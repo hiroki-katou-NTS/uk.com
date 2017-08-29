@@ -2,6 +2,11 @@ package nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest
 
 import java.util.Date;
 
+/**
+ * 
+ * @author vunv
+ *
+ */
 public interface GetApprovalRootService {
 
 	/**
@@ -17,6 +22,6 @@ public interface GetApprovalRootService {
 			String cid, 
 			String sid, 
 			int employmentRootAtr, 
-			String subjectRequest, 
+			int appType, 
 			Date standardDate);
 }

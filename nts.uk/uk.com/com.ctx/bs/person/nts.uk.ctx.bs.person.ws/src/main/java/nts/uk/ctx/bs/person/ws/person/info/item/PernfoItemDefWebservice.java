@@ -113,7 +113,7 @@ public class PernfoItemDefWebservice extends WebService{
 	}
 
 	@POST
-	@Path("updateItemChange")
+	@Path("SetOrder")
 	public void updateItemChange(UpdateOrderItemChangeCommand command) {
 		this.updateOrderItemChange.handle(command);
 	}

@@ -1,5 +1,6 @@
 package find.person.info.item;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -201,9 +202,11 @@ public class PerInfoItemDefFinder {
 					strItem.getStringItemType().value, strItem.getStringItemDataType().value);
 		case 2:
 			NumericItem numItem = (NumericItem) dataTypeState;
+			BigDecimal numericItemMin = numItem.getNumericItemMin() != null ? numItem.getNumericItemMin().v() : null;
+			BigDecimal numericItemMax = numItem.getNumericItemMax() != null ? numItem.getNumericItemMax().v() : null;
 			return DataTypeStateDto.createNumericItemDto(numItem.getNumericItemMinus().value,
 					numItem.getNumericItemAmount().value, numItem.getIntegerPart().v(), numItem.getDecimalPart().v(),
-					numItem.getNumericItemMin().v(), numItem.getNumericItemMax().v());
+					numericItemMin, numericItemMax);
 		case 3:
 			DateItem dItem = (DateItem) dataTypeState;
 			return DataTypeStateDto.createDateItemDto(dItem.getDateItemType().value);

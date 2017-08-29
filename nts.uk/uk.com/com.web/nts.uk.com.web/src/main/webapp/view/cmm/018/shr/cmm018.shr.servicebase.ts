@@ -1,6 +1,7 @@
 module nts.uk.com.view.cmm018.shr {
     export module servicebase {
         var paths: any = {
+            updateHIstory: "workflow/approvermanagement/workroot/updateHistory",
             personCostCalculationSelect: "at/schedule/budget/premium/findPersonCostCalculationByCompanyID",
             personCostCalculationInsert: "at/schedule/budget/premium/insertPersonCostCalculation",
             personCostCalculationUpdate: "at/schedule/budget/premium/updatePersonCostCalculation",
@@ -9,6 +10,10 @@ module nts.uk.com.view.cmm018.shr {
             premiumItemUpdate: "at/schedule/budget/premium/updatePremiumItem",
             getAttendanceItems: "at/share/attendanceitem/getPossibleAttendanceItem",
             getAttendanceItemByType:  "at/share/attendanceType/getByType/",
+        }
+        
+        export function updateHistory(data): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.updateHIstory, data);
         }
         
         export function personCostCalculationSelect(): JQueryPromise<any> {

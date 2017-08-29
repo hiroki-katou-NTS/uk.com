@@ -5,8 +5,15 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+
+			<script>
+				var dialogSize = {
+					width : 980,
+					height : 650
+				};
+			</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.bs.person.dom.person.role.RoleName
 			</com:ValidatorScript>
@@ -19,23 +26,22 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<div class="container">
-					<button id="B_1" class="proceed" data-bind="click:updateItemChange">#{i18n.getText('CPS006_19')}</button>
-					<button id="B_2" data-bind="click:OpenCDL022Modal">#{i18n.getText('CPS006_20')}</button>
-					<button id="B_3" data-bind="click:closeDialog">#{i18n.getText('CPS006_21')}</button>
-				</div>
+				<button id="B_1" class="proceed" data-bind="click:updateItemChange">#{i18n.getText('CPS006_19')}</button>
+				<button id="B_2" data-bind="click:OpenCDL022Modal">#{i18n.getText('CPS006_20')}</button>
+				<button id="B_3" data-bind="click:closeDialog">#{i18n.getText('CPS006_21')}</button>
 			</div>
 			<div id="contents-area" class="cf">
-				<div id="content-left"
-					data-bind="ntsPanel:{width: '270px', height: '490px', direction: 'right', showIcon: true, visible: true}">
+				<div id="content_main">
+					<div id="content-left"
+						data-bind="ntsPanel:{width: '270px', height: '490px', direction: 'right', showIcon: true, visible: true}">
 
-					<div class="div_line">
-						<div data-bind="ntsCheckBox: { checked: ckbDisplayAbolition }">#{i18n.getText('CPS006_22')}</div>
-					</div>
+						<div class="div_line">
+							<div data-bind="ntsCheckBox: { checked: ckbDisplayAbolition }">#{i18n.getText('CPS006_22')}</div>
+						</div>
 
-					<div class="div_line">
-						<div style="width: 250px"
-							data-bind="ntsSearchBox: {
+						<div class="div_line">
+							<div style="width: 250px"
+								data-bind="ntsSearchBox: {
 							placeHolder:'#{i18n.getText('CPS006_15')}',
 							searchMode: 'filter',
 							targetKey: 'id', 
@@ -45,267 +51,267 @@
 							selectedKey: 'id', 
 							fields: ['itemName'], 
 							mode: 'igGrid'}" />
-					</div>
+						</div>
 
-					<div class="div_line">
-						<table id="B1_3"
-							data-bind="ntsGridList: {
+						<div class="div_line">
+							<table id="B1_3"
+								data-bind="ntsGridList: {
 							rows : 15,
 							options: itemInfoDefList ,
 							optionsValue: 'id',
 							columns: columns ,
 							multiple: false ,
 							value: currentSelectId }">
-						</table>
-					</div>
-
-				</div>
-				<div id="content-right">
-					<div class="div_line">
-
-						<div class="line_col_1">
-							<div id="B2_1" data-bind="ntsFormLabel: {  }">#{i18n.getText('CPS006_23')}</div>
-						</div>
-
-						<div class="line_col_2">
-							<span id="B2_2" data-bind="text:currentItem().itemDefaultName"></span>
+							</table>
 						</div>
 
 					</div>
+					<div id="content-right">
+						<div class="div_line">
 
-					<div class="div_line">
-
-						<div class="line_col_1">
-							<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CPS006_16')}</div>
-						</div>
-
-						<div class="line_col_2">
-							<input data-bind="ntsTextEditor: {value: itemNameText }" />
-						</div>
-
-
-						<div id="B2_5"
-							data-bind="ntsCheckBox: { checked: ckbIsAbolition }">#{i18n.getText('CPS006_24')}</div>
-
-
-					</div>
-
-
-					<div class="div_line">
-						<com:ko-if bind="currentItem().requireChangable === 1">
 							<div class="line_col_1">
-								<div id="B2_6" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS006_25')}</div>
+								<div id="B2_1" data-bind="ntsFormLabel: {  }">#{i18n.getText('CPS006_23')}</div>
 							</div>
 
 							<div class="line_col_2">
-								<div class="cf"
-									data-bind="ntsSwitchButton: {
+								<span id="B2_2" data-bind="text:currentItem().itemDefaultName"></span>
+							</div>
+
+						</div>
+
+						<div class="div_line">
+
+							<div class="line_col_1">
+								<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CPS006_16')}</div>
+							</div>
+
+							<div class="line_col_2">
+								<input data-bind="ntsTextEditor: {value: itemNameText }" />
+							</div>
+
+
+							<div id="B2_5"
+								data-bind="ntsCheckBox: { checked: ckbIsAbolition }">#{i18n.getText('CPS006_24')}</div>
+
+
+						</div>
+
+
+						<div class="div_line">
+							<com:ko-if bind="currentItem().requireChangable === 1">
+								<div class="line_col_1">
+									<div id="B2_6" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS006_25')}</div>
+								</div>
+
+								<div class="line_col_2">
+									<div class="cf"
+										data-bind="ntsSwitchButton: {
 									options: roundingRules,
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: isRequired ,
 									enable: true }">
+									</div>
+
+								</div>
+							</com:ko-if>
+							<com:ko-if bind="currentItem().requireChangable === 0">
+
+								<div class="line_col_1">
+									<div id="B2_17" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CPS006_25')}</div>
 								</div>
 
-							</div>
-						</com:ko-if>
-						<com:ko-if bind="currentItem().requireChangable === 0">
-
-							<div class="line_col_1">
-								<div id="B2_17" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CPS006_25')}</div>
-							</div>
-
-							<div class="line_col_2">
-								<span id="B2_18" data-bind="text:genRequiredText()"></span>
-							</div>
-						</com:ko-if>
+								<div class="line_col_2">
+									<span id="B2_18" data-bind="text:genRequiredText()"></span>
+								</div>
+							</com:ko-if>
 
 
-						<div class="div_line">
+							<div class="div_line">
 
-							<div class="line_col_1">
-								<div id="B2_8" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS006_28')}</div>
+								<div class="line_col_1">
+									<div id="B2_8" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS006_28')}</div>
+								</div>
+
+								<div class="line_col_2">
+									<span id="B2_9" data-bind="text:genDatatypeValueText()"></span>
+								</div>
 							</div>
 
-							<div class="line_col_2">
-								<span id="B2_9" data-bind="text:genDatatypeValueText()"></span>
-							</div>
+							<com:ko-if bind=" dataType() === 1">
+
+								<div class="div_line">
+
+									<div class="line_col_1">
+										<div id="B2_10" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS006_29')}</div>
+									</div>
+
+									<div class="line_col_2">
+										<span id="B2_11" data-bind="text:genStringItemTypeText()">roleCode</span>
+									</div>
+
+								</div>
+
+								<div class="div_line">
+
+									<div class="line_col_1">
+										<div id="B2_12" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS006_30')}</div>
+									</div>
+
+									<div class="line_col_2">
+										<span id="B2_13"
+											data-bind="text:currentItem().itemTypeState.dataTypeState.stringItemLength">roleCode</span>
+									</div>
+
+								</div>
+
+								<div class="div_line">
+
+									<div class="line_col_1">
+										<div id="B2_14" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_31')}</div>
+									</div>
+
+									<div class="line_col_2">
+										<span id="B2_15"
+											data-bind="text: genStringItemDataTypeText ()"></span>
+									</div>
+
+									<button class="float_left"
+										data-bind="ntsHelpButton: {image: 'B2_16.png', position: 'right top', enable: true }">?</button>
+
+								</div>
+
+							</com:ko-if>
+
+							<com:ko-if bind="dataType()  === 2">
+
+								<div class="div_line">
+
+									<div class="line_col_1">
+										<div id="B2_20" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS006_32')}</div>
+									</div>
+
+									<div class="line_col_2">
+										<span id="B2_21"
+											data-bind="currentItem().itemTypeState.dataTypeState.numericItemAmount"></span>
+									</div>
+
+								</div>
+
+								<div class="div_line">
+
+									<div class="line_col_1">
+										<div id="B2_22" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_33')}</div>
+									</div>
+
+									<div class="line_col_2">
+										<span id="B2_23"
+											data-bind="text:genStringNumericItemMinusText()">roleCode</span>
+									</div>
+
+								</div>
+
+								<div class="div_line">
+
+									<div class="line_col_1">
+										<div id="B2_24" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_34')}</div>
+									</div>
+
+									<div class="line_col_2">
+										<span id="B2_25"
+											data-bind="currentItem().itemTypeState.dataTypeState.integerPart"></span>
+									</div>
+
+								</div>
+
+								<div class="div_line">
+
+									<div class="line_col_1">
+										<div id="B2_26" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_35')}</div>
+									</div>
+
+									<div class="line_col_2">
+										<span id="B2_27"
+											data-bind="currentItem().itemTypeState.dataTypeState.decimalPart"></span>
+									</div>
+
+								</div>
+
+							</com:ko-if>
+
+							<com:ko-if bind="dataType() === 3">
+
+								<div class="div_line">
+
+									<div class="line_col_1">
+										<div id="B2_29" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_36')}</div>
+									</div>
+
+									<div class="line_col_2">
+										<span id="B2_30" data-bind="text:genDateTypeText()"></span>
+									</div>
+
+								</div>
+
+							</com:ko-if>
+
+							<com:ko-if bind="dataType() === 4">
+								<div class="div_line">
+
+									<div class="line_col_1">
+										<div id="B2_32" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_37')}</div>
+									</div>
+
+									<div class="line_col_2">
+										<span id="B2_33"
+											data-bind="text:currentItem().itemTypeState.dataTypeState.min"></span>
+										<span id="B2_34">~</span> <span id="B2_35"
+											data-bind="text:currentItem().itemTypeState.dataTypeState.max"></span>
+									</div>
+
+								</div>
+
+							</com:ko-if>
+
+							<com:ko-if bind="dataType() === 5">
+
+								<div class="div_line">
+
+									<div class="line_col_1">
+										<div id="B2_37" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_40')}</div>
+									</div>
+
+									<div class="line_col_2">
+										<span id="B2_38"
+											data-bind="text:currentItem().itemTypeState.dataTypeState.timePointItemMin"></span>
+										<span id="B2_39">~</span> <span id="B2_40"
+											data-bind="text:currentItem().itemTypeState.dataTypeState.timePointItemMax"></span>
+									</div>
+
+								</div>
+
+							</com:ko-if>
+
+							<com:ko-if bind="dataType() === 6">
+
+								<div class="div_line">
+
+									<div class="line_col_1">
+										<div id="B2_42" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS001_43')}</div>
+									</div>
+
+									<div class="line_col_2">
+										<span id="B2_43">roleCode</span>
+									</div>
+
+									<button id="B2_44">#{i18n.getText('CAS001_44')}</button>
+
+								</div>
+
+							</com:ko-if>
+
 						</div>
-
-						<com:ko-if bind=" dataType() === 1">
-
-							<div class="div_line">
-
-								<div class="line_col_1">
-									<div id="B2_10" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS006_29')}</div>
-								</div>
-
-								<div class="line_col_2">
-									<span id="B2_11" data-bind="text:genStringItemTypeText()">roleCode</span>
-								</div>
-
-							</div>
-
-							<div class="div_line">
-
-								<div class="line_col_1">
-									<div id="B2_12" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS006_30')}</div>
-								</div>
-
-								<div class="line_col_2">
-									<span id="B2_13"
-										data-bind="text:currentItem().itemTypeState.dataTypeState.stringItemLength">roleCode</span>
-								</div>
-
-							</div>
-
-							<div class="div_line">
-
-								<div class="line_col_1">
-									<div id="B2_14" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_31')}</div>
-								</div>
-
-								<div class="line_col_2">
-									<span id="B2_15" data-bind="text: genStringItemDataTypeText ()"></span>
-								</div>
-
-								<button class="float_left"
-									data-bind="ntsHelpButton: {image: 'B2_16.png', position: 'right top', enable: true }">?</button>
-
-							</div>
-
-						</com:ko-if>
-
-						<com:ko-if bind="dataType()  === 2">
-
-							<div class="div_line">
-
-								<div class="line_col_1">
-									<div id="B2_20" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CPS006_32')}</div>
-								</div>
-
-								<div class="line_col_2">
-									<span id="B2_21"
-										data-bind="currentItem().itemTypeState.dataTypeState.numericItemAmount"></span>
-								</div>
-
-							</div>
-
-							<div class="div_line">
-
-								<div class="line_col_1">
-									<div id="B2_22" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_33')}</div>
-								</div>
-
-								<div class="line_col_2">
-									<span id="B2_23"
-										data-bind="text:genStringNumericItemMinusText()">roleCode</span>
-								</div>
-
-							</div>
-
-							<div class="div_line">
-
-								<div class="line_col_1">
-									<div id="B2_24" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_34')}</div>
-								</div>
-
-								<div class="line_col_2">
-									<span id="B2_25"
-										data-bind="currentItem().itemTypeState.dataTypeState.integerPart"></span>
-								</div>
-
-							</div>
-
-							<div class="div_line">
-
-								<div class="line_col_1">
-									<div id="B2_26" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_35')}</div>
-								</div>
-
-								<div class="line_col_2">
-									<span id="B2_27"
-										data-bind="currentItem().itemTypeState.dataTypeState.decimalPart"></span>
-								</div>
-
-							</div>
-
-						</com:ko-if>
-
-						<com:ko-if bind="dataType() === 3">
-
-							<div class="div_line">
-
-								<div class="line_col_1">
-									<div id="B2_29" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_36')}</div>
-								</div>
-
-								<div class="line_col_2">
-									<span id="B2_30" data-bind="text:genDateTypeText()"></span>
-								</div>
-
-							</div>
-
-						</com:ko-if>
-
-						<com:ko-if bind="dataType() === 4">
-							<div class="div_line">
-
-								<div class="line_col_1">
-									<div id="B2_32" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_37')}</div>
-								</div>
-
-								<div class="line_col_2">
-									<span id="B2_33"
-										data-bind="text:currentItem().itemTypeState.dataTypeState.min"></span>
-									<span id="B2_34">~</span> <span id="B2_35"
-										data-bind="text:currentItem().itemTypeState.dataTypeState.max"></span>
-								</div>
-
-							</div>
-
-						</com:ko-if>
-
-						<com:ko-if bind="dataType() === 5">
-
-							<div class="div_line">
-
-								<div class="line_col_1">
-									<div id="B2_37" data-bind="ntsFormLabel: { required:false }">#{i18n.getText('CAS001_40')}</div>
-								</div>
-
-								<div class="line_col_2">
-									<span id="B2_38"
-										data-bind="text:currentItem().itemTypeState.dataTypeState.timePointItemMin"></span>
-									<span id="B2_39">~</span> <span id="B2_40"
-										data-bind="text:currentItem().itemTypeState.dataTypeState.timePointItemMax"></span>
-								</div>
-
-							</div>
-
-						</com:ko-if>
-
-						<com:ko-if bind="dataType() === 6">
-
-							<div class="div_line">
-
-								<div class="line_col_1">
-									<div id="B2_42" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CAS001_43')}</div>
-								</div>
-
-								<div class="line_col_2">
-									<span id="B2_43">roleCode</span>
-								</div>
-
-								<button id="B2_44">#{i18n.getText('CAS001_44')}</button>
-
-							</div>
-
-						</com:ko-if>
-
 					</div>
-
-
 				</div>
 			</div>
 		</ui:define>

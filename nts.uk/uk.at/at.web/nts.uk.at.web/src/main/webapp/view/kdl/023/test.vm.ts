@@ -35,6 +35,9 @@ module nts.uk.at.view.kdl023.viewmodel {
                 if (res) {
                     self.patternList(res);
                 }
+            }).fail(res => {
+                nts.uk.ui.dialog.alertError(res);
+            }).always(() => {
                 dfd.resolve();
             });
             return dfd.promise();

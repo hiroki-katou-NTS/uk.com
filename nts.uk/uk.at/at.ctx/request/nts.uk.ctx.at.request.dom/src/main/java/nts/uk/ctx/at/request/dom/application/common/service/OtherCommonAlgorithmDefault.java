@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.ClosureAdaptor;
-import nts.uk.ctx.at.request.dom.application.common.adapter.EmployeeAdaptor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdaptor;
 
 @Stateless
 public class OtherCommonAlgorithmDefault implements OtherCommonAlgorithmService {

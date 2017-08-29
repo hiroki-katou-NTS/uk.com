@@ -88,8 +88,9 @@ public class Application extends DomainObject{
 	 */
 	private BigDecimal reflectPerTime;
 	/**
-	 * 予定反映状態
+	 * 実績反映状態
 	 */
+	@Setter
 	private ReflectPlanPerState reflectPerState;
 	/**
 	 * 実績強制反映

@@ -109,11 +109,11 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SELECT_GET_DISPORDER_ITEM_QUERY = "SELECT od.disporder FROM PpemtPerInfoItemOrder od"
 			+ " WHERE od.perInfoCtgId = :perInfoCtgId ORDER BY od.disporder DESC";
 
-	private final static String SELECT_CHECK_ITEM_NAME_QUERY = "SELECT i.itemName"
-			+ " FROM PpemtPerInfoItem i WHERE i.perInfoCtgId = :perInfoCtgId AND i.itemName = :itemName";
-
 	private final static String SELECT_ALL_ITEM_ORDER_BY_CTGID_QUERY = "SELECT o FROM PpemtPerInfoItemOrder o"
 			+ " WHERE o.perInfoCtgId = :perInfoCtgId";
+
+	private final static String SELECT_ITEM_ORDER_BY_ITEM_ID_QUERY = "SELECT o FROM PpemtPerInfoItemOrder o"
+			+ " WHERE o.ppemtPerInfoItemPK.perInfoItemDefId = :perInfoItemDefId";
 
 	private final static String SELECT_ITEM_DISPORDER_BY_KEY_QUERY = "SELECT o.disporder FROM PpemtPerInfoItemOrder o"
 			+ " WHERE o.perInfoCtgId = :perInfoCtgId AND o.ppemtPerInfoItemPK.perInfoItemDefId = :perInfoItemDefId";
@@ -143,30 +143,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
-	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String isAbolition,
-			String contractCd) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Optional<PersonInfoItemDefinition> getPerInfoItemDefById(String perInfoItemDefId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEM_BY_ITEM_ID_QUERY, Object[].class)
 				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoItemDefId).getSingle(i -> {
 					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
 					return createDomainFromEntity(i, items);
 				});
-	}
-
-	@Override
-	public String getItemDefaultName(String categoryCd, String itemCd) {
-		return queryProxy().query(SELECT_DEFAULT_ITEM_NAME_BY_ITEMS_CODE, String.class)
-				.setParameter("categoryCd", categoryCd).setParameter("itemCd", itemCd).getSingleOrNull();
-	}
-
-	@Override
-	public void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef) {
-		this.commandProxy().update(createPerInfoItemDefFromDomain(perInfoItemDef));
 	}
 
 	@Override
@@ -212,16 +194,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		// this.commandProxy().update(createPerInfoItemDefCmFromDomain(perInfoItemDef,
 		// contractCd));
 		// this.commandProxy().update(createPerInfoItemDefFromDomain(perInfoItemDef));
-	}
-
-	@Override
-	public boolean checkItemNameIsUnique(String perInfoCtgId, String newItemName) {
-		List<String> itemNames = this.queryProxy().query(SELECT_CHECK_ITEM_NAME_QUERY, String.class)
-				.setParameter("perInfoCtgId", perInfoCtgId).setParameter("itemName", newItemName).getList();
-		if (itemNames == null || itemNames.isEmpty()) {
-			return true;
-		}
-		return false;
 	}
 
 	@Override
@@ -274,6 +246,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private PpemtPerInfoItemOrder createItemOrder(String perInfoItemDefId, String perInfoCtgId, int dispOrder) {
 		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(perInfoItemDefId);
 		return new PpemtPerInfoItemOrder(perInfoItemPK, perInfoCtgId, dispOrder, dispOrder);
+	}
+
+	private PpemtPerInfoItemOrder createItemOrder(String perInfoItemDefId, String perInfoCtgId, int dispOrder,
+			int displayOrder) {
+		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(perInfoItemDefId);
+		return new PpemtPerInfoItemOrder(perInfoItemPK, perInfoCtgId, dispOrder, displayOrder);
 	}
 
 	private PersonInfoItemDefinition createDomainFromEntity(Object[] i, List<String> items) {
@@ -405,8 +383,8 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				break;
 			case 2:
 				NumericItem numericItem = (NumericItem) dataTypeState;
-				numericItemMin = numericItem.getNumericItemMin().v();
-				numericItemMax = numericItem.getNumericItemMax().v();
+				numericItemMin = numericItem.getNumericItemMin() != null ? numericItem.getNumericItemMin().v() : null;
+				numericItemMax = numericItem.getNumericItemMax() != null ? numericItem.getNumericItemMax().v() : null;
 				numericItemAmountAtr = new BigDecimal(numericItem.getNumericItemAmount().value);
 				numericItemMinusAtr = new BigDecimal(numericItem.getNumericItemMinus().value);
 				numericItemDecimalPart = new BigDecimal(numericItem.getDecimalPart().v());
@@ -452,6 +430,18 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				numericItemMinusAtr, numericItemDecimalPart, numericItemIntegerPart, selectionItemRefType,
 				selectionItemRefCode);
 	}
+	// Sonnlb Code
+
+	@Override
+	public void updatePerInfoItemDef(PersonInfoItemDefinition perInfoItemDef) {
+		this.commandProxy().update(createPerInfoItemDefFromDomain(perInfoItemDef));
+	}
+
+	@Override
+	public String getItemDefaultName(String categoryCd, String itemCd) {
+		return queryProxy().query(SELECT_DEFAULT_ITEM_NAME_BY_ITEMS_CODE, String.class)
+				.setParameter("categoryCd", categoryCd).setParameter("itemCd", itemCd).getSingleOrNull();
+	}
 
 	private PerInfoItemDefOrder createPerInfoItemDefOrderFromEntity(PpemtPerInfoItemOrder order) {
 		return PerInfoItemDefOrder.createFromJavaType(order.ppemtPerInfoItemPK.perInfoItemDefId, order.perInfoCtgId,
@@ -467,5 +457,20 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 					return createDomainFromEntity(i, items);
 				});
 	}
+
+	@Override
+	public void UpdateOrderItem(PerInfoItemDefOrder itemOrder) {
+		this.commandProxy().update(createItemOrder(itemOrder.getPerInfoItemDefId(), itemOrder.getPerInfoCtgId(),
+				itemOrder.getDispOrder().v(), itemOrder.getDisplayOrder().v()));
+	}
+
+	@Override
+	public Optional<PerInfoItemDefOrder> getPerInfoItemDefOrdersByItemId(String perInfoItemDefId) {
+		return this.queryProxy().query(SELECT_ITEM_ORDER_BY_ITEM_ID_QUERY, PpemtPerInfoItemOrder.class)
+				.setParameter("perInfoItemDefId", perInfoItemDefId)
+				.getSingle(o -> createPerInfoItemDefOrderFromEntity(o));
+	}
+
+	// Sonnlb Code
 
 }

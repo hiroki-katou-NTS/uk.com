@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 /**
  * 職場別就業承認ルート
  * @author hoatt
@@ -44,7 +45,7 @@ public class WorkplaceApprovalRoot extends AggregateRoot{
 			String endDate,
 			String branchId,
 			String anyItemApplicationId,
-			int confirmationRootType,
+			Integer confirmationRootType,
 			int employmentRootAtr){
 		return new WorkplaceApprovalRoot(companyId,
 			approvalId,
@@ -53,9 +54,31 @@ public class WorkplaceApprovalRoot extends AggregateRoot{
 			ApprovalPeriod.createSimpleFromJavaType(startDate, endDate),
 			branchId,
 			anyItemApplicationId,
-			EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
+			confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
 			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
-			EnumAdaptor.valueOf(applicationType, ApplicationType.class));
+			applicationType == null ? null: EnumAdaptor.valueOf(applicationType, ApplicationType.class));
+	}
+	public static WorkplaceApprovalRoot convert(String companyId,
+			String approvalId,
+			String workplaceId,
+			String historyId,
+			Integer applicationType,
+			GeneralDate startDate,
+			GeneralDate endDate,
+			String branchId,
+			String anyItemApplicationId,
+			Integer confirmationRootType,
+			int employmentRootAtr){
+		return new WorkplaceApprovalRoot(companyId,
+			approvalId,
+			workplaceId,
+			historyId, 
+			new ApprovalPeriod(startDate, endDate),
+			branchId,
+			anyItemApplicationId,
+			confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
+			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
+			applicationType == null ? null: EnumAdaptor.valueOf(applicationType, ApplicationType.class));
 	}
 	public static WorkplaceApprovalRoot updateSdateEdate(WorkplaceApprovalRoot wpApprovalRoot, String sDate, String eDate){
 		WorkplaceApprovalRoot wp = wpApprovalRoot;

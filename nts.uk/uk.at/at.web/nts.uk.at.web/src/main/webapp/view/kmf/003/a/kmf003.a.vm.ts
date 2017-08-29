@@ -94,6 +94,12 @@ module nts.uk.at.view.kmf003.a.viewmodel {
                 }
             });    
             
+            if(self.useConditionCls() == true){
+                self.enableGrantDate(true);
+            } else {
+                self.enableGrantDate(false);
+            }
+            
             self.useConditionCls.subscribe(function(value) {
                 if(!value){
                     self.enableGrantDate(false);
