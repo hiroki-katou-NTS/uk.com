@@ -5846,8 +5846,7 @@ var nts;
                         _super.apply(this, arguments);
                     }
                     TimeEditorProcessor.prototype.update = function ($input, data) {
-                        $input.
-                            super.update($input, data);
+                        _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         var width = option.width;
                         var $parent = $input.parent();

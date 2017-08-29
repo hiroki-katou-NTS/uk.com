@@ -83,7 +83,7 @@ module nts.uk.ui.koExtentions {
         }
 
         update($input: JQuery, data: any) {
-            var value: (val: any) => string = data.value;
+            var value: (val?: any) => string = data.value;
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
