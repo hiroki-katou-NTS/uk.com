@@ -1,4 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service;
+
+import nts.arc.time.GeneralDate;
+
 /**
  * 
  * 4-1.詳細画面登録前の処理
@@ -14,7 +17,7 @@ public interface ProcessBeforeDetailScreenRegistrationService {
 	 * @param targetApp 対象申請
 	 * @param postAtr 事前事後区分
 	 */
-	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, String appDate, int employeeRouteAtr, String targetApp, int postAtr);
+	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate, int employeeRouteAtr, String targetApp, int postAtr);
 	
 	/**
 	 * 1.排他チェック
