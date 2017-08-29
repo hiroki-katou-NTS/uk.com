@@ -2,16 +2,16 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.access.jobtitle.dto;
+package nts.uk.ctx.bs.employee.pub.employee;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class AcJobTitleDto.
+ * The Class PubJobTitleDto.
  */
 @Data
-public class AcJobTitleDto {
+public class PubJobTitleDto {
 
 	/** The company id. */
 	private String companyId;
@@ -35,7 +35,14 @@ public class AcJobTitleDto {
 	private GeneralDate endDate;
 
 	/**
-	 * Instantiates a new ac job title dto.
+	 * Instantiates a new pub job title dto.
+	 */
+	public PubJobTitleDto() {
+		super();
+	}
+
+	/**
+	 * Instantiates a new pub job title dto.
 	 *
 	 * @param companyId
 	 *            the company id
@@ -52,7 +59,7 @@ public class AcJobTitleDto {
 	 * @param endDate
 	 *            the end date
 	 */
-	public AcJobTitleDto(String companyId, String positionId, String positionCode,
+	public PubJobTitleDto(String companyId, String positionId, String positionCode,
 			String positionName, String sequenceCode, GeneralDate startDate, GeneralDate endDate) {
 		super();
 		this.companyId = companyId;
