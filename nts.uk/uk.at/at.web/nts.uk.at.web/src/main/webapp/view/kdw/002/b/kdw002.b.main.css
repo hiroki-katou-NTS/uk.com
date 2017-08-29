@@ -31,6 +31,10 @@
 	color: black;
 }
 
+#grid_container {
+	width: 1200px !important;
+}
+
 .proceed {
 	margin-left: 80px !important;
 }
@@ -85,9 +89,7 @@ td:nth-child(3), td:nth-child(4), td:nth-child(5) {
 .leftpanel {
 	float: left;
 }
-#grid_container {
-	width: 1158px !important;
-}
+
 .leftLabel {
 	
 }
