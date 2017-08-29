@@ -2,15 +2,15 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
 import lombok.AllArgsConstructor;
 /**
- * 区分
+ * 確定者
  * @author hoatt
  *
  */
 @AllArgsConstructor
-public enum ApprovalAtr {
-	/** 個人*/
-	PERSON(0),
-	/** 職位*/
-	JOB_TITLE(1);
+public enum ConfirmPerson {
+	/** 未確定*/
+	NOT_CONFIRM(0),
+	/** 確定*/
+	CONFIRM(1);
 	public final int value;
 }
