@@ -40,8 +40,8 @@ module nts.uk.at.view.kmf003.b.viewmodel {
             self.items = ko.observableArray([]);
             
             self.grantReferenceDateOptions = ko.observableArray([
-                new GrantReferenceDateOption(0, 'nts.uk.resource.getText("Enum_GrantReferenceDate_HIRE_DATE")'),
-                new GrantReferenceDateOption(1, 'nts.uk.resource.getText("Enum_GrantReferenceDate_YEAR_HD_REFERENCE_DATE")')
+                new GrantReferenceDateOption(0, nts.uk.resource.getText("Enum_GrantReferenceDate_HIRE_DATE")),
+                new GrantReferenceDateOption(1, nts.uk.resource.getText("Enum_GrantReferenceDate_YEAR_HD_REFERENCE_DATE"))
             ]);
             
             self.payDayCalculate = ko.observable("");

@@ -10,5 +10,5 @@ public interface AppTypeDiscreteSettingRepository {
 	 * @param appType
 	 * @return
 	 */
-	public Optional<ApplicationSetting> getAppTypeDiscreteSettingByAppType(String companyID, int appType);
+	public Optional<AppTypeDiscreteSetting> getAppTypeDiscreteSettingByAppType(String companyID, int appType);
 }

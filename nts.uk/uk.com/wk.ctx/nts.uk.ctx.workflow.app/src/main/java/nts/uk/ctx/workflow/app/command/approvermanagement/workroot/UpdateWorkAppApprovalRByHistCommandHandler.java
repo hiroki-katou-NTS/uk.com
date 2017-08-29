@@ -67,7 +67,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				//item update
 				CompanyApprovalRoot comAppRoot = CompanyApprovalRoot.updateSdateEdate(comAppRootDb.get(), objUpdateItem.getStartDate(), objUpdateItem.getEndDate());
 				//find history previous
-				List<CompanyApprovalRoot> lstOld= repoCom.getComApprovalRootByEdate(companyId, eDatePrevious, updateItem.getApplicationType());
+				List<CompanyApprovalRoot> lstOld= repoCom.getComApprovalRootByEdate(companyId, eDatePrevious, comAppRoot.getApplicationType()== null ? null : comAppRoot.getApplicationType().value);
 				if(lstOld.isEmpty()){// history previous is not exist
 					if(objUpdateItem.getEditOrDelete()==1){//TH: edit
 						repoCom.updateComApprovalRoot(comAppRoot);
@@ -126,7 +126,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				}
 				WorkplaceApprovalRoot wpAppRoot = WorkplaceApprovalRoot.updateSdateEdate(wpAppRootDb.get(), objUpdateItem.getStartDate(), objUpdateItem.getEndDate());
 				//find history previous
-				List<WorkplaceApprovalRoot> lstOld= repoWorkplace.getWpApprovalRootByEdate(companyId, wpAppRoot.getWorkplaceId(), eDatePrevious, updateItem.getApplicationType());
+				List<WorkplaceApprovalRoot> lstOld= repoWorkplace.getWpApprovalRootByEdate(companyId, wpAppRoot.getWorkplaceId(), eDatePrevious, wpAppRoot.getApplicationType() == null ? null : wpAppRoot.getApplicationType().value);
 				if(lstOld.isEmpty()){// history previous is not exist
 					if(objUpdateItem.getEditOrDelete()==1){//TH: edit
 						repoWorkplace.updateWpApprovalRoot(wpAppRoot);
@@ -161,7 +161,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 						repoWorkplace.updateWpApprovalRoot(wpAppRoot);
 					}else{//delete 
 						String startDateUpdate = wp.getPeriod().getStartDate().localDate().format(formatter);
-						WorkplaceApprovalRoot wpAppRootUpdate = WorkplaceApprovalRoot.updateSdateEdate(wp, startDateUpdate, endDateUpdate);
+						WorkplaceApprovalRoot wpAppRootUpdate = WorkplaceApprovalRoot.updateSdateEdate(wp, startDateUpdate, endDateDelete);
 						//update history previous
 						repoWorkplace.updateWpApprovalRoot(wpAppRootUpdate);
 						//get all  ApprovalPhase by BranchId
@@ -188,7 +188,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				}
 				PersonApprovalRoot psAppRoot = PersonApprovalRoot.updateSdateEdate(psAppRootDb.get(), objUpdateItem.getStartDate(), objUpdateItem.getEndDate());
 				//find history previous
-				List<PersonApprovalRoot> lstOld= repo.getPsApprovalRootByEdate(companyId, psAppRoot.getEmployeeId(),  eDatePrevious, updateItem.getApplicationType());
+				List<PersonApprovalRoot> lstOld= repo.getPsApprovalRootByEdate(companyId, psAppRoot.getEmployeeId(),  eDatePrevious, psAppRoot.getApplicationType() == null ? null : psAppRoot.getApplicationType().value);
 				if(lstOld.isEmpty()){// history previous is not exist
 					if(objUpdateItem.getEditOrDelete()==1){//TH: edit
 						repo.updatePsApprovalRoot(psAppRoot);
@@ -223,7 +223,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 						repo.updatePsApprovalRoot(psAppRoot);
 					}else{//delete 
 						String startDateUpdate = ps.getPeriod().getStartDate().localDate().format(formatter);
-						PersonApprovalRoot psAppRootUpdate= PersonApprovalRoot.updateSdateEdate(ps, startDateUpdate, endDateUpdate);
+						PersonApprovalRoot psAppRootUpdate= PersonApprovalRoot.updateSdateEdate(ps, startDateUpdate, endDateDelete);
 						//update history previous
 						repo.updatePsApprovalRoot(psAppRootUpdate);
 						//get all  ApprovalPhase by BranchId

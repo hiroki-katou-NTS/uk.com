@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDt
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeDetailDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeFormatDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeFormatDetailDto;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatMonthly;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
@@ -22,7 +23,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class DailyPerformanceFinder {
-
+	
 	@Inject
 	private AttendanceItemRepository attendanceItemRepository;
 
