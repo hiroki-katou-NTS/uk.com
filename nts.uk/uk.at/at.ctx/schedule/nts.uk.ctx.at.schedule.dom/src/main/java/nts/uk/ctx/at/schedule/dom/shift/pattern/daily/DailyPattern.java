@@ -52,32 +52,16 @@ public class DailyPattern extends AggregateRoot {
 		this.listDailyPatternVal.stream().filter(Objects::nonNull).forEach(item -> {
 			// check validate eap and find msg25
 			if (!StringUtil.isNullOrEmpty(item.getWorkTypeSetCd().v(), true)
-					&& !StringUtil.isNullOrEmpty(item.getWorkingHoursCd().v(), true)
 					&& item.getDays() == null) {
 				throw new BusinessException("Msg_25");
 			}
 
 			// check validate eap and find msg25
 			if (StringUtil.isNullOrEmpty(item.getWorkTypeSetCd().v(), true)
-					&& StringUtil.isNullOrEmpty(item.getWorkingHoursCd().v(), true)
-					&& item.getDays() == null) {
-				throw new BusinessException("Msg_25");
-			}
-
-			// check validate eap and find msg22
-			if (StringUtil.isNullOrEmpty(item.getWorkTypeSetCd().v(), true)
-					&& !StringUtil.isNullOrEmpty(item.getWorkingHoursCd().v(), true)) {
-				throw new BusinessException("Msg_23");
-			}
-
-			// check validate eap and find msg22
-			if (StringUtil.isNullOrEmpty(item.getWorkTypeSetCd().v(), true)
-					&& StringUtil.isNullOrEmpty(item.getWorkingHoursCd().v(), true)
 					&& item.getDays() != null) {
 				throw new BusinessException("Msg_22");
 			}
 		});
-
 	}
 
 	/**

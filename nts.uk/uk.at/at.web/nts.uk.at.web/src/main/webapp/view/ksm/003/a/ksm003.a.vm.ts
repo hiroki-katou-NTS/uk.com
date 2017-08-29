@@ -151,7 +151,11 @@ module nts.uk.at.view.ksm003.a {
                     self.selectedCode(nts.uk.text.padLeft(self.detail().patternCode(), '0', 2));
                     self.isEditting(true);
                 }).fail(function(res) {
-                    alert(res.message);
+                    if (res.messageId == "Msg_3") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_3" });
+                    } else {
+                        alert(res.message);
+                    }
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
@@ -210,14 +214,15 @@ module nts.uk.at.view.ksm003.a {
                 self.isEditting(false);
                 self.selectedCode("");
                 self.resetInput();
-                self.clearError();
                 $("#inpCode").focus();
+                self.clearError();
             }
 
             //reset Input
             private resetInput(): void {
                 let self = this;
-                //cretar new table
+                self.detail().patternCode("");
+                self.detail().patternName("");
                 self.detail().dailyPatternVals().forEach(function(item) {
                     item.workTypeSetCd("");
                     item.workTypeInfo("");
@@ -225,14 +230,15 @@ module nts.uk.at.view.ksm003.a {
                     item.workingHoursCd("");
                     item.days(null);
                 });
-                self.detail().patternCode("");
-                self.detail().patternName("");
             }
 
             // clear Error
             private clearError(): void {
                 if ($('.nts-editor').ntsError("hasError")) {
                     $('.nts-editor').ntsError('clear');
+                }
+                if ($('.buttonEvent').ntsError("hasError")) {
+                    $('.buttonEvent').ntsError('clear');
                 }
             }
 
@@ -241,16 +247,24 @@ module nts.uk.at.view.ksm003.a {
                 let self = this;
                 $('#inpCode').ntsEditor('validate');
                 $('#inpPattern').ntsEditor('validate');
-                self.detail().dailyPatternVals().forEach((item) => {
-                    if (item.isSetting()) {
-                        $('#days' + item.dispOrder).ntsEditor('validate');
+
+                if (nts.uk.util.isNullOrEmpty(self.detail().dailyPatternVals())) {
+                    $('#days1').ntsError('set', { messageId: "Msg_31" });
+                }
+
+                self.detail().dailyPatternVals().filter(i => i.isSetting()).forEach((item) => {
+                    $('#days' + item.dispOrder).ntsEditor('validate');
+
+                    if (!nts.uk.text.isNullOrEmpty(item.days()) && nts.uk.text.isNullOrEmpty(item.workTypeSetCd())) {
+                        $('#btnVal' + item.dispOrder).ntsError('set', { messageId: "Msg_22" });
                     }
 
-                    if (!nts.uk.text.isNullOrEmpty(item.days()) && nts.uk.text.isNullOrEmpty(item.workTypeSetCd()) {
-                        $('#days' + item.dispOrder).ntsError('set', { messageId: "Msg_22" });
+                    if (nts.uk.text.isNullOrEmpty(item.days()) && !nts.uk.text.isNullOrEmpty(item.workTypeSetCd())) {
+                        $('#days' + item.dispOrder).ntsError('set', { messageId: "Msg_25" });
                     }
                 });
-                return $('.nts-input').ntsError('hasError');
+
+                return $('.nts-input').ntsError('hasError') || $('.buttonEvent').ntsError('hasError');
             }
 
             //click button open Dialog Working
@@ -374,8 +388,14 @@ module nts.uk.at.view.ksm003.a {
                         self.workingHoursCd(childData.selectedWorkTimeCode);
                         self.setWorkTypeName(childData.selectedWorkTypeName);
                         self.setWorkTimeName(childData.selectedWorkTimeName);
-//                        $('#days' + self.dispOrder).ntsError('clear');
-//                        $('#days' + self.dispOrder).ntsEditor('validate');
+                        if ($('.nts-editor').ntsError("hasError")) {
+                            $('.nts-editor').ntsError('clear');
+                        }
+                        if ($('.buttonEvent').ntsError("hasError")) {
+                            $('.buttonEvent').ntsError('clear');
+                        }
+                        //                        $('#days' + self.dispOrder).ntsError('clear');
+                        //                        $('#days' + self.dispOrder).ntsEditor('validate');
                     });
 
                 }

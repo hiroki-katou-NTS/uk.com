@@ -36,7 +36,7 @@ public class UpdateItemChangeCommandHandler extends CommandHandler<UpdateItemCha
 					command.getIsRequired(), itemDef.getSystemRequired().value, itemDef.getRequireChangable().value);
 		}
 
-		this.pernfoItemDefRep.updatePerInfoItemDefRoot(itemDefDomain);
+		this.pernfoItemDefRep.updatePerInfoItemDef(itemDefDomain);
 	}
 
 }

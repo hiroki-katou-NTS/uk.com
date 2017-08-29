@@ -42,7 +42,7 @@ public class JpaTotalSubjectsSetMemento implements TotalSubjectsSetMemento {
 	 */
 	@Override
 	public void setWorkTypeCode(WorkTypeCode setWorkTypeCode) {
-		this.entity.setWorkTypeCd(setWorkTypeCode.v());
+		this.entity.getKshstTotalSubjectsPK().setWorkTypeCd(setWorkTypeCode.v());
 	}
 
 	/*

@@ -112,6 +112,11 @@ module kcp009.viewmodel {
                             self.organizationName(currentItem.depName);
                         }
                     }
+                } else {
+                    self.empDisplayCode("");
+                    self.empBusinessName("");
+                    self.organizationName("");
+//                    self.selectedOrdinalNumber(0);
                 }
             });
             // Selected OrdinalNumber
@@ -242,7 +247,7 @@ module kcp009.viewmodel {
     export interface ComponentOption {
         systemReference: SystemType;
         isDisplayOrganizationName: boolean;
-        employeeInputList?: KnockoutObservableArray<EmployeeModel>;
+        employeeInputList: KnockoutObservableArray<EmployeeModel>;
         targetBtnText: string;
         selectedItem: KnockoutObservable<string>;
     }
