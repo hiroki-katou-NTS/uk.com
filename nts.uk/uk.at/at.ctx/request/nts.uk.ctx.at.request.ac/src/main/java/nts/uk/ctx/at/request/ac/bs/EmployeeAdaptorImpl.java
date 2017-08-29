@@ -35,7 +35,7 @@ public class EmployeeAdaptorImpl implements EmployeeAdaptor {
 	}
 
 	@Override
-	public List<String> findWpkIdsBySCode(String companyId, String sid, GeneralDate baseDate) {
-		return this.employeePub.findWpkIdsBySCode(companyId, sid, baseDate);
+	public List<String> findWpkIdsBySid(String companyId, String sid, GeneralDate baseDate) {
+		return this.employeePub.findWpkIdsBySid(companyId, sid, baseDate);
 	}
 }

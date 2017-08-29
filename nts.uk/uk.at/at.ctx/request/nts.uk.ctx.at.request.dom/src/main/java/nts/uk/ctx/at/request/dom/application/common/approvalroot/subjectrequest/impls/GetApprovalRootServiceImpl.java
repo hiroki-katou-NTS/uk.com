@@ -53,7 +53,7 @@ public class GetApprovalRootServiceImpl implements GetApprovalRootService {
 			List<PersonAppRootAdaptorDto> perAppRootsOfCommon = this.approvalRootAdaptorDto.findByBaseDateOfCommon(cid, sid, standardDate);
 			if (CollectionUtil.isEmpty(perAppRootsOfCommon)) {
 				// 所属職場を含む上位職場を取得
-				List<String> wpkList = this.employeeAdaptor.findWpkIdsBySCode(cid, sid, GeneralDate.legacyDate(standardDate));
+				List<String> wpkList = this.employeeAdaptor.findWpkIdsBySid(cid, sid, GeneralDate.legacyDate(standardDate));
 				for (String wｋｐId : wpkList) {
 					List<WkpAppRootAdaptorDto> wkpAppRoots = this.approvalRootAdaptorDto.findWkpByBaseDate(cid, wｋｐId, standardDate, appType);
 					if (!CollectionUtil.isEmpty(wkpAppRoots)) {

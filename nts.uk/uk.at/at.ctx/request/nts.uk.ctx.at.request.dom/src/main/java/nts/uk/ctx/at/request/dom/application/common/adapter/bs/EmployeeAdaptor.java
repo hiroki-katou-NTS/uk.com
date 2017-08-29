@@ -24,6 +24,6 @@ public interface EmployeeAdaptor {
 	 * @return the list
 	 */
 	// RequestList #65
-	List<String> findWpkIdsBySCode(String companyId, String sid, GeneralDate date);
+	List<String> findWpkIdsBySid(String companyId, String sid, GeneralDate date);
 	
 }
