@@ -214,16 +214,17 @@ module nts.uk.ui.koExtentions {
                         : component.igTreeGridSelection('option', 'multipleSelection')
                     
                     let selectedProperties = _.map(result.selectItems, primaryKey);
-                    let selectedValue;
-                    if(selectedKey !== null){
-                        selectedValue = isMulti ? _.map(result.selectItems, selectedKey) : 
-                            result.selectItems.length > 0 ? result.selectItems[0][selectedKey] : undefined;        
-                    } else {
-                        selectedValue = isMulti ? [result.selectItems] : 
-                            result.selectItems.length > 0 ? result.selectItems[0] : undefined;    
-                    }
+//                    let selectedValue;
+//                    if(selectedKey !== null){
+//                        selectedValue = isMulti ? _.map(result.selectItems, selectedKey) : 
+//                            result.selectItems.length > 0 ? result.selectItems[0][selectedKey] : undefined;        
+//                    } else {
+//                        selectedValue = isMulti ? [result.selectItems] : 
+//                            result.selectItems.length > 0 ? result.selectItems[0] : undefined;    
+//                    }
                     
                     if (targetMode === 'igGrid') {  
+                        component.ntsGridList("setSelected", selectedProperties);
                         if(searchMode === "filter"){
                             $container.data("filteredSrouce", result.options); 
                             component.attr("filtered", true);   
@@ -238,12 +239,16 @@ module nts.uk.ui.koExtentions {
                             });
                             component.igGrid("option", "dataSource", source);  
                             component.igGrid("dataBind");  
+                            
+                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
+                                component.trigger("selectionchanged");        
+                            }
                         } else {
-                            //selected(selectedValue);    
+                            component.trigger("selectionchanged");    
                         }
-                        component.ntsGridList("setSelected", selectedProperties);
                     } else if (targetMode == 'igTree') {
                         component.ntsTreeView("setSelected", selectedProperties);
+                        component.trigger("selectionchanged");
                         //selected(selectedValue);
                     }
                     _.defer(function() {

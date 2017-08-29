@@ -668,7 +668,7 @@
     export module resource {
 
 
-        export function getText(code: string, params: string[]): string {
+        export function getText(code: string, params?: string[]): string {
             let text = names[code];
             if (text) {
                 text = formatCompCustomizeResource(text);
@@ -678,7 +678,7 @@
             return code;
         }
 
-        export function getMessage(messageId: string, params: string[]): string {
+        export function getMessage(messageId: string, params?: string[]): string {
             let message = messages[messageId];
             if (!message) {
                 let responseText="";

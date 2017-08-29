@@ -75,7 +75,6 @@ module nts.uk.ui.jqueryExtentions {
                     };
     
                     var ntsControl = ntsControls.getControl(controlDef.controlType);
-                    // TODO: Somehow when re-render by virtualization, it can't get cell out of grid
                     var cell = $self.igGrid("cellById", rowId, column.key);
                     var isEnable = $(cell).find("." + ntsControl.containerClass()).data("enable");
                     isEnable = isEnable !== undefined ? isEnable : controlDef.enable === undefined ? true : controlDef.enable;
@@ -98,11 +97,13 @@ module nts.uk.ui.jqueryExtentions {
                         ntsControl.$containedGrid = $self;
                         
                         // Cell state color
-                        cellFormatter.style($self, {
+                        let c = {
                             id: rowId,
                             columnKey: column.key,
                             element: $gridCell[0]    
-                        });
+                        };
+                        cellFormatter.style($self, c);
+                        color.rememberDisabled($self, c);
                     }, 0);
     
                     return $container.html();
@@ -135,7 +136,9 @@ module nts.uk.ui.jqueryExtentions {
             }
             // Window resize
             $(window).resize(function() {
-                settings.setGridSize($(self));
+                if (options.autoFitWindow) {
+                    settings.setGridSize($(self));
+                }
                 columnSize.load($(self));
             });
         };
@@ -347,12 +350,12 @@ module nts.uk.ui.jqueryExtentions {
             /**
              * Update cell.
              */
-            export function updateCell($grid: JQuery, rowId: any, columnKey: any, cellValue: any, visibleColumnsMap?: any) {
+            export function updateCell($grid: JQuery, rowId: any, columnKey: any, cellValue: any, allColumnsMap?: any) {
                 let grid: any = $grid.data("igGrid");
                 if (!utils.updatable($grid)) return;
                 let gridUpdate: any = $grid.data("igGridUpdating");
                 let autoCommit = grid.options.autoCommit;
-                let columnsMap: any = visibleColumnsMap || utils.getVisibleColumnsMap($grid);
+                let columnsMap: any = allColumnsMap || utils.getColumnsMap($grid);
                 let rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
                 grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
                 if (!utils.isNtsControl($grid, columnKey)) renderCell($grid, rId, columnKey);
@@ -362,12 +365,12 @@ module nts.uk.ui.jqueryExtentions {
             /**
              * Update row.
              */
-            export function updateRow($grid: JQuery, rowId: any, updatedRowData: any, visibleColumnsMap?: any, forceRender?: boolean) {
+            export function updateRow($grid: JQuery, rowId: any, updatedRowData: any, allColumnsMap?: any, forceRender?: boolean) {
                 let grid: any = $grid.data("igGrid");
                 if (!utils.updatable($grid)) return;
                 let gridUpdate: any = $grid.data("igGridUpdating");
                 let autoCommit = grid.options.autoCommit;
-                let columnsMap: any = visibleColumnsMap || utils.getVisibleColumnsMap($grid);
+                let columnsMap: any = allColumnsMap || utils.getColumnsMap($grid);
                 let rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
                 let origData = gridUpdate._getLatestValues(rId); 
                 grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
@@ -714,9 +717,9 @@ module nts.uk.ui.jqueryExtentions {
         module functions {
             export let UPDATE_ROW: string = "updateRow";
             export let ENABLE_CONTROL: string = "enableNtsControlAt";
-            export let ENABLE_ALL_CONTROL: string = "enableNtsControl";
+            export let ENABLE_ALL_CONTROLS: string = "enableNtsControls";
             export let DISABLE_CONTROL: string = "disableNtsControlAt";
-            export let DISABLE_ALL_CONTROL: string = "disableNtsControl";
+            export let DISABLE_ALL_CONTROLS: string = "disableNtsControls";
             export let DIRECT_ENTER: string = "directEnter";
             
             export function ntsAction($grid: JQuery, method: string, params: Array<any>) {
@@ -728,14 +731,14 @@ module nts.uk.ui.jqueryExtentions {
                     case ENABLE_CONTROL:
                         enableNtsControlAt($grid, params[0], params[1], params[2]);
                         break;
-                    case ENABLE_ALL_CONTROL:
-                        enableNtsControl($grid, params[0], params[1]);
+                    case ENABLE_ALL_CONTROLS:
+                        enableNtsControls($grid, params[0], params[1]);
                         break;
                     case DISABLE_CONTROL:
                         disableNtsControlAt($grid, params[0], params[1], params[2]);
                         break;
-                    case DISABLE_ALL_CONTROL:
-                        disableNtsControl($grid, params[0], params[1]);
+                    case DISABLE_ALL_CONTROLS:
+                        disableNtsControls($grid, params[0], params[1]);
                         break;
                     case DIRECT_ENTER:
                         var direction: selection.Direction = $grid.data(internal.ENTER_DIRECT);
@@ -749,13 +752,6 @@ module nts.uk.ui.jqueryExtentions {
                         break;
                 }
             }
-            
-            function enableNtsControl($grid: JQuery, columnKey: any, controlType: string) {
-                var datasource = $grid.igGrid("option", "dataSource");
-                for (let i = 0; i <= datasource.length; i++) {
-                    enableNtsControlAt($grid, i, columnKey, controlType);
-                }
-            }
     
             function updateRow($grid: JQuery, rowId: any, object: any, autoCommit: boolean) {
                 updating.updateRow($grid, rowId, object, undefined, true);
@@ -766,10 +762,23 @@ module nts.uk.ui.jqueryExtentions {
                 }
             }
 
-            function disableNtsControl($grid: JQuery, columnKey: any, controlType: string) {
-                var datasource = $grid.igGrid("option", "dataSource");
-                for (let i = 0; i <= datasource.length; i++) {
-                    disableNtsControlAt($grid, i, columnKey, controlType);
+            function disableNtsControls($grid: JQuery, columnKey: any, controlType: string) {
+                var ds = $grid.igGrid("option", "dataSource");
+                var primaryKey = $grid.igGrid("option", "primaryKey");
+                for (let i = 0; i < ds.length; i++) {
+                    let id = ds[i][primaryKey];
+                    disableNtsControlAt($grid, id, columnKey, controlType);
+                    color.pushDisable($grid, { id: id, columnKey: columnKey });
+                }
+            }
+            
+            function enableNtsControls($grid: JQuery, columnKey: any, controlType: string) {
+                var ds = $grid.igGrid("option", "dataSource");
+                var primaryKey = $grid.igGrid("option", "primaryKey");
+                for (let i = 0; i < ds.length; i++) {
+                    let id = ds[i][primaryKey];
+                    enableNtsControlAt($grid, id, columnKey, controlType);
+                    color.popDisable($grid, { id: id, columnKey: columnKey }); 
                 }
             }
             
@@ -779,6 +788,7 @@ module nts.uk.ui.jqueryExtentions {
                 if (util.isNullOrUndefined(control)) return;
                 control.disable($(cellContainer));
                 if (!$(cellContainer).hasClass(color.Disable)) $(cellContainer).addClass(color.Disable);
+                color.pushDisable($grid, { id: rowId, columnKey: columnKey });
             }
     
             function enableNtsControlAt($grid: JQuery, rowId: any, columnKey: any, controlType: string) {
@@ -787,6 +797,7 @@ module nts.uk.ui.jqueryExtentions {
                 if (util.isNullOrUndefined(control)) return;
                 control.enable($(cellContainer));
                 $(cellContainer).removeClass(color.Disable);
+                color.popDisable($grid, { id: rowId, columnKey: columnKey });
             }
         }
         
@@ -924,7 +935,7 @@ module nts.uk.ui.jqueryExtentions {
                         var value = opt[optionsValue];
                         var text = opt[optionsText];
     
-                        var btn = $('<button>').text(text)
+                        var btn = $('<button>').text(text).css("height", "26px")
                             .addClass('nts-switch-button')
                             .attr('data-swbtn', value)
                             .on('click', function() {
@@ -1244,7 +1255,7 @@ module nts.uk.ui.jqueryExtentions {
                     } else {
                         updatedRow[nextColumn.options.key] = String(res.toString().trim());
                     } 
-                    updating.updateRow($grid, $gridRow.data("id"), updatedRow, visibleColumnsMap, true);
+                    updating.updateRow($grid, $gridRow.data("id"), updatedRow, undefined, true);
                 }).fail(function(res: any) {
                     
                 });
@@ -1430,7 +1441,7 @@ module nts.uk.ui.jqueryExtentions {
                                 updatedRow[columnKey] = cbData;
                             }
                         }
-                        updating.updateRow(self.$grid, $gridRow.data("id"), updatedRow, visibleColumnsMap);
+                        updating.updateRow(self.$grid, $gridRow.data("id"), updatedRow);
                     });
                 }
                 
@@ -1469,7 +1480,7 @@ module nts.uk.ui.jqueryExtentions {
                     let columnKey = columnsGroup[columnIndex].key;
                     updateRow[columnKey] = data;
                     let $gridRow = utils.rowAt(selectedCell);
-                    updating.updateRow(this.$grid, $gridRow.data("id"), updateRow, visibleColumnsMap);
+                    updating.updateRow(this.$grid, $gridRow.data("id"), updateRow);
                 }
                 
                 private process(data: string) {
@@ -1568,7 +1579,7 @@ module nts.uk.ui.jqueryExtentions {
                             targetColumn = nextColumn.options;
                             targetIndex = nextColumn.index;
                         }
-                        updating.updateRow(self.$grid, $gridRow.data("id"), rowData, visibleColumnsMap);    
+                        updating.updateRow(self.$grid, $gridRow.data("id"), rowData);    
                         _.forEach(comboErrors, function(combo: any) {
                             setTimeout(function() {
                                 let $container = combo.cell.find(".nts-combo-container");
@@ -1836,8 +1847,10 @@ module nts.uk.ui.jqueryExtentions {
                     // Mark errors
                     errors.mark($grid);
                     color.styleHeaders($grid, options);
-                    // Resize grid
-                    settings.setGridSize($grid);
+                    if (options.autoFitWindow) {
+                        // Resize grid
+                        settings.setGridSize($grid);
+                    }
                     // Load columns size
                     columnSize.load($grid);
                 };
@@ -2233,6 +2246,60 @@ module nts.uk.ui.jqueryExtentions {
                     if (!util.isNullOrUndefined(targetColumn)) $(this).addClass(targetColumn.color);
                 });
             }
+            
+            export function rememberDisabled($grid: JQuery, cell: any) {
+                let settings = $grid.data(internal.SETTINGS);
+                if (!settings) return;
+                let disables = settings.disables;
+                if (!disables) return;
+                let controlType = utils.getControlType($grid, cell.columnKey);
+                let row = disables[cell.id];
+                if (!row) return;
+                _.forEach(row, function(c, i) {
+                    if (c === cell.columnKey) {
+                        $grid.ntsGrid(functions.DISABLE_CONTROL, cell.id, cell.columnKey, controlType);
+                        $(cell.element).addClass(Disable);
+                        return false;
+                    }
+                });
+            }
+            
+            export function pushDisable($grid: JQuery, cell: any) {
+                let settings = $grid.data(internal.SETTINGS);
+                if (!settings) return;
+                let disables = settings.disables;
+                if (!disables) {
+                    settings.disables = {};
+                }
+                if (!settings.disables[cell.id] || settings.disables[cell.id].length === 0) {
+                    settings.disables[cell.id] = [ cell.columnKey ];
+                    return;
+                }
+                let found = false;
+                _.forEach(settings.disables[cell.id], function(c, i) {
+                    if (c === cell.columnKey) {
+                        found = true;
+                        return false;
+                    }
+                });
+                if (!found) settings.disables[cell.id].push(cell.columnKey);
+            }
+            export function popDisable($grid: JQuery, cell: any) {
+                let settings = $grid.data(internal.SETTINGS);
+                if (!settings) return;
+                let disables = settings.disables;
+                if (!disables || !disables[cell.id] || disables[cell.id].length === 0) return;
+                let index = -1;
+                _.forEach(disables[cell.id], function(c: any, i: number) {
+                    if (c === cell.columnKey) {
+                        index = i;
+                        return false;
+                    }
+                });
+                if (index !== -1) {
+                    disables[cell.id].splice(index, 1);
+                }
+            }
         }
         
         module fixedColumns {
@@ -2599,9 +2666,8 @@ module nts.uk.ui.jqueryExtentions {
             export function setGridSize($grid: JQuery) {
                 var height = window.innerHeight;
                 var width = window.innerWidth;
-                // TODO: Developer want to set width & height on their own. Should decide when we will auto resize or that will be an option
-//                $grid.igGrid("option", "width", width - 240);
-//                $grid.igGrid("option", "height", height - 90);
+                $grid.igGrid("option", "width", width - 240);
+                $grid.igGrid("option", "height", height - 90);
             }
         }
         
@@ -2690,21 +2756,21 @@ module nts.uk.ui.jqueryExtentions {
                 return $cell.hasClass(color.Disable);
             }
             
-            export function dataTypeOfPrimaryKey($grid: JQuery, visibleColumnsMap: any) : string {
-                if (util.isNullOrUndefined(visibleColumnsMap)) return;
-                let visibleColumns = visibleColumnsMap["undefined"];
-                if (Object.keys(visibleColumnsMap).length > 1) {
-                    visibleColumns = _.concat(visibleColumnsMap["true"], visibleColumnsMap["undefined"]);
+            export function dataTypeOfPrimaryKey($grid: JQuery, columnsMap: any) : string {
+                if (util.isNullOrUndefined(columnsMap)) return;
+                let columns = columnsMap["undefined"];
+                if (Object.keys(columnsMap).length > 1) {
+                    columns = _.concat(columnsMap["true"], columnsMap["undefined"]);
                 }
                 let primaryKey = $grid.igGrid("option", "primaryKey");
-                let keyColumn: Array<any> =  _.filter(visibleColumns, function(column: any) {
+                let keyColumn: Array<any> =  _.filter(columns, function(column: any) {
                     return column.key === primaryKey;
                 });
-                if (!util.isNullOrUndefined(keyColumn)) return keyColumn[0].dataType;
+                if (!util.isNullOrUndefined(keyColumn) && keyColumn.length > 0) return keyColumn[0].dataType;
                 return;
             }
-            export function parseIntIfNumber(value: any, $grid: JQuery, visibleColumnsMap: any) {
-                if (dataTypeOfPrimaryKey($grid, visibleColumnsMap) === "number") {
+            export function parseIntIfNumber(value: any, $grid: JQuery, columnsMap: any) {
+                if (dataTypeOfPrimaryKey($grid, columnsMap) === "number") {
                     return parseInt(value);
                 }
                 return value;
@@ -2776,6 +2842,10 @@ module nts.uk.ui.jqueryExtentions {
                 }
                 let referGrid = fixedColumns.realGridOf($grid);
                 if (!util.isNullOrUndefined(referGrid)) return referGrid.igGrid("option", "columns");
+            }
+            export function getColumnsMap($grid: JQuery) {
+                let columns = getColumns($grid);
+                return _.groupBy(columns, "fixed");
             }
             export function getVisibleColumns($grid: JQuery) {
                 return _.filter(getColumns($grid), function(column: any) {
