@@ -6631,21 +6631,21 @@ var nts;
                                     var checkitem = container.find("input[type='radio']");
                                     if (!container.find("input[type='radio']").is(":checked")) {
                                         checkitem.prop("checked", true);
-                                        data.checked(true);
+                                        data.checked(container.find("input[type='radio']").data("value"));
                                     }
                                     else {
                                         checkitem.prop("checked", false);
-                                        data.checked(false);
+                                        data.checked(undefined);
                                     }
                                     container.focus();
                                 }
                             }
                         });
-                        var radioBoxLabel = drawRadio(data.checked, option, dataName, optionValue, enable, optionText, true);
+                        var radioBoxLabel = drawRadio(data.checked, option, dataName, optionValue, enable, optionText, false);
                         radioBoxLabel.appendTo(container);
                         var radio = container.find("input[type='radio']");
                         radio.attr("name", group).bind('selectionchanged', function () {
-                            data.checked(radio.is(":checked"));
+                            data.checked(radio.data("value"));
                         });
                         new nts.uk.util.value.DefaultValue().onReset(container, data.value);
                     };
@@ -6777,7 +6777,7 @@ var nts;
                 }());
                 function getOptionValue(item, optionValue) {
                     if (nts.uk.util.isNullOrUndefined(item)) {
-                        return optionValue;
+                        return nts.uk.util.isNullOrUndefined(optionValue) ? true : optionValue;
                     }
                     return (optionValue === undefined) ? item : item[optionValue];
                 }
@@ -18983,4 +18983,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
