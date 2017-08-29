@@ -53,11 +53,11 @@ module nts.uk.ui.koExtentions {
                     }             
                 }        
             }); 
-            var radioBoxLabel = drawRadio(data.checked, option, dataName, optionValue, enable, optionText, true);
+            var radioBoxLabel = drawRadio(data.checked, option, dataName, optionValue, enable, optionText, false);
             radioBoxLabel.appendTo(container);
             let radio = container.find("input[type='radio']");
             radio.attr("name", group).bind('selectionchanged', () => {
-                data.checked(radio.is(":checked")); 
+                data.checked(radio.data("value")); 
             });
             // Default value
             new nts.uk.util.value.DefaultValue().onReset(container, data.value);

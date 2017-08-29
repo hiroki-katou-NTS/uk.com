@@ -6641,11 +6641,11 @@ var nts;
                                 }
                             }
                         });
-                        var radioBoxLabel = drawRadio(data.checked, option, dataName, optionValue, enable, optionText, true);
+                        var radioBoxLabel = drawRadio(data.checked, option, dataName, optionValue, enable, optionText, false);
                         radioBoxLabel.appendTo(container);
                         var radio = container.find("input[type='radio']");
                         radio.attr("name", group).bind('selectionchanged', function () {
-                            data.checked(radio.is(":checked"));
+                            data.checked(radio.data("value"));
                         });
                         new nts.uk.util.value.DefaultValue().onReset(container, data.value);
                     };
@@ -7019,9 +7019,13 @@ var nts;
                                             component.trigger("selectionchanged");
                                         }
                                     }
+                                    else {
+                                        component.trigger("selectionchanged");
+                                    }
                                 }
                                 else if (targetMode == 'igTree') {
                                     component.ntsTreeView("setSelected", selectedProperties);
+                                    component.trigger("selectionchanged");
                                 }
                                 _.defer(function () {
                                     component.trigger("selectChange");
@@ -8221,6 +8225,26 @@ var nts;
                         });
                         var treeGridId = $treegrid.attr('id');
                         $treegrid.closest('.ui-igtreegrid').addClass('nts-treegridview').attr("tabindex", tabIndex);
+                        $treegrid.bind('selectionchanged', function () {
+                            if (data.multiple) {
+                                var selected = $treegrid.ntsTreeView('getSelected');
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
+                                    data.selectedValues(_.map(selected, function (s) { return s.id; }));
+                                }
+                                else {
+                                    data.selectedValues([]);
+                                }
+                            }
+                            else {
+                                var selected = $treegrid.ntsTreeView('getSelected');
+                                if (!nts.uk.util.isNullOrEmpty(selected)) {
+                                    data.value(selected.id);
+                                }
+                                else {
+                                    data.value('');
+                                }
+                            }
+                        });
                         $treegrid.setupSearchScroll("igTreeGrid");
                     };
                     NtsTreeGridViewBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -18983,4 +19007,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
