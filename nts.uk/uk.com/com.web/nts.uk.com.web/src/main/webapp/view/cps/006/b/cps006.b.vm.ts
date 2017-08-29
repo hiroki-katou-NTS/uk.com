@@ -383,7 +383,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
     function makeIcon(value, row) {
         if (value == '1')
-            return "×";
+            return "<i class='icon icon-close'></i>";
         return '';
     }
 
