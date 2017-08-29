@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.estimate.employment;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -39,4 +40,14 @@ public interface EmploymentEstablishmentRepository {
 	 */
 	public void removeEmploymentEstablishment(String companyId, String employmentCode
 			,int targetYear);
+	
+	
+	/**
+	 * Find all employment setting.
+	 *
+	 * @param companyId the company id
+	 * @param targetYear the target year
+	 * @return the list
+	 */
+	public List<String> findAllEmploymentSetting(String companyId, int targetYear);
 }

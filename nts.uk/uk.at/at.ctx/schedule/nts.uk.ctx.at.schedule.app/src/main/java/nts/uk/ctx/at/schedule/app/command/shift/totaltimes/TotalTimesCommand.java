@@ -23,7 +23,19 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 /**
  * The Class TotalTimesCommand.
  */
+
+/**
+ * Sets the list total subjects.
+ *
+ * @param listTotalSubjects the new list total subjects
+ */
 @Setter
+
+/**
+ * Gets the list total subjects.
+ *
+ * @return the list total subjects
+ */
 @Getter
 public class TotalTimesCommand {
 
@@ -48,14 +60,13 @@ public class TotalTimesCommand {
 	/** The total condition. */
 	private TotalConditionDto totalCondition;
 
-	/** The summary list. */
-	private List<TotalSubjectsDto> summaryList;
+	/** The list total subjects. */
+	private List<TotalSubjectsDto> listTotalSubjects;
 
 	/**
 	 * To domain.
 	 *
-	 * @param companyId
-	 *            the company id
+	 * @param companyId the company id
 	 * @return the total times
 	 */
 	public TotalTimes toDomain(String companyId) {
@@ -76,10 +87,8 @@ public class TotalTimesCommand {
 		/**
 		 * Instantiates a new dto get memento.
 		 *
-		 * @param companyId
-		 *            the company id
-		 * @param command
-		 *            the command
+		 * @param companyId the company id
+		 * @param command the command
 		 */
 		public DtoGetMemento(String companyId, TotalTimesCommand command) {
 			this.companyId = companyId;
@@ -191,7 +200,7 @@ public class TotalTimesCommand {
 		 */
 		@Override
 		public List<TotalSubjects> getTotalSubjects() {
-			return this.command.getSummaryList().stream().map(TotalSubjectsDto::toDomain)
+			return this.command.listTotalSubjects.stream().map(TotalSubjectsDto::toDomain)
 					.collect(Collectors.toList());
 		}
 

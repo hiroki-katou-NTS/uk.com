@@ -31,6 +31,11 @@ public class YearHolidayGrantDeleteCommandHandler extends CommandHandler<YearHol
 			throw new RuntimeException("Year Holiday Not Found");
 		}
 				
+		// remove year holiday by code
 		yearHolidayRepo.remove(companyId, command.getYearHolidayCode());
+		// remove conditions
+		yearHolidayRepo.removeCondition(companyId, command.getYearHolidayCode());
+		// remove grant date by condition no
+		yearHolidayRepo.removeGrantDates(companyId, command.getYearHolidayCode());
 	}
 }
