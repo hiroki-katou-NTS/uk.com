@@ -20,9 +20,9 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	private SystemRequired systemRequired;
 	private RequireChangable requireChangable;
 	private ItemTypeState itemTypeState;
-	
+
 	public static String ROOT_CONTRACT_CODE = "000000000000";
-	
+
 	private PersonInfoItemDefinition(String perInfoCategoryId, String itemCode, String itemParentCode, String itemName,
 			int isAbolition, int isFixed, int isRequired) {
 		super();
@@ -53,8 +53,9 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.systemRequired = EnumAdaptor.valueOf(systemRequired, SystemRequired.class);
 		this.requireChangable = EnumAdaptor.valueOf(requireChangable, RequireChangable.class);
 	}
-	
-	private PersonInfoItemDefinition(String perInfoCategoryId, String itemCode, String itemParentCode, String itemName) {
+
+	private PersonInfoItemDefinition(String perInfoCategoryId, String itemCode, String itemParentCode,
+			String itemName) {
 		super();
 		this.perInfoItemDefId = IdentifierUtil.randomUniqueId();
 		this.perInfoCategoryId = perInfoCategoryId;
@@ -67,6 +68,7 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.systemRequired = SystemRequired.NONE_REQUIRED;
 		this.requireChangable = RequireChangable.REQUIRED;
 	}
+
 	public static PersonInfoItemDefinition createFromJavaType(String personInfoCategoryId, String itemCode,
 			String itemParentCode, String itemName, int isAbolition, int isFixed, int isRequired) {
 		return new PersonInfoItemDefinition(personInfoCategoryId, itemCode, itemParentCode, itemName, isAbolition,
@@ -79,13 +81,18 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		return new PersonInfoItemDefinition(perInfoItemDefId, perInfoCategoryId, itemCode, itemParentCode, itemName,
 				isAbolition, isFixed, isRequired, systemRequired, requireChangable);
 	}
-	
-	public static PersonInfoItemDefinition createForAddItem(String perInfoCategoryId, String itemCode, String itemParentCode, String itemName) {
+
+	public static PersonInfoItemDefinition createForAddItem(String perInfoCategoryId, String itemCode,
+			String itemParentCode, String itemName) {
 		return new PersonInfoItemDefinition(perInfoCategoryId, itemCode, itemParentCode, itemName);
 	}
 
 	public void setItemTypeState(ItemTypeState itemTypeState) {
 		this.itemTypeState = itemTypeState;
+	}
+
+	public void setItemName(String name) {
+		this.itemName = new ItemName(name);
 	}
 
 }

@@ -20,7 +20,7 @@ public class KrcmtDailyAttendanceItemPK implements Serializable {
 	public String companyId;
 	
 	/*勤怠項目ID*/
-	@Column(name = "ID")
+	@Column(name = "ATTENDANCE_ITEM_ID")
 	public int 	attendanceItemId;
 
 }

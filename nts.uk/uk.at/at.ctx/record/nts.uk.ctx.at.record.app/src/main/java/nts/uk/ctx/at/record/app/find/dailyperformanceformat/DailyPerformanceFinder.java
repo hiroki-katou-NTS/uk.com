@@ -25,9 +25,6 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class DailyPerformanceFinder {
 	
 	@Inject
-	private FrameNoAdapter frameNoAdapter;
-	
-	@Inject
 	private AttendanceItemRepository attendanceItemRepository;
 
 	@Inject

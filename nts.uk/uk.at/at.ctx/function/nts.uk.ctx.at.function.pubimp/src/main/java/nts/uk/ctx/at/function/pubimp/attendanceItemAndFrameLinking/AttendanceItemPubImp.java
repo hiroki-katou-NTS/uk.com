@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.attendanceItemAndFrameLinking.repository.AttendanceItemLinkingRepository;
+import nts.uk.ctx.at.function.pub.attendanceItemAndFrameLinking.AttendanceItemLinkingDto;
 import nts.uk.ctx.at.function.pub.attendanceItemAndFrameLinking.AttendanceItemLinkingPub;
 
 @Stateless
@@ -16,9 +17,9 @@ public class AttendanceItemPubImp implements AttendanceItemLinkingPub {
 	private AttendanceItemLinkingRepository attendanceItemLinkingRepository;
 
 	@Override
-	public List<Integer> getFrameNo(String attendanceItemId) {
-		return attendanceItemLinkingRepository.getByAttendanceId(attendanceItemId).stream().map(f -> {
-			return f.getFrameNo().v();
+	public List<AttendanceItemLinkingDto> getFrameNo(List<Integer> attendanceItemIds) {
+		return attendanceItemLinkingRepository.getByAttendanceId(attendanceItemIds).stream().map(f -> {
+			return new AttendanceItemLinkingDto(f.getAttendanceItemId(), f.getFrameNo().v());
 		}).collect(Collectors.toList());
 	}
 
