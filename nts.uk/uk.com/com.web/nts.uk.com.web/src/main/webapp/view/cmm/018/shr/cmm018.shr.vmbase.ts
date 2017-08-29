@@ -243,5 +243,15 @@ module nts.uk.com.view.cmm018.shr {
             MSG102 = <any>"最新の履歴開始日以前に履歴を追加することはできません。",
             MSG128 = <any>"最後の履歴を削除することができません。"
         }
+        export class Approver{
+            id: string;
+            code: string;
+            name: string;
+            constructor(id: string, code: string, name: string){
+                this.id = id;
+                this.code = code;
+                this.name = name;    
+            }
+        } 
     }
 }
