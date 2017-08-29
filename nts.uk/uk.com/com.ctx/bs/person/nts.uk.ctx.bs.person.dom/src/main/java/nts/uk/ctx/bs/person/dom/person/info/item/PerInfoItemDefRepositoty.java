@@ -15,9 +15,12 @@ public interface PerInfoItemDefRepositoty {
 
 	List<String> getPerInfoItemsName(String perInfoCtgId, String contractCd);
 
-	void addPerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd, String ctgCode);
+	String addPerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd, String ctgCode);
 
 	void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd);
+
+	void removePerInfoItemDefRoot(List<String> perInfoCtgIds, String categoryCd, String contractCd,
+			String itemCode);
 
 	String getPerInfoItemCodeLastest(String contractCd, String categoryCd);
 
@@ -41,6 +44,6 @@ public interface PerInfoItemDefRepositoty {
 	Optional<PerInfoItemDefOrder> getPerInfoItemDefOrdersByItemId(String perInfoItemDefId);
 
 	void UpdateOrderItem(PerInfoItemDefOrder itemOrder);
-	
+
 	// Sonnlb Code
 }
