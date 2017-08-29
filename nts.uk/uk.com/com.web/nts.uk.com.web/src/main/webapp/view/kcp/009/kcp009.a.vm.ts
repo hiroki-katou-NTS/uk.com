@@ -14,6 +14,7 @@ module kcp009.a.viewmodel {
         
         listComponentOption: ComponentOption;
         selectedItem: KnockoutObservable<string>;
+        tabindex: number;
         constructor() {
             let self = this;
 //            self.empList = ko.observableArray([]);
@@ -51,14 +52,15 @@ module kcp009.a.viewmodel {
                 // Reload Component
                 self.reloadComponent();
             });
-
+            self.tabindex = 1;
             // Initial listComponentOption
             self.listComponentOption = {
                 systemReference: self.systemType(),
                 isDisplayOrganizationName: self.isDisplayOrganizationName(),
                 employeeInputList: self.empList,
                 targetBtnText: self.targetBtnText,
-                selectedItem: self.selectedItem
+                selectedItem: self.selectedItem,
+                tabIndex: self.tabindex
             };
             
         }

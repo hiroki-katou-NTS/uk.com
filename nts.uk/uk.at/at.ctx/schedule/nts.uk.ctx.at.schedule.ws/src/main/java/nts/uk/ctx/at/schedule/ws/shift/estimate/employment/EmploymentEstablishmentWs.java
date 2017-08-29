@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.ws.shift.estimate.employment;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -72,5 +75,21 @@ public class EmploymentEstablishmentWs extends WebService {
 	@Path("delete")
 	public void deleteEmploymentEstimate(EmploymentEstablishmentDeleteCommand command) {
 		this.delete.handle(command);
+	}
+	
+	/**
+	 * Find all by target year.
+	 *
+	 * @param targetYear the target year
+	 * @return the list
+	 */
+	@POST
+	@Path("findAll/{targetYear}")
+	public List<EmploymentEstablishmentDto> findAllByTargetYear(@PathParam("targetYear") Integer targetYear){
+		return this.finder.findAllByTargetYear(targetYear).stream().map(employmentCode -> {
+			EmploymentEstablishmentDto dto = new EmploymentEstablishmentDto();
+			dto.setEmploymentCode(employmentCode);
+			return dto;
+		}).collect(Collectors.toList());
 	}
 }
