@@ -31,7 +31,7 @@ public interface PerInfoItemDefRepositoty {
 
 	// Sonnlb Code
 
-	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithNoAbolition(String perInfoCtgId,
+	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithoutAbolition(String perInfoCtgId,
 			String contractCd);
 
 	void updatePerInfoItemDef(PersonInfoItemDefinition perInfoItemDef);
@@ -41,6 +41,9 @@ public interface PerInfoItemDefRepositoty {
 	Optional<PerInfoItemDefOrder> getPerInfoItemDefOrdersByItemId(String perInfoItemDefId);
 
 	void UpdateOrderItem(PerInfoItemDefOrder itemOrder);
+
+	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithoutSetItem(String perInfoCtgId,
+			String contractCd);
 	
 	// Sonnlb Code
 }
