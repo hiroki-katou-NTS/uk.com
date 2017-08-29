@@ -6631,11 +6631,11 @@ var nts;
                                     var checkitem = container.find("input[type='radio']");
                                     if (!container.find("input[type='radio']").is(":checked")) {
                                         checkitem.prop("checked", true);
-                                        data.checked(true);
+                                        data.checked(container.find("input[type='radio']").data("value"));
                                     }
                                     else {
                                         checkitem.prop("checked", false);
-                                        data.checked(false);
+                                        data.checked(undefined);
                                     }
                                     container.focus();
                                 }
@@ -6777,7 +6777,7 @@ var nts;
                 }());
                 function getOptionValue(item, optionValue) {
                     if (nts.uk.util.isNullOrUndefined(item)) {
-                        return optionValue;
+                        return nts.uk.util.isNullOrUndefined(optionValue) ? true : optionValue;
                     }
                     return (optionValue === undefined) ? item : item[optionValue];
                 }
