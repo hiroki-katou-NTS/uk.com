@@ -95,6 +95,7 @@ module nts.uk.at.view.ksm003.a {
                         self.itemLst([]);
                         self.switchNewMode();
                     } else {
+                        self.itemLst([]);
                         self.itemLst(dataRes);
                     }
 
@@ -129,7 +130,7 @@ module nts.uk.at.view.ksm003.a {
                     dfd.resolve();
                 });
                 return dfd.promise();
-            }
+            }   
 
             // save Daily Pattern in database
             public save() {
@@ -154,7 +155,7 @@ module nts.uk.at.view.ksm003.a {
                     if (res.messageId == "Msg_3") {
                         $('#inpCode').ntsError('set', { messageId: "Msg_3" });
                     } else {
-                        alert(res.message);
+                        nts.uk.ui.dialog.alert(res.message);
                     }
                 }).always(function() {
                     nts.uk.ui.block.clear();
