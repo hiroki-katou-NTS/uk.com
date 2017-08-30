@@ -144,9 +144,11 @@ module nts.uk.at.view.ksm001.a {
                     self.loadCompanyEstablishment(year, false);
                 });
                 self.employmentEstablishmentModel.selectedYear.subscribe(year => {
+                    self.updateEmploymentEstimateSetting(year);
                     self.loadEmploymentEstablishment(year, self.selectedEmploymentCode(), false);
                 });
                 self.personalEstablishmentModel.selectedYear.subscribe(year => {
+                    self.updatePersonalEstimateSetting(year);
                     self.loadCompanyEstablishment(year, false);
                     self.updatePersonalEstimateSetting(year);
                 });
@@ -219,11 +221,11 @@ module nts.uk.at.view.ksm001.a {
 
                 // Get 2 years before, 2 years after.
                 let arr = [];
-                arr.push(currentYear.subtract('years', 2).year());
-                arr.push(currentYear.add('years', 1).year());
-                arr.push(currentYear.add('years', 1).year());
-                arr.push(currentYear.add('years', 1).year());
-                arr.push(currentYear.add('years', 1).year());
+                arr.push(currentYear.subtract(2, 'years').year());
+                arr.push(currentYear.add(1, 'years').year());
+                arr.push(currentYear.add(1, 'years').year());
+                arr.push(currentYear.add(1, 'years').year());
+                arr.push(currentYear.add(1, 'years').year());
 
                 // Map to model
                 let mapped = arr.map(i => {
@@ -343,10 +345,9 @@ module nts.uk.at.view.ksm001.a {
 
                 $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption).done(function() {
                     self.employmentList($('#employmentSetting').getDataList());
+                    self.loadEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(),self.selectedEmploymentCode(), true);
+                    self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
                 });
-                self.loadEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(),self.findEmploymentBy, true);
-                self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
-                self.selectedEmploymentCode.valueHasMutated();
                 
             }
             /**
@@ -617,8 +618,11 @@ module nts.uk.at.view.ksm001.a {
                     estimateNumberOfDay: self.employmentEstablishmentModel.estimateDaysModel.toDto(),
                     employmentCode: self.selectedEmploymentCode()
                 };
-                service.saveEmploymentEstablishment(2017, dto).done(function(){
-                   
+
+                service.saveEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(), dto).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
+                    });
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
@@ -628,12 +632,18 @@ module nts.uk.at.view.ksm001.a {
             * function on click deleteEmploymentEstablishment action
             */
             public deleteEmploymentEstablishment(): void {
-                nts.uk.ui.block.invisible();
-                var self = this;    
-                service.deleteEmploymentEstablishment(2017, self.selectedEmploymentCode()).done(function(){
-                   
-                }).always(() => {
-                    nts.uk.ui.block.clear();
+                let self = this;
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
+                    nts.uk.ui.block.invisible();
+                    service.deleteEmploymentEstablishment(
+                        self.employmentEstablishmentModel.selectedYear(),
+                        self.selectedEmploymentCode()).done(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                                self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
+                            });
+                        }).always(() => {
+                            nts.uk.ui.block.clear();
+                        });
                 });
             }
             /**
