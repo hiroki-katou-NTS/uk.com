@@ -1,4 +1,4 @@
-package entity;
+package entity.person.bs.info;
 
 import java.io.Serializable;
 
@@ -11,11 +11,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class BsydtEmployeePk implements Serializable {
+public class BpsdtPersonPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Basic(optional = false)
-	@Column(name = "SID")
-	public String EmployeeId;
-
+	@Column(name = "PERSON_ID")
+	public String personId;
 }

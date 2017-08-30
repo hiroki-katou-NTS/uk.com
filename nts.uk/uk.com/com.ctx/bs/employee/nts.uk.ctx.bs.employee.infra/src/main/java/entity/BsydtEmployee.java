@@ -21,14 +21,14 @@ public class BsydtEmployee extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public BsydtEmployeePk bsydtEmployeePk;
+	
+	@Basic(optional = false)
+	@Column(name = "PID")
+	public String personID;
 		
 	@Basic(optional = false)
 	@Column(name = "CID")
 	public String companyId;
-
-	@Basic(optional = false)
-	@Column(name = "PERSON_ID")
-	public String personID;
 
 	@Basic(optional = false)
 	@Column(name = "EMPLOYEE_CD")
@@ -46,15 +46,15 @@ public class BsydtEmployee extends UkJpaEntity implements Serializable {
 	@Column(name = "ENTRY_DATE")
 	public String entryDate;
 	
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "ADOPT_DATE")
 	public String adoptDate;
 	
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "HIRING_TYPE")
 	public String hiringType;
 	
-	@Basic(optional = false)
+	@Basic(optional = true)
 	@Column(name = "RETIRE_DATE")
 	public String retireDate;
 	
