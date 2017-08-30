@@ -8,13 +8,15 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../shr/cmm018.shr.vmbase.js" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="main.js" />
+			
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<button data-bind="click: openDialog">open k</button>
+				<button data-bind="click: openDialogK">open k</button>
 			</div>
 			<div id="functions-area-bottom">
 			</div>

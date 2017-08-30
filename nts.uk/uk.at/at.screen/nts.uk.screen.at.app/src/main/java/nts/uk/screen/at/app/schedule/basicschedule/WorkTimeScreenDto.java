@@ -16,6 +16,7 @@ public class WorkTimeScreenDto {
 	private String siftCd;
 	private String name;
 	private String abName;
+	private String symbol;
 	private int dailyWorkAtr;
 	private int methodAtr;
 	private int displayAtr;

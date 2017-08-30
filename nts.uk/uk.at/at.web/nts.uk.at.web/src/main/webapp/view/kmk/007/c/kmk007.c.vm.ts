@@ -23,7 +23,7 @@ module nts.uk.at.view.kmk007.c.viewmodel {
             var data = nts.uk.ui.windows.getShared("KMK007_WORK_TYPES");
             
             for(var i = 0; i < data.length; i++){
-                self.oldDataItems.push(new ItemModel(data[i].code, data[i].name, i));
+                self.oldDataItems.push(new ItemModel(data[i].workTypeCode, data[i].name, i));
             }
             
             self.items = ko.observableArray(self.oldDataItems());
@@ -46,7 +46,7 @@ module nts.uk.at.view.kmk007.c.viewmodel {
             var newData = self.items();
             
             for(var i = 0; i < newData.length; i++){
-                self.newDataItems.push(new WorkTypeDispOrder(newData[i].code, i));
+                self.newDataItems.push(new WorkTypeDispOrder({workTypeCode: newData[i].code, dispOrder: i}));
             }
             
             service.order(self.newDataItems()).done(function(data){
@@ -88,12 +88,17 @@ module nts.uk.at.view.kmk007.c.viewmodel {
         }
     }
     
+    export interface IWorkTypeDispOrder {
+        workTypeCode: string,
+        dispOrder: number
+    }
+    
     class WorkTypeDispOrder {
-        code: string;
-        order: number;
-        constructor(code: string, order: number) {
-            this.code = code;
-            this.order = order;
+        workTypeCode: string;
+        dispOrder: number;
+        constructor(param: IWorkTypeDispOrder) {
+            this.workTypeCode = param.workTypeCode;
+            this.dispOrder = param.dispOrder;
         }
     }
 }
