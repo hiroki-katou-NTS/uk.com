@@ -1,4 +1,4 @@
-package entity.person.bs.info;
+package entity.person.info;
 
 import java.io.Serializable;
 

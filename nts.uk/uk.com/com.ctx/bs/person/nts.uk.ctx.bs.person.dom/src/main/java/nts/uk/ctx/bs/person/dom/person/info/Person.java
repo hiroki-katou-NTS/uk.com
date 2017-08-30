@@ -2,8 +2,9 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.person;
+package nts.uk.ctx.bs.person.dom.person.info;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
@@ -12,6 +13,7 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 // 個人
 @Getter
+@AllArgsConstructor
 public class Person extends AggregateRoot {
 
 	/** The person id. */
@@ -22,25 +24,9 @@ public class Person extends AggregateRoot {
 	//個人旧名
 	private PersonName personName;
 	
-	
-	/**
-	 * Instantiates a new person.
-	 *
-	 * @param memento the memento
-	 */
-	public Person(PersonGetMemento memento){
-		this.personId = memento.getPersonId();
-		this.personName = memento.getPersonName();
+
+	public static Person createFromJavaStyle(String personId, String personName) {
+		return new Person(new PersonId(personId), new PersonName(personName));
 	}
 	
-	
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(PersonSetMemento memento){
-		memento.setPersonId(this.personId);
-		memento.setPersonName(this.personName);
-	}
 }

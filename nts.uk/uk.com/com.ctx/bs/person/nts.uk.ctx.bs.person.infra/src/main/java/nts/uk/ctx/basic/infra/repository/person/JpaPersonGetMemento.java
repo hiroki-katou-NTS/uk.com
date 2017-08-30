@@ -5,9 +5,9 @@
 package nts.uk.ctx.basic.infra.repository.person;
 
 import nts.uk.ctx.basic.dom.person.PersonGetMemento;
-import nts.uk.ctx.basic.dom.person.PersonId;
-import nts.uk.ctx.basic.dom.person.PersonName;
 import nts.uk.ctx.basic.infra.entity.person.CcgmtPerson;
+import nts.uk.ctx.bs.person.dom.person.info.PersonId;
+import nts.uk.ctx.bs.person.dom.person.info.PersonName;
 
 /**
  * The Class JpaPersonGetMemento.

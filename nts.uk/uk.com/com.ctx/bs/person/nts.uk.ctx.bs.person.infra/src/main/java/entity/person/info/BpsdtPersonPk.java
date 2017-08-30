@@ -1,4 +1,4 @@
-package entity.person.bs.info;
+package entity.person.info;
 
 import java.io.Serializable;
 
@@ -15,6 +15,6 @@ public class BpsdtPersonPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Basic(optional = false)
-	@Column(name = "PERSON_ID")
+	@Column(name = "PID")
 	public String personId;
 }

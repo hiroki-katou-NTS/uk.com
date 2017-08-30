@@ -2,27 +2,26 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.person;
+package nts.uk.ctx.bs.person.dom.person.info;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * The Class PersonName.
+ * The Class PersonId.
  */
-// 個人名
-@StringMaxLength(120)
-public class PersonName extends StringPrimitiveValue<PersonName> {
+@StringMaxLength(10)
+public class PersonId extends StringPrimitiveValue<PersonId> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Instantiates a new employee name.
+	 * Instantiates a new person id.
 	 *
 	 * @param rawValue the raw value
 	 */
-	public PersonName(String rawValue) {
+	public PersonId(String rawValue) {
 		super(rawValue);
 	}
 
