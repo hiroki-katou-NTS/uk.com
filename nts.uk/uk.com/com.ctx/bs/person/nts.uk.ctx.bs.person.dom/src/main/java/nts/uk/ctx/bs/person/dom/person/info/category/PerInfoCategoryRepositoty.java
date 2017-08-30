@@ -17,8 +17,6 @@ public interface PerInfoCategoryRepositoty {
 
 	void updatePerInfoCtg(PersonInfoCategory perInfoCtg, String contractCd);
 
-	void updatePerInfoCtgWithListCompany(String categoryName, List<String> ctgIdList);
-
 	String getPerInfoCtgCodeLastest(String contractCd);
 
 	boolean checkCtgNameIsUnique(String companyId, String newCtgName);

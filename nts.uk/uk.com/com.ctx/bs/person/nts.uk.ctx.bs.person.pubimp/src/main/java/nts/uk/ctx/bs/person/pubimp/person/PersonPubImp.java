@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.basic.dom.person.PersonRepository;
+import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 import nts.uk.ctx.bs.person.pub.person.PersonPub;
 import nts.uk.ctx.bs.person.pub.person.PubPersonDto;
 

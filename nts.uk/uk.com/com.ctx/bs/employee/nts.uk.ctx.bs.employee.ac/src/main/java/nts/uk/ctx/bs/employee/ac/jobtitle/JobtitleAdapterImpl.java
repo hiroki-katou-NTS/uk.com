@@ -12,14 +12,14 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.company.pub.jobtitle.JobtitlePub;
-import nts.uk.ctx.bs.employee.dom.access.jobtitle.JobTitleAdapter;
+import nts.uk.ctx.bs.employee.dom.access.jobtitle.SyJobTitleAdapter;
 import nts.uk.ctx.bs.employee.dom.access.jobtitle.dto.AcJobTitleDto;
 
 /**
  * The Class JobtitleAdapterImpl.
  */
 @Stateless
-public class JobtitleAdapterImpl implements JobTitleAdapter {
+public class JobtitleAdapterImpl implements SyJobTitleAdapter {
 
 	/** The jobtitle pub. */
 	@Inject

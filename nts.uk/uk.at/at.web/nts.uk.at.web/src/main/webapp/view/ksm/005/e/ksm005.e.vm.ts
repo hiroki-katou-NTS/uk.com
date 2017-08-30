@@ -148,6 +148,9 @@ module nts.uk.at.view.ksm005.e {
              */
             public checkMonthlyPatternSettingBatch(): boolean {
                 var self = this;
+                if ($('.yearmonthInput').ntsError("hasError") == true) {
+                   return true;
+                }
                 //check start month and end month
                 if (self.getbetweenMonth(self.endYearMonth(),self.startYearMonth()) > 12) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_149" }).then(function() {

@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.workplace;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -12,8 +14,7 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkTimeWor
 
 	private final String SELECT_WORKTIME_WORKPLACE_BYID = "SELECT a FROM KshmtWorkTimeWorkplace a "
 			+ " WHERE a.kshmtWorkTimeWorkplacePK.companyID = :companyID "
-			+ " AND a.kshmtWorkTimeWorkplacePK.workplaceID = :workplaceID "
-			+ " AND a.kshmtWorkTimeWorkplacePK.workTimeID = :workTimeID ";
+			+ " AND a.kshmtWorkTimeWorkplacePK.workplaceID = :workplaceID ";
 	
 	private WorkTimeWorkplace toDomain(KshmtWorkTimeWorkplace entity) {
 		return WorkTimeWorkplace.createFromJavaType(
@@ -31,13 +32,18 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkTimeWor
 	}
 	
 	@Override
-	public Optional<WorkTimeWorkplace> getWorkTimeWorkplaceById(String companyID, String workplaceID,
-			String workTimeId) {
-		return this.queryProxy().query(SELECT_WORKTIME_WORKPLACE_BYID,KshmtWorkTimeWorkplace.class)
+	public List<String> getWorkTimeWorkplaceById(String companyID, String workplaceID) {
+		List<String> getWorkTimeWorkplaceById = new ArrayList<>();
+		List<WorkTimeWorkplace> listWorkTimeWorkplace =  this.queryProxy()
+				.query(SELECT_WORKTIME_WORKPLACE_BYID,KshmtWorkTimeWorkplace.class)
 				.setParameter("companyID", companyID)
 				.setParameter("workplaceID", workplaceID)
-				.setParameter("workTimeID", workTimeId)
-				.getSingle(c-> toDomain(c));
+				.getList(c-> toDomain(c));
+		for(WorkTimeWorkplace workTimeWorkplace : listWorkTimeWorkplace) {
+			getWorkTimeWorkplaceById.add(workTimeWorkplace.getWorkTimeID());
+		}
+		
+		return getWorkTimeWorkplaceById;
 	}
 
 }
