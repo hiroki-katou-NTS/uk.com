@@ -136,7 +136,7 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 	 */
 	@Override
 	public List<WorkTime> findAll(String companyID) {
-		return this.queryProxy().query(this.FIND_ALL, KwtmtWorkTime.class)
+		return this.queryProxy().query(FIND_ALL, KwtmtWorkTime.class)
 				.setParameter("companyID", companyID).getList(x -> convertToDomainWorkTime(x));
 	}
 
@@ -149,7 +149,7 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 		int i = 0;
 		while (codes.size() - (i + 500) > 0) {
 			List<String> subCodelist = codes.subList(i, i + 500);
-			List<WorkTime> subResult = this.queryProxy().query(this.FIND_BY_CODES, KwtmtWorkTime.class)
+			List<WorkTime> subResult = this.queryProxy().query(FIND_BY_CODES, KwtmtWorkTime.class)
 					.setParameter("companyID", companyID).setParameter("siftCDs", subCodelist)
 					.getList(x -> convertToDomainWorkTime(x));
 			result.addAll(subResult);
