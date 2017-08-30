@@ -279,6 +279,7 @@ module nts.uk.at.view.ksm001.a {
                 self.loadCompanyEstablishment(currentYear, true).done(function() {
                     dfd.resolve();
                 }).always(() => {
+                    $('#comboTargetYear').focus();
                     nts.uk.ui.block.clear();
                 });
                 return dfd.promise();
@@ -353,6 +354,8 @@ module nts.uk.at.view.ksm001.a {
                     self.employmentList($('#employmentSetting').getDataList());
                     self.loadEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(), self.selectedEmploymentCode(), true);
                     self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
+                }).always(() => {
+                    $('#comboTargetYear').focus();
                 });
 
             }
@@ -443,6 +446,8 @@ module nts.uk.at.view.ksm001.a {
                         self.updatePersonalEstimateSetting(self.personalEstablishmentModel.selectedYear());
                         self.loadPersonalEstablishment(self.personalEstablishmentModel.selectedYear(), self.selectedEmployeeCode(), true);
                     });
+                }).always(() => {
+                    $('#comboTargetYear').focus();
                 });
 
             }
@@ -737,6 +742,7 @@ module nts.uk.at.view.ksm001.a {
             private openDialogUsageSettingModel(): void {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/ksm/001/e/index.xhtml").onClosed(function() {
+                    $('#comboTargetYear').focus();
                     self.loadUsageSettingModel();
                 });
             }
@@ -747,7 +753,7 @@ module nts.uk.at.view.ksm001.a {
             private openDialogCommonSetting(): void {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/ksm/001/f/index.xhtml").onClosed(function() {
-
+                    $('#comboTargetYear').focus();
                 });
             }
 
@@ -758,7 +764,6 @@ module nts.uk.at.view.ksm001.a {
                 let self = this;
                 // Auto next tab when press tab key.
                 $("[tabindex='75']").on('keydown', function(e) {
-                    console.log('75');
                     if (e.which == 9) {
                         self.companyEstablishmentModel.selectedTab('tab-2');
                         self.employmentEstablishmentModel.selectedTab('tab-2');
@@ -767,7 +772,6 @@ module nts.uk.at.view.ksm001.a {
                 });
 
                 $("[tabindex='141']").on('keydown', function(e) {
-                    console.log('141');
                     if (e.which == 9) {
                         self.companyEstablishmentModel.selectedTab('tab-3');
                         self.employmentEstablishmentModel.selectedTab('tab-3');
