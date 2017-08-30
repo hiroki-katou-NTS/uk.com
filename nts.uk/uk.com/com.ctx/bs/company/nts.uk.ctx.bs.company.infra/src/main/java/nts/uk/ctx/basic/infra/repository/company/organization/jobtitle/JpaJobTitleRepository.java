@@ -71,10 +71,43 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 				.collect(Collectors.toList());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleRepository#findByJobIds(java.util.List)
+	 */
+	@Override
+	public List<JobTitle> findByJobIds(List<String> jobIds) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<CjtmtJobTitle> cq = cb.createQuery(CjtmtJobTitle.class);
+		Root<CjtmtJobTitle> root = cq.from(CjtmtJobTitle.class);
+
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+		predicateList.add(
+				root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.jobId).in(jobIds));
+
+		List<Order> orderList = new ArrayList<Order>();
+		// Sort by sequence master.
+		orderList.add(cb
+				.asc(root.get(CjtmtJobTitle_.csqmtSequenceMaster).get(CsqmtSequenceMaster_.order)));
+		// Sort by job code.
+		orderList.add(
+				cb.asc(root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.jobCode)));
+
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		cq.orderBy(orderList);
+
+		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
+				.collect(Collectors.toList());
+	}
+
 	/**
 	 * To domain.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the job title
 	 */
 	private JobTitle toDomain(CjtmtJobTitle entity) {

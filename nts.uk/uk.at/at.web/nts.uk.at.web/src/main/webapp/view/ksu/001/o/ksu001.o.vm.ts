@@ -1,10 +1,9 @@
 module ksu001.o.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
-    import exCell = __viewContext.viewModel.viewA.
 
     export class ScreenModel {
-        listWorkType: KnockoutObservableArray<IWorkType>;
-        listWorkTime: KnockoutObservableArray<IWorkTime>;
+        listWorkType: KnockoutObservableArray<WorkType>;
+        listWorkTime: KnockoutObservableArray<WorkTime>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
         selectedWorkTypeCode: KnockoutObservable<string>;
@@ -13,7 +12,7 @@ module ksu001.o.viewmodel {
         time2: KnockoutObservable<string>;
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
-        nameWorkTimeType: KnockoutObservable<any[]>;
+        nameWorkTimeType: KnockoutObservable<ExCell>;
 
         constructor() {
             let self = this;
@@ -21,10 +20,8 @@ module ksu001.o.viewmodel {
             self.listWorkTime = ko.observableArray([]);
 
             self.roundingRules = ko.observableArray([
-                //KSU001_71
-                { code: '1', name: nts.uk.resource.getText("リスト内検索") },
-                //KSU001_72
-                { code: '2', name: nts.uk.resource.getText("全件検索") }
+                { code: '1', name: nts.uk.resource.getText("KSU001_71") },
+                { code: '2', name: nts.uk.resource.getText("KSU001_72") }
             ]);
             self.selectedRuleCode = ko.observable(1);
             self.itemName = ko.observable('');
@@ -50,7 +47,14 @@ module ksu001.o.viewmodel {
                         workTypeCode = '';
                     }
 
-                    let c = _.find(self.listWorkTime(), ['siftCd', self.selectedWorkTimeCode()]);
+                    let siftCode: string = null;
+                    if (self.selectedWorkTimeCode()) {
+                        siftCode = self.selectedWorkTimeCode().slice(0, 3);
+                    } else {
+                        siftCode = self.selectedWorkTimeCode()
+                    }
+
+                    let c = _.find(self.listWorkTime(), ['siftCd', siftCode]);
                     if (c) {
                         workTimeName = c.abName;
                         workTimeCode = c.siftCd;
@@ -99,9 +103,6 @@ module ksu001.o.viewmodel {
                             displayAtr: wT.displayAtr
                         }));
                     });
-                    //                    self.selectedWorkTypeCode(self.listWorkType()[0].workTypeCode);
-                } else {
-                    alert('Have not data of workType');
                 }
                 dfd.resolve();
             }).fail(function() {
@@ -117,21 +118,76 @@ module ksu001.o.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.getWorkTime().done(function(data: WorkTime[]) {
+                // insert item「据え置き」 with code = '000'
+                self.listWorkTime.push(new WorkTime({
+                    siftCd: '000',
+                    name: nts.uk.resource.getText("KSU001_97"),
+                    abName: '',
+                    symbol: '',
+                    dailyWorkAtr: undefined,
+                    methodAtr: undefined,
+                    displayAtr: undefined,
+                    note: null,
+                    amStartClock: undefined,
+                    pmEndClock: undefined,
+                    timeNumberCnt: undefined,
+                }));
+
+                // insert item 「なし」 with code = '000'
+                self.listWorkTime.push(new WorkTime({
+                    siftCd: '000',
+                    name: nts.uk.resource.getText("KSU001_98"),
+                    abName: '',
+                    symbol: '',
+                    dailyWorkAtr: undefined,
+                    methodAtr: undefined,
+                    displayAtr: undefined,
+                    note: null,
+                    amStartClock: undefined,
+                    pmEndClock: undefined,
+                    timeNumberCnt: undefined,
+                }));
+
+                // insert item 「個人情報設定」 with code = '000'
+                self.listWorkTime.push(new WorkTime({
+                    siftCd: '000',
+                    name: nts.uk.resource.getText("KSU001_99"),
+                    abName: '',
+                    symbol: '',
+                    dailyWorkAtr: undefined,
+                    methodAtr: undefined,
+                    displayAtr: undefined,
+                    note: null,
+                    amStartClock: undefined,
+                    pmEndClock: undefined,
+                    timeNumberCnt: undefined,
+                }));
+
                 if (data.length > 0) {
                     _.each(data, function(wT) {
-                        self.listWorkTime.push(new WorkTime({
-                            siftCd: wT.siftCd,
-                            name: wT.name,
-                            abName: wT.abName,
-                            dailyWorkAtr: wT.dailyWorkAtr,
-                            methodAtr: wT.methodAtr,
-                            displayAtr: wT.dailyWorkAtr,
-                            note: wT.note,
-                        }));
+                        let workTimeObj: WorkTime = _.find(self.listWorkTime(), ['siftCd', wT.siftCd]);
+                        if (workTimeObj && wT.timeNumberCnt == 1) {
+                            workTimeObj.timeZone1 = nts.uk.time.parseTime(wT.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.pmEndClock, true).format();
+                            workTimeObj.labelDisplay = '  ' + workTimeObj.siftCd + (!!workTimeObj.symbol ? ' ' + workTimeObj.symbol : '') + ' ' + workTimeObj.name + ' ' + workTimeObj.timeZone1 + ' ' + workTimeObj.timeZone2 + ' ' + (!!workTimeObj.note ? '(' + workTimeObj.note + ')' : '');
+                        } else if (workTimeObj && wT.timeNumberCnt == 2) {
+                            workTimeObj.timeZone2 = nts.uk.time.parseTime(wT.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.pmEndClock, true).format();
+                            workTimeObj.labelDisplay = '  ' + workTimeObj.siftCd + (!!workTimeObj.symbol ? ' ' + workTimeObj.symbol : '') + ' ' + workTimeObj.name + ' ' + workTimeObj.timeZone1 + ' ' + workTimeObj.timeZone2 + ' ' + (!!workTimeObj.note ? '(' + workTimeObj.note + ')' : '');
+                        } else {
+                            self.listWorkTime.push(new WorkTime({
+                                siftCd: wT.siftCd,
+                                name: wT.name,
+                                abName: wT.abName,
+                                symbol: wT.symbol,
+                                dailyWorkAtr: wT.dailyWorkAtr,
+                                methodAtr: wT.methodAtr,
+                                displayAtr: wT.dailyWorkAtr,
+                                note: wT.note,
+                                amStartClock: wT.amStartClock,
+                                pmEndClock: wT.pmEndClock,
+                                timeNumberCnt: wT.timeNumberCnt
+                            }));
+                        }
                     });
-                    //                    self.selectedWorkTimeCode(self.listWorkTime()[0].siftCd);
-                } else {
-                    alert('Have not data of workTime');
                 }
                 dfd.resolve();
             }).fail(function() {
@@ -159,7 +215,7 @@ module ksu001.o.viewmodel {
         abbreviationName: string;
         memo: string;
         displayAtr: number;
-        labelDisplay: string
+        labelDisplay: string;
 
         constructor(params: IWorkType) {
             this.workTypeCode = params.workTypeCode;
@@ -169,7 +225,7 @@ module ksu001.o.viewmodel {
             this.abbreviationName = params.abbreviationName;
             this.memo = params.memo;
             this.displayAtr = params.displayAtr;
-            this.labelDisplay = '  ' + this.workTypeCode + '  ' + this.abbreviationName + '  ' + this.name + ' ( ' + this.memo + ' )';
+            this.labelDisplay = '  ' + this.workTypeCode + ' ' + (!!this.symbolicName ? ' ' + this.symbolicName : '') + ' ' + this.name + (!!this.memo ? '( ' + this.memo + ' )' : '');
         }
     }
 
@@ -177,31 +233,49 @@ module ksu001.o.viewmodel {
         siftCd: string,
         name: string,
         abName: string,
+        symbol: string,
         dailyWorkAtr: number,
         methodAtr: number,
         displayAtr: number,
-        note: string
+        note: string,
+        amStartClock: number,
+        pmEndClock: number,
+        timeNumberCnt: number,
     }
 
     class WorkTime {
         siftCd: string;
         name: string;
         abName: string;
+        symbol: string;
         dailyWorkAtr: number;
         methodAtr: number;
         displayAtr: number;
         note: string;
+        codeName: string;
+        amStartClock: number;
+        pmEndClock: number;
+        timeNumberCnt: number;
+        timeZone1: string;
+        timeZone2: string;
         labelDisplay: string;
 
         constructor(params: IWorkTime) {
             this.siftCd = params.siftCd;
             this.name = params.name;
             this.abName = params.abName;
+            this.symbol = params.symbol;
             this.dailyWorkAtr = params.dailyWorkAtr;
             this.methodAtr = params.methodAtr;
             this.displayAtr = params.displayAtr;
             this.note = params.note;
-            this.labelDisplay = '  ' + this.siftCd + '  ' + this.abName + '  ' + this.name + '  ' + 'timeZone1  timeZone2 ' + '( ' + this.note + ' )';
+            this.codeName = this.siftCd + this.name;
+            this.amStartClock = params.amStartClock;
+            this.pmEndClock = params.pmEndClock;
+            this.timeNumberCnt = params.timeNumberCnt;
+            this.timeZone1 = this.timeNumberCnt == 1 ? nts.uk.time.parseTime(this.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.pmEndClock, true).format() : '';
+            this.timeZone2 = this.timeNumberCnt == 2 ? nts.uk.time.parseTime(this.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.pmEndClock, true).format() : '';
+            this.labelDisplay = '  ' + this.siftCd + (!!this.symbol ? ' ' + this.symbol : '') + ' ' + this.name + ' ' + this.timeZone1 + ' ' + this.timeZone2 + ' ' + (!!this.note ? '(' + this.note + ')' : '');
         }
     }
 

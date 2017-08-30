@@ -33,7 +33,7 @@
 				<div id="functions-area-content">
 					<button tabindex="1" data-bind="click : register">#{i18n.getText('CPS005_10')}</button>
 					<button tabindex="2" class="proceed"
-						data-bind="click : addUpdateData, enable: $root.errors.isEmpty">#{i18n.getText('CPS005_11')}</button>
+						data-bind="click : addUpdateData, enable: isEnableButtonProceed()">#{i18n.getText('CPS005_11')}</button>
 					<button tabindex="3" class="danger" data-bind="click: removeData">#{i18n.getText('CPS005_58')}</button>
 					<button tabindex="4" data-bind="click: closedDialog">#{i18n.getText('CPS005_14')}</button>
 				</div>

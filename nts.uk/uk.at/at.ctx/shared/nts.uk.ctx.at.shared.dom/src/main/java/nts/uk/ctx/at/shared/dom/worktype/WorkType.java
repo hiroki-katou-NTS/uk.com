@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktype;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -51,6 +53,8 @@ public class WorkType extends AggregateRoot {
 	// 出勤率の計算
 	private CalculateMethod calculateMethod;
 
+	private List<WorkTypeSet> workTypeSetList;
+	
 	@Override
 	public void validate() {
 		super.validate();
@@ -133,5 +137,13 @@ public class WorkType extends AggregateRoot {
 				new WorkTypeName(name), new WorkTypeAbbreviationName(abbreviationName), new WorkTypeMemo(memo),
 				dailyWork, EnumAdaptor.valueOf(deprecate, DeprecateClassification.class),
 				EnumAdaptor.valueOf(calculateMethod, CalculateMethod.class));
+	}
+	
+	/**
+	 * Set work type set
+	 * @param workTypeList
+	 */
+	public void setWorkTypeSet(List<WorkTypeSet> workTypeList) {
+		this.workTypeSetList = workTypeList;
 	}
 }

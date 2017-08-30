@@ -51,4 +51,8 @@ public interface YearHolidayRepository {
 	 * @param yearHolidayCode the year holiday code
 	 */
 	void remove(String companyId, String yearHolidayCode);
+
+	void removeCondition(String companyId, String yearHolidayCode);
+
+	void removeGrantDates(String companyId, String yearHolidayCode);
 }

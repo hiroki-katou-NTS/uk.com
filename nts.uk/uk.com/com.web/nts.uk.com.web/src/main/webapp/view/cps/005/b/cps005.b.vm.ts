@@ -2,6 +2,7 @@ module nts.uk.com.view.cps005.b {
     import getText = nts.uk.resource.getText;
     import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
+    import info = nts.uk.ui.dialog.info;
     import modal = nts.uk.ui.windows.sub.modal;
     import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
@@ -10,10 +11,17 @@ module nts.uk.com.view.cps005.b {
         export class ScreenModel {
             currentItemData: KnockoutObservable<ItemDataModel>;
             isUpdate: boolean = false;
+            isEnableButtonProceed: KnockoutObservable<boolean>;
             constructor() {
                 let self = this,
                     dataItemModel = new ItemDataModel(null);
                 self.currentItemData = ko.observable(dataItemModel);
+                self.isEnableButtonProceed = ko.computed(function() {
+                    if (nts.uk.ui._viewModel && nts.uk.ui._viewModel.errors) {
+                        return (nts.uk.ui._viewModel.errors.isEmpty() && self.currentItemData().isEnableButtonProceed());
+                    }
+                    return self.currentItemData().isEnableButtonProceed();
+                });
             }
 
             startPage(): JQueryPromise<any> {
@@ -21,10 +29,11 @@ module nts.uk.com.view.cps005.b {
                     dfd = $.Deferred();
                 let categoryId = "AF3714DE-507B-4E9D-BA61-4B16948A5872";
                 new service.Service().getAllPerInfoItemDefByCtgId(categoryId).done(function(data: IItemData) {
+                    self.currentItemData(new ItemDataModel(data));
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
-                        self.currentItemData(new ItemDataModel(data));
                         self.currentItemData().perInfoItemSelectCode(data.personInfoItemList ? data.personInfoItemList[0].id : "");
                         self.isUpdate = true;
+                        self.currentItemData().isEnableButtonProceed(true);
                     } else {
                         self.register();
                     }
@@ -33,18 +42,15 @@ module nts.uk.com.view.cps005.b {
                 return dfd.promise();
             }
 
-            reloadData(newItemName: string): JQueryPromise<any> {
+            reloadData(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
                 let categoryId = "AF3714DE-507B-4E9D-BA61-4B16948A5872";
                 new service.Service().getAllPerInfoItemDefByCtgId(categoryId).done(function(data: IItemData) {
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
-                        self.currentItemData(new ItemDataModel(data));
-                        if (newItemName) {
-                            let newItem = _.find(data.personInfoItemList, item => { return item.itemName == newItemName });
-                            self.currentItemData().perInfoItemSelectCode(newItem ? newItem.id : "");
-                        }
+                        self.currentItemData().personInfoItemList(_.map(data.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
                         self.isUpdate = true;
+                        self.currentItemData().isEnableButtonProceed(true);
                     } else {
                         self.register();
                     }
@@ -60,27 +66,46 @@ module nts.uk.com.view.cps005.b {
                 self.currentItemData().currentItemSelected(new PersonInfoItem(null));
                 self.isUpdate = false;
                 $("#item-name-control").focus();
+                self.currentItemData().isEnableButtonProceed(true);
             }
 
             addUpdateData() {
                 let self = this,
-                    newItemDef = new AddItemModel(self.currentItemData().currentItemSelected());
-                let categoryId = "AF3714DE-507B-4E9D-BA61-4B16948A5872";
-                newItemDef.perInfoCtgId = categoryId;
-                newItemDef.singleItem.referenceCode = "Hard Code";
+                    newItemDef,
+                    categoryId = "AF3714DE-507B-4E9D-BA61-4B16948A5872";
                 if (self.isUpdate == true) {
-                    new service.Service().updateItemDef(newItemDef).done().fail(error => {
+                    newItemDef = new UpdateItemModel(self.currentItemData().currentItemSelected());
+                    newItemDef.singleItem.referenceCode = "Hard Code";
+                    new service.Service().updateItemDef(newItemDef).done(() => {
+                        self.reloadData();
+                        info({ messageId: "Msg_15" });
+                    }).fail(error => {
                         alertError(error);
                     });
                 } else {
-                    new service.Service().addItemDef(newItemDef).done().fail(error => {
+                    newItemDef = new AddItemModel(self.currentItemData().currentItemSelected())
+                    newItemDef.perInfoCtgId = categoryId;
+                    newItemDef.singleItem.referenceCode = "Hard Code";
+                    new service.Service().addItemDef(newItemDef).done(function(data: string) {
+                        self.reloadData().done(() => {
+                            self.currentItemData().perInfoItemSelectCode(data);
+                        });
+                        info({ messageId: "Msg_15" });
+                    }).fail(error => {
                         alertError(error);
                     });
                 }
             }
 
             removeData() {
-
+                let self = this,
+                removeModel = new RemoveItemModel(self.currentItemData().perInfoItemSelectCode());
+                if (!self.currentItemData().perInfoItemSelectCode()) return;
+                new service.Service().removeItemDef(removeModel).done(function(data: string) {
+                    alert(data);
+                }).fail(error => {
+                    alertError(error);
+                });
             }
 
             closedDialog() {
@@ -93,6 +118,8 @@ module nts.uk.com.view.cps005.b {
         personInfoItemList: KnockoutObservableArray<PersonInfoItemShowListModel> = ko.observableArray([]);
         perInfoItemSelectCode: KnockoutObservable<string> = ko.observable("");
         currentItemSelected: KnockoutObservable<PersonInfoItem> = ko.observable(new PersonInfoItem(null));
+        isEnableButtonProceed: KnockoutObservable<boolean> = ko.observable(false);
+        isEnableButtonDelete: KnockoutObservable<boolean>;
         dataTypeEnum: Array<any> = new Array();
         //Enum : dataTypeEnum is selected value 1 - 文字列(String)
         stringItemTypeEnum: Array<any> = new Array();
@@ -129,6 +156,10 @@ module nts.uk.com.view.cps005.b {
                     nts.uk.ui.errors.clearAll();
                     new service.Service().getPerInfoItemDefById(newItemId).done(function(data: IPersonInfoItem) {
                         self.currentItemSelected(new PersonInfoItem(data));
+                        self.isEnableButtonProceed(true);
+                        if (self.currentItemSelected().fixedAtr() == 1) {
+                            self.isEnableButtonProceed(false);
+                        }
                         self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataType(); }).localizedName);
                         self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemType(); }).localizedName);
                         self.currentItemSelected().stringItem().stringItemDataTypeText(_.find(self.stringItemDataTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemDataType(); }).localizedName);
@@ -197,14 +228,14 @@ module nts.uk.com.view.cps005.b {
     export class StringItemModel {
         stringItemType: KnockoutObservable<number> = ko.observable(4);
         stringItemTypeText: KnockoutObservable<string> = ko.observable("");
-        stringItemLength: KnockoutObservable<number> = ko.observable(null);
+        stringItemLength: KnockoutObservable<number> = ko.observable(1);
         stringItemDataType: KnockoutObservable<number> = ko.observable(2);
         stringItemDataTypeText: KnockoutObservable<string> = ko.observable("");
         constructor(data: IStringItem) {
             let self = this;
             if (!data) return;
             self.stringItemType(data.stringItemType || 4);
-            self.stringItemLength(data.stringItemLength || null);
+            self.stringItemLength(data.stringItemLength || 1);
             self.stringItemDataType(data.stringItemDataType || 2);
         }
     }
@@ -229,23 +260,23 @@ module nts.uk.com.view.cps005.b {
         }
     }
     export class TimeItemModel {
-        timeItemMin: KnockoutObservable<number> = ko.observable(null);
-        timeItemMax: KnockoutObservable<number> = ko.observable(null);
+        timeItemMin: KnockoutObservable<number> = ko.observable(0);
+        timeItemMax: KnockoutObservable<number> = ko.observable(0);
         constructor(data: ITimeItem) {
             let self = this;
             if (!data) return;
-            self.timeItemMin(data.min || null);
-            self.timeItemMax(data.max || null);
+            self.timeItemMin(data.min || 0);
+            self.timeItemMax(data.max || 0);
         }
     }
     export class TimePointItemModel {
-        timePointItemMin: KnockoutObservable<number> = ko.observable(null);
-        timePointItemMax: KnockoutObservable<number> = ko.observable(null);
+        timePointItemMin: KnockoutObservable<number> = ko.observable(0);
+        timePointItemMax: KnockoutObservable<number> = ko.observable(0);
         constructor(data: ITimePointItem) {
             let self = this;
             if (!data) return;
-            self.timePointItemMin(data.timePointItemMin || null);
-            self.timePointItemMax(data.timePointItemMax || null);
+            self.timePointItemMin(data.timePointItemMin || 0);
+            self.timePointItemMax(data.timePointItemMax || 0);
         }
     }
     export class DateItemModel {
@@ -258,13 +289,13 @@ module nts.uk.com.view.cps005.b {
         }
     }
     export class SelectionItemModel {
-        selectionItemRefType: KnockoutObservable<number> = ko.observable(null);
+        selectionItemRefType: KnockoutObservable<number> = ko.observable(1);
         selectionItemRefTypeText: KnockoutObservable<string> = ko.observable("");
         selectionItemRefCode: KnockoutObservable<string> = ko.observable(null);
         constructor(data: ISelectionItem) {
             let self = this;
             if (!data) return;
-            self.selectionItemRefType(data.selectionItemRefType || null);
+            self.selectionItemRefType(data.selectionItemRefType || 1);
             self.selectionItemRefCode(data.selectionItemRefCode || null);
         }
     }
@@ -280,19 +311,35 @@ module nts.uk.com.view.cps005.b {
     }
     export class AddItemModel {
         perInfoCtgId: string;
-        itemCode: string;
-        itemParentCode: string;
         itemName: string;
         singleItem: SingleItemAddModel;
         constructor(data: PersonInfoItem) {
             let self = this;
             if (!data) return;
-            self.perInfoCtgId = data.id;
             self.itemName = data.itemName();
             self.singleItem = new SingleItemAddModel(data);
         }
     }
 
+    export class UpdateItemModel {
+        perInfoItemDefId: string;
+        itemName: string;
+        singleItem: SingleItemAddModel;
+        constructor(data: PersonInfoItem) {
+            let self = this;
+            if (!data) return;
+            self.perInfoItemDefId = data.id;
+            self.itemName = data.itemName();
+            self.singleItem = new SingleItemAddModel(data);
+        }
+    }
+    export class RemoveItemModel {
+        perInfoItemDefId: string;
+        constructor(perInfoItemDefId: string) {
+            let self = this;
+            self.perInfoItemDefId = perInfoItemDefId;
+        }
+    }
     export class SingleItemAddModel {
         dataType: number = -1;
         // StringItem property
@@ -407,7 +454,7 @@ module nts.uk.com.view.cps005.b {
     interface ISelectionItem {
         dataTypeValue: number;
         selectionItemRefType: number;
-        selectionItemRefCode: number;
+        selectionItemRefCode: string;
     }
 
 }

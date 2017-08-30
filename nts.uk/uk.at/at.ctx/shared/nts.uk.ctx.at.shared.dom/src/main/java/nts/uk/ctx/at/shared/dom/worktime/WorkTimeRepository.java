@@ -61,15 +61,4 @@ public interface WorkTimeRepository {
 	 * @return list Work Time
 	 */
 	public List<WorkTime> findByCodeList(String companyID, List<String> siftCDs);
-
-	/**
-	 * get list WorkTime by CompanyId and DisplayAtr = DISPLAY
-	 * added by sonnh1
-	 * 
-	 * @param companyID
-	 * @param displayAtr
-	 * @return list Work Time
-	 */
-	public List<WorkTime> findByCIdAndDisplayAtr(String companyID, int displayAtr);
-
 }

@@ -1,6 +1,5 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -141,7 +140,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 * @param appType
 	 */
 	@Override
-	public List<PersonApprovalRoot> findByBaseDate(String cid, String sid, Date baseDate, String appType) {
+	public List<PersonApprovalRoot> findByBaseDate(String cid, String sid, Date baseDate, int appType) {
 		return this.queryProxy().query(FIND_BY_BASEDATE, WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", cid)
 				.setParameter("employeeId", sid)
@@ -174,14 +173,13 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 * @return
 	 */
 	private PersonApprovalRoot toDomainPsApR(WwfmtPsApprovalRoot entity){
-		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-		val domain = PersonApprovalRoot.createSimpleFromJavaType(entity.wwfmtPsApprovalRootPK.companyId,
+		val domain = PersonApprovalRoot.convert(entity.wwfmtPsApprovalRootPK.companyId,
 				entity.wwfmtPsApprovalRootPK.approvalId,
 				entity.wwfmtPsApprovalRootPK.employeeId,
 				entity.wwfmtPsApprovalRootPK.historyId,
 				entity.applicationType,
-				entity.startDate.localDate().format(formatter),
-				entity.endDate.localDate().format(formatter),
+				entity.startDate,
+				entity.endDate,
 				entity.branchId,
 				entity.anyItemAppId,
 				entity.confirmationRootType,

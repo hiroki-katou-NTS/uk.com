@@ -17,5 +17,8 @@ public class KshstTotalSubjectsPK_ {
     
     /** The work type atr. */
     public static volatile SingularAttribute<KshstTotalSubjectsPK, Integer> workTypeAtr;
+    
+    /** The work type atr. */
+    public static volatile SingularAttribute<KshstTotalSubjectsPK, String> workTypeCd;
 	
 }

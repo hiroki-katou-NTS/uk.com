@@ -28,7 +28,7 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 
 	/** The entity. */
 	private KshstTotalTimes entity;
-
+	
 	/**
 	 * Instantiates a new jpa total times set memento.
 	 *
@@ -36,9 +36,6 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 	 *            the total times
 	 */
 	public JpaTotalTimesSetMemento(KshstTotalTimes totalTimes) {
-		if (entity.getKshstTotalTimesPK() == null) {
-			entity.setKshstTotalTimesPK(new KshstTotalTimesPK());
-		}
 		this.entity = totalTimes;
 	}
 

@@ -17,7 +17,6 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.find.worktime.WorkTimeFinder;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
-import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeScheduleDto;
 
 /**
  * 
@@ -92,17 +91,6 @@ public class WorkTimeWebService extends WebService {
 				command.endTime);
 	}
 
-	/**
-	 * Find by C id and display atr.
-	 *
-	 * @return the list
-	 */
-	@POST
-	@Path("findByCIdAndDisplayAtr")
-	public List<WorkTimeScheduleDto> findByCIdAndDisplayAtr() {
-		return this.workTimeFinder.findByCIdAndDisplayAtr();
-	}
-	
 	/**
 	 * Find by id.
 	 *

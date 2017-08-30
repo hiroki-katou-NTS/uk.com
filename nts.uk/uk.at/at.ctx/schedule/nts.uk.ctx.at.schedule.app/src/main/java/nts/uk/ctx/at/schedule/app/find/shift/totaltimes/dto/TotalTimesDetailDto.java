@@ -48,7 +48,7 @@ public class TotalTimesDetailDto implements TotalTimesSetMemento {
 	private TotalConditionDto totalCondition;
 
 	/** The summary list. */
-	private List<TotalSubjectsDto> summaryList;
+	private List<TotalSubjectsDto> listTotalSubjects;
 
 	/*
 	 * (non-Javadoc)
@@ -129,7 +129,7 @@ public class TotalTimesDetailDto implements TotalTimesSetMemento {
 	 */
 	@Override
 	public void setTotalSubjects(List<TotalSubjects> totalSubjects) {
-		this.summaryList = totalSubjects.stream().map(item -> {
+		this.listTotalSubjects = totalSubjects.stream().map(item -> {
 			TotalSubjectsDto dto = new TotalSubjectsDto();
 			item.saveToMemento(dto);
 			return dto;

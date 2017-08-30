@@ -23,6 +23,9 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTimeSetting;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 
+/**
+ * The Class EmploymentEstablishmentSaveCommand.
+ */
 @Getter
 @Setter
 public class EmploymentEstablishmentSaveCommand {

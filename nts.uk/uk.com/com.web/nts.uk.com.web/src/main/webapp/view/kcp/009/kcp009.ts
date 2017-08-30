@@ -18,7 +18,7 @@ module kcp009.viewmodel {
         isActivePersonalProfile: KnockoutObservable<boolean>;
         keySearch: KnockoutObservable<string>;
         isDisplay: KnockoutObservable<boolean>;
-
+        tabIndex: number;
         
         constructor() {
             var self = this;
@@ -38,7 +38,7 @@ module kcp009.viewmodel {
             $(document).undelegate('#list-box_grid', 'iggriddatarendered');
             ko.cleanNode($input[0]);
             var self = this;
-            
+            self.tabIndex = data.tabIndex;
             // System Reference Type
             self.systemType = data.systemReference;
             if (data.employeeInputList().length > 1) {
@@ -112,6 +112,11 @@ module kcp009.viewmodel {
                             self.organizationName(currentItem.depName);
                         }
                     }
+                } else {
+                    self.empDisplayCode("");
+                    self.empBusinessName("");
+                    self.organizationName("");
+//                    self.selectedOrdinalNumber(0);
                 }
             });
             // Selected OrdinalNumber
@@ -242,9 +247,10 @@ module kcp009.viewmodel {
     export interface ComponentOption {
         systemReference: SystemType;
         isDisplayOrganizationName: boolean;
-        employeeInputList?: KnockoutObservableArray<EmployeeModel>;
+        employeeInputList: KnockoutObservableArray<EmployeeModel>;
         targetBtnText: string;
         selectedItem: KnockoutObservable<string>;
+        tabIndex: number;
     }
 
     /**

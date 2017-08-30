@@ -34,6 +34,10 @@ public class KshstTotalSubjectsPK implements Serializable {
 	/** The work type atr. */
 	@Column(name = "WORK_TYPE_ATR")
 	private Integer workTypeAtr;
+	
+	/** The work type cd. */
+	@Column(name = "WORK_TYPE_CD")
+	private String workTypeCd;
 
 	/**
 	 * Instantiates a new kshst total subjects PK.
@@ -52,10 +56,11 @@ public class KshstTotalSubjectsPK implements Serializable {
 	 * @param workTypeAtr
 	 *            the work type atr
 	 */
-	public KshstTotalSubjectsPK(String cid, Integer totalTimesNo, Integer workTypeAtr) {
+	public KshstTotalSubjectsPK(String cid, Integer totalTimesNo, Integer workTypeAtr, String workTypeCd) {
 		this.cid = cid;
 		this.totalTimesNo = totalTimesNo;
 		this.workTypeAtr = workTypeAtr;
+		this.workTypeCd = workTypeCd;
 	}
 
 	/*
@@ -93,7 +98,11 @@ public class KshstTotalSubjectsPK implements Serializable {
 		if (this.workTypeAtr != other.workTypeAtr) {
 			return false;
 		}
+		if (this.workTypeCd != other.workTypeCd) {
+			return false;
+		}
 		return true;
 	}
+
 
 }

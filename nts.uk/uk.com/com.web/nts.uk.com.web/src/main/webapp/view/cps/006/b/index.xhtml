@@ -7,8 +7,15 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+
+			<script>
+				var dialogSize = {
+					width : 980,
+					height : 650
+				};
+			</script>
 			<com:ValidatorScript>
-				nts.uk.ctx.bs.person.dom.person.role.RoleName
+				nts.uk.ctx.bs.person.dom.person.info.item.ItemName
 			</com:ValidatorScript>
 			<com:stylefile path="cps006.b.style.css" />
 			<com:scriptfile set="IGNITE" />
@@ -19,11 +26,9 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<div class="container">
-					<button id="B_1" class="proceed" data-bind="click:updateItemChange">#{i18n.getText('CPS006_19')}</button>
-					<button id="B_2" data-bind="click:OpenCDL022Modal">#{i18n.getText('CPS006_20')}</button>
-					<button id="B_3" data-bind="click:closeDialog">#{i18n.getText('CPS006_21')}</button>
-				</div>
+				<button id="B_1" class="proceed" data-bind="click:updateItemChange">#{i18n.getText('CPS006_19')}</button>
+				<button id="B_2" data-bind="click:OpenCDL022Modal">#{i18n.getText('CPS006_20')}</button>
+				<button id="B_3" data-bind="click:closeDialog">#{i18n.getText('CPS006_21')}</button>
 			</div>
 			<div id="contents-area" class="cf">
 				<div id="content_main">
@@ -77,7 +82,8 @@
 						<div class="div_line">
 
 							<div class="line_col_1">
-								<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CPS006_16')}</div>
+								<div
+									data-bind="ntsFormLabel: { required:true ,constraint:'ItemName' }">#{i18n.getText('CPS006_16')}</div>
 							</div>
 
 							<div class="line_col_2">

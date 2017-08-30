@@ -58,7 +58,16 @@ public class WorkTypeFinder {
 	 * @return the list
 	 */
 	public List<WorkTypeDto> findByCompanyId() {
-		return this.workTypeRepo.findByCompanyId(companyId).stream().map(c -> WorkTypeDto.fromDomain(c))
+		return this.workTypeRepo.findByCompanyId(companyId).stream()
+				.map(c -> {
+					List<WorkTypeSetDto> workTypeSetList = c.getWorkTypeSetList()
+							.stream().map(x -> WorkTypeSetDto.fromDomain(x))
+							.collect(Collectors.toList());
+					
+					WorkTypeDto workType = WorkTypeDto.fromDomain(c);
+					workType.setWorkTypeSets(workTypeSetList);
+					return workType;
+				})
 				.collect(Collectors.toList());
 	}
 
@@ -78,7 +87,7 @@ public class WorkTypeFinder {
 	 * @return List WorkTypeDto
 	 */
 	public List<WorkTypeDto> findByCIdAndDisplayAtr() {
-		return this.workTypeRepo.findByCIdAndDisplayAtr(companyId, DeprecateClassification.Deprecated.value).stream()
+		return this.workTypeRepo.findByCIdAndDisplayAtr(companyId, DeprecateClassification.NotDeprecated.value).stream()
 				.map(c -> WorkTypeDto.fromDomain(c)).collect(Collectors.toList());
 	}
 	

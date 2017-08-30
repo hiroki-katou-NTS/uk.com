@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalATR;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
@@ -120,13 +120,13 @@ public class DetailedScreenAfterApprovalProcessDefault implements DetailedScreen
 	}
 
 	@Override
-	public List<String> actualReflectionStateDecision(String appID, String phaseID, ApprovalATR approvalAtr) {
+	public List<String> actualReflectionStateDecision(String appID, String phaseID, ApprovalAtr approvalAtr) {
 		// 承認者一覧
 		List<String> lstApprover = new ArrayList<>();
 		List<String> lstNotApprover = new ArrayList<>();
 		List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(AppContexts.user().companyId(), phaseID);
 		for (ApprovalFrame frame : listFrame) {
-			if (frame.getApprovalATR() == ApprovalATR.APPROVED) {
+			if (frame.getApprovalATR() == ApprovalAtr.APPROVED) {
 				lstApprover.add(frame.getApproverSID());
 			} else {
 				lstNotApprover.add(frame.getApproverSID());
@@ -135,7 +135,7 @@ public class DetailedScreenAfterApprovalProcessDefault implements DetailedScreen
 		// Get distinct List Approver
 		lstApprover.stream().distinct().collect(Collectors.toList());
 		lstNotApprover.stream().distinct().collect(Collectors.toList());
-		if (approvalAtr == ApprovalATR.APPROVED) {
+		if (approvalAtr == ApprovalAtr.APPROVED) {
 			return lstApprover;
 		} else {
 			return lstNotApprover;
@@ -154,9 +154,9 @@ public class DetailedScreenAfterApprovalProcessDefault implements DetailedScreen
 				if (frame.getDispOrder() >= 1 && frame.getDispOrder() <= 4) {
 					// get list nguoi xac nhan
 					List<String> listApprover = this.actualReflectionStateDecision(appID, phase.getPhaseID(),
-							ApprovalATR.APPROVED);
+							ApprovalAtr.APPROVED);
 					List<String> listNotApprover = this.actualReflectionStateDecision(appID, phase.getPhaseID(),
-							ApprovalATR.UNAPPROVED);
+							ApprovalAtr.UNAPPROVED);
 				}
 				// Su dung thang 3.2
 				// truyen vao mot list dai dien nguoi xac nhan, lay ra list nguoi xac nhan
@@ -177,10 +177,10 @@ public class DetailedScreenAfterApprovalProcessDefault implements DetailedScreen
 		List<AppApprovalPhase> listPhase = approvalPhaseRepo.findPhaseByAppID(companyID, appID);
 		for (AppApprovalPhase phase : listPhase) {
 			// 承認フェーズ」．承認区分が承認済以外の場合(「承認フェーズ」．承認区分 ≠ 承認済
-			if (phase.getApprovalATR() != ApprovalATR.APPROVED) {
+			if (phase.getApprovalATR() != ApprovalAtr.APPROVED) {
 				// Tìm trong những phase chưa được approved, lấy ra những Frame đã dc approved
 				List<String> lstApproved = this.actualReflectionStateDecision(appID, phase.getPhaseID(),
-						ApprovalATR.APPROVED);
+						ApprovalAtr.APPROVED);
 				// GỌI THẰNG 3.1 : Truyền vào lstApproved vừa nhận được companyID,trả ra 2 list,
 				// OUTPUT
 				// 承認者の代行情報リスト
