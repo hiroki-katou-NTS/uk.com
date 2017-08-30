@@ -58,7 +58,16 @@ public class WorkTypeFinder {
 	 * @return the list
 	 */
 	public List<WorkTypeDto> findByCompanyId() {
-		return this.workTypeRepo.findByCompanyId(companyId).stream().map(c -> WorkTypeDto.fromDomain(c))
+		return this.workTypeRepo.findByCompanyId(companyId).stream()
+				.map(c -> {
+					List<WorkTypeSetDto> workTypeSetList = c.getWorkTypeSetList()
+							.stream().map(x -> WorkTypeSetDto.fromDomain(x))
+							.collect(Collectors.toList());
+					
+					WorkTypeDto workType = WorkTypeDto.fromDomain(c);
+					workType.setWorkTypeSets(workTypeSetList);
+					return workType;
+				})
 				.collect(Collectors.toList());
 	}
 

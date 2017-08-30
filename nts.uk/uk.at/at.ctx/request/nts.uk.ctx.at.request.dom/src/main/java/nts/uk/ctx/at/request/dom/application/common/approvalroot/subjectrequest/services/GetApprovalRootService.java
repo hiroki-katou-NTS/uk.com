@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services;
 
 import java.util.Date;
+import java.util.List;
+
+import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.dto.ApprovalRootDataResult;
 
 /**
  * 
@@ -18,7 +21,7 @@ public interface GetApprovalRootService {
 	 * @param subjectRequest 対象申請
 	 * @param standardDate 基準日
 	 */
-	void getApprovalRootOfSubjectRequest(
+	List<ApprovalRootDataResult> getApprovalRootOfSubjectRequest(
 			String cid, 
 			String sid, 
 			int employmentRootAtr, 

@@ -18,6 +18,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.PersonA
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.WkpAppRootAdaptorDto;
 import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.AdjustmentApprovalRootService;
 import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.GetApprovalRootService;
+import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.dto.ApprovalPhaseAdaptorResult;
+import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.dto.ApprovalRootDataResult;
 
 /**
  * 1.社員の対象申請の承認ルートを取得する
@@ -47,10 +49,10 @@ public class GetApprovalRootServiceImpl implements GetApprovalRootService {
 	 * @param baseDate 基準日
 	 */
 	@Override
-	public void getApprovalRootOfSubjectRequest(
+	public List<ApprovalRootDataResult> getApprovalRootOfSubjectRequest(
 			String cid, String sid, int employmentRootAtr, 
 			int appType,Date baseDate) {
-		List<String> branchIds = new ArrayList<>();
+		List<ApprovalRootDataResult> result = new ArrayList<>();
 		// get 個人別就業承認ルート from workflow
 		List<PersonAppRootAdaptorDto> perAppRoots = this.approvalRootAdaptorDto.findByBaseDate(cid, sid, baseDate, appType);
 		if (CollectionUtil.isEmpty(perAppRoots)) {
@@ -63,12 +65,16 @@ public class GetApprovalRootServiceImpl implements GetApprovalRootService {
 					List<WkpAppRootAdaptorDto> wkpAppRoots = this.approvalRootAdaptorDto.findWkpByBaseDate(cid, wｋｐId, baseDate, appType);
 					if (!CollectionUtil.isEmpty(wkpAppRoots)) {
 						// 2.承認ルートを整理する
+						result = wkpAppRoots.stream().map( x -> ApprovalRootDataResult.convertFromWkpData(x)).collect(Collectors.toList());
+						this.adjustmentApprovalRoot(cid, sid, GeneralDate.legacyDate(baseDate), result);
 						break;
 					} 
 					
 					List<WkpAppRootAdaptorDto> wkpAppRootsOfCom = this.approvalRootAdaptorDto.findWkpByBaseDateOfCommon(cid, wｋｐId, baseDate);
 					if (!CollectionUtil.isEmpty(wkpAppRootsOfCom)) {
 						// 2.承認ルートを整理する
+						result = wkpAppRoots.stream().map( x -> ApprovalRootDataResult.convertFromWkpData(x)).collect(Collectors.toList());
+						this.adjustmentApprovalRoot(cid, sid, GeneralDate.legacyDate(baseDate), result);
 						break;
 					} 
 				}
@@ -79,20 +85,28 @@ public class GetApprovalRootServiceImpl implements GetApprovalRootService {
 					List<CompanyAppRootAdaptorDto> companyAppRootsOfCom = this.approvalRootAdaptorDto.findCompanyByBaseDateOfCommon(cid, baseDate);
 					if (!CollectionUtil.isEmpty(companyAppRootsOfCom)) {
 						// 2.承認ルートを整理する
+						result = comAppRoots.stream().map( x -> ApprovalRootDataResult.convertFromCompanyData(x)).collect(Collectors.toList());
+						this.adjustmentApprovalRoot(cid, sid, GeneralDate.legacyDate(baseDate), result);
 					} 
 				}else {
 					// 2.承認ルートを整理する
+					result = comAppRoots.stream().map( x -> ApprovalRootDataResult.convertFromCompanyData(x)).collect(Collectors.toList());
+					this.adjustmentApprovalRoot(cid, sid, GeneralDate.legacyDate(baseDate), result);
 				}
 					
 			}else {
 				// 2.承認ルートを整理する
+				result = perAppRoots.stream().map( x -> ApprovalRootDataResult.convertFromPersonData(x)).collect(Collectors.toList());
+				this.adjustmentApprovalRoot(cid, sid, GeneralDate.legacyDate(baseDate), result);
 			}
 			
 		}else {
 			// 2.承認ルートを整理する
-			branchIds = perAppRoots.stream().map(x -> x.getBranchId()).collect(Collectors.toList());
-			this.adjustmentApprovalRoot(cid, sid, GeneralDate.legacyDate(baseDate), branchIds);
+			result = perAppRoots.stream().map( x -> ApprovalRootDataResult.convertFromPersonData(x)).collect(Collectors.toList());
+			this.adjustmentApprovalRoot(cid, sid, GeneralDate.legacyDate(baseDate), result);
 		}
+		
+		return result;
 	}
 	
 	/**
@@ -103,12 +117,13 @@ public class GetApprovalRootServiceImpl implements GetApprovalRootService {
 	 * @param baseDate
 	 * @param branchIds
 	 */
-	private void adjustmentApprovalRoot(String cid, String sid, GeneralDate baseDate,  List<String> branchIds) {
-		branchIds.stream().forEach(x -> {
-			List<ApprovalPhaseAdaptorDto> appPhase = this.approvalRootAdaptorDto.findApprovalPhaseByBranchId(cid, x)
+	private void adjustmentApprovalRoot(String cid, String sid, GeneralDate baseDate,  List<ApprovalRootDataResult> appDatas) {
+		appDatas.stream().forEach(x -> {
+			List<ApprovalPhaseAdaptorDto> appPhase = this.approvalRootAdaptorDto.findApprovalPhaseByBranchId(cid, x.getBranchId())
 					.stream().filter(f -> f.getBrowsingPhase() == 0)
 					.collect(Collectors.toList());
-			this.adjustmentAppRootService.adjustmentApprovalRootData(cid, sid, baseDate, appPhase);
+			List<ApprovalPhaseAdaptorResult> phases = this.adjustmentAppRootService.adjustmentApprovalRootData(cid, sid, baseDate, appPhase);
+			x.setApprovers(phases);	
 		});
 	}
 

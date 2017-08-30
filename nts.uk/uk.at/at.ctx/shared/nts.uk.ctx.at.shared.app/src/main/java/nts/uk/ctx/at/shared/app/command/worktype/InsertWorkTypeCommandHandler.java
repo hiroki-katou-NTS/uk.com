@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.command.worktype;
 
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -30,9 +31,11 @@ public class InsertWorkTypeCommandHandler extends CommandHandler<WorkTypeCommand
 		if (workTypeRepo.findByPK(companyId, workTypeCommandBase.getWorkTypeCode()).isPresent()) {
 			throw new BusinessException("Msg_3");
 		}
+		
 		WorkType workType = workTypeCommandBase.toDomain(companyId);
 		workType.validate();
-		
 		workTypeRepo.add(workType);
+				
+		workTypeRepo.addWorkTypeSet(workTypeCommandBase.getOneDay().toDomainWorkTypeSet(companyId));
 	}
 }

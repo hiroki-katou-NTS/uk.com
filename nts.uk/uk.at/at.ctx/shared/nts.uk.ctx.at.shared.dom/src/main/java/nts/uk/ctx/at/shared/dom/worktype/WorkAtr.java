@@ -3,8 +3,7 @@ package nts.uk.ctx.at.shared.dom.worktype;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public enum WorkAtr {
-	
+public enum WorkAtr {	
 	// 1日
 	OneDay(0),
 
