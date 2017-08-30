@@ -5,6 +5,7 @@ module nts.uk.at.view.kmk009.a {
             getAllTotalTimes: "ctx/at/schedule/shift/totaltimes/getallitem",
             getAllTotalTimesDetail: "ctx/at/schedule/shift/totaltimes/getdetail/",
             totalClassification: "ctx/at/schedule/shift/totaltimes/find/totalclassification",
+            totalUseEnum: "ctx/at/schedule/shift/totaltimes/find/totalUseEnum",
             saveAllTotalTimes: "ctx/at/schedule/shift/totaltimes/save",
             findByIdWorkType: "at/share/worktype/findById",
             findByIdWorkTime: "at/shared/worktime/findById",
@@ -23,6 +24,10 @@ module nts.uk.at.view.kmk009.a {
         }
         export function getTotalClsEnum(): JQueryPromise<Array<model.Enum>> {
             return nts.uk.request.ajax(paths.totalClassification);
+        }
+        
+        export function getTotalUseEnum(): JQueryPromise<Array<model.EnumUse>> {
+            return nts.uk.request.ajax(paths.totalUseEnum);
         }
 
         export function getAllTotalTimesDetail(TotalTimesNo: number): JQueryPromise<viewmodel.model.TotalTimesDetail> {
@@ -85,6 +90,18 @@ module nts.uk.at.view.kmk009.a {
         export module model {
 
             export class Enum {
+                value: number;
+                fieldName: string;
+                localizedName: string;
+
+                constructor(value: number, fieldName: string, localizedName: string) {
+                    this.value = value;
+                    this.fieldName = fieldName;
+                    this.localizedName = localizedName;
+                }
+            }
+            
+            export class EnumUse {
                 value: number;
                 fieldName: string;
                 localizedName: string;

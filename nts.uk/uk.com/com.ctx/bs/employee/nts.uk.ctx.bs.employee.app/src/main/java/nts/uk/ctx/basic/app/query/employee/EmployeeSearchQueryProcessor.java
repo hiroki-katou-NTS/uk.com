@@ -24,11 +24,11 @@ import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffJobTitleHis
 import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffJobTitleHistoryRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.access.jobtitle.JobTitleAdapter;
+import nts.uk.ctx.bs.employee.dom.access.jobtitle.SyJobTitleAdapter;
 import nts.uk.ctx.bs.employee.dom.access.jobtitle.dto.AcJobTitleDto;
-import nts.uk.ctx.bs.employee.dom.access.person.PersonAdapter;
+import nts.uk.ctx.bs.employee.dom.access.person.SyPersonAdapter;
 import nts.uk.ctx.bs.employee.dom.access.person.dto.AcPersonDto;
-import nts.uk.ctx.bs.employee.dom.access.workplace.WorkplaceAdapter;
+import nts.uk.ctx.bs.employee.dom.access.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceDto;
 import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceHierarchyDto;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
@@ -43,15 +43,15 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class EmployeeSearchQueryProcessor {
 	/** The person repository. */
 	@Inject
-	private PersonAdapter personAdapter;
+	private SyPersonAdapter personAdapter;
 
 	/** The workplace repository. */
 	@Inject
-	private WorkplaceAdapter workplaceAdapter;
+	private SyWorkplaceAdapter workplaceAdapter;
 
 	/** The job title repository. */
 	@Inject
-	private JobTitleAdapter jobTitleAdapter;
+	private SyJobTitleAdapter jobTitleAdapter;
 
 	/** The employee repository. */
 	@Inject

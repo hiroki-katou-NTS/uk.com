@@ -11,7 +11,7 @@ import nts.uk.ctx.bs.employee.dom.access.person.dto.AcPersonDto;
 /**
  * The Interface PersonAdapter.
  */
-public interface PersonAdapter {
+public interface SyPersonAdapter {
 
 	/**
 	 * Find by person ids.

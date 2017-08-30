@@ -2,22 +2,25 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.access.employment;
+package nts.uk.ctx.bs.employee.pub.employee;
 
 import java.util.List;
 
-import nts.uk.ctx.bs.employee.dom.access.employment.dto.AcEmploymentDto;
+import nts.arc.time.GeneralDate;
 
 /**
- * The Interface PersonAdapter.
+ * The Interface EmployeePub.
  */
-public interface EmploymentAdapter {
+public interface SyEmployeePub {
 
 	/**
 	 * Find by wpk ids.
 	 *
-	 * @param workplaceId the workplace id
+	 * @param companyId the company id
+	 * @param workplaceIds the workplace ids
+	 * @param baseDate the base date
 	 * @return the list
 	 */
-	List<AcEmploymentDto> findByEmpCodes(List<String> employmentCodes);
+	List<EmployeeDto> findByWpkIds(String companyId, List<String> workplaceIds, GeneralDate baseDate);
+
 }
