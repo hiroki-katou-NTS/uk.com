@@ -3810,6 +3810,42 @@ var nts;
                 }
                 dialog.confirm = confirm;
                 ;
+                function bundledErrors(errors) {
+                    var id = uk.util.randomId();
+                    $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
+                    var container = $("body").find("#" + id);
+                    container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー内容</th>" +
+                        "<th style='display: none;'/><th style='width: 150px;'>エラーコード</th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
+                    var errorBody = container.find("tbody");
+                    _.forEach(errors["messageId"], function (id, idx) {
+                        var row = $("<tr/>");
+                        row.append("<td style='display: none;'>" + (idx + 1) + "/td><td>" + errors.messages[id] + "</td><td>" + id + "</td>");
+                        row.appendTo(errorBody);
+                    });
+                    var functionArea = container.find("#functions-area-bottom");
+                    functionArea.append("<button class='ntsButton ntsClose large'/>");
+                    container.dialog({
+                        title: "エラー一覧",
+                        dialogClass: "no-close-btn",
+                        modal: true,
+                        resizable: false,
+                        width: 450,
+                        maxHeight: 500,
+                        closeOnEscape: false,
+                        open: function () {
+                            container.find("#error-board").css({ "overflow": "auto", "max-height": "300px", "margin-bottom": "65px" });
+                            container.find("#functions-area-bottom").css({ "left": "0px" });
+                            functionArea.find(".ntsClose").text("閉じる").click(function (evt) {
+                                container.dialog("destroy");
+                                container.remove();
+                            });
+                        },
+                        close: function (event) {
+                        }
+                    });
+                }
+                dialog.bundledErrors = bundledErrors;
+                ;
             })(dialog = ui.dialog || (ui.dialog = {}));
             ui.confirmSave = function (dirtyChecker) {
                 var frame = windows.getSelf();
@@ -18983,4 +19019,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
