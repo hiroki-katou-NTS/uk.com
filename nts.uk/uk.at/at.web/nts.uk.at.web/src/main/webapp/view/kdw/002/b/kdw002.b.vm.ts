@@ -15,7 +15,7 @@ module nts.uk.at.view.kdw002.b {
 
                 this.bussinessColumn = ko.observableArray([
                     { headerText: getText('KDW002_12'), key: 'businessTypeCode', width: 100 },
-                    { headerText: getText('KDW002_4'), key: 'businessTypeName', width: 150 },
+                    { headerText: getText('KDW002_4'), key: 'businessTypeName', width: 150 , formatter: _.escape},
                 ]);
 
                 self.bussinessCurrentCode = ko.observable('');
@@ -25,7 +25,6 @@ module nts.uk.at.view.kdw002.b {
 
                     service.getListDailyServiceTypeControl(businessTypeCode).done(DailyServiceTypeControls => {
                         $("#grid").igGrid("dataSourceObject", _.sortBy(DailyServiceTypeControls, 'attendanceItemId')).igGrid("dataBind");
-
                         var dataSource = $('#grid').data('igGrid').dataSource;
                         var filteredData = dataSource.transformedData('afterfilteringandpaging');
                         var i;
@@ -59,11 +58,12 @@ module nts.uk.at.view.kdw002.b {
                     if (!nts.uk.util.isNullOrUndefined(businessTypes)) {
                         var businessTypeCode = businessTypes[0].businessTypeCode;
                         self.bussinessCurrentCode(businessTypeCode);
+                        let bussinessCodeItems = [];
                         businessTypes.forEach(businessType => {
-                            self.bussinessCodeItems.push(new BusinessType(businessType));
+                            bussinessCodeItems.push(new BusinessType(businessType));
+                           //   self.bussinessCodeItems.push(new BusinessType(businessType));
                         });
-
-
+                        self.bussinessCodeItems(_.sortBy(bussinessCodeItems,'businessTypeCode'));
                     }
 
                 });
@@ -128,20 +128,33 @@ module nts.uk.at.view.kdw002.b {
                 var i;
                 var l = filteredData.length;
                 for (i = index; i < l; i++) {
-                    // var rowIndex = i + 1;
-                    //  var idValue = $("#grid").igGrid("getCellValue", rowIndex, "attendanceItemId");
-                    //  var nameValue = $("#grid").igGrid("getCellValue", rowIndex, "attendanceItemName");
                     var rowId = filteredData[i].attendanceItemId;
                     var nameValue = filteredData[i].attendanceItemName;
                     var idValue = rowId.toString();
-                    //  var nameValue = $("#grid").igGrid("getCellValue", rowId, "attendanceItemName");
 
                     if (_.includes(idValue, self.txtSearch()) || _.includes(nameValue, self.txtSearch())) {
                         $('#grid').igGridSelection('selectRow', i);
+                         $('#grid').igGrid("virtualScrollTo", i);
                         keynotExist = false;
                         break;
                     }
                 }
+                if (keynotExist){
+                    for (i = 0; i < index; i++) {
+                        var rowId = filteredData[i].attendanceItemId;
+                        var nameValue = filteredData[i].attendanceItemName;
+                        var idValue = rowId.toString();
+                        if (_.includes(idValue, self.txtSearch()) || _.includes(nameValue, self.txtSearch())) {
+                            $('#grid').igGridSelection('selectRow', i);
+                            $('#grid').igGrid("virtualScrollTo", i);
+                            keynotExist = false;
+                            break;
+                        }
+                    }
+                }
+
+
+
                 if (keynotExist) {
                     alert("該当する項目が見つかりませんでした");
                 }
@@ -258,8 +271,8 @@ function loadIgrid() {
         alternateRowStyles: false,
         dataSourceType: "json",
         autoCommit: true,
-        //        virtualization : true,
-        //        virtualizationMode : "continuous",
+       virtualization: true,
+       virtualizationMode : "continuous",
         columns: [
             { key: "attendanceItemId", width: "100px", headerText: nts.uk.resource.getText('KDW002_3'), dataType: "number", columnCssClass: "readOnlyColor" },
             { key: "attendanceItemName", width: "250px", headerText: nts.uk.resource.getText('KDW002_4'), dataType: "string", columnCssClass: "readOnlyColor" },

@@ -472,6 +472,7 @@ project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.ws') {
 project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
 	}
 }
 project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.app') {
@@ -485,6 +486,8 @@ project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.infra') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
+		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
+		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.infra')
 	}
 }
 project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.ac') {

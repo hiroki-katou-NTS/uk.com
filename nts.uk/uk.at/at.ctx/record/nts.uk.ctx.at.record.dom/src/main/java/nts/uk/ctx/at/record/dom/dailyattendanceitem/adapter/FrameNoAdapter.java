@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface FrameNoAdapter {
 	
-	List<Integer> getFrameNo(String attendanceItemId);
+	List<FrameNoAdapterDto> getFrameNo(List<Integer> attendanceItemIds);
 }

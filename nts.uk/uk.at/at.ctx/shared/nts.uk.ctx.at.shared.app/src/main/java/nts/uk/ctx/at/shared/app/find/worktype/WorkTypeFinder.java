@@ -78,7 +78,7 @@ public class WorkTypeFinder {
 	 * @return List WorkTypeDto
 	 */
 	public List<WorkTypeDto> findByCIdAndDisplayAtr() {
-		return this.workTypeRepo.findByCIdAndDisplayAtr(companyId, DeprecateClassification.Deprecated.value).stream()
+		return this.workTypeRepo.findByCIdAndDisplayAtr(companyId, DeprecateClassification.NotDeprecated.value).stream()
 				.map(c -> WorkTypeDto.fromDomain(c)).collect(Collectors.toList());
 	}
 	

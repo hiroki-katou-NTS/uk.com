@@ -15,12 +15,9 @@ public interface PerInfoItemDefRepositoty {
 
 	List<String> getPerInfoItemsName(String perInfoCtgId, String contractCd);
 
-	String addPerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd, String ctgCode);
+	void addPerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd, String ctgCode);
 
 	void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd);
-
-	void removePerInfoItemDefRoot(List<String> perInfoCtgIds, String categoryCd, String contractCd,
-			String itemCode);
 
 	String getPerInfoItemCodeLastest(String contractCd, String categoryCd);
 
@@ -34,7 +31,7 @@ public interface PerInfoItemDefRepositoty {
 
 	// Sonnlb Code
 
-	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithNoAbolition(String perInfoCtgId,
+	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithoutAbolition(String perInfoCtgId,
 			String contractCd);
 
 	void updatePerInfoItemDef(PersonInfoItemDefinition perInfoItemDef);
@@ -45,5 +42,8 @@ public interface PerInfoItemDefRepositoty {
 
 	void UpdateOrderItem(PerInfoItemDefOrder itemOrder);
 
+	List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryIdWithoutSetItem(String perInfoCtgId,
+			String contractCd);
+	
 	// Sonnlb Code
 }

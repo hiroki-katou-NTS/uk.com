@@ -18,14 +18,14 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM KfnmtAttendanceLink a ");
-		builderString.append("WHERE a.kfnmtAttendanceLinkPK.attendanceItemId = :attendanceItemId ");
+		builderString.append("WHERE a.kfnmtAttendanceLinkPK.attendanceItemId IN :attendanceItemIds ");
 		FIND = builderString.toString();
 	}
 
 	@Override
-	public List<AttendanceItemLinking> getByAttendanceId(String attendanceItemId) {
+	public List<AttendanceItemLinking> getByAttendanceId(List<Integer> attendanceItemIds) {
 		return this.queryProxy().query(FIND, KfnmtAttendanceLink.class)
-				.setParameter("attendanceItemId", attendanceItemId).getList(f -> toDomain(f));
+				.setParameter("attendanceItemIds", attendanceItemIds).getList(f -> toDomain(f));
 	}
 
 	private static AttendanceItemLinking toDomain(KfnmtAttendanceLink kfnmtAttendanceLink) {

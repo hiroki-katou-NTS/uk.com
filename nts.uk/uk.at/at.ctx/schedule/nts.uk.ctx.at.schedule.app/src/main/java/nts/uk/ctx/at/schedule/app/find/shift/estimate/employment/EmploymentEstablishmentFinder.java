@@ -129,4 +129,21 @@ public class EmploymentEstablishmentFinder {
 		return dto;
 	}
 	
+	/**
+	 * Find all by target year.
+	 *
+	 * @param targetYear the target year
+	 * @return the list
+	 */
+	public List<String> findAllByTargetYear(int targetYear) {
+
+		// get login user
+		LoginUserContext loginUserContext = AppContexts.user();
+
+		// get company id
+		String companyId = loginUserContext.companyId();
+
+		return this.repository.findAllEmploymentSetting(companyId, targetYear);
+	}
+
 }

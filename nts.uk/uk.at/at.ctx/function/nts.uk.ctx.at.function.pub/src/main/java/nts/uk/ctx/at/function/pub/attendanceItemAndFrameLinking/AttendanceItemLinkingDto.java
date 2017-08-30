@@ -5,5 +5,7 @@ import lombok.Value;
 @Value
 public class AttendanceItemLinkingDto {
 	
+	private int attendanceItemId;
+	
 	private int frameNo;
 }
