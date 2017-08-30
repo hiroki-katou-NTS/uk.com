@@ -528,7 +528,7 @@ module nts.uk.ui.validation {
 
         validate(inputText: string): any {
             var result = new ValidationResult();
-            inputText = time.TimeWithDayAttr.cutDayDivision(inputText);
+            
             // Check required
             if (util.isNullOrEmpty(inputText)) {
                 if (this.required === true) {
@@ -539,18 +539,21 @@ module nts.uk.ui.validation {
                     return result;
                 }
             }
-            let minStr, maxStr;
+            
+            var minValue: any = time.minutesBased.clock.dayattr.MIN_VALUE;
+            var maxValue: any = time.minutesBased.clock.dayattr.MAX_VALUE;
             if(!util.isNullOrUndefined(this.constraint)){
-                minStr = time.parseTime(this.constraint.min, true).format();
-                maxStr = time.parseTime(this.constraint.max, true).format();            
+                minValue = time.minutesBased.clock.dayattr.create(
+                    time.minutesBased.clock.dayattr.parseString(this.constraint.min).asMinutes);
+                maxValue = time.minutesBased.clock.dayattr.create(
+                    time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);            
             }
             
-            let parseValue = time.parseTime(inputText);
-            
-            if (!parseValue.success || (parseValue.toValue() < this.constraint.min || parseValue.toValue() > this.constraint.max)) {
-                result.fail(nts.uk.resource.getMessage("FND_E_TIME", [ this.name, minStr, maxStr ]), "FND_E_TIME");     
+            var parsed = time.minutesBased.clock.dayattr.parseString(inputText);
+            if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
+                result.fail(nts.uk.resource.getMessage("FND_E_TIME", [ this.name, minValue.fullText, maxValue.fullText ]), "FND_E_TIME");
             } else {
-                result.success(parseValue.toValue());    
+                result.success(parsed.asMinutes);
             }
             
             return result;

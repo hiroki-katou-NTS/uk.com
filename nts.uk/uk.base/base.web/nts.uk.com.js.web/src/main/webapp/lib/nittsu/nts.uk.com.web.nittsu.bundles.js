@@ -1202,12 +1202,8 @@ var nts;
                     this.option = option;
                 }
                 TimeWithDayFormatter.prototype.format = function (source) {
-                    var parseValue = uk.time.parseTime(source, true);
-                    var timeWithDay = new uk.time.TimeWithDayAttr(parseValue.toValue());
-                    if (this.option.timeWithDay) {
-                        return timeWithDay.getDayDivision().text + " " + timeWithDay.getTime();
-                    }
-                    return timeWithDay.getRawTime();
+                    var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(source);
+                    return this.option.timeWithDay ? timeWithDayAttr.fullText : timeWithDayAttr.shortText;
                 };
                 return TimeWithDayFormatter;
             }());
@@ -2215,6 +2211,9 @@ var nts;
             (function (minutesBased) {
                 minutesBased.MINUTES_IN_DAY = 24 * 60;
                 function createBase(timeAsMinutes) {
+                    if (!isFinite(timeAsMinutes)) {
+                        throw new Error("invalid value: " + timeAsMinutes);
+                    }
                     var mat = new Number(timeAsMinutes);
                     uk.util.accessor.defineInto(mat)
                         .get("asMinutes", function () { return timeAsMinutes; })
@@ -2298,13 +2297,18 @@ var nts;
                     function create(timeAsMinutes) {
                         var duration = minutesBased.createBase(timeAsMinutes);
                         uk.util.accessor.defineInto(duration)
-                            .get('asHoursDouble', function () { return timeAsMinutes / 60; })
-                            .get('asHoursInt', function () { return uk.ntsNumber.trunc(duration.asHoursDouble); })
-                            .get('minutePart', function () { return Math.abs(timeAsMinutes) % 60; })
-                            .get('typeName', function () { return "DurationMinutesBasedTime"; });
+                            .get("typeName", function () { return "DurationMinutesBasedTime"; })
+                            .get("asHoursDouble", function () { return timeAsMinutes / 60; })
+                            .get("asHoursInt", function () { return uk.ntsNumber.trunc(duration.asHoursDouble); })
+                            .get("minutePart", function () { return Math.abs(timeAsMinutes) % 60; })
+                            .get("text", function () { return createText(duration); });
                         return duration;
                     }
                     duration_1.create = create;
+                    function createText(duration) {
+                        return (duration.isNegative ? "-" : "")
+                            + duration.asHoursInt + ":" + uk.text.padLeft(duration.minutePart.toString(), "0", 2);
+                    }
                 })(duration = minutesBased.duration || (minutesBased.duration = {}));
             })(minutesBased = time.minutesBased || (time.minutesBased = {}));
         })(time = uk.time || (uk.time = {}));
@@ -2320,7 +2324,7 @@ var nts;
             (function (minutesBased) {
                 var clock;
                 (function (clock_1) {
-                    function clock() {
+                    function create() {
                         var args = [];
                         for (var _i = 0; _i < arguments.length; _i++) {
                             args[_i - 0] = arguments[_i];
@@ -2333,13 +2337,14 @@ var nts;
                         var daysOffset = function () { return uk.ntsNumber.trunc(clock.isNegative ? (timeAsMinutes + 1) / minutesBased.MINUTES_IN_DAY - 1
                             : timeAsMinutes / minutesBased.MINUTES_IN_DAY); };
                         uk.util.accessor.defineInto(clock)
+                            .get("typeName", function () { return "ClockMinutesBasedTime"; })
                             .get("daysOffset", function () { return daysOffset(); })
-                            .get("hourPart", function () { return Math.floor(positivizedMinutes() / 60); })
+                            .get("hourPart", function () { return Math.floor((positivizedMinutes() % minutesBased.MINUTES_IN_DAY) / 60); })
                             .get("minutePart", function () { return positivizedMinutes() % 60; })
-                            .get("typeName", function () { return "ClockMinutesBasedTime"; });
+                            .get("clockTextInDay", function () { return clock.hourPart + ":" + uk.text.padLeft(clock.minutePart.toString(), "0", 2); });
                         return clock;
                     }
-                    clock_1.clock = clock;
+                    clock_1.create = create;
                     function parseAsClock(args) {
                         var result;
                         if (uk.types.matchArguments(args, ["number"])) {
@@ -2368,12 +2373,130 @@ var nts;
             (function (minutesBased) {
                 var clock;
                 (function (clock) {
-                    var TimeWithDayAttr = (function () {
-                        function TimeWithDayAttr() {
+                    var dayattr;
+                    (function (dayattr) {
+                        dayattr.MAX_VALUE = create(4319);
+                        dayattr.MIN_VALUE = create(-720);
+                        (function (DayAttr) {
+                            DayAttr[DayAttr["THE_PREVIOUS_DAY"] = 0] = "THE_PREVIOUS_DAY";
+                            DayAttr[DayAttr["THE_PRESENT_DAY"] = 1] = "THE_PRESENT_DAY";
+                            DayAttr[DayAttr["THE_NEXT_DAY"] = 2] = "THE_NEXT_DAY";
+                            DayAttr[DayAttr["TWO_DAY_LATER"] = 3] = "TWO_DAY_LATER";
+                        })(dayattr.DayAttr || (dayattr.DayAttr = {}));
+                        var DayAttr = dayattr.DayAttr;
+                        function getDayAttrText(dayAttr) {
+                            switch (dayAttr) {
+                                case DayAttr.THE_PREVIOUS_DAY: return "前日";
+                                case DayAttr.THE_PRESENT_DAY: return "当日";
+                                case DayAttr.THE_NEXT_DAY: return "翌日";
+                                case DayAttr.TWO_DAY_LATER: return "翌々日";
+                                default: throw new Error("invalid value: " + dayAttr);
+                            }
                         }
-                        return TimeWithDayAttr;
-                    }());
-                    clock.TimeWithDayAttr = TimeWithDayAttr;
+                        dayattr.getDayAttrText = getDayAttrText;
+                        function getDaysOffset(dayAttr) {
+                            switch (dayAttr) {
+                                case DayAttr.THE_PREVIOUS_DAY: return -1;
+                                case DayAttr.THE_PRESENT_DAY: return 0;
+                                case DayAttr.THE_NEXT_DAY: return 1;
+                                case DayAttr.TWO_DAY_LATER: return 2;
+                                default: throw new Error("invalid value: " + dayAttr);
+                            }
+                        }
+                        dayattr.getDaysOffset = getDaysOffset;
+                        var ResultParseTimeWithDayAttr = (function () {
+                            function ResultParseTimeWithDayAttr(success, asMinutes) {
+                                this.success = success;
+                                this.asMinutes = asMinutes;
+                            }
+                            ResultParseTimeWithDayAttr.succeeded = function (asMinutes) {
+                                return new ResultParseTimeWithDayAttr(true, asMinutes);
+                            };
+                            ResultParseTimeWithDayAttr.failed = function () {
+                                return new ResultParseTimeWithDayAttr(false);
+                            };
+                            return ResultParseTimeWithDayAttr;
+                        }());
+                        dayattr.ResultParseTimeWithDayAttr = ResultParseTimeWithDayAttr;
+                        function parseString(source) {
+                            var foundAttr = cutDayAttrTextIfExists(source);
+                            if (foundAttr.found) {
+                                var daysOffset = getDaysOffset(foundAttr.attr);
+                                var parsedAsDuration = minutesBased.duration.parseString(foundAttr.clockPartText);
+                                if (!parsedAsDuration.success) {
+                                    return ResultParseTimeWithDayAttr.failed();
+                                }
+                                var asMinutes = parsedAsDuration.toValue() + minutesBased.MINUTES_IN_DAY * daysOffset;
+                                return ResultParseTimeWithDayAttr.succeeded(asMinutes);
+                            }
+                            else {
+                                var parsedAsDuration = minutesBased.duration.parseString(source);
+                                if (!parsedAsDuration.success) {
+                                    return ResultParseTimeWithDayAttr.failed();
+                                }
+                                if (parsedAsDuration.minus) {
+                                    var asClock = -(parsedAsDuration.toValue()) - minutesBased.MINUTES_IN_DAY;
+                                    if (asClock >= 0) {
+                                        return ResultParseTimeWithDayAttr.failed();
+                                    }
+                                    return ResultParseTimeWithDayAttr.succeeded(asClock);
+                                }
+                                else {
+                                    return ResultParseTimeWithDayAttr.succeeded(parsedAsDuration.toValue());
+                                }
+                            }
+                        }
+                        dayattr.parseString = parseString;
+                        function create(minutesFromZeroOclock) {
+                            var timeWithDayAttr = (clock.create(minutesFromZeroOclock));
+                            uk.util.accessor.defineInto(timeWithDayAttr)
+                                .get("dayAttr", function () { return getDayAttrFromDaysOffset(timeWithDayAttr.daysOffset); })
+                                .get("fullText", function () { return getDayAttrText(timeWithDayAttr.dayAttr) + timeWithDayAttr.clockTextInDay; })
+                                .get("shortText", function () { return createShortText(timeWithDayAttr); });
+                            return timeWithDayAttr;
+                        }
+                        dayattr.create = create;
+                        function createShortText(timeWithDayAttr) {
+                            if (timeWithDayAttr.daysOffset >= 0) {
+                                var asDuration = minutesBased.duration.create(timeWithDayAttr.asMinutes);
+                                return asDuration.text;
+                            }
+                            else {
+                                return "-" + timeWithDayAttr.clockTextInDay;
+                            }
+                        }
+                        function getDayAttrFromDaysOffset(daysOffset) {
+                            switch (daysOffset) {
+                                case -1: return DayAttr.THE_PREVIOUS_DAY;
+                                case 0: return DayAttr.THE_PRESENT_DAY;
+                                case 1: return DayAttr.THE_NEXT_DAY;
+                                case 2: return DayAttr.TWO_DAY_LATER;
+                                default: throw new Error("invalid value: " + daysOffset);
+                            }
+                        }
+                        var DAY_ATTR_TEXTS = [
+                            { value: DayAttr.THE_PREVIOUS_DAY },
+                            { value: DayAttr.THE_PRESENT_DAY },
+                            { value: DayAttr.THE_NEXT_DAY },
+                            { value: DayAttr.TWO_DAY_LATER }
+                        ];
+                        DAY_ATTR_TEXTS.forEach(function (e) { return e.text = getDayAttrText(e.value); });
+                        function cutDayAttrTextIfExists(source) {
+                            var foundAttr = _.find(DAY_ATTR_TEXTS, function (e) { return source.indexOf(e.text) === 0; });
+                            var result = {
+                                found: foundAttr !== undefined
+                            };
+                            if (result.found) {
+                                result.attrText = foundAttr.text;
+                                result.attr = foundAttr.value;
+                                result.clockPartText = source.slice(foundAttr.text.length);
+                            }
+                            else {
+                                result.clockPartText = source;
+                            }
+                            return result;
+                        }
+                    })(dayattr = clock.dayattr || (clock.dayattr = {}));
                 })(clock = minutesBased.clock || (minutesBased.clock = {}));
             })(minutesBased = time.minutesBased || (time.minutesBased = {}));
         })(time = uk.time || (uk.time = {}));
@@ -3280,7 +3403,6 @@ var nts;
                     }
                     TimeWithDayValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        inputText = uk.time.TimeWithDayAttr.cutDayDivision(inputText);
                         if (util.isNullOrEmpty(inputText)) {
                             if (this.required === true) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
@@ -3291,17 +3413,18 @@ var nts;
                                 return result;
                             }
                         }
-                        var minStr, maxStr;
+                        var minValue = uk.time.minutesBased.clock.dayattr.MIN_VALUE;
+                        var maxValue = uk.time.minutesBased.clock.dayattr.MAX_VALUE;
                         if (!util.isNullOrUndefined(this.constraint)) {
-                            minStr = uk.time.parseTime(this.constraint.min, true).format();
-                            maxStr = uk.time.parseTime(this.constraint.max, true).format();
+                            minValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.min).asMinutes);
+                            maxValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);
                         }
-                        var parseValue = uk.time.parseTime(inputText);
-                        if (!parseValue.success || (parseValue.toValue() < this.constraint.min || parseValue.toValue() > this.constraint.max)) {
-                            result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minStr, maxStr]), "FND_E_TIME");
+                        var parsed = uk.time.minutesBased.clock.dayattr.parseString(inputText);
+                        if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
+                            result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minValue.fullText, maxValue.fullText]), "FND_E_TIME");
                         }
                         else {
-                            result.success(parseValue.toValue());
+                            result.success(parsed.asMinutes);
                         }
                         return result;
                     };
@@ -5983,14 +6106,17 @@ var nts;
                     TimeWithDayAttrEditorProcessor.prototype.init = function ($input, data) {
                         _super.prototype.init.call(this, $input, data);
                         $input.focus(function () {
-                            if (!$input.attr('readonly')) {
-                                var selectionType = document.getSelection().type;
-                                var parsed = uk.time.parseTime(data.value(), true);
-                                var value = parsed.success ? parsed.format() : data.value();
-                                $input.val(value);
-                                if (selectionType === 'Range') {
-                                    $input.select();
-                                }
+                            if ($input.attr('readonly')) {
+                                return;
+                            }
+                            if ($input.ntsError('hasError')) {
+                                return;
+                            }
+                            var selectionTypeOnFocusing = document.getSelection().type;
+                            var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(data.value());
+                            $input.val(timeWithDayAttr.shortText);
+                            if (selectionTypeOnFocusing === 'Range') {
+                                $input.select();
                             }
                         });
                     };

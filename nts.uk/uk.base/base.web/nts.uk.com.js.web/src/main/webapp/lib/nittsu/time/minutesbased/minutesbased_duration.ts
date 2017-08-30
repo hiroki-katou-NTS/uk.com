@@ -78,21 +78,28 @@ module nts.uk.time.minutesBased {
     
 
         export interface DurationMinutesBasedTime extends MinutesBasedTime<DurationMinutesBasedTime> {
-            asHoursDouble(): number;
-            asHoursInt(): number;
-            minutePart(): number;
+            asHoursDouble: number;
+            asHoursInt: number;
+            minutePart: number;
+            text: string;
         }
         
         export function create(timeAsMinutes: number): DurationMinutesBasedTime {
             let duration: any = createBase(timeAsMinutes);
             
             util.accessor.defineInto(duration)
-                .get('asHoursDouble', () => timeAsMinutes / 60)
-                .get('asHoursInt', () => ntsNumber.trunc(duration.asHoursDouble))
-                .get('minutePart', () => Math.abs(timeAsMinutes) % 60)
-                .get('typeName', () => "DurationMinutesBasedTime");
+                .get("typeName", () => "DurationMinutesBasedTime")
+                .get("asHoursDouble", () => timeAsMinutes / 60)
+                .get("asHoursInt", () => ntsNumber.trunc(duration.asHoursDouble))
+                .get("minutePart", () => Math.abs(timeAsMinutes) % 60)
+                .get("text", () => createText(duration));
             
             return duration;
+        }
+        
+        function createText(duration: DurationMinutesBasedTime): string {
+            return (duration.isNegative ? "-" : "")
+                + duration.asHoursInt + ":" + text.padLeft(duration.minutePart.toString(), "0", 2);
         }
     }
 }

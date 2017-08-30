@@ -420,18 +420,24 @@ module nts.uk.ui.koExtentions {
         init($input: JQuery, data: any) {
             super.init($input, data);
             $input.focus(() => {
-                if (!$input.attr('readonly')) {
-                    var selectionType = document.getSelection().type;
-                    // Remove separator (comma)
-                    let parsed = time.parseTime(data.value(), true);
-                    let value = parsed.success ? parsed.format() : data.value();
-                    $input.val(value);
-                    // If focusing is caused by Tab key, select text
-                    // this code is needed because removing separator deselects.
-                    if (selectionType === 'Range') {
-                        $input.select();
-                    }
+                if ($input.attr('readonly')) {
+                    return;
                 }
+                if ($input.ntsError('hasError')) {
+                    return;
+                }
+                
+                var selectionTypeOnFocusing = document.getSelection().type;
+                
+                let timeWithDayAttr = time.minutesBased.clock.dayattr.create(data.value());
+                $input.val(timeWithDayAttr.shortText);
+
+                // If focusing is caused by Tab key, select text
+                // this code is needed because removing separator deselects.
+                if (selectionTypeOnFocusing === 'Range') {
+                    $input.select();
+                }
+                
             });
         }
         

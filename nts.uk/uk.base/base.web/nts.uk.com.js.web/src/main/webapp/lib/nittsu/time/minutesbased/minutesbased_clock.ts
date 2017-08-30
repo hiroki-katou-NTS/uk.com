@@ -5,14 +5,18 @@ module nts.uk.time.minutesBased {
     export module clock {
         
         export interface ClockMinutesBasedTime extends MinutesBasedTime<ClockMinutesBasedTime> {
-            daysOffset(): number;
-            hourPart(): number;
-            minutePart(): number;
+            daysOffset: number;
+            hourPart: number;
+            minutePart: number;
+            clockTextInDay: string;
         }
         
-        export function clock(daysOffset: number, hourPart: number, minutePart: number): ClockMinutesBasedTime;
-        export function clock(minutesFromZeroOclock: number): ClockMinutesBasedTime;
-        export function clock(... args: any[]): ClockMinutesBasedTime {
+        /**
+         * create new instance
+         */
+        export function create(daysOffset: number, hourPart: number, minutePart: number): ClockMinutesBasedTime;
+        export function create(minutesFromZeroOclock: number): ClockMinutesBasedTime;
+        export function create(... args: any[]): ClockMinutesBasedTime {
             let timeAsMinutes = parseAsClock(args);
             let clock: any = createBase(timeAsMinutes);
             
@@ -25,10 +29,11 @@ module nts.uk.time.minutesBased {
                             : timeAsMinutes / MINUTES_IN_DAY);
             
             util.accessor.defineInto(clock)
+                .get("typeName", () => "ClockMinutesBasedTime")
                 .get("daysOffset", () => daysOffset())
-                .get("hourPart", () => Math.floor(positivizedMinutes() / 60))
+                .get("hourPart", () => Math.floor((positivizedMinutes() % MINUTES_IN_DAY) / 60))
                 .get("minutePart", () => positivizedMinutes() % 60)
-                .get("typeName", () => "ClockMinutesBasedTime");
+                .get("clockTextInDay", () => clock.hourPart + ":" + text.padLeft(clock.minutePart.toString(), "0", 2));
             
             return clock;
         }
