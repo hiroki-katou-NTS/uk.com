@@ -1,27 +1,25 @@
 package command.person.info.category;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 
 @Stateless
-public class UpdatePerInfoCtgCommandHandler extends CommandHandler<UpdatePerInfoCtgCommand> {
+public class UpdatePerInfoCtgCommandHandler extends CommandHandlerWithResult<UpdatePerInfoCtgCommand, String> {
 
 	@Inject
 	private PerInfoCategoryRepositoty perInfoCtgRep;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdatePerInfoCtgCommand> context) {
+	protected String handle(CommandHandlerContext<UpdatePerInfoCtgCommand> context) {
 		UpdatePerInfoCtgCommand perInfoCtgCommand = context.getCommand();
 		if (!this.perInfoCtgRep.checkCtgNameIsUnique(PersonInfoCategory.ROOT_COMPANY_ID,
 				perInfoCtgCommand.getCategoryName())) {
@@ -31,18 +29,17 @@ public class UpdatePerInfoCtgCommandHandler extends CommandHandler<UpdatePerInfo
 				.getPerInfoCategory(perInfoCtgCommand.getId(), PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
 				.orElse(null);
 		if (perInfoCtg == null || perInfoCtg.getIsFixed() == IsFixed.FIXED) {
-			return;
+			return null;
 		}
 		perInfoCtg.setCategoryName(perInfoCtgCommand.getCategoryName());
-		if (!checkQuantityCtgData()) {
-			perInfoCtg.setCategoryType(perInfoCtgCommand.getCategoryType());
+		if (checkQuantityCtgData()) {
+			this.perInfoCtgRep.updatePerInfoCtg(perInfoCtg, PersonInfoItemDefinition.ROOT_CONTRACT_CODE);
+			return "Msg_232";
 		}
+		perInfoCtg.setCategoryType(perInfoCtgCommand.getCategoryType());
 		this.perInfoCtgRep.updatePerInfoCtg(perInfoCtg, PersonInfoItemDefinition.ROOT_CONTRACT_CODE);
-
-		List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
-		List<String> ctgIdList = this.perInfoCtgRep.getPerInfoCtgIdList(companyIdList,
-				perInfoCtg.getCategoryCode().v());
-		this.perInfoCtgRep.updatePerInfoCtgWithListCompany(perInfoCtgCommand.getCategoryName(), ctgIdList);
+		return null;
+			
 	}
 
 	private boolean checkQuantityCtgData() {

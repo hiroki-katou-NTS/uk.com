@@ -112,16 +112,6 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	}
 
 	@Override
-	public void updatePerInfoCtgWithListCompany(String categoryName, List<String> ctgIdList) {
-		ctgIdList.stream().forEach(ctgId -> {
-			PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(ctgId);
-			PpemtPerInfoCtg perInfoCtgOld = this.queryProxy().find(perInfoCtgPK, PpemtPerInfoCtg.class).orElse(null);
-			perInfoCtgOld.categoryName = categoryName;
-			this.commandProxy().update(perInfoCtgOld);
-		});
-	}
-
-	@Override
 	public boolean checkCtgNameIsUnique(String companyId, String newCtgName) {
 		List<String> categoryNames = this.queryProxy().query(SELECT_CHECK_CTG_NAME_QUERY, String.class)
 				.setParameter("companyId", companyId).setParameter("categoryName", newCtgName).getList();

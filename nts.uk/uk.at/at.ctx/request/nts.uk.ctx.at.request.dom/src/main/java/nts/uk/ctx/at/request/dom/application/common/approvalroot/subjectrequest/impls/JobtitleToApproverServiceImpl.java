@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.impls;
 
 import java.util.List;
+import java.util.Objects;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -8,6 +9,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdaptor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.JobtitleSearchSetAdaptor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.JobtitleSearchSetAdaptorDto;
 import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.GetSubjectOfJobTitleService;
 import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.JobtitleToApproverService;
 import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.dto.ApproverInfo;
@@ -27,6 +30,9 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	@Inject
 	private GetSubjectOfJobTitleService getSubjectOfJobTitleService;
 
+	@Inject
+	private JobtitleSearchSetAdaptor jobtitleSearchSetAdaptor;
+	
 	@Override
 	public List<ApproverInfo> convertToApprover(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
 		// 共通アルゴリズム「申請者の職位の序列は承認者のと比較する」を実行する
@@ -40,8 +46,8 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 			}
 
 			// lấy domain 「職位別のサーチ設定」
-			// TODO: Doi them domain(Chua co)
-			if (true) {
+			JobtitleSearchSetAdaptorDto job = this.jobtitleSearchSetAdaptor.finById(cid, jobTitleId);
+			if (!Objects.isNull(job)) {
 				List<String> wkpIds = this.emloyeePub.findWpkIdsBySid(cid, sid, baseDate);
 				wkpIds.remove(0);
 
