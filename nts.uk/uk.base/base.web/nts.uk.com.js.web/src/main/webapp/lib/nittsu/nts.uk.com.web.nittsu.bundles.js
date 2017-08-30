@@ -1202,6 +1202,9 @@ var nts;
                     this.option = option;
                 }
                 TimeWithDayFormatter.prototype.format = function (source) {
+                    if (!isFinite(source)) {
+                        return source;
+                    }
                     var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(source);
                     return this.option.timeWithDay ? timeWithDayAttr.fullText : timeWithDayAttr.shortText;
                 };
@@ -2276,17 +2279,20 @@ var nts;
                             if (parts.length !== 2) {
                                 return ResultParseMiuntesBasedDuration.failed();
                             }
-                            hourPart = Math.abs(parseInt(parts[0], 10));
-                            minutePart = parseInt(parts[1], 10);
+                            hourPart = Math.abs(Number(parts[0]));
+                            minutePart = Number(parts[1]);
                         }
                         else {
-                            var integerized = parseInt(source, 10);
+                            var integerized = Number(source);
                             if (isNaN(integerized)) {
                                 return ResultParseMiuntesBasedDuration.failed();
                             }
                             var regularized = Math.abs(integerized);
                             hourPart = Math.floor(regularized / 100);
                             minutePart = regularized % 100;
+                        }
+                        if (!isFinite(hourPart) || !isFinite(minutePart)) {
+                            return ResultParseMiuntesBasedDuration.failed();
                         }
                         if (minutePart >= 60) {
                             return ResultParseMiuntesBasedDuration.failed();

@@ -613,6 +613,9 @@
             }
 
             format(source: any): string {
+                if (!isFinite(source)) {
+                    return source;
+                }
                 let timeWithDayAttr = time.minutesBased.clock.dayattr.create(source);
                 return this.option.timeWithDay ? timeWithDayAttr.fullText : timeWithDayAttr.shortText;
             }

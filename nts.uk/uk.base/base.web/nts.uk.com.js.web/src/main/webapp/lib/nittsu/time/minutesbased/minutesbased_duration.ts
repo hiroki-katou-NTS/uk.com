@@ -56,10 +56,10 @@ module nts.uk.time.minutesBased {
                     return ResultParseMiuntesBasedDuration.failed();
                 }
                 
-                hourPart = Math.abs(parseInt(parts[0], 10));
-                minutePart = parseInt(parts[1], 10);
+                hourPart = Math.abs(Number(parts[0]));
+                minutePart = Number(parts[1]);
             } else {
-                let integerized = parseInt(source, 10);
+                let integerized = Number(source);
                 if (isNaN(integerized)) {
                     return ResultParseMiuntesBasedDuration.failed();
                 }
@@ -69,6 +69,9 @@ module nts.uk.time.minutesBased {
                 minutePart = regularized % 100;
             }
             
+            if (!isFinite(hourPart) || !isFinite(minutePart)) {
+                return ResultParseMiuntesBasedDuration.failed();
+            }
             if (minutePart >= 60) {
                 return ResultParseMiuntesBasedDuration.failed();
             }
