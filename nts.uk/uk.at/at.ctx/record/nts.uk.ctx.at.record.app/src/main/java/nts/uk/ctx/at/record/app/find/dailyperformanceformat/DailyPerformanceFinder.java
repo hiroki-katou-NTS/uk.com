@@ -25,6 +25,9 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class DailyPerformanceFinder {
 	
 	@Inject
+	private AttendanceItemsFinder attendanceItemsFinder;
+	
+	@Inject
 	private AttendanceItemRepository attendanceItemRepository;
 
 	@Inject
@@ -38,10 +41,12 @@ public class DailyPerformanceFinder {
 		String companyId = login.companyId();
 
 		// 勤怠項目 - find attendance item
-		List<AttendanceItem> attendanceItems = this.attendanceItemRepository.getAttendanceItems(companyId, 1);
-		List<AttendanceItemDto> attendanceItemDtos = attendanceItems.stream().map(f -> {
-			return new AttendanceItemDto(f.getAttendanceId(), f.getAttendanceName().v(), f.getDislayNumber());
-		}).collect(Collectors.toList());
+//		List<AttendanceItem> attendanceItems = this.attendanceItemRepository.getAttendanceItems(companyId, 1);
+//		List<AttendanceItemDto> attendanceItemDtos = attendanceItems.stream().map(f -> {
+//			return new AttendanceItemDto(f.getAttendanceId(), f.getAttendanceName().v(), f.getDislayNumber());
+//		}).collect(Collectors.toList());
+		
+		List<AttendanceItemDto> attendanceItemDtos = this.attendanceItemsFinder.find();
 
 		// find daily detail
 //		BusinessTypeFormatDailyDto businessTypeFormatDailyDto = new BusinessTypeFormatDailyDto(null, null, null);

@@ -29,7 +29,8 @@
 		<ui:define name="content">
 			<div data-bind="with: viewA">
 				<div id="functions-area">
-					<button id="saveData" class="proceed">#{i18n.getText('KSU001_1')}</button>
+					<button id="saveData" class="proceed"
+						data-bind="enable: $root.errors.isEmpty">#{i18n.getText('KSU001_1')}</button>
 					<button class="done">#{i18n.getText('KSU001_2')}</button>
 					<button class="create">#{i18n.getText('KSU001_3')}</button>
 					<button class="check">#{i18n.getText('KSU001_4')}</button>
@@ -134,7 +135,8 @@
 					<div class="right-content">
 						<div id="top-area">
 							<div>
-								<span>A3_1</span> <span>#{i18n.getText('KSU001_54')}</span>
+								<span data-bind="text: workPlaceNameDisplay"></span> <span
+									data-bind="text: lengthListSid"></span>
 							</div>
 							<div id="top-area-2">
 								<button id="prevMonth">

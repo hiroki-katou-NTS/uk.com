@@ -19,4 +19,12 @@ public interface JobTitleRepository {
 	 * @return the list
 	 */
 	List<JobTitle> findAll(String companyId, GeneralDate referenceDate);
+
+	/**
+	 * Find by job ids.
+	 *
+	 * @param jobIds the job ids
+	 * @return the list
+	 */
+	List<JobTitle> findByJobIds(List<String> jobIds);
 }

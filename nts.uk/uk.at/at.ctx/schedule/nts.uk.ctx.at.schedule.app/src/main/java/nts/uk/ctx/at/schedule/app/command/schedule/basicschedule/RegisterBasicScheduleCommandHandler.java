@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import org.apache.commons.lang3.StringUtils;
-
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.StringUtil;
@@ -32,7 +29,7 @@ import nts.uk.shr.com.context.AppContexts;
  *         error
  *
  */
-@Stateless
+@RequestScoped
 public class RegisterBasicScheduleCommandHandler
 		extends CommandHandlerWithResult<List<RegisterBasicScheduleCommand>, List<String>> {
 
@@ -69,7 +66,7 @@ public class RegisterBasicScheduleCommandHandler
 				continue;
 			}
 
-			if (workType.get().getDeprecate() != DeprecateClassification.Deprecated) {
+			if (workType.get().getDeprecate() == DeprecateClassification.Deprecated) {
 				// set error to list
 				errList.add("Msg_468");
 				continue;
@@ -79,7 +76,7 @@ public class RegisterBasicScheduleCommandHandler
 			if (StringUtil.isNullOrEmpty(bSchedule.getWorkTimeCode(), true)) {
 				continue;
 			}
-			
+
 			workTime = workTimeRepo.findByCode(companyId, bSchedule.getWorkTimeCode());
 
 			if (!workTime.isPresent()) {
@@ -88,7 +85,7 @@ public class RegisterBasicScheduleCommandHandler
 				continue;
 			}
 
-			if (workTime.get().getDispAtr().value != DisplayAtr.DisplayAtr_Display.value) {
+			if (workTime.get().getDispAtr().value == DisplayAtr.DisplayAtr_NotDisplay.value) {
 				// Set error to list
 				errList.add("Msg_469");
 				continue;
@@ -96,12 +93,11 @@ public class RegisterBasicScheduleCommandHandler
 
 			// Check workType-workTime
 			try {
-				if (workTime.isPresent() && workType.isPresent()) {
-					basicScheduleService.checkPairWorkTypeWorkTime(workType.get().getWorkTypeCode().v(),
-							workTime.get().getSiftCD().v());
-				}
-			} catch (BusinessException ex) {
+				basicScheduleService.checkPairWorkTypeWorkTime(workType.get().getWorkTypeCode().v(),
+						workTime.get().getSiftCD().v());
+			} catch (RuntimeException ex) {
 				errList.add(ex.getMessage());
+				continue;
 			}
 
 			// Check exist of basicSchedule
