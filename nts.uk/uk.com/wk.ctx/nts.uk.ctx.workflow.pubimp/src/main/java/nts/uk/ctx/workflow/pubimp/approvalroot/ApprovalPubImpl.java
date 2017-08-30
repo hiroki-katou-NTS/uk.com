@@ -157,7 +157,7 @@ public class ApprovalPubImpl implements ApprovalRootPub{
 								a.getEmployeeId(), 
 								a.getOrderNumber(), 
 								a.getApprovalAtr().value, 
-								a.getConfirmPerson()))
+								a.getConfirmPerson().value))
 						.collect(Collectors.toList())
 			    )).collect(Collectors.toList());
 	}
