@@ -31,14 +31,15 @@ import nts.uk.ctx.basic.infra.entity.company.organization.employee.jobtitle.Kmnm
 @Stateless
 public class JpaAffJobTitleHistoryRepository extends JpaRepository
 		implements AffJobTitleHistoryRepository {
-	
+
 	/**
 	 * To domain.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 * @return the aff job title history
 	 */
-	private AffJobTitleHistory toDomain(KmnmtAffiliJobTitleHist entity){
+	private AffJobTitleHistory toDomain(KmnmtAffiliJobTitleHist entity) {
 		return new AffJobTitleHistory(new JpaAffJobTitleHistoryGetMemento(entity));
 	}
 
@@ -52,12 +53,12 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository
 	@Override
 	public List<AffJobTitleHistory> searchJobTitleHistory(GeneralDate baseDate,
 			List<String> positionIds) {
-		
+
 		// check exist data
-		if(CollectionUtil.isEmpty(positionIds)){
+		if (CollectionUtil.isEmpty(positionIds)) {
 			return new ArrayList<>();
 		}
-		
+
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -207,6 +208,97 @@ public class JpaAffJobTitleHistoryRepository extends JpaRepository
 		// endDate >= base date
 		lstpredicateWhere.add(criteriaBuilder
 				.greaterThanOrEqualTo(root.get(KmnmtAffiliJobTitleHist_.endD), baseDate));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<KmnmtAffiliJobTitleHist> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(category -> toDomain(category))
+				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.basic.dom.company.organization.employee.jobtile.
+	 * AffJobTitleHistoryRepository#findBySid(java.lang.String)
+	 */
+	@Override
+	public List<AffJobTitleHistory> findBySid(String employeeId, GeneralDate baseDate) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KMNMT_JOB_TITLE_HIST (KmnmtJobTitleHist SQL)
+		CriteriaQuery<KmnmtAffiliJobTitleHist> cq = criteriaBuilder
+				.createQuery(KmnmtAffiliJobTitleHist.class);
+
+		// root data
+		Root<KmnmtAffiliJobTitleHist> root = cq.from(KmnmtAffiliJobTitleHist.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// employee id in data employee id
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(KmnmtAffiliJobTitleHist_.kmnmtJobTitleHistPK)
+						.get(KmnmtAffiliJobTitleHistPK_.empId), employeeId));
+
+		// start date <= base date
+		lstpredicateWhere.add(criteriaBuilder
+				.lessThanOrEqualTo(root.get(KmnmtAffiliJobTitleHist_.kmnmtJobTitleHistPK)
+						.get(KmnmtAffiliJobTitleHistPK_.strD), baseDate));
+
+		// endDate >= base date
+		lstpredicateWhere.add(criteriaBuilder
+				.greaterThanOrEqualTo(root.get(KmnmtAffiliJobTitleHist_.endD), baseDate));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<KmnmtAffiliJobTitleHist> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(category -> toDomain(category))
+				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.basic.dom.company.organization.employee.jobtile.
+	 * AffJobTitleHistoryRepository#findBySid(java.lang.String)
+	 */
+	@Override
+	public List<AffJobTitleHistory> findBySid(String employeeId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KMNMT_JOB_TITLE_HIST (KmnmtJobTitleHist SQL)
+		CriteriaQuery<KmnmtAffiliJobTitleHist> cq = criteriaBuilder
+				.createQuery(KmnmtAffiliJobTitleHist.class);
+
+		// root data
+		Root<KmnmtAffiliJobTitleHist> root = cq.from(KmnmtAffiliJobTitleHist.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// employee id in data employee id
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(KmnmtAffiliJobTitleHist_.kmnmtJobTitleHistPK)
+						.get(KmnmtAffiliJobTitleHistPK_.empId), employeeId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));

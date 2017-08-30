@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.workflow;
 import java.util.Date;
 import java.util.List;
 
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseAdaptorDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.CompanyAppRootAdaptorDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.PersonAppRootAdaptorDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.WkpAppRootAdaptorDto;
@@ -72,4 +73,12 @@ public interface ApprovalRootAdaptor {
 	 * @return ApprovalRootDtos
 	 */
 	List<CompanyAppRootAdaptorDto> findCompanyByBaseDateOfCommon(String cid, Date baseDate);
+	
+	/**
+	 * 
+	 * @param cid
+	 * @param branchId
+	 * @return
+	 */
+	List<ApprovalPhaseAdaptorDto> findApprovalPhaseByBranchId(String cid, String branchId);
 }

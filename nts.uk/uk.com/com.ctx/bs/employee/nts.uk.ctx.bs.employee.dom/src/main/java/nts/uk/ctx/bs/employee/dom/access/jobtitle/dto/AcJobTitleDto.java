@@ -10,12 +10,6 @@ import nts.arc.time.GeneralDate;
 /**
  * The Class AcJobTitleDto.
  */
-
-/*
- * (non-Javadoc)
- * 
- * @see java.lang.Object#toString()
- */
 @Data
 public class AcJobTitleDto {
 

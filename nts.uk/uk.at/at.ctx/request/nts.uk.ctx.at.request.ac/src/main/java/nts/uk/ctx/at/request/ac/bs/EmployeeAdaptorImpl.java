@@ -38,4 +38,9 @@ public class EmployeeAdaptorImpl implements EmployeeAdaptor {
 	public List<String> findWpkIdsBySid(String companyId, String sid, GeneralDate baseDate) {
 		return this.employeePub.findWpkIdsBySid(companyId, sid, baseDate);		
 	}
+
+	@Override
+	public String getWorkplaceId(String companyId, String employeeId, GeneralDate baseDate) {
+		return this.employeePub.getWorkplaceId(companyId, employeeId, baseDate);	
+	}
 }
