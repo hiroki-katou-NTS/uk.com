@@ -37,6 +37,29 @@
 					<button data-bind="click: openJ">#{i18n.getText('CMM018_13')}</button>
 				</div>
 				<div class="contents-area">
+					<div>
+						<table>
+							<tr>
+								<td>
+									<div style = "width: 100px; margin-left: 20px;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_19')}</div>
+								</td>
+								<td>
+									<div style = "width: 600px" data-bind = "text: nameCompany"></div>
+								</td>
+								<td>
+									<div >#{i18n.getText('CMM018_8')}</div>
+								</td>
+								<td>
+									<div data-bind="ntsSwitchButton: {
+											options: listMode,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedModeCode,
+											enable: true}"></div>
+								</td>
+							</tr>
+						</table>
+					</div>
 				</div>
 			</div>
 			<div id="tabpanel-2" role="tabpanel">
@@ -51,13 +74,13 @@
 					<!-- B1_8: Button マスタリスト -->
 					<button data-bind="click: openI">#{i18n.getText('CMM018_13')}</button>
 				</div>
-				<div class="contents-area">
+				<div id = "creenCD" class="contents-area">
 					<div>
 						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_19')}</div>
-						<div></div>
+						<div data-bind = "text: nameCompany"></div>
 					</div>
 					<div id="left-content" class="bg-green caret-right caret-background">
-						<div class="cf">
+						<div class="cf" data-bind = "if: modeCommon">
 							<div style="float: left">
 <!-- 								<table tabindex="2" id="single-list-dataSource"
 									data-bind="ntsGridList:{
@@ -72,6 +95,8 @@
 								</table> -->
 							</div>
 						</div>
+					</div>
+					<div id="right-content">
 					</div>
 				</div>
 			</div>
