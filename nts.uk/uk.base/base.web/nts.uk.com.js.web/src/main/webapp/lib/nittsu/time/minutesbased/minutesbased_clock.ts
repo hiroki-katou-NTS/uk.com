@@ -25,9 +25,10 @@ module nts.uk.time.minutesBased {
                             : timeAsMinutes / MINUTES_IN_DAY);
             
             util.accessor.defineInto(clock)
-                .get('daysOffset', () => daysOffset())
-                .get('hourPart', () => Math.floor(positivizedMinutes() / 60))
-                .get('minutePart', () => positivizedMinutes() % 60);
+                .get("daysOffset", () => daysOffset())
+                .get("hourPart", () => Math.floor(positivizedMinutes() / 60))
+                .get("minutePart", () => positivizedMinutes() % 60)
+                .get("typeName", () => "ClockMinutesBasedTime");
             
             return clock;
         }
@@ -35,10 +36,10 @@ module nts.uk.time.minutesBased {
         function parseAsClock(args: any[]): number {
             var result: number;
             
-            if (types.matchArguments(args, ['number'])) {
+            if (types.matchArguments(args, ["number"])) {
                 result = args[0];
             }
-            else if (types.matchArguments(args, ['number', 'number', 'number'])) {
+            else if (types.matchArguments(args, ["number", "number", "number"])) {
                 let daysOffset: number = args[0];
                 let hourPart: number = args[1];
                 let minutePart: number = args[2];

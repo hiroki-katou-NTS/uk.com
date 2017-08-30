@@ -2333,18 +2333,19 @@ var nts;
                         var daysOffset = function () { return uk.ntsNumber.trunc(clock.isNegative ? (timeAsMinutes + 1) / minutesBased.MINUTES_IN_DAY - 1
                             : timeAsMinutes / minutesBased.MINUTES_IN_DAY); };
                         uk.util.accessor.defineInto(clock)
-                            .get('daysOffset', function () { return daysOffset(); })
-                            .get('hourPart', function () { return Math.floor(positivizedMinutes() / 60); })
-                            .get('minutePart', function () { return positivizedMinutes() % 60; });
+                            .get("daysOffset", function () { return daysOffset(); })
+                            .get("hourPart", function () { return Math.floor(positivizedMinutes() / 60); })
+                            .get("minutePart", function () { return positivizedMinutes() % 60; })
+                            .get("typeName", function () { return "ClockMinutesBasedTime"; });
                         return clock;
                     }
                     clock_1.clock = clock;
                     function parseAsClock(args) {
                         var result;
-                        if (uk.types.matchArguments(args, ['number'])) {
+                        if (uk.types.matchArguments(args, ["number"])) {
                             result = args[0];
                         }
-                        else if (uk.types.matchArguments(args, ['number', 'number', 'number'])) {
+                        else if (uk.types.matchArguments(args, ["number", "number", "number"])) {
                             var daysOffset = args[0];
                             var hourPart = args[1];
                             var minutePart = args[2];
