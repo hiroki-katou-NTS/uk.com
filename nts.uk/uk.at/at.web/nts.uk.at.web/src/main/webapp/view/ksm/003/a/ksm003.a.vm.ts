@@ -120,10 +120,12 @@ module nts.uk.at.view.ksm003.a {
                     //getPatternValByPatternCd by patternCode  
                     if (dataRes !== undefined) {
                         self.isEditting(true);
-                        $("#inpPattern").focus();
+                        
                         self.detail(new model.DailyPatternDetailModel(dataRes.patternCode, dataRes.patternName, dataRes.dailyPatternVals.map(function(item) {
                             return new model.DailyPatternValModel(item.dispOrder, item.workTypeSetCd, item.workingHoursCd, item.days);
                         })));
+                        
+                        $("#inpPattern").focus();
                     }
                     //                    nts.uk.ui.block.clear();
 
