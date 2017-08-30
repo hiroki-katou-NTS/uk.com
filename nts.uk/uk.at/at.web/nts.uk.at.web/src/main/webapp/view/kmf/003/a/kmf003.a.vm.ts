@@ -2,7 +2,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
     export class ScreenModel {
         //Grid data
         columns: KnockoutObservable<any>;
-        singleSelectedCode: KnockoutObservable<any>;;
+        singleSelectedCode: KnockoutObservable<any>;
         items: KnockoutObservableArray<ItemModel>;
         currentCode: KnockoutObservable<any>;
         
