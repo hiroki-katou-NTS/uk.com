@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.AttendanceItemsFinder;
+import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
 
 @Path("at/record/businesstype")
@@ -22,6 +23,12 @@ public class AttendanceItemWebService extends WebService {
 	@Path("attendanceItem/findAll")
 	public List<AttendanceItemDto> getAll(){
 		return this.attendanceItemsFinder.find();
+	}
+	
+	@POST
+	@Path("attendanceItem/getAttendanceItems")
+	public List<AttdItemDto> getAttendanceItems(){
+		return this.attendanceItemsFinder.findAll();
 	}
 
 }

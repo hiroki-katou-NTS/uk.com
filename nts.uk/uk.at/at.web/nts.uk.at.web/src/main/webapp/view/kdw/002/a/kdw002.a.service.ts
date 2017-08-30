@@ -1,7 +1,8 @@
 module nts.uk.at.view.kdw002.a {
     export module service {
         var paths: any = {
-            getAttendanceItems: "at/share/attendanceitem/getAttendanceItems",
+           // getAttendanceItems: "at/share/attendanceitem/getAttendanceItems",
+            getAttendanceItems: "at/record/businesstype/attendanceItem/getAttendanceItems",
             getControlOfAttendanceItem: "at/share/ControlOfAttendanceItems/getControlOfAttendanceItem/",
             updateControlOfAttendanceItem: "at/share/ControlOfAttendanceItems/updateControlOfAttendanceItem"
             }
