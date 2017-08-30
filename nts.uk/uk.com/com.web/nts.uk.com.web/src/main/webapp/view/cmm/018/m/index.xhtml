@@ -9,10 +9,10 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="cmm018.l.main.css" />
-			<com:scriptfile path="cmm018.l.start.js" />
-			<com:scriptfile path="cmm018.l.vm.js" />
-			<com:scriptfile path="cmm018.l.service.js" />
+			<com:stylefile path="cmm018.m.main.css" />
+			<com:scriptfile path="cmm018.m.start.js" />
+			<com:scriptfile path="cmm018.m.vm.js" />
+			<com:scriptfile path="cmm018.m.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -22,13 +22,20 @@
 			</div>
 			<div id="contents-area">
 			
-				<div id="label1" class="label">#{i18n.getText('CMM018_73')}</div>
+				<div id="label1" class="label">#{i18n.getText('CMM018_91')}</div>
 				
 				<span id="label2" class="label with-image">
 					<i class="image image-calendar"/>
 					<span>#{i18n.getText('CMM018_74')}</span>
 					<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
 				</span>
+				
+				<div id="checkboxArea">
+					<div id="checkbox1" data-bind="ntsCheckBox: { checked: enable1 }">#{i18n.getText('CMM018_75')}</div><br></br>
+					<div id="checkbox2" data-bind="ntsCheckBox: { checked: enable2 }">#{i18n.getText('CMM018_76')}</div><br></br>
+					<div id="checkbox3" data-bind="ntsCheckBox: { checked: enable3 }">#{i18n.getText('CMM018_78')}</div><br></br>
+				</div>
+				
 			</div>
 		</ui:define>
 

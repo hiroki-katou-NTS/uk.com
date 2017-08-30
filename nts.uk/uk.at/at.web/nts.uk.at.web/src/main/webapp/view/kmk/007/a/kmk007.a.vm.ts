@@ -197,6 +197,16 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
+        
+        openDiablogC() {
+            var self = this;
+                        
+            nts.uk.ui.windows.setShared("KMK007_WORK_TYPES", self.listWorkType());
+            
+            nts.uk.ui.windows.sub.modal("/view/kmk/007/c/index.xhtml").onClosed(() => {
+                
+            });    
+        }
 
         addWorkType(): any {
             var self = this,

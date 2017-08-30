@@ -35,11 +35,11 @@ public class CommonApprovalRootFinder {
 	@Inject
 	private ApproverRepository repoApprover;
 	
-	public CommonApprovalRootDto getAllCommonApprovalRoot(int rootType, String employeeId){
+	public CommonApprovalRootDto getAllCommonApprovalRoot(ParamDto param){
 		//user contexts
 		String companyId = AppContexts.user().companyId();
 		//TH: company - domain 会社別就業承認ルート
-		if(rootType == 0){
+		if(param.getRootType() == 0){
 			List<CompanyAppRootDto> lstComRoot = new ArrayList<>();
 			//get all data from ComApprovalRoot (会社別就業承認ルート)
 			List<CompanyApprovalRoot> lstCom = this.repoCom.getAllComApprovalRoot(companyId);
@@ -61,11 +61,11 @@ public class CommonApprovalRootFinder {
 			return new CommonApprovalRootDto(lstComRoot, null, null);
 		}
 		//TH: workplace - domain 職場別就業承認ルート
-		if(rootType == 1){
+		if(param.getRootType() == 1){
 			List<WorkPlaceAppRootDto> lstWpRoot = new ArrayList<>();
-			String workplaceId = "";
+//			String workplaceId = "";
 			//get all data from WorkplaceApprovalRoot (職場別就業承認ルート)
-			List<WorkplaceApprovalRoot> lstWp = this.repoWorkplace.getAllWpApprovalRoot(companyId, workplaceId);
+			List<WorkplaceApprovalRoot> lstWp = this.repoWorkplace.getAllWpApprovalRoot(companyId, param.getWorkplaceId());
 			for (WorkplaceApprovalRoot workplaceApprovalRoot : lstWp) {
 				List<ApprovalPhaseDto> lstApprovalPhase = new ArrayList<>();
 				List<Approver> lstApprover = new ArrayList<>();
@@ -87,7 +87,7 @@ public class CommonApprovalRootFinder {
 		else{
 			List<PersonAppRootDto> lstPsRoot = new ArrayList<>();
 			//get all data from PersonApprovalRoot (個人別就業承認ルート)
-			List<PersonApprovalRoot> lstPs = this.repo.getAllPsApprovalRoot(companyId, employeeId);
+			List<PersonApprovalRoot> lstPs = this.repo.getAllPsApprovalRoot(companyId, param.getEmployeeId());
 			for (PersonApprovalRoot personApprovalRoot : lstPs) {
 				List<ApprovalPhaseDto> lstApprovalPhase = new ArrayList<>();
 				List<Approver> lstApprover = new ArrayList<>();
