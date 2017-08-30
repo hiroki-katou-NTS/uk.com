@@ -13,7 +13,7 @@ import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceHierarchyDto;
 /**
  * The Interface PersonAdapter.
  */
-public interface WorkplaceAdapter {
+public interface SyWorkplaceAdapter {
 
 	/**
 	 * Find by wpk id.

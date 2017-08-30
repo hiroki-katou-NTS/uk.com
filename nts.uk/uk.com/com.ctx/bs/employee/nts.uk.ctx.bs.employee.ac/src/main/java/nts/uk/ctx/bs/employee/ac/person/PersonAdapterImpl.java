@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.dom.access.person.PersonAdapter;
+import nts.uk.ctx.bs.employee.dom.access.person.SyPersonAdapter;
 import nts.uk.ctx.bs.employee.dom.access.person.dto.AcPersonDto;
 import nts.uk.ctx.bs.person.pub.person.PersonPub;
 
@@ -18,7 +18,7 @@ import nts.uk.ctx.bs.person.pub.person.PersonPub;
  * The Class PersonAdapterImpl.
  */
 @Stateless
-public class PersonAdapterImpl implements PersonAdapter {
+public class PersonAdapterImpl implements SyPersonAdapter {
 
 	/** The person pub. */
 	@Inject
