@@ -120,11 +120,11 @@ module nts.uk.at.view.ksm003.a {
                     //getPatternValByPatternCd by patternCode  
                     if (dataRes !== undefined) {
                         self.isEditting(true);
-                        
+
                         self.detail(new model.DailyPatternDetailModel(dataRes.patternCode, dataRes.patternName, dataRes.dailyPatternVals.map(function(item) {
                             return new model.DailyPatternValModel(item.dispOrder, item.workTypeSetCd, item.workingHoursCd, item.days);
                         })));
-                        
+
                         $("#inpPattern").focus();
                     }
                     //                    nts.uk.ui.block.clear();
@@ -132,7 +132,7 @@ module nts.uk.at.view.ksm003.a {
                     dfd.resolve();
                 });
                 return dfd.promise();
-            }   
+            }
 
             // save Daily Pattern in database
             public save() {
@@ -157,7 +157,7 @@ module nts.uk.at.view.ksm003.a {
                     if (res.messageId == "Msg_3") {
                         $('#inpCode').ntsError('set', { messageId: "Msg_3" });
                     } else {
-                        nts.uk.ui.dialog.alert(res.message);
+                        nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
                     }
                 }).always(function() {
                     nts.uk.ui.block.clear();
@@ -168,10 +168,11 @@ module nts.uk.at.view.ksm003.a {
             public deletePattern() {
                 let self = this;
 
-                //                nts.uk.ui.block.grayout();
-
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     var dataHistory: DailyPatternItemDto[] = self.itemLst();
+
+                    nts.uk.ui.block.grayout();
+
                     service.deleteDailyPattern(self.selectedCode()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             self.loadAllDailyPatternItems();
@@ -188,7 +189,7 @@ module nts.uk.at.view.ksm003.a {
                             }
 
                             // check list control is 0   
-                            if (self.itemLst() === undefined || self.itemLst().length == 0) {
+                            if (nts.uk.util.isNullOrEmpty(self.itemLst())) {
                                 self.itemLst([]);
                                 self.switchNewMode()
                             }
@@ -201,11 +202,13 @@ module nts.uk.at.view.ksm003.a {
                                 self.selectedCode(self.itemLst()[indexSelected + 1].patternCode);
                             }
                         });
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
                     }).always(function() {
-                        //                        nts.uk.ui.block.clear();
+                        nts.uk.ui.block.clear();
                     });
                 }).ifNo(function() {
-                    //                    nts.uk.ui.block.clear();
+                    nts.uk.ui.block.clear();
                     return;
                 });
 
@@ -387,18 +390,20 @@ module nts.uk.at.view.ksm003.a {
 
                     nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml", { title: nts.uk.resource.getText('KDL003_1') }).onClosed(function() {
                         var childData = nts.uk.ui.windows.getShared('childData');
-                        self.workTypeSetCd(childData.selectedWorkTypeCode);
-                        self.workingHoursCd(childData.selectedWorkTimeCode);
-                        self.setWorkTypeName(childData.selectedWorkTypeName);
-                        self.setWorkTimeName(childData.selectedWorkTimeName);
-                        if ($('.nts-editor').ntsError("hasError")) {
-                            $('.nts-editor').ntsError('clear');
+                        if (childData) {
+                            self.workTypeSetCd(childData.selectedWorkTypeCode);
+                            self.workingHoursCd(childData.selectedWorkTimeCode);
+                            self.setWorkTypeName(childData.selectedWorkTypeName);
+                            self.setWorkTimeName(childData.selectedWorkTimeName);
+                            if ($('.nts-editor').ntsError("hasError")) {
+                                $('.nts-editor').ntsError('clear');
+                            }
+                            if ($('.buttonEvent').ntsError("hasError")) {
+                                $('.buttonEvent').ntsError('clear');
+                            }
+                            //                        $('#days' + self.dispOrder).ntsError('clear');
+                            //                        $('#days' + self.dispOrder).ntsEditor('validate');
                         }
-                        if ($('.buttonEvent').ntsError("hasError")) {
-                            $('.buttonEvent').ntsError('clear');
-                        }
-                        //                        $('#days' + self.dispOrder).ntsError('clear');
-                        //                        $('#days' + self.dispOrder).ntsEditor('validate');
                     });
 
                 }

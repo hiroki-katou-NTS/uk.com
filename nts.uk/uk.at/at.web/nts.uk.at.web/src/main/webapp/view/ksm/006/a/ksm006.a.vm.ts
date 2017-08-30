@@ -288,7 +288,7 @@ module nts.uk.at.view.ksm006.a {
                             }
                         });
                     } else {
-                        nts.uk.ui.dialog.alertError(res.message);
+                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
                     }
                     blockUI.clear();
                 });
@@ -300,12 +300,15 @@ module nts.uk.at.view.ksm006.a {
              */
             public registerByWorkplace(): void {
                 var self = this;
-                blockUI.invisible();
+                
                 self.clearError();
                 if (!self.selectedWorkplaceId()) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_339" });
                     return;
                 }
+                
+                blockUI.invisible();
+                
                 service.saveWorkplaceBasicWork(self.collectWorkplaceData()).done(function(data) {
 
                     var existItem = self.workplaceAlreadySetList().filter((item) => {
@@ -341,7 +344,7 @@ module nts.uk.at.view.ksm006.a {
                             }
                         });
                     } else {
-                        nts.uk.ui.dialog.alertError(res.message);
+                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
                     }
                     blockUI.clear();
                 });
@@ -353,12 +356,15 @@ module nts.uk.at.view.ksm006.a {
              */
             registerByClassification(): void {
                 var self = this;
-                blockUI.invisible();
+                
                 self.clearError();
                 if (!self.selectedClassifi()) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_339" });
                     return;
                 }
+                
+                blockUI.invisible();
+                
                 service.saveClassifyBasicWork(self.collectClassifyData()).done(function(data) {
                     // Check if exist alreadysetting of selectedItem
                     var existItem = self.classifiAlreadySetList().filter((item) => {
@@ -393,7 +399,7 @@ module nts.uk.at.view.ksm006.a {
                             }
                         });
                     } else {
-                        nts.uk.ui.dialog.alertError(res.message);
+                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
                     }
                     blockUI.clear();
                 });
@@ -421,8 +427,7 @@ module nts.uk.at.view.ksm006.a {
                         });
                         blockUI.clear();
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alertError(res.message);
-                        blockUI.clear();
+                       nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
                     });
                 });
 
@@ -450,8 +455,7 @@ module nts.uk.at.view.ksm006.a {
                         });
                         blockUI.clear();
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alertError(res.message);
-                        blockUI.clear();
+                       nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
                     });
                 });
             }
