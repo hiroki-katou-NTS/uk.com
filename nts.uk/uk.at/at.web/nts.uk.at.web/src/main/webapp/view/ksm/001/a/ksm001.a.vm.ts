@@ -148,20 +148,22 @@ module nts.uk.at.view.ksm001.a {
                 });
                 self.personalEstablishmentModel.selectedYear.subscribe(year => {
                     self.loadCompanyEstablishment(year, false);
+                    self.updatePersonalEstimateSetting(year);
                 });
                 
                 self.selectedEmployeeCode.valueHasMutated();
                 self.selectedEmployeeCode.subscribe(function(employeeCode) {
                     if (!employeeCode) {
                         self.personalEstablishmentModel.disableInput();
-                    }
-                    if (employeeCode) {
+                        self.personalEstablishmentModel.enableDelete(false);
+                    }else {
                         var employment: UnitModel = self.findByCodeEmployee(employeeCode);
                         if (employment) {
                             self.employeeName(employment.name);
                         }
                         self.personalEstablishmentModel.enableInput();
                         self.loadPersonalEstablishment(self.personalEstablishmentModel.selectedYear(), self.selectedEmployeeCode(), false);
+                        
                     }
                 });
 
@@ -249,6 +251,7 @@ module nts.uk.at.view.ksm001.a {
                     if (isLoading) {
                         self.isLoading(false);
                     }
+                    self.initNextTabFeature();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -320,6 +323,7 @@ module nts.uk.at.view.ksm001.a {
                     if (isLoading) {
                         self.isLoading(false);
                     }
+                    self.initNextTabFeature();
                     nts.uk.ui.block.clear();
                     dfd.resolve();
                 });
@@ -357,13 +361,20 @@ module nts.uk.at.view.ksm001.a {
                         personalSettings.push(employmentSetting);
                     }
                     self.alreadySettingPersonal(personalSettings);
-                    self.personalEstablishmentModel.enableDelete(self.checkSettingPersonal(self.selectedEmployeeCode()));
+                    self.updateEnableDeletePersonal(self.selectedEmployeeCode());
                 });
             }
             
+            /**
+             * 
+             */
+            private updateEnableDeletePersonal(employeeCode: string) {
+                var self = this;
+                self.personalEstablishmentModel.enableDelete(self.checkSettingPersonal(employeeCode));
+            }
               
              /**
-            * load perosnal establishment
+            * load personal establishment
             */
             private loadPersonalEstablishment(targetYear: number, employeeCode: string, isLoading: boolean): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
@@ -377,6 +388,8 @@ module nts.uk.at.view.ksm001.a {
                         if (isLoading) {
                             self.isLoading(false);
                         }
+                        self.updateEnableDeletePersonal(employeeCode);
+                        self.initNextTabFeature();
                         nts.uk.ui.block.clear();
                         dfd.resolve();
                     });
@@ -399,7 +412,6 @@ module nts.uk.at.view.ksm001.a {
                 self.isEmploymentSelected(false);
                 self.isPersonSelected(true);
                 self.isLoading(true);
-               
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponentPerson).done(function() {
                     self.alreadySettingEmployment = ko.observableArray([]);
                     self.isShowNoSelectRow = ko.observable(false);
@@ -704,6 +716,38 @@ module nts.uk.at.view.ksm001.a {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/ksm/001/f/index.xhtml").onClosed(function() {
                     
+                });
+            }
+            
+            /**
+             * set next tab index
+             */
+             public initNextTabFeature() {
+                let self = this;
+                // Auto next tab when press tab key.
+                $("[tabindex='75']").on('keydown', function(e) {
+                    console.log('75');
+                    if (e.which == 9) {
+                        self.companyEstablishmentModel.selectedTab('tab-2');
+                        self.employmentEstablishmentModel.selectedTab('tab-2');
+                        self.personalEstablishmentModel.selectedTab('tab-2');
+                    }
+                });
+
+                $("[tabindex='141']").on('keydown', function(e) {
+                    console.log('141');
+                    if (e.which == 9) {
+                        self.companyEstablishmentModel.selectedTab('tab-3');
+                        self.employmentEstablishmentModel.selectedTab('tab-3');
+                        self.personalEstablishmentModel.selectedTab('tab-3');
+                    }
+                });
+                $("[tabindex='9']").on('keydown', function(e) {
+                    if (e.which == 9 && !$(e.target).parents("[tabindex='9']")[0]) {
+                        self.companyEstablishmentModel.selectedTab('tab-1');
+                        self.employmentEstablishmentModel.selectedTab('tab-1');
+                        self.personalEstablishmentModel.selectedTab('tab-1');
+                    }
                 });
             }
 
