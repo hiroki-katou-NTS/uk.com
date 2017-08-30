@@ -2202,10 +2202,41 @@ var nts;
                 THE_NEXT_DAY: new DayAttr(2, "翌日"),
                 TWO_DAY_LATER: new DayAttr(3, "翌々日")
             };
+        })(time = uk.time || (uk.time = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var time;
+        (function (time) {
             var minutesBased;
             (function (minutesBased) {
-                var parse;
-                (function (parse) {
+                minutesBased.MINUTES_IN_DAY = 24 * 60;
+                function createBase(timeAsMinutes) {
+                    var mat = new Number(timeAsMinutes);
+                    uk.util.accessor.defineInto(mat)
+                        .get("asMinutes", function () { return timeAsMinutes; })
+                        .get("isNegative", function () { return timeAsMinutes < 0; })
+                        .get("typeName", function () { return "MinutesBasedTime"; });
+                    return mat;
+                }
+                minutesBased.createBase = createBase;
+            })(minutesBased = time.minutesBased || (time.minutesBased = {}));
+        })(time = uk.time || (uk.time = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var time;
+        (function (time) {
+            var minutesBased;
+            (function (minutesBased) {
+                var duration;
+                (function (duration_1) {
                     var ResultParseMiuntesBasedDuration = (function (_super) {
                         __extends(ResultParseMiuntesBasedDuration, _super);
                         function ResultParseMiuntesBasedDuration(success, minus, hours, minutes, msg) {
@@ -2215,12 +2246,6 @@ var nts;
                             this.minutes = minutes;
                             this.msg = msg || "FND_E_TIME";
                         }
-                        ResultParseMiuntesBasedDuration.succeeded = function (minus, hours, minutes) {
-                            return new ResultParseMiuntesBasedDuration(true, minus, hours, minutes);
-                        };
-                        ResultParseMiuntesBasedDuration.failed = function () {
-                            return new ResultParseMiuntesBasedDuration(false);
-                        };
                         ResultParseMiuntesBasedDuration.prototype.format = function () {
                             if (!this.success)
                                 return "";
@@ -2234,10 +2259,16 @@ var nts;
                         ResultParseMiuntesBasedDuration.prototype.getMsg = function () {
                             return this.msg;
                         };
+                        ResultParseMiuntesBasedDuration.succeeded = function (minus, hours, minutes) {
+                            return new ResultParseMiuntesBasedDuration(true, minus, hours, minutes);
+                        };
+                        ResultParseMiuntesBasedDuration.failed = function () {
+                            return new ResultParseMiuntesBasedDuration(false);
+                        };
                         return ResultParseMiuntesBasedDuration;
                     }(time.ParseResult));
-                    parse.ResultParseMiuntesBasedDuration = ResultParseMiuntesBasedDuration;
-                    function durationString(source) {
+                    duration_1.ResultParseMiuntesBasedDuration = ResultParseMiuntesBasedDuration;
+                    function parseString(source) {
                         var isNegative = source.indexOf('-') === 0;
                         var hourPart;
                         var minutePart;
@@ -2263,57 +2294,87 @@ var nts;
                         }
                         return ResultParseMiuntesBasedDuration.succeeded(isNegative, hourPart, minutePart);
                     }
-                    parse.durationString = durationString;
-                })(parse = minutesBased.parse || (minutesBased.parse = {}));
-                function duration(timeAsMinutes) {
-                    var duration = createBaseMBT(timeAsMinutes);
-                    uk.util.accessor.defineInto(duration)
-                        .get('asHoursDouble', function () { return timeAsMinutes / 60; })
-                        .get('asHoursInt', function () { return uk.ntsNumber.trunc(duration.asHoursDouble); })
-                        .get('minutePart', function () { return Math.abs(timeAsMinutes) % 60; });
-                    return duration;
-                }
-                minutesBased.duration = duration;
-                function clock() {
-                    var args = [];
-                    for (var _i = 0; _i < arguments.length; _i++) {
-                        args[_i - 0] = arguments[_i];
+                    duration_1.parseString = parseString;
+                    function create(timeAsMinutes) {
+                        var duration = minutesBased.createBase(timeAsMinutes);
+                        uk.util.accessor.defineInto(duration)
+                            .get('asHoursDouble', function () { return timeAsMinutes / 60; })
+                            .get('asHoursInt', function () { return uk.ntsNumber.trunc(duration.asHoursDouble); })
+                            .get('minutePart', function () { return Math.abs(timeAsMinutes) % 60; })
+                            .get('typeName', function () { return "DurationMinutesBasedTime"; });
+                        return duration;
                     }
-                    var timeAsMinutes = parseAsClock(args);
-                    var clock = createBaseMBT(timeAsMinutes);
-                    var positivizedMinutes = function () { return (timeAsMinutes >= 0)
-                        ? timeAsMinutes
-                        : timeAsMinutes + (1 + Math.floor(-timeAsMinutes / MINUTES_IN_DAY)) * MINUTES_IN_DAY; };
-                    var daysOffset = function () { return uk.ntsNumber.trunc(clock.isNegative ? (timeAsMinutes + 1) / MINUTES_IN_DAY - 1
-                        : timeAsMinutes / MINUTES_IN_DAY); };
-                    uk.util.accessor.defineInto(clock)
-                        .get('daysOffset', function () { return daysOffset(); })
-                        .get('hourPart', function () { return Math.floor(positivizedMinutes() / 60); })
-                        .get('minutePart', function () { return positivizedMinutes() % 60; });
-                    return clock;
-                }
-                minutesBased.clock = clock;
-                function parseAsClock(args) {
-                    var result;
-                    if (uk.types.matchArguments(args, ['number'])) {
-                        result = args[0];
+                    duration_1.create = create;
+                })(duration = minutesBased.duration || (minutesBased.duration = {}));
+            })(minutesBased = time.minutesBased || (time.minutesBased = {}));
+        })(time = uk.time || (uk.time = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var time;
+        (function (time) {
+            var minutesBased;
+            (function (minutesBased) {
+                var clock;
+                (function (clock_1) {
+                    function clock() {
+                        var args = [];
+                        for (var _i = 0; _i < arguments.length; _i++) {
+                            args[_i - 0] = arguments[_i];
+                        }
+                        var timeAsMinutes = parseAsClock(args);
+                        var clock = minutesBased.createBase(timeAsMinutes);
+                        var positivizedMinutes = function () { return (timeAsMinutes >= 0)
+                            ? timeAsMinutes
+                            : timeAsMinutes + (1 + Math.floor(-timeAsMinutes / minutesBased.MINUTES_IN_DAY)) * minutesBased.MINUTES_IN_DAY; };
+                        var daysOffset = function () { return uk.ntsNumber.trunc(clock.isNegative ? (timeAsMinutes + 1) / minutesBased.MINUTES_IN_DAY - 1
+                            : timeAsMinutes / minutesBased.MINUTES_IN_DAY); };
+                        uk.util.accessor.defineInto(clock)
+                            .get('daysOffset', function () { return daysOffset(); })
+                            .get('hourPart', function () { return Math.floor(positivizedMinutes() / 60); })
+                            .get('minutePart', function () { return positivizedMinutes() % 60; });
+                        return clock;
                     }
-                    else if (uk.types.matchArguments(args, ['number', 'number', 'number'])) {
-                        var daysOffset = args[0];
-                        var hourPart = args[1];
-                        var minutePart = args[2];
-                        result = daysOffset * MINUTES_IN_DAY + hourPart * 60 + minutePart;
+                    clock_1.clock = clock;
+                    function parseAsClock(args) {
+                        var result;
+                        if (uk.types.matchArguments(args, ['number'])) {
+                            result = args[0];
+                        }
+                        else if (uk.types.matchArguments(args, ['number', 'number', 'number'])) {
+                            var daysOffset = args[0];
+                            var hourPart = args[1];
+                            var minutePart = args[2];
+                            result = daysOffset * minutesBased.MINUTES_IN_DAY + hourPart * 60 + minutePart;
+                        }
+                        return result;
                     }
-                    return result;
-                }
-                function createBaseMBT(timeAsMinutes) {
-                    var mat = new Number(timeAsMinutes);
-                    uk.util.accessor.defineInto(mat)
-                        .get('asMinutes', function () { return timeAsMinutes; })
-                        .get('isNegative', function () { return timeAsMinutes < 0; });
-                    return mat;
-                }
-            })(minutesBased = time_1.minutesBased || (time_1.minutesBased = {}));
+                })(clock = minutesBased.clock || (minutesBased.clock = {}));
+            })(minutesBased = time.minutesBased || (time.minutesBased = {}));
+        })(time = uk.time || (uk.time = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var time;
+        (function (time) {
+            var minutesBased;
+            (function (minutesBased) {
+                var clock;
+                (function (clock) {
+                    var TimeWithDayAttr = (function () {
+                        function TimeWithDayAttr() {
+                        }
+                        return TimeWithDayAttr;
+                    }());
+                    clock.TimeWithDayAttr = TimeWithDayAttr;
+                })(clock = minutesBased.clock || (minutesBased.clock = {}));
+            })(minutesBased = time.minutesBased || (time.minutesBased = {}));
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -3121,7 +3182,7 @@ var nts;
                         }
                         var maxStr, minStr;
                         if (this.mode === "time") {
-                            var timeParse = uk.time.minutesBased.parse.durationString(inputText);
+                            var timeParse = uk.time.minutesBased.duration.parseString(inputText);
                             if (timeParse.success) {
                                 result.success(timeParse.toValue());
                             }

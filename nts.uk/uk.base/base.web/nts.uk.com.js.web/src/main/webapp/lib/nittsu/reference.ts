@@ -12,7 +12,13 @@
 /// <reference path="util.ts"/>
 /// <reference path="text.ts"/>
 /// <reference path="number.ts"/>
+
 /// <reference path="time.ts"/>
+/// <reference path="time/minutesbased/minutesbased.ts"/>
+/// <reference path="time/minutesbased/minutesbased_duration.ts"/>
+/// <reference path="time/minutesbased/minutesbased_clock.ts"/>
+/// <reference path="time/minutesbased/minutesbased_withdayattr.ts"/>
+
 /// <reference path="request.ts"/>
 /// <reference path="ui/init.ts"/>
 /// <reference path="ui/notify.ts"/>
