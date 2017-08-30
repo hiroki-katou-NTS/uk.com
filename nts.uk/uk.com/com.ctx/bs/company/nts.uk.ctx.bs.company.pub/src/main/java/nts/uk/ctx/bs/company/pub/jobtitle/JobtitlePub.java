@@ -21,4 +21,13 @@ public interface JobtitlePub {
 	 * @return the list
 	 */
 	List<PubJobtitleDto> findAll(String companyId, GeneralDate referenceDate);
+
+	/**
+	 * Find by sid.
+	 *
+	 * @param companyId the company id
+	 * @param employeeId the employee id
+	 * @return the list
+	 */
+	List<PubJobtitleDto> findByJobIds(List<String> jobIds);
 }

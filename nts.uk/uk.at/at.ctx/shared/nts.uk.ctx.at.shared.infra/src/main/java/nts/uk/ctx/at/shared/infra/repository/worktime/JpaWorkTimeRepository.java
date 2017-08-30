@@ -42,28 +42,30 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 	private final String findWorkTimeByList = "SELECT a FROM KwtmtWorkTime a "
 			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID " + "AND a.kwtmpWorkTimePK.siftCD IN :siftCDs";
 
-	private final String FIND_BY_CID_AND_DISPLAY_ATR = "SELECT a FROM KwtmtWorkTime a JOIN KshmtWorkTimeOrder b ON a.kwtmpWorkTimePK.siftCD = b.kshmpWorkTimeOrderPK.workTimeCode "
-			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID "
-			+ "AND a.displayAtr = :displayAtr "
+	private final String FIND_BY_CID_AND_DISPLAY_ATR = "SELECT a FROM KwtmtWorkTime a "
+			+ "JOIN KshmtWorkTimeOrder b ON a.kwtmpWorkTimePK.siftCD = b.kshmpWorkTimeOrderPK.workTimeCode "
+			+ "JOIN KwtdtWorkTimeDay c ON a.kwtmpWorkTimePK.siftCD = c.kwtdpWorkTimeDayPK.siftCD "
+			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID " + "AND a.displayAtr = :displayAtr "
 			+ "ORDER BY b.dispOrder ASC";
 
-	private static final String FIND_ALL = "SELECT k FROM KwtmtWorkTime k "
-			+ "LEFT JOIN KshmtWorkTimeOrder o "
+	private static final String FIND_ALL = "SELECT k FROM KwtmtWorkTime k " + "LEFT JOIN KshmtWorkTimeOrder o "
 			+ "ON k.kwtmpWorkTimePK.siftCD = o.kshmpWorkTimeOrderPK.workTimeCode "
-			+ "WHERE k.kwtmpWorkTimePK.companyID = :companyID "
-			+ "AND k.displayAtr = 1 " // Always display.
+			+ "WHERE k.kwtmpWorkTimePK.companyID = :companyID " + "AND k.displayAtr = 1 " // Always
+																							// display.
 			+ "ORDER BY o.dispOrder ASC";
 
-	private static final String FIND_BY_CODES = "SELECT k FROM KwtmtWorkTime k "
-			+ "LEFT JOIN KshmtWorkTimeOrder o "
+	private static final String FIND_BY_CODES = "SELECT k FROM KwtmtWorkTime k " + "LEFT JOIN KshmtWorkTimeOrder o "
 			+ "ON k.kwtmpWorkTimePK.siftCD = o.kshmpWorkTimeOrderPK.workTimeCode "
-			+ "WHERE k.kwtmpWorkTimePK.companyID = :companyID "
-			+ "AND k.displayAtr = 1 " // Always display.
-			+ "AND k.kwtmpWorkTimePK.siftCD IN :siftCDs "
-			+ "ORDER BY o.dispOrder ASC";
+			+ "WHERE k.kwtmpWorkTimePK.companyID = :companyID " + "AND k.displayAtr = 1 " // Always
+																							// display.
+			+ "AND k.kwtmpWorkTimePK.siftCD IN :siftCDs " + "ORDER BY o.dispOrder ASC";
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findByCompanyID(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findByCompanyID(java
+	 * .lang.String)
 	 */
 	@Override
 	public List<WorkTime> findByCompanyID(String companyID) {
@@ -71,8 +73,12 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 				.setParameter("companyID", companyID).getList(x -> convertToDomainWorkTime(x));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findByCode(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findByCode(java.lang
+	 * .String, java.lang.String)
 	 */
 	@Override
 	public Optional<WorkTime> findByCode(String companyID, String siftCD) {
@@ -80,8 +86,12 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 				.map(x -> convertToDomainWorkTime(x));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findByCodeList(java.lang.String, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findByCodeList(java.
+	 * lang.String, java.util.List)
 	 */
 	@Override
 	public List<WorkTime> findByCodeList(String companyID, List<String> siftCDs) {
@@ -120,19 +130,12 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 						new WorkTimeSymbol(kwtmtWorkTime.workTimeSymbol)));
 	}
 
-	/**
-	 * get list WorkTime by CompanyId and DisplayAtr = DISPLAY
-	 * Join with table ORDER to sort workTimeCode
-	 */
-	@Override
-	public List<WorkTime> findByCIdAndDisplayAtr(String companyID, int displayAtr) {
-		return this.queryProxy().query(FIND_BY_CID_AND_DISPLAY_ATR, KwtmtWorkTime.class)
-				.setParameter("companyID", companyID).setParameter("displayAtr", displayAtr)
-				.getList(x -> convertToDomainWorkTime(x));
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findAll(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findAll(java.lang.
+	 * String)
 	 */
 	@Override
 	public List<WorkTime> findAll(String companyID) {
@@ -140,8 +143,12 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 				.setParameter("companyID", companyID).getList(x -> convertToDomainWorkTime(x));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findByCodes(java.lang.String, java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findByCodes(java.
+	 * lang.String, java.util.List)
 	 */
 	@Override
 	public List<WorkTime> findByCodes(String companyID, List<String> codes) {

@@ -25,6 +25,7 @@
 						
 						<button data-bind="ntsLegendButton: legendOptions"></button>
 						
+						<button id="with-template" data-bind="ntsLegendButton: legendWithTemplateOptions"></button>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -33,20 +34,37 @@
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-<pre><![CDATA[<button data-bind="ntsLegendButton: legendOptions"></button>]]></pre>
+<pre><![CDATA[<button data-bind="ntsLegendButton: legendOptions"></button>
+
+<button id="with-template" data-bind="ntsLegendButton: legendWithTemplateOptions"></button>]]></pre>
 								</div>
 								<div id="tabs-viewmodel" class="cf">
 									<h2>TypeScript</h2>
 <pre><![CDATA[class ScreenModel {
+    
     legendOptions: any;
+    
+    legendWithTemplateOptions: any;
+    
     constructor() {
+        var self = this;
+        
         this.legendOptions = {
             items: [
                 { colorCode: '#ff0000', labelText: 'RED' },
                 { colorCode: '#00AA00', labelText: 'GREEN' },
                 { colorCode: '#0000FF', labelText: 'BLUE' }
             ]
-        }
+        };
+        this.legendWithTemplateOptions = {
+            items: [
+                { colorCode: '#ff0000', labelText: 'RED' },
+                { colorCode: '#00AA00', labelText: 'GREEN' },
+                { colorCode: '#0000FF', labelText: 'BLUE' }
+            ],
+            template : '<div style="color: # {colorCode}; "> # {labelText} </div>'
+        };
+        
     }
 }]]></pre>
 								</div>

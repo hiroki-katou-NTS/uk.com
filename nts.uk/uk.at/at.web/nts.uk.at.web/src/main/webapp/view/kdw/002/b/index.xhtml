@@ -38,24 +38,27 @@
 				<label class="mylabel">#{i18n.getText('KDW002_1')}</label>
 			</div>
 			<div id="contents-area">
-				<div class="leftpanel"
-					data-bind="ntsPanel:{ direction: 'right', visible: true}">
-					<label class="leftLabel">#{i18n.getText('KDW002_9')}</label>
-					<table id="leftGrid"
-						data-bind="ntsGridList: {								
+				<div class="container">
+					<div class="leftpanel"
+						data-bind="ntsPanel:{ direction: 'right', visible: true}">
+						<label class="leftLabel">#{i18n.getText('KDW002_9')}</label>
+						<table id="leftGrid"
+							data-bind="ntsGridList: {								
 								height: 200,
 								dataSource: bussinessCodeItems,
 								primaryKey: 'businessTypeCode',
 								columns: bussinessColumn,
 								multiple: false,
+								enable: true,
+								showCheckBox: false,	
 								value: bussinessCurrentCode
 							}"></table>
+					</div>
+					<input type="text" class="searchText" placeholder="コード／名称で検索"
+						data-bind="value: txtSearch" />
+					<button class="searchButton" data-bind="click: searchData">検索</button>
+					<table id="grid"></table>
 				</div>
-				<input type="text" class="searchText" placeholder="コード／名称で検索"
-					data-bind="value: txtSearch" />
-				<button class="searchButton" data-bind="click: searchData">検索</button>
-				<table id="grid"></table>
-
 			</div>
 		</ui:define>
 

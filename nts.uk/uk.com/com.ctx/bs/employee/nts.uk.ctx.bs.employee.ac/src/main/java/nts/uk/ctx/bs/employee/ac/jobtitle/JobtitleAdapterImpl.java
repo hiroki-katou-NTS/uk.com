@@ -41,4 +41,20 @@ public class JobtitleAdapterImpl implements JobTitleAdapter {
 				.collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.access.jobtitle.JobTitleAdapter#findByJobIds(
+	 * java.util.List)
+	 */
+	@Override
+	public List<AcJobTitleDto> findByJobIds(List<String> jobIds) {
+		return jobtitlePub.findByJobIds(jobIds).stream()
+				.map(item -> new AcJobTitleDto(item.getCompanyId(), item.getPositionId(),
+						item.getPositionCode(), item.getPositionName(), item.getSequenceCode(),
+						item.getStartDate(), item.getEndDate()))
+				.collect(Collectors.toList());
+	}
+
 }
