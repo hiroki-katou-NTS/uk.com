@@ -225,6 +225,14 @@ module nts.uk.ui.koExtentions {
 //                        $("#" + $grid.attr("id") + "_scrollContainer").scrollTop(scrollTop);        
 //                    }, 10);
 //                }
+            } else if($grid.attr("filtered") === true || $grid.attr("filtered") === "true"){
+                let filteredSource = _.filter(currentSource, function(item){
+                    return sources.indexOf(item) >= 0;        
+                });    
+                if(!_.isEqual(filteredSource, currentSource)){
+                    $grid.igGrid('option', 'dataSource', filteredSource);
+                    $grid.igGrid("dataBind");    
+                }
             }
 
             var currentSelectedItems = $grid.ntsGridList('getSelected');
