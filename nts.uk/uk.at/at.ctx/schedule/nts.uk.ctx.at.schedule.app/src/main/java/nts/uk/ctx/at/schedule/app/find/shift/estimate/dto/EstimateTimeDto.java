@@ -69,19 +69,19 @@ public class EstimateTimeDto implements EstimateTimeSettingSetMemento{
 			yearlyEstimateTimeSetting.forEach(yearly->{
 				switch (yearly.getEstimatedCondition()) {
 				case CONDITION_1ST:
-					time1st = new Double(yearly.getTime().v()).intValue();
+					time1st = new Double(yearly.getTime().minutes()).intValue();
 					break;
 				case CONDITION_2ND:
-					time2nd = new Double(yearly.getTime().v()).intValue();
+					time2nd = new Double(yearly.getTime().minutes()).intValue();
 					break;
 				case CONDITION_3RD:
-					time3rd = new Double(yearly.getTime().v()).intValue();
+					time3rd = new Double(yearly.getTime().minutes()).intValue();
 					break;
 				case CONDITION_4TH:
-					time4th = new Double(yearly.getTime().v()).intValue();
+					time4th = new Double(yearly.getTime().minutes()).intValue();
 					break;
 				case CONDITION_5TH:
-					time5th = new Double(yearly.getTime().v()).intValue();
+					time5th = new Double(yearly.getTime().minutes()).intValue();
 					break;
 				}
 			});

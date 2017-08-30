@@ -14,6 +14,9 @@ import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentTimeDto;
 @Setter
 public class PersonalEstablishmentDto {
 	
+	/** The employee id. */
+	private String employeeId;
+	
 	/** The estimate time. */
 	private EstablishmentTimeDto estimateTime;
 	
