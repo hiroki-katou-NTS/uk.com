@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.schedule.basicschedule;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -13,7 +14,7 @@ import nts.arc.time.GeneralDate;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class BasicSchedule {
+public class BasicSchedule extends AggregateRoot {
 	/* employee Id */
 	private String sId;
 
