@@ -254,6 +254,18 @@ module nts.uk.at.view.ksm006.a {
                 if ($('button').ntsError("hasError")) {
                     $('button').ntsError('clear');
                 }
+
+                if ($('#companyWide-content').ntsError("hasError")) {
+                    $('#companyWide-content').ntsError('clear');
+                }
+
+                if ($('#workplace-content').ntsError("hasError")) {
+                    $('#workplace-content').ntsError('clear');
+                }
+
+                if ($('#classification-content').ntsError("hasError")) {
+                    $('#classification-content').ntsError('clear');
+                }
             }
 
             /**
