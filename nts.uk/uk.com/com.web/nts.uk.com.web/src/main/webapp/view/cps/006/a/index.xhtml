@@ -46,7 +46,7 @@
 						data-bind="ntsGridList: {	
 						dataSource: categoryList ,
 						primaryKey: 'id' ,
-						columns: colums ,
+						columns: currentCategory().ctgColums ,
 						multiple: false,
 						value: currentCategory().id ,
 						rows:15 }">
@@ -71,11 +71,8 @@
 								value: categoryName ,
 								enable: true,
 								immediate: false}"></input>
-							<com:ko-if bind="displayIsAbolished == 1">
-								<div>#{i18n.getText('CPS006_11')}</div>
-							</com:ko-if>
-							<com:ko-if bind="displayIsAbolished == 0">
-								<div>ahahhaha</div>
+							<com:ko-if bind="displayIsAbolished === 0">
+								<div data-bind="ntsCheckBox: { checked: isAbolition }">#{i18n.getText('CPS006_11')}</div>
 							</com:ko-if>
 						</div>
 
@@ -140,11 +137,11 @@
 						</div>
 						<table id="item_grid"
 							data-bind="ntsGridList: {	
-						dataSource: itemList ,
+						dataSource: currentCategory().itemList ,
 						primaryKey: 'id' ,
-						columns: itemColums ,
+						columns: currentCategory().itemColums ,
 						multiple: false,
-						value: currentItemId ,
+						value: currentCategory().currentItemId ,
 						rows:10 }">
 						</table>
 					</div>
