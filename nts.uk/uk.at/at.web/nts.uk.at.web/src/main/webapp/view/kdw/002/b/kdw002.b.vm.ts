@@ -15,7 +15,7 @@ module nts.uk.at.view.kdw002.b {
 
                 this.bussinessColumn = ko.observableArray([
                     { headerText: getText('KDW002_12'), key: 'businessTypeCode', width: 100 },
-                    { headerText: getText('KDW002_4'), key: 'businessTypeName', width: 150 , formatter: _.escape},
+                    { headerText: getText('KDW002_4'), key: 'businessTypeName', width: 150, formatter: _.escape },
                 ]);
 
                 self.bussinessCurrentCode = ko.observable('');
@@ -23,28 +23,35 @@ module nts.uk.at.view.kdw002.b {
 
                     self.bussinessCurrentCode(businessTypeCode);
 
-                    service.getListDailyServiceTypeControl(businessTypeCode).done(DailyServiceTypeControls => {
-                        $("#grid").igGrid("dataSourceObject", _.sortBy(DailyServiceTypeControls, 'attendanceItemId')).igGrid("dataBind");
-                        var dataSource = $('#grid').data('igGrid').dataSource;
-                        var filteredData = dataSource.transformedData('afterfilteringandpaging');
-                        var i;
-                        var l = filteredData.length;
-                        for (i = 0; i < l; i++) {
-                            if (!filteredData[i].userCanSet || !filteredData[i].use) {
-                                var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
-                                var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
-                                cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
-                                cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
+                    $.when(service.getListDailyServiceTypeControl(businessTypeCode), service.getAttendanceItems()).done(
+                        (DailyServiceTypeControls, attendanceItems) => {
+                            var attdItems = _.map(attendanceItems, function(x) { return _.pick(x, ['attendanceItemId', 'attendanceItemName']) });
+                            var dstControls = _(DailyServiceTypeControls).concat(attdItems).groupBy('attendanceItemId').map(_.spread(_.assign)).value();
+                            $("#grid").igGrid("dataSourceObject", _.sortBy(dstControls, 'attendanceItemId')).igGrid("dataBind");
+                            var dataSource = $('#grid').data('igGrid').dataSource;
+                            var filteredData = dataSource.transformedData('afterfilteringandpaging');
+                            var i;
+                            var l = filteredData.length;
+                            for (i = 0; i < l; i++) {
+                                if (!filteredData[i].userCanSet || !filteredData[i].use) {
+                                    var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
+                                    var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
+                                    cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
+                                    cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
 
-                                if (!filteredData[i].userCanSet) {
-                                    //  $("#grid").igGridUpdating("setCellValue", i + 1, "youCanChangeIt", false);
-                                    $("#grid").igGridUpdating("setCellValue", i + 1, "canBeChangedByOthers", false);
+                                    if (!filteredData[i].userCanSet) {
+                                        //  $("#grid").igGridUpdating("setCellValue", i + 1, "youCanChangeIt", false);
+                                        $("#grid").igGridUpdating("setCellValue", i + 1, "canBeChangedByOthers", false);
+                                    }
                                 }
                             }
+                    );
 
-                        }
 
-                    });
+
+
+
+
 
 
                 });
@@ -56,14 +63,16 @@ module nts.uk.at.view.kdw002.b {
                 service.getBusinessTypes().done(businessTypes => {
 
                     if (!nts.uk.util.isNullOrUndefined(businessTypes)) {
-                        var businessTypeCode = businessTypes[0].businessTypeCode;
-                        self.bussinessCurrentCode(businessTypeCode);
                         let bussinessCodeItems = [];
                         businessTypes.forEach(businessType => {
                             bussinessCodeItems.push(new BusinessType(businessType));
-                           //   self.bussinessCodeItems.push(new BusinessType(businessType));
+                            //   self.bussinessCodeItems.push(new BusinessType(businessType));
                         });
-                        self.bussinessCodeItems(_.sortBy(bussinessCodeItems,'businessTypeCode'));
+                        var bTypes = _.sortBy(bussinessCodeItems, 'businessTypeCode');
+                        self.bussinessCodeItems(bTypes);
+                        var businessTypeCode = bTypes[0].businessTypeCode;
+                        self.bussinessCurrentCode(businessTypeCode);
+
                     }
 
                 });
@@ -134,12 +143,12 @@ module nts.uk.at.view.kdw002.b {
 
                     if (_.includes(idValue, self.txtSearch()) || _.includes(nameValue, self.txtSearch())) {
                         $('#grid').igGridSelection('selectRow', i);
-                         $('#grid').igGrid("virtualScrollTo", i);
+                        $('#grid').igGrid("virtualScrollTo", i);
                         keynotExist = false;
                         break;
                     }
                 }
-                if (keynotExist){
+                if (keynotExist) {
                     for (i = 0; i < index; i++) {
                         var rowId = filteredData[i].attendanceItemId;
                         var nameValue = filteredData[i].attendanceItemName;
@@ -271,8 +280,8 @@ function loadIgrid() {
         alternateRowStyles: false,
         dataSourceType: "json",
         autoCommit: true,
-       virtualization: true,
-       virtualizationMode : "continuous",
+        virtualization: true,
+        virtualizationMode: "continuous",
         columns: [
             { key: "attendanceItemId", width: "100px", headerText: nts.uk.resource.getText('KDW002_3'), dataType: "number", columnCssClass: "readOnlyColor" },
             { key: "attendanceItemName", width: "250px", headerText: nts.uk.resource.getText('KDW002_4'), dataType: "string", columnCssClass: "readOnlyColor" },

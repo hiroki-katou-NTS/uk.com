@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.app.command.dailyperformanceformat.DailyServiceTypeC
 import nts.uk.ctx.at.record.app.command.dailyperformanceformat.DailyServiceTypeControlUpdateCommand;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.DailyServiceTypeControlDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.DailyServiceTypeControlFinder;
-@Path("at/share/DailyServiceTypeControl")
+@Path("at/record/DailyServiceTypeControl")
 @Produces("application/json")
 public class DailyServiceTypeControlWebService extends WebService {
 	@Inject

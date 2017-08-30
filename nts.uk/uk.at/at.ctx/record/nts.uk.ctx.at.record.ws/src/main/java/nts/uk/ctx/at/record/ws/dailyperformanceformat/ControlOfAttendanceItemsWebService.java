@@ -12,7 +12,7 @@ import nts.uk.ctx.at.record.app.command.dailyperformanceformat.ControlOfAttendan
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.ControlOfAttendanceItemsDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.ControlOfAttendanceItemsFinder;
 
-@Path("at/share/ControlOfAttendanceItems")
+@Path("at/record/ControlOfAttendanceItems")
 @Produces("application/json")
 public class ControlOfAttendanceItemsWebService extends WebService {
 	@Inject
