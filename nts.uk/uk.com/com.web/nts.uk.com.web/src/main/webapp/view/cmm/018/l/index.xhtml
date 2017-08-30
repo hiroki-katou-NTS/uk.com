@@ -17,11 +17,18 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="button1">#{i18n.getText('CMM018_71')}</button>
+				<button id="button1" class="proceed">#{i18n.getText('CMM018_71')}</button>
 				<button id="button2">#{i18n.getText('CMM018_72')}</button>
 			</div>
 			<div id="contents-area">
+			
+				<div id="label1" class="label">#{i18n.getText('CMM018_73')}</div>
 				
+				<span id="label2" class="label with-image">
+					<i class="image image-calendar"/>
+					<span>#{i18n.getText('CMM018_74')}</span>
+					<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+				</span>
 			</div>
 		</ui:define>
 
