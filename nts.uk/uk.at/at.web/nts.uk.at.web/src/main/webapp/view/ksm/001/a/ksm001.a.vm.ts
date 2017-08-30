@@ -145,7 +145,7 @@ module nts.uk.at.view.ksm001.a {
                 });
                 self.personalEstablishmentModel.selectedYear.subscribe(year => {
                     self.updatePersonalEstimateSetting(year);
-                    self.loadCompanyEstablishment(year, false);
+                    self.loadPersonalEstablishment(year, self.selectedEmployeeCode(), false);
                 });
 
                 // Selected employee subscription.
