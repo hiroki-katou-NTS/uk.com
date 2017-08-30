@@ -361,18 +361,20 @@ module nts.uk.at.view.ksm005.b {
 
                     nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function() {
                         var childData = nts.uk.ui.windows.getShared('childData');
-                        dto.workTypeCode = childData.selectedWorkTypeCode;
-                        dto.workTypeName = childData.selectedWorkTypeName;
-                        dto.workingCode = childData.selectedWorkTimeCode;
-                        dto.workingName = childData.selectedWorkTimeName;
-                        
-                        if (dto.workTypeCode && dto.workingCode) {
-                            dto.typeColor = TypeColor.ATTENDANCE;
-                        } else {
-                            dto.typeColor = TypeColor.HOLIDAY;
+                        if (childData) {
+                            dto.workTypeCode = childData.selectedWorkTypeCode;
+                            dto.workTypeName = childData.selectedWorkTypeName;
+                            dto.workingCode = childData.selectedWorkTimeCode;
+                            dto.workingName = childData.selectedWorkTimeName;
+
+                            if (dto.workTypeCode && dto.workingCode) {
+                                dto.typeColor = TypeColor.ATTENDANCE;
+                            } else {
+                                dto.typeColor = TypeColor.HOLIDAY;
+                            }
+
+                            self.updateWorkMonthlySettingClose(dto);
                         }
-                        
-                        self.updateWorkMonthlySettingClose(dto);
                     });
                 }
                 else {
