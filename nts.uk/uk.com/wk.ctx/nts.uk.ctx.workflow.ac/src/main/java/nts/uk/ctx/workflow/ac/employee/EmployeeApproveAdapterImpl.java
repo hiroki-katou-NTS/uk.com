@@ -1,36 +1,50 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.workflow.ac.employee;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDto;
-import nts.uk.ctx.bs.employee.pub.employee.EmployeePub;
+import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
+import nts.uk.ctx.bs.employee.pub.employee.employment.SyEmploymentPub;
+import nts.uk.ctx.bs.employee.pub.employee.workplace.SyWorkplacePub;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
 
 /**
- * 社員についてデータを取得する
- * @author dudt
- *
+ * The Class EmployeeApproveAdapterImpl.
  */
 @Stateless
-public class EmployeeApproveAdapterImpl implements EmployeeApproveAdapter{
+public class EmployeeApproveAdapterImpl implements EmployeeApproveAdapter {
+
+	/** The employee pub. */
 	@Inject
-	private EmployeePub employeePub;
-	/**
-	 * 「所属職場履歴」をすべて取得する
-	 * get employee information by companyId, workplaceId and base date
-	 * @param companyId　会社ID
-	 * @param workplaceIds　職場IDリスト
-	 * @param baseDate　基準日
-	 * @return 社員情報
+	private SyEmployeePub employeePub;
+
+	/** The workplace pub. */
+	@Inject
+	private SyWorkplacePub workplacePub;
+
+	/** The employment pub. */
+	@Inject
+	private SyEmploymentPub employmentPub;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.
+	 * EmployeeApproveAdapter#findByWpkIds(java.lang.String, java.util.List,
+	 * nts.arc.time.GeneralDate)
 	 */
-	public List<EmployeeApproveDto> findByWpkIds(String companyId, 
-			List<String> workplaceIds,
-			GeneralDate baseDate){
+	public List<EmployeeApproveDto> findByWpkIds(String companyId, List<String> workplaceIds,
+			GeneralDate baseDate) {
 		List<EmployeeDto> empDto = employeePub.findByWpkIds(companyId, workplaceIds, baseDate);
 		List<EmployeeApproveDto> lstEmployees = new ArrayList<>();
 		for (EmployeeDto employeeDto : empDto) {
@@ -46,28 +60,26 @@ public class EmployeeApproveAdapterImpl implements EmployeeApproveAdapter{
 		}
 		return lstEmployees;
 	}
-	/**
-	 * get workplace id by employeeId and basedate
-	 * @param companyId 会社ID
-	 * @param employeeId　社員ID
-	 * @param baseDate　基準日
-	 * @return　職場ID
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.
+	 * EmployeeApproveAdapter#getWorkplaceId(java.lang.String, java.lang.String,
+	 * nts.arc.time.GeneralDate)
 	 */
-	public String getWorkplaceId(String companyId,
-			String employeeId, 
-			GeneralDate baseDate) {
-		return employeePub.getWorkplaceId(companyId, employeeId, baseDate);
+	public String getWorkplaceId(String companyId, String employeeId, GeneralDate baseDate) {
+		return workplacePub.getWorkplaceId(companyId, employeeId, baseDate);
 	}
-	/**
-	 * get employment code by companyID, employeeID and base date
-	 * @param companyId 会社ID
-	 * @param employeeId　社員ID　
-	 * @param baseDate　基準日
-	 * @return　雇用コード
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.
+	 * EmployeeApproveAdapter#getEmploymentCode(java.lang.String,
+	 * java.lang.String, nts.arc.time.GeneralDate)
 	 */
-	public String getEmploymentCode(String companyId, 
-			String employeeId, 
-			GeneralDate baseDate){
-		return employeePub.getEmploymentCode(companyId, employeeId, baseDate);
+	public String getEmploymentCode(String companyId, String employeeId, GeneralDate baseDate) {
+		return employmentPub.getEmploymentCode(companyId, employeeId, baseDate);
 	}
 }

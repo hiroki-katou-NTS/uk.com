@@ -12,7 +12,7 @@ import nts.uk.ctx.bs.employee.dom.access.jobtitle.dto.AcJobTitleDto;
 /**
  * The Interface PersonAdapter.
  */
-public interface JobTitleAdapter {
+public interface SyJobTitleAdapter {
 
 	/**
 	 * Find by person ids.
