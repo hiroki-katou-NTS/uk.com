@@ -20,10 +20,6 @@ public class GoBackDirectlyCommonSetting {
 	 */
 	private String companyID;
 	/**
-	 * 申請ID
-	 */
-	private String appID;
-	/**
 	 * 勤務変更
 	 */
 	private WorkChangeFlg workChangeFlg;
@@ -72,14 +68,13 @@ public class GoBackDirectlyCommonSetting {
 	 */
 	private CommentFontColor commentFontColor2;
 
-	public GoBackDirectlyCommonSetting(String companyID, String appID, WorkChangeFlg workChangeFlg,
+	public GoBackDirectlyCommonSetting(String companyID, WorkChangeFlg workChangeFlg,
 			UseAtr workChangeTimeAtr, AppDisplayAtr performanceDisplayAtr, CheckAtr contraditionCheckAtr,
 			GoBackWorkType goBackWorkType, CheckAtr lateLeaveEarlySettingAtr, CommentContent commentContent1,
 			FontWeightFlg commentFontWeight1, CommentFontColor commentFontColor1, CommentContent commentContent2,
 			FontWeightFlg commentFontWeight2, CommentFontColor commentFontColor2) {
 		super();
 		this.companyID = companyID;
-		this.appID = appID;
 		this.workChangeFlg = workChangeFlg;
 		this.workChangeTimeAtr = workChangeTimeAtr;
 		this.performanceDisplayAtr = performanceDisplayAtr;

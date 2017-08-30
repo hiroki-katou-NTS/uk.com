@@ -37,10 +37,6 @@ input.col2.nts-editor.nts-input.reset-element {
 	margin-left: 21px;
 }
 
-div.ntsControl.ntsCheckBox {
-	margin-left: 15px;
-}
-
 label.applicant {
 	margin-left: 20px;
 }
@@ -81,4 +77,11 @@ div.form-label.broken {
 }
 .lblTitle{
 	width: 110px;
+}
+
+.btnSendMail{
+	margin-left: 15px;
+}
+.workGroup{
+	margin-left: 50px;
 }

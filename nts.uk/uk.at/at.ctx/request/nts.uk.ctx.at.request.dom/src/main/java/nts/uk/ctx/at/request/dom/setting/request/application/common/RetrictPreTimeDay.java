@@ -15,5 +15,4 @@ public class RetrictPreTimeDay extends DecimalPrimitiveValue<RetrictPreTimeDay> 
 	public RetrictPreTimeDay(BigDecimal rawValue) {
 		super(rawValue);
 	}
-
 }

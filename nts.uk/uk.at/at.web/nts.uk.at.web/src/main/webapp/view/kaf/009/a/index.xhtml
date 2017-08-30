@@ -11,18 +11,17 @@
 					nts.uk.shr.com.primitive.PersonId
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kaf009.b.style.css" />
-			<com:scriptfile path="kaf009.b.start.js" />
-			<com:scriptfile path="kaf009.b.service.js" />
-			<com:scriptfile path="kaf009.b.vm.js" />
+			<com:stylefile path="kaf009.a.style.css" />
+			<com:scriptfile path="kaf009.a.start.js" />
+			<com:scriptfile path="kaf009.a.service.js" />
+			<com:scriptfile path="kaf009.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="proceed" data-bind="" tabindex="1">#{i18n.getText('KAF009_3')}</button>
 				<button id="btnSpecSetting" data-bind="" tabindex="2">#{i18n.getText('KAF009_4')}</button>
 				<button data-bind="" tabindex="3">#{i18n.getText('KAF009_5')}</button>
-				<div
-					data-bind="ntsCheckBox: { checked: true, enable: true, text: '#{i18n.getText('KAF009_6')}' }"></div>
+				<div class="btnSendMail" data-bind="ntsCheckBox: { checked: true, enable: true, text: '#{i18n.getText('KAF009_6')}' }"></div>
 			</div>
 			<div id="contents-area">
 				<!--LEFT CONTENTS -->
@@ -52,17 +51,19 @@
 					<!--勤務時間 １１１１１１１１１１１１１-->
 					<div class="valign-center control-group">
 						<!--LINE　１ -->
-						<div class="lblTitle" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_13')}</div>
-						<input class="inpStartTime1"
-							data-bind="ntsTimeEditor: {value: time, inputFormat: 'time'}" />
-						<label>#{i18n.getText('KAF009_14')}</label> <input
-							class="inpEndTime1"
-							data-bind="ntsTimeEditor: {value: time, inputFormat: 'time'}" />
-						<!--選択場所　Button-->
-						<button data-bind="">#{i18n.getText('KAF009_15')}</button>
-						<label>場所名前</label> <br />
+						<div class="cell valign-center">
+							<div class="lblTitle" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_13')}</div>
+							<input class="inpStartTime1" data-bind="ntsTimeEditor: {value: time, inputFormat: 'time'}" />
+							<label>#{i18n.getText('KAF009_14')}</label> 
+							<input class="inpEndTime1" data-bind="ntsTimeEditor: {value: time, inputFormat: 'time'}" />
+							<!--選択場所　Button-->
+							<button data-bind="click: openLocationDialog">#{i18n.getText('KAF009_15')}</button>
+							<label>場所名前</label> <br />
+						</div>
+						
+						
 						<!--LINE　２ -->
-						<div class="cf valign-center control-group switch"
+						<div class="valign-center control-group switch"
 							data-bind="ntsSwitchButton: {
 								options: goWorkAtr,
 								optionsValue: 'goCode',
@@ -70,7 +71,7 @@
 								value: selectedGo,
 								enable: true }">
 						</div>
-						<div class="cf"
+						<div class="valign-center control-group switch"
 							data-bind="ntsSwitchButton: {
 								options: backHomeAtr,
 								optionsValue: 'backCode',
@@ -99,7 +100,7 @@
 								value: selectedGo2,
 								enable: true }">
 						</div>
-						<div class="cf"
+						<div class="valign-center control-group switch"
 							data-bind="ntsSwitchButton: {
 								options: backHomeAtr,
 								optionsValue: 'backCode',
@@ -108,6 +109,38 @@
 								enable: true }">
 						</div>
 						<label id="comment2"></label>
+					</div>
+					<!--勤務を変更する -->
+					<div class="valign-center control-group">
+						<div data-bind="ntsCheckBox: { checked: true, enable: true, text: '#{i18n.getText('KAF009_21')}' }"></div>
+						<div class="table">
+							<div class="cell valign-center">
+								<div class="valign-center control-group" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_22')}</div>
+								<BR />
+								<div class="valign-center control-group" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_23')}</div>
+							</div>
+							<div class="cell valign-center">
+								<button class="workSelect">#{i18n.getText('KAF009_24')}</button>
+							</div>
+							<div class="cell valign-center">
+								<label class="workTypeName"></label>	
+								<label class="siftName"></label>
+							</div>
+						</div>
+					</div>
+					<!--定型理由 -->
+					<div class="valign-center control-group">
+						<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_25')}</div>
+						<div id="combo-box" data-bind="ntsComboBox: {
+								options: itemComboBox,
+								optionsValue: 'code',
+								value: selectedComboCode,
+								optionsText: 'name',
+								enable: true,
+								columns: [
+									{ prop: 'code', length: 4 },
+									{ prop: 'name', length: 10 },
+								]}"></div>
 					</div>
 					<!--直帰する -->
 					<div class="valign-center control-group">

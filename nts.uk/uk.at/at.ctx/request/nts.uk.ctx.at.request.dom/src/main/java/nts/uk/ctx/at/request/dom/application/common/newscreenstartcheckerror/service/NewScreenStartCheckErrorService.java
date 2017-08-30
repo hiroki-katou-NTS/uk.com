@@ -5,6 +5,6 @@ package nts.uk.ctx.at.request.dom.application.common.newscreenstartcheckerror.se
  */
 public interface NewScreenStartCheckErrorService {
 	/*エラーチェックを実行*/
-	public void checkErorr(int appType);
+	public void checkError(int appType);
 	
 }

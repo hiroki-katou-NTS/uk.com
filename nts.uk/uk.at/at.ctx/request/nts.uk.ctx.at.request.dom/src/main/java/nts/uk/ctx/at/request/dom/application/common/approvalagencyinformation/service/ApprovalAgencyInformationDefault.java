@@ -64,7 +64,6 @@ public class ApprovalAgencyInformationDefault implements ApprovalAgencyInformati
 						ObjApproverRepresenter obj = new ObjApproverRepresenter(approveItem,"Pass");
 						outputListApproverAndRepresenterSID.add(obj);
 					}
-					
 					//ktra xem AgentAppType = SUBSTITUTE_DESIGNATION hay k
 					if(agentAdapterDto.getAgentAppType1() == 0) {
 						outputFlag = false;

@@ -13,7 +13,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         //labor time
         laborTime: KnockoutObservable<string>;
         //combobox
-        ListLydo: KnockoutObservableArray<Lydo>;
+        ListReason: KnockoutObservableArray<Reason>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
         selectedCode: KnockoutObservable<string>;
@@ -32,6 +32,11 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         selectedBack2: any;
         //Go Work 2
         selectedGo2: any;
+        //workLocation 
+        workLocationCD: KnockoutObservable<string>;
+        //comboBox 
+        itemComboBox: KnockoutObservableArray<ItemCombo>;
+        selectedComboCode:KnockoutObservable<string>; 
         constructor() {
             var self = this;
             //date editor
@@ -47,10 +52,10 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             //labor time 
             self.laborTime = ko.observable("00:00");
             //combobox
-            self.ListLydo = ko.observableArray([
-                new Lydo('1','name1'),
-                new Lydo('2','name2'),
-                new Lydo('3','name3')
+            self.ListReason = ko.observableArray([
+                new Reason('1','name1'),
+                new Reason('2','name2'),
+                new Reason('3','name3')
             ]);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
@@ -77,7 +82,15 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             self.selectedGo2 = ko.observable(1);
             //BackHome 2
             self.selectedBack2 = ko.observable(1);
-            
+            //Work Location 
+            self.workLocationCD = ko.observable('');
+            //ComboBox 
+            self.itemComboBox = ko.observableArray([
+                new ItemCombo('基本給1', '基本給'),
+                new ItemCombo('基本給2', '役職手当'),
+                new ItemCombo('0003', '基本給')
+            ]);
+            self.selectedComboCode = ko.observable('0002')
             //MultilineEditor 
             self.multilineeditor = {
                 value: ko.observable(''),
@@ -101,8 +114,32 @@ module nts.uk.at.view.kaf009.b.viewmodel {
 
             return dfd.promise();
         }
+        /**
+         * KDL010_勤務場所選択を起動する
+         */
+        openLocationDialog(){
+            var self = this;
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.workLocationCD());
+            nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
+                var self = this;
+                var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
+                if (returnWorkLocationCD !== undefined) {
+                    self.workLocationCD(returnWorkLocationCD);
+                    nts.uk.ui.block.clear();
+                }
+                else{
+                    self.workLocationCD = ko.observable("");
+                    nts.uk.ui.block.clear();}
+            });
+        
+        }
+        
     }
-    class Lydo {
+    /**
+     * 理由
+     */
+    class Reason {
         code: string; 
         name: string;
         constructor(code: string, name: string) {
@@ -110,4 +147,16 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             this.name = name;
         }
     }
+    /**
+     * 
+     */
+    class ItemCombo {
+        code: string;
+        name: string;
+        
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+}
 }
