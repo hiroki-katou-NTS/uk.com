@@ -13,8 +13,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.basic.dom.company.organization.employee.Employee;
-import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistoryRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffJobTitleHistory;
@@ -27,6 +25,8 @@ import nts.uk.ctx.bs.employee.dom.access.jobtitle.JobTitleAdapter;
 import nts.uk.ctx.bs.employee.dom.access.jobtitle.dto.AcJobTitleDto;
 import nts.uk.ctx.bs.employee.dom.access.workplace.WorkplaceAdapter;
 import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceDto;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDto;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.PubJobTitleDto;

@@ -1,4 +1,4 @@
-package entity;
+package entity.employeeinfo;
 
 import java.io.Serializable;
 
@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -24,15 +25,15 @@ public class BsydtEmployee extends UkJpaEntity implements Serializable {
 	
 	@Basic(optional = false)
 	@Column(name = "PID")
-	public String personID;
+	public String personId;
 		
 	@Basic(optional = false)
 	@Column(name = "CID")
 	public String companyId;
 
 	@Basic(optional = false)
-	@Column(name = "EMPLOYEE_CD")
-	public String EmployeeCode;
+	@Column(name = "SCD")
+	public String employeeCode;
 
 	@Basic(optional = false)
 	@Column(name = "COMPANY_MAIL")
@@ -44,11 +45,11 @@ public class BsydtEmployee extends UkJpaEntity implements Serializable {
 	
 	@Basic(optional = false)
 	@Column(name = "ENTRY_DATE")
-	public String entryDate;
+	public GeneralDate entryDate;
 	
 	@Basic(optional = true)
 	@Column(name = "ADOPT_DATE")
-	public String adoptDate;
+	public GeneralDate adoptDate;
 	
 	@Basic(optional = true)
 	@Column(name = "HIRING_TYPE")
@@ -56,7 +57,7 @@ public class BsydtEmployee extends UkJpaEntity implements Serializable {
 	
 	@Basic(optional = true)
 	@Column(name = "RETIRE_DATE")
-	public String retireDate;
+	public GeneralDate retireDate;
 	
 	@Override
 	protected Object getKey() {

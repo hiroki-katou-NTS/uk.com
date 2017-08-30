@@ -1,4 +1,4 @@
-package entity;
+package entity.employeeinfo;
 
 import java.io.Serializable;
 
@@ -16,6 +16,6 @@ public class BsydtEmployeePk implements Serializable {
 	
 	@Basic(optional = false)
 	@Column(name = "SID")
-	public String EmployeeId;
+	public String employeeId;
 
 }

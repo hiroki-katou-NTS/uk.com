@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.dom.company.organization.employee;
+package nts.uk.ctx.bs.employee.dom.employeeinfo;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

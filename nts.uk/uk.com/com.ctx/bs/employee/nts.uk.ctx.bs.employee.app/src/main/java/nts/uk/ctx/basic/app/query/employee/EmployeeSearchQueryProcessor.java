@@ -16,8 +16,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.basic.dom.company.organization.employee.Employee;
-import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffClassHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.classification.AffClassHistoryRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistory;
@@ -33,6 +31,8 @@ import nts.uk.ctx.bs.employee.dom.access.person.dto.AcPersonDto;
 import nts.uk.ctx.bs.employee.dom.access.workplace.WorkplaceAdapter;
 import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceDto;
 import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceHierarchyDto;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 

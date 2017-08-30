@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.dom.company.organization.employee;
+package nts.uk.ctx.bs.employee.dom.employeeinfo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
