@@ -201,6 +201,52 @@ public class ProgramIdConsts {
 	public static final String CAS001C = "CAS001C";
 	
 	public static final String CAS001D = "CAS001D";
+
+	public static final String KMK005A = "KMK005A";
+
+	public static final String KMK005B = "KMK005B";
+
+	public static final String KMK005D = "KMK005D";
+
+	public static final String KMK005E = "KMK005E";
+
+	public static final String KMK005F = "KMK005F";
+
+	public static final String KMK005G = "KMK005G";
+
+	public static final String KMK005H = "KMK005H";
+
+	public static final String KMK005I = "KMK005I";
+
+	public static final String KMK005K = "KMK005K";
+
+	public static final String KMK008A = "KMK008A";
+
+	public static final String KMK008B = "KMK008B";
+
+	public static final String KMK008C = "KMK008C";
+
+	public static final String KMK008D = "KMK008D";
+
+	public static final String KMK008E = "KMK008E";
+
+	public static final String KMK008F = "KMK008F";
+
+	public static final String KMK008G = "KMK008G";
+
+	public static final String KMK008I = "KMK008I";
+
+	public static final String KMK008J = "KMK008J";
+
+	public static final String KMK008K = "KMK008K";
+	
+	public static final String KCP006A = "KCP006A";
+
+	public static final String KCP006B = "KCP006B";
+	
+	public static final String KDW002A = "KDW002A";
+
+	public static final String KDW002B = "KDW002B";
 	
 	
 }

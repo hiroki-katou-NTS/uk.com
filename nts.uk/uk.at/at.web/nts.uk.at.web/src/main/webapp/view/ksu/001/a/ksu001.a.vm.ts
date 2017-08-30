@@ -49,7 +49,6 @@ module ksu001.a.viewmodel {
         arrDay: Time[] = [];
         listSid: KnockoutObservableArray<string> = ko.observableArray([]);
         lengthListSid: any;
-        isClickNextBackMonth: boolean = false;
         workPlaceNameDisplay: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
@@ -420,8 +419,7 @@ module ksu001.a.viewmodel {
                     dtMoment = dtMoment.add(1, 'months');
                     dtMoment.subtract(1, 'days');
                     self.dtAft(dtMoment.toDate());
-                    self.isClickNextBackMonth = true;
-                    self.updateDetailAndHorzSum(self.isClickNextBackMonth);
+                    self.updateDetailAndHorzSum();
                 }
             });
 
@@ -437,8 +435,7 @@ module ksu001.a.viewmodel {
                     dtMoment = dtMoment.subtract(1, 'months');
                     dtMoment.add(1, 'days');
                     self.dtPrev(dtMoment.toDate());
-                    self.isClickNextBackMonth = true;
-                    self.updateDetailAndHorzSum(self.isClickNextBackMonth);
+                    self.updateDetailAndHorzSum();
                 }
             });
 
@@ -549,6 +546,9 @@ module ksu001.a.viewmodel {
                 newLeftMostDs.push({ empId: x, empName: empItem.empCd + ' ' + empItem.empName });
                 //newMiddle dataSource
                 newMiddleDs.push({ empId: x, team: "1", rank: "A", qualification: "★", employmentName: "アルバイト", workplaceName: "東京本社", classificationName: "分類", positionName: "一般" });
+                //newDetail dataSource
+                let dsOfSid: any = _.filter(self.dataSource(), ['sid', x]);
+                newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
                 //newVertSumContent dataSource
                 newVertSumContentDs.push({ empId: x, noCan: 6, noGet: 6 });
             });
@@ -557,12 +557,49 @@ module ksu001.a.viewmodel {
                 newLeftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
             }
 
+            //get new horzSumContentDs
+            let horzSumContentDs = [];
+            for (let i = 0; i < 5; i++) {
+                let obj = {};
+                obj["itemId"] = i.toString();
+                obj["empId"] = "";
+                for (let j = 0; j < self.arrDay.length; j++) {
+                    obj['_' + self.arrDay[j].yearMonthDay] = "10";
+                }
+                horzSumContentDs.push(obj);
+            }
+
+            let newDetailColumns = [];
+            //define the new detailColumns
+            _.each(self.arrDay, (x: Time) => {
+                newDetailColumns.push({
+                    key: "_" + x.yearMonthDay, width: "100px", headerText: "", visible: true
+                });
+            });
+
             let updateLeftmostContent = {
                 dataSource: newLeftMostDs,
             };
 
             let updateMiddleContent = {
                 dataSource: newMiddleDs,
+            };
+
+            let detailHeaderDeco = [], detailContentDeco = [];
+            //Set color for detail
+            self.setColorForDetail(detailHeaderDeco, detailContentDeco);
+            let updateDetailContent = {
+                columns: newDetailColumns,
+                dataSource: newDetailContentDs,
+                features: [{
+                    name: "BodyCellStyle",
+                    decorator: detailContentDeco
+                }]
+            };
+
+            let updateHorzSumContent = {
+                columns: newDetailColumns,
+                dataSource: horzSumContentDs
             };
 
             let updateVertSumContent = {
@@ -577,17 +614,15 @@ module ksu001.a.viewmodel {
             $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
             $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
             $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
-
-            self.isClickNextBackMonth = false;
-            self.updateDetailAndHorzSum(self.isClickNextBackMonth);
+            $("#extable").exTable("updateTable", "detail", {}, updateDetailContent);
+            $("#extable").exTable("updateTable", "horizontalSummaries", {}, updateHorzSumContent);
         }
 
         /**
          * update new data of header and content of detail and horizSum
          */
-        updateDetailAndHorzSum(isClickNextBackMonth: boolean): void {
+        updateDetailAndHorzSum(): void {
             let self = this;
-
             //Get dates in time period
             let currentDay = new Date(self.dtPrev().toString());
             self.arrDay = [];
@@ -626,6 +661,7 @@ module ksu001.a.viewmodel {
             let detailHeaderDeco = [], detailContentDeco = [];
             //Set color for detail
             self.setColorForDetail(detailHeaderDeco, detailContentDeco);
+
             let updateDetailHeader = {
                 columns: newDetailColumns,
                 dataSource: newDetailHeaderDs,
@@ -636,7 +672,7 @@ module ksu001.a.viewmodel {
             };
 
             //if haven't data in extable, only update header detail and header horizontal
-            if (isClickNextBackMonth && self.empItems().length == 0) {
+            if (self.empItems().length == 0) {
                 $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
                 $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, {});
             } else {
@@ -945,7 +981,15 @@ module ksu001.a.viewmodel {
                 });
                 //holiday
                 if (arrDay[i].weekDay == '日' || arrDay[i].weekDay == '土') {
-                    this['_' + arrDay[i].yearMonthDay] = ['休日', ''];
+                    this['_' + arrDay[i].yearMonthDay] = new ExCell({
+                        endTime: null,
+                        startTime: null,
+                        symbol: null,
+                        workTimeCode: "",
+                        workTimeName: "",
+                        workTypeCode: "",
+                        workTypeName: "休日",
+                    });
                 } else if (obj) {
                     //get code and name of workType and workTime
                     let workTypeCode = null, workTypeName = null, workTimeCode = null, workTimeName = null;

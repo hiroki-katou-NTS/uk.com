@@ -6,13 +6,10 @@ module nts.uk.at.view.kmk007.c.service {
     /**
      *  Save order data
      */
-    export function order(data: Array<WorkTypeDispOrder>): JQueryPromise<any> {
+    export function order(data: Array<viewmodel.IWorkTypeDispOrder>): JQueryPromise<any> {
         var path = nts.uk.text.format(servicePath.order);
         return nts.uk.request.ajax("at", path, data);
     } 
     
-    export interface WorkTypeDispOrder {
-        workTypeCode: string,
-        dispOrder: number
-    }
+    
 }
