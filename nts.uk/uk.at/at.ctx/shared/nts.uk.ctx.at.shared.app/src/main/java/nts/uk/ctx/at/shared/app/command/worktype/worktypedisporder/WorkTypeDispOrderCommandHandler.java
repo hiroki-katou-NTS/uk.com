@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.worktype.worktypedisporder;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -16,16 +18,19 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Transactional
 @Stateless
-public class WorkTypeDispOrderCommandHandler extends CommandHandler<WorkTypeDispOrderCommand> {
+public class WorkTypeDispOrderCommandHandler extends CommandHandler<List<WorkTypeDispOrderCommand>> {
 	@Inject
 	private WorkTypeDispOrderRepository workTypeDisporderRepository;
 	
 	@Override
-	protected void handle(CommandHandlerContext<WorkTypeDispOrderCommand> context) {
-		WorkTypeDispOrderCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<List<WorkTypeDispOrderCommand>> context) {
+		List<WorkTypeDispOrderCommand> command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		
 		workTypeDisporderRepository.remove(companyId);
-		workTypeDisporderRepository.add(command.toDomain());
+		
+		for (WorkTypeDispOrderCommand workTypeDispOrderCommand : command) {
+			workTypeDisporderRepository.add(workTypeDispOrderCommand.toDomain());
+		}
 	}
 }
