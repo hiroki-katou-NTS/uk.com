@@ -47,7 +47,7 @@ module nts.uk.at.view.ksm005.b {
                 self.enableDelete = ko.observable(true);
                 
                 // now month setting kcp006
-                self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYY')+'01'));
+                self.yearMonthPicked = ko.observable(self.getMonth());
                 
                 self.selectMonthlyPattern.subscribe(function(monthlyPatternCode: string) {
                     if (self.isBuild) {
@@ -55,6 +55,7 @@ module nts.uk.at.view.ksm005.b {
                     }
                     
                     if (monthlyPatternCode) {
+                        self.yearMonthPicked(self.getMonth());
                         self.detailMonthlyPattern(monthlyPatternCode, self.yearMonthPicked());
                     }
                     else {
@@ -63,7 +64,9 @@ module nts.uk.at.view.ksm005.b {
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
-                    self.detailMonthlyPattern(self.selectMonthlyPattern(), month);
+                    if (self.modeMonthlyPattern() == ModeMonthlyPattern.UPDATE) {
+                        self.detailMonthlyPattern(self.selectMonthlyPattern(), month);
+                    }
                 });
                 self.cssRangerYM = {
                 };
@@ -83,6 +86,12 @@ module nts.uk.at.view.ksm005.b {
                         self.openDialogByFindDate(date);
                     }
                 });
+            }
+            /**
+             * get month now
+             */
+            private getMonth(): number {
+                return parseInt(moment().format('YYYY') + '01');
             }
 
             /**
@@ -290,8 +299,9 @@ module nts.uk.at.view.ksm005.b {
             public resetData(): void{
                 var self = this;
                 self.clearValiate();
-                self.monthlyPatternModel().resetData();   
                 self.modeMonthlyPattern(ModeMonthlyPattern.ADD);
+                self.yearMonthPicked(self.getMonth());
+                self.monthlyPatternModel().resetData();   
                 var dataUpdate: WorkMonthlySettingDto[] = [];
                 for (var item of self.lstWorkMonthlySetting()) {
                     item.workTypeCode='';
