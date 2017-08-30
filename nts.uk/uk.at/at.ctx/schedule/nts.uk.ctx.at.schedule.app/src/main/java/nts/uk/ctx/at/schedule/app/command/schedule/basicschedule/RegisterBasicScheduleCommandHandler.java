@@ -2,7 +2,9 @@ package nts.uk.ctx.at.schedule.app.command.schedule.basicschedule;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -47,26 +49,41 @@ public class RegisterBasicScheduleCommandHandler
 
 	@Override
 	protected List<String> handle(CommandHandlerContext<List<RegisterBasicScheduleCommand>> context) {
-		Optional<WorkType> workType = null;
-		Optional<WorkTime> workTime = null;
-
 		String companyId = AppContexts.user().companyId();
 		List<String> errList = new ArrayList<String>();
 		List<RegisterBasicScheduleCommand> bScheduleCommand = context.getCommand();
+		List<String> listWorkTypeCode = bScheduleCommand.stream().map(x -> {
+			return x.getWorkTypeCode();
+		}).collect(Collectors.toList());
+		List<String> listWorkTimeCode = bScheduleCommand.stream().map(x -> {
+			return x.getWorkTimeCode();
+		}).collect(Collectors.toList());
+
+		List<WorkType> listWorkType = workTypeRepo.getPossibleWorkType(companyId, listWorkTypeCode);
+		List<WorkTime> listWorkTime = workTimeRepo.findByCodeList(companyId, listWorkTimeCode);
+
+		Map<String, WorkType> workTypeMap = listWorkType.stream().collect(Collectors.toMap(x -> {
+			return x.getWorkTypeCode().v();
+		}, x -> x));
+
+		Map<String, WorkTime> workTimeMap = listWorkTime.stream().collect(Collectors.toMap(x -> {
+			return x.getSiftCD().v();
+		}, x -> x));
+
 		for (RegisterBasicScheduleCommand bSchedule : bScheduleCommand) {
 			BasicSchedule basicScheduleObj = BasicSchedule.createFromJavaType(bSchedule.getEmployeeId(),
 					bSchedule.getDate(), bSchedule.getWorkTypeCode(), bSchedule.getWorkTimeCode());
 
 			// Check WorkType
-			workType = workTypeRepo.findByPK(companyId, bSchedule.getWorkTypeCode());
+			WorkType workType = workTypeMap.get(bSchedule.getWorkTypeCode()); 
 
-			if (!workType.isPresent()) {
+			if (workType == null) {
 				// set error to list
 				errList.add("Msg_436");
 				continue;
 			}
 
-			if (workType.get().getDeprecate() == DeprecateClassification.Deprecated) {
+			if (workType.getDeprecate() == DeprecateClassification.Deprecated) {
 				// set error to list
 				errList.add("Msg_468");
 				continue;
@@ -77,15 +94,15 @@ public class RegisterBasicScheduleCommandHandler
 				continue;
 			}
 
-			workTime = workTimeRepo.findByCode(companyId, bSchedule.getWorkTimeCode());
+			WorkTime workTime = workTimeMap.get(bSchedule.getWorkTimeCode());
 
-			if (!workTime.isPresent()) {
+			if (workTime == null) {
 				// Set error to list
 				errList.add("Msg_437");
 				continue;
 			}
 
-			if (workTime.get().getDispAtr().value == DisplayAtr.DisplayAtr_NotDisplay.value) {
+			if (workTime.getDispAtr().value == DisplayAtr.DisplayAtr_NotDisplay.value) {
 				// Set error to list
 				errList.add("Msg_469");
 				continue;
@@ -93,8 +110,8 @@ public class RegisterBasicScheduleCommandHandler
 
 			// Check workType-workTime
 			try {
-				basicScheduleService.checkPairWorkTypeWorkTime(workType.get().getWorkTypeCode().v(),
-						workTime.get().getSiftCD().v());
+				basicScheduleService.checkPairWorkTypeWorkTime(workType.getWorkTypeCode().v(),
+						workTime.getSiftCD().v());
 			} catch (RuntimeException ex) {
 				errList.add(ex.getMessage());
 				continue;
