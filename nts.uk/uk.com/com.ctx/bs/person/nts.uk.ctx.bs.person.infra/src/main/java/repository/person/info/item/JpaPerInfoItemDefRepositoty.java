@@ -10,6 +10,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
+import entity.person.info.category.PpemtPerInfoCtg;
+import entity.person.info.category.PpemtPerInfoCtgPK;
 import entity.person.info.item.PpemtPerInfoItem;
 import entity.person.info.item.PpemtPerInfoItemCm;
 import entity.person.info.item.PpemtPerInfoItemCmPK;
@@ -147,6 +149,9 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " ON pi.perInfoCtgId = pc.ppemtPerInfoCtgPK.perInfoCtgId" + " WHERE pc.categoryCd = :categoryCd"
 			+ " AND pi.itemCd = :itemCd" + " AND pc.cid= '000000000000-0000'";
 
+	private final static String SELECT_ITEMS_BY_LIST_CTG_ID_QUERY = "SELECT i FROM PpemtPerInfoItem i"
+			+ " WHERE i.itemCd = :itemCd AND i.perInfoCtgId IN :perInfoCtgIds";
+
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
@@ -183,11 +188,12 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	@Override
-	public void addPerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd, String ctgCode) {
+	public String addPerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd, String ctgCode) {
 		PpemtPerInfoItemCm perInfoItemCm = createPerInfoItemDefCmFromDomain(perInfoItemDef, contractCd, ctgCode);
 		this.commandProxy().insert(perInfoItemCm);
 		this.commandProxy().insert(createPerInfoItemDefFromDomain(perInfoItemDef));
 		addOrderItemRoot(perInfoItemDef.getPerInfoItemDefId(), perInfoItemDef.getPerInfoCategoryId());
+		return perInfoItemDef.getPerInfoItemDefId();
 	}
 
 	@Override
@@ -205,9 +211,47 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 
 	@Override
 	public void updatePerInfoItemDefRoot(PersonInfoItemDefinition perInfoItemDef, String contractCd) {
-		// this.commandProxy().update(createPerInfoItemDefCmFromDomain(perInfoItemDef,
-		// contractCd));
-		// this.commandProxy().update(createPerInfoItemDefFromDomain(perInfoItemDef));
+		PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(perInfoItemDef.getPerInfoCategoryId());
+		PpemtPerInfoCtg perInfoCtg = this.queryProxy().find(perInfoCtgPK, PpemtPerInfoCtg.class).orElse(null);
+		if (perInfoCtg == null) {
+			return;
+		}
+		PpemtPerInfoItemCmPK perInfoItemCmPK = new PpemtPerInfoItemCmPK(contractCd, perInfoCtg.categoryCd,
+				perInfoItemDef.getItemCode().v());
+		PpemtPerInfoItemCm itemCmOld = this.queryProxy().find(perInfoItemCmPK, PpemtPerInfoItemCm.class).orElse(null);
+		if (itemCmOld == null) {
+			return;
+		}
+		PpemtPerInfoItemCm itemCmNew = createPerInfoItemDefCmFromDomain(perInfoItemDef, contractCd,
+				perInfoCtg.categoryCd);
+		itemCmNew.setInsCcd(itemCmOld.getInsCcd());
+		itemCmNew.setInsDate(itemCmOld.getInsDate());
+		itemCmNew.setInsScd(itemCmOld.getInsScd());
+		itemCmNew.setInsPg(itemCmOld.getInsPg());
+		itemCmNew.setUpdDate(itemCmOld.getUpdDate());
+		itemCmNew.setUpdCcd(itemCmOld.getUpdCcd());
+		itemCmNew.setUpdScd(itemCmOld.getUpdScd());
+		itemCmNew.setUpdPg(itemCmOld.getUpdPg());
+		this.commandProxy().update(itemCmNew);
+
+		PpemtPerInfoItemPK perInfoItemPK = new PpemtPerInfoItemPK(perInfoItemDef.getPerInfoItemDefId());
+		PpemtPerInfoItem perInfoItem = this.queryProxy().find(perInfoItemPK, PpemtPerInfoItem.class).orElse(null);
+		if (perInfoItem == null) {
+			return;
+		}
+		perInfoItem.itemName = perInfoItemDef.getItemName().v();
+		this.commandProxy().update(perInfoItem);
+	}
+
+	@Override
+	public void removePerInfoItemDefRoot(List<String> perInfoCtgIds, String categoryCd, String contractCd,
+			String itemCode) {
+		List<PpemtPerInfoItem> listItem = this.queryProxy()
+				.query(SELECT_ITEMS_BY_LIST_CTG_ID_QUERY, PpemtPerInfoItem.class).setParameter("itemCd", itemCode)
+				.setParameter("perInfoCtgIds", perInfoCtgIds).getList();
+		this.commandProxy().removeAll(listItem);
+		PpemtPerInfoItemCmPK perInfoItemCmPK = new PpemtPerInfoItemCmPK(contractCd, categoryCd, itemCode);
+		this.commandProxy().remove(PpemtPerInfoItemCm.class, perInfoItemCmPK);
 	}
 
 	@Override

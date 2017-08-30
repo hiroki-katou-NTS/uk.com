@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.ws.shift.estimate.personal;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -50,6 +52,18 @@ public class PersonalEstablishmentWs extends WebService{
 	public PersonalEstablishmentDto findByTargetYear(@PathParam("targetYear") Integer targetYear,
 			@PathParam("employeeId") String employeeId) {
 		return this.finder.findEstimateTime(targetYear, employeeId);
+	}
+	
+	/**
+	 * Find all by target year.
+	 *
+	 * @param targetYear the target year
+	 * @return the list
+	 */
+	@POST
+	@Path("findAll/{targetYear}")
+	public List<PersonalEstablishmentDto> findAllByTargetYear(@PathParam("targetYear") Integer targetYear) {
+		return this.finder.findAllPersonalSetting(targetYear);
 	}
 	
 	/**

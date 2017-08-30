@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services;
 
-import java.util.Date;
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseAdaptorDto;
+
 /**
+ * 2.承認ルートを整理する
  * 
  * @author vunv
- *
  */
 public interface AdjustmentApprovalRootService {
 
@@ -15,14 +17,12 @@ public interface AdjustmentApprovalRootService {
 	 * 
 	 * @param cid 会社ID
 	 * @param sid 社員ID（申請本人の社員ID）
-	 * @param employmentRootAtr 就業ルート区分
-	 * @param subjectRequest 対象申請
-	 * @param standardDate 基準日
-	 * @param branchIds
+	 * @param baseDate 基準日
+	 * @param appPhases 承認フーズ
 	 */
-	void getApprovalRootOfSubjectRequest(
+	void adjustmentApprovalRootData(
 			String cid, 
 			String sid, 
-			Date standardDate,
-			List<String> branchIds);
+			GeneralDate baseDate,
+			List<ApprovalPhaseAdaptorDto> appPhases);
 }

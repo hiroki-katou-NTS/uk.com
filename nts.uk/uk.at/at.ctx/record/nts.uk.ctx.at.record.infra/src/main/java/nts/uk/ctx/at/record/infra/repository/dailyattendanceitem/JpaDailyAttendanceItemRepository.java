@@ -13,7 +13,7 @@ import nts.uk.ctx.at.record.infra.entity.dailyattendanceitem.KrcmtDailyAttendanc
 public class JpaDailyAttendanceItemRepository extends JpaRepository implements DailyAttendanceItemRepository {
 
 	private static final String FIND;
-
+	private static final String FIND_ALL;
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -21,6 +21,14 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 		builderString.append("WHERE a.krcmtDailyAttendanceItemPK.companyId = :companyId ");
 		builderString.append("AND a.userCanSet = :userCanSet ");
 		FIND = builderString.toString();
+		
+		
+		StringBuilder b = new StringBuilder();
+		b.append("SELECT a ");
+		b.append("FROM KrcmtDailyAttendanceItem a ");
+		b.append("WHERE a.krcmtDailyAttendanceItemPK.companyId = :companyId ");
+		FIND_ALL = b.toString();
+		
 	}
 
 	@Override
@@ -39,5 +47,11 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 				krcmtDailyAttendanceItem.dailyAttendanceAtr.intValue(),
 				krcmtDailyAttendanceItem.nameLineFeedPosition.intValue());
 		return dailyAttendanceItem;
+	}
+
+	@Override
+	public List<DailyAttendanceItem> getList(String companyId) {
+		return this.queryProxy().query(FIND_ALL, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
+				.getList(f -> toDomain(f));
 	}
 }

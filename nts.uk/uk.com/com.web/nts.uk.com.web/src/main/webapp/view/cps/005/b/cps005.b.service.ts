@@ -6,6 +6,8 @@ module nts.uk.com.view.cps005.b {
                 getPerInfoItemDefById: "ctx/bs/person/info/ctgItem/findby/itemId/{0}",
                 addItemDef: "ctx/bs/person/info/ctgItem/add",
                 updateItemDef: "ctx/bs/person/info/ctgItem/update",
+                removeItemDef: "ctx/bs/person/info/ctgItem/remove",
+                
             }
 
             constructor() {
@@ -23,12 +25,15 @@ module nts.uk.com.view.cps005.b {
             };
             
             addItemDef(newItemDef: any): JQueryPromise<any> {
-                console.log(ko.toJS(newItemDef));
                 return nts.uk.request.ajax("com", this.paths.addItemDef, newItemDef);
             };
             
             updateItemDef(newItemDef: any): JQueryPromise<any> {
                 return nts.uk.request.ajax("com", this.paths.updateItemDef, newItemDef);
+            };
+            
+            removeItemDef(removeCommand: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("com", this.paths.removeItemDef, removeCommand);
             };
         }
     }

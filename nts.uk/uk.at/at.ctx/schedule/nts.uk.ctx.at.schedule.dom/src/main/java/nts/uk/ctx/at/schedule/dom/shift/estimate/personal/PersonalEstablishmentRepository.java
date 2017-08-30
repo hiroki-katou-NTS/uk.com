@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.estimate.personal;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -37,5 +38,14 @@ public interface PersonalEstablishmentRepository {
 	 * @param targetYear the target year
 	 */
 	public void removePersonalEstablishment(String employeeId, int targetYear);
+	
+	
+	/**
+	 * Find all.
+	 *
+	 * @param targetYear the target year
+	 * @return the list
+	 */
+	public List<String> findAll(int targetYear);
 }
 

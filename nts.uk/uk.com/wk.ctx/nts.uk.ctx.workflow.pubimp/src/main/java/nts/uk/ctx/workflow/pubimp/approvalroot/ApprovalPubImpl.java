@@ -13,6 +13,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRep
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.pub.approvalroot.ApprovalPhaseDto;
 import nts.uk.ctx.workflow.pub.approvalroot.ApprovalRootPub;
+import nts.uk.ctx.workflow.pub.approvalroot.ApproverDto;
 import nts.uk.ctx.workflow.pub.approvalroot.CompanyApprovalRootDto;
 import nts.uk.ctx.workflow.pub.approvalroot.PersonApprovalRootDto;
 import nts.uk.ctx.workflow.pub.approvalroot.WkpApprovalRootDto;
@@ -147,7 +148,17 @@ public class ApprovalPubImpl implements ApprovalRootPub{
 						x.getApprovalPhaseId(),
 						x.getApprovalForm().value,
 						x.getBrowsingPhase(),
-						x.getOrderNumber()
+						x.getOrderNumber(),
+						x.getApprovers().stream().map(a -> new ApproverDto(
+								a.getCompanyId(), 
+								a.getApprovalPhaseId(), 
+								a.getApproverId(), 
+								a.getJobTitleId(), 
+								a.getEmployeeId(), 
+								a.getOrderNumber(), 
+								a.getApprovalAtr().value, 
+								a.getConfirmPerson().value))
+						.collect(Collectors.toList())
 			    )).collect(Collectors.toList());
 	}
 }

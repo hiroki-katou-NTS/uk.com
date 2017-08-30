@@ -29,8 +29,7 @@ public class UpdateItemCommandHandler extends CommandHandler<UpdateItemCommand> 
 		if (!checkQuantityItemData()) {
 			newItem = MappingDtoToDomain.mappingFromDomaintoCommandForUpdate(itemCommand, oldItem);
 		}
-		//this.pernfoItemDefRep.updatePerInfoItemDefRoot(perInfoItemDef, contractCd);
-
+		this.pernfoItemDefRep.updatePerInfoItemDefRoot(newItem, contractCd);
 	}
 
 	private boolean checkQuantityItemData() {
@@ -44,7 +43,6 @@ public class UpdateItemCommandHandler extends CommandHandler<UpdateItemCommand> 
 		 */
 		// Hiện tại trả về true ~ số lượng > 1
 		return true;
-
 	}
 
 }
