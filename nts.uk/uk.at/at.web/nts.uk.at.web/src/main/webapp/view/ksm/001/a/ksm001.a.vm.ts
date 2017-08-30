@@ -150,7 +150,6 @@ module nts.uk.at.view.ksm001.a {
                 self.personalEstablishmentModel.selectedYear.subscribe(year => {
                     self.updatePersonalEstimateSetting(year);
                     self.loadCompanyEstablishment(year, false);
-                    self.updatePersonalEstimateSetting(year);
                 });
                 
                 self.selectedEmployeeCode.valueHasMutated();
@@ -294,6 +293,7 @@ module nts.uk.at.view.ksm001.a {
                         employmentSettings.push(employmentSetting);
                     }
                     self.alreadySettingEmployment(employmentSettings);
+                    self.updateEnableDeleteEmployment(self.selectedEmploymentCode());
                 });
             }
             
@@ -326,6 +326,7 @@ module nts.uk.at.view.ksm001.a {
                         self.isLoading(false);
                     }
                     self.initNextTabFeature();
+                    self.updateEnableDeleteEmployment(employmentCode);
                     nts.uk.ui.block.clear();
                     dfd.resolve();
                 });
@@ -367,7 +368,15 @@ module nts.uk.at.view.ksm001.a {
             }
             
             /**
-             * 
+             * update enable delete button by call service
+             */
+            private updateEnableDeleteEmployment(employementCode: string) {
+                var self = this;
+                self.employmentEstablishmentModel.enableDelete(self.checkEmploymentSetting(employementCode));
+            }
+            
+             /**
+             * update enable delete button by call service
              */
             private updateEnableDeletePersonal(employeeCode: string) {
                 var self = this;
@@ -587,13 +596,13 @@ module nts.uk.at.view.ksm001.a {
             * function on click deleteCompanyEstablishment action
             */
             public deleteCompanyEstablishment(): void {
-                nts.uk.ui.block.invisible();
                 var self = this;
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-                    service.deleteCompanyEstablishment(self.selectedTargetYear()).done(function() {
+                    nts.uk.ui.block.invisible();
+                    service.deleteCompanyEstablishment(self.companyEstablishmentModel.selectedYear()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             // reload page
-                            self.loadCompanyEstablishment(self.selectedTargetYear(), false);
+                            self.loadCompanyEstablishment(self.companyEstablishmentModel.selectedYear(), false);
                         });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
@@ -640,6 +649,7 @@ module nts.uk.at.view.ksm001.a {
                         self.selectedEmploymentCode()).done(function() {
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                                 self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
+                                self.loadEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(), self.selectedEmploymentCode(), false);
                             });
                         }).always(() => {
                             nts.uk.ui.block.clear();
@@ -691,9 +701,9 @@ module nts.uk.at.view.ksm001.a {
             * function on click deletePersonalEstablishment action
             */
             public deletePersonalEstablishment(): void {
-                nts.uk.ui.block.invisible();
                 var self = this;    
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    nts.uk.ui.block.invisible();
                     service.deletePersonalEstablishment(self.personalEstablishmentModel.selectedYear(),self.findEmployeeIdByCode(self.selectedEmployeeCode())).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             // reload page
