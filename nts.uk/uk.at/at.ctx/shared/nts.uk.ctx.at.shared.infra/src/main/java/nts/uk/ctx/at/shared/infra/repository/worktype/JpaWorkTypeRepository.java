@@ -6,6 +6,7 @@ package nts.uk.ctx.at.shared.infra.repository.worktype;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -13,13 +14,19 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkTypePK;
+import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkTypeSet;
+import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkTypeSetPK;
 
 @Stateless
 public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepository {
 
 	private static final String SELECT_FROM_WORKTYPE = "SELECT c FROM KshmtWorkType c";
+	
+	private static final String SELECT_FROM_WORKTYPESET = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
+			+ " AND a.kshmtWorkTypeSetPK.workTypeCode = :workTypeCode";
 
 	private final String SELECT_WORKTYPE = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId"
 			+ " AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible";
@@ -47,7 +54,28 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				entity.kshmtWorkTypePK.workTypeCode, entity.symbolicName, entity.name, entity.abbreviationName,
 				entity.memo, entity.worktypeAtr, entity.oneDayAtr, entity.morningAtr, entity.afternoonAtr,
 				entity.deprecateAtr, entity.calculatorMethod);
+		if (entity.worktypeSetList != null) {
+			domain.setWorkTypeSet(entity.worktypeSetList.stream().map(x -> toDomainWorkTypeSet(x)).collect(Collectors.toList()));
+		}
 		return domain;
+	}
+	
+	private static WorkTypeSet toDomainWorkTypeSet(KshmtWorkTypeSet entity){
+        val domain = WorkTypeSet.createSimpleFromJavaType(
+        		entity.kshmtWorkTypeSetPK.companyId, 
+        		entity.kshmtWorkTypeSetPK.workTypeCode, 
+        		entity.kshmtWorkTypeSetPK.workAtr, 
+        		entity.digestPublicHd, 
+        		entity.hodidayAtr, 
+        		entity.countHoliday, 
+        		entity.closeAtr, 
+        		entity.sumAbsenseNo, 
+        		entity.sumSpHolidayNo, 
+        		entity.timeLeaveWork, 
+        		entity.attendanceTime, 
+        		entity.genSubHoliday, 
+        		entity.dayNightTimeAsk);
+        return domain;
 	}
 
 	private static KshmtWorkType toEntity(WorkType domain) {
@@ -67,6 +95,22 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 		return entity;
 	}
+	
+	private static KshmtWorkTypeSet toEntityWorkTypeSet(WorkTypeSet domain) {
+		val entity = new KshmtWorkTypeSet(
+				new KshmtWorkTypeSetPK(domain.getCompanyId(), domain.getWorkTypeCd().v(), domain.getWorkAtr().value),
+				domain.getDigestPublicHd().value,
+				domain.getHolidayAtr().value,
+				domain.getCountHodiday().value,
+				domain.getCloseAtr().value,
+				domain.getSumAbsenseNo(),
+				domain.getSumSpHodidayNo(),
+				domain.getTimeLeaveWork().value,
+				domain.getAttendanceTime().value,
+				domain.getGenSubHodiday().value,
+				domain.getDayNightTimeAsk().value);
+		return entity;
+	}
 
 	@Override
 	public List<WorkType> getPossibleWorkType(String companyId, List<String> lstPossible) {
@@ -79,6 +123,14 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 		String query = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId";
 		return this.queryProxy().query(query, KshmtWorkType.class).setParameter("companyId", companyId)
 				.getList(c -> toDomain(c));
+	}
+	
+	@Override
+	public List<WorkTypeSet> findWorkTypeSet(String companyId, String workTypeCode) {	
+		return this.queryProxy().query(SELECT_FROM_WORKTYPESET, KshmtWorkTypeSet.class)
+				.setParameter("companyId", companyId)
+				.setParameter("workTypeCode", workTypeCode)
+				.getList(x -> toDomainWorkTypeSet(x));			
 	}
 
 	/**
@@ -128,5 +180,17 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	public void add(WorkType workType) {
 		this.commandProxy().insert(toEntity(workType));
 	}
+
+	@Override
+	public void remove(String companyId, String workTypeCd) {
+        KshmtWorkTypePK key = new KshmtWorkTypePK(companyId, workTypeCd);
+        this.commandProxy().remove(KshmtWorkType.class, key);		
+	}
+
+	@Override
+	public void addWorkTypeSet(WorkTypeSet workTypeSet) {
+		this.commandProxy().insert(toEntityWorkTypeSet(workTypeSet));		
+	}
+	
 
 }

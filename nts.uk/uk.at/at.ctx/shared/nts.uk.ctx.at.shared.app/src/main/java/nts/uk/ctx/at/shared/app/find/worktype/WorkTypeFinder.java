@@ -17,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DisplayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -59,7 +58,16 @@ public class WorkTypeFinder {
 	 * @return the list
 	 */
 	public List<WorkTypeDto> findByCompanyId() {
-		return this.workTypeRepo.findByCompanyId(companyId).stream().map(c -> WorkTypeDto.fromDomain(c))
+		return this.workTypeRepo.findByCompanyId(companyId).stream()
+				.map(c -> {
+					List<WorkTypeSetDto> workTypeSetList = c.getWorkTypeSetList()
+							.stream().map(x -> WorkTypeSetDto.fromDomain(x))
+							.collect(Collectors.toList());
+					
+					WorkTypeDto workType = WorkTypeDto.fromDomain(c);
+					workType.setWorkTypeSets(workTypeSetList);
+					return workType;
+				})
 				.collect(Collectors.toList());
 	}
 

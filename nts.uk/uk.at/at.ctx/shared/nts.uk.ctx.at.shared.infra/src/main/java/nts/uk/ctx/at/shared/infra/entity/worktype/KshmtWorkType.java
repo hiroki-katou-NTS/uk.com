@@ -5,10 +5,13 @@
 package nts.uk.ctx.at.shared.infra.entity.worktype;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -66,9 +69,11 @@ public class KshmtWorkType extends UkJpaEntity implements Serializable{
     @Column(name = "CALC_METHOD")
     public int calculatorMethod;
 	
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="workType", orphanRemoval = true)
+    public List<KshmtWorkTypeSet> worktypeSetList;
+    
 	@Override
 	protected Object getKey() {
 		return kshmtWorkTypePK;
 	}
-
 }
