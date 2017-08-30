@@ -1,10 +1,9 @@
 package nts.uk.ctx.at.request.app.find.application.common.approvalframe;
 
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalATR;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmATR;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.Reason;
+import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
 
 /**
  * 
@@ -22,22 +21,13 @@ public class ApprovalFrameDto {
 	private int dispOrder ;
 	
 	/** 承認者 */
-	private String authorizerSID ;
-	
-	/** 代行者 */
-	private String substituteSID ; 
+	private String approverSID ;
 	
 	/** 承認区分 */
-	private ApprovalATR approvalATR;
-
-	/** 日付 */
-	private String approvalDate;
-	
-	/** 理由 */
-	private Reason reason;
+	private ApprovalAtr approvalATR;
 	
 	/** 確定区分 */
-	private ConfirmATR confirmATR;
+	private ConfirmAtr confirmATR;
 	
 	public static ApprovalFrameDto fromDomain (ApprovalFrame domain){
 		
@@ -45,11 +35,8 @@ public class ApprovalFrameDto {
 				domain.getCompanyID(),
 				domain.getPhaseID(),
 				domain.getDispOrder(),
-				domain.getAuthorizerSID(),
-				domain.getSubstituteSID(),
+				domain.getApproverSID(),
 				domain.getApprovalATR(),
-				domain.getApprovalDate(),
-				domain.getReason(),
 				domain.getConfirmATR());
 	}
 }

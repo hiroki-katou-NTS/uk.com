@@ -1,6 +1,5 @@
 package command.person.info.item;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsAbolition;
 import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateType;
@@ -43,35 +42,39 @@ public class MappingDtoToDomain {
 		return itemDef;
 	}
 
-	public PersonInfoItemDefinition mappingFromDomaintoDto(AddItemCommand addItemCommand) {
-		PersonInfoItemDefinition itemDef = PersonInfoItemDefinition.createFromJavaType(addItemCommand.getPerInfoCtgId(),
-				addItemCommand.getItemCode(), addItemCommand.getItemParentCode(), addItemCommand.getItemName(),
-				IsAbolition.NOT_ABOLITION.value, IsFixed.NOT_FIXED.value, IsRequired.REQUIRED.value);
-		itemDef.setItemTypeState(createItemTypeState(addItemCommand, null, null));
+	public static PersonInfoItemDefinition mappingFromDomaintoCommand(AddItemCommand addItemCommand) {
+		PersonInfoItemDefinition itemDef = PersonInfoItemDefinition.createForAddItem(addItemCommand.getPerInfoCtgId(),
+				addItemCommand.getItemCode(), addItemCommand.getItemParentCode(), addItemCommand.getItemName());
+		itemDef.setItemTypeState(createItemTypeState(addItemCommand, ItemType.SINGLE_ITEM, null));
 		return itemDef;
+	}
+	
+	public static PersonInfoItemDefinition mappingFromDomaintoCommandForUpdate(UpdateItemCommand updateItem, PersonInfoItemDefinition item) {
+		item.setItemTypeState(createItemTypeStateForUpdate(updateItem));
+		return item;
 	}
 
 	private static ItemTypeState createItemTypeState(AddItemCommand addItemCommand, ItemType itemType,
 			DataTypeValue dataTypeValue) {
-		itemType = itemType != null ? itemType : EnumAdaptor.valueOf(addItemCommand.getItemType(), ItemType.class);
 		if (itemType == ItemType.SINGLE_ITEM) {
-			return ItemTypeState.createSingleItem(createDataTypeState(addItemCommand, dataTypeValue));
+			return ItemTypeState.createSingleItem(createDataTypeState(addItemCommand.getSingleItem(), dataTypeValue));
 		} else {
 			return ItemTypeState.createSetItem(null);
 		}
 	}
 
-	private static DataTypeState createDataTypeState(AddItemCommand addItemCommand, DataTypeValue dataTypeValue) {
-		if (addItemCommand.getSingleItem() == null) {
+	private static ItemTypeState createItemTypeStateForUpdate(UpdateItemCommand updateItem) {
+		return ItemTypeState.createSingleItem(createDataTypeState(updateItem.getSingleItem(), null));
+	}
+
+	private static DataTypeState createDataTypeState(SingleItemCommand singleI, DataTypeValue dataTypeValue) {
+		if (singleI == null) {
 			if (dataTypeValue == DataTypeValue.DATE) {
 				return DataTypeState.createDateItem(DateType.YEARMONTHDAY.value);
 			}
 			return null;
 		}
-		SingleItemCommand singleI = addItemCommand.getSingleItem();
-		dataTypeValue = dataTypeValue != null ? dataTypeValue
-				: EnumAdaptor.valueOf(singleI.getDataType(), DataTypeValue.class);
-		switch (dataTypeValue.value) {
+		switch (singleI.getDataType()) {
 		case 1:
 			return DataTypeState.createStringItem(singleI.getStringItemLength(), singleI.getStringItemType(),
 					singleI.getStringItemDataType());

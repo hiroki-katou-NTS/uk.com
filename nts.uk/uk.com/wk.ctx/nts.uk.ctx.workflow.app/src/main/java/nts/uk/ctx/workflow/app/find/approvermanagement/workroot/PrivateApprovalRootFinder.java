@@ -2,25 +2,29 @@ package nts.uk.ctx.workflow.app.find.approvermanagement.workroot;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranch;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkAppApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class PrivateApprovalRootFinder {
 	@Inject
-	private WorkAppApprovalRootRepository repo;
-	//user contexts
-	String companyId = AppContexts.user().companyId();
+	private PersonApprovalRootRepository repo;
+	@Inject
+	private ApprovalPhaseRepository repoAppPhase;
+	@Inject
+	private ApproverRepository repoApprover;
 	
 	public List<PrivateApprovalRootDto> getAllPrivateApprovalRoot(String employeeId){
+		//user contexts
+		String companyId = AppContexts.user().companyId();
 		List<PrivateApprovalRootDto> lstAppRoot = new ArrayList<>();
 		//get data person by employee id
 		List<PersonApprovalRoot> lstPri = this.repo.getAllPsApprovalRoot(companyId, employeeId);
@@ -30,10 +34,10 @@ public class PrivateApprovalRootFinder {
 //			if(branch.isPresent()){
 				List<Approver> lstApprover = new ArrayList<>();
 				//get data approval phase by branch id
-				List<ApprovalPhase> lstAppPhase = this.repo.getAllApprovalPhasebyCode(companyId, personalApprovalRoot.getBranchId());
+				List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, personalApprovalRoot.getBranchId());
 				for (ApprovalPhase approvalPhase : lstAppPhase) {
 					//get data approver by approval phase id
-					lstApprover = this.repo.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+					lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
 					lstApprovalPhase.add(new ApprovalPhaseDto(lstApprover, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
 							approvalPhase.getApprovalForm().value, approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
 				}

@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDt
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeDetailDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeFormatDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeFormatDetailDto;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatMonthly;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
@@ -22,7 +23,10 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class DailyPerformanceFinder {
-
+	
+	@Inject
+	private AttendanceItemsFinder attendanceItemsFinder;
+	
 	@Inject
 	private AttendanceItemRepository attendanceItemRepository;
 
@@ -37,10 +41,12 @@ public class DailyPerformanceFinder {
 		String companyId = login.companyId();
 
 		// 勤怠項目 - find attendance item
-		List<AttendanceItem> attendanceItems = this.attendanceItemRepository.getAttendanceItems(companyId, 1);
-		List<AttendanceItemDto> attendanceItemDtos = attendanceItems.stream().map(f -> {
-			return new AttendanceItemDto(f.getAttendanceId(), f.getAttendanceName().v(), f.getDislayNumber());
-		}).collect(Collectors.toList());
+//		List<AttendanceItem> attendanceItems = this.attendanceItemRepository.getAttendanceItems(companyId, 1);
+//		List<AttendanceItemDto> attendanceItemDtos = attendanceItems.stream().map(f -> {
+//			return new AttendanceItemDto(f.getAttendanceId(), f.getAttendanceName().v(), f.getDislayNumber());
+//		}).collect(Collectors.toList());
+		
+		List<AttendanceItemDto> attendanceItemDtos = this.attendanceItemsFinder.find();
 
 		// find daily detail
 //		BusinessTypeFormatDailyDto businessTypeFormatDailyDto = new BusinessTypeFormatDailyDto(null, null, null);

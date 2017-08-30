@@ -33,7 +33,12 @@ public class PpemtPerInfoItemOrder extends UkJpaEntity implements Serializable {
 	@NotNull
 	@Column(name = "DISPORDER")
 	public int disporder;
-
+	
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "DISPLAY_ORDER")
+	public int displayOrder;
+	
 	@Override
 	protected Object getKey() {
 		return ppemtPerInfoItemPK;

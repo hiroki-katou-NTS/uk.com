@@ -243,9 +243,12 @@ module nts.uk.ui.koExtentions {
                             if(nts.uk.util.isNullOrEmpty(selectedProperties)){
                                 component.trigger("selectionchanged");        
                             }
+                        } else {
+                            component.trigger("selectionchanged");    
                         }
                     } else if (targetMode == 'igTree') {
                         component.ntsTreeView("setSelected", selectedProperties);
+                        component.trigger("selectionchanged");
                         //selected(selectedValue);
                     }
                     _.defer(function() {

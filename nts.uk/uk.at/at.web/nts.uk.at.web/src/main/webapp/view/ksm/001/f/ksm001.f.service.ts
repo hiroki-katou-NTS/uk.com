@@ -1,47 +1,57 @@
-module nts.uk.at.view.ksm001.e {
+module nts.uk.at.view.ksm001.f {
+    
+    import UsageSettingDto = nts.uk.at.view.ksm001.a.service.model.UsageSettingDto;
+    
     export module service {
         var paths = {
-            find: "ctx/at/schedule/shift/pattern/estimate/usagesetting/find",
-            save: "ctx/at/schedule/shift/pattern/estimate/usagesetting/save",
-            useclassification: "ctx/at/schedule/shift/pattern/estimate/usagesetting/find/useclassification"
+            findCommonGuidelineSetting: "ctx/at/schedule/shift/estimate/guideline/find",
+            saveCommonGuidelineSetting: "ctx/at/schedule/shift/estimate/guideline/save"
         }
 
         /**
          * call service find setting
          */
-        export function getUsageSetting(): JQueryPromise<model.UsageSettingDto> {
-            return nts.uk.request.ajax('at', paths.find);
+        export function findCommonGuidelineSetting(): JQueryPromise<model.CommonGuidelineSettingDto> {
+            return nts.uk.request.ajax('at', paths.findCommonGuidelineSetting);
         }
 
-        export function saveUsageSetting(command: model.UsageSettingDto): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.save, command);
+        export function saveCommonGuidelineSetting(command: model.CommonGuidelineSettingDto): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.saveCommonGuidelineSetting, command);
         }
         
-        export function getUseClsEnum(): JQueryPromise<Array<model.Enum>> {
-            return nts.uk.request.ajax(paths.useclassification);
-        }
 
         export module model {
-            export class UsageSettingDto {
-                employmentSetting: number;
-                personalSetting: number;
             
-                constructor(employmentSetting: number, personalSetting: number) {
-                    this.employmentSetting = employmentSetting;
-                    this.personalSetting = personalSetting;
-                }
+            
+            export interface EstimatedAlarmColorDto {
+                guidelineCondition: number;
+                color: string;
             }
             
-            export class Enum {
-                value: number;
-                fieldName: string;
-                localizedName: string;
-    
-                constructor(value: number, fieldName: string, localizedName: string) {
-                    this.value = value;
-                    this.fieldName = fieldName;
-                    this.localizedName = localizedName;
-                }
+            export interface ReferenceConditionDto {
+                yearlyDisplayCondition: number;
+                monthlyDisplayCondition: number;
+                alarmCheckCondition: number;
+            }
+            
+            export interface CommonGuidelineSettingDto {
+                /** The alarm colors. */
+                alarmColors: EstimatedAlarmColorDto[];
+
+                /** The estimate time. */
+                estimateTime: ReferenceConditionDto;
+
+                /** The estimate price. */
+                estimatePrice: ReferenceConditionDto;
+
+                /** The estimate number of days. */
+                estimateNumberOfDays: ReferenceConditionDto;
+            }
+            
+            
+            export interface EstimatedConditionDto {
+                code: number;
+                name: string;
             }
         }
     }

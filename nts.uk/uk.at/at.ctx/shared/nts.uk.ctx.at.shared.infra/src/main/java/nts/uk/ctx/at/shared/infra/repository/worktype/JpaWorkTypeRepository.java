@@ -32,21 +32,17 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 			+ " AND c.kshmtWorkTypePK.workTypeCode IN :lstPossible";
 
 	private final String SELECT_BY_CID_DISPLAY_ATR = SELECT_FROM_WORKTYPE
-			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId"
-			+ " AND c.displayAtr = :displayAtr ORDER BY c.sortOrder ASC";
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId" + " AND c.deprecateAtr = :deprecateClassification";
 
 	private static final String FIND_NOT_DEPRECATED_BY_LIST_CODE = SELECT_FROM_WORKTYPE
 			+ " LEFT JOIN KshmtWorkTypeOrder o"
 			+ " ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId"
-			+ " AND c.kshmtWorkTypePK.workTypeCode IN :codes AND c.deprecateAtr = 0"
-			+ " ORDER BY o.dispOrder ASC";
+			+ " AND c.kshmtWorkTypePK.workTypeCode IN :codes AND c.deprecateAtr = 0" + " ORDER BY o.dispOrder ASC";
 
-	private static final String FIND_NOT_DEPRECATED = SELECT_FROM_WORKTYPE
-			+ " LEFT JOIN KshmtWorkTypeOrder o"
+	private static final String FIND_NOT_DEPRECATED = SELECT_FROM_WORKTYPE + " LEFT JOIN KshmtWorkTypeOrder o"
 			+ " ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
-			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId"
-			+ " AND c.deprecateAtr = 0"
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId" + " AND c.deprecateAtr = 0"
 			+ " ORDER BY o.dispOrder ASC";
 
 	private static WorkType toDomain(KshmtWorkType entity) {
@@ -134,12 +130,13 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	}
 
 	/**
-	 * Find by companyId and displayAtr = DISPLAY sort by SORT_ORDER
+	 * Find by companyId and deprecateClassification
 	 */
 	@Override
-	public List<WorkType> findByCIdAndDisplayAtr(String companyId, int displayAtr) {
+	public List<WorkType> findByCIdAndDisplayAtr(String companyId, int deprecateClassification) {
 		return this.queryProxy().query(SELECT_BY_CID_DISPLAY_ATR, KshmtWorkType.class)
-				.setParameter("companyId", companyId).setParameter("displayAtr", displayAtr).getList(c -> toDomain(c));
+				.setParameter("companyId", companyId).setParameter("deprecateClassification", deprecateClassification)
+				.getList(c -> toDomain(c));
 	}
 
 	@Override

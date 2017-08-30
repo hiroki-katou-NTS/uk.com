@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -29,7 +29,7 @@ import nts.uk.shr.com.context.AppContexts;
  *         error
  *
  */
-@Stateless
+@RequestScoped
 public class RegisterBasicScheduleCommandHandler
 		extends CommandHandlerWithResult<List<RegisterBasicScheduleCommand>, List<String>> {
 
@@ -66,38 +66,38 @@ public class RegisterBasicScheduleCommandHandler
 				continue;
 			}
 
-			if (workType.get().getDeprecate() != DeprecateClassification.Deprecated) {
+			if (workType.get().getDeprecate() == DeprecateClassification.Deprecated) {
 				// set error to list
 				errList.add("Msg_468");
 				continue;
 			}
 
 			// Check WorkTime
-			// WorkTimeCode = "000" : it is day off
-			if (bSchedule.getWorkTimeCode() != "000") {
-				workTime = workTimeRepo.findByCode(companyId, bSchedule.getWorkTimeCode());
+			if (StringUtil.isNullOrEmpty(bSchedule.getWorkTimeCode(), true)) {
+				continue;
+			}
 
-				if (!workTime.isPresent()) {
-					// Set error to list
-					errList.add("Msg_437");
-					continue;
-				}
+			workTime = workTimeRepo.findByCode(companyId, bSchedule.getWorkTimeCode());
 
-				if (workTime.get().getDispAtr().value != DisplayAtr.DisplayAtr_Display.value) {
-					// Set error to list
-					errList.add("Msg_469");
-					continue;
-				}
+			if (!workTime.isPresent()) {
+				// Set error to list
+				errList.add("Msg_437");
+				continue;
+			}
+
+			if (workTime.get().getDispAtr().value == DisplayAtr.DisplayAtr_NotDisplay.value) {
+				// Set error to list
+				errList.add("Msg_469");
+				continue;
 			}
 
 			// Check workType-workTime
 			try {
-				if (workTime.isPresent() && workType.isPresent()) {
-					basicScheduleService.checkPairWorkTypeWorkTime(workType.get().getWorkTypeCode().v(),
-							workTime.get().getSiftCD().v());
-				}
-			} catch (BusinessException ex) {
+				basicScheduleService.checkPairWorkTypeWorkTime(workType.get().getWorkTypeCode().v(),
+						workTime.get().getSiftCD().v());
+			} catch (RuntimeException ex) {
 				errList.add(ex.getMessage());
+				continue;
 			}
 
 			// Check exist of basicSchedule

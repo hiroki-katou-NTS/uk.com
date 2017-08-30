@@ -23,6 +23,13 @@ import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingRepository;
+import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -49,6 +56,18 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 	/** The monthly pattern repository. */
 	@Inject
 	private MonthlyPatternRepository monthlyPatternRepository;
+	
+	/** The monthly pattern repository. */
+	@Inject
+	private WorkTimeRepository workTimeRepository;
+	
+	/** The monthly pattern repository. */
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+	
+	/** The basic schedule service. */
+	@Inject
+	private BasicScheduleService basicScheduleService;
 	
 
 	/*
@@ -79,6 +98,48 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 				throw new BusinessException("Msg_148");
 			}
 		});
+		
+		
+		// check setting work type
+		lstDomain.forEach(domain -> {
+			Optional<WorkType> worktype = this.workTypeRepository.findByPK(companyId, domain.getWorkTypeCode().v());
+			
+			// not exist data
+			if(!worktype.isPresent()){
+				throw new BusinessException("Msg_389");
+			}
+			
+			// not use
+			if(worktype.get().getDeprecate().value == DeprecateClassification.Deprecated.value){
+				throw new BusinessException("Msg_416");
+			}
+		});
+
+		
+		// check setting work time 
+		lstDomain.forEach(domain->{	
+			if (!StringUtil.isNullOrEmpty(domain.getWorkingCode().v(), true)) {
+				Optional<WorkTime> worktime = this.workTimeRepository.findByCode(companyId,
+						domain.getWorkingCode().v());
+
+				// not exist data
+				if (!worktime.isPresent()) {
+					throw new BusinessException("Msg_390");
+				}
+
+				// not use
+				if (worktime.get().getDispAtr().value == UseSetting.UseAtr_NotUse.value) {
+					throw new BusinessException("Msg_417");
+				}
+			}
+		});
+
+		// check pair work type and work time
+		lstDomain.forEach(domain->{
+			this.basicScheduleService.checkPairWorkTypeWorkTime(domain.getWorkTypeCode().v(),
+					domain.getWorkingCode().v());
+		});
+		
 		// command to domain
 		MonthlyPattern domain = command.toDomain(companyId);
 

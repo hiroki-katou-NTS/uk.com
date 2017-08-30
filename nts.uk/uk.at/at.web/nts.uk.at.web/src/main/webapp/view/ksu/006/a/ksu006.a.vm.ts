@@ -1,6 +1,7 @@
 module nts.uk.at.view.ksu006.a {
     export module viewmodel {
         
+        import EnumerationModel = service.model.EnumerationModel;
         import ExternalBudgetModel = service.model.ExternalBudgetModel; 
         import ExternalBudgetValueModel = service.model.ExternalBudgetValueModel;
         import DataPreviewModel = service.model.DataPreviewModel;
@@ -16,7 +17,7 @@ module nts.uk.at.view.ksu006.a {
             extensionFileList: KnockoutObservableArray<string>;
             fileId: KnockoutObservable<string>;
             
-            encodingList: KnockoutObservableArray<any>;
+            encodingList: KnockoutObservableArray<EnumerationModel>;
             selectedEncoding: KnockoutObservable<number>;
             
             startLine: KnockoutObservable<number>;
@@ -47,8 +48,8 @@ module nts.uk.at.view.ksu006.a {
                 self.extensionFileList = ko.observableArray(['txt','csv', 'TXT', 'CSV']);
                 self.fileId = ko.observable(null);
                 
-                self.encodingList = ko.observableArray([{code: 1, name: 'Shift JIS'}]);
-                self.selectedEncoding = ko.observable(1);
+                self.encodingList = ko.observableArray([]);
+                self.selectedEncoding = ko.observable(null);
                 
                 self.startLine = ko.observable(1);
                 self.isOverride = ko.observable(true);
@@ -58,7 +59,7 @@ module nts.uk.at.view.ksu006.a {
                     return nts.uk.resource.getText("KSU006_123", [self.totalRecord()]);
                 });
                 
-                self.enableDataPreview = ko.observable(false);;
+                self.enableDataPreview = ko.observable(true);
                 self.isDataDailyUnit = ko.observable(true);
                 self.dataPreview = ko.observableArray([]);
                 self.firstRecord = ko.observable(null);
@@ -92,7 +93,11 @@ module nts.uk.at.view.ksu006.a {
                 // initial name id of time zone unit
                 self.initNameIdTimeZoneUnit();
                 
-                $.when(self.loadAllExternalBudget()).done(() => {
+                $.when(self.loadCharsetEnum(), self.loadAllExternalBudget()).done(() => {
+                    if (self.encodingList().length > 0) {
+                        self.selectedEncoding(self.encodingList()[0]);
+                    }
+                    
                     if (self.externalBudgetList().length > 0) {
                         self.isModeExecute(true);
                         self.selectedExtBudgetCode(self.externalBudgetList()[0].code);
@@ -117,10 +122,26 @@ module nts.uk.at.view.ksu006.a {
                 
                 $('#comboExternalBudget').focus();
                 self.uploadFile().done(function() {
-                    self.validateFile();
+                    self.validateFile().done(() => {
+                        self.openDialogProgress();
+                    }).fail((isContinueProgress: boolean) => {
+                        if (!isContinueProgress) {
+                            return;
+                        }
+                        self.openDialogProgress();
+                    });
                     dfd.resolve();
-                }).fail(function() {
-                    nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
+                }).fail(function(res: any) {
+                    self.showMessageError(res);
+                });
+            }
+            
+            private openDialogProgress() {
+                let self = this;
+                nts.uk.ui.block.grayout();
+                nts.uk.ui.windows.setShared("ExtractCondition", self.toJSObject());
+                nts.uk.ui.windows.sub.modal('/view/ksu/006/b/index.xhtml').onClosed(() => {
+                    nts.uk.ui.block.clear();
                 });
             }
             
@@ -139,7 +160,12 @@ module nts.uk.at.view.ksu006.a {
                         }
                         
                         // update header data preview
-                        self.checkUnitAtr();
+                        self.checkUnitAtr().done(() => {
+                            // reset value
+                            self.resetDataPreview();
+
+                            self.enableDataPreview(true);
+                        });
                     });
                 });
             }
@@ -147,8 +173,8 @@ module nts.uk.at.view.ksu006.a {
             public openDialogLog() {
                 nts.uk.ui.block.grayout();
                 nts.uk.ui.windows.sub.modal('/view/ksu/006/c/index.xhtml').onClosed(() => {
-                        nts.uk.ui.block.clear();
-                    });
+                    nts.uk.ui.block.clear();
+                });
             }
             
             private checkUnitAtr(): JQueryPromise<boolean> {
@@ -158,13 +184,13 @@ module nts.uk.at.view.ksu006.a {
                 // list external budget is empty ==> show mode Daily.
                 if (nts.uk.text.isNullOrEmpty(self.selectedExtBudgetCode()) {
                     self.isDataDailyUnit(true);
-                    return;
+                    return dfd.promise();
                 }
                 service.checkUnitAtr(self.selectedExtBudgetCode()).done((state: boolean) => {
                     self.isDataDailyUnit(state);
                     dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
+                }).fail(function(res: any) {
+                    self.showMessageError(res);
                 });
                 return dfd.promise();
             }
@@ -181,24 +207,37 @@ module nts.uk.at.view.ksu006.a {
                 }
                 
                 self.uploadFile().done(function() {
-                    service.findDataPreview(self.toJSObject()).done((res: DataPreviewModel) => {
-                        self.isDataDailyUnit(res.isDailyUnit);
-                        
-                        self.dataPreview(res.data);
-                        self.firstRecord(self.dataPreview()[0]);
-                        self.remainData(self.dataPreview().slice(1, self.dataPreview().length));
-                        
-                        self.totalRecord(res.totalRecord);
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
+                    self.validateFile().done(() => {
+                        self.loadDataPreview();
+                    }).fail((isContinueProgress: boolean) => {
+                        if (!isContinueProgress) {
+                            return;
+                        }
+                        self.loadDataPreview();
                     });
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
+                }).fail(function(res: any) {
+                    self.showMessageError(res);
                 });  
+            }
+            
+            private loadDataPreview() {
+                let self = this;
+                service.findDataPreview(self.toJSObject()).done((res: DataPreviewModel) => {
+                    self.isDataDailyUnit(res.isDailyUnit);
+
+                    self.dataPreview(res.data);
+                    self.firstRecord(self.dataPreview()[0]);
+                    self.remainData(self.dataPreview().slice(1, self.dataPreview().length));
+
+                    self.totalRecord(res.totalRecord);
+                }).fail(function(res: any) {
+                    self.showMessageError(res);
+                });
             }
             
             private resetDataPreview() {
                 let self = this;
+                self.totalRecord(0);
                 self.dataPreview([]);
                 self.firstRecord(null);
                 self.remainData([]);
@@ -226,8 +265,8 @@ module nts.uk.at.view.ksu006.a {
                 service.findExternalBudgetList().done(function(res: Array<ExternalBudgetModel>) {
                     self.externalBudgetList(res);
                     dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
+                }).fail(function(res: any) {
+                    self.showMessageError(res);
                 });
                 return dfd.promise();
             }
@@ -242,24 +281,30 @@ module nts.uk.at.view.ksu006.a {
                 $("#file-upload").ntsFileUpload({stereoType: 'ExternalBudgetFile'}).done(function(inforFileUpload) {
                     self.fileId(inforFileUpload[0].id);
                     dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
+                }).fail(function(res: any) {
+                    self.showMessageError(res);
                 });
                 return dfd.promise();
             }
             
-            private validateFile() {
+            private validateFile(): JQueryPromise<boolean> {
                 let self = this;
-                let extractCondition: any = self.toJSObject();
-                service.validateFile(extractCondition).done(function() {
-                    nts.uk.ui.block.grayout();
-                    nts.uk.ui.windows.setShared("ExtractCondition", extractCondition);
-                    nts.uk.ui.windows.sub.modal('/view/ksu/006/b/index.xhtml').onClosed(() => {
-                        nts.uk.ui.block.clear();
-                    });
+                let dfd = $.Deferred<boolean>();
+                
+                service.validateFile(self.toJSObject()).done(function() {
+                    dfd.resolve();
                 }).fail(function(res: any) {
-                    nts.uk.ui.dialog.alertError({messageId: res.messageId, messageParams: res.parameterIds});
+                    if (res.businessException && res.messageId == 'Msg_161') {
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_161' }).ifYes(function() {
+                            dfd.reject(true);
+                        }).ifNo(function() {
+                            dfd.reject(false);
+                        });
+                    } else {
+                        self.showMessageError(res);
+                    }
                 });
+                return dfd.promise();
             }
             
             private toJSObject(): any {
@@ -272,6 +317,26 @@ module nts.uk.at.view.ksu006.a {
                         startLine: parseInt(self.startLine()),
                         isOverride: self.isOverride()
                 };
+            }
+            
+            private loadCharsetEnum(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                service.findCharsetList().done((res: Array<EnumerationModel>) => {
+                    self.encodingList(res);
+                    dfd.resolve();
+                }).fail(function(res: any) {
+                    self.showMessageError(res);
+                });
+                return dfd.promise();
+            }
+            
+            private showMessageError(res: any) {
+                if (res.businessException) {
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                } else {
+                    nts.uk.ui.dialog.alertError(res.message);
+                }
             }
         }
     }

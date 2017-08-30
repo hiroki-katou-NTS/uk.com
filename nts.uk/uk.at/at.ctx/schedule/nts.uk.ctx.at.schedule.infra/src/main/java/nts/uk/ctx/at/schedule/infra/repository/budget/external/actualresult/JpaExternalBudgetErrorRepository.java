@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,6 +61,11 @@ public class JpaExternalBudgetErrorRepository extends JpaRepository implements E
                 root.get(KscdtExtBudgetError_.kscdtExtBudgetErrorPK).get(KscdtExtBudgetErrorPK_.exeId), executionId));
 
         query.where(predicateList.toArray(new Predicate[] {}));
+        
+        query.orderBy(Arrays.asList(
+            builder.asc(root.get(KscdtExtBudgetError_.kscdtExtBudgetErrorPK).get(KscdtExtBudgetErrorPK_.lineNo)),
+            builder.asc(root.get(KscdtExtBudgetError_.kscdtExtBudgetErrorPK).get(KscdtExtBudgetErrorPK_.columnNo))
+        ));
 
         return em.createQuery(query).getResultList().stream().map(
                 entity -> new ExternalBudgetError(new JpaExternalBudgetErrorGetMemento((KscdtExtBudgetError) entity)))

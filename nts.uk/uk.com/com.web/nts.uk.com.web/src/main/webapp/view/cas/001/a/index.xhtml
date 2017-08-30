@@ -12,8 +12,12 @@
 			</com:ValidatorScript>
 			<com:stylefile path="cas001.a.style.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
-			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile
+				path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"
+				of="/nts.uk.com.js.web" />
+			<com:scriptfile
+				path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"
+				of="/nts.uk.com.js.web" />
 			<com:scriptfile path="cas001.a.start.js" />
 			<com:scriptfile path="cas001.a.service.js" />
 			<com:scriptfile path="cas001.a.vm.js" />
@@ -78,13 +82,13 @@
 					<div id="roleConfigArea" data-bind="with:currentRole">
 
 						<div class="div_line" style="margin-top: 0px;">
-							<div class="float_left display_flex">
-								<div 
+							<div class="line_col_1 display_flex">
+								<div
 									data-bind="ntsFormLabel: { required:true,constraint:'RoleName' }">#{i18n.getText('CAS001_12')}</div>
-								<span id="A3_002" data-bind="text:roleCode"></span> 
-								<span id="A3_003" data-bind="text:roleName"></span>
+								<span id="A3_002" data-bind="text:roleCode"></span> <span
+									id="A3_003" data-bind="text:roleName"></span>
 							</div>
-							<div class="float_left" data-bind="with:$parent">
+							<div class="line_col_2" data-bind="with:$parent">
 								<button id="A3_004" data-bind="click:OpenDModal">#{i18n.getText('CAS001_13')}</button>
 							</div>
 						</div>
@@ -106,7 +110,7 @@
 													options: $parent.roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: allowMapBrowse,
+													value: allowMapUpload,
 													enable: true }"></div>
 												</td>
 												<td>
@@ -115,7 +119,7 @@
 													options: $parent.roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: allowMapUpload ,
+													value:  allowMapBrowse,
 													enable: true }"></div>
 												</td>
 											</tr>
@@ -169,12 +173,12 @@
 						<!-- 	category area -->
 						<div id="category_config_arena" data-bind="with:currentCategory">
 							<div class="div_line">
-								<div class="float_left">
+								<div class="line_col_1">
 									<div id="A4_001" data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CAS001_21')}</div>
 									<span id="A4_002" class="padding_left_20"
 										data-bind="text:categoryName"></span>
 								</div>
-								<div style="padding-left: 130px" class="float_left">
+								<div class="line_col_2">
 									<div id="A4_003" data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CAS001_22')}</div>
 									<span id="A4_004" class="padding_left_20"
 										data-bind="text:categoryType"></span>

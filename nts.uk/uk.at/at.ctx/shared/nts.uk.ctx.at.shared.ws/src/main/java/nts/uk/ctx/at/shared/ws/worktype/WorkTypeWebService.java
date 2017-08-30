@@ -23,7 +23,6 @@ import nts.uk.ctx.at.shared.app.command.worktype.RemoveWorkTypeCommandHandler;
 import nts.uk.ctx.at.shared.app.command.worktype.WorkTypeCommandBase;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
-import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeSetDto;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
 
@@ -41,15 +40,15 @@ public class WorkTypeWebService extends WebService {
 	/** The basic schedule. */
 	@Inject
 	private BasicScheduleService basicSchedule;
-	
+
 	@Inject
 	private InsertWorkTypeCommandHandler insertWorkTypeCommandHandler;
 	
 	@Inject
 	private RemoveWorkTypeCommandHandler  removeWorkTypeCommandHandler;
 
-	private static final List<Integer> workstyleList = Arrays.asList(WorkStyle.AFTERNOON_BREAK.value,
-			WorkStyle.MORNING_BREAK.value, WorkStyle.ONE_DAY_REST.value, WorkStyle.ONE_DAY_WORK.value);
+	private static final List<Integer> workstyleList = Arrays.asList(WorkStyle.AFTERNOON_WORK.value,
+			WorkStyle.MORNING_WORK.value, WorkStyle.ONE_DAY_REST.value, WorkStyle.ONE_DAY_WORK.value);
 
 	/**
 	 * Gets the possible work type.

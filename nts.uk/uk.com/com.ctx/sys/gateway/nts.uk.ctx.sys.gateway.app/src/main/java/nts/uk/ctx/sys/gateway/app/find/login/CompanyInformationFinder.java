@@ -20,15 +20,14 @@ public class CompanyInformationFinder {
 
 	/** The company information adapter. */
 	@Inject
-	CompanyInformationAdapter companyInformationAdapter;
+	private CompanyInformationAdapter companyInformationAdapter;
 
 	/**
-	 * Find all by contract code.
+	 * Find all.
 	 *
-	 * @param contractCode the contract code
 	 * @return the list
 	 */
-	public List<CompanyInformationDto> findAllByContractCode(String contractCode) {
-		return companyInformationAdapter.findByContractCode(contractCode);
+	public List<CompanyInformationDto> findAll() {
+		return companyInformationAdapter.findAll();
 	}
 }

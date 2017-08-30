@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -32,8 +35,8 @@ public class WwfmtAppover extends UkJpaEntity implements Serializable {
 	@Column(name = "SID")
 	public String employeeId;
 	/**順序*/
-	@Column(name = "ORDER_NUMBER")
-	public int orderNumber;
+	@Column(name = "DISPORDER")
+	public int displayOrder;
 	/**区分*/
 	@Column(name = "APPROVAL_ATR")
 	public int approvalAtr;
@@ -41,6 +44,14 @@ public class WwfmtAppover extends UkJpaEntity implements Serializable {
 	@Column(name = "CONFIRM_PERSON")
 	public int confirmPerson;
 
+	@ManyToOne
+	@JoinColumns({
+        @JoinColumn(name = "CID", referencedColumnName = "WWFMT_APPROVER.CID", insertable = false, updatable = false),
+        @JoinColumn(name = "APPROVAL_PHASE_ID", referencedColumnName = "WWFMT_APPROVER.APPROVAL_PHASE_ID", insertable = false, updatable = false),
+        @JoinColumn(name = "APPROVER_ID", referencedColumnName = "WWFMT_APPROVER.APPROVER_ID", insertable = false, updatable = false)
+    })
+	public WwfmtApprovalPhase wwfmtApprovalPhase;
+	
 	@Override
 	protected Object getKey() {
 		return wwfmtAppoverPK;

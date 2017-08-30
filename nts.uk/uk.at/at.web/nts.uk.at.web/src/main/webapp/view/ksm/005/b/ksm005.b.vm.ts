@@ -60,7 +60,6 @@ module nts.uk.at.view.ksm005.b {
                     else {
                         self.resetData();
                     }
-                    console.log(monthlyPatternCode);
                 });
                 
                 self.yearMonthPicked.subscribe(function(month: number){
@@ -94,15 +93,37 @@ module nts.uk.at.view.ksm005.b {
                 if (self.validateClient()) {
                     return;
                 }
+                
+                // mode ADD
+                if(self.modeMonthlyPattern() == ModeMonthlyPattern.ADD){
+                    service.findByIdMonthlyPattern(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3)).done(function(data){
+                       if(data && data.code){
+                           $('#inp_monthlyPatternCode').ntsError('set', {messageId: 'Msg_3'});
+                           return;
+                       }else {
+                           self.openDialogBacthSetting();
+                       }
+                    });
+                } else {
+                    self.openDialogBacthSetting();
+                }
+                
+            }
+            
+            /**
+             * open batch setting E
+             */
+            private openDialogBacthSetting(): void{
+                var self = this; 
                 nts.uk.ui.windows.setShared("monthlyPatternCode", nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3));
                 nts.uk.ui.windows.setShared("monthlyPatternName", self.monthlyPatternModel().name());
                 nts.uk.ui.windows.setShared("yearmonth", self.yearMonthPicked());
                 nts.uk.ui.windows.sub.modal("/view/ksm/005/e/index.xhtml").onClosed(function() {
                     var isCancelSave: boolean = nts.uk.ui.windows.getShared("isCancelSave");
-                    if (!isCancelSave) {
+                    if (isCancelSave != null && isCancelSave != undefined && !isCancelSave) {
                         self.reloadPage(nts.uk.text.padLeft(self.monthlyPatternModel().code(), '0', 3), false);
                     }
-                });
+                });    
             }
 
             /**

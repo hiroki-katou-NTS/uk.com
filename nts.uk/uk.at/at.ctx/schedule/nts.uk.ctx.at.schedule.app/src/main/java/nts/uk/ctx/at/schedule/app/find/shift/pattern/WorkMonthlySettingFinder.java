@@ -68,7 +68,7 @@ public class WorkMonthlySettingFinder {
 	
 	/** The internationalization. */
 	@Inject
-	IInternationalization internationalization;
+	private IInternationalization internationalization;
 	
 	/**
 	 * Find by month.
@@ -183,10 +183,11 @@ public class WorkMonthlySettingFinder {
 						dto.setWorkTypeName(internationalization.getItemName(NONE_SETTING).get());
 					}
 					
-					// set work time name NONE_SETTING
-					dto.setWorkingName(internationalization.getItemName(NONE_SETTING).get());
+					// set work time name ""
+					dto.setWorkingName("");
 				}
 				resDataWorkMonthlySetting.add(dto);
+				
 			} else {
 				// data default
 				WorkMonthlySettingDto dto = new WorkMonthlySettingDto();
@@ -197,11 +198,11 @@ public class WorkMonthlySettingFinder {
 				// set type color HOLIDAY
 				dto.setTypeColor(HOLIDAY);
 				
-				// set work type name NONE_SETTING
-				dto.setWorkTypeName(internationalization.getItemName(NONE_SETTING).get());
+				// set work type name ""
+				dto.setWorkTypeName("");
 
-				// set work time name NONE_SETTING
-				dto.setWorkingName(internationalization.getItemName(NONE_SETTING).get());
+				// set work time name ""
+				dto.setWorkingName("");
 				
 				resDataWorkMonthlySetting.add(dto);
 			}

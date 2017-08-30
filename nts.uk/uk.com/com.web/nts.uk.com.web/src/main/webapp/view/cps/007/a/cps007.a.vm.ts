@@ -26,6 +26,21 @@ module cps007.a.vm {
                 layout.id(x.id);
                 layout.code(x.code);
                 layout.name(x.name);
+
+                // remove all sibling sperators
+                let maps = _(x.itemsClassification)
+                    .map((x, i) => (x.layoutItemType == 2) ? i : -1)
+                    .filter(x => x != -1).value();
+                
+                _.each(maps, (t, i) => {
+                    if (maps[i + 1] == t + 1) {
+                        _.remove(x.itemsClassification, (m: IItemClassification) => {
+                            let item: IItemClassification = ko.unwrap(x.itemsClassification)[maps[i + 1]];
+                            return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
+                        });
+                    }
+                });
+
                 layout.itemsClassification(x.itemsClassification);
             });
         }
@@ -72,7 +87,7 @@ module cps007.a.vm {
             block();
             service.saveData(command).done(() => {
                 self.start();
-                info(text("Msg_15")).then(function() {
+                info({ messageId: "Msg_15" }).then(function() {
                     unblock();
                 });
             }).fail((mes) => {

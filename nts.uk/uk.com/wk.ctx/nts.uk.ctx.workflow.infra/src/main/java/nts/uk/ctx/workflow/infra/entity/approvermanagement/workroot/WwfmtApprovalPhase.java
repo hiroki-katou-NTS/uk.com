@@ -1,9 +1,13 @@
 package nts.uk.ctx.workflow.infra.entity.approvermanagement.workroot;
 
 import java.io.Serializable;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -30,8 +34,11 @@ public class WwfmtApprovalPhase extends UkJpaEntity implements Serializable{
 	@Column(name = "BROWSING_PHASE")
 	public int browsingPhase;
 	/**順序*/
-	@Column(name = "ORDER_NUMBER")
-	public int orderNumber;
+	@Column(name = "DISPORDER")
+	public int displayOrder;
+	
+	@OneToMany(cascade=CascadeType.ALL, mappedBy="wwfmtApprovalPhase", orphanRemoval = true)
+	public List<WwfmtAppover> wwfmtAppovers;
 	
 	@Override
 	protected Object getKey() {

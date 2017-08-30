@@ -48,8 +48,11 @@ module nts.uk.at.view.ksm003.a {
                 self.selectedCode.subscribe(function(codeChanged: string) {
                     if (codeChanged) {
                         self.getPatternValByPatternCd(codeChanged);
+                    } else {
+                        self.isEditting(false);
+                        self.resetInput();
+                        self.clearError();
                     }
-
                 });
 
             }
@@ -71,7 +74,7 @@ module nts.uk.at.view.ksm003.a {
                     } else {
                         self.switchNewMode();
                     }
-                    //                    self.clearError();
+                    self.clearError();
                     dfd.resolve();
                 });
 
@@ -109,27 +112,18 @@ module nts.uk.at.view.ksm003.a {
 
                 var dfd = $.Deferred();
 
-                //                self.clearError();
-
+                self.clearError();
                 // nts.uk.ui.block.grayout();
 
                 service.getPatternValByPatternCd(patternCode).done(function(dataRes) {
                     //getPatternValByPatternCd by patternCode  
                     if (dataRes !== undefined) {
+                        self.isEditting(true);
+                        $("#inpPattern").focus();
                         self.detail(new model.DailyPatternDetailModel(dataRes.patternCode, dataRes.patternName, dataRes.dailyPatternVals.map(function(item) {
                             return new model.DailyPatternValModel(item.dispOrder, item.workTypeSetCd, item.workingHoursCd, item.days);
                         })));
                     }
-
-                    //check start in Mode
-                    if (self.itemLst().length <= 0 || self.selectedCode() == null) {
-                        self.isEditting(false);
-                        $("#inpCode").focus();
-                    } else {
-                        self.isEditting(true);
-                        $("#inpPattern").focus();
-                    }
-
                     //                    nts.uk.ui.block.clear();
 
                     dfd.resolve();
@@ -155,12 +149,12 @@ module nts.uk.at.view.ksm003.a {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     self.loadAllDailyPatternItems();
                     self.selectedCode(nts.uk.text.padLeft(self.detail().patternCode(), '0', 2));
-                    $("#inpPattern").focus();
-                }).fail(function(error) {
-                    if (error.messageId == 'Msg_31' || error.messageId == 'Msg_22' || error.messageId == 'Msg_23' || error.messageId == 'Msg_25' || error.messageId == 'Msg_435' || error.messageId == 'Msg_434') {
-                        $('#days0').ntsError('set', error);
+                    self.isEditting(true);
+                }).fail(function(res) {
+                    if (res.messageId == "Msg_3") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_3" });
                     } else {
-                        $('#inpCode').ntsError('set', error);
+                        alert(res.message);
                     }
                 }).always(function() {
                     nts.uk.ui.block.clear();
@@ -217,20 +211,8 @@ module nts.uk.at.view.ksm003.a {
             //select switch New Mode
             public switchNewMode(): void {
                 let self = this;
-
-                // cretar new table
-                var dataNew: model.DailyPatternValModel[];
-                dataNew = new Array();
-                for (let i = 0; i <= 9; i++) {
-                    dataNew.push(new model.DailyPatternValModel(i, "", "", null));
-                }
-                // error here
-                self.detail().patternCode("");
-                self.detail().patternName("");
-                self.detail().dailyPatternVals(dataNew);
-
                 self.isEditting(false);
-                self.selectedCode(null);
+                self.selectedCode("");
                 self.resetInput();
                 $("#inpCode").focus();
                 self.clearError();
@@ -238,13 +220,25 @@ module nts.uk.at.view.ksm003.a {
 
             //reset Input
             private resetInput(): void {
-                $('.nts-input').val("");
+                let self = this;
+                self.detail().patternCode("");
+                self.detail().patternName("");
+                self.detail().dailyPatternVals().forEach(function(item) {
+                    item.workTypeSetCd("");
+                    item.workTypeInfo("");
+                    item.workingInfo("");
+                    item.workingHoursCd("");
+                    item.days(null);
+                });
             }
 
             // clear Error
             private clearError(): void {
-                if ($('.nts-input').ntsError("hasError")) {
-                    $('.nts-input').ntsError('clear');
+                if ($('.nts-editor').ntsError("hasError")) {
+                    $('.nts-editor').ntsError('clear');
+                }
+                if ($('.buttonEvent').ntsError("hasError")) {
+                    $('.buttonEvent').ntsError('clear');
                 }
             }
 
@@ -253,12 +247,24 @@ module nts.uk.at.view.ksm003.a {
                 let self = this;
                 $('#inpCode').ntsEditor('validate');
                 $('#inpPattern').ntsEditor('validate');
-                self.detail().dailyPatternVals().forEach((item) => {
-                    if (item.isSetting()) {
-                        $('#days' + item.dispOrder).ntsEditor('validate');
+
+                if (nts.uk.util.isNullOrEmpty(self.detail().dailyPatternVals())) {
+                    $('#days1').ntsError('set', { messageId: "Msg_31" });
+                }
+
+                self.detail().dailyPatternVals().filter(i => i.isSetting()).forEach((item) => {
+                    $('#days' + item.dispOrder).ntsEditor('validate');
+
+                    if (!nts.uk.text.isNullOrEmpty(item.days()) && nts.uk.text.isNullOrEmpty(item.workTypeSetCd())) {
+                        $('#btnVal' + item.dispOrder).ntsError('set', { messageId: "Msg_22" });
+                    }
+
+                    if (nts.uk.text.isNullOrEmpty(item.days()) && !nts.uk.text.isNullOrEmpty(item.workTypeSetCd())) {
+                        $('#days' + item.dispOrder).ntsError('set', { messageId: "Msg_25" });
                     }
                 });
-                return $('.nts-input').ntsError('hasError');
+
+                return $('.nts-input').ntsError('hasError') || $('.buttonEvent').ntsError('hasError');
             }
 
             //click button open Dialog Working
@@ -272,12 +278,6 @@ module nts.uk.at.view.ksm003.a {
                 let self = this;
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml', { title: nts.uk.resource.getText('KDL003_1') });
             }
-
-            //        closeDialog
-            private closeDialog(): void {
-                nts.uk.ui.windows.close();
-            }
-
         }
 
         // define model     
@@ -325,7 +325,7 @@ module nts.uk.at.view.ksm003.a {
 
 
                 public toDto(): DailyPatternDetailDto {
-                    return new DailyPatternDetailDto(this.patternCode(), this.patternName(), this.dailyPatternVals().map((item) => {
+                    return new DailyPatternDetailDto(nts.uk.text.padLeft(this.patternCode(), '0', 2), this.patternName(), this.dailyPatternVals().map((item) => {
                         if (item.workTypeSetCd() || item.workingHoursCd() || item.days()) {
                             return item.toDto();
                         }
@@ -342,6 +342,7 @@ module nts.uk.at.view.ksm003.a {
                 workingInfo: KnockoutObservable<string>;
                 workingHoursCd: KnockoutObservable<string>;
                 days: KnockoutObservable<number>;
+                isSetting: KnockoutComputed<boolean>;
 
                 constructor(dispOrder: number, workTypeSetCd: string, workingHoursCd: string, days: number) {
                     this.dispOrder = dispOrder;
@@ -350,6 +351,12 @@ module nts.uk.at.view.ksm003.a {
                     this.days = ko.observable(days);
                     this.workTypeInfo = ko.observable(workTypeSetCd);
                     this.workingInfo = ko.observable(workingHoursCd);
+                    this.isSetting = ko.computed(() => {
+                        if (this.workTypeSetCd() || this.workingHoursCd() || this.days()) {
+                            return true;
+                        }
+                        return false;
+                    });
                 }
 
                 public setWorkTypeName(workTypeName: string): void {
@@ -360,16 +367,8 @@ module nts.uk.at.view.ksm003.a {
                     this.workingInfo(this.workingHoursCd() + ' ' + workTimeName);
                 }
 
-
                 public toDto(): DailyPatternValDto {
                     return new DailyPatternValDto(this.dispOrder, this.workTypeSetCd(), this.workingHoursCd(), this.days());
-                }
-
-                public isSetting(): boolean {
-                    if (this.workTypeSetCd() || this.workingHoursCd() || this.days()) {
-                        return true;
-                    }
-                    return false;
                 }
 
                 /**
@@ -389,7 +388,14 @@ module nts.uk.at.view.ksm003.a {
                         self.workingHoursCd(childData.selectedWorkTimeCode);
                         self.setWorkTypeName(childData.selectedWorkTypeName);
                         self.setWorkTimeName(childData.selectedWorkTimeName);
-
+                        if ($('.nts-editor').ntsError("hasError")) {
+                            $('.nts-editor').ntsError('clear');
+                        }
+                        if ($('.buttonEvent').ntsError("hasError")) {
+                            $('.buttonEvent').ntsError('clear');
+                        }
+                        //                        $('#days' + self.dispOrder).ntsError('clear');
+                        //                        $('#days' + self.dispOrder).ntsEditor('validate');
                     });
 
                 }

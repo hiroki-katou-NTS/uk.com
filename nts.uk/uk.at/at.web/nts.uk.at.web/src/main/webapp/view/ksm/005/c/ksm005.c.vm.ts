@@ -19,7 +19,6 @@ module nts.uk.at.view.ksm005.c {
             monthlyPatternCode: string;
             monthlyPatternSetting: KnockoutObservable<string>;
             employeeName: KnockoutObservable<string>;
-            enableSave: KnockoutObservable<boolean>;
             enableDelete: KnockoutObservable<boolean>;
             enableSystemChange: KnockoutObservable<boolean>;
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -34,7 +33,6 @@ module nts.uk.at.view.ksm005.c {
                 self.baseDate = ko.observable(new Date());
                 self.monthlyPatternSetting = ko.observable('');
                 self.employeeName = ko.observable('');
-                self.enableSave = ko.observable(false);
                 self.enableDelete = ko.observable(false);
                 self.enableSystemChange = ko.observable(false);
                 self.ccgcomponent = {
@@ -90,9 +88,9 @@ module nts.uk.at.view.ksm005.c {
                     if (employeeCode) {
                         self.applySelectEmployeeCode(employeeCode);
                     }else {
-                        self.enableSave(false);
                         self.enableDelete(false);
-                        self.enableSystemChange(false);    
+                        self.enableSystemChange(false);  
+                        self.employeeName('');  
                     }
                 });
             }
@@ -103,7 +101,7 @@ module nts.uk.at.view.ksm005.c {
                 var self = this;
                 self.employeeList([]);
                 var employeeSearchs: UnitModel[] = [];
-                for (var employeeSearch: EmployeeSearchDto of dataList) {
+                for (var employeeSearch of dataList) {
                     var employee: UnitModel = {
                         code: employeeSearch.employeeCode,
                         name: employeeSearch.employeeName,
@@ -144,7 +142,7 @@ module nts.uk.at.view.ksm005.c {
             public findByCodeEmployee(employeeCode: string): UnitModel {
                 var employee: UnitModel;
                 var self = this;
-                for (var employeeSelect: UnitModel of self.employeeList()) {
+                for (var employeeSelect of self.employeeList()) {
                     if (employeeSelect.code === employeeCode) {
                         employee = employeeSelect;
                         break;
@@ -159,7 +157,7 @@ module nts.uk.at.view.ksm005.c {
             public getAllEmployeeIdBySearch(): string[] {
                 var self = this;
                 var employeeIds: string[] = [];
-                for (var employeeSelect: UnitModel of self.employeeList()) {
+                for (var employeeSelect of self.employeeList()) {
                     employeeIds.push(self.findEmployeeIdByCode(employeeSelect.code));
                 }
                 return employeeIds;
@@ -171,7 +169,7 @@ module nts.uk.at.view.ksm005.c {
             public findEmployeeIdByCode(employeeCode: string): string{
                 var self = this;
                 var employeeId = '';
-                for (var employee: EmployeeSearchDto of self.selectedEmployee()) {
+                for (var employee of self.selectedEmployee()) {
                     if(employee.employeeCode === employeeCode){
                         employeeId = employee.employeeId;
                     }
@@ -184,7 +182,7 @@ module nts.uk.at.view.ksm005.c {
             public findEmployeeCodeById(employeeId: string): string{
                 var self = this;
                 var employeeCode = '';
-                for (var employee: EmployeeSearchDto of self.selectedEmployee()) {
+                for (var employee of self.selectedEmployee()) {
                     if(employee.employeeId === employeeId){
                         employeeCode = employee.employeeCode;
                     }
@@ -196,7 +194,7 @@ module nts.uk.at.view.ksm005.c {
              *  apply info monthly pattern setting 
              */
             public applySelectEmployeeCode(employeeCode: string){
-                var self = this;    
+                var self = this;
                 if (employeeCode) {
                     self.employeeName((self.findByCodeEmployee(employeeCode)).name);
                     service.findByIdMonthlyPatternSetting(self.findEmployeeIdByCode(employeeCode)).done(function(data: MonthlyPatternSettingDto) {
@@ -205,20 +203,17 @@ module nts.uk.at.view.ksm005.c {
                             if (data.info && data.info.code) {
                                 self.monthlyPatternCode = data.info.code;
                                 self.monthlyPatternSetting(data.info.code + ' ' + data.info.name);
-                                self.enableSave(true);
                                 self.enableDelete(true);
                                 self.enableSystemChange(true);
                             }else {
                                 self.monthlyPatternCode = '';
-                                self.monthlyPatternSetting(nts.uk.resource.getText("KSM005_43"));
-                                self.enableSave(true);
+                                self.monthlyPatternSetting('');
                                 self.enableDelete(true);
                                 self.enableSystemChange(true);   
                             }
                         } else {
                             self.monthlyPatternCode = '';
                             self.monthlyPatternSetting('');
-                            self.enableSave(true);
                             self.enableDelete(false);
                             self.enableSystemChange(true);
                         }
@@ -251,7 +246,7 @@ module nts.uk.at.view.ksm005.c {
                 var dataRes: UnitAlreadySettingModel[] = [];
                 var self = this;
                 service.findAllMonthlyPatternSetting(employeeIds).done(function(data) {
-                    for (var employeeId: string of data) {
+                    for (var employeeId of data) {
                         var setting: UnitAlreadySettingModel;
                         setting = { code: self.findEmployeeCodeById(employeeId), isAlreadySetting: true };
                         dataRes.push(setting);
@@ -277,6 +272,10 @@ module nts.uk.at.view.ksm005.c {
             public saveMonthlyPatternSetting(): void {
                 var self = this;
                 var dto : MonthlyPatternSettingActionDto;
+                if (!self.selectedCode()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
+                    return;
+                }
                 dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), monthlyPatternCode: self.monthlyPatternCode};
                 service.saveMonthlyPatternSetting(dto).done(function() {
                     // show message 15
@@ -285,9 +284,7 @@ module nts.uk.at.view.ksm005.c {
                         self.reloadPage();
                     });
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error).then(function() {
-                        self.reloadPage();
-                    });
+                    nts.uk.ui.dialog.alertError(error);
                 });    
             }
             /**
@@ -304,9 +301,7 @@ module nts.uk.at.view.ksm005.c {
                             self.reloadPage();
                         });
                     }).fail(function(error) {
-                        nts.uk.ui.dialog.alertError(error).then(function() {
-                            self.reloadPage();
-                        });
+                        nts.uk.ui.dialog.alertError(error);
                     });
                 }).ifNo(function() {
                     self.reloadPage();

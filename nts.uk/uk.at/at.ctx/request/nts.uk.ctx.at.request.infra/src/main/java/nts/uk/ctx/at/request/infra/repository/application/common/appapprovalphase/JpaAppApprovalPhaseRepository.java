@@ -3,23 +3,30 @@ package nts.uk.ctx.at.request.infra.repository.application.common.appapprovalpha
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhasePK;
-import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
-import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeavePK;
 
 
+
+@Stateless
 public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppApprovalPhaseRepository{
 	private final String SELECT= "SELECT c FROM KrqdtAppApprovalPhase c";
-	private final String SELECT_SINGLE = "SELECT c FROM KrqdtAppApprovalPhase c WHERE c.KrqdtAppApprovalPhasePK.companyID = :companyID AND c.KrqdtAppApprovalPhasePK.appID = :appID AND c.KrqdtAppApprovalPhasePK.phaseID = :phaseID";
+	private final String SELECT_SINGLE = "SELECT c FROM KrqdtAppApprovalPhase c "
+			+ " WHERE c.KrqdtAppApprovalPhasePK.companyID = :companyID "
+			+ " AND c.KrqdtAppApprovalPhasePK.appID = :appID "
+			+ "AND c.KrqdtAppApprovalPhasePK.phaseID = :phaseID";
 	//get List Phase by appID
 	private final String SELECT_BY_APP_ID = "SELECT c FROM KrqdtAppApprovalPhase c"
 			+ " WHERE c.KrqdtAppApprovalPhasePK.companyID = :companyID"
 			+ " AND c.KrqdtAppApprovalPhasePK.appID = :appID";
 	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.KrqdtAppApprovalPhasePK.companyID = :companyID";
+	
+	
 	@Override
 	public Optional<AppApprovalPhase> findByCode(String companyID, String appID, String phaseID) {
 		return this.queryProxy()
@@ -49,7 +56,7 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 	}
 	@Override
 	public void delete(String companyID, String appID, String phaseID) {
-		this.commandProxy().remove(KrqdtAppLateOrLeave.class, new KrqdtAppLateOrLeavePK(companyID, appID));
+		this.commandProxy().remove(KrqdtAppApprovalPhase.class, new KrqdtAppApprovalPhasePK(companyID, appID,phaseID));
 		this.getEntityManager().flush();
 		
 	}
@@ -73,13 +80,17 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 
 
 	//get List Phase by AppID
-	@Override
+	
 	public List<AppApprovalPhase> findPhaseByAppID(String companyID, String appID) {
 		return this.queryProxy()
 				.query(SELECT_BY_APP_ID, KrqdtAppApprovalPhase.class)
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID)
 				.getList(c -> toDomain(c));
-	};
-	
+	}
+
+
+
+
+
 }

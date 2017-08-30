@@ -41,14 +41,18 @@
 						</td>
 					</tr>
 					<tr>
-						<td>Start date:</td>
-						<td><div data-bind="ntsDatePicker: {value: start, dateFormat: 'YYYY-MM-DD'}"></div> (Required for dialog B)</td>
+						<td>Start date (*):</td>
+						<td><div data-bind="ntsDatePicker: {value: start, dateFormat: 'YYYY-MM-DD'}"></div></td>
 					</tr>
 					<tr>
-						<td>End date:</td>
-						<td><div data-bind="ntsDatePicker: {value: end, dateFormat: 'YYYY-MM-DD'}"></div> (Required for dialog B)</td>
+						<td>End date (*):</td>
+						<td><div data-bind="ntsDatePicker: {value: end, dateFormat: 'YYYY-MM-DD'}"></div></td>
 					</tr>
-				</table><br/>
+				</table>
+				<br/>
+				(*) Required for dialog B.<br/>
+				(*) Start date must be before end date.<br/>
+				(*) Date range must be less than or equal 31 days.<br/><br/>
 				Returned list: <span data-bind="text: returnedList().length"/><br/><br/>
 				<table id='returned-list'>
 					<tr>

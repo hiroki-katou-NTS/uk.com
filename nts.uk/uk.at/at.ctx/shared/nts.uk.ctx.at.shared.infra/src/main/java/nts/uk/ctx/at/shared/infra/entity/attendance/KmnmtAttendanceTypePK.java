@@ -24,6 +24,6 @@ public class KmnmtAttendanceTypePK implements Serializable{
 	@Column(name = "ATTENDANCEITEM_ID")
 	public int attendanceItemId;
 	/*勤怠項目名称*/
-	@Column(name = "ATTENDANCEITEM_TYPE")
-	public int attendanceItemType;
+	@Column(name = "SCREEN_USE_ATR")
+	public int screenUseAtr;
 }

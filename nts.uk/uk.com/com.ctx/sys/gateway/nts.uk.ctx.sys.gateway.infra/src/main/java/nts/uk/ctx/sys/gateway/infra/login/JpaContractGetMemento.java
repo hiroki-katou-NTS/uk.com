@@ -7,7 +7,7 @@ package nts.uk.ctx.sys.gateway.infra.login;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.login.ContractGetMemento;
-import nts.uk.ctx.sys.gateway.dom.login.RawPassword;
+import nts.uk.ctx.sys.gateway.dom.login.HashPassword;
 import nts.uk.ctx.sys.gateway.dom.login.Period;
 import nts.uk.ctx.sys.gateway.entity.login.SgwdtContract;
 
@@ -32,8 +32,8 @@ public class JpaContractGetMemento implements ContractGetMemento {
 	 * @see nts.uk.ctx.sys.gateway.dom.login.ContractGetMemento#getPassword()
 	 */
 	@Override
-	public RawPassword getPassword() {
-		return new RawPassword(this.entity.getPassword());
+	public HashPassword getPassword() {
+		return new HashPassword(this.entity.getPassword());
 	}
 
 	/* (non-Javadoc)

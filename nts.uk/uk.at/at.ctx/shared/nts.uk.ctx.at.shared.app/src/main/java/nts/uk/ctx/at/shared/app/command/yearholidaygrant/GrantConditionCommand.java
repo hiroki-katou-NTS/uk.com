@@ -4,11 +4,13 @@ import java.util.List;
 
 import lombok.Value;
 
+/**
+ * 
+ * @author TanLV
+ *
+ */
 @Value
 public class GrantConditionCommand {
-	/* 会社ID */
-	private String companyId;
-	
 	/* 年休付与テーブル設定コード */
 	private String yearHolidayCode;
 	

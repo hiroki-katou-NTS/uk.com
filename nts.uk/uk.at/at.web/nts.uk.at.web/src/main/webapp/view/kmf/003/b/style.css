@@ -31,7 +31,7 @@ tr {
 }
 
 .contents-header td {
-    border: 1px solid;
+    border: 1px solid #CCC;
     text-align: center;
     height: 20px;
     padding: 5px 3px;
@@ -81,7 +81,7 @@ table.contents-header td.allow-pay {
 }
 
 .contents-data td {
-    border: 1px solid;
+    border: 1px solid #CCC;
     text-align: center;
     height: 20px;
 }
@@ -114,5 +114,5 @@ table.contents-data tbody {
     height: 350px;   
     overflow-y: auto;   
     overflow-x: hidden; 
-    border: 1px solid;
+    border: 1px solid #CCC;
 }

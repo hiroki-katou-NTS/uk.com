@@ -108,10 +108,10 @@ module nts.uk.ui.gridlist {
             $("#grid2").ntsGrid("disableNtsControlAt", 1, "combo", "ComboBox");
         });
         $("#disable-all").on("click", function() {
-            $("#grid2").ntsGrid("disableNtsControl", "ruleCode", "SwitchButtons");
+            $("#grid2").ntsGrid("disableNtsControls", "ruleCode", "SwitchButtons");
         });
         $("#enable-all").on("click", function() {
-            $("#grid2").ntsGrid("enableNtsControl", "ruleCode", "SwitchButtons");
+            $("#grid2").ntsGrid("enableNtsControls", "ruleCode", "SwitchButtons");
         });
         this.bind(model);
     });

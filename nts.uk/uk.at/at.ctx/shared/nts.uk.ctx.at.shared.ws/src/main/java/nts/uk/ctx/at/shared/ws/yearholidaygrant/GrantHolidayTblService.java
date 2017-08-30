@@ -11,9 +11,7 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.yearholidaygrant.GrantHolidayTblAddCommandHandler;
 import nts.uk.ctx.at.shared.app.command.yearholidaygrant.GrantHolidayTblCommand;
-import nts.uk.ctx.at.shared.app.command.yearholidaygrant.GrantHolidayTblDeleteCommand;
-import nts.uk.ctx.at.shared.app.command.yearholidaygrant.GrantHolidayTblDeleteCommandHandler;
-import nts.uk.ctx.at.shared.app.command.yearholidaygrant.GrantHolidayTblUpdateCommandHandler;
+import nts.uk.ctx.at.shared.app.find.yearholidaygrant.CalculateGrantHdTblParam;
 import nts.uk.ctx.at.shared.app.find.yearholidaygrant.GrantHolidayTblDto;
 import nts.uk.ctx.at.shared.app.find.yearholidaygrant.GrantHolidayTblFinder;
 
@@ -30,14 +28,6 @@ public class GrantHolidayTblService extends WebService {
 	/** The add command handler. */
 	@Inject
 	private GrantHolidayTblAddCommandHandler add;
-	
-	/** The update command handler. */
-	@Inject
-	private GrantHolidayTblUpdateCommandHandler update;
-	
-	/** The delete command handler. */
-	@Inject
-	private GrantHolidayTblDeleteCommandHandler delete;
 	
 	/**
 	 * Find by codes.
@@ -64,24 +54,13 @@ public class GrantHolidayTblService extends WebService {
 	}
 	
 	/**
-	 * Update GrantHolidayTblDto.
+	 * Calculate grant date
 	 *
 	 * @param command the command
 	 */
 	@POST
-	@Path("update")
-	public void updateYearHolidayGrant(GrantHolidayTblCommand command) {
-		update.handle(command);
-	}
-	
-	/**
-	 * Delete GrantHolidayTblDto.
-	 *
-	 * @param command the command
-	 */
-	@POST
-	@Path("delete")
-	public void deleteYearHolidayGrant(List<GrantHolidayTblDeleteCommand> command) {
-		delete.handle(command);
+	@Path("calculateGrantDate")
+	public List<GrantHolidayTblDto> calculateGrantDate(CalculateGrantHdTblParam param) {
+		return find.calculateGrantDate(param);
 	}
 }

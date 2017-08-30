@@ -6,12 +6,10 @@ package nts.uk.ctx.sys.gateway.entity.login;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,8 +32,6 @@ public class SgwstSystemConfig extends UkJpaEntity implements Serializable {
     
     /** The install form. */
     @Id
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "INSTALL_FORM")
     private Short installForm;
 

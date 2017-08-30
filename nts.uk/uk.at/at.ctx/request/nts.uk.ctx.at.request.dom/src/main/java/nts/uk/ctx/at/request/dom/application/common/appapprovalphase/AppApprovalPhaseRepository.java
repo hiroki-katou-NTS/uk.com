@@ -19,6 +19,8 @@ public interface AppApprovalPhaseRepository {
 	 */
 	Optional<AppApprovalPhase> findByCode(String companyID, String appID, String phaseID);
 
+	
+	
 	// 承認情報の整理
 	/**
 	 * Find List 5 Phase
@@ -44,7 +46,7 @@ public interface AppApprovalPhaseRepository {
 	void update(AppApprovalPhase appAprovalPhase);
 
 	/**
-	 * Delete
+	 * Delete by phaseID
 	 * 
 	 * @param companyID
 	 * @param appID

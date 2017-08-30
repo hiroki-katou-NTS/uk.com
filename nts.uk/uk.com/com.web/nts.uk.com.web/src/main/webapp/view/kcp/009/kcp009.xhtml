@@ -5,50 +5,74 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 	<div id="component-content" style="height: 500px">
-		<div id="function-panel"  style="border: 1px solid; width: 1200px;">
-			<div id="component-control-btn" style="background-color: #97D155; width: 15%; height: 45px; padding: 5px 10px; margin: 0px; float: left; border-right: 1px solid;">
-				<button style="width: 70px; height: 40px; background-color: #E0F59E; border-radius: 5px" data-bind="click: showEmpList">#{i18n.getText('KCP009_3')}</button>				
-				<button style="width: 35px; height: 35px; background-color: #E0F59E; border-radius: 5px" data-bind="click: previousEmp, enable: isActivePreviousBtn()">
-					<span class="caret-left caret-inline"></span>
-				</button>
-				<button style="width: 35px; height: 35px; background-color: #E0F59E; border-radius: 5px" data-bind="click: nextEmp, enable: isActiveNextBtn()">
-					<span class="caret-right caret-inline"></span>
-				</button>
-			</div>
-			<div style="padding-top: 12px; float: left; width: 55%; background-color: white; height: 40px; padding: 5px 10px; float: left">
-				<div style="width: 120px; float: left"><span data-bind="text: empDisplayCode"></span></div>
-				<div style="width: 120px; float: left"><span data-bind="text: empBusinessName"></span></div>
-				<com:ko tag="if" bind="isActivePersonalProfile">
-					<div class="icon" id="profile-icon"></div>
-				</com:ko>
-				<div style="width: 120px; padding-left: 10px; float: left"><span data-bind="text: selectedNumberOfPeople"></span></div>
-				<div style="width: 50px; float: left"><span style="width: 20px">#{i18n.getText('KCP009_1')}</span></div>
-				<input style="border-radius: 5px; height: 30px; width: 110px" data-bind="ntsTextEditor: {
+		<div id="function-panel">
+			<table id="employ_view">
+				<tr id="function-tr">
+					<td class="bg-green border-left" id="tbl_left"><button
+							id="btn_show_list" data-bind="text: targetBtnText, attr: {tabindex: tabIndex}"></button>
+							<!-- #{i18n.getText('KCP009_3')} -->
+					</td>
+					<td class="bg-green none_border"><button class="btn_select" id="prev-btn"
+							data-bind="click: previousEmp, enable: isActivePreviousBtn(), attr: {tabindex: tabIndex}">
+							<!-- <span class="caret-left caret-inline"></span> -->
+						</button></td>
+					<td class="bg-green border-right">
+						<button class="btn_select" id="next-btn"
+							data-bind="click: nextEmp, enable: isActiveNextBtn(), attr: {tabindex: tabIndex}">
+							<!-- <span class="caret-right caret-inline"></span> -->
+						</button>
+					</td>
+					<td class="none_border em_display">
+						<div>
+							<span data-bind="text: empDisplayCode"></span>
+						</div>
+					</td>
+					<td class="none_border em_display">
+						<div>
+							<span data-bind="text: empBusinessName"></span>
+						</div>
+					</td>
+					<td class="none_border"><div
+							data="enable: isActivePersonalProfile" class="icon"
+							id="profile-icon" data-bind="attr: {tabindex: tabIndex}"></div></td>
+					<td class="none_border em_display"><div>
+							<span data-bind="text: selectedNumberOfPeople"></span><span>#{i18n.getText('KCP009_1')}</span>
+						</div></td>
+					<td class="border-right"><input
+						data-bind="ntsTextEditor: {
 								value: keySearch,
 								name: '#[KCP009_2]',
-								option: {
-								enable: true}
-								}" />
-			</div>
-			<div data-bind="if: isDisplayOrganizationName" style="padding-top: 12px; float: left; width: 22%; background-color: white; height: 40px; padding: 5px 10px">
-				<div style="float: left; background-color: #97D155; border: 1px solid; height: 100%; width: 100px;"><span style="margin-left: 20px; margin-top: 20px" data-bind="text: organizationDesignation"></span></div>
-				<div style="width:90px; float: left"><span data-bind="text: organizationName"></span></div>
-			</div>
-			<div style="clear: both;"></div>
+								option: {width: '100',enable: true}
+								}, attr: {tabindex: tabIndex}" />
+					</td>
+					<td id="wkp_title_text" class="bg-green border-left"
+						data-bind="visible: isDisplayOrganizationName">
+						<div>
+							<span data-bind="text: organizationDesignation"></span>
+						</div>
+					</td>
+					<td id="wkp_text" data-bind="visible: isDisplayOrganizationName"><div>
+							<span data-bind="text: organizationName"></span>
+						</div></td>
+				</tr>
+			</table>
 		</div>
 
 		<div id="items-list">
-			<table id="single-list"
-				data-bind="ntsGridList: {
-					height: 350,
-					width: 350,
-					dataSource: empList,
-					columns: gridColumns,
-					primaryKey: 'id',
-					name: '#[KCP009_3]',
+				
+				<div id="list-box" data-bind="ntsListBox: {
+					options: empList,
+					optionsValue: 'id',
+					optionsText: 'code',
 					multiple: false,
-					value: selectedItem
-				}"></table>
+					value: selectedItem,
+					enable: true,
+					name: targetBtnText,
+					rows: 10,
+					columns: [
+						{ key: 'code', length: 4 },
+						{ key: 'businessName', length: 10 }
+					]}"></div>
 		</div>
 
 

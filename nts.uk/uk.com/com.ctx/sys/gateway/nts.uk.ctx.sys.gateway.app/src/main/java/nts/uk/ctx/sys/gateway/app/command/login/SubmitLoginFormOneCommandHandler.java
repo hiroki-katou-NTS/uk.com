@@ -25,7 +25,7 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 
 	/** The user repository. */
 	@Inject
-	UserRepository userRepository;
+	private UserRepository userRepository;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -59,7 +59,7 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 	 */
 	private void checkInput(SubmitLoginFormOneCommand command) {
 		//check input loginId
-		if (command.getLoginId().isEmpty() || command.getLoginId() == null) {
+		if (command.getLoginId().trim().isEmpty() || command.getLoginId() == null) {
 			throw new BusinessException("Msg_309");
 		}
 		//check input password
@@ -75,7 +75,7 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 	 * @param password the password
 	 */
 	private void compareHashPassword(Optional<User> user, String password) {
-		if (!PasswordHash.verifyThat(password, "salt").isEqualTo(user.get().getPassword().v())) {
+		if (!PasswordHash.verifyThat(password, user.get().getUserId()).isEqualTo(user.get().getPassword().v())) {
 			throw new BusinessException("Msg_302");
 		}
 	}
@@ -86,7 +86,7 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 	 * @param user the user
 	 */
 	private void checkLimitTime(Optional<User> user) {
-		if (!user.get().getExpirationDate().after(GeneralDate.today())) {
+		if (user.get().getExpirationDate().before(GeneralDate.today())) {
 			throw new BusinessException("Msg_316");
 		}
 	}

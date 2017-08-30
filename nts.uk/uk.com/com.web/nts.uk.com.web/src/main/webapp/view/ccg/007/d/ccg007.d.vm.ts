@@ -9,6 +9,7 @@ module nts.uk.pr.view.ccg007.d {
             companyList: KnockoutObservableArray<CompanyItemModel>;
             selectedCompanyCode: KnockoutObservable<string>;
             isSaveLoginInfo: KnockoutObservable<boolean>;
+            contractCode: KnockoutObservable<string>;
             constructor() {
                 var self = this;
                 self.employeeCode = ko.observable('');
@@ -16,6 +17,7 @@ module nts.uk.pr.view.ccg007.d {
                 self.companyList = ko.observableArray([]);
                 self.selectedCompanyCode = ko.observable('');
                 self.isSaveLoginInfo = ko.observable(true);
+                self.contractCode = ko.observable('');
             }
             start(): JQueryPromise<void> {
                 var self = this;
@@ -23,6 +25,7 @@ module nts.uk.pr.view.ccg007.d {
                 //get system config
                 blockUI.invisible();
                 nts.uk.characteristics.restore("contractInfo").done(function(data) {
+                    self.contractCode(data?data.contractCode:"");
                     service.checkContract({ contractCode: data ? data.contractCode : "", contractPassword: data ? data.contractPassword : "" }).done(function(showContractData: any) {
                         if (showContractData) {
                             if (showContractData.showContract) {
@@ -34,7 +37,6 @@ module nts.uk.pr.view.ccg007.d {
                             dfd.resolve();
                         }
                         else {
-                            //TODO システムエラー画面へ遷移する
                         }
                         blockUI.clear();
                     }).fail(function() {
@@ -56,7 +58,8 @@ module nts.uk.pr.view.ccg007.d {
                     dialogClass: 'no-close'
                 }).onClosed(() => {
                     var contractCode = nts.uk.ui.windows.getShared('contractCode');
-                    service.getAllCompany(contractCode).done(function(data: Array<CompanyItemModel>) {
+                    self.contractCode(contractCode);
+                    service.getAllCompany().done(function(data: Array<CompanyItemModel>) {
                         //get list company from server 
                         self.companyList(data);
                         if (data.length > 0) {
@@ -74,7 +77,7 @@ module nts.uk.pr.view.ccg007.d {
                         nts.uk.request.jump("/view/ccg/007/b/index.xhtml");
                     }
                     else {
-                        service.getAllCompany(contractCode).done(function(data: Array<CompanyItemModel>) {
+                        service.getAllCompany().done(function(data: Array<CompanyItemModel>) {
                             //get list company from server 
                             self.companyList(data);
                             if (data.length > 0) {
@@ -97,18 +100,16 @@ module nts.uk.pr.view.ccg007.d {
             private submitLogin() {
                 var self = this;
                 blockUI.invisible();
-                service.submitLogin({ companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()), password: _.escape(self.password()) }).done(function() {
-                    nts.uk.characteristics.remove("form3LoginInfo");
-                    if (self.isSaveLoginInfo()) {
-                        nts.uk.characteristics.save("form3LoginInfo", { companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function() {
+                service.submitLogin({ companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()), password: _.escape(self.password()),contractCode: _.escape(self.contractCode()) }).done(function() {
+                    nts.uk.characteristics.remove("form3LoginInfo").done(function() {
+                        if (self.isSaveLoginInfo()) {
+                            nts.uk.characteristics.save("form3LoginInfo", { companyCode: _.escape(self.selectedCompanyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function() {
+                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                            });
+                        } else {
                             nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
-                        });
-                    } else {
-                        //TODO confirm kiban team promise for remove
-                        setTimeout(function() {
-                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
-                        }, 1000);
-                    }
+                        }
+                    });
                     blockUI.clear();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });

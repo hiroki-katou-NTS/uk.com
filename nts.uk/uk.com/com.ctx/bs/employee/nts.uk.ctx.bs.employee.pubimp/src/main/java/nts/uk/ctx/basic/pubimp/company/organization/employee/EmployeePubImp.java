@@ -17,20 +17,29 @@ import nts.uk.ctx.basic.dom.company.organization.employee.Employee;
 import nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistoryRepository;
+import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffJobTitleHistory;
+import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffJobTitleHistoryRepository;
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.access.employment.EmploymentAdapter;
 import nts.uk.ctx.bs.employee.dom.access.employment.dto.AcEmploymentDto;
+import nts.uk.ctx.bs.employee.dom.access.jobtitle.JobTitleAdapter;
+import nts.uk.ctx.bs.employee.dom.access.jobtitle.dto.AcJobTitleDto;
 import nts.uk.ctx.bs.employee.dom.access.workplace.WorkplaceAdapter;
 import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceDto;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeDto;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeePub;
+import nts.uk.ctx.bs.employee.pub.employee.PubJobTitleDto;
 
 /**
  * The Class EmployeePubImp.
  */
 @Stateless
 public class EmployeePubImp implements EmployeePub {
+
+	/** The employment adapter. */
+	@Inject
+	private JobTitleAdapter jobTitleAdapter;
 
 	/** The workplace adapter. */
 	@Inject
@@ -51,6 +60,10 @@ public class EmployeePubImp implements EmployeePub {
 	/** The employment history repository. */
 	@Inject
 	private AffEmploymentHistoryRepository employmentHistoryRepository;
+
+	/** The job title history repository. */
+	@Inject
+	private AffJobTitleHistoryRepository jobTitleHistoryRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -117,7 +130,7 @@ public class EmployeePubImp implements EmployeePub {
 		List<String> employeeIds = affWorkplaceHistories.stream()
 				.map(AffWorkplaceHistory::getEmployeeId).collect(Collectors.toList());
 
-		List<Employee> employeeList = employeeRepository.getListPersonByListEmployeeId(companyId,
+		List<Employee> employeeList = employeeRepository.findByListEmployeeId(companyId,
 				employeeIds);
 
 		// Return
@@ -130,6 +143,88 @@ public class EmployeePubImp implements EmployeePub {
 			dto.setSMail(item.getSMail().v());
 			dto.setRetirementDate(item.getRetirementDate());
 			dto.setJoinDate(item.getJoinDate());
+			return dto;
+		}).collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.employee.EmployeePub#findWpkIdsBySCode(java.
+	 * lang.String, java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate baseDate) {
+		// Query
+		List<AffWorkplaceHistory> affWorkplaceHistories = workplaceHistoryRepository
+				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
+
+		// Return
+		return affWorkplaceHistories.stream().map(item -> {
+			return item.getWorkplaceId().v();
+		}).collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.employee.EmployeePub#findJobTitleBySid(String)
+	 */
+	@Override
+	public List<PubJobTitleDto> findJobTitleBySid(String employeeId) {
+		// Query
+		List<AffJobTitleHistory> affJobTitleHistories = this.jobTitleHistoryRepository
+				.findBySid(employeeId);
+
+		List<String> jobIds = affJobTitleHistories.stream().map(item -> item.getJobTitleId().v())
+				.collect(Collectors.toList());
+
+		List<AcJobTitleDto> jobTitleDtos = this.jobTitleAdapter.findByJobIds(jobIds);
+
+		// Return
+		return jobTitleDtos.stream().map(item -> {
+			PubJobTitleDto dto = new PubJobTitleDto();
+			dto.setCompanyId(item.getCompanyId());
+			dto.setPositionId(item.getPositionId());
+			dto.setPositionCode(item.getPositionCode());
+			dto.setPositionName(item.getPositionName());
+			dto.setSequenceCode(item.getSequenceCode());
+			dto.setStartDate(item.getStartDate());
+			dto.setEndDate(item.getEndDate());
+			return dto;
+		}).collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.employee.EmployeePub#findJobTitleBySid(java.
+	 * lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<PubJobTitleDto> findJobTitleBySid(String employeeId, GeneralDate baseDate) {
+		// Query
+		List<AffJobTitleHistory> affJobTitleHistories = this.jobTitleHistoryRepository
+				.findBySid(employeeId, baseDate);
+
+		List<String> jobIds = affJobTitleHistories.stream().map(item -> item.getJobTitleId().v())
+				.collect(Collectors.toList());
+
+		List<AcJobTitleDto> jobTitleDtos = this.jobTitleAdapter.findByJobIds(jobIds);
+
+		// Return
+		return jobTitleDtos.stream().map(item -> {
+			PubJobTitleDto dto = new PubJobTitleDto();
+			dto.setCompanyId(item.getCompanyId());
+			dto.setPositionId(item.getPositionId());
+			dto.setPositionCode(item.getPositionCode());
+			dto.setPositionName(item.getPositionName());
+			dto.setSequenceCode(item.getSequenceCode());
+			dto.setStartDate(item.getStartDate());
+			dto.setEndDate(item.getEndDate());
 			return dto;
 		}).collect(Collectors.toList());
 	}

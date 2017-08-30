@@ -8,6 +8,11 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
+			<com:ValidatorScript>
+				nts.uk.ctx.at.schedule.dom.shift.estimate.time.MonthlyEstimateTime
+				nts.uk.ctx.at.schedule.dom.shift.estimate.time.YearlyEstimateTime
+				nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatePrice
+   			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
@@ -22,8 +27,8 @@
 		<ui:define name="sidebar">
 			<ul tabindex="-1"  class="navigator">
 				<li data-bind="click: onSelectCompany" ><a tabindex="-1" href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li data-bind="click: onSelectEmployment"><a tabindex="-1" href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Employment')}</a></li>
-				<li data-bind="click: onSelectPerson"><a tabindex="-1" href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
+				<li data-bind="click: onSelectEmployment, visible: usageSettingModel.settingEmployment"><a tabindex="-1" href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Employment')}</a></li>
+				<li data-bind="click: onSelectPerson, visible: usageSettingModel.settingPersonal"><a tabindex="-1" href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">

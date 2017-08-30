@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -39,7 +40,7 @@ public class ApplicationFinder {
 	 * get all application by date
 	 * @return
 	 */
-	public List<ApplicationDto> getAllAppByDate(BigDecimal applicationDate){
+	public List<ApplicationDto> getAllAppByDate(GeneralDate applicationDate){
 		String companyID = AppContexts.user().companyId();
 		return this.appRepo.getAllAppByDate(companyID, applicationDate).stream()
 				.map(c->ApplicationDto.fromDomain(c))
