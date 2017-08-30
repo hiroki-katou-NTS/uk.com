@@ -3810,6 +3810,42 @@ var nts;
                 }
                 dialog.confirm = confirm;
                 ;
+                function bundledErrors(errors) {
+                    var id = uk.util.randomId();
+                    $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
+                    var container = $("body").find("#" + id);
+                    container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー内容</th>" +
+                        "<th style='display: none;'/><th style='width: 150px;'>エラーコード</th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
+                    var errorBody = container.find("tbody");
+                    _.forEach(errors["messageId"], function (id, idx) {
+                        var row = $("<tr/>");
+                        row.append("<td style='display: none;'>" + (idx + 1) + "/td><td>" + errors.messages[id] + "</td><td>" + id + "</td>");
+                        row.appendTo(errorBody);
+                    });
+                    var functionArea = container.find("#functions-area-bottom");
+                    functionArea.append("<button class='ntsButton ntsClose large'/>");
+                    container.dialog({
+                        title: "エラー一覧",
+                        dialogClass: "no-close-btn",
+                        modal: true,
+                        resizable: false,
+                        width: 450,
+                        maxHeight: 500,
+                        closeOnEscape: false,
+                        open: function () {
+                            container.find("#error-board").css({ "overflow": "auto", "max-height": "300px", "margin-bottom": "65px" });
+                            container.find("#functions-area-bottom").css({ "left": "0px" });
+                            functionArea.find(".ntsClose").text("閉じる").click(function (evt) {
+                                container.dialog("destroy");
+                                container.remove();
+                            });
+                        },
+                        close: function (event) {
+                        }
+                    });
+                }
+                dialog.bundledErrors = bundledErrors;
+                ;
             })(dialog = ui.dialog || (ui.dialog = {}));
             ui.confirmSave = function (dirtyChecker) {
                 var frame = windows.getSelf();
@@ -9862,6 +9898,68 @@ var nts;
                         return $control.data(DATA_HAS_ERROR) === true;
                     }
                 })(ntsError || (ntsError = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                var ntsFixedTable;
+                (function (ntsFixedTable_1) {
+                    $.fn.ntsFixedTable = ntsFixedTable;
+                    function ntsFixedTable(action, options) {
+                        var $controls = $(this);
+                        if (typeof arguments[0] !== 'string') {
+                            return ntsFixedTable.apply($controls, _.concat("init", action));
+                        }
+                        if (action === "init") {
+                            return init($controls, options);
+                        }
+                        else {
+                            return $controls;
+                        }
+                        ;
+                    }
+                    function init(controls, options) {
+                        controls.each(function () {
+                            var $originTable = $(this);
+                            $originTable.addClass("fixed-table");
+                            var $colgroup = $originTable.find("colgroup");
+                            var $thead = $originTable.find("thead");
+                            var width = 0;
+                            $colgroup.find("col").each(function () {
+                                width += Number($(this).attr("width").replace(/px/gi, ''));
+                            });
+                            width++;
+                            var setting = $.extend({ height: "auto" }, options);
+                            var $container = $("<div class='nts-fixed-table cf'/>");
+                            $originTable.after($container);
+                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").width(width);
+                            var $headerTable = $("<table class='fixed-table'></table>");
+                            $headerTable.append($colgroup.clone()).append($thead);
+                            $headerContainer.append($headerTable);
+                            $headerContainer.appendTo($container);
+                            $originTable.addClass("nts-fixed-body-table");
+                            var $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>");
+                            var $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
+                            var bodyHeight = "auto";
+                            if (setting.height !== "auto") {
+                                bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
+                            }
+                            $bodyWrapper.width(width).height(bodyHeight);
+                            $bodyWrapper.append($originTable);
+                            $bodyContainer.append($bodyWrapper);
+                            $container.append($bodyContainer);
+                        });
+                        return controls;
+                    }
+                })(ntsFixedTable || (ntsFixedTable = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -19004,68 +19102,6 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
             })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var ntsFixedTable;
-                (function (ntsFixedTable_1) {
-                    $.fn.ntsFixedTable = ntsFixedTable;
-                    function ntsFixedTable(action, options) {
-                        var $controls = $(this);
-                        if (typeof arguments[0] !== 'string') {
-                            return ntsFixedTable.apply($controls, _.concat("init", action));
-                        }
-                        if (action === "init") {
-                            return init($controls, options);
-                        }
-                        else {
-                            return $controls;
-                        }
-                        ;
-                    }
-                    function init(controls, options) {
-                        controls.each(function () {
-                            var $originTable = $(this);
-                            $originTable.addClass("fixed-table");
-                            var $colgroup = $originTable.find("colgroup");
-                            var $thead = $originTable.find("thead");
-                            var width = 0;
-                            $colgroup.find("col").each(function () {
-                                width += Number($(this).attr("width").replace(/px/gi, ''));
-                            });
-                            width++;
-                            var setting = $.extend({ height: "auto" }, options);
-                            var $container = $("<div class='nts-fixed-table cf'/>");
-                            $originTable.after($container);
-                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").width(width);
-                            var $headerTable = $("<table class='fixed-table'></table>");
-                            $headerTable.append($colgroup.clone()).append($thead);
-                            $headerContainer.append($headerTable);
-                            $headerContainer.appendTo($container);
-                            $originTable.addClass("nts-fixed-body-table");
-                            var $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>");
-                            var $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
-                            var bodyHeight = "auto";
-                            if (setting.height !== "auto") {
-                                bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
-                            }
-                            $bodyWrapper.width(width).height(bodyHeight);
-                            $bodyWrapper.append($originTable);
-                            $bodyContainer.append($bodyWrapper);
-                            $container.append($bodyContainer);
-                        });
-                        return controls;
-                    }
-                })(ntsFixedTable || (ntsFixedTable = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

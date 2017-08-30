@@ -1,6 +1,5 @@
 module ksu001.o.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
-    //    import exCell = __viewContext.viewModel.viewA.
 
     export class ScreenModel {
         listWorkType: KnockoutObservableArray<WorkType>;
@@ -124,6 +123,7 @@ module ksu001.o.viewmodel {
                     siftCd: '000',
                     name: nts.uk.resource.getText("KSU001_97"),
                     abName: '',
+                    symbol: '',
                     dailyWorkAtr: undefined,
                     methodAtr: undefined,
                     displayAtr: undefined,
@@ -138,6 +138,7 @@ module ksu001.o.viewmodel {
                     siftCd: '000',
                     name: nts.uk.resource.getText("KSU001_98"),
                     abName: '',
+                    symbol: '',
                     dailyWorkAtr: undefined,
                     methodAtr: undefined,
                     displayAtr: undefined,
@@ -152,6 +153,7 @@ module ksu001.o.viewmodel {
                     siftCd: '000',
                     name: nts.uk.resource.getText("KSU001_99"),
                     abName: '',
+                    symbol: '',
                     dailyWorkAtr: undefined,
                     methodAtr: undefined,
                     displayAtr: undefined,
@@ -166,15 +168,16 @@ module ksu001.o.viewmodel {
                         let workTimeObj: WorkTime = _.find(self.listWorkTime(), ['siftCd', wT.siftCd]);
                         if (workTimeObj && wT.timeNumberCnt == 1) {
                             workTimeObj.timeZone1 = nts.uk.time.parseTime(wT.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.pmEndClock, true).format();
-                            workTimeObj.labelDisplay = '  ' + workTimeObj.siftCd + (!!workTimeObj.abName ? ' ' + workTimeObj.abName : '') + ' ' + workTimeObj.name + ' ' + workTimeObj.timeZone1 + ' ' + workTimeObj.timeZone2 + ' ' + (!!workTimeObj.note ? '(' + workTimeObj.note + ')' : '');
+                            workTimeObj.labelDisplay = '  ' + workTimeObj.siftCd + (!!workTimeObj.symbol ? ' ' + workTimeObj.symbol : '') + ' ' + workTimeObj.name + ' ' + workTimeObj.timeZone1 + ' ' + workTimeObj.timeZone2 + ' ' + (!!workTimeObj.note ? '(' + workTimeObj.note + ')' : '');
                         } else if (workTimeObj && wT.timeNumberCnt == 2) {
                             workTimeObj.timeZone2 = nts.uk.time.parseTime(wT.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.pmEndClock, true).format();
-                            workTimeObj.labelDisplay = '  ' + workTimeObj.siftCd + (!!workTimeObj.abName ? ' ' + workTimeObj.abName : '') + ' ' + workTimeObj.name + ' ' + workTimeObj.timeZone1 + ' ' + workTimeObj.timeZone2 + ' ' + (!!workTimeObj.note ? '(' + workTimeObj.note + ')' : '');
+                            workTimeObj.labelDisplay = '  ' + workTimeObj.siftCd + (!!workTimeObj.symbol ? ' ' + workTimeObj.symbol : '') + ' ' + workTimeObj.name + ' ' + workTimeObj.timeZone1 + ' ' + workTimeObj.timeZone2 + ' ' + (!!workTimeObj.note ? '(' + workTimeObj.note + ')' : '');
                         } else {
                             self.listWorkTime.push(new WorkTime({
                                 siftCd: wT.siftCd,
                                 name: wT.name,
                                 abName: wT.abName,
+                                symbol: wT.symbol,
                                 dailyWorkAtr: wT.dailyWorkAtr,
                                 methodAtr: wT.methodAtr,
                                 displayAtr: wT.dailyWorkAtr,
@@ -222,7 +225,7 @@ module ksu001.o.viewmodel {
             this.abbreviationName = params.abbreviationName;
             this.memo = params.memo;
             this.displayAtr = params.displayAtr;
-            this.labelDisplay = '  ' + this.workTypeCode + ' ' + (!!this.abbreviationName ? ' ' + this.abbreviationName : '') + ' ' + this.name + (!!this.memo ? '( ' + this.memo + ' )' : '');
+            this.labelDisplay = '  ' + this.workTypeCode + ' ' + (!!this.symbolicName ? ' ' + this.symbolicName : '') + ' ' + this.name + (!!this.memo ? '( ' + this.memo + ' )' : '');
         }
     }
 
@@ -230,6 +233,7 @@ module ksu001.o.viewmodel {
         siftCd: string,
         name: string,
         abName: string,
+        symbol: string,
         dailyWorkAtr: number,
         methodAtr: number,
         displayAtr: number,
@@ -243,6 +247,7 @@ module ksu001.o.viewmodel {
         siftCd: string;
         name: string;
         abName: string;
+        symbol: string;
         dailyWorkAtr: number;
         methodAtr: number;
         displayAtr: number;
@@ -259,6 +264,7 @@ module ksu001.o.viewmodel {
             this.siftCd = params.siftCd;
             this.name = params.name;
             this.abName = params.abName;
+            this.symbol = params.symbol;
             this.dailyWorkAtr = params.dailyWorkAtr;
             this.methodAtr = params.methodAtr;
             this.displayAtr = params.displayAtr;
@@ -269,7 +275,7 @@ module ksu001.o.viewmodel {
             this.timeNumberCnt = params.timeNumberCnt;
             this.timeZone1 = this.timeNumberCnt == 1 ? nts.uk.time.parseTime(this.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.pmEndClock, true).format() : '';
             this.timeZone2 = this.timeNumberCnt == 2 ? nts.uk.time.parseTime(this.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.pmEndClock, true).format() : '';
-            this.labelDisplay = '  ' + this.siftCd + (!!this.abName ? ' ' + this.abName : '') + ' ' + this.name + ' ' + this.timeZone1 + ' ' + this.timeZone2 + ' ' + (!!this.note ? '(' + this.note + ')' : '');
+            this.labelDisplay = '  ' + this.siftCd + (!!this.symbol ? ' ' + this.symbol : '') + ' ' + this.name + ' ' + this.timeZone1 + ' ' + this.timeZone2 + ' ' + (!!this.note ? '(' + this.note + ')' : '');
         }
     }
 
