@@ -1,5 +1,6 @@
 module nts.uk.at.view.kmk009.a.viewmodel {
 
+    import EnumUse = service.model.Enum;
     import Enum = service.model.Enum;
     import WorkTypeDto = service.model.WorkTypeDto;
     import WorkTimeDto = service.model.WorkTimeDto;
@@ -8,6 +9,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         itemTotalTimes: KnockoutObservableArray<model.TotalTimes>;
         itemTotalTimesDetail: KnockoutObservable<model.TotalTimesDetail>;
         totalClsEnums: Array<Enum>;
+        totalClsEnumsUse: Array<EnumUse>;
         valueEnum: KnockoutObservable<number>;
         currentCode: KnockoutObservable<any>;
         columns: KnockoutObservableArray<any>;
@@ -23,12 +25,13 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             var self = this;
             self.itemTotalTimes = ko.observableArray([]);
             self.itemTotalTimesDetail = ko.observable(null);
-            self.totalClsEnums = [];;
+            self.totalClsEnums = [];
+            self.totalClsEnumsUse = [];
             self.valueEnum = ko.observable(null);
             self.currentCode = ko.observable(null);
             self.columns = ko.observableArray([
                 { headerText: nts.uk.resource.getText('KMK009_4'), key: 'totalCountNo', formatter: _.escape, width: 50 },
-                { headerText: nts.uk.resource.getText('KMK009_5'), key: 'useAtr', formatter: _.escape, width: 80 },
+                { headerText: nts.uk.resource.getText('KMK009_5'), key: 'useAtrName', formatter: _.escape, width: 80 },
                 { headerText: nts.uk.resource.getText('KMK009_6'), key: 'totalTimesName', formatter: _.escape, width: 150 },
                 { headerText: nts.uk.resource.getText('KMK009_14'), key: 'summaryAtrName', formatter: _.escape, width: 100 }
             ]);
@@ -100,10 +103,15 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 if (self.totalClsEnums.length > 0) {
                     self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail().summaryAtr()].value);
                 }
-                self.loadAllTotalTimes().done(() => {
-                    dfd.resolve();
+                self.loadTotalUseEnum().done(function() {
+                    self.loadAllTotalTimes().done(() => {
+                        dfd.resolve();
+                    });
                 });
+
             });
+
+
 
             return dfd.promise();
         }
@@ -122,6 +130,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
                 for (var i = 0; i < self.itemTotalTimes().length; i++) {
                     self.itemTotalTimes()[i].summaryAtrName = self.totalClsEnums[self.itemTotalTimes()[i].summaryAtr].localizedName;
+                    self.itemTotalTimes()[i].useAtrName = self.totalClsEnumsUse[self.itemTotalTimes()[i].useAtr].localizedName;
                 }
                 self.itemTotalTimes.valueHasMutated();
 
@@ -175,7 +184,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     }
                     dfd.resolve();
                 });
-                
+
             });
 
 
@@ -249,7 +258,27 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             return dfd.promise();
         }
 
-        
+        // load enum enum
+        private loadTotalUseEnum(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred<any>();
+
+            nts.uk.ui.block.grayout();
+
+            // get setting
+            service.getTotalUseEnum().done(function(dataRes: Array<EnumUse>) {
+
+                self.totalClsEnumsUse = dataRes;
+
+                nts.uk.ui.block.clear();
+
+                dfd.resolve();
+            });
+
+            return dfd.promise();
+        }
+
+
 
         // save Daily Pattern in database
         public save() {
@@ -291,8 +320,8 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             service.saveAllTotalTimes(command).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     self.loadAllTotalTimes().done(function() {
-//                        self.loadAllTotalTimesDetail(self.currentCode()).done(function() {
-//                        });
+                        //                        self.loadAllTotalTimesDetail(self.currentCode()).done(function() {
+                        //                        });
                     });
                 });
 
@@ -384,7 +413,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 });
             });
         }
-        
+
         clearError(): void {
             if ($('.nts-validate').ntsError("hasError") == true) {
                 $('.nts-validate').ntsError('clear');
@@ -403,16 +432,17 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         export class TotalTimes {
             totalCountNo: number;
             summaryAtr: number;
-            useAtr: KnockoutObservable<number>;
+            useAtr: number;
             totalTimesName: KnockoutObservable<string>;
             summaryAtrName: string;
-
+            useAtrName: string
             constructor(totalCountNo: number, summaryAtr: number, useAtr: number, totalTimesName: string) {
                 this.totalCountNo = totalCountNo;
                 this.summaryAtr = summaryAtr;
-                this.useAtr = ko.observable(useAtr);
+                this.useAtr = useAtr;
                 this.totalTimesName = ko.observable(totalTimesName);
                 this.summaryAtrName = null;
+                this.useAtrName = null;
             }
         }
 

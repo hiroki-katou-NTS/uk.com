@@ -4,6 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseAdaptorDto;
+import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.dto.ApprovalPhaseAdaptorResult;
 
 /**
  * 2.承認ルートを整理する
@@ -20,7 +21,7 @@ public interface AdjustmentApprovalRootService {
 	 * @param baseDate 基準日
 	 * @param appPhases 承認フーズ
 	 */
-	void adjustmentApprovalRootData(
+	List<ApprovalPhaseAdaptorResult> adjustmentApprovalRootData(
 			String cid, 
 			String sid, 
 			GeneralDate baseDate,

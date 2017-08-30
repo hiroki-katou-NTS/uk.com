@@ -23,13 +23,15 @@
 					<div class="label">#{i18n.getText('CMM018_46')}</div>
 				</div>
 				<div class="table">
-					<div class="cell column1">
-						<!-- I1_2: Label 設定対象 -->
-						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_47')}</div>	
-					</div>
-					<div class="cell">
-						<!-- I1_3: 設定対象 -->
-						<label data-bind="text: item"></label>
+					<div data-bind="if: dataSource.mode">
+						<div class="cell column1">
+							<!-- I1_2: Label 設定対象 -->
+							<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_47')}</div>	
+						</div>
+						<div class="cell">
+							<!-- I1_3: 設定対象 -->
+							<label data-bind="text: item"></label>
+						</div>
 					</div>
 				</div>
 				<div class="table">
@@ -55,7 +57,7 @@
 						<label>#{i18n.getText('CMM018_93')}</label>
 					</div>
 				</div>
-				<div class="table" data-bind="style: { visibility: (size()==0)?'hidden':'visible' }">
+				<div class="table">
 					<div class="cell column1">
 						<!-- I1_7: Label -->
 						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CMM018_49')}</div>

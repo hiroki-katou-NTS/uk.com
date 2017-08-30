@@ -15,16 +15,11 @@ import nts.uk.ctx.at.record.infra.entity.dailyattendanceitem.KshstDailyServiceTy
 
 @Stateless
 public class JpaDailyServiceTypeControlRepository extends JpaRepository implements DailyServiceTypeControlRepository {
-	private final String SELECT_BY_BUSINESSCODE_AND_COMPANYID = "SELECT c, k.attendanceItemName, k.userCanSet, k.kmnmtAttendanceItemPK.attendanceItemId "
-			+ "FROM KmnmtAttendanceItem k LEFT JOIN KshstDailyServiceTypeControl c "
-			+ "ON c.kshstDailyServiceTypeControlPK.attendanceItemId = k.kmnmtAttendanceItemPK.attendanceItemId  "
+	private final String SELECT_BY_BUSINESSCODE_AND_COMPANYID = "SELECT c, k.attendanceItemName, k.userCanSet, k.krcmtDailyAttendanceItemPK.attendanceItemId "
+			+ "FROM KrcmtDailyAttendanceItem k LEFT JOIN KshstDailyServiceTypeControl c "
+			+ "ON c.kshstDailyServiceTypeControlPK.attendanceItemId = k.krcmtDailyAttendanceItemPK.attendanceItemId  "
 			+ "AND c.kshstDailyServiceTypeControlPK.businessTypeCode = :businessTypeCode"
-			+ " WHERE k.kmnmtAttendanceItemPK.companyId = :companyId";
-
-	// private final String SELECT_BY_WORKTYPECODE = "SELECT c FROM
-	// KdwstDAIControlOfAttendanceItems c WHERE
-	// c.kdwstDAIControlOfAttendanceItemsPK.businessTypeCode =
-	// :businessTypeCode";
+			+ " WHERE k.krcmtDailyAttendanceItemPK.companyId = :companyId";
 
 	@Override
 	public List<DailyServiceTypeControl> getListDailyServiceTypeControl(BusinessTypeCode businessTypeCode,
@@ -67,7 +62,7 @@ public class JpaDailyServiceTypeControlRepository extends JpaRepository implemen
 
 	private DailyServiceTypeControl toDomain(Object[] object, String businessTypeCode) {
 		String attendanceItemName = (String) object[1];
-		int userCanSet = (int) object[2];
+		int userCanSet = ((BigDecimal) object[2]).intValue();
 		KshstDailyServiceTypeControl kshstDailyServiceTypeControl = (KshstDailyServiceTypeControl) object[0];
 		int attendanceId = (int) object[3];
 		if (kshstDailyServiceTypeControl == null) {

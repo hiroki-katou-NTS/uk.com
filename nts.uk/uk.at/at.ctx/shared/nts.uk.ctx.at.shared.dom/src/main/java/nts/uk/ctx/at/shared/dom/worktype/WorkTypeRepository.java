@@ -73,6 +73,14 @@ public interface WorkTypeRepository {
 	 * @return WorkType
 	 */
 	Optional<WorkType> findByPK(String companyId, String workTypeCd);
+	
+	/**
+	 * 
+	 * @param companyId
+	 * @param workTypeCd
+	 * @return
+	 */
+	List<WorkTypeSet> findWorkTypeSet(String companyId, String workTypeCode);
 
 	/**
 	 * Insert workType to DB
@@ -80,4 +88,16 @@ public interface WorkTypeRepository {
 	 * @param workType
 	 */
 	void add(WorkType workType);
+	
+	/**
+	 * 
+	 * @param workTypeSet
+	 */
+	void addWorkTypeSet(WorkTypeSet workTypeSet);
+	
+	/**
+	 * 
+	 * @param workTypeCd
+	 */
+	void remove(String companyId, String workTypeCd);
 }
