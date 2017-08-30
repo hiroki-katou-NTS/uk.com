@@ -7,6 +7,7 @@ package nts.uk.ctx.at.schedule.app.find.shift.estimate.personal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -116,6 +117,20 @@ public class PersonalEstablishmentFinder {
 		dto.setEstimatePrice(estimatePrice);
 		dto.setEstimateNumberOfDay(estimateNumberOfDay);
 		return dto;
+	}
+	
+	/**
+	 * Find all personal setting.
+	 *
+	 * @param targetYear the target year
+	 * @return the list
+	 */
+	public List<PersonalEstablishmentDto> findAllPersonalSetting(int targetYear){
+		return this.repository.findAll(targetYear).stream().map(employeeId->{
+			PersonalEstablishmentDto dto = new PersonalEstablishmentDto();
+			dto.setEmployeeId(employeeId);
+			return dto;
+		}).collect(Collectors.toList());
 	}
 	
 }

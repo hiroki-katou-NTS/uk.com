@@ -42,12 +42,6 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 	private final String findWorkTimeByList = "SELECT a FROM KwtmtWorkTime a "
 			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID " + "AND a.kwtmpWorkTimePK.siftCD IN :siftCDs";
 
-	private final String FIND_BY_CID_AND_DISPLAY_ATR = "SELECT a FROM KwtmtWorkTime a "
-			+ "JOIN KshmtWorkTimeOrder b ON a.kwtmpWorkTimePK.siftCD = b.kshmpWorkTimeOrderPK.workTimeCode "
-			+ "JOIN KwtdtWorkTimeDay c ON a.kwtmpWorkTimePK.siftCD = c.kwtdpWorkTimeDayPK.siftCD "
-			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID " + "AND a.displayAtr = :displayAtr "
-			+ "ORDER BY b.dispOrder ASC";
-
 	private static final String FIND_ALL = "SELECT k FROM KwtmtWorkTime k " + "LEFT JOIN KshmtWorkTimeOrder o "
 			+ "ON k.kwtmpWorkTimePK.siftCD = o.kshmpWorkTimeOrderPK.workTimeCode "
 			+ "WHERE k.kwtmpWorkTimePK.companyID = :companyID " + "AND k.displayAtr = 1 " // Always
@@ -139,8 +133,8 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 	 */
 	@Override
 	public List<WorkTime> findAll(String companyID) {
-		return this.queryProxy().query(this.FIND_ALL, KwtmtWorkTime.class).setParameter("companyID", companyID)
-				.getList(x -> convertToDomainWorkTime(x));
+		return this.queryProxy().query(FIND_ALL, KwtmtWorkTime.class)
+				.setParameter("companyID", companyID).getList(x -> convertToDomainWorkTime(x));
 	}
 
 	/*
@@ -156,7 +150,7 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 		int i = 0;
 		while (codes.size() - (i + 500) > 0) {
 			List<String> subCodelist = codes.subList(i, i + 500);
-			List<WorkTime> subResult = this.queryProxy().query(this.FIND_BY_CODES, KwtmtWorkTime.class)
+			List<WorkTime> subResult = this.queryProxy().query(FIND_BY_CODES, KwtmtWorkTime.class)
 					.setParameter("companyID", companyID).setParameter("siftCDs", subCodelist)
 					.getList(x -> convertToDomainWorkTime(x));
 			result.addAll(subResult);

@@ -5,8 +5,11 @@
 package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.personal;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -441,6 +444,71 @@ public class JpaPersonalEstablishmentRepository extends JpaRepository
 		this.commandProxy().removeAll(estimateTimePersonals);
 		this.commandProxy().removeAll(estimatePricePersonals);
 		this.commandProxy().removeAll(estimateDaysPersonals);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.personal.
+	 * PersonalEstablishmentRepository#findAll(int)
+	 */
+	@Override
+	public List<String> findAll(int targetYear) {
+
+		// get all setting of company
+		List<KscmtEstTimePerSet> estimatePersonal = this.getEstimatePersonal(targetYear);
+
+		Map<String, KscmtEstTimePerSet> mapEstimatePersonal = new HashMap<>();
+		estimatePersonal.forEach(estimate -> {
+			if (!mapEstimatePersonal.containsKey(estimate.getKscmtEstTimePerSetPK().getSid())) {
+				mapEstimatePersonal.put(estimate.getKscmtEstTimePerSetPK().getSid(), estimate);
+			}
+		});
+
+		// to list data
+		return mapEstimatePersonal.values().stream()
+				.map(estimate -> estimate.getKscmtEstTimePerSetPK().getSid())
+				.collect(Collectors.toList());
+	}
+	
+	
+	/**
+	 * Gets the estimate personal.
+	 *
+	 * @param targetYear the target year
+	 * @return the estimate personal
+	 */
+	private List<KscmtEstTimePerSet> getEstimatePersonal(int targetYear){
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KSCMT_EST_TIME_Per_SET (KscmtEstTimePerSet SQL)
+		CriteriaQuery<KscmtEstTimePerSet> cq = criteriaBuilder
+				.createQuery(KscmtEstTimePerSet.class);
+
+		// root data
+		Root<KscmtEstTimePerSet> root = cq.from(KscmtEstTimePerSet.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal target year
+		lstpredicateWhere
+				.add(criteriaBuilder.equal(root.get(KscmtEstTimePerSet_.kscmtEstTimePerSetPK)
+						.get(KscmtEstTimePerSetPK_.targetYear), targetYear));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<KscmtEstTimePerSet> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList();
 	}
 
 }
