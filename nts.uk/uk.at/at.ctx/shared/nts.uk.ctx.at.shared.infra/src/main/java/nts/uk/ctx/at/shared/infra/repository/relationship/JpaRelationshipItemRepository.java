@@ -21,7 +21,6 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 	 * change from entity to domain
 	 * @param entity
 	 * @return
-	 * 
 	 * author: Hoang Yen
 	 */
 	private static Relationship toDomain(KshstRelationshipItem entity){
@@ -40,7 +39,6 @@ public class JpaRelationshipItemRepository extends JpaRepository implements Rela
 	
 	/**
 	 * get all data
-	 * 
 	 * author: Hoang Yen
 	 */
 	@Override

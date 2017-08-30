@@ -53,4 +53,23 @@ public interface EmployeePub {
 	 * @return the list
 	 */
 	List<EmployeeDto> findByWpkIds(String companyId, List<String> workplaceIds, GeneralDate baseDate);
+
+	/**
+	 * Find job title by sid.
+	 *
+	 * @param employeeId the employee id
+	 * @return the list
+	 */
+	// RequestList #17
+	List<PubJobTitleDto> findJobTitleBySid(String employeeId);
+
+	/**
+	 * Find job title by sid.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	// RequestList #33
+	List<PubJobTitleDto> findJobTitleBySid(String employeeId, GeneralDate baseDate);
 }

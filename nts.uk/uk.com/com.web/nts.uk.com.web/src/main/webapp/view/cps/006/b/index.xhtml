@@ -15,7 +15,7 @@
 				};
 			</script>
 			<com:ValidatorScript>
-				nts.uk.ctx.bs.person.dom.person.role.RoleName
+				nts.uk.ctx.bs.person.dom.person.info.item.ItemName
 			</com:ValidatorScript>
 			<com:stylefile path="cps006.b.style.css" />
 			<com:scriptfile set="IGNITE" />
@@ -82,7 +82,8 @@
 						<div class="div_line">
 
 							<div class="line_col_1">
-								<div data-bind="ntsFormLabel: { required:true }">#{i18n.getText('CPS006_16')}</div>
+								<div
+									data-bind="ntsFormLabel: { required:true ,constraint:'ItemName' }">#{i18n.getText('CPS006_16')}</div>
 							</div>
 
 							<div class="line_col_2">

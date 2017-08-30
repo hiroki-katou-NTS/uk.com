@@ -144,9 +144,11 @@ module nts.uk.at.view.ksm001.a {
                     self.loadCompanyEstablishment(year, false);
                 });
                 self.employmentEstablishmentModel.selectedYear.subscribe(year => {
+                    self.updateEmploymentEstimateSetting(year);
                     self.loadEmploymentEstablishment(year, self.selectedEmploymentCode(), false);
                 });
                 self.personalEstablishmentModel.selectedYear.subscribe(year => {
+                    self.updatePersonalEstimateSetting(year);
                     self.loadCompanyEstablishment(year, false);
                 });
                 
@@ -154,14 +156,15 @@ module nts.uk.at.view.ksm001.a {
                 self.selectedEmployeeCode.subscribe(function(employeeCode) {
                     if (!employeeCode) {
                         self.personalEstablishmentModel.disableInput();
-                    }
-                    if (employeeCode) {
+                        self.personalEstablishmentModel.enableDelete(false);
+                    }else {
                         var employment: UnitModel = self.findByCodeEmployee(employeeCode);
                         if (employment) {
                             self.employeeName(employment.name);
                         }
                         self.personalEstablishmentModel.enableInput();
                         self.loadPersonalEstablishment(self.personalEstablishmentModel.selectedYear(), self.selectedEmployeeCode(), false);
+                        
                     }
                 });
 
@@ -217,11 +220,11 @@ module nts.uk.at.view.ksm001.a {
 
                 // Get 2 years before, 2 years after.
                 let arr = [];
-                arr.push(currentYear.subtract('years', 2).year());
-                arr.push(currentYear.add('years', 1).year());
-                arr.push(currentYear.add('years', 1).year());
-                arr.push(currentYear.add('years', 1).year());
-                arr.push(currentYear.add('years', 1).year());
+                arr.push(currentYear.subtract(2, 'years').year());
+                arr.push(currentYear.add(1, 'years').year());
+                arr.push(currentYear.add(1, 'years').year());
+                arr.push(currentYear.add(1, 'years').year());
+                arr.push(currentYear.add(1, 'years').year());
 
                 // Map to model
                 let mapped = arr.map(i => {
@@ -249,6 +252,7 @@ module nts.uk.at.view.ksm001.a {
                     if (isLoading) {
                         self.isLoading(false);
                     }
+                    self.initNextTabFeature();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -289,6 +293,7 @@ module nts.uk.at.view.ksm001.a {
                         employmentSettings.push(employmentSetting);
                     }
                     self.alreadySettingEmployment(employmentSettings);
+                    self.updateEnableDeleteEmployment(self.selectedEmploymentCode());
                 });
             }
             
@@ -320,6 +325,8 @@ module nts.uk.at.view.ksm001.a {
                     if (isLoading) {
                         self.isLoading(false);
                     }
+                    self.initNextTabFeature();
+                    self.updateEnableDeleteEmployment(employmentCode);
                     nts.uk.ui.block.clear();
                     dfd.resolve();
                 });
@@ -339,10 +346,9 @@ module nts.uk.at.view.ksm001.a {
 
                 $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption).done(function() {
                     self.employmentList($('#employmentSetting').getDataList());
+                    self.loadEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(),self.selectedEmploymentCode(), true);
+                    self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
                 });
-                self.loadEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(),self.findEmploymentBy, true);
-                self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
-                self.selectedEmploymentCode.valueHasMutated();
                 
             }
             /**
@@ -357,13 +363,28 @@ module nts.uk.at.view.ksm001.a {
                         personalSettings.push(employmentSetting);
                     }
                     self.alreadySettingPersonal(personalSettings);
-                    self.personalEstablishmentModel.enableDelete(self.checkSettingPersonal(self.selectedEmployeeCode()));
+                    self.updateEnableDeletePersonal(self.selectedEmployeeCode());
                 });
             }
             
+            /**
+             * update enable delete button by call service
+             */
+            private updateEnableDeleteEmployment(employementCode: string) {
+                var self = this;
+                self.employmentEstablishmentModel.enableDelete(self.checkEmploymentSetting(employementCode));
+            }
+            
+             /**
+             * update enable delete button by call service
+             */
+            private updateEnableDeletePersonal(employeeCode: string) {
+                var self = this;
+                self.personalEstablishmentModel.enableDelete(self.checkSettingPersonal(employeeCode));
+            }
               
              /**
-            * load perosnal establishment
+            * load personal establishment
             */
             private loadPersonalEstablishment(targetYear: number, employeeCode: string, isLoading: boolean): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
@@ -377,6 +398,8 @@ module nts.uk.at.view.ksm001.a {
                         if (isLoading) {
                             self.isLoading(false);
                         }
+                        self.updateEnableDeletePersonal(employeeCode);
+                        self.initNextTabFeature();
                         nts.uk.ui.block.clear();
                         dfd.resolve();
                     });
@@ -399,7 +422,6 @@ module nts.uk.at.view.ksm001.a {
                 self.isEmploymentSelected(false);
                 self.isPersonSelected(true);
                 self.isLoading(true);
-               
                 $('#ccgcomponent').ntsGroupComponent(self.ccgcomponentPerson).done(function() {
                     self.alreadySettingEmployment = ko.observableArray([]);
                     self.isShowNoSelectRow = ko.observable(false);
@@ -574,13 +596,13 @@ module nts.uk.at.view.ksm001.a {
             * function on click deleteCompanyEstablishment action
             */
             public deleteCompanyEstablishment(): void {
-                nts.uk.ui.block.invisible();
                 var self = this;
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
-                    service.deleteCompanyEstablishment(self.selectedTargetYear()).done(function() {
+                    nts.uk.ui.block.invisible();
+                    service.deleteCompanyEstablishment(self.companyEstablishmentModel.selectedYear()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             // reload page
-                            self.loadCompanyEstablishment(self.selectedTargetYear(), false);
+                            self.loadCompanyEstablishment(self.companyEstablishmentModel.selectedYear(), false);
                         });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
@@ -605,8 +627,11 @@ module nts.uk.at.view.ksm001.a {
                     estimateNumberOfDay: self.employmentEstablishmentModel.estimateDaysModel.toDto(),
                     employmentCode: self.selectedEmploymentCode()
                 };
-                service.saveEmploymentEstablishment(2017, dto).done(function(){
-                   
+
+                service.saveEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(), dto).done(function() {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
+                    });
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
@@ -616,12 +641,19 @@ module nts.uk.at.view.ksm001.a {
             * function on click deleteEmploymentEstablishment action
             */
             public deleteEmploymentEstablishment(): void {
-                nts.uk.ui.block.invisible();
-                var self = this;    
-                service.deleteEmploymentEstablishment(2017, self.selectedEmploymentCode()).done(function(){
-                   
-                }).always(() => {
-                    nts.uk.ui.block.clear();
+                let self = this;
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(() => {
+                    nts.uk.ui.block.invisible();
+                    service.deleteEmploymentEstablishment(
+                        self.employmentEstablishmentModel.selectedYear(),
+                        self.selectedEmploymentCode()).done(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
+                                self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
+                                self.loadEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(), self.selectedEmploymentCode(), false);
+                            });
+                        }).always(() => {
+                            nts.uk.ui.block.clear();
+                        });
                 });
             }
             /**
@@ -669,9 +701,9 @@ module nts.uk.at.view.ksm001.a {
             * function on click deletePersonalEstablishment action
             */
             public deletePersonalEstablishment(): void {
-                nts.uk.ui.block.invisible();
                 var self = this;    
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    nts.uk.ui.block.invisible();
                     service.deletePersonalEstablishment(self.personalEstablishmentModel.selectedYear(),self.findEmployeeIdByCode(self.selectedEmployeeCode())).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             // reload page
@@ -704,6 +736,38 @@ module nts.uk.at.view.ksm001.a {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/ksm/001/f/index.xhtml").onClosed(function() {
                     
+                });
+            }
+            
+            /**
+             * set next tab index
+             */
+             public initNextTabFeature() {
+                let self = this;
+                // Auto next tab when press tab key.
+                $("[tabindex='75']").on('keydown', function(e) {
+                    console.log('75');
+                    if (e.which == 9) {
+                        self.companyEstablishmentModel.selectedTab('tab-2');
+                        self.employmentEstablishmentModel.selectedTab('tab-2');
+                        self.personalEstablishmentModel.selectedTab('tab-2');
+                    }
+                });
+
+                $("[tabindex='141']").on('keydown', function(e) {
+                    console.log('141');
+                    if (e.which == 9) {
+                        self.companyEstablishmentModel.selectedTab('tab-3');
+                        self.employmentEstablishmentModel.selectedTab('tab-3');
+                        self.personalEstablishmentModel.selectedTab('tab-3');
+                    }
+                });
+                $("[tabindex='9']").on('keydown', function(e) {
+                    if (e.which == 9 && !$(e.target).parents("[tabindex='9']")[0]) {
+                        self.companyEstablishmentModel.selectedTab('tab-1');
+                        self.employmentEstablishmentModel.selectedTab('tab-1');
+                        self.personalEstablishmentModel.selectedTab('tab-1');
+                    }
                 });
             }
 

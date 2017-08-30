@@ -76,6 +76,7 @@
 									enable: true,										
 									showCheckBox: false}">
 							</table>
+							<label data-bind="text: singleSelectedCode()"></label>
 							<hr/>
 							<h2>Multi Selection TreeGrid</h2>
 							<div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid2', items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
@@ -92,6 +93,7 @@
 									enable: true,										
 									showCheckBox: true}">
 							</table>
+							<label data-bind="text: selectedCodes2()"></label>
 						</div>
 						<article class="cf">
 							<div class="tabs">
