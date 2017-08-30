@@ -156,8 +156,26 @@ module nts.uk.at.view.ksm003.a {
                 }).fail(function(res) {
                     if (res.messageId == "Msg_3") {
                         $('#inpCode').ntsError('set', { messageId: "Msg_3" });
+                    } else if (res.messageId == "Msg_23") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_23" });
+                    } else if (res.messageId == "Msg_24") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_24" });
+                    } else if (res.messageId == "Msg_25") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_25" });
+                    } else if (res.messageId == "Msg_389") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_389" });
+                    } else if (res.messageId == "Msg_390") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_390" });
+                    } else if (res.messageId == "Msg_416") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_416" });
+                    } else if (res.messageId == "Msg_417") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_417" });
+                    } else if (res.messageId == "Msg_434") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_434" });
+                    } else if (res.messageId == "Msg_435") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_435" });
                     } else {
-                        nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
+                        nts.uk.ui.dialog.alertError(res.message);
                     }
                 }).always(function() {
                     nts.uk.ui.block.clear();
