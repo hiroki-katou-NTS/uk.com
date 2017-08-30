@@ -255,7 +255,7 @@ module nts.uk.at.view.ksm006.a {
                     $('button').ntsError('clear');
                 }
             }
-            
+
             /**
              * Register Basic Work By Company
              */
@@ -287,10 +287,23 @@ module nts.uk.at.view.ksm006.a {
                                 default: { break; }
                             }
                         });
+                    } else if (res.messageId == "Msg_389") {
+                        $('#companyWide-content').ntsError('set', { messageId: "Msg_389" });
+                    } else if (res.messageId == "Msg_390") {
+                        $('#companyWide-content').ntsError('set', { messageId: "Msg_390" });
+                    } else if (res.messageId == "Msg_416") {
+                        $('#companyWide-content').ntsError('set', { messageId: "Msg_416" });
+                    } else if (res.messageId == "Msg_417") {
+                        $('#companyWide-content').ntsError('set', { messageId: "Msg_417" });
+                    } else if (res.messageId == "Msg_434") {
+                        $('#companyWide-content').ntsError('set', { messageId: "Msg_434" });
+                    } else if (res.messageId == "Msg_435") {
+                        $('#companyWide-content').ntsError('set', { messageId: "Msg_435" });
                     } else {
-                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
+                        nts.uk.ui.dialog.alertError(res.message);
                     }
-                    blockUI.clear();
+                }).always(function() {
+                    nts.uk.ui.block.clear();
                 });
             }
 
@@ -300,15 +313,15 @@ module nts.uk.at.view.ksm006.a {
              */
             public registerByWorkplace(): void {
                 var self = this;
-                
+
                 self.clearError();
                 if (!self.selectedWorkplaceId()) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_339" });
                     return;
                 }
-                
+
                 blockUI.invisible();
-                
+
                 service.saveWorkplaceBasicWork(self.collectWorkplaceData()).done(function(data) {
 
                     var existItem = self.workplaceAlreadySetList().filter((item) => {
@@ -343,10 +356,23 @@ module nts.uk.at.view.ksm006.a {
                                 default: { break; }
                             }
                         });
+                    } else if (res.messageId == "Msg_389") {
+                        $('#workplace-content').ntsError('set', { messageId: "Msg_389" });
+                    } else if (res.messageId == "Msg_390") {
+                        $('#workplace-content').ntsError('set', { messageId: "Msg_390" });
+                    } else if (res.messageId == "Msg_416") {
+                        $('#workplace-content').ntsError('set', { messageId: "Msg_416" });
+                    } else if (res.messageId == "Msg_417") {
+                        $('#workplace-content').ntsError('set', { messageId: "Msg_417" });
+                    } else if (res.messageId == "Msg_434") {
+                        $('#workplace-content').ntsError('set', { messageId: "Msg_434" });
+                    } else if (res.messageId == "Msg_435") {
+                        $('#workplace-content').ntsError('set', { messageId: "Msg_435" });
                     } else {
-                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
+                        nts.uk.ui.dialog.alertError(res.message);
                     }
-                    blockUI.clear();
+                }).always(function() {
+                    nts.uk.ui.block.clear();
                 });
             }
 
@@ -356,15 +382,15 @@ module nts.uk.at.view.ksm006.a {
              */
             registerByClassification(): void {
                 var self = this;
-                
+
                 self.clearError();
                 if (!self.selectedClassifi()) {
                     nts.uk.ui.dialog.info({ messageId: "Msg_339" });
                     return;
                 }
-                
+
                 blockUI.invisible();
-                
+
                 service.saveClassifyBasicWork(self.collectClassifyData()).done(function(data) {
                     // Check if exist alreadysetting of selectedItem
                     var existItem = self.classifiAlreadySetList().filter((item) => {
@@ -398,13 +424,25 @@ module nts.uk.at.view.ksm006.a {
                                 default: { break; }
                             }
                         });
+                    } else if (res.messageId == "Msg_389") {
+                        $('#classification-content').ntsError('set', { messageId: "Msg_389" });
+                    } else if (res.messageId == "Msg_390") {
+                        $('#classification-content').ntsError('set', { messageId: "Msg_390" });
+                    } else if (res.messageId == "Msg_416") {
+                        $('#classification-content').ntsError('set', { messageId: "Msg_416" });
+                    } else if (res.messageId == "Msg_417") {
+                        $('#classification-content').ntsError('set', { messageId: "Msg_417" });
+                    } else if (res.messageId == "Msg_434") {
+                        $('#classification-content').ntsError('set', { messageId: "Msg_434" });
+                    } else if (res.messageId == "Msg_435") {
+                        $('#classification-content').ntsError('set', { messageId: "Msg_435" });
                     } else {
-                        nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
+                        nts.uk.ui.dialog.alertError(res.message);
                     }
-                    blockUI.clear();
+                }).always(function() {
+                    nts.uk.ui.block.clear();
                 });
             }
-
             /**
              *  Remove Classification Basic Work
              */
@@ -427,7 +465,7 @@ module nts.uk.at.view.ksm006.a {
                         });
                         blockUI.clear();
                     }).fail((res) => {
-                       nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
+                        nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
                     });
                 });
 
@@ -455,7 +493,7 @@ module nts.uk.at.view.ksm006.a {
                         });
                         blockUI.clear();
                     }).fail((res) => {
-                       nts.uk.ui.dialog.alertError(res.message).then(()=>{nts.uk.ui.block.clear();});
+                        nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
                     });
                 });
             }
