@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * 承認フェーズDto
@@ -12,7 +13,7 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 @Getter
 @AllArgsConstructor
-public class ApprovalPhaseAdaptorDto extends AggregateRoot {
+public class ApprovalPhaseAdaptorDto {
 	/** 会社ID */
 	private String companyId;
 	/** 分岐ID */
@@ -25,4 +26,6 @@ public class ApprovalPhaseAdaptorDto extends AggregateRoot {
 	private int browsingPhase;
 	/** 順序 */
 	private int orderNumber;
+	/** 承認者*/
+	private List<ApproverAdaptorDto> approverDtos;
 }

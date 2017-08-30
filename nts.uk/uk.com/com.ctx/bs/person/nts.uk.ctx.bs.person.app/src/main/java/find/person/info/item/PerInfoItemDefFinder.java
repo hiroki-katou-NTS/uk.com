@@ -64,14 +64,14 @@ public class PerInfoItemDefFinder {
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(String perInfoCtgId, String isAbolition) {
 		if (isAbolition.equals("true")) {
 			return this.pernfoItemDefRep
-					.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode()).stream()
+					.getAllPerInfoItemDefByCategoryIdWithoutSetItem(perInfoCtgId, AppContexts.user().contractCode()).stream()
 					.map(item -> {
 						return mappingFromDomaintoDto(item, 0);
 					}).collect(Collectors.toList());
 
 		} else {
 			return this.pernfoItemDefRep
-					.getAllPerInfoItemDefByCategoryIdWithNoAbolition(perInfoCtgId, AppContexts.user().contractCode())
+					.getAllPerInfoItemDefByCategoryIdWithoutAbolition(perInfoCtgId, AppContexts.user().contractCode())
 					.stream().map(item -> {
 						return mappingFromDomaintoDto(item, 0);
 					}).collect(Collectors.toList());

@@ -20,7 +20,6 @@ module nts.uk.at.view.ksm001.a {
             isEmploymentSelected: KnockoutObservable<boolean>;
             isPersonSelected: KnockoutObservable<boolean>;
             isLoading: KnockoutObservable<boolean>;
-            selectedTargetYear: KnockoutObservable<number>;
             companyEstablishmentModel: EstablishmentModel;
             employmentEstablishmentModel: EstablishmentModel;
             personalEstablishmentModel: EstablishmentModel;
@@ -33,7 +32,6 @@ module nts.uk.at.view.ksm001.a {
             
             lstEmploymentComponentOption: any;
             selectedEmploymentCode: KnockoutObservable<string>;
-            alreadyEmploymentSettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             
             ccgcomponentPerson: GroupOption;
 
@@ -45,11 +43,13 @@ module nts.uk.at.view.ksm001.a {
             selectedEmployeeCode: KnockoutObservable<string>;
             employeeName: KnockoutObservable<string>;
             employmentName: KnockoutObservable<string>;
-            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+            alreadySettingEmployment: KnockoutObservableArray<UnitAlreadySettingModel>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
             employeeList: KnockoutObservableArray<UnitModel>;
 
             employmentList: KnockoutObservableArray<UnitModel>;
+            
+            alreadySettingPersonal: KnockoutObservableArray<UnitAlreadySettingModel>;
 
             constructor() {
                 var self = this;
@@ -70,9 +70,10 @@ module nts.uk.at.view.ksm001.a {
                 self.isEmploymentSelected = ko.observable(false);
                 self.isPersonSelected = ko.observable(false);
                 self.isLoading = ko.observable(false);
-                self.selectedTargetYear = ko.observable(null);
                 self.selectedEmploymentCode = ko.observable('');
-                self.alreadySettingList = ko.observableArray([]);
+                self.alreadySettingEmployment = ko.observableArray([]);
+                self.alreadySettingPersonal = ko.observableArray([]);
+                self.selectedEmployeeCode = ko.observable('');
                 
                 self.lstEmploymentComponentOption = {
                     isShowAlreadySet: true,
@@ -82,7 +83,7 @@ module nts.uk.at.view.ksm001.a {
                     selectedCode: self.selectedEmploymentCode,
                     isDialog: false,
                     isShowNoSelectRow: false,
-                    alreadySettingList: self.alreadySettingList,
+                    alreadySettingList: self.alreadySettingEmployment,
                     maxRows: 12
                 };
                 
@@ -137,6 +138,52 @@ module nts.uk.at.view.ksm001.a {
                     { id: 'emp-tab-3', title: nts.uk.resource.getText("KSM001_25"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.selEmploymentTab = ko.observable('emp-tab-1');
+
+                // Selected year subscription.
+                self.companyEstablishmentModel.selectedYear.subscribe(year => {
+                    self.loadCompanyEstablishment(year, false);
+                });
+                self.employmentEstablishmentModel.selectedYear.subscribe(year => {
+                    self.loadEmploymentEstablishment(year, self.selectedEmploymentCode(), false);
+                });
+                self.personalEstablishmentModel.selectedYear.subscribe(year => {
+                    self.loadCompanyEstablishment(year, false);
+                    self.updatePersonalEstimateSetting(year);
+                });
+                
+                self.selectedEmployeeCode.valueHasMutated();
+                self.selectedEmployeeCode.subscribe(function(employeeCode) {
+                    if (!employeeCode) {
+                        self.personalEstablishmentModel.disableInput();
+                        self.personalEstablishmentModel.enableDelete(false);
+                    }else {
+                        var employment: UnitModel = self.findByCodeEmployee(employeeCode);
+                        if (employment) {
+                            self.employeeName(employment.name);
+                        }
+                        self.personalEstablishmentModel.enableInput();
+                        self.loadPersonalEstablishment(self.personalEstablishmentModel.selectedYear(), self.selectedEmployeeCode(), false);
+                        
+                    }
+                });
+
+                self.selectedEmploymentCode.subscribe(function(employmentCode) {
+                    if (!employmentCode) {
+                        self.employmentEstablishmentModel.disableInput();
+                    }
+                    if (employmentCode) {
+                        var employment: UnitModel = self.findEmploymentByCode(employmentCode);
+                        if (employment) {
+                            self.employmentName(employment.name);
+                        }
+                        self.employmentEstablishmentModel.enableInput();
+
+                        let currentYear = self.employmentEstablishmentModel.selectedYear() ?
+                            self.employmentEstablishmentModel.selectedYear() : moment().year();
+
+                        self.loadEmploymentEstablishment(currentYear, employmentCode, false);
+                    }
+                });
                 
             }
             
@@ -169,7 +216,6 @@ module nts.uk.at.view.ksm001.a {
             private setSelectableYears(): void {
                 let self = this;
                 let currentYear = moment();
-                self.selectedTargetYear(currentYear.year());
 
                 // Get 2 years before, 2 years after.
                 let arr = [];
@@ -191,6 +237,7 @@ module nts.uk.at.view.ksm001.a {
                 var self = this;
                 
             }
+            
            /**
             * load company establishment
             */
@@ -204,6 +251,7 @@ module nts.uk.at.view.ksm001.a {
                     if (isLoading) {
                         self.isLoading(false);
                     }
+                    self.initNextTabFeature();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -220,28 +268,48 @@ module nts.uk.at.view.ksm001.a {
                 self.isPersonSelected(false);
                 self.isCompanySelected(true);
                 self.isLoading(true);
-                self.loadCompanyEstablishment(self.selectedTargetYear(), true).done(function() {
-                    self.selectedTargetYear.subscribe(function(targetYear) {
-                        self.loadCompanyEstablishment(targetYear, false);
-                    });
+
+                let currentYear = self.companyEstablishmentModel.selectedYear() ?
+                    self.companyEstablishmentModel.selectedYear() : moment().year();
+
+                self.loadCompanyEstablishment(currentYear, true).done(function() {
                     dfd.resolve();
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
                 return dfd.promise();
             }
-                        
            
             /**
-             * call service load data 
+             * find all employment setting to view
              */
-            private loadEmploymentSelected(employmentCode: string): void {
+            private updateEmploymentEstimateSetting(targetYear: number){
                 var self = this;
-                if (employmentCode) {
-                    
-                }
+                service.findAllEmploymentSetting(targetYear).done(function(data) {
+                    var employmentSettings: UnitAlreadySettingModel[] = [];
+                    for (var employment of data) {
+                        var employmentSetting: UnitAlreadySettingModel = { code: employment.employmentCode, isAlreadySetting: true };
+                        employmentSettings.push(employmentSetting);
+                    }
+                    self.alreadySettingEmployment(employmentSettings);
+                });
             }
             
+            /**
+             * check setting employment setting
+             */
+            private checkEmploymentSetting(employmentCode: string){
+                var self = this;
+                for(var employmentSetting of self.alreadySettingEmployment()){
+                    if(employmentSetting.code === employmentCode && employmentSetting.isAlreadySetting){
+                        return true;    
+                    }    
+                }    
+                
+                return false;
+            }
+            
+             
              /**
             * load company establishment
             */
@@ -255,6 +323,8 @@ module nts.uk.at.view.ksm001.a {
                     if (isLoading) {
                         self.isLoading(false);
                     }
+                    self.initNextTabFeature();
+                    nts.uk.ui.block.clear();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -274,23 +344,61 @@ module nts.uk.at.view.ksm001.a {
                 $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption).done(function() {
                     self.employmentList($('#employmentSetting').getDataList());
                 });
-                
+                self.loadEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(),self.findEmploymentBy, true);
+                self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
                 self.selectedEmploymentCode.valueHasMutated();
-                self.selectedEmploymentCode.subscribe(function(employmentCode) {
-                    if (!employmentCode) {
-                        self.employmentEstablishmentModel.disableInput();
-                    }
-                    if (employmentCode) {
-                        var employment: UnitModel = self.findEmploymentByCode(employmentCode);
-                        if (employment) {
-                            self.employmentName(employment.name);
-                        }
-                        self.employmentEstablishmentModel.enableInput();
-                        self.loadEmploymentEstablishment(self.selectedTargetYear(), employmentCode, true);
-                    }
-                });
-                nts.uk.ui.block.clear();
                 
+            }
+            /**
+             * call service find all personal setting => view UI
+             */
+            private updatePersonalEstimateSetting(targetYear: number){
+                var self = this;
+                service.findAllPersonalSetting(targetYear).done(function(data) {
+                    var personalSettings: UnitAlreadySettingModel[] = [];
+                    for (var personal of data) {
+                        var employmentSetting: UnitAlreadySettingModel = { code: self.findEmployeeCodeById(personal.employeeId), isAlreadySetting: true };
+                        personalSettings.push(employmentSetting);
+                    }
+                    self.alreadySettingPersonal(personalSettings);
+                    self.updateEnableDeletePersonal(self.selectedEmployeeCode());
+                });
+            }
+            
+            /**
+             * 
+             */
+            private updateEnableDeletePersonal(employeeCode: string) {
+                var self = this;
+                self.personalEstablishmentModel.enableDelete(self.checkSettingPersonal(employeeCode));
+            }
+              
+             /**
+            * load personal establishment
+            */
+            private loadPersonalEstablishment(targetYear: number, employeeCode: string, isLoading: boolean): JQueryPromise<void> {
+                var dfd = $.Deferred<void>();
+                var self = this;
+                var employeeId = self.findEmployeeIdByCode(employeeCode);
+                if (employeeId) {
+                    service.findPersonalEstablishment(targetYear, employeeId).done(function(data) {
+                        self.personalEstablishmentModel.estimateTimeModel.updateData(data.estimateTime);
+                        self.personalEstablishmentModel.estimatePriceModel.updateData(data.estimatePrice);
+                        self.personalEstablishmentModel.estimateDaysModel.updateData(data.estimateNumberOfDay);
+                        if (isLoading) {
+                            self.isLoading(false);
+                        }
+                        self.updateEnableDeletePersonal(employeeCode);
+                        self.initNextTabFeature();
+                        nts.uk.ui.block.clear();
+                        dfd.resolve();
+                    });
+                }
+                else {
+                    nts.uk.ui.block.clear();
+                    dfd.resolve();
+                }
+                return dfd.promise();
             }
             /**
              * on click tab panel employment action event
@@ -304,35 +412,20 @@ module nts.uk.at.view.ksm001.a {
                 self.isEmploymentSelected(false);
                 self.isPersonSelected(true);
                 self.isLoading(true);
-                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponentPerson);
-                self.selectedEmployeeCode = ko.observable('');
-                self.alreadySettingList = ko.observableArray([]);
-                self.isShowNoSelectRow = ko.observable(false);
-                self.employeeList = ko.observableArray<UnitModel>([]);
-                self.applyKCP005ContentSearch([]);
-                self.viewDefaultPersonal();
+                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponentPerson).done(function() {
+                    self.alreadySettingEmployment = ko.observableArray([]);
+                    self.isShowNoSelectRow = ko.observable(false);
+                    self.employeeList = ko.observableArray<UnitModel>([]);
+                    self.applyKCP005ContentSearch([]);
+                    self.viewDefaultPersonal();
+                    $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption).done(function() {
 
-                $('#employeeSearch').ntsListComponent(self.lstPersonComponentOption);
-                self.selectedEmployeeCode.valueHasMutated();
-                self.selectedEmployeeCode.subscribe(function(employeeCode) {
-                    if (!employeeCode) {
-                        self.personalEstablishmentModel.disableInput();
-                    }
-                    if (employeeCode) {
-                        var employment: UnitModel = self.findByCodeEmployee(employeeCode);
-                        if (employment) {
-                            self.employeeName(employment.name);
-                        }
-                        self.personalEstablishmentModel.enableInput();
-                        service.findPersonalEstablishment(2017, self.findEmployeeIdByCode(employeeCode)).done(function(data) {
-                            self.personalEstablishmentModel.estimateTimeModel.updateData(data.estimateTime);
-                            self.personalEstablishmentModel.estimatePriceModel.updateData(data.estimatePrice);
-                            self.personalEstablishmentModel.estimateDaysModel.updateData(data.estimateNumberOfDay);
-                            self.isLoading(false);
-                        });
-                    }
+                        self.updatePersonalEstimateSetting(self.personalEstablishmentModel.selectedYear());
+                        self.loadPersonalEstablishment(self.personalEstablishmentModel.selectedYear(), self.selectedEmployeeCode(), true);
+                    });
                 });
-                nts.uk.ui.block.clear();
+                
+                
             }
             /**
              * Default personal data
@@ -340,7 +433,7 @@ module nts.uk.at.view.ksm001.a {
             private viewDefaultPersonal(): void {
                 var self = this;
                 var employeeDefault: string ="01";
-                service.findPersonalEstablishment(self.selectedTargetYear(), employeeDefault).done(function(data) {
+                service.findPersonalEstablishment(moment().year(), employeeDefault).done(function(data) {
                     self.personalEstablishmentModel.estimateTimeModel.updateData(data.estimateTime);
                     self.personalEstablishmentModel.estimatePriceModel.updateData(data.estimatePrice);
                     self.personalEstablishmentModel.estimateDaysModel.updateData(data.estimateNumberOfDay);
@@ -420,9 +513,7 @@ module nts.uk.at.view.ksm001.a {
                     self.selectedEmployeeCode(dataList[0].employeeCode);
                 }
 
-                self.findAllByEmployeeIds(self.getAllEmployeeIdBySearch()).done(function(data) {
-                    self.alreadySettingList(data);
-                });
+                self.updatePersonalEstimateSetting(self.personalEstablishmentModel.selectedYear());
                 self.lstPersonComponentOption = {
                     isShowAlreadySet: true,
                     isMultiSelect: false,
@@ -432,7 +523,7 @@ module nts.uk.at.view.ksm001.a {
                     selectedCode: self.selectedEmployeeCode,
                     isDialog: false,
                     isShowNoSelectRow: false,
-                    alreadySettingList: self.alreadySettingList,
+                    alreadySettingList: self.alreadySettingPersonal,
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
                     maxWidth: 350,
@@ -478,8 +569,14 @@ module nts.uk.at.view.ksm001.a {
                     estimateNumberOfDay: self.companyEstablishmentModel.estimateDaysModel.toDto()
                     
                 };
-                service.saveCompanyEstablishment(2017, dto).done(function(){
-                   
+                service.saveCompanyEstablishment(self.companyEstablishmentModel.selectedYear(), dto).done(function(){
+                    // show message 15
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        // reload pa    
+                        self.loadCompanyEstablishment(self.companyEstablishmentModel.selectedYear(), false);
+                    });
+                }).fail(function(error){
+                    nts.uk.ui.dialog.alertError(error);    
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
@@ -490,12 +587,18 @@ module nts.uk.at.view.ksm001.a {
             */
             public deleteCompanyEstablishment(): void {
                 nts.uk.ui.block.invisible();
-                var self = this;    
-                
-                service.deleteCompanyEstablishment(2017).done(function(){
-                   
-                }).always(() => {
-                    nts.uk.ui.block.clear();
+                var self = this;
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    service.deleteCompanyEstablishment(self.selectedTargetYear()).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            // reload page
+                            self.loadCompanyEstablishment(self.selectedTargetYear(), false);
+                        });
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error);
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
                 });
             }
             
@@ -533,7 +636,18 @@ module nts.uk.at.view.ksm001.a {
                     nts.uk.ui.block.clear();
                 });
             }
-            
+            /**
+             * function check employee setting
+             */
+            private checkSettingPersonal(employeeCode: string): boolean {
+                var self = this;
+                for(var employee of self.alreadySettingPersonal()){
+                    if(employee.code == employeeCode && employee.isAlreadySetting){
+                        return true;    
+                    }    
+                }
+                return false;
+            }
            /**
             * function on click savePersonalEstablishment action
             */
@@ -549,8 +663,15 @@ module nts.uk.at.view.ksm001.a {
                     estimateNumberOfDay: self.personalEstablishmentModel.estimateDaysModel.toDto(),
                     employeeId: self.findEmployeeIdByCode(self.selectedEmployeeCode())
                 };
-                service.savePersonalEstablishment(2017, dto).done(function(){
-                   
+                service.savePersonalEstablishment(self.personalEstablishmentModel.selectedYear(), dto).done(function(){
+                    // show message 15
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        // reload page    
+                        self.updatePersonalEstimateSetting(self.personalEstablishmentModel.selectedYear());
+                        self.loadPersonalEstablishment(self.personalEstablishmentModel.selectedYear(),self.selectedEmployeeCode(), false);
+                    });
+                }).fail(function(error){
+                   nts.uk.ui.dialog.alertError(error);     
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
@@ -562,10 +683,19 @@ module nts.uk.at.view.ksm001.a {
             public deletePersonalEstablishment(): void {
                 nts.uk.ui.block.invisible();
                 var self = this;    
-                service.deletePersonalEstablishment(2017, self.findEmployeeIdByCode(self.selectedEmployeeCode())).done(function(){
-                   
-                }).always(() => {
-                    nts.uk.ui.block.clear();
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    service.deletePersonalEstablishment(self.personalEstablishmentModel.selectedYear(),self.findEmployeeIdByCode(self.selectedEmployeeCode())).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            // reload page
+                            
+                            self.loadPersonalEstablishment(self.personalEstablishmentModel.selectedYear(), self.selectedEmployeeCode(), false);
+                            self.updatePersonalEstimateSetting(self.personalEstablishmentModel.selectedYear());
+                        });
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error);
+                    }).always(() => {
+                        nts.uk.ui.block.clear();
+                    });
                 });
             }
             
@@ -586,6 +716,38 @@ module nts.uk.at.view.ksm001.a {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/ksm/001/f/index.xhtml").onClosed(function() {
                     
+                });
+            }
+            
+            /**
+             * set next tab index
+             */
+             public initNextTabFeature() {
+                let self = this;
+                // Auto next tab when press tab key.
+                $("[tabindex='75']").on('keydown', function(e) {
+                    console.log('75');
+                    if (e.which == 9) {
+                        self.companyEstablishmentModel.selectedTab('tab-2');
+                        self.employmentEstablishmentModel.selectedTab('tab-2');
+                        self.personalEstablishmentModel.selectedTab('tab-2');
+                    }
+                });
+
+                $("[tabindex='141']").on('keydown', function(e) {
+                    console.log('141');
+                    if (e.which == 9) {
+                        self.companyEstablishmentModel.selectedTab('tab-3');
+                        self.employmentEstablishmentModel.selectedTab('tab-3');
+                        self.personalEstablishmentModel.selectedTab('tab-3');
+                    }
+                });
+                $("[tabindex='9']").on('keydown', function(e) {
+                    if (e.which == 9 && !$(e.target).parents("[tabindex='9']")[0]) {
+                        self.companyEstablishmentModel.selectedTab('tab-1');
+                        self.employmentEstablishmentModel.selectedTab('tab-1');
+                        self.personalEstablishmentModel.selectedTab('tab-1');
+                    }
                 });
             }
 
@@ -837,14 +999,21 @@ module nts.uk.at.view.ksm001.a {
             estimateDaysModel: EstablishmentDaysModel;
             selectedTab: KnockoutObservable<string>;
             isEditable: KnockoutObservable<boolean>;
+            isEnableDelete: KnockoutObservable<boolean>;
+            selectedYear: KnockoutObservable<number>;
             constructor() {
                 this.estimateTimeModel = new EstablishmentTimeModel();
                 this.estimatePriceModel = new EstablishmentPriceModel();
                 this.estimateDaysModel = new EstablishmentDaysModel();
                 this.selectedTab = ko.observable('tab-1');
                 this.isEditable = ko.observable(true);
+                this.isEnableDelete = ko.observable(true);
+                this.selectedYear = ko.observable(moment().year());
             }
 
+            enableDelete(isDelete: boolean){
+                this.isEnableDelete(isDelete);
+            }
             enableInput(): void {
                 this.isEditable(true);
             }

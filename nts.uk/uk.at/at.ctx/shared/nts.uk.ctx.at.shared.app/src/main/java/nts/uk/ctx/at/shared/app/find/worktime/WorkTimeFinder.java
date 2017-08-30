@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
@@ -19,7 +18,6 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeDto;
-import nts.uk.ctx.at.shared.app.find.worktime.dto.WorkTimeScheduleDto;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
@@ -27,7 +25,6 @@ import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktimeset.TimeDayAtr;
 import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSet;
 import nts.uk.ctx.at.shared.dom.worktimeset.WorkTimeSetRepository;
-import nts.uk.ctx.at.shared.dom.worktype.DisplayAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -256,19 +253,6 @@ public class WorkTimeFinder {
 		return String.format("%02d:%02d", time / 60, time % 60);
 	}
 
-	/**
-	 * find list WorkTimeScheduleDto (WorkTimeDto) by companyId and DisplayAtr =
-	 * DISPLAY (added by sonnh1)
-	 * 
-	 * @return List WorkTimeScheduleDto
-	 */
-	public List<WorkTimeScheduleDto> findByCIdAndDisplayAtr() {
-		String companyID = AppContexts.user().companyId();
-		return this.workTimeRepository.findByCIdAndDisplayAtr(companyID, DisplayAtr.DisplayAtr_Display.value).stream()
-				.map(x -> WorkTimeScheduleDto.fromDomain(x)).collect(Collectors.toList());
-	}
-
-	
 	/**
 	 * Find by id.
 	 *

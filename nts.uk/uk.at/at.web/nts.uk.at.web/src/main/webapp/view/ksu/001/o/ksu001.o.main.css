@@ -33,7 +33,7 @@
 
 #oViewModel #combo-box2 {
 	top: 9px;
-	margin-left: 30px;
+	margin-left: 16px;
 	min-width: 516px !important;
 }
 
@@ -47,7 +47,6 @@
 
 #oViewModel #group-button>button:last-child {
 	width: 20px;
-	top: -5px;
 	height: 20px;
 }
 
@@ -61,5 +60,5 @@
 }
 
 #oViewModel .cf1 .nts-switch-button {
-	width: 96px !important;
+	width: 114px !important;
 }

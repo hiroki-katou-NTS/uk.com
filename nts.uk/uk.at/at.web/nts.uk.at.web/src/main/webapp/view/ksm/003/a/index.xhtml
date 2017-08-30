@@ -35,7 +35,7 @@
 				<!-- B1_4: Button Delete -->
 				<button tabindex="4" id="btn_004"
 					class="button danger separate-button fix-button"
-					data-bind="click: deletePattern, enable: $root.errors.isEmpty">#{i18n.getText('KSM003_22')}</button>
+					data-bind="click: deletePattern, enable: $root.errors.isEmpty()  &amp; isEditting()">#{i18n.getText('KSM003_22')}</button>
 			</div>
 			<div id="content-area">
 				<div id="left-content" style="float: left"

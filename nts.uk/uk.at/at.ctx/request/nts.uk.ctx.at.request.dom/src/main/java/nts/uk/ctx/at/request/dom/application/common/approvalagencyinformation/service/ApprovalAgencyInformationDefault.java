@@ -50,7 +50,7 @@ public class ApprovalAgencyInformationDefault implements ApprovalAgencyInformati
 			//duyệt list lấy được trong domain Agent
 			for(AgentAdaptorDto agentAdapterDto : listAgenta) {
 				//nếu người xác nhận có trong list Agent
-				if(approveItem == agentAdapterDto.getEmployeeId()) {
+				if(approveItem.equals(agentAdapterDto.getEmployeeId())) {
 					//ktra xem AgentAppType = No_Settings hay k
 					if(agentAdapterDto.getAgentAppType1() == 2 ) {
 						outputFlag = false;

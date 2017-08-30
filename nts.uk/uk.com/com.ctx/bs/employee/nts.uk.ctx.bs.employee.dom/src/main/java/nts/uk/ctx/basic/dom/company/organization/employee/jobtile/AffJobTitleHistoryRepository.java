@@ -21,7 +21,7 @@ public interface AffJobTitleHistoryRepository {
 	 * @return the list
 	 */
 	List<AffJobTitleHistory> searchJobTitleHistory(GeneralDate baseDate, List<String> positionIds);
-	
+
 	/**
 	 * Find all job title history.
 	 *
@@ -41,4 +41,21 @@ public interface AffJobTitleHistoryRepository {
 	 */
 	List<AffJobTitleHistory> searchJobTitleHistory(List<String> employeeIds,
 			GeneralDate baseDate, List<String> positionIds);
+
+	/**
+	 * Find by sid.
+	 *
+	 * @param employeeId the employee id
+	 * @return the list
+	 */
+	List<AffJobTitleHistory> findBySid(String employeeId);
+
+	/**
+	 * Find by sid.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	List<AffJobTitleHistory> findBySid(String employeeId, GeneralDate baseDate);
 }

@@ -25,5 +25,15 @@ public interface EmployeeAdaptor {
 	 */
 	// RequestList #65
 	List<String> findWpkIdsBySid(String companyId, String sid, GeneralDate date);
+
+	/**
+	 * 所属職場の取得 Gets the workplace id.
+	 *
+	 * @param companyId the company id
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the workplace id
+	 */
+	String getWorkplaceId(String companyId,String employeeId, GeneralDate baseDate);
 	
 }
