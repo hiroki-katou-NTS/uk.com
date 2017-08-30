@@ -5,8 +5,8 @@ import lombok.Value;
 @AllArgsConstructor
 @Value
 public class ControlOfAttendanceItemsDto {
-	public int attandanceTimeId;
-	public String attandanceName;
+	public int attendanceItemId;
+	public String attendanceItemName;
 	public int inputUnitOfTimeItem;
 	public String headerBackgroundColorOfDailyPerformance;
 	public int nameLineFeedPosition;

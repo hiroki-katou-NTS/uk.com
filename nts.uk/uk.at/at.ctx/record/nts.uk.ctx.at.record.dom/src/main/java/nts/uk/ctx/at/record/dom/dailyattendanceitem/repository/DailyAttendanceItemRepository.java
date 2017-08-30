@@ -7,4 +7,5 @@ import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
 public interface DailyAttendanceItemRepository {
 	
 	List<DailyAttendanceItem> getListTobeUsed(String companyId, int userCanUpdateAtr);
+	List<DailyAttendanceItem> getList(String companyId);
 }
