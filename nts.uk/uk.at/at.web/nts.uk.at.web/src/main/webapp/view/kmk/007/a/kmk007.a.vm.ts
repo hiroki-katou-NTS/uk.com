@@ -126,14 +126,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
             self.currentCode = ko.observable();
 
-            //            self.currentCode.subscribe(x => {
-            //                let items = self.listWorkType(),
-            //                    item: IWorkType = _.find(items, (m: IWorkType) => m.workTypeCode == x),
-            //                    model = self.currentWorkType();
-            //
-            //                model.workTypeCode(item.workTypeCode);
-            //            });
-
             self.currentCode.subscribe(function(newValue) {
                 var itemWorkType = _.find(self.listWorkType(), function(item: IWorkType) {
                     return item.workTypeCode == newValue;
