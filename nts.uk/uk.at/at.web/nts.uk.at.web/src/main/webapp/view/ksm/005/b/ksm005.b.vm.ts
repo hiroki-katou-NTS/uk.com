@@ -47,7 +47,7 @@ module nts.uk.at.view.ksm005.b {
                 self.enableDelete = ko.observable(true);
                 
                 // now month setting kcp006
-                self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYYMM')));
+                self.yearMonthPicked = ko.observable(parseInt(moment().format('YYYY')+'01'));
                 
                 self.selectMonthlyPattern.subscribe(function(monthlyPatternCode: string) {
                     if (self.isBuild) {
@@ -150,7 +150,7 @@ module nts.uk.at.view.ksm005.b {
             public updateWorkMothlySetting(data: WorkMonthlySettingDto[]): void{
                 var self = this;
                 var optionDates: any[] = [];
-                for(var settings: WorkMonthlySettingDto of data){
+                for(var settings of data){
                     optionDates.push(self.toOptionDate(settings));      
                 }
                 self.optionDates(optionDates);
@@ -245,7 +245,7 @@ module nts.uk.at.view.ksm005.b {
             public isLastMonthlyPattern(selectedCode: string): boolean {
                 var self = this;
                 var index: number = 0;
-                for(var item: MonthlyPatternDto of self.lstMonthlyPattern()){
+                for(var item of self.lstMonthlyPattern()){
                     index++;
                     if(index == self.lstMonthlyPattern().length && selectedCode === item.code){
                         return true;
@@ -258,7 +258,7 @@ module nts.uk.at.view.ksm005.b {
              * check exist data by selected
              */
             public isVisibleMonthlyPattern(seletedCode: string, dataRes: MonthlyPatternDto[]){
-                for (var item: MonthlyPatternDto of dataRes) {
+                for (var item of dataRes) {
                     if(seletedCode === item.code){
                         return true;    
                     }
@@ -293,7 +293,7 @@ module nts.uk.at.view.ksm005.b {
                 self.monthlyPatternModel().resetData();   
                 self.modeMonthlyPattern(ModeMonthlyPattern.ADD);
                 var dataUpdate: WorkMonthlySettingDto[] = [];
-                for (var item: WorkMonthlySettingDto of self.lstWorkMonthlySetting()) {
+                for (var item of self.lstWorkMonthlySetting()) {
                     item.workTypeCode='';
                     item.workTypeName = '';
                     item.workingCode='';
@@ -389,7 +389,7 @@ module nts.uk.at.view.ksm005.b {
             public updateWorkMonthlySettingClose(setting: WorkMonthlySettingDto): void{
                 var self = this;
                 var dataUpdate: WorkMonthlySettingDto[] = [];
-                for(var item: WorkMonthlySettingDto of self.lstWorkMonthlySetting()){
+                for(var item of self.lstWorkMonthlySetting()){
                     if(item.ymdk == setting.ymdk){
                         dataUpdate.push(setting);
                     }    
