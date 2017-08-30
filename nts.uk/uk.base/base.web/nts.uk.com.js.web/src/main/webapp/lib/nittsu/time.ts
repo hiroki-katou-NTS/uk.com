@@ -927,7 +927,50 @@ module nts.uk.time {
     export module minutesBased {
         
         export module parse {
-            export function durationString(source: string): number {
+            
+            
+            export class ResultParseMiuntesBasedDuration extends time.ParseResult {
+                
+                minus: boolean;
+                hours: number;
+                minutes: number;
+                msg: string;
+                
+                constructor(success, minus?, hours?, minutes?, msg?) {
+                    super(success);
+                    this.minus = minus;
+                    this.hours = hours;
+                    
+                    this.minutes = minutes;
+                    this.msg = msg || "FND_E_TIME";
+                }
+                
+                static succeeded(minus, hours, minutes) {
+                    return new ResultParseMiuntesBasedDuration(true, minus, hours, minutes);
+                }
+        
+                static failed() {
+                    return new ResultParseMiuntesBasedDuration(false);
+                }
+                
+                format() {
+                    if (!this.success)
+                        return "";
+                    return (this.minus ? '-' : '') + this.hours + ':' + text.padLeft(String(this.minutes), '0', 2);
+                }
+                
+                toValue() {
+                    if (!this.success)
+                        return 0;
+                    return (this.minus ? -1 : 1) * (this.hours * 60 + this.minutes);
+                }
+            
+                getMsg() {
+                    return this.msg;
+                }
+            }
+            
+            export function durationString(source: string): ResultParseMiuntesBasedDuration {
                 var isNegative = source.indexOf('-') === 0;
                 var hourPart: number;
                 var minutePart: number;
@@ -935,7 +978,7 @@ module nts.uk.time {
                 if (source.indexOf(':') !== -1) {
                     let parts = source.split(':');
                     if (parts.length !== 2) {
-                        return NaN;
+                        return ResultParseMiuntesBasedDuration.failed();
                     }
                     
                     hourPart = Math.abs(parseInt(parts[0], 10));
@@ -943,7 +986,7 @@ module nts.uk.time {
                 } else {
                     let integerized = parseInt(source, 10);
                     if (isNaN(integerized)) {
-                        return NaN;
+                        return ResultParseMiuntesBasedDuration.failed();
                     }
                     
                     let regularized = Math.abs(integerized);
@@ -952,10 +995,10 @@ module nts.uk.time {
                 }
                 
                 if (minutePart >= 60) {
-                    return NaN;
+                    return ResultParseMiuntesBasedDuration.failed();
                 }
                 
-                return (isNegative ? -1 : 1) * (hourPart * 60 + minutePart);
+                return ResultParseMiuntesBasedDuration.succeeded(isNegative, hourPart, minutePart);
             }
         }
         

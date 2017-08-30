@@ -2206,6 +2206,37 @@ var nts;
             (function (minutesBased) {
                 var parse;
                 (function (parse) {
+                    var ResultParseMiuntesBasedDuration = (function (_super) {
+                        __extends(ResultParseMiuntesBasedDuration, _super);
+                        function ResultParseMiuntesBasedDuration(success, minus, hours, minutes, msg) {
+                            _super.call(this, success);
+                            this.minus = minus;
+                            this.hours = hours;
+                            this.minutes = minutes;
+                            this.msg = msg || "FND_E_TIME";
+                        }
+                        ResultParseMiuntesBasedDuration.succeeded = function (minus, hours, minutes) {
+                            return new ResultParseMiuntesBasedDuration(true, minus, hours, minutes);
+                        };
+                        ResultParseMiuntesBasedDuration.failed = function () {
+                            return new ResultParseMiuntesBasedDuration(false);
+                        };
+                        ResultParseMiuntesBasedDuration.prototype.format = function () {
+                            if (!this.success)
+                                return "";
+                            return (this.minus ? '-' : '') + this.hours + ':' + uk.text.padLeft(String(this.minutes), '0', 2);
+                        };
+                        ResultParseMiuntesBasedDuration.prototype.toValue = function () {
+                            if (!this.success)
+                                return 0;
+                            return (this.minus ? -1 : 1) * (this.hours * 60 + this.minutes);
+                        };
+                        ResultParseMiuntesBasedDuration.prototype.getMsg = function () {
+                            return this.msg;
+                        };
+                        return ResultParseMiuntesBasedDuration;
+                    }(time.ParseResult));
+                    parse.ResultParseMiuntesBasedDuration = ResultParseMiuntesBasedDuration;
                     function durationString(source) {
                         var isNegative = source.indexOf('-') === 0;
                         var hourPart;
@@ -2213,7 +2244,7 @@ var nts;
                         if (source.indexOf(':') !== -1) {
                             var parts = source.split(':');
                             if (parts.length !== 2) {
-                                return NaN;
+                                return ResultParseMiuntesBasedDuration.failed();
                             }
                             hourPart = Math.abs(parseInt(parts[0], 10));
                             minutePart = parseInt(parts[1], 10);
@@ -2221,16 +2252,16 @@ var nts;
                         else {
                             var integerized = parseInt(source, 10);
                             if (isNaN(integerized)) {
-                                return NaN;
+                                return ResultParseMiuntesBasedDuration.failed();
                             }
                             var regularized = Math.abs(integerized);
                             hourPart = Math.floor(regularized / 100);
                             minutePart = regularized % 100;
                         }
                         if (minutePart >= 60) {
-                            return NaN;
+                            return ResultParseMiuntesBasedDuration.failed();
                         }
-                        return (isNegative ? -1 : 1) * (hourPart * 60 + minutePart);
+                        return ResultParseMiuntesBasedDuration.succeeded(isNegative, hourPart, minutePart);
                     }
                     parse.durationString = durationString;
                 })(parse = minutesBased.parse || (minutesBased.parse = {}));
@@ -3090,7 +3121,7 @@ var nts;
                         }
                         var maxStr, minStr;
                         if (this.mode === "time") {
-                            var timeParse = uk.time.parseTime(inputText, false);
+                            var timeParse = uk.time.minutesBased.parse.durationString(inputText);
                             if (timeParse.success) {
                                 result.success(timeParse.toValue());
                             }
@@ -9976,6 +10007,68 @@ var nts;
                         return $control.data(DATA_HAS_ERROR) === true;
                     }
                 })(ntsError || (ntsError = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                var ntsFixedTable;
+                (function (ntsFixedTable_1) {
+                    $.fn.ntsFixedTable = ntsFixedTable;
+                    function ntsFixedTable(action, options) {
+                        var $controls = $(this);
+                        if (typeof arguments[0] !== 'string') {
+                            return ntsFixedTable.apply($controls, _.concat("init", action));
+                        }
+                        if (action === "init") {
+                            return init($controls, options);
+                        }
+                        else {
+                            return $controls;
+                        }
+                        ;
+                    }
+                    function init(controls, options) {
+                        controls.each(function () {
+                            var $originTable = $(this);
+                            $originTable.addClass("fixed-table");
+                            var $colgroup = $originTable.find("colgroup");
+                            var $thead = $originTable.find("thead");
+                            var width = 0;
+                            $colgroup.find("col").each(function () {
+                                width += Number($(this).attr("width").replace(/px/gi, ''));
+                            });
+                            width++;
+                            var setting = $.extend({ height: "auto" }, options);
+                            var $container = $("<div class='nts-fixed-table cf'/>");
+                            $originTable.after($container);
+                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").width(width);
+                            var $headerTable = $("<table class='fixed-table'></table>");
+                            $headerTable.append($colgroup.clone()).append($thead);
+                            $headerContainer.append($headerTable);
+                            $headerContainer.appendTo($container);
+                            $originTable.addClass("nts-fixed-body-table");
+                            var $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>");
+                            var $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
+                            var bodyHeight = "auto";
+                            if (setting.height !== "auto") {
+                                bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
+                            }
+                            $bodyWrapper.width(width).height(bodyHeight);
+                            $bodyWrapper.append($originTable);
+                            $bodyContainer.append($bodyWrapper);
+                            $container.append($bodyContainer);
+                        });
+                        return controls;
+                    }
+                })(ntsFixedTable || (ntsFixedTable = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -19118,68 +19211,6 @@ var nts;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
             })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var ntsFixedTable;
-                (function (ntsFixedTable_1) {
-                    $.fn.ntsFixedTable = ntsFixedTable;
-                    function ntsFixedTable(action, options) {
-                        var $controls = $(this);
-                        if (typeof arguments[0] !== 'string') {
-                            return ntsFixedTable.apply($controls, _.concat("init", action));
-                        }
-                        if (action === "init") {
-                            return init($controls, options);
-                        }
-                        else {
-                            return $controls;
-                        }
-                        ;
-                    }
-                    function init(controls, options) {
-                        controls.each(function () {
-                            var $originTable = $(this);
-                            $originTable.addClass("fixed-table");
-                            var $colgroup = $originTable.find("colgroup");
-                            var $thead = $originTable.find("thead");
-                            var width = 0;
-                            $colgroup.find("col").each(function () {
-                                width += Number($(this).attr("width").replace(/px/gi, ''));
-                            });
-                            width++;
-                            var setting = $.extend({ height: "auto" }, options);
-                            var $container = $("<div class='nts-fixed-table cf'/>");
-                            $originTable.after($container);
-                            var $headerContainer = $("<div class='nts-fixed-header-container ui-iggrid'/>").width(width);
-                            var $headerTable = $("<table class='fixed-table'></table>");
-                            $headerTable.append($colgroup.clone()).append($thead);
-                            $headerContainer.append($headerTable);
-                            $headerContainer.appendTo($container);
-                            $originTable.addClass("nts-fixed-body-table");
-                            var $bodyContainer = $("<div class='nts-fixed-body-container ui-iggrid'/>");
-                            var $bodyWrapper = $("<div class='nts-fixed-body-wrapper'/>");
-                            var bodyHeight = "auto";
-                            if (setting.height !== "auto") {
-                                bodyHeight = Number(setting.height.toString().replace(/px/mi)) - $headerTable.find("thead").outerHeight();
-                            }
-                            $bodyWrapper.width(width).height(bodyHeight);
-                            $bodyWrapper.append($originTable);
-                            $bodyContainer.append($bodyWrapper);
-                            $container.append($bodyContainer);
-                        });
-                        return controls;
-                    }
-                })(ntsFixedTable || (ntsFixedTable = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

@@ -420,7 +420,7 @@ module nts.uk.ui.validation {
             let maxStr, minStr;
             // Time duration
             if(this.mode === "time"){
-                var timeParse = time.parseTime(inputText, false) 
+                var timeParse = time.minutesBased.parse.durationString(inputText) 
                 if (timeParse.success) {
                     result.success(timeParse.toValue());
                 } else {
