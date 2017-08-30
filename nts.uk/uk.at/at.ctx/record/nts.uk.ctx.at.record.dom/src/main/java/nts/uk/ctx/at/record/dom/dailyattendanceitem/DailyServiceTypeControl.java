@@ -1,8 +1,8 @@
-package nts.uk.ctx.at.shared.dom.attendanceitem;
+package nts.uk.ctx.at.record.dom.dailyattendanceitem;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.BusinessTypeCode;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 
 @Getter
 public class DailyServiceTypeControl extends AggregateRoot {

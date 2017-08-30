@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.attendanceitem.find;
+package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.attendanceitem.DailyServiceTypeControl;
-import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.BusinessTypeCode;
-import nts.uk.ctx.at.shared.dom.attendanceitem.repository.DailyServiceTypeControlRepository;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyServiceTypeControl;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.primitivevalue.BusinessTypeCode;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyServiceTypeControlRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

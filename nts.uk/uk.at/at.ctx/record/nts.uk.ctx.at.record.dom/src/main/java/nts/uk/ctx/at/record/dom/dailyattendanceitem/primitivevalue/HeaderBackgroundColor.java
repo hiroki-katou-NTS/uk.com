@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.attendanceitem.primitives;
+package nts.uk.ctx.at.record.dom.dailyattendanceitem.primitivevalue;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

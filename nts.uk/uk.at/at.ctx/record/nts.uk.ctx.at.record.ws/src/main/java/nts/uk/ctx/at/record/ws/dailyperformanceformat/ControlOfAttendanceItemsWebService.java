@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.ws.attendanceitem;
+package nts.uk.ctx.at.record.ws.dailyperformanceformat;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -7,10 +7,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.attendanceitem.command.ControlOfAttendanceItemsCommand;
-import nts.uk.ctx.at.shared.app.attendanceitem.command.ControlOfAttendanceItemsUpdateCommand;
-import nts.uk.ctx.at.shared.app.attendanceitem.find.ControlOfAttendanceItemsDto;
-import nts.uk.ctx.at.shared.app.attendanceitem.find.ControlOfAttendanceItemsFinder;
+import nts.uk.ctx.at.record.app.command.dailyperformanceformat.ControlOfAttendanceItemsCommand;
+import nts.uk.ctx.at.record.app.command.dailyperformanceformat.ControlOfAttendanceItemsUpdateCommand;
+import nts.uk.ctx.at.record.app.find.dailyperformanceformat.ControlOfAttendanceItemsDto;
+import nts.uk.ctx.at.record.app.find.dailyperformanceformat.ControlOfAttendanceItemsFinder;
 
 @Path("at/share/ControlOfAttendanceItems")
 @Produces("application/json")

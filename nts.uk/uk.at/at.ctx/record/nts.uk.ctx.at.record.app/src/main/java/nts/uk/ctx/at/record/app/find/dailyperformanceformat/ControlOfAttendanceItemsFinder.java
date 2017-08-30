@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.attendanceitem.find;
+package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -6,10 +6,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.ControlOfAttendanceItems;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.ControlOfAttendanceItemsRepository;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceItemRepository;
-import nts.uk.ctx.at.shared.dom.attendanceitem.ControlOfAttendanceItems;
-import nts.uk.ctx.at.shared.dom.attendanceitem.repository.ControlOfAttendanceItemsRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

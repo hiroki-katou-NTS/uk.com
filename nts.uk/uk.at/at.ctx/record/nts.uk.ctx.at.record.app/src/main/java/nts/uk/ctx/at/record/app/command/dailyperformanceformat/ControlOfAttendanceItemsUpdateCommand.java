@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.attendanceitem.command;
+package nts.uk.ctx.at.record.app.command.dailyperformanceformat;
 
 import java.math.BigDecimal;
 
@@ -7,8 +7,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.attendanceitem.ControlOfAttendanceItems;
-import nts.uk.ctx.at.shared.dom.attendanceitem.repository.ControlOfAttendanceItemsRepository;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.ControlOfAttendanceItems;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.ControlOfAttendanceItemsRepository;
 
 @Stateless
 public class ControlOfAttendanceItemsUpdateCommand extends CommandHandler<ControlOfAttendanceItemsCommand> {

@@ -1,9 +1,10 @@
-package nts.uk.ctx.at.shared.dom.attendanceitem.repository;
+package nts.uk.ctx.at.record.dom.dailyattendanceitem.repository;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.attendanceitem.ControlOfAttendanceItems;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.ControlOfAttendanceItems;
+
 
 public interface ControlOfAttendanceItemsRepository {
 

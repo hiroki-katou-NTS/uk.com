@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.attendanceitem.enums;
+package nts.uk.ctx.at.record.dom.dailyattendanceitem.enums;
 
 import lombok.AllArgsConstructor;
 

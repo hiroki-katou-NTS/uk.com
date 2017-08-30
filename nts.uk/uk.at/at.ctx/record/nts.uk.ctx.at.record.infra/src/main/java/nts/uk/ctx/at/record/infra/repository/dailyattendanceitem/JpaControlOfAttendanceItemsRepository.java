@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.repository.attendanceitem;
+package nts.uk.ctx.at.record.infra.repository.dailyattendanceitem;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -6,10 +6,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.attendanceitem.ControlOfAttendanceItems;
-import nts.uk.ctx.at.shared.dom.attendanceitem.repository.ControlOfAttendanceItemsRepository;
-import nts.uk.ctx.at.shared.infra.entity.attendanceitem.KshstControlOfAttendanceItems;
-import nts.uk.ctx.at.shared.infra.entity.attendanceitem.KshstControlOfAttendanceItemsPK;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.ControlOfAttendanceItems;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.ControlOfAttendanceItemsRepository;
+import nts.uk.ctx.at.record.infra.entity.dailyattendanceitem.KshstControlOfAttendanceItems;
+import nts.uk.ctx.at.record.infra.entity.dailyattendanceitem.KshstControlOfAttendanceItemsPK;
 
 @Stateless
 public class JpaControlOfAttendanceItemsRepository extends JpaRepository implements ControlOfAttendanceItemsRepository {

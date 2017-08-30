@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.ws.attendanceitem;
+package nts.uk.ctx.at.record.ws.dailyperformanceformat;
 
 import java.util.List;
 
@@ -9,10 +9,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.attendanceitem.command.DailyServiceTypeControlCommand;
-import nts.uk.ctx.at.shared.app.attendanceitem.command.DailyServiceTypeControlUpdateCommand;
-import nts.uk.ctx.at.shared.app.attendanceitem.find.DailyServiceTypeControlDto;
-import nts.uk.ctx.at.shared.app.attendanceitem.find.DailyServiceTypeControlFinder;
+import nts.uk.ctx.at.record.app.command.dailyperformanceformat.DailyServiceTypeControlCommand;
+import nts.uk.ctx.at.record.app.command.dailyperformanceformat.DailyServiceTypeControlUpdateCommand;
+import nts.uk.ctx.at.record.app.find.dailyperformanceformat.DailyServiceTypeControlDto;
+import nts.uk.ctx.at.record.app.find.dailyperformanceformat.DailyServiceTypeControlFinder;
 @Path("at/share/DailyServiceTypeControl")
 @Produces("application/json")
 public class DailyServiceTypeControlWebService extends WebService {

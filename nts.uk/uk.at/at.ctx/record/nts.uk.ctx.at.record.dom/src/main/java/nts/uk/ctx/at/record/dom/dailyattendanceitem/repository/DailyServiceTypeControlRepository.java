@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.shared.dom.attendanceitem.repository;
+package nts.uk.ctx.at.record.dom.dailyattendanceitem.repository;
 
 
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.attendanceitem.DailyServiceTypeControl;
-import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.BusinessTypeCode;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyServiceTypeControl;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 
 public interface DailyServiceTypeControlRepository {
 	

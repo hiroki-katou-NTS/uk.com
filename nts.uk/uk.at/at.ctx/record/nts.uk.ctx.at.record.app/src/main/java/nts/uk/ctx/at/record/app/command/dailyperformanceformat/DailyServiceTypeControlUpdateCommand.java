@@ -1,6 +1,5 @@
-package nts.uk.ctx.at.shared.app.attendanceitem.command;
+package nts.uk.ctx.at.record.app.command.dailyperformanceformat;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,8 +8,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.attendanceitem.DailyServiceTypeControl;
-import nts.uk.ctx.at.shared.dom.attendanceitem.repository.DailyServiceTypeControlRepository;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyServiceTypeControl;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyServiceTypeControlRepository;
 
 @Stateless
 public class DailyServiceTypeControlUpdateCommand extends CommandHandler<List<DailyServiceTypeControlCommand>> {

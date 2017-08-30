@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.attendanceitem.find;
+package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;

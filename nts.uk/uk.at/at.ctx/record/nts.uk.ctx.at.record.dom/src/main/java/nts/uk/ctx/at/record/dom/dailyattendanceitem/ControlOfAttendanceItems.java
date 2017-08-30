@@ -1,12 +1,12 @@
-package nts.uk.ctx.at.shared.dom.attendanceitem;
+package nts.uk.ctx.at.record.dom.dailyattendanceitem;
 
 import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.shared.dom.attendanceitem.enums.TimeInputUnit;
-import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.HeaderBackgroundColor;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.enums.TimeInputUnit;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.primitivevalue.HeaderBackgroundColor;
 
 @Getter
 public class ControlOfAttendanceItems extends AggregateRoot {

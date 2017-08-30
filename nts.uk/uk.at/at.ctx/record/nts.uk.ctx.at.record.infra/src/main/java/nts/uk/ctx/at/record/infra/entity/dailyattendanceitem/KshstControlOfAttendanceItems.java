@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.attendanceitem;
+package nts.uk.ctx.at.record.infra.entity.dailyattendanceitem;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

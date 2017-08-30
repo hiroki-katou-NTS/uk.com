@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.repository.attendanceitem;
+package nts.uk.ctx.at.record.infra.repository.dailyattendanceitem;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -7,11 +7,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.attendanceitem.DailyServiceTypeControl;
-import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.BusinessTypeCode;
-import nts.uk.ctx.at.shared.dom.attendanceitem.repository.DailyServiceTypeControlRepository;
-import nts.uk.ctx.at.shared.infra.entity.attendanceitem.KshstDailyServiceTypeControl;
-import nts.uk.ctx.at.shared.infra.entity.attendanceitem.KshstDailyServiceTypeControlPK;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyServiceTypeControl;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.primitivevalue.BusinessTypeCode;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyServiceTypeControlRepository;
+import nts.uk.ctx.at.record.infra.entity.dailyattendanceitem.KshstDailyServiceTypeControl;
+import nts.uk.ctx.at.record.infra.entity.dailyattendanceitem.KshstDailyServiceTypeControlPK;
 
 @Stateless
 public class JpaDailyServiceTypeControlRepository extends JpaRepository implements DailyServiceTypeControlRepository {
@@ -55,21 +55,7 @@ public class JpaDailyServiceTypeControlRepository extends JpaRepository implemen
 
 	}
 
-	/*
-	 * private DailyServiceTypeControl toDailyServiceTypeControlDomain(
-	 * KshstDailyServiceTypeControl kshstDailyServiceTypeControl) { return
-	 * DailyServiceTypeControl.createFromJavaType(
-	 * kshstDailyServiceTypeControl.kshstDailyServiceTypeControlPK.
-	 * attendanceItemId,
-	 * kshstDailyServiceTypeControl.kshstDailyServiceTypeControlPK.
-	 * businessTypeCode, kshstDailyServiceTypeControl.youCanChangeIt.intValue()
-	 * == 1 ? true : false,
-	 * kshstDailyServiceTypeControl.canBeChangedByOthers.intValue() == 1 ? true
-	 * : false, kshstDailyServiceTypeControl.use.intValue() == 1 ? true :
-	 * false,);
-	 * 
-	 * }
-	 */ private KshstDailyServiceTypeControl toDailyServiceTypeControlEntity(
+	private KshstDailyServiceTypeControl toDailyServiceTypeControlEntity(
 			DailyServiceTypeControl dailyServiceTypeControl) {
 		return new KshstDailyServiceTypeControl(
 				new KshstDailyServiceTypeControlPK(dailyServiceTypeControl.getBusinessTypeCode().v(),

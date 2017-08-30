@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.attendanceitem;
+package nts.uk.ctx.at.record.infra.entity.dailyattendanceitem;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -11,7 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.layer.infra.data.query.DBCharPaddingAs;
-import nts.uk.ctx.at.shared.dom.attendanceitem.primitives.BusinessTypeCode;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.primitivevalue.BusinessTypeCode;
 @Setter
 @Getter
 @Embeddable
