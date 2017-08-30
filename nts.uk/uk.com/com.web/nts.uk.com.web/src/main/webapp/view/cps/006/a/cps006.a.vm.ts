@@ -9,11 +9,6 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
     export class ScreenModel {
         categoryList: KnockoutObservableArray<any> = ko.observableArray([]);
-        colums: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: 'id', key: 'id', width: 100, hidden: true },
-            { headerText: text('CPS006_6'), key: 'categoryName', width: 230 },
-            { headerText: text('CPS006_7'), key: 'isAbolition', width: 50, formatter: makeIcon }
-        ]);
         currentCategory: KnockoutObservable<CategoryInfoDetail> = ko.observable((new CategoryInfoDetail({
             id: '', categoryNameDefault: '',
             categoryName: '', categoryType: 4, isAbolition: "", itemList: []
@@ -28,8 +23,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 self.getDetailCategory(value);
             });
             self.isAbolished.subscribe(function(value) {
+                self.categoryList.removeAll();
                 if (value) {
-                    self.categoryList.removeAll();
                     service.getAllCategory().done(function(data: Array<any>) {
                         if (data.length > 0) {
                             self.categoryList(_.map(data, x => new CategoryInfo({
@@ -39,11 +34,10 @@ module nts.uk.com.view.cps006.a.viewmodel {
                                 categoryType: x.categoryType,
                                 isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : ""
                             })));
+                            $("#category_grid").igGrid("option", "dataSource", self.categoryList());
                         }
                     });
 
-
-                    $("#category_grid").igGrid("option", "dataSource", self.categoryList());
                 } else {
 
                     service.getAllCategory().done(function(data: Array<any>) {
@@ -75,7 +69,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
                 if (data) {
                     self.currentCategory().setData({
                         categoryNameDefault: data.categoryNameDefault, categoryName: data.categoryName,
-                        categoryType: data.categoryType, isAbolition: data.isAbolition, itemList: data.itemLst
+                        categoryType: data.categoryType, isAbolition: data.abolition, itemList: data.itemLst
                     }, data.systemRequired);
                     if (data.itemLst.length > 0) {
                         self.currentCategory().currentItemId(data.itemLst[0].id);
@@ -91,24 +85,47 @@ module nts.uk.com.view.cps006.a.viewmodel {
             let self = this,
                 dfd = $.Deferred();
             self.categoryList.removeAll();
-            service.getAllCategory().done(function(data: Array<any>) {
-                if (data.length > 0) {
-                    self.categoryList(_.map(data, x => new CategoryInfo({
-                        id: x.id,
-                        categoryCode: x.categoryCode,
-                        categoryName: x.categoryName,
-                        categoryType: x.categoryType,
-                        isAbolition: x.isAbolition
-                    })));
-                    if (id === undefined) {
-                        self.currentCategory().id(self.categoryList()[0].id);
-                    } else {
-                        self.currentCategory().id(id);
-                    }
+            if (self.isAbolished()) {
+                service.getAllCategory().done(function(data: Array<any>) {
+                    if (data.length > 0) {
+                        self.categoryList(_.map(data, x => new CategoryInfo({
+                            id: x.id,
+                            categoryCode: x.categoryCode,
+                            categoryName: x.categoryName,
+                            categoryType: x.categoryType,
+                            isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : "",
+                        })));
+                        if (id === undefined) {
+                            self.currentCategory().id(self.categoryList()[0].id);
+                        } else {
+                            self.currentCategory().id(id);
+                        }
 
-                }
-                dfd.resolve();
-            });
+                    }
+                    dfd.resolve();
+                });
+            } else {
+                service.getAllCategory().done(function(data: Array<any>) {
+                    if (data.length > 0) {
+                        self.categoryList(_.map(_.filter(data, x => { return x.isAbolition == 0 }), x => new CategoryInfo({
+                            id: x.id,
+                            categoryCode: x.categoryCode,
+                            categoryName: x.categoryName,
+                            categoryType: x.categoryType,
+                            isAbolition: ""
+                        })));
+                        if (id === undefined) {
+                            self.currentCategory().id(self.categoryList()[0].id);
+                        } else {
+                            self.currentCategory().id(id);
+                        }
+
+                    }
+                    dfd.resolve();
+                });
+
+            }
+
 
             return dfd.promise();
         }
@@ -119,7 +136,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
             setShared('categoryInfo', self.currentCategory());
             block.invisible();
             nts.uk.ui.windows.sub.modal('/view/cps/006/b/index.xhtml', { title: '' }).onClosed(function(): any {
-                self.start(undefined).done(() => {
+                self.start(self.currentCategory().id()).done(() => {
                     block.clear();
                 });
             });
@@ -237,6 +254,11 @@ module nts.uk.com.view.cps006.a.viewmodel {
             { headerText: text('CPS006_16'), key: 'itemName', width: 250 },
             { headerText: text('CPS006_17'), key: 'isAbolition', width: 50, formatter: makeIcon }
         ]);
+        ctgColums: KnockoutObservableArray<any> = ko.observableArray([
+            { headerText: 'id', key: 'id', width: 100, hidden: true },
+            { headerText: text('CPS006_6'), key: 'categoryName', width: 230 },
+            { headerText: text('CPS006_7'), key: 'isAbolition', width: 50 }
+        ]);
         constructor(params: ICategoryInfoDetail) {
             this.id = ko.observable("");
             this.categoryNameDefault = params.categoryNameDefault;
@@ -250,7 +272,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.categoryNameDefault = params.categoryNameDefault;
             this.categoryName(params.categoryName);
             this.categoryType = params.categoryType;
-            this.isAbolition(params.isAbolition != '' ? true : false);
+            this.isAbolition(params.isAbolition);
             this.displayIsAbolished = displayIsAbolished;
             this.itemList(params.itemList);
         }

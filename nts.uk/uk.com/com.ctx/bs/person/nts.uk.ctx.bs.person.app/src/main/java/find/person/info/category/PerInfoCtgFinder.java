@@ -11,7 +11,6 @@ import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
-import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -26,7 +25,8 @@ public class PerInfoCtgFinder {
 	private PerInfoItemDefRepositoty pernfoItemDefRep;
 
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg(String companyId) {
-		return perInfoCtgRepositoty.getAllPerInfoCategory(companyId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
+		String contractCd = companyId.substring(0,12);
+		return perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCd)
 				.stream().map(p -> {
 					return new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
 							p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
@@ -40,13 +40,13 @@ public class PerInfoCtgFinder {
 		String contractCd = companyId.substring(0, 12);
 		PerCtgInfoDto detailCtgInfo = new PerCtgInfoDto();
 		PersonInfoCategory perInfoCtg = this.perInfoByCompanyRepo
-				.getDetailCategoryInfo(companyId, categoryId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).orElse(null);
+				.getDetailCategoryInfo(companyId, categoryId, contractCd).orElse(null);
 		if (perInfoCtg != null) {
 			String categoryNameDefault = this.perInfoByCompanyRepo.getNameCategoryInfo(companyIdRoot,
 					perInfoCtg.getCategoryCode().toString());
 			detailCtgInfo.setCategoryName(perInfoCtg.getCategoryName().toString());
 			detailCtgInfo.setCategoryType(perInfoCtg.getCategoryType().value);
-			detailCtgInfo.setIsAbolition(perInfoCtg.getIsAbolition().value == 1 ? "1" : "0");
+			detailCtgInfo.setAbolition(perInfoCtg.getIsAbolition().value == 1? true: false);
 			if (!categoryNameDefault.equals("null")) {
 				detailCtgInfo.setCategoryNameDefault(categoryNameDefault);
 			}

@@ -46,7 +46,7 @@
 						data-bind="ntsGridList: {	
 						dataSource: categoryList ,
 						primaryKey: 'id' ,
-						columns: colums ,
+						columns: currentCategory().ctgColums ,
 						multiple: false,
 						value: currentCategory().id ,
 						rows:15 }">

@@ -42,20 +42,6 @@ public class PerInfoCategoryWebservice extends WebService {
 		String companyId = AppContexts.user().companyId();
 		return this.finder.getAllPerInfoCtg(companyId);
 	}
-
-	@POST
-	@Path("findAllByRoot")
-	public List<PerInfoCtgFullDto> getAllPerInfoCtgRoot() {
-		return this.finder.getAllPerInfoCtg("000000000000-0000");
-	}
-
-	@POST
-	@Path("find/companyId/{categoryId}")
-	public PerInfoCtgFullDto getDetailCtgInfoByCompany(@PathParam("categoryId") String categoryId) {
-		String companyId = AppContexts.user().companyId();
-		String contractCd = companyId.substring(0, 12);
-		return this.finder.getDetailCategoryInfo(companyId,categoryId,contractCd);
-	}
 	
 	@POST
 	@Path("find/root/{categoryId}")

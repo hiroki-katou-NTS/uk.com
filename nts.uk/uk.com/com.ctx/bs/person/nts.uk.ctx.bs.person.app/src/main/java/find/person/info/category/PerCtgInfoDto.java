@@ -15,7 +15,7 @@ public class PerCtgInfoDto {
 	private String categoryNameDefault;
 	private String categoryName;
 	private int categoryType;
-	private String isAbolition;
+	private boolean isAbolition;
 	private int systemRequired;
 	private List<PersonInfoItemDefDto> itemLst;
 }
