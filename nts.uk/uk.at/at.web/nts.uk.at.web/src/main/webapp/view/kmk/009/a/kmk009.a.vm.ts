@@ -1,4 +1,5 @@
 module nts.uk.at.view.kmk009.a.viewmodel {
+
     import Enum = service.model.Enum;
     import WorkTypeDto = service.model.WorkTypeDto;
     import WorkTimeDto = service.model.WorkTimeDto;
@@ -13,6 +14,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         useSet: KnockoutObservableArray<any>;
         selectUse: KnockoutObservable<any>;
         enableUse: KnockoutObservable<boolean>;
+        enableUpper: KnockoutObservable<boolean>;
+        selectUppper: KnockoutObservable<any>;
+        selectUnder: KnockoutObservable<any>;
+        enableUnder: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
@@ -20,11 +25,11 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             self.itemTotalTimesDetail = ko.observable(null);
             self.totalClsEnums = [];;
             self.valueEnum = ko.observable(null);
-            self.currentCode = ko.observable(1);
+            self.currentCode = ko.observable(null);
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText('KMK009_4'), key: 'totalCountNo', width: 50 },
-                { headerText: nts.uk.resource.getText('KMK009_5'), key: 'totalTimesName', width: 80 },
-                { headerText: nts.uk.resource.getText('KMK009_6'), key: 'useAtr', formatter: _.escape, width: 150 },
+                { headerText: nts.uk.resource.getText('KMK009_4'), key: 'totalCountNo', formatter: _.escape, width: 50 },
+                { headerText: nts.uk.resource.getText('KMK009_5'), key: 'useAtr', formatter: _.escape, width: 80 },
+                { headerText: nts.uk.resource.getText('KMK009_6'), key: 'totalTimesName', formatter: _.escape, width: 150 },
                 { headerText: nts.uk.resource.getText('KMK009_14'), key: 'summaryAtrName', formatter: _.escape, width: 100 }
             ]);
             self.useSet = ko.observableArray([
@@ -32,8 +37,11 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 { code: '0', name: nts.uk.resource.getText("KMK009_13") },
             ]);
             self.selectUse = ko.observable(0);
+            self.selectUppper = ko.observable(0);
+            self.selectUnder = ko.observable(0);
             self.enableUse = ko.observable(false);
-
+            self.enableUpper = ko.observable(false);
+            self.enableUnder = ko.observable(false);
 
 
             //subscribe currentCode
@@ -42,41 +50,40 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 if (codeChanged == 0) { return; }
                 self.selectUse(null);
                 self.loadAllTotalTimesDetail(codeChanged);
-                //                if (self.itemDivTime().inputSet.cancelErrSelReason == 1) {
-                //                    self.checkErrInput(true);
-                //                } else {
-                //                    self.checkErrInput(false);
-                //                }
-                //                if (self.itemDivTime().selectSet.cancelErrSelReason == 1) {
-                //                    self.checkErrSelect(true);
-                //                } else {
-                //                    self.checkErrSelect(false);
-                //                }
-
-                //                $("#itemname").focus();
             });
             //subscribe selectUse
             self.selectUse.subscribe(function(codeChanged) {
                 if (codeChanged == 1) {
                     self.enableUse(true);
                     self.itemTotalTimesDetail().useAtr(1);
-                    //                    if (self.selectSel() == 1) {
-                    //                        self.enableSelect(true);
-                    //                    } else {
-                    //                        self.enableSelect(false);
-                    //                    }
-                    //                    if (self.selectInp() == 1) {
-                    //                        self.enableInput(true);
-                    //                    } else {
-                    //                        self.enableInput(false);
-                    //                    }
                 } else {
                     self.enableUse(false);
                     self.itemTotalTimesDetail().useAtr(0);
-                    //                    self.enableSelect(false);
-                    //                    self.enableInput(false);
                 }
             });
+
+            //subscribe upper Limit
+            self.selectUppper.subscribe(function(codeChanged) {
+                if ((codeChanged == true && self.selectUse() === "1") || (codeChanged == true && self.selectUse() === 1)) {
+                    self.enableUpper(true);
+                    self.itemTotalTimesDetail().totalCondition().upperLimitSettingAtr(1);
+                } else {
+                    self.enableUpper(false);
+                    self.itemTotalTimesDetail().totalCondition().upperLimitSettingAtr(0);
+                }
+            });
+
+            //subscribe under Limit
+            self.selectUnder.subscribe(function(codeChanged) {
+                if ((codeChanged == true && self.selectUse() === "1") || (codeChanged == true && self.selectUse() === 1)) {
+                    self.enableUnder(true);
+                    self.itemTotalTimesDetail().totalCondition().lowerLimitSettingAtr(1);
+                } else {
+                    self.enableUnder(false);
+                    self.itemTotalTimesDetail().totalCondition().lowerLimitSettingAtr(0);
+                }
+            });
+
         }
         /**
          * start page
@@ -87,7 +94,6 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             var self = this;
             //            nts.uk.ui.block.invisible();
             var dfd = $.Deferred();
-
             self.loadAllTotalTimesDetail(1);
 
             self.loadTotalClsEnum().done(function() {
@@ -111,16 +117,13 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
             service.getAllTotalTimes().done(function(lstTotalTimes: Array<model.TotalTimes>) {
                 nts.uk.ui.block.clear();
-                //                if (lstTotalTimes === undefined || lstTotalTimes.length == 0) {
-                //                    self.();
-                //                } else {
-                //                self.currentCode(0);
+                self.itemTotalTimes([]);
                 self.itemTotalTimes(lstTotalTimes);
-                //                self.itemTotalTimes(lstTotalTimes.map(item => item.summaryAtrName(self.totalClsEnums[item.summaryAtr()].localizedName)));
 
                 for (var i = 0; i < self.itemTotalTimes().length; i++) {
                     self.itemTotalTimes()[i].summaryAtrName = self.totalClsEnums[self.itemTotalTimes()[i].summaryAtr].localizedName;
                 }
+                self.itemTotalTimes.valueHasMutated();
 
 
                 //                    let rdivTimeFirst = _.first(lstDivTime);
@@ -139,18 +142,40 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
             nts.uk.ui.block.grayout();
 
-
             service.getAllTotalTimesDetail(codeChanged).done(function(item: model.TotalTimesDetail) {
                 nts.uk.ui.block.clear();
                 if (item == null || item === undefined) {
                     self.itemTotalTimesDetail(null);
                 } else {
+                    // check errors
                     self.itemTotalTimesDetail(new model.TotalTimesDetail(item.totalCountNo, item.countAtr, item.useAtr, item.totalTimesName,
                         item.totalTimesABName, item.summaryAtr, item.totalCondition, item.listTotalSubjects));
                     self.selectUse(self.itemTotalTimesDetail().useAtr());
+
+                    // disable or enable Upper limit and under linit
+                    self.selectUppper(self.itemTotalTimesDetail().totalCondition().upperLimitSettingAtr());
+                    if (self.selectUppper() === 1) {
+                        self.enableUpper(true);
+                    } else {
+                        self.enableUpper(false);
+                    }
+                    self.selectUnder(self.itemTotalTimesDetail().totalCondition().lowerLimitSettingAtr());
+                    if (self.selectUnder() === 1) {
+                        self.enableUnder(true);
+                    } else {
+                        self.enableUnder(false);
+                    }
                     self.loadListWorkType();
                     self.loadListWorkTimes();
                 }
+                // load all data  Enum
+                self.loadTotalClsEnum().done(function() {
+                    if (self.totalClsEnums.length > 0) {
+                        self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail().summaryAtr()].value);
+                    }
+                    dfd.resolve();
+                });
+                
             });
 
 
@@ -171,7 +196,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.block.clear();
 
                 if (res) {
-                    self.itemTotalTimesDetail().workTypeInfo(res.map(item => item.workTypeCode + ' ' + item.name).join("+"));
+                    self.itemTotalTimesDetail().workTypeInfo(res.map(item => item.workTypeCode + ' ' + item.name).join("＋"));
                 } else {
                     self.itemTotalTimesDetail().workTypeInfo('');
                 }
@@ -195,7 +220,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.block.clear();
 
                 if (res) {
-                    self.itemTotalTimesDetail().workingInfo(res.map(item => item.code + ' ' + item.name).join("+"));
+                    self.itemTotalTimesDetail().workingInfo(res.map(item => item.code + ' ' + item.name).join("＋"));
                 } else {
                     self.itemTotalTimesDetail().workingInfo('');
                 }
@@ -203,8 +228,6 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
             return dfd.promise();
         }
-
-
 
         // load enum
         private loadTotalClsEnum(): JQueryPromise<any> {
@@ -226,6 +249,61 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             return dfd.promise();
         }
 
+        
+
+        // save Daily Pattern in database
+        public save() {
+            let self = this;
+            nts.uk.ui.block.grayout();
+            //trim() name
+            self.itemTotalTimesDetail().totalTimesName($.trim(self.itemTotalTimesDetail().totalTimesName()));
+            self.itemTotalTimesDetail().totalTimesABName($.trim(self.itemTotalTimesDetail().totalTimesABName()));
+            // save enum
+            self.itemTotalTimesDetail().summaryAtr(self.valueEnum());
+            // define dataDto
+            var detailDto = self.itemTotalTimesDetail();
+
+            let command: any = {};
+
+            command.totalCountNo = detailDto.totalCountNo;
+            command.countAtr = detailDto.countAtr();
+            command.useAtr = detailDto.useAtr();
+            command.totalTimesName = detailDto.totalTimesName();
+            command.totalTimesABName = detailDto.totalTimesABName();
+            command.summaryAtr = detailDto.summaryAtr();
+
+            /** The total condition. */
+            let totalCondition: any = {};
+            totalCondition.upperLimitSettingAtr = detailDto.totalCondition().upperLimitSettingAtr();
+            totalCondition.lowerLimitSettingAtr = detailDto.totalCondition().lowerLimitSettingAtr();
+            totalCondition.thresoldUpperLimit = detailDto.totalCondition().thresoldUpperLimit();
+            totalCondition.thresoldLowerLimit = detailDto.totalCondition().thresoldLowerLimit();
+
+            command.totalCondition = totalCondition;
+
+            let listTotalSubjects: Array<any> = [];
+
+            for (let totalObj of detailDto.listTotalSubjects()) {
+                listTotalSubjects.push({ workTypeCode: totalObj.workTypeCode(), workTypeAtr: totalObj.workTypeAtr() });
+            }
+            command.listTotalSubjects = listTotalSubjects;
+            // call service save all 
+            service.saveAllTotalTimes(command).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    self.loadAllTotalTimes().done(function() {
+//                        self.loadAllTotalTimesDetail(self.currentCode()).done(function() {
+//                        });
+                    });
+                });
+
+
+            }).fail(function(res) {
+                alert(res.message);
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });
+        }
+        // openKDL001Dialog
         public openKDL001Dialog() {
             var self = this;
             nts.uk.ui.block.grayout();
@@ -306,70 +384,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 });
             });
         }
-
-
-        // save Daily Pattern in database
-        public save() {
-            let self = this;
-
-            nts.uk.ui.block.grayout();
-            //            self.detail().patternName($.trim(self.detail().patternName()));
-            //            if (self.validate()) {
-            //                nts.uk.ui.block.clear();
-            //                return;
-            //            }
-            // save enum
-            self.itemTotalTimesDetail().summaryAtr(self.valueEnum());
-            self.itemTotalTimesDetail().summaryAtrName(self.totalClsEnums[self.itemTotalTimesDetail().summaryAtr()].localizedName);
-            // define dataDto
-            var detailDto = self.itemTotalTimesDetail();
-
-            let command: any = {};
-
-            command.totalCountNo = detailDto.totalCountNo;
-            command.countAtr = detailDto.countAtr();
-            command.useAtr = detailDto.useAtr();
-            command.totalTimesName = detailDto.totalTimesName();
-            command.totalTimesABName = detailDto.totalTimesABName();
-            command.summaryAtr = detailDto.summaryAtr();
-
-            /** The total condition. */
-            let totalCondition: any = {};
-            totalCondition.upperLimitSettingAtr = detailDto.totalCondition().upperLimitSettingAtr();
-            totalCondition.lowerLimitSettingAtr = detailDto.totalCondition().lowerLimitSettingAtr();
-            totalCondition.thresoldUpperLimit = detailDto.totalCondition().thresoldUpperLimit();
-            totalCondition.thresoldLowerLimit = detailDto.totalCondition().thresoldLowerLimit();
-
-            command.totalCondition = totalCondition;
-
-            let listTotalSubjects: Array<any> = [];
-
-            for (let totalObj of detailDto.listTotalSubjects()) {
-                listTotalSubjects.push({ workTypeCode: totalObj.workTypeCode(), workTypeAtr: totalObj.workTypeAtr() });
-            }
-            command.listTotalSubjects = listTotalSubjects;
-            // call service save all 
-            service.saveAllTotalTimes(command).done(function() {
-                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-
-                self.loadAllTotalTimesDetail(1);
-
-                self.loadTotalClsEnum().done(function() {
-                    if (self.totalClsEnums.length > 0) {
-                        self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail().summaryAtr()].value);
-                        self.itemTotalTimesDetail().summaryAtrName(self.totalClsEnums[self.itemTotalTimesDetail().summaryAtr()].localizedName);
-                    }
-
-                });
-
-                self.loadAllTotalTimes();
-
-            }).fail(function(res) {
-                alert(res.message);
-            }).always(function() {
-                nts.uk.ui.block.clear();
-            });
-        }
+        
         clearError(): void {
             if ($('.nts-validate').ntsError("hasError") == true) {
                 $('.nts-validate').ntsError('clear');
