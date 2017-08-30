@@ -25,7 +25,7 @@ import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.
 public class JobtitleToApproverServiceImpl implements JobtitleToApproverService {
 
 	@Inject
-	private EmployeeAdaptor emloyeePub;
+	private EmployeeAdaptor employeeAdaptor;
 
 	@Inject
 	private GetSubjectOfJobTitleService getSubjectOfJobTitleService;
@@ -38,7 +38,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 		// 共通アルゴリズム「申請者の職位の序列は承認者のと比較する」を実行する
 		boolean isSameRank = compareRank(cid, sid, baseDate, jobTitleId);
 		if (isSameRank) {
-			String wkpId = this.emloyeePub.getWorkplaceId(cid, sid, baseDate);
+			String wkpId = this.employeeAdaptor.getWorkplaceId(cid, sid, baseDate);
 			// thực hiện xử lý 「職場に指定する職位の対象者を取得する」
 			List<ApproverInfo> approvers = this.getSubjectOfJobTitleService.getByWkp(cid, wkpId, baseDate, jobTitleId);
 			if (!CollectionUtil.isEmpty(approvers)) {
@@ -48,7 +48,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 			// lấy domain 「職位別のサーチ設定」
 			JobtitleSearchSetAdaptorDto job = this.jobtitleSearchSetAdaptor.finById(cid, jobTitleId);
 			if (!Objects.isNull(job)) {
-				List<String> wkpIds = this.emloyeePub.findWpkIdsBySid(cid, sid, baseDate);
+				List<String> wkpIds = this.employeeAdaptor.findWpkIdsBySid(cid, sid, baseDate);
 				wkpIds.remove(0);
 
 				// 上位職場が存在する(not exist wkpId 上位)
@@ -74,7 +74,9 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 
 	@Override
 	public boolean compareRank(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
-		// TODO Auto-generated method stub
+		String empCode = this.employeeAdaptor.getEmploymentCode(cid, sid, baseDate);
+		
+		
 		return true;
 	}
 

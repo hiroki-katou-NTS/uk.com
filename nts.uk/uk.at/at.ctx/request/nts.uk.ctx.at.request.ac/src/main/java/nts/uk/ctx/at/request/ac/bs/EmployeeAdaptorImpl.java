@@ -27,20 +27,16 @@ public class EmployeeAdaptorImpl implements EmployeeAdaptor {
 	 * @return 雇用コード
 	 */
 	public String getEmploymentCode(String companyId, String employeeId, GeneralDate baseDate) {
-		/*
-		 * return employeePub.getEmploymentCode(companyId, employeeId,
-		 * baseDate);
-		 */
-		return null;
+		return employeePub.getEmploymentCode(companyId, employeeId, baseDate);
 	}
 
 	@Override
 	public List<String> findWpkIdsBySid(String companyId, String sid, GeneralDate baseDate) {
-		return this.employeePub.findWpkIdsBySid(companyId, sid, baseDate);		
+		return this.employeePub.findWpkIdsBySid(companyId, sid, baseDate);
 	}
 
 	@Override
 	public String getWorkplaceId(String companyId, String employeeId, GeneralDate baseDate) {
-		return this.employeePub.getWorkplaceId(companyId, employeeId, baseDate);	
+		return this.employeePub.getWorkplaceId(companyId, employeeId, baseDate);
 	}
 }
