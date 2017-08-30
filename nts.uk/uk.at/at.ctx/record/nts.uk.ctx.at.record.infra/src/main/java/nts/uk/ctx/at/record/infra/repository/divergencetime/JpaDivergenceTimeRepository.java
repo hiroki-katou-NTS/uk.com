@@ -27,7 +27,7 @@ public class JpaDivergenceTimeRepository extends JpaRepository implements Diverg
 	 * NamPT getDivergenceTimeName for mapping AttendanceItemName
 	 */
 	private final String SELECT_DIVTIME_NAME = SELECT_ALL_DIVTIME
-			+ " WHERE c.kmkmtDivergenceTimePK.divTimeId IN :divTimeIds";
+			+ " AND c.kmkmtDivergenceTimePK.divTimeId IN :divTimeIds";
 	private final String SELECT_FROM_DIVREASON = "SELECT c FROM KmkmtDivergenceReason c";
 	private final String SELECT_ALL_DIVREASON = SELECT_FROM_DIVREASON
 			+ " WHERE c.kmkmtDivergenceReasonPK.companyId = :companyId"

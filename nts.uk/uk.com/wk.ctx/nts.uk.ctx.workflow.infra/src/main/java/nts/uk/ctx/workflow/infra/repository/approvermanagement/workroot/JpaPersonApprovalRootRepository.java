@@ -140,7 +140,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 * @param appType
 	 */
 	@Override
-	public List<PersonApprovalRoot> findByBaseDate(String cid, String sid, Date baseDate, String appType) {
+	public List<PersonApprovalRoot> findByBaseDate(String cid, String sid, Date baseDate, int appType) {
 		return this.queryProxy().query(FIND_BY_BASEDATE, WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", cid)
 				.setParameter("employeeId", sid)

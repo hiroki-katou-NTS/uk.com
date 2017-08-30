@@ -29,7 +29,7 @@ public class KrcmtDailyAttendanceItem extends UkJpaEntity implements Serializabl
 	public KrcmtDailyAttendanceItemPK krcmtDailyAttendanceItemPK;
 
 	/* 勤怠項目名称 */
-	@Column(name = "NAME")
+	@Column(name = "ATTENDANCE_ITEM_NAME")
 	public String attendanceItemName;
 	
 	/* 表示番号 */

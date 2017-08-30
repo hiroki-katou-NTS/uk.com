@@ -92,7 +92,7 @@ public class JpaApproverRepository extends JpaRepository implements ApproverRepo
 		entity.employeeId = domain.getEmployeeId();
 		entity.displayOrder = domain.getOrderNumber();
 		entity.approvalAtr = domain.getApprovalAtr().value;
-		entity.confirmPerson = domain.getConfirmPerson();
+		entity.confirmPerson = domain.getConfirmPerson().value;
 		return entity;
 	}
 }

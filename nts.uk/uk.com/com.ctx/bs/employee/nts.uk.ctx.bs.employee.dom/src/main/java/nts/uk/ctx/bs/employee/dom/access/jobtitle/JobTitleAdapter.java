@@ -21,4 +21,12 @@ public interface JobTitleAdapter {
 	 * @return the list
 	 */
 	List<AcJobTitleDto> findAll(String companyId, GeneralDate referenceDate);
+
+	/**
+	 * Find by job ids.
+	 *
+	 * @param jobIds the job ids
+	 * @return the list
+	 */
+	List<AcJobTitleDto> findByJobIds(List<String> jobIds);
 }

@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -36,12 +37,12 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		if (!workType.isPresent()) {
 			throw new RuntimeException("NOT FOUND WORK TYPE");
 		}
-
-		WorkTypeUnit workTypeUnit = workType.get().getDailyWork().getWorkTypeUnit();
+		DailyWork dailyWork = workType.get().getDailyWork();
+		WorkTypeUnit workTypeUnit = dailyWork.getWorkTypeUnit();
 		// All day
 		if (WorkTypeUnit.OneDay == workTypeUnit) {
 
-			WorkTypeClassification workTypeClass = workType.get().getDailyWork().getOneDay();
+			WorkTypeClassification workTypeClass = dailyWork.getOneDay();
 
 			if (WorkTypeClassification.AnnualHoliday == workTypeClass
 					|| WorkTypeClassification.YearlyReserved == workTypeClass
@@ -80,9 +81,9 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 			WorkStyle workStyle = this.checkWorkDay(workTypeCode);
 			if (WorkStyle.ONE_DAY_REST == workStyle) {
 
-				SetupType morningWorkStyle = this.checkRequiredOfInputType(workType.get().getDailyWork().getMorning());
+				SetupType morningWorkStyle = this.checkRequiredOfInputType(dailyWork.getMorning());
 				SetupType afternoonWorkStyle = this
-						.checkRequiredOfInputType(workType.get().getDailyWork().getAfternoon());
+						.checkRequiredOfInputType(dailyWork.getAfternoon());
 
 				return this.checkRequired(morningWorkStyle, afternoonWorkStyle);
 			} else {
@@ -108,11 +109,11 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		if (!workType.isPresent()) {
 			throw new RuntimeException("NOT FOUND WORK TYPE");
 		}
-
-		WorkTypeUnit workTypeUnit = workType.get().getDailyWork().getWorkTypeUnit();
+		DailyWork dailyWork = workType.get().getDailyWork();
+		WorkTypeUnit workTypeUnit = dailyWork.getWorkTypeUnit();
 		// All day
 		if (WorkTypeUnit.OneDay == workTypeUnit) {
-			WorkTypeClassification workTypeClass = workType.get().getDailyWork().getOneDay();
+			WorkTypeClassification workTypeClass = dailyWork.getOneDay();
 			if (this.checkType(workTypeClass)) {
 				return WorkStyle.ONE_DAY_REST;
 			} else {
@@ -123,8 +124,8 @@ public class DefaultBasicScheduleService implements BasicScheduleService {
 		// Half day
 		if (WorkTypeUnit.MonringAndAfternoon == workTypeUnit) {
 
-			WorkTypeClassification morningType = workType.get().getDailyWork().getMorning();
-			WorkTypeClassification afternoonType = workType.get().getDailyWork().getAfternoon();
+			WorkTypeClassification morningType = dailyWork.getMorning();
+			WorkTypeClassification afternoonType = dailyWork.getAfternoon();
 
 			if (this.checkType(morningType)) {
 				if (this.checkType(afternoonType)) {

@@ -15,8 +15,8 @@
 								<label>#{i18n.getText('KSM001_29')}</label>
 							</div>
 						</div>
-						<div class="pull-left helpButton">
-							<button data-bind="ntsHelpButton: {image: 'image/img002.png', position: 'right top', enable: true }">?</button>
+						<div tabindex="-1" class="pull-left helpButton">
+							<button tabindex="-1" data-bind="ntsHelpButton: {image: 'image/img002.png', position: 'right top', enable: true }">?</button>
 						</div>
 						<table tabindex="10" class="border-all tbl-monthly" data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="bg-dark-green">
@@ -30,29 +30,54 @@
 							<tr data-bind="with: yearlyEstimate">
 								<td class="bg-green">#{i18n.getText('KSM001_16')}</td>
 								<td>
-									<input tabindex="18"
-										data-bind=" ntsTimeEditor: {name: '#[KSM001_32]', value: time1st, inputFormat: 'time', 
-										mode: 'time', required: true, enable: $parents[1].isEditable}" />
+									<input tabindex="11"
+										data-bind=" ntsTimeEditor: {name: '#[KSM001_32]',
+											value: time1st,
+											inputFormat: 'time', 
+											mode: 'time',
+											required: true,
+											enable: $parents[1].isEditable,
+											constraint: 'YearlyEstimateTime'}" />
 								</td>
 								<td>
-									<input tabindex="19" 
-										data-bind=" ntsTimeEditor: {name: '#[KSM001_33]', value: time2nd, inputFormat: 'time', 
-										mode: 'time', required: true, enable: $parents[1].isEditable}" />
+									<input tabindex="12" 
+										data-bind=" ntsTimeEditor: {name: '#[KSM001_33]',
+											value: time2nd,
+											inputFormat: 'time', 
+											mode: 'time',
+											required: true,
+											enable: $parents[1].isEditable,
+											constraint: 'YearlyEstimateTime'}" />
 								</td>
 								<td>
-									<input tabindex="20" 
-										data-bind=" ntsTimeEditor: {name: '#[KSM001_34]', value: time3rd, inputFormat: 'time', 
-										mode: 'time', required: true, enable: $parents[1].isEditable}" />
+									<input tabindex="13" 
+										data-bind=" ntsTimeEditor: {name: '#[KSM001_34]',
+											value: time3rd,
+											inputFormat: 'time', 
+											mode: 'time',
+											required: true,
+											enable: $parents[1].isEditable,
+											constraint: 'YearlyEstimateTime'}" />
 								</td>
 								<td>
-									<input tabindex="21" 
-										data-bind=" ntsTimeEditor: {name: '#[KSM001_35]', value: time4th, inputFormat: 'time', 
-										mode: 'time', required: true, enable: $parents[1].isEditable}" />
+									<input tabindex="14" 
+										data-bind=" ntsTimeEditor: {name: '#[KSM001_35]',
+											value: time4th,
+											inputFormat: 'time', 
+											mode: 'time',
+											required: true,
+											enable: $parents[1].isEditable,
+											constraint: 'YearlyEstimateTime'}" />
 								</td>
 								<td>
-									<input tabindex="22" 
-										data-bind=" ntsTimeEditor: {name: '#[KSM001_36]', value: time5th, inputFormat: 'time', 
-										mode: 'time', required: true, enable: $parents[1].isEditable}" />
+									<input tabindex="15" 
+										data-bind=" ntsTimeEditor: {name: '#[KSM001_36]',
+											value: time5th,
+											inputFormat: 'time', 
+											mode: 'time',
+											required: true,
+											enable: $parents[1].isEditable,
+											constraint: 'YearlyEstimateTime'}" />
 								</td>
 							</tr>
 							<com:ko tag="foreach" bind="monthlyEstimates">
@@ -61,29 +86,54 @@
 										<div data-bind="text: ($index()+1)+'月度'"></div>
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 22 + $index()*5}, 
-											ntsTimeEditor: {name: '#[KSM001_38]', value: time1st, inputFormat: 'time', 
-											mode: 'time', required: true, enable: $parents[1].isEditable}" />
+										<input data-bind="attr: {'tabindex': 16 + $index()*5}, 
+											ntsTimeEditor: {name: '#[KSM001_38]',
+												value: time1st,
+												inputFormat: 'time', 
+												mode: 'time',
+												required: true,
+												enable: $parents[1].isEditable,
+												constraint: 'MonthlyEstimateTime'}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 23 + $index()*5},
-											ntsTimeEditor: {name: '#[KSM001_39]', value: time2nd, inputFormat: 'time', 
-											mode: 'time', required: true, enable: $parents[1].isEditable}" />
+										<input data-bind="attr: {'tabindex': 17 + $index()*5},
+											ntsTimeEditor: {name: '#[KSM001_39]',
+												value: time2nd,
+												inputFormat: 'time', 
+												mode: 'time',
+												required: true,
+												enable: $parents[1].isEditable,
+												constraint: 'MonthlyEstimateTime'}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 24 + $index()*5}, 
-										ntsTimeEditor: {name: '#[KSM001_40]', value: time3rd, inputFormat: 'time', 
-										mode: 'time', required: true, enable: $parents[1].isEditable}" />
+										<input data-bind="attr: {'tabindex': 18 + $index()*5}, 
+											ntsTimeEditor: {name: '#[KSM001_40]',
+												value: time3rd,
+												inputFormat: 'time', 
+												mode: 'time',
+												required: true,
+												enable: $parents[1].isEditable,
+												constraint: 'MonthlyEstimateTime'}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 25 + $index()*5}, 
-										ntsTimeEditor: {name: '#[KSM001_41]', value: time4th, inputFormat: 'time', 
-										mode: 'time', required: true, enable: $parents[1].isEditable}" />
+										<input data-bind="attr: {'tabindex': 19 + $index()*5}, 
+											ntsTimeEditor: {name: '#[KSM001_41]',
+												value: time4th,
+												inputFormat: 'time', 
+												mode: 'time',
+												required: true,
+												enable: $parents[1].isEditable,
+												constraint: 'MonthlyEstimateTime'}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 26 + $index()*5}, 
-										ntsTimeEditor: {name: '#[KSM001_42]', value: time5th, inputFormat: 'time', 
-										mode: 'time', required: true, enable: $parents[1].isEditable}" />
+										<input data-bind="attr: {'tabindex': 20 + $index()*5}, 
+											ntsTimeEditor: {name: '#[KSM001_42]',
+												value: time5th,
+												inputFormat: 'time', 
+												mode: 'time',
+												required: true,
+												enable: $parents[1].isEditable,
+												constraint: 'MonthlyEstimateTime'}" />
 									</td>
 								</tr>
 							</com:ko>
@@ -97,10 +147,10 @@
 								<label>#{i18n.getText('KSM001_29')}</label>
 							</div>
 						</div>
-						<div class="pull-left helpButton">
-							<button data-bind="ntsHelpButton: {image: 'image/img002.png', position: 'right top', enable: true }">?</button>
+						<div tabindex="-1" class="pull-left helpButton">
+							<button tabindex="-1" data-bind="ntsHelpButton: {image: 'image/img002.png', position: 'right top', enable: true }">?</button>
 						</div>
-						<table tabindex="21" data-bind="attr: {'name': nts.uk.resource.getText('KSM001_43')}" class="border-all tbl-monthly">
+						<table tabindex="76" data-bind="attr: {'name': nts.uk.resource.getText('KSM001_43')}" class="border-all tbl-monthly">
 							<tr class="bg-dark-green">
 								<td>#{i18n.getText('KSM001_43')}</td>
 								<td>#{i18n.getText('KSM001_11')}</td>
@@ -112,24 +162,39 @@
 							<tr data-bind="with: yearlyEstimate">
 								<td class="bg-green">#{i18n.getText('KSM001_31')}</td>
 								<td>
-									<input tabindex="82" 
-										data-bind=" ntsTextEditor: {name: '#[KSM001_32]', value: price1st, required: true, enable: $parents[1].isEditable}" />
+									<input tabindex="77" 
+										data-bind=" ntsNumberEditor: {name: '#[KSM001_32]',
+										value: price1st, required: true,
+										enable: $parents[1].isEditable,
+										constraint: 'EstimatePrice'}" />
 								</td>
 								<td>
-									<input tabindex="83" 
-										data-bind=" ntsTextEditor: {name: '#[KSM001_33]', value: price2nd, required: true, enable: $parents[1].isEditable}" />
+									<input tabindex="78" 
+										data-bind=" ntsNumberEditor: {name: '#[KSM001_33]',
+										value: price2nd, required: true,
+										enable: $parents[1].isEditable,
+										constraint: 'EstimatePrice'}" />
 								</td>
 								<td>
-									<input tabindex="84" 
-										data-bind=" ntsTextEditor: {name: '#[KSM001_34]', value: price3rd, required: true, enable: $parents[1].isEditable}" />
+									<input tabindex="79" 
+										data-bind=" ntsNumberEditor: {name: '#[KSM001_34]',
+										value: price3rd, required: true,
+										enable: $parents[1].isEditable,
+										constraint: 'EstimatePrice'}" />
 								</td>
 								<td>
-									<input tabindex="85" 
-										data-bind=" ntsTextEditor: {name: '#[KSM001_35]', value: price4th, required: true, enable: $parents[1].isEditable}" />
+									<input tabindex="80" 
+										data-bind=" ntsNumberEditor: {name: '#[KSM001_35]',
+										value: price4th, required: true,
+										enable: $parents[1].isEditable,
+										constraint: 'EstimatePrice'}" />
 								</td>
 								<td>
-									<input tabindex="86" 
-										data-bind=" ntsTextEditor: {name: '#[KSM001_36]', value: price5th, required: true, enable: $parents[1].isEditable}" />
+									<input tabindex="81" 
+										data-bind=" ntsNumberEditor: {name: '#[KSM001_36]',
+										value: price5th, required: true,
+										enable: $parents[1].isEditable,
+										constraint: 'EstimatePrice'}" />
 								</td>
 							</tr>
 							<com:ko tag="foreach" bind="monthlyEstimates">
@@ -138,24 +203,39 @@
 										<div data-bind="text: ($index()+1)+'月度'"></div>
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 87 + $index()*5},
-											ntsTextEditor: {name: '#[KSM001_38]', value: price1st, required: true, enable: $parents[1].isEditable}" />
+										<input data-bind="attr: {'tabindex': 82 + $index()*5},
+											ntsNumberEditor: {name: '#[KSM001_38]',
+											value: price1st, required: true,
+											enable: $parents[1].isEditable,
+											constraint: 'EstimatePrice'}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 88 + $index()*5},
-											ntsTextEditor: {name: '#[KSM001_39]', value: price2nd, required: true, enable: $parents[1].isEditable}" />
+										<input data-bind="attr: {'tabindex': 83 + $index()*5},
+											ntsNumberEditor: {name: '#[KSM001_39]',
+											value: price2nd, required: true,
+											enable: $parents[1].isEditable,
+											constraint: 'EstimatePrice'}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 89 + $index()*5},
-											ntsTextEditor: {name: '#[KSM001_40]', value: price3rd, required: true, enable: $parents[1].isEditable}" />
+										<input data-bind="attr: {'tabindex': 84 + $index()*5},
+											ntsNumberEditor: {name: '#[KSM001_40]',
+											value: price3rd, required: true,
+											enable: $parents[1].isEditable,
+											constraint: 'EstimatePrice'}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 90 + $index()*5},
-											ntsTextEditor: {name: '#[KSM001_41]', value: price4th, required: true, enable: $parents[1].isEditable}" />
+										<input data-bind="attr: {'tabindex': 85 + $index()*5},
+											ntsNumberEditor: {name: '#[KSM001_41]',
+											value: price4th, required: true,
+											enable: $parents[1].isEditable,
+											constraint: 'EstimatePrice'}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 91 + $index()*5},
-											ntsTextEditor: {name: '#[KSM001_42]', value: price5th, required: true, enable: $parents[1].isEditable}" />
+										<input data-bind="attr: {'tabindex': 86 + $index()*5},
+											ntsNumberEditor: {name: '#[KSM001_42]',
+											value: price5th, required: true,
+											enable: $parents[1].isEditable,
+											constraint: 'EstimatePrice'}" />
 									</td>
 								</tr>
 							</com:ko>
@@ -169,10 +249,10 @@
 								<label>#{i18n.getText('KSM001_29')}</label>
 							</div>
 						</div>
-						<div class="pull-left helpButton">
-							<button data-bind="ntsHelpButton: {image: 'image/img002.png', position: 'right top', enable: true }">?</button>
+						<div tabindex="-1" class="pull-left helpButton">
+							<button tabindex="-1" data-bind="ntsHelpButton: {image: 'image/img002.png', position: 'right top', enable: true }">?</button>
 						</div>
-						<table tabindex="32" data-bind="attr: {'name': nts.uk.resource.getText('KSM001_44')}"  class="border-all tbl-monthly">
+						<table tabindex="142" data-bind="attr: {'name': nts.uk.resource.getText('KSM001_44')}"  class="border-all tbl-monthly">
 							<tr class="bg-dark-green">
 								<td>#{i18n.getText('KSM001_44')}</td>
 								<td>#{i18n.getText('KSM001_16')}</td>
@@ -185,23 +265,38 @@
 								<td class="bg-green">#{i18n.getText('KSM001_31')}</td>
 								<td>
 									<input tabindex="147" 
-										data-bind=" ntsTextEditor: {name: '#[KSM001_32]', value: days1st, required: true, enable: $parents[1].isEditable}" />
+										data-bind=" ntsNumberEditor: {name: '#[KSM001_32]',
+										value: days1st, required: true,
+										enable: $parents[1].isEditable,
+										constraint: 'EstimatePrice'}" />
 								</td>
 								<td>
 									<input tabindex="148" 
-										data-bind=" ntsTextEditor: {name: '#[KSM001_33]', value: days2nd, required: true, enable: $parents[1].isEditable}" />
+										data-bind=" ntsNumberEditor: {name: '#[KSM001_33]',
+										value: days2nd, required: true,
+										enable: $parents[1].isEditable,
+										constraint: 'EstimatePrice'}" />
 								</td>
 								<td>
 									<input tabindex="149" 
-										data-bind=" ntsTextEditor: {name: '#[KSM001_34]', value: days3rd, required: true, enable: $parents[1].isEditable}" />
+										data-bind=" ntsNumberEditor: {name: '#[KSM001_34]',
+										value: days3rd, required: true,
+										enable: $parents[1].isEditable,
+										constraint: 'EstimatePrice'}" />
 								</td>
 								<td>
 									<input tabindex="150" 
-										data-bind=" ntsTextEditor: {name: '#[KSM001_35]', value: days4th, required: true, enable: $parents[1].isEditable}" />
+										data-bind=" ntsNumberEditor: {name: '#[KSM001_35]',
+										value: days4th, required: true,
+										enable: $parents[1].isEditable,
+										constraint: 'EstimatePrice'}" />
 								</td>
 								<td>
 									<input tabindex="151" 
-										data-bind=" ntsTextEditor: {name: '#[KSM001_36]', value: days5th, required: true, enable: $parents[1].isEditable}" />
+										data-bind=" ntsNumberEditor: {name: '#[KSM001_36]',
+										value: days5th, required: true,
+										enable: $parents[1].isEditable,
+										constraint: 'EstimatePrice'}" />
 								</td>
 							</tr>
 							<com:ko tag="foreach" bind="monthlyEstimates">
@@ -210,19 +305,39 @@
 										<div data-bind="text: ($index()+1)+'月度'"></div>
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 152 + $index()*5}, ntsTextEditor: {name: '#[KSM001_38]', value: days1st, required: true, enable: $parents[1].isEditable}" />
+										<input data-bind="attr: {'tabindex': 152 + $index()*5},
+											ntsNumberEditor: {name: '#[KSM001_38]',
+												value: days1st, required: true,
+												enable: $parents[1].isEditable,
+												constraint: 'EstimatePrice'}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 153 + $index()*5}, ntsTextEditor: {name: '#[KSM001_39]', value: days2nd, required: true, enable: $parents[1].isEditable}" />
+										<input data-bind="attr: {'tabindex': 153 + $index()*5},
+											ntsNumberEditor: {name: '#[KSM001_39]',
+												value: days2nd, required: true,
+												enable: $parents[1].isEditable,
+												constraint: 'EstimatePrice'}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 154 + $index()*5}, ntsTextEditor: {name: '#[KSM001_40]', value: days3rd, required: true, enable: $parents[1].isEditable}" />
+										<input data-bind="attr: {'tabindex': 154 + $index()*5},
+											ntsNumberEditor: {name: '#[KSM001_40]',
+												value: days3rd, required: true,
+												enable: $parents[1].isEditable,
+												constraint: 'EstimatePrice'}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 155 + $index()*5}, ntsTextEditor: {name: '#[KSM001_41]', value: days4th, required: true, enable: $parents[1].isEditable}" />
+										<input data-bind="attr: {'tabindex': 155 + $index()*5},
+											ntsNumberEditor: {name: '#[KSM001_41]',
+												value: days4th, required: true,
+												enable: $parents[1].isEditable,
+												constraint: 'EstimatePrice'}" />
 									</td>
 									<td>
-										<input data-bind="attr: {'tabindex': 156 + $index()*5}, ntsTextEditor: {name: '#[KSM001_42]', value: days5th, required: true, enable: $parents[1].isEditable}" />
+										<input data-bind="attr: {'tabindex': 156 + $index()*5},
+											ntsNumberEditor: {name: '#[KSM001_42]',
+												value: days5th, required: true,
+												enable: $parents[1].isEditable,
+												constraint: 'EstimatePrice'}" />
 									</td>
 								</tr>
 							</com:ko>

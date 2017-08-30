@@ -1,12 +1,15 @@
 package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeSortedDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeSorted;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessFormatSortedRepository;
@@ -22,27 +25,39 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class BusinessTypeSortedFinder {
-	
+
+	@Inject
+	private AttendanceItemsFinder attendanceItemsFinder;
+
 	@Inject
 	private AttendanceItemRepository attendanceItemRepository;
-	
+
 	@Inject
 	private BusinessFormatSortedRepository businessFormatSortedRepository;
-	
-	public List<BusinessTypeSortedDto> findAll(){
+
+	public List<BusinessTypeSortedDto> findAll() {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
+
+		// find list attendanceItem has 使用区分 = true
+//		Map<Integer, AttendanceItemDto> attendanceItemDtos = this.attendanceItemsFinder.find().stream()
+//				.collect(Collectors.toMap(AttendanceItemDto::getAttendanceItemId, x -> x));
 		
-		//find list attendanceItem has 使用区分　=　true
-		List<AttendanceItem> attendanceItems = this.attendanceItemRepository.getAttendanceItems(companyId, 1);
-		
-		List<BusinessTypeSortedDto> businessTypeSortedDtos = attendanceItems.stream().map(f -> {
-			
-			Optional<BusinessTypeSorted> businessTypeSorted = this.businessFormatSortedRepository.find(companyId, f.getAttendanceId());
-			
-			return new BusinessTypeSortedDto(f.getAttendanceId(), f.getDislayNumber(), f.getAttendanceName().v(), businessTypeSorted.isPresent() ? businessTypeSorted.get().getOrder() : 1);
+		Map<Integer, AttendanceItem> attendanceItemDtos = this.attendanceItemRepository.getAttendanceItems(companyId, 1).stream()
+				.collect(Collectors.toMap(AttendanceItem::getAttendanceId, x -> x));
+
+		List<BusinessTypeSorted> businessTypeSorted = this.businessFormatSortedRepository.find(companyId,
+				attendanceItemDtos.keySet().stream().collect(Collectors.toList()));
+
+		List<BusinessTypeSortedDto> businessTypeSortedDtos = businessTypeSorted.stream().map(f -> {
+			return new BusinessTypeSortedDto(f.getAttendanceItemId(),
+//					attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceItemDisplayNumber(),
+//					attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceItemName(),
+					attendanceItemDtos.get(f.getAttendanceItemId()).getDislayNumber(),
+					attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceName().v(),
+					f.getOrder());
 		}).collect(Collectors.toList());
-		
+
 		return businessTypeSortedDtos;
 	}
 

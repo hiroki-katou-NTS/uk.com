@@ -18,7 +18,10 @@
 			<button id="stick-undo">
 				<img src="undo.png" style="width: 15px;" />
 			</button>
-			<button></button>
+			<button>
+				<img src="popup.png"
+					style="width: 13px; margin-left: -4px; padding-bottom: 5px;" />
+			</button>
 		</div>
 	</div>
 	<div id="set-work-time">
@@ -27,14 +30,12 @@
 			data-bind="ntsTimeEditor: {value: time1, inputFormat: 'time'}" /> <span
 			id="spelcial">~</span> <input id="time-edit2"
 			data-bind="ntsTimeEditor: {value: time2, inputFormat: 'time'}" />
-		<!-- KSU001_67 -->
-		<button class="reserved">#{i18n.getText('検索')}</button>
-		<!-- KSU001_68 -->
-		<button>#{i18n.getText('解除')}</button>
+		<button class="reserved">#{i18n.getText('KSU001_67')}</button>
+		<button>#{i18n.getText('KSU001_68')}</button>
 		<div id="combo-box2"
 			data-bind="ntsComboBox: {
 										options: listWorkTime,
-										optionsValue: 'siftCd',
+										optionsValue: 'codeName',
 										value: selectedWorkTimeCode,
 										optionsText: 'labelDisplay', 
 										editable:  false,

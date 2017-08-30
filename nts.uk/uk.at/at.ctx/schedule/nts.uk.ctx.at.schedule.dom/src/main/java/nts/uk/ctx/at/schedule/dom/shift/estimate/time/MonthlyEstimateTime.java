@@ -4,15 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.estimate.time;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerRange;
+import nts.arc.primitive.TimeDurationPrimitiveValue;
+import nts.arc.primitive.constraint.TimeRange;
+import nts.gul.util.Time;
 
 /**
  * The Class MonthlyEstimateTime.
  */
-@IntegerRange(min = 0, max = 5999)
-public class MonthlyEstimateTime extends IntegerPrimitiveValue<MonthlyEstimateTime>{
-	
+@TimeRange(max = "999:59", min = "00:00")
+public class MonthlyEstimateTime extends TimeDurationPrimitiveValue<MonthlyEstimateTime> {
+
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
@@ -21,8 +22,18 @@ public class MonthlyEstimateTime extends IntegerPrimitiveValue<MonthlyEstimateTi
 	 *
 	 * @param rawValue the raw value
 	 */
-	public MonthlyEstimateTime(Integer rawValue) {
+	public MonthlyEstimateTime(Long rawValue) {
 		super(rawValue);
+	}
+
+	/**
+	 * Of minutes.
+	 *
+	 * @param minutes the minutes
+	 * @return the monthly estimate time
+	 */
+	public static MonthlyEstimateTime ofMinutes(int minutes) {
+		return new MonthlyEstimateTime(minutes * Time.STEP);
 	}
 
 }
