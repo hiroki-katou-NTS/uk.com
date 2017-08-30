@@ -3,7 +3,7 @@ module nts.uk.at.view.kmk007.c.viewmodel {
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservable<any>;
         oldDataItems: KnockoutObservableArray<ItemModel>;
-        newDataItems: KnockoutObservableArray<ItemModel>;
+        newDataItems: KnockoutObservableArray<WorkTypeDispOrder>;
         selectedCodes: KnockoutObservableArray<any>;
 
         constructor() {
@@ -46,10 +46,14 @@ module nts.uk.at.view.kmk007.c.viewmodel {
             var newData = self.items();
             
             for(var i = 0; i < newData.length; i++){
-                self.newDataItems.push(new ItemModel(newData[i].code, newData[i].name, i));
+                self.newDataItems.push(new WorkTypeDispOrder(newData[i].code, i));
             }
             
-            self.newDataItems();
+            service.order(self.newDataItems()).done(function(data){
+                nts.uk.ui.windows.close();
+            }).fail(function(res) {
+                 
+            });
         }
         
         /**
@@ -80,6 +84,15 @@ module nts.uk.at.view.kmk007.c.viewmodel {
         constructor(code: string, name: string, order: number) {
             this.code = code;
             this.name = name;
+            this.order = order;
+        }
+    }
+    
+    class WorkTypeDispOrder {
+        code: string;
+        order: number;
+        constructor(code: string, order: number) {
+            this.code = code;
             this.order = order;
         }
     }

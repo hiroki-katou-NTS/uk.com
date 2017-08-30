@@ -21,6 +21,8 @@ import nts.uk.ctx.at.shared.app.command.worktype.InsertWorkTypeCommandHandler;
 import nts.uk.ctx.at.shared.app.command.worktype.RemoveWorkTypeCommand;
 import nts.uk.ctx.at.shared.app.command.worktype.RemoveWorkTypeCommandHandler;
 import nts.uk.ctx.at.shared.app.command.worktype.WorkTypeCommandBase;
+import nts.uk.ctx.at.shared.app.command.worktype.worktypedisporder.WorkTypeDispOrderCommand;
+import nts.uk.ctx.at.shared.app.command.worktype.worktypedisporder.WorkTypeDispOrderCommandHandler;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeDto;
 import nts.uk.ctx.at.shared.app.find.worktype.WorkTypeFinder;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
@@ -46,6 +48,9 @@ public class WorkTypeWebService extends WebService {
 	
 	@Inject
 	private RemoveWorkTypeCommandHandler  removeWorkTypeCommandHandler;
+	
+	@Inject
+	private WorkTypeDispOrderCommandHandler  workTypeDispOrderCommandHandler;
 
 	private static final List<Integer> workstyleList = Arrays.asList(WorkStyle.AFTERNOON_WORK.value,
 			WorkStyle.MORNING_WORK.value, WorkStyle.ONE_DAY_REST.value, WorkStyle.ONE_DAY_WORK.value);
@@ -177,4 +182,13 @@ public class WorkTypeWebService extends WebService {
 		this.removeWorkTypeCommandHandler.handle(command);
 	}
 	
+	/**
+	 * 
+	 * @param Work Type Order
+	 */
+	@POST
+	@Path("order")
+	public void order(List<WorkTypeDispOrderCommand> command) {
+		this.workTypeDispOrderCommandHandler.handle(command);
+	}
 }
