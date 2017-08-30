@@ -1,18 +1,17 @@
-#contents-area {
-	
+#contents-area{
+	min-width: 1300px !important;
 }
-
 #contents-area-right {
 	width: 360px;
-	height: 520px;
+	height: 555px;
 	float: left;
 	clear: right;
 	margin-left: 10px;
 }
 
 #contents-area-left {
-	width: 900px;
-	height: 520px;
+	width: 800px;
+	height: 555px;
 	float: left;
 	clear: right;
 	padding-left: 50px;

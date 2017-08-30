@@ -252,6 +252,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 		this.commandProxy().removeAll(listItem);
 		PpemtPerInfoItemCmPK perInfoItemCmPK = new PpemtPerInfoItemCmPK(contractCd, categoryCd, itemCode);
 		this.commandProxy().remove(PpemtPerInfoItemCm.class, perInfoItemCmPK);
+		List<PpemtPerInfoItemPK> listPK = listItem.stream().map(item -> {
+			return item.ppemtPerInfoItemPK;
+		}).collect(Collectors.toList());
+		this.commandProxy().removeAll(PpemtPerInfoItemOrder.class, listPK);
 	}
 
 	@Override
@@ -361,7 +365,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				dataTypeState = DataTypeState.createDateItem(dateItemType.intValue());
 				break;
 			case 4:
-				dataTypeState = DataTypeState.createTimeItem(timeItemMin.intValue(), timeItemMax.intValue());
+				dataTypeState = DataTypeState.createTimeItem(timeItemMax.intValue(), timeItemMin.intValue());
 				break;
 			case 5:
 				dataTypeState = DataTypeState.createTimePointItem(timepointItemMin.intValue(),
