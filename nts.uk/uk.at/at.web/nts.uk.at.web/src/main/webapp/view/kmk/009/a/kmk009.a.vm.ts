@@ -316,6 +316,11 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         public save() {
             let self = this;
             nts.uk.ui.block.invisible();
+            //check validate save
+            if (self.itemTotalTimesDetail.useAtr() == 0 ) {
+                nts.uk.ui.block.clear();
+                return;
+            }
             //trim() name
             self.itemTotalTimesDetail.totalTimesName($.trim(self.itemTotalTimesDetail.totalTimesName()));
             self.itemTotalTimesDetail.totalTimesABName($.trim(self.itemTotalTimesDetail.totalTimesABName()));
