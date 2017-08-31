@@ -35,7 +35,7 @@
 							<table tabindex="2" id="single-list-dataSource"
 								data-bind="ntsGridList:{
 									name: '#[KMK009_3]',
-									width: 450,
+									width: 350,
 									height: 365,
 									options: itemTotalTimes,								
 									optionsValue: 'totalCountNo',
@@ -60,7 +60,7 @@
 							</td>
 							<td>
 								<!-- A3_2 , A3_3 ,A3_4: Setting Use -->
-								<div tabindex="3" style="padding-left: 5px"
+								<div tabindex="3"
 									data-bind="ntsSwitchButton: {
 									name: '#[KMK009_5]',
 									options: useSet,
@@ -77,7 +77,7 @@
 								<div
 									data-bind="ntsFormLabel: {required: true,constraint: 'TotalTimesName' }">#{i18n.getText('KMK009_6')}</div>
 							</td>
-							<td style="padding-left: 5px">
+							<td>
 								<!-- A3_6: Total Time Name --> 
 								<input tabindex="4"
 								class="nts-input" id="itemname" style="width: 100px"
@@ -96,7 +96,7 @@
 								<div
 									data-bind="ntsFormLabel: {required: true,constraint: 'TotalTimesABName' }">#{i18n.getText('KMK009_22')}</div>
 							</td>
-							<td style="padding-left: 5px">
+							<td>
 								<!-- A3_26: Total Time Name --> <input tabindex="5"
 								class="nts-input" id="itemnameAB" style="width: 60px"
 								data-bind="ntsTextEditor:{
@@ -113,7 +113,7 @@
 								<div
 									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_14')}</div>
 							</td>
-							<td style="padding-left: 5px">
+							<td>
 								<!-- A3_8: Total Time Name -->
 								<div id="combo-box" tabindex="6"
 									data-bind="ntsComboBox: {
@@ -135,12 +135,12 @@
 								<!-- A3_10 -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_8')}</div>
 							</td>
-							<td style="padding-left: 5px">
+							<td>
 								<!-- A3_11 Open dialog KDL002-->
 								<button tabindex="7"
 									data-bind="click: openKDL002Dialog,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
 								<!-- A3_12: Time item name --> <input class="nts-input"
-								id="inpName" style="width: 350px" tabindex="8"
+								id="inpName" style="width: 350px"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
 										value: itemTotalTimesDetail().workTypeInfo ,
@@ -154,13 +154,13 @@
 								<!-- A3_13 -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_9')}</div>
 							</td>
-							<td style="padding-left: 5px">
+							<td>
 								<!-- A3_14 Open dialog KDL001-->
 								<button tabindex="9"
 									data-bind="click: openKDL001Dialog,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
 								<!-- A3_15: Time item name --> 
 								<input class="nts-input"
-								id="inpName" style="width: 350px" tabindex="10"
+								id="inpName" style="width: 350px"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
 										value: itemTotalTimesDetail().workingInfo,
@@ -174,10 +174,10 @@
 								<!-- A3_16: Label -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_10')}</div>
 							</td>
-							<td style="padding-left: 5px">
+							<td>
 								<div tabindex="9">
 									<!--A3:17 : Check error(select) -->
-									<div style="margin-bottom: 10px" tabindex="11"
+									<div tabindex="11"
 										data-bind="ntsCheckBox:{
 									checked: selectUppper,
 									enable: enableUse
@@ -201,10 +201,10 @@
 						</tr>
 						<tr class="row">
 							<td></td>
-							<td style="padding-left: 5px">
+							<td>
 								<div tabindex="10">
 									<!-- :A3_20 Check error(select) -->
-									<div style="margin-bottom: 10px" tabindex="13"
+									<div tabindex="13"
 										data-bind="ntsCheckBox:{
 									checked: selectUnder,
 									enable: enableUse
@@ -229,10 +229,10 @@
 								<!-- A3_23 -->
 								<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_11')}</div>
 							</td>
-							<td style="padding-left: 5px">
+							<td>
 								<div tabindex="11">
 									<!-- A3_24: Check error(select) -->
-									<div style="margin-bottom: 10px" tabindex="15"
+									<div tabindex="15"
 										data-bind="ntsCheckBox:{
 									checked: itemTotalTimesDetail().countAtr,
 									enable: enableUse,
