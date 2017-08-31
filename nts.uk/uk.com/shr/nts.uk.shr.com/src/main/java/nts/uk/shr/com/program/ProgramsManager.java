@@ -179,6 +179,13 @@ public class ProgramsManager {
 	 */
 	public static final Program CMM044A = new Program(WebAppId.COM, ProgramIdConsts.CMM044A, "CMM044_1",
 			"/view/cmm/044/a/index.xhtml");
+	
+	/**
+	 * CPS005B
+	 */
+	public static final Program CPS005B  = new Program(WebAppId.COM, ProgramIdConsts.CPS005B, "CPS005_37",
+			"/view/cps/005/b/index.xhtml");
+	
 	/**
 	 * KMK011A
 	 */
