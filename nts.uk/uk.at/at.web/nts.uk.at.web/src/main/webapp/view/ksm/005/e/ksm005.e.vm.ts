@@ -137,8 +137,8 @@ module nts.uk.at.view.ksm005.e {
              * function get between month start month to end month
              */
             private getbetweenMonth(endMonth: number, startMonth: number): number {
-                var endYear: number = Number(endMonth/100);
-                var startYear: number = Number(startMonth/100);
+                var endYear: number = Math.floor(endMonth/100);
+                var startYear: number = Math.floor(startMonth/100);
                 var numberMonthStart: number = startYear * 12 + startMonth % 100;
                 var numberMonthEnd: number = endYear * 12 + endMonth % 100;
                 return numberMonthEnd - numberMonthStart + 1;
