@@ -38,7 +38,7 @@ public class ProgramsManager {
 	/**
 	 * CCG008D
 	 */
-	public static final Program CCG008D = new Program(WebAppId.COM, ProgramIdConsts.CCG008D, "PgName_CCG008D",
+	public static final Program CCG008D = new Program(WebAppId.COM, ProgramIdConsts.CCG008D, "",
 			"/view/ccg/008/d/index.xhtml");
 	/**
 	 * CCG013A
@@ -93,15 +93,19 @@ public class ProgramsManager {
 	/**
 	 * CCG015A
 	 */
-	public static final Program CCG015A = new Program(WebAppId.COM, ProgramIdConsts.CCG015A, "PgName_CCG015A",
+	public static final Program CCG015A = new Program(WebAppId.COM, ProgramIdConsts.CCG015A, "CCG015_1",
 			"/view/ccg/015/a/index.xhtml");
 
 	/**
 	 * CCG015B
 	 */
-	public static final Program CCG015B = new Program(WebAppId.COM, ProgramIdConsts.CCG015B, "PgName_CCG015B",
+	public static final Program CCG015B = new Program(WebAppId.COM, ProgramIdConsts.CCG015B, "CCG015_2",
 			"/view/ccg/015/b/index.xhtml");
-
+	/**
+	 * CCG015C
+	 */
+	public static final Program CCG015C = new Program(WebAppId.COM, ProgramIdConsts.CCG015C, "CCG015_3",
+			"/view/ccg/015/c/index.xhtml");
 	/**
 	 * CCG014A
 	 */
@@ -316,7 +320,7 @@ public class ProgramsManager {
 	/**
 	 * KSU001A
 	 */
-	public static final Program KSU001A = new Program(WebAppId.AT, ProgramIdConsts.KSU001A, "PgName_KSU001A",
+	public static final Program KSU001A = new Program(WebAppId.AT, ProgramIdConsts.KSU001A, "",
 			"/view/ksu/001/a/index.xhtml");
 
 	/** The Constant KDL003. */
