@@ -536,55 +536,55 @@ public class ProgramsManager {
 	/**
 	 * KMK005A
 	 */
-	public static final Program KMK005A  = new Program(WebAppId.AT, ProgramIdConsts.KMK005A, "KMK005�ｼｿ91",
+	public static final Program KMK005A  = new Program(WebAppId.AT, ProgramIdConsts.KMK005A, "KMK005_91",
 			"/view/kmk/005/a/index.xhtml");
 	
 	/**
 	 * KMK005B
 	 */
-	public static final Program KMK005B  = new Program(WebAppId.AT, ProgramIdConsts.KMK005B, "KMK005�ｼｿ5",
+	public static final Program KMK005B  = new Program(WebAppId.AT, ProgramIdConsts.KMK005B, "KMK005_5",
 			"/view/kmk/005/b/index.xhtml");
 	
 	/**
 	 * KMK005D
 	 */
-	public static final Program KMK005D  = new Program(WebAppId.AT, ProgramIdConsts.KMK005D, "KMK005�ｼｿ7",
+	public static final Program KMK005D  = new Program(WebAppId.AT, ProgramIdConsts.KMK005D, "KMK005_7",
 			"/view/kmk/005/d/index.xhtml");
 	
 	/**
 	 * KMK005E
 	 */
-	public static final Program KMK005E  = new Program(WebAppId.AT, ProgramIdConsts.KMK005E, "KMK005�ｼｿ11",
+	public static final Program KMK005E  = new Program(WebAppId.AT, ProgramIdConsts.KMK005E, "KMK005_11",
 			"/view/kmk/005/e/index.xhtml");
 	
 	/**
 	 * KMK005B
 	 */
-	public static final Program KMK005F  = new Program(WebAppId.AT, ProgramIdConsts.KMK005F, "KMK005�ｼｿ13",
+	public static final Program KMK005F  = new Program(WebAppId.AT, ProgramIdConsts.KMK005F, "KMK005_13",
 			"/view/kmk/005/f/index.xhtml");
 	
 	/**
 	 * KMK005G
 	 */
-	public static final Program KMK005G  = new Program(WebAppId.AT, ProgramIdConsts.KMK005G, "KMK005�ｼｿ92",
+	public static final Program KMK005G  = new Program(WebAppId.AT, ProgramIdConsts.KMK005G, "KMK005_92",
 			"/view/kmk/005/g/index.xhtml");
 	
 	/**
 	 * KMK005H
 	 */
-	public static final Program KMK005H  = new Program(WebAppId.AT, ProgramIdConsts.KMK005H, "KMK005�ｼｿ92",
+	public static final Program KMK005H  = new Program(WebAppId.AT, ProgramIdConsts.KMK005H, "KMK005_92",
 			"/view/kmk/005/h/index.xhtml");
 	
 	/**
 	 * KMK005H
 	 */
-	public static final Program KMK005I  = new Program(WebAppId.AT, ProgramIdConsts.KMK005I, "KMK005�ｼｿ92",
+	public static final Program KMK005I  = new Program(WebAppId.AT, ProgramIdConsts.KMK005I, "KMK005_92",
 			"/view/kmk/005/i/index.xhtml");
 	
 	/**
 	 * KMK005K
 	 */
-	public static final Program KMK005K  = new Program(WebAppId.AT, ProgramIdConsts.KMK005K, "KMK005�ｼｿ92",
+	public static final Program KMK005K  = new Program(WebAppId.AT, ProgramIdConsts.KMK005K, "KMK005_92",
 			"/view/kmk/005/k/index.xhtml");
 	
 	/**
