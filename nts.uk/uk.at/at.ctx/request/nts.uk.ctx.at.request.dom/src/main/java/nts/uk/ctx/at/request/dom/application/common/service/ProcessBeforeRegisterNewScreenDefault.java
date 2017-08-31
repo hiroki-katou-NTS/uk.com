@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service;
 import javax.ejb.Stateless;
 
 @Stateless
-public class ProcessBeforeRegisterNewScreenDefault {
+public class ProcessBeforeRegisterNewScreenDefault implements ProcessBeforeRegisterNewScreenService{
 	
 	public void processBeforeRegisterNewScreen(String companyID, String employeeID, String startDate, String endDate, int postAtr, int routeAtr, String targetApp){
 		/*
