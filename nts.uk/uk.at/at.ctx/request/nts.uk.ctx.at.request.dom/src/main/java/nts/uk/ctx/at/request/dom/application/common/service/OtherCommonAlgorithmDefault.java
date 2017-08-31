@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +22,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
+import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 
@@ -29,12 +31,14 @@ public class OtherCommonAlgorithmDefault implements OtherCommonAlgorithmService 
 	
 	@Inject
 	private EmployeeAdaptor employeeAdaptor;
-	
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepo;
 	
 	@Inject
 	private ApplicationSettingRepository appSettingRepo;
+	
+	@Inject
+	private WorkTimeWorkplaceRepository workTimeWorkplaceRepo;
 	
 	/*@Inject
 	private ClosureAdaptor closureAdaptor;*/
@@ -58,11 +62,21 @@ public class OtherCommonAlgorithmDefault implements OtherCommonAlgorithmService 
 		*/
 		return new ArrayList<GeneralDate>();
 	}
-
+	/**
+	 * 1.職場別就業時間帯を取得
+	 */
 	@Override
 	public void getWorkingHoursByWorkplace(String companyID, String employeeID, GeneralDate referenceDate) {
-		// TODO Auto-generated method stub
-		
+		List<String> listEmployeeAdaptor = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, referenceDate);
+		//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
+		for(String employeeAdaptor : listEmployeeAdaptor) {
+			List<String> listWorkTime = workTimeWorkplaceRepo
+					.getWorkTimeWorkplaceById(companyID, employeeAdaptor);
+			if(listWorkTime.size()>0) {
+				Collections.sort(listWorkTime);
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -102,7 +116,9 @@ public class OtherCommonAlgorithmDefault implements OtherCommonAlgorithmService 
 			
 		return prePostAtr;
 	}
-
+	/**
+	 * 5.事前事後区分の判断
+	 */
 	@Override
 	public void judgmentPrePostAtr(ApplicationType appType, GeneralDate appDate) {
 		String companyID = AppContexts.user().companyId();

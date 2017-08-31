@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 1-4.新規画面起動時の承認ルート取得パターン
+ * 
  * @author tutk
  *
  */

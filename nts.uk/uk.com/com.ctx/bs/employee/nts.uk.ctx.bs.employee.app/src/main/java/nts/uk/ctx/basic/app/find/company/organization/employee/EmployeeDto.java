@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.basic.dom.company.organization.employee.Employee;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 
 @NoArgsConstructor
 @AllArgsConstructor

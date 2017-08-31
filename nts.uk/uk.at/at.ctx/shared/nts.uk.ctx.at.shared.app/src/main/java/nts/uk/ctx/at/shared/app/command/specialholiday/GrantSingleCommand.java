@@ -4,8 +4,6 @@ import lombok.Data;
 
 @Data
 public class GrantSingleCommand {
-	/* 会社ID */
-	private String companyId;
 
 	/* 特別休暇コード */
 	private String specialHolidayCode;

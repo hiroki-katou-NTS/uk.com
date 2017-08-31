@@ -8,7 +8,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCtgByCompanyRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.shr.com.context.AppContexts;
@@ -20,8 +19,6 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class UpdateNamePerInfoCtgCommandHandler extends CommandHandler<UpdateNamePerInfoCtgCommand> {
-	@Inject
-	private PerInfoCategoryRepositoty perInfoCategoryRepositoty;
 
 	@Inject
 	private PerInfoCtgByCompanyRepositoty perInfoCtgRepositoty;
@@ -31,8 +28,8 @@ public class UpdateNamePerInfoCtgCommandHandler extends CommandHandler<UpdateNam
 		UpdateNamePerInfoCtgCommand update = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		String contractCd = companyId.substring(0, 12);
-		boolean isExistName = this.perInfoCategoryRepositoty.checkCtgNameIsUnique(companyId, update.getCategoryName());
-		if (isExistName) {
+		List<String> nameList = this.perInfoCtgRepositoty.checkCtgNameIsUnique(companyId, update.getCategoryName());
+		if ( (nameList.size() - 1) <= 0) {
 			PersonInfoCategory categoryInfo = this.perInfoCtgRepositoty
 					.getDetailCategoryInfo(companyId, update.getCategoryId(), contractCd).orElse(null);
 			if (categoryInfo != null) {
