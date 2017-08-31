@@ -7,7 +7,7 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr
 @Value
 public class DetailedScreenPreBootModeOutput {
 	
-	String approverSID;
+	User user;
 	
 	ReflectPlanPerState reflectPlanState;
 	
