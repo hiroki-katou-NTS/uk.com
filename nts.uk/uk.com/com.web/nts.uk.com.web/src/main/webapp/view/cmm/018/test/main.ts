@@ -24,7 +24,8 @@ module nts.uk.com.view.cmm018.test.viewmodel{
                                         formSetting: 0,//承認形態
                                         approverInfor: self.approverInfor(),//承認者一覧
                                         confirmedPerson: self.confirmedPerson, //確定者
-                                        selectTypeSet: 0 //
+                                        selectTypeSet: 0, //職位指定（1）、個人指定（0）
+                                        tab: 0//０：会社、１：職場、２：個人
                                         });
             windows.sub.modal("/view/cmm/018/k/index.xhtml", { title: "", dialogClass: "no-close" });    
             
