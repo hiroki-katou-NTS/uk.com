@@ -65,6 +65,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 if (codeChanged == 0) { return; }
                 self.selectUse(null);
                 self.loadAllTotalTimesDetail(codeChanged);
+                $('#switch-use').focus();
             });
             //subscribe selectUse
             self.selectUse.subscribe(function(codeChanged) {
@@ -316,6 +317,8 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
             service.saveAllTotalTimes(self.itemTotalTimesDetail.toDto()).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    // Focus grid list
+                    $('#single-list-dataSource_container').focus();
                     self.loadAllTotalTimes().done(function() {
                     });
                 });
