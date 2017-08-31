@@ -226,9 +226,15 @@ module nts.uk.ui.koExtentions {
 //                    }, 10);
 //                }
             } else if($grid.attr("filtered") === true || $grid.attr("filtered") === "true"){
-                let filteredSource = _.filter(currentSource, function(item){
-                    return sources.indexOf(item) >= 0;        
-                });    
+                let filteredSource = [];
+                _.forEach(currentSource, function(item){
+                    let itemX = _.find(sources, function (s){
+                        return s[optionsValue] === item[optionsValue];        
+                    });
+                    if(!nts.uk.util.isNullOrUndefined(itemX)){ 
+                        filteredSource.push(itemX);
+                    }     
+                });     
                 if(!_.isEqual(filteredSource, currentSource)){
                     $grid.igGrid('option', 'dataSource', filteredSource);
                     $grid.igGrid("dataBind");    
