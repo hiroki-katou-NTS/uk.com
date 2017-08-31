@@ -249,8 +249,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
                 if (res && res.length > 0) {
                     self.itemTotalTimesDetail.workTypeInfo(res.map(item => item.workTypeCode + ' ' + item.name).join(" ＋ "));
+                    self.stash.workTypeInfo(res.map(item => item.workTypeCode + ' ' + item.name).join(" ＋ "));
                 } else {
                     self.itemTotalTimesDetail.workTypeInfo(lstWorkTypeCd.join(" ＋ "));
+                    self.stash.workTypeInfo(lstWorkTypeCd.join(" ＋ "));
                 }
                 dfd.resolve();
             });
@@ -274,8 +276,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
                 if (res && res.length > 0 ) {
                     self.itemTotalTimesDetail.workingInfo(res.map(item => item.code + ' ' + item.name).join(" ＋ "));
+                    self.stash.workingInfo(res.map(item => item.code + ' ' + item.name).join(" ＋ "));
                 } else {
                     self.itemTotalTimesDetail.workingInfo(lstWorkTypeCd.join(" ＋ "));
+                    self.stash.workingInfo(lstWorkTypeCd.join(" ＋ "));
                 }
                 dfd.resolve();
             });
@@ -572,6 +576,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 listTotalSubjectsUpdate.push(model);
             }
             this.listTotalSubjects(listTotalSubjectsUpdate);
+            
         }
 
         toDto(): TotalTimesDetailDto {
