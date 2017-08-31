@@ -83,6 +83,14 @@ module nts.uk.com.view.cps005.b {
                     newItemDef = new AddItemModel(self.currentItemData().currentItemSelected())
                     newItemDef.perInfoCtgId = self.categoryId;
                     newItemDef.singleItem.referenceCode = "Hard Code";
+//                    let x =  newItemDef.itemName;
+//                    for(let i = 0; i < 50; i++){                
+//                         newItemDef.itemName = x + i
+//                          new service.Service().addItemDef(newItemDef).done(function () {
+//                          }).fail(function (error) {
+//                                alertError({ messageId: error.message });
+//                           });
+//                      }
                     new service.Service().addItemDef(newItemDef).done(function(data: string) {
                         self.reloadData().done(() => {
                             self.currentItemData().perInfoItemSelectCode(data);
@@ -91,7 +99,7 @@ module nts.uk.com.view.cps005.b {
                     }).fail(error => {
                          alertError({ messageId: error.message });
                     });
-                }
+               }
             }
 
             removeData() {
