@@ -1,6 +1,8 @@
 /// <reference path="reference.ts"/>
 
 module nts.uk.time {
+    
+    const MINUTES_IN_DAY = 24 * 60;
 
     var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "H:mm", "Hmm", "YYYY"];
     var listEmpire: { [year: string]: string } = {
