@@ -27,6 +27,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         enableUnder: KnockoutObservable<boolean>;
         enableWorkType: KnockoutObservable<boolean>;
         enableWorkTime: KnockoutObservable<boolean>;
+        enableSave: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.itemTotalTimes = ko.observableArray([]);
@@ -51,6 +52,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             self.enableUse = ko.observable(false);
             self.enableUpper = ko.observable(false);
             self.enableUnder = ko.observable(false);
+            self.enableSave = ko.observable(true);
             self.enableWorkType = ko.computed(function() {
                 return self.enableUse() && ((self.valueEnum() == self.totalClsEnums[0].value) || (self.valueEnum() == self.totalClsEnums[2].value));
             });
@@ -61,6 +63,12 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
+                if (!codeChanged || codeChanged < 1) {
+                    self.enableSave(false);
+                    self.resetData();
+                    return;
+                }
+                self.enableSave(true);
                 self.clearError();
                 if (codeChanged == 0) { return; }
                 self.selectUse(null);
@@ -432,6 +440,15 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             model.updateData(dto);
             return model;
         }
+        
+        /**
+         * reset data by not selected 
+         */
+        private resetData(): void{
+            var self = this;
+            self.enableUse(false);
+            self.itemTotalTimesDetail.resetData();    
+        }
 
     }
 
@@ -525,6 +542,18 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             };
             return dto;
         }
+        resetData() {
+            this.totalCountNo = 0;
+            this.countAtr(0);
+            this.useAtr(0);
+            this.totalTimesName('');
+            this.totalTimesABName('');
+            this.totalCondition.resetData();
+            this.summaryAtr(0);
+            this.listTotalSubjects([]);
+            this.workTypeInfo('');
+            this.workingInfo(''); 
+        }
     }
 
     export class TotalConditionModel {
@@ -553,6 +582,12 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 thresoldLowerLimit: this.thresoldLowerLimit()
             };
             return dto;
+        }
+        resetData() {
+            this.upperLimitSettingAtr(0);
+            this.lowerLimitSettingAtr(0);
+            this.thresoldUpperLimit(0);
+            this.thresoldLowerLimit(0);
         }
     }
 
