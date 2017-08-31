@@ -38,10 +38,10 @@
 									height: 365,
 									options: itemTotalTimes,								
 									optionsValue: 'totalCountNo',
+									primaryKey: 'totalCountNo',
 									columns: columns,
 									multiple: false,
-									value: currentCode,
-									enable: true}">
+									value: currentCode}">
 							</table>
 						</div>
 					</div>
@@ -96,7 +96,7 @@
 							</td>
 							<td style="padding-left: 5px">
 								<!-- A3_26: Total Time Name --> <input tabindex="5"
-								class="nts-input" id="itemname" style="width: 60px"
+								class="nts-input" id="itemnameAB" style="width: 60px"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK009_22]',
                                          value: itemTotalTimesDetail().totalTimesABName,
@@ -142,6 +142,7 @@
 										name: '#[KMK011_31]',
 										value: itemTotalTimesDetail().workTypeInfo ,
 										required: true,
+										readonly: true,
 										enable: enableUse}" />
 							</td>
 						</tr>
@@ -161,7 +162,7 @@
 										name: '#[KMK011_31]',
 										value: itemTotalTimesDetail().workingInfo,
 										required: true,
-									
+										readonly: true,
 										enable: enableUse}" />
 							</td>
 						</tr>
@@ -175,7 +176,7 @@
 									<!--A3:17 : Check error(select) -->
 									<div style="margin-bottom: 10px"
 										data-bind="ntsCheckBox:{
-									checked: itemTotalTimesDetail().totalCondition().upperLimitSettingAtr,
+									checked: selectUppper,
 									enable: enableUse
 									}">
 									</div>
@@ -189,7 +190,7 @@
 									inputFormat: 'time', 
 									mode: 'time', 
 									constraint: 'ConditionThresholdLimit',
-									enable: enableUse}" />
+									enable: enableUpper}" />
 									<!-- A3_19 -->
 									#{i18n.getText('KMK009_17')}
 								</div>
@@ -202,7 +203,7 @@
 									<!-- :A3_20 Check error(select) -->
 									<div style="margin-bottom: 10px"
 										data-bind="ntsCheckBox:{
-									checked: itemTotalTimesDetail().totalCondition().lowerLimitSettingAtr,
+									checked: selectUnder,
 									enable: enableUse
 									}">
 									</div>
@@ -214,7 +215,7 @@
 									inputFormat: 'time', 
 									mode: 'time', 
 									constraint: 'ConditionThresholdLimit',
-									enable: enableUse}" />
+									enable: enableUnder}" />
 									<!-- A3_22 -->
 									#{i18n.getText('KMK009_20')}
 								</div>

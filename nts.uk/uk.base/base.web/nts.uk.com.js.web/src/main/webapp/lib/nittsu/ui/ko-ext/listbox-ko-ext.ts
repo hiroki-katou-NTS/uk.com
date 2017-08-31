@@ -189,6 +189,7 @@ module nts.uk.ui.koExtentions {
             // Get data.
             var data = valueAccessor();
             // Get options.
+            var currentSource = container.igGrid('option', 'dataSource');
             var options: Array<any> = ko.unwrap(data.options);
 
             // Get options value.
@@ -229,6 +230,14 @@ module nts.uk.ui.koExtentions {
                 }); 
                 container.igGrid('option', 'dataSource', currentSources);
                 container.igGrid("dataBind");        
+            } else if(container.attr("filtered") === true || container.attr("filtered") === "true"){
+                let filteredSource = _.filter(currentSource, function(item){
+                    return options.indexOf(item) >= 0;        
+                });    
+                if(!_.isEqual(filteredSource, currentSource)){
+                    container.igGrid('option', 'dataSource', filteredSource);
+                    container.igGrid("dataBind");    
+                }
             }
             
             let isMultiOld = container.igGridSelection('option', 'multipleSelection');

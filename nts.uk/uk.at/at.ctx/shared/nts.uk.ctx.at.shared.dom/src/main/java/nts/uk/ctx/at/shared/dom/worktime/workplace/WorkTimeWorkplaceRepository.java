@@ -5,8 +5,8 @@ package nts.uk.ctx.at.shared.dom.worktime.workplace;
  *
  */
 
-import java.util.Optional;
+import java.util.List;
 
 public interface WorkTimeWorkplaceRepository {
-	Optional<WorkTimeWorkplace> getWorkTimeWorkplaceById(String companyID,String workplaceID,String workTimeId);
+	List<String> getWorkTimeWorkplaceById(String companyID,String workplaceID);
 }

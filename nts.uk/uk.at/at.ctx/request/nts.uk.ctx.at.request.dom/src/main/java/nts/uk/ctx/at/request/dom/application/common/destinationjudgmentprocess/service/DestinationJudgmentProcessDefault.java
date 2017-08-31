@@ -6,8 +6,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.ObjApproverRepresenter;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
-import nts.uk.shr.com.context.AppContexts;
 /**
  * 3-2.送信先の判断処理
  * @author tutk

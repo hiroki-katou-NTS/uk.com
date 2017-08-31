@@ -11,9 +11,10 @@ import nts.arc.time.GeneralDate;
 
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentRequestAdaptor;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentAdaptorDto;
+import nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.AgentApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.ObjApproverRepresenter;
-import nts.uk.shr.com.context.AppContexts;
+
 /**
  * 
  * @author tutk
@@ -31,8 +32,7 @@ public class ApprovalAgencyInformationDefault implements ApprovalAgencyInformati
 	
 	@Override
 	public ApprovalAgencyInformationOutput getApprovalAgencyInformation(String companyID, List<String> approver) {
-		//String companyId = AppContexts.user().companyId();
-		String employeeId = AppContexts.user().employeeId();
+		
 		GeneralDate generalDate = GeneralDate.today(); 
 		
 		boolean outputFlag = true; 
@@ -43,7 +43,8 @@ public class ApprovalAgencyInformationDefault implements ApprovalAgencyInformati
 		{
 			return new ApprovalAgencyInformationOutput(outputListApproverAndRepresenterSID, outputListRepresenterSID, outputFlag);
 		}
-		List<AgentAdaptorDto> listAgenta = agentRequestAdaptor.find(companyID, employeeId, generalDate,generalDate );
+		//ドメインモデル「代行承認」を取得する(lấy thông tin domain 「代行承認」)
+		List<AgentAdaptorDto> listAgenta = agentRequestAdaptor.findAll(companyID, approver, generalDate,generalDate );
 		
 		//duyệt list người xác nhận
 		for(String approveItem : approver ) {
@@ -52,7 +53,8 @@ public class ApprovalAgencyInformationDefault implements ApprovalAgencyInformati
 				//nếu người xác nhận có trong list Agent
 				if(approveItem.equals(agentAdapterDto.getEmployeeId())) {
 					//ktra xem AgentAppType = No_Settings hay k
-					if(agentAdapterDto.getAgentAppType1() == 2 ) {
+					if(agentAdapterDto.getAgentSid1() == null || agentAdapterDto.getAgentAppType1() == AgentApplicationType.NO_SETTINGS ) {
+					//if(agentAdapterDto.getAgentAppType1() == AgentApplicationType.NO_SETTINGS ) {
 						outputFlag = false;
 						// add nguoi xac nhan vao 
 						ObjApproverRepresenter obj = new ObjApproverRepresenter(approveItem,"Empty");
@@ -60,17 +62,17 @@ public class ApprovalAgencyInformationDefault implements ApprovalAgencyInformati
 						
 					}
 					//ktra xem AgentAppType = PATH hay k
-					if(agentAdapterDto.getAgentAppType1() == 1) {
+					if(agentAdapterDto.getAgentAppType1() == AgentApplicationType.PATH) {
 						ObjApproverRepresenter obj = new ObjApproverRepresenter(approveItem,"Pass");
 						outputListApproverAndRepresenterSID.add(obj);
 					}
 					//ktra xem AgentAppType = SUBSTITUTE_DESIGNATION hay k
-					if(agentAdapterDto.getAgentAppType1() == 0) {
+					if(agentAdapterDto.getAgentAppType1() == AgentApplicationType.SUBSTITUTE_DESIGNATION) {
 						outputFlag = false;
 						ObjApproverRepresenter obj = new ObjApproverRepresenter(approveItem,agentAdapterDto.getAgentSid1());
 						outputListApproverAndRepresenterSID.add(obj);
 						//add data in list representerSID
-						outputListRepresenterSID.add(approveItem);
+						outputListRepresenterSID.add(agentAdapterDto.getAgentSid1());
 					}
 						
 				}

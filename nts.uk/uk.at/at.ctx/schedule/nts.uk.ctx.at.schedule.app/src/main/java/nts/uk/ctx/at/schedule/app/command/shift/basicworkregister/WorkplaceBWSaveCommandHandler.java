@@ -16,8 +16,15 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkdayDivision;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkRepository;
+import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.BasicScheduleService;
 import nts.uk.ctx.at.shared.dom.schedule.basicschedule.WorkStyle;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WorkplaceBWSaveCommandHandler.
@@ -33,6 +40,14 @@ public class WorkplaceBWSaveCommandHandler extends CommandHandler<WorkplaceBWSav
 	@Inject
 	private BasicScheduleService basicScheduleService;
 
+	/** The monthly pattern repository. */
+	@Inject
+	private WorkTimeRepository workTimeRepository;
+
+	/** The monthly pattern repository. */
+	@Inject
+	private WorkTypeRepository workTypeRepository;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -42,6 +57,8 @@ public class WorkplaceBWSaveCommandHandler extends CommandHandler<WorkplaceBWSav
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<WorkplaceBWSaveCommand> context) {
+		// get company id user login
+		String companyId = AppContexts.user().companyId();
 
 		// Get Command
 		WorkplaceBWSaveCommand command = context.getCommand();
@@ -56,22 +73,25 @@ public class WorkplaceBWSaveCommandHandler extends CommandHandler<WorkplaceBWSav
 		command.getBasicWorkSetting().stream().forEach(item -> {
 			switch (WorkdayDivision.valuesOf(item.getWorkDayDivision())) {
 			case WORKINGDAYS:
-				if (StringUtil.isNullOrEmpty(item.getWorkTypeCode(), true) || WorkStyle.ONE_DAY_REST
-						.equals(basicScheduleService.checkWorkDay(item.getWorkTypeCode()))) {
+				if (!this.checkExistWorkDay(companyId, item.getWorkTypeCode(), item.getSiftCode())
+						|| WorkStyle.ONE_DAY_REST.equals(
+								basicScheduleService.checkWorkDay(item.getWorkTypeCode()))) {
 					businessException.setSuppliment("KSM006_6",
 							(new BusinessException("Msg_178", "KSM006_6")).getMessage());
 				}
 				break;
 			case NON_WORKINGDAY_INLAW:
-				if (StringUtil.isNullOrEmpty(item.getWorkTypeCode(), true) || WorkStyle.ONE_DAY_WORK
-						.equals(basicScheduleService.checkWorkDay(item.getWorkTypeCode()))) {
+				if (!this.checkExistWorkDay(companyId, item.getWorkTypeCode(), item.getSiftCode())
+						|| WorkStyle.ONE_DAY_WORK.equals(
+								basicScheduleService.checkWorkDay(item.getWorkTypeCode()))) {
 					businessException.setSuppliment("KSM006_7",
 							(new BusinessException("Msg_179", "KSM006_7")).getMessage());
 				}
 				break;
 			case NON_WORKINGDAY_EXTRALEGAL:
-				if (StringUtil.isNullOrEmpty(item.getWorkTypeCode(), true) || WorkStyle.ONE_DAY_WORK
-						.equals(basicScheduleService.checkWorkDay(item.getWorkTypeCode()))) {
+				if (!this.checkExistWorkDay(companyId, item.getWorkTypeCode(), item.getSiftCode())
+						|| WorkStyle.ONE_DAY_WORK.equals(
+								basicScheduleService.checkWorkDay(item.getWorkTypeCode()))) {
 					businessException.setSuppliment("KSM006_8",
 							(new BusinessException("Msg_179", "KSM006_8")).getMessage());
 				}
@@ -99,4 +119,60 @@ public class WorkplaceBWSaveCommandHandler extends CommandHandler<WorkplaceBWSav
 			this.repository.insert(workplaceBasicWork);
 		}
 	}
+
+	/**
+	 * Check exist work day.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @param workTypeCode
+	 *            the work type code
+	 * @param workingCode
+	 *            the working code
+	 * @return true, if successful
+	 */
+	private boolean checkExistWorkDay(String companyId, String workTypeCode, String workingCode) {
+		// Check empty
+		if (StringUtil.isNullOrEmpty(workTypeCode, true)) {
+			return false;
+		}
+
+		// Check setting work type
+		if (!StringUtil.isNullOrEmpty(workTypeCode, true)) {
+			// check setting work type
+			Optional<WorkType> optWorktype = this.workTypeRepository.findByPK(companyId,
+					workTypeCode);
+
+			// not exist data
+			if (!optWorktype.isPresent()) {
+				throw new BusinessException("Msg_389");
+			}
+
+			// not use
+			if (optWorktype.get()
+					.getDeprecate().value == DeprecateClassification.Deprecated.value) {
+				throw new BusinessException("Msg_416");
+			}
+
+		}
+
+		// check setting work time
+		if (!StringUtil.isNullOrEmpty(workingCode, true)) {
+			Optional<WorkTime> worktime = this.workTimeRepository.findByCode(companyId,
+					workingCode);
+
+			// not exist data
+			if (!worktime.isPresent()) {
+				throw new BusinessException("Msg_390");
+			}
+
+			// not use
+			if (worktime.get().getDispAtr().value == UseSetting.UseAtr_NotUse.value) {
+				throw new BusinessException("Msg_417");
+			}
+		}
+
+		return true;
+	}
+
 }

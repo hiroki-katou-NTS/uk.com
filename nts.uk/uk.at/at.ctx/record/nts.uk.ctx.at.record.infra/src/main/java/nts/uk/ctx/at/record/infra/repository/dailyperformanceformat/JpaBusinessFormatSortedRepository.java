@@ -119,7 +119,7 @@ public class JpaBusinessFormatSortedRepository extends JpaRepository implements 
 		entity.krcstBusinessTypeSortedPK = new KrcstBusinessTypeSortedPK();
 		entity.krcstBusinessTypeSortedPK.companyId = businessTypeSorted.getCompanyId();
 		entity.krcstBusinessTypeSortedPK.attendanceItemId = new BigDecimal(businessTypeSorted.getAttendanceItemId());
-		entity.order = new BigDecimal(businessTypeSorted.getOrder());
+		entity.order = new BigDecimal(businessTypeSorted.getOrder().v());
 
 		return entity;
 	}

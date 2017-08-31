@@ -8,6 +8,7 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
+ * Change to use the BpsdtPerson class
  * The Class CcgmtPerson_.
  */
 @StaticMetamodel(CcgmtPerson.class)

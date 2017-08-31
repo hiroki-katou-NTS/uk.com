@@ -10,10 +10,10 @@ package nts.uk.ctx.at.schedule.dom.shift.totaltimes;
 public enum UseAtr {
 
 	/** The Not use. */
-	NotUse(0, "Enum_UseAtr_NotUse", ""),
+	NotUse(0, "使用しない", "Enum_UseAtr_NotUse"),
 
 	/** The Use. */
-	Use(1, "Enum_UseAtr_Use", "");
+	Use(1, "使用する", "Enum_UseAtr_Use");
 
 	/** The value. */
 	public final int value;

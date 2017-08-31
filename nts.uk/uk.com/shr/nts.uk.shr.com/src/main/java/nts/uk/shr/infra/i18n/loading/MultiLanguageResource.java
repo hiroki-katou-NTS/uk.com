@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 
@@ -31,7 +32,7 @@ import nts.uk.shr.infra.i18n.SystemProperties;
 import nts.uk.shr.infra.i18n.format.DateTimeFormatProvider;
 import nts.uk.shr.infra.i18n.format.DateTimeTranscoder;
 
-@SessionScoped
+@Dependent
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class MultiLanguageResource implements IInternationalization,Serializable {
 

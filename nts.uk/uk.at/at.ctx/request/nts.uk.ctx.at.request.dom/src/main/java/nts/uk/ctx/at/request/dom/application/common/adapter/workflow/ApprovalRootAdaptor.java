@@ -8,6 +8,11 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Company
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.PersonAppRootAdaptorDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.WkpAppRootAdaptorDto;
 
+/**
+ * 
+ * @author vunv
+ *
+ */
 public interface ApprovalRootAdaptor {
 	/**
 	 * 1.社員の対象申請の承認ルートを取得する（共通以外）
