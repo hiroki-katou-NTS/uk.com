@@ -27,6 +27,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         enableUnder: KnockoutObservable<boolean>;
         enableWorkType: KnockoutObservable<boolean>;
         enableWorkTime: KnockoutObservable<boolean>;
+        enableSave: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.itemTotalTimes = ko.observableArray([]);
@@ -51,6 +52,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             self.enableUse = ko.observable(false);
             self.enableUpper = ko.observable(false);
             self.enableUnder = ko.observable(false);
+            self.enableSave = ko.observable(true);
             self.enableWorkType = ko.computed(function() {
                 return self.enableUse() && ((self.valueEnum() == self.totalClsEnums[0].value) || (self.valueEnum() == self.totalClsEnums[2].value));
             });
@@ -61,45 +63,73 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
+                if (!codeChanged || codeChanged < 1) {
+                    self.enableSave(false);
+                    self.resetData();
+                    return;
+                }
+                self.enableSave(true);
                 self.clearError();
                 if (codeChanged == 0) { return; }
                 self.selectUse(null);
                 self.loadAllTotalTimesDetail(codeChanged);
+                $('#switch-use').focus();
             });
             //subscribe selectUse
             self.selectUse.subscribe(function(codeChanged) {
-                if (codeChanged == 1) {
-                    self.enableUse(true);
-                    self.itemTotalTimesDetail.useAtr(1);
-                } else {
-                    self.enableUse(false);
-                    self.itemTotalTimesDetail.useAtr(0);
-                }
+                self.loadBySelectUse(self.checkSelectUse(), self.selectUnder(), self.selectUppper());
             });
 
             //subscribe upper Limit
-            self.selectUppper.subscribe(function(codeChanged) {
-                if ((codeChanged == true && self.selectUse() === "1") || (codeChanged == true && self.selectUse() === 1)) {
-                    self.enableUpper(true);
-                    self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr(1);
-                } else {
-                    self.enableUpper(false);
-                    self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr(0);
-                }
+            self.selectUppper.subscribe(function(isUpper) {
+                self.loadBySelectUse(self.checkSelectUse(), self.selectUnder(), isUpper);
             });
 
             //subscribe under Limit
-            self.selectUnder.subscribe(function(codeChanged) {
-                if ((codeChanged == true && self.selectUse() === "1") || (codeChanged == true && self.selectUse() === 1)) {
-                    self.enableUnder(true);
-                    self.itemTotalTimesDetail.totalCondition.lowerLimitSettingAtr(1);
-                } else {
-                    self.enableUnder(false);
-                    self.itemTotalTimesDetail.totalCondition.lowerLimitSettingAtr(0);
-                }
+            self.selectUnder.subscribe(function(isUnder) {
+                self.loadBySelectUse(self.checkSelectUse(), isUnder, self.selectUppper());
             });
 
         }
+
+        /**
+         * check select use by use
+         */
+
+
+        private checkSelectUse(): boolean {
+            var self = this;
+            return ((self.selectUse() === "1") || self.selectUse() === 1);
+        }
+        /**
+         * load data by select use
+         */
+        private loadBySelectUse(isUse: boolean, isUnder: boolean, isUpper: boolean): void {
+            var self = this;
+            if (isUse) {
+                self.enableUse(true);
+                self.itemTotalTimesDetail.useAtr(1);
+            }
+            else {
+                self.enableUse(false);
+                self.itemTotalTimesDetail.useAtr(0);
+            }
+            if (isUnder && self.checkSelectUse()) {
+                self.enableUnder(true);
+                self.itemTotalTimesDetail.totalCondition.lowerLimitSettingAtr(1);
+            } else {
+                self.enableUnder(false);
+                self.itemTotalTimesDetail.totalCondition.lowerLimitSettingAtr(0);
+            }
+            if (isUpper && self.checkSelectUse()) {
+                self.enableUpper(true);
+                self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr(1);
+            } else {
+                self.enableUpper(false);
+                self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr(0);
+            }
+        }
+
         /**
          * start page
          * get all divergence time
@@ -136,7 +166,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     var model = new TotalTimesModel();
                     model.updateData(dto);
                     model.summaryAtrName = self.totalClsEnums[dto.summaryAtr].localizedName;
-                    model.useAtrName = self.totalClsEnums[dto.useAtr].localizedName;
+                    model.useAtrName = self.totalClsEnumsUse[dto.useAtr].localizedName;
                     models.push(model);
                 }
                 self.itemTotalTimes(models);
@@ -286,16 +316,27 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         public save() {
             let self = this;
             nts.uk.ui.block.invisible();
-            console.log(self.itemTotalTimesDetail);
+            //check validate save
+            if (self.itemTotalTimesDetail.useAtr() == 0 ) {
+                nts.uk.ui.block.clear();
+                return;
+            }
             //trim() name
             self.itemTotalTimesDetail.totalTimesName($.trim(self.itemTotalTimesDetail.totalTimesName()));
             self.itemTotalTimesDetail.totalTimesABName($.trim(self.itemTotalTimesDetail.totalTimesABName()));
+            if (self.itemTotalTimesDetail.countAtr()) {
+                self.itemTotalTimesDetail.countAtr(1);
+            } else {
+                self.itemTotalTimesDetail.countAtr(0);
+            }
             // save enum
             self.itemTotalTimesDetail.summaryAtr(self.valueEnum());
             // define dataDto
 
             service.saveAllTotalTimes(self.itemTotalTimesDetail.toDto()).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    // Focus grid list
+                    $('#single-list-dataSource_container').focus();
                     self.loadAllTotalTimes().done(function() {
                     });
                 });
@@ -330,14 +371,12 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.windows.setShared('kml001selectedCodeList', listWorkCode, true);
                 nts.uk.ui.windows.sub.modal('/view/kdl/001/a/index.xhtml', { title: nts.uk.resource.getText('KDL001') }).onClosed(function(): any {
                     nts.uk.ui.block.clear();
-                    console.log(nts.uk.ui.windows.getShared('kml001selectedCodeList'));
                     var shareWorkCocde: Array<string> = nts.uk.ui.windows.getShared('kml001selectedCodeList');
                     // deleted data worktype
-
                     self.itemTotalTimesDetail.listTotalSubjects(_.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 0));
                     // insert data worktype
-                    for (let i = 0; i < shareWorkCocde.length; i++) {
-                        self.itemTotalTimesDetail.listTotalSubjects().push(new TotalSubjectsModel(shareWorkCocde[i], 1));
+                    for (var item of shareWorkCocde) {
+                        self.itemTotalTimesDetail.listTotalSubjects().push(self.toSubjectModel(item, 1));
                     }
                     self.loadListWorkType();
                     self.loadListWorkTimes();
@@ -371,13 +410,12 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.windows.setShared('KDL002_SelectedItemId', listWorkType, true);
                 nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: nts.uk.resource.getText('KDL002') }).onClosed(function(): any {
                     nts.uk.ui.block.clear();
-                    console.log(nts.uk.ui.windows.getShared('KDL002_SelectedNewItem'));
                     var shareWorkType: Array<any> = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
                     // deleted data worktype
                     self.itemTotalTimesDetail.listTotalSubjects(_.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 1));
                     // insert data worktype
                     for (let i = 0; i < shareWorkType.length; i++) {
-                        self.itemTotalTimesDetail.listTotalSubjects().push(new TotalSubjectsModel(shareWorkType[i].code, 0));
+                        self.itemTotalTimesDetail.listTotalSubjects().push(self.toSubjectModel(shareWorkType[i].code, 0));
                     }
                     self.loadListWorkType();
                     self.loadListWorkTimes();
@@ -396,6 +434,25 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             if ($('.nts-editor').ntsError("hasError") == true) {
                 $('.nts-input').ntsError('clear');
             }
+        }
+        /**
+         * to init model
+         */
+
+        private toSubjectModel(workTypeCode: string, workTypeAtr): TotalSubjectsModel {
+            var model: TotalSubjectsModel = new TotalSubjectsModel();
+            var dto: TotalSubjectsDto = { workTypeCode: workTypeCode, workTypeAtr: workTypeAtr };
+            model.updateData(dto);
+            return model;
+        }
+        
+        /**
+         * reset data by not selected 
+         */
+        private resetData(): void{
+            var self = this;
+            self.enableUse(false);
+            self.itemTotalTimesDetail.resetData();    
         }
 
     }
@@ -490,6 +547,18 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             };
             return dto;
         }
+        resetData() {
+            this.totalCountNo = 0;
+            this.countAtr(0);
+            this.useAtr(0);
+            this.totalTimesName('');
+            this.totalTimesABName('');
+            this.totalCondition.resetData();
+            this.summaryAtr(0);
+            this.listTotalSubjects([]);
+            this.workTypeInfo('');
+            this.workingInfo(''); 
+        }
     }
 
     export class TotalConditionModel {
@@ -518,6 +587,12 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 thresoldLowerLimit: this.thresoldLowerLimit()
             };
             return dto;
+        }
+        resetData() {
+            this.upperLimitSettingAtr(0);
+            this.lowerLimitSettingAtr(0);
+            this.thresoldUpperLimit(0);
+            this.thresoldLowerLimit(0);
         }
     }
 

@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "BSYDT_EMPLOYEE")
+//@Entity
+//@NoArgsConstructor
+//@AllArgsConstructor
+//@Table(name = "BSYDT_EMPLOYEE")
 public class BsydtEmployee extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

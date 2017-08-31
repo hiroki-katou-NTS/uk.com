@@ -29,17 +29,17 @@ public class KmnmtEmployee extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KmnmtEmployeePK kmnmtEmployeePK;
 
-//	@Basic(optional = false)
-//	@Column(name = "S_MAIL")
-//	public String employeeMail;
-//
-//	@Basic(optional = false)
-//	@Column(name = "RETIREMENT_DATE")
-//	public GeneralDate retirementDate;
-//
-//	@Basic(optional = false)
-//	@Column(name = "JOIN_DATE")
-//	public GeneralDate joinDate;
+	@Basic(optional = false)
+	@Column(name = "S_MAIL")
+	public String employeeMail;
+
+	@Basic(optional = false)
+	@Column(name = "RETIREMENT_DATE")
+	public GeneralDate retirementDate;
+
+	@Basic(optional = false)
+	@Column(name = "JOIN_DATE")
+	public GeneralDate joinDate;
 
 	@Override
 	protected Object getKey() {

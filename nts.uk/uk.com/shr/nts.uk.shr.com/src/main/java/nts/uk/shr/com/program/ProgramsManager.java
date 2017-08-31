@@ -662,6 +662,44 @@ public class ProgramsManager {
 	public static final Program KDW002B  = new Program(WebAppId.AT, ProgramIdConsts.KDW002B, "KDW002_1",
 			"/view/kdw/002/b/index.xhtml");
 	
+	/** The Constant CCG001. */
+	public static final Program CCG001  = new Program(WebAppId.COM, ProgramIdConsts.CCG001, null,
+			"/view/ccg/001/index.xhtml");
+	
+	/** The Constant KCP001. */
+	public static final Program KCP001  = new Program(WebAppId.COM, ProgramIdConsts.KCP001, null,
+			"/view/kcp/001/index.xhtml");
+	
+	public static final Program KCP002  = new Program(WebAppId.COM, ProgramIdConsts.KCP002, null,
+			"/view/kcp/002/index.xhtml");
+	
+	public static final Program KCP003  = new Program(WebAppId.COM, ProgramIdConsts.KCP003, null,
+			"/view/kcp/003/index.xhtml");
+	
+	public static final Program KCP004  = new Program(WebAppId.COM, ProgramIdConsts.KCP004, null,
+			"/view/kcp/004/index.xhtml");
+	
+	public static final Program KCP005  = new Program(WebAppId.COM, ProgramIdConsts.KCP005, null,
+			"/view/kcp/005/index.xhtml");
+	
+	/**
+	 * KDW007A
+	 */
+	public static final Program KDW007A  = new Program(WebAppId.AT, ProgramIdConsts.KDW007A, "",
+			"/view/kdw/007/a/index.xhtml");
+	
+	/**
+	 * KDW007A
+	 */
+	public static final Program KDW008B  = new Program(WebAppId.AT, ProgramIdConsts.KDW008B, "",
+			"/view/kdw/008/b/index.xhtml");
+	
+	/**
+	 * KDW007A
+	 */
+	public static final Program KDW008C  = new Program(WebAppId.AT, ProgramIdConsts.KDW008C, "",
+			"/view/kdw/008/c/index.xhtml");
+	
 	
 	// TODO: Define new programs here.
 
