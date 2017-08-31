@@ -61,4 +61,22 @@ public class JobtitlePubImp implements JobtitlePub {
 				.collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.company.pub.jobtitle.JobtitlePub#findByJobIds(java.lang.
+	 * String, java.util.List, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<PubJobtitleDto> findByJobIds(String companyId, List<String> jobIds,
+			GeneralDate baseDate) {
+		return jobTitleRepository.findByJobIds(companyId, jobIds, baseDate).stream()
+				.map(item -> new PubJobtitleDto(item.getCompanyId().v(), item.getPositionId().v(),
+						item.getPositionCode().v(), item.getPositionName().v(),
+						item.getSequenceCode().v(), item.getPeriod().getStartDate(),
+						item.getPeriod().getEndDate()))
+				.collect(Collectors.toList());
+	}
+
 }

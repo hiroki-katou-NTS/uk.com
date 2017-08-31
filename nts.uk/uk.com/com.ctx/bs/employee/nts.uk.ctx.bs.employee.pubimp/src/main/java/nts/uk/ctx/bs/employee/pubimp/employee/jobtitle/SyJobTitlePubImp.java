@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pubimp.employee.jobtitle;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -80,6 +81,34 @@ public class SyJobTitlePubImp implements SyJobTitlePub {
 				.collect(Collectors.toList());
 
 		List<AcJobTitleDto> jobTitleDtos = this.jobTitleAdapter.findByJobIds(jobIds);
+
+		// Return
+		return jobTitleDtos.stream().map(item -> {
+			PubJobTitleDto dto = new PubJobTitleDto();
+			dto.setCompanyId(item.getCompanyId());
+			dto.setPositionId(item.getPositionId());
+			dto.setPositionCode(item.getPositionCode());
+			dto.setPositionName(item.getPositionName());
+			dto.setSequenceCode(item.getSequenceCode());
+			dto.setStartDate(item.getStartDate());
+			dto.setEndDate(item.getEndDate());
+			return dto;
+		}).collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.pub.employee.jobtitle.SyJobTitlePub#
+	 * findJobTitleByPositionId(java.lang.String, java.lang.String,
+	 * nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<PubJobTitleDto> findJobTitleByPositionId(String companyId, String positionId,
+			GeneralDate baseDate) {
+		// Query
+		List<AcJobTitleDto> jobTitleDtos = this.jobTitleAdapter.findByJobIds(companyId,
+				Arrays.asList(positionId), baseDate);
 
 		// Return
 		return jobTitleDtos.stream().map(item -> {

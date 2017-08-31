@@ -443,8 +443,7 @@ module ksu001.a.viewmodel {
              * Save data
              */
             $("#saveData").click(function() {
-                let dfd = $.Deferred(),
-                    arrObj: BasicSchedule[] = [],
+                let arrObj: BasicSchedule[] = [],
                     arrCell: Cell[] = $("#extable").exTable("updatedCells"),
                     lengthArrCell = arrCell.length;
                 if (lengthArrCell == 0) {
@@ -512,21 +511,19 @@ module ksu001.a.viewmodel {
                 }));
 
                 service.registerData(arrObj).done(function(error: any) {
+                    if (error) {
+                        self.addListError(error);
+                    } else {
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));    
+                    }
                     //get data and update extable
                     self.getDataBasicSchedule().done(function() {
                         self.updateExTable();
                     });
-                    //                    if (error) {
-                    //                        alert('Has error!');
-                    //                    } else {
-                    alert(nts.uk.resource.getMessage("Msg_15"));
-                    //                    }
-                    dfd.resolve();
+                    
                 }).fail(function(error: any) {
-
-                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(error.message);    
                 });
-                return dfd.promise();
             });
         }
 
@@ -729,6 +726,25 @@ module ksu001.a.viewmodel {
                 });
             }
         }
+        
+        /**
+         * Set error
+         */
+        addListError(errorsRequest: Array<string>) {
+            var messages = _.map(errorsRequest, function(err){
+                return {
+                    err: nts.uk.resource.getMessage(err)   
+                };    
+            });
+            
+            var errorVm = {
+                messageId:  errorsRequest,
+                messages: messages
+            };
+            
+            nts.uk.ui.dialog.bundledErrors(errorVm);
+        }
+
     }
 
     interface ICell {

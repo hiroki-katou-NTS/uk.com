@@ -31,4 +31,15 @@ public interface SyJobTitlePub {
 	 */
 	// RequestList #33
 	List<PubJobTitleDto> findJobTitleBySid(String employeeId, GeneralDate baseDate);
+
+	/**
+	 * Find job title by position id.
+	 *
+	 * @param companyId the company id
+	 * @param positionId the position id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	// RequestList #67-1
+	List<PubJobTitleDto> findJobTitleByPositionId(String companyId, String positionId, GeneralDate baseDate);
 }
