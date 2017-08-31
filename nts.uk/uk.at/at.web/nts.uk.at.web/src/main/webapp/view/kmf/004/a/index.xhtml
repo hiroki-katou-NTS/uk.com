@@ -38,7 +38,7 @@
 							data-bind="ntsGridList: {	
 								width: 300,
 								height: 300,
-								dataSource: items,
+								dataSource: sphdList,
 								primaryKey: 'specialHolidayCode',
 								columns: columns,
 								multiple: false,								
@@ -47,14 +47,14 @@
 					</div>
 				</div>
 				<div class="right-content">
-					<div class="control-group">
+					<div class="control-group" data-bind="with: currentItem">
 						<div id="code-sphd"
 							data-bind="ntsFormLabel: {required: true,constraint:['SpecialHolidayCode','SpecialHolidayName']}">#{i18n.getText('KMF004_9')}</div>
 						<span><input id="code-text"
-							style="width: 40px; margin-left: -10px;"
-							data-bind="ntsTextEditor: {value: inp_specialHolidayCode, required: true, enable: isEnableCode}" /></span>
+							style="width: 40px; margin-left: -1px;"
+							data-bind="ntsTextEditor: {value: specialHolidayCode, required: true, enable:$parent.isEnableCode}" /></span>
 						<span><input id="code-text2" style="width: 180px"
-							data-bind="ntsTextEditor: {value: inp_specialHolidayName, required: true}" /></span>
+							data-bind="ntsTextEditor: {value: specialHolidayName, required: true}" /></span>
 						<div id="addtitional-set"
 							style="vertical-align: middle; margin-left: 50px;"
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF004_11')}</div>
@@ -62,20 +62,21 @@
 						<div>
 							<div id="target-item" style="margin-top: 10px;"
 								data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF004_13')}</div>
-							<button data-bind="click : openKDL002Dialog"
+							<button
+								data-bind="click : $parent.openKDL002Dialog.bind($parent)"
 								style="margin-left: 96px;" id="A_BTN_004">#{i18n.getText('KMF004_12')}</button>
 							<span><input id="text-target-item" style="width: 469px"
-								data-bind="ntsTextEditor: {value: workTypeNames, required: true}" /></span>
+								data-bind="ntsTextEditor: {value: $parent.workTypeNames, required: true}" /></span>
 						</div>
 						<div>
 							<div id="single-offer" style="margin-top: 10px;"
 								data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_14')}</div>
 							<div id="check-single-offer" style="margin-left: 96px;"
 								data-bind="ntsSwitchButton: {
-												options: roundingRules,
+												options: $parent.roundingPeriodic,
 												optionsValue: 'code',
 												optionsText: 'name',
-												value: sel_grantPeriodicCls,
+												value: $parent.inp_grantPeriodicCls,
 												enable: true}"></div>
 						</div>
 						<div>
@@ -84,119 +85,141 @@
 								data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_16')}</div>
 							<input style="width: 524px; height: 50px; margin-left: 132px;"
 								id="webMenuCode"
-								data-bind="ntsMultilineEditor: {value: inp_memo,name: '#[CCG013_49]'}" />
+								data-bind="ntsMultilineEditor: {value: memo,name: '#[CCG013_49]'}" />
 						</div>
 					</div>
 					<div class="tab-content">
 						<div id="tab-panel"
 							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-							<div class="tab-content-1">
-								<div
-									data-bind="ntsRadioButton: {
-												checked: selectedValue, 
-												enable: true, 
-												option: option1, 
-												optionValue: 'value', 
-												optionText: 'text', 
-												group: 'ntsControl'}">
-								</div>
+							<div class="tab-content-1"
+								data-bind="with: currentItem().grantRegular">
+								<label class="ntsRadioBox" data-bind="with: $parent.option1"
+									style="margin-top: 10px;"> <input type="radio"
+									name="grantRegularMethod"
+									data-bind="checkedValue: value, 
+										checked: $parent.grantRegularMethod, 
+										enable: true" />
+									<span class="box"></span><span class="label"
+									data-bind="text: text"></span>
+								</label>
 								<div>
 									<span style="margin-left: 100px">#{i18n.getText('KMF004_25')}</span>
 									<div style="margin-top: 10px;"
-										data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+										data-bind="ntsDatePicker: {
+											value: grantStartDate, 
+											dateFormat: 'YYYY/MM/DD', 
+											enable: grantRegularMethod()==0}">
+									</div>
 									<span style="">#{i18n.getText('KMF004_26')}</span> <input
 										style="width: 40px;"
-										data-bind="ntsTextEditor: {
-												value: ko.observable(''), 
-												required: true}" />
+										data-bind="ntsNumberEditor: {
+												value: months,
+												option: ko.mapping.fromJS({
+												unitID: 'YEARS',
+												width: '60'}),
+												enable: grantRegularMethod()==0}" />
 									<input style="width: 40px;"
-										data-bind="ntsTextEditor: {
-												value: ko.observable(''),
-												required: true}" />
+										data-bind="ntsNumberEditor: {
+												value: years,
+												option: ko.mapping.fromJS({
+												unitID: 'MONTHS',
+												width: '60'}),
+												enable: grantRegularMethod()==0}" />
 								</div>
-								<div style="margin-top: 20px;"
-									data-bind="ntsRadioButton: {
-												checked: selectedValue, 
-												enable: enable, 
-												option: option2, 
-												optionValue: 'value', 
-												optionText: 'text', 
-												group: 'ntsControl'}">
-								</div>
+								<label style="margin-top: 35px;" class="ntsRadioBox"
+									data-bind="with: $parent.option2"> <input type="radio"
+									name="grantRegularMethod"
+									data-bind="checkedValue: value, 
+																							 checked: $parent.grantRegularMethod, 
+																							 enable: true" />
+									<span class="box"></span><span class="label"
+									data-bind="text: text"></span>
+								</label>
 								<button
 									style="display: block; margin-top: 10px; margin-left: 100px;"
-									data-bind="click: openBDialog">#{i18n.getText('KMF004_29')}</button>
+									data-bind="click: $parent.openBDialog, enable: grantRegularMethod()==1">#{i18n.getText('KMF004_29')}</button>
 								<span style="margin-left: 100px;">#{i18n.getText('KMF004_30')}</span>
 							</div>
-							<div class="tab-content-2">
+							<div class="tab-content-2"
+								data-bind="with: currentItem().grantPeriodic">
 								<span style="display: block;">#{i18n.getText('KMF004_31')}</span>
 								<div style="margin-left: 25px;">
-									<div>
-										<div
-											data-bind="ntsRadioButton: {
-												checked: selectedValue, 
-												enable: enable, 
-												optionText: '#{i18n.getText('KMF004_32')}', 
-												group: 'ntsControl' }">
-										</div>
-										<span style="vertical-align: middle; margin-left: 80px;">#{i18n.getText('KMF004_31')}</span>
+									<div id="radio-tab2-1">
+										<label class="ntsRadioBox"> <input type="radio"
+											name="grantPeriodicMethod"
+											data-bind="checkedValue: 0, checked: grantPeriodicMethod, enable: true" />
+											<span class="box"></span><span class="label">#{i18n.getText('KMF004_32')}</span>
+										</label> <span style="vertical-align: middle; margin-left: 80px;">#{i18n.getText('KMF004_31')}</span>
 										<input style="width: 40px;"
-											data-bind="ntsTextEditor: {
-												value: ko.observable(''), 
-												required: true}" />
+											data-bind="ntsNumberEditor: {
+												value: grantDay,
+												option: ko.mapping.fromJS({
+												unitID: 'DAYS',
+												width: '60'}),
+												enable: grantPeriodicMethod()==0}" />
 									</div>
-									<div>
-										<div
-											data-bind="ntsRadioButton: {
-												checked: selectedValue, 
-												enable: enable, 
-												optionText: '#{i18n.getText('KMF004_33')}', 
-												group: 'ntsControl' }">
-										</div>
-										<button style="margin-top: 10px; margin-left: 30px;">#{i18n.getText('KMF004_34')}</button>
+									<div id="radio-tab2-2">
+										<label class="ntsRadioBox"> <input type="radio"
+											name="grantPeriodicMethod"
+											data-bind="checkedValue: 1, checked: grantPeriodicMethod, enable: true" />
+											<span class="box"></span><span class="label">#{i18n.getText('KMF004_33')}</span>
+										</label>
+										<button data-bind="enable: grantPeriodicMethod()==1" style="margin-top: 10px; margin-left: 30px;">#{i18n.getText('KMF004_34')}</button>
 									</div>
 									<span style="margin-left: 40px;">#{i18n.getText('KMF004_30')}</span>
 								</div>
 								<div style="margin-top: 20px;">
 									<span>#{i18n.getText('KMF004_36')}</span>
 									<div style="margin-left: 170px;" class="cf"
-											data-bind="ntsSwitchButton: {
-												options: roundingRules1,
+										data-bind="ntsSwitchButton: {
+												options: $parent.roundingSplitAcquisition,
 												optionsValue: 'code',
 												optionsText: 'name',
-												value: selectedRuleCode}">
+												value: splitAcquisition,
+												enable: grantPeriodicMethod()==1}">
 									</div>
 								</div>
 							</div>
-							<div class="tab-content-3">
+							<div class="tab-content-3"
+								data-bind="with: currentItem().sphdLimit">
 								<span style="display: block;">#{i18n.getText('KMF004_40')}</span>
 								<div style="margin-left: 25px;">
-									<div>
-										<div
-											data-bind="ntsRadioButton: {
-												checked: selectedValue, 
-												enable: enable, 
-												optionText: '#{i18n.getText('KMF004_42')}', 
-												group: 'ntsControl' }">
-										</div>
+									<div style="margin-top: 10px;">
+										<label class="ntsRadioBox"> <input
+											style="margin-top: 10px;" type="radio"
+											name="specialVacationMethod"
+											data-bind="checkedValue: 0, checked: specialVacationMethod, enable: true" />
+											<span class="box"></span><span class="label">#{i18n.getText('KMF004_42')}</span>
+										</label>
 									</div>
-									<div>
-										<div
-											data-bind="ntsRadioButton: {
-												checked: selectedValue, 
-												enable: enable, 
-												optionText: '#{i18n.getText('KMF004_43')}', 
-												group: 'ntsControl' }">
-										</div>
+									<div style="margin-top: 10px;">
+										<label class="ntsRadioBox"> <input type="radio"
+											name="specialVacationMethod"
+											data-bind="checkedValue: 1, checked: specialVacationMethod, enable: true" />
+											<span class="box"></span><span class="label">#{i18n.getText('KMF004_43')}</span>
+										</label>
 									</div>
-									<div>
-										<div
-											data-bind="ntsRadioButton: {checked: selectedValue, enable: enable, optionText: '#{i18n.getText('KMF004_44')}', group: 'ntsControl' }"></div>
-										<span style="vertical-align: middle; margin-left: 80px;">#{i18n.getText('KMF004_45')}</span>
+									<div style="margin-top: 10px;">
+										<label class="ntsRadioBox"> <input type="radio"
+											name="specialVacationMethod"
+											data-bind="checkedValue: 2, checked: specialVacationMethod, enable: true" />
+											<span class="box"></span><span class="label">#{i18n.getText('KMF004_45')}</span>
+										</label> <input style="width: 40px;"
+											data-bind="ntsNumberEditor: {
+												value: specialVacationMonths,
+												option: ko.mapping.fromJS({
+												unitID: 'MONTHS',
+												width: '60'}),
+												required: true,
+												enable: specialVacationMethod()==2}" />
 										<input style="width: 40px;"
-											data-bind="ntsTextEditor: {value: ko.observable(''), required: true}" />
-										<input style="width: 40px;"
-											data-bind="ntsTextEditor: {value: ko.observable(''), required: true}" />
+											data-bind="ntsNumberEditor: {
+												value: specialVacationYears,
+												option: ko.mapping.fromJS({
+												unitID: 'DAYS',
+												width: '60'}),
+												required: true,
+												enable: specialVacationMethod()==2}" />
 									</div>
 								</div>
 								<div style="margin-top: 20px;">
@@ -205,22 +228,28 @@
 										<span>#{i18n.getText('KMF004_49')}</span>
 										<div style="margin-left: 170px;" class="cf"
 											data-bind="ntsSwitchButton: {
-												options: roundingRules2,
+												options: $parent.roundingCarryForward,
 												optionsValue: 'code',
 												optionsText: 'name',
-												value: selectedRuleCode}">
+												value: grantCarryForward,
+												enable: specialVacationMethod()==2}">
 										</div>
 									</div>
 									<div style="margin-top: 10px;">
 										<span style="vertical-align: middle; margin-left: 50px;">#{i18n.getText('KMF004_53')}</span>
 										<input style="width: 40px; margin-left: 140px;"
-											data-bind="ntsTextEditor: {
-												value: ko.observable(''), 
-												required: true}" />
+											data-bind="ntsNumberEditor: {
+												value: limitCarryoverDays,
+												option: ko.mapping.fromJS({
+												unitID: 'DAYS',
+												width: '60'}),
+												required: true,
+												enable: specialVacationMethod()==2}" />
 									</div>
 								</div>
 							</div>
-							<div class="tab-content-4">
+							<div class="tab-content-4"
+								data-bind="with: currentItem().subCondition">
 								<div>
 									<span>#{i18n.getText('KMF004_55')}</span>
 								</div>
@@ -228,75 +257,108 @@
 									<span>#{i18n.getText('KMF004_55')}</span>
 								</div>
 								<div>
-									<div style="" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KMF004_60')}</div>
-									<div style="margin-left: 40px;" class="cf"
+									<div style="" data-bind="ntsCheckBox: { checked: useGender }">#{i18n.getText('KMF004_60')}</div>
+									<div style="margin-left: 40px; margin-top: 10px;" class="cf"
 										data-bind="ntsSwitchButton: {
-													options: roundingRules4,
+													options: $parent.roundingGenderAtr,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: selectedRuleCode}"></div>
+													value: genderAtr}"></div>
 								</div>
 								<div>
-									<div style="" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KMF004_60')}</div>
-									<button style="margin-left: 40px; margin-top: 10px;">#{i18n.getText('KMF004_63')}</button>
+									<div style="" data-bind="ntsCheckBox: { checked: useEmployee }">#{i18n.getText('KMF004_60')}</div>
+									<button style="margin-left: 40px; margin-top: 5px;">#{i18n.getText('KMF004_63')}</button>
 									<input style="width: 360px"
 										data-bind="ntsTextEditor: {value: ko.observable(''), required: true}" />
 								</div>
 								<div>
-									<div style="" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('Com_Class')}</div>
-									<button style="margin-left: 67px; margin-top: 10px;">#{i18n.getText('KMF004_63')}</button>
+									<div style="" data-bind="ntsCheckBox: { checked: useCls }">#{i18n.getText('Com_Class')}</div>
+									<button style="margin-left: 67px; margin-top: 5px;" data-bind="enable: useCls()==1">#{i18n.getText('KMF004_63')}</button>
 									<input style="width: 360px"
-										data-bind="ntsTextEditor: {value: ko.observable(''), required: true}" />
+										data-bind="ntsTextEditor: {value: ko.observable(''), required: true, enable: useCls()==1}" />
 								</div>
 								<div>
-									<div style="" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KMF004_56')}</div>
-									<input
-										style="width: 30px; margin-left: 66px; margin-top: 10px;"
-										data-bind="ntsTextEditor: {value: ko.observable(''), required: true}" />
-									<span>～</span> <input style="width: 30px; margin-top: 10px;"
-										data-bind="ntsTextEditor: {value: ko.observable(''), required: true}" />
+									<div style="" data-bind="ntsCheckBox: { checked: useAge }">#{i18n.getText('KMF004_56')}</div>
+									<input style="width: 30px; margin-left: 66px; margin-top: 5px;"
+										data-bind="ntsNumberEditor: {
+												value: limitAgeFrom,
+												option: ko.mapping.fromJS({
+												unitID: 'AGE',
+												width: '60'}),
+												required: true}" />
+									<span >～</span> <input style="width: 30px; margin-top: 3px;"
+										data-bind="ntsNumberEditor: {
+												value: limitAgeTo,
+												option: ko.mapping.fromJS({
+												unitID: 'AGE',
+												width: '60'}),
+												required: true}" />
 								</div>
-								<span>年齢基準</span>
-								<button style="width: 25px; height: 25px; margin-left: 20px;">?</button>
+								<span style="margin-left: 75px; ">年齢基準</span>
+								<button style="width: 25px; height: 25px; margin-left: 20px; margin-top: 5px;">?</button>
 								<div>
-									<div
-										data-bind="ntsRadioBoxGroup: {checked: selectedValue, enable: enable, optionText: '#{i18n.getText('KMF004_42')}', group: 'ntsControl' }"></div>
+									<label class="ntsRadioBox"> <input type="radio"
+										name="ageCriteriaAtr"
+										data-bind="checkedValue: 0, checked: ageCriteriaAtr, enable: true" />
+										<span class="box" style="margin-left: 100px;"></span><span class="label">#{i18n.getText('KMF004_42')}</span>
+									</label>>
 								</div>
 								<div>
-									<div
-										data-bind="ntsRadioBoxGroup: {checked: selectedValue, enable: enable, optionText: '#{i18n.getText('KMF004_43')}', group: 'ntsControl' }"></div>
+									<label class="ntsRadioBox"> <input type="radio"
+										name="ageCriteriaAtr"
+										data-bind="checkedValue: 1, checked: ageCriteriaAtr, enable: true" />
+										<span class="box" style="margin-left: 100px;"></span><span class="label">#{i18n.getText('KMF004_43')}</span>
+									</label>
 									<div id="combo-box"
 										data-bind="ntsComboBox: {
-																			options: itemList,
-																			optionsValue: 'code',
-																			visibleItemsCount: 5,
-																			value: selectedCode,
-																			optionsText: 'name',
-																			editable: isEditable,
-																			enable: isEnable,
-																			columns: [
-																				{ prop: 'code', length: 4 },
-																				{ prop: 'name', length: 10 },
-																			]}"></div>
-									<input style="width: 50px"
-										data-bind="ntsTextEditor: {value: ko.observable(''), required: true}" />
+													options: $parent.itemAgeBaseYearAtr,
+													optionsValue: 'code',
+													visibleItemsCount: 5,
+													value: ageBaseYearAtr,
+													optionsText: 'name',
+													editable: false,
+													enable: ageCriteriaAtr()==1,
+													columns: [
+														{ prop: 'code', length: 4 },
+														{ prop: 'name', length: 10 },
+													]}"></div>
+									<div id="monthdays"
+										data-bind="ntsMonthDays: {value: ageBaseDates, enable: ageCriteriaAtr()==1}">
+									</div>
 								</div>
 							</div>
-							<div class="tab-content-5">
+							<div class="tab-content-5"
+								data-bind="with: currentItem().grantSingle">
 								<span style="display: block;">#{i18n.getText('KMF004_31')}</span>
 								<div style="margin-left: 25px;">
 									<div>
-										<div
-											data-bind="ntsRadioBoxGroup: {checked: selectedValue, enable: enable, optionText: '#{i18n.getText('KMF004_32')}', group: 'ntsControl' }"></div>
-										<span style="vertical-align: middle; margin-left: 80px;">#{i18n.getText('KMF004_31')}</span>
-										<input style="width: 40px;"
-											data-bind="ntsTextEditor: {value: ko.observable(''), required: true}" />
+										<div>
+											<label class="ntsRadioBox"> <input type="radio"
+												name="grantDaySingleType"
+												data-bind="checkedValue: 0, checked: grantDaySingleType, enable: true" />
+												<span class="box"></span><span class="label">#{i18n.getText('KMF004_43')}</span>
+											</label> <span style="vertical-align: middle; margin-left: 80px;">#{i18n.getText('KMF004_31')}</span>
+											<input style="width: 40px;"
+												data-bind="ntsNumberEditor: {
+												value: fixNumberDays,
+												option: ko.mapping.fromJS({
+												unitID: 'DAYS',
+												width: '60'}),
+												required: true,
+												enable: grantDaySingleType()==0}" />
+										</div>
 									</div>
 									<div>
-										<div
-											data-bind="ntsRadioBoxGroup: {checked: selectedValue, enable: enable, optionText: '#{i18n.getText('KMF004_70')}', group: 'ntsControl' }"></div>
-										<button data-bind="click: openGDialog"
-											style="margin-top: 10px; margin-left: 30px;">#{i18n.getText('KMF004_71')}</button>
+										<div>
+											<label class="ntsRadioBox"> <input type="radio"
+												name="grantDaySingleType"
+												data-bind="checkedValue: 1, checked: grantDaySingleType, enable: true" />
+												<span class="box"></span><span class="label">#{i18n.getText('KMF004_70')}</span>
+											</label>
+											<button data-bind="click: $parent.openGDialog ,enable:grantDaySingleType()==1 "
+												style="margin-top: 10px; margin-left: 92px;">#{i18n.getText('KMF004_71')}</button>
+										</div>
+
 									</div>
 									<span style="margin-left: 40px;">#{i18n.getText('KMF004_30')}</span>
 								</div>
@@ -306,20 +368,22 @@
 										<span>#{i18n.getText('KMF004_68')}</span>
 										<div style="margin-left: 100px;" class="cf"
 											data-bind="ntsSwitchButton: {
-													options: roundingRules3,
+													options: $parent.roundingMakeInvitation,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: selectedRuleCode}"></div>
+													value: makeInvitation,
+													enable: true}"></div>
 									</div>
 									<div style="margin-top: 10px;">
 										<div style="margin-left: 35px;">
 											<span>#{i18n.getText('KMF004_69')}</span>
 											<div style="margin-left: 38px;" class="cf"
 												data-bind="ntsSwitchButton: {
-													options: roundingRules3,
+													options: $parent.roundingMakeInvitation,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: selectedRuleCode}"></div>
+													value: holidayExclusionAtr,
+													enable: true}"></div>
 										</div>
 									</div>
 								</div>

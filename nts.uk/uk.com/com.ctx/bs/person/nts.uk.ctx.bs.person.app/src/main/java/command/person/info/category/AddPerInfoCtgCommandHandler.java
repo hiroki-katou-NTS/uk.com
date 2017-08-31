@@ -36,7 +36,7 @@ public class AddPerInfoCtgCommandHandler extends CommandHandler<AddPerInfoCtgCom
 	protected void handle(CommandHandlerContext<AddPerInfoCtgCommand> context) {
 		AddPerInfoCtgCommand perInfoCtgCommand = context.getCommand();
 		if (!this.perInfoCtgRep.checkCtgNameIsUnique(PersonInfoCategory.ROOT_COMPANY_ID,
-				perInfoCtgCommand.getCategoryName())) {
+				perInfoCtgCommand.getCategoryName(), "")) {
 			throw new BusinessException(new RawErrorMessage("Msg_215"));
 		}
 		String contractCd = PersonInfoItemDefinition.ROOT_CONTRACT_CODE;

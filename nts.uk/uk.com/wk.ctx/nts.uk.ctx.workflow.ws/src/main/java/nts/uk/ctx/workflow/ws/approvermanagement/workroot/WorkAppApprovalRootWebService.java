@@ -8,16 +8,19 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommandHandler;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeAdapterInforFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeSearch;
+import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ParamDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.PrivateApprovalRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.PrivateApprovalRootFinder;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
 @Path("workflow/approvermanagement/workroot")
 @Produces("application/json")
@@ -34,13 +37,13 @@ public class WorkAppApprovalRootWebService extends WebService{
  
 	@POST
 	@Path("getbycom")
-	public CommonApprovalRootDto getAllByCom(int rootType, String employeeId) {
-		return this.comFinder.getAllCommonApprovalRoot(rootType, employeeId);
+	public CommonApprovalRootDto getAllByCom(ParamDto param) {
+		return this.comFinder.getAllCommonApprovalRoot(param);
 	}
 	
 	@POST
-	@Path("getbyperson")
-	public List<PrivateApprovalRootDto> getAllByPerson(@PathParam("employeeId") String employeeId) {
+	@Path("getbyprivate")
+	public List<PrivateApprovalRootDto> getAllByPrivate(@PathParam("employeeId") String employeeId) {
 		return this.privateFinder.getAllPrivateApprovalRoot(employeeId);
 	}
 	@POST
@@ -53,4 +56,15 @@ public class WorkAppApprovalRootWebService extends WebService{
 	 public void updateHistory(UpdateWorkAppApprovalRByHistCommand command){
 		 this.updateHist.handle(command);
 	 }
+		
+	/**
+	 * Enumクラスの値一覧取得.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("find/applicationType")
+	public List<EnumConstant> findApplicationType() {
+		return EnumAdaptor.convertToValueNameList(ApplicationType.class);
+	}
 }

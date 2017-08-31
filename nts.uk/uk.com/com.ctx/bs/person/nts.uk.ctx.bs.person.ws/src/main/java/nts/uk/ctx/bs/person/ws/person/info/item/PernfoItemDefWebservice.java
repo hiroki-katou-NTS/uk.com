@@ -112,8 +112,8 @@ public class PernfoItemDefWebservice extends WebService {
 
 	@POST
 	@Path("update")
-	public void updateItemDef(UpdateItemCommand updateItemCommand) {
-		updateItemCm.handle(updateItemCommand);
+	public JavaTypeResult<String> updateItemDef(UpdateItemCommand updateItemCommand) {
+		return new JavaTypeResult<String>(updateItemCm.handle(updateItemCommand));
 	}
 	
 	@POST

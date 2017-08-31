@@ -55,7 +55,7 @@ public class BusinessTypeSortedFinder {
 //					attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceItemName(),
 					attendanceItemDtos.get(f.getAttendanceItemId()).getDislayNumber(),
 					attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceName().v(),
-					f.getOrder());
+					f.getOrder().v());
 		}).collect(Collectors.toList());
 
 		return businessTypeSortedDtos;
