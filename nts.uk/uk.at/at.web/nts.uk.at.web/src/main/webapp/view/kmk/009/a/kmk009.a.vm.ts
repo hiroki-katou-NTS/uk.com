@@ -158,7 +158,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     var model = new TotalTimesModel();
                     model.updateData(dto);
                     model.summaryAtrName = self.totalClsEnums[dto.summaryAtr].localizedName;
-                    model.useAtrName = self.totalClsEnums[dto.useAtr].localizedName;
+                    model.useAtrName = self.totalClsEnumsUse[dto.useAtr].localizedName;
                     models.push(model);
                 }
                 self.itemTotalTimes(models);
