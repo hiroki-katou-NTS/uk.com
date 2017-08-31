@@ -1,20 +1,44 @@
 package nts.uk.ctx.at.request.dom.application.common.service;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.ClosureAdaptor;
-import nts.uk.ctx.at.request.dom.application.common.adapter.EmployeeAdaptor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdaptor;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
+import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 
 @Stateless
 public class OtherCommonAlgorithmDefault implements OtherCommonAlgorithmService {
 	
 	@Inject
 	private EmployeeAdaptor employeeAdaptor;
+	@Inject
+	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepo;
+	
+	@Inject
+	private ApplicationSettingRepository appSettingRepo;
+	
+	@Inject
+	private WorkTimeWorkplaceRepository workTimeWorkplaceRepo;
 	
 	/*@Inject
 	private ClosureAdaptor closureAdaptor;*/
@@ -38,10 +62,71 @@ public class OtherCommonAlgorithmDefault implements OtherCommonAlgorithmService 
 		*/
 		return new ArrayList<GeneralDate>();
 	}
-
+	/**
+	 * 1.職場別就業時間帯を取得
+	 */
 	@Override
 	public void getWorkingHoursByWorkplace(String companyID, String employeeID, GeneralDate referenceDate) {
-		// TODO Auto-generated method stub
-		
+		List<String> listEmployeeAdaptor = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, referenceDate);
+		//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
+		for(String employeeAdaptor : listEmployeeAdaptor) {
+			List<String> listWorkTime = workTimeWorkplaceRepo
+					.getWorkTimeWorkplaceById(companyID, employeeAdaptor);
+			if(listWorkTime.size()>0) {
+				Collections.sort(listWorkTime);
+				break;
+			}
+		}
+	}
+
+	@Override
+	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType, GeneralDate appDate) {
+		GeneralDate systemDate = GeneralDate.today();
+		BigDecimal systemTime = BigDecimal.valueOf(GeneralDateTime.now().localDateTime().getHour()*60 
+				+ GeneralDateTime.now().localDateTime().getMinute());
+		String companyID = AppContexts.user().companyId();
+		PrePostAtr prePostAtr = null;
+		Optional<AppTypeDiscreteSetting> appTypeDisc = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
+		//if appdate > systemDate 
+		if(appDate.after(systemDate) ) {
+			//xin truoc 事前事後区分= 事前
+			prePostAtr = PrePostAtr.PREDICT;
+			
+		}else if(appDate.before(systemDate)) { // if appDate < systemDate
+			//xin sau 事前事後区分= 事後
+			prePostAtr = PrePostAtr.POSTERIOR;
+		}else{ // if appDate = systemDate
+			// if RetrictPreUseFlg = notuse ->prePostAtr = POSTERIOR
+			if(appTypeDisc.get().getRetrictPreUseFlg() == UseAtr.NOTUSE) {
+				prePostAtr = PrePostAtr.POSTERIOR;
+			}else {
+				//「事前の受付制限」．チェック方法が日数でチェック
+				if(appTypeDisc.get().getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
+					prePostAtr = PrePostAtr.POSTERIOR;
+				}else {//システム日時と受付制限日時と比較する
+					if(systemTime.compareTo(appTypeDisc.get().getRetrictPreTimeDay().v())==1) {
+						
+						prePostAtr = PrePostAtr.POSTERIOR;
+					}else { // if systemDateTime <=  RetrictPreTimeDay - > xin truoc
+						prePostAtr = PrePostAtr.PREDICT;
+					}
+				}
+			}
+		}
+			
+		return prePostAtr;
+	}
+	/**
+	 * 5.事前事後区分の判断
+	 */
+	@Override
+	public void judgmentPrePostAtr(ApplicationType appType, GeneralDate appDate) {
+		String companyID = AppContexts.user().companyId();
+		Optional<ApplicationSetting> appSetting = appSettingRepo.getApplicationSettingByComID(companyID);
+		if(appSetting.get().getDisplayPrePostFlg() == AppDisplayAtr.DISPLAY) { // AppDisplayAtr displayPrePostFlg
+			
+		}else {
+			
+		}
 	}
 }

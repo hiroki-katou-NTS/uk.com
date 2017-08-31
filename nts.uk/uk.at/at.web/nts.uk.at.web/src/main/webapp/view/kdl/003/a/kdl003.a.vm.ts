@@ -175,6 +175,12 @@ module nts.uk.at.view.kdl003.a {
              */
             private initWorkTypeSelection(): void {
                 let self = this;
+
+                // Return if list work type is null or empty
+                if (nts.uk.util.isNullOrEmpty(self.listWorkType())) {
+                    return;
+                };
+
                 // Selected code from caller screen.
                 let selectedWorkTypeCode = self.callerParameter.selectedWorkTypeCode;
                 let isInSelectableCodes = selectedWorkTypeCode ? _.find(self.listWorkType(), item => selectedWorkTypeCode == item.workTypeCode) : false;
@@ -191,6 +197,12 @@ module nts.uk.at.view.kdl003.a {
              */
             private setWorkTimeSelection(): void {
                 let self = this;
+
+                // Return if list work time is null or empty
+                if (nts.uk.util.isNullOrEmpty(self.listWorkTime())) {
+                    return;
+                };
+
                 // Selected code from caller screen.
                 let selectedWorkTimeCode = self.callerParameter.selectedWorkTimeCode;
                 let isInSelectableCodes = selectedWorkTimeCode ? _.find(self.listWorkTime(), item => selectedWorkTimeCode == item.code) : false;
@@ -206,12 +218,16 @@ module nts.uk.at.view.kdl003.a {
              * Search work time.
              */
             public search(): void {
+                var self = this;
+                if (!self.startTime() && !self.endTime()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_53" });
+                    return;
+                }
                 if ($('#inputEndTime').ntsError('hasError') ||
                     $('#inputStartTime').ntsError('hasError')) {
                     return;
                 }
                 nts.uk.ui.block.invisible();
-                var self = this;
 
                 // Search command.
                 let command = {

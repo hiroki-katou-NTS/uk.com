@@ -19,7 +19,6 @@ module nts.uk.at.view.ksm005.c {
             monthlyPatternCode: string;
             monthlyPatternSetting: KnockoutObservable<string>;
             employeeName: KnockoutObservable<string>;
-            enableSave: KnockoutObservable<boolean>;
             enableDelete: KnockoutObservable<boolean>;
             enableSystemChange: KnockoutObservable<boolean>;
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
@@ -34,7 +33,6 @@ module nts.uk.at.view.ksm005.c {
                 self.baseDate = ko.observable(new Date());
                 self.monthlyPatternSetting = ko.observable('');
                 self.employeeName = ko.observable('');
-                self.enableSave = ko.observable(false);
                 self.enableDelete = ko.observable(false);
                 self.enableSystemChange = ko.observable(false);
                 self.ccgcomponent = {
@@ -90,10 +88,10 @@ module nts.uk.at.view.ksm005.c {
                     if (employeeCode) {
                         self.applySelectEmployeeCode(employeeCode);
                     }else {
-                        self.enableSave(false);
                         self.enableDelete(false);
                         self.enableSystemChange(false);  
                         self.employeeName('');  
+                        self.monthlyPatternSetting('');
                     }
                 });
             }
@@ -206,20 +204,17 @@ module nts.uk.at.view.ksm005.c {
                             if (data.info && data.info.code) {
                                 self.monthlyPatternCode = data.info.code;
                                 self.monthlyPatternSetting(data.info.code + ' ' + data.info.name);
-                                self.enableSave(true);
                                 self.enableDelete(true);
                                 self.enableSystemChange(true);
                             }else {
                                 self.monthlyPatternCode = '';
                                 self.monthlyPatternSetting('');
-                                self.enableSave(true);
                                 self.enableDelete(true);
                                 self.enableSystemChange(true);   
                             }
                         } else {
                             self.monthlyPatternCode = '';
                             self.monthlyPatternSetting('');
-                            self.enableSave(true);
                             self.enableDelete(false);
                             self.enableSystemChange(true);
                         }
@@ -278,6 +273,10 @@ module nts.uk.at.view.ksm005.c {
             public saveMonthlyPatternSetting(): void {
                 var self = this;
                 var dto : MonthlyPatternSettingActionDto;
+                if (!self.selectedCode()) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_189" });
+                    return;
+                }
                 dto = {employeeId: self.findEmployeeIdByCode(self.selectedCode()), monthlyPatternCode: self.monthlyPatternCode};
                 service.saveMonthlyPatternSetting(dto).done(function() {
                     // show message 15
@@ -286,9 +285,7 @@ module nts.uk.at.view.ksm005.c {
                         self.reloadPage();
                     });
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error).then(function() {
-                        self.reloadPage();
-                    });
+                    nts.uk.ui.dialog.alertError(error);
                 });    
             }
             /**
@@ -305,9 +302,7 @@ module nts.uk.at.view.ksm005.c {
                             self.reloadPage();
                         });
                     }).fail(function(error) {
-                        nts.uk.ui.dialog.alertError(error).then(function() {
-                            self.reloadPage();
-                        });
+                        nts.uk.ui.dialog.alertError(error);
                     });
                 }).ifNo(function() {
                     self.reloadPage();

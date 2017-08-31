@@ -46,7 +46,7 @@ public interface AppApprovalPhaseRepository {
 	void update(AppApprovalPhase appAprovalPhase);
 
 	/**
-	 * Delete
+	 * Delete by phaseID
 	 * 
 	 * @param companyID
 	 * @param appID

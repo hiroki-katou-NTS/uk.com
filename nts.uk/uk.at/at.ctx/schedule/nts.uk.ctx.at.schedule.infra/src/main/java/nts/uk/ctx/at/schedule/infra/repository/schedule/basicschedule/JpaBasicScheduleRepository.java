@@ -3,7 +3,6 @@ package nts.uk.ctx.at.schedule.infra.repository.schedule.basicschedule;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import javax.transaction.Transactional;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -19,7 +18,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdtBasicSche
  *
  */
 @Stateless
-@Transactional
+// @Transactional
 public class JpaBasicScheduleRepository extends JpaRepository implements BasicScheduleRepository {
 
 	/**
@@ -56,7 +55,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	 */
 	@Override
 	public void insert(BasicSchedule bSchedule) {
-		this.commandProxy().insert(toEntity(bSchedule));
+		KscdtBasicSchedule x = toEntity(bSchedule);
+		this.commandProxy().insert(x);
 	}
 
 	/**
@@ -67,7 +67,9 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 	@Override
 	public void update(BasicSchedule bSchedule) {
 		KscdpBasicSchedulePK pk = new KscdpBasicSchedulePK(bSchedule.getSId(), bSchedule.getDate());
-		KscdtBasicSchedule entity = new KscdtBasicSchedule();
+		KscdtBasicSchedule entity = this.queryProxy()
+				.find(new KscdpBasicSchedulePK(bSchedule.getSId(), bSchedule.getDate()), KscdtBasicSchedule.class)
+				.get();
 		entity.kscdpBSchedulePK = pk;
 		entity.workTimeCode = bSchedule.getWorkTimeCode();
 		entity.workTypeCode = bSchedule.getWorkTypeCode();

@@ -48,24 +48,32 @@ public class MappingDtoToDomain {
 		itemDef.setItemTypeState(createItemTypeState(addItemCommand, ItemType.SINGLE_ITEM, null));
 		return itemDef;
 	}
+	
+	public static PersonInfoItemDefinition mappingFromDomaintoCommandForUpdate(UpdateItemCommand updateItem, PersonInfoItemDefinition item) {
+		item.setItemTypeState(createItemTypeStateForUpdate(updateItem));
+		return item;
+	}
 
 	private static ItemTypeState createItemTypeState(AddItemCommand addItemCommand, ItemType itemType,
 			DataTypeValue dataTypeValue) {
 		if (itemType == ItemType.SINGLE_ITEM) {
-			return ItemTypeState.createSingleItem(createDataTypeState(addItemCommand, dataTypeValue));
+			return ItemTypeState.createSingleItem(createDataTypeState(addItemCommand.getSingleItem(), dataTypeValue));
 		} else {
 			return ItemTypeState.createSetItem(null);
 		}
 	}
 
-	private static DataTypeState createDataTypeState(AddItemCommand addItemCommand, DataTypeValue dataTypeValue) {
-		if (addItemCommand.getSingleItem() == null) {
+	private static ItemTypeState createItemTypeStateForUpdate(UpdateItemCommand updateItem) {
+		return ItemTypeState.createSingleItem(createDataTypeState(updateItem.getSingleItem(), null));
+	}
+
+	private static DataTypeState createDataTypeState(SingleItemCommand singleI, DataTypeValue dataTypeValue) {
+		if (singleI == null) {
 			if (dataTypeValue == DataTypeValue.DATE) {
 				return DataTypeState.createDateItem(DateType.YEARMONTHDAY.value);
 			}
 			return null;
 		}
-		SingleItemCommand singleI = addItemCommand.getSingleItem();
 		switch (singleI.getDataType()) {
 		case 1:
 			return DataTypeState.createStringItem(singleI.getStringItemLength(), singleI.getStringItemType(),

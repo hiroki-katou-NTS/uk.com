@@ -30,6 +30,12 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 	
 	private final String findAllByCompanyID = "SELECT a FROM KshstGrantHdTblSet a "
 			+ "WHERE a.kshstGrantHdTblSetPK.companyId = :companyId";
+	private final String DELETE_CONDITION = "DELETE FROM KshstGrantCondition c "
+			+ "WHERE c.kshstGrantConditionPK.companyId =:companyId "
+			+ "AND c.kshstGrantConditionPK.yearHolidayCode =:yearHolidayCode ";
+	private final String DELETE_GRANT_DATES = "DELETE FROM KshstGrantHdTbl g "
+			+ "WHERE g.kshstGrantHdTblPK.companyId =:companyId "
+			+ "AND g.kshstGrantHdTblPK.yearHolidayCode =:yearHolidayCode ";
 	
 	@Override
 	public List<GrantHdTblSet> findAll(String companyId) {
@@ -77,9 +83,26 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 		this.commandProxy().remove(KshstGrantHdTblSet.class, new KshstGrantHdTblSetPK(companyId, yearHolidayCode));
 	}
 	
+	@Override
+	public void removeCondition(String companyId,  String yearHolidayCode) {
+		this.getEntityManager().createQuery(DELETE_CONDITION)
+			.setParameter("companyId", companyId)
+			.setParameter("yearHolidayCode", yearHolidayCode)
+			.executeUpdate();
+	}
+	
+	@Override
+	public void removeGrantDates(String companyId, String yearHolidayCode) {
+		this.getEntityManager().createQuery(DELETE_GRANT_DATES)
+		.setParameter("companyId", companyId)
+		.setParameter("yearHolidayCode", yearHolidayCode)
+		.executeUpdate();
+	}
+	
 	/**
+	 * Convert to domain
 	 * 
-	 * @param x
+	 * @param KshstGrantHdTblSet
 	 * @return
 	 */
 	private GrantHdTblSet convertToDomainYearHoliday(KshstGrantHdTblSet x) {
@@ -102,6 +125,7 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 	}
 
 	/**
+	 * Convert to entity
 	 * 
 	 * @param yearHoliday
 	 * @return
@@ -122,5 +146,4 @@ public class JpaYearHolidayRepository extends JpaRepository implements YearHolid
 				yearHoliday.getSimultaneousGrandMonthDays(),
 				yearHoliday.getYearHolidayNote().v(), grantCoditionList);
 	}
-	
 }

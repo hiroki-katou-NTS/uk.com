@@ -7,18 +7,19 @@
 	<div id="component-content" style="height: 500px">
 		<div id="function-panel">
 			<table id="employ_view">
-				<tr>
+				<tr id="function-tr">
 					<td class="bg-green border-left" id="tbl_left"><button
-							id="btn_show_list" data-bind="click: showEmpList">#{i18n.getText('KCP009_3')}</button>
+							id="btn_show_list" data-bind="text: targetBtnText, attr: {tabindex: tabIndex}"></button>
+							<!-- #{i18n.getText('KCP009_3')} -->
 					</td>
-					<td class="bg-green none_border"><button class="btn_select"
-							data-bind="click: previousEmp, enable: isActivePreviousBtn()">
-							<span class="caret-left caret-inline"></span>
+					<td class="bg-green none_border"><button class="btn_select" id="prev-btn"
+							data-bind="click: previousEmp, enable: isActivePreviousBtn(), attr: {tabindex: tabIndex}">
+							<!-- <span class="caret-left caret-inline"></span> -->
 						</button></td>
 					<td class="bg-green border-right">
-						<button class="btn_select"
-							data-bind="click: nextEmp, enable: isActiveNextBtn()">
-							<span class="caret-right caret-inline"></span>
+						<button class="btn_select" id="next-btn"
+							data-bind="click: nextEmp, enable: isActiveNextBtn(), attr: {tabindex: tabIndex}">
+							<!-- <span class="caret-right caret-inline"></span> -->
 						</button>
 					</td>
 					<td class="none_border em_display">
@@ -33,23 +34,24 @@
 					</td>
 					<td class="none_border"><div
 							data="enable: isActivePersonalProfile" class="icon"
-							id="profile-icon"></div></td>
+							id="profile-icon" data-bind="attr: {tabindex: tabIndex}"></div></td>
 					<td class="none_border em_display"><div>
 							<span data-bind="text: selectedNumberOfPeople"></span><span>#{i18n.getText('KCP009_1')}</span>
 						</div></td>
-					<td class="none_border"><input
+					<td class="border-right"><input
 						data-bind="ntsTextEditor: {
 								value: keySearch,
 								name: '#[KCP009_2]',
 								option: {width: '100',enable: true}
-								}" /></td>
+								}, attr: {tabindex: tabIndex}" />
+					</td>
 					<td id="wkp_title_text" class="bg-green border-left"
-						data-bind="if: isDisplayOrganizationName">
+						data-bind="visible: isDisplayOrganizationName">
 						<div>
 							<span data-bind="text: organizationDesignation"></span>
 						</div>
 					</td>
-					<td id="wkp_text"><div>
+					<td id="wkp_text" data-bind="visible: isDisplayOrganizationName"><div>
 							<span data-bind="text: organizationName"></span>
 						</div></td>
 				</tr>
@@ -57,17 +59,20 @@
 		</div>
 
 		<div id="items-list">
-			<table id="single-list"
-				data-bind="ntsGridList: {
-					height: 350,
-					width: 350,
-					dataSource: empList,
-					columns: gridColumns,
-					primaryKey: 'id',
-					name: '#[KCP009_3]',
+				
+				<div id="list-box" data-bind="ntsListBox: {
+					options: empList,
+					optionsValue: 'id',
+					optionsText: 'code',
 					multiple: false,
-					value: selectedItem
-				}"></table>
+					value: selectedItem,
+					enable: true,
+					name: targetBtnText,
+					rows: 10,
+					columns: [
+						{ key: 'code', length: 4 },
+						{ key: 'businessName', length: 10 }
+					]}"></div>
 		</div>
 
 

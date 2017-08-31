@@ -10,25 +10,36 @@ import javax.ws.rs.Produces;
 
 import command.person.info.item.AddItemCommand;
 import command.person.info.item.AddItemCommandHandler;
+import command.person.info.item.RemoveItemCommand;
+import command.person.info.item.RemoveItemCommandHandler;
 import command.person.info.item.UpdateItemChangeCommand;
 import command.person.info.item.UpdateItemChangeCommandHandler;
+import command.person.info.item.UpdateItemCommand;
+import command.person.info.item.UpdateItemCommandHandler;
 import command.person.info.item.UpdateOrderItemChangeCommand;
 import command.person.info.item.UpdateOrderItemChangeCommandHandler;
 import find.person.info.item.PerInfoItemChangeDefDto;
 import find.person.info.item.PerInfoItemDefDto;
 import find.person.info.item.PerInfoItemDefFinder;
 import find.person.info.item.PerInfoItemDefFullEnumDto;
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 
 @Path("ctx/bs/person/info/ctgItem")
 @Produces("application/json")
-public class PernfoItemDefWebservice extends WebService{
+public class PernfoItemDefWebservice extends WebService {
 
 	@Inject
 	private PerInfoItemDefFinder itemDefFinder;
 
 	@Inject
 	private AddItemCommandHandler addItemCm;
+
+	@Inject
+	private UpdateItemCommandHandler updateItemCm;
+	
+	@Inject
+	private RemoveItemCommandHandler removeItemCm;
 
 	@Inject
 	private UpdateItemChangeCommandHandler updateItemChange;
@@ -95,16 +106,22 @@ public class PernfoItemDefWebservice extends WebService{
 
 	@POST
 	@Path("add")
-	public void addItemDef(AddItemCommand addItemCommand) {
-		addItemCm.handle(addItemCommand);
+	public JavaTypeResult<String> addItemDef(AddItemCommand addItemCommand) {
+		return new JavaTypeResult<String>(addItemCm.handle(addItemCommand));
 	}
 
 	@POST
 	@Path("update")
-	public void updateItemDef() {
-		// return itemDefFinder.getRequiredIds();
+	public void updateItemDef(UpdateItemCommand updateItemCommand) {
+		updateItemCm.handle(updateItemCommand);
 	}
-
+	
+	@POST
+	@Path("remove")
+	public JavaTypeResult<String> removeItemDef(RemoveItemCommand removeCommand) {
+		return new JavaTypeResult<String>(removeItemCm.handle(removeCommand));
+		
+	}
 	// service update item change
 	@POST
 	@Path("updateItemChange")
@@ -113,7 +130,7 @@ public class PernfoItemDefWebservice extends WebService{
 	}
 
 	@POST
-	@Path("updateItemChange")
+	@Path("SetOrder")
 	public void updateItemChange(UpdateOrderItemChangeCommand command) {
 		this.updateOrderItemChange.handle(command);
 	}

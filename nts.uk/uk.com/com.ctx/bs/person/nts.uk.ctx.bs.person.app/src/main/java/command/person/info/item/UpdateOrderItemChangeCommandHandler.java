@@ -1,36 +1,50 @@
 package command.person.info.item;
 
-import java.util.List;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.bs.person.dom.person.info.category.IsFixed;
+import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
+import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
-import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.ctx.bs.person.dom.person.info.order.PerInfoItemDefOrder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class UpdateOrderItemChangeCommandHandler extends CommandHandler<UpdateOrderItemChangeCommand> {
 
 	@Inject
-	private PerInfoItemDefRepositoty pernfoItemDefRep;
+	private PerInfoItemDefRepositoty perinfoItemDefRep;
+
+	@Inject
+	private PerInfoCategoryRepositoty perCtgRep;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateOrderItemChangeCommand> context) {
 
-		List<OrderItemChange> listItem = context.getCommand().getOrderItemList();
+		UpdateOrderItemChangeCommand command = context.getCommand();
 
-		for (OrderItemChange i : listItem) {
-			PersonInfoItemDefinition itemdef = this.pernfoItemDefRep
-					.getPerInfoItemDefById(i.getId(), AppContexts.user().contractCode()).get();
+		String contractCd = AppContexts.user().contractCode();
 
-			PersonInfoItemDefinition itemDefDomain = PersonInfoItemDefinition.createFromEntity(
-					itemdef.getPerInfoItemDefId(), itemdef.getPerInfoCategoryId(), itemdef.getItemCode().v(),
-					itemdef.getItemParentCode().v(), itemdef.getItemName().v(), itemdef.getIsAbolition().value,
-					itemdef.getIsFixed().value, itemdef.getIsRequired().value, itemdef.getSystemRequired().value,
-					itemdef.getRequireChangable().value);
+		PersonInfoCategory perInfoCategory = this.perCtgRep.getPerInfoCategory(command.getCategoryId(), contractCd)
+				.get();
+
+		for (OrderItemChange i : command.getOrderItemList()) {
+
+			int itemIndex = command.getOrderItemList().indexOf(i) + 1;
+
+			PerInfoItemDefOrder itemDefOrderOpt = this.perinfoItemDefRep.getPerInfoItemDefOrdersByItemId(i.getId())
+					.get();
+
+			PerInfoItemDefOrder itemDefOrderDomain = PerInfoItemDefOrder.createFromJavaType(
+					itemDefOrderOpt.getPerInfoItemDefId(), itemDefOrderOpt.getPerInfoCtgId(), itemIndex,
+					perInfoCategory.getIsFixed().equals(IsFixed.FIXED) ? itemDefOrderOpt.getDisplayOrder().v()
+							: itemIndex);
+
+			this.perinfoItemDefRep.UpdateOrderItem(itemDefOrderDomain);
+
 		}
 
 	}

@@ -23,3 +23,11 @@
 .line_col_2>span {
 	line-height: 37px;
 }
+
+#content_main {
+	width: 950px;
+}
+
+#B1_3 tr>td:NTH-CHILD(2) {
+	text-align: center;
+}

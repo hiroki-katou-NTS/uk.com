@@ -71,6 +71,7 @@ public class JpaApproverRepository extends JpaRepository implements ApproverRepo
 	 */
 	private Approver toDomainApprover(WwfmtAppover entity){
 		val domain = Approver.createSimpleFromJavaType(entity.wwfmtAppoverPK.companyId,
+				entity.wwfmtAppoverPK.branchId,
 				entity.wwfmtAppoverPK.approvalPhaseId,
 				entity.wwfmtAppoverPK.approverId,
 				entity.jobId,
@@ -87,12 +88,12 @@ public class JpaApproverRepository extends JpaRepository implements ApproverRepo
 	 */
 	private WwfmtAppover toEntityApprover(Approver domain){
 		val entity = new WwfmtAppover();
-		entity.wwfmtAppoverPK = new WwfmtAppoverPK(domain.getCompanyId(), domain.getApprovalPhaseId(), domain.getApproverId());
+		entity.wwfmtAppoverPK = new WwfmtAppoverPK(domain.getCompanyId(), domain.getBranchId(), domain.getApprovalPhaseId(), domain.getApproverId());
 		entity.jobId = domain.getJobTitleId();
 		entity.employeeId = domain.getEmployeeId();
 		entity.displayOrder = domain.getOrderNumber();
 		entity.approvalAtr = domain.getApprovalAtr().value;
-		entity.confirmPerson = domain.getConfirmPerson();
+		entity.confirmPerson = domain.getConfirmPerson().value;
 		return entity;
 	}
 }

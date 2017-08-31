@@ -5,11 +5,13 @@
 package nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
+import nts.arc.primitive.constraint.IntegerRange;
 
 /**
  * The Class YearlyEstimateDays.
  */
 // 年間目安日数
+@IntegerRange(min = 0 , max = 366)
 public class YearlyEstimateDays extends IntegerPrimitiveValue<YearlyEstimateDays>{
 
 	

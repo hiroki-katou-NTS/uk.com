@@ -1,8 +1,9 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.AgentApplicationType;
 @Data
 public class AgentAdaptorDto {
 	/**
@@ -36,7 +37,7 @@ public class AgentAdaptorDto {
 	 * 1:パス
 	 * 2:設定なし
 	 */
-	private int agentAppType1;
+	private AgentApplicationType agentAppType1;
 
 	//----人事承認---
 	
@@ -50,7 +51,7 @@ public class AgentAdaptorDto {
 	 * 1:パス
 	 * 2:設定なし
 	 */
-	private int agentAppType2;
+	private AgentApplicationType agentAppType2;
 
 	//----給与承認---
 	
@@ -64,7 +65,7 @@ public class AgentAdaptorDto {
 	 * 1:パス
 	 * 2:設定なし
 	 */
-	private int agentAppType3;
+	private AgentApplicationType agentAppType3;
 
 	//----経理承認---
 	
@@ -78,5 +79,5 @@ public class AgentAdaptorDto {
 	 * 1:パス
 	 * 2:設定なし
 	 */
-	private int agentAppType4;
+	private AgentApplicationType agentAppType4;
 }

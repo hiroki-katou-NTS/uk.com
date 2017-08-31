@@ -58,7 +58,8 @@ module nts.uk.pr.view.ccg007.d {
                     dialogClass: 'no-close'
                 }).onClosed(() => {
                     var contractCode = nts.uk.ui.windows.getShared('contractCode');
-                    service.getAllCompany(contractCode).done(function(data: Array<CompanyItemModel>) {
+                    self.contractCode(contractCode);
+                    service.getAllCompany().done(function(data: Array<CompanyItemModel>) {
                         //get list company from server 
                         self.companyList(data);
                         if (data.length > 0) {
@@ -76,7 +77,7 @@ module nts.uk.pr.view.ccg007.d {
                         nts.uk.request.jump("/view/ccg/007/b/index.xhtml");
                     }
                     else {
-                        service.getAllCompany(contractCode).done(function(data: Array<CompanyItemModel>) {
+                        service.getAllCompany().done(function(data: Array<CompanyItemModel>) {
                             //get list company from server 
                             self.companyList(data);
                             if (data.length > 0) {

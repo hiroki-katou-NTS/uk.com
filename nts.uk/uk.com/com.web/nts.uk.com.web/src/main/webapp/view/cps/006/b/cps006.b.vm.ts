@@ -32,7 +32,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         itemNameText: KnockoutObservable<string> = ko.observable('');
 
-        currentCategory: KnockoutObservable<PerInfoCategory>;
+        currentCategory: PerInfoCategory;
 
         ckbDisplayAbolition: KnockoutObservable<boolean> = ko.observable(false);
 
@@ -42,6 +42,10 @@ module nts.uk.com.view.cps006.b.viewmodel {
             let self = this;
 
             self.currentSelectId.subscribe(function(newValue) {
+                if (!newValue) {
+
+                    return;
+                }
 
                 service.getPerInfoItemDefById(newValue).done(function(data: IItemInfoDef) {
 
@@ -74,7 +78,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
             let self = this,
                 dfd = $.Deferred();
 
-            self.currentCategory = ko.observable(new PerInfoCategory('02E24D13-0558-41CC-866B-E930306AE6D4', 'CS00004', 'Du lịch', 1, 0, 1, 0));
+            self.currentCategory = new PerInfoCategory(getShared('categoryInfo'));
 
             self.loadDataForGrid().done(function() {
 
@@ -95,39 +99,40 @@ module nts.uk.com.view.cps006.b.viewmodel {
             self.loadItemInfoDefList().done(function() {
 
                 //set selected item for gridlist
+                if (self.itemInfoDefList().length > 0) {
 
-                if (lastSelectedIndex != -1) {
+                    if (lastSelectedIndex != -1) {
 
-                    let selectItem = _.find(self.itemInfoDefList(), function(i) { return i.id == self.currentSelectId() });
+                        let selectItem = _.find(self.itemInfoDefList(), function(i) { return i.id == self.currentSelectId() });
 
-                    if (selectItem) {
+                        if (selectItem) {
 
-                        selectedId = self.currentSelectId();
-
-                    } else {
-
-                        if (self.itemInfoDefList().length == 0) {
-
-                            selectedId = '';
+                            selectedId = self.currentSelectId();
 
                         } else {
 
-                            if (self.itemInfoDefList().length <= lastSelectedIndex) {
+                            if (self.itemInfoDefList().length == 0) {
 
-                                selectedId = self.itemInfoDefList()[self.itemInfoDefList().length - 1].id;
+                                selectedId = '';
 
                             } else {
 
-                                selectedId = self.itemInfoDefList()[lastSelectedIndex == 0 ? 0 : lastSelectedIndex].id;
+                                if (self.itemInfoDefList().length <= lastSelectedIndex) {
 
+                                    selectedId = self.itemInfoDefList()[self.itemInfoDefList().length - 1].id;
+
+                                } else {
+
+                                    selectedId = self.itemInfoDefList()[lastSelectedIndex == 0 ? 0 : lastSelectedIndex].id;
+
+                                }
                             }
                         }
+                    } else {
+
+                        selectedId = self.itemInfoDefList()[0].id;
                     }
-                } else {
-
-                    selectedId = self.itemInfoDefList()[0].id;
                 }
-
                 self.currentSelectId(selectedId);
 
                 dfd.resolve();
@@ -139,7 +144,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         loadItemInfoDefList(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred(),
-                categoryId = self.currentCategory().id;
+                categoryId = self.currentCategory.id;
             service.getItemInfoDefList(categoryId, self.ckbDisplayAbolition()).done(function(itemInfoDefList: Array<IItemInfoDef>) {
 
                 self.itemInfoDefList([]);
@@ -350,17 +355,23 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
             nts.uk.ui.windows.sub.modal('/view/cdl/022/a/index.xhtml', { title: '' }).onClosed(function(): any {
 
+                if (!getShared('CDL020_VALUES')) {
+                    block.clear();
+                    return;
+                }
+
                 command = {
-                    
+                    categoryId: self.currentCategory.id,
                     orderItemList: getShared('CDL020_VALUES')
-                    
                 }
 
                 service.SetOrder(command).done(function() {
+
                     self.loadDataForGrid().done(function() {
 
                         block.clear();
                     });
+
                 });
 
 
@@ -372,7 +383,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
     function makeIcon(value, row) {
         if (value == '1')
-            return "×";
+            return "<i class='icon icon-close'></i>";
         return '';
     }
 
@@ -425,29 +436,11 @@ module nts.uk.com.view.cps006.b.viewmodel {
     }
 
     export class PerInfoCategory {
-        id: string;
-        categoryCode: string;
-        categoryName: string;
-        personEmployeeType: number;
-        isAbolition: number;
-        categoryType: number;
-        isFixed: number;
 
-        constructor(
-            id: string,
-            categoryCode: string,
-            categoryName: string,
-            personEmployeeType: number,
-            isAbolition: number,
-            categoryType: number,
-            isFixed: number) {
-            this.id = id;
-            this.categoryCode = categoryCode;
-            this.categoryName = categoryName;
-            this.personEmployeeType = personEmployeeType;
-            this.isAbolition = isAbolition;
-            this.categoryType = categoryType;
-            this.isFixed = isFixed
+        id: string;
+
+        constructor(param) {
+            this.id = param.id();
         }
 
     }

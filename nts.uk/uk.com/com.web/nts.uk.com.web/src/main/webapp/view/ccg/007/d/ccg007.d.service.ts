@@ -31,8 +31,8 @@ module nts.uk.pr.view.ccg007.d {
         /**
           * Function is used to copy new Top Page.
           */
-        export function getAllCompany(contractCode: string): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.getAllCompany+"/"+ contractCode);
+        export function getAllCompany(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.getAllCompany);
         }
 
         export interface SystemConfigDto {

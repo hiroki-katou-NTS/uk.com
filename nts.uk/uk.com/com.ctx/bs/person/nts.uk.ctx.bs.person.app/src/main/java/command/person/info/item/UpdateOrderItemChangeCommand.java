@@ -7,5 +7,7 @@ import lombok.Value;
 @Value
 public class UpdateOrderItemChangeCommand {
 
+	private String categoryId;
+
 	private List<OrderItemChange> orderItemList;
 }

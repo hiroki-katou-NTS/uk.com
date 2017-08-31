@@ -41,9 +41,9 @@ public class KrqstApplicationSetting extends UkJpaEntity {
 
 	@Column(name = "DISPLAY_SEARCH_TIME_FLG")
 	public int displaySearchTimeFlg;
-
-	@Column(name = "DISPLAY_INIT_DAY_FLG")
-	public int displayInitDayFlg;
+	
+	@Column(name = "MANUAL_SEND_MAIL_ATR")
+	public int manualSendMailAtr;
 
 	/** 承認 */
 	

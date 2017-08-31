@@ -8,11 +8,6 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.at.record.dom.divergencetime.DivergenceReasonContent
-				nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeName
-				nts.uk.ctx.at.record.dom.divergencetime.Time
-				
-				
 				nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimesName
 				nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimesABName
 				nts.uk.ctx.at.schedule.dom.shift.totaltimes.ConditionThresholdLimit
@@ -29,7 +24,7 @@
 				<!-- A1_1: Button Registration -->
 				<button id="btnSave"
 					class="button proceed separate-button fix-button"
-					data-bind="click: Registration,enable: $root.errors.isEmpty"
+					data-bind="click: save,enable: $root.errors.isEmpty"
 					tabindex="1">#{i18n.getText('KMK009_1')}</button>
 			</div>
 
@@ -43,10 +38,10 @@
 									height: 365,
 									options: itemTotalTimes,								
 									optionsValue: 'totalCountNo',
+									primaryKey: 'totalCountNo',
 									columns: columns,
 									multiple: false,
-									value: currentCode,
-									enable: true}">
+									value: currentCode}">
 							</table>
 						</div>
 					</div>
@@ -81,15 +76,15 @@
 									data-bind="ntsFormLabel: {required: true,constraint: 'TotalTimesName' }">#{i18n.getText('KMK009_6')}</div>
 							</td>
 							<td style="padding-left: 5px">
-								<!-- A3_6: Divergence Time Name --> 
+								<!-- A3_6: Total Time Name --> 
 								<input tabindex="4"
 								class="nts-input" id="itemname" style="width: 100px"
 								data-bind="ntsTextEditor:{
 										 name: '#[KMK009_6]',
                                          value: itemTotalTimesDetail().totalTimesName,
                                          required: true,
+                                         constraint: 'TotalTimesName',
                                          enable: enableUse}" />
-								<!-- constraint: 'DivergenceTimeName', -->
 							</td>
 						</tr>
 
@@ -100,12 +95,13 @@
 									data-bind="ntsFormLabel: {required: true,constraint: 'TotalTimesABName' }">#{i18n.getText('KMK009_22')}</div>
 							</td>
 							<td style="padding-left: 5px">
-								<!-- A3_26: Divergence Time Name --> <input tabindex="5"
-								class="nts-input" id="itemname" style="width: 60px"
+								<!-- A3_26: Total Time Name --> <input tabindex="5"
+								class="nts-input" id="itemnameAB" style="width: 60px"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK009_22]',
                                          value: itemTotalTimesDetail().totalTimesABName,
                                          required: true,
+                                         constraint: 'TotalTimesABName',
                                          enable: enableUse}" />
 							</td>
 						</tr>
@@ -113,10 +109,10 @@
 							<td>
 								<!--A3_7 -->
 								<div
-									data-bind="ntsFormLabel: {required: true,constraint: 'DivergenceTimeName' }">#{i18n.getText('KMK009_14')}</div>
+									data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_14')}</div>
 							</td>
 							<td style="padding-left: 5px">
-								<!-- A3_8: Divergence Time Name -->
+								<!-- A3_8: Total Time Name -->
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
 									options: totalClsEnums,
@@ -144,7 +140,7 @@
 								id="inpName" style="width: 350px"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
-										value: timeItemName,
+										value: itemTotalTimesDetail().workTypeInfo ,
 										required: true,
 										readonly: true,
 										enable: enableUse}" />
@@ -159,11 +155,12 @@
 								<!-- A3_14 Open dialog KDL001-->
 								<button tabindex="8"
 									data-bind="click: openKDL001Dialog,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
-								<!-- A3_15: Time item name --> <input class="nts-input"
+								<!-- A3_15: Time item name --> 
+								<input class="nts-input"
 								id="inpName" style="width: 350px"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
-										value: timeItemName,
+										value: itemTotalTimesDetail().workingInfo,
 										required: true,
 										readonly: true,
 										enable: enableUse}" />
@@ -179,7 +176,7 @@
 									<!--A3:17 : Check error(select) -->
 									<div style="margin-bottom: 10px"
 										data-bind="ntsCheckBox:{
-									checked: itemTotalTimesDetail().totalCondition().upperLimitSettingAtr,
+									checked: selectUppper,
 									enable: enableUse
 									}">
 									</div>
@@ -192,8 +189,8 @@
 									value: itemTotalTimesDetail().totalCondition().thresoldUpperLimit,
 									inputFormat: 'time', 
 									mode: 'time', 
-									constraint: 'Time',
-									enable: enableUse}" />
+									constraint: 'ConditionThresholdLimit',
+									enable: enableUpper}" />
 									<!-- A3_19 -->
 									#{i18n.getText('KMK009_17')}
 								</div>
@@ -206,7 +203,7 @@
 									<!-- :A3_20 Check error(select) -->
 									<div style="margin-bottom: 10px"
 										data-bind="ntsCheckBox:{
-									checked: itemTotalTimesDetail().totalCondition().lowerLimitSettingAtr,
+									checked: selectUnder,
 									enable: enableUse
 									}">
 									</div>
@@ -217,8 +214,8 @@
 									value: itemTotalTimesDetail().totalCondition().thresoldLowerLimit,
 									inputFormat: 'time', 
 									mode: 'time', 
-									constraint: 'Time',
-									enable: enableUse}" />
+									constraint: 'ConditionThresholdLimit',
+									enable: enableUnder}" />
 									<!-- A3_22 -->
 									#{i18n.getText('KMK009_20')}
 								</div>

@@ -1,19 +1,21 @@
 module nts.uk.com.view.cps005.a {
     import getText = nts.uk.resource.getText;
-    import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import info = nts.uk.ui.dialog.info;
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import textUK = nts.uk.text;
-
     export module viewmodel {
         export class ScreenModel {
             currentData: KnockoutObservable<DataModel>;
             isUpdate: boolean = false;
+            isEnableButtonProceedA: KnockoutObservable<boolean>;
             constructor() {
                 let self = this,
                     dataModel = new DataModel(null);
                 self.currentData = ko.observable(dataModel);
+                self.isEnableButtonProceedA = ko.observable(true);
             }
 
             startPage(): JQueryPromise<any> {
@@ -21,15 +23,17 @@ module nts.uk.com.view.cps005.a {
                     dfd = $.Deferred();
                 new service.Service().getAllPerInfoCtg().done(function(data: IData) {
                     self.isUpdate = false;
+                    self.currentData(new DataModel(data));
                     if (data && data.categoryList && data.categoryList.length > 0) {
-                        self.currentData().categoryList(_.map(data.categoryList, item => { return new PerInfoCtgModel(item) }));
                         self.isUpdate = true;
                         self.currentData().perInfoCtgSelectCode(data.categoryList[0].id);
+                        self.currentData().isEnableButtonProceed(true);
                     } else {
                         self.register();
                     }
                     dfd.resolve();
                 })
+
                 return dfd.promise();
             }
 
@@ -41,6 +45,7 @@ module nts.uk.com.view.cps005.a {
                     if (data && data.categoryList && data.categoryList.length > 0) {
                         self.currentData().categoryList(_.map(data.categoryList, item => { return new PerInfoCtgModel(item) }));
                         self.isUpdate = true;
+                        self.currentData().isEnableButtonProceed(true);
                         if (newCtgName) {
                             let newCtg = _.find(data.categoryList, item => { return item.categoryName == newCtgName });
                             self.currentData().perInfoCtgSelectCode(newCtg ? newCtg.id : "");
@@ -61,6 +66,8 @@ module nts.uk.com.view.cps005.a {
                 self.isUpdate = false;
                 self.currentData().historyClassEnable(true);
                 $("#category-name-control").focus();
+                self.currentData().isEnableButtonProceed(true);
+                self.currentData().isEnableButtonOpenDialog(false);
             }
 
             addUpdateData() {
@@ -70,31 +77,38 @@ module nts.uk.com.view.cps005.a {
                 }
                 if (self.isUpdate) {
                     let updateCategory = new UpdatePerInfoCtgModel(self.currentData().currentCtgSelected());
-                    new service.Service().updatePerInfoCtg(updateCategory).done(() => {
+                    new service.Service().updatePerInfoCtg(updateCategory).done(function(data: string) {
                         self.reloadData();
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        if (data) {
+                            info({ messageId: data }).then(() => {
+                                info({ messageId: "Msg_15" });
+                            });
+                        }
                     }).fail(error => {
-                        nts.uk.ui.dialog.alertError(error);
+                        alertError(error);
                     });
                 } else {
                     let newCategory = new AddPerInfoCtgModel(self.currentData().currentCtgSelected());
                     new service.Service().addPerInfoCtg(newCategory).done(() => {
                         self.reloadData(newCategory.categoryName);
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
-                            nts.uk.ui.dialog.confirm({ messageId: "Msg_213" }).ifYes(() => {
-                                alert("Show dialog B");
+                        info({ messageId: "Msg_15" }).then(() => {
+                            confirm({ messageId: "Msg_213" }).ifYes(() => {
+                                setShared('categoryId', self.currentData().perInfoCtgSelectCode());
+                                modal("/view/cps/005/b/index.xhtml").onClosed(() => { });
                             }).ifNo(() => {
                                 return;
                             })
                         });
                     }).fail(error => {
-                        nts.uk.ui.dialog.alertError(error);
+                        alertError(error);
                     });
                 }
             }
 
             openDialogB() {
-                alert("open dialog B");
+                let self = this;
+                setShared('categoryId', self.currentData().perInfoCtgSelectCode());
+                modal("/view/cps/005/b/index.xhtml").onClosed(() => { });
             }
         }
     }
@@ -103,17 +117,18 @@ module nts.uk.com.view.cps005.a {
         categoryList: KnockoutObservableArray<PerInfoCtgModel> = ko.observableArray([]);
         perInfoCtgSelectCode: KnockoutObservable<string> = ko.observable("");
         currentCtgSelected: KnockoutObservable<PerInfoCtgModel> = ko.observable(new PerInfoCtgModel(null));
-
+        isEnableButtonProceed: KnockoutObservable<boolean> = ko.observable(true);
+        isEnableButtonOpenDialog: KnockoutObservable<boolean> = ko.observable(false);
         historyClassification: Array<any> = [
-            { code: 1, name: nts.uk.resource.getText("CPS005_53") },
-            { code: 2, name: nts.uk.resource.getText("CPS005_54") },
+            { code: 1, name: getText("CPS005_53") },
+            { code: 2, name: getText("CPS005_54") },
         ];
         //<!-- mapping CategoryType enum value = 3 or 4 or 5 . But using enum HistoryType to display -->
         historyTypes: any = new Array<any>();
         //mapping CategoryType enum value = 1 or 2. Theo thiết kế không lấy từ enum CategoryType
         singleMultipleType: Array<any> = [
-            { value: 1, name: nts.uk.resource.getText("CPS005_55") },
-            { value: 2, name: nts.uk.resource.getText("CPS005_56") },
+            { value: 1, name: getText("CPS005_55") },
+            { value: 2, name: getText("CPS005_56") },
         ];
         historyClassEnable: KnockoutObservable<boolean> = ko.observable(true);
         constructor(data: IData) {
@@ -128,7 +143,12 @@ module nts.uk.com.view.cps005.a {
                 nts.uk.ui.errors.clearAll();
                 new service.Service().getPerInfoCtgWithItemsName(newId).done(function(data: IPersonInfoCtg) {
                     self.currentCtgSelected(new PerInfoCtgModel(data));
-                    self.historyClassEnable(false)
+                    self.historyClassEnable(false);
+                    self.isEnableButtonProceed(true);
+                    self.isEnableButtonOpenDialog(true);
+                    if (self.currentCtgSelected().fixedIsSelected()) {
+                        self.isEnableButtonProceed(false);
+                    }
                 });
             });
         }
@@ -156,23 +176,23 @@ module nts.uk.com.view.cps005.a {
                 self.categoryName = data.categoryName || "";
                 self.perInfoCtgName(data.categoryName || "");
                 self.itemNameList(_.map(data.itemNameList, item => { return new PerInfoItemModel(item) }));
-                self.historyFixedName = (data.categoryType == 1 || data.categoryType == 2) ? nts.uk.resource.getText("CPS005_54") : nts.uk.resource.getText("CPS005_53");
+                self.historyFixedName = (data.categoryType == 1 || data.categoryType == 2) ? getText("CPS005_54") : getText("CPS005_53");
                 self.categoryType = data.categoryType;
                 switch (self.categoryType) {
                     case 1:
-                        self.categoryTypeName = nts.uk.resource.getText("CPS005_55");
+                        self.categoryTypeName = getText("CPS005_55");
                         break;
                     case 2:
-                        self.categoryTypeName = nts.uk.resource.getText("CPS005_56");
+                        self.categoryTypeName = getText("CPS005_56");
                         break;
                     case 3:
-                        self.categoryTypeName = nts.uk.resource.getText("Enum_HistoryTypes_CONTINUOUS");
+                        self.categoryTypeName = getText("Enum_HistoryTypes_CONTINUOUS");
                         break;
                     case 4:
-                        self.categoryTypeName = nts.uk.resource.getText("Enum_HistoryTypes_NO_DUPLICATE");
+                        self.categoryTypeName = getText("Enum_HistoryTypes_NO_DUPLICATE");
                         break;
                     case 5:
-                        self.categoryTypeName = nts.uk.resource.getText("Enum_HistoryTypes_DUPLICATE");
+                        self.categoryTypeName = getText("Enum_HistoryTypes_DUPLICATE");
                         break;
                 }
                 self.historyClassSelected((data.categoryType == 1 || data.categoryType == 2) ? 2 : 1);

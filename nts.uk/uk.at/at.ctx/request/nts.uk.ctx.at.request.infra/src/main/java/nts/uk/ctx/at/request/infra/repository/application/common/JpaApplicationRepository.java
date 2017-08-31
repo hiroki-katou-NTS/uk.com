@@ -74,8 +74,10 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	 */
 	@Override
 	public List<Application> getAllAppByAppType(String companyID, int applicationType) {
-		return this.queryProxy().query(SELECT_BY_APPTYPE, KafdtApplication.class).setParameter("companyID", companyID)
-				.setParameter("applicationType", applicationType).getList(c -> toDomain(c));
+		return this.queryProxy().query(SELECT_BY_APPTYPE, KafdtApplication.class)
+				.setParameter("companyID", companyID)
+				.setParameter("applicationType", applicationType)
+				.getList(c -> toDomain(c));
 	}
 
 	/**

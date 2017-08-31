@@ -59,7 +59,7 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 	 */
 	private void checkInput(SubmitLoginFormOneCommand command) {
 		//check input loginId
-		if (command.getLoginId().isEmpty() || command.getLoginId() == null) {
+		if (command.getLoginId().trim().isEmpty() || command.getLoginId() == null) {
 			throw new BusinessException("Msg_309");
 		}
 		//check input password
@@ -86,7 +86,7 @@ public class SubmitLoginFormOneCommandHandler extends CommandHandler<SubmitLogin
 	 * @param user the user
 	 */
 	private void checkLimitTime(Optional<User> user) {
-		if (!user.get().getExpirationDate().after(GeneralDate.today())) {
+		if (user.get().getExpirationDate().before(GeneralDate.today())) {
 			throw new BusinessException("Msg_316");
 		}
 	}

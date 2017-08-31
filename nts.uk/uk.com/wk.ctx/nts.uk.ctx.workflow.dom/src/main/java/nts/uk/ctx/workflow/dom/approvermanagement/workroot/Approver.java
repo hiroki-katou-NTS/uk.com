@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.DomainObject;
 /**
  * 承認者
  * @author hoatt
@@ -14,9 +15,11 @@ import nts.arc.enums.EnumAdaptor;
 @Getter
 @Setter
 @AllArgsConstructor
-public class Approver {
+public class Approver extends DomainObject{
 	/**会社ID*/
 	private String companyId;
+	/**分岐ID*/
+	private String branchId;
 	/**承認フェーズID*/
 	private String approvalPhaseId;
 	/**承認者ID*/
@@ -30,9 +33,10 @@ public class Approver {
 	/**区分*/
 	private ApprovalAtr approvalAtr;
 	/**確定者*/
-	private int confirmPerson;
+	private ConfirmPerson confirmPerson;
 	
-	public static Approver createSimpleFromJavaType(String companyId,
+	public static Approver createSimpleFromJavaType(String companyId, 
+			String branchId,
 			String approvalPhaseId,
 			String approverId,
 			String jobTitleId,
@@ -41,13 +45,14 @@ public class Approver {
 			int approvalAtr,
 			int confirmPerson){
 		return new Approver(companyId,
+				branchId,
 				approvalPhaseId,
 				approverId,
 				jobTitleId,
 				employeeId,
 				orderNumber,
 				EnumAdaptor.valueOf(approvalAtr, ApprovalAtr.class),
-				confirmPerson);
+				EnumAdaptor.valueOf(confirmPerson, ConfirmPerson.class));
 	}
 	public static Approver updateApprovalPhaseId(Approver approver){
 		String approvalPhaseId = UUID.randomUUID().toString();

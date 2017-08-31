@@ -105,8 +105,8 @@ subprojects {
         // Apache commons IO
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.27.1'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.40.1'
+		compile group: 'nts.gul', name: 'nts.gul', version: '0.27.2'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.40.3'
 		
 	}
 }
@@ -472,6 +472,7 @@ project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.ws') {
 project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
+		compile project (':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
 	}
 }
 project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.app') {
@@ -485,6 +486,8 @@ project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.infra') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom')
+		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
+		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.infra')
 	}
 }
 project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.ac') {

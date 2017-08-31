@@ -13,6 +13,13 @@
 					height : 780
 				};
 			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceYears
+				nts.uk.ctx.at.shared.dom.yearholidaygrant.LengthOfServiceMonths
+				nts.uk.ctx.at.shared.dom.yearholidaygrant.GrantDays
+				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedTimeHdDays
+				nts.uk.ctx.at.shared.dom.yearholidaygrant.LimitedHalfHdCnt
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="kmf003.b.vm.js" />
@@ -47,7 +54,7 @@
 						</tr>
 						<tr></tr>
 						<tr>
-							<td>基準日</td>
+							<td>#{i18n.getText('KMF003_46')}</td>
 							<td style="text-align: right">
 								<div class="cal-value" data-bind="ntsDatePicker: {value: referenceDate, dateFormat: 'YYYY/MM/DD'}, hasfocus: true"></div>
 							</td>
@@ -91,30 +98,40 @@
 							<td data-bind="text: $index() + 1" class="numbers"></td>
 							<td class="input-units"><input class="year-input" data-bind="ntsNumberEditor: {
 										value: lengthOfServiceYears, 
+										constraint: 'LengthOfServiceYears',
+										name: '#[KMF003_48]',
 										option: ko.mapping.fromJS({
 											unitID: 'YEARS',
 											width: '50'
 										})}" /></td>
 							<td class="input-units"><input class="months-input" data-bind="ntsNumberEditor: {
 										value: lengthOfServiceMonths, 
+										constraint: 'LengthOfServiceMonths',
+										name: '#[KMF003_49]',
 										option: ko.mapping.fromJS({
 											unitID: 'MONTHS',
 											width: '60'
 										})}" /></td>
 							<td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
 										value: grantDays, 
+										constraint: 'GrantDays',
+										name: '#[KMF003_43]',
 										option: ko.mapping.fromJS({
 											unitID: 'DAYS',
 											width: '50'
 										})}" /></td>
 							<td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
 										value: limitedTimeHdDays, 
+										constraint: 'LimitedTimeHdDays',
+										name: '#[KMF003_44]',
 										option: ko.mapping.fromJS({
 											unitID: 'DAYS',
 											width: '50'
 										})}" /></td>										
 							<td class="input-units"><input class="times-input" data-bind="ntsNumberEditor: {
 										value: limitedHalfHdCnt, 
+										constraint: 'LimitedHalfHdCnt',
+										name: '#[KMF003_45]',
 										option: ko.mapping.fromJS({
 											unitID: 'TIMES',
 											width: '50'

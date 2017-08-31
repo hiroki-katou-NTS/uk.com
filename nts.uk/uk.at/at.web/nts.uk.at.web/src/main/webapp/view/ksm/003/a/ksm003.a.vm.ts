@@ -95,6 +95,7 @@ module nts.uk.at.view.ksm003.a {
                         self.itemLst([]);
                         self.switchNewMode();
                     } else {
+                        self.itemLst([]);
                         self.itemLst(dataRes);
                     }
 
@@ -119,10 +120,12 @@ module nts.uk.at.view.ksm003.a {
                     //getPatternValByPatternCd by patternCode  
                     if (dataRes !== undefined) {
                         self.isEditting(true);
-                        $("#inpPattern").focus();
+
                         self.detail(new model.DailyPatternDetailModel(dataRes.patternCode, dataRes.patternName, dataRes.dailyPatternVals.map(function(item) {
                             return new model.DailyPatternValModel(item.dispOrder, item.workTypeSetCd, item.workingHoursCd, item.days);
                         })));
+
+                        $("#inpPattern").focus();
                     }
                     //                    nts.uk.ui.block.clear();
 
@@ -151,7 +154,29 @@ module nts.uk.at.view.ksm003.a {
                     self.selectedCode(nts.uk.text.padLeft(self.detail().patternCode(), '0', 2));
                     self.isEditting(true);
                 }).fail(function(res) {
-                    alert(res.message);
+                    if (res.messageId == "Msg_3") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_3" });
+                    } else if (res.messageId == "Msg_23") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_23" });
+                    } else if (res.messageId == "Msg_24") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_24" });
+                    } else if (res.messageId == "Msg_25") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_25" });
+                    } else if (res.messageId == "Msg_389") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_389" });
+                    } else if (res.messageId == "Msg_390") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_390" });
+                    } else if (res.messageId == "Msg_416") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_416" });
+                    } else if (res.messageId == "Msg_417") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_417" });
+                    } else if (res.messageId == "Msg_434") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_434" });
+                    } else if (res.messageId == "Msg_435") {
+                        $('#inpCode').ntsError('set', { messageId: "Msg_435" });
+                    } else {
+                        nts.uk.ui.dialog.alertError(res.message);
+                    }
                 }).always(function() {
                     nts.uk.ui.block.clear();
                 });
@@ -161,10 +186,11 @@ module nts.uk.at.view.ksm003.a {
             public deletePattern() {
                 let self = this;
 
-                //                nts.uk.ui.block.grayout();
-
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     var dataHistory: DailyPatternItemDto[] = self.itemLst();
+
+                    nts.uk.ui.block.grayout();
+
                     service.deleteDailyPattern(self.selectedCode()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             self.loadAllDailyPatternItems();
@@ -181,7 +207,7 @@ module nts.uk.at.view.ksm003.a {
                             }
 
                             // check list control is 0   
-                            if (self.itemLst() === undefined || self.itemLst().length == 0) {
+                            if (nts.uk.util.isNullOrEmpty(self.itemLst())) {
                                 self.itemLst([]);
                                 self.switchNewMode()
                             }
@@ -194,11 +220,13 @@ module nts.uk.at.view.ksm003.a {
                                 self.selectedCode(self.itemLst()[indexSelected + 1].patternCode);
                             }
                         });
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
                     }).always(function() {
-                        //                        nts.uk.ui.block.clear();
+                        nts.uk.ui.block.clear();
                     });
                 }).ifNo(function() {
-                    //                    nts.uk.ui.block.clear();
+                    nts.uk.ui.block.clear();
                     return;
                 });
 
@@ -210,14 +238,15 @@ module nts.uk.at.view.ksm003.a {
                 self.isEditting(false);
                 self.selectedCode("");
                 self.resetInput();
-                self.clearError();
                 $("#inpCode").focus();
+                self.clearError();
             }
 
             //reset Input
             private resetInput(): void {
                 let self = this;
-                //cretar new table
+                self.detail().patternCode("");
+                self.detail().patternName("");
                 self.detail().dailyPatternVals().forEach(function(item) {
                     item.workTypeSetCd("");
                     item.workTypeInfo("");
@@ -225,14 +254,15 @@ module nts.uk.at.view.ksm003.a {
                     item.workingHoursCd("");
                     item.days(null);
                 });
-                self.detail().patternCode("");
-                self.detail().patternName("");
             }
 
             // clear Error
             private clearError(): void {
                 if ($('.nts-editor').ntsError("hasError")) {
                     $('.nts-editor').ntsError('clear');
+                }
+                if ($('.buttonEvent').ntsError("hasError")) {
+                    $('.buttonEvent').ntsError('clear');
                 }
             }
 
@@ -241,16 +271,24 @@ module nts.uk.at.view.ksm003.a {
                 let self = this;
                 $('#inpCode').ntsEditor('validate');
                 $('#inpPattern').ntsEditor('validate');
-                self.detail().dailyPatternVals().forEach((item) => {
-                    if (item.isSetting()) {
-                        $('#days' + item.dispOrder).ntsEditor('validate');
+
+                if (nts.uk.util.isNullOrEmpty(self.detail().dailyPatternVals())) {
+                    $('#days1').ntsError('set', { messageId: "Msg_31" });
+                }
+
+                self.detail().dailyPatternVals().filter(i => i.isSetting()).forEach((item) => {
+                    $('#days' + item.dispOrder).ntsEditor('validate');
+
+                    if (!nts.uk.text.isNullOrEmpty(item.days()) && nts.uk.text.isNullOrEmpty(item.workTypeSetCd())) {
+                        $('#btnVal' + item.dispOrder).ntsError('set', { messageId: "Msg_22" });
                     }
 
-                    if (!nts.uk.text.isNullOrEmpty(item.days()) && nts.uk.text.isNullOrEmpty(item.workTypeSetCd()) {
-                        $('#days' + item.dispOrder).ntsError('set', { messageId: "Msg_22" });
+                    if (nts.uk.text.isNullOrEmpty(item.days()) && !nts.uk.text.isNullOrEmpty(item.workTypeSetCd())) {
+                        $('#days' + item.dispOrder).ntsError('set', { messageId: "Msg_25" });
                     }
                 });
-                return $('.nts-input').ntsError('hasError');
+
+                return $('.nts-input').ntsError('hasError') || $('.buttonEvent').ntsError('hasError');
             }
 
             //click button open Dialog Working
@@ -370,12 +408,20 @@ module nts.uk.at.view.ksm003.a {
 
                     nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml", { title: nts.uk.resource.getText('KDL003_1') }).onClosed(function() {
                         var childData = nts.uk.ui.windows.getShared('childData');
-                        self.workTypeSetCd(childData.selectedWorkTypeCode);
-                        self.workingHoursCd(childData.selectedWorkTimeCode);
-                        self.setWorkTypeName(childData.selectedWorkTypeName);
-                        self.setWorkTimeName(childData.selectedWorkTimeName);
-//                        $('#days' + self.dispOrder).ntsError('clear');
-//                        $('#days' + self.dispOrder).ntsEditor('validate');
+                        if (childData) {
+                            self.workTypeSetCd(childData.selectedWorkTypeCode);
+                            self.workingHoursCd(childData.selectedWorkTimeCode);
+                            self.setWorkTypeName(childData.selectedWorkTypeName);
+                            self.setWorkTimeName(childData.selectedWorkTimeName);
+                            if ($('.nts-editor').ntsError("hasError")) {
+                                $('.nts-editor').ntsError('clear');
+                            }
+                            if ($('.buttonEvent').ntsError("hasError")) {
+                                $('.buttonEvent').ntsError('clear');
+                            }
+                            //                        $('#days' + self.dispOrder).ntsError('clear');
+                            //                        $('#days' + self.dispOrder).ntsEditor('validate');
+                        }
                     });
 
                 }

@@ -1,7 +1,7 @@
  module ksu001.o.service {
     var paths: any = {
         getWorkType: "at/share/worktype/getByCIdAndDisplayAtr",
-        getWorkTime: "at/shared/worktime/findByCIdAndDisplayAtr"
+        getWorkTime: "screen/at/schedule/basicschedule/getListWorkTime"
     }
 
     export function getWorkType(): JQueryPromise<any> {

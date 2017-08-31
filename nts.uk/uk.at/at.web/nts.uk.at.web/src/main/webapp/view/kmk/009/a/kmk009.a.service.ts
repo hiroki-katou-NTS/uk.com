@@ -4,17 +4,16 @@ module nts.uk.at.view.kmk009.a {
         var paths = {
             getAllTotalTimes: "ctx/at/schedule/shift/totaltimes/getallitem",
             getAllTotalTimesDetail: "ctx/at/schedule/shift/totaltimes/getdetail/",
-            totalclassification: "ctx/at/schedule/shift/totaltimes/find/totalclassification",
+            totalClassification: "ctx/at/schedule/shift/totaltimes/find/totalclassification",
+            totalUseEnum: "ctx/at/schedule/shift/totaltimes/find/totalUseEnum",
+            saveAllTotalTimes: "ctx/at/schedule/shift/totaltimes/save",
+            findByIdWorkType: "at/share/worktype/findById",
+            findByIdWorkTime: "at/shared/worktime/findById",
+            findByIdListWorkTypes: "at/share/worktype/getpossibleworktype",
+            findByIdlistWorkTimes: "at/shared/worktime/findByCodeList",
+            findAlldWorkType: "at/share/worktype/findAll",
+            findAllWorkTime: "at/shared/worktime/findAll"
 
-
-
-
-            getAllDivTime: "at/record/divergencetime/getalldivtime",
-            updateDivTime: "at/record/divergencetime/updatedivtime",
-            updateTimeItemId: "at/record/divergencetime/updateTimeItemId",
-            getAllAttItem: "at/share/attendanceType/getByType/",
-            getItemSet: "at/record/divergencetime/getitemset/",
-            getAllName: "at/share/attendanceitem/getPossibleAttendanceItem"
         }
 
         /**
@@ -24,58 +23,67 @@ module nts.uk.at.view.kmk009.a {
             return nts.uk.request.ajax("at", paths.getAllTotalTimes);
         }
         export function getTotalClsEnum(): JQueryPromise<Array<model.Enum>> {
-            return nts.uk.request.ajax(paths.totalclassification);
+            return nts.uk.request.ajax(paths.totalClassification);
+        }
+        
+        export function getTotalUseEnum(): JQueryPromise<Array<model.EnumUse>> {
+            return nts.uk.request.ajax(paths.totalUseEnum);
         }
 
         export function getAllTotalTimesDetail(TotalTimesNo: number): JQueryPromise<viewmodel.model.TotalTimesDetail> {
             return nts.uk.request.ajax("at", paths.getAllTotalTimesDetail + TotalTimesNo);
         }
+        /**
+       * save
+       */
+        export function saveAllTotalTimes(command: viewmodel.model.TotalTimesDetail): JQueryPromise<Array<viewmodel.model.TotalTimesDetail>> {
+            return nts.uk.request.ajax("at", paths.saveAllTotalTimes, command);
+        }
 
-
-
-
-
-
-
+        /**
+            * findByIdWorkTime
+           */
+        export function findByIdWorkTime(workTimeCode: string): JQueryPromise<model.WorkTimeDto> {
+            return nts.uk.request.ajax("at", paths.findByIdWorkTime + '/' + workTimeCode);
+        }
 
 
         /**
-        * get all item selected(item da duoc chon)
+         * findByIdWorkType
         */
-        export function getItemSelected(divTimeId: number): JQueryPromise<Array<viewmodel.model.TimeItemSet>> {
-            return nts.uk.request.ajax("at", paths.getItemSet + divTimeId);
-        }
-        /**
-        * get name(item da duoc chon)
-        */
-        export function getNameItemSelected(lstItemId: Array<number>): JQueryPromise<Array<viewmodel.model.DivergenceItem>> {
-            return nts.uk.request.ajax("at", paths.getAllName, lstItemId);
-        }
-        /**
-        * get all attendance item id(id co the chon)
-        */
-        export function getAllAttItem(divType: number): JQueryPromise<Array<viewmodel.model.AttendanceType>> {
-            return nts.uk.request.ajax("at", paths.getAllAttItem + divType);
-        }
-        /**
-        * update time item id (da duoc chon lai)
-        */
-        export function updateTimeItemId(lstItemId: Array<viewmodel.model.DivergenceTimeItem>): JQueryPromise<Array<viewmodel.model.DivergenceTimeItem>> {
-            return nts.uk.request.ajax("at", paths.updateTimeItemId, lstItemId);
-        }
-        /**
-        * get all divergence time
-        */
-        export function getAllDivTime(): JQueryPromise<Array<viewmodel.model.DivergenceTime>> {
-            return nts.uk.request.ajax("at", paths.getAllDivTime);
-        }
-        /**
-         * update divergence time
-         */
-        export function updateDivTime(Object: viewmodel.model.ObjectDivergence): JQueryPromise<Array<viewmodel.model.DivergenceTimeItem>> {
-            return nts.uk.request.ajax("at", paths.updateDivTime, Object);
+        export function findByIdWorkType(workTypeCode: string): JQueryPromise<model.WorkTypeDto> {
+            return nts.uk.request.ajax("at", paths.findByIdWorkType + '/' + workTypeCode);
         }
 
+        /**
+          * findListByIdWorkTime
+           */
+        export function findListByIdWorkTimes(workTimeCodes: Array<string>): JQueryPromise<Array<model.WorkTimeDto>> {
+            return nts.uk.request.ajax(paths.findByIdlistWorkTimes, workTimeCodes);
+        }
+
+
+        /**
+         * findListByIdWorkType
+        */
+        export function findListByIdWorkTypes(workTypeCodes: Array<string>): JQueryPromise<Array<model.WorkTypeDto>> {
+            return nts.uk.request.ajax("at", paths.findByIdListWorkTypes, workTypeCodes);
+        }
+
+        /**
+         * findListByIdWorkTime
+          */
+        export function findAllWorkTimes(): JQueryPromise<Array<model.WorkTimeDto>> {
+            return nts.uk.request.ajax(paths.findAllWorkTime);
+        }
+
+
+        /**
+         * findListByIdWorkType
+        */
+        export function findAllWorkTypes(): JQueryPromise<Array<model.WorkTypeDto>> {
+            return nts.uk.request.ajax("at", paths.findAlldWorkType);
+        }
 
 
 
@@ -91,6 +99,29 @@ module nts.uk.at.view.kmk009.a {
                     this.fieldName = fieldName;
                     this.localizedName = localizedName;
                 }
+            }
+            
+            export class EnumUse {
+                value: number;
+                fieldName: string;
+                localizedName: string;
+
+                constructor(value: number, fieldName: string, localizedName: string) {
+                    this.value = value;
+                    this.fieldName = fieldName;
+                    this.localizedName = localizedName;
+                }
+            }
+
+            export interface WorkTypeDto {
+                workTypeCode: string;
+                name: string;
+            }
+
+            export interface WorkTimeDto {
+                code: string;
+                name: string;
+
             }
         }
     }
