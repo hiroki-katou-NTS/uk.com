@@ -16,7 +16,6 @@ import find.person.info.category.PerInfoCategoryFinder;
 import find.person.info.category.PerInfoCtgDataEnumDto;
 import find.person.info.category.PerInfoCtgFullDto;
 import find.person.info.category.PerInfoCtgWithItemsNameDto;
-import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 
 @Path("ctx/bs/person/info/category")
@@ -69,7 +68,7 @@ public class PerInfoCtgWebservice extends WebService {
 
 	@POST
 	@Path("update")
-	public JavaTypeResult<String> updatePerInfoCtg(UpdatePerInfoCtgCommand newPerInfoCtg) {
-		return new JavaTypeResult<String>(updatePerInfoCtgCommand.handle(newPerInfoCtg));
+	public void updatePerInfoCtg(UpdatePerInfoCtgCommand newPerInfoCtg) {
+		updatePerInfoCtgCommand.handle(newPerInfoCtg);
 	}
 }
