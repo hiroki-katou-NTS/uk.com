@@ -185,7 +185,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.dialog.alertError(res.message);
             }).always(function() {
                 nts.uk.ui.block.clear();
-            });;
+            });
 
             return dfd.promise();
         }
@@ -202,7 +202,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 if (data) {
                     self.stash.updateData(data);
                     self.itemTotalTimesDetail.updateData(data);
-                    self.selectUse(self.itemTotalTimesDetail.useAtr())
+                    self.selectUse(self.itemTotalTimesDetail.useAtr());
                     // disable or enable Upper limit and under linit
                     self.selectUppper(self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr());
                     if (self.selectUppper() == 1) {
@@ -247,10 +247,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             service.findListByIdWorkTypes(lstWorkTypeCd).done(function(res: Array<WorkTypeDto>) {
                 nts.uk.ui.block.clear();
 
-                if (res) {
+                if (res && res.length > 0) {
                     self.itemTotalTimesDetail.workTypeInfo(res.map(item => item.workTypeCode + ' ' + item.name).join(" ＋ "));
                 } else {
-                    self.itemTotalTimesDetail.workTypeInfo('');
+                    self.itemTotalTimesDetail.workTypeInfo(lstWorkTypeCd.join(" ＋ "));
                 }
                 dfd.resolve();
             });
@@ -272,10 +272,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             service.findListByIdWorkTimes(lstWorkTypeCd).done(function(res: Array<WorkTimeDto>) {
                 nts.uk.ui.block.clear();
 
-                if (res) {
+                if (res && res.length > 0 ) {
                     self.itemTotalTimesDetail.workingInfo(res.map(item => item.code + ' ' + item.name).join(" ＋ "));
                 } else {
-                    self.itemTotalTimesDetail.workingInfo('');
+                    self.itemTotalTimesDetail.workingInfo(lstWorkTypeCd.join(" ＋ "));
                 }
                 dfd.resolve();
             });
