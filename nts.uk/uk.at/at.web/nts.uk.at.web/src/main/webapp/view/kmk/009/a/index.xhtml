@@ -34,6 +34,7 @@
 						<div style="float: left">
 							<table tabindex="2" id="single-list-dataSource"
 								data-bind="ntsGridList:{
+									name: '#[KMK009_3]',
 									width: 450,
 									height: 365,
 									options: itemTotalTimes,								
@@ -61,6 +62,7 @@
 								<!-- A3_2 , A3_3 ,A3_4: Setting Use -->
 								<div tabindex="3" style="padding-left: 5px"
 									data-bind="ntsSwitchButton: {
+									name: '#[KMK009_5]',
 									options: useSet,
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -113,8 +115,9 @@
 							</td>
 							<td style="padding-left: 5px">
 								<!-- A3_8: Total Time Name -->
-								<div id="combo-box"
+								<div id="combo-box" tabindex="6"
 									data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
 									options: totalClsEnums,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
@@ -137,7 +140,7 @@
 								<button tabindex="7"
 									data-bind="click: openKDL002Dialog,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
 								<!-- A3_12: Time item name --> <input class="nts-input"
-								id="inpName" style="width: 350px"
+								id="inpName" style="width: 350px" tabindex="8"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
 										value: itemTotalTimesDetail().workTypeInfo ,
@@ -153,11 +156,11 @@
 							</td>
 							<td style="padding-left: 5px">
 								<!-- A3_14 Open dialog KDL001-->
-								<button tabindex="8"
+								<button tabindex="9"
 									data-bind="click: openKDL001Dialog,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
 								<!-- A3_15: Time item name --> 
 								<input class="nts-input"
-								id="inpName" style="width: 350px"
+								id="inpName" style="width: 350px" tabindex="10"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
 										value: itemTotalTimesDetail().workingInfo,
@@ -174,7 +177,7 @@
 							<td style="padding-left: 5px">
 								<div tabindex="9">
 									<!--A3:17 : Check error(select) -->
-									<div style="margin-bottom: 10px"
+									<div style="margin-bottom: 10px" tabindex="11"
 										data-bind="ntsCheckBox:{
 									checked: selectUppper,
 									enable: enableUse
@@ -182,7 +185,7 @@
 									</div>
 
 									<!-- A3_18: Alarm time -->
-									<input class="nts-validate" id="inpAlarmTime"
+									<input class="nts-validate" id="inpAlarmTime" tabindex="12"
 										style="width: 50px"
 										data-bind="ntsTimeEditor: {
 									name: '#[KMK009_16]',
@@ -201,14 +204,14 @@
 							<td style="padding-left: 5px">
 								<div tabindex="10">
 									<!-- :A3_20 Check error(select) -->
-									<div style="margin-bottom: 10px"
+									<div style="margin-bottom: 10px" tabindex="13"
 										data-bind="ntsCheckBox:{
 									checked: selectUnder,
 									enable: enableUse
 									}">
 									</div>
 									<!-- A3_21: Error time -->
-									<input style="width: 50px"
+									<input style="width: 50px" tabindex="14"
 										data-bind="ntsTimeEditor: {
 									name: '#[KMK009_19]',
 									value: itemTotalTimesDetail().totalCondition().thresoldLowerLimit,
@@ -229,7 +232,7 @@
 							<td style="padding-left: 5px">
 								<div tabindex="11">
 									<!-- A3_24: Check error(select) -->
-									<div style="margin-bottom: 10px"
+									<div style="margin-bottom: 10px" tabindex="15"
 										data-bind="ntsCheckBox:{
 									checked: itemTotalTimesDetail().countAtr,
 									enable: enableUse,
