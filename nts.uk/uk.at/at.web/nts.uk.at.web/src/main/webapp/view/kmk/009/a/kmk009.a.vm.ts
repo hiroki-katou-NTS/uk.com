@@ -68,38 +68,59 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             });
             //subscribe selectUse
             self.selectUse.subscribe(function(codeChanged) {
-                if (codeChanged == 1) {
-                    self.enableUse(true);
-                    self.itemTotalTimesDetail.useAtr(1);
-                } else {
-                    self.enableUse(false);
-                    self.itemTotalTimesDetail.useAtr(0);
-                }
+                 self.loadBySelectUse(self.checkSelectUse(), self.selectUnder(), self.selectUppper());
             });
 
             //subscribe upper Limit
-            self.selectUppper.subscribe(function(codeChanged) {
-                if ((codeChanged == true && self.selectUse() === "1") || (codeChanged == true && self.selectUse() === 1)) {
-                    self.enableUpper(true);
-                    self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr(1);
-                } else {
-                    self.enableUpper(false);
-                    self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr(0);
-                }
+            self.selectUppper.subscribe(function(isUpper) {
+               self.loadBySelectUse(self.checkSelectUse(), self.selectUnder(), isUpper);
             });
 
             //subscribe under Limit
-            self.selectUnder.subscribe(function(codeChanged) {
-                if ((codeChanged == true && self.selectUse() === "1") || (codeChanged == true && self.selectUse() === 1)) {
-                    self.enableUnder(true);
-                    self.itemTotalTimesDetail.totalCondition.lowerLimitSettingAtr(1);
-                } else {
-                    self.enableUnder(false);
-                    self.itemTotalTimesDetail.totalCondition.lowerLimitSettingAtr(0);
-                }
+            self.selectUnder.subscribe(function(isUnder) {
+                self.loadBySelectUse(self.checkSelectUse(), isUnder, self.selectUppper());
             });
 
         }
+        
+        /**
+         * check select use by use
+         */
+        
+        
+        private checkSelectUse(): boolean {
+            var self = this;
+            return ((self.selectUse() === "1") || self.selectUse() === 1);
+        }
+        /**
+         * load data by select use
+         */
+        private loadBySelectUse(isUse: boolean, isUnder: boolean, isUpper: boolean): void {
+            var self = this;
+            if (isUse) {
+                self.enableUse(true);
+                self.itemTotalTimesDetail.useAtr(1);
+            }
+            else {
+                self.enableUse(false);
+                self.itemTotalTimesDetail.useAtr(0);
+            }
+            if (isUnder && self.checkSelectUse()) {
+                self.enableUnder(true);
+                self.itemTotalTimesDetail.totalCondition.lowerLimitSettingAtr(1);
+            } else {
+                self.enableUnder(false);
+                self.itemTotalTimesDetail.totalCondition.lowerLimitSettingAtr(0);
+            }
+            if (isUpper && self.checkSelectUse()) {
+                self.enableUpper(true);
+                self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr(1);
+            } else {
+                self.enableUpper(false);
+                self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr(0);
+            }
+        }
+        
         /**
          * start page
          * get all divergence time
@@ -200,7 +221,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
             let lstWorkTypeCd: Array<string> = _.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 0)
                 .map((item) => item.workTypeCode());
-
+            
             service.findListByIdWorkTypes(lstWorkTypeCd).done(function(res: Array<WorkTypeDto>) {
                 nts.uk.ui.block.clear();
 
@@ -286,7 +307,6 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         public save() {
             let self = this;
             nts.uk.ui.block.invisible();
-            console.log(self.itemTotalTimesDetail);
             //trim() name
             self.itemTotalTimesDetail.totalTimesName($.trim(self.itemTotalTimesDetail.totalTimesName()));
             self.itemTotalTimesDetail.totalTimesABName($.trim(self.itemTotalTimesDetail.totalTimesABName()));
@@ -330,14 +350,12 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.windows.setShared('kml001selectedCodeList', listWorkCode, true);
                 nts.uk.ui.windows.sub.modal('/view/kdl/001/a/index.xhtml', { title: nts.uk.resource.getText('KDL001') }).onClosed(function(): any {
                     nts.uk.ui.block.clear();
-                    console.log(nts.uk.ui.windows.getShared('kml001selectedCodeList'));
                     var shareWorkCocde: Array<string> = nts.uk.ui.windows.getShared('kml001selectedCodeList');
                     // deleted data worktype
-
                     self.itemTotalTimesDetail.listTotalSubjects(_.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 0));
                     // insert data worktype
-                    for (let i = 0; i < shareWorkCocde.length; i++) {
-                        self.itemTotalTimesDetail.listTotalSubjects().push(new TotalSubjectsModel(shareWorkCocde[i], 1));
+                    for(var item of shareWorkCocde){
+                        self.itemTotalTimesDetail.listTotalSubjects().push(self.toSubjectModel(item, 1));
                     }
                     self.loadListWorkType();
                     self.loadListWorkTimes();
@@ -371,13 +389,12 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.windows.setShared('KDL002_SelectedItemId', listWorkType, true);
                 nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: nts.uk.resource.getText('KDL002') }).onClosed(function(): any {
                     nts.uk.ui.block.clear();
-                    console.log(nts.uk.ui.windows.getShared('KDL002_SelectedNewItem'));
                     var shareWorkType: Array<any> = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
                     // deleted data worktype
                     self.itemTotalTimesDetail.listTotalSubjects(_.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 1));
                     // insert data worktype
                     for (let i = 0; i < shareWorkType.length; i++) {
-                        self.itemTotalTimesDetail.listTotalSubjects().push(new TotalSubjectsModel(shareWorkType[i].code, 0));
+                        self.itemTotalTimesDetail.listTotalSubjects().push(self.toSubjectModel(shareWorkType[i].code, 0));
                     }
                     self.loadListWorkType();
                     self.loadListWorkTimes();
@@ -397,9 +414,19 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 $('.nts-input').ntsError('clear');
             }
         }
+        /**
+         * to init model
+         */
+
+        private toSubjectModel(workTypeCode: string, workTypeAtr): TotalSubjectsModel {
+            var model: TotalSubjectsModel = new TotalSubjectsModel();
+            var dto: TotalSubjectsDto = { workTypeCode: workTypeCode, workTypeAtr: workTypeAtr };
+            model.updateData(dto);
+            return model;
+        }
 
     }
-
+    
 
 
 
