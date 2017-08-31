@@ -38,7 +38,7 @@ public class ProgramsManager {
 	/**
 	 * CCG008D
 	 */
-	public static final Program CCG008D = new Program(WebAppId.COM, ProgramIdConsts.CCG008D, "PgName_CCG008D",
+	public static final Program CCG008D = new Program(WebAppId.COM, ProgramIdConsts.CCG008D, "",
 			"/view/ccg/008/d/index.xhtml");
 	/**
 	 * CCG013A
@@ -93,15 +93,19 @@ public class ProgramsManager {
 	/**
 	 * CCG015A
 	 */
-	public static final Program CCG015A = new Program(WebAppId.COM, ProgramIdConsts.CCG015A, "PgName_CCG015A",
+	public static final Program CCG015A = new Program(WebAppId.COM, ProgramIdConsts.CCG015A, "CCG015_1",
 			"/view/ccg/015/a/index.xhtml");
 
 	/**
 	 * CCG015B
 	 */
-	public static final Program CCG015B = new Program(WebAppId.COM, ProgramIdConsts.CCG015B, "PgName_CCG015B",
+	public static final Program CCG015B = new Program(WebAppId.COM, ProgramIdConsts.CCG015B, "CCG015_2",
 			"/view/ccg/015/b/index.xhtml");
-
+	/**
+	 * CCG015C
+	 */
+	public static final Program CCG015C = new Program(WebAppId.COM, ProgramIdConsts.CCG015C, "CCG015_3",
+			"/view/ccg/015/c/index.xhtml");
 	/**
 	 * CCG014A
 	 */
@@ -175,6 +179,13 @@ public class ProgramsManager {
 	 */
 	public static final Program CMM044A = new Program(WebAppId.COM, ProgramIdConsts.CMM044A, "CMM044_1",
 			"/view/cmm/044/a/index.xhtml");
+	
+	/**
+	 * CPS005B
+	 */
+	public static final Program CPS005B  = new Program(WebAppId.COM, ProgramIdConsts.CPS005B, "CPS005_37",
+			"/view/cps/005/b/index.xhtml");
+	
 	/**
 	 * KMK011A
 	 */
@@ -309,7 +320,7 @@ public class ProgramsManager {
 	/**
 	 * KSU001A
 	 */
-	public static final Program KSU001A = new Program(WebAppId.AT, ProgramIdConsts.KSU001A, "PgName_KSU001A",
+	public static final Program KSU001A = new Program(WebAppId.AT, ProgramIdConsts.KSU001A, "",
 			"/view/ksu/001/a/index.xhtml");
 
 	/** The Constant KDL003. */
@@ -513,15 +524,21 @@ public class ProgramsManager {
 			"/view/kmk/007/c/index.xhtml");
 	
 	/**
+	 * CAS001A
+	 */
+	public static final Program CAS001A  = new Program(WebAppId.AT, ProgramIdConsts.CAS001A, "CAS001_1",
+			"/view/cas/001/a/index.xhtml");
+
+	/**
 	 * CAS001C
 	 */
-	public static final Program CAS001C  = new Program(WebAppId.AT, ProgramIdConsts.CAS001C, "PgName_CAS001C",
+	public static final Program CAS001C  = new Program(WebAppId.AT, ProgramIdConsts.CAS001C, "CAS001_67",
 			"/view/cas/001/c/index.xhtml");
 	
 	/**
 	 * CAS001D
 	 */
-	public static final Program CAS001D  = new Program(WebAppId.AT, ProgramIdConsts.CAS001D, "PgName_CAS001D",
+	public static final Program CAS001D  = new Program(WebAppId.AT, ProgramIdConsts.CAS001D, "CAS001_66",
 			"/view/cas/001/d/index.xhtml");
 	
 	/**
@@ -699,6 +716,18 @@ public class ProgramsManager {
 	 */
 	public static final Program KDW008C  = new Program(WebAppId.AT, ProgramIdConsts.KDW008C, "",
 			"/view/kdw/008/c/index.xhtml");
+	
+	/**
+	 * CPS006A
+	 */
+	public static final Program CPS006A  = new Program(WebAppId.AT, ProgramIdConsts.CPS006A, "CPS005_36",
+			"/view/cps/006/a/index.xhtml");
+
+	/**
+	 * CPS006B
+	 */
+	public static final Program CPS006B  = new Program(WebAppId.AT, ProgramIdConsts.CPS006B, "CPS005_37",
+			"/view/cps/006/b/index.xhtml");
 	
 	
 	// TODO: Define new programs here.
