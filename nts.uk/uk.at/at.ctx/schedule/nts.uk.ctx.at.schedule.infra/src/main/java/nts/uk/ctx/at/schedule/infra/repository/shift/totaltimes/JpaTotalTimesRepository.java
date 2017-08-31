@@ -81,7 +81,7 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 		Optional<KshstTotalTimes> optKshstTotalTimes = this.queryProxy().find(kshstTotalTimesPK,
 				KshstTotalTimes.class);
 
-		if (optKshstTotalTimes == null) {
+		if (!optKshstTotalTimes.isPresent()) {
 			return Optional.empty();
 		}
 
