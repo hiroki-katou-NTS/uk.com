@@ -10,6 +10,7 @@ module nts.uk.ui.koExtentions {
         init(element: HTMLElement, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
             let HEADER_HEIGHT = 27;
             let ROW_HEIGHT = 23;
+            let DIFF_NUMBER = 2;
             
             var $grid = $(element);
             let gridId = $grid.attr('id');
@@ -30,7 +31,16 @@ module nts.uk.ui.koExtentions {
             $grid.data("init", true);
             
             if (data.multiple){
-                ROW_HEIGHT = 24;            
+                ROW_HEIGHT = 24;      
+                
+                // Internet Explorer 6-11
+                var isIE = /*@cc_on!@*/false || !!document.documentMode;
+                
+                // Edge 20+
+                var isEdge = !isIE && !!window.StyleMedia; 
+                if (isIE || isEdge) {
+                    DIFF_NUMBER = -2;    
+                }
             }
             var features = [];
             features.push({ name: 'Selection', multipleSelection: data.multiple });
@@ -93,7 +103,7 @@ module nts.uk.ui.koExtentions {
                 if (isDeleteButton){
                     ROW_HEIGHT = 30;        
                 }
-                height = rows * ROW_HEIGHT + HEADER_HEIGHT;   
+                height = rows * ROW_HEIGHT + HEADER_HEIGHT - DIFF_NUMBER;   
                 
                 let colSettings = [];
                 _.forEach(iggridColumns, function (c){

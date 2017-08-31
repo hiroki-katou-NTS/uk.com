@@ -5977,6 +5977,7 @@ var nts;
                     NtsGridListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var HEADER_HEIGHT = 27;
                         var ROW_HEIGHT = 23;
+                        var DIFF_NUMBER = 2;
                         var $grid = $(element);
                         var gridId = $grid.attr('id');
                         if (nts.uk.util.isNullOrUndefined(gridId)) {
@@ -5994,6 +5995,11 @@ var nts;
                         $grid.data("init", true);
                         if (data.multiple) {
                             ROW_HEIGHT = 24;
+                            var isIE = false || !!document.documentMode;
+                            var isEdge = !isIE && !!window.StyleMedia;
+                            if (isIE || isEdge) {
+                                DIFF_NUMBER = -2;
+                            }
                         }
                         var features = [];
                         features.push({ name: 'Selection', multipleSelection: data.multiple });
@@ -6052,7 +6058,7 @@ var nts;
                             if (isDeleteButton) {
                                 ROW_HEIGHT = 30;
                             }
-                            height = rows * ROW_HEIGHT + HEADER_HEIGHT;
+                            height = rows * ROW_HEIGHT + HEADER_HEIGHT - DIFF_NUMBER;
                             var colSettings_1 = [];
                             _.forEach(iggridColumns, function (c) {
                                 if (c["hidden"] === undefined || c["hidden"] === false) {
