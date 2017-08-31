@@ -357,16 +357,23 @@ public class ProgramsManager {
 			"/view/kdl/023/b/index.xhtml");
 	
 	/** The Constant KSM001. */
-	public static final Program KSM001 = new Program(WebAppId.AT, ProgramIdConsts.KSM001, "KSM001_1",
+	public static final Program KSM001 = new Program(WebAppId.AT, ProgramIdConsts.KSM001, "KSM001_62",
 			"/view/ksm/001/a/index.xhtml");
 	
 	/** The Constant KMK009. */
+	// TODO: can check lai
 	public static final Program KMK009 = new Program(WebAppId.AT, ProgramIdConsts.KMK009, "KMK009_1",
 			"/view/kmk/009/a/index.xhtml");
 	
 	/** The Constant KSU006. */
-	public static final Program KSU006 = new Program(WebAppId.AT, ProgramIdConsts.KSU006, "PgName_KSU006",
+	public static final Program KSU006A = new Program(WebAppId.AT, ProgramIdConsts.KSU006A, "KSU006_321",
 			"/view/ksu/006/a/index.xhtml");
+	
+	public static final Program KSU006B = new Program(WebAppId.AT, ProgramIdConsts.KSU006B, "KSU006_322",
+			"/view/ksu/006/b/index.xhtml");
+	
+	public static final Program KSU006C = new Program(WebAppId.AT, ProgramIdConsts.KSU006C, "KSU006_323",
+			"/view/ksu/006/c/index.xhtml");
 	
 	/** The Constant CCG007. */
 	public static final Program CCG007A = new Program(WebAppId.COM, ProgramIdConsts.CCG007A,
