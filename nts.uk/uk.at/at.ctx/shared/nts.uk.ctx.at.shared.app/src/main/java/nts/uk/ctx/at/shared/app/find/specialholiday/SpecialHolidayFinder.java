@@ -83,10 +83,11 @@ public class SpecialHolidayFinder {
 		if (grantPeriodic == null) {
 			return null;
 		}
-		
 		GrantPeriodicDto grantPeriodicDto = new GrantPeriodicDto();
 		grantPeriodicDto.setSpecialHolidayCode(grantPeriodic.getSpecialHolidayCode().v());
 		grantPeriodicDto.setGrantDay(grantPeriodic.getGrantDay().v());
+		grantPeriodicDto.setSplitAcquisition(grantPeriodic.getSplitAcquisition().value);
+		grantPeriodicDto.setGrantPeriodicMethod(grantPeriodic.getGrantPeriodicMethod().value);
 		
 		return grantPeriodicDto;
 	}
@@ -103,7 +104,11 @@ public class SpecialHolidayFinder {
 		
 		SphdLimitDto sphdLimitDto = new SphdLimitDto();
 		sphdLimitDto.setSpecialHolidayCode(sphdLimit.getSpecialHolidayCode().v());
-		
+		sphdLimitDto.setSpecialVacationMonths(sphdLimit.getSpecialVacationMonths().v());
+		sphdLimitDto.setSpecialVacationYears(sphdLimit.getSpecialVacationYears().v());
+		sphdLimitDto.setGrantCarryForward(sphdLimit.getGrantCarryForward().value);
+		sphdLimitDto.setLimitCarryoverDays(sphdLimit.getLimitCarryoverDays().v());
+		sphdLimitDto.setSpecialVacationMethod(sphdLimit.getSpecialVacationMethod().value);
 		return sphdLimitDto;
 	}
 	
@@ -119,7 +124,16 @@ public class SpecialHolidayFinder {
 		
 		SubConditionDto subConditionDto = new SubConditionDto();
 		subConditionDto.setSpecialHolidayCode(subCondition.getSpecialHolidayCode().v());
-		
+		subConditionDto.setUseGender(subCondition.getUseGender().value);
+		subConditionDto.setUseEmployee(subCondition.getUseEmployee().value);
+		subConditionDto.setUseCls(subCondition.getUseCls().value);
+		subConditionDto.setUseAge(subCondition.getUseAge().value);
+		subConditionDto.setGenderAtr(subCondition.getGenderAtr().value);
+		subConditionDto.setLimitAgeFrom(subCondition.getLimitAgeFrom().v());
+		subConditionDto.setLimitAgeTo(subCondition.getLimitAgeTo().v());
+		subConditionDto.setAgeCriteriaAtr(subCondition.getAgeCriteriaAtr().value);
+		subConditionDto.setAgeBaseYearAtr(subCondition.getAgeBaseYearAtr().value);
+		subConditionDto.setAgeBaseDates(subCondition.getAgeBaseDates().v());
 		return subConditionDto;
 	}
 	
@@ -132,10 +146,12 @@ public class SpecialHolidayFinder {
 		if (grantSingle == null) {
 			return null;
 		}
-		
 		GrantSingleDto grantSingleDto = new GrantSingleDto();
 		grantSingleDto.setSpecialHolidayCode(grantSingle.getSpecialHolidayCode().v());
-		
+		grantSingleDto.setGrantDaySingleType(grantSingle.getGrantDaySingleType().value);
+		grantSingleDto.setFixNumberDays(grantSingle.getFixNumberDays().v());
+		grantSingleDto.setMakeInvitation(grantSingle.getMakeInvitation().value);
+		grantSingleDto.setHolidayExclusionAtr(grantSingle.getHolidayExclusionAtr().value);
 		return grantSingleDto;
 	}
 

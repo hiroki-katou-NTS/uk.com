@@ -101,7 +101,9 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 
 
 	private KshstGrantRegular convertToDbTypeRegular(GrantRegular grantRegular) {
-
+		if(grantRegular == null){
+			return null;
+		}
 		KshstGrantRegular kshstGrantRegular = new KshstGrantRegular();
 		KshstGrantRegularPK kshstGrantRegularPK = new KshstGrantRegularPK(grantRegular.getCompanyId(),
 				grantRegular.getSpecialHolidayCode().v());
@@ -115,38 +117,67 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	}
 
 	private KshstGrantPeriodic convertToDbTypePeriodic(GrantPeriodic grantPeriodic) {
-
+		if(grantPeriodic == null){
+			return null;
+		}
 		KshstGrantPeriodic kshstGrantPeriodic = new KshstGrantPeriodic();
 		KshstGrantPeriodicPK kshstGrantPeriodicPK = new KshstGrantPeriodicPK(grantPeriodic.getCompanyId(),
 				grantPeriodic.getSpecialHolidayCode().v());
+		kshstGrantPeriodic.grantDay = grantPeriodic.getGrantDay().v();
+		kshstGrantPeriodic.splitAcquisition = grantPeriodic.getSplitAcquisition().value;
+		kshstGrantPeriodic.grantPerioricMethod = grantPeriodic.getGrantPeriodicMethod().value;
 		kshstGrantPeriodic.kshstGrantPeriodicPK = kshstGrantPeriodicPK;
 		
 		return kshstGrantPeriodic;
 	}
-
 	private KshstSphdLimit convertToDbTypeSphdLimit(SphdLimit sphdLimit) {
-
+		if(sphdLimit == null){
+			return null;
+		}
 		KshstSphdLimit kshstSphdLimit = new KshstSphdLimit();
 		KshstSphdLimitPK kshstSphdLimitPK = new KshstSphdLimitPK(sphdLimit.getCompanyId(),
 				sphdLimit.getSpecialHolidayCode().v());
+		kshstSphdLimit.specialVacationMonths = sphdLimit.getSpecialVacationMonths().v();
+		kshstSphdLimit.specialVacationYears = sphdLimit.getSpecialVacationYears().v();
+		kshstSphdLimit.grantCarryForward = sphdLimit.getGrantCarryForward().value;
+		kshstSphdLimit.limitCarryoverDays = sphdLimit.getLimitCarryoverDays().v();
+		kshstSphdLimit.specialVacationMethod = sphdLimit.getSpecialVacationMethod().value;
 		kshstSphdLimit.kshstSphdLimitPK = kshstSphdLimitPK;
 		return kshstSphdLimit;
 	}
 
 	private KshstSphdSubCondition convertToDbTypeSubCondition(SubCondition subCondition) {
-
+		if(subCondition == null){
+			return null;
+		}
 		KshstSphdSubCondition kshstSphdSubCondition = new KshstSphdSubCondition();
 		KshstSphdSubConditionPK kshstSphdSubConditionPK = new KshstSphdSubConditionPK(subCondition.getCompanyId(),
 				subCondition.getSpecialHolidayCode().v());
+		kshstSphdSubCondition.useGender = subCondition.getUseGender().value;
+		kshstSphdSubCondition.useEmployee = subCondition.getUseEmployee().value;
+		kshstSphdSubCondition.useCls = subCondition.getUseCls().value;
+		kshstSphdSubCondition.useAge = subCondition.getUseAge().value;
+		kshstSphdSubCondition.genderAtr = subCondition.getGenderAtr().value;
+		kshstSphdSubCondition.limitAgeFrom = subCondition.getLimitAgeFrom().v();
+		kshstSphdSubCondition.limitAgeTo = subCondition.getLimitAgeTo().v();
+		kshstSphdSubCondition.ageCriteriaAtr = subCondition.getAgeCriteriaAtr().value;
+		kshstSphdSubCondition.ageBaseYearAtr = subCondition.getAgeBaseYearAtr().value;
+		kshstSphdSubCondition.ageBaseDates = subCondition.getAgeBaseDates().v();
 		kshstSphdSubCondition.kshstSphdSubConditionPK = kshstSphdSubConditionPK;
 		return kshstSphdSubCondition;
 	}
 
 	private KshstGrantSingle convertToDbTypeGrantSingle(GrantSingle grantSingle) {
-
+		if(grantSingle == null){
+			return null;
+		}
 		KshstGrantSingle kshstGrantSingle = new KshstGrantSingle();
 		KshstGrantSinglePK kshstGrantSinglePK = new KshstGrantSinglePK(grantSingle.getCompanyId(),
 				grantSingle.getSpecialHolidayCode().v());
+		kshstGrantSingle.grantDaySingleType = grantSingle.getGrantDaySingleType().value;
+		kshstGrantSingle.fixNumberDays = grantSingle.getFixNumberDays().v();
+		kshstGrantSingle.makeInvitation = grantSingle.getMakeInvitation().value;
+		kshstGrantSingle.holidayExcusionAtr = grantSingle.getHolidayExclusionAtr().value;
 		kshstGrantSingle.kshstGrantSinglePK = kshstGrantSinglePK;
 		return kshstGrantSingle;
 	}

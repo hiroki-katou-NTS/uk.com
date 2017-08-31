@@ -34,19 +34,19 @@ public class AddSpecialHolidayCommand {
 	private List<String> workTypeList;
 
 	/**/
-	private GrantRegularCommand regularCommand;
+	private GrantRegularCommand grantRegular;
 
 	/**/
-	private GrantPeriodicCommand periodicCommant;
+	private GrantPeriodicCommand grantPeriodic;
 
 	/**/
-	private SphdLimitCommand limitCommand;
+	private SphdLimitCommand sphdLimit;
 
 	/**/
-	private SubConditionCommand conditionCommand;
+	private SubConditionCommand subCondition;
 
 	/**/
-	private GrantSingleCommand singleCommand;
+	private GrantSingleCommand grantSingle;
 
 	public SpecialHoliday toDomain(String companyId) {
 		return SpecialHoliday.createFromJavaType(companyId, this.specialHolidayCode, this.specialHolidayName,
@@ -56,52 +56,52 @@ public class AddSpecialHolidayCommand {
 	}
 
 	private GrantRegular toDomainGrantRegular(String companyId) {
-		if (this.regularCommand == null) {
+		if (this.grantRegular == null) {
 			return null;
 		}
 
-		return GrantRegular.createFromJavaType(companyId, specialHolidayCode, this.regularCommand.getGrantStartDate(),
-				this.regularCommand.getMonths(), this.regularCommand.getYears(),
-				this.regularCommand.getGrantRegularMethod());
+		return GrantRegular.createFromJavaType(companyId, specialHolidayCode, this.grantRegular.getGrantStartDate(),
+				this.grantRegular.getMonths(), this.grantRegular.getYears(),
+				this.grantRegular.getGrantRegularMethod());
 	}
 
 	private GrantPeriodic toDomainGrantPeriodic(String companyId) {
-		if (this.periodicCommant == null) {
+		if (this.grantPeriodic == null) {
 			return null;
 		}
 
-		return GrantPeriodic.createFromJavaType(companyId, specialHolidayCode, this.periodicCommant.getGrantDay(),
-				this.periodicCommant.getSplitAcquisition(), this.periodicCommant.getGrantPeriodicMethod());
+		return GrantPeriodic.createFromJavaType(companyId, specialHolidayCode, this.grantPeriodic.getGrantDay(),
+				this.grantPeriodic.getSplitAcquisition(), this.grantPeriodic.getGrantPeriodicMethod());
 	}
 
 	private SphdLimit toDomainSphdLimit(String companyId) {
-		if (this.limitCommand == null) {
+		if (this.sphdLimit == null) {
 			return null;
 		}
-		return SphdLimit.createFromJavaType(companyId, specialHolidayCode, this.limitCommand.getSpecialVacationMonths(),
-				this.limitCommand.getSpecialVacationYears(), this.limitCommand.getGrantCarryForward(),
-				this.limitCommand.getLimitCarryoverDays(), this.limitCommand.getSpecialVacationMethod());
+		return SphdLimit.createFromJavaType(companyId, specialHolidayCode, this.sphdLimit.getSpecialVacationMonths(),
+				this.sphdLimit.getSpecialVacationYears(), this.sphdLimit.getGrantCarryForward(),
+				this.sphdLimit.getLimitCarryoverDays(), this.sphdLimit.getSpecialVacationMethod());
 	}
 
 	private SubCondition toDomainSubCondition(String companyId) {
-		if (this.conditionCommand == null) {
+		if (this.subCondition == null) {
 			return null;
 		}
 
-		return SubCondition.createFromJavaType(companyId, specialHolidayCode, this.conditionCommand.getUseGender(),
-				this.conditionCommand.getUseEmployee(), this.conditionCommand.getUseCls(),
-				this.conditionCommand.getUseAge(), this.conditionCommand.getGenderAtr(),
-				this.conditionCommand.getLimitAgeFrom(), this.conditionCommand.getLimitAgeTo(),
-				this.conditionCommand.getAgeCriteriaAtr(), this.conditionCommand.getAgeBaseYearAtr(),
-				this.conditionCommand.getAgeBaseDates());
+		return SubCondition.createFromJavaType(companyId, specialHolidayCode, this.subCondition.getUseGender(),
+				this.subCondition.getUseEmployee(), this.subCondition.getUseCls(),
+				this.subCondition.getUseAge(), this.subCondition.getGenderAtr(),
+				this.subCondition.getLimitAgeFrom(), this.subCondition.getLimitAgeTo(),
+				this.subCondition.getAgeCriteriaAtr(), this.subCondition.getAgeBaseYearAtr(),
+				this.subCondition.getAgeBaseDates());
 	}
 
 	private GrantSingle toDomainGrantSingle(String companyId) {
-		if (this.singleCommand == null) {
+		if (this.grantSingle == null) {
 			return null;
 		}
 		return GrantSingle.createSimpleFromJavaType(companyId, specialHolidayCode,
-				this.singleCommand.getGrantDaySingleType(), this.singleCommand.getFixNumberDays(),
-				this.singleCommand.getMakeInvitation(), this.singleCommand.getHolidayExclusionAtr());
+				this.grantSingle.getGrantDaySingleType(), this.grantSingle.getFixNumberDays(),
+				this.grantSingle.getMakeInvitation(), this.grantSingle.getHolidayExclusionAtr());
 	}
 }

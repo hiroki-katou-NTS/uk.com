@@ -29,12 +29,12 @@ public class GrantPeriodic {
 			String companyId,
 			int specialHolidayCode,
 			int grantDay,
-			int fixedDayGrant,
+			int splitAcquisition,
 			int grantPeriodicMethod){
 					return new GrantPeriodic(companyId,
 							new SpecialHolidayCode(specialHolidayCode),
 							new GrantDay(grantDay),
-							EnumAdaptor.valueOf(fixedDayGrant, SplitAcquisition.class),
+							EnumAdaptor.valueOf(splitAcquisition, SplitAcquisition.class),
 							EnumAdaptor.valueOf(grantPeriodicMethod, GrantPeriodicMethod.class));
 	}
 
