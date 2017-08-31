@@ -13,10 +13,10 @@ import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "BSYDT_EMPLOYEE")
+//@Entity
+//@NoArgsConstructor
+//@AllArgsConstructor
+//@Table(name = "BSYDT_EMPLOYEE")
 public class BsydtEmployee extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -42,6 +42,10 @@ public class BsydtEmployee extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "COMPANY_MOBILE_MAIL")
 	public String companyMobileMail;
+	
+	@Basic(optional = false)
+	@Column(name = "COMPANY_MOBILE")
+	public String companyMobile;
 	
 	@Basic(optional = false)
 	@Column(name = "ENTRY_DATE")

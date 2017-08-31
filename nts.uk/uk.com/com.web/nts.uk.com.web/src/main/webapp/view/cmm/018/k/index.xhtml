@@ -14,10 +14,10 @@
 			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="cmm018.k.service.js" />
+			<com:scriptfile path="../shr/cmm018.shr.vmbase.js" />
+			<com:scriptfile path="cmm018.k.service.js" />			
 			<com:scriptfile path="cmm018.k.vm.js" />
-			<com:scriptfile path="cmm018.k.start.js" />
-			
+			<com:scriptfile path="cmm018.k.start.js" />			
 			<com:stylefile path="cmm018.k.main.css" />
 		</ui:define>
 
@@ -36,7 +36,7 @@
 					<button data-bind="" tabindex="2" id = "applyButton" class="caret-bottom">#{i18n.getText('CMM018_77')}</button>
 				</div>
 				<!--K1_3-->
-				<div class="typeSetting x-large" tabindex="3" data-bind="ntsSwitchButton: {
+				<div class="typeSetting x-large" id = "typeSetting" style="margin-top: 5px;" tabindex="3" data-bind="ntsSwitchButton: {
 									options: typeSetting,
 									optionsValue: 'code',
 									optionsText: 'name',
@@ -48,81 +48,71 @@
 					<div id="tree-grid"></div>	
 				</div>
 				<div class = "settingApprover">
-					<table>
-						<tr>
-							<td class ="selectApprover">
-								<!--K2_1-->
-								<div class = "titleSelect" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_61')}</div>
-							</td>
-							<td></td>
-							<td class ="selectedApprover">
-								<!--K2_10-->
-								<div class ="titleSelected" data-bind = "ntsFormLabel: {required: true }">#{i18n.getText('CMM018_27')}</div>
-								<!--K2_11-->
-								<div class="typeSetting" tabindex="6" data-bind="ntsSwitchButton: {
-													options: formSetting,
-													optionsValue: 'code',
-													optionsText: 'name',
-													name: '#[CMM018_27]',
-													value: selectFormSet,
-													enable: true }"></div>
-							</td>	
-							<td></td>						
-						</tr>
-						<tr>
-							<td  class ="selectApprover">
-								<!--K2_3選択可能な承認者一覧(個人指定)-->
-								<div id="component-items-list"></div>
-								<!--K2_3選択可能な承認者一覧(職位指定)-->
-								<div id="component-items-list-job"></div>
-							</td>
-							<td style ="padding-left: 10px; padding-right: 10px">
-								<!--K2_8 →button  -->
-								<button id="arrowLeft" data-bind="click: leftSelect" style="margin-bottom: 20px"><i class="icon icon-button-arrow-left"></i></button><br/>
-								<!--K2_9 ←button  -->
-								<button id = "arrowRight" data-bind="click: rightSelect"><i class="icon icon-button-arrow-right"></i></button>
-							</td>
-							<td style = "vertical-align: top; padding-top: 40px;">
-								<!--選択された承認者 -->
-								<!--K2_14-->
-								<div class = "approverSelect" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_62')}</div><br/>
-								<!--K2_15-->
-								<table id="multi-list" data-bind="ntsGridList: {
-									height: 200,
-									width: 400,
-									options: selectedEmpl,
-									optionsValue: 'id',
-									columns: columns,
-									multiple: true,
-									name: '#[CMM018_62]',
-									value: currentIdEmp}"></table><br/>
-								<div>
-									<!--K2_20-->
-									<div style="vertical-align: top;" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_64')}</div>
-									<!--K2_21 確定者の選択-->
-									<div id="combo-box" data-bind="ntsComboBox: {
-																				options: itemListCbb,
-																				optionsValue: 'id',
-																				visibleItemsCount: 5,
-																				value: selectedId,
-																				optionsText: 'name',
-																				editable: false,
-																				enable: cbbEnable,
-																				columns: [
-																					{ prop: 'id', length: 0 },
-																					{ prop: 'code', length: 0 },
-																					{ prop: 'name', length: 4 },
-																				]}"></div>
-								</div>
-							</td>
-							<td  style ="padding-left: 10px;">
-								<!--K2_24 →button  -->
-								<button class="auto-height" id = "arrowTop" data-bind="click: topSelect" style="margin-bottom: 20px"><i class="icon icon-button-arrow-top"/></button><br/>
-								<!--K2_25 →button  -->
-								<button class="auto-height" id = "arrowBottom" data-bind="click: bottomSelect" ><i class="icon icon-button-arrow-bottom"/></button>
-							</td>
-						</tr>
-					</table>					
+					<div>
+						<!--K2_1-->					
+						<div class = "titleSelect" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_61')}</div>
+						<div style = "float: right;margin-right: 210px;">
+							<!--K2_10-->
+							<div class ="titleSelected" data-bind = "ntsFormLabel: {required: true }">#{i18n.getText('CMM018_27')}</div>
+							<!--K2_11-->
+							<div class="typeSetting" tabindex="6" data-bind="ntsSwitchButton: {
+												options: formSetting,
+												optionsValue: 'code',
+												optionsText: 'name',
+												name: '#[CMM018_27]',
+												value: selectFormSet,
+												enable: true }"></div>
+						</div>
+					</div>
+					<br/>
+					<!--選択された承認者 -->
+					<!--K2_14-->
+					<div class = "approverSelect" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_62')}</div><br/>
+					<br/>
+					<div style="display: inline-flex;">
+						<div id="swap-list" data-bind="ntsSwapList: { 
+										showSearchBox: { showLeft : true, showRight: false},
+										height: 300,
+										dataSource: employeeList,
+										disableMoveButton: false,
+										primaryKey: 'code',
+										columns: columns,
+										value: approverList,
+										searchMode: 'filter',
+										searchCriterion: ['code'],
+										draggable: true,
+										multipleDrag: { left: true, right: false },
+										innerDrag: { left: false, right: true },
+										outerDrag: { left: true, right: true } 
+									}"></div> 
+						<div id="up-down" data-bind="ntsUpDown: {
+									targetSource: approverList,
+									primaryKey: 'code',
+									comId: '#swap-list',
+									type: 'swap',
+									swapTarget: 'right'
+								}"
+								class=""></div>
+					</div>
+					<br/>
+					<div style="float: right; margin-right: 180px; margin-top: 5px; margin-bottom: 5px">
+						<!--K2_20-->
+						<div style="vertical-align: top;" data-bind="ntsFormLabel: {required: false }">#{i18n.getText('CMM018_64')}</div>
+						<!--K2_21 確定者の選択-->
+						<div id="combo-box" data-bind="ntsComboBox: {
+																	options: itemListCbb,
+																	optionsValue: 'id',
+																	visibleItemsCount: 5,
+																	value: selectedCbbCode,
+																	optionsText: 'name',
+																	editable: false,
+																	enable: cbbEnable,
+																	columns: [
+																		{ prop: 'name', length: 10 },
+																	]}"></div>
+						
+					</div>
+									
 				</div>				
 			</div>
 			<div id="functions-area-bottom">

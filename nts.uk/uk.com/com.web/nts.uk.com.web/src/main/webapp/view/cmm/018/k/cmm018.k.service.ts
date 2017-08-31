@@ -1,4 +1,4 @@
-module cmm018.k.service{
+module nts.uk.com.view.cmm018.k.service{
     import format = nts.uk.text.format;
     // Service paths.
     var servicePath = {

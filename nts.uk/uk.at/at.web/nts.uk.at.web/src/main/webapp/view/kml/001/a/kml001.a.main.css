@@ -166,15 +166,3 @@ img {
 #combo-box {
 	width: 132px;
 }
-.percenSymbol {
-	margin-left: -25px;
-    display: inline-block;
-}
-.premiumPercent { height: 30px; }
-.premiumPercent.nts-editor.nts-input{
-	padding-right: 20px;
-}
-.premiumItems.nts-editor.nts-input { 
-	height: 18px;
-	margin-right: -80px;
-}

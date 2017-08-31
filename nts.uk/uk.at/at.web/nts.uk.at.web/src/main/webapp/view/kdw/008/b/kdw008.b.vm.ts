@@ -50,7 +50,7 @@ module nts.uk.at.view.kdw008.b {
 
                 self.columns1 = ko.observableArray([
                     { headerText: 'コード', key: 'businessTypeCode', width: 100 },
-                    { headerText: '勤務種別名称', key: 'businessTypeName', width: 150 }
+                    { headerText: '勤務種別名称', key: 'businessTypeName', width: 150, formatter: _.escape }
                 ]);
                 this.selectedCode = ko.observable();
 

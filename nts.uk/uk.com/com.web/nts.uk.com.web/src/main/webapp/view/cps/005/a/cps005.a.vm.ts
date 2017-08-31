@@ -64,10 +64,10 @@ module nts.uk.com.view.cps005.a {
                 self.currentData().perInfoCtgSelectCode("");
                 self.currentData().currentCtgSelected(new PerInfoCtgModel(null));
                 self.isUpdate = false;
-                self.currentData().historyClassEnable(true);
                 $("#category-name-control").focus();
                 self.currentData().isEnableButtonProceed(true);
                 self.currentData().isEnableButtonOpenDialog(false);
+                self.currentData().isHisTypeUpdateModel(false);
             }
 
             addUpdateData() {
@@ -77,18 +77,23 @@ module nts.uk.com.view.cps005.a {
                 }
                 if (self.isUpdate) {
                     let updateCategory = new UpdatePerInfoCtgModel(self.currentData().currentCtgSelected());
-                    new service.Service().updatePerInfoCtg(updateCategory).done(function(data: string) {
+                    new service.Service().updatePerInfoCtg(updateCategory).done(function() {
                         self.reloadData();
-                        if (data) {
-                            info({ messageId: data }).then(() => {
-                                info({ messageId: "Msg_15" });
-                            });
-                        }
+                        info({ messageId: "Msg_15" });
                     }).fail(error => {
-                        alertError(error);
+                        alertError({ messageId: error.message });
                     });
                 } else {
                     let newCategory = new AddPerInfoCtgModel(self.currentData().currentCtgSelected());
+//                    let x =  newCategory.categoryName;
+//                    for(let i = 0; i < 200; i++){
+//                                           
+//                            newCategory.categoryName = x + i
+//                             new a.service.Service().addPerInfoCtg(newCategory).done(function () {
+//                            }).fail(function (error) {
+//                                               alertError({ messageId: error.message });
+//                             });
+//                      }
                     new service.Service().addPerInfoCtg(newCategory).done(() => {
                         self.reloadData(newCategory.categoryName);
                         info({ messageId: "Msg_15" }).then(() => {
@@ -100,7 +105,7 @@ module nts.uk.com.view.cps005.a {
                             })
                         });
                     }).fail(error => {
-                        alertError(error);
+                        alertError({ messageId: error.message });
                     });
                 }
             }
@@ -119,6 +124,7 @@ module nts.uk.com.view.cps005.a {
         currentCtgSelected: KnockoutObservable<PerInfoCtgModel> = ko.observable(new PerInfoCtgModel(null));
         isEnableButtonProceed: KnockoutObservable<boolean> = ko.observable(true);
         isEnableButtonOpenDialog: KnockoutObservable<boolean> = ko.observable(false);
+        isHisTypeUpdateModel: KnockoutObservable<boolean> = ko.observable(false);
         historyClassification: Array<any> = [
             { code: 1, name: getText("CPS005_53") },
             { code: 2, name: getText("CPS005_54") },
@@ -130,7 +136,6 @@ module nts.uk.com.view.cps005.a {
             { value: 1, name: getText("CPS005_55") },
             { value: 2, name: getText("CPS005_56") },
         ];
-        historyClassEnable: KnockoutObservable<boolean> = ko.observable(true);
         constructor(data: IData) {
             let self = this;
             if (data) {
@@ -143,7 +148,7 @@ module nts.uk.com.view.cps005.a {
                 nts.uk.ui.errors.clearAll();
                 new service.Service().getPerInfoCtgWithItemsName(newId).done(function(data: IPersonInfoCtg) {
                     self.currentCtgSelected(new PerInfoCtgModel(data));
-                    self.historyClassEnable(false);
+                    self.isHisTypeUpdateModel(true);
                     self.isEnableButtonProceed(true);
                     self.isEnableButtonOpenDialog(true);
                     if (self.currentCtgSelected().fixedIsSelected()) {
@@ -162,6 +167,7 @@ module nts.uk.com.view.cps005.a {
         categoryType: number = 1;
         categoryTypeName: string = "";
         historyClassSelected: KnockoutObservable<number> = ko.observable(1);
+        historyClassSelectedText: KnockoutObservable<string> = ko.observable("");
         // historyTypesSelected and singleMulTypeSelected == categoryType
         historyTypesSelected: KnockoutObservable<number> = ko.observable(1);
         singleMulTypeSelected: KnockoutObservable<number> = ko.observable(1);
@@ -202,6 +208,9 @@ module nts.uk.com.view.cps005.a {
                     self.historyTypesSelected(data.categoryType - 2);
                     self.singleMulTypeSelected(1);
                     self.historyTypesDisplay(true);
+                    self.historyClassSelectedText(getText("CPS005_53"));
+                } else {
+                    self.historyClassSelectedText(getText("CPS005_54"));    
                 }
                 self.fixedIsSelected(data.isFixed == 1 ? true : false);
             }

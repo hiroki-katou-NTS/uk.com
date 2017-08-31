@@ -13,7 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author hieult
  *
  */
-@Stateless
+
 public class DetailScreenInitModeFinder {
 	
 	

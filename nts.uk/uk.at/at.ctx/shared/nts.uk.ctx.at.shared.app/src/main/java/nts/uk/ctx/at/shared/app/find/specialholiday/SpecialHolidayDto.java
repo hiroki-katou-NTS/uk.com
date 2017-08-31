@@ -6,16 +6,28 @@ import lombok.Data;
 
 @Data
 public class SpecialHolidayDto {
-	
-	private String companyId;
 
+	/*特別休暇コード*/
 	private int specialHolidayCode;
 
+	/*特別休暇名称*/
 	private String specialHolidayName;
 
-	private int grantPeriodicCls;
+	/*定期付与*/
+	private int grantMethod;
 
+	/*メモ*/
 	private String memo;
 	
 	private List<String> workTypeList;
+	
+	private GrantRegularDto grantRegular;
+	
+	private GrantPeriodicDto grantPeriodic;
+	
+	private SphdLimitDto sphdLimit;
+	
+	private SubConditionDto subCondition;
+	
+	private GrantSingleDto grantSingle;
 }

@@ -19,7 +19,7 @@ public interface PerInfoCategoryRepositoty {
 
 	String getPerInfoCtgCodeLastest(String contractCd);
 
-	boolean checkCtgNameIsUnique(String companyId, String newCtgName);
+	boolean checkCtgNameIsUnique(String companyId, String newCtgName, String ctgId);
 
 	List<String> getPerInfoCtgIdList(List<String> companyIdList, String categoryCd);
 

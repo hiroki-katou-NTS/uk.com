@@ -443,8 +443,7 @@ module ksu001.a.viewmodel {
              * Save data
              */
             $("#saveData").click(function() {
-                let dfd = $.Deferred(),
-                    arrObj: BasicSchedule[] = [],
+                let arrObj: BasicSchedule[] = [],
                     arrCell: Cell[] = $("#extable").exTable("updatedCells"),
                     lengthArrCell = arrCell.length;
                 if (lengthArrCell == 0) {
@@ -459,74 +458,21 @@ module ksu001.a.viewmodel {
                         workTypeCode: arrCell[i].value.workTypeCode
                     }));
                 }
-                //Msg_436
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-09T00:00:00.000Z",
-                    workTypeCode: "231",
-                    workTimeCode: "001",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-                //Msg_468
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-10T00:00:00.000Z",
-                    workTypeCode: "007",
-                    workTimeCode: "001",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-                //workTimeCode == NULL or empty
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-11T00:00:00.000Z",
-                    workTypeCode: "001",
-                    workTimeCode: null,
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-                //Msg_437
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-12T00:00:00.000Z",
-                    workTypeCode: "001",
-                    workTimeCode: "231",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-                //Msg_469
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-12T00:00:00.000Z",
-                    workTypeCode: "001",
-                    workTimeCode: "010",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-
-                //Msg_435
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-12T00:00:00.000Z",
-                    workTypeCode: "001",
-                    workTimeCode: "000",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-
-                //Msg_434
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-12T00:00:00.000Z",
-                    workTypeCode: "002",
-                    workTimeCode: "001",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
 
                 service.registerData(arrObj).done(function(error: any) {
+                    if (error.length != 0) {
+                        self.addListError(error);
+                    } else {
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));    
+                    }
                     //get data and update extable
                     self.getDataBasicSchedule().done(function() {
                         self.updateExTable();
                     });
-                    //                    if (error) {
-                    //                        alert('Has error!');
-                    //                    } else {
-                    alert(nts.uk.resource.getMessage("Msg_15"));
-                    //                    }
-                    dfd.resolve();
+                    
                 }).fail(function(error: any) {
-
-                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(error.message);    
                 });
-                return dfd.promise();
             });
         }
 
@@ -729,6 +675,24 @@ module ksu001.a.viewmodel {
                 });
             }
         }
+        
+        /**
+         * Set error
+         */
+        addListError(errorsRequest: Array<string>) {
+            var messages = {};
+            _.forEach(errorsRequest, function(err){
+                messages[err] = nts.uk.resource.getMessage(err);
+            });
+            
+            var errorVm = {
+                messageId:  errorsRequest,
+                messages: messages
+            };
+            
+            nts.uk.ui.dialog.bundledErrors(errorVm);
+        }
+
     }
 
     interface ICell {
