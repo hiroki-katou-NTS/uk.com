@@ -69,12 +69,12 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             });
             //subscribe selectUse
             self.selectUse.subscribe(function(codeChanged) {
-                 self.loadBySelectUse(self.checkSelectUse(), self.selectUnder(), self.selectUppper());
+                self.loadBySelectUse(self.checkSelectUse(), self.selectUnder(), self.selectUppper());
             });
 
             //subscribe upper Limit
             self.selectUppper.subscribe(function(isUpper) {
-               self.loadBySelectUse(self.checkSelectUse(), self.selectUnder(), isUpper);
+                self.loadBySelectUse(self.checkSelectUse(), self.selectUnder(), isUpper);
             });
 
             //subscribe under Limit
@@ -83,12 +83,12 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             });
 
         }
-        
+
         /**
          * check select use by use
          */
-        
-        
+
+
         private checkSelectUse(): boolean {
             var self = this;
             return ((self.selectUse() === "1") || self.selectUse() === 1);
@@ -121,7 +121,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr(0);
             }
         }
-        
+
         /**
          * start page
          * get all divergence time
@@ -222,7 +222,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
             let lstWorkTypeCd: Array<string> = _.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 0)
                 .map((item) => item.workTypeCode());
-            
+
             service.findListByIdWorkTypes(lstWorkTypeCd).done(function(res: Array<WorkTypeDto>) {
                 nts.uk.ui.block.clear();
 
@@ -311,6 +311,11 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             //trim() name
             self.itemTotalTimesDetail.totalTimesName($.trim(self.itemTotalTimesDetail.totalTimesName()));
             self.itemTotalTimesDetail.totalTimesABName($.trim(self.itemTotalTimesDetail.totalTimesABName()));
+            if (self.itemTotalTimesDetail.countAtr()) {
+                self.itemTotalTimesDetail.countAtr(1);
+            } else {
+                self.itemTotalTimesDetail.countAtr(0);
+            }
             // save enum
             self.itemTotalTimesDetail.summaryAtr(self.valueEnum());
             // define dataDto
@@ -357,7 +362,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     // deleted data worktype
                     self.itemTotalTimesDetail.listTotalSubjects(_.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 0));
                     // insert data worktype
-                    for(var item of shareWorkCocde){
+                    for (var item of shareWorkCocde) {
                         self.itemTotalTimesDetail.listTotalSubjects().push(self.toSubjectModel(item, 1));
                     }
                     self.loadListWorkType();
@@ -429,7 +434,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         }
 
     }
-    
+
 
 
 
