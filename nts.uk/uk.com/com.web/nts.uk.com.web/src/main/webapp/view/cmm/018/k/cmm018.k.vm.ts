@@ -57,8 +57,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 self.appType(data.appType);
                 //承認形態
                 self.selectFormSet(data.formSetting);                
-                //設定種類
-                self.selectTypeSet(data.selectTypeSet);
+                
                 self.setDataForSwapList(self.selectTypeSet());
                 //承認者一覧
                 self.approverList(data.approverInfor);
@@ -70,6 +69,16 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 }else{
                     self.selectedCbbCode("");
                 }
+                //承認者の登録(個人別): 非表示
+                if(data.tab === 0){
+                    $('#typeSetting').hide();
+                    self.selectTypeSet(0);    
+                }else{
+                    $('#typeSetting').show();
+                    //設定種類
+                    self.selectTypeSet(data.selectTypeSet);
+                }
+                
             }
             //基準日
             this.standardDate(new Date());
@@ -105,7 +114,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 }
             })
             
-            
+            //確定者(K2_21)の選択肢を承認者一覧(K2_15)と合わせる(update item cua control 確定者(K2_21)  theo 承認者一覧(K2_15))
             self.approverList.subscribe(function(){
                 self.setDataForCbb();
             })
