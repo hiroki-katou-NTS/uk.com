@@ -236,7 +236,7 @@ module nts.uk.ui.koExtentions {
                     }     
                 });     
                 if(!_.isEqual(filteredSource, currentSource)){
-                    $grid.igGrid('option', 'dataSource', filteredSource);
+                    $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource));
                     $grid.igGrid("dataBind");    
                 }
             }

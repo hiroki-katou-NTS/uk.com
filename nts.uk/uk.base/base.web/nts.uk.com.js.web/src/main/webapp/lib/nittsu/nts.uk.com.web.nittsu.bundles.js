@@ -3810,6 +3810,42 @@ var nts;
                 }
                 dialog.confirm = confirm;
                 ;
+                function bundledErrors(errors) {
+                    var id = uk.util.randomId();
+                    $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
+                    var container = $("body").find("#" + id);
+                    container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー内容</th>" +
+                        "<th style='display: none;'/><th style='width: 150px;'>エラーコード</th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
+                    var errorBody = container.find("tbody");
+                    _.forEach(errors["messageId"], function (id, idx) {
+                        var row = $("<tr/>");
+                        row.append("<td style='display: none;'>" + (idx + 1) + "/td><td>" + errors.messages[id] + "</td><td>" + id + "</td>");
+                        row.appendTo(errorBody);
+                    });
+                    var functionArea = container.find("#functions-area-bottom");
+                    functionArea.append("<button class='ntsButton ntsClose large'/>");
+                    container.dialog({
+                        title: "エラー一覧",
+                        dialogClass: "no-close-btn",
+                        modal: true,
+                        resizable: false,
+                        width: 450,
+                        maxHeight: 500,
+                        closeOnEscape: false,
+                        open: function () {
+                            container.find("#error-board").css({ "overflow": "auto", "max-height": "300px", "margin-bottom": "65px" });
+                            container.find("#functions-area-bottom").css({ "left": "0px" });
+                            functionArea.find(".ntsClose").text("閉じる").click(function (evt) {
+                                container.dialog("destroy");
+                                container.remove();
+                            });
+                        },
+                        close: function (event) {
+                        }
+                    });
+                }
+                dialog.bundledErrors = bundledErrors;
+                ;
             })(dialog = ui.dialog || (ui.dialog = {}));
             ui.confirmSave = function (dirtyChecker) {
                 var frame = windows.getSelf();
@@ -6132,11 +6168,17 @@ var nts;
                             $grid.igGrid("dataBind");
                         }
                         else if ($grid.attr("filtered") === true || $grid.attr("filtered") === "true") {
-                            var filteredSource = _.filter(currentSource, function (item) {
-                                return sources.indexOf(item) >= 0;
+                            var filteredSource_1 = [];
+                            _.forEach(currentSource, function (item) {
+                                var itemX = _.find(sources, function (s) {
+                                    return s[optionsValue] === item[optionsValue];
+                                });
+                                if (!nts.uk.util.isNullOrUndefined(itemX)) {
+                                    filteredSource_1.push(itemX);
+                                }
                             });
-                            if (!_.isEqual(filteredSource, currentSource)) {
-                                $grid.igGrid('option', 'dataSource', filteredSource);
+                            if (!_.isEqual(filteredSource_1, currentSource)) {
+                                $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_1));
                                 $grid.igGrid("dataBind");
                             }
                         }
@@ -6534,11 +6576,17 @@ var nts;
                             container.igGrid("dataBind");
                         }
                         else if (container.attr("filtered") === true || container.attr("filtered") === "true") {
-                            var filteredSource = _.filter(currentSource, function (item) {
-                                return options.indexOf(item) >= 0;
+                            var filteredSource_2 = [];
+                            _.forEach(currentSource, function (item) {
+                                var itemX = _.find(sources, function (s) {
+                                    return s[optionsValue] === item[optionsValue];
+                                });
+                                if (!nts.uk.util.isNullOrUndefined(itemX)) {
+                                    filteredSource_2.push(itemX);
+                                }
                             });
-                            if (!_.isEqual(filteredSource, currentSource)) {
-                                container.igGrid('option', 'dataSource', filteredSource);
+                            if (!_.isEqual(filteredSource_2, currentSource)) {
+                                container.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_2));
                                 container.igGrid("dataBind");
                             }
                         }
@@ -7032,7 +7080,7 @@ var nts;
                                                 return oldItem[primaryKey] === item[primaryKey];
                                             }) === undefined;
                                         });
-                                        component.igGrid("option", "dataSource", source);
+                                        component.igGrid("option", "dataSource", _.cloneDeep(source));
                                         component.igGrid("dataBind");
                                         if (nts.uk.util.isNullOrEmpty(selectedProperties)) {
                                             component.trigger("selectionchanged");

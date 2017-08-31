@@ -5,8 +5,9 @@ __viewContext.ready(function () {
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
+        index: number;
         constructor() {
-            
+            this.index = 0;
             this.items = ko.observableArray([]);
             var str = ['a0', 'b0', 'c0', 'd0'];
             for(var j = 0; j < 4; j++) {
@@ -34,9 +35,10 @@ __viewContext.ready(function () {
         }
         
         updateItem() {
-//            this.items()[0].name = "tests";
-//            this.items.valueHasMutated();
-            this.currentCodeList([]);
+            this.items()[this.index].name = "tests";
+            this.items.valueHasMutated();
+            this.index++;
+//            this.currentCodeList([]);
         }
         
         removeItem() {
