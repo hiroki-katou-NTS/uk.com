@@ -682,6 +682,24 @@ public class ProgramsManager {
 	public static final Program KCP005  = new Program(WebAppId.COM, ProgramIdConsts.KCP005, null,
 			"/view/kcp/005/index.xhtml");
 	
+	/**
+	 * KDW007A
+	 */
+	public static final Program KDW007A  = new Program(WebAppId.AT, ProgramIdConsts.KDW007A, "",
+			"/view/kdw/007/a/index.xhtml");
+	
+	/**
+	 * KDW007A
+	 */
+	public static final Program KDW008B  = new Program(WebAppId.AT, ProgramIdConsts.KDW008B, "",
+			"/view/kdw/008/b/index.xhtml");
+	
+	/**
+	 * KDW007A
+	 */
+	public static final Program KDW008C  = new Program(WebAppId.AT, ProgramIdConsts.KDW008C, "",
+			"/view/kdw/008/c/index.xhtml");
+	
 	
 	// TODO: Define new programs here.
 
