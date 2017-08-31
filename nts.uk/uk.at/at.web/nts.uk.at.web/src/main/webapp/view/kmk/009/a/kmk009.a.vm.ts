@@ -120,7 +120,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
 
-            nts.uk.ui.block.grayout();
+            nts.uk.ui.block.invisible();
 
 
             service.getAllTotalTimes().done(function(lstTotalTimes: Array<model.TotalTimes>) {
@@ -145,20 +145,22 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         }
 
         // loadAllTotalTimesDetail
-        private loadAllTotalTimesDetail(codeChanged: number): JQueryPromise<any> {
+        private loadAllTotalTimesDetail(codeChanged): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
 
-            nts.uk.ui.block.grayout();
+//            nts.uk.ui.block.invisible();
 
-            service.getAllTotalTimesDetail(codeChanged).done(function(item: model.TotalTimesDetail) {
-                nts.uk.ui.block.clear();
+            service.getAllTotalTimesDetail(parseInt(codeChanged)).done(function(item: model.TotalTimesDetail) {
+//                nts.uk.ui.block.clear();
                 if (item == null || item === undefined) {
                     self.itemTotalTimesDetail(null);
                 } else {
                     // check errors
                     self.itemTotalTimesDetail(new model.TotalTimesDetail(item.totalCountNo, item.countAtr, item.useAtr, item.totalTimesName,
                         item.totalTimesABName, item.summaryAtr, item.totalCondition, item.listTotalSubjects));
+                    
+                    // save selectUse
                     self.selectUse(self.itemTotalTimesDetail().useAtr());
 
                     // disable or enable Upper limit and under linit
@@ -196,7 +198,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
 
-            nts.uk.ui.block.grayout();
+            nts.uk.ui.block.invisible();
 
             let lstWorkTypeCd: Array<string> = _.filter(self.itemTotalTimesDetail().listTotalSubjects(), (item) => item.workTypeAtr() == 0)
                 .map((item) => item.workTypeCode());
@@ -220,7 +222,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
 
-            nts.uk.ui.block.grayout();
+            nts.uk.ui.block.invisible();
 
             let lstWorkTypeCd: Array<string> = _.filter(self.itemTotalTimesDetail().listTotalSubjects(), (item) => item.workTypeAtr() == 1)
                 .map((item) => item.workTypeCode());
@@ -243,7 +245,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
 
-            nts.uk.ui.block.grayout();
+            nts.uk.ui.block.invisible();
 
             // get setting
             service.getTotalClsEnum().done(function(dataRes: Array<Enum>) {
@@ -263,7 +265,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
 
-            nts.uk.ui.block.grayout();
+            nts.uk.ui.block.invisible();
 
             // get setting
             service.getTotalUseEnum().done(function(dataRes: Array<EnumUse>) {
@@ -283,7 +285,8 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         // save Daily Pattern in database
         public save() {
             let self = this;
-            nts.uk.ui.block.grayout();
+            nts.uk.ui.block.invisible();
+            console.log(self.itemTotalTimesDetail());
             //trim() name
             self.itemTotalTimesDetail().totalTimesName($.trim(self.itemTotalTimesDetail().totalTimesName()));
             self.itemTotalTimesDetail().totalTimesABName($.trim(self.itemTotalTimesDetail().totalTimesABName()));
@@ -315,6 +318,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             for (let totalObj of detailDto.listTotalSubjects()) {
                 listTotalSubjects.push({ workTypeCode: totalObj.workTypeCode(), workTypeAtr: totalObj.workTypeAtr() });
             }
+            // add command listTotalSubjects
             command.listTotalSubjects = listTotalSubjects;
             // call service save all 
             service.saveAllTotalTimes(command).done(function() {
@@ -327,7 +331,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
 
             }).fail(function(res) {
-                alert(res.message);
+                nts.uk.ui.dialog.alertError(res.message);
             }).always(function() {
                 nts.uk.ui.block.clear();
             });
@@ -335,7 +339,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         // openKDL001Dialog
         public openKDL001Dialog() {
             var self = this;
-            nts.uk.ui.block.grayout();
+            nts.uk.ui.block.invisible();
             // check worktype or worktime send to KDL001Dialog
             var listWorkType = [];
             var listWorkCode = [];
@@ -353,7 +357,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.windows.setShared('kml001multiSelectMode', true);
                 nts.uk.ui.windows.setShared('kml001selectAbleCodeList', list);
                 nts.uk.ui.windows.setShared('kml001selectedCodeList', listWorkCode, true);
-                nts.uk.ui.windows.sub.modal('/view/kdl/001/a/index.xhtml', { title: '選択肢の設定', }).onClosed(function(): any {
+                nts.uk.ui.windows.sub.modal('/view/kdl/001/a/index.xhtml', {title: nts.uk.resource.getText('KDL001') }).onClosed(function(): any {
                     nts.uk.ui.block.clear();
                     console.log(nts.uk.ui.windows.getShared('kml001selectedCodeList'));
                     var shareWorkCocde: Array<string> = nts.uk.ui.windows.getShared('kml001selectedCodeList');
@@ -376,7 +380,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         //        open KDL002Dialog()
         public openKDL002Dialog() {
             var self = this;
-            nts.uk.ui.block.grayout();
+            nts.uk.ui.block.invisible();
             // check worktype or worktime send to KDL002Dialog
             var listWorkType = [];
             var listWorkCode = [];
@@ -394,7 +398,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.windows.setShared('KDL002_Multiple', true);
                 nts.uk.ui.windows.setShared('KDL002_AllItemObj', list);
                 nts.uk.ui.windows.setShared('KDL002_SelectedItemId', listWorkType, true);
-                nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '選択肢の設定', }).onClosed(function(): any {
+                nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: nts.uk.resource.getText('KDL002') }).onClosed(function(): any {
                     nts.uk.ui.block.clear();
                     console.log(nts.uk.ui.windows.getShared('KDL002_SelectedNewItem'));
                     var shareWorkType: Array<any> = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
@@ -477,6 +481,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 this.workingInfo = ko.observable(null);
 
             }
+            
         }
 
         export class TotalCondition {
