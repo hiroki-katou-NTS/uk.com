@@ -143,17 +143,17 @@ public class ProgramsManager {
 	/**
 	 * CCG031A
 	 */
-	public static final Program CCG031A = new Program(WebAppId.COM, ProgramIdConsts.CCG031A, "PgName_CCG031A",
+	public static final Program CCG031A = new Program(WebAppId.COM, ProgramIdConsts.CCG031A, "CCG031_1",
 			"/view/ccg/031/a/index.xhtml");
 	/**
 	 * CCG031B
 	 */
-	public static final Program CCG031B = new Program(WebAppId.COM, ProgramIdConsts.CCG031B, "PgName_CCG031B",
+	public static final Program CCG031B = new Program(WebAppId.COM, ProgramIdConsts.CCG031B, "CCG031_2",
 			"/view/ccg/031/b/index.xhtml");
 	/**
 	 * CCG031C
 	 */
-	public static final Program CCG031C = new Program(WebAppId.COM, ProgramIdConsts.CCG031C, "PgName_CCG031C",
+	public static final Program CCG031C = new Program(WebAppId.COM, ProgramIdConsts.CCG031C, "CCG031_3",
 			"/view/ccg/031/c/index.xhtml");
 	/**
 	 * CDL022A
