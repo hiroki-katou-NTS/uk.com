@@ -93,15 +93,19 @@ public class ProgramsManager {
 	/**
 	 * CCG015A
 	 */
-	public static final Program CCG015A = new Program(WebAppId.COM, ProgramIdConsts.CCG015A, "PgName_CCG015A",
+	public static final Program CCG015A = new Program(WebAppId.COM, ProgramIdConsts.CCG015A, "CCG015_1",
 			"/view/ccg/015/a/index.xhtml");
 
 	/**
 	 * CCG015B
 	 */
-	public static final Program CCG015B = new Program(WebAppId.COM, ProgramIdConsts.CCG015B, "PgName_CCG015B",
+	public static final Program CCG015B = new Program(WebAppId.COM, ProgramIdConsts.CCG015B, "CCG015_2",
 			"/view/ccg/015/b/index.xhtml");
-
+	/**
+	 * CCG015C
+	 */
+	public static final Program CCG015C = new Program(WebAppId.COM, ProgramIdConsts.CCG015C, "CCG015_3",
+			"/view/ccg/015/c/index.xhtml");
 	/**
 	 * CCG014A
 	 */
