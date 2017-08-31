@@ -4,6 +4,10 @@ import nts.arc.primitive.TimeClockPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
 import nts.uk.shr.com.enumcommon.DayAttr;
 
+/**
+ * 時刻（日区分付き）
+ * @author m_kitahira
+ */
 @TimeRange(min = "-12:00", max = "71:59")
 public class TimeWithDayAttr extends TimeClockPrimitiveValue<TimeWithDayAttr>{
 
