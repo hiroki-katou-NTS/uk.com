@@ -178,12 +178,12 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
                 self.itemTotalTimes.valueHasMutated();
 
-
-                //                    let rdivTimeFirst = _.first(lstDivTime);
-                //                    self.currentCode(rdivTimeFirst.divTimeId);
-                //                }
                 dfd.resolve();
-            })
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError(res.message);
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });;
 
             return dfd.promise();
         }
