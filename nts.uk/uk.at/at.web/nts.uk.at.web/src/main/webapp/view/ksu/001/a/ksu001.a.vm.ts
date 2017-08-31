@@ -511,8 +511,8 @@ module ksu001.a.viewmodel {
                 }));
 
                 service.registerData(arrObj).done(function(error: any) {
-                    if (error) {
-                        self.addListError(error);
+                    if (error && error.value) {
+                        self.addListError(error.value);
                     } else {
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));    
                     }

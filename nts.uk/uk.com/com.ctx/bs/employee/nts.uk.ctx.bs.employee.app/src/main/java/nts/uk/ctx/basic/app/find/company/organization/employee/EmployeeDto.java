@@ -21,7 +21,7 @@ public class EmployeeDto {
 		return new EmployeeDto(domain.getPId(),
 				domain.getSId(),
 				domain.getSCd().v(),
-				domain.getSMail().v(),
+				domain.getCompanyMail().v(),
 				domain.getRetirementDate(),
 				domain.getJoinDate());
 	}

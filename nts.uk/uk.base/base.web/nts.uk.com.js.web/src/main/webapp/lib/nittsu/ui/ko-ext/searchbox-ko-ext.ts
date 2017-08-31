@@ -237,7 +237,7 @@ module nts.uk.ui.koExtentions {
                                              return oldItem[primaryKey] === item[primaryKey];        
                                             }) === undefined;            
                             });
-                            component.igGrid("option", "dataSource", source);  
+                            component.igGrid("option", "dataSource", _.cloneDeep(source));  
                             component.igGrid("dataBind");  
                             
                             if(nts.uk.util.isNullOrEmpty(selectedProperties)){

@@ -7,6 +7,8 @@ package nts.uk.ctx.bs.person.dom.person.info;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.basic.dom.person.PersonGetMemento;
+import nts.uk.ctx.basic.dom.person.PersonSetMemento;
 
 /**
  * The Class Person.
@@ -25,8 +27,26 @@ public class Person extends AggregateRoot {
 	private PersonName personName;
 	
 
-	public static Person createFromJavaStyle(String personId, String personName) {
-		return new Person(new PersonId(personId), new PersonName(personName));
+	
+	/**
+	 * Instantiates a new person.
+	 *
+	 * @param memento the memento
+	 */
+	public Person(PersonGetMemento memento){
+		this.personId = memento.getPersonId();
+		this.personName = memento.getPersonName();
+	}
+	
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(PersonSetMemento memento){
+		memento.setPersonId(this.personId);
+		memento.setPersonName(this.personName);
 	}
 	
 }

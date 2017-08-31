@@ -7,12 +7,20 @@ package nts.uk.ctx.basic.infra.repository.person;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
-import entity.person.info.BpsdtPerson;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.basic.infra.entity.person.CcgmtPerson;
+import nts.uk.ctx.basic.infra.entity.person.CcgmtPerson_;
 import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 
@@ -21,16 +29,6 @@ import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
  */
 @Stateless
 public class JpaPersonRepository extends JpaRepository implements PersonRepository {
-	public final String SELECT_NO_WHERE = "SELECT c FROM BpsdtPerson c";
-
-	public final String SELECT_BY_PERSON_IDS = SELECT_NO_WHERE
-			+ " WHERE c.bpsdtPersonPk.personId IN :pids";
-
-	private static Person toDomain(BpsdtPerson entity) {
-		Person domain = Person.createFromJavaStyle(entity.bpsdtPersonPk.personId,
-				entity.PersonNameGroup);
-		return domain;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -47,19 +45,51 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 			return new ArrayList<>();
 		}
 		
-		List<Person> lstPerson = this.queryProxy()
-				.query(SELECT_BY_PERSON_IDS, BpsdtPerson.class)
-				.setParameter("pids", personIds).getList(c -> toDomain(c));
-		
-		return lstPerson;
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call CCGMT_PERSON (CcgmtPerson SQL)
+		CriteriaQuery<CcgmtPerson> cq = criteriaBuilder.createQuery(CcgmtPerson.class);
+
+		// root data
+		Root<CcgmtPerson> root = cq.from(CcgmtPerson.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// in person id
+		lstpredicateWhere.add(criteriaBuilder.and(root.get(CcgmtPerson_.pid).in(personIds)));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<CcgmtPerson> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(item -> this.toDomain(item))
+				.collect(Collectors.toList());
 	}
 
+	/**
+	 * To domain.
+	 *
+	 * @param entity the entity
+	 * @return the person
+	 */
+	private Person toDomain(CcgmtPerson entity) {
+		return new Person(new JpaPersonGetMemento(entity));
+	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.basic.dom.person.PersonRepository#getByPersonId(java.lang.String)
 	 */
 	@Override
 	public Optional<Person> getByPersonId(String personId) {
-		return this.queryProxy().find(personId, BpsdtPerson.class).map(item -> toDomain(item));
+		return this.queryProxy().find(personId, CcgmtPerson.class).map(item -> this.toDomain(item));
 	}
 }
