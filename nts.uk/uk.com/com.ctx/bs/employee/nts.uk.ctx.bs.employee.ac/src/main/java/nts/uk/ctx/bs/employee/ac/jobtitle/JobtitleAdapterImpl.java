@@ -19,7 +19,7 @@ import nts.uk.ctx.bs.employee.dom.access.jobtitle.dto.AcJobTitleDto;
  * The Class JobtitleAdapterImpl.
  */
 @Stateless
-public abstract class JobtitleAdapterImpl implements SyJobTitleAdapter {
+public class JobtitleAdapterImpl implements SyJobTitleAdapter {
 
 	/** The jobtitle pub. */
 	@Inject
