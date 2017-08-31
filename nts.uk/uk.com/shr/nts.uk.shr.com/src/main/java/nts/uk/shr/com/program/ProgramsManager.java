@@ -21,11 +21,6 @@ import java.util.stream.Collectors;
 public class ProgramsManager {
 
 	/**
-	 * Ccg001d
-	 */
-	public static final Program Ccg001d = new Program(WebAppId.AT, ProgramIdConsts.Ccg001d, "PgName_Ccg001d",
-			"/view/ccg/001/d/index.xhtml");
-	/**
 	 * CCG008A
 	 */
 	public static final Program CCG008A = new Program(WebAppId.COM, ProgramIdConsts.CCG008A, "CCG008_1",
@@ -391,24 +386,20 @@ public class ProgramsManager {
 	public static final Program CCG007D = new Program(WebAppId.COM, ProgramIdConsts.CCG007D,
 			"CCG007_4", "/view/ccg/007/a/index.xhtml");
 	
-	/** The Constant CCG001. */
-	public static final Program CCG001 = new Program(WebAppId.COM, ProgramIdConsts.CCG001, "PgName_CCG001",
-			"/view/ccg/001/a/index.xhtml");
-	
 	/** The Constant KMK004A. */
-	public static final Program KMK004A  = new Program(WebAppId.AT, ProgramIdConsts.KMK004A, "PgName_KMK004A",
+	public static final Program KMK004A  = new Program(WebAppId.AT, ProgramIdConsts.KMK004A, "KMK004_1",
 			"/view/kmk/004/a/index.xhtml");
 	
 	/** The Constant KMK004E. */
-	public static final Program KMK004E  = new Program(WebAppId.AT, ProgramIdConsts.KMK004E, "PgName_KMK004E",
+	public static final Program KMK004E  = new Program(WebAppId.AT, ProgramIdConsts.KMK004E, "KMK004_2",
 			"/view/kmk/004/e/index.xhtml");
 	
 	/** The Constant KMK012A. */
-	public static final Program KMK012A  = new Program(WebAppId.AT, ProgramIdConsts.KMK012A, "PgName_KMK012A",
+	public static final Program KMK012A  = new Program(WebAppId.AT, ProgramIdConsts.KMK012A, "KMK012_11",
 			"/view/kmk/012/a/index.xhtml");
 	
 	/** The Constant KMK012D. */
-	public static final Program KMK012D  = new Program(WebAppId.AT, ProgramIdConsts.KMK012D, "PgName_KMK012D",
+	public static final Program KMK012D  = new Program(WebAppId.AT, ProgramIdConsts.KMK012D, "KMK012_34",
 			"/view/kmk/012/d/index.xhtml");
 	
 	/** The Constant KMF001A. */

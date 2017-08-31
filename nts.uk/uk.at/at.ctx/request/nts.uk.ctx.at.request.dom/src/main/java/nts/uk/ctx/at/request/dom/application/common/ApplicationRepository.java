@@ -13,6 +13,9 @@ public interface ApplicationRepository {
 	 * @return list application
 	 */
 	List<Application> getAllApplication(String companyID);
+	
+	
+	List<Application> getAllApplicationByPhaseID(String comanyID,String appID, String phaseID);
 	/**
 	 * get Application by applicationID
 	 * @param companyID
