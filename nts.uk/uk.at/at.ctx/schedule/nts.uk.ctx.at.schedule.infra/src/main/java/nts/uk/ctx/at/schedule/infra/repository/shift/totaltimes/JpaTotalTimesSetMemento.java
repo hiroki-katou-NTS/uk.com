@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.shift.totaltimes;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.schedule.dom.shift.totaltimes.CountAtr;
 import nts.uk.ctx.at.schedule.dom.shift.totaltimes.SummaryAtr;
@@ -17,6 +17,7 @@ import nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimesSetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.totaltimes.UseAtr;
 import nts.uk.ctx.at.schedule.infra.entity.shift.totaltimes.KshstTotalCondition;
 import nts.uk.ctx.at.schedule.infra.entity.shift.totaltimes.KshstTotalSubjects;
+import nts.uk.ctx.at.schedule.infra.entity.shift.totaltimes.KshstTotalSubjectsPK;
 import nts.uk.ctx.at.schedule.infra.entity.shift.totaltimes.KshstTotalTimes;
 import nts.uk.ctx.at.schedule.infra.entity.shift.totaltimes.KshstTotalTimesPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -131,7 +132,7 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 	 */
 	@Override
 	public void setTotalCondition(TotalCondition totalCondition) {
-		KshstTotalCondition kshstTotalCondition = new KshstTotalCondition();
+		KshstTotalCondition kshstTotalCondition = this.entity.getTotalCondition();
 		totalCondition.saveToMemento(
 				new JpaTotalConditionSetMemento(this.entity.getKshstTotalTimesPK().getCid(),
 						this.entity.getKshstTotalTimesPK().getTotalTimesNo(), kshstTotalCondition));
@@ -146,16 +147,34 @@ public class JpaTotalTimesSetMemento implements TotalTimesSetMemento {
 	 */
 	@Override
 	public void setTotalSubjects(List<TotalSubjects> summaryList) {
-
-		List<KshstTotalSubjects> listTotalSubjects = summaryList.stream().map(item -> {
-			KshstTotalSubjects entity = new KshstTotalSubjects();
-			item.saveToMemento(
-					new JpaTotalSubjectsSetMemento(this.entity.getKshstTotalTimesPK().getCid(),
-							this.entity.getKshstTotalTimesPK().getTotalTimesNo(), entity));
-			return entity;
-		}).collect(Collectors.toList());
-
-		this.entity.setListTotalSubjects(listTotalSubjects);
+		String companyId = this.entity.getKshstTotalTimesPK().getCid();
+		int totalTimeNo = this.entity.getKshstTotalTimesPK().getTotalTimesNo();
+		
+		List<KshstTotalSubjects> lstTotalSubjectCommand = new ArrayList<>();
+		
+		List<KshstTotalSubjects> lstTotalSubjectDB = this.entity.listTotalSubjects;
+		
+		for (TotalSubjects totalObj : summaryList) {
+		    
+		    // find entity existed
+		    KshstTotalSubjects entityTotal = lstTotalSubjectDB.stream()
+		            .filter(entity -> {
+		                KshstTotalSubjectsPK pk = entity.getKshstTotalSubjectsPK();
+                        return pk.getCid().equals(companyId) && pk.getTotalTimesNo() == totalTimeNo
+                                && pk.getWorkTypeAtr() == totalObj.getWorkTypeAtr().value
+                                && pk.getWorkTypeCd().equals(totalObj.getWorkTypeCode().v());
+		            })
+		            .findFirst()
+		            .orElse(new KshstTotalSubjects());
+		    
+		    // save to memento
+		    totalObj.saveToMemento(new JpaTotalSubjectsSetMemento(companyId, totalTimeNo, entityTotal));
+		    
+		    // add list total subjects
+		    lstTotalSubjectCommand.add(entityTotal);
+		}
+		
+		this.entity.setListTotalSubjects(lstTotalSubjectCommand);
 	}
 
 }
