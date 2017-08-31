@@ -54,7 +54,7 @@ public class RegisterBasicScheduleCommandHandler
 
 		String companyId = AppContexts.user().companyId();
 		List<RegisterBasicScheduleCommand> bScheduleCommand = context.getCommand();
-		
+
 		List<String> listWorkTypeCode = bScheduleCommand.stream().map(x -> {
 			return x.getWorkTypeCode();
 		}).collect(Collectors.toList());
@@ -78,7 +78,7 @@ public class RegisterBasicScheduleCommandHandler
 					bSchedule.getDate(), bSchedule.getWorkTypeCode(), bSchedule.getWorkTimeCode());
 
 			// Check WorkType
-			WorkType workType = workTypeMap.get(bSchedule.getWorkTypeCode()); 
+			WorkType workType = workTypeMap.get(bSchedule.getWorkTypeCode());
 
 			if (workType == null) {
 				// set error to list
@@ -93,31 +93,35 @@ public class RegisterBasicScheduleCommandHandler
 			}
 
 			// Check WorkTime
-			if (StringUtil.isNullOrEmpty(bSchedule.getWorkTimeCode(), true)) {
-				continue;
-			}
-
 			WorkTime workTime = workTimeMap.get(bSchedule.getWorkTimeCode());
+			
+			if (!StringUtil.isNullOrEmpty(bSchedule.getWorkTimeCode(), true) && !("000").equals(bSchedule.getWorkTimeCode())) {
 
-			if (workTime == null) {
-				// Set error to list
-				addMessage(errList, "Msg_437");
-				continue;
-			}
+				if (workTime == null) {
+					// Set error to list
+					addMessage(errList, "Msg_437");
+					continue;
+				}
 
-			if (workTime.getDispAtr().value == DisplayAtr.DisplayAtr_NotDisplay.value) {
-				// Set error to list
-				addMessage(errList, "Msg_469");
-				continue;
+				if (workTime.getDispAtr().value == DisplayAtr.DisplayAtr_NotDisplay.value) {
+					// Set error to list
+					addMessage(errList, "Msg_469");
+					continue;
+				}
 			}
 
 			// Check workType-workTime
 			try {
-				basicScheduleService.checkPairWorkTypeWorkTime(workType.getWorkTypeCode().v(),
-						workTime.getSiftCD().v());
+				if(workTime == null){
+					basicScheduleService.checkPairWorkTypeWorkTime(workType.getWorkTypeCode().v(),
+							bSchedule.getWorkTimeCode());
+				}else{
+					basicScheduleService.checkPairWorkTypeWorkTime(workType.getWorkTypeCode().v(),
+							workTime.getSiftCD().v());
+				}
 			} catch (RuntimeException ex) {
-				BusinessException businessException = (BusinessException)ex.getCause();
-				errList.add(businessException.getMessageId());
+				BusinessException businessException = (BusinessException) ex.getCause();
+				addMessage(errList, businessException.getMessageId());
 				continue;
 			}
 
@@ -131,12 +135,13 @@ public class RegisterBasicScheduleCommandHandler
 				basicScheduleRepo.insert(basicScheduleObj);
 			}
 		}
-		
+
 		return errList;
 	}
-	
+
 	/**
 	 * Add exception message
+	 * 
 	 * @param exceptions
 	 * @param messageId
 	 */
