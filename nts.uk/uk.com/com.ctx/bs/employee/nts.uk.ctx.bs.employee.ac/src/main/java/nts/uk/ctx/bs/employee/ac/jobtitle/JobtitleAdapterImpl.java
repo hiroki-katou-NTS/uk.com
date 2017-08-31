@@ -57,4 +57,21 @@ public class JobtitleAdapterImpl implements SyJobTitleAdapter {
 				.collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.access.jobtitle.SyJobTitleAdapter#findByJobIds
+	 * (java.lang.String, java.util.List, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<AcJobTitleDto> findByJobIds(String companyId, List<String> jobIds,
+			GeneralDate baseDate) {
+		return jobtitlePub.findByJobIds(companyId, jobIds, baseDate).stream()
+				.map(item -> new AcJobTitleDto(item.getCompanyId(), item.getPositionId(),
+						item.getPositionCode(), item.getPositionName(), item.getSequenceCode(),
+						item.getStartDate(), item.getEndDate()))
+				.collect(Collectors.toList());
+	}
+
 }

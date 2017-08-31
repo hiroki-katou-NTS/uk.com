@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.StringUtil;
@@ -49,9 +50,11 @@ public class RegisterBasicScheduleCommandHandler
 
 	@Override
 	protected List<String> handle(CommandHandlerContext<List<RegisterBasicScheduleCommand>> context) {
-		String companyId = AppContexts.user().companyId();
 		List<String> errList = new ArrayList<String>();
+
+		String companyId = AppContexts.user().companyId();
 		List<RegisterBasicScheduleCommand> bScheduleCommand = context.getCommand();
+		
 		List<String> listWorkTypeCode = bScheduleCommand.stream().map(x -> {
 			return x.getWorkTypeCode();
 		}).collect(Collectors.toList());
@@ -79,13 +82,13 @@ public class RegisterBasicScheduleCommandHandler
 
 			if (workType == null) {
 				// set error to list
-				errList.add("Msg_436");
+				addMessage(errList, "Msg_436");
 				continue;
 			}
 
 			if (workType.getDeprecate() == DeprecateClassification.Deprecated) {
 				// set error to list
-				errList.add("Msg_468");
+				addMessage(errList, "Msg_468");
 				continue;
 			}
 
@@ -98,13 +101,13 @@ public class RegisterBasicScheduleCommandHandler
 
 			if (workTime == null) {
 				// Set error to list
-				errList.add("Msg_437");
+				addMessage(errList, "Msg_437");
 				continue;
 			}
 
 			if (workTime.getDispAtr().value == DisplayAtr.DisplayAtr_NotDisplay.value) {
 				// Set error to list
-				errList.add("Msg_469");
+				addMessage(errList, "Msg_469");
 				continue;
 			}
 
@@ -113,7 +116,8 @@ public class RegisterBasicScheduleCommandHandler
 				basicScheduleService.checkPairWorkTypeWorkTime(workType.getWorkTypeCode().v(),
 						workTime.getSiftCD().v());
 			} catch (RuntimeException ex) {
-				errList.add(ex.getMessage());
+				BusinessException businessException = (BusinessException)ex.getCause();
+				errList.add(businessException.getMessageId());
 				continue;
 			}
 
@@ -127,7 +131,18 @@ public class RegisterBasicScheduleCommandHandler
 				basicScheduleRepo.insert(basicScheduleObj);
 			}
 		}
-
+		
 		return errList;
+	}
+	
+	/**
+	 * Add exception message
+	 * @param exceptions
+	 * @param messageId
+	 */
+	private void addMessage(List<String> errorsList, String messageId) {
+		if (!errorsList.contains(messageId)) {
+			errorsList.add(messageId);
+		}
 	}
 }

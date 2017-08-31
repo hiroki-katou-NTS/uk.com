@@ -7,7 +7,7 @@ module nts.uk.at.view.kmf004.a.service {
         findWorkType: "at/share/worktype/findAll"
     }
 
-    export function findAllSpecialHoliday(): JQueryPromise<Array<viewmodel.model.SpecialHolidayDto>> {
+    export function findAllSpecialHoliday(): JQueryPromise<Array<viewmodel.model.ISpecialHolidayDto>> {
         return nts.uk.request.ajax("at",paths.findAllSpecialHoliday);
     }
 

@@ -49,7 +49,8 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " FROM PpemtPerInfoCtg c WHERE c.cid IN :companyIdList AND c.categoryCd = :categoryCd";
 
 	private final static String SELECT_CHECK_CTG_NAME_QUERY = "SELECT c.categoryName"
-			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName";
+			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName"
+			+ " AND c.ppemtPerInfoCtgPK.perInfoCtgId != :ctgId";
 
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
@@ -112,19 +113,10 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	}
 
 	@Override
-	public void updatePerInfoCtgWithListCompany(String categoryName, List<String> ctgIdList) {
-		ctgIdList.stream().forEach(ctgId -> {
-			PpemtPerInfoCtgPK perInfoCtgPK = new PpemtPerInfoCtgPK(ctgId);
-			PpemtPerInfoCtg perInfoCtgOld = this.queryProxy().find(perInfoCtgPK, PpemtPerInfoCtg.class).orElse(null);
-			perInfoCtgOld.categoryName = categoryName;
-			this.commandProxy().update(perInfoCtgOld);
-		});
-	}
-
-	@Override
-	public boolean checkCtgNameIsUnique(String companyId, String newCtgName) {
+	public boolean checkCtgNameIsUnique(String companyId, String newCtgName, String ctgId) {
 		List<String> categoryNames = this.queryProxy().query(SELECT_CHECK_CTG_NAME_QUERY, String.class)
-				.setParameter("companyId", companyId).setParameter("categoryName", newCtgName).getList();
+				.setParameter("companyId", companyId).setParameter("categoryName", newCtgName)
+				.setParameter("ctgId", ctgId).getList();
 		if (categoryNames == null || categoryNames.isEmpty()) {
 			return true;
 		}

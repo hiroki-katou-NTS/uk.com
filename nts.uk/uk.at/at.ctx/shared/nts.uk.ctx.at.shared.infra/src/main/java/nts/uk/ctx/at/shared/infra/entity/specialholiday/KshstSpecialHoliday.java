@@ -43,6 +43,18 @@ public class KshstSpecialHoliday extends UkJpaEntity implements Serializable {
 	@OneToOne(cascade = CascadeType.ALL, mappedBy="specialHoliday", orphanRemoval = true)
 	public KshstGrantRegular grantRegular;
 	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="specialHoliday", orphanRemoval = true)
+	public KshstGrantPeriodic grantPeriodic;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="specialHoliday", orphanRemoval = true)
+	public KshstSphdLimit sphdLimit;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="specialHoliday", orphanRemoval = true)
+	public KshstSphdSubCondition subCondition;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy="specialHoliday", orphanRemoval = true)
+	public KshstGrantSingle grantSingle;
+	
 	@Override
 	protected Object getKey() {
 		return null;

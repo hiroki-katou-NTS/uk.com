@@ -9,7 +9,11 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 15.詳細画面申請データを取得する
+ * @author tutk
+ *
+ */
 @Stateless
 public class DetailScreenApplicationDataDefault implements DetailScreenApplicationDataService {
 
@@ -17,7 +21,7 @@ public class DetailScreenApplicationDataDefault implements DetailScreenApplicati
 	private ApplicationRepository appRepo;
 	
 	@Override
-	public Optional<Application> detailScreenApplicationDataService(String appID) {
+	public Optional<Application> detailScreenApplicationData(String appID) {
 		String companyID = AppContexts.user().companyId();
 		Optional<Application> app = appRepo.getAppById(companyID, appID);
 		if(!app.isPresent()) {
