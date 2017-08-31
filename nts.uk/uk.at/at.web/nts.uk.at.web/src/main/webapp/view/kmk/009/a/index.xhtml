@@ -137,8 +137,8 @@
 							</td>
 							<td>
 								<!-- A3_11 Open dialog KDL002-->
-								<button tabindex="7"
-									data-bind="click: openKDL002Dialog,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
+								<button tabindex="7" 
+									data-bind="click: openKDL002Dialog,enable: enableWorkType">#{i18n.getText('KMK009_15')}</button>
 								<!-- A3_12: Time item name --> <input class="nts-input"
 								id="inpName" style="width: 350px"
 								data-bind="ntsTextEditor:{
@@ -146,7 +146,7 @@
 										value: itemTotalTimesDetail.workTypeInfo ,
 										required: true,
 										readonly: true,
-										enable: enableUse}" />
+										enable: enableWorkType}" />
 							</td>
 						</tr>
 						<tr class="row">
@@ -157,7 +157,7 @@
 							<td>
 								<!-- A3_14 Open dialog KDL001-->
 								<button tabindex="9"
-									data-bind="click: openKDL001Dialog,enable: enableUse">#{i18n.getText('KMK009_15')}</button>
+									data-bind="click: openKDL001Dialog,enable: enableWorkTime">#{i18n.getText('KMK009_15')}</button>
 								<!-- A3_15: Time item name --> 
 								<input class="nts-input"
 								id="inpName" style="width: 350px"
@@ -166,7 +166,7 @@
 										value: itemTotalTimesDetail.workingInfo,
 										required: true,
 										readonly: true,
-										enable: enableUse}" />
+										enable: enableWorkTime}" />
 							</td>
 						</tr>
 						<tr class="row">

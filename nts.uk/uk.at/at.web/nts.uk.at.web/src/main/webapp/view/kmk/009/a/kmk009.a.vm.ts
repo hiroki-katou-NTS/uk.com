@@ -8,7 +8,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
     import TotalConditionDto = service.model.TotalConditionDto;
     import TotalSubjectsDto = service.model.TotalSubjectsDto;
     import TotalTimesDetailDto = service.model.TotalTimesDetailDto;
-    
+
 
     export class ScreenModel {
         itemTotalTimes: KnockoutObservableArray<TotalTimesModel>;
@@ -25,7 +25,8 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         selectUppper: KnockoutObservable<any>;
         selectUnder: KnockoutObservable<any>;
         enableUnder: KnockoutObservable<boolean>;
-
+        enableWorkType: KnockoutObservable<boolean>;
+        enableWorkTime: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             self.itemTotalTimes = ko.observableArray([]);
@@ -50,7 +51,13 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             self.enableUse = ko.observable(false);
             self.enableUpper = ko.observable(false);
             self.enableUnder = ko.observable(false);
+            self.enableWorkType = ko.computed(function() {
+                return self.enableUse() && ((self.valueEnum() == self.totalClsEnums[0].value) || (self.valueEnum() == self.totalClsEnums[2].value));
+            });
 
+            self.enableWorkTime = ko.computed(function() {
+                return self.enableUse() && ((self.valueEnum() == self.totalClsEnums[1].value) || (self.valueEnum() == self.totalClsEnums[2].value));
+            });
 
             //subscribe currentCode
             self.currentCode.subscribe(function(codeChanged) {
@@ -125,12 +132,12 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.block.clear();
                 self.itemTotalTimes([]);
                 var models: TotalTimesModel[] = [];
-                for(var dto of data){
+                for (var dto of data) {
                     var model = new TotalTimesModel();
                     model.updateData(dto);
                     model.summaryAtrName = self.totalClsEnums[dto.summaryAtr].localizedName;
-                    model.useAtrName = self.totalClsEnums[dto.useAtr].localizedName;   
-                    models.push(model);    
+                    model.useAtrName = self.totalClsEnums[dto.useAtr].localizedName;
+                    models.push(model);
                 }
                 self.itemTotalTimes(models);
 
@@ -151,7 +158,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
 
-//            nts.uk.ui.block.invisible();
+            //            nts.uk.ui.block.invisible();
 
             service.getAllTotalTimesDetail(codeChanged).done(function(data) {
                 //                nts.uk.ui.block.clear();
@@ -321,7 +328,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 nts.uk.ui.windows.setShared('kml001multiSelectMode', true);
                 nts.uk.ui.windows.setShared('kml001selectAbleCodeList', list);
                 nts.uk.ui.windows.setShared('kml001selectedCodeList', listWorkCode, true);
-                nts.uk.ui.windows.sub.modal('/view/kdl/001/a/index.xhtml', {title: nts.uk.resource.getText('KDL001') }).onClosed(function(): any {
+                nts.uk.ui.windows.sub.modal('/view/kdl/001/a/index.xhtml', { title: nts.uk.resource.getText('KDL001') }).onClosed(function(): any {
                     nts.uk.ui.block.clear();
                     console.log(nts.uk.ui.windows.getShared('kml001selectedCodeList'));
                     var shareWorkCocde: Array<string> = nts.uk.ui.windows.getShared('kml001selectedCodeList');
@@ -396,143 +403,143 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
 
 
-  
-        export class TotalTimesModel {
-            totalCountNo: number;
-            summaryAtr: number;
-            useAtr: number;
-            totalTimesName: string;
-            summaryAtrName: string;
-            useAtrName: string
-            constructor() {
-                this.totalCountNo = 1;
-                this.summaryAtr = 1;
-                this.useAtr = 1;
-                this.totalTimesName = null;
-                this.summaryAtrName = null;
-                this.useAtrName = null;
-            }
-            
-            updateData(dto: TotalTimesDto) {
-                this.totalCountNo = dto.totalCountNo;
-                this.summaryAtr = dto.summaryAtr;
-                this.useAtr = dto.useAtr;
-                this.totalTimesName = dto.totalTimesName;
-            }
+
+    export class TotalTimesModel {
+        totalCountNo: number;
+        summaryAtr: number;
+        useAtr: number;
+        totalTimesName: string;
+        summaryAtrName: string;
+        useAtrName: string
+        constructor() {
+            this.totalCountNo = 1;
+            this.summaryAtr = 1;
+            this.useAtr = 1;
+            this.totalTimesName = null;
+            this.summaryAtrName = null;
+            this.useAtrName = null;
         }
 
-        export class TotalTimesDetailModel {
-            totalCountNo: number;
-            countAtr: KnockoutObservable<number>;
-            useAtr: KnockoutObservable<number>;
-            totalTimesName: KnockoutObservable<string>;
-            totalTimesABName: KnockoutObservable<string>;
-            summaryAtr: KnockoutObservable<number>;
-            totalCondition: TotalConditionModel;
-            listTotalSubjects: KnockoutObservableArray<TotalSubjectsModel>;
-            workTypeInfo: KnockoutObservable<string>;
-            workingInfo: KnockoutObservable<string>;
+        updateData(dto: TotalTimesDto) {
+            this.totalCountNo = dto.totalCountNo;
+            this.summaryAtr = dto.summaryAtr;
+            this.useAtr = dto.useAtr;
+            this.totalTimesName = dto.totalTimesName;
+        }
+    }
+
+    export class TotalTimesDetailModel {
+        totalCountNo: number;
+        countAtr: KnockoutObservable<number>;
+        useAtr: KnockoutObservable<number>;
+        totalTimesName: KnockoutObservable<string>;
+        totalTimesABName: KnockoutObservable<string>;
+        summaryAtr: KnockoutObservable<number>;
+        totalCondition: TotalConditionModel;
+        listTotalSubjects: KnockoutObservableArray<TotalSubjectsModel>;
+        workTypeInfo: KnockoutObservable<string>;
+        workingInfo: KnockoutObservable<string>;
 
 
-            constructor() {
-                this.totalCountNo = 1;
-                this.countAtr = ko.observable(1);
-                this.useAtr = ko.observable(1);
-                this.totalTimesName = ko.observable('');
-                this.totalTimesABName = ko.observable('');
-                this.summaryAtr = ko.observable(1);
-                this.totalCondition = new TotalConditionModel();
-                this.listTotalSubjects = ko.observableArray([]);
-                this.workTypeInfo = ko.observable(null);
-                this.workingInfo = ko.observable(null);
+        constructor() {
+            this.totalCountNo = 1;
+            this.countAtr = ko.observable(1);
+            this.useAtr = ko.observable(1);
+            this.totalTimesName = ko.observable('');
+            this.totalTimesABName = ko.observable('');
+            this.summaryAtr = ko.observable(1);
+            this.totalCondition = new TotalConditionModel();
+            this.listTotalSubjects = ko.observableArray([]);
+            this.workTypeInfo = ko.observable(null);
+            this.workingInfo = ko.observable(null);
 
-            }
-            
-            updateData(dto: TotalTimesDetailDto) {
-                this.totalCountNo = dto.totalCountNo;
-                this.countAtr(dto.countAtr);
-                this.useAtr(dto.useAtr);
-                this.totalTimesName(dto.totalTimesName);
-                this.totalTimesABName(dto.totalTimesABName);
-                this.totalCondition.updateData(dto.totalCondition);
-                this.summaryAtr(dto.summaryAtr);
-                this.listTotalSubjects([]);
-                var listTotalSubjectsUpdate : TotalSubjectsModel[] = [];
-                for (var item of dto.listTotalSubjects) {
-                    var model: TotalSubjectsModel = new TotalSubjectsModel();
-                    model.updateData(item);
-                    listTotalSubjectsUpdate.push(model);
-                }
-                this.listTotalSubjects(listTotalSubjectsUpdate);
-            }
-
-            toDto(): TotalTimesDetailDto{
-                var listTotalSubjectsDto: TotalSubjectsDto[] = [];
-                for (var model of this.listTotalSubjects()) {
-                    listTotalSubjectsDto.push(model.toDto());
-                }
-                var dto: TotalTimesDetailDto = {
-                    totalCountNo: this.totalCountNo,
-                    countAtr: this.countAtr(),
-                    useAtr: this.useAtr(),
-                    totalTimesName: this.totalTimesName(),
-                    totalTimesABName: this.totalTimesABName(),
-                    totalCondition: this.totalCondition.toDto(),
-                    summaryAtr : this.summaryAtr(),
-                    listTotalSubjects: listTotalSubjectsDto
-                };
-                return dto;    
-            }
         }
 
-        export class TotalConditionModel {
-            upperLimitSettingAtr: KnockoutObservable<number>;
-            lowerLimitSettingAtr: KnockoutObservable<number>;
-            thresoldUpperLimit: KnockoutObservable<number>;
-            thresoldLowerLimit: KnockoutObservable<number>;
-            constructor() {
-                this.upperLimitSettingAtr = ko.observable(1);
-                this.lowerLimitSettingAtr = ko.observable(1);
-                this.thresoldUpperLimit = ko.observable(1);
-                this.thresoldLowerLimit = ko.observable(1);
+        updateData(dto: TotalTimesDetailDto) {
+            this.totalCountNo = dto.totalCountNo;
+            this.countAtr(dto.countAtr);
+            this.useAtr(dto.useAtr);
+            this.totalTimesName(dto.totalTimesName);
+            this.totalTimesABName(dto.totalTimesABName);
+            this.totalCondition.updateData(dto.totalCondition);
+            this.summaryAtr(dto.summaryAtr);
+            this.listTotalSubjects([]);
+            var listTotalSubjectsUpdate: TotalSubjectsModel[] = [];
+            for (var item of dto.listTotalSubjects) {
+                var model: TotalSubjectsModel = new TotalSubjectsModel();
+                model.updateData(item);
+                listTotalSubjectsUpdate.push(model);
             }
-            updateData(dto: TotalConditionDto){
-                this.upperLimitSettingAtr(dto.upperLimitSettingAtr);
-                this.lowerLimitSettingAtr(dto.lowerLimitSettingAtr);
-                this.thresoldUpperLimit(dto.thresoldUpperLimit);
-                this.thresoldLowerLimit(dto.thresoldLowerLimit);
-            }
-            
-            toDto(): TotalConditionDto{
-                var dto: TotalConditionDto = {
-                    upperLimitSettingAtr: this.upperLimitSettingAtr(),
-                    lowerLimitSettingAtr: this.lowerLimitSettingAtr(),
-                    thresoldUpperLimit: this.thresoldUpperLimit(),
-                    thresoldLowerLimit: this.thresoldLowerLimit()
-                };
-                return dto;
-            }
+            this.listTotalSubjects(listTotalSubjectsUpdate);
         }
 
-        export class TotalSubjectsModel {
-            workTypeCode: KnockoutObservable<string>;
-            workTypeAtr: KnockoutObservable<number>;
-
-            constructor() {
-                this.workTypeCode = ko.observable('');
-                this.workTypeAtr = ko.observable(1);
+        toDto(): TotalTimesDetailDto {
+            var listTotalSubjectsDto: TotalSubjectsDto[] = [];
+            for (var model of this.listTotalSubjects()) {
+                listTotalSubjectsDto.push(model.toDto());
             }
-            updateData(dto: TotalSubjectsDto){
-                this.workTypeCode(dto.workTypeCode);
-                this.workTypeAtr(dto.workTypeAtr);    
-            }
-            toDto(): TotalSubjectsDto{
-                var dto: TotalSubjectsDto = {
-                    workTypeCode: this.workTypeCode(),
-                    workTypeAtr: this.workTypeAtr()
-                };    
-                return dto;
-            }
+            var dto: TotalTimesDetailDto = {
+                totalCountNo: this.totalCountNo,
+                countAtr: this.countAtr(),
+                useAtr: this.useAtr(),
+                totalTimesName: this.totalTimesName(),
+                totalTimesABName: this.totalTimesABName(),
+                totalCondition: this.totalCondition.toDto(),
+                summaryAtr: this.summaryAtr(),
+                listTotalSubjects: listTotalSubjectsDto
+            };
+            return dto;
         }
+    }
+
+    export class TotalConditionModel {
+        upperLimitSettingAtr: KnockoutObservable<number>;
+        lowerLimitSettingAtr: KnockoutObservable<number>;
+        thresoldUpperLimit: KnockoutObservable<number>;
+        thresoldLowerLimit: KnockoutObservable<number>;
+        constructor() {
+            this.upperLimitSettingAtr = ko.observable(1);
+            this.lowerLimitSettingAtr = ko.observable(1);
+            this.thresoldUpperLimit = ko.observable(1);
+            this.thresoldLowerLimit = ko.observable(1);
+        }
+        updateData(dto: TotalConditionDto) {
+            this.upperLimitSettingAtr(dto.upperLimitSettingAtr);
+            this.lowerLimitSettingAtr(dto.lowerLimitSettingAtr);
+            this.thresoldUpperLimit(dto.thresoldUpperLimit);
+            this.thresoldLowerLimit(dto.thresoldLowerLimit);
+        }
+
+        toDto(): TotalConditionDto {
+            var dto: TotalConditionDto = {
+                upperLimitSettingAtr: this.upperLimitSettingAtr(),
+                lowerLimitSettingAtr: this.lowerLimitSettingAtr(),
+                thresoldUpperLimit: this.thresoldUpperLimit(),
+                thresoldLowerLimit: this.thresoldLowerLimit()
+            };
+            return dto;
+        }
+    }
+
+    export class TotalSubjectsModel {
+        workTypeCode: KnockoutObservable<string>;
+        workTypeAtr: KnockoutObservable<number>;
+
+        constructor() {
+            this.workTypeCode = ko.observable('');
+            this.workTypeAtr = ko.observable(1);
+        }
+        updateData(dto: TotalSubjectsDto) {
+            this.workTypeCode(dto.workTypeCode);
+            this.workTypeAtr(dto.workTypeAtr);
+        }
+        toDto(): TotalSubjectsDto {
+            var dto: TotalSubjectsDto = {
+                workTypeCode: this.workTypeCode(),
+                workTypeAtr: this.workTypeAtr()
+            };
+            return dto;
+        }
+    }
 
 }
