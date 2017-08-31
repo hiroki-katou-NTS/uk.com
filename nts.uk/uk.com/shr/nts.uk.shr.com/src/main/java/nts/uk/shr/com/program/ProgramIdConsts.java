@@ -140,7 +140,11 @@ public class ProgramIdConsts {
 	
 	public static final String KMK009 = "KMK009";
 	
-	public static final String KSU006 = "KSU006";
+	public static final String KSU006A = "KSU006A";
+	
+	public static final String KSU006B = "KSU006B";
+	
+	public static final String KSU006C = "KSU006C";
 	
 	public static final String CCG007A = "CCG007A";
 	
