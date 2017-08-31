@@ -26,13 +26,13 @@ buildscript {
 	}
 }
 
-//すべてのプロジェクトに適応すべき�?容はここに追記す�?
+//すべてのプロジェクトに適応すべき内容はここに追記する
 allprojects {
 	apply from: "$rootDir/gradle/properties.gradle"
 	apply from: "$rootDir/gradle/library_properties.gradle"
 	apply plugin: "com.jfrog.artifactory"
 
-	//ビルド及び実行�?、Java8を対象とする
+	//ビルド及び実行は、Java8を対象とする
 	sourceCompatibility = "$javaVersion"
 	targetCompatibility = "$javaVersion" 
 
@@ -51,7 +51,7 @@ subprojects {
 		}
 	}
 	
-	//compileJavaとcompileTestJavaの実行時の�?��コードをunicodeで�?�?
+	//compileJavaとcompileTestJavaの実行時の文字コードをunicodeで指定
 	[compileJava, compileTestJava]*.options*.encoding = "$defaultEncoding"
 	
 	dependencies {
@@ -105,13 +105,13 @@ subprojects {
         // Apache commons IO
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.27'
-		compile group: 'nts.arc', name: 'nts.arc', version: 'test.0.41'
+		compile group: 'nts.gul', name: 'nts.gul', version: '0.28'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.41'
 		
 	}
 }
 
-//========================shr�?�?=====================================
+//========================shr　↓=====================================
 project (':shr:nts.uk.shr.com') {
 	dependencies {
 		compile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
@@ -139,9 +139,9 @@ project (':shr:nts.uk.shr.find') {
 	dependencies {
 	}
 }
-//========================shr �?=====================================
+//========================shr ↑=====================================
 
-//========================basic�?=====================================
+//========================basic↓=====================================
 project (':com.ctx:basic:nts.uk.ctx.basic.ws') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
@@ -185,8 +185,8 @@ project (':com.ctx:basic:nts.uk.ctx.basic.pubimp') {
 		compile project(':com.ctx:basic:nts.uk.ctx.basic.infra')
 	}
 }
-//========================basic �?=====================================
-//========================sys:shared�?�?=====================================
+//========================basic ↑=====================================
+//========================sys:shared　↓=====================================
 
 project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.ws') {
 	dependencies {
@@ -213,9 +213,9 @@ project (':com.ctx:sys:share:nts.uk.ctx.sys.shared.infra') {
 	}
 }
 
-//========================sys:shared �?=====================================
+//========================sys:shared ↑=====================================
 
-//========================sys:auth �?=====================================
+//========================sys:auth ↓=====================================
 
 project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.ws') {
 	dependencies {
@@ -264,7 +264,7 @@ project (':com.ctx:sys:auth:nts.uk.ctx.sys.auth.pubimp') {
 		compile project(':com.ctx:sys:auth:nts.uk.ctx.sys.auth.infra')
 	}
 }
-//========================sys:auth �?=====================================
+//========================sys:auth ↑=====================================
 
 //========================sys:gateway=====================================
 
@@ -316,9 +316,9 @@ project (':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.pubimp') {
 		compile project(':com.ctx:sys:gateway:nts.uk.ctx.sys.gateway.infra')
 	}
 }
-//========================sys:gateway �?=====================================
+//========================sys:gateway ↑=====================================
 
-//========================sys:portal�?�?=====================================
+//========================sys:portal　↓=====================================
 
 project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.ws') {
 	dependencies {
@@ -364,8 +364,8 @@ project (':com.ctx:sys:portal:nts.uk.ctx.sys.portal.pubimp') {
 		compile project(':com.ctx:sys:portal:nts.uk.ctx.sys.portal.infra')
 	}
 }
-//========================sys:portal �?=====================================
-//========================bs:person�?�?=====================================
+//========================sys:portal ↑=====================================
+//========================bs:person　↓=====================================
 
 project (':com.ctx:bs:person:nts.uk.ctx.bs.person.ws') {
 	dependencies {
@@ -412,8 +412,8 @@ project (':com.ctx:bs:person:nts.uk.ctx.bs.person.pubimp') {
 		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.infra')
 	}
 }
-//========================bs:peron �?=====================================
-//========================bs:company�?�?=====================================
+//========================bs:peron ↑=====================================
+//========================bs:company　↓=====================================
 
 project (':com.ctx:bs:company:nts.uk.ctx.bs.company.ws') {
 	dependencies {
@@ -460,13 +460,13 @@ project (':com.ctx:bs:company:nts.uk.ctx.bs.company.pubimp') {
 		compile project(':com.ctx:bs:company:nts.uk.ctx.bs.company.infra')
 	}
 }
-//========================bs:company �?=====================================
-//========================bs:employee�?�?=====================================
+//========================bs:company ↑=====================================
+//========================bs:employee　↓=====================================
 
 project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.ws') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
-		compile project(':com.ctx:bs:person:nts.uk.ctx.bs.person.dom')
+		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.app')
 	}
 }
 project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.dom') {
@@ -511,8 +511,8 @@ project (':com.ctx:bs:employee:nts.uk.ctx.bs.employee.pubimp') {
 		compile project(':com.ctx:bs:employee:nts.uk.ctx.bs.employee.infra')
 	}
 }
-//========================bs:employee �?=====================================
-//=====================nts.uk.com.web�?============================
+//========================bs:employee ↑=====================================
+//=====================nts.uk.com.web↓============================
 project (':com.web:nts.uk.com.web') {
 	apply plugin: 'war'
 	apply plugin: "de.richsource.gradle.plugins.typescript"
@@ -647,7 +647,7 @@ project (':com.web:nts.uk.com.web') {
 
 	}
 }
-//========================nts.uk.com.web�?=====================================
+//========================nts.uk.com.web↑=====================================
 
 project (':wk.ctx:nts.uk.ctx.workflow.ws') {
 	dependencies {
