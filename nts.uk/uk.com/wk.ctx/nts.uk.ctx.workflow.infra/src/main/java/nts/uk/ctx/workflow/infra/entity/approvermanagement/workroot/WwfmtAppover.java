@@ -46,9 +46,9 @@ public class WwfmtAppover extends UkJpaEntity implements Serializable {
 
 	@ManyToOne
 	@JoinColumns({
-        @JoinColumn(name = "CID", referencedColumnName = "WWFMT_APPROVER.CID", insertable = false, updatable = false),
-        @JoinColumn(name = "APPROVAL_PHASE_ID", referencedColumnName = "WWFMT_APPROVER.APPROVAL_PHASE_ID", insertable = false, updatable = false),
-        @JoinColumn(name = "APPROVER_ID", referencedColumnName = "WWFMT_APPROVER.APPROVER_ID", insertable = false, updatable = false)
+        @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+        @JoinColumn(name = "BRANCH_ID", referencedColumnName = "BRANCH_ID", insertable = false, updatable = false),
+        @JoinColumn(name = "APPROVAL_PHASE_ID", referencedColumnName = "APPROVAL_PHASE_ID", insertable = false, updatable = false)
     })
 	public WwfmtApprovalPhase wwfmtApprovalPhase;
 	
