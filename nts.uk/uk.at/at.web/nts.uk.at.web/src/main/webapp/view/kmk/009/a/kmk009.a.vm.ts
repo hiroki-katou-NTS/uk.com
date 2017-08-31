@@ -13,17 +13,18 @@ module nts.uk.at.view.kmk009.a.viewmodel {
     export class ScreenModel {
         itemTotalTimes: KnockoutObservableArray<TotalTimesModel>;
         itemTotalTimesDetail: TotalTimesDetailModel;
+        stash: TotalTimesDetailModel;
         totalClsEnums: Array<Enum>;
         totalClsEnumsUse: Array<EnumUse>;
         valueEnum: KnockoutObservable<number>;
-        currentCode: KnockoutObservable<any>;
+        currentCode: KnockoutObservable<string>;
         columns: KnockoutObservableArray<any>;
         useSet: KnockoutObservableArray<any>;
-        selectUse: KnockoutObservable<any>;
+        selectUse: KnockoutObservable<number>;
         enableUse: KnockoutObservable<boolean>;
         enableUpper: KnockoutObservable<boolean>;
-        selectUppper: KnockoutObservable<any>;
-        selectUnder: KnockoutObservable<any>;
+        selectUppper: KnockoutObservable<number>;
+        selectUnder: KnockoutObservable<number>;
         enableUnder: KnockoutObservable<boolean>;
         enableWorkType: KnockoutObservable<boolean>;
         enableWorkTime: KnockoutObservable<boolean>;
@@ -32,6 +33,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             var self = this;
             self.itemTotalTimes = ko.observableArray([]);
             self.itemTotalTimesDetail = new TotalTimesDetailModel();
+            self.stash = new TotalTimesDetailModel();
             self.totalClsEnums = [];
             self.totalClsEnumsUse = [];
             self.valueEnum = ko.observable(null);
@@ -178,12 +180,12 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
                 self.itemTotalTimes.valueHasMutated();
 
-
-                //                    let rdivTimeFirst = _.first(lstDivTime);
-                //                    self.currentCode(rdivTimeFirst.divTimeId);
-                //                }
                 dfd.resolve();
-            })
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alertError(res.message);
+            }).always(function() {
+                nts.uk.ui.block.clear();
+            });;
 
             return dfd.promise();
         }
@@ -198,6 +200,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             service.getAllTotalTimesDetail(codeChanged).done(function(data) {
                 //                nts.uk.ui.block.clear();
                 if (data) {
+                    self.stash.updateData(data);
                     self.itemTotalTimesDetail.updateData(data);
                     self.selectUse(self.itemTotalTimesDetail.useAtr())
                     // disable or enable Upper limit and under linit
@@ -325,8 +328,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         // save Daily Pattern in database
         public save() {
             let self = this;
+            if ($('.nts-input').ntsError('hasError')) {
+                return;
+            };
             nts.uk.ui.block.invisible();
-
             //trim() name
             self.itemTotalTimesDetail.totalTimesName($.trim(self.itemTotalTimesDetail.totalTimesName()));
             self.itemTotalTimesDetail.totalTimesABName($.trim(self.itemTotalTimesDetail.totalTimesABName()));
@@ -339,7 +344,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             self.itemTotalTimesDetail.summaryAtr(self.valueEnum());
             // define dataDto
 
-            service.saveAllTotalTimes(self.itemTotalTimesDetail.toDto()).done(function() {
+            // Get data to save
+            let saveData: TotalTimesDetailModel = self.getSaveData();
+
+            service.saveAllTotalTimes(saveData.toDto()).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     // Focus grid list
                     $('#single-list-dataSource_container').focus();
@@ -459,6 +467,36 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             var self = this;
             self.enableUse(false);
             self.itemTotalTimesDetail.resetData();
+        }
+
+        /**
+         * Get save data
+         */
+        private getSaveData(): TotalTimesDetailModel {
+            let self = this;
+
+            // Get data from current data model.
+            let saveData: TotalTimesDetailModel = self.itemTotalTimesDetail;
+
+            // Get reserved data from stash if input is disabled.
+            if (!self.enableWorkType()) {
+                saveData.workTypeInfo(self.stash.workTypeInfo());
+            }
+            if (!self.enableWorkTime()) {
+                saveData.workingInfo(self.stash.workingInfo());
+            }
+            if (!self.enableUpper()) {
+                saveData.totalCondition.thresoldUpperLimit(self.stash.totalCondition.thresoldUpperLimit());
+            }
+            if (!self.enableUnder()) {
+                saveData.totalCondition.thresoldLowerLimit(self.stash.totalCondition.thresoldLowerLimit());
+            }
+            if (!self.enableUse()) {
+                saveData = self.stash;
+                saveData.useAtr(0);
+            }
+
+            return saveData;
         }
 
     }
