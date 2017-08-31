@@ -6173,6 +6173,15 @@ var nts;
                             $grid.igGrid('option', 'dataSource', currentSources);
                             $grid.igGrid("dataBind");
                         }
+                        else if ($grid.attr("filtered") === true || $grid.attr("filtered") === "true") {
+                            var filteredSource = _.filter(currentSource, function (item) {
+                                return sources.indexOf(item) >= 0;
+                            });
+                            if (!_.isEqual(filteredSource, currentSource)) {
+                                $grid.igGrid('option', 'dataSource', filteredSource);
+                                $grid.igGrid("dataBind");
+                            }
+                        }
                         var currentSelectedItems = $grid.ntsGridList('getSelected');
                         var isEqual = _.isEqualWith(currentSelectedItems, data.value(), function (current, newVal) {
                             if ((current === undefined && newVal === undefined) || (current !== undefined && current.id === newVal)) {
@@ -6528,6 +6537,7 @@ var nts;
                     };
                     ListBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
+                        var currentSource = container.igGrid('option', 'dataSource');
                         var options = ko.unwrap(data.options);
                         var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
                         var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
@@ -6564,6 +6574,15 @@ var nts;
                             });
                             container.igGrid('option', 'dataSource', currentSources);
                             container.igGrid("dataBind");
+                        }
+                        else if (container.attr("filtered") === true || container.attr("filtered") === "true") {
+                            var filteredSource = _.filter(currentSource, function (item) {
+                                return options.indexOf(item) >= 0;
+                            });
+                            if (!_.isEqual(filteredSource, currentSource)) {
+                                container.igGrid('option', 'dataSource', filteredSource);
+                                container.igGrid("dataBind");
+                            }
                         }
                         var isMultiOld = container.igGridSelection('option', 'multipleSelection');
                         if (isMultiOld !== isMultiSelect) {
