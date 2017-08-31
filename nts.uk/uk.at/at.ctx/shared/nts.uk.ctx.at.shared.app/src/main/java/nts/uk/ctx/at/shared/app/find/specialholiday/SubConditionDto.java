@@ -1,8 +1,10 @@
-package nts.uk.ctx.at.shared.app.command.specialholiday;
+package nts.uk.ctx.at.shared.app.find.specialholiday;
 
 import lombok.Data;
 @Data
-public class SubConditionCommand {
+public class SubConditionDto {
+	/*会社ID*/
+	private String companyId;
 
 	/*特別休暇コード*/
 	private int specialHolidayCode;

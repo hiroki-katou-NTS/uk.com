@@ -17,7 +17,7 @@ public class KshstGrantPeriodicPK implements Serializable{
 	
 	/* 会社ID */
 	@Column(name = "CID")
-	public int companyId;
+	public String companyId;
 	
 	/* コード */
 	@Column(name = "SPHD_CD")

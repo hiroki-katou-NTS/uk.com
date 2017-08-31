@@ -3,7 +3,7 @@ package nts.uk.ctx.at.shared.dom.specialholiday;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
-public enum GrantPeriodicCls {
+public enum GrantMethod {
 	/* 残数管理をする */
 	ManageRemainNumber(0),
 	/* 残数管理をしない */

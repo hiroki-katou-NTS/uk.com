@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KshstLimitSphdPK implements Serializable {
+public class KshstSphdLimitPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 会社ID */
@@ -20,5 +20,5 @@ public class KshstLimitSphdPK implements Serializable {
 
 	/* 特別休暇コード */
 	@Column(name = "SPHD_CD")
-	public String specialHolidayCode;
+	public int specialHolidayCode;
 }
