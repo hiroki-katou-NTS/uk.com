@@ -6443,11 +6443,17 @@ var nts;
                             $grid.igGrid("dataBind");
                         }
                         else if ($grid.attr("filtered") === true || $grid.attr("filtered") === "true") {
-                            var filteredSource = _.filter(currentSource, function (item) {
-                                return sources.indexOf(item) >= 0;
+                            var filteredSource_1 = [];
+                            _.forEach(currentSource, function (item) {
+                                var itemX = _.find(sources, function (s) {
+                                    return s[optionsValue] === item[optionsValue];
+                                });
+                                if (!nts.uk.util.isNullOrUndefined(itemX)) {
+                                    filteredSource_1.push(itemX);
+                                }
                             });
-                            if (!_.isEqual(filteredSource, currentSource)) {
-                                $grid.igGrid('option', 'dataSource', filteredSource);
+                            if (!_.isEqual(filteredSource_1, currentSource)) {
+                                $grid.igGrid('option', 'dataSource', filteredSource_1);
                                 $grid.igGrid("dataBind");
                             }
                         }
@@ -6845,11 +6851,17 @@ var nts;
                             container.igGrid("dataBind");
                         }
                         else if (container.attr("filtered") === true || container.attr("filtered") === "true") {
-                            var filteredSource = _.filter(currentSource, function (item) {
-                                return options.indexOf(item) >= 0;
+                            var filteredSource_2 = [];
+                            _.forEach(currentSource, function (item) {
+                                var itemX = _.find(sources, function (s) {
+                                    return s[optionsValue] === item[optionsValue];
+                                });
+                                if (!nts.uk.util.isNullOrUndefined(itemX)) {
+                                    filteredSource_2.push(itemX);
+                                }
                             });
-                            if (!_.isEqual(filteredSource, currentSource)) {
-                                container.igGrid('option', 'dataSource', filteredSource);
+                            if (!_.isEqual(filteredSource_2, currentSource)) {
+                                container.igGrid('option', 'dataSource', filteredSource_2);
                                 container.igGrid("dataBind");
                             }
                         }
@@ -7343,7 +7355,7 @@ var nts;
                                                 return oldItem[primaryKey] === item[primaryKey];
                                             }) === undefined;
                                         });
-                                        component.igGrid("option", "dataSource", source);
+                                        component.igGrid("option", "dataSource", _.cloneDeep(source));
                                         component.igGrid("dataBind");
                                         if (nts.uk.util.isNullOrEmpty(selectedProperties)) {
                                             component.trigger("selectionchanged");
