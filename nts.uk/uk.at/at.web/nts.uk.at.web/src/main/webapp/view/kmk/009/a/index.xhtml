@@ -83,7 +83,7 @@
 								class="nts-input" id="itemname" style="width: 100px"
 								data-bind="ntsTextEditor:{
 										 name: '#[KMK009_6]',
-                                         value: itemTotalTimesDetail().totalTimesName,
+                                         value: itemTotalTimesDetail.totalTimesName,
                                          required: true,
                                          constraint: 'TotalTimesName',
                                          enable: enableUse}" />
@@ -101,7 +101,7 @@
 								class="nts-input" id="itemnameAB" style="width: 60px"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK009_22]',
-                                         value: itemTotalTimesDetail().totalTimesABName,
+                                         value: itemTotalTimesDetail.totalTimesABName,
                                          required: true,
                                          constraint: 'TotalTimesABName',
                                          enable: enableUse}" />
@@ -143,7 +143,7 @@
 								id="inpName" style="width: 350px" tabindex="8"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
-										value: itemTotalTimesDetail().workTypeInfo ,
+										value: itemTotalTimesDetail.workTypeInfo ,
 										required: true,
 										readonly: true,
 										enable: enableUse}" />
@@ -163,7 +163,7 @@
 								id="inpName" style="width: 350px" tabindex="10"
 								data-bind="ntsTextEditor:{
 										name: '#[KMK011_31]',
-										value: itemTotalTimesDetail().workingInfo,
+										value: itemTotalTimesDetail.workingInfo,
 										required: true,
 										readonly: true,
 										enable: enableUse}" />
@@ -189,7 +189,7 @@
 										style="width: 50px"
 										data-bind="ntsTimeEditor: {
 									name: '#[KMK009_16]',
-									value: itemTotalTimesDetail().totalCondition().thresoldUpperLimit,
+									value: itemTotalTimesDetail.totalCondition.thresoldUpperLimit,
 									inputFormat: 'time', 
 									mode: 'time', 
 									constraint: 'ConditionThresholdLimit',
@@ -214,7 +214,7 @@
 									<input style="width: 50px" tabindex="14"
 										data-bind="ntsTimeEditor: {
 									name: '#[KMK009_19]',
-									value: itemTotalTimesDetail().totalCondition().thresoldLowerLimit,
+									value: itemTotalTimesDetail.totalCondition.thresoldLowerLimit,
 									inputFormat: 'time', 
 									mode: 'time', 
 									constraint: 'ConditionThresholdLimit',
@@ -234,7 +234,7 @@
 									<!-- A3_24: Check error(select) -->
 									<div style="margin-bottom: 10px" tabindex="15"
 										data-bind="ntsCheckBox:{
-									checked: itemTotalTimesDetail().countAtr,
+									checked: itemTotalTimesDetail.countAtr,
 									enable: enableUse,
 									text: '#{i18n.getText('KMK009_21')}'}">
 									</div>

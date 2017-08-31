@@ -4,10 +4,15 @@ module nts.uk.at.view.kmk009.a.viewmodel {
     import Enum = service.model.Enum;
     import WorkTypeDto = service.model.WorkTypeDto;
     import WorkTimeDto = service.model.WorkTimeDto;
+    import TotalTimesDto = service.model.TotalTimesDto;
+    import TotalConditionDto = service.model.TotalConditionDto;
+    import TotalSubjectsDto = service.model.TotalSubjectsDto;
+    import TotalTimesDetailDto = service.model.TotalTimesDetailDto;
+    
 
     export class ScreenModel {
-        itemTotalTimes: KnockoutObservableArray<model.TotalTimes>;
-        itemTotalTimesDetail: KnockoutObservable<model.TotalTimesDetail>;
+        itemTotalTimes: KnockoutObservableArray<TotalTimesModel>;
+        itemTotalTimesDetail: TotalTimesDetailModel;
         totalClsEnums: Array<Enum>;
         totalClsEnumsUse: Array<EnumUse>;
         valueEnum: KnockoutObservable<number>;
@@ -24,7 +29,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         constructor() {
             var self = this;
             self.itemTotalTimes = ko.observableArray([]);
-            self.itemTotalTimesDetail = ko.observable(null);
+            self.itemTotalTimesDetail = new TotalTimesDetailModel();
             self.totalClsEnums = [];
             self.totalClsEnumsUse = [];
             self.valueEnum = ko.observable(null);
@@ -58,10 +63,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             self.selectUse.subscribe(function(codeChanged) {
                 if (codeChanged == 1) {
                     self.enableUse(true);
-                    self.itemTotalTimesDetail().useAtr(1);
+                    self.itemTotalTimesDetail.useAtr(1);
                 } else {
                     self.enableUse(false);
-                    self.itemTotalTimesDetail().useAtr(0);
+                    self.itemTotalTimesDetail.useAtr(0);
                 }
             });
 
@@ -69,10 +74,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             self.selectUppper.subscribe(function(codeChanged) {
                 if ((codeChanged == true && self.selectUse() === "1") || (codeChanged == true && self.selectUse() === 1)) {
                     self.enableUpper(true);
-                    self.itemTotalTimesDetail().totalCondition().upperLimitSettingAtr(1);
+                    self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr(1);
                 } else {
                     self.enableUpper(false);
-                    self.itemTotalTimesDetail().totalCondition().upperLimitSettingAtr(0);
+                    self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr(0);
                 }
             });
 
@@ -80,10 +85,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             self.selectUnder.subscribe(function(codeChanged) {
                 if ((codeChanged == true && self.selectUse() === "1") || (codeChanged == true && self.selectUse() === 1)) {
                     self.enableUnder(true);
-                    self.itemTotalTimesDetail().totalCondition().lowerLimitSettingAtr(1);
+                    self.itemTotalTimesDetail.totalCondition.lowerLimitSettingAtr(1);
                 } else {
                     self.enableUnder(false);
-                    self.itemTotalTimesDetail().totalCondition().lowerLimitSettingAtr(0);
+                    self.itemTotalTimesDetail.totalCondition.lowerLimitSettingAtr(0);
                 }
             });
 
@@ -95,24 +100,17 @@ module nts.uk.at.view.kmk009.a.viewmodel {
          */
         public startPage(): JQueryPromise<any> {
             var self = this;
-            //            nts.uk.ui.block.invisible();
             var dfd = $.Deferred();
-            self.loadAllTotalTimesDetail(1);
-
+            // load all data  Enum
             self.loadTotalClsEnum().done(function() {
-                if (self.totalClsEnums.length > 0) {
-                    self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail().summaryAtr()].value);
-                }
                 self.loadTotalUseEnum().done(function() {
                     self.loadAllTotalTimes().done(() => {
+                        self.currentCode(self.itemTotalTimes()[0].totalCountNo);
                         dfd.resolve();
                     });
+
                 });
-
             });
-
-
-
             return dfd.promise();
         }
 
@@ -123,15 +121,19 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             nts.uk.ui.block.invisible();
 
 
-            service.getAllTotalTimes().done(function(lstTotalTimes: Array<model.TotalTimes>) {
+            service.getAllTotalTimes().done(function(data) {
                 nts.uk.ui.block.clear();
                 self.itemTotalTimes([]);
-                self.itemTotalTimes(lstTotalTimes);
-
-                for (var i = 0; i < self.itemTotalTimes().length; i++) {
-                    self.itemTotalTimes()[i].summaryAtrName = self.totalClsEnums[self.itemTotalTimes()[i].summaryAtr].localizedName;
-                    self.itemTotalTimes()[i].useAtrName = self.totalClsEnumsUse[self.itemTotalTimes()[i].useAtr].localizedName;
+                var models: TotalTimesModel[] = [];
+                for(var dto of data){
+                    var model = new TotalTimesModel();
+                    model.updateData(dto);
+                    model.summaryAtrName = self.totalClsEnums[dto.summaryAtr].localizedName;
+                    model.useAtrName = self.totalClsEnums[dto.useAtr].localizedName;   
+                    models.push(model);    
                 }
+                self.itemTotalTimes(models);
+
                 self.itemTotalTimes.valueHasMutated();
 
 
@@ -151,42 +153,31 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
 //            nts.uk.ui.block.invisible();
 
-            service.getAllTotalTimesDetail(parseInt(codeChanged)).done(function(item: model.TotalTimesDetail) {
-//                nts.uk.ui.block.clear();
-                if (item == null || item === undefined) {
-                    self.itemTotalTimesDetail(null);
-                } else {
-                    // check errors
-                    self.itemTotalTimesDetail(new model.TotalTimesDetail(item.totalCountNo, item.countAtr, item.useAtr, item.totalTimesName,
-                        item.totalTimesABName, item.summaryAtr, item.totalCondition, item.listTotalSubjects));
-                    
-                    // save selectUse
-                    self.selectUse(self.itemTotalTimesDetail().useAtr());
-
+            service.getAllTotalTimesDetail(codeChanged).done(function(data) {
+                //                nts.uk.ui.block.clear();
+                if (data) {
+                    self.itemTotalTimesDetail.updateData(data);
+                    self.selectUse(self.itemTotalTimesDetail.useAtr())
                     // disable or enable Upper limit and under linit
-                    self.selectUppper(self.itemTotalTimesDetail().totalCondition().upperLimitSettingAtr());
-                    if (self.selectUppper() === 1) {
+                    self.selectUppper(self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr());
+                    if (self.selectUppper() == 1) {
                         self.enableUpper(true);
                     } else {
                         self.enableUpper(false);
                     }
-                    self.selectUnder(self.itemTotalTimesDetail().totalCondition().lowerLimitSettingAtr());
-                    if (self.selectUnder() === 1) {
+                    self.selectUnder(self.itemTotalTimesDetail.totalCondition.lowerLimitSettingAtr());
+                    if (self.selectUnder() == 1) {
                         self.enableUnder(true);
                     } else {
                         self.enableUnder(false);
                     }
-                    self.loadListWorkType();
-                    self.loadListWorkTimes();
-                }
-                // load all data  Enum
-                self.loadTotalClsEnum().done(function() {
-                    if (self.totalClsEnums.length > 0) {
-                        self.valueEnum(self.totalClsEnums[self.itemTotalTimesDetail().summaryAtr()].value);
-                    }
-                    dfd.resolve();
-                });
+                    self.loadListWorkType().done(function() {
+                        self.loadListWorkTimes().done(function() {
 
+                            dfd.resolve();
+                        });
+                    });
+                }
             });
 
 
@@ -200,17 +191,18 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
             nts.uk.ui.block.invisible();
 
-            let lstWorkTypeCd: Array<string> = _.filter(self.itemTotalTimesDetail().listTotalSubjects(), (item) => item.workTypeAtr() == 0)
+            let lstWorkTypeCd: Array<string> = _.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 0)
                 .map((item) => item.workTypeCode());
 
             service.findListByIdWorkTypes(lstWorkTypeCd).done(function(res: Array<WorkTypeDto>) {
                 nts.uk.ui.block.clear();
 
                 if (res) {
-                    self.itemTotalTimesDetail().workTypeInfo(res.map(item => item.workTypeCode + ' ' + item.name).join("＋"));
+                    self.itemTotalTimesDetail.workTypeInfo(res.map(item => item.workTypeCode + ' ' + item.name).join("＋"));
                 } else {
-                    self.itemTotalTimesDetail().workTypeInfo('');
+                    self.itemTotalTimesDetail.workTypeInfo('');
                 }
+                dfd.resolve();
             });
 
             return dfd.promise();
@@ -224,17 +216,18 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
             nts.uk.ui.block.invisible();
 
-            let lstWorkTypeCd: Array<string> = _.filter(self.itemTotalTimesDetail().listTotalSubjects(), (item) => item.workTypeAtr() == 1)
+            let lstWorkTypeCd: Array<string> = _.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 1)
                 .map((item) => item.workTypeCode());
 
             service.findListByIdWorkTimes(lstWorkTypeCd).done(function(res: Array<WorkTimeDto>) {
                 nts.uk.ui.block.clear();
 
                 if (res) {
-                    self.itemTotalTimesDetail().workingInfo(res.map(item => item.code + ' ' + item.name).join("＋"));
+                    self.itemTotalTimesDetail.workingInfo(res.map(item => item.code + ' ' + item.name).join("＋"));
                 } else {
-                    self.itemTotalTimesDetail().workingInfo('');
+                    self.itemTotalTimesDetail.workingInfo('');
                 }
+                dfd.resolve();
             });
 
             return dfd.promise();
@@ -286,46 +279,17 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         public save() {
             let self = this;
             nts.uk.ui.block.invisible();
-            console.log(self.itemTotalTimesDetail());
+            console.log(self.itemTotalTimesDetail);
             //trim() name
-            self.itemTotalTimesDetail().totalTimesName($.trim(self.itemTotalTimesDetail().totalTimesName()));
-            self.itemTotalTimesDetail().totalTimesABName($.trim(self.itemTotalTimesDetail().totalTimesABName()));
+            self.itemTotalTimesDetail.totalTimesName($.trim(self.itemTotalTimesDetail.totalTimesName()));
+            self.itemTotalTimesDetail.totalTimesABName($.trim(self.itemTotalTimesDetail.totalTimesABName()));
             // save enum
-            self.itemTotalTimesDetail().summaryAtr(self.valueEnum());
+            self.itemTotalTimesDetail.summaryAtr(self.valueEnum());
             // define dataDto
-            var detailDto = self.itemTotalTimesDetail();
 
-            let command: any = {};
-
-            command.totalCountNo = detailDto.totalCountNo;
-            command.countAtr = detailDto.countAtr();
-            command.useAtr = detailDto.useAtr();
-            command.totalTimesName = detailDto.totalTimesName();
-            command.totalTimesABName = detailDto.totalTimesABName();
-            command.summaryAtr = detailDto.summaryAtr();
-
-            /** The total condition. */
-            let totalCondition: any = {};
-            totalCondition.upperLimitSettingAtr = detailDto.totalCondition().upperLimitSettingAtr();
-            totalCondition.lowerLimitSettingAtr = detailDto.totalCondition().lowerLimitSettingAtr();
-            totalCondition.thresoldUpperLimit = detailDto.totalCondition().thresoldUpperLimit();
-            totalCondition.thresoldLowerLimit = detailDto.totalCondition().thresoldLowerLimit();
-
-            command.totalCondition = totalCondition;
-
-            let listTotalSubjects: Array<any> = [];
-
-            for (let totalObj of detailDto.listTotalSubjects()) {
-                listTotalSubjects.push({ workTypeCode: totalObj.workTypeCode(), workTypeAtr: totalObj.workTypeAtr() });
-            }
-            // add command listTotalSubjects
-            command.listTotalSubjects = listTotalSubjects;
-            // call service save all 
-            service.saveAllTotalTimes(command).done(function() {
+            service.saveAllTotalTimes(self.itemTotalTimesDetail.toDto()).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     self.loadAllTotalTimes().done(function() {
-                        //                        self.loadAllTotalTimesDetail(self.currentCode()).done(function() {
-                        //                        });
                     });
                 });
 
@@ -343,11 +307,11 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             // check worktype or worktime send to KDL001Dialog
             var listWorkType = [];
             var listWorkCode = [];
-            for (let i = 0; i < self.itemTotalTimesDetail().listTotalSubjects().length; i++) {
-                if (self.itemTotalTimesDetail().listTotalSubjects()[i].workTypeAtr() === 0) {
-                    listWorkType[i] = self.itemTotalTimesDetail().listTotalSubjects()[i].workTypeCode();
+            for (let i = 0; i < self.itemTotalTimesDetail.listTotalSubjects().length; i++) {
+                if (self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeAtr() == 0) {
+                    listWorkType[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
                 } else {
-                    listWorkCode[i] = self.itemTotalTimesDetail().listTotalSubjects()[i].workTypeCode();
+                    listWorkCode[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
                 }
             }
             service.findAllWorkTimes().done(function(dataRes: Array<WorkTimeDto>) {
@@ -363,10 +327,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     var shareWorkCocde: Array<string> = nts.uk.ui.windows.getShared('kml001selectedCodeList');
                     // deleted data worktype
 
-                    self.itemTotalTimesDetail().listTotalSubjects(_.filter(self.itemTotalTimesDetail().listTotalSubjects(), (item) => item.workTypeAtr() == 0));
+                    self.itemTotalTimesDetail.listTotalSubjects(_.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 0));
                     // insert data worktype
                     for (let i = 0; i < shareWorkCocde.length; i++) {
-                        self.itemTotalTimesDetail().listTotalSubjects().push(new model.TotalSubjects(shareWorkCocde[i], 1));
+                        self.itemTotalTimesDetail.listTotalSubjects().push(new TotalSubjectsModel(shareWorkCocde[i], 1));
                     }
                     self.loadListWorkType();
                     self.loadListWorkTimes();
@@ -384,11 +348,11 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             // check worktype or worktime send to KDL002Dialog
             var listWorkType = [];
             var listWorkCode = [];
-            for (let i = 0; i < self.itemTotalTimesDetail().listTotalSubjects().length; i++) {
-                if (self.itemTotalTimesDetail().listTotalSubjects()[i].workTypeAtr() === 0) {
-                    listWorkType[i] = self.itemTotalTimesDetail().listTotalSubjects()[i].workTypeCode();
+            for (let i = 0; i < self.itemTotalTimesDetail.listTotalSubjects().length; i++) {
+                if (self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeAtr() == 0) {
+                    listWorkType[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
                 } else {
-                    listWorkCode[i] = self.itemTotalTimesDetail().listTotalSubjects()[i].workTypeCode();
+                    listWorkCode[i] = self.itemTotalTimesDetail.listTotalSubjects()[i].workTypeCode();
                 }
             }
 
@@ -403,10 +367,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     console.log(nts.uk.ui.windows.getShared('KDL002_SelectedNewItem'));
                     var shareWorkType: Array<any> = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
                     // deleted data worktype
-                    self.itemTotalTimesDetail().listTotalSubjects(_.filter(self.itemTotalTimesDetail().listTotalSubjects(), (item) => item.workTypeAtr() == 1));
+                    self.itemTotalTimesDetail.listTotalSubjects(_.filter(self.itemTotalTimesDetail.listTotalSubjects(), (item) => item.workTypeAtr() == 1));
                     // insert data worktype
                     for (let i = 0; i < shareWorkType.length; i++) {
-                        self.itemTotalTimesDetail().listTotalSubjects().push(new model.TotalSubjects(shareWorkType[i].code, 0));
+                        self.itemTotalTimesDetail.listTotalSubjects().push(new TotalSubjectsModel(shareWorkType[i].code, 0));
                     }
                     self.loadListWorkType();
                     self.loadListWorkTimes();
@@ -432,79 +396,143 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
 
 
-    export module model {
-        export class TotalTimes {
+  
+        export class TotalTimesModel {
             totalCountNo: number;
             summaryAtr: number;
             useAtr: number;
-            totalTimesName: KnockoutObservable<string>;
+            totalTimesName: string;
             summaryAtrName: string;
             useAtrName: string
-            constructor(totalCountNo: number, summaryAtr: number, useAtr: number, totalTimesName: string) {
-                this.totalCountNo = totalCountNo;
-                this.summaryAtr = summaryAtr;
-                this.useAtr = useAtr;
-                this.totalTimesName = ko.observable(totalTimesName);
+            constructor() {
+                this.totalCountNo = 1;
+                this.summaryAtr = 1;
+                this.useAtr = 1;
+                this.totalTimesName = null;
                 this.summaryAtrName = null;
                 this.useAtrName = null;
             }
+            
+            updateData(dto: TotalTimesDto) {
+                this.totalCountNo = dto.totalCountNo;
+                this.summaryAtr = dto.summaryAtr;
+                this.useAtr = dto.useAtr;
+                this.totalTimesName = dto.totalTimesName;
+            }
         }
 
-        export class TotalTimesDetail {
+        export class TotalTimesDetailModel {
             totalCountNo: number;
             countAtr: KnockoutObservable<number>;
             useAtr: KnockoutObservable<number>;
             totalTimesName: KnockoutObservable<string>;
             totalTimesABName: KnockoutObservable<string>;
             summaryAtr: KnockoutObservable<number>;
-            totalCondition: KnockoutObservable<model.TotalCondition>;
-            listTotalSubjects: KnockoutObservableArray<model.TotalSubjects>;
+            totalCondition: TotalConditionModel;
+            listTotalSubjects: KnockoutObservableArray<TotalSubjectsModel>;
             workTypeInfo: KnockoutObservable<string>;
             workingInfo: KnockoutObservable<string>;
 
 
-            constructor(totalCountNo: number, countAtr: number, useAtr: number, totalTimesName: string, totalTimesABName: string, summaryAtr: number, totalCondition: model.TotalCondition, listTotalSubjects: Array<model.TotalSubjects>) {
-                this.totalCountNo = totalCountNo;
-                this.countAtr = ko.observable(countAtr);
-                this.useAtr = ko.observable(useAtr);
-                this.totalTimesName = ko.observable(totalTimesName);
-                this.totalTimesABName = ko.observable(totalTimesABName);
-                this.summaryAtr = ko.observable(summaryAtr);
-                this.totalCondition = ko.observable(new model.TotalCondition(totalCondition.upperLimitSettingAtr, totalCondition.lowerLimitSettingAtr,
-                    totalCondition.thresoldUpperLimit, totalCondition.thresoldLowerLimit));
+            constructor() {
+                this.totalCountNo = 1;
+                this.countAtr = ko.observable(1);
+                this.useAtr = ko.observable(1);
+                this.totalTimesName = ko.observable('');
+                this.totalTimesABName = ko.observable('');
+                this.summaryAtr = ko.observable(1);
+                this.totalCondition = new TotalConditionModel();
                 this.listTotalSubjects = ko.observableArray([]);
-                for (let i = 0; i < listTotalSubjects.length; i++) {
-                    // add list
-                    this.listTotalSubjects.push(new model.TotalSubjects(listTotalSubjects[i].workTypeCode, listTotalSubjects[i].workTypeAtr));
-                }
                 this.workTypeInfo = ko.observable(null);
                 this.workingInfo = ko.observable(null);
 
             }
             
+            updateData(dto: TotalTimesDetailDto) {
+                this.totalCountNo = dto.totalCountNo;
+                this.countAtr(dto.countAtr);
+                this.useAtr(dto.useAtr);
+                this.totalTimesName(dto.totalTimesName);
+                this.totalTimesABName(dto.totalTimesABName);
+                this.totalCondition.updateData(dto.totalCondition);
+                this.summaryAtr(dto.summaryAtr);
+                this.listTotalSubjects([]);
+                var listTotalSubjectsUpdate : TotalSubjectsModel[] = [];
+                for (var item of dto.listTotalSubjects) {
+                    var model: TotalSubjectsModel = new TotalSubjectsModel();
+                    model.updateData(item);
+                    listTotalSubjectsUpdate.push(model);
+                }
+                this.listTotalSubjects(listTotalSubjectsUpdate);
+            }
+
+            toDto(): TotalTimesDetailDto{
+                var listTotalSubjectsDto: TotalSubjectsDto[] = [];
+                for (var model of this.listTotalSubjects()) {
+                    listTotalSubjectsDto.push(model.toDto());
+                }
+                var dto: TotalTimesDetailDto = {
+                    totalCountNo: this.totalCountNo,
+                    countAtr: this.countAtr(),
+                    useAtr: this.useAtr(),
+                    totalTimesName: this.totalTimesName(),
+                    totalTimesABName: this.totalTimesABName(),
+                    totalCondition: this.totalCondition.toDto(),
+                    summaryAtr : this.summaryAtr(),
+                    listTotalSubjects: listTotalSubjectsDto
+                };
+                return dto;    
+            }
         }
 
-        export class TotalCondition {
+        export class TotalConditionModel {
             upperLimitSettingAtr: KnockoutObservable<number>;
             lowerLimitSettingAtr: KnockoutObservable<number>;
             thresoldUpperLimit: KnockoutObservable<number>;
             thresoldLowerLimit: KnockoutObservable<number>;
-            constructor(upperLimitSettingAtr: number, lowerLimitSettingAtr: number, thresoldUpperLimit: number, thresoldLowerLimit: number) {
-                this.upperLimitSettingAtr = ko.observable(upperLimitSettingAtr);
-                this.lowerLimitSettingAtr = ko.observable(lowerLimitSettingAtr);
-                this.thresoldUpperLimit = ko.observable(thresoldUpperLimit);
-                this.thresoldLowerLimit = ko.observable(thresoldLowerLimit);
+            constructor() {
+                this.upperLimitSettingAtr = ko.observable(1);
+                this.lowerLimitSettingAtr = ko.observable(1);
+                this.thresoldUpperLimit = ko.observable(1);
+                this.thresoldLowerLimit = ko.observable(1);
+            }
+            updateData(dto: TotalConditionDto){
+                this.upperLimitSettingAtr(dto.upperLimitSettingAtr);
+                this.lowerLimitSettingAtr(dto.lowerLimitSettingAtr);
+                this.thresoldUpperLimit(dto.thresoldUpperLimit);
+                this.thresoldLowerLimit(dto.thresoldLowerLimit);
+            }
+            
+            toDto(): TotalConditionDto{
+                var dto: TotalConditionDto = {
+                    upperLimitSettingAtr: this.upperLimitSettingAtr(),
+                    lowerLimitSettingAtr: this.lowerLimitSettingAtr(),
+                    thresoldUpperLimit: this.thresoldUpperLimit(),
+                    thresoldLowerLimit: this.thresoldLowerLimit()
+                };
+                return dto;
             }
         }
 
-        export class TotalSubjects {
+        export class TotalSubjectsModel {
             workTypeCode: KnockoutObservable<string>;
             workTypeAtr: KnockoutObservable<number>;
 
-            constructor(workTypeCode: string, workTypeAtr: number) {
-                this.workTypeCode = ko.observable(workTypeCode);
-                this.workTypeAtr = ko.observable(workTypeAtr);
+            constructor() {
+                this.workTypeCode = ko.observable('');
+                this.workTypeAtr = ko.observable(1);
+            }
+            updateData(dto: TotalSubjectsDto){
+                this.workTypeCode(dto.workTypeCode);
+                this.workTypeAtr(dto.workTypeAtr);    
+            }
+            toDto(): TotalSubjectsDto{
+                var dto: TotalSubjectsDto = {
+                    workTypeCode: this.workTypeCode(),
+                    workTypeAtr: this.workTypeAtr()
+                };    
+                return dto;
             }
         }
-    }
+
 }
