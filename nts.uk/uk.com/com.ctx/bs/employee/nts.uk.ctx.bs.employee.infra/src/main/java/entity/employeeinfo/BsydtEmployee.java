@@ -44,6 +44,10 @@ public class BsydtEmployee extends UkJpaEntity implements Serializable {
 	public String companyMobileMail;
 	
 	@Basic(optional = false)
+	@Column(name = "COMPANY_MOBILE")
+	public String companyMobile;
+	
+	@Basic(optional = false)
 	@Column(name = "ENTRY_DATE")
 	public GeneralDate entryDate;
 	
