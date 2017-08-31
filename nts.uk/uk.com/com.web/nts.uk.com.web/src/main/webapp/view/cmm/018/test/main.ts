@@ -21,7 +21,7 @@ module nts.uk.com.view.cmm018.test.viewmodel{
             self.confirmedPerson('A00000000001');
             setShared("CMM008K_PARAM", { 
                                         appType: "0", //設定する対象申請名 
-                                        formSetting: 0,//承認形態
+                                        formSetting: 0,//0: 全員確認、１：誰か一人
                                         approverInfor: self.approverInfor(),//承認者一覧
                                         confirmedPerson: self.confirmedPerson, //確定者
                                         selectTypeSet: 0, //職位指定（1）、個人指定（0）
