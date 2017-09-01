@@ -356,10 +356,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     // Focus grid list
                     $('#single-list-dataSource_container').focus();
                     self.loadAllTotalTimes().done(function() {
-                        self.loadListWorkType().done(function() {
-                            self.loadListWorkTimes().done(function() {
-
-                            });
+                        self.loadAllTotalTimesDetail(self.currentCode()).done(function() {
                         });
                     });
                 });
@@ -520,7 +517,6 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 saveData.updateData(self.stash.toDto());
                 saveData.useAtr(0);
             }
-
         }
 
     }
