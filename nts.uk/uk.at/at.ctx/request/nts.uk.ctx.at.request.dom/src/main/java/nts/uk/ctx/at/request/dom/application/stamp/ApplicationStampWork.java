@@ -23,6 +23,8 @@ public class ApplicationStampWork {
 	 */
 	private Integer stampFrameNo;
 	
+	private StampGoOutReason stampGoOutReason;
+	
 	/**
 	 * 応援カード
 	 */
@@ -53,11 +55,12 @@ public class ApplicationStampWork {
 	 */
 	private String endLocation;
 
-	public ApplicationStampWork(StampAtr stampAtr, Integer stampFrameNo, String supportCard, String supportLocationCD,
-			Integer startTime, String startLocation, Integer endTime, String endLocation) {
+	public ApplicationStampWork(StampAtr stampAtr, Integer stampFrameNo, StampGoOutReason stampGoOutReason, String supportCard, 
+			String supportLocationCD, Integer startTime, String startLocation, Integer endTime, String endLocation) {
 		super();
 		this.stampAtr = stampAtr;
 		this.stampFrameNo = stampFrameNo;
+		this.stampGoOutReason = stampGoOutReason;
 		this.supportCard = supportCard;
 		this.supportLocationCD = supportLocationCD;
 		this.startTime = startTime;

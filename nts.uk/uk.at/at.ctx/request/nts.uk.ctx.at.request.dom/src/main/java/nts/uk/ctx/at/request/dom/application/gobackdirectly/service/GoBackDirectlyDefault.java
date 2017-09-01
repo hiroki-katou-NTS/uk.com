@@ -7,8 +7,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.registerapprovereflection.service.RegisterAtApproveReflectionInfoService;
-import nts.uk.ctx.at.request.dom.application.common.service.ProcessBeforeRegisterNewScreenService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.ProcessBeforeRegisterService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
@@ -30,7 +30,7 @@ public class GoBackDirectlyDefault implements GoBackDirectlyService {
 	@Inject
 	GoBackDirectlyRepository goBackDirectRepo;
 	@Inject
-	ProcessBeforeRegisterNewScreenService processBeforeRegister;
+	ProcessBeforeRegisterService processBeforeRegister;
 	@Inject
 	GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
 
@@ -41,9 +41,12 @@ public class GoBackDirectlyDefault implements GoBackDirectlyService {
 		 * アルゴリズム「直行直帰登録前チェック」を実行する
 		 */
 		// Goi thang 2.1 len
-		processBeforeRegister.processBeforeRegisterNewScreen(companyID, employeeID,
-				application.getInputDate().toString(), goBackDirectly.getWorkTimeEnd1().toString(),
-				application.getPrePostAtr().value, approvalRoot, application.getApplicationType().toString());
+		//2017.09.01 DuDT: comment tam thoi theo ham da sua => DucPM sua lai sau
+//		processBeforeRegister.processBeforeRegister(companyID, 
+//				employeeID,
+//				application.getInputDate(), 
+//				goBackDirectly.getWorkTimeEnd1(),
+//				application.getPrePostAtr().value, approvalRoot, application.getApplicationType().toString());
 		// if hasError return
 		// if no Error
 		// アルゴリズム「直行直帰するチェック」を実行する
