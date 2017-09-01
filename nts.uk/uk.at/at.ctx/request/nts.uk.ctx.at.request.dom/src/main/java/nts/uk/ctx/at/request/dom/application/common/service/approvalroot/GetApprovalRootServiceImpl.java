@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.impls;
+package nts.uk.ctx.at.request.dom.application.common.service.approvalroot;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -16,10 +16,8 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.CompanyAppRootAdaptorDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.PersonAppRootAdaptorDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.WkpAppRootAdaptorDto;
-import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.AdjustmentApprovalRootService;
-import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.GetApprovalRootService;
-import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.dto.ApprovalPhaseAdaptorResult;
-import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.dto.ApprovalRootDataResult;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.dto.ApprovalPhaseAdaptorResult;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.dto.ApprovalRootDataResult;
 
 /**
  * 1.社員の対象申請の承認ルートを取得する

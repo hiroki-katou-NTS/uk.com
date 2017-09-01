@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services;
+package nts.uk.ctx.at.request.dom.application.common.service.approvalroot;
 
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseAdaptorDto;
-import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.dto.ApprovalPhaseAdaptorResult;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.dto.ApprovalPhaseAdaptorResult;
 
 /**
  * 2.承認ルートを整理する

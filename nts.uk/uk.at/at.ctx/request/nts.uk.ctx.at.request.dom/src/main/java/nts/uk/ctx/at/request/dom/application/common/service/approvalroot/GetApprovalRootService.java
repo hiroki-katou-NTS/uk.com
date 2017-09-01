@@ -1,9 +1,9 @@
-package nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services;
+package nts.uk.ctx.at.request.dom.application.common.service.approvalroot;
 
 import java.util.Date;
 import java.util.List;
 
-import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.dto.ApprovalRootDataResult;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.dto.ApprovalRootDataResult;
 
 /**
  * 

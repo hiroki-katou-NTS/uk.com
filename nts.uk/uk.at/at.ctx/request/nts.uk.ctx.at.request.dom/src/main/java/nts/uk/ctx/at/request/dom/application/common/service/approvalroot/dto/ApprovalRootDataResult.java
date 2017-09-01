@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.dto;
+package nts.uk.ctx.at.request.dom.application.common.service.approvalroot.dto;
 
 import java.util.List;
 

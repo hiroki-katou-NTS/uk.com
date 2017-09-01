@@ -1,9 +1,9 @@
-package nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services;
+package nts.uk.ctx.at.request.dom.application.common.service.approvalroot;
 
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.dto.ApproverInfo;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.dto.ApproverInfo;
 
 /**
  * 6.職場に指定する職位の対象者を取得する

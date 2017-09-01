@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.impls;
+package nts.uk.ctx.at.request.dom.application.common.service.approvalroot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +13,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseAdaptorDto;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverAdaptorDto;
-import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.AdjustmentApprovalRootService;
-import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.JobtitleToApproverService;
-import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.dto.ApprovalPhaseAdaptorResult;
-import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.dto.ApproverInfo;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.dto.ApprovalPhaseAdaptorResult;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.dto.ApproverInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformationService;
 import nts.uk.ctx.at.request.dom.application.common.service.other.dto.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;

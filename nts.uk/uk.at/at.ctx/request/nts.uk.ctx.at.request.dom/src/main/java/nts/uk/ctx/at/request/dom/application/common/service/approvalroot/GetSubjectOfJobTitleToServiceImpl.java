@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.impls;
+package nts.uk.ctx.at.request.dom.application.common.service.approvalroot;
 
 import java.util.List;
 
@@ -7,8 +7,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdaptor;
-import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.GetSubjectOfJobTitleService;
-import nts.uk.ctx.at.request.dom.application.common.approvalroot.subjectrequest.services.dto.ApproverInfo;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.dto.ApproverInfo;
 
 /**
  * 3.職位から承認者へ変換する
