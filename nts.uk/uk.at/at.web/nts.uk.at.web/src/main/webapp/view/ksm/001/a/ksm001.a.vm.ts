@@ -18,6 +18,7 @@ module nts.uk.at.view.ksm001.a {
             usageSettingModel: UsageSettingModel;
             lstTargetYear: KnockoutObservableArray<any>;
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
+            defaultCurrencyOption: any;
 
             // Flag
             isCompanySelected: KnockoutObservable<boolean>;
@@ -59,6 +60,12 @@ module nts.uk.at.view.ksm001.a {
                     { id: 'tab-3', title: nts.uk.resource.getText("KSM001_25"), content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.lstTargetYear = ko.observableArray([]);
+                self.defaultCurrencyOption = {
+                    width: "50",
+                    grouplength: 3,
+                    decimallength: 2,
+                    currencyformat: "JPY"
+                };
 
                 // Initial data model.
                 self.companyEstablishmentModel = new EstablishmentModel();

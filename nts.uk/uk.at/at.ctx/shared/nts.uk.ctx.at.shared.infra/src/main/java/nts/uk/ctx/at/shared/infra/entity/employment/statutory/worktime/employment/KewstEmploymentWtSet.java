@@ -134,4 +134,35 @@ public class KewstEmploymentWtSet extends UkJpaEntity implements Serializable {
 		return this.jewstEmploymentWtSetPK;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((jewstEmploymentWtSetPK == null) ? 0 : jewstEmploymentWtSetPK.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KewstEmploymentWtSet other = (KewstEmploymentWtSet) obj;
+		if (jewstEmploymentWtSetPK == null) {
+			if (other.jewstEmploymentWtSetPK != null)
+				return false;
+		} else if (!jewstEmploymentWtSetPK.equals(other.jewstEmploymentWtSetPK))
+			return false;
+		return true;
+	}
+
 }
