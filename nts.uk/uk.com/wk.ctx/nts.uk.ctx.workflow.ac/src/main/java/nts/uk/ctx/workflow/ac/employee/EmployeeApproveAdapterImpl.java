@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.pub.employee.EmployeeDto;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.employee.workplace.SyWorkplacePub;
@@ -45,9 +45,9 @@ public class EmployeeApproveAdapterImpl implements EmployeeApproveAdapter {
 	 */
 	public List<EmployeeApproveDto> findByWpkIds(String companyId, List<String> workplaceIds,
 			GeneralDate baseDate) {
-		List<EmployeeDto> empDto = employeePub.findByWpkIds(companyId, workplaceIds, baseDate);
+		List<EmployeeExport> empDto = employeePub.findByWpkIds(companyId, workplaceIds, baseDate);
 		List<EmployeeApproveDto> lstEmployees = new ArrayList<>();
-		for (EmployeeDto employeeDto : empDto) {
+		for (EmployeeExport employeeDto : empDto) {
 			EmployeeApproveDto appDto = new EmployeeApproveDto();
 			appDto.setCompanyId(employeeDto.getCompanyId());
 			appDto.setJoinDate(employeeDto.getJoinDate());

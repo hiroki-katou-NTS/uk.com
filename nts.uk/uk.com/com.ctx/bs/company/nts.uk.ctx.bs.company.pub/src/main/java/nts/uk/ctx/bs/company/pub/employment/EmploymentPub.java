@@ -17,6 +17,6 @@ public interface EmploymentPub {
 	 * @param employmentCodes the employment codes
 	 * @return the list
 	 */
-	List<PubEmploymentDto> findByEmpCodes(List<String> employmentCodes);
+	List<EmploymentExport> findByEmpCodes(List<String> employmentCodes);
 
 }

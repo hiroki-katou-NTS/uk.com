@@ -15,8 +15,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffJobTitleHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.access.jobtitle.SyJobTitleAdapter;
-import nts.uk.ctx.bs.employee.dom.access.jobtitle.dto.AcJobTitleDto;
-import nts.uk.ctx.bs.employee.pub.employee.jobtitle.PubJobTitleDto;
+import nts.uk.ctx.bs.employee.dom.access.jobtitle.dto.JobTitleImport;
+import nts.uk.ctx.bs.employee.pub.employee.jobtitle.JobTitleExport;
 import nts.uk.ctx.bs.employee.pub.employee.jobtitle.SyJobTitlePub;
 
 /**
@@ -40,7 +40,7 @@ public class SyJobTitlePubImp implements SyJobTitlePub {
 	 * nts.uk.ctx.bs.employee.pub.employee.EmployeePub#findJobTitleBySid(String)
 	 */
 	@Override
-	public List<PubJobTitleDto> findJobTitleBySid(String employeeId) {
+	public List<JobTitleExport> findJobTitleBySid(String employeeId) {
 		// Query
 		List<AffJobTitleHistory> affJobTitleHistories = this.jobTitleHistoryRepository
 				.findBySid(employeeId);
@@ -48,11 +48,11 @@ public class SyJobTitlePubImp implements SyJobTitlePub {
 		List<String> jobIds = affJobTitleHistories.stream().map(item -> item.getJobTitleId().v())
 				.collect(Collectors.toList());
 
-		List<AcJobTitleDto> jobTitleDtos = this.jobTitleAdapter.findByJobIds(jobIds);
+		List<JobTitleImport> jobTitleDtos = this.jobTitleAdapter.findByJobIds(jobIds);
 
 		// Return
 		return jobTitleDtos.stream().map(item -> {
-			PubJobTitleDto dto = new PubJobTitleDto();
+			JobTitleExport dto = new JobTitleExport();
 			dto.setCompanyId(item.getCompanyId());
 			dto.setPositionId(item.getPositionId());
 			dto.setPositionCode(item.getPositionCode());
@@ -72,7 +72,7 @@ public class SyJobTitlePubImp implements SyJobTitlePub {
 	 * lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<PubJobTitleDto> findJobTitleBySid(String employeeId, GeneralDate baseDate) {
+	public List<JobTitleExport> findJobTitleBySid(String employeeId, GeneralDate baseDate) {
 		// Query
 		List<AffJobTitleHistory> affJobTitleHistories = this.jobTitleHistoryRepository
 				.findBySid(employeeId, baseDate);
@@ -80,11 +80,11 @@ public class SyJobTitlePubImp implements SyJobTitlePub {
 		List<String> jobIds = affJobTitleHistories.stream().map(item -> item.getJobTitleId().v())
 				.collect(Collectors.toList());
 
-		List<AcJobTitleDto> jobTitleDtos = this.jobTitleAdapter.findByJobIds(jobIds);
+		List<JobTitleImport> jobTitleDtos = this.jobTitleAdapter.findByJobIds(jobIds);
 
 		// Return
 		return jobTitleDtos.stream().map(item -> {
-			PubJobTitleDto dto = new PubJobTitleDto();
+			JobTitleExport dto = new JobTitleExport();
 			dto.setCompanyId(item.getCompanyId());
 			dto.setPositionId(item.getPositionId());
 			dto.setPositionCode(item.getPositionCode());
@@ -104,15 +104,15 @@ public class SyJobTitlePubImp implements SyJobTitlePub {
 	 * nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<PubJobTitleDto> findJobTitleByPositionId(String companyId, String positionId,
+	public List<JobTitleExport> findJobTitleByPositionId(String companyId, String positionId,
 			GeneralDate baseDate) {
 		// Query
-		List<AcJobTitleDto> jobTitleDtos = this.jobTitleAdapter.findByJobIds(companyId,
+		List<JobTitleImport> jobTitleDtos = this.jobTitleAdapter.findByJobIds(companyId,
 				Arrays.asList(positionId), baseDate);
 
 		// Return
 		return jobTitleDtos.stream().map(item -> {
-			PubJobTitleDto dto = new PubJobTitleDto();
+			JobTitleExport dto = new JobTitleExport();
 			dto.setCompanyId(item.getCompanyId());
 			dto.setPositionId(item.getPositionId());
 			dto.setPositionCode(item.getPositionCode());

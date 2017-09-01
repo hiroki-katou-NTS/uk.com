@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.company.pub.workplace;
+package nts.uk.ctx.bs.employee.dom.access.workplace.dto;
 
 import lombok.Data;
 
@@ -16,7 +16,7 @@ import lombok.Data;
  * @see java.lang.Object#toString()
  */
 @Data
-public class PubWorkplaceHierarchyDto {
+public class WorkplaceHierarchyImport {
 
 	/** The workplace id. */
 	private String workplaceId;
@@ -32,7 +32,7 @@ public class PubWorkplaceHierarchyDto {
 	 * @param hierarchyCode
 	 *            the hierarchy code
 	 */
-	public PubWorkplaceHierarchyDto(String workplaceId, String hierarchyCode) {
+	public WorkplaceHierarchyImport(String workplaceId, String hierarchyCode) {
 		super();
 		this.workplaceId = workplaceId;
 		this.hierarchyCode = hierarchyCode;

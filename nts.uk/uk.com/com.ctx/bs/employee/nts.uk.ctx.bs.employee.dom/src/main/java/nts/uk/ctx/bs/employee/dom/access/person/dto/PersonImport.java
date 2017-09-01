@@ -10,7 +10,7 @@ import lombok.Data;
  * The Class PersonDto.
  */
 @Data
-public class AcPersonDto {
+public class PersonImport {
 
 	/** The person id. */
 	private String personId;
@@ -26,7 +26,7 @@ public class AcPersonDto {
 	 * @param personName
 	 *            the person name
 	 */
-	public AcPersonDto(String personId, String personName) {
+	public PersonImport(String personId, String personName) {
 		super();
 		this.personId = personId;
 		this.personName = personName;

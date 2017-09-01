@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
  * The Class PubJobTitleDto.
  */
 @Data
-public class PubJobTitleDto {
+public class JobTitleExport {
 
 	/** The company id. */
 	private String companyId;
@@ -37,7 +37,7 @@ public class PubJobTitleDto {
 	/**
 	 * Instantiates a new pub job title dto.
 	 */
-	public PubJobTitleDto() {
+	public JobTitleExport() {
 		super();
 	}
 
@@ -59,7 +59,7 @@ public class PubJobTitleDto {
 	 * @param endDate
 	 *            the end date
 	 */
-	public PubJobTitleDto(String companyId, String positionId, String positionCode,
+	public JobTitleExport(String companyId, String positionId, String positionCode,
 			String positionName, String sequenceCode, GeneralDate startDate, GeneralDate endDate) {
 		super();
 		this.companyId = companyId;

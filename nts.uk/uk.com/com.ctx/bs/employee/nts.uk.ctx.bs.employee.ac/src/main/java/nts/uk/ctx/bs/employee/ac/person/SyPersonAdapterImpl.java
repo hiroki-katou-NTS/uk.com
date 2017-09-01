@@ -11,14 +11,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.access.person.SyPersonAdapter;
-import nts.uk.ctx.bs.employee.dom.access.person.dto.AcPersonDto;
+import nts.uk.ctx.bs.employee.dom.access.person.dto.PersonImport;
 import nts.uk.ctx.bs.person.pub.person.PersonPub;
 
 /**
  * The Class PersonAdapterImpl.
  */
 @Stateless
-public class PersonAdapterImpl implements SyPersonAdapter {
+public class SyPersonAdapterImpl implements SyPersonAdapter {
 
 	/** The person pub. */
 	@Inject
@@ -32,9 +32,9 @@ public class PersonAdapterImpl implements SyPersonAdapter {
 	 * java.util.List)
 	 */
 	@Override
-	public List<AcPersonDto> findByPersonIds(List<String> personIds) {
+	public List<PersonImport> findByPersonIds(List<String> personIds) {
 		return personPub.findByPersonIds(personIds).stream()
-				.map(item -> new AcPersonDto(item.getPersonId(), item.getPersonName()))
+				.map(item -> new PersonImport(item.getPersonId(), item.getPersonName()))
 				.collect(Collectors.toList());
 	}
 

@@ -20,7 +20,7 @@ public interface SyJobTitlePub {
 	 * @return the list
 	 */
 	// RequestList #17
-	List<PubJobTitleDto> findJobTitleBySid(String employeeId);
+	List<JobTitleExport> findJobTitleBySid(String employeeId);
 
 	/**
 	 * Find job title by sid.
@@ -30,7 +30,7 @@ public interface SyJobTitlePub {
 	 * @return the list
 	 */
 	// RequestList #33
-	List<PubJobTitleDto> findJobTitleBySid(String employeeId, GeneralDate baseDate);
+	List<JobTitleExport> findJobTitleBySid(String employeeId, GeneralDate baseDate);
 
 	/**
 	 * Find job title by position id.
@@ -41,5 +41,5 @@ public interface SyJobTitlePub {
 	 * @return the list
 	 */
 	// RequestList #67-1
-	List<PubJobTitleDto> findJobTitleByPositionId(String companyId, String positionId, GeneralDate baseDate);
+	List<JobTitleExport> findJobTitleByPositionId(String companyId, String positionId, GeneralDate baseDate);
 }
