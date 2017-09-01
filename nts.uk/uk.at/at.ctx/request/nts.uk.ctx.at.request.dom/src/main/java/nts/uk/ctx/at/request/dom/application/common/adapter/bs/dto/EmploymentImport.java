@@ -5,7 +5,7 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class EmploymentAdaptorDto {
+public class EmploymentImport {
 	private String companyId;
 	private Integer workClosureId;
 	private Integer salaryClosureId;

@@ -1,12 +1,12 @@
 package nts.uk.ctx.workflow.pub.approvalroot.export;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
-@Data
+@Getter
 @AllArgsConstructor
-public class CompanyApprovalRootExport {
+public class ComApprovalRootExport {
 
 	/** 会社ID */
 	private String companyId;

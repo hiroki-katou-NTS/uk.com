@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdaptor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.employee.workplace.SyWorkplacePub;
@@ -19,7 +19,7 @@ import nts.uk.ctx.bs.employee.pub.employee.workplace.SyWorkplacePub;
  * The Class EmployeeAdaptorImpl.
  */
 @Stateless
-public class EmployeeAdaptorImpl implements EmployeeAdaptor {
+public class EmployeeAdapterImpl implements EmployeeAdapter {
 
 	/** The employee pub. */
 	@Inject

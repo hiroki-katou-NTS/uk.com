@@ -6,7 +6,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdaptor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.valueobject.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
@@ -17,7 +17,7 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
 public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
 	
 	@Inject
-	private EmployeeAdaptor employeeAdaptor;
+	private EmployeeAdapter employeeAdaptor;
 	
 	@Inject
 	private ApplicationDeadlineRepository applicationDeadlineRepository;

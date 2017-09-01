@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalPhaseExport;
-import nts.uk.ctx.workflow.pub.approvalroot.export.CompanyApprovalRootExport;
+import nts.uk.ctx.workflow.pub.approvalroot.export.ComApprovalRootExport;
 import nts.uk.ctx.workflow.pub.approvalroot.export.PersonApprovalRootExport;
 import nts.uk.ctx.workflow.pub.approvalroot.export.WkpApprovalRootExport;
 
@@ -60,7 +60,7 @@ public interface ApprovalRootPub {
 	 * @param appType 対象申請
 	 * @return ApprovalRootDtos
 	 */
-	List<CompanyApprovalRootExport> findCompanyByBaseDate(String cid, Date baseDate, int appType);
+	List<ComApprovalRootExport> findCompanyByBaseDate(String cid, Date baseDate, int appType);
 	
 	/**
 	 * ドメインモデル「会社別就業承認ルート」を取得する(共通)
@@ -69,7 +69,7 @@ public interface ApprovalRootPub {
 	 * @param baseDate 基準日
 	 * @return ApprovalRootDtos
 	 */
-	List<CompanyApprovalRootExport> findCompanyByBaseDateOfCommon(String cid, Date baseDate);
+	List<ComApprovalRootExport> findCompanyByBaseDateOfCommon(String cid, Date baseDate);
 	
 	/**
 	 * 

@@ -5,9 +5,9 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.CompanyAppRootImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.PersonAppRootImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.WkpAppRootImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ComApprovalRootImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.PersonApprovalRootImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.WkpApprovalRootImport;
 
 @Data
 @AllArgsConstructor
@@ -39,7 +39,7 @@ public class ApprovalRootOutput {
 	
 	private List<ApprovalPhaseOutput> approvers;
 	
-	public static ApprovalRootOutput convertFromPersonData(PersonAppRootImport x) {
+	public static ApprovalRootOutput convertFromPersonData(PersonApprovalRootImport x) {
 		return new ApprovalRootOutput(
 				x.getCompanyId(),
 				null, 
@@ -56,7 +56,7 @@ public class ApprovalRootOutput {
 				null);
 	}
 	
-	public static ApprovalRootOutput convertFromWkpData(WkpAppRootImport x) {
+	public static ApprovalRootOutput convertFromWkpData(WkpApprovalRootImport x) {
 		return new ApprovalRootOutput(
 				x.getCompanyId(),
 				x.getWorkplaceId(), 
@@ -73,7 +73,7 @@ public class ApprovalRootOutput {
 				null);
 	}
 	
-	public static ApprovalRootOutput convertFromCompanyData(CompanyAppRootImport x) {
+	public static ApprovalRootOutput convertFromCompanyData(ComApprovalRootImport x) {
 		return new ApprovalRootOutput(
 				x.getCompanyId(),
 				null, 

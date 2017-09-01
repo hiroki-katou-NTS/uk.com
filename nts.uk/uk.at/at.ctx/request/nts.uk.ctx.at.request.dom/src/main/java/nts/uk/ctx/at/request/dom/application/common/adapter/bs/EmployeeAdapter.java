@@ -4,7 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 
-public interface EmployeeAdaptor {
+public interface EmployeeAdapter {
 	/**
 	 * get employment code by companyID, employeeID and base date
 	 * @param companyId 会社ID

@@ -8,7 +8,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdaptor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.JobtitleSearchSetAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.JobtitleSearchSetImport;
 import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApproverInfo;
@@ -23,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.
 public class JobtitleToApproverServiceImpl implements JobtitleToApproverService {
 
 	@Inject
-	private EmployeeAdaptor employeeAdaptor;
+	private EmployeeAdapter employeeAdaptor;
 	@Inject
 	private JobtitleSearchSetAdapter jobtitleSearchSetAdaptor;
 

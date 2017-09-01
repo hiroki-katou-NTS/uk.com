@@ -1,14 +1,14 @@
-package nts.uk.ctx.workflow.pub.approvalroot.export;
+package nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
 @Getter
-public class PersonApprovalRootExport extends ComApprovalRootExport {
+public class PersonApprovalRootImport extends ComApprovalRootImport {
 	/** 社員ID */
 	private String employeeId;
 
-	public PersonApprovalRootExport(
+	public PersonApprovalRootImport(
 			String companyId, 
 			String approvalId, 
 			String employeeId,

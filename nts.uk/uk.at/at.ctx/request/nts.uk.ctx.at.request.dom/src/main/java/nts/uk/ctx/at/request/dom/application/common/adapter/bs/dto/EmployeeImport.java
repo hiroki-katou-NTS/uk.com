@@ -4,7 +4,7 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 @Data
-public class EmployeeAdaptorDto {
+public class EmployeeImport {
 	/** The company id. */
 	private String companyId;
 

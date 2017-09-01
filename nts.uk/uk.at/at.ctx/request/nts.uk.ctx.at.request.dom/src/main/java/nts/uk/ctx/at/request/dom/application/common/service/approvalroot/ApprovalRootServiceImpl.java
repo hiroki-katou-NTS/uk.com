@@ -12,13 +12,13 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdaptor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.CompanyAppRootImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.PersonAppRootImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.WkpAppRootImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ComApprovalRootImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.PersonApprovalRootImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.WkpApprovalRootImport;
 import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApprovalPhaseOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApprovalRootOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApproverInfo;
@@ -41,7 +41,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 	private ApprovalRootAdapter approvalRootAdaptorDto;
 
 	@Inject
-	private EmployeeAdaptor employeeAdaptor;
+	private EmployeeAdapter employeeAdaptor;
 	
 	@Inject
 	private JobtitleToApproverService jobtitleToAppService;
@@ -71,15 +71,15 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 			int appType,Date baseDate) {
 		List<ApprovalRootOutput> result = new ArrayList<>();
 		// get 個人別就業承認ルート from workflow
-		List<PersonAppRootImport> perAppRoots = this.approvalRootAdaptorDto.findByBaseDate(cid, sid, baseDate, appType);
+		List<PersonApprovalRootImport> perAppRoots = this.approvalRootAdaptorDto.findByBaseDate(cid, sid, baseDate, appType);
 		if (CollectionUtil.isEmpty(perAppRoots)) {
 			// get 個人別就業承認ルート from workflow by other conditions
-			List<PersonAppRootImport> perAppRootsOfCommon = this.approvalRootAdaptorDto.findByBaseDateOfCommon(cid, sid, baseDate);
+			List<PersonApprovalRootImport> perAppRootsOfCommon = this.approvalRootAdaptorDto.findByBaseDateOfCommon(cid, sid, baseDate);
 			if (CollectionUtil.isEmpty(perAppRootsOfCommon)) {
 				// 所属職場を含む上位職場を取得
 				List<String> wpkList = this.employeeAdaptor.findWpkIdsBySid(cid, sid, GeneralDate.legacyDate(baseDate));
 				for (String wｋｐId : wpkList) {
-					List<WkpAppRootImport> wkpAppRoots = this.approvalRootAdaptorDto.findWkpByBaseDate(cid, wｋｐId, baseDate, appType);
+					List<WkpApprovalRootImport> wkpAppRoots = this.approvalRootAdaptorDto.findWkpByBaseDate(cid, wｋｐId, baseDate, appType);
 					if (!CollectionUtil.isEmpty(wkpAppRoots)) {
 						// 2.承認ルートを整理する
 						result = wkpAppRoots.stream().map( x -> ApprovalRootOutput.convertFromWkpData(x)).collect(Collectors.toList());
@@ -87,7 +87,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 						break;
 					} 
 					
-					List<WkpAppRootImport> wkpAppRootsOfCom = this.approvalRootAdaptorDto.findWkpByBaseDateOfCommon(cid, wｋｐId, baseDate);
+					List<WkpApprovalRootImport> wkpAppRootsOfCom = this.approvalRootAdaptorDto.findWkpByBaseDateOfCommon(cid, wｋｐId, baseDate);
 					if (!CollectionUtil.isEmpty(wkpAppRootsOfCom)) {
 						// 2.承認ルートを整理する
 						result = wkpAppRoots.stream().map( x -> ApprovalRootOutput.convertFromWkpData(x)).collect(Collectors.toList());
@@ -97,9 +97,9 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 				}
 				
 				// ドメインモデル「会社別就業承認ルート」を取得する
-				List<CompanyAppRootImport> comAppRoots = this.approvalRootAdaptorDto.findCompanyByBaseDate(cid, baseDate, appType);
+				List<ComApprovalRootImport> comAppRoots = this.approvalRootAdaptorDto.findCompanyByBaseDate(cid, baseDate, appType);
 				if (CollectionUtil.isEmpty(comAppRoots)){
-					List<CompanyAppRootImport> companyAppRootsOfCom = this.approvalRootAdaptorDto.findCompanyByBaseDateOfCommon(cid, baseDate);
+					List<ComApprovalRootImport> companyAppRootsOfCom = this.approvalRootAdaptorDto.findCompanyByBaseDateOfCommon(cid, baseDate);
 					if (!CollectionUtil.isEmpty(companyAppRootsOfCom)) {
 						// 2.承認ルートを整理する
 						result = comAppRoots.stream().map( x -> ApprovalRootOutput.convertFromCompanyData(x)).collect(Collectors.toList());

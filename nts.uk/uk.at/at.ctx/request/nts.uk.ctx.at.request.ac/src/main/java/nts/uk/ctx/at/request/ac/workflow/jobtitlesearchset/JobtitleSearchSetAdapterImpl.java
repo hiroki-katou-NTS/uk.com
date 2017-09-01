@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.JobtitleSearchSetAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.JobtitleSearchSetImport;
-import nts.uk.ctx.workflow.pub.jobtitlesearchset.JobtitleSearchSetDto;
+import nts.uk.ctx.workflow.pub.jobtitlesearchset.JobtitleSearchSetExport;
 import nts.uk.ctx.workflow.pub.jobtitlesearchset.JobtitleSearchSetPub;
 
 /**
@@ -23,13 +23,16 @@ public class JobtitleSearchSetAdapterImpl implements JobtitleSearchSetAdapter {
 
 	@Override
 	public JobtitleSearchSetImport finById(String cid, String jobtitleId) {
-		JobtitleSearchSetDto job = this.jobtitleSearchSetPub.finById(cid, jobtitleId);
+		JobtitleSearchSetExport job = this.jobtitleSearchSetPub.finById(cid, jobtitleId);
 		if (Objects.isNull(job)) {
 			return null;
 		}
 
-		return JobtitleSearchSetImport.createSimpleFromJavaType(job.getCompanyId(), job.getJobId(),
-				job.getSearchSetFlg());
+		return this.toImport(job);
+	}
+
+	public JobtitleSearchSetImport toImport(JobtitleSearchSetExport job) {
+		return new JobtitleSearchSetImport(job.getCompanyId(), job.getJobId(), job.getSearchSetFlg());
 	}
 
 }

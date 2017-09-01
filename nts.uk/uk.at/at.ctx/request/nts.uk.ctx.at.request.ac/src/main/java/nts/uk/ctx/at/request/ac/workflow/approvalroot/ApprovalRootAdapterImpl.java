@@ -10,10 +10,13 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.CompanyAppRootImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.PersonAppRootImport;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.WkpAppRootImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ComApprovalRootImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.PersonApprovalRootImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.WkpApprovalRootImport;
 import nts.uk.ctx.workflow.pub.approvalroot.ApprovalRootPub;
+import nts.uk.ctx.workflow.pub.approvalroot.export.ComApprovalRootExport;
+import nts.uk.ctx.workflow.pub.approvalroot.export.PersonApprovalRootExport;
+import nts.uk.ctx.workflow.pub.approvalroot.export.WkpApprovalRootExport;
 
 @Stateless
 public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
@@ -23,109 +26,39 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 	private ApprovalRootPub approvalRootPub;
 	
 	@Override
-	public List<PersonAppRootImport> findByBaseDate(String cid, String sid, Date standardDate, int appType) {
+	public List<PersonApprovalRootImport> findByBaseDate(String cid, String sid, Date standardDate, int appType) {
 		return this.approvalRootPub.findByBaseDate(cid, sid, standardDate, appType).stream()
-				.map(x -> new PersonAppRootImport(
-						x.getCompanyId(),
-						x.getApprovalId(),
-						x.getEmployeeId(),
-						x.getHistoryId(),
-						x.getApplicationType(),
-						x.getStartDate(),
-						x.getEndDate(),
-						x.getBranchId(),
-						x.getAnyItemApplicationId(),
-						x.getConfirmationRootType(),
-						x.getEmploymentRootAtr()
-			    )).collect(Collectors.toList());
+				.map(x -> this.toPersonAppRootImport(x)).collect(Collectors.toList());
 	}
 	
 	@Override
-	public List<PersonAppRootImport> findByBaseDateOfCommon(String cid, String sid, Date standardDate) {
+	public List<PersonApprovalRootImport> findByBaseDateOfCommon(String cid, String sid, Date standardDate) {
 		return this.approvalRootPub.findByBaseDateOfCommon(cid, sid, standardDate).stream()
-				.map(x -> new PersonAppRootImport(
-						x.getCompanyId(),
-						x.getApprovalId(),
-						x.getEmployeeId(),
-						x.getHistoryId(),
-						x.getApplicationType(),
-						x.getStartDate(),
-						x.getEndDate(),
-						x.getBranchId(),
-						x.getAnyItemApplicationId(),
-						x.getConfirmationRootType(),
-						x.getEmploymentRootAtr()
-			    )).collect(Collectors.toList());
+				.map(x -> this.toPersonAppRootImport(x)).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<WkpAppRootImport> findWkpByBaseDate(String cid, String workPlaceId, Date baseDate, int appType) {
+	public List<WkpApprovalRootImport> findWkpByBaseDate(String cid, String workPlaceId, Date baseDate, int appType) {
 		return this.approvalRootPub.findWkpByBaseDate(cid, workPlaceId, baseDate, appType).stream()
-				.map(x -> new WkpAppRootImport(
-						x.getCompanyId(),
-						x.getApprovalId(),
-						x.getWorkplaceId(),
-						x.getHistoryId(),
-						x.getApplicationType(),
-						x.getStartDate(),
-						x.getEndDate(),
-						x.getBranchId(),
-						x.getAnyItemApplicationId(),
-						x.getConfirmationRootType(),
-						x.getEmploymentRootAtr()
-			    )).collect(Collectors.toList());
+				.map(x -> this.toWkpAppRootImport(x)).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<WkpAppRootImport> findWkpByBaseDateOfCommon(String cid, String workPlaceId, Date baseDate) {
+	public List<WkpApprovalRootImport> findWkpByBaseDateOfCommon(String cid, String workPlaceId, Date baseDate) {
 		return this.approvalRootPub.findWkpByBaseDateOfCommon(cid, workPlaceId, baseDate).stream()
-				.map(x -> new WkpAppRootImport(
-						x.getCompanyId(),
-						x.getApprovalId(),
-						x.getWorkplaceId(),
-						x.getHistoryId(),
-						x.getApplicationType(),
-						x.getStartDate(),
-						x.getEndDate(),
-						x.getBranchId(),
-						x.getAnyItemApplicationId(),
-						x.getConfirmationRootType(),
-						x.getEmploymentRootAtr()
-			    )).collect(Collectors.toList());
+				.map(x -> this.toWkpAppRootImport(x)).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<CompanyAppRootImport> findCompanyByBaseDate(String cid, Date baseDate, int appType) {
+	public List<ComApprovalRootImport> findCompanyByBaseDate(String cid, Date baseDate, int appType) {
 		return this.approvalRootPub.findCompanyByBaseDate(cid, baseDate, appType).stream()
-				.map(x -> new CompanyAppRootImport(
-						x.getCompanyId(),
-						x.getApprovalId(),
-						x.getHistoryId(),
-						x.getApplicationType(),
-						x.getStartDate(),
-						x.getEndDate(),
-						x.getBranchId(),
-						x.getAnyItemApplicationId(),
-						x.getConfirmationRootType(),
-						x.getEmploymentRootAtr()
-			    )).collect(Collectors.toList());
+				.map(x -> this.toComAppRootImport(x)).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<CompanyAppRootImport> findCompanyByBaseDateOfCommon(String cid, Date baseDate) {
+	public List<ComApprovalRootImport> findCompanyByBaseDateOfCommon(String cid, Date baseDate) {
 		return this.approvalRootPub.findCompanyByBaseDateOfCommon(cid, baseDate).stream()
-				.map(x -> new CompanyAppRootImport(
-						x.getCompanyId(),
-						x.getApprovalId(),
-						x.getHistoryId(),
-						x.getApplicationType(),
-						x.getStartDate(),
-						x.getEndDate(),
-						x.getBranchId(),
-						x.getAnyItemApplicationId(),
-						x.getConfirmationRootType(),
-						x.getEmploymentRootAtr()
-			    )).collect(Collectors.toList());
+				.map(x -> this.toComAppRootImport(x)).collect(Collectors.toList());
 	}
 
 	@Override
@@ -149,6 +82,71 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 								a.getConfirmPerson()))
 						.collect(Collectors.toList())
 			    )).collect(Collectors.toList());
+	}
+	
+	/**
+	 * convert to Person
+	 * 
+	 * @param root
+	 * @return
+	 */
+	private PersonApprovalRootImport toPersonAppRootImport(PersonApprovalRootExport root) {
+		return new PersonApprovalRootImport(
+				root.getCompanyId(),
+				root.getApprovalId(),
+				root.getEmployeeId(),
+				root.getHistoryId(),
+				root.getApplicationType(),
+				root.getStartDate(),
+				root.getEndDate(),
+				root.getBranchId(),
+				root.getAnyItemApplicationId(),
+				root.getConfirmationRootType(),
+				root.getEmploymentRootAtr()
+	    );
+	}
+	
+	/**
+	 * convert to Workplace
+	 * 
+	 * @param root
+	 * @return
+	 */
+	private WkpApprovalRootImport toWkpAppRootImport(WkpApprovalRootExport root) {
+		return new WkpApprovalRootImport(
+				root.getCompanyId(),
+				root.getApprovalId(),
+				root.getWorkplaceId(),
+				root.getHistoryId(),
+				root.getApplicationType(),
+				root.getStartDate(),
+				root.getEndDate(),
+				root.getBranchId(),
+				root.getAnyItemApplicationId(),
+				root.getConfirmationRootType(),
+				root.getEmploymentRootAtr()
+	    );
+	}
+	
+	/**
+	 * convert to Company
+	 * 
+	 * @param root
+	 * @return
+	 */
+	private ComApprovalRootImport toComAppRootImport(ComApprovalRootExport root) {
+		return new ComApprovalRootImport(
+				root.getCompanyId(),
+				root.getApprovalId(),
+				root.getHistoryId(),
+				root.getApplicationType(),
+				root.getStartDate(),
+				root.getEndDate(),
+				root.getBranchId(),
+				root.getAnyItemApplicationId(),
+				root.getConfirmationRootType(),
+				root.getEmploymentRootAtr()
+	    );
 	}
 }
 

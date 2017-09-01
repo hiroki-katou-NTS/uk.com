@@ -1,17 +1,12 @@
 package nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
-/**
- * 
- * @author vunv
- *
- */
-@Data
+@Getter
 @AllArgsConstructor
-public class CompanyAppRootImport {
+public class ComApprovalRootImport {
 
 	/** 会社ID */
 	private String companyId;
