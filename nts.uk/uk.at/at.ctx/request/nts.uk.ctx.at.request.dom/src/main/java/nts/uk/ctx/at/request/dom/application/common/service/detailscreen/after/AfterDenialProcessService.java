@@ -3,7 +3,11 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 import java.util.List;
 
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-
+/**
+ * 詳細画面否認後の処理
+ * @author ducPM
+ *
+ */
 public interface AfterDenialProcessService {
 	/**
 	 * 否認できるかチェックする true：否認できる false：否認できない
