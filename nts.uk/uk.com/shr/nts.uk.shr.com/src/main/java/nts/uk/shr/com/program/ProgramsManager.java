@@ -526,19 +526,19 @@ public class ProgramsManager {
 	/**
 	 * CAS001A
 	 */
-	public static final Program CAS001A  = new Program(WebAppId.AT, ProgramIdConsts.CAS001A, "CAS001_1",
+	public static final Program CAS001A  = new Program(WebAppId.COM, ProgramIdConsts.CAS001A, "CAS001_1",
 			"/view/cas/001/a/index.xhtml");
 
 	/**
 	 * CAS001C
 	 */
-	public static final Program CAS001C  = new Program(WebAppId.AT, ProgramIdConsts.CAS001C, "CAS001_67",
+	public static final Program CAS001C  = new Program(WebAppId.COM, ProgramIdConsts.CAS001C, "CAS001_67",
 			"/view/cas/001/c/index.xhtml");
 	
 	/**
 	 * CAS001D
 	 */
-	public static final Program CAS001D  = new Program(WebAppId.AT, ProgramIdConsts.CAS001D, "CAS001_66",
+	public static final Program CAS001D  = new Program(WebAppId.COM, ProgramIdConsts.CAS001D, "CAS001_66",
 			"/view/cas/001/d/index.xhtml");
 	
 	/**
@@ -720,13 +720,13 @@ public class ProgramsManager {
 	/**
 	 * CPS006A
 	 */
-	public static final Program CPS006A  = new Program(WebAppId.AT, ProgramIdConsts.CPS006A, "CPS005_36",
+	public static final Program CPS006A  = new Program(WebAppId.COM, ProgramIdConsts.CPS006A, "CPS005_36",
 			"/view/cps/006/a/index.xhtml");
 
 	/**
 	 * CPS006B
 	 */
-	public static final Program CPS006B  = new Program(WebAppId.AT, ProgramIdConsts.CPS006B, "CPS005_37",
+	public static final Program CPS006B  = new Program(WebAppId.COM, ProgramIdConsts.CPS006B, "CPS005_37",
 			"/view/cps/006/b/index.xhtml");
 	
 	
