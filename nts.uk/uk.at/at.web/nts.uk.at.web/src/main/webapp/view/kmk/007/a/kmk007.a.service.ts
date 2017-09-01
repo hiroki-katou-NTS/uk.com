@@ -4,6 +4,7 @@ module nts.uk.at.view.kmk007.a.service {
         findAll: "at/share/worktype/findAll",
         addWorkType: "at/share/worktype/add",
         removeWorkType: "at/share/worktype/remove",
+        updateWorkType: "at/share/worktype/update",
         findWorkTypeSet: "at/share/worktype/find/{0}"
     }
 
@@ -12,12 +13,12 @@ module nts.uk.at.view.kmk007.a.service {
         return nts.uk.request.ajax(path);
     }
 
-    export function addWebMenu(workType: any): JQueryPromise<any> {
-        var path = paths.addWorkType;
+    export function addWorkType(isCreated, workType: any): JQueryPromise<any> {
+        var path = isCreated ? paths.addWorkType : paths.updateWorkType;
         return nts.uk.request.ajax("at", path, workType);
     }
 
-    export function deleteWebMenu(workTypeCd): JQueryPromise<any> {
+    export function deleteWorkType(workTypeCd): JQueryPromise<any> {
         var path = paths.removeWorkType;
         var obj = {
             workTypeCd: workTypeCd

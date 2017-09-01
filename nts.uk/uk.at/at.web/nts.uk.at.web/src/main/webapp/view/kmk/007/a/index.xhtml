@@ -7,6 +7,13 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode
+					nts.uk.ctx.at.shared.dom.worktype.WorkTypeName
+					nts.uk.ctx.at.shared.dom.worktype.WorkTypeAbbreviationName
+					nts.uk.ctx.at.shared.dom.worktype.WorkTypeSymbolicName
+					nts.uk.ctx.at.shared.dom.worktype.WorkTypeMemo
+				</com:ValidatorScript>
 			<com:stylefile path="kmk007.a.style.css" />
 			<com:scriptfile path="kmk007.a.start.js" />
 			<com:scriptfile path="kmk007.a.vm.js" />
@@ -22,9 +29,9 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<button id="clear-button">#{i18n.getText('KMK007_1')}</button>
+					<button id="clear-button" data-bind="click: cleanForm">#{i18n.getText('KMK007_1')}</button>
 					<button id="register-button" class="proceed"
-						data-bind="click: addWorkType">#{i18n.getText('KMK007_2')}</button>
+						data-bind="click: addWorkType, enable: $root.errors.isEmpty">#{i18n.getText('KMK007_2')}</button>
 					<button id="orderby-button">#{i18n.getText('KMK007_3')}</button>
 					<button id="print-button">マスタリスト出力ボタン</button>
 					<div id="switch-language"></div>
@@ -55,25 +62,25 @@
 				<div class="right-content">
 					<div class="control-group" data-bind="with: currentWorkType">
 						<div style="vertical-align: middle"
-							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK007_11')}</div>
-						<input style="width: 40px; margin-left: 45px;"
-							data-bind="ntsTextEditor: {value: workTypeCode, required: true}" />
-						<input style="width: 180px"
-							data-bind="ntsTextEditor: {value: name, required: true}" />
+							data-bind="ntsFormLabel: {constraint: ['WorkTypeCode','WorkTypeName'],required: true}">#{i18n.getText('KMK007_11')}</div>
+						<input id="input-workTypeCode"
+							data-bind="ntsTextEditor: {value: workTypeCode,constraint: 'WorkTypeCode', required: true}" />
+						<input id="input-workTypeName"
+							data-bind="ntsTextEditor: {value: name,constraint: 'WorkTypeName', required: true}" />
 						<div style="margin-left: 20px;"
-							data-bind="ntsCheckBox: { checked: !!abolishAtr() }">#{i18n.getText('KMK007_14')}</div>
+							data-bind="ntsCheckBox: { checked: abolishAtr }">#{i18n.getText('KMK007_14')}</div>
 						<div>
 							<div style="margin-top: 10px;"
-								data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK007_15')}</div>
-							<input style="width: 180px; margin-left: 82px;"
-								data-bind="ntsTextEditor: {value: abbreviationName, required: true}" />
+								data-bind="ntsFormLabel: {constraint: 'WorkTypeAbbreviationName',required: true}">#{i18n.getText('KMK007_15')}</div>
+							<input style="width: 180px; margin-left: 142px;"
+								data-bind="ntsTextEditor: {value: abbreviationName,constraint: 'WorkTypeAbbreviationName', required: true}" />
 							<div style="margin-top: 10px; margin-left: 25px;"
-								data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK007_16')}</div>
+								data-bind="ntsFormLabel: {constraint: 'WorkTypeSymbolicName',required: true}">#{i18n.getText('KMK007_16')}</div>
 							<input style="width: 180px"
-								data-bind="ntsTextEditor: {value: symbolicName, required: true}" />
+								data-bind="ntsTextEditor: {value: symbolicName,constraint: 'WorkTypeSymbolicName' ,required: true}" />
 						</div>
 						<div>
-							<div style="margin-top: 10px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK007_17')}</div>
+							<div style="margin-top: 10px;" data-bind="ntsFormLabel: {constraint: 'WorkTypeMemo'}">#{i18n.getText('KMK007_17')}</div>
 							<input style="width: 400px; margin-left: 82px;"
 								data-bind="ntsTextEditor: {value: memo, required: true}" />
 						</div>
@@ -101,8 +108,8 @@
 														visibleItemsCount: 5,
 														value: currentWorkType().oneDayCls,
 														optionsText: 'name',
-														editable: isEditable,
-														enable: isEnable,
+														editable: false,
+														enable: true,
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
@@ -126,13 +133,14 @@
 							</div>
 							<div id="oneday-set-2"
 								data-bind="if: currentWorkType().oneDayCls() == '5'">
-							  <div data-bind="with: currentWorkType().oneDay">
-								<div style="margin-top: 20px; margin-left: 210px; display: inline-block;">
-									<label>#{i18n.getText('KMK007_31')}</label>
-								</div>
-								<div style="vertical-align: middle; margin-left: 30px"
-									id="combo-box"
-									data-bind="ntsComboBox: {
+								<div data-bind="with: currentWorkType().oneDay">
+									<div
+										style="margin-top: 20px; margin-left: 210px; display: inline-block;">
+										<label>#{i18n.getText('KMK007_31')}</label>
+									</div>
+									<div style="vertical-align: middle; margin-left: 30px"
+										id="combo-box"
+										data-bind="ntsComboBox: {
 														options: $parent.itemListOneDay,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
@@ -143,18 +151,19 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-								<button style="margin-left: 20px;">#{i18n.getText('KMK007_33')}</button>
+									<button style="margin-left: 20px;">#{i18n.getText('KMK007_33')}</button>
 								</div>
 							</div>
 							<div id="oneday-set-3"
 								data-bind="if: currentWorkType().oneDayCls() == '4'">
-							  <div data-bind="with: currentWorkType().oneDay">
-								<div style="margin-top: 20px; margin-left: 210px; display: inline-block;">
-									<label>#{i18n.getText('KMK007_31')}</label>
-								</div>
-								<div style="vertical-align: middle; margin-left: 30px"
-									id="combo-box"
-									data-bind="ntsComboBox: {
+								<div data-bind="with: currentWorkType().oneDay">
+									<div
+										style="margin-top: 20px; margin-left: 210px; display: inline-block;">
+										<label>#{i18n.getText('KMK007_31')}</label>
+									</div>
+									<div style="vertical-align: middle; margin-left: 30px"
+										id="combo-box"
+										data-bind="ntsComboBox: {
 														options: $parent.itemListOneDay,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
@@ -165,28 +174,28 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-								<button style="margin-left: 20px;">#{i18n.getText('KMK007_35')}</button>
-							  </div>
+									<button style="margin-left: 20px;">#{i18n.getText('KMK007_35')}</button>
+								</div>
 							</div>
 							<div id="oneday-set-4"
 								data-bind="if: currentWorkType().oneDayCls() == '11'">
-							  <div data-bind="with: currentWorkType().oneDay">
-								<div>
-									<div style="margin-left: 20px;"
-										data-bind="ntsCheckBox: { checked: genSubHodiday }">#{i18n.getText('KMK007_26')}</div>
-								</div>
-								<div>
-									<div style="margin-left: 20px;"
-										data-bind="ntsCheckBox: { checked: dayNightTimeAsk }">#{i18n.getText('KMK007_24')}</div>
-								</div>
-								<div>
-									<div style="margin-left: 20px;"
-										data-bind="ntsCheckBox: { checked: timeLeaveWork }">#{i18n.getText('KMK007_25')}</div>
-								</div>
-								<div
-									style="margin-left: 20px; margin-top: 10px; display: inline-block; vertical-align: middle;"
-									id="combo-box"
-									data-bind="ntsComboBox: {
+								<div data-bind="with: currentWorkType().oneDay">
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: genSubHodiday }">#{i18n.getText('KMK007_26')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk }">#{i18n.getText('KMK007_24')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: timeLeaveWork }">#{i18n.getText('KMK007_25')}</div>
+									</div>
+									<div
+										style="margin-left: 20px; margin-top: 10px; display: inline-block; vertical-align: middle;"
+										id="combo-box"
+										data-bind="ntsComboBox: {
 														options: $parent.itemHodidayAtr,
 														optionsValue: 'code',
 														visibleItemsCount: 3,
@@ -197,8 +206,9 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-								<div style="display: inline-block; margin-top: 10px; vertical-align: middle; margin-left: 20px;">#{i18n.getText('KMK007_29')}</div>
-						      </div>
+									<div
+										style="display: inline-block; margin-top: 10px; vertical-align: middle; margin-left: 20px;">#{i18n.getText('KMK007_29')}</div>
+								</div>
 							</div>
 							<div id="oneday-set-6"
 								data-bind="if: currentWorkType().oneDayCls() == '7'">
@@ -221,15 +231,15 @@
 							</div>
 							<div id="oneday-set-7"
 								data-bind="if: currentWorkType().oneDayCls() == '8' || currentWorkType().oneDayCls() == '1'">
-							  <div data-bind="with: currentWorkType().oneDay">
-								<div>
-									<div style="margin-left: 20px;"
-										data-bind="ntsCheckBox: { checked: digestPublicHd }">#{i18n.getText('KMK007_27')}</div>
-								</div>
-								<div
-									style="margin-left: 20px; margin-top: 10px; display: inline-block; vertical-align: middle;"
-									id="combo-box"
-									data-bind="ntsComboBox: {
+								<div data-bind="with: currentWorkType().oneDay">
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: digestPublicHd }">#{i18n.getText('KMK007_27')}</div>
+									</div>
+									<div
+										style="margin-left: 20px; margin-top: 10px; display: inline-block; vertical-align: middle;"
+										id="combo-box"
+										data-bind="ntsComboBox: {
 														options: $parent.itemHodidayAtr,
 														optionsValue: 'code',
 														visibleItemsCount: 3,
@@ -240,19 +250,20 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-								<div
-									style="display: inline-block; margin-top: 10px; vertical-align: middle; margin-left: 20px;">#{i18n.getText('KMK007_29')}</div>
-							  </div>
+									<div
+										style="display: inline-block; margin-top: 10px; vertical-align: middle; margin-left: 20px;">#{i18n.getText('KMK007_29')}</div>
+								</div>
 							</div>
 							<div id="oneday-set-9"
 								data-bind="if: currentWorkType().oneDayCls() == '13'">
-							   <div data-bind="with: currentWorkType().oneDay">
-								<div style="margin-top: 20px; margin-left: 40px; display: inline-block;">
-									<label>#{i18n.getText('KMK007_36')}</label>
-								</div>
-								<div style="vertical-align: middle; margin-left: 100px"
-									id="combo-box"
-									data-bind="ntsComboBox: {
+								<div data-bind="with: currentWorkType().oneDay">
+									<div
+										style="margin-top: 20px; margin-left: 40px; display: inline-block;">
+										<label>#{i18n.getText('KMK007_36')}</label>
+									</div>
+									<div style="vertical-align: middle; margin-left: 100px"
+										id="combo-box"
+										data-bind="ntsComboBox: {
 														options: $parent.itemCloseAtr,
 														optionsValue: 'code',
 														visibleItemsCount: 4,
@@ -263,7 +274,7 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-							  </div>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -282,37 +293,37 @@
 															visibleItemsCount: 4,
 															value: currentWorkType().morningCls,
 															optionsText: 'name',
-															editable: isEditable,
-															enable: isEnable,
+															editable: false,
+															enable: true,
 															columns: [
 																{ prop: 'name', length: 10 },
 															]}"></div>
 							<div id="morning-set-1"
 								data-bind="if: currentWorkType().morningCls() == '0'">
-							  <div data-bind="with: currentWorkType().morning">	
-								<div>
-									<div style="margin-left: 20px;"
-										data-bind="ntsCheckBox: { checked: dayNightTimeAsk }">#{i18n.getText('KMK007_23')}</div>
+								<div data-bind="with: currentWorkType().morning">
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk }">#{i18n.getText('KMK007_23')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: attendanceTime }">#{i18n.getText('KMK007_24')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: timeLeaveWork }">#{i18n.getText('KMK007_25')}</div>
+									</div>
 								</div>
-								<div>
-									<div style="margin-left: 20px;"
-										data-bind="ntsCheckBox: { checked: attendanceTime }">#{i18n.getText('KMK007_24')}</div>
-								</div>
-								<div>
-									<div style="margin-left: 20px;"
-										data-bind="ntsCheckBox: { checked: timeLeaveWork }">#{i18n.getText('KMK007_25')}</div>
-								</div>
-							  </div>
 							</div>
-                            <div id="morning-set-2"
+							<div id="morning-set-2"
 								data-bind="if: currentWorkType().morningCls() == '5'">
-							  <div data-bind="with: currentWorkType().morning">
-								<div style="margin-top: 20px; margin-left: 40px; display: inline-block;">
-									<label>#{i18n.getText('KMK007_31')}</label>
-								</div>
-								<div class="morning-set-3-combo-box"
-									id="combo-box"
-									data-bind="ntsComboBox: {
+								<div data-bind="with: currentWorkType().morning">
+									<div
+										style="margin-top: 20px; margin-left: 40px; display: inline-block;">
+										<label>#{i18n.getText('KMK007_31')}</label>
+									</div>
+									<div class="haftday-combo-box" id="combo-box"
+										data-bind="ntsComboBox: {
 														options: $parent.itemListOneDay,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
@@ -323,18 +334,18 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-								<button style="margin-left: 20px;">#{i18n.getText('KMK007_33')}</button>
+									<button style="margin-left: 20px;">#{i18n.getText('KMK007_33')}</button>
 								</div>
 							</div>
 							<div id="morning-set-3"
 								data-bind="if: currentWorkType().morningCls() == '4'">
-							  <div data-bind="with: currentWorkType().morning">
-								<div style="margin-top: 20px; margin-left: 40px; display: inline-block">
-									<label>#{i18n.getText('KMK007_31')}</label>
-								</div>
-								<div class="morning-set-3-combo-box"
-									id="combo-box"
-									data-bind="ntsComboBox: {
+								<div data-bind="with: currentWorkType().morning">
+									<div
+										style="margin-top: 20px; margin-left: 40px; display: inline-block">
+										<label>#{i18n.getText('KMK007_31')}</label>
+									</div>
+									<div class="haftday-combo-box" id="combo-box"
+										data-bind="ntsComboBox: {
 														options: $parent.itemListOneDay,
 														optionsValue: 'code',
 														visibleItemsCount: 4,
@@ -345,8 +356,8 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-								<button style="margin-left: 20px;">#{i18n.getText('KMK007_35')}</button>
-							  </div>
+									<button style="margin-left: 20px;">#{i18n.getText('KMK007_35')}</button>
+								</div>
 							</div>
 							<div id="morning-set-5"
 								data-bind="if: currentWorkType().morningCls() == '8'">
@@ -400,37 +411,37 @@
 															visibleItemsCount: 4,
 															value: currentWorkType().afternoonCls,
 															optionsText: 'name',
-															editable: isEditable,
-															enable: isEnable,
+															editable: false,
+															enable: true,
 															columns: [
 																{ prop: 'name', length: 10 },
 															]}"></div>
-                          <div id="afternoon-set-1"
+							<div id="afternoon-set-1"
 								data-bind="if: currentWorkType().afternoonCls() == '0'">
-							 <div data-bind="with: currentWorkType().afternoon">
-								<div>
-									<div style="margin-left: 20px;"
-										data-bind="ntsCheckBox: { checked: dayNightTimeAsk }">#{i18n.getText('KMK007_23')}</div>
+								<div data-bind="with: currentWorkType().afternoon">
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: dayNightTimeAsk }">#{i18n.getText('KMK007_23')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: attendanceTime }">#{i18n.getText('KMK007_24')}</div>
+									</div>
+									<div>
+										<div style="margin-left: 20px;"
+											data-bind="ntsCheckBox: { checked: timeLeaveWork }">#{i18n.getText('KMK007_25')}</div>
+									</div>
 								</div>
-								<div>
-									<div style="margin-left: 20px;"
-										data-bind="ntsCheckBox: { checked: attendanceTime }">#{i18n.getText('KMK007_24')}</div>
-								</div>
-								<div>
-									<div style="margin-left: 20px;"
-										data-bind="ntsCheckBox: { checked: timeLeaveWork }">#{i18n.getText('KMK007_25')}</div>
-								</div>
-							  </div>	
 							</div>
-                            <div id="afternoon-set-2"
+							<div id="afternoon-set-2"
 								data-bind="if: currentWorkType().afternoonCls() == '5'">
-							  <div data-bind="with: currentWorkType().afternoon">
-								<div style="margin-top: 20px; margin-left: 40px; display: inline-block;">
-									<label>#{i18n.getText('KMK007_31')}</label>
-								</div>
-								<div class="morning-set-3-combo-box"
-									id="combo-box"
-									data-bind="ntsComboBox: {
+								<div data-bind="with: currentWorkType().afternoon">
+									<div
+										style="margin-top: 20px; margin-left: 40px; display: inline-block;">
+										<label>#{i18n.getText('KMK007_31')}</label>
+									</div>
+									<div class="haftday-combo-box" id="combo-box"
+										data-bind="ntsComboBox: {
 														options: $parent.itemListOneDay,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
@@ -441,18 +452,18 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-								<button style="margin-left: 20px;">#{i18n.getText('KMK007_33')}</button>
+									<button style="margin-left: 20px;">#{i18n.getText('KMK007_33')}</button>
 								</div>
 							</div>
 							<div id="afternoon-set-3"
 								data-bind="if: currentWorkType().afternoonCls() == '4'">
-							  <div data-bind="with: currentWorkType().afternoon">
-								<div style="margin-top: 20px; margin-left: 40px; display: inline-block">
-									<label>#{i18n.getText('KMK007_31')}</label>
-								</div>
-								<div class="morning-set-3-combo-box"
-									id="combo-box"
-									data-bind="ntsComboBox: {
+								<div data-bind="with: currentWorkType().afternoon">
+									<div
+										style="margin-top: 20px; margin-left: 40px; display: inline-block">
+										<label>#{i18n.getText('KMK007_31')}</label>
+									</div>
+									<div class="haftday-combo-box" id="combo-box"
+										data-bind="ntsComboBox: {
 														options: $parent.itemListOneDay,
 														optionsValue: 'code',
 														visibleItemsCount: 4,
@@ -463,8 +474,8 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-								<button style="margin-left: 20px;">#{i18n.getText('KMK007_35')}</button>
-							  </div>
+									<button style="margin-left: 20px;">#{i18n.getText('KMK007_35')}</button>
+								</div>
 							</div>
 							<div id="afternoon-set-5"
 								data-bind="if: currentWorkType().afternoonCls() == '8'">
@@ -503,7 +514,23 @@
 									</div>
 								</div>
 							</div>
+
 						</div>
+					</div>
+					<div class="control-group" data-bind="with: currentWorkType">
+						<div style="margin-top: 30px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KMK007_44')}</div>
+						<div class="calulator-method-combo-box" id="combo-box"
+							data-bind="ntsComboBox: {
+														options: $parent.itemCalculatorMethod,
+														optionsValue: 'code',
+														visibleItemsCount: 4,
+														value: calculatorMethod,
+														optionsText: 'name',
+														editable: false,
+														enable: $parent.enableMethod,
+														columns: [
+															{ prop: 'name', length: 15 },
+														]}"></div>
 					</div>
 				</div>
 			</div>
