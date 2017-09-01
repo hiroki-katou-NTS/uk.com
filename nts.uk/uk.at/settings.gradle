@@ -41,3 +41,6 @@ include 'at.screen:nts.uk.screen.at.ws'
 include 'at.screen:nts.uk.screen.at.app'
 include 'at.screen:nts.uk.screen.at.infra'
 
+include 'at.file:nts.uk.file.at.ws'
+include 'at.file:nts.uk.file.at.app'
+include 'at.file:nts.uk.file.at.infra'
