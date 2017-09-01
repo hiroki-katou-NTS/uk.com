@@ -6453,7 +6453,7 @@ var nts;
                                 }
                             });
                             if (!_.isEqual(filteredSource_1, currentSource)) {
-                                $grid.igGrid('option', 'dataSource', filteredSource_1);
+                                $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_1));
                                 $grid.igGrid("dataBind");
                             }
                         }
@@ -6861,7 +6861,7 @@ var nts;
                                 }
                             });
                             if (!_.isEqual(filteredSource_2, currentSource)) {
-                                container.igGrid('option', 'dataSource', filteredSource_2);
+                                container.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_2));
                                 container.igGrid("dataBind");
                             }
                         }
@@ -7417,6 +7417,22 @@ var nts;
                             component = $("#" + ko.unwrap(data.comId));
                         }
                         var srhX = $searchBox.data("searchObject");
+                        if (component.attr("filtered") === true || component.attr("filtered") === "true") {
+                            var currentSoruce_1 = srhX.getDataSource();
+                            var newItems = _.filter(arr, function (i) {
+                                return _.find(currentSoruce_1, function (ci) {
+                                    return ci[primaryKey] === i[primaryKey];
+                                }) === undefined;
+                            });
+                            if (!nts.uk.util.isNullOrEmpty(newItems)) {
+                                var gridSources_1 = component.igGrid("option", "dataSource");
+                                _.forEach(newItems, function (item) {
+                                    gridSources_1.push(item);
+                                });
+                                component.igGrid("option", "dataSource", _.cloneDeep(gridSources_1));
+                                component.igGrid("dataBind");
+                            }
+                        }
                         srhX.setDataSource(arr);
                         if (enable === false) {
                             $searchBox.find(".ntsSearchBox_Component").attr('disabled', 'disabled');
