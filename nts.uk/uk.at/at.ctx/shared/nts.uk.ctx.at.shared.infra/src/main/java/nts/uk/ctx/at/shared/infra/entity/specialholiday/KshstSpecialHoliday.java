@@ -57,6 +57,6 @@ public class KshstSpecialHoliday extends UkJpaEntity implements Serializable {
 	
 	@Override
 	protected Object getKey() {
-		return null;
+		return kshstSpecialHolidayPK;
 	}
 }
