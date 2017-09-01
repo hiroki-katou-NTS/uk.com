@@ -25,7 +25,6 @@ public class NewLayoutWebservices extends WebService {
 	@Path("get")
 	public NewLayoutDto getNewLayout() {
 		return nLayoutFinder.getLayout();
-
 	}
 
 	@POST
