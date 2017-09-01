@@ -7,5 +7,5 @@ public interface IPersonPub {
 	 * @param sID
 	 * @return
 	 */
-	PersonInfoOutput getPersonInfo(String sID);
+	PersonInfoExport getPersonInfo(String sID);
 }

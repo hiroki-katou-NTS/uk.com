@@ -13,15 +13,9 @@ public interface EmployeeInfoPub {
 
 	/**
 	 * Find Employee by companyId,employeeCode
+	 * For request No.18
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @param workplaceIds
-	 *            the workplace ids
-	 * @param baseDate
-	 *            the base date
-	 * @return the list
 	 */
-	Optional<EmployeeInfoDtoExport> findByCidSid(String companyId, String employeeCode);
+	Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode);
 
 }

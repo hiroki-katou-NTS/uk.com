@@ -15,7 +15,7 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 	private EmployeeRepository repo;
 
 	@Override
-	public Optional<EmployeeInfoDtoExport> findByCidSid(String companyId, String employeeCode) {
+	public Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode) {
 		// TODO Auto-generated method stub
 		
 		Optional<Employee> domain = repo.findByEmployeeCode(companyId, employeeCode);

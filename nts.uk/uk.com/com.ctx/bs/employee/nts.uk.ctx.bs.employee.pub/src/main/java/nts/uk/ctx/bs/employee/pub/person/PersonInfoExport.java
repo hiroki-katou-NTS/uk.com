@@ -6,7 +6,7 @@ import nts.arc.time.GeneralDate;
 
 @Data
 @AllArgsConstructor
-public class PersonInfoOutput {
+public class PersonInfoExport {
 	/** 社員ID*/
 	private String sID;
 	/** 社員コード*/
