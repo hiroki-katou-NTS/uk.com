@@ -567,7 +567,7 @@ module nts.uk.at.view.ksm001.a {
                     isShowWorkPlaceName: true,
                     isShowSelectAllButton: false,
                     maxWidth: 350,
-                    maxRows: 12
+                    maxRows: 22
                 };
 
             }

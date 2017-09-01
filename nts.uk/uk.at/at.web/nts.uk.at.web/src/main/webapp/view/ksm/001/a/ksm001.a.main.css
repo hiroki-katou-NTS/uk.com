@@ -9,6 +9,11 @@
 	width: 150px;
 }
 
+.lableContentPersonal {
+	width: 100px;
+	margin-left: 60px;
+}
+
 .helpButton {
 	margin-right: 15px;
 	margin-left: 15px;
@@ -71,6 +76,10 @@
 }
 
 .contentkcp005 {
-	margin-top: 20px;
+	margin-top: 35px;
 	margin-left: 80px;
+}
+
+.personalEstablishment{
+	margin-top: 10px;
 }
