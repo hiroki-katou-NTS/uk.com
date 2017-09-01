@@ -16,6 +16,6 @@ public class BsydtEmployeePk implements Serializable {
 	
 	@Basic(optional = false)
 	@Column(name = "SID")
-	public String employeeId;
+	public String sId;
 
 }

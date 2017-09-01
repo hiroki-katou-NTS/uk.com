@@ -10,7 +10,7 @@ import lombok.Data;
  * The Class AcEmploymentDto.
  */
 @Data
-public class AcEmploymentDto {
+public class EmploymentImport {
 
 	/** The company id. */
 	private String companyId;
@@ -41,7 +41,7 @@ public class AcEmploymentDto {
 	 * @param employmentName
 	 *            the employment name
 	 */
-	public AcEmploymentDto(String companyId, Integer workClosureId, Integer salaryClosureId,
+	public EmploymentImport(String companyId, Integer workClosureId, Integer salaryClosureId,
 			String employmentCode, String employmentName) {
 		super();
 		this.companyId = companyId;

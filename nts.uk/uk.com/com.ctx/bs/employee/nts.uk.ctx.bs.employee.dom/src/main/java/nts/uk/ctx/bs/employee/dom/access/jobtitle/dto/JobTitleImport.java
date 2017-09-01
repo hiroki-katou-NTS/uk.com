@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
  * The Class AcJobTitleDto.
  */
 @Data
-public class AcJobTitleDto {
+public class JobTitleImport {
 
 	/** The company id. */
 	private String companyId;
@@ -52,7 +52,7 @@ public class AcJobTitleDto {
 	 * @param endDate
 	 *            the end date
 	 */
-	public AcJobTitleDto(String companyId, String positionId, String positionCode,
+	public JobTitleImport(String companyId, String positionId, String positionCode,
 			String positionName, String sequenceCode, GeneralDate startDate, GeneralDate endDate) {
 		super();
 		this.companyId = companyId;

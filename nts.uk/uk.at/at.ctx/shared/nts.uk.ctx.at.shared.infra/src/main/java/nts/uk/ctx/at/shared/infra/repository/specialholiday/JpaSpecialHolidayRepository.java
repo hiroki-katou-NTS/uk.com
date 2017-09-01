@@ -32,7 +32,7 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdWorkTypePK;
 public class JpaSpecialHolidayRepository extends JpaRepository implements SpecialHolidayRepository {
 
 	private static final String SELECT_BY_CID;
-
+	private static final String CHECK_BY_CID;
 	static {
 
 		StringBuilder builderString = new StringBuilder();
@@ -41,6 +41,13 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		builderString.append(" WHERE e.kshstSpecialHolidayPK.companyId = :companyId");
 		builderString.append(" ORDER BY e.kshstSpecialHolidayPK.specialHolidayCode ASC");
 		SELECT_BY_CID = builderString.toString();
+		
+		 builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM KshstSpecialHoliday e");
+		builderString.append(" WHERE e.kshstSpecialHolidayPK.companyId = :companyId");
+		builderString.append(" AND e.kshstSpecialHolidayPK.specialHolidayCode = :specialHolidayCode");
+		CHECK_BY_CID = builderString.toString();
 	}
 
 	/**
@@ -274,6 +281,16 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	public List<SpecialHoliday> findByCompanyId(String companyId) {
 		return this.queryProxy().query(SELECT_BY_CID, KshstSpecialHoliday.class).setParameter("companyId", companyId)
 				.getList(c -> convertToDomain(c));
+	}
+	
+	@Override
+	public boolean checkExists(String companyId, int specialHolidayCode) {
+		List<KshstSpecialHoliday> branchs = this.queryProxy().query(CHECK_BY_CID, KshstSpecialHoliday.class)
+       		 .setParameter("companyId", companyId)
+       		 .setParameter("specialHolidayCode", specialHolidayCode)
+       		 .getList();
+		
+		return !branchs.isEmpty();
 	}
 
 	/**

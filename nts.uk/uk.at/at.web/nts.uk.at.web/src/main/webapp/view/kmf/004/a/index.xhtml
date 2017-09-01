@@ -83,7 +83,7 @@
 							<div id="memo"
 								style="margin-top: 10px; vertical-align: text-bottom;"
 								data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_16')}</div>
-							<input style="width: 524px; height: 50px; margin-left: 132px;"
+							<textarea style="width: 524px; height: 50px; margin-left: 132px; margin-top: 10px;"
 								id="webMenuCode"
 								data-bind="ntsMultilineEditor: {value: memo,name: '#[CCG013_49]'}" />
 						</div>
@@ -263,13 +263,14 @@
 													options: $parent.roundingGenderAtr,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: genderAtr}"></div>
+													value: genderAtr,
+													enable: useGender()==1}"></div>
 								</div>
 								<div>
 									<div style="" data-bind="ntsCheckBox: { checked: useEmployee }">#{i18n.getText('KMF004_60')}</div>
-									<button style="margin-left: 40px; margin-top: 5px;">#{i18n.getText('KMF004_63')}</button>
+									<button style="margin-left: 40px; margin-top: 5px;" data-bind="enable: useEmployee()==1">#{i18n.getText('KMF004_63')}</button>
 									<input style="width: 360px"
-										data-bind="ntsTextEditor: {value: ko.observable(''), required: true}" />
+										data-bind="ntsTextEditor: {value: ko.observable(''), required: true, enable: useEmployee()==1}" />
 								</div>
 								<div>
 									<div style="" data-bind="ntsCheckBox: { checked: useCls }">#{i18n.getText('Com_Class')}</div>
@@ -285,14 +286,16 @@
 												option: ko.mapping.fromJS({
 												unitID: 'AGE',
 												width: '60'}),
-												required: true}" />
+												required: true,
+												enable: useAge()==1}" />
 									<span >～</span> <input style="width: 30px; margin-top: 3px;"
 										data-bind="ntsNumberEditor: {
 												value: limitAgeTo,
 												option: ko.mapping.fromJS({
 												unitID: 'AGE',
 												width: '60'}),
-												required: true}" />
+												required: true,
+												enable: useAge()==1}" />
 								</div>
 								<span style="margin-left: 75px; ">年齢基準</span>
 								<button style="width: 25px; height: 25px; margin-left: 20px; margin-top: 5px;">?</button>
@@ -317,11 +320,7 @@
 													value: ageBaseYearAtr,
 													optionsText: 'name',
 													editable: false,
-													enable: ageCriteriaAtr()==1,
-													columns: [
-														{ prop: 'code', length: 4 },
-														{ prop: 'name', length: 10 },
-													]}"></div>
+													enable: ageCriteriaAtr()==1}"></div>
 									<div id="monthdays"
 										data-bind="ntsMonthDays: {value: ageBaseDates, enable: ageCriteriaAtr()==1}">
 									</div>

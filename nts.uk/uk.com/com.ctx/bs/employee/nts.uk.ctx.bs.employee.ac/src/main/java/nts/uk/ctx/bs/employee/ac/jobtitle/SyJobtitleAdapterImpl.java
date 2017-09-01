@@ -13,13 +13,13 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.company.pub.jobtitle.JobtitlePub;
 import nts.uk.ctx.bs.employee.dom.access.jobtitle.SyJobTitleAdapter;
-import nts.uk.ctx.bs.employee.dom.access.jobtitle.dto.AcJobTitleDto;
+import nts.uk.ctx.bs.employee.dom.access.jobtitle.dto.JobTitleImport;
 
 /**
  * The Class JobtitleAdapterImpl.
  */
 @Stateless
-public class JobtitleAdapterImpl implements SyJobTitleAdapter {
+public class SyJobtitleAdapterImpl implements SyJobTitleAdapter {
 
 	/** The jobtitle pub. */
 	@Inject
@@ -33,9 +33,9 @@ public class JobtitleAdapterImpl implements SyJobTitleAdapter {
 	 * lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<AcJobTitleDto> findAll(String companyId, GeneralDate referenceDate) {
+	public List<JobTitleImport> findAll(String companyId, GeneralDate referenceDate) {
 		return jobtitlePub.findAll(companyId, referenceDate).stream()
-				.map(item -> new AcJobTitleDto(item.getCompanyId(), item.getPositionId(),
+				.map(item -> new JobTitleImport(item.getCompanyId(), item.getPositionId(),
 						item.getPositionCode(), item.getPositionName(), item.getSequenceCode(),
 						item.getStartDate(), item.getEndDate()))
 				.collect(Collectors.toList());
@@ -49,9 +49,9 @@ public class JobtitleAdapterImpl implements SyJobTitleAdapter {
 	 * java.util.List)
 	 */
 	@Override
-	public List<AcJobTitleDto> findByJobIds(List<String> jobIds) {
+	public List<JobTitleImport> findByJobIds(List<String> jobIds) {
 		return jobtitlePub.findByJobIds(jobIds).stream()
-				.map(item -> new AcJobTitleDto(item.getCompanyId(), item.getPositionId(),
+				.map(item -> new JobTitleImport(item.getCompanyId(), item.getPositionId(),
 						item.getPositionCode(), item.getPositionName(), item.getSequenceCode(),
 						item.getStartDate(), item.getEndDate()))
 				.collect(Collectors.toList());
@@ -65,10 +65,10 @@ public class JobtitleAdapterImpl implements SyJobTitleAdapter {
 	 * (java.lang.String, java.util.List, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<AcJobTitleDto> findByJobIds(String companyId, List<String> jobIds,
+	public List<JobTitleImport> findByJobIds(String companyId, List<String> jobIds,
 			GeneralDate baseDate) {
 		return jobtitlePub.findByJobIds(companyId, jobIds, baseDate).stream()
-				.map(item -> new AcJobTitleDto(item.getCompanyId(), item.getPositionId(),
+				.map(item -> new JobTitleImport(item.getCompanyId(), item.getPositionId(),
 						item.getPositionCode(), item.getPositionName(), item.getSequenceCode(),
 						item.getStartDate(), item.getEndDate()))
 				.collect(Collectors.toList());

@@ -2,31 +2,16 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.company.pub.workplace;
-
-import java.time.Period;
+package nts.uk.ctx.bs.employee.dom.access.workplace.dto;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class PubWorkplaceDto.
- */
-
-/*
- * (non-Javadoc)
- * 
- * @see java.lang.Object#toString()
- */
-
-/*
- * (non-Javadoc)
- * 
- * @see java.lang.Object#toString()
+ * The Class AcWorkplaceDto.
  */
 @Data
-public class PubWorkplaceDto {
-
+public class WorkplaceImport {
 	/** The company id. */
 	private String companyId;
 
@@ -61,7 +46,7 @@ public class PubWorkplaceDto {
 	 * @param endDate
 	 *            the end date
 	 */
-	public PubWorkplaceDto(String companyId, String workplaceId, String workplaceCode,
+	public WorkplaceImport(String companyId, String workplaceId, String workplaceCode,
 			String workplaceName, GeneralDate startDate, GeneralDate endDate) {
 		super();
 		this.companyId = companyId;
@@ -71,5 +56,4 @@ public class PubWorkplaceDto {
 		this.startDate = startDate;
 		this.endDate = endDate;
 	}
-
 }

@@ -141,6 +141,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             $.when(self.getAllSpecialHoliday(), self.getWorkTypeList()).done(function() {
                 if (self.items().length > 0) {
                     self.currentCode(self.items()[0].specialHolidayCode());
+                    $("#code-text2").focus();
                 } else {
                     self.initSpecialHoliday();
                 }
@@ -233,7 +234,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
-
             if (self.inp_grantMethod() == 0) {
                 self.currentItem().grantRegular(null);
                 self.currentItem().grantPeriodic(null);
@@ -315,7 +315,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
         deleteSpecialHoliday() {
             let self = this;
-            var index_of_itemDelete = _.findIndex(self.items(), ['specialHolidayCode', self.currentCode()]);
+            var index_of_itemDelete = _.findIndex(self.items(), function(item) {
+                return item.specialHolidayCode() == self.currentCode();
+            });
             nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                 var specialholiday = {
                     specialHolidayCode: self.currentItem().specialHolidayCode()
@@ -326,11 +328,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         if (self.items().length == 0) {
                             self.initSpecialHoliday();
                         } else if (self.items().length == 1) {
-                            holidayId = self.items()[0].specialHolidayCode;
+                            holidayId = self.items()[0].specialHolidayCode();
                         } else if (index_of_itemDelete == self.items().length) {
-                            holidayId = self.items()[index_of_itemDelete - 1].specialHolidayCode;
+                            holidayId = self.items()[index_of_itemDelete - 1].specialHolidayCode();
                         } else {
-                            holidayId = self.items()[index_of_itemDelete].specialHolidayCode;
+                            holidayId = self.items()[index_of_itemDelete].specialHolidayCode();
                         }
                         self.currentCode(holidayId);
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16"));
@@ -353,6 +355,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.workTypeNames("");
             nts.uk.ui.errors.clearAll();
             self.isEnableCode(true);
+            $("#code-text").focus();
+            
         }
 
         changedCode(value) {
@@ -382,12 +386,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openKDL002Dialog() {
             let self = this;
             nts.uk.ui.block.invisible();
-
             var workTypeCodes = _.map(self.workTypeList(), function(item: IWorkTypeModal) { return item.workTypeCode });
             nts.uk.ui.windows.setShared('KDL002_Multiple', true);
             nts.uk.ui.windows.setShared('KDL002_AllItemObj', workTypeCodes);
-            nts.uk.ui.windows.setShared('KDL002_SelectedItemId', []);
-
+            nts.uk.ui.windows.setShared('KDL002_SelectedItemId', self.currentItem().workTypeList());
+            
             nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '' }).onClosed(function(): any {
                 nts.uk.ui.block.clear();
                 var data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
@@ -396,7 +399,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     name.push(item.name);
                 });
                 self.workTypeNames(name.join(" + "));
-
+                
                 var workTypeCodes = _.map(data, function(item: IWorkTypeModal) { return item.code; });
                 self.currentItem().workTypeList(workTypeCodes);
             });
@@ -621,10 +624,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             ageBaseDates: KnockoutObservable<number>;
             constructor(param: ISubConditionDto) {
                 this.specialHolidayCode = ko.observable(param.specialHolidayCode || null);
-                this.useGender = ko.observable(param.useGender || true);
-                this.useEmployee = ko.observable(param.useEmployee || true);
-                this.useCls = ko.observable(param.useCls || true);
-                this.useAge = ko.observable(param.useAge || true);
+                this.useGender = ko.observable(param.useGender || false);
+                this.useEmployee = ko.observable(param.useEmployee || false);
+                this.useCls = ko.observable(param.useCls || false);
+                this.useAge = ko.observable(param.useAge || false);
                 this.genderAtr = ko.observable(param.genderAtr || 0);
                 this.limitAgeFrom = ko.observable(param.limitAgeFrom || null);
                 this.limitAgeTo = ko.observable(param.limitAgeTo || null);

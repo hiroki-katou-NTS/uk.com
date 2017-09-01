@@ -30,9 +30,9 @@ public class EmploymentPubImp implements EmploymentPub {
 	 * util.List)
 	 */
 	@Override
-	public List<PubEmploymentDto> findByEmpCodes(List<String> employmentCodes) {
+	public List<EmploymentExport> findByEmpCodes(List<String> employmentCodes) {
 		return employmentRepository.findByEmpCodes(employmentCodes).stream()
-				.map(item -> new PubEmploymentDto(item.getCompanyId().v(), item.getWorkClosureId(),
+				.map(item -> new EmploymentExport(item.getCompanyId().v(), item.getWorkClosureId(),
 						item.getSalaryClosureId(), item.getEmploymentCode().v(),
 						item.getEmploymentName().v()))
 				.collect(Collectors.toList());

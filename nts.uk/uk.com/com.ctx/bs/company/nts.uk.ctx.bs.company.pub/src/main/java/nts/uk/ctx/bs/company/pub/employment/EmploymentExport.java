@@ -10,7 +10,7 @@ import lombok.Data;
  * The Class PubWorkplaceDto.
  */
 @Data
-public class PubEmploymentDto {
+public class EmploymentExport {
 	/** The company id. */
 	private String companyId;
 
@@ -40,7 +40,7 @@ public class PubEmploymentDto {
 	 * @param employmentName
 	 *            the employment name
 	 */
-	public PubEmploymentDto(String companyId, Integer workClosureId, Integer salaryClosureId,
+	public EmploymentExport(String companyId, Integer workClosureId, Integer salaryClosureId,
 			String employmentCode, String employmentName) {
 		super();
 		this.companyId = companyId;
