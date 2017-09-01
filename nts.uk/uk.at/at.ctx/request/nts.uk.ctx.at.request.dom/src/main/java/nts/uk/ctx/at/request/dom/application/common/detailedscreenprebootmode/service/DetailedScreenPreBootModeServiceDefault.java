@@ -18,10 +18,10 @@ import nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.se
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
-import nts.uk.ctx.at.request.dom.application.common.detailedacreenafterapprovalprocess.service.DetailedScreenAfterApprovalProcessService;
 import nts.uk.ctx.at.request.dom.application.common.detailedscreenprebootmode.CanBeApprovedOutput;
 import nts.uk.ctx.at.request.dom.application.common.detailedscreenprebootmode.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.detailedscreenprebootmode.User;
+import nts.uk.ctx.at.request.dom.application.common.detailscreenapprovalprocess.service.DetailedScreenAfterApprovalProcessService;
 import nts.uk.ctx.at.request.dom.application.common.service.OtherCommonAlgorithmService;
 import nts.uk.ctx.at.request.dom.application.common.valueobject.PeriodCurrentMonth;
 import nts.uk.shr.com.context.AppContexts;

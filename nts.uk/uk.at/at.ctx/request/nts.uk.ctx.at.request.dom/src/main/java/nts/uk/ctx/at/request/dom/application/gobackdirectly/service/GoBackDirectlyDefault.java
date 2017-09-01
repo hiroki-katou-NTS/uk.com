@@ -3,6 +3,8 @@ package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
+
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.registerapprovereflection.service.RegisterAtApproveReflectionInfoService;
@@ -103,7 +105,23 @@ public class GoBackDirectlyDefault implements GoBackDirectlyService {
 
 		// 設定：直行直帰申請共通設定.早退遅刻設定
 		if (goBackCommonSet.getLateLeaveEarlySettingAtr() != CheckAtr.NOTCHECK) {
-
+			// check Valid 1
+			CheckValidOutput validOut = this.goBackLateEarlyCheckValidity(goBackDirectly, goBackCommonSet);
+			if (validOut.isCheckValid1 && validOut.isCheckValid2) {
+				//アルゴリズム「1日分の勤怠時間を仮計算」を実行する
+				
+				// GOI 1日分の勤怠時間を仮計算 ben HIbetsuJisseki
+				int  attendanceTime = 0;
+				if(attendanceTime<0) {
+					throw new BusinessException("Msg_296");
+				}else {
+					//Lai check thang Time lan nua 
+					//Merge Node 1
+					if(attendanceTime<0) {
+						throw new BusinessException("Msg_295");
+					}
+				}
+			}
 		}
 
 		return null;
@@ -112,12 +130,30 @@ public class GoBackDirectlyDefault implements GoBackDirectlyService {
 	@Override
 	public CheckValidOutput goBackLateEarlyCheckValidity(GoBackDirectly goBackDirectly,
 			GoBackDirectlyCommonSetting goBackCommonSet) {
-		// TODO Auto-generated method stub
 		CheckValidOutput result = new CheckValidOutput();
-		result.isCheck = false;
-		if (goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.CHANGE) {
+		result.isCheckValid1 = false;
+		result.isCheckValid2 = false;
+		//
 
+		if (goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.CHANGE
+				&& goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.DECIDECHANGE) {
+
+		} else if (goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.NOTCHANGE
+				&& goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.DECIDENOTCHANGE) {
+			// ・出張申請.勤務種類 ＝空白
+			// ・出張申請.就業時間帯 ＝空白
+			// 勤務種類及び銃所時間帯はチェック対象外
 		}
+		// MERGE NODE 1
+		if (goBackDirectly.getGoWorkAtr1() == UseAtr.USE) {
+			// 入力なし
+			if (goBackDirectly.getWorkTimeStart1().v() == 0) {
+				// Gan endDate = ""
+			}
+		}
+
+		// 申請時に決める
+		// If dc check thi tra ra gia tri
 		return result;
 	}
 

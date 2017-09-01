@@ -34,5 +34,6 @@ public class CheckValidOutput {
 	/**
 	 * チェック対象
 	 */
-	boolean isCheck;
+	boolean isCheckValid1 ;
+	boolean isCheckValid2 ;
 }

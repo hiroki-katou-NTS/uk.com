@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
