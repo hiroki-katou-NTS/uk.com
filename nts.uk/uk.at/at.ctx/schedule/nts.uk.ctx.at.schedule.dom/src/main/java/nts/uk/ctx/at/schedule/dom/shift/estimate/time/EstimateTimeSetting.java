@@ -7,6 +7,7 @@ package nts.uk.ctx.at.schedule.dom.shift.estimate.time;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 
 /**
@@ -14,7 +15,7 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
  */
 // 目安時間設定
 @Getter
-public class EstimateTimeSetting {
+public class EstimateTimeSetting extends DomainObject{
 
 	/** The target classification. */
 	// 対象区分
