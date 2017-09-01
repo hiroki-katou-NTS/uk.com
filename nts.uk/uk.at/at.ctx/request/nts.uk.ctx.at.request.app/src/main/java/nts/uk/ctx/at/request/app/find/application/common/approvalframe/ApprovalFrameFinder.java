@@ -27,9 +27,8 @@ public class ApprovalFrameFinder {
 		return this.approvalFrameRepository.findByCode(companyID, phaseID,dispOrder  )
 				.map(approvalFrame -> ApprovalFrameDto.fromDomain(approvalFrame));
 	}
-	public List<ApprovalFrameDto> getAllApproverByPhaseID() {
+	public List<ApprovalFrameDto> getAllApproverByPhaseID(String phaseID ) {
 		String companyID = AppContexts.user().companyId();
-		String phaseID = IdentifierUtil.randomUniqueId();
 		return this.approvalFrameRepository.getAllApproverByPhaseID(companyID, phaseID)
 				.stream().map(approvalFrame -> ApprovalFrameDto.fromDomain(approvalFrame)).collect(Collectors.toList());
 	}

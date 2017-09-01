@@ -1,6 +1,8 @@
 __viewContext.ready(function() {
     let screenModel = new kaf000.a.viewmodel.ScreenModel();
-        __viewContext.bind(screenModel);
+    screenModel.start().done(function(){
+       __viewContext.bind(screenModel); 
+    });
 
 });
 

@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Value;
 @Value
 public class CommonApprovalRootDto {
-	List<CompanyAppRootDto> lstCompanyRoot;
-	List<WorkPlaceAppRootDto> lstWorkplaceRoot;
-	List<PersonAppRootDto> lstPersonRoot;
+	private List<CompanyAppRootDto> lstCompanyRoot;
+	private List<WorkPlaceAppRootDto> lstWorkplaceRoot;
+	private List<PersonAppRootDto> lstPersonRoot;
 }
