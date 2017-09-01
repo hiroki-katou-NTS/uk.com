@@ -10,11 +10,11 @@ import org.apache.logging.log4j.util.Strings;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.NewScreenStartCheckErrorService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.ProcessAfterRegisterService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.PrelaunchAppCommonSetService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.ProcessBeforeRegisterService;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.AfterProcessRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforeProcessRegister;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
@@ -22,13 +22,13 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 public class ApplicationStampNewDefault implements ApplicationStampNewDomainService {
 	
 	@Inject
-	private PrelaunchAppCommonSetService prelaunchAppCommonSetService;
+	private BeforePrelaunchAppCommonSet prelaunchAppCommonSetService;
 	
 	@Inject
-	private NewScreenStartCheckErrorService newScreenStartCheckErrorService;
+	private StartCheckErrorService newScreenStartCheckErrorService;
 	
 	@Inject
-	private ProcessBeforeRegisterService processBeforeRegisterService; 
+	private BeforeProcessRegister processBeforeRegisterService; 
 	
 	@Inject
 	private RegisterAtApproveReflectionInfoService registerAtApproveReflectionInfoService;
@@ -37,7 +37,7 @@ public class ApplicationStampNewDefault implements ApplicationStampNewDomainServ
 	private ApplicationStampRepository applicationStampRepository;
 	
 	@Inject
-	private ProcessAfterRegisterService processAfterRegisterService;
+	private AfterProcessRegister processAfterRegisterService;
 	
 	@Inject
 	private ApplicationSettingRepository applicationSettingRepository;

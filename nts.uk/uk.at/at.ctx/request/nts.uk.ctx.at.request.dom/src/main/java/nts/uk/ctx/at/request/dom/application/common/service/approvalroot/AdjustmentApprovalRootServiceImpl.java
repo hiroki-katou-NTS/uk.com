@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approva
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverAdaptorDto;
 import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.dto.ApprovalPhaseAdaptorResult;
 import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.dto.ApproverInfo;
-import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformationService;
+import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.dto.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
@@ -37,7 +37,7 @@ public class AdjustmentApprovalRootServiceImpl implements AdjustmentApprovalRoot
 	 * 3-1.承認代行情報の取得処理
 	 */
 	@Inject
-	private ApprovalAgencyInformationService appAgencyInfoService;
+	private ApprovalAgencyInformation appAgencyInfoService;
 	
 	/** 承認設定 */
 	@Inject
