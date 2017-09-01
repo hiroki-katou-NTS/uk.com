@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.pub.employee.jobtitle;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
@@ -20,7 +21,7 @@ public interface SyJobTitlePub {
 	 * @return the list
 	 */
 	// RequestList #17
-	List<PubJobTitleDto> findJobTitleBySid(String employeeId);
+	List<JobTitleExport> findJobTitleBySid(String employeeId);
 
 	/**
 	 * Find job title by sid.
@@ -30,7 +31,7 @@ public interface SyJobTitlePub {
 	 * @return the list
 	 */
 	// RequestList #33
-	List<PubJobTitleDto> findJobTitleBySid(String employeeId, GeneralDate baseDate);
+	Optional<JobTitleExport> findJobTitleBySid(String employeeId, GeneralDate baseDate);
 
 	/**
 	 * Find job title by position id.
@@ -41,5 +42,5 @@ public interface SyJobTitlePub {
 	 * @return the list
 	 */
 	// RequestList #67-1
-	List<PubJobTitleDto> findJobTitleByPositionId(String companyId, String positionId, GeneralDate baseDate);
+	Optional<JobTitleExport> findJobTitleByPositionId(String companyId, String positionId, GeneralDate baseDate);
 }

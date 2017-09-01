@@ -35,12 +35,21 @@
 						<!-- Binding with Value -->
 						<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 						<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
-						<h3>Date (YYYY/MM/DD)</h3>
-						<input data-name="Date Editor" data-bind="ntsTimeEditor: { name: 'dateEditor', value: date, inputFormat: 'date', enable: enable, readonly: readonly, required: true }" />
-						<h3>Time Of Day(HH:mm)</h3>
-						<input data-name="Time Of Days Editor" data-bind="ntsTimeEditor: {name: 'Clock', constraint:'SampleTimeClock', value: timeOfDay, inputFormat: 'time', enable: enable, readonly: readonly, required: true}" />
-						<h3>Time (HH:mm)</h3>
-						<input data-name="Time Editor" data-bind="ntsTimeEditor: {name: 'Duration', constraint: 'SampleTimeDuration', value: time, inputFormat: 'time', mode: 'time', enable: enable, readonly: readonly, required: true}" />
+						<p>
+							<h3>Date (YYYY/MM/DD)</h3>
+							<input data-name="Date Editor" data-bind="ntsTimeEditor: { name: 'dateEditor', value: date, inputFormat: 'date', enable: enable, readonly: readonly, required: true }" />
+							binding: "<span data-bind="text: date"></span>"
+						</p>
+						<p>
+							<h3>Time Of Day(HH:mm)</h3>
+							<input data-name="Time Of Days Editor" data-bind="ntsTimeEditor: {name: 'Clock', constraint:'SampleTimeClock', value: timeOfDayAsString, inputFormat: 'time', enable: enable, readonly: readonly, required: true}" />
+							binding: "<span data-bind="text: timeOfDayAsString"></span>"
+						</p>
+						<p>
+							<h3>Time (HH:mm)</h3>
+							<input data-name="Time Editor" data-bind="ntsTimeEditor: {name: 'Duration', constraint: 'SampleTimeDuration', value: time, inputFormat: 'time', mode: 'time', enable: enable, readonly: readonly, required: true}" />
+							binding: <span data-bind="text: time"></span>
+						</p>
 						<hr/>
 						<!-- Binding with Object -->
 						<div data-bind="with: yearmontheditor">
@@ -49,7 +58,10 @@
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 							<br/><br/>
 							<input data-name="YearMonth Editor" data-bind="ntsTimeEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+							binding: <span data-bind="text: value"></span>
 						</div>
+						<hr />
+						<h3>Year</h3>
 						<input id="yearEditor" data-name="Year Editor" data-bind="ntsTimeEditor: {inputFormat: 'YYYY', value: year, required: true, mode: 'year'}" />
 						<input id="fiscalYearEditor" data-name="Fiscal Year Editor" data-bind="ntsTimeEditor: {inputFormat: 'YYYY', value: year, required: true, mode: 'fiscal'}" />
 						<article class="cf">

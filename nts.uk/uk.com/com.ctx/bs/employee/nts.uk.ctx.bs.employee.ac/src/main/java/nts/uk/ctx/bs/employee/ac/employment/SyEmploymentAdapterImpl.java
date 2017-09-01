@@ -12,13 +12,13 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.company.pub.employment.EmploymentPub;
 import nts.uk.ctx.bs.employee.dom.access.employment.SyEmploymentAdapter;
-import nts.uk.ctx.bs.employee.dom.access.employment.dto.AcEmploymentDto;
+import nts.uk.ctx.bs.employee.dom.access.employment.dto.EmploymentImport;
 
 /**
  * The Class EmploymentAdapterImpl.
  */
 @Stateless
-public class EmploymentAdapterImpl implements SyEmploymentAdapter {
+public class SyEmploymentAdapterImpl implements SyEmploymentAdapter {
 
 	/** The employment pub. */
 	@Inject
@@ -31,9 +31,9 @@ public class EmploymentAdapterImpl implements SyEmploymentAdapter {
 	 * findByEmpCodes(java.util.List)
 	 */
 	@Override
-	public List<AcEmploymentDto> findByEmpCodes(List<String> employmentCodes) {
+	public List<EmploymentImport> findByEmpCodes(List<String> employmentCodes) {
 		return employmentPub.findByEmpCodes(employmentCodes).stream()
-				.map(item -> new AcEmploymentDto(item.getCompanyId(), item.getWorkClosureId(),
+				.map(item -> new EmploymentImport(item.getCompanyId(), item.getWorkClosureId(),
 						item.getSalaryClosureId(), item.getEmploymentCode(),
 						item.getEmploymentName()))
 				.collect(Collectors.toList());

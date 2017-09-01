@@ -166,7 +166,7 @@
         export function isInFrame() {
             return window.parent != window;
         }
-
+        
         /**
          * valueMaybeEmptyがnullまたはundefinedの場合、defaultValueを返す。
          * そうでなければ、valueMaybeEmptyを返す。
@@ -506,6 +506,24 @@
                 }
             }
         }
+        
+        export module accessor {
+            export function defineInto(obj: any): AccessorDefine {
+                return new AccessorDefine(obj);
+            }
+            
+            export class AccessorDefine {
+                obj: any;
+                constructor(obj: any) {
+                    this.obj = obj;
+                }
+                
+                get(name: string, func: () => any) {
+                    Object.defineProperty(this.obj, name, { get: func, configurable: true });
+                    return this;
+                }
+            }
+        }
     }
 
     export class WebStorageWrapper {
@@ -791,6 +809,21 @@
 
         function createKey(key: string): string {
             return 'nts.uk.characteristics.' + key;
+        }
+    }
+     
+    export module types {
+        
+        export function matchArguments(values: any[], types: string[]) {
+            if (values.length !== types.length) {
+                return false;
+            }
+            
+            for (var i = 0; i < values.length; i++) {
+                if (typeof values[i] !== types[i]) return false;
+            }
+            
+            return true;
         }
     }
 }
