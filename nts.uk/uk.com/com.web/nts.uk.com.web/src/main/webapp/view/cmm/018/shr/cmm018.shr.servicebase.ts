@@ -3,7 +3,8 @@ module nts.uk.com.view.cmm018.shr {
         var paths: any = {
             updateHistory: "workflow/approvermanagement/workroot/updateHistory",
             getAllDataCom: "workflow/approvermanagement/workroot/getbycom",
-            getAllDataPr: "workflow/approvermanagement/workroot/getbyprivate"
+            getAllDataPr: "workflow/approvermanagement/workroot/getbyprivate",
+            getNameAppType: "workflow/approvermanagement/workroot/find/applicationType"
         }
         
         export function updateHistory(data): JQueryPromise<any> {
@@ -14,6 +15,9 @@ module nts.uk.com.view.cmm018.shr {
         }
         export function getAllDataPr(param): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.getAllDataPr, param);
+        }
+        export function getNameAppType(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.getNameAppType);
         }
     } 
 }
