@@ -36,12 +36,12 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	   + " AND c.endDate = :endDate";
 	 private final String FIND_BY_BASEDATE = FIN_BY_EMP
 			   + " AND c.stardDate <= :baseDate"
-			   + " AND c.endDate => :baseDate"
+			   + " AND c.endDate >= :baseDate"
 			   + " AND c.employmentRootAtr IN (1,2,3)" 
 			   + " AND c.applicationType = :appType";
 	 private final String FIND_BY_BASEDATE_OF_COM = FIN_BY_EMP
 			   + " AND c.stardDate <= :baseDate"
-			   + " AND c.endDate => :baseDate"
+			   + " AND c.endDate >= :baseDate"
 			   + " AND c.employmentRootAtr = 0";
 	/**
 	 * get all Person Approval Root
@@ -140,7 +140,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 * @param appType
 	 */
 	@Override
-	public List<PersonApprovalRoot> findByBaseDate(String cid, String sid, Date baseDate, int appType) {
+	public List<PersonApprovalRoot> findByBaseDate(String cid, String sid, GeneralDate baseDate, int appType) {
 		return this.queryProxy().query(FIND_BY_BASEDATE, WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", cid)
 				.setParameter("employeeId", sid)
@@ -158,7 +158,7 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 * @param appType
 	 */
 	@Override
-	public List<PersonApprovalRoot> findByBaseDateOfCommon(String cid, String sid, Date baseDate) {
+	public List<PersonApprovalRoot> findByBaseDateOfCommon(String cid, String sid, GeneralDate baseDate) {
 		return this.queryProxy().query(FIND_BY_BASEDATE_OF_COM, WwfmtPsApprovalRoot.class)
 				.setParameter("companyId", cid)
 				.setParameter("employeeId", sid)

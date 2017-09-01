@@ -19,10 +19,12 @@ public interface EmployeeOfApprovalRoot {
 	 * @param rootType　就業ルート区分　
 	 * @param appType　対象申請
 	 * @param baseDate　基準日
-	 * @return　承認ルートあり＝＞承認ルートのデータ	// * 承認ルートなし　＝＞null
+	 * @return　承認ルートあり＝＞true	// * 承認ルートなし　＝＞false
 	 */
-	List<EmployeeUnregisterOutput> lstEmpApprovalRoot(String companyId,
-			List<ApprovalRootCommonOutput> lstRootInfor,
+	boolean lstEmpApprovalRoot(String companyId,
+			List<ApprovalRootCommonOutput> lstCompanyRootInfor,
+			List<ApprovalRootCommonOutput> lstWorkpalceRootInfor,
+			List<ApprovalRootCommonOutput> lstPersonRootInfor,
 			EmployeeUnregisterOutput empInfor, 
 			int rootType,
 			int appType,

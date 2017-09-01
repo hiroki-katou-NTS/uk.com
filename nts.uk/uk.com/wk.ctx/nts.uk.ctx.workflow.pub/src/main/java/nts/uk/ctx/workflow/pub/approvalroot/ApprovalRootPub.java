@@ -1,8 +1,8 @@
 package nts.uk.ctx.workflow.pub.approvalroot;
 
-import java.util.Date;
 import java.util.List;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalPhaseExport;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ComApprovalRootExport;
 import nts.uk.ctx.workflow.pub.approvalroot.export.PersonApprovalRootExport;
@@ -18,7 +18,7 @@ public interface ApprovalRootPub {
 	 * @param appType 対象申請
 	 * @return ApprovalRootDtos
 	 */
-	List<PersonApprovalRootExport> findByBaseDate(String cid, String sid, Date baseDate, int appType);
+	List<PersonApprovalRootExport> findByBaseDate(String cid, String sid, GeneralDate baseDate, int appType);
 	
 	/**
 	 * 1.社員の対象申請の承認ルートを取得する(共通）
@@ -28,7 +28,7 @@ public interface ApprovalRootPub {
 	 * @param baseDate 基準日
 	 * @return ApprovalRootDtos
 	 */
-	List<PersonApprovalRootExport> findByBaseDateOfCommon(String cid, String sid, Date baseDate);
+	List<PersonApprovalRootExport> findByBaseDateOfCommon(String cid, String sid, GeneralDate baseDate);
 	
 	/**
 	 * ドメインモデル「職場別就業承認ルート」を取得する(就業ルート区分(申請か、確認か、任意項目か))
@@ -39,7 +39,7 @@ public interface ApprovalRootPub {
 	 * @param appType 対象申請
 	 * @return ApprovalRootDtos
 	 */
-	List<WkpApprovalRootExport> findWkpByBaseDate(String cid, String workplaceId, Date baseDate, int appType);
+	List<WkpApprovalRootExport> findWkpByBaseDate(String cid, String workplaceId, GeneralDate baseDate, int appType);
 	
 	/**
 	 * ドメインモデル「職場別就業承認ルート」を取得する(共通)
@@ -50,7 +50,7 @@ public interface ApprovalRootPub {
 	 * @param baseDate 基準日
 	 * @return ApprovalRootDtos
 	 */
-	List<WkpApprovalRootExport> findWkpByBaseDateOfCommon(String cid, String workplaceId, Date baseDate);
+	List<WkpApprovalRootExport> findWkpByBaseDateOfCommon(String cid, String workplaceId, GeneralDate baseDate);
 	
 	/**
 	 * ドメインモデル「会社別就業承認ルート」を取得する(就業ルート区分(申請か、確認か、任意項目か))
@@ -60,7 +60,7 @@ public interface ApprovalRootPub {
 	 * @param appType 対象申請
 	 * @return ApprovalRootDtos
 	 */
-	List<ComApprovalRootExport> findCompanyByBaseDate(String cid, Date baseDate, int appType);
+	List<ComApprovalRootExport> findCompanyByBaseDate(String cid, GeneralDate baseDate, int appType);
 	
 	/**
 	 * ドメインモデル「会社別就業承認ルート」を取得する(共通)
@@ -69,7 +69,7 @@ public interface ApprovalRootPub {
 	 * @param baseDate 基準日
 	 * @return ApprovalRootDtos
 	 */
-	List<ComApprovalRootExport> findCompanyByBaseDateOfCommon(String cid, Date baseDate);
+	List<ComApprovalRootExport> findCompanyByBaseDateOfCommon(String cid, GeneralDate baseDate);
 	
 	/**
 	 * 
