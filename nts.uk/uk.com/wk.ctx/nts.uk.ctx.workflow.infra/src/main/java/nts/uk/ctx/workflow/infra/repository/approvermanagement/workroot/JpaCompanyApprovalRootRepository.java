@@ -1,6 +1,5 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +23,7 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 
 	private final String FIND_BY_ALL = "SELECT c FROM WwfmtComApprovalRoot c";
 	private final String FIND_BY_CID = FIND_BY_ALL
-	   + " WHERE c.wwfmtComApprovalRoot.companyId = :companyId";
+	   + " WHERE c.wwfmtComApprovalRootPK.companyId = :companyId";
 	private final String FIND_BY_DATE = FIND_BY_CID 
 	   + " AND c.endDate = :endDate"
 	   + " AND c.applicationType = :applicationType";;

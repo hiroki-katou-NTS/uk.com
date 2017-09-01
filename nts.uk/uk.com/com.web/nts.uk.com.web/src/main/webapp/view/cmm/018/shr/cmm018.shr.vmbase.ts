@@ -1,14 +1,251 @@
 module nts.uk.com.view.cmm018.shr {
     export module vmbase {
-        export class GridPersonCostCalculation {
+        export class ListHistory {
             dateRange: string;  
             constructor(dateRange: string) {
                 var self = this;
                 self.dateRange = dateRange;
             }  
         }
-    
-        
+        //Screen I
+        export interface IData_Param{
+            /** name */
+            name?: string
+            /**開始日*/
+            startDate: string;
+            /**開始日 Old*/
+            startDateOld?: string;
+            /**check 申請承認の種類区分: 会社(1)　－　職場(2)　－　社員(3)*/
+            check: number;
+            /** まとめて設定モード(0) - 申請個別設定モード(1)*/
+            mode: number;
+        }
+        //ScreenI
+        export class IData{
+            /**開始日*/
+            startDate: string;
+            /**開始日 Old*/
+            startDateOld: string;
+            /**check 申請承認の種類区分: 会社(1)　－　職場(2)　－　社員(3)*/
+            check: number;
+            /** まとめて設定モード(0) - 申請個別設定モード(1)*/
+            mode: number;
+            /** 履歴から引き継ぐか、初めから作成するかを選択する*/
+            copyDataFlag: boolean;
+            constructor(startDate: string,
+                startDateOld: string,
+                check: number,
+                mode: number,
+                copyDataFlag: boolean){
+                    this.startDate = startDate;
+                    this.startDateOld = startDateOld;
+                    this.check = check;
+                    this.mode = mode;
+                    this.copyDataFlag = copyDataFlag;
+            }
+        }
+        //ScreenJ
+        export class JData{
+            /**開始日*/
+            startDate: string;
+            /**終了日*/
+            endDate: string;
+            /**履歴ID*/
+            workplaceId: string;
+            /**社員ID*/
+            employeeId: string;
+            /**check 申請承認の種類区分: 会社(1)　－　職場(2)　－　社員(3)*/
+            check: number;
+            /**「履歴を削除する」を選択する か(0)、「履歴を修正する」を選択する か(1)。*/
+            editOrDelete: number;
+            /**開始日 previous*/
+            startDatePrevious: string;
+            /** list history and approvalId */
+            lstUpdate: Array<UpdateHistoryDto>;
+            constructor(startDate: string,
+            endDate: string,
+            workplaceId: string,
+            employeeId: string,
+            check: number,
+            editOrDelete: number,
+            startDatePrevious: string,
+            lstUpdate: Array<UpdateHistoryDto>){
+                this.startDate = startDate;
+                this.endDate = endDate;
+                this.workplaceId = workplaceId;
+                this.employeeId = employeeId;
+                this.check = check;
+                this.editOrDelete = editOrDelete;
+                this.startDatePrevious = startDatePrevious;
+                this.lstUpdate = lstUpdate;
+            }
+        }
+        //ScrenJ
+        export interface JData_Param{
+            /** name */
+            name: string
+            /**開始日*/
+            startDate: string;
+            /**終了日*/
+            endDate: string;
+            /**履歴ID*/
+            workplaceId?: string;
+            /**社員ID*/
+            employeeId?: string;
+            /**check 申請承認の種類区分: 会社(1)　－　職場(2)　－　社員(3)*/
+            check: number;
+            /** まとめて設定モード(0) - 申請個別設定モード(1)*/
+            mode: number;
+            /** 編集対象期間履歴が重なっているかチェックする*/
+            overlapFlag: boolean;
+            /**開始日 previous*/
+            startDatePrevious: string;
+            /** list history and approvalId */
+            lstUpdate: Array<UpdateHistoryDto>;
+        }
+        //ScreenJ
+        export class UpdateHistoryDto{
+            /**承認ID*/
+            approvalId: string;
+            /**履歴ID*/
+            historyId: string;
+            constructor(approvalId: string, historyId: string){
+                this.approvalId = approvalId;
+                this.historyId = historyId; 
+            }
+        }
+        //Param screen A,C,E
+        export class ParamDto {
+            /**就業ルート区分: 会社(0)　－　職場(1)　－　社員(2)*/
+            rootType: number;
+            /**履歴ID*/
+            workplaceId: string;
+            /**社員ID*/
+            employeeId: string;
+            constructor(rootType: number, workplaceId: string, employeeId: string){
+                this.rootType = rootType;
+                this.workplaceId = workplaceId;
+                this.employeeId =  employeeId;
+            }
+        }
+        //data screen A,C,E
+        export class CommonApprovalRootDto{
+            lstCompanyRoot: Array<CompanyAppRootDto>;
+            lstWorkplaceRoot: Array<WorkPlaceAppRootDto>;
+            lstPersonRoot: Array<PersonAppRootDto>;
+        }
+        //data screen A
+        export class CompanyAppRootDto{
+            company: ComApprovalRootDto;
+            lstAppPhase: Array<ApprovalPhaseDto>;
+        }
+        //data screen C
+        export class WorkPlaceAppRootDto{
+            workplace: WpApprovalRootDto;
+            lstAppPhase: Array<ApprovalPhaseDto>;
+        }
+        //data screen E
+        export class PersonAppRootDto{
+            person: PsApprovalRootDto;
+            lstAppPhase: Array<ApprovalPhaseDto>;
+        }
+        export class ComApprovalRootDto{
+            /**会社ID*/
+            companyId: string;
+            /**承認ID*/
+            approvalId: string;
+            /**履歴ID*/
+            historyId: string;
+            /**申請種類*/
+            applicationType: number;
+            /**開始日*/
+            startDate: string;
+            /**終了日*/
+            endDate: string;
+            /**分岐ID*/
+            branchId: string;
+            /**任意項目申請ID*/
+            anyItemApplicationId: string;
+            /**確認ルート種類*/
+            confirmationRootType: number;
+            /**就業ルート区分*/
+            employmentRootAtr: number;
+        }
+        export class WpApprovalRootDto{
+            /**会社ID*/
+            companyId: string;
+            /**承認ID*/
+            approvalId: string;
+            /**履歴ID*/
+            workplaceId: string;
+            /**履歴ID*/
+            historyId: string;
+            /**申請種類*/
+            applicationType: number;
+            /**開始日*/
+            startDate: string;
+            /**終了日*/
+            endDate: string;
+            /**分岐ID*/
+            branchId: string;
+            /**任意項目申請ID*/
+            anyItemApplicationId: string;
+            /**確認ルート種類*/
+            confirmationRootType: number;
+            /**就業ルート区分*/
+            employmentRootAtr: number;
+        }
+        export class PsApprovalRootDto{
+            /**会社ID*/
+            companyId: string;
+            /**承認ID*/
+            approvalId: string;
+            /**社員ID*/
+            employeeId: string;
+            /**履歴ID*/
+            historyId: string;
+            /**申請種類*/
+            applicationType: number;
+            /**開始日*/
+            startDate: string;
+            /**終了日*/
+            endDate: string;
+            /**分岐ID*/
+            branchId: string;
+            /**任意項目申請ID*/
+            anyItemApplicationId: string;
+            /**確認ルート種類*/
+            confirmationRootType: number;
+            /**就業ルート区分*/
+            employmentRootAtr: number;
+        }
+        export class ApprovalPhaseDto{
+            approver: Array<ApproverDto>;
+            /**分岐ID*/
+            branchId: string;
+            /**承認フェーズID*/
+            approvalPhaseId: string;
+            /**承認形態*/
+            approvalForm: number;
+            /**閲覧フェーズ*/
+            browsingPhase: number;
+            /**順序*/
+            orderNumber: number;
+        }
+        export class ApproverDto{
+            /**承認者ID*/
+            approverId: string;
+            /**職位ID*/
+            jobTitleId: string;
+            /**社員ID*/
+            employeeId: string;
+            /**順序*/
+            orderNumber: number;
+            /**区分*/
+            approvalAtr: number;
+            /**確定者*/
+            confirmPerson: number;
+        }
         export class ProcessHandler {
             
             /**
@@ -39,14 +276,7 @@ module nts.uk.com.view.cmm018.shr {
                 return moment(inputDate).isSameOrAfter(moment(date));
             }
         }
-        export enum MSG {
-            MSG015 = <any>"登録しました。",
-            MSG018 = <any>"選択中のデータを削除しますか？",
-            MSG065 = <any>"最新の履歴の有効開始日より以前の有効開始日を登録できません。",
-            MSG066 = <any>"割増項目が設定されてません。",
-            MSG102 = <any>"最新の履歴開始日以前に履歴を追加することはできません。",
-            MSG128 = <any>"最後の履歴を削除することができません。"
-        }
+        
         export class Approver{
             id: string;
             code: string;
