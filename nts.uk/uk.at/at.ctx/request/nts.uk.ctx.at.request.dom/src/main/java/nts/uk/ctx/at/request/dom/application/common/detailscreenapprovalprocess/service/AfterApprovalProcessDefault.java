@@ -24,7 +24,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class DetailedScreenAfterApprovalProcessDefault implements DetailedScreenAfterApprovalProcessService {
+public class AfterApprovalProcessDefault implements AfterApprovalProcessService {
 	@Inject
 	private ApplicationRepository appRepo;
 	@Inject

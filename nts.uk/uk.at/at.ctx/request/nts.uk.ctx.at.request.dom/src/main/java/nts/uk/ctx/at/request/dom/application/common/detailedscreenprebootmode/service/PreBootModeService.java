@@ -8,7 +8,7 @@ import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.detailedscreenprebootmode.CanBeApprovedOutput;
 import nts.uk.ctx.at.request.dom.application.common.detailedscreenprebootmode.DetailedScreenPreBootModeOutput;
 
-public interface DetailedScreenPreBootModeService {
+public interface PreBootModeService {
 	
 	public DetailedScreenPreBootModeOutput getDetailedScreenPreBootMode(Application applicationData, GeneralDate baseDate);
 	/** Can be Approved

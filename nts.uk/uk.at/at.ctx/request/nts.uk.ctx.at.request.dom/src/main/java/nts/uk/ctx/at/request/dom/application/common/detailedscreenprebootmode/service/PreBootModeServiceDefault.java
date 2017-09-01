@@ -21,13 +21,13 @@ import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
 import nts.uk.ctx.at.request.dom.application.common.detailedscreenprebootmode.CanBeApprovedOutput;
 import nts.uk.ctx.at.request.dom.application.common.detailedscreenprebootmode.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.detailedscreenprebootmode.User;
-import nts.uk.ctx.at.request.dom.application.common.detailscreenapprovalprocess.service.DetailedScreenAfterApprovalProcessService;
+import nts.uk.ctx.at.request.dom.application.common.detailscreenapprovalprocess.service.AfterApprovalProcessService;
 import nts.uk.ctx.at.request.dom.application.common.service.OtherCommonAlgorithmService;
 import nts.uk.ctx.at.request.dom.application.common.valueobject.PeriodCurrentMonth;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class DetailedScreenPreBootModeServiceDefault implements DetailedScreenPreBootModeService {
+public class PreBootModeServiceDefault implements PreBootModeService {
 
 	@Inject
 	OtherCommonAlgorithmService otherCommonAlgorithmService;
@@ -39,7 +39,7 @@ public class DetailedScreenPreBootModeServiceDefault implements DetailedScreenPr
 	ApprovalFrameRepository approvalFrameRepository;
 
 	@Inject
-	DetailedScreenAfterApprovalProcessService detailedScreenAfterApprovalProcessService;
+	AfterApprovalProcessService detailedScreenAfterApprovalProcessService;
 
 	@Inject
 	ApprovalAgencyInformationService approvalAgencyInformationService;

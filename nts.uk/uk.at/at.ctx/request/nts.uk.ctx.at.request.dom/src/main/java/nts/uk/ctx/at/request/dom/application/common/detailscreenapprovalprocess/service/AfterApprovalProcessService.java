@@ -8,7 +8,7 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr
 /**
  * 8-2.詳細画面承認後の処理
  */
-public interface DetailedScreenAfterApprovalProcessService {
+public interface AfterApprovalProcessService {
 	/**
 	 * 詳細画面承認後の処理
 	 */

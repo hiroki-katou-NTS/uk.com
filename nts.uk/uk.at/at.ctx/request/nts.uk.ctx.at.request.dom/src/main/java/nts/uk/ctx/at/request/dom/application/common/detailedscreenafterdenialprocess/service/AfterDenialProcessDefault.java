@@ -17,17 +17,17 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApproval
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
-import nts.uk.ctx.at.request.dom.application.common.detailscreenapprovalprocess.service.DetailedScreenAfterApprovalProcessService;
+import nts.uk.ctx.at.request.dom.application.common.detailscreenapprovalprocess.service.AfterApprovalProcessService;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class DetailedScreenAfterDenialProcessDefault implements DetailedScreenAfterDenialProcessService {
+public class AfterDenialProcessDefault implements AfterDenialProcessService {
 
 	@Inject
-	private DetailedScreenAfterApprovalProcessService afterApprovalProcess;
+	private AfterApprovalProcessService afterApprovalProcess;
 
 	@Inject
 	private ApprovalFrameRepository frameRepo;

@@ -15,7 +15,7 @@ import nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.Ap
 import nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.ObjApproverRepresenter;
 import nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.service.ApprovalAgencyInformationService;
 import nts.uk.ctx.at.request.dom.application.common.destinationjudgmentprocess.service.DestinationJudgmentProcessService;
-import nts.uk.ctx.at.request.dom.application.common.detailedacreenafterapprovalprocess.service.DetailedScreenAfterApprovalProcessService;
+import nts.uk.ctx.at.request.dom.application.common.detailscreenapprovalprocess.service.AfterApprovalProcessService;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -26,13 +26,16 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 /** 5-2.詳細画面削除後の処理*/
-public class DetailedScreenProcessAfterDeleteSeviceDefault implements DetailedScreenProcessAfterDeleteSevice {
+public class ProcessAfterDeleteSeviceDefault implements ProcessAfterDeleteSevice {
 
 	@Inject
 	private AppApprovalPhaseRepository appApprovalPhaseRepository;
 
 	@Inject
-	private DetailedScreenAfterApprovalProcessService detailedScreenAfterApprovalProcessService;
+	private AfterApprovalProcessService detailedScreenAfterApprovalProcessService;
+	
+	@Inject
+	private ProcessAfterDeleteSevice DetailedScreenProcessAfterDeleteSevice;
 
 	@Inject
 	private ApprovalAgencyInformationService approvalAgencyInformationService;

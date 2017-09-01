@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalFor
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
-import nts.uk.ctx.at.request.dom.application.common.detailscreenapprovalprocess.service.DetailedScreenAfterApprovalProcessDefault;
+import nts.uk.ctx.at.request.dom.application.common.detailscreenapprovalprocess.service.AfterApprovalProcessDefault;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -35,7 +35,7 @@ public class RegisterAtApproveReflectionInfoDefault
 	private ApprovalFrameRepository frameRepo;
 
 	// @Inject
-	private DetailedScreenAfterApprovalProcessDefault approvalProcess;
+	private AfterApprovalProcessDefault approvalProcess;
 
 	@Override
 	public void newScreenRegisterAtApproveInfoReflect(String empID, Application application) {

@@ -4,7 +4,7 @@ import java.util.List;
 
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 
-public interface DetailedScreenAfterDenialProcessService {
+public interface AfterDenialProcessService {
 	/**
 	 * 否認できるかチェックする true：否認できる false：否認できない
 	 * 

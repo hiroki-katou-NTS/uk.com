@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.detailedscreenprocessafterd
 
 import nts.uk.ctx.at.request.dom.application.common.Application;
 
-public interface DetailedScreenProcessAfterDeleteSevice {
+public interface ProcessAfterDeleteSevice {
 
 	public ScreenAfterDelete screenAfterDelete (Application applicationData , String appID);
 
