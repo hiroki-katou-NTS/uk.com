@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.service.newscreen;
+package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
