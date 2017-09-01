@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.specialholiday.yearserviceset;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
@@ -9,25 +11,28 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceset.YearServiceSet;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceset.repository.YearServiceSetRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceset.repository.YearServiceComRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class InsertYearServiceSetCommandHandler extends CommandHandler<InsertYearServiceSetCommand>{
 	@Inject
-	private YearServiceSetRepository yearServiceSetRep;
+	private YearServiceComRepository yearServiceSetRep;
 
 	@Override
 	protected void handle(CommandHandlerContext<InsertYearServiceSetCommand> context) {
+		
+		List<YearServiceSet> lst = new ArrayList<>();
+		InsertYearServiceSetCommand insert = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		YearServiceSet yearServiceSet = YearServiceSet.createFromJavaType(companyId, context.getCommand().getSpecialHolidayCode(), context.getCommand().getYearServiceType(), context.getCommand().getYear(), context.getCommand().getMonth(), context.getCommand().getDate());
-		Optional<YearServiceSet> yearServiceSetOld = yearServiceSetRep.find(companyId, context.getCommand().getSpecialHolidayCode(), context.getCommand().getYearServiceType());
-		if(yearServiceSetOld.isPresent()){
-			try{
-				throw new TimeoutException();
-			}catch(TimeoutException e){
-			}
+		List<YearServiceSetCommand> yearServiceSets = insert.getYearServiceSets();
+//		for(YearServiceSetCommand obj : yearServiceSets){
+//			lst.add()
+//		}
+		for(YearServiceSetCommand obj : yearServiceSets){
+			YearServiceSet o = YearServiceSet.update(companyId, obj.getSpecialHolidayCode(), obj.getYearServiceType(), obj.getYear(), obj.getMonth(), obj.getDate());
+			lst.add(o);
 		}
-		yearServiceSetRep.insert(yearServiceSet);
+		yearServiceSetRep.insertSet(lst);
 	}
 }

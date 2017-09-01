@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.specialholiday.yearservicecom.YearServiceCom;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearservicecom.repository.YearServiceComRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceset.repository.YearServiceComRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * update length Service Year Atr
@@ -22,11 +22,12 @@ public class UpdateYearServiceComCommandHandler extends CommandHandler<UpdateYea
 	@Override
 	protected void handle(CommandHandlerContext<UpdateYearServiceComCommand> context) {
 		String companyId = AppContexts.user().companyId();
-		Optional<YearServiceCom> yearServiceComOld = yearServiceComRep.find(companyId, context.getCommand().getSpecialHolidayCode());
+		Optional<YearServiceCom> yearServiceComOld = yearServiceComRep.findCom(companyId, context.getCommand().getSpecialHolidayCode());
+		YearServiceCom yearServiceComNew = YearServiceCom.createFromJavaType(companyId, context.getCommand().getSpecialHolidayCode(), context.getCommand().getLengthServiceYearAtr(),context.getCommand().getYearServiceSets());
 		if(!yearServiceComOld.isPresent()){
-			throw new RuntimeException("対象データがありません。");
+			yearServiceComRep.insertCom(yearServiceComNew);
+			return;
 		}
-		YearServiceCom yearServiceComNew = YearServiceCom.createFromJavaType(companyId, context.getCommand().getSpecialHolidayCode(), context.getCommand().getLengthServiceYearAtr());
-		yearServiceComRep.update(yearServiceComNew);
+		yearServiceComRep.updateCom(yearServiceComNew);
 	}
 }
