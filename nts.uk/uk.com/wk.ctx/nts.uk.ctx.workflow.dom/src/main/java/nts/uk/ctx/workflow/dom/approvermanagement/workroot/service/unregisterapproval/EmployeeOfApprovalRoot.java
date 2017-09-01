@@ -1,8 +1,10 @@
-package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service;
+package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval;
 
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootCommonOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 /**
  * 02.社員の対象申請の承認ルートを取得する
  * @author dudt
@@ -19,9 +21,9 @@ public interface EmployeeOfApprovalRoot {
 	 * @param baseDate　基準日
 	 * @return　承認ルートあり＝＞承認ルートのデータ	// * 承認ルートなし　＝＞null
 	 */
-	List<EmployeeUnregisterDto> lstEmpApprovalRoot(String companyId,
-			List<ApprovalRootCommonDto> lstRootInfor,
-			EmployeeUnregisterDto empInfor, 
+	List<EmployeeUnregisterOutput> lstEmpApprovalRoot(String companyId,
+			List<ApprovalRootCommonOutput> lstRootInfor,
+			EmployeeUnregisterOutput empInfor, 
 			int rootType,
 			int appType,
 			GeneralDate baseDate);

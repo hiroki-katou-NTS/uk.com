@@ -1,9 +1,9 @@
-package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service;
+package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 @Value
-public class ApprovalRootCommonDto {
+public class ApprovalRootCommonOutput {
 	/**会社ID*/
 	private String companyId;
 	/**承認ID*/

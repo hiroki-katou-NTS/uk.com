@@ -1,9 +1,9 @@
-package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service;
+package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 @Value
-public class EmployeeUnregisterDto {
+public class EmployeeUnregisterOutput {
 	/** The CompanyId */
 	private String companyId;
 
