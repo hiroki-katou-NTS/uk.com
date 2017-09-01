@@ -123,6 +123,7 @@ public class CompanyEstablishmentFinder {
 		dto.setEstimateTime(estimateTime);
 		dto.setEstimatePrice(estimatePrice);
 		dto.setEstimateNumberOfDay(estimateNumberOfDay);
+		dto.setSetting(this.repository.checkSetting(companyId, targetYear));
 		return dto;
 	}
 	

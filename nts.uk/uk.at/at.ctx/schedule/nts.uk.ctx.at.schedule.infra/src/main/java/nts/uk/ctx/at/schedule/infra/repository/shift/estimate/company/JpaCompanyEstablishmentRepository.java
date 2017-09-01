@@ -446,4 +446,15 @@ public class JpaCompanyEstablishmentRepository extends JpaRepository
 		this.commandProxy().removeAll(estimateDaysCompanys);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.company.
+	 * CompanyEstablishmentRepository#checkSetting(java.lang.String, int)
+	 */
+	@Override
+	public boolean checkSetting(String companyId, int targetYear) {
+		return !(CollectionUtil.isEmpty(this.getEstimateTimeCompany(companyId, targetYear)));
+	}
+
 }
