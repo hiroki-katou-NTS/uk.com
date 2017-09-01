@@ -22,6 +22,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
 import nts.uk.ctx.at.shared.dom.worktime.workplace.WorkTimeWorkplaceRepository;
@@ -122,13 +123,21 @@ public class OtherCommonAlgorithmDefault implements OtherCommonAlgorithmService 
 	 * 5.事前事後区分の判断
 	 */
 	@Override
-	public void judgmentPrePostAtr(ApplicationType appType, GeneralDate appDate) {
+	public InitValueAtr judgmentPrePostAtr(ApplicationType appType, GeneralDate appDate,boolean checkCaller) {
+		InitValueAtr outputInitValueAtr = null;
 		String companyID = AppContexts.user().companyId();
+		Optional<AppTypeDiscreteSetting> appTypeDisc = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
 		Optional<ApplicationSetting> appSetting = appSettingRepo.getApplicationSettingByComID(companyID);
 		if(appSetting.get().getDisplayPrePostFlg() == AppDisplayAtr.DISPLAY) { // AppDisplayAtr displayPrePostFlg
-			
-		}else {
-			
+			//メニューから起動(Boot from menu) : checkCaller == true
+			if(checkCaller) {
+				outputInitValueAtr = appTypeDisc.get().getPrePostInitFlg();
+			}else {// その他のPG（日別修正、トップページアラーム、残業指示）から起動(Start from other PG (daily correction, top page alarm, overtime work instruction)): checkCaller == false
+				outputInitValueAtr = InitValueAtr.POST;
+			}
+		}else { //if not display
+			outputInitValueAtr = InitValueAtr.NOCHOOSE;
 		}
+		return outputInitValueAtr;
 	}
 }
