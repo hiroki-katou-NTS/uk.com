@@ -1,4 +1,4 @@
-package nts.uk.shr.com.primitive;
+package nts.uk.shr.com.time;
 
 import nts.arc.primitive.TimeClockPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
