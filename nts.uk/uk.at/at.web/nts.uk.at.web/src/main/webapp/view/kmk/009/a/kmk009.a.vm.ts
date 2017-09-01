@@ -182,7 +182,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
                 dfd.resolve();
             }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
+                nts.uk.ui.dialog.alertError(res);
             }).always(function() {
                 nts.uk.ui.block.clear();
             });
@@ -274,7 +274,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             service.findListByIdWorkTimes(lstWorkTypeCd).done(function(res: Array<WorkTimeDto>) {
                 nts.uk.ui.block.clear();
 
-                if (res && res.length > 0 ) {
+                if (res && res.length > 0) {
                     self.itemTotalTimesDetail.workingInfo(res.map(item => item.code + ' ' + item.name).join(" ＋ "));
                     self.stash.workingInfo(res.map(item => item.code + ' ' + item.name).join(" ＋ "));
                 } else {
@@ -349,19 +349,24 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             // define dataDto
 
             // Get data to save
-            let saveData: TotalTimesDetailModel = self.getSaveData();
+            self.getSaveData();
 
-            service.saveAllTotalTimes(saveData.toDto()).done(function() {
+            service.saveAllTotalTimes(self.itemTotalTimesDetail.toDto()).done(function() {
                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                     // Focus grid list
                     $('#single-list-dataSource_container').focus();
                     self.loadAllTotalTimes().done(function() {
+                        self.loadListWorkType().done(function() {
+                            self.loadListWorkTimes().done(function() {
+
+                            });
+                        });
                     });
                 });
 
 
             }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
+                nts.uk.ui.dialog.alertError(res);
             }).always(function() {
                 nts.uk.ui.block.clear();
             });
@@ -476,7 +481,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
         /**
          * Get save data
          */
-        private getSaveData(): TotalTimesDetailModel {
+        private getSaveData(): void {
             let self = this;
 
             // Get data from current data model.
@@ -484,9 +489,25 @@ module nts.uk.at.view.kmk009.a.viewmodel {
 
             // Get reserved data from stash if input is disabled.
             if (!self.enableWorkType()) {
+
+//                let lstWorkCd: Array<TotalSubjectsModel> = _.filter(saveData.listTotalSubjects(), (item) => item.workTypeAtr() == 1);
+//
+//                saveData.listTotalSubjects(_.filter(self.stash.listTotalSubjects(), (item) => item.workTypeAtr() == 0));
+//
+//                for (var i = 0; i < lstWorkCd.length; i++) {
+//                    saveData.listTotalSubjects.push(lstWorkCd[i]);
+//                }
                 saveData.workTypeInfo(self.stash.workTypeInfo());
             }
             if (!self.enableWorkTime()) {
+                let lstWorkCd: Array<TotalSubjectsModel> = _.filter(saveData.listTotalSubjects(), (item) => item.workTypeAtr() == 0);
+
+                saveData.listTotalSubjects(_.filter(self.stash.listTotalSubjects(), (item) => item.workTypeAtr() == 1));
+
+                for (var i = 0; i < lstWorkCd.length; i++) {
+                    saveData.listTotalSubjects.push(lstWorkCd[i]);
+                }
+
                 saveData.workingInfo(self.stash.workingInfo());
             }
             if (!self.enableUpper()) {
@@ -496,11 +517,10 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 saveData.totalCondition.thresoldLowerLimit(self.stash.totalCondition.thresoldLowerLimit());
             }
             if (!self.enableUse()) {
-                saveData = self.stash;
+                saveData.updateData(self.stash.toDto());
                 saveData.useAtr(0);
             }
 
-            return saveData;
         }
 
     }
@@ -576,7 +596,7 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                 listTotalSubjectsUpdate.push(model);
             }
             this.listTotalSubjects(listTotalSubjectsUpdate);
-            
+
         }
 
         toDto(): TotalTimesDetailDto {
