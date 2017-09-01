@@ -490,13 +490,13 @@ module nts.uk.at.view.kmk009.a.viewmodel {
             // Get reserved data from stash if input is disabled.
             if (!self.enableWorkType()) {
 
-//                let lstWorkCd: Array<TotalSubjectsModel> = _.filter(saveData.listTotalSubjects(), (item) => item.workTypeAtr() == 1);
-//
-//                saveData.listTotalSubjects(_.filter(self.stash.listTotalSubjects(), (item) => item.workTypeAtr() == 0));
-//
-//                for (var i = 0; i < lstWorkCd.length; i++) {
-//                    saveData.listTotalSubjects.push(lstWorkCd[i]);
-//                }
+                let lstWorkCd: Array<TotalSubjectsModel> = _.filter(saveData.listTotalSubjects(), (item) => item.workTypeAtr() == 1);
+
+                saveData.listTotalSubjects(_.filter(self.stash.listTotalSubjects(), (item) => item.workTypeAtr() == 0));
+
+                for (var i = 0; i < lstWorkCd.length; i++) {
+                    saveData.listTotalSubjects.push(lstWorkCd[i]);
+                }
                 saveData.workTypeInfo(self.stash.workTypeInfo());
             }
             if (!self.enableWorkTime()) {
