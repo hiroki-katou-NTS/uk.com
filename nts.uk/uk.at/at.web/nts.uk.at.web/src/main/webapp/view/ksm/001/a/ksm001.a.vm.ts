@@ -63,7 +63,6 @@ module nts.uk.at.view.ksm001.a {
                 self.defaultCurrencyOption = {
                     width: "50",
                     grouplength: 3,
-                    decimallength: 2,
                     currencyformat: "JPY"
                 };
 
@@ -205,6 +204,8 @@ module nts.uk.at.view.ksm001.a {
                 var self = this;
                 service.findCompanySettingEstimate().done(function(data) {
                     self.usageSettingModel.updateData(data);
+                }).fail(res => {
+                    nts.uk.ui.dialog.alertError(res);
                 });
             }
 
@@ -268,6 +269,8 @@ module nts.uk.at.view.ksm001.a {
                     self.companyEstablishmentModel.isEnableDelete(data.setting);
                     self.initNextTabFeature();
                     dfd.resolve();
+                }).fail(res => {
+                    nts.uk.ui.dialog.alertError(res);
                 });
                 return dfd.promise();
             }
@@ -345,6 +348,8 @@ module nts.uk.at.view.ksm001.a {
                     self.updateEnableDeleteEmployment(employmentCode);
                     nts.uk.ui.block.clear();
                     dfd.resolve();
+                }).fail(res => {
+                    nts.uk.ui.dialog.alertError(res);
                 });
                 return dfd.promise();
             }
@@ -425,7 +430,9 @@ module nts.uk.at.view.ksm001.a {
                         self.initNextTabFeature();
                         nts.uk.ui.block.clear();
                         dfd.resolve();
-                    });
+                    }).fail(res => {
+                    nts.uk.ui.dialog.alertError(res);
+                });
                 }
                 else {
                     nts.uk.ui.block.clear();
@@ -634,6 +641,7 @@ module nts.uk.at.view.ksm001.a {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             // reload page
                             self.loadCompanyEstablishment(self.companyEstablishmentModel.selectedYear(), false);
+                            $('.nts-input').ntsError('clear');
                         });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
@@ -664,6 +672,8 @@ module nts.uk.at.view.ksm001.a {
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
                         self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
                     });
+                }).fail(res => {
+                    nts.uk.ui.dialog.alertError(res);
                 }).always(() => {
                     $('#comboTargetYear').focus();
                     nts.uk.ui.block.clear();
@@ -683,7 +693,10 @@ module nts.uk.at.view.ksm001.a {
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(() => {
                                 self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
                                 self.loadEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(), self.selectedEmploymentCode(), false);
+                                $('.nts-input').ntsError('clear');
                             });
+                        }).fail(res => {
+                            nts.uk.ui.dialog.alertError(res);
                         }).always(() => {
                             $('#comboTargetYear').focus();
                             nts.uk.ui.block.clear();
@@ -746,6 +759,7 @@ module nts.uk.at.view.ksm001.a {
                             // reload page
                             self.loadPersonalEstablishment(self.personalEstablishmentModel.selectedYear(), self.selectedEmployeeCode(), false);
                             self.updatePersonalEstimateSetting(self.personalEstablishmentModel.selectedYear());
+                            $('.nts-input').ntsError('clear');
                         });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
