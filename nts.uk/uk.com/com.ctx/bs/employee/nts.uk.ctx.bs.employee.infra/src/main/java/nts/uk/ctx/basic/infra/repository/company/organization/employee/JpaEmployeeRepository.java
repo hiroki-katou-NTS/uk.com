@@ -35,14 +35,14 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	public final String SELECT_BY_SID = SELECT_NO_WHERE + " WHERE c.bsydtEmployeePk.sId = :sId";
 
 	private static Employee toDomain(BsydtEmployee entity) {
-		Employee domain = Employee.createFromJavaStyle(entity.companyId, entity.personId,
+		Employee domain = Employee.createFromJavaType(entity.companyId, entity.personId,
 				entity.bsydtEmployeePk.sId, entity.employeeCode, entity.companyMail, entity.retireDate,
 				entity.entryDate);
 		return domain;
 	}
 
 	private static Employee toDomainKmnmtEmployee(KmnmtEmployee entity) {
-		Employee domain = Employee.createFromJavaStyle(entity.kmnmtEmployeePK.companyId,
+		Employee domain = Employee.createFromJavaType(entity.kmnmtEmployeePK.companyId,
 				entity.kmnmtEmployeePK.personId, entity.kmnmtEmployeePK.employeeId, entity.kmnmtEmployeePK.employeeCode,
 				entity.employeeMail, entity.retirementDate, entity.joinDate);
 		return domain;
