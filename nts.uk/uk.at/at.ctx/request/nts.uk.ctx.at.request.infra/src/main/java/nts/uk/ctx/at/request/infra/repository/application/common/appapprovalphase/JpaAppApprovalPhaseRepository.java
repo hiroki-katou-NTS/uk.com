@@ -18,13 +18,13 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 	private final String SELECT= "SELECT c FROM KrqdtAppApprovalPhase c";
 	private final String SELECT_SINGLE = "SELECT c FROM KrqdtAppApprovalPhase c "
 			+ " WHERE c.KrqdtAppApprovalPhasePK.companyID = :companyID "
-			+ " AND c.KrqdtAppApprovalPhasePK.appID = :appID "
-			+ "AND c.KrqdtAppApprovalPhasePK.phaseID = :phaseID";
+			+ " AND c.krqdtAppApprovalPhasePK.appID = :appID "
+			+ "AND c.krqdtAppApprovalPhasePK.phaseID = :phaseID";
 	//get List Phase by appID
 	private final String SELECT_BY_APP_ID = "SELECT c FROM KrqdtAppApprovalPhase c"
-			+ " WHERE c.KrqdtAppApprovalPhasePK.companyID = :companyID"
-			+ " AND c.KrqdtAppApprovalPhasePK.appID = :appID";
-	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.KrqdtAppApprovalPhasePK.companyID = :companyID";
+			+ " WHERE c.krqdtAppApprovalPhasePK.companyID = :companyID"
+			+ " AND c.krqdtAppApprovalPhasePK.appID = :appID";
+	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.krqdtAppApprovalPhasePK.companyID = :companyID";
 	
 	
 	@Override

@@ -20,15 +20,15 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 
 	private final String SELECT = "SELECT c FROM KrqdtApprovalFrame c";
 	private final String SELECT_SINGLE = "SELECT c FROM KrqdtApprovalFrame c"
-			+ " WHERE c.KrqdtApprovalFramePK.companyID = :companyID"
-			+ " AND c.KrqdtApprovalFramePK.phaseID = :phaseID"
-			+ " AND c.KrqdtApprovalFramePK.dispOrder = :dispOrder ";
+			+ " WHERE c.krqdtApprovalFramePK.companyID = :companyID"
+			+ " AND c.krqdtApprovalFramePK.phaseID = :phaseID"
+			+ " AND c.krqdtApprovalFramePK.dispOrder = :dispOrder ";
 	//get List Phase
 	private final String SELECT_BY_PHASE_ID = SELECT
-			+ " WHERE c.KrqdtApprovalFramePK.companyID = :companyID"
-			+ " AND c.KrqdtApprovalFramePK.phaseID = :phaseID";
+			+ " WHERE c.krqdtApprovalFramePK.companyID = :companyID"
+			+ " AND c.krqdtApprovalFramePK.phaseID = :phaseID";
 	
-	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.KrqdtAppLateOrLeavePK.companyID = :companyID";
+	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.krqdtAppLateOrLeavePK.companyID = :companyID";
 
 	@Override
 	public Optional<ApprovalFrame> findByCode(String companyID, String phaseID, int dispOrder) {
