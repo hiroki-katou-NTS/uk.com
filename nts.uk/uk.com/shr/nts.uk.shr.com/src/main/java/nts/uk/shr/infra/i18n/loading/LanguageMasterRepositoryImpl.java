@@ -35,6 +35,6 @@ public class LanguageMasterRepositoryImpl extends JpaRepository implements Langu
 	public boolean isJapanese(String languageId) {
 		String languageCode = this.queryProxy().find(languageId, LanguageMaster.class).get().getLanguageCode();
 		Locale locate = LocaleUtils.toLocale(languageCode);
-		return Locale.JAPANESE.equals(locate);
+		return Locale.JAPANESE.equals(locate) || Locale.JAPAN.equals(locate);
 	}
 }
