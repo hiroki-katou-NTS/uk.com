@@ -5,13 +5,15 @@ __viewContext.ready(function () {
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
-        index: number;
+        indexUpdate: number;
+        indexAdd: number;
         constructor() {
-            this.index = 0;
+            this.indexUpdate = 0;
+            this.indexAdd = 51;
             this.items = ko.observableArray([]);
             var str = ['a0', 'b0', 'c0', 'd0'];
             for(var j = 0; j < 4; j++) {
-                for(var i = 1; i < 51; i++) {    
+                for(var i = 1; i < this.indexAdd; i++) {    
                     var code = i < 10 ? str[j] + '0' + i : str[j] + i;         
                     this.items.push(new ItemModel(code,code,code,code));
                 } 
@@ -31,13 +33,14 @@ __viewContext.ready(function () {
         }
         
         addItem() {
-            this.items.push(new ItemModel('999', '基本給', "description 1", "other1"));
+            this.items.push(new ItemModel('a0' + this.indexAdd, '基本給', "description 1", "other1"));
+            this.indexAdd++;
         }
         
         updateItem() {
-            this.items()[this.index].name = "tests";
+            this.items()[this.indexUpdate].name = "tests";
             this.items.valueHasMutated();
-            this.index++;
+            this.indexUpdate++;
 //            this.currentCodeList([]);
         }
         
