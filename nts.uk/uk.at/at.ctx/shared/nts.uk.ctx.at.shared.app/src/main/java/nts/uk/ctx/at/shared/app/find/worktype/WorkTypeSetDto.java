@@ -31,6 +31,7 @@ public class WorkTypeSetDto {
 	private int genSubHodiday;
 
 	private int dayNightTimeAsk;
+	
 
 	public static WorkTypeSetDto fromDomain(WorkTypeSet domain) {
         return new WorkTypeSetDto(

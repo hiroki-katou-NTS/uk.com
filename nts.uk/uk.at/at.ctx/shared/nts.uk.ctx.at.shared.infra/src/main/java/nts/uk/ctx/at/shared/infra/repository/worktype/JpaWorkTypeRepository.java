@@ -44,6 +44,10 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 			+ " ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId" + " AND c.deprecateAtr = 0"
 			+ " ORDER BY o.dispOrder ASC";
+	
+	private static final String DELETE_WORKTYPE_SET = "DELETE FROM KshmtWorkTypeSet c "
+			+ "WHERE c.kshmtWorkTypeSetPK.companyId =:companyId "
+			+ "AND c.kshmtWorkTypeSetPK.workTypeCode =:workTypeCode ";
 
 	private static WorkType toDomain(KshmtWorkType entity) {
 		val domain = WorkType.createSimpleFromJavaType(entity.kshmtWorkTypePK.companyId,
@@ -177,6 +181,11 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	public void add(WorkType workType) {
 		this.commandProxy().insert(toEntity(workType));
 	}
+	
+	@Override
+	public void update(WorkType workType) {
+		this.commandProxy().update(toEntity(workType));	
+	}
 
 	@Override
 	public void remove(String companyId, String workTypeCd) {
@@ -188,6 +197,12 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	public void addWorkTypeSet(WorkTypeSet workTypeSet) {
 		this.commandProxy().insert(toEntityWorkTypeSet(workTypeSet));		
 	}
-	
 
+	@Override
+	public void removeWorkTypeSet(String companyId, String workTypeCd) {
+		this.getEntityManager().createQuery(DELETE_WORKTYPE_SET)
+		.setParameter("companyId", companyId)
+		.setParameter("workTypeCode", workTypeCd)
+		.executeUpdate();
+	}
 }

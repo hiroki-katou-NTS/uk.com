@@ -43,7 +43,7 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd ORDER BY co.ppemtPerInfoCtgCmPK.categoryCd DESC";
 
 	private final static String SELECT_GET_DISPORDER_CTG_OF_COMPANY_QUERY = "SELECT od.disporder FROM PpemtPerInfoCtgOrder od"
-			+ " WHERE od.ppemtPerInfoCtgPK.perInfoCtgId = :perInfoCtgId AND od.cid = :companyId ORDER BY od.disporder DESC";
+			+ " WHERE od.cid = :companyId ORDER BY od.disporder DESC";
 
 	private final static String SELECT_LIST_CTG_ID_QUERY = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " FROM PpemtPerInfoCtg c WHERE c.cid IN :companyIdList AND c.categoryCd = :categoryCd";
@@ -137,22 +137,21 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	}
 
 	private void addOrderPerInfoCtgRoot(String perInfoCtgId, String companyId) {
-		int newdisOrderLastest = getDispOrderLastestCtgOfCompany(perInfoCtgId, companyId) + 1;
+		int newdisOrderLastest = getDispOrderLastestCtgOfCompany(companyId) + 1;
 		this.commandProxy().insert(createPerInfoCtgOrderFromDomain(perInfoCtgId, companyId, newdisOrderLastest));
 	}
 
 	private void addOrderPerInfoCtgWithListCompany(List<PpemtPerInfoCtg> lstPpemtPerInfoCtg) {
 		this.commandProxy().insertAll(lstPpemtPerInfoCtg.stream().map(p -> {
-			int newdisOrderLastest = getDispOrderLastestCtgOfCompany(p.ppemtPerInfoCtgPK.perInfoCtgId, p.cid) + 1;
+			int newdisOrderLastest = getDispOrderLastestCtgOfCompany(p.cid) + 1;
 			return createPerInfoCtgOrderFromDomain(p.ppemtPerInfoCtgPK.perInfoCtgId, p.cid, newdisOrderLastest);
 		}).collect(Collectors.toList()));
 	}
 
-	private int getDispOrderLastestCtgOfCompany(String perInfoCtgId, String companyId) {
+	private int getDispOrderLastestCtgOfCompany(String companyId) {
 		List<Integer> dispOrderLastests = this.getEntityManager()
 				.createQuery(SELECT_GET_DISPORDER_CTG_OF_COMPANY_QUERY, Integer.class)
-				.setParameter("perInfoCtgId", perInfoCtgId).setParameter("companyId", companyId).setMaxResults(1)
-				.getResultList();
+				.setParameter("companyId", companyId).setMaxResults(1).getResultList();
 		if (dispOrderLastests != null && !dispOrderLastests.isEmpty()) {
 			return dispOrderLastests.get(0);
 		}

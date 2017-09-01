@@ -48,7 +48,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	private final String SEL_PRE_ATTEND = "SELECT a FROM KmldtPremiumAttendance a "
 			+ "WHERE a.kmldpPremiumAttendancePK.companyID = :companyID "
 			+ "AND a.kmldpPremiumAttendancePK.historyID = :historyID "
-			+ "AND a.kmldpPremiumAttendancePK.premiumID = :displayNumber "
+			+ "AND a.kmldpPremiumAttendancePK.displayNumber = :displayNumber "
 			+ "AND a.kmldpPremiumAttendancePK.attendanceID = :attendanceID ";
 	
 	@Override

@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
-import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The class PersonInfoItemDefFinder
@@ -19,13 +19,12 @@ import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 public class PersonInfoItemDefFinder {
 	@Inject
 	private PerInfoItemDefRepositoty pernfoItemDefRep;
-
-	public List<PersonInfoItemDefDto> getAllPerInfoItemDefByCtgId(String perInfoCtgId) {
+	
+	public List<PersonInfoItemDefDto> getAllPerInfoItemDefByCategoryIdWithoutSetItem(String perInfoCtgId) {
+		String contracCd = AppContexts.user().companyId().substring(0, 12);
 		return this.pernfoItemDefRep
-				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream()
+				.getAllPerInfoItemDefByCategoryIdWithoutSetItem(perInfoCtgId, contracCd).stream()
 				.map(item -> PersonInfoItemDefDto.fromDomain(item))
 				.collect(Collectors.toList());
 	};
-
-
 }
