@@ -144,15 +144,21 @@ module nts.uk.at.view.ksm001.a {
 
                 // Selected year subscription.
                 self.companyEstablishmentModel.selectedYear.subscribe(year => {
-                    self.loadCompanyEstablishment(year, false);
+                    self.loadCompanyEstablishment(year, false).done(() => {
+                        $('#first-time-input').focus();
+                    });
                 });
                 self.employmentEstablishmentModel.selectedYear.subscribe(year => {
                     self.updateEmploymentEstimateSetting(year);
-                    self.loadEmploymentEstablishment(year, self.selectedEmploymentCode(), false);
+                    self.loadEmploymentEstablishment(year, self.selectedEmploymentCode(), false).done(() => {
+                        $('#first-time-input').focus();
+                    });
                 });
                 self.personalEstablishmentModel.selectedYear.subscribe(year => {
                     self.updatePersonalEstimateSetting(year);
-                    self.loadPersonalEstablishment(year, self.selectedEmployeeCode(), false);
+                    self.loadPersonalEstablishment(year, self.selectedEmployeeCode(), false).done(() => {
+                        $('#first-time-input').focus();
+                    });
                 });
 
                 // Selected employee subscription.
