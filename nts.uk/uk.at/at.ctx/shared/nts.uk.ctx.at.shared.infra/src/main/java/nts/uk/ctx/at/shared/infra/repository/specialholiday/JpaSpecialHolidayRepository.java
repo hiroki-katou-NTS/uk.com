@@ -19,12 +19,12 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantRegular;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantRegularPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantSingle;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantSinglePK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSubCondition;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSubConditionPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSpecialHoliday;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSpecialHolidayPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdLimit;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdLimitPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSubCondition;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSubConditionPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdWorkType;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdWorkTypePK;
 
@@ -107,7 +107,6 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		KshstGrantRegular kshstGrantRegular = new KshstGrantRegular();
 		KshstGrantRegularPK kshstGrantRegularPK = new KshstGrantRegularPK(grantRegular.getCompanyId(),
 				grantRegular.getSpecialHolidayCode().v());
-
 		kshstGrantRegular.grantStartDate = grantRegular.getGrantStartDate();
 		kshstGrantRegular.months = grantRegular.getMonths().v();
 		kshstGrantRegular.years = grantRegular.getYears().v();
@@ -302,11 +301,17 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			return new KshstSphdWorkType(key);
 		}).collect(Collectors.toList());
 
+		entity.grantRegular = convertToDbTypeRegular(specialHoliday.getGrantRegular());
+		entity.grantPeriodic = convertToDbTypePeriodic(specialHoliday.getGrantPeriodic());
+		entity.sphdLimit = convertToDbTypeSphdLimit(specialHoliday.getSphdLimit());
+		entity.subCondition = convertToDbTypeSubCondition(specialHoliday.getSubCondition());
+		entity.grantSingle = convertToDbTypeGrantSingle(specialHoliday.getGrantSingle());
 		entity.sphdWorkTypes = workTypes;
 		entity.kshstSpecialHolidayPK = primaryKey;
 		this.commandProxy().update(entity);
 	}
 
+	
 	/**
 	 * Delete Special Holiday
 	 */
