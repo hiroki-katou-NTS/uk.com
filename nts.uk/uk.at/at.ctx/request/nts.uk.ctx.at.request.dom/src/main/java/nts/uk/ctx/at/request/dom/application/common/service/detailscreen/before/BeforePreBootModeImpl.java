@@ -17,13 +17,13 @@ import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcess;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.dto.CanBeApprovedOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.dto.DecideAgencyExpired;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.dto.DetailedScreenPreBootModeOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.dto.User;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.CanBeApprovedOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DecideAgencyExpiredOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.dto.ApprovalAgencyInformationOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.application.common.valueobject.PeriodCurrentMonth;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -162,7 +162,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 					outputAlternateExpiration = false;
 
 				} else {
-					DecideAgencyExpired decideAgencyExpired = decideAgencyExpired(approvalFrame);
+					DecideAgencyExpiredOutput decideAgencyExpired = decideAgencyExpired(approvalFrame);
 
 				}
 			} else {
@@ -188,7 +188,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				if (approvalFrame.getApproverSID() == employeeID) {
 					return new CanBeApprovedOutput(true, ApprovalAtr.DENIAL, false);
 				} else {
-					DecideAgencyExpired decideAgencyExpired = decideAgencyExpired(approvalFrame);
+					DecideAgencyExpiredOutput decideAgencyExpired = decideAgencyExpired(approvalFrame);
 					// Whether the login person is a substitute approver
 					if (decideAgencyExpired.getOutputApprover().contains(employeeID)) {
 						return new CanBeApprovedOutput(true, ApprovalAtr.DENIAL, false);
@@ -202,7 +202,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				} else {
 					// Check if login authorized as delegate approver
 					if (approvalFrame.getRepresenterSID() == employeeID) {
-						DecideAgencyExpired decideAgencyExpired = decideAgencyExpired(approvalFrame);
+						DecideAgencyExpiredOutput decideAgencyExpired = decideAgencyExpired(approvalFrame);
 						return new CanBeApprovedOutput(true, ApprovalAtr.APPROVED, decideAgencyExpired.isOutputAlternateExpiration());
 					}
 					else {
@@ -264,7 +264,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 					return new CanBeApprovedOutput(true, ApprovalAtr.APPROVED, false);
 				} else {
 					if (employeeID == approvalFrame.getRepresenterSID()) {
-						DecideAgencyExpired decideAgencyExpired = decideAgencyExpired(approvalFrame);
+						DecideAgencyExpiredOutput decideAgencyExpired = decideAgencyExpired(approvalFrame);
 						return new CanBeApprovedOutput(true, ApprovalAtr.APPROVED,
 								decideAgencyExpired.isOutputAlternateExpiration());
 					}
@@ -299,7 +299,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 						if (employeeID == approvalFrame.getApproverSID()) {
 							outputAuthorizableflags = true;
 							outputApprovalATR = ApprovalAtr.APPROVED;
-							DecideAgencyExpired decideAgencyExpired = decideAgencyExpired(approvalFrame);
+							DecideAgencyExpiredOutput decideAgencyExpired = decideAgencyExpired(approvalFrame);
 							return new CanBeApprovedOutput(true, ApprovalAtr.APPROVED,
 									decideAgencyExpired.isOutputAlternateExpiration());
 						} else {
@@ -314,7 +314,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 	}
 
 	@Override
-	public DecideAgencyExpired decideAgencyExpired(ApprovalFrame approvalFrame) {
+	public DecideAgencyExpiredOutput decideAgencyExpired(ApprovalFrame approvalFrame) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		List<String> approver = null;
@@ -330,7 +330,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			outputAlternateExpiration = true;
 		}
 
-		return new DecideAgencyExpired(outputApprover, outputAlternateExpiration);
+		return new DecideAgencyExpiredOutput(outputApprover, outputAlternateExpiration);
 	}
 	/**Decide by Approver
 	 * 14-2.詳細画面起動前モード�?判断- 2*/

@@ -12,14 +12,14 @@ import org.apache.logging.log4j.util.Strings;
 
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverAdaptorDto;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
-import nts.uk.ctx.at.request.dom.application.common.service.other.dto.ApprovalAgencyInformationOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.application.common.valueobject.ApproverResult;
 import nts.uk.ctx.at.request.dom.application.common.valueobject.ApproverWhoApproved;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
@@ -55,7 +55,7 @@ public class AfterProcessDetailImpl implements AfterProcessDetail {
 		List<AppApprovalPhase> appApprovalPhases = appApprovalPhaseRepository.findPhaseByAppID(companyID, appID);
 		ApproverResult approverResult = acquireApproverWhoApproved(appApprovalPhases);
 		List<ApproverWhoApproved> approverWhoApproveds = approverResult.getApproverWhoApproveds();
-		List<ApproverAdaptorDto> approvers = approverResult.getApprovers();
+		List<ApproverImport> approvers = approverResult.getApprovers();
 		Application application = applicationOptional.get();
 		// application.reversionReason = "";
 		// application.reflectPerTime = NOTREFLECTED;

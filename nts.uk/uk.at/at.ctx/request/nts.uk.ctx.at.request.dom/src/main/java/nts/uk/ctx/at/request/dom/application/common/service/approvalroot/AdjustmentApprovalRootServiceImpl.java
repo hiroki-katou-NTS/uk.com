@@ -11,12 +11,12 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseAdaptorDto;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverAdaptorDto;
-import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.dto.ApprovalPhaseAdaptorResult;
-import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.dto.ApproverInfo;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverImport;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApprovalPhaseOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApproverInfo;
 import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
-import nts.uk.ctx.at.request.dom.application.common.service.other.dto.ApprovalAgencyInformationOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AprovalPersonFlg;
@@ -44,14 +44,14 @@ public class AdjustmentApprovalRootServiceImpl implements AdjustmentApprovalRoot
 	private ApplicationSettingRepository appSettingRepository;
 	
 	@Override
-	public List<ApprovalPhaseAdaptorResult> adjustmentApprovalRootData(String cid, String sid, GeneralDate baseDate,
-			List<ApprovalPhaseAdaptorDto> appPhases) {
-		List<ApprovalPhaseAdaptorResult> phaseResults = new ArrayList<>();
+	public List<ApprovalPhaseOutput> adjustmentApprovalRootData(String cid, String sid, GeneralDate baseDate,
+			List<ApprovalPhaseImport> appPhases) {
+		List<ApprovalPhaseOutput> phaseResults = new ArrayList<>();
 		
-		for (ApprovalPhaseAdaptorDto phase : appPhases) {
-			ApprovalPhaseAdaptorResult phaseResult = ApprovalPhaseAdaptorResult.convertDtoToResult(phase);
+		for (ApprovalPhaseImport phase : appPhases) {
+			ApprovalPhaseOutput phaseResult = ApprovalPhaseOutput.convertDtoToResult(phase);
 			
-			List<ApproverAdaptorDto> approvers = phase.getApproverDtos();
+			List<ApproverImport> approvers = phase.getApproverDtos();
 			if (!CollectionUtil.isEmpty(approvers)) {
 				List<ApproverInfo> approversResult = new ArrayList<>();
 				approvers.stream().forEach(x -> {

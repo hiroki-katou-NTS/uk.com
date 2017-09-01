@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.other;
 
 import java.util.List;
 
-import nts.uk.ctx.at.request.dom.application.common.service.other.dto.ObjApproverRepresenter;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ObjApproverRepresenterOutput;
 
 
 /**
@@ -11,5 +11,5 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.dto.ObjApprove
  *
  */
 public interface DestinationJudgmentProcess {
-	public List<String> getDestinationJudgmentProcessService(List<ObjApproverRepresenter> listApproverAndRepresenterSID);
+	public List<String> getDestinationJudgmentProcessService(List<ObjApproverRepresenterOutput> listApproverAndRepresenterSID);
 }

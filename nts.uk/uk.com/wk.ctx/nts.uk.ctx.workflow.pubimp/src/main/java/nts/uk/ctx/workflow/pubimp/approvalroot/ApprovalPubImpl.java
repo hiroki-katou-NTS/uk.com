@@ -11,12 +11,12 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseReposito
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
-import nts.uk.ctx.workflow.pub.approvalroot.ApprovalPhaseDto;
 import nts.uk.ctx.workflow.pub.approvalroot.ApprovalRootPub;
-import nts.uk.ctx.workflow.pub.approvalroot.ApproverDto;
-import nts.uk.ctx.workflow.pub.approvalroot.CompanyApprovalRootDto;
-import nts.uk.ctx.workflow.pub.approvalroot.PersonApprovalRootDto;
-import nts.uk.ctx.workflow.pub.approvalroot.WkpApprovalRootDto;
+import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalPhaseExport;
+import nts.uk.ctx.workflow.pub.approvalroot.export.ApproverExport;
+import nts.uk.ctx.workflow.pub.approvalroot.export.CompanyApprovalRootExport;
+import nts.uk.ctx.workflow.pub.approvalroot.export.PersonApprovalRootExport;
+import nts.uk.ctx.workflow.pub.approvalroot.export.WkpApprovalRootExport;
 
 @Stateless
 public class ApprovalPubImpl implements ApprovalRootPub{
@@ -34,9 +34,9 @@ public class ApprovalPubImpl implements ApprovalRootPub{
 	private ApprovalPhaseRepository appPhaseRepository;
 	
 	@Override
-	public List<PersonApprovalRootDto> findByBaseDate(String cid, String sid, Date standardDate, int appType) {
+	public List<PersonApprovalRootExport> findByBaseDate(String cid, String sid, Date standardDate, int appType) {
 		return this.personAppRootRepository.findByBaseDate(cid, sid, standardDate, appType).stream()
-				.map(x -> new PersonApprovalRootDto(
+				.map(x -> new PersonApprovalRootExport(
 						x.getCompanyId(),
 						x.getApprovalId(),
 						x.getEmployeeId(),
@@ -52,9 +52,9 @@ public class ApprovalPubImpl implements ApprovalRootPub{
 	}
 
 	@Override
-	public List<PersonApprovalRootDto> findByBaseDateOfCommon(String cid, String sid, Date standardDate) {
+	public List<PersonApprovalRootExport> findByBaseDateOfCommon(String cid, String sid, Date standardDate) {
 		return this.personAppRootRepository.findByBaseDateOfCommon(cid, sid, standardDate).stream()
-				.map(x -> new PersonApprovalRootDto(
+				.map(x -> new PersonApprovalRootExport(
 						x.getCompanyId(),
 						x.getApprovalId(),
 						x.getEmployeeId(),
@@ -70,9 +70,9 @@ public class ApprovalPubImpl implements ApprovalRootPub{
 	}
 	
 	@Override
-	public List<WkpApprovalRootDto> findWkpByBaseDate(String cid, String workplaceId, Date baseDate, int appType) {
+	public List<WkpApprovalRootExport> findWkpByBaseDate(String cid, String workplaceId, Date baseDate, int appType) {
 		return this.wkpAppRootRepository.findByBaseDate(cid, workplaceId, baseDate, appType).stream()
-				.map(x -> new WkpApprovalRootDto(
+				.map(x -> new WkpApprovalRootExport(
 						x.getCompanyId(),
 						x.getApprovalId(),
 						x.getWorkplaceId(),
@@ -88,9 +88,9 @@ public class ApprovalPubImpl implements ApprovalRootPub{
 	}
 	
 	@Override
-	public List<WkpApprovalRootDto> findWkpByBaseDateOfCommon(String cid, String workplaceId, Date baseDate) {
+	public List<WkpApprovalRootExport> findWkpByBaseDateOfCommon(String cid, String workplaceId, Date baseDate) {
 		return this.wkpAppRootRepository.findByBaseDateOfCommon(cid, workplaceId, baseDate).stream()
-				.map(x -> new WkpApprovalRootDto(
+				.map(x -> new WkpApprovalRootExport(
 						x.getCompanyId(),
 						x.getApprovalId(),
 						x.getWorkplaceId(),
@@ -106,9 +106,9 @@ public class ApprovalPubImpl implements ApprovalRootPub{
 	}
 	
 	@Override
-	public List<CompanyApprovalRootDto> findCompanyByBaseDate(String cid, Date baseDate, int appType) {
+	public List<CompanyApprovalRootExport> findCompanyByBaseDate(String cid, Date baseDate, int appType) {
 		return this.companyAppRootRepository.findByBaseDate(cid, baseDate, appType).stream()
-				.map(x -> new CompanyApprovalRootDto(
+				.map(x -> new CompanyApprovalRootExport(
 						x.getCompanyId(),
 						x.getApprovalId(),
 						x.getHistoryId(),
@@ -123,9 +123,9 @@ public class ApprovalPubImpl implements ApprovalRootPub{
 	}
 	
 	@Override
-	public List<CompanyApprovalRootDto> findCompanyByBaseDateOfCommon(String cid, Date baseDate) {
+	public List<CompanyApprovalRootExport> findCompanyByBaseDateOfCommon(String cid, Date baseDate) {
 		return this.companyAppRootRepository.findByBaseDateOfCommon(cid, baseDate).stream()
-				.map(x -> new CompanyApprovalRootDto(
+				.map(x -> new CompanyApprovalRootExport(
 						x.getCompanyId(),
 						x.getApprovalId(),
 						x.getHistoryId(),
@@ -140,16 +140,16 @@ public class ApprovalPubImpl implements ApprovalRootPub{
 	}
 	
 	@Override
-	public List<ApprovalPhaseDto> findApprovalPhaseByBranchId(String cid, String branchId) {
+	public List<ApprovalPhaseExport> findApprovalPhaseByBranchId(String cid, String branchId) {
 		return this.appPhaseRepository.getAllApprovalPhasebyCode(cid, branchId).stream()
-				.map(x -> new ApprovalPhaseDto(
+				.map(x -> new ApprovalPhaseExport(
 						x.getCompanyId(),
 						x.getBranchId(),
 						x.getApprovalPhaseId(),
 						x.getApprovalForm().value,
 						x.getBrowsingPhase(),
 						x.getOrderNumber(),
-						x.getApprovers().stream().map(a -> new ApproverDto(
+						x.getApprovers().stream().map(a -> new ApproverExport(
 								a.getCompanyId(), 
 								a.getApprovalPhaseId(), 
 								a.getApproverId(), 

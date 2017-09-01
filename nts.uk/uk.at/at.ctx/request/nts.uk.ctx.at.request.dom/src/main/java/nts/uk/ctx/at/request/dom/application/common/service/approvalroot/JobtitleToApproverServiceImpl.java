@@ -9,9 +9,9 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdaptor;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.JobtitleSearchSetAdaptor;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.JobtitleSearchSetAdaptorDto;
-import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.dto.ApproverInfo;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.JobtitleSearchSetAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.JobtitleSearchSetImport;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApproverInfo;
 
 /**
  * 3.職位から承認者へ変換する
@@ -29,7 +29,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	private GetSubjectOfJobTitleService getSubjectOfJobTitleService;
 
 	@Inject
-	private JobtitleSearchSetAdaptor jobtitleSearchSetAdaptor;
+	private JobtitleSearchSetAdapter jobtitleSearchSetAdaptor;
 	
 	@Override
 	public List<ApproverInfo> convertToApprover(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
@@ -44,7 +44,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 			}
 
 			// lấy domain 「職位別のサーチ設定」
-			JobtitleSearchSetAdaptorDto job = this.jobtitleSearchSetAdaptor.finById(cid, jobTitleId);
+			JobtitleSearchSetImport job = this.jobtitleSearchSetAdaptor.finById(cid, jobTitleId);
 			if (!Objects.isNull(job)) {
 				List<String> wkpIds = this.employeeAdaptor.findWpkIdsBySid(cid, sid, baseDate);
 				wkpIds.remove(0);
