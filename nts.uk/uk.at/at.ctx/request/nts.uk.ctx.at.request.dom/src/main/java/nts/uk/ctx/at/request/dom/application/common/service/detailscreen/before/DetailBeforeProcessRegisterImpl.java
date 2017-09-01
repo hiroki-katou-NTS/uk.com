@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 
 @Stateless
-public class BeforeProcessRegisterImpl implements BeforeProcessRegister {
+public class DetailBeforeProcessRegisterImpl implements DetailBeforeProcessRegister {
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithmService;

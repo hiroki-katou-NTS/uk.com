@@ -8,7 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforeProcessRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeProcessRegister;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
@@ -30,7 +30,7 @@ public class GoBackDirectlyDefault implements GoBackDirectlyService {
 	@Inject
 	GoBackDirectlyRepository goBackDirectRepo;
 	@Inject
-	BeforeProcessRegister processBeforeRegister;
+	NewBeforeProcessRegister processBeforeRegister;
 	@Inject
 	GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
 

@@ -8,7 +8,7 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.
  * 2-1.新規画面登録前の処理
  *
  */
-public interface BeforeProcessRegister {
+public interface NewBeforeProcessRegister {
 	/**
 	 * 2-1.新規画面登録前の処理
 	 * @param companyID

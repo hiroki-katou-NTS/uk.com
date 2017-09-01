@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheck
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.AfterProcessRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforeProcessRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeProcessRegister;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
@@ -28,7 +28,7 @@ public class ApplicationStampNewDefault implements ApplicationStampNewDomainServ
 	private StartCheckErrorService newScreenStartCheckErrorService;
 	
 	@Inject
-	private BeforeProcessRegister processBeforeRegisterService; 
+	private NewBeforeProcessRegister processBeforeRegisterService; 
 	
 	@Inject
 	private RegisterAtApproveReflectionInfoService registerAtApproveReflectionInfoService;

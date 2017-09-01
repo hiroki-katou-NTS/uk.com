@@ -14,7 +14,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 
 @Stateless
-public class BeforeProcessRegisterImpl implements BeforeProcessRegister {
+public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
 	
 	@Inject
 	private EmployeeAdaptor employeeAdaptor;

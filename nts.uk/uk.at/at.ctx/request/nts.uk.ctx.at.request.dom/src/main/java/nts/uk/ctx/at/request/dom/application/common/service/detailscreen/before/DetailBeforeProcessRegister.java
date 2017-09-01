@@ -7,7 +7,7 @@ import nts.arc.time.GeneralDate;
  * 4-1.詳細画面登録前の処理
  *
  */
-public interface BeforeProcessRegister {
+public interface DetailBeforeProcessRegister {
 	/**
 	 * 4-1.詳細画面登録前の処理
 	 * @param companyID 会社ID 
