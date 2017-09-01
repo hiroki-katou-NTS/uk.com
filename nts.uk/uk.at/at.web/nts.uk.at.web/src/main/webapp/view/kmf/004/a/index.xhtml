@@ -76,7 +76,7 @@
 												options: $parent.roundingPeriodic,
 												optionsValue: 'code',
 												optionsText: 'name',
-												value: $parent.inp_grantPeriodicCls,
+												value: $parent.inp_grantMethod,
 												enable: true}"></div>
 						</div>
 						<div>
@@ -164,7 +164,7 @@
 											data-bind="checkedValue: 1, checked: grantPeriodicMethod, enable: true" />
 											<span class="box"></span><span class="label">#{i18n.getText('KMF004_33')}</span>
 										</label>
-										<button data-bind="enable: grantPeriodicMethod()==1" style="margin-top: 10px; margin-left: 30px;">#{i18n.getText('KMF004_34')}</button>
+										<button data-bind="enable: grantPeriodicMethod()==1, click: $parent.openDDialog.bind($parent)" style="margin-top: 10px; margin-left: 30px;">#{i18n.getText('KMF004_34')}</button>
 									</div>
 									<span style="margin-left: 40px;">#{i18n.getText('KMF004_30')}</span>
 								</div>

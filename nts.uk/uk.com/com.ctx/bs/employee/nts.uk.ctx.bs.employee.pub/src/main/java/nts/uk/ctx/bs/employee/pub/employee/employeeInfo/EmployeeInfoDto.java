@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pub.employee.employeeInfo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
@@ -12,6 +13,7 @@ import nts.arc.time.GeneralDate;
  * Dto by Request List #18
  */
 @Data
+@AllArgsConstructor
 public class EmployeeInfoDto {
 
 	/** The company id. */
