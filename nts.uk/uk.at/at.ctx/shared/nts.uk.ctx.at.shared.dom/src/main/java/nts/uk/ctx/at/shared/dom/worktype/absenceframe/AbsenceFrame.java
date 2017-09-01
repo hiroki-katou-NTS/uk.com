@@ -5,7 +5,6 @@ package nts.uk.ctx.at.shared.dom.worktype.absenceframe;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
-
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeName;
 
 @Getter
@@ -37,5 +36,10 @@ public class AbsenceFrame {
 				absenceFrameNo, 
 				new WorkTypeName(absenceFrameName), 
 				EnumAdaptor.valueOf(deprecateAbsence, DeprecateClassification.class));
+	}
+
+	public static AbsenceFrame createFromJavaType(String companyId, int absenceFrameNo, String absenceFrameName,
+			int deprecateAbsence) {
+		return new AbsenceFrame(companyId, absenceFrameNo, new WorkTypeName(absenceFrameName), EnumAdaptor.valueOf(deprecateAbsence, DeprecateClassification.class));
 	}
 }
