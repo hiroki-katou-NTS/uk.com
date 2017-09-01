@@ -11,14 +11,14 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.company.pub.employment.EmploymentPub;
-import nts.uk.ctx.bs.employee.dom.access.employment.EmploymentAdapter;
+import nts.uk.ctx.bs.employee.dom.access.employment.SyEmploymentAdapter;
 import nts.uk.ctx.bs.employee.dom.access.employment.dto.AcEmploymentDto;
 
 /**
  * The Class EmploymentAdapterImpl.
  */
 @Stateless
-public class EmploymentAdapterImpl implements EmploymentAdapter {
+public class EmploymentAdapterImpl implements SyEmploymentAdapter {
 
 	/** The employment pub. */
 	@Inject

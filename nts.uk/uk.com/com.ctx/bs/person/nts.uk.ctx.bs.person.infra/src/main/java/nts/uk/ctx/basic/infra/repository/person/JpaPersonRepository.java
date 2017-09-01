@@ -19,10 +19,10 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.basic.dom.person.Person;
-import nts.uk.ctx.basic.dom.person.PersonRepository;
 import nts.uk.ctx.basic.infra.entity.person.CcgmtPerson;
 import nts.uk.ctx.basic.infra.entity.person.CcgmtPerson_;
+import nts.uk.ctx.bs.person.dom.person.info.Person;
+import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 
 /**
  * The Class JpaPersonRepository.

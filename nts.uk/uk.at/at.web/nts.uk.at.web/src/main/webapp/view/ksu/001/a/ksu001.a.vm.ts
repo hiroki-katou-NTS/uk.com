@@ -49,7 +49,6 @@ module ksu001.a.viewmodel {
         arrDay: Time[] = [];
         listSid: KnockoutObservableArray<string> = ko.observableArray([]);
         lengthListSid: any;
-        isClickNextBackMonth: boolean = false;
         workPlaceNameDisplay: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
@@ -420,8 +419,7 @@ module ksu001.a.viewmodel {
                     dtMoment = dtMoment.add(1, 'months');
                     dtMoment.subtract(1, 'days');
                     self.dtAft(dtMoment.toDate());
-                    self.isClickNextBackMonth = true;
-                    self.updateDetailAndHorzSum(self.isClickNextBackMonth);
+                    self.updateDetailAndHorzSum();
                 }
             });
 
@@ -437,8 +435,7 @@ module ksu001.a.viewmodel {
                     dtMoment = dtMoment.subtract(1, 'months');
                     dtMoment.add(1, 'days');
                     self.dtPrev(dtMoment.toDate());
-                    self.isClickNextBackMonth = true;
-                    self.updateDetailAndHorzSum(self.isClickNextBackMonth);
+                    self.updateDetailAndHorzSum();
                 }
             });
 
@@ -446,8 +443,7 @@ module ksu001.a.viewmodel {
              * Save data
              */
             $("#saveData").click(function() {
-                let dfd = $.Deferred(),
-                    arrObj: BasicSchedule[] = [],
+                let arrObj: BasicSchedule[] = [],
                     arrCell: Cell[] = $("#extable").exTable("updatedCells"),
                     lengthArrCell = arrCell.length;
                 if (lengthArrCell == 0) {
@@ -462,74 +458,21 @@ module ksu001.a.viewmodel {
                         workTypeCode: arrCell[i].value.workTypeCode
                     }));
                 }
-                //Msg_436
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-09T00:00:00.000Z",
-                    workTypeCode: "231",
-                    workTimeCode: "001",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-                //Msg_468
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-10T00:00:00.000Z",
-                    workTypeCode: "007",
-                    workTimeCode: "001",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-                //workTimeCode == NULL or empty
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-11T00:00:00.000Z",
-                    workTypeCode: "001",
-                    workTimeCode: null,
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-                //Msg_437
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-12T00:00:00.000Z",
-                    workTypeCode: "001",
-                    workTimeCode: "231",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-                //Msg_469
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-12T00:00:00.000Z",
-                    workTypeCode: "001",
-                    workTimeCode: "010",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-
-                //Msg_435
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-12T00:00:00.000Z",
-                    workTypeCode: "001",
-                    workTimeCode: "000",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-
-                //Msg_434
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-12T00:00:00.000Z",
-                    workTypeCode: "002",
-                    workTimeCode: "001",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
 
                 service.registerData(arrObj).done(function(error: any) {
+                    if (error.length != 0) {
+                        self.addListError(error);
+                    } else {
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));    
+                    }
                     //get data and update extable
                     self.getDataBasicSchedule().done(function() {
                         self.updateExTable();
                     });
-                    //                    if (error) {
-                    //                        alert('Has error!');
-                    //                    } else {
-                    alert(nts.uk.resource.getMessage("Msg_15"));
-                    //                    }
-                    dfd.resolve();
+                    
                 }).fail(function(error: any) {
-
-                    dfd.reject();
+                    nts.uk.ui.dialog.alertError(error.message);    
                 });
-                return dfd.promise();
             });
         }
 
@@ -549,6 +492,9 @@ module ksu001.a.viewmodel {
                 newLeftMostDs.push({ empId: x, empName: empItem.empCd + ' ' + empItem.empName });
                 //newMiddle dataSource
                 newMiddleDs.push({ empId: x, team: "1", rank: "A", qualification: "★", employmentName: "アルバイト", workplaceName: "東京本社", classificationName: "分類", positionName: "一般" });
+                //newDetail dataSource
+                let dsOfSid: any = _.filter(self.dataSource(), ['sid', x]);
+                newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
                 //newVertSumContent dataSource
                 newVertSumContentDs.push({ empId: x, noCan: 6, noGet: 6 });
             });
@@ -557,12 +503,49 @@ module ksu001.a.viewmodel {
                 newLeftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
             }
 
+            //get new horzSumContentDs
+            let horzSumContentDs = [];
+            for (let i = 0; i < 5; i++) {
+                let obj = {};
+                obj["itemId"] = i.toString();
+                obj["empId"] = "";
+                for (let j = 0; j < self.arrDay.length; j++) {
+                    obj['_' + self.arrDay[j].yearMonthDay] = "10";
+                }
+                horzSumContentDs.push(obj);
+            }
+
+            let newDetailColumns = [];
+            //define the new detailColumns
+            _.each(self.arrDay, (x: Time) => {
+                newDetailColumns.push({
+                    key: "_" + x.yearMonthDay, width: "100px", headerText: "", visible: true
+                });
+            });
+
             let updateLeftmostContent = {
                 dataSource: newLeftMostDs,
             };
 
             let updateMiddleContent = {
                 dataSource: newMiddleDs,
+            };
+
+            let detailHeaderDeco = [], detailContentDeco = [];
+            //Set color for detail
+            self.setColorForDetail(detailHeaderDeco, detailContentDeco);
+            let updateDetailContent = {
+                columns: newDetailColumns,
+                dataSource: newDetailContentDs,
+                features: [{
+                    name: "BodyCellStyle",
+                    decorator: detailContentDeco
+                }]
+            };
+
+            let updateHorzSumContent = {
+                columns: newDetailColumns,
+                dataSource: horzSumContentDs
             };
 
             let updateVertSumContent = {
@@ -577,17 +560,15 @@ module ksu001.a.viewmodel {
             $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
             $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
             $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
-
-            self.isClickNextBackMonth = false;
-            self.updateDetailAndHorzSum(self.isClickNextBackMonth);
+            $("#extable").exTable("updateTable", "detail", {}, updateDetailContent);
+            $("#extable").exTable("updateTable", "horizontalSummaries", {}, updateHorzSumContent);
         }
 
         /**
          * update new data of header and content of detail and horizSum
          */
-        updateDetailAndHorzSum(isClickNextBackMonth: boolean): void {
+        updateDetailAndHorzSum(): void {
             let self = this;
-
             //Get dates in time period
             let currentDay = new Date(self.dtPrev().toString());
             self.arrDay = [];
@@ -626,6 +607,7 @@ module ksu001.a.viewmodel {
             let detailHeaderDeco = [], detailContentDeco = [];
             //Set color for detail
             self.setColorForDetail(detailHeaderDeco, detailContentDeco);
+
             let updateDetailHeader = {
                 columns: newDetailColumns,
                 dataSource: newDetailHeaderDs,
@@ -636,7 +618,7 @@ module ksu001.a.viewmodel {
             };
 
             //if haven't data in extable, only update header detail and header horizontal
-            if (isClickNextBackMonth && self.empItems().length == 0) {
+            if (self.empItems().length == 0) {
                 $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
                 $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, {});
             } else {
@@ -693,6 +675,24 @@ module ksu001.a.viewmodel {
                 });
             }
         }
+        
+        /**
+         * Set error
+         */
+        addListError(errorsRequest: Array<string>) {
+            var messages = {};
+            _.forEach(errorsRequest, function(err){
+                messages[err] = nts.uk.resource.getMessage(err);
+            });
+            
+            var errorVm = {
+                messageId:  errorsRequest,
+                messages: messages
+            };
+            
+            nts.uk.ui.dialog.bundledErrors(errorVm);
+        }
+
     }
 
     interface ICell {
@@ -945,7 +945,15 @@ module ksu001.a.viewmodel {
                 });
                 //holiday
                 if (arrDay[i].weekDay == '日' || arrDay[i].weekDay == '土') {
-                    this['_' + arrDay[i].yearMonthDay] = ['休日', ''];
+                    this['_' + arrDay[i].yearMonthDay] = new ExCell({
+                        endTime: null,
+                        startTime: null,
+                        symbol: null,
+                        workTimeCode: "",
+                        workTimeName: "",
+                        workTypeCode: "",
+                        workTypeName: "休日",
+                    });
                 } else if (obj) {
                     //get code and name of workType and workTime
                     let workTypeCode = null, workTypeName = null, workTimeCode = null, workTimeName = null;

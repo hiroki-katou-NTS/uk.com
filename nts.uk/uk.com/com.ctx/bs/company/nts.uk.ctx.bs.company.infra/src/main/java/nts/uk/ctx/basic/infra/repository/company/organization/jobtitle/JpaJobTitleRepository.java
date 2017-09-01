@@ -71,8 +71,12 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 				.collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleRepository#findByJobIds(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleRepository#
+	 * findByJobIds(java.util.List)
 	 */
 	@Override
 	public List<JobTitle> findByJobIds(List<String> jobIds) {
@@ -97,6 +101,48 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 				cb.asc(root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.jobCode)));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
+		cq.orderBy(orderList);
+
+		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
+				.collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleRepository#findByJobIds(java.lang.String, java.util.List, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<JobTitle> findByJobIds(String companyId, List<String> jobIds,
+			GeneralDate baseDate) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<CjtmtJobTitle> cq = cb.createQuery(CjtmtJobTitle.class);
+		Root<CjtmtJobTitle> root = cq.from(CjtmtJobTitle.class);
+
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+		predicateList.add(
+				cb.equal(root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.companyId),
+						companyId));
+
+		predicateList.add(
+				root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.jobId).in(jobIds));
+
+		predicateList.add(cb.lessThanOrEqualTo(root.get(CjtmtJobTitle_.startDate), baseDate));
+
+		predicateList.add(cb.greaterThanOrEqualTo(root.get(CjtmtJobTitle_.endDate), baseDate));
+
+		List<Order> orderList = new ArrayList<Order>();
+		// Sort by sequence master.
+		orderList.add(cb
+				.asc(root.get(CjtmtJobTitle_.csqmtSequenceMaster).get(CsqmtSequenceMaster_.order)));
+		// Sort by job code.
+		orderList.add(
+				cb.asc(root.get(CjtmtJobTitle_.cjtmtJobTitlePK).get(CjtmtJobTitlePK_.jobCode)));
+
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		
 		cq.orderBy(orderList);
 
 		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))

@@ -25,7 +25,7 @@ public class SpecialHoliday extends AggregateRoot {
 	private SpecialHolidayName specialHolidayName;
 
 	/* 定期付与 */
-	private GrantPeriodicCls grantPeriodicCls;
+	private GrantMethod grantMethod;
 
 	/* メモ */
 	private Memo memo;
@@ -34,19 +34,19 @@ public class SpecialHoliday extends AggregateRoot {
 	private List<String> workTypeList;
 	
 	/**/
-	private GrantRegular tabGrantRegular;
+	private GrantRegular grantRegular;
 	
 	/**/
-	private GrantPeriodic tabGrantPeriodic;
+	private GrantPeriodic grantPeriodic;
 	
 	/**/
-	private SphdLimit tabSphdLimit;
+	private SphdLimit sphdLimit;
 	
 	/**/
-	private SubCondition tabSubCondition;
+	private SubCondition subCondition;
 	
 	/**/
-	private GrantSingle tabGrantSingle;
+	private GrantSingle grantSingle;
 
 	@Override
 	public void validate() {
@@ -63,7 +63,7 @@ public class SpecialHoliday extends AggregateRoot {
 			GrantSingle grantSingle) {
 		return new SpecialHoliday(companyId, new SpecialHolidayCode(specialHolidayCode),
 				new SpecialHolidayName(specialHolidayName),
-				EnumAdaptor.valueOf(grantPeriodicCls, GrantPeriodicCls.class),
+				EnumAdaptor.valueOf(grantPeriodicCls, GrantMethod.class),
 				new Memo(memo),
 				workTypeList,
 				grantRegular,

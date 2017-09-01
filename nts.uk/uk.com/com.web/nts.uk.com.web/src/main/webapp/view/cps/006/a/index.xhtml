@@ -46,7 +46,7 @@
 						data-bind="ntsGridList: {	
 						dataSource: categoryList ,
 						primaryKey: 'id' ,
-						columns: colums ,
+						columns: currentCategory().ctgColums ,
 						multiple: false,
 						value: currentCategory().id ,
 						rows:15 }">
@@ -71,11 +71,8 @@
 								value: categoryName ,
 								enable: true,
 								immediate: false}"></input>
-							<com:ko-if bind="displayIsAbolished == 1">
-								<div>#{i18n.getText('CPS006_11')}</div>
-							</com:ko-if>
-							<com:ko-if bind="displayIsAbolished == 0">
-								<div>ahahhaha</div>
+							<com:ko-if bind="displayIsAbolished === 0">
+								<div data-bind="ntsCheckBox: { checked: isAbolition }">#{i18n.getText('CPS006_11')}</div>
 							</com:ko-if>
 						</div>
 
@@ -98,7 +95,7 @@
 									<label id="continue">#{i18n.getText('CPS006_48')}</label>
 								</com:ko-if>
 								<button
-									data-bind="ntsHelpButton: {image: 'helpcas006.png', 
+									data-bind="ntsHelpButton: {image: 'cps006_2.png', 
 									position: 'right+50 top',
 									enable: true }">?</button>
 							</com:ko-if>
@@ -109,7 +106,7 @@
 									<div id='col1' data-bind="ntsFormLabel: {}" class='distane'>
 										<label>#{i18n.getText('CPS006_12')}</label>
 									</div>
-									<label id="historyType">#{i18n.getText('CPS006_46')}</label>
+									<label id="historyType">#{i18n.getText('CPS006_45')}</label>
 								</div>
 
 
@@ -130,7 +127,7 @@
 								</com:ko-if>
 
 								<button
-									data-bind="ntsHelpButton: {image: 'helpcps1.png', position: 'right+50 top', enable: true }">?</button>
+									data-bind="ntsHelpButton: {image: 'cps006_1.png', position: 'right+50 top', enable: true }">?</button>
 							</com:ko-if>
 						</div>
 					</div>
@@ -140,11 +137,11 @@
 						</div>
 						<table id="item_grid"
 							data-bind="ntsGridList: {	
-						dataSource: itemList ,
+						dataSource: currentCategory().itemList ,
 						primaryKey: 'id' ,
-						columns: itemColums ,
+						columns: currentCategory().itemColums ,
 						multiple: false,
-						value: currentItemId ,
+						value: currentCategory().currentItemId ,
 						rows:10 }">
 						</table>
 					</div>

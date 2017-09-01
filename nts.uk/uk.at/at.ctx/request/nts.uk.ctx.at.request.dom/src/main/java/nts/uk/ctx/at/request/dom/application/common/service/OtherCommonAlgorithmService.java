@@ -9,6 +9,7 @@ import java.util.List;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.valueobject.PeriodCurrentMonth;
 
 public interface OtherCommonAlgorithmService {
 	/**
@@ -32,7 +33,7 @@ public interface OtherCommonAlgorithmService {
 	 * @param date 基準日
 	 * @return List<String>: [0]: startDate, [1]: endDate <=> 締め期間(開始年月日,終了年月日) 
 	 */
-	public List<GeneralDate> employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date);
+	public PeriodCurrentMonth employeePeriodCurrentMonthCalculate(String companyID, String employeeID, GeneralDate date);
 	/**
 	 * 5.事前事後区分の判断
 	 * @param appType

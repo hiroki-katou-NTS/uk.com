@@ -7,8 +7,8 @@ package nts.uk.ctx.at.schedule.app.command.shift.basicworkregister;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Data;
-import nts.uk.ctx.at.schedule.app.command.shift.basicworkregister.dto.BasicWorkSettingDto;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkGetMemento;
@@ -17,14 +17,12 @@ import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceId;
 /**
  * The Class WorkplaceBWSaveCommand.
  */
-@Data
-public class WorkplaceBWSaveCommand {
+@Getter
+@Setter
+public class WorkplaceBWSaveCommand extends BaseBWSaveCommand {
 
 	/** The workplace id. */
 	private String workplaceId;
-
-	/** The basic work setting. */
-	private List<BasicWorkSettingDto> basicWorkSetting;
 
 	/**
 	 * To domain.

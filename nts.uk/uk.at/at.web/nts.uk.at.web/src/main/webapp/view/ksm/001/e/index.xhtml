@@ -27,7 +27,7 @@
 				<img class="imageSettings" src="img001.png"></img>
 				<div class="companyInfo">#{i18n.getText('Com_Company')}</div>
 				<div class="checkSetting">
-					<div tabindex="1" data-bind="ntsCheckBox: { checked: settingEmployment }">#{i18n.getText('Com_Employment')}</div>
+					<div id="ckb-employment" tabindex="1" data-bind="ntsCheckBox: { checked: settingEmployment }">#{i18n.getText('Com_Employment')}</div>
 				</div>
 				<div class="checkSetting">
 					<div tabindex="2"  data-bind="ntsCheckBox: { checked: settingPersonal }">#{i18n.getText('Com_Person')}</div>
@@ -35,8 +35,8 @@
 				
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="3" class="x-large proceed" data-bind="click: saveUsageSettingModel">#{i18n.getText('KMK004_27')}</button>
-				<button tabindex="4" data-bind="click: cancelSaveUsageSettingModel">#{i18n.getText('KMK004_37')}</button>
+				<button tabindex="3" class="x-large proceed" data-bind="click: saveUsageSettingModel">#{i18n.getText('KSM001_48')}</button>
+				<button tabindex="4" data-bind="click: cancelSaveUsageSettingModel">#{i18n.getText('KSM001_49')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -92,19 +92,33 @@ public class ProgramIdConsts {
 	
 	public static final String KSM002D = "KSM002D";
 	
+	public static final String KSM002E = "KSM002E";
+	
 	public static final String KSM004A = "KSM004A";
 	
 	public static final String KSM004C = "KSM004C";
 	
 	public static final String KSM004D = "KSM004D";
+	
+	public static final String KSM004E = "KSM004E";
 
 	public static final String CMM044A = "CMM044A";
 	
 	public static final String KSU001A = "KSU001A";
 	
+	public static final String KDL001A = "KDL001A";
+	
+	public static final String KDL002A = "KDL002A";
+	
 	public static final String KDL003 = "KDL003";
 	
 	public static final String KSM006 = "KSM006";
+	
+	public static final String KDL007A = "KDL007A";
+	
+	public static final String KDL010A = "KDL010A";
+	
+	public static final String KDL021A = "KDL021A";
 	
 	public static final String KSM003 = "KSM003";
 	
@@ -126,9 +140,19 @@ public class ProgramIdConsts {
 	
 	public static final String KMK009 = "KMK009";
 	
-	public static final String KSU006 = "KSU006";
+	public static final String KSU006A = "KSU006A";
 	
-	public static final String CCG007 = "CCG007";
+	public static final String KSU006B = "KSU006B";
+	
+	public static final String KSU006C = "KSU006C";
+	
+	public static final String CCG007A = "CCG007A";
+	
+	public static final String CCG007B = "CCG007B";
+	
+	public static final String CCG007C = "CCG007C";
+	
+	public static final String CCG007D = "CCG007D";
 	
 	public static final String CCG001 = "CCG001";
 	
@@ -184,9 +208,78 @@ public class ProgramIdConsts {
 	
 	public static final String KMK007D = "KMK007D";
 	
+	public static final String CAS001A = "CAS001A";
+	
 	public static final String CAS001C = "CAS001C";
 	
 	public static final String CAS001D = "CAS001D";
+
+	public static final String KMK005A = "KMK005A";
+
+	public static final String KMK005B = "KMK005B";
+
+	public static final String KMK005D = "KMK005D";
+
+	public static final String KMK005E = "KMK005E";
+
+	public static final String KMK005F = "KMK005F";
+
+	public static final String KMK005G = "KMK005G";
+
+	public static final String KMK005H = "KMK005H";
+
+	public static final String KMK005I = "KMK005I";
+
+	public static final String KMK005K = "KMK005K";
+
+	public static final String KMK008A = "KMK008A";
+
+	public static final String KMK008B = "KMK008B";
+
+	public static final String KMK008C = "KMK008C";
+
+	public static final String KMK008D = "KMK008D";
+
+	public static final String KMK008E = "KMK008E";
+
+	public static final String KMK008F = "KMK008F";
+
+	public static final String KMK008G = "KMK008G";
+
+	public static final String KMK008I = "KMK008I";
+
+	public static final String KMK008J = "KMK008J";
+
+	public static final String KMK008K = "KMK008K";
 	
+	public static final String KCP006A = "KCP006A";
+
+	public static final String KCP006B = "KCP006B";
+	
+	public static final String KDW002A = "KDW002A";
+
+	public static final String KDW002B = "KDW002B";
+	
+	public static final String KCP001 = "KCP001";
+	
+	public static final String KCP002 = "KCP002";
+	
+	public static final String KCP003 = "KCP003";
+	
+	public static final String KCP004 = "KCP004";
+	
+	public static final String KCP005 = "KCP005";
+	
+	public static final String KDW007A = "KDW007A";
+	
+	public static final String KDW008B = "KDW008B";
+	
+	public static final String KDW008C = "KDW008C";
+
+	public static final String CPS006A = "CPS006A";
+	
+	public static final String CPS006B = "CPS006B";
+
+	public static final String CPS005B = "CPS005B";
 	
 }

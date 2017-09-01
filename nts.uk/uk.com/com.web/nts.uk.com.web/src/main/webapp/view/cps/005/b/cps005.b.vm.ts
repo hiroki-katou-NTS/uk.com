@@ -1,34 +1,28 @@
 module nts.uk.com.view.cps005.b {
     import getText = nts.uk.resource.getText;
-    import alert = nts.uk.ui.dialog.alert;
     import confirm = nts.uk.ui.dialog.confirm;
     import info = nts.uk.ui.dialog.info;
-    import modal = nts.uk.ui.windows.sub.modal;
+    import alertError = nts.uk.ui.dialog.alertError;
     import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
-    import alertError = nts.uk.ui.dialog.alertError;
     export module viewmodel {
         export class ScreenModel {
             currentItemData: KnockoutObservable<ItemDataModel>;
             isUpdate: boolean = false;
             isEnableButtonProceed: KnockoutObservable<boolean>;
+            categoryId: string = "";
             constructor() {
                 let self = this,
                     dataItemModel = new ItemDataModel(null);
                 self.currentItemData = ko.observable(dataItemModel);
-                self.isEnableButtonProceed = ko.computed(function() {
-                    if (nts.uk.ui._viewModel && nts.uk.ui._viewModel.errors) {
-                        return (nts.uk.ui._viewModel.errors.isEmpty() && self.currentItemData().isEnableButtonProceed());
-                    }
-                    return self.currentItemData().isEnableButtonProceed();
-                });
+                self.categoryId = getShared("categoryId");
+                self.isEnableButtonProceed = ko.observable(true);
             }
 
             startPage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-                let categoryId = "AF3714DE-507B-4E9D-BA61-4B16948A5872";
-                new service.Service().getAllPerInfoItemDefByCtgId(categoryId).done(function(data: IItemData) {
+                new service.Service().getAllPerInfoItemDefByCtgId(self.categoryId).done(function(data: IItemData) {
                     self.currentItemData(new ItemDataModel(data));
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
                         self.currentItemData().perInfoItemSelectCode(data.personInfoItemList ? data.personInfoItemList[0].id : "");
@@ -45,8 +39,7 @@ module nts.uk.com.view.cps005.b {
             reloadData(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-                let categoryId = "AF3714DE-507B-4E9D-BA61-4B16948A5872";
-                new service.Service().getAllPerInfoItemDefByCtgId(categoryId).done(function(data: IItemData) {
+                new service.Service().getAllPerInfoItemDefByCtgId(self.categoryId).done(function(data: IItemData) {
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
                         self.currentItemData().personInfoItemList(_.map(data.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
                         self.isUpdate = true;
@@ -67,49 +60,86 @@ module nts.uk.com.view.cps005.b {
                 self.isUpdate = false;
                 $("#item-name-control").focus();
                 self.currentItemData().isEnableButtonProceed(true);
+                self.currentItemData().isEnableButtonDelete(false);
             }
 
             addUpdateData() {
                 let self = this,
-                    newItemDef,
-                    categoryId = "AF3714DE-507B-4E9D-BA61-4B16948A5872";
+                    newItemDef;
                 if (self.isUpdate == true) {
                     newItemDef = new UpdateItemModel(self.currentItemData().currentItemSelected());
                     newItemDef.singleItem.referenceCode = "Hard Code";
-                    new service.Service().updateItemDef(newItemDef).done(() => {
+                    new service.Service().updateItemDef(newItemDef).done(function(data: string) {
+                        if (data) {
+                            info({ messageId: data }).then(() => { info({ messageId: "Msg_15" }); });
+                        }
                         self.reloadData();
-                        info({ messageId: "Msg_15" });
+                        self.currentItemData().perInfoItemSelectCode("");
+                        self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
                     }).fail(error => {
-                        alertError(error);
+                         alertError({ messageId: error.message });
                     });
                 } else {
                     newItemDef = new AddItemModel(self.currentItemData().currentItemSelected())
-                    newItemDef.perInfoCtgId = categoryId;
+                    newItemDef.perInfoCtgId = self.categoryId;
                     newItemDef.singleItem.referenceCode = "Hard Code";
+//                    let x =  newItemDef.itemName;
+//                    for(let i = 0; i < 50; i++){                
+//                         newItemDef.itemName = x + i
+//                          new service.Service().addItemDef(newItemDef).done(function () {
+//                          }).fail(function (error) {
+//                                alertError({ messageId: error.message });
+//                           });
+//                      }
                     new service.Service().addItemDef(newItemDef).done(function(data: string) {
                         self.reloadData().done(() => {
                             self.currentItemData().perInfoItemSelectCode(data);
                         });
                         info({ messageId: "Msg_15" });
                     }).fail(error => {
-                        alertError(error);
+                         alertError({ messageId: error.message });
                     });
-                }
+               }
             }
 
             removeData() {
                 let self = this,
-                removeModel = new RemoveItemModel(self.currentItemData().perInfoItemSelectCode());
+                    removeModel = new RemoveItemModel(self.currentItemData().perInfoItemSelectCode());
                 if (!self.currentItemData().perInfoItemSelectCode()) return;
-                new service.Service().removeItemDef(removeModel).done(function(data: string) {
-                    alert(data);
-                }).fail(error => {
-                    alertError(error);
-                });
+                let indexItemDelete = _.findIndex(self.currentItemData().personInfoItemList(), function(item) { return item.id == removeModel.perInfoItemDefId; });
+                confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    new service.Service().removeItemDef(removeModel).done(function(data: string) {
+                        if (data) {
+                            info({ messageId: data });
+                            return;
+                        }
+                        self.reloadData().done(() => {
+                            let itemListLength = self.currentItemData().personInfoItemList().length;
+                            if (itemListLength === 0) {
+                                self.register();
+                                return;
+                            }
+                            if (itemListLength - 1 >= indexItemDelete) {
+                                self.currentItemData().perInfoItemSelectCode(self.currentItemData().personInfoItemList()[indexItemDelete].id);
+                                return;
+                            }
+                            if (itemListLength - 1 < indexItemDelete) {
+                                self.currentItemData().perInfoItemSelectCode(self.currentItemData().personInfoItemList()[itemListLength - 1].id);
+                                return;
+                            }
+                        });
+                        info({ messageId: "Msg_16" });
+
+                    }).fail(error => {
+                         alertError({ messageId: error.message });
+                    });
+                }).ifNo(() => {
+                    return;
+                })
             }
 
             closedDialog() {
-
+                nts.uk.ui.windows.close();
             }
         }
     }
@@ -118,20 +148,20 @@ module nts.uk.com.view.cps005.b {
         personInfoItemList: KnockoutObservableArray<PersonInfoItemShowListModel> = ko.observableArray([]);
         perInfoItemSelectCode: KnockoutObservable<string> = ko.observable("");
         currentItemSelected: KnockoutObservable<PersonInfoItem> = ko.observable(new PersonInfoItem(null));
-        isEnableButtonProceed: KnockoutObservable<boolean> = ko.observable(false);
-        isEnableButtonDelete: KnockoutObservable<boolean>;
+        isEnableButtonProceed: KnockoutObservable<boolean> = ko.observable(true);
+        isEnableButtonDelete: KnockoutObservable<boolean> = ko.observable(true);
         dataTypeEnum: Array<any> = new Array();
         //Enum : dataTypeEnum is selected value 1 - 文字列(String)
         stringItemTypeEnum: Array<any> = new Array();
         stringItemDataTypeEnum: Array<any> = new Array();
         //Enum : dataTypeEnum is selected value 2 - 数値(Numeric)
         numericItemAmountAtrEnum: Array<any> = [
-            { code: 1, name: nts.uk.resource.getText("CPS005_50") },
-            { code: 0, name: nts.uk.resource.getText("CPS005_51") },
+            { code: 1, name: getText("CPS005_50") },
+            { code: 0, name: getText("CPS005_51") },
         ];
         numericItemMinusAtrEnum: Array<any> = [
-            { code: 1, name: nts.uk.resource.getText("CPS005_46") },
-            { code: 0, name: nts.uk.resource.getText("CPS005_47") },
+            { code: 1, name: getText("CPS005_46") },
+            { code: 0, name: getText("CPS005_47") },
         ];
         //Enum : dataTypeEnum is selected value 3 -日付(Date)
         dateItemTypeEnum: Array<any> = new Array();
@@ -157,8 +187,10 @@ module nts.uk.com.view.cps005.b {
                     new service.Service().getPerInfoItemDefById(newItemId).done(function(data: IPersonInfoItem) {
                         self.currentItemSelected(new PersonInfoItem(data));
                         self.isEnableButtonProceed(true);
+                        self.isEnableButtonDelete(true);
                         if (self.currentItemSelected().fixedAtr() == 1) {
                             self.isEnableButtonProceed(false);
+                            self.isEnableButtonDelete(false);
                         }
                         self.currentItemSelected().dataTypeText(_.find(self.dataTypeEnum, function(o) { return o.value == self.currentItemSelected().dataType(); }).localizedName);
                         self.currentItemSelected().stringItem().stringItemTypeText(_.find(self.stringItemTypeEnum, function(o) { return o.value == self.currentItemSelected().stringItem().stringItemType(); }).localizedName);
