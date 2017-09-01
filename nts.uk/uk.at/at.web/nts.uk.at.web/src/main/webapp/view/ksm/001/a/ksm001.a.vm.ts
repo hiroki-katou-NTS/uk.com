@@ -252,6 +252,7 @@ module nts.uk.at.view.ksm001.a {
                     if (isLoading) {
                         self.isLoading(false);
                     }
+                    self.companyEstablishmentModel.isEnableDelete(data.setting);
                     self.initNextTabFeature();
                     dfd.resolve();
                 });
