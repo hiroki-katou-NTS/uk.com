@@ -6812,7 +6812,6 @@ var nts;
                     };
                     ListBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
-                        var currentSource = container.igGrid('option', 'dataSource');
                         var options = ko.unwrap(data.options);
                         var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
                         var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
@@ -6822,6 +6821,7 @@ var nts;
                         var columns = data.columns;
                         var rows = data.rows;
                         var container = $(element).find(".ntsListBox");
+                        var currentSource = container.igGrid('option', 'dataSource');
                         if (container.data("enable") !== enable) {
                             if (!enable) {
                                 container.ntsGridList('unsetupSelecting');

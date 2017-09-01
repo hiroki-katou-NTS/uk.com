@@ -189,7 +189,6 @@ module nts.uk.ui.koExtentions {
             // Get data.
             var data = valueAccessor();
             // Get options.
-            var currentSource = container.igGrid('option', 'dataSource');
             var options: Array<any> = ko.unwrap(data.options);
 
             // Get options value.
@@ -202,6 +201,7 @@ module nts.uk.ui.koExtentions {
             var rows = data.rows;
             // Container.
             var container = $(element).find(".ntsListBox");
+            var currentSource = container.igGrid('option', 'dataSource');
             if(container.data("enable") !== enable){
                 if(!enable){
                     container.ntsGridList('unsetupSelecting');
