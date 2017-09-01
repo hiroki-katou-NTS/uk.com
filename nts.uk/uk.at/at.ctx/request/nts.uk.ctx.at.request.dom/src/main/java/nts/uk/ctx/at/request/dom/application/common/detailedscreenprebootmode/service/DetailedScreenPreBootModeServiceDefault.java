@@ -70,13 +70,13 @@ public class DetailedScreenPreBootModeServiceDefault implements DetailedScreenPr
 				.filter(e -> e.getApproverSID() == employeeID).collect(Collectors.toList());
 		boolean isUserIsApprover = !filtedApprovalFrame.isEmpty();
 		String approverSID = filtedApprovalFrame.get(0).getApproverSID();
-
+		//get status
 		if (startDate.after(applicationData.getApplicationDate()) == false) {
 			outputStatus = applicationData.getReflectPlanState();
 		} else {
 			outputStatus = ReflectPlanPerState.PASTAPP;
 		}
-
+		//get User
 		if (decideByApprover(applicationData)) {
 			if (isUserIsApprover == true) {
 				applicationData.setApplicantSID(employeeID);
@@ -107,7 +107,7 @@ public class DetailedScreenPreBootModeServiceDefault implements DetailedScreenPr
 		boolean outputAuthorizableflags = false;
 		ApprovalAtr outputApprovalATR = ApprovalAtr.UNAPPROVED;
 		boolean outputAlternateExpiration = false;
-
+		//Get List AppApprovalPhase
 		if (status == ReflectPlanPerState.DENIAL || status == ReflectPlanPerState.WAITREFLECTION
 				|| status == ReflectPlanPerState.NOTREFLECTED || status == ReflectPlanPerState.REMAND) {
 			List<AppApprovalPhase> listAppApprovalPhase = appApprovalPhaseRepository.findPhaseByAppID(companyID,
@@ -115,6 +115,7 @@ public class DetailedScreenPreBootModeServiceDefault implements DetailedScreenPr
 			for (AppApprovalPhase appApprovalPhase : listAppApprovalPhase) {
 				/** Truyen list rỗng 8231 */
 				List<String> listApprover = new ArrayList<String>();
+				//OutputApprovalATR
 				if (!listApprover.isEmpty()) {
 					if (checkFlag(applicationData, appApprovalPhase.getDispOrder())) {
 						CanBeApprovedOutput canBeApprovedOutput = null;
@@ -223,7 +224,7 @@ public class DetailedScreenPreBootModeServiceDefault implements DetailedScreenPr
 		boolean outputAuthorizableflags = false;
 		ApprovalAtr outputApprovalATR = ApprovalAtr.UNAPPROVED;
 		boolean outputAlternateExpiration = false;
-
+		//Get listApprovalFrame
 		List<ApprovalFrame> listApprovalFrame = approvalFrameRepository.getAllApproverByPhaseID(companyID,
 				appApprovalPhase.getPhaseID());
 		for (ApprovalFrame approvalFrame : listApprovalFrame) {
@@ -253,7 +254,7 @@ public class DetailedScreenPreBootModeServiceDefault implements DetailedScreenPr
 		boolean outputAuthorizableflags = false;
 		ApprovalAtr outputApprovalATR = ApprovalAtr.UNAPPROVED;
 		boolean outputAlternateExpiration = false;
-
+		//Get listApprovalFrame
 		List<ApprovalFrame> listApprovalFrame = approvalFrameRepository.getAllApproverByPhaseID(companyID,
 				appApprovalPhase.getPhaseID());
 		if (appApprovalPhase.getApprovalForm() == ApprovalForm.EVERYONEAPPROVED) {
@@ -316,6 +317,7 @@ public class DetailedScreenPreBootModeServiceDefault implements DetailedScreenPr
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		List<String> approver = null;
+		//Get list
 		ApprovalAgencyInformationOutput approvalAgencyInformationOutput = approvalAgencyInformationService
 				.getApprovalAgencyInformation(companyID, approver);
 		List<String> outputApprover = approvalAgencyInformationOutput.getListApproverAndRepresenterSID().stream()

@@ -4,6 +4,6 @@ import nts.uk.ctx.at.request.dom.application.common.Application;
 
 public interface DetailedScreenProcessAfterDeleteSevice {
 
-	public ScreenAfterDelete screenAfterDelete (Application applicationData);
+	public ScreenAfterDelete screenAfterDelete (Application applicationData , String appID);
 
 }
