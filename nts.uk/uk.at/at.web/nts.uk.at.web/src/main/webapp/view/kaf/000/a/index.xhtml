@@ -72,6 +72,43 @@
 					</tbody>
 				</table>
 			</div>
+			
+			<!-- Footer test -->
+			<!-- <td data-bind="attr: { colspan: bonusPayTimeItemSettings.size() }"> -->
+			<div id="label-1">
+				<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
+			</div>	
+			<div id="table-1" >
+				<table id="table-phase">
+					<thead>
+						<tr  class="bg-green">
+							<th class="phase-app" style="width:111px;"></th>
+							<th class="name-app" style="width:111px;"></th>
+							<th class="content-app" style="width:211px;">1234</th>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach :listPhase ">
+						<tr>
+							<td class="bg-green" data-bind="text: phaseID,
+									attr: {'rowspan':$parent.listPhase().length}"></td>
+								<!-- attr: {colspan:$paren.listPhase.size()}, -->
+								
+								
+							<td class="bg-green" >Name 1</td>
+							<td>content 1</td>
+							<td class="bg-green" >Name 1</td>
+							<td>content 1</td>
+							<td class="bg-green" >Name 1</td>
+							<td>content 1</td>
+							<td class="bg-green" >Name 1</td>
+							<td>content 1</td>
+							<td class="bg-green" >Name 1</td>
+							<td>content 1</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			
 				
 		</ui:define>
 	</ui:composition>

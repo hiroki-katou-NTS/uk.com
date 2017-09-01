@@ -1,11 +1,13 @@
 package nts.uk.ctx.at.request.infra.repository.application.common.approvalframe;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFrame;
@@ -18,7 +20,7 @@ import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.Krqdt
 @Stateless
 public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepository {
 
-	private final String SELECT = "SELECT c FROM KrqdtApprovalFrame c";
+	private final String SELECT = "SELECT c FROM KrqdtApprovalFrame c ";
 	private final String SELECT_SINGLE = "SELECT c FROM KrqdtApprovalFrame c"
 			+ " WHERE c.krqdtApprovalFramePK.companyID = :companyID"
 			+ " AND c.krqdtApprovalFramePK.phaseID = :phaseID"
@@ -111,6 +113,16 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 	@Override
 	public Optional<ApprovalFrame> findByCode(String companyID, String phaseID, String dispOrder) {
 		return null;
+	}
+
+	@Override
+	public List<ApprovalFrame> getListFrameByListPhase(String companyID,List<String> listPhaseID) {
+		List<ApprovalFrame> listFrame = new ArrayList<>();
+		for(String phaseID :listPhaseID) {
+			List<ApprovalFrame> approvalFrame = findByPhaseID( companyID,phaseID);
+			listFrame.addAll(approvalFrame);
+		}
+		return listFrame;
 	}
 
 
