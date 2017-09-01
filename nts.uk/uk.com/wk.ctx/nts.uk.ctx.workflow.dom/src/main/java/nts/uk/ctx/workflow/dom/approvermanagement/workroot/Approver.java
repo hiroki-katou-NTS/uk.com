@@ -18,6 +18,8 @@ import nts.arc.layer.dom.DomainObject;
 public class Approver extends DomainObject{
 	/**会社ID*/
 	private String companyId;
+	/**分岐ID*/
+	private String branchId;
 	/**承認フェーズID*/
 	private String approvalPhaseId;
 	/**承認者ID*/
@@ -33,7 +35,8 @@ public class Approver extends DomainObject{
 	/**確定者*/
 	private ConfirmPerson confirmPerson;
 	
-	public static Approver createSimpleFromJavaType(String companyId,
+	public static Approver createSimpleFromJavaType(String companyId, 
+			String branchId,
 			String approvalPhaseId,
 			String approverId,
 			String jobTitleId,
@@ -42,6 +45,7 @@ public class Approver extends DomainObject{
 			int approvalAtr,
 			int confirmPerson){
 		return new Approver(companyId,
+				branchId,
 				approvalPhaseId,
 				approverId,
 				jobTitleId,

@@ -40,8 +40,7 @@ module nts.uk.at.view.kdw002.b {
                                     cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
 
                                     if (!filteredData[i].userCanSet) {
-                                        //  $("#grid").igGridUpdating("setCellValue", i + 1, "youCanChangeIt", false);
-                                        $("#grid").igGridUpdating("setCellValue", i + 1, "canBeChangedByOthers", false);
+                                        $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "canBeChangedByOthers", false);
                                     }
                                 }
                             }

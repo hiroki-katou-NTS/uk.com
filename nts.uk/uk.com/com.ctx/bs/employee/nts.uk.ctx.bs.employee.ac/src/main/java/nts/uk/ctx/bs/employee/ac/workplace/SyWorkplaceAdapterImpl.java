@@ -13,7 +13,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.company.pub.workplace.PubWorkplaceDto;
 import nts.uk.ctx.bs.company.pub.workplace.WorkplacePub;
-import nts.uk.ctx.bs.employee.dom.access.workplace.WorkplaceAdapter;
+import nts.uk.ctx.bs.employee.dom.access.workplace.SyWorkplaceAdapter;
 import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceDto;
 import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceHierarchyDto;
 
@@ -21,7 +21,7 @@ import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceHierarchyDto;
  * The Class WorkplaceAdapterImpl.
  */
 @Stateless
-public class SyWorkplaceAdapterImpl implements WorkplaceAdapter {
+public class SyWorkplaceAdapterImpl implements SyWorkplaceAdapter {
 
 	/** The workplace pub. */
 	@Inject

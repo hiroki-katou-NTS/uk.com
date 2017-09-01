@@ -25,15 +25,16 @@ public class GrantPeriodic {
 	/* 付与日数定期方法 */
 	private GrantPeriodicMethod grantPeriodicMethod;
 
-	public static GrantPeriodic createFromJavaType(String companyId,
+	public static GrantPeriodic createFromJavaType(
+			String companyId,
 			int specialHolidayCode,
 			int grantDay,
-			int fixedDayGrant,
+			int splitAcquisition,
 			int grantPeriodicMethod){
 					return new GrantPeriodic(companyId,
 							new SpecialHolidayCode(specialHolidayCode),
 							new GrantDay(grantDay),
-							EnumAdaptor.valueOf(fixedDayGrant, SplitAcquisition.class),
+							EnumAdaptor.valueOf(splitAcquisition, SplitAcquisition.class),
 							EnumAdaptor.valueOf(grantPeriodicMethod, GrantPeriodicMethod.class));
 	}
 

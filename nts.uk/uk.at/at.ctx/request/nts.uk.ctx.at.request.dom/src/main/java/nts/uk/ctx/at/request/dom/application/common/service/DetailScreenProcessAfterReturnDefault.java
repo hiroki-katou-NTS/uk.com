@@ -119,13 +119,9 @@ public class DetailScreenProcessAfterReturnDefault implements DetailScreenProces
 						.distinct()
 						.collect(Collectors.toList());
 				//send mail
-				
-				
 			}
-			
 		}
 		//show messeger 223
-
 		if(listDestination.size()>0) {
 			//Imported(就業)「社員」を取得する
 			//情報メッセージに（Msg_392）を表示する

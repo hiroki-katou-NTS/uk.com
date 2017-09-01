@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyperformanceformat;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.OrderSorted;
 
 /**
  * 
@@ -15,9 +16,9 @@ public class BusinessTypeSorted extends AggregateRoot {
 
 	private int attendanceItemId;
 	
-	private int order;
+	private OrderSorted order;
 
-	public BusinessTypeSorted(String companyId, int attendanceItemId, int order) {
+	public BusinessTypeSorted(String companyId, int attendanceItemId, OrderSorted order) {
 		super();
 		this.companyId = companyId;
 		this.attendanceItemId = attendanceItemId;
@@ -25,6 +26,6 @@ public class BusinessTypeSorted extends AggregateRoot {
 	}
 	
 	public static BusinessTypeSorted createFromJavaType(String companyId, int attendanceItemId, int order){
-		return new BusinessTypeSorted(companyId, attendanceItemId, order);
+		return new BusinessTypeSorted(companyId, attendanceItemId, new OrderSorted(order));
 	}
 }

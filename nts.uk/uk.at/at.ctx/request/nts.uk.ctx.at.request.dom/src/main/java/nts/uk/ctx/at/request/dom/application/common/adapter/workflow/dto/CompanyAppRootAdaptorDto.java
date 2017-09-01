@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
+/**
+ * 
+ * @author vunv
+ *
+ */
 @Data
 @AllArgsConstructor
 public class CompanyAppRootAdaptorDto {

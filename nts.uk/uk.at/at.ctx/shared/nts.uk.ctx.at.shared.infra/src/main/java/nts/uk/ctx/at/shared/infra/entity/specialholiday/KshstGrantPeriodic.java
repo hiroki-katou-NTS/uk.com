@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -22,8 +25,8 @@ public class KshstGrantPeriodic extends UkJpaEntity implements Serializable {
 		public KshstGrantPeriodicPK kshstGrantPeriodicPK;
 		
 		/* 付与日数 */
-		@Column(name = "FIXED_DAY_GRANT")
-		public int fixedDayGrant;
+		@Column(name = "SPLIT_ACQUISITION")
+		public int splitAcquisition;
 		
 		/* 固定付与日数 */
 		@Column(name = "GRANT_DAY")
@@ -32,11 +35,18 @@ public class KshstGrantPeriodic extends UkJpaEntity implements Serializable {
 		/* 付与日数定期方法 */
 		@Column(name = "GRANT_PERIODIC_METHOD")
 		public int grantPerioricMethod;
+		
+		@OneToOne(optional = false)
+		@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName="CID", insertable = false, updatable = false),
+			@JoinColumn(name = "SPHD_CD", referencedColumnName="SPHD_CD", insertable = false, updatable = false)
+		})
+		
+		public KshstSpecialHoliday specialHoliday;
 	
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
+		return kshstGrantPeriodicPK;
 	}
 
 }

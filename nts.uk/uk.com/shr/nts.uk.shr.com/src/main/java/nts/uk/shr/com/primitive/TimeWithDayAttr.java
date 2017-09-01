@@ -1,14 +1,12 @@
 package nts.uk.shr.com.primitive;
 
-import org.apache.http.annotation.Obsolete;
-
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.LongRange;
+import nts.arc.primitive.constraint.IntegerRange;
 import nts.gul.util.Time;
 import nts.uk.shr.com.enumcommon.DayAttr;
 
 
-@LongRange(max = 4319, min = -720)
+@IntegerRange(max = 4319, min = -720)
 public class TimeWithDayAttr extends IntegerPrimitiveValue<TimeWithDayAttr>{
 	
 	private static final int MAX_MINUTES_IN_DAY = Time.MAX_HOUR * Time.MAX_MS;
@@ -50,7 +48,7 @@ public class TimeWithDayAttr extends IntegerPrimitiveValue<TimeWithDayAttr>{
 	}
 	
 	public int getDayTime(){
-		return (this.v() + MAX_MINUTES_IN_DAY) % MAX_MINUTES_IN_DAY;
+		return (Math.abs(this.v()) + MAX_MINUTES_IN_DAY) % MAX_MINUTES_IN_DAY;
 	}
 	
 	/**
@@ -66,7 +64,7 @@ public class TimeWithDayAttr extends IntegerPrimitiveValue<TimeWithDayAttr>{
 	}
 	
 	public String getRawTimeWithFormat(){
-		return (this.v() / 60) + ":" + (this.v() % 60);
+		return (this.v() / 60) + ":" + Math.abs((this.v() % 60));
 	}
 	
 	public int hour() {

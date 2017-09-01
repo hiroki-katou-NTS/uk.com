@@ -3,12 +3,14 @@
  */
 package nts.uk.ctx.at.shared.dom.bonuspay.primitives;
 
+import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
  * @author hungnm
  *
  */
+@StringMaxLength(3)
 public class WorkingTimesheetCode extends CodePrimitiveValue<WorkingTimesheetCode> {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

@@ -91,6 +91,7 @@ module nts.uk.at.view.ksm005.c {
                         self.enableDelete(false);
                         self.enableSystemChange(false);  
                         self.employeeName('');  
+                        self.monthlyPatternSetting('');
                     }
                 });
             }
