@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pub.employee.jobtitle;
 
+import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
@@ -11,6 +12,7 @@ import nts.arc.time.GeneralDate;
  * The Class PubJobTitleDto.
  */
 @Data
+@Builder
 public class JobTitleExport {
 
 	/** The company id. */
@@ -33,42 +35,5 @@ public class JobTitleExport {
 
 	/** The end date. */
 	private GeneralDate endDate;
-
-	/**
-	 * Instantiates a new pub job title dto.
-	 */
-	public JobTitleExport() {
-		super();
-	}
-
-	/**
-	 * Instantiates a new pub job title dto.
-	 *
-	 * @param companyId
-	 *            the company id
-	 * @param positionId
-	 *            the position id
-	 * @param positionCode
-	 *            the position code
-	 * @param positionName
-	 *            the position name
-	 * @param sequenceCode
-	 *            the sequence code
-	 * @param startDate
-	 *            the start date
-	 * @param endDate
-	 *            the end date
-	 */
-	public JobTitleExport(String companyId, String positionId, String positionCode,
-			String positionName, String sequenceCode, GeneralDate startDate, GeneralDate endDate) {
-		super();
-		this.companyId = companyId;
-		this.positionId = positionId;
-		this.positionCode = positionCode;
-		this.positionName = positionName;
-		this.sequenceCode = sequenceCode;
-		this.startDate = startDate;
-		this.endDate = endDate;
-	}
 
 }
