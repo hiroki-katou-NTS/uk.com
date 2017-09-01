@@ -85,21 +85,16 @@ module nts.uk.com.view.cps005.a {
                     });
                 } else {
                     let newCategory = new AddPerInfoCtgModel(self.currentData().currentCtgSelected());
-//                    let x =  newCategory.categoryName;
-//                    for(let i = 0; i < 200; i++){
-//                                           
-//                            newCategory.categoryName = x + i
-//                             new a.service.Service().addPerInfoCtg(newCategory).done(function () {
-//                            }).fail(function (error) {
-//                                               alertError({ messageId: error.message });
-//                             });
-//                      }
                     new service.Service().addPerInfoCtg(newCategory).done(() => {
                         self.reloadData(newCategory.categoryName);
                         info({ messageId: "Msg_15" }).then(() => {
                             confirm({ messageId: "Msg_213" }).ifYes(() => {
                                 setShared('categoryId', self.currentData().perInfoCtgSelectCode());
-                                modal("/view/cps/005/b/index.xhtml").onClosed(() => { });
+                                modal("/view/cps/005/b/index.xhtml").onClosed(() => {
+                                    let ctgCode = self.currentData().perInfoCtgSelectCode();
+                                    self.currentData().perInfoCtgSelectCode("");
+                                    self.currentData().perInfoCtgSelectCode(ctgCode);
+                                });
                             }).ifNo(() => {
                                 return;
                             })
@@ -113,7 +108,11 @@ module nts.uk.com.view.cps005.a {
             openDialogB() {
                 let self = this;
                 setShared('categoryId', self.currentData().perInfoCtgSelectCode());
-                modal("/view/cps/005/b/index.xhtml").onClosed(() => { });
+                modal("/view/cps/005/b/index.xhtml").onClosed(() => {
+                    let ctgCode = self.currentData().perInfoCtgSelectCode();
+                    self.currentData().perInfoCtgSelectCode("");
+                    self.currentData().perInfoCtgSelectCode(ctgCode);
+                });
             }
         }
     }
@@ -210,7 +209,7 @@ module nts.uk.com.view.cps005.a {
                     self.historyTypesDisplay(true);
                     self.historyClassSelectedText(getText("CPS005_53"));
                 } else {
-                    self.historyClassSelectedText(getText("CPS005_54"));    
+                    self.historyClassSelectedText(getText("CPS005_54"));
                 }
                 self.fixedIsSelected(data.isFixed == 1 ? true : false);
             }

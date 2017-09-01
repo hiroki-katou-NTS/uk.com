@@ -2,6 +2,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
     import getText = nts.uk.resource.getText;
     import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog.info;
     export class ScreenModel {
@@ -134,11 +135,13 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             nts.uk.ui.windows.sub.modal('/view/cas/001/d/index.xhtml', { title: '' }).onClosed(function(): any {
 
-                self.reload().done(function() {
+                if (!getShared('isCanceled')) {
+                    self.reload().done(function() {
 
-                    block.clear();
+                        block.clear();
 
-                });
+                    });
+                }
             });
         }
 
@@ -152,12 +155,13 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             nts.uk.ui.windows.sub.modal('/view/cas/001/c/index.xhtml', { title: '' }).onClosed(function(): any {
 
-                self.reload().done(function() {
+                if (!getShared('isCanceled')) {
+                    self.reload().done(function() {
 
-                    block.clear();
+                        block.clear();
 
-                });
-
+                    });
+                }
             });
         }
 
