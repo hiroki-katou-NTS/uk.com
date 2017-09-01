@@ -612,6 +612,7 @@ module nts.uk.at.view.ksm001.a {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
                 }).always(() => {
+                    $('#comboTargetYear').focus();
                     nts.uk.ui.block.clear();
                 });
             }
@@ -631,6 +632,7 @@ module nts.uk.at.view.ksm001.a {
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
                     }).always(() => {
+                        $('#comboTargetYear').focus();
                         nts.uk.ui.block.clear();
                     });
                 });
@@ -657,6 +659,7 @@ module nts.uk.at.view.ksm001.a {
                         self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
                     });
                 }).always(() => {
+                    $('#comboTargetYear').focus();
                     nts.uk.ui.block.clear();
                 });
             }
@@ -676,6 +679,7 @@ module nts.uk.at.view.ksm001.a {
                                 self.loadEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(), self.selectedEmploymentCode(), false);
                             });
                         }).always(() => {
+                            $('#comboTargetYear').focus();
                             nts.uk.ui.block.clear();
                         });
                 });
@@ -719,6 +723,7 @@ module nts.uk.at.view.ksm001.a {
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error);
                 }).always(() => {
+                    $('#comboTargetYear').focus();
                     nts.uk.ui.block.clear();
                 });
             }
@@ -739,6 +744,7 @@ module nts.uk.at.view.ksm001.a {
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
                     }).always(() => {
+                        $('#comboTargetYear').focus();
                         nts.uk.ui.block.clear();
                     });
                 });
