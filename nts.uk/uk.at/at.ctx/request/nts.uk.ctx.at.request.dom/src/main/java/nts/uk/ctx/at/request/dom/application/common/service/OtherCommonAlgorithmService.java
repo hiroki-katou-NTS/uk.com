@@ -4,12 +4,13 @@ package nts.uk.ctx.at.request.dom.application.common.service;
  * 16.その他
  *
  */
-import java.util.List;
+
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.valueobject.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 
 public interface OtherCommonAlgorithmService {
 	/**
@@ -39,5 +40,5 @@ public interface OtherCommonAlgorithmService {
 	 * @param appType
 	 * @param appDate
 	 */
-	public void judgmentPrePostAtr(ApplicationType appType,GeneralDate appDate);
+	public InitValueAtr judgmentPrePostAtr(ApplicationType appType,GeneralDate appDate,boolean checkCaller);
 }

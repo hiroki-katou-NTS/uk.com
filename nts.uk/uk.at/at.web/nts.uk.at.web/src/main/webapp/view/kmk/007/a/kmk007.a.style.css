@@ -22,6 +22,15 @@
 	border: 1px solid;
 }
 
+#input-workTypeCode {
+	width: 30px !important; 
+	margin-left: 45px;
+}
+
+#input-workTypeName {
+	width: 230px !important;
+}
+
 #morning, #afternoon {
 	display: inline-table;
 	height: 250px;
@@ -37,12 +46,12 @@
 	margin-top: 20px;
 }
 
-#morning-set-1, #morning-set-5, #morning-set-6 ,#morning-set-8 {
+#morning-set-1, #morning-set-5, #morning-set-6, #morning-set-8 {
 	margin-left: 70px;
 	margin-top: 20px;
 }
 
-#afternoon-set-1, #afternoon-set-5, #afternoon-set-6 ,#afternoon-set-8 {
+#afternoon-set-1, #afternoon-set-5, #afternoon-set-6, #afternoon-set-8 {
 	margin-left: 70px;
 	margin-top: 20px;
 }
@@ -64,11 +73,17 @@
 	display: inline-block;
 }
 
-.morning-set-3-combo-box {
-	vertical-align: middle; 
-	margin-left: 4px; 
+.haftday-combo-box {
+	vertical-align: middle;
+	margin-left: 4px;
 	min-width: 150px !important;
 	width: 150px
+}
+
+.calulator-method-combo-box {
+	vertical-align: middle;
+	margin-left: 10px;
+	width: 250px
 }
 
 button.ntsSwitchLanguage {

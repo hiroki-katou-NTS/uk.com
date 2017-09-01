@@ -49,7 +49,7 @@ public class PerInfoCategoryFinder {
 
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompany() {
 		List<PerInfoCtgShowDto> categoryList = perInfoCtgRepositoty
-				.getAllPerInfoCategory(AppContexts.user().companyId(), PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
+				.getAllPerInfoCategory(AppContexts.user().companyId(),AppContexts.user().contractCode())
 				.stream().map(p -> {
 					return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
 							p.getCategoryType().value);

@@ -8,8 +8,9 @@
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../shr/cmm018.shr.servicebase.js" />
+			<com:scriptfile path="../shr/cmm018.shr.vmbase.js" />
 			<com:stylefile path="cmm018.a.main.css" />
-			<com:scriptfile path="cmm018.a.service.js" />
 			<com:scriptfile path="cmm018.a.vm.js" />
 			<com:scriptfile path="cmm018.a.start.js" />
 		</ui:define>
@@ -32,24 +33,28 @@
 					<!-- A1_6: Button 未登録社員リスト -->
 					<button data-bind="click: function(){openDialogD(0)}, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_12')}</button>
 					<!-- A1_7: Button 承認者一覧 -->
-					<button data-bind="click: openI">#{i18n.getText('CMM018_14')}</button>
+					<button data-bind="click: openDialogI">#{i18n.getText('CMM018_14')}</button>
 					<!-- A1_8: Button マスタリスト -->
-					<button data-bind="click: openJ">#{i18n.getText('CMM018_13')}</button>
+					<button data-bind="click: openDialogJ">#{i18n.getText('CMM018_13')}</button>
 				</div>
 				<div class="contents-area">
 					<div>
 						<table>
 							<tr>
 								<td>
+									<!-- A1_9: Label -->
 									<div style = "width: 100px; margin-left: 20px;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_19')}</div>
 								</td>
 								<td>
+									<!-- A1_10: 会社名 -->
 									<div style = "width: 600px" data-bind = "text: nameCompany"></div>
 								</td>
 								<td>
+									<!-- A1_11: Label モード切替： -->
 									<div >#{i18n.getText('CMM018_8')}</div>
 								</td>
 								<td>
+									<!-- A1_12: SwitchButton モード切替 -->
 									<div data-bind="ntsSwitchButton: {
 											options: listMode,
 											optionsValue: 'code',
@@ -60,8 +65,129 @@
 							</tr>
 						</table>
 					</div>
+						<!-- A2: List gridList -->
+						<div id = "left-contents" style="float: left;margin-left: 10px;">
+							<div style="width: 260px; height: 350px;" class="caret-right caret-background bg-green">
+								<div style="margin: 20px">
+									<button class="dateControlBtn" data-bind="click: openDialogI">#{i18n.getText('CMM018_20')}</button>
+									<button class="danger dateControlBtn" data-bind="click: openDialogJ">#{i18n.getText('CMM018_21')}</button>
+								</div>
+								<div style="margin: 20px">
+									<table tabindex="2" id="single-list-dataSource"
+										data-bind="ntsGridList:{
+											width: 220,
+											height: 258,
+											options: listHistory,								
+											optionsValue: 'dateRange',
+											columns: columns,
+											multiple: false,
+											value: currentCode,
+											enable: true}" >
+									</table>
+								</div>
+							</div>
+						</div>
+						<!-- A3: List -->
+						<div id = "right-contents" style="float: right;">
+							<div>
+								<!-- A3_1: Label 有効期間 -->
+								<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
+								<!-- A3_2: 選択する期間 -->
+								<div style = "width: 600px;display: inline-block;" data-bind = "text: nameCompany"></div>
+							</div>
+							<table class="contents-header">
+								<thead>
+									<tr>
+										<!-- A3_4: 申請の種類（見出し） -->
+										<td rowspan="2" class="name">#{i18n.getText('CMM018_24')}</td>
+										<!-- A3_5: フェーズ1⇒（見出し） -->
+										<td colspan="2">#{i18n.getText('CMM018_30')}</td>
+										<!-- A3_6: フェーズ2⇒（見出し） -->
+										<td colspan="2" class="input-units">#{i18n.getText('CMM018_31')}</td>
+										<!-- A3_7: フェーズ3⇒（見出し） -->
+										<td colspan="2" class="input-units">#{i18n.getText('CMM018_32')}</td>
+										<!-- A3_8: フェーズ4⇒（見出し） -->
+										<td colspan="2" class="input-units">#{i18n.getText('CMM018_33')}</td>
+										<!-- A3_9: フェーズ5（見出し） -->
+										<td colspan="2" class="base-date">#{i18n.getText('CMM018_34')}</td>
+										<!-- A3_29: クリア（見出し） -->
+										<td rowspan="2" class="allow-pay">#{i18n.getText('CMM018_95')}</td>
+									</tr>
+									<tr>
+										<!-- A3_10: 承認者指定（見出し） -->
+										<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+										<!-- A3_11: 承認者（見出し） -->
+										<td class="approver">#{i18n.getText('CMM018_29')}</td>
+										<!-- A3_10 -->
+										<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+										<!-- A3_11 -->
+										<td class="approver">#{i18n.getText('CMM018_29')}</td>
+										<!-- A3_10 -->
+										<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+										<!-- A3_11 -->
+										<td class="approver">#{i18n.getText('CMM018_29')}</td>
+										<!-- A3_10 -->
+										<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+										<!-- A3_11 -->
+										<td class="approver">#{i18n.getText('CMM018_29')}</td>
+										<!-- A3_10 -->
+										<td class="button_phase">#{i18n.getText('CMM018_28')}</td>
+										<!-- A3_11 -->
+										<td class="approver">#{i18n.getText('CMM018_29')}</td>
+									</tr>
+								</thead>
+								<tbody data-bind="foreach: lstItems">
+									<tr>
+										<!-- A3_12: App Name -->
+										<td class="name">
+											<div style="display: inline-block;">Kakashi</div>
+											<div style="display: inline-block;" data-bind="if: true">
+												<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
+											</div>
+										</td>
+										<!-- A3_14: -->
+										<td class="button_phase">
+											<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
+											<div>hhh</div>
+										</td>
+										<!-- A3_16: -->
+										<td class="approver"><div>#{i18n.getText('CMM018_29')}</div></td>
+										<!-- A3_17: -->
+										<td class="button_phase">
+											<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
+										</td>
+										<!-- A3_19: -->
+										<td class="approver"><div>Kakashi</div></td>
+										<!-- A3_20: -->
+										<td class="button_phase">
+											<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
+										</td>
+										<!-- A3_22: -->										
+										<td class="approver"><div>Kakashi</div></td>
+										<!-- A3_23: -->
+										<td class="button_phase">
+											<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
+										</td>
+										<!-- A3_25: -->
+										<td class="approver"><div>Kakashi</div></td>
+										<!-- A3_26: -->
+										<td class="button_phase">
+											<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
+										</td>
+										<!-- A3_28: -->
+										<td class="approver"><div>Kakashi</div></td>
+										<!-- A3_29: -->
+										<td class="allow-pay">
+											<div>
+												<button style=" background-image: url(../images/cmm018_delete.png);width:17px; height:18px;"></button>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
 				</div>
-			</div>
 			<div id="tabpanel-2" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">#{i18n.getText('Com_Workplace')}</span>
@@ -72,7 +198,7 @@
 					<!-- B1_7: Button 承認者一覧 -->
 					<button data-bind="click: openDialogC">#{i18n.getText('CMM018_14')}</button>
 					<!-- B1_8: Button マスタリスト -->
-					<button data-bind="click: openI">#{i18n.getText('CMM018_13')}</button>
+					<button data-bind="click: openDialogI">#{i18n.getText('CMM018_13')}</button>
 				</div>
 				<div id = "creenCD" class="contents-area">
 					<div>
@@ -110,7 +236,7 @@
 					<!-- C1_7: Button 承認者一覧 -->
 					<button data-bind="click: openDialogC">#{i18n.getText('CMM018_14')}</button>
 					<!-- C1_8: Button マスタリスト -->
-					<button data-bind="click: openI">#{i18n.getText('CMM018_13')}</button>
+					<button data-bind="click: openDialogI">#{i18n.getText('CMM018_13')}</button>
 				</div>
 				<div class="contents-area">
 				</div>

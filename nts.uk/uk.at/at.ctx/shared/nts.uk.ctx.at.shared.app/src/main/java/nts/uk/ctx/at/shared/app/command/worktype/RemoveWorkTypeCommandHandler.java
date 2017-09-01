@@ -20,8 +20,9 @@ public class RemoveWorkTypeCommandHandler extends CommandHandler<RemoveWorkTypeC
 	protected void handle(CommandHandlerContext<RemoveWorkTypeCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		RemoveWorkTypeCommand command = context.getCommand();
-		
-		workTypeRepository.remove(companyId, command.getWorkTypeCd());
-		
+		if (workTypeRepository.findByPK(companyId, command.getWorkTypeCd()).isPresent()) {
+			workTypeRepository.remove(companyId, command.getWorkTypeCd());
+			workTypeRepository.removeWorkTypeSet(companyId, command.getWorkTypeCd());
+		}
 	}
 }
