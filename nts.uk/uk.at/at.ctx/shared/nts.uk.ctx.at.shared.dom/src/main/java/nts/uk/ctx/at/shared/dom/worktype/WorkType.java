@@ -52,7 +52,7 @@ public class WorkType extends AggregateRoot {
 
 	// 出勤率の計算
 	private CalculateMethod calculateMethod;
-
+	
 	private List<WorkTypeSet> workTypeSetList;
 	
 	@Override

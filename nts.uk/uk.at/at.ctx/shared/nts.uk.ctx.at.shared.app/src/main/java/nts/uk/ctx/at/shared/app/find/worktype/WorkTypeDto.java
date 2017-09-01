@@ -15,8 +15,6 @@ public class WorkTypeDto {
 	private String companyId;
 	/*勤務種類コード*/
 	private String workTypeCode;
-	/*ソート順*/
-	private int sortOrder;
 	/*勤務種類名称*/
 	private String name;
 	/*勤務種類略名*/
@@ -43,7 +41,6 @@ public class WorkTypeDto {
 	public static WorkTypeDto fromDomain(WorkType workType){
 		return new WorkTypeDto(workType.getCompanyId(), 
 				workType.getWorkTypeCode().v(), 
-				0, 
 				workType.getName().v(), 
 				workType.getAbbreviationName().v(), 
 				workType.getSymbolicName().v(),

@@ -32,7 +32,7 @@
 					<button id="clear-button" data-bind="click: cleanForm">#{i18n.getText('KMK007_1')}</button>
 					<button id="register-button" class="proceed"
 						data-bind="click: addWorkType, enable: $root.errors.isEmpty">#{i18n.getText('KMK007_2')}</button>
-					<button id="orderby-button">#{i18n.getText('KMK007_3')}</button>
+					<button id="orderby-button" data-bind="click: openDiablogC">#{i18n.getText('KMK007_3')}</button>
 					<button id="print-button">マスタリスト出力ボタン</button>
 					<div id="switch-language"></div>
 					<button id="remove-button" class="danger"
@@ -70,18 +70,18 @@
 						<div style="margin-left: 20px;"
 							data-bind="ntsCheckBox: { checked: abolishAtr }">#{i18n.getText('KMK007_14')}</div>
 						<div>
-							<div style="margin-top: 10px;"
+							<div style="margin-top: 10px"
 								data-bind="ntsFormLabel: {constraint: 'WorkTypeAbbreviationName',required: true}">#{i18n.getText('KMK007_15')}</div>
-							<input style="width: 180px; margin-left: 142px;"
+							<input id="abbreviation-name-input"
 								data-bind="ntsTextEditor: {value: abbreviationName,constraint: 'WorkTypeAbbreviationName', required: true}" />
 							<div style="margin-top: 10px; margin-left: 25px;"
 								data-bind="ntsFormLabel: {constraint: 'WorkTypeSymbolicName',required: true}">#{i18n.getText('KMK007_16')}</div>
-							<input style="width: 180px"
+							<input id="symbolic-name-input"
 								data-bind="ntsTextEditor: {value: symbolicName,constraint: 'WorkTypeSymbolicName' ,required: true}" />
 						</div>
 						<div>
 							<div style="margin-top: 10px;" data-bind="ntsFormLabel: {constraint: 'WorkTypeMemo'}">#{i18n.getText('KMK007_17')}</div>
-							<input style="width: 400px; margin-left: 82px;"
+							<input id="memo-input"
 								data-bind="ntsTextEditor: {value: memo, required: true}" />
 						</div>
 
