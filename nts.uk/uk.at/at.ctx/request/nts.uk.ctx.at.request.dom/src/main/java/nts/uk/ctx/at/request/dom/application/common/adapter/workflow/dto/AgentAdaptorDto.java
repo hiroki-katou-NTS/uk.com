@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto;
 
 import lombok.Data;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.approvalagencyinformation.AgentApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.service.other.dto.AgentApplicationType;
 @Data
 public class AgentAdaptorDto {
 	/**

@@ -142,6 +142,6 @@ public class Application extends DomainObject{
 	  * @param reflectPerState
 	  */
 	 public void changeReflectState(int reflectPerState) {
-	  this.reflectPerState = reflectPlanState;
+		 this.reflectPerState = reflectPlanState;
 	 }
 }

@@ -2,11 +2,14 @@ package nts.uk.ctx.at.request.infra.repository.setting.applicationformreason;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.setting.applicationformreason.ApplicationFormReason;
 import nts.uk.ctx.at.request.dom.setting.applicationformreason.ApplicationFormReasonRepository;
 import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstAppReason;
 
+@Stateless
 public class JpaApplicationFormReason extends JpaRepository implements ApplicationFormReasonRepository{
 	private static final String FINDBYCOMPANYID = "SELECT c FROM KrqstAppReason c WHERE c.krqstAppReasonPK.companyId = :companyId";
 	

@@ -8,12 +8,11 @@ import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringCharType(CharType.NUMERIC)
-@StringMaxLength(2)
+@StringMaxLength(4)
 public class RetrictPreTimeDay extends DecimalPrimitiveValue<RetrictPreTimeDay> {
 	private static final long serialVersionUID = 1L;
 
 	public RetrictPreTimeDay(BigDecimal rawValue) {
 		super(rawValue);
 	}
-
 }

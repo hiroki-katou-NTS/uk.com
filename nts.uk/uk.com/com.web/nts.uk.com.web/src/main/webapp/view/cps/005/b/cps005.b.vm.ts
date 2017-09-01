@@ -69,27 +69,37 @@ module nts.uk.com.view.cps005.b {
                 if (self.isUpdate == true) {
                     newItemDef = new UpdateItemModel(self.currentItemData().currentItemSelected());
                     newItemDef.singleItem.referenceCode = "Hard Code";
-                    new service.Service().updateItemDef(newItemDef).done(() => {
+                    new service.Service().updateItemDef(newItemDef).done(function(data: string) {
+                        if (data) {
+                            info({ messageId: data }).then(() => { info({ messageId: "Msg_15" }); });
+                        }
                         self.reloadData();
                         self.currentItemData().perInfoItemSelectCode("");
                         self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
-                        info({ messageId: "Msg_15" });
                     }).fail(error => {
-                        alertError(error);
+                         alertError({ messageId: error.message });
                     });
                 } else {
                     newItemDef = new AddItemModel(self.currentItemData().currentItemSelected())
                     newItemDef.perInfoCtgId = self.categoryId;
                     newItemDef.singleItem.referenceCode = "Hard Code";
+//                    let x =  newItemDef.itemName;
+//                    for(let i = 0; i < 50; i++){                
+//                         newItemDef.itemName = x + i
+//                          new service.Service().addItemDef(newItemDef).done(function () {
+//                          }).fail(function (error) {
+//                                alertError({ messageId: error.message });
+//                           });
+//                      }
                     new service.Service().addItemDef(newItemDef).done(function(data: string) {
                         self.reloadData().done(() => {
                             self.currentItemData().perInfoItemSelectCode(data);
                         });
                         info({ messageId: "Msg_15" });
                     }).fail(error => {
-                        alertError(error);
+                         alertError({ messageId: error.message });
                     });
-                }
+               }
             }
 
             removeData() {
@@ -121,7 +131,7 @@ module nts.uk.com.view.cps005.b {
                         info({ messageId: "Msg_16" });
 
                     }).fail(error => {
-                        alertError(error);
+                         alertError({ messageId: error.message });
                     });
                 }).ifNo(() => {
                     return;

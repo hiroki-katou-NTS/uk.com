@@ -189,7 +189,6 @@ module nts.uk.ui.koExtentions {
             // Get data.
             var data = valueAccessor();
             // Get options.
-            var currentSource = container.igGrid('option', 'dataSource');
             var options: Array<any> = ko.unwrap(data.options);
 
             // Get options value.
@@ -202,6 +201,7 @@ module nts.uk.ui.koExtentions {
             var rows = data.rows;
             // Container.
             var container = $(element).find(".ntsListBox");
+            var currentSource = container.igGrid('option', 'dataSource');
             if(container.data("enable") !== enable){
                 if(!enable){
                     container.ntsGridList('unsetupSelecting');
@@ -231,9 +231,15 @@ module nts.uk.ui.koExtentions {
                 container.igGrid('option', 'dataSource', currentSources);
                 container.igGrid("dataBind");        
             } else if(container.attr("filtered") === true || container.attr("filtered") === "true"){
-                let filteredSource = _.filter(currentSource, function(item){
-                    return options.indexOf(item) >= 0;        
-                });    
+                let filteredSource = [];
+                _.forEach(currentSource, function(item){
+                    let itemX = _.find(sources, function (s){
+                        return s[optionsValue] === item[optionsValue];        
+                    });
+                    if(!nts.uk.util.isNullOrUndefined(itemX)){ 
+                        filteredSource.push(itemX);
+                    }     
+                });     
                 if(!_.isEqual(filteredSource, currentSource)){
                     container.igGrid('option', 'dataSource', filteredSource);
                     container.igGrid("dataBind");    

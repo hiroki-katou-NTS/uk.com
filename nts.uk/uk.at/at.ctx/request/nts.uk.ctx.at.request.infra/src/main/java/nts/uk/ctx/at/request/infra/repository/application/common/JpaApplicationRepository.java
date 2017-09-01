@@ -140,4 +140,10 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 
 	}
 
+	@Override
+	public List<Application> getAllApplicationByPhaseID(String comanyID, String appID, String phaseID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

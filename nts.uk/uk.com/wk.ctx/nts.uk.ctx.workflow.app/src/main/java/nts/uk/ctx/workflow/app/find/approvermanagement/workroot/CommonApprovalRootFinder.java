@@ -2,20 +2,17 @@ package nts.uk.ctx.workflow.app.find.approvermanagement.workroot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 
@@ -42,15 +39,21 @@ public class CommonApprovalRootFinder {
 		if(param.getRootType() == 0){
 			List<CompanyAppRootDto> lstComRoot = new ArrayList<>();
 			//get all data from ComApprovalRoot (会社別就業承認ルート)
-			List<CompanyApprovalRoot> lstCom = this.repoCom.getAllComApprovalRoot(companyId);
-			for (CompanyApprovalRoot companyApprovalRoot : lstCom) {
+			List<ComApprovalRootDto> lstCom = this.repoCom.getAllComApprovalRoot(companyId)
+								.stream()
+								.map(c->ComApprovalRootDto.fromDomain(c))
+								.collect(Collectors.toList());
+			for (ComApprovalRootDto companyApprovalRoot : lstCom) {
 				List<ApprovalPhaseDto> lstApprovalPhase = new ArrayList<>();
-				List<Approver> lstApprover = new ArrayList<>();
+				List<ApproverDto> lstApprover = new ArrayList<ApproverDto>();
 				//get All Approval Phase by BranchId
 				List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, companyApprovalRoot.getBranchId());
 				for (ApprovalPhase approvalPhase : lstAppPhase) {
 					//get All Approver By ApprovalPhaseId
-					lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+					lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId())
+								.stream()
+								.map(c->ApproverDto.fromDomain(c))
+								.collect(Collectors.toList());
 					//lst (ApprovalPhase + lst Approver)
 					lstApprovalPhase.add(new ApprovalPhaseDto(lstApprover, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
 							approvalPhase.getApprovalForm().value, approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
@@ -65,15 +68,21 @@ public class CommonApprovalRootFinder {
 			List<WorkPlaceAppRootDto> lstWpRoot = new ArrayList<>();
 //			String workplaceId = "";
 			//get all data from WorkplaceApprovalRoot (職場別就業承認ルート)
-			List<WorkplaceApprovalRoot> lstWp = this.repoWorkplace.getAllWpApprovalRoot(companyId, param.getWorkplaceId());
-			for (WorkplaceApprovalRoot workplaceApprovalRoot : lstWp) {
+			List<WpApprovalRootDto> lstWp = this.repoWorkplace.getAllWpApprovalRoot(companyId, param.getWorkplaceId())
+					.stream()
+					.map(c->WpApprovalRootDto.fromDomain(c))
+					.collect(Collectors.toList());
+			for (WpApprovalRootDto workplaceApprovalRoot : lstWp) {
 				List<ApprovalPhaseDto> lstApprovalPhase = new ArrayList<>();
-				List<Approver> lstApprover = new ArrayList<>();
+				List<ApproverDto> lstApprover = new ArrayList<>();
 				//get All Approval Phase by BranchId
 				List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, workplaceApprovalRoot.getBranchId());
 				for (ApprovalPhase approvalPhase : lstAppPhase) {
 					//get All Approver By ApprovalPhaseId
-					lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+					lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId())
+							.stream()
+							.map(c->ApproverDto.fromDomain(c))
+							.collect(Collectors.toList());
 					//lst (ApprovalPhase + lst Approver)
 					lstApprovalPhase.add(new ApprovalPhaseDto(lstApprover, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
 							approvalPhase.getApprovalForm().value, approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
@@ -87,15 +96,21 @@ public class CommonApprovalRootFinder {
 		else{
 			List<PersonAppRootDto> lstPsRoot = new ArrayList<>();
 			//get all data from PersonApprovalRoot (個人別就業承認ルート)
-			List<PersonApprovalRoot> lstPs = this.repo.getAllPsApprovalRoot(companyId, param.getEmployeeId());
-			for (PersonApprovalRoot personApprovalRoot : lstPs) {
+			List<PsApprovalRootDto> lstPs = this.repo.getAllPsApprovalRoot(companyId, param.getEmployeeId())
+					.stream()
+					.map(c->PsApprovalRootDto.fromDomain(c))
+					.collect(Collectors.toList());
+			for (PsApprovalRootDto personApprovalRoot : lstPs) {
 				List<ApprovalPhaseDto> lstApprovalPhase = new ArrayList<>();
-				List<Approver> lstApprover = new ArrayList<>();
+				List<ApproverDto> lstApprover = new ArrayList<>();
 				//get All Approval Phase by BranchId
 				List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, personApprovalRoot.getBranchId());
 				for (ApprovalPhase approvalPhase : lstAppPhase) {
 					//get All Approver By ApprovalPhaseId
-					lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+					lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId())
+							.stream()
+							.map(c->ApproverDto.fromDomain(c))
+							.collect(Collectors.toList());
 					//lst (ApprovalPhase + lst Approver)
 					lstApprovalPhase.add(new ApprovalPhaseDto(lstApprover, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
 							approvalPhase.getApprovalForm().value, approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));

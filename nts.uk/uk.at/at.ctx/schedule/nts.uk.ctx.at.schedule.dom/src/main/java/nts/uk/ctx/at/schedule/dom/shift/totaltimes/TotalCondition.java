@@ -50,7 +50,7 @@ public class TotalCondition {
 		this.thresoldLowerLimit = memento.getThresoldLowerLimit();
 
 		if (UseAtr.Use.equals(upperLimitSettingAtr) && UseAtr.Use.equals(lowerLimitSettingAtr)
-				&& thresoldLowerLimit.greaterThanOrEqualTo(thresoldUpperLimit)) {
+				&& thresoldUpperLimit.greaterThanOrEqualTo(thresoldLowerLimit)) {
 			throw new BusinessException("Msg_210");
 		}
 	}

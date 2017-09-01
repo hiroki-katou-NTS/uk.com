@@ -6,6 +6,8 @@ import javax.transaction.Transactional;
 
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectCommonDefault;
+import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectCommonService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -16,25 +18,30 @@ public class GoBackDirectlyCommonSettingFinder {
 	private GoBackDirectlyCommonSettingRepository goBackRepo;
 	
 	
+	@Inject 
+	private GoBackDirectCommonService dataSetting;
+	
+	
 	/**
 	 * @param appID
 	 * @return
 	 */
-	public GoBackDirectlyCommonSettingDto findGoBackDirectlyCommonSettingbyAppID(String appID){
+	public GoBackDirectlyCommonSettingDto findGoBackDirectlyCommonSettingbyAppID(){
 		String companyID = AppContexts.user().companyId();
-		return this.goBackRepo.findByAppID(companyID, appID)
-				.map(x-> convertToDTo(x))
+		return this.goBackRepo.findByCompanyID(companyID)
+				.map(x-> convertToDto(x))
 				.orElse(null);
+		
+		//dataSetting.getSettingData()
 	}
 	
 	/**
 	 * @param domain
 	 * @return
 	 */
-	private GoBackDirectlyCommonSettingDto convertToDTo(GoBackDirectlyCommonSetting domain) {
+	private GoBackDirectlyCommonSettingDto convertToDto(GoBackDirectlyCommonSetting domain) {
 		return new GoBackDirectlyCommonSettingDto(
 				domain.getCompanyID(), 
-				domain.getAppID(), 
 				domain.getWorkChangeFlg().value,
 				domain.getWorkChangeFlg().value,
 				domain.getPerformanceDisplayAtr().value,

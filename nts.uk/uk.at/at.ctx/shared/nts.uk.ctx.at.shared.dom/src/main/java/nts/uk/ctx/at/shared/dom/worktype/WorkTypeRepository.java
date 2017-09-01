@@ -90,12 +90,28 @@ public interface WorkTypeRepository {
 	void add(WorkType workType);
 	
 	/**
+	 * Update workType to DB
+	 * 
+	 * @param workType
+	 */
+	void update(WorkType workType);
+	
+	/**
+	 * Insert workTypeSet to DB
 	 * 
 	 * @param workTypeSet
 	 */
 	void addWorkTypeSet(WorkTypeSet workTypeSet);
 	
 	/**
+	 * Delete workTypeSet to DB
+	 * 
+	 * @param workTypeSet
+	 */
+	void removeWorkTypeSet(String companyId, String workTypeCd);
+	
+	/**
+	 * Delete workType to DB
 	 * 
 	 * @param workTypeCd
 	 */
