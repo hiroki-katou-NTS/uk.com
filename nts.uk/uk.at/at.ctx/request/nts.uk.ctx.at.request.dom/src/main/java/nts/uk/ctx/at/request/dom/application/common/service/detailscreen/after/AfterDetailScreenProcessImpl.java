@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApproval
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.dto.DetailScreenProcessAfterOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenProcessAfterOutput;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

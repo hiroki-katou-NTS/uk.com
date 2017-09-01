@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.at.request.dom.application.common.service.other.dto.ObjApproverRepresenter;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ObjApproverRepresenterOutput;
 /**
  * 3-2.送信先の判断処理
  * @author tutk
@@ -17,12 +17,12 @@ public class DestinationJudgmentProcessImpl implements DestinationJudgmentProces
 
 	@Override
 	public List<String> getDestinationJudgmentProcessService(
-			List<ObjApproverRepresenter> listApproverAndRepresenterSID) {
+			List<ObjApproverRepresenterOutput> listApproverAndRepresenterSID) {
 		List<String> listDestination = new ArrayList<>();
 		if(listApproverAndRepresenterSID.size()==0) {
 			return listDestination;
 		}
-		for(ObjApproverRepresenter objApproverRepresenter : listApproverAndRepresenterSID ) {
+		for(ObjApproverRepresenterOutput objApproverRepresenter : listApproverAndRepresenterSID ) {
 			if(objApproverRepresenter.getRepresenter() == "Empty") {
 				listDestination.add(objApproverRepresenter.getApprover());
 			}

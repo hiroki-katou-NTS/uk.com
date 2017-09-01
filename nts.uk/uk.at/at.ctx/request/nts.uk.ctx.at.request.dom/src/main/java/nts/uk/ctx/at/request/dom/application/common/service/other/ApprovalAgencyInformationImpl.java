@@ -9,11 +9,11 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentRequestAdaptor;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentAdaptorDto;
-import nts.uk.ctx.at.request.dom.application.common.service.other.dto.AgentApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.service.other.dto.ApprovalAgencyInformationOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.dto.ObjApproverRepresenter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentImport;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgentApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ObjApproverRepresenterOutput;
 
 /**
  * 
@@ -27,7 +27,7 @@ public class ApprovalAgencyInformationImpl implements ApprovalAgencyInformation 
 //	@Inject
 //	AgentRepository agentRepository;
 	@Inject 
-	private AgentRequestAdaptor agentRequestAdaptor;
+	private AgentRequestAdapter agentRequestAdaptor;
 	
 	
 	@Override
@@ -37,19 +37,19 @@ public class ApprovalAgencyInformationImpl implements ApprovalAgencyInformation 
 		
 		boolean outputFlag = true; 
 		List<String>  outputListRepresenterSID = new ArrayList<>();
-		List<ObjApproverRepresenter> outputListApproverAndRepresenterSID = new  ArrayList<>();
+		List<ObjApproverRepresenterOutput> outputListApproverAndRepresenterSID = new  ArrayList<>();
 		// neu list nguoi xác nhận =  null
 		if(approver.size()==0)
 		{
 			return new ApprovalAgencyInformationOutput(outputListApproverAndRepresenterSID, outputListRepresenterSID, outputFlag);
 		}
 		//ドメインモデル「代行承認」を取得する(lấy thông tin domain 「代行承認」)
-		List<AgentAdaptorDto> listAgenta = agentRequestAdaptor.findAll(companyID, approver, generalDate,generalDate );
+		List<AgentImport> listAgenta = agentRequestAdaptor.findAll(companyID, approver, generalDate,generalDate );
 		
 		//duyệt list người xác nhận
 		for(String approveItem : approver ) {
 			//duyệt list lấy được trong domain Agent
-			for(AgentAdaptorDto agentAdapterDto : listAgenta) {
+			for(AgentImport agentAdapterDto : listAgenta) {
 				//nếu người xác nhận có trong list Agent
 				if(approveItem.equals(agentAdapterDto.getEmployeeId())) {
 					//ktra xem AgentAppType = No_Settings hay k
@@ -57,19 +57,19 @@ public class ApprovalAgencyInformationImpl implements ApprovalAgencyInformation 
 					//if(agentAdapterDto.getAgentAppType1() == AgentApplicationType.NO_SETTINGS ) {
 						outputFlag = false;
 						// add nguoi xac nhan vao 
-						ObjApproverRepresenter obj = new ObjApproverRepresenter(approveItem,"Empty");
+						ObjApproverRepresenterOutput obj = new ObjApproverRepresenterOutput(approveItem,"Empty");
 						outputListApproverAndRepresenterSID.add(obj);
 						
 					}
 					//ktra xem AgentAppType = PATH hay k
 					if(agentAdapterDto.getAgentAppType1() == AgentApplicationType.PATH) {
-						ObjApproverRepresenter obj = new ObjApproverRepresenter(approveItem,"Pass");
+						ObjApproverRepresenterOutput obj = new ObjApproverRepresenterOutput(approveItem,"Pass");
 						outputListApproverAndRepresenterSID.add(obj);
 					}
 					//ktra xem AgentAppType = SUBSTITUTE_DESIGNATION hay k
 					if(agentAdapterDto.getAgentAppType1() == AgentApplicationType.SUBSTITUTE_DESIGNATION) {
 						outputFlag = false;
-						ObjApproverRepresenter obj = new ObjApproverRepresenter(approveItem,agentAdapterDto.getAgentSid1());
+						ObjApproverRepresenterOutput obj = new ObjApproverRepresenterOutput(approveItem,agentAdapterDto.getAgentSid1());
 						outputListApproverAndRepresenterSID.add(obj);
 						//add data in list representerSID
 						outputListRepresenterSID.add(agentAdapterDto.getAgentSid1());

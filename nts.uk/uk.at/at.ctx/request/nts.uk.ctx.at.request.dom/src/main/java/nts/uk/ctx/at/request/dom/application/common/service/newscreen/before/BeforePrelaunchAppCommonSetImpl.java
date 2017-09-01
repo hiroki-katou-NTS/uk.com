@@ -11,7 +11,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdaptor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
@@ -29,7 +29,7 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 	private ApplicationSettingRepository applicationSettingRepository;
 	
 	@Inject
-	private EmployeeAdaptor employeeAdaptor;
+	private EmployeeAdapter employeeAdaptor;
 	
 	@Inject
 	private RequestOfEarchWorkplaceRepository requestOfEarchWorkplaceRepository;

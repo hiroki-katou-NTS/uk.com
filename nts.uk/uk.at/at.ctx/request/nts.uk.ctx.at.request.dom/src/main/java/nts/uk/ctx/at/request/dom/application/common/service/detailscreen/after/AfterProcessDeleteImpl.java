@@ -14,8 +14,8 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.ScreenAfterDelete;
 import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
-import nts.uk.ctx.at.request.dom.application.common.service.other.dto.ApprovalAgencyInformationOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.dto.ObjApproverRepresenter;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ObjApproverRepresenterOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -68,7 +68,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 					
 					/** 3-1 アルゴリズム「承認代行情報の取得処理」を実行する(thực hiện xử lý 「承認代行情報の取得処理」)*/
 					ApprovalAgencyInformationOutput approvalAgencyInformationOutput = approvalAgencyInformationService.getApprovalAgencyInformation(companyID, approver);
-					List<ObjApproverRepresenter> listApproverRepresenter = approvalAgencyInformationOutput.getListApproverAndRepresenterSID();
+					List<ObjApproverRepresenterOutput> listApproverRepresenter = approvalAgencyInformationOutput.getListApproverAndRepresenterSID();
 					
 					/** 3-2 */
 					listDestination = destinationJudgmentProcessService.getDestinationJudgmentProcessService(listApproverRepresenter);

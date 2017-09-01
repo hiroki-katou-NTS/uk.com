@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen;
 
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.dto.DetailScreenInitModeOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.dto.User;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
 
 /**
  * 

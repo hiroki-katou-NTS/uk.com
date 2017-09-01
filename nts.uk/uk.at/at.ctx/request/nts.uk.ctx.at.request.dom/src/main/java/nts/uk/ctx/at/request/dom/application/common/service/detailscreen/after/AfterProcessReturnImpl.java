@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
-import nts.uk.ctx.at.request.dom.application.common.service.other.dto.ObjApproverRepresenter;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ObjApproverRepresenterOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
@@ -108,7 +108,7 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 				//get 8.2 -> 3 -> 3.1
 				List<String> listApprover = new ArrayList<>();
 				//get List Approver And RepresenterSID
-				List<ObjApproverRepresenter> getListApproverRep = approvalAgencyInformationServiceRepo
+				List<ObjApproverRepresenterOutput> getListApproverRep = approvalAgencyInformationServiceRepo
 						.getApprovalAgencyInformation(
 						application.getCompanyID(), 
 						listApprover).getListApproverAndRepresenterSID();

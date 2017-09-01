@@ -14,7 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdaptor;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.valueobject.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
@@ -33,7 +33,7 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	
 	@Inject
-	private EmployeeAdaptor employeeAdaptor;
+	private EmployeeAdapter employeeAdaptor;
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepo;
 	

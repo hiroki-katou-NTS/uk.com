@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
 import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.dto.DetailScreenProcessAfterOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenProcessAfterOutput;
 
 /**
  * 

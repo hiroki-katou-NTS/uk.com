@@ -8,5 +8,5 @@ public interface JobtitleSearchSetPub {
 	 * @param jobtitleId
 	 * @return
 	 */
-	JobtitleSearchSetDto finById(String cid, String jobtitleId);
+	JobtitleSearchSetExport finById(String cid, String jobtitleId);
 }
