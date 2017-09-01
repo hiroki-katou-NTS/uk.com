@@ -1,6 +1,6 @@
 package nts.uk.ctx.bs.employee.pub.person;
 
-public interface IPersonPub {
+public interface IPersonInfoPub {
 
 	/**
 	 * for request list No.1
