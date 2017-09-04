@@ -412,7 +412,7 @@ module nts.uk.ui.validation {
                     return result;
                 }
                 else {
-                    result.success("");
+                    result.success(null);
                     return result;
                 }
             }
