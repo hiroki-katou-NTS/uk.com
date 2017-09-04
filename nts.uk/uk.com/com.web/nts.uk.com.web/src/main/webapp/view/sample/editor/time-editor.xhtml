@@ -41,15 +41,12 @@
 							binding: "<span data-bind="text: date"></span>"
 						</p>
 						<p>
-							<h3>Time Of Day(HH:mm)</h3>
-							<input data-name="Time Of Days Editor" data-bind="ntsTimeEditor: {name: 'Clock', constraint:'SampleTimeClock', value: timeOfDayAsString, inputFormat: 'time', enable: enable, readonly: readonly, required: true}" />
-							binding: "<span data-bind="text: timeOfDayAsString"></span>"
-						</p>
-						<p>
-							<h3>Time (HH:mm)</h3>
+							<h3>Duration (HH:mm)</h3>
 							<input data-name="Time Editor" data-bind="ntsTimeEditor: {name: 'Duration', constraint: 'SampleTimeDuration', value: time, inputFormat: 'time', mode: 'time', enable: enable, readonly: readonly, required: true}" />
 							binding: <span data-bind="text: time"></span>
 						</p>
+						<br/><br/><br/>
+						Clock (time of day): <a href="timewithday-editor.xhtml">TimeWithDayAttrEditor</a>
 						<hr/>
 						<!-- Binding with Object -->
 						<div data-bind="with: yearmontheditor">
