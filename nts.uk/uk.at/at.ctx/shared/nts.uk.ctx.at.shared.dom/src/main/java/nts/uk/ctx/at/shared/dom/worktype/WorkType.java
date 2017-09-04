@@ -63,4 +63,15 @@ public class WorkType {
 				new WorkTypeMemo(memo),
 				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class));
 	}
+	
+	
+	public AttendanceHolidayAttr getAttendanceHolidayAttr() {
+		return this.dailyWork.getAttendanceHolidayAttr();
+	}
+	
+	public boolean isWeekDayAttendance() {
+		return this.dailyWork.isWeekDayAttendance();
+	}
+
+	
 }
