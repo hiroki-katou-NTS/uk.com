@@ -31,7 +31,7 @@
 					<div>
 						<!-- BEGIN C2_1 ~ C2_2 -->
 							<div class="pull-left" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU006_302')}</div>
-							<div id="daterangepicker" tabindex="1" data-bind="ntsDateRangePicker: {
+							<div id="dateRangePickerLog" tabindex="1" data-bind="ntsDateRangePicker: {
 									name: '#[KSU006_303]',
 									startName: '#[KSU006_304]',
 									endName: '#[KSU006_305]',
@@ -68,7 +68,7 @@
 							columns: listColumn,
 							multiple: false,
 							value: rowSelected,
-							rows: 11}"></table></div><!-- END C3 -->
+							rows: 11}, rended: dataLog"></table></div><!-- END C3 -->
 					
 				</div>
 			</div>

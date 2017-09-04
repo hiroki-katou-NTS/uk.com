@@ -22,7 +22,7 @@ public class PpemtPerInfoItemOrder extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	protected PpemtPerInfoItemPK ppemtPerInfoItemPK;
+	public PpemtPerInfoItemPK ppemtPerInfoItemPK;
 
 	@Basic(optional = false)
 	@NotNull
@@ -33,7 +33,12 @@ public class PpemtPerInfoItemOrder extends UkJpaEntity implements Serializable {
 	@NotNull
 	@Column(name = "DISPORDER")
 	public int disporder;
-
+	
+	@Basic(optional = false)
+	@NotNull
+	@Column(name = "DISPLAY_ORDER")
+	public int displayOrder;
+	
 	@Override
 	protected Object getKey() {
 		return ppemtPerInfoItemPK;

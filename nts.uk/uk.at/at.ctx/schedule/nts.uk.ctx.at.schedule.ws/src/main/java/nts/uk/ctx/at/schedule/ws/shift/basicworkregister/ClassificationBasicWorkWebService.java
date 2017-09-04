@@ -42,7 +42,8 @@ public class ClassificationBasicWorkWebService extends WebService {
 	/**
 	 * Find all.
 	 *
-	 * @param classifyCode the classify code
+	 * @param classifyCode
+	 *            the classify code
 	 * @return the classifi basic work find dto
 	 */
 	@POST
@@ -50,7 +51,7 @@ public class ClassificationBasicWorkWebService extends WebService {
 	public ClassifiBasicWorkFindDto findAll(@PathParam("classifyCode") String classifyCode) {
 		return this.finder.findAll(classifyCode);
 	}
-	
+
 	/**
 	 * Find setting.
 	 *

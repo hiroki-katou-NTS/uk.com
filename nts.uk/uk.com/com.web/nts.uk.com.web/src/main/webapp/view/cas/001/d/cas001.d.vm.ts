@@ -6,26 +6,18 @@ module nts.uk.com.view.cas001.d.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel {
         categoryList: KnockoutObservableArray<CategoryAuth> = ko.observableArray([]);
-        categoryOrgin: KnockoutObservableArray<CategoryAuth> = ko.observableArray([]);
         currentRoleCode: KnockoutObservable<string> = ko.observable('');
         currentRole: KnockoutObservable<PersonRole> = ko.observable(getShared('personRole'));
 
         constructor() {
             var self = this;
 
-            self.categoryList.subscribe(data => {
-                if (data) {
-                    $("#grid").igGrid("option", "dataSource", data);
-                } else {
-                    $("#grid").igGrid("option", "dataSource", []);
-                }
-            });
-
             self.start();
         }
 
-        start() {
+        start(): JQueryPromise<any> {
             let self = this,
+                dfd = $.Deferred(),
                 role: IPersonRole = ko.toJS(self.currentRole);
 
             self.categoryList.removeAll();
@@ -38,54 +30,16 @@ module nts.uk.com.view.cas001.d.viewmodel {
                         selfAuth: !!x.allowPersonRef,
                         otherAuth: !!x.allowOtherRef
                     })));
+                    dfd.resolve();
                 }
             });
+            return dfd.promise();
         }
 
         creatCategory() {
             let self = this,
-                role: IPersonRole = ko.toJS(self.currentRole),
-                data: Array<ICategoryAuth> = [],
-                datas: Array<any> = [];
-            if (self.categoryOrgin().length > 0) {
-                data = _.uniqBy(self.categoryOrgin(), 'categoryId');
-                datas = _(data)
-                    .map((x: ICategoryAuth) => {
-                        return {
-                            roleId: role.roleId,
-                            categoryId: x.categoryId,
-                            allowPersonRef: Number(x.selfAuth),
-                            allowOtherRef: Number(x.otherAuth)
-                        };
-                    })
-                    .value();
-                service.updateCategory({ lstCategory: datas }).done(function(data) {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        close();
-                    });
-                }).fail(function(res) {
-                    alert(res.message);
-                })
-            } else {
-                data = _.uniqBy(self.categoryList(), 'categoryId');
-                datas = _(data)
-                    .map((x: ICategoryAuth) => {
-                        return {
-                            roleId: role.roleId,
-                            categoryId: x.categoryId,
-                            allowPersonRef: Number(x.selfAuth),
-                            allowOtherRef: Number(x.otherAuth)
-                        };
-                    })
-                    .value();
-                service.updateCategory({ lstCategory: datas }).done(function(data) {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        close();
-                    });
-                }).fail(function(res) {
-                    alert(res.message);
-                })
-            }
+                role: IPersonRole = ko.toJS(self.currentRole);
+            self.update(self.categoryList(), role.roleId);
 
         }
 
@@ -93,6 +47,26 @@ module nts.uk.com.view.cas001.d.viewmodel {
             close();
         }
 
+        update(items: Array<CategoryAuth>, roleId: string) {
+            let data: Array<ICategoryAuth> = _.uniqBy(items, 'categoryId'),
+                datas: Array<any> = _(data)
+                    .map((x: ICategoryAuth) => {
+                        return {
+                            roleId: roleId,
+                            categoryId: x.categoryId,
+                            allowPersonRef: Number(x.selfAuth),
+                            allowOtherRef: Number(x.otherAuth)
+                        };
+                    })
+                    .value();
+            service.updateCategory({ lstCategory: datas }).done(function(data) {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                    close();
+                });
+            }).fail(function(res) {
+                alert(res.message);
+            })
+        }
 
     }
 

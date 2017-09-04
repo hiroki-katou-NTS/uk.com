@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.ws.dailyperformanceformat;
 
-import java.math.BigDecimal;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -30,9 +28,9 @@ public class BusinessTypeFormatMonthlyWebService extends WebService  {
 	private UpdateBusinessTypeMonthlyCommandHandler updateBusinessTypeMonthlyCommandHandler;
 	
 	@POST
-	@Path("findBusinessTypeMonthlyDetail/{businessTypeCode}/{sheetNo}")
-	public BusinessTypeMonthlyDetailDto getAll(@PathParam("businessTypeCode") String businessTypeCode, @PathParam("sheetNo") BigDecimal sheetNo){
-		return this.businessTypeMonthlyDetailFinder.findDetail(businessTypeCode, sheetNo);
+	@Path("findBusinessTypeMonthlyDetail/{businessTypeCode}")
+	public BusinessTypeMonthlyDetailDto getAll(@PathParam("businessTypeCode") String businessTypeCode){
+		return this.businessTypeMonthlyDetailFinder.findDetail(businessTypeCode);
 	}
 	
 	@POST

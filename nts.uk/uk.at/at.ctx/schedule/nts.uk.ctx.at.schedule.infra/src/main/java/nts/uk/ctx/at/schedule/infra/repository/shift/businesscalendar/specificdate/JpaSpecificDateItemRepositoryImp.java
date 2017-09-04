@@ -32,8 +32,8 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 	 */
 	private SpecificDateItem toBonusPaySettingDomain(KsmstSpecificDateItem ksmstSpecificDateItem) {
 		return SpecificDateItem.createFromJavaType(ksmstSpecificDateItem.ksmstSpecificDateItemPK.companyId,
-				ksmstSpecificDateItem.ksmstSpecificDateItemPK.itemItemId, ksmstSpecificDateItem.useAtr,
-				ksmstSpecificDateItem.itemNo, ksmstSpecificDateItem.name);
+				ksmstSpecificDateItem.useAtr,
+				ksmstSpecificDateItem.ksmstSpecificDateItemPK.itemNo, ksmstSpecificDateItem.name);
 	}
 
 	/**
@@ -43,8 +43,7 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 	 */
 	private static KsmstSpecificDateItem toEntity(SpecificDateItem domain) {
 		val entity = new KsmstSpecificDateItem();
-		entity.ksmstSpecificDateItemPK = new KsmstSpecificDateItemPK(domain.getCompanyId(), domain.getTimeItemId());
-		entity.itemNo = domain.getSpecificDateItemNo().v();
+		entity.ksmstSpecificDateItemPK = new KsmstSpecificDateItemPK(domain.getCompanyId(), domain.getSpecificDateItemNo().v());
 		entity.name = domain.getSpecificName().v();
 		entity.useAtr = BigDecimal.valueOf(domain.getUseAtr().value);
 		return entity;
@@ -73,7 +72,6 @@ public class JpaSpecificDateItemRepositoryImp extends JpaRepository implements S
 			KsmstSpecificDateItem b = toEntity(specificDateItem);
 			KsmstSpecificDateItem x = this.queryProxy().find(b.ksmstSpecificDateItemPK, KsmstSpecificDateItem.class).get();
 			x.setUseAtr(b.useAtr);
-			x.setItemNo(b.itemNo);
 			x.setName(b.name);
 			lstEntity.add(x);
 		}

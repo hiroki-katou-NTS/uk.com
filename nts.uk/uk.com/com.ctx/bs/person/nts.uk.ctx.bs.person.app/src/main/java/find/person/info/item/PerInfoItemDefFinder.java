@@ -1,27 +1,34 @@
 package find.person.info.item;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import find.person.info.category.PerInfoCategoryFinder;
+import find.person.info.category.PerInfoCtgFullDto;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.enums.EnumConstant;
+import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;
+import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateType;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemType;
 import nts.uk.ctx.bs.person.dom.person.info.item.ItemTypeState;
-import nts.uk.ctx.bs.person.dom.person.info.item.PernfoItemDefRepositoty;
+import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.ctx.bs.person.dom.person.info.numericitem.NumericItem;
-import nts.uk.ctx.bs.person.dom.person.info.selectionitem.CodeNameReferenceType;
-import nts.uk.ctx.bs.person.dom.person.info.selectionitem.EnumReferenceCondition;
-import nts.uk.ctx.bs.person.dom.person.info.selectionitem.MasterReferenceCondition;
-import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceType;
-import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypeState;
+import nts.uk.ctx.bs.person.dom.person.info.order.PerInfoItemDefOrder;
+import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypes;
 import nts.uk.ctx.bs.person.dom.person.info.selectionitem.SelectionItem;
 import nts.uk.ctx.bs.person.dom.person.info.setitem.SetItem;
 import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeState;
+import nts.uk.ctx.bs.person.dom.person.info.singleitem.DataTypeValue;
 import nts.uk.ctx.bs.person.dom.person.info.singleitem.SingleItem;
 import nts.uk.ctx.bs.person.dom.person.info.stringitem.StringItem;
+import nts.uk.ctx.bs.person.dom.person.info.stringitem.StringItemDataType;
+import nts.uk.ctx.bs.person.dom.person.info.stringitem.StringItemType;
 import nts.uk.ctx.bs.person.dom.person.info.timeitem.TimeItem;
 import nts.uk.ctx.bs.person.dom.person.info.timepointitem.TimePointItem;
 import nts.uk.shr.com.context.AppContexts;
@@ -30,63 +37,152 @@ import nts.uk.shr.com.context.AppContexts;
 public class PerInfoItemDefFinder {
 
 	@Inject
-	private PernfoItemDefRepositoty pernfoItemDefRep;
+	private PerInfoItemDefRepositoty pernfoItemDefRep;
 
-	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(String perInfoCtgId) {
-		return pernfoItemDefRep
+	@Inject
+	IInternationalization internationalization;
+
+	@Inject
+	private PerInfoCategoryFinder categoryFinder;
+
+	public PerInfoItemDefFullEnumDto getAllPerInfoItemDefByCtgId(String perInfoCtgId) {
+		List<PerInfoItemDefShowListDto> perInfoItemDefs = this.pernfoItemDefRep
 				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream()
 				.map(item -> {
-					return mappingFromDomaintoDto(item);
+					return new PerInfoItemDefShowListDto(item.getPerInfoItemDefId(), item.getItemName().v());
 				}).collect(Collectors.toList());
+		List<EnumConstant> dataTypeEnum = EnumAdaptor.convertToValueNameList(DataTypeValue.class, internationalization);
+		List<EnumConstant> stringItemTypeEnum = EnumAdaptor.convertToValueNameList(StringItemType.class,
+				internationalization);
+		List<EnumConstant> stringItemDataTypeEnum = EnumAdaptor.convertToValueNameList(StringItemDataType.class,
+				internationalization);
+		List<EnumConstant> dateItemTypeEnum = EnumAdaptor.convertToValueNameList(DateType.class, internationalization);
+		return new PerInfoItemDefFullEnumDto(dataTypeEnum, stringItemTypeEnum, stringItemDataTypeEnum, dateItemTypeEnum,
+				perInfoItemDefs);
 	};
 
+	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgId(String perInfoCtgId, String isAbolition) {
+		if (isAbolition.equals("true")) {
+			return this.pernfoItemDefRep
+					.getAllPerInfoItemDefByCategoryIdWithoutSetItem(perInfoCtgId, AppContexts.user().contractCode()).stream()
+					.map(item -> {
+						return mappingFromDomaintoDto(item, 0);
+					}).collect(Collectors.toList());
+
+		} else {
+			return this.pernfoItemDefRep
+					.getAllPerInfoItemDefByCategoryIdWithoutAbolition(perInfoCtgId, AppContexts.user().contractCode())
+					.stream().map(item -> {
+						return mappingFromDomaintoDto(item, 0);
+					}).collect(Collectors.toList());
+
+		}
+
+	}
+
+	public PerInfoItemChangeDefDto getPerInfoItemDefByIdOfOtherCompany(String perInfoItemDefId) {
+
+		PerInfoItemDefDto itemDefDto = this.pernfoItemDefRep
+				.getPerInfoItemDefById(perInfoItemDefId, AppContexts.user().contractCode()).map(item -> {
+					return mappingFromDomaintoDto(item, 0);
+				}).orElse(null);
+
+		PerInfoCtgFullDto ctgDto = this.categoryFinder.getPerInfoCtg(itemDefDto.getPerInfoCtgId());
+
+		String itemDefaultName = this.pernfoItemDefRep.getItemDefaultName(ctgDto.getCategoryCode(),
+				itemDefDto.getItemCode());
+
+		return mappingFromDomaintoChangeDto(itemDefDto, itemDefaultName, 0);
+	};
+
+	private PerInfoItemChangeDefDto mappingFromDomaintoChangeDto(PerInfoItemDefDto itemDefDto, String defaultName,
+			int dispOrder) {
+		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class,
+				internationalization);
+		return new PerInfoItemChangeDefDto(itemDefDto.getId(), itemDefDto.getPerInfoCtgId(), itemDefDto.getItemCode(),
+				itemDefDto.getItemName(), defaultName, itemDefDto.getIsAbolition(), itemDefDto.getIsFixed(),
+				itemDefDto.getIsRequired(), itemDefDto.getSystemRequired(), itemDefDto.getRequireChangable(), dispOrder,
+				itemDefDto.getItemTypeState(), selectionItemRefTypes);
+	}
+
 	public PerInfoItemDefDto getPerInfoItemDefById(String perInfoItemDefId) {
-		return pernfoItemDefRep.getPerInfoItemDefById(perInfoItemDefId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
-				.map(item -> {
-					return mappingFromDomaintoDto(item);
+		return this.pernfoItemDefRep
+				.getPerInfoItemDefById(perInfoItemDefId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).map(item -> {
+					return mappingFromDomaintoDto(item, 0);
 				}).orElse(null);
 	};
 
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListId(List<String> listItemDefId) {
-		return pernfoItemDefRep.getPerInfoItemDefByListId(listItemDefId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
-				.stream().map(item -> {
-					return mappingFromDomaintoDto(item);
+		return this.pernfoItemDefRep
+				.getPerInfoItemDefByListId(listItemDefId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream()
+				.map(item -> {
+					return mappingFromDomaintoDto(item, 0);
 				}).collect(Collectors.toList());
 	};
-	
-	//Function get data for Layout
+
+	// Function get data for Layout
 	public List<PerInfoItemDefDto> getAllPerInfoItemDefByCtgIdForLayout(String perInfoCtgId) {
-		return pernfoItemDefRep
-				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().companyCode()).stream()
-				.map(item -> {
-					return mappingFromDomaintoDto(item);
-				}).collect(Collectors.toList());
+		List<PersonInfoItemDefinition> itemDefs = this.pernfoItemDefRep
+				.getAllPerInfoItemDefByCategoryId(perInfoCtgId, AppContexts.user().contractCode()).stream()
+				.filter(e -> e.getItemParentCode().equals("")) // filter set
+																// item or
+																// single item
+																// (has'nt
+																// parent item)
+				.collect(Collectors.toList());
+		List<PerInfoItemDefOrder> itemOrders = this.pernfoItemDefRep.getPerInfoItemDefOrdersByCtgId(perInfoCtgId);
+		return mappingItemAndOrder(itemDefs, itemOrders);
 	};
 
 	public PerInfoItemDefDto getPerInfoItemDefByIdForLayout(String perInfoItemDefId) {
-		return pernfoItemDefRep.getPerInfoItemDefById(perInfoItemDefId, AppContexts.user().companyCode())
-				.map(item -> {
-					return mappingFromDomaintoDto(item);
-				}).orElse(null);
-	};
+		PersonInfoItemDefinition itemDef = this.pernfoItemDefRep
+				.getPerInfoItemDefById(perInfoItemDefId, AppContexts.user().contractCode()).orElse(null);
+		int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(itemDef.getPerInfoCategoryId(),
+				itemDef.getPerInfoItemDefId());
+		return mappingFromDomaintoDto(itemDef, dispOrder);
+	}
 
 	public List<PerInfoItemDefDto> getPerInfoItemDefByListIdForLayout(List<String> listItemDefId) {
-		return pernfoItemDefRep.getPerInfoItemDefByListId(listItemDefId, AppContexts.user().companyCode())
-				.stream().map(item -> {
-					return mappingFromDomaintoDto(item);
+		return this.pernfoItemDefRep.getPerInfoItemDefByListId(listItemDefId, AppContexts.user().contractCode())
+				.stream().map(i -> {
+					int dispOrder = this.pernfoItemDefRep.getItemDispOrderBy(i.getPerInfoCategoryId(),
+							i.getPerInfoItemDefId());
+					return mappingFromDomaintoDto(i, dispOrder);
 				}).collect(Collectors.toList());
 	};
 
-	//mapping data from domain to DTO
-	private PerInfoItemDefDto mappingFromDomaintoDto(PersonInfoItemDefinition itemDef) {
+	// return list id of item definition if it's require;
+	public List<String> getRequiredIds() {
+		String companyId = AppContexts.user().companyId();
+		String contractCd = AppContexts.user().contractCode();
+		return this.pernfoItemDefRep.getRequiredIds(contractCd, companyId);
+	}
+
+	// mapping data from domain to DTO
+
+	private List<PerInfoItemDefDto> mappingItemAndOrder(List<PersonInfoItemDefinition> itemDefs,
+			List<PerInfoItemDefOrder> itemOrders) {
+		return itemDefs.stream().map(i -> {
+			PerInfoItemDefOrder itemOrder = itemOrders.stream()
+					.filter(o -> o.getPerInfoItemDefId().equals(i.getPerInfoItemDefId())).findFirst().orElse(null);
+			if (itemOrder != null) {
+				return mappingFromDomaintoDto(i, itemOrder.getDispOrder().v());
+			}
+			return mappingFromDomaintoDto(i, 0);
+		}).collect(Collectors.toList());
+	}
+
+	private PerInfoItemDefDto mappingFromDomaintoDto(PersonInfoItemDefinition itemDef, int dispOrder) {
+		List<EnumConstant> selectionItemRefTypes = EnumAdaptor.convertToValueNameList(ReferenceTypes.class,
+				internationalization);
 		return new PerInfoItemDefDto(itemDef.getPerInfoItemDefId(), itemDef.getPerInfoCategoryId(),
 				itemDef.getItemCode().v(), itemDef.getItemName().v(), itemDef.getIsAbolition().value,
 				itemDef.getIsFixed().value, itemDef.getIsRequired().value, itemDef.getSystemRequired().value,
-				itemDef.getRequireChangable().value, createItemTypeStateDto(itemDef.getItemTypeState()));
+				itemDef.getRequireChangable().value, dispOrder, createItemTypeStateDto(itemDef.getItemTypeState()),
+				selectionItemRefTypes);
 	}
 
 	private ItemTypeStateDto createItemTypeStateDto(ItemTypeState itemTypeState) {
-
 		ItemType itemType = itemTypeState.getItemType();
 		if (itemType == ItemType.SINGLE_ITEM) {
 			SingleItem singleItemDom = (SingleItem) itemTypeState;
@@ -98,7 +194,6 @@ public class PerInfoItemDefFinder {
 	}
 
 	private DataTypeStateDto createDataTypeStateDto(DataTypeState dataTypeState) {
-
 		int dataTypeValue = dataTypeState.getDataTypeValue().value;
 		switch (dataTypeValue) {
 		case 1:
@@ -107,9 +202,11 @@ public class PerInfoItemDefFinder {
 					strItem.getStringItemType().value, strItem.getStringItemDataType().value);
 		case 2:
 			NumericItem numItem = (NumericItem) dataTypeState;
+			BigDecimal numericItemMin = numItem.getNumericItemMin() != null ? numItem.getNumericItemMin().v() : null;
+			BigDecimal numericItemMax = numItem.getNumericItemMax() != null ? numItem.getNumericItemMax().v() : null;
 			return DataTypeStateDto.createNumericItemDto(numItem.getNumericItemMinus().value,
 					numItem.getNumericItemAmount().value, numItem.getIntegerPart().v(), numItem.getDecimalPart().v(),
-					numItem.getNumericItemMin().v(), numItem.getNumericItemMax().v());
+					numericItemMin, numericItemMax);
 		case 3:
 			DateItem dItem = (DateItem) dataTypeState;
 			return DataTypeStateDto.createDateItemDto(dItem.getDateItemType().value);

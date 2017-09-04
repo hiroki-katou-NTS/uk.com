@@ -21,7 +21,7 @@ public class PpemtPerInfoCtgCm extends UkJpaEntity implements Serializable {
     private static final long serialVersionUID = 1L;
     
     @EmbeddedId
-    protected PpemtPerInfoCtgCmPK ppemtPerInfoCtgCmPK;
+    public PpemtPerInfoCtgCmPK ppemtPerInfoCtgCmPK;
     
     @Basic(optional = false)
     @Column(name = "CATEGORY_PARENT_CD")

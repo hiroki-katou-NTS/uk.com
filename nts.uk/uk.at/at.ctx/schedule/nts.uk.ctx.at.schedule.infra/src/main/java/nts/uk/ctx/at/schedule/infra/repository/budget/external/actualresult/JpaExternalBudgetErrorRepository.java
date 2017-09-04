@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,8 +17,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetError;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetErrorRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetError;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetErrorRepository;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetError;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetErrorPK_;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetError_;
@@ -60,6 +61,11 @@ public class JpaExternalBudgetErrorRepository extends JpaRepository implements E
                 root.get(KscdtExtBudgetError_.kscdtExtBudgetErrorPK).get(KscdtExtBudgetErrorPK_.exeId), executionId));
 
         query.where(predicateList.toArray(new Predicate[] {}));
+        
+        query.orderBy(Arrays.asList(
+            builder.asc(root.get(KscdtExtBudgetError_.kscdtExtBudgetErrorPK).get(KscdtExtBudgetErrorPK_.lineNo)),
+            builder.asc(root.get(KscdtExtBudgetError_.kscdtExtBudgetErrorPK).get(KscdtExtBudgetErrorPK_.columnNo))
+        ));
 
         return em.createQuery(query).getResultList().stream().map(
                 entity -> new ExternalBudgetError(new JpaExternalBudgetErrorGetMemento((KscdtExtBudgetError) entity)))

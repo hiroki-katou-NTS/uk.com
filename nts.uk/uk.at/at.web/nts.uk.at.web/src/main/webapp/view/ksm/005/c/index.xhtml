@@ -7,10 +7,10 @@
 	<body>
 		<ui:composition template="../../../../master/dialog.xhtml">
 			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 1250, height: 750 };</script>
+				<script>var dialogSize = { width: 1280, height: 780 };</script>
+				<com:scriptfile set="IGNITE" />
 				<com:stylefile path="ksm005.c.main.css" />
 				<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
 				<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
 				<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
@@ -23,7 +23,7 @@
 				<div id="functions-area">
 					<a tabindex="-1" class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KSM005_7')}</a>
 					
-					<button tabindex="1" class="proceed" data-bind="click: saveMonthlyPatternSetting, enable: enableSave">#{i18n.getText('KSM005_9')}</button>
+					<button tabindex="1" class="proceed" data-bind="click: saveMonthlyPatternSetting">#{i18n.getText('KSM005_9')}</button>
 					<button tabindex="3" class="danger" data-bind="click: deleteMonthlyPatternSetting, enable: enableDelete">#{i18n.getText('KSM005_12')}</button>
 				</div>
 				<div class="contents">

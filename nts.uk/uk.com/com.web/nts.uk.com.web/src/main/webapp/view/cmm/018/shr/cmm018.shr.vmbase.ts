@@ -1,197 +1,252 @@
 module nts.uk.com.view.cmm018.shr {
     export module vmbase {
-        export class GridPersonCostCalculation {
+        export class ListHistory {
             dateRange: string;  
             constructor(dateRange: string) {
                 var self = this;
                 self.dateRange = dateRange;
             }  
         }
-    
-        export interface PersonCostCalculationInterface {
-            companyID: string;
-            historyID: string;
+        //Screen I
+        export interface IData_Param{
+            /** name */
+            name?: string
+            /**開始日*/
             startDate: string;
+            /**開始日 Old*/
+            startDateOld?: string;
+            /**check 申請承認の種類区分: 会社(1)　－　職場(2)　－　社員(3)*/
+            check: number;
+            /** まとめて設定モード(0) - 申請個別設定モード(1)*/
+            mode: number;
+        }
+        //ScreenI
+        export class IData{
+            /**開始日*/
+            startDate: string;
+            /**開始日 Old*/
+            startDateOld: string;
+            /**check 申請承認の種類区分: 会社(1)　－　職場(2)　－　社員(3)*/
+            check: number;
+            /** まとめて設定モード(0) - 申請個別設定モード(1)*/
+            mode: number;
+            /** 履歴から引き継ぐか、初めから作成するかを選択する*/
+            copyDataFlag: boolean;
+            constructor(startDate: string,
+                startDateOld: string,
+                check: number,
+                mode: number,
+                copyDataFlag: boolean){
+                    this.startDate = startDate;
+                    this.startDateOld = startDateOld;
+                    this.check = check;
+                    this.mode = mode;
+                    this.copyDataFlag = copyDataFlag;
+            }
+        }
+        //ScreenJ
+        export class JData{
+            /**開始日*/
+            startDate: string;
+            /**終了日*/
             endDate: string;
-            unitPrice: number;
-            memo: string;
-            premiumSets: Array<PremiumSettingInterface>;
-        }
-    
-        export class PersonCostCalculation {
-            companyID: KnockoutObservable<string>;
-            historyID: KnockoutObservable<string>;
-            startDate: KnockoutObservable<string>;
-            endDate: KnockoutObservable<string>;
-            unitPrice: KnockoutObservable<number>;
-            memo: KnockoutObservable<string>;
-            premiumSets : KnockoutObservableArray<PremiumSetting>;
-            constructor(companyID: string, historyID: string, startDate: string, endDate: string, unitPrice: number, memo: string, 
-                premiumSets: Array<PremiumSettingInterface>, premiumItems: Array<PremiumItem>) {
-                var self = this;
-                self.companyID = ko.observable(companyID);
-                self.historyID = ko.observable(historyID);
-                self.startDate = ko.observable(startDate);
-                self.endDate = ko.observable(endDate);
-                self.unitPrice = ko.observable(unitPrice);
-                self.memo = ko.observable(memo);
-                let koPremiumSets = [];
-                premiumItems.forEach(function(premiumItem, index){
-                    if(premiumItem.useAtr()){
-                        let premiumSet = _.find(premiumSets, function(o) { 
-                            return o.premiumID == index+1; 
-                        })
-                        if(premiumSet) {
-                            koPremiumSets.push(ProcessHandler.fromObjectPremiumSet(premiumSet));        
-                        } else {
-                            koPremiumSets.push(
-                                new vmbase.PremiumSetting("", "", premiumItem.iD(), 1, premiumItem.attendanceID(), premiumItem.name(), premiumItem.displayNumber(), premiumItem.useAtr(), [])
-                            );    
-                        }
-                    }
-                });
-                self.premiumSets = ko.observableArray(koPremiumSets);
+            /**履歴ID*/
+            workplaceId: string;
+            /**社員ID*/
+            employeeId: string;
+            /**check 申請承認の種類区分: 会社(1)　－　職場(2)　－　社員(3)*/
+            check: number;
+            /**「履歴を削除する」を選択する か(0)、「履歴を修正する」を選択する か(1)。*/
+            editOrDelete: number;
+            /**開始日 previous*/
+            startDatePrevious: string;
+            /** list history and approvalId */
+            lstUpdate: Array<UpdateHistoryDto>;
+            constructor(startDate: string,
+            endDate: string,
+            workplaceId: string,
+            employeeId: string,
+            check: number,
+            editOrDelete: number,
+            startDatePrevious: string,
+            lstUpdate: Array<UpdateHistoryDto>){
+                this.startDate = startDate;
+                this.endDate = endDate;
+                this.workplaceId = workplaceId;
+                this.employeeId = employeeId;
+                this.check = check;
+                this.editOrDelete = editOrDelete;
+                this.startDatePrevious = startDatePrevious;
+                this.lstUpdate = lstUpdate;
             }
         }
-        
-        export interface PremiumSettingInterface {
-            companyID: string;
-            historyID: string;
-            premiumID: number;
-            rate: number;
-            attendanceID: number;
-            name: string;
-            displayNumber: number;
-            useAtr: number;
-            attendanceItems: Array<AttendanceItem>;
+        //ScrenJ
+        export interface JData_Param{
+            /** name */
+            name: string
+            /**開始日*/
+            startDate: string;
+            /**終了日*/
+            endDate: string;
+            /**履歴ID*/
+            workplaceId?: string;
+            /**社員ID*/
+            employeeId?: string;
+            /**check 申請承認の種類区分: 会社(1)　－　職場(2)　－　社員(3)*/
+            check: number;
+            /** まとめて設定モード(0) - 申請個別設定モード(1)*/
+            mode: number;
+            /** 編集対象期間履歴が重なっているかチェックする*/
+            overlapFlag: boolean;
+            /**開始日 previous*/
+            startDatePrevious: string;
+            /** list history and approvalId */
+            lstUpdate: Array<UpdateHistoryDto>;
         }
-        
-        export class PremiumSetting {
-            companyID: KnockoutObservable<string>;
-            historyID: KnockoutObservable<string>;
-            premiumID: KnockoutObservable<number>; 
-            rate: KnockoutObservable<number>;
-            attendanceID: KnockoutObservable<number>;
-            name: KnockoutObservable<string>;
-            displayNumber: KnockoutObservable<number>;
-            useAtr: KnockoutObservable<number>;
-            attendanceItems: KnockoutObservableArray<AttendanceItem>;
-            constructor(companyID: string, historyID: string, premiumID: number, rate: number, attendanceID: number, 
-                name: string, displayNumber: number, useAtr: number, attendanceItems: Array<AttendanceItem>) {
-                var self = this;
-                self.companyID = ko.observable(companyID);
-                self.historyID = ko.observable(historyID);
-                self.premiumID = ko.observable(premiumID);
-                self.rate = ko.observable(rate);
-                self.attendanceID = ko.observable(attendanceID);
-                self.name = ko.observable(name);
-                self.displayNumber = ko.observable(displayNumber);
-                self.useAtr = ko.observable(useAtr);
-                let koAttendanceItems = [];
-                attendanceItems.forEach(function(item){
-                    koAttendanceItems.push(new vmbase.AttendanceItem(item.shortAttendanceID, item.name));
-                });
-                self.attendanceItems = ko.observableArray(koAttendanceItems);
-            }
-            
-        }
-        
-        export class AttendanceItem {
-            shortAttendanceID: number;
-            name: string;
-            constructor(shortAttendanceID: number, name: string) {
-                var self = this;
-                self.shortAttendanceID = shortAttendanceID;
-                self.name = name;    
-            }    
-        }
-        
-        export class PremiumItem {
-            companyID: KnockoutObservable<string>;
-            iD: KnockoutObservable<number>; 
-            attendanceID: KnockoutObservable<number>;
-            name: KnockoutObservable<string>;
-            displayNumber: KnockoutObservable<number>;
-            useAtr: KnockoutObservable<number>;
-            isChange: KnockoutObservable<boolean>;
-            constructor(companyID: string, iD: number, attendanceID: number, name: string, displayNumber: number, useAtr: number, isChange: boolean) {
-                var self = this;
-                self.companyID = ko.observable(companyID);
-                self.iD = ko.observable(iD);
-                self.attendanceID = ko.observable(attendanceID);
-                self.name = ko.observable(name);
-                self.displayNumber = ko.observable(displayNumber);
-                self.useAtr = ko.observable(useAtr);
-                self.isChange = ko.observable(isChange);
+        //ScreenJ
+        export class UpdateHistoryDto{
+            /**承認ID*/
+            approvalId: string;
+            /**履歴ID*/
+            historyId: string;
+            constructor(approvalId: string, historyId: string){
+                this.approvalId = approvalId;
+                this.historyId = historyId; 
             }
         }
-        
+        //Param screen A,C,E
+        export class ParamDto {
+            /**就業ルート区分: 会社(0)　－　職場(1)　－　社員(2)*/
+            rootType: number;
+            /**履歴ID*/
+            workplaceId: string;
+            /**社員ID*/
+            employeeId: string;
+            constructor(rootType: number, workplaceId: string, employeeId: string){
+                this.rootType = rootType;
+                this.workplaceId = workplaceId;
+                this.employeeId =  employeeId;
+            }
+        }
+        //data screen A,C,E
+        export class CommonApprovalRootDto{
+            lstCompanyRoot: Array<CompanyAppRootDto>;
+            lstWorkplaceRoot: Array<WorkPlaceAppRootDto>;
+            lstPersonRoot: Array<PersonAppRootDto>;
+        }
+        //data screen A
+        export class CompanyAppRootDto{
+            company: ComApprovalRootDto;
+            lstAppPhase: Array<ApprovalPhaseDto>;
+        }
+        //data screen C
+        export class WorkPlaceAppRootDto{
+            workplace: WpApprovalRootDto;
+            lstAppPhase: Array<ApprovalPhaseDto>;
+        }
+        //data screen E
+        export class PersonAppRootDto{
+            person: PsApprovalRootDto;
+            lstAppPhase: Array<ApprovalPhaseDto>;
+        }
+        export class ComApprovalRootDto{
+            /**会社ID*/
+            companyId: string;
+            /**承認ID*/
+            approvalId: string;
+            /**履歴ID*/
+            historyId: string;
+            /**申請種類*/
+            applicationType: number;
+            /**開始日*/
+            startDate: string;
+            /**終了日*/
+            endDate: string;
+            /**分岐ID*/
+            branchId: string;
+            /**任意項目申請ID*/
+            anyItemApplicationId: string;
+            /**確認ルート種類*/
+            confirmationRootType: number;
+            /**就業ルート区分*/
+            employmentRootAtr: number;
+        }
+        export class WpApprovalRootDto{
+            /**会社ID*/
+            companyId: string;
+            /**承認ID*/
+            approvalId: string;
+            /**履歴ID*/
+            workplaceId: string;
+            /**履歴ID*/
+            historyId: string;
+            /**申請種類*/
+            applicationType: number;
+            /**開始日*/
+            startDate: string;
+            /**終了日*/
+            endDate: string;
+            /**分岐ID*/
+            branchId: string;
+            /**任意項目申請ID*/
+            anyItemApplicationId: string;
+            /**確認ルート種類*/
+            confirmationRootType: number;
+            /**就業ルート区分*/
+            employmentRootAtr: number;
+        }
+        export class PsApprovalRootDto{
+            /**会社ID*/
+            companyId: string;
+            /**承認ID*/
+            approvalId: string;
+            /**社員ID*/
+            employeeId: string;
+            /**履歴ID*/
+            historyId: string;
+            /**申請種類*/
+            applicationType: number;
+            /**開始日*/
+            startDate: string;
+            /**終了日*/
+            endDate: string;
+            /**分岐ID*/
+            branchId: string;
+            /**任意項目申請ID*/
+            anyItemApplicationId: string;
+            /**確認ルート種類*/
+            confirmationRootType: number;
+            /**就業ルート区分*/
+            employmentRootAtr: number;
+        }
+        export class ApprovalPhaseDto{
+            approver: Array<ApproverDto>;
+            /**分岐ID*/
+            branchId: string;
+            /**承認フェーズID*/
+            approvalPhaseId: string;
+            /**承認形態*/
+            approvalForm: number;
+            /**閲覧フェーズ*/
+            browsingPhase: number;
+            /**順序*/
+            orderNumber: number;
+        }
+        export class ApproverDto{
+            /**承認者ID*/
+            approverId: string;
+            /**職位ID*/
+            jobTitleId: string;
+            /**社員ID*/
+            employeeId: string;
+            /**順序*/
+            orderNumber: number;
+            /**区分*/
+            approvalAtr: number;
+            /**確定者*/
+            confirmPerson: number;
+        }
         export class ProcessHandler {
-            
-            /**
-             * convert PersonCostCalculation JS object to PersonCostCalculation knockoutJS object 
-             */
-            static fromObjectPerconCost(object: PersonCostCalculationInterface, premiumItems: Array<PremiumItem>): PersonCostCalculation {
-                return new PersonCostCalculation(
-                    object.companyID, 
-                    object.historyID, 
-                    object.startDate, 
-                    object.endDate,
-                    object.unitPrice,
-                    object.memo,
-                    object.premiumSets, 
-                    premiumItems);
-            }
-            
-            /**
-             * convert PersonCostCalculation knockoutJS object to PersonCostCalculation JS object
-             */
-            static toObjectPersonCost(koObject: PersonCostCalculation): PersonCostCalculationInterface {
-                let premiumSets: Array<PremiumSettingInterface> = [];
-                koObject.premiumSets().forEach(function(koPremiumSet){premiumSets.push(ProcessHandler.toObjectPremiumSet(koPremiumSet));});
-                return {
-                    companyID: koObject.companyID(),
-                    historyID: koObject.historyID(),
-                    startDate: koObject.startDate(),
-                    endDate: koObject.endDate(),
-                    unitPrice: koObject.unitPrice(),
-                    memo: koObject.memo(),
-                    premiumSets : premiumSets     
-                };    
-            }
-            
-            /**
-             * convert PremiumSetting JS object to PremiumSetting knockoutJS object 
-             */
-            static fromObjectPremiumSet(object: PremiumSettingInterface): PremiumSetting {
-                return new PremiumSetting(
-                    object.companyID,
-                    object.historyID,
-                    object.premiumID,
-                    object.rate,
-                    object.attendanceID,
-                    object.name,
-                    object.displayNumber,
-                    object.useAtr,
-                    object.attendanceItems);
-            }
-            
-            /**
-             * convert PremiumSetting knockoutJS object to PremiumSetting JS object
-             */
-            static toObjectPremiumSet(koObject: PremiumSetting): PremiumSettingInterface {
-                return {
-                    companyID: koObject.companyID(),
-                    historyID: koObject.historyID(),
-                    premiumID: koObject.premiumID(), 
-                    rate: koObject.rate(),
-                    attendanceID: koObject.attendanceID(),
-                    name: koObject.name(),
-                    displayNumber: koObject.displayNumber(),
-                    useAtr: koObject.useAtr(),
-                    attendanceItems: _.map(koObject.attendanceItems() , function(item){ return {shortAttendanceID: item.shortAttendanceID, name: item.name}})   
-                };    
-            }
             
             /**
              * get one day before input date as string format
@@ -221,27 +276,16 @@ module nts.uk.com.view.cmm018.shr {
                 return moment(inputDate).isSameOrAfter(moment(date));
             }
         }
-    
-        export enum UseAtr {
-            NotUse = 0,
-            Use = 1
-        }
         
-        export enum UnitPrice {
-            Price_1 = 0,
-            Price_2 = 1, 
-            Price_3 = 2,
-            Standard = 3,
-            Contract = 4
-        }
-    
-        export enum MSG {
-            MSG015 = <any>"登録しました。",
-            MSG018 = <any>"選択中のデータを削除しますか？",
-            MSG065 = <any>"最新の履歴の有効開始日より以前の有効開始日を登録できません。",
-            MSG066 = <any>"割増項目が設定されてません。",
-            MSG102 = <any>"最新の履歴開始日以前に履歴を追加することはできません。",
-            MSG128 = <any>"最後の履歴を削除することができません。"
-        }
+        export class Approver{
+            id: string;
+            code: string;
+            name: string;
+            constructor(id: string, code: string, name: string){
+                this.id = id;
+                this.code = code;
+                this.name = name;    
+            }
+        } 
     }
 }

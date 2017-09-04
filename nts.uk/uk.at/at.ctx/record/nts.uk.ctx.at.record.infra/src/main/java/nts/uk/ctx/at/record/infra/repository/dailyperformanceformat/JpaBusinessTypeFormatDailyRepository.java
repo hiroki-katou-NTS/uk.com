@@ -7,11 +7,8 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessFormatSheet;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatDailyRepository;
-import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheet;
-import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessFormatSheetPK;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDailyPK;
 
@@ -31,14 +28,15 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcmtBusinessTypeDaily a ");
 		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
-		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
 		FIND = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("UPDATE KrcmtBusinessTypeDaily a ");
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcmtBusinessTypeDaily a ");
 		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.companyId = :companyId ");
-		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
-		builderString.append("WHERE a.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.businessTypeCode = :businessTypeCode ");
+		builderString.append("AND a.krcmtBusinessTypeDailyPK.sheetNo = :sheetNo ");
 		FIND_DETAIl = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -73,7 +71,7 @@ public class JpaBusinessTypeFormatDailyRepository extends JpaRepository implemen
 	}
 
 	@Override
-	public void deleteExistData(List<BigDecimal> attendanceItemIds) {
+	public void deleteExistData(List<Integer> attendanceItemIds) {
 		this.getEntityManager().createQuery(REMOVE_EXIST_DATA).setParameter("attendanceItemIds", attendanceItemIds)
 				.executeUpdate();
 	}

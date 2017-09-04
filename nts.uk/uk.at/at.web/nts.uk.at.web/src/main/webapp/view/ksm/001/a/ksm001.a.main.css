@@ -39,18 +39,54 @@
 	text-align: center;
 	padding-top: 3px;
 	padding-bottom: 3px;
-	padding-right: 10px;
-	padding-left: 10px;
+	padding-right: 5px;
+	padding-left: 5px;
+	min-width: 50px;
+	max-width: 85px;
+}
+
+.border-all input {
+	width: 50px;
+	text-align: center !important;
+}
+.company_border td {
+	border: solid grey 1px;
+	text-align: center;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 5px;
+	padding-left: 5px;
 	min-width: 60px;
 	max-width: 130px;
 }
 
-.border-all input {
-	width: 80px;
+.company_border input {
+	width: 60px;
 	text-align: center !important;
 }
 
 .employmentSettingContent {
 	margin-top: 30px;
 	margin-left: 20px;
+}
+
+.person_left {
+	width: 500px;
+}
+
+.person_right {
+	width: 655px;
+}
+
+.employment_left {
+	width: 435px;
+}
+
+.employment_right {
+	width: 720px;
+}
+
+.contentkcp005 {
+	margin-top: 20px;
+	margin-left: 80px;
 }

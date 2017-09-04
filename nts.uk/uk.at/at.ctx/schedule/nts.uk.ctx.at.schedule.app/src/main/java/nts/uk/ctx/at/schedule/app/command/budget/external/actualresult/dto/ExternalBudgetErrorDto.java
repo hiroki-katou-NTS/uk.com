@@ -5,12 +5,12 @@
 package nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto;
 
 import lombok.Builder;
-import nts.uk.ctx.at.schedule.dom.budget.external.ExtBudgetWorkplaceCode;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetAccDate;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetActualValue;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetErrorContent;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetError;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetErrorGetMemento;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExtBudgetAccDate;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExtBudgetActualValue;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExtBudgetErrorContent;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExtBudgetWorkplaceCode;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetError;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetErrorGetMemento;
 
 /**
  * The Class ExternalBudgetErrorDto.

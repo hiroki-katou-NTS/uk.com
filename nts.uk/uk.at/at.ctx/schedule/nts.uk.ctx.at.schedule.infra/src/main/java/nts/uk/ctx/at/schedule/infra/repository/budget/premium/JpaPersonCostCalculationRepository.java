@@ -48,7 +48,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	private final String SEL_PRE_ATTEND = "SELECT a FROM KmldtPremiumAttendance a "
 			+ "WHERE a.kmldpPremiumAttendancePK.companyID = :companyID "
 			+ "AND a.kmldpPremiumAttendancePK.historyID = :historyID "
-			+ "AND a.kmldpPremiumAttendancePK.premiumID = :premiumID "
+			+ "AND a.kmldpPremiumAttendancePK.displayNumber = :displayNumber "
 			+ "AND a.kmldpPremiumAttendancePK.attendanceID = :attendanceID ";
 	
 	@Override
@@ -101,8 +101,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 		currentEntity.setMemo(personCostCalculation.getMemo().v());
 		if(personCostCalculation.getPremiumSettings()!=null){
 			for(int i=0; i < personCostCalculation.getPremiumSettings().size(); i++){
-				int id = personCostCalculation.getPremiumSettings().get(i).getPremiumID();
-				Optional<KmlstPremiumSet> premiumSet = currentEntity.kmlstPremiumSets.stream().filter(x -> x.kmlspPremiumSet.premiumID == id).findFirst();
+				int id = personCostCalculation.getPremiumSettings().get(i).getDisplayNumber();
+				Optional<KmlstPremiumSet> premiumSet = currentEntity.kmlstPremiumSets.stream().filter(x -> x.kmlspPremiumSet.displayNumber == id).findFirst();
 				if(premiumSet.isPresent()){
 					premiumSet.get().setPremiumRate(personCostCalculation.getPremiumSettings().get(i).getRate().v());
 					premiumSet.get().setKmldtPremiumAttendances( 
@@ -119,11 +119,9 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 					PremiumSetting premiumSetting = new PremiumSetting(
 							currentEntity.kmlmpPersonCostCalculationPK.companyID, 
 							currentEntity.kmlmpPersonCostCalculationPK.historyID, 
-							personCostCalculation.getPremiumSettings().get(i).getPremiumID(), 
-							personCostCalculation.getPremiumSettings().get(i).getRate(), 
-							personCostCalculation.getPremiumSettings().get(i).getAttendanceID(), 
-							personCostCalculation.getPremiumSettings().get(i).getName(), 
 							personCostCalculation.getPremiumSettings().get(i).getDisplayNumber(), 
+							personCostCalculation.getPremiumSettings().get(i).getRate(), 
+							personCostCalculation.getPremiumSettings().get(i).getName(), 
 							personCostCalculation.getPremiumSettings().get(i).getUseAtr(), 
 							personCostCalculation.getPremiumSettings().get(i).getAttendanceItems());
 					currentEntity.kmlstPremiumSets.add(toPremiumSetEntity(premiumSetting)); 
@@ -164,11 +162,9 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 		return new PremiumSetting(
 				kmlstPremiumSet.kmlspPremiumSet.companyID, 
 				kmlstPremiumSet.kmlspPremiumSet.historyID, 
-				kmlstPremiumSet.kmlspPremiumSet.premiumID, 
+				kmlstPremiumSet.kmlspPremiumSet.displayNumber, 
 				new PremiumRate(kmlstPremiumSet.premiumRate),
-				kmlstPremiumSet.kmnmtPremiumItem.attendanceID,
 				new PremiumName(kmlstPremiumSet.kmnmtPremiumItem.name),
-				kmlstPremiumSet.kmnmtPremiumItem.displayNumber,
 				EnumAdaptor.valueOf(kmlstPremiumSet.kmnmtPremiumItem.useAtr, UseAttribute.class),
 				kmlstPremiumSet.kmldtPremiumAttendances.stream().map(x -> x.kmldpPremiumAttendancePK.attendanceID).collect(Collectors.toList()));
 	}
@@ -201,7 +197,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 				new KmlspPremiumSetPK(
 						premiumSetting.getCompanyID(), 
 						premiumSetting.getHistoryID(), 
-						premiumSetting.getPremiumID()
+						premiumSetting.getDisplayNumber()
 				), 
 				premiumSetting.getRate().v(),
 				null,
@@ -209,7 +205,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 				premiumSetting.getAttendanceItems().stream().map(x -> toPremiumAttendanceEntity(
 								premiumSetting.getCompanyID(), 
 								premiumSetting.getHistoryID(), 
-								premiumSetting.getPremiumID(), 
+								premiumSetting.getDisplayNumber(), 
 								x)
 						).collect(Collectors.toList())
 				);
@@ -223,11 +219,11 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 	 * @param attendanceID attendance ID
 	 * @return PremiumAttendance Entity Object
 	 */
-	private KmldtPremiumAttendance toPremiumAttendanceEntity(String companyID, String historyID, Integer premiumID, Integer attendanceID){
+	private KmldtPremiumAttendance toPremiumAttendanceEntity(String companyID, String historyID, Integer displayNumber, Integer attendanceID){
 		Optional<KmldtPremiumAttendance> kmldtPremiumAttendance = this.queryProxy().query(SEL_PRE_ATTEND, KmldtPremiumAttendance.class)
 				.setParameter("companyID", companyID)
 				.setParameter("historyID", historyID)
-				.setParameter("premiumID", premiumID)
+				.setParameter("displayNumber", displayNumber)
 				.setParameter("attendanceID", attendanceID)
 				.getSingle();
 		if(kmldtPremiumAttendance.isPresent()){
@@ -237,7 +233,7 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 					new KmldpPremiumAttendancePK(
 							companyID, 
 							historyID, 
-							premiumID, 
+							displayNumber, 
 							attendanceID), 
 					null);
 		}
@@ -252,10 +248,8 @@ public class JpaPersonCostCalculationRepository extends JpaRepository implements
 		return new KmnmtPremiumItem(
 				new KmnmpPremiumItemPK(
 						premiumSetting.getCompanyID(), 
-						premiumSetting.getPremiumID()), 
-				premiumSetting.getAttendanceID(),
+						premiumSetting.getDisplayNumber()), 
 				premiumSetting.getName().v(), 
-				premiumSetting.getDisplayNumber(), 
 				premiumSetting.getUseAtr().value);
 	}
 }

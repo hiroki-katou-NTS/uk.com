@@ -13,24 +13,17 @@ public class PremiumItem {
 	
 	private String companyID;
 	
-	private Integer iD;
-	
-	private Integer attendanceID;
+	private Integer displayNumber;
 	
 	private PremiumName name;
 
-	private Integer displayNumber;
-
 	private UseAttribute useAtr;
 
-	public PremiumItem(String companyID, Integer iD, Integer attendanceID, PremiumName name,
-			Integer displayNumber, UseAttribute useAtr) {
+	public PremiumItem(String companyID, Integer displayNumber, PremiumName name, UseAttribute useAtr) {
 		super();
 		this.companyID = companyID;
-		this.iD = iD;
-		this.attendanceID = attendanceID;
-		this.name = name;
 		this.displayNumber = displayNumber;
+		this.name = name;
 		this.useAtr = useAtr;
 	}
 }

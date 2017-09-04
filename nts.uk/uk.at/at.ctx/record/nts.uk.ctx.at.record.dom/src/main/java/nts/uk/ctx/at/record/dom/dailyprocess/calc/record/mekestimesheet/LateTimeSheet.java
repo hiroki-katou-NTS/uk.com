@@ -2,7 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet;
 
 import lombok.val;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
-import nts.uk.shr.com.primitive.TimeWithDayAttr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 遅刻時間帯

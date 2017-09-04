@@ -5,9 +5,22 @@ import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+/**
+ * 
+ * @author nampt
+ *
+ */
+@AllArgsConstructor
+@NoArgsConstructor
+@Entity
+@Table(name = "KRCMT_BUS_MONTHLY_ITEM")
 public class KrcmtBusinessTypeMonthly extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -15,8 +28,8 @@ public class KrcmtBusinessTypeMonthly extends UkJpaEntity implements Serializabl
 	@EmbeddedId
 	public KrcmtBusinessTypeMonthlyPK krcmtBusinessTypeMonthlyPK;
 
-	@Column(name = "ORDER")
-	public BigDecimal order;
+	@Column(name = "ORDER_MONTHLY")
+	public int order;
 
 	@Column(name = "COLUMN_WIDTH")
 	public BigDecimal columnWidth;

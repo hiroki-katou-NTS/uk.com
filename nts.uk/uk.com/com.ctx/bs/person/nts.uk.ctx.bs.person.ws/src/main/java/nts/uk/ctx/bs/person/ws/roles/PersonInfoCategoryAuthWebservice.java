@@ -14,7 +14,6 @@ import find.roles.auth.category.PersonInfoCategoryAuthDto;
 import find.roles.auth.category.PersonInfoCategoryAuthFinder;
 import find.roles.auth.category.PersonInfoCategoryDetailDto;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.bs.person.dom.person.role.auth.category.PersonInfoCategoryDetail;
 
 @Path("ctx/bs/person/roles/auth/category")
 @Produces("application/json")
@@ -39,14 +38,12 @@ public class PersonInfoCategoryAuthWebservice extends WebService {
 		return personInfoCategoryAuthFinder.getDetailPersonCategoryAuthByPId(roleId, personCategoryAuthId);
 	}
 
-	
 	@POST
-	@Path("find/{roleId}")
-	public List<PersonInfoCategoryDetail> getAllCategoryByRoleId(@PathParam("roleId") String roleId) {
-		return personInfoCategoryAuthFinder.getAllCategoryByRoleId(roleId);
+	@Path("find/categoryAuth/{roleId}")
+	public List<PersonInfoCategoryAuthDto> getAllCategoryAuthByRoleId(@PathParam("roleId") String roleId) {
+		return personInfoCategoryAuthFinder.getAllCategoryAuth(roleId);
 
 	}
-	
 	@POST
 	@Path("update")
 	public void updateCategoryAuth(UpdatePersonInfoCategoryAuthCommand command){

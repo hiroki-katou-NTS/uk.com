@@ -48,6 +48,8 @@
 						<input type="button" id="update-row" value="updateRow"/>
 						<input type="button" id="enable-ctrl" value="Enable"/>
 						<input type="button" id="disable-ctrl" value="Disable"/>
+						<input type="button" id="enable-ctrls" value="Enable All"/>
+						<input type="button" id="disable-ctrls" value="Disable All"/>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -154,6 +156,18 @@
 												<td>$(".selector").ntsGrid("disableNtsControlAt", rowId, columnKey, controlType);</td>
 												<td>
 													Disable control in the cell corresponding to rowId and columnKey.
+												</td>
+											</tr>
+											<tr>
+												<td>$(".selector").ntsGrid("enableNtsControls", columnKey, controlType);</td>
+												<td>
+													Enable controls in a column of columnKey.
+												</td>
+											</tr>											
+											<tr>
+												<td>$(".selector").ntsGrid("disableNtsControls", columnKey, controlType);</td>
+												<td>
+													Disable controls in a column of columnKey.
 												</td>
 											</tr>
 											<tr>

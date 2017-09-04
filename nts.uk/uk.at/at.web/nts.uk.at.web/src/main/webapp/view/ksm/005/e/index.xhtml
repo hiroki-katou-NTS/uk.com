@@ -17,19 +17,17 @@
 			<ui:define name="content">
 				<div class="contents">
 					<div class="period_labels">
-						<div
-							data-bind="ntsFormLabel: {required: true}">
+						<div data-bind="ntsFormLabel: {required: true}">
 							<label>#{i18n.getText('KSM005_27')}</label>
 						</div>
-						<div tabindex="1" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yearmonth'}"></div>
+						<div tabindex="1" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yearmonth', required: true}" class="yearmonthInput"></div>
 						<label>~</label>
-						<div tabindex="2" data-bind="ntsDatePicker: {value: endYearMonth, dateFormat: 'yearmonth'}"></div>
+						<div tabindex="2" data-bind="ntsDatePicker: {value: endYearMonth, dateFormat: 'yearmonth', required: true}" class="yearmonthInput" ></div>
 					</div>
 					<div class="employee_labels">
 						<div data-bind="ntsFormLabel: {}">
 							<label>#{i18n.getText('KSM005_28')}</label>
 						</div>
-						<br />
 						<hr/>
 					</div>
 					
@@ -84,9 +82,7 @@
 				</div>
 				
 				<div id="functions-area-bottom">
-					<div  tabindex="7" data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KSM005_33')}</div>
-					<br />
-					<br />
+					<div  id="checkOverWriteSetting" tabindex="7" data-bind="ntsCheckBox: { checked: overwirte }">#{i18n.getText('KSM005_33')}</div>
 					<button tabindex="8" class="proceed x-large" data-bind="click: saveMonthlyPatternSettingBatch">#{i18n.getText('KSM005_34')}</button>
 					<button tabindex="9" class="large" data-bind="click: cancelSaveMonthlyPatternSetting">#{i18n.getText('KSM005_26')}</button>
 				</div>

@@ -1,6 +1,9 @@
 package find.person.info.item;
 
+import java.util.List;
+
 import lombok.Value;
+import nts.arc.enums.EnumConstant;
 
 @Value
 public class PerInfoItemDefDto {
@@ -13,5 +16,7 @@ public class PerInfoItemDefDto {
 	private int isRequired;
 	private int systemRequired;
 	private int requireChangable;
+	private int dispOrder;
 	private ItemTypeStateDto itemTypeState;
+	private List<EnumConstant> selectionItemRefTypes;
 }

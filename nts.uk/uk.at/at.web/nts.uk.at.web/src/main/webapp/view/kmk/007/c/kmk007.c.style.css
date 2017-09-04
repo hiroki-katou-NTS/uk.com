@@ -1,0 +1,21 @@
+@CHARSET "UTF-8";
+
+#contents-area{
+	padding: 40px 20px;
+	float: left;
+    display: inline-flex;
+}
+
+.swap-contents{
+	float: left;
+    padding-left: 20px;
+    margin-top: -24px;
+}
+
+.ntsUpButton{
+	margin-bottom: 50px;
+}
+
+button.auto-height{
+	height: 80px;
+}

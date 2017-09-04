@@ -12,10 +12,9 @@ import java.util.List;
 public interface CompanyInformationAdapter {
 	
 	/**
-	 * Find by contract code.
+	 * Find all.
 	 *
-	 * @param contractCode the contract code
 	 * @return the list
 	 */
-	List<CompanyInformationDto> findByContractCode(String contractCode);
+	List<CompanyInformationDto> findAll();
 }

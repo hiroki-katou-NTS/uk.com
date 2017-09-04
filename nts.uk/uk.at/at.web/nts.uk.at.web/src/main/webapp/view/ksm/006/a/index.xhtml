@@ -45,8 +45,8 @@
 								<tr class="tr-heigh">
 									<td style="width: 150px"><div
 											data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_6')}</div></td>
-									<td class="td-width-100"><button id="focus-btn" style="width: 70px"
-											tabindex="3" data-bind="click: gotoDialog">#{i18n.getText('KSM006_11')}</button></td>
+									<td class="td-width-100"><button id="companyBWWorkingDayBtn" style="width: 70px"
+											tabindex="3" data-bind="click: gotoDialog.bind($data, 1)">#{i18n.getText('KSM006_11')}</button></td>
 									<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
 									<td class="td-width-100"><span data-bind="text: worktypeCode"></span></td>
 									<td class="td-width-100"><span data-bind="text: worktypeDisplayName"></span></td>
@@ -64,8 +64,8 @@
 								<tr class="tr-heigh">
 									<td style="width: 150px"><div
 											data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_7')}</div></td>
-									<td class="td-width-100"><button style="width: 70px"
-											tabindex="4" data-bind="click: gotoDialog">#{i18n.getText('KSM006_11')}</button></td>
+									<td class="td-width-100"><button style="width: 70px" id="companyBWNonInLawBtn"
+											tabindex="4" data-bind="click: gotoDialog.bind($data, 2)">#{i18n.getText('KSM006_11')}</button></td>
 									<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
 									<td class="td-width-100"><span data-bind="text: worktypeCode"></span></td>
 									<td class="td-width-100"><span data-bind="text: worktypeDisplayName"></span></td>
@@ -82,7 +82,7 @@
 								<tr class="tr-heigh">
 									<td style="width: 150px"><div
 											data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_8')}</div></td>
-									<td class="td-width-100" data-bind="click: gotoDialog"><button style="width: 70px"
+									<td class="td-width-100" data-bind="click: gotoDialog.bind($data, 3)"><button style="width: 70px" id="companyBWNonExtraBtn"
 											tabindex="5">#{i18n.getText('KSM006_11')}</button></td>
 									<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
 									<td class="td-width-100"><span data-bind="text: worktypeCode"></span></td>
@@ -113,7 +113,7 @@
 				<div id="workplace-content">
 					<table style="margin: 50px">
 						<tr>
-							<td style="width: 500px">
+							<td>
 								<div id="workplace-list" tabindex="-1"></div>
 							</td>
 
@@ -129,8 +129,8 @@
 										<tr class="tr-heigh">
 											<td style="width: 150px"><div
 													data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_6')}</div></td>
-											<td class="td-width-100"><button style="width: 70px"
-													tabindex="2"  data-bind="click: gotoDialog">#{i18n.getText('KSM006_11')}</button></td>
+											<td class="td-width-100"><button style="width: 70px" id="workplaceBWWorkingDayBtn"
+													tabindex="2"  data-bind="click: gotoDialog.bind($data, 1)">#{i18n.getText('KSM006_11')}</button></td>
 											<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
 											<td class="td-width-100"><span
 												data-bind="text: worktypeCode"></span></td>
@@ -152,8 +152,8 @@
 										<tr class="tr-heigh">
 											<td style="width: 150px"><div
 													data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_7')}</div></td>
-											<td class="td-width-100"><button style="width: 70px"
-													tabindex="3"  data-bind="click: gotoDialog">#{i18n.getText('KSM006_11')}</button></td>
+											<td class="td-width-100"><button style="width: 70px" id="workplaceBWNonInLawBtn"
+													tabindex="3"  data-bind="click: gotoDialog.bind($data, 2)">#{i18n.getText('KSM006_11')}</button></td>
 											<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
 											<td class="td-width-100"><span
 												data-bind="text: worktypeCode"></span></td>
@@ -174,8 +174,8 @@
 										<tr class="tr-heigh">
 											<td style="width: 150px"><div
 													data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_8')}</div></td>
-											<td class="td-width-100"><button style="width: 70px"
-													tabindex="4" data-bind="click: gotoDialog">#{i18n.getText('KSM006_11')}</button></td>
+											<td class="td-width-100"><button style="width: 70px" id="workplaceBWNonExtraBtn"
+													tabindex="4" data-bind="click: gotoDialog.bind($data, 3)">#{i18n.getText('KSM006_11')}</button></td>
 											<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
 											<td class="td-width-100"><span
 												data-bind="text: worktypeCode"></span></td>
@@ -211,7 +211,7 @@
 				<div id="classification-content">
 					<table style="margin: 50px">
 						<tr>
-							<td style="width: 500px">
+							<td>
 								<div id="classification-list" tabindex="-1"></div>
 							</td>
 
@@ -227,8 +227,8 @@
 										<tr class="tr-heigh">
 											<td style="width: 150px"><div
 													data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_6')}</div></td>
-											<td class="td-width-100"><button style="width: 70px"
-													tabindex="2"  data-bind="click: gotoDialog">#{i18n.getText('KSM006_11')}</button></td>
+											<td class="td-width-100"><button style="width: 70px" id="classifyBWWorkingDayBtn"
+													tabindex="2"  data-bind="click: gotoDialog.bind($data, 1)">#{i18n.getText('KSM006_11')}</button></td>
 											<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
 											<td class="td-width-100"><span
 												data-bind="text: worktypeCode"></span></td>
@@ -250,8 +250,8 @@
 										<tr class="tr-heigh">
 											<td style="width: 150px"><div
 													data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_7')}</div></td>
-											<td class="td-width-100"><button style="width: 70px"
-													tabindex="3"  data-bind="click: gotoDialog">#{i18n.getText('KSM006_11')}</button></td>
+											<td class="td-width-100"><button style="width: 70px" id="classifyBWNonInLawBtn"
+													tabindex="3"  data-bind="click: gotoDialog.bind($data, 2)">#{i18n.getText('KSM006_11')}</button></td>
 											<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
 											<td class="td-width-100"><span
 												data-bind="text: worktypeCode"></span></td>
@@ -272,8 +272,8 @@
 										<tr class="tr-heigh">
 											<td style="width: 150px"><div
 													data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSM006_8')}</div></td>
-											<td class="td-width-100"><button style="width: 70px"
-													tabindex="4"  data-bind="click: gotoDialog">#{i18n.getText('KSM006_11')}</button></td>
+											<td class="td-width-100"><button style="width: 70px" id="classifyBWNonExtraBtn"
+													tabindex="4"  data-bind="click: gotoDialog.bind($data, 3)">#{i18n.getText('KSM006_11')}</button></td>
 											<td class="td-width-100"><span>#{i18n.getText('KSM006_9')}</span></td>
 											<td class="td-width-100"><span
 												data-bind="text: worktypeCode"></span></td>

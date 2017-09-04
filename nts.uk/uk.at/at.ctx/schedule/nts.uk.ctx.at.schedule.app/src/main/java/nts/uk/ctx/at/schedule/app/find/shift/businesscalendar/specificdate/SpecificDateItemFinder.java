@@ -45,7 +45,7 @@ public class SpecificDateItemFinder {
 	}
 
 	private SpecificDateItemDto toSpecificDateItemDto(SpecificDateItem specificDateItem) {
-		return new SpecificDateItemDto(specificDateItem.getTimeItemId(), specificDateItem.getUseAtr().value,
+		return new SpecificDateItemDto(specificDateItem.getUseAtr().value,
 				specificDateItem.getSpecificDateItemNo().v(), specificDateItem.getSpecificName().v());
 	}
 

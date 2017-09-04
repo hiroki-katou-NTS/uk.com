@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.app.command.dailyperformanceformat;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,44 +38,48 @@ public class UpdateBusinessTypeDailyCommandHandler extends CommandHandler<Update
 		UpdateBusinessTypeDailyCommand command = context.getCommand();
 
 		// List attendanceItemId in DB
-		List<BigDecimal> attendanceItemIdInDBs = this.businessTypeFormatDailyRepository
+		List<Integer> attendanceItemIdInDBs = this.businessTypeFormatDailyRepository
 				.getBusinessTypeFormatDailyDetail(companyId, command.getBusinesstypeCode(), command.getSheetNo())
 				.stream().map(f -> {
 					return f.getAttendanceItemId();
 				}).collect(Collectors.toList());
 
 		// List attendanceItemId from UI
-		List<BigDecimal> attendanceItemIdInUI = command.getWorkTypeFormatDetailDtos().stream().map(f -> {
+		List<Integer> attendanceItemIdInUI = command.getBusinessTypeFormatDetailDtos().stream().map(f -> {
 			return f.getAttendanceItemId();
 		}).collect(Collectors.toList());
 
 		// List attendanceItemId has been removed from List UI compare List from DB
-		List<BigDecimal> attendanceItemIdRemove = attendanceItemIdInDBs.stream()
+		List<Integer> attendanceItemIdRemove = attendanceItemIdInDBs.stream()
 				.filter(f -> !attendanceItemIdInUI.contains(f)).collect(Collectors.toList());
 
 		// List attendanceItemId has been added from List UI compare List from DB
-		List<BigDecimal> attendanceItemIdAdd = attendanceItemIdInUI.stream()
+		List<Integer> attendanceItemIdAdd = attendanceItemIdInUI.stream()
 				.filter(item -> !attendanceItemIdInDBs.contains(item)).collect(Collectors.toList());
 
 		// remove all of data has removed in list attendanceId from UI
-		this.businessTypeFormatDailyRepository.deleteExistData(attendanceItemIdRemove);
+		if(!attendanceItemIdRemove.isEmpty()){
+			this.businessTypeFormatDailyRepository.deleteExistData(attendanceItemIdRemove);			
+		}
 
 		// List Data Update from UI compare DB (exist in DB)
-		List<BusinessTypeFormatDaily> businessTypeFormatDailyUpdates = command.getWorkTypeFormatDetailDtos().stream()
+		List<BusinessTypeFormatDaily> businessTypeFormatDailyUpdates = command.getBusinessTypeFormatDetailDtos().stream()
 				.filter(item -> !attendanceItemIdAdd.contains(item.getAttendanceItemId())).map(f -> {
 					return new BusinessTypeFormatDaily(companyId, new BusinessTypeCode(command.getBusinesstypeCode()),
 							f.getAttendanceItemId(), command.getSheetNo(), f.getOrder(), f.getColumnWidth());
 				}).collect(Collectors.toList());
 
 		// List Data Add from UI (just added in UI)
-		List<BusinessTypeFormatDaily> businessTypeFormatDailyAdds = command.getWorkTypeFormatDetailDtos().stream()
+		List<BusinessTypeFormatDaily> businessTypeFormatDailyAdds = command.getBusinessTypeFormatDetailDtos().stream()
 				.filter(item -> attendanceItemIdAdd.contains(item.getAttendanceItemId())).map(f -> {
 					return new BusinessTypeFormatDaily(companyId, new BusinessTypeCode(command.getBusinesstypeCode()),
 							f.getAttendanceItemId(), command.getSheetNo(), f.getOrder(), f.getColumnWidth());
 				}).collect(Collectors.toList());
 
 		// add all of data has added in list attendanceId
-		this.businessTypeFormatDailyRepository.add(businessTypeFormatDailyAdds);
+		if(!businessTypeFormatDailyAdds.isEmpty()){
+			this.businessTypeFormatDailyRepository.add(businessTypeFormatDailyAdds);			
+		}
 
 		// update data has changed in list attendanceId
 		businessTypeFormatDailyUpdates.forEach(f -> {

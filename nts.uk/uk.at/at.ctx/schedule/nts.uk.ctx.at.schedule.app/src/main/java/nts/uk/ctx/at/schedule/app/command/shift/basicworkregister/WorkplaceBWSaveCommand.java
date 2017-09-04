@@ -7,39 +7,76 @@ package nts.uk.ctx.at.schedule.app.command.shift.basicworkregister;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Data;
-import nts.uk.ctx.at.schedule.app.command.shift.basicworkregister.dto.BasicWorkSettingDto;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceId;
-
 
 /**
  * The Class WorkplaceBWSaveCommand.
  */
-@Data
-public class WorkplaceBWSaveCommand implements WorkplaceBasicWorkGetMemento {
-	
+@Getter
+@Setter
+public class WorkplaceBWSaveCommand extends BaseBWSaveCommand {
+
 	/** The workplace id. */
 	private String workplaceId;
-	
-	/** The basic work setting. */
-	private List<BasicWorkSettingDto> basicWorkSetting;
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkGetMemento#getWorkPlaceId()
+
+	/**
+	 * To domain.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @return the daily pattern
 	 */
-	@Override
-	public WorkplaceId getWorkPlaceId() {
-		return new WorkplaceId(this.workplaceId);
+	public WorkplaceBasicWork toDomain() {
+		return new WorkplaceBasicWork(new GetMemento(this));
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkGetMemento#getBasicWorkSetting()
+	/**
+	 * The Class JpaPatternCalendarSettingGetMemento.
 	 */
-	@Override
-	public List<BasicWorkSetting> getBasicWorkSetting() {
-		return this.basicWorkSetting.stream().map(item -> item.toDomain())
-				.collect(Collectors.toList());
+	private class GetMemento implements WorkplaceBasicWorkGetMemento {
+
+		/** The setting. */
+		private WorkplaceBWSaveCommand command;
+
+		/**
+		 * Instantiates a new jpa pattern calendar setting get memento.
+		 *
+		 * @param companyId
+		 *            the company id
+		 * @param setting
+		 *            the setting
+		 */
+		public GetMemento(WorkplaceBWSaveCommand command) {
+			this.command = command;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.
+		 * WorkplaceBasicWorkGetMemento#getWorkPlaceId()
+		 */
+		@Override
+		public WorkplaceId getWorkPlaceId() {
+			return new WorkplaceId(this.command.workplaceId);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.schedule.dom.shift.basicworkregister.
+		 * WorkplaceBasicWorkGetMemento#getBasicWorkSetting()
+		 */
+		@Override
+		public List<BasicWorkSetting> getBasicWorkSetting() {
+			return this.command.basicWorkSetting.stream().map(item -> item.toDomain())
+					.collect(Collectors.toList());
+		}
 	}
+
 }

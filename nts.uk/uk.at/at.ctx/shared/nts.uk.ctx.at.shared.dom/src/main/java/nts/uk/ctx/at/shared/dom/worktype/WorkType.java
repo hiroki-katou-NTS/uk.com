@@ -4,63 +4,157 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktype;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
+import nts.arc.layer.dom.AggregateRoot;
 
+/**
+ * The Class WorkType.
+ */
+// 勤務種類
 @Getter
-public class WorkType {
-	/*会社ID*/
+public class WorkType extends AggregateRoot {
+
+	/** The company id. */
+	/* 会社ID */
 	private String companyId;
-	/*勤務種類コード*/
+
+	/** The work type code. */
+	/* 勤務種類コード */
 	private WorkTypeCode workTypeCode;
-	/*ソート順*/
-	private int sortOrder;
-	/*勤務種類記号名*/
+
+	/** The symbolic name. */
+	/* 勤務種類記号名 */
 	private WorkTypeSymbolicName symbolicName;
-	/*勤務種類名称*/
+
+	/** The name. */
+	/* 勤務種類名称 */
 	private WorkTypeName name;
-	/*勤務種類略名*/
+
+	/** The abbreviation name. */
+	/* 勤務種類略名 */
 	private WorkTypeAbbreviationName abbreviationName;
-	/*勤務種類備考*/
+
+	/** The memo. */
+	/* 勤務種類備考 */
 	private WorkTypeMemo memo;
-	/*使用区分*/
-	private DisplayAtr displayAtr;
 
 	/** The daily work. */
-	private DailyWork dailyWork;  // 1日の勤務
+	// 1日の勤務
+	private DailyWork dailyWork;
 
 	/** The deprecate. */
-	private DeprecateClassification deprecate; //廃止区分
+	// 廃止区分
+	private DeprecateClassification deprecate;
+
+	// 出勤率の計算
+	private CalculateMethod calculateMethod;
+
+	private List<WorkTypeSet> workTypeSetList;
 	
-	public WorkType(String companyId, WorkTypeCode workTypeCode, int sortOrder,
-			WorkTypeSymbolicName symbolicName, WorkTypeName name, WorkTypeAbbreviationName abbreviationName,
-			WorkTypeMemo memo, DisplayAtr displayAtr) {
+	@Override
+	public void validate() {
+		super.validate();
+		if (this.workTypeCode.v() == "000") {
+			throw new BusinessException("Msg_385");
+		}
+
+		WorkTypeClassification moringType = this.dailyWork.getMorning();
+		WorkTypeClassification afternoonType = this.dailyWork.getAfternoon();
+		if (this.dailyWork.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon) {
+			if ((moringType == afternoonType && (moringType != WorkTypeClassification.Attendance
+					|| moringType == WorkTypeClassification.SpecialHoliday))
+					|| (moringType == WorkTypeClassification.Pause && afternoonType == WorkTypeClassification.Shooting)
+					|| (moringType == WorkTypeClassification.Shooting
+							&& afternoonType == WorkTypeClassification.Pause)) {
+				throw new BusinessException("Msg_395");
+			}
+		}
+	}
+
+	/**
+	 * 
+	 * @param companyId
+	 * @param workTypeCode
+	 * @param sortOrder
+	 * @param symbolicName
+	 * @param name
+	 * @param abbreviationName
+	 * @param memo
+	 * @param displayAtr
+	 * @param dailyWork
+	 * @param deprecate
+	 * @param calculateMethod
+	 */
+	public WorkType(String companyId, WorkTypeCode workTypeCode, WorkTypeSymbolicName symbolicName, WorkTypeName name,
+			WorkTypeAbbreviationName abbreviationName, WorkTypeMemo memo, DailyWork dailyWork,
+			DeprecateClassification deprecate, CalculateMethod calculateMethod) {
 		super();
 		this.companyId = companyId;
 		this.workTypeCode = workTypeCode;
-		this.sortOrder = sortOrder;
 		this.symbolicName = symbolicName;
 		this.name = name;
 		this.abbreviationName = abbreviationName;
 		this.memo = memo;
-		this.displayAtr = displayAtr;
+		this.dailyWork = dailyWork;
+		this.deprecate = deprecate;
+		this.calculateMethod = calculateMethod;
+	}
+
+	/**
+	 * Creates the simple from java type.
+	 *
+	 * @param companyId
+	 *            the company id
+	 * @param workTypeCode
+	 *            the work type code
+	 * @param sortOrder
+	 *            the sort order
+	 * @param symbolicName
+	 *            the symbolic name
+	 * @param name
+	 *            the name
+	 * @param abbreviationName
+	 *            the abbreviation name
+	 * @param memo
+	 *            the memo
+	 * @param displayAtr
+	 *            the display atr
+	 * @return the work type
+	 */
+	public static WorkType createSimpleFromJavaType(String companyId, String workTypeCode, String symbolicName,
+			String name, String abbreviationName, String memo, int workTypeUnit, int oneDay, int morning, int afternoon,
+			int deprecate, int calculateMethod) {
+		DailyWork dailyWork = new DailyWork();
+		dailyWork.setWorkTypeUnit(EnumAdaptor.valueOf(workTypeUnit, WorkTypeUnit.class));
+		dailyWork.setOneDay(EnumAdaptor.valueOf(oneDay, WorkTypeClassification.class));
+		dailyWork.setMorning(EnumAdaptor.valueOf(morning, WorkTypeClassification.class));
+		dailyWork.setAfternoon(EnumAdaptor.valueOf(afternoon, WorkTypeClassification.class));
+		return new WorkType(companyId, new WorkTypeCode(workTypeCode), new WorkTypeSymbolicName(symbolicName),
+				new WorkTypeName(name), new WorkTypeAbbreviationName(abbreviationName), new WorkTypeMemo(memo),
+				dailyWork, EnumAdaptor.valueOf(deprecate, DeprecateClassification.class),
+				EnumAdaptor.valueOf(calculateMethod, CalculateMethod.class));
 	}
 	
-	public static WorkType createSimpleFromJavaType(String companyId,
-										String workTypeCode,
-										int sortOrder,
-										String symbolicName,
-										String name,
-										String abbreviationName,
-										String memo,
-										int displayAtr){
-		return new WorkType(companyId, 
-				new WorkTypeCode(workTypeCode),
-				sortOrder,
-				new WorkTypeSymbolicName(symbolicName),
-				new WorkTypeName(name),
-				new WorkTypeAbbreviationName(abbreviationName),
-				new WorkTypeMemo(memo),
-				EnumAdaptor.valueOf(displayAtr, DisplayAtr.class));
+	/**
+	 * Set work type set
+	 * @param workTypeList
+	 */
+	public void setWorkTypeSet(List<WorkTypeSet> workTypeList) {
+		this.workTypeSetList = workTypeList;
 	}
+	
+	
+	public AttendanceHolidayAttr getAttendanceHolidayAttr() {
+		return this.dailyWork.getAttendanceHolidayAttr();
+	}
+	
+	public boolean isWeekDayAttendance() {
+		return this.dailyWork.isWeekDayAttendance();
+	}
+
+	
 }

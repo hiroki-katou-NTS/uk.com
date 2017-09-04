@@ -17,16 +17,23 @@ import nts.uk.ctx.at.shared.infra.entity.attendance.KmnmtAttendanceType;
 @Stateless
 public class JpaAttendanceTypeRepository extends JpaRepository implements AttendanceTypeRepository{
 	
-	private final String SEL_ITEM_BY_TYPE = "SELECT a FROM KmnmtAttendanceType a WHERE a.kmnmtAttendanceTypePK.companyId = :companyId AND a.kmnmtAttendanceTypePK.attendanceItemType = :attendanceItemType";
+	private final String SEL_ITEM_BY_TYPE = "SELECT a "
+			+ "FROM KmnmtAttendanceType a "
+			+ "WHERE a.kmnmtAttendanceTypePK.companyId = :companyId "
+			+ "AND a.kmnmtAttendanceTypePK.screenUseAtr = :screenUseAtr";
 	
 	@Override
-	public List<AttendanceType> getItemByType(String companyID, int type) {
-		return this.queryProxy().query(SEL_ITEM_BY_TYPE, KmnmtAttendanceType.class).setParameter("companyId", companyID).setParameter("attendanceItemType", type)
+	public List<AttendanceType> getItemByScreenUseAtr(String companyID, int screenUseAtr) {
+		return this.queryProxy()
+				.query(SEL_ITEM_BY_TYPE, KmnmtAttendanceType.class)
+				.setParameter("companyId", companyID)
+				.setParameter("screenUseAtr", screenUseAtr)
 			.getList().stream().map(x -> 
 				AttendanceType.createSimpleFromJavaType(
 						x.kmnmtAttendanceTypePK.companyId, 
-						x.kmnmtAttendanceTypePK.attendanceItemId, 
-						x.kmnmtAttendanceTypePK.attendanceItemType))
+						x.kmnmtAttendanceTypePK.attendanceItemId,
+						x.kmnmtAttendanceTypePK.screenUseAtr,
+						x.attendanctType))
 			.collect(Collectors.toList());
 	}
 

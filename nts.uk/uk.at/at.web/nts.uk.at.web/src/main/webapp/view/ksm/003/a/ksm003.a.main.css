@@ -8,10 +8,6 @@
 	min-width: 75px;
 }
 
-#btn_001 {
-	border: 1px solid #aaa;
-	padding-bottom: 15px;
-}
 #left-content {
 	margin: 10px 0px 0 20px !important;
 	float: left;
@@ -53,4 +49,7 @@
 	padding-left: 10px;
 	min-width: 100px;
 	max-width: 200px;
+}
+.tbl-monthly .ntsControl {
+	width: 50px !important;
 }

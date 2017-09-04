@@ -118,6 +118,25 @@ module nts.uk.ui.koExtentions {
             });
             var treeGridId = $treegrid.attr('id');
             $treegrid.closest('.ui-igtreegrid').addClass('nts-treegridview').attr("tabindex", tabIndex);
+            
+            $treegrid.bind('selectionchanged', () => {
+                if (data.multiple) {
+                    let selected: Array<any> = $treegrid.ntsTreeView('getSelected');
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
+                        data.selectedValues(_.map(selected, s => s.id));
+                    } else {
+                        data.selectedValues([]);
+                    }
+                } else {
+                    let selected = $treegrid.ntsTreeView('getSelected');
+                    if (!nts.uk.util.isNullOrEmpty(selected)) {
+                        data.value(selected.id);
+                    } else {
+                        data.value('');
+                    }
+                }
+            });
+            
             $treegrid.setupSearchScroll("igTreeGrid");
         }
 
