@@ -582,6 +582,10 @@
             }
 
             format(source: any): string {
+                if (nts.uk.util.isNullOrEmpty(source)) {
+                    return "";
+                }
+                
                 var result;
                 if (this.option.inputFormat === "yearmonth") {
                     result = time.parseYearMonth(source);
