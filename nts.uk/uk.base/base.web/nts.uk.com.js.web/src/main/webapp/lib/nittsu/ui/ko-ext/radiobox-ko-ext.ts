@@ -43,21 +43,21 @@ module nts.uk.ui.koExtentions {
                         let checkitem = container.find("input[type='radio']");
                         if(!container.find("input[type='radio']").is(":checked")){
                             checkitem.prop("checked", true); 
-                            data.checked(true);        
+                            data.checked(container.find("input[type='radio']").data("value"));        
                         } else {
                             checkitem.prop("checked", false); 
-                            data.checked(false);    
+                            data.checked(undefined);    
                         }    
                         
                         container.focus();  
                     }             
                 }        
             }); 
-            var radioBoxLabel = drawRadio(data.checked, option, dataName, optionValue, enable, optionText, true);
+            var radioBoxLabel = drawRadio(data.checked, option, dataName, optionValue, enable, optionText, false);
             radioBoxLabel.appendTo(container);
             let radio = container.find("input[type='radio']");
             radio.attr("name", group).bind('selectionchanged', () => {
-                data.checked(radio.is(":checked")); 
+                data.checked(radio.data("value")); 
             });
             // Default value
             new nts.uk.util.value.DefaultValue().onReset(container, data.value);
@@ -230,7 +230,7 @@ module nts.uk.ui.koExtentions {
     
     function getOptionValue (item: any, optionValue: string) {
         if (nts.uk.util.isNullOrUndefined(item)) {
-            return optionValue;        
+            return nts.uk.util.isNullOrUndefined(optionValue) ? true : optionValue;        
         }
         return (optionValue === undefined) ? item : item[optionValue];
     };

@@ -46,6 +46,7 @@
 							<hr/>
 							<h2>GridList</h2>
 							<h3>Search mode: filter</h3>
+							<button data-bind="click:rebind"> rebind</button>
 							<div style="width: 852px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
 								items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />																																														
 							<table id="multi-list" data-bind="ntsGridList: {
@@ -75,6 +76,7 @@
 									enable: true,										
 									showCheckBox: false}">
 							</table>
+							<label data-bind="text: singleSelectedCode()"></label>
 							<hr/>
 							<h2>Multi Selection TreeGrid</h2>
 							<div style="width: 700px" data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTree', comId:'treegrid2', items: dataSource2, selected: selectedCodes2, selectedKey: 'code', childField: 'childs', fields: ['name', 'code']}" />																																														
@@ -91,6 +93,7 @@
 									enable: true,										
 									showCheckBox: true}">
 							</table>
+							<label data-bind="text: selectedCodes2()"></label>
 						</div>
 						<article class="cf">
 							<div class="tabs">

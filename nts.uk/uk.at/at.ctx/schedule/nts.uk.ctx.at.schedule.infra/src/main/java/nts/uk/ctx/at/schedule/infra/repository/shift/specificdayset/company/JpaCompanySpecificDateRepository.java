@@ -31,7 +31,7 @@ public class JpaCompanySpecificDateRepository extends JpaRepository implements C
 	 * get List With Name of Specific
 	 */
 	private static final String GET_BY_USE_WITH_NAME = "SELECT p.name,p.useAtr, s FROM KsmmtComSpecDateSet s"
-			+ " INNER JOIN KsmstSpecificDateItem p ON p.itemNo = s.ksmmtComSpecDateSetPK.specificDateItemNo"
+			+ " INNER JOIN KsmstSpecificDateItem p ON p.ksmstSpecificDateItemPK.itemNo = s.ksmmtComSpecDateSetPK.specificDateItemNo"
 			+ " WHERE s.ksmmtComSpecDateSetPK.companyId = :companyId"
 			+ " AND CAST(s.ksmmtComSpecDateSetPK.specificDate AS VARCHAR(8)) LIKE CONCAT( :specificDate,'%')";
 	

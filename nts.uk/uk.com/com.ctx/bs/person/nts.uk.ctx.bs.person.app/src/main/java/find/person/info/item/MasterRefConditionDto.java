@@ -1,7 +1,7 @@
 package find.person.info.item;
 
 import lombok.Getter;
-import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceType;
+import nts.uk.ctx.bs.person.dom.person.info.selectionitem.ReferenceTypes;
 
 @Getter
 public class MasterRefConditionDto extends SelectionItemDto {
@@ -9,7 +9,7 @@ public class MasterRefConditionDto extends SelectionItemDto {
 	private String masterType;
 
 	private MasterRefConditionDto(String masterType) {
-		super(ReferenceType.DESIGNATED_MASTER);
+		super(ReferenceTypes.DESIGNATED_MASTER);
 		this.masterType = masterType;
 	}
 

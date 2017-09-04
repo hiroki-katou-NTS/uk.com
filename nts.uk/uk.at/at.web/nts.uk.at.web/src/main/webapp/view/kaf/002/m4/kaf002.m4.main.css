@@ -1,0 +1,10 @@
+.table {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.column1 {
+	width: 150px;
+}
+.column2 {
+	vertical-align: middle;
+}

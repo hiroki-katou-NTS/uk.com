@@ -2,8 +2,8 @@ module nts.uk.com.view.cps005.a {
     export module service {
         export class Service {
             paths = {
-                getAllPerInfoCtg: "ctx/bs/person/info/category/findby/company",
-                getPerInfoCtg: "ctx/bs/person/info/category/findby/{0}",
+                getAllPerInfoCtg: "ctx/bs/person/info/category/findAll/company/root",
+                getPerInfoCtg: "ctx/bs/person/info/category/find/companyby/{0}",
                 getPerInfoCtgWithItemsName: "ctx/bs/person/info/category/find/withItemsName/{0}",
                 addPerInfoCtg: "ctx/bs/person/info/category/add",
                 updatePerInfoCtg: "ctx/bs/person/info/category/update",
@@ -27,11 +27,11 @@ module nts.uk.com.view.cps005.a {
             };
 
             addPerInfoCtg(newCategory: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("com", this.paths.getAllPerInfoCtg);
+                return nts.uk.request.ajax("com", this.paths.addPerInfoCtg, newCategory);
             };
 
-            updatePerInfoCtg(newCategory: any): JQueryPromise<any> {
-                return nts.uk.request.ajax("com", this.paths.updatePerInfoCtg);
+            updatePerInfoCtg(updateCategory: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("com", this.paths.updatePerInfoCtg, updateCategory);
             };
 
         }

@@ -19,8 +19,8 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDateTime;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLog;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLog;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLogRepository;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetLog;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetLog_;
 
@@ -117,6 +117,18 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
                 .collect(Collectors.toList());
     }
 
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.
+     * ExternalBudgetLogRepository#isExisted(java.lang.String)
+     */
+    @Override
+    public boolean isExisted(String executeId) {
+        return this.queryProxy().find(executeId, KscdtExtBudgetLog.class).isPresent();
+    }
+
+    
     /**
      * To entity.
      *

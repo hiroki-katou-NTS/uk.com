@@ -9,7 +9,7 @@ public class MasterReferenceCondition extends ReferenceTypeState {
 
 	private MasterReferenceCondition(String masterType) {
 		super();
-		this.referenceType = ReferenceType.DESIGNATED_MASTER;
+		this.referenceType = ReferenceTypes.DESIGNATED_MASTER;
 		this.masterType = new MasterType(masterType);
 	}
 

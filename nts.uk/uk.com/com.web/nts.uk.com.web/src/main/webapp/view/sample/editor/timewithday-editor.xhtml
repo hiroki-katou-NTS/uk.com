@@ -24,16 +24,25 @@
 				<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>TimeEditor</h1>
+						<h1>TimeWithDayEditor</h1>
 						<h2>Overview</h2>
 						<!-- Binding with Value -->
 						<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 						<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
-						<h3>Show Time With Day</h3>
-						<input id="test" data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint:'TimeWithDayAttr', value: time, enable: enable, readonly: readonly, required: true }" />
-						<h3>Show Raw Time</h3>
-						<input id="test2" data-bind="ntsTimeWithDayEditor: {name: 'Time With Day 2', constraint:'TimeWithDayAttr', value: time2, enable: enable, readonly: readonly, required: true, option: {timeWithDay: false}}" />
-						
+						<p>
+							<h3>Show Time With Day</h3>
+							<input id="test" data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint:'TimeWithDayAttr', value: time, enable: enable, readonly: readonly, required: true }" />
+							binding: <span data-bind="text: time"></span>
+						</p>
+						<p>
+							<input id="test" data-bind="ntsTimeWithDayEditor: { name: 'Time With Day', constraint:'TimeWithDayAttr', value: time2, enable: enable, readonly: readonly, required: true }" />
+							binding: <span data-bind="text: time2"></span>
+						</p>
+						<p>
+							<h3>Show Raw Time</h3>
+							<input id="test2" data-bind="ntsTimeWithDayEditor: {name: 'Time With Day 2', constraint:'TimeWithDayAttr', value: time2, enable: enable, readonly: readonly, required: true, option: {timeWithDay: false}}" />
+							binding: <span data-bind="text: time2"></span>
+						</p>
 						<article class="cf">
 							<div class="tabs">
 								<ol>

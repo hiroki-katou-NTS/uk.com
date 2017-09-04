@@ -14,6 +14,7 @@ module nts.uk.at.view.ksm005.e {
 
         export class ScreenModel {
             monthlyPatternCode: string;
+            monthlyPatternName: string;
             startYearMonth: KnockoutObservable<number>;
             endYearMonth: KnockoutObservable<number>;
             overwirte: KnockoutObservable<boolean>;
@@ -33,22 +34,23 @@ module nts.uk.at.view.ksm005.e {
 
             constructor() {
                 var self = this;
-                self.startYearMonth = ko.observable(201701);
-                self.endYearMonth = ko.observable(201712);
+                self.startYearMonth = ko.observable(nts.uk.ui.windows.getShared("yearmonth"));
+                self.endYearMonth = ko.observable(nts.uk.ui.windows.getShared("yearmonth"));
                 self.overwirte = ko.observable(true);
-                self.worktypeInfoWorkDays = ko.observable('001 A');
-                self.worktimeInfoWorkDays = ko.observable('001 A');
-                self.worktypeInfoStatutoryHolidays = ko.observable('001 A');
-                self.worktimeInfoStatutoryHolidays = ko.observable('001 A');
-                self.worktypeInfoNoneStatutoryHolidays = ko.observable('001 A');
-                self.worktimeInfoNoneStatutoryHolidays = ko.observable('001 A');
-                self.worktypeInfoPublicHolidays = ko.observable('001 A');
-                self.worktimeInfoPublicHolidays = ko.observable('001 A');
+                self.worktypeInfoWorkDays = ko.observable('');
+                self.worktimeInfoWorkDays = ko.observable('');
+                self.worktypeInfoStatutoryHolidays = ko.observable('');
+                self.worktimeInfoStatutoryHolidays = ko.observable('');
+                self.worktypeInfoNoneStatutoryHolidays = ko.observable('');
+                self.worktimeInfoNoneStatutoryHolidays = ko.observable('');
+                self.worktypeInfoPublicHolidays = ko.observable('');
+                self.worktimeInfoPublicHolidays = ko.observable('');
                 self.monthlyPatternSettingBatchWorkDays = ko.observable(new MonthlyPatternSettingBatch());
                 self.monthlyPatternSettingBatchStatutoryHolidays = ko.observable(new MonthlyPatternSettingBatch());
                 self.monthlyPatternSettingBatchNoneStatutoryHolidays = ko.observable(new MonthlyPatternSettingBatch());
                 self.monthlyPatternSettingBatchPublicHolidays = ko.observable(new MonthlyPatternSettingBatch());
                 self.monthlyPatternCode = nts.uk.ui.windows.getShared("monthlyPatternCode");
+                self.monthlyPatternName = nts.uk.ui.windows.getShared("monthlyPatternName");
             }
 
 
@@ -101,7 +103,7 @@ module nts.uk.at.view.ksm005.e {
              */
             public findNameByWorktypeCode(workTypeCode: string, data: WorkTypeDto[]) {
                 var workTypeName: string = '';
-                for (var worktype: WorkTypeDto of data) {
+                for (var worktype of data) {
                     if (workTypeCode == worktype.workTypeCode) {
                         workTypeName = worktype.name;
                     }
@@ -125,19 +127,32 @@ module nts.uk.at.view.ksm005.e {
              * function check setting monthly pattern setting batch
              */
             public checkMonthlyPatternSettingBatchVal(val: MonthlyPatternSettingBatch){
-                if (val.workTypeCode && val.workingCode) {
+                if (val.workTypeCode) {
                     return false;
                 }    
                 return true;
             }
 
             /**
+             * function get between month start month to end month
+             */
+            private getbetweenMonth(endMonth: number, startMonth: number): number {
+                var endYear: number = Math.floor(endMonth/100);
+                var startYear: number = Math.floor(startMonth/100);
+                var numberMonthStart: number = startYear * 12 + startMonth % 100;
+                var numberMonthEnd: number = endYear * 12 + endMonth % 100;
+                return numberMonthEnd - numberMonthStart + 1;
+            }
+            /**
              * function check error by click button
              */
             public checkMonthlyPatternSettingBatch(): boolean {
                 var self = this;
+                if ($('.yearmonthInput').ntsError("hasError") == true) {
+                   return true;
+                }
                 //check start month and end month
-                if (self.endYearMonth() - self.startYearMonth() > 12) {
+                if (self.getbetweenMonth(self.endYearMonth(),self.startYearMonth()) > 12) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_149" }).then(function() {
                     });
                     return true;
@@ -167,6 +182,7 @@ module nts.uk.at.view.ksm005.e {
                 var self = this;
                 // check error
                 if (self.checkMonthlyPatternSettingBatch()) {
+                    nts.uk.ui.block.clear();
                     return;
                 }
                 self.saveMonthlyPatternSettingBatchService(BusinessDayClassification.WORK_DAYS, self.monthlyPatternSettingBatchWorkDays());
@@ -176,13 +192,12 @@ module nts.uk.at.view.ksm005.e {
                 service.batchWorkMonthlySetting(self.collectData()).done(function() {
                     // show message 15
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        nts.uk.ui.windows.setShared("isCancelSave", false);
                         nts.uk.ui.windows.close();
                     });
 
                 }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error).then(function() {
-                        nts.uk.ui.windows.close();
-                    });
+                    nts.uk.ui.dialog.alertError(error);
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
@@ -227,7 +242,8 @@ module nts.uk.at.view.ksm005.e {
                     overwrite: self.overwirte(),
                     startYearMonth: self.startYearMonth(),
                     endYearMonth: self.endYearMonth(),
-                    monthlyPatternCode: self.monthlyPatternCode
+                    monthlyPatternCode: self.monthlyPatternCode,
+                    monthlyPatternName: self.monthlyPatternName
                 };    
                 return dto;
             }
@@ -235,6 +251,7 @@ module nts.uk.at.view.ksm005.e {
              * function by click button cancel save monthly pattern setting batch
              */
             public cancelSaveMonthlyPatternSetting(): void{
+                nts.uk.ui.windows.setShared("isCancelSave", true);
                 nts.uk.ui.windows.close();    
             }
             /**
@@ -253,25 +270,25 @@ module nts.uk.at.view.ksm005.e {
             public openDialogWorkDays(): void {
                 var self = this;
                 nts.uk.ui.windows.setShared('parentCodes', {
-                    selectWorkTypeCode: self.monthlyPatternSettingBatchWorkDays().workTypeCode,
-                    selectSiftCode: self.monthlyPatternSettingBatchWorkDays().workingCode
+                    selectedWorkTypeCode: self.monthlyPatternSettingBatchWorkDays().workTypeCode,
+                    selectedWorkTimeCode: self.monthlyPatternSettingBatchWorkDays().workingCode
                 }, true);
 
                 nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function(){
                     var childData = nts.uk.ui.windows.getShared('childData');
-                    self.monthlyPatternSettingBatchWorkDays().workTypeCode = childData.selectedWorkTimeCode;
-                    if (childData.selectedWorkTimeCode) {
-                        self.worktypeInfoWorkDays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
-                    }
-                    else {
-                        self.worktypeInfoWorkDays(nts.uk.resource.getText("KSM005_43"));
-                    }
-                    self.monthlyPatternSettingBatchWorkDays().workingCode = childData.selectedSiftCode;
-                    if (childData.selectedSiftCode) {
-                        self.worktimeInfoWorkDays(childData.selectedSiftCode + ' ' + childData.selectedSiftName);
-                    } else {
-                        self.worktypeInfoWorkDays(nts.uk.resource.getText("KSM005_43"));
-                    } 
+                    if (childData) {
+                        self.monthlyPatternSettingBatchWorkDays().workTypeCode = childData.selectedWorkTypeCode;
+                        if (childData.selectedWorkTypeCode) {
+                            self.worktypeInfoWorkDays(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
+                        }
+                        self.monthlyPatternSettingBatchWorkDays().workingCode = childData.selectedWorkTimeCode;
+
+                        if (childData.selectedWorkTimeCode) {
+                            self.worktimeInfoWorkDays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
+                        } else {
+                            self.worktimeInfoWorkDays('');
+                        }
+                    }  
                 });
             }
             
@@ -281,25 +298,24 @@ module nts.uk.at.view.ksm005.e {
             public openDialogStatutoryHolidays(): void {
                 var self = this;
                 nts.uk.ui.windows.setShared('parentCodes', {
-                    selectWorkTypeCode: self.monthlyPatternSettingBatchStatutoryHolidays().workTypeCode,
-                    selectSiftCode: self.monthlyPatternSettingBatchStatutoryHolidays().workingCode
+                    selectedWorkTypeCode: self.monthlyPatternSettingBatchStatutoryHolidays().workTypeCode,
+                    selectedWorkTimeCode: self.monthlyPatternSettingBatchStatutoryHolidays().workingCode
                 }, true);
 
                 nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function(){
                     var childData = nts.uk.ui.windows.getShared('childData');
-                    self.monthlyPatternSettingBatchStatutoryHolidays().workTypeCode = childData.selectedWorkTimeCode;
-                    if (childData.selectedWorkTimeCode) {
-                        self.worktypeInfoStatutoryHolidays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
+                    if(childData){
+                        self.monthlyPatternSettingBatchStatutoryHolidays().workTypeCode = childData.selectedWorkTypeCode;
+                        if (childData.selectedWorkTypeCode) {
+                            self.worktypeInfoStatutoryHolidays(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
+                        }
+                        self.monthlyPatternSettingBatchStatutoryHolidays().workingCode = childData.selectedWorkTimeCode;
+                        if (childData.selectedWorkTimeCode) {
+                            self.worktimeInfoStatutoryHolidays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
+                        } else {
+                            self.worktimeInfoStatutoryHolidays('');
+                        }
                     }
-                    else {
-                        self.worktypeInfoStatutoryHolidays(nts.uk.resource.getText("KSM005_43"));
-                    }
-                    self.monthlyPatternSettingBatchStatutoryHolidays().workingCode = childData.selectedSiftCode;
-                    if (childData.selectedSiftCode) {
-                        self.worktimeInfoStatutoryHolidays(childData.selectedSiftCode + ' ' + childData.selectedSiftName);
-                    } else {
-                        self.worktypeInfoStatutoryHolidays(nts.uk.resource.getText("KSM005_43"));
-                    } 
                 });
             }
              /**
@@ -308,25 +324,27 @@ module nts.uk.at.view.ksm005.e {
             public openDialogNoneStatutoryHolidays(): void {
                 var self = this;
                 nts.uk.ui.windows.setShared('parentCodes', {
-                    selectWorkTypeCode: self.monthlyPatternSettingBatchNoneStatutoryHolidays().workTypeCode,
-                    selectSiftCode: self.monthlyPatternSettingBatchNoneStatutoryHolidays().workingCode
+                    selectedWorkTypeCode: self.monthlyPatternSettingBatchNoneStatutoryHolidays().workTypeCode,
+                    selectedWorkTimeCode: self.monthlyPatternSettingBatchNoneStatutoryHolidays().workingCode
                 }, true);
 
                 nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function(){
                     var childData = nts.uk.ui.windows.getShared('childData');
-                    self.monthlyPatternSettingBatchNoneStatutoryHolidays().workTypeCode = childData.selectedWorkTimeCode;
-                    if (childData.selectedWorkTimeCode) {
-                        self.worktypeInfoNoneStatutoryHolidays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
+                    if (childData) {
+                        self.monthlyPatternSettingBatchNoneStatutoryHolidays().workTypeCode = childData.selectedWorkTypeCode;
+
+                        if (childData.selectedWorkTypeCode) {
+                            self.worktypeInfoNoneStatutoryHolidays(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
+                        }
+
+                        self.monthlyPatternSettingBatchNoneStatutoryHolidays().workingCode = childData.selectedWorkTimeCode;
+
+                        if (childData.selectedWorkTimeCode) {
+                            self.worktimeInfoNoneStatutoryHolidays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
+                        } else {
+                            self.worktimeInfoNoneStatutoryHolidays('');
+                        }
                     }
-                    else {
-                        self.worktypeInfoNoneStatutoryHolidays(nts.uk.resource.getText("KSM005_43"));
-                    }
-                    self.monthlyPatternSettingBatchNoneStatutoryHolidays().workingCode = childData.selectedSiftCode;
-                    if (childData.selectedSiftCode) {
-                        self.worktimeInfoNoneStatutoryHolidays(childData.selectedSiftCode + ' ' + childData.selectedSiftName);
-                    } else {
-                        self.worktypeInfoNoneStatutoryHolidays(nts.uk.resource.getText("KSM005_43"));
-                    } 
                 });
             }
              /**
@@ -335,25 +353,25 @@ module nts.uk.at.view.ksm005.e {
             public openDialogPublicHolidays(): void {
                 var self = this;
                 nts.uk.ui.windows.setShared('parentCodes', {
-                    selectWorkTypeCode: self.monthlyPatternSettingBatchPublicHolidays().workTypeCode,
-                    selectSiftCode: self.monthlyPatternSettingBatchPublicHolidays().workingCode
+                    selectedWorkTypeCode: self.monthlyPatternSettingBatchPublicHolidays().workTypeCode,
+                    selectedWorkTimeCode: self.monthlyPatternSettingBatchPublicHolidays().workingCode
                 }, true);
 
                 nts.uk.ui.windows.sub.modal("/view/kdl/003/a/index.xhtml").onClosed(function(){
                     var childData = nts.uk.ui.windows.getShared('childData');
-                    self.monthlyPatternSettingBatchPublicHolidays().workTypeCode = childData.selectedWorkTimeCode;
-                    if (childData.selectedWorkTimeCode) {
-                        self.worktypeInfoPublicHolidays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
+                    if (childData) {
+                        self.monthlyPatternSettingBatchPublicHolidays().workTypeCode = childData.selectedWorkTypeCode;
+
+                        if (childData.selectedWorkTypeCode) {
+                            self.worktypeInfoPublicHolidays(childData.selectedWorkTypeCode + ' ' + childData.selectedWorkTypeName);
+                        }
+                        self.monthlyPatternSettingBatchPublicHolidays().workingCode = childData.selectedWorkTimeCode;
+                        if (childData.selectedWorkTimeCode) {
+                            self.worktimeInfoPublicHolidays(childData.selectedWorkTimeCode + ' ' + childData.selectedWorkTimeName);
+                        } else {
+                            self.worktimeInfoPublicHolidays('');
+                        }
                     }
-                    else {
-                        self.worktypeInfoPublicHolidays(nts.uk.resource.getText("KSM005_43"));
-                    }
-                    self.monthlyPatternSettingBatchPublicHolidays().workingCode = childData.selectedSiftCode;
-                    if (childData.selectedSiftCode) {
-                        self.worktimeInfoPublicHolidays(childData.selectedSiftCode + ' ' + childData.selectedSiftName);
-                    } else {
-                        self.worktypeInfoPublicHolidays(nts.uk.resource.getText("KSM005_43"));
-                    } 
                 });
             }
         }

@@ -93,6 +93,11 @@ module kcp.share.list {
          * Max rows to visible in list component.
          */
         maxRows: number;
+        
+        /**
+         * Set max width for component.Min is 350px;
+         */
+        maxWidth?: number;
     }
     
     export class SelectType {
@@ -116,11 +121,14 @@ module kcp.share.list {
      * Grid style
      */
     export interface GridStyle {
-        codeColumnSize: number;
+        codeColumnSize: any;
         totalColumnSize: number;
         totalComponentSize: number;
         totalHeight: number;
         rowHeight: number;
+        nameColumnSize: any;
+        workplaceColumnSize: any;
+        alreadySetColumnSize: any;
     }
     
     /**
@@ -180,6 +188,9 @@ module kcp.share.list {
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
                  && data.isMultiSelect && data.isShowSelectAllButton;
             self.initGridStyle(data);
+            if (data.maxWidth && data.maxWidth <= 350) {
+                data.maxWidth = 350;
+            }
             self.listType = data.listType;
             self.tabIndex = this.getTabIndexByListType(data.listType);
             if (data.baseDate) {
@@ -204,11 +215,11 @@ module kcp.share.list {
             // Setup list column.
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize,
                         template: "<td class='list-component-name-col'>${code}</td>",});
-            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: 170,
+            this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: self.gridStyle.nameColumnSize,
                         template: "<td class='list-component-name-col'>${name}</td>",});
             // With Employee list, add column company name.
             if (data.listType == ListType.EMPLOYEE && data.isShowWorkPlaceName) {
-                self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: 150,
+                self.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP005_4'), prop: 'workplaceName', width: self.gridStyle.workplaceColumnSize,
                         template: "<td class='list-component-name-col'>${workplaceName}</td>"});
             }
             
@@ -217,7 +228,7 @@ module kcp.share.list {
                 self.alreadySettingList = data.alreadySettingList;
                 // Add row already setting.
                 self.listComponentColumn.push({
-                    headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: 70,
+                    headerText: nts.uk.resource.getText('KCP001_4'), prop: 'isAlreadySetting', width: self.gridStyle.alreadySetColumnSize,
                     formatter: function(isAlreadySet: string) {
                         if (isAlreadySet == 'true') {
                             return '<div style="text-align: center;max-height: 18px;"><i class="icon icon-78"></i></div>';
@@ -440,9 +451,9 @@ module kcp.share.list {
          * Init Grid Style.
          */
         private initGridStyle(data: ComponentOption) {
-            var codeColumnSize: number = 50;
+            var codeColumnSize: any = 50;
             var companyColumnSize: number = 0;
-            var heightOfRow : number = data.isMultiSelect ? 24 : 21;
+            var heightOfRow : number = data.isMultiSelect ? 24 : 23;
             switch(data.listType) {
                 case ListType.EMPLOYMENT:
                     break;
@@ -462,17 +473,24 @@ module kcp.share.list {
             var alreadySettingColSize = data.isShowAlreadySet ? 70 : 0;
             var multiSelectColSize = data.isMultiSelect ? 55 : 0;
             var selectAllButtonSize = this.isHasButtonSelectAll ? 60 : 0;
-            var totalColumnSize: number = codeColumnSize + 170 + companyColumnSize
+            var totalColumnSize: number = data.maxWidth ? data.maxWidth : codeColumnSize + 170 + companyColumnSize
                 + alreadySettingColSize + multiSelectColSize;
             var minTotalSize = this.isHasButtonSelectAll ? 415 : 350;
             var totalRowsHeight = heightOfRow * this.maxRows + 24;
             var totalHeight: number = this.hasBaseDate ? 101 : 55;
+            codeColumnSize = data.maxWidth ? '25%': codeColumnSize;
+            var nameColumnSize = data.maxWidth ? '35%' : 170;
+            var workplaceColumnSize = data.maxWidth ? '25%' : 150;
+            var alreadySetColumnSize = data.maxWidth ? '15%' : 70;
             this.gridStyle = {
                 codeColumnSize: codeColumnSize,
                 totalColumnSize: Math.max(minTotalSize, totalColumnSize),
                 totalComponentSize: Math.max(minTotalSize, totalColumnSize) + 2,
                 totalHeight: totalHeight + totalRowsHeight,
-                rowHeight: totalRowsHeight
+                rowHeight: totalRowsHeight,
+                nameColumnSize: nameColumnSize,
+                workplaceColumnSize: workplaceColumnSize,
+                alreadySetColumnSize: alreadySetColumnSize
             };
         }
         

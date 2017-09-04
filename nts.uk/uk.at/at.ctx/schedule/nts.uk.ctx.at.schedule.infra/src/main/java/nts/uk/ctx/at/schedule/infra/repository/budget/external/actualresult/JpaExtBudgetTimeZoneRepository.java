@@ -116,13 +116,11 @@ public class JpaExtBudgetTimeZoneRepository extends JpaRepository implements Ext
             KscdtExtBudgetTimePK pk = KscdtExtBudgetTimePK.createEntity(tempPK);
             pk.setPeriodTimeNo(object.getTimePeriod());
 
-            KscdtExtBudgetTime newEntity = null;
+            KscdtExtBudgetTime newEntity = new KscdtExtBudgetTime(pk);
             // find entity existed ?
             Optional<KscdtExtBudgetTime> optional = this.queryProxy().find(pk, KscdtExtBudgetTime.class);
             if (optional.isPresent()) {
                 newEntity = optional.get();
-            } else {
-                newEntity = new KscdtExtBudgetTime(pk);
             }
             lstEntity.add(newEntity);
         }

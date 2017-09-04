@@ -1,41 +1,53 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 /**
- * 
+ * 承認フェーズ
  * @author hoatt
  *
  */
 @Getter
+@Setter
 @AllArgsConstructor
 public class ApprovalPhase extends AggregateRoot{
-	/*会社ID*/
+	/**会社ID*/
 	private String companyId;
-	/*分岐ID*/
-	private int branchId;
-	/*承認フェーズID*/
+	/**分岐ID*/
+	private String branchId;
+	/**承認フェーズID*/
 	private String approvalPhaseId;
-	/*承認形態*/
+	/**承認形態*/
 	private ApprovalForm approvalForm;
-	/*閲覧フェーズ*/
+	/**閲覧フェーズ*/
 	private int browsingPhase;
-	/*順序*/
-	private String orderNumber;
+	/**順序*/
+	private int orderNumber;
+	
+	/**承認者*/
+	private List<Approver>  approvers;
 	
 	public static ApprovalPhase createSimpleFromJavaType(String companyId,
-			int branchId,
+			String branchId,
 			String approvalPhaseId,
 			int approvalForm,
 			int browsingPhase,
-			String orderNumber){
+			int orderNumber){
 		return new ApprovalPhase(companyId,
 				branchId,
 				approvalPhaseId,
 				EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),
 				browsingPhase,
-				orderNumber);
+				orderNumber, null);
+	}
+	public static ApprovalPhase updateBranchId(ApprovalPhase approvalPhase, String branchId){
+		ApprovalPhase approvalPhaseNew = approvalPhase;
+		approvalPhaseNew.setBranchId(branchId);
+		return approvalPhaseNew;
 	}
 }

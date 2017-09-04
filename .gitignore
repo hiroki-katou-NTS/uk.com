@@ -8,6 +8,7 @@ taskArtifacts/
 .settings/
 .sass-cache/
 .metadata/
+.recommenders/
 *.class
 *.js.map
 *.orig

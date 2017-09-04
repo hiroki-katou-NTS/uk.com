@@ -6,12 +6,10 @@ package nts.uk.ctx.sys.gateway.entity.login;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,21 +20,33 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "SGWST_SYSTEM_CONFIG")
+
+/**
+ * Instantiates a new sgwst system config.
+ */
 @NoArgsConstructor
 public class SgwstSystemConfig extends UkJpaEntity implements Serializable {
 	
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
+    /** The install form. */
     @Id
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "INSTALL_FORM")
     private Short installForm;
 
+    /**
+     * Instantiates a new sgwst system config.
+     *
+     * @param installForm the install form
+     */
     public SgwstSystemConfig(Short installForm) {
         this.installForm = installForm;
     }
 
+    /* (non-Javadoc)
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+     */
     @Override
     public int hashCode() {
         int hash = 0;
@@ -44,9 +54,11 @@ public class SgwstSystemConfig extends UkJpaEntity implements Serializable {
         return hash;
     }
 
+    /* (non-Javadoc)
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof SgwstSystemConfig)) {
             return false;
         }
@@ -57,6 +69,9 @@ public class SgwstSystemConfig extends UkJpaEntity implements Serializable {
         return true;
     }
    
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
 	@Override
 	protected Object getKey() {
 		return this.installForm;

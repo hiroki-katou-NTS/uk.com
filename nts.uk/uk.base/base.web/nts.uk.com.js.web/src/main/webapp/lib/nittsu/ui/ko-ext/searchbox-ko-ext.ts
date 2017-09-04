@@ -214,36 +214,41 @@ module nts.uk.ui.koExtentions {
                         : component.igTreeGridSelection('option', 'multipleSelection')
                     
                     let selectedProperties = _.map(result.selectItems, primaryKey);
-                    let selectedValue;
-                    if(selectedKey !== null){
-                        selectedValue = isMulti ? _.map(result.selectItems, selectedKey) : 
-                            result.selectItems.length > 0 ? result.selectItems[0][selectedKey] : undefined;        
-                    } else {
-                        selectedValue = isMulti ? [result.selectItems] : 
-                            result.selectItems.length > 0 ? result.selectItems[0] : undefined;    
-                    }
+//                    let selectedValue;
+//                    if(selectedKey !== null){
+//                        selectedValue = isMulti ? _.map(result.selectItems, selectedKey) : 
+//                            result.selectItems.length > 0 ? result.selectItems[0][selectedKey] : undefined;        
+//                    } else {
+//                        selectedValue = isMulti ? [result.selectItems] : 
+//                            result.selectItems.length > 0 ? result.selectItems[0] : undefined;    
+//                    }
                     
                     if (targetMode === 'igGrid') {  
+                        component.ntsGridList("setSelected", selectedProperties);
                         if(searchMode === "filter"){
                             $container.data("filteredSrouce", result.options); 
                             component.attr("filtered", true);   
                             //selected(selectedValue);
                             //selected.valueHasMutated();
-                            let source = _.filter(dataSource, function (item: any){
+                            let source = _.filter(data.items(), function (item: any){
                                              return _.find(result.options, function (itemFilterd: any){
                                             return itemFilterd[primaryKey] === item[primaryKey];        
                                                 }) !== undefined || _.find(srh.getDataSource(), function (oldItem: any){
                                              return oldItem[primaryKey] === item[primaryKey];        
                                             }) === undefined;            
                             });
-                            component.igGrid("option", "dataSource", source);  
+                            component.igGrid("option", "dataSource", _.cloneDeep(source));  
                             component.igGrid("dataBind");  
+                            
+                            if(nts.uk.util.isNullOrEmpty(selectedProperties)){
+                                component.trigger("selectionchanged");        
+                            }
                         } else {
-                            //selected(selectedValue);    
+                            component.trigger("selectionchanged");    
                         }
-                        component.ntsGridList("setSelected", selectedProperties);
                     } else if (targetMode == 'igTree') {
                         component.ntsTreeView("setSelected", selectedProperties);
+                        component.trigger("selectionchanged");
                         //selected(selectedValue);
                     }
                     _.defer(function() {
@@ -299,6 +304,24 @@ module nts.uk.ui.koExtentions {
                 component = $("#" + ko.unwrap(data.comId));    
             }
             let srhX: SearchPub= $searchBox.data("searchObject");
+            
+            if(component.attr("filtered") === true || component.attr("filtered") === "true"){
+                let currentSoruce = srhX.getDataSource();
+            
+                let newItems = _.filter(arr, function(i){
+                    return _.find(currentSoruce, function(ci){
+                        return ci[primaryKey] === i[primaryKey];
+                    }) === undefined;            
+                });    
+                if(!nts.uk.util.isNullOrEmpty(newItems)){
+                    let gridSources = component.igGrid("option", "dataSource");
+                    _.forEach(newItems, function (item){
+                        gridSources.push(item);            
+                    });
+                    component.igGrid("option", "dataSource", _.cloneDeep(gridSources));  
+                    component.igGrid("dataBind");     
+                }
+            }
             
             srhX.setDataSource(arr);
             

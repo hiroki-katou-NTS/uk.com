@@ -6,7 +6,6 @@ package nts.uk.ctx.at.schedule.infra.entity.dailypattern;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class KdpstDailyPatternSet_.
  */

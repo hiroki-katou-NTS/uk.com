@@ -4,11 +4,18 @@ module nts.uk.at.view.ksu006.a {
          *  Service paths
          */
         var servicePath: any = {
-            findExternalBudgetList: "at/schedule/budget/external/findallexternalbudget",
             
+            findCharsetList: "at/schedule/budget/external/find/charsetlist",
+            findExternalBudgetList: "at/schedule/budget/external/findallexternalbudget",
+            checkUnitAtr: "at/schedule/budget/external/validate/isDailyUnit",
             findDataPreview: "at/schedule/budget/external/find/preview",
             validateFile: "at/schedule/budget/external/import/validate",
+            exportDetailError: "at/schedule/budget/external/log/export",
         };
+        
+        export function findCharsetList(): JQueryPromise<model.EnumerationModel> {
+            return nts.uk.request.ajax(servicePath.findCharsetList);
+        }
         
         export function findExternalBudgetList(): JQueryPromise<any> {
             let dfd = $.Deferred();
@@ -22,18 +29,29 @@ module nts.uk.at.view.ksu006.a {
             return dfd.promise();
         }
         
+        export function checkUnitAtr(externalBudgetCd: string): JQueryPromise<boolean> {
+            return nts.uk.request.ajax("at", servicePath.checkUnitAtr, externalBudgetCd);
+        }
+        
         export function findDataPreview(extractCondition: any): JQueryPromise<model.DataPreviewModel> {
             return nts.uk.request.ajax(servicePath.findDataPreview, extractCondition);
         }
         
-        export function validateFile(fileId: string): JQueryPromise<void> {
-            return nts.uk.request.ajax(servicePath.validateFile + "/" + fileId);
+        export function validateFile(extractCondition: any): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.validateFile, extractCondition);
         }
         
         /**
         * Model namespace.
         */
         export module model {
+            
+            export class EnumerationModel {
+                value: number;
+                fieldName: string;
+                localizedName: string;
+            }
+            
             
             export class ExternalBudgetModel {
                 code: string;

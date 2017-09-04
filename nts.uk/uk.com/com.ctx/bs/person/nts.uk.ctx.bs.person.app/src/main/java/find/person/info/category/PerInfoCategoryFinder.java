@@ -12,7 +12,7 @@ import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.bs.person.dom.person.info.category.HistoryTypes;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
-import nts.uk.ctx.bs.person.dom.person.info.item.PernfoItemDefRepositoty;
+import nts.uk.ctx.bs.person.dom.person.info.item.PerInfoItemDefRepositoty;
 import nts.uk.ctx.bs.person.dom.person.info.item.PersonInfoItemDefinition;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -26,12 +26,12 @@ public class PerInfoCategoryFinder {
 	private PerInfoCategoryRepositoty perInfoCtgRepositoty;
 
 	@Inject
-	private PernfoItemDefRepositoty pernfoItemDefRep;
-	
+	private PerInfoItemDefRepositoty pernfoItemDefRep;
+
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg() {
 		return perInfoCtgRepositoty
-				.getAllPerInfoCategory(PersonInfoCategory.ROOT_COMPANY_ID, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream()
-				.map(p -> {
+				.getAllPerInfoCategory(PersonInfoCategory.ROOT_COMPANY_ID, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
+				.stream().map(p -> {
 					return new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
 							p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
 							p.getCategoryType().value, p.getIsFixed().value);
@@ -39,17 +39,18 @@ public class PerInfoCategoryFinder {
 	};
 
 	public PerInfoCtgFullDto getPerInfoCtg(String perInfoCtgId) {
-		return perInfoCtgRepositoty.getPerInfoCategory(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).map(p -> {
-			return new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(), p.getCategoryName().v(),
-					p.getPersonEmployeeType().value, p.getIsAbolition().value, p.getCategoryType().value,
-					p.getIsFixed().value);
-		}).orElse(null);
+		return perInfoCtgRepositoty.getPerInfoCategory(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
+				.map(p -> {
+					return new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
+							p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
+							p.getCategoryType().value, p.getIsFixed().value);
+				}).orElse(null);
 	};
 
 	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompany() {
 		List<PerInfoCtgShowDto> categoryList = perInfoCtgRepositoty
-				.getAllPerInfoCategory(AppContexts.user().companyId(), PersonInfoItemDefinition.ROOT_CONTRACT_CODE).stream()
-				.map(p -> {
+				.getAllPerInfoCategory(AppContexts.user().companyId(),AppContexts.user().contractCode())
+				.stream().map(p -> {
 					return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
 							p.getCategoryType().value);
 				}).collect(Collectors.toList());
@@ -57,13 +58,27 @@ public class PerInfoCategoryFinder {
 		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
 		return new PerInfoCtgDataEnumDto(historyTypes, categoryList);
 	};
+	
+	public PerInfoCtgDataEnumDto getAllPerInfoCtgByCompanyRoot() {
+		List<PerInfoCtgShowDto> categoryList = perInfoCtgRepositoty
+				.getAllPerInfoCategory(PersonInfoCategory.ROOT_COMPANY_ID, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
+				.stream().map(p -> {
+					return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
+							p.getCategoryType().value);
+				}).collect(Collectors.toList());
 
+		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
+		return new PerInfoCtgDataEnumDto(historyTypes, categoryList);
+	};
+	
+	
 	public PerInfoCtgWithItemsNameDto getPerInfoCtgWithItemsName(String perInfoCtgId) {
 		List<String> itemNameList = pernfoItemDefRep.getPerInfoItemsName(perInfoCtgId,
 				PersonInfoItemDefinition.ROOT_CONTRACT_CODE);
-		return perInfoCtgRepositoty.getPerInfoCategory(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE).map(p -> {
-			return new PerInfoCtgWithItemsNameDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-					p.getCategoryType().value, p.getIsFixed().value, itemNameList);
-		}).orElse(null);
+		return perInfoCtgRepositoty.getPerInfoCategory(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
+				.map(p -> {
+					return new PerInfoCtgWithItemsNameDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
+							p.getCategoryType().value, p.getIsFixed().value, itemNameList);
+				}).orElse(null);
 	};
 }

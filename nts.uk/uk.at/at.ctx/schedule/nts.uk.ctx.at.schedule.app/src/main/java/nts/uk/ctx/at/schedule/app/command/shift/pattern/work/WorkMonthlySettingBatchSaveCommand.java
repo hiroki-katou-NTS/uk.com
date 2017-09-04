@@ -10,10 +10,14 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.MonthlyPatternDto;
 import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkTypeCode;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.WorkingCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternCode;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternGetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternName;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySettingGetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -28,6 +32,12 @@ public class WorkMonthlySettingBatchSaveCommand {
 	
 	/** The work monthly setting. */
 	private List<WorkMonthlySettingDto> workMonthlySetting;
+	
+	/** The mode. */
+	private int mode;
+	
+	/** The monthly pattern. */
+	private MonthlyPatternDto monthlyPattern;
 
 	/**
 	 * To domain month.
@@ -36,9 +46,9 @@ public class WorkMonthlySettingBatchSaveCommand {
 	 * @return the list
 	 */
 	public List<WorkMonthlySetting> toDomainMonth(String companyId){
-		return this.workMonthlySetting.stream()
-				.map(dto -> new WorkMonthlySetting(
-						new WorkMonthlySettingBatchGetMementoImpl(companyId, dto)))
+		return this.workMonthlySetting.stream().map(
+				dto -> new WorkMonthlySetting(new WorkMonthlySettingBatchGetMementoImpl(companyId,
+						dto, monthlyPattern.getCode())))
 				.collect(Collectors.toList());
 	}
 	/**
@@ -52,15 +62,21 @@ public class WorkMonthlySettingBatchSaveCommand {
 		/** The dto. */
 		private WorkMonthlySettingDto dto;
 		
+		/** The monthly pattern code. */
+		private String monthlyPatternCode;
+		
 		/**
 		 * Instantiates a new work monthly setting batch get memento impl.
 		 *
 		 * @param companyId the company id
 		 * @param dto the dto
+		 * @param monthlyPatternCode the monthly pattern code
 		 */
-		public WorkMonthlySettingBatchGetMementoImpl(String companyId, WorkMonthlySettingDto dto) {
+		public WorkMonthlySettingBatchGetMementoImpl(String companyId, WorkMonthlySettingDto dto,
+				String monthlyPatternCode) {
 			this.companyId = companyId;
 			this.dto = dto;
+			this.monthlyPatternCode = monthlyPatternCode;
 		}
 		
 		/*
@@ -112,8 +128,70 @@ public class WorkMonthlySettingBatchSaveCommand {
 		 */
 		@Override
 		public MonthlyPatternCode getMonthlyPatternCode() {
-			return new MonthlyPatternCode(this.dto.getMonthlyPatternCode());
+			return new MonthlyPatternCode(this.monthlyPatternCode);
 		}
 		
 	}
+	
+	/**
+	 * To domain.
+	 *
+	 * @param companyId the company id
+	 * @return the monthly pattern
+	 */
+	
+	public MonthlyPattern toDomain(String companyId){
+		return new MonthlyPattern(new MonthlyPatternGetMementoImpl(this, companyId));
+	}
+	
+	/**
+	 * The Class MonthlyPatternGetMementoImpl.
+	 */
+	class MonthlyPatternGetMementoImpl implements MonthlyPatternGetMemento{
+
+		/** The command. */
+		private WorkMonthlySettingBatchSaveCommand command;
+		
+		/** The company id. */
+		private String companyId;
+		
+		public MonthlyPatternGetMementoImpl(WorkMonthlySettingBatchSaveCommand command, String companyId) {
+			this.command = command;
+			this.companyId = companyId;
+		}
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternGetMemento#getCompanyId()
+		 */
+		@Override
+		public CompanyId getCompanyId() {
+			return new CompanyId(this.companyId);
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternGetMemento#
+		 * getMonthlyPatternCode()
+		 */
+		@Override
+		public MonthlyPatternCode getMonthlyPatternCode() {
+			return new MonthlyPatternCode(this.command.monthlyPattern.getCode());
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.at.schedule.dom.shift.pattern.MonthlyPatternGetMemento#
+		 * getMonthlyPatternName()
+		 */
+		@Override
+		public MonthlyPatternName getMonthlyPatternName() {
+			return new MonthlyPatternName(this.command.monthlyPattern.getName());
+		}
+		
+	}
+	
 }

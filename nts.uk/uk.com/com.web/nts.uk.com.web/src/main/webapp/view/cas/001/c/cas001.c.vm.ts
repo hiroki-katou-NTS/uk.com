@@ -2,7 +2,7 @@ module nts.uk.com.view.cas001.c.viewmodel {
     import error = nts.uk.ui.errors;
     import text = nts.uk.resource.getText;
     import close = nts.uk.ui.windows.close;
-    import alert = nts.uk.ui.dialog.alert;
+    import dialog = nts.uk.ui.dialog;
     import getShared = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
@@ -16,6 +16,8 @@ module nts.uk.com.view.cas001.c.viewmodel {
             self.roleList.subscribe(data => {
                 if (data) {
                     $("#roles").igGrid("option", "dataSource", data);
+                }else{
+                    $("#roles").igGrid("option", "dataSource", []);
                 }
             });
 
@@ -31,6 +33,8 @@ module nts.uk.com.view.cas001.c.viewmodel {
                     _.each(data, function(c) {
                         self.roleList.push(new PersonRole(c.roleId, c.roleCode, c.roleName));
                     });
+                }else{
+                   dialog.alert(text('CAS001_7')); 
                 }
             });
         }
@@ -39,26 +43,26 @@ module nts.uk.com.view.cas001.c.viewmodel {
             let data = (__viewContext["viewModel"].roleList());
             let self = this;
             self.roleCodeArray = [];
-            _.find(data, function(role) {
+            _.find(data, function(role:PersonRole) {
                 if (role.selected === true) {
                     self.roleCodeArray.push(role.roleId);
                 }
             });
             if (self.roleCodeArray.length > 0) {
-                nts.uk.ui.dialog.confirm(text('Msg_64')).ifYes(() => {
+               dialog.confirm(text('Msg_64')).ifYes(() => {
                     let roleObj = { roleIdDestination: self.roleCopy().roleId, roleIds: self.roleCodeArray };
                     service.update(roleObj).done(function(obj) {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_20" }).then(function() {
+                        dialog.info({ messageId: "Msg_20" }).then(function() {
                             close();
                         });
                     }).fail(function(res: any) {
-                        alert(res.message);
+                        dialog.alert(res.message);
                     })
 
                 }).ifCancel(function() {
                 })
             }else{
-                alert(text('Msg_365'));
+                dialog.alert(text('Msg_365'));
             }
 
         }

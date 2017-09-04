@@ -12,19 +12,19 @@ module nts.uk.at.view.kdw006 {
             }
 
             opendScreenA() {
-                //nts.uk.request.jump("/view/kmk/008/g/index.xhtml");
+                nts.uk.request.jump("/view/kdw/002/b/index.xhtml");
             }
 
             opendScreenB() {
-                //nts.uk.request.jump("/view/kmk/008/g/index.xhtml");
+                nts.uk.request.jump("/view/kdw/002/a/index.xhtml");
             }
             
             opendScreenC() {
-                //nts.uk.request.jump("/view/kmk/008/g/index.xhtml");
+                nts.uk.request.jump("/view/kdw/007/a/index.xhtml");
             }
             
             opendScreenD() {
-                //nts.uk.request.jump("/view/kmk/008/g/index.xhtml");
+                nts.uk.request.jump("/view/kdw/008/b/index.xhtml");
             }
         }
     }

@@ -28,7 +28,10 @@
 }
 
 .label_master {
-	font-size: 17pt;
+	font-size: 20pt;
+	padding-top: 20px;
+	padding-left: 20px;
+	display: block;
 }
 
 .label_tips {

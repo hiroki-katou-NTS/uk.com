@@ -2,46 +2,56 @@ module nts.uk.pr.view.ccg007.c {
     export module viewmodel {
         import SystemConfigDto = service.SystemConfigDto;
         import ContractDto = service.ContractDto;
+        import blockUI = nts.uk.ui.block;
         export class ScreenModel {
             companyCode: KnockoutObservable<string>;
             employeeCode: KnockoutObservable<string>;
             password: KnockoutObservable<string>;
             isSaveLoginInfo: KnockoutObservable<boolean>;
+            contractCode: KnockoutObservable<string>;
             constructor() {
                 var self = this;
                 self.companyCode = ko.observable('');
                 self.employeeCode = ko.observable('');
                 self.password = ko.observable('');
                 self.isSaveLoginInfo = ko.observable(true);
+                self.contractCode = ko.observable('');
             }
 
             start(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 //get system config
-                //TODO get local contract info
+                //get local contract info
+                blockUI.invisible();
                 nts.uk.characteristics.restore("contractInfo").done(function(data) {
+                    self.contractCode(data?data.contractCode:"");
                     service.checkContract({ contractCode: data ? data.contractCode : "", contractPassword: data ? data.contractPassword : "" }).done(function(showContractData: any) {
-                        if (showContractData.showContract) {
-                            self.openContractAuthDialog();
+                        //if show contract
+                        if (showContractData) {
+                            if (showContractData.showContract) {
+                                self.openContractAuthDialog();
+                            }
+                            else {
+                                self.getEmployeeLoginSetting(data.contractCode);
+                            }
                         }
                         else {
-                            self.getEmployeeLoginSetting(data.contractCode);
                         }
+                        blockUI.clear();
                         dfd.resolve();
                     }).fail(function() {
-                        alert();
                         dfd.resolve();
-                        //TODO システムエラー画面へ遷移する    
+                        blockUI.clear();
                     });
                 }).fail(function() {
-                    alert();
                     dfd.resolve();
-                    //TODO システムエラー画面へ遷移する    
+                    blockUI.clear();
                 });
                 return dfd.promise();
             }
 
+            //get employ login setting and check permit view form 
             private getEmployeeLoginSetting(contractCode: string): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
@@ -50,7 +60,7 @@ module nts.uk.pr.view.ccg007.c {
                         nts.uk.request.jump("/view/ccg/007/b/index.xhtml");
                     }
                     else {
-                        //TODO get login ID and set here
+                        //get login infor from local storeage 
                         nts.uk.characteristics.restore("form2LoginInfo").done(function(loginInfo) {
                             if (loginInfo) {
                                 self.companyCode(loginInfo.companyCode);
@@ -63,34 +73,38 @@ module nts.uk.pr.view.ccg007.c {
                 return dfd.promise();
             }
 
-            //TODO when invalid contract 
+            //when invalid contract 
             private openContractAuthDialog() {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/ccg/007/a/index.xhtml", {
-                    height: 320,
-                    width: 500,
+                    height: 300,
+                    width: 400,
                     title: nts.uk.resource.getText("CCG007_9"),
                     dialogClass: 'no-close'
                 }).onClosed(() => {
+                    var contractCode = nts.uk.ui.windows.getShared('contractCode');
+                    self.contractCode(contractCode);
                 });
             }
 
+            //submit login
             private submitLogin() {
                 var self = this;
-                service.submitLogin({ companyCode: _.escape(self.companyCode()), employeeCode: _.escape(self.employeeCode()), password: _.escape(self.password()) }).done(function() {
-                    nts.uk.characteristics.remove("form2LoginInfo");
-                    if (self.isSaveLoginInfo()) {
-                        nts.uk.characteristics.save("form2LoginInfo", { companyCode: _.escape(self.companyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function() {
-                            nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
-                        });
-                    } else {
-                        //TODO confirm kiban team promise for remove
-                        setTimeout(function() {
-                            nts.uk.request.jump("/view/ccg/015/a/index.xhtml");
-                        }, 1000);
-                    }
+                blockUI.invisible();
+                service.submitLogin({ companyCode: _.escape(self.companyCode()), employeeCode: _.escape(self.employeeCode()), password: _.escape(self.password()),contractCode: _.escape(self.contractCode()) }).done(function() {
+                    nts.uk.characteristics.remove("form2LoginInfo").done(function() {
+                        if (self.isSaveLoginInfo()) {
+                            nts.uk.characteristics.save("form2LoginInfo", { companyCode: _.escape(self.companyCode()), employeeCode: _.escape(self.employeeCode()) }).done(function() {
+                                nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                            });
+                        } else {
+                            nts.uk.request.jump("/view/ccg/008/a/index.xhtml");
+                        }
+                    });
+                    blockUI.clear();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    blockUI.clear();
                 });
             }
         }

@@ -47,7 +47,9 @@ module ksu001.a.viewmodel {
         selectedModeDisplayObject: KnockoutObservable<number> = ko.observable(1);
 
         arrDay: Time[] = [];
-        listSid: string[] = [];
+        listSid: KnockoutObservableArray<string> = ko.observableArray([]);
+        lengthListSid: any;
+        workPlaceNameDisplay: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             let self = this;
@@ -68,63 +70,6 @@ module ksu001.a.viewmodel {
                 self.items.push(new ItemModel('00' + i, '基本給' + i, '00' + i));
             }
 
-            // Fire event.
-            $("#multi-list").on('itemDeleted', (function(e: Event) {
-                alert("Item is deleted in multi grid is " + e["detail"]["target"]);
-            }));
-
-            //popup 1
-            $('#popup-area2').ntsPopup({
-                position: {
-                    my: 'left top',
-                    at: 'left bottom',
-                    of: $('.create')
-                }
-            });
-
-            $('.create').click(function() {
-                $('#popup-area2').toggle();
-            });
-
-            //popup 2
-            $('#popup-area3').ntsPopup({
-                position: {
-                    my: 'left top',
-                    at: 'left bottom',
-                    of: $('.check')
-                }
-            });
-
-            $('.check').click(function() {
-                $('#popup-area3').toggle();
-            });
-
-            //popup 3
-            $('#popup-area4').ntsPopup({
-                position: {
-                    my: 'left top',
-                    at: 'left bottom',
-                    of: $('.vacation')
-                }
-            });
-
-            $('.vacation').click(function() {
-                $('#popup-area4').toggle();
-            });
-
-            //popup 4
-            $('#popup-area5').ntsPopup({
-                position: {
-                    my: 'left top',
-                    at: 'left bottom',
-                    of: $('.setting')
-                }
-            });
-
-            $('.setting').click(function() {
-                $('#popup-area5').toggle();
-            });
-
             self.selectedModeDisplay.subscribe(function(newValue) {
                 if (newValue == 1) {
                     $('#oViewModel').addClass('oViewModelDisplay');
@@ -133,13 +78,15 @@ module ksu001.a.viewmodel {
                 }
             });
 
+            //display for A3_2
+            self.lengthListSid = ko.pureComputed(() => {
+                return nts.uk.resource.getText('KSU001_54', [self.listSid().length.toString()]);
+            });
+
             //start
             self.selectedModeDisplay(1);
             self.initCCG001();
-
-            _.delay(() => {
-                $('#hor-scroll-button-hide').click();
-            }, 500);
+            self.initExTable();
         }
 
         /**
@@ -149,11 +96,11 @@ module ksu001.a.viewmodel {
             let self = this,
                 dfd = $.Deferred(),
                 obj = {
-                    sId: self.listSid,
+                    sId: self.listSid(),
                     startDate: self.dtPrev(),
                     endDate: self.dtAft()
                 };
-            service.getDataBasicSchedule(obj).done(function(data: any) {
+            service.getDataBasicSchedule(obj).done(function(data: BasicSchedule[]) {
                 if (data) {
                     self.dataSource(data);
                 }
@@ -164,27 +111,41 @@ module ksu001.a.viewmodel {
             return dfd.promise();
         }
 
+        /**
+         * CCG001 return listEmployee
+         * When listEmployee changed, call function updateExtable() to refresh data of exTable
+         */
         searchEmployee(dataEmployee: EmployeeSearchDto[]) {
             let self = this;
             self.empItems.removeAll();
             _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
                 self.empItems.push(new PersonModel({
-                    personId: item.employeeId,
-                    code: item.employeeCode,
-                    name: item.employeeName,
+                    empId: item.employeeId,
+                    empCd: item.employeeCode,
+                    empName: item.employeeName,
+                    workplaceId: item.workplaceId,
+                    wokplaceCd: item.workplaceCode,
+                    workplaceName: item.workplaceName,
                 }));
             });
+            //get workPlaceName to display A3-1
+            self.workPlaceNameDisplay(self.empItems()[0].workplaceName);
 
-            self.listSid = [];
+            self.listSid([]);
+            let arrSid: string[] = [];
             _.each(self.empItems(), (x) => {
-                self.listSid.push(x.personId);
+                arrSid.push(x.empId);
             });
+            self.listSid(arrSid);
             //get data basicSchedule
-            $.when(self.getDataBasicSchedule()).done(function() {
-                self.initExTable();
+            self.getDataBasicSchedule().done(function() {
+                self.updateExTable();
             });
         }
 
+        /**
+         * init CCG001
+         */
         initCCG001() {
             let self = this;
             self.ccgcomponent = {
@@ -199,7 +160,6 @@ module ksu001.a.viewmodel {
                 isMutipleCheck: true,
                 isSelectAllEmployee: true,
 
-                //Event options
                 /**
                 * @param dataList: list employee returned from component.
                 * Define how to use this list employee by yourself in the function's body.
@@ -224,10 +184,12 @@ module ksu001.a.viewmodel {
                     self.searchEmployee(dataEmployee);
                 }
             }
-
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
         }
 
+        /**
+         * Create exTable
+         */
         initExTable(): void {
             let self = this,
                 timeRanges = [],
@@ -235,7 +197,7 @@ module ksu001.a.viewmodel {
                 currentDay = new Date(self.dtPrev().toString());
 
             while (currentDay <= self.dtAft()) {
-                self.arrDay.push(new Time(currentDay.toString()));
+                self.arrDay.push(new Time(currentDay));
                 currentDay.setDate(currentDay.getDate() + 1);
             }
 
@@ -254,26 +216,7 @@ module ksu001.a.viewmodel {
                 leftHorzContentDs = [],
                 vertSumContentDs = [];
 
-            //Set color for detailHeader
-            for (let i = 0; i < self.arrDay.length; i++) {
-                if (self.arrDay[i].weekDay == '土') {
-                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 0, "color-blue text-color-blue text-align-center"));
-                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 1, "color-blue"));
-                } else if (self.arrDay[i].weekDay == '日') {
-                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 0, "color-pink text-color-red text-align-center"));
-                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 1, "color-pink"));
-                } else {
-                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 0, "text-align-center"));
-                }
-                //Set color for detailContent
-                _.each(self.listSid, (empId) => {
-                    if (self.arrDay[i].weekDay == '土' || self.arrDay[i].weekDay == '日') {
-                        detailContentDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, empId, "text-color-red"));
-                    } else {
-                        detailContentDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, empId, "text-color-blue"));
-                    }
-                });
-            }
+            self.setColorForDetail(detailHeaderDeco, detailContentDeco);
 
             //create dataSource for detailHeader
             detailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
@@ -291,34 +234,10 @@ module ksu001.a.viewmodel {
 
             horzSumHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
 
-            //dataSource
-            _.each(self.listSid, (x) => {
-                //leftMost dataSource
-                leftmostDs.push({ empId: x, empName: "社員名" });
-                //middle dataSource
-                middleDs.push({ empId: x, team: "1", rank: "A", qualification: "★", employmentName: "アルバイト", workplaceName: "東京本社", classificationName: "分類", positionName: "一般" });
-                //detail dataSource
-                let dsOfSid: any = _.filter(self.dataSource(), ['sid', x]);
-                detailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
-                //vertSumContent dataSource
-                vertSumContentDs.push({ empId: x, noCan: 6, noGet: 6 });
-            });
-
-            for (let i = 0; i < 10; i++) {
-                let obj = {};
-                obj["itemId"] = i.toString();
-                obj["empId"] = "";
-                for (let j = 0; j < self.arrDay.length; j++) {
-                    obj['_' + self.arrDay[j].yearMonthDay] = "10";
-                }
-                horzSumContentDs.push(obj);
-                leftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
-            }
-
             //create leftMost Header and Content
             let leftmostColumns = [{
                 headerText: nts.uk.resource.getText("KSU001_56"), key: "empName", width: "160px", icon: "ui-icon ui-icon-contact",
-                iconWidth: "35px", control: "link", handler: function(rData, rowIdx, key) { alert('社員名'); }
+                iconWidth: "35px", control: "link", handler: function(rData, rowIdx, key) { }
             }];
 
             let leftmostHeader = {
@@ -350,9 +269,7 @@ module ksu001.a.viewmodel {
                 features: [{
                     name: "HeaderRowHeight",
                     rows: { 0: "75px" }
-                }, {
-                        name: "ColumnResizes"
-                    }]
+                }]
             };
 
             let middleContent = {
@@ -392,7 +309,19 @@ module ksu001.a.viewmodel {
                 }, {
                         name: "TimeRange",
                         ranges: timeRanges
-                    }]
+                    }],
+                view: function(mode, obj) {
+                    switch (mode) {
+                        case "shortName":
+                            return [obj.workTypeName, obj.workTimeName];
+                        case "symbol":
+                            return obj.symbol;
+                        case "time":
+                            return [obj.startTime, obj.endTime];
+                    }
+                },
+                upperInput: "startTime",
+                lowerInput: "endTime"
             };
 
             //create VerticalSum Header and Content
@@ -429,7 +358,6 @@ module ksu001.a.viewmodel {
 
             let leftHorzSumHeader = {
                 columns: leftHorzColumns,
-                //        dataSource: leftHorzHeaderDs,
                 rowHeight: "75px"
             };
 
@@ -458,24 +386,16 @@ module ksu001.a.viewmodel {
 
             new nts.uk.ui.exTable.ExTable($("#extable"), {
                 headerHeight: "75px", bodyRowHeight: "50px", bodyHeight: "200px",
-                horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "200px",
+                horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "100px",
                 horizontalSumBodyRowHeight: "20px",
                 areaResize: true,
                 bodyHeightMode: "dynamic",
-                windowOccupation: 50,
+                windowXOccupation: 80,
+                windowYOccupation: 150,
                 updateMode: "stick",
                 pasteOverWrite: true,
                 stickOverWrite: true,
-                determination: {
-                    rows: [0],
-                    columns: ["empName"]
-                },
-                heightSetter: {
-                    showBodyHeightButton: true,
-                    click: function() {
-                        alert("Show dialog");
-                    }
-                }
+                viewMode: "shortName",
             })
                 .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
                 .MiddleHeader(middleHeader).MiddleContent(middleContent)
@@ -487,96 +407,105 @@ module ksu001.a.viewmodel {
             //set mode of exTable is stickMode single
             $("#extable").exTable("stickMode", "single");
 
-            //Paste data into cell (set-sticker-single)
-            $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
-
             /**
              * next a month
              */
             $("#nextMonth").click(function() {
-                //Recalculate the time period
-                let dtMoment = moment(self.dtAft());
-                dtMoment.add(1, 'days');
-                self.dtPrev(dtMoment.toDate());
-                dtMoment = dtMoment.add(1, 'months');
-                dtMoment.subtract(1, 'days');
-                self.dtAft(dtMoment.toDate());
-
-                self.updateDetail(detailHeaderDs, objDetailHeaderDs, detailContentDs);
+                if (self.selectedTimePeriod() == 1) {
+                    //Recalculate the time period
+                    let dtMoment = moment(self.dtAft());
+                    dtMoment.add(1, 'days');
+                    self.dtPrev(dtMoment.toDate());
+                    dtMoment = dtMoment.add(1, 'months');
+                    dtMoment.subtract(1, 'days');
+                    self.dtAft(dtMoment.toDate());
+                    self.updateDetailAndHorzSum();
+                }
             });
 
             /**
              * come back a month
              */
             $("#prevMonth").click(function() {
-                //Recalculate the time period
-                let dtMoment = moment(self.dtPrev());
-                dtMoment.subtract(1, 'days');
-                self.dtAft(dtMoment.toDate());
-                dtMoment = dtMoment.subtract(1, 'months');
-                dtMoment.add(1, 'days');
-                self.dtPrev(dtMoment.toDate());
-
-                self.updateDetail(detailHeaderDs, objDetailHeaderDs, detailContentDs);
+                if (self.selectedTimePeriod() == 1) {
+                    //Recalculate the time period
+                    let dtMoment = moment(self.dtPrev());
+                    dtMoment.subtract(1, 'days');
+                    self.dtAft(dtMoment.toDate());
+                    dtMoment = dtMoment.subtract(1, 'months');
+                    dtMoment.add(1, 'days');
+                    self.dtPrev(dtMoment.toDate());
+                    self.updateDetailAndHorzSum();
+                }
             });
 
-            //updateCell return arr[rowIndex, columnKey, innerIdx (là index của cell con ở trong cell lớn)]
+            /**
+             * Save data
+             */
             $("#saveData").click(function() {
-                let dfd = $.Deferred(),
-                    arrObj: BasicSchedule[] = [],
+                let arrObj: BasicSchedule[] = [],
                     arrCell: Cell[] = $("#extable").exTable("updatedCells"),
-                    lengthArr = arrCell.length;
-                for (let i = 0; i < lengthArr; i += 2) {
+                    lengthArrCell = arrCell.length;
+                if (lengthArrCell == 0) {
+                    return;
+                }
+                for (let i = 0; i < lengthArrCell; i += 1) {
                     arrObj.push(new BasicSchedule({
-                        date: arrCell[i].columnKey,
-                        sid: self.listSid[i],
-                        workTimeCd: arrCell[i + 1].value,
-                        workTypeCd: arrCell[i].value
-
+                        // slice string '_YYYYMMDD' to 'YYYYMMDD'
+                        date: moment.utc(arrCell[i].columnKey.slice(1, arrCell[i].columnKey.length), 'YYYYMMDD').toISOString(),
+                        employeeId: self.listSid()[arrCell[i].rowIndex],
+                        workTimeCode: arrCell[i].value.workTimeCode,
+                        workTypeCode: arrCell[i].value.workTypeCode
                     }));
                 }
-                service.registerData(arrObj).done(function() {
-                    dfd.resolve();
-                }).fail(function() {
-                    dfd.reject();
-                });
-                return dfd.promise();
-            });
 
+                service.registerData(arrObj).done(function(error: any) {
+                    if (error.length != 0) {
+                        self.addListError(error);
+                    } else {
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));    
+                    }
+                    //get data and update extable
+                    self.getDataBasicSchedule().done(function() {
+                        self.updateExTable();
+                    });
+                    
+                }).fail(function(error: any) {
+                    nts.uk.ui.dialog.alertError(error.message);    
+                });
+            });
         }
 
-        //update new data of header and content of detail
-        updateDetail(detailHeaderDs: any, objDetailHeaderDs: any, detailContentDs: any): any {
+        /**
+         *  update extable 
+         */
+        updateExTable(): void {
             let self = this;
-            //Get dates in time period
-            let currentDay = new Date(self.dtPrev().toString());
-            self.arrDay = [];
-            while (currentDay <= self.dtAft()) {
-                self.arrDay.push(new Time(currentDay.toString()));
-                currentDay.setDate(currentDay.getDate() + 1);
-            }
+            //Paste data into cell (set-sticker-single)
+            $("#extable").exTable("stickData", __viewContext.viewModel.viewO.nameWorkTimeType());
 
-            detailHeaderDs = [];
-            //define the new detailColumns
-            var newDetailColumns = [];
-            _.each(self.arrDay, (x: Time) => {
-                newDetailColumns.push({
-                    key: "_" + x.yearMonthDay, width: "100px", headerText: "", visible: true
-                });
+            let newLeftMostDs = [], newMiddleDs = [], newDetailContentDs = [], newVertSumContentDs = [], newLeftHorzContentDs = [];
+
+            _.each(self.listSid(), (x) => {
+                //newLeftMost dataSource
+                let empItem: PersonModel = _.find(self.empItems(), ['empId', x]);
+                newLeftMostDs.push({ empId: x, empName: empItem.empCd + ' ' + empItem.empName });
+                //newMiddle dataSource
+                newMiddleDs.push({ empId: x, team: "1", rank: "A", qualification: "★", employmentName: "アルバイト", workplaceName: "東京本社", classificationName: "分類", positionName: "一般" });
+                //newDetail dataSource
+                let dsOfSid: any = _.filter(self.dataSource(), ['sid', x]);
+                newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
+                //newVertSumContent dataSource
+                newVertSumContentDs.push({ empId: x, noCan: 6, noGet: 6 });
             });
-
-            //create new dataSource for detailHeader
-            detailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
-            for (let i = 0; i < self.arrDay.length; i++) {
-                objDetailHeaderDs['_' + self.arrDay[i].yearMonthDay] = '';
+            //newLeftHorzSContent dataSource
+            for (let i = 0; i < 5; i++) {
+                newLeftHorzContentDs.push({ itemId: i.toString(), itemName: "8:00 ~ 9:00", sum: "23.5" });
             }
-            detailHeaderDs.push(objDetailHeaderDs);
 
-            //get new dataSource
-            self.dataSource([]);
-            detailContentDs = [];
+            //get new horzSumContentDs
             let horzSumContentDs = [];
-            for (let i = 0; i < 10; i++) {
+            for (let i = 0; i < 5; i++) {
                 let obj = {};
                 obj["itemId"] = i.toString();
                 obj["empId"] = "";
@@ -586,30 +515,182 @@ module ksu001.a.viewmodel {
                 horzSumContentDs.push(obj);
             }
 
-            self.getDataBasicSchedule().done(() => {
-                //dataSource
-                _.each(self.listSid, (x) => {
-                    let dsOfSid: any = _.filter(self.dataSource(), ['sid', x]);
-                    detailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
+            let newDetailColumns = [];
+            //define the new detailColumns
+            _.each(self.arrDay, (x: Time) => {
+                newDetailColumns.push({
+                    key: "_" + x.yearMonthDay, width: "100px", headerText: "", visible: true
                 });
-
-                let updateDetailHeader = {
-                    columns: newDetailColumns,
-                    dataSource: detailHeaderDs
-                };
-                let updateDetailContent = {
-                    columns: newDetailColumns,
-                    dataSource: detailContentDs
-                };
-
-                let updateHorzSumContent = {
-                    columns: newDetailColumns,
-                    dataSource: horzSumContentDs
-                };
-
-                $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
-                $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, updateHorzSumContent);
             });
+
+            let updateLeftmostContent = {
+                dataSource: newLeftMostDs,
+            };
+
+            let updateMiddleContent = {
+                dataSource: newMiddleDs,
+            };
+
+            let detailHeaderDeco = [], detailContentDeco = [];
+            //Set color for detail
+            self.setColorForDetail(detailHeaderDeco, detailContentDeco);
+            let updateDetailContent = {
+                columns: newDetailColumns,
+                dataSource: newDetailContentDs,
+                features: [{
+                    name: "BodyCellStyle",
+                    decorator: detailContentDeco
+                }]
+            };
+
+            let updateHorzSumContent = {
+                columns: newDetailColumns,
+                dataSource: horzSumContentDs
+            };
+
+            let updateVertSumContent = {
+                dataSource: newVertSumContentDs,
+            };
+
+            let updateLeftHorzSumContent = {
+                dataSource: newLeftHorzContentDs
+            };
+
+            $("#extable").exTable("updateTable", "leftmost", {}, updateLeftmostContent);
+            $("#extable").exTable("updateTable", "middle", {}, updateMiddleContent);
+            $("#extable").exTable("updateTable", "verticalSummaries", {}, updateVertSumContent);
+            $("#extable").exTable("updateTable", "leftHorizontalSummaries", {}, updateLeftHorzSumContent);
+            $("#extable").exTable("updateTable", "detail", {}, updateDetailContent);
+            $("#extable").exTable("updateTable", "horizontalSummaries", {}, updateHorzSumContent);
+        }
+
+        /**
+         * update new data of header and content of detail and horizSum
+         */
+        updateDetailAndHorzSum(): void {
+            let self = this;
+            //Get dates in time period
+            let currentDay = new Date(self.dtPrev().toString());
+            self.arrDay = [];
+            let newDetailColumns = [], newObjDetailHeaderDs = [], newDetailHeaderDs = [], newDetailContentDs = [];
+            while (currentDay <= self.dtAft()) {
+                self.arrDay.push(new Time(currentDay));
+                currentDay.setDate(currentDay.getDate() + 1);
+            }
+
+            //define the new detailColumns
+            _.each(self.arrDay, (x: Time) => {
+                newDetailColumns.push({
+                    key: "_" + x.yearMonthDay, width: "100px", headerText: "", visible: true
+                });
+            });
+
+            //create new detailHeaderDs
+            newDetailHeaderDs.push(new ExItem(undefined, null, null, null, true, self.arrDay));
+            for (let i = 0; i < self.arrDay.length; i++) {
+                newObjDetailHeaderDs['_' + self.arrDay[i].yearMonthDay] = '';
+            }
+            newDetailHeaderDs.push(newObjDetailHeaderDs);
+
+            //get new horzSumContentDs
+            let horzSumContentDs = [];
+            for (let i = 0; i < 5; i++) {
+                let obj = {};
+                obj["itemId"] = i.toString();
+                obj["empId"] = "";
+                for (let j = 0; j < self.arrDay.length; j++) {
+                    obj['_' + self.arrDay[j].yearMonthDay] = "10";
+                }
+                horzSumContentDs.push(obj);
+            }
+
+            let detailHeaderDeco = [], detailContentDeco = [];
+            //Set color for detail
+            self.setColorForDetail(detailHeaderDeco, detailContentDeco);
+
+            let updateDetailHeader = {
+                columns: newDetailColumns,
+                dataSource: newDetailHeaderDs,
+                features: [{
+                    name: "HeaderCellStyle",
+                    decorator: detailHeaderDeco
+                }]
+            };
+
+            //if haven't data in extable, only update header detail and header horizontal
+            if (self.empItems().length == 0) {
+                $("#extable").exTable("updateTable", "detail", updateDetailHeader, {});
+                $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, {});
+            } else {
+                self.getDataBasicSchedule().done(() => {
+                    //dataSour of detail
+                    _.each(self.listSid(), (x) => {
+                        let dsOfSid: any = _.filter(self.dataSource(), ['sid', x]);
+                        newDetailContentDs.push(new ExItem(x, dsOfSid, __viewContext.viewModel.viewO.listWorkType(), __viewContext.viewModel.viewO.listWorkTime(), false, self.arrDay));
+                    });
+
+                    let updateDetailContent = {
+                        columns: newDetailColumns,
+                        dataSource: newDetailContentDs,
+                        features: [{
+                            name: "BodyCellStyle",
+                            decorator: detailContentDeco
+                        }]
+                    };
+
+                    let updateHorzSumContent = {
+                        columns: newDetailColumns,
+                        dataSource: horzSumContentDs
+                    };
+
+                    $("#extable").exTable("updateTable", "detail", updateDetailHeader, updateDetailContent);
+                    $("#extable").exTable("updateTable", "horizontalSummaries", updateDetailHeader, updateHorzSumContent);
+                });
+            }
+        }
+
+        /**
+         * Set color for detailHeader
+         */
+        setColorForDetail(detailHeaderDeco: any, detailContentDeco: any): void {
+            let self = this;
+
+            for (let i = 0; i < self.arrDay.length; i++) {
+                if (self.arrDay[i].weekDay == '土') {
+                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 0, "color-blue text-color-blue text-align-center"));
+                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 1, "color-blue"));
+                } else if (self.arrDay[i].weekDay == '日') {
+                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 0, "color-pink text-color-red text-align-center"));
+                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 1, "color-pink"));
+                } else {
+                    detailHeaderDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, 0, "text-align-center"));
+                }
+                //Set color for detailContent
+                _.each(self.listSid(), (empId) => {
+                    if (self.arrDay[i].weekDay == '土' || self.arrDay[i].weekDay == '日') {
+                        detailContentDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, empId, "text-color-red"));
+                    } else {
+                        detailContentDeco.push(new CellColor("_" + self.arrDay[i].yearMonthDay, empId, "text-color-blue"));
+                    }
+                });
+            }
+        }
+        
+        /**
+         * Set error
+         */
+        addListError(errorsRequest: Array<string>) {
+            var messages = {};
+            _.forEach(errorsRequest, function(err){
+                messages[err] = nts.uk.resource.getMessage(err);
+            });
+            
+            var errorVm = {
+                messageId:  errorsRequest,
+                messages: messages
+            };
+            
+            nts.uk.ui.dialog.bundledErrors(errorVm);
         }
 
     }
@@ -617,14 +698,14 @@ module ksu001.a.viewmodel {
     interface ICell {
         rowIndex: string,
         columnKey: string,
-        value: string,
+        value: ExCell,
         innerIdx: number
     }
 
     class Cell {
         rowIndex: string;
         columnKey: string;
-        value: string;
+        value: ExCell;
         innerIdx: number;
 
         constructor(params: ICell) {
@@ -636,44 +717,53 @@ module ksu001.a.viewmodel {
     }
 
     interface IPersonModel {
-        personId: string;
-        code: string;
-        name: string;
-        baseDate?: number;
+        empId: string,
+        empCd: string,
+        empName: string,
+        workplaceId: string,
+        wokplaceCd: string,
+        workplaceName: string,
+        baseDate?: number
     }
 
     class PersonModel {
-        personId: string;
-        code: string;
-        name: string;
+        empId: string;
+        empCd: string;
+        empName: string;
+        workplaceId: string;
+        wokplaceCd: string;
+        workplaceName: string;
         baseDate: number;
 
         constructor(param: IPersonModel) {
-            this.personId = param.personId;
-            this.code = param.code;
-            this.name = param.name;
+            this.empId = param.empId;
+            this.empCd = param.empCd;
+            this.empName = param.empName;
+            this.workplaceId = param.workplaceId;
+            this.wokplaceCd = param.wokplaceCd;
+            this.workplaceName = param.workplaceName;
             this.baseDate = param.baseDate;
         }
     }
 
     interface IBasicSchedule {
         date: string,
-        sid: string,
-        workTimeCd: string,
-        workTypeCd: string
+        employeeId: string,
+        workTimeCode: string,
+        workTypeCode: string
     }
 
     class BasicSchedule {
         date: string;
-        sid: string;
-        workTimeCd: string;
-        workTypeCd: string;
+        employeeId: string;
+        workTimeCode: string;
+        workTypeCode: string;
 
         constructor(params: IBasicSchedule) {
             this.date = params.date;
-            this.sid = params.sid;
-            this.workTimeCd = params.workTimeCd;
-            this.workTypeCd = params.workTypeCd;
+            this.employeeId = params.employeeId;
+            this.workTimeCode = params.workTimeCode;
+            this.workTypeCode = params.workTypeCode;
         }
     }
 
@@ -728,14 +818,14 @@ module ksu001.a.viewmodel {
     }
 
     class Time {
-        ymd: string;
+        ymd: Date;
         year: string;
         month: string;
         day: string;
         weekDay: string;
         yearMonthDay: string;
 
-        constructor(ymd: string) {
+        constructor(ymd: Date) {
             this.ymd = ymd;
             this.year = moment(this.ymd).format('YYYY');
             this.month = moment(this.ymd).format('M');
@@ -805,6 +895,35 @@ module ksu001.a.viewmodel {
         }
     }
 
+    interface IExCell {
+        workTypeCode: string,
+        workTypeName: string,
+        workTimeCode: string,
+        workTimeName: string,
+        symbol: string,
+        startTime: any,
+        endTime: any
+    }
+
+    class ExCell {
+        workTypeCode: string;
+        workTypeName: string;
+        workTimeCode: string;
+        workTimeName: string;
+        symbol: string;
+        startTime: any;
+        endTime: any;
+        constructor(params: IExCell) {
+            this.workTypeCode = params.workTypeCode;
+            this.workTypeName = params.workTypeName;
+            this.workTimeCode = params.workTimeCode;
+            this.workTimeName = params.workTimeName;
+            this.symbol = params.symbol;
+            this.startTime = params.startTime;
+            this.endTime = params.endTime;
+        }
+    }
+
     class ExItem {
         empId: string;
         empName: string;
@@ -819,21 +938,62 @@ module ksu001.a.viewmodel {
                 }
                 return;
             }
-            //create detailContent (ex: [workType, workTime] : ["出勤", "通常４ｈ "])
+            //create detailContent 
             for (let i = 0; i < arrDay.length; i++) {
                 let obj: BasicSchedule = _.find(dsOfSid, (x) => {
-                    return moment(x.date).format('D') == arrDay[i].day;
+                    return moment(new Date(x.date)).format('D') == arrDay[i].day;
                 });
                 //holiday
                 if (arrDay[i].weekDay == '日' || arrDay[i].weekDay == '土') {
-                    this['_' + arrDay[i].yearMonthDay] = ['休日', ''];
+                    this['_' + arrDay[i].yearMonthDay] = new ExCell({
+                        endTime: null,
+                        startTime: null,
+                        symbol: null,
+                        workTimeCode: "",
+                        workTimeName: "",
+                        workTypeCode: "",
+                        workTypeName: "休日",
+                    });
                 } else if (obj) {
-                    //get name of workType and workTime
-                    let workTypeName = _.find(listWorkType, ['workTypeCode', obj.workTypeCd]).abbreviationName;
-                    let workTimeName = _.find(listWorkTime, ['siftCd', obj.workTimeCd]).abName;
-                    this['_' + arrDay[i].yearMonthDay] = [workTypeName, workTimeName];
+                    //get code and name of workType and workTime
+                    let workTypeCode = null, workTypeName = null, workTimeCode = null, workTimeName = null;
+                    let workType = _.find(listWorkType, ['workTypeCode', obj.workTypeCode]);
+                    if (workType) {
+                        workTypeCode = obj.workTypeCode;
+                        workTypeName = workType.abbreviationName;
+                    } else {
+                        workTypeCode = '';
+                        workTypeName = '';
+                    }
+
+                    let workTime = _.find(listWorkTime, ['siftCd', obj.workTimeCode]);
+                    if (workTime) {
+                        workTimeCode = obj.workTimeCode;
+                        workTimeName = workTime.abName;
+                    } else {
+                        workTimeCode = '';
+                        workTimeName = '';
+                    }
+
+                    this['_' + arrDay[i].yearMonthDay] = new ExCell({
+                        workTypeCode: workTypeCode,
+                        workTypeName: workTypeName,
+                        workTimeCode: workTimeCode,
+                        workTimeName: workTimeName,
+                        symbol: null,
+                        startTime: null,
+                        endTime: null
+                    });
                 } else {
-                    this['_' + arrDay[i].yearMonthDay] = ['', ''];
+                    this['_' + arrDay[i].yearMonthDay] = new ExCell({
+                        workTypeCode: '',
+                        workTypeName: '',
+                        workTimeCode: '',
+                        workTimeName: '',
+                        symbol: null,
+                        startTime: null,
+                        endTime: null
+                    });
                 }
             }
         }

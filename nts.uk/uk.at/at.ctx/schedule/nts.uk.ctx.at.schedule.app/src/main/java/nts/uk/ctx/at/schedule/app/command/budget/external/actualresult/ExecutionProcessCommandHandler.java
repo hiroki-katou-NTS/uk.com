@@ -4,10 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.budget.external.actualresult;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,32 +19,29 @@ import java.util.Optional;
 import javax.ejb.Stateful;
 import javax.inject.Inject;
 
-import org.apache.commons.csv.CSVFormat;
-
+import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.i18n.custom.IInternationalization;
+import nts.arc.layer.app.command.AsyncCommandHandler;
+import nts.arc.layer.app.command.AsyncCommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.arc.primitive.PrimitiveValueUtil;
-import nts.arc.task.AsyncTask;
-import nts.arc.task.AsyncTaskService;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.csv.NtsCsvReader;
 import nts.gul.csv.NtsCsvRecord;
-import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExecutionInfor;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetDailyDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetErrorDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetLogDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetTimeDto;
+import nts.uk.ctx.at.schedule.dom.budget.external.BudgetAtr;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.UnitAtr;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.CompletionState;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.Encoding;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetMoney;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumberPerson;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetNumericalVal;
@@ -55,24 +49,22 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetTime;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetUnitPrice;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDaily;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDailyRepository;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetErrorRepository;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLog;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetLogRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZone;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZoneRepository;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.WorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ScWorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetErrorRepository;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.CompletionState;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLog;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLogRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.ExtBudgetFileCheckService;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.FileUltil;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class ExecutionProcessCommandHandler.
  */
 @Stateful
-public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<ExecutionProcessCommand, ExecutionInfor> {
-    
-    /** The managed task service. */
-    @Inject
-    private AsyncTaskService managedTaskService;
+public class ExecutionProcessCommandHandler extends AsyncCommandHandler<ExecutionProcessCommand> {
     
     /** The internationalization. */
     @Inject
@@ -108,87 +100,102 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     
     /** The workplace adapter. */
     @Inject
-    private WorkplaceAdapter workplaceAdapter;
+    private ScWorkplaceAdapter workplaceAdapter;
     
-    /** The Constant FORMAT_DATES. */
-    private static final List<String> FORMAT_DATES = Arrays.asList("yyyyMMdd", "yyyy/M/d", "yyyy/MM/dd");
+    /** The format dates. */
+    private final List<String> FORMAT_DATES = Arrays.asList("yyyyMMdd", "yyyy/M/d", "yyyy/MM/dd");
     
-    /** The Constant DEFAULT_VALUE. */
-    private static final Integer DEFAULT_VALUE = 0;
+    /** The default value. */
+    private final Integer DEFAULT_VALUE = 0;
     
-    /** The Constant INDEX_COLUMN_CODE. */
-    private static final Integer INDEX_COLUMN_CODE = 0;
+    /** The max column daily. */
+    private final Integer MAX_COLUMN_DAILY = 3;
     
-    /** The Constant INDEX_COLUMN_DATE. */
-    private static final Integer INDEX_COLUMN_DATE = 1;
+    /** The max column time zone. */
+    private final Integer MAX_COLUMN_TIME_ZONE = 50;
     
-    /** The Constant INDEX_BEGIN_COL_VALUE. */
-    private static final Integer INDEX_BEGIN_COL_VALUE = 2;
+    /** The index column code. */
+    private final Integer INDEX_COLUMN_CODE = 0;
     
-    /** The Constant MAX_COLMN. */
-    private static final Integer MAX_COLMN = 51;
+    /** The index column date. */
+    private final Integer INDEX_COLUMN_DATE = 1;
     
-    /** The Constant TOTAL_RECORD. */
-    private static final String TOTAL_RECORD = "TOTAL_RECORD";
+    /** The index begin col value. */
+    private final Integer INDEX_BEGIN_COL_VALUE = 2;
     
-    /** The Constant SUCCESS_CNT. */
-    private static final String SUCCESS_CNT = "SUCCESS_CNT";
+    /** The max colmn. */
+    private final Integer MAX_COLMN = 51;
     
-    /** The Constant FAIL_CNT. */
-    private static final String FAIL_CNT = "FAIL_CNT";
+    /** The total record. */
+    private final String TOTAL_RECORD = "TOTAL_RECORD";
+    
+    /** The success cnt. */
+    private final String SUCCESS_CNT = "SUCCESS_CNT";
+    
+    /** The fail cnt. */
+    private final String FAIL_CNT = "FAIL_CNT";
+    
+    /** The blank value. */
+    private final String BLANK_VALUE = "0";
+    
+    /** The blank value time. */
+    private final String BLANK_VALUE_TIME = "00:00";
     
     /* (non-Javadoc)
      * @see nts.arc.layer.app.command.CommandHandlerWithResult#handle(nts.arc.layer.app.command.CommandHandlerContext)
      */
     @Override
-    protected ExecutionInfor handle(CommandHandlerContext<ExecutionProcessCommand> context) {
+    protected void handle(CommandHandlerContext<ExecutionProcessCommand> context) {
+        val asyncTask = context.asAsync();
+        TaskDataSetter setter = asyncTask.getDataSetter();
+
         ExecutionProcessCommand command = context.getCommand();
-        TaskDataSetter setter = new TaskDataSetter();
-        // GUID
-        String executeId = IdentifierUtil.randomUniqueId();
-        AsyncTask task = AsyncTask.builder().withContexts().keepsTrack(true).build(() -> {
-            this.fileCheckService.validFileFormat(command.getFileId());
-            setter.setData(TOTAL_RECORD, DEFAULT_VALUE);
-            setter.setData(SUCCESS_CNT, DEFAULT_VALUE);
-            setter.setData(FAIL_CNT, DEFAULT_VALUE);
-            
-            // register table LOG with status: IN_COMPLETE 
-            String employeeId = AppContexts.user().employeeId();
-            GeneralDateTime dateTimeCurrent = GeneralDateTime.now();
-            ExternalBudgetLogDto extBudgetLogDto = ExternalBudgetLogDto.builder()
-                    .executionId(executeId)
-                    .employeeId(employeeId)
-                    .startDateTime(dateTimeCurrent)
-                    .endDateTime(dateTimeCurrent) // begin import, do not have end date?
-                    .extBudgetCode(command.getExternalBudgetCode())
-                    .extBudgetFileName(command.getFileName())
-                    .completionState(CompletionState.INCOMPLETE)
-                    .build();
-            this.extBudgetLogRepo.add(extBudgetLogDto.toDomain());
-            
-            String companyId = AppContexts.user().companyId();
-            Optional<ExternalBudget> extBudgetOptional = this.externalBudgetRepo.find(companyId,
-                    command.getExternalBudgetCode());
-            if (!extBudgetOptional.isPresent()) {
-                throw new RuntimeException("Not external budget setting.");
-            }
-            
-            // initial import process
-            ImportProcess importProcess = new ImportProcess();
-            importProcess.executeId = executeId;
-            importProcess.inputStream = this.fileStreamService.takeOutFromFileId(command.getFileId());
-            importProcess.externalBudget = extBudgetOptional.get();
-            importProcess.extractCondition = command;
-            
-            // begin process input file
-            this.processInput(importProcess, setter);
-        });
-        task.setDataSetter(setter);
-        this.managedTaskService.execute(task);
-        return ExecutionInfor.builder()
-                .taskId(task.getId())
-                .executeId(executeId)
+        String executeId = command.getExecuteId();
+
+        // find all message JP before import
+        Map<String, String> mapStringJP = findAllStringJP();
+        // valid file format
+        this.fileCheckService.validFileIgnoreCharset(command.getFileId(), command.getEncoding(),
+                command.getStartLine().v());
+
+        // get input stream by file id
+        InputStream inputStream = this.fileStreamService.takeOutFromFileId(command.getFileId());
+
+        setter.setData(TOTAL_RECORD, DEFAULT_VALUE);
+        setter.setData(SUCCESS_CNT, DEFAULT_VALUE);
+        setter.setData(FAIL_CNT, DEFAULT_VALUE);
+
+        // register table LOG with status: IN_COMPLETE
+        String employeeId = AppContexts.user().employeeId();
+        GeneralDateTime dateTimeCurrent = GeneralDateTime.now();
+        ExternalBudgetLogDto extBudgetLogDto = ExternalBudgetLogDto.builder()
+                .executionId(executeId)
+                .employeeId(employeeId)
+                .startDateTime(dateTimeCurrent)
+                .endDateTime(dateTimeCurrent)
+                .extBudgetCode(command.getExternalBudgetCode())
+                .extBudgetFileName(command.getFileName())
+                .completionState(CompletionState.INCOMPLETE)
                 .build();
+        this.extBudgetLogRepo.add(extBudgetLogDto.toDomain());
+
+        String companyId = AppContexts.user().companyId();
+        Optional<ExternalBudget> extBudgetOptional = this.externalBudgetRepo.find(companyId,
+                command.getExternalBudgetCode());
+        if (!extBudgetOptional.isPresent()) {
+            throw new RuntimeException("Not external budget setting.");
+        }
+
+        // initial import process
+        ImportProcess importProcess = new ImportProcess();
+        importProcess.executeId = executeId;
+        importProcess.inputStream = inputStream;
+        importProcess.externalBudget = extBudgetOptional.get();
+        importProcess.extractCondition = command;
+        importProcess.mapStringJP = mapStringJP;
+
+        // begin process input file
+        this.processInput(importProcess, asyncTask);
     }
     
     /**
@@ -197,20 +204,31 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param importProcess the import process
      * @param setter the setter
      */
-    private void processInput(ImportProcess importProcess, TaskDataSetter setter) {
+    private <C> void processInput(ImportProcess importProcess, AsyncCommandHandlerContext<C> asyncTask) {
+        TaskDataSetter setter = asyncTask.getDataSetter();
+        boolean isInterrupt = false;
         try {
-            Charset charset = this.getCharset(importProcess.extractCondition.getEncoding());
-            String newLineCode = this.getNewLineCode();
-            NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().withChartSet(charset)
-                    .withFormat(CSVFormat.EXCEL.withRecordSeparator(newLineCode));
+            NtsCsvReader csvReader = FileUltil.newCsvReader(importProcess.extractCondition.getEncoding());
             List<NtsCsvRecord> csRecords = csvReader.parse(importProcess.inputStream);
-            setter.updateData(TOTAL_RECORD, csRecords.size() - importProcess.extractCondition.getStartLine() + 1);
+            
+            // calculate total record and check has data
+            int calTotal = csRecords.size() - importProcess.extractCondition.getStartLine().v() + 1;
+            if (calTotal > DEFAULT_VALUE) {
+                setter.updateData(TOTAL_RECORD, calTotal);
+            }
+            
             Iterator<NtsCsvRecord> csvRecordIterator = csRecords.iterator();
             while(csvRecordIterator.hasNext()) {
-                /** TODO: check has interruption, if is interrupt, update table LOG status interruption (中断)
+                /** check has interruption, if is interrupt, update table LOG status interruption (中断)
                  * and end flow (stop process)
-                 * this.updateLog(importProcess.executeId, CompletionState.INTERRUPTION);
                  */
+                if (asyncTask.hasBeenRequestedToCancel()) {
+                    isInterrupt = true;
+                    this.updateLog(importProcess.executeId, CompletionState.INTERRUPTION);
+                    asyncTask.finishedAsCancelled();
+                    break;
+                }
+                
                 importProcess.stopLine = false;
                 this.processLine(importProcess, csvRecordIterator.next());
                 
@@ -223,9 +241,16 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                     setter.updateData(FAIL_CNT, log.getNumberFail());
                 }
             }
-            this.updateLog(importProcess.executeId, CompletionState.DONE);
-        } catch (IOException e) {
-            e.printStackTrace();
+            
+            // update status DONE if not interrupt
+            if (!isInterrupt) {
+                this.updateLog(importProcess.executeId, CompletionState.DONE);
+            }
+            
+            // close input stream
+            importProcess.inputStream.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
     
@@ -237,23 +262,23 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      */
     private void processLine(ImportProcess importProcess, NtsCsvRecord record) {
         importProcess.startLine++;
-        if (importProcess.startLine < importProcess.extractCondition.getStartLine()) {
+        // check line start read
+        if (importProcess.startLine < importProcess.extractCondition.getStartLine().v()) {
             return;
         }
         
         // get data cell from input csv
         List<String> result = new ArrayList<>();
         for (int i = 0; i < MAX_COLMN; i++) {
-            Object header = record.getColumn(i);
-            if (header != null) {
-                result.add(header.toString());
+            Object value = record.getColumn(i);
+            if (value != null) {
+                result.add(this.fillBlankValueIfNeed(value.toString(), importProcess.externalBudget.getBudgetAtr()));
             }
         }
         // check record has data?
         if (CollectionUtil.isEmpty(result)) {
             // update table log with status DONE(完了)
             this.updateLog(importProcess.executeId, CompletionState.DONE);
-            importProcess.failCnt++;
             return;
         }
         // validate input file csv
@@ -261,6 +286,24 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         
         // insert data master
         this.insertValue(importProcess, result);
+    }
+    
+    /**
+     * Fill value if need.
+     *
+     * @param value the value
+     * @param budgetAtr the budget atr
+     * @return the string
+     */
+    private String fillBlankValueIfNeed(String value, BudgetAtr budgetAtr) {
+        if (!value.trim().isEmpty()) {
+            return value;
+        }
+        if (budgetAtr == BudgetAtr.TIME) {
+            return BLANK_VALUE_TIME;
+        } else {
+            return BLANK_VALUE;
+        }
     }
     
     /**
@@ -302,12 +345,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      */
     private void addExtBudgetDaily(ImportProcess importProcess, List<String> result) {
         String rawValue = result.get(INDEX_BEGIN_COL_VALUE);
-        Long value = null;
-        try {
-            value = this.convertVal(rawValue);
-        } catch (RuntimeException e) {
-            value = Long.parseLong(rawValue);
-        }
+        Long value = this.parseActualValue(rawValue);
         ExternalBudgetDailyDto dto = ExternalBudgetDailyDto.builder()
                 .budgetAtr(importProcess.externalBudget.getBudgetAtr())
                 .workplaceId(importProcess.workplaceId)
@@ -317,28 +355,28 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                 .build();
         
         switch (importProcess.externalBudget.getBudgetAtr()) {
-        case TIME:
-            ExternalBudgetDaily<ExtBudgetTime> domainTime = dto.toDomain();
-            this.saveDataDaily(importProcess, domainTime);
-            break;
-        case PEOPLE:
-            ExternalBudgetDaily<ExtBudgetNumberPerson> domainPeople = dto.toDomain();
-            this.saveDataDaily(importProcess, domainPeople);
-            break;
-        case MONEY:
-            ExternalBudgetDaily<ExtBudgetMoney> domainMoney = dto.toDomain();
-            this.saveDataDaily(importProcess, domainMoney);
-            break;
-        case NUMERICAL:
-            ExternalBudgetDaily<ExtBudgetNumericalVal> domainNumerical = dto.toDomain();
-            this.saveDataDaily(importProcess, domainNumerical);
-            break;
-        case PRICE:
-            ExternalBudgetDaily<ExtBudgetUnitPrice> domainPrice = dto.toDomain();
-            this.saveDataDaily(importProcess, domainPrice);
-            break;
-        default:
-            throw new RuntimeException("Not budget atr suitable.");
+            case TIME:
+                ExternalBudgetDaily<ExtBudgetTime> domainTime = dto.toDomain();
+                this.saveDataDaily(importProcess, domainTime);
+                break;
+            case PEOPLE:
+                ExternalBudgetDaily<ExtBudgetNumberPerson> domainPeople = dto.toDomain();
+                this.saveDataDaily(importProcess, domainPeople);
+                break;
+            case MONEY:
+                ExternalBudgetDaily<ExtBudgetMoney> domainMoney = dto.toDomain();
+                this.saveDataDaily(importProcess, domainMoney);
+                break;
+            case NUMERICAL:
+                ExternalBudgetDaily<ExtBudgetNumericalVal> domainNumerical = dto.toDomain();
+                this.saveDataDaily(importProcess, domainNumerical);
+                break;
+            case PRICE:
+                ExternalBudgetDaily<ExtBudgetUnitPrice> domainPrice = dto.toDomain();
+                this.saveDataDaily(importProcess, domainPrice);
+                break;
+            default:
+                throw new RuntimeException("Not budget atr suitable.");
         }
     }
     
@@ -349,7 +387,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param importProcess the import process
      * @param domain the domain
      */
-    private <T> void saveDataDaily (ImportProcess importProcess, ExternalBudgetDaily<T> domain) {
+    private <T> void saveDataDaily(ImportProcess importProcess, ExternalBudgetDaily<T> domain) {
         if (!this.extBudgetDailyRepo.isExisted(domain.getWorkplaceId(), GeneralDate.legacyDate(domain.getActualDate()),
                 domain.getExtBudgetCode().v())) {
             this.extBudgetDailyRepo.add(domain);
@@ -364,7 +402,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                 .executionId(importProcess.executeId)
                 .lineNo(importProcess.startLine)
                 .columnNo(DEFAULT_VALUE)
-                .errorContent(this.getMessageById("Msg_167"))
+                .errorContent(importProcess.mapStringJP.get("Msg_167"))
                 .build();
         this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
         
@@ -383,12 +421,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         List<String> lstValue = result.subList(INDEX_BEGIN_COL_VALUE, result.size());
         for (int i=0; i<lstValue.size(); i++) {
             String rawValue = lstValue.get(i);
-            Long value = null;
-            try {
-                value = this.convertVal(rawValue);
-            } catch (RuntimeException e) {
-                value = Long.parseLong(rawValue);
-            }
+            Long value = this.parseActualValue(rawValue);
             mapValue.put(i, value);
         }
         ExternalBudgetTimeDto dto = ExternalBudgetTimeDto.builder()
@@ -399,28 +432,28 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                 .mapValue(mapValue)
                 .build();
         switch (importProcess.externalBudget.getBudgetAtr()) {
-        case TIME:
-            ExternalBudgetTimeZone<ExtBudgetTime> domainTime = dto.toDomain();
-            this.saveDataTime(importProcess, domainTime);
-            break;
-        case PEOPLE:
-            ExternalBudgetTimeZone<ExtBudgetNumberPerson> domainPeople = dto.toDomain();
-            this.saveDataTime(importProcess, domainPeople);
-            break;
-        case MONEY:
-            ExternalBudgetTimeZone<ExtBudgetMoney> domainMoney = dto.toDomain();
-            this.saveDataTime(importProcess, domainMoney);
-            break;
-        case NUMERICAL:
-            ExternalBudgetTimeZone<ExtBudgetNumericalVal> domainNumerical = dto.toDomain();
-            this.saveDataTime(importProcess, domainNumerical);
-            break;
-        case PRICE:
-            ExternalBudgetTimeZone<ExtBudgetUnitPrice> domainPrice = dto.toDomain();
-            this.saveDataTime(importProcess, domainPrice);
-            break;
-        default:
-            throw new RuntimeException("Not budget atr suitable.");
+            case TIME:
+                ExternalBudgetTimeZone<ExtBudgetTime> domainTime = dto.toDomain();
+                this.saveDataTime(importProcess, domainTime);
+                break;
+            case PEOPLE:
+                ExternalBudgetTimeZone<ExtBudgetNumberPerson> domainPeople = dto.toDomain();
+                this.saveDataTime(importProcess, domainPeople);
+                break;
+            case MONEY:
+                ExternalBudgetTimeZone<ExtBudgetMoney> domainMoney = dto.toDomain();
+                this.saveDataTime(importProcess, domainMoney);
+                break;
+            case NUMERICAL:
+                ExternalBudgetTimeZone<ExtBudgetNumericalVal> domainNumerical = dto.toDomain();
+                this.saveDataTime(importProcess, domainNumerical);
+                break;
+            case PRICE:
+                ExternalBudgetTimeZone<ExtBudgetUnitPrice> domainPrice = dto.toDomain();
+                this.saveDataTime(importProcess, domainPrice);
+                break;
+            default:
+                throw new RuntimeException("Not budget atr suitable.");
         }
     }
     
@@ -431,7 +464,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param importProcess the import process
      * @param domain the domain
      */
-    private <T> void saveDataTime (ImportProcess importProcess, ExternalBudgetTimeZone<T> domain) {
+    private <T> void saveDataTime(ImportProcess importProcess, ExternalBudgetTimeZone<T> domain) {
         if (!this.extBudgetTimeRepo.isExisted(domain.getWorkplaceId(), GeneralDate.legacyDate(domain.getActualDate()),
                 domain.getExtBudgetCode().v())) {
             this.extBudgetTimeRepo.add(domain);
@@ -446,7 +479,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                 .executionId(importProcess.executeId)
                 .lineNo(importProcess.startLine)
                 .columnNo(DEFAULT_VALUE)
-                .errorContent(this.getMessageById("Msg_167"))
+                .errorContent(importProcess.mapStringJP.get("Msg_167"))
                 .build();
         this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
         
@@ -461,13 +494,14 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param result the result
      */
     private void validDataLine(ImportProcess importProcess, List<String> result) {
+        // valid column necessary.
         this.validUnitAtr(importProcess, result.size());
         
         // check column 2 (２列目) is date ?
-        this.validDateFormat(importProcess, result.get(INDEX_COLUMN_DATE));
+        this.validDateFormat(importProcess, result);
         
         // Check column 1 (1列目) is workplace code?
-        this.validWorkplaceCode(importProcess, result.get(INDEX_COLUMN_CODE));
+        this.validWorkplaceCode(importProcess, result);
         
         // Check actual value by primitive
         this.validActualVal(importProcess, result);
@@ -487,42 +521,35 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      */
     private void validUnitAtr(ImportProcess importProcess, int numberColInput) {
         UnitAtr unitAtr = importProcess.externalBudget.getUnitAtr();
-        int numberCol = 0;
+        int numberCol;
         switch (unitAtr) {
-        case DAILY:
-            numberCol = 3;
-            break;
-        case BYTIMEZONE:
-            numberCol = 50;
-            break;
-        default:
-            throw new RuntimeException("Not unit atr suitable.");
+            case DAILY:
+                numberCol = MAX_COLUMN_DAILY;
+                break;
+            case BYTIMEZONE:
+                numberCol = MAX_COLUMN_TIME_ZONE;
+                break;
+            default:
+                throw new RuntimeException("Not unit atr suitable.");
         }
+        if (numberColInput == numberCol) {
+            return;
+        }
+        String messageIdError = "Msg_162";
         if (numberColInput < numberCol) {
-            ExternalBudgetErrorDto extBudgetErrorDto = ExternalBudgetErrorDto.builder()
-                    .executionId(importProcess.executeId)
-                    .lineNo(importProcess.startLine)
-                    .columnNo(numberColInput)
-                    .errorContent(this.getMessageById("Msg_163"))
-                    .build();
-            this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
-            
-            importProcess.failCnt++;
-            // marker finish process line
-            importProcess.stopLine = true;
-        } else if (numberColInput > numberCol) {
-            ExternalBudgetErrorDto extBudgetErrorDto = ExternalBudgetErrorDto.builder()
-                    .executionId(importProcess.executeId)
-                    .lineNo(importProcess.startLine)
-                    .columnNo(++numberCol)
-                    .errorContent(this.getMessageById("Msg_162"))
-                    .build();
-            this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
-            
-            importProcess.failCnt++;
-            // marker finish process line
-            importProcess.stopLine = true;
+            messageIdError = "Msg_163";
         }
+        ExternalBudgetErrorDto extBudgetErrorDto = ExternalBudgetErrorDto.builder()
+                .executionId(importProcess.executeId)
+                .lineNo(importProcess.startLine)
+                .columnNo(DEFAULT_VALUE)
+                .errorContent(importProcess.mapStringJP.get(messageIdError))
+                .build();
+        this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
+        
+        importProcess.failCnt++;
+        // marker finish process line
+        importProcess.stopLine = true;
     }
     
     /**
@@ -531,11 +558,12 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param importProcess the import process
      * @param inputDate the input date
      */
-    private void validDateFormat(ImportProcess importProcess, String inputDate) {
+    private void validDateFormat(ImportProcess importProcess, List<String> result) {
         // finish process of line.
         if (importProcess.stopLine) {
             return;
         }
+        String inputDate = result.get(INDEX_COLUMN_DATE);
         Boolean isInValidDateFormat = null;
         for (String formatDate : FORMAT_DATES) {
             try {
@@ -569,23 +597,26 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param importProcess the import process
      * @param workplaceCode the workplace code
      */
-    private void validWorkplaceCode(ImportProcess importProcess, String workplaceCode) {
+    private void validWorkplaceCode(ImportProcess importProcess, List<String> result) {
         // finish process of line.
         if (importProcess.stopLine) {
             return;
         }
-        List<String> lstWpkId = this.workplaceAdapter.findWpkIdList(workplaceCode, importProcess.actualDate);
+        String companyId = AppContexts.user().companyId();
+        String workplaceCode = result.get(INDEX_COLUMN_CODE);
+        List<String> lstWpkId = this.workplaceAdapter.findWpkIdList(companyId, workplaceCode, importProcess.actualDate);
         if (!CollectionUtil.isEmpty(lstWpkId)) {
             importProcess.workplaceId = lstWpkId.get(DEFAULT_VALUE);
             return;
         }
         // insert error
+        int idxColReal = INDEX_COLUMN_CODE + 1;
         ExternalBudgetErrorDto extBudgetErrorDto = ExternalBudgetErrorDto.builder()
                 .executionId(importProcess.executeId)
                 .lineNo(importProcess.startLine)
-                .columnNo(INDEX_COLUMN_CODE)
+                .columnNo(idxColReal)
                 .workplaceCode(workplaceCode)
-                .errorContent(this.getMessageById("Msg_164"))
+                .errorContent(importProcess.mapStringJP.get("Msg_164"))
                 .build();
         this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
         
@@ -617,7 +648,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      * @param value the value
      */
     private void validValByPrimitive (ImportProcess importProcess, int columnNo, String value) {
-        String itemName = "KSU006_18";
+        String itemName = importProcess.mapStringJP.get("KSU006_18");
         try {
             switch (importProcess.externalBudget.getBudgetAtr()) {
                 case TIME:
@@ -654,8 +685,25 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
                 default:
                     throw new RuntimeException("Not budget atr suitable.");
             }
-        } catch (Exception e) {
+        } catch (BusinessException e) {
+            this.logError(importProcess, columnNo, value, e.getMessage());
+        } catch (NumberFormatException numberFormat) {
             this.logError(importProcess, columnNo, value, "Invalid format number.");
+        }
+    }
+    
+    /**
+     * Parses the actual value.
+     *
+     * @param rawValue the raw value
+     * @return the long
+     */
+    private Long parseActualValue(String rawValue) {
+        try {
+            return Long.parseLong(rawValue);
+        } catch (NumberFormatException e) {
+            // case budget atr: TIME
+            return this.convertVal(rawValue);
         }
     }
     
@@ -668,33 +716,13 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     private Long convertVal(String value) {
         String CHARACTER_COLON = ":";
         if (!value.contains(CHARACTER_COLON)) {
-            throw new RuntimeException("Actual value time invalid format.");
+            throw new BusinessException(new RawErrorMessage("Invalid format time of value."));
         }
         String[] arr = value.split(CHARACTER_COLON);
         Integer HOUR = 60;
-        try {
-            Long numberHour = Long.parseLong(arr[0]);
-            Long numberminute = Long.parseLong(arr[1]);
-            return numberHour * HOUR + numberminute;
-        } catch (NumberFormatException e) {
-            throw new RuntimeException(e.getMessage());
-        }
-    }
-    
-    /**
-     * Gets the charset.
-     *
-     * @param value the value
-     * @return the charset
-     */
-    private Charset getCharset(Integer value) {
-        Encoding encoding = Encoding.valueOf(value);
-        switch (encoding) {
-            case Shift_JIS:
-                return Charset.forName("Shift_JIS");
-            default:
-            return StandardCharsets.UTF_8;
-        }
+        Long numberHour = Long.parseLong(arr[0]);
+        Long numberMinute = Long.parseLong(arr[1]);
+        return numberHour * HOUR + numberMinute;
     }
     
     /**
@@ -760,12 +788,24 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
     }
     
     /**
-     * Gets the new line code.
+     * Find all string JP.
      *
-     * @return the new line code
+     * @return the map
      */
-    private String getNewLineCode() {
-        return "\r\n"; // CR+LF
+    private Map<String, String> findAllStringJP() {
+        Map<String, String> mapMessage = new HashMap<>();
+        String nameId = "KSU006_18";
+        // TODO: wait for fixing of Kiban team?
+//        Optional<String> optional = this.internationalization.getItemName(nameId);
+//        mapMessage.put(nameId, optional.isPresent() ? optional.get() : (nameId + " is not found."));
+        mapMessage.put(nameId, nameId + " is not found.");
+        
+        List<String> lstMsgId = Arrays.asList("Msg_162", "Msg_163", "Msg_164", "Msg_167");
+        for (String msgId : lstMsgId) {
+//            mapMessage.put(msgId, this.getMessageById(msgId));
+            mapMessage.put(msgId, msgId + " is not found.");
+        }
+        return mapMessage;
     }
     
     /**
@@ -776,10 +816,10 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
      */
     private String getMessageById(String messageId) {
         String errorContent = messageId + " is not found.";
-//        Optional<String> optional = this.internationalization.getRawMessage(messageId);
-//        if (optional.isPresent()) {
-//            errorContent = optional.get();
-//        }
+        Optional<String> optional = this.internationalization.getRawMessage(messageId);
+        if (optional.isPresent()) {
+            errorContent = optional.get();
+        }
         return errorContent;
     }
     
@@ -792,7 +832,7 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         String executeId = "";
         
         /** The start line. */
-        int startLine;
+        int startLine = 0;
         
         /** The success cnt. */
         int successCnt = 0;
@@ -811,6 +851,9 @@ public class ExecutionProcessCommandHandler extends CommandHandlerWithResult<Exe
         
         /** The extract condition. */
         ExecutionProcessCommand extractCondition;
+        
+        /** The map string JP. */
+        Map<String, String> mapStringJP;
         
         /** The workplace id. */
         String workplaceId;

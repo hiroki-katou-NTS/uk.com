@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 440,
-					height : 600
+					width : 550,
+					height :650
 				};
 			</script>
 			<com:ValidatorScript>
@@ -27,29 +27,29 @@
 		<ui:define name="content">
 			<div id="contents-area">
 				<div id='role'>
-					<div class='flex valign-center' data-bind="with: currentRole">
+					<div class='flex' data-bind="with: currentRole">
 						<div
 							data-bind="ntsFormLabel: {constraint: ['RoleCode' , 'RoleName'],required:true}"
 							class='distane'>
 							<label id="codeName">#{i18n.getText('CAS001_12')}</label>
 						</div>
-						<label id="roleCode" data-bind="text: roleCode"></label> 
-						<label id="roleName" data-bind="text: roleName"></label>
+						<label id="roleCode" data-bind="text: roleCode"></label> <label
+							id="roleName" data-bind="text: roleName"></label>
 					</div>
 					<div data-bind="ntsFormLabel: {}" class='distane'>
 						<label id="codeName">#{i18n.getText('CAS001_57')}</label>
 					</div>
 				</div>
 				<div id='category' class="bg-green caret-background">
-<!-- 					<div id="search" tabindex="1"
+					<div id="search" tabindex="1"
 						data-bind="ntsSearchBox: {
-									searchMode: 'filter',
-									targetKey: 'categoryId',
-								    mode: 'igGrid',
-								    comId: 'grid',
-									items: categoryList,
-									selectedKey: 'categoryId', 
-									fields: ['categoryId','categoryCode', 'categoryName']}" /> -->
+						searchMode: 'filter',
+						targetKey: 'categoryId',
+						mode: 'igGrid', 
+						comId: 'grid',
+						items: categoryList ,  
+						selectedKey: 'categoryId',
+						fields: ['categoryCode', 'categoryName']}" />
 					<table id="grid">
 					</table>
 
@@ -58,8 +58,7 @@
 			<div id="functions-area-bottom">
 				<button id="registration" class="proceed x-large"
 					data-bind='click:creatCategory' tabindex="6">#{i18n.getText('CAS001_61')}</button>
-				<button id="delete" class="danger " data-bind='click: closeDialog'
-					tabindex="7">#{i18n.getText('CAS001_62')}</button>
+				<button id="delete" data-bind='click: closeDialog' tabindex="7">#{i18n.getText('CAS001_62')}</button>
 
 			</div>
 

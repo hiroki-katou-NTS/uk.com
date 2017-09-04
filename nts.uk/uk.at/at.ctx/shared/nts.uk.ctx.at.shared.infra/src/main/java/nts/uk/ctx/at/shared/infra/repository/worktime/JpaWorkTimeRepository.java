@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.worktime;
 
 import java.util.ArrayList;
@@ -38,23 +42,51 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 	private final String findWorkTimeByList = "SELECT a FROM KwtmtWorkTime a "
 			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID " + "AND a.kwtmpWorkTimePK.siftCD IN :siftCDs";
 
-	private final String FIND_BY_CID_AND_DISPLAY_ATR = "SELECT a FROM KwtmtWorkTime a JOIN KshmtWorkTimeOrder b ON a.kwtmpWorkTimePK.siftCD = b.kshmpWorkTimeOrderPK.workTimeCd "
-			+ "WHERE a.kwtmpWorkTimePK.companyID = :companyID "
-			+ "AND a.displayAtr = :displayAtr "
-			+ "ORDER BY b.dispOrder ASC";
+	private static final String FIND_ALL = "SELECT k FROM KwtmtWorkTime k " + "LEFT JOIN KshmtWorkTimeOrder o "
+			+ "ON k.kwtmpWorkTimePK.siftCD = o.kshmpWorkTimeOrderPK.workTimeCode "
+			+ "WHERE k.kwtmpWorkTimePK.companyID = :companyID " + "AND k.displayAtr = 1 " // Always
+																							// display.
+			+ "ORDER BY o.dispOrder ASC";
 
+	private static final String FIND_BY_CODES = "SELECT k FROM KwtmtWorkTime k " + "LEFT JOIN KshmtWorkTimeOrder o "
+			+ "ON k.kwtmpWorkTimePK.siftCD = o.kshmpWorkTimeOrderPK.workTimeCode "
+			+ "WHERE k.kwtmpWorkTimePK.companyID = :companyID " + "AND k.displayAtr = 1 " // Always
+																							// display.
+			+ "AND k.kwtmpWorkTimePK.siftCD IN :siftCDs " + "ORDER BY o.dispOrder ASC";
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findByCompanyID(java
+	 * .lang.String)
+	 */
 	@Override
 	public List<WorkTime> findByCompanyID(String companyID) {
 		return this.queryProxy().query(findWorkTimeByCompanyID, KwtmtWorkTime.class)
 				.setParameter("companyID", companyID).getList(x -> convertToDomainWorkTime(x));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findByCode(java.lang
+	 * .String, java.lang.String)
+	 */
 	@Override
 	public Optional<WorkTime> findByCode(String companyID, String siftCD) {
 		return this.queryProxy().find(new KwtmpWorkTimePK(companyID, siftCD), KwtmtWorkTime.class)
 				.map(x -> convertToDomainWorkTime(x));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findByCodeList(java.
+	 * lang.String, java.util.List)
+	 */
 	@Override
 	public List<WorkTime> findByCodeList(String companyID, List<String> siftCDs) {
 		List<WorkTime> result = new ArrayList<WorkTime>();
@@ -92,14 +124,42 @@ public class JpaWorkTimeRepository extends JpaRepository implements WorkTimeRepo
 						new WorkTimeSymbol(kwtmtWorkTime.workTimeSymbol)));
 	}
 
-	/**
-	 * get list WorkTime by CompanyId and DisplayAtr = DISPLAY
-	 * Join with table ORDER to sort workTimeCd
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findAll(java.lang.
+	 * String)
 	 */
 	@Override
-	public List<WorkTime> findByCIdAndDisplayAtr(String companyID, int displayAtr) {
-		return this.queryProxy().query(FIND_BY_CID_AND_DISPLAY_ATR, KwtmtWorkTime.class)
-				.setParameter("companyID", companyID).setParameter("displayAtr", displayAtr)
+	public List<WorkTime> findAll(String companyID) {
+		return this.queryProxy().query(FIND_ALL, KwtmtWorkTime.class)
+				.setParameter("companyID", companyID).getList(x -> convertToDomainWorkTime(x));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository#findByCodes(java.
+	 * lang.String, java.util.List)
+	 */
+	@Override
+	public List<WorkTime> findByCodes(String companyID, List<String> codes) {
+		List<WorkTime> result = new ArrayList<WorkTime>();
+		int i = 0;
+		while (codes.size() - (i + 500) > 0) {
+			List<String> subCodelist = codes.subList(i, i + 500);
+			List<WorkTime> subResult = this.queryProxy().query(FIND_BY_CODES, KwtmtWorkTime.class)
+					.setParameter("companyID", companyID).setParameter("siftCDs", subCodelist)
+					.getList(x -> convertToDomainWorkTime(x));
+			result.addAll(subResult);
+			i += 500;
+		}
+		List<WorkTime> lastResult = this.queryProxy().query(FIND_BY_CODES, KwtmtWorkTime.class)
+				.setParameter("companyID", companyID).setParameter("siftCDs", codes.subList(i, codes.size()))
 				.getList(x -> convertToDomainWorkTime(x));
+		result.addAll(lastResult);
+		return result;
 	}
 }

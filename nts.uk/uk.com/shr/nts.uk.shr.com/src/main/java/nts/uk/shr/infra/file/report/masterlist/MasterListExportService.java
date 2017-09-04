@@ -21,7 +21,6 @@ import nts.uk.shr.infra.file.report.masterlist.annotation.NamedAnnotation;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
-import nts.uk.shr.infra.file.report.masterlist.data.MasterListHeaderColumns;
 import nts.uk.shr.infra.file.report.masterlist.generator.MasterListExportSource;
 import nts.uk.shr.infra.file.report.masterlist.generator.MasterListReportGenerator;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
@@ -35,8 +34,8 @@ public class MasterListExportService extends ExportService<MasterListExportQuery
 	@Inject
 	private ISessionLocale currentLanguage;
 	
-//	@Inject
-//	private CompanyAdapter company;
+	@Inject
+	private CompanyAdapter company;
 
 	@Override
 	protected void handle(ExportServiceContext<MasterListExportQuery> context) {
@@ -45,9 +44,8 @@ public class MasterListExportService extends ExportService<MasterListExportQuery
 		
 		try {
 			MasterListData domainData = CDI.current().select(MasterListData.class, new NamedAnnotation(query.getDomainId())).get();
-			MasterListHeaderColumns headerColumns = CDI.current().select(MasterListHeaderColumns.class, new NamedAnnotation(query.getDomainId())).get();
 			
-			List<MasterHeaderColumn> columns = headerColumns.getHeaderColumns();
+			List<MasterHeaderColumn> columns = domainData.getHeaderColumns();
 			List<MasterData> datas = domainData.getMasterDatas();
 			Map<String, String> headers = this.getHeaderInfor(query);
 			
@@ -65,15 +63,14 @@ public class MasterListExportService extends ExportService<MasterListExportQuery
 		Map<String, String> headers = new LinkedHashMap<>(); 
 		
 		LoginUserContext context = AppContexts.user();
-		String companyCode = context.companyCode();
-		String companyname = "";//company.getCompanyByCode(companyCode)
-//				.orElseThrow(() -> new RuntimeException("Company is not found!!!!")).getCompanyName();
+		String companyname = this.company.getCurrentCompany()
+				.orElseThrow(() -> new RuntimeException("Company is not found!!!!")).getCompanyName();
 		
 		String language = currentLanguage.getSessionLocale().getDisplayLanguage(); 
 		
 		String createReportDate = GeneralDateTime.now().localDateTime().format(DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss"));
 		
-		headers.put("【会社】", companyCode + " " + companyname);
+		headers.put("【会社】", context.companyCode() + " " + companyname);
 		headers.put("【種類】", query.getDomainType());
 		headers.put("【日時】", createReportDate);
 		headers.put("【選択言語】 ", language);

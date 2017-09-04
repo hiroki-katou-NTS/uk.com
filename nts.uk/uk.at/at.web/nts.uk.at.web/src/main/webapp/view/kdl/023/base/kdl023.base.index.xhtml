@@ -49,7 +49,7 @@
 							<div class="margin-left-100">
 								<div class="control-group" data-bind="with: statutorySetting">
 									<div tabindex="2" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_6')}' }"></div>
-									<div tabindex="7" id="cbb-work-type-statutory" class="pull-right"
+									<div tabindex="3" id="cbb-work-type-statutory" class="pull-right"
 										data-bind="ntsComboBox: {
 												name: '#[KDL023_17]',
 												options: $parents[1].listWorkType,
@@ -64,8 +64,8 @@
 									</div>
 								</div>
 								<div class="control-group" data-bind="with: nonStatutorySetting">
-									<div tabindex="3" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_7')}' }"></div>
-									<div tabindex="8" id="cbb-work-type-non-statutory" class="pull-right"
+									<div tabindex="4" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_7')}' }"></div>
+									<div tabindex="5" id="cbb-work-type-non-statutory" class="pull-right"
 										data-bind="ntsComboBox: {
 												name: '#[KDL023_18]',
 												options: $parents[1].listWorkType,
@@ -80,8 +80,8 @@
 									</div>
 								</div>
 								<div class="control-group" data-bind="with: holidaySetting">
-									<div tabindex="4" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_8')}' }"></div>
-									<div tabindex="9" id="cbb-work-type-holiday" class="pull-right"
+									<div tabindex="6" data-bind="ntsCheckBox: { checked: useClassification, text: '#{i18n.getText('KDL023_8')}' }"></div>
+									<div tabindex="7" id="cbb-work-type-holiday" class="pull-right"
 										data-bind="ntsComboBox: {
 												name: '#[KDL023_19]',
 												options: $parents[1].listWorkType,
@@ -100,7 +100,7 @@
 							<div class="control-group">
 								<div class="margin-left-50" data-bind="ntsFormLabel: {}">#{i18n.getText('KDL023_10')}</div>
 							</div>
-							<div id="reflection-method-radio-group" tabindex="5" class="margin-left-100">
+							<div id="reflection-method-radio-group" tabindex="8" class="margin-left-100">
 								<div class="control-group">
 									<label class="ntsRadioBox"><input type="radio"
 										name="textRadio"
@@ -117,8 +117,7 @@
 								</div>
 							</div>
 						</com:ko>
-						<button tabindex="6" class="btn-apply-setting caret-right pull-right" data-bind="click: onBtnApplySettingClicked">
-							#{i18n.getText('KDL023_13')}
+						<button tabindex="9" class="btn-apply-setting caret-right pull-right" data-bind="text: buttonReflectPatternText(), click: onBtnApplySettingClicked">
 						</button>
 					</div>
 					<!-- Calendar function -->

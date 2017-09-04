@@ -1,0 +1,52 @@
+.contents-area {
+	width: 1238px;
+}
+.dateControlBtn { width: 80px; margin-top: 10px;}
+.dateControlBtn:FIRST-CHILD{ margin-left: 10px; }
+.dateControlBtn:LAST-CHILD{ margin-left: 40px; }
+#sidebar-area {
+	width: 80px;
+}
+#left-contents {
+	width: 260px;
+	height: 680px;
+}
+thead {
+	background-color: #c7f391;
+}
+
+tr {
+	height: 10px;
+}
+.contents-header td {
+    border: 1px solid #CCC;
+    text-align: center;
+    height: 20px;
+    padding: 5px 3px;
+}
+.contents-header {
+	width: 920px;
+	margin-top: 20px;
+}
+table.contents-header tbody {
+	background-color:#E0F59E;
+}
+table.contents-header td.name {
+	width: 100px;
+}
+
+table.contents-header td.button_phase {
+	width: 80px;
+}
+
+table.contents-header td.approver {
+	width: 70px !important;
+}
+
+table.contents-header td.base-date {
+	width: 150px;
+}
+
+table.contents-header td.allow-pay {
+	width: 45px;
+}

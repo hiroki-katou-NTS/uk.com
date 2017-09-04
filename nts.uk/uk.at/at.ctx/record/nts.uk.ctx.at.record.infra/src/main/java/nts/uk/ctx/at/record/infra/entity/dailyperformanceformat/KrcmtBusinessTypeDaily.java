@@ -28,8 +28,8 @@ public class KrcmtBusinessTypeDaily extends UkJpaEntity implements Serializable 
 	@EmbeddedId
 	public KrcmtBusinessTypeDailyPK krcmtBusinessTypeDailyPK;
 
-	@Column(name = "ORDER")
-	public BigDecimal order;
+	@Column(name = "ORDER_DAILY")
+	public int order;
 
 	@Column(name = "COLUMN_WIDTH")
 	public BigDecimal columnWidth;
