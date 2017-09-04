@@ -1,0 +1,43 @@
+package nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet;
+
+import lombok.val;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
+import nts.uk.shr.com.primitive.TimeWithDayAttr;
+
+/**
+ * 遅刻時間帯
+ * @author keisuke_hoshina
+ *
+ */
+public class LateTimeSheet {
+	
+	private TimeWithDayAttr start;
+	private TimeWithDayAttr end;
+
+	private LateTimeSheet(TimeWithDayAttr start, TimeWithDayAttr end) {
+		this.start = start;
+		this.end   = end;
+	}
+	
+	/**
+	 * @param goWorkTime 出勤時間
+	 * @param workTime   就業時間帯クラス
+	 * @return 計算用時間帯：遅刻時間帯
+	 */
+	public static LateTimeSheet of(TimeWithDayAttr goWorkTime, WorkTime workTime) {
+		
+		val lateTimeSheet = workTime.getLateTimeCalcRange(goWorkTime);
+		
+		if(goWorkTime.greaterThan(lateTimeSheet.getStart())) {
+			return new LateTimeSheet(lateTimeSheet.getStart(),goWorkTime);
+		}
+		else {
+			return new LateTimeSheet(lateTimeSheet.getStart(),lateTimeSheet.getEnd());
+		}
+	}
+	
+//	public void calcLateTime(計上控除区分) {
+//	}
+	
+
+}
