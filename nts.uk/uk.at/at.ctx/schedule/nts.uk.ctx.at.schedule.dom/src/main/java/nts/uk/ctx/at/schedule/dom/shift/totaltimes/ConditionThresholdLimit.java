@@ -22,7 +22,7 @@ public class ConditionThresholdLimit extends TimeDurationPrimitiveValue<Conditio
 	 * @param rawValue
 	 *            the raw value
 	 */
-	public ConditionThresholdLimit(Long rawValue) {
+	public ConditionThresholdLimit(int rawValue) {
 		super(rawValue);
 	}
 }
