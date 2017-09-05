@@ -100,4 +100,36 @@ public class KcwstCompanyWtSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.jcwstCompanyWtSetPK;
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((jcwstCompanyWtSetPK == null) ? 0 : jcwstCompanyWtSetPK.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KcwstCompanyWtSet other = (KcwstCompanyWtSet) obj;
+		if (jcwstCompanyWtSetPK == null) {
+			if (other.jcwstCompanyWtSetPK != null)
+				return false;
+		} else if (!jcwstCompanyWtSetPK.equals(other.jcwstCompanyWtSetPK))
+			return false;
+		return true;
+	}
+
 }

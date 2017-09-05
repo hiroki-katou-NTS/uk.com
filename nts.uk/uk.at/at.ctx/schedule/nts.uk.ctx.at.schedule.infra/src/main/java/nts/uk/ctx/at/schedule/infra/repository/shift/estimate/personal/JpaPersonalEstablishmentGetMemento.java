@@ -18,7 +18,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimeP
  */
 public class JpaPersonalEstablishmentGetMemento implements PersonalEstablishmentGetMemento{
 	
-	public static final int FIRST_TIME = 0;
+	private static final int FIRST_TIME = 0;
 	
 	/** The estimate time Personals. */
 	private List<KscmtEstTimePerSet> estimateTimePersonals;
