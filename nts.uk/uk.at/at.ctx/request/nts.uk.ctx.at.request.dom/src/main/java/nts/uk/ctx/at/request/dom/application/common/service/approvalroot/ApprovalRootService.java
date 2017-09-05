@@ -30,7 +30,7 @@ public interface ApprovalRootService {
 			String sid, 
 			int employmentRootAtr, 
 			int appType, 
-			Date standardDate);
+			GeneralDate standardDate);
 	
 	/**
 	 * 2.承認ルートを整理する

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.approvalroot;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -70,7 +69,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 	@Override
 	public List<ApprovalRootOutput> getApprovalRootOfSubjectRequest(
 			String cid, String sid, int employmentRootAtr, 
-			int appType,Date baseDate) {
+			int appType,GeneralDate baseDate) {
 		List<ApprovalRootOutput> result = new ArrayList<>();
 		// get 個人別就業承認ルート from workflow
 		List<PersonApprovalRootImport> perAppRoots = this.approvalRootAdaptorDto.findByBaseDate(cid, sid, baseDate, appType);
@@ -79,13 +78,13 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 			List<PersonApprovalRootImport> perAppRootsOfCommon = this.approvalRootAdaptorDto.findByBaseDateOfCommon(cid, sid, baseDate);
 			if (CollectionUtil.isEmpty(perAppRootsOfCommon)) {
 				// 所属職場を含む上位職場を取得
-				List<String> wpkList = this.employeeAdaptor.findWpkIdsBySid(cid, sid, GeneralDate.legacyDate(baseDate));
+				List<String> wpkList = this.employeeAdaptor.findWpkIdsBySid(cid, sid, baseDate);
 				for (String wｋｐId : wpkList) {
 					List<WkpApprovalRootImport> wkpAppRoots = this.approvalRootAdaptorDto.findWkpByBaseDate(cid, wｋｐId, baseDate, appType);
 					if (!CollectionUtil.isEmpty(wkpAppRoots)) {
 						// 2.承認ルートを整理する
 						result = wkpAppRoots.stream().map( x -> ApprovalRootOutput.convertFromWkpData(x)).collect(Collectors.toList());
-						this.adjustmentData(cid, sid, GeneralDate.legacyDate(baseDate), result);
+						this.adjustmentData(cid, sid, baseDate, result);
 						break;
 					} 
 					
@@ -93,7 +92,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 					if (!CollectionUtil.isEmpty(wkpAppRootsOfCom)) {
 						// 2.承認ルートを整理する
 						result = wkpAppRoots.stream().map( x -> ApprovalRootOutput.convertFromWkpData(x)).collect(Collectors.toList());
-						this.adjustmentData(cid, sid, GeneralDate.legacyDate(baseDate), result);
+						this.adjustmentData(cid, sid, baseDate, result);
 						break;
 					} 
 				}
@@ -105,24 +104,24 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 					if (!CollectionUtil.isEmpty(companyAppRootsOfCom)) {
 						// 2.承認ルートを整理する
 						result = comAppRoots.stream().map( x -> ApprovalRootOutput.convertFromCompanyData(x)).collect(Collectors.toList());
-						this.adjustmentData(cid, sid, GeneralDate.legacyDate(baseDate), result);
+						this.adjustmentData(cid, sid, baseDate, result);
 					} 
 				}else {
 					// 2.承認ルートを整理する
 					result = comAppRoots.stream().map( x -> ApprovalRootOutput.convertFromCompanyData(x)).collect(Collectors.toList());
-					this.adjustmentData(cid, sid, GeneralDate.legacyDate(baseDate), result);
+					this.adjustmentData(cid, sid, baseDate, result);
 				}
 					
 			}else {
 				// 2.承認ルートを整理する
 				result = perAppRoots.stream().map( x -> ApprovalRootOutput.convertFromPersonData(x)).collect(Collectors.toList());
-				this.adjustmentData(cid, sid, GeneralDate.legacyDate(baseDate), result);
+				this.adjustmentData(cid, sid, baseDate, result);
 			}
 			
 		}else {
 			// 2.承認ルートを整理する
 			result = perAppRoots.stream().map( x -> ApprovalRootOutput.convertFromPersonData(x)).collect(Collectors.toList());
-			this.adjustmentData(cid, sid, GeneralDate.legacyDate(baseDate), result);
+			this.adjustmentData(cid, sid, baseDate, result);
 		}
 		
 		return result;
