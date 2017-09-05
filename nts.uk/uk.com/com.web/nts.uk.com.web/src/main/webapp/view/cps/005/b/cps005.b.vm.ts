@@ -73,6 +73,8 @@ module nts.uk.com.view.cps005.b {
                     new service.Service().updateItemDef(newItemDef).done(function(data: string) {
                         if (data) {
                             info({ messageId: data }).then(() => { info({ messageId: "Msg_15" }); });
+                        } else {
+                            info({ messageId: "Msg_15" });
                         }
                         self.reloadData();
                         self.currentItemData().perInfoItemSelectCode("");

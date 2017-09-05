@@ -27,7 +27,6 @@ public class UpdateItemCommandHandler extends CommandHandlerWithResult<UpdateIte
 		}
 		PersonInfoItemDefinition oldItem = this.pernfoItemDefRep
 				.getPerInfoItemDefById(itemCommand.getPerInfoItemDefId(), contractCd).orElse(null);
-		oldItem.validate();
 		if (oldItem == null || oldItem.getIsFixed() == IsFixed.FIXED) {
 			return null;
 		}
