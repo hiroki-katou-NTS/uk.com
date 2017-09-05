@@ -4,25 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.bs.company.pub.workplace;
 
-import java.time.Period;
-
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 /**
  * The Class PubWorkplaceDto.
- */
-
-/*
- * (non-Javadoc)
- * 
- * @see java.lang.Object#toString()
- */
-
-/*
- * (non-Javadoc)
- * 
- * @see java.lang.Object#toString()
  */
 @Data
 public class WorkplaceExport {
