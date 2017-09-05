@@ -23,9 +23,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         index: KnockoutObservable<number>;
 
         isEnable: KnockoutObservable<boolean> = ko.observable(true);
-        //list worktype not japanese
-        listWTypeNotJp: any;
-
 
         constructor() {
             var self = this,
@@ -46,9 +43,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
             self.selectedRuleCode = ko.observable(1);
             self.listWorkType = ko.observableArray([]);
-            self.listWTypeNotJp = ko.pureComputed(() => {
-                return self.listWorkType();
-            });
             self.oneDay = ko.observable(new WorkTypeSet(iwork));
             self.currentOneDay = ko.observable(new WorkTypeSet(iwork));
             self.currentMorning = ko.observable(new WorkTypeSet(iwork));
@@ -73,7 +67,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 calculatorMethod: 0,
                 oneDay: ko.toJS(self.oneDay),
                 morning: ko.toJS(self.oneDay),
-                afternoon: ko.toJS(self.oneDay)
+                afternoon: ko.toJS(self.oneDay),
             }));
 
 
@@ -393,7 +387,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 calculatorMethod: 0,
                 oneDay: ko.toJS(self.oneDay),
                 morning: ko.toJS(self.oneDay),
-                afternoon: ko.toJS(self.oneDay)
+                afternoon: ko.toJS(self.oneDay),
             }));
             self.currentCode("");
             if (self.listWorkType().length > 0) {
@@ -422,7 +416,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                             calculatorMethod: item.calculatorMethod,
                             oneDay: ko.toJS(self.oneDay),
                             morning: ko.toJS(self.oneDay),
-                            afternoon: ko.toJS(self.oneDay)
+                            afternoon: ko.toJS(self.oneDay),
+                            dispOrder: item.dispOrder
                         });
 
                         // one day
@@ -482,9 +477,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                         }
                         self.listWorkType.push(ko.toJS(workType));
                     });
-                } else {
-
-                }
+                    self.listWorkType(_.orderBy(self.listWorkType(), ['dispOrder', 'workTypeCode'], ['asc', 'asc']));
+                } else { }
                 dfd.resolve();
             }).fail((res) => { });
             return dfd.promise();
@@ -504,7 +498,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 self.isEnable(false);
                 $("#single-list").igGrid("option", "width", "340px");
                 $("#left-content").css('width', '380');
-
+                //add new columns
                 var cols = $("#single-list").igGrid("option", "columns");
                 var newColumn = { headerText: nts.uk.resource.getText('KMK007_9'), key: 'nameNotJP', width: 100, formatter: _.escape };
                 cols.splice(2, 0, newColumn);
@@ -569,8 +563,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         oneDay?: IWorkTypeSet;
         morning?: IWorkTypeSet;
         afternoon?: IWorkTypeSet;
-        dispAbName: string;
-        dispName: string;
+        dispOrder?: number;
+        dispAbName?: string;
+        dispName?: string;
     }
 
     export class WorkType {
@@ -593,6 +588,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         oneDay: KnockoutObservable<WorkTypeSet>;
         morning: KnockoutObservable<WorkTypeSet>;
         afternoon: KnockoutObservable<WorkTypeSet>;
+        dispOrder: KnockoutObservable<number>;
 
         constructor(param: IWorkType) {
             this.workTypeCode = ko.observable(param.workTypeCode || '');
@@ -613,6 +609,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             this.oneDay = ko.observable(new WorkTypeSet(param.oneDay));
             this.morning = ko.observable(new WorkTypeSet(param.morning));
             this.afternoon = ko.observable(new WorkTypeSet(param.afternoon));
+            this.dispOrder = ko.observable(param.dispOrder == 0 ? null : param.dispOrder);
+
             if (param.abolishAtr == 0) {
                 this.icon = "";
             } else {
