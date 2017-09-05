@@ -11,11 +11,11 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.company.pub.workplace.PubWorkplaceDto;
+import nts.uk.ctx.bs.company.pub.workplace.WorkplaceExport;
 import nts.uk.ctx.bs.company.pub.workplace.WorkplacePub;
 import nts.uk.ctx.bs.employee.dom.access.workplace.SyWorkplaceAdapter;
-import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceDto;
-import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceHierarchyDto;
+import nts.uk.ctx.bs.employee.dom.access.workplace.dto.WorkplaceImport;
+import nts.uk.ctx.bs.employee.dom.access.workplace.dto.WorkplaceHierarchyImport;
 
 /**
  * The Class WorkplaceAdapterImpl.
@@ -35,9 +35,9 @@ public class SyWorkplaceAdapterImpl implements SyWorkplaceAdapter {
 	 * java.lang.String)
 	 */
 	@Override
-	public AcWorkplaceDto findByWkpId(String workplaceId) {
+	public WorkplaceImport findByWkpId(String workplaceId) {
 
-		PubWorkplaceDto item = workplacePub.findByWkpId(workplaceId);
+		WorkplaceExport item = workplacePub.findByWkpId(workplaceId);
 
 		// Check exist
 		if (item == null) {
@@ -45,7 +45,7 @@ public class SyWorkplaceAdapterImpl implements SyWorkplaceAdapter {
 		}
 
 		// Return
-		return new AcWorkplaceDto(item.getCompanyId(), item.getWorkplaceId(),
+		return new WorkplaceImport(item.getCompanyId(), item.getWorkplaceId(),
 				item.getWorkplaceCode(), item.getWorkplaceName(), item.getStartDate(),
 				item.getEndDate());
 	}
@@ -57,9 +57,9 @@ public class SyWorkplaceAdapterImpl implements SyWorkplaceAdapter {
 	 * findAllWorkplaceOfCompany(java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<AcWorkplaceDto> findAllWorkplaceOfCompany(String companyId, GeneralDate baseDate) {
+	public List<WorkplaceImport> findAllWorkplaceOfCompany(String companyId, GeneralDate baseDate) {
 		return workplacePub.findAllWorkplaceOfCompany(companyId, baseDate).stream()
-				.map(item -> new AcWorkplaceDto(item.getCompanyId(), item.getWorkplaceId(),
+				.map(item -> new WorkplaceImport(item.getCompanyId(), item.getWorkplaceId(),
 						item.getWorkplaceCode(), item.getWorkplaceName(), item.getStartDate(),
 						item.getEndDate()))
 				.collect(Collectors.toList());
@@ -72,10 +72,10 @@ public class SyWorkplaceAdapterImpl implements SyWorkplaceAdapter {
 	 * findAllHierarchyChild(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<AcWorkplaceHierarchyDto> findAllHierarchyChild(String companyId,
+	public List<WorkplaceHierarchyImport> findAllHierarchyChild(String companyId,
 			String workplaceId) {
 		return workplacePub.findAllHierarchyChild(companyId, workplaceId).stream().map(
-				item -> new AcWorkplaceHierarchyDto(item.getWorkplaceId(), item.getHierarchyCode()))
+				item -> new WorkplaceHierarchyImport(item.getWorkplaceId(), item.getHierarchyCode()))
 				.collect(Collectors.toList());
 	}
 
@@ -87,9 +87,9 @@ public class SyWorkplaceAdapterImpl implements SyWorkplaceAdapter {
 	 * (java.util.List)
 	 */
 	@Override
-	public List<AcWorkplaceDto> findByWkpIds(List<String> workplaceIds) {
+	public List<WorkplaceImport> findByWkpIds(List<String> workplaceIds) {
 		return workplacePub.findByWkpIds(workplaceIds).stream()
-				.map(item -> new AcWorkplaceDto(item.getCompanyId(), item.getWorkplaceId(),
+				.map(item -> new WorkplaceImport(item.getCompanyId(), item.getWorkplaceId(),
 						item.getWorkplaceCode(), item.getWorkplaceName(), item.getStartDate(),
 						item.getEndDate()))
 				.collect(Collectors.toList());

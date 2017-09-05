@@ -7,60 +7,96 @@
 <body>
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-
-			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-			<com:stylefile path="kmf004.b.main.css" />
-			<com:stylefile path="../c/kmf004.b.main.css" />
-
-			<com:scriptfile path="kmf004.b.vm.js" />
-			<com:scriptfile path="kmf004.b.service.js" />
-			<com:scriptfile path="../c/kmf004.c.vm.js" />
-			<com:scriptfile path="../c/kmf004.c.service.js" />
-			<com:scriptfile path="kmf004.b.start.js" />
 			<script>var dialogSize = { width: 1300, height: 800 };</script>
-		</ui:define>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmf004.d.main.css" />
+<!-- 			<com:stylefile path="../e/kmf004.e.main.css" /> -->
+			
+			<com:scriptfile path="kmf004.d.vm.js" />
+			<com:scriptfile path="kmf004.d.service.js" />
+			<com:scriptfile path="kmf004.d.start.js" />
 
+<!-- 			<com:scriptfile path="../e/kmf004.e.vm.js" /> -->
+<!-- 			<com:scriptfile path="../e/kmf004.e.service.js" /> -->
+		</ui:define>
 		<ui:define name="sidebar">
 			<div data-bind="with: tabView">
-				<ul class="navigator" data-bind="foreach: tabs().filter(function(t) { return t.display() == true})">
+				<ul class="navigator"
+					data-bind="foreach: tabs().filter(function(t) { return t.display() == true})">
 					<li><a
 						data-bind="text: name, click: changeTab, css: { 'active': active }, attr: { href: '#tabpanel-' + id.toLowerCase() }"></a></li>
 				</ul>
 			</div>
 		</ui:define>
-
 		<ui:define name="sidebar-content">
 			<div class="sidebar-content-header" data-bind="with: tabView">
-				<span class="title" data-bind="text: title"></span> <a
-					class="myLinkButton" data-bind="click: navigateView"> <span
-					class="myLinkButtonText">#{i18n.getText('KMK005_58')}</span>
-				</a>
-				<button class="proceed" data-bind="click: saveData">#{i18n.getText('KMK005_60')}</button>
-				<button class="danger" data-bind="click: removeData, enable: removeAble">#{i18n.getText('KMK005_62')}</button>
+				<span class="title" data-bind="text: title"></span>
+				<button class="proceed" data-bind="click: $parent.viewmodelD.register">#{i18n.getText('KMF004_2')}</button>
+				<button class="cancel" data-bind="click: $parent.viewmodelD.closeDialog">#{i18n.getText('KMF004_4')}</button>
 			</div>
-			<div id="tabpanel-g" role="tabpanel" class="screen-g"
-				data-bind="with: viewmodelG">
+			<div id="tabpanel-d" role="tabpanel" class="screen-d"
+				data-bind="with: viewmodelD">
 				<div class="contents-area">
-					<div class="g3_1">#{i18n.getText('KMK005_72',['#Com_Company'])}</div>
-					<div data-bind="with: model">
-						<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK005_73')}</div>
-						<button
-							data-bind="click: $parent.openBonusPaySettingDialog.bind($parent)">#{i18n.getText('KMK005_74')}</button>
-						<label data-bind="text: id">G3_4</label> <label
-							data-bind="text: name">G3_5</label>
+					<div>
+						<div data-bind="ntsFormLabel: { required: true }"
+							class="form-label-1 required">#{i18n.getText('KMF004_93')}</div>
 					</div>
+					<div id="radio" style=""
+						data-bind="ntsRadioBoxGroup: {
+														options: itemList,
+														optionsValue: 'id',
+														optionsText: 'name',
+														value: selectedId,
+														enable: true}">
+					</div>
+					
 				</div>
+				<span>#{i18n.getText('KMF004_97')}
+				<button id="help" data-bind="ntsHelpButton: {image: 'image/IMG_KMF004_2.png', position: 'right top', enable: enable }">?</button>
+				</span>
+				<hr />
+				<div data-bind="if: display">
+				</div>
+				<div class="contents-area-bottom"></div>
+				<table class="contents-header">
+					<thead>
+						<tr>
+							<td rowspan="2" class="numbers"></td>
+							<td rowspan="2" class="input-units">#{i18n.getText('KMF003_43')}</td>
+							<td rowspan="2" class="input-units">#{i18n.getText('KMF003_43')}</td>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+				<table class="contents-data">
+					<thead></thead>
+					<tbody style="margin-left: 10px;" data-bind="foreach: items">
+						<tr>
+							<td data-bind="text: $index() + 1" class="numbers"></td>
+							<td class="input-units-year">
+							<input id="year" class="year-input" data-bind="ntsNumberEditor: {
+										value: year, 
+										option: ko.mapping.fromJS({
+											unitID: 'YEARS',
+											width: '50'
+										})}" />
+							<input id="month" class="months-input" data-bind="ntsNumberEditor: {
+										value: month, 
+										option: ko.mapping.fromJS({
+											unitID: 'MONTHS',
+											width: '60'
+										})}" /></td>
+
+							<!-- <td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
+										value: restedDaysInYear, 
+										option: ko.mapping.fromJS({
+											unitID: 'DAYS',
+											width: '50'
+										})}" /></td> -->
+						</tr>
+					</tbody>
+				</table>
 			</div>
-			<div id="tabpanel-h" role="tabpanel" class="screen-c"
-				data-bind="with: viewmodelH">
-				<ui:include src="../c/index.xhtml" />
-			</div>
-		
 		</ui:define>
 	</ui:composition>
 </body>

@@ -15,7 +15,7 @@ public class AddAgreementYearSettingCommand {
 
 	private int yearValue;
 	
-	private Long errorOneYear;
+	private int errorOneYear;
 	
-	private Long alarmOneYear;
+	private int alarmOneYear;
 }

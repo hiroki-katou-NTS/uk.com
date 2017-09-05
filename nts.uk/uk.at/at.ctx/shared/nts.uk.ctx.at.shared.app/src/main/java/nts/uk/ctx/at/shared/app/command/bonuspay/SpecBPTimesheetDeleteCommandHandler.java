@@ -28,7 +28,7 @@ public class SpecBPTimesheetDeleteCommandHandler extends CommandHandler<List<Spe
 	private SpecBonusPayTimesheet toSpecBonusPayTimesheetDomain(SpecBPTimesheetDeleteCommand specBPTimesheetDeleteCommand) {
 		return SpecBonusPayTimesheet.createFromJavaType(specBPTimesheetDeleteCommand.timeSheetNO,
 				specBPTimesheetDeleteCommand.useAtr, specBPTimesheetDeleteCommand.timeItemId,
-				Long.valueOf(specBPTimesheetDeleteCommand.startTime), Long.valueOf(specBPTimesheetDeleteCommand.endTime),
+				specBPTimesheetDeleteCommand.startTime, specBPTimesheetDeleteCommand.endTime,
 				specBPTimesheetDeleteCommand.roundingTimeAtr, specBPTimesheetDeleteCommand.roundingAtr,
 				specBPTimesheetDeleteCommand.specialDateItemNO);
 

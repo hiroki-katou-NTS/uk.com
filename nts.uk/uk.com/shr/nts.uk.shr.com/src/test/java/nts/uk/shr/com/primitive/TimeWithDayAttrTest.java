@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import lombok.val;
 import nts.uk.shr.com.enumcommon.DayAttr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 public class TimeWithDayAttrTest {
 

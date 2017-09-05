@@ -582,6 +582,10 @@
             }
 
             format(source: any): string {
+                if (nts.uk.util.isNullOrEmpty(source)) {
+                    return "";
+                }
+                
                 var result;
                 if (this.option.inputFormat === "yearmonth") {
                     result = time.parseYearMonth(source);
@@ -613,13 +617,11 @@
             }
 
             format(source: any): string {
-                let parseValue = time.parseTime(source, true);
-                let timeWithDay = new time.TimeWithDayAttr(parseValue.toValue());
-                if (this.option.timeWithDay) {
-                    return timeWithDay.getDayDivision().text + " " + timeWithDay.getTime();            
+                if (!isFinite(source)) {
+                    return source;
                 }
-                
-                return timeWithDay.getRawTime();
+                let timeWithDayAttr = time.minutesBased.clock.dayattr.create(source);
+                return this.option.timeWithDay ? timeWithDayAttr.fullText : timeWithDayAttr.shortText;
             }
         }
         

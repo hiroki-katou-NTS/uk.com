@@ -11,7 +11,6 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.SpecBPTimesheetRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecBonusPayTimesheet;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -45,7 +44,7 @@ public class SpecBPTimesheetAddCommandHandler extends CommandHandler<List<SpecBP
 	private SpecBonusPayTimesheet toSpecBonusPayTimesheetDomain(SpecBPTimesheetAddCommand specBPTimesheetAddCommand) {
 		return SpecBonusPayTimesheet.createFromJavaType(specBPTimesheetAddCommand.timeSheetNO,
 				specBPTimesheetAddCommand.useAtr, specBPTimesheetAddCommand.timeItemId,
-				Long.valueOf(specBPTimesheetAddCommand.startTime), Long.valueOf(specBPTimesheetAddCommand.endTime),
+				specBPTimesheetAddCommand.startTime, specBPTimesheetAddCommand.endTime,
 				specBPTimesheetAddCommand.roundingTimeAtr, specBPTimesheetAddCommand.roundingAtr,
 				specBPTimesheetAddCommand.specialDateItemNO);
 

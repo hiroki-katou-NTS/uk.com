@@ -36,7 +36,7 @@ public class KscdtExtBudgetDaily extends UkJpaEntity implements Serializable {
     /** The actual val. */
     @Basic(optional = false)
     @Column(name = "ACTUAL_VAL")
-    private Long actualVal;
+    private Integer actualVal;
     
     /**
      * Instantiates a new kscdt ext budget daily.

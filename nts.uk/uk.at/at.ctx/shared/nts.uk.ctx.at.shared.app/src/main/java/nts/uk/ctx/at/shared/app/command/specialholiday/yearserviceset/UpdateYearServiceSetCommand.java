@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.shared.app.command.specialholiday.yearserviceset;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 /**
@@ -9,15 +11,6 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class UpdateYearServiceSetCommand {
-	/**コード**/
-	private int specialHolidayCode;
-	/** 年間サービスタイプ **/
-	private int yearServiceType;
-	/** 月数 **/
-	private int year;
-	/** 年数 **/
-	private int month;
-	/** 特別休暇付与日数 **/
-	private int date;
+public class UpdateYearServiceSetCommand{
+	private List<YearServiceSetCommand> yearServiceSets;
 }

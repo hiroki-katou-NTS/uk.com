@@ -32,5 +32,5 @@ public interface SpecialHolidayRepository {
 	void update(SpecialHoliday specialHoliday);
 	
 	
-	
+	boolean checkExists(String companyCode, int specialHolidayCode);
 }

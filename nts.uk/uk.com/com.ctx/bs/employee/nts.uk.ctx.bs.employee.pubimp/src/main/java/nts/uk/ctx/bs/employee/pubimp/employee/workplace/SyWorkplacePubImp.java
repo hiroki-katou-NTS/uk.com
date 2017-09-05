@@ -15,7 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.access.workplace.SyWorkplaceAdapter;
-import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceDto;
+import nts.uk.ctx.bs.employee.dom.access.workplace.dto.WorkplaceImport;
 import nts.uk.ctx.bs.employee.pub.employee.workplace.SyWorkplacePub;
 
 /**
@@ -48,10 +48,10 @@ public class SyWorkplacePubImp implements SyWorkplacePub {
 		List<String> wkpIds = affWorkplaceHistories.stream().map(item -> item.getWorkplaceId().v())
 				.collect(Collectors.toList());
 
-		List<AcWorkplaceDto> acWorkplaceDtos = workplaceAdapter.findByWkpIds(wkpIds);
+		List<WorkplaceImport> acWorkplaceDtos = workplaceAdapter.findByWkpIds(wkpIds);
 
 		Map<String, String> comWkpMap = acWorkplaceDtos.stream().collect(
-				Collectors.toMap(AcWorkplaceDto::getCompanyId, AcWorkplaceDto::getWorkplaceId));
+				Collectors.toMap(WorkplaceImport::getCompanyId, WorkplaceImport::getWorkplaceId));
 
 		// Return workplace id
 		return comWkpMap.get(companyId);

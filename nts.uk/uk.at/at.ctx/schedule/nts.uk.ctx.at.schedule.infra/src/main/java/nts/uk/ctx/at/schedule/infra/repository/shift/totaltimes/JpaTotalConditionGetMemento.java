@@ -60,7 +60,7 @@ public class JpaTotalConditionGetMemento implements TotalConditionGetMemento {
 	 */
 	@Override
 	public ConditionThresholdLimit getThresoldUpperLimit() {
-		return new ConditionThresholdLimit(this.entity.getThresoldUpperLimit());
+		return new ConditionThresholdLimit((int)this.entity.getThresoldUpperLimit());
 	}
 
 	/*
@@ -72,7 +72,7 @@ public class JpaTotalConditionGetMemento implements TotalConditionGetMemento {
 	 */
 	@Override
 	public ConditionThresholdLimit getThresoldLowerLimit() {
-		return new ConditionThresholdLimit(this.entity.getThresoldLowerLimit());
+		return new ConditionThresholdLimit((int)this.entity.getThresoldLowerLimit());
 	}
 
 }

@@ -4,9 +4,11 @@ module kaf000.a.viewmodel{
          * List
          */
         //listPhase
-        listPhase: KnockoutObservableArray<AppApprovalPhase>;
+        listPhase: KnockoutObservableArray<model.AppApprovalPhase>;
+        //listPhaseID
+        listPhaseID: Array<String>;
         //listFrame
-        listFrame: KnockoutObservableArray<ApprovalFrame>;
+        listFrame: KnockoutObservableArray<model.ApprovalFrame>;
         constructor(){
             var self = this;
             /**
@@ -14,17 +16,24 @@ module kaf000.a.viewmodel{
              */
             
             self.listPhase = ko.observableArray([]);
+            self.listPhaseID = [];
             self.listFrame = ko.observableArray([]);
         }
         
         start(): JQueryPromise<any> {
+            
             let self = this;
-            alert("sdfds");
-            self.getAllPhase();
-            
-            alert("sdfd1");
-            self.getAllFrame();
-            
+            var dfd = $.Deferred();
+            //alert("sdfds");
+            //self.getAllPhase();
+            var dfdAllPhase = self.getAllPhase();
+            $.when(dfdAllPhase).done((dfdAllPhaseData)=>{
+//                self.listPhase(dfdAllPhaseData);
+//                self.listFrame(dfdAllFrameData);
+                //alert("ccc");    
+                 dfd.resolve(); 
+            });
+            return dfd.promise();
         }
         
         //getAllPhase
@@ -34,55 +43,58 @@ module kaf000.a.viewmodel{
             var dfd = $.Deferred<any>();
             service.getAllPhaseByAppID(appID).done(function(data){
                 self.listPhase(data);
+                for(var i = 0;i<self.listPhase().length;i++){
+                    
+                        self.listPhaseID.push(self.listPhase()[i].phaseID);    
+                    }
                 dfd.resolve(data);    
             });
             return dfd.promise();
         }
         //getAllFrame
-        getAllFrame(){
-            let phaseID = 'P000';
+        getAllFrame(listPhaseID){
             var self = this;
             var dfd = $.Deferred<any>();
-            service.getAllFrameByPhaseID(phaseID).done(function(data){
-                self.listFrame(data);
-                dfd.resolve(data);    
-            });
+                service.getAllFrameByPhaseID(listPhaseID).done(function(data){
+                    self.listFrame(data);
+                    dfd.resolve(data);    
+                }); 
             return dfd.promise();
         }
         
     }
     
     export module model {
-        
+        //       AppApprovalPhase
         // class AppApprovalPhase
         export class AppApprovalPhase{
-            appID : String;
-            phaseID : String;
-            approvalForm : number;
-            dispOrder : number;
-            approvalATR : number;    
+            appID : KnockoutObservable<String>;
+            phaseID : KnockoutObservable<String>;
+            approvalForm : KnockoutObservable<number>;
+            dispOrder : KnockoutObservable<number>;
+            approvalATR : KnockoutObservable<number>;    
             constructor(appID : String,phaseID : String,approvalForm : number,dispOrder : number,approvalATR : number){
-                this.appID  = appID;
-                this.phaseID = phaseID;
-                this.approvalForm = approvalForm;
-                this.dispOrder = dispOrder;
-                this.approvalATR = approvalATR; 
+                this.appID  = ko.observable(appID);
+                this.phaseID = ko.observable(phaseID);
+                this.approvalForm = ko.observable(approvalForm);
+                this.dispOrder = ko.observable(dispOrder);
+                this.approvalATR = ko.observable(approvalATR); 
             }
         } 
         
         // class ApprovalFrame
         export class ApprovalFrame{
-            phaseID : String;
-            dispOrder : number;
-            approverSID : String;
-            approvalATR : number;
-            confirmATR : number;    
+            phaseID : KnockoutObservable<String>;
+            dispOrder : KnockoutObservable<number>;
+            approverSID : KnockoutObservable<String>;
+            approvalATR : KnockoutObservable<number>;
+            confirmATR : KnockoutObservable<number>;    
             constructor(phaseID : String,dispOrder : number,approverSID : String,approvalATR : number,confirmATR : number){
-                this.phaseID = phaseID;
-                this.dispOrder = dispOrder;
-                this.approverSID  = approverSID;
-                this.approvalATR = approvalATR; 
-                this.confirmATR = confirmATR;
+                this.phaseID = ko.observable(phaseID);
+                this.dispOrder = ko.observable(dispOrder);
+                this.approverSID  = ko.observable(approverSID);
+                this.approvalATR = ko.observable(approvalATR); 
+                this.confirmATR = ko.observable(confirmATR);
                 
             }
         }//end class frame   

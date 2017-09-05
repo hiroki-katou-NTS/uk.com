@@ -35,7 +35,7 @@ public class AgreementMonthSetting extends AggregateRoot {
 	}
 
 	public static AgreementMonthSetting createFromJavaType(String employeeId, BigDecimal yearMonthValue,
-			Long errorOneMonth, Long alarmOneMonth) {
+			int errorOneMonth, int alarmOneMonth) {
 		return new AgreementMonthSetting(employeeId, new YearMonth(yearMonthValue.intValue()),
 				new ErrorOneMonth(errorOneMonth), new AlarmOneMonth(alarmOneMonth));
 	}
