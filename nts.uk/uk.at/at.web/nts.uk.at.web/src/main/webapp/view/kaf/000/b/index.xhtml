@@ -13,10 +13,120 @@
 			<com:scriptfile path="kaf000.b.vm.js" />
 			<com:scriptfile path="kaf000.b.start.js" />
 		</ui:define>
-
+			
 		<ui:define name="content">
+			<div id="functions-area">
+				<!-- B1_1 -->
+				<a class="goback" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KAF000_14')}</a>
+			<!-- 	<button ><span class="ui-icon-triangle-1-w"></span></button>
+				<button ><span class="ui-icon-triangle-1-e"></span></button> -->
+				<!-- B1_4 -->
+				<button class="proceed">#{i18n.getText('KAF000_15')}</button>
+				<!-- B1_5 -->
+				<button >#{i18n.getText('KAF000_16')}</button>
+				<!-- B1_6 -->
+				<button >#{i18n.getText('KAF000_17')}</button>
+				<!-- B1_7 -->
+				<button >#{i18n.getText('KAF000_18')}</button>
 				
+				<!-- B1_8 -->
+				<button class="proceed">#{i18n.getText('KAF000_19')}</button>
+				<!-- B1_9 -->
+				<button >#{i18n.getText('KAF000_20')}</button>
+				<!-- B1_10 -->
+				<button >#{i18n.getText('KAF000_21')}</button>
+				<!-- B1_11 -->
+				<button >#{i18n.getText('KAF000_22')}</button>
+				
+				<!-- B1_12 -->
+				<button  class="danger">#{i18n.getText('KAF000_23')}</button>
+				<!-- B1_13 -->
+				<button  class="danger">#{i18n.getText('KAF000_24')}</button>
+			</div>
+			<div id="contents-area">
+				<!-- row1 -->
+				<div id="message-area"> 
+					<table >
+						<tr>
+							<!-- A1_1 -->
+							<td class="message-td" >#{i18n.getText('KAF000_1')}</td>
+							<!-- A1_2 -->
+							<td class="message-td"> 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 </td>
+						</tr>
+						<tr>
+							<!-- A1_3 -->
+							<td class="message-td">#{i18n.getText('KAF000_2')}</td>
+							<!-- A1_4 -->
+							<td class="message-td"> 2017/11/12  ~ 2019/11/12</td>
+						</tr>
+					</table>
+				</div>
+				<!-- row2 -->
+				<div id="message-area" style="margin-top: 16px;"> 
+					<table >
+						<tr>
+							<!-- A1_1 -->
+							<td class="message-td" >#{i18n.getText('KAF000_1')}</td>
+							<!-- A1_2 -->
+							<td class="message-td"> 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 </td>
+						</tr>
+						<tr>
+							<!-- A1_3 -->
+							<td class="message-td">#{i18n.getText('KAF000_2')}</td>
+							<!-- A1_4 -->
+							<td class="message-td"> 2017/11/12  ~ 2019/11/12</td>
+						</tr>
+					</table>
+				</div>
+				<!-- row 2 -->
+				<div style=" margin-top: 16px;margin-left: 39px;float: left;">
+					<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_28')}</div>
+				</div>	
+				<div style=" margin-top: 16px;">
+					<textarea id="input-text" rows="3" cols="86"></textarea>
+				</div>
+				
+				<!-- Body -->
+				<div style="height: 50px;background-color: gray ; margin-top: 30px;'">body</div>
+				<!-- end body -->
+				
+				<!-- Footer -->
+				<div id="label-1" style="margin-left: 39px;">
+					<!-- B6 -->
+					<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
+				</div>	
+				<div id="table-1" >
+					<table id="table-phase">
+						<thead>
+							<tr  class="bg-green">
+								<th class="phase-app" style="width:111px;"></th>
+								<th class="name-app" style="width:111px;"></th>
+								<th class="content-app" style="width:230px;">#{i18n.getText('KAF000_3')}</th>
+								<th class="phase-app" style="width:111px;">#{i18n.getText('KAF000_29')}</th>
+								<th class="name-app" style="width:111px;">#{i18n.getText('KAF000_30')}</th>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach :listFrameByListPhase1 ">
+							<com:ko bind="$data" tag ="foreach">
+								<tr>
+									<com:ko bind="$index() === 0" tag="if">
+										<td class="bg-green" data-bind="attr: {rowspan: $parent.length},text: $data.phaseID">test</td>
+									</com:ko>
+									<td class="bg-green" ><label data-bind="text: $data.approverSID"></label></td>
+									<td><label data-bind="text: $data.reason"></label></td>
+									<td><label>????</label></td>
+									<td><label>OK</label></td>
+								</tr>
+							</com:ko>
+						</tbody>
+					</table>
+				</div>
+				<!-- end footer -->
+			</div>
+			
+			
 		</ui:define>
+		
 	</ui:composition>
 </body>
 </html>
