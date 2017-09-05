@@ -20,5 +20,9 @@ public class SubmitLoginFormOneCommand {
 	/** The password. */
 	private String password;
 	
+	/** The contract code. */
+	private String contractCode;
 	
+	/** The contract password. */
+	private String contractPassword;
 }
