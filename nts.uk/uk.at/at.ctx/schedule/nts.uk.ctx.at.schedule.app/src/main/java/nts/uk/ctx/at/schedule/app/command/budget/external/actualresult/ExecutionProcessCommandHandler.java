@@ -152,8 +152,6 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         ExecutionProcessCommand command = context.getCommand();
         String executeId = command.getExecuteId();
 
-        // find all message JP before import
-        Map<String, String> mapStringJP = findAllStringJP();
         // valid file format
         this.fileCheckService.validFileIgnoreCharset(command.getFileId(), command.getEncoding(),
                 command.getStartLine().v());
@@ -192,7 +190,6 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         importProcess.inputStream = inputStream;
         importProcess.externalBudget = extBudgetOptional.get();
         importProcess.extractCondition = command;
-        importProcess.mapStringJP = mapStringJP;
 
         // begin process input file
         this.processInput(importProcess, asyncTask);
@@ -402,7 +399,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                 .executionId(importProcess.executeId)
                 .lineNo(importProcess.startLine)
                 .columnNo(DEFAULT_VALUE)
-                .errorContent(importProcess.mapStringJP.get("Msg_167"))
+                .errorContent(this.getMessageById("Msg_167"))
                 .build();
         this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
         
@@ -479,7 +476,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                 .executionId(importProcess.executeId)
                 .lineNo(importProcess.startLine)
                 .columnNo(DEFAULT_VALUE)
-                .errorContent(importProcess.mapStringJP.get("Msg_167"))
+                .errorContent(this.getMessageById("Msg_167"))
                 .build();
         this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
         
@@ -543,7 +540,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                 .executionId(importProcess.executeId)
                 .lineNo(importProcess.startLine)
                 .columnNo(DEFAULT_VALUE)
-                .errorContent(importProcess.mapStringJP.get(messageIdError))
+                .errorContent(this.getMessageById(messageIdError))
                 .build();
         this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
         
@@ -616,7 +613,8 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                 .lineNo(importProcess.startLine)
                 .columnNo(idxColReal)
                 .workplaceCode(workplaceCode)
-                .errorContent(importProcess.mapStringJP.get("Msg_164"))
+                .acceptedDate(result.get(INDEX_COLUMN_DATE))
+                .errorContent(this.getMessageById("Msg_164", "Com_Workplace"))
                 .build();
         this.extBudgetErrorRepo.add(extBudgetErrorDto.toDomain());
         
@@ -636,7 +634,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
             return;
         }
         for (int i = INDEX_BEGIN_COL_VALUE; i < lstValue.size(); i++) {
-            this.validValByPrimitive(importProcess, i + 1, lstValue.get(i));
+            this.validValByPrimitive(importProcess, i, lstValue.get(i));
         }
     }
     
@@ -648,47 +646,48 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * @param value the value
      */
     private void validValByPrimitive (ImportProcess importProcess, int columnNo, String value) {
-        String itemName = importProcess.mapStringJP.get("KSU006_18");
+        int columnRealNo = columnNo + 1;
+        String itemName = this.getItemNameById("KSU006_18");
         try {
             switch (importProcess.externalBudget.getBudgetAtr()) {
                 case TIME:
                     // convert HH:mm -> minute
                     Long valueTime = this.convertVal(value);
                     PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetTime(valueTime.intValue()), (ex) ->{
-                        this.logError(importProcess, columnNo, value, ex.getErrorMessage(itemName));
+                        this.logError(importProcess, columnRealNo, value, ex.getErrorMessage(itemName));
                     });
                     break;
                 case PEOPLE:
-                    Integer valuePeople= Integer.parseInt(value);
-                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetNumberPerson(valuePeople), (ex) ->{
-                        this.logError(importProcess, columnNo, value, ex.getErrorMessage(itemName));
+                    Long valuePeople= Long.parseLong(value);
+                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetNumberPerson(valuePeople.intValue()), (ex) ->{
+                        this.logError(importProcess, columnRealNo, value, ex.getErrorMessage(itemName));
                     });
                     break;
                 case MONEY:
-                    Integer valueMoney= Integer.parseInt(value);
-                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetMoney(valueMoney), (ex) ->{
-                        this.logError(importProcess, columnNo, value, ex.getErrorMessage(itemName));
+                    Long valueMoney= Long.parseLong(value);
+                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetMoney(valueMoney.intValue()), (ex) ->{
+                        this.logError(importProcess, columnRealNo, value, ex.getErrorMessage(itemName));
                     });
                     break;
                 case NUMERICAL:
-                    Integer valueNumerical= Integer.parseInt(value);
-                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetNumericalVal(valueNumerical), (ex) ->{
-                        this.logError(importProcess, columnNo, value, ex.getErrorMessage(itemName));
+                    Long valueNumerical= Long.parseLong(value);
+                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetNumericalVal(valueNumerical.intValue()), (ex) ->{
+                        this.logError(importProcess, columnRealNo, value, ex.getErrorMessage(itemName));
                     });
                     break;
                 case PRICE:
-                    Integer valuePrice= Integer.parseInt(value);
-                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetUnitPrice(valuePrice), (ex) ->{
-                        this.logError(importProcess, columnNo, value, ex.getErrorMessage(itemName));
+                    Long valuePrice= Long.parseLong(value);
+                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetUnitPrice(valuePrice.intValue()), (ex) ->{
+                        this.logError(importProcess, columnRealNo, value, ex.getErrorMessage(itemName));
                     });
                     break;
                 default:
                     throw new RuntimeException("Not budget atr suitable.");
             }
         } catch (BusinessException e) {
-            this.logError(importProcess, columnNo, value, e.getMessage());
+            this.logError(importProcess, columnRealNo, value, e.getMessage());
         } catch (NumberFormatException numberFormat) {
-            this.logError(importProcess, columnNo, value, "Invalid format number.");
+            this.logError(importProcess, columnRealNo, value, "Invalid format number.");
         }
     }
     
@@ -788,24 +787,18 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
     }
     
     /**
-     * Find all string JP.
+     * Gets the item name by id.
      *
-     * @return the map
+     * @param nameId the name id
+     * @return the item name by id
      */
-    private Map<String, String> findAllStringJP() {
-        Map<String, String> mapMessage = new HashMap<>();
-        String nameId = "KSU006_18";
-        // TODO: wait for fixing of Kiban team?
-//        Optional<String> optional = this.internationalization.getItemName(nameId);
-//        mapMessage.put(nameId, optional.isPresent() ? optional.get() : (nameId + " is not found."));
-        mapMessage.put(nameId, nameId + " is not found.");
-        
-        List<String> lstMsgId = Arrays.asList("Msg_162", "Msg_163", "Msg_164", "Msg_167");
-        for (String msgId : lstMsgId) {
-//            mapMessage.put(msgId, this.getMessageById(msgId));
-            mapMessage.put(msgId, msgId + " is not found.");
+    private String getItemNameById(String nameId) {
+        String itemName = nameId + " is not found.";
+        Optional<String> optional = this.internationalization.getItemName(nameId);
+        if (optional.isPresent()) {
+            itemName = optional.get();
         }
-        return mapMessage;
+        return itemName;
     }
     
     /**
@@ -814,13 +807,22 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * @param messageId the message id
      * @return the message by id
      */
-    private String getMessageById(String messageId) {
-        String errorContent = messageId + " is not found.";
-        Optional<String> optional = this.internationalization.getRawMessage(messageId);
-        if (optional.isPresent()) {
-            errorContent = optional.get();
+    private String getMessageById(String messageId, String... parameters) {
+        String message = messageId + " is not found.";
+        
+        // initial optional
+        Optional<String> optional = Optional.empty();
+        
+        // no parameter
+        if (parameters.length <= DEFAULT_VALUE) {
+            optional = this.internationalization.getRawMessage(messageId);
+        } else {
+            optional = this.internationalization.getMessage(messageId, parameters);
         }
-        return errorContent;
+        if (optional.isPresent()) {
+            message = optional.get();
+        }
+        return message;
     }
     
     /**
@@ -851,9 +853,6 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         
         /** The extract condition. */
         ExecutionProcessCommand extractCondition;
-        
-        /** The map string JP. */
-        Map<String, String> mapStringJP;
         
         /** The workplace id. */
         String workplaceId;

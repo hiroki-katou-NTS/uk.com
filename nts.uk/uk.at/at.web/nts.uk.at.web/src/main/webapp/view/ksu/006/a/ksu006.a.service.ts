@@ -13,7 +13,7 @@ module nts.uk.at.view.ksu006.a {
             exportDetailError: "at/schedule/budget/external/log/export",
         };
         
-        export function findCharsetList(): JQueryPromise<model.EnumerationModel> {
+        export function findCharsetList(): JQueryPromise<Array<model.EnumerationModel>> {
             return nts.uk.request.ajax(servicePath.findCharsetList);
         }
         
