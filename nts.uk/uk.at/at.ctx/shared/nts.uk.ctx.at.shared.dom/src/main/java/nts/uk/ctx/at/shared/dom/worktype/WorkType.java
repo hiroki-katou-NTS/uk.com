@@ -55,6 +55,8 @@ public class WorkType extends AggregateRoot {
 	
 	private List<WorkTypeSet> workTypeSetList;
 	
+	private int dispOrder;
+	
 	@Override
 	public void validate() {
 		super.validate();
@@ -145,5 +147,13 @@ public class WorkType extends AggregateRoot {
 	 */
 	public void setWorkTypeSet(List<WorkTypeSet> workTypeList) {
 		this.workTypeSetList = workTypeList;
+	}
+	
+	/**
+	 * Set display order
+	 * @param order
+	 */
+	public void setDisplayOrder(int dispOrder) {
+		this.dispOrder = dispOrder;
 	}
 }

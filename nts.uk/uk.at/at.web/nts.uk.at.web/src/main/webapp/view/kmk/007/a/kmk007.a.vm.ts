@@ -66,7 +66,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 calculatorMethod: 0,
                 oneDay: ko.toJS(self.oneDay),
                 morning: ko.toJS(self.oneDay),
-                afternoon: ko.toJS(self.oneDay)
+                afternoon: ko.toJS(self.oneDay),
             }));
 
 
@@ -173,7 +173,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 } else {
                     self.checkCalculatorMethod(morningCode);
                 }
-                
+
                 if (newOneDayCls == self.currentAfternoonCls()) {
                     self.setWorkTypeSet(self.currentWorkType().afternoon(), ko.toJS(self.currentAfternoon));
                 } else {
@@ -220,44 +220,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     self.setWorkTypeSet(self.currentWorkType().morning(), itemWorkType.morning);
                     self.setWorkTypeSet(self.currentWorkType().afternoon(), itemWorkType.afternoon);
 
-                    //                    self.currentWorkType().oneDay().workTypeCode(itemWorkType.workTypeCode);
-                    //                    self.currentWorkType().oneDay().attendanceTime(itemWorkType.oneDay.attendanceTime);
-                    //                    self.currentWorkType().oneDay().closeAtr(itemWorkType.oneDay.closeAtr);
-                    //                    self.currentWorkType().oneDay().countHodiday(itemWorkType.oneDay.countHodiday);
-                    //                    self.currentWorkType().oneDay().dayNightTimeAsk(itemWorkType.oneDay.dayNightTimeAsk);
-                    //                    self.currentWorkType().oneDay().digestPublicHd(itemWorkType.oneDay.digestPublicHd);
-                    //                    self.currentWorkType().oneDay().genSubHodiday(itemWorkType.oneDay.genSubHodiday);
-                    //                    self.currentWorkType().oneDay().holidayAtr(itemWorkType.oneDay.holidayAtr);
-                    //                    self.currentWorkType().oneDay().sumAbsenseNo(itemWorkType.oneDay.sumAbsenseNo);
-                    //                    self.currentWorkType().oneDay().sumSpHodidayNo(itemWorkType.oneDay.sumSpHodidayNo);
-                    //                    self.currentWorkType().oneDay().timeLeaveWork(itemWorkType.oneDay.timeLeaveWork);
-                    //                    self.currentWorkType().oneDay().workAtr(itemWorkType.oneDay.workAtr);
-                    //
-                    //                    self.currentWorkType().morning().workTypeCode(itemWorkType.workTypeCode);
-                    //                    self.currentWorkType().morning().attendanceTime(itemWorkType.morning.attendanceTime);
-                    //                    self.currentWorkType().morning().closeAtr(itemWorkType.morning.closeAtr);
-                    //                    self.currentWorkType().morning().countHodiday(itemWorkType.morning.countHodiday);
-                    //                    self.currentWorkType().morning().dayNightTimeAsk(itemWorkType.morning.dayNightTimeAsk);
-                    //                    self.currentWorkType().morning().digestPublicHd(itemWorkType.morning.digestPublicHd);
-                    //                    self.currentWorkType().morning().genSubHodiday(itemWorkType.morning.genSubHodiday);
-                    //                    self.currentWorkType().morning().holidayAtr(itemWorkType.morning.holidayAtr);
-                    //                    self.currentWorkType().morning().sumAbsenseNo(itemWorkType.morning.sumAbsenseNo);
-                    //                    self.currentWorkType().morning().sumSpHodidayNo(itemWorkType.morning.sumSpHodidayNo);
-                    //                    self.currentWorkType().morning().timeLeaveWork(itemWorkType.morning.timeLeaveWork);
-                    //                    self.currentWorkType().morning().workAtr(itemWorkType.morning.workAtr);
-                    //
-                    //                    self.currentWorkType().afternoon().workTypeCode(itemWorkType.workTypeCode);
-                    //                    self.currentWorkType().afternoon().attendanceTime(itemWorkType.afternoon.attendanceTime);
-                    //                    self.currentWorkType().afternoon().closeAtr(itemWorkType.afternoon.closeAtr);
-                    //                    self.currentWorkType().afternoon().countHodiday(itemWorkType.afternoon.countHodiday);
-                    //                    self.currentWorkType().afternoon().dayNightTimeAsk(itemWorkType.afternoon.dayNightTimeAsk);
-                    //                    self.currentWorkType().afternoon().digestPublicHd(itemWorkType.afternoon.digestPublicHd);
-                    //                    self.currentWorkType().afternoon().genSubHodiday(itemWorkType.afternoon.genSubHodiday);
-                    //                    self.currentWorkType().afternoon().holidayAtr(itemWorkType.afternoon.holidayAtr);
-                    //                    self.currentWorkType().afternoon().sumAbsenseNo(itemWorkType.afternoon.sumAbsenseNo);
-                    //                    self.currentWorkType().afternoon().sumSpHodidayNo(itemWorkType.afternoon.sumSpHodidayNo);
-                    //                    self.currentWorkType().afternoon().timeLeaveWork(itemWorkType.afternoon.timeLeaveWork);
-                    //                    self.currentWorkType().afternoon().workAtr(itemWorkType.afternoon.workAtr);
                 } else {
                     self.isCreated(true);
                 }
@@ -451,7 +413,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                             calculatorMethod: item.calculatorMethod,
                             oneDay: ko.toJS(self.oneDay),
                             morning: ko.toJS(self.oneDay),
-                            afternoon: ko.toJS(self.oneDay)
+                            afternoon: ko.toJS(self.oneDay),
+                            dispOrder: item.dispOrder
                         });
 
                         // one day
@@ -511,8 +474,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                         }
                         self.listWorkType.push(ko.toJS(workType));
                     });
+                    self.listWorkType(_.orderBy(self.listWorkType(), ['dispOrder', 'workTypeCode'], ['asc', 'asc']));
                 } else {
-
+                    
                 }
                 dfd.resolve();
             }).fail((res) => { });
@@ -569,6 +533,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         oneDay?: IWorkTypeSet;
         morning?: IWorkTypeSet;
         afternoon?: IWorkTypeSet;
+        dispOrder?: number;
     }
 
     export class WorkType {
@@ -587,6 +552,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         oneDay: KnockoutObservable<WorkTypeSet>;
         morning: KnockoutObservable<WorkTypeSet>;
         afternoon: KnockoutObservable<WorkTypeSet>;
+        dispOrder: KnockoutObservable<number>;
 
         constructor(param: IWorkType) {
             this.workTypeCode = ko.observable(param.workTypeCode || '');
@@ -603,6 +569,11 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             this.oneDay = ko.observable(new WorkTypeSet(param.oneDay));
             this.morning = ko.observable(new WorkTypeSet(param.morning));
             this.afternoon = ko.observable(new WorkTypeSet(param.afternoon));
+            if (param.dispOrder != 0) {
+                this.dispOrder = ko.observable(param.dispOrder);
+            } else {
+                this.dispOrder = ko.observable(null);
+            }
             if (param.abolishAtr == 0) {
                 this.icon = "";
             } else {

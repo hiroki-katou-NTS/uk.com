@@ -5,7 +5,6 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSet;
 
 @Data
 @AllArgsConstructor
@@ -35,6 +34,8 @@ public class WorkTypeDto {
 	private int afternoonCls;
 	/* 出勤率の計算方法 */
 	private int calculatorMethod;
+	/* 出勤率の計算方法 */
+	private int dispOrder;
 	
 	private List<WorkTypeSetDto> workTypeSets;
 		
@@ -51,6 +52,7 @@ public class WorkTypeDto {
 				workType.getDailyWork().getMorning().value,
 				workType.getDailyWork().getAfternoon().value,
 				workType.getCalculateMethod().value,
+				workType.getDispOrder(),
 				null);
 	}
 }
