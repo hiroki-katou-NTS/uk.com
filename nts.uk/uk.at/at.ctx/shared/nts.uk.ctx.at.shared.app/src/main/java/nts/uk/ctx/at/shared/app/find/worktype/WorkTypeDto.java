@@ -35,6 +35,8 @@ public class WorkTypeDto {
 	/* 出勤率の計算方法 */
 	private int calculatorMethod;
 
+	private int dispOrder;
+
 	private List<WorkTypeSetDto> workTypeSets;
 
 	public static WorkTypeDto fromDomain(WorkType workType) {
@@ -42,7 +44,8 @@ public class WorkTypeDto {
 				workType.getAbbreviationName().v(), workType.getSymbolicName().v(), workType.getDeprecate().value,
 				workType.getMemo().v(), workType.getDailyWork().getWorkTypeUnit().value,
 				workType.getDailyWork().getOneDay().value, workType.getDailyWork().getMorning().value,
-				workType.getDailyWork().getAfternoon().value, workType.getCalculateMethod().value, null);
+				workType.getDailyWork().getAfternoon().value, workType.getCalculateMethod().value,
+				workType.getDispOrder(), null);
 	}
 
 	public WorkTypeDto(String companyId, String workTypeCode, String name, String abbreviationName) {

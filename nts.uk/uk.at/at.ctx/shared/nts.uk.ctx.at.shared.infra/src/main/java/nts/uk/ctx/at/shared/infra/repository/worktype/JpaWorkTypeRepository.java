@@ -26,10 +26,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	private static final String SELECT_FROM_WORKTYPE = "SELECT c FROM KshmtWorkType c";
 	
 	private static final String SELECT_ALL_WORKTYPE = SELECT_FROM_WORKTYPE
-			+ " LEFT JOIN KshmtWorkTypeOrder o"
-			+ " ON c.kshmtWorkTypePK.workTypeCode = o.kshmtWorkTypeDispOrderPk.workTypeCode"
-			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId"
-			+ " ORDER BY CASE WHEN (o.dispOrder = NULL) THEN c.kshmtWorkTypePK.workTypeCode ELSE o.dispOrder END ASC";
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId";
 	
 	private static final String SELECT_FROM_WORKTYPESET = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
 			+ " AND a.kshmtWorkTypeSetPK.workTypeCode = :workTypeCode";
@@ -60,6 +57,10 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				entity.kshmtWorkTypePK.workTypeCode, entity.symbolicName, entity.name, entity.abbreviationName,
 				entity.memo, entity.worktypeAtr, entity.oneDayAtr, entity.morningAtr, entity.afternoonAtr,
 				entity.deprecateAtr, entity.calculatorMethod);
+		if (entity.kshmtWorkTypeOrder != null) {
+			domain.setDisplayOrder(entity.kshmtWorkTypeOrder.dispOrder);
+		}
+		
 		if (entity.worktypeSetList != null) {
 			domain.setWorkTypeSet(entity.worktypeSetList.stream().map(x -> toDomainWorkTypeSet(x)).collect(Collectors.toList()));
 		}
