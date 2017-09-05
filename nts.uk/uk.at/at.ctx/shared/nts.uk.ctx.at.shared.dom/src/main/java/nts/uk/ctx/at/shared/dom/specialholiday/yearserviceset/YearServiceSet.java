@@ -10,11 +10,12 @@ import nts.arc.error.BusinessException;
 public class YearServiceSet {
 	private String companyId;
 	private int specialHolidayCode;
+	private int yearServiceNo;
 	private int yearServiceType;
 	private Integer year;
 	private Integer month;
 	private Integer date;
-	public YearServiceSet(String companyId, int specialHolidayCode, int yearServiceType, int year, int month, int date) {
+	public YearServiceSet(String companyId, int specialHolidayCode, int yearServiceNo, int yearServiceType, int year, int month, int date) {
 		super();
 		this.companyId = companyId;
 		this.specialHolidayCode = specialHolidayCode;
@@ -23,8 +24,8 @@ public class YearServiceSet {
 		this.month = month;
 		this.date = date;
 	}
-	public static YearServiceSet update(String companyId, int specialHolidayCode, int yearServiceType, int year, int month, int date){
-		return new YearServiceSet(companyId, specialHolidayCode, yearServiceType, year, month, date);
+	public static YearServiceSet update(String companyId, int specialHolidayCode, int yearServiceNo, int yearServiceType, int year, int month, int date){
+		return new YearServiceSet(companyId, specialHolidayCode, yearServiceNo, yearServiceType, year, month, date);
 	}
 	/**
 	 * creates from java type 
@@ -36,8 +37,8 @@ public class YearServiceSet {
 	 * @param date
 	 * @return
 	 */
-	public static YearServiceSet createFromJavaType(String companyId, int specialHolidayCode, int yearServiceType, int year, int month, int date){
-		return new YearServiceSet(companyId, specialHolidayCode, yearServiceType, year, month, date);
+	public static YearServiceSet createFromJavaType(String companyId, int specialHolidayCode, int yearServiceNo, int yearServiceType, int year, int month, int date){
+		return new YearServiceSet(companyId, specialHolidayCode, yearServiceNo, yearServiceType, year, month, date);
 	}
 	
 	public static void validateInput(List<YearServiceSet> yearServiceSetlst){

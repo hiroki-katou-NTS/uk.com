@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.infra.repository.specialholiday.yearservice;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -32,7 +33,8 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 	private static YearServiceSet toDomainSet(KshstYearServiceSet entity){
 		YearServiceSet domain  = YearServiceSet.createFromJavaType(entity.kshstYearServiceSetPK.companyId,
 																	entity.kshstYearServiceSetPK.specialHolidayCode,
-																	entity.kshstYearServiceSetPK.yearServiceType,
+																	entity.kshstYearServiceSetPK.yearServiceNo,
+																	entity.yearServiceType,
 																	entity.year,
 																	entity.month, 
 																	entity.date);
@@ -82,6 +84,13 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 		val entity = new KshstYearServiceCom();
 		entity.kshstYearServiceComPK = new KshstYearServiceComPK(domain.getCompanyId(), domain.getSpecialHolidayCode());
 		entity.lengthServiceYearAtr = domain.getLengthServiceYearAtr();
+		
+		if (domain.getYearServiceSets() != null) {
+			entity.listYearServiceSet =  domain.getYearServiceSets().stream()
+					.map(x -> toEntitySet(x))
+					.collect(Collectors.toList());
+		}
+		
 		return entity;
 	}
 

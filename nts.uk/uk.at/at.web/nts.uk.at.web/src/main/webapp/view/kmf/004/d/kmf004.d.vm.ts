@@ -55,9 +55,9 @@ module nts.uk.at.view.kmf004 {
                         }
                         break;
                     case 'E':
-//                        if (!!view.viewmodelE && typeof view.viewmodelE.start == 'function') {
-//                            view.viewmodelE.start();
-//                        }
+                        //                        if (!!view.viewmodelE && typeof view.viewmodelE.start == 'function') {
+                        //                            view.viewmodelE.start();
+                        //                        }
                         break;
                 }
             }
@@ -98,6 +98,7 @@ module nts.uk.at.view.kmf004 {
             enable: KnockoutObservable<boolean>;
             display: KnockoutObservable<boolean>;
             items: KnockoutObservableArray<Item>;
+            updatelst : KnockoutObservable<Update>;
             constructor() {
                 let self = this;
                 self.itemList = ko.observableArray([
@@ -106,17 +107,18 @@ module nts.uk.at.view.kmf004 {
                 ]);
                 self.value = ko.observable('');
                 self.enable = ko.observable(true);
-                self.selectedId = ko.observable(null);
+                self.selectedId = ko.observable(0);
                 self.items = ko.observableArray([]);
+                self.updatelst = ko.observableArray(null);
                 self.display = ko.observable(true);
                 self.selectedId.subscribe((value) => {
-                    if (value==0) {
+                    if (value == 0) {
                         self.display(false);
-//                        nts.uk.ui.errors.clearAll();
                     }
-                    else{
+                    else {
                         self.display(true);
                     }
+                    console.log(self.display());
                 });
                 self.start();
             }
@@ -124,41 +126,61 @@ module nts.uk.at.view.kmf004 {
             start() {
                 var self = this;
                 var dfd = $.Deferred();
-                service.findAll().done((lstData)=>{
-//                    self.items(lstData);
-                    for(let i = 0; i < 20; i++){
-                        if(lstData[i]){
-                             self.items.push(new Item(lstData[i].specialHolidayCode, null, lstData[i].yearServiceType, lstData[i].month, lstData[i].year, lstData[i].date));
-                        } else{
-                            self.items.push(new Item(null, null, null, null, null, null));
+                service.findAll().done((lstData) => {
+                    //                    self.items(lstData);
+                    for (let i = 0; i < 20; i++) {
+                        if (lstData[i]) {
+                            var param: IItem = {
+                                yearServiceType: lstData[i].yearServiceType,
+                                month: lstData[i].month,
+                                year: lstData[i].year,
+                                date: lstData[i].date  
+                            };
+                            
+                            self.items.push(new Item(param));
+                        } else {
+                            var param: IItem = {
+                                yearServiceType: 0,
+                                month: null,
+                                year: null,
+                                date: null 
+                            };
+                            self.items.push(new Item(param));
                         }
-                     }
+                    }
                     dfd.resolve();
                 }).fail(function(error) {
-                dfd.reject();
-                alert(error.message);
+                    dfd.reject();
+                    alert(error.message);
                 })
-//                for(var i=0; i< 20; i++) {
-//                    var item : IItem = {
-//                        specialHolidayCode: null,
-//                        lengthServiceYearAtr: null,
-//                        yearServiceType: null,
-//                        year: null,
-//                        month: null,
-//                        date: null,
-//                    };
-//                    self.items.push(new Item(item));    
-//                }
-            return dfd.promise();
+                return dfd.promise();
             }
-            
+
             register(){
-                let self = this;
-                console.log("a");
+                var self = this;
+                let b = this.value();
+                let a = self.items();
+                
+                var items = _.filter(self.items(), function(item: Item) {
+                    return item.date() != null || item.month() != null || item.year() != null;
+                });
+                for(let i = 0; i < self.items().length; i ++){
+                    var dataTranfer = {
+                    specialHolidayCode: 1, // TODO
+                    yearServiceNo: i,
+                    lengthServiceYearAtr: 0,
+                    yearServiceSets:  ko.toJS(items)   
+                }
             }
-            
-            closeDialog(){
-                 nts.uk.ui.windows.close();
+                
+                
+                service.update(dataTranfer).done(function(items){
+                    console.log(a);
+                });
+            }
+                
+            closeDialog() {
+                nts.uk.ui.windows.close();
             }
         }
         class BoxModel {
@@ -170,31 +192,37 @@ module nts.uk.at.view.kmf004 {
                 self.name = name;
             }
         }
-        export class Item{
-            specialHolidayCode: KnockoutObservable<number>;
-            lengthServiceYearAtr: KnockoutObservable<number>;
+        export class Item {
             yearServiceType: KnockoutObservable<number>;
+            yearServiceNo: KnockoutObservable<number>;
             month: KnockoutObservable<number>;
             year: KnockoutObservable<number>;
             date: KnockoutObservable<number>;
-            
-            constructor(specialHolidayCode: number, lengthServiceYearAtr: number, yearServiceType: number, month: number, year: number, date: number) {
+
+            constructor(param: IItem) {
                 var self = this;
-                self.specialHolidayCode = ko.observable(specialHolidayCode);
-                self.lengthServiceYearAtr = ko.observable(lengthServiceYearAtr);
-                self.yearServiceType = ko.observable(yearServiceType);
-                self.month = ko.observable(month);
-                self.year = ko.observable(year);
-                self.date = ko.observable(date);
+                self.yearServiceType = ko.observable(param.yearServiceType);
+                self.yearServiceNo = ko.observable(param.yearServiceNo);
+                self.month = ko.observable(param.month);
+                self.year = ko.observable(param.year);
+                self.date = ko.observable(param.date);
             }
         }
         export interface IItem {
-            specialHolidayCode: number;
-            lengthServiceYearAtr: number;
             yearServiceType: number;
+            yearServiceNo: number;
             month: number;
             year: number;
             date: number;
+        }
+        export class Update{
+            lengthService: KnockoutObservable<number>;
+            lstSet: KnockoutObservableArray<Item>;
+            constructor(lengthService: number, lstSet: Array<Item>){
+                let self = this;
+                self.lengthService = lengthService;
+                self.lstSet = lstSet;
+            }
         }
     }
 }
