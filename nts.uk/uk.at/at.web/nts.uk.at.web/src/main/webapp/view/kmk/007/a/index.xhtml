@@ -29,27 +29,28 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="container">
-					<button id="clear-button" data-bind="click: cleanForm">#{i18n.getText('KMK007_1')}</button>
+					<button id="clear-button"
+						data-bind="click: cleanForm, enable: isEnable">#{i18n.getText('KMK007_1')}</button>
 					<button id="register-button" class="proceed"
 						data-bind="click: addWorkType, enable: $root.errors.isEmpty">#{i18n.getText('KMK007_2')}</button>
 					<button id="orderby-button" data-bind="click: openDiablogC">#{i18n.getText('KMK007_3')}</button>
-					<button id="print-button">マスタリスト出力ボタン</button>
+					<button id="print-button" data-bind="click: changeLanguage">マスタリスト出力ボタン</button>
 					<div id="switch-language"></div>
 					<button id="remove-button" class="danger"
-						data-bind="click: removeWorkType">#{i18n.getText('KMK007_5')}</button>
+						data-bind="click: removeWorkType, enable: isEnable">#{i18n.getText('KMK007_5')}</button>
 				</div>
 			</div>
 			<div id="contents-area">
 				<div id="left-content"
 					class="bg-green caret-right caret-background cf"
-					style="width: 340px; height: 530px;">
+					style="width: 320px; height: 530px;">
 					<div id="LST_001" style="margin-left: 10px; padding: 10px;">
 						<div
 							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'workTypeCode',comId: 'single-list', 
 	                              items: listWorkType, selected: currentCode, selectedKey: 'workTypeCode', fields: ['workTypeCode', 'name'], mode: 'igGrid'}" />
 						<table id="single-list"
 							data-bind="ntsGridList: {	
-								width: 300,
+								width: 280,
 								height: 450,
 								dataSource: listWorkType,
 								primaryKey: 'workTypeCode',
@@ -64,25 +65,26 @@
 						<div style="vertical-align: middle"
 							data-bind="ntsFormLabel: {constraint: ['WorkTypeCode','WorkTypeName'],required: true}">#{i18n.getText('KMK007_11')}</div>
 						<input id="input-workTypeCode"
-							data-bind="ntsTextEditor: {value: workTypeCode,constraint: 'WorkTypeCode', required: true}" />
+							data-bind="ntsTextEditor: {value: workTypeCode, constraint: 'WorkTypeCode', required: true, enable: $parent.isEnable}" />
 						<input id="input-workTypeName"
-							data-bind="ntsTextEditor: {value: name,constraint: 'WorkTypeName', required: true}" />
+							data-bind="ntsTextEditor: {value: dispName, constraint: 'WorkTypeName', required: true}" />
 						<div style="margin-left: 20px;"
-							data-bind="ntsCheckBox: { checked: abolishAtr }">#{i18n.getText('KMK007_14')}</div>
+							data-bind="ntsCheckBox: { checked: abolishAtr, enable: $parent.isEnable }">#{i18n.getText('KMK007_14')}</div>
 						<div>
 							<div style="margin-top: 10px"
 								data-bind="ntsFormLabel: {constraint: 'WorkTypeAbbreviationName',required: true}">#{i18n.getText('KMK007_15')}</div>
 							<input id="abbreviation-name-input"
-								data-bind="ntsTextEditor: {value: abbreviationName,constraint: 'WorkTypeAbbreviationName', required: true}" />
+								data-bind="ntsTextEditor: {value: dispAbName, constraint: 'WorkTypeAbbreviationName', required: true}" />
 							<div style="margin-top: 10px; margin-left: 25px;"
 								data-bind="ntsFormLabel: {constraint: 'WorkTypeSymbolicName',required: true}">#{i18n.getText('KMK007_16')}</div>
 							<input id="symbolic-name-input"
-								data-bind="ntsTextEditor: {value: symbolicName,constraint: 'WorkTypeSymbolicName' ,required: true}" />
+								data-bind="ntsTextEditor: {value: symbolicName, constraint: 'WorkTypeSymbolicName', required: true, enable: $parent.isEnable}" />
 						</div>
 						<div>
-							<div style="margin-top: 10px;" data-bind="ntsFormLabel: {constraint: 'WorkTypeMemo'}">#{i18n.getText('KMK007_17')}</div>
+							<div style="margin-top: 10px;"
+								data-bind="ntsFormLabel: {constraint: 'WorkTypeMemo'}">#{i18n.getText('KMK007_17')}</div>
 							<input id="memo-input"
-								data-bind="ntsTextEditor: {value: memo, required: true}" />
+								data-bind="ntsTextEditor: {value: memo, enable: $parent.isEnable}" />
 						</div>
 
 
@@ -92,7 +94,7 @@
 													optionsValue: 'code',
 													optionsText: 'name',
 													value: workAtr,
-													enable: true }"></div>
+													enable: $parent.isEnable }"></div>
 					</div>
 					<div data-bind="if: currentWorkType().workAtr() == '0'">
 						<div id="duty-type-set-oneday">

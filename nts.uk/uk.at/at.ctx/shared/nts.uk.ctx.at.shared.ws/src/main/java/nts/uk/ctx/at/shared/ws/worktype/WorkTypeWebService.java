@@ -46,13 +46,13 @@ public class WorkTypeWebService extends WebService {
 
 	@Inject
 	private InsertWorkTypeCommandHandler insertWorkTypeCommandHandler;
-	
+
 	@Inject
-	private RemoveWorkTypeCommandHandler  removeWorkTypeCommandHandler;
-	
+	private RemoveWorkTypeCommandHandler removeWorkTypeCommandHandler;
+
 	@Inject
-	private WorkTypeDispOrderCommandHandler  workTypeDispOrderCommandHandler;
-	
+	private WorkTypeDispOrderCommandHandler workTypeDispOrderCommandHandler;
+
 	@Inject
 	private UpdateWorkTypeCommandHandler updateWorkTypeCommandHandler;
 
@@ -167,15 +167,29 @@ public class WorkTypeWebService extends WebService {
 	}
 
 	/**
+	 * Find by companyId and languageId in WORK TYPE LANGUAGE
 	 * 
-	 * @param Work Type
+	 * @param workTypeCode
+	 * @return
+	 */
+	@POST
+	@Path("getByCIdAndLangId/{langId}")
+	public List<WorkTypeDto> checkLanguageWorkType(@PathParam("langId") String langId) {
+		return this.find.checkLanguageWorkType(langId);
+	}
+
+	/**
+	 * 
+	 * @param Work
+	 *            Type
+	 * 
 	 */
 	@POST
 	@Path("add")
 	public void add(WorkTypeCommandBase command) {
 		this.insertWorkTypeCommandHandler.handle(command);
 	}
-	
+
 	/**
 	 * 
 	 * @param command
@@ -185,7 +199,7 @@ public class WorkTypeWebService extends WebService {
 	public void update(WorkTypeCommandBase command) {
 		this.updateWorkTypeCommandHandler.handle(command);
 	}
-	
+
 	/**
 	 * 
 	 * @param command
@@ -195,10 +209,11 @@ public class WorkTypeWebService extends WebService {
 	public void remove(RemoveWorkTypeCommand command) {
 		this.removeWorkTypeCommandHandler.handle(command);
 	}
-	
+
 	/**
 	 * 
-	 * @param Work Type Order
+	 * @param Work
+	 *            Type Order
 	 */
 	@POST
 	@Path("order")

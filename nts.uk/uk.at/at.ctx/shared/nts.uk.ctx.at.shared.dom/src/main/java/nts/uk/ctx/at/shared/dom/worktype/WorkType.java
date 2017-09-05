@@ -103,6 +103,23 @@ public class WorkType extends AggregateRoot {
 		this.deprecate = deprecate;
 		this.calculateMethod = calculateMethod;
 	}
+	
+	/**
+	 * 
+	 * @param companyId
+	 * @param workTypeCode
+	 * @param name
+	 * @param abbreviationName
+	 */
+	public WorkType(String companyId, WorkTypeCode workTypeCode, WorkTypeName name,
+			WorkTypeAbbreviationName abbreviationName) {
+		super();
+		this.companyId = companyId;
+		this.workTypeCode = workTypeCode;
+		this.name = name;
+		this.abbreviationName = abbreviationName;
+	}
+
 
 	/**
 	 * Creates the simple from java type.
