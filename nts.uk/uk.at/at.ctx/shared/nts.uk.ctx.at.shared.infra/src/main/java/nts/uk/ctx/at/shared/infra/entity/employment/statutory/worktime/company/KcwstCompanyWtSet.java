@@ -37,59 +37,59 @@ public class KcwstCompanyWtSet extends UkJpaEntity implements Serializable {
 
 	/** The daily time. */
 	@Column(name = "DAILY_TIME")
-	private Long dailyTime;
+	private int dailyTime;
 
 	/** The weekly time. */
 	@Column(name = "WEEKLY_TIME")
-	private Long weeklyTime;
+	private int weeklyTime;
 
 	/** The jan time. */
 	@Column(name = "JAN_TIME")
-	private Long janTime;
+	private int janTime;
 
 	/** The feb time. */
 	@Column(name = "FEB_TIME")
-	private Long febTime;
+	private int febTime;
 
 	/** The mar time. */
 	@Column(name = "MAR_TIME")
-	private Long marTime;
+	private int marTime;
 
 	/** The apr time. */
 	@Column(name = "APR_TIME")
-	private Long aprTime;
+	private int aprTime;
 
 	/** The may time. */
 	@Column(name = "MAY_TIME")
-	private Long mayTime;
+	private int mayTime;
 
 	/** The jun time. */
 	@Column(name = "JUN_TIME")
-	private Long junTime;
+	private int junTime;
 
 	/** The jul time. */
 	@Column(name = "JUL_TIME")
-	private Long julTime;
+	private int julTime;
 
 	/** The aug time. */
 	@Column(name = "AUG_TIME")
-	private Long augTime;
+	private int augTime;
 
 	/** The sep time. */
 	@Column(name = "SEP_TIME")
-	private Long sepTime;
+	private int sepTime;
 
 	/** The oct time. */
 	@Column(name = "OCT_TIME")
-	private Long octTime;
+	private int octTime;
 
 	/** The nov time. */
 	@Column(name = "NOV_TIME")
-	private Long novTime;
+	private int novTime;
 
 	/** The dec time. */
 	@Column(name = "DEC_TIME")
-	private Long decTime;
+	private int decTime;
 
 	/*
 	 * (non-Javadoc)
