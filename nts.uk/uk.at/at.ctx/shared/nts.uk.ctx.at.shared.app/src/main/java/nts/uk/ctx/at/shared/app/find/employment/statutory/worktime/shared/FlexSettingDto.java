@@ -58,20 +58,20 @@ public class FlexSettingDto {
 		List<FlexMonth> flexMonthly = new ArrayList<FlexMonth>();
 
 		// Convert to map.
-		Map<Month, Double> statutoryMonthly = domain.getStatutorySetting().getMonthly().stream()
-				.collect(Collectors.toMap(Monthly::getMonth, x -> x.getTime().minutes()));
+		Map<Month, Integer> statutoryMonthly = domain.getStatutorySetting().getMonthly().stream()
+				.collect(Collectors.toMap(Monthly::getMonth, x -> x.getTime().valueAsMinutes()));
 
 		// Set specified work time.
 		domain.getSpecifiedSetting().getMonthly().forEach(item -> {
 			FlexMonth fm = new FlexMonth();
 			fm.setMonth(item.getMonth().getValue());
-			fm.setSpecifiedTime((long)item.getTime().minutes());
+			fm.setSpecifiedTime(item.getTime().valueAsMinutes());
 			flexMonthly.add(fm);
 		});
 
 		// Set statutory work time.
 		flexMonthly.forEach(month -> {
-			month.setStatutoryTime(statutoryMonthly.get(Month.of(month.getMonth())).longValue());
+			month.setStatutoryTime(statutoryMonthly.get(Month.of(month.getMonth())));
 		});
 
 		return flexMonthly;
@@ -86,8 +86,8 @@ public class FlexSettingDto {
 	// Get flexDaily dto from domain.
 	private static FlexDaily getFlexDaily(FlexSetting domain) {
 		FlexDaily flexDaily = new FlexDaily();
-		flexDaily.setSpecifiedTime((long)domain.getSpecifiedSetting().getDaily().minutes());
-		flexDaily.setStatutoryTime((long)domain.getStatutorySetting().getDaily().minutes());
+		flexDaily.setSpecifiedTime(domain.getSpecifiedSetting().getDaily().valueAsMinutes());
+		flexDaily.setStatutoryTime(domain.getStatutorySetting().getDaily().valueAsMinutes());
 		return flexDaily;
 	}
 
@@ -98,15 +98,15 @@ public class FlexSettingDto {
 	 * @return the flex setting
 	 */
 	public static FlexSetting toDomain(FlexSettingDto dto) {
-		DailyTime speDaily = DailyTime.ofMinutes(dto.getFlexDaily().getSpecifiedTime());
-		DailyTime staDaily = DailyTime.ofMinutes(dto.getFlexDaily().getStatutoryTime());
+		DailyTime speDaily = new DailyTime(dto.getFlexDaily().getSpecifiedTime());
+		DailyTime staDaily = new DailyTime(dto.getFlexDaily().getStatutoryTime());
 		List<Monthly> speMonthly = new ArrayList<Monthly>();
 		List<Monthly> staMonthly = new ArrayList<Monthly>();
 
 		dto.getFlexMonthly().forEach(item -> {
 			Month m = java.time.Month.of(item.getMonth());
-			Monthly spe = new Monthly(MonthlyTime.ofMinutes(item.getSpecifiedTime()), m);
-			Monthly sta = new Monthly(MonthlyTime.ofMinutes(item.getStatutoryTime()), m);
+			Monthly spe = new Monthly(new MonthlyTime(item.getSpecifiedTime()), m);
+			Monthly sta = new Monthly(new MonthlyTime(item.getStatutoryTime()), m);
 			speMonthly.add(spe);
 			staMonthly.add(sta);
 		});
