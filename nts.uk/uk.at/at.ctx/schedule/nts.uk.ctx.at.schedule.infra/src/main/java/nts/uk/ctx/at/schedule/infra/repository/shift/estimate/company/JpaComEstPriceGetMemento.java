@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.personal;
+package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.company;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,23 +13,23 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimatedCondition;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatePrice;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPrice;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSettingGetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstPricePerSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComSet;
 
 /**
- * The Class JpaEstimatedPersonalPriceGetMemento.
+ * The Class JpaEstimatedCompanyPriceGetMemento.
  */
-public class JpaPersonalEstimatedPriceGetMemento implements  EstimatedPriceSettingGetMemento{
+public class JpaComEstPriceGetMemento implements  EstimatedPriceSettingGetMemento{
 	
-	/** The estimate price Personal. */
-	private KscmtEstPricePerSet estimatePricePersonal;
+	/** The estimate price company. */
+	private KscmtEstPriceComSet estimatePriceCompany;
 	
 	/**
-	 * Instantiates a new jpa estimated Personal price get memento.
+	 * Instantiates a new jpa estimated company price get memento.
 	 *
-	 * @param estimatePricePersonal the estimate price Personal
+	 * @param estimatePriceCompany the estimate price company
 	 */
-	public JpaPersonalEstimatedPriceGetMemento(KscmtEstPricePerSet estimatePricePersonal) {
-		this.estimatePricePersonal = estimatePricePersonal;
+	public JpaComEstPriceGetMemento(KscmtEstPriceComSet estimatePriceCompany) {
+		this.estimatePriceCompany = estimatePriceCompany;
 	}
 
 	/*
@@ -41,7 +41,7 @@ public class JpaPersonalEstimatedPriceGetMemento implements  EstimatedPriceSetti
 	@Override
 	public EstimateTargetClassification getTargetClassification() {
 		return EnumAdaptor.valueOf(
-				this.estimatePricePersonal.getKscmtEstPricePerSetPK().getTargetCls(),
+				this.estimatePriceCompany.getKscmtEstPriceComSetPK().getTargetCls(),
 				EstimateTargetClassification.class);
 	}
 
@@ -55,15 +55,15 @@ public class JpaPersonalEstimatedPriceGetMemento implements  EstimatedPriceSetti
 	public List<EstimatedPrice> getPriceSetting() {
 		List<EstimatedPrice> estimatedPrice = new ArrayList<>();
 		estimatedPrice.add(new EstimatedPrice(EstimatedCondition.CONDITION_1ST,
-				new EstimatePrice(this.estimatePricePersonal.getEstCondition1stMny())));
+				new EstimatePrice(this.estimatePriceCompany.getEstCondition1stMny())));
 		estimatedPrice.add(new EstimatedPrice(EstimatedCondition.CONDITION_2ND,
-				new EstimatePrice(this.estimatePricePersonal.getEstCondition2ndMny())));
+				new EstimatePrice(this.estimatePriceCompany.getEstCondition2ndMny())));
 		estimatedPrice.add(new EstimatedPrice(EstimatedCondition.CONDITION_3RD,
-				new EstimatePrice(this.estimatePricePersonal.getEstCondition3rdMny())));
+				new EstimatePrice(this.estimatePriceCompany.getEstCondition3rdMny())));
 		estimatedPrice.add(new EstimatedPrice(EstimatedCondition.CONDITION_4TH,
-				new EstimatePrice(this.estimatePricePersonal.getEstCondition4thMny())));
+				new EstimatePrice(this.estimatePriceCompany.getEstCondition4thMny())));
 		estimatedPrice.add(new EstimatedPrice(EstimatedCondition.CONDITION_5TH,
-				new EstimatePrice(this.estimatePricePersonal.getEstCondition5thMny())));
+				new EstimatePrice(this.estimatePriceCompany.getEstCondition5thMny())));
 		return estimatedPrice;
 	}
 	

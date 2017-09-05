@@ -40,7 +40,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimeP
  * The Class JpaPersonalEstablishmentRepository.
  */
 @Stateless
-public class JpaPersonalEstablishmentRepository extends JpaRepository
+public class JpaPerEstablishmentRepository extends JpaRepository
 		implements PersonalEstablishmentRepository {
 	
 	/** The default value. */
@@ -285,7 +285,7 @@ public class JpaPersonalEstablishmentRepository extends JpaRepository
 	private PersonalEstablishment toDomain(List<KscmtEstTimePerSet> estimateTimePersonals,
 			List<KscmtEstPricePerSet> estimatePricePersonals,
 			List<KscmtEstDaysPerSet> estimateDaysPersonals) {
-		return new PersonalEstablishment(new JpaPersonalEstablishmentGetMemento(estimateTimePersonals,
+		return new PersonalEstablishment(new JpaPerEstablishmentGetMemento(estimateTimePersonals,
 				estimatePricePersonals, estimateDaysPersonals));
 	}
 	
@@ -398,7 +398,7 @@ public class JpaPersonalEstablishmentRepository extends JpaRepository
 		}
 
 		personalEstablishment.getAdvancedSetting()
-				.saveToMemento(new JpaPersonalEstimateDetailSettingSetMemento(estimateTimePersonals,
+				.saveToMemento(new JpaPerEstDetailSetSetMemento(estimateTimePersonals,
 						estimatePricePersonals, estimateDaysPersonals));
 		if (isAddTime) {
 			this.commandProxy().insertAll(estimateTimePersonals);

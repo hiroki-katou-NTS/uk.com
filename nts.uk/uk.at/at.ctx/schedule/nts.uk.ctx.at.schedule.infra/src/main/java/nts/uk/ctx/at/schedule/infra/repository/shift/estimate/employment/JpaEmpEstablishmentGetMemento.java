@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCod
 /**
  * The Class JpaEmploymentEstablishmentGetMemento.
  */
-public class JpaEmploymentEstablishmentGetMemento implements EmploymentEstablishmentGetMemento{
+public class JpaEmpEstablishmentGetMemento implements EmploymentEstablishmentGetMemento{
 	
 	public static final int FIRST_TIME = 0;
 	
@@ -38,7 +38,7 @@ public class JpaEmploymentEstablishmentGetMemento implements EmploymentEstablish
 	 *
 	 * @param estimateTimeEmployments the estimate time Employments
 	 */
-	public JpaEmploymentEstablishmentGetMemento(List<KscmtEstTimeEmpSet> estimateTimeEmployments,
+	public JpaEmpEstablishmentGetMemento(List<KscmtEstTimeEmpSet> estimateTimeEmployments,
 			List<KscmtEstPriceEmpSet> estimatePriceEmployments,
 			List<KscmtEstDaysEmpSet> estimateDaysEmployments) {
 		this.estimateTimeEmployments = estimateTimeEmployments;
@@ -55,7 +55,7 @@ public class JpaEmploymentEstablishmentGetMemento implements EmploymentEstablish
 	 */
 	@Override
 	public EstimateDetailSetting getAdvancedSetting() {
-		return new EstimateDetailSetting(new JpaEmploymentEstimateDetailSettingGetMemento(
+		return new EstimateDetailSetting(new JpaEmpEstDetailSetGetMemento(
 				this.estimateTimeEmployments, this.estimatePriceEmployments, this.estimateDaysEmployments));
 	}
 

@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.company;
+package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.employment;
 
 import java.util.List;
 
@@ -10,26 +10,27 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.EstimateNumberOfDaySetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.MonthlyEstimateNumberOfDay;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.YearlyEstimateNumberOfDay;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDaysEmpSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDaysEmpSetPK;
 
 /**
- * The Class JpaCompanyEstimateNumberOfDaySetMemento.
+ * The Class JpaEmploymentEstimateNumberOfDaySetMemento.
  */
-public class JpaCompanyEstimateNumberOfDaySetMemento implements EstimateNumberOfDaySetMemento {
-	/** The estimate days company. */
-	private KscmtEstDaysComSet estimateDaysCompany;
+public class JpaEmpEstDaysSetMemento implements EstimateNumberOfDaySetMemento {
+	
+	/** The estimate days employment. */
+	private KscmtEstDaysEmpSet estimateDaysEmployment;
 	
 	/**
-	 * Instantiates a new jpa company estimate number of day set memento.
+	 * Instantiates a new jpa Employment estimate number of day set memento.
 	 *
-	 * @param estimateDaysCompany the estimate days company
+	 * @param estimateDaysEmployment the estimate days Employment
 	 */
-	public JpaCompanyEstimateNumberOfDaySetMemento(KscmtEstDaysComSet estimateDaysCompany) {
-		if(estimateDaysCompany.getKscmtEstDaysComSetPK() == null){
-			estimateDaysCompany.setKscmtEstDaysComSetPK(new KscmtEstDaysComSetPK());
+	public JpaEmpEstDaysSetMemento(KscmtEstDaysEmpSet estimateDaysEmployment) {
+		if(estimateDaysEmployment.getKscmtEstDaysEmpSetPK() == null){
+			estimateDaysEmployment.setKscmtEstDaysEmpSetPK(new KscmtEstDaysEmpSetPK());
 		}
-		this.estimateDaysCompany = estimateDaysCompany;
+		this.estimateDaysEmployment = estimateDaysEmployment;
 	}
 	
 
@@ -42,7 +43,7 @@ public class JpaCompanyEstimateNumberOfDaySetMemento implements EstimateNumberOf
 	 */
 	@Override
 	public void setTargetClassification(EstimateTargetClassification targetClassification) {
-		this.estimateDaysCompany.getKscmtEstDaysComSetPK().setTargetCls(targetClassification.value);
+		this.estimateDaysEmployment.getKscmtEstDaysEmpSetPK().setTargetCls(targetClassification.value);
 	}
 
 	/*
@@ -56,24 +57,24 @@ public class JpaCompanyEstimateNumberOfDaySetMemento implements EstimateNumberOf
 	public void setYearlyEstimateNumberOfDaySetting(
 			List<YearlyEstimateNumberOfDay> yearlyEstimateNumberOfDaySetting) {
 		
-		if (this.estimateDaysCompany.getKscmtEstDaysComSetPK()
+		if (this.estimateDaysEmployment.getKscmtEstDaysEmpSetPK()
 				.getTargetCls() == EstimateTargetClassification.YEARLY.value) {
 			yearlyEstimateNumberOfDaySetting.forEach(yearly -> {
 				switch (yearly.getEstimatedCondition()) {
 				case CONDITION_1ST:
-					this.estimateDaysCompany.setEstCondition1stDays(yearly.getDays().v());
+					this.estimateDaysEmployment.setEstCondition1stDays(yearly.getDays().v());
 					break;
 				case CONDITION_2ND:
-					this.estimateDaysCompany.setEstCondition2ndDays(yearly.getDays().v());
+					this.estimateDaysEmployment.setEstCondition2ndDays(yearly.getDays().v());
 					break;
 				case CONDITION_3RD:
-					this.estimateDaysCompany.setEstCondition3rdDays(yearly.getDays().v());
+					this.estimateDaysEmployment.setEstCondition3rdDays(yearly.getDays().v());
 					break;
 				case CONDITION_4TH:
-					this.estimateDaysCompany.setEstCondition4thDays(yearly.getDays().v());
+					this.estimateDaysEmployment.setEstCondition4thDays(yearly.getDays().v());
 					break;
 				case CONDITION_5TH:
-					this.estimateDaysCompany.setEstCondition5thDays(yearly.getDays().v());
+					this.estimateDaysEmployment.setEstCondition5thDays(yearly.getDays().v());
 					break;
 
 				default:
@@ -96,24 +97,24 @@ public class JpaCompanyEstimateNumberOfDaySetMemento implements EstimateNumberOf
 	public void setMonthlyEstimateNumberOfDaySetting(
 			List<MonthlyEstimateNumberOfDay> monthlyEstimateNumberOfDaySetting) {
 
-		if (this.estimateDaysCompany.getKscmtEstDaysComSetPK()
+		if (this.estimateDaysEmployment.getKscmtEstDaysEmpSetPK()
 				.getTargetCls() != EstimateTargetClassification.YEARLY.value) {
 			monthlyEstimateNumberOfDaySetting.forEach(monthly -> {
 				switch (monthly.getEstimatedCondition()) {
 				case CONDITION_1ST:
-					this.estimateDaysCompany.setEstCondition1stDays(monthly.getDays().v());
+					this.estimateDaysEmployment.setEstCondition1stDays(monthly.getDays().v());
 					break;
 				case CONDITION_2ND:
-					this.estimateDaysCompany.setEstCondition2ndDays(monthly.getDays().v());
+					this.estimateDaysEmployment.setEstCondition2ndDays(monthly.getDays().v());
 					break;
 				case CONDITION_3RD:
-					this.estimateDaysCompany.setEstCondition3rdDays(monthly.getDays().v());
+					this.estimateDaysEmployment.setEstCondition3rdDays(monthly.getDays().v());
 					break;
 				case CONDITION_4TH:
-					this.estimateDaysCompany.setEstCondition4thDays(monthly.getDays().v());
+					this.estimateDaysEmployment.setEstCondition4thDays(monthly.getDays().v());
 					break;
 				case CONDITION_5TH:
-					this.estimateDaysCompany.setEstCondition5thDays(monthly.getDays().v());
+					this.estimateDaysEmployment.setEstCondition5thDays(monthly.getDays().v());
 					break;
 
 				default:

@@ -18,7 +18,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimeP
 /**
  * The Class JpaEstimateDetailSettingPersonalGetMemento.
  */
-public class JpaPersonalEstimateDetailSettingGetMemento implements EstimateDetailSettingGetMemento{
+public class JpaPerEstDetailSetGetMemento implements EstimateDetailSettingGetMemento{
 	
 	/** The estimate time Personals. */
 	private List<KscmtEstTimePerSet> estimateTimePersonals;
@@ -35,7 +35,7 @@ public class JpaPersonalEstimateDetailSettingGetMemento implements EstimateDetai
 	 *
 	 * @param estimateTimePersonals the estimate time Personals
 	 */
-	public JpaPersonalEstimateDetailSettingGetMemento(List<KscmtEstTimePerSet> estimateTimePersonals,
+	public JpaPerEstDetailSetGetMemento(List<KscmtEstTimePerSet> estimateTimePersonals,
 			List<KscmtEstPricePerSet> estimatePricePersonals,
 			List<KscmtEstDaysPerSet> estimateDaysPersonals) {
 		this.estimateTimePersonals = estimateTimePersonals;
@@ -53,7 +53,7 @@ public class JpaPersonalEstimateDetailSettingGetMemento implements EstimateDetai
 	public List<EstimateTimeSetting> getEstimateTime() {
 		return this.estimateTimePersonals.stream()
 				.map(entity -> new EstimateTimeSetting(
-						new JpaPersonalEstimateTimeSettingGetMemento(entity)))
+						new JpaPerEstTimeSetGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
 
@@ -68,7 +68,7 @@ public class JpaPersonalEstimateDetailSettingGetMemento implements EstimateDetai
 	public List<EstimatedPriceSetting> getEstimatePrice() {
 		return this.estimatePricePersonals.stream()
 				.map(entity -> new EstimatedPriceSetting(
-						new JpaPersonalEstimatedPriceGetMemento(entity)))
+						new JpaPerEstPriceGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
 
@@ -83,7 +83,7 @@ public class JpaPersonalEstimateDetailSettingGetMemento implements EstimateDetai
 	public List<EstimateNumberOfDay> getEstimateNumberOfDay() {
 		return this.estimateDaysPersonals.stream()
 				.map(entity -> new EstimateNumberOfDay(
-						new JpaPersonalEstimateNumberOfDayGetMemento(entity)))
+						new JpaPerEstDaysGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
 

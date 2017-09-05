@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.personal;
+package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.company;
 
 import java.util.List;
 
@@ -10,27 +10,27 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTimeSettingSetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.MonthlyEstimateTimeSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.YearlyEstimateTimeSetting;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimePerSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimePerSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComSetPK;
 
 /**
- * The Class JpaEstimateTimeSettingPersonalGetMemento.
+ * The Class JpaEstimateTimeSettingCompanyGetMemento.
  */
-public class JpaPersonalEstimateTimeSettingSetMemento implements EstimateTimeSettingSetMemento{
+public class JpaComEstTimeSetSetMemento implements EstimateTimeSettingSetMemento{
 	
-	/** The est time Personal. */
-	private KscmtEstTimePerSet estTimePersonal;
+	/** The est time company. */
+	private KscmtEstTimeComSet estTimeCompany;
 	
 	/**
-	 * Instantiates a new jpa estimate time setting Personal get memento.
+	 * Instantiates a new jpa estimate time setting company get memento.
 	 *
-	 * @param estTimePersonal the est time Personal
+	 * @param estTimeCompany the est time company
 	 */
-	public JpaPersonalEstimateTimeSettingSetMemento(KscmtEstTimePerSet estTimePersonal){
-		if(estTimePersonal.getKscmtEstTimePerSetPK() == null){
-			estTimePersonal.setKscmtEstTimePerSetPK(new KscmtEstTimePerSetPK());
+	public JpaComEstTimeSetSetMemento(KscmtEstTimeComSet estTimeCompany){
+		if(estTimeCompany.getKscmtEstTimeComSetPK() == null){
+			estTimeCompany.setKscmtEstTimeComSetPK(new KscmtEstTimeComSetPK());
 		}
-		this.estTimePersonal = estTimePersonal;
+		this.estTimeCompany = estTimeCompany;
 	}
 
 
@@ -43,7 +43,7 @@ public class JpaPersonalEstimateTimeSettingSetMemento implements EstimateTimeSet
 	 */
 	@Override
 	public void setTargetClassification(EstimateTargetClassification targetClassification) {
-		this.estTimePersonal.getKscmtEstTimePerSetPK().setTargetCls(targetClassification.value);
+		this.estTimeCompany.getKscmtEstTimeComSetPK().setTargetCls(targetClassification.value);
 
 	}
 
@@ -57,26 +57,26 @@ public class JpaPersonalEstimateTimeSettingSetMemento implements EstimateTimeSet
 	@Override
 	public void setYearlyEstimateTimeSetting(
 			List<YearlyEstimateTimeSetting> yearlyEstimateTimeSetting) {
-		if (this.estTimePersonal.getKscmtEstTimePerSetPK()
+		if (this.estTimeCompany.getKscmtEstTimeComSetPK()
 				.getTargetCls() == EstimateTargetClassification.YEARLY.value) {
 
 			
 			yearlyEstimateTimeSetting.forEach(yearly->{
 				switch (yearly.getEstimatedCondition()) {
 				case CONDITION_1ST:
-					this.estTimePersonal.setEstCondition1stTime(yearly.getTime().valueAsMinutes());
+					this.estTimeCompany.setEstCondition1stTime(yearly.getTime().valueAsMinutes());
 					break;
 				case CONDITION_2ND:
-					this.estTimePersonal.setEstCondition2ndTime(yearly.getTime().valueAsMinutes());
+					this.estTimeCompany.setEstCondition2ndTime(yearly.getTime().valueAsMinutes());
 					break;
 				case CONDITION_3RD:
-					this.estTimePersonal.setEstCondition3rdTime(yearly.getTime().valueAsMinutes());
+					this.estTimeCompany.setEstCondition3rdTime(yearly.getTime().valueAsMinutes());
 					break;
 				case CONDITION_4TH:
-					this.estTimePersonal.setEstCondition4thTime(yearly.getTime().valueAsMinutes());
+					this.estTimeCompany.setEstCondition4thTime(yearly.getTime().valueAsMinutes());
 					break;
 				case CONDITION_5TH:
-					this.estTimePersonal.setEstCondition5thTime(yearly.getTime().valueAsMinutes());
+					this.estTimeCompany.setEstCondition5thTime(yearly.getTime().valueAsMinutes());
 					break;
 
 				default:
@@ -99,26 +99,26 @@ public class JpaPersonalEstimateTimeSettingSetMemento implements EstimateTimeSet
 			List<MonthlyEstimateTimeSetting> monthlyEstimateTimeSetting) {
 		
 		// check target class not yearly
-		if (this.estTimePersonal.getKscmtEstTimePerSetPK()
+		if (this.estTimeCompany.getKscmtEstTimeComSetPK()
 				.getTargetCls() != EstimateTargetClassification.YEARLY.value) {
 
 			
 			monthlyEstimateTimeSetting.forEach(monthly->{
 				switch (monthly.getEstimatedCondition()) {
 				case CONDITION_1ST:
-					this.estTimePersonal.setEstCondition1stTime(monthly.getTime().valueAsMinutes());
+					this.estTimeCompany.setEstCondition1stTime(monthly.getTime().valueAsMinutes());
 					break;
 				case CONDITION_2ND:
-					this.estTimePersonal.setEstCondition2ndTime(monthly.getTime().valueAsMinutes());
+					this.estTimeCompany.setEstCondition2ndTime(monthly.getTime().valueAsMinutes());
 					break;
 				case CONDITION_3RD:
-					this.estTimePersonal.setEstCondition3rdTime(monthly.getTime().valueAsMinutes());
+					this.estTimeCompany.setEstCondition3rdTime(monthly.getTime().valueAsMinutes());
 					break;
 				case CONDITION_4TH:
-					this.estTimePersonal.setEstCondition4thTime(monthly.getTime().valueAsMinutes());
+					this.estTimeCompany.setEstCondition4thTime(monthly.getTime().valueAsMinutes());
 					break;
 				case CONDITION_5TH:
-					this.estTimePersonal.setEstCondition5thTime(monthly.getTime().valueAsMinutes());
+					this.estTimeCompany.setEstCondition5thTime(monthly.getTime().valueAsMinutes());
 					break;
 
 				default:

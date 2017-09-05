@@ -37,7 +37,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeCo
  * The Class JpaCompanyEstablishmentRepository.
  */
 @Stateless
-public class JpaCompanyEstablishmentRepository extends JpaRepository
+public class JpaComEstablishmentRepository extends JpaRepository
 		implements CompanyEstablishmentRepository {
 	
 	/** The default value. */
@@ -282,7 +282,7 @@ public class JpaCompanyEstablishmentRepository extends JpaRepository
 	private CompanyEstablishment toDomain(List<KscmtEstTimeComSet> estimateTimeCompanys,
 			List<KscmtEstPriceComSet> estimatePriceCompanys,
 			List<KscmtEstDaysComSet> estimateDaysCompanys) {
-		return new CompanyEstablishment(new JpaCompanyEstablishmentGetMemento(estimateTimeCompanys,
+		return new CompanyEstablishment(new JpaComEstablishmentGetMemento(estimateTimeCompanys,
 				estimatePriceCompanys, estimateDaysCompanys));
 	}
 	
@@ -395,7 +395,7 @@ public class JpaCompanyEstablishmentRepository extends JpaRepository
 		}
 
 		companyEstablishment.getAdvancedSetting()
-				.saveToMemento(new JpaCompanyEstimateDetailSettingSetMemento(estimateTimeCompanys,
+				.saveToMemento(new JpaComEstDetailSetSetMemento(estimateTimeCompanys,
 						estimatePriceCompanys, estimateDaysCompanys));
 		if(isAddTime){
 			this.commandProxy().insertAll(estimateTimeCompanys);

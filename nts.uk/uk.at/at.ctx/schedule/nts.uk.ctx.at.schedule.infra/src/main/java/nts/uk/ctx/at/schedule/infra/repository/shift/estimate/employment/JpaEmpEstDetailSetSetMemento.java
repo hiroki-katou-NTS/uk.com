@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTim
 /**
  * The Class JpaEstimateDetailSettingEmploymentSetMemento.
  */
-public class JpaEmploymentEstimateDetailSettingSetMemento implements EstimateDetailSettingSetMemento{
+public class JpaEmpEstDetailSetSetMemento implements EstimateDetailSettingSetMemento{
 	
 	/** The estimate time Employments. */
 	private List<KscmtEstTimeEmpSet> estimateTimeEmployments;
@@ -35,7 +35,7 @@ public class JpaEmploymentEstimateDetailSettingSetMemento implements EstimateDet
 	 * @param estimateTimeEmployments the estimate time Employments
 	 * @param estimatePriceEmployments the estimate price Employments
 	 */
-	public JpaEmploymentEstimateDetailSettingSetMemento(List<KscmtEstTimeEmpSet> estimateTimeEmployments,
+	public JpaEmpEstDetailSetSetMemento(List<KscmtEstTimeEmpSet> estimateTimeEmployments,
 			List<KscmtEstPriceEmpSet> estimatePriceEmployments,List<KscmtEstDaysEmpSet> estimateDaysEmployments) {
 		this.estimateTimeEmployments = estimateTimeEmployments;
 		this.estimatePriceEmployments = estimatePriceEmployments;
@@ -58,7 +58,7 @@ public class JpaEmploymentEstimateDetailSettingSetMemento implements EstimateDet
 				if (entity.getKscmtEstTimeEmpSetPK()
 						.getTargetCls() == estimateSetting.getTargetClassification().value) {
 					estimateSetting
-							.saveToMemento(new JpaEmploymentEstimateTimeSettingSetMemento(entity));
+							.saveToMemento(new JpaEmpEstTimeSetSetMemento(entity));
 				}
 			});
 		});
@@ -77,7 +77,7 @@ public class JpaEmploymentEstimateDetailSettingSetMemento implements EstimateDet
 			this.estimatePriceEmployments.forEach(entity -> {
 				if (entity.getKscmtEstPriceEmpSetPK()
 						.getTargetCls() == estimateSetting.getTargetClassification().value) {
-					estimateSetting.saveToMemento(new JpaEmploymentEstimatedPriceSetMemento(entity));
+					estimateSetting.saveToMemento(new JpaEmpEstPriceSetMemento(entity));
 				}
 			});
 		});
@@ -97,7 +97,7 @@ public class JpaEmploymentEstimateDetailSettingSetMemento implements EstimateDet
 				if (entity.getKscmtEstDaysEmpSetPK()
 						.getTargetCls() == estimateSetting.getTargetClassification().value) {
 					estimateSetting
-							.saveToMemento(new JpaEmploymentEstimateNumberOfDaySetMemento(entity));
+							.saveToMemento(new JpaEmpEstDaysSetMemento(entity));
 				}
 			});
 		});

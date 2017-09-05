@@ -20,7 +20,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTim
 /**
  * The Class JpaEmploymentEstimateTimeSettingGetMemento.
  */
-public class JpaEmploymentEstimateTimeSettingGetMemento implements EstimateTimeSettingGetMemento{
+public class JpaEmpEstTimeSetGetMemento implements EstimateTimeSettingGetMemento{
 	
 	/** The est time employment. */
 	private KscmtEstTimeEmpSet estTimeEmployment;
@@ -30,7 +30,7 @@ public class JpaEmploymentEstimateTimeSettingGetMemento implements EstimateTimeS
 	 *
 	 * @param estTimeEmployment the est time Employment
 	 */
-	public JpaEmploymentEstimateTimeSettingGetMemento(KscmtEstTimeEmpSet estTimeEmployment){
+	public JpaEmpEstTimeSetGetMemento(KscmtEstTimeEmpSet estTimeEmployment){
 		this.estTimeEmployment = estTimeEmployment;
 	}
 

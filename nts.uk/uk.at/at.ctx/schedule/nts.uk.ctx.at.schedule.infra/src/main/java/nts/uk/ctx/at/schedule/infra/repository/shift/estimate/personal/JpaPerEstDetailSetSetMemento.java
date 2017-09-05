@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimeP
 /**
  * The Class JpaEstimateDetailSettingPersonalSetMemento.
  */
-public class JpaPersonalEstimateDetailSettingSetMemento implements EstimateDetailSettingSetMemento{
+public class JpaPerEstDetailSetSetMemento implements EstimateDetailSettingSetMemento{
 	
 	/** The estimate time Personals. */
 	private List<KscmtEstTimePerSet> estimateTimePersonals;
@@ -35,7 +35,7 @@ public class JpaPersonalEstimateDetailSettingSetMemento implements EstimateDetai
 	 * @param estimateTimePersonals the estimate time Personals
 	 * @param estimatePricePersonals the estimate price Personals
 	 */
-	public JpaPersonalEstimateDetailSettingSetMemento(List<KscmtEstTimePerSet> estimateTimePersonals,
+	public JpaPerEstDetailSetSetMemento(List<KscmtEstTimePerSet> estimateTimePersonals,
 			List<KscmtEstPricePerSet> estimatePricePersonals,List<KscmtEstDaysPerSet> estimateDaysPersonals) {
 		this.estimateTimePersonals = estimateTimePersonals;
 		this.estimatePricePersonals = estimatePricePersonals;
@@ -58,7 +58,7 @@ public class JpaPersonalEstimateDetailSettingSetMemento implements EstimateDetai
 				if (entity.getKscmtEstTimePerSetPK()
 						.getTargetCls() == estimateSetting.getTargetClassification().value) {
 					estimateSetting
-							.saveToMemento(new JpaPersonalEstimateTimeSettingSetMemento(entity));
+							.saveToMemento(new JpaPerEstTimeSetSetMemento(entity));
 				}
 			});
 		});
@@ -77,7 +77,7 @@ public class JpaPersonalEstimateDetailSettingSetMemento implements EstimateDetai
 			this.estimatePricePersonals.forEach(entity -> {
 				if (entity.getKscmtEstPricePerSetPK()
 						.getTargetCls() == estimateSetting.getTargetClassification().value) {
-					estimateSetting.saveToMemento(new JpaPersonalEstimatedPriceSetMemento(entity));
+					estimateSetting.saveToMemento(new JpaPerEstPriceSetMemento(entity));
 				}
 			});
 		});
@@ -97,7 +97,7 @@ public class JpaPersonalEstimateDetailSettingSetMemento implements EstimateDetai
 				if (entity.getKscmtEstDaysPerSetPK()
 						.getTargetCls() == estimateSetting.getTargetClassification().value) {
 					estimateSetting
-							.saveToMemento(new JpaPersonalEstimateNumberOfDaySetMemento(entity));
+							.saveToMemento(new JpaPerEstDaysSetMemento(entity));
 				}
 			});
 		});
