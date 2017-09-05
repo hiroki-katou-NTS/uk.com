@@ -80,8 +80,8 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	 */
 	private boolean compareRank(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
 		JobTitleImport jobOfEmp = this.syJobTitleAdapter.findJobTitleBySid(sid, baseDate);
-		JobTitleImport job = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobTitleId, baseDate);
-		
+		JobTitleImport jobOfApprover = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobTitleId, baseDate);
+		JobTitleImport jobOfRequest = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobOfEmp.getPositionId(), baseDate);
 		
 		
 		return true;
