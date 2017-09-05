@@ -41,83 +41,83 @@ public class KwwstWorkplaceWtSet extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "DAILY_TIME")
-	private Long dailyTime;
+	private int dailyTime;
 
 	/** The weekly time. */
 	@Column(name = "WEEKLY_TIME")
-	private Long weeklyTime;
+	private int weeklyTime;
 
 	/** The jan time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "JAN_TIME")
-	private Long janTime;
+	private int janTime;
 
 	/** The feb time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "FEB_TIME")
-	private Long febTime;
+	private int febTime;
 
 	/** The mar time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "MAR_TIME")
-	private Long marTime;
+	private int marTime;
 
 	/** The apr time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "APR_TIME")
-	private Long aprTime;
+	private int aprTime;
 
 	/** The may time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "MAY_TIME")
-	private Long mayTime;
+	private int mayTime;
 
 	/** The jun time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "JUN_TIME")
-	private Long junTime;
+	private int junTime;
 
 	/** The jul time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "JUL_TIME")
-	private Long julTime;
+	private int julTime;
 
 	/** The aug time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "AUG_TIME")
-	private Long augTime;
+	private int augTime;
 
 	/** The sep time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "SEP_TIME")
-	private Long sepTime;
+	private int sepTime;
 
 	/** The oct time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "OCT_TIME")
-	private Long octTime;
+	private int octTime;
 
 	/** The nov time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "NOV_TIME")
-	private Long novTime;
+	private int novTime;
 
 	/** The dec time. */
 	@Basic(optional = false)
 	@NotNull
 	@Column(name = "DEC_TIME")
-	private Long decTime;
+	private int decTime;
 
 	/**
 	 * Instantiates a new jwpwtst workplace wt set.
@@ -134,4 +134,36 @@ public class KwwstWorkplaceWtSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.jwwstWorkplaceWtSetPK;
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((jwwstWorkplaceWtSetPK == null) ? 0 : jwwstWorkplaceWtSetPK.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KwwstWorkplaceWtSet other = (KwwstWorkplaceWtSet) obj;
+		if (jwwstWorkplaceWtSetPK == null) {
+			if (other.jwwstWorkplaceWtSetPK != null)
+				return false;
+		} else if (!jwwstWorkplaceWtSetPK.equals(other.jwwstWorkplaceWtSetPK))
+			return false;
+		return true;
+	}
+
 }

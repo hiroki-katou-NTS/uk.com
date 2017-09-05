@@ -1175,6 +1175,9 @@ var nts;
                     this.option = option;
                 }
                 TimeFormatter.prototype.format = function (source) {
+                    if (nts.uk.util.isNullOrEmpty(source)) {
+                        return "";
+                    }
                     var result;
                     if (this.option.inputFormat === "yearmonth") {
                         result = uk.time.parseYearMonth(source);
@@ -3236,7 +3239,7 @@ var nts;
                                 return result;
                             }
                             else {
-                                result.success("");
+                                result.success(null);
                                 return result;
                             }
                         }

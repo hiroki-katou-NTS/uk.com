@@ -4,6 +4,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction;
 
 import java.util.List;
+import java.util.Set;
 
 import nts.arc.time.GeneralDate;
 
@@ -56,7 +57,7 @@ public interface DailyPerformanceScreenRepo {
 	List<String> getListBusinessType(List<String> lstEmployee, DateRange dateRange);
 
 	// Get format daily performance correction
-	List<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType);
+	Set<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType);
 
 	// Get Daily performance business type type control
 	List<DPBusinessTypeControl> getListBusinessTypeControl(List<String> lstBusinessType,

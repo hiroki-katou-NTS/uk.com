@@ -102,7 +102,7 @@ public class DailyPerformanceCorrectionProcessor {
 		List<String> lstBusinessTypeCode = this.repo.getListBusinessType(lstEmployee, dateRange);
 		List<FormatDPCorrectionDto> lstFormat = new ArrayList<>();
 		if (lstBusinessTypeCode.size() > 0) {
-			lstFormat = this.repo.getListFormatDPCorrection(lstBusinessTypeCode);
+			lstFormat.addAll(this.repo.getListFormatDPCorrection(lstBusinessTypeCode));
 			result.setLstFormat(lstFormat);
 		}
 		List<DPBusinessTypeControl> lstDPBusinessTypeControl = new ArrayList<>();

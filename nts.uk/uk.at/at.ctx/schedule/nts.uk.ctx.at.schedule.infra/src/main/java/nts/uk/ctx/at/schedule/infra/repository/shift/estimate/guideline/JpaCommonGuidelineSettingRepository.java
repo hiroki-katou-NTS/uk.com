@@ -20,9 +20,6 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.guideline.KscstEstGuid
 public class JpaCommonGuidelineSettingRepository extends JpaRepository
 		implements CommonGuidelineSettingRepository {
 
-	/** The Constant FIRST_DATA. */
-	public static final int FIRST_DATA = 0;
-
 	/*
 	 * (non-Javadoc)
 	 * 

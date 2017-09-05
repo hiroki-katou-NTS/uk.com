@@ -5,9 +5,18 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "BPSDT_PERSON")
 public class BpsdtPerson  extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -16,15 +25,15 @@ public class BpsdtPerson  extends UkJpaEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "BIRTHDAY")
-	public String birthday;
+	public GeneralDate birthday;
 
 	@Basic(optional = false)
 	@Column(name = "BLOOD_TYPE")
-	public String bloodType;
+	public int bloodType;
 
 	@Basic(optional = false)
 	@Column(name = "GENDER")
-	public String gender;
+	public int gender;
 	
 	@Basic(optional = false)
 	@Column(name = "PERSON_MOBILE")

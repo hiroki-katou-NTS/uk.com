@@ -46,7 +46,7 @@ public class Employee extends AggregateRoot {
 	private GeneralDate adoptDate;
 
 	
-	public static Employee createFromJavaStyle(String companyId, String pId, String sId, String sCd, String companyMail,
+	public static Employee createFromJavaType(String companyId, String pId, String sId, String sCd, String companyMail,
 			GeneralDate retirementDate, GeneralDate joinDate) {
 		return new Employee(companyId, pId, sId, new EmployeeCode(sCd), new EmployeeMail(companyMail), retirementDate,
 				joinDate);

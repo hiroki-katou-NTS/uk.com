@@ -82,4 +82,9 @@ public class EmployeeApproveAdapterImpl implements EmployeeApproveAdapter {
 	public String getEmploymentCode(String companyId, String employeeId, GeneralDate baseDate) {
 		return employmentPub.getEmploymentCode(companyId, employeeId, baseDate);
 	}
+
+	@Override
+	public List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date) {		
+		return workplacePub.findWpkIdsBySid(companyId, employeeId, date);
+	}
 }

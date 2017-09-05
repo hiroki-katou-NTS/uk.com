@@ -4,11 +4,13 @@ module nts.uk.com.view.cas001.c.viewmodel {
     import close = nts.uk.ui.windows.close;
     import dialog = nts.uk.ui.dialog;
     import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
 
     export class ScreenModel {
         roleList: KnockoutObservableArray<any> = ko.observableArray([]);
         roleCodeArray = [];
         roleCopy: KnockoutObservable<PersonRole> = ko.observable(getShared('personRole'));
+        isCanceled : boolean ;
 
         constructor() {
             var self = this;
@@ -64,10 +66,15 @@ module nts.uk.com.view.cas001.c.viewmodel {
             }else{
                 dialog.alert(text('Msg_365'));
             }
+            self.isCanceled = false;
+            setShared('isCanceled', self.isCanceled);
 
         }
         
         closeDialog() {
+            let self = this;
+            self.isCanceled = true;
+            setShared('isCanceled', self.isCanceled);
             close();
         }
     }
