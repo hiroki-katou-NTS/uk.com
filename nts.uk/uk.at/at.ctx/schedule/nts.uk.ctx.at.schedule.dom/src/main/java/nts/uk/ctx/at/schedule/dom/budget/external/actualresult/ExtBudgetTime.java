@@ -22,7 +22,7 @@ public class ExtBudgetTime extends TimeClockPrimitiveValue<ExtBudgetTime> {
      *
      * @param rawValue the raw value
      */
-    public ExtBudgetTime(Long rawValue) {
+    public ExtBudgetTime(int rawValue) {
         super(rawValue);
     }
 
