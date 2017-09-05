@@ -277,6 +277,13 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 self.getWorkType();
             });
         }
+        
+        private openBDialog(itemId: number){
+            nts.uk.ui.windows.setShared("KMK007_ITEM_ID", itemId);
+            nts.uk.ui.windows.sub.modal("/view/kmk/007/b/index.xhtml").onClosed(() => {
+                
+            });  
+        }
 
         private addWorkType(): any {
             var self = this,
@@ -484,7 +491,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             return dfd.promise();
         }
 
-        changeLanguage(): void {
+        private changeLanguage(): void {
             let self = this;
             let dfd = $.Deferred();
             service.findByLangId('en').done((data) => {
