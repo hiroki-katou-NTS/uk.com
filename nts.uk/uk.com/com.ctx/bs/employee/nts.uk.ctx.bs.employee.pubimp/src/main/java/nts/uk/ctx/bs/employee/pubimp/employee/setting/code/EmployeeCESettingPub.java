@@ -7,7 +7,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.setting.code.EmployeeCESetting;
 import nts.uk.ctx.bs.employee.dom.setting.code.IEmployeeCESettingRepository;
-import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.setting.code.EmployeeCodeEditSettingDto;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.setting.code.EmployeeCodeEditSettingExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.setting.code.IEmployeeCESettingPub;
 
 @Stateless
@@ -17,7 +17,7 @@ public class EmployeeCESettingPub implements IEmployeeCESettingPub {
 	IEmployeeCESettingRepository repo;
 
 	@Override
-	public Optional<EmployeeCodeEditSettingDto> getByComId(String companyId) {
+	public Optional<EmployeeCodeEditSettingExport> getByComId(String companyId) {
 		Optional<EmployeeCESetting> domain = repo.getByComId(companyId);
 
 		if (!domain.isPresent()) {
@@ -26,7 +26,7 @@ public class EmployeeCESettingPub implements IEmployeeCESettingPub {
 
 		EmployeeCESetting _domain = domain.get();
 
-		return Optional.of(new EmployeeCodeEditSettingDto(_domain.getCompanyId(), _domain.getCeMethodAtr().value,
+		return Optional.of(new EmployeeCodeEditSettingExport(_domain.getCompanyId(), _domain.getCeMethodAtr().value,
 				_domain.getDigitNumb().v()));
 	}
 }

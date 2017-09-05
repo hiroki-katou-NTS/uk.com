@@ -1,54 +1,52 @@
 package nts.uk.ctx.at.record.app.find.standardtime.dto;
 
-import java.math.BigDecimal;
-
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.standardtime.BasicAgreementSetting;
 
 @Value
 public class AgreementTimeOfCompanyDto {
 
-	private Long alarmWeek;
+	private int alarmWeek;
 
-	private Long errorWeek;
+	private int errorWeek;
 
-	private Long limitWeek;
+	private int limitWeek;
 
-	private Long alarmTwoWeeks;
+	private int alarmTwoWeeks;
 
-	private Long errorTwoWeeks;
+	private int errorTwoWeeks;
 
-	private Long limitTwoWeeks;
+	private int limitTwoWeeks;
 
-	private Long alarmFourWeeks;
+	private int alarmFourWeeks;
 
-	private Long errorFourWeeks;
+	private int errorFourWeeks;
 
-	private Long limitFourWeeks;
+	private int limitFourWeeks;
 
-	private Long alarmOneMonth;
+	private int alarmOneMonth;
 
-	private Long errorOneMonth;
+	private int errorOneMonth;
 
-	private Long limitOneMonth;
+	private int limitOneMonth;
 
-	private Long alarmTwoMonths;
+	private int alarmTwoMonths;
 
-	private Long errorTwoMonths;
+	private int errorTwoMonths;
 
-	private Long limitTwoMonths;
+	private int limitTwoMonths;
 
-	private Long alarmThreeMonths;
+	private int alarmThreeMonths;
 
-	private Long errorThreeMonths;
+	private int errorThreeMonths;
 
-	private Long limitThreeMonths;
+	private int limitThreeMonths;
 
-	private Long alarmOneYear;
+	private int alarmOneYear;
 
-	private Long errorOneYear;
+	private int errorOneYear;
 
-	private Long limitOneYear;
+	private int limitOneYear;
 
 	public static AgreementTimeOfCompanyDto toDomain(BasicAgreementSetting basicAgreementSetting) {
 		return new AgreementTimeOfCompanyDto(basicAgreementSetting.getAlarmWeek().v(), basicAgreementSetting.getErrorWeek().v(),

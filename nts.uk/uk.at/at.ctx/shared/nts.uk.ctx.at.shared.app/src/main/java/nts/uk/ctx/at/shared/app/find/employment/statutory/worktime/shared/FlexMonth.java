@@ -16,8 +16,8 @@ public class FlexMonth {
 	private int month;
 
 	/** The statutory time. */
-	private Long statutoryTime;
+	private int statutoryTime;
 
 	/** The specified time. */
-	private Long specifiedTime;
+	private int specifiedTime;
 }

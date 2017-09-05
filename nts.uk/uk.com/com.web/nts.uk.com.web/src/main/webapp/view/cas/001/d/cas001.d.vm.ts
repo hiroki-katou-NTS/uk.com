@@ -4,10 +4,12 @@ module nts.uk.com.view.cas001.d.viewmodel {
     import resource = nts.uk.resource;
     import alert = nts.uk.ui.dialog.alert;
     import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
     export class ScreenModel {
         categoryList: KnockoutObservableArray<CategoryAuth> = ko.observableArray([]);
         currentRoleCode: KnockoutObservable<string> = ko.observable('');
         currentRole: KnockoutObservable<PersonRole> = ko.observable(getShared('personRole'));
+        isCanceled: boolean;
 
         constructor() {
             var self = this;
@@ -44,11 +46,15 @@ module nts.uk.com.view.cas001.d.viewmodel {
         }
 
         closeDialog() {
+            let self = this;
+            self.isCanceled = true;
+            setShared('isCanceled', self.isCanceled);
             close();
         }
 
         update(items: Array<CategoryAuth>, roleId: string) {
-            let data: Array<ICategoryAuth> = _.uniqBy(items, 'categoryId'),
+            let self = this,
+                data: Array<ICategoryAuth> = _.uniqBy(items, 'categoryId'),
                 datas: Array<any> = _(data)
                     .map((x: ICategoryAuth) => {
                         return {
@@ -66,6 +72,9 @@ module nts.uk.com.view.cas001.d.viewmodel {
             }).fail(function(res) {
                 alert(res.message);
             })
+
+            self.isCanceled = false;
+            setShared('isCanceled', self.isCanceled);
         }
 
     }

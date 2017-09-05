@@ -35,9 +35,9 @@ public class JobtitlePubImp implements JobtitlePub {
 	 * nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<PubJobtitleDto> findAll(String companyId, GeneralDate referenceDate) {
+	public List<JobtitleExport> findAll(String companyId, GeneralDate referenceDate) {
 		return jobTitleRepository.findAll(companyId, referenceDate).stream()
-				.map(item -> new PubJobtitleDto(item.getCompanyId().v(), item.getPositionId().v(),
+				.map(item -> new JobtitleExport(item.getCompanyId().v(), item.getPositionId().v(),
 						item.getPositionCode().v(), item.getPositionName().v(),
 						item.getSequenceCode().v(), item.getPeriod().getStartDate(),
 						item.getPeriod().getEndDate()))
@@ -52,9 +52,9 @@ public class JobtitlePubImp implements JobtitlePub {
 	 * List)
 	 */
 	@Override
-	public List<PubJobtitleDto> findByJobIds(List<String> jobIds) {
+	public List<JobtitleExport> findByJobIds(List<String> jobIds) {
 		return jobTitleRepository.findByJobIds(jobIds).stream()
-				.map(item -> new PubJobtitleDto(item.getCompanyId().v(), item.getPositionId().v(),
+				.map(item -> new JobtitleExport(item.getCompanyId().v(), item.getPositionId().v(),
 						item.getPositionCode().v(), item.getPositionName().v(),
 						item.getSequenceCode().v(), item.getPeriod().getStartDate(),
 						item.getPeriod().getEndDate()))
@@ -69,10 +69,10 @@ public class JobtitlePubImp implements JobtitlePub {
 	 * String, java.util.List, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<PubJobtitleDto> findByJobIds(String companyId, List<String> jobIds,
+	public List<JobtitleExport> findByJobIds(String companyId, List<String> jobIds,
 			GeneralDate baseDate) {
 		return jobTitleRepository.findByJobIds(companyId, jobIds, baseDate).stream()
-				.map(item -> new PubJobtitleDto(item.getCompanyId().v(), item.getPositionId().v(),
+				.map(item -> new JobtitleExport(item.getCompanyId().v(), item.getPositionId().v(),
 						item.getPositionCode().v(), item.getPositionName().v(),
 						item.getSequenceCode().v(), item.getPeriod().getStartDate(),
 						item.getPeriod().getEndDate()))

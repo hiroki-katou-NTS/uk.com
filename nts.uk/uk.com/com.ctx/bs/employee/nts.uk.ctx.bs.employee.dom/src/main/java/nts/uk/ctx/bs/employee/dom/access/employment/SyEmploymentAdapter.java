@@ -6,7 +6,7 @@ package nts.uk.ctx.bs.employee.dom.access.employment;
 
 import java.util.List;
 
-import nts.uk.ctx.bs.employee.dom.access.employment.dto.AcEmploymentDto;
+import nts.uk.ctx.bs.employee.dom.access.employment.dto.EmploymentImport;
 
 /**
  * The Interface PersonAdapter.
@@ -19,5 +19,5 @@ public interface SyEmploymentAdapter {
 	 * @param workplaceId the workplace id
 	 * @return the list
 	 */
-	List<AcEmploymentDto> findByEmpCodes(List<String> employmentCodes);
+	List<EmploymentImport> findByEmpCodes(List<String> employmentCodes);
 }

@@ -16,7 +16,7 @@ public class DataTypeState extends AggregateRoot {
 	@Getter
 	protected DataTypeValue dataTypeValue;
 
-	public static DataTypeState createTimeItem(long max, long min) {
+	public static DataTypeState createTimeItem(int max, int min) {
 		return TimeItem.createFromJavaType(max, min);
 	}
 

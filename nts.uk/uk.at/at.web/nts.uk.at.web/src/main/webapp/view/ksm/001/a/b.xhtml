@@ -11,7 +11,7 @@
 		</ui:define>
 		<ui:define name="extended-action-bar">
 			<button tabindex="1" class="proceed" data-bind="click: saveCompanyEstablishment">#{i18n.getText('KSM001_1')}</button>
-			<button tabindex="2" class="danger" data-bind="click: deleteCompanyEstablishment">#{i18n.getText('KSM001_2')}</button>
+			<button tabindex="2" class="danger" data-bind="click: deleteCompanyEstablishment, enable: companyEstablishmentModel.isEnableDelete">#{i18n.getText('KSM001_2')}</button>
 			<button tabindex="4" data-bind="click: openDialogUsageSettingModel">#{i18n.getText('KSM001_3')}</button>
 		</ui:define>
 		<ui:define name="extended-111">

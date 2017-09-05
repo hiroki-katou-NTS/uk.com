@@ -26,27 +26,9 @@ public class Person extends AggregateRoot {
 	//個人旧名
 	private PersonName personName;
 	
-
-	
-	/**
-	 * Instantiates a new person.
-	 *
-	 * @param memento the memento
-	 */
-	public Person(PersonGetMemento memento){
-		this.personId = memento.getPersonId();
-		this.personName = memento.getPersonName();
+	public static Person createFromJavaType(String pId, String personName){
+		return new Person(new PersonId(pId), new PersonName(personName));
 	}
 	
-	
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(PersonSetMemento memento){
-		memento.setPersonId(this.personId);
-		memento.setPersonName(this.personName);
-	}
 	
 }

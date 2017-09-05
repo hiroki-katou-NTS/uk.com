@@ -1,17 +1,20 @@
 package nts.uk.ctx.at.shared.app.command.specialholiday.yearservicecom;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 /**
  * update length Service Year Atr
  * @author yennth
  *
  */
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
 public class UpdateYearServiceComCommand {
 	/**コード**/
 	private int specialHolidayCode;
 	/** 勤続年数 **/
 	private int lengthServiceYearAtr;
+	private List<YearServiceCommand> yearServiceSets;
 }

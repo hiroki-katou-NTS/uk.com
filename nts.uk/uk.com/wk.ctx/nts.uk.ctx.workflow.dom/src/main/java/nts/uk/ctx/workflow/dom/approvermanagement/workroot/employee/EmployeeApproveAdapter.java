@@ -32,4 +32,13 @@ public interface EmployeeApproveAdapter {
 	 * @return 社員情報
 	 */
 	List<EmployeeApproveDto> findByWpkIds(String companyId, List<String> workplaceIds, GeneralDate baseDate);
+	/**
+	 * ドメインモデル「職場別就業承認ルート」を取得する(lấy domain「職場別就業承認ルート」)
+	 * 取得した所属職場ID＋その上位職場ID
+	 * @param companyId
+	 * @param employeeId
+	 * @param date
+	 * @return
+	 */
+	List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date);
 }

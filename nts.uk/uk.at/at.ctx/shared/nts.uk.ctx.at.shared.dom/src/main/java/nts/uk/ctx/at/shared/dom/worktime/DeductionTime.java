@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime;
 
 import lombok.Getter;
-import nts.uk.shr.com.primitive.TimeWithDayAttr;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * The Class DeductionTime.

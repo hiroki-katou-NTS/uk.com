@@ -29,7 +29,10 @@ tr {
 	margin-top: 20px;
 }
 table.contents-header tbody {
+	height: 200px;
 	background-color:#E0F59E;
+	overflow-y: scroll;
+    overflow-x: hiden;
 }
 table.contents-header td.name {
 	width: 100px;

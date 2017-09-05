@@ -75,8 +75,8 @@ public class JpaAgreementMonthSettingRepository extends JpaRepository implements
 		AgreementMonthSetting agreementMonthSetting = AgreementMonthSetting.createFromJavaType(
 				kmkmtAgreementMonthSet.kmkmtAgreementMonthSetPK.employeeId,
 				kmkmtAgreementMonthSet.kmkmtAgreementMonthSetPK.yearmonthValue,
-				kmkmtAgreementMonthSet.errorOneMonth.longValue(),
-				kmkmtAgreementMonthSet.alarmOneMonth.longValue());
+				kmkmtAgreementMonthSet.errorOneMonth.intValue(),
+				kmkmtAgreementMonthSet.alarmOneMonth.intValue());
 		return agreementMonthSetting;
 	}
 

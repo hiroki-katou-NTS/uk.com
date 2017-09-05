@@ -9,5 +9,5 @@ public interface IEmployeeCESettingPub {
 	 * return one reccord of EmployeeCodeSetting dto:
 	 * companyId, ceMethodAtr [code editing method], digitNumb [number of digit]
 	 */
-	Optional<EmployeeCodeEditSettingDto> getByComId(String companyId);
+	Optional<EmployeeCodeEditSettingExport> getByComId(String companyId);
 }
