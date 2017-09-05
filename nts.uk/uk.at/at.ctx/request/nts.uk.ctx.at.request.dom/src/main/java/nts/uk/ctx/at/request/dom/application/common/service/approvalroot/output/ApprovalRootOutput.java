@@ -4,7 +4,9 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ComApprovalRootImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.PersonApprovalRootImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.WkpApprovalRootImport;
@@ -37,7 +39,9 @@ public class ApprovalRootOutput {
 	/** 就業ルート区分 */
 	private int employmentRootAtr;
 	
-	private List<ApprovalPhaseOutput> approvers;
+	private List<ApprovalPhaseImport> beforeApprovers;
+	
+	private List<ApprovalPhaseOutput> afterApprovers;
 	
 	public static ApprovalRootOutput convertFromPersonData(PersonApprovalRootImport x) {
 		return new ApprovalRootOutput(
@@ -53,6 +57,7 @@ public class ApprovalRootOutput {
 				x.getAnyItemApplicationId(), 
 				x.getConfirmationRootType(), 
 				x.getEmploymentRootAtr(), 
+				null,
 				null);
 	}
 	
@@ -70,6 +75,7 @@ public class ApprovalRootOutput {
 				x.getAnyItemApplicationId(), 
 				x.getConfirmationRootType(), 
 				x.getEmploymentRootAtr(), 
+				null,
 				null);
 	}
 	
@@ -87,6 +93,7 @@ public class ApprovalRootOutput {
 				x.getAnyItemApplicationId(), 
 				x.getConfirmationRootType(), 
 				x.getEmploymentRootAtr(), 
+				null,
 				null);
 	}
 }

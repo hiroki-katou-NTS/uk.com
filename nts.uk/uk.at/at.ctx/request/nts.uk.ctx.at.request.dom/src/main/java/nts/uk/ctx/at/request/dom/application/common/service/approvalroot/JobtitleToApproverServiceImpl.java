@@ -9,6 +9,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyJobTitleAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.JobtitleSearchSetAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.JobtitleSearchSetImport;
 import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApproverInfo;
@@ -23,16 +25,17 @@ import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.
 public class JobtitleToApproverServiceImpl implements JobtitleToApproverService {
 
 	@Inject
-	private EmployeeAdapter employeeAdaptor;
+	private EmployeeAdapter employeeAdapter;
 	@Inject
-	private JobtitleSearchSetAdapter jobtitleSearchSetAdaptor;
-
+	private JobtitleSearchSetAdapter jobtitleSearchSetAdapter;
+	@Inject
+	private SyJobTitleAdapter syJobTitleAdapter;
 	@Override
 	public List<ApproverInfo> convertToApprover(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
 		// 共通アルゴリズム「申請者の職位の序列は承認者のと比較する」を実行する
 		boolean isSameRank = compareRank(cid, sid, baseDate, jobTitleId);
 		if (isSameRank) {
-			String wkpId = this.employeeAdaptor.getWorkplaceId(cid, sid, baseDate);
+			String wkpId = this.employeeAdapter.getWorkplaceId(cid, sid, baseDate);
 			// thực hiện xử lý 「職場に指定する職位の対象者を取得する」
 			List<ApproverInfo> approvers = this.getByWkp(cid, wkpId, baseDate, jobTitleId);
 			if (!CollectionUtil.isEmpty(approvers)) {
@@ -40,9 +43,9 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 			}
 
 			// lấy domain 「職位別のサーチ設定」
-			JobtitleSearchSetImport job = this.jobtitleSearchSetAdaptor.finById(cid, jobTitleId);
+			JobtitleSearchSetImport job = this.jobtitleSearchSetAdapter.finById(cid, jobTitleId);
 			if (!Objects.isNull(job)) {
-				List<String> wkpIds = this.employeeAdaptor.findWpkIdsBySid(cid, sid, baseDate);
+				List<String> wkpIds = this.employeeAdapter.findWpkIdsBySid(cid, sid, baseDate);
 				wkpIds.remove(0);
 
 				// 上位職場が存在する(not exist wkpId 上位)
@@ -76,8 +79,11 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	 * @return
 	 */
 	private boolean compareRank(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
-		String empCode = this.employeeAdaptor.getEmploymentCode(cid, sid, baseDate);
-
+		List<JobTitleImport> jobsOfEmp = this.syJobTitleAdapter.findJobTitleBySid(sid, baseDate);
+		List<JobTitleImport> jobs = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobTitleId, baseDate);
+		
+		
+		
 		return true;
 	}
 
