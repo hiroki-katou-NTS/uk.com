@@ -25,13 +25,13 @@ import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.shared.WorkingTime
 public class WorkingTimeSettingDto {
 
 	/** The daily. */
-	private Long daily;
+	private int daily;
 
 	/** The monthly. */
 	private List<MonthlyDto> monthly;
 
 	/** The weekly. */
-	private Long weekly;
+	private int weekly;
 
 	/**
 	 * From domain.
@@ -41,8 +41,8 @@ public class WorkingTimeSettingDto {
 	 */
 	public static WorkingTimeSettingDto fromDomain(WorkingTimeSetting domain) {
 		WorkingTimeSettingDto dto = new WorkingTimeSettingDto();
-		dto.setDaily((long)domain.getDaily().minutes());
-		dto.setWeekly((long)domain.getWeekly().minutes());
+		dto.setDaily(domain.getDaily().valueAsMinutes());
+		dto.setWeekly(domain.getWeekly().valueAsMinutes());
 		dto.setMonthly(MonthlyDto.fromDomain(domain.getMonthly()));
 		return dto;
 	}
@@ -55,11 +55,11 @@ public class WorkingTimeSettingDto {
 	 */
 	public static WorkingTimeSetting toDomain(WorkingTimeSettingDto dto) {
 		List<Monthly> monthly = dto.getMonthly().stream().map(item -> {
-			return new Monthly(MonthlyTime.ofMinutes(item.getTime()), java.time.Month.of(item.getMonth()));
+			return new Monthly(new MonthlyTime(item.getTime()), java.time.Month.of(item.getMonth()));
 		}).collect(Collectors.toList());
 		WorkingTimeSetting domain = new WorkingTimeSetting();
-		domain.setDaily(DailyTime.ofMinutes(dto.getDaily()));
-		domain.setWeekly(WeeklyTime.ofMinutes(dto.getWeekly()));
+		domain.setDaily(new DailyTime(dto.getDaily()));
+		domain.setWeekly(new WeeklyTime(dto.getWeekly()));
 		domain.setMonthly(monthly);
 		return domain;
 	}
