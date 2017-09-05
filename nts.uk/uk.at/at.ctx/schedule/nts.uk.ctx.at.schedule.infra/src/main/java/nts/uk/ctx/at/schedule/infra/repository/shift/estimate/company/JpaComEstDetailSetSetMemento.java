@@ -17,7 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeCo
 /**
  * The Class JpaEstimateDetailSettingCompanySetMemento.
  */
-public class JpaCompanyEstimateDetailSettingSetMemento implements EstimateDetailSettingSetMemento{
+public class JpaComEstDetailSetSetMemento implements EstimateDetailSettingSetMemento{
 	
 	/** The estimate time companys. */
 	private List<KscmtEstTimeComSet> estimateTimeCompanys;
@@ -35,7 +35,7 @@ public class JpaCompanyEstimateDetailSettingSetMemento implements EstimateDetail
 	 * @param estimateTimeCompanys the estimate time companys
 	 * @param estimatePriceCompanys the estimate price companys
 	 */
-	public JpaCompanyEstimateDetailSettingSetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
+	public JpaComEstDetailSetSetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
 			List<KscmtEstPriceComSet> estimatePriceCompanys,List<KscmtEstDaysComSet> estimateDaysCompanys) {
 		this.estimateTimeCompanys = estimateTimeCompanys;
 		this.estimatePriceCompanys = estimatePriceCompanys;
@@ -58,7 +58,7 @@ public class JpaCompanyEstimateDetailSettingSetMemento implements EstimateDetail
 				if (entity.getKscmtEstTimeComSetPK()
 						.getTargetCls() == estimateSetting.getTargetClassification().value) {
 					estimateSetting
-							.saveToMemento(new JpaCompanyEstimateTimeSettingSetMemento(entity));
+							.saveToMemento(new JpaComEstTimeSetSetMemento(entity));
 				}
 			});
 		});
@@ -77,7 +77,7 @@ public class JpaCompanyEstimateDetailSettingSetMemento implements EstimateDetail
 			this.estimatePriceCompanys.forEach(entity -> {
 				if (entity.getKscmtEstPriceComSetPK()
 						.getTargetCls() == estimateSetting.getTargetClassification().value) {
-					estimateSetting.saveToMemento(new JpaCompanyEstimatedPriceSetMemento(entity));
+					estimateSetting.saveToMemento(new JpaComEstPriceSetMemento(entity));
 				}
 			});
 		});
@@ -97,7 +97,7 @@ public class JpaCompanyEstimateDetailSettingSetMemento implements EstimateDetail
 				if (entity.getKscmtEstDaysComSetPK()
 						.getTargetCls() == estimateSetting.getTargetClassification().value) {
 					estimateSetting
-							.saveToMemento(new JpaCompanyEstimateNumberOfDaySetMemento(entity));
+							.saveToMemento(new JpaComEstDaysSetMemento(entity));
 				}
 			});
 		});

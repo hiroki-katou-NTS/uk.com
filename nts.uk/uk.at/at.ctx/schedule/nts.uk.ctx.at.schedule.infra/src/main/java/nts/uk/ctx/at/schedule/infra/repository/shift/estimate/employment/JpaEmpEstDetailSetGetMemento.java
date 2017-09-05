@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.company;
+package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.employment;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,36 +11,36 @@ import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSettingGetMemento
 import nts.uk.ctx.at.schedule.dom.shift.estimate.numberofday.EstimateNumberOfDay;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.time.EstimateTimeSetting;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysComSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstTimeComSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstDaysEmpSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPriceEmpSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTimeEmpSet;
 
 /**
- * The Class JpaEstimateDetailSettingCompanyGetMemento.
+ * The Class JpaEstimateDetailSettingEmploymentGetMemento.
  */
-public class JpaCompanyEstimateDetailSettingGetMemento implements EstimateDetailSettingGetMemento{
+public class JpaEmpEstDetailSetGetMemento implements EstimateDetailSettingGetMemento{
 	
-	/** The estimate time companys. */
-	private List<KscmtEstTimeComSet> estimateTimeCompanys;
+	/** The estimate time Employments. */
+	private List<KscmtEstTimeEmpSet> estimateTimeEmployments;
 	
-	/** The estimate price companys. */
-	private List<KscmtEstPriceComSet> estimatePriceCompanys;
+	/** The estimate price Employments. */
+	private List<KscmtEstPriceEmpSet> estimatePriceEmployments;
 	
-	/** The estimate days companys. */
-	private List<KscmtEstDaysComSet> estimateDaysCompanys;
+	/** The estimate days Employments. */
+	private List<KscmtEstDaysEmpSet> estimateDaysEmployments;
 
 	
 	/**
-	 * Instantiates a new jpa estimate detail setting company get memento.
+	 * Instantiates a new jpa estimate detail setting Employment get memento.
 	 *
-	 * @param estimateTimeCompanys the estimate time companys
+	 * @param estimateTimeEmployments the estimate time Employments
 	 */
-	public JpaCompanyEstimateDetailSettingGetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
-			List<KscmtEstPriceComSet> estimatePriceCompanys,
-			List<KscmtEstDaysComSet> estimateDaysCompanys) {
-		this.estimateTimeCompanys = estimateTimeCompanys;
-		this.estimatePriceCompanys = estimatePriceCompanys;
-		this.estimateDaysCompanys = estimateDaysCompanys;
+	public JpaEmpEstDetailSetGetMemento(List<KscmtEstTimeEmpSet> estimateTimeEmployments,
+			List<KscmtEstPriceEmpSet> estimatePriceEmployments,
+			List<KscmtEstDaysEmpSet> estimateDaysEmployments) {
+		this.estimateTimeEmployments = estimateTimeEmployments;
+		this.estimatePriceEmployments = estimatePriceEmployments;
+		this.estimateDaysEmployments = estimateDaysEmployments;
 	}
 	/*
 	 * (non-Javadoc)
@@ -51,9 +51,9 @@ public class JpaCompanyEstimateDetailSettingGetMemento implements EstimateDetail
 	 */
 	@Override
 	public List<EstimateTimeSetting> getEstimateTime() {
-		return this.estimateTimeCompanys.stream()
+		return this.estimateTimeEmployments.stream()
 				.map(entity -> new EstimateTimeSetting(
-						new JpaCompanyEstimateTimeSettingGetMemento(entity)))
+						new JpaEmpEstTimeSetGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
 
@@ -66,9 +66,9 @@ public class JpaCompanyEstimateDetailSettingGetMemento implements EstimateDetail
 	 */
 	@Override
 	public List<EstimatedPriceSetting> getEstimatePrice() {
-		return this.estimatePriceCompanys.stream()
+		return this.estimatePriceEmployments.stream()
 				.map(entity -> new EstimatedPriceSetting(
-						new JpaCompanyEstimatedPriceGetMemento(entity)))
+						new JpaEmpEstPriceGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
 
@@ -81,9 +81,9 @@ public class JpaCompanyEstimateDetailSettingGetMemento implements EstimateDetail
 	 */
 	@Override
 	public List<EstimateNumberOfDay> getEstimateNumberOfDay() {
-		return this.estimateDaysCompanys.stream()
+		return this.estimateDaysEmployments.stream()
 				.map(entity -> new EstimateNumberOfDay(
-						new JpaCompanyEstimateNumberOfDayGetMemento(entity)))
+						new JpaEmpEstDaysGetMemento(entity)))
 				.collect(Collectors.toList());
 	}
 

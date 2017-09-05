@@ -40,7 +40,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstTim
  * The Class JpaEmploymentEstablishmentRepository.
  */
 @Stateless
-public class JpaEmploymentEstablishmentRepository extends JpaRepository
+public class JpaEmpEstablishmentRepository extends JpaRepository
 		implements EmploymentEstablishmentRepository {
 	
 	/** The default value. */
@@ -311,7 +311,7 @@ public class JpaEmploymentEstablishmentRepository extends JpaRepository
 	private EmploymentEstablishment toDomain(List<KscmtEstTimeEmpSet> estimateTimeEmployments,
 			List<KscmtEstPriceEmpSet> estimatePriceEmployments,
 			List<KscmtEstDaysEmpSet> estimateDaysEmployments) {
-		return new EmploymentEstablishment(new JpaEmploymentEstablishmentGetMemento(estimateTimeEmployments,
+		return new EmploymentEstablishment(new JpaEmpEstablishmentGetMemento(estimateTimeEmployments,
 				estimatePriceEmployments, estimateDaysEmployments));
 	}
 	
@@ -437,7 +437,7 @@ public class JpaEmploymentEstablishmentRepository extends JpaRepository
 		}
 
 		employmentEstablishment.getAdvancedSetting()
-				.saveToMemento(new JpaEmploymentEstimateDetailSettingSetMemento(estimateTimeEmployments,
+				.saveToMemento(new JpaEmpEstDetailSetSetMemento(estimateTimeEmployments,
 						estimatePriceEmployments, estimateDaysEmployments));
 		if(isAddTime){
 			this.commandProxy().insertAll(estimateTimeEmployments);

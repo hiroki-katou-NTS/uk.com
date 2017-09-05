@@ -2,34 +2,34 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.company;
+package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.personal;
 
 import java.util.List;
 
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPrice;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.price.EstimatedPriceSettingSetMemento;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComSet;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstPriceComSetPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstPricePerSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstPricePerSetPK;
 
 /**
- * The Class JpaEstimatedCompanyPriceSetMemento.
+ * The Class JpaEstimatedPersonalPriceSetMemento.
  */
-public class JpaCompanyEstimatedPriceSetMemento implements EstimatedPriceSettingSetMemento{
+public class JpaPerEstPriceSetMemento implements EstimatedPriceSettingSetMemento{
 	
-	/** The estimate price company. */
-	private KscmtEstPriceComSet estimatePriceCompany;
+	/** The estimate price Personal. */
+	private KscmtEstPricePerSet estimatePricePersonal;
 	
 	/**
-	 * Instantiates a new jpa estimated company price set memento.
+	 * Instantiates a new jpa estimated Personal price set memento.
 	 *
-	 * @param estimatePriceCompany the estimate price company
+	 * @param estimatePricePersonal the estimate price Personal
 	 */
-	public JpaCompanyEstimatedPriceSetMemento(KscmtEstPriceComSet estimatePriceCompany) {
-		if (estimatePriceCompany.getKscmtEstPriceComSetPK() == null) {
-			estimatePriceCompany.setKscmtEstPriceComSetPK(new KscmtEstPriceComSetPK());
+	public JpaPerEstPriceSetMemento(KscmtEstPricePerSet estimatePricePersonal) {
+		if (estimatePricePersonal.getKscmtEstPricePerSetPK() == null) {
+			estimatePricePersonal.setKscmtEstPricePerSetPK(new KscmtEstPricePerSetPK());
 		}
-		this.estimatePriceCompany = estimatePriceCompany;
+		this.estimatePricePersonal = estimatePricePersonal;
 	}
 
 	/*
@@ -41,7 +41,7 @@ public class JpaCompanyEstimatedPriceSetMemento implements EstimatedPriceSetting
 	 */
 	@Override
 	public void setTargetClassification(EstimateTargetClassification targetClassification) {
-		this.estimatePriceCompany.getKscmtEstPriceComSetPK()
+		this.estimatePricePersonal.getKscmtEstPricePerSetPK()
 				.setTargetCls(targetClassification.value);
 	}
 
@@ -53,19 +53,19 @@ public class JpaCompanyEstimatedPriceSetMemento implements EstimatedPriceSetting
 		priceSetting.forEach(price -> {
 			switch (price.getEstimatedCondition()) {
 			case CONDITION_1ST:
-				this.estimatePriceCompany.setEstCondition1stMny(price.getEstimatedPrice().v());
+				this.estimatePricePersonal.setEstCondition1stMny(price.getEstimatedPrice().v());
 				break;
 			case CONDITION_2ND:
-				this.estimatePriceCompany.setEstCondition2ndMny(price.getEstimatedPrice().v());
+				this.estimatePricePersonal.setEstCondition2ndMny(price.getEstimatedPrice().v());
 				break;
 			case CONDITION_3RD:
-				this.estimatePriceCompany.setEstCondition3rdMny(price.getEstimatedPrice().v());
+				this.estimatePricePersonal.setEstCondition3rdMny(price.getEstimatedPrice().v());
 				break;
 			case CONDITION_4TH:
-				this.estimatePriceCompany.setEstCondition4thMny(price.getEstimatedPrice().v());
+				this.estimatePricePersonal.setEstCondition4thMny(price.getEstimatedPrice().v());
 				break;
 			case CONDITION_5TH:
-				this.estimatePriceCompany.setEstCondition5thMny(price.getEstimatedPrice().v());
+				this.estimatePricePersonal.setEstCondition5thMny(price.getEstimatedPrice().v());
 				break;
 
 			default:

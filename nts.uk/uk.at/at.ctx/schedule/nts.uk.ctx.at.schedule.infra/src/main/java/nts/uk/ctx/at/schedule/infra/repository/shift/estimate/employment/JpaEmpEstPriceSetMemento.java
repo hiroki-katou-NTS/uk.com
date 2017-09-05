@@ -15,7 +15,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.employment.KscmtEstPri
 /**
  * The Class JpaEmploymentEstimatedPriceSetMemento.
  */
-public class JpaEmploymentEstimatedPriceSetMemento implements EstimatedPriceSettingSetMemento{
+public class JpaEmpEstPriceSetMemento implements EstimatedPriceSettingSetMemento{
 	
 	/** The estimate price employment. */
 	private KscmtEstPriceEmpSet estimatePriceEmployment;
@@ -25,7 +25,7 @@ public class JpaEmploymentEstimatedPriceSetMemento implements EstimatedPriceSett
 	 *
 	 * @param estimatePriceEmployment the estimate price employment
 	 */
-	public JpaEmploymentEstimatedPriceSetMemento(KscmtEstPriceEmpSet estimatePriceEmployment) {
+	public JpaEmpEstPriceSetMemento(KscmtEstPriceEmpSet estimatePriceEmployment) {
 		if (estimatePriceEmployment.getKscmtEstPriceEmpSetPK() == null) {
 			estimatePriceEmployment.setKscmtEstPriceEmpSetPK(new KscmtEstPriceEmpSetPK());
 		}

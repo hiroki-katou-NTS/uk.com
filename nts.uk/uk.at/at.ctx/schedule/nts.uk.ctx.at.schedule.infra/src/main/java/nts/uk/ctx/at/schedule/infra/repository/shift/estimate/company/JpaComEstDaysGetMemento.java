@@ -20,7 +20,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.company.KscmtEstDaysCo
 /**
  * The Class JpaCompanyEstimateNumberOfDayGetMemento.
  */
-public class JpaCompanyEstimateNumberOfDayGetMemento implements EstimateNumberOfDayGetMemento {
+public class JpaComEstDaysGetMemento implements EstimateNumberOfDayGetMemento {
 	
 	/** The estimate days company. */
 	private KscmtEstDaysComSet estimateDaysCompany;
@@ -31,7 +31,7 @@ public class JpaCompanyEstimateNumberOfDayGetMemento implements EstimateNumberOf
 	 *
 	 * @param estimateDaysCompany the estimate days company
 	 */
-	public JpaCompanyEstimateNumberOfDayGetMemento(KscmtEstDaysComSet estimateDaysCompany) {
+	public JpaComEstDaysGetMemento(KscmtEstDaysComSet estimateDaysCompany) {
 		if(estimateDaysCompany.getKscmtEstDaysComSetPK() == null){
 			estimateDaysCompany.setKscmtEstDaysComSetPK(new KscmtEstDaysComSetPK());
 		}

@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 /**
  * The Class JpaCompanyEstablishmentGetMemento.
  */
-public class JpaCompanyEstablishmentGetMemento implements CompanyEstablishmentGetMemento{
+public class JpaComEstablishmentGetMemento implements CompanyEstablishmentGetMemento{
 	
 	public static final int FIRST_TIME = 0;
 	
@@ -37,7 +37,7 @@ public class JpaCompanyEstablishmentGetMemento implements CompanyEstablishmentGe
 	 *
 	 * @param estimateTimeCompanys the estimate time companys
 	 */
-	public JpaCompanyEstablishmentGetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
+	public JpaComEstablishmentGetMemento(List<KscmtEstTimeComSet> estimateTimeCompanys,
 			List<KscmtEstPriceComSet> estimatePriceCompanys,
 			List<KscmtEstDaysComSet> estimateDaysCompanys) {
 		this.estimateTimeCompanys = estimateTimeCompanys;
@@ -77,7 +77,7 @@ public class JpaCompanyEstablishmentGetMemento implements CompanyEstablishmentGe
 	 */
 	@Override
 	public EstimateDetailSetting getAdvancedSetting() {
-		return new EstimateDetailSetting(new JpaCompanyEstimateDetailSettingGetMemento(
+		return new EstimateDetailSetting(new JpaComEstDetailSetGetMemento(
 				this.estimateTimeCompanys, this.estimatePriceCompanys, this.estimateDaysCompanys));
 	}
 

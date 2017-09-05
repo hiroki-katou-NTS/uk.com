@@ -16,7 +16,7 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.personal.KscmtEstTimeP
 /**
  * The Class JpaPersonalEstablishmentGetMemento.
  */
-public class JpaPersonalEstablishmentGetMemento implements PersonalEstablishmentGetMemento{
+public class JpaPerEstablishmentGetMemento implements PersonalEstablishmentGetMemento{
 	
 	private static final int FIRST_TIME = 0;
 	
@@ -36,7 +36,7 @@ public class JpaPersonalEstablishmentGetMemento implements PersonalEstablishment
 	 *
 	 * @param estimateTimePersonals the estimate time Personals
 	 */
-	public JpaPersonalEstablishmentGetMemento(List<KscmtEstTimePerSet> estimateTimePersonals,
+	public JpaPerEstablishmentGetMemento(List<KscmtEstTimePerSet> estimateTimePersonals,
 			List<KscmtEstPricePerSet> estimatePricePersonals,
 			List<KscmtEstDaysPerSet> estimateDaysPersonals) {
 		this.estimateTimePersonals = estimateTimePersonals;
@@ -64,7 +64,7 @@ public class JpaPersonalEstablishmentGetMemento implements PersonalEstablishment
 	 */
 	@Override
 	public EstimateDetailSetting getAdvancedSetting() {
-		return new EstimateDetailSetting(new JpaPersonalEstimateDetailSettingGetMemento(
+		return new EstimateDetailSetting(new JpaPerEstDetailSetGetMemento(
 				this.estimateTimePersonals, this.estimatePricePersonals, this.estimateDaysPersonals));
 	}
 
