@@ -41,10 +41,10 @@ public class JpaCompanyEstablishmentRepository extends JpaRepository
 		implements CompanyEstablishmentRepository {
 	
 	/** The default value. */
-	public static int DEFAULT_VALUE = 0;
+	private static int DEFAULT_VALUE = 0;
 	
 	/** The total month of year. */
-	public static int TOTAL_MONTH_OF_YEAR = 12;
+	private static int TOTAL_MONTH_OF_YEAR = 12;
 
 	/*
 	 * (non-Javadoc)
@@ -444,6 +444,17 @@ public class JpaCompanyEstablishmentRepository extends JpaRepository
 		this.commandProxy().removeAll(estimateTimeCompanys);
 		this.commandProxy().removeAll(estimatePriceCompanys);
 		this.commandProxy().removeAll(estimateDaysCompanys);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.estimate.company.
+	 * CompanyEstablishmentRepository#checkSetting(java.lang.String, int)
+	 */
+	@Override
+	public boolean checkSetting(String companyId, int targetYear) {
+		return !(CollectionUtil.isEmpty(this.getEstimateTimeCompany(companyId, targetYear)));
 	}
 
 }

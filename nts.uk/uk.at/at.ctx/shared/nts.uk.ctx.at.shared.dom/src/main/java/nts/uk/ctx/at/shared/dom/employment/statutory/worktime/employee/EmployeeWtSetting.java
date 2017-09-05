@@ -49,4 +49,42 @@ public class EmployeeWtSetting extends AggregateRoot {
 		memento.setWorkingTimeSetting(this.workingTimeSetting);
 		memento.setYearMonth(this.yearMonth);
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
+		result = prime * result + ((yearMonth == null) ? 0 : yearMonth.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EmployeeWtSetting other = (EmployeeWtSetting) obj;
+		if (companyId == null) {
+			if (other.companyId != null)
+				return false;
+		} else if (!companyId.equals(other.companyId))
+			return false;
+		if (yearMonth == null) {
+			if (other.yearMonth != null)
+				return false;
+		} else if (!yearMonth.equals(other.yearMonth))
+			return false;
+		return true;
+	}
+
 }

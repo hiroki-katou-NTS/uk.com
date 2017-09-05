@@ -180,6 +180,7 @@ module nts.uk.at.view.ksm001.a {
                 estimateTime: EstablishmentTimeDto;
                 estimatePrice: EstablishmentPriceDto;
                 estimateNumberOfDay: EstablishmentDaysDto;
+                setting: boolean;
             }
             
 
