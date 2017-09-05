@@ -48,15 +48,13 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 
 		List<Predicate> predicateList = new ArrayList<>();
 
-		predicateList.add(builder.equal(
-				root.get(KshstTotalTimes_.kshstTotalTimesPK).get(KshstTotalTimesPK_.cid),
-				companyId));
+		predicateList.add(
+				builder.equal(root.get(KshstTotalTimes_.kshstTotalTimesPK).get(KshstTotalTimesPK_.cid), companyId));
 
 		query.where(predicateList.toArray(new Predicate[] {}));
 
 		// order by closure id asc
-		query.orderBy(builder.asc(
-				root.get(KshstTotalTimes_.kshstTotalTimesPK).get(KshstTotalTimesPK_.totalTimesNo)));
+		query.orderBy(builder.asc(root.get(KshstTotalTimes_.kshstTotalTimesPK).get(KshstTotalTimesPK_.totalTimesNo)));
 
 		List<KshstTotalTimes> result = em.createQuery(query).getResultList();
 
@@ -78,10 +76,9 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 	public Optional<TotalTimes> getTotalTimesDetail(String companyId, Integer totalCountNo) {
 		KshstTotalTimesPK kshstTotalTimesPK = new KshstTotalTimesPK(companyId, totalCountNo);
 
-		Optional<KshstTotalTimes> optKshstTotalTimes = this.queryProxy().find(kshstTotalTimesPK,
-				KshstTotalTimes.class);
+		Optional<KshstTotalTimes> optKshstTotalTimes = this.queryProxy().find(kshstTotalTimesPK, KshstTotalTimes.class);
 
-		if (optKshstTotalTimes == null) {
+		if (!optKshstTotalTimes.isPresent()) {
 			return Optional.empty();
 		}
 
@@ -97,12 +94,14 @@ public class JpaTotalTimesRepository extends JpaRepository implements TotalTimes
 	 */
 	@Override
 	public void update(TotalTimes totalTimes) {
-		Optional<KshstTotalTimes> optional = this.queryProxy().find(new KshstTotalTimesPK(totalTimes.getCompanyId().v(), totalTimes.getTotalCountNo()), KshstTotalTimes.class);
-		
+		Optional<KshstTotalTimes> optional = this.queryProxy().find(
+				new KshstTotalTimesPK(totalTimes.getCompanyId().v(), totalTimes.getTotalCountNo()),
+				KshstTotalTimes.class);
+
 		if (!optional.isPresent()) {
 			throw new RuntimeException("Total times not existed.");
 		}
-		
+
 		KshstTotalTimes entity = optional.get();
 		totalTimes.saveToMemento(new JpaTotalTimesSetMemento(entity));
 		this.commandProxy().update(entity);

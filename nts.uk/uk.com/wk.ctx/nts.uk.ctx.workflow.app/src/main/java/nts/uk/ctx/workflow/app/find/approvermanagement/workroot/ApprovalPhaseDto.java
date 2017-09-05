@@ -3,11 +3,10 @@ package nts.uk.ctx.workflow.app.find.approvermanagement.workroot;
 import java.util.List;
 
 import lombok.Value;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 @Value
 public class ApprovalPhaseDto {
 
-	private List<Approver> aa;
+	private List<ApproverDto> approver;
 	/**分岐ID*/
 	private String branchId;
 	/**承認フェーズID*/

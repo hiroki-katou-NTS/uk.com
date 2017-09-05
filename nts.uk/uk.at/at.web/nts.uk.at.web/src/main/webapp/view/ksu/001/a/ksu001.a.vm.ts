@@ -458,60 +458,9 @@ module ksu001.a.viewmodel {
                         workTypeCode: arrCell[i].value.workTypeCode
                     }));
                 }
-                //Msg_436
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-09T00:00:00.000Z",
-                    workTypeCode: "231",
-                    workTimeCode: "001",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-                //Msg_468
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-10T00:00:00.000Z",
-                    workTypeCode: "007",
-                    workTimeCode: "001",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-                //workTimeCode == NULL or empty
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-11T00:00:00.000Z",
-                    workTypeCode: "001",
-                    workTimeCode: null,
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-                //Msg_437
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-12T00:00:00.000Z",
-                    workTypeCode: "001",
-                    workTimeCode: "231",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-                //Msg_469
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-12T00:00:00.000Z",
-                    workTypeCode: "001",
-                    workTimeCode: "010",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-
-                //Msg_435
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-12T00:00:00.000Z",
-                    workTypeCode: "001",
-                    workTimeCode: "000",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
-
-                //Msg_434
-                arrObj.push(new BasicSchedule({
-                    date: "2017-01-12T00:00:00.000Z",
-                    workTypeCode: "002",
-                    workTimeCode: "001",
-                    employeeId: "00000000-0000-0000-0000-000000000001"
-                }));
 
                 service.registerData(arrObj).done(function(error: any) {
-                    if (error) {
+                    if (error.length != 0) {
                         self.addListError(error);
                     } else {
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));    
@@ -731,10 +680,9 @@ module ksu001.a.viewmodel {
          * Set error
          */
         addListError(errorsRequest: Array<string>) {
-            var messages = _.map(errorsRequest, function(err){
-                return {
-                    err: nts.uk.resource.getMessage(err)   
-                };    
+            var messages = {};
+            _.forEach(errorsRequest, function(err){
+                messages[err] = nts.uk.resource.getMessage(err);
             });
             
             var errorVm = {

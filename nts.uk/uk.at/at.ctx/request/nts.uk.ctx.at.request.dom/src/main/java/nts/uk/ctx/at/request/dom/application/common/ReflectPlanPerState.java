@@ -28,11 +28,12 @@ public enum ReflectPlanPerState {
 	/**
 	 * 否認
 	 */
+	
 	DENIAL(6),
 	/** Other */
-	OTHER(99)
+	/**Status = 過去申請 */
+	PASTAPP(99)
 	;
-	
 	
 	
 	public int value;

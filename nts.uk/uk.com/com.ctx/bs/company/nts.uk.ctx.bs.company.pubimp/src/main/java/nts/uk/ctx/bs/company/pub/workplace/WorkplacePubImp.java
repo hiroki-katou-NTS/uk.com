@@ -32,9 +32,9 @@ public class WorkplacePubImp implements WorkplacePub {
 	 * findAllWorkplaceOfCompany(java.lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<PubWorkplaceDto> findAllWorkplaceOfCompany(String companyId, GeneralDate baseDate) {
+	public List<WorkplaceExport> findAllWorkplaceOfCompany(String companyId, GeneralDate baseDate) {
 		return workplaceRepository.findAllWorkplaceOfCompany(companyId, baseDate).stream()
-				.map(item -> new PubWorkplaceDto(item.getCompanyId().v(), item.getWorkplaceId().v(),
+				.map(item -> new WorkplaceExport(item.getCompanyId().v(), item.getWorkplaceId().v(),
 						item.getWorkplaceCode().v(), item.getWorkplaceName().v(),
 						item.getPeriod().getStartDate(), item.getPeriod().getEndDate()))
 				.collect(Collectors.toList());
@@ -48,10 +48,10 @@ public class WorkplacePubImp implements WorkplacePub {
 	 * java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<PubWorkplaceHierarchyDto> findAllHierarchyChild(String companyId,
+	public List<WorkplaceHierarchyExport> findAllHierarchyChild(String companyId,
 			String workplaceId) {
 		return workplaceRepository.findAllHierarchyChild(companyId, workplaceId).stream()
-				.map(item -> new PubWorkplaceHierarchyDto(item.getWorkplaceId().v(),
+				.map(item -> new WorkplaceHierarchyExport(item.getWorkplaceId().v(),
 						item.getHierarchyCode()))
 				.collect(Collectors.toList());
 	}
@@ -64,7 +64,7 @@ public class WorkplacePubImp implements WorkplacePub {
 	 * String)
 	 */
 	@Override
-	public PubWorkplaceDto findByWkpId(String workplaceId) {
+	public WorkplaceExport findByWkpId(String workplaceId) {
 		// Query
 		Optional<Workplace> optWorkplace = workplaceRepository.findByWkpId(workplaceId);
 
@@ -77,7 +77,7 @@ public class WorkplacePubImp implements WorkplacePub {
 		Workplace item = optWorkplace.get();
 
 		// Return
-		return new PubWorkplaceDto(item.getCompanyId().v(), item.getWorkplaceId().v(),
+		return new WorkplaceExport(item.getCompanyId().v(), item.getWorkplaceId().v(),
 				item.getWorkplaceCode().v(), item.getWorkplaceName().v(),
 				item.getPeriod().getStartDate(), item.getPeriod().getEndDate());
 	}
@@ -90,9 +90,9 @@ public class WorkplacePubImp implements WorkplacePub {
 	 * List)
 	 */
 	@Override
-	public List<PubWorkplaceDto> findByWkpIds(List<String> workplaceIds) {
+	public List<WorkplaceExport> findByWkpIds(List<String> workplaceIds) {
 		return workplaceRepository.findByWkpIds(workplaceIds).stream()
-				.map(item -> new PubWorkplaceDto(item.getCompanyId().v(), item.getWorkplaceId().v(),
+				.map(item -> new WorkplaceExport(item.getCompanyId().v(), item.getWorkplaceId().v(),
 						item.getWorkplaceCode().v(), item.getWorkplaceName().v(),
 						item.getPeriod().getStartDate(), item.getPeriod().getEndDate()))
 				.collect(Collectors.toList());

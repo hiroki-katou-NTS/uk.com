@@ -613,13 +613,11 @@
             }
 
             format(source: any): string {
-                let parseValue = time.parseTime(source, true);
-                let timeWithDay = new time.TimeWithDayAttr(parseValue.toValue());
-                if (this.option.timeWithDay) {
-                    return timeWithDay.getDayDivision().text + " " + timeWithDay.getTime();            
+                if (!isFinite(source)) {
+                    return source;
                 }
-                
-                return timeWithDay.getRawTime();
+                let timeWithDayAttr = time.minutesBased.clock.dayattr.create(source);
+                return this.option.timeWithDay ? timeWithDayAttr.fullText : timeWithDayAttr.shortText;
             }
         }
         

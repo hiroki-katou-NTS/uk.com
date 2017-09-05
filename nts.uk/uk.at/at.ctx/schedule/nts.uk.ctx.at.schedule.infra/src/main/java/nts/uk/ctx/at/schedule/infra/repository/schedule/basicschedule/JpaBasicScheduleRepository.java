@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.infra.entity.schedule.basicschedule.KscdpBasicSchedulePK;
@@ -31,7 +32,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 		val entity = new KscdtBasicSchedule();
 
 		entity.kscdpBSchedulePK = new KscdpBasicSchedulePK(domain.getSId(), domain.getDate());
-		entity.workTimeCode = domain.getWorkTimeCode();
+		entity.workTimeCode = StringUtil.isNullOrEmpty(domain.getWorkTimeCode(), true)
+				|| ("000").equals(domain.getWorkTimeCode()) ? "   " : domain.getWorkTimeCode();
 		entity.workTypeCode = domain.getWorkTypeCode();
 		return entity;
 	}
@@ -71,7 +73,8 @@ public class JpaBasicScheduleRepository extends JpaRepository implements BasicSc
 				.find(new KscdpBasicSchedulePK(bSchedule.getSId(), bSchedule.getDate()), KscdtBasicSchedule.class)
 				.get();
 		entity.kscdpBSchedulePK = pk;
-		entity.workTimeCode = bSchedule.getWorkTimeCode();
+		entity.workTimeCode = StringUtil.isNullOrEmpty(bSchedule.getWorkTimeCode(), true)
+				|| ("000").equals(bSchedule.getWorkTimeCode()) ? "   " : bSchedule.getWorkTimeCode();
 		entity.workTypeCode = bSchedule.getWorkTypeCode();
 
 		this.commandProxy().update(entity);

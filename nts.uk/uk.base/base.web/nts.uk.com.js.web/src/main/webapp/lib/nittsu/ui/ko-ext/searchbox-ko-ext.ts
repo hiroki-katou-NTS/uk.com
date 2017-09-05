@@ -237,7 +237,7 @@ module nts.uk.ui.koExtentions {
                                              return oldItem[primaryKey] === item[primaryKey];        
                                             }) === undefined;            
                             });
-                            component.igGrid("option", "dataSource", source);  
+                            component.igGrid("option", "dataSource", _.cloneDeep(source));  
                             component.igGrid("dataBind");  
                             
                             if(nts.uk.util.isNullOrEmpty(selectedProperties)){
@@ -304,6 +304,24 @@ module nts.uk.ui.koExtentions {
                 component = $("#" + ko.unwrap(data.comId));    
             }
             let srhX: SearchPub= $searchBox.data("searchObject");
+            
+            if(component.attr("filtered") === true || component.attr("filtered") === "true"){
+                let currentSoruce = srhX.getDataSource();
+            
+                let newItems = _.filter(arr, function(i){
+                    return _.find(currentSoruce, function(ci){
+                        return ci[primaryKey] === i[primaryKey];
+                    }) === undefined;            
+                });    
+                if(!nts.uk.util.isNullOrEmpty(newItems)){
+                    let gridSources = component.igGrid("option", "dataSource");
+                    _.forEach(newItems, function (item){
+                        gridSources.push(item);            
+                    });
+                    component.igGrid("option", "dataSource", _.cloneDeep(gridSources));  
+                    component.igGrid("dataBind");     
+                }
+            }
             
             srhX.setDataSource(arr);
             

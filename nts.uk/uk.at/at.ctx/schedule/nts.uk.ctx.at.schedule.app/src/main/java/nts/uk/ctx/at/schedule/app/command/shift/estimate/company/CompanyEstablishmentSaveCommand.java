@@ -9,9 +9,9 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentTimeDto;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentNumberOfDayDto;
 import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentPriceDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.dto.EstablishmentTimeDto;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSetting;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateDetailSettingGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.Year;
@@ -38,6 +38,7 @@ public class CompanyEstablishmentSaveCommand {
 	/** The estimate number of day. */
 	private EstablishmentNumberOfDayDto estimateNumberOfDay;
 	
+	/** The target year. */
 	private int targetYear;
 	
 	

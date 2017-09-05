@@ -457,6 +457,24 @@ var nts;
                 }());
                 value.DefaultValue = DefaultValue;
             })(value = util.value || (util.value = {}));
+            var accessor;
+            (function (accessor) {
+                function defineInto(obj) {
+                    return new AccessorDefine(obj);
+                }
+                accessor.defineInto = defineInto;
+                var AccessorDefine = (function () {
+                    function AccessorDefine(obj) {
+                        this.obj = obj;
+                    }
+                    AccessorDefine.prototype.get = function (name, func) {
+                        Object.defineProperty(this.obj, name, { get: func, configurable: true });
+                        return this;
+                    };
+                    return AccessorDefine;
+                }());
+                accessor.AccessorDefine = AccessorDefine;
+            })(accessor = util.accessor || (util.accessor = {}));
         })(util = uk.util || (uk.util = {}));
         var WebStorageWrapper = (function () {
             function WebStorageWrapper(nativeStorage) {
@@ -693,6 +711,20 @@ var nts;
                 return 'nts.uk.characteristics.' + key;
             }
         })(characteristics = uk.characteristics || (uk.characteristics = {}));
+        var types;
+        (function (types_1) {
+            function matchArguments(values, types) {
+                if (values.length !== types.length) {
+                    return false;
+                }
+                for (var i = 0; i < values.length; i++) {
+                    if (typeof values[i] !== types[i])
+                        return false;
+                }
+                return true;
+            }
+            types_1.matchArguments = matchArguments;
+        })(types = uk.types || (uk.types = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 var nts;
@@ -1170,12 +1202,11 @@ var nts;
                     this.option = option;
                 }
                 TimeWithDayFormatter.prototype.format = function (source) {
-                    var parseValue = uk.time.parseTime(source, true);
-                    var timeWithDay = new uk.time.TimeWithDayAttr(parseValue.toValue());
-                    if (this.option.timeWithDay) {
-                        return timeWithDay.getDayDivision().text + " " + timeWithDay.getTime();
+                    if (!isFinite(source)) {
+                        return source;
                     }
-                    return timeWithDay.getRawTime();
+                    var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(source);
+                    return this.option.timeWithDay ? timeWithDayAttr.fullText : timeWithDayAttr.shortText;
                 };
                 return TimeWithDayFormatter;
             }());
@@ -1327,6 +1358,7 @@ var nts;
     (function (uk) {
         var time;
         (function (time_1) {
+            var MINUTES_IN_DAY = 24 * 60;
             var defaultInputFormat = ["YYYY/MM/DD", "YYYY-MM-DD", "YYYYMMDD", "YYYY/MM", "YYYY-MM", "YYYYMM", "H:mm", "Hmm", "YYYY"];
             var listEmpire = {
                 "明治": "1868/01/01",
@@ -2099,76 +2131,310 @@ var nts;
                 return false;
             }
             time_1.isEndOfMonth = isEndOfMonth;
-            var TimeWithDayAttr = (function () {
-                function TimeWithDayAttr(rawValue) {
-                    this.MAX_HOUR = 24;
-                    this.MAX_MS = 60;
-                    this.rawValue = rawValue;
-                    if (rawValue < 0) {
-                        this.dayDivision = DayDivision.THE_PREVIOUS_DAY;
-                        this.time = Math.abs(rawValue);
+        })(time = uk.time || (uk.time = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var time;
+        (function (time) {
+            var minutesBased;
+            (function (minutesBased) {
+                minutesBased.MINUTES_IN_DAY = 24 * 60;
+                function createBase(timeAsMinutes) {
+                    if (!isFinite(timeAsMinutes)) {
+                        throw new Error("invalid value: " + timeAsMinutes);
                     }
-                    else {
-                        this.dayDivision = this.checkDayDivision(rawValue);
-                        this.time = this.getTimeDuration(rawValue);
-                    }
+                    var mat = new Number(timeAsMinutes);
+                    uk.util.accessor.defineInto(mat)
+                        .get("asMinutes", function () { return timeAsMinutes; })
+                        .get("isNegative", function () { return timeAsMinutes < 0; })
+                        .get("typeName", function () { return "MinutesBasedTime"; });
+                    return mat;
                 }
-                TimeWithDayAttr.prototype.getDayDivision = function () {
-                    return this.dayDivision;
-                };
-                TimeWithDayAttr.prototype.getTime = function () {
-                    var minutes = uk.ntsNumber.trunc(this.time % 60);
-                    return uk.ntsNumber.trunc(this.time / 60) + ":" + (minutes < 10 ? "0" + minutes : minutes);
-                };
-                TimeWithDayAttr.prototype.getRawTime = function () {
-                    var minutes = Math.abs(uk.ntsNumber.trunc(this.rawValue % 60));
-                    return uk.ntsNumber.trunc(this.rawValue / 60) + ":" + (minutes < 10 ? "0" + minutes : minutes);
-                };
-                TimeWithDayAttr.prototype.getTimeDuration = function (value) {
-                    if (this.dayDivision.value === DayDivision.THE_PRESENT_DAY.value) {
-                        return value;
-                    }
-                    return value - (this.dayDivision.value - 1) * this.MAX_HOUR * this.MAX_MS;
-                };
-                TimeWithDayAttr.prototype.checkDayDivision = function (value) {
-                    var days = uk.ntsNumber.trunc(value / (this.MAX_HOUR * this.MAX_MS));
-                    switch (days) {
-                        case 0:
-                            return DayDivision.THE_PRESENT_DAY;
-                        case 1:
-                            return DayDivision.THE_NEXT_DAY;
-                        case 2:
-                            return DayDivision.TWO_DAY_LATER;
-                        default:
-                            return DayDivision.NONE;
-                    }
-                };
-                TimeWithDayAttr.cutDayDivision = function (input) {
-                    var dayDivisions = _.forEach(_.values(DayDivision), function (dd) {
-                        if (input.indexOf(dd.text) >= 0) {
-                            input = input.replace(dd.text, "").trim();
+                minutesBased.createBase = createBase;
+            })(minutesBased = time.minutesBased || (time.minutesBased = {}));
+        })(time = uk.time || (uk.time = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var time;
+        (function (time) {
+            var minutesBased;
+            (function (minutesBased) {
+                var duration;
+                (function (duration_1) {
+                    var ResultParseMiuntesBasedDuration = (function (_super) {
+                        __extends(ResultParseMiuntesBasedDuration, _super);
+                        function ResultParseMiuntesBasedDuration(success, minus, hours, minutes, msg) {
+                            _super.call(this, success);
+                            this.minus = minus;
+                            this.hours = hours;
+                            this.minutes = minutes;
+                            this.msg = msg || "FND_E_TIME";
                         }
-                    });
-                    return input;
-                };
-                return TimeWithDayAttr;
-            }());
-            time_1.TimeWithDayAttr = TimeWithDayAttr;
-            var DayAttr = (function () {
-                function DayAttr(value, text) {
-                    this.value = value;
-                    this.text = text;
-                }
-                return DayAttr;
-            }());
-            time_1.DayAttr = DayAttr;
-            var DayDivision = {
-                NONE: new DayAttr(-1, ""),
-                THE_PREVIOUS_DAY: new DayAttr(0, "前日"),
-                THE_PRESENT_DAY: new DayAttr(1, "当日"),
-                THE_NEXT_DAY: new DayAttr(2, "翌日"),
-                TWO_DAY_LATER: new DayAttr(3, "翌々日")
-            };
+                        ResultParseMiuntesBasedDuration.prototype.format = function () {
+                            if (!this.success)
+                                return "";
+                            return (this.minus ? '-' : '') + this.hours + ':' + uk.text.padLeft(String(this.minutes), '0', 2);
+                        };
+                        ResultParseMiuntesBasedDuration.prototype.toValue = function () {
+                            if (!this.success)
+                                return 0;
+                            return (this.minus ? -1 : 1) * (this.hours * 60 + this.minutes);
+                        };
+                        ResultParseMiuntesBasedDuration.prototype.getMsg = function () {
+                            return this.msg;
+                        };
+                        ResultParseMiuntesBasedDuration.succeeded = function (minus, hours, minutes) {
+                            return new ResultParseMiuntesBasedDuration(true, minus, hours, minutes);
+                        };
+                        ResultParseMiuntesBasedDuration.failed = function () {
+                            return new ResultParseMiuntesBasedDuration(false);
+                        };
+                        return ResultParseMiuntesBasedDuration;
+                    }(time.ParseResult));
+                    duration_1.ResultParseMiuntesBasedDuration = ResultParseMiuntesBasedDuration;
+                    function parseString(source) {
+                        var isNegative = source.indexOf('-') === 0;
+                        var hourPart;
+                        var minutePart;
+                        if (source.indexOf(':') !== -1) {
+                            var parts = source.split(':');
+                            if (parts.length !== 2) {
+                                return ResultParseMiuntesBasedDuration.failed();
+                            }
+                            hourPart = Math.abs(Number(parts[0]));
+                            minutePart = Number(parts[1]);
+                        }
+                        else {
+                            var integerized = Number(source);
+                            if (isNaN(integerized)) {
+                                return ResultParseMiuntesBasedDuration.failed();
+                            }
+                            var regularized = Math.abs(integerized);
+                            hourPart = Math.floor(regularized / 100);
+                            minutePart = regularized % 100;
+                        }
+                        if (!isFinite(hourPart) || !isFinite(minutePart)) {
+                            return ResultParseMiuntesBasedDuration.failed();
+                        }
+                        if (minutePart >= 60) {
+                            return ResultParseMiuntesBasedDuration.failed();
+                        }
+                        return ResultParseMiuntesBasedDuration.succeeded(isNegative, hourPart, minutePart);
+                    }
+                    duration_1.parseString = parseString;
+                    function create(timeAsMinutes) {
+                        var duration = minutesBased.createBase(timeAsMinutes);
+                        uk.util.accessor.defineInto(duration)
+                            .get("typeName", function () { return "DurationMinutesBasedTime"; })
+                            .get("asHoursDouble", function () { return timeAsMinutes / 60; })
+                            .get("asHoursInt", function () { return uk.ntsNumber.trunc(duration.asHoursDouble); })
+                            .get("minutePart", function () { return Math.abs(timeAsMinutes) % 60; })
+                            .get("text", function () { return createText(duration); });
+                        return duration;
+                    }
+                    duration_1.create = create;
+                    function createText(duration) {
+                        return (duration.isNegative ? "-" : "")
+                            + duration.asHoursInt + ":" + uk.text.padLeft(duration.minutePart.toString(), "0", 2);
+                    }
+                })(duration = minutesBased.duration || (minutesBased.duration = {}));
+            })(minutesBased = time.minutesBased || (time.minutesBased = {}));
+        })(time = uk.time || (uk.time = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var time;
+        (function (time) {
+            var minutesBased;
+            (function (minutesBased) {
+                var clock;
+                (function (clock_1) {
+                    function create() {
+                        var args = [];
+                        for (var _i = 0; _i < arguments.length; _i++) {
+                            args[_i - 0] = arguments[_i];
+                        }
+                        var timeAsMinutes = parseAsClock(args);
+                        var clock = minutesBased.createBase(timeAsMinutes);
+                        var positivizedMinutes = function () { return (timeAsMinutes >= 0)
+                            ? timeAsMinutes
+                            : timeAsMinutes + (1 + Math.floor(-timeAsMinutes / minutesBased.MINUTES_IN_DAY)) * minutesBased.MINUTES_IN_DAY; };
+                        var daysOffset = function () { return uk.ntsNumber.trunc(clock.isNegative ? (timeAsMinutes + 1) / minutesBased.MINUTES_IN_DAY - 1
+                            : timeAsMinutes / minutesBased.MINUTES_IN_DAY); };
+                        uk.util.accessor.defineInto(clock)
+                            .get("typeName", function () { return "ClockMinutesBasedTime"; })
+                            .get("daysOffset", function () { return daysOffset(); })
+                            .get("hourPart", function () { return Math.floor((positivizedMinutes() % minutesBased.MINUTES_IN_DAY) / 60); })
+                            .get("minutePart", function () { return positivizedMinutes() % 60; })
+                            .get("clockTextInDay", function () { return clock.hourPart + ":" + uk.text.padLeft(clock.minutePart.toString(), "0", 2); });
+                        return clock;
+                    }
+                    clock_1.create = create;
+                    function parseAsClock(args) {
+                        var result;
+                        if (uk.types.matchArguments(args, ["number"])) {
+                            result = args[0];
+                        }
+                        else if (uk.types.matchArguments(args, ["number", "number", "number"])) {
+                            var daysOffset = args[0];
+                            var hourPart = args[1];
+                            var minutePart = args[2];
+                            result = daysOffset * minutesBased.MINUTES_IN_DAY + hourPart * 60 + minutePart;
+                        }
+                        return result;
+                    }
+                })(clock = minutesBased.clock || (minutesBased.clock = {}));
+            })(minutesBased = time.minutesBased || (time.minutesBased = {}));
+        })(time = uk.time || (uk.time = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var time;
+        (function (time) {
+            var minutesBased;
+            (function (minutesBased) {
+                var clock;
+                (function (clock) {
+                    var dayattr;
+                    (function (dayattr) {
+                        dayattr.MAX_VALUE = create(4319);
+                        dayattr.MIN_VALUE = create(-720);
+                        (function (DayAttr) {
+                            DayAttr[DayAttr["THE_PREVIOUS_DAY"] = 0] = "THE_PREVIOUS_DAY";
+                            DayAttr[DayAttr["THE_PRESENT_DAY"] = 1] = "THE_PRESENT_DAY";
+                            DayAttr[DayAttr["THE_NEXT_DAY"] = 2] = "THE_NEXT_DAY";
+                            DayAttr[DayAttr["TWO_DAY_LATER"] = 3] = "TWO_DAY_LATER";
+                        })(dayattr.DayAttr || (dayattr.DayAttr = {}));
+                        var DayAttr = dayattr.DayAttr;
+                        function getDayAttrText(dayAttr) {
+                            switch (dayAttr) {
+                                case DayAttr.THE_PREVIOUS_DAY: return "前日";
+                                case DayAttr.THE_PRESENT_DAY: return "当日";
+                                case DayAttr.THE_NEXT_DAY: return "翌日";
+                                case DayAttr.TWO_DAY_LATER: return "翌々日";
+                                default: throw new Error("invalid value: " + dayAttr);
+                            }
+                        }
+                        dayattr.getDayAttrText = getDayAttrText;
+                        function getDaysOffset(dayAttr) {
+                            switch (dayAttr) {
+                                case DayAttr.THE_PREVIOUS_DAY: return -1;
+                                case DayAttr.THE_PRESENT_DAY: return 0;
+                                case DayAttr.THE_NEXT_DAY: return 1;
+                                case DayAttr.TWO_DAY_LATER: return 2;
+                                default: throw new Error("invalid value: " + dayAttr);
+                            }
+                        }
+                        dayattr.getDaysOffset = getDaysOffset;
+                        var ResultParseTimeWithDayAttr = (function () {
+                            function ResultParseTimeWithDayAttr(success, asMinutes) {
+                                this.success = success;
+                                this.asMinutes = asMinutes;
+                            }
+                            ResultParseTimeWithDayAttr.succeeded = function (asMinutes) {
+                                return new ResultParseTimeWithDayAttr(true, asMinutes);
+                            };
+                            ResultParseTimeWithDayAttr.failed = function () {
+                                return new ResultParseTimeWithDayAttr(false);
+                            };
+                            return ResultParseTimeWithDayAttr;
+                        }());
+                        dayattr.ResultParseTimeWithDayAttr = ResultParseTimeWithDayAttr;
+                        function parseString(source) {
+                            var foundAttr = cutDayAttrTextIfExists(source);
+                            if (foundAttr.found) {
+                                var daysOffset = getDaysOffset(foundAttr.attr);
+                                var parsedAsDuration = minutesBased.duration.parseString(foundAttr.clockPartText);
+                                if (!parsedAsDuration.success) {
+                                    return ResultParseTimeWithDayAttr.failed();
+                                }
+                                var asMinutes = parsedAsDuration.toValue() + minutesBased.MINUTES_IN_DAY * daysOffset;
+                                return ResultParseTimeWithDayAttr.succeeded(asMinutes);
+                            }
+                            else {
+                                var parsedAsDuration = minutesBased.duration.parseString(source);
+                                if (!parsedAsDuration.success) {
+                                    return ResultParseTimeWithDayAttr.failed();
+                                }
+                                if (parsedAsDuration.minus) {
+                                    var asClock = -(parsedAsDuration.toValue()) - minutesBased.MINUTES_IN_DAY;
+                                    if (asClock >= 0) {
+                                        return ResultParseTimeWithDayAttr.failed();
+                                    }
+                                    return ResultParseTimeWithDayAttr.succeeded(asClock);
+                                }
+                                else {
+                                    return ResultParseTimeWithDayAttr.succeeded(parsedAsDuration.toValue());
+                                }
+                            }
+                        }
+                        dayattr.parseString = parseString;
+                        function create(minutesFromZeroOclock) {
+                            var timeWithDayAttr = (clock.create(minutesFromZeroOclock));
+                            uk.util.accessor.defineInto(timeWithDayAttr)
+                                .get("dayAttr", function () { return getDayAttrFromDaysOffset(timeWithDayAttr.daysOffset); })
+                                .get("fullText", function () { return getDayAttrText(timeWithDayAttr.dayAttr) + timeWithDayAttr.clockTextInDay; })
+                                .get("shortText", function () { return createShortText(timeWithDayAttr); });
+                            return timeWithDayAttr;
+                        }
+                        dayattr.create = create;
+                        function createShortText(timeWithDayAttr) {
+                            if (timeWithDayAttr.daysOffset >= 0) {
+                                var asDuration = minutesBased.duration.create(timeWithDayAttr.asMinutes);
+                                return asDuration.text;
+                            }
+                            else {
+                                return "-" + timeWithDayAttr.clockTextInDay;
+                            }
+                        }
+                        function getDayAttrFromDaysOffset(daysOffset) {
+                            switch (daysOffset) {
+                                case -1: return DayAttr.THE_PREVIOUS_DAY;
+                                case 0: return DayAttr.THE_PRESENT_DAY;
+                                case 1: return DayAttr.THE_NEXT_DAY;
+                                case 2: return DayAttr.TWO_DAY_LATER;
+                                default: throw new Error("invalid value: " + daysOffset);
+                            }
+                        }
+                        var DAY_ATTR_TEXTS = [
+                            { value: DayAttr.THE_PREVIOUS_DAY },
+                            { value: DayAttr.THE_PRESENT_DAY },
+                            { value: DayAttr.THE_NEXT_DAY },
+                            { value: DayAttr.TWO_DAY_LATER }
+                        ];
+                        DAY_ATTR_TEXTS.forEach(function (e) { return e.text = getDayAttrText(e.value); });
+                        function cutDayAttrTextIfExists(source) {
+                            var foundAttr = _.find(DAY_ATTR_TEXTS, function (e) { return source.indexOf(e.text) === 0; });
+                            var result = {
+                                found: foundAttr !== undefined
+                            };
+                            if (result.found) {
+                                result.attrText = foundAttr.text;
+                                result.attr = foundAttr.value;
+                                result.clockPartText = source.slice(foundAttr.text.length);
+                            }
+                            else {
+                                result.clockPartText = source;
+                            }
+                            return result;
+                        }
+                    })(dayattr = clock.dayattr || (clock.dayattr = {}));
+                })(clock = minutesBased.clock || (minutesBased.clock = {}));
+            })(minutesBased = time.minutesBased || (time.minutesBased = {}));
         })(time = uk.time || (uk.time = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -2976,7 +3242,7 @@ var nts;
                         }
                         var maxStr, minStr;
                         if (this.mode === "time") {
-                            var timeParse = uk.time.parseTime(inputText, false);
+                            var timeParse = uk.time.minutesBased.duration.parseString(inputText);
                             if (timeParse.success) {
                                 result.success(timeParse.toValue());
                             }
@@ -3073,7 +3339,6 @@ var nts;
                     }
                     TimeWithDayValidator.prototype.validate = function (inputText) {
                         var result = new ValidationResult();
-                        inputText = uk.time.TimeWithDayAttr.cutDayDivision(inputText);
                         if (util.isNullOrEmpty(inputText)) {
                             if (this.required === true) {
                                 result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
@@ -3084,17 +3349,18 @@ var nts;
                                 return result;
                             }
                         }
-                        var minStr, maxStr;
+                        var minValue = uk.time.minutesBased.clock.dayattr.MIN_VALUE;
+                        var maxValue = uk.time.minutesBased.clock.dayattr.MAX_VALUE;
                         if (!util.isNullOrUndefined(this.constraint)) {
-                            minStr = uk.time.parseTime(this.constraint.min, true).format();
-                            maxStr = uk.time.parseTime(this.constraint.max, true).format();
+                            minValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.min).asMinutes);
+                            maxValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);
                         }
-                        var parseValue = uk.time.parseTime(inputText);
-                        if (!parseValue.success || (parseValue.toValue() < this.constraint.min || parseValue.toValue() > this.constraint.max)) {
-                            result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minStr, maxStr]), "FND_E_TIME");
+                        var parsed = uk.time.minutesBased.clock.dayattr.parseString(inputText);
+                        if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
+                            result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minValue.fullText, maxValue.fullText]), "FND_E_TIME");
                         }
                         else {
-                            result.success(parseValue.toValue());
+                            result.success(parsed.asMinutes);
                         }
                         return result;
                     };
@@ -5812,14 +6078,17 @@ var nts;
                     TimeWithDayAttrEditorProcessor.prototype.init = function ($input, data) {
                         _super.prototype.init.call(this, $input, data);
                         $input.focus(function () {
-                            if (!$input.attr('readonly')) {
-                                var selectionType = document.getSelection().type;
-                                var parsed = uk.time.parseTime(data.value(), true);
-                                var value = parsed.success ? parsed.format() : data.value();
-                                $input.val(value);
-                                if (selectionType === 'Range') {
-                                    $input.select();
-                                }
+                            if ($input.attr('readonly')) {
+                                return;
+                            }
+                            if ($input.ntsError('hasError')) {
+                                return;
+                            }
+                            var selectionTypeOnFocusing = document.getSelection().type;
+                            var timeWithDayAttr = uk.time.minutesBased.clock.dayattr.create(data.value());
+                            $input.val(timeWithDayAttr.shortText);
+                            if (selectionTypeOnFocusing === 'Range') {
+                                $input.select();
                             }
                         });
                     };
@@ -6174,11 +6443,17 @@ var nts;
                             $grid.igGrid("dataBind");
                         }
                         else if ($grid.attr("filtered") === true || $grid.attr("filtered") === "true") {
-                            var filteredSource = _.filter(currentSource, function (item) {
-                                return sources.indexOf(item) >= 0;
+                            var filteredSource_1 = [];
+                            _.forEach(currentSource, function (item) {
+                                var itemX = _.find(sources, function (s) {
+                                    return s[optionsValue] === item[optionsValue];
+                                });
+                                if (!nts.uk.util.isNullOrUndefined(itemX)) {
+                                    filteredSource_1.push(itemX);
+                                }
                             });
-                            if (!_.isEqual(filteredSource, currentSource)) {
-                                $grid.igGrid('option', 'dataSource', filteredSource);
+                            if (!_.isEqual(filteredSource_1, currentSource)) {
+                                $grid.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_1));
                                 $grid.igGrid("dataBind");
                             }
                         }
@@ -6537,7 +6812,6 @@ var nts;
                     };
                     ListBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
-                        var currentSource = container.igGrid('option', 'dataSource');
                         var options = ko.unwrap(data.options);
                         var optionValue = ko.unwrap(data.primaryKey === undefined ? data.optionsValue : data.primaryKey);
                         var optionText = ko.unwrap(data.primaryText === undefined ? data.optionsText : data.primaryText);
@@ -6547,6 +6821,7 @@ var nts;
                         var columns = data.columns;
                         var rows = data.rows;
                         var container = $(element).find(".ntsListBox");
+                        var currentSource = container.igGrid('option', 'dataSource');
                         if (container.data("enable") !== enable) {
                             if (!enable) {
                                 container.ntsGridList('unsetupSelecting');
@@ -6576,11 +6851,17 @@ var nts;
                             container.igGrid("dataBind");
                         }
                         else if (container.attr("filtered") === true || container.attr("filtered") === "true") {
-                            var filteredSource = _.filter(currentSource, function (item) {
-                                return options.indexOf(item) >= 0;
+                            var filteredSource_2 = [];
+                            _.forEach(currentSource, function (item) {
+                                var itemX = _.find(sources, function (s) {
+                                    return s[optionsValue] === item[optionsValue];
+                                });
+                                if (!nts.uk.util.isNullOrUndefined(itemX)) {
+                                    filteredSource_2.push(itemX);
+                                }
                             });
-                            if (!_.isEqual(filteredSource, currentSource)) {
-                                container.igGrid('option', 'dataSource', filteredSource);
+                            if (!_.isEqual(filteredSource_2, currentSource)) {
+                                container.igGrid('option', 'dataSource', _.cloneDeep(filteredSource_2));
                                 container.igGrid("dataBind");
                             }
                         }
@@ -7074,7 +7355,7 @@ var nts;
                                                 return oldItem[primaryKey] === item[primaryKey];
                                             }) === undefined;
                                         });
-                                        component.igGrid("option", "dataSource", source);
+                                        component.igGrid("option", "dataSource", _.cloneDeep(source));
                                         component.igGrid("dataBind");
                                         if (nts.uk.util.isNullOrEmpty(selectedProperties)) {
                                             component.trigger("selectionchanged");
@@ -7136,6 +7417,22 @@ var nts;
                             component = $("#" + ko.unwrap(data.comId));
                         }
                         var srhX = $searchBox.data("searchObject");
+                        if (component.attr("filtered") === true || component.attr("filtered") === "true") {
+                            var currentSoruce_1 = srhX.getDataSource();
+                            var newItems = _.filter(arr, function (i) {
+                                return _.find(currentSoruce_1, function (ci) {
+                                    return ci[primaryKey] === i[primaryKey];
+                                }) === undefined;
+                            });
+                            if (!nts.uk.util.isNullOrEmpty(newItems)) {
+                                var gridSources_1 = component.igGrid("option", "dataSource");
+                                _.forEach(newItems, function (item) {
+                                    gridSources_1.push(item);
+                                });
+                                component.igGrid("option", "dataSource", _.cloneDeep(gridSources_1));
+                                component.igGrid("dataBind");
+                            }
+                        }
                         srhX.setDataSource(arr);
                         if (enable === false) {
                             $searchBox.find(".ntsSearchBox_Component").attr('disabled', 'disabled');

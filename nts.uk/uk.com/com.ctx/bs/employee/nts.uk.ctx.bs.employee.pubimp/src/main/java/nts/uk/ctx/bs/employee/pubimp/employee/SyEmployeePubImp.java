@@ -15,7 +15,7 @@ import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplace
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
-import nts.uk.ctx.bs.employee.pub.employee.EmployeeDto;
+import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 
 /**
@@ -39,7 +39,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	 * findByWpkIds(java.lang.String, java.util.List, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public List<EmployeeDto> findByWpkIds(String companyId, List<String> workplaceIds,
+	public List<EmployeeExport> findByWpkIds(String companyId, List<String> workplaceIds,
 			GeneralDate baseDate) {
 		// Query
 		List<AffWorkplaceHistory> affWorkplaceHistories = workplaceHistoryRepository
@@ -53,12 +53,12 @@ public class SyEmployeePubImp implements SyEmployeePub {
 
 		// Return
 		return employeeList.stream().map(item -> {
-			EmployeeDto dto = new EmployeeDto();
+			EmployeeExport dto = new EmployeeExport();
 			dto.setCompanyId(item.getCompanyId());
 			dto.setPId(item.getPId());
 			dto.setSId(item.getSId());
 			dto.setSCd(item.getSCd().v());
-			dto.setSMail(item.getSMail().v());
+			dto.setSMail(item.getCompanyMail().v());
 			dto.setRetirementDate(item.getRetirementDate());
 			dto.setJoinDate(item.getJoinDate());
 			return dto;

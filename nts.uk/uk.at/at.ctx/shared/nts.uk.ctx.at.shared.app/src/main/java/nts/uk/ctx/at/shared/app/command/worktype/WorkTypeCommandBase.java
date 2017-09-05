@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.app.command.worktype;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,6 +27,8 @@ public class WorkTypeCommandBase {
 	private String afternoonCls;
 	private String calculatorMethod;
 	private WorkTypeSetBase oneDay;
+	private WorkTypeSetBase morning;
+    private WorkTypeSetBase afternoon;
 	
 
 	public WorkType toDomain(String companyId) {

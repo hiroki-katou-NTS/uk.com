@@ -53,6 +53,40 @@ public class KscmtMonthPatternPK implements Serializable {
 		super();
 		this.cid = cid;
 		this.mPatternCd = mPatternCd;
-	}    
-    
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + ((mPatternCd == null) ? 0 : mPatternCd.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KscmtMonthPatternPK other = (KscmtMonthPatternPK) obj;
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
+			return false;
+		if (mPatternCd == null) {
+			if (other.mPatternCd != null)
+				return false;
+		} else if (!mPatternCd.equals(other.mPatternCd))
+			return false;
+		return true;
+	}
+
 }

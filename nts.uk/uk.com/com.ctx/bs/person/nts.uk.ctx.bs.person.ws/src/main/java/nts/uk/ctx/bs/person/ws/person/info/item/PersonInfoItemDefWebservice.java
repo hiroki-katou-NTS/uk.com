@@ -26,6 +26,6 @@ public class PersonInfoItemDefWebservice extends WebService{
 	@POST
 	@Path("findby/categoryId/{perInfoCtgId}")
 	public List<PersonInfoItemDefDto> getAllPerInfoItemDefByCtgId(@PathParam("perInfoCtgId") String perInfoCtgId) {
-		return itemDefFinder.getAllPerInfoItemDefByCtgId(perInfoCtgId);
+		return itemDefFinder.getAllPerInfoItemDefByCategoryIdWithoutSetItem(perInfoCtgId);
 	}
 }

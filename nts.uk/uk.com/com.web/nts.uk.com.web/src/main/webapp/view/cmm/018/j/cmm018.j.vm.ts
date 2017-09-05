@@ -3,13 +3,13 @@ module nts.uk.com.view.cmm018.j {
         import servicebase = cmm018.shr.servicebase;
         import close = nts.uk.ui.windows.close;
         import block =  nts.uk.ui.block;
-//        import vmbase = cmm018.shr.vmbase;
+        import vmbase = cmm018.shr.vmbase;
         export class ScreenModel {
             isUpdate: KnockoutObservable<boolean>;
             size: number;
             newStartDate: KnockoutObservable<string>;
             item: KnockoutObservable<string> = ko.observable('');
-            dataSource: IData_Param;
+            dataSource: vmbase.JData_Param;
             itemList:  KnockoutObservableArray<any>;
             selectedId: KnockoutObservable<number> = ko.observable(0);
             constructor() {
@@ -19,9 +19,9 @@ module nts.uk.com.view.cmm018.j {
                                     { code: 1, name: nts.uk.resource.getText("CMM018_55") }
                                 ]);
                 let lstItem = [];
-                lstItem.push(new UpdateHistoryDto('1','1'));
-                lstItem.push(new UpdateHistoryDto('0','2'));
-                var data: IData_Param = nts.uk.ui.windows.getShared('CMM018J_PARAM')|| 
+                lstItem.push(new vmbase.UpdateHistoryDto('1','1'));
+                lstItem.push(new vmbase.UpdateHistoryDto('0','2'));
+                var data: vmbase.JData_Param = nts.uk.ui.windows.getShared('CMM018J_PARAM')|| 
                         {name: 'Hatake Kakashi',startDate: '2021-11-02', endDate: '9999-12-31', workplaceId: '123', employeeId: 'abc', check: 1, mode: 1, overlapFlag: true, startDatePrevious: '2020-11-02', lstUpdate: lstItem};
                 self.dataSource = data;
                 self.item(self.dataSource.name);
@@ -43,7 +43,7 @@ module nts.uk.com.view.cmm018.j {
                 block.invisible();
                 var self = this;
                 //data
-                let dataFix: IDataJ = new IDataJ(self.newStartDate(),'9999-12-31',self.dataSource.workplaceId,self.dataSource.employeeId,self.dataSource.check,self.selectedId(),self.dataSource.startDate,self.dataSource.lstUpdate);
+                let dataFix: vmbase.JData = new vmbase.JData(self.newStartDate(),'9999-12-31',self.dataSource.workplaceId,self.dataSource.employeeId,self.dataSource.check,self.selectedId(),self.dataSource.startDate,self.dataSource.lstUpdate);
                 if(self.isUpdate()) {//TH: edit
                     //履歴編集を実行する(Update history)
                     servicebase.updateHistory(self.dataSource).done(function(){
@@ -96,7 +96,7 @@ module nts.uk.com.view.cmm018.j {
             }
             submitAndCloseDialog(): void {
                 var self = this;
-                let dataFix: IDataJ = new IDataJ(self.newStartDate(),'9999-12-31',self.dataSource.workplaceId,self.dataSource.employeeId,self.dataSource.check,self.selectedId(),self.dataSource.startDate,self.dataSource.lstUpdate);
+                let dataFix: vmbase.JData = new vmbase.JData(self.newStartDate(),'9999-12-31',self.dataSource.workplaceId,self.dataSource.employeeId,self.dataSource.check,self.selectedId(),self.dataSource.startDate,self.dataSource.lstUpdate);
                 servicebase.updateHistory(self.dataSource).done(function(){
                     alert("done");
                 }).fail(function(res){
@@ -109,73 +109,6 @@ module nts.uk.com.view.cmm018.j {
             closeDialog(): void {
                 $("#startDateInput").ntsError('clear');
                 close();   
-            }
-        }
-        class IDataJ{
-            /**開始日*/
-            startDate: string;
-            /**終了日*/
-            endDate: string;
-            /**履歴ID*/
-            workplaceId: string;
-            /**社員ID*/
-            employeeId: string;
-            /**check 申請承認の種類区分: 会社(1)　－　職場(2)　－　社員(3)*/
-            check: number;
-            /**「履歴を削除する」を選択する か(0)、「履歴を修正する」を選択する か(1)。*/
-            editOrDelete: number;
-            /**開始日 previous*/
-            startDatePrevious: string;
-            /** list history and approvalId */
-            lstUpdate: Array<UpdateHistoryDto>;
-            constructor(startDate: string,
-            endDate: string,
-            workplaceId: string,
-            employeeId: string,
-            check: number,
-            editOrDelete: number,
-            startDatePrevious: string,
-            lstUpdate: Array<UpdateHistoryDto>){
-                this.startDate = startDate;
-                this.endDate = endDate;
-                this.workplaceId = workplaceId;
-                this.employeeId = employeeId;
-                this.check = check;
-                this.editOrDelete = editOrDelete;
-                this.startDatePrevious = startDatePrevious;
-                this.lstUpdate = lstUpdate;
-            }
-        }
-        interface IData_Param{
-            /** name */
-            name: string
-            /**開始日*/
-            startDate: string;
-            /**終了日*/
-            endDate: string;
-            /**履歴ID*/
-            workplaceId?: string;
-            /**社員ID*/
-            employeeId?: string;
-            /**check 申請承認の種類区分: 会社(1)　－　職場(2)　－　社員(3)*/
-            check: number;
-            /** まとめて設定モード(0) - 申請個別設定モード(1)*/
-            mode: number;
-            /** 編集対象期間履歴が重なっているかチェックする*/
-            overlapFlag: boolean;
-            /**開始日 previous*/
-            startDatePrevious: string;
-            /** list history and approvalId */
-            lstUpdate: Array<UpdateHistoryDto>;
-        }
-        class UpdateHistoryDto{
-            /**承認ID*/
-            approvalId: string;
-            /**履歴ID*/
-            historyId: string;
-            constructor(approvalId: string, historyId: string){
-                this.approvalId = approvalId;
-                this.historyId = historyId; 
             }
         }
     }

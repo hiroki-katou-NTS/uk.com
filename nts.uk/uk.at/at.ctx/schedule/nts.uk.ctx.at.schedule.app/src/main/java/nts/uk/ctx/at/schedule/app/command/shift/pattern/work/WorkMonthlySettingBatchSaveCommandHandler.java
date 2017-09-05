@@ -6,6 +6,8 @@ package nts.uk.ctx.at.schedule.app.command.shift.pattern.work;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,7 +20,9 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.schedule.app.find.shift.pattern.dto.WorkMonthlySettingDto;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPattern;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.monthly.MonthlyPatternRepository;
 import nts.uk.ctx.at.schedule.dom.shift.pattern.work.WorkMonthlySetting;
@@ -88,7 +92,34 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		
 		// get command
 		WorkMonthlySettingBatchSaveCommand command = context.getCommand();
+
+		// check not setting
+		if(CollectionUtil.isEmpty(command.getWorkMonthlySetting())){
+			throw new BusinessException("Msg_148");
+		}
 		
+		// convert to map domain update
+		Map<Integer, WorkMonthlySettingDto> mapWorkMonthlySetting = command.getWorkMonthlySetting()
+				.stream().collect(Collectors.toMap((dto) -> {
+					return dto.getYmdk();
+				}, Function.identity()));
+		
+		// get to date
+		Date toDate = this.toDate(command.getWorkMonthlySetting().get(INDEX_FIRST).getYmdk());
+		
+		// get year month
+		int yearMonth = this.getYearMonth(toDate);
+		
+		// update begin date
+		toDate = this.toDate(yearMonth * MONTH_MUL + NEXT_DAY);
+		
+		// loop year month setting
+		while (this.getYearMonth(toDate) == yearMonth) {
+			if (!mapWorkMonthlySetting.containsKey(this.getYearMonthDate(toDate))) {
+				throw new BusinessException("Msg_148");
+			}
+			toDate = this.nextDay(toDate);
+		}
 		// to list domain
 		List<WorkMonthlySetting> lstDomain = command.toDomainMonth(companyId);
 		
@@ -211,5 +242,71 @@ public class WorkMonthlySettingBatchSaveCommandHandler
 		// add all list domain
 		this.workMonthlySettingRepository.addAll(addAllDomains);
 	}
+	
 
+	/** The Constant NEXT_DAY. */
+	public static final int NEXT_DAY = 1;
+	
+	/** The Constant BEGIN_END_MONTH. */
+	public static final int BEGIN_END_MONTH = 12;
+	
+	/** The Constant ZERO_DAY_MONTH. */
+	public static final int ZERO_DAY_MONTH = 0;
+	
+	/** The Constant YEAR_MUL. */
+	public static final int YEAR_MUL = 10000;
+	
+	/** The Constant MONTH_MUL. */
+	public static final int MONTH_MUL = 100;
+
+	/**
+	 * Next day.
+	 *
+	 * @param day the day
+	 * @return the date
+	 */
+	public Date nextDay(Date day) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(day);
+		cal.add(Calendar.DAY_OF_MONTH, NEXT_DAY); 
+		return cal.getTime();
+	}
+		
+	/**
+	 * Gets the year month date.
+	 *
+	 * @param day the day
+	 * @return the year month date
+	 */
+	public int getYearMonthDate(Date day) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(day);
+		return cal.get(Calendar.YEAR) * YEAR_MUL + (cal.get(Calendar.MONTH) + NEXT_DAY) * MONTH_MUL
+				+ cal.get(Calendar.DAY_OF_MONTH);
+	}
+
+	/**
+	 * Gets the year month.
+	 *
+	 * @param day the day
+	 * @return the year month
+	 */
+	public int getYearMonth(Date day) {
+		return getYearMonthDate(day) / MONTH_MUL;
+	}
+	
+	/**
+	 * To date.
+	 *
+	 * @param year the year
+	 * @param month the month
+	 * @param day the day
+	 * @return the date
+	 */
+	public Date toDate(int yearMonthDate) {
+		Calendar cal = Calendar.getInstance();
+		cal.set(yearMonthDate / YEAR_MUL, (yearMonthDate % YEAR_MUL) / MONTH_MUL - NEXT_DAY,
+				yearMonthDate % MONTH_MUL, ZERO_DAY_MONTH, ZERO_DAY_MONTH);
+		return cal.getTime();
+	}
 }

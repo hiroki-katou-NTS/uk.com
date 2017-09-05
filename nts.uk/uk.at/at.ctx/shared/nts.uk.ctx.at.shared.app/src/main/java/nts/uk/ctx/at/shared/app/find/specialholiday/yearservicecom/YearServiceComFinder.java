@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.specialholiday.yearservicecom.repository.YearServiceComRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceset.repository.YearServiceComRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -16,7 +16,7 @@ public class YearServiceComFinder {
 	private YearServiceComRepository yearServiceComRep;
 	public List<YearServiceComDto> finder(){
 		String companyId = AppContexts.user().companyId();
-		return this.yearServiceComRep.findAll(companyId).stream().map(item ->{
+		return this.yearServiceComRep.findAllCom(companyId).stream().map(item ->{
 			return new YearServiceComDto(item.getSpecialHolidayCode(), item.getLengthServiceYearAtr());
 		}).collect(Collectors.toList());
 	}
