@@ -30,7 +30,7 @@ public class InsertYearServiceSetCommandHandler extends CommandHandler<InsertYea
 //			lst.add()
 //		}
 		for(YearServiceSetCommand obj : yearServiceSets){
-			YearServiceSet o = YearServiceSet.update(companyId, obj.getSpecialHolidayCode(), obj.getYearServiceType(), obj.getYear(), obj.getMonth(), obj.getDate());
+			YearServiceSet o = YearServiceSet.update(companyId, obj.getSpecialHolidayCode(), obj.getYearServiceNo(), obj.getYearServiceType(), obj.getYear(), obj.getMonth(), obj.getDate());
 			lst.add(o);
 		}
 		yearServiceSetRep.insertSet(lst);

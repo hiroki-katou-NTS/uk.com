@@ -10,6 +10,7 @@ import lombok.Setter;
 public class YearServiceSetCommand {
 	/**コード**/
 	private int specialHolidayCode;
+	private int yearServiceNo;
 	/** 年間サービスタイプ **/
 	private int yearServiceType;
 	/** 月数 **/
