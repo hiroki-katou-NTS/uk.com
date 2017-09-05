@@ -31,7 +31,7 @@ public interface SyJobTitleAdapter {
 	 * @return the list
 	 */
 	// RequestList #33
-	List<JobTitleImport> findJobTitleBySid(String employeeId, GeneralDate baseDate);
+	JobTitleImport findJobTitleBySid(String employeeId, GeneralDate baseDate);
 
 	/**
 	 * Find job title by position id.
@@ -42,5 +42,5 @@ public interface SyJobTitleAdapter {
 	 * @return the list
 	 */
 	// RequestList #67-1
-	List<JobTitleImport> findJobTitleByPositionId(String companyId, String positionId, GeneralDate baseDate);
+	JobTitleImport findJobTitleByPositionId(String companyId, String positionId, GeneralDate baseDate);
 }

@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.request.ac.bs;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -12,7 +13,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.JobTitleImport;
-import nts.uk.ctx.bs.employee.pub.employee.jobtitle.PubJobTitleDto;
+import nts.uk.ctx.bs.employee.pub.employee.jobtitle.JobTitleExport;
 import nts.uk.ctx.bs.employee.pub.employee.jobtitle.SyJobTitlePub;
 
 /**
@@ -30,15 +31,15 @@ public class SyJobTitleAdapterImpl implements SyJobTitleAdapter{
 	}
 
 	@Override
-	public List<JobTitleImport> findJobTitleBySid(String employeeId, GeneralDate baseDate) {
-		return this.syJobTitlePub.findJobTitleBySid(employeeId, baseDate).stream()
-				.map(x-> this.toImport(x)).collect(Collectors.toList());
+	public JobTitleImport findJobTitleBySid(String employeeId, GeneralDate baseDate) {
+		Optional<JobTitleExport> export = this.syJobTitlePub.findJobTitleBySid(employeeId, baseDate);
+		return export.map(x -> this.toImport(x)).orElse(null);
 	}
 
 	@Override
-	public List<JobTitleImport> findJobTitleByPositionId(String companyId, String positionId, GeneralDate baseDate) {
-		return this.syJobTitlePub.findJobTitleByPositionId(companyId, positionId, baseDate).stream()
-				.map(x-> this.toImport(x)).collect(Collectors.toList());
+	public JobTitleImport findJobTitleByPositionId(String companyId, String positionId, GeneralDate baseDate) {
+		return this.syJobTitlePub.findJobTitleByPositionId(companyId, positionId, baseDate)
+				.map(x-> this.toImport(x)).orElse(null);
 	}
 
 	
@@ -47,7 +48,7 @@ public class SyJobTitleAdapterImpl implements SyJobTitleAdapter{
 	 * @param ex
 	 * @return
 	 */
-	private JobTitleImport toImport(PubJobTitleDto ex) {
+	private JobTitleImport toImport(JobTitleExport ex) {
 		return new JobTitleImport(
 				ex.getCompanyId(), 
 				ex.getPositionId(), 
