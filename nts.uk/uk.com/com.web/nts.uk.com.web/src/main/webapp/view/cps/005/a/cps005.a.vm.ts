@@ -129,7 +129,7 @@ module nts.uk.com.view.cps005.a {
             { code: 2, name: getText("CPS005_54") },
         ];
         //<!-- mapping CategoryType enum value = 3 or 4 or 5 . But using enum HistoryType to display -->
-        historyTypes: any = new Array<any>();
+        historyTypes: Array<any> = new Array<any>();
         //mapping CategoryType enum value = 1 or 2. Theo thiết kế không lấy từ enum CategoryType
         singleMultipleType: Array<any> = [
             { value: 1, name: getText("CPS005_55") },
@@ -139,7 +139,7 @@ module nts.uk.com.view.cps005.a {
             let self = this;
             if (data) {
                 self.categoryList(_.map(data.categoryList, item => { return new PerInfoCtgModel(item) }));
-                self.historyTypes = data.historyTypes ? data.historyTypes : [];
+                self.historyTypes = data.historyTypes ? data.historyTypes.splice(0,3) : [];
             }
             //subscribe select category code
             self.perInfoCtgSelectCode.subscribe(newId => {
