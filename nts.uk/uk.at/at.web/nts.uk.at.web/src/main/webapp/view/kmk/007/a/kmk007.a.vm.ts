@@ -274,7 +274,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             nts.uk.ui.windows.setShared("KMK007_WORK_TYPES", self.listWorkType());
 
             nts.uk.ui.windows.sub.modal("/view/kmk/007/c/index.xhtml").onClosed(() => {
-
+                self.getWorkType();
             });
         }
 
@@ -609,7 +609,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             this.oneDay = ko.observable(new WorkTypeSet(param.oneDay));
             this.morning = ko.observable(new WorkTypeSet(param.morning));
             this.afternoon = ko.observable(new WorkTypeSet(param.afternoon));
-            this.dispOrder = ko.observable(param.dispOrder == 0 ? null : param.dispOrder);
+            this.dispOrder = ko.observable(param.dispOrder);
 
             if (param.abolishAtr == 0) {
                 this.icon = "";

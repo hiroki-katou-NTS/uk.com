@@ -55,7 +55,7 @@ public class WorkType extends AggregateRoot {
 	
 	private List<WorkTypeSet> workTypeSetList;
 	
-	private int dispOrder;
+	private Integer dispOrder;
 	
 	@Override
 	public void validate() {
