@@ -78,7 +78,7 @@ public interface PersonApprovalRootRepository {
 	 * @param appType
 	 * @return
 	 */
-	List<PersonApprovalRoot> findByBaseDate(String cid, String sid, Date standardDate, int appType);
+	List<PersonApprovalRoot> findByBaseDate(String cid, String sid, GeneralDate standardDate, int appType);
 	
 	/**
 	 * 個人別就業承認ルート」を取得する
@@ -87,5 +87,5 @@ public interface PersonApprovalRootRepository {
 	 * @param sid
 	 * @param baseDate
 	 */
-	List<PersonApprovalRoot> findByBaseDateOfCommon(String cid, String sid, Date baseDate);
+	List<PersonApprovalRoot> findByBaseDateOfCommon(String cid, String sid, GeneralDate baseDate);
 }

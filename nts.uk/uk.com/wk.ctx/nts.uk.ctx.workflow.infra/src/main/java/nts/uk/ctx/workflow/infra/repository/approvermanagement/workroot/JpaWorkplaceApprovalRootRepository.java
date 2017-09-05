@@ -33,12 +33,12 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			   + " AND c.applicationType IS NULL";
 	private final String FIND_BY_BASEDATE = FIND_BY_WKPID
 			+ " AND c.stardDate <= :baseDate"
-			+ " AND c.endDate => :baseDate"
+			+ " AND c.endDate >= :baseDate"
 			+ " AND c.employmentRootAtr IN (1,2,3)" 
 			+ " AND c.applicationType = :appType";
 	private final String FIND_BY_BASEDATE_OF_COM = FIND_BY_WKPID
 			+ " AND c.stardDate <= :baseDate"
-			+ " AND c.endDate => :baseDate"
+			+ " AND c.endDate >= :baseDate"
 			+ " AND c.employmentRootAtr = 0";
 	
 
@@ -105,7 +105,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 * @return WorkplaceApprovalRoots
 	 */
 	@Override
-	public List<WorkplaceApprovalRoot> findByBaseDate(String cid, String workplaceId, Date baseDate, int appType) {
+	public List<WorkplaceApprovalRoot> findByBaseDate(String cid, String workplaceId, GeneralDate baseDate, int appType) {
 		return this.queryProxy().query(FIND_BY_BASEDATE, WwfmtWpApprovalRoot.class)
 				.setParameter("companyId", cid)
 				.setParameter("workplaceId", workplaceId)
@@ -123,7 +123,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	 * @return WorkplaceApprovalRoots
 	 */
 	@Override
-	public List<WorkplaceApprovalRoot> findByBaseDateOfCommon(String cid, String workplaceId, Date baseDate) {
+	public List<WorkplaceApprovalRoot> findByBaseDateOfCommon(String cid, String workplaceId, GeneralDate baseDate) {
 		return this.queryProxy().query(FIND_BY_BASEDATE_OF_COM, WwfmtWpApprovalRoot.class)
 				.setParameter("companyId", cid)
 				.setParameter("workplaceId", workplaceId)
