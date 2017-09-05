@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.TimeRange;
 @TimeRange(max="8784:00", min = "00:00")
 public class ErrorOneYear extends TimeDurationPrimitiveValue<ErrorOneYear>{
 	
-	public ErrorOneYear(Long rawValue) {
+	public ErrorOneYear(int rawValue) {
 		super(rawValue);
 	}
 

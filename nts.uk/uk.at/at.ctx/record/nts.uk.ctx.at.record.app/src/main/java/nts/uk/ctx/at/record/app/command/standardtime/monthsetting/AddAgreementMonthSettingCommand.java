@@ -13,9 +13,9 @@ public class AddAgreementMonthSettingCommand {
 	
 	private String employeeId;
 
-	private Long yearMonthValue;
+	private int yearMonthValue;
 
-	private Long errorOneMonth;
+	private int errorOneMonth;
 
-	private Long alarmOneMonth;
+	private int alarmOneMonth;
 }

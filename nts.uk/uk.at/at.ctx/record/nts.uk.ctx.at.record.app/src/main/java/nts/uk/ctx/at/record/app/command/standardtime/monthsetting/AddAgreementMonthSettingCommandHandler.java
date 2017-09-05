@@ -27,7 +27,7 @@ public class AddAgreementMonthSettingCommandHandler extends CommandHandler<AddAg
 		AddAgreementMonthSettingCommand command = context.getCommand();
 		AgreementMonthSetting agreementMonthSetting = new AgreementMonthSetting(
 				command.getEmployeeId(),
-				new YearMonth(command.getYearMonthValue().intValue()),
+				new YearMonth(command.getYearMonthValue()),
 				new ErrorOneMonth(command.getErrorOneMonth()),
 				new AlarmOneMonth(command.getAlarmOneMonth()));
 		
