@@ -337,6 +337,11 @@ module nts.uk.request {
             });
             return dfd.promise();
         }
+        
+        export function isFileExist(fileId: string): boolean {
+            return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
+        }
+        
     }
 
 
@@ -357,6 +362,7 @@ module nts.uk.request {
 
         return destination.rawUrl;
     }
+
     export function liveView(fileId: string);
     export function liveView(webAppId: WebAppId, fileId: string): string {
         let liveViewPath = "/webapi/shr/infra/file/storage/liveview/";

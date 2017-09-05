@@ -46,6 +46,12 @@ __viewContext.ready(function() {
             console.log(nts.uk.request.specials.donwloadFile(this.fileId()));
         }
         
+        isExist() {
+           nts.uk.request.specials.isFileExist(this.fileId()).done(function(res) {
+               $("#check-exist").text(res);
+           });
+        }
+        
         preview() {
             var self = this;
             var liveviewcontainer = $("#file-review");
