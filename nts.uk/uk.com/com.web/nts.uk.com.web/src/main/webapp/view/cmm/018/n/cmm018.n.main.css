@@ -1,3 +1,12 @@
+#panel1{
+	margin: 20px 0px 0px 0px;
+    height: 300px;
+}
+
+#tab-panel{
+	width: 320px;
+}
+
 #functions-area {
     height: 57px;
 }    

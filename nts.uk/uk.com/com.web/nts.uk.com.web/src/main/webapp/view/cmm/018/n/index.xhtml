@@ -21,7 +21,31 @@
 				<button id="button2">#{i18n.getText('CMM018_72')}</button>
 			</div>
 			<div id="contents-area">
-				
+				<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+					<div class="tab-content-1">
+						<span>Tab Content 1</span><br/>
+					</div>
+					<div class="tab-content-2">
+						<span>
+							<span id="label2" class="label with-image">
+								<i class="image image-calendar"/>
+								<span>#{i18n.getText('CMM018_74')}</span>
+								<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+							</span>
+							
+							<div id="panel1" class="panel panel-frame">
+								<table id="multi-list" data-bind="ntsGridList: {
+									height: 300,
+									options: items,
+									optionsValue: 'code',
+									columns: columns,
+									multiple: true,
+									value: currentCodeList
+								}"></table>
+							</div>
+						</span><br/>
+					</div>
+				</div>
 			</div>
 		</ui:define>
 
