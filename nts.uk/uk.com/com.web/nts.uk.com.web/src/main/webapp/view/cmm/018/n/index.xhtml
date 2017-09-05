@@ -46,6 +46,22 @@
 						</span><br/>
 					</div>
 				</div>
+				
+				<div id="leftPanel">
+					<div id="label1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM018_90')}</div>
+					
+					<div id="rightTable">
+						<table id="multi-list2" data-bind="ntsGridList: {
+							height: 380,
+							options: items2,
+							optionsValue: 'code',
+							columns: columns2,
+							multiple: true,
+							value: currentCodeList2
+						}"></table>
+					</div>
+				</div>
+				
 			</div>
 		</ui:define>
 

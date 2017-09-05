@@ -2,6 +2,11 @@ module nts.uk.at.view.cmm018.n {
     export module viewmodel {
         export class ScreenModel {
 
+            //Right table's properties.
+            items2: KnockoutObservableArray<ItemModel>;
+            columns2: KnockoutObservableArray<NtsGridListColumn>;
+            currentCodeList2: KnockoutObservableArray<any>;
+            
             //Left table's properties.
             items: KnockoutObservableArray<ItemModel>;
             columns: KnockoutObservableArray<NtsGridListColumn>;
@@ -18,6 +23,20 @@ module nts.uk.at.view.cmm018.n {
             constructor() {
                 var self = this;
 
+                //Init right table.
+                self.items2 = ko.observableArray([]);
+
+                for (let i = 1; i < 15; i++) {
+                    self.items2.push(new ItemModel('00' + i, '基本給' + i));
+                }
+
+                self.columns2 = ko.observableArray([
+                    { headerText: '社員CD', key: 'code', width: 89 },
+                    { headerText: '氏名', key: 'name', width: 89 }
+                ]);
+
+                self.currentCodeList2 = ko.observableArray([]);
+                
                 //Init left table.
                 self.items = ko.observableArray([]);
 
