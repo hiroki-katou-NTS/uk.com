@@ -8,7 +8,7 @@ public class TimeItemMax extends TimeDurationPrimitiveValue<TimeItemMax> {
 
 	private static final long serialVersionUID = 1L;
 
-	public TimeItemMax(Long rawValue) {
-		super(rawValue);
+	public TimeItemMax(int timeAsMinutes) {
+		super(timeAsMinutes);
 	}
 }
