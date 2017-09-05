@@ -60,19 +60,19 @@ public class JpaCompanyEstimateTimeSettingGetMemento implements EstimateTimeSett
 				.getTargetCls() == EstimateTargetClassification.YEARLY.value) {
 			yearlyEstimateTimeSetting
 					.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_1ST,
-							YearlyEstimateTime.ofMinutes(this.estTimeCompany.getEstCondition1stTime())));
+							new YearlyEstimateTime(this.estTimeCompany.getEstCondition1stTime())));
 			yearlyEstimateTimeSetting
 			.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_2ND,
-					YearlyEstimateTime.ofMinutes(this.estTimeCompany.getEstCondition2ndTime())));
+					new YearlyEstimateTime(this.estTimeCompany.getEstCondition2ndTime())));
 			yearlyEstimateTimeSetting
 			.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_3RD,
-					YearlyEstimateTime.ofMinutes(this.estTimeCompany.getEstCondition3rdTime())));
+					new YearlyEstimateTime(this.estTimeCompany.getEstCondition3rdTime())));
 			yearlyEstimateTimeSetting
 			.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_4TH,
-					YearlyEstimateTime.ofMinutes(this.estTimeCompany.getEstCondition4thTime())));
+					new YearlyEstimateTime(this.estTimeCompany.getEstCondition4thTime())));
 			yearlyEstimateTimeSetting
 			.add(new YearlyEstimateTimeSetting(EstimatedCondition.CONDITION_5TH,
-					YearlyEstimateTime.ofMinutes(this.estTimeCompany.getEstCondition5thTime())));
+					new YearlyEstimateTime(this.estTimeCompany.getEstCondition5thTime())));
 		}
 		
 		return yearlyEstimateTimeSetting;
@@ -91,19 +91,19 @@ public class JpaCompanyEstimateTimeSettingGetMemento implements EstimateTimeSett
 		if (this.estTimeCompany.getKscmtEstTimeComSetPK()
 				.getTargetCls() != EstimateTargetClassification.YEARLY.value) {
 			monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
-					MonthlyEstimateTime.ofMinutes(this.estTimeCompany.getEstCondition1stTime()),
+					new MonthlyEstimateTime(this.estTimeCompany.getEstCondition1stTime()),
 					EstimatedCondition.CONDITION_1ST));
 			monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
-					MonthlyEstimateTime.ofMinutes(this.estTimeCompany.getEstCondition2ndTime()),
+					new MonthlyEstimateTime(this.estTimeCompany.getEstCondition2ndTime()),
 					EstimatedCondition.CONDITION_2ND));
 			monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
-					MonthlyEstimateTime.ofMinutes(this.estTimeCompany.getEstCondition3rdTime()),
+					new MonthlyEstimateTime(this.estTimeCompany.getEstCondition3rdTime()),
 					EstimatedCondition.CONDITION_3RD));
 			monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
-					MonthlyEstimateTime.ofMinutes(this.estTimeCompany.getEstCondition4thTime()),
+					new MonthlyEstimateTime(this.estTimeCompany.getEstCondition4thTime()),
 					EstimatedCondition.CONDITION_4TH));
 			monthlyEstimateTimeSetting.add(new MonthlyEstimateTimeSetting(
-					MonthlyEstimateTime.ofMinutes(this.estTimeCompany.getEstCondition5thTime()),
+					new MonthlyEstimateTime(this.estTimeCompany.getEstCondition5thTime()),
 					EstimatedCondition.CONDITION_5TH));
 		}
 		
