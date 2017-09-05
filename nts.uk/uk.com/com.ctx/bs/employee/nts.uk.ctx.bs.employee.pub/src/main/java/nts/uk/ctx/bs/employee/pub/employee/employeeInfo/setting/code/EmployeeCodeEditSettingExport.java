@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class EmployeeCodeEditSettingDto {
+public class EmployeeCodeEditSettingExport {
 	private String companyId;
 	
 	private int ceMethodAtr;

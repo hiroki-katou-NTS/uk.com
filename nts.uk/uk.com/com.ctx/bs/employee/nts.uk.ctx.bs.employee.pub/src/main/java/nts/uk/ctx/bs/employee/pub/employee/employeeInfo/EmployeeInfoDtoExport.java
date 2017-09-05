@@ -14,7 +14,7 @@ import nts.arc.time.GeneralDate;
  */
 @Data
 @AllArgsConstructor
-public class EmployeeInfoDto {
+public class EmployeeInfoDtoExport {
 
 	/** The company id. */
 	private String companyId;
