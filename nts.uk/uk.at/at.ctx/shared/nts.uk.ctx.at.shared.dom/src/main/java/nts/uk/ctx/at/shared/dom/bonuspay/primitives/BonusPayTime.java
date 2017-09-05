@@ -11,7 +11,7 @@ public class BonusPayTime extends TimeDurationPrimitiveValue<BonusPayTime>{
 	 */
 	private static final long serialVersionUID = 1L;
 	
-	public BonusPayTime(Long rawValue) {
+	public BonusPayTime(int rawValue) {
 		super(rawValue);
 	}
 
