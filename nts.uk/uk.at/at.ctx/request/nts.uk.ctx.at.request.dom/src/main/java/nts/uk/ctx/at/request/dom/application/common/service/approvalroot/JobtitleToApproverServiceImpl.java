@@ -30,11 +30,16 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	private JobtitleSearchSetAdapter jobtitleSearchSetAdapter;
 	@Inject
 	private SyJobTitleAdapter syJobTitleAdapter;
+	
+	/**
+	 * 3.職位から承認者へ変換する
+	 * 
+	 */
 	@Override
 	public List<ApproverInfo> convertToApprover(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
 		// 共通アルゴリズム「申請者の職位の序列は承認者のと比較する」を実行する
-		boolean isSameRank = compareRank(cid, sid, baseDate, jobTitleId);
-		if (isSameRank) {
+		boolean isApper = compareRank(cid, sid, baseDate, jobTitleId);
+		if (isApper) {
 			String wkpId = this.employeeAdapter.getWorkplaceId(cid, sid, baseDate);
 			// thực hiện xử lý 「職場に指定する職位の対象者を取得する」
 			List<ApproverInfo> approvers = this.getByWkp(cid, wkpId, baseDate, jobTitleId);
@@ -80,11 +85,15 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	 */
 	private boolean compareRank(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
 		JobTitleImport jobOfEmp = this.syJobTitleAdapter.findJobTitleBySid(sid, baseDate);
+		// 承認者の
 		JobTitleImport jobOfApprover = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobTitleId, baseDate);
+		// 申請の
 		JobTitleImport jobOfRequest = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobOfEmp.getPositionId(), baseDate);
+		if (jobOfRequest.getPositionCode().compareTo(jobOfApprover.getPositionCode()) < 0) {
+			return true;
+		}
 		
-		
-		return true;
+		return false;
 	}
 
 	/**
@@ -99,7 +108,8 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	 * @return
 	 */
 	private List<ApproverInfo> getByWkp(String cid, String wkpId, GeneralDate baseDate, String jobTitleId) {
-		// TODO Auto-generated method stub
+		// 承認者の
+				JobTitleImport jobOfApprover = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobTitleId, baseDate);
 		return null;
 	}
 }
