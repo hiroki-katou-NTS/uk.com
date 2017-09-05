@@ -628,13 +628,13 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * @param importProcess the import process
      * @param lstValue the lst value
      */
-    private void validActualVal(ImportProcess importProcess, List<String> lstValue) {
+    private void validActualVal(ImportProcess importProcess, List<String> result) {
         // finish process of line.
         if (importProcess.stopLine) {
             return;
         }
-        for (int i = INDEX_BEGIN_COL_VALUE; i < lstValue.size(); i++) {
-            this.validValByPrimitive(importProcess, i, lstValue.get(i));
+        for (int i = INDEX_BEGIN_COL_VALUE; i < result.size(); i++) {
+            this.validValByPrimitive(importProcess, i, result.get(i));
         }
     }
     
