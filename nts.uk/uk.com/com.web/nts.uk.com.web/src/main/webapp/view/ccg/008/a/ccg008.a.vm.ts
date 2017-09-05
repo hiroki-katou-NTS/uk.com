@@ -10,7 +10,7 @@
         dataSource: KnockoutObservable<model.LayoutAllDto>;
         displayButton: boolean;
         topPageCode: KnockoutObservable<string>; 
-        constructor() {
+        constructor() { 
             var self = this;
             self.topPageCode = ko.observable('');
             self.displayButton = true;

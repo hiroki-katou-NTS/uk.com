@@ -7,7 +7,7 @@ package nts.uk.ctx.bs.employee.dom.access.jobtitle;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.access.jobtitle.dto.AcJobTitleDto;
+import nts.uk.ctx.bs.employee.dom.access.jobtitle.dto.JobTitleImport;
 
 /**
  * The Interface PersonAdapter.
@@ -20,7 +20,7 @@ public interface SyJobTitleAdapter {
 	 * @param personIds the person ids
 	 * @return the list
 	 */
-	List<AcJobTitleDto> findAll(String companyId, GeneralDate referenceDate);
+	List<JobTitleImport> findAll(String companyId, GeneralDate referenceDate);
 
 	/**
 	 * Find by job ids.
@@ -28,7 +28,7 @@ public interface SyJobTitleAdapter {
 	 * @param jobIds the job ids
 	 * @return the list
 	 */
-	List<AcJobTitleDto> findByJobIds(List<String> jobIds);
+	List<JobTitleImport> findByJobIds(List<String> jobIds);
 
 	/**
 	 * Find by job ids.
@@ -38,6 +38,6 @@ public interface SyJobTitleAdapter {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	List<AcJobTitleDto> findByJobIds(String companyId, List<String> jobIds,
+	List<JobTitleImport> findByJobIds(String companyId, List<String> jobIds,
 			GeneralDate baseDate);
 }

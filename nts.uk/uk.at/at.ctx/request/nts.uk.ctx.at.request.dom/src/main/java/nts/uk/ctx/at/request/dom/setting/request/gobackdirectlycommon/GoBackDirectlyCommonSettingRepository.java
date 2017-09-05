@@ -9,7 +9,7 @@ public interface GoBackDirectlyCommonSettingRepository {
 	 * @param appID
 	 * @return
 	 */
-	public Optional<GoBackDirectlyCommonSetting> findByAppID(String companyID, String appID);
+	public Optional<GoBackDirectlyCommonSetting> findByCompanyID(String companyID);
 	/**
 	 * @param goBackDirectlyCommonSettingItem
 	 */

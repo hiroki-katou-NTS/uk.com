@@ -83,7 +83,7 @@ module nts.uk.ui.koExtentions {
         }
 
         update($input: JQuery, data: any) {
-            var value: (val: any) => string = data.value;
+            var value: (val?: any) => string = data.value;
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
@@ -413,25 +413,31 @@ module nts.uk.ui.koExtentions {
     }
     
     /**
-     * TimeEditor Processor
+     * TimeWithDayAttrEditor Processor
      */
     class TimeWithDayAttrEditorProcessor extends EditorProcessor {
         
         init($input: JQuery, data: any) {
             super.init($input, data);
             $input.focus(() => {
-                if (!$input.attr('readonly')) {
-                    var selectionType = document.getSelection().type;
-                    // Remove separator (comma)
-                    let parsed = time.parseTime(data.value(), true);
-                    let value = parsed.success ? parsed.format() : data.value();
-                    $input.val(value);
-                    // If focusing is caused by Tab key, select text
-                    // this code is needed because removing separator deselects.
-                    if (selectionType === 'Range') {
-                        $input.select();
-                    }
+                if ($input.attr('readonly')) {
+                    return;
                 }
+                if ($input.ntsError('hasError')) {
+                    return;
+                }
+                
+                var selectionTypeOnFocusing = document.getSelection().type;
+                
+                let timeWithDayAttr = time.minutesBased.clock.dayattr.create(data.value());
+                $input.val(timeWithDayAttr.shortText);
+
+                // If focusing is caused by Tab key, select text
+                // this code is needed because removing separator deselects.
+                if (selectionTypeOnFocusing === 'Range') {
+                    $input.select();
+                }
+                
             });
         }
         

@@ -34,17 +34,17 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 				entity.krqdtGoBackDirectlyPK.appID,
 				new WorkTypeCode(entity.workTypeCD), 
 				new SiftCode(entity.siftCD),
-				EnumAdaptor.valueOf(entity.workChangeAtr, UseAtr.class), 
+				EnumAdaptor.valueOf(entity.workChangeAtr, UseAtr.class),
+				EnumAdaptor.valueOf(entity.goWorkAtr1, UseAtr.class),
+				EnumAdaptor.valueOf(entity.backHomeAtr1, UseAtr.class),
 				new WorkTimeGoBack(entity.workTimeStart1),
 				new WorkTimeGoBack(entity.workTimeEnd1), 
 				entity.workLocationCd1,
-				EnumAdaptor.valueOf(entity.goWorkAtr1, UseAtr.class),
-				EnumAdaptor.valueOf(entity.backHomeAtr1, UseAtr.class), 
+				EnumAdaptor.valueOf(entity.goWorkAtr2, UseAtr.class),
+				EnumAdaptor.valueOf(entity.backHomeAtr2, UseAtr.class),
 				new WorkTimeGoBack(entity.workTimeStart2),
 				new WorkTimeGoBack(entity.workTimeEnd2), 
-				entity.workLocationCd1,
-				EnumAdaptor.valueOf(entity.goWorkAtr2, UseAtr.class),
-				EnumAdaptor.valueOf(entity.backHomeAtr2, UseAtr.class));
+				entity.workLocationCd1);
 	}
 
 	/**
@@ -78,6 +78,40 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID)
 				.getSingle(c -> toDomain(c));
+	}
+
+	@Override
+	public void update(GoBackDirectly goBackDirectly) {
+		//get current Entity
+		KrqdtGoBackDirectly currentEntity = this.queryProxy()
+				.find(new KrqdtGoBackDirectlyPK(goBackDirectly.getCompanyID(),goBackDirectly.getAppID()), KrqdtGoBackDirectly.class)
+				.get(); 
+		currentEntity.setGoWorkAtr1(goBackDirectly.getGoWorkAtr1().value);
+		currentEntity.setBackHomeAtr1(goBackDirectly.getBackHomeAtr1().value);
+		currentEntity.setWorkTimeStart1(goBackDirectly.getWorkTimeStart1().v());
+		currentEntity.setWorkTimeEnd1(goBackDirectly.getWorkTimeEnd1().v());
+		currentEntity.setGoWorkAtr2(goBackDirectly.getGoWorkAtr2().value);
+		currentEntity.setBackHomeAtr2(goBackDirectly.getBackHomeAtr2().value);
+		currentEntity.setWorkChangeAtr(goBackDirectly.getWorkChangeAtr().value);
+		currentEntity.setWorkTimeStart2(goBackDirectly.getWorkTimeStart2().v());
+		currentEntity.setWorkTimeEnd2(goBackDirectly.getWorkTimeEnd2().v());
+		
+		if(goBackDirectly.getWorkChangeAtr() == UseAtr.USE) {
+			currentEntity.setWorkTypeCD(goBackDirectly.getWorkTypeCD().v());
+			currentEntity.setSiftCD(goBackDirectly.getSiftCd().v());
+		}
+		this.commandProxy().update(goBackDirectly);
+	}
+
+	@Override
+	public void insert(GoBackDirectly goBackDirectly) {
+		this.commandProxy().insert(goBackDirectly);
+	}
+
+	@Override
+	public void delete(GoBackDirectly goBackDirectly) {
+		this.commandProxy()
+			.remove(KrqdtGoBackDirectly.class, new KrqdtGoBackDirectlyPK(goBackDirectly.getCompanyID(),goBackDirectly.getAppID()));
 	}
 
 }

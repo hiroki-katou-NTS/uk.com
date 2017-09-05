@@ -18,10 +18,9 @@ public class RemoveSpecialHolidayCommandHandler extends CommandHandler<RemoveSpe
 	protected void handle(CommandHandlerContext<RemoveSpecialHolidayCommand> context) {
 		RemoveSpecialHolidayCommand removeSpecialHolidayCommand = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		int specialHolidayCode = removeSpecialHolidayCommand.getSpecialHolidayCode();
 		
 		// Delete Special Holiday
-		specialHolidayRepository.delete(companyId, specialHolidayCode);
+		specialHolidayRepository.delete(companyId, removeSpecialHolidayCommand.getSpecialHolidayCode());
 		
 	}
 

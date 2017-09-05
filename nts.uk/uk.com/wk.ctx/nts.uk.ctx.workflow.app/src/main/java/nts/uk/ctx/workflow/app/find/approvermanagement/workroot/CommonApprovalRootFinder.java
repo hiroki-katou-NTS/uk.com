@@ -2,6 +2,7 @@ package nts.uk.ctx.workflow.app.find.approvermanagement.workroot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,6 +14,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
+import nts.uk.shr.com.company.CompanyAdapter;
+import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * 
@@ -21,6 +24,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class CommonApprovalRootFinder {
+	@Inject
+	private CompanyAdapter comAdapter;
 	@Inject
 	private PersonApprovalRootRepository repo;
 	@Inject
@@ -35,6 +40,9 @@ public class CommonApprovalRootFinder {
 	public CommonApprovalRootDto getAllCommonApprovalRoot(ParamDto param){
 		//user contexts
 		String companyId = AppContexts.user().companyId();
+		//get name company
+		Optional<CompanyInfor> companyCurrent = comAdapter.getCurrentCompany();
+		String companyName = companyCurrent == null ? "" : companyCurrent.get().getCompanyName();
 		//TH: company - domain 会社別就業承認ルート
 		if(param.getRootType() == 0){
 			List<CompanyAppRootDto> lstComRoot = new ArrayList<>();
@@ -61,7 +69,7 @@ public class CommonApprovalRootFinder {
 				//add in lstAppRoot
 				lstComRoot.add(new CompanyAppRootDto(companyApprovalRoot,lstApprovalPhase));
 			}
-			return new CommonApprovalRootDto(lstComRoot, null, null);
+			return new CommonApprovalRootDto(companyName,lstComRoot, null, null);
 		}
 		//TH: workplace - domain 職場別就業承認ルート
 		if(param.getRootType() == 1){
@@ -90,7 +98,7 @@ public class CommonApprovalRootFinder {
 				//add in lstAppRoot
 				lstWpRoot.add(new WorkPlaceAppRootDto(workplaceApprovalRoot,lstApprovalPhase));
 			}
-			return new CommonApprovalRootDto(null, lstWpRoot, null);
+			return new CommonApprovalRootDto(companyName, null, lstWpRoot, null);
 		}
 		//TH: person - domain 個人別就業承認ルート
 		else{
@@ -118,7 +126,7 @@ public class CommonApprovalRootFinder {
 				//add in lstAppRoot
 				lstPsRoot.add(new PersonAppRootDto(personApprovalRoot,lstApprovalPhase));
 			}
-			return new CommonApprovalRootDto(null, null, lstPsRoot);
+			return new CommonApprovalRootDto(companyName, null, null, lstPsRoot);
 		}
 	}
 	

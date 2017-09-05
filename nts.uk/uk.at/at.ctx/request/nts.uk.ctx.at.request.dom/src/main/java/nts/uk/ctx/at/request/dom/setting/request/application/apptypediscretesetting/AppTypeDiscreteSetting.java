@@ -14,6 +14,11 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.RetrictPreTi
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 
+/**
+ * 申請種類別設定
+ * @author ducpm
+ *
+ */
 @Model
 @Value
 public class AppTypeDiscreteSetting {

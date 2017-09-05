@@ -69,19 +69,19 @@ public class EstimateTimeDto implements EstimateTimeSettingSetMemento{
 			yearlyEstimateTimeSetting.forEach(yearly->{
 				switch (yearly.getEstimatedCondition()) {
 				case CONDITION_1ST:
-					time1st = new Double(yearly.getTime().minutes()).intValue();
+					time1st = yearly.getTime().valueAsMinutes();
 					break;
 				case CONDITION_2ND:
-					time2nd = new Double(yearly.getTime().minutes()).intValue();
+					time2nd = yearly.getTime().valueAsMinutes();
 					break;
 				case CONDITION_3RD:
-					time3rd = new Double(yearly.getTime().minutes()).intValue();
+					time3rd = yearly.getTime().valueAsMinutes();
 					break;
 				case CONDITION_4TH:
-					time4th = new Double(yearly.getTime().minutes()).intValue();
+					time4th = yearly.getTime().valueAsMinutes();
 					break;
 				case CONDITION_5TH:
-					time5th = new Double(yearly.getTime().minutes()).intValue();
+					time5th = yearly.getTime().valueAsMinutes();
 					break;
 				}
 			});
@@ -104,19 +104,19 @@ public class EstimateTimeDto implements EstimateTimeSettingSetMemento{
 			monthlyEstimateTimeSetting.forEach(monthly -> {
 				switch (monthly.getEstimatedCondition()) {
 				case CONDITION_1ST:
-					time1st = new Double(monthly.getTime().minutes()).intValue();
+					time1st = monthly.getTime().valueAsMinutes();
 					break;
 				case CONDITION_2ND:
-					time2nd = new Double(monthly.getTime().minutes()).intValue();
+					time2nd = monthly.getTime().valueAsMinutes();
 					break;
 				case CONDITION_3RD:
-					time3rd = new Double(monthly.getTime().minutes()).intValue();
+					time3rd = monthly.getTime().valueAsMinutes();
 					break;
 				case CONDITION_4TH:
-					time4th = new Double(monthly.getTime().minutes()).intValue();
+					time4th = monthly.getTime().valueAsMinutes();
 					break;
 				case CONDITION_5TH:
-					time5th = new Double(monthly.getTime().minutes()).intValue();
+					time5th = monthly.getTime().valueAsMinutes();
 					break;
 				}
 			});

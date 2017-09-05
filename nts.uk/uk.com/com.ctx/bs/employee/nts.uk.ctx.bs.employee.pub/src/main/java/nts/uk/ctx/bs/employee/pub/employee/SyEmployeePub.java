@@ -21,6 +21,6 @@ public interface SyEmployeePub {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	List<EmployeeDto> findByWpkIds(String companyId, List<String> workplaceIds, GeneralDate baseDate);
+	List<EmployeeExport> findByWpkIds(String companyId, List<String> workplaceIds, GeneralDate baseDate);
 
 }
