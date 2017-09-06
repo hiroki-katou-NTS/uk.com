@@ -4,44 +4,35 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.overtime;
 
-import java.util.List;
-
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Class OvertimeSetting.
+ * The Class OvertimeLangName.
  */
-//時間外超過設定
+// 超過時間の他言語表示名
+
 @Getter
-public class OvertimeSetting extends AggregateRoot{
+public class OvertimeLangName extends AggregateRoot{
 	
 	/** The company id. */
 	// 会社ID
 	private CompanyId companyId;
 
-	/** The note. */
-	// 備考
-	private OvertimeNote note;
+	/** The name. */
+	// 名称
+	private OvertimeName name;
 	
-	/** The breakdown items. */
-	// 内訳項目一覧
-	private List<OvertimeBRDItem> breakdownItems;
+	/** The language id. */
+	// 言語ID
+	private LanguageId languageId;
 	
-	/** The calculation method. */
-	// 計算方法
-	private OvertimeCalculationMethod calculationMethod;
-	
-	/** The over times. */
-	// 超過時間一覧
-	private List<Overtime> overtimes;
-	
-	
+	/** The overtime no. */
+	// 超過時間NO
+	private OvertimeNo overtimeNo;
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -49,6 +40,8 @@ public class OvertimeSetting extends AggregateRoot{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
+		result = prime * result + ((languageId == null) ? 0 : languageId.hashCode());
+		result = prime * result + ((overtimeNo == null) ? 0 : overtimeNo.hashCode());
 		return result;
 	}
 
@@ -63,13 +56,22 @@ public class OvertimeSetting extends AggregateRoot{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		OvertimeSetting other = (OvertimeSetting) obj;
+		OvertimeLangName other = (OvertimeLangName) obj;
 		if (companyId == null) {
 			if (other.companyId != null)
 				return false;
 		} else if (!companyId.equals(other.companyId))
 			return false;
+		if (languageId == null) {
+			if (other.languageId != null)
+				return false;
+		} else if (!languageId.equals(other.languageId))
+			return false;
+		if (overtimeNo != other.overtimeNo)
+			return false;
 		return true;
 	}
-
+	
+	
+	
 }
