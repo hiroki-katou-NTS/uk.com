@@ -9,6 +9,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
     export class ScreenModel {
         categoryList: KnockoutObservableArray<any> = ko.observableArray([]);
+        categorySourceLst: KnockoutObservableArray<any> = ko.observableArray([]);
         currentCategory: KnockoutObservable<CategoryInfoDetail> = ko.observable((new CategoryInfoDetail({
             id: '', categoryNameDefault: '',
             categoryName: '', categoryType: 4, isAbolition: "", itemList: []
@@ -95,6 +96,15 @@ module nts.uk.com.view.cps006.a.viewmodel {
                             categoryType: x.categoryType,
                             isAbolition: x.isAbolition == 1 ? "<i  style=\"margin-left: 10px\" class=\"icon icon-close\"></i>" : "",
                         })));
+
+                        self.categorySourceLst(_.map(data, x => new CategoryInfo({
+                            id: x.id,
+                            categoryCode: x.categoryCode,
+                            categoryName: x.categoryName,
+                            categoryType: x.categoryType,
+                            isAbolition: ""
+                        })));
+
                         if (id === undefined) {
                             self.currentCategory().id(self.categoryList()[0].id);
                         } else {
@@ -118,6 +128,14 @@ module nts.uk.com.view.cps006.a.viewmodel {
                             categoryType: x.categoryType,
                             isAbolition: ""
                         })));
+                        self.categorySourceLst(_.map(data, x => new CategoryInfo({
+                            id: x.id,
+                            categoryCode: x.categoryCode,
+                            categoryName: x.categoryName,
+                            categoryType: x.categoryType,
+                            isAbolition: ""
+                        })));
+
                         if (id === undefined) {
                             self.currentCategory().id(self.categoryList()[0].id);
                         } else {
@@ -152,7 +170,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
 
         openCDL022Modal() {
             let self = this,
-                cats = _.map(ko.toJS(self.categoryList), (x: any) => { return { id: x.id, name: x.categoryName }; });
+                cats = _.map(ko.toJS(self.categorySourceLst), (x: any) => { return { id: x.id, name: x.categoryName }; });
             block.invisible();
             setShared('CDL020_PARAMS', cats);
             nts.uk.ui.windows.sub.modal('/view/cdl/022/a/index.xhtml', { title: '' }).onClosed(function(): any {
@@ -256,7 +274,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
         categoryName: KnockoutObservable<string>;
         categoryType: number;
         isAbolition: KnockoutObservable<boolean>;
-        isExistedItemLst : number;
+        isExistedItemLst: number;
         displayIsAbolished: number = 0;
         itemList: KnockoutObservableArray<any>;
         currentItemId: KnockoutObservable<string> = ko.observable('');
@@ -279,7 +297,7 @@ module nts.uk.com.view.cps006.a.viewmodel {
             this.itemList = ko.observableArray(params.itemList || []);
         }
 
-        setData(params: any, displayIsAbolished: number, isExistedItemLst:  number) {
+        setData(params: any, displayIsAbolished: number, isExistedItemLst: number) {
             this.categoryNameDefault = params.categoryNameDefault;
             this.categoryName(params.categoryName);
             this.categoryType = params.categoryType;
