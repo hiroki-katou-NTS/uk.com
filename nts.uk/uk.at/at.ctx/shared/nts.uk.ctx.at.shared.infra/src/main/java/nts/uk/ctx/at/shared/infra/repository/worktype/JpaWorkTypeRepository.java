@@ -190,7 +190,20 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	
 	@Override
 	public void update(WorkType workType) {
-		this.commandProxy().update(toEntity(workType));	
+		KshmtWorkTypePK key = new KshmtWorkTypePK(workType.getCompanyId(), workType.getWorkTypeCode().v());
+		KshmtWorkType entity = this.queryProxy().find(key, KshmtWorkType.class).get();
+		entity.kshmtWorkTypePK = key;
+		entity.symbolicName = workType.getSymbolicName().v();
+		entity.name = workType.getName().v();		
+		entity.abbreviationName = workType.getAbbreviationName().v();
+		entity.memo = workType.getMemo().v();
+		entity.deprecateAtr = workType.getDeprecate().value;
+		entity.worktypeAtr = workType.getDailyWork().getWorkTypeUnit().value;
+		entity.oneDayAtr = workType.getDailyWork().getOneDay().value;
+		entity.morningAtr = workType.getDailyWork().getMorning().value;
+		entity.afternoonAtr = workType.getDailyWork().getAfternoon().value;
+		entity.calculatorMethod = workType.getCalculateMethod().value;
+		this.commandProxy().update(entity);	
 	}
 
 	@Override
