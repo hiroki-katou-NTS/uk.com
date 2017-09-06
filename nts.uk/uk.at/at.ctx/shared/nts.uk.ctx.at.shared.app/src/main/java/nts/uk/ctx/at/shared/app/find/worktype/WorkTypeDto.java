@@ -35,7 +35,7 @@ public class WorkTypeDto {
 	/* 出勤率の計算方法 */
 	private int calculatorMethod;
 
-	private int dispOrder;
+	private Integer dispOrder;
 
 	private List<WorkTypeSetDto> workTypeSets;
 

@@ -68,10 +68,13 @@ module nts.uk.com.view.cps005.b {
                     newItemDef;
                 if (self.isUpdate == true) {
                     newItemDef = new UpdateItemModel(self.currentItemData().currentItemSelected());
+                    newItemDef.perInfoCtgId = self.categoryId;
                     newItemDef.singleItem.referenceCode = "Hard Code";
                     new service.Service().updateItemDef(newItemDef).done(function(data: string) {
                         if (data) {
                             info({ messageId: data }).then(() => { info({ messageId: "Msg_15" }); });
+                        } else {
+                            info({ messageId: "Msg_15" });
                         }
                         self.reloadData();
                         self.currentItemData().perInfoItemSelectCode("");
@@ -347,6 +350,7 @@ module nts.uk.com.view.cps005.b {
 
     export class UpdateItemModel {
         perInfoItemDefId: string;
+        perInfoCtgId: string;
         itemName: string;
         singleItem: SingleItemAddModel;
         constructor(data: PersonInfoItem) {

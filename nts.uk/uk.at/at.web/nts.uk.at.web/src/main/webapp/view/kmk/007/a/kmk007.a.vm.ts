@@ -276,8 +276,15 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             nts.uk.ui.windows.setShared("KMK007_WORK_TYPES", self.listWorkType());
 
             nts.uk.ui.windows.sub.modal("/view/kmk/007/c/index.xhtml").onClosed(() => {
-
+                self.getWorkType();
             });
+        }
+        
+        private openBDialog(itemId: number){
+            nts.uk.ui.windows.setShared("KMK007_ITEM_ID", itemId);
+            nts.uk.ui.windows.sub.modal("/view/kmk/007/b/index.xhtml").onClosed(() => {
+                
+            });  
         }
 
         private addWorkType(): any {
@@ -490,7 +497,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             return dfd.promise();
         }
 
-        changeLanguage(): void {
+        private changeLanguage(): void {
             let self = this;
             let dfd = $.Deferred();
             if (self.index1 % 2 != 0) {
@@ -632,7 +639,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             this.oneDay = ko.observable(new WorkTypeSet(param.oneDay));
             this.morning = ko.observable(new WorkTypeSet(param.morning));
             this.afternoon = ko.observable(new WorkTypeSet(param.afternoon));
-            this.dispOrder = ko.observable(param.dispOrder == 0 ? null : param.dispOrder);
+            this.dispOrder = ko.observable(param.dispOrder);
 
             if (param.abolishAtr == 0) {
                 this.icon = "";
