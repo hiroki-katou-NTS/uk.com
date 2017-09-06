@@ -326,11 +326,11 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
         }
 
-        genParamDisplayOrder() {
+        genParamDisplayOrder(paramList) {
             let self = this,
                 disPlayOrderArray = [];
 
-            for (let i of self.itemInfoDefList()) {
+            for (let i of paramList) {
 
                 var item = {
                     id: i.id,
@@ -347,35 +347,44 @@ module nts.uk.com.view.cps006.b.viewmodel {
         OpenCDL022Modal() {
 
             let self = this,
-                command;
+                command,
+                paramList = [];
 
-            setShared('CDL020_PARAMS', self.genParamDisplayOrder());
+            service.getItemInfoDefList(self.currentCategory.id, true).done(function(itemInfoDefList: Array<IItemInfoDef>) {
 
-            block.invisible();
+                paramList = self.genParamDisplayOrder(itemInfoDefList);
 
-            nts.uk.ui.windows.sub.modal('/view/cdl/022/a/index.xhtml', { title: '' }).onClosed(function(): any {
+                setShared('CDL020_PARAMS', paramList);
 
-                if (!getShared('CDL020_VALUES')) {
-                    block.clear();
-                    return;
-                }
+                block.invisible();
 
-                command = {
-                    categoryId: self.currentCategory.id,
-                    orderItemList: getShared('CDL020_VALUES')
-                }
+                nts.uk.ui.windows.sub.modal('/view/cdl/022/a/index.xhtml', { title: '' }).onClosed(function(): any {
 
-                service.SetOrder(command).done(function() {
-
-                    self.loadDataForGrid().done(function() {
-
+                    if (!getShared('CDL020_VALUES')) {
                         block.clear();
+                        return;
+                    }
+
+                    command = {
+                        categoryId: self.currentCategory.id,
+                        orderItemList: getShared('CDL020_VALUES')
+                    }
+
+                    service.SetOrder(command).done(function() {
+
+                        self.loadDataForGrid().done(function() {
+
+                            block.clear();
+                        });
+
                     });
+
 
                 });
 
-
             });
+
+
         }
 
 
