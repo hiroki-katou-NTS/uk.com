@@ -49,7 +49,8 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 		val entity = new KshstYearServiceSet();
 		entity.kshstYearServiceSetPK = new KshstYearServiceSetPK(domain.getCompanyId(),
 																	domain.getSpecialHolidayCode(),
-																	domain.getYearServiceType());
+																	domain.getYearServiceNo());
+		entity.yearServiceType = domain.getYearServiceType();
 		entity.year = domain.getYear();
 		entity.month = domain.getMonth();
 		entity.date = domain.getDate();
@@ -134,7 +135,7 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 		}
 	}
 	@Override
-	public Optional<YearServiceSet> findSet(String companyId, int specialHolidayCode, int yearServiceType) {
+	public Optional<YearServiceSet> findSet(String companyId, String specialHolidayCode, int yearServiceType) {
 		return this.queryProxy().find(new KshstYearServiceSetPK(companyId, specialHolidayCode, yearServiceType), KshstYearServiceSet.class).map(c->toDomainSet(c));
 	}
 	@Override
@@ -152,7 +153,12 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 	public void updateCom(YearServiceCom yearServiceCom) {
 		KshstYearServiceCom entity = toEntityCom(yearServiceCom);
 		KshstYearServiceCom oldEntity = this.queryProxy().find(entity.kshstYearServiceComPK, KshstYearServiceCom.class).get();
-		oldEntity.setLengthServiceYearAtr(entity.lengthServiceYearAtr);
+		oldEntity.lengthServiceYearAtr = entity.lengthServiceYearAtr;
+		if (yearServiceCom.getYearServiceSets() != null) {
+			oldEntity.listYearServiceSet =  yearServiceCom.getYearServiceSets().stream()
+					.map(x -> toEntitySet(x))
+					.collect(Collectors.toList());
+		}
 		this.commandProxy().update(oldEntity);
 	}
 	@Override
@@ -160,7 +166,7 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 		this.commandProxy().insert(toEntityCom(yearServiceCom));
 	}
 	@Override
-	public Optional<YearServiceCom> findCom(String companyId, int specialHolidayCode) {
+	public Optional<YearServiceCom> findCom(String companyId, String specialHolidayCode) {
 		return this.queryProxy().find(new KshstYearServiceComPK(companyId, specialHolidayCode), KshstYearServiceCom.class).map(c->toDomainCom(c));
 	}
 	

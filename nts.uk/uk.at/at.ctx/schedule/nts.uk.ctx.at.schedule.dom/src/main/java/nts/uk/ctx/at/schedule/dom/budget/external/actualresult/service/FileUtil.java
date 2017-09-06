@@ -13,9 +13,9 @@ import nts.gul.csv.NtsCsvReader;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetCharset;
 
 /**
- * The Class FileUltil.
+ * The Class FileUtil.
  */
-public class FileUltil {
+public class FileUtil {
     
     /**
      * New csv reader.
@@ -24,8 +24,8 @@ public class FileUltil {
      * @return the nts csv reader
      */
     public static NtsCsvReader newCsvReader(Integer valueEncoding) {
-        Charset charset = FileUltil.getCharset(valueEncoding);
-        String newLineCode = FileUltil.getNewLineCode();
+        Charset charset = getCharset(valueEncoding);
+        String newLineCode = getNewLineCode();
         return NtsCsvReader.newReader().withNoHeader().withChartSet(charset)
                 .withFormat(CSVFormat.EXCEL.withRecordSeparator(newLineCode)).skipEmptyLines(true);
     }
@@ -39,9 +39,9 @@ public class FileUltil {
     private static Charset getCharset(Integer valueEncoding) {
         ExtBudgetCharset encoding = ExtBudgetCharset.valueOf(valueEncoding);
         switch (encoding) {
-            case Shift_JIS:
-                return Charset.forName("Shift_JIS");
-            default:
+        case Shift_JIS:
+            return Charset.forName("Shift_JIS");
+        default:
             return StandardCharsets.UTF_8;
         }
     }
