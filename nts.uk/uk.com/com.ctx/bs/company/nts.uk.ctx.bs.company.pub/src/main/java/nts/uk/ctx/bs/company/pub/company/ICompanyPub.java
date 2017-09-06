@@ -6,7 +6,7 @@ public interface ICompanyPub {
 	
 	/**
 	 * for request list No.51
-	 * @return List<CompanyExport>
+	 * @return List Company
 	 */
 	
 	List<CompanyExport> getAllCompany();
