@@ -37,7 +37,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         itemAgeBaseYearAtr: KnockoutObservableArray<any>;
         visibleGrantSingle: KnockoutObservable<boolean>;
         visibleGrant: KnockoutObservable<boolean>;
-        
+
         constructor() {
             var self = this;
 
@@ -174,15 +174,15 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         grantSingle: self.toGrantSingleDto(specialHolidayRes.grantSingle)
                     };
                     self.items.push(new model.SpecialHolidayDto(specialHoliday));
-                    
+
                 });
-                
+
                 dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
                 dfd.reject(error);
             });
-            
+
             return dfd.promise();
         }
 
@@ -211,14 +211,14 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             if (!subCondition) {
                 return new model.SubConditionDto({});
             }
-            
+
             subCondition.useGender = Number(subCondition.useGender) == 1;
             subCondition.useEmployee = Number(subCondition.useEmployee) == 1;
             subCondition.useCls = Number(subCondition.useCls) == 1;
             subCondition.useAge = Number(subCondition.useAge) == 1;
-            
+
             // TODO--
-            
+
             return new model.SubConditionDto(subCondition);
         }
 
@@ -231,66 +231,70 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
         addSpecialHoliday(): JQueryPromise<any> {
             var self = this;
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }
-            if (self.inp_grantMethod() == 0) {
-                self.currentItem().grantRegular(null);
-                self.currentItem().grantPeriodic(null);
-                self.currentItem().sphdLimit(null);
-                self.currentItem().subCondition(null);
-            } else {
-                var useGender = self.currentItem().subCondition().useGender();
-                var useEmployee = self.currentItem().subCondition().useEmployee();
-                var useCls = self.currentItem().subCondition().useCls();
-                var useAge = self.currentItem().subCondition().useAge();
-                
-                self.currentItem().subCondition().useGender(useGender ? 1 : 0);
-                self.currentItem().subCondition().useEmployee(useEmployee ? 1 : 0);
-                self.currentItem().subCondition().useCls(useCls ? 1 : 0);
-                self.currentItem().subCondition().useAge(useAge ? 1 : 0);
-                
-                self.currentItem().grantSingle(null);
-            }
-            self.currentItem().grantMethod(self.inp_grantMethod());
-            
-            if (self.isEnableCode()) {
-                var emptyObjectRegular: model.IGrantRegularDto = {};
-                var emptyObjectPeriodic: model.IGrantPeriodic = {};
-                var emptyObjectSphdLimit: model.ISphdLimitDto = {};
-                var emptyObjectSubCondition: model.ISubConditionDto = {};
-                var emptyObjectGrantSingle: model.IGrantSingleDto = {};
-                
-                var specialHoliday = ko.toJSON(self.currentItem());
-                specialHoliday["grantMethod"] = self.inp_grantMethod();
-                service.addSpecialHoliday(specialHoliday).done(function(res) {
-                    var resObj = ko.toJS(res);
-           
-                    if (self.currentCode) {
+            $(".nts-input").trigger("validate");
+            if (!$(".nts-input").ntsError("hasError")) {
+                if (nts.uk.ui.errors.hasError()) {
+                    return;
+                }
+                if (self.inp_grantMethod() == 0) {
+                    self.currentItem().grantRegular(null);
+                    self.currentItem().grantPeriodic(null);
+                    self.currentItem().sphdLimit(null);
+                    self.currentItem().subCondition(null);
+                } else {
+                    var useGender = self.currentItem().subCondition().useGender();
+                    var useEmployee = self.currentItem().subCondition().useEmployee();
+                    var useCls = self.currentItem().subCondition().useCls();
+                    var useAge = self.currentItem().subCondition().useAge();
+
+                    self.currentItem().subCondition().useGender(useGender ? 1 : 0);
+                    self.currentItem().subCondition().useEmployee(useEmployee ? 1 : 0);
+                    self.currentItem().subCondition().useCls(useCls ? 1 : 0);
+                    self.currentItem().subCondition().useAge(useAge ? 1 : 0);
+
+                    self.currentItem().grantSingle(null);
+                }
+                self.currentItem().grantMethod(self.inp_grantMethod());
+
+                if (self.isEnableCode()) {
+                    var emptyObjectRegular: model.IGrantRegularDto = {};
+                    var emptyObjectPeriodic: model.IGrantPeriodic = {};
+                    var emptyObjectSphdLimit: model.ISphdLimitDto = {};
+                    var emptyObjectSubCondition: model.ISubConditionDto = {};
+                    var emptyObjectGrantSingle: model.IGrantSingleDto = {};
+
+                    var specialHoliday = ko.toJSON(self.currentItem());
+                    specialHoliday["grantMethod"] = self.inp_grantMethod();
+
+                    service.addSpecialHoliday(specialHoliday).done(function(res) {
+                        var resObj = ko.toJS(res);
+
+                        if (self.currentCode) {
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                            self.getAllSpecialHoliday().done(function() {
+                                self.currentCode(self.currentItem().specialHolidayCode());
+
+                                self.isEnableCode(false);
+                            });
+                        }
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message);
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    })
+                }
+                else {
+                    service.updateSpecialHoliday(ko.toJSON(self.currentItem())).done(function(res) {
                         nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
                         self.getAllSpecialHoliday().done(function() {
                             self.currentCode(self.currentItem().specialHolidayCode());
-                            
-                            self.isEnableCode(false);
                         });
-                    }
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                })
-            }
-            else {
-                service.updateSpecialHoliday(ko.toJSON(self.currentItem())).done(function(res) {
-                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
-                    self.getAllSpecialHoliday().done(function() {
-                        self.currentCode(self.currentItem().specialHolidayCode());
-                    });
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alertError(res.message);
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                })
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message);
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    })
+                }
             }
         }
 
@@ -356,13 +360,13 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             nts.uk.ui.errors.clearAll();
             self.isEnableCode(true);
             $("#code-text").focus();
-            
+
         }
 
         changedCode(value) {
             var self = this;
             self.currentItem(self.findSpecialHoliday(value));
-            
+
             if (self.currentItem() != null) {
                 var names = self.getNames(self.workTypeList(), self.currentItem().workTypeList());
                 self.workTypeNames(names);
@@ -390,7 +394,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             nts.uk.ui.windows.setShared('KDL002_Multiple', true);
             nts.uk.ui.windows.setShared('KDL002_AllItemObj', workTypeCodes);
             nts.uk.ui.windows.setShared('KDL002_SelectedItemId', self.currentItem().workTypeList());
-            
+
             nts.uk.ui.windows.sub.modal('/view/kdl/002/a/index.xhtml', { title: '' }).onClosed(function(): any {
                 nts.uk.ui.block.clear();
                 var data = nts.uk.ui.windows.getShared('KDL002_SelectedNewItem');
@@ -399,7 +403,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     name.push(item.name);
                 });
                 self.workTypeNames(name.join(" + "));
-                
+
                 var workTypeCodes = _.map(data, function(item: IWorkTypeModal) { return item.code; });
                 self.currentItem().workTypeList(workTypeCodes);
             });
@@ -414,8 +418,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
 
         }
-        
-        
+
+
         openDDialog() {
             let self = this;
             nts.uk.ui.block.invisible();
@@ -425,11 +429,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
 
         }
-        
+
         openGDialog() {
             let self = this;
             nts.uk.ui.block.invisible();
-            nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml', {dialogClass: 'no-close' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml', { dialogClass: 'no-close' }).onClosed(function(): any {
                 nts.uk.ui.block.clear();
             });
 

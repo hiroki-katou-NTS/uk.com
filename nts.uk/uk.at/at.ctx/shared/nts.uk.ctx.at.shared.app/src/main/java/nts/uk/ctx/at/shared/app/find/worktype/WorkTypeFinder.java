@@ -17,6 +17,9 @@ import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSymbolicName;
+import nts.uk.ctx.at.shared.dom.worktype.language.WorkTypeLanguage;
+import nts.uk.ctx.at.shared.dom.worktype.language.WorkTypeLanguageRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -26,10 +29,13 @@ public class WorkTypeFinder {
 	/** The work type repo. */
 	@Inject
 	private WorkTypeRepository workTypeRepo;
-	
+
 	/** The work time repository. */
 	@Inject
 	private WorkTimeRepository workTimeRepository;
+
+	@Inject
+	private WorkTypeLanguageRepository workTypeLanguageRepo;
 
 	/** The company id. */
 	// user contexts
@@ -44,7 +50,8 @@ public class WorkTypeFinder {
 	/**
 	 * Find not deprecated by list code.
 	 *
-	 * @param codes the codes
+	 * @param codes
+	 *            the codes
 	 * @return the list
 	 */
 	public List<WorkTypeDto> findNotDeprecatedByListCode(List<String> codes) {
@@ -58,17 +65,14 @@ public class WorkTypeFinder {
 	 * @return the list
 	 */
 	public List<WorkTypeDto> findByCompanyId() {
-		return this.workTypeRepo.findByCompanyId(companyId).stream()
-				.map(c -> {
-					List<WorkTypeSetDto> workTypeSetList = c.getWorkTypeSetList()
-							.stream().map(x -> WorkTypeSetDto.fromDomain(x))
-							.collect(Collectors.toList());
-					
-					WorkTypeDto workType = WorkTypeDto.fromDomain(c);
-					workType.setWorkTypeSets(workTypeSetList);
-					return workType;
-				})
-				.collect(Collectors.toList());
+		return this.workTypeRepo.findByCompanyId(companyId).stream().map(c -> {
+			List<WorkTypeSetDto> workTypeSetList = c.getWorkTypeSetList().stream()
+					.map(x -> WorkTypeSetDto.fromDomain(x)).collect(Collectors.toList());
+
+			WorkTypeDto workType = WorkTypeDto.fromDomain(c);
+			workType.setWorkTypeSets(workTypeSetList);
+			return workType;
+		}).collect(Collectors.toList());
 	}
 
 	/**
@@ -82,7 +86,8 @@ public class WorkTypeFinder {
 	}
 
 	/**
-	 * Find by companyId and DeprecateClassification = Deprecated (added by sonnh1)
+	 * Find by companyId and DeprecateClassification = Deprecated (added by
+	 * sonnh1)
 	 * 
 	 * @return List WorkTypeDto
 	 */
@@ -90,49 +95,70 @@ public class WorkTypeFinder {
 		return this.workTypeRepo.findByCIdAndDisplayAtr(companyId, DeprecateClassification.NotDeprecated.value).stream()
 				.map(c -> WorkTypeDto.fromDomain(c)).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * Find by id.
 	 *
-	 * @param workTypeCode the work type code
+	 * @param workTypeCode
+	 *            the work type code
 	 * @return the work type dto
 	 */
-	public WorkTypeDto findById(String workTypeCode){
+	public WorkTypeDto findById(String workTypeCode) {
 		Optional<WorkType> workType = this.workTypeRepo.findByPK(companyId, workTypeCode);
-		if(workType.isPresent()){
+		if (workType.isPresent()) {
 			return WorkTypeDto.fromDomain(workType.get());
 		}
-		
+
 		return null;
 	}
-	
+
 	/**
 	 * Check pair.
 	 *
-	 * @param pairDto the pair dto
+	 * @param pairDto
+	 *            the pair dto
 	 */
-	public void checkPair(WorkTypeCheckPairDto pairDto){
+	public void checkPair(WorkTypeCheckPairDto pairDto) {
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get company id
 		String companyId = loginUserContext.companyId();
 
-		Optional<WorkType> opWorkType = this.workTypeRepo.findByPK(companyId,
-				pairDto.getWorkTypeCode());
-		
+		Optional<WorkType> opWorkType = this.workTypeRepo.findByPK(companyId, pairDto.getWorkTypeCode());
+
 		// check exist data
-		if(!opWorkType.isPresent()){
+		if (!opWorkType.isPresent()) {
 			throw new BusinessException("Msg_023");
 		}
-		
-		Optional<WorkTime> opWorkTime = this.workTimeRepository.findByCode(companyId,
-				pairDto.getWorkTimeCode());
-		
+
+		Optional<WorkTime> opWorkTime = this.workTimeRepository.findByCode(companyId, pairDto.getWorkTimeCode());
+
 		WorkType workType = opWorkType.get();
-		
-//		if(workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.OneDay)){
-//			
-//		}
+
+		// if(workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.OneDay)){
+		//
+		// }
+	}
+
+	/**
+	 * Check language base on language Id
+	 * 
+	 * @param langId
+	 * @return List WorkTypeDtos
+	 */
+	public List<WorkTypeDto> checkLanguageWorkType(String langId) {
+		if (langId.equals("jp")) {
+			List<WorkType> workType = workTypeRepo.findByCompanyId(companyId);
+			return workType.stream().map(x -> {
+				return WorkTypeDto.fromDomain(x);
+			}).collect(Collectors.toList());
+		} else {
+			List<WorkTypeLanguage> workTypeLanguage = workTypeLanguageRepo.findByCIdAndLangId(companyId, langId);
+			return workTypeLanguage.stream().map(x -> {
+				WorkType wT = new WorkType(companyId, x.getWorkTypeCode(), x.getName(), x.getAbbreviationName());
+				return WorkTypeDto.fromDomainWorkTypeLanguage(wT);
+			}).collect(Collectors.toList());
+		}
 	}
 }
