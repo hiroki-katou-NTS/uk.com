@@ -179,12 +179,22 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 				
 				// approvers count > 0 and < 10
 				if (phase.getApprovalForm() == ApprovalForm.SINGLE_APPROVED.value) {
-					// TODO: Pending cho nay can confirm voi chi Du
 					List<ApproverImport> befApprovers = phase.getApproverDtos().stream().filter(x-> x.getConfirmPerson() == ConfirmPerson.CONFIRM.value).collect(Collectors.toList());
 					
-					if (true) {
-						errorFlag = ErrorFlag.NO_CONFIRM_PERSON;
-						break;
+					if (!CollectionUtil.isEmpty(befApprovers)) {
+						// 確定者あるドメインモデル「承認者」から変換した実際の承認者がいるかチェックする
+						Optional<ApproverInfo> approver =  afterApprovers.stream().map(x -> {
+							Optional<ApproverImport> impBef = befApprovers.stream().filter(y -> y.getApproverId().equals(x.getSid())).findFirst();
+							if (!impBef.isPresent()) {
+								return null;
+							}
+							return x;
+						}).findFirst();
+						
+						if (!approver.isPresent()) {
+							errorFlag = ErrorFlag.NO_CONFIRM_PERSON;
+							break;
+						}
 					}
 				}
 				
