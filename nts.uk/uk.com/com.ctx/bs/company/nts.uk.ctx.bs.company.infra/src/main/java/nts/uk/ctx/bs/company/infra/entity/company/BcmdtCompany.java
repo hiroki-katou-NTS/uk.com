@@ -23,8 +23,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "CMNMT_COMPANY")
-public class CmnmtCompany extends UkJpaEntity implements Serializable {
+@Table(name = "BCMDT_COMPANY")
+public class BcmdtCompany extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -53,11 +53,20 @@ public class CmnmtCompany extends UkJpaEntity implements Serializable {
     @NotNull
     @Column(name = "STR_M")
     private Integer strM;
+    
+    
+    /** The Abolition. */
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "ABOLITION_ATR")
+    public int abolitionAtr;
+    
+    
 
     /**
      * Instantiates a new cmnmt company.
      */
-    public CmnmtCompany() {
+    public BcmdtCompany() {
     	super();
     }
 
@@ -66,7 +75,7 @@ public class CmnmtCompany extends UkJpaEntity implements Serializable {
      *
      * @param cid the cid
      */
-    public CmnmtCompany(String cid) {
+    public BcmdtCompany(String cid) {
         this.cid = cid;
     }
 
@@ -91,10 +100,10 @@ public class CmnmtCompany extends UkJpaEntity implements Serializable {
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are
 		// not set
-		if (!(object instanceof CmnmtCompany)) {
+		if (!(object instanceof BcmdtCompany)) {
 			return false;
 		}
-		CmnmtCompany other = (CmnmtCompany) object;
+		BcmdtCompany other = (BcmdtCompany) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
