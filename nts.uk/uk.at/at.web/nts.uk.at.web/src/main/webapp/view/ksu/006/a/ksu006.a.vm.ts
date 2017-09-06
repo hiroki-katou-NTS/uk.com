@@ -95,7 +95,7 @@ module nts.uk.at.view.ksu006.a {
                 
                 $.when(self.loadCharsetEnum(), self.loadAllExternalBudget()).done(() => {
                     if (self.encodingList().length > 0) {
-                        self.selectedEncoding(self.encodingList()[0]);
+                        self.selectedEncoding(self.encodingList()[0].value);
                     }
                     
                     if (self.externalBudgetList().length > 0) {
@@ -182,7 +182,7 @@ module nts.uk.at.view.ksu006.a {
                 let dfd = $.Deferred<any>();
                 
                 // list external budget is empty ==> show mode Daily.
-                if (nts.uk.text.isNullOrEmpty(self.selectedExtBudgetCode()) {
+                if (nts.uk.text.isNullOrEmpty(self.selectedExtBudgetCode())) {
                     self.isDataDailyUnit(true);
                     return dfd.promise();
                 }
@@ -294,15 +294,17 @@ module nts.uk.at.view.ksu006.a {
                 service.validateFile(self.toJSObject()).done(function() {
                     dfd.resolve();
                 }).fail(function(res: any) {
-                    if (res.businessException && res.messageId == 'Msg_161') {
-                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_161' }).ifYes(function() {
-                            dfd.reject(true);
-                        }).ifNo(function() {
-                            dfd.reject(false);
-                        });
-                    } else {
-                        self.showMessageError(res);
-                    }
+                    // TODO: pending check charset of file.
+//                    if (res.businessException && res.messageId == 'Msg_161') {
+//                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_161' }).ifYes(function() {
+//                            dfd.reject(true);
+//                        }).ifNo(function() {
+//                            dfd.reject(false);
+//                        });
+//                    } else {
+//                        self.showMessageError(res);
+//                    }
+                    self.showMessageError(res);
                 });
                 return dfd.promise();
             }
