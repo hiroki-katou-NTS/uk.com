@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 public class GrantRegularDto {
 	
-	private int specialHolidayCode;
+	private String specialHolidayCode;
 	
 	private GeneralDate grantStartDate;
 	

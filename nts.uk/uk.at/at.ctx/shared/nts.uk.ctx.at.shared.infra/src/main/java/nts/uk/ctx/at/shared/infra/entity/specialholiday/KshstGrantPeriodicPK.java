@@ -21,5 +21,5 @@ public class KshstGrantPeriodicPK implements Serializable{
 	
 	/* コード */
 	@Column(name = "SPHD_CD")
-	public int specialHolidayCode;
+	public String specialHolidayCode;
 }
