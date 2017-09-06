@@ -23,6 +23,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         index: KnockoutObservable<number>;
 
         isEnable: KnockoutObservable<boolean> = ko.observable(true);
+        langId: KnockoutObservable<string> = ko.observable('jp');
+        index1: number = 1;
 
         constructor() {
             var self = this,
@@ -207,10 +209,10 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     self.currentWorkType().workTypeCode(itemWorkType.workTypeCode);
                     self.currentWorkType().name(itemWorkType.name);
                     self.currentWorkType().nameNotJP(itemWorkType.nameNotJP);
-                    self.currentWorkType().dispName(itemWorkType.nameNotJP || itemWorkType.name);
+                    self.currentWorkType().dispName(self.langId() == 'jp' ? itemWorkType.name : itemWorkType.nameNotJP);
                     self.currentWorkType().abbreviationName(itemWorkType.abbreviationName);
                     self.currentWorkType().abNameNotJP(itemWorkType.abNameNotJP);
-                    self.currentWorkType().dispAbName(itemWorkType.abNameNotJP || itemWorkType.abbreviationName);
+                    self.currentWorkType().dispAbName(self.langId() == 'jp' ? itemWorkType.abbreviationName : itemWorkType.abNameNotJP);
                     self.currentWorkType().symbolicName(itemWorkType.symbolicName);
                     self.currentWorkType().abolishAtr(itemWorkType.abolishAtr);
                     self.currentWorkType().memo(itemWorkType.memo);
@@ -350,24 +352,28 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
         private checkCalculatorMethod(workTypeSetCode: number): void {
             let self = this;
-            if (workTypeSetCode == 1 || workTypeSetCode == 8 || workTypeSetCode == 12 || workTypeSetCode == 13) {
-                self.currentWorkType().calculatorMethod(0);
+            if (self.langId() != 'jp') {
                 self.enableMethod(false);
-            } else if (workTypeSetCode == 0 || workTypeSetCode == 2 || workTypeSetCode == 3 || workTypeSetCode == 7 || workTypeSetCode == 10) {
-                self.currentWorkType().calculatorMethod(1);
-                self.enableMethod(false);
-            } else if (workTypeSetCode == 6) {
-                self.currentWorkType().calculatorMethod(2);
-                self.enableMethod(false);
-            } else if (workTypeSetCode == 9) {
-                self.currentWorkType().calculatorMethod(3);
-                self.enableMethod(false);
-            } else if (workTypeSetCode == 4) {
-                self.currentWorkType().calculatorMethod(1);
-                self.enableMethod(true);
             } else {
-                self.currentWorkType().calculatorMethod(0);
-                self.enableMethod(true);
+                if (workTypeSetCode == 1 || workTypeSetCode == 8 || workTypeSetCode == 12 || workTypeSetCode == 13) {
+                    self.currentWorkType().calculatorMethod(0);
+                    self.enableMethod(false);
+                } else if (workTypeSetCode == 0 || workTypeSetCode == 2 || workTypeSetCode == 3 || workTypeSetCode == 7 || workTypeSetCode == 10) {
+                    self.currentWorkType().calculatorMethod(1);
+                    self.enableMethod(false);
+                } else if (workTypeSetCode == 6) {
+                    self.currentWorkType().calculatorMethod(2);
+                    self.enableMethod(false);
+                } else if (workTypeSetCode == 9) {
+                    self.currentWorkType().calculatorMethod(3);
+                    self.enableMethod(false);
+                } else if (workTypeSetCode == 4) {
+                    self.currentWorkType().calculatorMethod(1);
+                    self.enableMethod(true);
+                } else {
+                    self.currentWorkType().calculatorMethod(0);
+                    self.enableMethod(true);
+                }
             }
         }
 
@@ -480,34 +486,51 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     self.listWorkType(_.orderBy(self.listWorkType(), ['dispOrder', 'workTypeCode'], ['asc', 'asc']));
                 } else { }
                 dfd.resolve();
-            }).fail((res) => { });
+            }).fail((res) => { dfd.reject(); });
             return dfd.promise();
         }
 
         changeLanguage(): void {
             let self = this;
             let dfd = $.Deferred();
-            service.findByLangId('en').done((data) => {
-                _.each(data, (x) => {
-                    let tmp = _.find(self.listWorkType(), ['workTypeCode', x.workTypeCode]);
-                    if (tmp) {
-                        _.find(self.listWorkType(), ['workTypeCode', x.workTypeCode]).nameNotJP = x.name;
-                        _.find(self.listWorkType(), ['workTypeCode', x.workTypeCode]).abNameNotJP = x.abbreviationName;
-                    }
+            if (self.index1 % 2 != 0) {
+                self.langId('en');
+                service.findByLangId(self.langId()).done((data) => {
+                    _.each(data, (x) => {
+                        if (_.find(self.listWorkType(), ['workTypeCode', x.workTypeCode])) {
+                            _.find(self.listWorkType(), ['workTypeCode', x.workTypeCode]).nameNotJP = x.name;
+                            _.find(self.listWorkType(), ['workTypeCode', x.workTypeCode]).abNameNotJP = x.abbreviationName;
+                        }
+                    });
+
+                    self.isEnable(false);
+                    $("#single-list").igGrid("option", "width", "340px");
+                    $("#left-content").css('width', '380');
+                    //add columns otherLanguageName
+                    var cols = $("#single-list").igGrid("option", "columns");
+                    var newColumn = { headerText: nts.uk.resource.getText('KMK007_9'), key: 'nameNotJP', width: 100, formatter: _.escape };
+                    cols.splice(2, 0, newColumn);
+                    $("#single-list").igGrid("option", "columns", cols);
+                    self.currentCode.valueHasMutated();
+
+                    dfd.resolve();
+                }).fail(() => {
+                    dfd.reject();
                 });
-                self.isEnable(false);
-                $("#single-list").igGrid("option", "width", "340px");
-                $("#left-content").css('width', '380');
-                //add new columns
+
+            } else {
+                self.langId('jp');
+                self.getWorkType();
+                self.isEnable(true);
+                $("#single-list").igGrid("option", "width", "280px");
+                $("#left-content").css('width', '320');
+                //remove columns otherLanguageName
                 var cols = $("#single-list").igGrid("option", "columns");
-                var newColumn = { headerText: nts.uk.resource.getText('KMK007_9'), key: 'nameNotJP', width: 100, formatter: _.escape };
-                cols.splice(2, 0, newColumn);
+                cols.splice(2, 1);
                 $("#single-list").igGrid("option", "columns", cols);
                 self.currentCode.valueHasMutated();
-                dfd.resolve();
-            }).fail(() => {
-                dfd.reject();
-            });
+            }
+            self.index1 += 1;
             dfd.promise();
         }
     }
