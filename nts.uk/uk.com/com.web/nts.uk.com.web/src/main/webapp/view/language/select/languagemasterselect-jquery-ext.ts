@@ -93,7 +93,7 @@ module nts.uk.ui.jqueryExtentions {
         
         function getSystemLanguage() : JQueryPromise<Array<model.CompanyDto>> {
             let dfd = $.Deferred<Array<any>>();
-            nts.uk.request.ajax("/language/findall")
+            nts.uk.request.ajax("com","/language/findall")
                 .done(function(res: Array<any>) {   
                     dfd.resolve(res);
                 }).fail(function(res) {
