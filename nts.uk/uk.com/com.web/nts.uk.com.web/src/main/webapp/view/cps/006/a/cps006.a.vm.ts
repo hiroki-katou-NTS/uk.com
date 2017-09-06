@@ -162,9 +162,8 @@ module nts.uk.com.view.cps006.a.viewmodel {
             setShared('categoryInfo', self.currentCategory());
             block.invisible();
             nts.uk.ui.windows.sub.modal('/view/cps/006/b/index.xhtml', { title: '' }).onClosed(function(): any {
-                self.start(self.currentCategory().id()).done(() => {
-                    block.clear();
-                });
+                self.getDetailCategory(self.currentCategory().id());
+                block.clear();
             });
         }
 
