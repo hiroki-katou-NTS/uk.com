@@ -2,7 +2,6 @@ package nts.uk.shr.infra.i18n.loading;
 
 import java.util.Locale;
 
-import javax.ejb.Stateful;
 import javax.enterprise.context.SessionScoped;
 import javax.enterprise.event.Event;
 
@@ -11,7 +10,7 @@ import nts.arc.i18n.custom.LanguageChangedEvent;
 import nts.arc.i18n.custom.ResourceChangedEvent;
 import nts.gul.text.IdentifierUtil;
 
-@Stateful
+@SessionScoped
 public class SessionLocale implements ISessionLocale {
 	private Locale currentLocale;
 	private long version;
