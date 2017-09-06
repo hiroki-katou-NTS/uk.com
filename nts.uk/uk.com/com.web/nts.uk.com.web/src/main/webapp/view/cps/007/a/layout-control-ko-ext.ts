@@ -702,11 +702,18 @@ module nts.custombinding {
                 if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
                     services.getCats().done((data: any) => {
                         if (data && data.categoryList && data.categoryList.length) {
-                            opts.comboxbox.options(data.categoryList);
-                            if (opts.comboxbox.value() == data.categoryList[0].id) {
-                                opts.comboxbox.value.valueHasMutated();
-                            } else {
-                                opts.comboxbox.value(data.categoryList[0].id);
+                            let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition);
+                            if (cats.length) {
+                                opts.comboxbox.options(cats);
+                                if (opts.comboxbox.value() == cats[0].id) {
+                                    opts.comboxbox.value.valueHasMutated();
+                                } else {
+                                    opts.comboxbox.value(cats[0].id);
+                                }
+                            }
+                            // show message if hasn't any category
+                            if (ko.toJS(opts.sortable.isEnabled)) {
+                                alert(text('Msg_288')).then(opts.callback);
                             }
                         } else {
                             // show message if hasn't any category
@@ -852,6 +859,10 @@ module nts.custombinding {
 
                                 if (data.category && data.category.id && data.chooseItems && data.chooseItems.length) {
                                     services.getCat(data.category.id).done((_cat: IItemCategory) => {
+                                        if (_cat.isAbolition) {
+                                            return;
+                                        }
+                                        
                                         let ids: Array<string> = data.chooseItems.map(x => x.id);
                                         services.getItemsByIds(ids).done((_data: Array<IItemDefinition>) => {
                                             // sort againt by ids
@@ -925,7 +936,7 @@ module nts.custombinding {
                 $.extend(opts, {
                     callback: access.callback
                 });
-            }            
+            }
 
             // validate editAble
             if (ko.unwrap(access.editAble) != undefined) {
@@ -954,7 +965,7 @@ module nts.custombinding {
                 }
             });
             opts.sortable.isEnabled.valueHasMutated();
-            
+
             // call private constructor
             self._constructor();
 
@@ -1046,6 +1057,7 @@ module nts.custombinding {
         id: string;
         categoryName: string;
         categoryType: IT_CAT_TYPE;
+        isAbolition?: number;
     }
 
     interface IItemGroup {
