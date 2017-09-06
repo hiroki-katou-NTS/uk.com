@@ -28,10 +28,15 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM BcmdtCompany e");
+		builderString.append(" WHERE e.abolitionAtr = 0 ");
 		GETALLCOMPANY = builderString.toString();
 	}
 
-	private static Company toDomainNotFullAtr(BcmdtCompany entity) {
+	/**
+	 * @param entity
+	 * @return new Company(companyCode,companyName,companyId,isAboltiton)
+	 */
+	private static Company toSimpleDomain(BcmdtCompany entity) {
 		val domain = Company.createFromJavaType(entity.getCcd(), entity.getCompanyName(), entity.getCid(),
 				entity.getAbolitionAtr());
 		return domain;
@@ -61,8 +66,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 
 	@Override
 	public List<Company> getAllCompany() {
-		// TODO Auto-generated method stub
-		return this.queryProxy().query(GETALLCOMPANY, BcmdtCompany.class).getList(c -> toDomainNotFullAtr(c));
+		return this.queryProxy().query(GETALLCOMPANY, BcmdtCompany.class).getList(c -> toSimpleDomain(c));
 	}
 
 }
