@@ -144,7 +144,11 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 					.collect(Collectors.toList());
 			x.setBeforeApprovers(appPhase);
 			List<ApprovalPhaseOutput> phases = this.adjustmentApprovalRootData(cid, sid, baseDate, appPhase);
-			x.setAfterApprovers(phases);	
+			x.setAfterApprovers(phases);
+			
+			// 7.承認ルートの異常チェック
+			ErrorFlag errorFlag = this.checkError(appPhase, phases);
+			x.setErrorFlag(errorFlag);
 		});
 		return appDatas;
 	}
