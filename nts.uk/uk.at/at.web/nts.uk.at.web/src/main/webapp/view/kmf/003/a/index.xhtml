@@ -57,9 +57,9 @@
 						<tr>
 							<td width="200"><div
 									data-bind="ntsFormLabel: {required: true, constraint:['YearHolidayCode','YearHolidayName']}">#{i18n.getText('KMF003_10')}</div></td>
-							<td><input class="input-code"
-								data-bind="ntsTextEditor: { value: code, enable: editmode, constraint: 'YearHolidayCode', required: true, name: '#[KMF003_11]', option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({autofill: true, filldirection: 'left'}))}, hasfocus: editmode" /> <input
-								class="input-name" data-bind="ntsTextEditor: {value: name, constraint: 'YearHolidayName', required: true, name: '#[KMF003_12]'}, hasfocus: !editmode()" />
+							<td><input class="input-code" id="input-code"
+								data-bind="ntsTextEditor: { value: code, enable: editMode, constraint: 'YearHolidayCode', required: true, name: '#[KMF003_11]', immediate: false, option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({autofill: true, filldirection: 'left'}))}" /> <input
+								class="input-name" id="input-name" data-bind="ntsTextEditor: {value: name, constraint: 'YearHolidayName', required: true, name: '#[KMF003_12]'}" />
 							</td>
 						</tr>
 						<tr></tr>
