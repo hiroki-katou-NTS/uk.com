@@ -710,10 +710,11 @@ module nts.custombinding {
                                 } else {
                                     opts.comboxbox.value(cats[0].id);
                                 }
-                            }
-                            // show message if hasn't any category
-                            if (ko.toJS(opts.sortable.isEnabled)) {
-                                alert(text('Msg_288')).then(opts.callback);
+                            } else {
+                                // show message if hasn't any category
+                                if (ko.toJS(opts.sortable.isEnabled)) {
+                                    alert(text('Msg_288')).then(opts.callback);
+                                }
                             }
                         } else {
                             // show message if hasn't any category
@@ -862,7 +863,7 @@ module nts.custombinding {
                                         if (_cat.isAbolition) {
                                             return;
                                         }
-                                        
+
                                         let ids: Array<string> = data.chooseItems.map(x => x.id);
                                         services.getItemsByIds(ids).done((_data: Array<IItemDefinition>) => {
                                             // sort againt by ids
