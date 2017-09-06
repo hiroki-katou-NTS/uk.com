@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf009.b.viewmodel {
+module nts.uk.at.view.kaf009.a.viewmodel {
     export class ScreenModel {
         // date editor
         date: KnockoutObservable<string>;
@@ -36,11 +36,12 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         workLocationCD: KnockoutObservable<string>;
         //comboBox 
         itemComboBox: KnockoutObservableArray<ItemCombo>;
-        selectedComboCode:KnockoutObservable<string>; 
+        selectedComboCode: KnockoutObservable<string>;
         constructor() {
             var self = this;
             //date editor
-            self.date = ko.observable(nts.uk.resource.getText("KAF009_12"));
+            self.date = ko.observable(moment().format('YYYY/MM/DD'));
+            //             self.date = ko.observable('20000101');
             //time editor
             self.time = ko.observable("12:00");
             //check late
@@ -53,9 +54,9 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             self.laborTime = ko.observable("00:00");
             //combobox
             self.ListReason = ko.observableArray([
-                new Reason('1','name1'),
-                new Reason('2','name2'),
-                new Reason('3','name3')
+                new Reason('1', 'name1'),
+                new Reason('2', 'name2'),
+                new Reason('3', 'name3')
             ]);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
@@ -68,15 +69,15 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             self.selectedRuleCode = ko.observable(1);
             //Go Work
             self.goWorkAtr = ko.observableArray([
-            { goCode:'1',goName:nts.uk.resource.getText("KAF009_16")},
-            { goCode:'2',goName:nts.uk.resource.getText("KAF009_17")}
-            ]); 
+                { goCode: '1', goName: nts.uk.resource.getText("KAF009_16") },
+                { goCode: '2', goName: nts.uk.resource.getText("KAF009_17") }
+            ]);
             self.selectedGo = ko.observable(1);
             //BackHome 
             self.backHomeAtr = ko.observableArray([
-            { backCode:'1',backName:nts.uk.resource.getText("KAF009_18")},
-            { backCode:'2',backName:nts.uk.resource.getText("KAF009_19")}
-            ]); 
+                { backCode: '1', backName: nts.uk.resource.getText("KAF009_18") },
+                { backCode: '2', backName: nts.uk.resource.getText("KAF009_19") }
+            ]);
             self.selectedBack = ko.observable(1);
             //Go Work 2
             self.selectedGo2 = ko.observable(1);
@@ -109,15 +110,19 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             var self = this;
 
             var dfd = $.Deferred();
-
+            //String appID = "123456789";
+            //Get data 
+            service.getGoBackDirectly().done(function(goBackDirect: any) {
+                return goBackDirect;
+                
+            }
             dfd.resolve();
-
             return dfd.promise();
         }
         /**
          * KDL010_勤務場所選択を起動する
          */
-        openLocationDialog(){
+        openLocationDialog() {
             var self = this;
             nts.uk.ui.block.invisible();
             nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.workLocationCD());
@@ -128,19 +133,20 @@ module nts.uk.at.view.kaf009.b.viewmodel {
                     self.workLocationCD(returnWorkLocationCD);
                     nts.uk.ui.block.clear();
                 }
-                else{
+                else {
                     self.workLocationCD = ko.observable("");
-                    nts.uk.ui.block.clear();}
+                    nts.uk.ui.block.clear();
+                }
             });
-        
+
         }
-        
+
     }
     /**
      * 理由
      */
     class Reason {
-        code: string; 
+        code: string;
         name: string;
         constructor(code: string, name: string) {
             this.code = code;
@@ -153,10 +159,10 @@ module nts.uk.at.view.kaf009.b.viewmodel {
     class ItemCombo {
         code: string;
         name: string;
-        
+
         constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
         }
-}
+    }
 }

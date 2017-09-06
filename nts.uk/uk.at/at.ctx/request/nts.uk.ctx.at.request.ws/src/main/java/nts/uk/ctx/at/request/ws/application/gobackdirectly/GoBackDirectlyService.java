@@ -1,0 +1,31 @@
+package nts.uk.ctx.at.request.ws.application.gobackdirectly;
+
+import javax.inject.Inject;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+
+import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyDto;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyFinder;
+
+@Path("at/request/application/gobackdirectly")
+@Produces("application/json")
+public class GoBackDirectlyService extends WebService {
+	@Inject
+	private GoBackDirectlyFinder goBackDirectlyFinder;
+
+	@POST
+	@Path("getGoBackDirectlyByAppID")
+	public GoBackDirectlyDto getGoBackDirectlyByAppID() {
+		String appID = "123456789";
+		return this.goBackDirectlyFinder.getGoBackDirectlyByAppID(appID);
+	}
+	
+	@POST
+	@Path("getall")
+	public String getall() {
+		return null;
+	}
+
+}

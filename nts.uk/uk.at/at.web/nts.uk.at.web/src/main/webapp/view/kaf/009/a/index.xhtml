@@ -45,8 +45,8 @@
 					<div class="valign-center control-group">
 						<!--申請日付 -->
 						<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_11')}</div>
-						<input id="inputdate"
-							data-bind="ntsTimeEditor: {value: date, inputFormat: 'date'}" />
+						<input id="inputdate" data-bind="ntsTimeEditor: {value: date, inputFormat: 'date'}" />
+<!-- 							<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div> -->
 					</div>
 					<!--勤務時間 １１１１１１１１１１１１１-->
 					<div class="valign-center control-group">
@@ -157,7 +157,22 @@
 				</div>
 				<!--RIGHT CONTENT -->
 				<div class="right-contents">
-					<div class="panel panel-gray-bg">背景色も枠線もなし</div>
+					<div class="panel panel-gray-bg">背景色も枠線もなし
+						<label>#{i18n.getText('KAF009_30')} :</label>
+						<BR />
+						<BR />
+						<label>#{i18n.getText('KAF009_31')} :</label>
+						<BR />
+						<BR />
+						<label>#{i18n.getText('KAF009_32')} :</label>
+						<BR />
+						<label>#{i18n.getText('KAF009_33')} :</label>
+						<BR />
+						<BR />
+						<label>#{i18n.getText('KAF009_34')} :</label>
+						<BR />
+						<label>#{i18n.getText('KAF009_35')} :</label>
+					</div>
 				</div>
 			</div>
 		</ui:define>
