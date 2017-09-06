@@ -38,3 +38,15 @@ table.data-items tbody {
 	overflow-x: hidden;
 	border: 1px solid #CCC;
 }
+
+.screen-b{
+	padding: 40px;
+}
+
+.title {
+    padding-right: 120px !important;
+}
+
+.hidden-right-border{
+    border-right-style: hidden;
+}

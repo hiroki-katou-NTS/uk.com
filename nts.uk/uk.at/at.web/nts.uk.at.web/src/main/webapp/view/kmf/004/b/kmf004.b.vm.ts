@@ -99,6 +99,7 @@ module nts.uk.at.view.kmf004 {
             value: KnockoutObservable<string>;
             enable: KnockoutObservable<boolean>;
             items: KnockoutObservableArray<Item>;
+            
             constructor() {
                 let self = this;
                 self.itemList = ko.observableArray([
@@ -117,20 +118,46 @@ module nts.uk.at.view.kmf004 {
             start() {
                 var self = this;
                 var dfd = $.Deferred();
+                
+                // Get special holiday code from A screen
+                var sphdCd = 01;
             
-            for(var i=0; i< 20; i++) {
-                var item : IItem = {
-                    year: i,
-                    month: i,
-                };
-                self.items.push(new Item(item));    
+                service.findByCode(sphdCd).done(function(data){
+                    self.bindData(data);                
+                    dfd.resolve();
+                }).fail(function(res) {
+                    dfd.reject(res);    
+                });
+    
+                return dfd.promise();
             }
             
-            dfd.resolve();
-
-            return dfd.promise();
+            bindData(data: any) {
+                var self = this;
+            
+                self.items.removeAll();
+                
+                //Update case
+                for(var i = 0; i < data.length; i++){
+                    var item : IItem = {
+                        year: data[i].year,
+                        month: data[i].month
+                    };
+                    
+                    self.items.push(new Item(item));
+                }
+                
+                for(var i = data.length; i < 20; i++) {
+                    var item : IItem = {
+                        year: null,
+                        month: null
+                    };
+                    
+                    self.items.push(new Item(item));    
+                }
             }
         }
+        
         class BoxModel {
             id: number;
             name: string;
@@ -140,20 +167,22 @@ module nts.uk.at.view.kmf004 {
                 self.name = name;
             }
         }
-        export class Item {
-        year: KnockoutObservable<number>;
-        month: KnockoutObservable<number>;
         
-        constructor(param: IItem) {
-            var self = this;
-            self.year = ko.observable(param.year);
-            self.month = ko.observable(param.month);
-    
+        export class Item {
+            year: KnockoutObservable<number>;
+            month: KnockoutObservable<number>;
+            
+            constructor(param: IItem) {
+                var self = this;
+                self.year = ko.observable(param.year);
+                self.month = ko.observable(param.month);
+        
+            }
         }
-    }
+        
         export interface IItem {
-        year: number;
-        month: number;
-    }
+            year: number;
+            month: number;
+        }
     }
 }
