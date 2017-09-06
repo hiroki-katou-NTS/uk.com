@@ -64,6 +64,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                 self.ckbIsAbolition(newItem.isAbolition === 1 ? true : false);
 
+
             });
 
             self.ckbDisplayAbolition.subscribe(function(newValue) {
@@ -349,7 +350,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
             let self = this,
                 command,
                 paramList = [];
-            
+
             block.invisible();
 
             service.getItemInfoDefList(self.currentCategory.id, true).done(function(itemInfoDefList: Array<IItemInfoDef>) {
