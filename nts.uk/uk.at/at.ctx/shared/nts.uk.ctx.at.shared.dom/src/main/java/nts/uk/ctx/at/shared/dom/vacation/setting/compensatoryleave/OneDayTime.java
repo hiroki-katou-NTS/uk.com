@@ -20,7 +20,7 @@ public class OneDayTime extends TimeClockPrimitiveValue<OneDayTime>{
 	 *
 	 * @param rawValue the raw value
 	 */
-	public OneDayTime(Long rawValue) {
+	public OneDayTime(Integer rawValue) {
 		super(rawValue);
 	}
 	
@@ -32,7 +32,7 @@ public class OneDayTime extends TimeClockPrimitiveValue<OneDayTime>{
 	 * @param second the second
 	 */
 	public OneDayTime(int hour, int minute, int second) {
-		super(hour, minute, second);
+		super(hour);
 	}
 
 }

@@ -36,6 +36,10 @@ public class KshstYearServiceSet extends UkJpaEntity implements Serializable {
 	/** 特別休暇付与日数 **/
 	@Column(name = "GRANT_DATES")
 	public int date;
+	/** 年間サービスタイプ **/
+	@Column(name = "YEAR_SERVICE_TYPE")
+	public int yearServiceType;
+	
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
 			@JoinColumn(name = "SPHD_CD", referencedColumnName = "SPHD_CD", insertable = false, updatable = false) })

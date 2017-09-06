@@ -6,12 +6,10 @@ package nts.uk.ctx.at.shared.dom.bonuspay.setting;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.arc.primitive.TimeClockPrimitiveValue;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.RoundingAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UnitAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPayTime;
-import nts.uk.ctx.at.shared.dom.bonuspay.primitives.TimeItemId;
 
 /**
  * @author hungnm
@@ -51,8 +49,8 @@ public class BonusPayTimesheet extends DomainObject {
 		super();
 	}
 
-	public static BonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, String timeItemId, Long startTime,
-			Long endTime, int roundingTimeAtr, int roundingAtr) {
+	public static BonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, String timeItemId, int startTime,
+			int endTime, int roundingTimeAtr, int roundingAtr) {
 		return new BonusPayTimesheet(timeSheetId, EnumAdaptor.valueOf(useAtr, UseAtr.class), timeItemId,
 				new BonusPayTime(startTime), new BonusPayTime(endTime),
 				EnumAdaptor.valueOf(roundingTimeAtr, UnitAtr.class),

@@ -50,4 +50,43 @@ public class PersonalEstablishment extends AggregateRoot{
 		memento.setTargetYear(this.targetYear);
 		memento.setAdvancedSetting(this.advancedSetting);
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((employeeId == null) ? 0 : employeeId.hashCode());
+		result = prime * result + ((targetYear == null) ? 0 : targetYear.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PersonalEstablishment other = (PersonalEstablishment) obj;
+		if (employeeId == null) {
+			if (other.employeeId != null)
+				return false;
+		} else if (!employeeId.equals(other.employeeId))
+			return false;
+		if (targetYear == null) {
+			if (other.targetYear != null)
+				return false;
+		} else if (!targetYear.equals(other.targetYear))
+			return false;
+		return true;
+	}
+	
+	
 }

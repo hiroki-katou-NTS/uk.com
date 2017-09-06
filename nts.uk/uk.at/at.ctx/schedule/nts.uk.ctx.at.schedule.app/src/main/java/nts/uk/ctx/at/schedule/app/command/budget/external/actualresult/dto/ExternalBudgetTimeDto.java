@@ -183,7 +183,7 @@ public class ExternalBudgetTimeDto {
         public ExternalBudgetVal<T> getActualValue() {
             switch (this.budgetAtr) {
             case TIME:
-                return new ExternalBudgetVal<T> ((T) new ExtBudgetTime(this.value));
+                return new ExternalBudgetVal<T> ((T) new ExtBudgetTime(this.value.intValue()));
             case PEOPLE:
                 return new ExternalBudgetVal<T> ((T) new ExtBudgetNumberPerson(this.value.intValue()));
             case MONEY:

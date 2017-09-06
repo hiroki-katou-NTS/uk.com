@@ -24,8 +24,8 @@ public class SingleItemCommand {
 	private Integer dateItemType;
 
 	// TimeItem property
-	private Long timeItemMin;
-	private Long timeItemMax;
+	private Integer timeItemMin;
+	private Integer timeItemMax;
 
 	// TimePointItem property
 	private Integer timePointItemMin;

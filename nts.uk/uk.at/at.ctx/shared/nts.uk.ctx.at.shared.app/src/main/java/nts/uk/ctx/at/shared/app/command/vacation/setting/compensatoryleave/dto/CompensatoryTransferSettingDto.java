@@ -64,7 +64,7 @@ public class CompensatoryTransferSettingDto {
 		 */
 		@Override
 		public OneDayTime getCertainTime() {
-			return new OneDayTime(this.compensatoryTransferSettingDto.certainTime.longValue());
+			return new OneDayTime(this.compensatoryTransferSettingDto.certainTime);
 		}
 
 		/* (non-Javadoc)
@@ -80,7 +80,7 @@ public class CompensatoryTransferSettingDto {
 		 */
 		@Override
 		public OneDayTime getOneDayTime() {
-			return new OneDayTime(this.compensatoryTransferSettingDto.oneDayTime.longValue());
+			return new OneDayTime(this.compensatoryTransferSettingDto.oneDayTime);
 		}
 
 		/* (non-Javadoc)
@@ -88,7 +88,7 @@ public class CompensatoryTransferSettingDto {
 		 */
 		@Override
 		public OneDayTime getHalfDayTime() {
-			return new OneDayTime(this.compensatoryTransferSettingDto.halfDayTime.longValue());
+			return new OneDayTime(this.compensatoryTransferSettingDto.halfDayTime);
 		}
 
 		/* (non-Javadoc)

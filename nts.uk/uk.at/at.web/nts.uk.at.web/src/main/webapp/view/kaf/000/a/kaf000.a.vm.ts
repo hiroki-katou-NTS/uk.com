@@ -9,6 +9,12 @@ module kaf000.a.viewmodel{
         listPhaseID: Array<String>;
         //listFrame
         listFrame: KnockoutObservableArray<model.ApprovalFrame>;
+        //listFrameByListPhaseId
+        listFrameByListPhase: KnockoutObservableArray<model.ApprovalFrame>;
+        //listFrameByListPhaseId
+        listFrameByListPhase1: KnockoutObservableArray<Array<model.ApprovalFrame>>;
+        //list appID 
+        ListAppID : Array<String>;
         constructor(){
             var self = this;
             /**
@@ -18,6 +24,9 @@ module kaf000.a.viewmodel{
             self.listPhase = ko.observableArray([]);
             self.listPhaseID = [];
             self.listFrame = ko.observableArray([]);
+            self.listFrameByListPhase = ko.observableArray([]);
+            self.listFrameByListPhase1 = ko.observableArray([]);
+            self.ListAppID = [];
         }
         
         start(): JQueryPromise<any> {
@@ -28,9 +37,7 @@ module kaf000.a.viewmodel{
             //self.getAllPhase();
             var dfdAllPhase = self.getAllPhase();
             $.when(dfdAllPhase).done((dfdAllPhaseData)=>{
-//                self.listPhase(dfdAllPhaseData);
-//                self.listFrame(dfdAllFrameData);
-                //alert("ccc");    
+                self.getAllFrameByListPhaseId1(self.listPhaseID);
                  dfd.resolve(); 
             });
             return dfd.promise();
@@ -52,16 +59,36 @@ module kaf000.a.viewmodel{
             return dfd.promise();
         }
         //getAllFrame
-        getAllFrame(listPhaseID){
+        getAllFrame(phaseID){
             var self = this;
             var dfd = $.Deferred<any>();
-                service.getAllFrameByPhaseID(listPhaseID).done(function(data){
+                service.getAllFrameByPhaseID(phaseID).done(function(data){
                     self.listFrame(data);
                     dfd.resolve(data);    
                 }); 
             return dfd.promise();
         }
         
+        //get all frame by list phase ID
+        getAllFrameByListPhaseId(listPhaseID){
+            var self = this;
+            var dfd = $.Deferred<any>();
+                service.getAllFrameByListPhaseId(listPhaseID).done(function(data){
+                    self.listFrameByListPhase(data);
+                    dfd.resolve(data);    
+                }); 
+            return dfd.promise();
+        }
+         //get all frame by list phase ID 1
+        getAllFrameByListPhaseId1(listPhaseID){
+            var self = this;
+            var dfd = $.Deferred<any>();
+                service.getAllFrameByListPhaseId1(listPhaseID).done(function(data){
+                    self.listFrameByListPhase1(data);
+                    dfd.resolve(data);    
+                }); 
+            return dfd.promise();
+        }
     }
     
     export module model {
@@ -88,14 +115,20 @@ module kaf000.a.viewmodel{
             dispOrder : KnockoutObservable<number>;
             approverSID : KnockoutObservable<String>;
             approvalATR : KnockoutObservable<number>;
-            confirmATR : KnockoutObservable<number>;    
-            constructor(phaseID : String,dispOrder : number,approverSID : String,approvalATR : number,confirmATR : number){
+            confirmATR : KnockoutObservable<number>;
+            approvalDate :  KnockoutObservable<String>;
+            reason : KnockoutObservable<String>;
+            representerSID : KnockoutObservable<String>;
+            constructor(phaseID : String,dispOrder : number,approverSID : String,approvalATR : number,
+                    confirmATR : number,approvalDate : String,reason: String,representerSID: String){
                 this.phaseID = ko.observable(phaseID);
                 this.dispOrder = ko.observable(dispOrder);
                 this.approverSID  = ko.observable(approverSID);
                 this.approvalATR = ko.observable(approvalATR); 
                 this.confirmATR = ko.observable(confirmATR);
-                
+                this.approvalDate = ko.observable(approvalDate);
+                this.reason = ko.observable(reason);
+                this.representerSID = ko.observable(representerSID);
             }
         }//end class frame   
         

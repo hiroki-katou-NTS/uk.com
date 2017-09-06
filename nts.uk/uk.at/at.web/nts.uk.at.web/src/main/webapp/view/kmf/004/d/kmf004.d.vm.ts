@@ -4,34 +4,27 @@ module nts.uk.at.view.kmf004 {
     import confirm = nts.uk.ui.dialog.confirm;
     import href = nts.uk.request.jump;
     import modal = nts.uk.ui.windows.sub.modal;
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
 
     let __viewContext: any = window["__viewContext"] || {};
 
-    export module viewmodel {
+    export module viewmodel1 {
         export class TabScreenModel {
             title: KnockoutObservable<string> = ko.observable('');
             removeAble: KnockoutObservable<boolean> = ko.observable(true);
             tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
-                new TabModel({ id: 'G', name: getText('Com_Company'), active: true }),
-                new TabModel({ id: 'H', name: getText('Com_Workplace') }),
-                new TabModel({ id: 'I', name: getText('Com_Person') }),
-                new TabModel({ id: 'K', name: getText('KMK005_44') }),
+                new TabModel({ id: 'D', name: getText('Com_Company'), active: true }),
+                new TabModel({ id: 'E', name: getText('Com_Person') })
             ]);
+
+            //radio
 
             constructor() {
                 let self = this;
                 //get use setting 
-                nts.uk.at.view.kmf004.b.service.getUseSetting()
-                    .done((useSetting) => {
-                        self.tabs()[1].display(useSetting.workplaceUseAtr);
-                        self.tabs()[2].display(useSetting.personalUseAtr);
-                        self.tabs()[3].display(useSetting.workingTimesheetUseAtr);
-                    });
 
                 self.tabs().map((t) => {
                     // set title for tab
+
                     if (t.active() == true) {
                         self.title(t.name);
                         self.changeTab(t);
@@ -56,92 +49,19 @@ module nts.uk.at.view.kmf004 {
 
                 // call start function on view at here
                 switch (tab.id) {
-                    case 'G':
-                        if (!!view.viewmodelG && typeof view.viewmodelG.start == 'function') {
-                            view.viewmodelG.start();
+                    case 'D':
+                        if (!!view.viewmodelD && typeof view.viewmodelD.start == 'function') {
+                            view.viewmodelD.start();
                         }
                         break;
-                    case 'H':
-                        if (!!view.viewmodelH && typeof view.viewmodelH.start == 'function') {
-                            view.viewmodelH.start();
-                        }
-                        break;
-                    case 'I':
-                        if (!!view.viewmodelI && typeof view.viewmodelI.start == 'function') {
-                            view.viewmodelI.start();
-                        }
-                        break;
-                    case 'K':
-                        if (!!view.viewmodelK && typeof view.viewmodelK.start == 'function') {
-                            view.viewmodelK.start();
-                        }
-                        break;
-                }
-            }
-
-            navigateView() {
-                let self = this;
-
-                // check dirty before navigate to view a                
-                href("../a/index.xhtml");
-            }
-
-            saveData() {
-                let self = this, view = __viewContext.viewModel,
-                    activeTab = _.find(self.tabs(), t => t.active());
-
-                switch (activeTab.id) {
-                    case 'G':
-                        if (typeof view.viewmodelG.saveData == 'function') {
-                            view.viewmodelG.saveData();
-                        }
-                        break;
-                    case 'H':
-                        if (typeof view.viewmodelH.saveData == 'function') {
-                            view.viewmodelH.saveData();
-                        }
-                        break;
-                    case 'I':
-                        if (typeof view.viewmodelI.saveData == 'function') {
-                            view.viewmodelI.saveData();
-                        }
-                        break;
-                    case 'K':
-                        if (typeof view.viewmodelK.saveData == 'function') {
-                            view.viewmodelK.saveData();
-                        }
-                        break;
-                }
-            }
-
-            removeData() {
-                let self = this, view = __viewContext.viewModel,
-                    activeTab = _.find(self.tabs(), t => t.active());
-                switch (activeTab.id) {
-                    case 'G':
-                        if (typeof view.viewmodelG.removeData == 'function') {
-                            view.viewmodelG.removeData();
-                        }
-                        break;
-                    case 'H':
-                        if (typeof view.viewmodelH.removeData == 'function') {
-                            view.viewmodelH.removeData();
-                        }
-                        break;
-                    case 'I':
-                        if (typeof view.viewmodelI.removeData == 'function') {
-                            view.viewmodelI.removeData();
-                        }
-                        break;
-                    case 'K':
-                        if (typeof view.viewmodelK.removeData == 'function') {
-                            view.viewmodelK.removeData();
-                        }
+                    case 'E':
+                        //                        if (!!view.viewmodelE && typeof view.viewmodelE.start == 'function') {
+                        //                            view.viewmodelE.start();
+                        //                        }
                         break;
                 }
             }
         }
-
 
         interface ITabModel {
             id: string;
@@ -170,98 +90,138 @@ module nts.uk.at.view.kmf004 {
         }
     }
 
-    export module g.viewmodel {
+    export module d.viewmodel {
         export class ScreenModel {
-            model: KnockoutObservable<BonusPaySetting> = ko.observable(new BonusPaySetting({ id: '', name: '' }));
+            itemList: KnockoutObservableArray<any>;
+            selectedId: KnockoutObservable<number>;
+            value: KnockoutObservable<string>;
+            enable: KnockoutObservable<boolean>;
+            display: KnockoutObservable<boolean>;
+            items: KnockoutObservableArray<Item>;
+            updatelst : KnockoutObservable<Update>;
             constructor() {
                 let self = this;
-
+                self.itemList = ko.observableArray([
+                    new BoxModel(0, nts.uk.resource.getText("KMF004_95")),
+                    new BoxModel(1, nts.uk.resource.getText("KMF004_96"))
+                ]);
+                self.value = ko.observable('');
+                self.enable = ko.observable(true);
+                self.selectedId = ko.observable(0);
+                self.items = ko.observableArray([]);
+                self.updatelst = ko.observableArray(null);
+                self.display = ko.observable(true);
+                self.selectedId.subscribe((value) => {
+                    if (value == 0) {
+                        self.display(false);
+                    }
+                    else {
+                        self.display(true);
+                    }
+                    console.log(self.display());
+                });
                 self.start();
             }
 
             start() {
-                let self = this,
-                    model = self.model();
-
-                service.getData().done(resp => {
-                    if (resp) {
-                        model.id(resp.bonusPaySettingCode);
-                        service.getName(resp.bonusPaySettingCode).done(x => {
-                            if (x) {
-                                model.name(x.name);
-                            } else {
-                                __viewContext.viewModel.tabView.removeAble(false);
-                                model.id('');
-                                model.name(getText("KDL007_6"));
-                            }
-                        }).fail(x => alert(x));
-                        model.id.valueHasMutated();
-                    } else {
-                        __viewContext.viewModel.tabView.removeAble(false);
-                        model.id('');
-                        model.name(getText("KDL007_6"));
+                var self = this;
+                var dfd = $.Deferred();
+                service.findAll().done((lstData) => {
+                    //                    self.items(lstData);
+                    for (let i = 0; i < 20; i++) {
+                        if (lstData[i]) {
+                            var param: IItem = {
+                                yearServiceType: lstData[i].yearServiceType,
+                                month: lstData[i].month,
+                                year: lstData[i].year,
+                                date: lstData[i].date  
+                            };
+                            
+                            self.items.push(new Item(param));
+                        } else {
+                            var param: IItem = {
+                                yearServiceType: 0,
+                                month: null,
+                                year: null,
+                                date: null 
+                            };
+                            self.items.push(new Item(param));
+                        }
                     }
-                }).fail(x => alert(x));
+                    dfd.resolve();
+                }).fail(function(error) {
+                    dfd.reject();
+                    alert(error.message);
+                })
+                return dfd.promise();
             }
 
-
-            saveData() {
-                let self = this,
-                    data: IBonusPaySetting = ko.toJS(self.model),
-                    command = {
-                        bonusPaySettingCode: data.id,
-                        action: 0 // add/update mode
-                    };
-                if (data.id !== '') {
-                    service.saveData(command)
-                        .done(() => {
-                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15", []));
-                            self.start();
-                        })
-                        .fail(x => alert(x));
-                } else {
-                    alert(nts.uk.resource.getMessage("Msg_30", []));
+            register(){
+                var self = this;
+                let b = this.value();
+                let a = self.items();
+                
+                var items = _.filter(self.items(), function(item: Item) {
+                    return item.date() != null || item.month() != null || item.year() != null;
+                });
+                for(let i = 0; i < self.items().length; i ++){
+                    var dataTranfer = {
+                    specialHolidayCode: 1, // TODO
+                    yearServiceNo: i,
+                    lengthServiceYearAtr: 0,
+                    yearServiceSets:  ko.toJS(items)   
                 }
             }
-
-            removeData() {
-                let self = this,
-                    data: IBonusPaySetting = ko.toJS(self.model),
-                    command = {
-                        bonusPaySettingCode: data.id,
-                        action: 1 // remove mode
-                    };
-
-                service.saveData(command).done(() => {
-                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
-                    self.start();
-                }).fail(x => alert(x));
+                
+                
+                service.update(dataTranfer).done(function(items){
+                    console.log(a);
+                });
+            }
+                
+            closeDialog() {
+                nts.uk.ui.windows.close();
             }
         }
-
-
-        interface IBonusPaySetting {
-            id: string;
+        class BoxModel {
+            id: number;
             name: string;
+            constructor(id, name) {
+                var self = this;
+                self.id = id;
+                self.name = name;
+            }
         }
+        export class Item {
+            yearServiceType: KnockoutObservable<number>;
+            yearServiceNo: KnockoutObservable<number>;
+            month: KnockoutObservable<number>;
+            year: KnockoutObservable<number>;
+            date: KnockoutObservable<number>;
 
-        class BonusPaySetting {
-            id: KnockoutObservable<string> = ko.observable('');
-            name: KnockoutObservable<string> = ko.observable('');
-
-            constructor(param: IBonusPaySetting) {
+            constructor(param: IItem) {
+                var self = this;
+                self.yearServiceType = ko.observable(param.yearServiceType);
+                self.yearServiceNo = ko.observable(param.yearServiceNo);
+                self.month = ko.observable(param.month);
+                self.year = ko.observable(param.year);
+                self.date = ko.observable(param.date);
+            }
+        }
+        export interface IItem {
+            yearServiceType: number;
+            yearServiceNo: number;
+            month: number;
+            year: number;
+            date: number;
+        }
+        export class Update{
+            lengthService: KnockoutObservable<number>;
+            lstSet: KnockoutObservableArray<Item>;
+            constructor(lengthService: number, lstSet: Array<Item>){
                 let self = this;
-
-                self.id(param.id);
-                self.name(param.name);
-
-                self.id.subscribe(x => {
-                    let view = __viewContext.viewModel && __viewContext.viewModel.tabView,
-                        acts: any = view && _.find(view.tabs(), (t: any) => t.active());
-                    if (acts && acts.id == 'G') {
-                        view.removeAble(!!x);
-                    }
-                });
+                self.lengthService = lengthService;
+                self.lstSet = lstSet;
             }
         }
     }

@@ -16,7 +16,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.access.employment.SyEmploymentAdapter;
-import nts.uk.ctx.bs.employee.dom.access.employment.dto.AcEmploymentDto;
+import nts.uk.ctx.bs.employee.dom.access.employment.dto.EmploymentImport;
 import nts.uk.ctx.bs.employee.pub.employee.employment.SyEmploymentPub;
 
 /**
@@ -48,10 +48,10 @@ public class SyEmploymentPubImp implements SyEmploymentPub {
 		List<String> employmentCodes = affEmploymentHistories.stream()
 				.map(item -> item.getEmploymentCode().v()).collect(Collectors.toList());
 
-		List<AcEmploymentDto> acEmploymentDtos = employmentAdapter.findByEmpCodes(employmentCodes);
+		List<EmploymentImport> acEmploymentDtos = employmentAdapter.findByEmpCodes(employmentCodes);
 
 		Map<String, String> comEmpMap = acEmploymentDtos.stream().collect(Collectors
-				.toMap(AcEmploymentDto::getCompanyId, AcEmploymentDto::getEmploymentCode));
+				.toMap(EmploymentImport::getCompanyId, EmploymentImport::getEmploymentCode));
 
 		// Return EmploymentCode
 		return comEmpMap.get(companyId);

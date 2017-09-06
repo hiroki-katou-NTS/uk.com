@@ -25,12 +25,12 @@ import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffJobTitleHis
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistory;
 import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.access.jobtitle.SyJobTitleAdapter;
-import nts.uk.ctx.bs.employee.dom.access.jobtitle.dto.AcJobTitleDto;
+import nts.uk.ctx.bs.employee.dom.access.jobtitle.dto.JobTitleImport;
 import nts.uk.ctx.bs.employee.dom.access.person.SyPersonAdapter;
-import nts.uk.ctx.bs.employee.dom.access.person.dto.AcPersonDto;
+import nts.uk.ctx.bs.employee.dom.access.person.dto.PersonImport;
 import nts.uk.ctx.bs.employee.dom.access.workplace.SyWorkplaceAdapter;
-import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceDto;
-import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceHierarchyDto;
+import nts.uk.ctx.bs.employee.dom.access.workplace.dto.WorkplaceImport;
+import nts.uk.ctx.bs.employee.dom.access.workplace.dto.WorkplaceHierarchyImport;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -107,11 +107,11 @@ public class EmployeeSearchQueryProcessor {
 		}
 
 		// get all work place of company
-		List<AcWorkplaceDto> workplaces = this.workplaceAdapter.findAllWorkplaceOfCompany(companyId,
+		List<WorkplaceImport> workplaces = this.workplaceAdapter.findAllWorkplaceOfCompany(companyId,
 				baseDate);
 
 		// to map work place
-		Map<String, AcWorkplaceDto> workplaceMap = workplaces.stream()
+		Map<String, WorkplaceImport> workplaceMap = workplaces.stream()
 				.collect(Collectors.toMap((workplace) -> {
 					return workplace.getWorkplaceId();
 				}, Function.identity()));
@@ -123,11 +123,11 @@ public class EmployeeSearchQueryProcessor {
 				}, Function.identity()));
 
 		// get person name
-		List<AcPersonDto> persons = this.personAdapter.findByPersonIds(
+		List<PersonImport> persons = this.personAdapter.findByPersonIds(
 				employees.stream().map(employee -> employee.getPId()).collect(Collectors.toList()));
 
 		// to map person (person id)
-		Map<String, AcPersonDto> personMap = persons.stream().collect(Collectors.toMap((person) -> {
+		Map<String, PersonImport> personMap = persons.stream().collect(Collectors.toMap((person) -> {
 			return person.getPersonId();
 		}, Function.identity()));
 
@@ -318,7 +318,7 @@ public class EmployeeSearchQueryProcessor {
 		}
 
 		// get data child
-		List<AcWorkplaceHierarchyDto> workPlaceHierarchies = new ArrayList<>();
+		List<WorkplaceHierarchyImport> workPlaceHierarchies = new ArrayList<>();
 		workplaceHistory.forEach(work -> {
 			workPlaceHierarchies.addAll(this.workplaceAdapter.findAllHierarchyChild(companyId,
 					work.getWorkplaceId().v()));
@@ -398,7 +398,7 @@ public class EmployeeSearchQueryProcessor {
 				query.getEmployeeIds());
 
 		// get map person
-		Map<String, AcPersonDto> personMap = this.personAdapter
+		Map<String, PersonImport> personMap = this.personAdapter
 				.findByPersonIds(employees.stream().map(employee -> employee.getPId())
 						.collect(Collectors.toList()))
 				.stream().collect(Collectors.toMap((person) -> {
@@ -413,7 +413,7 @@ public class EmployeeSearchQueryProcessor {
 				}, Function.identity()));
 
 		// get map work place
-		Map<String, AcWorkplaceDto> mapWorkplace = this.workplaceAdapter
+		Map<String, WorkplaceImport> mapWorkplace = this.workplaceAdapter
 				.findAllWorkplaceOfCompany(companyId, query.getBaseDate()).stream()
 				.collect(Collectors.toMap((workplace) -> {
 					return workplace.getWorkplaceId();
@@ -427,7 +427,7 @@ public class EmployeeSearchQueryProcessor {
 				}, Function.identity()));
 
 		// get map job title
-		Map<String, AcJobTitleDto> mapJobTitle = this.jobTitleAdapter
+		Map<String, JobTitleImport> mapJobTitle = this.jobTitleAdapter
 				.findAll(companyId, query.getBaseDate()).stream()
 				.collect(Collectors.toMap((jobtitle) -> {
 					return jobtitle.getPositionId();
@@ -448,7 +448,7 @@ public class EmployeeSearchQueryProcessor {
 			if (mapWorkplaceHistory.containsKey(employee.getSId()) && mapWorkplace.containsKey(
 					(mapWorkplaceHistory.get(employee.getSId()).getWorkplaceId().v()))) {
 				AffWorkplaceHistory workplaceHistory = mapWorkplaceHistory.get(employee.getSId());
-				AcWorkplaceDto workplace = mapWorkplace.get(workplaceHistory.getWorkplaceId().v());
+				WorkplaceImport workplace = mapWorkplace.get(workplaceHistory.getWorkplaceId().v());
 				data.setWorkplaceId(workplace.getWorkplaceId());
 				data.setWorkplaceCode(workplace.getWorkplaceCode());
 				data.setWorkplaceName(workplace.getWorkplaceName());
@@ -458,7 +458,7 @@ public class EmployeeSearchQueryProcessor {
 			if (mapJobTitleHistory.containsKey(employee.getSId()) && mapJobTitle
 					.containsKey(mapJobTitleHistory.get(employee.getSId()).getJobTitleId().v())) {
 				AffJobTitleHistory jobTitleHistory = mapJobTitleHistory.get(employee.getSId());
-				AcJobTitleDto jobtitle = mapJobTitle.get(jobTitleHistory.getJobTitleId().v());
+				JobTitleImport jobtitle = mapJobTitle.get(jobTitleHistory.getJobTitleId().v());
 				data.setJobTitleId(jobtitle.getPositionId());
 				data.setJobTitleCode(jobtitle.getPositionCode());
 				data.setJobTitleName(jobtitle.getPositionName());

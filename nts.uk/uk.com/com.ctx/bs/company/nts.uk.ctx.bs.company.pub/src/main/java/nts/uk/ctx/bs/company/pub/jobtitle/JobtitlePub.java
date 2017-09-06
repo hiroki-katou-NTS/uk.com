@@ -20,7 +20,7 @@ public interface JobtitlePub {
 	 * @param referenceDate the reference date
 	 * @return the list
 	 */
-	List<PubJobtitleDto> findAll(String companyId, GeneralDate referenceDate);
+	List<JobtitleExport> findAll(String companyId, GeneralDate referenceDate);
 
 	/**
 	 * Find by sid.
@@ -29,7 +29,7 @@ public interface JobtitlePub {
 	 * @param employeeId the employee id
 	 * @return the list
 	 */
-	List<PubJobtitleDto> findByJobIds(List<String> jobIds);
+	List<JobtitleExport> findByJobIds(List<String> jobIds);
 	
 	/**
 	 * Find by job ids.
@@ -39,6 +39,6 @@ public interface JobtitlePub {
 	 * @param baseDate the base date
 	 * @return the list
 	 */
-	List<PubJobtitleDto> findByJobIds(String companyId, List<String> jobIds,
+	List<JobtitleExport> findByJobIds(String companyId, List<String> jobIds,
 			GeneralDate baseDate);
 }

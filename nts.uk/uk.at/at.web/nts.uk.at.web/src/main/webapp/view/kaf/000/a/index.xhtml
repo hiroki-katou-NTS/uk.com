@@ -36,45 +36,9 @@
 			<!-- Body -->
 			<div style="height: 50px;background-color: gray ; margin-top: 30px;'">1</div>
 			
-			<!-- Footer -->
-			<div id="label-1">
-				<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
-			</div>	
-			<div id="table-1" >
-				<table id="table-phase">
-					<tbody>
-						<tr class="bg-green">
-							<th class="phase-app" style="width:111px;"></th>
-							<th class="name-app" style="width:111px;"></th>
-							<th class="content-app" style="width:211px;">1234</th>
-						</tr>
-						<tr>
-							<td class="bg-green" rowspan="5"> phase 1</td>
-							<td class="bg-green" >Name 1</td>
-							<td>content 1</td>
-						</tr>
-						<tr>
-							<td class="bg-green" >Name 2</td>
-							<td >content 2</td>
-						</tr>
-						<tr>
-							<td class="bg-green" >Name 3</td>
-							<td >content 3</td>
-						</tr>
-						<tr>
-							<td class="bg-green" >Name 4</td>
-							<td >content 5</td>
-						</tr>
-						<tr>
-							<td class="bg-green" >Name 5</td>
-							<td >content 5</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
 			
-			<!-- Footer test -->
-			<!-- <td data-bind="attr: { colspan: bonusPayTimeItemSettings.size() }"> -->
+			
+			<!-- Footer -->
 			<div id="label-1">
 				<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
 			</div>	
@@ -84,27 +48,19 @@
 						<tr  class="bg-green">
 							<th class="phase-app" style="width:111px;"></th>
 							<th class="name-app" style="width:111px;"></th>
-							<th class="content-app" style="width:211px;">1234</th>
+							<th class="content-app" style="width:230px;">#{i18n.getText('KAF000_3')}</th>
 						</tr>
 					</thead>
-					<tbody data-bind="foreach :listPhase ">
-						<tr>
-							<td class="bg-green" data-bind="text: phaseID,
-									attr: {'rowspan':$parent.listPhase().length}"></td>
-								<!-- attr: {colspan:$paren.listPhase.size()}, -->
-								
-								
-							<td class="bg-green" >Name 1</td>
-							<td>content 1</td>
-							<td class="bg-green" >Name 1</td>
-							<td>content 1</td>
-							<td class="bg-green" >Name 1</td>
-							<td>content 1</td>
-							<td class="bg-green" >Name 1</td>
-							<td>content 1</td>
-							<td class="bg-green" >Name 1</td>
-							<td>content 1</td>
-						</tr>
+					<tbody data-bind="foreach :listFrameByListPhase1 ">
+						<com:ko bind="$data" tag ="foreach">
+							<tr>
+								<com:ko bind="$index() === 0" tag="if">
+									<td class="bg-green" data-bind="attr: {rowspan: $parent.length},text: $data.phaseID">test</td>
+								</com:ko>
+								<td class="bg-green" ><label data-bind="text: $data.approverSID"></label></td>
+								<td><label data-bind="text: $data.reason"></label></td>
+							</tr>
+						</com:ko>
 					</tbody>
 				</table>
 			</div>

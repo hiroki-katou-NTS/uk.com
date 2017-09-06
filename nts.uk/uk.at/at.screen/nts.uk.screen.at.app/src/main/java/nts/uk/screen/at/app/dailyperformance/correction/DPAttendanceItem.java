@@ -16,7 +16,6 @@ public class DPAttendanceItem {
 	private Integer id;
 	private String name;
 	private Integer displayNumber;
-	private boolean useAtr;
 	private boolean userCanSet;
 	private Integer lineBreakPosition;
 	// 勤怠項目属性

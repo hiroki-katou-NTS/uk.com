@@ -16,5 +16,5 @@ public class BpsdtPersonPk implements Serializable {
 	
 	@Basic(optional = false)
 	@Column(name = "PID")
-	public String personId;
+	public String pId;
 }

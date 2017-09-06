@@ -13,11 +13,13 @@ module nts.uk.com.view.cmm018.shr {
         //screenA
         export class ListApproval {
             approvalId: string;
-            name: string;  
-            constructor(approvalId: string, name: string) {
+            name: string;
+            lstApprover: Array<Approver>;
+            constructor(approvalId: string, name: string, lstApprover: Array<Approver>) {
                 var self = this;
                 this.approvalId = approvalId;
                 self.name = name;
+                self.lstApprover = lstApprover;
             }  
         }
         //Screen I
@@ -154,6 +156,27 @@ module nts.uk.com.view.cmm018.shr {
             company: ComApprovalRootDto;
             lstAppPhase: Array<ApprovalPhaseDto>;
         }
+        export class CompanyAppRootADto{
+            approvalId: string;
+            appPhase1: ApprovalPhaseDto;
+            appPhase2: ApprovalPhaseDto;
+            appPhase3: ApprovalPhaseDto;
+            appPhase4: ApprovalPhaseDto;
+            appPhase5: ApprovalPhaseDto;
+            constructor( approvalId: string,
+            appPhase1: ApprovalPhaseDto, 
+            appPhase2: ApprovalPhaseDto, 
+            appPhase3: ApprovalPhaseDto,
+            appPhase4: ApprovalPhaseDto, 
+            appPhase5: ApprovalPhaseDto){
+                this.approvalId =  approvalId;
+                this.appPhase1 = appPhase1;
+                this.appPhase2 = appPhase2;
+                this.appPhase3 = appPhase3;
+                this.appPhase4 = appPhase4;
+                this.appPhase5 = appPhase5;
+            }
+        }
         //data screen C
         export class WorkPlaceAppRootDto{
             workplace: WpApprovalRootDto;
@@ -246,6 +269,14 @@ module nts.uk.com.view.cmm018.shr {
             browsingPhase: number;
             /**順序*/
             orderNumber: number;
+            constructor(approver: Array<ApproverDto>, branchId: string, approvalPhaseId: string, approvalForm: number, browsingPhase: number, orderNumber: number){
+                this.approver = approver;
+                this.branchId = branchId;
+                this.approvalPhaseId = approvalPhaseId;
+                this.approvalForm = approvalForm;
+                this.browsingPhase = browsingPhase;
+                this.orderNumber = orderNumber;
+            }
         }
         export class ApproverDto{
             /**承認者ID*/

@@ -136,11 +136,11 @@
 										<td class="approver">#{i18n.getText('CMM018_29')}</td>
 									</tr>
 								</thead>
-								<tbody style = "overflow-y: scroll; height: 200px;" data-bind="foreach: lstItems">
+								<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "foreach: cpA">
 									<tr>
 										<!-- A3_12: App Name -->
 										<td class="name">
-											<div data-bind = "text: name" style="display: inline-block;"></div>
+											<div data-bind = "text: $parent.nameCompany" style="display: inline-block;"></div>
 											<div style="display: inline-block;" data-bind="if: true">
 												<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
 											</div>
@@ -151,31 +151,50 @@
 											<div>hhh</div>
 										</td>
 										<!-- A3_16: -->
-										<td class="approver"><div>#{i18n.getText('CMM018_29')}</div></td>
+										<td class="approver" data-bind="with: appPhase1"><div>
+											<div data-bind="foreach: approver">
+												<div data-bind="text: approverId"> <br /></div>
+											</div>
+										</div></td>
 										<!-- A3_17: -->
 										<td class="button_phase">
 											<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
 										</td>
 										<!-- A3_19: -->
-										<td class="approver"><div>Kakashi</div></td>
+										<td class="approver" data-bind="with: appPhase2">
+											<div data-bind="foreach: approver">
+												<div data-bind="text: approverId"> <br /></div>
+											</div>
+										</td>
 										<!-- A3_20: -->
 										<td class="button_phase">
 											<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
 										</td>
 										<!-- A3_22: -->										
-										<td class="approver"><div>Kakashi</div></td>
+										<td class="approver" data-bind="with: appPhase3">
+											<div data-bind="foreach: approver">
+												<div data-bind="text: approverId"> <br /></div>
+											</div></td>
 										<!-- A3_23: -->
 										<td class="button_phase">
 											<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
 										</td>
 										<!-- A3_25: -->
-										<td class="approver"><div>Kakashi</div></td>
+										<td class="approver" data-bind="with: appPhase4">
+											<div data-bind="foreach: approver">
+												<div data-bind="text: approverId"> <br /></div>
+											</div>
+										</td>
 										<!-- A3_26: -->
 										<td class="button_phase">
 											<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
 										</td>
 										<!-- A3_28: -->
-										<td class="approver"><div>Kakashi</div></td>
+										<td class="approver" data-bind="with: appPhase5">
+											<div data-bind="foreach: approver">
+												<div data-bind="text: approverId"> <br /></div>
+											</div>
+										</td>
 										<!-- A3_29: Button delete -->
 										<td class="allow-pay">
 											<div>

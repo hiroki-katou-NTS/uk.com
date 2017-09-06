@@ -29,7 +29,7 @@ public interface WorkplacePub {
 	 * @param workplaceId the workplace id
 	 * @return the optional
 	 */
-	PubWorkplaceDto findByWkpId(String workplaceId);
+	WorkplaceExport findByWkpId(String workplaceId);
 
 	/**
 	 * Find by wpk ids.
@@ -37,7 +37,7 @@ public interface WorkplacePub {
 	 * @param workplaceIds the workplace ids
 	 * @return the list
 	 */
-	List<PubWorkplaceDto> findByWkpIds(List<String> workplaceIds);
+	List<WorkplaceExport> findByWkpIds(List<String> workplaceIds);
 
 	/**
 	 * Find by person ids.
@@ -45,7 +45,7 @@ public interface WorkplacePub {
 	 * @param personIds the person ids
 	 * @return the list
 	 */
-	List<PubWorkplaceDto> findAllWorkplaceOfCompany(String companyId, GeneralDate baseDate);
+	List<WorkplaceExport> findAllWorkplaceOfCompany(String companyId, GeneralDate baseDate);
 
 	/**
 	 * Find all hierarchy child.
@@ -54,5 +54,5 @@ public interface WorkplacePub {
 	 * @param workplaceId the workplace id
 	 * @return the list
 	 */
-	List<PubWorkplaceHierarchyDto> findAllHierarchyChild(String companyId, String workplaceId);
+	List<WorkplaceHierarchyExport> findAllHierarchyChild(String companyId, String workplaceId);
 }
