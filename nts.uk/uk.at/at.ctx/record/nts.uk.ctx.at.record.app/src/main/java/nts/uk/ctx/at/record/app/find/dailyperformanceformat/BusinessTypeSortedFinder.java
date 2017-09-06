@@ -40,21 +40,21 @@ public class BusinessTypeSortedFinder {
 		String companyId = login.companyId();
 
 		// find list attendanceItem has 使用区分 = true
-//		Map<Integer, AttendanceItemDto> attendanceItemDtos = this.attendanceItemsFinder.find().stream()
-//				.collect(Collectors.toMap(AttendanceItemDto::getAttendanceItemId, x -> x));
+		Map<Integer, AttendanceItemDto> attendanceItemDtos = this.attendanceItemsFinder.find().stream()
+				.collect(Collectors.toMap(AttendanceItemDto::getAttendanceItemId, x -> x));
 		
-		Map<Integer, AttendanceItem> attendanceItemDtos = this.attendanceItemRepository.getAttendanceItems(companyId, 1).stream()
-				.collect(Collectors.toMap(AttendanceItem::getAttendanceId, x -> x));
+//		Map<Integer, AttendanceItem> attendanceItemDtos = this.attendanceItemRepository.getAttendanceItems(companyId, 1).stream()
+//				.collect(Collectors.toMap(AttendanceItem::getAttendanceId, x -> x));
 
 		List<BusinessTypeSorted> businessTypeSorted = this.businessFormatSortedRepository.find(companyId,
 				attendanceItemDtos.keySet().stream().collect(Collectors.toList()));
 
 		List<BusinessTypeSortedDto> businessTypeSortedDtos = businessTypeSorted.stream().map(f -> {
 			return new BusinessTypeSortedDto(f.getAttendanceItemId(),
-//					attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceItemDisplayNumber(),
-//					attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceItemName(),
-					attendanceItemDtos.get(f.getAttendanceItemId()).getDislayNumber(),
-					attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceName().v(),
+					attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceItemDisplayNumber(),
+					attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceItemName(),
+//					attendanceItemDtos.get(f.getAttendanceItemId()).getDislayNumber(),
+//					attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceName().v(),
 					f.getOrder().v());
 		}).collect(Collectors.toList());
 
