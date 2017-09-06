@@ -349,14 +349,14 @@ module nts.uk.com.view.cps006.b.viewmodel {
             let self = this,
                 command,
                 paramList = [];
+            
+            block.invisible();
 
             service.getItemInfoDefList(self.currentCategory.id, true).done(function(itemInfoDefList: Array<IItemInfoDef>) {
 
                 paramList = self.genParamDisplayOrder(itemInfoDefList);
 
                 setShared('CDL020_PARAMS', paramList);
-
-                block.invisible();
 
                 nts.uk.ui.windows.sub.modal('/view/cdl/022/a/index.xhtml', { title: '' }).onClosed(function(): any {
 
