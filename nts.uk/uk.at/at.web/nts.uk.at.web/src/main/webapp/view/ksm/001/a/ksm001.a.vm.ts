@@ -185,6 +185,7 @@ module nts.uk.at.view.ksm001.a {
                 self.selectedEmploymentCode.subscribe(function(employmentCode) {
                     if (!employmentCode) {
                         self.employmentEstablishmentModel.disableInput();
+                        self.employmentEstablishmentModel.enableDelete(false);
                     }
                     if (employmentCode) {
                         var employment: UnitModel = self.findEmploymentByCode(employmentCode);
