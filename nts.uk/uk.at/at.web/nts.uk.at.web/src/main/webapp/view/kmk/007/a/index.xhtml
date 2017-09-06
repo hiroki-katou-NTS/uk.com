@@ -32,9 +32,9 @@
 					<button id="clear-button"
 						data-bind="click: cleanForm, enable: isEnable">#{i18n.getText('KMK007_1')}</button>
 					<button id="register-button" class="proceed"
-						data-bind="click: addWorkType, enable: $root.errors.isEmpty">#{i18n.getText('KMK007_2')}</button>
+						data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('KMK007_2')}</button>
 					<button id="orderby-button" data-bind="click: openDiablogC">#{i18n.getText('KMK007_3')}</button>
-					<button id="print-button" data-bind="click: changeLanguage">マスタリスト出力ボタン</button>
+					<button id="print-button">マスタリスト出力ボタン</button>
 					<div id="switch-language"></div>
 					<button id="remove-button" class="danger"
 						data-bind="click: removeWorkType, enable: isEnable">#{i18n.getText('KMK007_5')}</button>

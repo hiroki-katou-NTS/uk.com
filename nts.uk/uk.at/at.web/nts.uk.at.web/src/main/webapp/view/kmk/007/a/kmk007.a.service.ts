@@ -6,7 +6,8 @@ module nts.uk.at.view.kmk007.a.service {
         removeWorkType: "at/share/worktype/remove",
         updateWorkType: "at/share/worktype/update",
         findWorkTypeSet: "at/share/worktype/find/{0}",
-        findByLangId: "at/share/worktype/getByCIdAndLangId"
+        findByLangId: "at/share/worktype/getByCIdAndLangId",
+        insertWorkTypeLang: "at/share/worktype/language/insert"
     }
 
     export function loadWorkType(): JQueryPromise<Array<any>> {
@@ -34,5 +35,9 @@ module nts.uk.at.view.kmk007.a.service {
 
     export function findByLangId(langId: string): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.findByLangId + '/' + langId);
+    }
+
+    export function insert(workTypeLanguage: any): JQueryPromise<any> {
+        return nts.uk.request.ajax("at", paths.insertWorkTypeLang, workTypeLanguage);
     }
 }

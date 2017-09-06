@@ -23,8 +23,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         index: KnockoutObservable<number>;
 
         isEnable: KnockoutObservable<boolean> = ko.observable(true);
-        langId: KnockoutObservable<string> = ko.observable('jp');
-        index1: number = 1;
+        langId: KnockoutObservable<string> = ko.observable('ja');
 
         constructor() {
             var self = this,
@@ -209,10 +208,10 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     self.currentWorkType().workTypeCode(itemWorkType.workTypeCode);
                     self.currentWorkType().name(itemWorkType.name);
                     self.currentWorkType().nameNotJP(itemWorkType.nameNotJP);
-                    self.currentWorkType().dispName(self.langId() == 'jp' ? itemWorkType.name : itemWorkType.nameNotJP);
+                    self.currentWorkType().dispName(self.langId() == 'ja' ? itemWorkType.name : itemWorkType.nameNotJP);
                     self.currentWorkType().abbreviationName(itemWorkType.abbreviationName);
                     self.currentWorkType().abNameNotJP(itemWorkType.abNameNotJP);
-                    self.currentWorkType().dispAbName(self.langId() == 'jp' ? itemWorkType.abbreviationName : itemWorkType.abNameNotJP);
+                    self.currentWorkType().dispAbName(self.langId() == 'ja' ? itemWorkType.abbreviationName : itemWorkType.abNameNotJP);
                     self.currentWorkType().symbolicName(itemWorkType.symbolicName);
                     self.currentWorkType().abolishAtr(itemWorkType.abolishAtr);
                     self.currentWorkType().memo(itemWorkType.memo);
@@ -230,16 +229,22 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 }
 
             });
+
+            self.langId.subscribe(() => {
+                self.changeLanguage();
+            });
         }
 
 
         startPage(): JQueryPromise<any> {
             var self = this;
+
             // switch language
             $("#switch-language").ntsSwitchMasterLanguage();
             $("#switch-language").on("selectionChanged", function(event, arg1, arg2) {
-                alert(event.detail.languageId);
+                self.langId(event.detail.languageId);
             });
+
             var dfd = $.Deferred();
             self.getWorkType().done(function() {
                 if (self.listWorkType().length > 0) {
@@ -253,6 +258,17 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             return dfd.promise();
         }
 
+        /**
+         * Check language to save
+         */
+        private saveData(): void {
+            let self = this;
+            if (self.langId() == 'ja') {
+                self.addWorkType();
+            } else {
+                self.insertWorkTypeLanguage();
+            }
+        }
 
         private setWorkTypeSet(worktypeset: WorkTypeSet, itemWorkType: IWorkTypeSet): void {
 
@@ -279,12 +295,12 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 self.getWorkType();
             });
         }
-        
-        private openBDialog(itemId: number){
+
+        private openBDialog(itemId: number) {
             nts.uk.ui.windows.setShared("KMK007_ITEM_ID", itemId);
             nts.uk.ui.windows.sub.modal("/view/kmk/007/b/index.xhtml").onClosed(() => {
-                
-            });  
+
+            });
         }
 
         private addWorkType(): any {
@@ -359,7 +375,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
         private checkCalculatorMethod(workTypeSetCode: number): void {
             let self = this;
-            if (self.langId() != 'jp') {
+            if (self.langId() != 'ja') {
                 self.enableMethod(false);
             } else {
                 if (workTypeSetCode == 1 || workTypeSetCode == 8 || workTypeSetCode == 12 || workTypeSetCode == 13) {
@@ -497,36 +513,12 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             return dfd.promise();
         }
 
+        /**
+         * When change language
+         */
         private changeLanguage(): void {
             let self = this;
-            let dfd = $.Deferred();
-            if (self.index1 % 2 != 0) {
-                self.langId('en');
-                service.findByLangId(self.langId()).done((data) => {
-                    _.each(data, (x) => {
-                        if (_.find(self.listWorkType(), ['workTypeCode', x.workTypeCode])) {
-                            _.find(self.listWorkType(), ['workTypeCode', x.workTypeCode]).nameNotJP = x.name;
-                            _.find(self.listWorkType(), ['workTypeCode', x.workTypeCode]).abNameNotJP = x.abbreviationName;
-                        }
-                    });
-
-                    self.isEnable(false);
-                    $("#single-list").igGrid("option", "width", "340px");
-                    $("#left-content").css('width', '380');
-                    //add columns otherLanguageName
-                    var cols = $("#single-list").igGrid("option", "columns");
-                    var newColumn = { headerText: nts.uk.resource.getText('KMK007_9'), key: 'nameNotJP', width: 100, formatter: _.escape };
-                    cols.splice(2, 0, newColumn);
-                    $("#single-list").igGrid("option", "columns", cols);
-                    self.currentCode.valueHasMutated();
-
-                    dfd.resolve();
-                }).fail(() => {
-                    dfd.reject();
-                });
-
-            } else {
-                self.langId('jp');
+            if (self.langId() == 'ja') {
                 self.getWorkType();
                 self.isEnable(true);
                 $("#single-list").igGrid("option", "width", "280px");
@@ -536,8 +528,67 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 cols.splice(2, 1);
                 $("#single-list").igGrid("option", "columns", cols);
                 self.currentCode.valueHasMutated();
+            } else {
+                self.findWorkTypeLanguage();
             }
-            self.index1 += 1;
+        }
+
+        /**
+         * find data WorkTypeLanguage
+         */
+        private findWorkTypeLanguage(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            service.findByLangId(self.langId()).done((data) => {
+                _.each(data, (x) => {
+                    if (_.find(self.listWorkType(), ['workTypeCode', x.workTypeCode])) {
+                        _.find(self.listWorkType(), ['workTypeCode', x.workTypeCode]).nameNotJP = x.name;
+                        _.find(self.listWorkType(), ['workTypeCode', x.workTypeCode]).abNameNotJP = x.abbreviationName;
+                    }
+                });
+
+                self.isEnable(false);
+                $("#single-list").igGrid("option", "width", "340px");
+                $("#left-content").css('width', '380');
+
+                var cols = $("#single-list").igGrid("option", "columns");
+                if ($("#single-list").igGrid("option", "columns").length == 3) {
+                    //add columns otherLanguageName   
+                    var newColumn = { headerText: nts.uk.resource.getText('KMK007_9'), key: 'nameNotJP', width: 100, formatter: _.escape };
+                    cols.splice(2, 0, newColumn);
+                    $("#single-list").igGrid("option", "columns", cols);
+                }
+
+                self.currentCode.valueHasMutated();
+
+                dfd.resolve();
+            }).fail(() => {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * insert name and abName to WorkTypeLanguage
+         */
+        private insertWorkTypeLanguage(): void {
+            let self = this;
+            let dfd = $.Deferred();
+
+            let obj = {
+                workTypeCode: self.currentWorkType().workTypeCode(),
+                langId: self.langId(),
+                name: self.currentWorkType().dispName(),
+                abName: self.currentWorkType().dispAbName()
+            }
+            service.insert(obj).done(() => {
+                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                self.getWorkType();
+                self.findWorkTypeLanguage();
+                dfd.resolve();
+            }).fail(() => {
+                dfd.reject();
+            });
             dfd.promise();
         }
     }
