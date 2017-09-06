@@ -20,5 +20,5 @@ public class KshstSphdSubConditionPK implements Serializable {
 
 	/* 特別休暇コード */
 	@Column(name = "SPHD_CD")
-	public int specialHolidayCode;
+	public String specialHolidayCode;
 }

@@ -10,14 +10,14 @@
 			<script>var dialogSize = { width: 1300, height: 800 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmf004.d.main.css" />
-<!-- 			<com:stylefile path="../e/kmf004.e.main.css" /> -->
-			
+			<!-- 			<com:stylefile path="../e/kmf004.e.main.css" /> -->
+
 			<com:scriptfile path="kmf004.d.vm.js" />
 			<com:scriptfile path="kmf004.d.service.js" />
 			<com:scriptfile path="kmf004.d.start.js" />
 
-<!-- 			<com:scriptfile path="../e/kmf004.e.vm.js" /> -->
-<!-- 			<com:scriptfile path="../e/kmf004.e.service.js" /> -->
+			<!-- 			<com:scriptfile path="../e/kmf004.e.vm.js" /> -->
+			<!-- 			<com:scriptfile path="../e/kmf004.e.service.js" /> -->
 		</ui:define>
 		<ui:define name="sidebar">
 			<div data-bind="with: tabView">
@@ -31,68 +31,84 @@
 		<ui:define name="sidebar-content">
 			<div class="sidebar-content-header" data-bind="with: tabView">
 				<span class="title" data-bind="text: title"></span>
-				<button class="proceed" data-bind="click: $parent.viewmodelD.register.bind($parent.viewmodelD)">#{i18n.getText('KMF004_2')}</button>
-				<button class="cancel" data-bind="click: $parent.viewmodelD.closeDialog">#{i18n.getText('KMF004_4')}</button>
+				<button class="proceed"
+					data-bind="click: $parent.viewmodelD.register.bind($parent.viewmodelD)">#{i18n.getText('KMF004_2')}</button>
+				<button class="cancel"
+					data-bind="click: $parent.viewmodelD.closeDialog">#{i18n.getText('KMF004_4')}</button>
 			</div>
 			<div id="tabpanel-d" role="tabpanel" class="screen-d"
 				data-bind="with: viewmodelD">
 				<div class="contents-area">
-					<div>
-						<div data-bind="ntsFormLabel: { required: true }"
-							class="form-label-1 required">#{i18n.getText('KMF004_93')}</div>
-					</div>
-					<div id="radio" style=""
-						data-bind="ntsRadioBoxGroup: {
+					<table>
+						<colgroup>
+							<col width="280px" />
+							<col width="*" />
+						</colgroup>
+						<tr class="row">
+							<td>
+								<div id="label" data-bind="ntsFormLabel: { required: true }"
+									class="form-label-1 required">#{i18n.getText('KMF004_93')}</div>
+							</td>
+							<td>
+								<div id="button_radio"
+									data-bind="ntsRadioBoxGroup: {
 														options: itemList,
 														optionsValue: 'id',
 														optionsText: 'name',
 														value: selectedId,
-														enable: true}">
-					</div>
-					
+														enable: true}, hasFocus: true">
+								</div>
+							</td>
+						</tr>
+					</table>
+
 				</div>
-				<span>#{i18n.getText('KMF004_97')}
-				<button id="help" data-bind="ntsHelpButton: {image: 'image/IMG_KMF004_2.png', position: 'right top', enable: enable }">?</button>
+				<span id="text">#{i18n.getText('KMF004_97')}
+					<button id="help"
+						data-bind="ntsHelpButton: {image: 'image/IMG_KMF004_2.png', position: 'right top', enable: enable }">?</button>
 				</span>
 				<hr />
-				<div data-bind="if: display">
-				</div>
+				<div data-bind="if: display"></div>
 				<div class="contents-area-bottom"></div>
 				<table class="contents-header" data-bind="if: display">
 					<thead>
 						<tr>
-							<td rowspan="2" class="numbers" style="width: 50px"></td>
+							<td rowspan="2" class="numbers"></td>
 							<td rowspan="2" class="input-units">#{i18n.getText('KMF004_98')}</td>
-							<td rowspan="2" class="input-units">#{i18n.getText('KMF004_31')}</td>
+							<td rowspan="2" class="date-input-field">#{i18n.getText('KMF004_31')}</td>
 						</tr>
 					</thead>
 					<tbody></tbody>
 				</table>
-				<table class="contents-data" style="width: 400px" data-bind="if: display">
+				<table class="contents-data" style="width: 293px"
+					data-bind="if: display">
 					<thead></thead>
 					<tbody style="margin-left: 10px;" data-bind="foreach: items">
 						<tr>
 							<td data-bind="text: $index() + 1" class="numbers"></td>
-							<td class="input-units-year">
-							<input id="year" class="year-input" data-bind="ntsNumberEditor: {
+							<td class="input-units-year"><input id="year"
+								class="year-input"
+								data-bind="ntsNumberEditor: {
 										value: year, 
 										option: ko.mapping.fromJS({
 											unitID: 'YEARS',
 											width: '50'
 										})}" />
-							<input id="month" class="months-input" data-bind="ntsNumberEditor: {
+								<input id="month" class="months-input"
+								data-bind="ntsNumberEditor: {
 										value: month, 
 										option: ko.mapping.fromJS({
 											unitID: 'MONTHS',
 											width: '60'
 										})}" /></td>
 
-							 <td class="input-units"><input class="days-input" data-bind="ntsNumberEditor: {
+							<td class="input-units"><input class="days-input"
+								data-bind="ntsNumberEditor: {
 										value: date, 
 										option: ko.mapping.fromJS({
 											unitID: 'DAYS',
 											width: '50'
-										})}" /></td> 
+										})}" /></td>
 						</tr>
 					</tbody>
 				</table>

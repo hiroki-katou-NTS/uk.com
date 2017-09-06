@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.shared.dom.worktype.specialholidayframe;
 
-import java.util.UUID;
-
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
@@ -35,5 +33,10 @@ public class SpecialHolidayFrame {
 				specialHdFrameNo,
 				new WorkTypeName(specialHdFrameName), 
 				EnumAdaptor.valueOf(deprecateSpecialHd, DeprecateClassification.class));
+	}
+
+	public static SpecialHolidayFrame createFromJavaType(String companyId, int specialHdFrameNo, String specialHdFrameName,
+			int deprecateSpecialHd) {
+		return new SpecialHolidayFrame(companyId, specialHdFrameNo, new WorkTypeName(specialHdFrameName), EnumAdaptor.valueOf(deprecateSpecialHd, DeprecateClassification.class));
 	}
 }

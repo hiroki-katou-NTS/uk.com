@@ -7,9 +7,15 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         selectedRuleCode: any;
         itemListOneDay: KnockoutObservableArray<ItemModel>;
         listWorkType: KnockoutObservableArray<any>;
+        listSpecialHlFrame: KnockoutObservableArray<any>;
+        listAbsenceFrame: KnockoutObservableArray<any>;
         oneDay: KnockoutObservable<WorkTypeSet>;
-        morning: KnockoutObservable<WorkTypeSet>;
-        afternoon: KnockoutObservable<WorkTypeSet>;
+        currentOneDayCls: KnockoutObservable<number>;
+        currentMorningCls: KnockoutObservable<number>;
+        currentAfternoonCls: KnockoutObservable<number>;
+        currentOneDay: KnockoutObservable<WorkTypeSet>;
+        currentMorning: KnockoutObservable<WorkTypeSet>;
+        currentAfternoon: KnockoutObservable<WorkTypeSet>;
         itemHodidayAtr: KnockoutObservableArray<ItemModel>;
         itemCloseAtr: KnockoutObservableArray<ItemModel>;
         itemListHaftDay: KnockoutObservableArray<ItemModel>;
@@ -18,6 +24,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         isCreated: KnockoutObservable<boolean>;
         index: KnockoutObservable<number>;
 
+        isEnable: KnockoutObservable<boolean> = ko.observable(true);
+        langId: KnockoutObservable<string> = ko.observable('ja');
 
         constructor() {
             var self = this,
@@ -38,12 +46,18 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
             self.selectedRuleCode = ko.observable(1);
             self.listWorkType = ko.observableArray([]);
+            self.listSpecialHlFrame = ko.observableArray([]);
+            self.listAbsenceFrame = ko.observableArray([]);
             self.oneDay = ko.observable(new WorkTypeSet(iwork));
-            self.morning = ko.observable(new WorkTypeSet(iwork));
-            self.afternoon = ko.observable(new WorkTypeSet(iwork));
+            self.currentOneDay = ko.observable(new WorkTypeSet(iwork));
+            self.currentMorning = ko.observable(new WorkTypeSet(iwork));
+            self.currentAfternoon = ko.observable(new WorkTypeSet(iwork));
             self.enableMethod = ko.observable(false);
-            self.isCreated = ko.observable(true);
+            self.isCreated = ko.observable(false);
             self.index = ko.observable(0);
+            self.currentOneDayCls = ko.observable(0);
+            self.currentMorningCls = ko.observable(0);
+            self.currentAfternoonCls = ko.observable(0);
             self.currentWorkType = ko.observable(new WorkType({
                 workTypeCode: '',
                 name: '',
@@ -58,7 +72,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 calculatorMethod: 0,
                 oneDay: ko.toJS(self.oneDay),
                 morning: ko.toJS(self.oneDay),
-                afternoon: ko.toJS(self.oneDay)
+                afternoon: ko.toJS(self.oneDay),
             }));
 
 
@@ -125,15 +139,21 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
 
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText('KMK007_7'), key: 'workTypeCode', width: 80, formatter: _.escape },
-                { headerText: nts.uk.resource.getText('KMK007_8'), key: 'name', width: 150, formatter: _.escape },
-                { headerText: '廃止', key: 'icon', width: 50 }
+                { headerText: nts.uk.resource.getText('KMK007_7'), key: 'workTypeCode', width: 70, formatter: _.escape },
+                { headerText: nts.uk.resource.getText('KMK007_8'), key: 'name', width: 110, formatter: _.escape },
+                { headerText: nts.uk.resource.getText('KMK007_10'), key: 'icon', width: 30 }
             ]);
 
             self.currentCode = ko.observable();
 
             self.currentWorkType().oneDayCls.subscribe(function(newOneDayCls) {
                 self.checkCalculatorMethod(newOneDayCls);
+
+                if (newOneDayCls == self.currentOneDayCls()) {
+                    self.setWorkTypeSet(self.currentWorkType().oneDay(), ko.toJS(self.currentOneDay()));
+                } else {
+                    self.setWorkTypeSet(self.currentWorkType().oneDay(), ko.toJS(self.oneDay));
+                }
             });
 
             self.currentWorkType().morningCls.subscribe(function(newOneDayCls) {
@@ -144,6 +164,12 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 } else {
                     self.checkCalculatorMethod(afternoonCode);
                 }
+
+                if (newOneDayCls == self.currentMorningCls()) {
+                    self.setWorkTypeSet(self.currentWorkType().morning(), ko.toJS(self.currentMorning));
+                } else {
+                    self.setWorkTypeSet(self.currentWorkType().morning(), ko.toJS(self.oneDay));
+                }
             });
 
             self.currentWorkType().afternoonCls.subscribe(function(newOneDayCls) {
@@ -153,10 +179,17 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 } else {
                     self.checkCalculatorMethod(morningCode);
                 }
+
+                if (newOneDayCls == self.currentAfternoonCls()) {
+                    self.setWorkTypeSet(self.currentWorkType().afternoon(), ko.toJS(self.currentAfternoon));
+                } else {
+                    self.setWorkTypeSet(self.currentWorkType().afternoon(), ko.toJS(self.oneDay));
+                }
             });
 
             self.currentCode.subscribe(function(newValue) {
                 if (newValue) {
+                    self.isCreated(false);
                     var index = _.findIndex(self.listWorkType(), function(item: IWorkType) {
                         return item.workTypeCode == newValue;
                     });
@@ -166,9 +199,23 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                         return item.workTypeCode == newValue;
                     });
 
+                    //set current worktypeset
+                    self.currentOneDay(itemWorkType.oneDay);
+                    self.currentMorning(itemWorkType.morning);
+                    self.currentAfternoon(itemWorkType.afternoon);
+
+                    //set current code 
+                    self.currentOneDayCls(itemWorkType.oneDayCls);
+                    self.currentMorningCls(itemWorkType.morningCls);
+                    self.currentAfternoonCls(itemWorkType.afternoonCls);
+
                     self.currentWorkType().workTypeCode(itemWorkType.workTypeCode);
                     self.currentWorkType().name(itemWorkType.name);
+                    self.currentWorkType().nameNotJP(itemWorkType.nameNotJP);
+                    self.currentWorkType().dispName(self.langId() == 'ja' ? itemWorkType.name : itemWorkType.nameNotJP);
                     self.currentWorkType().abbreviationName(itemWorkType.abbreviationName);
+                    self.currentWorkType().abNameNotJP(itemWorkType.abNameNotJP);
+                    self.currentWorkType().dispAbName(self.langId() == 'ja' ? itemWorkType.abbreviationName : itemWorkType.abNameNotJP);
                     self.currentWorkType().symbolicName(itemWorkType.symbolicName);
                     self.currentWorkType().abolishAtr(itemWorkType.abolishAtr);
                     self.currentWorkType().memo(itemWorkType.memo);
@@ -178,58 +225,33 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     self.currentWorkType().afternoonCls(itemWorkType.afternoonCls);
                     self.currentWorkType().calculatorMethod(itemWorkType.calculatorMethod);
 
-                    self.currentWorkType().oneDay().workTypeCode(itemWorkType.oneDay.workTypeCode);
-                    self.currentWorkType().oneDay().attendanceTime(itemWorkType.oneDay.attendanceTime);
-                    self.currentWorkType().oneDay().closeAtr(itemWorkType.oneDay.closeAtr);
-                    self.currentWorkType().oneDay().countHodiday(itemWorkType.oneDay.countHodiday);
-                    self.currentWorkType().oneDay().dayNightTimeAsk(itemWorkType.oneDay.dayNightTimeAsk);
-                    self.currentWorkType().oneDay().digestPublicHd(itemWorkType.oneDay.digestPublicHd);
-                    self.currentWorkType().oneDay().genSubHodiday(itemWorkType.oneDay.genSubHodiday);
-                    self.currentWorkType().oneDay().holidayAtr(itemWorkType.oneDay.holidayAtr);
-                    self.currentWorkType().oneDay().sumAbsenseNo(itemWorkType.oneDay.sumAbsenseNo);
-                    self.currentWorkType().oneDay().sumSpHodidayNo(itemWorkType.oneDay.sumSpHodidayNo);
-                    self.currentWorkType().oneDay().timeLeaveWork(itemWorkType.oneDay.timeLeaveWork);
-                    self.currentWorkType().oneDay().workAtr(itemWorkType.oneDay.workAtr);
-
-                    self.currentWorkType().morning().workTypeCode(itemWorkType.workTypeCode);
-                    self.currentWorkType().morning().attendanceTime(itemWorkType.morning.attendanceTime);
-                    self.currentWorkType().morning().closeAtr(itemWorkType.morning.closeAtr);
-                    self.currentWorkType().morning().countHodiday(itemWorkType.morning.countHodiday);
-                    self.currentWorkType().morning().dayNightTimeAsk(itemWorkType.morning.dayNightTimeAsk);
-                    self.currentWorkType().morning().digestPublicHd(itemWorkType.morning.digestPublicHd);
-                    self.currentWorkType().morning().genSubHodiday(itemWorkType.morning.genSubHodiday);
-                    self.currentWorkType().morning().holidayAtr(itemWorkType.morning.holidayAtr);
-                    self.currentWorkType().morning().sumAbsenseNo(itemWorkType.morning.sumAbsenseNo);
-                    self.currentWorkType().morning().sumSpHodidayNo(itemWorkType.morning.sumSpHodidayNo);
-                    self.currentWorkType().morning().timeLeaveWork(itemWorkType.morning.timeLeaveWork);
-                    self.currentWorkType().morning().workAtr(itemWorkType.morning.workAtr);
-
-                    self.currentWorkType().afternoon().workTypeCode(itemWorkType.workTypeCode);
-                    self.currentWorkType().afternoon().attendanceTime(itemWorkType.afternoon.attendanceTime);
-                    self.currentWorkType().afternoon().closeAtr(itemWorkType.afternoon.closeAtr);
-                    self.currentWorkType().afternoon().countHodiday(itemWorkType.afternoon.countHodiday);
-                    self.currentWorkType().afternoon().dayNightTimeAsk(itemWorkType.afternoon.dayNightTimeAsk);
-                    self.currentWorkType().afternoon().digestPublicHd(itemWorkType.afternoon.digestPublicHd);
-                    self.currentWorkType().afternoon().genSubHodiday(itemWorkType.afternoon.genSubHodiday);
-                    self.currentWorkType().afternoon().holidayAtr(itemWorkType.afternoon.holidayAtr);
-                    self.currentWorkType().afternoon().sumAbsenseNo(itemWorkType.afternoon.sumAbsenseNo);
-                    self.currentWorkType().afternoon().sumSpHodidayNo(itemWorkType.afternoon.sumSpHodidayNo);
-                    self.currentWorkType().afternoon().timeLeaveWork(itemWorkType.afternoon.timeLeaveWork);
-                    self.currentWorkType().afternoon().workAtr(itemWorkType.afternoon.workAtr);
+                    self.setWorkTypeSet(self.currentWorkType().oneDay(), itemWorkType.oneDay);
+                    self.setWorkTypeSet(self.currentWorkType().morning(), itemWorkType.morning);
+                    self.setWorkTypeSet(self.currentWorkType().afternoon(), itemWorkType.afternoon);
+                } else {
+                    self.isCreated(true);
                 }
 
+            });
+
+            self.langId.subscribe(() => {
+                self.changeLanguage();
             });
         }
 
 
         startPage(): JQueryPromise<any> {
             var self = this;
+
             // switch language
             $("#switch-language").ntsSwitchMasterLanguage();
             $("#switch-language").on("selectionChanged", function(event, arg1, arg2) {
-                alert(event.detail.languageId);
+                self.langId(event.detail.languageId);
             });
+
             var dfd = $.Deferred();
+            self.getSpecialHolidayFrame();
+            self.getAbsenceFrame();
             self.getWorkType().done(function() {
                 if (self.listWorkType().length > 0) {
                     self.currentCode(self.listWorkType()[0].workTypeCode);
@@ -241,15 +263,52 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             });
             return dfd.promise();
         }
-        
-        openDiablogC() {
+
+        /**
+         * Check language to save
+         */
+        private saveData(): void {
+            let self = this;
+            if (self.langId() == 'ja') {
+                self.addWorkType();
+            } else {
+                self.insertWorkTypeLanguage();
+            }
+        }
+
+        private setWorkTypeSet(worktypeset: WorkTypeSet, itemWorkType: IWorkTypeSet): void {
+
+            worktypeset.workTypeCode(itemWorkType.workTypeCode);
+            worktypeset.attendanceTime(itemWorkType.attendanceTime);
+            worktypeset.closeAtr(itemWorkType.closeAtr);
+            worktypeset.countHodiday(itemWorkType.countHodiday);
+            worktypeset.dayNightTimeAsk(itemWorkType.dayNightTimeAsk);
+            worktypeset.digestPublicHd(itemWorkType.digestPublicHd);
+            worktypeset.genSubHodiday(itemWorkType.genSubHodiday);
+            worktypeset.holidayAtr(itemWorkType.holidayAtr);
+            worktypeset.sumAbsenseNo(itemWorkType.sumAbsenseNo);
+            worktypeset.sumSpHodidayNo(itemWorkType.sumSpHodidayNo);
+            worktypeset.timeLeaveWork(itemWorkType.timeLeaveWork);
+            worktypeset.workAtr(itemWorkType.workAtr);
+        }
+
+        private openDiablogC() {
             var self = this;
-                        
+
             nts.uk.ui.windows.setShared("KMK007_WORK_TYPES", self.listWorkType());
-            
+
             nts.uk.ui.windows.sub.modal("/view/kmk/007/c/index.xhtml").onClosed(() => {
-                
-            });    
+                self.getWorkType();
+            });
+        }
+
+        private openBDialog(itemId: number) {
+            var self = this;
+            nts.uk.ui.windows.setShared("KMK007_ITEM_ID", itemId);
+            nts.uk.ui.windows.sub.modal("/view/kmk/007/b/index.xhtml").onClosed(() => {
+                self.getWorkType();
+               self.getAbsenceFrame();
+            });
         }
 
         private addWorkType(): any {
@@ -258,7 +317,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 length = workType.workTypeCode().length,
                 worktypeCode = workType.workTypeCode();
 
-            if (length < 3) {
+            if (length != 0 && length < 3) {
                 if (length == 1) {
                     workType.workTypeCode('00' + worktypeCode);
                 } else {
@@ -271,6 +330,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             } else if (workType.workAtr() == WorkAtr.MORNING) {
                 workType.oneDayCls(0);
             }
+            workType.name(workType.dispName());
+            workType.abbreviationName(workType.dispAbName());
             workType.oneDay().workTypeCode(workType.workTypeCode());
             workType.morning().workTypeCode(workType.workTypeCode());
             workType.afternoon().workTypeCode(workType.workTypeCode());
@@ -280,15 +341,22 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             self.changeBooleanToNumber(command.morning);
             self.changeBooleanToNumber(command.afternoon);
 
-            service.addWorkType(self.isCreated(), command).done(function() {
-                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
-                self.isCreated(false);
-                self.getWorkType().done(function() {
+            $("#input-workTypeCode").trigger("validate");
+            $("#input-workTypeName").trigger("validate");
 
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            } else {
+                service.addWorkType(self.isCreated(), command).done(function() {
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                    self.isCreated(false);
+                    self.getWorkType().done(function() {
+
+                    });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error.message);
                 });
-            }).fail(function(error) {
-                nts.uk.ui.dialog.alertError(error.message);
-            });
+            }
         }
 
         private changeBooleanToNumber(workTypeSet: IWorkTypeSet): void {
@@ -324,24 +392,28 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
         private checkCalculatorMethod(workTypeSetCode: number): void {
             let self = this;
-            if (workTypeSetCode == 1 || workTypeSetCode == 8 || workTypeSetCode == 12 || workTypeSetCode == 13) {
-                self.currentWorkType().calculatorMethod(0);
+            if (self.langId() != 'ja') {
                 self.enableMethod(false);
-            } else if (workTypeSetCode == 0 || workTypeSetCode == 2 || workTypeSetCode == 3 || workTypeSetCode == 7 || workTypeSetCode == 10) {
-                self.currentWorkType().calculatorMethod(1);
-                self.enableMethod(false);
-            } else if (workTypeSetCode == 6) {
-                self.currentWorkType().calculatorMethod(2);
-                self.enableMethod(false);
-            } else if (workTypeSetCode == 9) {
-                self.currentWorkType().calculatorMethod(3);
-                self.enableMethod(false);
-            } else if (workTypeSetCode == 4) {
-                self.currentWorkType().calculatorMethod(1);
-                self.enableMethod(true);
             } else {
-                self.currentWorkType().calculatorMethod(0);
-                self.enableMethod(true);
+                if (workTypeSetCode == 1 || workTypeSetCode == 8 || workTypeSetCode == 12 || workTypeSetCode == 13) {
+                    self.currentWorkType().calculatorMethod(0);
+                    self.enableMethod(false);
+                } else if (workTypeSetCode == 0 || workTypeSetCode == 2 || workTypeSetCode == 3 || workTypeSetCode == 7 || workTypeSetCode == 10) {
+                    self.currentWorkType().calculatorMethod(1);
+                    self.enableMethod(false);
+                } else if (workTypeSetCode == 6) {
+                    self.currentWorkType().calculatorMethod(2);
+                    self.enableMethod(false);
+                } else if (workTypeSetCode == 9) {
+                    self.currentWorkType().calculatorMethod(3);
+                    self.enableMethod(false);
+                } else if (workTypeSetCode == 4) {
+                    self.currentWorkType().calculatorMethod(1);
+                    self.enableMethod(true);
+                } else {
+                    self.currentWorkType().calculatorMethod(0);
+                    self.enableMethod(true);
+                }
             }
         }
 
@@ -361,7 +433,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 calculatorMethod: 0,
                 oneDay: ko.toJS(self.oneDay),
                 morning: ko.toJS(self.oneDay),
-                afternoon: ko.toJS(self.oneDay)
+                afternoon: ko.toJS(self.oneDay),
             }));
             self.currentCode("");
             if (self.listWorkType().length > 0) {
@@ -390,7 +462,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                             calculatorMethod: item.calculatorMethod,
                             oneDay: ko.toJS(self.oneDay),
                             morning: ko.toJS(self.oneDay),
-                            afternoon: ko.toJS(self.oneDay)
+                            afternoon: ko.toJS(self.oneDay),
+                            dispOrder: item.dispOrder
                         });
 
                         // one day
@@ -450,12 +523,126 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                         }
                         self.listWorkType.push(ko.toJS(workType));
                     });
-                } else {
+                    self.listWorkType(_.orderBy(self.listWorkType(), ['dispOrder', 'workTypeCode'], ['asc', 'asc']));
+                } else { }
+                dfd.resolve();
+            }).fail((res) => { dfd.reject(); });
+            return dfd.promise();
+        }
 
+        private getSpecialHolidayFrame(): any {
+            var self = this;
+            var dfd = $.Deferred();
+            service.getAllSpecialHolidayFrame().done(function(data) {
+                if (data.length != 0) {
+                    self.listSpecialHlFrame.removeAll();
+                    _.forEach(data, function(item) {
+                        if (item.deprecateSpecialHd == 0) {
+                            var specialHlFrame = new ItemModel(item.specialHdFrameNo, item.specialHdFrameName, item.deprecateSpecialHd)
+                            self.listSpecialHlFrame.push(ko.toJS(specialHlFrame));
+                        }
+                    });
                 }
                 dfd.resolve();
             }).fail((res) => { });
             return dfd.promise();
+        }
+
+        private getAbsenceFrame(): any {
+            var self = this;
+            var dfd = $.Deferred();
+            service.getAllAbsenceFrame().done(function(data) {
+                if (data.length != 0) {
+                    self.listAbsenceFrame.removeAll();
+                    _.forEach(data, function(item) {
+                        if (item.deprecateAbsence == 0) {
+                            var absenceFrame = new ItemModel(item.absenceFrameNo, item.absenceFrameName, item.deprecateAbsence)
+                            self.listAbsenceFrame.push(ko.toJS(absenceFrame));
+                        }
+                    });
+                }
+                dfd.resolve();
+            }).fail((res) => { });
+            return dfd.promise();
+        }
+
+        /**
+         * When change language
+         */
+        private changeLanguage(): void {
+            let self = this;
+            if (self.langId() == 'ja') {
+                self.getWorkType();
+                self.isEnable(true);
+                $("#single-list").igGrid("option", "width", "280px");
+                $("#left-content").css('width', '320');
+                //remove columns otherLanguageName
+                var cols = $("#single-list").igGrid("option", "columns");
+                cols.splice(2, 1);
+                $("#single-list").igGrid("option", "columns", cols);
+                self.currentCode.valueHasMutated();
+            } else {
+                self.findWorkTypeLanguage();
+            }
+        }
+
+        /**
+         * find data WorkTypeLanguage
+         */
+        private findWorkTypeLanguage(): JQueryPromise<any> {
+            let self = this;
+            let dfd = $.Deferred();
+            service.findByLangId(self.langId()).done((data) => {
+                _.each(data, (x) => {
+                    if (_.find(self.listWorkType(), ['workTypeCode', x.workTypeCode])) {
+                        _.find(self.listWorkType(), ['workTypeCode', x.workTypeCode]).nameNotJP = x.name;
+                        _.find(self.listWorkType(), ['workTypeCode', x.workTypeCode]).abNameNotJP = x.abbreviationName;
+                    }
+                });
+
+                self.isEnable(false);
+                $("#single-list").igGrid("option", "width", "340px");
+                $("#left-content").css('width', '380');
+
+                var cols = $("#single-list").igGrid("option", "columns");
+                if ($("#single-list").igGrid("option", "columns").length == 3) {
+                    //add columns otherLanguageName   
+                    var newColumn = { headerText: nts.uk.resource.getText('KMK007_9'), key: 'nameNotJP', width: 100, formatter: _.escape };
+                    cols.splice(2, 0, newColumn);
+                    $("#single-list").igGrid("option", "columns", cols);
+                }
+
+                self.currentCode.valueHasMutated();
+
+                dfd.resolve();
+            }).fail(() => {
+                dfd.reject();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * insert name and abName to WorkTypeLanguage
+         */
+        private insertWorkTypeLanguage(): void {
+            let self = this;
+            let dfd = $.Deferred();
+
+            let obj = {
+                workTypeCode: self.currentWorkType().workTypeCode(),
+                langId: self.langId(),
+                name: self.currentWorkType().dispName(),
+                abName: self.currentWorkType().dispAbName()
+            }
+            service.insert(obj).done(() => {
+                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+                self.getWorkType();
+                self.findWorkTypeLanguage();
+                dfd.resolve();
+            }).fail(() => {
+                dfd.reject();
+            });
+            dfd.promise();
         }
     }
 
@@ -495,7 +682,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
     export interface IWorkType {
         workTypeCode: string;
+        nameNotJP?: string;
         name: string;
+        abNameNotJP?: string;
         abbreviationName: string;
         symbolicName: string;
         abolishAtr: number;
@@ -508,12 +697,19 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         oneDay?: IWorkTypeSet;
         morning?: IWorkTypeSet;
         afternoon?: IWorkTypeSet;
+        dispOrder?: number;
+        dispAbName?: string;
+        dispName?: string;
     }
 
     export class WorkType {
         workTypeCode: KnockoutObservable<string>;
+        nameNotJP: KnockoutObservable<string>;
         name: KnockoutObservable<string>;
+        dispName: KnockoutObservable<string>;
+        abNameNotJP: KnockoutObservable<string>;
         abbreviationName: KnockoutObservable<string>;
+        dispAbName: KnockoutObservable<string>;
         symbolicName: KnockoutObservable<string>;
         abolishAtr: KnockoutObservable<any>;
         memo: KnockoutObservable<string>;
@@ -526,11 +722,16 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         oneDay: KnockoutObservable<WorkTypeSet>;
         morning: KnockoutObservable<WorkTypeSet>;
         afternoon: KnockoutObservable<WorkTypeSet>;
+        dispOrder: KnockoutObservable<number>;
 
         constructor(param: IWorkType) {
             this.workTypeCode = ko.observable(param.workTypeCode || '');
+            this.nameNotJP = ko.observable(param.nameNotJP);
             this.name = ko.observable(param.name);
+            this.dispName = ko.observable(param.dispName);
+            this.abNameNotJP = ko.observable(param.abNameNotJP);
             this.abbreviationName = ko.observable(param.abbreviationName);
+            this.dispAbName = ko.observable(param.dispAbName);
             this.symbolicName = ko.observable(param.symbolicName);
             this.abolishAtr = ko.observable(!!param.abolishAtr);
             this.memo = ko.observable(param.memo);
@@ -542,6 +743,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             this.oneDay = ko.observable(new WorkTypeSet(param.oneDay));
             this.morning = ko.observable(new WorkTypeSet(param.morning));
             this.afternoon = ko.observable(new WorkTypeSet(param.afternoon));
+            this.dispOrder = ko.observable(param.dispOrder);
+
             if (param.abolishAtr == 0) {
                 this.icon = "";
             } else {
