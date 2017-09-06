@@ -72,3 +72,7 @@ include 'com.ctx:bs:person:nts.uk.ctx.bs.person.infra'
 include 'com.ctx:bs:person:nts.uk.ctx.bs.person.pub'
 include 'com.ctx:bs:person:nts.uk.ctx.bs.person.pubimp'
 include 'com.ctx:bs:person:nts.uk.ctx.bs.person.ws'
+
+include 'com.screen:nts.uk.screen.com.ws'
+include 'com.screen:nts.uk.screen.com.app'
+include 'com.screen:nts.uk.screen.com.infra'
