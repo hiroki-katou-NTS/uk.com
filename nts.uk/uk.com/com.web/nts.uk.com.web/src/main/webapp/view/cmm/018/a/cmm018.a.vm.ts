@@ -3,6 +3,9 @@ module nts.uk.com.view.cmm018.a {
     import getText = nts.uk.resource.getText;
     import servicebase = cmm018.shr.servicebase;
     import vmbase = cmm018.shr.vmbase;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
+    import modal = nts.uk.ui.windows.sub.modal;
     export module viewmodel {
         export class ScreenModel {
             nameCompany: KnockoutObservable<string>;
@@ -91,6 +94,7 @@ module nts.uk.com.view.cmm018.a {
                     //get name application tyle
                     servicebase.getNameAppType().done(function(lstName){
                         self.lstNameAppType(lstName);
+                        console.log(lstName);
                     })
                 })
             }
@@ -110,10 +114,30 @@ module nts.uk.com.view.cmm018.a {
             }
             
             openDialogI(){
-                 nts.uk.ui.windows.sub.modal("/view/cmm/018/i/index.xhtml");
+                let paramI: vmbase.IData_Param = {
+                                name: "",
+                                startDate: "",
+                                startDateOld: "",
+                                check: 0,
+                                mode: 1
+                                }
+                setShared('CMM018I_PARAM', paramI);
+                modal("/view/cmm/018/i/index.xhtml");
             }
             openDialogJ(){
-                 nts.uk.ui.windows.sub.modal("/view/cmm/018/j/index.xhtml");
+                let lst: Array<vmbase.UpdateHistoryDto> = [];
+                let paramJ: vmbase.JData_Param = {
+                    startDate: "",
+                    endDate: "",
+                    workplaceId: "",
+                    employeeId: "",
+                    check: "",
+                    editOrDelete: 1,
+                    startDatePrevious: "",
+                    lstUpdate: lst
+                }
+                setShared('CMM018J_PARAM', paramJ);
+                modal("/view/cmm/018/j/index.xhtml");
                 
             }
             deleteRow(index){
