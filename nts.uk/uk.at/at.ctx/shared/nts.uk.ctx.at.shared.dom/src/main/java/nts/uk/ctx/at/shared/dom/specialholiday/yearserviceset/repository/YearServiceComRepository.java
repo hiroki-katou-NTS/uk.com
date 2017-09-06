@@ -34,7 +34,7 @@ public interface YearServiceComRepository {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	Optional<YearServiceSet> findSet(String companyId, int specialHolidayCode, int yearServiceType);
+	Optional<YearServiceSet> findSet(String companyId, String specialHolidayCode, int yearServiceType);
 	/**
 	 * find by year
 	 * @param companyId
@@ -67,5 +67,5 @@ public interface YearServiceComRepository {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	Optional<YearServiceCom> findCom(String companyId, int specialHolidayCode);
+	Optional<YearServiceCom> findCom(String companyId, String specialHolidayCode);
 }

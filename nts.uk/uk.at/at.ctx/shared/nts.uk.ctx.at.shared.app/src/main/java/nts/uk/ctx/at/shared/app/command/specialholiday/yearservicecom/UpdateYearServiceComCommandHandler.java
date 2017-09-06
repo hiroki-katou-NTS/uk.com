@@ -29,9 +29,11 @@ public class UpdateYearServiceComCommandHandler extends CommandHandler<UpdateYea
 		
 		List<YearServiceSet> yearServiceSets = null;
 		if (context.getCommand().getYearServiceSets() != null) {
+			
 			yearServiceSets = context.getCommand().getYearServiceSets().stream()
 					.map(x -> x.toDomain(context.getCommand().getSpecialHolidayCode(), companyId))
 					.collect(Collectors.toList());
+			YearServiceSet.validateInput(yearServiceSets);
 		}
 		
 		YearServiceCom yearServiceComNew = YearServiceCom.createFromJavaType(
