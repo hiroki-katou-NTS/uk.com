@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -13,20 +13,18 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDt
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeDetailDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeFormatDailyDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeFormatDetailDto;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapter;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatMonthly;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
 import nts.uk.ctx.at.shared.dom.attendance.AttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class DailyPerformanceFinder {
-	
+
 	@Inject
 	private AttendanceItemsFinder attendanceItemsFinder;
-	
+
 	@Inject
 	private AttendanceItemRepository attendanceItemRepository;
 
@@ -41,20 +39,28 @@ public class DailyPerformanceFinder {
 		String companyId = login.companyId();
 
 		// 勤怠項目 - find attendance item
-//		List<AttendanceItem> attendanceItems = this.attendanceItemRepository.getAttendanceItems(companyId, 1);
-//		List<AttendanceItemDto> attendanceItemDtos = attendanceItems.stream().map(f -> {
-//			return new AttendanceItemDto(f.getAttendanceId(), f.getAttendanceName().v(), f.getDislayNumber());
-//		}).collect(Collectors.toList());
-		
+		// List<AttendanceItem> attendanceItems =
+		// this.attendanceItemRepository.getAttendanceItems(companyId, 1);
+		// List<AttendanceItemDto> attendanceItemDtos =
+		// attendanceItems.stream().map(f -> {
+		// return new AttendanceItemDto(f.getAttendanceId(),
+		// f.getAttendanceName().v(), f.getDislayNumber());
+		// }).collect(Collectors.toList());
+
 		List<AttendanceItemDto> attendanceItemDtos = this.attendanceItemsFinder.find();
+		Map<Integer, AttendanceItemDto> attendanceItemMaps = attendanceItemDtos.stream().collect(
+				Collectors.toMap(AttendanceItemDto::getAttendanceItemId, x->x));
 
 		// find daily detail
-//		BusinessTypeFormatDailyDto businessTypeFormatDailyDto = new BusinessTypeFormatDailyDto(null, null, null);
-//		if (sheetNo == null) {
-//			businessTypeFormatDailyDto = new BusinessTypeFormatDailyDto(null, null, null);
-//		} else {
-			BusinessTypeFormatDailyDto businessTypeFormatDailyDto = businessTypeDailyDetailFinder.getDetail(businessTypeCode, sheetNo);
-//		}
+		// BusinessTypeFormatDailyDto businessTypeFormatDailyDto = new
+		// BusinessTypeFormatDailyDto(null, null, null);
+		// if (sheetNo == null) {
+		// businessTypeFormatDailyDto = new BusinessTypeFormatDailyDto(null,
+		// null, null);
+		// } else {
+		BusinessTypeFormatDailyDto businessTypeFormatDailyDto = businessTypeDailyDetailFinder
+				.getDetail(businessTypeCode, sheetNo);
+		// }
 
 		// find monthly detail
 		List<BusinessTypeFormatMonthly> businessTypeFormatMonthlies = this.workTypeFormatMonthlyRepository
@@ -65,10 +71,10 @@ public class DailyPerformanceFinder {
 		}
 
 		businessTypeFormatMonthlyDtos = businessTypeFormatMonthlies.stream().map(f -> {
-			Optional<AttendanceItem> attendanceItem = this.attendanceItemRepository.getAttendanceItemDetail(companyId,
-					f.getAttendanceItemId());
-			return new BusinessTypeFormatDetailDto(f.getAttendanceItemId(), attendanceItem.get().getDislayNumber(),
-					attendanceItem.get().getAttendanceName().v(), f.getOrder(), f.getColumnWidth());
+			if (attendanceItemMaps.containsKey(f.getAttendanceItemId()))
+				return new BusinessTypeFormatDetailDto(f.getAttendanceItemId(), attendanceItemMaps.get(f.getAttendanceItemId()).getAttendanceItemDisplayNumber(),
+						attendanceItemMaps.get(f.getAttendanceItemId()).getAttendanceItemName(), f.getOrder(), f.getColumnWidth());
+			return null;
 		}).collect(Collectors.toList());
 
 		BusinessTypeDetailDto businessTypeDetail = new BusinessTypeDetailDto(attendanceItemDtos,

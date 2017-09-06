@@ -141,9 +141,10 @@ module nts.uk.at.view.kdw008.b {
 
             setNewMode() {
                 let self = this;
+                self.businessTypeList([]);
                 self.newMode(true);
                 self.isUpdate = false;
-                self.currentBusinessType([]);
+                self.currentBusinessType(new BusinessTypeDetailModel(null));
                 self.currentBusinessTypeCode(null);
                 self.currentBusinessTypeName('');
                 self.selectedCode(null);
@@ -154,9 +155,10 @@ module nts.uk.at.view.kdw008.b {
                     dfd = $.Deferred();
                 new service.Service().getDailyPerformance(businessTypeCode, self.selectedSheetNo()).done(function(data: IBusinessTypeDetail) {
                     if (data) {
-                        self.currentBusinessType(new BusinessTypeDetailModel(data));
-                        // show data tab 1
                         self.businessTypeFormatMonthlyValue([]);
+                        self.currentBusinessType(new BusinessTypeDetailModel(data));
+                        self.currentBusinessType().attendanceItemDtos.valueHasMutated();
+                        // show data tab 1
                         data.businessTypeFormatMonthlyDtos = _.sortBy(data.businessTypeFormatMonthlyDtos, ["order"]);
                         if (data.businessTypeFormatMonthlyDtos) {
                             var attendanceItemModelMonthly = _.map(data.businessTypeFormatMonthlyDtos, item => {
