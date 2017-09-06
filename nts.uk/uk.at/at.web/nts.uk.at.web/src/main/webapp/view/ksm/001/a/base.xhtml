@@ -10,13 +10,15 @@
 			<ui:insert name="title" />
 			<span class="action-bar">
 			<ui:insert name="extended-action-bar" />
-			<button tabindex="3" >#{i18n.getText('KSM001_50')}</button>
 			<button tabindex="5" data-bind="click: openDialogCommonSetting">#{i18n.getText('KSM001_51')}</button>
 			</span>
 		</div>
 		<div class="contents-area cf" data-bind="visible: true" style="display: none">
 			<div class="lineContent">
-				<div class="lableContent" data-bind="ntsFormLabel: {required: true}">
+				<div class="lableContent" data-bind="visible: !isPersonSelected(), ntsFormLabel: {required: true}">
+					<label>#{i18n.getText('KSM001_4')}</label>
+				</div>
+				<div class="lableContentPersonal" data-bind="visible: isPersonSelected(), ntsFormLabel: {required: true}">
 					<label>#{i18n.getText('KSM001_4')}</label>
 				</div>
 				<ui:insert name="extended-111" />

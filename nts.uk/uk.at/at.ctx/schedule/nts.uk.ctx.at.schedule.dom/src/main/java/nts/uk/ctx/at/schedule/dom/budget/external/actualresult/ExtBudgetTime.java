@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresult;
 
-import nts.arc.primitive.TimeClockPrimitiveValue;
+import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;
 
 /**
@@ -12,7 +12,7 @@ import nts.arc.primitive.constraint.TimeRange;
  * 外部予算実績時間
  */
 @TimeRange(min = "00:00", max = "999:59")
-public class ExtBudgetTime extends TimeClockPrimitiveValue<ExtBudgetTime> {
+public class ExtBudgetTime extends TimeDurationPrimitiveValue<ExtBudgetTime> {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -22,7 +22,7 @@ public class ExtBudgetTime extends TimeClockPrimitiveValue<ExtBudgetTime> {
      *
      * @param rawValue the raw value
      */
-    public ExtBudgetTime(Long rawValue) {
+    public ExtBudgetTime(int rawValue) {
         super(rawValue);
     }
 

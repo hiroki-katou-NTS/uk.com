@@ -39,6 +39,7 @@ module nts.uk.com.view.cps005.b {
             reloadData(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
+                self.currentItemData().personInfoItemList([]);
                 new service.Service().getAllPerInfoItemDefByCtgId(self.categoryId).done(function(data: IItemData) {
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
                         self.currentItemData().personInfoItemList(_.map(data.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
@@ -68,10 +69,13 @@ module nts.uk.com.view.cps005.b {
                     newItemDef;
                 if (self.isUpdate == true) {
                     newItemDef = new UpdateItemModel(self.currentItemData().currentItemSelected());
+                    newItemDef.perInfoCtgId = self.categoryId;
                     newItemDef.singleItem.referenceCode = "Hard Code";
                     new service.Service().updateItemDef(newItemDef).done(function(data: string) {
                         if (data) {
                             info({ messageId: data }).then(() => { info({ messageId: "Msg_15" }); });
+                        } else {
+                            info({ messageId: "Msg_15" });
                         }
                         self.reloadData();
                         self.currentItemData().perInfoItemSelectCode("");
@@ -347,6 +351,7 @@ module nts.uk.com.view.cps005.b {
 
     export class UpdateItemModel {
         perInfoItemDefId: string;
+        perInfoCtgId: string;
         itemName: string;
         singleItem: SingleItemAddModel;
         constructor(data: PersonInfoItem) {

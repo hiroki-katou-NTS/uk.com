@@ -8,24 +8,24 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentRequestAdaptor;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentAdaptorDto;
-import nts.uk.ctx.at.request.dom.application.common.service.other.dto.AgentApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentRequestAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentImport;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.AgentApplicationType;
 import nts.uk.ctx.workflow.pub.agent.AgentPub;
 import nts.uk.ctx.workflow.pub.agent.AgentPubDto;
 
 @Stateless
-public class AgentAdapterImp implements AgentRequestAdaptor{
+public class AgentAdapterImp implements AgentRequestAdapter{
 	
 	@Inject
 	private AgentPub agentPub;
 
 	@Override
-	public List<AgentAdaptorDto> find(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate) {
+	public List<AgentImport> find(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate) {
 		List<AgentPubDto> empDto = agentPub.find(companyId, employeeId, startDate, endDate);
-		List<AgentAdaptorDto> lstEmployees = new ArrayList<>();
+		List<AgentImport> lstEmployees = new ArrayList<>();
 		for(AgentPubDto agentPubDto:empDto) {
-			AgentAdaptorDto agentDto = new AgentAdaptorDto();
+			AgentImport agentDto = new AgentImport();
 			agentDto.setEmployeeId(agentPubDto.getEmployeeId());
 			agentDto.setRequestId(agentPubDto.getRequestId());
 			agentDto.setStartDate(agentPubDto.getStartDate());
@@ -45,13 +45,13 @@ public class AgentAdapterImp implements AgentRequestAdaptor{
 	}
 
 	@Override
-	public List<AgentAdaptorDto> findAll(String companyId, List<String> employeeId, GeneralDate startDate,
+	public List<AgentImport> findAll(String companyId, List<String> employeeId, GeneralDate startDate,
 			GeneralDate endDate) {
-		List<AgentAdaptorDto> lstEmployees = new ArrayList<>();
+		List<AgentImport> lstEmployees = new ArrayList<>();
 		for(String emp :employeeId) {
 			List<AgentPubDto> empDto = agentPub.find(companyId, emp, startDate, endDate);
 			for(AgentPubDto agentPubDto:empDto) {
-				AgentAdaptorDto agentDto = new AgentAdaptorDto();
+				AgentImport agentDto = new AgentImport();
 				agentDto.setEmployeeId(agentPubDto.getEmployeeId());
 				agentDto.setRequestId(agentPubDto.getRequestId());
 				agentDto.setStartDate(agentPubDto.getStartDate());

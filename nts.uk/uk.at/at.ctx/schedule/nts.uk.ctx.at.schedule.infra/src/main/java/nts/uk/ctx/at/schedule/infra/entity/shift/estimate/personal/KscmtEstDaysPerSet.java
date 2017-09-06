@@ -86,6 +86,36 @@ public class KscmtEstDaysPerSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.kscmtEstDaysPerSetPK;
 	}
-	
-    
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((kscmtEstDaysPerSetPK == null) ? 0 : kscmtEstDaysPerSetPK.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KscmtEstDaysPerSet other = (KscmtEstDaysPerSet) obj;
+		if (kscmtEstDaysPerSetPK == null) {
+			if (other.kscmtEstDaysPerSetPK != null)
+				return false;
+		} else if (!kscmtEstDaysPerSetPK.equals(other.kscmtEstDaysPerSetPK))
+			return false;
+		return true;
+	}
+
 }

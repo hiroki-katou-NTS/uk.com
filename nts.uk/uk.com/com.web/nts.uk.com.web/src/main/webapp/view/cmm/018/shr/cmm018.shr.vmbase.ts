@@ -1,10 +1,23 @@
 module nts.uk.com.view.cmm018.shr {
     export module vmbase {
+        //screenA
         export class ListHistory {
+            approvalId: string;
             dateRange: string;  
-            constructor(dateRange: string) {
+            constructor(approvalId: string, dateRange: string) {
                 var self = this;
+                this.approvalId = approvalId;
                 self.dateRange = dateRange;
+            }  
+        }
+        //screenA
+        export class ListApproval {
+            approvalId: string;
+            name: string;  
+            constructor(approvalId: string, name: string) {
+                var self = this;
+                this.approvalId = approvalId;
+                self.name = name;
             }  
         }
         //Screen I
@@ -130,6 +143,8 @@ module nts.uk.com.view.cmm018.shr {
         }
         //data screen A,C,E
         export class CommonApprovalRootDto{
+            /**会社名*/
+            companyName: string;
             lstCompanyRoot: Array<CompanyAppRootDto>;
             lstWorkplaceRoot: Array<WorkPlaceAppRootDto>;
             lstPersonRoot: Array<PersonAppRootDto>;
@@ -245,6 +260,10 @@ module nts.uk.com.view.cmm018.shr {
             approvalAtr: number;
             /**確定者*/
             confirmPerson: number;
+        }
+        //
+        export enum ApprovalFormEnum{
+            
         }
         export class ProcessHandler {
             

@@ -3,6 +3,8 @@ package nts.uk.ctx.at.request.dom.application.common.approvalframe;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
+
 /**
  * 
  * @author hieult
@@ -62,5 +64,11 @@ public interface ApprovalFrameRepository {
 	 * @param phaseID
 	 */
 	void delete (String companyID , String phaseID , int dispOrder );
+	/**
+	 * get list frame by list phase
+	 * @param listPhase
+	 * @return
+	 */
+	List<ApprovalFrame> getListFrameByListPhase(String companyID,List<String> listPhaseID);
 
 }

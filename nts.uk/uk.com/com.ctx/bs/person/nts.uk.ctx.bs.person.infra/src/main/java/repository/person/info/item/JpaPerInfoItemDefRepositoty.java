@@ -152,6 +152,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SELECT_ITEMS_BY_LIST_CTG_ID_QUERY = "SELECT i FROM PpemtPerInfoItem i"
 			+ " WHERE i.itemCd = :itemCd AND i.perInfoCtgId IN :perInfoCtgIds";
 
+	private final static String SELECT_CHECK_ITEM_NAME_QUERY = "SELECT i.itemName"
+			+ " FROM PpemtPerInfoItem i WHERE i.perInfoCtgId = :perInfoCtgId AND i.itemName = :itemName"
+			+ " AND i.ppemtPerInfoItemPK.perInfoItemDefId != :perInfoItemDefId";
+
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
 		return this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
@@ -207,6 +211,17 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			return item;
 		}).collect(Collectors.toList()));
 		return perInfoItemDefIds;
+	}
+
+	@Override
+	public boolean checkItemNameIsUnique(String perInfoCtgId, String newItemName, String perInfoItemDefId) {
+		List<String> itemNames = this.queryProxy().query(SELECT_CHECK_ITEM_NAME_QUERY, String.class)
+				.setParameter("perInfoCtgId", perInfoCtgId).setParameter("itemName", newItemName)
+				.setParameter("perInfoItemDefId", perInfoItemDefId).getList();
+		if (itemNames == null || itemNames.isEmpty()) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override

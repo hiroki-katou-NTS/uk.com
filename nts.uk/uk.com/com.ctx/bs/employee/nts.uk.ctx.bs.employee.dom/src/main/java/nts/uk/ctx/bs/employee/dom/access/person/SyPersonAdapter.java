@@ -6,7 +6,7 @@ package nts.uk.ctx.bs.employee.dom.access.person;
 
 import java.util.List;
 
-import nts.uk.ctx.bs.employee.dom.access.person.dto.AcPersonDto;
+import nts.uk.ctx.bs.employee.dom.access.person.dto.PersonImport;
 
 /**
  * The Interface PersonAdapter.
@@ -19,5 +19,5 @@ public interface SyPersonAdapter {
 	 * @param personIds the person ids
 	 * @return the list
 	 */
-	List<AcPersonDto> findByPersonIds(List<String> personIds);
+	List<PersonImport> findByPersonIds(List<String> personIds);
 }

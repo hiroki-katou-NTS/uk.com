@@ -155,17 +155,17 @@ public class JpaBasicAgreementSettingRepository extends JpaRepository implements
 	private static BasicAgreementSetting toDomain(KmkmtBasicAgreementSetting kmkmtBasicAgreementSetting) {
 		BasicAgreementSetting basicAgreementSetting = BasicAgreementSetting.createFromJavaType(
 				kmkmtBasicAgreementSetting.kmkmtBasicAgreementSettingPK.basicSettingId,
-				kmkmtBasicAgreementSetting.alarmWeek.longValue(), kmkmtBasicAgreementSetting.errorWeek.longValue(),
-				kmkmtBasicAgreementSetting.limitWeek.longValue(), kmkmtBasicAgreementSetting.alarmTwoWeeks.longValue(),
-				kmkmtBasicAgreementSetting.errorTwoWeeks.longValue(), kmkmtBasicAgreementSetting.limitTwoWeeks.longValue(),
-				kmkmtBasicAgreementSetting.alarmFourWeeks.longValue(), kmkmtBasicAgreementSetting.errorFourWeeks.longValue(),
-				kmkmtBasicAgreementSetting.limitFourWeeks.longValue(), kmkmtBasicAgreementSetting.alarmOneMonth.longValue(),
-				kmkmtBasicAgreementSetting.errorOneMonth.longValue(), kmkmtBasicAgreementSetting.limitOneMonth.longValue(),
-				kmkmtBasicAgreementSetting.alarmTwoMonths.longValue(), kmkmtBasicAgreementSetting.errorTwoMonths.longValue(),
-				kmkmtBasicAgreementSetting.limitTwoMonths.longValue(), kmkmtBasicAgreementSetting.alarmThreeMonths.longValue(),
-				kmkmtBasicAgreementSetting.errorThreeMonths.longValue(), kmkmtBasicAgreementSetting.limitThreeMonths.longValue(),
-				kmkmtBasicAgreementSetting.alarmOneYear.longValue(), kmkmtBasicAgreementSetting.errorOneYear.longValue(),
-				kmkmtBasicAgreementSetting.limitOneYear.longValue());
+				kmkmtBasicAgreementSetting.alarmWeek.intValue(), kmkmtBasicAgreementSetting.errorWeek.intValue(),
+				kmkmtBasicAgreementSetting.limitWeek.intValue(), kmkmtBasicAgreementSetting.alarmTwoWeeks.intValue(),
+				kmkmtBasicAgreementSetting.errorTwoWeeks.intValue(), kmkmtBasicAgreementSetting.limitTwoWeeks.intValue(),
+				kmkmtBasicAgreementSetting.alarmFourWeeks.intValue(), kmkmtBasicAgreementSetting.errorFourWeeks.intValue(),
+				kmkmtBasicAgreementSetting.limitFourWeeks.intValue(), kmkmtBasicAgreementSetting.alarmOneMonth.intValue(),
+				kmkmtBasicAgreementSetting.errorOneMonth.intValue(), kmkmtBasicAgreementSetting.limitOneMonth.intValue(),
+				kmkmtBasicAgreementSetting.alarmTwoMonths.intValue(), kmkmtBasicAgreementSetting.errorTwoMonths.intValue(),
+				kmkmtBasicAgreementSetting.limitTwoMonths.intValue(), kmkmtBasicAgreementSetting.alarmThreeMonths.intValue(),
+				kmkmtBasicAgreementSetting.errorThreeMonths.intValue(), kmkmtBasicAgreementSetting.limitThreeMonths.intValue(),
+				kmkmtBasicAgreementSetting.alarmOneYear.intValue(), kmkmtBasicAgreementSetting.errorOneYear.intValue(),
+				kmkmtBasicAgreementSetting.limitOneYear.intValue());
 		return basicAgreementSetting;
 	}
 }
