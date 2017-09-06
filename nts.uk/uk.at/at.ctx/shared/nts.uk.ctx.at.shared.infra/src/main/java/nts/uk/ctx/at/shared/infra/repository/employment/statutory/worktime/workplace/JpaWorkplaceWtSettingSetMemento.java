@@ -64,8 +64,8 @@ public class JpaWorkplaceWtSettingSetMemento implements WorkPlaceWtSettingSetMem
 
 		// Set statutory work time setting.
 		WorkingTimeSetting statutory = flexSetting.getStatutorySetting();
-		this.flexStatutory.setDailyTime(statutory.getDaily().v());
-		this.flexStatutory.setWeeklyTime(statutory.getWeekly().v());
+		this.flexStatutory.setDailyTime(statutory.getDaily().valueAsMinutes());
+		this.flexStatutory.setWeeklyTime(statutory.getWeekly().valueAsMinutes());
 		this.flexStatutory = this.setMonthly(this.flexStatutory, statutory.getMonthly());
 
 		// Set specified category & type.
@@ -76,8 +76,8 @@ public class JpaWorkplaceWtSettingSetMemento implements WorkPlaceWtSettingSetMem
 
 		// Set specified work time setting.
 		WorkingTimeSetting specified = flexSetting.getSpecifiedSetting();
-		this.flexSpecified.setDailyTime(specified.getDaily().v());
-		this.flexSpecified.setWeeklyTime(specified.getWeekly().v());
+		this.flexSpecified.setDailyTime(specified.getDaily().valueAsMinutes());
+		this.flexSpecified.setWeeklyTime(specified.getWeekly().valueAsMinutes());
 		this.flexSpecified = this.setMonthly(this.flexSpecified, specified.getMonthly());
 
 	}
@@ -102,8 +102,8 @@ public class JpaWorkplaceWtSettingSetMemento implements WorkPlaceWtSettingSetMem
 
 		// Set work time setting.
 		WorkingTimeSetting wts = deformationLaborSetting.getStatutorySetting();
-		this.deformed.setDailyTime(wts.getDaily().v());
-		this.deformed.setWeeklyTime(wts.getWeekly().v());
+		this.deformed.setDailyTime(wts.getDaily().valueAsMinutes());
+		this.deformed.setWeeklyTime(wts.getWeekly().valueAsMinutes());
 		this.deformed = this.setMonthly(this.deformed, wts.getMonthly());
 	}
 
@@ -176,8 +176,8 @@ public class JpaWorkplaceWtSettingSetMemento implements WorkPlaceWtSettingSetMem
 
 		// Set work time setting.
 		WorkingTimeSetting wts = normalSetting.getStatutorySetting();
-		this.normal.setDailyTime(wts.getDaily().v());
-		this.normal.setWeeklyTime(wts.getWeekly().v());
+		this.normal.setDailyTime(wts.getDaily().valueAsMinutes());
+		this.normal.setWeeklyTime(wts.getWeekly().valueAsMinutes());
 		this.normal = this.setMonthly(this.normal, wts.getMonthly());
 	}
 
@@ -192,40 +192,40 @@ public class JpaWorkplaceWtSettingSetMemento implements WorkPlaceWtSettingSetMem
 		monthly.forEach(month -> {
 			switch (month.getMonth()) {
 			case JANUARY:
-				entity.setJanTime(month.getTime().v());
+				entity.setJanTime(month.getTime().valueAsMinutes());
 				break;
 			case FEBRUARY:
-				entity.setFebTime(month.getTime().v());
+				entity.setFebTime(month.getTime().valueAsMinutes());
 				break;
 			case MARCH:
-				entity.setMarTime(month.getTime().v());
+				entity.setMarTime(month.getTime().valueAsMinutes());
 				break;
 			case APRIL:
-				entity.setAprTime(month.getTime().v());
+				entity.setAprTime(month.getTime().valueAsMinutes());
 				break;
 			case MAY:
-				entity.setMayTime(month.getTime().v());
+				entity.setMayTime(month.getTime().valueAsMinutes());
 				break;
 			case JUNE:
-				entity.setJunTime(month.getTime().v());
+				entity.setJunTime(month.getTime().valueAsMinutes());
 				break;
 			case JULY:
-				entity.setJulTime(month.getTime().v());
+				entity.setJulTime(month.getTime().valueAsMinutes());
 				break;
 			case AUGUST:
-				entity.setAugTime(month.getTime().v());
+				entity.setAugTime(month.getTime().valueAsMinutes());
 				break;
 			case SEPTEMBER:
-				entity.setSepTime(month.getTime().v());
+				entity.setSepTime(month.getTime().valueAsMinutes());
 				break;
 			case OCTOBER:
-				entity.setOctTime(month.getTime().v());
+				entity.setOctTime(month.getTime().valueAsMinutes());
 				break;
 			case NOVEMBER:
-				entity.setNovTime(month.getTime().v());
+				entity.setNovTime(month.getTime().valueAsMinutes());
 				break;
 			case DECEMBER:
-				entity.setDecTime(month.getTime().v());
+				entity.setDecTime(month.getTime().valueAsMinutes());
 				break;
 			default:
 				break;

@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.record.dom.standardtime;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
@@ -33,7 +31,7 @@ public class AgreementYearSetting extends AggregateRoot{
 		this.alarmOneYear = alarmOneYear;
 	}
 	
-	public static AgreementYearSetting createFromJavaType(String employeeId, int yearvalue, Long errorOneYear, Long alarmOneYear){
+	public static AgreementYearSetting createFromJavaType(String employeeId, int yearvalue, int errorOneYear, int alarmOneYear){
 		return new AgreementYearSetting(employeeId, yearvalue, new ErrorOneYear(errorOneYear), new AlarmOneYear(alarmOneYear));
 	}
 	

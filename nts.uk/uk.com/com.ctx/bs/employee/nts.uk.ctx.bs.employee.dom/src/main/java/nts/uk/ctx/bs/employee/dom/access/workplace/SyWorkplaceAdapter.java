@@ -7,8 +7,8 @@ package nts.uk.ctx.bs.employee.dom.access.workplace;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceDto;
-import nts.uk.ctx.bs.employee.dom.access.workplace.dto.AcWorkplaceHierarchyDto;
+import nts.uk.ctx.bs.employee.dom.access.workplace.dto.WorkplaceImport;
+import nts.uk.ctx.bs.employee.dom.access.workplace.dto.WorkplaceHierarchyImport;
 
 /**
  * The Interface PersonAdapter.
@@ -21,7 +21,7 @@ public interface SyWorkplaceAdapter {
 	 * @param workplaceId the workplace id
 	 * @return the optional
 	 */
-	AcWorkplaceDto findByWkpId(String workplaceId);
+	WorkplaceImport findByWkpId(String workplaceId);
 
 	/**
 	 * Find by wpk ids.
@@ -29,7 +29,7 @@ public interface SyWorkplaceAdapter {
 	 * @param workplaceId the workplace id
 	 * @return the list
 	 */
-	List<AcWorkplaceDto> findByWkpIds(List<String> workplaceIds);
+	List<WorkplaceImport> findByWkpIds(List<String> workplaceIds);
 
 	/**
 	 * Find by person ids.
@@ -37,7 +37,7 @@ public interface SyWorkplaceAdapter {
 	 * @param personIds the person ids
 	 * @return the list
 	 */
-	List<AcWorkplaceDto> findAllWorkplaceOfCompany(String companyId, GeneralDate baseDate);
+	List<WorkplaceImport> findAllWorkplaceOfCompany(String companyId, GeneralDate baseDate);
 
 	/**
 	 * Find all hierarchy child.
@@ -46,5 +46,5 @@ public interface SyWorkplaceAdapter {
 	 * @param workplaceId the workplace id
 	 * @return the list
 	 */
-	List<AcWorkplaceHierarchyDto> findAllHierarchyChild(String companyId, String workplaceId);
+	List<WorkplaceHierarchyImport> findAllHierarchyChild(String companyId, String workplaceId);
 }

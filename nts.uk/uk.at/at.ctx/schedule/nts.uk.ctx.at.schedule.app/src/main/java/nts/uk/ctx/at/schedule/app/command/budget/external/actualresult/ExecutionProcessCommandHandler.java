@@ -654,7 +654,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                 case TIME:
                     // convert HH:mm -> minute
                     Long valueTime = this.convertVal(value);
-                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetTime(valueTime), (ex) ->{
+                    PrimitiveValueUtil.createWithValidate(() -> new ExtBudgetTime(valueTime.intValue()), (ex) ->{
                         this.logError(importProcess, columnNo, value, ex.getErrorMessage(itemName));
                     });
                     break;

@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.TimeRange;
 @TimeRange(max="336:00", min = "00:00")
 public class LimitTwoWeeks extends TimeDurationPrimitiveValue<LimitTwoWeeks> {
 	
-	public LimitTwoWeeks(Long rawValue) {
+	public LimitTwoWeeks(int rawValue) {
 		super(rawValue);
 	}
 

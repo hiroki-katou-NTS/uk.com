@@ -5,12 +5,14 @@ package nts.uk.screen.at.infra.dailyperformance.correction;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.record.infra.entity.dailyattendanceitem.KrcmtDailyAttendanceItem;
 import nts.uk.ctx.at.record.infra.entity.dailyattendanceitem.KshstControlOfAttendanceItems;
 import nts.uk.ctx.at.record.infra.entity.dailyattendanceitem.KshstDailyServiceTypeControl;
 import nts.uk.ctx.at.record.infra.entity.dailyperformanceformat.KrcmtBusinessTypeDaily;
@@ -22,11 +24,11 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.Kclm
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60hVacation;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
-import nts.uk.ctx.basic.infra.entity.company.organization.classification.CclmtClassification;
-import nts.uk.ctx.basic.infra.entity.company.organization.employee.KmnmtEmployee;
-import nts.uk.ctx.basic.infra.entity.company.organization.employment.CemptEmployment;
-import nts.uk.ctx.basic.infra.entity.company.organization.jobtitle.CjtmtJobTitle;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWorkplace;
+//import nts.uk.ctx.basic.infra.entity.company.organization.classification.CclmtClassification;
+//import nts.uk.ctx.basic.infra.entity.company.organization.employee.KmnmtEmployee;
+//import nts.uk.ctx.basic.infra.entity.company.organization.employment.CemptEmployment;
+//import nts.uk.ctx.basic.infra.entity.company.organization.jobtitle.CjtmtJobTitle;
+//import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWorkplace;
 import nts.uk.screen.at.app.dailyperformance.correction.ClosureDto;
 import nts.uk.screen.at.app.dailyperformance.correction.Com60HVacationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.CompensLeaveComDto;
@@ -157,12 +159,13 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("SELECT c FROM KshstDailyServiceTypeControl c ");
 		builderString.append("WHERE c.kshstDailyServiceTypeControlPK.businessTypeCode IN :lstBusinessType ");
 		builderString.append("AND c.kshstDailyServiceTypeControlPK.attendanceItemId IN :lstItem");
+		builderString.append("AND c.use = true");
 		SEL_DP_TYPE_CONTROL = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT i FROM KmnmtAttendanceItem i ");
-		builderString.append("WHERE i.kmnmtAttendanceItemPK.companyId = :companyId ");
-		builderString.append("AND i.kmnmtAttendanceItemPK.attendanceItemId IN :lstItem");
+		builderString.append("SELECT i FROM KrcmtDailyAttendanceItem i ");
+		builderString.append("WHERE i.krcmtDailyAttendanceItemPK.companyId = :companyId ");
+		builderString.append("AND i.krcmtDailyAttendanceItemPK.attendanceItemId IN :lstItem");
 		SEL_ATTENDANCE_ITEM = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -237,47 +240,52 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<String> getListJobTitle(DateRange dateRange) {
-		return this.queryProxy().query(SEL_JOB_TITLE, CjtmtJobTitle.class)
-				.setParameter("companyId", AppContexts.user().companyId())
-				.setParameter("baseDate", dateRange.getEndDate()).getList().stream().map(j -> {
-					return j.getCjtmtJobTitlePK().getJobId();
-				}).collect(Collectors.toList());
+//		return this.queryProxy().query(SEL_JOB_TITLE, CjtmtJobTitle.class)
+//				.setParameter("companyId", AppContexts.user().companyId())
+//				.setParameter("baseDate", dateRange.getEndDate()).getList().stream().map(j -> {
+//					return j.getCjtmtJobTitlePK().getJobId();
+//				}).collect(Collectors.toList());
+		return null;
 	}
 
 	@Override
 	public List<String> getListEmployment(Integer closureId) {
-		return this.queryProxy().query(SEL_EMPLOYMENT_BY_CLOSURE, CemptEmployment.class)
-				.setParameter("companyId", AppContexts.user().companyId()).setParameter("closureId", closureId)
-				.getList().stream().map(e -> {
-					return e.getCemptEmploymentPK().getCode();
-				}).collect(Collectors.toList());
+//		return this.queryProxy().query(SEL_EMPLOYMENT_BY_CLOSURE, CemptEmployment.class)
+//				.setParameter("companyId", AppContexts.user().companyId()).setParameter("closureId", closureId)
+//				.getList().stream().map(e -> {
+//					return e.getCemptEmploymentPK().getCode();
+//				}).collect(Collectors.toList());
+		return null;
 	}
 
 	@Override
 	public List<String> getListWorkplace(String employeeId, DateRange dateRange) {
-		return this.queryProxy().query(SEL_WORKPLACE, CwpmtWorkplace.class).setParameter("sId", employeeId)
-				.setParameter("baseDate", dateRange.getEndDate()).getList().stream().map(w -> {
-					return w.getCwpmtWorkplacePK().getWkpid();
-				}).collect(Collectors.toList());
+//		return this.queryProxy().query(SEL_WORKPLACE, CwpmtWorkplace.class).setParameter("sId", employeeId)
+//				.setParameter("baseDate", dateRange.getEndDate()).getList().stream().map(w -> {
+//					return w.getCwpmtWorkplacePK().getWkpid();
+//				}).collect(Collectors.toList());
+		return null;
 	}
 
 	@Override
 	public List<String> getListClassification() {
-		return this.queryProxy().query(SEL_CLASSIFICATION, CclmtClassification.class)
-				.setParameter("companyId", AppContexts.user().companyId()).getList().stream().map(c -> {
-					return c.getCclmtClassificationPK().getCode();
-				}).collect(Collectors.toList());
+//		return this.queryProxy().query(SEL_CLASSIFICATION, CclmtClassification.class)
+//				.setParameter("companyId", AppContexts.user().companyId()).getList().stream().map(c -> {
+//					return c.getCclmtClassificationPK().getCode();
+//				}).collect(Collectors.toList());
+		return null;
 	}
 
 	@Override
 	public List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			List<String> lstWorkplace, List<String> lstClassification) {
-		return this.queryProxy().query(SEL_EMPLOYEE, KmnmtEmployee.class).setParameter("lstClas", lstClassification)
-				.setParameter("lstEmp", lstEmployment).setParameter("lstJob", lstJobTitle)
-				.setParameter("lstWkp", lstWorkplace).getList().stream().map(s -> {
-					return new DailyPerformanceEmployeeDto(s.kmnmtEmployeePK.employeeId, s.kmnmtEmployeePK.personId,
-							s.kmnmtEmployeePK.employeeCode);
-				}).collect(Collectors.toList());
+//		return this.queryProxy().query(SEL_EMPLOYEE, KmnmtEmployee.class).setParameter("lstClas", lstClassification)
+//				.setParameter("lstEmp", lstEmployment).setParameter("lstJob", lstJobTitle)
+//				.setParameter("lstWkp", lstWorkplace).getList().stream().map(s -> {
+//					return new DailyPerformanceEmployeeDto(s.kmnmtEmployeePK.employeeId, s.kmnmtEmployeePK.personId,
+//							s.kmnmtEmployeePK.employeeCode);
+//				}).collect(Collectors.toList());
+		return null;
 	}
 
 	@Override
@@ -288,14 +296,14 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public List<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType) {
+	public Set<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType) {
 		return this.queryProxy().query(SEL_FORMAT_DP_CORRECTION, KrcmtBusinessTypeDaily.class)
 				.setParameter("companyId", AppContexts.user().companyId())
 				.setParameter("lstBusinessTypeCode", lstBusinessType).getList().stream()
 				.map(f -> new FormatDPCorrectionDto(f.krcmtBusinessTypeDailyPK.companyId,
 						f.krcmtBusinessTypeDailyPK.businessTypeCode, f.krcmtBusinessTypeDailyPK.attendanceItemId,
 						f.krcmtBusinessTypeDailyPK.sheetNo.intValue(), f.order, f.columnWidth.intValue()))
-				.collect(Collectors.toList());
+				.collect(Collectors.toSet());
 	}
 
 	@Override
@@ -313,12 +321,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<DPAttendanceItem> getListAttendanceItem(List<Integer> lstAttendanceItem) {
-		return this.queryProxy().query(SEL_ATTENDANCE_ITEM, KmnmtAttendanceItem.class)
+		return this.queryProxy().query(SEL_ATTENDANCE_ITEM, KrcmtDailyAttendanceItem.class)
 				.setParameter("companyId", AppContexts.user().companyId()).setParameter("lstItem", lstAttendanceItem)
 				.getList().stream().map(i -> {
-					return new DPAttendanceItem(i.kmnmtAttendanceItemPK.attendanceItemId, i.attendanceItemName,
-							i.displayNumber, i.useAtr == 1 ? true : false, i.userCanSet == 1 ? true : false,
-							i.nameLineFeedPosition, i.attendanceAtr);
+					return new DPAttendanceItem(i.krcmtDailyAttendanceItemPK.attendanceItemId, i.attendanceItemName,
+							i.displayNumber.intValue(), i.userCanSet.intValue() == 1 ? true : false,
+							i.nameLineFeedPosition.intValue(), i.dailyAttendanceAtr.intValue());
 				}).collect(Collectors.toList());
 	}
 

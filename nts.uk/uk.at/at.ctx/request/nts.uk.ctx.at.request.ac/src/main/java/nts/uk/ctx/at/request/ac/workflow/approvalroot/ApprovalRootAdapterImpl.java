@@ -1,12 +1,12 @@
 package nts.uk.ctx.at.request.ac.workflow.approvalroot;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverImport;
@@ -26,37 +26,37 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 	private ApprovalRootPub approvalRootPub;
 	
 	@Override
-	public List<PersonApprovalRootImport> findByBaseDate(String cid, String sid, Date standardDate, int appType) {
-		return this.approvalRootPub.findByBaseDate(cid, sid, standardDate, appType).stream()
+	public List<PersonApprovalRootImport> findByBaseDate(String cid, String sid, GeneralDate baseDate, int appType) {
+		return this.approvalRootPub.findByBaseDate(cid, sid, baseDate, appType).stream()
 				.map(x -> this.toPersonAppRootImport(x)).collect(Collectors.toList());
 	}
 	
 	@Override
-	public List<PersonApprovalRootImport> findByBaseDateOfCommon(String cid, String sid, Date standardDate) {
-		return this.approvalRootPub.findByBaseDateOfCommon(cid, sid, standardDate).stream()
+	public List<PersonApprovalRootImport> findByBaseDateOfCommon(String cid, String sid, GeneralDate baseDate) {
+		return this.approvalRootPub.findByBaseDateOfCommon(cid, sid, baseDate).stream()
 				.map(x -> this.toPersonAppRootImport(x)).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<WkpApprovalRootImport> findWkpByBaseDate(String cid, String workPlaceId, Date baseDate, int appType) {
+	public List<WkpApprovalRootImport> findWkpByBaseDate(String cid, String workPlaceId, GeneralDate baseDate, int appType) {
 		return this.approvalRootPub.findWkpByBaseDate(cid, workPlaceId, baseDate, appType).stream()
 				.map(x -> this.toWkpAppRootImport(x)).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<WkpApprovalRootImport> findWkpByBaseDateOfCommon(String cid, String workPlaceId, Date baseDate) {
+	public List<WkpApprovalRootImport> findWkpByBaseDateOfCommon(String cid, String workPlaceId, GeneralDate baseDate) {
 		return this.approvalRootPub.findWkpByBaseDateOfCommon(cid, workPlaceId, baseDate).stream()
 				.map(x -> this.toWkpAppRootImport(x)).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<ComApprovalRootImport> findCompanyByBaseDate(String cid, Date baseDate, int appType) {
+	public List<ComApprovalRootImport> findCompanyByBaseDate(String cid, GeneralDate baseDate, int appType) {
 		return this.approvalRootPub.findCompanyByBaseDate(cid, baseDate, appType).stream()
 				.map(x -> this.toComAppRootImport(x)).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<ComApprovalRootImport> findCompanyByBaseDateOfCommon(String cid, Date baseDate) {
+	public List<ComApprovalRootImport> findCompanyByBaseDateOfCommon(String cid, GeneralDate baseDate) {
 		return this.approvalRootPub.findCompanyByBaseDateOfCommon(cid, baseDate).stream()
 				.map(x -> this.toComAppRootImport(x)).collect(Collectors.toList());
 	}

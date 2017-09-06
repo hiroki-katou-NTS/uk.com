@@ -36,13 +36,13 @@ public class ApprovalFrameDto {
 	private String approvalDate;
 	
 	/** 理由 */
-	private Reason reason;
+	private String reason;
 	
 	/** 代行者 */
 	private String representerSID;
 	
 	
-	public static ApprovalFrameDto fromDomain (ApprovalFrame domain){
+	public static ApprovalFrameDto fromDomain(ApprovalFrame domain){
 		
 		return new ApprovalFrameDto (
 				domain.getCompanyID(),
@@ -52,7 +52,7 @@ public class ApprovalFrameDto {
 				domain.getApprovalATR(),
 				domain.getConfirmATR(),
 				domain.getApprovalDate(),
-				domain.getReason(),
+				domain.getReason().toString(),
 				domain.getRepresenterSID());
 	}
 }

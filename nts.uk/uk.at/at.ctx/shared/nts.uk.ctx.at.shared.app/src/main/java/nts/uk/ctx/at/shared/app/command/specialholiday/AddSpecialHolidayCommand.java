@@ -25,7 +25,7 @@ public class AddSpecialHolidayCommand {
 	private String specialHolidayName;
 
 	/* 定期付与 */
-	private int grantPeriodicCls;
+	private int grantMethod;
 
 	/* メモ */
 	private String memo;
@@ -50,7 +50,7 @@ public class AddSpecialHolidayCommand {
 
 	public SpecialHoliday toDomain(String companyId) {
 		return SpecialHoliday.createFromJavaType(companyId, this.specialHolidayCode, this.specialHolidayName,
-				this.grantPeriodicCls, this.memo, this.workTypeList, this.toDomainGrantRegular(companyId),
+				this.grantMethod, this.memo, this.workTypeList, this.toDomainGrantRegular(companyId),
 				this.toDomainGrantPeriodic(companyId), this.toDomainSphdLimit(companyId),
 				this.toDomainSubCondition(companyId), this.toDomainGrantSingle(companyId));
 	}

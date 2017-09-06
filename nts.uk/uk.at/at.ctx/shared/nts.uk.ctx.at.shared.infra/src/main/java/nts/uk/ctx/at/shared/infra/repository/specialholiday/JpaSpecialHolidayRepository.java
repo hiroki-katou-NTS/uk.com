@@ -19,12 +19,12 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantRegular;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantRegularPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantSingle;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantSinglePK;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSubCondition;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSubConditionPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSpecialHoliday;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSpecialHolidayPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdLimit;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdLimitPK;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSubCondition;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSubConditionPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdWorkType;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdWorkTypePK;
 
@@ -32,7 +32,7 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdWorkTypePK;
 public class JpaSpecialHolidayRepository extends JpaRepository implements SpecialHolidayRepository {
 
 	private static final String SELECT_BY_CID;
-
+	private static final String CHECK_BY_CID;
 	static {
 
 		StringBuilder builderString = new StringBuilder();
@@ -41,6 +41,13 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		builderString.append(" WHERE e.kshstSpecialHolidayPK.companyId = :companyId");
 		builderString.append(" ORDER BY e.kshstSpecialHolidayPK.specialHolidayCode ASC");
 		SELECT_BY_CID = builderString.toString();
+		
+		 builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM KshstSpecialHoliday e");
+		builderString.append(" WHERE e.kshstSpecialHolidayPK.companyId = :companyId");
+		builderString.append(" AND e.kshstSpecialHolidayPK.specialHolidayCode = :specialHolidayCode");
+		CHECK_BY_CID = builderString.toString();
 	}
 
 	/**
@@ -107,7 +114,6 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		KshstGrantRegular kshstGrantRegular = new KshstGrantRegular();
 		KshstGrantRegularPK kshstGrantRegularPK = new KshstGrantRegularPK(grantRegular.getCompanyId(),
 				grantRegular.getSpecialHolidayCode().v());
-
 		kshstGrantRegular.grantStartDate = grantRegular.getGrantStartDate();
 		kshstGrantRegular.months = grantRegular.getMonths().v();
 		kshstGrantRegular.years = grantRegular.getYears().v();
@@ -276,6 +282,16 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return this.queryProxy().query(SELECT_BY_CID, KshstSpecialHoliday.class).setParameter("companyId", companyId)
 				.getList(c -> convertToDomain(c));
 	}
+	
+	@Override
+	public boolean checkExists(String companyId, int specialHolidayCode) {
+		List<KshstSpecialHoliday> branchs = this.queryProxy().query(CHECK_BY_CID, KshstSpecialHoliday.class)
+       		 .setParameter("companyId", companyId)
+       		 .setParameter("specialHolidayCode", specialHolidayCode)
+       		 .getList();
+		
+		return !branchs.isEmpty();
+	}
 
 	/**
 	 * Add Special Holiday
@@ -302,11 +318,17 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 			return new KshstSphdWorkType(key);
 		}).collect(Collectors.toList());
 
+		entity.grantRegular = convertToDbTypeRegular(specialHoliday.getGrantRegular());
+		entity.grantPeriodic = convertToDbTypePeriodic(specialHoliday.getGrantPeriodic());
+		entity.sphdLimit = convertToDbTypeSphdLimit(specialHoliday.getSphdLimit());
+		entity.subCondition = convertToDbTypeSubCondition(specialHoliday.getSubCondition());
+		entity.grantSingle = convertToDbTypeGrantSingle(specialHoliday.getGrantSingle());
 		entity.sphdWorkTypes = workTypes;
 		entity.kshstSpecialHolidayPK = primaryKey;
 		this.commandProxy().update(entity);
 	}
 
+	
 	/**
 	 * Delete Special Holiday
 	 */

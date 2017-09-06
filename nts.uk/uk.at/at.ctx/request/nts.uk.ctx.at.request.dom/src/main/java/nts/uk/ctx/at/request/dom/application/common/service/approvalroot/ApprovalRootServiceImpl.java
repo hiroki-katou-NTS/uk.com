@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.approvalroot;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,9 +18,12 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approve
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ComApprovalRootImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.PersonApprovalRootImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.WkpApprovalRootImport;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApprovalForm;
 import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApprovalPhaseOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApprovalRootOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApproverInfo;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ConfirmPerson;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ErrorFlag;
 import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
@@ -68,7 +70,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 	@Override
 	public List<ApprovalRootOutput> getApprovalRootOfSubjectRequest(
 			String cid, String sid, int employmentRootAtr, 
-			int appType,Date baseDate) {
+			int appType,GeneralDate baseDate) {
 		List<ApprovalRootOutput> result = new ArrayList<>();
 		// get 個人別就業承認ルート from workflow
 		List<PersonApprovalRootImport> perAppRoots = this.approvalRootAdaptorDto.findByBaseDate(cid, sid, baseDate, appType);
@@ -77,13 +79,13 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 			List<PersonApprovalRootImport> perAppRootsOfCommon = this.approvalRootAdaptorDto.findByBaseDateOfCommon(cid, sid, baseDate);
 			if (CollectionUtil.isEmpty(perAppRootsOfCommon)) {
 				// 所属職場を含む上位職場を取得
-				List<String> wpkList = this.employeeAdaptor.findWpkIdsBySid(cid, sid, GeneralDate.legacyDate(baseDate));
+				List<String> wpkList = this.employeeAdaptor.findWpkIdsBySid(cid, sid, baseDate);
 				for (String wｋｐId : wpkList) {
 					List<WkpApprovalRootImport> wkpAppRoots = this.approvalRootAdaptorDto.findWkpByBaseDate(cid, wｋｐId, baseDate, appType);
 					if (!CollectionUtil.isEmpty(wkpAppRoots)) {
 						// 2.承認ルートを整理する
 						result = wkpAppRoots.stream().map( x -> ApprovalRootOutput.convertFromWkpData(x)).collect(Collectors.toList());
-						this.adjustmentApprovalRoot(cid, sid, GeneralDate.legacyDate(baseDate), result);
+						this.adjustmentData(cid, sid, baseDate, result);
 						break;
 					} 
 					
@@ -91,7 +93,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 					if (!CollectionUtil.isEmpty(wkpAppRootsOfCom)) {
 						// 2.承認ルートを整理する
 						result = wkpAppRoots.stream().map( x -> ApprovalRootOutput.convertFromWkpData(x)).collect(Collectors.toList());
-						this.adjustmentApprovalRoot(cid, sid, GeneralDate.legacyDate(baseDate), result);
+						this.adjustmentData(cid, sid, baseDate, result);
 						break;
 					} 
 				}
@@ -103,24 +105,24 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 					if (!CollectionUtil.isEmpty(companyAppRootsOfCom)) {
 						// 2.承認ルートを整理する
 						result = comAppRoots.stream().map( x -> ApprovalRootOutput.convertFromCompanyData(x)).collect(Collectors.toList());
-						this.adjustmentApprovalRoot(cid, sid, GeneralDate.legacyDate(baseDate), result);
+						this.adjustmentData(cid, sid, baseDate, result);
 					} 
 				}else {
 					// 2.承認ルートを整理する
 					result = comAppRoots.stream().map( x -> ApprovalRootOutput.convertFromCompanyData(x)).collect(Collectors.toList());
-					this.adjustmentApprovalRoot(cid, sid, GeneralDate.legacyDate(baseDate), result);
+					this.adjustmentData(cid, sid, baseDate, result);
 				}
 					
 			}else {
 				// 2.承認ルートを整理する
 				result = perAppRoots.stream().map( x -> ApprovalRootOutput.convertFromPersonData(x)).collect(Collectors.toList());
-				this.adjustmentApprovalRoot(cid, sid, GeneralDate.legacyDate(baseDate), result);
+				this.adjustmentData(cid, sid, baseDate, result);
 			}
 			
 		}else {
 			// 2.承認ルートを整理する
 			result = perAppRoots.stream().map( x -> ApprovalRootOutput.convertFromPersonData(x)).collect(Collectors.toList());
-			this.adjustmentApprovalRoot(cid, sid, GeneralDate.legacyDate(baseDate), result);
+			this.adjustmentData(cid, sid, baseDate, result);
 		}
 		
 		return result;
@@ -128,9 +130,75 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 	
 	/**
 	 * 2.承認ルートを整理する 
+	 * 
+	 * @param cid
+	 * @param sid
+	 * @param baseDate
+	 * @param branchIds
 	 */
 	@Override
-	public List<ApprovalPhaseOutput> adjustmentApprovalRootData(String cid, String sid, GeneralDate baseDate,
+	public List<ApprovalRootOutput> adjustmentData(String cid, String sid, GeneralDate baseDate,  List<ApprovalRootOutput> appDatas) {
+		appDatas.stream().forEach(x -> {
+			List<ApprovalPhaseImport> appPhase = this.approvalRootAdaptorDto.findApprovalPhaseByBranchId(cid, x.getBranchId())
+					.stream().filter(f -> f.getBrowsingPhase() == 0)
+					.collect(Collectors.toList());
+			x.setBeforeApprovers(appPhase);
+			List<ApprovalPhaseOutput> phases = this.adjustmentApprovalRootData(cid, sid, baseDate, appPhase);
+			x.setAfterApprovers(phases);
+			
+			// 7.承認ルートの異常チェック
+			ErrorFlag errorFlag = this.checkError(appPhase, phases);
+			x.setErrorFlag(errorFlag);
+		});
+		return appDatas;
+	}
+
+	/**
+	 * 7.承認ルートの異常チェック
+	 */
+	@Override
+	public ErrorFlag checkError(List<ApprovalPhaseImport> beforeDatas, List<ApprovalPhaseOutput> afterDatas) {
+		ErrorFlag errorFlag = ErrorFlag.NO_ERROR;
+		for (ApprovalPhaseImport phase : beforeDatas) {
+			if (!CollectionUtil.isEmpty(phase.getApproverDtos())) {
+				
+				List<ApproverInfo> afterApprovers = afterDatas.stream().filter(x -> x.getApprovalPhaseId().equals(phase.getApprovalPhaseId())).findFirst().get().getApprovers();
+				int approverCounts = afterApprovers.size();
+				
+				// １フェーズにトータルの実際の承認者 > 10
+				if (approverCounts > 10) {
+					errorFlag = ErrorFlag.APPROVER_UP_10;
+					break;
+				}
+				
+				// １フェーズにトータルの実際の承認者 <= 0
+				if (approverCounts <= 0) {
+					errorFlag = ErrorFlag.NO_APPROVER;
+					break;
+				}
+				
+				// approvers count > 0 and < 10
+				if (phase.getApprovalForm() == ApprovalForm.SINGLE_APPROVED.value) {
+					// TODO: Pending cho nay can confirm voi chi Du
+					List<ApproverImport> befApprovers = phase.getApproverDtos().stream().filter(x-> x.getConfirmPerson() == ConfirmPerson.CONFIRM.value).collect(Collectors.toList());
+					
+					if (true) {
+						errorFlag = ErrorFlag.NO_CONFIRM_PERSON;
+						break;
+					}
+				}
+				
+			}
+		}
+		
+		return errorFlag;
+	}
+	
+	
+	/**
+	 * 2.承認ルートを整理する call this activity fo every branchId
+	 */
+	private List<ApprovalPhaseOutput> adjustmentApprovalRootData(String cid, String sid, GeneralDate baseDate,
 			List<ApprovalPhaseImport> appPhases) {
 		List<ApprovalPhaseOutput> phaseResults = new ArrayList<>();
 		
@@ -184,24 +252,6 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 		}
 		return phaseResults;
 	}
-	
-	/**
-	 * 2.承認ルートを整理する call this activity fo every branchId
-	 * 
-	 * @param cid
-	 * @param sid
-	 * @param baseDate
-	 * @param branchIds
-	 */
-	private void adjustmentApprovalRoot(String cid, String sid, GeneralDate baseDate,  List<ApprovalRootOutput> appDatas) {
-		appDatas.stream().forEach(x -> {
-			List<ApprovalPhaseImport> appPhase = this.approvalRootAdaptorDto.findApprovalPhaseByBranchId(cid, x.getBranchId())
-					.stream().filter(f -> f.getBrowsingPhase() == 0)
-					.collect(Collectors.toList());
-			List<ApprovalPhaseOutput> phases = adjustmentApprovalRootData(cid, sid, baseDate, appPhase);
-			x.setApprovers(phases);	
-		});
-	}
 
 	/**
 	 * 承認者IDリストに重複の社員IDを消す(xóa ID của nhân viên bị trùng trong List ID người xác nhận)
@@ -225,5 +275,5 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 		}
 		return result;
 	}
-	
+
 }
