@@ -4,8 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 
+import java.util.Map;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.worktime.AmPmClassification;
 
 /**
  * The Class FixedWorkSetting.
@@ -27,7 +30,7 @@ public class FixedWorkSetting extends AggregateRoot {
 
 	/** The weekday work time. */
 	// 平日勤務時間帯
-	private FixWeekdayWorkTime weekdayWorkTime;
+	private Map<AmPmClassification, FixWeekdayWorkTime> weekdayWorkTimes;
 
 	// 打刻反映時間帯
 	// private List<打刻反映時間帯> stampImprintingTime
@@ -37,4 +40,13 @@ public class FixedWorkSetting extends AggregateRoot {
 
 	// 詳細設定
 	// private WorkTimeCommonSet advancedSetting
+	
+	/**
+	 * 指定した区分の就業時間の時間帯設定を返す
+	 * @param classification 一日or午前or午後
+	 * @return 就業時間の時間帯設定
+	 */
+	public WorkTimeOfTimeSheetSetList getWorkingHourSet(AmPmClassification classification) {
+		return new WorkTimeOfTimeSheetSetList(this.weekdayWorkTimes.get(classification).getWorkingTime().getWorkingHours());
+	}
 }

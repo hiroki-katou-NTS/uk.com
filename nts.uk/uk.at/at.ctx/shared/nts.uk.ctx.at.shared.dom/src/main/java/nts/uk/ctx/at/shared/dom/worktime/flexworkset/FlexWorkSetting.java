@@ -39,6 +39,6 @@ public class FlexWorkSetting extends AggregateRoot {
 	// private Boolean useHalfDayShift;
 
 	// コアタイム時間帯設定
-	// private コアタイム時間帯設定 coreTimeSetting
+	 private CoreTimeSetting coreTimeSetting;
 
 }
