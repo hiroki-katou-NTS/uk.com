@@ -230,8 +230,7 @@ module nts.uk.request {
             data: data,
             cache: false,
             contentType: false,
-            processData: false,
-            async: false
+            processData: false
         });
     }
 
