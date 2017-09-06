@@ -32,9 +32,9 @@
 					<button id="clear-button"
 						data-bind="click: cleanForm, enable: isEnable">#{i18n.getText('KMK007_1')}</button>
 					<button id="register-button" class="proceed"
-						data-bind="click: addWorkType, enable: $root.errors.isEmpty">#{i18n.getText('KMK007_2')}</button>
+						data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('KMK007_2')}</button>
 					<button id="orderby-button" data-bind="click: openDiablogC">#{i18n.getText('KMK007_3')}</button>
-					<button id="print-button" data-bind="click: changeLanguage">マスタリスト出力ボタン</button>
+					<button id="print-button">マスタリスト出力ボタン</button>
 					<div id="switch-language"></div>
 					<button id="remove-button" class="danger"
 						data-bind="click: removeWorkType, enable: isEnable">#{i18n.getText('KMK007_5')}</button>
@@ -65,9 +65,9 @@
 						<div style="vertical-align: middle"
 							data-bind="ntsFormLabel: {constraint: ['WorkTypeCode','WorkTypeName'],required: true}">#{i18n.getText('KMK007_11')}</div>
 						<input id="input-workTypeCode"
-							data-bind="ntsTextEditor: {value: workTypeCode, constraint: 'WorkTypeCode', required: true, enable: $parent.isEnable}" />
+							data-bind="ntsTextEditor: {value: workTypeCode,name: '#[KMK007_12]', constraint: 'WorkTypeCode', required: true, enable: $parent.isEnable}" />
 						<input id="input-workTypeName"
-							data-bind="ntsTextEditor: {value: dispName, constraint: 'WorkTypeName', required: true}" />
+							data-bind="ntsTextEditor: {value: dispName,name: '#[KMK007_13]', constraint: 'WorkTypeName', required: true}" />
 						<div style="margin-left: 20px;"
 							data-bind="ntsCheckBox: { checked: abolishAtr, enable: $parent.isEnable }">#{i18n.getText('KMK007_14')}</div>
 						<div>
@@ -143,17 +143,17 @@
 									<div style="vertical-align: middle; margin-left: 30px"
 										id="combo-box"
 										data-bind="ntsComboBox: {
-														options: $parent.itemListOneDay,
+														options: $parent.listAbsenceFrame,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
-														value: sumAbsenseNo,
+														value: sumAbsenseNo, 
 														optionsText: 'name',
 														editable: false,
 														enable: true,
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-									<button style="margin-left: 20px;">#{i18n.getText('KMK007_33')}</button>
+									<button style="margin-left: 20px;" data-bind="click: $parent.openBDialog.bind($parent, 5)">#{i18n.getText('KMK007_33')}</button>
 								</div>
 							</div>
 							<div id="oneday-set-3"
@@ -166,7 +166,7 @@
 									<div style="vertical-align: middle; margin-left: 30px"
 										id="combo-box"
 										data-bind="ntsComboBox: {
-														options: $parent.itemListOneDay,
+														options: $parent.listSpecialHlFrame,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
 														value: sumSpHodidayNo,
@@ -176,7 +176,7 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-									<button style="margin-left: 20px;">#{i18n.getText('KMK007_35')}</button>
+									<button style="margin-left: 20px;" data-bind="click: $parent.openBDialog.bind($parent, 4)">#{i18n.getText('KMK007_35')}</button>
 								</div>
 							</div>
 							<div id="oneday-set-4"
@@ -326,7 +326,7 @@
 									</div>
 									<div class="haftday-combo-box" id="combo-box"
 										data-bind="ntsComboBox: {
-														options: $parent.itemListOneDay,
+														options: $parent.listAbsenceFrame,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
 														value: sumAbsenseNo,
@@ -336,7 +336,7 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-									<button style="margin-left: 20px;">#{i18n.getText('KMK007_33')}</button>
+									<button style="margin-left: 20px;" data-bind="click: $parent.openBDialog.bind($parent, 5)">#{i18n.getText('KMK007_33')}</button>
 								</div>
 							</div>
 							<div id="morning-set-3"
@@ -348,7 +348,7 @@
 									</div>
 									<div class="haftday-combo-box" id="combo-box"
 										data-bind="ntsComboBox: {
-														options: $parent.itemListOneDay,
+														options: $parent.listSpecialHlFrame,
 														optionsValue: 'code',
 														visibleItemsCount: 4,
 														value: sumSpHodidayNo,
@@ -358,7 +358,7 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-									<button style="margin-left: 20px;">#{i18n.getText('KMK007_35')}</button>
+									<button style="margin-left: 20px;" data-bind="click: $parent.openBDialog.bind($parent, 4)">#{i18n.getText('KMK007_35')}</button>
 								</div>
 							</div>
 							<div id="morning-set-5"
@@ -444,7 +444,7 @@
 									</div>
 									<div class="haftday-combo-box" id="combo-box"
 										data-bind="ntsComboBox: {
-														options: $parent.itemListOneDay,
+														options: $parent.listAbsenceFrame,
 														optionsValue: 'code',
 														visibleItemsCount: 5,
 														value: sumAbsenseNo,
@@ -454,7 +454,7 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-									<button style="margin-left: 20px;">#{i18n.getText('KMK007_33')}</button>
+									<button style="margin-left: 20px;" data-bind="click: $parent.openBDialog.bind($parent, 5)">#{i18n.getText('KMK007_33')}</button>
 								</div>
 							</div>
 							<div id="afternoon-set-3"
@@ -466,7 +466,7 @@
 									</div>
 									<div class="haftday-combo-box" id="combo-box"
 										data-bind="ntsComboBox: {
-														options: $parent.itemListOneDay,
+														options: $parent.listSpecialHlFrame,
 														optionsValue: 'code',
 														visibleItemsCount: 4,
 														value: sumSpHodidayNo,
@@ -476,7 +476,7 @@
 														columns: [
 															{ prop: 'name', length: 10 },
 														]}"></div>
-									<button style="margin-left: 20px;">#{i18n.getText('KMK007_35')}</button>
+									<button style="margin-left: 20px;" data-bind="click: $parent.openBDialog.bind($parent, 4)">#{i18n.getText('KMK007_35')}</button>
 								</div>
 							</div>
 							<div id="afternoon-set-5"

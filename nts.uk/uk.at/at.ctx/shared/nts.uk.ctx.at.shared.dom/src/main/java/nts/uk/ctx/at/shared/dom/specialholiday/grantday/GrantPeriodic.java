@@ -27,7 +27,7 @@ public class GrantPeriodic {
 
 	public static GrantPeriodic createFromJavaType(
 			String companyId,
-			int specialHolidayCode,
+			String specialHolidayCode,
 			int grantDay,
 			int splitAcquisition,
 			int grantPeriodicMethod){

@@ -27,12 +27,12 @@
 	background: lightyellow;
 	height: 250px;
 	width: 800px;
-	margin-top: 15px;
+	margin-top: 25px;
 	border: 1px solid;
 }
 
 #input-workTypeCode {
-	width: 30px !important; 
+	width: 30px !important;
 	margin-left: 45px;
 }
 
@@ -104,13 +104,13 @@
 
 #symbolic-name-input {
 	width: 40px !important;
-	 vertical-align: bottom;
+	vertical-align: bottom;
 }
 
 #memo-input {
 	width: 400px;
-    margin-left: 135px;
-    vertical-align: bottom;
+	margin-left: 135px;
+	vertical-align: bottom;
 }
 
 button.ntsSwitchLanguage {

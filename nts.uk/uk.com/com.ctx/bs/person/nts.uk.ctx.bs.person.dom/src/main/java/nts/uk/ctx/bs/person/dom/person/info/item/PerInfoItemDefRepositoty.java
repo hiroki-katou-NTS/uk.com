@@ -30,6 +30,8 @@ public interface PerInfoItemDefRepositoty {
 	List<String> getRequiredIds(String contractCd, String companyId);
 	
 	void removePerInfoItemDefRoot(List<String> perInfoCtgIds, String categoryCd, String contractCd, String itemCode);
+	
+	boolean checkItemNameIsUnique(String perInfoCtgId, String newItemName, String perInfoItemDefId);
 
 	// Sonnlb Code
 

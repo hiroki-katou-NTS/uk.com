@@ -24,7 +24,7 @@ public class GrantDateSet {
 	/* 年数 */
 	private GrantDateYear grantDateYear;
 	
-	public static GrantDateSet createFromJavaType(String companyId, int specialHolidayCode, int grantDateType,
+	public static GrantDateSet createFromJavaType(String companyId, String specialHolidayCode, int grantDateType,
 			int grantDateMonth,
 			int grantDateYear){
 					return new GrantDateSet(companyId,
