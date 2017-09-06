@@ -57,7 +57,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.CompletionSta
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLog;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLogRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.ExtBudgetFileCheckService;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.FileUltil;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.FileUtil;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -205,7 +205,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         TaskDataSetter setter = asyncTask.getDataSetter();
         boolean isInterrupt = false;
         try {
-            NtsCsvReader csvReader = FileUltil.newCsvReader(importProcess.extractCondition.getEncoding());
+            NtsCsvReader csvReader = FileUtil.newCsvReader(importProcess.extractCondition.getEncoding());
             List<NtsCsvRecord> csRecords = csvReader.parse(importProcess.inputStream);
             
             // calculate total record and check has data
@@ -492,7 +492,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      */
     private void validDataLine(ImportProcess importProcess, List<String> result) {
         // valid column necessary.
-        this.validUnitAtr(importProcess, result.size());
+        this.validLimitColumn(importProcess, result.size());
         
         // check column 2 (２列目) is date ?
         this.validDateFormat(importProcess, result);
@@ -511,12 +511,12 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
     }
     
     /**
-     * Valid unit atr.
+     * Valid limit column.
      *
      * @param importProcess the import process
      * @param numberColInput the number col input
      */
-    private void validUnitAtr(ImportProcess importProcess, int numberColInput) {
+    private void validLimitColumn(ImportProcess importProcess, int numberColInput) {
         UnitAtr unitAtr = importProcess.externalBudget.getUnitAtr();
         int numberCol;
         switch (unitAtr) {
@@ -717,6 +717,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         if (!value.contains(CHARACTER_COLON)) {
             throw new BusinessException(new RawErrorMessage("Invalid format time of value."));
         }
+        // format time of value: 99:00
         String[] arr = value.split(CHARACTER_COLON);
         Integer HOUR = 60;
         Long numberHour = Long.parseLong(arr[0]);
@@ -758,12 +759,13 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      */
     private void updateLog(String executeId, CompletionState status) {
         Optional<ExternalBudgetLog> optional = this.extBudgetLogRepo.findExtBudgetLogByExecuteId(executeId);
-        if (optional.isPresent()) {
-            ExternalBudgetLogDto extBudgetLogDto = ExternalBudgetLogDto.copy(optional.get());
-            extBudgetLogDto.completionState = status;
-            extBudgetLogDto.endDateTime = GeneralDateTime.now();
-            this.extBudgetLogRepo.update(extBudgetLogDto.toDomain());
+        if (!optional.isPresent()) {
+            throw new RuntimeException("External budget log isn't existed.");
         }
+        ExternalBudgetLogDto extBudgetLogDto = ExternalBudgetLogDto.copy(optional.get());
+        extBudgetLogDto.completionState = status;
+        extBudgetLogDto.endDateTime = GeneralDateTime.now();
+        this.extBudgetLogRepo.update(extBudgetLogDto.toDomain());
     }
     
     /**
@@ -775,15 +777,16 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      */
     private void updateLog(boolean isUpdateCaseFail, String executeId, Integer number) {
         Optional<ExternalBudgetLog> optional = this.extBudgetLogRepo.findExtBudgetLogByExecuteId(executeId);
-        if (optional.isPresent()) {
-            ExternalBudgetLogDto extBudgetLogDto = ExternalBudgetLogDto.copy(optional.get());
-            if (isUpdateCaseFail) {
-                extBudgetLogDto.numberFail = number;
-            } else {
-                extBudgetLogDto.numberSuccess = number;
-            }
-            this.extBudgetLogRepo.update(extBudgetLogDto.toDomain());
+        if (!optional.isPresent()) {
+            throw new RuntimeException("External budget log isn't existed.");
         }
+        ExternalBudgetLogDto extBudgetLogDto = ExternalBudgetLogDto.copy(optional.get());
+        if (isUpdateCaseFail) {
+            extBudgetLogDto.numberFail = number;
+        } else {
+            extBudgetLogDto.numberSuccess = number;
+        }
+        this.extBudgetLogRepo.update(extBudgetLogDto.toDomain());
     }
     
     /**
@@ -795,10 +798,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
     private String getItemNameById(String nameId) {
         String itemName = nameId + " is not found.";
         Optional<String> optional = this.internationalization.getItemName(nameId);
-        if (optional.isPresent()) {
-            itemName = optional.get();
-        }
-        return itemName;
+        return optional.isPresent() ? optional.get() : itemName;
     }
     
     /**
@@ -819,10 +819,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         } else {
             optional = this.internationalization.getMessage(messageId, parameters);
         }
-        if (optional.isPresent()) {
-            message = optional.get();
-        }
-        return message;
+        return optional.isPresent() ? optional.get() : message;
     }
     
     /**
