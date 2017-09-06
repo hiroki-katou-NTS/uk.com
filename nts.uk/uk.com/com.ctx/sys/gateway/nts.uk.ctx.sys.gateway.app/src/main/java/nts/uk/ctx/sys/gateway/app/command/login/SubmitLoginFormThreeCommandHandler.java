@@ -16,10 +16,13 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeDto;
 import nts.uk.ctx.sys.gateway.dom.adapter.SysEmployeeAdapter;
 import nts.uk.ctx.sys.gateway.dom.adapter.SysEmployeeCodeSettingAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.Contract;
+import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
@@ -42,6 +45,10 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 	@Inject
 	private SysEmployeeAdapter employeeAdapter;
 
+	/** The contract repository. */
+	@Inject
+	private ContractRepository contractRepository;
+	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
@@ -57,6 +64,12 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 		// check validate input
 		this.checkInput(command);
 
+		//recheck contract
+		// pre check contract
+		this.checkContractInput(command);
+		// contract auth
+		this.contractAccAuth(command);
+		
 		// Edit employee code
 		employeeCode = this.employeeCodeEdit(employeeCode, companyId);
 		// Get domain 社員
@@ -77,19 +90,57 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 	private void checkInput(SubmitLoginFormThreeCommand command) {
 
 		// check input company code
-		if (command.getCompanyCode().isEmpty()||command.getCompanyCode() == null) {
+		if (StringUtil.isNullOrEmpty(command.getCompanyCode(), true)) {
 			throw new BusinessException("Msg_318");
 		}
 		// check input employee code
-		if (command.getEmployeeCode().isEmpty()||command.getEmployeeCode() == null) {
+		if (StringUtil.isNullOrEmpty(command.getEmployeeCode(), true)) {
 			throw new BusinessException("Msg_312");
 		}
 		// check input password
-		if (command.getPassword().isEmpty()||command.getPassword() == null) {
+		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
 			throw new BusinessException("Msg_310");
 		}
 	}
 
+	/**
+	 * Check contract input.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	private void checkContractInput(SubmitLoginFormThreeCommand command) {
+		if (StringUtil.isNullOrEmpty(command.getContractCode(), true)) {
+			throw new RuntimeException();
+		}
+		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
+			throw new RuntimeException();
+		}
+	}
+
+	/**
+	 * Contract acc auth.
+	 *
+	 * @param command the command
+	 */
+	private void contractAccAuth(SubmitLoginFormThreeCommand command) {
+		Optional<Contract> contract = contractRepository.getContract(command.getContractCode());
+		if (contract.isPresent()) {
+			// check contract pass
+			if (!PasswordHash.verifyThat(command.getContractPassword(), contract.get().getContractCode().v())
+					.isEqualTo(contract.get().getPassword().v())) {
+				throw new RuntimeException();
+			}
+			// check contract time
+			if (contract.get().getContractPeriod().getStartDate().after(GeneralDate.today())
+					|| contract.get().getContractPeriod().getEndDate().before(GeneralDate.today())) {
+				throw new RuntimeException();
+			}
+		} else {
+			throw new RuntimeException();
+		}
+	}
+	
 	/**
 	 * Employee code edit.
 	 *
