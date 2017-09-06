@@ -23,9 +23,9 @@ module nts.uk.at.view.kmk007.b.viewmodel {
             self.frameId = ko.observable(nts.uk.ui.windows.getShared("KMK007_ITEM_ID"));
             
             self.columns = ko.observableArray([
-                { headerText: "", prop: 'frameNo', hidden: true },
-                { headerText: nts.uk.resource.getText("KMK007_49"), prop: 'name', width: 150, formatter: _.escape },
-                { headerText: nts.uk.resource.getText("KMK007_50"), prop: 'abolition', width: 60 }
+                { headerText: "", key: 'frameNo', hidden: true },
+                { headerText: nts.uk.resource.getText("KMK007_49"), key: 'name', width: 150, formatter: _.escape },
+                { headerText: nts.uk.resource.getText("KMK007_50"), key: 'icon', width: 60 }
             ]);
             
             self.items = ko.observableArray([]);
@@ -145,10 +145,16 @@ module nts.uk.at.view.kmk007.b.viewmodel {
         frameNo: number;
         name: string;
         abolition: number;
+        icon: string;
         constructor(frameNo: number, name: string, abolition: number) {
             this.frameNo = frameNo;
             this.name = name;
             this.abolition = abolition;
+             if (abolition == 0) {
+                this.icon = "";
+            } else {
+                this.icon = '<i class="icon icon-dot"></i>';
+            }
         }
     }
     
