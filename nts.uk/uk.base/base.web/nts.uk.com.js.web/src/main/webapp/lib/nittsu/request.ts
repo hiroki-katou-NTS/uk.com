@@ -224,36 +224,15 @@ module nts.uk.request {
         return dfd.promise();
     }
     export function uploadFile(data: FormData, option?: any): $.Deferred {
-        let dfd = $.Deferred();
-        $.ajax({
+        return $.ajax({
             url: "/nts.uk.com.web/webapi/ntscommons/arc/filegate/upload",
             type: 'POST',
             data: data,
             cache: false,
             contentType: false,
             processData: false,
-            success: function(data, textStatus, jqXHR) {
-                if (option.onSuccess) {
-                    option.onSuccess();
-                }
-
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                if (option.onFail) {
-                    option.onFail();
-                }
-
-            }
-        }).done(function(res) {
-            if (res !== undefined && res.businessException) {
-                dfd.reject(res);
-            } else {
-                dfd.resolve(res);
-            }
-        }).fail(function(res) {
-            dfd.reject(res);
+            async: false
         });
-        return dfd.promise();
     }
 
     export function exportFile(path: string, data?: any, options?: any) {
@@ -273,9 +252,8 @@ module nts.uk.request {
                     specials.donwloadFile(res.id);
                     dfd.resolve(res);
                 }
-
             })
-            .fail(res => {
+            .fail((res: any) => {
                 dfd.reject(res);
             });
 
