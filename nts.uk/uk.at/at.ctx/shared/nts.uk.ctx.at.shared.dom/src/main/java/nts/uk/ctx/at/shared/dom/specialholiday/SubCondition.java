@@ -46,7 +46,7 @@ public class SubCondition {
 
 public static SubCondition createFromJavaType(
 		String companyId,
-		int specialHolidayCode,
+		String specialHolidayCode,
 		int useGender,
 		int useEmployee,
 		int useCls,

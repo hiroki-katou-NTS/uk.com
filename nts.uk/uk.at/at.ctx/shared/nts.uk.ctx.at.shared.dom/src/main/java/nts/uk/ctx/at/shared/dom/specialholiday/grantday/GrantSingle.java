@@ -28,7 +28,7 @@ public class GrantSingle {
 	private HolidayExclusionAtr holidayExclusionAtr;
 	
 	public static GrantSingle createSimpleFromJavaType(String companyId,
-			int specialHolidayCode,
+			String specialHolidayCode,
 			int grantDaySingleType,
 			int fixNumberDays,
 			int makeInvitation,
