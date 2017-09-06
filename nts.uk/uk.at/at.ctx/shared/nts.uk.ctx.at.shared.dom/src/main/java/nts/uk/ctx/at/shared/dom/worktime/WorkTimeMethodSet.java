@@ -25,5 +25,17 @@ public enum WorkTimeMethodSet {
 	WorkTimeMethodSet(int value){
 		this.value = value;
 	}
+	
+	/**
+	 * 固定勤務か判定
+	 * @return　固定勤務である
+	 */
+	public boolean isFixedWork() {
+		return Enum_Fixed_Work.equals(this);
+	}
+	
+	public boolean isFluidWork() {
+		return Enum_Fluid_Work.equals(this);
+	}
 
 }

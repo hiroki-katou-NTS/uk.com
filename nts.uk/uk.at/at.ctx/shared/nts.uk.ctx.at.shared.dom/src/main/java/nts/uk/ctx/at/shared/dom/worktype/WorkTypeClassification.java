@@ -29,4 +29,55 @@ public enum WorkTypeClassification {
 
 	/** The value. */
 	public final int value;
+	
+	public boolean isHoliday() {
+		switch (this) {
+		case Absence:
+		case AnnualHoliday:
+		case Closure:
+		case Holiday:
+		case LeaveOfAbsence:
+		case Pause:
+		case SpecialHoliday:
+		case SubstituteHoliday:
+		case TimeDigestVacation:
+		case YearlyReserved:
+		case ContinuousWork:
+			return true;
+			
+		case HolidayWork:
+		case Attendance:
+		case Shooting:
+			return false;
+			
+		default:
+			throw new RuntimeException("invalid value: " + this);
+		}
+	}
+	
+	public boolean isAttendance() {
+		return !this.isHoliday();
+	}
+	
+	public boolean isWeekDayAttendance() {
+		switch (this) {
+		case Attendance:
+		case Shooting:
+			return true;
+		case Absence:
+		case AnnualHoliday:
+		case Closure:
+		case ContinuousWork:
+		case Holiday:
+		case LeaveOfAbsence:
+		case Pause:
+		case SpecialHoliday:
+		case SubstituteHoliday:
+		case TimeDigestVacation:
+		case YearlyReserved:
+			return false;
+		default:
+			throw new RuntimeException("invalid value: " + this);
+		}
+	}
 }
