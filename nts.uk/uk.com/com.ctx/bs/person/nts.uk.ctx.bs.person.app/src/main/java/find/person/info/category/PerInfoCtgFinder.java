@@ -51,8 +51,15 @@ public class PerInfoCtgFinder {
 				detailCtgInfo.setCategoryNameDefault(categoryNameDefault);
 			}
 			List<PersonInfoItemDefDto> itemLst = this.pernfoItemDefRep
-					.getAllPerInfoItemDefByCategoryId(categoryId, contractCd).stream()
+					.getAllPerInfoItemDefByCategoryIdWithoutSetItem(categoryId, contractCd).stream()
 					.map(item -> PersonInfoItemDefDto.fromDomain(item)).collect(Collectors.toList());
+			if(itemLst.size() > 0) {
+				detailCtgInfo.setIsExistedItemLst(1);
+				
+			}else {
+				
+				detailCtgInfo.setIsExistedItemLst(0);
+			}
 			detailCtgInfo.setItemLst(itemLst);
 			List<String> requiredLst = this.perInfoByCompanyRepo.getItemInfoId(categoryId, contractCd);
 			if (requiredLst.size() > 0) {
