@@ -63,7 +63,7 @@ public class JpaBusinessFormatSortedRepository extends JpaRepository implements 
 	public void update(BusinessTypeSorted businessTypeSorted) {
 		this.getEntityManager().createQuery(UPDATE_BY_KEY).setParameter("companyId", businessTypeSorted.getCompanyId())
 				.setParameter("attendanceItemId", businessTypeSorted.getAttendanceItemId())
-				.setParameter("order", businessTypeSorted.getOrder()).executeUpdate();
+				.setParameter("order",new BigDecimal(businessTypeSorted.getOrder().v())).executeUpdate();
 	}
 
 	@Override
