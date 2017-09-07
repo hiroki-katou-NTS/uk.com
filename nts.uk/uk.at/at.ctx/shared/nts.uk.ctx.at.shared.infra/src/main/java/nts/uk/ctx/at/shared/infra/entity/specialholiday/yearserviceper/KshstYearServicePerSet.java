@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceset;
+package nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceper;
 
 import java.io.Serializable;
 
@@ -18,11 +18,11 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSHST_YEARSERVICE_COM_SET")
-public class KshstYearServiceSet extends UkJpaEntity implements Serializable {
+@Table(name = "KSHST_YEARSERVICE_PER_SET")
+public class KshstYearServicePerSet extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KshstYearServiceSetPK kshstYearServiceSetPK;
+	public KshstYearServicePerSetPK kshstYearServicePerSetPK;
 	/** 月数 **/
 	@Column(name = "YEAR_SERVICE_YEARS")
 	public int year;
@@ -32,20 +32,28 @@ public class KshstYearServiceSet extends UkJpaEntity implements Serializable {
 	/** 特別休暇付与日数 **/
 	@Column(name = "GRANT_DATES")
 	public int date;
+	/** 年間サービスタイプ **/
+	@Column(name = "YEAR_SERVICE_TYPE")
+	public int yearServiceType;
 	
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSHST_YEAR_SERVICE_COM.CID", insertable = false, updatable = false),
 			@JoinColumn(name = "SPHD_CD", referencedColumnName = "KSHST_YEAR_SERVICE_COM.SPHD_CD", insertable = false, updatable = false) })
 	public KshstYearServiceCom kshstYearServiceCom;
 	
+	@ManyToOne
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSHST_YEAR_SERVICE_PER.CID", insertable = false, updatable = false),
+			@JoinColumn(name = "SPHD_CD", referencedColumnName = "KSHST_YEAR_SERVICE_PER.SPHD_CD", insertable = false, updatable = false),
+			@JoinColumn(name = "YEAR_SERVICE_CD", referencedColumnName = "KSHST_YEAR_SERVICE_PER.YEAR_SERVICE_CD", insertable = false, updatable = false)})
+	public KshstYearServicePer kshstYearServicePer;
 	
 	@Override
 	protected Object getKey() {
-		return kshstYearServiceSetPK;
+		return kshstYearServicePerSetPK;
 	}
 
-	public KshstYearServiceSet(KshstYearServiceSetPK kshstYearServiceSetPK) {
+	public KshstYearServicePerSet(KshstYearServicePerSetPK kshstYearServiceSetPK) {
 		super();
-		this.kshstYearServiceSetPK = kshstYearServiceSetPK;
+		this.kshstYearServicePerSetPK = kshstYearServiceSetPK;
 	}
 }

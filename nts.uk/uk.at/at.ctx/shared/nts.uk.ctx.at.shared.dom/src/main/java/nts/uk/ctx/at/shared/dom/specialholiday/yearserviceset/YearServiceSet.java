@@ -11,24 +11,13 @@ import nts.arc.error.BusinessException;
 @AllArgsConstructor
 public class YearServiceSet {
 	private String companyId;
-	private String specialHolidayCode;
+	private String specialHolidayCode; 
 	private int yearServiceNo;
-	private int yearServiceType;
 	private Integer year;
 	private Integer month;
 	private Integer date;
-//	public YearServiceSet(String companyId, String specialHolidayCode, int yearServiceNo, int yearServiceType, int year, Integer month, Integer date) {
-//		super();
-//		this.companyId = companyId;
-//		this.specialHolidayCode = specialHolidayCode;
-//		this.yearServiceNo = yearServiceNo;
-//		this.yearServiceType = yearServiceType;
-//		this.year = year;
-//		this.month = month;
-//		this.date = date;
-//	}
-	public static YearServiceSet update(String companyId, String specialHolidayCode, int yearServiceNo, int yearServiceType, Integer year, Integer month, Integer date){
-		return new YearServiceSet(companyId, specialHolidayCode, yearServiceNo, yearServiceType, year, month, date);
+	public static YearServiceSet update(String companyId, String specialHolidayCode, int yearServiceNo, Integer year, Integer month, Integer date){
+		return new YearServiceSet(companyId, specialHolidayCode, yearServiceNo, year, month, date);
 	}
 	/**
 	 * creates from java type 
@@ -40,16 +29,19 @@ public class YearServiceSet {
 	 * @param date
 	 * @return
 	 */
-	public static YearServiceSet createFromJavaType(String companyId, String specialHolidayCode, int yearServiceNo, int yearServiceType, Integer year, Integer month, Integer date){
-		return new YearServiceSet(companyId, specialHolidayCode, yearServiceNo, yearServiceType, year, month, date);
+	public static YearServiceSet createFromJavaType(String companyId, String specialHolidayCode, int yearServiceNo, Integer year, Integer month, Integer date){
+		return new YearServiceSet(companyId, specialHolidayCode, yearServiceNo, year, month, date);
 	}
-	
+	/**
+	 * validate list input
+	 * @param yearServiceSetlst
+	 */
 	public static void validateInput(List<YearServiceSet> yearServiceSetlst){
 		List<Integer> yearLst = new ArrayList<>();
 		for(YearServiceSet item : yearServiceSetlst){
 			yearLst.add(item.getYear()); 
-			for(int i = 0; i < (yearLst.size()-2); i++){
-				for(int k = i+1; k<yearLst.size(); k++ ){
+			for(int i = 0; i <= (yearLst.size()-2); i++){
+				for(int k = i+1; k < yearLst.size(); k++ ){
 					if( yearLst.get(i) == yearLst.get(k)){
 						throw new BusinessException("Msg_99");
 					}
@@ -65,7 +57,6 @@ public class YearServiceSet {
 				throw new BusinessException("Msg_101");
 			}
 		}
-		
 	}
 	
 }
