@@ -8,18 +8,18 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class AmountRange.
+ * The Class TimeRange.
  */
-// 金額範囲
+// 時間範囲
 // 事前条件 : 上限値≧下限値
 @Getter
-public class AmountRange extends DomainObject{
+public class TimeRange extends DomainObject{
 
 	/** The upper limit. */
 	// 上限値
-	private AmountRangeValue upperLimit;
+	private TimeRangeValue upperLimit;
 
 	/** The lower limit. */
 	// 下限値
-	private AmountRangeValue lowerLimit;
+	private TimeRangeValue lowerLimit;
 }

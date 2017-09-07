@@ -22,6 +22,7 @@ public class CalculationFormulaSettingItem extends AggregateRoot {
 	// 順番
 	private int dispOrder;
 
+	// ===================== Optional ======================= //
 	/** The input value. */
 	// 入力値
 	private OptionalItemInputValue inputValue;

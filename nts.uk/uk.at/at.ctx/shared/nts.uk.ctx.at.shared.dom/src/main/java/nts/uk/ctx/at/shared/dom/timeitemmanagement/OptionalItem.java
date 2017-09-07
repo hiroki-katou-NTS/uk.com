@@ -21,29 +21,29 @@ public class OptionalItem extends AggregateRoot {
 	// 会社ID
 	private CompanyId companyId;
 
-	/** The emp condition classification. */
-	// 雇用条件区分
-	private EmpConditionClassification empConditionClassification;
-
-	/** The optional item atr. */
-	// 属性
-	private OptionalItemAttribute optionalItemAtr;
+	/** The optional item no. */
+	// 任意項目NO
+	private OptionalItemNo optionalItemNo;
 
 	/** The optional item name. */
 	// 任意項目名称
 	private OptionalItemName optionalItemName;
 
-	/** The optional item no. */
-	// 任意項目NO
-	private OptionalItemNo optionalItemNo;
-
-	/** The performance classification. */
-	// 実績区分
-	private PerformanceClassification performanceClassification;
+	/** The optional item atr. */
+	// 属性
+	private OptionalItemAttribute optionalItemAtr;
 
 	/** The usage classification. */
 	// 任意項目利用区分
 	private OptionalItemUsageClassification usageClassification;
+
+	/** The emp condition classification. */
+	// 雇用条件区分
+	private EmpConditionClassification empConditionClassification;
+
+	/** The performance classification. */
+	// 実績区分
+	private PerformanceClassification performanceClassification;
 
 	/** The calculation result range. */
 	// 計算結果の範囲

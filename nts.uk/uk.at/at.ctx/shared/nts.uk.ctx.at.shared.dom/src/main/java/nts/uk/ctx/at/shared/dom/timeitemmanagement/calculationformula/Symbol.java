@@ -2,28 +2,28 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.timeitemmanagement;
+package nts.uk.ctx.at.shared.dom.timeitemmanagement.calculationformula;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * The Class OptionalItemName.
+ * The Class Symbol.
  */
-@StringMaxLength(30)
-// 任意項目名称
-public class OptionalItemName extends StringPrimitiveValue<OptionalItemName> {
+@StringMaxLength(2)
+// 記号
+// TODO: khong co mo ta primitive value?
+public class Symbol extends StringPrimitiveValue<OptionalItemFormulaName> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Instantiates a new optional item name.
+	 * Instantiates a new symbol.
 	 *
 	 * @param rawValue the raw value
 	 */
-	public OptionalItemName(String rawValue) {
+	public Symbol(String rawValue) {
 		super(rawValue);
 	}
-
 }

@@ -13,13 +13,13 @@ import nts.arc.layer.dom.DomainObject;
 // 金額範囲
 // 事前条件 : 上限値≧下限値
 @Getter
-public class AmountRange extends DomainObject{
+public class NumberRange extends DomainObject{
 
 	/** The upper limit. */
 	// 上限値
-	private AmountRangeValue upperLimit;
+	private NumberRangeValue upperLimit;
 
 	/** The lower limit. */
 	// 下限値
-	private AmountRangeValue lowerLimit;
+	private NumberRangeValue lowerLimit;
 }

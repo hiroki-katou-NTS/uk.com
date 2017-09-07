@@ -12,12 +12,13 @@ import nts.arc.layer.dom.DomainObject;
  */
 // 任意項目計算式設定
 @Getter
-public class CalculationFormulaSetting extends DomainObject {
+public class OptionalItemFormulaSetting extends DomainObject {
 
 	/** The calculation classification. */
 	// 計算区分
 	private CalculationClassification calculationClassification;
 
+	// ===================== Optional ======================= //
 	/** The formula setting. */
 	// 計算式設定
 	private FormulaSetting formulaSetting;
