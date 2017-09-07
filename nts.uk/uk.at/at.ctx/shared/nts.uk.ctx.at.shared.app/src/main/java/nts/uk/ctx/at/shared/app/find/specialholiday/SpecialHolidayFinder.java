@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.app.find.specialholiday;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -10,8 +11,10 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SphdLimit;
 import nts.uk.ctx.at.shared.dom.specialholiday.SubCondition;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateCom;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantPeriodic;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegular;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegularRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantSingle;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -20,6 +23,9 @@ public class SpecialHolidayFinder {
 
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
+	
+	@Inject
+	private GrantRegularRepository grantRegularRepository;
 
 	/**
 	 * Find all Special Holiday by CompanyId
@@ -31,6 +37,37 @@ public class SpecialHolidayFinder {
 		return specialHolidayRepository.findByCompanyId(companyId).stream().map(e -> {
 			return convertToDbType(e);
 		}).collect(Collectors.toList());
+	}
+	
+	/**
+	 * Find Grant Date Com by special holiday code
+	 * 
+	 * @return
+	 */
+	public GrantDateComDto getComByCode(String specialHolidayCode) {
+		// user contexts
+		String companyId = AppContexts.user().companyId();
+
+		Optional<GrantDateCom> data = this.grantRegularRepository.getComByCode(companyId, specialHolidayCode);
+		
+		if(data.isPresent()){
+			return GrantDateComDto.fromDomain(data.get());
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Find all Grant Date Set by code
+	 * 
+	 * @return
+	 */
+	public List<GrantDateSetDto> getAllSetByCode(String specialHolidayCode) {
+		// user contexts
+		String companyId = AppContexts.user().companyId();
+
+		return this.grantRegularRepository.getSetByCode(companyId, specialHolidayCode).stream().map(c -> GrantDateSetDto.fromDomain(c))
+				.collect(Collectors.toList());
 	}
 
 	/**
