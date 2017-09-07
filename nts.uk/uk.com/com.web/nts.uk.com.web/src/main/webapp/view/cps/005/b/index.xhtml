@@ -269,9 +269,11 @@
 												name: '#[CPS005_38]',
 												value: numericItemMin,
 												constraint: 'NumericItemMin',
-												option: {
-								                    width: '80px',
-								                },
+												option:  new nts.uk.ui.option.NumberEditorOption({
+									            	placeholder: '',
+									            	width: '80px',
+									            	textalign: 'left'
+									            }),
 												required: false,
 												enable: true,
 												readonly: false}" />
@@ -280,9 +282,12 @@
 												name: '#[CPS005_39]',
 												value: numericItemMax,
 												constraint: 'NumericItemMax',
-												option: {
-								                    width: '80px',
-								                },
+												option: 'NumericItemMin',
+												option:  new nts.uk.ui.option.NumberEditorOption({
+									            	placeholder: '',
+									            	width: '80px',
+									            	textalign: 'left'
+									            }),
 												required: false,
 												enable: true,
 												readonly: false}" />

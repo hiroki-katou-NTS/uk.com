@@ -85,12 +85,12 @@ __viewContext.ready(function () {
             for (let i = -6; i <= 31; i++) {
                 if (i <= 0) {
                     let d = 31 + i;
-                    this["__" + d] = new ExCell("001", "出勤A", "1", "通常８ｈ");
-                } else if (i === 1) this["_" + i] = new ExCell("001", "出勤A", "1", "通常８ｈ");
-                else if (i === 2) this["_" + i] = new ExCell("002", "出勤B", "1", "通常８ｈ");
-                else if (i === 3) this["_" + i] = new ExCell("003", "出勤C", "1", "通常８ｈ");
-                else if (i === 4) this["_" + i] = new ExCell("004", "出勤D", "1", "通常８ｈ");
-                else this["_" + i] = new ExCell("00" + i, "出勤" + i, "1", "通常８ｈ");
+                    this["__" + d] = new ExCell("001", "出勤A" + this.empId, "1", "通常８ｈ");
+                } else if (i === 1) this["_" + i] = new ExCell("001", "出勤A" + this.empId, "1", "通常８ｈ" + this.empId);
+                else if (i === 2) this["_" + i] = new ExCell("002", "出勤B" + this.empId, "1", "通常８ｈ" + this.empId);
+                else if (i === 3) this["_" + i] = new ExCell("003", "出勤C" + this.empId, "1", "通常８ｈ" + this.empId);
+                else if (i === 4) this["_" + i] = new ExCell("004", "出勤D" + this.empId, "1", "通常８ｈ" + this.empId);
+                else this["_" + i] = new ExCell("00" + i, "出勤" + i + this.empId, "1", "通常８ｈ" + this.empId);
             }
         }
     }
@@ -149,7 +149,7 @@ __viewContext.ready(function () {
     for (let i = 0; i < 300; i++) {
         detailContentDs.push(new ExItem(i.toString()));
         leftmostDs.push({　empId: i.toString(), empName: "社員名" + i });
-        middleDs.push({ empId: i.toString(), cert: "★", over1: "207:00", over2: "23.0" });
+        middleDs.push({ empId: i.toString(), cert: "★", over1: 100 + i + "", over2: 1 + i + "" });
         updateMiddleDs.push({ empId: i.toString(), time: "100:00", days: "38", can: "", get: "" });
         if (i % 2 === 0) middleContentDeco.push(new CellColor("over1", i.toString(), "cell-red"));
         else middleContentDeco.push(new CellColor("over2", i.toString(), "cell-green"));
@@ -170,67 +170,67 @@ __viewContext.ready(function () {
         }, {
 //            key: "empName", width: "120px"
 //        }, {
-            key: "_1", width: "100px", handlerType: "Input", dataType: "duration/duration", min: "9:00", max: "19:00"
+            key: "_1", width: "100px", handlerType: "Input", dataType: "duration/duration", min: "4:00", max: "19:00"
         }, {
             key: "_2", width: "100px", handlerType: "Input", dataType: "duration/duration", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
-            key: "_3", width: "100px", handlerType: "Input", dataType: "time/time"
+            key: "_3", width: "100px", handlerType: "Input", dataType: "time/time", required: true
         }, {
             key: "_4", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_5", width: "100px", handlerType: "input", dataType: "text"
+            key: "_5", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_6", width: "100px", handlerType: "input", dataType: "text", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
+            key: "_6", width: "100px", handlerType: "input", dataType: "time/time", rightClick: function(rData, rowIdx, columnKey) { alert(rowIdx); }
         }, {
-            key: "_7", width: "100px", dataType: "text"
+            key: "_7", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_8", width: "100px"
+            key: "_8", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_9", width: "100px"
+            key: "_9", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_10", width: "100px"
+            key: "_10", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_11", width: "100px"
+            key: "_11", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_12", width: "100px"
+            key: "_12", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_13", width: "100px"
+            key: "_13", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_14", width: "100px"
+            key: "_14", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_15", width: "100px"
+            key: "_15", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_16", width: "100px"
+            key: "_16", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_17", width: "100px"
+            key: "_17", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_18", width: "100px"
+            key: "_18", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_19", width: "100px"
+            key: "_19", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_20", width: "100px"
+            key: "_20", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_21", width: "100px"
+            key: "_21", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_22", width: "100px"
+            key: "_22", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_23", width: "100px"
+            key: "_23", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_24", width: "100px"
+            key: "_24", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_25", width: "100px"
+            key: "_25", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_26", width: "100px"
+            key: "_26", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_27", width: "100px"
+            key: "_27", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_28", width: "100px"
+            key: "_28", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_29", width: "100px"
+            key: "_29", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_30", width: "100px"
+            key: "_30", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_31", width: "100px"
+            key: "_31", width: "100px", handlerType: "input", dataType: "time/time"
         }];
     
     let leftmostColumns = [{ key: "empName", headerText: "社員名", width: "160px", icon: "ui-icon ui-icon-contact", 
@@ -454,81 +454,81 @@ __viewContext.ready(function () {
         let newDetailColumns = [{
            key: "empId", width: "50px", headerText: "ABC", visible: false
         }, {
-            key: "__25", width: "100px"
+            key: "__25", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "__26", width: "100px"
+            key: "__26", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "__27", width: "100px"
+            key: "__27", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "__28", width: "100px"
+            key: "__28", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "__29", width: "100px"
+            key: "__29", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "__30", width: "100px"
+            key: "__30", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "__31", width: "100px"
+            key: "__31", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_1", width: "100px"
+            key: "_1", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_2", width: "100px", handlerType: "Input"
+            key: "_2", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_3", width: "100px"
+            key: "_3", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_4", width: "100px"
+            key: "_4", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_5", width: "100px"
+            key: "_5", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_6", width: "100px"
+            key: "_6", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_7", width: "100px"
+            key: "_7", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_8", width: "100px"
+            key: "_8", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_9", width: "100px"
+            key: "_9", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_10", width: "100px"
+            key: "_10", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_11", width: "100px"
+            key: "_11", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_12", width: "100px"
+            key: "_12", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_13", width: "100px"
+            key: "_13", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_14", width: "100px"
+            key: "_14", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_15", width: "100px"
+            key: "_15", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_16", width: "100px"
+            key: "_16", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_17", width: "100px"
+            key: "_17", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_18", width: "100px"
+            key: "_18", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_19", width: "100px"
+            key: "_19", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_20", width: "100px"
+            key: "_20", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_21", width: "100px"
+            key: "_21", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_22", width: "100px"
+            key: "_22", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_23", width: "100px"
+            key: "_23", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_24", width: "100px"
+            key: "_24", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_25", width: "100px"
+            key: "_25", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_26", width: "100px"
+            key: "_26", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_27", width: "100px"
+            key: "_27", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_28", width: "100px"
+            key: "_28", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_29", width: "100px"
+            key: "_29", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_30", width: "100px"
+            key: "_30", width: "100px", handlerType: "input", dataType: "time/time"
         }, {
-            key: "_31", width: "100px"
+            key: "_31", width: "100px", handlerType: "input", dataType: "time/time"
         }];
         let updateDetailHeader = {
             columns: newDetailColumns
@@ -548,10 +548,11 @@ __viewContext.ready(function () {
             return;
         });
         $("#set-sticker-multi2").click(function() {
-            $("#extable").exTable("stickData", [ new ExCell("MM", "出勤MM", "M0", "通常１０ｈ"), new ExCell("DD", "出勤DD", "M1", "通常１０ｈ"), new ExCell("CC", "出勤CC", "M2", "通常１０ｈ") ]);
+            $("#extable").exTable("stickData", [ new ExCell("001", "出勤A0", "1", "通常８ｈ0"), new ExCell("MM", "出勤MM", "M0", "通常１０ｈ"), new ExCell("DD", "出勤DD", "M1", "通常１０ｈ"), new ExCell("CC", "出勤CC", "M2", "通常１０ｈ") ]);
         });
         $("#set-sticker-single").click(function() {
-            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", "M0", "通常１０ｈ"));
+//            $("#extable").exTable("stickData", new ExCell("MM", "出勤MM", "M0", "通常１０ｈ"));
+            $("#extable").exTable("stickData", new ExCell("001", "出勤A0", "1", "通常８ｈ0"));
         });
         $("#stick-undo").click(function() {
             $("#extable").exTable("stickUndo");
@@ -568,5 +569,9 @@ __viewContext.ready(function () {
         });
         $("#popup-set").click(function() {
             $("#extable").exTable("popupValue", $("#popup-val").val());
+        });
+    
+        $("#open-dialog").click(function() {
+            nts.uk.ui.windows.sub.modal("/view/sample/extable/dialog/sample.xhtml");
         });
 });

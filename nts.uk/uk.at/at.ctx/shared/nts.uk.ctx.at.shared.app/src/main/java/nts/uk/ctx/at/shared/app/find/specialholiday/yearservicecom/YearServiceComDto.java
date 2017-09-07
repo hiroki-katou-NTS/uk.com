@@ -8,6 +8,6 @@ import lombok.Value;
  */
 @Value
 public class YearServiceComDto {
-	private int specialHolidayCode;
+	private String specialHolidayCode;
 	private int lengthServiceYearAtr;
 }

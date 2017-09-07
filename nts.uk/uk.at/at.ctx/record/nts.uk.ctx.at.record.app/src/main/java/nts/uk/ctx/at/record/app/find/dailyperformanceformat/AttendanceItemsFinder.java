@@ -51,10 +51,16 @@ public class AttendanceItemsFinder {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
+		List<AttendanceItemDto> attendanceItemDtos = new ArrayList<>();
+
 		// 勤怠項目
 		List<DailyAttendanceItem> dailyAttendanceItems = this.dailyAttendanceItemRepository.getListTobeUsed(companyId,
 				1);
 
+		if(dailyAttendanceItems.isEmpty()){
+			return attendanceItemDtos;
+		}
+		
 		// get list attendanceItemId
 		List<Integer> attendanceItemIds = dailyAttendanceItems.stream().map(f -> {
 			return f.getAttendanceItemId();
@@ -88,8 +94,6 @@ public class AttendanceItemsFinder {
 		// 特定加給時間項目
 		Map<Integer, BonusPayTimeItem> specialBonusPayTimeItem = this.bPTimeItemRepository.getListSpecialBonusPayTimeItemName(companyId, frameNos)
 				.stream().collect(Collectors.toMap(BonusPayTimeItem::getId, x -> x));
-
-		List<AttendanceItemDto> attendanceItemDtos = new ArrayList<>();
 
 		dailyAttendanceItems.stream().forEach(item -> {
 			if (frameNoMap.containsKey(item.getAttendanceItemId())) {

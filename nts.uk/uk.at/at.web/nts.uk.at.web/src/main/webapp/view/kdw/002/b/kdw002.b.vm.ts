@@ -25,25 +25,29 @@ module nts.uk.at.view.kdw002.b {
 
                     $.when(service.getListDailyServiceTypeControl(businessTypeCode), service.getAttendanceItems()).done(
                         (DailyServiceTypeControls, attendanceItems) => {
-                            var attdItems = _.map(attendanceItems, function(x) { return _.pick(x, ['attendanceItemId', 'attendanceItemName']) });
-                            var dstControls = _(DailyServiceTypeControls).concat(attdItems).groupBy('attendanceItemId').map(_.spread(_.assign)).value();
-                            $("#grid").igGrid("dataSourceObject", _.sortBy(dstControls, 'attendanceItemId')).igGrid("dataBind");
-                            var dataSource = $('#grid').data('igGrid').dataSource;
-                            var filteredData = dataSource.transformedData('afterfilteringandpaging');
-                            var i;
-                            var l = filteredData.length;
-                            for (i = 0; i < l; i++) {
-                                if (!filteredData[i].userCanSet || !filteredData[i].use) {
-                                    var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
-                                    var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
-                                    cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
-                                    cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
 
-                                    if (!filteredData[i].userCanSet) {
-                                        $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "canBeChangedByOthers", false);
+                            if (!nts.uk.util.isNullOrUndefined(DailyServiceTypeControls) && !nts.uk.util.isNullOrUndefined(attendanceItems)) {
+                                var attdItems = _.map(attendanceItems, function(x) { return _.pick(x, ['attendanceItemId', 'attendanceItemName']) });
+                                var dstControls = _(DailyServiceTypeControls).concat(attdItems).groupBy('attendanceItemId').map(_.spread(_.assign)).value();
+                                $("#grid").igGrid("dataSourceObject", _.sortBy(dstControls, 'attendanceItemId')).igGrid("dataBind");
+                                var dataSource = $('#grid').data('igGrid').dataSource;
+                                var filteredData = dataSource.transformedData('afterfilteringandpaging');
+                                var i;
+                                var l = filteredData.length;
+                                for (i = 0; i < l; i++) {
+                                    if (!filteredData[i].userCanSet || !filteredData[i].use) {
+                                        var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
+                                        var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
+                                        cellYouCanChangeIt.classList.add('readOnlyColorIsUse');
+                                        cellCanBeChangedByOthers.classList.add('readOnlyColorIsUse');
+
+                                        if (!filteredData[i].userCanSet) {
+                                            $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "canBeChangedByOthers", false);
+                                        }
                                     }
                                 }
                             }
+                        }
                     );
 
 
@@ -61,7 +65,7 @@ module nts.uk.at.view.kdw002.b {
 
                 service.getBusinessTypes().done(businessTypes => {
 
-                    if (!nts.uk.util.isNullOrUndefined(businessTypes)) {
+                    if (!nts.uk.util.isNullOrUndefined(businessTypes) && businessTypes.length > 0) {
                         let bussinessCodeItems = [];
                         businessTypes.forEach(businessType => {
                             bussinessCodeItems.push(new BusinessType(businessType));

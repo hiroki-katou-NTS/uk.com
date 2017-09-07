@@ -23,7 +23,7 @@ public class KmnmtPremiumItem extends UkJpaEntity{
 	@EmbeddedId
 	public KmnmpPremiumItemPK kmnmpPremiumItemPK;
 	
-	@Column(name="NAME")
+	@Column(name="PREMIUM_NAME")
 	public String name;
 	
 	@Column(name="USE_ATR")
