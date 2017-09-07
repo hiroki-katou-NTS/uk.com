@@ -61,7 +61,7 @@ module nts.uk.at.view.kdw002.b {
 
                 service.getBusinessTypes().done(businessTypes => {
 
-                    if (!nts.uk.util.isNullOrUndefined(businessTypes)) {
+                    if (!nts.uk.util.isNullOrUndefined(businessTypes) && businessTypes.length > 0) {
                         let bussinessCodeItems = [];
                         businessTypes.forEach(businessType => {
                             bussinessCodeItems.push(new BusinessType(businessType));

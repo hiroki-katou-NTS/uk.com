@@ -35,6 +35,7 @@
 
 #item-info-list_container {
 	border: 1px solid #999999 !important;
+	overflow: hidden !important;
 }
 
 #item-setting-button {

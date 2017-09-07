@@ -39,6 +39,7 @@ module nts.uk.com.view.cps005.b {
             reloadData(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
+                self.currentItemData().personInfoItemList([]);
                 new service.Service().getAllPerInfoItemDefByCtgId(self.categoryId).done(function(data: IItemData) {
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
                         self.currentItemData().personInfoItemList(_.map(data.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
