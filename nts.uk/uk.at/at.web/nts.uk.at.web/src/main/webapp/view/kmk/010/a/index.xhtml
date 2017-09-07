@@ -1,0 +1,120 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:stylefile path="kmk010.a.main.css" />
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="kmk010.a.start.js" />
+				<com:scriptfile path="kmk010.a.service.js" />
+				<com:scriptfile path="kmk010.a.vm.js" />
+				<com:ValidatorScript>
+					nts.uk.ctx.at.shared.dom.overtime.OvertimeNote
+					nts.uk.ctx.at.shared.dom.workrule.closure.ClosureName
+				</com:ValidatorScript>
+			</ui:define>
+	
+			<ui:define name="content">
+				<div id="functions-area">
+					<button tabindex="1" class="proceed" >#{i18n.getText('KMK010_4')}</button>
+					<button tabindex="2" class="buttonOther" >#{i18n.getText('KMK010_5')}</button>
+					<button tabindex="3" class="buttonOther" >#{i18n.getText('KMK010_6')}</button>
+					<button tabindex="4" class="buttonOther" >#{i18n.getText('KMK010_7')}</button>
+					<button tabindex="5" class="buttonOther" >#{i18n.getText('KMK010_7')}</button>
+				</div>
+				
+				<div id="contents-area" data-bind="with: overtimeSettingModel">
+					<div class="lableDetail" >
+						<div class="lableData" data-bind="ntsFormLabel: {required: true}">
+							<label>#{i18n.getText('KMK010_8')}</label>
+						</div>
+						<div class="methodSelect" data-bind="ntsRadioBoxGroup: {
+							options: $parent.calculationMethods,
+							optionsValue: 'value',
+							optionsText: 'localizedName',
+							value: calculationMethod,
+							enable: true }">
+						</div>
+					</div>
+					
+					<div class="lableDetail">
+						<div class="lableData" data-bind="ntsFormLabel: {required: false, constraint: 'OvertimeNote' }">
+							<label>#{i18n.getText('KMK010_9')}</label>
+						</div>
+						<textarea class="overtimeNote" data-bind="ntsMultilineEditor: { value: note, constraint: 'OvertimeNote' }" />
+					</div>
+					
+					<table tabindex="10" class="overtime-border tbl-monthly" >
+						<tr class="bg-dark-green">
+							<td>#{i18n.getText('KMK010_10')}</td>
+							<td>#{i18n.getText('KMK010_11')}</td>
+							<td>#{i18n.getText('KMK010_12')}</td>
+						</tr>
+						<com:ko tag="foreach" bind="overtimes">
+							<tr>
+								<td class="bg-green">
+									<div data-bind="text: overtimeNo"></div>
+								</td>
+								<td>
+									<input data-bind="attr: {'tabindex': 16 + $index()*5}, 
+										ntsTimeEditor: {name: '#[KSM001_38]',
+											value: time1st,
+											inputFormat: 'time', 
+											mode: 'time',
+											required: true,
+											enable: $parents[1].isEditable,
+											constraint: 'MonthlyEstimateTime'}" />
+								</td>
+								<td>
+									<input data-bind="attr: {'tabindex': 17 + $index()*5},
+										ntsTimeEditor: {name: '#[KSM001_39]',
+											value: time2nd,
+											inputFormat: 'time', 
+											mode: 'time',
+											required: true,
+											enable: $parents[1].isEditable,
+											constraint: 'MonthlyEstimateTime'}" />
+								</td>
+								<td>
+									<input data-bind="attr: {'tabindex': 18 + $index()*5}, 
+										ntsTimeEditor: {name: '#[KSM001_40]',
+											value: time3rd,
+											inputFormat: 'time', 
+											mode: 'time',
+											required: true,
+											enable: $parents[1].isEditable,
+											constraint: 'MonthlyEstimateTime'}" />
+								</td>
+								<td>
+									<input data-bind="attr: {'tabindex': 19 + $index()*5}, 
+										ntsTimeEditor: {name: '#[KSM001_41]',
+											value: time4th,
+											inputFormat: 'time', 
+											mode: 'time',
+											required: true,
+											enable: $parents[1].isEditable,
+											constraint: 'MonthlyEstimateTime'}" />
+								</td>
+								<td>
+									<input data-bind="attr: {'tabindex': 20 + $index()*5}, 
+										ntsTimeEditor: {name: '#[KSM001_42]',
+											value: time5th,
+											inputFormat: 'time', 
+											mode: 'time',
+											required: true,
+											enable: $parents[1].isEditable,
+											constraint: 'MonthlyEstimateTime'}" />
+								</td>
+							</tr>
+						</com:ko>
+					</table>
+				</div>
+				
+			</ui:define>
+		</ui:composition>
+	</body>
+</html>
