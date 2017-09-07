@@ -27,7 +27,7 @@ public class OvertimeSetting extends AggregateRoot{
 	
 	/** The breakdown items. */
 	// 内訳項目一覧
-	private List<OvertimeBreakdownItem> breakdownItems;
+	private List<OvertimeBRDItem> breakdownItems;
 	
 	/** The calculation method. */
 	// 計算方法

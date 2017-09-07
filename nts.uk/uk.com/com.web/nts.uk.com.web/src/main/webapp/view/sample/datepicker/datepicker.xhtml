@@ -24,7 +24,7 @@
 						<h1>DatePicker</h1>
 						<h2>Overview</h2>
 						<h3>Datepicker</h3>
-						<div data-bind="ntsDatePicker: { name: '#[FND_L_SEARCH_RELEASE]', value: dateString, dateFormat: 'YYYY/MM/DD', required: true}"></div>
+						<div data-bind="ntsDatePicker: { name: '#[FND_L_SEARCH_RELEASE]', value: dateString, dateFormat: 'YYYY/MM/DD', required: true, acceptJapaneseCalendar: true}"></div>
 						<input data-bind="ntsTimeEditor: {value: dateString}"/>
 						<br/>
 						<b>Return ISO String:</b> <span data-bind="text: dateString"/>
@@ -119,6 +119,14 @@ class ScreenModel {
 													"D": day of month field without leading zero<br/>
 													"DD": day of month field with leading zero<br/><br/>
 													The return value format for observable value. Only work with <b>string</b> and <b>number</b> type
+												</td>
+											</tr>
+											<tr>
+												<td>acceptJapaneseCalendar<br/><i>(Optional)</i></td>
+												<td>
+													<b>Type:</b> boolean<br/>
+													<b>Default:</b> false<br/>
+													enable accept formats as: "H29/8/30", "H290830", "平成29/8/30", "平成290830".
 												</td>
 											</tr>
 											<tr>

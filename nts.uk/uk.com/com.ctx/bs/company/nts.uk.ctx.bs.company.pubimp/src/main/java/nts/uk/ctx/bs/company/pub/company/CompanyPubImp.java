@@ -3,10 +3,12 @@ package nts.uk.ctx.bs.company.pub.company;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
 
+@Stateless
 public class CompanyPubImp implements ICompanyPub {
 
 	@Inject

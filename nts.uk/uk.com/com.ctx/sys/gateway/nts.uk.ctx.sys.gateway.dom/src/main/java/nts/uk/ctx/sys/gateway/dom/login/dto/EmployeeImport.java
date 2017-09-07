@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.adapter;
+package nts.uk.ctx.sys.gateway.dom.login.dto;
 
 import lombok.Getter;
 
@@ -10,11 +10,11 @@ import lombok.Getter;
  * The Class EmployeeDto.
  */
 @Getter
-public class EmployeeDto {
+public class EmployeeImport {
 
-	//ビジネスネーム
-	/** The business name. */
-	private String businessName;
+	//会社ID
+	/** The company id. */
+	private String companyId;
 
 	//個人ID
 	/** The personal id. */
@@ -29,13 +29,13 @@ public class EmployeeDto {
 	private String employeeCode;
 
 	/**
-	 * @param businessName
+	 * @param companyId
 	 * @param personalId
 	 * @param employeeId
 	 * @param employeeCode
 	 */
-	public EmployeeDto(String businessName, String personalId, String employeeId, String employeeCode) {
-		this.businessName = businessName;
+	public EmployeeImport(String companyId, String personalId, String employeeId, String employeeCode) {
+		this.companyId = companyId;
 		this.personalId = personalId;
 		this.employeeId = employeeId;
 		this.employeeCode = employeeCode;

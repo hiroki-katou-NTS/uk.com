@@ -12,7 +12,7 @@ import nts.arc.layer.dom.DomainObject;
  */
 // 時間外超過の内訳項目
 @Getter
-public class OvertimeBreakdownItem extends DomainObject{
+public class OvertimeBRDItem extends DomainObject{
 	
 	/** The use classification. */
 	// 使用区分
@@ -52,7 +52,7 @@ public class OvertimeBreakdownItem extends DomainObject{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		OvertimeBreakdownItem other = (OvertimeBreakdownItem) obj;
+		OvertimeBRDItem other = (OvertimeBRDItem) obj;
 		if (breakdownItemNo != other.breakdownItemNo)
 			return false;
 		return true;
