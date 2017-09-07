@@ -8,14 +8,14 @@ module nts.uk.at.view.kmk010.a {
             findByIdClosureHistory: "ctx/at/shared/workrule/closure/history/findById",
             saveClosureHistory: "ctx/at/shared/workrule/closure/history/save"
         }
-        
+
         /**
          * find all data overtime calculation method
          */
         export function findAllOvertimeCalculationMethod(): JQueryPromise<model.EnumConstantDto[]> {
             return nts.uk.request.ajax(paths.findAllOvertimeCalculationMethod);
         }
-        
+
         /**
          * find all data closure history call service
          */
@@ -54,12 +54,12 @@ module nts.uk.at.view.kmk010.a {
             return nts.uk.request.ajax(paths.saveClosureHistory, data);
         }
 
-        
+
 
         export module model {
-            
+
             export class ClosureHistoryMasterDto {
-                
+
                 /** The closure id. */
                 closureId: number;
 
@@ -72,14 +72,14 @@ module nts.uk.at.view.kmk010.a {
                 startDate: number;
 
                 view: string;
-                
+
                 updateData(): void {
                     var startMonthRage: string = nts.uk.time.formatYearMonth(this.startDate);
                     var endMonthRage: string = nts.uk.time.formatYearMonth(this.endDate);
                     this.view = startMonthRage + ' ~ ' + endMonthRage;
                 }
             }
-            
+
             export class ClosureHistoryHeaderDto {
 
                 /** The closure id. */
@@ -92,35 +92,35 @@ module nts.uk.at.view.kmk010.a {
                 /** The start date. */
                 // 開始年月: 年月
                 closureDate: number;
-                
-                
+
+
                 startDate: number;
             }
-            
-            export class ClosureHistoryFindDto{
+
+            export class ClosureHistoryFindDto {
                 /** The id. */
                 id: number;
 
                 /** The name. */
-                name: string;   
-                
+                name: string;
+
                 // the view
                 view: string;
-                
+
                 updateData(): void {
-                    this.view = this.id+": "+this.name;    
+                    this.view = this.id + ": " + this.name;
                 }
             }
-            
-            export enum UseClassification{
-                    
+
+            export enum UseClassification {
+
             }
-            
-            export class DayofMonth{
+
+            export class DayofMonth {
                 day: number;
                 name: string;
             }
-            
+
             export class ClosureDto {
                 /** The closure id. */
                 closureId: number;
@@ -130,15 +130,15 @@ module nts.uk.at.view.kmk010.a {
 
                 /** The day. */
                 month: number;
-                
+
                 // selected
                 closureSelected: ClosureHistoryMasterDto;
-                
+
                 // data history
                 closureHistories: ClosureHistoryMasterDto[];
             }
-            
-            export class ClosureSaveDto{
+
+            export class ClosureSaveDto {
                 /** The closure id. */
                 closureId: number;
 
@@ -148,26 +148,26 @@ module nts.uk.at.view.kmk010.a {
                 /** The day. */
                 month: number;
             }
-            
-            
+
+
             export interface EnumConstantDto {
                 value: number;
                 fieldName: string;
                 localizedName: string;
             }
-            
+
             export interface OvertimeDto {
                 name: string;
                 overtime: number;
                 overtimeNo: number;
                 useClassification: number;
             }
-            
+
             export interface OvertimeSettingDto {
                 note: string;
                 calculationMethod: number;
                 overtimes: OvertimeDto[];
             }
-
+        }
     }
 }
