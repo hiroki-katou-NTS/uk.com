@@ -89,13 +89,9 @@ module cps008.a.viewmodel {
                 layout: Layout = self.layout(),
                 layouts = self.layouts;
 
-            //layouts.removeAll();
-
             layout.id(undefined);
             layout.code('');
             layout.name('');
-            //layout.classifications([]);
-
             layout.action(LAYOUT_ACTION.INSERT);
             $("#A_INP_CODE").focus();
         }
