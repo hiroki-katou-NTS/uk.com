@@ -31,7 +31,7 @@ public class SphdLimit {
 
 	public static SphdLimit createFromJavaType(
 			String companyId,
-			int specialHolidayCode,
+			String specialHolidayCode,
 			int specialVacationMonths,
 			int specialVacationYears,
 			int grantCarryForward,

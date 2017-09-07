@@ -25,6 +25,9 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	private static final String SELECT_FROM_WORKTYPE = "SELECT c FROM KshmtWorkType c";
 	
+	private static final String SELECT_ALL_WORKTYPE = SELECT_FROM_WORKTYPE
+			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId";
+	
 	private static final String SELECT_FROM_WORKTYPESET = "SELECT a FROM KshmtWorkTypeSet a WHERE a.kshmtWorkTypeSetPK.companyId = :companyId"
 			+ " AND a.kshmtWorkTypeSetPK.workTypeCode = :workTypeCode";
 
@@ -54,6 +57,10 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 				entity.kshmtWorkTypePK.workTypeCode, entity.symbolicName, entity.name, entity.abbreviationName,
 				entity.memo, entity.worktypeAtr, entity.oneDayAtr, entity.morningAtr, entity.afternoonAtr,
 				entity.deprecateAtr, entity.calculatorMethod);
+		if (entity.kshmtWorkTypeOrder != null) {
+			domain.setDisplayOrder(entity.kshmtWorkTypeOrder.dispOrder);
+		}
+		
 		if (entity.worktypeSetList != null) {
 			domain.setWorkTypeSet(entity.worktypeSetList.stream().map(x -> toDomainWorkTypeSet(x)).collect(Collectors.toList()));
 		}
@@ -120,8 +127,7 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	@Override
 	public List<WorkType> findByCompanyId(String companyId) {
-		String query = SELECT_FROM_WORKTYPE + " WHERE c.kshmtWorkTypePK.companyId = :companyId";
-		return this.queryProxy().query(query, KshmtWorkType.class).setParameter("companyId", companyId)
+		return this.queryProxy().query(SELECT_ALL_WORKTYPE, KshmtWorkType.class).setParameter("companyId", companyId)
 				.getList(c -> toDomain(c));
 	}
 	
@@ -184,7 +190,20 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 	
 	@Override
 	public void update(WorkType workType) {
-		this.commandProxy().update(toEntity(workType));	
+		KshmtWorkTypePK key = new KshmtWorkTypePK(workType.getCompanyId(), workType.getWorkTypeCode().v());
+		KshmtWorkType entity = this.queryProxy().find(key, KshmtWorkType.class).get();
+		entity.kshmtWorkTypePK = key;
+		entity.symbolicName = workType.getSymbolicName().v();
+		entity.name = workType.getName().v();		
+		entity.abbreviationName = workType.getAbbreviationName().v();
+		entity.memo = workType.getMemo().v();
+		entity.deprecateAtr = workType.getDeprecate().value;
+		entity.worktypeAtr = workType.getDailyWork().getWorkTypeUnit().value;
+		entity.oneDayAtr = workType.getDailyWork().getOneDay().value;
+		entity.morningAtr = workType.getDailyWork().getMorning().value;
+		entity.afternoonAtr = workType.getDailyWork().getAfternoon().value;
+		entity.calculatorMethod = workType.getCalculateMethod().value;
+		this.commandProxy().update(entity);	
 	}
 
 	@Override

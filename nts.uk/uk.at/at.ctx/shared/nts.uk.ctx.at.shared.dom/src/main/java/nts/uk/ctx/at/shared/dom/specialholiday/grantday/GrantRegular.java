@@ -31,7 +31,7 @@ public class GrantRegular {
 	private GrantRegularMethod grantRegularMethod;
 
 	public static GrantRegular createFromJavaType(String companyId,
-			int specialHolidayCode,
+			String specialHolidayCode,
 			GeneralDate grantStartDate,
 			int months,
 			int years,

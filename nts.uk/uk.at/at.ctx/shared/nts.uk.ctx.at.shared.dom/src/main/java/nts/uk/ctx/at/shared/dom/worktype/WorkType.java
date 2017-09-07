@@ -52,8 +52,10 @@ public class WorkType extends AggregateRoot {
 
 	// 出勤率の計算
 	private CalculateMethod calculateMethod;
-
+	
 	private List<WorkTypeSet> workTypeSetList;
+	
+	private Integer dispOrder;
 	
 	@Override
 	public void validate() {
@@ -103,6 +105,23 @@ public class WorkType extends AggregateRoot {
 		this.deprecate = deprecate;
 		this.calculateMethod = calculateMethod;
 	}
+	
+	/**
+	 * 
+	 * @param companyId
+	 * @param workTypeCode
+	 * @param name
+	 * @param abbreviationName
+	 */
+	public WorkType(String companyId, WorkTypeCode workTypeCode, WorkTypeName name,
+			WorkTypeAbbreviationName abbreviationName) {
+		super();
+		this.companyId = companyId;
+		this.workTypeCode = workTypeCode;
+		this.name = name;
+		this.abbreviationName = abbreviationName;
+	}
+
 
 	/**
 	 * Creates the simple from java type.
@@ -145,5 +164,13 @@ public class WorkType extends AggregateRoot {
 	 */
 	public void setWorkTypeSet(List<WorkTypeSet> workTypeList) {
 		this.workTypeSetList = workTypeList;
+	}
+	
+	/**
+	 * Set display order
+	 * @param order
+	 */
+	public void setDisplayOrder(int dispOrder) {
+		this.dispOrder = dispOrder;
 	}
 }

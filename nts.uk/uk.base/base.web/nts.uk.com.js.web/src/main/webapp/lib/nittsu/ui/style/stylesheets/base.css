@@ -3567,6 +3567,10 @@ button.nts-switch-button[disabled]:hover {
   white-space: nowrap;
 }
 
+.extable {
+  position: relative;
+}
+
 /* line 1, ../sass/components/_extable.scss */
 .extable .xheader td {
   color: #000;
@@ -3594,10 +3598,18 @@ button.nts-switch-button[disabled]:hover {
   background-color: #FAD7A0;
 }
 
+.extable td.ex-round-go {
+	cursor: pointer;
+}
+
 /* line 18, ../sass/components/_extable.scss */
-.extable div.selected, .extable td.selected {
+.extable div.x-cell-selected, .extable td.x-cell-selected {
   background-color: #3498DB;
   color: #FFF;
+}
+
+.extable tr.x-row-selected {
+	background-color: #AED6F1;
 }
 
 /* line 22, ../sass/components/_extable.scss */
@@ -3611,6 +3623,18 @@ button.nts-switch-button[disabled]:hover {
   left: 6px;
   top: 50%;
   margin-top: -8px;
+}
+
+.ex-editor input::-ms-clear {
+  display: none;
+}
+
+.extable-crud {
+  padding-bottom: 4px;
+}
+
+.extable-delete-rows {
+  margin-left: 4px;
 }
 
 /* line 32, ../sass/components/_extable.scss */
