@@ -1,5 +1,6 @@
 package nts.uk.shr.infra.i18n.loading;
 
+import java.io.Serializable;
 import java.util.Locale;
 
 import javax.enterprise.context.SessionScoped;
@@ -11,7 +12,7 @@ import nts.arc.i18n.custom.ResourceChangedEvent;
 import nts.gul.text.IdentifierUtil;
 
 @SessionScoped
-public class SessionLocale implements ISessionLocale {
+public class SessionLocale implements ISessionLocale,Serializable{
 	private Locale currentLocale;
 	private long version;
 
