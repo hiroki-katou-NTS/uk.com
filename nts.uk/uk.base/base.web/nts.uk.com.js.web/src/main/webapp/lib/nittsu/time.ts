@@ -852,4 +852,36 @@ module nts.uk.time {
         return false;
     }
 
+    export function convertJapaneseDateToGlobal(japaneseDate: string): string{
+        let inputDate = _.clone(japaneseDate);
+        let endEraSymbolIndex = -1;
+        let currentEra;
+        let eraAcceptFormats = ["YYMMDD", "YY/MM/DD", "YY/M/DD", "YY/MM/D", "YY/M/D", "Y/MM/DD", "Y/M/DD", "Y/MM/D", "Y/M/D"];
+        
+        for(let i of __viewContext.env.japaneseEras){
+            if (inputDate.indexOf(i.name) >= 0) {
+                endEraSymbolIndex = inputDate.indexOf(i.name) + i.name.length;
+                currentEra = i;
+                break;
+            } else if (inputDate.indexOf(i.symbol) >= 0) { 
+                endEraSymbolIndex = inputDate.indexOf(i.symbol) + i.symbol.length;
+                currentEra = i;
+                break;
+            }                
+        }
+        if (endEraSymbolIndex > -1) {
+            let startEraDate = moment(currentEra.start, "YYYY-MM-DD");
+            let inputEraDate = inputDate.substring(endEraSymbolIndex);
+            let tempEra = moment.utc(inputEraDate, eraAcceptFormats, true); 
+            if (tempEra.isValid()) {
+                return startEraDate.add(tempEra.format("YY"), "Y")
+                                    .set({'month': tempEra.month(), "date": tempEra.date()})
+                                    .format("YYYY/MM/DD");      
+            }
+        }
+        
+        return japaneseDate;
+    }
+
+
 }

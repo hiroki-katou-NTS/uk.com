@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.app.find.dailyperformanceformat;
+package nts.uk.ctx.at.record.dom.dailyattendanceitem.repository;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -9,16 +9,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
-import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItemDomainServiceDto;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapter;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapterDto;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.PremiumItemAdapter;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.PremiumItemDto;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTime;
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
 import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
@@ -26,22 +22,19 @@ import nts.uk.ctx.at.shared.dom.bonuspay.timeitem.BonusPayTimeItem;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
-/**
- * 
- * @author nampt
- *
+/*
+ * NamPT
+ * Set name of dailyAttendanceItem
+ * 勤怠項目に対応する名称を生成する
  */
 @Stateless
-public class AttendanceItemsFinder {
-
+public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendanceItemNameDomainService {
+	
 	@Inject
-	private DailyAttendanceItemNameDomainService dailyAttendanceItemNameDomainService;
+	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
 
 	@Inject
 	private DivergenceTimeRepository divergenceTimeRepository;
-
-	@Inject
-	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
 
 	@Inject
 	private FrameNoAdapter frameNoAdapter;
@@ -52,67 +45,21 @@ public class AttendanceItemsFinder {
 	@Inject
 	private BPTimeItemRepository bPTimeItemRepository;
 
-	public List<AttendanceItemDto> find() {
+	@Override
+	public List<DailyAttendanceItemDomainServiceDto> getNameOfDailyAttendanceItem(List<Integer> dailyAttendanceItemIds) {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
-
-		List<AttendanceItemDto> attendanceItemDtos = new ArrayList<>();
-
-		// 勤怠項目
-		List<DailyAttendanceItem> dailyAttendanceItems = this.dailyAttendanceItemRepository.getListTobeUsed(companyId,
-				1);
-
-		if (dailyAttendanceItems.isEmpty()) {
-			return attendanceItemDtos;
-		}
-
-		// get list attendanceItemId
-		List<Integer> attendanceItemIds = dailyAttendanceItems.stream().map(f -> {
-			return f.getAttendanceItemId();
-		}).collect(Collectors.toList());
-
-		List<DailyAttendanceItemDomainServiceDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameDomainService
-				.getNameOfDailyAttendanceItem(attendanceItemIds);
 		
-//		List<AttendanceItemDto> attendanceItemDtoResult = dailyAttendanceItemDomainServiceDtos.stream().map(f -> {
-//			return new AttendanceItemDto(f.getAttendanceItemId(), f.getAttendanceItemName(), f.getAttendanceItemDisplayNumber());
-//		}).collect(Collectors.toList());
+		List<DailyAttendanceItem> dailyAttendanceItemList = dailyAttendanceItemRepository.getListById(companyId, dailyAttendanceItemIds);
 		
-		dailyAttendanceItemDomainServiceDtos.forEach(f -> {
-			AttendanceItemDto attendanceItemDto = new AttendanceItemDto();
-			attendanceItemDto.setAttendanceItemId(f.getAttendanceItemId());
-			attendanceItemDto.setAttendanceItemName(f.getAttendanceItemName());
-			attendanceItemDto.setAttendanceItemDisplayNumber(f.getAttendanceItemDisplayNumber());
-			attendanceItemDtos.add(attendanceItemDto);
-		});
-
-		return attendanceItemDtos;
-	}
-
-	public List<AttdItemDto> findAll() {
-		LoginUserContext login = AppContexts.user();
-		String companyId = login.companyId();
-
-		// 勤怠項目
-		List<DailyAttendanceItem> dailyAttendanceItems = this.dailyAttendanceItemRepository.getList(companyId);
-
-		// get list attendanceItemId
-		List<Integer> attendanceItemIds = dailyAttendanceItems.stream().map(f -> {
-			return f.getAttendanceItemId();
-		}).collect(Collectors.toList());
-
 		// 対応するドメインモデル 「勤怠項目と枠の紐付け」 を取得する
-		List<FrameNoAdapterDto> attendanceItemAndFrameNos = this.frameNoAdapter.getFrameNo(attendanceItemIds);
+		List<FrameNoAdapterDto> attendanceItemAndFrameNos = this.frameNoAdapter.getFrameNo(dailyAttendanceItemIds);
 
 		// get list frame No
-		// List<Integer> frameNos = attendanceItemAndFrameNos.stream().map(f ->
-		// {
-		// return f.getFrameNo();
-		// }).collect(Collectors.toList());
-
 		Map<Integer, Integer> frameNoMap = attendanceItemAndFrameNos.stream()
 				.collect(Collectors.toMap(FrameNoAdapterDto::getAttendanceItemId, FrameNoAdapterDto::getFrameNo));
 		List<Integer> frameNos = frameNoMap.values().stream().collect(Collectors.toList());
+
 		// 乖離時間
 		Map<Integer, DivergenceTime> divergenceTimes = this.divergenceTimeRepository
 				.getDivergenceTimeName(companyId, frameNos).stream()
@@ -132,13 +79,12 @@ public class AttendanceItemsFinder {
 				.getListSpecialBonusPayTimeItemName(companyId, frameNos).stream()
 				.collect(Collectors.toMap(BonusPayTimeItem::getId, x -> x));
 
-		List<AttdItemDto> attendanceItemDtos = new ArrayList<>();
-
-		dailyAttendanceItems.stream().forEach(item -> {
+		List<DailyAttendanceItemDomainServiceDto> dailyAttendanceItemDomainServiceDtos = new ArrayList<>();
+		
+		dailyAttendanceItemList.stream().forEach(item -> {
 			if (frameNoMap.containsKey(item.getAttendanceItemId())) {
-				AttdItemDto attendanceDto = new AttdItemDto();
-				attendanceDto.setDailyAttendanceAtr(item.getDailyAttendanceAtr().value);
-				attendanceDto.setNameLineFeedPosition(item.getNameLineFeedPosition());
+				DailyAttendanceItemDomainServiceDto attendanceDto = new DailyAttendanceItemDomainServiceDto();
+				attendanceDto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
 				attendanceDto.setAttendanceItemId(item.getAttendanceItemId());
 				attendanceDto.setAttendanceItemName(item.getAttendanceName().v());
 				if (divergenceTimes.containsKey(frameNoMap.get(item.getAttendanceItemId()))) {
@@ -155,10 +101,11 @@ public class AttendanceItemsFinder {
 							MessageFormat.format(attendanceDto.getAttendanceItemName(), specialBonusPayTimeItem
 									.get(frameNoMap.get(item.getAttendanceItemId())).getTimeItemName().v()));
 				}
-				attendanceItemDtos.add(attendanceDto);
+				dailyAttendanceItemDomainServiceDtos.add(attendanceDto);
 			}
 		});
-
-		return attendanceItemDtos;
+		
+		return dailyAttendanceItemDomainServiceDtos;
 	}
+
 }
