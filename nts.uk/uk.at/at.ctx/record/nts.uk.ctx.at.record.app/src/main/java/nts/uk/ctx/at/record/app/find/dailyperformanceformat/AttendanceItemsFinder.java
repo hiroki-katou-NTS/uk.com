@@ -74,9 +74,17 @@ public class AttendanceItemsFinder {
 		List<DailyAttendanceItemDomainServiceDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameDomainService
 				.getNameOfDailyAttendanceItem(attendanceItemIds);
 		
-		dailyAttendanceItemDomainServiceDtos.stream().map(f -> {
-			return new AttendanceItemDto(f.getAttendanceItemId(), f.getAttendanceItemName(), f.getAttendanceItemDisplayNumber());
-		}).collect(Collectors.toList());
+//		List<AttendanceItemDto> attendanceItemDtoResult = dailyAttendanceItemDomainServiceDtos.stream().map(f -> {
+//			return new AttendanceItemDto(f.getAttendanceItemId(), f.getAttendanceItemName(), f.getAttendanceItemDisplayNumber());
+//		}).collect(Collectors.toList());
+		
+		dailyAttendanceItemDomainServiceDtos.forEach(f -> {
+			AttendanceItemDto attendanceItemDto = new AttendanceItemDto();
+			attendanceItemDto.setAttendanceItemId(f.getAttendanceItemId());
+			attendanceItemDto.setAttendanceItemName(f.getAttendanceItemName());
+			attendanceItemDto.setAttendanceItemDisplayNumber(f.getAttendanceItemDisplayNumber());
+			attendanceItemDtos.add(attendanceItemDto);
+		});
 
 		return attendanceItemDtos;
 	}
