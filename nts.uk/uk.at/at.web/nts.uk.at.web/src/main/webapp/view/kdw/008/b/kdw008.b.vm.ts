@@ -156,6 +156,7 @@ module nts.uk.at.view.kdw008.b {
                 new service.Service().getDailyPerformance(businessTypeCode, self.selectedSheetNo()).done(function(data: IBusinessTypeDetail) {
                     if (data) {
                         self.businessTypeFormatMonthlyValue([]);
+                        self.businessTypeFormatDailyValue([]);
                         self.currentBusinessType(new BusinessTypeDetailModel(data));
                         self.currentBusinessType().attendanceItemDtos.valueHasMutated();
                         // show data tab 1
@@ -174,10 +175,12 @@ module nts.uk.at.view.kdw008.b {
                         } else self.businessTypeFormatMonthlyValue([]);
                         //show data tab 2
                         //self.selectedSheetNo(data.businessTypeFormatDailyDto.sheetNo);
-                        self.selectedSheetName(data.businessTypeFormatDailyDto.sheetName);
-                        self.businessTypeFormatDailyValue([]);
-                        data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos = _.sortBy(data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos, ["order"]);
-                        if (data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos) {
+                        if(data.businessTypeFormatDailyDto == null){
+                           self.selectedSheetName("");
+                        } else self.selectedSheetName(data.businessTypeFormatDailyDto.sheetName);
+                        self.currentBusinessType().attendanceItemDtos.valueHasMutated();
+                        if (data.businessTypeFormatDailyDto != null && data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos) {
+                            data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos = _.sortBy(data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos, ["order"]);
                             var attendanceItemModelDaily = _.map(data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos, item => {
                                 var daily = {
                                     attendanceItemId: item.attendanceItemId,

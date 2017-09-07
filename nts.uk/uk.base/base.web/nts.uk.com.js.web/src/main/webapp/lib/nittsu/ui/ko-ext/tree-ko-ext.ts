@@ -3,7 +3,7 @@
 module nts.uk.ui.koExtentions {
 
     /**
-     * TreeGrid binding handler
+     * Tree binding handler
      */
     class NtsTreeDragAndDropBindingHandler implements KnockoutBindingHandler {
         /**
@@ -56,7 +56,7 @@ module nts.uk.ui.koExtentions {
                 width: width,
                 height: height,
                 dataSource: _.cloneDeep(options),
-                initialExpandDepth: 0,
+                initialExpandDepth: 0, 
                 tabIndex: -1,
                 checkboxMode : !multiple ? "off" : selectOnParent ? "triState" : "biState",
                 singleBranchExpand: false,
@@ -67,28 +67,55 @@ module nts.uk.ui.koExtentions {
                     childDataProperty: optionsChild
 //                    ,nodeContentTemplate: template
                 },
-//                dragStart: function(evt, ui) {
-                    //return reference to the helper. Jquery object for drag information.
-                    //ui.helper;
-//                },
                 dragAndDrop: true,
                 dragAndDropSettings: {
                     allowDrop: allowOtherTreeNode,
                     customDropValidation: function (element) {
+                        let dragInfor = $tree.data("dragInfor");
+                        let mousePosition = $tree.data("mousePosition");
                         // Validates the drop target
                         let droppableNode = $(this);
+                        if(droppableNode.prop("tagName").toLowerCase() !== "li"){
+                            droppableNode = droppableNode.closest("li");    
+                        }
+                        
+                        let isOutTarget = mousePosition.top < droppableNode.offset().top 
+                            || mousePosition.top > droppableNode.offset().top + droppableNode.height();
+                        
+                        let dragParent = $tree.igTree("parentNode", element);
+                        let targetParent = $tree.igTree("parentNode", droppableNode);
+                        
                         let targetNode = $tree.igTree("nodeFromElement", droppableNode);
-                        let dragNode = $tree.igTree("nodeFromElement", element);
-                        
-                        let targetDeep: number = (targetNode.path.match(/_/g) || []).length;
-                        if(targetDeep + 1 >= maxDeepLeaf){
-                            return false;        
-                        }
-                        
-                        let targetNodeChildren = $tree.igTree("children", droppableNode);
-                        if(targetNodeChildren.length >= maxChildInNode){
-                            return false        
-                        }
+                        if(!isOutTarget){
+                            if(!nts.uk.util.isNullOrEmpty(targetNode.path)){
+                                let targetDeep: number = (targetNode.path.match(/_/g) || []).length;
+                                if(targetDeep + 1 >= maxDeepLeaf){
+                                    return false;        
+                                }     
+                            } else {
+                                return false;    
+                            }
+                            
+                            let targetNodeChildren = $tree.igTree("children", droppableNode);
+                            if(targetNodeChildren.length >= maxChildInNode){
+                                return false        
+                            }          
+                        } else if (targetParent !== null && !targetParent.is(dragParent)){
+                            targetNode = $tree.igTree("nodeFromElement", targetParent);
+                            if(!nts.uk.util.isNullOrEmpty(targetNode.path)){
+                                let targetDeep: number = (targetNode.path.match(/_/g) || []).length;
+                                if(targetDeep + 1 >= maxDeepLeaf){
+                                    return false;        
+                                }     
+                            } else {
+                                return false;    
+                            }
+                            
+                            let targetNodeChildren = $tree.igTree("children", targetParent);
+                            if(targetNodeChildren.length >= maxChildInNode){
+                                return false        
+                            }     
+                        } 
                         
                         let customValidateResult = nts.uk.util.isNullOrUndefined(customValidate) ? true: customValidate();
                         
@@ -98,6 +125,13 @@ module nts.uk.ui.koExtentions {
                         
                         return true;
                     }
+                },
+                dragStart: function(evt, ui) {
+                    $tree.data("dragInfor", {
+                        helper:  ui.helper,  
+                        targetNodePath: ui.path,
+                        mousePosition: ui.position
+                    });
                 },
                 selectionChanged: function(evt, ui) {
                     if (ko.unwrap(data.multiple)) {
@@ -120,21 +154,20 @@ module nts.uk.ui.koExtentions {
                 },
                 nodeCheckstateChanged: function(evt, ui) {
                     if (ko.isObservable(data.selectedValues)) {
-                        if(ui.newState === "on"){
+                        if (ko.isObservable(data.selectedValues)) { 
                             let selectedNodes = $tree.igTree("checkedNodes");
                             data.selectedValues(_.map(selectedNodes, function(s){
                                 return s.data[optionsValue];    
                             }));
-                        } else {
-                            _.remove(data.selectedValues(), function(val){
-                                return ui.node.data[optionsValue] === val;        
-                            });    
-                            data.selectedValues.valueHasMutated();
                         }
                     }
                 }
             });
-//            $treegrid.setupSearchScroll("igTreeGrid");
+            $tree.mousemove(function( event ) {
+                var pageCoords = {top: event.pageY, left: event.pageX};
+                $tree.data("mousePosition", pageCoords );
+            });
+            $tree.setupSearchScroll("igTree");
         }
 
         /**
@@ -158,7 +191,7 @@ module nts.uk.ui.koExtentions {
 
             // Clear selection.
             if (nts.uk.util.isNullOrEmpty(selectedValues) && nts.uk.util.isNullOrUndefined(singleValue)) {
-                $tree.igTree("clearSelection");
+                $tree.ntsTreeDrag("deselectAll");
                 $tree.find("a").removeClass("ui-state-active");
             } else {
                 if (multiple) {

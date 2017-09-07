@@ -29,7 +29,7 @@ public class KmldtPremiumAttendance extends UkJpaEntity{
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"), 
 		@PrimaryKeyJoinColumn(name="HIS_ID",referencedColumnName="HIS_ID"),
-		@PrimaryKeyJoinColumn(name="DISPLAY_NUMBER",referencedColumnName="DISPLAY_NUMBER")
+		@PrimaryKeyJoinColumn(name="PREMIUM_NO",referencedColumnName="PREMIUM_NO")
 	})
 	public KmlstPremiumSet kmlstPremiumSet;
 	

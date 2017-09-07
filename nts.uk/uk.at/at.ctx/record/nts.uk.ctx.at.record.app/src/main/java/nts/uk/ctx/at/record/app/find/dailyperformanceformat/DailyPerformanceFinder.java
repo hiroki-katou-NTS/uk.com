@@ -44,15 +44,8 @@ public class DailyPerformanceFinder {
 				Collectors.toMap(AttendanceItemDto::getAttendanceItemId, x->x));
 
 		// find daily detail
-		// BusinessTypeFormatDailyDto businessTypeFormatDailyDto = new
-		// BusinessTypeFormatDailyDto(null, null, null);
-		// if (sheetNo == null) {
-		// businessTypeFormatDailyDto = new BusinessTypeFormatDailyDto(null,
-		// null, null);
-		// } else {
 		BusinessTypeFormatDailyDto businessTypeFormatDailyDto = businessTypeDailyDetailFinder
 				.getDetail(businessTypeCode, sheetNo);
-		// }
 
 		// find monthly detail
 		List<BusinessTypeFormatMonthly> businessTypeFormatMonthlies = this.workTypeFormatMonthlyRepository

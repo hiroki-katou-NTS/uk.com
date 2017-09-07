@@ -5,7 +5,8 @@ module cps007.a.vm {
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
-        unblock = window["nts"]["uk"]["ui"]["block"]["clear"];
+        unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
+        invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
 
     export class ViewModel {
         layout: KnockoutObservable<Layout> = ko.observable(new Layout({ id: '', code: '', name: '' }));
@@ -84,7 +85,7 @@ module cps007.a.vm {
             }
 
             // push data layout to webservice
-            block();
+            invisible();
             service.saveData(command).done(() => {
                 self.start();
                 info({ messageId: "Msg_15" }).then(function() {

@@ -454,7 +454,7 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			switch (dataType.intValue()) {
 			case 1:
 				StringItem stringItem = (StringItem) dataTypeState;
-				stringItemType = new BigDecimal(stringItem.getDataTypeValue().value);
+				stringItemType = new BigDecimal(stringItem.getStringItemType().value);
 				stringItemLength = new BigDecimal(stringItem.getStringItemLength().v());
 				stringItemDataType = new BigDecimal(stringItem.getStringItemDataType().value);
 				break;
