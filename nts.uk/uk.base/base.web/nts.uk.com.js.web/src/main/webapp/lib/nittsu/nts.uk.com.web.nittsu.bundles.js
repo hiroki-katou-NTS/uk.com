@@ -7327,15 +7327,21 @@ var nts;
                         $container.data("searchObject", searchObject);
                         var search = function (searchKey) {
                             if (targetMode) {
-                                var selectedItems = void 0;
+                                var selectedItems = void 0, isMulti = void 0;
                                 if (targetMode == 'igGrid') {
                                     if (component.length === 0) {
                                         component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");
                                     }
                                     selectedItems = component.ntsGridList("getSelected");
+                                    isMulti = component.igGridSelection('option', 'multipleSelection');
                                 }
                                 else if (targetMode == 'igTree') {
                                     selectedItems = component.ntsTreeView("getSelected");
+                                    isMulti = component.igTreeGridSelection('option', 'multipleSelection');
+                                }
+                                else if (targetMode == 'igTreeDrag') {
+                                    selectedItems = component.ntsTreeDrag("getSelected");
+                                    isMulti = component.ntsTreeDrag('option', 'isMulti');
                                 }
                                 var srh_1 = $container.data("searchObject");
                                 var result_1 = srh_1.search(searchKey, selectedItems);
@@ -7343,8 +7349,6 @@ var nts;
                                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT"));
                                     return;
                                 }
-                                var isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection')
-                                    : component.igTreeGridSelection('option', 'multipleSelection');
                                 var selectedProperties = _.map(result_1.selectItems, primaryKey);
                                 if (targetMode === 'igGrid') {
                                     component.ntsGridList("setSelected", selectedProperties);
@@ -7371,6 +7375,9 @@ var nts;
                                 else if (targetMode == 'igTree') {
                                     component.ntsTreeView("setSelected", selectedProperties);
                                     component.trigger("selectionchanged");
+                                }
+                                else if (targetMode == 'igTreeDrag') {
+                                    component.ntsTreeDrag("setSelected", selectedProperties);
                                 }
                                 _.defer(function () {
                                     component.trigger("selectChange");
@@ -11002,6 +11009,27 @@ var nts;
                         return $treegrid;
                     }
                     function setupIgTreeScroll($control) {
+                        var id = $control.attr('id');
+                        $control.on("selectChange", function () {
+                            var selectedRows = $control.ntsTreeDrag("getSelected");
+                            if ($.isArray(selectedRows)) {
+                                selectedRows = selectedRows[0];
+                            }
+                            if (!nts.uk.util.isNullOrUndefined(selectedRows)) {
+                                $control.igTree("expandToNode", selectedRows.element);
+                                var index = _.findIndex($control.find("li"), function (e) {
+                                    return $(e).is(selectedRows.element);
+                                });
+                                if (index >= 0) {
+                                    var scrollTo_1 = index * 29;
+                                    var scrollTop = $control.scrollTop();
+                                    var height = $control.height();
+                                    if (scrollTo_1 < scrollTop || scrollTo_1 > scrollTop + height - 28) {
+                                        $control.scrollTop(scrollTo_1);
+                                    }
+                                }
+                            }
+                        });
                         return $control;
                     }
                 })(ntsSearchBox || (ntsSearchBox = {}));
@@ -14554,16 +14582,47 @@ var nts;
                             dragAndDropSettings: {
                                 allowDrop: allowOtherTreeNode,
                                 customDropValidation: function (element) {
+                                    var dragInfor = $tree.data("dragInfor");
+                                    var mousePosition = $tree.data("mousePosition");
                                     var droppableNode = $(this);
-                                    var targetNode = $tree.igTree("nodeFromElement", droppableNode);
-                                    var dragNode = $tree.igTree("nodeFromElement", element);
-                                    var targetDeep = (targetNode.path.match(/_/g) || []).length;
-                                    if (targetDeep + 1 >= maxDeepLeaf) {
-                                        return false;
+                                    if (droppableNode.prop("tagName").toLowerCase() !== "li") {
+                                        droppableNode = droppableNode.closest("li");
                                     }
-                                    var targetNodeChildren = $tree.igTree("children", droppableNode);
-                                    if (targetNodeChildren.length >= maxChildInNode) {
-                                        return false;
+                                    var isOutTarget = mousePosition.top < droppableNode.offset().top
+                                        || mousePosition.top > droppableNode.offset().top + droppableNode.height();
+                                    var dragParent = $tree.igTree("parentNode", element);
+                                    var targetParent = $tree.igTree("parentNode", droppableNode);
+                                    var targetNode = $tree.igTree("nodeFromElement", droppableNode);
+                                    if (!isOutTarget) {
+                                        if (!nts.uk.util.isNullOrEmpty(targetNode.path)) {
+                                            var targetDeep = (targetNode.path.match(/_/g) || []).length;
+                                            if (targetDeep + 1 >= maxDeepLeaf) {
+                                                return false;
+                                            }
+                                        }
+                                        else {
+                                            return false;
+                                        }
+                                        var targetNodeChildren = $tree.igTree("children", droppableNode);
+                                        if (targetNodeChildren.length >= maxChildInNode) {
+                                            return false;
+                                        }
+                                    }
+                                    else if (targetParent !== null && !targetParent.is(dragParent)) {
+                                        targetNode = $tree.igTree("nodeFromElement", targetParent);
+                                        if (!nts.uk.util.isNullOrEmpty(targetNode.path)) {
+                                            var targetDeep = (targetNode.path.match(/_/g) || []).length;
+                                            if (targetDeep + 1 >= maxDeepLeaf) {
+                                                return false;
+                                            }
+                                        }
+                                        else {
+                                            return false;
+                                        }
+                                        var targetNodeChildren = $tree.igTree("children", targetParent);
+                                        if (targetNodeChildren.length >= maxChildInNode) {
+                                            return false;
+                                        }
                                     }
                                     var customValidateResult = nts.uk.util.isNullOrUndefined(customValidate) ? true : customValidate();
                                     if (customValidateResult === false) {
@@ -14571,6 +14630,13 @@ var nts;
                                     }
                                     return true;
                                 }
+                            },
+                            dragStart: function (evt, ui) {
+                                $tree.data("dragInfor", {
+                                    helper: ui.helper,
+                                    targetNodePath: ui.path,
+                                    mousePosition: ui.position
+                                });
                             },
                             selectionChanged: function (evt, ui) {
                                 if (ko.unwrap(data.multiple)) {
@@ -14594,21 +14660,20 @@ var nts;
                             },
                             nodeCheckstateChanged: function (evt, ui) {
                                 if (ko.isObservable(data.selectedValues)) {
-                                    if (ui.newState === "on") {
+                                    if (ko.isObservable(data.selectedValues)) {
                                         var selectedNodes = $tree.igTree("checkedNodes");
                                         data.selectedValues(_.map(selectedNodes, function (s) {
                                             return s.data[optionsValue];
                                         }));
                                     }
-                                    else {
-                                        _.remove(data.selectedValues(), function (val) {
-                                            return ui.node.data[optionsValue] === val;
-                                        });
-                                        data.selectedValues.valueHasMutated();
-                                    }
                                 }
                             }
                         });
+                        $tree.mousemove(function (event) {
+                            var pageCoords = { top: event.pageY, left: event.pageX };
+                            $tree.data("mousePosition", pageCoords);
+                        });
+                        $tree.setupSearchScroll("igTree");
                     };
                     NtsTreeDragAndDropBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
@@ -14623,7 +14688,7 @@ var nts;
                             $tree.igTree("dataBind");
                         }
                         if (nts.uk.util.isNullOrEmpty(selectedValues) && nts.uk.util.isNullOrUndefined(singleValue)) {
-                            $tree.igTree("clearSelection");
+                            $tree.ntsTreeDrag("deselectAll");
                             $tree.find("a").removeClass("ui-state-active");
                         }
                         else {
@@ -20279,6 +20344,63 @@ var nts;
                         $grid.igTreeGridSelection('clearSelection');
                     }
                 })(ntsTreeView || (ntsTreeView = {}));
+                var ntsTreeDrag;
+                (function (ntsTreeDrag) {
+                    $.fn.ntsTreeDrag = function (action, param) {
+                        var $tree = $(this);
+                        switch (action) {
+                            case 'getSelected':
+                                return getSelected($tree);
+                            case 'setSelected':
+                                return setSelected($tree, param);
+                            case 'deselectAll':
+                                return deselectAll($tree);
+                            case 'isMulti':
+                                return isMultiple($tree);
+                        }
+                    };
+                    function isMultiple($tree) {
+                        var isMulti = $tree.igTree("option", "checkboxMode") !== "off";
+                        return isMulti;
+                    }
+                    function getSelected($tree) {
+                        var isMulti = isMultiple($tree);
+                        if (isMulti) {
+                            var values = $tree.igTree("checkedNodes");
+                            _.forEach(values, function (e) {
+                                return e["id"] = e.data[e.binding.valueKey];
+                            });
+                            return values;
+                        }
+                        else {
+                            var value = $tree.igTree("selectedNode");
+                            value["id"] = value.data[value.binding.valueKey];
+                            return value;
+                        }
+                    }
+                    function setSelected($tree, selectedId) {
+                        deselectAll($tree);
+                        var isMulti = isMultiple($tree);
+                        if (isMulti) {
+                            if (!$.isArray(selectedId)) {
+                                selectedId = [selectedId];
+                            }
+                            selectedId.forEach(function (id) {
+                                var $node = $tree.igTree("nodesByValue", id);
+                                $tree.igTree("toggleCheckstate", $node);
+                            });
+                        }
+                        else {
+                            var $node = $tree.igTree("nodesByValue", selectedId);
+                            $tree.igTree("select", $node);
+                        }
+                    }
+                    function deselectAll($tree) {
+                        _.forEach($tree.igTree("checkedNodes"), function (node) {
+                            $tree.igTree("toggleCheckstate", node.element);
+                        });
+                    }
+                })(ntsTreeDrag || (ntsTreeDrag = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
