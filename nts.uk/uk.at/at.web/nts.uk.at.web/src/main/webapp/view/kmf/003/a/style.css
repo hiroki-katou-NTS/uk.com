@@ -69,3 +69,7 @@
 button.nts-switch-button {
 	width: 100px;
 }
+
+table#tbl-condition tr, table#tbl-grant-hd-set tr {
+    height: 20px;
+}
