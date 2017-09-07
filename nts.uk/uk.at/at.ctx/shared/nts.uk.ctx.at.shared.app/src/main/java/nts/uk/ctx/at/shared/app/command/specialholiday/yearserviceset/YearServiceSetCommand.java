@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 public class YearServiceSetCommand {
 	/**コード**/
-	private int specialHolidayCode;
+	private String specialHolidayCode;
 	private int yearServiceNo;
 	/** 年間サービスタイプ **/
 	private int yearServiceType;

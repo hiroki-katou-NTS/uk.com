@@ -284,7 +284,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	}
 	
 	@Override
-	public boolean checkExists(String companyId, int specialHolidayCode) {
+	public boolean checkExists(String companyId, String specialHolidayCode) {
 		List<KshstSpecialHoliday> branchs = this.queryProxy().query(CHECK_BY_CID, KshstSpecialHoliday.class)
        		 .setParameter("companyId", companyId)
        		 .setParameter("specialHolidayCode", specialHolidayCode)
@@ -333,7 +333,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 	 * Delete Special Holiday
 	 */
 	@Override
-	public void delete(String companyId, int specialHolidayCode) {
+	public void delete(String companyId, String specialHolidayCode) {
 		KshstSpecialHolidayPK kshstSpecialHolidayPK = new KshstSpecialHolidayPK(companyId, specialHolidayCode);
 		this.commandProxy().remove(KshstSpecialHoliday.class, kshstSpecialHolidayPK);
 	}

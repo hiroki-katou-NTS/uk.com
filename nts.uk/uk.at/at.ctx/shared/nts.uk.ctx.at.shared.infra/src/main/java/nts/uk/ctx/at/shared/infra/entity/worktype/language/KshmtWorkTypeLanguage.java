@@ -21,7 +21,7 @@ public class KshmtWorkTypeLanguage extends UkJpaEntity implements Serializable{/
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public KshmtWorkTypeLanguagePK  kmnmtWorkTypeLanguagePK;
+	public KshmtWorkTypeLanguagePK  kshmtWorkTypeLanguagePK;
 	/*名称*/
 	@Column(name = "NAME")
 	public String name;
@@ -31,7 +31,7 @@ public class KshmtWorkTypeLanguage extends UkJpaEntity implements Serializable{/
 	
 	@Override
 	protected Object getKey() {
-		return kmnmtWorkTypeLanguagePK;
+		return kshmtWorkTypeLanguagePK;
 	}
 	
 }
