@@ -237,17 +237,12 @@ module cps008.a.viewmodel {
                     if (itemListLength === 1) {
                         unblock();
                         self.start();
-                        return;
-                    }
-                    if (itemListLength - 1 === indexItemDelete) {
+                    } else if (itemListLength - 1 === indexItemDelete) {
                         self.start(layouts[indexItemDelete - 1].code);
                         unblock();
-                        return;
-                    }
-                    if (itemListLength - 1 > indexItemDelete) {
+                    } else if (itemListLength - 1 > indexItemDelete) {
                         self.start(layouts[indexItemDelete + 1].code);
                         unblock();
-                        return;
                     }
 
                     showDialog.info(Text('Msg_16')).then(function() {
