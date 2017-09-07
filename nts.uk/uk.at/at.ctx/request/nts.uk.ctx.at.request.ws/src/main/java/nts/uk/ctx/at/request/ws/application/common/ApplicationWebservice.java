@@ -20,6 +20,8 @@ import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCom
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
+import nts.uk.ctx.at.request.app.find.application.common.GetDataBeforePreBootMode;
+import nts.uk.ctx.at.request.dom.application.common.Application;
 
 @Path("at/request/application")
 @Produces("application/json")
@@ -36,6 +38,9 @@ public class ApplicationWebservice extends WebService {
 	
 	@Inject 
 	private ApplicationFinder finderApp;
+	
+	@Inject 
+	private GetDataBeforePreBootMode getDataBeforePreBootMode; 
 	
 	/**
 	 * get All application
@@ -104,5 +109,25 @@ public class ApplicationWebservice extends WebService {
 	public void deleteApplication( String applicationID) {
 		DeleteApplicationCommand command = new DeleteApplicationCommand(applicationID);
 		this.deleteApp.handle(command);
+	}
+	
+	/**
+	 * check display reason
+	 * @return
+	 */
+	@POST
+	@Path("checkdisplayreason")
+	public boolean checkDisplayReason( Application application,GeneralDate datebase) {
+		return this.getDataBeforePreBootMode.checkDisplayReasonApp(application, datebase);
+	}
+	
+	/**
+	 * check display reason
+	 * @return
+	 */
+	@POST
+	@Path("checkdisplayauthorizationcomment")
+	public boolean checkAuthorizationComment( Application application,GeneralDate datebase) {
+		return this.getDataBeforePreBootMode.checkDisplayAuthorizationComment(application, datebase);
 	}
 }
