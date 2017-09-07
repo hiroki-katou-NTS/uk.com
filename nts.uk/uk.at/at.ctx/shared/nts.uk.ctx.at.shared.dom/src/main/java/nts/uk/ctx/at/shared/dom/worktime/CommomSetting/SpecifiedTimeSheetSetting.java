@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.worktime.CommomSetting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -38,6 +39,19 @@ public class SpecifiedTimeSheetSetting extends AggregateRoot{
 	
 	public List<TimeSheetWithUseAtr> getTimeSheets() {
 		return this.timeSheets.getTimeSpanList();
+	}
+	
+	/**
+	 * 引数のNoと一致している勤務Noを持つ時間帯(使用区分付き)を取得する
+	 * @param workNo
+	 * @return 時間帯(使用区分付き)
+	 */
+	public TimeSheetWithUseAtr getMatchWorkNoTimeSheet(int workNo) {
+		List<TimeSheetWithUseAtr> timeSheetWithUseAtrList = getTimeSheets().stream().filter(tc -> tc.getCount() == workNo).collect(Collectors.toList());
+		if(timeSheetWithUseAtrList.size()>1) {
+			throw new RuntimeException("Exist duplicate workNo : " + workNo);
+		}
+		return timeSheetWithUseAtrList.get(0);
 	}
 
 	/**
