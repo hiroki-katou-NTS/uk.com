@@ -21,8 +21,7 @@ module nts.custombinding {
     }
 
     export class LayoutControl implements KnockoutBindingHandler {
-        $tmp = $(`<div>
-                <style type="text/css" rel="stylesheet">
+        private style = `<style type="text/css" rel="stylesheet" id="layout_style">
                     .layout-control.editable{
                         width: 1025px;
                     }
@@ -198,8 +197,9 @@ module nts.custombinding {
                     .layout-control.editable .item-classification:hover>.close-btn {
                         display: block;
                     }
-                </style>
-                <div class="left-area">
+                </style>`;
+
+        private tmp = `<div class="left-area">
                     <div id="cps007_lbl_control"></div>
                     <div class="control-group">
                         <div class="form-group">
@@ -258,7 +258,7 @@ module nts.custombinding {
                                 <div data-bind="if: $data.layoutItemType == 2" class="item-sperator">
                                     <hr />
                                 </div>
-                                <span class="close-btn" data-bind="click: function() { ko.bindingHandlers['ntsLayoutControl'].options.sortable.removeItem($data, false); }">✖</span>
+                                <span class="close-btn" data-bind="click: function(item, event) { ko.bindingHandlers['ntsLayoutControl'].remove(item, event); }">✖</span>
                             </div>
                         </div>
                         <button id="cps007_btn_line"></button>
@@ -328,10 +328,9 @@ module nts.custombinding {
                             enable: true,
                             columns: [{ prop: 'name', length: 10 }]}"></div>
                     </div>
-                </script>
-            </div>`);
+                </script>`;
 
-        api = {
+        private api = {
             getCat: 'ctx/bs/person/info/category/find/companyby/{0}',
             getCats: "ctx/bs/person/info/category/findby/company",
             getGroups: 'ctx/bs/person/groupitem/getAll',
@@ -341,7 +340,7 @@ module nts.custombinding {
             getItemsByIds: 'ctx/bs/person/info/ctgItem/layout/findby/listItemId',
         };
 
-        services = {
+        private services = {
             getCat: (cid) => {
                 let self = this,
                     api = self.api;
@@ -386,284 +385,328 @@ module nts.custombinding {
             }
         };
 
-        controls = {
-            label: undefined,
-            radios: undefined,
-            combobox: undefined,
-            searchbox: undefined,
-            listbox: undefined,
-            button: undefined,
-            sortable: undefined,
-            line: undefined,
+        remove = (item, sender) => {
+            let target = $(sender.target),
+                layout = target.parents('.layout-control'),
+                opts = layout.data('options');
+
+            opts.sortable.removeItem(item, false);
         };
 
-        options = {
-            callback: () => {
-            },
-            radios: {
-                enable: ko.observable(true),
-                value: ko.observable(0),
-                options: ko.observableArray([{
-                    id: CAT_OR_GROUP.CATEGORY,
-                    name: text('CPS007_6'),
-                    enable: ko.observable(true)
-                }, {
-                        id: CAT_OR_GROUP.GROUP,
-                        name: text('CPS007_7'),
-                        enable: ko.observable(true)
-                    }]),
-                optionsValue: 'id',
-                optionsText: 'name'
-            },
-            comboxbox: {
-                enable: ko.observable(true),
-                editable: ko.observable(false),
-                visibleItemsCount: 10,
-                value: ko.observable(''),
-                options: ko.observableArray([]),
-                optionsValue: 'id',
-                optionsText: 'categoryName',
-                columns: [{ prop: 'categoryName', length: 15 }]
-            },
-            searchbox: {
-                mode: 'igGrid',
-                comId: 'cps007_lst_control',
-                items: ko.observableArray([]),
-                selected: ko.observableArray([]),
-                targetKey: 'id',
-                selectedKey: 'id',
-                fields: ['itemName']
-            },
-            listbox: {
-                enable: ko.observable(true),
-                multiple: ko.observable(true),
-                rows: 15,
-                options: ko.observableArray([]),
-                value: ko.observableArray([]),
-                optionsValue: 'id',
-                optionsText: 'itemName',
-                columns: [{ key: 'itemName', headerText: text('CPS007_9'), length: 15 }]
-            },
-            sortable: {
-                data: ko.observableArray([]),
-                isEnabled: ko.observable(true),
-                beforeMove: (data, evt, ui) => {
-                    let self = this,
-                        opts = self.options,
-                        sindex: number = data.sourceIndex,
-                        tindex: number = data.targetIndex,
-                        direct: boolean = sindex > tindex,
-                        item: IItemClassification = data.item,
-                        source: Array<IItemClassification> = ko.unwrap(opts.sortable.data);
+        private _constructor = (element?: HTMLElement, valueAccessor?: any) => {
+            let self = this,
+                services = self.services,
+                $element = $(element),
+                opts = {
+                    callback: () => {
+                    },
+                    radios: {
+                        enable: ko.observable(true),
+                        value: ko.observable(0),
+                        options: ko.observableArray([{
+                            id: CAT_OR_GROUP.CATEGORY,
+                            name: text('CPS007_6'),
+                            enable: ko.observable(true)
+                        }, {
+                                id: CAT_OR_GROUP.GROUP,
+                                name: text('CPS007_7'),
+                                enable: ko.observable(true)
+                            }]),
+                        optionsValue: 'id',
+                        optionsText: 'name'
+                    },
+                    comboxbox: {
+                        enable: ko.observable(true),
+                        editable: ko.observable(false),
+                        visibleItemsCount: 10,
+                        value: ko.observable(''),
+                        options: ko.observableArray([]),
+                        optionsValue: 'id',
+                        optionsText: 'categoryName',
+                        columns: [{ prop: 'categoryName', length: 15 }]
+                    },
+                    searchbox: {
+                        mode: 'igGrid',
+                        comId: 'cps007_lst_control',
+                        items: ko.observableArray([]),
+                        selected: ko.observableArray([]),
+                        targetKey: 'id',
+                        selectedKey: 'id',
+                        fields: ['itemName']
+                    },
+                    listbox: {
+                        enable: ko.observable(true),
+                        multiple: ko.observable(true),
+                        rows: 15,
+                        options: ko.observableArray([]),
+                        value: ko.observableArray([]),
+                        optionsValue: 'id',
+                        optionsText: 'itemName',
+                        columns: [{ key: 'itemName', headerText: text('CPS007_9'), length: 15 }]
+                    },
+                    sortable: {
+                        data: ko.observableArray([]),
+                        isEnabled: ko.observable(true),
+                        beforeMove: (data, evt, ui) => {
+                            let self = this,
+                                sindex: number = data.sourceIndex,
+                                tindex: number = data.targetIndex,
+                                direct: boolean = sindex > tindex,
+                                item: IItemClassification = data.item,
+                                source: Array<IItemClassification> = ko.unwrap(opts.sortable.data);
 
 
-                    // cancel drop if two line is sibling
-                    if (item.layoutItemType == IT_CLA_TYPE.SPER) {
-                        let front = source[tindex - 1] || { layoutID: '-1', layoutItemType: -1 },
-                            replc = source[tindex] || { layoutID: '-1', layoutItemType: -1 },
-                            next = source[tindex + 1] || { layoutID: '-1', layoutItemType: -1 };
+                            // cancel drop if two line is sibling
+                            if (item.layoutItemType == IT_CLA_TYPE.SPER) {
+                                let front = source[tindex - 1] || { layoutID: '-1', layoutItemType: -1 },
+                                    replc = source[tindex] || { layoutID: '-1', layoutItemType: -1 },
+                                    next = source[tindex + 1] || { layoutID: '-1', layoutItemType: -1 };
 
-                        if (!direct) { // drag from top to below
-                            if ([next.layoutItemType, replc.layoutItemType].indexOf(IT_CLA_TYPE.SPER) > -1) {
-                                data.cancelDrop = true;
-                            }
-                        } else {  // drag from below to top
-                            if ([replc.layoutItemType, front.layoutItemType].indexOf(IT_CLA_TYPE.SPER) > -1) {
-                                data.cancelDrop = true;
-                            }
-                        }
-                    } else { // if item is list or object
-                        let front = source[sindex - 1] || { layoutID: '-1', layoutItemType: -1 },
-                            next = source[sindex + 1] || { layoutID: '-1', layoutItemType: -1 };
+                                if (!direct) { // drag from top to below
+                                    if ([next.layoutItemType, replc.layoutItemType].indexOf(IT_CLA_TYPE.SPER) > -1) {
+                                        data.cancelDrop = true;
+                                    }
+                                } else {  // drag from below to top
+                                    if ([replc.layoutItemType, front.layoutItemType].indexOf(IT_CLA_TYPE.SPER) > -1) {
+                                        data.cancelDrop = true;
+                                    }
+                                }
+                            } else { // if item is list or object
+                                let front = source[sindex - 1] || { layoutID: '-1', layoutItemType: -1 },
+                                    next = source[sindex + 1] || { layoutID: '-1', layoutItemType: -1 };
 
-                        if (front.layoutItemType == IT_CLA_TYPE.SPER && next.layoutItemType == IT_CLA_TYPE.SPER) {
-                            data.cancelDrop = true;
-                        }
-                    }
-                },
-                afterMove: (data, evt, ui) => {
-                    /*let self = this,
-                        opts = self.options,
-                        source: Array<any> = ko.unwrap(opts.sortable.data),
-                        maps: Array<number> = _(source).map((x, i) => (x.typeId == IT_CLA_TYPE.SPER) ? i : -1)
-                            .filter(x => x != -1).value();
-
-                    // remove next line if two line is sibling
-                    _.each(maps, (x, i) => {
-                        if (maps[i + 1] == x + 1) {
-                            opts.sortable.data.remove(m => {
-                                let item = ko.unwrap(opts.sortable.data)[maps[i + 1]];
-                                return item.typeId == IT_CLA_TYPE.SPER && item.id == m.id;
-                            });
-                        }
-                    });*/
-                },
-                removeItem: (data: IItemClassification, byItemId?: boolean) => {
-                    let self = this,
-                        opts = self.options,
-                        items = opts.sortable.data;
-
-                    if (!byItemId) { // remove item by classification id (virtual id)
-                        items.remove((x: IItemClassification) => x.layoutID == data.layoutID);
-                    } else if (data.listItemDf) { // remove item by item definition id
-                        items.remove((x: IItemClassification) => x.listItemDf && x.listItemDf[0].id == data.listItemDf[0].id);
-                    }
-
-                    let source: Array<any> = ko.unwrap(items),
-                        maps: Array<number> = _(source).map((x: IItemClassification, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
-                            .filter(x => x != -1)
-                            .orderBy(x => x).value()
-
-                    // remove next line if two line is sibling
-                    _.each(maps, (x, i) => {
-                        if (maps[i + 1] == x + 1) {
-                            items.remove((m: IItemClassification) => {
-                                let item: IItemClassification = ko.unwrap(items)[maps[i + 1]];
-                                return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
-                            });
-                        }
-                    });
-
-                    return opts.sortable;
-                },
-                findExist: (ids: Array<string>) => {
-                    let self = this,
-                        opts = self.options,
-                        items = opts.sortable.data();
-
-                    if (!ids || !ids.length) {
-                        return [];
-                    }
-
-                    // return items if it's exist in list
-                    return _(items)
-                        .map((x: IItemClassification) => x.listItemDf)
-                        .flatten()
-                        .filter((x: IItemDefinition) => x && ids.indexOf(x.id) > -1)
-                        .value();
-                },
-                pushItem: (data: IItemClassification) => {
-                    let self = this,
-                        opts = self.options,
-                        items: KnockoutObservableArray<IItemClassification> = opts.sortable.data;
-
-                    switch (data.layoutItemType) {
-                        case IT_CLA_TYPE.ITEM:
-                            let item = _.find(ko.unwrap(items), (x: IItemClassification) => x.layoutItemType == IT_CLA_TYPE.ITEM && x.listItemDf[0].id == data.listItemDf[0].id);
-                            if (!item) {
-                                items.push(data);
-                                return true;
-                            } else {
-                                return false;
-                            }
-                        case IT_CLA_TYPE.LIST:
-                            items.push(data);
-                            return true;
-                        case IT_CLA_TYPE.SPER:
-                            // add line to list sortable
-                            let last: any = _.last(ko.unwrap(items));
-
-                            if (last && last.layoutItemType != IT_CLA_TYPE.SPER) {
-                                items.push(data);
-                                return true;
-                            } else {
-                                return false;
-                            }
-                    }
-                },
-                pushItems: (defs: Array<IItemDefinition>, groupMode?: boolean) => {
-                    let self = this,
-                        opts = self.options,
-                        services = self.services,
-                        removeItems = (data: Array<IItemClassification>) => {
-                            if (data && data.length) {
-                                _.each(data, x => opts.sortable.removeItem(x, true));
+                                if (front.layoutItemType == IT_CLA_TYPE.SPER && next.layoutItemType == IT_CLA_TYPE.SPER) {
+                                    data.cancelDrop = true;
+                                }
                             }
                         },
-                        pushItems = (defs: Array<IItemDefinition>) => {
-                            _.each(defs, def => {
-                                let item: IItemClassification = {
-                                    layoutID: random(),
-                                    dispOrder: -1,
-                                    personInfoCategoryID: undefined,
-                                    layoutItemType: IT_CLA_TYPE.ITEM,
-                                    listItemDf: []
-                                };
-
-                                def.dispOrder = -1;
-                                item.listItemDf = [def];
-                                item.className = def.itemName;
-                                item.personInfoCategoryID = def.perInfoCtgId;
-
-                                // setitem
-                                if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
-                                    services.getItemsByIds(def.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
-                                        if (defs && defs.length) {
-                                            _(defs).orderBy(x => x.dispOrder).each((x, i) => { x.dispOrder = i + 1; item.listItemDf.push(x) });
-
-                                            opts.sortable.pushItem(item);
-                                        }
+                        afterMove: (data, evt, ui) => {
+                            /*let self = this,
+                                opts = self.options,
+                                source: Array<any> = ko.unwrap(opts.sortable.data),
+                                maps: Array<number> = _(source).map((x, i) => (x.typeId == IT_CLA_TYPE.SPER) ? i : -1)
+                                    .filter(x => x != -1).value();
+        
+                            // remove next line if two line is sibling
+                            _.each(maps, (x, i) => {
+                                if (maps[i + 1] == x + 1) {
+                                    opts.sortable.data.remove(m => {
+                                        let item = ko.unwrap(opts.sortable.data)[maps[i + 1]];
+                                        return item.typeId == IT_CLA_TYPE.SPER && item.id == m.id;
                                     });
-                                } else {
-                                    opts.sortable.pushItem(item);
+                                }
+                            });*/
+                        },
+                        removeItem: (data: IItemClassification, byItemId?: boolean) => {
+                            let self = this,
+                                items = opts.sortable.data;
+
+                            if (!byItemId) { // remove item by classification id (virtual id)
+                                items.remove((x: IItemClassification) => x.layoutID == data.layoutID);
+                            } else if (data.listItemDf) { // remove item by item definition id
+                                items.remove((x: IItemClassification) => x.listItemDf && x.listItemDf[0].id == data.listItemDf[0].id);
+                            }
+
+                            let source: Array<any> = ko.unwrap(items),
+                                maps: Array<number> = _(source).map((x: IItemClassification, i) => (x.layoutItemType == IT_CLA_TYPE.SPER) ? i : -1)
+                                    .filter(x => x != -1)
+                                    .orderBy(x => x).value()
+
+                            // remove next line if two line is sibling
+                            _.each(maps, (x, i) => {
+                                if (maps[i + 1] == x + 1) {
+                                    items.remove((m: IItemClassification) => {
+                                        let item: IItemClassification = ko.unwrap(items)[maps[i + 1]];
+                                        return item && item.layoutItemType == IT_CLA_TYPE.SPER && item.layoutID == m.layoutID;
+                                    });
                                 }
                             });
-                        };
 
-                    if (!defs || !defs.length) {
-                        return;
-                    }
+                            return opts.sortable;
+                        },
+                        findExist: (ids: Array<string>) => {
+                            let self = this,
+                                items = opts.sortable.data();
 
-                    // remove all item if it's cancelled by user
-                    defs = _.filter(defs, x => !x.isAbolition);
+                            if (!ids || !ids.length) {
+                                return [];
+                            }
 
-                    // find duplicate items
-                    let dups = opts.sortable.findExist(defs.map(x => x.id));
+                            // return items if it's exist in list
+                            return _(items)
+                                .map((x: IItemClassification) => x.listItemDf)
+                                .flatten()
+                                .filter((x: IItemDefinition) => x && ids.indexOf(x.id) > -1)
+                                .value();
+                        },
+                        pushItem: (data: IItemClassification) => {
+                            let self = this,
+                                items: KnockoutObservableArray<IItemClassification> = opts.sortable.data;
 
-                    if (groupMode) {
-                        if (dups && dups.length) {
-                            // 情報メッセージ（#Msg_204#,既に配置されている項目名,選択したグループ名）を表示する
-                            // Show Msg_204 if itemdefinition is exist
-                            info(dups.map((x: IItemDefinition) => x.itemName).join(', ') + ' ' + text('Msg_204'))
-                                .then(() => {
-                                    removeItems(dups.map((x: IItemDefinition) => {
-                                        return {
+                            switch (data.layoutItemType) {
+                                case IT_CLA_TYPE.ITEM:
+                                    let item = _.find(ko.unwrap(items), (x: IItemClassification) => x.layoutItemType == IT_CLA_TYPE.ITEM && x.listItemDf[0].id == data.listItemDf[0].id);
+                                    if (!item) {
+                                        items.push(data);
+                                        return true;
+                                    } else {
+                                        return false;
+                                    }
+                                case IT_CLA_TYPE.LIST:
+                                    items.push(data);
+                                    return true;
+                                case IT_CLA_TYPE.SPER:
+                                    // add line to list sortable
+                                    let last: any = _.last(ko.unwrap(items));
+
+                                    if (last && last.layoutItemType != IT_CLA_TYPE.SPER) {
+                                        items.push(data);
+                                        return true;
+                                    } else {
+                                        return false;
+                                    }
+                            }
+                        },
+                        pushItems: (defs: Array<IItemDefinition>, groupMode?: boolean) => {
+                            let self = this,
+                                services = self.services,
+                                removeItems = (data: Array<IItemClassification>) => {
+                                    if (data && data.length) {
+                                        _.each(data, x => opts.sortable.removeItem(x, true));
+                                    }
+                                },
+                                pushItems = (defs: Array<IItemDefinition>) => {
+                                    _.each(defs, def => {
+                                        let item: IItemClassification = {
                                             layoutID: random(),
                                             dispOrder: -1,
                                             personInfoCategoryID: undefined,
                                             layoutItemType: IT_CLA_TYPE.ITEM,
-                                            listItemDf: [x]
+                                            listItemDf: []
                                         };
-                                    }));
+
+                                        def.dispOrder = -1;
+                                        item.listItemDf = [def];
+                                        item.className = def.itemName;
+                                        item.personInfoCategoryID = def.perInfoCtgId;
+
+                                        // setitem
+                                        if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
+                                            services.getItemsByIds(def.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
+                                                if (defs && defs.length) {
+                                                    _(defs).orderBy(x => x.dispOrder).each((x, i) => { x.dispOrder = i + 1; item.listItemDf.push(x) });
+
+                                                    opts.sortable.pushItem(item);
+                                                }
+                                            });
+                                        } else {
+                                            opts.sortable.pushItem(item);
+                                        }
+                                    });
+                                };
+
+                            if (!defs || !defs.length) {
+                                return;
+                            }
+
+                            // remove all item if it's cancelled by user
+                            defs = _.filter(defs, x => !x.isAbolition);
+
+                            // find duplicate items
+                            let dups = opts.sortable.findExist(defs.map(x => x.id));
+
+                            if (groupMode) {
+                                if (dups && dups.length) {
+                                    // 情報メッセージ（#Msg_204#,既に配置されている項目名,選択したグループ名）を表示する
+                                    // Show Msg_204 if itemdefinition is exist
+                                    info(dups.map((x: IItemDefinition) => x.itemName).join(', ') + ' ' + text('Msg_204'))
+                                        .then(() => {
+                                            removeItems(dups.map((x: IItemDefinition) => {
+                                                return {
+                                                    layoutID: random(),
+                                                    dispOrder: -1,
+                                                    personInfoCategoryID: undefined,
+                                                    layoutItemType: IT_CLA_TYPE.ITEM,
+                                                    listItemDf: [x]
+                                                };
+                                            }));
+                                            pushItems(defs);
+                                        });
+                                } else {
                                     pushItems(defs);
-                                });
-                        } else {
-                            pushItems(defs);
-                        }
-                    } else {
-                        let dupids = dups.map((x: IItemDefinition) => x.id),
-                            nodups = defs.filter((x: IItemDefinition) => dupids.indexOf(x.id) == -1);
+                                }
+                            } else {
+                                let dupids = dups.map((x: IItemDefinition) => x.id),
+                                    nodups = defs.filter((x: IItemDefinition) => dupids.indexOf(x.id) == -1);
 
-                        if (dupids && dupids.length) {
-                            // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
-                            // When the item selected in the screen item "selectable item list" has already been arranged on the screen
-                            alert(dups.map((x: IItemDefinition) => x.itemName).join(', ') + ' ' + text('Msg_202'));
-                        }
+                                if (dupids && dupids.length) {
+                                    // 画面項目「選択可能項目一覧」で選択している項目が既に画面に配置されている場合
+                                    // When the item selected in the screen item "selectable item list" has already been arranged on the screen
+                                    alert(dups.map((x: IItemDefinition) => x.itemName).join(', ') + ' ' + text('Msg_202'));
+                                }
 
-                        pushItems(nodups);
+                                pushItems(nodups);
+                            }
+
+                            // remove all item selected in list box
+                            opts.listbox.value.removeAll();
+                        }
                     }
+                },
+                ctrls = {
+                    label: undefined,
+                    radios: undefined,
+                    combobox: undefined,
+                    searchbox: undefined,
+                    listbox: undefined,
+                    button: undefined,
+                    sortable: undefined,
+                    line: undefined,
+                },
+                access = valueAccessor();
 
-                    // remove all item selected in list box
-                    opts.listbox.value.removeAll();
+            if (!$('#layout_style').length) {
+                $('head').append(self.style);
+            }
+
+            $element
+                .append(self.tmp)
+                .addClass('ntsControl layout-control');
+
+            // bindding callback function to control
+            if (access.callback) {
+                $.extend(opts, {
+                    callback: access.callback
+                });
+            }
+
+            // validate editAble
+            if (ko.unwrap(access.editAble) != undefined) {
+                if (typeof access.editAble == 'function') {
+                    let edit: boolean = access.editAble();
+                    opts.sortable.isEnabled(edit);
+                }
+                else {
+                    opts.sortable.isEnabled(Boolean(access.editAble));
                 }
             }
-        };
 
-        _constructor = () => {
-            let self = this,
-                opts = self.options,
-                ctrls = self.controls,
-                services = self.services;
+            // editable
+            opts.sortable.isEnabled.subscribe(x => {
+                if (!x) {
+                    $element.find('.left-area, .add-buttons, #cps007_btn_line').hide();
+                    $element
+                        .addClass('readonly')
+                        .removeClass('editable');
+                } else {
+                    $element
+                        .addClass('editable')
+                        .removeClass('readonly');
+
+                    $element.find('.left-area, .add-buttons, #cps007_btn_line').show();
+                }
+            });
+            opts.sortable.isEnabled.valueHasMutated();
 
             // extend option
             $.extend(opts.comboxbox, {
@@ -675,16 +718,32 @@ module nts.custombinding {
                 selected: opts.listbox.value
             });
 
+            // extend data of sortable with valueAccessor data prop
+            $.extend(opts.sortable, { data: access.data });
+            opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
+                _.each(data, (x, i) => { x.dispOrder = i + 1; x.layoutID = random() });
+            });
+
+            // extend data of sortable with valueAccessor beforeMove prop
+            if (access.beforeMove) {
+                $.extend(opts.sortable, { beforeMove: access.beforeMove });
+            }
+
+            // extend data of sortable with valueAccessor afterMove prop
+            if (access.afterMove) {
+                $.extend(opts.sortable, { afterMove: access.afterMove });
+            }
+
             // get all id of controls
-            $.extend(self.controls, {
-                label: self.$tmp.find('#cps007_lbl_control')[0],
-                radios: self.$tmp.find('#cps007_rdg_control')[0],
-                combobox: self.$tmp.find('#cps007_cbx_control')[0],
-                searchbox: self.$tmp.find('#cps007_sch_control')[0],
-                listbox: self.$tmp.find('#cps007_lst_control')[0],
-                button: self.$tmp.find('#cps007_btn_add')[0],
-                sortable: self.$tmp.find('#cps007_srt_control')[0],
-                line: self.$tmp.find('#cps007_btn_line')[0]
+            $.extend(ctrls, {
+                label: $element.find('#cps007_lbl_control')[0],
+                radios: $element.find('#cps007_rdg_control')[0],
+                combobox: $element.find('#cps007_cbx_control')[0],
+                searchbox: $element.find('#cps007_sch_control')[0],
+                listbox: $element.find('#cps007_lst_control')[0],
+                button: $element.find('#cps007_btn_add')[0],
+                sortable: $element.find('#cps007_srt_control')[0],
+                line: $element.find('#cps007_btn_line')[0]
             });
 
             // change text of label
@@ -703,6 +762,7 @@ module nts.custombinding {
                     services.getCats().done((data: any) => {
                         if (data && data.categoryList && data.categoryList.length) {
                             let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition);
+
                             if (cats.length) {
                                 opts.comboxbox.options(cats);
                                 if (opts.comboxbox.value() == cats[0].id) {
@@ -923,52 +983,20 @@ module nts.custombinding {
                     }
                 }
             });
+
+            // set data controls and option to element
+            $element.data('options', opts);
+            $element.data('controls', ctrls);
         }
 
         init = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
-            let self = this,
-                opts = self.options,
-                ctrls = self.controls,
-                $element = $(element),
-                access = valueAccessor();
-
-            // bindding callback function to control
-            if (access.callback) {
-                $.extend(opts, {
-                    callback: access.callback
-                });
-            }
-
-            // validate editAble
-            if (ko.unwrap(access.editAble) != undefined) {
-                if (typeof access.editAble == 'function') {
-                    let edit: boolean = access.editAble();
-                    opts.sortable.isEnabled(edit);
-                }
-                else {
-                    opts.sortable.isEnabled(Boolean(access.editAble));
-                }
-            }
-
-            // editable
-            opts.sortable.isEnabled.subscribe(x => {
-                if (!x) {
-                    self.$tmp.find('.left-area, .add-buttons, #cps007_btn_line').hide();
-                    $element
-                        .addClass('readonly')
-                        .removeClass('editable');
-                } else {
-                    $element
-                        .addClass('editable')
-                        .removeClass('readonly');
-
-                    self.$tmp.find('.left-area, .add-buttons, #cps007_btn_line').show();
-                }
-            });
-            opts.sortable.isEnabled.valueHasMutated();
 
             // call private constructor
-            self._constructor();
+            this._constructor(element, valueAccessor);
+
+            let $element = $(element),
+                opts = $element.data('options'),
+                ctrls = $element.data('controls');
 
             ko.bindingHandlers['ntsFormLabel'].init(ctrls.label, function() {
                 return {};
@@ -990,29 +1018,9 @@ module nts.custombinding {
                 return opts.listbox;
             }, allBindingsAccessor, viewModel, bindingContext);
 
-            // extend data of sortable with valueAccessor data prop
-            $.extend(opts.sortable, { data: access.data });
-            opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
-                _.each(data, (x, i) => { x.dispOrder = i + 1; x.layoutID = random() });
-            });
-
-            // extend data of sortable with valueAccessor beforeMove prop
-            if (access.beforeMove) {
-                $.extend(opts.sortable, { beforeMove: access.beforeMove });
-            }
-
-            // extend data of sortable with valueAccessor afterMove prop
-            if (access.afterMove) {
-                $.extend(opts.sortable, { afterMove: access.afterMove });
-            }
-
             ko.bindingHandlers['ntsSortable'].init(ctrls.sortable, function() {
                 return opts.sortable;
             }, allBindingsAccessor, viewModel, bindingContext);
-
-            $element
-                .addClass('ntsControl layout-control')
-                .append(self.$tmp);
 
             // Also tell KO *not* to bind the descendants itself, otherwise they will be bound twice
             return { controlsDescendantBindings: true };
@@ -1020,10 +1028,9 @@ module nts.custombinding {
 
         update = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
             let self = this,
-                opts = self.options,
-                ctrls = self.controls,
                 $element = $(element),
-                access = valueAccessor();
+                opts = $element.data('options'),
+                ctrls = $element.data('controls');
 
             ko.bindingHandlers['ntsFormLabel'].update(ctrls.label, function() {
                 return {};
