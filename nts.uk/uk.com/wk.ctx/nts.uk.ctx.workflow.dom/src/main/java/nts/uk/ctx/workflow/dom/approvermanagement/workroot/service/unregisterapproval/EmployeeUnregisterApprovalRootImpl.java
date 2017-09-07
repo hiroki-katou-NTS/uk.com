@@ -12,6 +12,9 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
@@ -24,9 +27,11 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 	private CompanyApprovalRootRepository comRootRepository;
 	@Inject
 	private WorkplaceApprovalRootRepository wpRootRepository;
+	@Inject
+	private PersonApprovalRootRepository psRootRepository;
 	
 	@Override
-	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate) {
+	public List<EmployeeApproveDto> lstEmployeeUnregister(String companyId, GeneralDate baseDate) {
 		List<EmployeeApproveDto> lstEmps = new ArrayList<>();
 		//ドメインモデル「社員」を取得する(lấy dữ liệu domain「社員」)
 		// TODO thuc hien khi co tra loi QA
@@ -37,7 +42,9 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 		}
 		//ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain「会社別就業承認ルート」)
 		List<CompanyApprovalRoot> comInfo = comRootRepository.findByBaseDateOfCommon(companyId, baseDate);
-		
+		if(CollectionUtil.isEmpty(comInfo)){
+			return null;
+		}
 		List<CompanyApprovalRoot> comInfoCommon = comInfo.stream()
 				.filter(x -> x.getEmploymentRootAtr().value == EmploymentRootAtr.COMMON.value)
 				.collect(Collectors.toList());		
@@ -46,9 +53,26 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 		}
 		//就業ルート区分が共通の「会社別就業承認ルート」がない場合(không có thông tin 「会社別就業承認ルート」 của 就業ルート区分là common)
 		//ドメインモデル「職場別就業承認ルート」を取得する(lấy thông tin domain 「職場別就業承認ルート」)
-		//List<WorkplaceApprovalRoot> wpInfo = wpRootRepository.findByBaseDateOfCommon(companyId, workplaceId, baseDate);
-		// TODO Auto-generated method stub
-		return null;
+		List<WorkplaceApprovalRoot> wpInfo = wpRootRepository.findAllByBaseDate(companyId, baseDate);
+		//ドメインモデル「個人別就業承認ルート」を取得する(lấy thông tin domain 「個人別就業承認ルート」)
+		List<PersonApprovalRoot> psInfo = psRootRepository.findAllByBaseDate(companyId, baseDate);
+		//承認ルート未登録出力対象としてリスト
+		List<EmployeeApproveDto> lstUnRegister = new ArrayList<>();
+		for(EmployeeApproveDto empInfor: lstEmps) {
+			//社員の対象申請の承認ルートを取得する(lấy dữ liệu approve route của đối tượng đơn xin của nhân viên)
+			boolean isEmpRoot = employeeOfApprovalRoot.lstEmpApprovalRoot(companyId,
+					comInfo,
+					wpInfo,
+					psInfo,
+					empInfor,
+					baseDate);
+			//承認ルート未登録出力対象として追加する(thêm vào đối tượng chưa cài đặt approve route để output)
+			if(!isEmpRoot) {
+				lstUnRegister.add(empInfor);
+			}
+		}
+		
+		return lstUnRegister;
 	}
 
 }

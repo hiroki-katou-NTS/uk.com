@@ -7,8 +7,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveAdapter;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootCommonOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 @Stateless
@@ -17,27 +21,25 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 	private EmployeeApproveAdapter employeeApproveAdapter;
 	@Override
 	public boolean lstEmpApprovalRoot(String companyId,
-			List<ApprovalRootCommonOutput> lstCompanyRootInfor,
-			List<ApprovalRootCommonOutput> lstWorkpalceRootInfor,
-			List<ApprovalRootCommonOutput> lstPersonRootInfor,
-			EmployeeUnregisterOutput empInfor, 
-			int rootType, 
-			int appType, 
+			List<CompanyApprovalRoot> lstCompanyRootInfor,
+			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor,
+			List<PersonApprovalRoot> lstPersonRootInfor,
+			EmployeeApproveDto empInfor, 
 			GeneralDate baseDate) {
 		//check ドメインモデル「個人別就業承認ルート」(domain 「個人別就業承認ルート」) ※ 就業ルート区分(申請か、確認か、任意項目か)
-		List<ApprovalRootCommonOutput> personRootAll = lstPersonRootInfor.stream()
+		List<PersonApprovalRoot> personRootAll = lstPersonRootInfor.stream()
 				.filter(x -> x.getEmployeeId().equals(empInfor.getSId()))
-				.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION.value 
-						|| x.getEmploymentRootAtr() == EmploymentRootAtr.CONFIRMATION.value 
-						|| x.getEmploymentRootAtr() == EmploymentRootAtr.ANYITEM.value)
+				.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION
+						|| x.getEmploymentRootAtr() == EmploymentRootAtr.CONFIRMATION
+						|| x.getEmploymentRootAtr() == EmploymentRootAtr.ANYITEM)
 				.collect(Collectors.toList());
 				
 		//データが０件(data = 0)
 		if(CollectionUtil.isEmpty(personRootAll)) {
 			//check ドメインモデル「個人別就業承認ルート」を取得する(láy du lieu domain「個人別就業承認ルート」 ) ※・就業ルート区分(共通)			
-			List<ApprovalRootCommonOutput> psRootCommonAtr = lstPersonRootInfor.stream()
+			List<PersonApprovalRoot> psRootCommonAtr = lstPersonRootInfor.stream()
 					.filter(x -> x.getEmployeeId().equals(empInfor.getSId()))
-					.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON.value)
+					.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
 					.collect(Collectors.toList());
 			//データが０件(data = 0)
 			if(CollectionUtil.isEmpty(psRootCommonAtr)) {
@@ -47,20 +49,20 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 					//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
 					for(String WpId: lstWpIds) {
 						//ドメインモデル「職場別就業承認ルート」を取得する(lấy domain「職場別就業承認ルート」)  ※ 就業ルート区分(申請か、確認か、任意項目か)
-						List<ApprovalRootCommonOutput> wpRootAllAtr = lstWorkpalceRootInfor
+						List<WorkplaceApprovalRoot> wpRootAllAtr = lstWorkpalceRootInfor
 								.stream()
-								.filter(x -> x.getWorkpalceId().contains(WpId))
-								.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION.value 
-										||x.getEmploymentRootAtr() == EmploymentRootAtr.CONFIRMATION.value 
-										|| x.getEmploymentRootAtr() == EmploymentRootAtr.ANYITEM.value)
+								.filter(x -> x.getWorkplaceId().contains(WpId))
+								.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION
+										||x.getEmploymentRootAtr() == EmploymentRootAtr.CONFIRMATION
+										|| x.getEmploymentRootAtr() == EmploymentRootAtr.ANYITEM)
 								.collect(Collectors.toList());
 						//データが０件(data = 0)
 						if(CollectionUtil.isEmpty(wpRootAllAtr)) {
 							//ドメインモデル「職場別就業承認ルート」を取得する(lấy domain 「職場別就業承認ルート」)  ※・就業ルート区分(共通)
-							List<ApprovalRootCommonOutput> wpRootAppAtr = lstWorkpalceRootInfor
+							List<WorkplaceApprovalRoot> wpRootAppAtr = lstWorkpalceRootInfor
 									.stream()
-									.filter(x -> x.getWorkpalceId().contains(WpId))
-									.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON.value)
+									.filter(x -> x.getWorkplaceId().contains(WpId))
+									.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
 									.collect(Collectors.toList());
 							//データが１件以上取得した場合(data >= 1)
 							if(!CollectionUtil.isEmpty(wpRootAppAtr)) {
@@ -87,16 +89,16 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 		//取得した所属職場ID＋その上位職場IDを先頭から最後までループする
 		//データが０件(data = 0)
 		//ドメインモデル「会社別就業承認ルート」を取得する(lấy dư liệu domain 「会社別就業承認ルート」) ※ 就業ルート区分(申請か、確認か、任意項目か)
-		List<ApprovalRootCommonOutput> companyRootAll = lstCompanyRootInfor.stream()
-				.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION.value 
-						|| x.getEmploymentRootAtr() == EmploymentRootAtr.CONFIRMATION.value 
-						|| x.getEmploymentRootAtr() ==EmploymentRootAtr.ANYITEM.value)
+		List<CompanyApprovalRoot> companyRootAll = lstCompanyRootInfor.stream()
+				.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION
+						|| x.getEmploymentRootAtr() == EmploymentRootAtr.CONFIRMATION 
+						|| x.getEmploymentRootAtr() ==EmploymentRootAtr.ANYITEM)
 				.collect(Collectors.toList());
 		//データが０件(data = 0)
 		if(CollectionUtil.isEmpty(companyRootAll)) {
 			//ドメインモデル「会社別就業承認ルート」を取得する(lấy dữ liệu domain「会社別就業承認ルート」)  ※・就業ルート区分(共通)
-			List<ApprovalRootCommonOutput> companyRootCommonAtr = lstCompanyRootInfor.stream()
-					.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON.value)
+			List<CompanyApprovalRoot> companyRootCommonAtr = lstCompanyRootInfor.stream()
+					.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
 					.collect(Collectors.toList());
 			if(companyRootCommonAtr.isEmpty()) {
 				//終了状態：承認ルートなし(trang thai ket thuc : khong co approval route)

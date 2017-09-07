@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.approverrootmaster;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 
@@ -13,6 +14,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRep
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
+import nts.uk.shr.com.company.CompanyAdapter;
+import nts.uk.shr.com.company.CompanyInfor;
 
 public class ApproverRootMasterImpl implements ApproverRootMaster{
 	@Inject
@@ -21,6 +24,8 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	private WorkplaceApprovalRootRepository wpRootRepository;
 	@Inject
 	private PersonApprovalRootRepository psRootRepository;
+	@Inject
+	private CompanyAdapter comAdapter;
 	@Override
 	public List<EmployeeApproveDto> employees(String companyID,
 			GeneralDate baseDate, 
@@ -31,6 +36,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		if(isCompany) {
 			//ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain 「会社別就業承認ルート」)
 			List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDateOfCommon(companyID, baseDate);
+			Optional<CompanyInfor> comInfo = comAdapter.getCurrentCompany();
 		}
 		//出力対象に職場別がある(có 職場別 trong đối tượng output)
 		if(isWorkplace) {
