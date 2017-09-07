@@ -206,8 +206,8 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         boolean isInterrupt = false;
         try {
             NtsCsvReader csvReader = FileUtil.newCsvReader(importProcess.extractCondition.getEncoding());
-            List<NtsCsvRecord> csRecords = csvReader.parse(importProcess.inputStream);
-            
+            // TODO: List<NtsCsvRecord> csRecords = csvReader.parse(importProcess.inputStream);
+            List<NtsCsvRecord> csRecords = new ArrayList<>();
             // calculate total record and check has data
             int calTotal = csRecords.size() - importProcess.extractCondition.getStartLine().v() + 1;
             if (calTotal > DEFAULT_VALUE) {

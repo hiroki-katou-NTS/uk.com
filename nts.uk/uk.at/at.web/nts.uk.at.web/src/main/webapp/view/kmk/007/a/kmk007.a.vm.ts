@@ -644,6 +644,18 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             });
             dfd.promise();
         }
+        
+        private exportExcel(): void{
+            var self = this;
+            var command = {
+                companyId: "000000000000-0001"
+            }          
+            service.saveAsExcel(command).done(function(){
+                
+            }).fail(function(){
+                
+            });
+        }
     }
 
     export enum WorkAtr {

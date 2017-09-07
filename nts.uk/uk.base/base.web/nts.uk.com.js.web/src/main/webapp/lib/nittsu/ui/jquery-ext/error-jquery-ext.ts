@@ -16,7 +16,7 @@ module nts.uk.ui.jqueryExtentions {
                 return _.some($control, c => hasError($(c)));
             } else if (action === DATA_GET_ERROR) {
                 return getErrorByElement($control.first());        
-            }else {
+            } else {
                 $control.each(function(index) {
                     var $item = $(this);
                     $item = processErrorOnItem($item, message, action, errorCode);

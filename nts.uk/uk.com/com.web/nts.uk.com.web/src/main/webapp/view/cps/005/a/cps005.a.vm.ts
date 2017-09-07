@@ -6,6 +6,7 @@ module nts.uk.com.view.cps005.a {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import textUK = nts.uk.text;
+    import block = nts.uk.ui.block;
     export module viewmodel {
         export class ScreenModel {
             currentData: KnockoutObservable<DataModel>;
@@ -21,6 +22,7 @@ module nts.uk.com.view.cps005.a {
             startPage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
+                block.invisible();
                 new service.Service().getAllPerInfoCtg().done(function(data: IData) {
                     self.isUpdate = false;
                     self.currentData(new DataModel(data));
@@ -31,6 +33,7 @@ module nts.uk.com.view.cps005.a {
                     } else {
                         self.register();
                     }
+                    block.clear();
                     dfd.resolve();
                 })
 
@@ -72,6 +75,7 @@ module nts.uk.com.view.cps005.a {
 
             addUpdateData() {
                 let self = this;
+                block.invisible();
                 if (!self.currentData().currentCtgSelected().perInfoCtgName()) {
                     return;
                 }
@@ -79,7 +83,7 @@ module nts.uk.com.view.cps005.a {
                     let updateCategory = new UpdatePerInfoCtgModel(self.currentData().currentCtgSelected());
                     new service.Service().updatePerInfoCtg(updateCategory).done(function() {
                         self.reloadData();
-                        info({ messageId: "Msg_15" });
+                        info({ messageId: "Msg_15" }).then(() => { block.clear(); });
                     }).fail(error => {
                         alertError({ messageId: error.message });
                     });
@@ -94,8 +98,10 @@ module nts.uk.com.view.cps005.a {
                                     let ctgCode = self.currentData().perInfoCtgSelectCode();
                                     self.currentData().perInfoCtgSelectCode("");
                                     self.currentData().perInfoCtgSelectCode(ctgCode);
+                                    block.clear();
                                 });
                             }).ifNo(() => {
+                                block.clear();
                                 return;
                             })
                         });
@@ -107,11 +113,13 @@ module nts.uk.com.view.cps005.a {
 
             openDialogB() {
                 let self = this;
+                block.invisible();
                 setShared('categoryId', self.currentData().perInfoCtgSelectCode());
                 modal("/view/cps/005/b/index.xhtml").onClosed(() => {
                     let ctgCode = self.currentData().perInfoCtgSelectCode();
                     self.currentData().perInfoCtgSelectCode("");
                     self.currentData().perInfoCtgSelectCode(ctgCode);
+                    block.clear();
                 });
             }
         }
@@ -139,7 +147,7 @@ module nts.uk.com.view.cps005.a {
             let self = this;
             if (data) {
                 self.categoryList(_.map(data.categoryList, item => { return new PerInfoCtgModel(item) }));
-                self.historyTypes = data.historyTypes ? data.historyTypes.splice(0,3) : [];
+                self.historyTypes = data.historyTypes ? data.historyTypes.splice(0, 3) : [];
             }
             //subscribe select category code
             self.perInfoCtgSelectCode.subscribe(newId => {
