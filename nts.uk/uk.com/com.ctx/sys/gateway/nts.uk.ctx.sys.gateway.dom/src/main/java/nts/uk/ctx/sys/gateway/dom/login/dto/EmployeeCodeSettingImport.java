@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.adapter;
+package nts.uk.ctx.sys.gateway.dom.login.dto;
 
 import lombok.Getter;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
  * The Class EmployeeCodeSettingDto.
  */
 @Getter
-public class EmployeeCodeSettingDto {
+public class EmployeeCodeSettingImport {
 	
 	//会社ID
 	/** The company id. */
@@ -30,8 +30,7 @@ public class EmployeeCodeSettingDto {
 	 * @param numberDigit
 	 * @param editType
 	 */
-	//TODO add contruct for mock data
-	public EmployeeCodeSettingDto(String companyId, Integer numberDigit, Integer editType) {
+	public EmployeeCodeSettingImport(String companyId, Integer numberDigit, Integer editType) {
 		this.companyId = companyId;
 		this.numberDigit = numberDigit;
 		this.editType = EmployCodeEditType.valueOf(editType);
