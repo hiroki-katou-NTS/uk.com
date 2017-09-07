@@ -1,4 +1,4 @@
-module cmm011.a.viewmodel {
+module cmm011_old.a.viewmodel {
 
 
     export class ScreenModel {
