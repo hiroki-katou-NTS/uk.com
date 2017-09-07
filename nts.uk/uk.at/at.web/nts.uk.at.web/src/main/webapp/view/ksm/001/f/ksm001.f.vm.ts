@@ -117,10 +117,10 @@ module nts.uk.at.view.ksm001.f {
             
             
             constructor() {
-                this.estAlarmColors1st = ko.observable('#ff0000');
-                this.estAlarmColors2nd = ko.observable('#ff0000');
-                this.estAlarmColors3rd = ko.observable('#ff0000');
-                this.estAlarmColors4th = ko.observable('#ff0000');
+                this.estAlarmColors1st = ko.observable('#0000ff');
+                this.estAlarmColors2nd = ko.observable('#ffff00');
+                this.estAlarmColors3rd = ko.observable('#ff9900');
+                this.estAlarmColors4th = ko.observable('#ff00ff');
                 this.estAlarmColors5th = ko.observable('#ff0000');
                 this.estimateTime = new ReferenceConditionModel();
                 this.estimatePrice = new ReferenceConditionModel();
