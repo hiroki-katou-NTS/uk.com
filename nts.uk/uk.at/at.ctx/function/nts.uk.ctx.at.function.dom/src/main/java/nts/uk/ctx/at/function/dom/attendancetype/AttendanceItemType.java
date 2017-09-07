@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.attendance;
+package nts.uk.ctx.at.function.dom.attendancetype;
 
 import lombok.AllArgsConstructor;
 

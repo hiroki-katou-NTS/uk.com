@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.attendance;
+package nts.uk.ctx.at.function.infra.enity.attendancetype;
 
 import java.io.Serializable;
 

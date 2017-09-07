@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.ws.attendance;
+package nts.uk.ctx.at.function.ws.attendancetype;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.find.attendance.AttendanceTypeDto;
-import nts.uk.ctx.at.shared.app.find.attendance.AttendanceTypeFinder;
+import nts.uk.ctx.at.function.app.find.attendancetype.AttendanceTypeDto;
+import nts.uk.ctx.at.function.app.find.attendancetype.AttendanceTypeFinder;
 /**
  * 
  * @author Doan Duy Hung

@@ -1,14 +1,11 @@
-package nts.uk.ctx.at.shared.app.find.attendance;
+package nts.uk.ctx.at.function.app.find.attendancetype;
 
 import lombok.AllArgsConstructor;
-/**
- * 
- * @author Doan Duy Hung
- *
- */
+import lombok.Data;
+
+@Data
 @AllArgsConstructor
 public class AttendanceTypeDto {
-	
 	public String companyId;
 	
 	public int attendanceItemId;

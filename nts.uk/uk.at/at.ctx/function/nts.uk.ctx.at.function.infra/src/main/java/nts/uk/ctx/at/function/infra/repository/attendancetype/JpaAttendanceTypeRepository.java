@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.repository.attendance;
+package nts.uk.ctx.at.function.infra.repository.attendancetype;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceType;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceTypeRepository;
-import nts.uk.ctx.at.shared.infra.entity.attendance.KmnmtAttendanceType;
+import nts.uk.ctx.at.function.dom.attendancetype.AttendanceType;
+import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
+import nts.uk.ctx.at.function.infra.enity.attendancetype.KmnmtAttendanceType;
 /**
  * 
  * @author Doan Duy Hung
