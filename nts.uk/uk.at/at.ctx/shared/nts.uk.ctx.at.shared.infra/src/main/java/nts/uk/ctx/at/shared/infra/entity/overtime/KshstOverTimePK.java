@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.overtime;
+package nts.uk.ctx.at.shared.infra.entity.overtime;
 
 import java.io.Serializable;
 
@@ -15,51 +15,42 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KshstPremiumExt60hRatePK.
+ * The Class KshstOverTimePK.
  */
-
 @Getter
 @Setter
 @Embeddable
-public class KshstPremiumExt60hRatePK implements Serializable {
+public class KshstOverTimePK implements Serializable {
     
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The cid. */
-	@Basic(optional = false)
+    @Basic(optional = false)
     @NotNull
     @Column(name = "CID")
     private String cid;
-    
-    /** The brd item no. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "BRD_ITEM_NO")
-    private short brdItemNo;
     
     /** The over time no. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "OVER_TIME_NO")
-    private short overTimeNo;
+    private int overTimeNo;
 
     /**
-     * Instantiates a new kshst premium ext 60 h rate PK.
+     * Instantiates a new kshst over time PK.
      */
-    public KshstPremiumExt60hRatePK() {
+    public KshstOverTimePK() {
     }
 
     /**
-     * Instantiates a new kshst premium ext 60 h rate PK.
+     * Instantiates a new kshst over time PK.
      *
      * @param cid the cid
-     * @param brdItemNo the brd item no
      * @param overTimeNo the over time no
      */
-    public KshstPremiumExt60hRatePK(String cid, short brdItemNo, short overTimeNo) {
+    public KshstOverTimePK(String cid, short overTimeNo) {
         this.cid = cid;
-        this.brdItemNo = brdItemNo;
         this.overTimeNo = overTimeNo;
     }
 
@@ -70,7 +61,6 @@ public class KshstPremiumExt60hRatePK implements Serializable {
     public int hashCode() {
         int hash = 0;
         hash += (cid != null ? cid.hashCode() : 0);
-        hash += (int) brdItemNo;
         hash += (int) overTimeNo;
         return hash;
     }
@@ -79,29 +69,27 @@ public class KshstPremiumExt60hRatePK implements Serializable {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(Object object) {
-        if (!(object instanceof KshstPremiumExt60hRatePK)) {
-            return false;
-        }
-        KshstPremiumExt60hRatePK other = (KshstPremiumExt60hRatePK) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
-            return false;
-        }
-        if (this.brdItemNo != other.brdItemNo) {
-            return false;
-        }
-        if (this.overTimeNo != other.overTimeNo) {
-            return false;
-        }
-        return true;
-    }
+	public boolean equals(Object object) {
+		if (!(object instanceof KshstOverTimePK)) {
+			return false;
+		}
+		KshstOverTimePK other = (KshstOverTimePK) object;
+		if ((this.cid == null && other.cid != null)
+				|| (this.cid != null && !this.cid.equals(other.cid))) {
+			return false;
+		}
+		if (this.overTimeNo != other.overTimeNo) {
+			return false;
+		}
+		return true;
+	}
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        return "entity.KshstPremiumExt60hRatePK[ cid=" + cid + ", brdItemNo=" + brdItemNo + ", overTimeNo=" + overTimeNo + " ]";
+        return "entity.KshstOverTimePK[ cid=" + cid + ", overTimeNo=" + overTimeNo + " ]";
     }
     
 }

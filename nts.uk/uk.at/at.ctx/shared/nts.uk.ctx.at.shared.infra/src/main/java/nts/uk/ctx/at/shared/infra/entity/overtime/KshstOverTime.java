@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.overtime;
+package nts.uk.ctx.at.shared.infra.entity.overtime;
 
 import java.io.Serializable;
 
@@ -12,13 +12,16 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 
 /**
  * The Class KshstOverTime.
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "KSHST_OVER_TIME")
 public class KshstOverTime extends JpaEntity implements Serializable {
@@ -34,18 +37,17 @@ public class KshstOverTime extends JpaEntity implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "IS_60H_SUPER_HD")
-    private short is60hSuperHd;
+    private int is60hSuperHd;
     
     /** The use atr. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "USE_ATR")
-    private short useAtr;
+    private int useAtr;
     
     /** The name. */
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 10)
     @Column(name = "NAME")
     private String name;
     

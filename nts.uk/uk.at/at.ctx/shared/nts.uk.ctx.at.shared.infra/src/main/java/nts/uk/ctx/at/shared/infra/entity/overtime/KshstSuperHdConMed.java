@@ -2,58 +2,73 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.overtime;
+package nts.uk.ctx.at.shared.infra.entity.overtime;
 
 import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.entity.JpaEntity;
 
 /**
- * The Class KshstOverTimeBrdPK.
+ * The Class KshstSuperHdConMed.
  */
 
 @Getter
 @Setter
-@Embeddable
-public class KshstOverTimeBrdPK implements Serializable {
+@Entity
+@Table(name = "KSHST_SUPER_HD_CON_MED")
+public class KshstSuperHdConMed extends JpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
-	
-	/** The cid. */
-	@Basic(optional = false)
+    private static final long serialVersionUID = 1L;
+    
+    /** The cid. */
+    @Id
+    @Basic(optional = false)
     @NotNull
     @Column(name = "CID")
     private String cid;
     
-    /** The brd item no. */
+    /** The round time. */
     @Basic(optional = false)
     @NotNull
-    @Column(name = "BRD_ITEM_NO")
-    private int brdItemNo;
+    @Column(name = "ROUND_TIME")
+    private int roundTime;
 
     /**
-     * Instantiates a new kshst over time brd PK.
+     * Instantiates a new kshst super hd con med.
      */
-    public KshstOverTimeBrdPK() {
+    public KshstSuperHdConMed() {
     }
 
     /**
-     * Instantiates a new kshst over time brd PK.
+     * Instantiates a new kshst super hd con med.
      *
      * @param cid the cid
-     * @param brdItemNo the brd item no
      */
-    public KshstOverTimeBrdPK(String cid, short brdItemNo) {
+    public KshstSuperHdConMed(String cid) {
         this.cid = cid;
-        this.brdItemNo = brdItemNo;
     }
+
+    /**
+     * Instantiates a new kshst super hd con med.
+     *
+     * @param cid the cid
+     * @param roundTime the round time
+     */
+    public KshstSuperHdConMed(String cid, short roundTime) {
+        this.cid = cid;
+        this.roundTime = roundTime;
+    }
+
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -62,7 +77,6 @@ public class KshstOverTimeBrdPK implements Serializable {
 	public int hashCode() {
 		int hash = 0;
 		hash += (cid != null ? cid.hashCode() : 0);
-		hash += (int) brdItemNo;
 		return hash;
 	}
 
@@ -71,17 +85,13 @@ public class KshstOverTimeBrdPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are
 		// not set
-		if (!(object instanceof KshstOverTimeBrdPK)) {
+		if (!(object instanceof KshstSuperHdConMed)) {
 			return false;
 		}
-		KshstOverTimeBrdPK other = (KshstOverTimeBrdPK) object;
+		KshstSuperHdConMed other = (KshstSuperHdConMed) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
-			return false;
-		}
-		if (this.brdItemNo != other.brdItemNo) {
 			return false;
 		}
 		return true;
@@ -92,7 +102,15 @@ public class KshstOverTimeBrdPK implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "entity.KshstOverTimeBrdPK[ cid=" + cid + ", brdItemNo=" + brdItemNo + " ]";
+		return "entity.KshstSuperHdConMed[ cid=" + cid + " ]";
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.cid;
 	}
     
 }

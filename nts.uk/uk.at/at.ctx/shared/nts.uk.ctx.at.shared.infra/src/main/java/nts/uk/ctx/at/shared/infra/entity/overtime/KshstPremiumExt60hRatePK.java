@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.overtime;
+package nts.uk.ctx.at.shared.infra.entity.overtime;
 
 import java.io.Serializable;
 
@@ -15,12 +15,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KshstOverTimeLangNamePK.
+ * The Class KshstPremiumExt60hRatePK.
  */
+
 @Getter
 @Setter
 @Embeddable
-public class KshstOverTimeLangNamePK implements Serializable {
+public class KshstPremiumExt60hRatePK implements Serializable {
     
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -31,37 +32,36 @@ public class KshstOverTimeLangNamePK implements Serializable {
     @Column(name = "CID")
     private String cid;
     
+    /** The brd item no. */
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "BRD_ITEM_NO")
+    private short brdItemNo;
+    
     /** The over time no. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "OVER_TIME_NO")
     private short overTimeNo;
-    
-    /** The language id. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "LANGUAGE_ID")
-    private String languageId;
 
     /**
-     * Instantiates a new kshst over time lang name PK.
+     * Instantiates a new kshst premium ext 60 h rate PK.
      */
-    public KshstOverTimeLangNamePK() {
+    public KshstPremiumExt60hRatePK() {
     }
 
     /**
-     * Instantiates a new kshst over time lang name PK.
+     * Instantiates a new kshst premium ext 60 h rate PK.
      *
      * @param cid the cid
+     * @param brdItemNo the brd item no
      * @param overTimeNo the over time no
-     * @param languageId the language id
      */
-    public KshstOverTimeLangNamePK(String cid, short overTimeNo, String languageId) {
+    public KshstPremiumExt60hRatePK(String cid, short brdItemNo, short overTimeNo) {
         this.cid = cid;
+        this.brdItemNo = brdItemNo;
         this.overTimeNo = overTimeNo;
-        this.languageId = languageId;
     }
-
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
@@ -70,8 +70,8 @@ public class KshstOverTimeLangNamePK implements Serializable {
     public int hashCode() {
         int hash = 0;
         hash += (cid != null ? cid.hashCode() : 0);
+        hash += (int) brdItemNo;
         hash += (int) overTimeNo;
-        hash += (languageId != null ? languageId.hashCode() : 0);
         return hash;
     }
 
@@ -80,18 +80,17 @@ public class KshstOverTimeLangNamePK implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KshstOverTimeLangNamePK)) {
+        if (!(object instanceof KshstPremiumExt60hRatePK)) {
             return false;
         }
-        KshstOverTimeLangNamePK other = (KshstOverTimeLangNamePK) object;
+        KshstPremiumExt60hRatePK other = (KshstPremiumExt60hRatePK) object;
         if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
             return false;
         }
-        if (this.overTimeNo != other.overTimeNo) {
+        if (this.brdItemNo != other.brdItemNo) {
             return false;
         }
-        if ((this.languageId == null && other.languageId != null) || (this.languageId != null && !this.languageId.equals(other.languageId))) {
+        if (this.overTimeNo != other.overTimeNo) {
             return false;
         }
         return true;
@@ -102,7 +101,7 @@ public class KshstOverTimeLangNamePK implements Serializable {
      */
     @Override
     public String toString() {
-        return "entity.KshstOverTimeLangNamePK[ cid=" + cid + ", overTimeNo=" + overTimeNo + ", languageId=" + languageId + " ]";
+        return "entity.KshstPremiumExt60hRatePK[ cid=" + cid + ", brdItemNo=" + brdItemNo + ", overTimeNo=" + overTimeNo + " ]";
     }
     
 }
