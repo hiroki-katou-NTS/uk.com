@@ -1,4 +1,4 @@
-module cmm011.a {
+module cmm011_old.a {
     __viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.start().done(function() {

@@ -1,4 +1,4 @@
-module cmm011.a.service {
+module cmm011_old.a.service {
     var paths = {
         getAllWorkPlace: "basic/organization/getallworkplace",
         getAllWorkPlaceByHistId: "basic/organization/getallwkpbyhistid/",
