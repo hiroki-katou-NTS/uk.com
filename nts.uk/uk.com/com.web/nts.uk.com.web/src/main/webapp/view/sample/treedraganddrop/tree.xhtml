@@ -68,7 +68,6 @@
 										height: 250,
 										options: items1,
 										selectedValues: selectedCode,
-										customValidate: function(){return false;},
 										optionsValue: 'code',
 										optionsChild: 'childs',
 										optionsText: 'nodeText',
@@ -84,6 +83,28 @@
 							<com:ko-foreach bind="selectedCode">
 								<div data-bind="text: $data"></div>
 							</com:ko-foreach>
+						</div>
+					</div>
+					<div class="cf">
+						<div style="float: left;">
+							<h3>With searchbox</h3>
+							<div>
+								<div data-bind="ntsSearchBox: {targetKey: 'code', mode:'igTreeDrag', comId:'treegrid3', items: items1,           
+									searchText: 'test',  selected: selectedCode, selectedKey: 'code', childField: 'childs', fields: ['code', 'nodeText'], enable: true} "/>
+								 <div style="display: inline-block;">
+									<div id="treegrid3"
+										data-bind="ntsTreeDragAndDrop:{
+										width: 1000, 
+										height: 250,
+										options: items1,
+										selectedValues: selectedCode,
+										optionsValue: 'code',
+										optionsChild: 'childs',
+										optionsText: 'nodeText',
+										multiple: true}">
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 					<article class="cf">
