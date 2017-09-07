@@ -38,11 +38,11 @@ public class UpdateYearServiceSetCommandHandler extends CommandHandler<UpdateYea
 		for(YearServiceSet object : lst){
 			for(YearServiceSetCommand obj : yearServiceSets){
 				if(obj.getYear() == object.getYear()){
-					YearServiceSet o = YearServiceSet.update(companyId, obj.getSpecialHolidayCode(), obj.getYearServiceNo(), obj.getYearServiceType(), obj.getYear(), obj.getMonth(), obj.getDate());
+					YearServiceSet o = YearServiceSet.update(companyId, obj.getSpecialHolidayCode(), obj.getYearServiceNo(), obj.getYear(), obj.getMonth(), obj.getDate());
 					lstUpdate.add(o);
 				}
 				else{
-					YearServiceSet a = YearServiceSet.update(companyId, obj.getSpecialHolidayCode(), obj.getYearServiceNo(), obj.getYearServiceType(), obj.getYear(), obj.getMonth(), obj.getDate());
+					YearServiceSet a = YearServiceSet.update(companyId, obj.getSpecialHolidayCode(), obj.getYearServiceNo(), obj.getYear(), obj.getMonth(), obj.getDate());
 					lstInsert.add(a);
 				}
 			}

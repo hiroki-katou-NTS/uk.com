@@ -242,7 +242,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
         startPage(): JQueryPromise<any> {
             var self = this;
-
+            $("#clear-button").focus();
             // switch language
             $("#switch-language").ntsSwitchMasterLanguage();
             $("#switch-language").on("selectionChanged", function(event, arg1, arg2) {
@@ -307,7 +307,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             nts.uk.ui.windows.setShared("KMK007_ITEM_ID", itemId);
             nts.uk.ui.windows.sub.modal("/view/kmk/007/b/index.xhtml").onClosed(() => {
                 self.getWorkType();
-               self.getAbsenceFrame();
+                self.getAbsenceFrame();
             });
         }
 
@@ -599,7 +599,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                         _.find(self.listWorkType(), ['workTypeCode', x.workTypeCode]).abNameNotJP = x.abbreviationName;
                     }
                 });
-
+                self.enableMethod(false);
                 self.isEnable(false);
                 $("#single-list").igGrid("option", "width", "340px");
                 $("#left-content").css('width', '380');

@@ -15,7 +15,6 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeForm
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeFormatDetailDto;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatMonthly;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatMonthlyRepository;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -24,9 +23,6 @@ public class DailyPerformanceFinder {
 
 	@Inject
 	private AttendanceItemsFinder attendanceItemsFinder;
-
-	@Inject
-	private AttendanceItemRepository attendanceItemRepository;
 
 	@Inject
 	private BusinessTypeDailyDetailFinder businessTypeDailyDetailFinder;
@@ -39,15 +35,11 @@ public class DailyPerformanceFinder {
 		String companyId = login.companyId();
 
 		// 勤怠項目 - find attendance item
-		// List<AttendanceItem> attendanceItems =
-		// this.attendanceItemRepository.getAttendanceItems(companyId, 1);
-		// List<AttendanceItemDto> attendanceItemDtos =
-		// attendanceItems.stream().map(f -> {
-		// return new AttendanceItemDto(f.getAttendanceId(),
-		// f.getAttendanceName().v(), f.getDislayNumber());
-		// }).collect(Collectors.toList());
-
 		List<AttendanceItemDto> attendanceItemDtos = this.attendanceItemsFinder.find();
+		if(attendanceItemDtos.isEmpty()){
+			BusinessTypeDetailDto businessTypeDetailDto = new BusinessTypeDetailDto(null, null, null);
+			return businessTypeDetailDto;
+		}
 		Map<Integer, AttendanceItemDto> attendanceItemMaps = attendanceItemDtos.stream().collect(
 				Collectors.toMap(AttendanceItemDto::getAttendanceItemId, x->x));
 
