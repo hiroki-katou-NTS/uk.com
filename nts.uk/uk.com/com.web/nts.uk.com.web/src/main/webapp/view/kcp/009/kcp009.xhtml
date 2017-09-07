@@ -4,6 +4,8 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
+	<com:stylefile path="style.css" />
+
 	<div id="component-content" style="height: 500px">
 		<div id="function-panel">
 			<table id="employ_view">
@@ -58,7 +60,7 @@
 			</table>
 		</div>
 
-		<div id="items-list">
+		<div id="items-list" data-bind="visible: isShowEmpList">
 				
 				<div id="list-box" data-bind="ntsListBox: {
 					options: empList,
