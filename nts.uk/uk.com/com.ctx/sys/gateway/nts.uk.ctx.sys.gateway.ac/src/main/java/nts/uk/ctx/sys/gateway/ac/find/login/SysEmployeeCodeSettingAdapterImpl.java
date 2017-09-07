@@ -34,12 +34,11 @@ public class SysEmployeeCodeSettingAdapterImpl implements SysEmployeeCodeSetting
 		Optional<EmployeeCodeEditSettingExport> opEmployeeCodeSetting = iEmployeeCESettingPub.getByComId(companyId);
 		if (opEmployeeCodeSetting.isPresent()) {
 			EmployeeCodeEditSettingExport employeeCodeSetting = opEmployeeCodeSetting.get();
-			//convert dto
+			// convert dto
 			EmployeeCodeSettingImport emCodeSetting = new EmployeeCodeSettingImport(employeeCodeSetting.getCompanyId(),
 					employeeCodeSetting.getDigitNumb(), employeeCodeSetting.getCeMethodAtr());
 			return Optional.of(emCodeSetting);
-		} else {
-			return Optional.empty();
 		}
+		return Optional.empty();
 	}
 }
