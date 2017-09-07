@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.adapter;
+package nts.uk.ctx.sys.gateway.dom.login.dto;
 
 import lombok.Getter;
 
@@ -10,7 +10,7 @@ import lombok.Getter;
  * The Class CompanyInformationDto.
  */
 @Getter
-public class CompanyInformationDto {
+public class CompanyInformationImport {
 	
 	//会社ID
 	/** The company id. */
@@ -29,7 +29,7 @@ public class CompanyInformationDto {
 	 * @param companyCode
 	 * @param companyName
 	 */
-	public CompanyInformationDto(String companyId, String companyCode, String companyName) {
+	public CompanyInformationImport(String companyId, String companyCode, String companyName) {
 		this.companyId = companyId;
 		this.companyCode = companyCode;
 		this.companyName = companyName;
