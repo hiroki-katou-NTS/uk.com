@@ -34,7 +34,6 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 		YearServiceSet domain  = YearServiceSet.createFromJavaType(entity.kshstYearServiceSetPK.companyId,
 																	entity.kshstYearServiceSetPK.specialHolidayCode,
 																	entity.kshstYearServiceSetPK.yearServiceNo,
-																	entity.yearServiceType,
 																	entity.year,
 																	entity.month, 
 																	entity.date);
@@ -50,7 +49,6 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 		entity.kshstYearServiceSetPK = new KshstYearServiceSetPK(domain.getCompanyId(),
 																	domain.getSpecialHolidayCode(),
 																	domain.getYearServiceNo());
-		entity.yearServiceType = domain.getYearServiceType();
 		entity.year = domain.getYear();
 		entity.month = domain.getMonth();
 		entity.date = domain.getDate();
@@ -121,9 +119,9 @@ public class JpaSetItemRepository extends JpaRepository implements YearServiceCo
 		for(YearServiceSet item : yearServiceSetLs){
 			KshstYearServiceSet entity = toEntitySet(item);
 			KshstYearServiceSet oldEntity = this.queryProxy().find(entity.kshstYearServiceSetPK, KshstYearServiceSet.class).get();
-			oldEntity.setYear(entity.year);
-			oldEntity.setMonth(entity.month);
-			oldEntity.setDate(entity.date);
+			oldEntity.year = entity.year;
+			oldEntity.month = entity.month;
+			oldEntity.date = entity.date;
 			this.commandProxy().update(oldEntity);
 		}
 	}

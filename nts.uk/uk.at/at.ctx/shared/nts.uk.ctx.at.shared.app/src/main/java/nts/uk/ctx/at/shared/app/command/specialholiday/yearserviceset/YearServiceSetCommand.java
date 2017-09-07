@@ -11,8 +11,6 @@ public class YearServiceSetCommand {
 	/**コード**/
 	private String specialHolidayCode;
 	private int yearServiceNo;
-	/** 年間サービスタイプ **/
-	private int yearServiceType;
 	/** 月数 **/
 	private Integer year;
 	/** 年数 **/

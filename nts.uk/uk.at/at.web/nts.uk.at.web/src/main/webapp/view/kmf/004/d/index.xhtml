@@ -68,9 +68,9 @@
 						data-bind="ntsHelpButton: {image: 'image/IMG_KMF004_2.png', position: 'right top', enable: enable }">?</button>
 				</span>
 				<hr />
-				<div data-bind="if: display"></div>
+<!-- 				<div></div> -->
 				<div class="contents-area-bottom"></div>
-				<table class="contents-header" data-bind="if: display">
+				<table class="contents-header">
 					<thead>
 						<tr>
 							<td rowspan="2" class="numbers"></td>
@@ -80,8 +80,7 @@
 					</thead>
 					<tbody></tbody>
 				</table>
-				<table class="contents-data" style="width: 293px"
-					data-bind="if: display">
+				<table class="contents-data" style="width: 293px">
 					<thead></thead>
 					<tbody style="margin-left: 10px;" data-bind="foreach: items">
 						<tr>

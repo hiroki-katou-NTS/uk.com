@@ -107,7 +107,7 @@ module nts.uk.at.view.kmf004 {
                 ]);
                 self.value = ko.observable('');
                 self.enable = ko.observable(true);
-                self.selectedId = ko.observable(null);
+                self.selectedId = ko.observable(0);
                 self.items = ko.observableArray([]);
                 self.lst = ko.observableArray([]);
                 self.display = ko.observable(false);
@@ -131,7 +131,6 @@ module nts.uk.at.view.kmf004 {
                     for (let i = 0; i < 20; i++) {
                         if (lstData[i]) {
                             var param: IItem = {
-                                yearServiceType: lstData[i].yearServiceType,
                                 yearServiceNo: i + 1,
                                 month: lstData[i].month,
                                 year: lstData[i].year,
@@ -141,7 +140,6 @@ module nts.uk.at.view.kmf004 {
                             self.items.push(new Item(param));
                         } else {
                             var param: IItem = {
-                                yearServiceType: 0,
                                 yearServiceNo: i + 1,
                                 month: null,
                                 year: null,
@@ -194,7 +192,6 @@ module nts.uk.at.view.kmf004 {
             }
         }
         export class Item {
-            yearServiceType: KnockoutObservable<number>;
             yearServiceNo: KnockoutObservable<number>;
             month: KnockoutObservable<number>;
             year: KnockoutObservable<number>;
@@ -202,7 +199,6 @@ module nts.uk.at.view.kmf004 {
 
             constructor(param: IItem) {
                 var self = this;
-                self.yearServiceType = ko.observable(param.yearServiceType);
                 self.yearServiceNo = ko.observable(param.yearServiceNo);
                 self.month = ko.observable(param.month);
                 self.year = ko.observable(param.year);
@@ -210,7 +206,6 @@ module nts.uk.at.view.kmf004 {
             }
         }
         export interface IItem {
-            yearServiceType: number;
             yearServiceNo: number
             month: number;
             year: number;

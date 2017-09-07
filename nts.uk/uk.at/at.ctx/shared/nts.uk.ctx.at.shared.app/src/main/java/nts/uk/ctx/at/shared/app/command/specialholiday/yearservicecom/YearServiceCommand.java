@@ -24,7 +24,6 @@ public class YearServiceCommand {
 				companyId, 
 				specialHoliday, 
 				yearServiceNo, 
-				yearServiceType,
 				year, 
 				month, 
 				date);
