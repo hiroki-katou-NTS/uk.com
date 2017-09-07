@@ -21,7 +21,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
 public class SysEmployeeCodeSettingAdapterImpl implements SysEmployeeCodeSettingAdapter {
 
 	@Inject
-	IEmployeeCESettingPub iEmployeeCESettingPub;
+	private IEmployeeCESettingPub iEmployeeCESettingPub;
 
 	/*
 	 * (non-Javadoc)

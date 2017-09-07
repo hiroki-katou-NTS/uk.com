@@ -21,7 +21,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 
 	@Inject
-	EmployeeInfoPub employeeInfoPub;
+	private EmployeeInfoPub employeeInfoPub;
 
 	/*
 	 * (non-Javadoc)

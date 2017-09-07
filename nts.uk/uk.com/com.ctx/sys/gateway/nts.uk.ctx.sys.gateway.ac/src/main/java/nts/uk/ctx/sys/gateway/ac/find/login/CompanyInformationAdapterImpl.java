@@ -23,7 +23,7 @@ import nts.uk.ctx.sys.gateway.dom.login.dto.CompanyInformationImport;
 public class CompanyInformationAdapterImpl implements CompanyInformationAdapter {
 
 	@Inject
-	ICompanyPub iCompanyPub;
+	private ICompanyPub iCompanyPub;
 
 	/*
 	 * (non-Javadoc)
