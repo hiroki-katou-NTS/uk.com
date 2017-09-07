@@ -2,9 +2,11 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.adapter;
+package nts.uk.ctx.sys.gateway.dom.login.adapter;
 
 import java.util.Optional;
+
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
 
 /**
  * The Interface EmployeeCodeSettingAdapter.
@@ -17,5 +19,5 @@ public interface SysEmployeeCodeSettingAdapter {
 	 * @param companyId the company id
 	 * @return the by company id
 	 */
-	Optional<EmployeeCodeSettingDto> getbyCompanyId(String companyId);
+	Optional<EmployeeCodeSettingImport> getbyCompanyId(String companyId);
 }
