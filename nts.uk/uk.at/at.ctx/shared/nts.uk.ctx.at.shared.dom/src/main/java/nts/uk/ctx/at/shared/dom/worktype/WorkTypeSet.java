@@ -12,25 +12,25 @@ public class WorkTypeSet {
 	private WorkTypeCode workTypeCd;
 
 	private WorkAtr workAtr;
-
+    //公休を消化する
 	private WorkTypeSetCheck digestPublicHd;
-
+    //休日区分
 	private HolidayAtr holidayAtr;
-
+    //休日日数をカウントする
 	private WorkTypeSetCheck countHodiday;
-
+    //休業区分
 	private CloseAtr closeAtr;
-
+    //欠勤枠
 	private int sumAbsenseNo ;
-
+    //特別休暇枠
 	private int sumSpHodidayNo;
-
+    //退勤時刻を直帰とする
 	private WorkTypeSetCheck timeLeaveWork;
-
+    //出勤時刻を直行とする
 	private WorkTypeSetCheck attendanceTime;
-
+    //代休を発生させる
 	private WorkTypeSetCheck genSubHodiday;
-
+    //日勤・夜勤時間を求める
 	private WorkTypeSetCheck dayNightTimeAsk;
 
 	public WorkTypeSet(String companyId, WorkTypeCode workTypeCd, WorkAtr workAtr, WorkTypeSetCheck digestPublicHd,
