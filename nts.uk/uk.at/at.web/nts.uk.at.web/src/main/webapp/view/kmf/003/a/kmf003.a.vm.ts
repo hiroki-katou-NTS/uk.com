@@ -223,6 +223,8 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             // validate
             $(".input-code").trigger("validate");
             $(".input-name").trigger("validate");
+            $(".a7_7").trigger("validate");
+            
             if (nts.uk.ui.errors.hasError()) {
                 return;    
             }

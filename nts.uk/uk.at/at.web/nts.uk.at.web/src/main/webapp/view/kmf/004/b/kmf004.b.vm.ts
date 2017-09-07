@@ -120,9 +120,9 @@ module nts.uk.at.view.kmf004 {
                 var dfd = $.Deferred();
                 
                 // Get special holiday code from A screen
-                var sphdCd = 01;
+                var specialHolidayCode = "01";
             
-                service.findByCode(sphdCd).done(function(data){
+                service.getComByCode(specialHolidayCode).done(function(data){
                     self.bindData(data);                
                     dfd.resolve();
                 }).fail(function(res) {
@@ -135,26 +135,83 @@ module nts.uk.at.view.kmf004 {
             bindData(data: any) {
                 var self = this;
             
-                self.items.removeAll();
-                
-                //Update case
-                for(var i = 0; i < data.length; i++){
-                    var item : IItem = {
-                        year: data[i].year,
-                        month: data[i].month
-                    };
+                if(data != undefined) {
+                    self.items.removeAll();
                     
-                    self.items.push(new Item(item));
+                    self.selectedId(data.grantDateAtr);
+                    self.value(data.grantDate);
+                    
+                    service.getAllSetByCode(data.specialHolidayCode).done(function(data){
+                        for(var i = 0; i < data.length; i++){
+                            var item : IItem = {
+                                year: data[i].year,
+                                month: data[i].month
+                            };
+                            
+                            self.items.push(new Item(item));
+                        }
+                        
+                        for(var i = data.length; i < 20; i++) {
+                            var item : IItem = {
+                                year: null,
+                                month: null
+                            };
+                            
+                            self.items.push(new Item(item));    
+                        }
+                    }).fail(function(res) {
+                          
+                    });
+                } else {
+                    self.selectedId(0);
+                    self.value(101);
+                    
+                    for(var i = 0; i < 20; i++) {
+                        var item : IItem = {
+                            year: null,
+                            month: null
+                        };
+                        
+                        self.items.push(new Item(item));    
+                    }
+                }
+            }
+            
+            saveData(){
+                var self = this;
+                
+                if (nts.uk.ui.errors.hasError()) {
+                    return;    
                 }
                 
-                for(var i = data.length; i < 20; i++) {
-                    var item : IItem = {
-                        year: null,
-                        month: null
-                    };
+                var setData = [];
+                var index = 1;
+                
+                _.forEach(self.items(), function(item) {
+                    if(item.month() != null && item.year() != null){
+                        setData.push({
+                            specialHolidayCode: "01",
+                            grantDateNo: index,
+                            grantDateMonth: item.month(),
+                            grantDateYear: item.year()
+                        });
+                    }
                     
-                    self.items.push(new Item(item));    
-                }
+                    index++;
+                });
+                
+                var dataItem : service.ComItem = {
+                    specialHolidayCode: "01",
+                    grantDateAtr: self.selectedId(),
+                    grantDate: self.value(),
+                    grantDateSets: ko.toJS(setData)
+                };
+                
+                service.addGrantDateCom(dataItem).done(function(data){
+                    
+                }).fail(function(res) {
+                          
+                });
             }
         }
         

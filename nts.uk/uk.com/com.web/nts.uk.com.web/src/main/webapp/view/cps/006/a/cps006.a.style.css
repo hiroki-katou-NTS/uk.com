@@ -11,7 +11,7 @@
 #content-right {
 	float: left;
 	width: 500px;
-	margin-left: 30px;
+	margin-left: 10px;
 }
 
 #isAbolition {
@@ -28,7 +28,7 @@ button.search-btn, button.clear-btn {
 }
 
 input.ntsSearchBox {
-	width: 160px !important;
+	width: 150px !important;
 }
 
 #category_grid_container {

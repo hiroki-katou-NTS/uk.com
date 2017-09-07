@@ -204,18 +204,19 @@ module nts.uk.at.view.kmk009.a.viewmodel {
                     self.itemTotalTimesDetail.updateData(data);
                     self.selectUse(self.itemTotalTimesDetail.useAtr());
                     // disable or enable Upper limit and under linit
-                    self.selectUppper(self.itemTotalTimesDetail.totalCondition.upperLimitSettingAtr());
-                    if (self.selectUppper() == 1) {
+                    self.selectUppper(data.totalCondition.upperLimitSettingAtr);
+                    if (self.selectUppper() == 1 && self.checkSelectUse()) {
                         self.enableUpper(true);
                     } else {
                         self.enableUpper(false);
                     }
-                    self.selectUnder(self.itemTotalTimesDetail.totalCondition.lowerLimitSettingAtr());
-                    if (self.selectUnder() == 1) {
+                    self.selectUnder(data.totalCondition.lowerLimitSettingAtr);
+                    if (self.selectUnder() == 1 && self.checkSelectUse()) {
                         self.enableUnder(true);
                     } else {
                         self.enableUnder(false);
                     }
+                    
                     self.loadListWorkType().done(function() {
                         self.loadListWorkTimes().done(function() {
                             // load all data  Enum
