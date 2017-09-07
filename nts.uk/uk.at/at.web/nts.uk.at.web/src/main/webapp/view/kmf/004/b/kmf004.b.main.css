@@ -50,3 +50,14 @@ table.data-items tbody {
 .hidden-right-border{
     border-right-style: hidden;
 }
+
+.setting-title{
+	float: left;
+	width: -webkit-fill-available;
+    padding: 15px 0px;
+}
+
+.help-button{
+	float: right;
+	margin: -40px 0px;
+}

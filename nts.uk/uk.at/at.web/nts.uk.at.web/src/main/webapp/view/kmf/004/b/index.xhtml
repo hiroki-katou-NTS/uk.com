@@ -57,8 +57,14 @@
 					</div>
 					<div id="monthdays" data-bind="ntsMonthDays: {value: value, enable: enable}"/>
 				</div>
-				<span>#{i18n.getText('KMF004_79')}</span>
 				
+				<span class="setting-title">#{i18n.getText('KMF004_79')}</span>
+				
+				<div class="help-button">
+					<button id="help" 
+						data-bind="ntsHelpButton: {image: 'IMG_KMF004_1.png', position: 'left top', enable: enable }">?</button>
+				</div>
+						
 				<hr />
 				
 				<table class="data-items">
