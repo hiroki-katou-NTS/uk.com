@@ -54,10 +54,11 @@ module cps008.a.viewmodel {
             });
         }
 
-        start(code?: string) {
+        start(code?: string): JQueryPromise<any> {
             let self = this,
                 layout: Layout = self.layout(),
-                layouts = self.layouts;
+                layouts = self.layouts,
+                dfd = $.Deferred();
             // get all layout
             layouts.removeAll();
             service.getAll().done((data: Array<any>) => {
@@ -86,7 +87,9 @@ module cps008.a.viewmodel {
                 } else {
                     self.createNewLayout();
                 }
+                dfd.resolve();
             });
+            return dfd.promise();
         }
 
         createNewLayout() {
@@ -235,14 +238,17 @@ module cps008.a.viewmodel {
                 service.saveData(data).done((data: any) => {
 
                     if (itemListLength === 1) {
-                        unblock();
-                        self.start();
+                        self.start().done(() => {
+                            unblock();
+                        });
                     } else if (itemListLength - 1 === indexItemDelete) {
-                        self.start(layouts[indexItemDelete - 1].code);
-                        unblock();
+                        self.start(layouts[indexItemDelete - 1].code).done(() => {
+                            unblock();
+                        });
                     } else if (itemListLength - 1 > indexItemDelete) {
-                        self.start(layouts[indexItemDelete + 1].code);
-                        unblock();
+                        self.start(layouts[indexItemDelete + 1].code).done(() => {
+                            unblock();
+                        });
                     }
 
                     showDialog.info(Text('Msg_16')).then(function() {
