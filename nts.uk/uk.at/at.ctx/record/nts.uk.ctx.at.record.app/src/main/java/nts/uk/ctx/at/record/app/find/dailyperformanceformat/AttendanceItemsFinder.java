@@ -51,10 +51,16 @@ public class AttendanceItemsFinder {
 		LoginUserContext login = AppContexts.user();
 		String companyId = login.companyId();
 
+		List<AttendanceItemDto> attendanceItemDtos = new ArrayList<>();
+
 		// 勤怠項目
 		List<DailyAttendanceItem> dailyAttendanceItems = this.dailyAttendanceItemRepository.getListTobeUsed(companyId,
 				1);
 
+		if(dailyAttendanceItems.isEmpty()){
+			return attendanceItemDtos;
+		}
+		
 		// get list attendanceItemId
 		List<Integer> attendanceItemIds = dailyAttendanceItems.stream().map(f -> {
 			return f.getAttendanceItemId();
@@ -89,26 +95,24 @@ public class AttendanceItemsFinder {
 		Map<Integer, BonusPayTimeItem> specialBonusPayTimeItem = this.bPTimeItemRepository.getListSpecialBonusPayTimeItemName(companyId, frameNos)
 				.stream().collect(Collectors.toMap(BonusPayTimeItem::getId, x -> x));
 
-		List<AttendanceItemDto> attendanceItemDtos = new ArrayList<>();
-
 		dailyAttendanceItems.stream().forEach(item -> {
 			if (frameNoMap.containsKey(item.getAttendanceItemId())) {
 				AttendanceItemDto attendanceDto = new AttendanceItemDto();
 				attendanceDto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
 				attendanceDto.setAttendanceItemId(item.getAttendanceItemId());
 				attendanceDto.setAttendanceItemName(item.getAttendanceName().v());
-				if (divergenceTimes.containsKey(item.getAttendanceItemId())) {
+				if (divergenceTimes.containsKey(frameNoMap.get(item.getAttendanceItemId()))) {
 					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							divergenceTimes.get(item.getAttendanceItemId()).getDivTimeName().v()));
-				} else if (premiumItemnames.containsKey(item.getAttendanceItemId())){
+							divergenceTimes.get(frameNoMap.get(item.getAttendanceItemId())).getDivTimeName().v()));
+				} else if (premiumItemnames.containsKey(frameNoMap.get(item.getAttendanceItemId()))){
 					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							premiumItemnames.get(item.getAttendanceItemId()).getPremiumItemname()));
-				} else if (bonusPayTimeItems.containsKey(item.getAttendanceItemId())) {
+							premiumItemnames.get(frameNoMap.get(item.getAttendanceItemId())).getPremiumItemname()));
+				} else if (bonusPayTimeItems.containsKey(frameNoMap.get(item.getAttendanceItemId()))) {
 					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							bonusPayTimeItems.get(item.getAttendanceItemId()).getTimeItemName().v()));
-				} else if (specialBonusPayTimeItem.containsKey(item.getAttendanceItemId())){
+							bonusPayTimeItems.get(frameNoMap.get(item.getAttendanceItemId())).getTimeItemName().v()));
+				} else if (specialBonusPayTimeItem.containsKey(frameNoMap.get(item.getAttendanceItemId()))){
 					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							specialBonusPayTimeItem.get(item.getAttendanceItemId()).getTimeItemName().v()));
+							specialBonusPayTimeItem.get(frameNoMap.get(item.getAttendanceItemId())).getTimeItemName().v()));
 				}
 				attendanceItemDtos.add(attendanceDto);
 			}
@@ -169,18 +173,18 @@ public class AttendanceItemsFinder {
 				attendanceDto.setNameLineFeedPosition(item.getNameLineFeedPosition());
 				attendanceDto.setAttendanceItemId(item.getAttendanceItemId());
 				attendanceDto.setAttendanceItemName(item.getAttendanceName().v());
-				if (divergenceTimes.containsKey(item.getAttendanceItemId())) {
+				if (divergenceTimes.containsKey(frameNoMap.get(item.getAttendanceItemId()))) {
 					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							divergenceTimes.get(item.getAttendanceItemId()).getDivTimeName().v()));
-				} else if (premiumItemnames.containsKey(item.getAttendanceItemId())){
+							divergenceTimes.get(frameNoMap.get(item.getAttendanceItemId())).getDivTimeName().v()));
+				} else if (premiumItemnames.containsKey(frameNoMap.get(item.getAttendanceItemId()))){
 					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							premiumItemnames.get(item.getAttendanceItemId()).getPremiumItemname()));
-				} else if (bonusPayTimeItems.containsKey(item.getAttendanceItemId())) {
+							premiumItemnames.get(frameNoMap.get(item.getAttendanceItemId())).getPremiumItemname()));
+				} else if (bonusPayTimeItems.containsKey(frameNoMap.get(item.getAttendanceItemId()))) {
 					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							bonusPayTimeItems.get(item.getAttendanceItemId()).getTimeItemName().v()));
-				} else if (specialBonusPayTimeItem.containsKey(item.getAttendanceItemId())){
+							bonusPayTimeItems.get(frameNoMap.get(item.getAttendanceItemId())).getTimeItemName().v()));
+				} else if (specialBonusPayTimeItem.containsKey(frameNoMap.get(item.getAttendanceItemId()))){
 					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							specialBonusPayTimeItem.get(item.getAttendanceItemId()).getTimeItemName().v()));
+							specialBonusPayTimeItem.get(frameNoMap.get(item.getAttendanceItemId())).getTimeItemName().v()));
 				}
 				attendanceItemDtos.add(attendanceDto);
 			}

@@ -5,6 +5,7 @@ module nts.uk.com.view.cps005.b {
     import alertError = nts.uk.ui.dialog.alertError;
     import getShared = nts.uk.ui.windows.getShared;
     import textUK = nts.uk.text;
+    import block = nts.uk.ui.block;
     export module viewmodel {
         export class ScreenModel {
             currentItemData: KnockoutObservable<ItemDataModel>;
@@ -22,6 +23,7 @@ module nts.uk.com.view.cps005.b {
             startPage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
+                 block.invisible();
                 new service.Service().getAllPerInfoItemDefByCtgId(self.categoryId).done(function(data: IItemData) {
                     self.currentItemData(new ItemDataModel(data));
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
@@ -31,6 +33,7 @@ module nts.uk.com.view.cps005.b {
                     } else {
                         self.register();
                     }
+                    block.clear();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -39,6 +42,7 @@ module nts.uk.com.view.cps005.b {
             reloadData(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
+                self.currentItemData().personInfoItemList([]);
                 new service.Service().getAllPerInfoItemDefByCtgId(self.categoryId).done(function(data: IItemData) {
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
                         self.currentItemData().personInfoItemList(_.map(data.personInfoItemList, item => { return new PersonInfoItemShowListModel(item) }));
@@ -66,12 +70,16 @@ module nts.uk.com.view.cps005.b {
             addUpdateData() {
                 let self = this,
                     newItemDef;
+                 block.invisible();
                 if (self.isUpdate == true) {
                     newItemDef = new UpdateItemModel(self.currentItemData().currentItemSelected());
+                    newItemDef.perInfoCtgId = self.categoryId;
                     newItemDef.singleItem.referenceCode = "Hard Code";
                     new service.Service().updateItemDef(newItemDef).done(function(data: string) {
                         if (data) {
-                            info({ messageId: data }).then(() => { info({ messageId: "Msg_15" }); });
+                            info({ messageId: data }).then(() => { info({ messageId: "Msg_15" }).then(() => { block.clear(); }); });
+                        } else {
+                            info({ messageId: "Msg_15" }).then(() => { block.clear(); });
                         }
                         self.reloadData();
                         self.currentItemData().perInfoItemSelectCode("");
@@ -87,7 +95,7 @@ module nts.uk.com.view.cps005.b {
                         self.reloadData().done(() => {
                             self.currentItemData().perInfoItemSelectCode(data);
                         });
-                        info({ messageId: "Msg_15" });
+                        info({ messageId: "Msg_15" }).then(() => { block.clear(); });
                     }).fail(error => {
                         alertError({ messageId: error.message });
                     });
@@ -97,12 +105,13 @@ module nts.uk.com.view.cps005.b {
             removeData() {
                 let self = this,
                     removeModel = new RemoveItemModel(self.currentItemData().perInfoItemSelectCode());
+                block.invisible();
                 if (!self.currentItemData().perInfoItemSelectCode()) return;
                 let indexItemDelete = _.findIndex(self.currentItemData().personInfoItemList(), function(item) { return item.id == removeModel.perInfoItemDefId; });
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
                     new service.Service().removeItemDef(removeModel).done(function(data: string) {
                         if (data) {
-                            info({ messageId: data });
+                            info({ messageId: data }).then(() => { block.clear(); });
                             return;
                         }
                         self.reloadData().done(() => {
@@ -120,7 +129,7 @@ module nts.uk.com.view.cps005.b {
                                 return;
                             }
                         });
-                        info({ messageId: "Msg_16" });
+                        info({ messageId: "Msg_16" }).then(() => { block.clear(); });
 
                     }).fail(error => {
                         alertError({ messageId: error.message });
@@ -275,10 +284,10 @@ module nts.uk.com.view.cps005.b {
         constructor(data: INumericItem) {
             let self = this;
             if (!data) return;
-            self.numericItemMin(data.NumericItemMin || null);
-            self.numericItemMax(data.NumericItemMax || null);
-            self.numericItemAmount(data.numericItemAmount || 1);
-            self.numericItemMinus(data.numericItemMinus || 1);
+            self.numericItemMin(data.numericItemMin || null);
+            self.numericItemMax(data.numericItemMax || null);
+            self.numericItemAmount(data.numericItemAmount);
+            self.numericItemMinus(data.numericItemMinus);
             self.decimalPart(data.decimalPart || 0);
             self.integerPart(data.integerPart || 0);
         }
@@ -347,6 +356,7 @@ module nts.uk.com.view.cps005.b {
 
     export class UpdateItemModel {
         perInfoItemDefId: string;
+        perInfoCtgId: string;
         itemName: string;
         singleItem: SingleItemAddModel;
         constructor(data: PersonInfoItem) {
@@ -454,8 +464,8 @@ module nts.uk.com.view.cps005.b {
     }
     interface INumericItem {
         dataTypeValue: number;
-        NumericItemMin: number;
-        NumericItemMax: number;
+        numericItemMin: number;
+        numericItemMax: number;
         numericItemAmount: number;
         numericItemMinus: number;
         decimalPart: number;

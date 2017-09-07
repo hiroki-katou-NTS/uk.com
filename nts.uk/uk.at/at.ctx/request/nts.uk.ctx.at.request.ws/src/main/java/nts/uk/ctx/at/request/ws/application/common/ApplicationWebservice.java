@@ -17,7 +17,7 @@ import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCom
 import nts.uk.ctx.at.request.app.command.application.common.DeleteApplicationCommand;
 import nts.uk.ctx.at.request.app.command.application.common.DeleteApplicationCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommand;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 
@@ -29,7 +29,7 @@ public class ApplicationWebservice extends WebService {
 	private CreateApplicationCommandHandler createApp;
 	
 	@Inject
-	private UpdateApplicationCommandHandler updateApp;
+	private UpdateApplicationApproveHandler updateApp;
 	
 	@Inject
 	private DeleteApplicationCommandHandler deleteApp;
@@ -90,7 +90,7 @@ public class ApplicationWebservice extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("update")
+	@Path("updatetoapprove")
 	public void updateApplication(UpdateApplicationCommand command) {
 		this.updateApp.handle(command);
 	}

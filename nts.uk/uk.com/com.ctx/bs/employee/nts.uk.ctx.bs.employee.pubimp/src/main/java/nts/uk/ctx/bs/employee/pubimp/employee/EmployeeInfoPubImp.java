@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.pubimp.employee;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
@@ -9,6 +10,7 @@ import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 
+@Stateless
 public class EmployeeInfoPubImp implements EmployeeInfoPub {
 
 	@Inject

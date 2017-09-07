@@ -57,10 +57,10 @@
 				<div id="tab-panel"
 					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 					<div class="tab-content-1" style="height: 500px; width: 850px">
-						<div style="margin-top: 15px" id="swap-list"
+						<div style="margin-top: 10px" id="swap-list"
 							data-bind="ntsSwapList: {
 							showSearchBox: { showLeft : true, showRight: true},
-							height: 400,
+							height: 460,
 							dataSource: currentBusinessType().attendanceItemDtos,
 							primaryKey: 'attendanceItemId',
 							columns: columns3,
@@ -90,10 +90,10 @@
 						<div id="label2" class="label">#{i18n.getText('KDW008_24')}</div>
 						<BR />
 						<div class="label">#{i18n.getText('KDW008_29')}</div>
-						<div style="margin-top: 15px" id="swap-list2"
+						<div style="margin-top: 10px" id="swap-list2"
 							data-bind="ntsSwapList: {
 							showSearchBox: { showLeft : true, showRight: true},
-							height: 370,
+							height: 400,
 							dataSource: currentBusinessType().attendanceItemDtos,
 							primaryKey: 'attendanceItemId',
 							columns: columns2,

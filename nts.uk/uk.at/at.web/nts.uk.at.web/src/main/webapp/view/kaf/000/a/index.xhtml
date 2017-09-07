@@ -16,30 +16,20 @@
 
 		<ui:define name="content">
 			<div style="height: 50px"> button </div>
+			
 			<!-- Message area -->
-			<div id="message-area"> 
-				<table >
-					<tr>
-						<!-- A1_1 -->
-						<td class="message-td" >#{i18n.getText('KAF000_1')}</td>
-						<!-- A1_2 -->
-						<td class="message-td"> 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 </td>
-					</tr>
-					<tr>
-						<!-- A1_3 -->
-						<td class="message-td">#{i18n.getText('KAF000_2')}</td>
-						<!-- A1_4 -->
-						<td class="message-td"> 2017/11/12  ~ 2019/11/12</td>
-					</tr>
-				</table>
+			<div>
+				<ui:include src="index1.xhtml" />
 			</div>
+			
 			<!-- Body -->
 			<div style="height: 50px;background-color: gray ; margin-top: 30px;'">1</div>
 			
-			
-			
 			<!-- Footer -->
-			<div id="label-1">
+			<div>
+				<ui:include src="index2.xhtml" />
+			</div>
+			<!-- <div id="label-1">
 				<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
 			</div>	
 			<div id="table-1" >
@@ -63,7 +53,7 @@
 						</com:ko>
 					</tbody>
 				</table>
-			</div>
+			</div> -->
 			
 				
 		</ui:define>

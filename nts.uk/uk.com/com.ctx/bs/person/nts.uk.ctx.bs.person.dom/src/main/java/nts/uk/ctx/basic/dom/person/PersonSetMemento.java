@@ -5,7 +5,7 @@
 package nts.uk.ctx.basic.dom.person;
 
 import nts.uk.ctx.bs.person.dom.person.info.PersonId;
-import nts.uk.ctx.bs.person.dom.person.info.PersonName;
+import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
 
 /**
  * The Interface PersonSetMemento.

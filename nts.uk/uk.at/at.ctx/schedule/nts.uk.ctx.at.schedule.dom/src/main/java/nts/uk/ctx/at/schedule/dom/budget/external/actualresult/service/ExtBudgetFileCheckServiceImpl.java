@@ -121,7 +121,7 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
      *            the start line
      */
     private void validLimitRecord(InputStream inputStream, Integer encoding, Integer startLine) {
-        NtsCsvReader csvReader = FileUltil.newCsvReader(encoding);
+        NtsCsvReader csvReader = FileUtil.newCsvReader(encoding);
         try {
             List<NtsCsvRecord> csvRecords = csvReader.parse(inputStream);
             if (CollectionUtil.isEmpty(csvRecords)) {
