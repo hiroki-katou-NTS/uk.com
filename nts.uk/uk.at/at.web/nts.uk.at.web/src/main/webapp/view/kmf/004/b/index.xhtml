@@ -39,7 +39,7 @@
 			<div class="sidebar-content-header" data-bind="with: tabView">
 				<span class="title" data-bind="text: title"></span>
 				<button class="proceed" data-bind="click: $parent.viewmodelB.saveData.bind($parent.viewmodelB)">#{i18n.getText('KMF004_2')}</button>
-				<button class="cancel">#{i18n.getText('KMF004_4')}</button>
+				<button class="cancel" data-bind="click: $parent.viewmodelB.cancel.bind($parent.viewmodelB)">#{i18n.getText('KMF004_4')}</button>
 			</div>
 			<div id="tabpanel-b" role="tabpanel" class="screen-b" data-bind="with: viewmodelB">
 				<div class="contents-area">

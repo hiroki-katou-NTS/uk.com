@@ -25,4 +25,5 @@ public interface GrantRegularRepository {
 
 	void add(GrantDateCom grantDateCom);
 
+	void update(GrantDateCom grantDateCom);
 }
