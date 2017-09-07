@@ -6,8 +6,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectSettingDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyFinder;
+import nts.uk.shr.com.context.AppContexts;
 
 @Path("at/request/application/gobackdirectly")
 @Produces("application/json")
@@ -21,11 +23,12 @@ public class GoBackDirectlyService extends WebService {
 		String appID = "123456789";
 		return this.goBackDirectlyFinder.getGoBackDirectlyByAppID(appID);
 	}
-	
+
 	@POST
-	@Path("getall")
-	public String getall() {
-		return null;
+	@Path("getGoBackCommonSetting")
+	public GoBackDirectSettingDto getGoBackCommonSetting() {
+		String SID = AppContexts.user().employeeId();
+		return this.goBackDirectlyFinder.getGoBackDirectSettingBySID(SID);
 	}
 
 }

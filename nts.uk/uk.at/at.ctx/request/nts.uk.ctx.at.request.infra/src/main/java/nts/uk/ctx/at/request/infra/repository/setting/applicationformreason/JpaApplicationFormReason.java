@@ -11,9 +11,11 @@ import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstApp
 
 @Stateless
 public class JpaApplicationFormReason extends JpaRepository implements ApplicationFormReasonRepository{
-	private static final String FINDBYCOMPANYID = "SELECT c FROM KrqstAppReason c WHERE c.krqstAppReasonPK.companyId = :companyId";
+	private static final String FINDBYCOMPANYID = "SELECT c FROM KrqstAppReason c "
+			+ " WHERE c.krqstAppReasonPK.companyId =:companyId";
 	
-	private static final String FINDBYAPPTYPE = FINDBYCOMPANYID + " c.krqstAppReasonPK.appType = :appType";
+	private static final String FINDBYAPPTYPE = FINDBYCOMPANYID 
+			+ " AND c.krqstAppReasonPK.appType =:appType";
 	/**
 	 * get reason by companyid
 	 */
@@ -27,8 +29,8 @@ public class JpaApplicationFormReason extends JpaRepository implements Applicati
 	}
 
 	private ApplicationFormReason toDomain(KrqstAppReason c) {
-		
-		return ApplicationFormReason.createSimpleFromJavaType(c.krqstAppReasonPK.companyId,
+		return ApplicationFormReason.createSimpleFromJavaType(
+				c.krqstAppReasonPK.companyId,
 				c.krqstAppReasonPK.appType,
 				c.krqstAppReasonPK.displayOrder, 
 				c.defaultOrder);
@@ -39,11 +41,10 @@ public class JpaApplicationFormReason extends JpaRepository implements Applicati
 	 */
 	@Override
 	public List<ApplicationFormReason> getReasonByAppType(String companyId, int appType) {
-		List<ApplicationFormReason> data = this.queryProxy()
-				.query(FINDBYAPPTYPE, KrqstAppReason.class)
+		List<ApplicationFormReason> data = this.queryProxy().query(FINDBYAPPTYPE, KrqstAppReason.class)
 				.setParameter("companyId", companyId)
 				.setParameter("appType", appType)
-				.getList(c ->toDomain(c));
+				.getList(c ->toDomain(c));	
 		return data;
 	}
 

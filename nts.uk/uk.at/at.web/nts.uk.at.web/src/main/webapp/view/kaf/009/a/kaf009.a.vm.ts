@@ -37,11 +37,23 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         //comboBox 
         itemComboBox: KnockoutObservableArray<ItemCombo>;
         selectedComboCode: KnockoutObservable<string>;
+        //CheckBox 
+        isWorkChange: KnockoutObservable<boolean>;
+        
+        //Time with day 
+        
+        enable: KnockoutObservable<boolean>;
+        readonly: KnockoutObservable<boolean>;
+        timeOfDay: KnockoutObservable<number>;
+        time: KnockoutObservable<number>;
+        time2: KnockoutObservable<number>;
+        
+        
         constructor() {
             var self = this;
             //date editor
             self.date = ko.observable(moment().format('YYYY/MM/DD'));
-            //             self.date = ko.observable('20000101');
+            //self.date = ko.observable('20000101');
             //time editor
             self.time = ko.observable("12:00");
             //check late
@@ -50,6 +62,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             // check early
             self.early = ko.observable(false);
             self.early2 = ko.observable(false);
+            //Checkbox 
+            self.isWorkChange = ko.observable(true);
             //labor time 
             self.laborTime = ko.observable("00:00");
             //combobox
@@ -91,7 +105,17 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 new ItemCombo('基本給2', '役職手当'),
                 new ItemCombo('0003', '基本給')
             ]);
-            self.selectedComboCode = ko.observable('0002')
+            //Time with Day 
+            
+            self.enable = ko.observable(true);
+            self.readonly = ko.observable(false);
+            
+            self.timeOfDay = ko.observable(2400);
+            self.time = ko.observable(1200);
+            self.time2 = ko.observable(3200);
+            //CheckBox 
+           
+            self.selectedComboCode = ko.observable('0002');
             //MultilineEditor 
             self.multilineeditor = {
                 value: ko.observable(''),
@@ -103,6 +127,11 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     textalign: "left"
                 })),
             };
+            
+            self.isWorkChange.subscribe(function(){
+                    
+            
+            });
 
         }
 
@@ -112,10 +141,15 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             var dfd = $.Deferred();
             //String appID = "123456789";
             //Get data 
-            service.getGoBackDirectly().done(function(goBackDirect: any) {
-                return goBackDirect;
-                
-            }
+            //            service.getGoBackDirectly().done(function(goBackDirect: any) {
+            //                console.log(goBackDirect);
+            //          ;
+            //      }
+
+            //Get Setting
+            service.getGoBackSetting().done(function(setting: any) {
+                console.log(setting);
+            });
             dfd.resolve();
             return dfd.promise();
         }
@@ -141,6 +175,26 @@ module nts.uk.at.view.kaf009.a.viewmodel {
 
         }
 
+        /**
+         * Set common Setting 
+         */
+        setCommonSetting(data: CommonSetting) {
+            let self = this;
+            if(data != undefined){
+               self.isWorkChange(data.workChangeFlg >0 ? false: false);
+                
+            }
+        }
+        /**
+         * New Screen Mode 
+         */
+        newScreenMode(){
+            let self = this;
+            self.selectedRuleCode(1); 
+            self.date(moment().format("YYYY/MM/DD"));   
+        
+        }
+
     }
     /**
      * 理由
@@ -153,6 +207,91 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             this.name = name;
         }
     }
+
+    /**
+     * 直行直帰申請共通設定
+     */
+    class CommonSetting {
+        workChangeFlg: number;
+        workChangTimeAtr: number;
+        perfomanceDisplayAtr: number;
+        contraditionCheckAtr: number;
+        workType: number;
+        lateLeaveEarlySettingAtr: number;
+        commentContent1: String;
+        commentFontWeight1: number;
+        commentFontColor1: String;
+        commentContent2: String;
+        commentFontWeight2: number;
+        commentFontColor2: String;
+        constructor(workChangeFlg: number, workChangTimeAtr: number, perfomanceDisplayAtr: number,
+            contraditionCheckAtr: number, workType: number, lateLeaveEarlySettingAtr: number, commentContent1: String,
+            commentFontWeight1: number, commentFontColor1: String, commentContent2: String, commentFontWeight2: number,
+            commentFontColor2: String) {
+            var self = this;
+            self.workChangeFlg = workChangeFlg;
+            self.workChangTimeAtr = workChangTimeAtr;
+            self.perfomanceDisplayAtr = perfomanceDisplayAtr;
+            self.contraditionCheckAtr = contraditionCheckAtr;
+            self.workType = workType;
+            self.lateLeaveEarlySettingAtr = lateLeaveEarlySettingAtr;
+            self.commentContent1 = commentContent1;
+            self.commentFontWeight1 = commentFontWeight1;
+            self.commentFontColor1 = commentFontColor1;
+            self.commentContent2 = commentContent2;
+            self.commentFontWeight2 = commentFontWeight2;
+            self.commentFontColor2 = commentFontColor2;
+        }
+    }
+    /**
+     * 
+     * 直行直帰申請
+     */
+    class GoBackDirectData {
+        appID: String;
+        workTypeCD: String;
+        siftCd: String;
+        workChangeAtr: number;
+        goWorkAtr1: number;
+        backHomeAtr1: number;
+        workTimeStart1: number;
+        workTimeEnd1: number;
+        workLocationCD1: String;
+        goWorkAtr2: number;
+        backHomeAtr2: number;
+        workTimeStart2: number;
+        workTimeEnd2: number;
+        workLocationCD2: String;
+        constructor(appID: String,
+            workTypeCD: String,
+            siftCd: String,
+            workChangeAtr: number,
+            goWorkAtr1: number,
+            backHomeAtr1: number,
+            workTimeStart1: number,
+            workTimeEnd1: number,
+            workLocationCD1: String,
+            goWorkAtr2: number,
+            backHomeAtr2: number,
+            workTimeStart2: number,
+            workTimeEnd2: number,
+            workLocationCD2: String) {
+            this.appID = appID;
+            this.siftCd = siftCd;
+            this.workChangeAtr = workChangeAtr;
+            this.goWorkAtr1 = goWorkAtr1;
+            this.backHomeAtr1 = backHomeAtr1;
+            this.workTimeStart1 = workTimeStart1;
+            this.workTimeEnd1 = workTimeEnd1;
+            this.workLocationCD1 = workLocationCD1;
+            this.goWorkAtr2 = goWorkAtr2;
+            this.backHomeAtr2 = backHomeAtr2;
+            this.workTimeStart2 = workTimeStart2;
+            this.workTimeEnd2 = workTimeEnd2;
+            this.workLocationCD2 = workLocationCD2;
+        }
+    }
+
     /**
      * 
      */

@@ -19,10 +19,14 @@
 	border-bottom: 2px solid #808080;
 	padding-bottom: 10px;
 }
+#inpEndTime1, #inpEndTime2 {
+	margin-left: 130px;
+}
+
 
 input.nts-editor.nts-input.reset-element {
 	text-align: center;
-	width: 45px;
+	width: 100px;
 }
 
 input#inputdate.nts-editor.nts-input.reset-element {
