@@ -7,14 +7,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootCommonOutput;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 @Stateless
 public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 	@Inject
@@ -25,6 +24,7 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor,
 			List<PersonApprovalRoot> lstPersonRootInfor,
 			EmployeeApproveDto empInfor, 
+			ApplicationType appType,
 			GeneralDate baseDate) {
 		//check ドメインモデル「個人別就業承認ルート」(domain 「個人別就業承認ルート」) ※ 就業ルート区分(申請か、確認か、任意項目か)
 		List<PersonApprovalRoot> personRootAll = lstPersonRootInfor.stream()
@@ -32,6 +32,7 @@ public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 				.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION
 						|| x.getEmploymentRootAtr() == EmploymentRootAtr.CONFIRMATION
 						|| x.getEmploymentRootAtr() == EmploymentRootAtr.ANYITEM)
+				.filter(x -> x.getApplicationType() == appType)
 				.collect(Collectors.toList());
 				
 		//データが０件(data = 0)

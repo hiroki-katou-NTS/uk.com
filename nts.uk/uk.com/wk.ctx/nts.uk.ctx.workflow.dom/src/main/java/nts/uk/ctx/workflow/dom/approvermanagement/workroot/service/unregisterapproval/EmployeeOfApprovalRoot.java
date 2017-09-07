@@ -3,6 +3,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterap
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
@@ -28,5 +29,6 @@ public interface EmployeeOfApprovalRoot {
 			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor,
 			List<PersonApprovalRoot> lstPersonRootInfor,
 			EmployeeApproveDto empInfor, 
+			ApplicationType appType,
 			GeneralDate baseDate);
 }
