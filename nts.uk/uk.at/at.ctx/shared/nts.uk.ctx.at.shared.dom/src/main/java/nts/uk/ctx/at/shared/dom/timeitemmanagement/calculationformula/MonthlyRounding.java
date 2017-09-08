@@ -16,14 +16,14 @@ public class MonthlyRounding extends DomainObject {
 
 	/** The calculation classification. */
 	// 計算区分
-	private CalculationClassification timeRounding;
+	private String numericalRounding;
 
 	/** The formula setting. */
 	// 計算式設定
-	private FormulaSetting amountRounding;
+	private String timeRounding;
 
 	/** The calculation item selection. */
 	// 計算項目選択
-	private CalculationItemSelection numericalRounding;
+	private String amountRounding;
 
 }
