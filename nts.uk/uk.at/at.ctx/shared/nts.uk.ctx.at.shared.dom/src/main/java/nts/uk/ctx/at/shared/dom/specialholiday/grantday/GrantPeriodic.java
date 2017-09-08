@@ -30,13 +30,12 @@ public class GrantPeriodic extends DomainObject{
 	@Override
 	public void validate(){
 		super.validate();
-		this.checkGrantDay();
 	}
 	
 	/**
 	 * Check Grant Day of Grant Periodic
 	 */
-	private void checkGrantDay(){
+	public void checkGrantDay(){
 		if(this.splitAcquisition == SplitAcquisition.FixedDay){
 			if(this.grantDay == null){
 				throw new BusinessException("Msg_97");

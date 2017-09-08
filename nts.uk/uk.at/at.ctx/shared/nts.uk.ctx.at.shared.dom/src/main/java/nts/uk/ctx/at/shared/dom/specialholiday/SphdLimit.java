@@ -36,13 +36,12 @@ public class SphdLimit extends DomainObject {
 	@Override
 	public void validate() {
 		super.validate();
-		this.checkTime();
 	}
-	
+
 	/**
 	 * Check Months and Years of Sphd Limit
 	 */
-	private void checkTime(){
+	public void checkTime() {
 		if (this.specialVacationMethod == SpecialVacationMethod.AvailableGrantDateDesignate) {
 			if (this.specialVacationMonths == null || this.specialVacationYears == null) {
 				throw new BusinessException("Msg_98");

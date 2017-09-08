@@ -34,7 +34,6 @@ public class GrantSingle extends DomainObject {
 	@Override
 	public void validate() {
 		super.validate();
-		this.checkFixNumberDay();
 	}
 	
 	/**

@@ -35,13 +35,12 @@ public class GrantRegular extends DomainObject {
 	@Override
 	public void validate() {
 		super.validate();
-		this.checkTime();
 	}
 	
 	/**
 	 * Check Grant Start Date and Months & Years of Grant Regular
 	 */
-	private void checkTime(){
+	public void checkTime(){
 		if (this.grantRegularMethod != GrantRegularMethod.GrantStartDateSpecify) {
 			return;
 		}

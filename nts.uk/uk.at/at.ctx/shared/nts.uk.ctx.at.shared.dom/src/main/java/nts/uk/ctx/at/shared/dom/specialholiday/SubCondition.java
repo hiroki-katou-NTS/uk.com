@@ -51,13 +51,12 @@ public class SubCondition extends DomainObject {
 	@Override
 	public void validate() {
 		super.validate();
-		this.checkAge();
 	}
-	
+
 	/**
 	 * Check Age and Date of Sub Condition
 	 */
-	private void checkAge(){
+	public void checkAge() {
 		if (this.useEmployee == UseEmployee.Use) {
 		}
 		if (this.useCls == UseCls.Use) {

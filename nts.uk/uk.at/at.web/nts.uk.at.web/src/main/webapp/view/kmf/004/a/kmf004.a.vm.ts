@@ -272,15 +272,17 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
                 specialHoliday["grantMethod"] = self.inp_grantMethod();
                 
-                service.addSpecialHoliday(specialHoliday).done(function(res) {
-                    var resObj = ko.toJS(res);
-                    if (self.currentCode) {
-
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
-                        self.getAllSpecialHoliday().done(function() {
-                            self.currentCode(self.currentItem().specialHolidayCode());
-                            self.isEnableCode(false);
-                        });
+                service.addSpecialHoliday(specialHoliday).done(function(errors) {
+                    if (errors && errors.length > 0) {
+                        self.addListError(errors);    
+                    } else {                    
+                        if (self.currentCode) {
+                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                            self.getAllSpecialHoliday().done(function() {
+                                self.currentCode(self.currentItem().specialHolidayCode());
+                                self.isEnableCode(false);
+                            });
+                        }
                     }
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);

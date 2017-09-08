@@ -53,25 +53,23 @@ public class SpecialHoliday extends AggregateRoot {
 	@Override
 	public void validate() {
 		super.validate(); 
+	}
+	
+	/**
+	 * Check Work Type
+	 */
+	public void validateInput(){
+		if(CollectionUtil.isEmpty(workTypeList)){
+			throw new BusinessException("Msg_12");
+		}
 		
-		this.validateWorkType();
-		
-		if (this.grantMethod == GrantMethod.ManageRemainNumber) {
+		if (this.isMethodManageRemainNumber()) {
 			this.grantSingle.validate();
 		} else {
 			this.grantRegular.validate();
 			this.grantPeriodic.validate();
 			this.sphdLimit.validate();
 			this.subCondition.validate();
-		}
-	}
-	
-	/**
-	 * Check Work Type
-	 */
-	public void validateWorkType(){
-		if(CollectionUtil.isEmpty(workTypeList)){
-			throw new BusinessException("Msg_12");
 		}
 	}
 	
@@ -92,5 +90,13 @@ public class SpecialHoliday extends AggregateRoot {
 				sphdLimit,
 				subCondition,
 				grantSingle);
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public boolean isMethodManageRemainNumber() {
+		return this.grantMethod == GrantMethod.ManageRemainNumber;
 	}
 }
