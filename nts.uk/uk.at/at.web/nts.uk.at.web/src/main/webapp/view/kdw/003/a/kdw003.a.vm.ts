@@ -14,6 +14,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         selectedEmployee: KnockoutObservable<any>;
         headersGrid: KnockoutObservableArray<any>;
         sheetsGrid: KnockoutObservableArray<any>;
+        fixColGrid: KnockoutObservableArray<any>;
         employeeModeHeader: Array<any> = [
             {
                 headerText: 'ID',
@@ -40,7 +41,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 headerText: nts.uk.resource.getText("KDW003_41"),
                 key: 'date',
                 dataType: 'String',
-                width: '180px',
+                width: '160px',
                 ntsControl: 'Label'
             },
             {
@@ -128,7 +129,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 headerText: nts.uk.resource.getText("KDW003_41"),
                 key: 'date',
                 dataType: 'String',
-                width: '180px',
+                width: '160px',
                 ntsControl: 'Label'
             },
             {
@@ -139,9 +140,80 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 ntsControl: 'Checkbox'
             }
         ];
-        employeeModeFixCol: Array<any>;
-        dateModeFixCol: Array<any>;
-        errorModeFixCol: Array<any>;
+        employeeModeFixCol: Array<any> = [
+            {
+                columnKey: 'id',
+                isFixed: true
+            },
+            {
+                columnKey: 'state',
+                isFixed: true
+            },
+            {
+                columnKey: 'error',
+                isFixed: true
+            },
+            {
+                columnKey: 'date',
+                isFixed: true
+            },
+            {
+                columnKey: 'sign',
+                isFixed: true
+            }
+        ];
+        dateModeFixCol: Array<any> = [
+            {
+                columnKey: 'id',
+                isFixed: true
+            },
+            {
+                columnKey: 'state',
+                isFixed: true
+            },
+            {
+                columnKey: 'error',
+                isFixed: true
+            },
+            {
+                columnKey: 'employeeId',
+                isFixed: true
+            },
+            {
+                columnKey: 'employeeName',
+                isFixed: true
+            },
+            {
+                columnKey: 'sign',
+                isFixed: true
+            }
+        ];
+        errorModeFixCol: Array<any> = [
+            {
+                columnKey: 'id',
+                isFixed: true
+            },
+            {
+                columnKey: 'state',
+                isFixed: true
+            },
+            {
+                columnKey: 'employeeId',
+                isFixed: true
+            },
+            {
+                columnKey: 'employeeName',
+                isFixed: true
+            },
+            {
+                columnKey: 'date',
+                isFixed: true
+            },
+            {
+                columnKey: 'sign',
+                isFixed: true
+            }
+        ];
 
         constructor() {
             var self = this;
@@ -162,8 +234,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 { code: 2, name: "エラー・アラーム" }
             ]);
             self.displayFormat = ko.observable(0);
-            self.baseDate = ko.observable(new Date());
-            self.headersGrid = ko.observableArray(self.employeeModeHeader);
+            self.headersGrid = ko.observableArray(self.dateModeHeader);
+            self.fixColGrid = ko.observableArray(self.dateModeFixCol);
             self.sheetsGrid = ko.observableArray([]);
         }
 
@@ -183,28 +255,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         loadGrid() {
             var self = this;
-            var fixedColumns = [
-                {
-                    columnKey: 'id',
-                    isFixed: true
-                },
-                {
-                    columnKey: 'state',
-                    isFixed: true
-                },
-                {
-                    columnKey: 'error',
-                    isFixed: true
-                },
-                {
-                    columnKey: 'date',
-                    isFixed: true
-                },
-                {
-                    columnKey: 'sign',
-                    isFixed: true
-                }
-            ];
             var summary: ISummaryColumn = {
                 columnKey: 'salary',
                 allowSummaries: true
@@ -280,7 +330,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         name: 'ColumnFixing', fixingDirection: 'left',
                         //                                            syncRowHeights: true,
                         showFixButtons: false,
-                        columnSettings: fixedColumns
+                        columnSettings: self.fixColGrid()
                     },
                     //                    {
                     //                        name: 'Summaries',
