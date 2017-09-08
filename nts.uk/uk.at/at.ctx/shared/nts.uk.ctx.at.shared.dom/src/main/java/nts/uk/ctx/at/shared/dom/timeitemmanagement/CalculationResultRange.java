@@ -27,11 +27,11 @@ public class CalculationResultRange extends DomainObject {
 	// ===================== Optional ======================= //
 	/** The number range. */
 	// 回数範囲
-	private NumberRangeValue numberRange;
+	private NumberRange numberRange;
 
 	/** The time range. */
 	// 時間範囲
-	private TimeRangeValue timeRange;
+	private TimeRange timeRange;
 
 	/** The amount range. */
 	// 金額範囲

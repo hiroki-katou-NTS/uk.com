@@ -12,8 +12,8 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  * The Class DispOrder.
  */
 // 任意項目計算式の並び順
-// 計算式で使用する順番を管理する
-// Manage the order of use in calculation formulas
+// 責務 : 計算式で使用する順番を管理する
+// Responsibility: Manage the order of use in calculation formulas
 @Getter
 public class DispOrder extends AggregateRoot {
 

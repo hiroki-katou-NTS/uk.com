@@ -1,0 +1,86 @@
+@CHARSET "UTF-8";
+
+.lableDetail {
+	margin-top: 30px;
+	margin-left: 20px;
+}
+
+.overtimeNote {
+	width: 280px !important;
+}
+
+.methodSelect {
+	vertical-align: -7px;
+}
+
+.buttonOther {
+	margin-left: 50px !important;
+}
+
+.bg-dark-green {
+	background-color: #C7F391;
+}
+
+.overtime-border td {
+	border: solid grey 1px;
+	text-align: center;
+	padding-top: 3px;
+	padding-bottom: 3px;
+	padding-right: 5px;
+	padding-left: 5px;
+	min-width: 30px;
+	max-width: 250px;
+}
+
+.overtime-border input {
+	width: 150px;
+}
+
+.overtime-border .overtime {
+	width: 50px;
+}
+
+.overtimeSettingDetail {
+	margin-top: 20px;
+}
+
+.overtimeDetail {
+	float: left;
+	max-width: 30%;
+}
+
+.sixtySetting {
+	float: left;
+	margin-left: 60px;
+	max-width: 70%;
+}
+
+#contents-left, #contents-right {
+	padding: 20px;
+	vertical-align: top !important;
+	min-width: 200px;
+}
+
+.divHeader {
+	margin: 5px;
+	min-width: 1360px;
+}
+
+#contents-right {
+	padding-left: 40px !important;
+}
+
+.lableData {
+	width: 170px;
+	float: left;
+}
+
+.lableDataEnd {
+	width: 130px;
+	margin-left: 50px;
+	float: left;
+}
+
+.valueData {
+	float: left;
+}

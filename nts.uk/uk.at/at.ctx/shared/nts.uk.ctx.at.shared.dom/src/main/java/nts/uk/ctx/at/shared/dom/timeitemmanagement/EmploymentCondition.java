@@ -5,13 +5,14 @@
 package nts.uk.ctx.at.shared.dom.timeitemmanagement;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class EmploymentCondition.
  */
 // 雇用条件
 @Getter
-public class EmploymentCondition {
+public class EmploymentCondition extends DomainObject {
 
 	/** The emp cd. */
 	// 雇用コード

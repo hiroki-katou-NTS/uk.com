@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 482,
+					height : 320
+				};
+			</script>
+			
+			<com:scriptfile set="IGNITE" />
+			
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="../_base/cmm011.base.js" />
+			<com:scriptfile path="cmm011.b.service.js" />
+			<com:scriptfile path="cmm011.b.vm.js" />
+			<com:scriptfile path="cmm011.b.start.js" />
+		</ui:define>
+
+		<!-- PAGE CONTENT -->
+		<ui:define name="content">
+			<div id="contents-area">
+				<div id="left-content">
+					<button tabindex="1">#{i18n.getText('CMM011_8')}</button>
+					<button tabindex="2" style="margin-left: 10px;margin-right: 10px;">#{i18n.getText('CMM011_9',['Com_Workplace'])}</button>
+					<button tabindex="3" >#{i18n.getText('CMM011_20')}</button>
+				</div>
+
+				<div id="right-content">
+				</div>
+			</div>
+			<div id="functions-area-bottom" >
+				<button class="large" tabindex="8">Close</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

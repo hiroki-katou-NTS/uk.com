@@ -12,11 +12,11 @@ public enum OvertimeCalculationMethod {
 	
 	/** The time series. */
 	// 時系列（原則）
-	TIME_SERIES(0, "Enum_OvertimeCalculationMethod_Time_Series", "時系列（原則）"),
+	TIME_SERIES(0, "時系列（原則）", "Enum_OvertimeCalculationMethod_Time_Series"),
 	
 	/** The decision after. */
 	//集計後に判断（便宜上）
-	DECISION_AFTER(1, "Enum_OvertimeCalculationMethod_Decision_After", "集計後に判断（便宜上）");
+	DECISION_AFTER(1, "集計後に判断（便宜上）", "Enum_OvertimeCalculationMethod_Decision_After");
 
 	
 	/** The value. */
