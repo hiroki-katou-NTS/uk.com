@@ -21,8 +21,4 @@ public class KrqstAppDeadlinePK implements Serializable{
 	 */
 	@Column(name = "CLOSURE_ID")
 	public int closureId;
-	
-	/**申請種類*/
-	@Column(name = "APP_TYPE")
-	public int appType;
 }

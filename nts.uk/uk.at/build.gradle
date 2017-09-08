@@ -105,8 +105,8 @@ subprojects {
         // Apache commons IO
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.28'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.41'
+		compile group: 'nts.gul', name: 'nts.gul', version: '0.29.1'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.41.1'
 		
 		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.5.4'
 	}
@@ -329,6 +329,9 @@ project (':at.screen:nts.uk.screen.at.app') {
 	 	compile project (':at.ctx:schedule:nts.uk.ctx.at.schedule.dom')
 	 	compile project (':at.ctx:record:nts.uk.ctx.at.record.dom')
 	 	compile project (':at.ctx:request:nts.uk.ctx.at.request.dom')
+		compile (group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.dom', version: '0.5.2')
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.dom', version: '0.5.3')
+		compile (group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.dom', version: '0.4')
 	}
 }
 
@@ -339,6 +342,9 @@ project (':at.screen:nts.uk.screen.at.infra') {
 		compile project(':at.ctx:schedule:nts.uk.ctx.at.schedule.infra')
 		compile project (':at.ctx:request:nts.uk.ctx.at.request.infra')
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.infra')
+		compile(group: 'com.bs.company', name: 'nts.uk.ctx.bs.company.infra', version: '0.5.2')
+		compile(group: 'com.bs.employee', name: 'nts.uk.ctx.bs.employee.infra', version: '0.5.3')
+		compile(group: 'com.bs.person', name: 'nts.uk.ctx.bs.person.infra', version: '0.4')
 	}
 }
 //=========================at:screen↑=====================================
@@ -415,6 +421,7 @@ project (':at.web:nts.uk.at.web') {
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
 		compile group: 'aspose', name: 'cells', version: '9.0.0'
 		
+		runtime group: 'eu.medsea.mimeutil', name: 'mime-util', version: '2.1.3'
 		runtime group: 'com.googlecode.juniversalchardet', name: 'juniversalchardet', version: '1.0.3'
 		
 		compile project(':at.ctx:shared:nts.uk.ctx.at.shared.app')

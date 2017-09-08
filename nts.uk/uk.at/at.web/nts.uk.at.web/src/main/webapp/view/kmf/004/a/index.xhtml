@@ -52,7 +52,7 @@
 							data-bind="ntsFormLabel: {required: true,constraint:['SpecialHolidayCode','SpecialHolidayName']}">#{i18n.getText('KMF004_9')}</div>
 						<span><input id="code-text"
 							style="width: 40px; margin-left: -1px;"
-							data-bind="ntsTextEditor: {value: specialHolidayCode, required: true, enable:$parent.isEnableCode}" /></span>
+							data-bind="ntsTextEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode', required: true, enable:$parent.isEnableCode, immediate: true ,option: {autofill:true, filldirection:'left'}}" /></span>
 						<span><input id="code-text2" style="width: 180px"
 							data-bind="ntsTextEditor: {value: specialHolidayName, required: true}" /></span>
 						<div id="addtitional-set"
@@ -64,14 +64,14 @@
 								data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF004_13')}</div>
 							<button
 								data-bind="click : $parent.openKDL002Dialog.bind($parent)"
-								style="margin-left: 96px;" id="A_BTN_004">#{i18n.getText('KMF004_12')}</button>
+								style="margin-left: 106px;" id="A_BTN_004">#{i18n.getText('KMF004_12')}</button>
 							<span><input id="text-target-item" style="width: 469px"
 								data-bind="ntsTextEditor: {value: $parent.workTypeNames, required: true}" /></span>
 						</div>
 						<div>
 							<div id="single-offer" style="margin-top: 10px;"
 								data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_14')}</div>
-							<div id="check-single-offer" style="margin-left: 96px;"
+							<div id="check-single-offer" style="margin-left: 107px;"
 								data-bind="ntsSwitchButton: {
 												options: $parent.roundingPeriodic,
 												optionsValue: 'code',
@@ -83,7 +83,7 @@
 							<div id="memo"
 								style="margin-top: 10px; vertical-align: text-bottom;"
 								data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_16')}</div>
-							<textarea style="width: 524px; height: 50px; margin-left: 132px; margin-top: 10px;"
+							<textarea style="width: 524px; height: 50px; margin-left: 144px; margin-top: 10px;"
 								id="webMenuCode"
 								data-bind="ntsMultilineEditor: {value: memo,name: '#[CCG013_49]'}" />
 						</div>

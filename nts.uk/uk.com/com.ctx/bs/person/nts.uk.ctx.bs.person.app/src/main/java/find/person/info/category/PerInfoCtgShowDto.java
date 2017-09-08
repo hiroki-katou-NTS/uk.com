@@ -7,4 +7,5 @@ public class PerInfoCtgShowDto {
 	private String id;
 	private String categoryName;
 	private int categoryType;
+	private int isAbolition;
 }

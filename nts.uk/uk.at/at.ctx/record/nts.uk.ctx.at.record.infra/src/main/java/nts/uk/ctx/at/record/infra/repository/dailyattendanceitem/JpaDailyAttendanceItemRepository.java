@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.infra.repository.dailyattendanceitem;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -14,6 +15,7 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 
 	private static final String FIND;
 	private static final String FIND_ALL;
+	private static final String FIND_SINGLE;
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -28,6 +30,13 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 		b.append("FROM KrcmtDailyAttendanceItem a ");
 		b.append("WHERE a.krcmtDailyAttendanceItemPK.companyId = :companyId ");
 		FIND_ALL = b.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM KrcmtDailyAttendanceItem a ");
+		builderString.append("WHERE a.krcmtDailyAttendanceItemPK.companyId = :companyId ");
+		builderString.append("AND  a.krcmtDailyAttendanceItemPK.attendanceItemId = :attendanceItemId ");
+		FIND_SINGLE = builderString.toString();
 		
 	}
 
@@ -53,5 +62,11 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	public List<DailyAttendanceItem> getList(String companyId) {
 		return this.queryProxy().query(FIND_ALL, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
 				.getList(f -> toDomain(f));
+	}
+
+	@Override
+	public Optional<DailyAttendanceItem> getDailyAttendanceItem(String companyId, int attendanceItemId) {
+		return this.queryProxy().query(FIND_SINGLE, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
+				.setParameter("attendanceItemId", attendanceItemId).getSingle(f -> toDomain(f));
 	}
 }

@@ -1,42 +1,14 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output;
 
-import lombok.Value;
-import nts.arc.time.GeneralDate;
-@Value
+import java.util.List;
+
+import lombok.Data;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
+@Data
 public class EmployeeUnregisterOutput {
-	/** The CompanyId */
-	private String companyId;
-
-	/** The personId */
-	private String pId;
-
-	/** The employeeId */
-	private String sId;
-
-	/** The employeeCode */
-	private String sCd;
-
-	/** The Company Mail */
-	private String companyMail;
-
-	/** The Company Mobile Mail - 会社携帯メールアドレス */
-	private String mobileMail;
-
-	/** The Company Mobile */
-	private String companyMobile;
-
-	/** TheJob Entry History */
-	private String jobEntryHistory;
-
-	/** The HiringType */
-	private int hiringType;
-
-	/** The RetireDate */
-	private GeneralDate retirementDate;
-
-	/** The EntryDate */
-	private GeneralDate joinDate;
-
-	/** The AdoptDate */
-	private GeneralDate adoptDate;
+	private EmployeeApproveDto empInfor;
+	
+	private List<Integer> appType;
+	
+	
 }

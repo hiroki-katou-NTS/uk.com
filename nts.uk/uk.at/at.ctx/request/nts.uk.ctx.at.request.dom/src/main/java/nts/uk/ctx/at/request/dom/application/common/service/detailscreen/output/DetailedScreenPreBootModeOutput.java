@@ -6,15 +6,15 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr
 
 @Value
 public class DetailedScreenPreBootModeOutput {
-	
+	//利用者
 	User user;
-	
+	//ステータス
 	ReflectPlanPerState reflectPlanState;
-	
+	//承認できるフラグ
 	Boolean authorizableFlags;
-	
+	//ログイン者の承認区分
 	ApprovalAtr approvalATR;
-	
+	//代行期限切れフラグ
 	Boolean alternateExpiration;
 	
 }

@@ -54,7 +54,7 @@ public class SpecialHoliday extends AggregateRoot {
 
 	}
 
-	public static SpecialHoliday createFromJavaType(String companyId, int specialHolidayCode,
+	public static SpecialHoliday createFromJavaType(String companyId, String specialHolidayCode,
 			String specialHolidayName, int grantPeriodicCls, String memo, List<String> workTypeList, 
 			GrantRegular grantRegular,
 			GrantPeriodic grantPeriodic,

@@ -17,7 +17,7 @@
 				nts.uk.ctx.bs.person.dom.person.info.numericitem.NumericItemMax
 				nts.uk.ctx.bs.person.dom.person.info.timeitem.TimeItemMin
 				nts.uk.ctx.bs.person.dom.person.info.timeitem.TimeItemMax
-				nts.uk.shr.com.primitive.TimeWithDayAttr
+				nts.uk.shr.com.time.TimeWithDayAttr
 			</com:ValidatorScript>
            	<script>var dialogSize = { width: 1150, height: 580 };</script>
 			<com:scriptfile set="IGNITE" />
@@ -146,16 +146,14 @@
 											<span data-bind="text: '#{i18n.getText('CPS005_17')}' "></span>
 										</div>
 										<input tabindex="9"
-											data-bind="ntsTextEditor: {
+											data-bind="ntsNumberEditor: {
 												name: '#[CPS005_17]',
 												value: stringItemLength,
 												constraint: 'StringItemLength',
-												option: {
-									            	textmode: 'text',
-									            	placeholder: '',
+												option: new nts.uk.ui.option.NumberEditorOption({
 									            	width: '175px',
 									            	textalign: 'left'
-									            },
+									            }),
 												required: true,
 												enable: true,
 												readonly: false,
@@ -225,20 +223,18 @@
 											<span data-bind="text: '#{i18n.getText('CPS005_20')}' "></span>
 										</div>
 										<input tabindex="14"
-											data-bind="ntsTextEditor: {
+											data-bind="ntsNumberEditor: {
 												name: '#[CPS005_20]',
 												value: integerPart,
 												constraint: 'IntegerPart',
-												option: {
-									            	textmode: 'text',
+												option: new nts.uk.ui.option.NumberEditorOption({
 									            	placeholder: '',
 									            	width: '175px',
 									            	textalign: 'left'
-									            },
+									            }),
 												required: true,
 												enable: true,
-												readonly: false,
-												immediate: false}" />
+												readonly: false}" />
 									</div>
 									<div
 										class="valign-center control-group control-group-margin-custom">
@@ -248,16 +244,15 @@
 											<span data-bind="text: '#{i18n.getText('CPS005_21')}' "></span>
 										</div>
 										<input tabindex="15"
-											data-bind="ntsTextEditor: {
+											data-bind="ntsNumberEditor: {
 												name: '#[CPS005_21]',
 												value: decimalPart,
 												constraint: 'DecimalPart',
-												option: {
-									            	textmode: 'text',
+												option: new nts.uk.ui.option.NumberEditorOption({
 									            	placeholder: '',
 									            	width: '175px',
 									            	textalign: 'left'
-									            },
+									            }),
 												required: true,
 												enable: true,
 												readonly: false,
@@ -274,9 +269,11 @@
 												name: '#[CPS005_38]',
 												value: numericItemMin,
 												constraint: 'NumericItemMin',
-												option: {
-								                    width: '80px',
-								                },
+												option:  new nts.uk.ui.option.NumberEditorOption({
+									            	placeholder: '',
+									            	width: '80px',
+									            	textalign: 'left'
+									            }),
 												required: false,
 												enable: true,
 												readonly: false}" />
@@ -285,9 +282,12 @@
 												name: '#[CPS005_39]',
 												value: numericItemMax,
 												constraint: 'NumericItemMax',
-												option: {
-								                    width: '80px',
-								                },
+												option: 'NumericItemMin',
+												option:  new nts.uk.ui.option.NumberEditorOption({
+									            	placeholder: '',
+									            	width: '80px',
+									            	textalign: 'left'
+									            }),
 												required: false,
 												enable: true,
 												readonly: false}" />

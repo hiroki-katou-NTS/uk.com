@@ -4,9 +4,16 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Table(name = "KRQST_WP_APP_CF_DETAIL")
 public class KrqstWpAppConfigDetail  extends UkJpaEntity implements Serializable{
 	/*主キー*/
 	@EmbeddedId
