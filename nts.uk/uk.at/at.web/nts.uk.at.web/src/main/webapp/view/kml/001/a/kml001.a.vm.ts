@@ -139,25 +139,25 @@ module nts.uk.at.view.kml001.a {
              * get list item for each premium setting
              */
             private getItem(iDList: Array<number>, index: number) {
-                var self = this;
-                var dfd = $.Deferred();
-                if (iDList.length != 0) {
-                    self.currentPersonCost().premiumSets()[index].attendanceItems.removeAll();
-                    servicebase.getAttendanceItems(iDList)
-                        .done(function(res: Array<any>) {
-                            let newList = [];
-                            res.forEach(function(item) {
-                                newList.push(new vmbase.AttendanceItem(item.attendanceItemId, item.attendanceItemName));
-                            });
-                            self.currentPersonCost().premiumSets()[index].attendanceItems(newList);
-                            self.createViewAttendanceItems(newList,index);
-                        })
-                        .fail(function(res) {
-                            nts.uk.ui.dialog.alertError(res.message);
-                        });
-                } else {
-                    self.createViewAttendanceItems([],index);        
-                }
+//                var self = this;
+//                var dfd = $.Deferred();
+//                if (iDList.length != 0) {
+//                    self.currentPersonCost().premiumSets()[index].attendanceItems.removeAll();
+//                    servicebase.getAttendanceItems(iDList)
+//                        .done(function(res: Array<any>) {
+//                            let newList = [];
+//                            res.forEach(function(item) {
+//                                newList.push(new vmbase.AttendanceItem(item.attendanceItemId, item.attendanceItemName));
+//                            });
+//                            self.currentPersonCost().premiumSets()[index].attendanceItems(newList);
+//                            self.createViewAttendanceItems(newList,index);
+//                        })
+//                        .fail(function(res) {
+//                            nts.uk.ui.dialog.alertError(res.message);
+//                        });
+//                } else {
+//                    self.createViewAttendanceItems([],index);        
+//                }
             }
             
             /**

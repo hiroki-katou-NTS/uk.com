@@ -4,13 +4,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.dom.attendancetype.AttendanceTypeRepository;
 import nts.uk.ctx.at.function.pub.attendancetype.AttendanceTypePub;
 import nts.uk.ctx.at.function.pub.attendancetype.AttendanceTypePubDto;
 @Stateless
 public class AttendanceTypePubImp implements AttendanceTypePub {
-	
+	@Inject
 	private AttendanceTypeRepository repository;
 	@Override
 	public List<AttendanceTypePubDto> getItemByScreenUseAtr(String companyId, int screenUseAtr) {

@@ -19,7 +19,7 @@ public class AttendanceItemPubImp implements AttendanceItemLinkingPub {
 	@Override
 	public List<AttendanceItemLinkingDto> getFrameNo(List<Integer> attendanceItemIds) {
 		return attendanceItemLinkingRepository.getByAttendanceId(attendanceItemIds).stream().map(f -> {
-			return new AttendanceItemLinkingDto(f.getAttendanceItemId(), f.getFrameNo().v());
+			return new AttendanceItemLinkingDto(f.getAttendanceItemId(), f.getFrameNo().v(), f.getFrameCategory().value);
 		}).collect(Collectors.toList());
 	}
 

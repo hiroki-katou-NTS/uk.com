@@ -15,7 +15,7 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItemRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
-import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePrimiumSevice;
+import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePrimiumAdapter;
 import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePriServiceDto;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -36,7 +36,7 @@ public class PersonCostCalculationFinder {
 	private PremiumItemRepository premiumItemRepository;
 	
 	@Inject
-	private AttendanceTypePrimiumSevice atType;
+	private AttendanceTypePrimiumAdapter atType;
 	
 	/**
 	 * get all Person Cost Calculation by company ID

@@ -13,9 +13,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum CalculationClassification {
 
-	/** The embedded formula. */
+	/** The item selection. */
 	// 計算式組込
-	EMBEDDED_FORMULA(0),
+	ITEM_SELECTION(0),
 
 	/** The formula setting. */
 	// 計算式設定

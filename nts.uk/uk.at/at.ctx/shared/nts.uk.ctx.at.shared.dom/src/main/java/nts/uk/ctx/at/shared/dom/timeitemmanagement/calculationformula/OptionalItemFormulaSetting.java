@@ -25,6 +25,6 @@ public class OptionalItemFormulaSetting extends DomainObject {
 
 	/** The calculation item selection. */
 	// 計算項目選択
-	private CalculationItemSelection calculationItemSelection;
+	private ItemSelection itemSelection;
 
 }
