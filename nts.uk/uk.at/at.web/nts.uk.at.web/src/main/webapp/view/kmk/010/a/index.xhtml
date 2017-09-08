@@ -47,71 +47,52 @@
 						</div>
 						<textarea class="overtimeNote" data-bind="ntsMultilineEditor: { value: note, constraint: 'OvertimeNote' }" />
 					</div>
-					
-					<table tabindex="10" class="overtime-border tbl-monthly" >
-						<tr class="bg-dark-green">
-							<td>#{i18n.getText('KMK010_10')}</td>
-							<td>#{i18n.getText('KMK010_11')}</td>
-							<td>#{i18n.getText('KMK010_12')}</td>
-						</tr>
-						<com:ko tag="foreach" bind="overtimes">
-							<tr>
-								<td class="bg-green">
-									<div data-bind="text: overtimeNo"></div>
-								</td>
-								<td>
-									<input data-bind="attr: {'tabindex': 16 + $index()*5}, 
-										ntsTimeEditor: {name: '#[KSM001_38]',
-											value: time1st,
-											inputFormat: 'time', 
-											mode: 'time',
-											required: true,
-											enable: $parents[1].isEditable,
-											constraint: 'MonthlyEstimateTime'}" />
-								</td>
-								<td>
-									<input data-bind="attr: {'tabindex': 17 + $index()*5},
-										ntsTimeEditor: {name: '#[KSM001_39]',
-											value: time2nd,
-											inputFormat: 'time', 
-											mode: 'time',
-											required: true,
-											enable: $parents[1].isEditable,
-											constraint: 'MonthlyEstimateTime'}" />
-								</td>
-								<td>
-									<input data-bind="attr: {'tabindex': 18 + $index()*5}, 
-										ntsTimeEditor: {name: '#[KSM001_40]',
-											value: time3rd,
-											inputFormat: 'time', 
-											mode: 'time',
-											required: true,
-											enable: $parents[1].isEditable,
-											constraint: 'MonthlyEstimateTime'}" />
-								</td>
-								<td>
-									<input data-bind="attr: {'tabindex': 19 + $index()*5}, 
-										ntsTimeEditor: {name: '#[KSM001_41]',
-											value: time4th,
-											inputFormat: 'time', 
-											mode: 'time',
-											required: true,
-											enable: $parents[1].isEditable,
-											constraint: 'MonthlyEstimateTime'}" />
-								</td>
-								<td>
-									<input data-bind="attr: {'tabindex': 20 + $index()*5}, 
-										ntsTimeEditor: {name: '#[KSM001_42]',
-											value: time5th,
-											inputFormat: 'time', 
-											mode: 'time',
-											required: true,
-											enable: $parents[1].isEditable,
-											constraint: 'MonthlyEstimateTime'}" />
-								</td>
-							</tr>
-						</com:ko>
-					</table>
+					<div class="overtimeSettingDetail">
+						<div class="overtimeDetail">
+							<table tabindex="10" class="overtime-border tbl-monthly" >
+								<tr class="bg-dark-green">
+									<td>#{i18n.getText('KMK010_10')}</td>
+									<td>#{i18n.getText('KMK010_11')}</td>
+									<td>#{i18n.getText('KMK010_12')}</td>
+								</tr>
+								<com:ko tag="foreach" bind="overtimes">
+									<tr>
+										<td class="bg-green">
+											<div data-bind="text: overtimeNo"></div>
+										</td>
+										<td>
+											<input data-bind="attr: {'tabindex': 16 + $index()*5}, 
+												ntsTextEditor: {name: '#[KSM001_38]',
+												value: name}" />
+										</td>
+										<td>
+											<div>
+												<input class="overtime" data-bind="attr: {'tabindex': 17 + $index()*5},
+													ntsTimeEditor: {name: '#[KSM001_39]',
+													value: overtime,
+													inputFormat: 'time', 
+													mode: 'time',
+													required: true,
+													enable: $parents[1].isEditable,
+													constraint: 'MonthlyEstimateTime'}" />
+												<label>#{i18n.getText('KMK010_14')}</label>
+											</div>
+										</td>
+									</tr>
+								</com:ko>
+							</table>
+						</div>
+						<div class="sixtySetting">
+							<table tabindex="10" class="overtime-border tbl-monthly" >
+								<tr class="bg-dark-green">
+									<td>#{i18n.getText('KMK010_15')}</td>
+									<td>#{i18n.getText('KMK010_16')}</td>
+									<td>#{i18n.getText('KMK010_17')}</td>
+									<td>#{i18n.getText('KMK010_18')}</td>
+								</tr>
+							</table>
+						</div>
+					</div>
 				</div>
 				
 			</ui:define>
