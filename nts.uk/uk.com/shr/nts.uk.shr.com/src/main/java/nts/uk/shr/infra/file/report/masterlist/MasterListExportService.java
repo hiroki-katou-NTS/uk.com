@@ -23,12 +23,16 @@ import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
 import nts.uk.shr.infra.file.report.masterlist.generator.MasterListExportSource;
 import nts.uk.shr.infra.file.report.masterlist.generator.MasterListReportGenerator;
 import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
+import nts.uk.shr.infra.i18n.loading.LanguageMasterRepository;
 
 @Stateless
 public class MasterListExportService extends ExportService<MasterListExportQuery>{
 	
 	@Inject
 	private MasterListReportGenerator generator;
+	
+	@Inject
+	private LanguageMasterRepository languageRepo;
 	
 	@Inject
 	private CompanyAdapter company;
@@ -63,11 +67,11 @@ public class MasterListExportService extends ExportService<MasterListExportQuery
 				.orElseThrow(() -> new RuntimeException("Company is not found!!!!")).getCompanyName();
 		
 		String createReportDate = GeneralDateTime.now().localDateTime().format(DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss"));
-		
+		String language = languageRepo.getSystemLanguage(query.getLanguageId()).get().getLanguageName();
 		headers.put("【会社】", context.companyCode() + " " + companyname);
 		headers.put("【種類】", query.getDomainType());
 		headers.put("【日時】", createReportDate);
-		headers.put("【選択言語】 ", query.getLanguage());
+		headers.put("【選択言語】 ", language);
 		
 		return headers;
 	}

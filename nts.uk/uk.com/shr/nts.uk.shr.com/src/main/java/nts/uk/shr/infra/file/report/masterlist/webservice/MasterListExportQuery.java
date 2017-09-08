@@ -9,7 +9,7 @@ public class MasterListExportQuery {
 	
 	private String domainType;
 
-	private String language;
+	private String languageId;
 	
 	private ReportType reportType;
 }
