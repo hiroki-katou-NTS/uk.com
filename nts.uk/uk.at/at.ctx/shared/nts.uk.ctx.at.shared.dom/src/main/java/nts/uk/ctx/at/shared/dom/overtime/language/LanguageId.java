@@ -2,27 +2,27 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.overtime;
+package nts.uk.ctx.at.shared.dom.overtime.language;
 
-import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.IntegerRange;
+import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * The Class PremiumRate.
+ * The Class LanguageId.
  */
-// 割増率
-@IntegerRange(min = 0, max = 100)
-public class PremiumRate extends IntegerPrimitiveValue<PremiumRate>{
+@StringMaxLength(3)
+// 言語ID
+public class LanguageId extends StringPrimitiveValue<LanguageId>{
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Instantiates a new premium rate.
+	 * Instantiates a new language id.
 	 *
 	 * @param rawValue the raw value
 	 */
-	public PremiumRate(Integer rawValue) {
+	public LanguageId(String rawValue) {
 		super(rawValue);
 	}
 

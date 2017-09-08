@@ -2,26 +2,27 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.overtime;
+package nts.uk.ctx.at.shared.dom.overtime.premium;
 
-import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.StringMaxLength;
+import nts.arc.primitive.IntegerPrimitiveValue;
+import nts.arc.primitive.constraint.IntegerRange;
 
 /**
- * The Class BreakdownItemName.
+ * The Class PremiumRate.
  */
-@StringMaxLength(30)
-public class BreakdownItemName extends StringPrimitiveValue<BreakdownItemName>{
+// 割増率
+@IntegerRange(min = 0, max = 100)
+public class PremiumRate extends IntegerPrimitiveValue<PremiumRate>{
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Instantiates a new breakdown item name.
+	 * Instantiates a new premium rate.
 	 *
 	 * @param rawValue the raw value
 	 */
-	public BreakdownItemName(String rawValue) {
+	public PremiumRate(Integer rawValue) {
 		super(rawValue);
 	}
 

@@ -2,13 +2,17 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.overtime;
+package nts.uk.ctx.at.shared.dom.overtime.setting;
 
 import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.overtime.OvertimeCalculationMethod;
+import nts.uk.ctx.at.shared.dom.overtime.OvertimeNote;
+import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItem;
 
 /**
  * The Class OvertimeSetting.
@@ -45,6 +49,7 @@ public class OvertimeSetting extends AggregateRoot{
 	public OvertimeSetting(OvertimeSettingGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.note = memento.getNote();
+		this.breakdownItems = memento.getBreakdownItems();
 		this.calculationMethod = memento.getCalculationMethod();
 		this.overtimes = memento.getOvertimes();
 	}
@@ -58,6 +63,7 @@ public class OvertimeSetting extends AggregateRoot{
 	public void saveToMemento(OvertimeSettingSetMemento memento){
 		memento.setCompanyId(this.companyId);
 		memento.setNote(this.note);
+		memento.setBreakdownItems(this.breakdownItems);
 		memento.setCalculationMethod(this.calculationMethod);
 		memento.setOvertimes(this.overtimes);
 	}

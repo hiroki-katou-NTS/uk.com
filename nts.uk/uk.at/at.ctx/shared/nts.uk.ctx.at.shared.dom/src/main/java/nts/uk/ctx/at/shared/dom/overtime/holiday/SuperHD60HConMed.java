@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.overtime;
+package nts.uk.ctx.at.shared.dom.overtime.holiday;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.overtime.premium.extra.PremiumExtra60HRate;
 
 /**
  * The Class SuperHD60HConMed.

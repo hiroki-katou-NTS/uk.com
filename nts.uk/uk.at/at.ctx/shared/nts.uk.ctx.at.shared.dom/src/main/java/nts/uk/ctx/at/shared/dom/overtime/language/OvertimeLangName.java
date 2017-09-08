@@ -2,35 +2,37 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.overtime;
+package nts.uk.ctx.at.shared.dom.overtime.language;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.overtime.OvertimeName;
+import nts.uk.ctx.at.shared.dom.overtime.OvertimeNo;
 
 /**
- * The Class OvertimeLangBRDItem.
+ * The Class OvertimeLangName.
  */
-// 時間外超過の内訳項目の他言語表示名
+// 超過時間の他言語表示名
+
 @Getter
-public class OvertimeLangBRDItem extends AggregateRoot{
+public class OvertimeLangName extends AggregateRoot{
 	
 	/** The company id. */
 	// 会社ID
 	private CompanyId companyId;
 
-
 	/** The name. */
 	// 名称
-	private BreakdownItemName name;
+	private OvertimeName name;
 	
 	/** The language id. */
 	// 言語ID
 	private LanguageId languageId;
 	
-	/** The breakdown item no. */
+	/** The overtime no. */
 	// 超過時間NO
-	private BreakdownItemNo breakdownItemNo;
+	private OvertimeNo overtimeNo;
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -39,9 +41,9 @@ public class OvertimeLangBRDItem extends AggregateRoot{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((breakdownItemNo == null) ? 0 : breakdownItemNo.hashCode());
 		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
 		result = prime * result + ((languageId == null) ? 0 : languageId.hashCode());
+		result = prime * result + ((overtimeNo == null) ? 0 : overtimeNo.hashCode());
 		return result;
 	}
 
@@ -56,9 +58,7 @@ public class OvertimeLangBRDItem extends AggregateRoot{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		OvertimeLangBRDItem other = (OvertimeLangBRDItem) obj;
-		if (breakdownItemNo != other.breakdownItemNo)
-			return false;
+		OvertimeLangName other = (OvertimeLangName) obj;
 		if (companyId == null) {
 			if (other.companyId != null)
 				return false;
@@ -69,8 +69,11 @@ public class OvertimeLangBRDItem extends AggregateRoot{
 				return false;
 		} else if (!languageId.equals(other.languageId))
 			return false;
+		if (overtimeNo != other.overtimeNo)
+			return false;
 		return true;
 	}
+	
 	
 	
 }
