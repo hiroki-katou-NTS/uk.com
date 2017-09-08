@@ -2,16 +2,16 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.guideline;
+package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.commonset;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimatedCondition;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.CommonGuidelineSettingGetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.EstimatedAlarmColor;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.ReferenceCondition;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.guideline.KscstEstGuideSetting;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.CommonGuidelineSettingGetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.EstimatedAlarmColor;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.ReferenceCondition;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.commonset.KscstEstComSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.common.color.ColorCode;
 public class JpaCommonGuidelineSettingGetMemento implements CommonGuidelineSettingGetMemento {
 
 	/** The entity. */
-	private KscstEstGuideSetting entity;
+	private KscstEstComSet entity;
 
 	/**
 	 * Instantiates a new jpa common guideline setting get memento.
@@ -29,7 +29,7 @@ public class JpaCommonGuidelineSettingGetMemento implements CommonGuidelineSetti
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaCommonGuidelineSettingGetMemento(KscstEstGuideSetting entity) {
+	public JpaCommonGuidelineSettingGetMemento(KscstEstComSet entity) {
 		this.entity = entity;
 	}
 

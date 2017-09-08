@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.app.find.shift.estimate.guideline.dto;
+package nts.uk.ctx.at.schedule.app.find.shift.estimate.commonset.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 import lombok.Data;
 import nts.uk.ctx.at.schedule.app.command.shift.estimate.guideline.dto.EstimatedAlarmColorDto;
 import nts.uk.ctx.at.schedule.app.command.shift.estimate.guideline.dto.ReferenceConditionDto;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.CommonGuidelineSettingSetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.EstimatedAlarmColor;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.ReferenceCondition;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.CommonGuidelineSettingSetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.EstimatedAlarmColor;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.ReferenceCondition;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**

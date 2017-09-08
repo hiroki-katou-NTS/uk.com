@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.shift.estimate.guideline;
+package nts.uk.ctx.at.schedule.infra.entity.shift.estimate.commonset;
 
 import java.io.Serializable;
 
@@ -42,7 +42,7 @@ public class KscstEstAlarmColor extends UkJpaEntity implements Serializable {
 	@ManyToOne
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false) })
-	public KscstEstGuideSetting kscstEstGuideSetting;
+	public KscstEstComSet kscstEstGuideSetting;
 
 	/**
 	 * Instantiates a new kscst est alarm color.

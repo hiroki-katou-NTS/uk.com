@@ -2,24 +2,32 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.timeitemmanagement.calculationformula;
+package nts.uk.ctx.at.shared.dom.common.amountrounding;
 
 import lombok.AllArgsConstructor;
 
 /**
- * The Enum CalculationClassification.
+ * The Enum Unit.
  */
-// 計算区分
+// 端数処理
 @AllArgsConstructor
-public enum CalculationClassification {
+public enum Unit {
 
-	/** The item selection. */
-	// 計算式組込
-	ITEM_SELECTION(0),
+	/** The one yen. */
+	// 1円
+	ONE_YEN(1),
 
-	/** The formula setting. */
-	// 計算式設定
-	FORMULA_SETTING(1);
+	/** The ten yen. */
+	// 10円
+	TEN_YEN(10),
+
+	/** The one hundred yen. */
+	// 100円
+	ONE_HUNDRED_YEN(100),
+
+	/** The one thousand yen. */
+	// 1000円
+	ONE_THOUSAND_YEN(1000);
 
 	/** The value. */
 	public final int value;

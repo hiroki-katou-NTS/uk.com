@@ -46,13 +46,13 @@ public class OptionalItemFormula extends AggregateRoot {
 	// 記号
 	private Symbol symbol;
 
+	// ===================== Optional ======================= //
 	/** The monthly rounding. */
 	// 月別端数処理
-	private String monthlyRounding;
+	private MonthlyRounding monthlyRounding;
 
-	// ===================== Optional ======================= //
 	/** The daily rounding. */
 	// 日別端数処理
-	private String dailyRounding;
+	private DailyRounding dailyRounding;
 
 }

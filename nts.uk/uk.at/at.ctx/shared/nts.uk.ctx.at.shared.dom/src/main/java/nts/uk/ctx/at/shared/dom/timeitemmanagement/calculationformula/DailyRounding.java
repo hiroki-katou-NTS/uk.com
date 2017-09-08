@@ -11,11 +11,11 @@ import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
- * The Class MonthlyRounding.
+ * The Class DailyRounding.
  */
-// 月別端数処理設定
+// 日別端数処理設定
 @Getter
-public class MonthlyRounding extends DomainObject {
+public class DailyRounding extends DomainObject {
 
 	/** The number rounding. */
 	// 数値丸め

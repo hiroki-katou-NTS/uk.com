@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.shift.estimate.guideline;
+package nts.uk.ctx.at.schedule.infra.entity.shift.estimate.commonset;
 
 import java.io.Serializable;
 import java.util.List;
@@ -24,8 +24,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSCST_EST_GUIDE_SETTING")
-public class KscstEstGuideSetting extends UkJpaEntity implements Serializable {
+@Table(name = "KSCST_EST_COM_SET")
+public class KscstEstComSet extends UkJpaEntity implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -77,7 +77,7 @@ public class KscstEstGuideSetting extends UkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new kscst est guide setting.
 	 */
-	public KscstEstGuideSetting() {
+	public KscstEstComSet() {
 		super();
 	}
 
@@ -100,10 +100,10 @@ public class KscstEstGuideSetting extends UkJpaEntity implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KscstEstGuideSetting)) {
+		if (!(object instanceof KscstEstComSet)) {
 			return false;
 		}
-		KscstEstGuideSetting other = (KscstEstGuideSetting) object;
+		KscstEstComSet other = (KscstEstComSet) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
