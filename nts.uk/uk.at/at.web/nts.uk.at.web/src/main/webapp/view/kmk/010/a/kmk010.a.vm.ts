@@ -2,6 +2,7 @@ module nts.uk.at.view.kmk010.a {
 
     import EnumConstantDto = service.model.EnumConstantDto;
     import OvertimeDto = service.model.OvertimeDto;
+    import OvertimeBRDItemDto = service.model.OvertimeBRDItemDto;
     import OvertimeSettingDto = service.model.OvertimeSettingDto;
     
     export module viewmodel {
@@ -32,18 +33,37 @@ module nts.uk.at.view.kmk010.a {
                 });
                 return dfd.promise();
             }
+            /**
+             * function on click button open dialog overtime setting
+             */
+            private openDialogOvertimeSetting(): void {
+                var self = this;
+                nts.uk.ui.windows.sub.modal("/view/kmk/010/b/index.xhtml").onClosed(function() {
+                    
+                });  
+            } 
+            /**
+             * function on click button open dialog overtime break down item
+             */
+            private openDialogOvertimeBRDItem(): void {
+                var self = this;
+                nts.uk.ui.windows.sub.modal("/view/kmk/010/c/index.xhtml").onClosed(function() {
+                    
+                });  
+            } 
 
         }
         export class OvertimeModel {
             name: KnockoutObservable<string>;
             overtime: KnockoutObservable<number>;
             overtimeNo: KnockoutObservable<number>;
-            useClassification: KnockoutObservable<number>;
+            useClassification: KnockoutObservable<boolean>;
+            
             constructor(){
                 this.name = ko.observable('');
                 this.overtime = ko.observable(0);
                 this.overtimeNo = ko.observable(0);
-                this.useClassification = ko.observable(0);    
+                this.useClassification = ko.observable(true);    
             }
             
             updateData(dto: OvertimeDto){
@@ -52,26 +72,77 @@ module nts.uk.at.view.kmk010.a {
                 this.overtimeNo(dto.overtimeNo);
                 this.useClassification(dto.useClassification);
             }
+            
+            toDto(): OvertimeDto {
+                var dto: OvertimeDto = {
+                    name: this.name(),
+                    overtime: this.overtime(),
+                    overtimeNo: this.overtimeNo(),
+                    useClassification: this.useClassification()
+                };
+                return dto;
+            }
+        }
+        
+        export class OvertimeBRDItemModel {
+            useClassification: KnockoutObservable<boolean>;
+            breakdownItemNo: KnockoutObservable<number>;
+            name: KnockoutObservable<string>;
+            productNumber: KnockoutObservable<number>;
+            
+            constructor() {
+                this.useClassification = ko.observable(true);
+                this.breakdownItemNo = ko.observable(0);
+                this.name = ko.observable('');
+                this.productNumber = ko.observable(0);
+            }
+            
+            updateData(dto: OvertimeBRDItemDto){
+                this.useClassification(dto.useClassification);
+                this.breakdownItemNo(dto.breakdownItemNo);
+                this.name(dto.name);
+                this.productNumber(dto.productNumber);
+            }
+            
+            toDto(): OvertimeBRDItemDto{
+                var dto: OvertimeBRDItemDto = {
+                    useClassification: this.useClassification(),
+                    breakdownItemNo: this.breakdownItemNo(),
+                    name: this.name(),
+                    productNumber: this.productNumber()
+                };
+                return dto;    
+            }
         }
         export class OvertimeSettingModel {
             note: KnockoutObservable<string>;
             calculationMethod: KnockoutObservable<number>;
             overtimes: OvertimeModel[];
+            breakdownItems: OvertimeBRDItemModel[]
+
             constructor() {
                 this.note = ko.observable('');
                 this.calculationMethod = ko.observable(0);
                 this.overtimes = [];
+                this.breakdownItems = [];
             }
-            
-            updateData(dto: OvertimeSettingDto){
+
+            updateData(dto: OvertimeSettingDto) {
                 this.note(dto.note);
                 this.calculationMethod(dto.calculationMethod);
                 this.overtimes = [];
-                for(var overtime of dto.overtimes){
+                for (var overtime of dto.overtimes) {
                     var model: OvertimeModel = new OvertimeModel();
                     model.updateData(overtime);
-                    this.overtimes.push(model); 
+                    this.overtimes.push(model);
                 }
+                this.breakdownItems = [];
+                for (var overtimeBRD of dto.breakdownItems) {
+                    var modelBRD: OvertimeBRDItemModel = new OvertimeBRDItemModel();
+                    modelBRD.updateData(overtimeBRD);
+                    this.breakdownItems.push(modelBRD);
+                }
+
             }
         }
         
