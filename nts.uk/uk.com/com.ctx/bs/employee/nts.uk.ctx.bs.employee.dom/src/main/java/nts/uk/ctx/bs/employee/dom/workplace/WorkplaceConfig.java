@@ -44,4 +44,36 @@ public class WorkplaceConfig extends AggregateRoot {
 		this.wkpConfigHistory = memento.getWkpConfigHistory();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof WorkplaceConfig))
+			return false;
+		WorkplaceConfig other = (WorkplaceConfig) obj;
+		if (companyId == null) {
+			if (other.companyId != null)
+				return false;
+		} else if (!companyId.equals(other.companyId))
+			return false;
+		return true;
+	}
+
+	
 }
