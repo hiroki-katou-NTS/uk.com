@@ -14,7 +14,7 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 // 計算式設定
 @Getter
-public class CalculationItemSelection extends AggregateRoot {
+public class ItemSelection extends AggregateRoot {
 
 	/** The minus segment. */
 	// マイナス区分
