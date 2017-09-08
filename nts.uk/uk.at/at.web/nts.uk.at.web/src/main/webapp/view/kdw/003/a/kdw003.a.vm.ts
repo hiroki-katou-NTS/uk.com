@@ -78,14 +78,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 headerText: nts.uk.resource.getText("KDW003_32"),
                 key: 'employeeId',
                 dataType: 'String',
-                width: '180px',
+                width: '100px',
                 ntsControl: 'Label'
             },
             {
                 headerText: nts.uk.resource.getText("KDW003_33"),
                 key: 'employeeName',
                 dataType: 'String',
-                width: '180px',
+                width: '100px',
                 ntsControl: 'Label'
             },
             {
@@ -115,14 +115,14 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 headerText: nts.uk.resource.getText("KDW003_32"),
                 key: 'employeeId',
                 dataType: 'String',
-                width: '180px',
+                width: '50px',
                 ntsControl: 'Label'
             },
             {
                 headerText: nts.uk.resource.getText("KDW003_33"),
                 key: 'employeeName',
                 dataType: 'String',
-                width: '180px',
+                width: '50px',
                 ntsControl: 'Label'
             },
             {
@@ -234,8 +234,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 { code: 2, name: "エラー・アラーム" }
             ]);
             self.displayFormat = ko.observable(0);
-            self.headersGrid = ko.observableArray(self.dateModeHeader);
-            self.fixColGrid = ko.observableArray(self.dateModeFixCol);
+            self.headersGrid = ko.observableArray(self.errorModeHeader);
+            self.fixColGrid = ko.observableArray(self.errorModeFixCol);
             self.sheetsGrid = ko.observableArray([]);
         }
 
