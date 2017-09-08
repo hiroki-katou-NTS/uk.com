@@ -8,7 +8,12 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 			<com:stylefile path="cmm018.n.main.css" />
 			<com:scriptfile path="cmm018.n.start.js" />
 			<com:scriptfile path="cmm018.n.vm.js" />
@@ -21,43 +26,21 @@
 				<button id="button2">#{i18n.getText('CMM018_72')}</button>
 			</div>
 			<div id="contents-area">
-				<div id="tab-panel" data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-					<div class="tab-content-1">
-						<span>Tab Content 1</span><br/>
-					</div>
-					<div class="tab-content-2">
-						<span>
-							<span id="label2" class="label with-image">
-								<i class="image image-calendar"/>
-								<span>#{i18n.getText('CMM018_74')}</span>
-								<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
-							</span>
-							
-							<div id="panel1" class="panel panel-frame">
-								<table id="multi-list" data-bind="ntsGridList: {
-									height: 300,
-									options: items,
-									optionsValue: 'code',
-									columns: columns,
-									multiple: true,
-									value: currentCodeList
-								}"></table>
-							</div>
-						</span><br/>
-					</div>
-				</div>
+			
+				<div id="ccgcomponent"></div>
 				
 				<div id="leftPanel">
 					<div id="label1" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM018_90')}</div>
 					
 					<div id="rightTable">
-						<table id="multi-list2" data-bind="ntsGridList: {
+						<table id="multi-list" data-bind="ntsGridList: {
 							height: 380,
 							options: items2,
 							optionsValue: 'code',
 							columns: columns2,
 							multiple: true,
-							value: currentCodeList2
+							value: currentCodeList2,
+							showNumbering: true
 						}"></table>
 					</div>
 				</div>
