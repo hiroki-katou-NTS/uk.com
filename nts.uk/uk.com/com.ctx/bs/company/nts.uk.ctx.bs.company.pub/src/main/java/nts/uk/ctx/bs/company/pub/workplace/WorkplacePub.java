@@ -14,25 +14,37 @@ import nts.arc.time.GeneralDate;
 public interface WorkplacePub {
 
 	/**
-	 * Find wpk ids.
+	 * Find wpk ids by wkp code.
 	 *
+	 * @param companyId the company id
 	 * @param wpkCode the wpk code
-	 * @param date the date
+	 * @param baseDate the base date
 	 * @return the list
 	 */
 	// RequestList #41
-	List<String> findWpkIdsByWkpCode(String companyId, String wpkCode, GeneralDate date);
+	List<String> findWpkIdsByWkpCode(String companyId, String wpkCode, GeneralDate baseDate);
 
 	/**
-	 * Find by wpk id.
+	 * Find by wkp id.
+	 *
+	 * @param companyId the company id
+	 * @param workplaceId the workplace id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	// RequestList #66
+	List<WkpCdNameExport> findByWkpId(String companyId, String workplaceId, GeneralDate baseDate);
+
+	/**
+	 * Find by wkp id.
 	 *
 	 * @param workplaceId the workplace id
-	 * @return the optional
+	 * @return the workplace export
 	 */
 	WorkplaceExport findByWkpId(String workplaceId);
 
 	/**
-	 * Find by wpk ids.
+	 * Find by wkp ids.
 	 *
 	 * @param workplaceIds the workplace ids
 	 * @return the list
@@ -40,9 +52,10 @@ public interface WorkplacePub {
 	List<WorkplaceExport> findByWkpIds(List<String> workplaceIds);
 
 	/**
-	 * Find by person ids.
+	 * Find all workplace of company.
 	 *
-	 * @param personIds the person ids
+	 * @param companyId the company id
+	 * @param baseDate the base date
 	 * @return the list
 	 */
 	List<WorkplaceExport> findAllWorkplaceOfCompany(String companyId, GeneralDate baseDate);
