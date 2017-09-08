@@ -43,7 +43,7 @@ public class GrantDatePer {
 
 	}
 
-	public void validateInput() {
+	public void validateInput(List<GrantDatePerSet> list) {
 		for (int i = 0; i < this.grantDatePerSet.size(); i++) {
 			GrantDatePerSet currentSet = this.grantDatePerSet.get(i);
 			
