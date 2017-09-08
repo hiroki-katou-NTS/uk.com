@@ -2,16 +2,16 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.guideline;
+package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.commonset;
 
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.CommonGuidelineSetting;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.CommonGuidelineSettingRepository;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.guideline.KscstEstGuideSetting;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.CommonGuidelineSetting;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.CommonGuidelineSettingRepository;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.commonset.KscstEstComSet;
 
 /**
  * The Class JpaCommonGuidelineSettingRepository.
@@ -30,7 +30,7 @@ public class JpaCommonGuidelineSettingRepository extends JpaRepository
 	@Override
 	public void add(CommonGuidelineSetting domain) {
 		// Create entity
-		KscstEstGuideSetting entity = new KscstEstGuideSetting();
+		KscstEstComSet entity = new KscstEstComSet();
 
 		// Push data
 		domain.saveToMemento(new JpaCommonGuidelineSettingSetMemento(entity));
@@ -49,7 +49,7 @@ public class JpaCommonGuidelineSettingRepository extends JpaRepository
 	@Override
 	public void update(CommonGuidelineSetting domain) {
 		// Create entity
-		KscstEstGuideSetting entity = new KscstEstGuideSetting();
+		KscstEstComSet entity = new KscstEstComSet();
 
 		// Push data
 		domain.saveToMemento(new JpaCommonGuidelineSettingSetMemento(entity));
@@ -67,8 +67,8 @@ public class JpaCommonGuidelineSettingRepository extends JpaRepository
 	@Override
 	public Optional<CommonGuidelineSetting> findByCompanyId(String companyId) {
 		// Find records.
-		Optional<KscstEstGuideSetting> optKscstEstGuideSetting = this.queryProxy().find(companyId,
-				KscstEstGuideSetting.class);
+		Optional<KscstEstComSet> optKscstEstGuideSetting = this.queryProxy().find(companyId,
+				KscstEstComSet.class);
 
 		// Check exist.
 		if (!optKscstEstGuideSetting.isPresent()) {

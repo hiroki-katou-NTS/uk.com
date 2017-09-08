@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.shift.estimate.guideline;
+package nts.uk.ctx.at.schedule.infra.entity.shift.estimate.commonset;
 
 import java.io.Serializable;
 

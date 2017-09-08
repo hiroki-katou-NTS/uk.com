@@ -2,17 +2,17 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.guideline;
+package nts.uk.ctx.at.schedule.infra.repository.shift.estimate.commonset;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.CommonGuidelineSettingSetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.EstimatedAlarmColor;
-import nts.uk.ctx.at.schedule.dom.shift.estimate.guideline.ReferenceCondition;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.guideline.KscstEstAlarmColor;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.guideline.KscstEstAlarmColorPK;
-import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.guideline.KscstEstGuideSetting;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.CommonGuidelineSettingSetMemento;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.EstimatedAlarmColor;
+import nts.uk.ctx.at.schedule.dom.shift.estimate.commonset.ReferenceCondition;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.commonset.KscstEstAlarmColor;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.commonset.KscstEstAlarmColorPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.estimate.commonset.KscstEstComSet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaCommonGuidelineSettingSetMemento implements CommonGuidelineSettingSetMemento {
 
 	/** The entity. */
-	private KscstEstGuideSetting entity;
+	private KscstEstComSet entity;
 
 	/**
 	 * Instantiates a new jpa common guideline setting set memento.
@@ -29,7 +29,7 @@ public class JpaCommonGuidelineSettingSetMemento implements CommonGuidelineSetti
 	 * @param entity
 	 *            the entity
 	 */
-	public JpaCommonGuidelineSettingSetMemento(KscstEstGuideSetting entity) {
+	public JpaCommonGuidelineSettingSetMemento(KscstEstComSet entity) {
 		this.entity = entity;
 	}
 

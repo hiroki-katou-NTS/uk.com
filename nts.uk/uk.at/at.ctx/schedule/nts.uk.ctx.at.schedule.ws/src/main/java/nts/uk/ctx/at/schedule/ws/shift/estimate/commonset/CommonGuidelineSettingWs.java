@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.ws.shift.estimate.guideline;
+package nts.uk.ctx.at.schedule.ws.shift.estimate.commonset;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -12,8 +12,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.schedule.app.command.shift.estimate.guideline.CommonGuidelineSettingSaveCommand;
 import nts.uk.ctx.at.schedule.app.command.shift.estimate.guideline.CommonGuidelineSettingSaveCommandHandler;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.guideline.CommonGuidelineSettingFinder;
-import nts.uk.ctx.at.schedule.app.find.shift.estimate.guideline.dto.CommonGuidelineSettingDto;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.commonset.CommonGuidelineSettingFinder;
+import nts.uk.ctx.at.schedule.app.find.shift.estimate.commonset.dto.CommonGuidelineSettingDto;
 
 /**
  * The Class CommonGuidelineSettingWs.
