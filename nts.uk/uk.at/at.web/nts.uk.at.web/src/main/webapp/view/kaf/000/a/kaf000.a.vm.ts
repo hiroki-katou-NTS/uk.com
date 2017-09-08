@@ -130,7 +130,146 @@ module kaf000.a.viewmodel{
                 this.reason = ko.observable(reason);
                 this.representerSID = ko.observable(representerSID);
             }
-        }//end class frame   
+        }//end class ApprovalFrame   
+        
+        export class ApprovalRootOutput{
+            workplaceId : KnockoutObservable<String>;
+            approvalId : KnockoutObservable<String>;
+            employeeId : KnockoutObservable<String>;
+            historyId : KnockoutObservable<String>;
+            applicationType : KnockoutObservable<number>;
+            startDate :  KnockoutObservable<String>;
+            endDate : KnockoutObservable<String>;
+            branchId : KnockoutObservable<String>;
+            anyItemApplicationId : KnockoutObservable<String>;
+            confirmationRootType : KnockoutObservable<number>;
+            employmentRootAtr : KnockoutObservable<number>;
+            beforeApprovers : KnockoutObservableArray<ApprovalPhaseImport>;
+            afterApprovers : KnockoutObservableArray<ApprovalPhaseOutput>;
+            errorFlag : KnockoutObservable<number>;
+            constructor(workplaceId : String,approvalId : String,
+                        employeeId : String,historyId : String,
+                        applicationType : number,startDate : String,
+                        endDate: String,branchId: String,
+                        anyItemApplicationId : String,confirmationRootType : number,employmentRootAtr :number,
+                        beforeApprovers : Array<ApprovalPhaseImport>,afterApprovers : Array<ApprovalPhaseOutput>,
+                        errorFlag : number){
+                this.workplaceId = ko.observable(workplaceId);
+                this.approvalId = ko.observable(approvalId);
+                this.employeeId  = ko.observable(employeeId);
+                this.historyId = ko.observable(historyId); 
+                this.applicationType = ko.observable(applicationType);
+                this.startDate = ko.observable(startDate);
+                this.endDate = ko.observable(endDate);
+                this.branchId = ko.observable(branchId);
+                this.anyItemApplicationId = ko.observable(anyItemApplicationId);
+                this.confirmationRootType = ko.observable(confirmationRootType);
+                this.employmentRootAtr = ko.observable(employmentRootAtr);
+                this.beforeApprovers = ko.observableArray(beforeApprovers);
+                this.afterApprovers = ko.observableArray(afterApprovers);
+                this.errorFlag = ko.observable(errorFlag);
+            }
+        }//end class ApprovalRootOutput
+        
+        //class ApprovalPhaseOutput
+        export class ApprovalPhaseOutput{
+            branchId : KnockoutObservable<String>;
+            approvalPhaseId : KnockoutObservable<String>;
+            approvalForm : KnockoutObservable<number>;
+            browsingPhase : KnockoutObservable<number>;
+            orderNumber : KnockoutObservable<number>;
+            approvers :  KnockoutObservableArray<ApproverInfo>;
+            constructor(branchId : String,approvalPhaseId : String,
+                        approvalForm : number,browsingPhase : number,
+                        orderNumber : number,approvers : Array<ApproverInfo>){
+                this.branchId = ko.observable(branchId);
+                this.approvalPhaseId = ko.observable(approvalPhaseId);
+                this.approvalForm  = ko.observable(approvalForm);
+                this.browsingPhase = ko.observable(browsingPhase); 
+                this.orderNumber = ko.observable(orderNumber);
+                this.approvers = ko.observableArray(approvers);
+                
+            }
+        }//end class ApprovalPhaseOutput
+        
+        //class ApproverInfo
+        export class ApproverInfo{
+            sid : KnockoutObservable<String>;
+            approvalPhaseId : KnockoutObservable<String>;
+            isConfirmPerson : KnockoutObservable<boolean>;
+            orderNumber : KnockoutObservable<number>;
+            constructor(sid : String,approvalPhaseId : String,
+                        isConfirmPerson : boolean,orderNumber : number){
+                this.sid = ko.observable(sid);
+                this.approvalPhaseId = ko.observable(approvalPhaseId);
+                this.isConfirmPerson  = ko.observable(isConfirmPerson);
+                this.orderNumber = ko.observable(orderNumber); 
+                
+            }
+        }//end class ApproverInfo
+        
+        //class ApprovalPhaseImport
+        export class ApprovalPhaseImport{
+            branchId : KnockoutObservable<String>;
+            approvalPhaseId : KnockoutObservable<String>;
+            approvalForm : KnockoutObservable<number>;
+            browsingPhase : KnockoutObservable<number>;
+            orderNumber : KnockoutObservable<number>;
+            approverDtos :  KnockoutObservableArray<ApproverImport>;
+            constructor(branchId : String,approvalPhaseId : String,
+                        approvalForm : number,browsingPhase : number,
+                        orderNumber : number,approverDtos : Array<ApproverImport>){
+                this.branchId = ko.observable(branchId);
+                this.approvalPhaseId = ko.observable(approvalPhaseId);
+                this.approvalForm  = ko.observable(approvalForm);
+                this.browsingPhase = ko.observable(browsingPhase); 
+                this.orderNumber = ko.observable(orderNumber);
+                this.approverDtos = ko.observableArray(approverDtos);
+                
+            }
+            
+        }//end class ApprovalPhaseImport
+        
+        //class ApproverImport
+        export class ApproverImport{
+            approvalPhaseId : KnockoutObservable<String>;
+            approverId : KnockoutObservable<String>;
+            jobTitleId : KnockoutObservable<String>;
+            employeeId : KnockoutObservable<String>;
+            orderNumber : KnockoutObservable<number>;
+            approvalAtr : KnockoutObservable<number>;
+            confirmPerson : KnockoutObservable<number>;
+            constructor(
+                        approvalPhaseId : String,
+                        approverId : String,jobTitleId : String,
+                        employeeId : String,orderNumber : number,
+                        approvalAtr : number,confirmPerson : number,){
+                this.approvalPhaseId = ko.observable(approvalPhaseId);
+                this.approverId  = ko.observable(approverId);
+                this.jobTitleId = ko.observable(jobTitleId); 
+                this.employeeId = ko.observable(employeeId);
+                this.orderNumber = ko.observable(orderNumber);
+                this.approvalAtr = ko.observable(approvalAtr); 
+                this.confirmPerson = ko.observable(confirmPerson);
+        }//end class ApproverImport
+        
+        //class ObjApprovalRootInput    
+        export class ObjApprovalRootInput{
+            cid : KnockoutObservable<String>;
+            sid : KnockoutObservable<String>;
+            employmentRootAtr : KnockoutObservable<number>;
+            appType : KnockoutObservable<number>;
+            standardDate : KnockoutObservable<String>;
+            constructor (cid : String,
+                        sid : String,employmentRootAtr : number,
+                        appType : number,standardDate : String){
+                this.cid  = ko.observable(cid);
+                this.sid = ko.observable(sid); 
+                this.employmentRootAtr = ko.observable(employmentRootAtr);
+                this.appType = ko.observable(appType);
+                this.standardDate = ko.observable(standardDate); 
+            }
+        }//end class ObjApprovalRootInput
         
     }
 }

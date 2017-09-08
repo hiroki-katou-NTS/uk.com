@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
@@ -29,19 +30,21 @@ public class KrqdtApprovalFrame extends UkJpaEntity implements Serializable {
 	public String approverSID;
 	
 	@Column(name = "APPROVAL_ATR")
-	public String approvalATR;
+	public int approvalATR;
 
 	@Column(name = "CONFIRM_ATR")
-	public String confirmATR;
+	public int confirmATR;
 	
-	@Column(name="REPRESENTER_SID")
-	public String representerSID; 
+	
 	
 	@Column(name="APPROVAL_DATE")
-	public String approvalDate;
+	public GeneralDate approvalDate;
 	
 	@Column(name="REASON")
 	public String reason;
+	
+	@Column(name="REPRESENTER_SID")
+	public String representerSID; 
 	
 	@Override
 	protected Object getKey() {
