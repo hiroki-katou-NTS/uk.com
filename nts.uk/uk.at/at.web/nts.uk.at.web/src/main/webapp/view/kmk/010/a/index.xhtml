@@ -20,7 +20,7 @@
 	
 			<ui:define name="content">
 				<div id="functions-area">
-					<button tabindex="1" class="proceed" >#{i18n.getText('KMK010_4')}</button>
+					<button tabindex="1" class="proceed" data-bind="click: saveOvertimeSetting">#{i18n.getText('KMK010_4')}</button>
 					<button tabindex="2" class="buttonOther" >#{i18n.getText('KMK010_5')}</button>
 					<button tabindex="3" class="buttonOther" data-bind="click: openDialogOvertimeSetting" >#{i18n.getText('KMK010_6')}</button>
 					<button tabindex="4" class="buttonOther" data-bind="click: openDialogOvertimeBRDItem">#{i18n.getText('KMK010_7')}</button>
@@ -83,11 +83,24 @@
 						<div class="sixtySetting">
 							<table tabindex="10" class="overtime-border tbl-monthly" >
 								<tr class="bg-dark-green">
-									<td>#{i18n.getText('KMK010_15')}</td>
-									<td>#{i18n.getText('KMK010_16')}</td>
-									<td>#{i18n.getText('KMK010_17')}</td>
-									<td>#{i18n.getText('KMK010_18')}</td>
+									<td rowspan="2">#{i18n.getText('KMK010_15')}</td>
+									<td rowspan="2">#{i18n.getText('KMK010_16')}</td>
+									<td rowspan="2">#{i18n.getText('KMK010_17')}</td>
+									<td rowspan="2">#{i18n.getText('KMK010_18')}</td>
+									<com:ko tag="foreach" bind="overtimes">
+										<td>
+											<div class="overtimeName" data-bind="text: name"></div>
+										</td>
+									</com:ko>
 								</tr>
+								<tr class="bg-dark-green">
+									<com:ko tag="foreach" bind="overtimes">
+										<td>
+											<div data-bind="ntsCheckBox: { checked: useClassification }">#{i18n.getText('KMK010_20')}</div>
+										</td>
+									</com:ko>
+								</tr>
+								
 								<com:ko tag="foreach" bind="breakdownItems">
 									<tr>
 										<td class="bg-green">
@@ -102,6 +115,17 @@
 										<td>
 											<div class="overtimeName" data-bind="text: productNumber"></div>
 										</td>
+										<com:ko tag="foreach" bind="rateBRDItems">
+											<td>
+												<input class="overtime" data-bind="attr: {'tabindex': 17 + $index()*5},
+													ntsTimeEditor: {name: '#[KSM001_39]',
+													value: premiumRate,
+													inputFormat: 'time', 
+													mode: 'time',
+													required: true
+													}" />
+											</td>
+										</com:ko>
 									</tr>
 								</com:ko>
 							</table>

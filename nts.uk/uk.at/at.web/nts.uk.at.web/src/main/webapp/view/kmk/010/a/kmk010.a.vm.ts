@@ -4,6 +4,7 @@ module nts.uk.at.view.kmk010.a {
     import OvertimeDto = service.model.OvertimeDto;
     import OvertimeBRDItemDto = service.model.OvertimeBRDItemDto;
     import OvertimeSettingDto = service.model.OvertimeSettingDto;
+    import PremiumExtra60HRateDto = service.model.PremiumExtra60HRateDto;
     
     export module viewmodel {
 
@@ -26,6 +27,16 @@ module nts.uk.at.view.kmk010.a {
                 var dfd = $.Deferred();
                 service.findByIdOvertimeSetting().done(function(dataOvertimeSetting) {
                     self.overtimeSettingModel.updateData(dataOvertimeSetting);
+                    for (var brdItem of self.overtimeSettingModel.breakdownItems){
+                        var rateBRDItems: PremiumExtra60HRateModel[] = [];
+                         for(var overtimeItem of self.overtimeSettingModel.overtimes){
+                                var rateModel: PremiumExtra60HRateModel = new PremiumExtra60HRateModel();
+                                rateModel.updateInfo(brdItem.breakdownItemNo(), overtimeItem.overtimeNo());
+                                rateBRDItems.push(rateModel);
+                         }
+                        brdItem.updateRateData(rateBRDItems);
+                        console.log(rateBRDItems.length);
+                    }
                     service.findAllOvertimeCalculationMethod().done(function(dataMethod) {
                         self.calculationMethods(dataMethod);
                         dfd.resolve(self);
@@ -51,7 +62,29 @@ module nts.uk.at.view.kmk010.a {
                     
                 });  
             } 
-
+            
+            /**
+             * convert array 
+             */
+            private toArrayRateDto(): PremiumExtra60HRateDto[] {
+                var dataRate: PremiumExtra60HRateDto[] = [];
+                var self = this;
+                for(var brdItem of self.overtimeSettingModel.breakdownItems){
+                    for(var rateItem of brdItem.rateBRDItems){
+                        dataRate.push(rateItem.toDto());    
+                    }    
+                }
+                console.log(dataRate);
+                return dataRate;
+            }
+            
+            /**
+             * function on click save overtime setting
+             */
+            private saveOvertimeSetting(): void {
+                var self = this;
+                self.toArrayRateDto();
+            }
         }
         export class OvertimeModel {
             name: KnockoutObservable<string>;
@@ -89,12 +122,14 @@ module nts.uk.at.view.kmk010.a {
             breakdownItemNo: KnockoutObservable<number>;
             name: KnockoutObservable<string>;
             productNumber: KnockoutObservable<number>;
+            rateBRDItems: PremiumExtra60HRateModel[];
             
             constructor() {
                 this.useClassification = ko.observable(true);
                 this.breakdownItemNo = ko.observable(0);
                 this.name = ko.observable('');
                 this.productNumber = ko.observable(0);
+                this.rateBRDItems = [];
             }
             
             updateData(dto: OvertimeBRDItemDto){
@@ -112,6 +147,9 @@ module nts.uk.at.view.kmk010.a {
                     productNumber: this.productNumber()
                 };
                 return dto;    
+            }
+            updateRateData(rateBRDItems: PremiumExtra60HRateModel[]){
+                this.rateBRDItems = rateBRDItems;    
             }
         }
         export class OvertimeSettingModel {
@@ -146,6 +184,37 @@ module nts.uk.at.view.kmk010.a {
             }
         }
         
+        export class PremiumExtra60HRateModel {
+            overtimeNo: KnockoutObservable<number>;
+            breakdownItemNo: KnockoutObservable<number>;
+            premiumRate: KnockoutObservable<number>;
+            
+            constructor() {
+                this.overtimeNo = ko.observable(0);
+                this.breakdownItemNo = ko.observable(0);
+                this.premiumRate = ko.observable(0);
+            }
+            
+            updateData(dto: PremiumExtra60HRateDto) {
+                this.overtimeNo(dto.overtimeNo);
+                this.breakdownItemNo(dto.breakdownItemNo);
+                this.premiumRate(dto.premiumRate);
+            }
+            
+            updateInfo(breakdownItemNo: number, overtimeNo: number) {
+                this.overtimeNo(overtimeNo);
+                this.breakdownItemNo(breakdownItemNo);
+            }
+            toDto(): PremiumExtra60HRateDto {
+                var dto: PremiumExtra60HRateDto = {
+                    overtimeNo: this.overtimeNo(),
+                    breakdownItemNo: this.breakdownItemNo(),
+                    premiumRate: this.premiumRate()
+                };
+                return dto;
+            }
+            
+        }
             
     }
 }

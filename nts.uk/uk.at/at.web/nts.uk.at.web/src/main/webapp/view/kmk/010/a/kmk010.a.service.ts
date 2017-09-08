@@ -55,6 +55,11 @@ module nts.uk.at.view.kmk010.a {
                 overtimes: OvertimeDto[];
                 breakdownItems: OvertimeBRDItemDto[];
             }
+            export interface PremiumExtra60HRateDto {
+                overtimeNo: number;
+                breakdownItemNo: number;
+                premiumRate: number;
+            }
         }
     }
 }
