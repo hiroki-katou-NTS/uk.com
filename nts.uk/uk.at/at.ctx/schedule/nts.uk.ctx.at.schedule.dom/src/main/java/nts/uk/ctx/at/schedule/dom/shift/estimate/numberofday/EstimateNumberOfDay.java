@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
+import nts.arc.i18n.I18NText;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimateTargetClassification;
 import nts.uk.ctx.at.schedule.dom.shift.estimate.EstimatedCondition;
@@ -36,6 +37,9 @@ public class EstimateNumberOfDay extends DomainObject {
 
 	/** The Constant ZERO_VALUE. */
 	private static final int ZERO_VALUE = 0;
+	
+	/** The Constant GUILDANCE_TEXT. */
+	private static final String GUILDANCE_TEXT = "目安利用条件";
 
 	/**
 	 * Instantiates a new estimate number of day.
@@ -70,12 +74,14 @@ public class EstimateNumberOfDay extends DomainObject {
 
 				if (yearlyBase.getDays().v() != ZERO_VALUE && yearlyNext.getDays().v() != ZERO_VALUE
 						&& yearlyNext.getDays().v() >= yearlyBase.getDays().v()) {
-					throw new BusinessException("Msg_147", "KSM001_24");
+					I18NText text = I18NText.main("Msg_147").addId("KSM001_25").addRaw(GUILDANCE_TEXT).build();
+					throw new BusinessException(text);
 				}
 
 				if (yearlyBase.getDays().v() == ZERO_VALUE
 						&& yearlyNext.getDays().v() > ZERO_VALUE) {
-					throw new BusinessException("Msg_182", "KSM001_24");
+					I18NText text = I18NText.main("Msg_182").addId("KSM001_25").addRaw(GUILDANCE_TEXT).build();
+					throw new BusinessException(text);
 				}
 			}
 			break;
