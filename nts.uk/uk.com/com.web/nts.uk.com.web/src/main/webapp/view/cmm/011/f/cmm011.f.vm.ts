@@ -37,6 +37,7 @@ module nts.uk.com.view.cmm011.f {
             }
             
             public execution() {
+                nts.uk.ui.windows.setShared("CreatedWorkplace", true);
                 nts.uk.ui.windows.close();
             }
             

@@ -7,8 +7,6 @@ module nts.uk.com.view.cmm011.a {
         
         export class ScreenModel {
             
-            isNewMode: KnockoutObservable<boolean>;
-            
             strDWorkplace: KnockoutObservable<string>; // A2_3
             endDWorkplace: KnockoutObservable<string>; // A2_5
             
@@ -21,10 +19,12 @@ module nts.uk.com.view.cmm011.a {
             wkpDisplayName: KnockoutObservable<string>; // A9_2
             wkpFullName: KnockoutObservable<string>; // A10_2
             
+            isNewMode: KnockoutObservable<boolean>;
+            isEnableButton: KnockoutObservable<boolean>;
+            isEnableInput: KnockoutObservable<boolean>;
+            
             constructor() {
                 let self = this;
-                
-                self.isNewMode = ko.observable(true);
                 
                 self.strDWorkplace = ko.observable("2016/04/01");
                 self.endDWorkplace = ko.observable("9999/12/31");
@@ -37,6 +37,14 @@ module nts.uk.com.view.cmm011.a {
                 self.wkpDisplayName = ko.observable(null);
                 self.wkpFullName = ko.observable(null);
                 
+                self.isNewMode = ko.observable(true);
+                self.isEnableButton = ko.computed(function() {
+                    return !self.isNewMode() && !nts.uk.text.isNullOrEmpty(self.strDWorkplace());
+                });
+                self.isEnableInput = ko.computed(function() {
+                    return !self.isNewMode() && !nts.uk.text.isNullOrEmpty(self.workplaceHistory().selectedWpkHistory());
+                });
+                self.isEnableInput = ko.observable(false);
             }
             
             public startPage(): JQueryPromise<any> {
@@ -70,7 +78,10 @@ module nts.uk.com.view.cmm011.a {
             }
             
             public createWkpDialog() {
+                let self = this;
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/f/index.xhtml').onClosed(() => {
+                    let isCreatedWkp: boolean = nts.uk.ui.windows.getShared("CreatedWorkplace");
+                    self.isNewMode(!isCreatedWkp);
                 });
             }
             
@@ -211,6 +222,21 @@ module nts.uk.com.view.cmm011.a {
             
             constructor() {
                 super();
+                let self = this;
+                
+                self.init();
+            }
+            
+            init() {
+                let self = this;
+                let lstWpkHistory: Array<IHistory> = [
+                    {workplaceId: "ABC1", historyId: "ABC1", startDate: "ABC1", endDate: "ABC1"},
+                    {workplaceId: "ABC2", historyId: "ABC2", startDate: "ABC2", endDate: "ABC2"},
+                    {workplaceId: "ABC3", historyId: "ABC3", startDate: "ABC3", endDate: "ABC3"},
+                    {workplaceId: "ABC4", historyId: "ABC4", startDate: "ABC4", endDate: "ABC4"},
+                ]
+                self.lstWpkHistory(lstWpkHistory);
+                self.selectFirst();
             }
         }
     }
