@@ -4,33 +4,34 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.overtime;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.app.find.overtime.dto.OvertimeSettingDto;
-import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSetting;
-import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSettingRepository;
+import nts.uk.ctx.at.shared.app.find.overtime.dto.OvertimeDto;
+import nts.uk.ctx.at.shared.dom.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.overtime.OvertimeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 /**
- * The Class OvertimeSettingFinder.
+ * The Class OvertimeFinder.
  */
 @Stateless
-public class OvertimeSettingFinder {
+public class OvertimeFinder {
 	
 	/** The repository. */
 	@Inject
-	private OvertimeSettingRepository repository;
+	private OvertimeRepository repository;
 	
 	/**
 	 * Find by id.
 	 *
-	 * @return the overtime setting dto
+	 * @return the list
 	 */
-	public OvertimeSettingDto findById() {
+	public List<OvertimeDto> findAll() {
 
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -39,14 +40,13 @@ public class OvertimeSettingFinder {
 		String companyId = loginUserContext.companyId();
 
 		// call repository find data
-		Optional<OvertimeSetting> overtimeSetting = this.repository.findById(companyId);
+		List<Overtime> overtimes = this.repository.findAll(companyId);
 
-		OvertimeSettingDto dto = new OvertimeSettingDto();
-		if (overtimeSetting.isPresent()) {
-			overtimeSetting.get().saveToMemento(dto);
-		}
-
-		return dto;
+		return overtimes.stream().map(domain -> {
+			OvertimeDto dto = new OvertimeDto();
+			domain.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
 
 	}
 	
