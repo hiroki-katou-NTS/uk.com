@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf009.a.viewmodel {
+module nts.uk.at.view.kaf009.b.viewmodel {
     export class ScreenModel {
         // date editor
         date: KnockoutObservable<string>;
@@ -39,7 +39,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         selectedComboCode: KnockoutObservable<string>;
         //CheckBox 
         isWorkChange: KnockoutObservable<boolean>;
+        
         //Time with day 
+        
         enable: KnockoutObservable<boolean>;
         readonly: KnockoutObservable<boolean>;
         timeOfDay: KnockoutObservable<number>;
@@ -125,7 +127,10 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     textalign: "left"
                 })),
             };
+            
             self.isWorkChange.subscribe(function(){
+                    
+            
             });
 
         }
@@ -140,12 +145,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             //                console.log(goBackDirect);
             //          ;
             //      }
+
             //Get Setting
             service.getGoBackSetting().done(function(setting: any) {
                 console.log(setting);
-                 dfd.resolve();
             });
-           
+            dfd.resolve();
             return dfd.promise();
         }
         /**
