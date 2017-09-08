@@ -513,4 +513,54 @@ public class JpaWorkplaceRepository extends JpaRepository implements WorkplaceRe
 				.collect(Collectors.toList());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.basic.dom.company.organization.workplace.WorkplaceRepository#
+	 * findByWkpId(java.lang.String, java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<Workplace> findByWkpId(String companyId, String wpkId, GeneralDate baseDate) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call CWPMT_WORK_PLACE (CwpmtWorkPlace SQL)
+		CriteriaQuery<CwpmtWorkplace> cq = criteriaBuilder.createQuery(CwpmtWorkplace.class);
+
+		// root data
+		Root<CwpmtWorkplace> root = cq.from(CwpmtWorkplace.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equals workplaceId
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(CwpmtWorkplace_.cwpmtWorkplacePK).get(CwpmtWorkplacePK_.cid), companyId));
+
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(CwpmtWorkplace_.cwpmtWorkplacePK).get(CwpmtWorkplacePK_.wkpid), wpkId));
+
+		// start date le base date
+		lstpredicateWhere.add(criteriaBuilder.lessThanOrEqualTo(
+				root.get(CwpmtWorkplace_.cwpmtWorkplacePK).get(CwpmtWorkplacePK_.strD), baseDate));
+
+		// start date le base date
+		lstpredicateWhere.add(criteriaBuilder.greaterThanOrEqualTo(
+				root.get(CwpmtWorkplace_.cwpmtWorkplacePK).get(CwpmtWorkplacePK_.endD), baseDate));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// create query
+		TypedQuery<CwpmtWorkplace> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(item -> this.toDomain(item))
+				.collect(Collectors.toList());
+	}
 }

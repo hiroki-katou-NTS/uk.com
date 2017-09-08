@@ -2,6 +2,7 @@ module nts.uk.at.view.kmk010.a {
     export module service {
         var paths = {
             findAllOvertimeCalculationMethod: "ctx/at/shared/overtime/setting/findAll/method",
+            findByIdOvertimeSetting: "ctx/at/shared/overtime/setting/findById",
             findAllClosureHistory: "ctx/at/shared/workrule/closure/history/findAll",
             findByIdClosure: "ctx/at/shared/workrule/closure/findById",
             saveClosure: "ctx/at/shared/workrule/closure/save",
@@ -16,6 +17,13 @@ module nts.uk.at.view.kmk010.a {
             return nts.uk.request.ajax(paths.findAllOvertimeCalculationMethod);
         }
 
+        /**
+         * find all data overtime calculation method
+         */
+        export function findByIdOvertimeSetting(): JQueryPromise<model.OvertimeSettingDto> {
+            return nts.uk.request.ajax(paths.findByIdOvertimeSetting);
+        }
+        
         /**
          * find all data closure history call service
          */
