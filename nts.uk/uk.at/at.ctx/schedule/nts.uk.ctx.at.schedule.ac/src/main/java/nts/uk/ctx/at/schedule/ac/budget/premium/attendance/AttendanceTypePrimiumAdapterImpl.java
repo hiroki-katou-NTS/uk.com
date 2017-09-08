@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.ac.budget.premium.attendancetype;
+package nts.uk.ctx.at.schedule.ac.budget.premium.attendance;
 
 import java.util.List;
 import java.util.stream.Collectors;
