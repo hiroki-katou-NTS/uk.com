@@ -813,6 +813,30 @@ button .icon {
   width: 30px;
   height: 28px;
 }
+/* line 202, ../sass/components/_icons.scss */
+.img-icon.icon-next {
+  background: url("images/icons/next-arrow.png") no-repeat center;
+  width: 26px;
+  height: 22px;
+}
+/* line 207, ../sass/components/_icons.scss */
+.img-icon.icon-next-all {
+  background: url("images/icons/next-all-arrow.png") no-repeat center;
+  width: 44px;
+  height: 22px;
+}
+/* line 212, ../sass/components/_icons.scss */
+.img-icon.icon-prev {
+  background: url("images/icons/prev-arrow.png") no-repeat center;
+  width: 26px;
+  height: 22px;
+}
+/* line 217, ../sass/components/_icons.scss */
+.img-icon.icon-prev-all {
+  background: url("images/icons/prev-all-arrow.png") no-repeat center;
+  width: 44px;
+  height: 22px;
+}
 
 /* line 2, ../sass/components/_accordion.scss */
 .ui-accordion .ui-accordion-header {
@@ -2922,32 +2946,22 @@ button.nts-switch-button[disabled]:hover {
   display: inline-block;
 }
 
-/* line 7, ../sass/components/_swaplist.scss */
-.ntsSwapList {
-  overflow: hidden;
-}
-
 /* line 10, ../sass/components/_swaplist.scss */
 .ntsSearchButton {
   margin-left: 10px;
 }
 
 /* line 13, ../sass/components/_swaplist.scss */
-.move-button {
-  width: 75px;
-}
-
-/* line 16, ../sass/components/_swaplist.scss */
 .move-forward {
   margin-bottom: 5px;
 }
 
-/* line 19, ../sass/components/_swaplist.scss */
+/* line 16, ../sass/components/_swaplist.scss */
 .ntsSwapComponent {
   display: table-cell;
 }
 
-/* line 22, ../sass/components/_swaplist.scss */
+/* line 20, ../sass/components/_swaplist.scss */
 .ntsMoveDataArea {
   height: 100%;
   vertical-align: middle;
@@ -2955,7 +2969,13 @@ button.nts-switch-button[disabled]:hover {
   text-align: center;
 }
 
-/* line 28, ../sass/components/_swaplist.scss */
+/* line 26, ../sass/components/_swaplist.scss */
+.ntsMoveDataArea .move-button {
+  width: 75px;
+  margin: 10px 20px;
+}
+
+/* line 31, ../sass/components/_swaplist.scss */
 .ntsSearchArea div {
   display: inline-block;
 }
@@ -3567,6 +3587,10 @@ button.nts-switch-button[disabled]:hover {
   white-space: nowrap;
 }
 
+.extable {
+  position: relative;
+}
+
 /* line 1, ../sass/components/_extable.scss */
 .extable .xheader td {
   color: #000;
@@ -3594,10 +3618,18 @@ button.nts-switch-button[disabled]:hover {
   background-color: #FAD7A0;
 }
 
+.extable td.ex-round-go {
+	cursor: pointer;
+}
+
 /* line 18, ../sass/components/_extable.scss */
-.extable div.selected, .extable td.selected {
+.extable div.x-cell-selected, .extable td.x-cell-selected {
   background-color: #3498DB;
   color: #FFF;
+}
+
+.extable tr.x-row-selected {
+	background-color: #AED6F1;
 }
 
 /* line 22, ../sass/components/_extable.scss */
@@ -3611,6 +3643,18 @@ button.nts-switch-button[disabled]:hover {
   left: 6px;
   top: 50%;
   margin-top: -8px;
+}
+
+.ex-editor input::-ms-clear {
+  display: none;
+}
+
+.extable-crud {
+  padding-bottom: 4px;
+}
+
+.extable-delete-rows {
+  margin-left: 4px;
 }
 
 /* line 32, ../sass/components/_extable.scss */

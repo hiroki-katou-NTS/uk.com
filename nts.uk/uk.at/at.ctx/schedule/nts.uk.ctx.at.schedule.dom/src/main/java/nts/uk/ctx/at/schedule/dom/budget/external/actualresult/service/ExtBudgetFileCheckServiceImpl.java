@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -121,16 +122,17 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
      *            the start line
      */
     private void validLimitRecord(InputStream inputStream, Integer encoding, Integer startLine) {
-        NtsCsvReader csvReader = FileUltil.newCsvReader(encoding);
+        NtsCsvReader csvReader = FileUtil.newCsvReader(encoding);
         try {
-            List<NtsCsvRecord> csvRecords = csvReader.parse(inputStream);
+            // TODO: List<NtsCsvRecord> csvRecords = csvReader.parse(inputStream);
+        	List<NtsCsvRecord> csvRecords = new ArrayList<>();
             if (CollectionUtil.isEmpty(csvRecords)) {
                 return;
             }
             if (csvRecords.size() > MAX_RECORD) {
                 throw new BusinessException("Msg_168");
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }

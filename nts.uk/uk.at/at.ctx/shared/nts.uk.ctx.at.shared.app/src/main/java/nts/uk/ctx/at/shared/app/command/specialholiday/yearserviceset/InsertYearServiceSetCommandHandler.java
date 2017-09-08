@@ -2,8 +2,6 @@ package nts.uk.ctx.at.shared.app.command.specialholiday.yearserviceset;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeoutException;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -30,7 +28,7 @@ public class InsertYearServiceSetCommandHandler extends CommandHandler<InsertYea
 //			lst.add()
 //		}
 		for(YearServiceSetCommand obj : yearServiceSets){
-			YearServiceSet o = YearServiceSet.update(companyId, obj.getSpecialHolidayCode(), obj.getYearServiceNo(), obj.getYearServiceType(), obj.getYear(), obj.getMonth(), obj.getDate());
+			YearServiceSet o = YearServiceSet.update(companyId, obj.getSpecialHolidayCode(), obj.getYearServiceNo(), obj.getYear(), obj.getMonth(), obj.getDate());
 			lst.add(o);
 		}
 		yearServiceSetRep.insertSet(lst);

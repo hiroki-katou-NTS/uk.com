@@ -22,3 +22,12 @@ tr {
 .frame-elimination{
 	float: right;
 }
+
+#multi-list>tbody>tr>td:last-child {
+	text-align: center;
+}
+
+#single-list .icon icon-dot {
+	vertical-align: middle;
+	font-size: 0px;
+}

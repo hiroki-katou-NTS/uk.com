@@ -13,17 +13,17 @@ import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceset.YearServiceSet;
 @Getter
 public class YearServiceCom extends AggregateRoot{
 	private String companyId;
-	private int specialHolidayCode;
+	private String specialHolidayCode;
 	private int lengthServiceYearAtr;
 	private List<YearServiceSet> yearServiceSets;
-	public YearServiceCom(String companyId, int specialHolidayCode, int lengthServiceYearAtr, List<YearServiceSet> yearServiceSets) {
+	public YearServiceCom(String companyId, String specialHolidayCode, int lengthServiceYearAtr, List<YearServiceSet> yearServiceSets) {
 		super();
 		this.companyId = companyId;
 		this.specialHolidayCode = specialHolidayCode;
 		this.lengthServiceYearAtr = lengthServiceYearAtr;
 		this.yearServiceSets = yearServiceSets;
 	}
-	public static YearServiceCom createFromJavaType(String companyId, int specialHolidayCode, int lengthServiceYearAtr, List<YearServiceSet> yearServiceSets){
+	public static YearServiceCom createFromJavaType(String companyId, String specialHolidayCode, int lengthServiceYearAtr, List<YearServiceSet> yearServiceSets){
 		return new YearServiceCom(companyId, specialHolidayCode, lengthServiceYearAtr, yearServiceSets);
 	}
 	@Override

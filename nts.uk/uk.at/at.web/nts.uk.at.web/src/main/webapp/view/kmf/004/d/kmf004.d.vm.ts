@@ -55,9 +55,9 @@ module nts.uk.at.view.kmf004 {
                         }
                         break;
                     case 'E':
-                        //                        if (!!view.viewmodelE && typeof view.viewmodelE.start == 'function') {
-                        //                            view.viewmodelE.start();
-                        //                        }
+//                        if (!!view.viewmodelE && typeof view.viewmodelE.start == 'function') {
+//                            view.viewmodelE.start();
+//                        }
                         break;
                 }
             }
@@ -98,7 +98,7 @@ module nts.uk.at.view.kmf004 {
             enable: KnockoutObservable<boolean>;
             display: KnockoutObservable<boolean>;
             items: KnockoutObservableArray<Item>;
-            updatelst : KnockoutObservable<Update>;
+            lst: KnockoutObservableArray<Item>;
             constructor() {
                 let self = this;
                 self.itemList = ko.observableArray([
@@ -109,8 +109,8 @@ module nts.uk.at.view.kmf004 {
                 self.enable = ko.observable(true);
                 self.selectedId = ko.observable(0);
                 self.items = ko.observableArray([]);
-                self.updatelst = ko.observableArray(null);
-                self.display = ko.observable(true);
+                self.lst = ko.observableArray([]);
+                self.display = ko.observable(false);
                 self.selectedId.subscribe((value) => {
                     if (value == 0) {
                         self.display(false);
@@ -131,19 +131,19 @@ module nts.uk.at.view.kmf004 {
                     for (let i = 0; i < 20; i++) {
                         if (lstData[i]) {
                             var param: IItem = {
-                                yearServiceType: lstData[i].yearServiceType,
+                                yearServiceNo: i + 1,
                                 month: lstData[i].month,
                                 year: lstData[i].year,
-                                date: lstData[i].date  
+                                date: lstData[i].date
                             };
-                            
+
                             self.items.push(new Item(param));
                         } else {
                             var param: IItem = {
-                                yearServiceType: 0,
+                                yearServiceNo: i + 1,
                                 month: null,
                                 year: null,
-                                date: null 
+                                date: null
                             };
                             self.items.push(new Item(param));
                         }
@@ -156,29 +156,28 @@ module nts.uk.at.view.kmf004 {
                 return dfd.promise();
             }
 
-            register(){
+            register() {
                 var self = this;
                 let b = this.value();
                 let a = self.items();
-                
+                let i = 0;
                 var items = _.filter(self.items(), function(item: Item) {
-                    return item.date() != null || item.month() != null || item.year() != null;
+                    return item.date() || item.month() || item.year();
                 });
-                for(let i = 0; i < self.items().length; i ++){
-                    var dataTranfer = {
-                    specialHolidayCode: 1, // TODO
-                    yearServiceNo: i,
-                    lengthServiceYearAtr: 0,
-                    yearServiceSets:  ko.toJS(items)   
+                               
+                var dataTranfer = {
+                    specialHolidayCode: '01', // TODO
+                    lengthServiceYearAtr: self.selectedId(),
+                    yearServiceSets: ko.toJS(items)
                 }
+
+                service.update(dataTranfer).done(function(items) {
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                }).fail(function(error){
+                        alert(error.message);
+                    });
             }
-                
-                
-                service.update(dataTranfer).done(function(items){
-                    console.log(a);
-                });
-            }
-                
+
             closeDialog() {
                 nts.uk.ui.windows.close();
             }
@@ -193,7 +192,6 @@ module nts.uk.at.view.kmf004 {
             }
         }
         export class Item {
-            yearServiceType: KnockoutObservable<number>;
             yearServiceNo: KnockoutObservable<number>;
             month: KnockoutObservable<number>;
             year: KnockoutObservable<number>;
@@ -201,7 +199,6 @@ module nts.uk.at.view.kmf004 {
 
             constructor(param: IItem) {
                 var self = this;
-                self.yearServiceType = ko.observable(param.yearServiceType);
                 self.yearServiceNo = ko.observable(param.yearServiceNo);
                 self.month = ko.observable(param.month);
                 self.year = ko.observable(param.year);
@@ -209,20 +206,10 @@ module nts.uk.at.view.kmf004 {
             }
         }
         export interface IItem {
-            yearServiceType: number;
-            yearServiceNo: number;
+            yearServiceNo: number
             month: number;
             year: number;
             date: number;
-        }
-        export class Update{
-            lengthService: KnockoutObservable<number>;
-            lstSet: KnockoutObservableArray<Item>;
-            constructor(lengthService: number, lstSet: Array<Item>){
-                let self = this;
-                self.lengthService = lengthService;
-                self.lstSet = lstSet;
-            }
         }
     }
 }

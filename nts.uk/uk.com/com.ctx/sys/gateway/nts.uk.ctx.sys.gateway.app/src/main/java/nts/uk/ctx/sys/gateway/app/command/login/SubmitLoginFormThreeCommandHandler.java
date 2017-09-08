@@ -16,13 +16,16 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
-import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingDto;
-import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeDto;
-import nts.uk.ctx.sys.gateway.dom.adapter.SysEmployeeAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.SysEmployeeCodeSettingAdapter;
+import nts.gul.text.StringUtil;
+import nts.uk.ctx.sys.gateway.dom.login.Contract;
+import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 
 /**
  * The Class SubmitLoginFormThreeCommandHandler.
@@ -42,6 +45,10 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 	@Inject
 	private SysEmployeeAdapter employeeAdapter;
 
+	/** The contract repository. */
+	@Inject
+	private ContractRepository contractRepository;
+	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
@@ -57,10 +64,16 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 		// check validate input
 		this.checkInput(command);
 
+		//recheck contract
+		// pre check contract
+		this.checkContractInput(command);
+		// contract auth
+		this.contractAccAuth(command);
+		
 		// Edit employee code
 		employeeCode = this.employeeCodeEdit(employeeCode, companyId);
 		// Get domain 社員
-		EmployeeDto em = this.getEmployee(companyId, employeeCode);
+		EmployeeImport em = this.getEmployee(companyId, employeeCode);
 		// Get User by associatedPersonId
 		User user = this.getUser(em.getEmployeeId().toString());
 		// check password
@@ -77,19 +90,57 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 	private void checkInput(SubmitLoginFormThreeCommand command) {
 
 		// check input company code
-		if (command.getCompanyCode().isEmpty()||command.getCompanyCode() == null) {
+		if (StringUtil.isNullOrEmpty(command.getCompanyCode(), true)) {
 			throw new BusinessException("Msg_318");
 		}
 		// check input employee code
-		if (command.getEmployeeCode().isEmpty()||command.getEmployeeCode() == null) {
+		if (StringUtil.isNullOrEmpty(command.getEmployeeCode(), true)) {
 			throw new BusinessException("Msg_312");
 		}
 		// check input password
-		if (command.getPassword().isEmpty()||command.getPassword() == null) {
+		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
 			throw new BusinessException("Msg_310");
 		}
 	}
 
+	/**
+	 * Check contract input.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	private void checkContractInput(SubmitLoginFormThreeCommand command) {
+		if (StringUtil.isNullOrEmpty(command.getContractCode(), true)) {
+			throw new RuntimeException();
+		}
+		if (StringUtil.isNullOrEmpty(command.getPassword(), true)) {
+			throw new RuntimeException();
+		}
+	}
+
+	/**
+	 * Contract acc auth.
+	 *
+	 * @param command the command
+	 */
+	private void contractAccAuth(SubmitLoginFormThreeCommand command) {
+		Optional<Contract> contract = contractRepository.getContract(command.getContractCode());
+		if (contract.isPresent()) {
+			// check contract pass
+			if (!PasswordHash.verifyThat(command.getContractPassword(), contract.get().getContractCode().v())
+					.isEqualTo(contract.get().getPassword().v())) {
+				throw new RuntimeException();
+			}
+			// check contract time
+			if (contract.get().getContractPeriod().getStartDate().after(GeneralDate.today())
+					|| contract.get().getContractPeriod().getEndDate().before(GeneralDate.today())) {
+				throw new RuntimeException();
+			}
+		} else {
+			throw new RuntimeException();
+		}
+	}
+	
 	/**
 	 * Employee code edit.
 	 *
@@ -98,9 +149,9 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 	 * @return the string
 	 */
 	private String employeeCodeEdit(String employeeCode, String companyId) {
-		Optional<EmployeeCodeSettingDto> findemployeeCodeSetting = employeeCodeSettingAdapter.getbyCompanyId(companyId);
+		Optional<EmployeeCodeSettingImport> findemployeeCodeSetting = employeeCodeSettingAdapter.getbyCompanyId(companyId);
 		if (findemployeeCodeSetting.isPresent()) {
-			EmployeeCodeSettingDto employeeCodeSetting = findemployeeCodeSetting.get();
+			EmployeeCodeSettingImport employeeCodeSetting = findemployeeCodeSetting.get();
 			EmployCodeEditType editType = employeeCodeSetting.getEditType();
 			Integer addNumberDigit = employeeCodeSetting.getNumberDigit();
 			if (employeeCodeSetting.getNumberDigit() == employeeCode.length()) {
@@ -135,8 +186,8 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 	 * @param employeeCode the employee code
 	 * @return the employee
 	 */
-	private EmployeeDto getEmployee(String companyId, String employeeCode) {
-		Optional<EmployeeDto> em = employeeAdapter.getByEmployeeCode(companyId, employeeCode);
+	private EmployeeImport getEmployee(String companyId, String employeeCode) {
+		Optional<EmployeeImport> em = employeeAdapter.getByEmployeeCode(companyId, employeeCode);
 		if (em.isPresent()) {
 			return em.get();
 		} else {

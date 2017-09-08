@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.specialholiday;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -21,6 +22,8 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	private static final String SELECT_ALL;
 
 	private static final String SELECT_ALL_COM;
+	
+	private static final String SELECT_ALL_SET;
 
 	static {
 
@@ -28,16 +31,22 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 		builderString.append("SELECT e");
 		builderString.append(" FROM KshstGrantRegular e");
 		builderString.append(" WHERE e.kshstGrantRegularPK.companyId = :companyId");
-		builderString.append(" WHERE e.kshstGrantRegularPK.specialHolidayCode = :specialHolidayCode");
+		builderString.append(" AND e.kshstGrantRegularPK.specialHolidayCode = :specialHolidayCode");
 		SELECT_ALL = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KshstGrantDateCom e");
 		builderString.append(" WHERE e.kshstGrantDateComPK.companyId = :companyId");
-		builderString.append(" WHERE e.kshstGrantDateComPK.specialHolidayCode = :specialHolidayCode");
+		builderString.append(" AND e.kshstGrantDateComPK.specialHolidayCode = :specialHolidayCode");
 		SELECT_ALL_COM = builderString.toString();
 
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM KshstGrantDateSet e");
+		builderString.append(" WHERE e.kshstGrantDateSetPK.companyId = :companyId");
+		builderString.append(" AND e.kshstGrantDateSetPK.specialHolidayCode = :specialHolidayCode");
+		SELECT_ALL_SET = builderString.toString();
 	}
 
 	/**
@@ -77,7 +86,8 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	private GrantDateSet convertToDomainSet(KshstGrantDateSet kshstGrantDateSet) {
 		GrantDateSet grantDateSet = GrantDateSet.createFromJavaType(kshstGrantDateSet.kshstGrantDateSetPK.companyId,
 				kshstGrantDateSet.kshstGrantDateSetPK.specialHolidayCode,
-				kshstGrantDateSet.kshstGrantDateSetPK.grantDateType, kshstGrantDateSet.grantDateM,
+				kshstGrantDateSet.kshstGrantDateSetPK.grantDateNo, 
+				kshstGrantDateSet.grantDateM,
 				kshstGrantDateSet.grantDateY);
 		return grantDateSet;
 	}
@@ -112,7 +122,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	private KshstGrantDateSet convertToDbTypeSet(GrantDateSet grantDateSet) {
 		KshstGrantDateSet kshstGrantDateSet = new KshstGrantDateSet();
 		KshstGrantDateSetPK kshstGrantDateSetPK = new KshstGrantDateSetPK(grantDateSet.getCompanyId(),
-				grantDateSet.getSpecialHolidayCode().v(), grantDateSet.getGrantDateType().value);
+				grantDateSet.getSpecialHolidayCode().v(), grantDateSet.getGrantDateNo());
 		kshstGrantDateSet.grantDateM = grantDateSet.getGrantDateMonth().v();
 		kshstGrantDateSet.grantDateY = grantDateSet.getGrantDateYear().v();
 		kshstGrantDateSet.kshstGrantDateSetPK = kshstGrantDateSetPK;
@@ -143,5 +153,38 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	@Override
 	public void add(GrantDateCom grantDateCom) {
 		this.commandProxy().insert(convertToDbTypeCom(grantDateCom));
+	}
+
+	@Override
+	public Optional<GrantDateCom> getComByCode(String companyId, String specialHolidayCode) {
+		return this.queryProxy().find(new KshstGrantDateComPK(companyId, specialHolidayCode), KshstGrantDateCom.class)
+				.map(x -> convertToDomainCom(x));
+	}
+
+	@Override
+	public List<GrantDateSet> getSetByCode(String companyId, String specialHolidayCode) {
+		return this.queryProxy().query(SELECT_ALL_SET, KshstGrantDateSet.class)
+				.setParameter("companyId", companyId)
+				.setParameter("specialHolidayCode", specialHolidayCode)
+				.getList(c -> convertToDomainSet(c));
+	}
+
+	@Override
+	public void update(GrantDateCom grantDateCom) {
+		KshstGrantDateComPK key = new KshstGrantDateComPK(grantDateCom.getCompanyId(), grantDateCom.getSpecialHolidayCode().v());
+		Optional<KshstGrantDateCom> entity = this.queryProxy().find(key, KshstGrantDateCom.class);
+		KshstGrantDateCom kshstGrantDateCom = entity.get();
+		kshstGrantDateCom.grantDateAtr = grantDateCom.getGrantDateAtr().value;
+		kshstGrantDateCom.grantDate = grantDateCom.getGrantDate().v();
+				
+		List<KshstGrantDateSet> grantDateSets = grantDateCom.getGrantDateSets().stream()
+				.map(x -> {
+					KshstGrantDateSetPK keyDateSet = new KshstGrantDateSetPK(grantDateCom.getCompanyId(), grantDateCom.getSpecialHolidayCode().v(), x.getGrantDateNo());
+					return new KshstGrantDateSet(keyDateSet, x.getGrantDateMonth().v(), x.getGrantDateYear().v());
+				}).collect(Collectors.toList());
+		
+		kshstGrantDateCom.grantDateSets = grantDateSets;
+		
+		this.commandProxy().update(kshstGrantDateCom);
 	}
 }
