@@ -12,8 +12,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateMonth;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateYear;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
@@ -29,11 +27,11 @@ public class KshstGrantDatePerSet extends UkJpaEntity implements Serializable {
 	
 	/* 月数 */
 	@Column(name = "GRANT_DATE_M")
-	public GrantDateMonth grantDateMonth;
+	public int grantDateMonth;
 
 	/* 年数 */
 	@Column(name = "GRANT_DATE_Y")
-	public GrantDateYear grantDateYear;
+	public int grantDateYear;
 
 	@ManyToOne
     @JoinColumns({
@@ -42,6 +40,13 @@ public class KshstGrantDatePerSet extends UkJpaEntity implements Serializable {
     	@JoinColumn(name="PERSONAL_GRANT_DATE_CD", referencedColumnName="PERSONAL_GRANT_DATE_CD", insertable = false, updatable = false)
     })
 	public KshstGrantDatePer grantDatePer;
+	
+	public KshstGrantDatePerSet(KshstGrantDatePerSetPK kshstGrantDatePerSetPK, int grantDateMonth, int grantDateYear) {
+		
+		this.kshstGrantDatePerSetPK = kshstGrantDatePerSetPK;
+		this.grantDateMonth = grantDateMonth;
+		this.grantDateYear = grantDateYear;
+	}
 	
 	@Override
 	protected Object getKey() {

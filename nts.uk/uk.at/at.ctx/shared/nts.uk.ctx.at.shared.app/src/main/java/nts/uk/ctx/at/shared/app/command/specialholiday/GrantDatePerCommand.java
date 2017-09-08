@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.app.find.specialholiday.GrantDatePerSetDto;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDatePer;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDatePerSet;
 import nts.uk.shr.com.context.AppContexts;
@@ -31,7 +30,7 @@ public class GrantDatePerCommand {
 	/*付与基準日*/
 	private int grantDateAtr;
 	
-	private List<GrantDatePerSetDto> grantDatePerSet;
+	private List<GrantDatePerSetCommand> grantDatePerSet;
 	
 	public GrantDatePer toDomain() {
 		String companyId = AppContexts.user().companyId();

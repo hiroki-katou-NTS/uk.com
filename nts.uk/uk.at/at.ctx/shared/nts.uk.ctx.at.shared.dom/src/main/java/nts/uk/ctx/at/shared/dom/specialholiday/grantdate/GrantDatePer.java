@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.grantdate;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -43,16 +44,24 @@ public class GrantDatePer {
 
 	}
 
-	public void validateInput(List<GrantDatePerSet> list) {
+	public void validateInput() {
 		for (int i = 0; i < this.grantDatePerSet.size(); i++) {
 			GrantDatePerSet currentSet = this.grantDatePerSet.get(i);
 			
+			// 0年0ヶ月は登録不可
+			if(currentSet.getGrantDateYear().v() == 0 && currentSet.getGrantDateMonth().v() == 0){
+				throw new BusinessException("Msg_95");
+			}
+						
+			// 経過年数は必ず１件以上必要
 			if(currentSet.getGrantDateYear().v() < 1){
 				throw new BusinessException("Msg_144");
 			}
 			
-			if(currentSet.getGrantDateYear().v() == 0 && currentSet.getGrantDateMonth().v() == 0){
-				throw new BusinessException("Msg_95");
+			// 同じ経過年数の場合は登録不可
+			int countDuplicate = Collections.frequency(this.grantDatePerSet, currentSet.getGrantDateYear().v());
+			if(countDuplicate > 0){
+				throw new BusinessException("Msg_96");
 			}
 		}
 	}
