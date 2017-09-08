@@ -29,6 +29,27 @@ public class PremiumExtra60HRate extends DomainObject {
 	// 超過時間NO
 	private  OvertimeNo overtimeNo;
 
+	/**
+	 * Instantiates a new premium extra 60 H rate.
+	 *
+	 * @param memento the memento
+	 */
+	public PremiumExtra60HRate(PremiumExtra60HRateGetMemento memento) {
+		this.breakdownItemNo = memento.getBreakdownItemNo();
+		this.premiumRate = memento.getPremiumRate();
+		this.overtimeNo = memento.getOvertimeNo();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(PremiumExtra60HRateSetMemento memento){
+		memento.setBreakdownItemNo(this.breakdownItemNo);
+		memento.setPremiumRate(this.premiumRate);
+		memento.setOvertimeNo(this.overtimeNo);
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
