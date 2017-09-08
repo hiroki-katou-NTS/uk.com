@@ -1,4 +1,4 @@
-module cmm008.a.service{
+module cmm008_old.a.service{
     var path = {
         getAllEmployment: "basic/organization/employment/findallemployments",
         createEmployment: "basic/organization/employment/createemployment",

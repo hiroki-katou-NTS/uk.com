@@ -1,4 +1,4 @@
-module cmm008.a.viewmodel{
+module cmm008_old.a.viewmodel{
     import option = nts.uk.ui.option;
     
     export class ScreenModel {
