@@ -4,6 +4,8 @@ module nts.uk.com.view.cmm011.a {
         import TreeWorkplace = service.model.TreeWorkplace;
         import WorkplaceHistory = base.WorkplaceHistoryAbstract;
         import IHistory = nts.uk.com.view.cmm011.base.IHistory;
+        import Workplace = base.IWorkplace;
+        import CreationType = base.CreationWorkplaceType;
         
         export class ScreenModel {
             
@@ -19,9 +21,12 @@ module nts.uk.com.view.cmm011.a {
             wkpDisplayName: KnockoutObservable<string>; // A9_2
             wkpFullName: KnockoutObservable<string>; // A10_2
             
+            creationType: CreationType;
+            
             isNewMode: KnockoutObservable<boolean>;
-            isEnableButton: KnockoutObservable<boolean>;
-            isEnableInput: KnockoutObservable<boolean>;
+            isValidWorplace: KnockoutObservable<boolean>;
+            isValidWorplaceHistory: KnockoutObservable<boolean>;
+            
             
             constructor() {
                 let self = this;
@@ -37,14 +42,28 @@ module nts.uk.com.view.cmm011.a {
                 self.wkpDisplayName = ko.observable(null);
                 self.wkpFullName = ko.observable(null);
                 
+                self.creationType = null;
+                
                 self.isNewMode = ko.observable(true);
-                self.isEnableButton = ko.computed(function() {
-                    return !self.isNewMode() && !nts.uk.text.isNullOrEmpty(self.strDWorkplace());
+                self.isValidWorplace = ko.computed(function() {
+                    if (self.isNewMode()) {
+                        return false;
+                    }
+                    return !nts.uk.text.isNullOrEmpty(self.strDWorkplace());
                 });
-                self.isEnableInput = ko.computed(function() {
-                    return !self.isNewMode() && !nts.uk.text.isNullOrEmpty(self.workplaceHistory().selectedWpkHistory());
+                self.isValidWorplaceHistory = ko.computed(function() {
+                    if (self.isNewMode()) {
+                        return false;
+                    }
+                    return !nts.uk.text.isNullOrEmpty(self.workplaceHistory().selectedWpkHistory());
                 });
-                self.isEnableInput = ko.observable(false);
+                
+                // subscribe
+                self.strDWorkplace.subscribe((newValue) => {
+                    if (!newValue) {
+                        self.configureWkpDialog();
+                    }
+                });
             }
             
             public startPage(): JQueryPromise<any> {
@@ -77,11 +96,21 @@ module nts.uk.com.view.cmm011.a {
                 });
             }
             
+            public deleteWkpHistoryDialog() {
+            }
+            
             public createWkpDialog() {
                 let self = this;
+                
+                let workplace: Workplace = {code: self.workplaceCode(), name: self.workplaceName()};
+                nts.uk.ui.windows.setShared("WorkplaceInfor", workplace);
+                
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/f/index.xhtml').onClosed(() => {
-                    let isCreatedWkp: boolean = nts.uk.ui.windows.getShared("CreatedWorkplace");
-                    self.isNewMode(!isCreatedWkp);
+                    let creationType: CreationType = nts.uk.ui.windows.getShared("CreatedWorkplaceCondition");
+                    if (creationType) {
+                        self.isNewMode(false);
+                        self.creationType = creationType;
+                    }
                 });
             }
             
@@ -136,13 +165,15 @@ module nts.uk.com.view.cmm011.a {
             treeColumns: KnockoutObservableArray<any>;
             lstWorkplace: KnockoutObservableArray<TreeWorkplace>;
             selectedWpkId: KnockoutObservable<string>;
+            
+            
 
             constructor(screenModel: ScreenModel) {
                 let self = this;
 
                 self.treeColumns = ko.observableArray([
                     { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
-                    { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: 250, dataType: "string" }
+                    { headerText: "コード/名称", key: 'nodeText', width: 250, dataType: "string" }
                 ]);
                 self.lstWorkplace = ko.observableArray([]);
                 self.selectedWpkId = ko.observable(null);
