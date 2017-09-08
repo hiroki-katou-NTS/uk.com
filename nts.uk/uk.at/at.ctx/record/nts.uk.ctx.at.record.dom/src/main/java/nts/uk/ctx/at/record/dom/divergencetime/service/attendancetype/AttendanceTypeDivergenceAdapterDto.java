@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class AttendanceTypeDivergenceServiceDto {
+public class AttendanceTypeDivergenceAdapterDto {
 	public int attendanceItemId;
 }

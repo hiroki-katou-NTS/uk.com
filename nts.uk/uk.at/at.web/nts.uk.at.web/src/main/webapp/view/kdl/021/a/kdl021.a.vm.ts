@@ -37,17 +37,17 @@ module kdl021.a.viewmodel {
             self.dataSoure.push(new ItemModel("", "選択なし"));
             //set source
             if (self.posibleItems.length > 0) {
-                service.getPossibleItem(self.posibleItems).done(function(lstItem: Array<any>) {
-                    for (let i in lstItem) {
-                        self.dataSoure.push(new ItemModel(lstItem[i].attendanceItemId.toString(), lstItem[i].attendanceItemName.toString()));
-                    };
-                    //set source
-                    self.items(self.dataSoure);
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
-                }).always(function() {
-                    nts.uk.ui.block.clear();
-                });
+//                service.getPossibleItem(self.posibleItems).done(function(lstItem: Array<any>) {
+//                    for (let i in lstItem) {
+//                        self.dataSoure.push(new ItemModel(lstItem[i].attendanceItemId.toString(), lstItem[i].attendanceItemName.toString()));
+//                    };
+//                    //set source
+//                    self.items(self.dataSoure);
+//                }).fail(function(res) {
+//                    nts.uk.ui.dialog.alert(res.message);
+//                }).always(function() {
+//                    nts.uk.ui.block.clear();
+//                });
             }else{
                 nts.uk.ui.block.clear();
             }

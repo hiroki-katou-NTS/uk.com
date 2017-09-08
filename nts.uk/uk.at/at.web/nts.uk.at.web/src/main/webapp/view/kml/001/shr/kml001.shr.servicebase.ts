@@ -9,6 +9,7 @@ module nts.uk.at.view.kml001.shr {
             premiumItemUpdate: "at/schedule/budget/premium/updatePremiumItem",
             getAttendanceItems: "at/share/attendanceitem/getPossibleAttendanceItem",
             getAttendanceItemByType:  "at/schedule/budget/premium/attendancePremiumItem",
+            //getAttendanceItemByType:  "at/share/attendanceType/getByType"
         }
         
         export function personCostCalculationSelect(): JQueryPromise<any> {
