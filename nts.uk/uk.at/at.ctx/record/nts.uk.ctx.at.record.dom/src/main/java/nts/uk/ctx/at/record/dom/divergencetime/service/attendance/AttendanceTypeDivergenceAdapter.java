@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.divergencetime.service.attendancetype;
+package nts.uk.ctx.at.record.dom.divergencetime.service.attendance;
 
 import java.util.List;
 

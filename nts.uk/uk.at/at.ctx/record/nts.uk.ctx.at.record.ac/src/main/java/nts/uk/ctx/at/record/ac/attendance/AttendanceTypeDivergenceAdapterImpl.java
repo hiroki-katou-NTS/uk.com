@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.ac.attendancetype;
+package nts.uk.ctx.at.record.ac.attendance;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.function.pub.attendancetype.AttendanceTypePub;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendancetype.AttendanceTypeDivergenceAdapterDto;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendancetype.AttendanceTypeDivergenceAdapter;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapter;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapterDto;
 @Stateless
 public class AttendanceTypeDivergenceAdapterImpl implements AttendanceTypeDivergenceAdapter{
 	@Inject
