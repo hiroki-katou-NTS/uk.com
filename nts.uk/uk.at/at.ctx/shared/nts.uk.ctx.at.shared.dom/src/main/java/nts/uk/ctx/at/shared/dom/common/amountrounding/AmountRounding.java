@@ -8,9 +8,9 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class TimeRoundingSetting.
+ * The Class AmountRounding.
  */
-// 時間丸め設定
+// 金額丸め
 @Getter
 public class AmountRounding extends DomainObject{
 	

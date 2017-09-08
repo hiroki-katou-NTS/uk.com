@@ -28,7 +28,9 @@ module nts.uk.com.view.cmm011.d {
                 nts.uk.ui.windows.close();
             }
             
-            
+            public close() {
+                nts.uk.ui.windows.close();
+            }
             
             public showMessageError(res: any) {
                 if (res.businessException) {
