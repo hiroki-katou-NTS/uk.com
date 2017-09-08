@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateCom;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDatePer;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDatePerSet;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateSet;
 
 public interface GrantRegularRepository {
@@ -26,4 +28,12 @@ public interface GrantRegularRepository {
 	void add(GrantDateCom grantDateCom);
 
 	void update(GrantDateCom grantDateCom);
+	
+	Optional<GrantDatePer> getPerByCode(String companyId, String specialHolidayCode, String personalGrantDateCode);
+	
+	List<GrantDatePerSet> getPerSetByCode(String companyId, String specialHolidayCode, String personalGrantDateCode);
+
+	void addPer(GrantDatePer grantDatePer);
+
+	void updatePer(GrantDatePer grantDatePer);
 }

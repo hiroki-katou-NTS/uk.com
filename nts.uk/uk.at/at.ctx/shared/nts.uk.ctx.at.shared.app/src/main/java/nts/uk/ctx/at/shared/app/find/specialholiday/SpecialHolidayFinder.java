@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SphdLimit;
 import nts.uk.ctx.at.shared.dom.specialholiday.SubCondition;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateCom;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDatePer;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantPeriodic;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegularRepository;
@@ -192,4 +193,35 @@ public class SpecialHolidayFinder {
 		return grantSingleDto;
 	}
 
+	/**
+	 * Find Grant Date Per by special holiday code
+	 * 
+	 * @return
+	 */
+	public GrantDatePerDto getPerByCode(String specialHolidayCode, String personalGrantDateCode) {
+		// user contexts
+		String companyId = AppContexts.user().companyId();
+
+		Optional<GrantDatePer> data = this.grantRegularRepository.getPerByCode(companyId, specialHolidayCode, personalGrantDateCode);
+		
+		if(data.isPresent()){
+			return GrantDatePerDto.fromDomain(data.get());
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * Find all Grant Date Per Set by code
+	 * 
+	 * @return
+	 */
+	public List<GrantDatePerSetDto> getPerSetByCode(String specialHolidayCode, String personalGrantDateCode) {
+		// user contexts
+		String companyId = AppContexts.user().companyId();
+
+		return this.grantRegularRepository.getPerSetByCode(companyId, specialHolidayCode, personalGrantDateCode).stream().map(c -> GrantDatePerSetDto.fromDomain(c))
+				.collect(Collectors.toList());
+	}
+	
 }

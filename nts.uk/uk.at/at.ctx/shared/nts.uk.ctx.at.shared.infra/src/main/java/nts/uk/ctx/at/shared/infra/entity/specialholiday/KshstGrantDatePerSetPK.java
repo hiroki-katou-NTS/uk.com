@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class KshstGrantDatePerPK implements Serializable {
+public class KshstGrantDatePerSetPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/* 会社ID */
@@ -25,4 +25,8 @@ public class KshstGrantDatePerPK implements Serializable {
 	/*特別休暇コード*/
 	@Column(name = "PERSONAL_GRANT_DATE_CD")
 	public String personalGrantDateCode;
+	
+	/* 付与日の数 */
+	@Column(name = "GRANT_DATE_NO")
+	public int grantDateNo;
 }
