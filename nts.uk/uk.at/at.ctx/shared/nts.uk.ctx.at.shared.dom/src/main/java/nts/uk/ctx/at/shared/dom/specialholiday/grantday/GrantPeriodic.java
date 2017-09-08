@@ -2,12 +2,15 @@ package nts.uk.ctx.at.shared.dom.specialholiday.grantday;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
-
+@NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class GrantPeriodic {
+public class GrantPeriodic extends DomainObject{
 
 	/* 会社ID */
 	private String companyId;
@@ -21,10 +24,26 @@ public class GrantPeriodic {
 	/* 固定付与日数 */
 	private SplitAcquisition splitAcquisition;
 
-
 	/* 付与日数定期方法 */
 	private GrantPeriodicMethod grantPeriodicMethod;
-
+	
+	@Override
+	public void validate(){
+		super.validate();
+		this.checkGrantDay();
+	}
+	
+	/**
+	 * Check Grant Day of Grant Periodic
+	 */
+	private void checkGrantDay(){
+		if(this.splitAcquisition == SplitAcquisition.FixedDay){
+			if(this.grantDay == null){
+				throw new BusinessException("Msg_97");
+			}
+		}
+	}
+	
 	public static GrantPeriodic createFromJavaType(
 			String companyId,
 			String specialHolidayCode,
@@ -38,7 +57,4 @@ public class GrantPeriodic {
 							EnumAdaptor.valueOf(grantPeriodicMethod, GrantPeriodicMethod.class));
 	}
 
-	public GrantPeriodic() {
-		// TODO Auto-generated constructor stub
-	}
 }
