@@ -1,0 +1,196 @@
+module nts.uk.com.view.cps009.a.viewmodel {
+    import error = nts.uk.ui.errors;
+    import text = nts.uk.resource.getText;
+    import close = nts.uk.ui.windows.close;
+    import dialog = nts.uk.ui.dialog;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
+    import block = nts.uk.ui.block;
+
+    export class ViewModel {
+        categoryList: KnockoutObservableArray<any> = ko.observableArray([]);
+        itemList: KnockoutObservableArray<any> = ko.observableArray([]);
+        initValueList: KnockoutObservableArray<any> = ko.observableArray([]);
+        categoryId: KnockoutObservable<string> = ko.observable('');
+        ctgColums: KnockoutObservableArray<any> = ko.observableArray([
+            { headerText: 'id', key: 'id', width: 100, hidden: true },
+            { headerText: text('CPS009_10'), key: 'categoryCode', width: 80 },
+            { headerText: text('CPS006_11'), key: 'categoryName', width: 160 }
+        ]);
+        itemValueLst: KnockoutObservableArray<any> = ko.observableArray(
+            [new ItemModel('1', '基本給'),
+                new ItemModel('2', '役職手当'),
+                new ItemModel('3', '基本給2')]);
+        selectionColumns = [{ prop: 'id', length: 4 },
+            { prop: 'itemName', length: 8 }];
+        currentCategory: KnockoutObservable<CategoryInfoDetail> = ko.observable(new CategoryInfoDetail({
+            categoryCode: '', categoryName: '', itemList: []
+        }));
+
+        comboItems = [new ItemModel('1', '基本給'),
+            new ItemModel('2', '役職手当'),
+            new ItemModel('3', '基本給2')];
+        comboColumns = [{ prop: 'code', length: 4 },
+            { prop: 'name', length: 8 }];
+        items = (function() {
+            var list = [];
+            for (var i = 0; i < 15; i++) {
+                list.push(new GridItem(i));
+            }
+            return list;
+        })();
+        constructor() {
+
+            let self = this;
+
+            self.start();
+
+            self.categoryId.subscribe(function(value) {
+                self.currentCategory().setData(new CategoryInfoDetail({
+                    categoryCode: value, categoryName: 'B', itemList: self.itemList()
+                }));
+            });
+
+        }
+        start(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            for (var i = 0; i < 10; i++) {
+                self.categoryList.push(new CategoryInfo({ id: i.toString(), categoryName: 'A', categoryCode: "000" + i.toString() }));
+                self.itemList.push(new ItemInfo({ id: i.toString(), itemCode: "000" + i.toString(), itemName: "B" }));
+                self.initValueList.push(new InitValue({ id: i.toString(), itemName: "C", comboxValue: "1", value: "HHH" }));
+            }
+            self.categoryId(self.categoryList()[0].id);
+
+            return dfd.promise();
+        }
+
+        openBDialog() {
+            
+            let self = this;
+            
+            setShared('categoryInfo', self.currentCategory());
+            block.invisible();
+            nts.uk.ui.windows.sub.modal('/view/cps/009/b/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                block.clear();
+            });
+
+        }
+    }
+    export interface ICategoryInfo {
+        id: string;
+        categoryName: string;
+        categoryCode: string;
+    }
+
+    export class CategoryInfo {
+        id: string;
+        categoryCode: string;
+        categoryName: string;
+        constructor(params: ICategoryInfo) {
+            this.id = params.id;
+            this.categoryName = params.categoryName;
+            this.categoryCode = params.categoryCode;
+        }
+
+    }
+    export interface IItemInfo {
+        id: string;
+        itemCode: string;
+        itemName: string;
+    }
+
+    export class ItemInfo {
+        id: string;
+        itemCode: string;
+        itemName: string;
+        constructor(params: IItemInfo) {
+            this.id = params.id;
+            this.itemCode = params.itemCode;
+            this.itemName = params.itemName;
+        }
+    }
+
+    export interface IInitValue {
+        id: string;
+        itemName: string;
+        comboxValue: string;
+        value: string;
+    }
+
+    export class InitValue {
+        id: string;
+        itemName: string;
+        comboxValue: number;
+        value: string;
+        constructor(params: IInitValue) {
+            this.id = params.id;
+            this.itemName = params.itemName;
+            this.comboxValue = params.comboxValue;
+            this.value = params.value;
+        }
+    }
+
+    export interface ICategoryInfoDetail {
+        categoryCode: string;
+        categoryName: string;
+        itemList?: Array<any>;
+    }
+
+    export class CategoryInfoDetail {
+        categoryCode: KnockoutObservable<string>;
+        categoryName: KnockoutObservable<string>;
+        itemList: KnockoutObservableArray<any>;
+        currentItemId: KnockoutObservable<string> = ko.observable('');
+        itemColums: KnockoutObservableArray<any> = ko.observableArray([
+            { headerText: 'id', key: 'id', width: 100, hidden: true },
+            { headerText: text('CPS009_15'), key: 'itemCode', width: 50 },
+            { headerText: text('CPS009_16'), key: 'itemName', width: 200 }
+        ]);
+        constructor(params: ICategoryInfoDetail) {
+            this.categoryCode = ko.observable(params.categoryCode || '');
+            this.categoryName = ko.observable(params.categoryName || '');
+            this.itemList = ko.observableArray(params.itemList || []);
+        }
+
+        setData(params: any) {
+            this.categoryCode(params.categoryCode);
+            this.categoryName(params.categoryName);
+            this.itemList(params.itemList);
+        }
+    }
+
+    class GridItem {
+        id: number;
+        flag: boolean;
+        ruleCode: string;
+        combo: string;
+        text1: string;
+        constructor(index: number) {
+            this.id = index;
+            this.flag = index % 2 == 0;
+            this.ruleCode = String(index % 3 + 1);
+            this.combo = String(index % 3 + 1);
+            this.text1 = "TEXT";
+        }
+    }
+
+    function makeIcon(value, row) {
+        if (value == "true")
+            return "●";
+        return '';
+    }
+
+    export class ItemModel {
+        code: string;
+        name: string;
+
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+
+
+}
