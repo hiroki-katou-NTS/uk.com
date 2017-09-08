@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.overtime;
+package nts.uk.ctx.at.shared.infra.entity.overtime.breakdown;
 
 import java.io.Serializable;
 
@@ -43,13 +43,13 @@ public class KshstOverTimeBrd implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "USE_ATR")
-    private short useAtr;
+    private int useAtr;
     
     /** The product number. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "PRODUCT_NUMBER")
-    private short productNumber;
+    private int productNumber;
 
     /**
      * Instantiates a new kshst over time brd.

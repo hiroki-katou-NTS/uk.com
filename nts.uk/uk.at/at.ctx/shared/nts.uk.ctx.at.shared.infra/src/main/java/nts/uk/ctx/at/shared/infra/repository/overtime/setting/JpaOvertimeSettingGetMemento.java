@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.overtime;
+package nts.uk.ctx.at.shared.infra.repository.overtime.setting;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,10 +11,15 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.overtime.OvertimeCalculationMethod;
 import nts.uk.ctx.at.shared.dom.overtime.OvertimeNote;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItem;
+import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.overtime.KshstOverTime;
 import nts.uk.ctx.at.shared.infra.entity.overtime.KshstOverTimePK;
-import nts.uk.ctx.at.shared.infra.entity.overtime.KshstOverTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.overtime.breakdown.KshstOverTimeBrd;
+import nts.uk.ctx.at.shared.infra.entity.overtime.breakdown.KshstOverTimeBrdPK;
+import nts.uk.ctx.at.shared.infra.entity.overtime.setting.KshstOverTimeSet;
+import nts.uk.ctx.at.shared.infra.repository.overtime.JpaOvertimeGetMemento;
+import nts.uk.ctx.at.shared.infra.repository.overtime.breakdown.JpaOvertimeBRDItemGetMemento;
 
 /**
  * The Class JpaOvertimeSettingGetMemento.
@@ -23,6 +28,9 @@ public class JpaOvertimeSettingGetMemento implements OvertimeSettingGetMemento{
 	
 	/** The entity overtimes. */
 	private List<KshstOverTime> entityOvertimes;
+	
+	/** The entity overtime BRD items. */
+	private List<KshstOverTimeBrd> entityOvertimeBRDItems;
 	
 	/** The entity. */
 	private KshstOverTimeSet entity;
@@ -34,13 +42,19 @@ public class JpaOvertimeSettingGetMemento implements OvertimeSettingGetMemento{
 	 * @param entityOvertimes the entity overtimes
 	 */
 	public JpaOvertimeSettingGetMemento(KshstOverTimeSet entity,
-			List<KshstOverTime> entityOvertimes) {
+			List<KshstOverTimeBrd> entityOvertimeBRDItems, List<KshstOverTime> entityOvertimes) {
+		entityOvertimeBRDItems.forEach(entityItem -> {
+			if (entityItem.getKshstOverTimeBrdPK() == null) {
+				entityItem.setKshstOverTimeBrdPK(new KshstOverTimeBrdPK());
+			}
+		});
 		entityOvertimes.forEach(entityItem -> {
 			if (entityItem.getKshstOverTimePK() == null) {
 				entityItem.setKshstOverTimePK(new KshstOverTimePK());
 			}
 		});
 		this.entityOvertimes = entityOvertimes;
+		this.entityOvertimeBRDItems = entityOvertimeBRDItems;
 		this.entity = entity;
 	}
 	
@@ -70,6 +84,19 @@ public class JpaOvertimeSettingGetMemento implements OvertimeSettingGetMemento{
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSettingGetMemento#
+	 * getBreakdownItems()
+	 */
+	@Override
+	public List<OvertimeBRDItem> getBreakdownItems() {
+		return this.entityOvertimeBRDItems.stream()
+				.map(entityBRDItem -> new OvertimeBRDItem(
+						new JpaOvertimeBRDItemGetMemento(entityBRDItem)))
+				.collect(Collectors.toList());
+	}
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.at.shared.dom.overtime.OvertimeSettingGetMemento#
 	 * getCalculationMethod()
 	 */
@@ -91,5 +118,6 @@ public class JpaOvertimeSettingGetMemento implements OvertimeSettingGetMemento{
 				.map(entityOvertime -> new Overtime(new JpaOvertimeGetMemento(entityOvertime)))
 				.collect(Collectors.toList());
 	}
+
 
 }
