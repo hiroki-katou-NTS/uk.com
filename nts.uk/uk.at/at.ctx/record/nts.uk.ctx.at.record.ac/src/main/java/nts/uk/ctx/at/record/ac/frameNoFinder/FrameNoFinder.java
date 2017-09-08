@@ -19,7 +19,7 @@ public class FrameNoFinder implements FrameNoAdapter{
 	@Override
 	public List<FrameNoAdapterDto> getFrameNo(List<Integer> attendanceItemIds) {
 		return attendanceItemLinkingPub.getFrameNo(attendanceItemIds).stream().map(f -> {
-			return new FrameNoAdapterDto(f.getAttendanceItemId(), f.getFrameNo());
+			return new FrameNoAdapterDto(f.getAttendanceItemId(), f.getFrameNo(), f.getFrameCategory());
 		}).collect(Collectors.toList());
 	}
 	

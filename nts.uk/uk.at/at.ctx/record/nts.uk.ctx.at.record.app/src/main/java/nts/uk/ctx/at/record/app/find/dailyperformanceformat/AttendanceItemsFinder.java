@@ -11,13 +11,9 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttdItemDto;
 import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.AttendanceItemDto;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItemDomainServiceDto;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.FrameNoAdapter;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.PremiumItemAdapter;
-import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemNameDomainService;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapter;
+import nts.uk.ctx.at.record.dom.dailyattendanceitem.adapter.DailyAttendanceItemNameAdapterDto;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
-import nts.uk.ctx.at.shared.dom.bonuspay.repository.BPTimeItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -28,24 +24,12 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class AttendanceItemsFinder {
-
+	
 	@Inject
-	private DailyAttendanceItemNameDomainService dailyAttendanceItemNameDomainService;
-
-	@Inject
-	private DivergenceTimeRepository divergenceTimeRepository;
+	private DailyAttendanceItemNameAdapter dailyAttendanceItemNameAdapter;
 
 	@Inject
 	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
-
-	@Inject
-	private FrameNoAdapter frameNoAdapter;
-
-	@Inject
-	private PremiumItemAdapter premiumItemAdapter;
-
-	@Inject
-	private BPTimeItemRepository bPTimeItemRepository;
 
 	public List<AttendanceItemDto> find() {
 		LoginUserContext login = AppContexts.user();
@@ -66,8 +50,7 @@ public class AttendanceItemsFinder {
 			return f.getAttendanceItemId();
 		}).collect(Collectors.toList());
 
-		List<DailyAttendanceItemDomainServiceDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameDomainService
-				.getNameOfDailyAttendanceItem(attendanceItemIds);
+		List<DailyAttendanceItemNameAdapterDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(attendanceItemIds);
 		
 //		List<AttendanceItemDto> attendanceItemDtoResult = dailyAttendanceItemDomainServiceDtos.stream().map(f -> {
 //			return new AttendanceItemDto(f.getAttendanceItemId(), f.getAttendanceItemName(), f.getAttendanceItemDisplayNumber());
@@ -102,8 +85,7 @@ public class AttendanceItemsFinder {
 			return f.getAttendanceItemId();
 		}).collect(Collectors.toList());
 
-		List<DailyAttendanceItemDomainServiceDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameDomainService
-				.getNameOfDailyAttendanceItem(attendanceItemIds);
+		List<DailyAttendanceItemNameAdapterDto> dailyAttendanceItemDomainServiceDtos = this.dailyAttendanceItemNameAdapter.getDailyAttendanceItemName(attendanceItemIds);
 		
 		
 		Map<Integer, DailyAttendanceItem> dailyAttendanceItemMap =

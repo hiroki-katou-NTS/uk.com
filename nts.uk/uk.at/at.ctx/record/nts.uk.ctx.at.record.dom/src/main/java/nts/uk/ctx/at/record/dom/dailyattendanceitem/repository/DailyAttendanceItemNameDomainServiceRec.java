@@ -5,7 +5,7 @@ import java.util.List;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItemDomainServiceDto;
 
-public interface DailyAttendanceItemNameDomainService {
+public interface DailyAttendanceItemNameDomainServiceRec {
 	
 	/*
 	 * Set name of dailyAttendanceItem

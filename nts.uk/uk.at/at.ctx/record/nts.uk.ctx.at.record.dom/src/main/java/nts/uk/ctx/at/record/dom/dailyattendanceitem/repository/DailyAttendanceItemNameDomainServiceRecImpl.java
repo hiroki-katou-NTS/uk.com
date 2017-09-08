@@ -28,7 +28,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  * 勤怠項目に対応する名称を生成する
  */
 @Stateless
-public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendanceItemNameDomainService {
+public class DailyAttendanceItemNameDomainServiceRecImpl implements DailyAttendanceItemNameDomainServiceRec {
 	
 	@Inject
 	private DailyAttendanceItemRepository dailyAttendanceItemRepository;
@@ -56,25 +56,25 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 		List<FrameNoAdapterDto> attendanceItemAndFrameNos = this.frameNoAdapter.getFrameNo(dailyAttendanceItemIds);
 
 		// get list frame No
-		Map<Integer, Integer> frameNoMap = attendanceItemAndFrameNos.stream()
-				.collect(Collectors.toMap(FrameNoAdapterDto::getAttendanceItemId, FrameNoAdapterDto::getFrameNo));
-		List<Integer> frameNos = frameNoMap.values().stream().collect(Collectors.toList());
+		Map<Integer, FrameNoAdapterDto> frameNoMap = attendanceItemAndFrameNos.stream()
+				.collect(Collectors.toMap(FrameNoAdapterDto::getAttendanceItemId, x -> x));
+		List<Integer> frameNos = frameNoMap.values().stream().map(item -> {return item.getFrameNo();}).collect(Collectors.toList());
 
-		// 乖離時間
+		// 乖離時間 7
 		Map<Integer, DivergenceTime> divergenceTimes = this.divergenceTimeRepository
 				.getDivergenceTimeName(companyId, frameNos).stream()
 				.collect(Collectors.toMap(DivergenceTime::getDivTimeId, x -> x));
 
-		// 割増項目
+		// 割増項目 4
 		Map<Integer, PremiumItemDto> premiumItemnames = this.premiumItemAdapter.getPremiumItemName(companyId, frameNos)
 				.stream().collect(Collectors.toMap(PremiumItemDto::getDisplayNumber, x -> x));
 
-		// 加給時間項目
+		// 加給時間項目 5 
 		Map<Integer, BonusPayTimeItem> bonusPayTimeItems = this.bPTimeItemRepository
 				.getListBonusPayTimeItemName(companyId, frameNos).stream()
 				.collect(Collectors.toMap(BonusPayTimeItem::getId, x -> x));
 
-		// 特定加給時間項目
+		// 特定加給時間項目 6
 		Map<Integer, BonusPayTimeItem> specialBonusPayTimeItem = this.bPTimeItemRepository
 				.getListSpecialBonusPayTimeItemName(companyId, frameNos).stream()
 				.collect(Collectors.toMap(BonusPayTimeItem::getId, x -> x));
