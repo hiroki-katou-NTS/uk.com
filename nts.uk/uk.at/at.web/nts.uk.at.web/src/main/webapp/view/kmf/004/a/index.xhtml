@@ -66,7 +66,7 @@
 								data-bind="click : $parent.openKDL002Dialog.bind($parent)"
 								style="margin-left: 106px;" id="A_BTN_004">#{i18n.getText('KMF004_12')}</button>
 							<span><input id="text-target-item" style="width: 469px"
-								data-bind="ntsTextEditor: {value: $parent.workTypeNames, required: true}" /></span>
+								data-bind="ntsTextEditor: {value: $parent.workTypeNames, enable: false}" /></span>
 						</div>
 						<div>
 							<div id="single-offer" style="margin-top: 10px;"
@@ -104,13 +104,13 @@
 								</label>
 								<div>
 									<span style="margin-left: 100px">#{i18n.getText('KMF004_25')}</span>
-									<div style="margin-top: 10px;"
+									<div id="grant-start-date" style="margin-top: 10px;"
 										data-bind="ntsDatePicker: {
 											value: grantStartDate, 
 											dateFormat: 'YYYY/MM/DD', 
 											enable: grantRegularMethod()==0}">
 									</div>
-									<span style="">#{i18n.getText('KMF004_26')}</span> <input
+									<span  style="">#{i18n.getText('KMF004_26')}</span> <input id="months"
 										style="width: 40px;"
 										data-bind="ntsNumberEditor: {
 												value: months,
@@ -118,7 +118,7 @@
 												unitID: 'YEARS',
 												width: '60'}),
 												enable: grantRegularMethod()==0}" />
-									<input style="width: 40px;"
+									<input id="years" style="width: 40px;"
 										data-bind="ntsNumberEditor: {
 												value: years,
 												option: ko.mapping.fromJS({
@@ -130,8 +130,8 @@
 									data-bind="with: $parent.option2"> <input type="radio"
 									name="grantRegularMethod"
 									data-bind="checkedValue: value, 
-																							 checked: $parent.grantRegularMethod, 
-																							 enable: true" />
+											 checked: $parent.grantRegularMethod, 
+											 enable: true" />
 									<span class="box"></span><span class="label"
 									data-bind="text: text"></span>
 								</label>
@@ -150,7 +150,7 @@
 											data-bind="checkedValue: 0, checked: grantPeriodicMethod, enable: true" />
 											<span class="box"></span><span class="label">#{i18n.getText('KMF004_32')}</span>
 										</label> <span style="vertical-align: middle; margin-left: 80px;">#{i18n.getText('KMF004_31')}</span>
-										<input style="width: 40px;"
+										<input id="grant-day" style="width: 40px;"
 											data-bind="ntsNumberEditor: {
 												value: grantDay,
 												option: ko.mapping.fromJS({
@@ -203,7 +203,8 @@
 										<label class="ntsRadioBox"> <input type="radio"
 											name="specialVacationMethod"
 											data-bind="checkedValue: 2, checked: specialVacationMethod, enable: true" />
-											<span class="box"></span><span class="label">#{i18n.getText('KMF004_45')}</span>
+											<span class="box"></span><span class="label">#{i18n.getText('KMF004_44')}</span>
+											<span class="label">#{i18n.getText('KMF004_45')}</span>
 										</label> <input style="width: 40px;"
 											data-bind="ntsNumberEditor: {
 												value: specialVacationMonths,

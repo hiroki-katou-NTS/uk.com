@@ -110,6 +110,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 if (codeChanged !== null && codeChanged !== undefined) {
                     self.changedCode(codeChanged);
                     self.isEnableCode(false);
+                    nts.uk.ui.errors.clearAll();
                 }
             });
 
@@ -118,10 +119,12 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     self.visibleGrantSingle(false);
                     self.visibleGrant(true);
                     self.selectedTab('tab-5');
+                    nts.uk.ui.errors.clearAll();
                 } else {
                     self.visibleGrantSingle(true);
                     self.visibleGrant(false);
                     self.selectedTab('tab-1');
+                    nts.uk.ui.errors.clearAll();
                 }
             })
 
@@ -133,6 +136,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 { id: 'tab-5', title: nts.uk.resource.getText('KMF004_21'), content: '.tab-content-5', enable: ko.observable(true), visible: self.visibleGrant }
             ]);
             self.selectedTab = ko.observable('tab-5');
+            self.selectedTab.subscribe(function(value) {
+                nts.uk.ui.errors.clearAll();
+            })
         }
 
         startPage(): JQueryPromise<any> {
@@ -231,70 +237,70 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
         addSpecialHoliday(): JQueryPromise<any> {
             var self = this;
-            $(".nts-input").trigger("validate");
-            if (!$(".nts-input").ntsError("hasError")) {
-                if (nts.uk.ui.errors.hasError()) {
-                    return;
-                }
-                if (self.inp_grantMethod() == 0) {
-                    self.currentItem().grantRegular(null);
-                    self.currentItem().grantPeriodic(null);
-                    self.currentItem().sphdLimit(null);
-                    self.currentItem().subCondition(null);
-                } else {
-                    var useGender = self.currentItem().subCondition().useGender();
-                    var useEmployee = self.currentItem().subCondition().useEmployee();
-                    var useCls = self.currentItem().subCondition().useCls();
-                    var useAge = self.currentItem().subCondition().useAge();
+            $(".ntsDatepicker").trigger("validate")
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            var specialHoliday = ko.toJS(self.currentItem());
+            if (self.inp_grantMethod() == 0) {
+                specialHoliday.grantRegular = null;
+                specialHoliday.grantPeriodic = null;
+                specialHoliday.sphdLimit = null;
+                specialHoliday.subCondition = null;
+            } else {
+                var useGender = specialHoliday.subCondition.useGender;
+                var useEmployee = specialHoliday.subCondition.useEmployee;
+                var useCls = specialHoliday.subCondition.useCls;
+                var useAge = specialHoliday.subCondition.useAge;
 
-                    self.currentItem().subCondition().useGender(useGender ? 1 : 0);
-                    self.currentItem().subCondition().useEmployee(useEmployee ? 1 : 0);
-                    self.currentItem().subCondition().useCls(useCls ? 1 : 0);
-                    self.currentItem().subCondition().useAge(useAge ? 1 : 0);
+                specialHoliday.subCondition.useGender = useGender ? 1 : 0;
+                specialHoliday.subCondition.useEmployee = useEmployee ? 1 : 0;
+                specialHoliday.subCondition.useCls = useCls ? 1 : 0;
+                specialHoliday.subCondition.useAge = useAge ? 1 : 0;
+                
+                specialHoliday.grantSingle = null;
+                specialHoliday.grantRegular.grantStartDate = new Date(specialHoliday.grantRegular.grantStartDate);
+            }
+            specialHoliday.grantMethod = self.inp_grantMethod();
+            
+            if (self.isEnableCode()) {
+                var emptyObjectRegular: model.IGrantRegularDto = {};
+                var emptyObjectPeriodic: model.IGrantPeriodic = {};
+                var emptyObjectSphdLimit: model.ISphdLimitDto = {};
+                var emptyObjectSubCondition: model.ISubConditionDto = {};
+                var emptyObjectGrantSingle: model.IGrantSingleDto = {};
 
-                    self.currentItem().grantSingle(null);
-                }
-                self.currentItem().grantMethod(self.inp_grantMethod());
-
-                if (self.isEnableCode()) {
-                    var emptyObjectRegular: model.IGrantRegularDto = {};
-                    var emptyObjectPeriodic: model.IGrantPeriodic = {};
-                    var emptyObjectSphdLimit: model.ISphdLimitDto = {};
-                    var emptyObjectSubCondition: model.ISubConditionDto = {};
-                    var emptyObjectGrantSingle: model.IGrantSingleDto = {};
-
-                    var specialHoliday = ko.toJSON(self.currentItem());
-                    specialHoliday["grantMethod"] = self.inp_grantMethod();
-
-                    service.addSpecialHoliday(specialHoliday).done(function(res) {
-                        var resObj = ko.toJS(res);
-
+                specialHoliday["grantMethod"] = self.inp_grantMethod();
+                
+                service.addSpecialHoliday(specialHoliday).done(function(errors) {
+                    if (errors && errors.length > 0) {
+                        self.addListError(errors);    
+                    } else {                    
                         if (self.currentCode) {
                             nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
                             self.getAllSpecialHoliday().done(function() {
                                 self.currentCode(self.currentItem().specialHolidayCode());
-
                                 self.isEnableCode(false);
                             });
                         }
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message);
-                    }).always(function() {
-                        nts.uk.ui.block.clear();
-                    })
-                }
-                else {
-                    service.updateSpecialHoliday(ko.toJSON(self.currentItem())).done(function(res) {
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
-                        self.getAllSpecialHoliday().done(function() {
-                            self.currentCode(self.currentItem().specialHolidayCode());
-                        });
-                    }).fail(function(res) {
-                        nts.uk.ui.dialog.alertError(res.message);
-                    }).always(function() {
-                        nts.uk.ui.block.clear();
-                    })
-                }
+                    }
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                })
+            }
+            else {
+                service.updateSpecialHoliday(ko.toJSON(self.currentItem())).done(function(res) {
+                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                    self.getAllSpecialHoliday().done(function() {
+                        self.currentCode(self.currentItem().specialHolidayCode());
+                    });
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                })
             }
         }
 
@@ -459,6 +465,23 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             }
             return name.join(" + ");
         }
+
+        /**
+         * Set error
+         */
+        addListError(errorsRequest: Array<string>) {
+            var messages = {};
+            _.forEach(errorsRequest, function(err) {
+                messages[err] = nts.uk.resource.getMessage(err);
+            });
+
+            var errorVm = {
+                messageId: errorsRequest,
+                messages: messages
+            };
+
+            nts.uk.ui.dialog.bundledErrors(errorVm);
+        }
     }
 
     class ItemModelSpecialHoliday {
@@ -524,7 +547,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             constructor(param: ISpecialHolidayDto) {
                 this.specialHolidayCode = ko.observable(param.specialHolidayCode || null);
                 this.specialHolidayName = ko.observable(param.specialHolidayName || '');
-                this.grantMethod = ko.observable(param.grantMethod || 0);
+                this.grantMethod = ko.observable(param.grantMethod || 1);
                 this.memo = ko.observable(param.memo || '');
                 this.workTypeList = ko.observableArray(param.workTypeList || null);
                 this.grantRegular = ko.observable(param.grantRegular || new GrantRegularDto({}));
@@ -544,13 +567,13 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         }
         export class GrantRegularDto {
             specialHolidayCode: KnockoutObservable<any>;
-            grantStartDate: KnockoutObservable<Date>;
+            grantStartDate: KnockoutObservable<string>;
             months: KnockoutObservable<number>;
             years: KnockoutObservable<number>;
             grantRegularMethod: KnockoutObservable<number>;
             constructor(param: IGrantRegularDto) {
                 this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
-                this.grantStartDate = ko.observable(new Date(param.grantStartDate) || null);
+                this.grantStartDate = ko.observable(param.grantStartDate || null);
                 this.months = ko.observable(param.months || null);
                 this.years = ko.observable(param.years || null);
                 this.grantRegularMethod = ko.observable(param.grantRegularMethod || 0);
