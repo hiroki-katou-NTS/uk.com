@@ -10,7 +10,6 @@ import javax.enterprise.inject.UnsatisfiedResolutionException;
 import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 
-import nts.arc.i18n.custom.ISessionLocale;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.arc.time.GeneralDateTime;
@@ -32,9 +31,6 @@ public class MasterListExportService extends ExportService<MasterListExportQuery
 	private MasterListReportGenerator generator;
 	
 	@Inject
-	private ISessionLocale currentLanguage;
-	
-	@Inject
 	private CompanyAdapter company;
 
 	@Override
@@ -49,7 +45,7 @@ public class MasterListExportService extends ExportService<MasterListExportQuery
 			List<MasterData> datas = domainData.getMasterDatas();
 			Map<String, String> headers = this.getHeaderInfor(query);
 			
-			this.generator.generate(context.getGeneratorContext(), new MasterListExportSource(headers, columns, datas));
+			this.generator.generate(context.getGeneratorContext(), new MasterListExportSource(headers, columns, datas, query.getReportType()));
 		} catch (UnsatisfiedResolutionException ex) {
 			throw new RuntimeException(ex);
 		} catch (Exception e) {
@@ -66,14 +62,12 @@ public class MasterListExportService extends ExportService<MasterListExportQuery
 		String companyname = this.company.getCurrentCompany()
 				.orElseThrow(() -> new RuntimeException("Company is not found!!!!")).getCompanyName();
 		
-		String language = currentLanguage.getSessionLocale().getDisplayLanguage(); 
-		
 		String createReportDate = GeneralDateTime.now().localDateTime().format(DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm:ss"));
 		
 		headers.put("【会社】", context.companyCode() + " " + companyname);
 		headers.put("【種類】", query.getDomainType());
 		headers.put("【日時】", createReportDate);
-		headers.put("【選択言語】 ", language);
+		headers.put("【選択言語】 ", query.getLanguage());
 		
 		return headers;
 	}

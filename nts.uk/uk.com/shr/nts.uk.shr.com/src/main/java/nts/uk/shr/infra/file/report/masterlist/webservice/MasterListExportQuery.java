@@ -8,4 +8,8 @@ public class MasterListExportQuery {
 	private String domainId;
 	
 	private String domainType;
+
+	private String language;
+	
+	private ReportType reportType;
 }
