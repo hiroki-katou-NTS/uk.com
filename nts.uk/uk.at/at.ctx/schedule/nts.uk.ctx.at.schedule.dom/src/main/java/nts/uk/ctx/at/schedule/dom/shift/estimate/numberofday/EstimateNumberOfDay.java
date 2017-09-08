@@ -107,12 +107,14 @@ public class EstimateNumberOfDay extends DomainObject {
 				if (monthlyNow.getDays().v() != ZERO_VALUE
 						&& monthlyNext.getDays().v() != ZERO_VALUE
 						&& monthlyNext.getDays().v() >= monthlyNow.getDays().v()) {
-					throw new BusinessException("Msg_147", "KSM001_24");
+					I18NText text = I18NText.main("Msg_147").addId("KSM001_25").addRaw(GUILDANCE_TEXT).build();
+					throw new BusinessException(text);
 				}
 
 				if (monthlyNow.getDays().v() == ZERO_VALUE
 						&& monthlyNext.getDays().v() > ZERO_VALUE) {
-					throw new BusinessException("Msg_182", "KSM001_24");
+					I18NText text = I18NText.main("Msg_182").addId("KSM001_25").addRaw(GUILDANCE_TEXT).build();
+					throw new BusinessException(text);
 				}
 			}
 			break;
