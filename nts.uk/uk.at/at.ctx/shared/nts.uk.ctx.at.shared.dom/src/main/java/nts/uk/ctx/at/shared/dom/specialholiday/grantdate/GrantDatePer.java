@@ -5,6 +5,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 
 @AllArgsConstructor
 @Getter
@@ -40,6 +41,20 @@ public class GrantDatePer {
 				EnumAdaptor.valueOf(grantDateAtr, GrantDateAtr.class),
 				grantDatePerSet);
 
+	}
+
+	public void validateInput() {
+		for (int i = 0; i < this.grantDatePerSet.size(); i++) {
+			GrantDatePerSet currentSet = this.grantDatePerSet.get(i);
+			
+			if(currentSet.getGrantDateYear().v() < 1){
+				throw new BusinessException("Msg_144");
+			}
+			
+			if(currentSet.getGrantDateYear().v() == 0 && currentSet.getGrantDateMonth().v() == 0){
+				throw new BusinessException("Msg_95");
+			}
+		}
 	}
 
 }
