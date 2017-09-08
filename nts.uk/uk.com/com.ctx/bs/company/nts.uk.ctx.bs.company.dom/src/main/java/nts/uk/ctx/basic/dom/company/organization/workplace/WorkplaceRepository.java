@@ -87,4 +87,14 @@ public interface WorkplaceRepository {
 	 * @return the list
 	 */
 	List<Workplace> findByWkpCd(String companyId, String wpkCode, GeneralDate baseDate);
+	
+	/**
+	 * Find by wkp id.
+	 *
+	 * @param companyId the company id
+	 * @param wpkId the wpk id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	List<Workplace> findByWkpId(String companyId, String wpkId, GeneralDate baseDate);
 }

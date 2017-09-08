@@ -8,4 +8,6 @@ public class AttendanceItemLinkingDto {
 	private int attendanceItemId;
 	
 	private int frameNo;
+	
+	private int frameCategory;
 }

@@ -82,10 +82,10 @@ module kmk011.a.viewmodel {
                         for (let j = 0; j < lstItem.length; j++) {
                             listItemId[j] = lstItem[j].attendanceId;
                         }
-                        service.getNameItemSelected(listItemId).done(function(lstName: Array<model.DivergenceItem>){
-                            self.lstItemSelected(lstName);
-                            self.findTimeName(self.divTimeId()); 
-                        });
+//                        service.getNameItemSelected(listItemId).done(function(lstName: Array<model.DivergenceItem>){
+//                            self.lstItemSelected(lstName);
+//                            self.findTimeName(self.divTimeId()); 
+//                        });
                     }
                 })
                 if (self.itemDivTime().inputSet.cancelErrSelReason == 1) {
@@ -214,15 +214,15 @@ module kmk011.a.viewmodel {
                         let itemUpdate = new model.DivergenceTimeItem(self.divTimeId(), list[i]);
                         listUpdate.push(itemUpdate);
                     }
-                    service.getNameItemSelected(list).done(function(lstName: Array<model.DivergenceItem>) {
-                        self.lstItemSelected(lstName);
-                        self.findTimeName(self.divTimeId());
-                        if(self.timeItemName()!=''){
-                            if ($('#inpName').ntsError("hasError") == true) {
-                                $('#inpName').ntsError('clear');
-                            }
-                        }
-                    })
+//                    service.getNameItemSelected(list).done(function(lstName: Array<model.DivergenceItem>) {
+//                        self.lstItemSelected(lstName);
+//                        self.findTimeName(self.divTimeId());
+//                        if(self.timeItemName()!=''){
+//                            if ($('#inpName').ntsError("hasError") == true) {
+//                                $('#inpName').ntsError('clear');
+//                            }
+//                        }
+//                    })
                 })
             });
         }

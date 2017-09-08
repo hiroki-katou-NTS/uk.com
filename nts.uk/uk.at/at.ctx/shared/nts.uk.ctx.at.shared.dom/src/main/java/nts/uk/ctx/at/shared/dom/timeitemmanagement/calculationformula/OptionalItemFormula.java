@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.timeitemmanagement.calculationformula;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.timeitemmanagement.OptionalItemNo;
 
 /**
  * The Class OptionalItemCalculationFormula.
@@ -23,11 +24,11 @@ public class OptionalItemFormula extends AggregateRoot {
 
 	/** The formula id. */
 	// 計算式ID
-	private String formulaId;
+	private OptionalItemFormulaId formulaId;
 
 	/** The optional item no. */
 	// 任意項目NO
-	private String optionalItemNo;
+	private OptionalItemNo optionalItemNo;
 
 	/** The formula name. */
 	// 計算式名称
@@ -35,22 +36,23 @@ public class OptionalItemFormula extends AggregateRoot {
 
 	/** The formula setting. */
 	// 計算式設定
-	private String formulaSetting;
+	private OptionalItemFormulaSetting formulaSetting;
 
 	/** The optional item calculation formula atr. */
 	// 属性
 	private CalculationFormulaAttribute formulaAtr;
 
+	/** The symbol. */
+	// 記号
+	private Symbol symbol;
+
+	// ===================== Optional ======================= //
 	/** The monthly rounding. */
 	// 月別端数処理
-	private String monthlyRounding;
+	private MonthlyRounding monthlyRounding;
 
 	/** The daily rounding. */
 	// 日別端数処理
-	private String dailyRounding; // Optional //
-
-	/** The symbol. */
-	// 記号
-	private String symbol;
+	private DailyRounding dailyRounding;
 
 }

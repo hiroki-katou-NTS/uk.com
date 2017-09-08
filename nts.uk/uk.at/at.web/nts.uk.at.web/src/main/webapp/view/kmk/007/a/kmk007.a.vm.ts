@@ -647,9 +647,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         
         private exportExcel(): void{
             var self = this;
-            var command = {
-                companyId: "000000000000-0001"
-            }          
+            var command = {}          
             service.saveAsExcel(command).done(function(){
                 
             }).fail(function(){
