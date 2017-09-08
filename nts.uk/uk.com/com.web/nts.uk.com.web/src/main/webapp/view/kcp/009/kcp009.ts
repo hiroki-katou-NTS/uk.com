@@ -178,7 +178,7 @@ module kcp009.viewmodel {
                         my: 'left top',
                         at: 'left bottom',
                         of: $('#function-tr')
-                    }
+                    },
                     dismissible: false
                 });
                 // Toggle
