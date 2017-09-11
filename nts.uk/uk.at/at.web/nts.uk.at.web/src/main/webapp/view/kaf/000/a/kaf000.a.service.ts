@@ -3,7 +3,8 @@
         getAllPhaseByAppID: "at/request/appapprovalphase/getallphase",
         getAllFrameByPhaseID: "at/request/approvalframe/getallframe",
         getAllFrameByListPhaseId : "at/request/approvalframe/getallframebylistphaseid",
-        getAllFrameByListPhaseId1 : "at/request/approvalframe/getallframebylistphaseid1"
+        getAllFrameByListPhaseId1 : "at/request/approvalframe/getallframebylistphaseid1",
+        getDataApprovalRoot : "at/request/application/getdataapprovalroot"
     }
      /**
       * get all phase by applicationID
@@ -29,5 +30,12 @@
       */
      export function getAllFrameByListPhaseId1(listPhaseId) : JQueryPromise<Array<Array<any>>>{
          return nts.uk.request.ajax("at",paths.getAllFrameByListPhaseId1,listPhaseId);
+     }      
+     
+     /**
+      * get all Data Approval Root 
+      */
+     export function getDataApprovalRoot(objApprovalRootInput ) : JQueryPromise<Array<any>>{
+         return nts.uk.request.ajax("at",paths.getDataApprovalRoot,objApprovalRootInput);
      }
  }

@@ -1,5 +1,14 @@
 module nts.uk.com.view.cmm018.shr {
     export module vmbase {
+        //
+        export class ApplicationType{
+            value: number;
+            localizedName: string;
+            constructor(value: number, localizedName: string){
+                this.value = value;
+                this.localizedName = localizedName;
+            }
+        }
         //screenA
         export class ListHistory {
             approvalId: string;
@@ -137,10 +146,13 @@ module nts.uk.com.view.cmm018.shr {
             workplaceId: string;
             /**社員ID*/
             employeeId: string;
-            constructor(rootType: number, workplaceId: string, employeeId: string){
+            /** mode is selected: まとめて登録モード(0)　－　申請個別登録モード(1)*/
+            selectedMode: number;
+            constructor(rootType: number, workplaceId: string, employeeId: string, selectedMode: number){
                 this.rootType = rootType;
                 this.workplaceId = workplaceId;
                 this.employeeId =  employeeId;
+                this.selectedMode = selectedMode;
             }
         }
         //data screen A,C,E
@@ -155,6 +167,41 @@ module nts.uk.com.view.cmm018.shr {
         export class CompanyAppRootDto{
             company: ComApprovalRootDto;
             lstAppPhase: Array<ApprovalPhaseDto>;
+        }
+        export class DataTreeB{
+            nameAppType: string;
+            lstbyApp: Array<DataTree>;
+            constructor(nameAppType: string,lstbyApp: Array<DataTree>){
+                this.nameAppType = nameAppType;
+                this.lstbyApp = lstbyApp;
+            }
+        }
+        export class DataTree{
+            nameAppType: string;
+            lstbyApp: Array<Com>;
+            constructor(nameAppType: string,lstbyApp: Array<Com>){
+                this.nameAppType = nameAppType;
+                this.lstbyApp = lstbyApp;
+            }
+        }
+        export class Com{
+            approvalId: string;
+            nameAppType: string;
+            constructor(approvalId: string, nameAppType: string){
+                this.nameAppType = nameAppType;
+                this.approvalId = approvalId;
+            }
+        }
+        //data display
+        export class ComRootDto{
+            name: string;
+            company: ComApprovalRootDto;
+            lstAppPhase: Array<ApprovalPhaseDto>;
+            constructor(name: string, company: ComApprovalRootDto, lstAppPhase: Array<ApprovalPhaseDto>){
+                this.name = name;
+                this.company = company;
+                this.lstAppPhase = lstAppPhase;
+            }
         }
         export class CompanyAppRootADto{
             approvalId: string;
@@ -327,7 +374,7 @@ module nts.uk.com.view.cmm018.shr {
             }
         }
         
-        export class Approver{
+        export class ApproverDtoK{
             id: string;
             code: string;
             name: string;

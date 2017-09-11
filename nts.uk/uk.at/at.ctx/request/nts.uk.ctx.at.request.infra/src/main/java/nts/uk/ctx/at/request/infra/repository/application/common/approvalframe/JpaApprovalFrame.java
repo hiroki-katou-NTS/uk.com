@@ -92,11 +92,12 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 	private KrqdtApprovalFrame toEntity(ApprovalFrame domain) {
 		return new KrqdtApprovalFrame(
 				new KrqdtApprovalFramePK(domain.getCompanyID(), domain.getPhaseID(), domain.getDispOrder()),
-				domain.getApproverSID(), domain.getApprovalATR().toString(),
-				domain.getConfirmATR().toString(),
+				domain.getApproverSID(), 
+				domain.getApprovalATR().value,
+				domain.getConfirmATR().value,
 				domain.getApprovalDate(),
 				domain.getReason().v(),
-				domain.getRepresenterSID().toString());
+				domain.getRepresenterSID());
 	}
 	
 	/**

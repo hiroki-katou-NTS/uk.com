@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.common.approvalframe;
 
 import lombok.Setter;
 import lombok.Value;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
@@ -33,7 +34,7 @@ public class ApprovalFrameDto {
 	private ConfirmAtr confirmATR;
 	
 	/** 日付 */
-	private String approvalDate;
+	private GeneralDate approvalDate;
 	
 	/** 理由 */
 	private String reason;
