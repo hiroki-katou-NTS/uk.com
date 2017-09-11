@@ -102,6 +102,24 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 	}
 	
 	/**
+	 * 開始時刻のみ指定した時刻に移動する
+	 * @param newStart 新しい開始時刻
+	 * @return
+	 */
+	public TimeSpanForCalc shiftOnlyStart(TimeWithDayAttr newStart) {
+		return new TimeSpanForCalc(newStart,this.end);
+	}
+	
+	/**
+	 * 終了時刻のみ指定した時刻に移動する
+	 * @param newStart
+	 * @return
+	 */
+	public TimeSpanForCalc shiftOnlyEnd(TimeWithDayAttr newEnd) {
+		return new TimeSpanForCalc(this.start,newEnd);
+	}
+	
+	/**
 	 * 重複している時間帯を返す
 	 * @param other 比較対象
 	 * @return 重複部分
@@ -127,6 +145,39 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 		
 		return Optional.of(result);
 	}
+	
+	/**
+	 * 基準の時間帯で比較対象の時間帯に重複していない部分を取得する
+	 * @param other 比較対象
+	 * @return 重複してない部分
+	 */
+	public Optional<TimeSpanForCalc> getNotDuplicationWith(TimeSpanForCalc other){
+		TimeSpanForCalc result;
+		
+		switch(this.checkDuplication(other))
+		{
+		case SAME_SPAN:
+		case CONTAINED:
+			/*時間帯をクリア*/
+			return Optional.empty();
+		case CONNOTATE_BEGINTIME:
+		case CONTAINS:
+			/*自分の終了を相手の開始にズラす*/
+			result = new TimeSpanForCalc(this.start,other.start);
+			break;
+		case CONNOTATE_ENDTIME:
+			/*自分の開始を相手の終了にずらす*/
+			result = new TimeSpanForCalc(other.end,this.end);
+			break;
+		case NOT_DUPLICATE:
+			/*何もしない*/
+			result = this;
+		default:
+			throw new RuntimeException("unknown duplicatoin");
+		}
+		return Optional.of(result);
+	}
+	
 	
 	/**
 	 *　重複している時間分時間帯をずらす
