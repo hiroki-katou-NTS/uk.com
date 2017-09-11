@@ -12,8 +12,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceConfigDto;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceConfig;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceConfigRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
+import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 
 /**
  * The Class WorkplaceConfigFinder.

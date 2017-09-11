@@ -8,8 +8,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 @Stateless
 public class JpaWorkplaceInfoRepository implements WorkplaceInfoRepository {
 

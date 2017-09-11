@@ -2,9 +2,11 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.workplace;
+package nts.uk.ctx.bs.employee.dom.workplace.configinfo;
 
 import java.util.List;
+
+import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 
 /**
  * The Interface WorkPlaceConfigInfoSetMemento.

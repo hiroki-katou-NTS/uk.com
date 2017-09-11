@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHierarchySetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
+import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceHierarchySetMemento;
 
 public class WorkplaceHierarchyDto implements WorkplaceHierarchySetMemento {
 

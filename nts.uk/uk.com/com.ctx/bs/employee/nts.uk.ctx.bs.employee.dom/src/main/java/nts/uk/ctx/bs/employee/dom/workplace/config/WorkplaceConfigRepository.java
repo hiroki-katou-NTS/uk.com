@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.workplace;
+package nts.uk.ctx.bs.employee.dom.workplace.config;
 
 import java.util.List;
 import java.util.Optional;
