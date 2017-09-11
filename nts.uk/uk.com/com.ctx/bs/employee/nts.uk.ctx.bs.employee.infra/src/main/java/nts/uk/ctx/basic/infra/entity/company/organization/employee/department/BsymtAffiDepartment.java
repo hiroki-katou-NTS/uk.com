@@ -12,6 +12,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -21,8 +22,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "BCMMT_AFFI_DEPARTMENT")
-public class BcmmtAffiDepartment extends UkJpaEntity {
+@Table(name = "BSYMT_AFFI_DEPARTMENT")
+public class BsymtAffiDepartment extends UkJpaEntity {
 
 	/** The id. */
 	@Id
@@ -39,12 +40,12 @@ public class BcmmtAffiDepartment extends UkJpaEntity {
 
 	/** The str D. */
 	@Column(name = "STR_D")
-	@Convert(converter = GeneralDate.class)
+	@Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate strD;
 
 	/** The end D. */
 	@Column(name = "END_D")
-	@Convert(converter = GeneralDate.class)
+	@Convert(converter = GeneralDateToDBConverter.class)
 	private GeneralDate endD;
 	/*
 	 * (non-Javadoc)
@@ -65,10 +66,10 @@ public class BcmmtAffiDepartment extends UkJpaEntity {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof BcmmtAffiDepartment)) {
+		if (!(object instanceof BsymtAffiDepartment)) {
 			return false;
 		}
-		BcmmtAffiDepartment other = (BcmmtAffiDepartment) object;
+		BsymtAffiDepartment other = (BsymtAffiDepartment) object;
 		if ((this.id == null && other.id != null)
 				|| (this.id != null && !this.id.equals(other.id))) {
 			return false;

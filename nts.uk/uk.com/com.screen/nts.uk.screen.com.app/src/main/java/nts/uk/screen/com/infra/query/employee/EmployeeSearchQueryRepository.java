@@ -6,6 +6,8 @@ package nts.uk.screen.com.infra.query.employee;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * The Interface EmployeeSearchQueryRepository.
  */
@@ -16,5 +18,5 @@ public interface EmployeeSearchQueryRepository {
 	 *
 	 * @return the list
 	 */
-	Optional<Kcp009EmployeeSearchData> findInAllEmployee(String code, System system);
+	Optional<Kcp009EmployeeSearchData> findInAllEmployee(String code, System system, GeneralDate baseDate);
 }

@@ -4,12 +4,16 @@
  *****************************************************************/
 package nts.uk.screen.com.infra.query.employee;
 
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Instantiates a new kcp 009 employee search data.
  */
-@Data
+@Builder
+@Setter
+@Getter
 public class Kcp009EmployeeSearchData{
 	
 	/** The employee id. */
