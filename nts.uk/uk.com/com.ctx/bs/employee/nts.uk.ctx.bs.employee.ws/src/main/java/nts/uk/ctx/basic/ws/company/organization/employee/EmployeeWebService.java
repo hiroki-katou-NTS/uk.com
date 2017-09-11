@@ -15,13 +15,13 @@ import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.basic.app.find.company.organization.employee.EmployeeDto;
-import nts.uk.ctx.basic.app.find.company.organization.employee.EmployeeFinder;
-import nts.uk.ctx.basic.app.query.employee.EmployeeSearchQueryProcessor;
-import nts.uk.ctx.basic.app.query.employee.EmployeeSearchData;
-import nts.uk.ctx.basic.app.query.employee.EmployeeSearchListData;
-import nts.uk.ctx.basic.app.query.employee.EmployeeSearchListQuery;
-import nts.uk.ctx.basic.app.query.employee.EmployeeSearchQuery;
+import nts.uk.ctx.bs.employee.app.find.employee.EmployeeDto;
+import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
+import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchData;
+import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListData;
+import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListQuery;
+import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchQuery;
+import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchQueryProcessor;
 
 @Path("basic/organization/employee")
 @Produces(MediaType.APPLICATION_JSON)

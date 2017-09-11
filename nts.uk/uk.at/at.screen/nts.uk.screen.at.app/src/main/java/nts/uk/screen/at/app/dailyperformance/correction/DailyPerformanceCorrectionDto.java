@@ -28,11 +28,15 @@ public class DailyPerformanceCorrectionDto {
 	
 	private List<DailyPerformanceEmployeeDto> lstEmployee;
 	
-	DPControlDisplayItem lstControlDisplayItem;
+	private DPControlDisplayItem lstControlDisplayItem;
 	
-	List<DPErrorDto> lstError;
+	private List<DPCellStateDto> lstCellState;
 	
-	List<DPErrorSettingDto> lstErrorSetting;
+	private List<DPErrorDto> lstError;
+	
+	private List<DPErrorSettingDto> lstErrorSetting;
+	
+	private List<DPDataDto> lstData;
 
 	public DailyPerformanceCorrectionDto() {
 		super();

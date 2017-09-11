@@ -58,12 +58,33 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 		List<AttendanceItemLinking> attendanceItemAndFrameNos = this.attendanceItemLinkingRepository
 				.getByAttendanceId(dailyAttendanceItemIds);
 
-		// get list frame No
-		Map<Integer, AttendanceItemLinking> frameNoMap = attendanceItemAndFrameNos.stream()
-				.collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
-		List<Integer> frameNos = frameNoMap.values().stream().map(item -> {
-			return item.getFrameNo().v();
+		// get list frame No 7
+		Map<Integer, AttendanceItemLinking> frameNoDivergenceMap = attendanceItemAndFrameNos.stream()
+				.filter(item -> item.getFrameCategory().value == 7).collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
+		// get list frame No 4
+		Map<Integer, AttendanceItemLinking> frameNoPremiumMap = attendanceItemAndFrameNos.stream()
+				.filter(item -> item.getFrameCategory().value == 4).collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
+		// get list frame No 5
+		Map<Integer, AttendanceItemLinking> frameNoBonusPayMap = attendanceItemAndFrameNos.stream()
+				.filter(item -> item.getFrameCategory().value == 5).collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
+		// get list frame No 6
+		Map<Integer, AttendanceItemLinking> frameNoSpecialBonusPayMap = attendanceItemAndFrameNos.stream()
+				.filter(item -> item.getFrameCategory().value == 6).collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
+		List<Integer> frameNos = attendanceItemAndFrameNos.stream().map(f -> {
+			return f.getFrameNo().v();
 		}).collect(Collectors.toList());
+//		= frameNoDivergenceMap.values().stream().map(item -> {
+//			return item.getFrameNo().v();
+//		}).collect(Collectors.toList());
+//		frameNos.addAll(frameNoPremiumMap.values().stream().map(item -> {
+//			return item.getFrameNo().v();
+//		}).collect(Collectors.toList()));
+//		frameNos.addAll(frameNoBonusPayMap.values().stream().map(item -> {
+//			return item.getFrameNo().v();
+//		}).collect(Collectors.toList()));
+//		frameNos.addAll(frameNoSpecialBonusPayMap.values().stream().map(item -> {
+//			return item.getFrameNo().v();
+//		}).collect(Collectors.toList()));
 
 		// 乖離時間 7
 		Map<Integer, DivergenceTimeAdapterDto> divergenceTimes = this.divergenceTimeAdapter
@@ -71,40 +92,44 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 				.collect(Collectors.toMap(DivergenceTimeAdapterDto::getDivTimeId, x -> x));
 
 		// 割増項目 4
-		Map<Integer, PremiumItemFuncAdapterDto> premiumItemnames = this.premiumItemFuncAdapter.getPremiumItemName(companyId, frameNos)
-				.stream().collect(Collectors.toMap(PremiumItemFuncAdapterDto::getDisplayNumber, x -> x));
-		
-		// 加給時間項目 5 
+		Map<Integer, PremiumItemFuncAdapterDto> premiumItemnames = this.premiumItemFuncAdapter
+				.getPremiumItemName(companyId, frameNos).stream()
+				.collect(Collectors.toMap(PremiumItemFuncAdapterDto::getDisplayNumber, x -> x));
+
+		// 加給時間項目 5
 		Map<Integer, BonusPayTimeItem> bonusPayTimeItems = this.bPTimeItemRepository
 				.getListBonusPayTimeItemName(companyId, frameNos).stream()
 				.collect(Collectors.toMap(BonusPayTimeItem::getId, x -> x));
-		
+
 		// 特定加給時間項目 6
 		Map<Integer, BonusPayTimeItem> specialBonusPayTimeItem = this.bPTimeItemRepository
 				.getListSpecialBonusPayTimeItemName(companyId, frameNos).stream()
 				.collect(Collectors.toMap(BonusPayTimeItem::getId, x -> x));
-		
+
 		List<DailyAttendanceItem> dailyAttendanceItemDomainServiceDtos = new ArrayList<>();
-		
+
 		dailyAttendanceItems.stream().forEach(item -> {
-			if (frameNoMap.containsKey(item.getAttendanceItemId())) {
+			if (frameNoDivergenceMap.containsKey(item.getAttendanceItemId()) 
+					|| frameNoPremiumMap.containsKey(item.getAttendanceItemId()) 
+					|| frameNoBonusPayMap.containsKey(item.getAttendanceItemId()) 
+					|| frameNoSpecialBonusPayMap.containsKey(item.getAttendanceItemId())) {
 				DailyAttendanceItem attendanceDto = new DailyAttendanceItem();
 				attendanceDto.setAttendanceItemDisplayNumber(item.getDisplayNumber());
 				attendanceDto.setAttendanceItemId(item.getAttendanceItemId());
 				attendanceDto.setAttendanceItemName(item.getAttendanceName());
-				if (divergenceTimes.containsKey(frameNoMap.get(item.getAttendanceItemId()))) {
+				if (divergenceTimes.containsKey(frameNoDivergenceMap.get(item.getAttendanceItemId()))) {
 					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							divergenceTimes.get(frameNoMap.get(item.getAttendanceItemId())).getDivTimeName()));
-				} else if (premiumItemnames.containsKey(frameNoMap.get(item.getAttendanceItemId()))) {
+							divergenceTimes.get(frameNoDivergenceMap.get(item.getAttendanceItemId())).getDivTimeName()));
+				} else if (premiumItemnames.containsKey(frameNoPremiumMap.get(item.getAttendanceItemId()))) {
 					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							premiumItemnames.get(frameNoMap.get(item.getAttendanceItemId())).getPremiumItemname()));
-				} else if (bonusPayTimeItems.containsKey(frameNoMap.get(item.getAttendanceItemId()))) {
+							premiumItemnames.get(frameNoPremiumMap.get(item.getAttendanceItemId())).getPremiumItemname()));
+				} else if (bonusPayTimeItems.containsKey(frameNoBonusPayMap.get(item.getAttendanceItemId()))) {
 					attendanceDto.setAttendanceItemName(MessageFormat.format(attendanceDto.getAttendanceItemName(),
-							bonusPayTimeItems.get(frameNoMap.get(item.getAttendanceItemId())).getTimeItemName().v()));
-				} else if (specialBonusPayTimeItem.containsKey(frameNoMap.get(item.getAttendanceItemId()))) {
+							bonusPayTimeItems.get(frameNoBonusPayMap.get(item.getAttendanceItemId())).getTimeItemName().v()));
+				} else if (specialBonusPayTimeItem.containsKey(frameNoSpecialBonusPayMap.get(item.getAttendanceItemId()))) {
 					attendanceDto.setAttendanceItemName(
 							MessageFormat.format(attendanceDto.getAttendanceItemName(), specialBonusPayTimeItem
-									.get(frameNoMap.get(item.getAttendanceItemId())).getTimeItemName().v()));
+									.get(frameNoSpecialBonusPayMap.get(item.getAttendanceItemId())).getTimeItemName().v()));
 				}
 				dailyAttendanceItemDomainServiceDtos.add(attendanceDto);
 			} else {
