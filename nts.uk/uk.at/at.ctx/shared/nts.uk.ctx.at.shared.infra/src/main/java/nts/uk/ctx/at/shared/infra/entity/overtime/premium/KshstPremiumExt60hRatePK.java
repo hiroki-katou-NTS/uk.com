@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.overtime;
+package nts.uk.ctx.at.shared.infra.entity.overtime.premium;
 
 import java.io.Serializable;
 
@@ -36,13 +36,13 @@ public class KshstPremiumExt60hRatePK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "BRD_ITEM_NO")
-    private short brdItemNo;
+    private int brdItemNo;
     
     /** The over time no. */
     @Basic(optional = false)
     @NotNull
     @Column(name = "OVER_TIME_NO")
-    private short overTimeNo;
+    private int overTimeNo;
 
     /**
      * Instantiates a new kshst premium ext 60 h rate PK.
@@ -57,7 +57,7 @@ public class KshstPremiumExt60hRatePK implements Serializable {
      * @param brdItemNo the brd item no
      * @param overTimeNo the over time no
      */
-    public KshstPremiumExt60hRatePK(String cid, short brdItemNo, short overTimeNo) {
+    public KshstPremiumExt60hRatePK(String cid, int brdItemNo, int overTimeNo) {
         this.cid = cid;
         this.brdItemNo = brdItemNo;
         this.overTimeNo = overTimeNo;

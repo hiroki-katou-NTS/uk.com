@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.overtime;
+package nts.uk.ctx.at.shared.infra.entity.overtime.holiday;
 
 import java.io.Serializable;
 
@@ -42,7 +42,17 @@ public class KshstSuperHdConMed extends JpaEntity implements Serializable {
     @NotNull
     @Column(name = "ROUND_TIME")
     private int roundTime;
-
+    
+    /** The rounding. */
+    @NotNull
+    @Column(name = "ROUNDING")
+    private int rounding;
+    
+    /** The super hd unit. */
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "SUPER_HD_UNIT")
+    private int superHdUnit;
     /**
      * Instantiates a new kshst super hd con med.
      */
