@@ -6,7 +6,9 @@ module nts.uk.at.view.kmk010.a {
             findAllOvertimeRounding: "ctx/at/shared/overtime/setting/findAll/rounding",
             findByIdOvertimeSetting: "ctx/at/shared/overtime/setting/findById",
             findAllPremiumExtra60HRate: "ctx/at/shared/overtime/premium/extra/findAll",
-            findByIdSuperHD60HConMed: "ctx/at/shared/overtime/super/holiday/findById"
+            findByIdSuperHD60HConMed: "ctx/at/shared/overtime/super/holiday/findById",
+            saveOvertimeSetting: "ctx/at/shared/overtime/setting/save",
+            saveSuperHD60HConMed: "ctx/at/shared/overtime/super/holiday/save",
         }
 
         /**
@@ -50,7 +52,19 @@ module nts.uk.at.view.kmk010.a {
         export function findByIdSuperHD60HConMed(): JQueryPromise<model.SuperHD60HConMedDto> {
             return nts.uk.request.ajax(paths.findByIdSuperHD60HConMed);
         }
+        /**
+         * save overtime setting to service
+         */
+        export function saveOvertimeSetting(dto: model.OvertimeSettingDto): JQueryPromise<void>{
+            return nts.uk.request.ajax(paths.saveOvertimeSetting, { setting: dto });
+        }
 
+        /**
+         * save super holiday 60h method
+         */
+        export function saveSuperHD60HConMed(dto: model.SuperHD60HConMedDto): JQueryPromise<void> {
+            return nts.uk.request.ajax(paths.saveSuperHD60HConMed, { setting: dto });
+        }
 
         export module model {
 

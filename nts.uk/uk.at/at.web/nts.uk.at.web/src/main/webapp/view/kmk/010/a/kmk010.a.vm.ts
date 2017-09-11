@@ -93,7 +93,6 @@ module nts.uk.at.view.kmk010.a {
                         dataRate.push(rateItem.toDto());    
                     }    
                 }
-                console.log(dataRate);
                 return dataRate;
             }
             
@@ -102,7 +101,15 @@ module nts.uk.at.view.kmk010.a {
              */
             private saveOvertimeSetting(): void {
                 var self = this;
-                self.toArrayRateDto();
+                service.saveOvertimeSetting(self.overtimeSettingModel.toDto()).done(function(){
+                    service.saveSuperHD60HConMed(self.superHD60HConMedModel.toDto()).done(function(){
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            // reload pa    
+                        });
+                    });
+                }).fail(function(error){
+                     nts.uk.ui.dialog.alertError(error);
+                });
             }
         }
         export class OvertimeModel {
@@ -201,6 +208,28 @@ module nts.uk.at.view.kmk010.a {
                 }
 
             }
+            
+            toDto(): OvertimeSettingDto {
+                var overtimes: OvertimeDto[] = [];
+                var breakdownItems: OvertimeBRDItemDto[] = [];
+                
+                for(var modelOvertime of this.overtimes){
+                    overtimes.push(modelOvertime.toDto());    
+                }
+                
+                for(var modelBreakdown of this.breakdownItems){
+                    breakdownItems.push(modelBreakdown.toDto());    
+                }
+                
+                var dto: OvertimeSettingDto = {
+                    note: this.note(),
+                    calculationMethod: this.calculationMethod(),
+                    breakdownItems: breakdownItems,
+                    overtimes: overtimes
+                };
+
+                return dto;
+            }
         }
         
         export class PremiumExtra60HRateModel {
@@ -261,6 +290,20 @@ module nts.uk.at.view.kmk010.a {
                         this.premiumExtra60HRates.push(model);
                     }*/
                 }
+            }
+            
+            toDto(): SuperHD60HConMedDto{
+               var premiumExtra60HRates: PremiumExtra60HRateDto[] = [];
+               for (var model of this.premiumExtra60HRates) {
+                   premiumExtra60HRates.push(model.toDto());
+               }
+               var dto: SuperHD60HConMedDto = {
+                   roundingTime: this.roundingTime(),
+                   rounding: this.rounding(),
+                   superHolidayOccurrenceUnit: this.superHolidayOccurrenceUnit(),
+                   premiumExtra60HRates: premiumExtra60HRates
+               };
+                return dto;
             }
         }
             
