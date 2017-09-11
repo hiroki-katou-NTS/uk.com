@@ -5,6 +5,8 @@ package nts.uk.screen.at.app.dailyperformance.correction;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -53,12 +55,22 @@ public class DailyPerformanceCorrectionProcessor {
 			} else {
 				screenDto.setLstEmployee(new ArrayList<>());
 			}
+			//TODO: create lst data
+			if (screenDto.getLstEmployee().size() > 0) {
+				List<GeneralDate> lstDate = dateRange.toListDate();
+				List<DPDataDto> lstData = new ArrayList<>();
+				screenDto.getLstEmployee().forEach(e->{
+					lstDate.forEach(d->{
+//						lstData.add(new DPDataDto("", "", d.toString("MM/DD"), false, employeeId, ""));
+					});
+				});
+			}
 			AsyncTask getDisplayItemsTask = AsyncTask.builder().withContexts().keepsTrack(true).build(() -> {
 				// アルゴリズム「表示項目を制御する」を実行する (Tiến hành xử lý "Điều khiển item hiển
 				// thị")
 				if (screenDto.getLstEmployee().size() > 0) {
 					screenDto.setLstControlDisplayItem(this.getControlDisplayItems(screenDto.getLstEmployee().stream()
-							.map(e -> e.getEmployeeId()).collect(Collectors.toList()), screenDto.getDateRange()));
+							.map(e -> e.getId()).collect(Collectors.toList()), screenDto.getDateRange()));
 				}
 			});
 			es.execute(getDisplayItemsTask);
@@ -69,7 +81,7 @@ public class DailyPerformanceCorrectionProcessor {
 				 */
 				if (screenDto.getLstEmployee().size() > 0) {
 					screenDto.setLstError(this.getDPErrorList(screenDto.getLstEmployee().stream()
-							.map(e -> e.getEmployeeId()).collect(Collectors.toList()), screenDto.getDateRange()));
+							.map(e -> e.getId()).collect(Collectors.toList()), screenDto.getDateRange()));
 					if (screenDto.getLstError().size() > 0) {
 						// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する (Lấy về domain
 						// model "Lỗi và alarm của thành tích công việc")
@@ -83,7 +95,7 @@ public class DailyPerformanceCorrectionProcessor {
 		});
 		es.execute(getHolidaySettingTask);
 		es.execute(getDisplayItemsAndErrorTask);
-		
+
 		// wait all tasks are done
 		es.awaitTermination(1, TimeUnit.MINUTES);
 		return screenDto;
@@ -92,18 +104,26 @@ public class DailyPerformanceCorrectionProcessor {
 	private List<DailyPerformanceEmployeeDto> getListEmployee(String sId, DateRange dateRange, Integer closureId) {
 		List<String> lstJobTitle = this.repo.getListJobTitle(dateRange);
 		List<String> lstEmployment = this.repo.getListEmployment(closureId);
-		List<String> lstWorkplace = this.repo.getListWorkplace(sId, dateRange);
+		Map<String, String> lstWorkplace = this.repo.getListWorkplace(sId, dateRange);
 		List<String> lstClassification = this.repo.getListClassification();
-		return this.repo.getListEmployee(lstJobTitle, lstEmployment, lstWorkplace, lstClassification);
+		return this.repo.getListEmployee(lstJobTitle, lstEmployment,
+				lstWorkplace, lstClassification);
 	}
 
 	private DPControlDisplayItem getControlDisplayItems(List<String> lstEmployee, DateRange dateRange) {
 		DPControlDisplayItem result = new DPControlDisplayItem();
 		List<String> lstBusinessTypeCode = this.repo.getListBusinessType(lstEmployee, dateRange);
-		List<FormatDPCorrectionDto> lstFormat = new ArrayList<>();
+		List<FormatDPCorrectionDto> lstFormat = new ArrayList<FormatDPCorrectionDto>();
+		List<DPSheetDto> lstSheet = new ArrayList<DPSheetDto>();
 		if (lstBusinessTypeCode.size() > 0) {
-			lstFormat.addAll(this.repo.getListFormatDPCorrection(lstBusinessTypeCode));
-			result.setLstFormat(lstFormat);
+			lstSheet = this.repo.getFormatSheets(lstBusinessTypeCode);
+			lstFormat = this.repo.getListFormatDPCorrection(lstBusinessTypeCode);
+			result.setLstSheet(lstSheet);
+			result.addColumnsToSheet(lstFormat);
+			result.setLstHeader(lstFormat.stream().map(f -> {
+				return new DPHeaderDto(String.valueOf(f.getAttendanceItemId()),
+						String.valueOf(f.getColumnWidth()) + "px");
+			}).collect(Collectors.toList()));
 		}
 		List<DPBusinessTypeControl> lstDPBusinessTypeControl = new ArrayList<>();
 		if (lstFormat.size() > 0) {
@@ -111,10 +131,24 @@ public class DailyPerformanceCorrectionProcessor {
 					lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList()));
 		}
 		if (lstDPBusinessTypeControl.size() > 0) {
-			result.setAttendanceItem(this.repo.getListAttendanceItem(
-					lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList())));
-			result.setAttendanceItemControl(this.repo.getListAttendanceItemControl(
-					lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList())));
+			List<DPAttendanceItem> lstAttendanceItem = this.repo.getListAttendanceItem(
+					lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList()));
+			lstAttendanceItem.stream().forEach(i -> {
+				Optional<DPHeaderDto> header = result.getLstHeader().stream()
+						.filter(h -> h.getKey().equals(String.valueOf(i.getId()))).findFirst();
+				if (header.isPresent()) {
+					header.get().setHeaderText(i);
+				}
+			});
+			List<DPAttendanceItemControl> lstAttendanceItemControl = this.repo.getListAttendanceItemControl(
+					lstFormat.stream().map(f -> f.getAttendanceItemId()).collect(Collectors.toList()));
+			lstAttendanceItemControl.stream().forEach(i -> {
+				Optional<DPHeaderDto> header = result.getLstHeader().stream()
+						.filter(h -> h.getKey().equals(String.valueOf(i.getAttendanceItemId()))).findFirst();
+				if (header.isPresent()) {
+					header.get().setHeaderColor(i);
+				}
+			});
 		}
 		return result;
 	}

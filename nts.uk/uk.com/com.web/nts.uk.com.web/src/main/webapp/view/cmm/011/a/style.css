@@ -1,0 +1,29 @@
+@CHARSET "UTF-8";
+
+#left-content {
+	width: 450px;
+	float: left;
+	margin: 20px 30px;
+}
+#left-content-top {
+	padding: 15px 20px;
+	margin-bottom: 50px;
+}
+.caret-background.caret-bottom:after {
+	left: 110px !important;
+}
+#left-content-bottom {
+	height: 570px;
+	padding: 20px;
+	border-radius: 5px;
+}
+#right-content {
+	float: left;
+	margin: 10px 30px;
+}
+#table-detail-setting {
+	margin-top: -10px;
+}
+#table-detail-setting td {
+	padding-top: 20px;
+}

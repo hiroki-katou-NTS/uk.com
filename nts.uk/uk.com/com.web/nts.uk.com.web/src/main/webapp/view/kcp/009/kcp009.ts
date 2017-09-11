@@ -18,6 +18,7 @@ module kcp009.viewmodel {
         isActivePersonalProfile: KnockoutObservable<boolean>;
         keySearch: KnockoutObservable<string>;
         isDisplay: KnockoutObservable<boolean>;
+        isShowEmpList: KnockoutObservable<boolean>;
         tabIndex: number;
         
         constructor() {
@@ -30,6 +31,7 @@ module kcp009.viewmodel {
 
             self.keySearch = ko.observable(null);
             self.isDisplay = ko.observable(true);
+            self.isShowEmpList = ko.observable(false);
         }
 
         // Initialize Component

@@ -12,21 +12,21 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistory;
-import nts.uk.ctx.basic.dom.company.organization.employee.workplace.AffWorkplaceHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.access.workplace.SyWorkplaceAdapter;
-import nts.uk.ctx.bs.employee.dom.access.workplace.dto.WorkplaceImport;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
+import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.workplace_old.Workplace;
+import nts.uk.ctx.bs.employee.dom.workplace_old.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.pub.employee.workplace.SyWorkplacePub;
 
 /**
- * The Class EmployeePubImp.
+ * The Class SyWorkplacePubImp.
  */
 @Stateless
 public class SyWorkplacePubImp implements SyWorkplacePub {
 
 	/** The workplace adapter. */
 	@Inject
-	private SyWorkplaceAdapter workplaceAdapter;
+	private WorkplaceRepository workplaceAdapter;
 
 	/** The workplace history repository. */
 	@Inject
@@ -48,10 +48,14 @@ public class SyWorkplacePubImp implements SyWorkplacePub {
 		List<String> wkpIds = affWorkplaceHistories.stream().map(item -> item.getWorkplaceId().v())
 				.collect(Collectors.toList());
 
-		List<WorkplaceImport> acWorkplaceDtos = workplaceAdapter.findByWkpIds(wkpIds);
+		List<Workplace> acWorkplaceDtos = workplaceAdapter.findByWkpIds(wkpIds);
 
-		Map<String, String> comWkpMap = acWorkplaceDtos.stream().collect(
-				Collectors.toMap(WorkplaceImport::getCompanyId, WorkplaceImport::getWorkplaceId));
+		Map<String, String> comWkpMap = acWorkplaceDtos.stream()
+				.collect(Collectors.toMap((item) -> {
+					return item.getCompanyId().v();
+				}, (item) -> {
+					return item.getWorkplaceId().v();
+				}));
 
 		// Return workplace id
 		return comWkpMap.get(companyId);
