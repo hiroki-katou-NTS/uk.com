@@ -394,6 +394,7 @@ module nts.uk.ui.validation {
         required: boolean; 
         valueType: string;
         mode: string;
+        acceptJapaneseCalendar: boolean;
         constructor(name: string, primitiveValueName: string, option?: any) {
             this.name = name;
             this.constraint = getConstraint(primitiveValueName);
@@ -401,6 +402,7 @@ module nts.uk.ui.validation {
             this.required = (option && option.required) ? option.required : false;
             this.valueType = (option && option.valueType) ? option.valueType : "string";
             this.mode = (option && option.mode) ? option.mode : "";
+            this.acceptJapaneseCalendar = (option && option.acceptJapaneseCalendar) ? option.acceptJapaneseCalendar : true;
         }
 
         validate(inputText: string): any {
@@ -412,15 +414,19 @@ module nts.uk.ui.validation {
                     return result;
                 }
                 else {
-                    result.success("");
+                    result.success(null);
                     return result;
                 }
+            }
+            
+            if(this.acceptJapaneseCalendar){
+                inputText = time.convertJapaneseDateToGlobal(inputText);            
             }
             
             let maxStr, minStr;
             // Time duration
             if(this.mode === "time"){
-                var timeParse = time.parseTime(inputText, false) 
+                var timeParse = time.minutesBased.duration.parseString(inputText);
                 if (timeParse.success) {
                     result.success(timeParse.toValue());
                 } else {
@@ -528,7 +534,7 @@ module nts.uk.ui.validation {
 
         validate(inputText: string): any {
             var result = new ValidationResult();
-            inputText = time.TimeWithDayAttr.cutDayDivision(inputText);
+            
             // Check required
             if (util.isNullOrEmpty(inputText)) {
                 if (this.required === true) {
@@ -539,18 +545,21 @@ module nts.uk.ui.validation {
                     return result;
                 }
             }
-            let minStr, maxStr;
+            
+            var minValue: any = time.minutesBased.clock.dayattr.MIN_VALUE;
+            var maxValue: any = time.minutesBased.clock.dayattr.MAX_VALUE;
             if(!util.isNullOrUndefined(this.constraint)){
-                minStr = time.parseTime(this.constraint.min, true).format();
-                maxStr = time.parseTime(this.constraint.max, true).format();            
+                minValue = time.minutesBased.clock.dayattr.create(
+                    time.minutesBased.clock.dayattr.parseString(this.constraint.min).asMinutes);
+                maxValue = time.minutesBased.clock.dayattr.create(
+                    time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);            
             }
             
-            let parseValue = time.parseTime(inputText);
-            
-            if (!parseValue.success || (parseValue.toValue() < this.constraint.min || parseValue.toValue() > this.constraint.max)) {
-                result.fail(nts.uk.resource.getMessage("FND_E_TIME", [ this.name, minStr, maxStr ]), "FND_E_TIME");     
+            var parsed = time.minutesBased.clock.dayattr.parseString(inputText);
+            if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
+                result.fail(nts.uk.resource.getMessage("FND_E_TIME", [ this.name, minValue.fullText, maxValue.fullText ]), "FND_E_TIME");
             } else {
-                result.success(parseValue.toValue());    
+                result.success(parsed.asMinutes);
             }
             
             return result;

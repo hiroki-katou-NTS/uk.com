@@ -202,17 +202,28 @@ module nts.uk.ui.koExtentions {
             $grid2.ntsGridList('setupSelecting');
 
             var $moveArea = $swap.find("#" + elementId + "-move-data")
-                .append("<button class = 'move-button move-forward ntsSwap_Component'><i class='icon icon-button-arrow-right'></i></button>")
-                .append("<button class = 'move-button move-back ntsSwap_Component'><i class='icon icon-button-arrow-left'></i></button>");
+                .append("<button class='move-button move-forward-all ntsSwap_Component'><i class='img-icon icon-next-all'></i></button>")
+                .append("<button class='move-button move-forward ntsSwap_Component'><i class='img-icon icon-next'></i></button>")
+                .append("<button class='move-button move-back ntsSwap_Component'><i class='img-icon icon-prev'></i></button>")
+                .append("<button class='move-button move-back-all ntsSwap_Component'><i class='img-icon icon-prev-all'></i></button>");
+            
             var $moveForward = $moveArea.find(".move-forward");
+            var $moveForwardAll = $moveArea.find(".move-forward-all");
             var $moveBack = $moveArea.find(".move-back");
+            var $moveBackAll = $moveArea.find(".move-back-all");
 
             var swapper = this.swapper;
             $moveForward.click(function() {
-                swapper.Model.move(true, data.value);
+                swapper.Model.move(true, data.value, false);
             });
             $moveBack.click(function() {
-                swapper.Model.move(false, data.value);
+                swapper.Model.move(false, data.value, false);
+            });
+            $moveForwardAll.click(function() {
+                swapper.Model.move(true, data.value, true);
+            });
+            $moveBackAll.click(function() {
+                swapper.Model.move(false, data.value, true);
             });
             
             $swap.find(".ntsSwap_Component").attr("tabindex", tabIndex);
@@ -439,7 +450,7 @@ module nts.uk.ui.koExtentions {
         abstract neighbor(param: any): string;
         abstract dropDone(): void;
         abstract enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>, value: (param?: any) => any) => void): void;
-        abstract move(forward: boolean, value: (param?: Array<any>) => Array<any>): void;
+        abstract move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean): void;
     }
     
     interface ISwapAction {
@@ -449,7 +460,7 @@ module nts.uk.ui.koExtentions {
         neighbor(param: any): string;
         dropDone(): void;
         enableDrag(ctx: any, value: (param?: any) => any, parts: Array<number>, cb: (parts: Array<number>, value: (param?: any) => any) => void): void;
-        move(forward: boolean, value: (param?: Array<any>) => Array<any>): void;
+        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean): void;
     }
     
     class SearchResult {
@@ -721,24 +732,35 @@ module nts.uk.ui.koExtentions {
             }
         }
         
-        move(forward: boolean, value: (param?: Array<any>) => Array<any>): void {
+        move(forward: boolean, value: (param?: Array<any>) => Array<any>, moveAll: boolean): void {
+            var primaryKey = this.transportBuilder.primaryKey;
+            
             var $source = forward === true ? this.swapParts[0].$listControl : this.swapParts[1].$listControl;
             var sourceList = forward === true ? this.swapParts[0].dataSource : this.swapParts[1].dataSource;
             var $dest = forward === true ? this.swapParts[1].$listControl : this.swapParts[0].$listControl;
             var destList = forward === true ? this.swapParts[1].dataSource : this.swapParts[0].dataSource;
-            var selectedRows = $source.igGrid("selectedRows");
-            if (nts.uk.util.isNullOrEmpty(selectedRows)) {
-                return;        
+            
+            if(moveAll){
+                var selectedIds = sourceList.map(function(row) { return row[primaryKey]; });
+                
+                this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
+                        .toAdjacent(destList.length > 0 ? destList[destList.length - 1][primaryKey] : null).update(moveAll);           
+            } else {
+                var selectedRows = $source.igGrid("selectedRows");
+                if (nts.uk.util.isNullOrEmpty(selectedRows)) {
+                    return;        
+                }
+                selectedRows.sort(function(one, two) {
+                    return one.index - two.index; 
+                });
+                
+                var firstSelected = selectedRows[0];
+                
+                var selectedIds = selectedRows.map(function(row) { return row.id; });
+                
+                this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
+                        .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][primaryKey] : null).update(moveAll);    
             }
-            selectedRows.sort(function(one, two) {
-                return one.index - two.index; 
-            });
-            
-            var firstSelected = selectedRows[0];
-            
-            var selectedIds = selectedRows.map(function(row) { return row.id; });
-            this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
-                    .target(selectedIds).toAdjacent(destList.length > 0 ? destList[destList.length - 1][this.swapParts[0].primaryKey] : null).update();
             
             var firstSource = this.transportBuilder.getFirst();
             var secondSource = this.transportBuilder.getSecond();
@@ -749,7 +771,6 @@ module nts.uk.ui.koExtentions {
             $source.igGridSelection("clearSelection");
             $dest.igGridSelection("clearSelection");
             
-            var primaryKey = this.transportBuilder.primaryKey;
             if (forward){
                 var selectIndex = firstSource.length === 0 ? -1 
                     : (firstSource.length - 1 < firstSelected.index ? firstSource.length - 1 : firstSelected.index); 
@@ -838,7 +859,15 @@ module nts.uk.ui.koExtentions {
             return _.findIndex(list, elm => elm[this.primaryKey].toString() === targetId.toString());
         }
         
-        move(src: Array<any>, dest: Array<any>) {
+        move(src: Array<any>, dest: Array<any>, moveAll: boolean) {
+            if(moveAll){
+                this.moveAllItems(src, dest);        
+            } else {
+                this.moveNormal(src, dest);     
+            }
+        }
+        
+        moveNormal(src: Array<any>, dest: Array<any>) {
             for (var i = 0; i < this.targetIds.length; i++) { 
                 this.outcomeIndex = this.indexOf(src, this.targetIds[i]);
                 if (this.outcomeIndex === -1) return;
@@ -855,6 +884,12 @@ module nts.uk.ui.koExtentions {
             }
         }
         
+        moveAllItems(src: Array<any>, dest: Array<any>){
+            dest.push.apply(dest, src)
+//            dest.splice(0, 0, src);       
+            _.remove(src); 
+        }
+        
         determineDirection() : string {
             if (this.startAt.toLowerCase() !== this.direction.toLowerCase()
                 && this.direction.toLowerCase() === "second") {
@@ -868,19 +903,19 @@ module nts.uk.ui.koExtentions {
             } else return "insideSecond";
         }
         
-        update() : void {
+        update(moveAll: boolean) : void {
             switch (this.determineDirection()) {
                 case "firstToSecond":
-                    this.move(this.firstList, this.secondList);
+                    this.move(this.firstList, this.secondList, moveAll);
                     break;
                 case "secondToFirst":
-                    this.move(this.secondList, this.firstList);
+                    this.move(this.secondList, this.firstList, moveAll);
                     break;
                 case "insideFirst":
-                    this.move(this.firstList, this.firstList);
+                    this.move(this.firstList, this.firstList, moveAll);
                     break;
                 case "insideSecond":
-                    this.move(this.secondList, this.secondList);
+                    this.move(this.secondList, this.secondList, moveAll);
                     break;
             }
         }

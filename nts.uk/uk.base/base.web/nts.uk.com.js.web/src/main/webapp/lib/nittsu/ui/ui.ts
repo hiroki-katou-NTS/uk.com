@@ -346,7 +346,7 @@ module nts.uk.ui {
         }
         export function getMaxZIndex() {
             let overlayElements = parent.$(".ui-widget-overlay");
-            var max = 120002;
+            var max = 12000;
             if (overlayElements.length > 0) {
                 let zIndexs = _.map(overlayElements, function(element) { return parseInt($(element).css("z-index")); });
                 var temp = _.max(zIndexs);
@@ -591,6 +591,42 @@ module nts.uk.ui {
             });
 
             return handlers;
+        };
+        
+        
+        export function bundledErrors(errors) {
+            let id = util.randomId();
+            $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
+            let container = $("body").find("#" + id);
+            container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー内容</th>" +
+                    "<th style='display: none;'/><th style='width: 150px;'>エラーコード</th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
+            let errorBody = container.find("tbody");
+            _.forEach(errors["messageId"], function(id, idx){ 
+                let row = $("<tr/>");
+                row.append("<td style='display: none;'>" + (idx + 1) + "/td><td>" + errors.messages[id] + "</td><td>" + id + "</td>");   
+                row.appendTo(errorBody);     
+            });
+            let functionArea = container.find("#functions-area-bottom");
+            functionArea.append("<button class='ntsButton ntsClose large'/>");
+            container.dialog({
+                    title: "エラー一覧",   
+                    dialogClass: "no-close-btn",
+                    modal: true,
+                    resizable: false,
+                    width: 450,
+                    maxHeight: 500,
+                    closeOnEscape: false,
+                    open: function() {
+                        container.find("#error-board").css({"overflow": "auto", "max-height" : "300px", "margin-bottom": "65px"});
+                        container.find("#functions-area-bottom").css({"left": "0px"});
+                        functionArea.find(".ntsClose").text("閉じる").click(function(evt){
+                            container.dialog("destroy");  
+                            container.remove();
+                        });   
+                    },
+                    close: function(event) {
+                    }
+                });
         };
     }
 

@@ -3,6 +3,8 @@ __viewContext.ready(function () {
         
         legendOptions: any;
         
+        legendWithTemplateOptions: any;
+        
         constructor() {
             var self = this;
             
@@ -12,7 +14,16 @@ __viewContext.ready(function () {
                     { colorCode: '#00AA00', labelText: 'GREEN' },
                     { colorCode: '#0000FF', labelText: 'BLUE' }
                 ]
-            }
+            };
+            this.legendWithTemplateOptions = {
+                items: [
+                    { colorCode: '#ff0000', labelText: 'RED' },
+                    { colorCode: '#00AA00', labelText: 'GREEN' },
+                    { colorCode: '#0000FF', labelText: 'BLUE' }
+                ],
+                template : '<div style="color: #{colorCode}; "> #{labelText} </div>'
+            };
+            
         }
     }
     

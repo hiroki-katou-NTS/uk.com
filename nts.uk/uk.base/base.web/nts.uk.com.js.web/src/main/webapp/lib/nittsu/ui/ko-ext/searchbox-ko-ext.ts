@@ -194,14 +194,19 @@ module nts.uk.ui.koExtentions {
             
             let search = function (searchKey: string){
                 if (targetMode) {
-                    let selectedItems;
+                    let selectedItems, isMulti;
                     if (targetMode == 'igGrid') {
                         if(component.length === 0){
                             component = $("#" + ko.unwrap(data.comId)).find(".ntsListBox");    
                         }
                         selectedItems = component.ntsGridList("getSelected");
+                        isMulti = component.igGridSelection('option', 'multipleSelection');
                     } else if (targetMode == 'igTree') {
                         selectedItems = component.ntsTreeView("getSelected");
+                        isMulti = component.igTreeGridSelection('option', 'multipleSelection');
+                    } else if (targetMode == 'igTreeDrag') {
+                        selectedItems = component.ntsTreeDrag("getSelected");  
+                        isMulti = component.ntsTreeDrag('option', 'isMulti') ;  
                     }
                     
                     let srh: SearchPub= $container.data("searchObject");
@@ -210,8 +215,6 @@ module nts.uk.ui.koExtentions {
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT"));
                         return;        
                     }
-                    let isMulti = targetMode === 'igGrid' ? component.igGridSelection('option', 'multipleSelection') 
-                        : component.igTreeGridSelection('option', 'multipleSelection')
                     
                     let selectedProperties = _.map(result.selectItems, primaryKey);
 //                    let selectedValue;
@@ -237,16 +240,21 @@ module nts.uk.ui.koExtentions {
                                              return oldItem[primaryKey] === item[primaryKey];        
                                             }) === undefined;            
                             });
-                            component.igGrid("option", "dataSource", source);  
+                            component.igGrid("option", "dataSource", _.cloneDeep(source));  
                             component.igGrid("dataBind");  
                             
                             if(nts.uk.util.isNullOrEmpty(selectedProperties)){
                                 component.trigger("selectionchanged");        
                             }
+                        } else {
+                            component.trigger("selectionchanged");    
                         }
                     } else if (targetMode == 'igTree') {
                         component.ntsTreeView("setSelected", selectedProperties);
+                        component.trigger("selectionchanged");
                         //selected(selectedValue);
+                    } else if(targetMode == 'igTreeDrag'){
+                        component.ntsTreeDrag("setSelected", selectedProperties);
                     }
                     _.defer(function() {
                         component.trigger("selectChange");    
@@ -301,6 +309,24 @@ module nts.uk.ui.koExtentions {
                 component = $("#" + ko.unwrap(data.comId));    
             }
             let srhX: SearchPub= $searchBox.data("searchObject");
+            
+            if(component.attr("filtered") === true || component.attr("filtered") === "true"){
+                let currentSoruce = srhX.getDataSource();
+            
+                let newItems = _.filter(arr, function(i){
+                    return _.find(currentSoruce, function(ci){
+                        return ci[primaryKey] === i[primaryKey];
+                    }) === undefined;            
+                });    
+                if(!nts.uk.util.isNullOrEmpty(newItems)){
+                    let gridSources = component.igGrid("option", "dataSource");
+                    _.forEach(newItems, function (item){
+                        gridSources.push(item);            
+                    });
+                    component.igGrid("option", "dataSource", _.cloneDeep(gridSources));  
+                    component.igGrid("dataBind");     
+                }
+            }
             
             srhX.setDataSource(arr);
             
