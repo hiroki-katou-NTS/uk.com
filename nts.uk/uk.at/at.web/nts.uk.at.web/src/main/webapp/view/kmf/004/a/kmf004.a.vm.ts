@@ -455,6 +455,34 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
 
         }
+        
+        /**
+         * CDL002：雇用選択ダイアログ
+         */
+        openCDL002(): void {
+            let self = this;
+            nts.uk.ui.windows.setShared('selectedCodes', []);
+            nts.uk.ui.windows.setShared('isMultipleSelection', true);
+            nts.uk.ui.windows.setShared('isDisplayUnselect', false);
+            nts.uk.ui.windows.sub.modal("com", "/view/cdl/002/a/index.xhtml").onClosed(() => {
+                var selected = nts.uk.ui.windows.getShared('selectedCodes');
+                self.currentItem().subCondition().clsCodes(selected);
+            });
+        }
+        
+        /**
+         * CDL003：分類選択ダイアログ
+         */
+        openCDL003(): void {
+            let self = this;
+            nts.uk.ui.windows.setShared('selectedCodes', []);
+            nts.uk.ui.windows.setShared('isMultipleSelection', true);
+            nts.uk.ui.windows.setShared('isDisplayUnselect', false);
+            nts.uk.ui.windows.sub.modal("com", "/view/cdl/003/a/index.xhtml").onClosed(() => {
+                var selected = nts.uk.ui.windows.getShared('selectedCodes');
+                self.currentItem().subCondition().empCodes(selected);
+            });
+        }
 
         getNames(data: Array<IWorkTypeModal>, workTypeCodesSelected: Array<string>) {
             var name = [];
@@ -638,7 +666,10 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             ageCriteriaAtr?: number;
             ageBaseYearAtr?: number;
             ageBaseDates?: number;
+            clsCodes?: Array<string>;
+            empCodes?: Array<string>;
         }
+        
         export class SubConditionDto {
             specialHolidayCode: KnockoutObservable<number>;
             useGender: KnockoutObservable<boolean>;
@@ -651,6 +682,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             ageCriteriaAtr: KnockoutObservable<number>;
             ageBaseYearAtr: KnockoutObservable<number>;
             ageBaseDates: KnockoutObservable<number>;
+            clsCodes: KnockoutObservableArray<string>;
+            empCodes: KnockoutObservableArray<string>;
+            
             constructor(param: ISubConditionDto) {
                 this.specialHolidayCode = ko.observable(param.specialHolidayCode || null);
                 this.useGender = ko.observable(param.useGender || false);
@@ -663,6 +697,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 this.ageCriteriaAtr = ko.observable(param.ageCriteriaAtr || 0);
                 this.ageBaseYearAtr = ko.observable(param.ageBaseYearAtr || 0);
                 this.ageBaseDates = ko.observable(param.ageBaseDates || null);
+                this.clsCodes = ko.observableArray(param.clsCodes || null);
+                this.empCodes = ko.observableArray(param.empCodes || null);
             }
         }
 
