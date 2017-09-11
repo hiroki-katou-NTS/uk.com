@@ -10,13 +10,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.overtime.dto.OvertimeSettingDto;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeSetting;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSetting;
+import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 /**
- * The Class CompanyEstablishmentFinder.
+ * The Class OvertimeSettingFinder.
  */
 @Stateless
 public class OvertimeSettingFinder {
@@ -26,11 +26,9 @@ public class OvertimeSettingFinder {
 	private OvertimeSettingRepository repository;
 	
 	/**
-	 * Find estimate time.
+	 * Find by id.
 	 *
-	 * @param targetYear
-	 *            the target year
-	 * @return the company establishment dto
+	 * @return the overtime setting dto
 	 */
 	public OvertimeSettingDto findById() {
 

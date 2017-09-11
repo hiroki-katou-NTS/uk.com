@@ -22,4 +22,14 @@ public class TimeRoundingSetting extends DomainObject{
 	// 端数処理
 	private Rounding rounding;
 
+	/**
+	 * Instantiates a new time rounding setting.
+	 *
+	 * @param roundingTime the rounding time
+	 * @param rounding the rounding
+	 */
+	public TimeRoundingSetting(Unit roundingTime, Rounding rounding) {
+		this.roundingTime = roundingTime;
+		this.rounding = rounding;
+	}
 }

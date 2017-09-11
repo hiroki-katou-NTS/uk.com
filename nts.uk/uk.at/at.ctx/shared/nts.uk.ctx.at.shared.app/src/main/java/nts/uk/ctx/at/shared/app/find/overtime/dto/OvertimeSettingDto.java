@@ -13,17 +13,13 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.overtime.OvertimeCalculationMethod;
 import nts.uk.ctx.at.shared.dom.overtime.OvertimeNote;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItem;
+import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSettingSetMemento;
 
 /**
  * The Class OvertimeSettingDto.
  */
 
-/**
- * Gets the overtimes.
- *
- * @return the overtimes
- */
 @Getter
 @Setter
 public class OvertimeSettingDto implements OvertimeSettingSetMemento{
@@ -33,6 +29,9 @@ public class OvertimeSettingDto implements OvertimeSettingSetMemento{
 	
     /** The calculation method. */
     private Integer calculationMethod;
+    
+    /** The breakdown items. */
+    private List<OvertimeBRDItemDto> breakdownItems; 
     
     /** The overtimes. */
     private List<OvertimeDto> overtimes;
@@ -64,6 +63,20 @@ public class OvertimeSettingDto implements OvertimeSettingSetMemento{
 	/*
 	 * (non-Javadoc)
 	 * 
+	 * @see nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSettingSetMemento#
+	 * setBreakdownItems(java.util.List)
+	 */
+	@Override
+	public void setBreakdownItems(List<OvertimeBRDItem> breakdownItems) {
+		this.breakdownItems = breakdownItems.stream().map(overtimeBRDItem -> {
+			OvertimeBRDItemDto dto = new OvertimeBRDItemDto();
+			overtimeBRDItem.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
+	}
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.at.shared.dom.overtime.OvertimeSettingSetMemento#
 	 * setCalculationMethod(nts.uk.ctx.at.shared.dom.overtime.
 	 * OvertimeCalculationMethod)
@@ -88,5 +101,7 @@ public class OvertimeSettingDto implements OvertimeSettingSetMemento{
 			return dto;
 		}).collect(Collectors.toList());
 	}
+
+	
 
 }
