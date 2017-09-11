@@ -12,8 +12,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Data
 @AllArgsConstructor
 public class GrantDatePerCommand {
-	/*会社ID*/
-	private String companyId;
 
 	/*付与日のID*/
 	private String specialHolidayCode;

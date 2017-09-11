@@ -30,3 +30,11 @@ div[class^=screen-h] {
 .screen-h .ntsSearchBox {
 	min-width: 300px;
 }
+
+.items-tbl{
+	padding-top: 20px;
+}
+
+.contents-area{
+	padding: 20px;
+}

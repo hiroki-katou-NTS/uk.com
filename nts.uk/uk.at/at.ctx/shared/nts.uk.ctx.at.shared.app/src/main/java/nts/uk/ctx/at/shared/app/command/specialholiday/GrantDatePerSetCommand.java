@@ -7,8 +7,6 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDatePerSet;
 @Data
 @AllArgsConstructor
 public class GrantDatePerSetCommand {
-	/*会社ID*/
-	private String companyId;
 
 	/*付与日のID*/
 	private String specialHolidayCode;
