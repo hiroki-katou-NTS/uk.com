@@ -18,14 +18,14 @@ public interface WorkplaceConfigInfoGetMemento {
 	 */
 	public String getCompanyId();
 
-    /**
+	/**
      * Gets the history id.
      *
      * @return the history id
      */
     public HistoryId getHistoryId();
 
-    /**
+	/**
      * Gets the wkp hierarchy.
      *
      * @return the wkp hierarchy
