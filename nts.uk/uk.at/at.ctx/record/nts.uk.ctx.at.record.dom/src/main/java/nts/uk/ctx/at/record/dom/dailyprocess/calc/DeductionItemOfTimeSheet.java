@@ -4,7 +4,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
@@ -14,8 +16,9 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 
 @RequiredArgsConstructor
-public class DeductionItemOfTimeSheet {
 
+public class DeductionItemOfTimeSheet {
+	@Getter
 	private final TimeSpanForCalc span;
 //	private final DedcutionClassification deductionClassification;
 //	private final BreakClassification breakClassification;
