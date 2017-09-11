@@ -5,18 +5,22 @@ module nts.uk.at.view.kmk010.a {
     import OvertimeBRDItemDto = service.model.OvertimeBRDItemDto;
     import OvertimeSettingDto = service.model.OvertimeSettingDto;
     import PremiumExtra60HRateDto = service.model.PremiumExtra60HRateDto;
+    import SuperHD60HConMedDto = service.model.SuperHD60HConMedDto;
     
     export module viewmodel {
 
         export class ScreenModel {
             calculationMethods: KnockoutObservableArray<EnumConstantDto>;
             overtimeSettingModel: OvertimeSettingModel;
+            superHD60HConMedModel: SuperHD60HConMedModel;
             useClassification: KnockoutObservableArray<any>;
+            lstUnit: EnumConstantDto[];
 
             constructor() {
                 var self = this;
                 self.calculationMethods = ko.observableArray<EnumConstantDto>([]);
                 self.overtimeSettingModel = new OvertimeSettingModel();
+                self.superHD60HConMedModel = new SuperHD60HConMedModel();
             }
 
             /**
@@ -25,6 +29,9 @@ module nts.uk.at.view.kmk010.a {
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
+                service.findAllOvertimeUnit().done(function(data) {
+                    self.lstUnit = data;
+                });
                 service.findByIdOvertimeSetting().done(function(dataOvertimeSetting) {
                     self.overtimeSettingModel.updateData(dataOvertimeSetting);
                     for (var brdItem of self.overtimeSettingModel.breakdownItems){
@@ -35,10 +42,12 @@ module nts.uk.at.view.kmk010.a {
                                 rateBRDItems.push(rateModel);
                          }
                         brdItem.updateRateData(rateBRDItems);
-                        console.log(rateBRDItems.length);
                     }
                     service.findAllOvertimeCalculationMethod().done(function(dataMethod) {
                         self.calculationMethods(dataMethod);
+                        service.findByIdSuperHD60HConMed().done(function(dataSuper) {
+                            self.superHD60HConMedModel.updateData(dataSuper);
+                        });
                         dfd.resolve(self);
                     });
                 });
@@ -214,6 +223,33 @@ module nts.uk.at.view.kmk010.a {
                 return dto;
             }
             
+        }
+        
+        export class SuperHD60HConMedModel {
+            roundingTime: KnockoutObservable<number>;
+            rounding: KnockoutObservable<number>;
+            superHolidayOccurrenceUnit: KnockoutObservable<number>;
+            premiumExtra60HRates: PremiumExtra60HRateModel[];
+            
+            constructor() {
+                this.roundingTime = ko.observable(1);
+                this.rounding = ko.observable(1);
+                this.superHolidayOccurrenceUnit = ko.observable(0);
+                this.premiumExtra60HRates = [];
+
+            }
+            
+            updateData(dto: SuperHD60HConMedDto) {
+                this.roundingTime(dto.roundingTime);
+                this.rounding(dto.rounding);
+                this.superHolidayOccurrenceUnit(dto.superHolidayOccurrenceUnit);
+                this.premiumExtra60HRates = [];
+                for (var itemDto of dto.premiumExtra60HRates) {
+                    var model: PremiumExtra60HRateModel = new PremiumExtra60HRateModel();
+                    model.updateData(itemDto);
+                    this.premiumExtra60HRates.push(model);
+                }
+            }
         }
             
     }

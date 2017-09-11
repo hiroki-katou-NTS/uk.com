@@ -2,12 +2,10 @@ module nts.uk.at.view.kmk010.a {
     export module service {
         var paths = {
             findAllOvertimeCalculationMethod: "ctx/at/shared/overtime/setting/findAll/method",
+            findAllOvertimeUnit: "ctx/at/shared/overtime/setting/findAll/unit",
             findByIdOvertimeSetting: "ctx/at/shared/overtime/setting/findById",
-            findAllClosureHistory: "ctx/at/shared/workrule/closure/history/findAll",
-            findByIdClosure: "ctx/at/shared/workrule/closure/findById",
-            saveClosure: "ctx/at/shared/workrule/closure/save",
-            findByIdClosureHistory: "ctx/at/shared/workrule/closure/history/findById",
-            saveClosureHistory: "ctx/at/shared/workrule/closure/history/save"
+            findAllPremiumExtra60HRate: "ctx/at/shared/overtime/premium/extra/findAll",
+            findByIdSuperHD60HConMed: "ctx/at/shared/overtime/super/holiday/findById"
         }
 
         /**
@@ -15,6 +13,13 @@ module nts.uk.at.view.kmk010.a {
          */
         export function findAllOvertimeCalculationMethod(): JQueryPromise<model.EnumConstantDto[]> {
             return nts.uk.request.ajax(paths.findAllOvertimeCalculationMethod);
+        }
+        
+        /**
+         * find all data overtime unit
+         */
+        export function findAllOvertimeUnit(): JQueryPromise<model.EnumConstantDto[]> {
+            return nts.uk.request.ajax(paths.findAllOvertimeUnit);
         }
 
         /**
@@ -25,138 +30,21 @@ module nts.uk.at.view.kmk010.a {
         }
         
         /**
-         * find all data closure history call service
+         * find all data premium extra 60h rate
          */
-        export function findAllClosureHistory(): JQueryPromise<model.ClosureHistoryFindDto[]> {
-            return nts.uk.request.ajax(paths.findAllClosureHistory);
+        export function findAllPremiumExtra60HRate(): JQueryPromise<model.PremiumExtra60HRateDto> {
+            return nts.uk.request.ajax(paths.findAllPremiumExtra60HRate);
         }
 
         /**
-         * find by id data closure call service
+         *  find by id super holiday method
          */
-        export function findByIdClosure(closureId: number): JQueryPromise<model.ClosureDto> {
-            return nts.uk.request.ajax(paths.findByIdClosure + "/" + closureId);
+        export function findByIdSuperHD60HConMed(): JQueryPromise<model.SuperHD60HConMedDto> {
+            return nts.uk.request.ajax(paths.findByIdSuperHD60HConMed);
         }
-
-        /**
-         * save closure call service
-         */
-        export function saveClosure(dto: model.ClosureSaveDto): JQueryPromise<void> {
-            return nts.uk.request.ajax(paths.saveClosure, dto);
-        }
-
-
-        /**
-         * find by id data closure history call service
-         */
-        export function findByIdClosureHistory(master: model.ClosureHistoryMasterDto)
-            : JQueryPromise<model.ClosureHistoryHeaderDto> {
-            return nts.uk.request.ajax(paths.findByIdClosureHistory, master);
-        }
-
-        /**
-         * save closure history call service
-         */
-        export function saveClosureHistory(dto: model.ClosureHistoryDto): JQueryPromise<void> {
-            var data = { closureHistory: dto };
-            return nts.uk.request.ajax(paths.saveClosureHistory, data);
-        }
-
 
 
         export module model {
-
-            export class ClosureHistoryMasterDto {
-
-                /** The closure id. */
-                closureId: number;
-
-                /** The end date. */
-                // 終了年月: 年月
-                endDate: number;
-
-                /** The start date. */
-                // 開始年月: 年月
-                startDate: number;
-
-                view: string;
-
-                updateData(): void {
-                    var startMonthRage: string = nts.uk.time.formatYearMonth(this.startDate);
-                    var endMonthRage: string = nts.uk.time.formatYearMonth(this.endDate);
-                    this.view = startMonthRage + ' ~ ' + endMonthRage;
-                }
-            }
-
-            export class ClosureHistoryHeaderDto {
-
-                /** The closure id. */
-                closureId: number;
-
-                /** The end date. */
-                // 終了年月: 年月
-                closureName: string;
-
-                /** The start date. */
-                // 開始年月: 年月
-                closureDate: number;
-
-
-                startDate: number;
-            }
-
-            export class ClosureHistoryFindDto {
-                /** The id. */
-                id: number;
-
-                /** The name. */
-                name: string;
-
-                // the view
-                view: string;
-
-                updateData(): void {
-                    this.view = this.id + ": " + this.name;
-                }
-            }
-
-            export enum UseClassification {
-
-            }
-
-            export class DayofMonth {
-                day: number;
-                name: string;
-            }
-
-            export class ClosureDto {
-                /** The closure id. */
-                closureId: number;
-
-                /** The use classification. */
-                useClassification: number;
-
-                /** The day. */
-                month: number;
-
-                // selected
-                closureSelected: ClosureHistoryMasterDto;
-
-                // data history
-                closureHistories: ClosureHistoryMasterDto[];
-            }
-
-            export class ClosureSaveDto {
-                /** The closure id. */
-                closureId: number;
-
-                /** The use classification. */
-                useClassification: number;
-
-                /** The day. */
-                month: number;
-            }
-
 
             export interface EnumConstantDto {
                 value: number;
@@ -168,13 +56,33 @@ module nts.uk.at.view.kmk010.a {
                 name: string;
                 overtime: number;
                 overtimeNo: number;
-                useClassification: number;
+                useClassification: boolean;
             }
 
+            export interface OvertimeBRDItemDto {
+                useClassification: boolean;
+                breakdownItemNo: number;
+                name: string;
+                productNumber: number;
+            }
+            
             export interface OvertimeSettingDto {
                 note: string;
                 calculationMethod: number;
                 overtimes: OvertimeDto[];
+                breakdownItems: OvertimeBRDItemDto[];
+            }
+            export interface PremiumExtra60HRateDto {
+                overtimeNo: number;
+                breakdownItemNo: number;
+                premiumRate: number;
+            }
+            
+            export interface SuperHD60HConMedDto {
+                roundingTime: number;
+                rounding: number;
+                superHolidayOccurrenceUnit: number;
+                premiumExtra60HRates: PremiumExtra60HRateDto[];
             }
         }
     }

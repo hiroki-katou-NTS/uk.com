@@ -131,8 +131,37 @@
 							</table>
 						</div>
 					</div>
+					<div class="rateBotton60H">
+					</div>
+					<div class="overtimeRate60H">
+						<div class="oneOvertimeRate">
+							<div class="labelOneRate">
+								<label>#{i18n.getText('KMK010_23')}</label>
+							</div>
+							<div class="labelTwoRate">
+								<label>#{i18n.getText('KMK010_24')}</label>
+							</div>
+							<div class="labelThreeRate">
+								<label>#{i18n.getText('KMK010_25')}</label>
+								<label>#{i18n.getText('KMK010_26')}</label>
+								<label>#{i18n.getText('KMK010_27')}</label>
+							</div>
+							<div class="lableFourRate">
+								<div class="selectUnit" data-bind="ntsComboBox: {
+									options: $parent.lstUnit,
+									optionsValue: 'value',
+									visibleItemsCount: 10,
+									value: superHD60HConMedModel.roundingTime,
+									optionsText: 'localizedName',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'value', length: 2 },
+									]}"></div>
+							</div>
+						</div>
+					</div>
 				</div>
-				
 			</ui:define>
 		</ui:composition>
 	</body>

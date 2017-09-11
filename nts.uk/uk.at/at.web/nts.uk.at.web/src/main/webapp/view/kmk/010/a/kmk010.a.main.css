@@ -89,3 +89,36 @@
 .valueData {
 	float: left;
 }
+
+.rateBotton60H {
+	clear: both;
+	height: 20px;
+}
+
+.overtimeRate60H {
+	margin-left: 180px;
+	border-radius: 5px;
+	border-color: #565555;
+	border-width: 1px;
+	border-style: double;
+	max-width: 49%;
+}
+
+.labelOneRate {
+	margin-top: 10px;
+	margin-left: 15px;
+}
+
+.labelTwoRate {
+	margin-top: 10px;
+	margin-left: 35px;
+}
+
+.labelThreeRate {
+	margin-top: 10px;
+	margin-left: 35px;
+}
+
+.selectUnit {
+	width: 60px;
+}
