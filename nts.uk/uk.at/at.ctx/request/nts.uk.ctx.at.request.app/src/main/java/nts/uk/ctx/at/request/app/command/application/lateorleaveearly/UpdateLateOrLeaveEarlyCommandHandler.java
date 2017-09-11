@@ -19,11 +19,12 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
 	
 	@Inject
 	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
+
 	@Override
 	protected void handle(CommandHandlerContext<UpdateLateOrLeaveEarlyCommand> context) {
 	//	UpdateLateOrLeaveEarlyCommand command = context.getCommand();
 		String appID = IdentifierUtil.randomUniqueId();
-		lateOrLeaveEarlyRepository.update(context.getCommand().toDomain(appID ));
+		lateOrLeaveEarlyRepository.update(context.getCommand().toDomain(appID));
 		
 	}
 	

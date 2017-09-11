@@ -19,4 +19,6 @@ public interface LateOrLeaveEarlyService {
 	
 	void deleteLateOrLeaveEarly (String companyID, String appID);
 	
+    void registerLateOrLeaveEarly (String companyID);
+	
 }

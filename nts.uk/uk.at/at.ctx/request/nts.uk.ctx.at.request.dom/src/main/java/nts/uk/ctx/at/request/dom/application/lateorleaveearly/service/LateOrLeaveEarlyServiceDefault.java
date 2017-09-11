@@ -30,4 +30,11 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		
 	}
 
+	@Override
+	public void registerLateOrLeaveEarly(String companyID) {
+		
+		// TODO Auto-generated method stub
+		
+	}
+
 }
