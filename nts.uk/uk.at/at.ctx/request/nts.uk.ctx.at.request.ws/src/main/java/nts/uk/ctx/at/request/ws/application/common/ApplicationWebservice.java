@@ -25,7 +25,6 @@ import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSu
 import nts.uk.ctx.at.request.app.find.application.common.GetDataBeforePreBootMode;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
 import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApprovalRootOutput;
 
 @Path("at/request/application")
 @Produces("application/json")
@@ -48,6 +47,8 @@ public class ApplicationWebservice extends WebService {
 	
 	@Inject 
 	private GetDataApprovalRootOfSubjectRequest getDataApprovalRoot;
+	
+	
 	
 	/**
 	 * get All application

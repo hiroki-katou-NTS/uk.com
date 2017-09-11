@@ -35,16 +35,16 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 private final String FIND_BY_DATE = FIN_BY_EMP
 	   + " AND c.endDate = :endDate";
 	 private final String FIND_BY_BASEDATE = FIN_BY_EMP
-			   + " AND c.stardDate <= :baseDate"
+			   + " AND c.startDate <= :baseDate"
 			   + " AND c.endDate >= :baseDate"
 			   + " AND c.employmentRootAtr IN (1,2,3)" 
 			   + " AND c.applicationType = :appType";
 	 private final String FIND_BY_BASEDATE_OF_COM = FIN_BY_EMP
-			   + " AND c.stardDate <= :baseDate"
+			   + " AND c.startDate <= :baseDate"
 			   + " AND c.endDate >= :baseDate"
 			   + " AND c.employmentRootAtr = 0";
 	 private final String FIND_ALL_BY_BASEDATE = FIND_ALL + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
-			   + " AND c.stardDate <= :baseDate"
+			   + " AND c.startDate <= :baseDate"
 			   + " AND c.endDate >= :baseDate"
 			   + " ORDER BY c.wwfmtPsApprovalRootPK.employeeId";
 			 

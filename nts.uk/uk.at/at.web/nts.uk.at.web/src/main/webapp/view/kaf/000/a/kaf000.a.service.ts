@@ -33,9 +33,9 @@
      }      
      
      /**
-      * get all Data Approval Root
+      * get all Data Approval Root 
       */
-     export function getDataApprovalRoot(objApprovalRootInput) : JQueryPromise<Array<any>>{
+     export function getDataApprovalRoot(objApprovalRootInput ) : JQueryPromise<Array<any>>{
          return nts.uk.request.ajax("at",paths.getDataApprovalRoot,objApprovalRootInput);
      }
  }
