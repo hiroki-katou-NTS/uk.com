@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * The Interface WorkPlaceConfigInfoSetMemento.
  */
-public interface WorkPlaceConfigInfoSetMemento {
+public interface WorkplaceConfigInfoSetMemento {
 	
 	/**
 	 * Sets the company id.

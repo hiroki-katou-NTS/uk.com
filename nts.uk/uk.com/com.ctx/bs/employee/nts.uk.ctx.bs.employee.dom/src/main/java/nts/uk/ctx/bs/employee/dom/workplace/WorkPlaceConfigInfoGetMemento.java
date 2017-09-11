@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * The Interface WorkPlaceConfigInfoGetMemento.
  */
-public interface WorkPlaceConfigInfoGetMemento {
+public interface WorkplaceConfigInfoGetMemento {
 
 	/**
 	 * Gets the company id.

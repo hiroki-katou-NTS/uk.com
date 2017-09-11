@@ -14,7 +14,7 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 //職場構成情報
 @Getter
-public class WorkPlaceConfigInfo extends AggregateRoot {
+public class WorkplaceConfigInfo extends AggregateRoot {
 
 	/** The company id. */
 	//会社ID
@@ -33,7 +33,7 @@ public class WorkPlaceConfigInfo extends AggregateRoot {
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(WorkPlaceConfigInfoSetMemento memento) {
+	public void saveToMemento(WorkplaceConfigInfoSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setHistoryId(this.getHistoryId());
 		memento.setWkpHierarchy(this.wkpHierarchy);
@@ -44,7 +44,7 @@ public class WorkPlaceConfigInfo extends AggregateRoot {
 	 *
 	 * @param memento the memento
 	 */
-	public WorkPlaceConfigInfo(WorkPlaceConfigInfoGetMemento memento) {
+	public WorkplaceConfigInfo(WorkplaceConfigInfoGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.historyId = memento.getHistoryId();
 		this.wkpHierarchy = memento.getWkpHierarchy();
@@ -71,9 +71,9 @@ public class WorkPlaceConfigInfo extends AggregateRoot {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof WorkPlaceConfigInfo))
+		if (!(obj instanceof WorkplaceConfigInfo))
 			return false;
-		WorkPlaceConfigInfo other = (WorkPlaceConfigInfo) obj;
+		WorkplaceConfigInfo other = (WorkplaceConfigInfo) obj;
 		if (companyId == null) {
 			if (other.companyId != null)
 				return false;
