@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
+import nts.uk.ctx.bs.employee.dom.workplace.configinfo.HierarchyCode;
 import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceHierarchySetMemento;
 
 public class WorkplaceHierarchyDto implements WorkplaceHierarchySetMemento {
@@ -23,8 +24,8 @@ public class WorkplaceHierarchyDto implements WorkplaceHierarchySetMemento {
 	}
 
 	@Override
-	public void setHierarchyCode(String hierarchyCode) {
-		this.hierarchyCode = hierarchyCode;
+	public void setHierarchyCode(HierarchyCode hierarchyCode) {
+		this.hierarchyCode = hierarchyCode.v();
 	}
 
 }
