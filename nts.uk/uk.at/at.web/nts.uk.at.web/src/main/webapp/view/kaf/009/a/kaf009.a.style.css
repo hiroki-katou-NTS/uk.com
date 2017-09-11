@@ -104,6 +104,12 @@ div.form-label.broken {
 button.nts-switch-button {
 	width: 100px;
 }
-	
-	
-	
+
+.lstApprover {
+	margin-left: 20px;
+}
+/*workType, Sift */
+.lblSiftCd, .lblWorkTypeCd {
+	line-height: 40px;
+	margin-left: 20px;
+}

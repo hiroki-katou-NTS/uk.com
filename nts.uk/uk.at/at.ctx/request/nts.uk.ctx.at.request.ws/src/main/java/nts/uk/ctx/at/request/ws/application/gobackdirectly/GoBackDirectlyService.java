@@ -20,7 +20,7 @@ public class GoBackDirectlyService extends WebService {
 	@POST
 	@Path("getGoBackDirectlyByAppID")
 	public GoBackDirectlyDto getGoBackDirectlyByAppID() {
-		String appID = "123456789";
+		String appID = "1445DA47-3CF9-4B0A-B819-96D20721881C";
 		return this.goBackDirectlyFinder.getGoBackDirectlyByAppID(appID);
 	}
 
