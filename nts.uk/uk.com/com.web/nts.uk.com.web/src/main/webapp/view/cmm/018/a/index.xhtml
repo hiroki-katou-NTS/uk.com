@@ -26,18 +26,18 @@
 		</ui:define>
 		<ui:define name="sidebar-content">
 			<div id="tabpanel-1" role="tabpanel">
-				<div class="sidebar-content-header">
+				<div class="sidebar-content-header" data-bind="with: viewmodelA">
 					<span class="title">#{i18n.getText('Com_Company')}</span>
 					<!-- A1_5: Button 登録 -->
 					<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_18')}</button>
 					<!-- A1_6: Button 未登録社員リスト -->
 					<button data-bind="click: function(){openDialogD(0)}, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_12')}</button>
 					<!-- A1_7: Button 承認者一覧 -->
-					<button data-bind="click: openDialogI">#{i18n.getText('CMM018_14')}</button>
+					<button data-bind="click: $data.openDialogI">#{i18n.getText('CMM018_14')}</button>
 					<!-- A1_8: Button マスタリスト -->
 					<button data-bind="click: openDialogJ">#{i18n.getText('CMM018_13')}</button>
 				</div>
-				<div class="contents-area">
+				<div class="contents-area" data-bind="with: viewmodelA">
 					<div style="margin-top: 10px;">
 						<table>
 							<tr>
@@ -67,12 +67,12 @@
 					</div>
 					<div>
 						<!-- SCREEN A -->
-						<div class="mode_Common"  data-bind="visible: selectedModeCode" style="clear: both;">
+						<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
 							<!-- A2: List gridList -->
 							<div id = "left-contents" style="float: left;margin-left: 10px;">
 								<div style="width: 260px; height: 350px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
-										<button class="dateControlBtn" data-bind="click: openDialogI">#{i18n.getText('CMM018_20')}</button>
+										<button class="dateControlBtn" data-bind="click: $data.openDialogI">#{i18n.getText('CMM018_20')}</button>
 										<button class="danger dateControlBtn" data-bind="click: openDialogJ">#{i18n.getText('CMM018_21')}</button>
 									</div>
 									<div style="margin: 20px">
@@ -210,10 +210,10 @@
 							</div>
 						</div>
 						<!-- SCREEN B -->
-						<div class="mode_Private" data-bind="visible: checkAAA">
+						<div class="mode_Private" data-bind="visible: selectedModeCode">
 							<!-- B2: List gridList -->
-							<div id = "left-contents" style="float: left;margin-left: 10px;">
-								<div style="width: 260px; height: 350px;" class="caret-right caret-background bg-green">
+							<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelB">
+								<div style="width: 280px; height: 470px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<!-- B2_2: -->
 										<button class="dateControlBtn" data-bind="click: openDialogI">#{i18n.getText('CMM018_20')}</button>
@@ -224,16 +224,15 @@
 									<div>
 									<table id="treegrid2"
 											data-bind="ntsTreeGridView:{
-												width: 220,
-												height: 258,
-												dataSource: items2,
+												width: 270,
+												dataSource: dataDisplay,
 												value: singleSelectedCode,
-												optionsValue: 'code',
-												optionsChild: 'childs',
-												optionsText: 'nodeText',
+												optionsValue: 'nameAppType',
+												optionsChild: 'lstbyApp',
+												optionsText: 'nameAppType',
 												multiple: false,
 												enable: true,
-												rows: 10,
+												rows: 15,
 												showCheckBox: false}"></table>
 									</div>
 								</div>
@@ -361,17 +360,17 @@
 					<!-- B1_6: Button 未登録社員リスト -->
 					<button data-bind="click: function(){openDialogD(0)}, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_12')}</button>
 					<!-- B1_7: Button 承認者一覧 -->
-					<button data-bind="click: openDialogC">#{i18n.getText('CMM018_14')}</button>
+					<button>#{i18n.getText('CMM018_14')}</button>
 					<!-- B1_8: Button マスタリスト -->
-					<button data-bind="click: openDialogI">#{i18n.getText('CMM018_13')}</button>
+					<button>#{i18n.getText('CMM018_13')}</button>
 				</div>
 				<div id = "creenCD" class="contents-area">
 					<div>
 						<div data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_19')}</div>
-						<div data-bind = "text: nameCompany"></div>
+						<div ></div>
 					</div>
 					<div id="left-content" class="bg-green caret-right caret-background">
-						<div class="cf" data-bind = "if: modeCommon">
+						<div >
 							<div style="float: left">
 <!-- 								<table tabindex="2" id="single-list-dataSource"
 									data-bind="ntsGridList:{
@@ -399,9 +398,9 @@
 					<!-- C1_6: Button 未登録社員リスト -->
 					<button data-bind="click: function(){openDialogD(0)}, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_12')}</button>
 					<!-- C1_7: Button 承認者一覧 -->
-					<button data-bind="click: openDialogC">#{i18n.getText('CMM018_14')}</button>
+					<button >#{i18n.getText('CMM018_14')}</button>
 					<!-- C1_8: Button マスタリスト -->
-					<button data-bind="click: openDialogI">#{i18n.getText('CMM018_13')}</button>
+					<button>#{i18n.getText('CMM018_13')}</button>
 				</div>
 				<div class="contents-area">
 				</div>
