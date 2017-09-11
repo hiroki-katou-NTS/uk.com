@@ -20,8 +20,12 @@ import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCom
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
+import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
+import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSubjectRequest;
 import nts.uk.ctx.at.request.app.find.application.common.GetDataBeforePreBootMode;
+import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
 import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApprovalRootOutput;
 
 @Path("at/request/application")
 @Produces("application/json")
@@ -41,6 +45,9 @@ public class ApplicationWebservice extends WebService {
 	
 	@Inject 
 	private GetDataBeforePreBootMode getDataBeforePreBootMode; 
+	
+	@Inject 
+	private GetDataApprovalRootOfSubjectRequest getDataApprovalRoot;
 	
 	/**
 	 * get All application
@@ -130,4 +137,15 @@ public class ApplicationWebservice extends WebService {
 	public boolean checkAuthorizationComment( Application application,GeneralDate datebase) {
 		return this.getDataBeforePreBootMode.checkDisplayAuthorizationComment(application, datebase);
 	}
+	
+	/**
+	 * get data  ApprovalRootOfSubjectRequest
+	 * @return
+	 */
+	@POST
+	@Path("getdataapprovalroot")
+	public List<ApprovalRootOfSubjectRequestDto> getDataApprovalRoot(ObjApprovalRootInput objApprovalRootInput) {
+		return this.getDataApprovalRoot.getApprovalRootOfSubjectRequest(objApprovalRootInput);
+	}
+	//List<ApprovalRootOutput>
 }
