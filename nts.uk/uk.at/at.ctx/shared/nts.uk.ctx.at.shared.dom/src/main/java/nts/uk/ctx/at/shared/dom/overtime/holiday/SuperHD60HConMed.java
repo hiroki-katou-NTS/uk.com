@@ -36,4 +36,29 @@ public class SuperHD60HConMed extends AggregateRoot{
 	/** The premium extra 60 H rates. */
 	// 60H超休の割増率一覧
 	private List<PremiumExtra60HRate> premiumExtra60HRates;
+	
+	
+	/**
+	 * Instantiates a new super HD 60 H con med.
+	 *
+	 * @param memento the memento
+	 */
+	public SuperHD60HConMed(SuperHD60HConMedGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.timeRoundingSetting = memento.getTimeRoundingSetting();
+		this.superHolidayOccurrenceUnit = memento.getSuperHolidayOccurrenceUnit();
+		this.premiumExtra60HRates = memento.getPremiumExtra60HRates();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(SuperHD60HConMedSetMemento memento){
+		memento.setCompanyId(this.companyId);
+		memento.setTimeRoundingSetting(this.timeRoundingSetting);
+		memento.setSuperHolidayOccurrenceUnit(this.superHolidayOccurrenceUnit);
+		memento.setPremiumExtra60HRates(this.premiumExtra60HRates);
+	}
 }

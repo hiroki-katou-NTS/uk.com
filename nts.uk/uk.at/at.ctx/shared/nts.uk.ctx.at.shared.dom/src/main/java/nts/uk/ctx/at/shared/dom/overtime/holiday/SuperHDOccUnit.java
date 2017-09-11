@@ -10,7 +10,7 @@ import nts.arc.primitive.constraint.TimeRange;
 /**
  * The Class SuperHDOccUnit.
  */
-// 60h超休発生単位
+// 60H超休発生単位
 @TimeRange(min = "0:00", max = "99:59")
 public class SuperHDOccUnit extends TimeDurationPrimitiveValue<SuperHDOccUnit>{
 

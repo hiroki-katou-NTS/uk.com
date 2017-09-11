@@ -18,4 +18,13 @@ public interface PremiumExtra60HRateRepository {
 	 * @return the list
 	 */
 	public List<PremiumExtra60HRate> findAll(String companyId);
+	
+	
+	/**
+	 * Save all.
+	 *
+	 * @param premiumExtras the premium extras
+	 * @param companyId the company id
+	 */
+	public void saveAll(List<PremiumExtra60HRate> premiumExtras, String companyId);
 }
