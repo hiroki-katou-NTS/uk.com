@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily.breaktimegoout;
 
-import java.awt.List;
+
+import java.util.List;
 
 import lombok.Value;
 
@@ -10,6 +11,17 @@ import lombok.Value;
  *
  */
 @Value
-public class DailyOfBreakTimeSheet {
+public class BreakTimeSheetOfDaily {
+	private BreakCategory breakClassification;
 	
+	private List<BreakTimeSheet> breakTimeSheet;
+	
+	/**
+	 * 休憩種類の取得
+	 * @return
+	 */
+	public BreakCategory getcategory() {
+		return this.breakClassification.is();
+	}
+
 }
