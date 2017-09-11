@@ -15,6 +15,7 @@ module nts.uk.at.view.kmk010.a {
             superHD60HConMedModel: SuperHD60HConMedModel;
             useClassification: KnockoutObservableArray<any>;
             lstUnit: EnumConstantDto[];
+            lstRounding: EnumConstantDto[];
 
             constructor() {
                 var self = this;
@@ -29,9 +30,17 @@ module nts.uk.at.view.kmk010.a {
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
+                
+                // find all unit
                 service.findAllOvertimeUnit().done(function(data) {
                     self.lstUnit = data;
                 });
+                
+                // find all rounding
+                service.findAllOvertimeRounding().done(function(data) {
+                    self.lstRounding = data;
+                });
+                
                 service.findByIdOvertimeSetting().done(function(dataOvertimeSetting) {
                     self.overtimeSettingModel.updateData(dataOvertimeSetting);
                     for (var brdItem of self.overtimeSettingModel.breakdownItems){
@@ -46,6 +55,7 @@ module nts.uk.at.view.kmk010.a {
                     service.findAllOvertimeCalculationMethod().done(function(dataMethod) {
                         self.calculationMethods(dataMethod);
                         service.findByIdSuperHD60HConMed().done(function(dataSuper) {
+                            console.log(dataSuper);
                             self.superHD60HConMedModel.updateData(dataSuper);
                         });
                         dfd.resolve(self);
@@ -240,14 +250,16 @@ module nts.uk.at.view.kmk010.a {
             }
             
             updateData(dto: SuperHD60HConMedDto) {
-                this.roundingTime(dto.roundingTime);
-                this.rounding(dto.rounding);
-                this.superHolidayOccurrenceUnit(dto.superHolidayOccurrenceUnit);
-                this.premiumExtra60HRates = [];
-                for (var itemDto of dto.premiumExtra60HRates) {
-                    var model: PremiumExtra60HRateModel = new PremiumExtra60HRateModel();
-                    model.updateData(itemDto);
-                    this.premiumExtra60HRates.push(model);
+                if (dto.setting) {
+                    this.roundingTime(dto.roundingTime);
+                    this.rounding(dto.rounding);
+                    this.superHolidayOccurrenceUnit(dto.superHolidayOccurrenceUnit);
+                    this.premiumExtra60HRates = [];
+                    /*for (var itemDto of dto.premiumExtra60HRates) {
+                        var model: PremiumExtra60HRateModel = new PremiumExtra60HRateModel();
+                        model.updateData(itemDto);
+                        this.premiumExtra60HRates.push(model);
+                    }*/
                 }
             }
         }

@@ -96,12 +96,13 @@
 }
 
 .overtimeRate60H {
-	margin-left: 180px;
+	margin-left: 130px;
 	border-radius: 5px;
 	border-color: #565555;
 	border-width: 1px;
 	border-style: double;
-	max-width: 49%;
+	width: 55%;
+	min-height: 150px;
 }
 
 .labelOneRate {
@@ -119,6 +120,42 @@
 	margin-left: 35px;
 }
 
+.lableFourRate {
+	margin-left: 230px;
+	margin-top: 15px;
+}
+
 .selectUnit {
-	width: 60px;
+	width: 70px;
+}
+
+.overtimeSelect {
+	width: 50px;
+}
+
+.selectRounding {
+	margin-left: 20px;
+	width: 170px;
+}
+
+.oneOvertimeRate {
+	float: left;
+	width: 55%;
+}
+
+.overtimeRate60H2 {
+	width: 5%;
+	float: left;
+	margin-top: 50px;
+}
+
+.overtimeRate60H3 {
+	width: 38%;
+	float: left;
+	margin-top: 20px;
+}
+
+.labelFiveRate{
+	margin-top: 10px;
+	margin-left: 80px;
 }

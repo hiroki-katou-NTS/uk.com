@@ -145,19 +145,55 @@
 								<label>#{i18n.getText('KMK010_25')}</label>
 								<label>#{i18n.getText('KMK010_26')}</label>
 								<label>#{i18n.getText('KMK010_27')}</label>
+								<label class="labelTwoRate" >#{i18n.getText('KMK010_28')}</label>
 							</div>
 							<div class="lableFourRate">
 								<div class="selectUnit" data-bind="ntsComboBox: {
 									options: $parent.lstUnit,
 									optionsValue: 'value',
 									visibleItemsCount: 10,
-									value: superHD60HConMedModel.roundingTime,
+									value: $parent.superHD60HConMedModel.roundingTime,
 									optionsText: 'localizedName',
 									editable: false,
 									enable: true,
 									columns: [
-										{ prop: 'value', length: 2 },
+										{ prop: 'localizedName', length: 2 },
 									]}"></div>
+									
+									<div class="selectRounding" data-bind="ntsComboBox: {
+									options: $parent.lstRounding,
+									optionsValue: 'value',
+									visibleItemsCount: 10,
+									value: $parent.superHD60HConMedModel.rounding,
+									optionsText: 'localizedName',
+									editable: false,
+									enable: true,
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}"></div>
+							</div>
+						</div>
+						<div class="overtimeRate60H2">
+							<div class="labelOneRate">
+								<label>#{i18n.getText('KMK010_29')}</label>
+							</div>
+						</div>
+						<div class="overtimeRate60H3">
+							<div class="labelOneRate">
+								<label>#{i18n.getText('KMK010_30')}</label>
+								<input class="overtimeSelect" data-bind="ntsTimeEditor: {name: '#[KSM001_39]',
+									value: $parent.superHD60HConMedModel.superHolidayOccurrenceUnit,
+									inputFormat: 'time', 
+									mode: 'time',
+									required: true
+									}" />
+							</div>
+							<div class="labelTwoRate">
+								<label>#{i18n.getText('KMK010_32')}</label>
+								<label>#{i18n.getText('KMK010_33')}</label>
+							</div>
+							<div class="labelFiveRate">
+								<label>#{i18n.getText('KMK010_34')}</label>
 							</div>
 						</div>
 					</div>

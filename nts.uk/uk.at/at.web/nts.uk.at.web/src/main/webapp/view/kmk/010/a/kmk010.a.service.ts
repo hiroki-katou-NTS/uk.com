@@ -3,6 +3,7 @@ module nts.uk.at.view.kmk010.a {
         var paths = {
             findAllOvertimeCalculationMethod: "ctx/at/shared/overtime/setting/findAll/method",
             findAllOvertimeUnit: "ctx/at/shared/overtime/setting/findAll/unit",
+            findAllOvertimeRounding: "ctx/at/shared/overtime/setting/findAll/rounding",
             findByIdOvertimeSetting: "ctx/at/shared/overtime/setting/findById",
             findAllPremiumExtra60HRate: "ctx/at/shared/overtime/premium/extra/findAll",
             findByIdSuperHD60HConMed: "ctx/at/shared/overtime/super/holiday/findById"
@@ -20,6 +21,13 @@ module nts.uk.at.view.kmk010.a {
          */
         export function findAllOvertimeUnit(): JQueryPromise<model.EnumConstantDto[]> {
             return nts.uk.request.ajax(paths.findAllOvertimeUnit);
+        }
+        
+        /**
+         * find all data overtime rounding
+         */
+        export function findAllOvertimeRounding(): JQueryPromise<model.EnumConstantDto[]> {
+            return nts.uk.request.ajax(paths.findAllOvertimeRounding);
         }
 
         /**
@@ -80,6 +88,7 @@ module nts.uk.at.view.kmk010.a {
             
             export interface SuperHD60HConMedDto {
                 roundingTime: number;
+                setting: boolean;
                 rounding: number;
                 superHolidayOccurrenceUnit: number;
                 premiumExtra60HRates: PremiumExtra60HRateDto[];
