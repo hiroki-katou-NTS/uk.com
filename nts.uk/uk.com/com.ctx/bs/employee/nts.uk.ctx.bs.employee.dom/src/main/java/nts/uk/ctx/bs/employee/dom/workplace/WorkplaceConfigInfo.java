@@ -12,26 +12,27 @@ import nts.arc.layer.dom.AggregateRoot;
 /**
  * The Class WorkPlaceConfigInfo.
  */
-//職場構成情報
+// 職場構成情報
 @Getter
 public class WorkplaceConfigInfo extends AggregateRoot {
 
 	/** The company id. */
-	//会社ID
+	// 会社ID
 	private String companyId;
 
 	/** The history id. */
-	//履歴ID
+	// 履歴ID
 	private HistoryId historyId;
 
 	/** The wkp hierarchy. */
-	//階層
+	// 階層
 	private List<WorkplaceHierarchy> wkpHierarchy;
 
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(WorkplaceConfigInfoSetMemento memento) {
 		memento.setCompanyId(this.companyId);
@@ -42,7 +43,8 @@ public class WorkplaceConfigInfo extends AggregateRoot {
 	/**
 	 * Instantiates a new work place config info.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public WorkplaceConfigInfo(WorkplaceConfigInfoGetMemento memento) {
 		this.companyId = memento.getCompanyId();
@@ -50,7 +52,9 @@ public class WorkplaceConfigInfo extends AggregateRoot {
 		this.wkpHierarchy = memento.getWkpHierarchy();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -62,7 +66,9 @@ public class WorkplaceConfigInfo extends AggregateRoot {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -87,5 +93,4 @@ public class WorkplaceConfigInfo extends AggregateRoot {
 		return true;
 	}
 
-	
 }
