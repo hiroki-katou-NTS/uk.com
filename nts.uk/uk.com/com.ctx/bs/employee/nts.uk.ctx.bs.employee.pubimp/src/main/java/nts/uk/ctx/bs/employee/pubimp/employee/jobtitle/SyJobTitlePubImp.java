@@ -14,10 +14,10 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffJobTitleHistory;
-import nts.uk.ctx.basic.dom.company.organization.employee.jobtile.AffJobTitleHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.access.jobtitle.SyJobTitleAdapter;
-import nts.uk.ctx.bs.employee.dom.access.jobtitle.dto.JobTitleImport;
+import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
+import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
 import nts.uk.ctx.bs.employee.pub.employee.jobtitle.JobTitleExport;
 import nts.uk.ctx.bs.employee.pub.employee.jobtitle.SyJobTitlePub;
 
@@ -32,7 +32,7 @@ public class SyJobTitlePubImp implements SyJobTitlePub {
 
 	/** The job title adapter. */
 	@Inject
-	private SyJobTitleAdapter jobTitleAdapter;
+	private JobTitleRepository jobTitleAdapter;
 
 	/** The job title history repository. */
 	@Inject
@@ -53,14 +53,15 @@ public class SyJobTitlePubImp implements SyJobTitlePub {
 		List<String> jobIds = affJobTitleHistories.stream().map(item -> item.getJobTitleId().v())
 				.collect(Collectors.toList());
 
-		List<JobTitleImport> jobTitleDtos = this.jobTitleAdapter.findByJobIds(jobIds);
+		List<JobTitle> jobTitleDtos = this.jobTitleAdapter.findByJobIds(jobIds);
 
 		// Return
 		return jobTitleDtos.stream()
-				.map(item -> JobTitleExport.builder().companyId(item.getCompanyId())
-						.positionId(item.getPositionId()).positionCode(item.getPositionCode())
-						.positionName(item.getPositionName()).sequenceCode(item.getSequenceCode())
-						.startDate(item.getStartDate()).endDate(item.getEndDate()).build())
+				.map(item -> JobTitleExport.builder().companyId(item.getCompanyId().v())
+						.positionId(item.getPositionId().v()).positionCode(item.getPositionCode().v())
+						.positionName(item.getPositionName().v()).sequenceCode(item.getSequenceCode().v())
+						.startDate(item.getPeriod().getStartDate()).endDate(item.getPeriod().getEndDate())
+						.build())
 				.collect(Collectors.toList());
 	}
 
@@ -83,7 +84,7 @@ public class SyJobTitlePubImp implements SyJobTitlePub {
 		}
 
 		// Get infos
-		List<JobTitleImport> jobTitleImports = this.jobTitleAdapter
+		List<JobTitle> jobTitleImports = this.jobTitleAdapter
 				.findByJobIds(Arrays.asList(optHistory.get().getJobTitleId().v()));
 
 		// Check exist
@@ -92,11 +93,12 @@ public class SyJobTitlePubImp implements SyJobTitlePub {
 		}
 
 		// Return
-		JobTitleImport item = jobTitleImports.get(FIRST_ITEM_INDEX);
-		return Optional.of(JobTitleExport.builder().companyId(item.getCompanyId())
-				.positionId(item.getPositionId()).positionCode(item.getPositionCode())
-				.positionName(item.getPositionName()).sequenceCode(item.getSequenceCode())
-				.startDate(item.getStartDate()).endDate(item.getEndDate()).build());
+		JobTitle item = jobTitleImports.get(FIRST_ITEM_INDEX);
+		return Optional.of(JobTitleExport.builder().companyId(item.getCompanyId().v())
+				.positionId(item.getPositionId().v()).positionCode(item.getPositionCode().v())
+				.positionName(item.getPositionName().v()).sequenceCode(item.getSequenceCode().v())
+				.startDate(item.getPeriod().getStartDate()).endDate(item.getPeriod().getEndDate())
+				.build());
 	}
 
 	/*
@@ -110,7 +112,7 @@ public class SyJobTitlePubImp implements SyJobTitlePub {
 	public Optional<JobTitleExport> findJobTitleByPositionId(String companyId, String positionId,
 			GeneralDate baseDate) {
 		// Query
-		List<JobTitleImport> jobTitleImports = this.jobTitleAdapter.findByJobIds(companyId,
+		List<JobTitle> jobTitleImports = this.jobTitleAdapter.findByJobIds(companyId,
 				Arrays.asList(positionId), baseDate);
 
 		// Check exist
@@ -119,11 +121,12 @@ public class SyJobTitlePubImp implements SyJobTitlePub {
 		}
 
 		// Return
-		JobTitleImport item = jobTitleImports.get(FIRST_ITEM_INDEX);
-		return Optional.of(JobTitleExport.builder().companyId(item.getCompanyId())
-				.positionId(item.getPositionId()).positionCode(item.getPositionCode())
-				.positionName(item.getPositionName()).sequenceCode(item.getSequenceCode())
-				.startDate(item.getStartDate()).endDate(item.getEndDate()).build());
+		JobTitle item = jobTitleImports.get(FIRST_ITEM_INDEX);
+		return Optional.of(JobTitleExport.builder().companyId(item.getCompanyId().v())
+				.positionId(item.getPositionId().v()).positionCode(item.getPositionCode().v())
+				.positionName(item.getPositionName().v()).sequenceCode(item.getSequenceCode().v())
+				.startDate(item.getPeriod().getStartDate()).endDate(item.getPeriod().getEndDate())
+				.build());
 	}
 
 }

@@ -13,7 +13,18 @@ import lombok.Data;
  */
 @Data
 public class DPControlDisplayItem {
-	private List<DPAttendanceItem> attendanceItem;
-	private List<DPAttendanceItemControl> attendanceItemControl;
-	private List<FormatDPCorrectionDto> lstFormat;
+	// sheet dtos
+	private List<DPSheetDto> lstSheet;
+	// header dtos
+	private List<DPHeaderDto> lstHeader;
+	
+	public void addColumnsToSheet(List<FormatDPCorrectionDto> lstFormat){
+		lstFormat.forEach(f->{
+			this.lstSheet.forEach(s -> {
+				if(f.getSheetNo().equals(s.getName())){
+					s.addColumn(String.valueOf(f.getAttendanceItemId()));
+				}
+			});
+		});
+	}
 }
