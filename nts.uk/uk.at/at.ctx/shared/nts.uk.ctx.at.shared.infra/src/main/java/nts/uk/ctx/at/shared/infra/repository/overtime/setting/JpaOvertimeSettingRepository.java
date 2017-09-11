@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.overtime.setting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -75,14 +76,47 @@ public class JpaOvertimeSettingRepository extends JpaRepository
 					return entityItem;
 				}).collect(Collectors.toList());
 
+		// check exist data
 		if (entity.isPresent()) {
 			return Optional
 					.ofNullable(this.toDomain(entity.get(), entityOvertimeBRDItem, entityOvertime));
 		}
+		// default data
 		return Optional.ofNullable(
 				this.toDomain(new KshstOverTimeSet(), entityOvertimeBRDItem, entityOvertime));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSettingRepository#save(
+	 * nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSetting)
+	 */
+	@Override
+	public void save(OvertimeSetting domain) {
+		KshstOverTimeSet entity = new KshstOverTimeSet();
+		// call repository find entity setting
+		Optional<KshstOverTimeSet> opEntity = this.queryProxy().find(domain.getCompanyId().v(),
+				KshstOverTimeSet.class);
+		
+		// check exist data
+		if(opEntity.isPresent()){
+			entity = opEntity.get();
+			entity = this.toEntity(domain);
+			this.commandProxy().update(entity);
+		}
+		// insert data
+		else {
+			entity = this.toEntity(domain);
+			this.commandProxy().insert(entity);
+		}
+		// save all overtime
+		overtimeRepository.saveAll(domain.getOvertimes(), domain.getCompanyId().v());
+		
+		// save all over time breakdown item
+		overtimeBRDItemRepository.saveAll(domain.getBreakdownItems(), domain.getCompanyId().v());
+	}
 	/**
 	 * To domain.
 	 *
@@ -96,5 +130,19 @@ public class JpaOvertimeSettingRepository extends JpaRepository
 		return new OvertimeSetting(
 				new JpaOvertimeSettingGetMemento(entity, entityOvertimeBRDItems, entityOvertime));
 	}
+
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the kshst over time set
+	 */
+	private KshstOverTimeSet toEntity(OvertimeSetting domain) {
+		KshstOverTimeSet entity = new KshstOverTimeSet();
+		domain.saveToMemento(
+				new JpaOvertimeSettingSetMemento(new ArrayList<>(), new ArrayList<>(), entity));
+		return entity;
+	}
+	
 
 }
