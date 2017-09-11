@@ -3,8 +3,11 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterap
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootCommonOutput;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
 /**
  * 02.社員の対象申請の承認ルートを取得する
  * @author dudt
@@ -22,11 +25,10 @@ public interface EmployeeOfApprovalRoot {
 	 * @return　承認ルートあり＝＞true	// * 承認ルートなし　＝＞false
 	 */
 	boolean lstEmpApprovalRoot(String companyId,
-			List<ApprovalRootCommonOutput> lstCompanyRootInfor,
-			List<ApprovalRootCommonOutput> lstWorkpalceRootInfor,
-			List<ApprovalRootCommonOutput> lstPersonRootInfor,
-			EmployeeUnregisterOutput empInfor, 
-			int rootType,
-			int appType,
+			List<CompanyApprovalRoot> lstCompanyRootInfor,
+			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor,
+			List<PersonApprovalRoot> lstPersonRootInfor,
+			EmployeeApproveDto empInfor, 
+			ApplicationType appType,
 			GeneralDate baseDate);
 }

@@ -6,6 +6,7 @@ package nts.uk.ctx.bs.employee.dom.classification.affiliate;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.bs.employee.dom.classification.ClassificationCode;
 import nts.uk.ctx.bs.employee.dom.common.history.Period;
 
 /**
