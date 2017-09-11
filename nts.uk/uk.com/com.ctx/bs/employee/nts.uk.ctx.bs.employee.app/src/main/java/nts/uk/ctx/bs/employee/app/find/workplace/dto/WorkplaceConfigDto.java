@@ -7,8 +7,8 @@ package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceConfigHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceConfigSetMemento;
+import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistory;
+import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigSetMemento;
 
 public class WorkplaceConfigDto implements WorkplaceConfigSetMemento {
 

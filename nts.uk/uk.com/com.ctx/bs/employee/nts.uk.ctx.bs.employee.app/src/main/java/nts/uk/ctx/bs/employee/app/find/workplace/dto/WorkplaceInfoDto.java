@@ -5,13 +5,13 @@
 package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 
 import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-import nts.uk.ctx.bs.employee.dom.workplace.OutsideWorkplaceCode;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceCode;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceDisplayName;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceGenericName;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceInfoSetMemento;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceName;
+import nts.uk.ctx.bs.employee.dom.workplace.info.OutsideWorkplaceCode;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceCode;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceDisplayName;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceGenericName;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoSetMemento;
+import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceName;
 
 /**
  * The Class WorkplaceInfoDto.

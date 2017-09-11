@@ -5,7 +5,7 @@
 package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 
 import nts.uk.ctx.bs.employee.dom.workplace.Period;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceConfigHistorySetMemento;
+import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistorySetMemento;
 
 public class WorkplaceConfigHistoryDto implements WorkplaceConfigHistorySetMemento {
 

@@ -9,8 +9,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceConfig;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceConfigRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
+import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 @Stateless
 public class JpaWorkplaceConfigRepository implements WorkplaceConfigRepository {
 
