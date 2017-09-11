@@ -1,88 +1,121 @@
-module nts.uk.at.view.kaf009.a.viewmodel {
+module nts.uk.at.view.kaf009.b.viewmodel {
     export class ScreenModel {
-        //current Data
-        curentGoBackDirect: KnockoutObservable<GoBackDirectData>;
-        //申請者
-        employeeName: KnockoutObservable<string>;
-        //Pre-POST
-        prePostSelected: KnockoutObservable<number>;
-        // 申請日付
-        appDate: KnockoutObservable<string>;
-        //TIME LINE 1
-        timeStart1: KnockoutObservable<number>;
-        timeEnd1: KnockoutObservable<number>;
-        //場所名前 
-        workLocationCD: KnockoutObservable<string>;
-        workLocationName: KnockoutObservable<string>;
-        //switch button selected
+        // date editor
+        date: KnockoutObservable<string>;
+        //time editor
+        time: KnockoutObservable<string>;
+        //check late
+        late: KnockoutObservable<boolean>;
+        late2: KnockoutObservable<boolean>;
+        //check early
+        early: KnockoutObservable<boolean>;
+        early2: KnockoutObservable<boolean>;
+        //labor time
+        laborTime: KnockoutObservable<string>;
+        //combobox
+        ListReason: KnockoutObservableArray<Reason>;
+        itemName: KnockoutObservable<string>;
+        currentCode: KnockoutObservable<number>
+        selectedCode: KnockoutObservable<string>;
+        //MultilineEditor
+        multilineeditor: any;
+        //Switch Button 
+        roundingRules: KnockoutObservableArray<any>;
+        selectedRuleCode: any;
+        //Back Home
+        backHomeAtr: KnockoutObservableArray<any>;
         selectedBack: any;
+        //Go Work
+        goWorkAtr: KnockoutObservableArray<any>;
         selectedGo: any;
-        //TIME LINE 2
-        timeStart2: KnockoutObservable<number>;
-        timeEnd2: KnockoutObservable<number>;
-        //場所名前 
-        workLocationCD2: KnockoutObservable<string>;
-        workLocationName2: KnockoutObservable<string>;
         //Back Home 2
         selectedBack2: any;
         //Go Work 2
         selectedGo2: any;
-        //勤務を変更する 
+        //workLocation 
+        workLocationCD: KnockoutObservable<string>;
+        //comboBox 
+        itemComboBox: KnockoutObservableArray<ItemCombo>;
+        selectedComboCode: KnockoutObservable<string>;
+        //CheckBox 
         isWorkChange: KnockoutObservable<boolean>;
-        //勤務種類
-        workTypeCd: KnockoutObservable<string>;
-        workTypeName: KnockoutObservable<string>;
-        //勤務種類
-        siftCd: KnockoutObservable<string>;
-        siftName: KnockoutObservable<string>;
-        //comboBox 定型理由
-        reasonCombo: KnockoutObservableArray<ComboReason>;
-        selectedReason: KnockoutObservable<string>;
-        //MultilineEditor
-        multilineeditor: any;
-
+        
+        //Time with day 
+        
+        enable: KnockoutObservable<boolean>;
+        readonly: KnockoutObservable<boolean>;
+        timeOfDay: KnockoutObservable<number>;
+        time: KnockoutObservable<number>;
+        time2: KnockoutObservable<number>;
+        
+        
         constructor() {
             var self = this;
-            //申請者
-            self.employeeName = ko.observable("");
-            //申請日付
-            self.appDate = ko.observable(moment().format('YYYY/MM/DD'));
-            //PRE_POST Switch Button
-            self.prePostSelected = ko.observable(1);
-            //time Value 
-            self.timeStart1 = ko.observable(0);
-            self.timeEnd1 = ko.observable(0);
-            self.timeStart2 = ko.observable(0);
-            self.timeEnd2 = ko.observable(0);
-            //switch button Selected
+            //date editor
+            self.date = ko.observable(moment().format('YYYY/MM/DD'));
+            //self.date = ko.observable('20000101');
+            //time editor
+            self.time = ko.observable("12:00");
+            //check late
+            self.late = ko.observable(true);
+            self.late2 = ko.observable(true);
+            // check early
+            self.early = ko.observable(false);
+            self.early2 = ko.observable(false);
+            //Checkbox 
+            self.isWorkChange = ko.observable(true);
+            //labor time 
+            self.laborTime = ko.observable("00:00");
+            //combobox
+            self.ListReason = ko.observableArray([
+                new Reason('1', 'name1'),
+                new Reason('2', 'name2'),
+                new Reason('3', 'name3')
+            ]);
+            self.itemName = ko.observable('');
+            self.currentCode = ko.observable(3);
+            self.selectedCode = ko.observable('0002');
+            //Switch Button
+            self.roundingRules = ko.observableArray([
+                { code: '1', name: nts.uk.resource.getText("KAF009_9") },
+                { code: '2', name: nts.uk.resource.getText("KAF009_10") }
+            ]);
+            self.selectedRuleCode = ko.observable(1);
+            //Go Work
+            self.goWorkAtr = ko.observableArray([
+                { goCode: '1', goName: nts.uk.resource.getText("KAF009_16") },
+                { goCode: '2', goName: nts.uk.resource.getText("KAF009_17") }
+            ]);
             self.selectedGo = ko.observable(1);
+            //BackHome 
+            self.backHomeAtr = ko.observableArray([
+                { backCode: '1', backName: nts.uk.resource.getText("KAF009_18") },
+                { backCode: '2', backName: nts.uk.resource.getText("KAF009_19") }
+            ]);
             self.selectedBack = ko.observable(1);
             //Go Work 2
             self.selectedGo2 = ko.observable(1);
             //BackHome 2
             self.selectedBack2 = ko.observable(1);
             //Work Location 
-            self.workLocationCD = ko.observable('001');
-            self.workLocationName = ko.observable('Name1');
-            //Work Location 2
-            self.workLocationCD2 = ko.observable('002');
-            self.workLocationName2 = ko.observable('Name2');
-
-            //Checkbox 勤務を変更する
-            self.isWorkChange = ko.observable(true);
-            self.workTypeCd = ko.observable('');
-            self.workTypeName = ko.observable('');
-            self.siftCd = ko.observable('');
-            self.siftName = ko.observable('');
-
-            //ComboBox Reason
-            self.reasonCombo = ko.observableArray([
-                new ComboReason('0001', '基本給'),
-                new ComboReason('0002', '役職手当'),
-                new ComboReason('0003', '基本給')
+            self.workLocationCD = ko.observable('');
+            //ComboBox 
+            self.itemComboBox = ko.observableArray([
+                new ItemCombo('基本給1', '基本給'),
+                new ItemCombo('基本給2', '役職手当'),
+                new ItemCombo('0003', '基本給')
             ]);
-            //Selected Reason 
-            self.selectedReason = ko.observable('0002');
+            //Time with Day 
+            
+            self.enable = ko.observable(true);
+            self.readonly = ko.observable(false);
+            
+            self.timeOfDay = ko.observable(2400);
+            self.time = ko.observable(1200);
+            self.time2 = ko.observable(3200);
+            //CheckBox 
+           
+            self.selectedComboCode = ko.observable('0002');
             //MultilineEditor 
             self.multilineeditor = {
                 value: ko.observable(''),
@@ -94,66 +127,32 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     textalign: "left"
                 })),
             };
-            //勤務を変更する
-            self.isWorkChange.subscribe(function() {
+            
+            self.isWorkChange.subscribe(function(){
+                    
+            
             });
 
         }
-        /**
-         * init Setting
-         */
-        initPage() {
-            var self = this;
 
-        }
-        /**
-         * 
-         */
         startPage(): JQueryPromise<any> {
             var self = this;
 
             var dfd = $.Deferred();
-            //get Common Setting
-            service.getGoBackSetting().done(function(settingData: CommonSetting) {
-                //get Setting common
-                debugger;
-                //Get data 
-                service.getGoBackDirectly().done(function(goBackDirectData: GoBackDirectData) {
-                    //Set Value of control
-                    self.setValueControl(goBackDirectData);
-                    dfd.resolve();
-                }).fail(function(){
-                    dfd.resolve();                    
-                });
+            //String appID = "123456789";
+            //Get data 
+            //            service.getGoBackDirectly().done(function(goBackDirect: any) {
+            //                console.log(goBackDirect);
+            //          ;
+            //      }
+
+            //Get Setting
+            service.getGoBackSetting().done(function(setting: any) {
+                console.log(setting);
             });
+            dfd.resolve();
             return dfd.promise();
         }
-        
-        /**
-         * set data from Server 
-         */
-        setValueControl(data: GoBackDirectData) {
-            var self = this;
-            self.prePostSelected(data.workChangeAtr);
-            //Line 1
-            self.timeStart1(data.workTimeStart1);
-            self.timeEnd1(data.workTimeEnd1);
-            self.selectedGo(data.goWorkAtr1);
-            self.selectedBack(data.backHomeAtr1);
-            self.workLocationCD(data.workLocationCD1);
-            //LINe 2
-            self.timeStart2(data.workTimeStart2);
-            self.timeEnd2(data.workTimeEnd2);
-            self.selectedGo2(data.goWorkAtr2);
-            self.selectedBack2(data.backHomeAtr2);
-            self.workLocationCD2(data.workLocationCD2);
-            //workType, Sift
-            self.workTypeCd(data.workTypeCD);
-            self.siftCd(data.siftCd);
-        }
-
-
-
         /**
          * KDL010_勤務場所選択を起動する
          */
@@ -181,22 +180,34 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         setCommonSetting(data: CommonSetting) {
             let self = this;
-            if (data != undefined) {
-                self.isWorkChange(data.workChangeFlg > 0 ? false : false);
-
+            if(data != undefined){
+               self.isWorkChange(data.workChangeFlg >0 ? false: false);
+                
             }
         }
         /**
          * New Screen Mode 
          */
-        newScreenMode() {
+        newScreenMode(){
             let self = this;
-            self.selectedRuleCode(1);
-            self.date(moment().format("YYYY/MM/DD"));
-
+            self.selectedRuleCode(1); 
+            self.date(moment().format("YYYY/MM/DD"));   
+        
         }
 
     }
+    /**
+     * 理由
+     */
+    class Reason {
+        code: string;
+        name: string;
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
+    }
+
     /**
      * 直行直帰申請共通設定
      */
@@ -284,13 +295,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
     /**
      * 
      */
-    class ComboReason {
-        reasonCode: string;
-        reasonName: string;
+    class ItemCombo {
+        code: string;
+        name: string;
 
-        constructor(reasonCode: string, reasonName: string) {
-            this.reasonCode = reasonCode;
-            this.reasonName = reasonName;
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
         }
     }
 }

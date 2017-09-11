@@ -19,14 +19,14 @@
 	border-bottom: 2px solid #808080;
 	padding-bottom: 10px;
 }
-
 #inpEndTime1, #inpEndTime2 {
-	margin-left: 100px;
+	margin-left: 130px;
 }
+
 
 input.nts-editor.nts-input.reset-element {
 	text-align: center;
-	width: 77px;
+	width: 100px;
 }
 
 input#inputdate.nts-editor.nts-input.reset-element {
@@ -51,7 +51,7 @@ div#combo-box.reset-element.ui-igcombo-wrapper {
 }
 
 textarea.nts-editor.nts-input.reset-element {
-	height: 150px;
+	height: 100px;
 }
 
 #multiline {
@@ -64,7 +64,7 @@ div.form-label.broken {
 
 .panel.panel-gray-bg {
 	float: right;
-	height: 450px;
+	height: 350px;
 	width: 250px;
 	margin-top: 20px;
 }
@@ -72,7 +72,6 @@ div.form-label.broken {
 .left-contents {
 	margin-top: 10px;
 	float: left;
-	width: 810px;
 }
 
 .right-contents {
@@ -80,36 +79,14 @@ div.form-label.broken {
 	float: left;
 	margin-left: 30px;
 }
-
-.lblTitle {
+.lblTitle{
 	width: 110px;
 }
 
-.btnSendMail {
+.btnSendMail{
 	margin-left: 15px;
 }
-
-.workGroup {
+.workGroup{
 	margin-left: 50px;
 }
 
-.mainScreen {
-	height: 620px;
-}
-
-#label-1 {
-	margin-left: 20px;
-}
-
-button.nts-switch-button {
-	width: 100px;
-}
-
-.lstApprover {
-	margin-left: 20px;
-}
-/*workType, Sift */
-.lblSiftCd, .lblWorkTypeCd {
-	line-height: 40px;
-	margin-left: 20px;
-}

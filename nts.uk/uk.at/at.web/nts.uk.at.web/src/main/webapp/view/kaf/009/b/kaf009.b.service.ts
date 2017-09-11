@@ -1,4 +1,4 @@
-module nts.uk.at.view.kaf009.a.service {
+module nts.uk.at.view.kaf009.b.service {
     var paths = {
         getGoBackDirectly: "/at/request/application/gobackdirectly/getGoBackDirectlyByAppID",
         getGoBackDirectlySetting: "/at/request/application/gobackdirectly/getGoBackCommonSetting"

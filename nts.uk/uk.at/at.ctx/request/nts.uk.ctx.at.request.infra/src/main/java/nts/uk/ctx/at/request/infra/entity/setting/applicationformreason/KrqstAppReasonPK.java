@@ -25,6 +25,6 @@ public class KrqstAppReasonPK implements Serializable{
 	/**
 	 * 表示順
 	 */
-	@Column(name ="DISPLAY_ORDER")
+	@Column(name ="DISPORDER")
 	public int displayOrder;
 }
