@@ -1,0 +1,151 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.timeitemmanagement.OptionalItemName
+			</com:ValidatorScript>
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="kmk002.a.start.js" />
+			<com:scriptfile path="kmk002.a.service.js" />
+			<com:scriptfile path="kmk002.a.vm.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area">
+				<button tabindex="1" class="proceed">#{i18n.getText('KMK002_1')}</button>
+			</div>
+			<div id="contents-area">
+				<table>
+					<tr>
+						<td>
+							<div style="width: 300px; margin-right: 30px; padding: 20px " class="caret-right caret-background bg-green">
+							<i class="icon icon-searchbox"></i>
+							<div data-bind="ntsSearchBox: {targetKey: 'code', mode:'igGrid', comId:'ahihi', items: roundingRules, 
+								selected: selectedCode, selectedKey: 'code', fields: ['name', 'code']}" />
+							<table id="ahihi"
+								data-bind="ntsGridList: {
+							width: 300,
+							dataSource: roundingRules,
+							optionsValue: 'code',
+							columns: columns,
+							multiple: false,
+							value: selectedCode,
+							rows: 15}">
+							</table>
+						</div>
+						</td>
+						<td style="vertical-align: top;">
+							<table class="control-group">
+								<tr>
+									<td><div data-bind="ntsFormLabel: {required: true, constraint: 'OptionalItemName'}">#{i18n.getText('KMK002_11')}</div></td>
+									<td><input tabindex="5" id="inpName"
+										data-bind="ntsTextEditor: {
+												  name: '#[KMK002_12]',
+		                                          value: name,
+		                                          constraint: 'OptionalItemName', 
+		                                          enable: true, 
+		                                          required: true}"/></td>
+								</tr>
+								<tr>
+									<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_13')}</div></td>
+									<td><div
+											data-bind="ntsSwitchButton: {
+											options: roundingRules,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedRuleCode,
+											enable: true }"></div>
+									</td>
+									<td>
+										<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_25')}</div>
+									</td>
+									<td>
+										<div tabindex="11"
+											data-bind="ntsCheckBox: { checked: checked, enable: true, text: nts.uk.resource.getText('KMK002_26') }"></div>
+										<input tabindex="12" id="upperLimit"
+										data-bind="ntsTextEditor: {
+												  name: '#[KMK002_26]',
+		                                          value: name}"/>
+									</td>
+								</tr>
+								<tr>
+									<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_16')}</div></td>
+									<td><div
+											data-bind="ntsSwitchButton: {
+											options: roundingRules,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedRuleCode,
+											enable: true }"></div>
+										<button>#{i18n.getText('KMK002_19')}</button></td>
+									<td></td>
+									<td>
+										<div tabindex="13"
+											data-bind="ntsCheckBox: { checked: checked, enable: true, text: nts.uk.resource.getText('KMK002_27') }"></div>
+										<input tabindex="14" id="lowerLimit"
+										data-bind="ntsTextEditor: {
+												  name: '#[KMK002_27]',
+		                                          value: name}"/>
+									</td>
+								</tr>
+								<tr>
+									<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_20')}</div></td>
+									<td><div
+											data-bind="ntsSwitchButton: {
+											options: roundingRules,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedRuleCode,
+											enable: true }"></div>
+									</td>
+								</tr>
+								<tr>
+									<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_24')}</div></td>
+									<td><div tabindex="11"
+											data-bind="ntsComboBox: {
+													options: roundingRules,
+													optionsValue: 'code',
+													value: selectedCbb,
+													optionsText: 'name',
+													editable: false,
+													enable: true,
+													columns: [
+														{ prop: 'code', length: 1 },
+														{ prop: 'name', length: 1 },
+													]}">
+										</div></td>
+								</tr>
+								<tr>
+									<td><button tabindex="15">#{i18n.getText('KMK002_28')}</button></td>
+									<td>
+										<button tabindex="16">#{i18n.getText('KMK002_29')}</button>
+										<button tabindex="17" class="danger">#{i18n.getText('KMK002_30')}</button>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="5"><span>#{i18n.getText('KMK002_31')}</span>
+										<input style="width: 700px" id="cha biet la cai gi"
+										data-bind="ntsTextEditor: {
+		                                          value: name,
+		                                          enable: false,
+		                                          readonly: true,
+		                                          required: false}"/>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+
+</html>
