@@ -14,148 +14,40 @@ module nts.uk.at.view.kmf004.c {
             //search
             baseDate: KnockoutObservable<Date> = ko.observable(new Date());
 
-            treeGrid: ITreeGrid = {
-                treeType: 1,
-                selectType: 1,
-                isDialog: false,
-                isMultiSelect: false,
-                isShowAlreadySet: true,
-                isShowSelectButton: false,
-                baseDate: ko.observable(new Date()),
-                selectedWorkplaceId: undefined,
-                alreadySettingList: ko.observableArray([])
-            };
+            //Grid data
+            columns: KnockoutObservable<any>;
+            singleSelectedCode: KnockoutObservable<any>;
+            items: KnockoutObservableArray<ItemModel>;
 
             model: KnockoutObservable<BonusPaySetting> = ko.observable(new BonusPaySetting({ id: '', name: '' }));
+            
+            code: KnockoutObservable<string>;
+            editMode: KnockoutObservable<boolean>;
+            name: KnockoutObservable<string>;
+            
             constructor() {
                 let self = this,
-                    tree = self.treeGrid,
-                    model = self.model();
+                   
+                model = self.model();
 
-                $.extend(tree, {
-                    selectedWorkplaceId: model.wid
-                });
-
-                tree.alreadySettingList.removeAll();
-
-                model.wid.subscribe(x => {
-                    let data: Array<any> = flat($('#tree-grid')['getDataList'](), 'childs'),
-                        item = _.find(data, m => m.workplaceId == x);
-
-                    if (item) {
-                        model.wname(item.name);
-                    } else {
-                        model.wname(getText("KDL007_6"));
-                    }
-
-                    service.getSetting(x).done(x => {
-                        if (x) {
-                            model.id(x.bonusPaySettingCode);
-                            service.getName(x.bonusPaySettingCode).done(m => {
-                                if (m) {
-                                    model.name(m.name)
-                                } else {
-                                    model.id('');
-                                    model.name(getText("KDL007_6"));
-                                }
-                            }).fail(x => alert(x));
-                        } else {
-                            model.id('');
-                            model.name(getText("KDL007_6"));
-                        }
-
-                    }).fail(x => alert(x));
-
-                });
-
-                // call start after tree-grid initial
-                $('#tree-grid')['ntsTreeComponent'](self.treeGrid).done(() => { self.start(); });
+                //Grid data
+                self.items = ko.observableArray([]);
+                
+                self.columns = ko.observableArray([
+                    { headerText: nts.uk.resource.getText("KMF004_7"), prop: 'code', width: 50 },
+                    { headerText: nts.uk.resource.getText("KMF004_8"), prop: 'name', width: 200, formatter: _.escape }
+                ]);
+                
+                self.singleSelectedCode = ko.observable("");
+                
+                self.code = ko.observable("");
+                self.editMode = ko.observable(true);  
+                self.name = ko.observable("");          
             }
 
             start() {
-                let self = this,
-                    tree = self.treeGrid,
-                    model = self.model(),
-                    wids: Array<string> = flat($('#tree-grid')['getDataList'](), 'childs').map(x => x.workplaceId);
-                model.wid(wids[0]);
-                // get ready setting list
-                tree.alreadySettingList.removeAll();
-                service.getData(wids).done((resp: Array<any>) => {
-                    if (resp && resp.length) {
-                        _.each(resp, x => tree.alreadySettingList.push({ workplaceId: x.workplaceId, isAlreadySetting: true }));
-                    }
-
-                    // call subscribe function of wid
-                    model.id.valueHasMutated();
-                    model.wid.valueHasMutated();
-                }).fail(x => alert(x));
-            }
-
-            openBonusPaySettingDialog() {
-                let self = this,
-                    model: BonusPaySetting = self.model();
-
-                setShared("KDL007_PARAM", { isMulti: false, posibles: [], selecteds: [model.id()] });
-
-                modal('../../../kdl/007/a/index.xhtml').onClosed(() => {
-                    let data: any = getShared('KDL007_VALUES');
-                    if (data && data.selecteds) {
-                        let code: string = data.selecteds[0];
-                        if (code) {
-                            model.id(code);
-                            service.getName(code).done(resp => {
-                                if (resp) {
-                                    model.name(resp.name);
-                                }
-                                else {
-                                    model.id('');
-                                    model.name(getText("KDL007_6"));
-                                }
-                            }).fail(x => alert(x));
-                        } else {
-                            model.id('');
-                            model.name(getText("KDL007_6"));
-                        }
-                    }
-                });
-            }
-
-            saveData() {
-                let self = this,
-                    model: IBonusPaySetting = ko.toJS(self.model),
-                    command: any = {
-                        workplaceId: model.wid,
-                        bonusPaySettingCode: model.id,
-                        action: 0
-                    };
-                if (model.id !== '') {
-                    if (model.wid !== '') {
-                        // call service to save setting
-                        service.saveData(command).done(() => {
-                            nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15", []));
-                            self.start();
-                        });
-                    }
-                } else {
-                    alert(nts.uk.resource.getMessage("Msg_30", []));
-                }
-            }
-
-            removeData() {
-                let self = this,
-                    model: IBonusPaySetting = ko.toJS(self.model),
-                    command: any = {
-                        workplaceId: model.wid,
-                        bonusPaySettingCode: model.id,
-                        action: 1
-                    };
-                if (model.wid !== '') {
-                    // call service to delete setting
-                    service.saveData(command).done(() => {
-                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_16", []));
-                        self.start();
-                    });
-                }
+                let self = this;
+                
             }
         }
 

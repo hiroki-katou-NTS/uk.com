@@ -54,8 +54,17 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             //delete button 
             self.isDelete = ko.observable(false);
             //image upload
-            self.filename = ko.observable(""); //file name
-            self.imageName = ko.observable("");
+            self.filename = ko.observable(''); //file name
+            self.imageName = ko.observable('未設定。非活性。');
+            self.imageName.subscribe((newValue) => {
+                if (!!newValue) {
+                    $('#imageName').addClass('text-black-underline');
+                } else {
+                    self.imageName('未設定。非活性。');
+                    $('#imageName').removeClass('text-black-underline');
+                }
+            });
+
             self.imageSize = ko.observable(nts.uk.text.format(resource.getText('CCG013_44'), 0));
             self.accept = ko.observableArray([".png"]); //supported extension
             self.textId = ko.observable(""); // file browser button text id
@@ -140,8 +149,8 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
         submit() {
             var self = this;
             $(".ntsColorPicker_Container").trigger("validate");
-            validateNameInput($("#nameTitleBar"),'#[CCG013_31]', self.nameTitleBar().trim(), 'TitleBarName');
-            
+            validateNameInput($("#nameTitleBar"), '#[CCG013_31]', self.nameTitleBar().trim(), 'TitleBarName');
+
             var hasError = nts.uk.ui.errors.hasError();
             if (hasError) {
                 return;
@@ -160,7 +169,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
                 windows.setShared("CCG013C_TitleBar", titleBar0);
                 self.cancel_Dialog();
             }
-            
+
         }
     }
 

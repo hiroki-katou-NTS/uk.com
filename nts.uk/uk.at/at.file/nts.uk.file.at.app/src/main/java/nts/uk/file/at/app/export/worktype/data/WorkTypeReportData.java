@@ -13,7 +13,7 @@ public class WorkTypeReportData {
 	private String workTypeCode;
 	/* 勤務種類名称 */
 	private String name;
-	// 勤務種類記号名
+	//  
 	private String symbolicName;
 	// 勤務種類略名
 	private String abbreviationName;

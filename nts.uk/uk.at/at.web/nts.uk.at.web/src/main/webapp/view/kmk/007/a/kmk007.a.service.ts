@@ -61,6 +61,6 @@ module nts.uk.at.view.kmk007.a.service {
     }
     
      export function saveAsExcel(command: any): JQueryPromise<any> {
-        return nts.uk.request.exportFile(paths.saveAsExcel, command);
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "WorkType", domainType: "test"});
     }
 }

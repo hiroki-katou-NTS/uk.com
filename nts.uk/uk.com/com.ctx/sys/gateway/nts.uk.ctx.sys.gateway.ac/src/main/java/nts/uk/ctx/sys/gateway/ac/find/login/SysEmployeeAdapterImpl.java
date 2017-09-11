@@ -36,12 +36,11 @@ public class SysEmployeeAdapterImpl implements SysEmployeeAdapter {
 		Optional<EmployeeInfoDtoExport> opEmployee = employeeInfoPub.getEmployeeInfo(companyId, employeeCode);
 		if (opEmployee.isPresent()) {
 			EmployeeInfoDtoExport employee = opEmployee.get();
-			//convert dto
-			EmployeeImport em = new EmployeeImport("", employee.getPersonId(), employee.getEmployeeId(),
-					employee.getEmployeeCode());
+			// convert dto
+			EmployeeImport em = new EmployeeImport(employee.getCompanyId(), employee.getPersonId(),
+					employee.getEmployeeId(), employee.getEmployeeCode());
 			return Optional.of(em);
-		} else {
-			return Optional.empty();
 		}
+		return Optional.empty();
 	}
 }

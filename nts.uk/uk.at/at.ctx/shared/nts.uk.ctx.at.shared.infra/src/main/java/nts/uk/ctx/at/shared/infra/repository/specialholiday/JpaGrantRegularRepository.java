@@ -234,8 +234,8 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 				kshstGrantDatePerSet.kshstGrantDatePerSetPK.specialHolidayCode,
 				kshstGrantDatePerSet.kshstGrantDatePerSetPK.personalGrantDateCode,
 				kshstGrantDatePerSet.kshstGrantDatePerSetPK.grantDateNo,
-				kshstGrantDatePerSet.grantDateMonth.v(),
-				kshstGrantDatePerSet.grantDateYear.v());
+				kshstGrantDatePerSet.grantDateMonth,
+				kshstGrantDatePerSet.grantDateYear);
 		return grantDatePerSet;
 	}
 
@@ -265,8 +265,8 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 		KshstGrantDatePerSet kshstGrantDatePerSet = new KshstGrantDatePerSet();
 		KshstGrantDatePerSetPK kshstGrantDatePerSetPK = new KshstGrantDatePerSetPK(grantDatePerSet.getCompanyId(),
 				grantDatePerSet.getSpecialHolidayCode(), grantDatePerSet.getPersonalGrantDateCode().v(), grantDatePerSet.getGrantDateNo());
-		kshstGrantDatePerSet.grantDateMonth = grantDatePerSet.getGrantDateMonth();
-		kshstGrantDatePerSet.grantDateYear = grantDatePerSet.getGrantDateYear();
+		kshstGrantDatePerSet.grantDateMonth = grantDatePerSet.getGrantDateMonth().v();
+		kshstGrantDatePerSet.grantDateYear = grantDatePerSet.getGrantDateYear().v();
 		kshstGrantDatePerSet.kshstGrantDatePerSetPK = kshstGrantDatePerSetPK;
 		
 		return kshstGrantDatePerSet;
@@ -285,7 +285,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 				.map(x -> {
 					KshstGrantDatePerSetPK keyDateSet = new KshstGrantDatePerSetPK(grantDatePer.getCompanyId(), grantDatePer.getSpecialHolidayCode(), 
 							grantDatePer.getPersonalGrantDateCode().v(), x.getGrantDateNo());
-					return new KshstGrantDatePerSet(keyDateSet, x.getGrantDateMonth(), x.getGrantDateYear());
+					return new KshstGrantDatePerSet(keyDateSet, x.getGrantDateMonth().v(), x.getGrantDateYear().v());
 				}).collect(Collectors.toList());
 		
 		kshstGrantDatePer.grantDatePerSet = grantDatePerSet;

@@ -27,7 +27,7 @@ public class OvertimeSetting extends AggregateRoot{
 	
 	/** The breakdown items. */
 	// 内訳項目一覧
-	private List<OvertimeBreakdownItem> breakdownItems;
+	private List<OvertimeBRDItem> breakdownItems;
 	
 	/** The calculation method. */
 	// 計算方法
@@ -37,8 +37,30 @@ public class OvertimeSetting extends AggregateRoot{
 	// 超過時間一覧
 	private List<Overtime> overtimes;
 	
+	/**
+	 * Instantiates a new overtime setting.
+	 *
+	 * @param memento the memento
+	 */
+	public OvertimeSetting(OvertimeSettingGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.note = memento.getNote();
+		this.calculationMethod = memento.getCalculationMethod();
+		this.overtimes = memento.getOvertimes();
+	}
 	
 
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(OvertimeSettingSetMemento memento){
+		memento.setCompanyId(this.companyId);
+		memento.setNote(this.note);
+		memento.setCalculationMethod(this.calculationMethod);
+		memento.setOvertimes(this.overtimes);
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

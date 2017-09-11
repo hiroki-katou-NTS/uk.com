@@ -7,20 +7,32 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendancetype.AttendanceTypeDivergenceAdapterDto;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendancetype.AttendanceTypeDivergenceAdapter;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class DivergenceItemSetFinder {
 	@Inject
 	private DivergenceTimeRepository divTimeRepo;
+	
+	@Inject 
+	private AttendanceTypeDivergenceAdapter atType;
 	//user contexts
-	String companyId = AppContexts.user().companyId();
+	
 	
 	public List<DivergenceItemSetDto> getAllDivReasonByCode(String divTimeId){
+		String companyId = AppContexts.user().companyId();
 		List<DivergenceItemSetDto> lst = this.divTimeRepo.getallItembyCode(companyId,Integer.valueOf(divTimeId))
 				.stream()
 				.map(c->DivergenceItemSetDto.fromDomain(c))
 				.collect(Collectors.toList());
 		return lst;
+	}
+	
+	public List<AttendanceTypeDivergenceAdapterDto> getAllAtType(int screenUseAtr){
+		String companyId = AppContexts.user().companyId();
+		List<AttendanceTypeDivergenceAdapterDto> data = atType.getItemByScreenUseAtr(companyId, screenUseAtr);
+		return data;
 	}
 }

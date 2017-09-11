@@ -3,7 +3,6 @@ package nts.uk.ctx.at.shared.app.command.specialholiday;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,7 +12,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDatePer;
-import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDatePerSet;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegularRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -38,9 +36,7 @@ public class AddGrantDatePerCommandHandler extends CommandHandlerWithResult<Gran
 		} 
 		
 		try {
-			
-			
-			//domain.validateInput(grantDatePerSet);
+			domain.validateInput();
 		} catch (BusinessException e) {
 			addMessage(errList, e.getMessageId());
 		}
