@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.timeitemmanagement.calculationformula;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.timeitemmanagement.OptionalItemNo;
 
 /**
  * The Class DispOrder.
@@ -23,11 +24,11 @@ public class DispOrder extends AggregateRoot {
 
 	/** The optional item no. */
 	// 任意項目NO
-	private String optionalItemNo;
+	private OptionalItemNo optionalItemNo;
 
 	/** The optional item formula id. */
 	// 任意項目計算式ID
-	private String optionalItemFormulaId;
+	private OptionalItemFormulaId optionalItemFormulaId;
 
 	/** The disp order. */
 	// 並び順

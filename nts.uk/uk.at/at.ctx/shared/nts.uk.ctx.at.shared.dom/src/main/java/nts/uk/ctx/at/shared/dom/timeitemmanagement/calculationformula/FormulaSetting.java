@@ -4,26 +4,28 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.timeitemmanagement.calculationformula;
 
+import java.util.List;
+
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class DispOrder.
+ * The Class FormulaSetting.
  */
 // 計算式設定
 @Getter
-public class FormulaSetting extends AggregateRoot {
+public class FormulaSetting extends DomainObject {
 
-	/** The company id. */
+	/** The minus segment. */
 	// マイナス区分
 	private MinusSegment minusSegment;
 
-	/** The optional item no. */
+	/** The operator. */
 	// 演算子
-	private CalculationClassification operator;
+	private OperatorClassification operator;
 
-	/** The optional item formula id. */
+	/** The formula setting items. */
 	// 計算式設定項目
-	private CalculationFormulaSettingItem calculationFormulaSettingItem;
+	private List<FormulaSettingItem> formulaSettingItems;
 
 }
