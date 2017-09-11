@@ -57,11 +57,10 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
             self.filename = ko.observable(''); //file name
             self.imageName = ko.observable('未設定。非活性。');
             self.imageName.subscribe((newValue) => {
-                if (!!newValue) {
-                    $('#imageName').addClass('text-black-underline');
+                if (newValue != '未設定。非活性。') {
+                    $('#imageName').addClass('text-blue-underline');
                 } else {
-                    self.imageName('未設定。非活性。');
-                    $('#imageName').removeClass('text-black-underline');
+                    $('#imageName').removeClass('text-blue-underline');
                 }
             });
 
@@ -136,7 +135,7 @@ module nts.uk.sys.view.ccg013.c.viewmodel {
 
         private deleteFile(): void {
             var self = this;
-            self.imageName('');
+            self.imageName('未設定。非活性。');
             self.imageSize(nts.uk.text.format(resource.getText('CCG013_44'), 0));
             $("#liveview").html('');
             self.isDelete(false);
