@@ -237,7 +237,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
         addSpecialHoliday(): JQueryPromise<any> {
             var self = this;
-            $(".ntsDatepicker").trigger("validate")
+            $(".nts-input").trigger("validate");
+            $(".nts-editor").trigger("validate");
+            $(".ntsDatepicker").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -291,7 +293,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 })
             }
             else {
-                service.updateSpecialHoliday(ko.toJSON(self.currentItem())).done(function(res) {
+                service.updateSpecialHoliday(specialHoliday).done(function(res) {
                     nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
                     self.getAllSpecialHoliday().done(function() {
                         self.currentCode(self.currentItem().specialHolidayCode());
@@ -547,7 +549,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             constructor(param: ISpecialHolidayDto) {
                 this.specialHolidayCode = ko.observable(param.specialHolidayCode || null);
                 this.specialHolidayName = ko.observable(param.specialHolidayName || '');
-                this.grantMethod = ko.observable(param.grantMethod || 1);
+                this.grantMethod = ko.observable(param.grantMethod || 0);
                 this.memo = ko.observable(param.memo || '');
                 this.workTypeList = ko.observableArray(param.workTypeList || null);
                 this.grantRegular = ko.observable(param.grantRegular || new GrantRegularDto({}));
@@ -573,7 +575,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             grantRegularMethod: KnockoutObservable<number>;
             constructor(param: IGrantRegularDto) {
                 this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
-                this.grantStartDate = ko.observable(param.grantStartDate || null);
+                this.grantStartDate = ko.observable(param.grantStartDate || '');
                 this.months = ko.observable(param.months || null);
                 this.years = ko.observable(param.years || null);
                 this.grantRegularMethod = ko.observable(param.grantRegularMethod || 0);

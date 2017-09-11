@@ -52,9 +52,9 @@
 							data-bind="ntsFormLabel: {required: true,constraint:['SpecialHolidayCode','SpecialHolidayName']}">#{i18n.getText('KMF004_9')}</div>
 						<span><input id="code-text"
 							style="width: 40px; margin-left: -1px;"
-							data-bind="ntsTextEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode', required: true, enable:$parent.isEnableCode, immediate: true ,option: {autofill:true, filldirection:'left'}}" /></span>
+							data-bind="ntsTextEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode', required: true, enable:$parent.isEnableCode, immediate: true ,option: {autofill:true, filldirection:'left'}, name: '#[KMF004_10]'}" /></span>
 						<span><input id="code-text2" style="width: 180px"
-							data-bind="ntsTextEditor: {value: specialHolidayName, required: true}" /></span>
+							data-bind="ntsTextEditor: {value: specialHolidayName, required: true, name: '#[KMF004_8]'}" /></span>
 						<div id="addtitional-set"
 							style="vertical-align: middle; margin-left: 50px;"
 							data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMF004_11')}</div>
@@ -85,7 +85,7 @@
 								data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_16')}</div>
 							<textarea style="width: 524px; height: 50px; margin-left: 144px; margin-top: 10px;"
 								id="webMenuCode"
-								data-bind="ntsMultilineEditor: {value: memo,name: '#[CCG013_49]'}" />
+								data-bind="ntsMultilineEditor: {value: memo,name: '#[KMF004_16]'}" />
 						</div>
 					</div>
 					<div class="tab-content">
@@ -107,11 +107,13 @@
 									<div id="grant-start-date" style="margin-top: 10px;"
 										data-bind="ntsDatePicker: {
 											value: grantStartDate, 
-											dateFormat: 'YYYY/MM/DD', 
-											enable: grantRegularMethod()==0}">
+											dateFormat: 'YYYY/MM/DD',
+											valueFormat: 'YYYY/MM/DD', 
+											enable: grantRegularMethod()==0,
+											name: '#[KMF004_25]'}">
 									</div>
-									<span  style="">#{i18n.getText('KMF004_26')}</span> <input id="months"
-										style="width: 40px;"
+									<span  style="">#{i18n.getText('KMF004_26')}</span> 
+									<input id="months" style="width: 40px;"
 										data-bind="ntsNumberEditor: {
 												value: months,
 												option: ko.mapping.fromJS({
@@ -176,7 +178,7 @@
 												optionsValue: 'code',
 												optionsText: 'name',
 												value: splitAcquisition,
-												enable: grantPeriodicMethod()==1}">
+												enable: true}">
 									</div>
 								</div>
 							</div>
@@ -233,7 +235,7 @@
 												optionsValue: 'code',
 												optionsText: 'name',
 												value: grantCarryForward,
-												enable: specialVacationMethod()==2}">
+												enable: true}">
 										</div>
 									</div>
 									<div style="margin-top: 10px;">
@@ -245,7 +247,7 @@
 												unitID: 'DAYS',
 												width: '60'}),
 												required: true,
-												enable: specialVacationMethod()==2}" />
+												enable: true}" />
 									</div>
 								</div>
 							</div>

@@ -43,7 +43,6 @@ public class GrantSingle extends DomainObject {
 		if (this.grantDaySingleType != GrantDaySingleType.FixDay) {
 			return;
 		}
-		
 		if (this.fixNumberDays == null) {
 			throw new BusinessException("Msg_97");
 		}
