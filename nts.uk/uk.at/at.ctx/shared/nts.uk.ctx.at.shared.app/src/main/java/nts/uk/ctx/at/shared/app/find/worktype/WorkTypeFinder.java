@@ -17,7 +17,6 @@ import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeSymbolicName;
 import nts.uk.ctx.at.shared.dom.worktype.language.WorkTypeLanguage;
 import nts.uk.ctx.at.shared.dom.worktype.language.WorkTypeLanguageRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -142,23 +141,16 @@ public class WorkTypeFinder {
 	}
 
 	/**
-	 * Check language base on language Id
+	 * get workType language base on language Id
 	 * 
 	 * @param langId
 	 * @return List WorkTypeDtos
 	 */
-	public List<WorkTypeDto> checkLanguageWorkType(String langId) {
-		if (langId.equals("jp")) {
-			List<WorkType> workType = workTypeRepo.findByCompanyId(companyId);
-			return workType.stream().map(x -> {
-				return WorkTypeDto.fromDomain(x);
-			}).collect(Collectors.toList());
-		} else {
-			List<WorkTypeLanguage> workTypeLanguage = workTypeLanguageRepo.findByCIdAndLangId(companyId, langId);
-			return workTypeLanguage.stream().map(x -> {
-				WorkType wT = new WorkType(companyId, x.getWorkTypeCode(), x.getName(), x.getAbbreviationName());
-				return WorkTypeDto.fromDomainWorkTypeLanguage(wT);
-			}).collect(Collectors.toList());
-		}
+	public List<WorkTypeDto> findWorkTypeLanguage(String langId) {
+		List<WorkTypeLanguage> workTypeLanguage = workTypeLanguageRepo.findByCIdAndLangId(companyId, langId);
+		return workTypeLanguage.stream().map(x -> {
+			WorkType wT = new WorkType(companyId, x.getWorkTypeCode(), x.getName(), x.getAbbreviationName());
+			return WorkTypeDto.fromDomainWorkTypeLanguage(wT);
+		}).collect(Collectors.toList());
 	}
 }
