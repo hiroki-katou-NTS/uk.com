@@ -21,7 +21,7 @@ public class WorkplaceHierarchy extends DomainObject {
 
 	/** The hierarchy code. */
 	// 階層コード
-	private String hierarchyCode;
+	private HierarchyCode hierarchyCode;
 	
 	/**
 	 * Instantiates a new work hierarchy.
