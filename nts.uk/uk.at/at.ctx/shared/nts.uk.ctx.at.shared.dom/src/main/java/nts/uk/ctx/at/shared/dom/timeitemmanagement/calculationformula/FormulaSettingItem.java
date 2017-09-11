@@ -8,11 +8,11 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
- * The Class CalculationFormulaSettingItem.
+ * The Class FormulaSettingItem.
  */
 // 計算式設定
 @Getter
-public class CalculationFormulaSettingItem extends AggregateRoot {
+public class FormulaSettingItem extends AggregateRoot {
 
 	/** The setting method. */
 	// 設定方法
@@ -27,8 +27,8 @@ public class CalculationFormulaSettingItem extends AggregateRoot {
 	// 入力値
 	private OptionalItemInputValue inputValue;
 
-	/** The calculation formula item id. */
+	/** The formula item id. */
 	// 計算式項目ID
-	private String calculationFormulaItemId;
+	private OptionalItemFormulaId formulaItemId;
 
 }

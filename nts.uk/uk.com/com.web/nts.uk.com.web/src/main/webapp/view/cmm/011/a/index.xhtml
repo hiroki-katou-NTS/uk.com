@@ -92,7 +92,8 @@
 						
 						<!-- BEGIN A5_1 ~ A_5_5 -->
 						<tr data-bind="with: workplaceHistory">
-							<td class="td-detail" style="vertical-align: top;"><div data-bind="ntsFormLabel: {constraint: 'WorkplaceCode'}">職場対象期間</div></td>
+							<td class="td-detail" style="vertical-align: top;"><div
+									data-bind="ntsFormLabel: {constraint: 'WorkplaceCode'}">#{i18n.getText('Com_Workplace')}</div></td>
 							<td><div id="list-box" tabindex="14" data-bind="ntsListBox: {
 								options: lstWpkHistory,
 								optionsValue: 'historyId',
@@ -105,11 +106,11 @@
 									{ key: 'textDisplay', length: 15 }
 								]}"></div></td>
 							<td>
-								<div><button tabindex="15" data-bind="click: $parent.addWkpHistoryDialog,
+								<div><button tabindex="15" data-bind="click: addWkpHistoryDialog,
 									enable: $parent.isValidWorplaceHistory">#{i18n.getText('CMM011_10', ['Com_Workplace'])}</button></div>
-								<div><button tabindex="16" data-bind="click: $parent.updateWkpHistoryDialog,
+								<div><button tabindex="16" data-bind="click: updateWkpHistoryDialog,
 									enable: $parent.isValidWorplaceHistory">#{i18n.getText('CMM011_11', ['Com_Workplace'])}</button></div>
-								<div><button tabindex="17" data-bind="click: $parent.deleteWkpHistoryDialog,
+								<div><button tabindex="17" data-bind="click: deleteWkpHistoryDialog,
 									enable: $parent.isValidWorplaceHistory">#{i18n.getText('CMM011_12', ['Com_Workplace'])}</button></div>
 							</td>
 							<td></td>
