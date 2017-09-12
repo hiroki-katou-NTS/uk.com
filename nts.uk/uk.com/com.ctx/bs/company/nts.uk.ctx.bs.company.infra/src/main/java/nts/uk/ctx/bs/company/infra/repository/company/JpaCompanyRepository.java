@@ -13,7 +13,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.company.dom.company.Company;
 import nts.uk.ctx.bs.company.dom.company.CompanyRepository;
-import nts.uk.ctx.bs.company.infra.entity.company.BcmdtCompany;
+import nts.uk.ctx.bs.company.infra.entity.company.BcmmtCompany;
 
 /**
  * The Class JpaCompanyRepository.
@@ -36,7 +36,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 * @param entity
 	 * @return new Company(companyCode,companyName,companyId,isAboltiton)
 	 */
-	private static Company toSimpleDomain(BcmdtCompany entity) {
+	private static Company toSimpleDomain(BcmmtCompany entity) {
 		val domain = Company.createFromJavaType(entity.getCcd(), entity.getCompanyName(), entity.getCid(),
 				entity.getAbolitionAtr());
 		return domain;
@@ -50,7 +50,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 */
 	@Override
 	public Optional<Company> getComanyById(String companyId) {
-		return this.queryProxy().find(companyId, BcmdtCompany.class).map(company -> this.toDomain(company));
+		return this.queryProxy().find(companyId, BcmmtCompany.class).map(company -> this.toDomain(company));
 	}
 
 	/**
@@ -60,13 +60,13 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	 *            the entity
 	 * @return the company
 	 */
-	private Company toDomain(BcmdtCompany entity) {
+	private Company toDomain(BcmmtCompany entity) {
 		return new Company(new JpaCompanyGetMemento(entity));
 	}
 
 	@Override
 	public List<Company> getAllCompany() {
-		return this.queryProxy().query(GETALLCOMPANY, BcmdtCompany.class).getList(c -> toSimpleDomain(c));
+		return this.queryProxy().query(GETALLCOMPANY, BcmmtCompany.class).getList(c -> toSimpleDomain(c));
 	}
 
 }

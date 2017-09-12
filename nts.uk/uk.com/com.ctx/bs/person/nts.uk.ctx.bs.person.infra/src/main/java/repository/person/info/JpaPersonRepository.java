@@ -17,7 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import entity.person.info.BpsdtPerson;
+import entity.person.info.BpsmtPerson;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.infra.entity.person.CcgmtPerson;
@@ -36,7 +36,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	public final String SELECT_BY_PERSON_IDS = SELECT_NO_WHERE
 			+ " WHERE c.bpsdtPersonPk.pId IN :pids";
 
-	private static Person toDomain(BpsdtPerson entity) {
+	private static Person toDomain(BpsmtPerson entity) {
 		Person domain = Person.createFromJavaType(entity.bpsdtPersonPk.pId, entity.personName);
 		return domain;
 	}
@@ -57,7 +57,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 		}
 		
 		List<Person> lstPerson = this.queryProxy()
-				.query(SELECT_BY_PERSON_IDS, BpsdtPerson.class)
+				.query(SELECT_BY_PERSON_IDS, BpsmtPerson.class)
 				.setParameter("pids", personIds).getList(c -> toDomain(c));
 		
 		return lstPerson;
@@ -69,6 +69,6 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	 */
 	@Override
 	public Optional<Person> getByPersonId(String personId) {
-		return this.queryProxy().find(personId, BpsdtPerson.class).map(item -> toDomain(item));
+		return this.queryProxy().find(personId, BpsmtPerson.class).map(item -> toDomain(item));
 	}
 }
