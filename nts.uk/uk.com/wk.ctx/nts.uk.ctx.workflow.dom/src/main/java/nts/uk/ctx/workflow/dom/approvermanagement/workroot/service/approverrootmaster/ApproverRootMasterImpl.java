@@ -1,6 +1,9 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.approverrootmaster;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -14,6 +17,9 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRep
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WorkplaceApproverOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverAdaptor;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverDto;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 
@@ -26,6 +32,8 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	private PersonApprovalRootRepository psRootRepository;
 	@Inject
 	private CompanyAdapter comAdapter;
+	@Inject
+	private WorkplaceApproverAdaptor wpAdapter;
 	@Override
 	public List<EmployeeApproveDto> employees(String companyID,
 			GeneralDate baseDate, 
@@ -41,14 +49,32 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		//出力対象に職場別がある(có 職場別 trong đối tượng output)
 		if(isWorkplace) {
 			//ドメインモデル「職場別就業承認ルート」を取得する(lấy dữ liệu domain 「職場別就業承認ルート」)
-			List<WorkplaceApprovalRoot> lstWps = wpRootRepository.findAllByBaseDate(companyID, baseDate);
+			List<WorkplaceApprovalRoot> lstWps = wpRootRepository.findAllByBaseDate(companyID, baseDate);			
 			//データが１件以上取得した場合(có 1 data trở lên)
 			if(!CollectionUtil.isEmpty(lstWps)) {
-				//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」)
-				// TODO Viet sau khi QA duoc tra loi
+				List<WorkplaceApproverOutput> lstInfors = new ArrayList<>();	
+				//Map<String, List<WorkplaceApproverDto>, List<WorkplaceApprovalRoot>> infor = new HashMap<String, List<WorkplaceApproverDto>, List<WorkplaceApprovalRoot>>();
+				//Map<String, List<WorkplaceApproverDto>>  = new HashMap<String, List<WorkplaceApproverDto>>();
+				for(WorkplaceApprovalRoot root: lstWps) {
+					
+					
+					
+					/*if(lstInfors.contains(root.getWorkplaceId())) {
+						lstInfors
+						continue;
+					}
+					//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」)
+					List<WorkplaceApproverDto> wpInfors = wpAdapter.findByWkpId(companyID, root.getWorkplaceId(), baseDate);
+					WorkplaceApproverOutput infor = new WorkplaceApproverOutput();
+					List<WorkplaceApprovalRoot> rootInfors = new ArrayList<>();
+					rootInfors.add(root);
+					infor.setWorplaceId(root.getWorkplaceId());
+					infor.setWpInfor(wpInfors);
+					lstInfors.add(infor);*/
+				}
+				
 			}
-		}
-		
+		}		
 		//出力対象に個人別がある(có 個人別 trong đối tượng output)
 		if(isPerson) {
 			//ドメインモデル「個人別就業承認ルート」を取得する(lấy dữ liệu domain「個人別就業承認ルート」)
