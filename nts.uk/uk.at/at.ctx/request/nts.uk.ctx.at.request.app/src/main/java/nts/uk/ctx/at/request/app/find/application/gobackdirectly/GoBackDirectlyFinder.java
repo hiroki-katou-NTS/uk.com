@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.app.find.setting.applicationformreason.ApplicationF
 import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingDto;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
-import nts.uk.ctx.at.request.dom.setting.applicationformreason.ApplicationReason;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectBasicData;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectCommonService;
@@ -52,7 +52,12 @@ public class GoBackDirectlyFinder {
 	}
 
 	public ApplicationFormReasonDto convertReasonDto(ApplicationReason domain) {
-		return new ApplicationFormReasonDto(domain.getCompanyId(), domain.getAppType().value, domain.getDisplayOrder(),
+		return new ApplicationFormReasonDto(
+				domain.getCompanyId(), 
+				domain.getAppType().value, 
+				domain.getReasonID(),
+				domain.getDispOrder(),
+				domain.getReasonTemp(),
 				domain.getDefaultFlg().value);
 	}
 

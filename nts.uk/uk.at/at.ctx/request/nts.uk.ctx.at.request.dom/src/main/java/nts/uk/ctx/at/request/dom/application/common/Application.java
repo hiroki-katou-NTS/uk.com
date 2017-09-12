@@ -43,7 +43,7 @@ public class Application extends DomainObject{
 	/**
 	 * 差戻し理由
 	 */
-	private ApplicationReason reversionReason;
+	private AppReason reversionReason;
 	/**
 	 * 申請日
 	 */
@@ -52,7 +52,7 @@ public class Application extends DomainObject{
 	/**
 	 * 申請理由
 	 */
-	private ApplicationReason applicationReason;
+	private AppReason applicationReason;
 	/**
 	 * 申請種類
 	 */
@@ -122,9 +122,9 @@ public class Application extends DomainObject{
 				EnumAdaptor.valueOf(prePostAtr,PrePostAtr.class),
 				inputDate, 
 				enteredPersonSID, 
-				new ApplicationReason(reversionReason), 
+				new AppReason(reversionReason), 
 				applicationDate, 
-				new ApplicationReason(applicationReason), 
+				new AppReason(applicationReason), 
 				EnumAdaptor.valueOf(applicationType,ApplicationType.class), 
 				applicantSID, 
 				EnumAdaptor.valueOf(reflectPlanScheReason,ReflectPlanScheReason.class), 
@@ -148,7 +148,7 @@ public class Application extends DomainObject{
 	  * change value of reversionReason
 	  * @param reversionReason
 	  */
-	 public void changeReversionReason(ApplicationReason reversionReason) {
+	 public void changeReversionReason(AppReason reversionReason) {
 		 this.reversionReason = reversionReason;
 	 }
 	 
@@ -163,7 +163,7 @@ public class Application extends DomainObject{
 	  * change value of applicationReason
 	  * @param applicationReason
 	  */
-	 public void changeApplicationReason(ApplicationReason applicationReason) {
+	 public void changeApplicationReason(AppReason applicationReason) {
 		 this.applicationReason = applicationReason;
 	 }
 }

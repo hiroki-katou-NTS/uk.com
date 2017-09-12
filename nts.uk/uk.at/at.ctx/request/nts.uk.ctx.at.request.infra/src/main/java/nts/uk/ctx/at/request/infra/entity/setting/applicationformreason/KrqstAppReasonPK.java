@@ -24,5 +24,5 @@ public class KrqstAppReasonPK implements Serializable{
 	public int appType;
 	/** 理由ID */
 	@Column(name ="REASON_ID")
-	public int reasonID;
+	public String reasonID;
 }

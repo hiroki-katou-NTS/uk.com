@@ -2,7 +2,7 @@ package nts.uk.ctx.at.request.dom.application.lateorleaveearly;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.request.dom.application.common.ApplicationReason;
+import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 
 /**
@@ -38,6 +38,11 @@ public interface LateOrLeaveEarlyRepository {
 	 * @param appID
 	 */
 	void remove (String companyID , String appID);
-
- 	ApplicationReason findAppReason(String companyID, ApplicationType applicationType);
+	/**
+	 * Get Reason Temp	
+	 * @param companyID
+	 * @param applicationType
+	 * @return
+	 */
+ 	 AppReason findAppReason(String companyID, ApplicationType applicationType);
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.infra.repository.setting.applicationformreason;
+package nts.uk.ctx.at.request.infra.repository.setting.applicationreason;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepo
 import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstAppReason;
 
 @Stateless
-public class JpaApplicationFormReason extends JpaRepository implements ApplicationReasonRepository{
+public class JpaApplicationReason extends JpaRepository implements ApplicationReasonRepository{
 	private static final String FINDBYCOMPANYID = "SELECT c FROM KrqstAppReason c WHERE c.krqstAppReasonPK.companyId = :companyId";
 	
 	private static final String FINDBYAPPTYPE = FINDBYCOMPANYID + " c.krqstAppReasonPK.appType = :appType";
@@ -30,8 +30,11 @@ public class JpaApplicationFormReason extends JpaRepository implements Applicati
 		
 		return ApplicationReason.createSimpleFromJavaType(c.krqstAppReasonPK.companyId,
 				c.krqstAppReasonPK.appType,
-				c.krqstAppReasonPK.displayOrder, 
-				c.defaultOrder);
+				c.krqstAppReasonPK.reasonID,
+				Integer.valueOf(c.dispOrder).intValue(),
+				c.reasonTemp,
+				c.defaultFlg
+				);
 	}
 
 	/**

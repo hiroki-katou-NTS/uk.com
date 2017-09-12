@@ -7,7 +7,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationReason;
+import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
@@ -70,9 +70,9 @@ public class LateOrLeaveEarly extends Application {
 		super(companyID, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
 				inputDate, 
 				enteredPersonSID, 
-				new ApplicationReason(reversionReason), 
+				new AppReason(reversionReason), 
 				applicationDate, 
-				new ApplicationReason(applicationReason), 
+				new AppReason(applicationReason), 
 				EnumAdaptor.valueOf(applicationType,ApplicationType.class), 
 				applicantSID, 
 				EnumAdaptor.valueOf(reflectPlanScheReason,ReflectPlanScheReason.class), 

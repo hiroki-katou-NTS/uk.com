@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationReason;
+import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -33,7 +33,7 @@ public class LateOrLeaveEarlyFinder {
 		
 		LateOrLeaveEarly result = lateOrLeaveEarly.get();
 		
-		ApplicationReason appReason = lateOrLeaveEarlyRepository.findAppReason(companyID, result.getApplicationType());
+		AppReason appReason = lateOrLeaveEarlyRepository.findAppReason(companyID, result.getApplicationType());
 		
 		
 //		return result.map(lateOrLeaveEarly -> LateOrLeaveEarlyDto.fromDomain(lateOrLeaveEarly, appReason));

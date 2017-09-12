@@ -3,9 +3,8 @@ package nts.uk.ctx.at.request.app.find.application.lateorleaveearly;
 import lombok.Setter;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationReason;
+import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
-import nts.uk.ctx.at.request.dom.setting.applicationformreason.ApplicationReason;
 /**
  * 
  * @author hieult
@@ -63,22 +62,25 @@ public class LateOrLeaveEarlyDto {
 		private String appReason;
 		
 		
-		//TODO: anamit	
-		public static LateOrLeaveEarlyDto fromDomain ( LateOrLeaveEarly domain, ApplicationReason appReason){
-//			 new LateOrLeaveEarlyDto(
-//					domain.getCompanyID(),
-//					domain.getAppID(),
-//					domain.getActualCancelAtr(),
-//					domain.getEarly1().value,
-//					domain.getEarlyTime1().minute(),
-//					domain.getLate1().value,
-//					domain.getLateTime1().minute(),
-//					domain.getEarly2().value,
-//					domain.getEarlyTime2().minute(),
-//					domain.getLate2().value,
-//					domain.getLateTime2().minute(),
-//					"",
-//					domain.getApplicationReason().v());
-			return null;
+		public static LateOrLeaveEarlyDto fromDomain ( LateOrLeaveEarly domain, nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason appReason){
+			return	 new LateOrLeaveEarlyDto(
+					domain.getCompanyID(),
+					domain.getAppID(),
+					//Get ApplicationName
+					domain.getApplicantSID(),
+					domain.getActualCancelAtr(),
+					domain.getEarly1().value,
+					domain.getEarlyTime1().minute(),
+					domain.getLate1().value,
+			    	domain.getLateTime1().minute(),
+			     	domain.getEarly2().value,
+					domain.getEarlyTime2().minute(),
+			    	domain.getLate2().value,
+			    	domain.getLateTime2().minute(),
+			    	appReason.reasonTemp,
+					domain.getApplicationReason().v());
+			
+	
+		
 		}
 }

@@ -17,12 +17,23 @@ public class ApplicationFormReasonDto {
 	 * 申請種類
 	 */
 	int appType;
+	
+	/**
+	 * 理由ID
+	 */
+	String reasonID;
 	/**
 	 * 表示順
 	 */
 	int displayOrder;
 	/**
+	 * 定型理由
+	 */
+	String reasonTemp;
+	/**
 	 * 既定
 	 */
 	int defaultFlg;
+	
+		
 }

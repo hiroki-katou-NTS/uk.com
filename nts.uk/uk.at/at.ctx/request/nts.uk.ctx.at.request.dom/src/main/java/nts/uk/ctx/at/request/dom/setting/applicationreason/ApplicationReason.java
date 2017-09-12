@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.setting.applicationformreason;
+package nts.uk.ctx.at.request.dom.setting.applicationreason;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
