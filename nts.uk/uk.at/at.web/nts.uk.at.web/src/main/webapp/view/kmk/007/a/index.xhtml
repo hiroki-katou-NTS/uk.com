@@ -65,7 +65,7 @@
 						<div style="vertical-align: middle"
 							data-bind="ntsFormLabel: {constraint: ['WorkTypeCode','WorkTypeName'],required: true}">#{i18n.getText('KMK007_11')}</div>
 						<input id="input-workTypeCode"
-							data-bind="ntsTextEditor: {value: workTypeCode,name: '#[KMK007_12]', constraint: 'WorkTypeCode', required: true, enable: $parent.isEnable}" />
+							data-bind="ntsTextEditor: {value: workTypeCode,name: '#[KMK007_12]', constraint: 'WorkTypeCode', required: true, option: {autofill:true, filldirection:'left'}, enable: $parent.isEnable}" />
 						<input id="input-workTypeName"
 							data-bind="ntsTextEditor: {value: dispName,name: '#[KMK007_13]', constraint: 'WorkTypeName', required: true}" />
 						<div style="margin-left: 20px;"

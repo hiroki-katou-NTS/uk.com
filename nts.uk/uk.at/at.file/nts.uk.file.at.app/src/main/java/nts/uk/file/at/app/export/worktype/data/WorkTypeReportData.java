@@ -3,6 +3,10 @@ package nts.uk.file.at.app.export.worktype.data;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.worktype.CalculateMethod;
+import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 
 @Data
 @AllArgsConstructor
@@ -22,15 +26,15 @@ public class WorkTypeReportData {
 	// 廃止区分
 	private int deprecate;
 	// 出勤率の計算
-	private int calculateMethod;
+	private CalculateMethod calculateMethod;
 	// 勤務の単位 (対象範囲)
-	private int workAtr;
+	private WorkTypeUnit workAtr;
 	// 1日
-	private int oneDayCls;
+	private WorkTypeClassification oneDayCls;
 	// 午前
-	private int morningCls;
+	private WorkTypeClassification morningCls;
 	// 午後
-	private int afternoonCls;
+	private WorkTypeClassification afternoonCls;
 	// 日勤・夜勤時間を求める
 	private int dayNightTimeAsk;
 	// 出勤時刻を直行とする
@@ -48,11 +52,12 @@ public class WorkTypeReportData {
 	// 特別休暇の集計枠
 	private int sumSpHodidayNo;
 	// 休業区分
-	private int closeAtr;
+	private CloseAtr closeAtr;
 	//他言語名称
 	private String otherLangName;
 	//他言語略名
 	private String otherLangShortName;
+	//並び順
 	private Integer dispOrder;
 	
 }

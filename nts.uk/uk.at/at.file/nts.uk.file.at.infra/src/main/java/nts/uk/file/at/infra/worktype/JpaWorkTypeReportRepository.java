@@ -4,8 +4,13 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.worktype.CalculateMethod;
+import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkTypeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktype.language.KshmtWorkTypeLanguage;
@@ -44,11 +49,11 @@ public class JpaWorkTypeReportRepository extends JpaRepository implements WorkTy
 				entity.abbreviationName,
 				entity.memo, 
 				entity.deprecateAtr, 
-				entity.calculatorMethod,
-				entity.worktypeAtr, 
-				entity.oneDayAtr, 
-				entity.morningAtr, 
-				entity.afternoonAtr, 
+				EnumAdaptor.valueOf(entity.calculatorMethod, CalculateMethod.class),
+				EnumAdaptor.valueOf(entity.worktypeAtr, WorkTypeUnit.class),
+				EnumAdaptor.valueOf(entity.oneDayAtr, WorkTypeClassification.class), 
+				EnumAdaptor.valueOf(entity.morningAtr, WorkTypeClassification.class),
+				EnumAdaptor.valueOf(entity.afternoonAtr, WorkTypeClassification.class), 
 				workTypeSet.dayNightTimeAsk, 
 				workTypeSet.attendanceTime, 
 				workTypeSet.timeLeaveWork, 
@@ -57,7 +62,7 @@ public class JpaWorkTypeReportRepository extends JpaRepository implements WorkTy
 				workTypeSet.genSubHoliday, 
 				workTypeSet.sumAbsenseNo, 
 				workTypeSet.sumSpHolidayNo, 
-				workTypeSet.closeAtr, 
+				EnumAdaptor.valueOf(workTypeSet.closeAtr, CloseAtr.class),
 				workTypeLanguage.name, 
 				workTypeLanguage.abname,
 				dispOrder);
