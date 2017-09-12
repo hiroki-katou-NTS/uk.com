@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
+import nts.uk.ctx.at.request.dom.setting.applicationformreason.ApplicationReason;
+import nts.uk.ctx.at.request.dom.setting.applicationformreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingRepository;
 import nts.uk.shr.com.context.AppContexts;

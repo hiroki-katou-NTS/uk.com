@@ -5,7 +5,7 @@ import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationReason;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
-import nts.uk.ctx.at.request.dom.setting.applicationformreason.ApplicationFormReason;
+import nts.uk.ctx.at.request.dom.setting.applicationformreason.ApplicationReason;
 /**
  * 
  * @author hieult
@@ -64,7 +64,7 @@ public class LateOrLeaveEarlyDto {
 		
 		
 		//TODO: anamit	
-		public static LateOrLeaveEarlyDto fromDomain ( LateOrLeaveEarly domain, ApplicationFormReason appReason){
+		public static LateOrLeaveEarlyDto fromDomain ( LateOrLeaveEarly domain, ApplicationReason appReason){
 //			 new LateOrLeaveEarlyDto(
 //					domain.getCompanyID(),
 //					domain.getAppID(),
