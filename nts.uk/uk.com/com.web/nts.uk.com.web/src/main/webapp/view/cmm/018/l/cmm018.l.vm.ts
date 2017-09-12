@@ -8,6 +8,14 @@ module nts.uk.at.view.cmm018.l {
                 var currentDate = (new Date()).toISOString().split('T')[0];
                 self.date = ko.observable(currentDate);
             }
+            //閉じるボタン
+            closeDialog(){
+                nts.uk.ui.windows.close();    
+            }
+            //Excel出力
+            printExcel(){
+                
+            }
         }
     }
 }
