@@ -17,11 +17,12 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 
 @RequiredArgsConstructor
 
-public class DeductionItemOfTimeSheet {
+public class TimeSheetOfDeductionItem {
 	@Getter
 	private final TimeSpanForCalc span;
 //	private final DedcutionClassification deductionClassification;
 //	private final BreakClassification breakClassification;
+
 
 	public TimeWithDayAttr start() {
 		return this.span.getStart();
@@ -31,13 +32,13 @@ public class DeductionItemOfTimeSheet {
 		return this.span.getEnd();
 	}
 	
-	public List<DeductionItemOfTimeSheet> devideAt(TimeWithDayAttr baseTime) {
+	public List<TimeSheeOfDeductionItem> devideAt(TimeWithDayAttr baseTime) {
 		return this.span.timeDivide(baseTime).stream()
-				.map(t -> new DeductionItemOfTimeSheet(t))
+				.map(t -> new TimeSheeOfDeductionItem(t))
 				.collect(Collectors.toList());
 	}
 	
-	public List<DeductionItemOfTimeSheet> devideIfContains(TimeWithDayAttr baseTime) {
+	public List<TimeSheeOfDeductionItem> devideIfContains(TimeWithDayAttr baseTime) {
 		if (this.contains(baseTime)) {
 			return this.devideAt(baseTime);
 		} else {
