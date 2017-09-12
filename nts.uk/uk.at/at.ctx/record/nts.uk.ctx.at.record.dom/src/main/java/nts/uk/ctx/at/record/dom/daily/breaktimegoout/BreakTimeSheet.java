@@ -14,9 +14,9 @@ public class BreakTimeSheet {
 	
 	private TimeSpanForCalc timeSheet;
 	
-	private AttendanceTime breakTime;
-	
-	private BreakClassification breakClassification;
+//	private AttendanceTime breakTime;
+//	
+//	private BreakClassification breakClassification;
 	
 	
 }

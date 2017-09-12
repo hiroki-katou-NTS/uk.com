@@ -3,8 +3,9 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import java.util.List;
 
 import lombok.Value;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.DailyOfBreakTime;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.DailyOfBreakTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
+
 
 /**
  * 休憩管理
@@ -13,6 +14,6 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.DailyOfBreakTimeSheet;
  */
 @Value
 public class BreakManagement {
-	private DailyOfBreakTime dailyOfBreakTime;
-	private List<DailyOfBreakTimeSheet> dailyOfBreakTimeSheet;
+	private BreakTimeOfDaily breakTimeOfDaily;
+	private List<BreakTimeSheetOfDaily> breakTimeSheetOfDaily;
 }
