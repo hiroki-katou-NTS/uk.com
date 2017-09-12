@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.app.find.budget.external.actualresult;
+package nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.log;
 
 import java.util.List;
 import java.util.Map;
@@ -13,8 +13,8 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExternalBudgetLogDto;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExternalBudgetQuery;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.log.dto.ExternalBudgetLogDto;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.log.dto.ExternalBudgetQuery;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLog;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLogRepository;

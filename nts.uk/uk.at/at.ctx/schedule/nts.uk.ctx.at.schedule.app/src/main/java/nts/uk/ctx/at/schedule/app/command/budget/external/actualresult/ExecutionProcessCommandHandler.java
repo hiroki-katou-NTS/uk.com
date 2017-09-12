@@ -37,6 +37,7 @@ import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.Exter
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetErrorDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetLogDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetTimeDto;
+import nts.uk.ctx.at.schedule.dom.adapter.ScWorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.budget.external.BudgetAtr;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudget;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetRepository;
@@ -50,7 +51,6 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDai
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetDailyRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZone;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExternalBudgetTimeZoneRepository;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ScWorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetErrorRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.CompletionState;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLog;
@@ -208,16 +208,15 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         TaskDataSetter setter = asyncTask.getDataSetter();
         boolean isInterrupt = false;
         try {
+            // get content of file input
             List<List<String>> lstRecord = FileUtil.findContentFile(importProcess.inputStream,
                     importProcess.extractCondition.getEncoding(),
                     FileUtil.getStandardColumn(importProcess.externalBudget.getUnitAtr()));
-
             // calculate total record and check has data
             int calTotal = lstRecord.size() - importProcess.extractCondition.getStartLine().v() + 1;
             if (calTotal > DEFAULT_VALUE) {
                 setter.updateData(TOTAL_RECORD, calTotal);
             }
-
             Iterator<List<String>> recordIterator = lstRecord.iterator();
             while (recordIterator.hasNext()) {
                 /**
@@ -230,10 +229,8 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                     asyncTask.finishedAsCancelled();
                     break;
                 }
-
                 importProcess.stopLine = false;
                 this.processLine(importProcess, recordIterator.next());
-
                 // respond status client
                 Optional<ExternalBudgetLog> optional = this.extBudgetLogRepo
                         .findExtBudgetLogByExecuteId(importProcess.executeId);
@@ -243,12 +240,10 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                     setter.updateData(FAIL_CNT, log.getNumberFail());
                 }
             }
-
             // update status DONE if not interrupt
             if (!isInterrupt) {
                 this.updateLog(importProcess.executeId, CompletionState.DONE);
             }
-
             // close input stream
             importProcess.inputStream.close();
         } catch (IOException e) {
@@ -268,7 +263,6 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         if (importProcess.startLine < importProcess.extractCondition.getStartLine().v()) {
             return;
         }
-        
         // get data cell from input csv
         List<String> result = new ArrayList<>();
         for (String value : record) {
@@ -298,11 +292,11 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         if (!value.trim().isEmpty()) {
             return value;
         }
+        // check type and file blank value: 0 or 00:00
         if (budgetAtr == BudgetAtr.TIME) {
             return BLANK_VALUE_TIME;
-        } else {
-            return BLANK_VALUE;
         }
+        return BLANK_VALUE;
     }
     
     /**
@@ -312,6 +306,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * @param result the result
      */
     private void insertValue(ImportProcess importProcess, List<String> result) {
+        // check continue process line.
         if (importProcess.stopLine) {
             return;
         }
@@ -333,6 +328,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         } else {
             number = ++importProcess.successCnt;
         }
+        // update log
         this.updateLog(isUpdateCaseFail, importProcess.executeId, number);
     }
     
@@ -344,7 +340,10 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      */
     private void addExtBudgetDaily(ImportProcess importProcess, List<String> result) {
         String rawValue = result.get(INDEX_BEGIN_COL_VALUE);
+        // parse  value
         Long value = this.parseActualValue(rawValue);
+        
+        // create daily dto
         ExternalBudgetDailyDto dto = ExternalBudgetDailyDto.builder()
                 .budgetAtr(importProcess.externalBudget.getBudgetAtr())
                 .workplaceId(importProcess.workplaceId)
@@ -352,7 +351,6 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                 .actualDate(importProcess.actualDate)
                 .actualValue(value)
                 .build();
-        
         switch (importProcess.externalBudget.getBudgetAtr()) {
             case TIME:
                 ExternalBudgetDaily<ExtBudgetTime> domainTime = dto.toDomain();
@@ -387,11 +385,13 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * @param domain the domain
      */
     private <T> void saveDataDaily(ImportProcess importProcess, ExternalBudgetDaily<T> domain) {
+        // find entity existed ?
         if (!this.extBudgetDailyRepo.isExisted(domain.getWorkplaceId(), GeneralDate.legacyDate(domain.getActualDate()),
                 domain.getExtBudgetCode().v())) {
             this.extBudgetDailyRepo.add(domain);
             return;
         }
+        // check has override?
         if (importProcess.extractCondition.getIsOverride()) {
             this.extBudgetDailyRepo.update(domain);
             return;
@@ -417,12 +417,17 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      */
     private void addExtBudgetTime(ImportProcess importProcess, List<String> result) {
         Map<Integer, Long> mapValue = new HashMap<>();
+        
+        // get list value
         List<String> lstValue = result.subList(INDEX_BEGIN_COL_VALUE, result.size());
+        
+        // convert value
         for (int i=0; i<lstValue.size(); i++) {
             String rawValue = lstValue.get(i);
             Long value = this.parseActualValue(rawValue);
             mapValue.put(i, value);
         }
+        // create time dto
         ExternalBudgetTimeDto dto = ExternalBudgetTimeDto.builder()
                 .budgetAtr(importProcess.externalBudget.getBudgetAtr())
                 .workplaceId(importProcess.workplaceId)
@@ -464,11 +469,13 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * @param domain the domain
      */
     private <T> void saveDataTime(ImportProcess importProcess, ExternalBudgetTimeZone<T> domain) {
+        // check existed ?
         if (!this.extBudgetTimeRepo.isExisted(domain.getWorkplaceId(), GeneralDate.legacyDate(domain.getActualDate()),
                 domain.getExtBudgetCode().v())) {
             this.extBudgetTimeRepo.add(domain);
             return;
         }
+        // check has override
         if (importProcess.extractCondition.getIsOverride()) {
             this.extBudgetTimeRepo.update(domain);
             return;
@@ -565,6 +572,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                 isInValidDateFormat = true;
             }
         }
+        // if has error, insert information error database
         if (isInValidDateFormat) {
             int idxColReal = INDEX_COLUMN_DATE + 1;
             ExternalBudgetErrorDto extBudgetErrorDto = ExternalBudgetErrorDto.builder()
@@ -595,6 +603,8 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         }
         String companyId = AppContexts.user().companyId();
         String workplaceCode = result.get(INDEX_COLUMN_CODE);
+        
+        // find workplace existed?
         List<String> lstWpkId = this.workplaceAdapter.findWpkIdList(companyId, workplaceCode, importProcess.actualDate);
         if (!CollectionUtil.isEmpty(lstWpkId)) {
             importProcess.workplaceId = lstWpkId.get(DEFAULT_VALUE);

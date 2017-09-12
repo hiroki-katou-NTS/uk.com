@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.app.find.budget.external.actualresult;
+package nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.error;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExternalBudgetErrorDto;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.error.dto.ExternalBudgetErrorDto;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetError;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetErrorRepository;
 

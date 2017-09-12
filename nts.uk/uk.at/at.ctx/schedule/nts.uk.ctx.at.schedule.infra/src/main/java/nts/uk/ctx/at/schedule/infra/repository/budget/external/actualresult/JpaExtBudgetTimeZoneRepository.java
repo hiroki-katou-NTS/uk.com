@@ -41,7 +41,10 @@ public class JpaExtBudgetTimeZoneRepository extends JpaRepository implements Ext
      */
     @Override
     public <T> void add(ExternalBudgetTimeZone<T> domain) {
+        // find list entity
         List<KscdtExtBudgetTime> lstEntity = this.findListEntity(domain);
+        
+        // insert list entity
         lstEntity.forEach(entity -> {
             this.commandProxy().insert(entity);
             this.getEntityManager().flush();
@@ -57,7 +60,10 @@ public class JpaExtBudgetTimeZoneRepository extends JpaRepository implements Ext
      */
     @Override
     public <T> void update(ExternalBudgetTimeZone<T> domain) {
+        // find list entity
         List<KscdtExtBudgetTime> lstEntity = this.findListEntity(domain);
+        
+        // update list entity
         lstEntity.forEach(entity -> {
             this.commandProxy().update(entity);
             this.getEntityManager().flush();
@@ -79,6 +85,7 @@ public class JpaExtBudgetTimeZoneRepository extends JpaRepository implements Ext
         CriteriaQuery<KscdtExtBudgetTime> query = builder.createQuery(KscdtExtBudgetTime.class);
         Root<KscdtExtBudgetTime> root = query.from(KscdtExtBudgetTime.class);
 
+        // add list condition
         List<Predicate> predicateList = new ArrayList<>();
 
         predicateList.add(builder.equal(

@@ -69,15 +69,18 @@ public class JpaExternalBudgetDailyRepository extends JpaRepository implements E
      * @return the kbddt ext budget daily
      */
     private <T> KscdtExtBudgetDaily toEntity(ExternalBudgetDaily<T> domain) {
+        // find entity existed ?
         Optional<KscdtExtBudgetDaily> optional = this.queryProxy().find(
                 new KscdtExtBudgetDailyPK(domain.getWorkplaceId(), domain.getExtBudgetCode().v()),
-                KscdtExtBudgetDaily.class);
+                KscdtExtBudgetDaily.class)
+                ;
         KscdtExtBudgetDaily entity = null;
         if (optional.isPresent()) {
             entity = optional.get();
         } else {
             entity = new KscdtExtBudgetDaily();
         }
+        
         JpaExternalBudgetDailySetMemento<T> memento = new JpaExternalBudgetDailySetMemento<T>(entity);
         domain.saveToMemento(memento);
         return entity;

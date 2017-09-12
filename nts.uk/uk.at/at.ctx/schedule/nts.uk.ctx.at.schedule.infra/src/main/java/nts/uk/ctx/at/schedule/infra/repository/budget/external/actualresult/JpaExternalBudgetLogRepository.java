@@ -30,7 +30,10 @@ import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExt
 @Stateless
 public class JpaExternalBudgetLogRepository extends JpaRepository implements ExternalBudgetLogRepository {
     
+    /** The Constant HOUR_FIRST_DAY. */
     private static final int HOUR_FIRST_DAY = 0;
+    
+    /** The Constant HOUR_LAST_DAY. */
     private static final int HOUR_LAST_DAY = 23;
 
     /*
@@ -98,6 +101,7 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
         CriteriaQuery<KscdtExtBudgetLog> query = builder.createQuery(KscdtExtBudgetLog.class);
         Root<KscdtExtBudgetLog> root = query.from(KscdtExtBudgetLog.class);
 
+        // add list condition to query.
         List<Predicate> predicateList = new ArrayList<>();
 
         predicateList.add(builder.equal(root.get(KscdtExtBudgetLog_.sid), employeeId));
@@ -110,6 +114,8 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
         predicateList.add(exp.in(listState));
 
         query.where(predicateList.toArray(new Predicate[] {}));
+        
+        // order by start date time DESC
         query.orderBy(builder.desc(root.get(KscdtExtBudgetLog_.strDateTime)));
 
         return em.createQuery(query).getResultList().stream()
@@ -132,9 +138,8 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
     /**
      * To entity.
      *
-     * @param domain
-     *            the domain
-     * @return the kbldt ext budget log
+     * @param domain the domain
+     * @return the kscdt ext budget log
      */
     private KscdtExtBudgetLog toEntity(ExternalBudgetLog domain) {
         Optional<KscdtExtBudgetLog> optional = this.queryProxy().find(domain.getExecutionId(), KscdtExtBudgetLog.class);
@@ -156,6 +161,8 @@ public class JpaExternalBudgetLogRepository extends JpaRepository implements Ext
      */
     private GeneralDateTime getGeneralDateTime(GeneralDateTime dateTime, Integer hour) {
         int minute = 0, second = 0;
+        
+        // case 23:59 (not case 00:00)
         if (hour > 0) {
             minute = 59;
         }
