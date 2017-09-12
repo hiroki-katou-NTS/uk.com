@@ -6,6 +6,7 @@ module nts.uk.at.view.kmk010.a {
     import OvertimeSettingDto = service.model.OvertimeSettingDto;
     import PremiumExtra60HRateDto = service.model.PremiumExtra60HRateDto;
     import SuperHD60HConMedDto = service.model.SuperHD60HConMedDto;
+    import OvertimeLangNameDto = service.model.OvertimeLangNameDto;
 
     export module viewmodel {
 
@@ -17,6 +18,7 @@ module nts.uk.at.view.kmk010.a {
             lstUnit: EnumConstantDto[];
             lstRounding: EnumConstantDto[];
             languageId: string;
+            static LANGUAGE_ID_JAPAN = 'ja';
 
             constructor() {
                 var self = this;
@@ -146,7 +148,54 @@ module nts.uk.at.view.kmk010.a {
 
                 $("#switch-language").on("selectionChanged", function(event, arg1, arg2) {
                     self.languageId = event.detail.languageId;
+                    self.updateLanguage();
                 });
+            }
+            /**
+             * update language by select language
+             */
+            public updateLanguage(): void {
+                var self = this;
+                if(self.languageId === ScreenModel.LANGUAGE_ID_JAPAN){
+                    service.findAllOvertime().done(function(dataOvertime){
+                        for (var overtime of self.overtimeSettingModel.overtimes) {
+                            for(var dtoOvertime of dataOvertime){
+                                if(overtime.overtimeNo() == dtoOvertime.overtimeNo){
+                                    overtime.name(dtoOvertime.name);    
+                                }    
+                            }
+                        } 
+                    });    
+                    service.findAllOvertimeBRDItem().done(function(dataOvertimeBRD){
+                        for (var overtime of self.overtimeSettingModel.breakdownItems) {
+                            for(var dtoOvertime of dataOvertimeBRD){
+                                if(overtime.breakdownItemNo() == dtoOvertime.breakdownItemNo){
+                                    overtime.name(dtoOvertime.name);    
+                                }    
+                            }
+                        } 
+                    });
+                }else {
+                    service.findAllOvertimeLanguageName(self.languageId).done(function(dataOvertimeLang){
+                        for (var overtime of self.overtimeSettingModel.overtimes) {
+                            for(var dtoOvertime of dataOvertimeLang){
+                                if(overtime.overtimeNo() == dtoOvertime.overtimeNo){
+                                    overtime.name(dtoOvertime.name);    
+                                }    
+                            }
+                        }
+                    });    
+                    
+                    service.findAllOvertimeLanguageBRDItem(self.languageId).done(function(dataOvertimeBRDLang){
+                        for (var overtime of self.overtimeSettingModel.breakdownItems) {
+                            for(var dtoOvertime of dataOvertimeBRDLang){
+                                if(overtime.breakdownItemNo() == dtoOvertime.breakdownItemNo){
+                                    overtime.name(dtoOvertime.name);    
+                                }    
+                            }
+                        } 
+                    });
+                }
             }
         }
         export class OvertimeModel {
@@ -195,14 +244,14 @@ module nts.uk.at.view.kmk010.a {
                 this.rateBRDItems = [];
             }
 
-            updateData(dto: OvertimeBRDItemDto) {
+           public updateData(dto: OvertimeBRDItemDto) {
                 this.useClassification(dto.useClassification);
                 this.breakdownItemNo(dto.breakdownItemNo);
                 this.name(dto.name);
                 this.productNumber(dto.productNumber);
             }
 
-            toDto(): OvertimeBRDItemDto {
+            public toDto(): OvertimeBRDItemDto {
                 var dto: OvertimeBRDItemDto = {
                     useClassification: this.useClassification(),
                     breakdownItemNo: this.breakdownItemNo(),
@@ -211,8 +260,14 @@ module nts.uk.at.view.kmk010.a {
                 };
                 return dto;
             }
-            updateRateData(rateBRDItems: PremiumExtra60HRateModel[]) {
+            public updateRateData(rateBRDItems: PremiumExtra60HRateModel[]): void {
                 this.rateBRDItems = rateBRDItems;
+            }
+            /**
+             * function on click button show dialog KDL021  
+             */
+            public openDialogDailyAttendanceItems(): void {
+                alert(this.breakdownItemNo());
             }
         }
         export class OvertimeSettingModel {

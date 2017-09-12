@@ -2,7 +2,7 @@ module nts.uk.at.view.kmk010.b {
 
     import OvertimeDto = nts.uk.at.view.kmk010.a.service.model.OvertimeDto;
     import OvertimeModel = nts.uk.at.view.kmk010.a.viewmodel.OvertimeModel;
-    import OvertimeLangNameDto = service.model.OvertimeLangNameDto;
+    import OvertimeLangNameDto = nts.uk.at.view.kmk010.a.service.model.OvertimeLangNameDto;
     
     export module viewmodel {
 
@@ -26,7 +26,7 @@ module nts.uk.at.view.kmk010.b {
            public startPage(): JQueryPromise<any> {
                var self = this;
                var dfd = $.Deferred();
-               service.findAllOvertime().done(function(data) {
+               nts.uk.at.view.kmk010.a.service.findAllOvertime().done(function(data) {
                    self.lstOvertimeModel = [];
                    for (var dto of data) {
                        var model: OvertimeModel = new OvertimeModel();
@@ -40,7 +40,7 @@ module nts.uk.at.view.kmk010.b {
                    } else {
                        self.textOvertimeName(nts.uk.resource.getText('KMK010_63'));
                        self.enableCheckbox(false);
-                       service.findAllOvertimeLanguageName(self.languageId).done(function(dataLanguageName){
+                       nts.uk.at.view.kmk010.a.service.findAllOvertimeLanguageName(self.languageId).done(function(dataLanguageName){
                            if (dataLanguageName && dataLanguageName.length > 0) {
                                for(var dataLang of dataLanguageName){
                                     for(var model of self.lstOvertimeModel){

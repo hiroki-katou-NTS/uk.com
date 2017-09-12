@@ -9,7 +9,10 @@ module nts.uk.at.view.kmk010.a {
             findByIdSuperHD60HConMed: "ctx/at/shared/overtime/super/holiday/findById",
             saveOvertimeSetting: "ctx/at/shared/overtime/setting/save",
             saveSuperHD60HConMed: "ctx/at/shared/overtime/super/holiday/save",
-            findAllOvertimeLanguageName: "ctx/at/shared/overtime/language/name/findAll"
+            findAllOvertimeLanguageName: "ctx/at/shared/overtime/language/name/findAll",
+            findAllOvertime : "ctx/at/shared/overtime/findAll",
+            findAllOvertimeLanguageBRDItem : "ctx/at/shared/overtime/breakdown/language/findAll",
+            findAllOvertimeBRDItem : "ctx/at/shared/overtime/breakdown/findAll"
         }
 
         /**
@@ -72,6 +75,26 @@ module nts.uk.at.view.kmk010.a {
         export function findAllOvertimeLanguageName(languageId: string): JQueryPromise<model.OvertimeLangNameDto[]> {
             return nts.uk.request.ajax(paths.findAllOvertimeLanguageName + '/' + languageId);
         }
+        
+         /**
+         * call service find all overtime
+         */
+        export function findAllOvertime(): JQueryPromise<model.OvertimeDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllOvertime);
+        }
+        
+        /**
+         * find all overtime language breakdown item
+         */
+        export function findAllOvertimeLanguageBRDItem(languageId: string): JQueryPromise<model.OvertimeLangBRDItemDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllOvertimeLanguageBRDItem + '/' + languageId);
+        } 
+        /**
+         * call service find all overtime breakdown item
+         */
+        export function findAllOvertimeBRDItem(): JQueryPromise<model.OvertimeBRDItemDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllOvertimeBRDItem);
+        }
 
         export module model {
 
@@ -120,6 +143,13 @@ module nts.uk.at.view.kmk010.a {
                 languageId: string;
                 overtimeNo: number;
             }
+            
+            export interface OvertimeLangBRDItemDto {
+                name: string;
+                languageId: string;
+                breakdownItemNo: number;
+            }  
+            
         }
     }
 }

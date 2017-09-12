@@ -3,7 +3,7 @@ module nts.uk.at.view.kmk010.c {
     import OvertimeBRDItemDto = nts.uk.at.view.kmk010.a.service.model.OvertimeBRDItemDto;
     import EnumConstantDto = nts.uk.at.view.kmk010.a.service.model.EnumConstantDto;
     import OvertimeBRDItemModel = nts.uk.at.view.kmk010.a.viewmodel.OvertimeBRDItemModel;
-    import OvertimeLangBRDItemDto = service.model.OvertimeLangBRDItemDto;
+    import OvertimeLangBRDItemDto = nts.uk.at.view.kmk010.a.service.model.OvertimeLangBRDItemDto;
     
     export module viewmodel {
 
@@ -32,7 +32,7 @@ module nts.uk.at.view.kmk010.c {
                service.findAllProductNumber().done(function(data){
                   self.lstProductNumber = data; 
                });
-               service.findAllOvertimeBRDItem().done(function(data) {
+               nts.uk.at.view.kmk010.a.service.findAllOvertimeBRDItem().done(function(data) {
                    self.lstOvertimeBRDItemModel = [];
                    for (var dto of data) {
                        var model: OvertimeBRDItemModel = new OvertimeBRDItemModel();
@@ -46,7 +46,7 @@ module nts.uk.at.view.kmk010.c {
                    } else {
                        self.textOvertimeName(nts.uk.resource.getText('KMK010_64'));
                        self.enableCheckbox(false);
-                       service.findAllOvertimeLanguageBRDItem(self.languageId).done(function(dataLanguageBRDItem){
+                       nts.uk.at.view.kmk010.a.service.findAllOvertimeLanguageBRDItem(self.languageId).done(function(dataLanguageBRDItem){
                            if (dataLanguageBRDItem && dataLanguageBRDItem.length > 0) {
                                for(var dataLang of dataLanguageBRDItem){
                                     for(var model of self.lstOvertimeBRDItemModel){
