@@ -7,6 +7,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.AppReason;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.Change;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
@@ -114,6 +116,11 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 					domain.getEarlyTime2().v(),
 					domain.getLate2().value,
 					domain.getLateTime2().v());
+	}
+	@Override
+	public AppReason findAppReason(String companyID, ApplicationType applicationType) {
+		// TODO Auto-generated method stub
+		return null;
 	};
 	
 

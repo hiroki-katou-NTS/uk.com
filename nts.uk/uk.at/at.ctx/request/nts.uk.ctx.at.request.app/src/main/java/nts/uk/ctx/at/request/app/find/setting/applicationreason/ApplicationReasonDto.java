@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.find.setting.applicationformreason;
+package nts.uk.ctx.at.request.app.find.setting.applicationreason;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
@@ -11,7 +11,7 @@ import lombok.Value;
  */
 @AllArgsConstructor
 @Value
-public class ApplicationFormReasonDto {
+public class ApplicationReasonDto {
 	String companyId;
 	/**
 	 * 申請種類

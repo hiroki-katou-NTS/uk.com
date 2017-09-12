@@ -6,7 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.uk.ctx.at.request.app.find.setting.applicationformreason.ApplicationFormReasonDto;
+import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReasonDto;
 import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingDto;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
@@ -51,8 +51,8 @@ public class GoBackDirectlyFinder {
 				domain.getListAppReason().stream().map(x -> convertReasonDto(x)).collect(Collectors.toList()));
 	}
 
-	public ApplicationFormReasonDto convertReasonDto(ApplicationReason domain) {
-		return new ApplicationFormReasonDto(
+	public ApplicationReasonDto convertReasonDto(ApplicationReason domain) {
+		return new ApplicationReasonDto(
 				domain.getCompanyId(), 
 				domain.getAppType().value, 
 				domain.getReasonID(),
