@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.pubimp.employee.classification;
+package nts.uk.ctx.bs.employee.pubimp.employment;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,21 +17,38 @@ import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistoryRepository;
-import nts.uk.ctx.bs.employee.pub.employee.employment.SyEmploymentPub;
+import nts.uk.ctx.bs.employee.pub.employment.EmploymentExport;
+import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 
 /**
- * The Class SyEmploymentPubImp.
+ * The Class EmploymentPubImp.
  */
 @Stateless
-public class SyEmploymentPubImp implements SyEmploymentPub {
+public class EmploymentPubImp implements SyEmploymentPub {
 
-	/** The employment adapter. */
+	/** The employment repository. */
 	@Inject
-	private EmploymentRepository employmentAdapter;
+	private EmploymentRepository employmentRepository;
 
 	/** The employment history repository. */
 	@Inject
 	private AffEmploymentHistoryRepository employmentHistoryRepository;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.employment.EmploymentPub#findByEmpCodes(java.
+	 * util.List)
+	 */
+	@Override
+	public List<EmploymentExport> findByEmpCodes(List<String> employmentCodes) {
+		return employmentRepository.findByEmpCodes(employmentCodes).stream()
+				.map(item -> new EmploymentExport(item.getCompanyId().v(), item.getWorkClosureId(),
+						item.getSalaryClosureId(), item.getEmploymentCode().v(),
+						item.getEmploymentName().v()))
+				.collect(Collectors.toList());
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -48,7 +65,7 @@ public class SyEmploymentPubImp implements SyEmploymentPub {
 		List<String> employmentCodes = affEmploymentHistories.stream()
 				.map(item -> item.getEmploymentCode().v()).collect(Collectors.toList());
 
-		List<Employment> acEmploymentDtos = employmentAdapter.findByEmpCodes(employmentCodes);
+		List<Employment> acEmploymentDtos = employmentRepository.findByEmpCodes(employmentCodes);
 
 		Map<String, String> comEmpMap = acEmploymentDtos.stream()
 				.collect(Collectors.toMap((item) -> {
