@@ -12,7 +12,6 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.PersonA
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.WkpApprovalRootImport;
 
 @Data
-@AllArgsConstructor
 public class ApprovalRootOutput {
 	/** 会社ID */
 	private String companyId;
@@ -42,6 +41,30 @@ public class ApprovalRootOutput {
 	private List<ApprovalPhaseImport> beforeApprovers;
 	
 	private List<ApprovalPhaseOutput> afterApprovers;
+	
+	/** エラーフラグ*/
+	private ErrorFlag errorFlag;
+	
+	public ApprovalRootOutput(String companyId, String workplaceId, String approvalId, String employeeId,
+			String historyId, int applicationType, GeneralDate startDate, GeneralDate endDate, String branchId,
+			String anyItemApplicationId, int confirmationRootType, int employmentRootAtr,
+			List<ApprovalPhaseImport> beforeApprovers, List<ApprovalPhaseOutput> afterApprovers) {
+		super();
+		this.companyId = companyId;
+		this.workplaceId = workplaceId;
+		this.approvalId = approvalId;
+		this.employeeId = employeeId;
+		this.historyId = historyId;
+		this.applicationType = applicationType;
+		this.startDate = startDate;
+		this.endDate = endDate;
+		this.branchId = branchId;
+		this.anyItemApplicationId = anyItemApplicationId;
+		this.confirmationRootType = confirmationRootType;
+		this.employmentRootAtr = employmentRootAtr;
+		this.beforeApprovers = beforeApprovers;
+		this.afterApprovers = afterApprovers;
+	}
 	
 	public static ApprovalRootOutput convertFromPersonData(PersonApprovalRootImport x) {
 		return new ApprovalRootOutput(

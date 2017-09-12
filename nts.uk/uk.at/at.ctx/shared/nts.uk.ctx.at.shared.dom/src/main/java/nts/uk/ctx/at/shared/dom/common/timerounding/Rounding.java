@@ -12,15 +12,15 @@ public enum Rounding {
 	
 	/** The rounding down. */
 	// 切り捨て
-	ROUNDING_DOWN(0, "Enum_Rounding_Down", "切り捨て"),
-	
+	ROUNDING_DOWN(0, "切り捨て", "Enum_Rounding_Down"),
+
 	/** The rounding up. */
-	//切り上げ
-	ROUNDING_UP(1, "Enum_Rounding_Up", "切り上げ"),
-	
+	// 切り上げ
+	ROUNDING_UP(1, "切り上げ", "Enum_Rounding_Up"),
+
 	/** The rounding down over. */
-	//未満切捨、以上切上
-	ROUNDING_DOWN_OVER(2, "Enum_Rounding_Down_Over", "未満切捨、以上切上");
+	// 未満切捨、以上切上
+	ROUNDING_DOWN_OVER(2, "未満切捨、以上切上", "Enum_Rounding_Down_Over");
 
 	
 	/** The value. */

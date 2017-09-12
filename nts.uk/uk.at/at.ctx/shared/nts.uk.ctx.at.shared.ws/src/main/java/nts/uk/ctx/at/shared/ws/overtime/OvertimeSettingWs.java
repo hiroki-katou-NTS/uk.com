@@ -18,6 +18,8 @@ import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.find.overtime.OvertimeSettingFinder;
 import nts.uk.ctx.at.shared.app.find.overtime.dto.OvertimeSettingDto;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.overtime.OvertimeCalculationMethod;
 
 /**
@@ -32,14 +34,35 @@ public class OvertimeSettingWs extends WebService {
 	private OvertimeSettingFinder finder;
 
 	/**
-	 * Gets the vacation expiration enum.
+	 * Find all method.
 	 *
-	 * @return the vacation expiration enum
+	 * @return the list
 	 */
 	@POST
 	@Path("findAll/method")
-	public List<EnumConstant> getVacationExpirationEnum() {
+	public List<EnumConstant> findAllMethod() {
 		return EnumAdaptor.convertToValueNameList(OvertimeCalculationMethod.class);
+	}
+	
+	/**
+	 * Find all unit.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findAll/unit")
+	public List<EnumConstant> findAllUnit() {
+		return EnumAdaptor.convertToValueNameList(Unit.class);
+	}
+	/**
+	 * Find all unit.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findAll/rounding")
+	public List<EnumConstant> findAllRounding() {
+		return EnumAdaptor.convertToValueNameList(Rounding.class);
 	}
 	
 	/**

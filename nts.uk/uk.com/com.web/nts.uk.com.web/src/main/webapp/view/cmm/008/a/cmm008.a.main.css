@@ -1,0 +1,14 @@
+#ruled-line {
+	background-color: #7f7f7f;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+#right-contents {
+	padding-left: 30px;
+	padding-top: 20px;
+	vertical-align: top;
+}
+#left-content {
+	padding: 20px;
+}

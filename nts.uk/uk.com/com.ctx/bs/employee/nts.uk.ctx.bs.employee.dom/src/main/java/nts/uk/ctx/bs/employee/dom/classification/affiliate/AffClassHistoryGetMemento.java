@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.classification.affiliate;
 
+import nts.uk.ctx.bs.employee.dom.classification.ClassificationCode;
 import nts.uk.ctx.bs.employee.dom.common.history.Period;
 
 /**

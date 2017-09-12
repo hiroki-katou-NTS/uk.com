@@ -22,6 +22,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.
 import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApprovalPhaseOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApprovalRootOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApproverInfo;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ConfirmPerson;
 import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ErrorFlag;
 import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
@@ -143,7 +144,11 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 					.collect(Collectors.toList());
 			x.setBeforeApprovers(appPhase);
 			List<ApprovalPhaseOutput> phases = this.adjustmentApprovalRootData(cid, sid, baseDate, appPhase);
-			x.setAfterApprovers(phases);	
+			x.setAfterApprovers(phases);
+			
+			// 7.承認ルートの異常チェック
+			ErrorFlag errorFlag = this.checkError(appPhase, phases);
+			x.setErrorFlag(errorFlag);
 		});
 		return appDatas;
 	}
@@ -156,12 +161,17 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 		ErrorFlag errorFlag = ErrorFlag.NO_ERROR;
 		for (ApprovalPhaseImport phase : beforeDatas) {
 			if (!CollectionUtil.isEmpty(phase.getApproverDtos())) {
-				int approverCounts = afterDatas.stream().filter(x -> x.getApprovalPhaseId().equals(phase.getApprovalPhaseId())).findFirst().get().getApprovers().size();
+				
+				List<ApproverInfo> afterApprovers = afterDatas.stream().filter(x -> x.getApprovalPhaseId().equals(phase.getApprovalPhaseId())).findFirst().get().getApprovers();
+				int approverCounts = afterApprovers.size();
+				
+				// １フェーズにトータルの実際の承認者 > 10
 				if (approverCounts > 10) {
 					errorFlag = ErrorFlag.APPROVER_UP_10;
 					break;
 				}
 				
+				// １フェーズにトータルの実際の承認者 <= 0
 				if (approverCounts <= 0) {
 					errorFlag = ErrorFlag.NO_APPROVER;
 					break;
@@ -169,9 +179,23 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 				
 				// approvers count > 0 and < 10
 				if (phase.getApprovalForm() == ApprovalForm.SINGLE_APPROVED.value) {
-//					if (phase.getBrowsingPhase()) {
-//						
-//					}
+					List<ApproverImport> befApprovers = phase.getApproverDtos().stream().filter(x-> x.getConfirmPerson() == ConfirmPerson.CONFIRM.value).collect(Collectors.toList());
+					
+					if (!CollectionUtil.isEmpty(befApprovers)) {
+						// 確定者あるドメインモデル「承認者」から変換した実際の承認者がいるかチェックする
+						Optional<ApproverInfo> approver =  afterApprovers.stream().map(x -> {
+							Optional<ApproverImport> impBef = befApprovers.stream().filter(y -> y.getApproverId().equals(x.getSid())).findFirst();
+							if (!impBef.isPresent()) {
+								return null;
+							}
+							return x;
+						}).findFirst();
+						
+						if (!approver.isPresent()) {
+							errorFlag = ErrorFlag.NO_CONFIRM_PERSON;
+							break;
+						}
+					}
 				}
 				
 			}

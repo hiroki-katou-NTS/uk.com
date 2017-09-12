@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
  * @author hoatt
  *
  */
-@AllArgsConstructor
 public enum ApplicationType {
 	/** 残業申請*/
 	OVER_TIME_APPLICATION(0,"残業申請"),
@@ -39,5 +38,11 @@ public enum ApplicationType {
 	
 	public Integer value;
 	
-	public String description;
+	public String nameId;
+
+	private ApplicationType(Integer value, String nameId) {
+		this.value = value;
+		this.nameId = nameId;
+	}
+	
 }
