@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 
@@ -19,7 +20,7 @@ import nts.arc.time.GeneralDate;
  */
 @Getter
 @AllArgsConstructor
-public class Application extends DomainObject{
+public class Application extends AggregateRoot{
 	/**
 	 * 会社ID
 	 */
@@ -48,11 +49,13 @@ public class Application extends DomainObject{
 	/**
 	 * 申請日
 	 */
+	@Setter
 	private GeneralDate applicationDate;
 	
 	/**
 	 * 申請理由
 	 */
+	@Setter
 	private AppReason applicationReason;
 	/**
 	 * 申請種類
