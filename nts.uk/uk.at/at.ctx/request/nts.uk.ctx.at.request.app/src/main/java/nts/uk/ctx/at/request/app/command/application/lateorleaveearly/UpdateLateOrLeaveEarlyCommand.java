@@ -40,18 +40,19 @@ public class UpdateLateOrLeaveEarlyCommand {
 	private int lateTime2;
 	
 	public LateOrLeaveEarly toDomain(String appID) {
-		new LateOrLeaveEarly(
-				AppContexts.user().companyId(),
-				appID,
-				this.actualCancelAtr,
-				this.early1,
-				this.earlyTime1,
-				this.late1,
-				this.lateTime1,
-				this.early2,
-				this.earlyTime2,
-				this.late2,
-				this.lateTime2);
+		return null;
+//		new LateOrLeaveEarly(
+//				AppContexts.user().companyId(),
+//				appID,
+//				this.actualCancelAtr,
+//				this.early1,
+//				this.earlyTime1,
+//				this.late1,
+//				this.lateTime1,
+//				this.early2,
+//				this.earlyTime2,
+//				this.late2,
+//				this.lateTime2);
 
 	}
 

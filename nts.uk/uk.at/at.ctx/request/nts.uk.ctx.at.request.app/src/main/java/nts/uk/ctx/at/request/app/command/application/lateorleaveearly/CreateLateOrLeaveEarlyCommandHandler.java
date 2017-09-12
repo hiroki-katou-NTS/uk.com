@@ -5,7 +5,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.FactoryLateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeaveEarlyService;
 
 @Stateless
@@ -15,13 +16,29 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 
 	@Inject
 	private LateOrLeaveEarlyService lateOrLeaveEarlyService;
+	
+	@Inject
+	
+	private FactoryLateOrLeaveEarly factoryLateOrLeaveEarly;
 
 	@Override
 	protected void handle(CommandHandlerContext<CreateLateOrLeaveEarlyCommand> context) {
-		String appID = IdentifierUtil.randomUniqueId();
 		CreateLateOrLeaveEarlyCommand command = context.getCommand();
+        LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(
+        		command.getApplicantName(),
+        		command.getApplicationDate(),
+        		command.getReasonTemp() +  System.lineSeparator() + command.getAppReason(),
+        		command.getActualCancelAtr(),
+        		command.getEarly1(),
+        		command.getEarlyTime1(),
+        		command.getLate1(),
+        		command.getLateTime1(),
+        		command.getEarly2(),
+        		command.getEarlyTime2(),
+        		command.getLate2(),
+        		command.getLateTime2());
 
-		lateOrLeaveEarlyService.createLateOrLeaveEarly(command.toDomain(appID));
+		lateOrLeaveEarlyService.createLateOrLeaveEarly(domainLateOrLeaveEarly);
 
 	}
 }
