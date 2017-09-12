@@ -12,28 +12,28 @@ public enum Unit {
 
 	/** The rounding time 1min. */
 	// 時系列（原則）
-	ROUNDING_TIME_1MIN(1, "Enum_RoundingTime_1Min", "1分"),
-	
+	ROUNDING_TIME_1MIN(1, "1分", "Enum_RoundingTime_1Min"),
+
 	/** The rounding time 5min. */
-	ROUNDING_TIME_5MIN(1, "Enum_RoundingTime_5Min", "5分"),
-	
+	ROUNDING_TIME_5MIN(5, "5分", "Enum_RoundingTime_5Min"),
+
 	/** The rounding time 6min. */
-	ROUNDING_TIME_6MIN(1, "Enum_RoundingTime_6Min", "6分"),
-	
+	ROUNDING_TIME_6MIN(6, "6分", "Enum_RoundingTime_6Min"),
+
 	/** The rounding time 10min. */
-	ROUNDING_TIME_10MIN(1, "Enum_RoundingTime_10Min", "10分"),
-	
+	ROUNDING_TIME_10MIN(10, "10分", "Enum_RoundingTime_10Min"),
+
 	/** The rounding time 15min. */
-	ROUNDING_TIME_15MIN(1, "Enum_RoundingTime_15Min", "15分"),
-	
+	ROUNDING_TIME_15MIN(15, "15分", "Enum_RoundingTime_15Min"),
+
 	/** The rounding time 20min. */
-	ROUNDING_TIME_20MIN(1, "Enum_RoundingTime_20Min", "20分"),
-	
+	ROUNDING_TIME_20MIN(20, "20分", "Enum_RoundingTime_20Min"),
+
 	/** The rounding time 30min. */
-	ROUNDING_TIME_30MIN(1, "Enum_RoundingTime_30Min", "30分"),
-	
+	ROUNDING_TIME_30MIN(30, "30分", "Enum_RoundingTime_30Min"),
+
 	/** The rounding time 60min. */
-	ROUNDING_TIME_60MIN(1, "Enum_RoundingTime_60Min", "60分");
+	ROUNDING_TIME_60MIN(60, "60分", "Enum_RoundingTime_60Min");
 
 	
 	/** The value. */

@@ -1,0 +1,78 @@
+#functions-area button ~ .ntsControl {
+	margin-left: 15px;
+}
+
+#functions-area button+.ntsControl {
+	margin-left: 300px;
+}
+
+#contents-area .left-area, #contents-area .right-area {
+	float: left;
+}
+
+#contents-area .left-area {
+	width: 320px;
+	margin-left: 85px;
+}
+
+#contents-area .left-area .bg-green {
+	padding: 12px;
+}
+
+#contents-area .right-area {
+	width: 1015px;
+	padding-left: 5px;
+}
+
+#contents-area .left-area #lefttabs {
+	margin-top: 15px;
+}
+
+#contents-area .left-area #lefttabs .ui-tabs-panel {
+	min-height: 300px;
+}
+
+#contents-area .left-area #lefttabs .ntsSearchBox.ntsSearchBox_Component
+	{
+	min-width: 131px;
+}
+
+.avatar-group, .person-group, .action-group {
+	float: left;
+	padding: 0 5px;
+}
+
+.avatar-group {
+	width:108px;
+	height: 147px;
+}
+
+.person-group {
+	width: 600px;
+	height: 147px;
+}
+
+.action-group {
+	width: 220px;
+}
+
+.active-panel {
+	width: 100%;   
+	min-height: 64px;
+    height: 100%;
+	border: 1px solid #999999;
+	margin-bottom: 10px;
+}
+
+.active-panel:before {
+	content: '';
+	display: block;
+	background-color: #00B050;
+	display: block;
+	background-color: #00B050;
+	height: 7px;
+}
+
+.avatar-group img {
+	padding: 5px 2px 2px 5px;
+}

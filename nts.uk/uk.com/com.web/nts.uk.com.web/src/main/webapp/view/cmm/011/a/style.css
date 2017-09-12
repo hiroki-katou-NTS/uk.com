@@ -1,11 +1,15 @@
 @CHARSET "UTF-8";
 
+#content-area {
+	min-width: 1900px;
+}
 #left-content {
 	width: 450px;
 	float: left;
 	margin: 20px 30px;
 }
 #left-content-top {
+	width: 95%;
 	padding: 15px 20px;
 	margin-bottom: 50px;
 }
@@ -13,6 +17,7 @@
 	left: 110px !important;
 }
 #left-content-bottom {
+	width: 95%;
 	height: 570px;
 	padding: 20px;
 	border-radius: 5px;
@@ -24,6 +29,6 @@
 #table-detail-setting {
 	margin-top: -10px;
 }
-#table-detail-setting td {
+.td-detail {
 	padding-top: 20px;
 }

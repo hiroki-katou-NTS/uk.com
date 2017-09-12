@@ -5,6 +5,7 @@ import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 /**
  * 
  * @author hieult
@@ -22,8 +23,8 @@ public class LateOrLeaveEarlyDto {
 		/** 申請者*/
 		private String applicantName;
 		
-/*		*//** 申請日*//*
-		private GeneralDate applicationDate;*/
+        /** 申請日*/
+		private GeneralDate applicationDate;
 		
 		/** 実績取消区分 */
 		
@@ -62,12 +63,13 @@ public class LateOrLeaveEarlyDto {
 		private String appReason;
 		
 		
-		public static LateOrLeaveEarlyDto fromDomain ( LateOrLeaveEarly domain, nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason appReason){
+		public static LateOrLeaveEarlyDto fromDomain ( LateOrLeaveEarly domain, ApplicationReason appReason){
 			return	 new LateOrLeaveEarlyDto(
 					domain.getCompanyID(),
 					domain.getAppID(),
 					//Get ApplicationName
 					domain.getApplicantSID(),
+					domain.getApplicationDate(),
 					domain.getActualCancelAtr(),
 					domain.getEarly1().value,
 					domain.getEarlyTime1().minute(),

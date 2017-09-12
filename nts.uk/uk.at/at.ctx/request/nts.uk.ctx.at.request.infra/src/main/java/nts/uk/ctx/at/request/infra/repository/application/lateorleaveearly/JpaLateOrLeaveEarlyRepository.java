@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.Select;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeavePK;
@@ -118,7 +119,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 					domain.getLateTime2().v());
 	}
 	@Override
-	public AppReason findAppReason(String companyID, ApplicationType applicationType) {
+	public ApplicationReason findApplicationReason(String companyID, ApplicationType applicationType) {
 		// TODO Auto-generated method stub
 		return null;
 	};

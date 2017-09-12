@@ -16,11 +16,6 @@ import nts.uk.ctx.at.shared.dom.overtime.UseClassification;
  * The Class OvertimeDto.
  */
 
-/**
- * Gets the use classification.
- *
- * @return the use classification
- */
 @Getter
 @Setter
 public class OvertimeDto implements OvertimeSetMemento{
@@ -35,7 +30,7 @@ public class OvertimeDto implements OvertimeSetMemento{
 	private Integer overtimeNo;
 	
 	/** The use classification. */
-	private Integer useClassification;
+	private Boolean useClassification;
 
 	/**
 	 * Sets the super holiday 60 H occurs.
@@ -54,7 +49,7 @@ public class OvertimeDto implements OvertimeSetMemento{
 	 */
 	@Override
 	public void setUseClassification(UseClassification useClassification) {
-		this.useClassification = useClassification.value;
+		this.useClassification = (useClassification.value == UseClassification.UseClass_Use.value);
 	}
 
 	/**

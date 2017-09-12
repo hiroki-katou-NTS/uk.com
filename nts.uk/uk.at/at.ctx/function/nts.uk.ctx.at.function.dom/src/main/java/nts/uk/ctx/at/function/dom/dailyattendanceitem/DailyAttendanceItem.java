@@ -10,6 +10,10 @@ public class DailyAttendanceItem {
 	private String attendanceItemName;
 
 	private int attendanceItemDisplayNumber;
+	
+	private int typeOfAttendanceItem;
+	
+	private int frameCategory;
 
 	public DailyAttendanceItem() {
 		super();
