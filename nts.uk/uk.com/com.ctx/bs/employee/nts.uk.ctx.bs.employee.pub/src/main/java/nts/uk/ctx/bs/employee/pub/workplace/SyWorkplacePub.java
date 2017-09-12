@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.company.pub.workplace;
+package nts.uk.ctx.bs.employee.pub.workplace;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import nts.arc.time.GeneralDate;
 /**
  * The Interface WorkplacePub.
  */
-public interface WorkplacePub {
+public interface SyWorkplacePub {
 
 	/**
 	 * Find wpk ids by wkp code.
@@ -23,6 +23,17 @@ public interface WorkplacePub {
 	 */
 	// RequestList #41
 	List<String> findWpkIdsByWkpCode(String companyId, String wpkCode, GeneralDate baseDate);
+
+	/**
+	 * Find wpk ids by sid.
+	 *
+	 * @param companyId the company id
+	 * @param employeeId the employee id
+	 * @param date the date
+	 * @return the list
+	 */
+	// RequestList #65
+	List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date);
 
 	/**
 	 * Find by wkp id.
@@ -68,4 +79,14 @@ public interface WorkplacePub {
 	 * @return the list
 	 */
 	List<WorkplaceHierarchyExport> findAllHierarchyChild(String companyId, String workplaceId);
+
+	/**
+	 * Gets the workplace id.
+	 *
+	 * @param companyId the company id
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the workplace id
+	 */
+	String getWorkplaceId(String companyId,String employeeId, GeneralDate baseDate);
 }
