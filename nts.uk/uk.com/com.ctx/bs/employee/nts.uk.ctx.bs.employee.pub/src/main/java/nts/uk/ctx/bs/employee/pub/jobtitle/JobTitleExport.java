@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.pub.employee.jobtitle;
+package nts.uk.ctx.bs.employee.pub.jobtitle;
 
 import lombok.Builder;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class PubJobTitleDto.
+ * The Class JobTitleExport.
  */
 @Data
 @Builder

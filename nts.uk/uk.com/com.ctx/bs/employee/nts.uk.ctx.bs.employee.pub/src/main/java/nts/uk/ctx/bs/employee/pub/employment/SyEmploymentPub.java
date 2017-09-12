@@ -2,36 +2,33 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.pub.employee.workplace;
+package nts.uk.ctx.bs.employee.pub.employment;
 
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
 
 /**
- * The Interface SyWorkplacePub.
+ * The Interface WorkplacePub.
  */
-public interface SyWorkplacePub {
+public interface SyEmploymentPub {
 
 	/**
-	 * Find wpk ids by sid.
+	 * Find by emp codes.
 	 *
-	 * @param companyId the company id
-	 * @param employeeId the employee id
-	 * @param date the date
+	 * @param employmentCodes the employment codes
 	 * @return the list
 	 */
-	// RequestList #65
-	List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date);
+	List<EmploymentExport> findByEmpCodes(List<String> employmentCodes);
 
 	/**
-	 * Gets the workplace id.
+	 * Gets the employment code.
 	 *
 	 * @param companyId the company id
 	 * @param employeeId the employee id
 	 * @param baseDate the base date
-	 * @return the workplace id
+	 * @return the employment code
 	 */
-	String getWorkplaceId(String companyId,String employeeId, GeneralDate baseDate);
+	String getEmploymentCode(String companyId, String employeeId, GeneralDate baseDate);
 
 }
