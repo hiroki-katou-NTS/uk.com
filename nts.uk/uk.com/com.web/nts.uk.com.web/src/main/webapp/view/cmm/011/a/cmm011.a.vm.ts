@@ -64,6 +64,11 @@ module nts.uk.com.view.cmm011.a {
                         self.configureWkpDialog();
                     }
                 });
+                self.workplaceName.subscribe((newValue) => {
+                    let obj: any = self.treeWorkplace().findPathNameByWkpIdSelected();
+                    self.wkpDisplayName(obj.wkpDisplayName + " " + newValue);
+                    self.wkpFullName(obj.wkpFullName + " " + newValue);
+                });
             }
             
             public startPage(): JQueryPromise<any> {
@@ -193,28 +198,30 @@ module nts.uk.com.view.cmm011.a {
                 return heightCell * 20;
             }
             
-            public findFullPathNameById(workplaceId: string): any {
-//                let self = this;
-//                let mapWkpName: any = self.convertMapHeirarchy();
-//                let wkpDisplayName: string = mapWkpName[workplaceId];
-//                
-//                let wkpFullName: string = null;
-//                let index: number = 0;
-//                while(index < )
-//                
-//                
-//                return {
-//                    wkpDisplayName: wkpDisplayName
-//                };
-            }
-            
-            private convertMapHeirarchy() {
+            public findPathNameByWkpIdSelected(): any {
                 let self = this;
-                return _.reduce(self.treeArray(), function(hash, value) {
+                
+                let selectedHeirarchyCd: string = null;
+                let obj: any = {};
+                let mapHeirarchy: any = _.reduce(self.treeArray(), function(hash, value) {
                     let key = value['heirarchyCode'];
                     hash[key] = value['name'];
+                    if (value['workplaceId'] == self.selectedWpkId()) {
+                        obj.wkpDisplayName = value['name'];
+                        selectedHeirarchyCd = key;
+                    }
                     return hash;
                 }, {});
+                
+                let index: number = 3;
+                let wkpFullName: string = "";
+                while(index <= selectedHeirarchyCd.length) {
+                    let parentHeirarchyCd: string = selectedHeirarchyCd.substr(0, index);
+                    wkpFullName += " " + mapHeirarchy[parentHeirarchyCd];
+                    index += 3;
+                }
+                obj.wkpFullName = wkpFullName.trim();
+                return obj;
             }
             
             private calWidthColText() {
