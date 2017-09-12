@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
@@ -13,6 +14,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
  * 外部予算実績項目受入ログ
  */
 @Getter
+@EqualsAndHashCode(callSuper = true, of = {"executionId"})
 public class ExternalBudgetLog extends AggregateRoot {
     
     /** The ext budget file name. */

@@ -12,7 +12,6 @@ import nts.arc.primitive.constraint.StringMaxLength;
  */
 @StringMaxLength(2)
 // 記号
-// TODO: khong co mo ta primitive value?
 public class Symbol extends StringPrimitiveValue<OptionalItemFormulaName> {
 
 	/** The Constant serialVersionUID. */
