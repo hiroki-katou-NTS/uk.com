@@ -16,7 +16,7 @@ public class BreakTimeSheet {
 	
 	private AttendanceTime breakTime;
 	
-	private BreakClassification breakClassification;
+	private BreakCategory breakClassification;
 	
 	
 }

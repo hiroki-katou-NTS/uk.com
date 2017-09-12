@@ -8,6 +8,6 @@ import lombok.Value;
  *
  */
 @Value
-public class DailyOfBreakTime {
-	
+public class BreakTimeOfDaily {
+
 }

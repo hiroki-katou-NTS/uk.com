@@ -23,6 +23,8 @@ public class TimeSheetWithUseAtr extends AggregateRoot implements HasTimeSpanFor
 	private TimeWithDayAttr startTime;
 	
 	private TimeWithDayAttr endTime;
+	
+	private int count;
 
 	@Override
 	public TimeSpanForCalc getTimeSpan() {
@@ -31,7 +33,9 @@ public class TimeSheetWithUseAtr extends AggregateRoot implements HasTimeSpanFor
 
 	@Override
 	public TimeSheetWithUseAtr newSpanWith(TimeWithDayAttr start, TimeWithDayAttr end) {
-		return new TimeSheetWithUseAtr(this.useAtr, start, end);
+		return new TimeSheetWithUseAtr(this.useAtr, start, end, this.count);
 	}
+	
+	
 
 }
