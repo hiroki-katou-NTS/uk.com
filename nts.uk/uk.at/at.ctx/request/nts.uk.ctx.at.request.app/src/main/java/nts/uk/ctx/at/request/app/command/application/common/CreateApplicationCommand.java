@@ -106,8 +106,7 @@ public class CreateApplicationCommand {
 	
 	public Application toDomain() {
 		return Application.createFromJavaType(
-				AppContexts.user().companyId(), 
-				this.applicationID,  
+				AppContexts.user().companyId(),
 				this.prePostAtr, 
 				this.inputDate,  
 				this.enteredPersonSID,  
