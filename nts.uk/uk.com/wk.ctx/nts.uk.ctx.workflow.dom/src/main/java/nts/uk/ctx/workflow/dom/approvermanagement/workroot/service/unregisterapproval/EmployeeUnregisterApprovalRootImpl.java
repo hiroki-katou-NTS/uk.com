@@ -61,7 +61,7 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 		List<EmployeeUnregisterOutput> lstUnRegister = new ArrayList<>();
 		EmployeeUnregisterOutput empInfo = new EmployeeUnregisterOutput();
 		for(EmployeeApproveDto empInfor: lstEmps) {
-			List<Integer> appTypes = new ArrayList<>();
+			List<String> appTypes = new ArrayList<>();
 			for(ApplicationType appType: ApplicationType.values()) {
 				//社員の対象申請の承認ルートを取得する(lấy dữ liệu approve route của đối tượng đơn xin của nhân viên)
 				boolean isEmpRoot = employeeOfApprovalRoot.lstEmpApprovalRoot(companyId,
@@ -73,10 +73,12 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 						baseDate);
 				//承認ルート未登録出力対象として追加する(thêm vào đối tượng chưa cài đặt approve route để output)
 				if(!isEmpRoot) {
-					empInfo.setAppType(appTypes);
+					appTypes.add(appType.nameId);					
 				}
 			}
+			
 			if(!CollectionUtil.isEmpty(appTypes)) {
+				empInfo.setAppType(appTypes);
 				empInfo.setEmpInfor(empInfor);
 				lstUnRegister.add(empInfo);
 			}
