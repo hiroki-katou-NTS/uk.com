@@ -18,10 +18,12 @@ import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRo
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeAdapterInforFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeSearch;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeUnregisterFinder;
+import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.MasterApproverRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ParamDto;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
 @Path("workflow/approvermanagement/workroot")
 @Produces("application/json")
 public class WorkAppApprovalRootWebService extends WebService{
@@ -79,5 +81,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	
 	@POST
 	@Path("testMasterDat")
-	
+	public MasterApproverRootOutput masterInfor(MasterApproverRootDto dto) {
+		MasterApproverRootOutput data = empUnregister.masterInfors(dto);
+		return data;
+	}
 }
