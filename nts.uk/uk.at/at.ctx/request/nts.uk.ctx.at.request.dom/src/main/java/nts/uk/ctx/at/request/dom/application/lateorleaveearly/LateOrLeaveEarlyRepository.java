@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 
 /**
  * 
@@ -44,5 +45,5 @@ public interface LateOrLeaveEarlyRepository {
 	 * @param applicationType
 	 * @return
 	 */
- 	 AppReason findAppReason(String companyID, ApplicationType applicationType);
+ 	 ApplicationReason findApplicationReason(String companyID, ApplicationType applicationType);
 }

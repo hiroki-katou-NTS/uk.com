@@ -6,9 +6,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -21,7 +21,6 @@ public class LateOrLeaveEarlyFinder {
 	@Inject
 	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
 
-	//TODO: anamite
 	public LateOrLeaveEarlyDto getLateOrLeaveEarly() {
 		String companyID = AppContexts.user().companyId();
 		String appID = IdentifierUtil.randomUniqueId();
@@ -32,12 +31,11 @@ public class LateOrLeaveEarlyFinder {
 		}
 		
 		LateOrLeaveEarly result = lateOrLeaveEarly.get();
+		ApplicationReason applicationReason = lateOrLeaveEarlyRepository.findApplicationReason(companyID, result.getApplicationType());
 		
-		AppReason appReason = lateOrLeaveEarlyRepository.findAppReason(companyID, result.getApplicationType());
 		
+		return LateOrLeaveEarlyDto.fromDomain(result, applicationReason);
 		
-//		return result.map(lateOrLeaveEarly -> LateOrLeaveEarlyDto.fromDomain(lateOrLeaveEarly, appReason));
-		return null;
 	}
 
 	
