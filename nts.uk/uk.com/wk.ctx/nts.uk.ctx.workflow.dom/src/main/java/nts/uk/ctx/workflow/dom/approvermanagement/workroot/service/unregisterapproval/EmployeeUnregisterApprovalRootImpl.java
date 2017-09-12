@@ -57,16 +57,19 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 			return null;
 		}
 		//ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain「会社別就業承認ルート」)
-		List<CompanyApprovalRoot> comInfo = comRootRepository.findByBaseDateOfCommon(companyId, baseDate);
+		List<CompanyApprovalRoot> comInfo = comRootRepository.findByBaseDateOfCommon(companyId, baseDate);		
 		if(CollectionUtil.isEmpty(comInfo)){
-			return null;
+			// TODO thuc hien khi co tra loi QA
+			//return null;
+		}else {
+			List<CompanyApprovalRoot> comInfoCommon = comInfo.stream()
+					.filter(x -> x.getEmploymentRootAtr().value == EmploymentRootAtr.COMMON.value)
+					.collect(Collectors.toList());		
+			if(!CollectionUtil.isEmpty(comInfoCommon)) {
+				return null;
+			}	
 		}
-		List<CompanyApprovalRoot> comInfoCommon = comInfo.stream()
-				.filter(x -> x.getEmploymentRootAtr().value == EmploymentRootAtr.COMMON.value)
-				.collect(Collectors.toList());		
-		if(!CollectionUtil.isEmpty(comInfoCommon)) {
-			return null;
-		}
+		
 		//就業ルート区分が共通の「会社別就業承認ルート」がない場合(không có thông tin 「会社別就業承認ルート」 của 就業ルート区分là common)
 		//ドメインモデル「職場別就業承認ルート」を取得する(lấy thông tin domain 「職場別就業承認ルート」)
 		List<WorkplaceApprovalRoot> wpInfo = wpRootRepository.findAllByBaseDate(companyId, baseDate);

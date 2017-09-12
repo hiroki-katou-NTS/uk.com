@@ -10,15 +10,18 @@ import javax.ws.rs.Produces;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommandHandler;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeAdapterInforFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeSearch;
+import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeUnregisterFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ParamDto;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 @Path("workflow/approvermanagement/workroot")
 @Produces("application/json")
 public class WorkAppApprovalRootWebService extends WebService{
@@ -29,6 +32,9 @@ public class WorkAppApprovalRootWebService extends WebService{
 	private EmployeeAdapterInforFinder employeeInfor;
 	@Inject
 	private UpdateWorkAppApprovalRByHistCommandHandler updateHist;
+	
+	@Inject
+	private EmployeeUnregisterFinder empUnregister;
  
 	@POST
 	@Path("getbycom")
@@ -62,4 +68,16 @@ public class WorkAppApprovalRootWebService extends WebService{
 	public List<EnumConstant> findApplicationType() {
 		return EnumAdaptor.convertToValueNameList(ApplicationType.class);
 	}
+	
+	@POST
+	@Path("testInUnregistry")
+	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(GeneralDate baseDate){
+		//GeneralDate date = GeneralDate.fromString(baseDate, "yyyy-mm-dd");
+		List<EmployeeUnregisterOutput> data =empUnregister.lstEmployeeUnregister(baseDate); 
+		return data;
+	}
+	
+	@POST
+	@Path("testMasterDat")
+	
 }
