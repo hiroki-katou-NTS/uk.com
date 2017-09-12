@@ -3,7 +3,9 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import java.util.List;
 
 import lombok.Value;
-import nts.uk.ctx.at.record.dom.daily.DailyOfAttendanceLeavingWork;
+import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWorkOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
@@ -20,11 +22,11 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkType;
  *
  */
 @Value
-public class OneDayOfCalculationRange {
+public class CalculationRangeOfOneDay {
 	
 	private FixWeekdayWorkTime fixWeekDayWorkTime;
 	
-	private List<DailyOfAttendanceLeavingWork> dailyOfAttendanceLeavingWork;
+	private List<AttendanceLeavingWorkOfDaily> dailyOfAttendanceLeavingWork;
 	
 	private final WorkTime workTime;
 	
@@ -33,16 +35,23 @@ public class OneDayOfCalculationRange {
 	private WithinWorkTimeSheet withinWorkingHoursTimeSheet;
 	
 	private WorkingSystem workingSystem;
+	
+	private TimeSpanForCalc oneDayOfRange;
+	
+	
 	/**
 	 * 就業内時間帯の作成
 	 */
 	public void createWithinWorkTimeSheet() {
 		/*固定控除時間帯の作成*/
+		DedcutionTimeSheet collectDeductionTimes = new DeductionTimeSheet();
+		collectDeductionTimes.createDedctionTimeSheet();
+		
 		
 		if(workingSystem.isExcludedWorkingCalculate()) {
 			theDayOfWorkTimesLoop();
 		}else{
-			
+			/*計算対象外の処理*/
 			return;
 		}
 	}
@@ -52,10 +61,10 @@ public class OneDayOfCalculationRange {
 	 * 就内・外時間帯作成と計算
 	 */
 	public void theDayOfWorkTimesLoop() {
-		for(int workNumber = 0; workNumber < dailyOfAttendanceLeavingWork.size(); workNumber++ ) {
+		for(int workNumber = 1; workNumber <= dailyOfAttendanceLeavingWork.size(); workNumber++ ) {
 			createWithinWorkTimeTimeSheet();
 			/*就外*/
-			/**/
+			/*勤務時間帯の計算*/
 			
 		}
 	}
