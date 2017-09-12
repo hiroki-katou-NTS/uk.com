@@ -4,7 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.overtime.holiday;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -12,8 +14,11 @@ import javax.inject.Inject;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.overtime.holiday.SuperHD60HConMed;
 import nts.uk.ctx.at.shared.dom.overtime.holiday.SuperHD60HConMedRepository;
+import nts.uk.ctx.at.shared.dom.overtime.premium.extra.PremiumExtra60HRate;
 import nts.uk.ctx.at.shared.dom.overtime.premium.extra.PremiumExtra60HRateRepository;
 import nts.uk.ctx.at.shared.infra.entity.overtime.holiday.KshstSuperHdConMed;
+import nts.uk.ctx.at.shared.infra.entity.overtime.premium.KshstPremiumExt60hRate;
+import nts.uk.ctx.at.shared.infra.repository.overtime.premium.JpaPremiumExtra60HRateSetMemento;
 
 /**
  * The Class JpaSuperHD60HConMedRepository.
@@ -34,8 +39,21 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 	 */
 	@Override
 	public Optional<SuperHD60HConMed> findById(String companyId) {
-		return this.queryProxy().find(companyId, KshstSuperHdConMed.class)
-				.map(entity -> this.toDomain(entity));
+		
+		// find by id to entity
+		Optional<KshstSuperHdConMed> opEntity = this.queryProxy().find(companyId, KshstSuperHdConMed.class);
+		
+		// find by company id to domain
+		List<PremiumExtra60HRate> premiumExtra60HRates = this.repository.findAll(companyId);
+		
+		// check exist data
+		if (opEntity.isPresent()) {
+			return Optional.ofNullable(this.toDomain(opEntity.get(),
+					this.toEntityPremiumExtraRate(companyId, premiumExtra60HRates)));
+		}
+		// default data
+		return Optional.ofNullable(this.toDomain(new KshstSuperHdConMed(),
+				this.toEntityPremiumExtraRate(companyId, premiumExtra60HRates)));
 	}
 	
 	/*
@@ -69,8 +87,9 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the super HD 60 H con med
 	 */
-	private SuperHD60HConMed toDomain(KshstSuperHdConMed entity){
-		return new SuperHD60HConMed(new JpaSuperHD60HConMedGetMemento(entity));
+	private SuperHD60HConMed toDomain(KshstSuperHdConMed entity,
+			List<KshstPremiumExt60hRate> entityPremiumExtra60HRates) {
+		return new SuperHD60HConMed(new JpaSuperHD60HConMedGetMemento(entity,entityPremiumExtra60HRates));
 	}
 
 	/**
@@ -83,6 +102,21 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 		KshstSuperHdConMed entity = new KshstSuperHdConMed();
 		domain.saveToMemento(new JpaSuperHD60HConMedSetMemento(entity));
 		return entity;
+	}
+	
+	/**
+	 * To entity premium extra rate.
+	 *
+	 * @param domains the domains
+	 * @return the list
+	 */
+	private List<KshstPremiumExt60hRate> toEntityPremiumExtraRate(String companyId,
+			List<PremiumExtra60HRate> domains) {
+		return domains.stream().map(domain -> {
+			KshstPremiumExt60hRate entity = new KshstPremiumExt60hRate();
+			domain.saveToMemento(new JpaPremiumExtra60HRateSetMemento(entity, companyId));
+			return entity;
+		}).collect(Collectors.toList());
 	}
 	
 
