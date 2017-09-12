@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -99,7 +100,6 @@ public class Application extends DomainObject{
 	
 	public static Application createFromJavaType(
 			String companyID,
-			String applicationID,
 			int prePostAtr,
 			GeneralDate inputDate, 
 			String enteredPersonSID, 
@@ -118,7 +118,7 @@ public class Application extends DomainObject{
 			int reflectPerEnforce) {
 		return new  Application(
 				companyID, 
-				applicationID, 
+				UUID.randomUUID().toString(), 
 				EnumAdaptor.valueOf(prePostAtr,PrePostAtr.class),
 				inputDate, 
 				enteredPersonSID, 

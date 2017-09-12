@@ -1,15 +1,22 @@
 package nts.uk.ctx.at.request.infra.repository.application.common;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
 
@@ -24,12 +31,24 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	private final String SELECT_BY_APPTYPE = SELECT_FROM_APPLICATION + " AND c.applicationType = :applicationType";
 
 	private Application toDomain(KafdtApplication entity) {
-		return Application.createFromJavaType(entity.kafdtApplicationPK.companyID,
-				entity.kafdtApplicationPK.applicationID, entity.prePostAtr, entity.inputDate, entity.enteredPersonSID,
-				entity.reversionReason, entity.applicationDate, entity.applicationReason, entity.applicationType,
-				entity.applicantSID, entity.reflectPlanScheReason, entity.reflectPlanTime, entity.reflectPlanState,
-				entity.reflectPlanEnforce, entity.reflectPerScheReason, entity.reflectPerTime, entity.reflectPerState,
-				entity.reflectPerEnforce);
+		return new Application(
+				entity.kafdtApplicationPK.companyID,
+				entity.kafdtApplicationPK.applicationID,
+				EnumAdaptor.valueOf(entity.prePostAtr,PrePostAtr.class), 
+				entity.inputDate, entity.enteredPersonSID,
+				new AppReason(entity.reversionReason), 
+				entity.applicationDate, 
+				new AppReason(entity.applicationReason),
+				EnumAdaptor.valueOf(entity.applicationType,ApplicationType.class),
+				entity.applicantSID, 
+				EnumAdaptor.valueOf(entity.reflectPlanScheReason,ReflectPlanScheReason.class), 
+				entity.reflectPlanTime, 
+				EnumAdaptor.valueOf(entity.reflectPlanState,ReflectPlanPerState.class),
+				EnumAdaptor.valueOf(entity.reflectPlanEnforce,ReflectPlanPerEnforce.class), 
+				EnumAdaptor.valueOf(entity.reflectPerScheReason,ReflectPerScheReason.class),
+				entity.reflectPerTime,
+				EnumAdaptor.valueOf(entity.reflectPerState,ReflectPlanPerState.class),
+				EnumAdaptor.valueOf(entity.reflectPerEnforce,ReflectPlanPerEnforce.class));
 	}
 
 	private KafdtApplication toEntity(Application domain) {
