@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.lateorleaveearly;
 
-import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
@@ -56,16 +55,16 @@ public class LateOrLeaveEarly extends Application {
 	/** All Agrs constructor */
 	public LateOrLeaveEarly(String companyID, String appID, int prePostAtr, GeneralDate inputDate,
 			String enteredPersonSID, String reversionReason, GeneralDate applicationDate, String applicationReason,
-			int applicationType, String applicantSID, ReflectPlanScheReason reflectPlanScheReason,
-			BigDecimal reflectPlanTime, int reflectPlanState, int reflectPlanEnforce,
-			ReflectPerScheReason reflectPerScheReason, BigDecimal reflectPerTime, int reflectPerState,
+			int applicationType, String applicantSID, int reflectPlanScheReason,
+			GeneralDate reflectPlanTime, int reflectPlanState, int reflectPlanEnforce,
+			int reflectPerScheReason, GeneralDate reflectPerTime, int reflectPerState,
 			int reflectPerEnforce, int actualCancelAtr, int early1, int earlyTime1, int late1, int lateTime1,
 			int early2, int earlyTime2, int late2, int lateTime2) {
 		super(companyID, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), inputDate, enteredPersonSID,
 				new AppReason(reversionReason), applicationDate, new AppReason(applicationReason),
-				EnumAdaptor.valueOf(applicationType, ApplicationType.class), applicantSID, reflectPlanScheReason,
+				EnumAdaptor.valueOf(applicationType, ApplicationType.class), applicantSID, EnumAdaptor.valueOf(reflectPlanScheReason, ReflectPlanScheReason.class),
 				reflectPlanTime, EnumAdaptor.valueOf(reflectPlanState, ReflectPlanPerState.class),
-				EnumAdaptor.valueOf(reflectPlanEnforce, ReflectPlanPerEnforce.class), reflectPerScheReason,
+				EnumAdaptor.valueOf(reflectPlanEnforce, ReflectPlanPerEnforce.class), EnumAdaptor.valueOf(reflectPerScheReason, ReflectPerScheReason.class),
 				reflectPerTime, EnumAdaptor.valueOf(reflectPerState, ReflectPlanPerState.class),
 				EnumAdaptor.valueOf(reflectPerEnforce, ReflectPlanPerEnforce.class));
 		this.companyID = companyID;
@@ -81,4 +80,18 @@ public class LateOrLeaveEarly extends Application {
 		this.lateTime2 = EnumAdaptor.valueOf(lateTime2, TimeDay.class);
 	}
 
+	public void changeApplication(int actualCancelAtr, int early1,
+			int earlyTime1, int late1, int lateTime1, int early2, int earlyTime2, int late2, int lateTime2)
+	{
+		this.actualCancelAtr = actualCancelAtr;
+		this.early1 = EnumAdaptor.valueOf(early1, Select.class);
+		this.earlyTime1 = EnumAdaptor.valueOf(earlyTime1, TimeDay.class);
+		this.late1 = EnumAdaptor.valueOf(late1, Select.class);
+		this.lateTime1 = EnumAdaptor.valueOf(lateTime1, TimeDay.class);
+		this.early2 = EnumAdaptor.valueOf(early2, Select.class);
+		this.earlyTime2 = EnumAdaptor.valueOf(earlyTime2, TimeDay.class);
+		this.late2 = EnumAdaptor.valueOf(late2, Select.class);
+		this.lateTime2 = EnumAdaptor.valueOf(lateTime2, TimeDay.class);
+	}
+	
 }

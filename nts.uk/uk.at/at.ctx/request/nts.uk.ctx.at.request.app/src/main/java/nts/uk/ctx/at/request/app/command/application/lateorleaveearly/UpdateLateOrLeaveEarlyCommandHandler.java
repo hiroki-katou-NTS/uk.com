@@ -5,8 +5,9 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.FactoryLateOrLeaveEarly;
+import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeaveEarlyService;
 
 /**
  * 
@@ -18,13 +19,26 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRe
 public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateLateOrLeaveEarlyCommand> {
 	
 	@Inject
-	private LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
+	private LateOrLeaveEarlyService lateOrLeaveEarlyService;
 
+	@Inject
+	private FactoryLateOrLeaveEarly factoryLateOrLeaveEarly;
 	@Override
 	protected void handle(CommandHandlerContext<UpdateLateOrLeaveEarlyCommand> context) {
-	//	UpdateLateOrLeaveEarlyCommand command = context.getCommand();
-		String appID = IdentifierUtil.randomUniqueId();
-		lateOrLeaveEarlyRepository.update(context.getCommand().toDomain(appID));
+		UpdateLateOrLeaveEarlyCommand command = context.getCommand();
+		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(
+        		command.getApplicationDate(),
+        		command.getReasonTemp() +  System.lineSeparator() + command.getAppReason(),
+        		command.getActualCancelAtr(),
+        		command.getEarly1(),
+        		command.getEarlyTime1(),
+        		command.getLate1(),
+        		command.getLateTime1(),
+        		command.getEarly2(),
+        		command.getEarlyTime2(),
+        		command.getLate2(),
+        		command.getLateTime2());
+		lateOrLeaveEarlyService.updateLateOrLeaveEarly(domainLateOrLeaveEarly);
 		
 	}
 	

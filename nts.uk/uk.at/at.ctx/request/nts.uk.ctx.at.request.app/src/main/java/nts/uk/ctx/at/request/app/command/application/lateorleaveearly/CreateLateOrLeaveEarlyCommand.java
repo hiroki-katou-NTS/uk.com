@@ -19,8 +19,6 @@ public class CreateLateOrLeaveEarlyCommand {
 	/** 申請ID */
 	private String appID;
 	
-	/** 申請者*/
-	private String applicantName;
 	
     /** 申請日*/
 	private GeneralDate applicationDate;
