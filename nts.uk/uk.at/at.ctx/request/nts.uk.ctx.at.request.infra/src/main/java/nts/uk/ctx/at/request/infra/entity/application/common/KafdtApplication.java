@@ -77,7 +77,7 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
      * 予定反映日時
      */
 	@Column(name="REFLECT_PLAN_TIME")
-	public BigDecimal reflectPlanTime;
+	public GeneralDate reflectPlanTime;
 	/**
 	 * 予定反映状態
 	 */
@@ -97,7 +97,7 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	 * 実績反映日時
 	 */
 	@Column(name="REFLECT_PER_TIME")
-	public BigDecimal reflectPerTime;
+	public GeneralDate reflectPerTime;
 	/**
 	 * 予定反映状態
 	 */

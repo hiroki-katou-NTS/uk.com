@@ -70,7 +70,7 @@ public class Application extends DomainObject{
     /**
      * 予定反映日時
      */
-	private BigDecimal reflectPlanTime;
+	private GeneralDate reflectPlanTime;
 	/**
 	 * 予定反映状態
 	 */
@@ -87,7 +87,7 @@ public class Application extends DomainObject{
 	/**
 	 * 実績反映日時
 	 */
-	private BigDecimal reflectPerTime;
+	private GeneralDate reflectPerTime;
 	/**
 	 * 実績反映状態
 	 */
@@ -109,11 +109,11 @@ public class Application extends DomainObject{
 			int applicationType, 
 			String applicantSID,
 			int reflectPlanScheReason, 
-			BigDecimal reflectPlanTime,
+			GeneralDate reflectPlanTime,
 			int reflectPlanState, 
 			int reflectPlanEnforce,
 			int reflectPerScheReason, 
-			BigDecimal reflectPerTime, 
+			GeneralDate reflectPerTime, 
 			int reflectPerState,
 			int reflectPerEnforce) {
 		return new  Application(
@@ -156,7 +156,7 @@ public class Application extends DomainObject{
 	  * change value of reflectPerTime
 	  * @param reflectPerTime
 	  */
-	 public void changeReflectPerTime(BigDecimal reflectPerTime) {
+	 public void changeReflectPerTime(GeneralDate reflectPerTime) {
 		 this.reflectPerTime = reflectPerTime;
 	 }
 	 /**
