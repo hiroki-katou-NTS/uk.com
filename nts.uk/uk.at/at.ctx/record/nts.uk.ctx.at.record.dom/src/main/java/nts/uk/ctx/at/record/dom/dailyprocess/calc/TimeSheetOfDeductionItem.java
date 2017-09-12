@@ -9,11 +9,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import nts.gul.util.value.Finally;
-import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWorkTime;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheet;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.StampGoOutReason;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.CalcMethodIfLeaveWorkDuringBreakTime;
 import nts.uk.ctx.at.shared.dom.worktime.basicinformation.SettingMethod;
@@ -24,15 +19,15 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidBre
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidPrefixBreakTimeOfCalcMethod;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
- * 控除項目の時間帯
+ * 控除�?��の時間帯
  * @author keisuke_hoshina
  *
  */
 
+@RequiredArgsConstructor
 
 @Getter
 public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
-
 	private Finally<StampGoOutReason> goOutReason;
 	private Finally<BreakClassification> breakAtr;
 	private final DedcutionClassification deductionAtr;
@@ -42,7 +37,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 //	private final BreakClassification breakClassification;
 
 	/**
-	 * 休憩時間帯取得時格納用
+	 * 休�?時間帯取得時格納用
 	 * @param timeSpan
 	 * @param goOutReason
 	 * @param breakAtr
@@ -62,7 +57,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	}
 	
 	/**
-	 * 固定勤務の休憩時間帯取得
+	 * 固定勤務�?休�?時間帯取�?
 	 * @param timeSpan
 	 * @param goOutReason
 	 * @param breakAtr
@@ -87,33 +82,33 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	
 
 	/**
-	 * 休憩と外出の重複判定
-	 * @param baseTimeSheet 現ループ中のリスト
-	 * @param compareTimeSheet　次のループで取り出すリスト
+	 * 休�?と外�?の重�?���?
+	 * @param baseTimeSheet 現ループ中のリス�?
+	 * @param compareTimeSheet�?次のループで取り出すリス�?
 	 */
 	public Map<TimeSpanForCalc,Boolean> DeplicateBreakGoOut(TimeSheetOfDeductionItem compareTimeSheet,SettingMethod setMethod,BreakClockOfManageAtr clockManage) {
 		Map<TimeSpanForCalc, Boolean> map = new HashMap<TimeSpanForCalc,Boolean>();
-		/*両方とも外出*/
+		/*両方とも外�?*/
 		if(this.getDeductionAtr().isGoOut() && compareTimeSheet.getDeductionAtr().isGoOut()) {
 			map.put(compareTimeSheet.calculationTimeSheet.getNotDuplicationWith(this.calculationTimeSheet).get(),Boolean.FALSE);
 			return map;
 		}
-		/*両方とも育児*/
+		/*両方とも育�?*/
 		else if(this.getDeductionAtr().isChildCare() && compareTimeSheet.getDeductionAtr().isChildCare()) {
 			map.put(compareTimeSheet.calculationTimeSheet.getNotDuplicationWith(this.calculationTimeSheet).get(),Boolean.FALSE);
 			return map;
 		}
-		/*前半育児、後半外出*/
+		/*前半育児�?�後半外�?*/
 		else if(this.getDeductionAtr().isChildCare() && compareTimeSheet.getDeductionAtr().isGoOut()) {
 			map.put(compareTimeSheet.calculationTimeSheet.getNotDuplicationWith(this.calculationTimeSheet).get(),Boolean.FALSE);
 			return map;
 		}
-		/*前半外出、後半育児*/
+		/*前半外�?、後半育�?*/
 		else if(this.getDeductionAtr().isGoOut() && compareTimeSheet.getDeductionAtr().isChildCare()) {
 			map.put(this.calculationTimeSheet.getNotDuplicationWith(compareTimeSheet.calculationTimeSheet).get(),Boolean.FALSE);
 			return map;
 		}
-		/*前半休憩、後半外出*/
+		/*前半休�?、後半外�?*/
 		else if((this.getDeductionAtr().isBreak() && compareTimeSheet.getDeductionAtr().isGoOut())){
 			if(setMethod.isFluidWork()) {
 				if(clockManage.isNotClockManage()) {
@@ -121,13 +116,13 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 					return map;
 				}
 				else {
-					/*アルゴリズムのパターン不足を発見したため、いったん保留*/
+					/*アルゴリズ�?のパターン不足を発見したため�?�いったん保留*/
 					map.put(compareTimeSheet.calculationTimeSheet.getNotDuplicationWith(this.calculationTimeSheet).get(),Boolean.FALSE);
 					return map;
 				}
 			}
 		}
-		/*前半外出、後半休憩*/
+		/*前半外�?、後半休�?*/
 		else if(this.getDeductionAtr().isGoOut() && compareTimeSheet.getDeductionAtr().isBreak()){
 			if(setMethod.isFluidWork()) {
 				if(clockManage.isNotClockManage()) {
@@ -143,15 +138,15 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 			
 		}
 		else if(this.getDeductionAtr().isBreak() && compareTimeSheet.getDeductionAtr().isBreak()) {
-			/*前半休憩、後半休憩打刻*/
+			/*前半休�?、後半休�?打刻*/
 			if(this.getBreakAtr().isBreak() && compareTimeSheet.getBreakAtr().isBreakStamp()) {
 				
 			}
-			/*前半休憩打刻、後半休憩*/
+			/*前半休�?打刻、後半休�?*/
 			else if((this.getBreakAtr().isBreakStamp() && compareTimeSheet.getBreakAtr().isBreak())){
 					
 			}
-			/*両方とも休憩打刻*/
+			/*両方とも休�?打刻*/
 			else if(this.getBreakAtr().isBreakStamp() && compareTimeSheet.getBreakAtr().isBreakStamp()) {
 				
 			}

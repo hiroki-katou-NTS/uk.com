@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 
 /**
- * 1日の計算範囲
+ * 1日の計算�?��
  * @author keisuke_hoshina
  *
  */
@@ -40,10 +40,10 @@ public class CalculationRangeOfOneDay {
 	
 	
 	/**
-	 * 就業内時間帯の作成
+	 * 就業�?��間帯の作�?
 	 */
 	public void createWithinWorkTimeSheet() {
-		/*固定控除時間帯の作成*/
+		/*固定控除時間帯の作�?*/
 		DedcutionTimeSheet collectDeductionTimes = new DeductionTimeSheet();
 		collectDeductionTimes.createDedctionTimeSheet();
 		
@@ -51,29 +51,29 @@ public class CalculationRangeOfOneDay {
 		if(workingSystem.isExcludedWorkingCalculate()) {
 			theDayOfWorkTimesLoop();
 		}else{
-			/*計算対象外の処理*/
+			/*計算対象外�?処�?*/
 			return;
 		}
 	}
 
 	/**
-	 * 勤務回数分ループ
-	 * 就内・外時間帯作成と計算
+	 * 勤務回数�?��ー�?
+	 * 就�??外時間帯作�?と計�?
 	 */
 	public void theDayOfWorkTimesLoop() {
 		for(int workNumber = 1; workNumber <= dailyOfAttendanceLeavingWork.size(); workNumber++ ) {
 			createWithinWorkTimeTimeSheet();
-			/*就外*/
-			/*勤務時間帯の計算*/
+			/*就�?*/
+			/*勤務時間帯の計�?*/
 			
 		}
 	}
 	
 	/**
-	 * 就業時間内時間帯の作成
-	 * @param workType　勤務種類コード
-	 * @param predetermineTimeSet 所定時間帯の設定
-	 * @param fixedWorkSetting 固定勤務の設定
+	 * 就業時間�?��間帯の作�?
+	 * @param workType�?勤務種類コー�?
+	 * @param predetermineTimeSet �?定時間帯の設�?
+	 * @param fixedWorkSetting 固定勤務�?設�?
 	 */
 	public void createWithinWorkTimeTimeSheet() {
 		if(workType.isWeekDayAttendance()) {
@@ -82,11 +82,11 @@ public class CalculationRangeOfOneDay {
 	}
 	
 	/**
-	 * 就業時間外時間帯の作成
+	 * 就業時間外時間帯の作�?
 	 */
 	public void createOutOfWorkTimeSheet(WorkType workType) {
 		if(workType.isWeekDayAttendance()) {
-			/*就業時間外　平日出勤の処理*/
+			/*就業時間外�??平日出勤の処�?*/
 		}
 		else {
 			/*休日出勤*/
@@ -94,14 +94,14 @@ public class CalculationRangeOfOneDay {
 	}
 
 	/**
-	 * 勤務の時間帯を判定し時間帯を作成
+	 * 勤務�?時間帯を判定し時間帯を作�?
 	 * @param workTimeDivision
 	 */
 	public void decisionWorkClassification(WorkTimeDivision workTimeDivision) {
-		/*就業区分の取得*/
+		/*就業区�??取�?*/
 		//           //
 		if(workTimeDivision.getWorkTimeDailyAtr().isFlex()) {
-			/*フレックス勤務の処理*/
+			/*フレ�?��ス勤務�?処�?*/
 		}
 		else {
 			switch(workTimeDivision.getWorkTimeMethodSet()) {
@@ -116,7 +116,7 @@ public class CalculationRangeOfOneDay {
 			}
 
 		}
-		/*控除時間帯の作成*/
+		/*控除時間帯の作�?*/
 		//             //
 	}
 }
