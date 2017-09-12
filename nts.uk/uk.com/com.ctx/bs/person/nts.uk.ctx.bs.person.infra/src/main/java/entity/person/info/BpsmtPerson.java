@@ -16,12 +16,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BPSDT_PERSON")
-public class BpsdtPerson  extends UkJpaEntity implements Serializable {
+@Table(name = "BPSMT_PERSON")
+public class BpsmtPerson  extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public BpsdtPersonPk bpsdtPersonPk;
+	public BpsmtPersonPk bpsdtPersonPk;
 
 	@Basic(optional = false)
 	@Column(name = "BIRTHDAY")

@@ -23,8 +23,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "BCMDT_COMPANY")
-public class BcmdtCompany extends UkJpaEntity implements Serializable {
+@Table(name = "BCMMT_COMPANY")
+public class BcmmtCompany extends UkJpaEntity implements Serializable {
 
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -66,7 +66,7 @@ public class BcmdtCompany extends UkJpaEntity implements Serializable {
     /**
      * Instantiates a new cmnmt company.
      */
-    public BcmdtCompany() {
+    public BcmmtCompany() {
     	super();
     }
 
@@ -75,7 +75,7 @@ public class BcmdtCompany extends UkJpaEntity implements Serializable {
      *
      * @param cid the cid
      */
-    public BcmdtCompany(String cid) {
+    public BcmmtCompany(String cid) {
         this.cid = cid;
     }
 
@@ -100,10 +100,10 @@ public class BcmdtCompany extends UkJpaEntity implements Serializable {
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are
 		// not set
-		if (!(object instanceof BcmdtCompany)) {
+		if (!(object instanceof BcmmtCompany)) {
 			return false;
 		}
-		BcmdtCompany other = (BcmdtCompany) object;
+		BcmmtCompany other = (BcmmtCompany) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;

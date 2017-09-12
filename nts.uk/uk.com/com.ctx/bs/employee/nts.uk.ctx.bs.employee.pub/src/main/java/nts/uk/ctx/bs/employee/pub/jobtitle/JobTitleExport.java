@@ -9,7 +9,7 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class PubJobTitleDto.
+ * The Class JobTitleExport.
  */
 @Data
 @Builder
