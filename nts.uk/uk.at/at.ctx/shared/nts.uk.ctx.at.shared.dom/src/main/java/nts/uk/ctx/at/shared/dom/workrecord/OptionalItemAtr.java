@@ -2,24 +2,28 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.workrecord.calculationformula;
+package nts.uk.ctx.at.shared.dom.workrecord;
 
 import lombok.AllArgsConstructor;
 
 /**
- * The Enum CalculationClassification.
+ * The Enum OptionalItemAttribute.
  */
-// 計算区分
+// 任意項目の属性
 @AllArgsConstructor
-public enum CalculationClassification {
+public enum OptionalItemAtr {
 
-	/** The item selection. */
-	// 計算式組込
-	ITEM_SELECTION(0),
+	/** The times. */
+	// 回数
+	TIMES(0),
 
-	/** The formula setting. */
-	// 計算式設定
-	FORMULA_SETTING(1);
+	/** The amount. */
+	// 金額
+	AMOUNT(1),
+
+	/** The time. */
+	// 時間
+	TIME(2);
 
 	/** The value. */
 	public final int value;

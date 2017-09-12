@@ -20,5 +20,5 @@ public class EmploymentCondition extends DomainObject {
 
 	/** The emp applicable cls. */
 	// 雇用適用区分
-	private EmpConditionClassification empApplicableCls;
+	private EmpApplicableAtr empApplicableAtr;
 }

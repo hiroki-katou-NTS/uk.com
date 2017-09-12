@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
  */
 // 計算式属性
 @AllArgsConstructor
-public enum CalculationFormulaAttribute {
+public enum CalculationFormulaAtr {
 
 	/** The times. */
 	// 回数

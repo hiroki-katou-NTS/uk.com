@@ -22,7 +22,7 @@ public class FormulaSetting extends DomainObject {
 
 	/** The operator. */
 	// 演算子
-	private OperatorClassification operator;
+	private OperatorAtr operator;
 
 	/** The formula setting items. */
 	// 計算式設定項目

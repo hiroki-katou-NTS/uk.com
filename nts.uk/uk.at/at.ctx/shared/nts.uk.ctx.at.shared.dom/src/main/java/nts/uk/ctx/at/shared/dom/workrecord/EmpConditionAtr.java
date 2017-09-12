@@ -7,19 +7,20 @@ package nts.uk.ctx.at.shared.dom.workrecord;
 import lombok.AllArgsConstructor;
 
 /**
- * The Enum OptionalItemUsageClassification.
+ * The Enum EmpConditionAtr.
  */
-// 任意項目利用区分
+// 雇用条件区分
+
 @AllArgsConstructor
-public enum OptionalItemUsageClassification {
+public enum EmpConditionAtr {
 
-	/** The not use. */
-	// 利用する
-	NOT_USE(0),
+	/** The no condition. */
+	// 条件なし
+	NO_CONDITION(0),
 
-	/** The use. */
-	// 利用しない
-	USE(1);
+	/** The with condition. */
+	// 条件あり
+	WITH_CONDITION(1);
 
 	/** The value. */
 	public final int value;

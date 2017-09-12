@@ -16,7 +16,7 @@ public class OptionalItemFormulaSetting extends DomainObject {
 
 	/** The calculation classification. */
 	// 計算区分
-	private CalculationClassification calculationClassification;
+	private CalculationAtr calculationAtr;
 
 	// ===================== Optional ======================= //
 	/** The formula setting. */

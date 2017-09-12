@@ -7,19 +7,19 @@ package nts.uk.ctx.at.shared.dom.workrecord;
 import lombok.AllArgsConstructor;
 
 /**
- * The Enum OptionalItemUsageClassification.
+ * The Enum PerformanceClassification.
  */
 // 任意項目利用区分
 @AllArgsConstructor
-public enum EmpApplicableClassification {
+public enum PerformanceAtr {
 
-	/** The not use. */
-	// 利用する
-	NOT_USE(0),
+	/** The monthly performance. */
+	// 月別実績
+	MONTHLY_PERFORMANCE(0),
 
-	/** The use. */
-	// 利用しない
-	USE(1);
+	/** The daily performance. */
+	// 日別実績
+	DAILY_PERFORMANCE(1);
 
 	/** The value. */
 	public final int value;

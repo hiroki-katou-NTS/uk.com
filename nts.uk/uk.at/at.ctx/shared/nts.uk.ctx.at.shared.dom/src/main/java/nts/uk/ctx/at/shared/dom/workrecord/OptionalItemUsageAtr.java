@@ -2,28 +2,24 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.workrecord.calculationformula;
+package nts.uk.ctx.at.shared.dom.workrecord;
 
 import lombok.AllArgsConstructor;
 
 /**
- * The Enum OperatorClassification.
+ * The Enum OptionalItemUsageClassification.
  */
-// 演算子区分
+// 任意項目利用区分
 @AllArgsConstructor
-public enum OperatorClassification {
+public enum OptionalItemUsageAtr {
 
-	/** The add. */
-	ADD(0),
+	/** The not use. */
+	// 利用する
+	NOT_USE(0),
 
-	/** The subtract. */
-	SUBTRACT(1),
-
-	/** The multiply. */
-	MULTIPLY(2),
-
-	/** The divide. */
-	DIVIDE(3);
+	/** The use. */
+	// 利用しない
+	USE(1);
 
 	/** The value. */
 	public final int value;

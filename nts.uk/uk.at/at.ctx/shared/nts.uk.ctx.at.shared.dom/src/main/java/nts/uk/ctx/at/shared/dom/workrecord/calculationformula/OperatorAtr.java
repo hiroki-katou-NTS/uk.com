@@ -2,24 +2,28 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.workrecord;
+package nts.uk.ctx.at.shared.dom.workrecord.calculationformula;
 
 import lombok.AllArgsConstructor;
 
 /**
- * The Enum EmpConditionClassification.
+ * The Enum OperatorClassification.
  */
-// 雇用適用区分
+// 演算子区分
 @AllArgsConstructor
-public enum EmpConditionClassification {
+public enum OperatorAtr {
 
-	/** The not apply. */
-	// 適用しない
-	NOT_APPLY(0),
+	/** The add. */
+	ADD(0),
 
-	/** The apply. */
-	// 適用する
-	APPLY(1);
+	/** The subtract. */
+	SUBTRACT(1),
+
+	/** The multiply. */
+	MULTIPLY(2),
+
+	/** The divide. */
+	DIVIDE(3);
 
 	/** The value. */
 	public final int value;

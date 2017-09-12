@@ -48,11 +48,11 @@ public interface OptionalItemFormulaGetMemento {
 	OptionalItemFormulaSetting getOptionalItemFormulaSetting();
 
 	/**
-	 * Gets the calculation formula attribute.
+	 * Gets the calculation formula atr.
 	 *
-	 * @return the calculation formula attribute
+	 * @return the calculation formula atr
 	 */
-	CalculationFormulaAttribute getCalculationFormulaAttribute();
+	CalculationFormulaAtr getCalculationFormulaAtr();
 
 	/**
 	 * Gets the symbol.

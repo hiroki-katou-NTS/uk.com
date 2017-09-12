@@ -48,11 +48,11 @@ public interface OptionalItemFormulaSetMemento {
 	void setOptionalItemFormulaSetting(OptionalItemFormulaSetting setting);
 
 	/**
-	 * Sets the calculation formula attribute.
+	 * Sets the calculation formula atr.
 	 *
-	 * @param atr the new calculation formula attribute
+	 * @param atr the new calculation formula atr
 	 */
-	void setCalculationFormulaAttribute(CalculationFormulaAttribute atr);
+	void setCalculationFormulaAtr(CalculationFormulaAtr atr);
 
 	/**
 	 * Sets the symbol.

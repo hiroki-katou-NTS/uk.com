@@ -40,7 +40,7 @@ public class OptionalItemFormula extends AggregateRoot {
 
 	/** The formula atr. */
 	// 属性
-	private CalculationFormulaAttribute formulaAtr;
+	private CalculationFormulaAtr formulaAtr;
 
 	/** The symbol. */
 	// 記号
@@ -66,7 +66,7 @@ public class OptionalItemFormula extends AggregateRoot {
 		this.optionalItemNo = memento.getOptionalItemNo();
 		this.formulaName = memento.getOptionalItemFormulaName();
 		this.formulaSetting = memento.getOptionalItemFormulaSetting();
-		this.formulaAtr = memento.getCalculationFormulaAttribute();
+		this.formulaAtr = memento.getCalculationFormulaAtr();
 		this.symbol = memento.getSymbol();
 		this.monthlyRounding = memento.getMonthlyRounding();
 		this.dailyRounding = memento.getDailyRounding();
@@ -83,7 +83,7 @@ public class OptionalItemFormula extends AggregateRoot {
 		memento.setOptionalItemNo(this.optionalItemNo);
 		memento.setOptionalItemFormulaName(this.formulaName);
 		memento.setOptionalItemFormulaSetting(this.formulaSetting);
-		memento.setCalculationFormulaAttribute(this.formulaAtr);
+		memento.setCalculationFormulaAtr(this.formulaAtr);
 		memento.setSymbol(this.symbol);
 		memento.setMonthlyRounding(this.monthlyRounding);
 		memento.setDailyRounding(this.dailyRounding);

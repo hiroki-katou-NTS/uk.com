@@ -33,32 +33,32 @@ public interface OptionalItemGetMemento {
 	OptionalItemName getOptionalItemName();
 
 	/**
-	 * Gets the optional item attribute.
+	 * Gets the optional item atr.
 	 *
-	 * @return the optional item attribute
+	 * @return the optional item atr
 	 */
-	OptionalItemAttribute getOptionalItemAttribute();
+	OptionalItemAtr getOptionalItemAtr();
 
 	/**
-	 * Gets the optional item usage classification.
+	 * Gets the optional item usage atr.
 	 *
-	 * @return the optional item usage classification
+	 * @return the optional item usage atr
 	 */
-	OptionalItemUsageClassification getOptionalItemUsageClassification();
+	OptionalItemUsageAtr getOptionalItemUsageAtr();
 
 	/**
-	 * Gets the emp condition classification.
+	 * Gets the emp condition atr.
 	 *
-	 * @return the emp condition classification
+	 * @return the emp condition atr
 	 */
-	EmpConditionClassification getEmpConditionClassification();
+	EmpConditionAtr getEmpConditionAtr();
 
 	/**
-	 * Gets the performance classification.
+	 * Gets the performance atr.
 	 *
-	 * @return the performance classification
+	 * @return the performance atr
 	 */
-	PerformanceClassification getPerformanceClassification();
+	PerformanceAtr getPerformanceAtr();
 
 	/**
 	 * Gets the calculation result range.

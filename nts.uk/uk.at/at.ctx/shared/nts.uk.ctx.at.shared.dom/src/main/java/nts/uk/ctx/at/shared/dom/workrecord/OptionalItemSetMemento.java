@@ -33,32 +33,32 @@ public interface OptionalItemSetMemento {
 	void setOptionalItemName(OptionalItemName optionalItemName);
 
 	/**
-	 * Sets the optional item attribute.
+	 * Sets the optional item atr.
 	 *
-	 * @param optionalItemAttribute the new optional item attribute
+	 * @param optionalItemAtr the new optional item atr
 	 */
-	void setOptionalItemAttribute(OptionalItemAttribute optionalItemAttribute);
+	void setOptionalItemAtr(OptionalItemAtr optionalItemAtr);
 
 	/**
-	 * Sets the optional item usage classification.
+	 * Sets the optional item usage atr.
 	 *
-	 * @param optionalItemUsageClassification the new optional item usage classification
+	 * @param optionalItemUsageAtr the new optional item usage atr
 	 */
-	void setOptionalItemUsageClassification(OptionalItemUsageClassification optionalItemUsageClassification);
+	void setOptionalItemUsageAtr(OptionalItemUsageAtr optionalItemUsageAtr);
 
 	/**
-	 * Sets the emp condition classification.
+	 * Sets the emp condition atr.
 	 *
-	 * @param empConditionClassification the new emp condition classification
+	 * @param empConditionAtr the new emp condition atr
 	 */
-	void setEmpConditionClassification(EmpConditionClassification empConditionClassification);
+	void setEmpConditionAtr(EmpConditionAtr empConditionAtr);
 
 	/**
-	 * Sets the performance classification.
+	 * Sets the performance atr.
 	 *
-	 * @param performanceClassification the new performance classification
+	 * @param performanceAtr the new performance atr
 	 */
-	void setPerformanceClassification(PerformanceClassification performanceClassification);
+	void setPerformanceAtr(PerformanceAtr performanceAtr);
 
 	/**
 	 * Sets the calculation result range.

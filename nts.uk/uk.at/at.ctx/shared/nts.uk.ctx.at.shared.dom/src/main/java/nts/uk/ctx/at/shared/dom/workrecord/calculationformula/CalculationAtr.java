@@ -2,24 +2,24 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.workrecord;
+package nts.uk.ctx.at.shared.dom.workrecord.calculationformula;
 
 import lombok.AllArgsConstructor;
 
 /**
- * The Enum PerformanceClassification.
+ * The Enum CalculationClassification.
  */
-// 任意項目利用区分
+// 計算区分
 @AllArgsConstructor
-public enum PerformanceClassification {
+public enum CalculationAtr {
 
-	/** The monthly performance. */
-	// 月別実績
-	MONTHLY_PERFORMANCE(0),
+	/** The item selection. */
+	// 計算式組込
+	ITEM_SELECTION(0),
 
-	/** The daily performance. */
-	// 日別実績
-	DAILY_PERFORMANCE(1);
+	/** The formula setting. */
+	// 計算式設定
+	FORMULA_SETTING(1);
 
 	/** The value. */
 	public final int value;

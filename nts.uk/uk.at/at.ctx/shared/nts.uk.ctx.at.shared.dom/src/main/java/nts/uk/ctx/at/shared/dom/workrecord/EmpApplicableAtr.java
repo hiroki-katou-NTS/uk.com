@@ -7,23 +7,19 @@ package nts.uk.ctx.at.shared.dom.workrecord;
 import lombok.AllArgsConstructor;
 
 /**
- * The Enum OptionalItemAttribute.
+ * The Enum EmpApplicableAtr.
  */
-// 任意項目の属性
+// 雇用適用区分
 @AllArgsConstructor
-public enum OptionalItemAttribute {
+public enum EmpApplicableAtr {
 
-	/** The times. */
-	// 回数
-	TIMES(0),
+	/** The not apply. */
+	// 適用しない
+	NOT_APPLY(0),
 
-	/** The amount. */
-	// 金額
-	AMOUNT(1),
-
-	/** The time. */
-	// 時間
-	TIME(2);
+	/** The apply. */
+	// 適用する
+	APPLY(1);
 
 	/** The value. */
 	public final int value;

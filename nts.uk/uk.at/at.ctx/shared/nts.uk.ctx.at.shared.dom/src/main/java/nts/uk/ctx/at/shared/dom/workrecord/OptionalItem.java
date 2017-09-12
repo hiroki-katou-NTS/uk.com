@@ -31,19 +31,19 @@ public class OptionalItem extends AggregateRoot {
 
 	/** The optional item atr. */
 	// 属性
-	private OptionalItemAttribute optionalItemAtr;
+	private OptionalItemAtr optionalItemAtr;
 
-	/** The usage classification. */
+	/** The usage atr. */
 	// 任意項目利用区分
-	private OptionalItemUsageClassification usageClassification;
+	private OptionalItemUsageAtr usageAtr;
 
-	/** The emp condition classification. */
+	/** The emp condition atr. */
 	// 雇用条件区分
-	private EmpConditionClassification empConditionClassification;
+	private EmpConditionAtr empConditionAtr;
 
-	/** The performance classification. */
+	/** The performance atr. */
 	// 実績区分
-	private PerformanceClassification performanceClassification;
+	private PerformanceAtr performanceAtr;
 
 	/** The calculation result range. */
 	// 計算結果の範囲
@@ -58,10 +58,10 @@ public class OptionalItem extends AggregateRoot {
 		this.companyId = memento.getCompanyId();
 		this.optionalItemNo = memento.getOptionalItemNo();
 		this.optionalItemName = memento.getOptionalItemName();
-		this.optionalItemAtr = memento.getOptionalItemAttribute();
-		this.usageClassification = memento.getOptionalItemUsageClassification();
-		this.empConditionClassification = memento.getEmpConditionClassification();
-		this.performanceClassification = memento.getPerformanceClassification();
+		this.optionalItemAtr = memento.getOptionalItemAtr();
+		this.usageAtr = memento.getOptionalItemUsageAtr();
+		this.empConditionAtr = memento.getEmpConditionAtr();
+		this.performanceAtr = memento.getPerformanceAtr();
 		this.calculationResultRange = memento.getCalculationResultRange();
 	}
 
@@ -73,11 +73,11 @@ public class OptionalItem extends AggregateRoot {
 	public void saveToMemento(OptionalItemSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setOptionalItemNo(this.optionalItemNo);
-		memento.setOptionalItemAttribute(this.optionalItemAtr);
+		memento.setOptionalItemAtr(this.optionalItemAtr);
 		memento.setOptionalItemName(this.optionalItemName);
-		memento.setOptionalItemUsageClassification(this.usageClassification);
-		memento.setEmpConditionClassification(this.empConditionClassification);
-		memento.setPerformanceClassification(this.performanceClassification);
+		memento.setOptionalItemUsageAtr(this.usageAtr);
+		memento.setEmpConditionAtr(this.empConditionAtr);
+		memento.setPerformanceAtr(this.performanceAtr);
 		memento.setCalculationResultRange(this.calculationResultRange);
 	}
 
