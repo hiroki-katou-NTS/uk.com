@@ -343,6 +343,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
             $("#input-workTypeCode").trigger("validate");
             $("#input-workTypeName").trigger("validate");
+            $("#abbreviation-name-input").trigger("validate");
+            $("#symbolic-name-input").trigger("validate");
+            $("#memo-input").trigger("validate");
 
             if (nts.uk.ui.errors.hasError()) {
                 return;
@@ -351,7 +354,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
                     self.isCreated(false);
                     self.getWorkType().done(function() {
-
+                        self.currentCode(workType.workTypeCode());
                     });
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error.message);
@@ -395,23 +398,23 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             if (self.langId() != 'ja') {
                 self.enableMethod(false);
             } else {
-                if (workTypeSetCode == 1 || workTypeSetCode == 8 || workTypeSetCode == 12 || workTypeSetCode == 13) {
-                    self.currentWorkType().calculatorMethod(0);
+                if (workTypeSetCode == WorkTypeCls.Holiday || workTypeSetCode == WorkTypeCls.Pause || workTypeSetCode == WorkTypeCls.LeaveOfAbsence || workTypeSetCode == WorkTypeCls.Closure) {
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.DO_NOT_GO_TO_WORK);
                     self.enableMethod(false);
-                } else if (workTypeSetCode == 0 || workTypeSetCode == 2 || workTypeSetCode == 3 || workTypeSetCode == 7 || workTypeSetCode == 10) {
-                    self.currentWorkType().calculatorMethod(1);
+                } else if (workTypeSetCode == WorkTypeCls.Attendance || workTypeSetCode == WorkTypeCls.AnnualHoliday || workTypeSetCode == WorkTypeCls.YearlyReserved || workTypeSetCode == WorkTypeCls.Shooting || workTypeSetCode == WorkTypeCls.ContinuousWork) {
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.MAKE_ATTENDANCE_DAY);
                     self.enableMethod(false);
-                } else if (workTypeSetCode == 6) {
-                    self.currentWorkType().calculatorMethod(2);
+                } else if (workTypeSetCode == WorkTypeCls.SubstituteHoliday) {
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.EXCLUDE_FROM_WORK_DAY);
                     self.enableMethod(false);
-                } else if (workTypeSetCode == 9) {
-                    self.currentWorkType().calculatorMethod(3);
+                } else if (workTypeSetCode == WorkTypeCls.TimeDigestVacation) {
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.TIME_DIGEST_VACATION);
                     self.enableMethod(false);
-                } else if (workTypeSetCode == 4) {
-                    self.currentWorkType().calculatorMethod(1);
+                } else if (workTypeSetCode == WorkTypeCls.SpecialHoliday) {
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.MAKE_ATTENDANCE_DAY);
                     self.enableMethod(true);
                 } else {
-                    self.currentWorkType().calculatorMethod(0);
+                    self.currentWorkType().calculatorMethod(CalculatorMethod.DO_NOT_GO_TO_WORK);
                     self.enableMethod(true);
                 }
             }
@@ -644,13 +647,13 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             });
             dfd.promise();
         }
-        
-        private exportExcel(): void{
+
+        private exportExcel(): void {
             var self = this;
-            let langId = self.langId();                    
-            service.saveAsExcel(langId).done(function(){              
-            }).fail(function(){
-                
+            let langId = self.langId();
+            service.saveAsExcel(langId).done(function() {
+            }).fail(function() {
+
             });
         }
     }
@@ -659,6 +662,44 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         ONE_DAY = 0,
         MORNING = 1,
         AFTERNOON = 2
+    }
+
+    export enum CalculatorMethod {
+        DO_NOT_GO_TO_WORK = 0,
+        MAKE_ATTENDANCE_DAY = 1,
+        EXCLUDE_FROM_WORK_DAY = 2,
+        TIME_DIGEST_VACATION = 3
+    }
+
+    export enum WorkTypeCls {
+        //出勤
+        Attendance,
+        // 休日
+        Holiday,
+        // 年休
+        AnnualHoliday,
+        // 積立年休
+        YearlyReserved,
+        //特別休暇
+        SpecialHoliday,
+        //欠勤
+        Absence,
+        //代休
+        SubstituteHoliday,
+        //振出
+        Shooting,
+        //振休
+        Pause,
+        //時間消化休暇
+        TimeDigestVacation,
+        //連続勤務
+        ContinuousWork,
+        //休日出勤
+        HolidayWork,
+        //休職
+        LeaveOfAbsence,
+        //休業
+        Closure
     }
 
     export class ItemWorkTypeModel {

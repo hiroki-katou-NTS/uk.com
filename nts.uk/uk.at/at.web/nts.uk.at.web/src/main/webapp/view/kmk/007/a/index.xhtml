@@ -34,7 +34,7 @@
 					<button id="register-button" class="proceed"
 						data-bind="click: saveData, enable: $root.errors.isEmpty">#{i18n.getText('KMK007_2')}</button>
 					<button id="orderby-button" data-bind="click: openDiablogC">#{i18n.getText('KMK007_3')}</button>
-					<button id="print-button" data-bind="click: exportExcel">マスタリスト出力ボタン</button>
+					<button id="print-button" data-bind="click: exportExcel">#{i18n.getText('KMK007_4')}</button>
 					<div id="switch-language"></div>
 					<button id="remove-button" class="danger"
 						data-bind="click: removeWorkType, enable: isEnable">#{i18n.getText('KMK007_5')}</button>
@@ -74,17 +74,17 @@
 							<div style="margin-top: 10px"
 								data-bind="ntsFormLabel: {constraint: 'WorkTypeAbbreviationName',required: true}">#{i18n.getText('KMK007_15')}</div>
 							<input id="abbreviation-name-input"
-								data-bind="ntsTextEditor: {value: dispAbName, constraint: 'WorkTypeAbbreviationName', required: true}" />
+								data-bind="ntsTextEditor: {value: dispAbName,name: '#[KMK007_15]', constraint: 'WorkTypeAbbreviationName', required: true}" />
 							<div style="margin-top: 10px; margin-left: 25px;"
 								data-bind="ntsFormLabel: {constraint: 'WorkTypeSymbolicName',required: true}">#{i18n.getText('KMK007_16')}</div>
 							<input id="symbolic-name-input"
-								data-bind="ntsTextEditor: {value: symbolicName, constraint: 'WorkTypeSymbolicName', required: true, enable: $parent.isEnable}" />
+								data-bind="ntsTextEditor: {value: symbolicName,name: '#[KMK007_16]', constraint: 'WorkTypeSymbolicName', required: true, enable: $parent.isEnable}" />
 						</div>
 						<div>
 							<div style="margin-top: 10px;"
 								data-bind="ntsFormLabel: {constraint: 'WorkTypeMemo'}">#{i18n.getText('KMK007_17')}</div>
 							<input id="memo-input"
-								data-bind="ntsTextEditor: {value: memo, enable: $parent.isEnable}" />
+								data-bind="ntsTextEditor: {value: memo,name: '#[KMK007_17]', enable: $parent.isEnable}" />
 						</div>
 
 
