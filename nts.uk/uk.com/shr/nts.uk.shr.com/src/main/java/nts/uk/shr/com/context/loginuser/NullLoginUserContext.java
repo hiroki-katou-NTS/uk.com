@@ -1,8 +1,13 @@
 package nts.uk.shr.com.context.loginuser;
 
+import java.io.Serializable;
+
 import nts.uk.shr.com.context.LoginUserContext;
 
-public class NullLoginUserContext implements LoginUserContext {
+public class NullLoginUserContext implements LoginUserContext, Serializable {
+
+	/** serialVersionUID */
+	private static final long serialVersionUID = 1L;
 
 	@Override
 	public boolean hasLoggedIn() {
