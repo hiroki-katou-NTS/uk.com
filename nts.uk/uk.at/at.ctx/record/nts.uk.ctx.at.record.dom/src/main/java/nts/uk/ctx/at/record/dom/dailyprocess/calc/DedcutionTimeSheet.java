@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.val;
 
@@ -16,6 +17,8 @@ public class DedcutionTimeSheet {
 
 	private final List<DeductionItemOfTimeSheet> forDeductionTimeZoneList;
 	private final List<DeductionItemOfTimeSheet> forRecordTimeZoneList;
+	@Getter
+	private final BreakManagement breakTimeSheet;
 	
 	public void devideDeductionsBy(ActualWorkingTimeSheet actualWorkingTimeSheet) {
 
