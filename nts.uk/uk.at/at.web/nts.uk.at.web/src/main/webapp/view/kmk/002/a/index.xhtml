@@ -8,18 +8,18 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile set="IGNITE" />
 			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.timeitemmanagement.OptionalItemName
+				nts.uk.ctx.at.shared.dom.workrecord.OptionalItemName
 			</com:ValidatorScript>
-			<com:stylefile path="style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="kmk002.style.css" />
 			<com:scriptfile path="kmk002.a.start.js" />
 			<com:scriptfile path="kmk002.a.service.js" />
 			<com:scriptfile path="kmk002.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" class="proceed">#{i18n.getText('KMK002_1')}</button>
+				<button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail">#{i18n.getText('KMK002_1')}</button>
 			</div>
 			<div id="contents-area">
 				<table>
@@ -42,86 +42,98 @@
 						</div>
 						</td>
 						<td style="vertical-align: top;">
-							<table class="control-group">
+							<table class="control-group" data-bind="with: optionalItem">
+
+							<!-- Optional Item view model -->
+							
 								<tr>
 									<td><div data-bind="ntsFormLabel: {required: true, constraint: 'OptionalItemName'}">#{i18n.getText('KMK002_11')}</div></td>
 									<td><input tabindex="5" id="inpName"
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_12]',
-		                                          value: name,
+		                                          value: optionalItemName,
 		                                          constraint: 'OptionalItemName', 
 		                                          enable: true, 
 		                                          required: true}"/></td>
 								</tr>
 								<tr>
+									<!-- Usage Atr -->
 									<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_13')}</div></td>
 									<td><div
 											data-bind="ntsSwitchButton: {
-											options: roundingRules,
+											options: usageClsDatasource,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedRuleCode,
+											value: usageAtr,
 											enable: true }"></div>
 									</td>
+
+									<!-- Calculation ResultRange -->
 									<td>
 										<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_25')}</div>
 									</td>
 									<td>
 										<div tabindex="11"
-											data-bind="ntsCheckBox: { checked: checked, enable: true, text: nts.uk.resource.getText('KMK002_26') }"></div>
+											data-bind="ntsCheckBox: { checked: calculationResultRange.upperCheck, enable: true, text: nts.uk.resource.getText('KMK002_26') }"></div>
 										<input tabindex="12" id="upperLimit"
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_26]',
-		                                          value: name}"/>
+		                                          value: calculationResultRange.numberUpper}"/>
 									</td>
 								</tr>
 								<tr>
+									<!-- EmpCondition Atr -->
 									<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_16')}</div></td>
 									<td><div
 											data-bind="ntsSwitchButton: {
-											options: roundingRules,
+											options: empConClsDatasource,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedRuleCode,
+											value: empConditionAtr,
 											enable: true }"></div>
 										<button>#{i18n.getText('KMK002_19')}</button></td>
 									<td></td>
+									
+									<!-- Calculation ResultRange -->
 									<td>
 										<div tabindex="13"
-											data-bind="ntsCheckBox: { checked: checked, enable: true, text: nts.uk.resource.getText('KMK002_27') }"></div>
+											data-bind="ntsCheckBox: { checked: calculationResultRange.lowerCheck, enable: true, text: nts.uk.resource.getText('KMK002_27') }"></div>
 										<input tabindex="14" id="lowerLimit"
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_27]',
-		                                          value: name}"/>
+		                                          value: calculationResultRange.numberLower}"/>
 									</td>
 								</tr>
 								<tr>
+									<!-- Performance Atr -->
 									<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_20')}</div></td>
 									<td><div
 											data-bind="ntsSwitchButton: {
-											options: roundingRules,
+											options: perfClsDatasource,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedRuleCode,
+											value: performanceAtr,
 											enable: true }"></div>
 									</td>
 								</tr>
 								<tr>
+									<!-- optionalItemAtr -->
 									<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_24')}</div></td>
 									<td><div tabindex="11"
 											data-bind="ntsComboBox: {
-													options: roundingRules,
+													options: atrDataSource,
 													optionsValue: 'code',
-													value: selectedCbb,
+													value: optionalItemAtr,
 													optionsText: 'name',
 													editable: false,
 													enable: true,
 													columns: [
-														{ prop: 'code', length: 1 },
 														{ prop: 'name', length: 1 },
 													]}">
 										</div></td>
 								</tr>
+								
+							<!-- Optional Item view model -->
 								<tr>
 									<td><button tabindex="15">#{i18n.getText('KMK002_28')}</button></td>
 									<td>
@@ -133,7 +145,7 @@
 									<td colspan="5"><span>#{i18n.getText('KMK002_31')}</span>
 										<input style="width: 700px" id="cha biet la cai gi"
 										data-bind="ntsTextEditor: {
-		                                          value: name,
+		                                          value: $parent.name,
 		                                          enable: false,
 		                                          readonly: true,
 		                                          required: false}"/>
