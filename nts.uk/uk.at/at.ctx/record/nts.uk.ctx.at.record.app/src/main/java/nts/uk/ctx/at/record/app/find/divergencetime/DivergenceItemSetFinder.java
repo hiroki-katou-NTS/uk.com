@@ -7,8 +7,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.divergencetime.DivergenceTimeRepository;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendancetype.AttendanceTypeDivergenceAdapterDto;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendancetype.AttendanceTypeDivergenceAdapter;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceAdapter;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapter;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapterDto;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -19,7 +21,8 @@ public class DivergenceItemSetFinder {
 	@Inject 
 	private AttendanceTypeDivergenceAdapter atType;
 	//user contexts
-	
+	@Inject
+	private AttendanceNameDivergenceAdapter atName;
 	
 	public List<DivergenceItemSetDto> getAllDivReasonByCode(String divTimeId){
 		String companyId = AppContexts.user().companyId();
@@ -33,6 +36,11 @@ public class DivergenceItemSetFinder {
 	public List<AttendanceTypeDivergenceAdapterDto> getAllAtType(int screenUseAtr){
 		String companyId = AppContexts.user().companyId();
 		List<AttendanceTypeDivergenceAdapterDto> data = atType.getItemByScreenUseAtr(companyId, screenUseAtr);
+		return data;
+	}
+	
+	public List<AttendanceNameDivergenceDto> getAtName(List<Integer> dailyAttendanceItemIds){
+		List<AttendanceNameDivergenceDto> data = atName.getDailyAttendanceItemName(dailyAttendanceItemIds);
 		return data;
 	}
 }

@@ -5,7 +5,7 @@ module kmk011.a.service {
         updateTimeItemId: "at/record/divergencetime/updateTimeItemId",
         getAllAttItem: "at/record/divergencetime/getAttendanceDivergenceItem",
         getItemSet: "at/record/divergencetime/getitemset/",
-        getAllName: "at/share/attendanceitem/getPossibleAttendanceItem"
+        getAllName: "at/record/divergencetime/AttendanceDivergenceName"
     }
     /**
     * get all item selected(item da duoc chon)

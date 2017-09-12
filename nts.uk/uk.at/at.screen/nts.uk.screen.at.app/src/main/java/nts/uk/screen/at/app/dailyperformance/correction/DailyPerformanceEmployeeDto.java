@@ -13,7 +13,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class DailyPerformanceEmployeeDto {
-	private String employeeId;
-	private String personId;
-	private String employeeCode;
+	private String id;
+	private String code;
+	private String businessName;
+	private String workplaceName;
+	private String depName;
 }

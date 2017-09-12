@@ -31,8 +31,9 @@ public class JpaAttendanceItemLinkingRepository extends JpaRepository implements
 	private static AttendanceItemLinking toDomain(KfnmtAttendanceLink kfnmtAttendanceLink) {
 		AttendanceItemLinking attendanceItemLinking = AttendanceItemLinking.createFromJavaType(
 				kfnmtAttendanceLink.kfnmtAttendanceLinkPK.attendanceItemId,
-				kfnmtAttendanceLink.kfnmtAttendanceLinkPK.frameNo.intValue(), kfnmtAttendanceLink.typeOfItem.intValue(),
-				kfnmtAttendanceLink.frameCategory.intValue());
+				kfnmtAttendanceLink.kfnmtAttendanceLinkPK.frameNo.intValue(),
+				kfnmtAttendanceLink.kfnmtAttendanceLinkPK.typeOfItem.intValue(),
+				kfnmtAttendanceLink.kfnmtAttendanceLinkPK.frameCategory.intValue());
 		return attendanceItemLinking;
 	}
 

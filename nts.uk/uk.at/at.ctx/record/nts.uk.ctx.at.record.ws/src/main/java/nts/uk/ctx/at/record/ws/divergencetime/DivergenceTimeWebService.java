@@ -25,7 +25,8 @@ import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceReasonDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceReasonFinder;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceTimeDto;
 import nts.uk.ctx.at.record.app.find.divergencetime.DivergenceTimeFinder;
-import nts.uk.ctx.at.record.dom.divergencetime.service.attendancetype.AttendanceTypeDivergenceAdapterDto;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceNameDivergenceDto;
+import nts.uk.ctx.at.record.dom.divergencetime.service.attendance.AttendanceTypeDivergenceAdapterDto;
 
 @Path("at/record/divergencetime")
 @Produces("application/json")
@@ -127,4 +128,10 @@ public class DivergenceTimeWebService extends WebService{
 		//乖離時間：1
 		return this.getItemSet.getAllAtType(1);
 	}
+	@POST
+	@Path("AttendanceDivergenceName")
+	public List<AttendanceNameDivergenceDto> getAtName(List<Integer> dailyAttendanceItemIds){
+		return this.getItemSet.getAtName(dailyAttendanceItemIds);
+	}
+	
 }
