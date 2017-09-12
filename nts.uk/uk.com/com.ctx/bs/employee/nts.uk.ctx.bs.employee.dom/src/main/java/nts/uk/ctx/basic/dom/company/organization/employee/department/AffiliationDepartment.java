@@ -6,7 +6,6 @@ package nts.uk.ctx.basic.dom.company.organization.employee.department;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.basic.dom.common.history.Period;
 
 /**
  * The Class AffiliationDepartment. 所属部門
@@ -14,39 +13,39 @@ import nts.uk.ctx.basic.dom.common.history.Period;
 @Getter
 public class AffiliationDepartment extends AggregateRoot {
 	
-	/** The id. */
-	private String id;
-	
-	/** The period. */
-	private Period period;
-	
-	/** The employee id. */
-	private String employeeId;
-	
-	/** The department id. */
-	private String departmentId;
-	
-	/**
-	 * Instantiates a new affiliation department.
-	 *
-	 * @param memento the memento
-	 */
-	public AffiliationDepartment(AffiliationDepartmentGetMemento memento) {
-		this.id = memento.getId();
-		this.period = memento.getPeriod();
-		this.departmentId = memento.getDepartmentId();
-		this.employeeId = memento.getEmployeeId();
-	}
-	
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(AffiliationDepartmentSetMemento memento) {
-		memento.setDepartmentId(this.departmentId);
-		memento.setId(this.id);
-		memento.setPeriod(this.period);
-		memento.setEmployeeId(this.employeeId);
-	}
+//	/** The id. */
+//	private String id;
+//	
+//	/** The period. */
+//	private Period period;
+//	
+//	/** The employee id. */
+//	private String employeeId;
+//	
+//	/** The department id. */
+//	private String departmentId;
+//	
+//	/**
+//	 * Instantiates a new affiliation department.
+//	 *
+//	 * @param memento the memento
+//	 */
+//	public AffiliationDepartment(AffiliationDepartmentGetMemento memento) {
+//		this.id = memento.getId();
+//		this.period = memento.getPeriod();
+//		this.departmentId = memento.getDepartmentId();
+//		this.employeeId = memento.getEmployeeId();
+//	}
+//	
+//	/**
+//	 * Save to memento.
+//	 *
+//	 * @param memento the memento
+//	 */
+//	public void saveToMemento(AffiliationDepartmentSetMemento memento) {
+//		memento.setDepartmentId(this.departmentId);
+//		memento.setId(this.id);
+//		memento.setPeriod(this.period);
+//		memento.setEmployeeId(this.employeeId);
+//	}
 }

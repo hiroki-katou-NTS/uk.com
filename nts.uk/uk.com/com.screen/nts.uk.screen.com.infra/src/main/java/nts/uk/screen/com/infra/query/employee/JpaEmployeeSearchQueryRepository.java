@@ -14,7 +14,7 @@ import entity.person.info.BpsdtPerson;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.infra.entity.company.organization.employee.department.BsymtDepartment;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWorkplace;
+import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWorkplace;
 
 /**
  * The Class JpaEmployeeSearchQueryRepository.
