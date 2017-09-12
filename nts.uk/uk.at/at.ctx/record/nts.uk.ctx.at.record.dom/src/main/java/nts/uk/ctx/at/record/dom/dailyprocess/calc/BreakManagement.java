@@ -14,22 +14,23 @@ import nts.uk.ctx.at.shared.dom.worktime.basicinformation.WorkTimeClassification
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidBreakTimeOfCalcMethod;
 
+
 /**
- * 休憩管理
+ * 休�?管�?
  * @author keisuke_hoshina
  *
  */
 @Value
 public class BreakManagement {
-	private BreakTimeOfDaily dailyOfBreakTime;
-	private List<BreakTimeSheetOfDaily> dailyOfBreakTimeSheet;
+	private BreakTimeOfDaily breakTimeOfDaily;
+	private List<BreakTimeSheetOfDaily> breakTimeSheetOfDaily;
 	
 	/**
-	 * 休憩時間帯を必要な分取り出す
-	 * @return 休憩時間の作成
+	 * 休�?時間帯を�?��な�?��り�?�?
+	 * @return 休�?時間の作�?
 	 */
 	
-	//→値がList内に存在しなければ空のリストを返すようにする
+	//→�?�がList�?��存在しなければ空のリストを返すようにする
 	public List<TimeSheetOfDeductionItem> getBreakTimeSheet(WorkTimeClassification workTimeClassification,FixRestCalcMethod restCalc,SetForNoStamp noStampSet
 															,FluidBreakTimeOfCalcMethod calcMethod) {
 		List<Optional<BreakTimeSheetOfDaily>> timeSheets = new ArrayList<Optional<BreakTimeSheetOfDaily>>();
@@ -37,7 +38,7 @@ public class BreakManagement {
 			timeSheets.add(getFixedBreakTimeSheet(restCalc)); 
 		}
 		else {
-			timeSheets.addAll(getFluidBreakTimeSheet(calcMethod,true,noStampSet));/*流動　の　休憩*/;
+			timeSheets.addAll(getFluidBreakTimeSheet(calcMethod,true,noStampSet));/*流動�?の�?休�?*/;
 		}
 		List<TimeSheetOfDeductionItem> dedTimeSheet = new ArrayList<TimeSheetOfDeductionItem>();
 		for(Optional<BreakTimeSheetOfDaily> OptionalTimeSheet : timeSheets) {
@@ -54,9 +55,9 @@ public class BreakManagement {
 	}
 	
 	/**
-	 * 固定勤務の時に休憩時間帯を取得する処理
-	 * @param restCalc 固定給系の計算方法
-	 * @return 休憩時間帯
+	 * 固定勤務�?時に休�?時間帯を取得する�?�?
+	 * @param restCalc 固定給系の計算方�?
+	 * @return 休�?時間帯
 	 */
 	public Optional<BreakTimeSheetOfDaily> getFixedBreakTimeSheet(FixRestCalcMethod restCalc) {
 		
@@ -74,11 +75,11 @@ public class BreakManagement {
 	
 
 	/**
-	 * 流動勤務の休憩設定取得
-	 * @param calcMethod 流動休憩の計算方法
-	 * @param isFixedBreakTime 流動固定休憩を使用する区分
-	 * @param noStampSet 休憩未打刻時の休憩設定
-	 * @return 休憩時間帯
+	 * 流動勤務�?休�?設定取�?
+	 * @param calcMethod 流動休�?の計算方�?
+	 * @param isFixedBreakTime 流動固定休�?を使用する区�?
+	 * @param noStampSet 休�?未打刻時�?休�?設�?
+	 * @return 休�?時間帯
 	 */
 	public List<Optional<BreakTimeSheetOfDaily>> getFluidBreakTimeSheet(FluidBreakTimeOfCalcMethod calcMethod,boolean isFixedBreakTime,SetForNoStamp noStampSet) {
 		
@@ -109,26 +110,27 @@ public class BreakManagement {
 	}
 	
 	/**
-	 * 流動固定休憩の計算方法がマスタ参照の日別計算の休憩時間帯クラスを取得する
-	 * @return　日別実績の休憩時間帯クラス
+	 * 流動固定休�?の計算方法がマスタ参�?の日別計算�?休�?時間帯クラスを取得す�?
+	 * @return�?日別実績の休�?時間帯クラス
 	 */
 	public Optional<BreakTimeSheetOfDaily> getReferenceTimeSheetFromWorkTime(){
 		return dailyOfBreakTimeSheet.stream().filter(tc -> tc.getBreakClassification().isReferenceFromWorkTime()).findFirst();
 	}
 	/**
-	 * 流動固定休憩の計算方法が打刻参照の日別計算の休憩時間帯クラスを取得する
-	 * @return　日別実績の休憩時間帯クラス
+	 * 流動固定休�?の計算方法が打刻参�?の日別計算�?休�?時間帯クラスを取得す�?
+	 * @return�?日別実績の休�?時間帯クラス
 	 */
 	public Optional<BreakTimeSheetOfDaily> getReferenceTimeSheetFromBreakStamp(){
 		return dailyOfBreakTimeSheet.stream().filter(tc -> tc.getBreakClassification().isReferenceFromWorkTime()).findFirst();
 	}
 	
 	/**
-	 * 流動固定休憩の計算方法がスケジュール参照の日別計算の休憩時間帯クラスを取得する
-	 * @return　日別実績の休憩時間帯クラス
+	 * 流動固定休�?の計算方法がスケジュール参�?の日別計算�?休�?時間帯クラスを取得す�?
+	 * @return�?日別実績の休�?時間帯クラス
 	 */
 	public Optional<BreakTimeSheetOfDaily> getReferenceTimeSheetFromSchedule(){
 		return dailyOfBreakTimeSheet.stream().filter(tc -> tc.getBreakClassification().isReferenceFromSchedule()).findFirst();
 	}
 	
+
 }

@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * 時間帯(使用区分付き)
+ * 時間帯(使用区�?��き)
  * @author keisuke_hoshina
  *
  */
@@ -35,7 +35,5 @@ public class TimeSheetWithUseAtr extends AggregateRoot implements HasTimeSpanFor
 	public TimeSheetWithUseAtr newSpanWith(TimeWithDayAttr start, TimeWithDayAttr end) {
 		return new TimeSheetWithUseAtr(this.useAtr, start, end, this.count);
 	}
-	
-	
 
 }

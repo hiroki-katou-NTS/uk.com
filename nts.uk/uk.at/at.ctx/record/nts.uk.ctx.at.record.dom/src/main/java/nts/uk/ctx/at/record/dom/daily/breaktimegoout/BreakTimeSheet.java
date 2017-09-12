@@ -5,7 +5,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 
 /**
- * 休憩時間帯
+ * 休�?時間帯
  * @author keisuke_hoshina
  *
  */
@@ -15,8 +15,10 @@ public class BreakTimeSheet {
 	private TimeSpanForCalc timeSheet;
 	
 	private AttendanceTime breakTime;
-	
-	private BreakCategory breakClassification;
+//	
+	private BreakClassification breakClassification;
+
+	private BreakCategory breakClassification
 	
 	
 }
