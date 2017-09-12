@@ -2,7 +2,11 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.pubimp.employee.jobtitle;
+package nts.uk.ctx.bs.employee.pubimp.jobtitle;
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 
 import java.util.Arrays;
 import java.util.List;
@@ -18,25 +22,82 @@ import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
-import nts.uk.ctx.bs.employee.pub.employee.jobtitle.JobTitleExport;
-import nts.uk.ctx.bs.employee.pub.employee.jobtitle.SyJobTitlePub;
+import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 
 /**
- * The Class SyJobTitlePubImp.
+ * The Class JobTitlePubImp.
  */
 @Stateless
-public class SyJobTitlePubImp implements SyJobTitlePub {
+public class JobTitlePubImp implements SyJobTitlePub {
 
 	/** The first item index. */
 	private final int FIRST_ITEM_INDEX = 0;
 
-	/** The job title adapter. */
+	/** The job title repository. */
 	@Inject
-	private JobTitleRepository jobTitleAdapter;
+	private JobTitleRepository jobTitleRepository;
 
 	/** The job title history repository. */
 	@Inject
 	private AffJobTitleHistoryRepository jobTitleHistoryRepository;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.jobtitle.JobtitlePub#findAll(java.lang.String,
+	 * nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<JobTitleExport> findAll(String companyId, GeneralDate referenceDate) {
+		return jobTitleRepository.findAll(companyId, referenceDate).stream()
+				.map(item -> JobTitleExport.builder().companyId(item.getCompanyId().v())
+						.positionId(item.getPositionId().v())
+						.positionCode(item.getPositionCode().v())
+						.positionName(item.getPositionName().v())
+						.sequenceCode(item.getSequenceCode().v())
+						.startDate(item.getPeriod().getStartDate())
+						.endDate(item.getPeriod().getEndDate()).build())
+				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.jobtitle.JobtitlePub#findByJobIds(java.util.
+	 * List)
+	 */
+	@Override
+	public List<JobTitleExport> findByJobIds(List<String> jobIds) {
+		return jobTitleRepository.findByJobIds(jobIds).stream().map(item -> JobTitleExport.builder()
+				.companyId(item.getCompanyId().v()).positionId(item.getPositionId().v())
+				.positionCode(item.getPositionCode().v()).positionName(item.getPositionName().v())
+				.sequenceCode(item.getSequenceCode().v()).startDate(item.getPeriod().getStartDate())
+				.endDate(item.getPeriod().getEndDate()).build()).collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.jobtitle.JobtitlePub#findByJobIds(java.lang.
+	 * String, java.util.List, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<JobTitleExport> findByJobIds(String companyId, List<String> jobIds,
+			GeneralDate baseDate) {
+		return jobTitleRepository.findByJobIds(companyId, jobIds, baseDate).stream()
+				.map(item -> JobTitleExport.builder().companyId(item.getCompanyId().v())
+						.positionId(item.getPositionId().v())
+						.positionCode(item.getPositionCode().v())
+						.positionName(item.getPositionName().v())
+						.sequenceCode(item.getSequenceCode().v())
+						.startDate(item.getPeriod().getStartDate())
+						.endDate(item.getPeriod().getEndDate()).build())
+				.collect(Collectors.toList());
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -53,16 +114,14 @@ public class SyJobTitlePubImp implements SyJobTitlePub {
 		List<String> jobIds = affJobTitleHistories.stream().map(item -> item.getJobTitleId().v())
 				.collect(Collectors.toList());
 
-		List<JobTitle> jobTitleDtos = this.jobTitleAdapter.findByJobIds(jobIds);
+		List<JobTitle> jobTitleDtos = this.jobTitleRepository.findByJobIds(jobIds);
 
 		// Return
-		return jobTitleDtos.stream()
-				.map(item -> JobTitleExport.builder().companyId(item.getCompanyId().v())
-						.positionId(item.getPositionId().v()).positionCode(item.getPositionCode().v())
-						.positionName(item.getPositionName().v()).sequenceCode(item.getSequenceCode().v())
-						.startDate(item.getPeriod().getStartDate()).endDate(item.getPeriod().getEndDate())
-						.build())
-				.collect(Collectors.toList());
+		return jobTitleDtos.stream().map(item -> JobTitleExport.builder()
+				.companyId(item.getCompanyId().v()).positionId(item.getPositionId().v())
+				.positionCode(item.getPositionCode().v()).positionName(item.getPositionName().v())
+				.sequenceCode(item.getSequenceCode().v()).startDate(item.getPeriod().getStartDate())
+				.endDate(item.getPeriod().getEndDate()).build()).collect(Collectors.toList());
 	}
 
 	/*
@@ -84,7 +143,7 @@ public class SyJobTitlePubImp implements SyJobTitlePub {
 		}
 
 		// Get infos
-		List<JobTitle> jobTitleImports = this.jobTitleAdapter
+		List<JobTitle> jobTitleImports = this.jobTitleRepository
 				.findByJobIds(Arrays.asList(optHistory.get().getJobTitleId().v()));
 
 		// Check exist
@@ -112,7 +171,7 @@ public class SyJobTitlePubImp implements SyJobTitlePub {
 	public Optional<JobTitleExport> findJobTitleByPositionId(String companyId, String positionId,
 			GeneralDate baseDate) {
 		// Query
-		List<JobTitle> jobTitleImports = this.jobTitleAdapter.findByJobIds(companyId,
+		List<JobTitle> jobTitleImports = this.jobTitleRepository.findByJobIds(companyId,
 				Arrays.asList(positionId), baseDate);
 
 		// Check exist

@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.company.pub.workplace;
+package nts.uk.ctx.bs.employee.pub.workplace;
 
 import lombok.Data;
 
