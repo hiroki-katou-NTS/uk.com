@@ -52,11 +52,11 @@ public class WorkType extends AggregateRoot {
 
 	// 出勤率の計算
 	private CalculateMethod calculateMethod;
-	
+
 	private List<WorkTypeSet> workTypeSetList;
-	
+
 	private Integer dispOrder;
-	
+
 	@Override
 	public void validate() {
 		super.validate();
@@ -105,7 +105,7 @@ public class WorkType extends AggregateRoot {
 		this.deprecate = deprecate;
 		this.calculateMethod = calculateMethod;
 	}
-	
+
 	/**
 	 * 
 	 * @param companyId
@@ -121,7 +121,6 @@ public class WorkType extends AggregateRoot {
 		this.name = name;
 		this.abbreviationName = abbreviationName;
 	}
-
 
 	/**
 	 * Creates the simple from java type.
@@ -157,20 +156,31 @@ public class WorkType extends AggregateRoot {
 				dailyWork, EnumAdaptor.valueOf(deprecate, DeprecateClassification.class),
 				EnumAdaptor.valueOf(calculateMethod, CalculateMethod.class));
 	}
-	
+
 	/**
 	 * Set work type set
+	 * 
 	 * @param workTypeList
 	 */
 	public void setWorkTypeSet(List<WorkTypeSet> workTypeList) {
 		this.workTypeSetList = workTypeList;
 	}
-	
+
 	/**
 	 * Set display order
+	 * 
 	 * @param order
 	 */
 	public void setDisplayOrder(int dispOrder) {
 		this.dispOrder = dispOrder;
+	}
+
+	/**
+	 * Check OneDay Morning Afternoon
+	 * 
+	 * @return
+	 */
+	public boolean isOneDay() {
+		return this.dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay;
 	}
 }
