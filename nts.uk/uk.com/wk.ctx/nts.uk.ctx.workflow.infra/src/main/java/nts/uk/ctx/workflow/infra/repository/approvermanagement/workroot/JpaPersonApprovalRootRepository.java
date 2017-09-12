@@ -35,14 +35,19 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 	 private final String FIND_BY_DATE = FIN_BY_EMP
 	   + " AND c.endDate = :endDate";
 	 private final String FIND_BY_BASEDATE = FIN_BY_EMP
-			   + " AND c.stardDate <= :baseDate"
+			   + " AND c.startDate <= :baseDate"
 			   + " AND c.endDate >= :baseDate"
 			   + " AND c.employmentRootAtr IN (1,2,3)" 
 			   + " AND c.applicationType = :appType";
 	 private final String FIND_BY_BASEDATE_OF_COM = FIN_BY_EMP
-			   + " AND c.stardDate <= :baseDate"
+			   + " AND c.startDate <= :baseDate"
 			   + " AND c.endDate >= :baseDate"
 			   + " AND c.employmentRootAtr = 0";
+	 private final String FIND_ALL_BY_BASEDATE = FIND_ALL + " WHERE c.wwfmtPsApprovalRootPK.companyId = :companyId"
+			   + " AND c.startDate <= :baseDate"
+			   + " AND c.endDate >= :baseDate"
+			   + " ORDER BY c.wwfmtPsApprovalRootPK.employeeId";
+			 
 	/**
 	 * get all Person Approval Root
 	 * @param companyId
@@ -202,5 +207,13 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		entity.confirmationRootType = (domain.getConfirmationRootType() == null ? null : domain.getConfirmationRootType().value);
 		entity.employmentRootAtr = domain.getEmploymentRootAtr().value;
 		return entity;
+	}
+	@Override
+	public List<PersonApprovalRoot> findAllByBaseDate(String companyId, GeneralDate baseDate) {
+		List<PersonApprovalRoot> data = this.queryProxy().query(FIND_ALL_BY_BASEDATE, WwfmtPsApprovalRoot.class)
+				.setParameter("companyId", companyId)
+				.setParameter("baseDate", baseDate)
+				.getList(c->toDomainPsApR(c));
+		return data;
 	}
 }

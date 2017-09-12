@@ -13,10 +13,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistory;
-import nts.uk.ctx.basic.dom.company.organization.employee.employment.AffEmploymentHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.access.employment.SyEmploymentAdapter;
-import nts.uk.ctx.bs.employee.dom.access.employment.dto.EmploymentImport;
+import nts.uk.ctx.bs.employee.dom.employment.Employment;
+import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
+import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistory;
+import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employee.employment.SyEmploymentPub;
 
 /**
@@ -27,7 +27,7 @@ public class SyEmploymentPubImp implements SyEmploymentPub {
 
 	/** The employment adapter. */
 	@Inject
-	private SyEmploymentAdapter employmentAdapter;
+	private EmploymentRepository employmentAdapter;
 
 	/** The employment history repository. */
 	@Inject
@@ -48,10 +48,14 @@ public class SyEmploymentPubImp implements SyEmploymentPub {
 		List<String> employmentCodes = affEmploymentHistories.stream()
 				.map(item -> item.getEmploymentCode().v()).collect(Collectors.toList());
 
-		List<EmploymentImport> acEmploymentDtos = employmentAdapter.findByEmpCodes(employmentCodes);
+		List<Employment> acEmploymentDtos = employmentAdapter.findByEmpCodes(employmentCodes);
 
-		Map<String, String> comEmpMap = acEmploymentDtos.stream().collect(Collectors
-				.toMap(EmploymentImport::getCompanyId, EmploymentImport::getEmploymentCode));
+		Map<String, String> comEmpMap = acEmploymentDtos.stream()
+				.collect(Collectors.toMap((item) -> {
+					return item.getCompanyId().v();
+				}, (item) -> {
+					return item.getEmploymentCode().v();
+				}));
 
 		// Return EmploymentCode
 		return comEmpMap.get(companyId);

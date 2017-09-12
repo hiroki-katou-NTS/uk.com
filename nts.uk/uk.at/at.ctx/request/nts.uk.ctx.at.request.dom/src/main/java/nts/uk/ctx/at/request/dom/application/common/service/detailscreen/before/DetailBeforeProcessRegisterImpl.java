@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 
 @Stateless
@@ -12,7 +13,7 @@ public class DetailBeforeProcessRegisterImpl implements DetailBeforeProcessRegis
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithmService;
 	
-	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate, int employeeRouteAtr, String targetApp, int postAtr ){
+	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID, PrePostAtr postAtr ){
 
 		// 選択した勤務種類の矛盾チェック(check sự mâu thuẫn của worktype đã chọn)
 		// selectedWorkTypeConflictCheck();

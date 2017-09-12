@@ -10,5 +10,11 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.Employ
  *
  */
 public interface EmployeeUnregisterApprovalRoot {
+	/**
+	 * 01.承認ルート未登録の社員を取得する
+	 * @param companyId
+	 * @param baseDate
+	 * @return
+	 */
 	List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate);
 }

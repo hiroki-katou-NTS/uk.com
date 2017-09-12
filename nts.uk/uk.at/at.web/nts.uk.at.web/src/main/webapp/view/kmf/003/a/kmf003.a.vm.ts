@@ -316,6 +316,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             }
             
             service.addYearHolidayGrant(data).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 self.getData();
                 self.singleSelectedCode(data.yearHolidayCode);
             }).fail(function(error) {
@@ -330,6 +331,7 @@ module nts.uk.at.view.kmf003.a.viewmodel {
             var self = this;
             
             service.updateYearHolidayGrant(data).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 self.getData();
                 self.singleSelectedCode(data.yearHolidayCode);
             }).fail(function(error) {

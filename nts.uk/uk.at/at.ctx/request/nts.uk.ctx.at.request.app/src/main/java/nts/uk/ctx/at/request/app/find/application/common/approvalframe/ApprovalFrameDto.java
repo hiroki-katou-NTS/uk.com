@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.common.approvalframe;
 
 import lombok.Setter;
 import lombok.Value;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
@@ -33,16 +34,16 @@ public class ApprovalFrameDto {
 	private ConfirmAtr confirmATR;
 	
 	/** 日付 */
-	private String approvalDate;
+	private GeneralDate approvalDate;
 	
 	/** 理由 */
-	private Reason reason;
+	private String reason;
 	
 	/** 代行者 */
 	private String representerSID;
 	
 	
-	public static ApprovalFrameDto fromDomain (ApprovalFrame domain){
+	public static ApprovalFrameDto fromDomain(ApprovalFrame domain){
 		
 		return new ApprovalFrameDto (
 				domain.getCompanyID(),
@@ -52,7 +53,7 @@ public class ApprovalFrameDto {
 				domain.getApprovalATR(),
 				domain.getConfirmATR(),
 				domain.getApprovalDate(),
-				domain.getReason(),
+				domain.getReason().toString(),
 				domain.getRepresenterSID());
 	}
 }

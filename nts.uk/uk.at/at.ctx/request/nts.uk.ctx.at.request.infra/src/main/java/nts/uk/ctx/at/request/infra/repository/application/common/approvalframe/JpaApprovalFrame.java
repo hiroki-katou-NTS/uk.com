@@ -92,11 +92,12 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 	private KrqdtApprovalFrame toEntity(ApprovalFrame domain) {
 		return new KrqdtApprovalFrame(
 				new KrqdtApprovalFramePK(domain.getCompanyID(), domain.getPhaseID(), domain.getDispOrder()),
-				domain.getApproverSID(), domain.getApprovalATR().toString(),
-				domain.getConfirmATR().toString(),
+				domain.getApproverSID(), 
+				domain.getApprovalATR().value,
+				domain.getConfirmATR().value,
 				domain.getApprovalDate(),
 				domain.getReason().v(),
-				domain.getRepresenterSID().toString());
+				domain.getRepresenterSID());
 	}
 	
 	/**
@@ -117,12 +118,25 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 
 	@Override
 	public List<ApprovalFrame> getListFrameByListPhase(String companyID,List<String> listPhaseID) {
+		
 		List<ApprovalFrame> listFrame = new ArrayList<>();
 		for(String phaseID :listPhaseID) {
 			List<ApprovalFrame> approvalFrame = findByPhaseID( companyID,phaseID);
 			listFrame.addAll(approvalFrame);
 		}
 		return listFrame;
+	}
+
+	@Override
+	public List<List<ApprovalFrame>> getListFrameByListPhase1(String companyID, List<String> listPhaseID) {
+		List<List<ApprovalFrame>> listListFrame = new ArrayList<>();
+		for(String phaseID :listPhaseID) {
+			List<ApprovalFrame> listFrame = new ArrayList<>();
+			List<ApprovalFrame> approvalFrame = findByPhaseID( companyID,phaseID);
+			listFrame.addAll(approvalFrame);
+			listListFrame.add(listFrame);
+		}
+		return listListFrame;
 	}
 
 

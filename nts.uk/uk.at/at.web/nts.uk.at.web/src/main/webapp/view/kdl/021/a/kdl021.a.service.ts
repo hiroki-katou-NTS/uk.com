@@ -1,6 +1,6 @@
 module kdl021.a.service {
     var paths = {
-        getPossibleAttendanceItem: "at/share/attendanceitem/getPossibleAttendanceItem"
+        getPossibleAttendanceItem: "at/record/divergencetime/AttendanceDivergenceName"
     }
     /**
     * get all divergence item id(id co the chon)

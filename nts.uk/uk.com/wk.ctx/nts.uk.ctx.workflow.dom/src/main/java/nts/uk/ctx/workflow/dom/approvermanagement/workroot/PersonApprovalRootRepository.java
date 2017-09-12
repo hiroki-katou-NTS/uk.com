@@ -88,4 +88,11 @@ public interface PersonApprovalRootRepository {
 	 * @param baseDate
 	 */
 	List<PersonApprovalRoot> findByBaseDateOfCommon(String cid, String sid, GeneralDate baseDate);
+	/**
+	 * ドメインモデル「個人別就業承認ルート」を取得する(lấy dữ liệu domain「個人別就業承認ルート」)
+	 * @param companyId
+	 * @param baseDate ・期間．開始日 <= 基準日  ・期間．終了日 >= 基準日
+	 * @return
+	 */
+	List<PersonApprovalRoot> findAllByBaseDate(String companyId, GeneralDate baseDate);
 }

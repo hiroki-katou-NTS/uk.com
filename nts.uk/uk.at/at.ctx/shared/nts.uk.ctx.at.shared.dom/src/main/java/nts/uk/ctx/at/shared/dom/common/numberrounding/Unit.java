@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 /**
  * The Enum Unit.
  */
-// 端数処理
+// 単位
 @AllArgsConstructor
 public enum Unit {
 
@@ -65,13 +65,13 @@ public enum Unit {
 	// 小数第1位
 	DECIMAL_1ST(12),
 
-	/** The decimal 2st. */
+	/** The decimal 2nd. */
 	// 小数第2位
-	DECIMAL_2ST(13),
+	DECIMAL_2ND(13),
 
-	/** The decimal 3st. */
+	/** The decimal 3rd. */
 	// 小数第3位
-	DECIMAL_3ST(14);
+	DECIMAL_3RD(14);
 
 	/** The value. */
 	public final int value;
