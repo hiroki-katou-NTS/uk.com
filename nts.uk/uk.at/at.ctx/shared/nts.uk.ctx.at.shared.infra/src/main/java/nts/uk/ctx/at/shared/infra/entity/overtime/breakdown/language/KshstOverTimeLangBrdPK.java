@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.overtime;
+package nts.uk.ctx.at.shared.infra.entity.overtime.breakdown.language;
 
 import java.io.Serializable;
 
@@ -36,7 +36,7 @@ public class KshstOverTimeLangBrdPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "BRD_ITEM_NO")
-    private short brdItemNo;
+    private int brdItemNo;
     
     /** The language id. */
     @Basic(optional = false)
@@ -57,7 +57,7 @@ public class KshstOverTimeLangBrdPK implements Serializable {
      * @param brdItemNo the brd item no
      * @param languageId the language id
      */
-    public KshstOverTimeLangBrdPK(String cid, short brdItemNo, String languageId) {
+    public KshstOverTimeLangBrdPK(String cid, int brdItemNo, String languageId) {
         this.cid = cid;
         this.brdItemNo = brdItemNo;
         this.languageId = languageId;

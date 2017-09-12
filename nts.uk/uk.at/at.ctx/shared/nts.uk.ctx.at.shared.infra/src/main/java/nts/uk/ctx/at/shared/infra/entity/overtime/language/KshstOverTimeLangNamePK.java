@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.overtime;
+package nts.uk.ctx.at.shared.infra.entity.overtime.language;
 
 import java.io.Serializable;
 
@@ -35,7 +35,7 @@ public class KshstOverTimeLangNamePK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "OVER_TIME_NO")
-    private short overTimeNo;
+    private int overTimeNo;
     
     /** The language id. */
     @Basic(optional = false)
@@ -56,7 +56,7 @@ public class KshstOverTimeLangNamePK implements Serializable {
      * @param overTimeNo the over time no
      * @param languageId the language id
      */
-    public KshstOverTimeLangNamePK(String cid, short overTimeNo, String languageId) {
+    public KshstOverTimeLangNamePK(String cid, int overTimeNo, String languageId) {
         this.cid = cid;
         this.overTimeNo = overTimeNo;
         this.languageId = languageId;
