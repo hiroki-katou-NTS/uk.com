@@ -1,4 +1,4 @@
-module nts.uk.com.view.cps009.a.viewmodel {
+module nts.uk.com.view.cps009.c.viewmodel {
     import error = nts.uk.ui.errors;
     import text = nts.uk.resource.getText;
     import close = nts.uk.ui.windows.close;
@@ -7,7 +7,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
     import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
 
-    export class ScreenModel {
+    export class ViewModel {
         constructor() {
 
 

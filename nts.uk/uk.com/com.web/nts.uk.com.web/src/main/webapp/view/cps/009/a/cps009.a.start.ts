@@ -12,7 +12,7 @@ module nts.uk.com.view.cps009.a {
 
         __viewContext.bind(__viewContext["viewModel"]);
 
-        let helpButton = '<button id=\"A2_012\" style=\'margin-left:20px;\'>' + nts.uk.resource.getText('CPS009_22') + '</button>'
+        let helpButton = '<button id=\"A2_012\" style=\'margin-left:20px;\' data-bind=\" click: openBDialog\">' + nts.uk.resource.getText('CPS009_22') + '</button>'
             + '<button style=\'margin-left: 10px;\' data-bind=\"ntsHelpButton: {image: \'helpcps0092.png\',position: \'right top\', enable: true }\">?</button>';
 
         nts.uk.ui.ig.grid.header.getCell('grid2', 'combo').append($(helpButton));

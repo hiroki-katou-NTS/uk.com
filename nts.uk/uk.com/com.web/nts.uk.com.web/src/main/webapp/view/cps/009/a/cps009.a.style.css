@@ -77,11 +77,15 @@ input.ntsSearchBox {
 	margin-top: 16px !important;
 }
 
-#grid2_displayContainer {
+/* #grid2_displayContainer {
 	max-width: 600px !important;
 	width: 600px !important;
 }
-
+ */
 #grid2_headers_v, #grid2_virtualContainer td:FIRST-CHILD, #grid2_combo {
 	overflow: visible !important;
+}
+
+#grid2_displayContainer_a{
+	position: fixed !important;
 }

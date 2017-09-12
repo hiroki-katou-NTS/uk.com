@@ -45,10 +45,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.start();
 
-            self.categoryId.subscribe(function(value) {
+            self.categoryId.subscribe(function(value: string) {
+                console.log(value);
                 self.currentCategory().setData(new CategoryInfoDetail({
-                    categoryCode: value, categoryName: 'B', itemList: self.itemList()
+                    categoryCode: value, categoryName: value, itemList: self.itemList()
                 }));
+                self.currentCategory.valueHasMutated();
             });
 
         }
@@ -122,7 +124,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
     export class InitValue {
         id: string;
         itemName: string;
-        comboxValue: number;
+        comboxValue: string;
         value: string;
         constructor(params: IInitValue) {
             this.id = params.id;
@@ -149,12 +151,12 @@ module nts.uk.com.view.cps009.a.viewmodel {
             { headerText: text('CPS009_16'), key: 'itemName', width: 200 }
         ]);
         constructor(params: ICategoryInfoDetail) {
-            this.categoryCode = ko.observable(params.categoryCode || '');
-            this.categoryName = ko.observable(params.categoryName || '');
-            this.itemList = ko.observableArray(params.itemList || []);
+            this.categoryCode = ko.observable(params.categoryCode);
+            this.categoryName = ko.observable(params.categoryName);
+            this.itemList = ko.observableArray(params.itemList);
         }
 
-        setData(params: any) {
+        setData(params: ICategoryInfoDetail) {
             this.categoryCode(params.categoryCode);
             this.categoryName(params.categoryName);
             this.itemList(params.itemList);

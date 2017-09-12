@@ -7,6 +7,12 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 310,
+					height :600
+				};
+			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps009.b.style.css" />
 			<com:scriptfile path="cps009.b.service.js" />
@@ -16,25 +22,47 @@
 
 		<ui:define name="content">
 			<div id="contents-area" class="cf">
-				<div id='role'>
-					<div class='flex' >
-						<div
-							data-bind="ntsFormLabel: {}"
-							class='distane'>
-							<label id="codeName">#{i18n.getText('CAS001_12')}</label>
+				<div id='ctg'>
+					<div class='flex'>
+						<div data-bind="ntsFormLabel: {}" class='distane'>
+							<label id="ctg">#{i18n.getText('CPS009_31')}</label>
 						</div>
-						<label id="roleCode" data-bind="text: roleCode"></label> <label
-							id="roleName" data-bind="text: roleName"></label>
+						<label id="ctgName">AAAAAAA</label>
 					</div>
 					<div data-bind="ntsFormLabel: {}" class='distane'>
-						<label id="codeName">#{i18n.getText('CAS001_57')}</label>
+						<label id="itemSel">#{i18n.getText('CPS009_32')}</label>
 					</div>
 				</div>
+				<div id="itemLst">
+					<table id="grid"
+						data-bind="ntsGridList: {
+						height: 300,
+						options: itemInitLst,
+						optionsValue: 'id',
+						columns: itemColumns,
+						multiple: true,
+						value: currentIdLst
+				    }"></table>
+				</div>
+				<div>
+					<div data-bind="ntsFormLabel: {}" class='distane'>
+						<label id="itemSel">#{i18n.getText('CPS009_34')}</label>
+					</div>
+					<div id="B_009" class="cf"
+						data-bind="ntsSwitchButton: {
+						options: roundingRules,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: selectedRuleCode,
+						enable: true }" tabindex="4"></div>
+				</div>
+
+
 			</div>
 			<div id='functions-area-bottom'>
-				<button id="registration" class="proceed x-large" tabindex="2">#{i18n.getText('CAS001_61')}
+				<button id="registration" class="proceed x-large" tabindex="5">#{i18n.getText('CPS009_29')}
 				</button>
-				<button id="cancel" tabindex="3">#{i18n.getText('CAS001_62')}</button>
+				<button id="cancel" tabindex="6">#{i18n.getText('CPS009_30')}</button>
 
 			</div>
 

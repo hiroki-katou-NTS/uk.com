@@ -38,7 +38,7 @@
 						rows:15 }">
 					</table>
 				</div>
-				<div id="content-right" data-bind='with: currentCategory'>
+				<div id="content-right">
 
 					<div>
 						<div data-bind="ntsFormLabel: {required: true}" class='distane'>
@@ -46,12 +46,12 @@
 						</div>
 						<input id="ctgCode"
 							data-bind="ntsTextEditor: {
-								value: categoryCode ,
+								value: currentCategory().categoryCode ,
 								enable: true,
 								immediate: false}"></input>
 						<input id="ctgName"
 							data-bind="ntsTextEditor: {
-								value: categoryName ,
+								value: currentCategory().categoryName ,
 								enable: true,
 								immediate: false}"></input>
 					</div>
@@ -63,16 +63,16 @@
 						targetKey: 'id',
 						mode: 'igGrid', 
 						comId: 'item_grid',
-						items: itemList ,  
+						items: currentCategory().itemList ,  
 						selectedKey: 'id',
 						fields: ['categoryName']}" />
 							<table id="item_grid"
 								data-bind="ntsGridList: {	
-						dataSource: itemList ,
+						dataSource: currentCategory().itemList ,
 						primaryKey: 'id' ,
-						columns: itemColums ,
+						columns: currentCategory().itemColums ,
 						multiple: false,
-						value: currentItemId ,
+						value: currentCategory().currentItemId ,
 						rows:10 }">
 							</table>
 
@@ -86,7 +86,7 @@
 									enable: true }">?</button>
 								<input id="date"
 								data-bind="ntsTextEditor: {
-								value: categoryCode ,
+								value: currentCategory().categoryCode ,
 								enable: true,
 								immediate: false}"></input>
 							</div>
