@@ -294,16 +294,6 @@ module nts.uk.at.view.ksu006.a {
                 service.validateFile(self.toJSObject()).done(function() {
                     dfd.resolve();
                 }).fail(function(res: any) {
-                    // TODO: pending check charset of file.
-//                    if (res.businessException && res.messageId == 'Msg_161') {
-//                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_161' }).ifYes(function() {
-//                            dfd.reject(true);
-//                        }).ifNo(function() {
-//                            dfd.reject(false);
-//                        });
-//                    } else {
-//                        self.showMessageError(res);
-//                    }
                     self.showMessageError(res);
                 });
                 return dfd.promise();
@@ -336,8 +326,6 @@ module nts.uk.at.view.ksu006.a {
             private showMessageError(res: any) {
                 if (res.businessException) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                } else {
-                    nts.uk.ui.dialog.alertError(res.message);
                 }
             }
         }

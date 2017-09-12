@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.budget.external.actualresult;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,8 +33,6 @@ import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
-import nts.gul.csv.NtsCsvReader;
-import nts.gul.csv.NtsCsvRecord;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetDailyDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetErrorDto;
 import nts.uk.ctx.at.schedule.app.command.budget.external.actualresult.dto.ExternalBudgetLogDto;
@@ -108,12 +107,6 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
     /** The default value. */
     private final Integer DEFAULT_VALUE = 0;
     
-    /** The max column daily. */
-    private final Integer MAX_COLUMN_DAILY = 3;
-    
-    /** The max column time zone. */
-    private final Integer MAX_COLUMN_TIME_ZONE = 50;
-    
     /** The index column code. */
     private final Integer INDEX_COLUMN_CODE = 0;
     
@@ -122,9 +115,6 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
     
     /** The index begin col value. */
     private final Integer INDEX_BEGIN_COL_VALUE = 2;
-    
-    /** The max colmn. */
-    private final Integer MAX_COLMN = 51;
     
     /** The total record. */
     private final String TOTAL_RECORD = "TOTAL_RECORD";
@@ -152,9 +142,14 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         ExecutionProcessCommand command = context.getCommand();
         String executeId = command.getExecuteId();
 
+        // get setting
+        ExternalBudget externalBudget = this.findSetting(command.getExternalBudgetCode());
+        
+        // get standard column
+        Integer standardColumn = FileUtil.getStandardColumn(externalBudget.getUnitAtr());
+        
         // valid file format
-        this.fileCheckService.validFileIgnoreCharset(command.getFileId(), command.getEncoding(),
-                command.getStartLine().v());
+        this.fileCheckService.validFileFormat(command.getFileId(), command.getEncoding(), standardColumn);
 
         // get input stream by file id
         InputStream inputStream = this.fileStreamService.takeOutFromFileId(command.getFileId());
@@ -177,22 +172,30 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                 .build();
         this.extBudgetLogRepo.add(extBudgetLogDto.toDomain());
 
-        String companyId = AppContexts.user().companyId();
-        Optional<ExternalBudget> extBudgetOptional = this.externalBudgetRepo.find(companyId,
-                command.getExternalBudgetCode());
-        if (!extBudgetOptional.isPresent()) {
-            throw new RuntimeException("Not external budget setting.");
-        }
-
         // initial import process
         ImportProcess importProcess = new ImportProcess();
         importProcess.executeId = executeId;
         importProcess.inputStream = inputStream;
-        importProcess.externalBudget = extBudgetOptional.get();
+        importProcess.externalBudget = externalBudget;
         importProcess.extractCondition = command;
 
         // begin process input file
         this.processInput(importProcess, asyncTask);
+    }
+    
+    /**
+     * Find setting.
+     *
+     * @param externalBudgetCode the external budget code
+     * @return the external budget
+     */
+    private ExternalBudget findSetting(String externalBudgetCode) {
+        String companyId = AppContexts.user().companyId();
+        Optional<ExternalBudget> extBudgetOptional = this.externalBudgetRepo.find(companyId, externalBudgetCode);
+        if (!extBudgetOptional.isPresent()) {
+            throw new RuntimeException("Not external budget setting.");
+        }
+        return extBudgetOptional.get();
     }
     
     /**
@@ -205,19 +208,21 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         TaskDataSetter setter = asyncTask.getDataSetter();
         boolean isInterrupt = false;
         try {
-            NtsCsvReader csvReader = FileUtil.newCsvReader(importProcess.extractCondition.getEncoding());
-            // TODO: List<NtsCsvRecord> csRecords = csvReader.parse(importProcess.inputStream);
-            List<NtsCsvRecord> csRecords = new ArrayList<>();
+            List<List<String>> lstRecord = FileUtil.findContentFile(importProcess.inputStream,
+                    importProcess.extractCondition.getEncoding(),
+                    FileUtil.getStandardColumn(importProcess.externalBudget.getUnitAtr()));
+
             // calculate total record and check has data
-            int calTotal = csRecords.size() - importProcess.extractCondition.getStartLine().v() + 1;
+            int calTotal = lstRecord.size() - importProcess.extractCondition.getStartLine().v() + 1;
             if (calTotal > DEFAULT_VALUE) {
                 setter.updateData(TOTAL_RECORD, calTotal);
             }
-            
-            Iterator<NtsCsvRecord> csvRecordIterator = csRecords.iterator();
-            while(csvRecordIterator.hasNext()) {
-                /** check has interruption, if is interrupt, update table LOG status interruption (中断)
-                 * and end flow (stop process)
+
+            Iterator<List<String>> recordIterator = lstRecord.iterator();
+            while (recordIterator.hasNext()) {
+                /**
+                 * check has interruption, if is interrupt, update table LOG
+                 * status interruption (中断) and end flow (stop process)
                  */
                 if (asyncTask.hasBeenRequestedToCancel()) {
                     isInterrupt = true;
@@ -225,10 +230,10 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                     asyncTask.finishedAsCancelled();
                     break;
                 }
-                
+
                 importProcess.stopLine = false;
-                this.processLine(importProcess, csvRecordIterator.next());
-                
+                this.processLine(importProcess, recordIterator.next());
+
                 // respond status client
                 Optional<ExternalBudgetLog> optional = this.extBudgetLogRepo
                         .findExtBudgetLogByExecuteId(importProcess.executeId);
@@ -238,15 +243,15 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
                     setter.updateData(FAIL_CNT, log.getNumberFail());
                 }
             }
-            
+
             // update status DONE if not interrupt
             if (!isInterrupt) {
                 this.updateLog(importProcess.executeId, CompletionState.DONE);
             }
-            
+
             // close input stream
             importProcess.inputStream.close();
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -257,7 +262,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * @param importProcess the import process
      * @param record the record
      */
-    private void processLine(ImportProcess importProcess, NtsCsvRecord record) {
+    private void processLine(ImportProcess importProcess, List<String> record) {
         importProcess.startLine++;
         // check line start read
         if (importProcess.startLine < importProcess.extractCondition.getStartLine().v()) {
@@ -266,11 +271,8 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         
         // get data cell from input csv
         List<String> result = new ArrayList<>();
-        for (int i = 0; i < MAX_COLMN; i++) {
-            Object value = record.getColumn(i);
-            if (value != null) {
-                result.add(this.fillBlankValueIfNeed(value.toString(), importProcess.externalBudget.getBudgetAtr()));
-            }
+        for (String value : record) {
+            result.add(this.fillBlankValueIfNeed(value, importProcess.externalBudget.getBudgetAtr()));
         }
         // check record has data?
         if (CollectionUtil.isEmpty(result)) {
@@ -497,7 +499,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         // check column 2 (２列目) is date ?
         this.validDateFormat(importProcess, result);
         
-        // Check column 1 (1列目) is workplace code?
+        // Check column 1 (1列目) ~ workplace is existed?
         this.validWorkplaceCode(importProcess, result);
         
         // Check actual value by primitive
@@ -518,17 +520,9 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      */
     private void validLimitColumn(ImportProcess importProcess, int numberColInput) {
         UnitAtr unitAtr = importProcess.externalBudget.getUnitAtr();
-        int numberCol;
-        switch (unitAtr) {
-            case DAILY:
-                numberCol = MAX_COLUMN_DAILY;
-                break;
-            case BYTIMEZONE:
-                numberCol = MAX_COLUMN_TIME_ZONE;
-                break;
-            default:
-                throw new RuntimeException("Not unit atr suitable.");
-        }
+        // find standard column
+        int numberCol = FileUtil.getStandardColumn(unitAtr);
+        
         if (numberColInput == numberCol) {
             return;
         }

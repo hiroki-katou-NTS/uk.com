@@ -14,16 +14,7 @@ public interface ExtBudgetFileCheckService {
      *
      * @param fileId the file id
      * @param encoding the encoding
-     * @param startLine the start line
+     * @param standardColumn the standard column
      */
-    void validFileFormat(String fileId, Integer encoding, Integer startLine);
-    
-    /**
-     * Valid file ignore charset.
-     *
-     * @param fileId the file id
-     * @param encoding the encoding
-     * @param startLine the start line
-     */
-    void validFileIgnoreCharset(String fileId, Integer encoding, Integer startLine);
+    void validFileFormat(String fileId, Integer encoding, Integer standardColumn);
 }
