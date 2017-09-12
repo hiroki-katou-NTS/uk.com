@@ -78,58 +78,58 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
             //1日-勤務種類の分類 
             self.itemListOneDay = ko.observableArray([
-                new ItemModel(0, '出勤', 1),
-                new ItemModel(1, '休日', 6),
-                new ItemModel(2, '年休', 1),
-                new ItemModel(3, '積立年休', 1),
-                new ItemModel(4, '特別休暇', 2),
-                new ItemModel(5, '欠勤', 3),
-                new ItemModel(6, '代休', 5),
-                new ItemModel(7, '振出', 1),
-                new ItemModel(8, '振休', 6),
-                new ItemModel(9, '時間消化休暇', 4),
-                new ItemModel(10, '連続勤務', 7),
-                new ItemModel(11, '休日出勤', 7),
-                new ItemModel(12, '休職', 7),
-                new ItemModel(13, '休業', 7)
+                new ItemModel(0, nts.uk.resource.getText('Enum_WorkTypeClassification_Attendance'), 1),
+                new ItemModel(1, nts.uk.resource.getText('Enum_WorkTypeClassification_Holiday'), 6),
+                new ItemModel(2, nts.uk.resource.getText('Enum_WorkTypeClassification_AnnualHoliday'), 1),
+                new ItemModel(3, nts.uk.resource.getText('Enum_WorkTypeClassification_YearlyReserved'), 1),
+                new ItemModel(4, nts.uk.resource.getText('Enum_WorkTypeClassification_SpecialHoliday'), 2),
+                new ItemModel(5, nts.uk.resource.getText('Enum_WorkTypeClassification_Absence'), 3),
+                new ItemModel(6, nts.uk.resource.getText('Enum_WorkTypeClassification_SubstituteHoliday'), 5),
+                new ItemModel(7, nts.uk.resource.getText('Enum_WorkTypeClassification_Shooting'), 1),
+                new ItemModel(8, nts.uk.resource.getText('Enum_WorkTypeClassification_Pause'), 6),
+                new ItemModel(9, nts.uk.resource.getText('Enum_WorkTypeClassification_TimeDigestVacation'), 4),
+                new ItemModel(10, nts.uk.resource.getText('Enum_WorkTypeClassification_ContinuousWork'), 7),
+                new ItemModel(11, nts.uk.resource.getText('Enum_WorkTypeClassification_HolidayWork'), 7),
+                new ItemModel(12, nts.uk.resource.getText('Enum_WorkTypeClassification_LeaveOfAbsence'), 7),
+                new ItemModel(13, nts.uk.resource.getText('Enum_WorkTypeClassification_Closure'), 7)
             ]);
 
             //午前と午後-勤務種類の分類 
             self.itemListHaftDay = ko.observableArray([
-                new ItemModel(0, '出勤', 1),
-                new ItemModel(1, '休日', 6),
-                new ItemModel(2, '年休', 1),
-                new ItemModel(3, '積立年休', 1),
-                new ItemModel(4, '特別休暇', 2),
-                new ItemModel(5, '欠勤', 3),
-                new ItemModel(6, '代休', 5),
-                new ItemModel(7, '振出', 1),
-                new ItemModel(8, '振休', 6),
-                new ItemModel(9, '時間消化休暇', 4)
+                new ItemModel(0, nts.uk.resource.getText('Enum_WorkTypeClassification_Attendance'), 1),
+                new ItemModel(1, nts.uk.resource.getText('Enum_WorkTypeClassification_Holiday'), 6),
+                new ItemModel(2, nts.uk.resource.getText('Enum_WorkTypeClassification_AnnualHoliday'), 1),
+                new ItemModel(3, nts.uk.resource.getText('Enum_WorkTypeClassification_YearlyReserved'), 1),
+                new ItemModel(4, nts.uk.resource.getText('Enum_WorkTypeClassification_SpecialHoliday'), 2),
+                new ItemModel(5, nts.uk.resource.getText('Enum_WorkTypeClassification_Absence'), 3),
+                new ItemModel(6, nts.uk.resource.getText('Enum_WorkTypeClassification_SubstituteHoliday'), 5),
+                new ItemModel(7, nts.uk.resource.getText('Enum_WorkTypeClassification_Shooting'), 1),
+                new ItemModel(8, nts.uk.resource.getText('Enum_WorkTypeClassification_Pause'), 6),
+                new ItemModel(9, nts.uk.resource.getText('Enum_WorkTypeClassification_TimeDigestVacation'), 4)
             ]);
 
 
             //休日区分
             self.itemHodidayAtr = ko.observableArray([
-                new ItemModel(0, '法定内休日', 0),
-                new ItemModel(1, '法定外休日', 0),
-                new ItemModel(2, '祝日', 0)
+                new ItemModel(0, nts.uk.resource.getText('Enum_HolidayAtr_STATUTORY_HOLIDAYS'), 0),
+                new ItemModel(1, nts.uk.resource.getText('Enum_HolidayAtr_NON_STATUTORY_HOLIDAYS'), 0),
+                new ItemModel(2, nts.uk.resource.getText('Enum_HolidayAtr_PUBLIC_HOLIDAY'), 0)
             ]);
 
             //休業区分
             self.itemCloseAtr = ko.observableArray([
-                new ItemModel(0, '産前休業', 0),
-                new ItemModel(1, '産後休業', 0),
-                new ItemModel(2, '育児休業', 0),
-                new ItemModel(3, '介護休業', 0)
+                new ItemModel(0, nts.uk.resource.getText('Enum_CloseAtr_PRENATAL'), 0),
+                new ItemModel(1, nts.uk.resource.getText('Enum_CloseAtr_ POSTPARTUM'), 0),
+                new ItemModel(2, nts.uk.resource.getText('Enum_CloseAtr_CHILD_CARE'), 0),
+                new ItemModel(3, nts.uk.resource.getText('Enum_CloseAtr_CARE'), 0)
             ]);
 
             //出勤率の計算方法
             self.itemCalculatorMethod = ko.observableArray([
-                new ItemModel(0, '出勤としない（分子に加算しない）', 0),
-                new ItemModel(1, '出勤日とする（分子に加算する）', 0),
-                new ItemModel(2, '労働日から除外する（分母から減算）', 0),
-                new ItemModel(3, '時間消化休暇', 0),
+                new ItemModel(0, nts.uk.resource.getText('Enum_CalculateMethod_DO_NOT_GO_TO_WORK'), 0),
+                new ItemModel(1, nts.uk.resource.getText('Enum_CalculateMethod_MAKE_ATTENDANCE_DAY'), 0),
+                new ItemModel(2, nts.uk.resource.getText('Enum_CalculateMethod_EXCLUDE_FROM_WORK_DAY'), 0),
+                new ItemModel(3, nts.uk.resource.getText('Enum_CalculateMethod_TIME_DIGEST_VACATION'), 0),
             ]);
 
             self.roundingRules = ko.observableArray([
@@ -647,9 +647,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         
         private exportExcel(): void{
             var self = this;
-            var command = {}          
-            service.saveAsExcel(command).done(function(){
-                
+            let langId = self.langId();                    
+            service.saveAsExcel(langId).done(function(){              
             }).fail(function(){
                 
             });
