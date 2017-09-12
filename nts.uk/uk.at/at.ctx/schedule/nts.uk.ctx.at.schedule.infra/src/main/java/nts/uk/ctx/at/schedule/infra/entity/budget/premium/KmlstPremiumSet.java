@@ -45,7 +45,7 @@ public class KmlstPremiumSet extends UkJpaEntity{
 	@ManyToOne
 	@PrimaryKeyJoinColumns(value = {
 		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
-		@PrimaryKeyJoinColumn(name="DISPLAY_NUMBER",referencedColumnName="DISPLAY_NUMBER")
+		@PrimaryKeyJoinColumn(name="PREMIUM_NO",referencedColumnName="PREMIUM_NO")
     })
 	public KmnmtPremiumItem kmnmtPremiumItem;
 	

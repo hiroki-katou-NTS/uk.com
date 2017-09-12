@@ -28,9 +28,9 @@
 						<ul>
 							<li><h4>Implement interface for get data to print:</h4>
 								<ul>
-									<li><h5>Implement interface MasterListHeaderColumns</h5>
+									<li><h5>Implement method getHeaderColumns() of interface MasterListData</h5>
 										<i>(return list attributes of master list and style of this as column.)</i></li>
-									<li><h5>Implement interface MasterListData</h5>
+									<li><h5>Implement method getMasterDatas() of interface MasterListData</h5>
 										<i>(return list datas of master list and from them, kiban will draw table master list.)</i></li>
 								</ul>
 							</li>
@@ -44,7 +44,7 @@
 							<div class="header"><h3>Implement interface for get datas</h3></div>
 							<div class="content">
 								<ul>
-									<li>Create a class for implement interface MasterListHeaderColumns</li>
+									<li>Create a class for implement interface MasterListData</li>
 									<li>Attach annotation @Stateless at top of class declaration</li>
 									<li>Attach annotation @DomainID at top of class declaration and pass domain id corresponding to master list.</li>
 									<li>Override method getHeaderColumns for return attributes of master and style for them.</li>
@@ -55,17 +55,22 @@
 public class TestMasterListExportImpl implements MasterListData {
 	
 	@Override
-	public List<MasterHeaderColumn> getHeaderColumns() {
-		List<MasterHeaderColumn> columns = new ArrayList<>();
+	public List<MasterData> getMasterDatas() {
+		List<MasterData> datas = new ArrayList<>();
 		
 		int i = 1;
-		
-		while (i <= 100) {
-			columns.add(new MasterHeaderColumn("Column " + i, "", ColumnTextAlign.CENTER, "", true));
+		Random random = new Random();
+		while (i <= 20) {
+			int j = 1;
+			Map<String, Object> data = new HashMap<>();
+			while (j <= 100){
+				data.put("Column " + j, random.nextInt(1000) + 1);
+				j++;
+			}
+			datas.add(new MasterData(data, null, ""));
 			i++;
 		}
-		
-		return columns;
+		return datas;
 	}
 	
 	@Override
@@ -83,6 +88,40 @@ public class TestMasterListExportImpl implements MasterListData {
 	}
 
 }]]></pre>
+								<div>
+									<h3>Structure of class MasterData</h3>
+<pre><![CDATA[
+@Data
+@AllArgsConstructor
+public class MasterData {
+
+	private Map<String, Object> datas; // data of a row
+	
+	private List<MasterData> childGroup;  // data for a other structure table in this row (not implement yet)
+	
+	private String group; // a table group that this row belong to. 
+}
+]]></pre>
+								</div>
+								<div>
+									<h3>Structure of class MasterHeaderColumn</h3>
+<pre><![CDATA[
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class MasterHeaderColumn {
+
+	private String columnId;            // ColumnId - is key for map datas in class MasterData
+	
+	private String columnText;          // Column text - text display in header of table
+	
+	private ColumnTextAlign textAlign;  // Column text align
+	
+	private String columnFormat;        // Column format (current, not implement yet)
+	
+	private boolean display;            // Column visible - is show this column in table
+}]]></pre>
+								</div>
 							</div>
 						</div>
 						
@@ -97,9 +136,11 @@ public class TestMasterListExportImpl implements MasterListData {
 @Data
 public class MasterListExportQuery {
 
-	private String domainId;
+	private String domainId;     // Domain id that is declared with @DomainID at step 1.
 	
-	private String domainType;
+	private String domainType;   // Domain Type: (text for 種類 in common header of report).
+	
+	private String languageId;     // Current languageId is selected in current master screen.
 }
 
 // Call web service

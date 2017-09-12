@@ -191,7 +191,8 @@ public class ExternalBudgetFinder {
      */
     private List<NtsCsvRecord> findRecordFile(InputStream inputStream, Integer encoding) throws IOException {
         NtsCsvReader csvReader = FileUtil.newCsvReader(encoding);
-        return csvReader.parse(inputStream);
+        // TODO: return csvReader.parse(inputStream);
+        return null;
     }
     
     
