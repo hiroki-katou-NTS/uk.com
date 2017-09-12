@@ -55,11 +55,11 @@ public class JpaOvertimeSettingRepository extends JpaRepository
 				KshstOverTimeSet.class);
 
 		// call repository find all domain overtime
-		List<Overtime> domainOvertime = this.overtimeRepository.findAll(companyId);
+		List<Overtime> domainOvertime = this.overtimeRepository.findAllUse(companyId);
 
 		// call repository find all domain overtime break down item
 		List<OvertimeBRDItem> domainOvertimeBrdItem = this.overtimeBRDItemRepository
-				.findAll(companyId);
+				.findAllUse(companyId);
 
 		// domain to entity
 		List<KshstOverTime> entityOvertime = domainOvertime.stream().map(domain -> {
