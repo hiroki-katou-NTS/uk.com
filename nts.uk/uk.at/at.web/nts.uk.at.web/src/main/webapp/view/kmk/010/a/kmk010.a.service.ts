@@ -9,6 +9,7 @@ module nts.uk.at.view.kmk010.a {
             findByIdSuperHD60HConMed: "ctx/at/shared/overtime/super/holiday/findById",
             saveOvertimeSetting: "ctx/at/shared/overtime/setting/save",
             saveSuperHD60HConMed: "ctx/at/shared/overtime/super/holiday/save",
+            findAllOvertimeLanguageName: "ctx/at/shared/overtime/language/name/findAll"
         }
 
         /**
@@ -65,6 +66,12 @@ module nts.uk.at.view.kmk010.a {
         export function saveSuperHD60HConMed(dto: model.SuperHD60HConMedDto): JQueryPromise<void> {
             return nts.uk.request.ajax(paths.saveSuperHD60HConMed, { setting: dto });
         }
+        /**
+         * find all overtime language name
+         */
+        export function findAllOvertimeLanguageName(languageId: string): JQueryPromise<model.OvertimeLangNameDto[]> {
+            return nts.uk.request.ajax(paths.findAllOvertimeLanguageName + '/' + languageId);
+        }
 
         export module model {
 
@@ -106,6 +113,12 @@ module nts.uk.at.view.kmk010.a {
                 rounding: number;
                 superHolidayOccurrenceUnit: number;
                 premiumExtra60HRates: PremiumExtra60HRateDto[];
+            }
+            
+            export interface OvertimeLangNameDto {
+                name: string;
+                languageId: string;
+                overtimeNo: number;
             }
         }
     }
