@@ -9,16 +9,45 @@ module cps001.a.vm {
         invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
 
     export class ViewModel {
+        ccgcomponent: any = {
+            baseDate: ko.observable(new Date()),
+            //Show/hide options
+            isQuickSearchTab: ko.observable(true),
+            isAdvancedSearchTab: ko.observable(true),
+            isAllReferableEmployee: ko.observable(true),
+            isOnlyMe: ko.observable(true),
+            isEmployeeOfWorkplace: ko.observable(true),
+            isEmployeeWorkplaceFollow: ko.observable(true),
+            isMutipleCheck: ko.observable(true),
+            isSelectAllEmployee: ko.observable(true),
+            onSearchAllClicked: (dataList: Array<any>) => {
+                let self = this;
+            },
+            onSearchOnlyClicked: (data: any) => {
+                let self = this;
+            },
+            onSearchOfWorkplaceClicked: (dataList: Array<any>) => {
+                let self = this;
+            },
+            onSearchWorkplaceChildClicked: (dataList: Array<any>) => {
+                let self = this;
+            },
+            onApplyEmployee: (dataEmployee: Array<any>) => {
+                let self = this;
+            }
+        };
+
+        person: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ id: '' }));
 
         constructor() {
             let self = this;
-
+            
             self.start();
         }
 
         start() {
             let self = this;
-
+            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
         }
 
         saveData() {
@@ -35,6 +64,29 @@ module cps001.a.vm {
                 unblock();
                 alert(mes.message);
             });
+        }
+    }
+
+    interface IPersonInfo {
+        id: string;
+        code?: string;
+        avartar?: string;
+        fullName?: string;
+    }
+
+    class PersonInfo {
+        id: KnockoutObservable<string> = ko.observable('');
+        code: KnockoutObservable<string> = ko.observable('');
+        avartar: KnockoutObservable<string> = ko.observable('');
+        fullName: KnockoutObservable<string> = ko.observable('');
+
+        constructor(param: IPersonInfo) {
+            let self = this;
+
+            self.id(param.id || '');
+            self.code(param.code || '');
+            self.avartar(param.avartar || '');
+            self.fullName(param.fullName || '');
         }
     }
 }
