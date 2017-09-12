@@ -6,7 +6,9 @@ package nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,6 +16,8 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
+import nts.arc.layer.app.file.storage.FileStorage;
+import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.gul.collection.CollectionUtil;
 
@@ -26,9 +30,15 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
     /** The file stream service. */
     @Inject
     private StoredFileStreamService fileStreamService;
+    
+    @Inject
+    private FileStorage fileStorage;
 
     /** The max record. */
     private final int MAX_RECORD = 999;
+    
+    /** The lst extension. */
+    private final List<String> LST_EXTENSION = Arrays.asList("txt", "csv");
 
     /*
      * (non-Javadoc)
@@ -40,7 +50,10 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
     public void validFileFormat(String fileId, Integer encoding, Integer standardColumn) {
         InputStream inputStream = this.findContentFile(fileId);
 
+        // valid file .txt or csv
         this.validFileExtension(fileId);
+        
+        // check limit record
         this.validLimitRecord(inputStream, encoding, standardColumn);
 
         // close input stream
@@ -78,7 +91,20 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
      *            the file id
      */
     private void validFileExtension(String fileId) {
-        // TODO: check extension file, if not support, throw new BusinessException("Msg_159");
+        Optional<StoredFileInfo> optional = this.fileStorage.getInfo(fileId);
+        if(!optional.isPresent()){
+            throw new RuntimeException("file not found");
+        }
+        String fileName = optional.get().getOriginalName().toLowerCase();
+        boolean isValidSupportFileType = false;
+        for (String item : LST_EXTENSION) {
+            if (fileName.contains(item)) {
+                isValidSupportFileType = true;
+            }
+        }
+        if (!isValidSupportFileType) {
+            throw new BusinessException("Msg_159");
+        }
     }
 
     /**
