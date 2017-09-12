@@ -11,6 +11,7 @@ import nts.arc.layer.dom.DomainObject;
  * The Class AmountRange.
  */
 // 金額範囲
+// 事前条件 : 上限値≧下限値
 @Getter
 public class AmountRange extends DomainObject{
 

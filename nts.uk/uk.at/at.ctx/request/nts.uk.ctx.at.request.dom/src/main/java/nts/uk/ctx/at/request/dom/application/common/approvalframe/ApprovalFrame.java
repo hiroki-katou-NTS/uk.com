@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.Reason;
 
@@ -40,7 +41,7 @@ public class ApprovalFrame extends DomainObject {
 	
 	/** 日付 */
 	@Setter
-	private String approvalDate;
+	private GeneralDate approvalDate;
 	
 	/** 理由 */
 	@Setter
@@ -51,7 +52,7 @@ public class ApprovalFrame extends DomainObject {
 	private String representerSID;
 
 	public static ApprovalFrame createFromJavaType( String companyID , String phaseID , int dispOrder , String approverSID ,
-			int approvalATR  , int confirmATR ,String approvalDate,String reason,String representerSID ){
+			int approvalATR  , int confirmATR ,GeneralDate approvalDate,String reason,String representerSID ){
 		return new ApprovalFrame (companyID , phaseID , dispOrder , approverSID ,
 									EnumAdaptor.valueOf(approvalATR , ApprovalAtr.class) ,
 									EnumAdaptor.valueOf(confirmATR, ConfirmAtr.class),
@@ -61,5 +62,44 @@ public class ApprovalFrame extends DomainObject {
 	}
 	
 	
+	/**
+	  * change value of approvalATR
+	  * @param approvalATR
+	  */
+	 public void changeApprovalATR(ApprovalAtr approvalATR) {
+		 this.approvalATR = approvalATR;
+	 }
+	 
+	 /**
+	  * change value of approverSID
+	  * @param approverSID
+	  */
+	 public void changeApproverSID(String  approverSID) {
+		 this.approverSID = approverSID;
+	 }
 	
+	 /**
+	  * change value of representerSID
+	  * @param representerSID
+	  */
+	 public void changeRepresenterSID(String  representerSID) {
+		 this.representerSID = representerSID;
+	 }
+	 
+	 /**
+	  * change value of reason
+	  * @param reason
+	  */
+	 public void changeReason(Reason reason) {
+		 this.reason = reason;
+	 }
+	 
+	 /**
+	  * change value of approvalDate
+	  * @param approvalDate
+	  */
+	 public void changeReason(GeneralDate approvalDate) {
+		 this.approvalDate = approvalDate;
+	 }
+	 
 }

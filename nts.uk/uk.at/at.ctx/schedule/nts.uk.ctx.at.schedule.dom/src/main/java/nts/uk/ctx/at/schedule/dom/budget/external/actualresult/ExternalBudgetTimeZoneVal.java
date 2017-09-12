@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresult;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
@@ -14,6 +15,7 @@ import nts.arc.layer.dom.DomainObject;
  * @param <T> the generic type
  */
 @Getter
+@EqualsAndHashCode(callSuper = true, of = {"timePeriod"})
 public class ExternalBudgetTimeZoneVal<T> extends DomainObject {
 
     /** The time period. */

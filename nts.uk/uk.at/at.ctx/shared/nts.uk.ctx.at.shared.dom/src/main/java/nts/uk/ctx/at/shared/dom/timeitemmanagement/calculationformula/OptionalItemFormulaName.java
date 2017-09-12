@@ -5,19 +5,28 @@
 package nts.uk.ctx.at.shared.dom.timeitemmanagement.calculationformula;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * The Class DispOrder.
+ * The Class OptionalItemFormulaName.
  */
-// 任意項目計算式の並び順
-// 計算式で使用する順番を管理する
-// Manage the order of use in calculation formulas
-@Getter
-public class OptionalItemFormulaName extends AggregateRoot {
 
-	/** The disp order. */
-	// 並び順
-	private int dispOrder;
+@Getter
+@StringMaxLength(30)
+// 任意項目計算式名称
+public class OptionalItemFormulaName extends StringPrimitiveValue<OptionalItemFormulaName> {
+
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
+
+	/**
+	 * Instantiates a new optional item formula name.
+	 *
+	 * @param rawValue the raw value
+	 */
+	public OptionalItemFormulaName(String rawValue) {
+		super(rawValue);
+	}
 
 }

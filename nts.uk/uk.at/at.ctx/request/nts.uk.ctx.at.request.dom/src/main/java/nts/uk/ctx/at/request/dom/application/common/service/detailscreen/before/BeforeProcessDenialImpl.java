@@ -10,12 +10,12 @@ import javax.inject.Inject;
  */
 @Stateless
 public class BeforeProcessDenialImpl implements BeforeProcessDenial {
-//	@Inject
-//	private ProcessBeforeDetailScreenRegistrationService repo; 
+	@Inject
+	private DetailBeforeProcessRegister detailBeforeProcessRegisterRepo;
 
 	@Override
 	public void detailedScreenProcessBeforeDenial() {
-		//repo.exclusiveCheck();
+		detailBeforeProcessRegisterRepo.exclusiveCheck();
 		
 	}
 }

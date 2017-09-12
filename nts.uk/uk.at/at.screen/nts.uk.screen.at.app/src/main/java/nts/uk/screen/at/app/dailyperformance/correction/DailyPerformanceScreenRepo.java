@@ -4,6 +4,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import nts.arc.time.GeneralDate;
@@ -44,20 +45,20 @@ public interface DailyPerformanceScreenRepo {
 	List<String> getListEmployment(Integer closureId);
 
 	// Get list workplace of login user
-	List<String> getListWorkplace(String employeeId, DateRange dateRange);
+	Map<String, String> getListWorkplace(String employeeId, DateRange dateRange);
 
 	// Get list classification of login company
 	List<String> getListClassification();
 
 	// Get list employee by jobTitle, employment, workplace, classification
 	List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
-			List<String> lstWorkplace, List<String> lstClassification);
+			Map<String, String> lstWorkplace, List<String> lstClassification);
 
 	// Get list business type of list employee (no duplicated)
 	List<String> getListBusinessType(List<String> lstEmployee, DateRange dateRange);
 
 	// Get format daily performance correction
-	Set<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType);
+	List<FormatDPCorrectionDto> getListFormatDPCorrection(List<String> lstBusinessType);
 
 	// Get Daily performance business type type control
 	List<DPBusinessTypeControl> getListBusinessTypeControl(List<String> lstBusinessType,
@@ -74,4 +75,7 @@ public interface DailyPerformanceScreenRepo {
 	
 	// Get error settings
 	List<DPErrorSettingDto> getErrorSetting(List<String> listErrorCode);
+	
+	// Get list sheet
+	List<DPSheetDto> getFormatSheets(List<String> lstBusinessType);
 }
