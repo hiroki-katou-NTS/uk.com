@@ -8,10 +8,12 @@
 		<ui:composition template="../../../../master/base.xhtml">
 			<ui:define name="htmlHead">
 				<com:stylefile path="kmk010.a.main.css" />
+				<com:stylefile path="/view/language/select/languagemasterselect.css" of="/nts.uk.com.web" />
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="kmk010.a.start.js" />
 				<com:scriptfile path="kmk010.a.service.js" />
 				<com:scriptfile path="kmk010.a.vm.js" />
+				<com:scriptfile path="/view/language/select/languagemasterselect-jquery-ext.js" of="/nts.uk.com.web" />
 				<com:ValidatorScript>
 					nts.uk.ctx.at.shared.dom.overtime.OvertimeNote
 				</com:ValidatorScript>
@@ -24,6 +26,7 @@
 					<button tabindex="3" class="buttonOther" data-bind="click: openDialogOvertimeSetting" >#{i18n.getText('KMK010_6')}</button>
 					<button tabindex="4" class="buttonOther" data-bind="click: openDialogOvertimeBRDItem">#{i18n.getText('KMK010_7')}</button>
 					<button tabindex="5" class="buttonOther" >#{i18n.getText('KMK010_7')}</button>
+					<div id="switch-language"></div>
 				</div>
 				
 				<div id="contents-area" data-bind="with: overtimeSettingModel">
@@ -84,7 +87,7 @@
 								<tr class="bg-dark-green">
 									<td rowspan="2">#{i18n.getText('KMK010_15')}</td>
 									<td rowspan="2">#{i18n.getText('KMK010_16')}</td>
-									<td rowspan="2">#{i18n.getText('KMK010_17')}</td>
+									<td rowspan="2" colspan="2">#{i18n.getText('KMK010_17')}</td>
 									<td rowspan="2">#{i18n.getText('KMK010_18')}</td>
 									<com:ko tag="foreach" bind="overtimes">
 										<td>
@@ -109,7 +112,10 @@
 											<div class="overtimeName" data-bind="text: name"></div>
 										</td>
 										<td>
-											<button tabindex="5">#{i18n.getText('KMK010_19')}</button>
+											<button tabindex="5" data-bind="click: openDialogDailyAttendanceItems">#{i18n.getText('KMK010_19')}</button>
+										</td>
+										<td>
+											<label>#{i18n.getText('KMK010_19')}</label>
 										</td>
 										<td>
 											<div class="overtimeName" data-bind="text: productNumber"></div>
