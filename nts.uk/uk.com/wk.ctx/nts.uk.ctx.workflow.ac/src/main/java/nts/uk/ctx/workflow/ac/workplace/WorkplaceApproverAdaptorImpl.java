@@ -7,13 +7,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.company.pub.workplace.WorkplacePub;
+import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverAdaptor;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverDto;
 @Stateless
 public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdaptor {
 	@Inject
-	private WorkplacePub wpPub;
+	private SyWorkplacePub wpPub;
 	@Override
 	public List<WorkplaceApproverDto> findByWkpId(String companyId, String workplaceId, GeneralDate baseDate) {
 		List<WorkplaceApproverDto> lstWp = wpPub.findByWkpId(companyId, workplaceId, baseDate)
