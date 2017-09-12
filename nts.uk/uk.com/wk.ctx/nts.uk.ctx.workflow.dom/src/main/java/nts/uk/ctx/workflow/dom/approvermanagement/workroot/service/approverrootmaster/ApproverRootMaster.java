@@ -4,6 +4,7 @@ import java.util.List;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
 
 /**
  * 01.承認ルートを取得する
@@ -19,5 +20,5 @@ public interface ApproverRootMaster {
 	 * @param isPerson 個人別があるかチェックする
 	 * @return 
 	 */
-	List<EmployeeApproveDto> employees(String companyID, GeneralDate baseDate, boolean isCompany, boolean isWorkplace, boolean isPerson);
+	MasterApproverRootOutput masterInfors(String companyID, GeneralDate baseDate, boolean isCompany, boolean isWorkplace, boolean isPerson);
 }
