@@ -43,9 +43,19 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 	public Optional<Kcp009EmployeeSearchData> findInAllEmployee(String code, System system, GeneralDate baseDate) {
 		Object[] resultQuery = null;
 		try {
-			resultQuery = (Object[]) this.getEntityManager().createQuery(SEARCH_QUERY_STRING)
+			resultQuery = (Object[]) this.getEntityManager().createQuery("SELECT e, p, wp, d FROM BsydtEmployee e "
+					+ "LEFT JOIN BpsdtPerson p ON e.personId = p.bpsdtPersonPk.pId "
+					+ "LEFT JOIN KmnmtAffiliWorkplaceHist h ON h.kmnmtAffiliWorkplaceHistPK.empId = e.bsydtEmployeePk.sId"
+					+ "	AND h.kmnmtAffiliWorkplaceHistPK.strD <= :baseDate"
+					+ " AND h.endD >= :baseDate "
+					+ "LEFT JOIN CwpmtWorkplace wp ON  wp.cwpmtWorkplacePK.wkpid = h.kmnmtAffiliWorkplaceHistPK.wkpId "
+					+ "LEFT JOIN BsymtAffiDepartment dh ON dh.sid = e.bsydtEmployeePk.sId "
+					+ " AND dh.strD <= :baseDate"
+					+ " AND dh.endD >= :baseDate "
+					+ "LEFT JOIN BsymtDepartment d ON d.id = dh.depId "
+					+ "WHERE e.employeeCode = :empCode")
 				.setParameter("baseDate", baseDate)
-				.setParameter("empCode", baseDate)
+				.setParameter("empCode", code)
 				.getSingleResult();
 		} catch (NoResultException e) {
 			return Optional.empty();

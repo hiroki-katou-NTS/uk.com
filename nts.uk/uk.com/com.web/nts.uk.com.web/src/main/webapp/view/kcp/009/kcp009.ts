@@ -176,8 +176,8 @@ module kcp009.viewmodel {
                         my: 'left top',
                         at: 'left bottom',
                         of: $('#function-tr')
-                    }
-                    dismissible: false
+                    },
+                    dismissible: false,
                 });
                 // Toggle
                 $('#btn_show_list').click(function() {
