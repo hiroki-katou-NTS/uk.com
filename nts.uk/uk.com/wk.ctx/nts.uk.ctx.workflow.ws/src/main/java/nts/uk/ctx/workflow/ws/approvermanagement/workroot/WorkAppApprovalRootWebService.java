@@ -77,4 +77,7 @@ public class WorkAppApprovalRootWebService extends WebService{
 		return data;
 	}
 	
+	@POST
+	@Path("testMasterDat")
+	
 }

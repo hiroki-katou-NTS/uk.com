@@ -1,4 +1,4 @@
-package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.approverrootmaster;
+package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.masterapproverroot;
 
 import java.util.List;
 
