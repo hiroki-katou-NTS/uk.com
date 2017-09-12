@@ -1,4 +1,4 @@
-module nts.uk.at.view.cmm018.l {
+module nts.uk.com.view.cmm018.l {
     export module viewmodel {
         export class ScreenModel {
             date: KnockoutObservable<string>;
@@ -14,7 +14,8 @@ module nts.uk.at.view.cmm018.l {
             }
             //Excel出力
             printExcel(){
-                
+                var self = this;
+                service.searchModeEmployee(self.date());
             }
         }
     }
