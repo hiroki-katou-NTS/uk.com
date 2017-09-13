@@ -25,6 +25,7 @@ import nts.uk.shr.infra.file.report.masterlist.data.ColumnTextAlign;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterData;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterHeaderColumn;
 import nts.uk.shr.infra.file.report.masterlist.data.MasterListData;
+import nts.uk.shr.infra.file.report.masterlist.webservice.MasterListExportQuery;
 
 @Stateless
 @DomainID(value = "WorkType")
@@ -44,7 +45,7 @@ public class WorkTypeExportImpl implements MasterListData {
 	
 
 	@Override
-	public List<MasterHeaderColumn> getHeaderColumns() {
+	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery arg0) {
 
 		List<MasterHeaderColumn> columns = new ArrayList<>();
 		columns.add(new MasterHeaderColumn("コード", internationalization.getItemName("KMK007_66").get(),
@@ -131,7 +132,7 @@ public class WorkTypeExportImpl implements MasterListData {
 	}
 
 	@Override
-	public List<MasterData> getMasterDatas() {
+	public List<MasterData> getMasterDatas(MasterListExportQuery arg0) {
 		String companyId = AppContexts.user().companyId();
 		
 		List<MasterData> datas = new ArrayList<>();
