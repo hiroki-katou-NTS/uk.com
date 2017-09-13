@@ -10,4 +10,5 @@ public class CommonApprovalRootDto {
 	private List<CompanyAppRootDto> lstCompanyRoot;
 	private List<WorkPlaceAppRootDto> lstWorkplaceRoot;
 	private List<PersonAppRootDto> lstPersonRoot;
+	private List<ObjDate> result;
 }

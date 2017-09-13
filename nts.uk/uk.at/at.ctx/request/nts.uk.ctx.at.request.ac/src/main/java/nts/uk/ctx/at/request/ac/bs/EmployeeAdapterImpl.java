@@ -12,8 +12,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
-import nts.uk.ctx.bs.employee.pub.employee.employment.SyEmploymentPub;
-import nts.uk.ctx.bs.employee.pub.employee.workplace.SyWorkplacePub;
+import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
+import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 
 /**
  * The Class EmployeeAdaptorImpl.

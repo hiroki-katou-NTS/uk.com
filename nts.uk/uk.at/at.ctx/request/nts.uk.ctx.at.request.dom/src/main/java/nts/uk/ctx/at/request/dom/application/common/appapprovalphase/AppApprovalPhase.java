@@ -41,5 +41,13 @@ public class AppApprovalPhase extends DomainObject {
 															EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),
 															dispOrder,
 															EnumAdaptor.valueOf(approvalATR, ApprovalAtr.class)) ; 
-								}									
+								}
+	
+	/**
+	  * change value of reversionReason
+	  * @param reversionReason
+	  */
+	public void changeApprovalATR(ApprovalAtr approvalATR) {
+		this.approvalATR = approvalATR;
+	}
 }

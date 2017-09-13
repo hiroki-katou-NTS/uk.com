@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.adapter.ScWorkplaceAdapter;
-import nts.uk.ctx.bs.company.pub.workplace.WorkplacePub;
+import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ScWorkplaceAdapter;
+import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 
 /**
  * The Class ScWorkplaceAdapterImpl.
@@ -20,22 +20,22 @@ import nts.uk.ctx.bs.company.pub.workplace.WorkplacePub;
 @Stateless
 public class ScWorkplaceAdapterImpl implements ScWorkplaceAdapter {
 
-    /** The workplace pub. */
-    @Inject
-    private WorkplacePub workplacePub;
+	/** The workplace pub. */
+	@Inject
+	private SyWorkplacePub workplacePub;
 
-    /*
-     * 
-     * (non-Javadoc)
-     * 
-     * @see
-     * nts.uk.ctx.at.schedule.dom.budget.external.actualresult.WorkplaceAdapter#
-     * findWpkIdList(java.lang.String, java.util.Date)
-     */
-    @Override
-    public List<String> findWpkIdList(String companyId, String wpkCode, Date baseDate) {
-         GeneralDate generalDate = GeneralDate.legacyDate(baseDate);
-         return this.workplacePub.findWpkIdsByWkpCode(companyId, wpkCode, generalDate);
-    }
+	/*
+	 * 
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.budget.external.actualresult.WorkplaceAdapter#
+	 * findWpkIdList(java.lang.String, java.util.Date)
+	 */
+	@Override
+	public List<String> findWpkIdList(String companyId, String wpkCode, Date baseDate) {
+		GeneralDate generalDate = GeneralDate.legacyDate(baseDate);
+		return this.workplacePub.findWpkIdsByWkpCode(companyId, wpkCode, generalDate);
+	}
 
 }
