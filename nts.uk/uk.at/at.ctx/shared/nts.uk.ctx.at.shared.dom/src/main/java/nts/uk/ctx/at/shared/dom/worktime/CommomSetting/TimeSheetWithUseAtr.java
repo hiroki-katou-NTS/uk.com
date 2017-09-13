@@ -33,7 +33,7 @@ public class TimeSheetWithUseAtr extends AggregateRoot implements HasTimeSpanFor
 
 	@Override
 	public TimeSheetWithUseAtr newSpanWith(TimeWithDayAttr start, TimeWithDayAttr end) {
-		return new TimeSheetWithUseAtr(this.useAtr, start, end,this.count);
+		return new TimeSheetWithUseAtr(this.useAtr, start, end, this.count);
 	}
 
 }

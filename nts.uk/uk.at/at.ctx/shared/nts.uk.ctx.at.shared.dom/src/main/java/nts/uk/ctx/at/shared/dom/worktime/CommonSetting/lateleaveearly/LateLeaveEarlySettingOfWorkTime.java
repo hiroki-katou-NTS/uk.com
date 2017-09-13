@@ -12,6 +12,7 @@ public class LateLeaveEarlySettingOfWorkTime {
 
 	private LateLeaveEarlyClassification lateLeaveEarlyClassification;
 	private GraceTimeSetting graceTimeSetting;
+	private boolean isCalculatedAtHolidayWork; 
 	
 	/**
 	 * パラメータが遅刻早退区分と一致しているか返す

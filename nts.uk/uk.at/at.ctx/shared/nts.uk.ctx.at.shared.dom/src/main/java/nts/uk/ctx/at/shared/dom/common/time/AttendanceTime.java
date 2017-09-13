@@ -1,8 +1,4 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
-package nts.uk.ctx.at.shared.dom.worktime.fluidworkset;
+package nts.uk.ctx.at.shared.dom.common.time;
 
 import nts.arc.primitive.TimeDurationPrimitiveValue;
 import nts.arc.primitive.constraint.TimeRange;

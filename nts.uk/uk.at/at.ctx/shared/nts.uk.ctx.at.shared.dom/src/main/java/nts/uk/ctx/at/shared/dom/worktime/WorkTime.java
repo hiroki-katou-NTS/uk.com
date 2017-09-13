@@ -1,9 +1,16 @@
 package nts.uk.ctx.at.shared.dom.worktime;
 
+import java.util.List;
+
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.attendance.UseSetting;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.flexworkset.FlexWorkSetting;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  *  就業時間帯の設定
@@ -26,9 +33,16 @@ public class WorkTime extends AggregateRoot {
 	private UseSetting dispAtr;
 
 	private WorkTimeDisplayName workTimeDisplayName;
+	
+	private FixedWorkSetting fixedWorkSetting;
+	
+	private FlexWorkSetting flexWorkSetting;
+
+	private PredetermineTimeSet predetermineTimeSet;
 
 	public WorkTime(SiftCode siftCD, String companyID, WorkTimeNote note, WorkTimeDivision workTimeDivision,
-			UseSetting dispAtr, WorkTimeDisplayName workTimeDisplayName) {
+			UseSetting dispAtr, WorkTimeDisplayName workTimeDisplayName, FixedWorkSetting fixedWorkSetting ,
+			FlexWorkSetting flexWorkSetting, PredetermineTimeSet predetermineTimeSet) {
 		super();
 		this.siftCD = siftCD;
 		this.companyID = companyID;
@@ -36,5 +50,39 @@ public class WorkTime extends AggregateRoot {
 		this.workTimeDivision = workTimeDivision;
 		this.dispAtr = dispAtr;
 		this.workTimeDisplayName = workTimeDisplayName;
+		this.fixedWorkSetting = fixedWorkSetting;
+		this.flexWorkSetting = flexWorkSetting;
+		this.predetermineTimeSet = predetermineTimeSet;
 	}
+	
+	
+	/**
+	 * 遅刻時間の計算範囲を取得する
+	 * @param goWorkTime
+	 * @return 遅刻の計算開始時間
+	 */
+	public TimeSpanForCalc getLateTimeCalcRange(TimeWithDayAttr goWorkTime) {
+		if(workTimeDivision.getWorkTimeDailyAtr().isFlex()&& flexWorkSetting.getCoreTimeSetting().getUse().isUse()) {
+			return new TimeSpanForCalc(flexWorkSetting.getCoreTimeSetting().getCoreTime().getStart(),goWorkTime);
+		}
+		return new TimeSpanForCalc(predetermineTimeSet.getDateStartTime(),goWorkTime);
+	}
+	
+//	/**
+//	 * 1回目の所定時間の開始時刻を取得
+//	 * @return 所定時間の開始時刻
+//	 */
+//	public TimeWithDayAttr onePredetermineStartTime(List<DeductionItemOfTimeSheet> a) {
+//		return this.predetermineTimeSet.getSpecifiedTimeSheet().getTimeSheets().get(0).getStartTime();
+//	}
+	
+	public void getBreakTimeSheet() {
+		if(workTimeDivision.getWorkTimeDailyAtr().isFlex() || workTimeDivision.getWorkTimeMethodSet().isFluidWork()) {
+			
+		}
+		else {
+			
+		}
+	}
+
 }

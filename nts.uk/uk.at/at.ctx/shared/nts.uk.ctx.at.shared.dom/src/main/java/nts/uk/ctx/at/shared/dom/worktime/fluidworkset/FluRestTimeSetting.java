@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.fluidworkset;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 
 @Getter
 // 流動休憩設定

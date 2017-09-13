@@ -52,5 +52,9 @@ public class UsageUnitSetting extends AggregateRoot {
 		memento.setWorkPlace(this.workPlace);
 		memento.setEmployment(this.employment);
 	}
+	
+	public void getDaily(String workPlaceId,String employeeID,String bussinessId) {
+		
+	}
 
 }
