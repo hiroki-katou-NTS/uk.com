@@ -25,6 +25,10 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 	private final TimeWithDayAttr start;
 	private final TimeWithDayAttr end;
 
+	public TimeSpanForCalc getSpan() {
+		return this;
+	}
+	
 	/**
 	 * 開始から終了までの時間を分の整数で返す Returns time as minutes from start to end.
 	 * 
@@ -60,24 +64,24 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 	}
 
 	/**
-	 * 開始時刻と終了時刻を後ろにズラす
+	 * 開始時刻と終了時刻を前にズラす
 	 * 
 	 * @param minutesToShiftAhead 移動させる時間（分）
 	 * @return ズラした後の開始時刻と終了時刻
 	 */
-	public TimeSpanForCalc shiftAhead(int minutesToShiftAhead) {
+	public TimeSpanForCalc shiftBack(int minutesToShiftAhead) {
 		return new TimeSpanForCalc(
 				this.start.shiftWithLimit(minutesToShiftAhead),
 				this.end.shiftWithLimit(minutesToShiftAhead));
 	}
 
 	/**
-	 * 開始時刻と終了時刻を手前にズラす
+	 * 開始時刻と終了時刻を後ろにズラす
 	 * 
 	 * @param minutesToMoveBack　移動させる時間（分）
 	 * @return ズラした後の開始時刻と終了時刻
 	 */
-	public TimeSpanForCalc shiftBack(int minutesToShiftBack) {
+	public TimeSpanForCalc shiftAhead(int minutesToShiftBack) {
 		return new TimeSpanForCalc(
 				this.start.shiftWithLimit(-minutesToShiftBack),
 				this.end.shiftWithLimit(-minutesToShiftBack));

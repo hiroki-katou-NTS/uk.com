@@ -39,7 +39,7 @@ public class FixedWorkSetting extends AggregateRoot {
 	// private 固定勤務の残業設定 overtimeSetting
 
 	// 詳細設定
-	// private WorkTimeCommonSet advancedSetting
+	 private WorkTimeCommonSet advancedSetting;
 	
 	/**
 	 * 指定した区分の就業時間の時間帯設定を返す

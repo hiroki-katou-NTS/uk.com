@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set;
 
 /**
- * 固定給系の計算方法
+ * 固定休憩の計算方法
  * @author keisuke_hoshina
  *
  */

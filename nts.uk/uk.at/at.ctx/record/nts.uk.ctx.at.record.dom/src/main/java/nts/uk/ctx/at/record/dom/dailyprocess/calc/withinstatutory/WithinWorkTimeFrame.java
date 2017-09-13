@@ -21,6 +21,12 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet {
 		return this.premiumTimeSheetInPredetermined.get();
 	}
 	
+	/**
+	 * constructor
+	 * @param workingHoursTimeNo
+	 * @param timeSheet
+	 * @param calculationTimeSheet
+	 */
 	public WithinWorkTimeFrame(
 			int workingHoursTimeNo,
 			TimeSpanWithRounding timeSheet,

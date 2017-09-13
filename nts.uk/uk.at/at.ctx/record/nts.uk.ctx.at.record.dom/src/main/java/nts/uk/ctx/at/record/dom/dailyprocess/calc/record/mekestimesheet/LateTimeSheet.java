@@ -1,7 +1,10 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet;
 
 import lombok.val;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LeaveEarlyDecisionClock;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
+import nts.uk.ctx.at.shared.dom.worktime.basicinformation.DailyWorkClassification;
+import nts.uk.ctx.at.shared.dom.worktime.basicinformation.WorkTimeClassification;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -24,20 +27,31 @@ public class LateTimeSheet {
 	 * @param workTime   就業時間帯クラス
 	 * @return 計算用時間帯：遅刻時間帯
 	 */
-	public static LateTimeSheet of(TimeWithDayAttr goWorkTime, WorkTime workTime) {
+	public static LateTimeSheet of(TimeWithDayAttr goWorkTime, WorkTime workTime,WorkTimeClassification classification) {
 		
-		val lateTimeSheet = workTime.getLateTimeCalcRange(goWorkTime);
+//		val lateTimeSheet = workTime.getLateTimeCalcRange(goWorkTime);
+//			
+//		if(goWorkTime.greaterThan(lateTimeSheet.getStart())) {
+//			return new LateTimeSheet(lateTimeSheet.getStart(),goWorkTime);
+//		}
+//		else {
+//			return new LateTimeSheet(lateTimeSheet.getStart(),lateTimeSheet.getEnd());
+//		}
+
 		
-		if(goWorkTime.greaterThan(lateTimeSheet.getStart())) {
-			return new LateTimeSheet(lateTimeSheet.getStart(),goWorkTime);
+		//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+		if(classification.getDailyWorkClassification().equals(DailyWorkClassification.NormalWork)) {
+			
+		}else {
+			/* フレックス勤務の場合の処理を記載する事 */
 		}
-		else {
-			return new LateTimeSheet(lateTimeSheet.getStart(),lateTimeSheet.getEnd());
-		}
+			
+		//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+		
+		
 	}
 	
 //	public void calcLateTime(計上控除区分) {
 //	}
 	
-
 }
