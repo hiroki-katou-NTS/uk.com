@@ -12,7 +12,7 @@ module ksu001.a.viewmodel {
         selectedCode: KnockoutObservableArray<any> = ko.observableArray([]);
         showinfoSelectedEmployee: KnockoutObservable<boolean> = ko.observable(true);
 
-        //Grid list A2_4 (pop-up)
+        //Pop-up
         items: KnockoutObservableArray<ItemModel> = ko.observableArray([]);
         columns: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KSU001_19"), key: 'code', width: 50 },
@@ -20,6 +20,27 @@ module ksu001.a.viewmodel {
             { headerText: 'コード', key: 'id', width: 50, hidden: true },
         ]);
         currentCodeList: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        itemList: KnockoutObservableArray<ItemModel>;
+        selectedCode1: KnockoutObservable<string> = ko.observable('0003');
+        roundingRules: KnockoutObservableArray<any> = ko.observableArray([
+            { code: '1', name: nts.uk.resource.getText("KSU001_89") },
+            { code: '2', name: nts.uk.resource.getText("KSU001_90") }
+        ]);
+        selectedRuleCode: any = ko.observable(1);
+        itemList1: KnockoutObservableArray<any> = ko.observableArray([
+            new BoxModel(1, '画面サイズ'),
+            new BoxModel(2, '高さを指定'),
+        ]);
+        selectedId: KnockoutObservable<number> = ko.observable(1);
+
+        itemList2: KnockoutObservableArray<any> = ko.observableArray([
+            new BoxModel(1, nts.uk.resource.getText("KSU001_339")),
+            new BoxModel(2, nts.uk.resource.getText("KSU001_340")),
+            new BoxModel(3, nts.uk.resource.getText("KSU001_341"))
+        ]);
+        selectedIds: KnockoutObservableArray<number> = ko.observableArray([1, 2]);
+        popupVal: KnockoutObservable<string> = ko.observable('');
 
         //Date time
         dtPrev: KnockoutObservable<Date> = ko.observable(new Date('2017/01/01'));
@@ -65,7 +86,7 @@ module ksu001.a.viewmodel {
                 self.dateTimeAfter(moment(self.dtAft()).format('YYYY/MM/DD'));
             });
 
-            //Grid list for pop-up
+            //Pop-up
             for (let i = 1; i <= 12; i++) {
                 self.items.push(new ItemModel('00' + i, '基本給' + i, '00' + i));
             }
@@ -77,6 +98,12 @@ module ksu001.a.viewmodel {
                     $('#oViewModel').removeClass('oViewModelDisplay');
                 }
             });
+
+            self.itemList = ko.observableArray([
+                new ItemModel('基本給1', '基本給', ''),
+                new ItemModel('基本給2', '役職手当', ''),
+                new ItemModel('0003', '基本給', '')
+            ]);
 
             //display for A3_2
             self.lengthListSid = ko.pureComputed(() => {
@@ -296,6 +323,19 @@ module ksu001.a.viewmodel {
                         decorator: detailHeaderDeco
                     }, {
                         name: "ColumnResizes"
+                    }, {
+                        name: "HeaderPopups",
+                        menu: {
+                            rows: [0],
+                            items: [
+                                { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
+                                { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                            ]
+                        },
+                        popup: {
+                            rows: [1],
+                            provider: function() { return $("#popup-area8"); }
+                        }
                     }]
             };
 
@@ -408,6 +448,20 @@ module ksu001.a.viewmodel {
             $("#extable").exTable("stickMode", "single");
 
             /**
+             * update text for row 2 of detailHeader
+             */
+            $("#popup-set").click(function() {
+                $("#extable").exTable("popupValue", self.popupVal());
+            });
+
+            /**
+             * close popup
+             */
+            $("#close-popup").click(function() {
+                $('#popup-area8').ntsPopup('hide');
+            });
+
+            /**
              * next a month
              */
             $("#nextMonth").click(function() {
@@ -463,15 +517,15 @@ module ksu001.a.viewmodel {
                     if (error.length != 0) {
                         self.addListError(error);
                     } else {
-                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));    
+                        nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_15"));
                     }
                     //get data and update extable
                     self.getDataBasicSchedule().done(function() {
                         self.updateExTable();
                     });
-                    
+
                 }).fail(function(error: any) {
-                    nts.uk.ui.dialog.alertError(error.message);    
+                    nts.uk.ui.dialog.alertError(error.message);
                 });
             });
         }
@@ -614,7 +668,19 @@ module ksu001.a.viewmodel {
                 features: [{
                     name: "HeaderCellStyle",
                     decorator: detailHeaderDeco
-                }]
+                }, {
+                        name: "HeaderPopups",
+                        menu: {
+                            rows: [0],
+                            items: [
+                                { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
+                                { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                            ]
+                        },
+                        popup: {
+                            rows: [1],
+                            provider: function() { return $("#popup-area8"); }
+                        }]
             };
 
             //if haven't data in extable, only update header detail and header horizontal
@@ -675,24 +741,34 @@ module ksu001.a.viewmodel {
                 });
             }
         }
-        
+
         /**
          * Set error
          */
         addListError(errorsRequest: Array<string>) {
             var messages = {};
-            _.forEach(errorsRequest, function(err){
+            _.forEach(errorsRequest, function(err) {
                 messages[err] = nts.uk.resource.getMessage(err);
             });
-            
+
             var errorVm = {
-                messageId:  errorsRequest,
+                messageId: errorsRequest,
                 messages: messages
             };
-            
+
             nts.uk.ui.dialog.bundledErrors(errorVm);
         }
 
+    }
+
+    class BoxModel {
+        id: number;
+        name: string;
+        constructor(id, name) {
+            var self = this;
+            self.id = id;
+            self.name = name;
+        }
     }
 
     interface ICell {
