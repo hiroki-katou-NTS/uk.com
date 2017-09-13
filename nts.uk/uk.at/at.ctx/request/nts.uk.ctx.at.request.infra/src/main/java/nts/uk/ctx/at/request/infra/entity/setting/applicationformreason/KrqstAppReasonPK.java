@@ -22,9 +22,7 @@ public class KrqstAppReasonPK implements Serializable{
 	/**申請種類*/
 	@Column(name = "APP_TYPE")
 	public int appType;
-	/**
-	 * 表示順
-	 */
-	@Column(name ="DISPLAY_ORDER")
-	public int displayOrder;
+	/** 理由ID */
+	@Column(name ="REASON_ID")
+	public String reasonID;
 }
