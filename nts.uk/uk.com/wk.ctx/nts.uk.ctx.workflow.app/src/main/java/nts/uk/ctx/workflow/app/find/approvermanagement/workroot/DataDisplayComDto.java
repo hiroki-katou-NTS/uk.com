@@ -1,13 +1,12 @@
 package nts.uk.ctx.workflow.app.find.approvermanagement.workroot;
 
+
 import java.util.List;
 
 import lombok.Value;
 @Value
-public class CommonApprovalRootDto {
-	/**会社名*/
+public class DataDisplayComDto {
+	private int id;
 	private String companyName;
 	private List<CompanyAppRootDto> lstCompanyRoot;
-	private List<WorkPlaceAppRootDto> lstWorkplaceRoot;
-	private List<PersonAppRootDto> lstPersonRoot;
 }

@@ -1,6 +1,23 @@
 module nts.uk.com.view.cmm018.shr {
     export module vmbase {
-        //
+        //list id lien ket
+        export class AppID{
+            id: string;
+            appId: Array<String>;    
+        }
+        //data after grouping history
+        export class DataFullDto{
+            lstCompany: Array<DataDisplayComDto> ;
+            lstWorkplaceRoot: Array<WorkPlaceAppRootDto> ;
+            lstPersonRoot: Array<PersonAppRootDto> ;
+        }
+        //data after grouping history of company
+        export class DataDisplayComDto{
+            id: number;
+            companyName: string;
+            lstCompanyRoot: Array<CompanyAppRootDto> ;
+        }
+        //app type
         export class ApplicationType{
             value: number;
             localizedName: string;
@@ -11,11 +28,11 @@ module nts.uk.com.view.cmm018.shr {
         }
         //screenA
         export class ListHistory {
-            approvalId: string;
+            id: number;
             dateRange: string;  
-            constructor(approvalId: string, dateRange: string) {
+            constructor(id: number, dateRange: string) {
                 var self = this;
-                this.approvalId = approvalId;
+                this.id = id;
                 self.dateRange = dateRange;
             }  
         }
@@ -23,8 +40,8 @@ module nts.uk.com.view.cmm018.shr {
         export class ListApproval {
             approvalId: string;
             name: string;
-            lstApprover: Array<Approver>;
-            constructor(approvalId: string, name: string, lstApprover: Array<Approver>) {
+            lstApprover: Array<ApproverDto>;
+            constructor(approvalId: string, name: string, lstApprover: Array<ApproverDto>) {
                 var self = this;
                 this.approvalId = approvalId;
                 self.name = name;
@@ -34,7 +51,7 @@ module nts.uk.com.view.cmm018.shr {
         //Screen I
         export interface IData_Param{
             /** name */
-            name?: string
+            name?: string;
             /**開始日*/
             startDate: string;
             /**開始日 Old*/
@@ -204,18 +221,24 @@ module nts.uk.com.view.cmm018.shr {
             }
         }
         export class CompanyAppRootADto{
+            common: boolean;
+            appTypeName: string;
             approvalId: string;
             appPhase1: ApprovalPhaseDto;
             appPhase2: ApprovalPhaseDto;
             appPhase3: ApprovalPhaseDto;
             appPhase4: ApprovalPhaseDto;
             appPhase5: ApprovalPhaseDto;
-            constructor( approvalId: string,
+            constructor(common: boolean,
+            appTypeName: string,
+            approvalId: string,
             appPhase1: ApprovalPhaseDto, 
             appPhase2: ApprovalPhaseDto, 
             appPhase3: ApprovalPhaseDto,
             appPhase4: ApprovalPhaseDto, 
             appPhase5: ApprovalPhaseDto){
+                this.common = common;
+                this.appTypeName = appTypeName;
                 this.approvalId =  approvalId;
                 this.appPhase1 = appPhase1;
                 this.appPhase2 = appPhase2;
