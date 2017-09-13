@@ -1,16 +1,11 @@
 package nts.uk.ctx.at.request.dom.application.common;
 
-import java.math.BigDecimal;
 import java.util.UUID;
-
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 
 /**

@@ -46,4 +46,6 @@ public interface LateOrLeaveEarlyRepository {
 	 * @return
 	 */
  	 ApplicationReason findApplicationReason(String companyID, ApplicationType applicationType);
+ 	 
+ 	 
 }

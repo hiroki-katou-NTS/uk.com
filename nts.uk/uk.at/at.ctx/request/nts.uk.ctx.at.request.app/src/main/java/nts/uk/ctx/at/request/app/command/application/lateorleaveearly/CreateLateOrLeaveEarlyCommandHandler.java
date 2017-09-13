@@ -18,14 +18,12 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 	private LateOrLeaveEarlyService lateOrLeaveEarlyService;
 	
 	@Inject
-	
 	private FactoryLateOrLeaveEarly factoryLateOrLeaveEarly;
 
 	@Override
 	protected void handle(CommandHandlerContext<CreateLateOrLeaveEarlyCommand> context) {
 		CreateLateOrLeaveEarlyCommand command = context.getCommand();
         LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(
-        		command.getApplicantName(),
         		command.getApplicationDate(),
         		command.getReasonTemp() +  System.lineSeparator() + command.getAppReason(),
         		command.getActualCancelAtr(),
