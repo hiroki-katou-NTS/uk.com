@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.setting.applicationformreason;
+package nts.uk.ctx.at.request.dom.setting.applicationreason;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
  */
 @Getter
 @AllArgsConstructor
-public class ApplicationFormReason extends AggregateRoot {
+public class ApplicationReason extends AggregateRoot {
 	/**
 	 * 会社Iｄ
 	 */
@@ -22,23 +22,31 @@ public class ApplicationFormReason extends AggregateRoot {
 	 * 申請種類
 	 */
 	public ApplicationType appType;
+	
+	/** 理由ID */
+	public String reasonID;
 	/**
 	 * 表示順
 	 */
-	public int displayOrder;
+	public int dispOrder;
+	
+	/** 定型理由 */
+	public String reasonTemp;
 	/**
 	 * 既定
 	 */
 	public DefaultFlg defaultFlg;
 	//定型理由
 	
-	public static ApplicationFormReason createSimpleFromJavaType(String companyId,
-			int appType,
-			int displayOrder,
+	public static ApplicationReason createSimpleFromJavaType(String companyId,
+			int appType, String reasonID, 
+			int dispOrder, String reasonTemp,
 			int defaultFlg) {
-				return new ApplicationFormReason(companyId, 
+				return new ApplicationReason(companyId, 
 						EnumAdaptor.valueOf(appType, ApplicationType.class), 
-						displayOrder, 
+						reasonID,
+						dispOrder,
+						reasonTemp,
 						EnumAdaptor.valueOf(defaultFlg, DefaultFlg.class));
 		
 	}

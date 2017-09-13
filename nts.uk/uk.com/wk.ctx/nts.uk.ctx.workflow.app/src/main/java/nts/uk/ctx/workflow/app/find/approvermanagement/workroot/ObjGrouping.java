@@ -8,7 +8,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ObjGrouping {
-	private String startDate;
-	private String endDate;
-	private List<String> lstApprovalId;
+	private List<ObjDate> lstApprovalId;
+	private List<ObjectDate> lstkk;
 }

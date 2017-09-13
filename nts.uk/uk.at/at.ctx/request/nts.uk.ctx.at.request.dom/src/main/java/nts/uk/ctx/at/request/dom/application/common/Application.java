@@ -1,14 +1,11 @@
 package nts.uk.ctx.at.request.dom.application.common;
 
-import java.math.BigDecimal;
-
+import java.util.UUID;
 import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.DomainObject;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -18,7 +15,7 @@ import nts.arc.time.GeneralDate;
  */
 @Getter
 @AllArgsConstructor
-public class Application extends DomainObject{
+public class Application extends AggregateRoot{
 	/**
 	 * 会社ID
 	 */
@@ -43,16 +40,18 @@ public class Application extends DomainObject{
 	/**
 	 * 差戻し理由
 	 */
-	private ApplicationReason reversionReason;
+	private AppReason reversionReason;
 	/**
 	 * 申請日
 	 */
+	@Setter
 	private GeneralDate applicationDate;
 	
 	/**
 	 * 申請理由
 	 */
-	private ApplicationReason applicationReason;
+	@Setter
+	private AppReason applicationReason;
 	/**
 	 * 申請種類
 	 */
@@ -69,7 +68,7 @@ public class Application extends DomainObject{
     /**
      * 予定反映日時
      */
-	private BigDecimal reflectPlanTime;
+	private GeneralDate reflectPlanTime;
 	/**
 	 * 予定反映状態
 	 */
@@ -86,7 +85,7 @@ public class Application extends DomainObject{
 	/**
 	 * 実績反映日時
 	 */
-	private BigDecimal reflectPerTime;
+	private GeneralDate reflectPerTime;
 	/**
 	 * 実績反映状態
 	 */
@@ -99,7 +98,6 @@ public class Application extends DomainObject{
 	
 	public static Application createFromJavaType(
 			String companyID,
-			String applicationID,
 			int prePostAtr,
 			GeneralDate inputDate, 
 			String enteredPersonSID, 
@@ -109,22 +107,22 @@ public class Application extends DomainObject{
 			int applicationType, 
 			String applicantSID,
 			int reflectPlanScheReason, 
-			BigDecimal reflectPlanTime,
+			GeneralDate reflectPlanTime,
 			int reflectPlanState, 
 			int reflectPlanEnforce,
 			int reflectPerScheReason, 
-			BigDecimal reflectPerTime, 
+			GeneralDate reflectPerTime, 
 			int reflectPerState,
 			int reflectPerEnforce) {
 		return new  Application(
 				companyID, 
-				applicationID, 
+				UUID.randomUUID().toString(), 
 				EnumAdaptor.valueOf(prePostAtr,PrePostAtr.class),
 				inputDate, 
 				enteredPersonSID, 
-				new ApplicationReason(reversionReason), 
+				new AppReason(reversionReason), 
 				applicationDate, 
-				new ApplicationReason(applicationReason), 
+				new AppReason(applicationReason), 
 				EnumAdaptor.valueOf(applicationType,ApplicationType.class), 
 				applicantSID, 
 				EnumAdaptor.valueOf(reflectPlanScheReason,ReflectPlanScheReason.class), 
@@ -148,7 +146,7 @@ public class Application extends DomainObject{
 	  * change value of reversionReason
 	  * @param reversionReason
 	  */
-	 public void changeReversionReason(ApplicationReason reversionReason) {
+	 public void changeReversionReason(AppReason reversionReason) {
 		 this.reversionReason = reversionReason;
 	 }
 	 
@@ -156,14 +154,14 @@ public class Application extends DomainObject{
 	  * change value of reflectPerTime
 	  * @param reflectPerTime
 	  */
-	 public void changeReflectPerTime(BigDecimal reflectPerTime) {
+	 public void changeReflectPerTime(GeneralDate reflectPerTime) {
 		 this.reflectPerTime = reflectPerTime;
 	 }
 	 /**
 	  * change value of applicationReason
 	  * @param applicationReason
 	  */
-	 public void changeApplicationReason(ApplicationReason applicationReason) {
+	 public void changeApplicationReason(AppReason applicationReason) {
 		 this.applicationReason = applicationReason;
 	 }
 }
