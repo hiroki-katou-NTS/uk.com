@@ -5,6 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
@@ -17,10 +18,10 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 	private EmployeeRepository repo;
 
 	@Override
-	public Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode) {
+	public Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode, GeneralDate entryDate) {
 		// TODO Auto-generated method stub
 		
-		Optional<Employee> domain = repo.findByEmployeeCode(companyId, employeeCode);
+		Optional<Employee> domain = repo.findByEmployeeCode(companyId, employeeCode , entryDate);
 
 		if (!domain.isPresent()) {
 			return Optional.empty();
