@@ -161,7 +161,7 @@ module nts.uk.at.view.kmk010.a {
                         for (var overtime of self.overtimeSettingModel.overtimes) {
                             for(var dtoOvertime of dataOvertime){
                                 if(overtime.overtimeNo() == dtoOvertime.overtimeNo){
-                                    overtime.name(dtoOvertime.name);    
+                                    overtime.languageName(dtoOvertime.name);    
                                 }    
                             }
                         } 
@@ -170,7 +170,7 @@ module nts.uk.at.view.kmk010.a {
                         for (var overtime of self.overtimeSettingModel.breakdownItems) {
                             for(var dtoOvertime of dataOvertimeBRD){
                                 if(overtime.breakdownItemNo() == dtoOvertime.breakdownItemNo){
-                                    overtime.name(dtoOvertime.name);    
+                                    overtime.languageName(dtoOvertime.name);    
                                 }    
                             }
                         } 
@@ -180,7 +180,7 @@ module nts.uk.at.view.kmk010.a {
                         for (var overtime of self.overtimeSettingModel.overtimes) {
                             for(var dtoOvertime of dataOvertimeLang){
                                 if(overtime.overtimeNo() == dtoOvertime.overtimeNo){
-                                    overtime.name(dtoOvertime.name);    
+                                    overtime.languageName(dtoOvertime.name);    
                                 }    
                             }
                         }
@@ -190,7 +190,7 @@ module nts.uk.at.view.kmk010.a {
                         for (var overtime of self.overtimeSettingModel.breakdownItems) {
                             for(var dtoOvertime of dataOvertimeBRDLang){
                                 if(overtime.breakdownItemNo() == dtoOvertime.breakdownItemNo){
-                                    overtime.name(dtoOvertime.name);    
+                                    overtime.languageName(dtoOvertime.name);    
                                 }    
                             }
                         } 
@@ -200,12 +200,14 @@ module nts.uk.at.view.kmk010.a {
         }
         export class OvertimeModel {
             name: KnockoutObservable<string>;
+            languageName: KnockoutObservable<string>;
             overtime: KnockoutObservable<number>;
             overtimeNo: KnockoutObservable<number>;
             useClassification: KnockoutObservable<boolean>;
 
             constructor() {
                 this.name = ko.observable('');
+                this.languageName = ko.observable('');
                 this.overtime = ko.observable(0);
                 this.overtimeNo = ko.observable(0);
                 this.useClassification = ko.observable(true);
@@ -213,6 +215,7 @@ module nts.uk.at.view.kmk010.a {
 
             updateData(dto: OvertimeDto) {
                 this.name(dto.name);
+                this.languageName(dto.name);
                 this.overtime(dto.overtime);
                 this.overtimeNo(dto.overtimeNo);
                 this.useClassification(dto.useClassification);
@@ -228,11 +231,13 @@ module nts.uk.at.view.kmk010.a {
                 return dto;
             }
         }
+        
 
         export class OvertimeBRDItemModel {
             useClassification: KnockoutObservable<boolean>;
             breakdownItemNo: KnockoutObservable<number>;
             name: KnockoutObservable<string>;
+            languageName: KnockoutObservable<string>;
             productNumber: KnockoutObservable<number>;
             rateBRDItems: PremiumExtra60HRateModel[];
 
@@ -240,6 +245,7 @@ module nts.uk.at.view.kmk010.a {
                 this.useClassification = ko.observable(true);
                 this.breakdownItemNo = ko.observable(0);
                 this.name = ko.observable('');
+                this.languageName = ko.observable('');
                 this.productNumber = ko.observable(0);
                 this.rateBRDItems = [];
             }
@@ -248,6 +254,7 @@ module nts.uk.at.view.kmk010.a {
                 this.useClassification(dto.useClassification);
                 this.breakdownItemNo(dto.breakdownItemNo);
                 this.name(dto.name);
+                this.languageName(dto.name);
                 this.productNumber(dto.productNumber);
             }
 
