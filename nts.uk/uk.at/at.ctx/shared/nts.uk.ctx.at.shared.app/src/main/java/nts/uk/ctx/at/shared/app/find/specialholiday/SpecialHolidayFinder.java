@@ -224,4 +224,16 @@ public class SpecialHolidayFinder {
 				.collect(Collectors.toList());
 	}
 	
+	/**
+	 * Find all Grant Date Per by code
+	 * 
+	 * @return
+	 */
+	public List<GrantDatePerDto> getAllPerByCode(String specialHolidayCode) {
+		// user contexts
+		String companyId = AppContexts.user().companyId();
+
+		return this.grantRegularRepository.findAllPer(companyId, specialHolidayCode).stream().map(c -> GrantDatePerDto.fromDomain(c))
+				.collect(Collectors.toList());
+	}
 }

@@ -39,6 +39,10 @@ table.data-items tbody {
 	border: 1px solid #CCC;
 }
 
+table.data-items tr td:first-child{
+	background-color: #c7f391;
+}
+
 .screen-b{
 	padding: 40px;
 }
