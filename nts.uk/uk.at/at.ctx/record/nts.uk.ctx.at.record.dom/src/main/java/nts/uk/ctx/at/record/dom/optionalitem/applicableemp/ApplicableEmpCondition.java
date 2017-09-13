@@ -2,12 +2,13 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.dom.optionalitem;
+package nts.uk.ctx.at.record.dom.optionalitem.applicableemp;
 
 import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.optionalitem.OptionalItemNo;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
