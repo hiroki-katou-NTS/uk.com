@@ -44,32 +44,4 @@ public interface SyJobTitlePub {
 	// RequestList #67-1
 	Optional<JobTitleExport> findJobTitleByPositionId(String companyId, String positionId, GeneralDate baseDate);
 
-	/**
-	 * Find all.
-	 *
-	 * @param companyId the company id
-	 * @param referenceDate the reference date
-	 * @return the list
-	 */
-	List<JobTitleExport> findAll(String companyId, GeneralDate referenceDate);
-
-	/**
-	 * Find by sid.
-	 *
-	 * @param companyId the company id
-	 * @param employeeId the employee id
-	 * @return the list
-	 */
-	List<JobTitleExport> findByJobIds(List<String> jobIds);
-
-	/**
-	 * Find by job ids.
-	 *
-	 * @param companyId the company id
-	 * @param jobIds the job ids
-	 * @param baseDate the base date
-	 * @return the list
-	 */
-	List<JobTitleExport> findByJobIds(String companyId, List<String> jobIds,
-			GeneralDate baseDate);
 }
