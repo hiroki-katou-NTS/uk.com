@@ -23,43 +23,74 @@
 	
 		<table class="form-input-tbl">
 			<tr>
-				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF004_91')}</div></td>
+				<td><div data-bind="ntsFormLabel: { required: true, constraint:['PersonalGrantDateCode','PersonalGrantDateName'] }">#{i18n.getText('KMF004_91')}</div></td>
 				<td>
-					<input class="input-code" id="input-code" data-bind="ntsTextEditor: { value: code, enable: editMode, required: true, immediate: false, option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({autofill: true, filldirection: 'left'}))}" /> 
-					<input class="input-name" id="input-name" data-bind="ntsTextEditor: { value: name, required: true}" />
+					<input class="input-code" id="input-code" data-bind="ntsTextEditor: { value: code, enable: editMode, constraint: 'PersonalGrantDateCode', required: true, name: '#[KMF004_87]' }, hasfocus: true" /> 
+					<input class="input-name" id="input-name" data-bind="ntsTextEditor: { value: name, constraint: 'PersonalGrantDateName', required: true, name: '#[KMF004_88]' }" />
 				</td>
 			</tr>
+			<tr></tr>
 			<tr>
 				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF004_73')}</div></td>
 				<td>
-					<div id="radio" style=""
-						data-bind="ntsRadioBoxGroup: {
-														options: itemList,
-														optionsValue: 'id',
-														optionsText: 'name',
-														value: selectedId,
-														enable: true}">
+					<div class="base-date-inputs">
+						<div id="radio" style=""
+							data-bind="ntsRadioBoxGroup: {
+															options: itemList,
+															optionsValue: 'code',
+															optionsText: 'name',
+															value: selectedBaseDateId,
+															enable: true}">
+						</div>
+						
+						<div id="monthdays" class="standardDate" data-bind="ntsMonthDays: {value: standardDate, enable: true}"/>
 					</div>
 				</td>
 			</tr>
 		</table>
 		
-		<div class="left-text-header"></div>
-		<div class="left-help-btn"></div>
+		<div class="left-text-header">#{i18n.getText('KMF004_79')}</div>
+		
+		<div class="left-help-btn">
+			<button id="help" 
+						data-bind="ntsHelpButton: {image: 'IMG_KMF004_1.png', position: 'left top', enable: true }">?</button>
+		</div>
+		
+		<hr/>
+		
 		<table class="data-setting-time">
 			<thead>
 				<tr>
-					<td></td>
-					<td></td>
+					<td width="19"></td>
+					<td colspan="2" width="160">#{i18n.getText('KMF004_80')}</td>
 				</tr>
 			</thead>
 			
-			<tbody>
-				<tr>
-					<td></td>
-					<td></td>
-				</tr>
-			</tbody>
+			<tbody data-bind="foreach: dataItems">
+					<tr>
+						<td data-bind="text: $index() + 1"></td>
+						<td class="hidden-right-border">
+							<input id="year" data-bind="ntsNumberEditor: {
+									value: year, 
+									constraint: 'GrantDateYear',
+									name: '#[KMF004_81]',
+									option: ko.mapping.fromJS({
+										unitID: 'YEARS',
+										width: '50'
+									})}" />
+						</td>
+						<td>
+							<input id="month" data-bind="ntsNumberEditor: {
+									value: month, 
+									constraint: 'GrantDateMonth',
+									name: '#[KMF004_82]',
+									option: ko.mapping.fromJS({
+										unitID: 'MONTHS',
+										width: '60'
+									})}" />
+						</td>
+					</tr>
+				</tbody>
 		</table>
 		
 	</div>
