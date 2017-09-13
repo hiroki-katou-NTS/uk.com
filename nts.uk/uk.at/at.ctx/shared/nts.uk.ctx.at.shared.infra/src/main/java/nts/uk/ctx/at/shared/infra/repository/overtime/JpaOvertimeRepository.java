@@ -22,6 +22,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.dom.overtime.OvertimeRepository;
+import nts.uk.ctx.at.shared.dom.overtime.UseClassification;
 import nts.uk.ctx.at.shared.infra.entity.overtime.KshstOverTime;
 import nts.uk.ctx.at.shared.infra.entity.overtime.KshstOverTimePK_;
 import nts.uk.ctx.at.shared.infra.entity.overtime.KshstOverTime_;
@@ -142,6 +143,48 @@ public class JpaOvertimeRepository extends JpaRepository implements OvertimeRepo
 
 		// exclude select
 		return query.getResultList();
+	}
+
+
+	@Override
+	public List<Overtime> findAllUse(String companyId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KSHST_OVER_TIME (KshstOverTime SQL)
+		CriteriaQuery<KshstOverTime> cq = criteriaBuilder.createQuery(KshstOverTime.class);
+
+		// root data
+		Root<KshstOverTime> root = cq.from(KshstOverTime.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal company id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshstOverTime_.kshstOverTimePK).get(KshstOverTimePK_.cid), companyId));
+		
+		// equal Use Classification use
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshstOverTime_.useAtr),
+				UseClassification.UseClass_Use.value));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// order by over time no asc
+		cq.orderBy(criteriaBuilder
+				.asc(root.get(KshstOverTime_.kshstOverTimePK).get(KshstOverTimePK_.overTimeNo)));
+
+		// create query
+		TypedQuery<KshstOverTime> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(entity -> this.toDomain(entity))
+				.collect(Collectors.toList());
 	}
 
 	

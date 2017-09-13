@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.ws.application.lateorleaveearly;
 
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -38,7 +37,7 @@ public class LateOrLeaveEarlyWebservice extends WebService{
 	
 	@POST
 	@Path("findbycode")
-	public Optional<LateOrLeaveEarlyDto> getByCode( String appID) {
+	public LateOrLeaveEarlyDto getByCode( String appID) {
 		return this.finder.getLateOrLeaveEarly();
 	}
 	

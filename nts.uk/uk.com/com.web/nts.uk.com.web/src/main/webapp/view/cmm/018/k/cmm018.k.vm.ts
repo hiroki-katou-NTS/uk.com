@@ -51,7 +51,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         constructor(){
             var self = this;            
             //設定対象
-            let data: any = getShared('CMM008K_PARAM');            
+            let data: any = getShared('CMM018K_PARAM');            
             if(data !== undefined){
                 //設定する対象申請名
                 self.appType(data.appType);
@@ -156,7 +156,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         //決定 button click
         submitClickButton(){
             var self = this;
-            setShared("CMM008K_PARAM", { 
+            setShared("CMM018K_DATA", { 
                                         appType: self.appType(), //設定する対象申請名 
                                         formSetting: self.selectFormSet(),//承認形態
                                         approverInfor: self.approverList(),//承認者一覧
@@ -168,6 +168,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         
         //キャンセル button click
         closeDialog(){
+             setShared("CMM018K_DATA",null);
             nts.uk.ui.windows.close();
         }       
 

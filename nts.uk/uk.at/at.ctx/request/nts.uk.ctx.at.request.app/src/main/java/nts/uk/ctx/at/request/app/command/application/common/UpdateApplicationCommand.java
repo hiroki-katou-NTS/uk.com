@@ -67,7 +67,7 @@ public class UpdateApplicationCommand {
     /**
      * 予定反映日時
      */
-	private BigDecimal reflectPlanTime;
+	private GeneralDate reflectPlanTime;
 	
 	/**
 	 * 予定反映状態
@@ -87,7 +87,7 @@ public class UpdateApplicationCommand {
 	/**
 	 * 実績反映日時
 	 */
-	private BigDecimal reflectPerTime;
+	private GeneralDate reflectPerTime;
 	
 	/**
 	 * 予定反映状態
@@ -101,8 +101,7 @@ public class UpdateApplicationCommand {
 	
 	public Application toDomain() {
 		return Application.createFromJavaType(
-				AppContexts.user().companyId(), 
-				this.applicationID,  
+				AppContexts.user().companyId(),   
 				this.prePostAtr, 
 				this.inputDate,  
 				this.enteredPersonSID,  

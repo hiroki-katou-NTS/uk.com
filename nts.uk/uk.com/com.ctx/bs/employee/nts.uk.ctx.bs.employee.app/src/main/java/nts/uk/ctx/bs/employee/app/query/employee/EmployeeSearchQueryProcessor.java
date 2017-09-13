@@ -47,11 +47,11 @@ public class EmployeeSearchQueryProcessor {
 
 	/** The workplace repository. */
 	@Inject
-	private WorkplaceRepository workplaceAdapter;
+	private WorkplaceRepository workplaceRepo;
 
 	/** The job title repository. */
 	@Inject
-	private JobTitleRepository jobTitleAdapter;
+	private JobTitleRepository jobTitleRepo;
 
 	/** The employee repository. */
 	@Inject
@@ -107,7 +107,7 @@ public class EmployeeSearchQueryProcessor {
 		}
 
 		// get all work place of company
-		List<Workplace> workplaces = this.workplaceAdapter.findAllWorkplaceOfCompany(companyId,
+		List<Workplace> workplaces = this.workplaceRepo.findAllWorkplaceOfCompany(companyId,
 				baseDate);
 
 		// to map work place
@@ -321,7 +321,7 @@ public class EmployeeSearchQueryProcessor {
 		// get data child
 		List<WorkPlaceHierarchy> workPlaceHierarchies = new ArrayList<>();
 		workplaceHistory.forEach(work -> {
-			workPlaceHierarchies.addAll(this.workplaceAdapter.findAllHierarchyChild(companyId,
+			workPlaceHierarchies.addAll(this.workplaceRepo.findAllHierarchyChild(companyId,
 					work.getWorkplaceId().v()));
 		});
 
@@ -414,7 +414,7 @@ public class EmployeeSearchQueryProcessor {
 				}, Function.identity()));
 
 		// get map work place
-		Map<String, Workplace> mapWorkplace = this.workplaceAdapter
+		Map<String, Workplace> mapWorkplace = this.workplaceRepo
 				.findAllWorkplaceOfCompany(companyId, query.getBaseDate()).stream()
 				.collect(Collectors.toMap((workplace) -> {
 					return workplace.getWorkplaceId().v();
@@ -428,7 +428,7 @@ public class EmployeeSearchQueryProcessor {
 				}, Function.identity()));
 
 		// get map job title
-		Map<String, JobTitle> mapJobTitle = this.jobTitleAdapter
+		Map<String, JobTitle> mapJobTitle = this.jobTitleRepo
 				.findAll(companyId, query.getBaseDate()).stream()
 				.collect(Collectors.toMap((jobtitle) -> {
 					return jobtitle.getPositionId().v();
