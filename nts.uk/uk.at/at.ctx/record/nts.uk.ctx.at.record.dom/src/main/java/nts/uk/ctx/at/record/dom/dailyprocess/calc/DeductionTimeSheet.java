@@ -22,7 +22,6 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.DeductionTime;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.BreakSetOfCommon;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.CalcMethodIfLeaveWorkDuringBreakTime;
-import nts.uk.ctx.at.shared.dom.worktime.basicinformation.WorkTimeClassification;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidBreakTimeOfCalcMethod;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -33,7 +32,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @RequiredArgsConstructor
-public class DedcutionTimeSheet {
+public class DeductionTimeSheet {
 
 	private final List<TimeSheetOfDeductionItem> forDeductionTimeZoneList;
 	private final List<TimeSheetOfDeductionItem> forRecordTimeZoneList;
@@ -60,105 +59,11 @@ public class DedcutionTimeSheet {
 		source.addAll(devided);
 	}
 	
-	public DedcutionTimeSheet createDedctionTimeSheet(){
+	public DeductionTimeSheet createDedctionTimeSheet(){
 		/*控除時間帯リストへコピー*/
 		List<TimeSheetOfDeductionItem> useDedTimeSheet = collectDeductionTimes();
 		/*重複部分補正処理*/
-//		int copyListPosition = useDedTimeSheet.size() - 1;
-//		List<TimeSheetOfDeductionItem> copyList = new ArrayList<TimeSheetOfDeductionItem>();
-//		int deference = 0;
-//		int nowPosition,compareNowPosition;
-//		boolean backMove=false;
-//		for(int dedSheetNo = 0 ; dedSheetNo < copyListPosition ; dedSheetNo++) {
-//			nowPosition = dedSheetNo - deference;
-//			compareNowPosition = dedSheetNo - deference + 1;
-//			
-//			if(compareNowPosition == useDedTimeSheet.size()) {
-//				break;
-//			}
-//			/*copyリストに対して n+1の要素を追加した直後はこちらの処理*/
-//			if(dedSheetNo + 1 == copyList.size()) {
-//				if(copyList.get(nowPosition).calculationTimeSheet.getDuplicatedWith(useDedTimeSheet.get(compareNowPosition).calculationTimeSheet).isPresent()) {
-//					Map<TimeSpanForCalc,Boolean> testSpan = useDedTimeSheet.get(nowPosition).DeplicateBreakGoOut(useDedTimeSheet.get(compareNowPosition));
-//					if(!testSpan.isEmpty()){
-//						for(TimeSpanForCalc ti : testSpan.keySet()) {
-//							/*後ろの時間帯が動いたら時にif*/
-//							if(testSpan.get(ti)) {
-//						
-//								copyList.add(TimeSheetOfDeductionItem.reateBreakTimeSheetAsFixed(ti
-//															 ,useDedTimeSheet.get(nowPosition).getGoOutReason()
-//															 ,useDedTimeSheet.get(nowPosition).getBreakAtr()
-//															 ,useDedTimeSheet.get(nowPosition).getDeductionAtr()
-//															 ,useDedTimeSheet.get(nowPosition).getWithinStatutoryAtr()
-//															 ));
-//
-//							}
-//							/*動かなかった場合はこっち*/
-//							else {
-//								copyList.set(dedSheetNo, TimeSheetOfDeductionItem.reateBreakTimeSheetAsFixed(ti
-//										 ,useDedTimeSheet.get(nowPosition).getGoOutReason()
-//										 ,useDedTimeSheet.get(nowPosition).getBreakAtr()
-//										 ,useDedTimeSheet.get(nowPosition).getDeductionAtr()
-//										 ,useDedTimeSheet.get(nowPosition).getWithinStatutoryAtr()
-//										 ));
-//							}
-//							
-//							if(dedSheetNo <  copyList.size()) {
-//								deference = dedSheetNo - copyList.size(); 
-//							}
-//						}
-//					
-//					}
-//				
-//				}
-//			}
-//			/*copyリストに対して n+1の要素を追加した直後はこちらの処理*/
-//			else {
-//				if(copyList.get(nowPosition).calculationTimeSheet.getDuplicatedWith(useDedTimeSheet.get(compareNowPosition).calculationTimeSheet).isPresent()) {
-//					Map<TimeSpanForCalc,Boolean> testSpan = useDedTimeSheet.get(nowPosition).DeplicateBreakGoOut(useDedTimeSheet.get(compareNowPosition));
-//					if(!testSpan.isEmpty()){
-//						for(TimeSpanForCalc ti : testSpan.keySet()) {
-//							/*後ろの時間帯が動いたら時にif*/
-//							if(testSpan.get(ti)) {
-//						
-//								copyList.add(TimeSheetOfDeductionItem.reateBreakTimeSheetAsFixed(ti
-//															 ,useDedTimeSheet.get(nowPosition).getGoOutReason()
-//															 ,useDedTimeSheet.get(nowPosition).getBreakAtr()
-//															 ,useDedTimeSheet.get(nowPosition).getDeductionAtr()
-//															 ,useDedTimeSheet.get(nowPosition).getWithinStatutoryAtr()
-//															 ));
-//
-//							}
-//							
-//							if(dedSheetNo <  copyList.size()) {
-//								deference = dedSheetNo - copyList.size(); 
-//							}
-//						}
-//					
-//					}
-//				
-//				}
-//			}
-//			//重複チェック
-//			if(useDedTimeSheet.get(nowPosition).calculationTimeSheet.getDuplicatedWith(useDedTimeSheet.get(compareNowPosition).calculationTimeSheet).isPresent()) {
-//				//重複部分の補正
-//				Map<TimeSpanForCalc,Boolean> testSpan = useDedTimeSheet.get(nowPosition).DeplicateBreakGoOut(useDedTimeSheet.get(compareNowPosition));
-//
-//				if(!testSpan.isEmpty())
-//				{
-//					for(TimeSpanForCalc ti : testSpan.keySet())
-//					copyList.add(TimeSheetOfDeductionItem.reateBreakTimeSheetAsFixed(ti
-//														 ,useDedTimeSheet.get(nowPosition).getGoOutReason()
-//														 ,useDedTimeSheet.get(nowPosition).getBreakAtr()
-//														 ,useDedTimeSheet.get(nowPosition).getDeductionAtr()
-//														 ,useDedTimeSheet.get(nowPosition).getWithinStatutoryAtr()
-//														 ));
-//					if(dedSheetNo <  copyList.size()) {
-//						deference = dedSheetNo - copyList.size(); 
-//					}
-//				}
-//			}
-//		}
+		
 		/*計上用↓*/
 		List<TimeSheetOfDeductionItem> recordDedTimeSheet = useDedTimeSheet;
 		
@@ -173,7 +78,7 @@ public class DedcutionTimeSheet {
 		
 		/*ここに丸め設定系の処理を置く*/
 		
-		return new DedcutionTimeSheet(goOutDeletedList, recordDedTimeSheet, breakTimeSheet);
+		return new DeductionTimeSheet(goOutDeletedList, recordDedTimeSheet, breakTimeSheet);
 	}
 
 	
@@ -192,7 +97,7 @@ public class DedcutionTimeSheet {
 									sheetList.add(TimeSheetOfDeductionItem.reateBreakTimeSheetAsFixed(new TimeSpanForCalc(tc.getGoOut().getEngrave().getTimesOfDay(),tc.getComeBack().getEngrave().getTimesOfDay())
 																									,Finally.of(tc.getGoOutReason())
 																									,null
-																									,DedcutionClassification.GO_OUT
+																									,DeductionClassification.GO_OUT
 																									,WithinStatutoryAtr.WithinStatury));	
 								});
 		/*育児時間帯を取得*/
