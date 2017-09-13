@@ -16,6 +16,8 @@ import nts.uk.ctx.at.shared.app.command.specialholiday.AddSpecialHolidayCommandH
 import nts.uk.ctx.at.shared.app.command.specialholiday.GrantDateComCommand;
 import nts.uk.ctx.at.shared.app.command.specialholiday.GrantDateComCommandHandler;
 import nts.uk.ctx.at.shared.app.command.specialholiday.GrantDatePerCommand;
+import nts.uk.ctx.at.shared.app.command.specialholiday.RemoveGrantDatePerCommand;
+import nts.uk.ctx.at.shared.app.command.specialholiday.RemoveGrantDatePerCommandHandler;
 import nts.uk.ctx.at.shared.app.command.specialholiday.RemoveSpecialHolidayCommand;
 import nts.uk.ctx.at.shared.app.command.specialholiday.RemoveSpecialHolidayCommandHandler;
 import nts.uk.ctx.at.shared.app.command.specialholiday.UpdateGrantDatePerCommandHandler;
@@ -52,6 +54,9 @@ public class SpecialHolidayWebService extends WebService{
 	
 	@Inject
 	private UpdateGrantDatePerCommandHandler updateGrantDatePerCommandHandler;
+	
+	@Inject
+	private RemoveGrantDatePerCommandHandler removeGrantDatePerCommandHandler;
 	
 	@Path("findByCid")
 	@POST
@@ -123,5 +128,17 @@ public class SpecialHolidayWebService extends WebService{
 	@POST
 	public JavaTypeResult<List<String>> UpdatePer(GrantDatePerCommand command) {
 		return new JavaTypeResult<List<String>>(this.updateGrantDatePerCommandHandler.handle(command));
+	}
+	
+	@Path("getAllPerByCode/{specialHolidayCode}")
+	@POST
+	public List<GrantDatePerDto> getAllPerByCode(@PathParam("specialHolidayCode") String specialHolidayCode) {
+		return this.specialHolidayFinder.getAllPerByCode(specialHolidayCode);
+	}
+	
+	@POST
+	@Path("removePer")
+	public void removePer(RemoveGrantDatePerCommand command) {
+		removeGrantDatePerCommandHandler.handle(command);
 	}
 }

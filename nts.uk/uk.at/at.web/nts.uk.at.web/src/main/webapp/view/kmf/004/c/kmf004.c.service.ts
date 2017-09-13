@@ -3,10 +3,17 @@ module nts.uk.at.view.kmf004.c.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
+        getAllPerByCode: "shared/specialholiday/getAllPerByCode/{0}",
         getPerByCode: "shared/specialholiday/getPerByCode/{0}/{1}",
         getPerSetByCode: "shared/specialholiday/getPerSetByCode/{0}/{1}",
         addPer: "shared/specialholiday/addPer",
-        UpdatePer: "shared/specialholiday/UpdatePer"
+        UpdatePer: "shared/specialholiday/UpdatePer",
+        removePer: "shared/specialholiday/removePer"
+    }
+    
+    export function getAllPerByCode(specialHolidayCode: string): JQueryPromise<GrantDatePerItem> {
+        var path = nts.uk.text.format(paths.getAllPerByCode, specialHolidayCode);
+        return nts.uk.request.ajax("at", path);
     }
 
     export function getPerByCode(specialHolidayCode: string, personalGrantDateCode: string): JQueryPromise<GrantDatePerItem> {
@@ -19,15 +26,20 @@ module nts.uk.at.view.kmf004.c.service {
         return nts.uk.request.ajax("at", path);
     }
     
-    export function addPer(data: Array<GrantDatePerItem>): JQueryPromise<any> {
+    export function addPer(data: GrantDatePerItem): JQueryPromise<any> {
         var path = nts.uk.text.format(paths.addPer);
         return nts.uk.request.ajax("at", path, data);
     }  
     
-    export function UpdatePer(data: Array<GrantDatePerItem>): JQueryPromise<any> {
+    export function UpdatePer(data: GrantDatePerItem): JQueryPromise<any> {
         var path = nts.uk.text.format(paths.UpdatePer);
         return nts.uk.request.ajax("at", path, data);
     }
+    
+    export function removePer(specialHolidayCode: string, personalGrantDateCode: string): JQueryPromise<any> {
+        var path = nts.uk.text.format(paths.removePer);
+        return nts.uk.request.ajax("at", path, {specialHolidayCode: specialHolidayCode, personalGrantDateCode: personalGrantDateCode});
+    } 
     
     export interface GrantDatePerItem {
         specialHolidayCode: string;
@@ -35,7 +47,7 @@ module nts.uk.at.view.kmf004.c.service {
         personalGrantDateName: string;
         grantDate: number;
         grantDateAtr: number;
-        grantDateSets: Array<GrantDatePerSetItem>;
+        grantDatePerSet: Array<GrantDatePerSetItem>;
     }
     
     export interface GrantDatePerSetItem {

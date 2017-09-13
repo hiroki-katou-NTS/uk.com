@@ -32,6 +32,10 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	private static final String SELECT_ALL_SET;
 	
 	private static final String SELECT_ALL_PER_SET;
+	
+	private static final String SELECT_ALL_PER;
+	
+	private static final String DELETE_ALL_PER_SET_BY_CODES;
 
 	static {
 
@@ -63,6 +67,21 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 		builderString.append(" AND e.kshstGrantDatePerSetPK.specialHolidayCode = :specialHolidayCode");
 		builderString.append(" AND e.kshstGrantDatePerSetPK.personalGrantDateCode = :personalGrantDateCode");
 		SELECT_ALL_PER_SET = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM KshstGrantDatePer e");
+		builderString.append(" WHERE e.kshstGrantDatePerPK.companyId = :companyId");
+		builderString.append(" AND e.kshstGrantDatePerPK.specialHolidayCode = :specialHolidayCode");
+		SELECT_ALL_PER = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("DELETE");
+		builderString.append(" FROM KshstGrantDatePerSet e");
+		builderString.append(" WHERE e.kshstGrantDatePerSetPK.companyId = :companyId");
+		builderString.append(" AND e.kshstGrantDatePerSetPK.specialHolidayCode = :specialHolidayCode");
+		builderString.append(" AND e.kshstGrantDatePerSetPK.personalGrantDateCode = :personalGrantDateCode");
+		DELETE_ALL_PER_SET_BY_CODES = builderString.toString();
 	}
 
 	/**
@@ -291,5 +310,25 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 		kshstGrantDatePer.grantDatePerSet = grantDatePerSet;
 		
 		this.commandProxy().update(kshstGrantDatePer);
+	}
+
+	@Override
+	public List<GrantDatePer> findAllPer(String companyId, String specialHolidayCode) {
+		return this.queryProxy().query(SELECT_ALL_PER, KshstGrantDatePer.class).setParameter("companyId", companyId)
+				.setParameter("specialHolidayCode", specialHolidayCode).getList(c -> convertToDomainPer(c));
+	}
+
+	@Override
+	public void removePer(String companyId, String specialHolidayCode, String personalGrantDateCode) {
+		this.commandProxy().remove(KshstGrantDatePer.class, new KshstGrantDatePerPK(companyId, specialHolidayCode, personalGrantDateCode));
+	}
+
+	@Override
+	public void removePerSet(String companyId, String specialHolidayCode, String personalGrantDateCode) {
+		this.getEntityManager().createQuery(DELETE_ALL_PER_SET_BY_CODES)
+		.setParameter("companyId", companyId)
+		.setParameter("specialHolidayCode", specialHolidayCode)
+		.setParameter("personalGrantDateCode", personalGrantDateCode)
+		.executeUpdate();
 	}
 }

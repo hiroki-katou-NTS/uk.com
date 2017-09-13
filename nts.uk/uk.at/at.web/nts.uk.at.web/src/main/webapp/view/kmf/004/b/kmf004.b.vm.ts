@@ -17,7 +17,7 @@ module nts.uk.at.view.kmf004 {
                 new TabModel({ id: 'B', name: getText('Com_Company'), active: true }),
                 new TabModel({ id: 'C', name: getText('Com_Person') })
             ]);
-
+            currentTab: KnockoutObservable<string> = ko.observable('B');
             //radio
 
             constructor() {
@@ -52,11 +52,13 @@ module nts.uk.at.view.kmf004 {
                 // call start function on view at here
                 switch (tab.id) {
                     case 'B':
+                        self.currentTab('B');
                         if (!!view.viewmodelB && typeof view.viewmodelB.start == 'function') {
                             view.viewmodelB.start();
                         }
                         break;
                     case 'C':
+                        self.currentTab('C');
                         if (!!view.viewmodelC && typeof view.viewmodelC.start == 'function') {
                             view.viewmodelC.start();
                         }
@@ -115,7 +117,7 @@ module nts.uk.at.view.kmf004 {
                 self.items = ko.observableArray([]);
                 
                 // Get special holiday code from A screen
-                self.specialHolidayCode = ko.observable('01');
+                self.specialHolidayCode = ko.observable(getShared("KMF004B_SPHD_CD"));
                 
                 self.start();
             }

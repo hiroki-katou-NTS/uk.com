@@ -2,6 +2,7 @@ package nts.uk.ctx.at.shared.dom.specialholiday.grantdate;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -59,8 +60,9 @@ public class GrantDatePer {
 			}
 			
 			// 同じ経過年数の場合は登録不可
-			int countDuplicate = Collections.frequency(this.grantDatePerSet, currentSet.getGrantDateYear().v());
-			if(countDuplicate > 0){
+			List<Integer> grantDateYears = this.grantDatePerSet.stream().map(x -> { return x.getGrantDateYear().v(); }).collect(Collectors.toList());
+			int countDuplicate = Collections.frequency(grantDateYears, currentSet.getGrantDateYear().v());
+			if(countDuplicate > 1){
 				throw new BusinessException("Msg_96");
 			}
 		}

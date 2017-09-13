@@ -36,4 +36,10 @@ public interface GrantRegularRepository {
 	void addPer(GrantDatePer grantDatePer);
 
 	void updatePer(GrantDatePer grantDatePer);
+	
+	List<GrantDatePer> findAllPer(String companyId, String specialHolidayCode);
+	
+	void removePer(String companyId, String specialHolidayCode, String personalGrantDateCode);
+
+	void removePerSet(String companyId, String specialHolidayCode, String personalGrantDateCode);
 }

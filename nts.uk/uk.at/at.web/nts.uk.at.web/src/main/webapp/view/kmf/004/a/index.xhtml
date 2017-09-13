@@ -10,6 +10,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode
 				nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayName
+				nts.uk.shr.com.primitive.Memo
 				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmf004.a.style.css" />
@@ -65,8 +66,8 @@
 							<button
 								data-bind="click : $parent.openKDL002Dialog.bind($parent)"
 								style="margin-left: 106px;" id="A_BTN_004">#{i18n.getText('KMF004_12')}</button>
-							<span><input id="text-target-item" style="width: 469px"
-								data-bind="ntsTextEditor: {value: $parent.workTypeNames, enable: false}" /></span>
+							<span><input id="text-target-item" style="width: 466px"
+								data-bind="ntsTextEditor: {value: $parent.workTypeNames, enable: false, name: '#[KMF004_13]'}" /></span>
 						</div>
 						<div>
 							<div id="single-offer" style="margin-top: 10px;"
@@ -79,12 +80,12 @@
 												value: $parent.inp_grantMethod,
 												enable: true}"></div>
 						</div>
-						<div>
-							<div id="memo"
+						<div id="memo">
+							<div id="lbl-memo"
 								style="margin-top: 10px; vertical-align: text-bottom;"
-								data-bind="ntsFormLabel: {}">#{i18n.getText('KMF004_16')}</div>
-							<textarea style="width: 524px; height: 50px; margin-left: 144px; margin-top: 10px;"
-								id="webMenuCode"
+								data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KMF004_16')}</div>
+							<textarea style="width: 516px; height: 50px; margin-left: 87px; margin-top: 10px; position: absolute;"
+								id="txta-memo"
 								data-bind="ntsMultilineEditor: {value: memo,name: '#[KMF004_16]'}" />
 						</div>
 					</div>
@@ -107,9 +108,10 @@
 									<div id="grant-start-date" style="margin-top: 10px;"
 										data-bind="ntsDatePicker: {
 											value: grantStartDate, 
-											dateFormat: 'YYYY/MM/DD',
 											valueFormat: 'YYYY/MM/DD', 
+											required: grantRegularMethod()==0 &amp; $parent.inp_grantMethod() == 1,
 											enable: grantRegularMethod()==0,
+											acceptJapaneseCalendar: true,
 											name: '#[KMF004_25]'}">
 									</div>
 									<span  style="">#{i18n.getText('KMF004_26')}</span> 
@@ -119,14 +121,18 @@
 												option: ko.mapping.fromJS({
 												unitID: 'YEARS',
 												width: '60'}),
-												enable: grantRegularMethod()==0}" />
+												required: grantRegularMethod()==0 &amp; $parent.inp_grantMethod() == 1,
+												enable: grantRegularMethod()==0,
+												name: '#[KMF004_26]'}" />
 									<input id="years" style="width: 40px;"
 										data-bind="ntsNumberEditor: {
 												value: years,
 												option: ko.mapping.fromJS({
 												unitID: 'MONTHS',
 												width: '60'}),
-												enable: grantRegularMethod()==0}" />
+												required: grantRegularMethod()==0 &amp; $parent.inp_grantMethod() == 1,
+												enable: grantRegularMethod()==0,
+												name: '#[KMF004_26]'}" />
 								</div>
 								<label style="margin-top: 35px;" class="ntsRadioBox"
 									data-bind="with: $parent.option2"> <input type="radio"
@@ -139,7 +145,7 @@
 								</label>
 								<button
 									style="display: block; margin-top: 10px; margin-left: 100px;"
-									data-bind="click: $parent.openBDialog, enable: grantRegularMethod()==1">#{i18n.getText('KMF004_29')}</button>
+									data-bind="click: $parent.openBDialog.bind($parent), enable: grantRegularMethod()==1">#{i18n.getText('KMF004_29')}</button>
 								<span style="margin-left: 100px;">#{i18n.getText('KMF004_30')}</span>
 							</div>
 							<div class="tab-content-2"
@@ -158,7 +164,9 @@
 												option: ko.mapping.fromJS({
 												unitID: 'DAYS',
 												width: '60'}),
-												enable: grantPeriodicMethod()==0}" />
+												required: grantPeriodicMethod()==0 &amp; $parent.inp_grantMethod() == 1,
+												enable: grantPeriodicMethod()==0,
+												name: '#[KMF004_31]'}" />
 									</div>
 									<div id="radio-tab2-2">
 										<label class="ntsRadioBox"> <input type="radio"
@@ -213,16 +221,18 @@
 												option: ko.mapping.fromJS({
 												unitID: 'MONTHS',
 												width: '60'}),
-												required: true,
-												enable: specialVacationMethod()==2}" />
+												required: specialVacationMethod()==2 &amp; $parent.inp_grantMethod() == 1,
+												enable: specialVacationMethod()==2,
+												name: '#[KMF004_45]'}" />
 										<input style="width: 40px;"
 											data-bind="ntsNumberEditor: {
 												value: specialVacationYears,
 												option: ko.mapping.fromJS({
 												unitID: 'DAYS',
 												width: '60'}),
-												required: true,
-												enable: specialVacationMethod()==2}" />
+												required: specialVacationMethod()==2 &amp; $parent.inp_grantMethod() == 1,
+												enable: specialVacationMethod()==2,
+												name: '#[KMF004_45]'}" />
 									</div>
 								</div>
 								<div style="margin-top: 20px;">
@@ -246,8 +256,9 @@
 												option: ko.mapping.fromJS({
 												unitID: 'DAYS',
 												width: '60'}),
-												required: true,
-												enable: true}" />
+												required: $parent.inp_grantMethod() == 1,
+												enable: true,
+												name: '#[KMF004_53]'}" />
 									</div>
 								</div>
 							</div>
@@ -273,13 +284,13 @@
 									<div style="" data-bind="ntsCheckBox: { checked: useEmployee }">#{i18n.getText('KMF004_60')}</div>
 									<button style="margin-left: 40px; margin-top: 5px;" data-bind="click: $parent.openCDL002.bind($parent), enable: useEmployee()==1">#{i18n.getText('KMF004_63')}</button>
 									<input style="width: 360px"
-										data-bind="ntsTextEditor: {value: ko.observable(''), required: true, enable: false}" />
+										data-bind="ntsTextEditor: {value: clsCodes, required: false, enable: false, name: '#[KMF004_60]'}" />
 								</div>
 								<div>
 									<div style="" data-bind="ntsCheckBox: { checked: useCls }">#{i18n.getText('Com_Class')}</div>
 									<button style="margin-left: 67px; margin-top: 5px;" data-bind="click: $parent.openCDL003.bind($parent), enable: useCls()==1">#{i18n.getText('KMF004_63')}</button>
 									<input style="width: 360px"
-										data-bind="ntsTextEditor: {value: ko.observable(''), required: true, enable: false}" />
+										data-bind="ntsTextEditor: {value: empCodes, required: false, enable: false, name: '#[Com_Class]'}" />
 								</div>
 								<div>
 									<div style="" data-bind="ntsCheckBox: { checked: useAge }">#{i18n.getText('KMF004_56')}</div>
@@ -289,19 +300,21 @@
 												option: ko.mapping.fromJS({
 												unitID: 'AGE',
 												width: '60'}),
-												required: true,
-												enable: useAge()==1}" />
+												required: useAge()==1 &amp; $parent.inp_grantMethod() == 1,
+												enable: useAge()==1,
+												name: '#[KMF004_56]'}" />
 									<span >～</span> <input style="width: 30px; margin-top: 3px;"
 										data-bind="ntsNumberEditor: {
 												value: limitAgeTo,
 												option: ko.mapping.fromJS({
 												unitID: 'AGE',
 												width: '60'}),
-												required: true,
-												enable: useAge()==1}" />
+												required: useAge()==1 &amp; $parent.inp_grantMethod() == 1,
+												enable: useAge()==1,
+												name: '#[KMF004_56]'}" />
 								</div>
 								<span style="margin-left: 75px; ">年齢基準</span>
-								<button style="width: 25px; height: 25px; margin-left: 20px; margin-top: 5px;">?</button>
+								<button style="width: 25px; height: 25px; margin-left: 20px; margin-top: 5px;" data-bind="ntsHelpButton: {image: 'IMG_KMF004_3.png', position: 'right top', enable: true }">?</button>
 								<div>
 									<label class="ntsRadioBox"> <input type="radio"
 										name="ageCriteriaAtr"
@@ -347,7 +360,8 @@
 												unitID: 'DAYS',
 												width: '60'}),
 												required: true,
-												enable: grantDaySingleType()==0}" />
+												enable: grantDaySingleType()==0,
+												name: '#[KMF004_31]'}" />
 										</div>
 									</div>
 									<div>
