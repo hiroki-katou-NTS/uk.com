@@ -4,13 +4,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
+
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DedcutionTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionItemOfTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.AmPmClassification;
@@ -40,8 +42,8 @@ public class WithinWorkTimeSheet {
 	//private RaisingSalaryTime
 	
 	private final List<WithinWorkTimeFrame> withinWorkTimeFrame;
-	private final LeaveEarlyDecisionClock leaveEarlyDecisionClock;
-	private final LateDecisionClock lateDecisionClock;
+	private final List<LeaveEarlyDecisionClock> leaveEarlyDecisionClock;
+	private final List<LateDecisionClock> lateDecisionClock;
 	
 	/**
 	 * 就業時間内時間帯の作成
@@ -55,7 +57,7 @@ public class WithinWorkTimeSheet {
 			PredetermineTimeSet predetermineTimeSet,
 			FixedWorkSetting fixedWorkSetting,
 			WorkTimeCommonSet workTimeCommonSet,
-			DedcutionTimeSheet deductionTimeSheet
+			DeductionTimeSheet deductionTimeSheet
 			) {
 		
 		val timeFrames = new ArrayList<WithinWorkTimeFrame>();
@@ -130,7 +132,7 @@ public class WithinWorkTimeSheet {
 		
 		/*所定内割増時間の時間帯作成*/
 		
-		return new WithinWorkTimeSheet(timeFrames/*,早退判断時刻（List）,遅刻判断時刻（List）*/);
+		return new WithinWorkTimeSheet(timeFrames,leaveEarlyDecisionClock,lateDecisionClock);
 	}
 
 	/**
@@ -171,4 +173,27 @@ public class WithinWorkTimeSheet {
 			throw new RuntimeException("unknown attendanceHolidayAttr" + attendanceHolidayAttr);
 		}
 	}
+	
+	/**
+	 * 引数のNoと一致する遅刻判断時刻を取得する
+	 * @param workNo
+	 * @return　遅刻判断時刻
+	 */
+	public LateDecisionClock getlateDecisionClock(int workNo) {
+		List<LateDecisionClock> clockList = this.lateDecisionClock.stream().filter(tc -> tc.getWorkNo()==workNo).collect(Collectors.toList());
+		if(clockList.size()>1) {
+			throw new RuntimeException("Exist duplicate workNo : " + workNo);
+		}
+		return clockList.get(0);
+	}
+	
+	
+	public LeaveEarlyDecisionClock getleaveEarlyDecisionClock(int workNo) {
+		List<LeaveEarlyDecisionClock> clockList = this.leaveEarlyDecisionClock.stream().filter(tc -> tc.getWorkNo()==workNo).collect(Collectors.toList());
+		if(clockList.size()>1) {
+			throw new RuntimeException("Exist duplicate workNo : " + workNo);
+		}
+		return clockList.get(0);
+	}
+		
 }

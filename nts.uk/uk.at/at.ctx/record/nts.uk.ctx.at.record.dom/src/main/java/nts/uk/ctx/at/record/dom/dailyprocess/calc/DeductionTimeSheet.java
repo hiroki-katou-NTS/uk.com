@@ -33,8 +33,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @RequiredArgsConstructor
-public class DedcutionTimeSheet {
-
+public class DeductionTimeSheet {
+	@Getter
 	private final List<TimeSheetOfDeductionItem> forDeductionTimeZoneList;
 	private final List<TimeSheetOfDeductionItem> forRecordTimeZoneList;
 	@Getter
@@ -60,7 +60,7 @@ public class DedcutionTimeSheet {
 		source.addAll(devided);
 	}
 	
-	public DedcutionTimeSheet createDedctionTimeSheet(){
+	public DeductionTimeSheet createDedctionTimeSheet(){
 		/*控除時間帯リストへコピー*/
 		List<TimeSheetOfDeductionItem> useDedTimeSheet = collectDeductionTimes();
 		/*重複部分補正処理*/
