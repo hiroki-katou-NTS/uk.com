@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class BsydtEmployeePk implements Serializable {
+public class BsymtEmployeePk implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	@Basic(optional = false)

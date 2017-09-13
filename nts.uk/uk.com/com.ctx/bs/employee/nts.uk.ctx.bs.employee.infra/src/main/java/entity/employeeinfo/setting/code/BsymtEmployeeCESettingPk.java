@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-public class BsydtEmployeeCESettingPk implements Serializable {
+public class BsymtEmployeeCESettingPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 		
 	@Column(name = "CID")
