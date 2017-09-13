@@ -9,10 +9,10 @@ import javax.enterprise.event.Event;
 import nts.arc.i18n.custom.ISessionLocale;
 import nts.arc.i18n.custom.LanguageChangedEvent;
 import nts.arc.i18n.custom.ResourceChangedEvent;
+import nts.gul.misc.DeepClonable;
 import nts.gul.text.IdentifierUtil;
 
-@SessionScoped
-public class SessionLocale implements ISessionLocale,Serializable{
+public class SessionLocale implements ISessionLocale,Serializable,DeepClonable<SessionLocale>{
 	private Locale currentLocale;
 	private long version;
 
@@ -47,5 +47,13 @@ public class SessionLocale implements ISessionLocale,Serializable{
 	public long getVersion() {
 		// TODO Auto-generated method stub
 		return this.version;
+	}
+
+	@Override
+	public SessionLocale deepClone() {
+		SessionLocale temp  = new SessionLocale();
+		temp.currentLocale = this.currentLocale;
+		temp.version = this.version;
+		return temp;
 	}
 }
