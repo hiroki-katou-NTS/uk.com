@@ -35,4 +35,71 @@ public class FormulaDispOrder extends AggregateRoot {
 	// 並び順
 	private int dispOrder;
 
+	/**
+	 * Instantiates a new formula disp order.
+	 *
+	 * @param memento the memento
+	 */
+	public FormulaDispOrder(FormulaDispOrderGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.optionalItemFormulaId = memento.getOptionalItemFormulaId();
+		this.optionalItemNo = memento.getOptionalItemNo();
+		this.dispOrder = memento.getDispOrder();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FormulaDispOrderSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setOptionalItemFormulaId(this.optionalItemFormulaId);
+		memento.setOptionalItemNo(this.optionalItemNo);
+		memento.setDispOrder(this.dispOrder);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
+		result = prime * result + ((optionalItemFormulaId == null) ? 0 : optionalItemFormulaId.hashCode());
+		result = prime * result + ((optionalItemNo == null) ? 0 : optionalItemNo.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FormulaDispOrder other = (FormulaDispOrder) obj;
+		if (companyId == null) {
+			if (other.companyId != null)
+				return false;
+		} else if (!companyId.equals(other.companyId))
+			return false;
+		if (optionalItemFormulaId == null) {
+			if (other.optionalItemFormulaId != null)
+				return false;
+		} else if (!optionalItemFormulaId.equals(other.optionalItemFormulaId))
+			return false;
+		if (optionalItemNo == null) {
+			if (other.optionalItemNo != null)
+				return false;
+		} else if (!optionalItemNo.equals(other.optionalItemNo))
+			return false;
+		return true;
+	}
+
 }
