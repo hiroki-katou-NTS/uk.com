@@ -8248,6 +8248,7 @@ var nts;
                             .setPrimaryKey(primaryKey)
                             .setInnerDrop((data.innerDrag && data.innerDrag.left !== undefined) ? data.innerDrag.left : true)
                             .setOuterDrop((data.outerDrag && data.outerDrag.left !== undefined) ? data.outerDrag.left : true)
+                            .setItemsLimit((data.itemsLimit && data.itemsLimit.left !== undefined) ? data.itemsLimit.left : null)
                             .build());
                         swapParts.push(new GridSwapPart().listControl($grid2)
                             .searchControl($swap.find(".ntsSwapSearchRight").find(".search-btn"))
@@ -8260,6 +8261,7 @@ var nts;
                             .setPrimaryKey(primaryKey)
                             .setInnerDrop((data.innerDrag && data.innerDrag.right !== undefined) ? data.innerDrag.right : true)
                             .setOuterDrop((data.outerDrag && data.outerDrag.right !== undefined) ? data.outerDrag.right : true)
+                            .setItemsLimit((data.itemsLimit && data.itemsLimit.right !== undefined) ? data.itemsLimit.right : null)
                             .build());
                         this.swapper = new SwapHandler().setModel(new GridSwapList($swap, swapParts));
                         $grid1.igGrid({
@@ -8460,17 +8462,22 @@ var nts;
                         var partId = model.transportBuilder.startAt === "first" ? 0 : 1;
                         var destPartId = model.receiver(ui) === "first" ? 0 : 1;
                         model.transportBuilder.toAdjacent(model.neighbor(ui)).target(model.target(ui));
+                        var max = model.swapParts[destPartId].itemsLimit;
                         // In case of multiple selections
                         if (ui.helper.hasClass("select-drag") === true) {
                             var rowsInHelper = ui.helper.find("tr");
                             var rows = rowsInHelper.toArray();
                             if (model.transportBuilder.startAt === model.receiver(ui)
                                 || (model.swapParts[partId].outerDrop === false
-                                    && model.transportBuilder.startAt !== model.receiver(ui))) {
+                                    && model.transportBuilder.startAt !== model.receiver(ui))
+                                || (!uk.util.isNullOrUndefined(max) && (rows.length + model.swapParts[destPartId].dataSource.length > max))) {
                                 $(this).sortable("cancel");
                                 for (var idx in rows) {
                                     model.swapParts[partId].$listControl.find("tbody").children()
                                         .eq($(rows[idx]).data("row-idx")).show();
+                                }
+                                if (!uk.util.isNullOrUndefined(max) && (rows.length + model.swapParts[destPartId].dataSource.length > max)) {
+                                    model.$container.trigger($.Event("swaplistgridsizeexceed"), [model.swapParts[destPartId].$listControl, max]);
                                 }
                                 return;
                             }
@@ -8502,8 +8509,12 @@ var nts;
                         else if ((model.swapParts[partId].innerDrop === false
                             && model.transportBuilder.startAt === model.receiver(ui))
                             || (model.swapParts[partId].outerDrop === false
-                                && model.transportBuilder.startAt !== model.receiver(ui))) {
+                                && model.transportBuilder.startAt !== model.receiver(ui))
+                            || (!uk.util.isNullOrUndefined(max) && model.swapParts[destPartId].dataSource.length >= max)) {
                             $(this).sortable("cancel");
+                            if (!uk.util.isNullOrUndefined(max) && model.swapParts[destPartId].dataSource.length >= max) {
+                                model.$container.trigger($.Event("swaplistgridsizeexceed"), [model.swapParts[destPartId].$listControl, max]);
+                            }
                         }
                     };
                     SwapHandler.prototype._update = function (model, evt, ui, value) {
@@ -8592,6 +8603,10 @@ var nts;
                     };
                     SwapPart.prototype.setOuterDrop = function (outerDrop) {
                         this.outerDrop = outerDrop;
+                        return this;
+                    };
+                    SwapPart.prototype.setItemsLimit = function (itemsLimit) {
+                        this.itemsLimit = itemsLimit;
                         return this;
                     };
                     SwapPart.prototype.initDraggable = function (opts) {
@@ -8775,14 +8790,23 @@ var nts;
                         var sourceList = forward === true ? this.swapParts[0].dataSource : this.swapParts[1].dataSource;
                         var $dest = forward === true ? this.swapParts[1].$listControl : this.swapParts[0].$listControl;
                         var destList = forward === true ? this.swapParts[1].dataSource : this.swapParts[0].dataSource;
+                        var max = forward === true ? this.swapParts[1].itemsLimit : this.swapParts[0].itemsLimit;
                         if (moveAll) {
                             var selectedIds = sourceList.map(function (row) { return row[primaryKey]; });
+                            if (!uk.util.isNullOrUndefined(max) && (selectedIds.length + destList.length > max)) {
+                                this.$container.trigger($.Event("swaplistgridsizeexceed"), [$dest, max]);
+                                return;
+                            }
                             this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
                                 .toAdjacent(destList.length > 0 ? destList[destList.length - 1][primaryKey] : null).update(moveAll);
                         }
                         else {
                             var selectedRows = $source.igGrid("selectedRows");
                             if (nts.uk.util.isNullOrEmpty(selectedRows)) {
+                                return;
+                            }
+                            if (!uk.util.isNullOrUndefined(max) && (selectedRows.length + destList.length > max)) {
+                                this.$container.trigger($.Event("swaplistgridsizeexceed"), [$dest, max]);
                                 return;
                             }
                             selectedRows.sort(function (one, two) {
