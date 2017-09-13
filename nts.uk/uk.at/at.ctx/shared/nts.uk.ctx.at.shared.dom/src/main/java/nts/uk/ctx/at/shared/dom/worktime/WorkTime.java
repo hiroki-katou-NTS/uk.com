@@ -61,12 +61,27 @@ public class WorkTime extends AggregateRoot {
 	 * @param goWorkTime
 	 * @return 遅刻の計算開始時間
 	 */
-	public TimeSpanForCalc getLateTimeCalcRange(TimeWithDayAttr goWorkTime) {
+	public TimeSpanForCalc getLateTimeCalcRange(TimeWithDayAttr goWorkTime,int workNo) {
 		if(workTimeDivision.getWorkTimeDailyAtr().isFlex()&& flexWorkSetting.getCoreTimeSetting().getUse().isUse()) {
 			return new TimeSpanForCalc(flexWorkSetting.getCoreTimeSetting().getCoreTime().getStart(),goWorkTime);
 		}
-		return new TimeSpanForCalc(predetermineTimeSet.getDateStartTime(),goWorkTime);
+		return new TimeSpanForCalc(predetermineTimeSet.getSpecifiedTimeSheet().getMatchWorkNoTimeSheet(workNo).getStartTime(),goWorkTime);
 	}
+	
+	
+	/**
+	 * 早退時間の計算範囲を取得する
+	 * @param leaveWorkTime
+	 * @param workNo
+	 * @return
+	 */
+	public TimeSpanForCalc getleaveEarlyTimeCalcRange(TimeWithDayAttr leaveWorkTime,int workNo) {
+		if(workTimeDivision.getWorkTimeDailyAtr().isFlex()&& flexWorkSetting.getCoreTimeSetting().getUse().isUse()) {
+			return new TimeSpanForCalc(leaveWorkTime,flexWorkSetting.getCoreTimeSetting().getCoreTime().getEnd());
+		}
+		return new TimeSpanForCalc(leaveWorkTime,predetermineTimeSet.getSpecifiedTimeSheet().getMatchWorkNoTimeSheet(workNo).getEndTime());
+	}
+	
 	
 //	/**
 //	 * 1回目の所定時間の開始時刻を取得

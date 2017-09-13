@@ -34,7 +34,6 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @RequiredArgsConstructor
 public class DeductionTimeSheet {
-
 	private final List<TimeSheetOfDeductionItem> forDeductionTimeZoneList;
 	private final List<TimeSheetOfDeductionItem> forRecordTimeZoneList;
 	@Getter
