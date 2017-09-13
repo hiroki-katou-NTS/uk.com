@@ -21,6 +21,11 @@ public class UpdateApplicationCommand {
 	private String applicationID;
 	
 	/**
+	 * 申請理由ID
+	 */
+	private String appReasonID;
+	
+	/**
 	 * 事前事後区分
 	 */
 	private int prePostAtr; 
@@ -98,10 +103,20 @@ public class UpdateApplicationCommand {
 	 * 実績強制反映
 	 */
 	private int reflectPerEnforce;
+	/**
+	 * 申請終了日
+	 */
+	private GeneralDate startDate;
+	
+	/**
+	 * 申請開始日
+	 */
+	private GeneralDate endDate;
 	
 	public Application toDomain() {
 		return Application.createFromJavaType(
-				AppContexts.user().companyId(),   
+				AppContexts.user().companyId(),
+				this.appReasonID,
 				this.prePostAtr, 
 				this.inputDate,  
 				this.enteredPersonSID,  
@@ -117,6 +132,8 @@ public class UpdateApplicationCommand {
 				this.reflectPerScheReason,  
 				this.reflectPerTime,  
 				this.reflectPerState,  
-				this.reflectPerEnforce);
+				this.reflectPerEnforce,
+				this.startDate,
+				this.endDate);
 	}
 }

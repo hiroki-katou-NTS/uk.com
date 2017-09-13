@@ -72,7 +72,10 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 		KrqdtAppLateOrLeave appLateOrLeaveEntity = (KrqdtAppLateOrLeave) joinEntity[0];
 		KafdtApplication applicationEntity = (KafdtApplication) joinEntity[1];
 		
-		return new LateOrLeaveEarly (appLateOrLeaveEntity.krqdtAppLateOrLeavePK.companyID, appLateOrLeaveEntity.krqdtAppLateOrLeavePK.appID,
+		return new LateOrLeaveEarly (
+				appLateOrLeaveEntity.krqdtAppLateOrLeavePK.companyID, 
+				appLateOrLeaveEntity.krqdtAppLateOrLeavePK.appID,
+				applicationEntity.appReasonId,
 				 applicationEntity.prePostAtr,
 				 applicationEntity.inputDate,
 				 applicationEntity.enteredPersonSID,
@@ -89,6 +92,8 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 				 applicationEntity.reflectPerTime,
 				 applicationEntity.reflectPerState,
 				 applicationEntity.reflectPerEnforce,
+				 applicationEntity.startDate,
+				 applicationEntity.endDate,
 				 appLateOrLeaveEntity.actualCancelAtr,
 				 appLateOrLeaveEntity.early1,
 				 appLateOrLeaveEntity.earlyTime1,

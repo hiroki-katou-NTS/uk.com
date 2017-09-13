@@ -30,6 +30,7 @@ public class UpdateApplicationCancelHandler extends CommandHandler<UpdateApplica
 		Application application = new  Application(
 				companyID,
 				appCommand.getApplicationID(),
+				appCommand.getAppReasonID(),
 				EnumAdaptor.valueOf(appCommand.getPrePostAtr(),PrePostAtr.class),
 				appCommand.getInputDate(), 
 				appCommand.getEnteredPersonSID(), 
@@ -45,7 +46,9 @@ public class UpdateApplicationCancelHandler extends CommandHandler<UpdateApplica
 				EnumAdaptor.valueOf(appCommand.getReflectPerScheReason(),ReflectPerScheReason.class), 
 				appCommand.getReflectPerTime(), 
 				EnumAdaptor.valueOf(appCommand.getReflectPerState(),ReflectPlanPerState.class), 
-				EnumAdaptor.valueOf(appCommand.getReflectPerEnforce(),ReflectPlanPerEnforce.class));
+				EnumAdaptor.valueOf(appCommand.getReflectPerEnforce(),ReflectPlanPerEnforce.class),
+				appCommand.getStartDate(),
+				appCommand.getEndDate());
 		//12
 		processCancelRepo.detailScreenCancelProcess(companyID, application.getApplicationID());
 	}

@@ -34,6 +34,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		return new Application(
 				entity.kafdtApplicationPK.companyID,
 				entity.kafdtApplicationPK.applicationID,
+				entity.appReasonId,
 				EnumAdaptor.valueOf(entity.prePostAtr,PrePostAtr.class), 
 				entity.inputDate, entity.enteredPersonSID,
 				new AppReason(entity.reversionReason), 
@@ -48,7 +49,9 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				EnumAdaptor.valueOf(entity.reflectPerScheReason,ReflectPerScheReason.class),
 				entity.reflectPerTime,
 				EnumAdaptor.valueOf(entity.reflectPerState,ReflectPlanPerState.class),
-				EnumAdaptor.valueOf(entity.reflectPerEnforce,ReflectPlanPerEnforce.class));
+				EnumAdaptor.valueOf(entity.reflectPerEnforce,ReflectPlanPerEnforce.class),
+				entity.startDate,
+				entity.endDate);
 	}
 
 	private KafdtApplication toEntity(Application domain) {
@@ -117,6 +120,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		KafdtApplication newEntity = toEntity(application);
 		KafdtApplication updateEntity = this.queryProxy().find(newEntity.kafdtApplicationPK, KafdtApplication.class)
 				.get();
+		updateEntity.appReasonId = newEntity.appReasonId;
 		updateEntity.prePostAtr = newEntity.prePostAtr;
 		updateEntity.inputDate = newEntity.inputDate;
 		updateEntity.enteredPersonSID = newEntity.enteredPersonSID;
@@ -133,6 +137,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		updateEntity.reflectPerTime = newEntity.reflectPerTime;
 		updateEntity.reflectPerState = newEntity.reflectPerState;
 		updateEntity.reflectPerEnforce = newEntity.reflectPerEnforce;
+		updateEntity.startDate = newEntity.startDate;
+		updateEntity.endDate = newEntity.endDate;
 		this.commandProxy().update(updateEntity);
 	}
 

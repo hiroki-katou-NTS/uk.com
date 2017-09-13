@@ -25,6 +25,10 @@ public class Application extends AggregateRoot{
 	 */
 	private String applicationID;
 	/**
+	 * 申請理由ID
+	 */
+	private String appReasonID;
+	/**
 	 * 事前事後区分
 	 */
 	private PrePostAtr prePostAtr;
@@ -96,8 +100,19 @@ public class Application extends AggregateRoot{
 	 */
 	private ReflectPlanPerEnforce reflectPerEnforce;
 	
+	/**
+	 * 申請終了日
+	 */
+	private GeneralDate startDate;
+	
+	/**
+	 * 申請開始日
+	 */
+	private GeneralDate endDate;
+	
 	public static Application createFromJavaType(
 			String companyID,
+			String appReasonID,
 			int prePostAtr,
 			GeneralDate inputDate, 
 			String enteredPersonSID, 
@@ -113,10 +128,13 @@ public class Application extends AggregateRoot{
 			int reflectPerScheReason, 
 			GeneralDate reflectPerTime, 
 			int reflectPerState,
-			int reflectPerEnforce) {
+			int reflectPerEnforce,
+			GeneralDate startDate,
+			GeneralDate endDate) {
 		return new  Application(
 				companyID, 
-				UUID.randomUUID().toString(), 
+				UUID.randomUUID().toString(),
+				appReasonID, 
 				EnumAdaptor.valueOf(prePostAtr,PrePostAtr.class),
 				inputDate, 
 				enteredPersonSID, 
@@ -132,7 +150,9 @@ public class Application extends AggregateRoot{
 				EnumAdaptor.valueOf(reflectPerScheReason,ReflectPerScheReason.class), 
 				reflectPerTime, 
 				EnumAdaptor.valueOf(reflectPerState,ReflectPlanPerState.class), 
-				EnumAdaptor.valueOf(reflectPerEnforce,ReflectPlanPerEnforce.class));
+				EnumAdaptor.valueOf(reflectPerEnforce,ReflectPlanPerEnforce.class),
+				startDate,
+				endDate);
 	}
 	
 	/**

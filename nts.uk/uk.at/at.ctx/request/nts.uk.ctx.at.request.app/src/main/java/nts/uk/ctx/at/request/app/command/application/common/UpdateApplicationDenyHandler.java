@@ -36,6 +36,7 @@ public class UpdateApplicationDenyHandler extends CommandHandler<UpdateApplicati
 		Application application = new  Application(
 				companyID,
 				appCommand.getApplicationID(),
+				appCommand.getAppReasonID(),
 				EnumAdaptor.valueOf(appCommand.getPrePostAtr(),PrePostAtr.class),
 				appCommand.getInputDate(), 
 				appCommand.getEnteredPersonSID(), 
@@ -51,7 +52,9 @@ public class UpdateApplicationDenyHandler extends CommandHandler<UpdateApplicati
 				EnumAdaptor.valueOf(appCommand.getReflectPerScheReason(),ReflectPerScheReason.class), 
 				appCommand.getReflectPerTime(), 
 				EnumAdaptor.valueOf(appCommand.getReflectPerState(),ReflectPlanPerState.class), 
-				EnumAdaptor.valueOf(appCommand.getReflectPerEnforce(),ReflectPlanPerEnforce.class));
+				EnumAdaptor.valueOf(appCommand.getReflectPerEnforce(),ReflectPlanPerEnforce.class),
+				appCommand.getStartDate(),
+				appCommand.getEndDate());
 		//9-1 .詳細画面否認前の処理
 		beforeProcessDenialRepo.detailedScreenProcessBeforeDenial();
 		//9.2 

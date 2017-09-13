@@ -26,6 +26,7 @@ public class CreateApplicationCommandHandler extends CommandHandler<CreateApplic
 		CreateApplicationCommand appCommand = context.getCommand();
 		Application application = Application.createFromJavaType(
 				companyID,
+				appCommand.getAppReasonID(),
 				appCommand.getPrePostAtr(), 
 				appCommand.getInputDate(), 
 				appCommand.getEnteredPersonSID(), 
@@ -41,7 +42,9 @@ public class CreateApplicationCommandHandler extends CommandHandler<CreateApplic
 				appCommand.getReflectPerScheReason(), 
 				appCommand.getReflectPerTime(), 
 				appCommand.getReflectPerState(), 
-				appCommand.getReflectPerEnforce());
+				appCommand.getReflectPerEnforce(),
+				appCommand.getStartDate(),
+				appCommand.getEndDate());
 		Optional<Application> app = appRepo.getAppById(companyID, appCommand.getApplicationID());
 		if(app.isPresent()) {
 			throw new BusinessException("Msg_3");

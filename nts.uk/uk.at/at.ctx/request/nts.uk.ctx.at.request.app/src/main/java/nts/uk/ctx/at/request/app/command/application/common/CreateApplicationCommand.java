@@ -19,12 +19,16 @@ import nts.uk.shr.com.context.AppContexts;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateApplicationCommand {
-
+	
+	
 	/**
 	 * 申請ID
 	 */
 	private String applicationID;
-	
+	/**
+	 * 申請理由ID
+	 */
+	private String appReasonID;
 	/**
 	 * 事前事後区分
 	 */
@@ -104,9 +108,20 @@ public class CreateApplicationCommand {
 	 */
 	private int reflectPerEnforce;
 	
+	/**
+	 * 申請終了日
+	 */
+	private GeneralDate startDate;
+	
+	/**
+	 * 申請開始日
+	 */
+	private GeneralDate endDate;
+	
 	public Application toDomain() {
 		return Application.createFromJavaType(
 				AppContexts.user().companyId(),
+				this.appReasonID,
 				this.prePostAtr, 
 				this.inputDate,  
 				this.enteredPersonSID,  
@@ -122,6 +137,8 @@ public class CreateApplicationCommand {
 				this.reflectPerScheReason,  
 				this.reflectPerTime,  
 				this.reflectPerState,  
-				this.reflectPerEnforce);
+				this.reflectPerEnforce,
+				this.startDate,
+				this.endDate);
 	}
 }
