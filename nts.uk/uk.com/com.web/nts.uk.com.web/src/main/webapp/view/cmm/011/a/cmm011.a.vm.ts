@@ -71,6 +71,9 @@ module nts.uk.com.view.cmm011.a {
                 });
             }
             
+            /**
+             * startPage
+             */
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
@@ -87,16 +90,26 @@ module nts.uk.com.view.cmm011.a {
                 return dfd.promise();
             }
             
+            /**
+             * configureWkpDialog
+             */
             public configureWkpDialog() {
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/b/index.xhtml').onClosed(() => {
                 });
             }
             
+            /**
+             * createWkpDialog
+             */
             public createWkpDialog() {
                 let self = this;
                 
-                let workplace: Workplace = {code: self.workplaceCode(), name: self.workplaceName()};
-                nts.uk.ui.windows.setShared("WorkplaceInfor", workplace);
+                let objTransfer: any = {};
+                objTransfer.code = self.workplaceCode();
+                objTransfer.name = self.workplaceName();
+                objTransfer.isLess999Heirarchies = self.treeWorkplace().isValidLimitHeirachy();
+                objTransfer.isLessTenthHeirarchy = self.treeWorkplace().selectedHeirarchyCd.length / 3 < 10;
+                nts.uk.ui.windows.setShared("ObjectTransfer", objTransfer);
                 
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/f/index.xhtml').onClosed(() => {
                     let creationType: CreationType = nts.uk.ui.windows.getShared("CreatedWorkplaceCondition");
@@ -144,6 +157,9 @@ module nts.uk.com.view.cmm011.a {
                 ];
             }
             
+            /**
+             * showMessageError
+             */
             public showMessageError(res: any) {
                 if (res.businessException) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
@@ -151,6 +167,9 @@ module nts.uk.com.view.cmm011.a {
             }
         }
         
+        /**
+         * TreeWorkplaceModel
+         */
         class TreeWorkplaceModel {
 
             screenModel: ScreenModel;
@@ -160,6 +179,8 @@ module nts.uk.com.view.cmm011.a {
             selectedWpkId: KnockoutObservable<string>;
             
             treeArray: KnockoutObservableArray<any>;
+            selectedHeirarchyCd: string;
+            mapHeirarchy: any;
 
             constructor(screenModel: ScreenModel) {
                 let self = this;
@@ -171,8 +192,22 @@ module nts.uk.com.view.cmm011.a {
                 self.lstWorkplace = ko.observableArray([]);
                 self.selectedWpkId = ko.observable(null);
                 self.treeArray = ko.observableArray([]);
+                
+                // subscribe
+                self.lstWorkplace.subscribe(dataList => {
+                    self.treeArray(self.convertTreeToArray(dataList));
+                });
+                self.selectedWpkId.subscribe(newValue => {
+                    self.selectedHeirarchyCd = self.getSelectedHeirarchyCd();
+                });
+                self.treeArray.subscribe(newArray => {
+                    self.mapHeirarchy = self.convertMapHeirarchy();
+                });
             }
 
+            /**
+             * findLstWorkplace
+             */
             public findLstWorkplace(startDate: Date): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<any>();
@@ -188,48 +223,85 @@ module nts.uk.com.view.cmm011.a {
                 return dfd.promise();
             }
 
+            /**
+             * selectFirst
+             */
             public selectFirst() {
                 let self = this;
                 self.selectedWpkId(self.lstWorkplace()[0].workplaceId);
             }
             
+            /**
+             * calHeightTree
+             */
             public calHeightTree(): number {
                 let heightCell: number = 26;
                 return heightCell * 20;
             }
             
+            /**
+             * findPathNameByWkpIdSelected
+             */
             public findPathNameByWkpIdSelected(): any {
                 let self = this;
-                
-                let selectedHeirarchyCd: string = null;
                 let obj: any = {};
-                let mapHeirarchy: any = _.reduce(self.treeArray(), function(hash, value) {
-                    let key = value['heirarchyCode'];
-                    hash[key] = value['name'];
-                    if (value['workplaceId'] == self.selectedWpkId()) {
-                        obj.wkpDisplayName = value['name'];
-                        selectedHeirarchyCd = key;
-                    }
-                    return hash;
-                }, {});
-                
                 let index: number = 3;
                 let wkpFullName: string = "";
-                while(index <= selectedHeirarchyCd.length) {
-                    let parentHeirarchyCd: string = selectedHeirarchyCd.substr(0, index);
-                    wkpFullName += " " + mapHeirarchy[parentHeirarchyCd];
+                while(index <= self.selectedHeirarchyCd.length) {
+                    let parentHeirarchyCd: string = self.selectedHeirarchyCd.substr(0, index);
+                    wkpFullName += " " + self.mapHeirarchy[parentHeirarchyCd];
                     index += 3;
                 }
                 obj.wkpFullName = wkpFullName.trim();
+                obj.wkpDisplayName = self.mapHeirarchy[self.selectedHeirarchyCd];
                 return obj;
             }
             
+            /**
+             * isValidLimitHeirachy
+             */
+            public isValidLimitHeirachy(): boolean {
+                let self = this;
+                let lengthElementSameHeirachies: number = self.treeArray().filter(item => {
+                    if (item.heirarchyCode.length != self.selectedHeirarchyCd.length) {
+                        return false;
+                    }
+                    let parentHeirarchyCd: string = item.heirarchyCode.substr(0, item.heirarchyCode.length - 3);
+                    let parentSelectedHeirarchyCd: string = self.selectedHeirarchyCd.substr(0,
+                        self.selectedHeirarchyCd.length - 3);
+                    return parentHeirarchyCd == parentSelectedHeirarchyCd;
+                }).length;
+                let maxHeirarchies: number = 999;
+                return lengthElementSameHeirachies < maxHeirarchies;
+            }
+            
+            /**
+             * getSelectedHeirarchyCd
+             */
+            private getSelectedHeirarchyCd(): string {
+                let self = this;
+                let heirarchyCode: string = "";
+                for(let item of self.treeArray()) {
+                    if (item.workplaceId == self.selectedWpkId()) {
+                        heirarchyCode = item.heirarchyCode;
+                        break;
+                    }
+                }
+                return heirarchyCode;
+            }
+            
+            /**
+             * calWidthColText
+             */
             private calWidthColText() {
                 let self = this;
                 let maxSizeNameCol: number = Math.max(self.getMaxSizeOfTextList(self.lstWorkplace()), 250);
                 self.treeColumns()[1].width = maxSizeNameCol;
             }
             
+            /**
+             * getMaxSizeOfTextList
+             */
             private getMaxSizeOfTextList(dataList: Array<TreeWorkplace>): number {
                 let self = this;
                 let max: number = 0;
@@ -237,11 +309,7 @@ module nts.uk.com.view.cmm011.a {
                 let defaultFontSize: number = 14;
                 let defaultFontFamily: Array<string> = ['DroidSansMono', 'Meiryo'];
                 
-                // convert tree to array
-                let textArray: Array<any> = self.convertTreeToArray(dataList);
-                self.treeArray(textArray);
-                
-                _.forEach(textArray, function(item) {
+                _.forEach(self.treeArray(), function(item) {
                     let o: any = $('<div id="test">' + item.nodeText + '</div>')
                         .css({
                             'position': 'absolute', 'float': 'left', 'white-space': 'nowrap', 'visibility': 'hidden',
@@ -257,6 +325,21 @@ module nts.uk.com.view.cmm011.a {
                 return max;
             }
             
+            /**
+             * convertMapHeirarchy
+             */
+            private convertMapHeirarchy(): any {
+                let self = this;
+                return _.reduce(self.treeArray(), function(hash: any, value: any) {
+                    let key: any = value['heirarchyCode'];
+                    hash[key] = value['name'];
+                    return hash;
+                }, {});
+            }
+            
+            /**
+             * convertTreeToArray
+             */
             private convertTreeToArray(dataList: Array<TreeWorkplace>): Array<any> {
                 let self = this;
                 let res: Array<any> = [];
@@ -276,6 +359,9 @@ module nts.uk.com.view.cmm011.a {
             }
         }
         
+        /**
+         * WorkplaceHistoryModel
+         */
         class WorkplaceHistoryModel extends WorkplaceHistory {
             
             constructor() {
@@ -297,6 +383,9 @@ module nts.uk.com.view.cmm011.a {
                 self.selectFirst();
             }
             
+            /**
+             * addWkpHistoryDialog
+             */
             public addWkpHistoryDialog() {
                 let self = this;
                 let startDateLatest: string = self.lstWpkHistory()[0].startDate;
@@ -305,11 +394,19 @@ module nts.uk.com.view.cmm011.a {
                 });
             }
             
+            /**
+             * updateWkpHistoryDialog
+             */
             public updateWkpHistoryDialog() {
+                let self = this;
+                nts.uk.ui.windows.setShared("StartDateHistory", self.getSelectedHistory().startDate);
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/e/index.xhtml').onClosed(() => {
                 });
             }
             
+            /**
+             * deleteWkpHistoryDialog
+             */
             public deleteWkpHistoryDialog() {
             }
         }
