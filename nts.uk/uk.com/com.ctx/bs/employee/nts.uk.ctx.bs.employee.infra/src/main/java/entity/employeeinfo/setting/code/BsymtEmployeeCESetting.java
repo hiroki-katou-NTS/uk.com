@@ -19,13 +19,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BSYDT_EMPLOYEE_CE_SET")
-public class BsydtEmployeeCESetting extends UkJpaEntity implements Serializable {
+@Table(name = "BSYMT_EMPLOYEE_CE_SET")
+public class BsymtEmployeeCESetting extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private BsydtEmployeeCESettingPk bsydtEmployeeCESettingPk;
+	private BsymtEmployeeCESettingPk bsydtEmployeeCESettingPk;
 
 	@Basic(optional = false)
 	@Column(name = "CODE_EDIT_METHOD_ATR")
