@@ -61,7 +61,7 @@ module nts.uk.at.view.kmf004.c {
                 self.dataItems = ko.observableArray([]);
                 
                 // Get codes from A screen
-                self.specialHolidayCode = ko.observable('01');
+                self.specialHolidayCode = ko.observable(getShared("KMF004B_SPHD_CD"));
                 
                 //Bind data to from when user select item on grid
                 self.singleSelectedCode.subscribe(function(value) {
