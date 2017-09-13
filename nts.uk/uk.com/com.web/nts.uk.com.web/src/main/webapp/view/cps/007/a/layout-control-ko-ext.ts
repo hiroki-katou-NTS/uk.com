@@ -23,7 +23,7 @@ module nts.custombinding {
     export class LayoutControl implements KnockoutBindingHandler {
         private style = `<style type="text/css" rel="stylesheet" id="layout_style">
                     .layout-control.editable{
-                        width: 1025px;
+                        width: 1245px;
                     }
                     .layout-control .left-area,
                     .layout-control .right-area,
@@ -80,7 +80,7 @@ module nts.custombinding {
                     .layout-control .drag-panel {
                         border: 1px solid #ccc;
                         border-radius: 10px;
-                        width: 597px;
+                        width: 810px;
                         height: 615px;
                         padding: 10px;
                         box-sizing: border-box;
