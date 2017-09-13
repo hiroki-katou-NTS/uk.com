@@ -45,8 +45,8 @@ public class MasterListExportService extends ExportService<MasterListExportQuery
 		try {
 			MasterListData domainData = CDI.current().select(MasterListData.class, new NamedAnnotation(query.getDomainId())).get();
 			
-			List<MasterHeaderColumn> columns = domainData.getHeaderColumns();
-			List<MasterData> datas = domainData.getMasterDatas();
+			List<MasterHeaderColumn> columns = domainData.getHeaderColumns(query);
+			List<MasterData> datas = domainData.getMasterDatas(query);
 			Map<String, String> headers = this.getHeaderInfor(query);
 			
 			this.generator.generate(context.getGeneratorContext(), new MasterListExportSource(headers, columns, datas, query.getReportType()));
