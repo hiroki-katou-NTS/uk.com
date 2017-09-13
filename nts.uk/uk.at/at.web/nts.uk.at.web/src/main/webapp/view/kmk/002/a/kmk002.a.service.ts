@@ -5,10 +5,10 @@ module nts.uk.at.view.kmk002.a {
          *  Service paths
          */
         let servicePath: any = {
-            findOptionalItemDetail: 'ctx/at/shared/workrecord/optionalitem/find',
-            saveOptionalItem: 'ctx/at/shared/workrecord/optionalitem/save',
-            removeOptionalItem: 'ctx/at/shared/workrecord/optionalitem/remove',
-            findOptionalItemHeaders: 'ctx/at/shared/workrecord/optionalitem/findall',
+            findOptionalItemDetail: 'ctx/at/record/optionalitem/find',
+            saveOptionalItem: 'ctx/at/record/optionalitem/save',
+            removeOptionalItem: 'ctx/at/record/optionalitem/remove',
+            findOptionalItemHeaders: 'ctx/at/record/optionalitem/findall',
         };
 
         export function saveOptionalItem(command: model.OptionalItemDto): JQueryPromise<any> {
