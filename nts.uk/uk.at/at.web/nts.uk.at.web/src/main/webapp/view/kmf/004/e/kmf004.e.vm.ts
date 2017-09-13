@@ -113,53 +113,6 @@ module nts.uk.at.view.kmf004.e.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-//            for (let i = 0; i < 20; i++) {
-//                        var param: item = {
-//                            yearServiceNo: i,
-//                            month: i,
-//                            year: i,
-//                            date: i
-//                    } 
-//                self.items.push(new Item (param));
-//            }
-//            console.log(self.items());
-//                            else {
-//                        var param: IItem = {
-//                            yearServiceNo: i + 1,
-//                            month: null,
-//                            year: null,
-//                            date: null
-//                        };
-//                        self.items.push(new Item(param));
-//                    }
-            
-//            service.getAllSet('01', '01').done((lstItem) => {
-//                for (let i = 0; i < 20; i++) {
-//                        if (lstItem[i]) {
-//                            var param: item = {
-//                                yearServiceNo: i + 1,
-//                                month: lstItem[i].month,
-//                                year: lstItem[i].year,
-//                                date: lstItem[i].date
-//                            };
-//
-//                            self.items.push(new Item(param));
-//                        } else {
-//                            var param: item = {
-//                                yearServiceNo: i + 1,
-//                                month: null,
-//                                year: null,
-//                                date: null
-//                            };
-//                            self.items.push(new Item(param));
-//                        }
-//                    }
-//            }).fail(function(error){
-//                    dfd.reject();
-//                    alert(error.message);
-//                });
-            
-            
             service.getAll().done((lstData: KnockoutObservableArray<Per>) => {
                 let sortedData : KnockoutObservableArray<any> = ko.observableArray([]);
                 sortedData(_.orderBy(lstData, ['yearServiceCode'], ['asc']));
@@ -168,21 +121,6 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                 self.selectedCode(ko.toJS(self.lstPer()[0].yearServiceCode));
                 self.selectedName(self.lstPer()[0].yearServiceName);
                 self.codeObject(ko.toJS(self.lstPer()[0].yearServiceCode)); 
-//                 _.forEach(self.lstPer()[0].yearServicePerSets, o => {
-//                     
-//                    self.items.push(ko.mapping.fromJS(o));    
-//                });
-//                for (let i = 0; i < 20; i++) {
-//                    if(self.items()[i] == undefined){
-//                        let t : item = {
-//                        yearServiceNo: ko.mapping.fromJS(i),
-//                        month: ko.mapping.fromJS(null),
-//                        year: ko.mapping.fromJS(null),
-//                        date: ko.mapping.fromJS(null)
-//                        }
-//                        self.items.push(new Item(t));
-//                    }
-//                }
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
@@ -214,8 +152,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
             }
             let dataTransfer = {
                 specialHolidayCode: '01',
-                yearServiceCode: ko.toJS(self.codeObject()),
-//                yearServiceNo: 
+                yearServiceCode: ko.toJS(self.codeObject()), 
                 yearServiceName: self.selectedName(),
                 yearServiceCls: 1,
                 yearServicePerSets: ko.toJS(self.getListItems()),   
