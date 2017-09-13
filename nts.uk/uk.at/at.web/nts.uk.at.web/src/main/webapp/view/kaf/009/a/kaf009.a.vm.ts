@@ -14,6 +14,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         //場所名前 
         workLocationCD: KnockoutObservable<string>;
         workLocationName: KnockoutObservable<string>;
+        //comment 
+        commentGo1: KnockoutObservable<string>;
+        commentBack1: KnockoutObservable<string>;
         //switch button selected
         selectedBack: any;
         selectedGo: any;
@@ -23,12 +26,15 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         //場所名前 
         workLocationCD2: KnockoutObservable<string>;
         workLocationName2: KnockoutObservable<string>;
+        //comment
+        commentGo2: KnockoutObservable<string>;
+        commentBack2: KnockoutObservable<string>;
         //Back Home 2
         selectedBack2: any;
         //Go Work 2
         selectedGo2: any;
         //勤務を変更する 
-        isWorkChange: KnockoutObservable<boolean>;
+        workChangeAtr: KnockoutObservable<boolean>;
         //勤務種類
         workTypeCd: KnockoutObservable<string>;
         workTypeName: KnockoutObservable<string>;
@@ -67,22 +73,21 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             //Work Location 2
             self.workLocationCD2 = ko.observable('002');
             self.workLocationName2 = ko.observable('Name2');
+            //comment 
+            self.commentGo1 = ko.observable('');
+            self.commentBack1 = ko.observable('');
+            self.commentGo2 = ko.observable('');
+            self.commentBack2 = ko.observable('');
 
             //Checkbox 勤務を変更する
-            self.isWorkChange = ko.observable(true);
+            self.workChangeAtr = ko.observable(true);
             self.workTypeCd = ko.observable('');
             self.workTypeName = ko.observable('');
             self.siftCd = ko.observable('');
             self.siftName = ko.observable('');
-
             //ComboBox Reason
-            self.reasonCombo = ko.observableArray([
-                new ComboReason('0001', '基本給'),
-                new ComboReason('0002', '役職手当'),
-                new ComboReason('0003', '基本給')
-            ]);
-            //Selected Reason 
-            self.selectedReason = ko.observable('0002');
+            self.reasonCombo = ko.observableArray([]);
+            self.selectedReason = ko.observable('');
             //MultilineEditor 
             self.multilineeditor = {
                 value: ko.observable(''),
@@ -95,15 +100,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 })),
             };
             //勤務を変更する
-            self.isWorkChange.subscribe(function() {
+            self.workChangeAtr.subscribe(function() {
             });
-
-        }
-        /**
-         * init Setting
-         */
-        initPage() {
-            var self = this;
 
         }
         /**
@@ -111,23 +109,34 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         startPage(): JQueryPromise<any> {
             var self = this;
-
             var dfd = $.Deferred();
             //get Common Setting
             service.getGoBackSetting().done(function(settingData: CommonSetting) {
                 //get Setting common
-                debugger;
+                self.setReasonControl(settingData.listReasonDto);
                 //Get data 
                 service.getGoBackDirectly().done(function(goBackDirectData: GoBackDirectData) {
                     //Set Value of control
                     self.setValueControl(goBackDirectData);
                     dfd.resolve();
-                }).fail(function(){
-                    dfd.resolve();                    
+                }).fail(function() {
+                    dfd.resolve();
                 });
             });
             return dfd.promise();
         }
+        
+        /**
+         * Set common Setting 
+         */
+        setGoBackSetting(data: GoBackDirectSetting) {
+            let self = this;
+            if (data != undefined) {
+                
+
+            }
+        }
+        
         
         /**
          * set data from Server 
@@ -148,8 +157,21 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             self.selectedBack2(data.backHomeAtr2);
             self.workLocationCD2(data.workLocationCD2);
             //workType, Sift
+            self.workChangeAtr(data.workChangeAtr == 1 ? true : false);
             self.workTypeCd(data.workTypeCD);
             self.siftCd(data.siftCd);
+        }
+        /**
+         * set reason 
+         */
+        setReasonControl(data: Array<ReasonDto>) {
+            var self = this;
+            //self.reasonCombo();
+            let comboSource: Array<ComboReason> = [];
+            _.forEach(data, function(value: ReasonDto) {
+                comboSource.push(new ComboReason(value.displayOrder, value.reasonTemp));
+            });
+            self.reasonCombo(_.orderBy(comboSource, 'reasonCode', 'asc'));
         }
 
 
@@ -176,16 +198,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
 
         }
 
-        /**
-         * Set common Setting 
-         */
-        setCommonSetting(data: CommonSetting) {
-            let self = this;
-            if (data != undefined) {
-                self.isWorkChange(data.workChangeFlg > 0 ? false : false);
-
-            }
-        }
+        
         /**
          * New Screen Mode 
          */
@@ -197,26 +210,44 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         }
 
     }
+
+
+    /**
+     * Setting Data from Server 
+     * 
+     */
+    class CommonSetting {
+        employeeName: string;
+        goBackSettingDto: GoBackDirectSetting;
+        listReasonDto: Array<ReasonDto>;
+        constructor(employeeName: string, goBackSettingDto: GoBackDirectSetting, listReasonDto: Array<ReasonDto>) {
+            var self = this;
+            self.employeeName = employeeName;
+            self.goBackSettingDto = goBackSettingDto;
+            self.listReasonDto = listReasonDto;
+        }
+    }
+
     /**
      * 直行直帰申請共通設定
      */
-    class CommonSetting {
+    class GoBackDirectSetting {
         workChangeFlg: number;
         workChangTimeAtr: number;
         perfomanceDisplayAtr: number;
         contraditionCheckAtr: number;
         workType: number;
         lateLeaveEarlySettingAtr: number;
-        commentContent1: String;
+        commentContent1: string;
         commentFontWeight1: number;
-        commentFontColor1: String;
-        commentContent2: String;
+        commentFontColor1: string;
+        commentContent2: string;
         commentFontWeight2: number;
-        commentFontColor2: String;
+        commentFontColor2: string;
         constructor(workChangeFlg: number, workChangTimeAtr: number, perfomanceDisplayAtr: number,
-            contraditionCheckAtr: number, workType: number, lateLeaveEarlySettingAtr: number, commentContent1: String,
-            commentFontWeight1: number, commentFontColor1: String, commentContent2: String, commentFontWeight2: number,
-            commentFontColor2: String) {
+            contraditionCheckAtr: number, workType: number, lateLeaveEarlySettingAtr: number, commentContent1: string,
+            commentFontWeight1: number, commentFontColor1: string, commentContent2: string, commentFontWeight2: number,
+            commentFontColor2: string) {
             var self = this;
             self.workChangeFlg = workChangeFlg;
             self.workChangTimeAtr = workChangTimeAtr;
@@ -234,37 +265,59 @@ module nts.uk.at.view.kaf009.a.viewmodel {
     }
     /**
      * 
+     */
+    class ReasonDto {
+        companyId: string;
+        appType: number;
+        reasonID: string;
+        displayOrder: number;
+        reasonTemp: string;
+        constructor(companyId: string, appType: number, reasonID: string, displayOrder: number, reasonTemp: string) {
+            var self = this;
+            self.companyId = companyId;
+            self.appType = appType;
+            self.reasonID = reasonID;
+            self.displayOrder = displayOrder;
+            self.reasonTemp = reasonTemp;
+        }
+
+    };
+
+
+
+    /**
+     * 
      * 直行直帰申請
      */
     class GoBackDirectData {
-        appID: String;
-        workTypeCD: String;
-        siftCd: String;
+        appID: string;
+        workTypeCD: string;
+        siftCd: string;
         workChangeAtr: number;
         goWorkAtr1: number;
         backHomeAtr1: number;
         workTimeStart1: number;
         workTimeEnd1: number;
-        workLocationCD1: String;
+        workLocationCD1: string;
         goWorkAtr2: number;
         backHomeAtr2: number;
         workTimeStart2: number;
         workTimeEnd2: number;
-        workLocationCD2: String;
-        constructor(appID: String,
-            workTypeCD: String,
-            siftCd: String,
+        workLocationCD2: string;
+        constructor(appID: string,
+            workTypeCD: string,
+            siftCd: string,
             workChangeAtr: number,
             goWorkAtr1: number,
             backHomeAtr1: number,
             workTimeStart1: number,
             workTimeEnd1: number,
-            workLocationCD1: String,
+            workLocationCD1: string,
             goWorkAtr2: number,
             backHomeAtr2: number,
             workTimeStart2: number,
             workTimeEnd2: number,
-            workLocationCD2: String) {
+            workLocationCD2: string) {
             this.appID = appID;
             this.siftCd = siftCd;
             this.workChangeAtr = workChangeAtr;
@@ -285,10 +338,10 @@ module nts.uk.at.view.kaf009.a.viewmodel {
      * 
      */
     class ComboReason {
-        reasonCode: string;
+        reasonCode: number;
         reasonName: string;
 
-        constructor(reasonCode: string, reasonName: string) {
+        constructor(reasonCode: number, reasonName: string) {
             this.reasonCode = reasonCode;
             this.reasonName = reasonName;
         }

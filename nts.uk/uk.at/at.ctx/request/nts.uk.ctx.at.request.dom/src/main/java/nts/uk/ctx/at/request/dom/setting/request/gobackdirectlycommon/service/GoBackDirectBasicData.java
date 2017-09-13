@@ -8,6 +8,11 @@ import lombok.Setter;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 
+/**
+ * 直行直帰基本データ
+ * @author ducpm
+ *
+ */
 @Getter
 @Setter
 public class GoBackDirectBasicData {

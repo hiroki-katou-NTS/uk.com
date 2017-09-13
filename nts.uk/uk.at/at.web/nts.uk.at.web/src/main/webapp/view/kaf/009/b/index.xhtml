@@ -62,7 +62,11 @@
 								value: selectedBack,
 								enable: true }">
 			</div>
-			<label id="comment1"></label>
+			<div>
+				<label class="commentGo1" data-bind="text: commentGo1"></label>
+				<label class="commentBack1" data-bind="text: commentBack1"></label>
+			</div>
+			
 		</div>
 		<!--勤務時間 　２２２２２２２２２２２２２２２-->
 		<div class="valign-center control-group">
@@ -96,13 +100,16 @@
 								value: selectedBack2,
 								enable: true }">
 			</div>
-			<label id="comment2"></label>
+			<div>
+				<label class="commentGo2" data-bind="text: commentGo2"></label>
+				<label class="commentBack2" data-bind="text: commentBack2"></label>
+			</div>
 		</div>
 		<!--勤務を変更する -->
 		<!--Work Change-->
 		<div class="valign-center control-group">
 			<div
-				data-bind="ntsCheckBox: { checked: isWorkChange, enable: true, text: '#{i18n.getText('KAF009_21')}' }"></div>
+				data-bind="ntsCheckBox: { checked: workChangeAtr, enable: true, text: '#{i18n.getText('KAF009_21')}' }"></div>
 			<div class="table">
 				<div class="cell valign-center">
 					<div class="valign-center control-group"
@@ -130,13 +137,11 @@
 				data-bind="ntsComboBox: {
 								options: reasonCombo,
 								optionsValue: 'reasonCode',
-								value: selectedReason,
 								optionsText: 'reasonName',
+								value: selectedReason,
 								enable: true,
-								columns: [
-									{ prop: 'reasonCode', length: 4 },
-									{ prop: 'reasonName', length: 10 },
-								]}"></div>
+								columns: [{ prop: 'reasonName', length: 10 }]}">
+			</div>
 		</div>
 		<!--直帰する -->
 		<div class="valign-center control-group">

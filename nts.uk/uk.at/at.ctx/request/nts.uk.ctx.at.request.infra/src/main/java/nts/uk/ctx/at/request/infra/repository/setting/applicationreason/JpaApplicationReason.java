@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstApp
 public class JpaApplicationReason extends JpaRepository implements ApplicationReasonRepository{
 	private static final String FINDBYCOMPANYID = "SELECT c FROM KrqstAppReason c WHERE c.krqstAppReasonPK.companyId = :companyId";
 	
-	private static final String FINDBYAPPTYPE = FINDBYCOMPANYID + " c.krqstAppReasonPK.appType = :appType";
+	private static final String FINDBYAPPTYPE = FINDBYCOMPANYID + " AND c.krqstAppReasonPK.appType = :appType";
 	/**
 	 * get reason by companyid
 	 */

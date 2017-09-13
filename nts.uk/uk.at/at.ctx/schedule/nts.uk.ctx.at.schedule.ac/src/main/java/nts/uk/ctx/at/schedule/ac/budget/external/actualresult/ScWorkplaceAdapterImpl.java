@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ScWorkplaceAdapter;
-import nts.uk.ctx.bs.company.pub.workplace.WorkplacePub;
+//import nts.uk.ctx.bs.company.pub.workplace.WorkplacePub;
 
 /**
  * The Class ScWorkplaceAdapterImpl.
@@ -21,8 +21,8 @@ import nts.uk.ctx.bs.company.pub.workplace.WorkplacePub;
 public class ScWorkplaceAdapterImpl implements ScWorkplaceAdapter {
 
     /** The workplace pub. */
-    @Inject
-    private WorkplacePub workplacePub;
+    //@Inject
+    //private WorkplacePub workplacePub;
 
     /*
      * 
@@ -34,8 +34,9 @@ public class ScWorkplaceAdapterImpl implements ScWorkplaceAdapter {
      */
     @Override
     public List<String> findWpkIdList(String companyId, String wpkCode, Date baseDate) {
-         GeneralDate generalDate = GeneralDate.legacyDate(baseDate);
-         return this.workplacePub.findWpkIdsByWkpCode(companyId, wpkCode, generalDate);
+//         GeneralDate generalDate = GeneralDate.legacyDate(baseDate);
+    	return null;
+//         return this.workplacePub.findWpkIdsByWkpCode(companyId, wpkCode, generalDate);
     }
 
 }
