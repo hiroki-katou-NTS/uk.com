@@ -10,7 +10,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExecutionTime
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExtBudgetFileName;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.log.ExternalBudgetLogGetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.log.KscdtExtBudgetLog;
-import nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult.JpaExecutionTimeGetMemento;
+import nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult.timeunit.JpaExecutionTimeGetMemento;
 
 /**
  * The Class JpaExternalBudgetLogGetMemento.
