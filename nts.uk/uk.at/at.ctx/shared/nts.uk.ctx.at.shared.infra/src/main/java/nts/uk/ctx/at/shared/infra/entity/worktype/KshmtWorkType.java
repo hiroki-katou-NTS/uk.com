@@ -78,8 +78,8 @@ public class KshmtWorkType extends UkJpaEntity implements Serializable{
     @OneToOne(cascade = CascadeType.ALL, mappedBy="workType", orphanRemoval = true)
     public KshmtWorkTypeOrder kshmtWorkTypeOrder;
     
-    @OneToOne(cascade = CascadeType.ALL, mappedBy="workType", orphanRemoval = true)
-    public KshmtWorkTypeLanguage workTypeLanguage;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="workType", orphanRemoval = true)
+    public List<KshmtWorkTypeLanguage> workTypeLanguage;
     
 	@Override
 	protected Object getKey() {
