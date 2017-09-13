@@ -31,32 +31,32 @@ public class NullLoginUserContext implements LoginUserContext, Serializable {
 
 	@Override
 	public String personId() {
-		return null;
+		return "000426a2-181b-4c7f-abc8-6fff9f4f983a";
 	}
 
 	@Override
 	public String contractCode() {
-		return null;
+		return "000000000000";
 	}
 
 	@Override
 	public String companyId() {
-		return null;
+		return this.contractCode() + "-" + this.companyCode();
 	}
 
 	@Override
 	public String companyCode() {
-		return null;
+		return "0001";
 	}
 
 	@Override
 	public String employeeId() {
-		return null;
+		return "000426a2-181b-4c7f-abc8-6fff9f4f983a";
 	}
 
 	@Override
 	public String employeeCode() {
-		return null;
+		return "1234567890AB";
 	}
 
 }
