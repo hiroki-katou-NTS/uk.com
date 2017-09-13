@@ -28,4 +28,63 @@ public class ApplicableEmpCondition extends AggregateRoot {
 	// 雇用条件
 	private List<EmploymentCondition> employmentConditions;
 
+	/**
+	 * Instantiates a new applicable emp condition.
+	 *
+	 * @param memento the memento
+	 */
+	public ApplicableEmpCondition(ApplicableEmpConditionGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.optionalItemNo = memento.getOptionalItemNo();
+		this.employmentConditions = memento.getEmploymentConditions();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(ApplicableEmpConditionSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setOptionalItemNo(this.optionalItemNo);
+		memento.SetEmpConditions(this.employmentConditions);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
+		result = prime * result + ((optionalItemNo == null) ? 0 : optionalItemNo.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ApplicableEmpCondition other = (ApplicableEmpCondition) obj;
+		if (companyId == null) {
+			if (other.companyId != null)
+				return false;
+		} else if (!companyId.equals(other.companyId))
+			return false;
+		if (optionalItemNo == null) {
+			if (other.optionalItemNo != null)
+				return false;
+		} else if (!optionalItemNo.equals(other.optionalItemNo))
+			return false;
+		return true;
+	}
+
 }
