@@ -4,8 +4,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.employeeinfo.setting.code.BsydtEmployeeCESetting;
-import entity.employeeinfo.setting.code.BsydtEmployeeCESettingPk;
+import entity.employeeinfo.setting.code.BsymtEmployeeCESetting;
+import entity.employeeinfo.setting.code.BsymtEmployeeCESettingPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.setting.code.EmployeeCESetting;
 import nts.uk.ctx.bs.employee.dom.setting.code.IEmployeeCESettingRepository;
@@ -17,8 +17,8 @@ public class JpaEmployeeCESettingRepository extends JpaRepository implements IEm
 
 	@Override
 	public Optional<EmployeeCESetting> getByComId(String companyId) {
-		Optional<BsydtEmployeeCESetting> entity = this.queryProxy()
-				.query(SELECT_BY_COM_ID, BsydtEmployeeCESetting.class).setParameter("companyId", companyId).getSingle();
+		Optional<BsymtEmployeeCESetting> entity = this.queryProxy()
+				.query(SELECT_BY_COM_ID, BsymtEmployeeCESetting.class).setParameter("companyId", companyId).getSingle();
 
 		if (!entity.isPresent()) {
 			return Optional.empty();
@@ -29,14 +29,14 @@ public class JpaEmployeeCESettingRepository extends JpaRepository implements IEm
 
 	@Override
 	public void saveSetting(EmployeeCESetting domain) {
-		Optional<BsydtEmployeeCESetting> entity = this.queryProxy()
-				.query(SELECT_BY_COM_ID, BsydtEmployeeCESetting.class).setParameter("companyId", domain.getCompanyId())
+		Optional<BsymtEmployeeCESetting> entity = this.queryProxy()
+				.query(SELECT_BY_COM_ID, BsymtEmployeeCESetting.class).setParameter("companyId", domain.getCompanyId())
 				.getSingle();
 
 		if (!entity.isPresent()) {
 			commandProxy().insert(toEntity(domain));
 		} else {
-			BsydtEmployeeCESetting _update = entity.get();
+			BsymtEmployeeCESetting _update = entity.get();
 
 			// update value from domain to entity
 			_update.setDigitNumb(domain.getDigitNumb().v());
@@ -49,13 +49,13 @@ public class JpaEmployeeCESettingRepository extends JpaRepository implements IEm
 
 	@Override
 	public void removeSetting(String companyId) {
-		BsydtEmployeeCESettingPk pkey = new BsydtEmployeeCESettingPk(companyId);
+		BsymtEmployeeCESettingPk pkey = new BsymtEmployeeCESettingPk(companyId);
 
-		Optional<BsydtEmployeeCESetting> entity = this.queryProxy()
-				.query(SELECT_BY_COM_ID, BsydtEmployeeCESetting.class).setParameter("companyId", companyId).getSingle();
+		Optional<BsymtEmployeeCESetting> entity = this.queryProxy()
+				.query(SELECT_BY_COM_ID, BsymtEmployeeCESetting.class).setParameter("companyId", companyId).getSingle();
 
 		if (entity.isPresent()) {
-			this.commandProxy().remove(BsydtEmployeeCESetting.class, pkey);
+			this.commandProxy().remove(BsymtEmployeeCESetting.class, pkey);
 		}
 	}
 
@@ -64,14 +64,14 @@ public class JpaEmployeeCESettingRepository extends JpaRepository implements IEm
 		this.removeSetting(domain.getCompanyId());
 	}
 
-	private EmployeeCESetting toDomain(BsydtEmployeeCESetting entity) {
+	private EmployeeCESetting toDomain(BsymtEmployeeCESetting entity) {
 		return EmployeeCESetting.createFromJavaType(entity.getBsydtEmployeeCESettingPk().getCId(),
 				entity.getCeMethodAtr(), entity.getDigitNumb());
 	}
 
-	private BsydtEmployeeCESetting toEntity(EmployeeCESetting domain) {
-		BsydtEmployeeCESettingPk pkey = new BsydtEmployeeCESettingPk(domain.getCompanyId());
+	private BsymtEmployeeCESetting toEntity(EmployeeCESetting domain) {
+		BsymtEmployeeCESettingPk pkey = new BsymtEmployeeCESettingPk(domain.getCompanyId());
 
-		return new BsydtEmployeeCESetting(pkey, domain.getCeMethodAtr().value, domain.getDigitNumb().v());
+		return new BsymtEmployeeCESetting(pkey, domain.getCeMethodAtr().value, domain.getDigitNumb().v());
 	}
 }

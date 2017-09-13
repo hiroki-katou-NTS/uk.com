@@ -4,22 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pub.employment;
 
-import java.util.List;
-
 import nts.arc.time.GeneralDate;
 
 /**
  * The Interface WorkplacePub.
  */
 public interface SyEmploymentPub {
-
-	/**
-	 * Find by emp codes.
-	 *
-	 * @param employmentCodes the employment codes
-	 * @return the list
-	 */
-	List<EmploymentExport> findByEmpCodes(List<String> employmentCodes);
 
 	/**
 	 * Gets the employment code.

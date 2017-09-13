@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ScWorkplaceAdapter;
-import nts.uk.ctx.bs.company.pub.workplace.WorkplacePub;
+import nts.uk.ctx.at.schedule.dom.adapter.ScWorkplaceAdapter;
+import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 
 /**
  * The Class ScWorkplaceAdapterImpl.
@@ -22,7 +22,7 @@ public class ScWorkplaceAdapterImpl implements ScWorkplaceAdapter {
 
 	/** The workplace pub. */
 	@Inject
-	private WorkplacePub workplacePub;
+	private SyWorkplacePub workplacePub;
 
 	/*
 	 * 
