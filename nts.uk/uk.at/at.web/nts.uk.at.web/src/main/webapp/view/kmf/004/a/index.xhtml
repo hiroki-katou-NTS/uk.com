@@ -145,7 +145,7 @@
 								</label>
 								<button
 									style="display: block; margin-top: 10px; margin-left: 100px;"
-									data-bind="click: $parent.openBDialog, enable: grantRegularMethod()==1">#{i18n.getText('KMF004_29')}</button>
+									data-bind="click: $parent.openBDialog.bind($parent), enable: grantRegularMethod()==1">#{i18n.getText('KMF004_29')}</button>
 								<span style="margin-left: 100px;">#{i18n.getText('KMF004_30')}</span>
 							</div>
 							<div class="tab-content-2"

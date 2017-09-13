@@ -420,7 +420,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
         openBDialog() {
             let self = this;
-            nts.uk.ui.windows.setShared('KMF004B_SPHD', self.currentItem().specialHolidayCode());
+            nts.uk.ui.windows.setShared('KMF004B_SPHD_CD', self.currentItem().specialHolidayCode());
             nts.uk.ui.windows.sub.modal('/view/kmf/004/b/index.xhtml', { height: 600, width: 1000, dialogClass: 'no-close' }).onClosed(function(): any {
             });
 
@@ -428,7 +428,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
         openDDialog() {
             let self = this;
-            nts.uk.ui.windows.setShared('KMF004D_SPHD', self.currentItem().specialHolidayCode());
+            nts.uk.ui.windows.setShared('KMF004D_SPHD_CD', self.currentItem().specialHolidayCode());
             nts.uk.ui.windows.sub.modal('/view/kmf/004/d/index.xhtml', { height: 600, width: 1100, dialogClass: 'no-close' }).onClosed(function(): any {
             });
 
@@ -436,7 +436,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
         openGDialog() {
             let self = this;
-            nts.uk.ui.windows.setShared('KMF004G_SPHD', self.currentItem().specialHolidayCode());
+            nts.uk.ui.windows.setShared('KMF004G_SPHD_CD', self.currentItem().specialHolidayCode());
             nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml', { dialogClass: 'no-close' }).onClosed(function(): any {
             });
 
@@ -596,7 +596,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             grantRegularMethod: KnockoutObservable<number>;
             constructor(param: IGrantRegularDto) {
                 this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
-                this.grantStartDate = ko.observable(param.grantStartDate || null);
+                this.grantStartDate = ko.observable(param.grantStartDate || (new Date).toString()); //TODO PENDING KIBAN FIX
                 this.months = ko.observable(param.months || null);
                 this.years = ko.observable(param.years || null);
                 this.grantRegularMethod = ko.observable(param.grantRegularMethod || 0);
