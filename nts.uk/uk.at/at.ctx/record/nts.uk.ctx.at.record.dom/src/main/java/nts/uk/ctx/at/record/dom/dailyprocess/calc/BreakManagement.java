@@ -46,7 +46,7 @@ public class BreakManagement {
 				dedTimeSheet.add(TimeSheetOfDeductionItem.reateBreakTimeSheetAsFixed(timeSheet.getTimeSheet()
 																				, null
 																				, Finally.of(BreakClassification.BREAK)
-																				, DedcutionClassification.BREAK
+																				, DeductionClassification.BREAK
 																				, WithinStatutoryAtr.WithinStatury));
 			}
 		}

@@ -16,7 +16,7 @@ public abstract class CalculationTimeSheet {
 	
 	protected TimeSpanWithRounding timeSheet;
 	protected final TimeSpanForCalc calculationTimeSheet;
-	protected final List<DedcutionTimeSheet> deductionTimeSheets = new ArrayList<>();
+	protected final List<DeductionTimeSheet> deductionTimeSheets = new ArrayList<>();
 	
 	public CalculationTimeSheet(TimeSpanWithRounding timeSheet, TimeSpanForCalc calculationTimeSheet) {
 		this.timeSheet = timeSheet;

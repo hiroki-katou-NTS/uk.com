@@ -5,7 +5,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
  * @author keisuke_hoshina
  *
  */
-public enum DedcutionClassification {
+public enum DeductionClassification {
 	GO_OUT, //外出
 	CHILD_CARE, //育児
 	BREAK //休憩

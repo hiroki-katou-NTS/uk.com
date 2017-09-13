@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.DedcutionTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionItemOfTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -55,7 +55,7 @@ public class WithinWorkTimeSheet {
 			PredetermineTimeSet predetermineTimeSet,
 			FixedWorkSetting fixedWorkSetting,
 			WorkTimeCommonSet workTimeCommonSet,
-			DedcutionTimeSheet deductionTimeSheet
+			DeductionTimeSheet deductionTimeSheet
 			) {
 		
 		val timeFrames = new ArrayList<WithinWorkTimeFrame>();
