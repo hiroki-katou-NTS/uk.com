@@ -59,8 +59,4 @@ __viewContext.ready(function() {
 
     var screen;
     this.bind(screen = new ScreenModel());
-    $("#check").on("click", function() {
-        var a = screen.x;
-    });
-
 });
