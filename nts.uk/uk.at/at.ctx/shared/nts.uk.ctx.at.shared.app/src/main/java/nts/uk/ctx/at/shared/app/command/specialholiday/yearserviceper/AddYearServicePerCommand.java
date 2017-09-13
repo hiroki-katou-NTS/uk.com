@@ -4,10 +4,9 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
 @Data
 @AllArgsConstructor
-public class UpdateYearServicePerCommand {
+public class AddYearServicePerCommand {
 	/**コード**/
 	private String specialHolidayCode;
 	private String yearServiceCode;
