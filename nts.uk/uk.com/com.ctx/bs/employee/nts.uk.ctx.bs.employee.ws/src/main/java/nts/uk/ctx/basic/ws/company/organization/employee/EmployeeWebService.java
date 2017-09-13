@@ -36,8 +36,8 @@ public class EmployeeWebService extends WebService {
 	
 	@POST
 	@Path("getPersonIdByEmployeeCode/{employeeCode}")
-	public EmployeeDto getPersonIdByEmployeeCode(@PathParam("employeeCode") String employeeCode) {
-		return this.employeeFinder.getPersonIdByEmployeeCode(employeeCode).orElse(null);
+	public EmployeeDto getPersonIdByEmployeeCode(@PathParam("employeeCode") String employeeCode ,@PathParam("entryDate") GeneralDate entryDate ) {
+		return this.employeeFinder.getPersonIdByEmployeeCode(employeeCode , entryDate).orElse(null);
 	}
 	
 	@POST

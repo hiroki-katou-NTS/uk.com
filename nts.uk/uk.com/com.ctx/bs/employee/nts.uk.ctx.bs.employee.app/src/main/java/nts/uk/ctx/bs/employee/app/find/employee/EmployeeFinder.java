@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -31,7 +32,7 @@ public class EmployeeFinder {
 	 * @param employeeCode the employee code
 	 * @return the person id by employee code
 	 */
-	public Optional<EmployeeDto> getPersonIdByEmployeeCode(String employeeCode) {
+	public Optional<EmployeeDto> getPersonIdByEmployeeCode(String employeeCode , GeneralDate entryDate) {
 		
 		//get login user
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -39,7 +40,7 @@ public class EmployeeFinder {
 		//get company id
 		String companyId = loginUserContext.companyId();
 		
-		return this.employeeRepository.findByEmployeeCode(companyId, employeeCode)
+		return this.employeeRepository.findByEmployeeCode(companyId, employeeCode, entryDate)
 				.map(item -> EmployeeDto.fromDomain(item));
 	}
 	
