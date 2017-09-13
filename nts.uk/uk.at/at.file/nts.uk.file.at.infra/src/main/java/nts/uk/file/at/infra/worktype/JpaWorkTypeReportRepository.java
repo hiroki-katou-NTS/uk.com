@@ -1,6 +1,7 @@
 package nts.uk.file.at.infra.worktype;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -9,13 +10,14 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktype.CalculateMethod;
 import nts.uk.ctx.at.shared.dom.worktype.CloseAtr;
+import nts.uk.ctx.at.shared.dom.worktype.HolidayAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkType;
 import nts.uk.ctx.at.shared.infra.entity.worktype.KshmtWorkTypeSet;
 import nts.uk.ctx.at.shared.infra.entity.worktype.language.KshmtWorkTypeLanguage;
+import nts.uk.file.at.app.export.worktype.WorkTypeReportData;
 import nts.uk.file.at.app.export.worktype.WorkTypeReportRepository;
-import nts.uk.file.at.app.export.worktype.data.WorkTypeReportData;
 
 @Stateless
 public class JpaWorkTypeReportRepository extends JpaRepository implements WorkTypeReportRepository {
@@ -25,46 +27,60 @@ public class JpaWorkTypeReportRepository extends JpaRepository implements WorkTy
 
 	@Override
 	public List<WorkTypeReportData> findAllWorkType(String companyId) {
-		return this.queryProxy().query(WORK_TYPE_SELECT_ALL, KshmtWorkType.class)
-				.setParameter("companyId", companyId).getList(x->toReportData(x));
+		return this.queryProxy().query(WORK_TYPE_SELECT_ALL, KshmtWorkType.class).setParameter("companyId", companyId)
+				.getList(x -> toReportData(x));
 	}
-	
+
 	private WorkTypeReportData toReportData(KshmtWorkType entity) {
-		KshmtWorkTypeSet workTypeSet = new KshmtWorkTypeSet();
+
+		KshmtWorkTypeSet workTypeSetOneDay = new KshmtWorkTypeSet();
+		KshmtWorkTypeSet workTypeSetMorning = new KshmtWorkTypeSet();
+		KshmtWorkTypeSet workTypeSetAfternoon = new KshmtWorkTypeSet();
 		if (!CollectionUtil.isEmpty(entity.worktypeSetList)) {
-			workTypeSet = entity.worktypeSetList.get(0);
+			if (entity.worktypeAtr == WorkTypeUnit.OneDay.value) {
+				workTypeSetOneDay = entity.worktypeSetList.get(0);
+			} else {
+				workTypeSetMorning = entity.worktypeSetList.get(0);
+				workTypeSetAfternoon = entity.worktypeSetList.get(1);
+			}
 		}
-		
+
 		KshmtWorkTypeLanguage workTypeLanguage = new KshmtWorkTypeLanguage();
-		if (entity.workTypeLanguage!= null) {
-			workTypeLanguage = entity.workTypeLanguage;
+		if (!CollectionUtil.isEmpty(entity.workTypeLanguage)) {
+			Optional<KshmtWorkTypeLanguage> workTypeLanguageOpt = entity.workTypeLanguage.stream()
+					.filter(x->x.kshmtWorkTypeLanguagePK.langId == "") //TODO fix languageId
+					.findFirst();
+			workTypeLanguage = workTypeLanguageOpt.isPresent() ? workTypeLanguageOpt.get() : new KshmtWorkTypeLanguage();
 		}
-		
-		Integer dispOrder = entity.kshmtWorkTypeOrder != null ? entity.kshmtWorkTypeOrder.dispOrder : null; 
-		
-		return new WorkTypeReportData(
-				entity.kshmtWorkTypePK.workTypeCode, 
-				entity.name, 
-				entity.symbolicName, 
-				entity.abbreviationName,
-				entity.memo, 
-				entity.deprecateAtr, 
+
+		Integer dispOrder = entity.kshmtWorkTypeOrder != null ? entity.kshmtWorkTypeOrder.dispOrder : null;
+
+		return new WorkTypeReportData(entity.kshmtWorkTypePK.workTypeCode, entity.name, entity.symbolicName,
+				entity.abbreviationName, entity.memo, entity.deprecateAtr,
 				EnumAdaptor.valueOf(entity.calculatorMethod, CalculateMethod.class),
 				EnumAdaptor.valueOf(entity.worktypeAtr, WorkTypeUnit.class),
-				EnumAdaptor.valueOf(entity.oneDayAtr, WorkTypeClassification.class), 
+				EnumAdaptor.valueOf(entity.oneDayAtr, WorkTypeClassification.class),
 				EnumAdaptor.valueOf(entity.morningAtr, WorkTypeClassification.class),
 				EnumAdaptor.valueOf(entity.afternoonAtr, WorkTypeClassification.class), 
-				workTypeSet.dayNightTimeAsk, 
-				workTypeSet.attendanceTime, 
-				workTypeSet.timeLeaveWork, 
-				workTypeSet.countHoliday,
-				workTypeSet.digestPublicHd, 
-				workTypeSet.genSubHoliday, 
-				workTypeSet.sumAbsenseNo, 
-				workTypeSet.sumSpHolidayNo, 
-				EnumAdaptor.valueOf(workTypeSet.closeAtr, CloseAtr.class),
-				workTypeLanguage.name, 
-				workTypeLanguage.abname,
-				dispOrder);
+				EnumAdaptor.valueOf(workTypeSetOneDay.hodidayAtr, HolidayAtr.class), 
+				workTypeSetOneDay.dayNightTimeAsk, 
+				workTypeSetOneDay.attendanceTime, 
+				workTypeSetOneDay.timeLeaveWork, 
+				workTypeSetOneDay.digestPublicHd,
+				workTypeSetOneDay.genSubHoliday, 
+				workTypeSetOneDay.sumAbsenseNo, 
+				workTypeSetOneDay.sumSpHolidayNo, 
+				EnumAdaptor.valueOf(workTypeSetOneDay.closeAtr, CloseAtr.class), 
+				workTypeSetMorning.dayNightTimeAsk,
+				workTypeSetMorning.attendanceTime,workTypeSetMorning.timeLeaveWork,workTypeSetMorning.countHoliday,workTypeSetMorning.digestPublicHd,
+				workTypeSetMorning.genSubHoliday, workTypeSetMorning.sumAbsenseNo,workTypeSetMorning.sumSpHolidayNo,
+				workTypeSetAfternoon.dayNightTimeAsk,
+				workTypeSetAfternoon.attendanceTime,
+				workTypeSetAfternoon.timeLeaveWork,
+				workTypeSetAfternoon.countHoliday,
+				workTypeSetAfternoon.digestPublicHd,
+				workTypeSetAfternoon.genSubHoliday,
+				workTypeSetAfternoon.sumAbsenseNo,workTypeSetAfternoon.sumSpHolidayNo, 
+				workTypeLanguage.name, workTypeLanguage.abname, dispOrder);
 	}
 }
