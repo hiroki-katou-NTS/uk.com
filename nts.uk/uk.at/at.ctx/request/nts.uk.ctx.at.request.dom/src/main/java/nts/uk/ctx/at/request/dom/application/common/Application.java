@@ -25,10 +25,6 @@ public class Application extends AggregateRoot{
 	 */
 	private String applicationID;
 	/**
-	 * 申請理由ID
-	 */
-	private String appReasonID;
-	/**
 	 * 事前事後区分
 	 */
 	private PrePostAtr prePostAtr;
@@ -112,7 +108,6 @@ public class Application extends AggregateRoot{
 	
 	public static Application createFromJavaType(
 			String companyID,
-			String appReasonID,
 			int prePostAtr,
 			GeneralDate inputDate, 
 			String enteredPersonSID, 
@@ -134,7 +129,6 @@ public class Application extends AggregateRoot{
 		return new  Application(
 				companyID, 
 				UUID.randomUUID().toString(),
-				appReasonID, 
 				EnumAdaptor.valueOf(prePostAtr,PrePostAtr.class),
 				inputDate, 
 				enteredPersonSID, 

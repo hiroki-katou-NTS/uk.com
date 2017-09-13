@@ -121,13 +121,12 @@ public class CreateApplicationCommand {
 	public Application toDomain() {
 		return Application.createFromJavaType(
 				AppContexts.user().companyId(),
-				this.appReasonID,
 				this.prePostAtr, 
 				this.inputDate,  
 				this.enteredPersonSID,  
 				this.reversionReason,  
 				this.applicationDate,  
-				this.applicationReason,  
+				this.appReasonID + ":" + this.applicationReason,
 				this.applicationType,  
 				this.applicantSID,  
 				this.reflectPlanScheReason,  

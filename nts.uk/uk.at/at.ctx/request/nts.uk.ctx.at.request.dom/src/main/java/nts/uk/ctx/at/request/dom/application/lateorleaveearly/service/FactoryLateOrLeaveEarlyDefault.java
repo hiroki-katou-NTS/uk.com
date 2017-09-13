@@ -16,7 +16,7 @@ public class FactoryLateOrLeaveEarlyDefault implements FactoryLateOrLeaveEarly {
 			int actualCancelAtr, int early1, int earlyTime1, int late1, int lateTime1, int early2, int earlyTime2,
 			int late2, int lateTime2) {
 		String appID = IdentifierUtil.randomUniqueId();
-		return new LateOrLeaveEarly(AppContexts.user().companyId(), appID,"", 0, GeneralDate.today(),
+		return new LateOrLeaveEarly(AppContexts.user().companyId(), appID, 0, GeneralDate.today(),
 				AppContexts.user().personId(), "", applicationDate, applicationReason, 9,
 				AppContexts.user().employeeId(), 0, null, 0, 0, 0, null, 0, 0,null,null, actualCancelAtr, early1,
 				earlyTime1, late1, lateTime1, early2, earlyTime2, late2, lateTime2);

@@ -33,28 +33,7 @@ public class UpdateApplicationDenyHandler extends CommandHandler<UpdateApplicati
 	protected void handle(CommandHandlerContext<UpdateApplicationCommand> context) {
 		String companyID = AppContexts.user().companyId();
 		UpdateApplicationCommand appCommand = context.getCommand();
-		Application application = new  Application(
-				companyID,
-				appCommand.getApplicationID(),
-				appCommand.getAppReasonID(),
-				EnumAdaptor.valueOf(appCommand.getPrePostAtr(),PrePostAtr.class),
-				appCommand.getInputDate(), 
-				appCommand.getEnteredPersonSID(), 
-				new AppReason(appCommand.getReversionReason()), 
-				appCommand.getApplicationDate(), 
-				new AppReason(appCommand.getApplicationReason()),
-				EnumAdaptor.valueOf(appCommand.getApplicationType(),ApplicationType.class), 
-				appCommand.getApplicantSID(), 
-				EnumAdaptor.valueOf(appCommand.getReflectPlanScheReason(),ReflectPlanScheReason.class), 
-				appCommand.getReflectPlanTime(), 
-				EnumAdaptor.valueOf(appCommand.getReflectPlanState(),ReflectPlanPerState.class), 
-				EnumAdaptor.valueOf(appCommand.getReflectPlanEnforce(),ReflectPlanPerEnforce.class), 
-				EnumAdaptor.valueOf(appCommand.getReflectPerScheReason(),ReflectPerScheReason.class), 
-				appCommand.getReflectPerTime(), 
-				EnumAdaptor.valueOf(appCommand.getReflectPerState(),ReflectPlanPerState.class), 
-				EnumAdaptor.valueOf(appCommand.getReflectPerEnforce(),ReflectPlanPerEnforce.class),
-				appCommand.getStartDate(),
-				appCommand.getEndDate());
+		Application application = appCommand.toDomain();
 		//9-1 .詳細画面否認前の処理
 		beforeProcessDenialRepo.detailedScreenProcessBeforeDenial();
 		//9.2 

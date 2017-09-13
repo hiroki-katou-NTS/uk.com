@@ -22,7 +22,8 @@ import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
 
 @Stateless
 public class JpaApplicationRepository extends JpaRepository implements ApplicationRepository {
-
+	private final String SEPERATE_REASON_STRING = ":";
+	
 	private final String SELECT_FROM_APPLICATION = "SELECT c FROM KafdtApplication c"
 			+ " WHERE c.kafdtApplicationPK.companyID = :companyID";
 	private final String SELECT_BY_CODE = SELECT_FROM_APPLICATION
@@ -34,12 +35,11 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		return new Application(
 				entity.kafdtApplicationPK.companyID,
 				entity.kafdtApplicationPK.applicationID,
-				entity.appReasonId,
 				EnumAdaptor.valueOf(entity.prePostAtr,PrePostAtr.class), 
 				entity.inputDate, entity.enteredPersonSID,
 				new AppReason(entity.reversionReason), 
 				entity.applicationDate, 
-				new AppReason(entity.applicationReason),
+				new AppReason(entity.appReasonId + SEPERATE_REASON_STRING + entity.applicationReason),
 				EnumAdaptor.valueOf(entity.applicationType,ApplicationType.class),
 				entity.applicantSID, 
 				EnumAdaptor.valueOf(entity.reflectPlanScheReason,ReflectPlanScheReason.class), 
