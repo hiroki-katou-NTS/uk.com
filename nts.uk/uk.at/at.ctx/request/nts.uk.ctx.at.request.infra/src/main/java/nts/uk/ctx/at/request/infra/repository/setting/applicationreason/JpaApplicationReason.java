@@ -1,16 +1,16 @@
-package nts.uk.ctx.at.request.infra.repository.setting.applicationformreason;
+package nts.uk.ctx.at.request.infra.repository.setting.applicationreason;
 
 import java.util.List;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.request.dom.setting.applicationformreason.ApplicationFormReason;
-import nts.uk.ctx.at.request.dom.setting.applicationformreason.ApplicationFormReasonRepository;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstAppReason;
 
 @Stateless
-public class JpaApplicationFormReason extends JpaRepository implements ApplicationFormReasonRepository{
+public class JpaApplicationReason extends JpaRepository implements ApplicationReasonRepository{
 	private static final String FINDBYCOMPANYID = "SELECT c FROM KrqstAppReason c WHERE c.krqstAppReasonPK.companyId = :companyId";
 	
 	private static final String FINDBYAPPTYPE = FINDBYCOMPANYID + " c.krqstAppReasonPK.appType = :appType";
@@ -18,28 +18,31 @@ public class JpaApplicationFormReason extends JpaRepository implements Applicati
 	 * get reason by companyid
 	 */
 	@Override
-	public List<ApplicationFormReason> getReasonByCompanyId(String companyId) {
-		List<ApplicationFormReason> data = this.queryProxy()
+	public List<ApplicationReason> getReasonByCompanyId(String companyId) {
+		List<ApplicationReason> data = this.queryProxy()
 				.query(FINDBYCOMPANYID, KrqstAppReason.class)
 				.setParameter("companyId", companyId)
 				.getList(c ->toDomain(c));
 		return data;
 	}
 
-	private ApplicationFormReason toDomain(KrqstAppReason c) {
+	private ApplicationReason toDomain(KrqstAppReason c) {
 		
-		return ApplicationFormReason.createSimpleFromJavaType(c.krqstAppReasonPK.companyId,
+		return ApplicationReason.createSimpleFromJavaType(c.krqstAppReasonPK.companyId,
 				c.krqstAppReasonPK.appType,
-				c.krqstAppReasonPK.displayOrder, 
-				c.defaultOrder);
+				c.krqstAppReasonPK.reasonID,
+				Integer.valueOf(c.dispOrder).intValue(),
+				c.reasonTemp,
+				c.defaultFlg
+				);
 	}
 
 	/**
 	 * get reason by application type
 	 */
 	@Override
-	public List<ApplicationFormReason> getReasonByAppType(String companyId, int appType) {
-		List<ApplicationFormReason> data = this.queryProxy()
+	public List<ApplicationReason> getReasonByAppType(String companyId, int appType) {
+		List<ApplicationReason> data = this.queryProxy()
 				.query(FINDBYAPPTYPE, KrqstAppReason.class)
 				.setParameter("companyId", companyId)
 				.setParameter("appType", appType)

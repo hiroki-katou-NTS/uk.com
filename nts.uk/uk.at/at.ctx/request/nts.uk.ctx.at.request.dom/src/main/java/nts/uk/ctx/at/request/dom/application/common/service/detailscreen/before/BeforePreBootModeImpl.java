@@ -29,7 +29,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class BeforePreBootModeImpl implements BeforePreBootMode {
-
+	/**14-2.詳細画面起動前モードの判断*/	
 	@Inject
 	OtherCommonAlgorithm otherCommonAlgorithmService;
 
@@ -144,6 +144,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			return new CanBeApprovedOutput(outputAuthorizableflags, outputApprovalATR, outputAlternateExpiration);
 		}
 	}
+	
 	/** 14-2.3.4 Can be approvedUnapproved */
 	private CanBeApprovedOutput approvedUnapproved(AppApprovalPhase appApprovalPhase) {
 		String companyID = AppContexts.user().companyId();
@@ -349,11 +350,25 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 	}
 
 	@Override
-	public boolean checkFlag(Application applicationData, int displayOrder) {
-		// TODO Auto-generated method stub
-		return false;
+	/*14-2 3-5.承認中の承認フェーズの判断 */
+	public boolean checkFlag(Application applicationData, int dispOrder) {
+		String companyID = AppContexts.user().companyId();
+		boolean outputAuthorizableflags = false;
+	
+		if(1 <= dispOrder && dispOrder <=5 ){
+			if(dispOrder == 1 ){
+				//TODO
+			}
+			else if(dispOrder == 2 || dispOrder == 3 || dispOrder == 4){
+				//TODO
+			}
+			else if(dispOrder == 5){}
+			//TODO
+		}
+		
+		
+		
+		return outputAuthorizableflags;
 	}
-
-
 
 }

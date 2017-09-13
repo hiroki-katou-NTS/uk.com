@@ -26,7 +26,6 @@ public class CreateApplicationCommandHandler extends CommandHandler<CreateApplic
 		CreateApplicationCommand appCommand = context.getCommand();
 		Application application = Application.createFromJavaType(
 				companyID,
-				appCommand.getApplicationID(),
 				appCommand.getPrePostAtr(), 
 				appCommand.getInputDate(), 
 				appCommand.getEnteredPersonSID(), 

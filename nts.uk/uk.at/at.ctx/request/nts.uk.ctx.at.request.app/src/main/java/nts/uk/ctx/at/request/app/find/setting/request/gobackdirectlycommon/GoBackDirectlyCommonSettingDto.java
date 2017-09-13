@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.find.request.gobackdirectlycommon;
+package nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
