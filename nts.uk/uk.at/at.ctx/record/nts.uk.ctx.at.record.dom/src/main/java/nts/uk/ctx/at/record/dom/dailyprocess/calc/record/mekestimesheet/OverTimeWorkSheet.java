@@ -69,11 +69,11 @@ public class OverTimeWorkSheet {
 		
 		for(OverTimeWorkFrameTimeSheet overWorkFrameTimeSheet :copyList){
 			
-			if(overWorkFrameTimeSheet..OverWorkFrameTime.limitgreaterhanOverWorkTime(limitTime)) {
+			if(overWorkFrameTimeSheet.OverWorkFrameTime.limitgreaterhanOverWorkTime(limitTime)) {
 				dailyOverWorkTime.getOverWorkTimeSheet().add(overWorkFrameTimeSheet.createOverWorkFramTimeSheet());
 			}
 			else {
-				dailyOverWorkTime.getOverTimeWorkFrameTimeSheet().add(overWorkFrameTimeSheet..devideAfterJudgeWorkTime(limitTime));
+				dailyOverWorkTime.getOverTimeWorkFrameTimeSheet().add(overWorkFrameTimeSheet.devideAfterJudgeWorkTime(limitTime));
 				dailyOverWorkTime.getOverTimeWorkFrameTimeSheet().add(overWorkFrameTimeSheet.devideAfterJudgeOutOfWorkTime(limitTime));
 			}
 			limitTime = overWorkFrameTimeSheet.OverWorkFrameTime.calcLimit(limitTime);

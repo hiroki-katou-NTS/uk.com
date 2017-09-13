@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
@@ -89,14 +88,5 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	 */
 	public boolean isDeplicated(TimeSpanForCalc nowTimeSpan,TimeSpanForCalc nextTimeSpan) {
 		return nowTimeSpan.checkDuplication(nextTimeSpan).isDuplicated();
-	}
-	
-	private enum adjustItemAtr{
-		now,
-		next;
-		
-		public boolean isNow(){
-			return next.equals(this);
-		}
 	}
 }

@@ -41,6 +41,9 @@ public class HolidayWorkTimeOfDaily {
 			timeSpan = attendanceLeaveSheet.getDuplicatedWith(holidayTimeSheet.getHours().getSpan());
 			/*控除時間帯を分割*/
 			/*遅刻早退処理*/
+			if(/*遅刻早退どっちの設定を見てもOKなので、どちらかの休出の場合でも計算するを見る*/) {
+				
+			}
 			/*休出時間帯の作成*/
 			
 			holidayWorkTimeSheetList.add(new HolidayWorkFrameTimeSheet(timeSpan.get()));

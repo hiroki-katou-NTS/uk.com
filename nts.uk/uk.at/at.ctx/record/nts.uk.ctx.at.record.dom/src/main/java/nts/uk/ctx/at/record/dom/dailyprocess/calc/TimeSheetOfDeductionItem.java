@@ -142,10 +142,6 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 				map.add(new TimeSheetOfDeductionItem(compareTimeSheet.calculationTimeSheet.getNotDuplicationWith(this.calculationTimeSheet).get(),compareTimeSheet.getGoOutReason(),compareTimeSheet.getBreakAtr(),compareTimeSheet.getDeductionAtr(),compareTimeSheet.getWithinStatutoryAtr()));
 				return map;
 			}
-			/*両方とも休　打刻*/
-			else if(this.getBreakAtr().get().isBreakStamp() && compareTimeSheet.getBreakAtr().get().isBreakStamp()) {
-				
-			}
 		}
 		map.add(this.calculationTimeSheet);
 		return map; 
