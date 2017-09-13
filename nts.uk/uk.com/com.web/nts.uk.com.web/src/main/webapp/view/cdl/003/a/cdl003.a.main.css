@@ -6,7 +6,7 @@
 	position: absolute;
 }
 
-.searchBoxDialog {
+#searchBoxDialog {
 	width: 350px;
 	margin-bottom: 10px;
 	margin-top: 10px;
