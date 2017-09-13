@@ -5,8 +5,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
+import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeavePK;
 
@@ -14,13 +17,14 @@ import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppL
 public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements LateOrLeaveEarlyRepository {
 	
 	private final String SELECT= "SELECT c FROM KrqdtAppLateOrLeave c";
-	private final String SELECT_SINGLE = "SELECT c FROM KrqdtAppLateOrLeave c WHERE c.KrqdtAppLateOrLeavePK.companyID = :companyID AND c.KrqdtAppLateOrLeavePK.appID = :appID";
 	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.KrqdtAppLateOrLeavePK.companyID = :companyID";
-
+	private final String SELECT_SINGLE = "SELECT c, t"
+			+ " FROM KrqdtAppLateOrLeave c JOIN KafdtApplication t"
+			+ " ON c.krqdtAppLateOrLeave.appID = t.KafdtApplicationPK.applicationID";
 	@Override
 	public Optional<LateOrLeaveEarly> findByCode(String companyID, String appID) {
 		return this.queryProxy()
-				.query(SELECT_SINGLE, KrqdtAppLateOrLeave.class)
+				.query(SELECT_SINGLE, Object[].class)
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID)
 				.getSingle(c -> toDomain(c));
@@ -64,32 +68,55 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 		
 	}
 	
-	private LateOrLeaveEarly toDomain(KrqdtAppLateOrLeave entity) {
-		return LateOrLeaveEarly.createFromJavaType(
-				entity.krqdtAppLateOrLeavePK.companyID,
-				entity.krqdtAppLateOrLeavePK.appID,
-				Integer.valueOf(entity.actualCancelAtr).intValue(),
-				Integer.valueOf(entity.early1).intValue(),
-				entity.earlyTime1,
-				Integer.valueOf(entity.late1).intValue(),
-				entity.lateTime1,
-				Integer.valueOf(entity.early2).intValue(),
-				entity.earlyTime2,
-				Integer.valueOf(entity.late2).intValue(),
-				entity.lateTime2);
+	private LateOrLeaveEarly toDomain(Object[] joinEntity) {
+		KrqdtAppLateOrLeave appLateOrLeaveEntity = (KrqdtAppLateOrLeave) joinEntity[0];
+		KafdtApplication applicationEntity = (KafdtApplication) joinEntity[1];
+		
+		return new LateOrLeaveEarly (appLateOrLeaveEntity.krqdtAppLateOrLeavePK.companyID, appLateOrLeaveEntity.krqdtAppLateOrLeavePK.appID,
+				 applicationEntity.prePostAtr,
+				 applicationEntity.inputDate,
+				 applicationEntity.enteredPersonSID,
+				 applicationEntity.reversionReason,
+				 applicationEntity.applicationDate,
+				 applicationEntity.applicationReason,
+				 applicationEntity.applicationType,
+				 applicationEntity.applicantSID,
+				 applicationEntity.reflectPlanScheReason,
+				 applicationEntity.reflectPlanTime,
+				 applicationEntity.reflectPlanState,
+				 applicationEntity.reflectPlanEnforce,
+				 applicationEntity.reflectPerScheReason,
+				 applicationEntity.reflectPerTime,
+				 applicationEntity.reflectPerState,
+				 applicationEntity.reflectPerEnforce,
+				 appLateOrLeaveEntity.actualCancelAtr,
+				 appLateOrLeaveEntity.early1,
+				 appLateOrLeaveEntity.earlyTime1,
+				 appLateOrLeaveEntity.late1,
+				 appLateOrLeaveEntity.lateTime1,
+				 appLateOrLeaveEntity.early2 ,
+				 appLateOrLeaveEntity.earlyTime2,
+			 	 appLateOrLeaveEntity.late2,
+				 appLateOrLeaveEntity.lateTime2);
 	}
+	
 	private KrqdtAppLateOrLeave toEntity (LateOrLeaveEarly domain){
 		return new KrqdtAppLateOrLeave (
 					new KrqdtAppLateOrLeavePK(domain.getCompanyID(), domain.getAppID()),
-					domain.getActualCancelAtr().toString(),
-					domain.getEarly1().toString(),
-					domain.getEarlyTime1().toString(),
-					domain.getLate1().toString(),
-					domain.getLateTime1().toString(),
-					domain.getEarly2().toString(),
-					domain.getEarlyTime2().toString(),
-					domain.getLate2().toString(),
-					domain.getLateTime2().toString());
+					domain.getActualCancelAtr(),
+					domain.getEarly1().value,
+					domain.getEarlyTime1().v(),
+					domain.getLate1().value,
+					domain.getLateTime1().v(),
+					domain.getEarly2().value,
+					domain.getEarlyTime2().v(),
+					domain.getLate2().value,
+					domain.getLateTime2().v());
+	}
+	@Override
+	public ApplicationReason findApplicationReason(String companyID, ApplicationType applicationType) {
+		// TODO Auto-generated method stub
+		return null;
 	};
 	
 
