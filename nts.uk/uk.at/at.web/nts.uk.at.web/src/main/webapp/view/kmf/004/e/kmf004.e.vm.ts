@@ -84,7 +84,6 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                     self.check(false);
                 }
             });
-            self.startPage();
         }
 
         /** get data to list **/
@@ -97,7 +96,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                 dfd.resolve();
             }).fail(function(error){
                     dfd.reject();
-                    alert(error.message);
+                    $('#inpCode').ntsError('set', error);
                 });
             
 //            service.getAllSet().done((lstItem) => {
@@ -124,7 +123,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                 dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
-                alert(error.message);
+                $('#inpCode').ntsError('set', error);
             });
             return dfd.promise();
         }  
@@ -133,8 +132,11 @@ module nts.uk.at.view.kmf004.e.viewmodel {
             let self = this;
             let data = self.items();
             let lstReturn = _.filter(data, function(item){
-                    return item.date() && item.month() && item.year();
-                });  
+                    return item.date() || item.month() || item.year();
+                });
+            for(let i = 0; i < lstReturn.length; i++){
+                lstReturn[i].yearServiceNo(i);
+            }  
             return lstReturn;
         }
         
@@ -169,7 +171,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }); 
                             });
                         }).fail(function(res){
-                            alert(res.message);
+                            $('#inpCode').ntsError('set', res);
                             });
                     }
                     else{
@@ -182,7 +184,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                                 self.selectedCode(code);  
                             });
                         }).fail(function(res){
-                            alert(res.message);
+                            $('#inpCode').ntsError('set', res);
                         });
                     }
                 }

@@ -3,11 +3,12 @@
 	margin-left: 40px !important;	
 	margin-top: 30px;
 	width: 360px;
-	height: 430px;
+	height: 460px;
 }
 #label{
 	margin-top: 30px;
 	overflow: inline-block;
+	margin-left: 0px;
 }
 .nts-input{
 	width: 45px;
@@ -69,4 +70,8 @@ td.hidden-right-border{
 
 .data-items{
 	    width: 296px;
+}
+
+#text{
+	margin-left: 0px;
 }

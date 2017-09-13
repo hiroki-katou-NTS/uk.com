@@ -8,16 +8,20 @@
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
 			<script>var dialogSize = { width: 1300, height: 800 };</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.primitives.YearServiceCode
+				nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.primitives.YearServiceName
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmf004.d.main.css" />
-			<!-- 			<com:stylefile path="../e/kmf004.e.main.css" /> -->
+			<com:stylefile path="../e/kmf004.e.main.css" />
 
 			<com:scriptfile path="kmf004.d.vm.js" />
 			<com:scriptfile path="kmf004.d.service.js" />
 			<com:scriptfile path="kmf004.d.start.js" />
 
-			<!-- 			<com:scriptfile path="../e/kmf004.e.vm.js" /> -->
-			<!-- 			<com:scriptfile path="../e/kmf004.e.service.js" /> -->
+			<com:scriptfile path="../e/kmf004.e.vm.js" />
+			<com:scriptfile path="../e/kmf004.e.service.js" />
 		</ui:define>
 		<ui:define name="sidebar">
 			<div data-bind="with: tabView">
@@ -31,10 +35,22 @@
 		<ui:define name="sidebar-content">
 			<div class="sidebar-content-header" data-bind="with: tabView">
 				<span class="title" data-bind="text: title"></span>
-				<button class="proceed"
-					data-bind="click: $parent.viewmodelD.register.bind($parent.viewmodelD)">#{i18n.getText('KMF004_2')}</button>
-				<button class="cancel"
-					data-bind="click: $parent.viewmodelD.closeDialog">#{i18n.getText('KMF004_4')}</button>
+				<com:ko-if bind="currentTab()==='d'">
+					<button class="proceed"
+						data-bind="click: $parent.viewmodelD.register.bind($parent.viewmodelD)">#{i18n.getText('KMF004_2')}</button>
+					<button class="cancel"
+						data-bind="click: $parent.viewmodelD.closeDialog">#{i18n.getText('KMF004_4')}</button>
+				</com:ko-if>	
+				<com:ko-if bind="currentTab()==='e'">
+					<!-- E1_1: Button New -->
+					<button tabindex="1" id="btn_001" class="button separate-button fix-button"  data-bind="click: $parent.viewmodelE.newMode.bind($parent.viewmodelE)">#{i18n.getText('KMF004_1')}</button>
+					<!-- E1_2: Button Registration -->
+					<button tabindex="2" id="btn_002" class="button proceed separate-button fix-button" data-bind="click: $parent.viewmodelE.register.bind($parent.viewmodelE), enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
+					<!-- E1_3: Button Delete -->
+					<button tabindex="3" id="btn_004" class="button danger separate-button fix-button" data-bind="enable: $parent.viewmodelE.lstPer().length>0, click: $parent.viewmodelE.remove.bind($parent.viewmodelE)" >#{i18n.getText('KMF004_3')}</button>
+					<!-- E1_1: Button New -->
+					<button tabindex="4" id="btn_005" class="button separate-button fix-button"  data-bind="click: close">#{i18n.getText('KMF004_4')}</button>
+				</com:ko-if>	
 			</div>
 			<div id="tabpanel-d" role="tabpanel" class="screen-d"
 				data-bind="with: viewmodelD">
@@ -111,6 +127,9 @@
 						</tr>
 					</tbody>
 				</table>
+			</div>
+			<div id="tabpanel-e" role="tabpanel" class="screen-e" data-bind="with: viewmodelE">
+				<ui:include src="../e/index.xhtml" />
 			</div>
 		</ui:define>
 	</ui:composition>
