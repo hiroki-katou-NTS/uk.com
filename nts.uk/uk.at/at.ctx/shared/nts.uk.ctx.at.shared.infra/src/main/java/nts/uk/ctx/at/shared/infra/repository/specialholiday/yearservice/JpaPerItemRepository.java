@@ -19,10 +19,18 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceper.KshstYear
 @Stateless
 public class JpaPerItemRepository extends JpaRepository implements YearServicePerRepository{
 	private final String SELECT_NO_WHERE = "SELECT c FROM KshstYearServicePerSet c ";
+	
 	private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstYearServicePerSetPK.companyId = :companyId ";
+	
 	private final String SELECT_YEAR = SELECT_ITEM + " AND c.year = :year";
+	
+	private final String SELECT_CODE = SELECT_ITEM + " AND c.kshstYearServicePerSetPK.specialHolidayCode = :specialHolidayCode";
+	
+	private final String SELECT_CODE_SET = SELECT_CODE + " AND c.kshstYearServicePerSetPK.yearServiceCode = :yearServiceCode";
+	
 	private final String SELECT_NO_WHERE_PER = "SELECT c FROM KshstYearServicePer c ";
-	private final String SELECT_ITEM_PER = SELECT_NO_WHERE_PER + "WHERE c.KshstYearServicePerPK.companyId = :companyId";
+	
+	private final String SELECT_ITEM_PER = SELECT_NO_WHERE_PER + "WHERE c.kshstYearServicePerPK.companyId = :companyId";
 	/**
 	 * change entity to domain
 	 * @param entity
@@ -34,7 +42,6 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 				entity.kshstYearServicePerSetPK.specialHolidayCode,
 				entity.kshstYearServicePerSetPK.yearServiceCode,
 				entity.kshstYearServicePerSetPK.yearServiceNo,
-				entity.yearServiceType,
 				entity.year,
 				entity.month, 
 				entity.date);
@@ -51,7 +58,6 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 																		domain.getSpecialHolidayCode(), 
 																		domain.getYearServiceCode(),
 																		domain.getYearServiceNo());
-		entity.yearServiceType = domain.getYearServiceType();
 		entity.year = domain.getYear();
 		entity.month = domain.getMonth();
 		entity.date = domain.getDate();
@@ -99,7 +105,6 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 			oldEntity.date = entity.date;
 			this.commandProxy().update(oldEntity);
 		}
-		
 	}
 	@Override
 	public void insertPerSet(List<YearServicePerSet> yearServicePerSetLs) {
@@ -109,8 +114,12 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 		}
 	}
 	@Override
-	public Optional<YearServicePerSet> findPerSet(String companyId, String specialHolidayCode, String yearServiceCode, int yearServiceType) {
-		return this.queryProxy().find(new KshstYearServicePerSetPK(companyId, specialHolidayCode, yearServiceCode, yearServiceType), KshstYearServicePerSet.class).map(c->toDomainPerSet(c));
+	public List<YearServicePerSet> findPerSet(String companyId, String specialHolidayCode, String yearServiceCode) {
+		return this.queryProxy().query(SELECT_CODE_SET, KshstYearServicePerSet.class)
+				.setParameter("companyId", companyId)
+				.setParameter("specialHolidayCode", specialHolidayCode)
+				.setParameter("yearServiceCode", yearServiceCode)
+				.getList(c -> toDomainPerSet(c));
 	}
 	@Override
 	public List<YearServicePerSet> findYearPerSet(String companyId, String yearServiceCode, Integer year) {
@@ -126,24 +135,42 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 	}
 	@Override
 	public void updatePer(YearServicePer yearServicePer) {
-		KshstYearServicePer entity = toEntityPer(yearServicePer);
-		KshstYearServicePer oldEntity = this.queryProxy().find(entity.kshstYearServicePerPK, KshstYearServicePer.class).get();
-		oldEntity.yearServiceName = entity.yearServiceName;
-		oldEntity.yearServiceCls = entity.yearServiceCls;
-		if(yearServicePer.getYearServicePerSets() != null){
-			oldEntity.listYearServicePerSet =  yearServicePer.getYearServicePerSets().stream()
-											.map(x -> toEntityPerSet(x))
-											.collect(Collectors.toList());
-		}
-		this.commandProxy().update(oldEntity);
-	}
+			KshstYearServicePer entity = toEntityPer(yearServicePer);
+			KshstYearServicePer oldEntity = this.queryProxy().find(entity.kshstYearServicePerPK, KshstYearServicePer.class).get();
+			oldEntity.yearServiceName = entity.yearServiceName;
+			oldEntity.yearServiceCls = entity.yearServiceCls;
+			if(yearServicePer.getYearServicePerSets() != null){
+				oldEntity.listYearServicePerSet =  yearServicePer.getYearServicePerSets().stream()
+						.map(x -> toEntityPerSet(x))
+						.collect(Collectors.toList());
+				
+			}
+			this.commandProxy().update(oldEntity);
+}
+//		KshstYearServicePer entity = toEntityPer(yearServicePer);
+//		KshstYearServicePer oldEntity = this.queryProxy().find(entity.kshstYearServicePerPK, KshstYearServicePer.class).get();
+//		oldEntity.yearServiceName = entity.yearServiceName;
+//		oldEntity.yearServiceCls = entity.yearServiceCls;
+//		if(yearServicePer.getYearServicePerSets() != null){
+//			oldEntity.listYearServicePerSet =  yearServicePer.getYearServicePerSets().stream()
+//											.map(x -> toEntityPerSet(x))
+//											.collect(Collectors.toList());
+//		}
+//		this.commandProxy().update(oldEntity);
+	
 	@Override
 	public void insertPer(YearServicePer yearServicePer) {
-		this.commandProxy().insert(toEntityPer(yearServicePer));
+			KshstYearServicePer entity = toEntityPer(yearServicePer);
+			this.commandProxy().insert(entity);
 	}
 	@Override
 	public Optional<YearServicePer> findPer(String companyId, String specialHolidayCode, String yearServiceCode) {
 		return this.queryProxy().find(new KshstYearServicePerPK(companyId, specialHolidayCode, yearServiceCode), KshstYearServicePer.class)
 				.map(c -> toDomainPer(c));
+	}
+	@Override
+	public void delete(String companyId, String specialHolidayCode, String yearServiceCode) {
+		KshstYearServicePerPK kshstYearServicePerPK = new KshstYearServicePerPK(companyId, specialHolidayCode, yearServiceCode);
+		this.commandProxy().remove(KshstYearServicePer.class, kshstYearServicePerPK);
 	}
 }

@@ -604,8 +604,6 @@ module ccg013.a.viewmodel {
                             item.imageSize(data.imageSize);
                         }
                     });
-
-
                 }
             });
         }

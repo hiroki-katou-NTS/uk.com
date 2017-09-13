@@ -5,7 +5,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.enums.EnumAdaptor;
@@ -18,8 +17,6 @@ import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRo
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeAdapterInforFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeSearch;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ParamDto;
-import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.PrivateApprovalRootDto;
-import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.PrivateApprovalRootFinder;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
 @Path("workflow/approvermanagement/workroot")
@@ -28,8 +25,6 @@ public class WorkAppApprovalRootWebService extends WebService{
 
 	@Inject
 	private CommonApprovalRootFinder comFinder;
-	@Inject
-	private PrivateApprovalRootFinder privateFinder;
 	@Inject
 	private EmployeeAdapterInforFinder employeeInfor;
 	@Inject
@@ -43,8 +38,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	
 	@POST
 	@Path("getbyprivate")
-	public List<PrivateApprovalRootDto> getAllByPrivate(@PathParam("employeeId") String employeeId) {
-		return this.privateFinder.getAllPrivateApprovalRoot(employeeId);
+	public CommonApprovalRootDto getAllByPrivate(ParamDto param) {
+		return this.comFinder.getPrivate(param);
 	}
 	@POST
 	@Path("getEmployeesInfo")

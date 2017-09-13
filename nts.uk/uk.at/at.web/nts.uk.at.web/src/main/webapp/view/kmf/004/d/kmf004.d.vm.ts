@@ -12,8 +12,8 @@ module nts.uk.at.view.kmf004 {
             title: KnockoutObservable<string> = ko.observable('');
             removeAble: KnockoutObservable<boolean> = ko.observable(true);
             tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
-                new TabModel({ id: 'D', name: getText('Com_Company'), active: true }),
-                new TabModel({ id: 'E', name: getText('Com_Person') })
+                new TabModel({ id: 'D', name: getText('Com_Company'), active: true })
+//                new TabModel({ id: 'E', name: getText('Com_Person') })
             ]);
 
             //radio
@@ -195,7 +195,7 @@ module nts.uk.at.view.kmf004 {
             yearServiceNo: KnockoutObservable<number>;
             month: KnockoutObservable<number>;
             year: KnockoutObservable<number>;
-            date: KnockoutObservable<number>;
+            date: KnockoutObservable<number>;  
 
             constructor(param: IItem) {
                 var self = this;

@@ -16,7 +16,7 @@ public class YearServiceSetFinder {
 	public List<YearServiceSetDto> finder(){
 		String companyId = AppContexts.user().companyId();
 		return this.yearServiceSetRep.findAllSet(companyId).stream().map(item ->{
-			return new YearServiceSetDto(item.getSpecialHolidayCode(), item.getYear(), item.getMonth(), item.getDate());
+			return new YearServiceSetDto(item.getSpecialHolidayCode(), item.getYearServiceNo(), item.getYear(), item.getMonth(), item.getDate());
 		}).collect(Collectors.toList());
 	}
 }

@@ -60,7 +60,7 @@ module nts.uk.at.view.kmk007.a.service {
         return nts.uk.request.ajax("at", paths.insertWorkTypeLang, workTypeLanguage);
     }
     
-     export function saveAsExcel(command: any): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "WorkType", domainType: "test"});
+     export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "WorkType", domainType: "test", languageId: languageId, reportType: 0});
     }
 }

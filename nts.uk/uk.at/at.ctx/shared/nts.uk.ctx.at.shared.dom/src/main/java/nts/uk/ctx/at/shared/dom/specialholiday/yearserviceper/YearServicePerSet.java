@@ -14,13 +14,12 @@ public class YearServicePerSet {
 	private String specialHolidayCode;
 	private String yearServiceCode;
 	private int yearServiceNo;
-	private int yearServiceType;
 	private Integer year;
 	private Integer month;
 	private Integer date;
 	
-	public static YearServicePerSet update(String companyId, String specialHolidayCode, String yearServiceCode, int yearServiceNo, int yearServiceType, Integer year, Integer month, Integer date){
-		return new YearServicePerSet(companyId, specialHolidayCode, yearServiceCode, yearServiceNo, yearServiceType, year, month, date);
+	public static YearServicePerSet update(String companyId, String specialHolidayCode, String yearServiceCode, int yearServiceNo, Integer year, Integer month, Integer date){
+		return new YearServicePerSet(companyId, specialHolidayCode, yearServiceCode, yearServiceNo, year, month, date);
 	}
 	
 	/**
@@ -36,8 +35,8 @@ public class YearServicePerSet {
 	 * @return
 	 * author: Hoang Yen
 	 */
-	public static YearServicePerSet createFromJavaType(String companyId, String specialHolidayCode, String yearServiceCode, int yearServiceNo, int yearServiceType, Integer year, Integer month, Integer date){
-		return new YearServicePerSet(companyId, specialHolidayCode, yearServiceCode, yearServiceNo, yearServiceType, year, month, date);
+	public static YearServicePerSet createFromJavaType(String companyId, String specialHolidayCode, String yearServiceCode, int yearServiceNo, Integer year, Integer month, Integer date){
+		return new YearServicePerSet(companyId, specialHolidayCode, yearServiceCode, yearServiceNo, year, month, date);
 	}
 	/**
 	 * validate input list
@@ -48,8 +47,8 @@ public class YearServicePerSet {
 		List<Integer> yearLst = new ArrayList<>();
 		for(YearServicePerSet item : yearServicePerSetlst){
 			yearLst.add(item.getYear()); 
-			for(int i = 0; i < (yearLst.size()-2); i++){
-				for(int k = i+1; k<yearLst.size(); k++ ){
+			for(int i = 0; i <= (yearLst.size()-2); i++){
+				for(int k = i+1; k < yearLst.size(); k++ ){
 					if( yearLst.get(i) == yearLst.get(k)){
 						throw new BusinessException("Msg_99");
 					}

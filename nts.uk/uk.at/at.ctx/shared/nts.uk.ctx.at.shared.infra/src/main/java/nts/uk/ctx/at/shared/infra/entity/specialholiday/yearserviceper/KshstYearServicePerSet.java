@@ -12,7 +12,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearservicecom.KshstYearServiceCom;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @AllArgsConstructor
@@ -32,14 +31,6 @@ public class KshstYearServicePerSet extends UkJpaEntity implements Serializable 
 	/** 特別休暇付与日数 **/
 	@Column(name = "GRANT_DATES")
 	public int date;
-	/** 年間サービスタイプ **/
-	@Column(name = "YEAR_SERVICE_TYPE")
-	public int yearServiceType;
-	
-	@ManyToOne
-	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSHST_YEAR_SERVICE_COM.CID", insertable = false, updatable = false),
-			@JoinColumn(name = "SPHD_CD", referencedColumnName = "KSHST_YEAR_SERVICE_COM.SPHD_CD", insertable = false, updatable = false) })
-	public KshstYearServiceCom kshstYearServiceCom;
 	
 	@ManyToOne
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSHST_YEAR_SERVICE_PER.CID", insertable = false, updatable = false),
