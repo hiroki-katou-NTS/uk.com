@@ -2,69 +2,58 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.shift.automaticcalculation;
+package nts.uk.ctx.at.schedule.dom.shift.autocalsetting;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
-
 /**
- * The Class AutoCalRestTimeSetting.
- */
-//休出時間の自動計算設定
-
-/**
- * Gets the late night time.
+ * Gets the rest time.
  *
- * @return the late night time
+ * @return the rest time
  */
 @Getter
-public class AutoCalRestTimeSetting extends DomainObject {
+public class WkpAutoCalSetting extends AggregateRoot {
 
 	/** The company id. */
 	//会社ID
 	private CompanyId companyId;
 	
-	/** The job id. */
-	//職位ID
-	private PositionId jobId;
-	
 	/** The wkp id. */
 	//職場ID
 	private WorkplaceId wkpId;
+
+	/** The normal OT time. */
+	//残業時間
+	private AutoCalOvertimeSetting normalOTTime;
 	
-	/** The auto cal atr. */
-	private Integer autoCalAtr;
+	/** The flex OT time. */
+	//フレックス超過時間
+	private AutoCalFlexOvertimeSetting flexOTTime;
 	
 	/** The rest time. */
 	//休出時間
-	private AutoCalSetting restTime;
-	
-	/** The late night time. */
-	//休出深夜時間
-	private AutoCalSetting lateNightTime;
+	private AutoCalRestTimeSetting restTime;
 
 	/**
-	 * Instantiates a new auto cal rest time setting.
+	 * Instantiates a new auto cal workplace setting.
 	 *
 	 * @param companyId the company id
-	 * @param jobId the job id
 	 * @param wkpId the wkp id
-	 * @param autoCalAtr the auto cal atr
+	 * @param normalOTTime the normal OT time
+	 * @param flexOTTime the flex OT time
 	 * @param restTime the rest time
-	 * @param lateNightTime the late night time
 	 */
-	public AutoCalRestTimeSetting(CompanyId companyId, PositionId jobId, WorkplaceId wkpId, Integer autoCalAtr,
-			AutoCalSetting restTime, AutoCalSetting lateNightTime) {
+	public WkpAutoCalSetting(CompanyId companyId, WorkplaceId wkpId, AutoCalOvertimeSetting normalOTTime,
+			AutoCalFlexOvertimeSetting flexOTTime, AutoCalRestTimeSetting restTime) {
 		super();
 		this.companyId = companyId;
-		this.jobId = jobId;
 		this.wkpId = wkpId;
-		this.autoCalAtr = autoCalAtr;
+		this.normalOTTime = normalOTTime;
+		this.flexOTTime = flexOTTime;
 		this.restTime = restTime;
-		this.lateNightTime = lateNightTime;
 	}
 
 	/* (non-Javadoc)
@@ -74,9 +63,7 @@ public class AutoCalRestTimeSetting extends DomainObject {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((autoCalAtr == null) ? 0 : autoCalAtr.hashCode());
 		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
-		result = prime * result + ((jobId == null) ? 0 : jobId.hashCode());
 		result = prime * result + ((wkpId == null) ? 0 : wkpId.hashCode());
 		return result;
 	}
@@ -92,21 +79,11 @@ public class AutoCalRestTimeSetting extends DomainObject {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AutoCalRestTimeSetting other = (AutoCalRestTimeSetting) obj;
-		if (autoCalAtr == null) {
-			if (other.autoCalAtr != null)
-				return false;
-		} else if (!autoCalAtr.equals(other.autoCalAtr))
-			return false;
+		WkpAutoCalSetting other = (WkpAutoCalSetting) obj;
 		if (companyId == null) {
 			if (other.companyId != null)
 				return false;
 		} else if (!companyId.equals(other.companyId))
-			return false;
-		if (jobId == null) {
-			if (other.jobId != null)
-				return false;
-		} else if (!jobId.equals(other.jobId))
 			return false;
 		if (wkpId == null) {
 			if (other.wkpId != null)

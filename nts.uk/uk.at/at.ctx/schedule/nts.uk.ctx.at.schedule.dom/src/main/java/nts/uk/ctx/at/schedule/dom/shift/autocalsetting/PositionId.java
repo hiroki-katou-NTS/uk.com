@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.shift.automaticcalculation;
+package nts.uk.ctx.at.schedule.dom.shift.autocalsetting;
 
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
@@ -22,7 +22,8 @@ public class PositionId extends CodePrimitiveValue<PositionId> {
 	/**
 	 * Instantiates a new position id.
 	 *
-	 * @param rawValue the raw value
+	 * @param rawValue
+	 *            the raw value
 	 */
 	public PositionId(String rawValue) {
 		super(rawValue);

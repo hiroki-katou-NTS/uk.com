@@ -2,22 +2,23 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.shift.automaticcalculation;
+package nts.uk.ctx.at.schedule.dom.shift.autocalsetting;
 
 /**
  * The Enum AutoCalAtrOvertime.
  */
+// 時間外の自動計算区分
 public enum AutoCalAtrOvertime {
 
 	/** The timerecorder. */
-	TIMERECORDER(0, "タイムレコーダーで選択" ,"Enum_AutoCalAtrOvertime_TimeRecorder" ),
-	
+	TIMERECORDER(0, "Enum_AutoCalAtrOvertime_TimeRecorder", "タイムレコーダーで選択"),
+
 	/** The calculatemboss. */
-	CALCULATEMBOSS(1, "打刻から計算する" ,"Enum_AutoCalAtrOvertime_CalculateEmbossing" ),
-	
+	CALCULATEMBOSS(1, "Enum_AutoCalAtrOvertime_CalculateEmbossing", "打刻から計算する"),
+
 	/** The applymanuallyenter. */
-	APPLYMANUALLYENTER(2, "申請または手入力" ,"Enum_AutoCalAtrOvertime_ApplyOrManuallyEnter" );
-	
+	APPLYMANUALLYENTER(2, "Enum_AutoCalAtrOvertime_ApplyOrManuallyEnter", "申請または手入力");
+
 	/** The value. */
 	public final int value;
 
@@ -30,13 +31,15 @@ public enum AutoCalAtrOvertime {
 	/** The Constant values. */
 	private final static AutoCalAtrOvertime[] values = AutoCalAtrOvertime.values();
 
-
 	/**
 	 * Instantiates a new auto cal atr overtime.
 	 *
-	 * @param value the value
-	 * @param nameId the name id
-	 * @param description the description
+	 * @param value
+	 *            the value
+	 * @param nameId
+	 *            the name id
+	 * @param description
+	 *            the description
 	 */
 	private AutoCalAtrOvertime(int value, String nameId, String description) {
 		this.value = value;
@@ -47,7 +50,8 @@ public enum AutoCalAtrOvertime {
 	/**
 	 * Value of.
 	 *
-	 * @param value the value
+	 * @param value
+	 *            the value
 	 * @return the auto cal atr overtime
 	 */
 	public static AutoCalAtrOvertime valueOf(Integer value) {

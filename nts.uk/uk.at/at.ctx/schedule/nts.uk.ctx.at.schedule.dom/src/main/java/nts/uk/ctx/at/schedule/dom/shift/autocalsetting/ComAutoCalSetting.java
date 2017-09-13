@@ -2,66 +2,38 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.shift.automaticcalculation;
+package nts.uk.ctx.at.schedule.dom.shift.autocalsetting;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Class AutoCalJobSetting.
+ * The Class ComAutoCalSetting.
  */
-//職位別自動計算設定
-
-/**
- * Gets the rest time.
- *
- * @return the rest time
- */
-
+// 会社別自動計算設定
 @Getter
-public class AutoCalJobSetting extends AggregateRoot{
+public class ComAutoCalSetting extends AggregateRoot {
 
 	/** The company id. */
-	//会社ID
+	// 会社ID
 	private CompanyId companyId;
 
-	/** The job id. */
-	//職位ID
-	private PositionId jobId;
-	
 	/** The normal OT time. */
-	//残業時間
+	// 残業時間
 	private AutoCalOvertimeSetting normalOTTime;
-	
+
 	/** The flex OT time. */
-	//フレックス超過時間
+	// フレックス超過時間
 	private AutoCalFlexOvertimeSetting flexOTTime;
-	
+
 	/** The rest time. */
-	//休出時間
+	// 休出時間
 	private AutoCalRestTimeSetting restTime;
 
-	/**
-	 * Instantiates a new auto cal job setting.
-	 *
-	 * @param companyId the company id
-	 * @param jobId the job id
-	 * @param normalOTTime the normal OT time
-	 * @param flexOTTime the flex OT time
-	 * @param restTime the rest time
-	 */
-	public AutoCalJobSetting(CompanyId companyId, PositionId jobId, AutoCalOvertimeSetting normalOTTime,
-			AutoCalFlexOvertimeSetting flexOTTime, AutoCalRestTimeSetting restTime) {
-		super();
-		this.companyId = companyId;
-		this.jobId = jobId;
-		this.normalOTTime = normalOTTime;
-		this.flexOTTime = flexOTTime;
-		this.restTime = restTime;
-	}
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -69,11 +41,12 @@ public class AutoCalJobSetting extends AggregateRoot{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
-		result = prime * result + ((jobId == null) ? 0 : jobId.hashCode());
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -84,16 +57,11 @@ public class AutoCalJobSetting extends AggregateRoot{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AutoCalJobSetting other = (AutoCalJobSetting) obj;
+		ComAutoCalSetting other = (ComAutoCalSetting) obj;
 		if (companyId == null) {
 			if (other.companyId != null)
 				return false;
 		} else if (!companyId.equals(other.companyId))
-			return false;
-		if (jobId == null) {
-			if (other.jobId != null)
-				return false;
-		} else if (!jobId.equals(other.jobId))
 			return false;
 		return true;
 	}

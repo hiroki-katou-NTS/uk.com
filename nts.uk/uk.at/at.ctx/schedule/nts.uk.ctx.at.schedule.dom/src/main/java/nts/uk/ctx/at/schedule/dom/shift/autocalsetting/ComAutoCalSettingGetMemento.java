@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.shift.automaticcalculation;
+package nts.uk.ctx.at.schedule.dom.shift.autocalsetting;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
  * The Interface AutoCalCompanySettingGetMemento.
  */
-public interface AutoCalCompanySettingGetMemento {
+public interface ComAutoCalSettingGetMemento {
 	
 	/**
 	 * Gets the company id.
