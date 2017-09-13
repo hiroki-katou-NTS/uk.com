@@ -5,7 +5,7 @@ import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 
 /**
- * 休�?時間帯
+ * 休憩時間帯
  * @author keisuke_hoshina
  *
  */

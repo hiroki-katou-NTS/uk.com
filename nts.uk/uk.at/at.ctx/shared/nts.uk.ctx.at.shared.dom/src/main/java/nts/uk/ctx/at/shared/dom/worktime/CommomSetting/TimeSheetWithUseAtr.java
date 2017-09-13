@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
- * 時間帯(使用区�?��き)
+ * 時間帯(使用区分付き)
  * @author keisuke_hoshina
  *
  */
