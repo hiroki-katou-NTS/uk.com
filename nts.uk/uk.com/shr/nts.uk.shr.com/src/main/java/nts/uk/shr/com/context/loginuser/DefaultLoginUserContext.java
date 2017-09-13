@@ -1,12 +1,19 @@
 package nts.uk.shr.com.context.loginuser;
 
+import java.io.Serializable;
+
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.val;
+import nts.gul.misc.DeepClonable;
 import nts.uk.shr.com.context.LoginUserContext;
 
 @RequiredArgsConstructor
-public class DefaultLoginUserContext implements LoginUserContext {
+public class DefaultLoginUserContext implements LoginUserContext, DeepClonable<DefaultLoginUserContext>, Serializable {
 	
+	/** serialVersionUID */
+	private static final long serialVersionUID = 1L;
+
 	private final String userId;
 	
 	private final boolean isEmployee;
@@ -75,6 +82,19 @@ public class DefaultLoginUserContext implements LoginUserContext {
 	@Override
 	public String employeeCode() {
 		return this.employeeCode;
+	}
+
+	@Override
+	public DefaultLoginUserContext deepClone() {
+		val clone = new DefaultLoginUserContext(this.userId, this.isEmployee);
+		clone.setCompanyCode(companyCode);
+		clone.setCompanyId(companyId);
+		clone.setContractCode(contractCode);
+		clone.setEmployeeCode(employeeCode);
+		clone.setEmployeeId(employeeId);
+		clone.setLoginCode(loginCode);
+		clone.setPersonId(personId);
+		return clone;
 	}
 	
 }
