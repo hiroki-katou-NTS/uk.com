@@ -4,7 +4,6 @@ package nts.uk.ctx.at.request.dom.setting.request.application;
 import lombok.AllArgsConstructor;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.UseAtr;
 
 /**
@@ -20,10 +19,7 @@ public class ApplicationDeadline extends AggregateRoot {
 	 * 締めＩＤ
 	 */
 	public int closureId;
-	/**
-	 * 申請種類
-	 */
-	public ApplicationType appType;
+	
 	/**
 	 * 利用区分
 	 */
@@ -39,13 +35,11 @@ public class ApplicationDeadline extends AggregateRoot {
 
 	public static ApplicationDeadline createSimpleFromJavaType(String companyId,
 			int closureId, 
-			int appType,
 			int userAtr,
 			String deadline,
 			int deadlineCriteria) {
 		return new ApplicationDeadline(companyId,
 				closureId,
-				EnumAdaptor.valueOf(appType, ApplicationType.class),
 				EnumAdaptor.valueOf(userAtr, UseAtr.class),
 				new Deadline(deadline),
 				EnumAdaptor.valueOf(deadlineCriteria, DeadlineCriteria.class));

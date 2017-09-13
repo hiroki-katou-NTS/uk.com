@@ -36,39 +36,39 @@ public class KscstEstComSet extends UkJpaEntity implements Serializable {
 	private String cid;
 
 	/** The time yearly disp cond. */
-	@Column(name = "TIME_YEARLY_DISP_COND")
+	@Column(name = "TIME_YEAR_DISP")
 	private int timeYearlyDispCond;
 
 	/** The time monthly disp cond. */
-	@Column(name = "TIME_MONTHLY_DISP_COND")
+	@Column(name = "TIME_MONTH_DISP")
 	private int timeMonthlyDispCond;
 
 	/** The time alarm check cond. */
-	@Column(name = "TIME_ALARM_CHECK_COND")
+	@Column(name = "TIME_ALARM_CHECK")
 	private int timeAlarmCheckCond;
 
 	/** The price yearly disp cond. */
-	@Column(name = "PRICE_YEARLY_DISP_COND")
+	@Column(name = "PRICE_YEAR_DISP")
 	private int priceYearlyDispCond;
 
 	/** The price monthly disp cond. */
-	@Column(name = "PRICE_MONTHLY_DISP_COND")
+	@Column(name = "PRICE_MONTH_DISP")
 	private int priceMonthlyDispCond;
 
 	/** The price alarm check cond. */
-	@Column(name = "PRICE_ALARM_CHECK_COND")
+	@Column(name = "PRICE_ALARM_CHECK")
 	private int priceAlarmCheckCond;
 
 	/** The num of day yearly disp cond. */
-	@Column(name = "NUM_OF_DAY_YEARLY_DISP_COND")
+	@Column(name = "NUM_OF_DAY_YEAR_DISP")
 	private int numOfDayYearlyDispCond;
 
 	/** The num of day monthly disp cond. */
-	@Column(name = "NUM_OF_DAY_MONTHLY_DISP_COND")
+	@Column(name = "NUM_OF_DAY_MONTH_DISP")
 	private int numOfDayMonthlyDispCond;
 
 	/** The num of day alarm check cond. */
-	@Column(name = "NUM_OF_DAY_ALARM_CHECK_COND")
+	@Column(name = "NUM_OF_DAY_ALARM_CHECK")
 	private int numOfDayAlarmCheckCond;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstEstGuideSetting", orphanRemoval = true)

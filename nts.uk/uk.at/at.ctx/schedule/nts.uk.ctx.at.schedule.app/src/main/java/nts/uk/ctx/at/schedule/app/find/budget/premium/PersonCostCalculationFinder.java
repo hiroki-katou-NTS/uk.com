@@ -15,6 +15,10 @@ import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculation;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PersonCostCalculationRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumItemRepository;
 import nts.uk.ctx.at.schedule.dom.budget.premium.PremiumSetting;
+import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePrimiumAdapter;
+import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumAdapter;
+import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceNamePriniumDto;
+import nts.uk.ctx.at.schedule.dom.budget.premium.service.AttendanceTypePriServiceDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -32,6 +36,11 @@ public class PersonCostCalculationFinder {
 	
 	@Inject
 	private PremiumItemRepository premiumItemRepository;
+	
+	@Inject
+	private AttendanceTypePrimiumAdapter atType;
+	@Inject
+	private AttendanceNamePriniumAdapter atName;
 	
 	/**
 	 * get all Person Cost Calculation by company ID
@@ -91,5 +100,20 @@ public class PersonCostCalculationFinder {
 				premiumSetting.getName().v(),
 				premiumSetting.getUseAtr().value,
 				premiumSetting.getAttendanceItems().stream().map(x -> new ShortAttendanceItemDto(x, x.toString())).collect(Collectors.toList()));
+	}
+	/**
+	 * get attendance at screen use
+	 * @param screenUseAtr
+	 * @return
+	 */
+	public List<AttendanceTypePriServiceDto> atTypes(int screenUseAtr){
+		String companyID = AppContexts.user().companyId();
+		List<AttendanceTypePriServiceDto> data = atType.getItemByScreenUseAtr(companyID, screenUseAtr);
+		return data;
+	}
+	
+	public List<AttendanceNamePriniumDto> atNames(List<Integer> dailyAttendanceItemIds){
+		List<AttendanceNamePriniumDto> data = atName.getDailyAttendanceItemName(dailyAttendanceItemIds);
+		return data;
 	}
 }

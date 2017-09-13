@@ -37,5 +37,16 @@ module nts.uk.com.view.cmm011 {
             endDate: string;
             textDisplay?: string;
         }
+        
+        export interface IWorkplace {
+            code: string;
+            name: string;
+        }
+        
+        export class CreationWorkplaceType {
+            static CREATE_ON_TOP = 1;
+            static CREATE_BELOW = 2;
+            static CREATE_TO_CHILD = 3;
+        }
     }
 }
