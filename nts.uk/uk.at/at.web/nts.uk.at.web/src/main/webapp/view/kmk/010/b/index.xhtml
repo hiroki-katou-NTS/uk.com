@@ -32,12 +32,12 @@
 							<tr class="bg-dark-green">
 								<td>#{i18n.getText('KMK010_36')}</td>
 								<td>#{i18n.getText('KMK010_37')}</td>
-								<td>#{i18n.getText('KMK010_38')}</td>
+								<td data-bind="text: textOvertimeName"></td>
 							</tr>
 							<com:ko tag="foreach" bind="lstOvertimeModel">
 								<tr>
 									<td class="bg-green">
-										<div data-bind="ntsCheckBox: { checked: useClassification }"></div>
+										<div data-bind="ntsCheckBox: { checked: useClassification, enable: $parent.enableCheckbox }"></div>
 									</td>
 									<td>
 										<div data-bind="text: overtimeNo"></div>
