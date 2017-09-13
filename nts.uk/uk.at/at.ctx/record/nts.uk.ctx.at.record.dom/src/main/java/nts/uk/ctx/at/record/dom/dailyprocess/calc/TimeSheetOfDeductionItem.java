@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -12,8 +13,8 @@ import lombok.RequiredArgsConstructor;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.StampGoOutReason;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.CalcMethodIfLeaveWorkDuringBreakTime;
-import nts.uk.ctx.at.shared.dom.worktime.basicinformation.SettingMethod;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.BreakClockOfManageAtr;
@@ -29,7 +30,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	private Finally<StampGoOutReason> goOutReason;
 	private Finally<BreakClassification> breakAtr;
-	private final DedcutionClassification deductionAtr;
+	private final DeductionClassification deductionAtr;
 	private final WithinStatutoryAtr withinStatutoryAtr;
 	
 //	private final DedcutionClassification deductionClassification;
@@ -46,7 +47,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	private TimeSheetOfDeductionItem(TimeSpanForCalc timeSpan
 									,Finally<StampGoOutReason> goOutReason
 									,Finally<BreakClassification> breakAtr
-									,DedcutionClassification deductionAtr
+									,DeductionClassification deductionAtr
 									,WithinStatutoryAtr withinStatutoryAtr) {
 		super(new TimeSpanWithRounding(timeSpan.getStart(),timeSpan.getEnd(),null),timeSpan);
 		this.goOutReason = goOutReason;
@@ -67,7 +68,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	public static TimeSheetOfDeductionItem reateBreakTimeSheetAsFixed(TimeSpanForCalc timeSpan
 			,Finally<StampGoOutReason> goOutReason
 			,Finally<BreakClassification> breakAtr
-			,DedcutionClassification deductionAtr
+			,DeductionClassification deductionAtr
 			,WithinStatutoryAtr withinStatutoryAtr) {
 		
 		return new TimeSheetOfDeductionItem(
@@ -85,72 +86,68 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	 * @param baseTimeSheet 現ループ中のリス　
 	 * @param compareTimeSheet　次のループで取り出すリス　
 	 */
-	public Map<TimeSpanForCalc,Boolean> DeplicateBreakGoOut(TimeSheetOfDeductionItem compareTimeSheet,SettingMethod setMethod,BreakClockOfManageAtr clockManage) {
-		Map<TimeSpanForCalc, Boolean> map = new HashMap<TimeSpanForCalc,Boolean>();
-		/*両方とも外　*/
-		if(this.getDeductionAtr().isGoOut() && compareTimeSheet.getDeductionAtr().isGoOut()) {
-			map.put(compareTimeSheet.calculationTimeSheet.getNotDuplicationWith(this.calculationTimeSheet).get(),Boolean.FALSE);
+	public List<TimeSheetOfDeductionItem> DeplicateBreakGoOut(TimeSheetOfDeductionItem compareTimeSheet,WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage) {
+		List<TimeSheetOfDeductionItem> map = new ArrayList<TimeSheetOfDeductionItem>();
+		/*両方とも育児　*/
+		if(this.getDeductionAtr().isChildCare() && compareTimeSheet.getDeductionAtr().isChildCare()) {
+			map.add(new TimeSheetOfDeductionItem(this.calculationTimeSheet,this.getGoOutReason(),this.getBreakAtr(),this.getDeductionAtr(),this.withinStatutoryAtr));
+			map.add(new TimeSheetOfDeductionItem(compareTimeSheet.calculationTimeSheet.getNotDuplicationWith(this.calculationTimeSheet).get(),compareTimeSheet.getGoOutReason(),compareTimeSheet.getBreakAtr(),compareTimeSheet.getDeductionAtr(),compareTimeSheet.getWithinStatutoryAtr()));
 			return map;
 		}
-		/*両方とも育　*/
-		else if(this.getDeductionAtr().isChildCare() && compareTimeSheet.getDeductionAtr().isChildCare()) {
-			map.put(compareTimeSheet.calculationTimeSheet.getNotDuplicationWith(this.calculationTimeSheet).get(),Boolean.FALSE);
-			return map;
-		}
-		/*前半育児　　後半外　*/
+		/*前半育児　　後半外出*/
 		else if(this.getDeductionAtr().isChildCare() && compareTimeSheet.getDeductionAtr().isGoOut()) {
-			map.put(compareTimeSheet.calculationTimeSheet.getNotDuplicationWith(this.calculationTimeSheet).get(),Boolean.FALSE);
+			map.add(new TimeSheetOfDeductionItem(this.calculationTimeSheet,this.getGoOutReason(),this.getBreakAtr(),this.getDeductionAtr(),this.withinStatutoryAtr));
+			map.add(new TimeSheetOfDeductionItem(compareTimeSheet.calculationTimeSheet.getNotDuplicationWith(this.calculationTimeSheet).get(),compareTimeSheet.getGoOutReason(),compareTimeSheet.getBreakAtr(),compareTimeSheet.getDeductionAtr(),compareTimeSheet.getWithinStatutoryAtr()));
 			return map;
 		}
-		/*前半外　、後半育　*/
+		/*前半外出、、後半育児*/
 		else if(this.getDeductionAtr().isGoOut() && compareTimeSheet.getDeductionAtr().isChildCare()) {
-			map.put(this.calculationTimeSheet.getNotDuplicationWith(compareTimeSheet.calculationTimeSheet).get(),Boolean.FALSE);
+			map.add(new TimeSheetOfDeductionItem(this.calculationTimeSheet,this.getGoOutReason(),this.getBreakAtr(),this.getDeductionAtr(),this.withinStatutoryAtr));
 			return map;
 		}
-		/*前半休　、後半外　*/
+		/*前半休憩、後半外出*/
 		else if((this.getDeductionAtr().isBreak() && compareTimeSheet.getDeductionAtr().isGoOut())){
 			if(setMethod.isFluidWork()) {
 				if(clockManage.isNotClockManage()) {
-					map.put(compareTimeSheet.calculationTimeSheet.getNotDuplicationWith(this.calculationTimeSheet).get(),Boolean.FALSE);
-					return map;
+					/*保留*/
 				}
 				else {
-					/*アルゴリズ　のパターン不足を発見したため　　いったん保留*/
-					map.put(compareTimeSheet.calculationTimeSheet.getNotDuplicationWith(this.calculationTimeSheet).get(),Boolean.FALSE);
-					return map;
+					/*保留*/
 				}
 			}
 		}
-		/*前半外　、後半休　*/
+		/*前半外出、後半休憩*/
 		else if(this.getDeductionAtr().isGoOut() && compareTimeSheet.getDeductionAtr().isBreak()){
 			if(setMethod.isFluidWork()) {
 				if(clockManage.isNotClockManage()) {
-					map.put(compareTimeSheet.calculationTimeSheet.getNotDuplicationWith(this.calculationTimeSheet).get(),Boolean.FALSE);
-					return map;
+					/*保留*/
 				}
 				else
 				{
-					map.put(this.calculationTimeSheet.getNotDuplicationWith(compareTimeSheet.calculationTimeSheet).get(),Boolean.FALSE);
-					return map;
+					/*保留*/
 				}
 			}
 			
 		}
+		/*休憩系と休憩系*/
 		else if(this.getDeductionAtr().isBreak() && compareTimeSheet.getDeductionAtr().isBreak()) {
 			/*前半休　、後半休　打刻*/
-			if(this.getBreakAtr().isBreak() && compareTimeSheet.getBreakAtr().isBreakStamp()) {
-				
+			if(this.getBreakAtr().get().isBreak() && compareTimeSheet.getBreakAtr().get().isBreakStamp()) {
+				map.add(new TimeSheetOfDeductionItem(this.calculationTimeSheet.getNotDuplicationWith(compareTimeSheet.calculationTimeSheet).get(),this.getGoOutReason(),this.getBreakAtr(),this.getDeductionAtr(),this.getWithinStatutoryAtr()));
+				return map;
 			}
 			/*前半休　打刻、後半休　*/
-			else if((this.getBreakAtr().isBreakStamp() && compareTimeSheet.getBreakAtr().isBreak())){
-					
+			else if((this.getBreakAtr().get().isBreakStamp() && compareTimeSheet.getBreakAtr().get().isBreak())){
+				map.add(new TimeSheetOfDeductionItem(this.calculationTimeSheet,this.getGoOutReason(),this.getBreakAtr(),this.getDeductionAtr(),this.withinStatutoryAtr));
+				map.add(new TimeSheetOfDeductionItem(compareTimeSheet.calculationTimeSheet.getNotDuplicationWith(this.calculationTimeSheet).get(),compareTimeSheet.getGoOutReason(),compareTimeSheet.getBreakAtr(),compareTimeSheet.getDeductionAtr(),compareTimeSheet.getWithinStatutoryAtr()));
+				return map;
 			}
 			/*両方とも休　打刻*/
-			else if(this.getBreakAtr().isBreakStamp() && compareTimeSheet.getBreakAtr().isBreakStamp()) {
+			else if(this.getBreakAtr().get().isBreakStamp() && compareTimeSheet.getBreakAtr().get().isBreakStamp()) {
 				
 			}
 		}
-		map.put(this.calculationTimeSheet,Boolean.FALSE);
+		map.add(this.calculationTimeSheet);
 		return map; 
 	}
 	
