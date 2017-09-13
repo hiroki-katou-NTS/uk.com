@@ -15,6 +15,7 @@ declare module nts.uk {
     module characteristics {
         function save(key: string, data: any): any;
         function restore(key: string): any;
+        function remove(key: string): any;
     }
 }
 declare module nts.uk.request {
@@ -22,6 +23,8 @@ declare module nts.uk.request {
         function getInfo(id: string): JQueryPromise<any>;
         function requestToCancel(id: string): void;
     }
+    function liveView(fileId: string): void;
+    const WEB_APP_NAME: any;
 }
 
 /**
