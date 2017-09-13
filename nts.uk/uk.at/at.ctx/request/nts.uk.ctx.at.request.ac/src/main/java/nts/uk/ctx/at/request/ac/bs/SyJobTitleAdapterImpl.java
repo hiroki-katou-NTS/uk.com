@@ -14,8 +14,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.JobTitleImport;
-import nts.uk.ctx.bs.employee.pub.employee.jobtitle.JobTitleExport;
-import nts.uk.ctx.bs.employee.pub.employee.jobtitle.SyJobTitlePub;
+import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
+import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 
 /**
  * @author vunv
