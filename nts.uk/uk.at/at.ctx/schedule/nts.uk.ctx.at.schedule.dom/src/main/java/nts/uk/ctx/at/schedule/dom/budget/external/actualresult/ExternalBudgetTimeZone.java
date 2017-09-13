@@ -7,6 +7,7 @@ package nts.uk.ctx.at.schedule.dom.budget.external.actualresult;
 import java.util.Date;
 import java.util.List;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
@@ -18,6 +19,7 @@ import nts.uk.ctx.at.schedule.dom.budget.external.ExternalBudgetCd;
  * 外外部予算実績時間帯
  */
 @Getter
+@EqualsAndHashCode(callSuper = true, of = {"workplaceId", "actualDate", "extBudgetCode"})
 public class ExternalBudgetTimeZone<T> extends AggregateRoot {
     
     /** The actual value. */

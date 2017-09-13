@@ -9,7 +9,8 @@ module nts.uk.at.view.kmk007.a.service {
         findByLangId: "at/share/worktype/getByCIdAndLangId",
         getAllAbsenceFrame: "at/share/worktype/absenceframe/findAll",
         getAllSpecialHolidayFrame: "at/share/worktype/specialholidayframe/findAll",
-        insertWorkTypeLang: "at/share/worktype/language/insert"
+        insertWorkTypeLang: "at/share/worktype/language/insert",
+        saveAsExcel: "file/at/worktypereport/saveAsExcel"
     }
 
     export function loadWorkType(): JQueryPromise<Array<any>> {
@@ -57,5 +58,9 @@ module nts.uk.at.view.kmk007.a.service {
 
     export function insert(workTypeLanguage: any): JQueryPromise<any> {
         return nts.uk.request.ajax("at", paths.insertWorkTypeLang, workTypeLanguage);
+    }
+    
+     export function saveAsExcel(languageId: string): JQueryPromise<any> {
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "WorkType", domainType: "test", languageId: languageId, reportType: 0});
     }
 }

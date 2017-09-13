@@ -144,4 +144,26 @@ public class Application extends DomainObject{
 	 public void changeReflectState(int reflectPerState) {
 		 this.reflectPerState = reflectPlanState;
 	 }
+	 /**
+	  * change value of reversionReason
+	  * @param reversionReason
+	  */
+	 public void changeReversionReason(ApplicationReason reversionReason) {
+		 this.reversionReason = reversionReason;
+	 }
+	 
+	 /**
+	  * change value of reflectPerTime
+	  * @param reflectPerTime
+	  */
+	 public void changeReflectPerTime(BigDecimal reflectPerTime) {
+		 this.reflectPerTime = reflectPerTime;
+	 }
+	 /**
+	  * change value of applicationReason
+	  * @param applicationReason
+	  */
+	 public void changeApplicationReason(ApplicationReason applicationReason) {
+		 this.applicationReason = applicationReason;
+	 }
 }

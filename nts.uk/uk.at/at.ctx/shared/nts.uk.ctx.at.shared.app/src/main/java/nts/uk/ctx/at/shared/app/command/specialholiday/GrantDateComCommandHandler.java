@@ -24,13 +24,17 @@ public class GrantDateComCommandHandler extends CommandHandler<GrantDateComComma
 		GrantDateComCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		
+		GrantDateCom domain = command.toDomain();
+		
 		// check exists code
 		Optional<GrantDateCom> grantDateCom = grantRegularRepository.getComByCode(companyId, command.getSpecialHolidayCode());
 		if (grantDateCom.isPresent()) {
-			//throw new BusinessException("Msg_3");
-		}
+			// Update data
+			grantRegularRepository.update(domain);
+			return;
+		} 
 		
-		GrantDateCom domain = command.toDomain();
+		// Add new data
 		grantRegularRepository.add(domain);
 	}
 }

@@ -19,6 +19,7 @@ module nts.uk.at.view.ksm001.a {
             lstTargetYear: KnockoutObservableArray<any>;
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
             defaultCurrencyOption: any;
+            defaultDaysOption: any;
 
             // Flag
             isCompanySelected: KnockoutObservable<boolean>;
@@ -64,6 +65,10 @@ module nts.uk.at.view.ksm001.a {
                     width: "50",
                     grouplength: 3,
                     currencyformat: "JPY"
+                };
+                self.defaultDaysOption = {
+                    width: "50",
+                    decimallength: 1
                 };
 
                 // Initial data model.
@@ -180,6 +185,7 @@ module nts.uk.at.view.ksm001.a {
                 self.selectedEmploymentCode.subscribe(function(employmentCode) {
                     if (!employmentCode) {
                         self.employmentEstablishmentModel.disableInput();
+                        self.employmentEstablishmentModel.enableDelete(false);
                     }
                     if (employmentCode) {
                         var employment: UnitModel = self.findEmploymentByCode(employmentCode);

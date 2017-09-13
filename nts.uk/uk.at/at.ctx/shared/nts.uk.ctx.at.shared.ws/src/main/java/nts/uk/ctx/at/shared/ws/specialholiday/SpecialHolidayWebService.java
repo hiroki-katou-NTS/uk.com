@@ -8,15 +8,21 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.command.specialholiday.AddGrantDatePerCommandHandler;
 import nts.uk.ctx.at.shared.app.command.specialholiday.AddSpecialHolidayCommand;
 import nts.uk.ctx.at.shared.app.command.specialholiday.AddSpecialHolidayCommandHandler;
 import nts.uk.ctx.at.shared.app.command.specialholiday.GrantDateComCommand;
 import nts.uk.ctx.at.shared.app.command.specialholiday.GrantDateComCommandHandler;
+import nts.uk.ctx.at.shared.app.command.specialholiday.GrantDatePerCommand;
 import nts.uk.ctx.at.shared.app.command.specialholiday.RemoveSpecialHolidayCommand;
 import nts.uk.ctx.at.shared.app.command.specialholiday.RemoveSpecialHolidayCommandHandler;
+import nts.uk.ctx.at.shared.app.command.specialholiday.UpdateGrantDatePerCommandHandler;
 import nts.uk.ctx.at.shared.app.command.specialholiday.UpdateSpecialHolidayCommandHandler;
 import nts.uk.ctx.at.shared.app.find.specialholiday.GrantDateComDto;
+import nts.uk.ctx.at.shared.app.find.specialholiday.GrantDatePerDto;
+import nts.uk.ctx.at.shared.app.find.specialholiday.GrantDatePerSetDto;
 import nts.uk.ctx.at.shared.app.find.specialholiday.GrantDateSetDto;
 import nts.uk.ctx.at.shared.app.find.specialholiday.SpecialHolidayDto;
 import nts.uk.ctx.at.shared.app.find.specialholiday.SpecialHolidayFinder;
@@ -41,6 +47,12 @@ public class SpecialHolidayWebService extends WebService{
 	@Inject
 	private GrantDateComCommandHandler grantDateComCommandHandler;
 	
+	@Inject
+	private AddGrantDatePerCommandHandler addGrantDatePerCommandHandler;
+	
+	@Inject
+	private UpdateGrantDatePerCommandHandler updateGrantDatePerCommandHandler;
+	
 	@Path("findByCid")
 	@POST
 	public List<SpecialHolidayDto> findByCid() {
@@ -55,8 +67,8 @@ public class SpecialHolidayWebService extends WebService{
 	
 	@Path("add")
 	@POST
-	public void add(AddSpecialHolidayCommand command) {
-		this.addSpecialHolidayCommandHandler.handle(command);
+	public JavaTypeResult<List<String>> add(AddSpecialHolidayCommand command) {
+		return new JavaTypeResult<List<String>>(this.addSpecialHolidayCommandHandler.handle(command));
 	}
 
 	@Path("update")
@@ -87,5 +99,29 @@ public class SpecialHolidayWebService extends WebService{
 	@POST
 	public void add(GrantDateComCommand command) {
 		this.grantDateComCommandHandler.handle(command);
+	}
+	
+	@Path("getPerByCode/{specialHolidayCode}/{personalGrantDateCode}")
+	@POST
+	public GrantDatePerDto getPerByCode(@PathParam("specialHolidayCode") String specialHolidayCode, @PathParam("personalGrantDateCode") String personalGrantDateCode) {
+		return this.specialHolidayFinder.getPerByCode(specialHolidayCode, personalGrantDateCode);
+	}
+	
+	@Path("getPerSetByCode/{specialHolidayCode}/{personalGrantDateCode}")
+	@POST
+	public List<GrantDatePerSetDto> getPerSetByCode(@PathParam("specialHolidayCode") String specialHolidayCode, @PathParam("personalGrantDateCode") String personalGrantDateCode) {
+		return this.specialHolidayFinder.getPerSetByCode(specialHolidayCode, personalGrantDateCode);
+	}
+	
+	@Path("addPer")
+	@POST
+	public JavaTypeResult<List<String>> addPer(GrantDatePerCommand command) {
+		return new JavaTypeResult<List<String>>(this.addGrantDatePerCommandHandler.handle(command));
+	}
+	
+	@Path("UpdatePer")
+	@POST
+	public JavaTypeResult<List<String>> UpdatePer(GrantDatePerCommand command) {
+		return new JavaTypeResult<List<String>>(this.updateGrantDatePerCommandHandler.handle(command));
 	}
 }

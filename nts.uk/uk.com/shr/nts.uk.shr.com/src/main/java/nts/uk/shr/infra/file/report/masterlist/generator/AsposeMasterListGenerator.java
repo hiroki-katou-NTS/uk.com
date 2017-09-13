@@ -29,7 +29,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 
 	private final String REPORT_ID = "MASTER_LIST";
 	
-	private final String REPORT_FILE_NAME = "マスターリスト帳票.xlsx";
+	private final String REPORT_FILE_NAME = "マスターリスト_{TYPE}.xlsx";
 	
 	private final int HEADER_INFOR_START_ROW = 0;
 	
@@ -56,6 +56,8 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		List<MasterHeaderColumn> columns = dataSource.getHeaderColumns().stream()
 				.filter(c -> c.isDisplay()).collect(Collectors.toList());
 		
+		sheet.setName("マスターリスト");
+		
 		if (!columns.isEmpty()){
 			this.setCommonStyle(cells);
 			this.fillHeader(cells, dataSource.getHeaders(), columns);
@@ -74,7 +76,22 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		}
 		reportContext.processDesigner();
 		
-		reportContext.saveAsExcel(this.createNewFile(generatorContext, REPORT_FILE_NAME));
+		String reportName = REPORT_FILE_NAME.replace("{TYPE}", dataSource.getHeaders().get("【種類】"));
+		
+		switch (dataSource.getReportType()) {
+		case CSV:
+			reportContext.saveAsCSV(this.createNewFile(generatorContext, reportName));
+			break;
+		case EXCEL:
+			reportContext.saveAsExcel(this.createNewFile(generatorContext, reportName));
+			break;
+		case PDF:
+			reportContext.saveAsPdf(this.createNewFile(generatorContext, reportName));
+			break;
+		default:
+			break;
+		}
+		
 	}
 	
 	private void setCommonStyle(Cells cells){
@@ -106,7 +123,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		for (MasterHeaderColumn c : columns) {
 			Cell cell = cells.get(MASTERLIST_DATA_START_ROW - 1, columnIndex);
 			cell.setStyle(this.getCellStyle(cell.getStyle(), c));
-			cell.setValue(c.getColumnId());
+			cell.setValue(c.getColumnText());
 			columnIndex++;
 		}
 	}

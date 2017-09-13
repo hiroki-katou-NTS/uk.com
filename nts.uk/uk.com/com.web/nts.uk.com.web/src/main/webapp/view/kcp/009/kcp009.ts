@@ -18,6 +18,7 @@ module kcp009.viewmodel {
         isActivePersonalProfile: KnockoutObservable<boolean>;
         keySearch: KnockoutObservable<string>;
         isDisplay: KnockoutObservable<boolean>;
+        isShowEmpList: KnockoutObservable<boolean>;
         tabIndex: number;
         
         constructor() {
@@ -26,10 +27,12 @@ module kcp009.viewmodel {
             self.targetBtnText = nts.uk.resource.getText("KCP009_3");
             self.empDisplayCode = ko.observable(null);
             self.empBusinessName = ko.observable(null);
+            self.organizationDesignation = ko.observable(null);
             self.organizationName = ko.observable(null);
-
+            
             self.keySearch = ko.observable(null);
             self.isDisplay = ko.observable(true);
+            self.isShowEmpList = ko.observable(false);
         }
 
         // Initialize Component
@@ -73,7 +76,7 @@ module kcp009.viewmodel {
             if (data.isDisplayOrganizationName) {
                 if (data.systemReference == SystemType.EMPLOYMENT) {
                     // Set Organization Designation if System Reference is Employment
-                    self.organizationDesignation = nts.uk.resource.getText("Com_Workplace");
+                    self.organizationDesignation(nts.uk.resource.getText("Com_Workplace"));
 
                     // Set Organization name
                     if (data.employeeInputList().length > 0) {
@@ -83,7 +86,7 @@ module kcp009.viewmodel {
                     }
                 } else {
                     // Set Organization Designation if System Reference is others
-                    self.organizationDesignation = nts.uk.resource.getText("Com_Department");
+                    self.organizationDesignation(nts.uk.resource.getText("Com_Department"));
 
                     // Set Organization name
                     if (data.employeeInputList().length > 0) {
@@ -93,7 +96,7 @@ module kcp009.viewmodel {
                     }
                 }
             } else {
-                self.organizationDesignation = null;
+                self.organizationDesignation(null);
                 self.organizationName(null);
             }
 
@@ -176,7 +179,7 @@ module kcp009.viewmodel {
                         my: 'left top',
                         at: 'left bottom',
                         of: $('#function-tr')
-                    }
+                    },
                     dismissible: false
                 });
                 // Toggle

@@ -1,3 +1,13 @@
+
+#rightTable{
+	margin: 4px 20px 20px 87px;
+}
+
+#leftPanel{
+	margin: 73px 20px 20px 465px;
+	display: inline-block;
+}
+
 #functions-area {
     height: 57px;
 }    

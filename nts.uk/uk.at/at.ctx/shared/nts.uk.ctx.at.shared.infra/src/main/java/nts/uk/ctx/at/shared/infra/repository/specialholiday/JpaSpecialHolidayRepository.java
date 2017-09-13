@@ -42,7 +42,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		builderString.append(" ORDER BY e.kshstSpecialHolidayPK.specialHolidayCode ASC");
 		SELECT_BY_CID = builderString.toString();
 		
-		 builderString = new StringBuilder();
+		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KshstSpecialHoliday e");
 		builderString.append(" WHERE e.kshstSpecialHolidayPK.companyId = :companyId");
@@ -283,6 +283,9 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 				.getList(c -> convertToDomain(c));
 	}
 	
+	/**
+	 * Check Exists Special Holiday Code
+	 */
 	@Override
 	public boolean checkExists(String companyId, String specialHolidayCode) {
 		List<KshstSpecialHoliday> branchs = this.queryProxy().query(CHECK_BY_CID, KshstSpecialHoliday.class)

@@ -174,8 +174,8 @@ public class WorkTypeWebService extends WebService {
 	 */
 	@POST
 	@Path("getByCIdAndLangId/{langId}")
-	public List<WorkTypeDto> checkLanguageWorkType(@PathParam("langId") String langId) {
-		return this.find.checkLanguageWorkType(langId);
+	public List<WorkTypeDto> findWorkTypeLanguage(@PathParam("langId") String langId) {
+		return this.find.findWorkTypeLanguage(langId);
 	}
 
 	/**

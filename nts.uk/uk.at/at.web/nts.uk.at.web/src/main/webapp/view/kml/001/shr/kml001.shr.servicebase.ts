@@ -7,8 +7,9 @@ module nts.uk.at.view.kml001.shr {
             personCostCalculationDelete: "at/schedule/budget/premium/deletePersonCostCalculation",
             premiumItemSelect: "at/schedule/budget/premium/findPremiumItemByCompanyID",
             premiumItemUpdate: "at/schedule/budget/premium/updatePremiumItem",
-            getAttendanceItems: "at/share/attendanceitem/getPossibleAttendanceItem",
-            getAttendanceItemByType:  "at/share/attendanceType/getByType/",
+            getAttendanceItems: "at/schedule/budget/premium/attendancePremiumName",
+            getAttendanceItemByType:  "at/schedule/budget/premium/attendancePremiumItem",
+            //getAttendanceItemByType:  "at/share/attendanceType/getByType"
         }
         
         export function personCostCalculationSelect(): JQueryPromise<any> {
@@ -40,7 +41,7 @@ module nts.uk.at.view.kml001.shr {
         }
         
         export function getAttendanceItemByType(command): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getAttendanceItemByType + command);
+            return nts.uk.request.ajax(paths.getAttendanceItemByType);
         }
     } 
 }

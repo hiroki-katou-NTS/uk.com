@@ -17,15 +17,15 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.security.hash.password.PasswordHash;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeCodeSettingDto;
-import nts.uk.ctx.sys.gateway.dom.adapter.EmployeeDto;
-import nts.uk.ctx.sys.gateway.dom.adapter.SysEmployeeAdapter;
-import nts.uk.ctx.sys.gateway.dom.adapter.SysEmployeeCodeSettingAdapter;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 import nts.uk.ctx.sys.gateway.dom.login.EmployCodeEditType;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.adapter.SysEmployeeCodeSettingAdapter;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeCodeSettingImport;
+import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 
 /**
  * The Class SubmitLoginFormTwoCommandHandler.
@@ -73,7 +73,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 		// Edit employee code
 		employeeCode = this.employeeCodeEdit(employeeCode, companyId);
 		// Get domain 社員
-		EmployeeDto em = this.getEmployee(companyId, employeeCode);
+		EmployeeImport em = this.getEmployee(companyId, employeeCode);
 		// Get User by associatedPersonId
 		User user = this.getUser(em.getEmployeeId().toString());
 		// check password
@@ -149,9 +149,9 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 	 * @return the string
 	 */
 	private String employeeCodeEdit(String employeeCode, String companyId) {
-		Optional<EmployeeCodeSettingDto> findEmployeeCodeSetting = employeeCodeSettingAdapter.getbyCompanyId(companyId);
+		Optional<EmployeeCodeSettingImport> findEmployeeCodeSetting = employeeCodeSettingAdapter.getbyCompanyId(companyId);
 		if (findEmployeeCodeSetting.isPresent()) {
-			EmployeeCodeSettingDto employeeCodeSetting = findEmployeeCodeSetting.get();
+			EmployeeCodeSettingImport employeeCodeSetting = findEmployeeCodeSetting.get();
 			EmployCodeEditType editType = employeeCodeSetting.getEditType();
 			Integer addNumberDigit = employeeCodeSetting.getNumberDigit();
 			if (employeeCodeSetting.getNumberDigit() == employeeCode.length()) {
@@ -187,8 +187,8 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 	 * @param employeeCode the employee code
 	 * @return the employee
 	 */
-	private EmployeeDto getEmployee(String companyId, String employeeCode) {
-		Optional<EmployeeDto> em = employeeAdapter.getByEmployeeCode(companyId, employeeCode);
+	private EmployeeImport getEmployee(String companyId, String employeeCode) {
+		Optional<EmployeeImport> em = employeeAdapter.getByEmployeeCode(companyId, employeeCode);
 		if (em.isPresent()) {
 			return em.get();
 		} else {
@@ -218,6 +218,7 @@ public class SubmitLoginFormTwoCommandHandler extends CommandHandler<SubmitLogin
 	 * @param password the password
 	 */
 	private void compareHashPassword(User user, String password) {
+		String pas = PasswordHash.generate(password, "111111111111111111111111111111111111");
 		if (!PasswordHash.verifyThat(password, user.getUserId()).isEqualTo(user.getPassword().v())) {
 			throw new BusinessException("Msg_302");
 		}

@@ -39,7 +39,7 @@
 			<div class="sidebar-content-header" data-bind="with: tabView">
 				<span class="title" data-bind="text: title"></span>
 				<button class="proceed" data-bind="click: $parent.viewmodelB.saveData.bind($parent.viewmodelB)">#{i18n.getText('KMF004_2')}</button>
-				<button class="cancel">#{i18n.getText('KMF004_4')}</button>
+				<button class="cancel" data-bind="click: $parent.viewmodelB.cancel.bind($parent.viewmodelB)">#{i18n.getText('KMF004_4')}</button>
 			</div>
 			<div id="tabpanel-b" role="tabpanel" class="screen-b" data-bind="with: viewmodelB">
 				<div class="contents-area">
@@ -57,8 +57,14 @@
 					</div>
 					<div id="monthdays" data-bind="ntsMonthDays: {value: value, enable: enable}"/>
 				</div>
-				<span>#{i18n.getText('KMF004_79')}</span>
 				
+				<span class="setting-title">#{i18n.getText('KMF004_79')}</span>
+				
+				<div class="help-button">
+					<button id="help" 
+						data-bind="ntsHelpButton: {image: 'IMG_KMF004_1.png', position: 'left top', enable: enable }">?</button>
+				</div>
+						
 				<hr />
 				
 				<table class="data-items">

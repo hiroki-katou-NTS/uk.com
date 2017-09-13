@@ -3,35 +3,46 @@ module nts.uk.at.view.kmf004.c.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'gets': 'at/share/wpBonusPaySetting/getListWPBonusPaySetting',
-        'get': 'at/share/wpBonusPaySetting/getWPBPSetting/{0}',
-        'save': 'at/share/wpBonusPaySetting/saveWpBonsPaySetting',
-        getName: 'at/share/bonusPaySetting/getBonusPaySetting/{0}'
+        getPerByCode: "shared/specialholiday/getPerByCode/{0}/{1}",
+        getPerSetByCode: "shared/specialholiday/getPerSetByCode/{0}/{1}",
+        addPer: "shared/specialholiday/addPer",
+        UpdatePer: "shared/specialholiday/UpdatePer"
     }
 
-    export function getData(data: Array<string>) {
-        return ajax(paths.gets, data);
+    export function getPerByCode(specialHolidayCode: string, personalGrantDateCode: string): JQueryPromise<GrantDatePerItem> {
+        var path = nts.uk.text.format(paths.getPerByCode, specialHolidayCode, personalGrantDateCode);
+        return nts.uk.request.ajax("at", path);
     }
-
-    export function getSetting(wid: string) {
-        if (!wid) {
-            return $.Deferred().resolve(undefined).promise();
-        }
-        return ajax(format(paths.get, wid));
+    
+    export function getPerSetByCode(specialHolidayCode: string, personalGrantDateCode: string): JQueryPromise<GrantDatePerSetItem> {
+        var path = nts.uk.text.format(paths.getPerSetByCode, specialHolidayCode, personalGrantDateCode);
+        return nts.uk.request.ajax("at", path);
     }
-
-    export function getName(bonusPaySettingCode) {
-        return ajax(format(paths.getName, bonusPaySettingCode));
+    
+    export function addPer(data: Array<GrantDatePerItem>): JQueryPromise<any> {
+        var path = nts.uk.text.format(paths.addPer);
+        return nts.uk.request.ajax("at", path, data);
+    }  
+    
+    export function UpdatePer(data: Array<GrantDatePerItem>): JQueryPromise<any> {
+        var path = nts.uk.text.format(paths.UpdatePer);
+        return nts.uk.request.ajax("at", path, data);
     }
-
-    export function saveData(command) {
-
-        // if remove action
-        if (!command.bonusPaySettingCode || command.bonusPaySettingCode == '000') {
-            command.action = 1;
-        }
-
-        // push to webservice
-        return ajax(paths.save, command);
+    
+    export interface GrantDatePerItem {
+        specialHolidayCode: string;
+        personalGrantDateCode: string;
+        personalGrantDateName: string;
+        grantDate: number;
+        grantDateAtr: number;
+        grantDateSets: Array<GrantDatePerSetItem>;
+    }
+    
+    export interface GrantDatePerSetItem {
+        specialHolidayCode: string;
+        personalGrantDateCode: string;
+        grantDateNo: number;
+        grantDateMonth: number;
+        grantDateYear: number;
     }
 }
