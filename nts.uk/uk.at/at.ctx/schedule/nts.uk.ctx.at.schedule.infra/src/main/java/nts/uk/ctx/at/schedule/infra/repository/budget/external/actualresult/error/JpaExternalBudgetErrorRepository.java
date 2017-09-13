@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult;
+package nts.uk.ctx.at.schedule.infra.repository.budget.external.actualresult.error;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,9 +19,9 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetError;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.error.ExternalBudgetErrorRepository;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetError;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetErrorPK_;
-import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.KscdtExtBudgetError_;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.error.KscdtExtBudgetError;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.error.KscdtExtBudgetErrorPK_;
+import nts.uk.ctx.at.schedule.infra.entity.budget.external.actualresult.error.KscdtExtBudgetError_;
 
 /**
  * The Class JpaExternalBudgetErrorRepository.
