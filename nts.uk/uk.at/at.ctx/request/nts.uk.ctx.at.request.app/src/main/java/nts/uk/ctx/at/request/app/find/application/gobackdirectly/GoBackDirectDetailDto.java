@@ -5,7 +5,11 @@ import lombok.Value;
 
 @AllArgsConstructor
 @Value
-public class GoBackDirectDataDto {
+public class GoBackDirectDetailDto {
 	GoBackDirectlyDto goBackDirectlyDto;
 	int prePostAtr;
+	String workLocationName1;
+	String workLocationName2;
+	String workTypeName;
+	String workTimeName;
 }

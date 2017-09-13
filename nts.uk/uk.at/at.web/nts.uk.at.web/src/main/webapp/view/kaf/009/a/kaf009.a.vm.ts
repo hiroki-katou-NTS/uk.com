@@ -47,8 +47,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         //MultilineEditor
         multilineeditor: any;
 
+        //Insert command
+        insertcommand: KnockoutObservable<IGoBackCommand>;
+
         constructor() {
             var self = this;
+            self.insertcommand = ko.observable(null);
             //申請者
             self.employeeName = ko.observable("");
             //申請日付
@@ -111,9 +115,11 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             //get Common Setting
-            service.getGoBackSetting().done(function(settingData: CommonSetting) {
+            //service.getGoBackSetting().done(function(settingData: CommonSetting) {
+            service.getGoBackDirectDetail().done(function(detailData: any) {
+                console.log(detailData);
                 //get Setting common
-                self.setReasonControl(settingData.listReasonDto);
+                //self.setReasonControl(settingData.listReasonDto);
                 //Get data 
                 service.getGoBackDirectly().done(function(goBackDirectData: GoBackDirectData) {
                     //Set Value of control
@@ -125,19 +131,62 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             });
             return dfd.promise();
         }
-        
+        /**
+         * 
+         */
+        insert() {
+            let self = this;
+            service.insertGoBackDirect(self.getInsertCommand()).done(function() {
+                self.startPage();
+            }).fail(function(){
+                    
+            })
+        }
+        /**
+         * 
+         */
+        getInsertCommand() {
+            let self = this;
+            let insertCommand: IGoBackCommand = new GoBackCommand();
+            insertCommand.appID = Math.random().toString();
+            insertCommand.workTypeCd = self.workTypeCd();
+            insertCommand.siftCd = self.siftCd();
+            insertCommand.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
+            insertCommand.goWorkAtr1 = self.selectedGo();
+            insertCommand.backHomeAtr1 = self.selectedBack();
+            insertCommand.workTimeStart1 = self.timeStart1();
+            insertCommand.workTimeEnd1 = self.timeEnd1();
+            insertCommand.goWorkAtr2 = self.selectedGo2();
+            insertCommand.backHomeAtr2 = self.selectedBack2();
+            insertCommand.workTimeStart2 = self.timeStart2();
+            insertCommand.workTimeEnd2 = self.timeEnd2();
+            insertCommand.workLocationCd1 = self.workLocationCD();
+            insertCommand.workLocationCd2 = self.workLocationCD2();
+            return insertCommand;
+        }
+
+        /**
+         * 
+         */
+        update() {
+
+
+        }
+
+
         /**
          * Set common Setting 
          */
         setGoBackSetting(data: GoBackDirectSetting) {
             let self = this;
             if (data != undefined) {
-                
+
 
             }
         }
-        
-        
+
+
+
         /**
          * set data from Server 
          */
@@ -198,7 +247,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
 
         }
 
-        
+
         /**
          * New Screen Mode 
          */
@@ -345,5 +394,39 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             this.reasonCode = reasonCode;
             this.reasonName = reasonName;
         }
+    }
+    export interface IGoBackCommand {
+        appID: string;
+        workTypeCd: string;
+        siftCd: string;
+        workChangeAtr: number;
+        goWorkAtr1: number;
+        backHomeAtr1: number;
+        workTimeStart1: number;
+        workTimeEnd1: number;
+        workLocationCd1: string;
+
+        goWorkAtr2: number;
+        backHomeAtr2: number;
+        workTimeStart2: number;
+        workTimeEnd2: number;
+        workLocationCd2: string;
+    }
+
+    class GoBackCommand implements IGoBackCommand {
+        appID: string;
+        workTypeCd: string;
+        siftCd: string;
+        workChangeAtr: number;
+        goWorkAtr1: number;
+        backHomeAtr1: number;
+        workTimeStart1: number;
+        workTimeEnd1: number;
+        workLocationCd1: string;
+        goWorkAtr2: number;
+        backHomeAtr2: number;
+        workTimeStart2: number;
+        workTimeEnd2: number;
+        workLocationCd2: string;
     }
 }

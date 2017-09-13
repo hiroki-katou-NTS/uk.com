@@ -10,9 +10,10 @@ import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReaso
 import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingDto;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectAppSet;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectAppSetService;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectAppSet;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectBasicData;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectCommonService;
 import nts.uk.shr.com.context.AppContexts;
@@ -24,6 +25,8 @@ public class GoBackDirectlyFinder {
 	private GoBackDirectlyRepository goBackDirectRepo;
 	@Inject
 	private GoBackDirectCommonService goBackCommon;
+	@Inject
+	private GoBackDirectAppSetService goBackAppSet;
 
 	/**
 	 * Get GoBackDirectlyDto
@@ -46,6 +49,14 @@ public class GoBackDirectlyFinder {
 	public GoBackDirectSettingDto getGoBackDirectSettingBySID(String SID) {
 		return convertSettingToDto(goBackCommon.getSettingData(SID));
 	}
+	/**
+	 * get Detail Data to 
+	 * @param appID
+	 * @return
+	 */
+	public GoBackDirectDetailDto getGoBackDirectDetailByAppId(String appID) {
+		return convertGoBackDirectData(goBackAppSet.getGoBackDirectAppSet(appID));
+	}
 
 	/**
 	 * Convert to GoBackDirectlyDto
@@ -57,15 +68,17 @@ public class GoBackDirectlyFinder {
 				domain.getWorkLocationCD1(), domain.getGoWorkAtr2().value, domain.getBackHomeAtr2().value,
 				domain.getWorkTimeStart2().v(), domain.getWorkTimeEnd2().v(), domain.getWorkLocationCD2());
 	}
+	
 	/**
 	 * get Data of GoBackDirect with Application Setting
+	 * 
 	 * @param domain
 	 * @return
 	 */
-	public GoBackDirectDataDto convertGoBackDirectData(GoBackDirectAppSet domain) {
-		return new GoBackDirectDataDto(
-				convertToDto(domain.getGoBackDirectly()),
-				domain.getPrePostAtr());
+	public GoBackDirectDetailDto convertGoBackDirectData(GoBackDirectAppSet domain) {
+		return new GoBackDirectDetailDto(convertToDto(domain.getGoBackDirectly()), domain.getPrePostAtr(),
+				domain.getWorkLocationName1(), domain.getWorkLocationName2(), domain.getWorkTypeName(),
+				domain.getWorkTimeName());
 	}
 
 	/**
