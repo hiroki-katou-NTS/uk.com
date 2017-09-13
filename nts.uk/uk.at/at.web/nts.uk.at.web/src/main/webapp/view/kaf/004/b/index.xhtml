@@ -26,11 +26,13 @@
 			<div data-bind="ntsCheckBox: { checked: sendMail }">#{i18n.getText('KAF004_10')}</div>
 			</div>
 			<div id="contents-area">
+			<div class="contents-left">
 				<div class = "header"><label class = "header">#{i18n.getText('KAF004_3')}</label></div>
 				<div class="valign-center control-group">
 					<div data-bind="ntsFormLabel: { constraint: 'PersonId'}">#{i18n.getText('KAF004_11')}</div>
 					<label class= "applicant">11111</label>
 				</div>
+				<div class = "note-right" style = "height: 110px; width: 200px; background-color: #BEBEBE; float:right; "></div>
 				<div class="valign-center control-group">
 					<div data-bind="ntsFormLabel: { constraint: 'PersonId', required: true }">#{i18n.getText('KAF004_12')}</div>
 					<input  id = "inputdate" data-bind="ntsTimeEditor: {value: date, inputFormat: 'date'}" />
@@ -52,7 +54,7 @@
 				<div class="valign-center control-group">
 				<div data-bind="ntsFormLabel: { constraint: 'PersonId'}">#{i18n.getText('KAF004_17')}</div>
 				<div id="combo-box" data-bind="ntsComboBox: {
-						options: ListTypicalReason,
+						options: ListAppReason,
 						optionsValue: 'code',
 						visibleItemsCount: 5,
 						value: selectedCode,
@@ -72,7 +74,8 @@
 					}" />
 		    	</div>
 				</div>
-
+				</div>
+				
 			</div>
 		</ui:define>
 	</ui:composition>

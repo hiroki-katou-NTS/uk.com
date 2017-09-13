@@ -14,7 +14,15 @@ module kaf000.a.viewmodel{
         //listFrameByListPhaseId
         listFrameByListPhase1: KnockoutObservableArray<Array<model.ApprovalFrame>>;
         //list appID 
-        ListAppID : Array<String>;
+        listAppID : Array<String>;
+        //List  Approval Root 
+        listApprovalRoot :  KnockoutObservableArray<Array<model.ApprovalRootOutput>>;
+        
+        /**
+         * obj input
+         */
+        
+        objApprovalRootInput : KnockoutObservable<model.ObjApprovalRootInput>;
         constructor(){
             var self = this;
             /**
@@ -26,7 +34,11 @@ module kaf000.a.viewmodel{
             self.listFrame = ko.observableArray([]);
             self.listFrameByListPhase = ko.observableArray([]);
             self.listFrameByListPhase1 = ko.observableArray([]);
-            self.ListAppID = [];
+            self.listAppID = [];
+            self.listApprovalRoot = ko.observableArray([]);
+            //obj input approval root
+            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','90000000-0000-0000-0000-000000000001',1,1,new Date('2019-11-02 00:00:00')));
+            
         }
         
         start(): JQueryPromise<any> {
@@ -36,11 +48,24 @@ module kaf000.a.viewmodel{
             //alert("sdfds");
             //self.getAllPhase();
             var dfdAllPhase = self.getAllPhase();
-            $.when(dfdAllPhase).done((dfdAllPhaseData)=>{
+            var dfdAllApprovalRoot = self.getAllApprovalRoot();
+            $.when(dfdAllPhase,dfdAllApprovalRoot).done((dfdAllPhaseData,dfdAllApprovalRootDât)=>{
                 self.getAllFrameByListPhaseId1(self.listPhaseID);
                  dfd.resolve(); 
             });
             return dfd.promise();
+        }
+        
+        //get all listApprovalRoot
+        getAllApprovalRoot(){
+            var self = this;
+            var dfd = $.Deferred<any>();
+            service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
+                self.listApprovalRoot(data);
+                dfd.resolve(data);    
+            });
+            return dfd.promise();
+            
         }
         
         //getAllPhase
@@ -255,19 +280,19 @@ module kaf000.a.viewmodel{
         
         //class ObjApprovalRootInput    
         export class ObjApprovalRootInput{
-            cid : KnockoutObservable<String>;
-            sid : KnockoutObservable<String>;
-            employmentRootAtr : KnockoutObservable<number>;
-            appType : KnockoutObservable<number>;
-            standardDate : KnockoutObservable<String>;
+            cid : String;
+            sid : String;
+            employmentRootAtr : number;
+            appType : number;
+            standardDate :  Date;
             constructor (cid : String,
                         sid : String,employmentRootAtr : number,
-                        appType : number,standardDate : String){
-                this.cid  = ko.observable(cid);
-                this.sid = ko.observable(sid); 
-                this.employmentRootAtr = ko.observable(employmentRootAtr);
-                this.appType = ko.observable(appType);
-                this.standardDate = ko.observable(standardDate); 
+                        appType : number,standardDate : Date){
+                this.cid  = cid;
+                this.sid = sid; 
+                this.employmentRootAtr =employmentRootAtr;
+                this.appType = appType;
+                this.standardDate = standardDate; 
             }
         }//end class ObjApprovalRootInput
         
