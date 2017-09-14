@@ -15,5 +15,13 @@ public interface OvertimeSettingRepository {
 	 * @return the optional
 	 */
 	public Optional<OvertimeSetting> findById(String companyId);
+	
+	
+	/**
+	 * Save.
+	 *
+	 * @param domain the domain
+	 */
+	public void save(OvertimeSetting domain);
 
 }
