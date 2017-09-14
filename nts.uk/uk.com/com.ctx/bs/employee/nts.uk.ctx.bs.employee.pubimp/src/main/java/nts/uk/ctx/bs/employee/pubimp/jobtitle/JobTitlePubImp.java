@@ -46,63 +46,6 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * nts.uk.ctx.bs.employee.pub.jobtitle.JobtitlePub#findAll(java.lang.String,
-	 * nts.arc.time.GeneralDate)
-	 */
-	@Override
-	public List<JobTitleExport> findAll(String companyId, GeneralDate referenceDate) {
-		return jobTitleRepository.findAll(companyId, referenceDate).stream()
-				.map(item -> JobTitleExport.builder().companyId(item.getCompanyId().v())
-						.positionId(item.getPositionId().v())
-						.positionCode(item.getPositionCode().v())
-						.positionName(item.getPositionName().v())
-						.sequenceCode(item.getSequenceCode().v())
-						.startDate(item.getPeriod().getStartDate())
-						.endDate(item.getPeriod().getEndDate()).build())
-				.collect(Collectors.toList());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.bs.employee.pub.jobtitle.JobtitlePub#findByJobIds(java.util.
-	 * List)
-	 */
-	@Override
-	public List<JobTitleExport> findByJobIds(List<String> jobIds) {
-		return jobTitleRepository.findByJobIds(jobIds).stream().map(item -> JobTitleExport.builder()
-				.companyId(item.getCompanyId().v()).positionId(item.getPositionId().v())
-				.positionCode(item.getPositionCode().v()).positionName(item.getPositionName().v())
-				.sequenceCode(item.getSequenceCode().v()).startDate(item.getPeriod().getStartDate())
-				.endDate(item.getPeriod().getEndDate()).build()).collect(Collectors.toList());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.bs.employee.pub.jobtitle.JobtitlePub#findByJobIds(java.lang.
-	 * String, java.util.List, nts.arc.time.GeneralDate)
-	 */
-	@Override
-	public List<JobTitleExport> findByJobIds(String companyId, List<String> jobIds,
-			GeneralDate baseDate) {
-		return jobTitleRepository.findByJobIds(companyId, jobIds, baseDate).stream()
-				.map(item -> JobTitleExport.builder().companyId(item.getCompanyId().v())
-						.positionId(item.getPositionId().v())
-						.positionCode(item.getPositionCode().v())
-						.positionName(item.getPositionName().v())
-						.sequenceCode(item.getSequenceCode().v())
-						.startDate(item.getPeriod().getStartDate())
-						.endDate(item.getPeriod().getEndDate()).build())
-				.collect(Collectors.toList());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
 	 * nts.uk.ctx.bs.employee.pub.employee.EmployeePub#findJobTitleBySid(String)
 	 */
 	@Override

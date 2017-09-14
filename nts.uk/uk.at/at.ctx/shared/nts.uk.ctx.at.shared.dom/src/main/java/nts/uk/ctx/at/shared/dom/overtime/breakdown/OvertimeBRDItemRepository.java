@@ -27,5 +27,13 @@ public interface OvertimeBRDItemRepository {
 	 * @return the list
 	 */
 	public List<OvertimeBRDItem> findAll(String companyId);
+	
+	/**
+	 * Find all use.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	public List<OvertimeBRDItem> findAllUse(String companyId);
 
 }

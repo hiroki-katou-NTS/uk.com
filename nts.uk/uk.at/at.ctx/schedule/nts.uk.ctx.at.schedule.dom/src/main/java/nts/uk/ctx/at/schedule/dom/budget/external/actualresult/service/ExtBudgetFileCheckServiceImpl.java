@@ -6,8 +6,9 @@ package nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,13 +16,10 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
+import nts.arc.layer.app.file.storage.FileStorage;
+import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
 import nts.gul.collection.CollectionUtil;
-import nts.gul.csv.NtsCsvReader;
-import nts.gul.csv.NtsCsvRecord;
-import nts.gul.text.charset.CharsetDetector;
-import nts.gul.text.charset.NtsCharset;
-import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetCharset;
 
 /**
  * The Class ExtBudgetFileCheckServiceImpl.
@@ -32,9 +30,15 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
     /** The file stream service. */
     @Inject
     private StoredFileStreamService fileStreamService;
+    
+    @Inject
+    private FileStorage fileStorage;
 
     /** The max record. */
     private final int MAX_RECORD = 999;
+    
+    /** The lst extension. */
+    private final List<String> LST_EXTENSION = Arrays.asList("txt", "csv");
 
     /*
      * (non-Javadoc)
@@ -43,35 +47,14 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
      * ExtBudgetFileCheckService#validFileFormat(java.lang.String)
      */
     @Override
-    public void validFileFormat(String fileId, Integer encoding, Integer startLine) {
+    public void validFileFormat(String fileId, Integer encoding, Integer standardColumn) {
         InputStream inputStream = this.findContentFile(fileId);
 
+        // valid file .txt or csv
         this.validFileExtension(fileId);
-        this.validLimitRecord(inputStream, encoding, startLine);
-        // TODO: wait for discussing check charset?
-//        this.validCharset(inputStream);
-
-        // close input stream
-        try {
-            inputStream.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service.
-     * ExtBudgetFileCheckService#validFileIgnoreCharset(java.lang.String,
-     * java.lang.Integer, java.lang.Integer)
-     */
-    @Override
-    public void validFileIgnoreCharset(String fileId, Integer encoding, Integer startLine) {
-        InputStream inputStream = this.findContentFile(fileId);
-
-        this.validFileExtension(fileId);
-        this.validLimitRecord(inputStream, encoding, startLine);
+        
+        // check limit record
+        this.validLimitRecord(inputStream, encoding, standardColumn);
 
         // close input stream
         try {
@@ -108,7 +91,20 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
      *            the file id
      */
     private void validFileExtension(String fileId) {
-        // TODO: check extension file, if not support, throw new BusinessException("Msg_159");
+        Optional<StoredFileInfo> optional = this.fileStorage.getInfo(fileId);
+        if(!optional.isPresent()){
+            throw new RuntimeException("file not found");
+        }
+        String fileName = optional.get().getOriginalName().toLowerCase();
+        boolean isValidSupportFileType = false;
+        for (String item : LST_EXTENSION) {
+            if (fileName.contains(item)) {
+                isValidSupportFileType = true;
+            }
+        }
+        if (!isValidSupportFileType) {
+            throw new BusinessException("Msg_159");
+        }
     }
 
     /**
@@ -118,35 +114,17 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
      *            the input stream
      * @param encoding
      *            the encoding
-     * @param startLine
-     *            the start line
+     * @param standardColumn
+     *            the standard column
      */
-    private void validLimitRecord(InputStream inputStream, Integer encoding, Integer startLine) {
-        NtsCsvReader csvReader = FileUtil.newCsvReader(encoding);
-        try {
-            // TODO: List<NtsCsvRecord> csvRecords = csvReader.parse(inputStream);
-        	List<NtsCsvRecord> csvRecords = new ArrayList<>();
-            if (CollectionUtil.isEmpty(csvRecords)) {
-                return;
-            }
-            if (csvRecords.size() > MAX_RECORD) {
-                throw new BusinessException("Msg_168");
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    private void validLimitRecord(InputStream inputStream, Integer encoding, Integer standardColumn) {
+        List<List<String>> resutl = FileUtil.findContentFile(inputStream, encoding, standardColumn);
+        if (CollectionUtil.isEmpty(resutl)) {
+            return;
+        }
+        if (resutl.size() > MAX_RECORD) {
+            throw new BusinessException("Msg_168");
         }
     }
 
-    /**
-     * Valid charset.
-     *
-     * @param inputStream
-     *            the input stream
-     */
-    private void validCharset(InputStream inputStream) {
-        NtsCharset charset = CharsetDetector.detect(inputStream);
-        if (charset.value != ExtBudgetCharset.Shift_JIS.value) {
-            throw new BusinessException("Msg_161");
-        }
-    }
 }

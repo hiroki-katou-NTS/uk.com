@@ -22,7 +22,6 @@ public class OvertimeLangBRDItem extends AggregateRoot{
 	// 会社ID
 	private CompanyId companyId;
 
-
 	/** The name. */
 	// 名称
 	private BreakdownItemName name;
@@ -35,6 +34,31 @@ public class OvertimeLangBRDItem extends AggregateRoot{
 	// 超過時間NO
 	private BreakdownItemNo breakdownItemNo;
 
+	
+	/**
+	 * Instantiates a new overtime lang BRD item.
+	 *
+	 * @param memento the memento
+	 */
+	public OvertimeLangBRDItem(OvertimeLangBRDItemGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.name = memento.getName();
+		this.languageId = memento.getLanguageId();
+		this.breakdownItemNo = memento.getBreakdownItemNo();
+	}
+	
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(OvertimeLangBRDItemSetMemento memento){
+		memento.setCompanyId(this.companyId);
+		memento.setName(this.name);
+		memento.setLanguageId(this.languageId);
+		memento.setBreakdownItemNo(this.breakdownItemNo);
+	}
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */

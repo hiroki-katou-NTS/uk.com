@@ -100,9 +100,9 @@ public class JpaPremiumExtra60HRateRepository extends JpaRepository
 		// for each data premium extra rate
 		premiumExtras.forEach(premiumExtra -> {
 			if (this.findKeyOfPremiumExtraRate(premiumExtra, lstPremiumExtraRates)) {
-				entityUpdateAll.add(this.toEntity(premiumExtra, companyId));
-			} else {
 				entityAddAll.add(this.toEntity(premiumExtra, companyId));
+			} else {
+				entityUpdateAll.add(this.toEntity(premiumExtra, companyId));
 			}
 		});
 

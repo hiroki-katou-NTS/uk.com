@@ -21,7 +21,7 @@ public class BpsmtPerson  extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public BpsmtPersonPk bpsdtPersonPk;
+	public BpsmtPersonPk bpsmtPersonPk;
 
 	@Basic(optional = false)
 	@Column(name = "BIRTHDAY")
@@ -93,7 +93,7 @@ public class BpsmtPerson  extends UkJpaEntity implements Serializable {
 	
 	@Override
 	protected Object getKey() {
-		return this.bpsdtPersonPk;
+		return this.bpsmtPersonPk;
 	}
 
 }
