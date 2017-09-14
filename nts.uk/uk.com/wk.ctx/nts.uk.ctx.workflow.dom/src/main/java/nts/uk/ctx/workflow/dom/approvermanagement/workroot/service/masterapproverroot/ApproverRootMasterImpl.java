@@ -96,7 +96,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		for(WorkplaceApprovalRoot root: lstWps) {
 			List<ApprovalForApplication> wpRootInfor = new ArrayList<>();
 			//Neu da co workplace roi
-			if(mapWpRootInfor.containsKey(root.getWorkplaceId())) {
+			if(!mapWpRootInfor.isEmpty() && mapWpRootInfor.containsKey(root.getWorkplaceId())) {
 				WorkplaceApproverOutput wpApp = mapWpRootInfor.get(root.getWorkplaceId());						
 				wpRootInfor = wpApp.getWpRootInfor();
 				wpRootInfor = getAppInfors(root, wpRootInfor, companyID);
@@ -127,7 +127,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		List<ApprovalRootMaster> lstAppInfo = new ArrayList<>();
 		//承認フェーズ, 承認者
 		lstAppInfo = getPhaseApprover(companyID, root.getBranchId());
-		ApprovalForApplication wpAppInfo = new ApprovalForApplication(appId, appName, root.getPeriod().getStartDate(), root.getPeriod().getEndDate(), lstAppInfo);
+		ApprovalForApplication wpAppInfo = new ApprovalForApplication(root.getApplicationType().value, appName, root.getPeriod().getStartDate(), root.getPeriod().getEndDate(), lstAppInfo);
 		wpRootInfor.add(wpAppInfo);
 		return wpRootInfor;
 	}
@@ -165,6 +165,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			ApprovalRootMaster appRoot = new ApprovalRootMaster(phase.getOrderNumber(), phase.getApprovalForm().name, lstApprovers);
 			lstMatter.add(appRoot);
 		}
+		Collections.sort(lstMatter, Comparator.comparing(ApprovalRootMaster:: getPhaseNumber));
 		return lstMatter;
 	}
 	
