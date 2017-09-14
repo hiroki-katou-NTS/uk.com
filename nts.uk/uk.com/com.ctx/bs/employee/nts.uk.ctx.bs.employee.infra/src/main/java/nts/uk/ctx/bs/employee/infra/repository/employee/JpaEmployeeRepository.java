@@ -41,8 +41,14 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 			+ " AND c.bsydtEmployeePk.sId IN :employeeIds ";
 
 	public final String SELECT_BY_COMPANY_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId";
+	
+	public final String SELECT_BY_SID = SELECT_NO_WHERE 
+			+ " WHERE c.bsydtEmployeePk.sId = :sId";
 
-	public final String SELECT_BY_SID = SELECT_NO_WHERE + " WHERE c.bsydtEmployeePk.sId = :sId";
+	public final String SELECT_BY_CID_SID = SELECT_NO_WHERE 
+			+ " WHERE c.companyId = :companyId"
+			+ " AND c.bsydtEmployeePk.sId = :sId";
+	
 
 	public final String SELECT_BY_STANDARDDATE = SELECT_NO_WHERE 
 			+ " WHERE c.companyId = :companyId"
@@ -169,7 +175,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	@Override
 	public Optional<Employee> findBySid(String companyId, String employeeId) {
 
-		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_SID, BsymtEmployee.class)
+		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_CID_SID, BsymtEmployee.class)
 				.setParameter("companyId", companyId)
 				.setParameter("sId", employeeId)
 				.getSingleOrNull();
@@ -214,6 +220,26 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 				.getList();
 
 		return toListEmployee(listEmpEntity);
+	}
+
+	@Override
+	public Optional<Employee> getBySid(String employeeId) {
+		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_SID, BsymtEmployee.class)
+				.setParameter("sId", employeeId)
+				.getSingleOrNull();
+
+		Employee person = new Employee();
+		if (entity != null) {
+			person = toDomainEmployee(entity);
+
+			List<JobEntryHistory> listJobEntry = new ArrayList<>();
+
+			if (!entity.listEntryHist.isEmpty()) {
+				person.setListEntryJobHist(
+						entity.listEntryHist.stream().map(c -> toDomainJobEntryHist(c)).collect(Collectors.toList()));
+			}
+		}
+		return Optional.of(person);
 	}
 
 }

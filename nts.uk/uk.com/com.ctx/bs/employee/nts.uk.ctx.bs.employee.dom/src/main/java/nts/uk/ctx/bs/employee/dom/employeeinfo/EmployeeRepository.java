@@ -57,6 +57,13 @@ public interface EmployeeRepository {
 	 */
 	Optional<Employee> findBySid(String companyId, String employeeId);
 	
+	/**
+	 * 
+	 * @param employeeId
+	 * @return the optional
+	 */
+	Optional<Employee> getBySid(String employeeId);
+	
 	
 	List<Employee> getListEmpByStandardDate(String companyId , GeneralDate standardDate);
 }
