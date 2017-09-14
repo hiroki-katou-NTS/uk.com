@@ -15,13 +15,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * The Class CemptEmploymentPK.
+ * The Class BsymtEmploymentPK.
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Embeddable
-public class CemptEmploymentPK implements Serializable {
+public class BsymtEmploymentPK implements Serializable {
 /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
@@ -32,7 +32,7 @@ public class CemptEmploymentPK implements Serializable {
 	
 	/** The code. */
 	@Basic(optional = false)
-	@Column(name="EMPTCD")
+	@Column(name="CODE")
 	private String code;
 	
 }

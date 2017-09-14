@@ -8,15 +8,15 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class CemptEmploymentPK_.
+ * The Class BsymtEmploymentPK_.
  */
-@StaticMetamodel(CemptEmploymentPK.class)
-public class CemptEmploymentPK_ {
+@StaticMetamodel(BsymtEmploymentPK.class)
+public class BsymtEmploymentPK_ {
 
 	/** The company id. */
-	public static volatile SingularAttribute<CemptEmploymentPK, String> cid;
+	public static volatile SingularAttribute<BsymtEmploymentPK, String> cid;
 	
 	/** The code. */
-	public static volatile SingularAttribute<CemptEmploymentPK, String> code;
+	public static volatile SingularAttribute<BsymtEmploymentPK, String> code;
 	
 }

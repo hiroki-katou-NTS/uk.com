@@ -16,10 +16,10 @@
 			<com:scriptfile path="cmm008.a.vm.js" />
 			<com:scriptfile path="cmm008.a.start.js" />
 			<com:ValidatorScript>
-				nts.uk.ctx.basic.dom.company.organization.employment.EmploymentCode
-				nts.uk.ctx.basic.dom.company.organization.employment.EmploymentName
-				nts.uk.ctx.basic.dom.company.organization.employment.Memo
-				nts.uk.ctx.basic.dom.company.organization.employment.EmpExternalCode
+				nts.uk.ctx.bs.employee.dom.employment.EmploymentCode
+				nts.uk.ctx.bs.employee.dom.employment.EmploymentName
+				nts.uk.ctx.bs.employee.dom.employment.EmpExternalCode
+				nts.uk.shr.com.primitive.Memo
 			</com:ValidatorScript>
 		</ui:define>
 
@@ -27,7 +27,7 @@
 			<div id="functions-area">
 				<button data-bind="click: createNewEmployment" tabindex="1">#{i18n.getText('CMM008_1')}</button>
 				<button class="proceed" data-bind="click: createEmployment, enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('CMM008_2')}</button>
-				<button class="danger" id="btnDelete" data-bind = "click: deleteEmployment, enable: isDelete" tabindex="4">#{i18n.getText('CMM008_4')}</button>
+				<button class="danger" id="btnDelete" data-bind = "click: deleteEmployment, enable: !isNewMode()" tabindex="4">#{i18n.getText('CMM008_4')}</button>
 			</div>
 			<div id="contents-area">
 				<table>
@@ -39,15 +39,15 @@
 						
 							<div class="td-width" data-bind="ntsFormLabel: {required: true, constraint: ['EmploymentCode', 'EmploymentName']}"><label>#{i18n.getText('CMM008_6')}</label></div>
 							<div style="display: inline-block; padding-left: 10px">
-								<input data-bind="ntsTextEditor: {
+								<input id="empCode" data-bind="ntsTextEditor: {
 														name: '#[CMM008_7]',
 														value: employmentCode, 
 														constraint: 'EmploymentCode', 
 														option: { width: '35px' },
 														required: true, 
-														enable: true}"
+														enable: isNewMode()}"
 									tabindex="7" />
-								<input data-bind="ntsTextEditor: {
+								<input id="empName" data-bind="ntsTextEditor: {
 														name: '#[CMM008_8]',
 														value: employmentName, 
 														constraint: 'EmploymentName',
@@ -66,7 +66,7 @@
 										</div>
 									</td>
 									<td>
-										<input data-bind="ntsTextEditor: {
+										<input id="extCode" data-bind="ntsTextEditor: {
 														name: '#[CMM008_9]',
 														value: empExternalCode, 
 														constraint: 'EmpExternalCode',
@@ -90,7 +90,7 @@
 										<div>
 											<!-- <TEXTAREA id="input-text" rows="5" cols="35"
 												data-bind="value: memo, name: '#[CMM008_10]'"></TEXTAREA> -->
-											<textarea data-bind="ntsMultilineEditor: { value: memo, name: '#[CMM008_10]', constraint: 'Memo', option: { width: '290px', height: '150px'}}" />
+											<textarea id="memo" data-bind="ntsMultilineEditor: { value: memo, name: '#[CMM008_10]', constraint: 'Memo', option: { width: '290px', height: '150px'}}" />
 										</div>
 									</td>
 								</tr>
