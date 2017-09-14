@@ -15,6 +15,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 public class DPErrorDto {
 	private String errorCode;
+	private String errorType;
 	private String employeeId;
 	private GeneralDate processingDate;
 	private Integer attendanceItemId;
