@@ -6,7 +6,13 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class EmployeeApproverOutput {
+	/**
+	 * employeeId
+	 */
 	String eId;
+	/**
+	 * EmployeeName
+	 */
 	String eName;
 	
 }

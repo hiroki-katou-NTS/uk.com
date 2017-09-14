@@ -11,6 +11,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
@@ -25,8 +26,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRep
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalForApplication;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootCommonOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootMaster;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApproverObjectOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.CompanyApprovalInfor;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeApproverOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
@@ -97,13 +98,17 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		Map<String, PersonApproverOutput> mapPsRootInfor = new HashMap<>();
 		for(PersonApprovalRoot root: lstPss) {
 			List<ApprovalForApplication> psWootInfor = new ArrayList<>();
-			ApproverObjectOutput psRoot = new ApproverObjectOutput(root.getHistoryId(), 
-					root.getApplicationType(), 
-					root.getPeriod(), 
+			ApprovalRootCommonOutput psRoot = new ApprovalRootCommonOutput(root.getCompanyId(),
+					root.getApprovalId(), root.getEmployeeId(),
+					"", 
+					root.getHistoryId(),
+					root.getApplicationType().value,
+					root.getPeriod().getEndDate(), 
+					root.getPeriod().getEndDate(), 
 					root.getBranchId(), 
-					root.getAnyItemApplicationId(), 
-					root.getConfirmationRootType(), 
-					root.getEmploymentRootAtr());
+					root.getAnyItemApplicationId(),
+					root.getConfirmationRootType().value,
+					root.getEmploymentRootAtr().value); 
 			//Neu da co person roi
 			if(!mapPsRootInfor.isEmpty() && mapPsRootInfor.containsKey(root.getEmployeeId())) {
 				PersonApproverOutput psApp = mapPsRootInfor.get(root.getEmployeeId());
@@ -123,7 +128,6 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		return mapPsRootInfor;
 	}
 	
-	
 	/**
 	 * get all approval of workplace
 	 * @param lstWps
@@ -135,13 +139,18 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		Map<String, WorkplaceApproverOutput> mapWpRootInfor =  new HashMap<>();
 		for(WorkplaceApprovalRoot root: lstWps) {
 			List<ApprovalForApplication> wpRootInfor = new ArrayList<>();
-			ApproverObjectOutput wpRoot = new ApproverObjectOutput(root.getHistoryId(),
-					root.getApplicationType(),
-					root.getPeriod(),
-					root.getBranchId(),
-					root.getAnyItemApplicationId(), 
-					root.getConfirmationRootType(), 
-					root.getEmploymentRootAtr());
+			ApprovalRootCommonOutput wpRoot = new ApprovalRootCommonOutput(root.getCompanyId(),
+					root.getApprovalId(), 
+					"",
+					root.getWorkplaceId(), 
+					root.getHistoryId(),
+					root.getApplicationType().value,
+					root.getPeriod().getEndDate(), 
+					root.getPeriod().getEndDate(), 
+					root.getBranchId(), 
+					root.getAnyItemApplicationId(),
+					root.getConfirmationRootType().value,
+					root.getEmploymentRootAtr().value);
 			//Neu da co workplace roi
 			if(!mapWpRootInfor.isEmpty() && mapWpRootInfor.containsKey(root.getWorkplaceId())) {
 				WorkplaceApproverOutput wpApp = mapWpRootInfor.get(root.getWorkplaceId());						
@@ -159,21 +168,21 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		return mapWpRootInfor;
 	}
 	
-	private List<ApprovalForApplication> getAppInfors(ApproverObjectOutput root, List<ApprovalForApplication> wpRootInfor, String companyID){
+	private List<ApprovalForApplication> getAppInfors(ApprovalRootCommonOutput root, List<ApprovalForApplication> wpRootInfor, String companyID){
 		//ApprovalForApplication wpAppInfo = null;
 		//neu la 就業ルート区分 la 共通(common)
 		String appName = "";
 		int appId = 0;
-		if(root.getEmploymentRootAtr() == EmploymentRootAtr.COMMON) {
+		if(root.getEmploymentRootAtr() == EmploymentRootAtr.COMMON.value) {
 			appName = rootCommon;
-		}else if(root.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION) {
-			appId = root.getApplicationType().value + 1;
-			appName = root.getApplicationType().nameId;
+		}else if(root.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION.value) {
+			appId = root.getApplicationType() + 1;
+			appName = EnumAdaptor.valueOf(root.getApplicationType(), ApplicationType.class).nameId;
 		}
 		List<ApprovalRootMaster> lstAppInfo = new ArrayList<>();
 		//承認フェーズ, 承認者
 		lstAppInfo = getPhaseApprover(companyID, root.getBranchId());
-		ApprovalForApplication wpAppInfo = new ApprovalForApplication(appId, appName, root.getPeriod().getStartDate(), root.getPeriod().getEndDate(), lstAppInfo);
+		ApprovalForApplication wpAppInfo = new ApprovalForApplication(appId, appName, root.getStartDate(), root.getEndDate(), lstAppInfo);
 		wpRootInfor.add(wpAppInfo);
 		Collections.sort(wpRootInfor, Comparator.comparing(ApprovalForApplication:: getAppType));
 		return wpRootInfor;
