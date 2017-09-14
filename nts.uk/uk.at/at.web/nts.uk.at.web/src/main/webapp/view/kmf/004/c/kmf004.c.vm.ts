@@ -29,6 +29,7 @@ module nts.uk.at.view.kmf004.c {
             standardDate: KnockoutObservable<number>;
             dataItems: KnockoutObservableArray<Item>;
             specialHolidayCode: KnockoutObservable<string>;
+            standardDateEnable: KnockoutObservable<boolean>;
             
             constructor() {
                 let self = this,
@@ -57,6 +58,7 @@ module nts.uk.at.view.kmf004.c {
                 
                 self.selectedBaseDateId = ko.observable(0); 
                 self.standardDate = ko.observable(101);
+                self.standardDateEnable = ko.observable(true);
                 
                 self.dataItems = ko.observableArray([]);
                 
@@ -81,6 +83,14 @@ module nts.uk.at.view.kmf004.c {
                         });
                     }
                 });  
+                
+                self.selectedBaseDateId.subscribe(function(value) {
+                    if(value == 0){
+                        self.standardDateEnable(true);
+                    } else {
+                        self.standardDateEnable(false);
+                    }
+                }); 
             }
 
             /**
@@ -213,7 +223,7 @@ module nts.uk.at.view.kmf004.c {
                 
                 _.forEach(self.dataItems(), function(item) {
                     if(item.month() != null && item.year() != null) {
-                        if(item.month() !== "" && item.year() !== "") {
+                        if(item.month() !== 0 && item.year() !== 0) {
                             perSetData.push({
                                 specialHolidayCode: self.specialHolidayCode(),
                                 personalGrantDateCode: self.code(),

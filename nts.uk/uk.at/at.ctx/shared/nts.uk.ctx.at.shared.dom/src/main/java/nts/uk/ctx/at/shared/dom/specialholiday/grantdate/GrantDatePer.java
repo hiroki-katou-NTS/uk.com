@@ -8,10 +8,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
+import nts.arc.layer.dom.DomainObject;
 
+/**
+ * 
+ * @author TanLV
+ *
+ */
 @AllArgsConstructor
 @Getter
-public class GrantDatePer {
+public class GrantDatePer extends DomainObject {
 
 	/*会社ID*/
 	private String companyId;
@@ -33,6 +39,9 @@ public class GrantDatePer {
 	
 	private List<GrantDatePerSet> grantDatePerSet;
 
+	/* 
+	 * Create from java type
+	 */
 	public static GrantDatePer createSimpleFromJavaType(String companyId, String specialHolidayCode, String personalGrantDateCode, String personalGrantDateName,
 			int grantDate, int grantDateAtr, List<GrantDatePerSet> grantDatePerSet) {
 		return new GrantDatePer(companyId,
@@ -45,6 +54,9 @@ public class GrantDatePer {
 
 	}
 
+	/* 
+	 * Validate function
+	 */
 	public void validateInput() {
 		for (int i = 0; i < this.grantDatePerSet.size(); i++) {
 			GrantDatePerSet currentSet = this.grantDatePerSet.get(i);

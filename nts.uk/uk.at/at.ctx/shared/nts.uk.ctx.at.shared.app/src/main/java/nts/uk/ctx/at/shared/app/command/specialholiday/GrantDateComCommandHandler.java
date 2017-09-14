@@ -12,6 +12,11 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDateCom;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegularRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * 
+ * @author Tanlv
+ *
+ */
 @Transactional
 @Stateless
 public class GrantDateComCommandHandler extends CommandHandler<GrantDateComCommand> {
@@ -26,15 +31,18 @@ public class GrantDateComCommandHandler extends CommandHandler<GrantDateComComma
 		
 		GrantDateCom domain = command.toDomain();
 		
+		domain.validate();
+		domain.validateInput();
+		
 		// check exists code
 		Optional<GrantDateCom> grantDateCom = grantRegularRepository.getComByCode(companyId, command.getSpecialHolidayCode());
 		if (grantDateCom.isPresent()) {
 			// Update data
-			grantRegularRepository.update(domain);
+			grantRegularRepository.updateGrantDateCom(domain);
 			return;
 		} 
 		
 		// Add new data
-		grantRegularRepository.add(domain);
+		grantRegularRepository.addGrantDateCom(domain);
 	}
 }
