@@ -7,7 +7,7 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.SpecifiedTimeSheetSetting;
+import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSheetSetting;
 import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.LateLeaveEarlyClassification;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -36,7 +36,7 @@ public class LeaveEarlyTimeSheet {
 	 * @param deductionTimeSheet
 	 * @return
 	 */
-	public static LeaveEarlyTimeSheet leaveEarlyTimeCalc(SpecifiedTimeSheetSetting specifiedTimeSheet,TimeWithDayAttr leaveWorkTime,int workNo
+	public static LeaveEarlyTimeSheet leaveEarlyTimeCalc(PredetermineTimeSheetSetting specifiedTimeSheet,TimeWithDayAttr leaveWorkTime,int workNo
 			,WorkTimeCommonSet workTimeCommonSet,WithinWorkTimeSheet withinWorkTimeSheet, WorkTime workTime,DeductionTimeSheet deductionTimeSheet) {	
 		TimeSpanForCalc fordeduct;
 		TimeSpanForCalc forRec;

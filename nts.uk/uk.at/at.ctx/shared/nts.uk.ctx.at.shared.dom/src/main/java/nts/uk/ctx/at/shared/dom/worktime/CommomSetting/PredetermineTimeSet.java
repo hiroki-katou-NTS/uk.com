@@ -23,7 +23,7 @@ public class PredetermineTimeSet extends AggregateRoot {
 	
 	private AttendanceClock rangeTimeDay;
 	
-	private SpecifiedTimeSheetSetting specifiedTimeSheet;
+	private PredetermineTimeSheetSetting specifiedTimeSheet;
 	
 	
 	public int getPredetermineEndTime() {

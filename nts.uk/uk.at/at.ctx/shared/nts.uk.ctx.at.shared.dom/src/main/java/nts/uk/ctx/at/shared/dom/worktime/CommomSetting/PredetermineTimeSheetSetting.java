@@ -21,7 +21,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @EqualsAndHashCode(callSuper = false)
-public class SpecifiedTimeSheetSetting extends AggregateRoot{
+public class PredetermineTimeSheetSetting extends AggregateRoot{
 	
 	private final TimeSheetList timeSheets;
 	
@@ -31,7 +31,7 @@ public class SpecifiedTimeSheetSetting extends AggregateRoot{
 	@Getter
 	private final TimeWithDayAttr PMStartTime;
 	
-	public SpecifiedTimeSheetSetting(List<TimeSheetWithUseAtr> timeSheets, TimeWithDayAttr AMEndTime, TimeWithDayAttr PMStartTime) {
+	public PredetermineTimeSheetSetting(List<TimeSheetWithUseAtr> timeSheets, TimeWithDayAttr AMEndTime, TimeWithDayAttr PMStartTime) {
 		this.timeSheets = new TimeSheetList(timeSheets);
 		this.AMEndTime = AMEndTime;
 		this.PMStartTime = PMStartTime;
