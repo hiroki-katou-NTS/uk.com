@@ -31,12 +31,12 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				   + " AND c.endDate = :endDate"
 				   + " AND c.applicationType IS NULL";
 	private final String FIND_BY_BASEDATE = FIND_BY_CID
-				+ " AND c.stardDate <= :baseDate"
+				+ " AND c.startDate <= :baseDate"
 				+ " AND c.endDate >= :baseDate"
 				+ " AND c.employmentRootAtr IN (1,2,3)" 
 				+ " AND c.applicationType = :appType";
 	private final String FIND_BY_BASEDATE_OF_COM = FIND_BY_CID
-				+ " AND c.stardDate <= :baseDate"
+				+ " AND c.startDate <= :baseDate"
 				+ " AND c.endDate >= :baseDate"
 				+ " AND c.employmentRootAtr = 0";
 	

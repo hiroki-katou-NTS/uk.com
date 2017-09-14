@@ -24,8 +24,8 @@ public class YearServicePerSetCommand{
 													specialHolidayCode, 
 													yearServiceCode, 
 													yearServiceNo, 
-													month, 
 													year, 
+													month, 
 													date);
 	}
 }

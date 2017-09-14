@@ -27,7 +27,7 @@ public class UpdateYearServicePerCommandHandler extends CommandHandler<UpdateYea
 		List<YearServicePerSet> yearServicePerSets = null;
 		if(context.getCommand().getYearServicePerSets() != null){
 			yearServicePerSets = context.getCommand().getYearServicePerSets().stream()
-					.map(x->x.toDomainPerSet(companyId, context.getCommand().getSpecialHolidayCode(), context.getCommand().getYearServiceCode(), context.getCommand().getYearServiceNo()))
+					.map(x->x.toDomainPerSet(companyId, context.getCommand().getSpecialHolidayCode(), context.getCommand().getYearServiceCode(), x.getYearServiceNo()))
 					.collect(Collectors.toList());
 			YearServicePerSet.validateInput(yearServicePerSets);
 		}

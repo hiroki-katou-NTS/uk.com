@@ -12,9 +12,10 @@ module nts.uk.at.view.kmf004 {
             title: KnockoutObservable<string> = ko.observable('');
             removeAble: KnockoutObservable<boolean> = ko.observable(true);
             tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
-                new TabModel({ id: 'D', name: getText('Com_Company'), active: true })
-//                new TabModel({ id: 'E', name: getText('Com_Person') })
+                new TabModel({ id: 'd', name: getText('Com_Company'), active: true }),
+                new TabModel({ id: 'e', name: getText('Com_Person') })
             ]);
+            currentTab: KnockoutObservable<string> = ko.observable('d');
 
             //radio
 
@@ -49,15 +50,17 @@ module nts.uk.at.view.kmf004 {
 
                 // call start function on view at here
                 switch (tab.id) {
-                    case 'D':
+                    case 'd':
+                        self.currentTab('d');
                         if (!!view.viewmodelD && typeof view.viewmodelD.start == 'function') {
                             view.viewmodelD.start();
                         }
                         break;
-                    case 'E':
-//                        if (!!view.viewmodelE && typeof view.viewmodelE.start == 'function') {
-//                            view.viewmodelE.start();
-//                        }
+                    case 'e':
+                        self.currentTab('e');
+                        if (!!view.viewmodelE && typeof view.viewmodelE.startPage == 'function') {
+                            view.viewmodelE.startPage();
+                        }
                         break;
                 }
             }
@@ -127,7 +130,7 @@ module nts.uk.at.view.kmf004 {
                 var self = this;
                 var dfd = $.Deferred();
                 service.findAll().done((lstData) => {
-                    //                    self.items(lstData);
+                    self.items([]);
                     for (let i = 0; i < 20; i++) {
                         if (lstData[i]) {
                             var param: IItem = {
@@ -164,20 +167,20 @@ module nts.uk.at.view.kmf004 {
                 var items = _.filter(self.items(), function(item: Item) {
                     return item.date() || item.month() || item.year();
                 });
-                               
+
                 var dataTranfer = {
-                    specialHolidayCode: '01', // TODO
+                    specialHolidayCode: nts.uk.ui.windows.getShared('KMF004D_SPHD_CD'), // TODO
                     lengthServiceYearAtr: self.selectedId(),
                     yearServiceSets: ko.toJS(items)
                 }
 
                 service.update(dataTranfer).done(function(items) {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                }).fail(function(error){
-                        alert(error.message);
-                    });
-            }
-
+                }).fail(function(error) {
+                    alert(error.message);
+                });
+            }   
+   
             closeDialog() {
                 nts.uk.ui.windows.close();
             }
@@ -195,7 +198,7 @@ module nts.uk.at.view.kmf004 {
             yearServiceNo: KnockoutObservable<number>;
             month: KnockoutObservable<number>;
             year: KnockoutObservable<number>;
-            date: KnockoutObservable<number>;  
+            date: KnockoutObservable<number>;
 
             constructor(param: IItem) {
                 var self = this;

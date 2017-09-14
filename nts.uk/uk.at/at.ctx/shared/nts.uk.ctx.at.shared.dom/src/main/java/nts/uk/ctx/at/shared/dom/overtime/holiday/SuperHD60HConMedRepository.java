@@ -18,4 +18,12 @@ public interface SuperHD60HConMedRepository {
 	 * @return the optional
 	 */
 	public Optional<SuperHD60HConMed> findById(String companyId);
+	
+	
+	/**
+	 * Save.
+	 *
+	 * @param domain the domain
+	 */
+	public void save(SuperHD60HConMed domain);
 }
