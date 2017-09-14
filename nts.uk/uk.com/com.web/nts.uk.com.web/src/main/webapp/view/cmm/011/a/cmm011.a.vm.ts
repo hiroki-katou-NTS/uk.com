@@ -64,6 +64,11 @@ module nts.uk.com.view.cmm011.a {
                         self.configureWkpDialog();
                     }
                 });
+                self.workplaceName.subscribe((newValue) => {
+                    let obj: any = self.treeWorkplace().findPathNameByWkpIdSelected();
+                    self.wkpDisplayName(obj.wkpDisplayName + " " + newValue);
+                    self.wkpFullName(obj.wkpFullName + " " + newValue);
+                });
             }
             
             public startPage(): JQueryPromise<any> {
@@ -74,6 +79,7 @@ module nts.uk.com.view.cmm011.a {
                 treeWorkplace.findLstWorkplace(new Date(self.strDWorkplace())).done(() => {
                     if (treeWorkplace.lstWorkplace().length > 0) {
                         treeWorkplace.selectFirst();
+                        self.isNewMode(false);
                     }
                     dfd.resolve();
                 });
@@ -84,19 +90,6 @@ module nts.uk.com.view.cmm011.a {
             public configureWkpDialog() {
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/b/index.xhtml').onClosed(() => {
                 });
-            }
-            
-            public addWkpHistoryDialog() {
-                nts.uk.ui.windows.sub.modal('/view/cmm/011/d/index.xhtml').onClosed(() => {
-                });
-            }
-            
-            public updateWkpHistoryDialog() {
-                nts.uk.ui.windows.sub.modal('/view/cmm/011/e/index.xhtml').onClosed(() => {
-                });
-            }
-            
-            public deleteWkpHistoryDialog() {
             }
             
             public createWkpDialog() {
@@ -166,7 +159,7 @@ module nts.uk.com.view.cmm011.a {
             lstWorkplace: KnockoutObservableArray<TreeWorkplace>;
             selectedWpkId: KnockoutObservable<string>;
             
-            
+            treeArray: KnockoutObservableArray<any>;
 
             constructor(screenModel: ScreenModel) {
                 let self = this;
@@ -177,6 +170,7 @@ module nts.uk.com.view.cmm011.a {
                 ]);
                 self.lstWorkplace = ko.observableArray([]);
                 self.selectedWpkId = ko.observable(null);
+                self.treeArray = ko.observableArray([]);
             }
 
             public findLstWorkplace(startDate: Date): JQueryPromise<void> {
@@ -204,6 +198,32 @@ module nts.uk.com.view.cmm011.a {
                 return heightCell * 20;
             }
             
+            public findPathNameByWkpIdSelected(): any {
+                let self = this;
+                
+                let selectedHeirarchyCd: string = null;
+                let obj: any = {};
+                let mapHeirarchy: any = _.reduce(self.treeArray(), function(hash, value) {
+                    let key = value['heirarchyCode'];
+                    hash[key] = value['name'];
+                    if (value['workplaceId'] == self.selectedWpkId()) {
+                        obj.wkpDisplayName = value['name'];
+                        selectedHeirarchyCd = key;
+                    }
+                    return hash;
+                }, {});
+                
+                let index: number = 3;
+                let wkpFullName: string = "";
+                while(index <= selectedHeirarchyCd.length) {
+                    let parentHeirarchyCd: string = selectedHeirarchyCd.substr(0, index);
+                    wkpFullName += " " + mapHeirarchy[parentHeirarchyCd];
+                    index += 3;
+                }
+                obj.wkpFullName = wkpFullName.trim();
+                return obj;
+            }
+            
             private calWidthColText() {
                 let self = this;
                 let maxSizeNameCol: number = Math.max(self.getMaxSizeOfTextList(self.lstWorkplace()), 250);
@@ -218,10 +238,11 @@ module nts.uk.com.view.cmm011.a {
                 let defaultFontFamily: Array<string> = ['DroidSansMono', 'Meiryo'];
                 
                 // convert tree to array
-                let textArray: Array<TreeWorkplace> = self.convertTreeToArray(dataList);
-                 
+                let textArray: Array<any> = self.convertTreeToArray(dataList);
+                self.treeArray(textArray);
+                
                 _.forEach(textArray, function(item) {
-                    let o: any = $('<div id="test">' + item.name + '</div>')
+                    let o: any = $('<div id="test">' + item.nodeText + '</div>')
                         .css({
                             'position': 'absolute', 'float': 'left', 'white-space': 'nowrap', 'visibility': 'hidden',
                             'font-size': defaultFontSize, 'font-family': defaultFontFamily
@@ -243,7 +264,13 @@ module nts.uk.com.view.cmm011.a {
                     if (item.childs && item.childs.length > 0) {
                         res = res.concat(self.convertTreeToArray(item.childs));
                     }
-                    res.push({ name: item.nodeText, level: item.level });
+                    res.push({
+                        workplaceId: item.workplaceId,
+                        name: item.name,
+                        nodeText: item.nodeText,
+                        heirarchyCode: item.heirarchyCode,
+                        level: item.level,
+                    });
                 })
                 return res;
             }
@@ -261,13 +288,29 @@ module nts.uk.com.view.cmm011.a {
             init() {
                 let self = this;
                 let lstWpkHistory: Array<IHistory> = [
-                    {workplaceId: "ABC1", historyId: "ABC1", startDate: "ABC1", endDate: "ABC1"},
-                    {workplaceId: "ABC2", historyId: "ABC2", startDate: "ABC2", endDate: "ABC2"},
-                    {workplaceId: "ABC3", historyId: "ABC3", startDate: "ABC3", endDate: "ABC3"},
-                    {workplaceId: "ABC4", historyId: "ABC4", startDate: "ABC4", endDate: "ABC4"},
+                    {workplaceId: "ABC1", historyId: "ABC1", startDate: "2015/04/01", endDate: "9999/12/31"},
+                    {workplaceId: "ABC2", historyId: "ABC2", startDate: "2015/04/01", endDate: "9999/12/31"},
+                    {workplaceId: "ABC3", historyId: "ABC3", startDate: "2015/04/01", endDate: "9999/12/31"},
+                    {workplaceId: "ABC4", historyId: "ABC4", startDate: "2015/04/01", endDate: "9999/12/31"}
                 ]
                 self.lstWpkHistory(lstWpkHistory);
                 self.selectFirst();
+            }
+            
+            public addWkpHistoryDialog() {
+                let self = this;
+                let startDateLatest: string = self.lstWpkHistory()[0].startDate;
+                nts.uk.ui.windows.setShared("StartDateLatestHistory", startDateLatest);
+                nts.uk.ui.windows.sub.modal('/view/cmm/011/d/index.xhtml').onClosed(() => {
+                });
+            }
+            
+            public updateWkpHistoryDialog() {
+                nts.uk.ui.windows.sub.modal('/view/cmm/011/e/index.xhtml').onClosed(() => {
+                });
+            }
+            
+            public deleteWkpHistoryDialog() {
             }
         }
     }

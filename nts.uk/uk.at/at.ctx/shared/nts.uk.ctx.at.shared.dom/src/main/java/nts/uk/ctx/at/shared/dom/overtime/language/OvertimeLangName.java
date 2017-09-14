@@ -33,6 +33,30 @@ public class OvertimeLangName extends AggregateRoot{
 	/** The overtime no. */
 	// 超過時間NO
 	private OvertimeNo overtimeNo;
+	
+	/**
+	 * Instantiates a new overtime lang name.
+	 *
+	 * @param memento the memento
+	 */
+	public OvertimeLangName(OvertimeLangNameGetMemento memento) {
+		this.companyId = memento.getCompanyId();
+		this.name = memento.getName();
+		this.languageId = memento.getLanguageId();
+		this.overtimeNo = memento.getOvertimeNo();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(OvertimeLangNameSetMemento memento){
+		memento.setCompanyId(this.companyId);
+		memento.setName(this.name);
+		memento.setLanguageId(this.languageId);
+		memento.setOvertimeNo(this.overtimeNo);
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

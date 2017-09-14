@@ -7,11 +7,11 @@
 }
 
 .extable td.text-color-red {
-	color: red ;
+	color: red;
 }
 
 .extable td.text-color-blue {
-	color: blue ;
+	color: blue;
 }
 
 .text-align-center {
@@ -66,10 +66,13 @@ table th, table td {
 }
 
 .landscape-setting, .vertical-scale-setting, .team-setting,
-	.people-setting, .rank-setting, .external-budget-record,
-	.support-setting {
+	.people-setting, .rank-setting, .support-setting {
 	width: 109px;
 	margin-top: 10px;
+}
+
+.external-budget-record {
+	width: 109px;
 }
 
 .sort-order-setting {
@@ -138,7 +141,8 @@ table th, table td {
 	width: 307px !important;
 }
 
-#popup-area2, #popup-area3, #popup-area4, #popup-area5, #popup-area6 {
+#popup-area2, #popup-area3, #popup-area4, #popup-area5, #popup-area6,
+	#popup-area7, #popup-area8 {
 	border: solid 6px #fff !important;
 	border-radius: 3.5px !important;
 	box-shadow: 1px 1px 5px 2px #888 !important;
@@ -157,4 +161,29 @@ table th, table td {
 
 #alarm-check-explanation {
 	margin-left: 7px;
+}
+
+#popup-area6 {
+	display: none;
+	z-index: 100;
+	visibility: visible;
+	top: 155px;
+	left: 835px;
+	width: 390px
+}
+
+#popup6-radioBox {
+	width: 120px;
+}
+
+#popup6-radioBox>.ntsRadioBox {
+	margin-bottom: 10px
+}
+
+#popup-area7>div {
+	margin-top: 15px
+}
+
+#popup-area7>div>button {
+	margin-left: 45px
 }

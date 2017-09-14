@@ -1,5 +1,6 @@
 module nts.uk.at.view.kmf004.g.viewmodel {
     import windows = nts.uk.ui.windows;
+    import getShared = nts.uk.ui.windows.getShared;
     
     export class ScreenModel {
         // list relationship A2_2
@@ -139,7 +140,7 @@ module nts.uk.at.view.kmf004.g.viewmodel {
             }
             
             nts.uk.ui.block.invisible();
-            let specialHolidayCode = nts.uk.ui.windows.getShared('KMF004G_SPHD_CD');//TODO windows.getShared("KMF004_G_SPHD_CD");
+            let specialHolidayCode = getShared("KMF004G_SPHD_CD");
             let obj = new GrantRelationship(specialHolidayCode, self.selectedCode(), null, self.grantDay(), self.morningHour(), self.isAlreadySet());
             _.defer(() => {
                     service.insert(obj).done(function() {

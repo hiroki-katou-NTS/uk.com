@@ -19,6 +19,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.at.shared.dom.overtime.UseClassification;
 import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItem;
 import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemRepository;
@@ -117,6 +118,54 @@ public class JpaOvertimeBRDItemRepository extends JpaRepository
 				.collect(Collectors.toList());
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemRepository#
+	 * findAllUse(java.lang.String)
+	 */
+	@Override
+	public List<OvertimeBRDItem> findAllUse(String companyId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call KSHST_OVER_TIME_BRD (KshstOverTimeBrd SQL)
+		CriteriaQuery<KshstOverTimeBrd> cq = criteriaBuilder.createQuery(KshstOverTimeBrd.class);
+
+		// root data
+		Root<KshstOverTimeBrd> root = cq.from(KshstOverTimeBrd.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// equal company id
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KshstOverTimeBrd_.kshstOverTimeBrdPK).get(KshstOverTimeBrdPK_.cid),
+				companyId));
+
+		// equal use classification
+		lstpredicateWhere.add(criteriaBuilder.equal(root.get(KshstOverTimeBrd_.useAtr),
+				UseClassification.UseClass_Use.value));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// order by over time break down item no asc
+		cq.orderBy(criteriaBuilder.asc(
+				root.get(KshstOverTimeBrd_.kshstOverTimeBrdPK).get(KshstOverTimeBrdPK_.brdItemNo)));
+
+		// create query
+		TypedQuery<KshstOverTimeBrd> query = em.createQuery(cq);
+
+		// exclude select
+		return query.getResultList().stream().map(entity -> this.toDomain(entity))
+				.collect(Collectors.toList());
+	}
 	
 	/**
 	 * To domain.
@@ -139,5 +188,6 @@ public class JpaOvertimeBRDItemRepository extends JpaRepository
 		domain.saveToMemento(new JpaOvertimeBRDItemSetMemento(entity, companyId));
 		return entity;
 	}
+
 
 }
