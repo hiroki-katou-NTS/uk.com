@@ -9,10 +9,16 @@ module nts.uk.at.view.kmk002.a {
             saveOptionalItem: 'ctx/at/record/optionalitem/save',
             removeOptionalItem: 'ctx/at/record/optionalitem/remove',
             findOptionalItemHeaders: 'ctx/at/record/optionalitem/findall',
+            findAllFormula: 'ctx/at/record/optionalitem/formula/findall',
+            saveFormula: 'ctx/at/record/optionalitem/formula/save'
         };
 
         export function saveOptionalItem(command: model.OptionalItemDto): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.saveOptionalItem, command);
+        }
+
+        export function saveFormula(command: Array<model.CalcFormulaDto>): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.saveFormula, {listCalcFormula: command});
         }
 
         export function findOptionalItemDetail(): JQueryPromise<model.OptionalItemDto> {
@@ -21,6 +27,10 @@ module nts.uk.at.view.kmk002.a {
 
         export function findOptionalItemHeaders(): JQueryPromise<Array<model.OptionalItemHeader>> {
             return nts.uk.request.ajax(servicePath.findOptionalItemHeaders);
+        }
+
+        export function findAllFormula(): JQueryPromise<Array<model.CalcFormulaDto>> {
+            return nts.uk.request.ajax(servicePath.findAllFormula);
         }
 
         export function removeOptionalItem(command: any): JQueryPromise<any> {
@@ -56,7 +66,7 @@ module nts.uk.at.view.kmk002.a {
                 timeUpper: number;
                 timeLower: number;
             }
-            export interface OptionalItemFormulaDto {
+            export interface CalcFormulaDto {
                 formulaId: string;
                 formulaName: string;
                 optionalItemNo: string;

@@ -27,6 +27,7 @@ import nts.arc.i18n.custom.ISessionLocale;
 import nts.arc.i18n.custom.ISystemResourceBundle;
 import nts.arc.i18n.custom.ResourceItem;
 import nts.arc.i18n.custom.ResourceType;
+import nts.arc.scoped.session.SessionContextProvider;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.SystemProperties;
 import nts.uk.shr.infra.i18n.format.DateTimeFormatProvider;
@@ -34,7 +35,7 @@ import nts.uk.shr.infra.i18n.format.DateTimeTranscoder;
 
 @Dependent
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class MultiLanguageResource implements IInternationalization,Serializable {
+public class MultiLanguageResource implements IInternationalization, Serializable {
 
 	private String getCompanyCode() {
 		return AppContexts.user().companyCode();
@@ -44,8 +45,8 @@ public class MultiLanguageResource implements IInternationalization,Serializable
 	private ISystemResourceBundle systemResourceBundle;
 	@Inject
 	private ICompanyResourceBundle companyResourceBundle;
-	@Inject
-	private ISessionLocale currentLanguage;
+
+	private ISessionLocale currentLocale;
 	// Map<programId, Map<String, String>>
 	private Map<String, Map<String, String>> codeNameResource;
 	// Map<programid,Map<messageId,message>
@@ -58,21 +59,25 @@ public class MultiLanguageResource implements IInternationalization,Serializable
 	private static final String ID_MARK = "#";
 	private static final String SEPARATOR = "_";
 
+	private static final String CURRENT_LOCALE = "current locale";
+
 	@PostConstruct
 	private void load() {
+		getSessionLocale();
+		
 		loadSystemResource();
 		loadCustomizedResource();
 	}
 
 	private void loadSystemResource() {
-		codeNameResource = systemResourceBundle.getResource(currentLanguage.getSessionLocale(), ResourceType.CODE_NAME);
+		codeNameResource = systemResourceBundle.getResource(currentLocale.getSessionLocale(), ResourceType.CODE_NAME);
 		if (codeNameResource == null || codeNameResource.isEmpty()) {
 			codeNameResource = systemResourceBundle.getResource(SystemProperties.DEFAULT_LANGUAGE,
 					ResourceType.CODE_NAME);
 		}
 
 		Map<String, Map<String, String>> tempMessageResource = systemResourceBundle
-				.getResource(currentLanguage.getSessionLocale(), ResourceType.MESSAGE);
+				.getResource(currentLocale.getSessionLocale(), ResourceType.MESSAGE);
 		if (tempMessageResource == null || tempMessageResource.isEmpty()) {
 			tempMessageResource = systemResourceBundle.getResource(SystemProperties.DEFAULT_LANGUAGE,
 					ResourceType.MESSAGE);
@@ -80,9 +85,18 @@ public class MultiLanguageResource implements IInternationalization,Serializable
 		messageResource = tempMessageResource;
 	}
 
+	private void getSessionLocale() {
+		ISessionLocale fromSeesion = SessionContextProvider.get().<ISessionLocale>get(CURRENT_LOCALE);
+		// if it isn't set yet, we will create new one with default locale
+		if (fromSeesion == null) {
+			fromSeesion = new SessionLocale();
+		}
+		this.currentLocale = fromSeesion;
+	}
+
 	private void loadCustomizedResource() {
 		companyCustomizedResource = companyResourceBundle
-				.getResource(getCompanyCode(), currentLanguage.getSessionLocale()).stream()
+				.getResource(getCompanyCode(), currentLocale.getSessionLocale()).stream()
 				.collect(Collectors.toMap(ResourceItem::getCode, ResourceItem::getContent));
 
 	}
@@ -164,7 +178,7 @@ public class MultiLanguageResource implements IInternationalization,Serializable
 				String param;
 				if (format != null) {
 					DateTimeTranscoder transcoder = DateTimeFormatProvider.LocaleTranscoderMap
-							.get(currentLanguage.getSessionLocale());
+							.get(currentLocale.getSessionLocale());
 					param = transcoder.create().get(format.substring(1)).apply(params.get(paramIndex));
 				} else {
 					param = getArgument(params.get(paramIndex));

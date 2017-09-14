@@ -19,6 +19,13 @@ public interface WorkplaceSetMemento {
 	public void setCompanyId(String companyId);
 
 	/**
+	 * Sets the workplace id.
+	 *
+	 * @param workplaceId the new workplace id
+	 */
+	public void setWorkplaceId(WorkplaceId workplaceId);
+	
+	/**
 	 * Sets the workplace history.
 	 *
 	 * @param workplaceHistory the new workplace history

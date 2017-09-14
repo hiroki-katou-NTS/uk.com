@@ -98,6 +98,10 @@ public class ApplicationDto {
 	 */
 	private int reflectPerEnforce;
 	
+	private GeneralDate startDate;
+	
+	private GeneralDate endDate;
+	
 	public static ApplicationDto fromDomain(Application domain) {
 		return new ApplicationDto(
 				domain.getCompanyID(),
@@ -117,7 +121,9 @@ public class ApplicationDto {
 				domain.getReflectPerScheReason().value, 
 				domain.getReflectPerTime(), 
 				domain.getReflectPerState().value, 
-				domain.getReflectPerEnforce().value
+				domain.getReflectPerEnforce().value,
+				domain.getStartDate(),
+				domain.getEndDate()
 				);
 	}
 

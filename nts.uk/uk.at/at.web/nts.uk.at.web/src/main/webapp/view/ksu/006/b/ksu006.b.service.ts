@@ -19,7 +19,7 @@ module nts.uk.pr.view.ksu006.b {
         /**
          * findErrors
          */
-        export function findErrors(executeId: string): JQueryPromise<model.ErrorModel> {
+        export function findErrors(executeId: string): JQueryPromise<Array<model.ErrorModel>> {
              return nts.uk.request.ajax(servicePath.findErrors + "/" + executeId);
         }
         

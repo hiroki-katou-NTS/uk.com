@@ -139,6 +139,7 @@ module nts.uk.ui.koExtentions {
                                 .setPrimaryKey(primaryKey)
                                 .setInnerDrop((data.innerDrag && data.innerDrag.left !== undefined) ? data.innerDrag.left : true)
                                 .setOuterDrop((data.outerDrag && data.outerDrag.left !== undefined) ? data.outerDrag.left : true)
+                                .setItemsLimit((data.itemsLimit && data.itemsLimit.left !== undefined) ? data.itemsLimit.left : null)
                                 .build());
             
             swapParts.push(new GridSwapPart().listControl($grid2)
@@ -152,6 +153,7 @@ module nts.uk.ui.koExtentions {
                                 .setPrimaryKey(primaryKey)
                                 .setInnerDrop((data.innerDrag && data.innerDrag.right !== undefined) ? data.innerDrag.right : true)
                                 .setOuterDrop((data.outerDrag && data.outerDrag.right !== undefined) ? data.outerDrag.right : true)
+                                .setItemsLimit((data.itemsLimit && data.itemsLimit.right !== undefined) ? data.itemsLimit.right : null)
                                 .build());
             
             this.swapper = new SwapHandler().setModel(new GridSwapList($swap, swapParts));
@@ -369,17 +371,23 @@ module nts.uk.ui.koExtentions {
             var partId = model.transportBuilder.startAt === "first" ? 0 : 1;
             var destPartId = model.receiver(ui) === "first" ? 0 : 1;
             model.transportBuilder.toAdjacent(model.neighbor(ui)).target(model.target(ui));
+            let max = model.swapParts[destPartId].itemsLimit;
             // In case of multiple selections
             if (ui.helper.hasClass("select-drag") === true) {
                 var rowsInHelper = ui.helper.find("tr");
-                var rows = rowsInHelper.toArray(); 
+                var rows = rowsInHelper.toArray();
+                 
                 if (model.transportBuilder.startAt === model.receiver(ui)
                     || (model.swapParts[partId].outerDrop === false
-                        && model.transportBuilder.startAt !== model.receiver(ui))) {
+                        && model.transportBuilder.startAt !== model.receiver(ui))
+                    || (!util.isNullOrUndefined(max) && (rows.length + model.swapParts[destPartId].dataSource.length > max))) {
                     $(this).sortable("cancel");
                     for (var idx in rows) {
                         model.swapParts[partId].$listControl.find("tbody").children()
                                                 .eq($(rows[idx]).data("row-idx")).show();
+                    }
+                    if (!util.isNullOrUndefined(max) && (rows.length + model.swapParts[destPartId].dataSource.length > max)) {
+                        model.$container.trigger($.Event("swaplistgridsizeexceed"), [ model.swapParts[destPartId].$listControl, max ]);
                     }
                     return;
                 } else {
@@ -406,8 +414,12 @@ module nts.uk.ui.koExtentions {
             } else if ((model.swapParts[partId].innerDrop === false
                 && model.transportBuilder.startAt === model.receiver(ui))
                 || (model.swapParts[partId].outerDrop === false
-                    && model.transportBuilder.startAt !== model.receiver(ui))) {
+                    && model.transportBuilder.startAt !== model.receiver(ui))
+                || (!util.isNullOrUndefined(max) && model.swapParts[destPartId].dataSource.length >= max)) {
                 $(this).sortable("cancel");
+                if (!util.isNullOrUndefined(max) && model.swapParts[destPartId].dataSource.length >= max) {
+                    model.$container.trigger($.Event("swaplistgridsizeexceed"), [ model.swapParts[destPartId].$listControl, max ]);
+                }
             }
         }
         
@@ -486,6 +498,7 @@ module nts.uk.ui.koExtentions {
         primaryKey: string;
         innerDrop: boolean = true;
         outerDrop: boolean = true;
+        itemsLimit: number;
         
         constructor() {
         }
@@ -542,6 +555,11 @@ module nts.uk.ui.koExtentions {
         
         setOuterDrop(outerDrop: boolean) {
             this.outerDrop = outerDrop;
+            return this;
+        }
+        
+        setItemsLimit(itemsLimit: number) {
+            this.itemsLimit = itemsLimit;
             return this;
         }
         
@@ -739,9 +757,14 @@ module nts.uk.ui.koExtentions {
             var sourceList = forward === true ? this.swapParts[0].dataSource : this.swapParts[1].dataSource;
             var $dest = forward === true ? this.swapParts[1].$listControl : this.swapParts[0].$listControl;
             var destList = forward === true ? this.swapParts[1].dataSource : this.swapParts[0].dataSource;
+            var max = forward === true ? this.swapParts[1].itemsLimit : this.swapParts[0].itemsLimit;
             
-            if(moveAll){
+            if (moveAll) {
                 var selectedIds = sourceList.map(function(row) { return row[primaryKey]; });
+                if (!util.isNullOrUndefined(max) && (selectedIds.length + destList.length > max)) {
+                    this.$container.trigger($.Event("swaplistgridsizeexceed"), [ $dest, max ]);
+                    return;
+                }
                 
                 this.transportBuilder.at(forward ? "first" : "second").directTo(forward ? "second" : "first")
                         .toAdjacent(destList.length > 0 ? destList[destList.length - 1][primaryKey] : null).update(moveAll);           
@@ -749,6 +772,10 @@ module nts.uk.ui.koExtentions {
                 var selectedRows = $source.igGrid("selectedRows");
                 if (nts.uk.util.isNullOrEmpty(selectedRows)) {
                     return;        
+                }
+                if (!util.isNullOrUndefined(max) && (selectedRows.length + destList.length > max)) {
+                    this.$container.trigger($.Event("swaplistgridsizeexceed"), [ $dest, max ]);
+                    return;
                 }
                 selectedRows.sort(function(one, two) {
                     return one.index - two.index; 

@@ -81,4 +81,41 @@ public class OptionalItem extends AggregateRoot {
 		memento.setCalculationResultRange(this.calculationResultRange);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
+		result = prime * result + ((optionalItemNo == null) ? 0 : optionalItemNo.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OptionalItem other = (OptionalItem) obj;
+		if (companyId == null) {
+			if (other.companyId != null)
+				return false;
+		} else if (!companyId.equals(other.companyId))
+			return false;
+		if (optionalItemNo == null) {
+			if (other.optionalItemNo != null)
+				return false;
+		} else if (!optionalItemNo.equals(other.optionalItemNo))
+			return false;
+		return true;
+	}
+
 }
