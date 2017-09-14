@@ -1,72 +1,79 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 
+@Stateless
 public class ApplicationStampDetailDefault implements ApplicationStampDetailDomainService {
 
+	@Inject
+	private ApplicationStampRepository applicationStampRepository; 
+	
 	@Override
-	public void appStampPreProcess(String companyID, String appID, String employeeID, GeneralDate date) {
+	public void appStampPreProcess(ApplicationStamp applicationStamp) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void appStampGoOutPermitPreProcess(String companyID, String appID, String employeeID, GeneralDate date) {
-		appStampPreProcess(companyID, appID, employeeID, date);
+	public void appStampGoOutPermitPreProcess(ApplicationStamp applicationStamp) {
+		//appStampPreProcess(companyID, appID, employeeID, date);
 		
 	}
 
 	@Override
-	public void appStampGoOutPermitUpdate(Application application) {
-		// TODO Auto-generated method stub
+	public void appStampGoOutPermitUpdate(ApplicationStamp applicationStamp) {
+		this.applicationStampRepository.updateStampGoOutPermit(applicationStamp);
 		
 	}
 
 	@Override
-	public void appStampWorkPreProcess(String companyID, String appID, String employeeID, GeneralDate date) {
-		appStampPreProcess(companyID, appID, employeeID, date);
+	public void appStampWorkPreProcess(ApplicationStamp applicationStamp) {
+		//appStampPreProcess(companyID, appID, employeeID, date);
 		
 	}
 
 	@Override
-	public void appStampWorkUpdate(Application application) {
-		// TODO Auto-generated method stub
+	public void appStampWorkUpdate(ApplicationStamp applicationStamp) {
+		this.applicationStampRepository.updateStampWork(applicationStamp);
 		
 	}
 
 	@Override
-	public void appStampCancelPreProcess(String companyID, String appID, String employeeID, GeneralDate date) {
-		appStampPreProcess(companyID, appID, employeeID, date);
+	public void appStampCancelPreProcess(ApplicationStamp applicationStamp) {
+		//appStampPreProcess(companyID, appID, employeeID, date);
 		
 	}
 
 	@Override
-	public void appStampCancelUpdate(Application application) {
-		// TODO Auto-generated method stub
+	public void appStampCancelUpdate(ApplicationStamp applicationStamp) {
+		this.applicationStampRepository.updateStampCancel(applicationStamp);
 		
 	}
 
 	@Override
-	public void appStampOnlineRecordPreProcess(String companyID, String appID, String employeeID, GeneralDate date) {
-		appStampPreProcess(companyID, appID, employeeID, date);
+	public void appStampOnlineRecordPreProcess(ApplicationStamp applicationStamp) {
+		//appStampPreProcess(companyID, appID, employeeID, date);
 		
 	}
 
 	@Override
-	public void appStampOnlineRecordUpdate(Application application) {
-		// TODO Auto-generated method stub
+	public void appStampOnlineRecordUpdate(ApplicationStamp applicationStamp) {
+		this.applicationStampRepository.updateStampOnlineRecord(applicationStamp);
 		
 	}
 
 	@Override
-	public void appStampOtherPreProcess(String companyID, String appID, String employeeID, GeneralDate date) {
-		appStampPreProcess(companyID, appID, employeeID, date);
+	public void appStampOtherPreProcess(ApplicationStamp applicationStamp) {
+		//appStampPreProcess(companyID, appID, employeeID, date);
 		
 	}
 
 	@Override
-	public void appStampOtherUpdate(Application application) {
+	public void appStampOtherUpdate(ApplicationStamp applicationStamp) {
 		// TODO Auto-generated method stub
 		
 	}

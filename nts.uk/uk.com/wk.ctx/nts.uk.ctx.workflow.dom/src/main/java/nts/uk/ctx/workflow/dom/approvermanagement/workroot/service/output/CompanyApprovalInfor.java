@@ -17,5 +17,5 @@ public class CompanyApprovalInfor {
 	/**
 	 * 会社別就業承認ルート情報
 	 */
-	List<CompanyApprovalRoot> lstComs;
+	List<ApprovalForApplication> lstComs;
 }

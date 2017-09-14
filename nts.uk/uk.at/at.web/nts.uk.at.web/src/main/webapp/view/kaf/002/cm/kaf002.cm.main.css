@@ -1,0 +1,43 @@
+#cm-content {
+	width: 1200px;
+}
+.cm-content-left {
+	display: inline-block;
+	margin-right: 20px;
+}
+.cm-content-right {
+	width: 300px;
+    display: inline-block;
+    vertical-align: top;
+}
+.cm-table {
+	margin-top: 5px;
+	margin-bottom: 5px;
+}
+.cm-column1 {
+	width: 150px;
+	vertical-align: top;
+}
+.cm-column2 {
+	vertical-align: middle;
+}
+.cm-panel {
+	width: 280px;
+    height: 420px;
+    margin-top: 10px;
+}
+.cm-time-editor {
+	width: 100px;
+}
+.cm-combo-box {
+	width: 130px;
+}
+.cm-memo {
+	width: 550px;
+	height: 100px;
+}
+.cm-title-div {
+	margin-top: 20px;
+	margin-left: 20px;
+	margin-bottom: 10px;
+}
