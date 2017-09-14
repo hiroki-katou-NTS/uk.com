@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -15,6 +14,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.BreakClo
  *
  */
 public class DeductionTimeSheetAdjustDuplicationTime {
+
 	@Getter
 	@Setter
 	private List<TimeSheetOfDeductionItem> timeSpanList;
@@ -34,40 +34,49 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	 * 控除時間の重複部分調整
 	 * @param setMethod
 	 * @param clockManage
-	 * @return
+	 * 
 	 */
-	public List<TimeSheetOfDeductionItem> reCreate(WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage){
+	public void reCreate(WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage){
 		List<TimeSheetOfDeductionItem> originCopyList = timeSpanList;
-		List<TimeSheetOfDeductionItem> toReturnCopyList = new ArrayList<TimeSheetOfDeductionItem>();
-		
-		while(originCopyList.size() > toReturnCopyList.size()) {
-			for(int number = 0 ;  number < originCopyList.size() ; number++) {
-				if(number > 0) {
-					originCopyList = toReturnCopyList;
-					toReturnCopyList.clear();
-				}
+		int processedListNumber = 0;
+		while(originCopyList.size() - 1 > processedListNumber) {
+			for(int number = 0 ;  number < originCopyList.size()  ; number++) {
+				processedListNumber = number;
 				if(isDeplicated(originCopyList.get(number).calculationTimeSheet, originCopyList.get(number+1).calculationTimeSheet)){
-					toReturnCopyList.addAll(convertFromTimeSpanToDeductionItem(originCopyList.get(number), originCopyList.get(number + 1), setMethod, clockManage));
-					if(toReturnCopyList.size()>number) {
+					int beforeCorrectSize = originCopyList.size();
+					originCopyList = convertFromDeductionItemToList(originCopyList,number, setMethod, clockManage);
+					if(originCopyList.size()>beforeCorrectSize) {
 						/*追加された*/
-						toReturnCopyList.addAll(originCopyList.subList(number + 2, originCopyList.size()));
 						break;
 					}
-					else if(toReturnCopyList.size() < number) {
-						/*削除された*/
-					}
-				}
-				else {
-					toReturnCopyList.add(originCopyList.get(number));
 				}
 			}
-
 		}
-		return toReturnCopyList;
 	}
 	
-	public List<TimeSheetOfDeductionItem> convertFromTimeSpanToDeductionItem(TimeSheetOfDeductionItem nowItem,TimeSheetOfDeductionItem nextItem,WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage){
-		return nowItem.DeplicateBreakGoOut(nextItem,setMethod,clockManage);
+	/**
+	 * 重複の調整後の値を入れたListを作成
+	 * @param originList　
+	 * @param number
+	 * @param setMethod
+	 * @param clockManage
+	 * @return 調整後の値を入れたList
+	 */
+	public List<TimeSheetOfDeductionItem> convertFromDeductionItemToList(List<TimeSheetOfDeductionItem> originList,int number,WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage){
+		return ReplaceListItem(originList,originList.get(number).DeplicateBreakGoOut(originList.get(number+1),setMethod,clockManage),number);
+	}
+	
+	/**
+	 * Listの指定した場所の値を調整後の値で置き換える
+	 * @param nowList
+	 * @param newItems
+	 * @param number
+	 * @return
+	 */
+	public List<TimeSheetOfDeductionItem> ReplaceListItem(List<TimeSheetOfDeductionItem> nowList,List<TimeSheetOfDeductionItem> newItems,int number ) {
+		nowList.set(number, newItems.get(0));
+		nowList.set(number+1, newItems.get(1));
+		return nowList;
 	}
 	
 	/**
