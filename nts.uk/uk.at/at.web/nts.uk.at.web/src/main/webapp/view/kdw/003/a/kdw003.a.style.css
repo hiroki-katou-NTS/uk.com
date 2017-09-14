@@ -1,7 +1,7 @@
 #dislayFormatLbl, #btnComfirmAttendance, #btnVacationRemaining, #btnExtraction{vertical-align: text-bottom;}
 #btnVacationRemaining{margin-left: 200px;}
 #dislayFormatLbl{margin-left: 20px;}
-#right-content{margin-left: 80px;}
-#emp-component, #cbListDate{margin-top: 10px; display: none;}
+#right-content{margin-left: 80px;width: 1200px;}
+#emp-component, #cbListDate{margin-top: 10px;}
 /* #contents-area, #function-content {width: 1280px;}
 #left-content{width: 100px; height: 500px; float: left;} */

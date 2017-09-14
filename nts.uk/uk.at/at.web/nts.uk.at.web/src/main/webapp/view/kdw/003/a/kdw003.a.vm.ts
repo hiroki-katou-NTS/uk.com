@@ -236,6 +236,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.currentDate = ko.observable(null);
             self.dateRanger.subscribe((dateRange) => {
                 if (dateRange) {
+                    self.selectedDate(dateRange.startDate);
                     var elementDate = dateRange.startDate;
                     while (!moment(elementDate, "YYYY/MM/DD").isAfter(dateRange.endDate)) {
                         self.lstDate.push({date: elementDate});
@@ -285,7 +286,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (mode == 0) {
                 return _.filter(self.allData, (data) => { return data.employeeId == self.selectedEmployee() });
             } else if (mode == 1) {
-                return _.filter(self.allData, (data) => { return data.date === self.selectedDate() });
+                return _.filter(self.allData, (data) => { return data.date === moment(self.selectedDate()).format('YYYY/MM/DD') });
             } else if (mode == 2) {
                 return _.filter(self.allData, (data) => { return data.error !== '' });
             }
@@ -390,8 +391,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             textColors.push(textColor);
             self.textColors(textColors);
             $("#grid2").ntsGrid({
-                width: '500px',
-                height: '200px',
+                width: '1000px',
+                height: '500px',
                 dataSource: self.dailyPerfomanceData(),
                 primaryKey: 'id',
                 rowVirtualization: true,
