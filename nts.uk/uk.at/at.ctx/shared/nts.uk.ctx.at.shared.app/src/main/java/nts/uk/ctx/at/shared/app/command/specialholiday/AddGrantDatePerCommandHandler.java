@@ -15,6 +15,11 @@ import nts.uk.ctx.at.shared.dom.specialholiday.grantdate.GrantDatePer;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegularRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * 
+ * @author Tanlv
+ *
+ */
 @Transactional
 @Stateless
 public class AddGrantDatePerCommandHandler extends CommandHandlerWithResult<GrantDatePerCommand, List<String>> {
@@ -28,6 +33,8 @@ public class AddGrantDatePerCommandHandler extends CommandHandlerWithResult<Gran
 		List<String> errList = new ArrayList<String>();
 		
 		GrantDatePer domain = command.toDomain();
+		
+		domain.validate();
 		
 		// check exists code
 		Optional<GrantDatePer> grantDatePer = grantRegularRepository.getPerByCode(companyId, command.getSpecialHolidayCode(), command.getPersonalGrantDateCode());

@@ -112,9 +112,17 @@ module nts.uk.at.view.kmf004 {
                 ]);
 
                 self.value = ko.observable('');
-                self.enable = ko.observable(true);
+                self.enable = ko.observable(false);
                 self.selectedId = ko.observable(0);
                 self.items = ko.observableArray([]);
+                
+                self.selectedId.subscribe(function(value) {
+                    if(value == 1){
+                        self.enable(true);
+                    } else {
+                        self.enable(false);
+                    }
+                }); 
                 
                 // Get special holiday code from A screen
                 self.specialHolidayCode = ko.observable(getShared("KMF004B_SPHD_CD"));
@@ -151,7 +159,7 @@ module nts.uk.at.view.kmf004 {
                     self.selectedId(data.grantDateAtr);
                     self.value(data.grantDate);
                     
-                    service.getAllSetByCode(data.specialHolidayCode).done(function(data){
+                    service.getAllSetByCode(data.specialHolidayCode).done(function(data: Array<any>){
                         for(var i = 0; i < data.length; i++){
                             var item : IItem = {
                                 year: data[i].grantDateYear,
@@ -174,7 +182,7 @@ module nts.uk.at.view.kmf004 {
                     });
                 } else {
                     self.selectedId(0);
-                    self.value(101);
+                    self.value("101");
                     
                     for(var i = 0; i < 20; i++) {
                         var item : IItem = {
@@ -236,7 +244,7 @@ module nts.uk.at.view.kmf004 {
                 
                 _.forEach(self.items(), function(item) {
                     if(item.month() != null && item.year() != null) {
-                        if(item.month() !== "" && item.year() !== "") {
+                        if(item.month() !== 0 && item.year() !== 0) {
                             setData.push({
                                 specialHolidayCode: self.specialHolidayCode(),
                                 grantDateNo: index,

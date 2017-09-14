@@ -186,7 +186,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	 * Add Grant Date Company
 	 */
 	@Override
-	public void add(GrantDateCom grantDateCom) {
+	public void addGrantDateCom(GrantDateCom grantDateCom) {
 		this.commandProxy().insert(convertToDbTypeCom(grantDateCom));
 	}
 
@@ -205,7 +205,7 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 	}
 
 	@Override
-	public void update(GrantDateCom grantDateCom) {
+	public void updateGrantDateCom(GrantDateCom grantDateCom) {
 		KshstGrantDateComPK key = new KshstGrantDateComPK(grantDateCom.getCompanyId(), grantDateCom.getSpecialHolidayCode().v());
 		Optional<KshstGrantDateCom> entity = this.queryProxy().find(key, KshstGrantDateCom.class);
 		KshstGrantDateCom kshstGrantDateCom = entity.get();
@@ -229,6 +229,12 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 				.map(x -> convertToDomainPer(x));
 	}
 
+	/**
+	 * Convert to domain
+	 * 
+	 * @param kshstGrantDatePer
+	 * @return
+	 */
 	private GrantDatePer convertToDomainPer(KshstGrantDatePer kshstGrantDatePer) {
 		List<GrantDatePerSet> grantDatePerSet = kshstGrantDatePer.grantDatePerSet.stream().map(x -> convertToDomainPerSet(x))
 				.collect(Collectors.toList());
@@ -248,6 +254,12 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 				.getList(c -> convertToDomainPerSet(c));
 	}
 
+	/**
+	 * Convert to domain
+	 * 
+	 * @param kshstGrantDatePerSet
+	 * @return
+	 */
 	private GrantDatePerSet convertToDomainPerSet(KshstGrantDatePerSet kshstGrantDatePerSet) {
 		GrantDatePerSet grantDatePerSet = GrantDatePerSet.createSimpleFromJavaType(kshstGrantDatePerSet.kshstGrantDatePerSetPK.companyId,
 				kshstGrantDatePerSet.kshstGrantDatePerSetPK.specialHolidayCode,
@@ -263,6 +275,12 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 		this.commandProxy().insert(convertToDbPer(grantDatePer));
 	}
 
+	/**
+	 * Convert to DB
+	 * 
+	 * @param grantDatePer
+	 * @return
+	 */
 	private KshstGrantDatePer convertToDbPer(GrantDatePer grantDatePer) {
 		KshstGrantDatePer kshstGrantDatePer = new KshstGrantDatePer();
 		KshstGrantDatePerPK kshstGrantDatePerPK = new KshstGrantDatePerPK(grantDatePer.getCompanyId(),
@@ -280,6 +298,12 @@ public class JpaGrantRegularRepository extends JpaRepository implements GrantReg
 		return kshstGrantDatePer;
 	}
 
+	/**
+	 * Convert to DB
+	 * 
+	 * @param grantDatePerSet
+	 * @return
+	 */
 	private KshstGrantDatePerSet convertToDbPerSet(GrantDatePerSet grantDatePerSet) {
 		KshstGrantDatePerSet kshstGrantDatePerSet = new KshstGrantDatePerSet();
 		KshstGrantDatePerSetPK kshstGrantDatePerSetPK = new KshstGrantDatePerSetPK(grantDatePerSet.getCompanyId(),

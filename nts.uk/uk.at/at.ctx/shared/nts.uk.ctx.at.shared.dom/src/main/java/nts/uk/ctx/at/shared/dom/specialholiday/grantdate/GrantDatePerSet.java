@@ -3,6 +3,11 @@ package nts.uk.ctx.at.shared.dom.specialholiday.grantdate;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * 
+ * @author TanLV
+ *
+ */
 @AllArgsConstructor
 @Getter
 public class GrantDatePerSet {
@@ -24,6 +29,9 @@ public class GrantDatePerSet {
 	/* 年数 */
 	private GrantDateYear grantDateYear;
 
+	/* 
+	 * Create from java type
+	 */
 	public static GrantDatePerSet createSimpleFromJavaType(String companyId, String specialHolidayCode, String personalGrantDateCode, int grantDateNo,
 			int grantDateMonth, int grantDateYear) {
 		return new GrantDatePerSet(companyId,
