@@ -20,9 +20,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval.EmployeeOfApprovalRoot;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval.EmployeeUnregisterApprovalRootImpl;
 import nts.uk.file.com.app.EmployeeUnregisterApprovalRootRepository;
-import nts.uk.file.com.app.EmployeeUnregisterOutputDataSoure;
 
 @Stateless
 public class EmployeeUnregisterApprovalRootRepositoryImpl implements EmployeeUnregisterApprovalRootRepository {
@@ -37,29 +35,36 @@ public class EmployeeUnregisterApprovalRootRepositoryImpl implements EmployeeUnr
 	private PersonApprovalRootRepository psRootRepository;
 
 	@Override
-	public EmployeeUnregisterOutputDataSoure getEmployeeUnregisterOutputLst(String companyId, GeneralDate date) {
+	public List<EmployeeUnregisterOutput> getEmployeeUnregisterOutputLst(String companyId, GeneralDate date) {
 
 		List<EmployeeUnregisterOutput> employLst = this.lstEmployeeUnregister(companyId, date);
-		EmployeeUnregisterOutputDataSoure employeeUnregisOutput = new EmployeeUnregisterOutputDataSoure(employLst);
-		return employeeUnregisOutput;
+		return employLst;
 	}
 
 	private List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate) {
 		List<EmployeeApproveDto> lstEmps = new ArrayList<>();
 		EmployeeApproveDto emp = new EmployeeApproveDto();
+		emp.setCompanyId(companyId);
 		emp.setPId("CEC90E5D-1910-4271-A1F5-2DC27B53E3E5");
 		emp.setSId("90000000-0000-0000-0000-000000000012");
-		emp.setSCd("000000000002");
+		emp.setSCd("000000000001");
 		emp.setPName("日通システム　ベトナム　１");
 		emp.setWpCode("C000000002");
-		emp.setPName("Webメニューの設定");
+		emp.setWpName("Webメニューの設定");
+		emp.setSMail("a@gmail.com");
+		emp.setRetirementDate(GeneralDate.today());
+		emp.setJoinDate(GeneralDate.today());
 		lstEmps.add(emp);
+		emp.setCompanyId(companyId);
 		emp.setPId("CE82367D-929C-4872-A51C-12BE4426EA6C");
 		emp.setSId("90000000-0000-0000-0000-000000000016");
-		emp.setSCd("000000000001");
+		emp.setSCd("000000000002");
 		emp.setPName("日通システム　ベトナム　2");
 		emp.setWpCode("C000000003");
-		emp.setPName("Webメニューの設定１");
+		emp.setWpName("Webメニューの設定１");
+		emp.setSMail("b@gmail.com");
+		emp.setRetirementDate(GeneralDate.today());
+		emp.setJoinDate(GeneralDate.today());
 		lstEmps.add(emp);
 		// ドメインモデル「社員」を取得する(lấy dữ liệu domain「社員」)
 		// TODO thuc hien khi co tra loi QA
