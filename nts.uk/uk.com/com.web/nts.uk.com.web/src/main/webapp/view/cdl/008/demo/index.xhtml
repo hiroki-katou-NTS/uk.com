@@ -4,38 +4,51 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+</head>
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="../../../sample/catalog/catalog.css" />
 			<com:scriptfile path="../../../sample/catalog/catalog.js" />
-			<com:scriptfile path="demo.a.vm.js" />
-			<com:scriptfile path="demo.a.start.js" />
+			<com:stylefile path="cdl008.parent.main.css" />
+			<com:scriptfile path="cdl008.parent.start.js" />
+			<com:scriptfile path="cdl008.parent.vm.js" />
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="contents-area">
-			<div id="side-menu" class="cf"></div>
-				<div id="content">
-					<div id="function-area" style="margin: 40px; margin-bottom: 10px">
-						<h1>Demo Main SCR to test -> CDL002 - 雇用選択ダイアログ</h1>
-						<h2>(Launch Employment selection dialog)</h2>
-
-						<div style="margin-left: 10px; padding-top: 10px">
-							<p>
-								<b>Click Button to Open Dialog</b>
-							</p>
-							<br></br>
-							<BUTTON data-bind="click: openDialog"
-								style="margin-right: 10px">Open Dialog</BUTTON>
-							<br></br><br></br>
-							<div>
-							<p>Selected Code(s):</p>
-							<p data-bind="text: getSelectedItemCode()"></p>
-							</div>
-						</div>
-						<hr></hr>
+				<div id="side-menu" class="cf"></div>
+				<div id="content" class="cf">
+					<div id="functions-area">
+						<button class="large" data-bind="click: openDialogCDL008" >CDL008</button>
+					</div>
+					<div id="contents-area">
+					<table>
+						<tr>
+						<td>基準日</td>
+						<td data-bind = "ntsDatePicker: {dateFormat: 'YYYY/MM/DD', value: baseDate, required: true}" >
+						</td>
+						</tr> 
+						<tr>
+							<td>職場ID 選択済項目:</td>
+							<td><input class="inputSelectCode" data-bind="ntsTextEditor: {
+								value: canSelectWorkplaceIds,
+								required: false,
+								enable: true,
+								readonly: false}" /></td>
+							</tr>
+						<tr>
+							<td>選択モード:</td>
+							<td><div data-bind="ntsCheckBox: { checked: selectMode }"></div></td>
+						</tr>
+					</table>
+							
+						<br/>
+						<div style="font-weight: bold">Returned Data:</div>
+						<div> Selected Work place id:</div>
+						<div style="word-break: break-all;" data-bind="text: selectWorkplaceIds"></div>
+						
 					</div>
 				</div>
 			</div>

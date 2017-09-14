@@ -1,60 +1,59 @@
-module nts.uk.com.view.cdl002.a {
-    import close = nts.uk.ui.windows.close;
-    import setShared = nts.uk.ui.windows.setShared;
-    import getShared = nts.uk.ui.windows.getShared;
+module nts.uk.com.view.cdl008.a {
+
+    import ListType = kcp.share.list.ListType;
+    import SelectType = kcp.share.list.SelectType;
+    import ComponentOption = kcp.share.list.ComponentOption;
+    import TreeComponentOption = kcp.share.tree.TreeComponentOption;
+    import TreeType = kcp.share.tree.TreeType;
+
     export module viewmodel {
-        export class ScreenModel {
-            selectedCodes: KnockoutObservable<any>;
-            isMultiSelect: KnockoutObservable<boolean>;
-            isDisplayUnselect: KnockoutObservable<boolean>;
-            listComponentOption: any;
-            
-            constructor() {
-                let self = this,
-                isMultiple: boolean = getShared('isMultipleSelection');
-                self.selectedCodes = ko.observable(getShared('selectedCodes'));
-                self.isMultiSelect = ko.observable(isMultiple);
-                
-                // If Selection Mode is Multiple Then not show Unselected Row
-                self.isDisplayUnselect = ko.observable(isMultiple ? false : getShared('isDisplayUnselect'));
-                
-                // Initial listComponentOption
-                self.listComponentOption = {
-                    isMultiSelect: self.isMultiSelect(),
-                    listType: ListType.EMPLOYMENT,
-                    selectType: 1,
-                    selectedCode: self.selectedCodes,
-                    isDialog: true,
-                    isShowNoSelectRow: self.isDisplayUnselect(),
-                    maxRows: 10,
-                };
-            }
-
-            /**
-             * Close dialog.
-             */
-            closeDialog(): void {
-                nts.uk.ui.windows.close();
-            }
-
-            /**
-             * Decide Employment
-             */
-            decideData = () => {
-                let self = this;
-                setShared('selectedCodes', self.selectedCodes());
-                close();
-            }
-        }
-        
         /**
-        * List Type
+        * Screen Model.
         */
-        export class ListType {
-            static EMPLOYMENT = 1;
-            static Classification = 2;
-            static JOB_TITLE = 3;
-            static EMPLOYEE = 4;
+        export class ScreenModel {
+            selectedCodeWorkplace: KnockoutObservableArray<string>;
+            baseDate: KnockoutObservable<Date>;
+            workplaces: TreeComponentOption;
+            isMultiple: boolean;
+            constructor(){
+                var self = this;
+                self.baseDate = ko.observable(new Date());
+                self.selectedCodeWorkplace = ko.observableArray([]);
+                self.isMultiple = false;
+                var inputCDL008 = nts.uk.ui.windows.getShared('inputCDL008');
+                if(inputCDL008){
+                    self.baseDate(inputCDL008.baseDate);
+                    self.isMultiple = inputCDL008.isMultiple;
+                    self.selectedCodeWorkplace(inputCDL008.canSelected);    
+                }
+                
+                self.workplaces = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: self.isMultiple,
+                    treeType: TreeType.WORK_PLACE,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    isShowSelectButton: true,
+                    selectedWorkplaceId: self.selectedCodeWorkplace,
+                    baseDate: self.baseDate,
+                    isDialog: true
+                }
+                 $('#workplaceList').ntsTreeComponent(self.workplaces);        
+            }
+            
+            /**
+             * function on click button selected workplace
+             */
+            private selectedWorkplace() :void {
+                var self = this;
+                nts.uk.ui.windows.setShared('outputCDL008', { selectedCode: self.selectedCodeWorkplace() });
+                nts.uk.ui.windows.close();    
+            }
+            /**
+             * close windows
+             */
+            private closeWindows(): void{
+                nts.uk.ui.windows.close();  
+            }
         }
     }
 }

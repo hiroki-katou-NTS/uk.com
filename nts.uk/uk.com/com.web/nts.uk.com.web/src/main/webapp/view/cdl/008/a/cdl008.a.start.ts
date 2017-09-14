@@ -1,6 +1,7 @@
-module demo.a {
+module nts.uk.com.view.cdl008.a {
     __viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
+         $("workplaceList").focus();
     });
 }
