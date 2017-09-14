@@ -15,7 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
-public class SpecifiedTimeSheetSettingTest {
+public class PredetermineTimeSheetSettingTest {
 
 	@Test
 	public void onedayWork() {
