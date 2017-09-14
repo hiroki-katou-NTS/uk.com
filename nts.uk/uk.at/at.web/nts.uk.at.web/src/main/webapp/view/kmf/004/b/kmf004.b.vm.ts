@@ -159,7 +159,7 @@ module nts.uk.at.view.kmf004 {
                     self.selectedId(data.grantDateAtr);
                     self.value(data.grantDate);
                     
-                    service.getAllSetByCode(data.specialHolidayCode).done(function(data){
+                    service.getAllSetByCode(data.specialHolidayCode).done(function(data: Array<any>){
                         for(var i = 0; i < data.length; i++){
                             var item : IItem = {
                                 year: data[i].grantDateYear,
