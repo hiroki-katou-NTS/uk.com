@@ -34,12 +34,13 @@
 				<span data-bind="text: workplaceName"></span>
 			</div>
 
-			<div style="display: inline-grid;margin-left: 130px;" data-bind="ntsRadioBoxGroup: {
+			<div id="radio-group-box" tabindex="19" data-bind="ntsRadioBoxGroup: {
+				name: '#[CMM011_31]',
 				options: itemList,
 				optionsValue: 'value',
 				optionsText: 'name',
 				value: selectedValBox,
-				enable: true}"></div>
+				enable: enableRadioGroup}"></div>
 
 			<div id="functions-area-bottom">
 				<button class="x-large proceed" tabindex="7"

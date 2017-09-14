@@ -21,7 +21,7 @@ module nts.uk.at.view.kmf004.b.service {
         return nts.uk.request.ajax("at", path);
     }
     
-    export function addGrantDateCom(data: Array<ComItem>): JQueryPromise<any> {
+    export function addGrantDateCom(data: ComItem): JQueryPromise<any> {
         var path = nts.uk.text.format(servicePath.addGrantDateCom);
         return nts.uk.request.ajax("at", path, data);
     }  

@@ -1,0 +1,13 @@
+@CHARSET "UTF-8";
+
+.contentDialog {
+	margin-top: 20px;
+	margin-left: 30px;
+	position: absolute;
+}
+
+#searchBoxDialog {
+	width: 350px;
+	margin-bottom: 10px;
+	margin-top: 10px;
+}

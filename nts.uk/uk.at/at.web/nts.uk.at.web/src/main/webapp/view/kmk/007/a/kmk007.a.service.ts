@@ -61,6 +61,6 @@ module nts.uk.at.view.kmk007.a.service {
     }
     
      export function saveAsExcel(languageId: string): JQueryPromise<any> {
-        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "WorkType", domainType: "test", languageId: languageId, reportType: 0});
+        return nts.uk.request.exportFile('/masterlist/report/print', {domainId: "WorkType", domainType: "勤務種類の登録", languageId: languageId, reportType: 0});
     }
 }

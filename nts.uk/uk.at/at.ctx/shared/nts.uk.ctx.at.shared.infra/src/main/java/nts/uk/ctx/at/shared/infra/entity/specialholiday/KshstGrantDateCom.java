@@ -38,6 +38,6 @@ public class KshstGrantDateCom extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return null;
+		return kshstGrantDateComPK;
 	}
 }

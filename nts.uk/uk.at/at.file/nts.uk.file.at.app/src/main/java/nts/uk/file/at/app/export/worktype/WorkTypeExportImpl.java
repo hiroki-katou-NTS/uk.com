@@ -15,6 +15,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.i18n.custom.IInternationalization;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.ctx.at.shared.dom.worktype.absenceframe.AbsenceFrame;
 import nts.uk.ctx.at.shared.dom.worktype.absenceframe.AbsenceFrameRepository;
 import nts.uk.ctx.at.shared.dom.worktype.specialholidayframe.SpecialHolidayFrame;
@@ -41,8 +42,6 @@ public class WorkTypeExportImpl implements MasterListData {
 
 	@Inject
 	private SpecialHolidayFrameRepository specialHolidayFrameRepository;
-
-	
 
 	@Override
 	public List<MasterHeaderColumn> getHeaderColumns(MasterListExportQuery arg0) {
@@ -132,11 +131,13 @@ public class WorkTypeExportImpl implements MasterListData {
 	}
 
 	@Override
-	public List<MasterData> getMasterDatas(MasterListExportQuery arg0) {
-		String companyId = AppContexts.user().companyId();
+	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
 		
+		String languageId = query.getLanguageId();	
+		String companyId = AppContexts.user().companyId();
+
 		List<MasterData> datas = new ArrayList<>();
-		List<WorkTypeReportData> listWorkTypeReport = workTypeReportRepository.findAllWorkType(companyId);
+		List<WorkTypeReportData> listWorkTypeReport = workTypeReportRepository.findAllWorkType(companyId,languageId);
 		listWorkTypeReport = listWorkTypeReport.stream().sorted(
 				Comparator.comparing(WorkTypeReportData::getDispOrder, Comparator.nullsLast(Integer::compareTo)))
 				.collect(Collectors.toList());
@@ -165,70 +166,88 @@ public class WorkTypeExportImpl implements MasterListData {
 				}
 				data.put("出勤率の計算方法", internationalization.getItemName(c.getCalculateMethod().nameId).get());
 				data.put("対象範囲", internationalization.getItemName(c.getWorkAtr().nameId).get());
-				data.put("1日", internationalization.getItemName(c.getOneDayCls().nameId).get());
-				data.put("午前", internationalization.getItemName(c.getMorningCls().nameId).get());
-				data.put("午後", internationalization.getItemName(c.getAfternoonCls().nameId).get());
-
-				data.put("１日の休日区分", internationalization.getItemName(c.getOneDayHolidayAtr().nameId).get());
-				data.put("1日の日勤・夜勤時間を求める", checkButtonCheck(c.getOneDayDayNightTimeAsk()));
-				data.put("1日の出勤時刻を直行とする", checkButtonCheck(c.getOneDayAttendanceTime()));
-				data.put("1日の退勤時刻を直帰とする", checkButtonCheck(c.getOneDayTimeLeaveWork()));
-				data.put("1日の公休を消化する", checkButtonCheck(c.getOneDayDigestPublicHd()));
-				data.put("1日の代休を発生させる", checkButtonCheck(c.getOneDayGenSubHodiday()));
-				data.put("1日の欠勤の集計枠", "");
-				AbsenceFrame absenceFrameOneDay = datasAbsenceFrameMap.get(c.getOneDaySumAbsenseNo());
-				if (absenceFrameOneDay != null) {
-					data.put("1日の欠勤の集計枠", absenceFrameOneDay.getAbsenceFrameName());
-				} else {
+				if (c.getWorkAtr() == WorkTypeUnit.OneDay) {
+					data.put("1日", internationalization.getItemName(c.getOneDayCls().nameId).get());
+					data.put("午前", "ー");
+					data.put("午後", "ー");
+					if (c.getOneDayCls() == WorkTypeClassification.HolidayWork
+							|| c.getOneDayCls() == WorkTypeClassification.Holiday) {
+						data.put("１日の休日区分", internationalization.getItemName(c.getOneDayHolidayAtr().nameId).get());
+					} else {
+						data.put("１日の休日区分", "");
+					}
+					data.put("1日の日勤・夜勤時間を求める", checkButtonCheck(c.getOneDayDayNightTimeAsk()));
+					data.put("1日の出勤時刻を直行とする", checkButtonCheck(c.getOneDayAttendanceTime()));
+					data.put("1日の退勤時刻を直帰とする", checkButtonCheck(c.getOneDayTimeLeaveWork()));
+					data.put("1日の公休を消化する", checkButtonCheck(c.getOneDayDigestPublicHd()));
+					data.put("1日の代休を発生させる", checkButtonCheck(c.getOneDayGenSubHodiday()));
 					data.put("1日の欠勤の集計枠", "");
-				}
-				SpecialHolidayFrame specialHlFrameOneDay = datasSpecialHlFrameMap.get(c.getOneDaySumSpHodidayNo());
-				if (specialHlFrameOneDay != null) {
-					data.put("1日の特別休暇の集計枠", specialHlFrameOneDay.getSpecialHdFrameName());
-				} else {
-					data.put("1日の特別休暇の集計枠", "");
-				}
-				data.put("1日の休業区分", internationalization.getItemName(c.getOneDaycloseAtr().nameId).get());
+					if (c.getOneDayCls() == WorkTypeClassification.Absence) {
+						AbsenceFrame absenceFrameOneDay = datasAbsenceFrameMap.get(c.getOneDaySumAbsenseNo());
+						data.put("1日の欠勤の集計枠", absenceFrameOneDay.getAbsenceFrameName());
+					} else {
+						data.put("1日の欠勤の集計枠", "");
+					}
 
-				data.put("午前の日勤・夜勤時間を求める", checkButtonCheck(c.getMorningDayNightTimeAsk()));
-				data.put("午前の出勤時刻を直行とする", checkButtonCheck(c.getMorningAttendanceTime()));
-				data.put("午前の退勤時刻を直帰とする", checkButtonCheck(c.getMorningTimeLeaveWork()));
-				data.put("午前の休日日数を数える", checkButtonCheck(c.getMorningCountHodiday()));
-				data.put("午前の公休を消化する", checkButtonCheck(c.getMorningDigestPublicHd()));
-				data.put("午前の代休を発生させる", checkButtonCheck(c.getMorningGenSubHodiday()));
-				AbsenceFrame absenceFrameMorning = datasAbsenceFrameMap.get(c.getMorningSumAbsenseNo());
-				if (absenceFrameMorning != null) {
-					data.put("午前の欠勤の集計枠", absenceFrameMorning.getAbsenceFrameName());
-				} else {
-					data.put("午前の欠勤の集計枠", "");
-				}
-				SpecialHolidayFrame specialHlFrameMorning = datasSpecialHlFrameMap.get(c.getMorningSumSpHodidayNo());
-				if (specialHlFrameMorning != null) {
-					data.put("午前の特別休暇の集計枠", specialHlFrameMorning.getSpecialHdFrameName());
-				} else {
-					data.put("午前の特別休暇の集計枠", "");
-				}
+					if (c.getOneDayCls() == WorkTypeClassification.SpecialHoliday) {
+						SpecialHolidayFrame specialHlFrameOneDay = datasSpecialHlFrameMap
+								.get(c.getOneDaySumSpHodidayNo());
+						data.put("1日の特別休暇の集計枠", specialHlFrameOneDay.getSpecialHdFrameName());
+					} else {
+						data.put("1日の特別休暇の集計枠", "");
+					}
 
-				data.put("午後の日勤・夜勤時間を求める", checkButtonCheck(c.getAfternoonDayNightTimeAsk()));
-				data.put("午後の出勤時刻を直行とする", checkButtonCheck(c.getAfternoonAttendanceTime()));
-				data.put("午後の退勤時刻を直帰とする", checkButtonCheck(c.getAfternoonTimeLeaveWork()));
-				data.put("午後の休日日数を数える", checkButtonCheck(c.getAfternoonCountHodiday()));
-				data.put("午後の公休を消化する", checkButtonCheck(c.getAfternoonDigestPublicHd()));
-				data.put("午後の代休を発生させる", checkButtonCheck(c.getAfternoonGenSubHodiday()));
-				data.put("午後の欠勤の集計枠", "");
-				data.put("午後の特別休暇の集計枠", "");
-				AbsenceFrame absenceFrameAfternoon = datasAbsenceFrameMap.get(c.getAfternoonSumAbsenseNo());
-				if (absenceFrameAfternoon != null) {
-					data.put("午前の欠勤の集計枠", absenceFrameAfternoon.getAbsenceFrameName());
+					if (c.getAfternoonCls() == WorkTypeClassification.Closure) {
+						data.put("1日の休業区分", internationalization.getItemName(c.getOneDaycloseAtr().nameId).get());
+					} else {
+						data.put("1日の休業区分", "");
+					}
+					workTypeSetHalfDayDefault(data);
 				} else {
-					data.put("午前の欠勤の集計枠", "");
-				}
-				SpecialHolidayFrame specialHlFrameAfternoon = datasSpecialHlFrameMap
-						.get(c.getAfternoonSumSpHodidayNo());
-				if (specialHlFrameAfternoon != null) {
-					data.put("午前の特別休暇の集計枠", specialHlFrameAfternoon.getSpecialHdFrameName());
-				} else {
-					data.put("午前の特別休暇の集計枠", "");
+					data.put("1日", "ー");
+					data.put("午前", internationalization.getItemName(c.getMorningCls().nameId).get());
+					data.put("午後", internationalization.getItemName(c.getAfternoonCls().nameId).get());
+
+					workTypeSetOneDayDefault(data);
+					data.put("午前の日勤・夜勤時間を求める", checkButtonCheck(c.getMorningDayNightTimeAsk()));
+					data.put("午前の出勤時刻を直行とする", checkButtonCheck(c.getMorningAttendanceTime()));
+					data.put("午前の退勤時刻を直帰とする", checkButtonCheck(c.getMorningTimeLeaveWork()));
+					data.put("午前の休日日数を数える", checkButtonCheck(c.getMorningCountHodiday()));
+					data.put("午前の公休を消化する", checkButtonCheck(c.getMorningDigestPublicHd()));
+					data.put("午前の代休を発生させる", checkButtonCheck(c.getMorningGenSubHodiday()));
+					if (c.getMorningCls() == WorkTypeClassification.Absence) {
+						AbsenceFrame absenceFrameMorning = datasAbsenceFrameMap.get(c.getMorningSumAbsenseNo());
+						data.put("午前の欠勤の集計枠", absenceFrameMorning.getAbsenceFrameName());
+					} else {
+						data.put("午前の欠勤の集計枠", "");
+					}
+
+					if (c.getMorningCls() == WorkTypeClassification.SpecialHoliday) {
+						SpecialHolidayFrame specialHlFrameMorning = datasSpecialHlFrameMap
+								.get(c.getMorningSumSpHodidayNo());
+						data.put("午前の特別休暇の集計枠", specialHlFrameMorning.getSpecialHdFrameName());
+					} else {
+						data.put("午前の特別休暇の集計枠", "");
+					}
+					data.put("午後の日勤・夜勤時間を求める", checkButtonCheck(c.getAfternoonDayNightTimeAsk()));
+					data.put("午後の出勤時刻を直行とする", checkButtonCheck(c.getAfternoonAttendanceTime()));
+					data.put("午後の退勤時刻を直帰とする", checkButtonCheck(c.getAfternoonTimeLeaveWork()));
+					data.put("午後の休日日数を数える", checkButtonCheck(c.getAfternoonCountHodiday()));
+					data.put("午後の公休を消化する", checkButtonCheck(c.getAfternoonDigestPublicHd()));
+					data.put("午後の代休を発生させる", checkButtonCheck(c.getAfternoonGenSubHodiday()));
+					if (c.getAfternoonCls() == WorkTypeClassification.Absence) {
+						AbsenceFrame absenceFrameAfternoon = datasAbsenceFrameMap.get(c.getAfternoonSumAbsenseNo());
+						data.put("午後の欠勤の集計枠", absenceFrameAfternoon.getAbsenceFrameName());
+					} else {
+						data.put("午後の欠勤の集計枠", "");
+					}
+					if (c.getAfternoonCls() == WorkTypeClassification.SpecialHoliday) {
+						SpecialHolidayFrame specialHlFrameAfternoon = datasSpecialHlFrameMap
+								.get(c.getAfternoonSumSpHodidayNo());
+						data.put("午後の特別休暇の集計枠", specialHlFrameAfternoon.getSpecialHdFrameName());
+					} else {
+						data.put("午後の特別休暇の集計枠", "");
+					}
 				}
 				data.put("他言語名称", c.getOtherLangName());
 				data.put("他言語略名", c.getOtherLangShortName());
@@ -238,11 +257,44 @@ public class WorkTypeExportImpl implements MasterListData {
 		return datas;
 	}
 
-	public static String checkButtonCheck(int check) {
+	private static String checkButtonCheck(int check) {
 		if (check == 1) {
 			return "○";
 		} else {
 			return "ー";
 		}
 	}
+
+	private static void workTypeSetOneDayDefault(Map<String, Object> data) {
+		data.put("１日の休日区分", "");
+		data.put("1日の日勤・夜勤時間を求める", "ー");
+		data.put("1日の出勤時刻を直行とする", "ー");
+		data.put("1日の退勤時刻を直帰とする", "ー");
+		data.put("1日の公休を消化する", "ー");
+		data.put("1日の代休を発生させる", "ー");
+		data.put("1日の欠勤の集計枠", "");
+		data.put("1日の特別休暇の集計枠", "");
+		data.put("1日の休業区分", "");
+
+	}
+
+	private static void workTypeSetHalfDayDefault(Map<String, Object> data) {
+		data.put("午前の日勤・夜勤時間を求める", "ー");
+		data.put("午前の出勤時刻を直行とする", "ー");
+		data.put("午前の退勤時刻を直帰とする", "ー");
+		data.put("午前の休日日数を数える", "ー");
+		data.put("午前の公休を消化する", "ー");
+		data.put("午前の代休を発生させる", "ー");
+		data.put("午前の欠勤の集計枠", "");
+		data.put("午後の日勤・夜勤時間を求める", "ー");
+		data.put("午後の出勤時刻を直行とする", "ー");
+		data.put("午後の退勤時刻を直帰とする", "ー");
+		data.put("午後の休日日数を数える", "ー");
+		data.put("午後の公休を消化する", "ー");
+		data.put("午後の代休を発生させる", "ー");
+		data.put("午前の欠勤の集計枠", "");
+		data.put("午前の特別休暇の集計枠", "");
+
+	}
+
 }
