@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.employment;
+package nts.uk.ctx.bs.employee.dom.employment_old;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;

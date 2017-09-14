@@ -2,12 +2,11 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.employment;
+package nts.uk.ctx.bs.employee.dom.employment_old;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.shr.com.primitive.Memo;
 
 /**
  * 雇用.
@@ -30,12 +29,6 @@ public class Employment extends AggregateRoot {
 	/** 雇用名称. */
 	private EmploymentName employmentName;
 	
-	/** 雇用外部コード. */
-	private EmpExternalCode empExternalCode;
-	
-	/** メモ. */
-	private Memo memo;
-	
 	/**
 	 * Instantiates a new employment.
 	 *
@@ -45,8 +38,8 @@ public class Employment extends AggregateRoot {
 		this.companyId = memento.getCompanyId();
 		this.employmentCode = memento.getEmploymentCode();
 		this.employmentName = memento.getEmploymentName();
-		this.empExternalCode = memento.getEmpExternalcode();
-		this.memo = memento.getMemo();
+		this.workClosureId = memento.getWorkClosureId();
+		this.salaryClosureId = memento.getSalaryClosureId();
 	}
 	
 	/**
@@ -58,8 +51,8 @@ public class Employment extends AggregateRoot {
 		memento.setCompanyId(this.companyId);
 		memento.setEmploymentCode(this.employmentCode);
 		memento.setEmploymentName(this.employmentName);
-		memento.setEmpExternalCode(this.empExternalCode);
-		memento.setMemo(this.memo);
+		memento.setWorkClosureId(this.workClosureId);
+		memento.setSalaryClosureId(this.salaryClosureId);
 	}
 
 	/* (non-Javadoc)
@@ -70,7 +63,8 @@ public class Employment extends AggregateRoot {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
-		result = prime * result + ((employmentCode == null) ? 0 : employmentCode.hashCode());
+		result = prime * result + ((salaryClosureId == null) ? 0 : salaryClosureId.hashCode());
+		result = prime * result + ((workClosureId == null) ? 0 : workClosureId.hashCode());
 		return result;
 	}
 
@@ -91,13 +85,18 @@ public class Employment extends AggregateRoot {
 				return false;
 		} else if (!companyId.equals(other.companyId))
 			return false;
-		if (employmentCode == null) {
-			if (other.employmentCode != null)
+		if (salaryClosureId == null) {
+			if (other.salaryClosureId != null)
 				return false;
-		} else if (!employmentCode.equals(other.employmentCode))
+		} else if (!salaryClosureId.equals(other.salaryClosureId))
+			return false;
+		if (workClosureId == null) {
+			if (other.workClosureId != null)
+				return false;
+		} else if (!workClosureId.equals(other.workClosureId))
 			return false;
 		return true;
 	}
 	
-
+	
 }

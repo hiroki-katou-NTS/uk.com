@@ -2,21 +2,21 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.infra.entity.employment;
+package nts.uk.ctx.bs.employee.infra.entity.workplace;
 
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class CemptEmploymentPK_.
+ * The Class BsydtWkpConfigInfoPK_.
  */
-@StaticMetamodel(CemptEmploymentPK.class)
-public class CemptEmploymentPK_ {
+@StaticMetamodel(BsydtWkpConfigInfoPK.class)
+public class BsydtWkpConfigInfoPK_ {
 
-	/** The company id. */
-	public static volatile SingularAttribute<CemptEmploymentPK, String> cid;
+	/** The cid. */
+	public static volatile SingularAttribute<BsydtWkpConfigInfoPK, String> cid;
 	
-	/** The code. */
-	public static volatile SingularAttribute<CemptEmploymentPK, String> code;
-	
+	/** The history id. */
+	public static volatile SingularAttribute<BsydtWkpConfigInfoPK, String> historyId;
 }
+
