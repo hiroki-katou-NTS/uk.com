@@ -16,9 +16,7 @@ public class YearServiceSet {
 	private Integer year;
 	private Integer month;
 	private Integer date;
-	public static YearServiceSet update(String companyId, String specialHolidayCode, int yearServiceNo, Integer year, Integer month, Integer date){
-		return new YearServiceSet(companyId, specialHolidayCode, yearServiceNo, year, month, date);
-	}
+
 	/**
 	 * creates from java type 
 	 * @param companyId
@@ -32,6 +30,7 @@ public class YearServiceSet {
 	public static YearServiceSet createFromJavaType(String companyId, String specialHolidayCode, int yearServiceNo, Integer year, Integer month, Integer date){
 		return new YearServiceSet(companyId, specialHolidayCode, yearServiceNo, year, month, date);
 	}
+	
 	/**
 	 * validate list input
 	 * @param yearServiceSetlst
@@ -40,19 +39,17 @@ public class YearServiceSet {
 		List<Integer> yearLst = new ArrayList<>();
 		for(YearServiceSet item : yearServiceSetlst){
 			yearLst.add(item.getYear()); 
-			for(int i = 0; i <= (yearLst.size()-2); i++){
-				for(int k = i+1; k < yearLst.size(); k++ ){
-					if( yearLst.get(i) == yearLst.get(k)){
-						throw new BusinessException("Msg_99");
-					}
-				}
-			}
+			// check duplicate year
+			yearLst.contains(item);
+			// year must exsist and year < 1
 			if(item.getYear() == null || item.getYear() < 1){
 				throw new BusinessException("Msg_145");
 			}
+			// year and month must exsist
 			if(item.getYear() == null || item.getMonth() == null){
 				throw new BusinessException("Msg_100");
 			}
+			// date must exsist
 			if(item.getDate() == null){
 				throw new BusinessException("Msg_101");
 			}

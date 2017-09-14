@@ -35,14 +35,14 @@
 						<input tabindex="6" class="nts-input" id="inpCode" data-bind="ntsTextEditor: { 	value: codeObject,
 																										constraint: 'YearServiceCode',
 																										required: true,
-																										name: '#[KDW009_9]',
+																										name: '#[KMF004_89]',
 																										immediate: true,
 																										option: {autofill:true, filldirection:'left'},
 																										enable: check}"/>
 						<!-- A3_3: Name--> 
 						<input tabindex="7" class="nts-input" id="inpPattern"  data-bind="ntsTextEditor: { 	value: selectedName,
 																										constraint: 'YearServiceName',
-																										name: '#[KDW009_10]',
+																										name: '#[KMF004_90]',
 																										required: true,
 																										enable: true}"/>
 					</td>
@@ -53,7 +53,7 @@
 						<div id="label_down"  data-bind="ntsFormLabel: {required: true,}">#{i18n.getText('KMF004_93')}</div>
 					</td>
 					<td>
-						<div id="button_radio" data-bind="ntsRadioBoxGroup: {
+						<div tabindex = "8" id="button_radio" data-bind="ntsRadioBoxGroup: {
 												options: itemList,
 												optionsValue: 'id',
 												optionsText: 'name',
@@ -73,11 +73,11 @@
 				</tr>
 			</table>
 			
-			<table class="data-items">
+			<table tabindex = "10" class="data-items">
 				<thead>
 					<tr>
 						<td width="19"></td>
-						<td colspan="2" width="134">#{i18n.getText('KMF003_43')}</td>
+						<td colspan="2" width="134">#{i18n.getText('KMF004_98')}</td>
 						<td width="0">#{i18n.getText('KMF004_31')}</td>
 					</tr>
 				</thead>
@@ -87,6 +87,8 @@
 						<td class="hidden-right-border">
 							<input id="year" data-bind="ntsNumberEditor: {
 									value: year, 
+									constraint: 'Year',
+									name: '#[KMF004_99]',
 									option: ko.mapping.fromJS({
 										unitID: 'YEARS',
 										width: '50'
@@ -95,6 +97,8 @@
 						<td>
 							<input id="month" data-bind="ntsNumberEditor: {
 									value: month, 
+									constraint: 'Month',
+									name: '#[KMF004_100]',
 									option: ko.mapping.fromJS({
 										unitID: 'MONTHS',
 										width: '60'
@@ -103,6 +107,8 @@
 						<td>
 							<input id="year" data-bind="ntsNumberEditor: {
 									value: date, 
+									constraint: 'Date',
+									name: '#[KMF004_31]',
 									option: ko.mapping.fromJS({
 										unitID: 'DAYS',
 										width: '50'
