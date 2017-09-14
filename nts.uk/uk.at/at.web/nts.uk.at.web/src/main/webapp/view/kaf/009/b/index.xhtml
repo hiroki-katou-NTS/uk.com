@@ -36,8 +36,9 @@
 				<label>#{i18n.getText('KAF009_14')}</label> <input id="inpEndTime1"
 					data-bind="ntsTimeWithDayEditor: {name: 'Time End 1', constraint:'TimeWithDayAttr', value: timeEnd1, enable: true, readonly: true, required: true}" />
 				<!--選択場所　Button-->
-				<button data-bind="click: openLocationDialog">#{i18n.getText('KAF009_15')}</button>
-				<label data-bind="text : workLocationCD() + '   ' + workLocationName()"></label><br />
+				<button id="btnLocation1" data-bind="click: function(){openLocationDialog(1)}">#{i18n.getText('KAF009_15')}</button>
+				<label
+					data-bind="text : workLocationCD() + '   ' + workLocationName()"></label><br />
 			</div>
 			<!--LINE　２ -->
 			<div class="valign-center control-group switch"
@@ -63,10 +64,10 @@
 								enable: true }">
 			</div>
 			<div>
-				<label class="commentGo1" data-bind="text: commentGo1"></label>
-				<label class="commentBack1" data-bind="text: commentBack1"></label>
+				<label class="commentGo1" data-bind="text: commentGo1"></label> <label
+					class="commentBack1" data-bind="text: commentBack1"></label>
 			</div>
-			
+
 		</div>
 		<!--勤務時間 　２２２２２２２２２２２２２２２-->
 		<div class="valign-center control-group">
@@ -75,8 +76,10 @@
 				data-bind="ntsTimeWithDayEditor: {name: 'Time Start 2',constraint:'TimeWithDayAttr',value: timeStart2}" />
 			<label>#{i18n.getText('KAF009_14')}</label> <input id="inpEndTime2"
 				data-bind="ntsTimeWithDayEditor: {name: 'Time End 2', constraint:'TimeWithDayAttr',value: timeEnd2}" />
-			<button data-bind="">#{i18n.getText('KAF009_15')}</button>
-			<label data-bind="text : workLocationCD2() + '   ' + workLocationName2()"></label><br />
+			<!--選択場所　Button-->
+			<button id="btnLocation2" data-bind="click: function(){openLocationDialog(2)}">#{i18n.getText('KAF009_15')}</button>
+			<label
+				data-bind="text : workLocationCD2() + '   ' + workLocationName2()"></label><br />
 			<!--line 2 -->
 			<div class="cf valign-center control-group switch"
 				data-bind="ntsSwitchButton: {
@@ -101,8 +104,8 @@
 								enable: true }">
 			</div>
 			<div>
-				<label class="commentGo2" data-bind="text: commentGo2"></label>
-				<label class="commentBack2" data-bind="text: commentBack2"></label>
+				<label class="commentGo2" data-bind="text: commentGo2"></label> <label
+					class="commentBack2" data-bind="text: commentBack2"></label>
 			</div>
 		</div>
 		<!--勤務を変更する -->
@@ -119,14 +122,13 @@
 						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_23')}</div>
 				</div>
 				<div class="cell valign-center">
-					<button class="workSelect">#{i18n.getText('KAF009_24')}</button>
+					<button class="workSelect" data-bind="click: openDialogKdl003">#{i18n.getText('KAF009_24')}</button>
 				</div>
 				<div class="cell valign-center">
 					<label class="lblWorkTypeCd" data-bind="text: workTypeCd"></label>
-					<LABEL>workTypeName</LABEL> 
-					<BR />
-					<label class="lblSiftCd" data-bind="text: siftCd"></label>
-					<LABEL>siftName</LABEL>
+					<LABEL data-bind="text: workTypeName"></LABEL> <BR /> <label
+						class="lblSiftCd" data-bind="text: siftCd"></label> <LABEL
+						data-bind="text: siftName"></LABEL>
 				</div>
 			</div>
 		</div>

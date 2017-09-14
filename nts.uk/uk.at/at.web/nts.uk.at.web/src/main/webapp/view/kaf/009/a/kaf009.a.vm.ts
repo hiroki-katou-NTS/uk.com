@@ -48,11 +48,11 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         multilineeditor: any;
 
         //Insert command
-        insertcommand: KnockoutObservable<IGoBackCommand>;
+        command: KnockoutObservable<IGoBackCommand>;
 
         constructor() {
             var self = this;
-            self.insertcommand = ko.observable(null);
+            self.command = ko.observable(null);
             //申請者
             self.employeeName = ko.observable("");
             //申請日付
@@ -136,43 +136,55 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         insert() {
             let self = this;
-            service.insertGoBackDirect(self.getInsertCommand()).done(function() {
+            service.insertGoBackDirect(self.getCommand(1)).done(function() {
                 self.startPage();
-            }).fail(function(){
-                    
+            }).fail(function() {
+
             })
         }
         /**
          * 
          */
-        getInsertCommand() {
+        update() {
             let self = this;
-            let insertCommand: IGoBackCommand = new GoBackCommand();
-            insertCommand.appID = Math.random().toString();
-            insertCommand.workTypeCd = self.workTypeCd();
-            insertCommand.siftCd = self.siftCd();
-            insertCommand.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
-            insertCommand.goWorkAtr1 = self.selectedGo();
-            insertCommand.backHomeAtr1 = self.selectedBack();
-            insertCommand.workTimeStart1 = self.timeStart1();
-            insertCommand.workTimeEnd1 = self.timeEnd1();
-            insertCommand.goWorkAtr2 = self.selectedGo2();
-            insertCommand.backHomeAtr2 = self.selectedBack2();
-            insertCommand.workTimeStart2 = self.timeStart2();
-            insertCommand.workTimeEnd2 = self.timeEnd2();
-            insertCommand.workLocationCd1 = self.workLocationCD();
-            insertCommand.workLocationCd2 = self.workLocationCD2();
-            return insertCommand;
+            service.updateGoBackDirect(self.getCommand(2)).done(function() {
+                //self.startPage();
+                alert("Done");
+            }).fail(function() {
+
+            })
         }
+
+
 
         /**
-         * 
+         * 1: insert 
+         * 2: update 
+         * 3: delete
          */
-        update() {
-
-
+        getCommand(mode: number) {
+            let self = this;
+            let command: IGoBackCommand = new GoBackCommand();
+            if (mode == 1) {
+                command.appID = Math.random().toString();
+            } else {
+                command.appID = '469dce47-ba9c-4d38-844d-2f51927ce33b';
+            }
+            command.workTypeCd = self.workTypeCd();
+            command.siftCd = self.siftCd();
+            command.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
+            command.goWorkAtr1 = self.selectedGo();
+            command.backHomeAtr1 = self.selectedBack();
+            command.workTimeStart1 = self.timeStart1();
+            command.workTimeEnd1 = self.timeEnd1();
+            command.goWorkAtr2 = self.selectedGo2();
+            command.backHomeAtr2 = self.selectedBack2();
+            command.workTimeStart2 = self.timeStart2();
+            command.workTimeEnd2 = self.timeEnd2();
+            command.workLocationCd1 = self.workLocationCD();
+            command.workLocationCd2 = self.workLocationCD2();
+            return command;
         }
-
 
         /**
          * Set common Setting 
@@ -228,15 +240,23 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         /**
          * KDL010_勤務場所選択を起動する
          */
-        openLocationDialog() {
+        openLocationDialog(line: number) {
             var self = this;
             nts.uk.ui.block.invisible();
-            nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.workLocationCD());
+            if (line == 1) {
+                nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.workLocationCD());
+            } else {
+                nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.workLocationCD2());
+            };
             nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
                 var self = this;
                 var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
                 if (returnWorkLocationCD !== undefined) {
-                    self.workLocationCD(returnWorkLocationCD);
+                    if (line == 1){
+                        self.workLocationCD(returnWorkLocationCD);
+                    }else{
+                        self.workLocationCD2(returnWorkLocationCD);    
+                    };
                     nts.uk.ui.block.clear();
                 }
                 else {
@@ -244,18 +264,42 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     nts.uk.ui.block.clear();
                 }
             });
-
         }
+        /**
+         * KDL003
+         */
+        openDialogKdl003() {
+            let self = this;
+            let workTypeCodes = [];
 
+            let workTimeCodes = [];
+            nts.uk.ui.windows.setShared('parentCodes', {
+                workTypeCodes: workTypeCodes,
+                selectedWorkTypeCode: self.workTypeCd(),
+                workTimeCodes: workTimeCodes,
+                selectedWorkTimeCode: self.siftCd()
+            }, true);
+
+            nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
+                //view all code of selected item 
+                var childData = nts.uk.ui.windows.getShared('childData');
+                if (childData) {
+                    debugger;
+                    self.workTypeCd(childData.selectedWorkTypeCode);
+                    self.workTypeName(childData.selectedWorkTypeName);
+                    self.siftCd(childData.selectedWorkTimeCode);
+                    self.siftName(childData.selectedWorkTimeName);
+                }
+            })
+        }
 
         /**
          * New Screen Mode 
          */
         newScreenMode() {
-            let self = this;
-            self.selectedRuleCode(1);
-            self.date(moment().format("YYYY/MM/DD"));
-
+            //            let self = this;
+            //            self.selectedRuleCode(1);
+            //            self.date(moment().format("YYYY/MM/DD"));
         }
 
     }

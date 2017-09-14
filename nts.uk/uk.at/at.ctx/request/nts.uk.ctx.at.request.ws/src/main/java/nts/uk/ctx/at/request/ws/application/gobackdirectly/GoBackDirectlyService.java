@@ -8,6 +8,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertGoBackDirectlyCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommand;
+import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommandHandler;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectDetailDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectSettingDto;
 import nts.uk.ctx.at.request.app.find.application.gobackdirectly.GoBackDirectlyDto;
@@ -22,6 +24,9 @@ public class GoBackDirectlyService extends WebService {
 	
 	@Inject 
 	private InsertGoBackDirectlyCommandHandler insertGoBackHandler;
+
+	@Inject 
+	private UpdateGoBackDirectlyCommandHandler updateGoBackHandler;
 
 	/**
 	 * 
@@ -55,10 +60,23 @@ public class GoBackDirectlyService extends WebService {
 		String appID = "1445DA47-3CF9-4B0A-B819-96D20721881C";
 		return this.goBackDirectlyFinder.getGoBackDirectDetailByAppId(appID);
 	}
-	
+	/**
+	 * 
+	 * @param command
+	 */
 	@POST
 	@Path("insertGoBackDirectly")
 	public void insertGoBackData (InsertGoBackDirectlyCommand command) {
 		this.insertGoBackHandler.handle(command);
 	}
+	/**
+	 * update command
+	 * @param command
+	 */
+	@POST
+	@Path("updateGoBackDirectly")
+	public void updateGoBackData (UpdateGoBackDirectlyCommand command) {
+		this.updateGoBackHandler.handle(command);
+	}
+		
 }

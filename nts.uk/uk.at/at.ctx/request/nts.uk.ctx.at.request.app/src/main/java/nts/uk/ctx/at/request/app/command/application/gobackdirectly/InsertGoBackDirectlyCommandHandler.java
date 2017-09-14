@@ -51,7 +51,5 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertGoB
 		} else {
 			goBackDirectRepo.insert(newGoBack);
 		}
-
 	}
-
 }
