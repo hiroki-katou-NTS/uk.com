@@ -9,7 +9,11 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
-
+/**
+ * 
+ * @author ducpm
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
@@ -47,7 +51,7 @@ public class KrqdtGoBackDirectly extends UkJpaEntity{
 	@Column(name="WORK_TIME_START2")
 	public int workTimeStart2;
 	
-	@Column(name="WORK_TIME_End2")
+	@Column(name="WORK_TIME_END2")
 	public int workTimeEnd2;
 
 	@Column(name="WORK_LOCATION_CD2")

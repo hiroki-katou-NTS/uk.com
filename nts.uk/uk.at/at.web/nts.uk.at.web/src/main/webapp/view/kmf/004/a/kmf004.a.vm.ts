@@ -12,7 +12,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         enable: KnockoutObservable<boolean>;
 
         //Tab Regular
-        option1: KnockoutObservable<any>;
+        option1: KnockoutObservable<any>; 
         option2: KnockoutObservable<any>;
 
         //
@@ -421,7 +421,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openBDialog() {
             let self = this;
             nts.uk.ui.windows.setShared('KMF004B_SPHD_CD', self.currentItem().specialHolidayCode());
-            nts.uk.ui.windows.sub.modal('/view/kmf/004/b/index.xhtml', { height: 600, width: 1000, dialogClass: 'no-close' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/kmf/004/b/index.xhtml').onClosed(function(): any {
             });
 
         }
@@ -429,7 +429,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openDDialog() {
             let self = this;
             nts.uk.ui.windows.setShared('KMF004D_SPHD_CD', self.currentItem().specialHolidayCode());
-            nts.uk.ui.windows.sub.modal('/view/kmf/004/d/index.xhtml', { height: 600, width: 1100, dialogClass: 'no-close' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/kmf/004/d/index.xhtml').onClosed(function(): any {
             });
 
         }
@@ -437,14 +437,14 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         openGDialog() {
             let self = this;
             nts.uk.ui.windows.setShared('KMF004G_SPHD_CD', self.currentItem().specialHolidayCode());
-            nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml', { dialogClass: 'no-close' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/kmf/004/g/index.xhtml').onClosed(function(): any {
             });
 
         }
 
         openHDialog() {
             let self = this;
-            nts.uk.ui.windows.sub.modal('/view/kmf/004/h/index.xhtml', { dialogClass: 'no-close' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/kmf/004/h/index.xhtml').onClosed(function(): any {
             });
 
         }

@@ -81,7 +81,7 @@
 												width: 220,
 												height: 258,
 												options: listHistory,								
-												optionsValue: 'approvalId',
+												optionsValue: 'id',
 												columns: columns,
 												multiple: false,
 												value: currentCode,
@@ -143,15 +143,15 @@
 										<tr>
 											<!-- A3_12: App Name -->
 											<td class="name">
-												<div data-bind = "text: $parent.nameCompany" style="display: inline-block;"></div>
-												<div style="display: inline-block;" data-bind="if: true">
+												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
+												<div style="display: inline-block;" data-bind="if: common">
 													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
 												</div>
 											</td>
 											<!-- A3_14: -->
-											<td class="button_phase">
+											<td class="button_phase" data-bind="with: appPhase1">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div>hhh</div>
+												<div data-bind="text: approvalForm"></div>
 											</td>
 											<!-- A3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
@@ -238,7 +238,7 @@
 								</div>
 							</div>
 							<!-- B3: List -->
-							<div id = "right-contents" style="float: right; margin-top: 10px;">
+							<div id = "right-contents" style="float: right; margin-top: 10px;" data-bind="with: $parent.viewmodelB">
 								<div>
 									<!-- B3_1: Label 有効期間 -->
 									<div style = "width: 100px; margin-left: 20px;display: inline-block;" data-bind ="ntsFormLabel: { required: false }">#{i18n.getText('CMM018_23')}</div>
@@ -295,9 +295,9 @@
 												</div>
 											</td>
 											<!-- B3_14: -->
-											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div>hhh</div>
+											<td class="button_phase" data-bind="with: appPhase1">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parents[1].openDialogK(approvalPhaseId)}"></button>
+												<div data-bind="text: approvalForm"></div>
 											</td>
 											<!-- B3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
@@ -306,8 +306,9 @@
 												</div>
 											</div></td>
 											<!-- B3_17: -->
-											<td class="button_phase">
+											<td class="button_phase" data-bind="with: appPhase2">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
+												<div data-bind="text: approvalForm"></div>
 											</td>
 											<!-- B3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
@@ -316,8 +317,9 @@
 												</div>
 											</td>
 											<!-- B3_20: -->
-											<td class="button_phase">
+											<td class="button_phase" data-bind="with: appPhase3">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
+												<div data-bind="text: approvalForm"></div>
 											</td>
 											<!-- B3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
@@ -325,8 +327,9 @@
 													<div data-bind="text: approverId"> <br /></div>
 												</div></td>
 											<!-- B3_23: -->
-											<td class="button_phase">
+											<td class="button_phase" data-bind="with: appPhase4">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
+												<div data-bind="text: approvalForm"></div>
 											</td>
 											<!-- B3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
@@ -335,8 +338,9 @@
 												</div>
 											</td>
 											<!-- B3_26: -->
-											<td class="button_phase">
+											<td class="button_phase" data-bind="with: appPhase5">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
+												<div data-bind="text: approvalForm"></div>
 											</td>
 											<!-- B3_28: -->
 											<td class="approver" data-bind="with: appPhase5">

@@ -19,7 +19,14 @@ public class EmployeeApproveDto {
 
 	/** The s cd. */
 	private String sCd;
-
+	/**
+	 * name
+	 */
+	private String pName;
+	
+	private String wpCode;
+	
+	private String wpName;
 	/** The s mail. */
 	private String sMail;
 

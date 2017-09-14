@@ -699,6 +699,11 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.screen:nts.uk.screen.com.infra')
 		runtime project (':com.screen:nts.uk.screen.com.ws')
 		
+		
+		runtime project (':com.file:nts.uk.file.com.ws')
+		runtime project (':com.file:nts.uk.file.com.app')
+		runtime project (':com.file:nts.uk.file.com.infra')
+		
 		// shr find implement
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: '0.1'
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.app', version: '0.1'

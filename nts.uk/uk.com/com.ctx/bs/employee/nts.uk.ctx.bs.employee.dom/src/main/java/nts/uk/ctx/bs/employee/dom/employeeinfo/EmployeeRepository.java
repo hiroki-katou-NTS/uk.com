@@ -7,6 +7,8 @@ package nts.uk.ctx.bs.employee.dom.employeeinfo;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * The Interface EmployeeRepository.
  */
@@ -19,7 +21,7 @@ public interface EmployeeRepository {
 	 * @param employeeCode the employee code
 	 * @return the person id by employee code
 	 */
-	Optional<Employee> findByEmployeeCode(String companyId, String employeeCode);
+	Optional<Employee> findByEmployeeCode(String companyId, String employeeCode , GeneralDate entryDate);
 
 	/**
 	 * Gets the list person by list employee.

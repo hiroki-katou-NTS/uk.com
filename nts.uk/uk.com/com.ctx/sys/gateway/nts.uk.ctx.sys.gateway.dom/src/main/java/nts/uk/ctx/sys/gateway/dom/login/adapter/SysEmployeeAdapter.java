@@ -9,16 +9,16 @@ import java.util.Optional;
 import nts.uk.ctx.sys.gateway.dom.login.dto.EmployeeImport;
 
 /**
- * The Interface EmployeeAdapter.
+ * The Interface SysEmployeeAdapter.
  */
 public interface SysEmployeeAdapter {
 
 	/**
-	 * Gets the by employee code.
+	 * Gets the current info by scd.
 	 *
 	 * @param companyId the company id
 	 * @param employeeCode the employee code
-	 * @return the by employee code
+	 * @return the current info by scd
 	 */
-	Optional<EmployeeImport> getByEmployeeCode(String companyId,String employeeCode);
+	Optional<EmployeeImport> getCurrentInfoByScd(String companyId,String employeeCode);
 }
