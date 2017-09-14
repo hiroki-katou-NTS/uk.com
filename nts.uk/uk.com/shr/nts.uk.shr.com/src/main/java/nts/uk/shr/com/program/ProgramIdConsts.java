@@ -282,4 +282,6 @@ public class ProgramIdConsts {
 
 	public static final String CPS005B = "CPS005B";
 	
+	public static final String CPS002E = "CPS002E";
+	
 }
