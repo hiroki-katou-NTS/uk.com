@@ -1,6 +1,9 @@
 module nts.uk.com.view.cmm011 {
     export module base {
 
+        /**
+         * WorkplaceHistoryAbstract
+         */
         export abstract class WorkplaceHistoryAbstract {
 
             lstWpkHistory: KnockoutObservableArray<IHistory>;
@@ -17,11 +20,33 @@ module nts.uk.com.view.cmm011 {
                 });
             }
             
+            /**
+             * selectFirst
+             */
             public selectFirst() {
                 let self = this;
                 self.selectedWpkHistory(self.lstWpkHistory()[0].historyId);
             }
             
+            /**
+             * getSelectedHistory
+             */
+            public getSelectedHistory(): IHistory {
+                let self = this;
+                return self.lstWpkHistory().filter(item => item.workplaceId == self.selectedWpkHistory())[0];
+            }
+            
+            /**
+             * isWorkplaceHistoryLatest
+             */
+            public isWorkplaceHistoryLatest(): boolean {
+                let self = this;
+                return self.selectedWpkHistory() == self.lstWpkHistory()[0].workplaceId;
+            }
+            
+            /**
+             * fillTextDisplay
+             */
             private fillTextDisplay() {
                 let self = this;
                 _.forEach(self.lstWpkHistory(), (item: IHistory) => {
@@ -30,6 +55,9 @@ module nts.uk.com.view.cmm011 {
             }
         }
         
+        /**
+         * IHistory
+         */
         export interface IHistory {
             workplaceId: string;
             historyId: string;
@@ -38,11 +66,17 @@ module nts.uk.com.view.cmm011 {
             textDisplay?: string;
         }
         
+        /**
+         * IWorkplace
+         */
         export interface IWorkplace {
             code: string;
             name: string;
         }
         
+        /**
+         * CreationWorkplaceType
+         */
         export class CreationWorkplaceType {
             static CREATE_ON_TOP = 1;
             static CREATE_BELOW = 2;

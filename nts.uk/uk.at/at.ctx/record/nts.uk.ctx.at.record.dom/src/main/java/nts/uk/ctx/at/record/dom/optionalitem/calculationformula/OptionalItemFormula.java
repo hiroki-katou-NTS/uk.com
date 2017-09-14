@@ -89,4 +89,41 @@ public class OptionalItemFormula extends AggregateRoot {
 		memento.setDailyRounding(this.dailyRounding);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
+		result = prime * result + ((formulaId == null) ? 0 : formulaId.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OptionalItemFormula other = (OptionalItemFormula) obj;
+		if (companyId == null) {
+			if (other.companyId != null)
+				return false;
+		} else if (!companyId.equals(other.companyId))
+			return false;
+		if (formulaId == null) {
+			if (other.formulaId != null)
+				return false;
+		} else if (!formulaId.equals(other.formulaId))
+			return false;
+		return true;
+	}
+
 }
