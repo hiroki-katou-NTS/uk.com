@@ -15,11 +15,9 @@ import nts.arc.time.GeneralDate;
 public class BsymtJobEntryHistoryPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	@Basic(optional = false)
 	@Column(name = "SID")
 	public String sId;
 	
-	@Basic(optional = false)
 	@Column(name = "ENTRY_DATE")
 	public GeneralDate entryDate;
 
