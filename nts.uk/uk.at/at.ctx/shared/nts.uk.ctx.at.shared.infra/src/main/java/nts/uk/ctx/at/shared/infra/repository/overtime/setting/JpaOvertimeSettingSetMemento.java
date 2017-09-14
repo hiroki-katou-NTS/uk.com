@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.overtime.setting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -88,8 +89,8 @@ public class JpaOvertimeSettingSetMemento implements OvertimeSettingSetMemento{
 	public void setBreakdownItems(List<OvertimeBRDItem> breakdownItems) {
 		this.entityOvertimeBRDItems = breakdownItems.stream().map(overtimeBRDItem -> {
 			KshstOverTimeBrd entityOvertimeBRDItem = new KshstOverTimeBrd();
-			overtimeBRDItem.saveToMemento(
-					new JpaOvertimeBRDItemSetMemento(entityOvertimeBRDItem, this.entity.getCid()));
+			overtimeBRDItem.saveToMemento(new JpaOvertimeBRDItemSetMemento(entityOvertimeBRDItem,
+					new ArrayList<>(), this.entity.getCid()));
 			return entityOvertimeBRDItem;
 		}).collect(Collectors.toList());
 

@@ -31,6 +31,9 @@ public class OvertimeSaveDto implements OvertimeGetMemento{
 	/** The use classification. */
 	private Boolean useClassification;
 	
+	/** The super holiday 60 H occurs. */
+	private Boolean superHoliday60HOccurs;
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.overtime.OvertimeGetMemento#getUseClassification()
 	 */
@@ -45,7 +48,7 @@ public class OvertimeSaveDto implements OvertimeGetMemento{
 	 */
 	@Override
 	public boolean getSuperHoliday60HOccurs() {
-		return false;
+		return this.superHoliday60HOccurs;
 	}
 	
 	/* (non-Javadoc)

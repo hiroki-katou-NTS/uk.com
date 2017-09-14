@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.overtime.breakdown;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.overtime.ProductNumber;
@@ -30,6 +32,9 @@ public class OvertimeBRDItemSaveDto implements OvertimeBRDItemGetMemento{
 
 	/** The product number. */
 	private Integer productNumber;
+	
+	/** The attendance item ids. */
+	private List<Integer> attendanceItemIds;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.overtime.OvertimeGetMemento#getUseClassification()
@@ -74,6 +79,18 @@ public class OvertimeBRDItemSaveDto implements OvertimeBRDItemGetMemento{
 	@Override
 	public ProductNumber getProductNumber() {
 		return ProductNumber.valueOf(this.productNumber);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemGetMemento#
+	 * getAttendanceItemIds()
+	 */
+	@Override
+	public List<Integer> getAttendanceItemIds() {
+		return this.attendanceItemIds;
 	}
 	
 

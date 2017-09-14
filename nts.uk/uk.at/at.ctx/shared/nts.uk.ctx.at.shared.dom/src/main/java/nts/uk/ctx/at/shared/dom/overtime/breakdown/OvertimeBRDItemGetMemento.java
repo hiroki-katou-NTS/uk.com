@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.overtime.breakdown;
 
+import java.util.List;
+
 import nts.uk.ctx.at.shared.dom.overtime.ProductNumber;
 import nts.uk.ctx.at.shared.dom.overtime.UseClassification;
 
@@ -42,5 +44,13 @@ public interface OvertimeBRDItemGetMemento {
 	 * @return the product number
 	 */
 	public ProductNumber getProductNumber();
+	
+	
+	/**
+	 * Gets the attendance item ids.
+	 *
+	 * @return the attendance item ids
+	 */
+	public List<Integer> getAttendanceItemIds();
 
 }

@@ -17,6 +17,7 @@ import nts.uk.ctx.at.shared.dom.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.overtime.OvertimeRepository;
 import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItem;
 import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemRepository;
+import nts.uk.ctx.at.shared.dom.overtime.breakdown.attendance.OvertimeBRDItemAtenRepository;
 import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSetting;
 import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSettingRepository;
 import nts.uk.ctx.at.shared.infra.entity.overtime.KshstOverTime;
@@ -39,6 +40,10 @@ public class JpaOvertimeSettingRepository extends JpaRepository
 	/** The overtime BRD item repository. */
 	@Inject
 	private OvertimeBRDItemRepository overtimeBRDItemRepository;
+	
+	/** The Overtime BRD item aten repository. */
+	@Inject
+	private OvertimeBRDItemAtenRepository overtimeBRDItemAtenRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -72,7 +77,7 @@ public class JpaOvertimeSettingRepository extends JpaRepository
 		List<KshstOverTimeBrd> entityOvertimeBRDItem = domainOvertimeBrdItem.stream()
 				.map(domain -> {
 					KshstOverTimeBrd entityItem = new KshstOverTimeBrd();
-					domain.saveToMemento(new JpaOvertimeBRDItemSetMemento(entityItem, companyId));
+					domain.saveToMemento(new JpaOvertimeBRDItemSetMemento(entityItem, this.overtimeBRDItemAtenRepository.findAll(companyId, domain.getBreakdownItemNo().value), companyId));
 					return entityItem;
 				}).collect(Collectors.toList());
 

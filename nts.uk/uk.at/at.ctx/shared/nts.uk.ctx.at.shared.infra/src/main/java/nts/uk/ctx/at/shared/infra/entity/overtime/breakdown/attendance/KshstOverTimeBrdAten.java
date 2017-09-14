@@ -10,9 +10,14 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The Class KshstOverTimeBrdAten.
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "KSHST_OVER_TIME_BRD_ATEN")
 public class KshstOverTimeBrdAten implements Serializable {

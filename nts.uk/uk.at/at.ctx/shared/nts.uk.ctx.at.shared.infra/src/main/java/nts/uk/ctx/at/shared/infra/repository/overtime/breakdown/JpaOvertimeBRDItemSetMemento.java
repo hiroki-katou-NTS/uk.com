@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.overtime.breakdown;
 
+import java.util.List;
+
 import nts.uk.ctx.at.shared.dom.overtime.ProductNumber;
 import nts.uk.ctx.at.shared.dom.overtime.UseClassification;
 import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemName;
@@ -19,16 +21,23 @@ public class JpaOvertimeBRDItemSetMemento implements OvertimeBRDItemSetMemento {
 
 	/** The entity. */
 	private KshstOverTimeBrd entity;
+	
+	/** The entity atens. */
+	private List<Integer> entityAtens;
 
 	/**
 	 * Instantiates a new jpa overtime BRD item set memento.
 	 *
 	 * @param entity the entity
+	 * @param entityAtens the entity atens
+	 * @param companyId the company id
 	 */
-	public JpaOvertimeBRDItemSetMemento(KshstOverTimeBrd entity, String companyId) {
+	public JpaOvertimeBRDItemSetMemento(KshstOverTimeBrd entity,
+			List<Integer> entityAtens, String companyId) {
 		if (entity.getKshstOverTimeBrdPK() == null) {
 			entity.setKshstOverTimeBrdPK(new KshstOverTimeBrdPK());
 		}
+		this.entityAtens = entityAtens;
 		this.entity = entity;
 		this.entity.getKshstOverTimeBrdPK().setCid(companyId);
 	}
@@ -79,6 +88,18 @@ public class JpaOvertimeBRDItemSetMemento implements OvertimeBRDItemSetMemento {
 	@Override
 	public void setProductNumber(ProductNumber productNumber) {
 		this.entity.setProductNumber(productNumber.value);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemSetMemento#
+	 * setAttendanceItemIds(java.util.List)
+	 */
+	@Override
+	public void setAttendanceItemIds(List<Integer> attendanceItemIds) {
+		this.entityAtens = attendanceItemIds;
 	}
 
 }

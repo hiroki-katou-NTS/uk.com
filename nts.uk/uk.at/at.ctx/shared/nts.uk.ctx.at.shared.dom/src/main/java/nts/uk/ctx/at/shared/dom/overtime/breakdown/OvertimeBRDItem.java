@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.overtime.breakdown;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.overtime.ProductNumber;
@@ -31,6 +33,10 @@ public class OvertimeBRDItem extends DomainObject{
 	/** The product number. */
 	// 積上番号
 	private ProductNumber productNumber;
+	
+	/** The attendance item ids. */
+	// 集計項目一覧
+	private List<Integer> attendanceItemIds;
 
 	
 	/**
@@ -43,6 +49,7 @@ public class OvertimeBRDItem extends DomainObject{
 		this.breakdownItemNo = memento.getBreakdownItemNo();
 		this.name = memento.getName();
 		this.productNumber = memento.getProductNumber();
+		this.attendanceItemIds = memento.getAttendanceItemIds();
 	}
 	
 	/**
@@ -55,6 +62,7 @@ public class OvertimeBRDItem extends DomainObject{
 		memento.setBreakdownItemNo(this.breakdownItemNo);
 		memento.setName(this.name);
 		memento.setProductNumber(this.productNumber);
+		memento.setAttendanceItemIds(this.attendanceItemIds);
 	}
 	
 	/* (non-Javadoc)

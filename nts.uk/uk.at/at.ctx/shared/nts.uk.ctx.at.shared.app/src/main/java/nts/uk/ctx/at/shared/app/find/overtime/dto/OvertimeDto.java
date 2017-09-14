@@ -31,15 +31,16 @@ public class OvertimeDto implements OvertimeSetMemento{
 	
 	/** The use classification. */
 	private Boolean useClassification;
+	
+	/** The super holiday 60 H occurs. */
+	private Boolean superHoliday60HOccurs;
 
-	/**
-	 * Sets the super holiday 60 H occurs.
-	 *
-	 * @param superHoliday60HOccurs the new super holiday 60 H occurs
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.shared.dom.overtime.OvertimeSetMemento#setSuperHoliday60HOccurs(boolean)
 	 */
 	@Override
 	public void setSuperHoliday60HOccurs(boolean superHoliday60HOccurs) {
-		// No thing code
+		this.superHoliday60HOccurs = superHoliday60HOccurs;
 	}
 
 	/**

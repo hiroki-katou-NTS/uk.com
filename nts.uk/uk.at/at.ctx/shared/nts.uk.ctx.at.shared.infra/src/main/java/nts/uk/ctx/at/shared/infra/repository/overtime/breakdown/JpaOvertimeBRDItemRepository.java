@@ -11,6 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -23,6 +24,7 @@ import nts.uk.ctx.at.shared.dom.overtime.UseClassification;
 import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItem;
 import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemRepository;
+import nts.uk.ctx.at.shared.dom.overtime.breakdown.attendance.OvertimeBRDItemAtenRepository;
 import nts.uk.ctx.at.shared.infra.entity.overtime.breakdown.KshstOverTimeBrd;
 import nts.uk.ctx.at.shared.infra.entity.overtime.breakdown.KshstOverTimeBrdPK_;
 import nts.uk.ctx.at.shared.infra.entity.overtime.breakdown.KshstOverTimeBrd_;
@@ -34,6 +36,9 @@ import nts.uk.ctx.at.shared.infra.entity.overtime.breakdown.KshstOverTimeBrd_;
 public class JpaOvertimeBRDItemRepository extends JpaRepository
 		implements OvertimeBRDItemRepository {
 	
+	/** The repository. */
+	@Inject
+	private OvertimeBRDItemAtenRepository repository;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -71,6 +76,10 @@ public class JpaOvertimeBRDItemRepository extends JpaRepository
 		// update all
 		this.commandProxy().updateAll(entityUpdateAll);
 
+		// save all aten
+		overtimeBreakdownItems
+				.forEach(domain -> this.repository.saveAll(domain.getAttendanceItemIds(), companyId,
+						domain.getBreakdownItemNo().value));
 	}
 
 	/*
@@ -114,7 +123,10 @@ public class JpaOvertimeBRDItemRepository extends JpaRepository
 		TypedQuery<KshstOverTimeBrd> query = em.createQuery(cq);
 
 		// exclude select
-		return query.getResultList().stream().map(entity -> this.toDomain(entity))
+		return query.getResultList().stream()
+				.map(entity -> this.toDomain(entity,
+						this.repository.findAll(companyId,
+								entity.getKshstOverTimeBrdPK().getBrdItemNo())))
 				.collect(Collectors.toList());
 	}
 	
@@ -163,7 +175,10 @@ public class JpaOvertimeBRDItemRepository extends JpaRepository
 		TypedQuery<KshstOverTimeBrd> query = em.createQuery(cq);
 
 		// exclude select
-		return query.getResultList().stream().map(entity -> this.toDomain(entity))
+		return query.getResultList().stream()
+				.map(entity -> this.toDomain(entity,
+						this.repository.findAll(companyId,
+								entity.getKshstOverTimeBrdPK().getBrdItemNo())))
 				.collect(Collectors.toList());
 	}
 	
@@ -173,8 +188,8 @@ public class JpaOvertimeBRDItemRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the overtime BRD item
 	 */
-	private OvertimeBRDItem toDomain(KshstOverTimeBrd entity){
-		return new OvertimeBRDItem(new JpaOvertimeBRDItemGetMemento(entity));
+	private OvertimeBRDItem toDomain(KshstOverTimeBrd entity, List<Integer> entityAtens){
+		return new OvertimeBRDItem(new JpaOvertimeBRDItemGetMemento(entity,entityAtens));
 	}
 	
 	/**
@@ -183,11 +198,13 @@ public class JpaOvertimeBRDItemRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kshst over time brd
 	 */
-	private KshstOverTimeBrd toEntity(OvertimeBRDItem domain, String companyId) {
+	private KshstOverTimeBrd toEntity(OvertimeBRDItem domain,String companyId) {
 		KshstOverTimeBrd entity = new KshstOverTimeBrd();
-		domain.saveToMemento(new JpaOvertimeBRDItemSetMemento(entity, companyId));
+		domain.saveToMemento(new JpaOvertimeBRDItemSetMemento(entity, new ArrayList<>(), companyId));
 		return entity;
 	}
 
+	
+	
 
 }

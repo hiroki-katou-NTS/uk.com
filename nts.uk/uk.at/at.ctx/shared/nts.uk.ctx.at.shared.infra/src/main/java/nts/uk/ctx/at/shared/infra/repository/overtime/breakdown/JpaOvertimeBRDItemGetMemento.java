@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.overtime.breakdown;
 
+import java.util.List;
+
 import nts.uk.ctx.at.shared.dom.overtime.ProductNumber;
 import nts.uk.ctx.at.shared.dom.overtime.UseClassification;
 import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemName;
@@ -20,15 +22,21 @@ public class JpaOvertimeBRDItemGetMemento implements OvertimeBRDItemGetMemento {
 	/** The entity. */
 	private KshstOverTimeBrd entity;
 	
+	/** The entity atens. */
+	private List<Integer> entityAtens;
+	
 	/**
 	 * Instantiates a new jpa overtime BRD item get memento.
 	 *
 	 * @param entity the entity
+	 * @param entityAtens the entity atens
 	 */
-	public JpaOvertimeBRDItemGetMemento(KshstOverTimeBrd entity) {
-		if(entity.getKshstOverTimeBrdPK() == null){
+	public JpaOvertimeBRDItemGetMemento(KshstOverTimeBrd entity,
+			List<Integer> entityAtens) {
+		if (entity.getKshstOverTimeBrdPK() == null) {
 			entity.setKshstOverTimeBrdPK(new KshstOverTimeBrdPK());
 		}
+		this.entityAtens = entityAtens;
 		this.entity = entity;
 	}
 
@@ -78,6 +86,18 @@ public class JpaOvertimeBRDItemGetMemento implements OvertimeBRDItemGetMemento {
 	@Override
 	public ProductNumber getProductNumber() {
 		return ProductNumber.valueOf(this.entity.getProductNumber());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemGetMemento#
+	 * getAttendanceItemIds()
+	 */
+	@Override
+	public List<Integer> getAttendanceItemIds() {
+		return this.entityAtens;
 	}
 
 }
