@@ -10,7 +10,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceAp
 @AllArgsConstructor
 public class WorkplaceApproverOutput {
 	//職場情報
-	List<WorkplaceApproverDto> wpInfor;
+	WorkplaceApproverDto wpInfor;
 	//職場別就業承認ルート情報
 	List<ApprovalForApplication> wpRootInfor;
 }

@@ -1,12 +1,12 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.masterapproverroot;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -55,13 +55,12 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			boolean isCompany, 
 			boolean isWorkplace,
 			boolean isPerson) {
-		MasterApproverRootOutput masterInfor = null;
-		CompanyApprovalInfor comMasterInfor = null;		
+		//MasterApproverRootOutput masterInfor = null;
+		CompanyApprovalInfor comMasterInfor = new CompanyApprovalInfor(null, null);		
 		Map<String, WorkplaceApproverOutput> mapWpRootInfor = new HashMap<>();
 		//出力対象に会社別がある(có 会社別 trong đối tượng output)
 		if(isCompany) {
 			comMasterInfor = getComApprovalInfor(companyID, baseDate);
-			masterInfor.setCompanyRootInfor(comMasterInfor);
 		}
 		//出力対象に職場別がある(có 職場別 trong đối tượng output)
 		if(isWorkplace) {
@@ -70,7 +69,6 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			//データが１件以上取得した場合(có 1 data trở lên)
 			if(!CollectionUtil.isEmpty(lstWps)) {				
 				mapWpRootInfor = getWpApproverInfor(lstWps, companyID, baseDate);				
-				masterInfor.setWorplaceRootInfor(mapWpRootInfor);
 			}
 		}		
 		//出力対象に個人別がある(có 個人別 trong đối tượng output)
@@ -83,10 +81,16 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 				// TODO Viet sau khi QA duoc tra loi
 			}
 		}
-		
+		MasterApproverRootOutput masterInfor = new MasterApproverRootOutput(comMasterInfor, mapWpRootInfor);
 		return masterInfor;
 	}
-	
+	/**
+	 * get all approval of workplace
+	 * @param lstWps
+	 * @param companyID
+	 * @param baseDate
+	 * @return
+	 */
 	private Map<String, WorkplaceApproverOutput> getWpApproverInfor(List<WorkplaceApprovalRoot> lstWps, String companyID, GeneralDate baseDate){
 		Map<String, WorkplaceApproverOutput> mapWpRootInfor =  new HashMap<>();
 		for(WorkplaceApprovalRoot root: lstWps) {
@@ -99,33 +103,31 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 				continue;
 			}
 			
-			//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」)
+			//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」) tra ra 1 list nhung thuc chat chi co 1 du lieu
 			List<WorkplaceApproverDto> wpInfors = wpAdapter.findByWkpId(companyID, root.getWorkplaceId(), baseDate);
-			WorkplaceApproverOutput wpOutput = null;
-			wpOutput.setWpInfor(wpInfors);
 			wpRootInfor = getAppInfors(root, wpRootInfor, companyID);
-			wpOutput.setWpRootInfor(wpRootInfor);
+			Collections.sort(wpRootInfor, Comparator.comparing(ApprovalForApplication:: getAppType));
+			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpInfors.get(0), wpRootInfor);
 			mapWpRootInfor.put(root.getWorkplaceId(), wpOutput);
 		}
 		return mapWpRootInfor;
 	}
 	
 	private List<ApprovalForApplication> getAppInfors(WorkplaceApprovalRoot root, List<ApprovalForApplication> wpRootInfor, String companyID){
-		ApprovalForApplication wpAppInfo = null;
+		//ApprovalForApplication wpAppInfo = null;
 		//neu la 就業ルート区分 la 共通(common)
+		String appName = "";
+		int appId = 0;
 		if(root.getEmploymentRootAtr() == EmploymentRootAtr.COMMON) {
-			wpAppInfo.setAppType(rootCommon);
+			appName = rootCommon;
 		}else if(root.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION) {
-			wpAppInfo.setAppType(root.getApplicationType().nameId);
-		}else {
-			wpAppInfo.setAppType("");
+			appId = root.getApplicationType().value + 1;
+			appName = root.getApplicationType().nameId;
 		}
-		wpAppInfo.setStartDate(root.getPeriod().getStartDate());
-		wpAppInfo.setEndDate(root.getPeriod().getEndDate());
 		List<ApprovalRootMaster> lstAppInfo = new ArrayList<>();
 		//承認フェーズ, 承認者
 		lstAppInfo = getPhaseApprover(companyID, root.getBranchId());
-		wpAppInfo.setLstApproval(lstAppInfo);
+		ApprovalForApplication wpAppInfo = new ApprovalForApplication(appId, appName, root.getPeriod().getStartDate(), root.getPeriod().getEndDate(), lstAppInfo);
 		wpRootInfor.add(wpAppInfo);
 		return wpRootInfor;
 	}
@@ -152,18 +154,15 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	
 	private List<ApprovalRootMaster> getPhaseApprover(String companyID, String branchId){
 		List<ApprovalRootMaster> lstMatter = new ArrayList<>();
-		ApprovalRootMaster appRoot = null;
 		//承認フェーズ, 承認者
 		List<ApprovalPhase> getAllIncludeApprovers = phaseRepository.getAllIncludeApprovers(companyID, branchId);
 		for(ApprovalPhase phase: getAllIncludeApprovers) {
-			appRoot.setPhaseNumber(phase.getOrderNumber());
-			appRoot.setApprovalForm(phase.getApprovalForm().name);
 			List<String> lstApprovers = new ArrayList<>();
 			for(Approver approver: phase.getApprovers()) {
 				// TODO chuyen sang ten khi co request
 				lstApprovers.add(approver.getEmployeeId());
 			}
-			appRoot.setPersonName(lstApprovers);
+			ApprovalRootMaster appRoot = new ApprovalRootMaster(phase.getOrderNumber(), phase.getApprovalForm().name, lstApprovers);
 			lstMatter.add(appRoot);
 		}
 		return lstMatter;
@@ -176,32 +175,12 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	 * @return
 	 */
 	private CompanyApprovalInfor getComApprovalInfor(String companyID, GeneralDate baseDate) {
-		CompanyApprovalInfor comMasterInfor = null;
+		//CompanyApprovalInfor comMasterInfor = null;
 		//ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain 「会社別就業承認ルート」)
 		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDateOfCommon(companyID, baseDate);
 		Optional<CompanyInfor> comInfo = comAdapter.getCurrentCompany();
 		List<ApprovalForApplication> comApproverRoot =  new ArrayList<>();
-		ApprovalForApplication approvalForApplication = null;
-		//Lap de lay du lieu theo app type
-		for(ApplicationType appType: ApplicationType.values()) {
-			approvalForApplication = null;
-			approvalForApplication.setAppType(appType.nameId);
-			//「会社別就業承認ルート」	
-			if(!lstComs.isEmpty()) {
-				Optional<CompanyApprovalRoot> comApps = lstComs
-						.stream()
-						.filter(x -> x.getApplicationType() == appType)
-						.findAny();
-				// TODO CHI TRA RA 1 DU LIEU -> XEM LAI
-				if(comApps.isPresent()) {						
-					approvalForApplication = getApproval(approvalForApplication, comApps.get(), companyID);
-				}
-			}					
-			//thong tin các application da duoc set approver
-			comApproverRoot.add(approvalForApplication);
-		}
-		approvalForApplication = null;
-		approvalForApplication.setAppType(rootCommon);
+		ApprovalForApplication approvalForApplication = new ApprovalForApplication(0, rootCommon, null, null, null);
 		if(!lstComs.isEmpty()) {
 			//lay du lieu voi truong hop 0: 共通(common)
 			Optional<CompanyApprovalRoot> opComCommon = lstComs.stream()
@@ -212,8 +191,24 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			}	
 		}
 		comApproverRoot.add(approvalForApplication);
-		comMasterInfor.setComInfo(comInfo);
-		comMasterInfor.setLstComs(comApproverRoot);
+		//Lap de lay du lieu theo app type
+		for(ApplicationType appType: ApplicationType.values()) {
+			approvalForApplication = new ApprovalForApplication(appType.value + 1, appType.nameId, null, null, null);
+			//「会社別就業承認ルート」	
+			if(!lstComs.isEmpty()) {
+				Optional<CompanyApprovalRoot> comApps = lstComs
+						.stream()
+						.filter(x -> x.getApplicationType() == appType)
+						.findAny();
+				if(comApps.isPresent()) {						
+					approvalForApplication = getApproval(approvalForApplication, comApps.get(), companyID);
+				}
+			}					
+			//thong tin các application da duoc set approver
+			comApproverRoot.add(approvalForApplication);
+		}
+		Collections.sort(comApproverRoot, Comparator.comparing(ApprovalForApplication:: getAppType));
+		CompanyApprovalInfor comMasterInfor = new CompanyApprovalInfor(comInfo, comApproverRoot);
 		return comMasterInfor;
 	}
 }

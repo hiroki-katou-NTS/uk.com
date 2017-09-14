@@ -11,7 +11,11 @@ public class ApprovalForApplication {
 	/**
 	 * 申請種類
 	 */
-	String appType;
+	int appType;
+	/**
+	 * 申請種類 name
+	 */
+	String appTypeName;
 	/**
 	 * 期間: 開始日
 	 */
@@ -24,4 +28,5 @@ public class ApprovalForApplication {
 	 *　承認者情報
 	 */
 	List<ApprovalRootMaster> lstApproval;
+	
 }
