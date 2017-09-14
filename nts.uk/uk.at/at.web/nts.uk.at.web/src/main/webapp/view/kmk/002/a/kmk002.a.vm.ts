@@ -2,7 +2,7 @@ module nts.uk.at.view.kmk002.a {
     import OptionalItemDto = service.model.OptionalItemDto;
     import OptionalItemHeader = service.model.OptionalItemHeader;
     import CalculationResultRangeDto = service.model.CalculationResultRangeDto;
-    import OptionalItemFormulaDto = service.model.OptionalItemFormulaDto;
+    import OptionalItemFormulaDto = service.model.CalcFormulaDto;
     export module viewmodel {
 
         export class ScreenModel {
@@ -16,11 +16,16 @@ module nts.uk.at.view.kmk002.a {
 
             optionalItem: OptionalItem;
             optionalItemHeaders: Array<OptionalItemHeader>;
+            calcFormulas: Array<CalcFormula>;
 
             constructor() {
                 let self = this;
                 self.optionalItem = new OptionalItem();
                 self.optionalItemHeaders = new Array<OptionalItemHeader>();
+                self.calcFormulas = new Array<CalcFormula>();
+                for (var i = 0; i < 5; i++) {
+                    self.calcFormulas.push(new CalcFormula());
+                }
 
 
                 // mock data.
@@ -37,6 +42,40 @@ module nts.uk.at.view.kmk002.a {
                     { headerText: 'code', key: 'code', width: 100 },
                     { headerText: 'name', key: 'name', width: 150 },
                 ]);
+
+                // ahihi
+                var comboItems = [{ code: '0', name: 'TIMES' },
+                    { code: '1', name: 'AMOUNT' },
+                    { code: '2', name: 'TIME' }];
+                var comboColumns = [{ prop: 'name', length: 1 }];
+
+                $("#1").ntsGrid({
+                    width: '970px',
+                    height: '400px',
+                    dataSource: self.calcFormulas,
+                    primaryKey: 'formulaId',
+                    virtualization: true,
+                    virtualizationMode: 'continuous',
+                    columns: [
+                        { headerText: 'SYMBOL', key: 'symbolValue', dataType: 'string', width: '50px' },
+                        { headerText: 'ATR', key: 'formulaAtr', dataType: 'number', width: '230px', ntsControl: 'Combobox' },
+                        { headerText: 'NAME', key: 'formulaName', dataType: 'string', width: '50px' },
+                        { headerText: 'CALC_ATR', key: 'formulaAtr', dataType: 'number', width: '290px', ntsControl: 'SwitchButtons' },
+                        { headerText: 'OPEN_DIALOG', key: 'open', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' },
+                        { headerText: 'TEXT', key: 'formulaName', dataType: 'string', width: '50px' },
+                        { headerText: 'DAILY_UNIT', key: 'formulaAtr', dataType: 'string', width: '230px', ntsControl: 'Combobox' },
+                        { headerText: 'DAILY_ROUNDING', key: 'formulaAtr', dataType: 'string', width: '230px', ntsControl: 'Combobox' },
+                        { headerText: 'MONTHLY_UNIT', key: 'formulaAtr', dataType: 'string', width: '230px', ntsControl: 'Combobox' },
+                        { headerText: 'MONTHLY_ROUNDING', key: 'formulaAtr', dataType: 'string', width: '230px', ntsControl: 'Combobox' }
+                    ],
+                    features: [{ name: 'Sorting', type: 'local' }],
+                    ntsControls: [{
+                        name: 'SwitchButtons', options: [{ value: 0, text: 'Option 1' }, { value: 1, text: 'Option 2' }],
+                        optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true
+                    },
+                        { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
+                        { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' }]
+                });
             }
 
             /**
@@ -50,6 +89,9 @@ module nts.uk.at.view.kmk002.a {
                     console.log('name:' + self.optionalItem.optionalItemName());
                     dfd.resolve();
                 });
+                // Test.
+                self.loadFormula();
+
                 return dfd.promise();
             }
 
@@ -62,6 +104,19 @@ module nts.uk.at.view.kmk002.a {
                 service.findOptionalItemHeaders().done(res => {
                     self.optionalItemHeaders = res;
                     dfd.resolve();
+                });
+                return dfd.promise();
+
+            }
+
+            /**
+             * Load formula
+             */
+            private loadFormula(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                service.findAllFormula().done(res => {
+                    console.log(res);
                 });
                 return dfd.promise();
 
@@ -90,7 +145,58 @@ module nts.uk.at.view.kmk002.a {
                 service.saveOptionalItem(command).done(() => {
                     dfd.resolve();
                 }).fail().always();
+
+                //test
+                let test:Array<OptionalItemFormulaDto> = self.calcFormulas.map(item => {
+                    return item.toDto();
+                });
+                console.log(test);
+                service.saveFormula(test);
                 return dfd.promise();
+            }
+        }
+
+        class CalcFormula {
+            formulaId: string;
+            optionalItemNo: string;
+            formulaName: KnockoutObservable<string>;
+            formulaAtr: KnockoutObservable<number>;
+            symbolValue: KnockoutObservable<string>;
+            formulaSetting: any;
+            monthlyRounding: any;
+            dailyRounding: any;
+
+            constructor() {
+                this.formulaId = '000';
+                this.optionalItemNo = '000';
+                this.formulaName = ko.observable('asdvxzc');
+                this.formulaAtr = ko.observable(0);
+                this.symbolValue = ko.observable('asdvxzc');
+                // TODO.. mock data.
+                this.formulaSetting = '';
+                this.monthlyRounding = '';
+                this.dailyRounding = '';
+            }
+
+            public toDto() {
+                let self = this;
+                let dto: OptionalItemFormulaDto = <OptionalItemFormulaDto>{};
+                dto.formulaId = self.formulaId;
+                dto.optionalItemNo = self.optionalItemNo;
+                dto.formulaName = self.formulaName();
+                dto.formulaAtr = self.formulaAtr();
+                dto.symbolValue = self.symbolValue();
+
+                return dto;
+            }
+
+            public fromDto(dto: OptionalItemFormulaDto) {
+                let self = this;
+                self.formulaId = dto.formulaId;
+                self.optionalItemNo = dto.optionalItemNo;
+                self.formulaName(dto.formulaName);
+                self.formulaAtr(dto.formulaAtr);
+                self.symbolValue(dto.symbolValue);
             }
         }
 
