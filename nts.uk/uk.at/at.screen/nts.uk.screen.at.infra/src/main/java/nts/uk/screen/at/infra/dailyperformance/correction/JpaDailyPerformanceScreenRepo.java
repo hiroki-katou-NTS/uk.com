@@ -25,11 +25,11 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.compensatoryleave.Kclm
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60hVacation;
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
-import nts.uk.ctx.basic.infra.entity.company.organization.classification.CclmtClassification;
-import nts.uk.ctx.basic.infra.entity.company.organization.employee.KmnmtEmployee;
-import nts.uk.ctx.basic.infra.entity.company.organization.employment.CemptEmployment;
-import nts.uk.ctx.basic.infra.entity.company.organization.jobtitle.CjtmtJobTitle;
-import nts.uk.ctx.basic.infra.entity.company.organization.workplace.CwpmtWorkplace;
+import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification;
+import nts.uk.ctx.bs.employee.infra.entity.employee.KmnmtEmployee;
+import nts.uk.ctx.bs.employee.infra.entity.employment.CemptEmployment;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CjtmtJobTitle;
+import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWorkplace;
 import nts.uk.screen.at.app.dailyperformance.correction.ClosureDto;
 import nts.uk.screen.at.app.dailyperformance.correction.Com60HVacationDto;
 import nts.uk.screen.at.app.dailyperformance.correction.CompensLeaveComDto;

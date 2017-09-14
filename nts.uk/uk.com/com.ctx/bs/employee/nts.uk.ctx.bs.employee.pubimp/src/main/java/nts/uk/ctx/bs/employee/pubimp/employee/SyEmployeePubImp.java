@@ -59,8 +59,8 @@ public class SyEmployeePubImp implements SyEmployeePub {
 			dto.setSId(item.getSId());
 			dto.setSCd(item.getSCd().v());
 			dto.setSMail(item.getCompanyMail().v());
-			dto.setRetirementDate(item.getRetirementDate());
-			dto.setJoinDate(item.getJoinDate());
+			dto.setRetirementDate(item.getListEntryJobHist().get(0).getRetirementDate());
+			dto.setJoinDate(item.getListEntryJobHist().get(0).getJoinDate());
 			return dto;
 		}).collect(Collectors.toList());
 	}

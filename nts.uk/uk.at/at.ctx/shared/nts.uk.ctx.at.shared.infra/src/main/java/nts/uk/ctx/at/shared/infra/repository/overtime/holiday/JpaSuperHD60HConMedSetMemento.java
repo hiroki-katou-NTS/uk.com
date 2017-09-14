@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.overtime.holiday;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
@@ -12,6 +13,8 @@ import nts.uk.ctx.at.shared.dom.overtime.holiday.SuperHD60HConMedSetMemento;
 import nts.uk.ctx.at.shared.dom.overtime.holiday.SuperHDOccUnit;
 import nts.uk.ctx.at.shared.dom.overtime.premium.extra.PremiumExtra60HRate;
 import nts.uk.ctx.at.shared.infra.entity.overtime.holiday.KshstSuperHdConMed;
+import nts.uk.ctx.at.shared.infra.entity.overtime.premium.KshstPremiumExt60hRate;
+import nts.uk.ctx.at.shared.infra.repository.overtime.premium.JpaPremiumExtra60HRateSetMemento;
 
 /**
  * The Class JpaSuperHD60HConMedSetMemento.
@@ -26,7 +29,7 @@ public class JpaSuperHD60HConMedSetMemento implements SuperHD60HConMedSetMemento
 	 *
 	 * @param entity the entity
 	 */
-	public JpaSuperHD60HConMedSetMemento(KshstSuperHdConMed entity) {
+	public JpaSuperHD60HConMedSetMemento(KshstSuperHdConMed entity){
 		this.entity = entity;
 	}
 	
@@ -69,7 +72,12 @@ public class JpaSuperHD60HConMedSetMemento implements SuperHD60HConMedSetMemento
 	 */
 	@Override
 	public void setPremiumExtra60HRates(List<PremiumExtra60HRate> premiumExtra60HRates) {
-		//TO DO
+		premiumExtra60HRates.stream().map(domain -> {
+			KshstPremiumExt60hRate entity = new KshstPremiumExt60hRate();
+			domain.saveToMemento(
+					new JpaPremiumExtra60HRateSetMemento(entity, this.entity.getCid()));
+			return entity;
+		}).collect(Collectors.toList());
 	}
 
 }

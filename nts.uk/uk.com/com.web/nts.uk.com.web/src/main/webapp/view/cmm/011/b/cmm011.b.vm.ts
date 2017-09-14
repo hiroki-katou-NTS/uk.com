@@ -6,15 +6,20 @@ module nts.uk.com.view.cmm011.b {
         
         export class ScreenModel {
             
+            
             workplaceHistory: KnockoutObservable<WorkplaceHistoryModel>;
             startDate: KnockoutObservable<string>;
             
             constructor() {
                 let self = this;
-                self.workplaceHistory = ko.observable(new WorkplaceHistoryModel());
-                self.startDate = ko.observable("2017/09/08");
+                
+                self.workplaceHistory = ko.observable(new WorkplaceHistoryModel(self));
+                self.startDate = ko.observable(null);
             }
             
+            /**
+             * startPage
+             */
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
@@ -24,14 +29,23 @@ module nts.uk.com.view.cmm011.b {
                 return dfd.promise();
             }
             
+            /**
+             * execution
+             */
             public execution() {
                 nts.uk.ui.windows.close();
             }
             
+            /**
+             * close
+             */
             public close() {
                 nts.uk.ui.windows.close();
             }
             
+            /**
+             * showMessageError
+             */
             public showMessageError(res: any) {
                 if (res.businessException) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
@@ -39,13 +53,41 @@ module nts.uk.com.view.cmm011.b {
             }
         }
         
+        /**
+         * WorkplaceHistoryModel
+         */
         class WorkplaceHistoryModel extends WorkplaceHistory {
             
-            constructor() {
+            screenModel: ScreenModel;
+            
+               // mode
+            isSelectionMode: KnockoutObservable<boolean>;
+            isNewMode: KnockoutObservable<boolean>;
+            isAddMode: KnockoutObservable<boolean>;
+            isUpdateMode: KnockoutObservable<boolean>;
+            
+            constructor(screenModel: ScreenModel) {
                 super();
                 let self = this;
                 
+                self.screenModel = screenModel;
+                
+                // mode
+                self.isSelectionMode = ko.observable(false);
+                self.isNewMode = ko.observable(false);
+                self.isAddMode = ko.observable(false);
+                self.isUpdateMode = ko.observable(false); 
+                
                 self.init();
+                
+                // subscribe
+                self.lstWpkHistory.subscribe(newList => {
+                    
+                    // list empty or null -> new mode
+                    if (!newList || newList.length <= 0) {
+                        self.isNewMode(true);
+                    }
+                });
             }
             
             init() {
@@ -58,6 +100,29 @@ module nts.uk.com.view.cmm011.b {
                 ]
                 self.lstWpkHistory(lstWpkHistory);
                 self.selectFirst();
+            }
+            
+            /**
+             * addHistory
+             */
+            public addHistory() {
+                let self = this;
+                self.isAddMode(true);
+            }
+            
+            /**
+             * updateHistory
+             */
+            public updateHistory() {
+                let self = this;
+                self.isUpdateMode(true);
+            }
+            
+            /**
+             * removeHistory
+             */
+            public removeHistory() {
+                let self = this;
             }
         }
     }

@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.infra.repository.overtime.holiday;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
@@ -14,6 +15,8 @@ import nts.uk.ctx.at.shared.dom.overtime.holiday.SuperHD60HConMedGetMemento;
 import nts.uk.ctx.at.shared.dom.overtime.holiday.SuperHDOccUnit;
 import nts.uk.ctx.at.shared.dom.overtime.premium.extra.PremiumExtra60HRate;
 import nts.uk.ctx.at.shared.infra.entity.overtime.holiday.KshstSuperHdConMed;
+import nts.uk.ctx.at.shared.infra.entity.overtime.premium.KshstPremiumExt60hRate;
+import nts.uk.ctx.at.shared.infra.repository.overtime.premium.JpaPremiumExtra60HRateGetMemento;
 
 /**
  * The Class JpaSuperHD60HConMedGetMemento.
@@ -22,14 +25,20 @@ public class JpaSuperHD60HConMedGetMemento implements SuperHD60HConMedGetMemento
 
 	/** The entity. */
 	private KshstSuperHdConMed entity;
+	
+	/** The entity premium extra 60 H rates. */
+	private List<KshstPremiumExt60hRate> entityPremiumExtra60HRates;
 
 	/**
 	 * Instantiates a new jpa super HD 60 H con med get memento.
 	 *
 	 * @param entity the entity
+	 * @param entityPremiumExtra60HRates the entity premium extra 60 H rates
 	 */
-	public JpaSuperHD60HConMedGetMemento(KshstSuperHdConMed entity) {
+	public JpaSuperHD60HConMedGetMemento(KshstSuperHdConMed entity,
+			List<KshstPremiumExt60hRate> entityPremiumExtra60HRates) {
 		this.entity = entity;
+		this.entityPremiumExtra60HRates = entityPremiumExtra60HRates;
 	}
 	
 	/*
@@ -78,8 +87,9 @@ public class JpaSuperHD60HConMedGetMemento implements SuperHD60HConMedGetMemento
 	 */
 	@Override
 	public List<PremiumExtra60HRate> getPremiumExtra60HRates() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.entityPremiumExtra60HRates.stream().map(
+				entity -> new PremiumExtra60HRate(new JpaPremiumExtra60HRateGetMemento(entity)))
+				.collect(Collectors.toList());
 	}
 
 }

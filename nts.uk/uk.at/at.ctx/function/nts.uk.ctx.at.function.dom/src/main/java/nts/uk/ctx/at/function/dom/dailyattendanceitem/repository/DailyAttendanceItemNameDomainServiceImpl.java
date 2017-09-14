@@ -60,16 +60,16 @@ public class DailyAttendanceItemNameDomainServiceImpl implements DailyAttendance
 
 		// get list frame No 7
 		Map<Integer, AttendanceItemLinking> frameNoDivergenceMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 7).collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
+				.filter(item -> item.getFrameCategory().value == 7 && item.getTypeOfAttendanceItem().value == 1).collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		// get list frame No 4
 		Map<Integer, AttendanceItemLinking> frameNoPremiumMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 4).collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
+				.filter(item -> item.getFrameCategory().value == 4 && item.getTypeOfAttendanceItem().value == 1).collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		// get list frame No 5
 		Map<Integer, AttendanceItemLinking> frameNoBonusPayMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 5).collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
+				.filter(item -> item.getFrameCategory().value == 5 && item.getTypeOfAttendanceItem().value == 1).collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		// get list frame No 6
 		Map<Integer, AttendanceItemLinking> frameNoSpecialBonusPayMap = attendanceItemAndFrameNos.stream()
-				.filter(item -> item.getFrameCategory().value == 6).collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
+				.filter(item -> item.getFrameCategory().value == 6 && item.getTypeOfAttendanceItem().value == 1).collect(Collectors.toMap(AttendanceItemLinking::getAttendanceItemId, x -> x));
 		List<Integer> frameNos = attendanceItemAndFrameNos.stream().map(f -> {
 			return f.getFrameNo().v();
 		}).collect(Collectors.toList());

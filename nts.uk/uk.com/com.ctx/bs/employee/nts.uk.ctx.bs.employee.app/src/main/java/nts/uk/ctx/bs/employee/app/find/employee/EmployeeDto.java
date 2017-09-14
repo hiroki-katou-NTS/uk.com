@@ -22,7 +22,7 @@ public class EmployeeDto {
 				domain.getSId(),
 				domain.getSCd().v(),
 				domain.getCompanyMail().v(),
-				domain.getRetirementDate(),
-				domain.getJoinDate());
+				domain.getListEntryJobHist().get(0).getRetirementDate(),
+				domain.getListEntryJobHist().get(0).getJoinDate());
 	}
 }
