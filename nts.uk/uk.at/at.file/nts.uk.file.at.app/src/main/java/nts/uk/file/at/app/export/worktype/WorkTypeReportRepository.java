@@ -4,5 +4,5 @@ import java.util.List;
 
 public interface WorkTypeReportRepository {
  
-   List<WorkTypeReportData> findAllWorkType(String companyId);
+   List<WorkTypeReportData> findAllWorkType(String companyId,String langId);
 }

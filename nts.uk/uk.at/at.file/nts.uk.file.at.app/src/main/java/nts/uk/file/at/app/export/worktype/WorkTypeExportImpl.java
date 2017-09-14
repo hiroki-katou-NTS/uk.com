@@ -14,7 +14,6 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.i18n.custom.IInternationalization;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.worktype.WorkAtr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.ctx.at.shared.dom.worktype.absenceframe.AbsenceFrame;
@@ -132,11 +131,13 @@ public class WorkTypeExportImpl implements MasterListData {
 	}
 
 	@Override
-	public List<MasterData> getMasterDatas(MasterListExportQuery arg0) {
+	public List<MasterData> getMasterDatas(MasterListExportQuery query) {
+		
+		String languageId = query.getLanguageId();	
 		String companyId = AppContexts.user().companyId();
 
 		List<MasterData> datas = new ArrayList<>();
-		List<WorkTypeReportData> listWorkTypeReport = workTypeReportRepository.findAllWorkType(companyId);
+		List<WorkTypeReportData> listWorkTypeReport = workTypeReportRepository.findAllWorkType(companyId,languageId);
 		listWorkTypeReport = listWorkTypeReport.stream().sorted(
 				Comparator.comparing(WorkTypeReportData::getDispOrder, Comparator.nullsLast(Integer::compareTo)))
 				.collect(Collectors.toList());
@@ -236,16 +237,16 @@ public class WorkTypeExportImpl implements MasterListData {
 					data.put("午後の代休を発生させる", checkButtonCheck(c.getAfternoonGenSubHodiday()));
 					if (c.getAfternoonCls() == WorkTypeClassification.Absence) {
 						AbsenceFrame absenceFrameAfternoon = datasAbsenceFrameMap.get(c.getAfternoonSumAbsenseNo());
-						data.put("午前の欠勤の集計枠", absenceFrameAfternoon.getAbsenceFrameName());
+						data.put("午後の欠勤の集計枠", absenceFrameAfternoon.getAbsenceFrameName());
 					} else {
-						data.put("午前の欠勤の集計枠", "");
+						data.put("午後の欠勤の集計枠", "");
 					}
 					if (c.getAfternoonCls() == WorkTypeClassification.SpecialHoliday) {
 						SpecialHolidayFrame specialHlFrameAfternoon = datasSpecialHlFrameMap
 								.get(c.getAfternoonSumSpHodidayNo());
-						data.put("午前の特別休暇の集計枠", specialHlFrameAfternoon.getSpecialHdFrameName());
+						data.put("午後の特別休暇の集計枠", specialHlFrameAfternoon.getSpecialHdFrameName());
 					} else {
-						data.put("午前の特別休暇の集計枠", "");
+						data.put("午後の特別休暇の集計枠", "");
 					}
 				}
 				data.put("他言語名称", c.getOtherLangName());

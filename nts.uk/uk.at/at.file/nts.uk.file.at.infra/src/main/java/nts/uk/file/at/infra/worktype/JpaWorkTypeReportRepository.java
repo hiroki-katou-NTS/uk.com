@@ -26,12 +26,12 @@ public class JpaWorkTypeReportRepository extends JpaRepository implements WorkTy
 			+ " WHERE c.kshmtWorkTypePK.companyId = :companyId";
 
 	@Override
-	public List<WorkTypeReportData> findAllWorkType(String companyId) {
+	public List<WorkTypeReportData> findAllWorkType(String companyId, String langId) {
 		return this.queryProxy().query(WORK_TYPE_SELECT_ALL, KshmtWorkType.class).setParameter("companyId", companyId)
-				.getList(x -> toReportData(x));
+				.getList(x -> toReportData(x,langId));
 	}
 
-	private WorkTypeReportData toReportData(KshmtWorkType entity) {
+	private WorkTypeReportData toReportData(KshmtWorkType entity,String langId) {
 
 		KshmtWorkTypeSet workTypeSetOneDay = new KshmtWorkTypeSet();
 		KshmtWorkTypeSet workTypeSetMorning = new KshmtWorkTypeSet();
@@ -48,7 +48,7 @@ public class JpaWorkTypeReportRepository extends JpaRepository implements WorkTy
 		KshmtWorkTypeLanguage workTypeLanguage = new KshmtWorkTypeLanguage();
 		if (!CollectionUtil.isEmpty(entity.workTypeLanguage)) {
 			Optional<KshmtWorkTypeLanguage> workTypeLanguageOpt = entity.workTypeLanguage.stream()
-					.filter(x->x.kshmtWorkTypeLanguagePK.langId == "") //TODO fix languageId
+					.filter(x->x.kshmtWorkTypeLanguagePK.langId.equals(langId))
 					.findFirst();
 			workTypeLanguage = workTypeLanguageOpt.isPresent() ? workTypeLanguageOpt.get() : new KshmtWorkTypeLanguage();
 		}
