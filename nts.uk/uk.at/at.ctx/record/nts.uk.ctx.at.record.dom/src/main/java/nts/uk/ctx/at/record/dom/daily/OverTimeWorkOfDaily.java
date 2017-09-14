@@ -33,7 +33,7 @@ public class OverTimeWorkOfDaily {
 	 * @param secondStartTime 2回目勤務の開始時間
 	 * @return
 	 */
-	public static Optional<OverTimeWorkOfDaily> of(List<OverTimeHourSet> overTimeHourSet,AttendanceLeavingWork attendanceLeave,TimeWithDayAttr secondStartTime,int workNo) {
+	public static OverTimeWorkOfDaily of(List<OverTimeHourSet> overTimeHourSet,AttendanceLeavingWork attendanceLeave,TimeWithDayAttr secondStartTime,int workNo) {
 		
 		List<OverTimeWorkFrameTimeSheet> frameTimeSheet = new ArrayList<OverTimeWorkFrameTimeSheet>();
 		TimeSpanForCalc timeSheet = new TimeSpanForCalc(attendanceLeave.getAttendance().getActualEngrave().getTimesOfDay(),attendanceLeave.getLeaveWork().getActualEngrave().getTimesOfDay());
@@ -48,7 +48,7 @@ public class OverTimeWorkOfDaily {
 
 		}
 		
-		return Optional.of(new OverTimeWorkOfDaily(frameTimeSheet));
+		return new OverTimeWorkOfDaily(frameTimeSheet);
 	}
 	
 	/**

@@ -19,15 +19,9 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	@Setter
 	private List<TimeSheetOfDeductionItem> timeSpanList;
 	
-	private DeductionTimeSheetAdjustDuplicationTime(List<TimeSheetOfDeductionItem> useDedTimeSheet) {
+	
+	public DeductionTimeSheetAdjustDuplicationTime(List<TimeSheetOfDeductionItem> useDedTimeSheet) {
 		this.timeSpanList = useDedTimeSheet;
-	}
-	/**
-	 * Constructor
-	 * @param useDedTimeSheet
-	 */
-	public DeductionTimeSheetAdjustDuplicationTime createTimeSpanList(List<TimeSheetOfDeductionItem> useDedTimeSheet) {
-		 return new DeductionTimeSheetAdjustDuplicationTime(useDedTimeSheet); 
 	}
 	
 	/**
@@ -36,7 +30,7 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	 * @param clockManage
 	 * 
 	 */
-	public void reCreate(WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage){
+	public List<TimeSheetOfDeductionItem> reCreate(WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage){
 		List<TimeSheetOfDeductionItem> originCopyList = timeSpanList;
 		int processedListNumber = 0;
 		while(originCopyList.size() - 1 > processedListNumber) {
@@ -52,6 +46,8 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 				}
 			}
 		}
+		timeSpanList = originCopyList;
+		return originCopyList;
 	}
 	
 	/**
@@ -62,7 +58,7 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	 * @param clockManage
 	 * @return 調整後の値を入れたList
 	 */
-	public List<TimeSheetOfDeductionItem> convertFromDeductionItemToList(List<TimeSheetOfDeductionItem> originList,int number,WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage){
+	private List<TimeSheetOfDeductionItem> convertFromDeductionItemToList(List<TimeSheetOfDeductionItem> originList,int number,WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage){
 		return ReplaceListItem(originList,originList.get(number).DeplicateBreakGoOut(originList.get(number+1),setMethod,clockManage),number);
 	}
 	
@@ -73,7 +69,7 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	 * @param number
 	 * @return
 	 */
-	public List<TimeSheetOfDeductionItem> ReplaceListItem(List<TimeSheetOfDeductionItem> nowList,List<TimeSheetOfDeductionItem> newItems,int number ) {
+	private List<TimeSheetOfDeductionItem> ReplaceListItem(List<TimeSheetOfDeductionItem> nowList,List<TimeSheetOfDeductionItem> newItems,int number ) {
 		nowList.set(number, newItems.get(0));
 		nowList.set(number+1, newItems.get(1));
 		return nowList;
@@ -85,7 +81,7 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	 * @param now　アクセスしようとしている場所
 	 * @return 調整後の値
 	 */
-	public int adjustUpperLimit(int upperlimit,int now) {
+	private int adjustUpperLimit(int upperlimit,int now) {
 		return (upperlimit > now)?now:upperlimit;
 	}
 	
@@ -95,7 +91,7 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	 * @param nextTimeSpan
 	 * @return　重複している
 	 */
-	public boolean isDeplicated(TimeSpanForCalc nowTimeSpan,TimeSpanForCalc nextTimeSpan) {
+	private boolean isDeplicated(TimeSpanForCalc nowTimeSpan,TimeSpanForCalc nextTimeSpan) {
 		return nowTimeSpan.checkDuplication(nextTimeSpan).isDuplicated();
 	}
 }

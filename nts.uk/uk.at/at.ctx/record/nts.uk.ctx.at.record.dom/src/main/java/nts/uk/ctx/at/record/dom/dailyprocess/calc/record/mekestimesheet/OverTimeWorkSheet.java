@@ -2,15 +2,18 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
+import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
 import nts.uk.ctx.at.record.dom.daily.OverTimeWorkOfDaily;
 import nts.uk.ctx.at.shared.dom.common.DailyTime;
 import nts.uk.ctx.at.shared.dom.common.time.BreakdownTimeDay;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.OverWorkSet.StatutoryOverWorkSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.OverTimeHourSet;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 残業時間帯
@@ -36,8 +39,9 @@ public class OverTimeWorkSheet {
 	 * @param workingSystem
 	 * @return
 	 */
-	public OverTimeWorkSheet createOverWorkFrame(List<OverTimeHourSet> overTimeHourSet,WorkingSystem workingSystem) {
-		return new OverTimeWorkSheet(OverTimeWorkOfDaily.of(overTimeHourSet));
+	public static OverTimeWorkSheet createOverWorkFrame(List<OverTimeHourSet> overTimeHourSet,WorkingSystem workingSystem,
+												AttendanceLeavingWork attendanceLeave,TimeWithDayAttr secondStartTime,int workNo) {
+		return new OverTimeWorkSheet(OverTimeWorkOfDaily.of(overTimeHourSet,attendanceLeave,secondStartTime,workNo));
 	}
 	
 	/**
