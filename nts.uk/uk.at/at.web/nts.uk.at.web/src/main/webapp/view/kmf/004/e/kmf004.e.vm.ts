@@ -148,12 +148,12 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                     return tam.date() || tam.month() || tam.year();
                 });
             let listSet = {
-                specialHolidayCode: '01',
+                specialHolidayCode: nts.uk.ui.windows.getShared('KMF004D_SPHD_CD'),
                 lengthServiceYearAtr: self.selectedId(),
                 yearServiceSets: ko.toJS(items)
             }
             let dataTransfer = {
-                specialHolidayCode: '01',
+                specialHolidayCode: nts.uk.ui.windows.getShared('KMF004D_SPHD_CD'),
                 yearServiceCode: ko.toJS(self.codeObject()), 
                 yearServiceName: self.selectedName(),
                 yearServiceCls: 1,
@@ -257,6 +257,12 @@ module nts.uk.at.view.kmf004.e.viewmodel {
             }); 
 //            $("#inpPattern").focus();
         } 
+        
+        
+        closeDialog(){
+            nts.uk.ui.windows.close();    
+        }
+        
     } 
     export interface Per{
         specialHolidayCode: string
@@ -291,14 +297,14 @@ module nts.uk.at.view.kmf004.e.viewmodel {
     
     
     class BoxModel {
-            id: number;
-            name: string;
-            constructor(id, name) {
-                var self = this;
-                self.id = id;
-                self.name = name;
-            }
+        id: number;
+        name: string;
+        constructor(id, name) {
+            var self = this;
+            self.id = id;
+            self.name = name;
         }
+    }
 }
 
 

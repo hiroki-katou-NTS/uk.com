@@ -169,7 +169,7 @@ module nts.uk.at.view.kmf004 {
                 });
 
                 var dataTranfer = {
-                    specialHolidayCode: '01', // TODO
+                    specialHolidayCode: nts.uk.ui.windows.getShared('KMF004D_SPHD_CD'), // TODO
                     lengthServiceYearAtr: self.selectedId(),
                     yearServiceSets: ko.toJS(items)
                 }
@@ -179,8 +179,8 @@ module nts.uk.at.view.kmf004 {
                 }).fail(function(error) {
                     alert(error.message);
                 });
-            }
-
+            }   
+   
             closeDialog() {
                 nts.uk.ui.windows.close();
             }
