@@ -35,9 +35,9 @@ module nts.uk.com.view.cdl008.a {
                     isShowSelectButton: true,
                     selectedWorkplaceId: self.selectedCodeWorkplace,
                     baseDate: self.baseDate,
-                    isDialog: true
+                    isDialog: true,
+                    maxRows : 12
                 }
-                 $('#workplaceList').ntsTreeComponent(self.workplaces);        
             }
             
             /**
