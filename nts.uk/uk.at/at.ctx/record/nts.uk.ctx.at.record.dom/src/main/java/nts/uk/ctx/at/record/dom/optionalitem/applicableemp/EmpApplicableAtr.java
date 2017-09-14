@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.dom.optionalitem;
+package nts.uk.ctx.at.record.dom.optionalitem.applicableemp;
 
 import lombok.AllArgsConstructor;
 
