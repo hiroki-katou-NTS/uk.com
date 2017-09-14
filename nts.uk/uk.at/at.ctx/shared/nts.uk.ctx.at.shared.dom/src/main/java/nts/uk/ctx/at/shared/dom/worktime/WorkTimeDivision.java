@@ -22,4 +22,12 @@ public class WorkTimeDivision {
 		this.workTimeDailyAtr = workTimeDailyAtr;
 		this.workTimeMethodSet = workTimeMethodSet;
 	}
+	
+	/**
+	 * フレックス勤務or流動勤務のどちらかに該当するか判定する
+	 * @return　フレックスか流動である
+	 */
+	public boolean isfluidorFlex() {
+		return workTimeDailyAtr.isFlex()||workTimeMethodSet.isFluidWork();
+	}
 }
