@@ -371,7 +371,7 @@
 												data-bind="checkedValue: 1, checked: grantDaySingleType, enable: true" />
 												<span class="box"></span><span class="label">#{i18n.getText('KMF004_70')}</span>
 											</label>
-											<button data-bind="click: $parent.openGDialog ,enable:grantDaySingleType()==1 "
+											<button data-bind="click: $parent.openGDialog.bind($parent) ,enable:grantDaySingleType()==1 "
 												style="margin-top: 10px; margin-left: 92px;">#{i18n.getText('KMF004_71')}</button>
 										</div>
 
