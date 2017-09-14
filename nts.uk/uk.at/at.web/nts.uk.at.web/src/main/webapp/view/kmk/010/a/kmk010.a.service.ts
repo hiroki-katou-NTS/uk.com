@@ -12,7 +12,8 @@ module nts.uk.at.view.kmk010.a {
             findAllOvertimeLanguageName: "ctx/at/shared/overtime/language/name/findAll",
             findAllOvertime : "ctx/at/shared/overtime/findAll",
             findAllOvertimeLanguageBRDItem : "ctx/at/shared/overtime/breakdown/language/findAll",
-            findAllOvertimeBRDItem : "ctx/at/shared/overtime/breakdown/findAll"
+            findAllOvertimeBRDItem : "ctx/at/shared/overtime/breakdown/findAll",
+            findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems"
         }
 
         /**
@@ -95,6 +96,12 @@ module nts.uk.at.view.kmk010.a {
         export function findAllOvertimeBRDItem(): JQueryPromise<model.OvertimeBRDItemDto[]> {
             return nts.uk.request.ajax('at', paths.findAllOvertimeBRDItem);
         }
+        /**
+         * call service find all daily attendance item
+         */
+        export function findAllDailyAttendanceItem(): JQueryPromise<model.DailyAttendanceItemDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllDailyAttendanceItem);
+        }
 
         export module model {
 
@@ -109,6 +116,7 @@ module nts.uk.at.view.kmk010.a {
                 overtime: number;
                 overtimeNo: number;
                 useClassification: boolean;
+                superHoliday60HOccurs: boolean;
             }
 
             export interface OvertimeBRDItemDto {
@@ -116,6 +124,7 @@ module nts.uk.at.view.kmk010.a {
                 breakdownItemNo: number;
                 name: string;
                 productNumber: number;
+                attendanceItemIds: number[];
             }
             
             export interface OvertimeSettingDto {
@@ -149,6 +158,11 @@ module nts.uk.at.view.kmk010.a {
                 languageId: string;
                 breakdownItemNo: number;
             }  
+            
+            export interface DailyAttendanceItemDto {
+                attendanceItemId: number;
+                attendanceItemName: string;
+            }
             
         }
     }
