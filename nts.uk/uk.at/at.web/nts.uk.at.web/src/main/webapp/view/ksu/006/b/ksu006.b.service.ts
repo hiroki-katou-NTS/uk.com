@@ -9,20 +9,32 @@ module nts.uk.pr.view.ksu006.b {
             exportDetailError: "at/schedule/budget/external/log/export",
         };
         
+        /**
+         * executeImportFile
+         */
         export function executeImportFile(command: any): JQueryPromise<any> {
              return nts.uk.request.ajax(servicePath.executeImportFile, command);
         }
         
-        export function findErrors(executeId: string): JQueryPromise<model.ErrorModel> {
+        /**
+         * findErrors
+         */
+        export function findErrors(executeId: string): JQueryPromise<Array<model.ErrorModel>> {
              return nts.uk.request.ajax(servicePath.findErrors + "/" + executeId);
         }
         
+        /**
+         * downloadDetailError
+         */
         export function downloadDetailError(executeId: string): JQueryPromise<any> {
             return nts.uk.request.exportFile(servicePath.exportDetailError + "/" +  executeId);
         }
         
         export module model {
             
+            /**
+             * ErrorModel
+             */
             export interface ErrorModel {
                 order: number;
                 lineNo: number;

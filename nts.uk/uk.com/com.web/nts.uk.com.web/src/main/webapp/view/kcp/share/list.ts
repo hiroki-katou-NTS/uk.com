@@ -316,7 +316,7 @@ module kcp.share.list {
                 dfd.resolve();
             });
             
-            $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt, ui) {
+            $(document).delegate('#' + self.componentGridId, "iggridrowsrendered", function(evt) {
                 self.addIconToAlreadyCol();
             });
             

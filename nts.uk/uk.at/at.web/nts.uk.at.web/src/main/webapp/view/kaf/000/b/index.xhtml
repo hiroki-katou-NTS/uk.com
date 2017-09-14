@@ -12,6 +12,20 @@
 					nts.uk.shr.com.time.TimeWithDayAttr
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../../002/shr/kaf002.shr.service.js" />
+			<com:scriptfile path="../../002/shr/kaf002.shr.vm.js" />
+			<com:scriptfile path="../../002/m1/kaf002.m1.vm.js" />
+			<com:scriptfile path="../../002/m2/kaf002.m2.vm.js" />
+			<com:scriptfile path="../../002/m3/kaf002.m3.vm.js" />
+			<com:scriptfile path="../../002/m4/kaf002.m4.vm.js" />
+			<com:scriptfile path="../../002/m5/kaf002.m5.vm.js" />
+			<com:scriptfile path="../../002/cm/kaf002.cm.vm.js" />
+			<com:stylefile path="../../002/cm/kaf002.cm.main.css" />
+			<com:stylefile path="../../002/m1/kaf002.m1.main.css" />
+			<com:stylefile path="../../002/m2/kaf002.m2.main.css" />
+			<com:stylefile path="../../002/m3/kaf002.m3.main.css" />
+			<com:stylefile path="../../002/m4/kaf002.m4.main.css" />
+			<com:stylefile path="../../002/m5/kaf002.m5.main.css" />
 			<com:stylefile path="../../009/b/kaf009.b.style.css" />
 			<com:stylefile path="kaf000.b.main.css" />
 			<com:scriptfile path="kaf000.b.service.js" />
@@ -38,7 +52,10 @@
 				<button >#{i18n.getText('KAF000_18')}</button>
 				
 				<!-- B1_8 -->
-				<button class="proceed">#{i18n.getText('KAF000_19')}</button>
+				<div data-bind="with: cm" style="display: inline-block">
+					<button class="proceed" data-bind="click: update">#{i18n.getText('KAF000_19')}</button>
+				</div>
+				
 				<!-- B1_9 -->
 				<button >#{i18n.getText('KAF000_20')}</button>
 				<!-- B1_10 -->
@@ -96,6 +113,10 @@
 				
 				<!-- Body -->
 <!-- 				<div style="height: 50px;background-color: gray ; margin-top: 30px;'">body</div> -->
+				<div data-bind="with: cm">
+					<ui:include src="../../002/cm/index.xhtml" />
+				</div>
+				
 				<div class="divKaf009" data-bind="with: screenModel9">
 					<ui:include src="../../009/b/index.xhtml"></ui:include>
 				</div>

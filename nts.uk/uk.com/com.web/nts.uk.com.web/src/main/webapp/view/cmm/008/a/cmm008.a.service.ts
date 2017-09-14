@@ -4,7 +4,7 @@ module nts.uk.com.view.cmm008.a {
          *  Service paths
          */
         var paths: any = {
-//            findRetentionYearlyByCompany: 'ctx/at/shared/vacation/setting/retentionyearly/find',
+            findEmployment: 'basic/company/organization/employment/findById',
         };
 
         

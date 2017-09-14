@@ -36,7 +36,6 @@ public class ApplicationReason extends AggregateRoot {
 	 * 既定
 	 */
 	public DefaultFlg defaultFlg;
-	//定型理由
 	
 	public static ApplicationReason createSimpleFromJavaType(String companyId,
 			int appType, String reasonID, 

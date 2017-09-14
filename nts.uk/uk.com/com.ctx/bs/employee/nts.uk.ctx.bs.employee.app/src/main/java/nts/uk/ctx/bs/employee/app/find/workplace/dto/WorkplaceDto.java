@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
+import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceSetMemento;
 
 /**
@@ -19,6 +20,10 @@ public class WorkplaceDto implements WorkplaceSetMemento {
 	// 会社ID
 	public String companyId;
 
+	/** The workplace id. */
+	//職場ID
+	public String workplaceId;
+	
 	/** The workplace history. */
 	// 履歴
 	public List<WorkplaceHistoryDto> workplaceHistory;
@@ -48,5 +53,17 @@ public class WorkplaceDto implements WorkplaceSetMemento {
 			item.saveToMemento(wkpDto);
 			return wkpDto;
 		}).collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.workplace.WorkplaceSetMemento#setWorkplaceId(
+	 * nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId)
+	 */
+	@Override
+	public void setWorkplaceId(WorkplaceId workplaceId) {
+		this.workplaceId = workplaceId.v();
 	}
 }

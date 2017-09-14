@@ -1,6 +1,8 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerapproval;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -13,7 +15,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WpApproverAsAppOutput;
 
 public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprovalRoot {
 	@Inject
@@ -23,8 +25,11 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 	@Inject
 	private PersonApprovalRootRepository psRootRepository;
 	@Override
-	public List<EmployeeApproveDto> lstEmps(String companyID, GeneralDate baseDate, List<String> lstEmpIds,
+	public Map<String, WpApproverAsAppOutput> lstEmps(String companyID, GeneralDate baseDate, List<String> lstEmpIds,
 			EmploymentRootAtr rootAtr, List<ApplicationType> lstApps) {
+		
+		Map<String, WpApproverAsAppOutput> appOutput = new HashMap<>();
+		
 		//ドメインモデル「会社別就業承認ルート」を取得する(lấy dữ liệu domain 「会社別就業承認ルート」)
 		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDateOfCommon(companyID, baseDate); 
 		//ドメインモデル「職場別就業承認ルート」を取得する(lấy dữ liệu domain 「職場別就業承認ルート」)
@@ -36,6 +41,9 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			//選択する申請対象をループする(loop theo loại don xin da chon)
 			for(ApplicationType appType: lstApps) {
 				//ループ中の承認ルート対象が共通ルート が false の場合(loại đơn xin đang xử lý loop : 共通ルート  = false)
+				if(rootAtr != EmploymentRootAtr.COMMON) {
+					
+				}
 			}
 		}
 		

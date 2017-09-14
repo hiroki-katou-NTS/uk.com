@@ -6,7 +6,13 @@ module nts.uk.at.view.kmk010.a {
             findAllOvertimeRounding: "ctx/at/shared/overtime/setting/findAll/rounding",
             findByIdOvertimeSetting: "ctx/at/shared/overtime/setting/findById",
             findAllPremiumExtra60HRate: "ctx/at/shared/overtime/premium/extra/findAll",
-            findByIdSuperHD60HConMed: "ctx/at/shared/overtime/super/holiday/findById"
+            findByIdSuperHD60HConMed: "ctx/at/shared/overtime/super/holiday/findById",
+            saveOvertimeSetting: "ctx/at/shared/overtime/setting/save",
+            saveSuperHD60HConMed: "ctx/at/shared/overtime/super/holiday/save",
+            findAllOvertimeLanguageName: "ctx/at/shared/overtime/language/name/findAll",
+            findAllOvertime : "ctx/at/shared/overtime/findAll",
+            findAllOvertimeLanguageBRDItem : "ctx/at/shared/overtime/breakdown/language/findAll",
+            findAllOvertimeBRDItem : "ctx/at/shared/overtime/breakdown/findAll"
         }
 
         /**
@@ -50,7 +56,45 @@ module nts.uk.at.view.kmk010.a {
         export function findByIdSuperHD60HConMed(): JQueryPromise<model.SuperHD60HConMedDto> {
             return nts.uk.request.ajax(paths.findByIdSuperHD60HConMed);
         }
+        /**
+         * save overtime setting to service
+         */
+        export function saveOvertimeSetting(dto: model.OvertimeSettingDto): JQueryPromise<void>{
+            return nts.uk.request.ajax(paths.saveOvertimeSetting, { setting: dto });
+        }
 
+        /**
+         * save super holiday 60h method
+         */
+        export function saveSuperHD60HConMed(dto: model.SuperHD60HConMedDto): JQueryPromise<void> {
+            return nts.uk.request.ajax(paths.saveSuperHD60HConMed, { setting: dto });
+        }
+        /**
+         * find all overtime language name
+         */
+        export function findAllOvertimeLanguageName(languageId: string): JQueryPromise<model.OvertimeLangNameDto[]> {
+            return nts.uk.request.ajax(paths.findAllOvertimeLanguageName + '/' + languageId);
+        }
+        
+         /**
+         * call service find all overtime
+         */
+        export function findAllOvertime(): JQueryPromise<model.OvertimeDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllOvertime);
+        }
+        
+        /**
+         * find all overtime language breakdown item
+         */
+        export function findAllOvertimeLanguageBRDItem(languageId: string): JQueryPromise<model.OvertimeLangBRDItemDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllOvertimeLanguageBRDItem + '/' + languageId);
+        } 
+        /**
+         * call service find all overtime breakdown item
+         */
+        export function findAllOvertimeBRDItem(): JQueryPromise<model.OvertimeBRDItemDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllOvertimeBRDItem);
+        }
 
         export module model {
 
@@ -93,6 +137,19 @@ module nts.uk.at.view.kmk010.a {
                 superHolidayOccurrenceUnit: number;
                 premiumExtra60HRates: PremiumExtra60HRateDto[];
             }
+            
+            export interface OvertimeLangNameDto {
+                name: string;
+                languageId: string;
+                overtimeNo: number;
+            }
+            
+            export interface OvertimeLangBRDItemDto {
+                name: string;
+                languageId: string;
+                breakdownItemNo: number;
+            }  
+            
         }
     }
 }

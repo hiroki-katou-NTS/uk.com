@@ -15,7 +15,8 @@ module nts.uk.com.view.cmm018.m {
             
             printExcel(){
                 var self = this;
-                   
+                var master = new service.MasterDto(self.date(), self.isCompany(), self.isWorkplace(), self.isPerson());
+                service.searchModeEmployee(master);
             }
         }
         

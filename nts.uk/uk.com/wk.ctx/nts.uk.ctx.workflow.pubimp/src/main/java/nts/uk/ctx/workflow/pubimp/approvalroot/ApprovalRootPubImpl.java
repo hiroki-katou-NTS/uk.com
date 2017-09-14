@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
@@ -74,7 +75,7 @@ public class ApprovalRootPubImpl implements ApprovalRootPub{
 	
 	@Override
 	public List<ApprovalPhaseExport> findApprovalPhaseByBranchId(String cid, String branchId) {
-		return this.appPhaseRepository.getAllApprovalPhasebyCode(cid, branchId).stream()
+		return this.appPhaseRepository.getAllIncludeApprovers(cid, branchId).stream()
 				.map(x -> new ApprovalPhaseExport(
 						x.getCompanyId(),
 						x.getBranchId(),
@@ -82,7 +83,7 @@ public class ApprovalRootPubImpl implements ApprovalRootPub{
 						x.getApprovalForm().value,
 						x.getBrowsingPhase(),
 						x.getOrderNumber(),
-						x.getApprovers().stream().map(a -> new ApproverExport(
+						CollectionUtil.isEmpty(x.getApprovers())? null: x.getApprovers().stream().map(a -> new ApproverExport(
 								a.getCompanyId(), 
 								a.getApprovalPhaseId(), 
 								a.getApproverId(), 
@@ -107,12 +108,12 @@ public class ApprovalRootPubImpl implements ApprovalRootPub{
 				root.getApprovalId(),
 				root.getEmployeeId(),
 				root.getHistoryId(),
-				root.getApplicationType().value,
+				root.getApplicationType()==null?null:root.getApplicationType().value,
 				root.getPeriod().getStartDate(),
 				root.getPeriod().getEndDate(),
 				root.getBranchId(),
 				root.getAnyItemApplicationId(),
-				root.getConfirmationRootType().value,
+				root.getConfirmationRootType() == null?null:root.getConfirmationRootType().value,
 				root.getEmploymentRootAtr().value
 	    );
 	}
@@ -129,12 +130,12 @@ public class ApprovalRootPubImpl implements ApprovalRootPub{
 				root.getApprovalId(),
 				root.getWorkplaceId(),
 				root.getHistoryId(),
-				root.getApplicationType().value,
+				root.getApplicationType()==null?null:root.getApplicationType().value,
 				root.getPeriod().getStartDate(),
 				root.getPeriod().getEndDate(),
 				root.getBranchId(),
 				root.getAnyItemApplicationId(),
-				root.getConfirmationRootType().value,
+				root.getConfirmationRootType() == null?null:root.getConfirmationRootType().value,
 				root.getEmploymentRootAtr().value
 	    );
 	}
@@ -150,12 +151,12 @@ public class ApprovalRootPubImpl implements ApprovalRootPub{
 				root.getCompanyId(),
 				root.getApprovalId(),
 				root.getHistoryId(),
-				root.getApplicationType().value,
+				root.getApplicationType()==null?null:root.getApplicationType().value,
 				root.getPeriod().getStartDate(),
 				root.getPeriod().getEndDate(),
 				root.getBranchId(),
 				root.getAnyItemApplicationId(),
-				root.getConfirmationRootType().value,
+				root.getConfirmationRootType() == null?null:root.getConfirmationRootType().value,
 				root.getEmploymentRootAtr().value
 	    );
 	}
