@@ -4,6 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.workplace.info;
 
-public class WorkplaceInfoCommand {
+public class RegisterWorkplaceInfoCommandHandler {
 
 }
