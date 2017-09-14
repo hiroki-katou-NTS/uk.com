@@ -226,7 +226,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                 return;
             }
-            if (self.currentItem().itemTypeState.itemType == 2) {
+            if (self.itemType() == 2) {
                 switch (self.currentItem().itemTypeState.dataTypeState.dataTypeValue) {
                     case 1:
                         return getText('Enum_DataTypeValue_STRING');
@@ -241,9 +241,6 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     case 6:
                         return getText('Enum_DataTypeValue_SELECTION');
                 }
-            } else {
-
-                return getText('Enum_DataTypeValue_STRING');
             }
 
         }
@@ -322,12 +319,24 @@ module nts.uk.com.view.cps006.b.viewmodel {
         dataType() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null || self.currentItem().itemTypeState.itemType == 1) {
+            if (self.currentItem().itemTypeState == null || self.itemType() === 1) {
+
+                return ;
+            }
+
+            return self.currentItem().itemTypeState.dataTypeState.dataTypeValue;
+
+        }
+
+        itemType() {
+            let self = this;
+
+            if (self.currentItem().itemTypeState == null) {
 
                 return;
             }
 
-            return self.currentItem().itemTypeState.dataTypeState.dataTypeValue;
+            return self.currentItem().itemTypeState.itemType;
 
         }
 
