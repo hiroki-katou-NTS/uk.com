@@ -53,5 +53,4 @@ public class BsymtJobEntryHistory extends UkJpaEntity implements Serializable {
 		return this.bsydtJobEntryHistoryPk;
 	}
 	
-	
 }

@@ -5,15 +5,15 @@ import java.util.List;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoDtoExport;
 
 /**
- * The Interface Employee At Work Reference Date.
+ * The Interface Employee AtWork Reference StanardDate.
  */
 
-public interface EmployeeAtworkReferDate {
+public interface EmployeeAtworkReferenDatePub {
 	/**
 	 * Get List Employee by companyId,standardDate 
 	 * For request No.60
 	 *
 	 */
 
-	List<EmployeeInfoDtoExport> getListEmployee(String companyId , String standardDate);
+	List<EmployeeInfoDtoExport> getListEmployeeByStandardDate(String companyId , String standardDate);
 }
