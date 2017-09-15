@@ -117,7 +117,8 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 							//update lst Approver New
 							repoApprover.addAllApprover(lstApproverNew);
 							//convert
-							lstAPhaseNew.add(ApprovalPhase.updateBranchId(approvalPhase, branchId));
+							approvalPhase.updateBranchId(branchId);
+							lstAPhaseNew.add(approvalPhase);
 						}
 						//update lst APhase
 						repoAppPhase.addAllApprovalPhase(lstAPhaseNew);
@@ -202,7 +203,8 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 							//update lst Approver New
 							repoApprover.addAllApprover(lstApproverNew);
 							//convert
-							lstAPhaseNew.add(ApprovalPhase.updateBranchId(approvalPhase, branchId));
+							approvalPhase.updateBranchId(branchId);
+							lstAPhaseNew.add(approvalPhase);
 						}
 						//update lst APhase
 						repoAppPhase.addAllApprovalPhase(lstAPhaseNew);
@@ -288,7 +290,8 @@ public class AddWorkAppApprovalRByHistCommandHandler extends CommandHandler<List
 							//update lst Approver New
 							repoApprover.addAllApprover(lstApproverNew);
 							//convert
-							lstAPhaseNew.add(ApprovalPhase.updateBranchId(approvalPhase, branchId));
+							approvalPhase.updateBranchId(branchId);
+							lstAPhaseNew.add(approvalPhase);
 						}
 						//update lst APhase
 						repoAppPhase.addAllApprovalPhase(lstAPhaseNew);

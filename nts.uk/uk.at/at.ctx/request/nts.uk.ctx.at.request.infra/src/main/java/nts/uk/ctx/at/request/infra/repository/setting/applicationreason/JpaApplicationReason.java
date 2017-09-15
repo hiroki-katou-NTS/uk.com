@@ -16,8 +16,10 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 			+ "WHERE c.krqstAppReasonPK.companyId = :companyId";
 	
 	private static final String FINDBYAPPTYPE = FINDBYCOMPANYID + " AND c.krqstAppReasonPK.appType = :appType";
+
 	
 	private static final String FINDBYREASONID = FINDBYCOMPANYID + " AND c.krqstAppReasonPK.reasonID = :reasonID";
+
 	/**
 	 * get reason by companyid
 	 */

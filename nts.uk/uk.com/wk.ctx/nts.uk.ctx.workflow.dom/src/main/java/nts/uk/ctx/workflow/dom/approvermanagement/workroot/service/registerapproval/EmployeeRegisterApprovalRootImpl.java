@@ -1,10 +1,14 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerapproval;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
@@ -13,7 +17,8 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootCommonOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WpApproverAsAppOutput;
 
 public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprovalRoot {
 	@Inject
@@ -22,9 +27,15 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 	private WorkplaceApprovalRootRepository wpRootRepository;
 	@Inject
 	private PersonApprovalRootRepository psRootRepository;
+	@Inject
+	private ApplicationOfEmployee appEmployee;
+	
 	@Override
-	public List<EmployeeApproveDto> lstEmps(String companyID, GeneralDate baseDate, List<String> lstEmpIds,
+	public Map<String, WpApproverAsAppOutput> lstEmps(String companyID, GeneralDate baseDate, List<String> lstEmpIds,
 			EmploymentRootAtr rootAtr, List<ApplicationType> lstApps) {
+		
+		Map<String, WpApproverAsAppOutput> appOutput = new HashMap<>();
+		
 		//ドメインモデル「会社別就業承認ルート」を取得する(lấy dữ liệu domain 「会社別就業承認ルート」)
 		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDateOfCommon(companyID, baseDate); 
 		//ドメインモデル「職場別就業承認ルート」を取得する(lấy dữ liệu domain 「職場別就業承認ルート」)
@@ -35,7 +46,17 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		for(String empId: lstEmpIds) {
 			//選択する申請対象をループする(loop theo loại don xin da chon)
 			for(ApplicationType appType: lstApps) {
+				List<ApprovalRootCommonOutput> appOfEmployee = new ArrayList<>();
 				//ループ中の承認ルート対象が共通ルート が false の場合(loại đơn xin đang xử lý loop : 共通ルート  = false)
+				if(rootAtr != EmploymentRootAtr.COMMON) {
+					appOfEmployee = appEmployee.commonOfEmployee(lstComs, lstWps, lstPss, companyID, empId, appType, baseDate);
+				}else {
+					appOfEmployee = appEmployee.appOfEmployee(lstComs, lstWps, lstPss, companyID, empId, appType, baseDate);
+				}
+				//終了状態が「承認ルートあり」の場合(trang thai ket thuc「có approval route」)
+				if(!CollectionUtil.isEmpty(appOfEmployee)) {
+					//2.承認ルートを整理する
+				}
 			}
 		}
 		
