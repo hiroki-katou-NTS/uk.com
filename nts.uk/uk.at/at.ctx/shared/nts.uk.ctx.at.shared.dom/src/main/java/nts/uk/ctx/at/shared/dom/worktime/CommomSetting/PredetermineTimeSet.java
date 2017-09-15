@@ -3,6 +3,7 @@ package nts.uk.ctx.at.shared.dom.worktime.CommomSetting;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
 import nts.uk.shr.com.time.AttendanceClock;
@@ -22,7 +23,7 @@ public class PredetermineTimeSet extends AggregateRoot {
 	
 	private TimeWithDayAttr dateStartTime; 
 	
-	private AttendanceClock rangeTimeDay;
+	private AttendanceTime rangeTimeDay;
 	
 	private PredetermineTimeSheetSetting specifiedTimeSheet;
 	
