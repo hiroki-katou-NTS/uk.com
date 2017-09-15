@@ -163,6 +163,7 @@ module nts.uk.com.view.cps005.a {
                     if (self.currentCtgSelected().fixedIsSelected()) {
                         self.isEnableButtonProceed(false);
                     }
+                    $('#category-name-control').focus();
                 });
             });
         }
