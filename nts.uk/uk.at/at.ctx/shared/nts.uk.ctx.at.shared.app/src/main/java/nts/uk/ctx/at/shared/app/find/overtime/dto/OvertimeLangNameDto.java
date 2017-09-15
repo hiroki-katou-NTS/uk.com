@@ -7,17 +7,17 @@ package nts.uk.ctx.at.shared.app.find.overtime.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeName;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.overtime.language.LanguageId;
-import nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangNameSetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeName;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.LanguageId;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangSetMemento;
 
 /**
  * The Class OvertimeLangNameDto.
  */
 @Getter
 @Setter
-public class OvertimeLangNameDto implements OvertimeLangNameSetMemento {
+public class OvertimeLangNameDto implements OvertimeNameLangSetMemento {
 
 	/** The name. */
 	private String name;

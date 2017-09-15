@@ -6,11 +6,11 @@ package nts.uk.ctx.at.shared.app.find.overtime.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeName;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeSetMemento;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeValue;
-import nts.uk.ctx.at.shared.dom.overtime.UseClassification;
+import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeName;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeSetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeValue;
 
 /**
  * The Class OvertimeDto.

@@ -8,11 +8,11 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.overtime.ProductNumber;
-import nts.uk.ctx.at.shared.dom.overtime.UseClassification;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemName;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemSetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemName;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItemSetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.ProductNumber;
 
 /**
  * The Class OvertimeBRDItemDto.
@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemSetMemento;
 
 @Getter
 @Setter
-public class OvertimeBRDItemDto implements OvertimeBRDItemSetMemento{
+public class OvertimeBRDItemDto implements OutsideOTBRDItemSetMemento{
 	
 	/** The use classification. */
 	private Boolean useClassification;
