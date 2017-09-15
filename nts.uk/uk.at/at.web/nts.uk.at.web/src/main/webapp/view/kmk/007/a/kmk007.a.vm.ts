@@ -315,6 +315,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             });
         }
 
+        /**
+         * Insert work type
+         */
         private addWorkType(): any {
             var self = this,
                 workType = self.currentWorkType(),
@@ -370,6 +373,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             }
         }
 
+        /**
+         * Change booean value to number
+         */
         private changeBooleanToNumber(workTypeSet: IWorkTypeSet): void {
             workTypeSet.digestPublicHd = Number(workTypeSet.digestPublicHd);
             workTypeSet.attendanceTime = Number(workTypeSet.attendanceTime);
@@ -379,6 +385,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             workTypeSet.timeLeaveWork = Number(workTypeSet.timeLeaveWork);
         }
 
+        /**
+         * Delete Work Type
+         */
         private removeWorkType(): any {
             let self = this;
             let workTypeCd = self.currentCode();
@@ -401,6 +410,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             });
         }
 
+        /**
+         * Check Calculator Method based on work type cls
+         */
         private checkCalculatorMethod(workTypeSetCode: number): void {
             let self = this;
             if (self.langId() != 'ja') {
@@ -428,13 +440,16 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             }
         }
 
+        /**
+         * Reset display
+         */
         private cleanForm(): void {
             var self = this,
                 cwt = self.currentWorkType(),
                 od = cwt.oneDay(),
                 mn = cwt.morning(),
                 af = cwt.afternoon();
-            
+
             cwt.workTypeCode('');
             cwt.name('');
             cwt.abbreviationName('');
@@ -460,7 +475,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             od.genSubHodiday(0);
             od.dayNightTimeAsk(0);
 
-
             mn.workTypeCode('');
             mn.workAtr(0);
             mn.digestPublicHd(0);
@@ -473,7 +487,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             mn.attendanceTime(0);
             mn.genSubHodiday(0);
             mn.dayNightTimeAsk(0);
-
 
             af.workTypeCode('');
             af.workAtr(0);
@@ -493,6 +506,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             }
         }
 
+        /**
+         * Get data from database 
+         */
         private getWorkType(): any {
             var self = this;
             var dfd = $.Deferred();
@@ -581,6 +597,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             return dfd.promise();
         }
 
+        /**
+         * Get data special holiday frame form database
+         */
         private getSpecialHolidayFrame(): any {
             var self = this;
             var dfd = $.Deferred();
@@ -599,6 +618,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             return dfd.promise();
         }
 
+        /**
+         * Get data absence frame from database
+         */
         private getAbsenceFrame(): any {
             var self = this;
             var dfd = $.Deferred();
@@ -696,6 +718,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             dfd.promise();
         }
 
+        /**
+         * Print file excel
+         */
         private exportExcel(): void {
             var self = this;
             let langId = self.langId();

@@ -111,34 +111,6 @@ public class WorkTypeFinder {
 		return null;
 	}
 
-	/**
-	 * Check pair.
-	 *
-	 * @param pairDto
-	 *            the pair dto
-	 */
-	public void checkPair(WorkTypeCheckPairDto pairDto) {
-		// get login user
-		LoginUserContext loginUserContext = AppContexts.user();
-
-		// get company id
-		String companyId = loginUserContext.companyId();
-
-		Optional<WorkType> opWorkType = this.workTypeRepo.findByPK(companyId, pairDto.getWorkTypeCode());
-
-		// check exist data
-		if (!opWorkType.isPresent()) {
-			throw new BusinessException("Msg_023");
-		}
-
-		Optional<WorkTime> opWorkTime = this.workTimeRepository.findByCode(companyId, pairDto.getWorkTimeCode());
-
-		WorkType workType = opWorkType.get();
-
-		// if(workType.getDailyWork().getWorkTypeUnit().equals(WorkTypeUnit.OneDay)){
-		//
-		// }
-	}
 
 	/**
 	 * get workType language base on language Id
