@@ -9,11 +9,10 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.persistence.NoResultException;
 
-import entity.employeeinfo.BsydtEmployee;
-import entity.person.info.BpsdtPerson;
+import entity.employeeinfo.BsymtEmployee;
+import entity.person.info.BpsmtPerson;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.basic.infra.entity.company.organization.employee.department.BsymtDepartment;
 import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWorkplace;
 
 /**
@@ -23,16 +22,18 @@ import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWorkplace;
 public class JpaEmployeeSearchQueryRepository extends JpaRepository implements EmployeeSearchQueryRepository{
 	
 	/** The Constant SEARCH_QUERY_STRING. */
-	private static final String SEARCH_QUERY_STRING = "SELECT e, p, wp, d From BsydtEmployee e "
+	private static final String SEARCH_QUERY_STRING = "SELECT e, p, wp, d From BsymtEmployee e "
 			+ "LEFT JOIN BpsdtPerson p ON e.personId = p.bpsdtPersonPk.pId "
 			+ "LEFT JOIN KmnmtAffiliWorkplaceHist h ON e.bsydtEmployeePk.sId = h.kmnmtAffiliWorkplaceHistPK.empId"
 			+ "	AND h.kmnmtAffiliWorkplaceHistPK.strD <= :baseDate"
 			+ " AND h.endD >= :baseDate "
 			+ "LEFT JOIN CwpmtWorkplace wp ON  wp.cwpmtWorkplacePK.wkpid = h.kmnmtAffiliWorkplaceHistPK.wkpId "
-			+ "LEFT JOIN BsymtAffiDepartment dh ON dh.sid = e.bsydtEmployeePk.sId"
+			+ "LEFT JOIN BsymtAffiDepartment ad ON ad.sid = e.bsydtEmployeePk.sId"
+			+ " AND ad.strD <= :baseDate"
+			+ " AND ad.endD >= :baseDate "
+			+ "LEFT JOIN BsymtDepartmentHist dh ON dh.bsymtDepartmentHistPK.depId = ad.depId "
 			+ " AND dh.strD <= :baseDate"
 			+ " AND dh.endD >= :baseDate "
-			+ "LEFT JOIN BsymtDepartment d ON d.id = dh.depId "
 			+ "WHERE e.employeeCode = :empCode";
 
 	/* (non-Javadoc)
@@ -62,10 +63,10 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 		}
 		
 		// Convert query data.
-		BsydtEmployee employee = (BsydtEmployee) resultQuery[0];
-		BpsdtPerson person = (BpsdtPerson) resultQuery[1];
+		BsymtEmployee employee = (BsymtEmployee) resultQuery[0];
+		BpsmtPerson person = (BpsmtPerson) resultQuery[1];
 		CwpmtWorkplace workplace = resultQuery[2] == null ? null : (CwpmtWorkplace) resultQuery[2];
-		BsymtDepartment department = resultQuery[3] == null ? null : (BsymtDepartment) resultQuery[3];
+//		BsymtDepartment department = resultQuery[3] == null ? null : (BsymtDepartment) resultQuery[3];
 		
 		switch (system) {
 		case Employment:
@@ -82,7 +83,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 					.employeeId(employee.bsydtEmployeePk.sId)
 					.employeeCode(employee.employeeCode)
 					.businessName(person.businessName)
-					.orgName(department.getName())
+//					.orgName(department.getName())
 					.build());
 		}
 	}

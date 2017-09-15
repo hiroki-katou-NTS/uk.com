@@ -6,46 +6,54 @@ package nts.uk.ctx.basic.dom.company.organization.employee.department;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.bs.employee.dom.common.history.Period;
 
 /**
- * The Class AffiliationDepartment. 所属部門
+ * The Class AffiliationDepartment.
  */
 @Getter
 public class AffiliationDepartment extends AggregateRoot {
 	
-//	/** The id. */
-//	private String id;
-//	
-//	/** The period. */
-//	private Period period;
-//	
-//	/** The employee id. */
-//	private String employeeId;
-//	
-//	/** The department id. */
-//	private String departmentId;
-//	
-//	/**
-//	 * Instantiates a new affiliation department.
-//	 *
-//	 * @param memento the memento
-//	 */
-//	public AffiliationDepartment(AffiliationDepartmentGetMemento memento) {
-//		this.id = memento.getId();
-//		this.period = memento.getPeriod();
-//		this.departmentId = memento.getDepartmentId();
-//		this.employeeId = memento.getEmployeeId();
-//	}
-//	
-//	/**
-//	 * Save to memento.
-//	 *
-//	 * @param memento the memento
-//	 */
-//	public void saveToMemento(AffiliationDepartmentSetMemento memento) {
-//		memento.setDepartmentId(this.departmentId);
-//		memento.setId(this.id);
-//		memento.setPeriod(this.period);
-//		memento.setEmployeeId(this.employeeId);
-//	}
+	/** The id. */
+	private String id;
+	
+	/** The period. */
+	private Period period;
+	
+	/** The employee id. */
+	private String employeeId;
+	
+	/** The department id. */
+	private String departmentId;
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AffiliationDepartment other = (AffiliationDepartment) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
+	}
 }
