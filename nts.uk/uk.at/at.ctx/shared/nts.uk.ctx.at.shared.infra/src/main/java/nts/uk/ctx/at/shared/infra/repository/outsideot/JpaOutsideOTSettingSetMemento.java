@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.overtime.setting;
+package nts.uk.ctx.at.shared.infra.repository.outsideot;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,14 +18,14 @@ import nts.uk.ctx.at.shared.infra.entity.outsideot.KshstOverTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTime;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTimePK;
-import nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown.JpaOvertimeBRDItemSetMemento;
+import nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown.JpaOutsideOTBRDItemSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.overtime.JpaOvertimeSetMemento;
 
 /**
- * The Class JpaOvertimeSettingSetMemento.
+ * The Class JpaOutsideOTSettingSetMemento.
  */
 @Getter
-public class JpaOvertimeSettingSetMemento implements OutsideOTSettingSetMemento{
+public class JpaOutsideOTSettingSetMemento implements OutsideOTSettingSetMemento{
 	
 	/** The entity overtimes. */
 	private List<KshstOverTime> entityOvertimes;
@@ -42,7 +42,7 @@ public class JpaOvertimeSettingSetMemento implements OutsideOTSettingSetMemento{
 	 * @param entityOvertimes the entity overtimes
 	 * @param entity the entity
 	 */
-	public JpaOvertimeSettingSetMemento(List<KshstOverTime> entityOvertimes,
+	public JpaOutsideOTSettingSetMemento(List<KshstOverTime> entityOvertimes,
 			List<KshstOutsideOtBrd> entityOvertimeBRDItems, KshstOverTimeSet entity) {
 		entityOvertimes.forEach(entityItem -> {
 			if (entityItem.getKshstOverTimePK() == null) {
@@ -89,7 +89,7 @@ public class JpaOvertimeSettingSetMemento implements OutsideOTSettingSetMemento{
 		this.entityOvertimeBRDItems = breakdownItems.stream().map(overtimeBRDItem -> {
 			KshstOutsideOtBrd entityOvertimeBRDItem = new KshstOutsideOtBrd();
 			overtimeBRDItem.saveToMemento(
-					new JpaOvertimeBRDItemSetMemento(entityOvertimeBRDItem, this.entity.getCid()));
+					new JpaOutsideOTBRDItemSetMemento(entityOvertimeBRDItem, this.entity.getCid()));
 			return entityOvertimeBRDItem;
 		}).collect(Collectors.toList());
 

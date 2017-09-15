@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.overtime.holiday;
+package nts.uk.ctx.at.shared.infra.repository.outsideot.holiday;
 
 import java.util.List;
 import java.util.Optional;
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.premium.extra.PremiumExtra60HRate;
 import nts.uk.ctx.at.shared.dom.outsideot.premium.extra.PremiumExtra60HRateRepository;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.holiday.KshstSuperHdConMed;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRate;
-import nts.uk.ctx.at.shared.infra.repository.overtime.premium.JpaPremiumExtra60HRateSetMemento;
+import nts.uk.ctx.at.shared.infra.repository.outsideot.premium.JpaPremiumExtra60HRateSetMemento;
 
 /**
  * The Class JpaSuperHD60HConMedRepository.

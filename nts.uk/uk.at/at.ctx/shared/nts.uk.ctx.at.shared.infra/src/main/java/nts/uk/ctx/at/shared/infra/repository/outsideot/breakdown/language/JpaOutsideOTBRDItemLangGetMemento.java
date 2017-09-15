@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.overtime.breakdown.language;
+package nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown.language;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemName;
@@ -12,9 +12,9 @@ import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.LanguageId;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOverTimeLangBrd;
 
 /**
- * The Class JpaOvertimeLangBRDItemGetMemento.
+ * The Class JpaOutsideOTBRDItemLangGetMemento.
  */
-public class JpaOvertimeLangBRDItemGetMemento implements OutsideOTBRDItemLangGetMemento {
+public class JpaOutsideOTBRDItemLangGetMemento implements OutsideOTBRDItemLangGetMemento {
 
 	
 	/** The entity. */
@@ -25,7 +25,7 @@ public class JpaOvertimeLangBRDItemGetMemento implements OutsideOTBRDItemLangGet
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOvertimeLangBRDItemGetMemento(KshstOverTimeLangBrd entity) {
+	public JpaOutsideOTBRDItemLangGetMemento(KshstOverTimeLangBrd entity) {
 		this.entity = entity;
 	}
 

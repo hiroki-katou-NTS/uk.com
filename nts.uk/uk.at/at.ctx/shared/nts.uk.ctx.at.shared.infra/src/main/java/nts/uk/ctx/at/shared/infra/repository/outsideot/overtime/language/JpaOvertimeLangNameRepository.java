@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.overtime.language;
+package nts.uk.ctx.at.shared.infra.repository.outsideot.overtime.language;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,7 +145,7 @@ public class JpaOvertimeLangNameRepository extends JpaRepository
 	 * @return the overtime lang name
 	 */
 	private OvertimeNameLang toDomain(KshstOverTimeLangName entity) {
-		return new OvertimeNameLang(new JpaOvertimeLangNameGetMemento(entity));
+		return new OvertimeNameLang(new JpaOvertimeNameLangGetMemento(entity));
 	}
 	
 	/**

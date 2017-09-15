@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.overtime.setting;
+package nts.uk.ctx.at.shared.infra.repository.outsideot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,23 +22,23 @@ import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeRepository;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.KshstOverTimeSet;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTime;
-import nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown.JpaOvertimeBRDItemSetMemento;
+import nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown.JpaOutsideOTBRDItemSetMemento;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.overtime.JpaOvertimeSetMemento;
 
 /**
- * The Class JpaOvertimeSettingRepository.
+ * The Class JpaOutsideOTSettingRepository.
  */
 @Stateless
-public class JpaOvertimeSettingRepository extends JpaRepository
+public class JpaOutsideOTSettingRepository extends JpaRepository
 		implements OutsideOTSettingRepository {
 
-	/** The repository. */
+	/** The overtime repository. */
 	@Inject
 	private OvertimeRepository overtimeRepository;
 	
-	/** The overtime BRD item repository. */
+	/** The outside OTBRD item repository. */
 	@Inject
-	private OutsideOTBRDItemRepository overtimeBRDItemRepository;
+	private OutsideOTBRDItemRepository outsideOTBRDItemRepository;
 	
 	/*
 	 * (non-Javadoc)
@@ -58,7 +58,7 @@ public class JpaOvertimeSettingRepository extends JpaRepository
 		List<Overtime> domainOvertime = this.overtimeRepository.findAllUse(companyId);
 
 		// call repository find all domain overtime break down item
-		List<OutsideOTBRDItem> domainOvertimeBrdItem = this.overtimeBRDItemRepository
+		List<OutsideOTBRDItem> domainOvertimeBrdItem = this.outsideOTBRDItemRepository
 				.findAllUse(companyId);
 
 		// domain to entity
@@ -72,7 +72,7 @@ public class JpaOvertimeSettingRepository extends JpaRepository
 		List<KshstOutsideOtBrd> entityOvertimeBRDItem = domainOvertimeBrdItem.stream()
 				.map(domain -> {
 					KshstOutsideOtBrd entityItem = new KshstOutsideOtBrd();
-					domain.saveToMemento(new JpaOvertimeBRDItemSetMemento(entityItem, companyId));
+					domain.saveToMemento(new JpaOutsideOTBRDItemSetMemento(entityItem, companyId));
 					return entityItem;
 				}).collect(Collectors.toList());
 
@@ -115,20 +115,21 @@ public class JpaOvertimeSettingRepository extends JpaRepository
 		overtimeRepository.saveAll(domain.getOvertimes(), domain.getCompanyId().v());
 		
 		// save all over time breakdown item
-		overtimeBRDItemRepository.saveAll(domain.getBreakdownItems(), domain.getCompanyId().v());
+		outsideOTBRDItemRepository.saveAll(domain.getBreakdownItems(), domain.getCompanyId().v());
 	}
+	
 	/**
 	 * To domain.
 	 *
 	 * @param entity the entity
 	 * @param entityOvertimeBRDItems the entity overtime BRD items
 	 * @param entityOvertime the entity overtime
-	 * @return the overtime setting
+	 * @return the outside OT setting
 	 */
 	private OutsideOTSetting toDomain(KshstOverTimeSet entity,
 			List<KshstOutsideOtBrd> entityOvertimeBRDItems, List<KshstOverTime> entityOvertime) {
 		return new OutsideOTSetting(
-				new JpaOvertimeSettingGetMemento(entity, entityOvertimeBRDItems, entityOvertime));
+				new JpaOutsideOTSettingGetMemento(entity, entityOvertimeBRDItems, entityOvertime));
 	}
 
 	/**
@@ -140,7 +141,7 @@ public class JpaOvertimeSettingRepository extends JpaRepository
 	private KshstOverTimeSet toEntity(OutsideOTSetting domain) {
 		KshstOverTimeSet entity = new KshstOverTimeSet();
 		domain.saveToMemento(
-				new JpaOvertimeSettingSetMemento(new ArrayList<>(), new ArrayList<>(), entity));
+				new JpaOutsideOTSettingSetMemento(new ArrayList<>(), new ArrayList<>(), entity));
 		return entity;
 	}
 	

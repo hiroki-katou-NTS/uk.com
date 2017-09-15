@@ -20,7 +20,7 @@ import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOut
 /**
  * The Class JpaOvertimeBRDItemSetMemento.
  */
-public class JpaOvertimeBRDItemSetMemento implements OutsideOTBRDItemSetMemento {
+public class JpaOutsideOTBRDItemSetMemento implements OutsideOTBRDItemSetMemento {
 
 	/** The entity. */
 	private KshstOutsideOtBrd entity;
@@ -32,7 +32,7 @@ public class JpaOvertimeBRDItemSetMemento implements OutsideOTBRDItemSetMemento 
 	 * @param entityAtens the entity atens
 	 * @param companyId the company id
 	 */
-	public JpaOvertimeBRDItemSetMemento(KshstOutsideOtBrd entity, String companyId) {
+	public JpaOutsideOTBRDItemSetMemento(KshstOutsideOtBrd entity, String companyId) {
 		if (entity.getKshstOutsideOtBrdPK() == null) {
 			entity.setKshstOutsideOtBrdPK(new KshstOutsideOtBrdPK());
 		}

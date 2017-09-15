@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.overtime.language;
+package nts.uk.ctx.at.shared.infra.repository.outsideot.overtime.language;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeName;
@@ -12,19 +12,19 @@ import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangGetM
 import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeLangName;
 
 /**
- * The Class JpaOvertimeLangNameGetMemento.
+ * The Class JpaOvertimeNameLangGetMemento.
  */
-public class JpaOvertimeLangNameGetMemento implements OvertimeNameLangGetMemento{
+public class JpaOvertimeNameLangGetMemento implements OvertimeNameLangGetMemento{
 
 	/** The entity. */
 	private KshstOverTimeLangName entity;
 	
 	/**
-	 * Instantiates a new jpa overtime lang name get memento.
+	 * Instantiates a new jpa overtime name lang get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOvertimeLangNameGetMemento(KshstOverTimeLangName entity) {
+	public JpaOvertimeNameLangGetMemento(KshstOverTimeLangName entity) {
 		this.entity = entity;
 	}
 	

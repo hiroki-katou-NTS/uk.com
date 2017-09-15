@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.overtime.premium;
+package nts.uk.ctx.at.shared.infra.repository.outsideot.premium;
 
 import java.util.ArrayList;
 import java.util.List;

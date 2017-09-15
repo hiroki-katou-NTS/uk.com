@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.repository.overtime.breakdown.language;
+package nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown.language;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +28,10 @@ import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOverT
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOverTimeLangBrd_;
 
 /**
- * The Class JpaOvertimeLangBRDItemRepository.
+ * The Class JpaOutsideOTBRDItemLangRepository.
  */
 @Stateless
-public class JpaOvertimeLangBRDItemRepository extends JpaRepository
+public class JpaOutsideOTBRDItemLangRepository extends JpaRepository
 		implements OutsideOTBRDItemLangRepository {
 
 	
@@ -133,14 +133,15 @@ public class JpaOvertimeLangBRDItemRepository extends JpaRepository
 		this.commandProxy().updateAll(entityUpdateAll);
 		
 	}
+	
 	/**
 	 * To domain.
 	 *
 	 * @param entity the entity
-	 * @return the overtime lang BRD item
+	 * @return the outside OTBRD item lang
 	 */
 	private OutsideOTBRDItemLang toDomain(KshstOverTimeLangBrd entity) {
-		return new OutsideOTBRDItemLang(new JpaOvertimeLangBRDItemGetMemento(entity));
+		return new OutsideOTBRDItemLang(new JpaOutsideOTBRDItemLangGetMemento(entity));
 	}
 	
 	/**
@@ -151,7 +152,7 @@ public class JpaOvertimeLangBRDItemRepository extends JpaRepository
 	 */
 	private KshstOverTimeLangBrd toEntity(OutsideOTBRDItemLang domain){
 		KshstOverTimeLangBrd entity = new KshstOverTimeLangBrd();
-		domain.saveToMemento(new JpaOvertimeLangBRDItemSetMemento(entity));
+		domain.saveToMemento(new JpaOutsideOTBRDItemLangSetMemento(entity));
 		return entity;
 	}
 

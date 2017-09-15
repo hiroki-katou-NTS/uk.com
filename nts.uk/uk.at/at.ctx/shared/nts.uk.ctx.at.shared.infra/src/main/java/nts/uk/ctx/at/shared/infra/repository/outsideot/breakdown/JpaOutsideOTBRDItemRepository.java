@@ -28,10 +28,10 @@ import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd_;
 
 /**
- * The Class JpaOvertimeBRDItemRepository.
+ * The Class JpaOutsideOTBRDItemRepository.
  */
 @Stateless
-public class JpaOvertimeBRDItemRepository extends JpaRepository
+public class JpaOutsideOTBRDItemRepository extends JpaRepository
 		implements OutsideOTBRDItemRepository {
 	
 	/*
@@ -173,7 +173,7 @@ public class JpaOvertimeBRDItemRepository extends JpaRepository
 	 * @return the outside OTBRD item
 	 */
 	private OutsideOTBRDItem toDomain(KshstOutsideOtBrd entity) {
-		return new OutsideOTBRDItem(new JpaOvertimeBRDItemGetMemento(entity));
+		return new OutsideOTBRDItem(new JpaOutsideOTBRDItemGetMemento(entity));
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class JpaOvertimeBRDItemRepository extends JpaRepository
 	 */
 	private KshstOutsideOtBrd toEntity(OutsideOTBRDItem domain,String companyId) {
 		KshstOutsideOtBrd entity = new KshstOutsideOtBrd();
-		domain.saveToMemento(new JpaOvertimeBRDItemSetMemento(entity, companyId));
+		domain.saveToMemento(new JpaOutsideOTBRDItemSetMemento(entity, companyId));
 		return entity;
 	}
 	

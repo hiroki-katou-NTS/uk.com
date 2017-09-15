@@ -16,9 +16,9 @@ import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK;
 
 /**
- * The Class JpaOvertimeBRDItemGetMemento.
+ * The Class JpaOutsideOTBRDItemGetMemento.
  */
-public class JpaOvertimeBRDItemGetMemento implements OutsideOTBRDItemGetMemento {
+public class JpaOutsideOTBRDItemGetMemento implements OutsideOTBRDItemGetMemento {
 	
 	/** The entity. */
 	private KshstOutsideOtBrd entity;
@@ -29,7 +29,7 @@ public class JpaOvertimeBRDItemGetMemento implements OutsideOTBRDItemGetMemento 
 	 * @param entity the entity
 	 * @param entityAtens the entity atens
 	 */
-	public JpaOvertimeBRDItemGetMemento(KshstOutsideOtBrd entity) {
+	public JpaOutsideOTBRDItemGetMemento(KshstOutsideOtBrd entity) {
 		if (entity.getKshstOutsideOtBrdPK() == null) {
 			entity.setKshstOutsideOtBrdPK(new KshstOutsideOtBrdPK());
 		}
