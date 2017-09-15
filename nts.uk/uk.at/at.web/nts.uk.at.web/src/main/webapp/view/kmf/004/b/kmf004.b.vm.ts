@@ -183,6 +183,7 @@ module nts.uk.at.view.kmf004 {
                 } else {
                     self.selectedId(0);
                     self.value("101");
+                    self.items.removeAll();
                     
                     for(var i = 0; i < 20; i++) {
                         var item : IItem = {
