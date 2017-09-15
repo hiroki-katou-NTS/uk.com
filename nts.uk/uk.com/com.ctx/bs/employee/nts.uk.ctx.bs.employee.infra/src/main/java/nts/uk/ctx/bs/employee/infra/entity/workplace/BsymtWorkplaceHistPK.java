@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 
 
 @Embeddable
-public class BsymtWorkplacePK implements Serializable {
+public class BsymtWorkplaceHistPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -28,10 +28,10 @@ public class BsymtWorkplacePK implements Serializable {
     @Column(name = "HISTORY_ID")
     private String historyId;
 
-	public BsymtWorkplacePK() {
+	public BsymtWorkplaceHistPK() {
 	}
 
-	public BsymtWorkplacePK(String cid, String wkpid, String historyId) {
+	public BsymtWorkplaceHistPK(String cid, String wkpid, String historyId) {
         this.cid = cid;
         this.wkpid = wkpid;
         this.historyId = historyId;
@@ -48,10 +48,10 @@ public class BsymtWorkplacePK implements Serializable {
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof BsymtWorkplacePK)) {
+        if (!(object instanceof BsymtWorkplaceHistPK)) {
             return false;
         }
-        BsymtWorkplacePK other = (BsymtWorkplacePK) object;
+        BsymtWorkplaceHistPK other = (BsymtWorkplaceHistPK) object;
         if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
             return false;
         }

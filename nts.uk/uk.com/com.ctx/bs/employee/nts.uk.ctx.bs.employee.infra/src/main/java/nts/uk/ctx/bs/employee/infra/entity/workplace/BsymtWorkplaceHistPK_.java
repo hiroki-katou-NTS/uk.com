@@ -10,15 +10,15 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class BsymtWorkplacePK_.
  */
-@StaticMetamodel(BsymtWorkplacePK.class)
-public class BsymtWorkplacePK_ {
+@StaticMetamodel(BsymtWorkplaceHistPK.class)
+public class BsymtWorkplaceHistPK_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<BsymtWorkplacePK, String> cid;
+	public static volatile SingularAttribute<BsymtWorkplaceHistPK, String> cid;
 
 	/** The wkpid. */
-	public static volatile SingularAttribute<BsymtWorkplacePK, String> wkpid;
+	public static volatile SingularAttribute<BsymtWorkplaceHistPK, String> wkpid;
 	
 	/** The history id. */
-	public static volatile SingularAttribute<BsymtWorkplacePK, String> historyId;
+	public static volatile SingularAttribute<BsymtWorkplaceHistPK, String> historyId;
 }

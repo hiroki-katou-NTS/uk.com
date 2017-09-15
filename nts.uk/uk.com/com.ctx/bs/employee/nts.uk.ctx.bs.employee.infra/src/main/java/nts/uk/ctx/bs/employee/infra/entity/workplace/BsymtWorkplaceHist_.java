@@ -12,15 +12,15 @@ import nts.arc.time.GeneralDate;
 /**
  * The Class BsymtWorkplace_.
  */
-@StaticMetamodel(BsymtWorkplace.class)
-public class BsymtWorkplace_ {
+@StaticMetamodel(BsymtWorkplaceHist.class)
+public class BsymtWorkplaceHist_ {
 
 	/** The bsymt workplace PK. */
-	public static volatile SingularAttribute<BsymtWorkplace, BsymtWorkplacePK> bsymtWorkplacePK;
+	public static volatile SingularAttribute<BsymtWorkplaceHist, BsymtWorkplaceHistPK> bsymtWorkplacePK;
 	
 	/** The str D. */
-	public static volatile SingularAttribute<BsymtWorkplace, GeneralDate> strD;
+	public static volatile SingularAttribute<BsymtWorkplaceHist, GeneralDate> strD;
 	
 	/** The end D. */
-	public static volatile SingularAttribute<BsymtWorkplace, GeneralDate> endD;
+	public static volatile SingularAttribute<BsymtWorkplaceHist, GeneralDate> endD;
 }

@@ -19,14 +19,14 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
 @Entity
-@Table(name = "BSYMT_WORKPLACE")
+@Table(name = "BSYMT_WORKPLACE_HIST")
 
-public class BsymtWorkplace extends UkJpaEntity implements Serializable {
+public class BsymtWorkplaceHist extends UkJpaEntity implements Serializable {
     
 	private static final long serialVersionUID = 1L;
     
 	@EmbeddedId
-    protected BsymtWorkplacePK bsymtWorkplacePK;
+    protected BsymtWorkplaceHistPK bsymtWorkplaceHistPK;
     
     @NotNull
     @Column(name = "STR_D")
@@ -41,17 +41,17 @@ public class BsymtWorkplace extends UkJpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (bsymtWorkplacePK != null ? bsymtWorkplacePK.hashCode() : 0);
+        hash += (bsymtWorkplaceHistPK != null ? bsymtWorkplaceHistPK.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof BsymtWorkplace)) {
+        if (!(object instanceof BsymtWorkplaceHist)) {
             return false;
         }
-        BsymtWorkplace other = (BsymtWorkplace) object;
-        if ((this.bsymtWorkplacePK == null && other.bsymtWorkplacePK != null) || (this.bsymtWorkplacePK != null && !this.bsymtWorkplacePK.equals(other.bsymtWorkplacePK))) {
+        BsymtWorkplaceHist other = (BsymtWorkplaceHist) object;
+        if ((this.bsymtWorkplaceHistPK == null && other.bsymtWorkplaceHistPK != null) || (this.bsymtWorkplaceHistPK != null && !this.bsymtWorkplaceHistPK.equals(other.bsymtWorkplaceHistPK))) {
             return false;
         }
         return true;
@@ -59,12 +59,12 @@ public class BsymtWorkplace extends UkJpaEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "entity.BsymtWorkplace[ bsymtWorkplacePK=" + bsymtWorkplacePK + " ]";
+        return "entity.BsymtWorkplace[ bsymtWorkplaceHistPK=" + bsymtWorkplaceHistPK + " ]";
     }
 
 	@Override
 	protected Object getKey() {
-		return this.bsymtWorkplacePK;
+		return this.bsymtWorkplaceHistPK;
 	}
     
 }
