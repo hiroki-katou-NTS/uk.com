@@ -21,7 +21,7 @@ public interface EmployeeRepository {
 	 * @param employeeCode the employee code
 	 * @return the person id by employee code
 	 */
-	Optional<Employee> findByEmployeeCode(String companyId, String employeeCode , GeneralDate entryDate);
+	Optional<Employee> findByEmployeeCode(String companyId, String employeeCode , GeneralDate standardDate);
 
 	/**
 	 * Gets the list person by list employee.
@@ -58,8 +58,20 @@ public interface EmployeeRepository {
 	Optional<Employee> findBySid(String companyId, String employeeId);
 	
 	/**
+<<<<<<< HEAD
 	 * Find last employee in db
 	 * @return the optional
 	 */
 	String findLastEml(String startLetter);
+=======
+	 * 
+	 * @param employeeId
+	 * @return the optional
+	 */
+	Optional<Employee> getBySid(String employeeId);
+	
+	
+	List<Employee> getListEmpByStandardDate(String companyId , GeneralDate standardDate);
+>>>>>>> c191155df05db3db4ef1e59a1d8fc41e086137d4
 }
+
