@@ -10,17 +10,16 @@ import nts.arc.error.BusinessException;
 @Getter
 @AllArgsConstructor
 public class YearServicePerSet {
+	/**会社ID**/
 	private String companyId;
+	
 	private String specialHolidayCode;
+	/**コード**/
 	private String yearServiceCode;
 	private int yearServiceNo;
 	private Integer year;
 	private Integer month;
 	private Integer date;
-	
-	public static YearServicePerSet update(String companyId, String specialHolidayCode, String yearServiceCode, int yearServiceNo, Integer year, Integer month, Integer date){
-		return new YearServicePerSet(companyId, specialHolidayCode, yearServiceCode, yearServiceNo, year, month, date);
-	}
 	
 	/**
 	 * creates from java type
@@ -47,19 +46,17 @@ public class YearServicePerSet {
 		List<Integer> yearLst = new ArrayList<>();
 		for(YearServicePerSet item : yearServicePerSetlst){
 			yearLst.add(item.getYear()); 
-			for(int i = 0; i <= (yearLst.size()-2); i++){
-				for(int k = i+1; k < yearLst.size(); k++ ){
-					if( yearLst.get(i) == yearLst.get(k)){
-						throw new BusinessException("Msg_99");
-					}
-				}
-			}
+			// don't duplicate year
+			yearLst.contains(item);
+			// year must exist and year < 1 
 			if(item.getYear() == null || item.getYear() < 1){
 				throw new BusinessException("Msg_145");
 			}
+			// year and month must exsist
 			if(item.getYear() == null || item.getMonth() == null){
 				throw new BusinessException("Msg_100");
 			}
+			// date must exsist
 			if(item.getDate() == null){
 				throw new BusinessException("Msg_101");
 			}

@@ -48,10 +48,12 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             self.listWorkType = ko.observableArray([]);
             self.listSpecialHlFrame = ko.observableArray([]);
             self.listAbsenceFrame = ko.observableArray([]);
+
             self.oneDay = ko.observable(new WorkTypeSet(iwork));
             self.currentOneDay = ko.observable(new WorkTypeSet(iwork));
             self.currentMorning = ko.observable(new WorkTypeSet(iwork));
             self.currentAfternoon = ko.observable(new WorkTypeSet(iwork));
+
             self.enableMethod = ko.observable(false);
             self.isCreated = ko.observable(false);
             self.index = ko.observable(0);
@@ -237,6 +239,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             self.langId.subscribe(() => {
                 self.changeLanguage();
             });
+
+            debugger;
         }
 
 
@@ -306,11 +310,14 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             var self = this;
             nts.uk.ui.windows.setShared("KMK007_ITEM_ID", itemId);
             nts.uk.ui.windows.sub.modal("/view/kmk/007/b/index.xhtml").onClosed(() => {
-                self.getWorkType();
+                self.getSpecialHolidayFrame();
                 self.getAbsenceFrame();
             });
         }
 
+        /**
+         * Insert work type
+         */
         private addWorkType(): any {
             var self = this,
                 workType = self.currentWorkType(),
@@ -324,18 +331,22 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     workType.workTypeCode('0' + worktypeCode);
                 }
             }
+
             if (workType.workAtr() == WorkAtr.ONE_DAY) {
                 workType.morningCls(0);
                 workType.afternoonCls(0);
             } else if (workType.workAtr() == WorkAtr.MORNING) {
                 workType.oneDayCls(0);
             }
+
             workType.name(workType.dispName());
             workType.abbreviationName(workType.dispAbName());
             workType.oneDay().workTypeCode(workType.workTypeCode());
             workType.morning().workTypeCode(workType.workTypeCode());
             workType.afternoon().workTypeCode(workType.workTypeCode());
+
             let command: any = ko.toJS(workType);
+
             command.abolishAtr = Number(command.abolishAtr);
             self.changeBooleanToNumber(command.oneDay);
             self.changeBooleanToNumber(command.morning);
@@ -362,6 +373,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             }
         }
 
+        /**
+         * Change booean value to number
+         */
         private changeBooleanToNumber(workTypeSet: IWorkTypeSet): void {
             workTypeSet.digestPublicHd = Number(workTypeSet.digestPublicHd);
             workTypeSet.attendanceTime = Number(workTypeSet.attendanceTime);
@@ -371,6 +385,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             workTypeSet.timeLeaveWork = Number(workTypeSet.timeLeaveWork);
         }
 
+        /**
+         * Delete Work Type
+         */
         private removeWorkType(): any {
             let self = this;
             let workTypeCd = self.currentCode();
@@ -393,6 +410,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             });
         }
 
+        /**
+         * Check Calculator Method based on work type cls
+         */
         private checkCalculatorMethod(workTypeSetCode: number): void {
             let self = this;
             if (self.langId() != 'ja') {
@@ -420,36 +440,81 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             }
         }
 
+        /**
+         * Reset display
+         */
         private cleanForm(): void {
-            var self = this;
-            self.currentWorkType(new WorkType({
-                workTypeCode: '',
-                name: '',
-                abbreviationName: '',
-                symbolicName: '',
-                abolishAtr: 0,
-                memo: '',
-                workAtr: 0,
-                oneDayCls: 0,
-                morningCls: 0,
-                afternoonCls: 0,
-                calculatorMethod: 0,
-                oneDay: ko.toJS(self.oneDay),
-                morning: ko.toJS(self.oneDay),
-                afternoon: ko.toJS(self.oneDay),
-            }));
+            var self = this,
+                cwt = self.currentWorkType(),
+                od = cwt.oneDay(),
+                mn = cwt.morning(),
+                af = cwt.afternoon();
+
+            cwt.workTypeCode('');
+            cwt.name('');
+            cwt.abbreviationName('');
+            cwt.symbolicName('');
+            cwt.abolishAtr(0);
+            cwt.memo('');
+            cwt.workAtr(0);
+            cwt.oneDayCls(0);
+            cwt.morningCls(0);
+            cwt.afternoonCls(0);
+            cwt.calculatorMethod(0);
+
+            od.workTypeCode('');
+            od.workAtr(0);
+            od.digestPublicHd(0);
+            od.holidayAtr(0);
+            od.countHodiday(0);
+            od.closeAtr(0);
+            od.sumAbsenseNo(0);
+            od.sumSpHodidayNo(0);
+            od.timeLeaveWork(0);
+            od.attendanceTime(0);
+            od.genSubHodiday(0);
+            od.dayNightTimeAsk(0);
+
+            mn.workTypeCode('');
+            mn.workAtr(0);
+            mn.digestPublicHd(0);
+            mn.holidayAtr(0);
+            mn.countHodiday(0);
+            mn.closeAtr(0);
+            mn.sumAbsenseNo(0);
+            mn.sumSpHodidayNo(0);
+            mn.timeLeaveWork(0);
+            mn.attendanceTime(0);
+            mn.genSubHodiday(0);
+            mn.dayNightTimeAsk(0);
+
+            af.workTypeCode('');
+            af.workAtr(0);
+            af.digestPublicHd(0);
+            af.holidayAtr(0);
+            af.countHodiday(0);
+            af.closeAtr(0);
+            af.sumAbsenseNo(0);
+            af.sumSpHodidayNo(0);
+            af.timeLeaveWork(0);
+            af.attendanceTime(0);
+            af.genSubHodiday(0);
+            af.dayNightTimeAsk(0);
             self.currentCode("");
             if (self.listWorkType().length > 0) {
                 nts.uk.ui.errors.clearAll();
             }
         }
 
+        /**
+         * Get data from database 
+         */
         private getWorkType(): any {
             var self = this;
             var dfd = $.Deferred();
+            self.listWorkType.removeAll();
             service.loadWorkType().done(function(data) {
                 if (data.length != 0) {
-                    self.listWorkType.removeAll();
                     _.forEach(data, function(item) {
                         var workType = new WorkType({
                             workTypeCode: item.workTypeCode,
@@ -471,7 +536,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
 
                         // one day
                         if (item.workTypeSets.length > 0) {
-                            //var wtSetRes = item.workTypeSets[0];
                             _.forEach(item.workTypeSets, function(itemWorkTypeSet) {
                                 if (itemWorkTypeSet.workAtr == WorkAtr.ONE_DAY) {
                                     var workTypeSet = new WorkTypeSet({
@@ -533,6 +597,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             return dfd.promise();
         }
 
+        /**
+         * Get data special holiday frame form database
+         */
         private getSpecialHolidayFrame(): any {
             var self = this;
             var dfd = $.Deferred();
@@ -551,6 +618,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             return dfd.promise();
         }
 
+        /**
+         * Get data absence frame from database
+         */
         private getAbsenceFrame(): any {
             var self = this;
             var dfd = $.Deferred();
@@ -648,12 +718,15 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             dfd.promise();
         }
 
+        /**
+         * Print file excel
+         */
         private exportExcel(): void {
             var self = this;
             let langId = self.langId();
             service.saveAsExcel(langId).done(function() {
-            }).fail(function() {
-
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error.message);
             });
         }
     }
