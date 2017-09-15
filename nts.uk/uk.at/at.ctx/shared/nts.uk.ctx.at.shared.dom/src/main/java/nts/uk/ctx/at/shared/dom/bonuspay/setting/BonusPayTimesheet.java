@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.enums.UnitAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPayTime;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.TimeItemId;
+import nts.uk.shr.com.time.AttendanceClock;
 
 /**
  * @author hungnm
@@ -26,16 +27,16 @@ public class BonusPayTimesheet extends DomainObject {
 
 	private String timeItemId;
 
-	private BonusPayTime startTime;
+	private AttendanceClock startTime;
 
-	private BonusPayTime endTime;
+	private AttendanceClock endTime;
 
 	private UnitAtr roundingTimeAtr;
 
 	private RoundingAtr roundingAtr;
 
 	protected BonusPayTimesheet(int timeSheetId, UseAtr useAtr, String timeItemId,
-			BonusPayTime startTime, BonusPayTime endTime, UnitAtr roundingTimeAtr,
+			AttendanceClock startTime, AttendanceClock endTime, UnitAtr roundingTimeAtr,
 			RoundingAtr roundingAtr) {
 		super();
 		this.timeSheetId = timeSheetId;
@@ -54,7 +55,7 @@ public class BonusPayTimesheet extends DomainObject {
 	public static BonusPayTimesheet createFromJavaType(int timeSheetId, int useAtr, String timeItemId, Long startTime,
 			Long endTime, int roundingTimeAtr, int roundingAtr) {
 		return new BonusPayTimesheet(timeSheetId, EnumAdaptor.valueOf(useAtr, UseAtr.class), timeItemId,
-				new BonusPayTime(startTime), new BonusPayTime(endTime),
+				new AttendanceClock(startTime), new AttendanceClock(endTime),
 				EnumAdaptor.valueOf(roundingTimeAtr, UnitAtr.class),
 				EnumAdaptor.valueOf(roundingAtr, RoundingAtr.class));
 	}
