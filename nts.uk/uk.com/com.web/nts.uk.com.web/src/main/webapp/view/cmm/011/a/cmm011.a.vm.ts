@@ -187,7 +187,7 @@ module nts.uk.com.view.cmm011.a {
 
                 self.treeColumns = ko.observableArray([
                     { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
-                    { headerText: "コード/名称", key: 'nodeText', width: 250, dataType: "string" }
+                    { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: 250, dataType: "string" }
                 ]);
                 self.lstWorkplace = ko.observableArray([]);
                 self.selectedWpkId = ko.observable(null);
