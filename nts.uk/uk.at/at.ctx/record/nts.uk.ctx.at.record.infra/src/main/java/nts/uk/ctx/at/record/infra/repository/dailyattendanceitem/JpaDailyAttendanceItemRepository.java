@@ -25,7 +25,6 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 		builderString.append("SELECT a ");
 		builderString.append("FROM KrcmtDailyAttendanceItem a ");
 		builderString.append("WHERE a.krcmtDailyAttendanceItemPK.companyId = :companyId ");
-		builderString.append("AND a.userCanSet = :userCanSet ");
 		FIND = builderString.toString();
 		
 		
@@ -55,7 +54,7 @@ public class JpaDailyAttendanceItemRepository extends JpaRepository implements D
 	@Override
 	public List<DailyAttendanceItem> getListTobeUsed(String companyId, int userCanUpdateAtr) {
 		return this.queryProxy().query(FIND, KrcmtDailyAttendanceItem.class).setParameter("companyId", companyId)
-				.setParameter("userCanSet", userCanUpdateAtr).getList(f -> toDomain(f));
+				.getList(f -> toDomain(f));
 	}
 	
 	@Override

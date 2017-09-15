@@ -40,7 +40,11 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			+ " AND c.stardDate <= :baseDate"
 			+ " AND c.endDate >= :baseDate"
 			+ " AND c.employmentRootAtr = 0";
-	
+	private final String FIND_ALL_BY_BASEDATE = FIND_BY_ALL + " WHERE  c.wwfmtWpApprovalRootPK.companyId = :companyId"
+			+ " AND c.stardDate <= :baseDate"
+			+ " AND c.endDate >= :baseDate"
+			+ " ORDER BY  c.wwfmtWpApprovalRootPK.workplaceId ";
+
 
 	/**
 	 * get All Workplace Approval Root
@@ -206,5 +210,13 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		entity.confirmationRootType = (domain.getConfirmationRootType() == null ? null : domain.getConfirmationRootType().value);
 		entity.employmentRootAtr = domain.getEmploymentRootAtr().value;
 		return entity;
+	}
+	
+	public List<WorkplaceApprovalRoot> findAllByBaseDate(String companyId, GeneralDate baseDate){
+		List<WorkplaceApprovalRoot> data = this.queryProxy().query(FIND_ALL_BY_BASEDATE, WwfmtWpApprovalRoot.class)
+				.setParameter("companyId", companyId)
+				.setParameter("baseDate", baseDate)
+				.getList(c->toDomainWpApR(c));
+		return data;
 	}
 }

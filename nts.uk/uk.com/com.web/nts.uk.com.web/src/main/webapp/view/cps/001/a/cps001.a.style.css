@@ -1,3 +1,172 @@
-#functions-area div.ntsControl:nth-child(1) {
-	margin-left: 70px;
+#functions-area button ~ .ntsControl {
+	margin-left: 15px;
+}
+
+#functions-area button+.ntsControl {
+	margin-left: 515px;
+}
+
+#functions-area, #contents-area {
+	min-width: 1250px;
+}
+
+#contents-area .left-area, #contents-area .right-area {
+	float: left;
+}
+
+#contents-area .left-area {
+	width: 240px;
+	margin-left: 85px;
+}
+
+#contents-area .left-area .bg-green {
+	padding: 12px;
+	height: 220px;
+}
+
+#contents-area .right-area {
+	padding-left: 5px;
+}
+
+#contents-area .left-area #lefttabs {
+	margin-top: 15px;
+}
+
+#lefttabs .ntsSearchBox.ntsSearchBox_Component {
+	min-width: 120px;
+}
+
+.avatar-group, .person-group, .action-group {
+	float: left;
+	padding: 0 5px;
+}
+
+.avatar-group {
+	width: 108px;
+	height: 147px;
+}
+
+.person-group {
+	width: 575px;
+	height: 147px;
+}
+
+.action-group {
+	width: 200px;
+}
+
+.action-group .column {
+	width: 95px;
+	margin-left: 1px;
+	padding: 3px 0 3px 5px;
+	box-sizing: border-box;
+	float: left;
+}
+
+.action-group button {
+	width: 100%;
+}
+
+.action-group .btn {
+	margin-bottom: 5px;
+}
+
+.action-group .btn-print {
+	height: 65px;
+	background-repeat: no-repeat;
+	background-position-x: 2px;
+	background-position-y: center;
+	background-image: url("images/print.png");
+}
+
+.action-group .btn-location {
+	background-repeat: no-repeat;
+	background-position-x: 2px;
+	background-position-y: center;
+	background-image: url("images/location.png");
+	background-position-y: center;
+}
+
+.action-group .btn-details {
+	background-repeat: no-repeat;
+	background-position-x: 5px;
+	background-position-y: center;
+	background-image: url("images/details.png");
+}
+
+.action-group .btn-goout {
+	cursor: pointer;
+	display: block;
+	min-height: 42px;
+	line-height: 42px;
+	padding-left: 60px;
+	background-repeat: no-repeat;
+	background-position-x: 5px;
+	background-position-y: center;
+	background-image: url("images/goout.png");
+	display: block;
+}
+
+.active-panel {
+	width: 100%;
+	min-height: 52px;
+	height: 100%;
+	box-sizing: border-box;
+	border: 1px solid #999999;
+	margin-bottom: 10px;
+}
+
+.active-panel:before {
+	content: '';
+	display: block;
+	background-color: #00B050;
+	display: block;
+	background-color: #00B050;
+	height: 7px;
+}
+
+.avatar-group img {
+	padding: 5px 2px 2px 5px;
+}
+
+.person-info {
+	margin: 5px;
+	width: calc(100% - 10px);
+	box-sizing: border-box;
+}
+
+.person-info td {
+	line-height: 30px;
+	border: 1px solid #999;
+}
+
+.person-info td:first-child {
+	width: 120px;
+	padding-left: 15px;
+}
+
+.person-info td:nth-child(3) {
+	width: 100px;
+	padding-left: 15px;
+	box-sizing: border-box;
+}
+
+#hor-scroll-button-hide {
+	margin-top: 5%;
+}
+
+.bottom-right-area {
+	padding: 5px;
+}
+
+.form-group {
+	margin-bottom: 5px;
+}
+
+.form-group>* {
+	display: inline-block;
+	vertical-align: middle;
+}
+#contents-area .layout-control .drag-panel {
+	min-width: 895px;
 }

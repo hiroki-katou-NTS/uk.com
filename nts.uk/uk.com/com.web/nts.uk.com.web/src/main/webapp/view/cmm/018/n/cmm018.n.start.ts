@@ -1,6 +1,9 @@
-module nts.uk.at.view.cmm018.n {  
+module cmm018.n.start {  
     __viewContext.ready(function() {
         let screenModel = new viewmodel.ScreenModel();
-            __viewContext.bind(screenModel);
+            screenModel.start().done(function(){
+                __viewContext.bind(screenModel);
+                screenModel.loadGrid();
+            });    
     });
 }

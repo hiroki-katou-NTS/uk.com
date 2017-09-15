@@ -20,7 +20,7 @@ public class FormatDPCorrectionDto {
 	
 	private Integer attendanceItemId;
 	
-	private Integer sheetNo;
+	private String sheetNo;
 	
 	private Integer order;
 	

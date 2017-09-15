@@ -23,7 +23,7 @@ public enum Rounding {
 
 	/** The down 4 up 5. */
 	// 四捨五入
-	DOWN_4_UP_5(1);
+	DOWN_4_UP_5(5);
 
 	/** The value. */
 	public final int value;
