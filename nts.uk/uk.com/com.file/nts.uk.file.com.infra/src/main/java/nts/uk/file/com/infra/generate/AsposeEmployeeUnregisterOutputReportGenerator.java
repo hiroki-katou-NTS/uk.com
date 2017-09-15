@@ -1,9 +1,6 @@
 package nts.uk.file.com.infra.generate;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
+import java.util.List;
 
 import javax.ejb.Stateless;
 
@@ -13,22 +10,19 @@ import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
+import com.aspose.cells.HorizontalPageBreakCollection;
 import com.aspose.cells.PageSetup;
-import com.aspose.cells.PdfSaveOptions;
-import com.aspose.cells.Range;
-import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Style;
-import com.aspose.cells.TextAlignmentType;
-import com.aspose.cells.TextDirectionType;
+import com.aspose.cells.VerticalPageBreakCollection;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 import com.aspose.cells.WorksheetCollection;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 import nts.uk.file.com.app.EmployeeUnregisterOutputDataSoure;
 import nts.uk.file.com.app.EmployeeUnregisterOutputGenerator;
-import nts.uk.file.com.app.HeaderEmployeeUnregisterOutput;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
@@ -38,50 +32,28 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 	private static final String TEMPLATE_FILE = "report/1.xlsx";
 
 	private static final String REPORT_FILE_NAME = "CMM018.xlsx";
-	
-	/** The Constant REPORT_FILE_NAME. */
-	private static final String EXTENSION = ".xlsx";
 
-	private static final String REPORT_ID = "ReportSample";
+	private static final int[] COLUMN_INDEX = { 0, 1, 2, 3, 4, 5, 6 };
 
-	/** The Constant HEADER. */
-	private static final String HEADER = "HEADER";
-
-	private static final int AMOUNT_COLUMN = 5;
-
-	private static final int FIRST_COLUMN = 0;
-
-	/** The Constant FIRST_ROW_INDEX. */
-	private int FIRST_ROW_INDEX = 5;
-
-	private static final int[] COLUMN_INDEX = { 0, 1, 2, 3, 4 };
-
-	private static final int ROW_HEIGHT = 28;
+	private static int startRow;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, EmployeeUnregisterOutputDataSoure dataSource) {
-		Object x = this.getClass().getClassLoader().getResourceAsStream(TEMPLATE_FILE);
+
 		try (val reportContext = this.createContext(TEMPLATE_FILE)) {
-			
+
 			val designer = this.createContext(TEMPLATE_FILE);
 			Workbook workbook = designer.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			Worksheet worksheet = worksheets.get(0);
-			Cells cells = worksheet.getCells();
-
 			// set up page prepare print
 			this.printPage(worksheet);
+			this.printEmployee(worksheets, dataSource);
 
-			// set title of table
-			this.setHeaderPage(worksheets, cells, dataSource, 0);
-
-			// set header of page
-			designer.getDesigner().setDataSource(HEADER, Arrays.asList(dataSource.getHeaderEmployee()));
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
-			
-			designer.saveAsExcel(this.createNewFile(generatorContext,
-					this.getReportName(REPORT_FILE_NAME)));
+
+			designer.saveAsExcel(this.createNewFile(generatorContext, this.getReportName(REPORT_FILE_NAME)));
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -103,76 +75,200 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 	}
 
 	/**
-	 * Prints the title row.
+	 * PRINT EACH EMPLOYEE
 	 *
 	 * @param worksheets
 	 *            the worksheets
-	 * @param rowIndex
-	 *            the row index
 	 */
-	private void printTitleRow(WorksheetCollection worksheets, int rowIndex,
-			EmployeeUnregisterOutputDataSoure employee) {
+	private void printEmployee(WorksheetCollection worksheets, EmployeeUnregisterOutputDataSoure employee) {
 		Worksheet worksheet = worksheets.get(0);
 		Cells cells = worksheet.getCells();
-		HeaderEmployeeUnregisterOutput headerTable = employee.getHeaderEmployee();
-		// Set Row height
-		cells.setRowHeightPixel(rowIndex, ROW_HEIGHT);
+		List<EmployeeUnregisterOutput> employeeUnregisLst = employee.getEmployeeUnregisterOutputLst();
+		this.startRow = 6;
+		int indexSheet = 0;
 
-		// Print target Header
-		// merge start rowIndex, start columIndex, totalRow, totalCol, conflict
-		cells.merge(rowIndex, 0, 1, 2, true);
-		Cell target = cells.get(rowIndex, COLUMN_INDEX[0]);
-		target.setValue(headerTable.getEmployee());
+		int x = 5;
+		for (int j = 0; j < employeeUnregisLst.size(); j++) {
 
-		// Print workplace code Header
-		Cell workplaceCode = cells.get(rowIndex, COLUMN_INDEX[2]);
-		workplaceCode.setValue(headerTable.getWorkplaceCode());
+			int totalRowOfEmployee = employeeUnregisLst.get(j).getAppType().size();
+			System.out.println(x);
+			if (totalRowOfEmployee > 1) {
+				int numberOfPage = (x + totalRowOfEmployee) / 52;
 
-		// Print workplace name Header
-		Cell workplaceName = cells.get(rowIndex, COLUMN_INDEX[3]);
-		workplaceName.setValue(headerTable.getWorkplaceName());
+				int numberOfRowMerge = (52 * numberOfPage) - x;
+				if (numberOfRowMerge > 0) {
+					cells.merge(x, 1, numberOfRowMerge, 1, true);
+					Cell sCd = cells.get(x, COLUMN_INDEX[1]);
+					sCd.setValue(employeeUnregisLst.get(j).getEmpInfor().getSCd());
 
-		// Print application name Header
-		Cell appName = cells.get(rowIndex, COLUMN_INDEX[4]);
-		appName.setValue(headerTable.getAppName());
+					cells.merge(x, 2, numberOfRowMerge, 1, true);
+					Cell pName = cells.get(x, COLUMN_INDEX[2]);
+					pName.setValue(employeeUnregisLst.get(j).getEmpInfor().getPName());
 
-		for (int c : COLUMN_INDEX) {
-			Cell cell = cells.get(rowIndex, COLUMN_INDEX[c]);
-			setTitleStyle(cell);
+					cells.merge(x, 3, numberOfRowMerge, 1, true);
+					Cell wpCode = cells.get(x, COLUMN_INDEX[3]);
+					wpCode.setValue(employeeUnregisLst.get(j).getEmpInfor().getWpCode());
+
+					cells.merge(x, 4, numberOfRowMerge, 1, true);
+					Cell wpName = cells.get(x, COLUMN_INDEX[4]);
+					wpName.setValue(employeeUnregisLst.get(j).getEmpInfor().getWpName());
+
+					for (int k = 0; k < numberOfRowMerge; k++) {
+						Cell sCode = cells.get(x + k, COLUMN_INDEX[1]);
+						setTitleStyle(sCode);
+
+						Cell perName = cells.get(x + k, COLUMN_INDEX[2]);
+						setTitleStyle(perName);
+
+						Cell wpCd = cells.get(x + k, COLUMN_INDEX[3]);
+						setTitleStyle(wpCd);
+
+						Cell worplaceName = cells.get(x + k, COLUMN_INDEX[4]);
+						setTitleStyle(worplaceName);
+					}
+
+					for (int i = 0; i < numberOfRowMerge; i++) {
+
+						Cell appType = cells.get(x, COLUMN_INDEX[5]);
+						appType.setValue(employeeUnregisLst.get(j).getAppType().get(i));
+						Style style = appType.getStyle();
+						style.setPattern(BackgroundType.SOLID);
+						style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
+						style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
+						appType.setStyle(style);
+					}
+
+					HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
+					hPageBreaks.add("H" + numberOfPage * 52);
+					VerticalPageBreakCollection vPageBreaks = worksheet.getVerticalPageBreaks();
+					vPageBreaks.add("H" + numberOfPage * 52);
+
+					x = (numberOfPage * 52) + 1;
+					cells.merge(x, 1, totalRowOfEmployee - numberOfRowMerge, 1, true);
+					Cell sCd1 = cells.get(x, COLUMN_INDEX[1]);
+					sCd1.setValue(employeeUnregisLst.get(j).getEmpInfor().getSCd());
+
+					cells.merge(x, 2, numberOfRowMerge, 1, true);
+					Cell pName1 = cells.get(x, COLUMN_INDEX[2]);
+					pName1.setValue(employeeUnregisLst.get(j).getEmpInfor().getPName());
+
+					cells.merge(x, 3, numberOfRowMerge, 1, true);
+					Cell wpCode1 = cells.get(x, COLUMN_INDEX[3]);
+					wpCode1.setValue(employeeUnregisLst.get(j).getEmpInfor().getWpCode());
+
+					cells.merge(x, 4, numberOfRowMerge, 1, true);
+					Cell wpName1 = cells.get(x, COLUMN_INDEX[4]);
+					wpName1.setValue(employeeUnregisLst.get(j).getEmpInfor().getWpName());
+
+					for (int k = 0; k < numberOfRowMerge; k++) {
+						Cell sCode = cells.get(x + k, COLUMN_INDEX[1]);
+						setTitleStyle(sCode);
+
+						Cell perName = cells.get(x + k, COLUMN_INDEX[2]);
+						setTitleStyle(perName);
+
+						Cell wpCd = cells.get(x + k, COLUMN_INDEX[3]);
+						setTitleStyle(wpCd);
+
+						Cell worplaceName = cells.get(x + k, COLUMN_INDEX[4]);
+						setTitleStyle(worplaceName);
+					}
+
+					for (int i = numberOfRowMerge; i < totalRowOfEmployee; i++) {
+
+						Cell appType = cells.get(x, COLUMN_INDEX[5]);
+						appType.setValue(employeeUnregisLst.get(j).getAppType().get(i));
+						Style style = appType.getStyle();
+						style.setPattern(BackgroundType.SOLID);
+						style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
+						style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
+						appType.setStyle(style);
+					}
+
+				} else {
+
+					cells.merge(x, 1, totalRowOfEmployee, 1, true);
+					Cell sCd = cells.get(x, COLUMN_INDEX[1]);
+					sCd.setValue(employeeUnregisLst.get(j).getEmpInfor().getSCd());
+
+					cells.merge(x, 2, totalRowOfEmployee, 1, true);
+					Cell pName = cells.get(x, COLUMN_INDEX[2]);
+					pName.setValue(employeeUnregisLst.get(j).getEmpInfor().getPName());
+
+					cells.merge(x, 3, totalRowOfEmployee, 1, true);
+					Cell wpCode = cells.get(x, COLUMN_INDEX[3]);
+					wpCode.setValue(employeeUnregisLst.get(j).getEmpInfor().getWpCode());
+
+					cells.merge(x, 4, totalRowOfEmployee, 1, true);
+					Cell wpName = cells.get(x, COLUMN_INDEX[4]);
+					wpName.setValue(employeeUnregisLst.get(j).getEmpInfor().getWpName());
+
+					for (int i = 0; i < totalRowOfEmployee; i++) {
+
+						Cell appType = cells.get(x, COLUMN_INDEX[5]);
+						appType.setValue(employeeUnregisLst.get(j).getAppType().get(i));
+						Style style = appType.getStyle();
+						style.setPattern(BackgroundType.SOLID);
+						style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
+						style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
+						appType.setStyle(style);
+					}
+
+					for (int k = 0; k < totalRowOfEmployee; k++) {
+						Cell sCode = cells.get(x + k, COLUMN_INDEX[1]);
+						setTitleStyle(sCode);
+
+						Cell perName = cells.get(x + k, COLUMN_INDEX[2]);
+						setTitleStyle(perName);
+
+						Cell wpCd = cells.get(x + k, COLUMN_INDEX[3]);
+						setTitleStyle(wpCd);
+
+						Cell worplaceName = cells.get(x + k, COLUMN_INDEX[4]);
+						setTitleStyle(worplaceName);
+					}
+
+				}
+
+			} else {
+
+				int numberOfPage = (x + 1) / 52;
+
+				int numberOfRowMerge = (52 * numberOfPage) - x;
+
+				if (numberOfRowMerge > 0) {
+
+				}
+
+				Cell sCd = cells.get(x, COLUMN_INDEX[1]);
+				sCd.setValue(employeeUnregisLst.get(j).getEmpInfor().getSCd());
+				setTitleStyle(sCd);
+
+				Cell pName = cells.get(x, COLUMN_INDEX[2]);
+				pName.setValue(employeeUnregisLst.get(j).getEmpInfor().getPName());
+				setTitleStyle(pName);
+
+				Cell wpCode = cells.get(x, COLUMN_INDEX[3]);
+				wpCode.setValue(employeeUnregisLst.get(j).getEmpInfor().getWpCode());
+				setTitleStyle(wpCode);
+
+				Cell wpName = cells.get(x, COLUMN_INDEX[4]);
+				wpName.setValue(employeeUnregisLst.get(j).getEmpInfor().getWpName());
+				setTitleStyle(wpName);
+				
+				Cell appType = cells.get(x, COLUMN_INDEX[5]);
+				appType.setValue(employeeUnregisLst.get(j).getAppType().get(0));
+				Style style = appType.getStyle();
+				style.setPattern(BackgroundType.SOLID);
+				style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
+				style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
+				appType.setStyle(style);
+			}
+
 		}
 
-	}
+		this.startRow = x;
 
-	/**
-	 * SET HEADER
-	 * 
-	 * @param worksheets
-	 * @param cells
-	 * @param reportData
-	 * @param sheetIndex
-	 */
-	private void setHeaderPage(WorksheetCollection worksheets, Cells cells,
-			EmployeeUnregisterOutputDataSoure reportData, int sheetIndex) {
-		Worksheet worksheet = worksheets.get(sheetIndex);
-		createRange(cells, FIRST_ROW_INDEX, 1);
-		this.printTitleRow(worksheets, FIRST_ROW_INDEX, reportData);
-	}
-
-	/**
-	 * Creates the range.
-	 *
-	 * @param cells
-	 *            the cells
-	 * @param firstRow
-	 *            the first row
-	 * @param totalRows
-	 *            the total row
-	 */
-	private void createRange(Cells cells, int firstRow, int totalRow) {
-		for (int i = FIRST_COLUMN; i < AMOUNT_COLUMN; i++) {
-			Range range = cells.createRange(firstRow, i, totalRow, 1);
-			range.setOutlineBorders(CellBorderType.THIN, Color.getGray());
-		}
 	}
 
 	/**
@@ -186,25 +282,17 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 		style.setPattern(BackgroundType.SOLID);
 		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
 		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
-		style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getGray());
-		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getGray());
+		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.DOTTED, Color.getGray());
 		cell.setStyle(style);
 	}
 
-	/**
-	 * Sets the backgroundcolor.
-	 *
-	 * @param cell
-	 *            the new backgroundcolor
-	 */
-	private void setBackgroundcolor(Cell cell) {
+	private void setTitleBreakPage(Cell cell) {
 		Style style = cell.getStyle();
-		style.setForegroundColor(Color.fromArgb(199, 243, 145));
 		style.setPattern(BackgroundType.SOLID);
-		style.setTextDirection(TextDirectionType.LEFT_TO_RIGHT);
-		style.setVerticalAlignment(TextAlignmentType.TOP);
-		style.setHorizontalAlignment(TextAlignmentType.LEFT);
+		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
+		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
+		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.DOTTED, Color.getGray());
 		cell.setStyle(style);
-	}
 
+	}
 }

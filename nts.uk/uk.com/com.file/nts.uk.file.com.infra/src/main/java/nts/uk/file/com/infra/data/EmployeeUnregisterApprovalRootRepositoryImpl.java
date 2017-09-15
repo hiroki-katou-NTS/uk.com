@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
@@ -43,29 +44,33 @@ public class EmployeeUnregisterApprovalRootRepositoryImpl implements EmployeeUnr
 
 	private List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate) {
 		List<EmployeeApproveDto> lstEmps = new ArrayList<>();
-		EmployeeApproveDto emp = new EmployeeApproveDto();
-		emp.setCompanyId(companyId);
-		emp.setPId("CEC90E5D-1910-4271-A1F5-2DC27B53E3E5");
-		emp.setSId("90000000-0000-0000-0000-000000000012");
-		emp.setSCd("000000000001");
-		emp.setPName("日通システム　ベトナム　１");
-		emp.setWpCode("C000000002");
-		emp.setWpName("Webメニューの設定");
-		emp.setSMail("a@gmail.com");
-		emp.setRetirementDate(GeneralDate.today());
-		emp.setJoinDate(GeneralDate.today());
-		lstEmps.add(emp);
-		emp.setCompanyId(companyId);
-		emp.setPId("CE82367D-929C-4872-A51C-12BE4426EA6C");
-		emp.setSId("90000000-0000-0000-0000-000000000016");
-		emp.setSCd("000000000002");
-		emp.setPName("日通システム　ベトナム　2");
-		emp.setWpCode("C000000003");
-		emp.setWpName("Webメニューの設定１");
-		emp.setSMail("b@gmail.com");
-		emp.setRetirementDate(GeneralDate.today());
-		emp.setJoinDate(GeneralDate.today());
-		lstEmps.add(emp);
+		for (int i = 0; i < 5; i = i + 2) {
+			EmployeeApproveDto emp = new EmployeeApproveDto();
+			emp.setCompanyId(companyId);
+			emp.setPId("CEC90E5D-1910-4271-A1F5-2DC27B53E3E5");
+			emp.setSId("90000000-0000-0000-0000-000000000016");
+			emp.setSCd("00000000000" + String.valueOf(i));
+			emp.setPName("日通システム　ベトナム　" + String.valueOf(i));
+			emp.setWpCode("C00000000" +  String.valueOf(i));
+			emp.setWpName("Webメニューの設定");
+			emp.setSMail("a@gmail.com");
+			emp.setRetirementDate(GeneralDate.today());
+			emp.setJoinDate(GeneralDate.today());
+			lstEmps.add(emp);
+			emp.setCompanyId(companyId);
+			emp.setPId("CE82367D-929C-4872-A51C-12BE4426EA6C");
+			emp.setSId("90000000-0000-0000-0000-000000000014");
+			emp.setSCd("00000000000" + String.valueOf( i + 1));
+			emp.setPName("日通システム　ベトナム　"+ String.valueOf( i + 1));
+			emp.setWpCode("C00000000"+ String.valueOf( i + 1));
+			emp.setWpName("Webメニューの設定" + String.valueOf( i + 1));
+			emp.setSMail("b@gmail.com");
+			emp.setRetirementDate(GeneralDate.today());
+			emp.setJoinDate(GeneralDate.today());
+			lstEmps.add(emp);
+
+		}
+
 		// ドメインモデル「社員」を取得する(lấy dữ liệu domain「社員」)
 		// TODO thuc hien khi co tra loi QA
 
