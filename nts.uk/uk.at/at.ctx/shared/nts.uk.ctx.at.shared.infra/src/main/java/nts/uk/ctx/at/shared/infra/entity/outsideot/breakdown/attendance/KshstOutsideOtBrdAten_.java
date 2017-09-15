@@ -2,21 +2,19 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown;
+package nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance;
 
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KshstOverTimeBrdPK_.
+ * The Class KshstOutsideOtBrdAten_.
  */
-@StaticMetamodel(KshstOverTimeBrdPK.class)
-public class KshstOverTimeBrdPK_ {
+@StaticMetamodel(KshstOutsideOtBrdAten.class)
+public class KshstOutsideOtBrdAten_ {
 
-	/** The cid. */
-	public static volatile SingularAttribute<KshstOverTimeBrdPK, String> cid;
+	/** The kshst outside ot brd aten PK. */
+	public static volatile SingularAttribute<KshstOutsideOtBrdAten, KshstOutsideOtBrdAtenPK> kshstOutsideOtBrdAtenPK;
 	
-	/** The brd item no. */
-	public static volatile SingularAttribute<KshstOverTimeBrdPK, Integer> brdItemNo;
-	
+
 }

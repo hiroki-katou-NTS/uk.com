@@ -5,14 +5,15 @@
 package nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemName;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItemGetMemento;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.ProductNumber;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOverTimeBrd;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOverTimeBrdPK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK;
 
 /**
  * The Class JpaOvertimeBRDItemGetMemento.
@@ -20,10 +21,7 @@ import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOverTimeBrdPK;
 public class JpaOvertimeBRDItemGetMemento implements OutsideOTBRDItemGetMemento {
 	
 	/** The entity. */
-	private KshstOverTimeBrd entity;
-	
-	/** The entity atens. */
-	private List<Integer> entityAtens;
+	private KshstOutsideOtBrd entity;
 	
 	/**
 	 * Instantiates a new jpa overtime BRD item get memento.
@@ -31,12 +29,10 @@ public class JpaOvertimeBRDItemGetMemento implements OutsideOTBRDItemGetMemento 
 	 * @param entity the entity
 	 * @param entityAtens the entity atens
 	 */
-	public JpaOvertimeBRDItemGetMemento(KshstOverTimeBrd entity,
-			List<Integer> entityAtens) {
-		if (entity.getKshstOverTimeBrdPK() == null) {
-			entity.setKshstOverTimeBrdPK(new KshstOverTimeBrdPK());
+	public JpaOvertimeBRDItemGetMemento(KshstOutsideOtBrd entity) {
+		if (entity.getKshstOutsideOtBrdPK() == null) {
+			entity.setKshstOutsideOtBrdPK(new KshstOutsideOtBrdPK());
 		}
-		this.entityAtens = entityAtens;
 		this.entity = entity;
 	}
 
@@ -61,7 +57,7 @@ public class JpaOvertimeBRDItemGetMemento implements OutsideOTBRDItemGetMemento 
 	 */
 	@Override
 	public BreakdownItemNo getBreakdownItemNo() {
-		return BreakdownItemNo.valueOf(this.entity.getKshstOverTimeBrdPK().getBrdItemNo());
+		return BreakdownItemNo.valueOf(this.entity.getKshstOutsideOtBrdPK().getBrdItemNo());
 	}
 
 	/*
@@ -97,7 +93,9 @@ public class JpaOvertimeBRDItemGetMemento implements OutsideOTBRDItemGetMemento 
 	 */
 	@Override
 	public List<Integer> getAttendanceItemIds() {
-		return this.entityAtens;
+		return this.entity.getLstOutsideOtBrdAten().stream()
+				.map(entity -> entity.getKshstOutsideOtBrdAtenPK().getAttendanceItemId())
+				.collect(Collectors.toList());
 	}
 
 }

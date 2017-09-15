@@ -15,13 +15,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KshstOverTimeBrdPK.
+ * The Class KshstOutsideOtBrdPK.
  */
 
 @Getter
 @Setter
 @Embeddable
-public class KshstOverTimeBrdPK implements Serializable {
+public class KshstOutsideOtBrdPK implements Serializable {
     
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -41,7 +41,7 @@ public class KshstOverTimeBrdPK implements Serializable {
     /**
      * Instantiates a new kshst over time brd PK.
      */
-    public KshstOverTimeBrdPK() {
+    public KshstOutsideOtBrdPK() {
     }
 
     /**
@@ -50,7 +50,7 @@ public class KshstOverTimeBrdPK implements Serializable {
      * @param cid the cid
      * @param brdItemNo the brd item no
      */
-    public KshstOverTimeBrdPK(String cid, short brdItemNo) {
+    public KshstOutsideOtBrdPK(String cid, short brdItemNo) {
         this.cid = cid;
         this.brdItemNo = brdItemNo;
     }
@@ -73,10 +73,10 @@ public class KshstOverTimeBrdPK implements Serializable {
 	public boolean equals(Object object) {
 		// TODO: Warning - this method won't work in the case the id fields are
 		// not set
-		if (!(object instanceof KshstOverTimeBrdPK)) {
+		if (!(object instanceof KshstOutsideOtBrdPK)) {
 			return false;
 		}
-		KshstOverTimeBrdPK other = (KshstOverTimeBrdPK) object;
+		KshstOutsideOtBrdPK other = (KshstOutsideOtBrdPK) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;

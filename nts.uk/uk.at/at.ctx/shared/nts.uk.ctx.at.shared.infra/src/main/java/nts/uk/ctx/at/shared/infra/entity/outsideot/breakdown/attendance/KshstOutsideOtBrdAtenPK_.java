@@ -8,13 +8,19 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KshstOverTimeBrd_.
+ * The Class KshstOutsideOtBrdAtenPK_.
  */
-@StaticMetamodel(KshstOverTimeBrdAten.class)
-public class KshstOverTimeBrdAten_ {
+@StaticMetamodel(KshstOutsideOtBrdAtenPK.class)
+public class KshstOutsideOtBrdAtenPK_ {
 
-	/** The kshst over time brd PK. */
-	public static volatile SingularAttribute<KshstOverTimeBrdAten, KshstOverTimeBrdAtenPK> kshstOverTimeBrdAtenPK;
+	/** The cid. */
+	public static volatile SingularAttribute<KshstOutsideOtBrdAtenPK, String> cid;
+	
+	/** The brd item no. */
+	public static volatile SingularAttribute<KshstOutsideOtBrdAtenPK, Integer> brdItemNo;
+	
+	/** The attendance item id. */
+	public static volatile SingularAttribute<KshstOutsideOtBrdAtenPK, Integer> attendanceItemId;
 	
 
 }

@@ -8,34 +8,37 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOutsideOtBrdAten;
 
 /**
- * The Class KshstOverTimeBrd.
+ * The Class KshstOutsideOtBrd.
  */
 
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHST_OVER_TIME_BRD")
-public class KshstOverTimeBrd implements Serializable {
+@Table(name = "KSHST_OUTSIDE_OT_BRD")
+public class KshstOutsideOtBrd implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The entity atens. */
-    private List<Integer> entityAtens;
-    
     /** The kshst over time brd PK. */
     @EmbeddedId
-    protected KshstOverTimeBrdPK kshstOverTimeBrdPK;
+    protected KshstOutsideOtBrdPK kshstOutsideOtBrdPK;
     
     /** The name. */
     @Basic(optional = false)
@@ -55,21 +58,27 @@ public class KshstOverTimeBrd implements Serializable {
     @Column(name = "PRODUCT_NUMBER")
     private int productNumber;
     
+    /** The lst outside ot brd aten. */
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = true, updatable = true),
+			@JoinColumn(name = "BRD_ITEM_NO", referencedColumnName = "BRD_ITEM_NO", insertable = true, updatable = true) })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<KshstOutsideOtBrdAten> lstOutsideOtBrdAten;
     
 
     /**
      * Instantiates a new kshst over time brd.
      */
-    public KshstOverTimeBrd() {
+    public KshstOutsideOtBrd() {
     }
 
     /**
-     * Instantiates a new kshst over time brd.
+     * Instantiates a new kshst outside ot brd.
      *
-     * @param kshstOverTimeBrdPK the kshst over time brd PK
+     * @param kshstOutsideOtBrdPK the kshst outside ot brd PK
      */
-    public KshstOverTimeBrd(KshstOverTimeBrdPK kshstOverTimeBrdPK) {
-        this.kshstOverTimeBrdPK = kshstOverTimeBrdPK;
+    public KshstOutsideOtBrd(KshstOutsideOtBrdPK kshstOutsideOtBrdPK) {
+        this.kshstOutsideOtBrdPK = kshstOutsideOtBrdPK;
     }
 
     /**
@@ -81,9 +90,9 @@ public class KshstOverTimeBrd implements Serializable {
      * @param useAtr the use atr
      * @param productNumber the product number
      */
-	public KshstOverTimeBrd(KshstOverTimeBrdPK kshstOverTimeBrdPK, int exclusVer, String name,
+	public KshstOutsideOtBrd(KshstOutsideOtBrdPK kshstOutsideOtBrdPK, int exclusVer, String name,
 			short useAtr, short productNumber) {
-		this.kshstOverTimeBrdPK = kshstOverTimeBrdPK;
+		this.kshstOutsideOtBrdPK = kshstOutsideOtBrdPK;
 		this.name = name;
 		this.useAtr = useAtr;
 		this.productNumber = productNumber;
@@ -95,8 +104,8 @@ public class KshstOverTimeBrd implements Serializable {
      * @param cid the cid
      * @param brdItemNo the brd item no
      */
-    public KshstOverTimeBrd(String cid, short brdItemNo) {
-        this.kshstOverTimeBrdPK = new KshstOverTimeBrdPK(cid, brdItemNo);
+    public KshstOutsideOtBrd(String cid, short brdItemNo) {
+        this.kshstOutsideOtBrdPK = new KshstOutsideOtBrdPK(cid, brdItemNo);
     }
 
 
@@ -106,7 +115,7 @@ public class KshstOverTimeBrd implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (kshstOverTimeBrdPK != null ? kshstOverTimeBrdPK.hashCode() : 0);
+		hash += (kshstOutsideOtBrdPK != null ? kshstOutsideOtBrdPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -116,13 +125,13 @@ public class KshstOverTimeBrd implements Serializable {
 	@Override
 	public boolean equals(Object object) {
 		// not set
-		if (!(object instanceof KshstOverTimeBrd)) {
+		if (!(object instanceof KshstOutsideOtBrd)) {
 			return false;
 		}
-		KshstOverTimeBrd other = (KshstOverTimeBrd) object;
-		if ((this.kshstOverTimeBrdPK == null && other.kshstOverTimeBrdPK != null)
-				|| (this.kshstOverTimeBrdPK != null
-						&& !this.kshstOverTimeBrdPK.equals(other.kshstOverTimeBrdPK))) {
+		KshstOutsideOtBrd other = (KshstOutsideOtBrd) object;
+		if ((this.kshstOutsideOtBrdPK == null && other.kshstOutsideOtBrdPK != null)
+				|| (this.kshstOutsideOtBrdPK != null
+						&& !this.kshstOutsideOtBrdPK.equals(other.kshstOutsideOtBrdPK))) {
 			return false;
 		}
 		return true;
@@ -133,7 +142,7 @@ public class KshstOverTimeBrd implements Serializable {
      */
     @Override
     public String toString() {
-        return "entity.KshstOverTimeBrd[ kshstOverTimeBrdPK=" + kshstOverTimeBrdPK + " ]";
+        return "entity.KshstOutsideOtBrdPK[ kshstOutsideOtBrdPK=" + kshstOutsideOtBrdPK + " ]";
     }
     
 }

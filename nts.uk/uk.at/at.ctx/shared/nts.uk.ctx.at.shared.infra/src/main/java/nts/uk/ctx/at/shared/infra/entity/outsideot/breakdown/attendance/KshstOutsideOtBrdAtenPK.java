@@ -15,12 +15,12 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KshstOverTimeBrdAtenPK.
+ * The Class KshstOutsideOtBrdAtenPK.
  */
 @Getter
 @Setter
 @Embeddable
-public class KshstOverTimeBrdAtenPK implements Serializable {
+public class KshstOutsideOtBrdAtenPK implements Serializable {
     
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -41,10 +41,10 @@ public class KshstOverTimeBrdAtenPK implements Serializable {
     @Column(name = "ATTENDANCE_ITEM_ID")
     private int attendanceItemId;
 
-    public KshstOverTimeBrdAtenPK() {
+    public KshstOutsideOtBrdAtenPK() {
     }
 
-    public KshstOverTimeBrdAtenPK(String cid, int brdItemNo, int attendanceItemId) {
+    public KshstOutsideOtBrdAtenPK(String cid, int brdItemNo, int attendanceItemId) {
         this.cid = cid;
         this.brdItemNo = brdItemNo;
         this.attendanceItemId = attendanceItemId;
@@ -63,10 +63,10 @@ public class KshstOverTimeBrdAtenPK implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KshstOverTimeBrdAtenPK)) {
+        if (!(object instanceof KshstOutsideOtBrdAtenPK)) {
             return false;
         }
-        KshstOverTimeBrdAtenPK other = (KshstOverTimeBrdAtenPK) object;
+        KshstOutsideOtBrdAtenPK other = (KshstOutsideOtBrdAtenPK) object;
         if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
             return false;
         }

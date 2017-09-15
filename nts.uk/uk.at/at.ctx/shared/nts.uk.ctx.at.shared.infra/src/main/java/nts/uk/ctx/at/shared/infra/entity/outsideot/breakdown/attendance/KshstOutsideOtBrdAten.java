@@ -15,23 +15,23 @@ import lombok.Setter;
 import nts.arc.layer.infra.data.entity.JpaEntity;
 
 /**
- * The Class KshstOverTimeBrdAten.
+ * The Class KshstOutsideOtBrdAten.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHST_OVER_TIME_BRD_ATEN")
-public class KshstOverTimeBrdAten extends JpaEntity implements Serializable {
+@Table(name = "KSHST_OUTSIDE_OT_BRD_ATEN")
+public class KshstOutsideOtBrdAten extends JpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     @EmbeddedId
-    protected KshstOverTimeBrdAtenPK kshstOverTimeBrdAtenPK;
+    protected KshstOutsideOtBrdAtenPK kshstOutsideOtBrdAtenPK;
 
     /**
      * Instantiates a new kshst over time brd aten.
      */
-    public KshstOverTimeBrdAten() {
+    public KshstOutsideOtBrdAten() {
     }
 
     /**
@@ -39,8 +39,8 @@ public class KshstOverTimeBrdAten extends JpaEntity implements Serializable {
      *
      * @param kshstOverTimeBrdAtenPK the kshst over time brd aten PK
      */
-    public KshstOverTimeBrdAten(KshstOverTimeBrdAtenPK kshstOverTimeBrdAtenPK) {
-        this.kshstOverTimeBrdAtenPK = kshstOverTimeBrdAtenPK;
+    public KshstOutsideOtBrdAten(KshstOutsideOtBrdAtenPK kshstOverTimeBrdAtenPK) {
+        this.kshstOutsideOtBrdAtenPK = kshstOverTimeBrdAtenPK;
     }
 
 	/*
@@ -51,7 +51,7 @@ public class KshstOverTimeBrdAten extends JpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kshstOverTimeBrdAtenPK != null ? kshstOverTimeBrdAtenPK.hashCode() : 0);
+        hash += (kshstOutsideOtBrdAtenPK != null ? kshstOutsideOtBrdAtenPK.hashCode() : 0);
         return hash;
     }
 
@@ -63,13 +63,13 @@ public class KshstOverTimeBrdAten extends JpaEntity implements Serializable {
 	@Override
 	public boolean equals(Object object) {
 		// not set
-		if (!(object instanceof KshstOverTimeBrdAten)) {
+		if (!(object instanceof KshstOutsideOtBrdAten)) {
 			return false;
 		}
-		KshstOverTimeBrdAten other = (KshstOverTimeBrdAten) object;
-		if ((this.kshstOverTimeBrdAtenPK == null && other.kshstOverTimeBrdAtenPK != null)
-				|| (this.kshstOverTimeBrdAtenPK != null
-						&& !this.kshstOverTimeBrdAtenPK.equals(other.kshstOverTimeBrdAtenPK))) {
+		KshstOutsideOtBrdAten other = (KshstOutsideOtBrdAten) object;
+		if ((this.kshstOutsideOtBrdAtenPK == null && other.kshstOutsideOtBrdAtenPK != null)
+				|| (this.kshstOutsideOtBrdAtenPK != null
+						&& !this.kshstOutsideOtBrdAtenPK.equals(other.kshstOutsideOtBrdAtenPK))) {
 			return false;
 		}
 		return true;
@@ -80,7 +80,7 @@ public class KshstOverTimeBrdAten extends JpaEntity implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "entity.KshstOverTimeBrdAten[ kshstOverTimeBrdAtenPK=" + kshstOverTimeBrdAtenPK
+		return "entity.KshstOverTimeBrdAten[ kshstOverTimeBrdAtenPK=" + kshstOutsideOtBrdAtenPK
 				+ " ]";
 	}
 
@@ -91,7 +91,7 @@ public class KshstOverTimeBrdAten extends JpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshstOverTimeBrdAtenPK;
+		return this.kshstOutsideOtBrdAtenPK;
 	}
 
 }
