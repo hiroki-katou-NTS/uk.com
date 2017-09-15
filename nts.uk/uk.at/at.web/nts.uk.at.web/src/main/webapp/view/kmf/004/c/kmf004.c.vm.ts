@@ -78,6 +78,7 @@ module nts.uk.at.view.kmf004.c {
                             self.selectedBaseDateId(data.grantDateAtr),
                             self.standardDate(data.grantDate),
                             self.bindPerSetData(data.personalGrantDateCode)
+                            $("#input-name").focus();
                         }).fail(function(res) {
                               
                         });
@@ -151,6 +152,8 @@ module nts.uk.at.view.kmf004.c {
                                     
                     if (self.items().length > 0) {
                         self.singleSelectedCode(self.items()[0].code);
+                    } else {
+                        self.newBtn();    
                     }
                     
                     dfd.resolve();
@@ -207,6 +210,7 @@ module nts.uk.at.view.kmf004.c {
                 }
                 
                 self.singleSelectedCode(" ");
+                $("#input-code").focus();
             }
             
             /**
