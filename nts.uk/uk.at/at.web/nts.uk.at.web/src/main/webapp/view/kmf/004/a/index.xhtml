@@ -109,7 +109,7 @@
 										data-bind="ntsDatePicker: {
 											value: grantStartDate, 
 											valueFormat: 'YYYY/MM/DD', 
-											required: grantRegularMethod()==0 &amp; $parent.inp_grantMethod() == 1,
+											required: ko.computed(function(){ return grantRegularMethod()==0 &amp;&amp; $parent.inp_grantMethod() == 1; }),
 											enable: grantRegularMethod()==0,
 											acceptJapaneseCalendar: true,
 											name: '#[KMF004_25]'}">
@@ -121,7 +121,7 @@
 												option: ko.mapping.fromJS({
 												unitID: 'YEARS',
 												width: '60'}),
-												required: grantRegularMethod()==0 &amp; $parent.inp_grantMethod() == 1,
+												required: ko.computed(function(){ return grantRegularMethod()==0 &amp;&amp; $parent.inp_grantMethod() == 1;}),
 												enable: grantRegularMethod()==0,
 												name: '#[KMF004_26]'}" />
 									<input id="years" style="width: 40px;"
@@ -130,7 +130,7 @@
 												option: ko.mapping.fromJS({
 												unitID: 'MONTHS',
 												width: '60'}),
-												required: grantRegularMethod()==0 &amp; $parent.inp_grantMethod() == 1,
+												required: ko.computed(function(){ return grantRegularMethod()==0 &amp;&amp; $parent.inp_grantMethod() == 1;}),
 												enable: grantRegularMethod()==0,
 												name: '#[KMF004_26]'}" />
 								</div>
@@ -164,7 +164,7 @@
 												option: ko.mapping.fromJS({
 												unitID: 'DAYS',
 												width: '60'}),
-												required: grantPeriodicMethod()==0 &amp; $parent.inp_grantMethod() == 1,
+												required: ko.computed(function(){ return grantPeriodicMethod()==0 &amp;&amp; $parent.inp_grantMethod() == 1;}),
 												enable: grantPeriodicMethod()==0,
 												name: '#[KMF004_31]'}" />
 									</div>
@@ -221,7 +221,7 @@
 												option: ko.mapping.fromJS({
 												unitID: 'MONTHS',
 												width: '60'}),
-												required: specialVacationMethod()==2 &amp; $parent.inp_grantMethod() == 1,
+												required: ko.computed(function(){ return specialVacationMethod()==2 &amp;&amp; $parent.inp_grantMethod() == 1;}),
 												enable: specialVacationMethod()==2,
 												name: '#[KMF004_45]'}" />
 										<input style="width: 40px;"
@@ -230,7 +230,7 @@
 												option: ko.mapping.fromJS({
 												unitID: 'DAYS',
 												width: '60'}),
-												required: specialVacationMethod()==2 &amp; $parent.inp_grantMethod() == 1,
+												required: ko.computed(function(){ return specialVacationMethod()==2 &amp;&amp; $parent.inp_grantMethod() == 1;}),
 												enable: specialVacationMethod()==2,
 												name: '#[KMF004_45]'}" />
 									</div>
@@ -300,7 +300,7 @@
 												option: ko.mapping.fromJS({
 												unitID: 'AGE',
 												width: '60'}),
-												required: useAge()==1 &amp; $parent.inp_grantMethod() == 1,
+												required: ko.computed(function(){ return useAge()==1 &amp;&amp; $parent.inp_grantMethod() == 1;}),
 												enable: useAge()==1,
 												name: '#[KMF004_56]'}" />
 									<span >～</span> <input style="width: 30px; margin-top: 3px;"
@@ -309,7 +309,7 @@
 												option: ko.mapping.fromJS({
 												unitID: 'AGE',
 												width: '60'}),
-												required: useAge()==1 &amp; $parent.inp_grantMethod() == 1,
+												required: ko.computed(function(){ return useAge()==1 &amp;&amp; $parent.inp_grantMethod() == 1;}),
 												enable: useAge()==1,
 												name: '#[KMF004_56]'}" />
 								</div>
