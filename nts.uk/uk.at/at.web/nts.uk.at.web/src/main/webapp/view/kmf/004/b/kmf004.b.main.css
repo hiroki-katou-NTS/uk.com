@@ -44,7 +44,7 @@ table.data-items tr td:first-child{
 }
 
 .screen-b{
-	padding: 40px;
+    padding: 0 40px 0px 40px;
 }
 
 .title {
