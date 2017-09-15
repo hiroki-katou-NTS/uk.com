@@ -89,10 +89,10 @@
 								<input data-bind="ntsTextEditor: {value: itemNameText }" />
 							</div>
 
-
-							<div id="B2_5"
-								data-bind="ntsCheckBox: { checked: ckbIsAbolition }">#{i18n.getText('CPS006_24')}</div>
-
+							<com:ko-if bind="currentItem().systemRequired === 0">
+								<div id="B2_5"
+									data-bind="ntsCheckBox: { checked: ckbIsAbolition }">#{i18n.getText('CPS006_24')}</div>
+							</com:ko-if>
 
 						</div>
 
