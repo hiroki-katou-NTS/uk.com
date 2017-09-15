@@ -145,7 +145,7 @@
 								</label>
 								<button
 									style="display: block; margin-top: 10px; margin-left: 100px;"
-									data-bind="click: $parent.openBDialog.bind($parent), enable: grantRegularMethod()==1">#{i18n.getText('KMF004_29')}</button>
+									data-bind="click: $parent.openBDialog.bind($parent), enable: grantRegularMethod()==1 &amp;&amp; !$parent.isEnableCode() ">#{i18n.getText('KMF004_29')}</button>
 								<span style="margin-left: 100px;">#{i18n.getText('KMF004_30')}</span>
 							</div>
 							<div class="tab-content-2"
@@ -174,7 +174,7 @@
 											data-bind="checkedValue: 1, checked: grantPeriodicMethod, enable: true" />
 											<span class="box"></span><span class="label">#{i18n.getText('KMF004_33')}</span>
 										</label>
-										<button data-bind="enable: grantPeriodicMethod()==1, click: $parent.openDDialog.bind($parent)" style="margin-top: 10px; margin-left: 30px;">#{i18n.getText('KMF004_34')}</button>
+										<button data-bind="enable: grantPeriodicMethod()==1 &amp;&amp; !$parent.isEnableCode(), click: $parent.openDDialog.bind($parent)" style="margin-top: 10px; margin-left: 30px;">#{i18n.getText('KMF004_34')}</button>
 									</div>
 									<span style="margin-left: 40px;">#{i18n.getText('KMF004_30')}</span>
 								</div>
@@ -371,7 +371,7 @@
 												data-bind="checkedValue: 1, checked: grantDaySingleType, enable: true" />
 												<span class="box"></span><span class="label">#{i18n.getText('KMF004_70')}</span>
 											</label>
-											<button data-bind="click: $parent.openGDialog.bind($parent) ,enable:grantDaySingleType()==1 "
+											<button data-bind="click: $parent.openGDialog.bind($parent) ,enable:grantDaySingleType()==1 &amp;&amp; !$parent.isEnableCode()"
 												style="margin-top: 10px; margin-left: 92px;">#{i18n.getText('KMF004_71')}</button>
 										</div>
 
