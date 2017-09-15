@@ -91,6 +91,8 @@ module nts.uk.at.view.kmf004.c {
                         self.standardDateEnable(false);
                     }
                 }); 
+                
+                self.bindPerSetData("");
             }
 
             /**
