@@ -2,24 +2,23 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.common.amountrounding;
+package nts.uk.ctx.at.record.dom.optitem.applicable;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class AmountRounding.
+ * The Class EmploymentCondition.
  */
-// 金額丸め
+// 雇用条件
 @Getter
-public class AmountRounding extends DomainObject{
-	
-	/** The unit. */
-	// 単位
-	private Unit unit;
-	
-	/** The rounding. */
-	// 端数処理
-	private Rounding rounding;
+public class EmploymentCondition extends DomainObject {
 
+	/** The emp cd. */
+	// 雇用コード
+	private String empCd;
+
+	/** The emp applicable cls. */
+	// 雇用適用区分
+	private EmpApplicableAtr empApplicableAtr;
 }

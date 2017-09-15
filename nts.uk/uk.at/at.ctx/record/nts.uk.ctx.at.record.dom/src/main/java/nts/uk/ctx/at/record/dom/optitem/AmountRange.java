@@ -2,24 +2,24 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.common.amountrounding;
+package nts.uk.ctx.at.record.dom.optitem;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class AmountRounding.
+ * The Class AmountRange.
  */
-// 金額丸め
+// 金額範囲
+// 事前条件 : 上限値≧下限値
 @Getter
-public class AmountRounding extends DomainObject{
-	
-	/** The unit. */
-	// 単位
-	private Unit unit;
-	
-	/** The rounding. */
-	// 端数処理
-	private Rounding rounding;
+public class AmountRange extends DomainObject{
 
+	/** The upper limit. */
+	// 上限値
+	private AmountRangeValue upperLimit;
+
+	/** The lower limit. */
+	// 下限値
+	private AmountRangeValue lowerLimit;
 }
