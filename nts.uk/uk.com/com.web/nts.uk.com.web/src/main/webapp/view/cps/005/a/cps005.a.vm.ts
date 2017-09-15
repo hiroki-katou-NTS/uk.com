@@ -86,6 +86,7 @@ module nts.uk.com.view.cps005.a {
                         info({ messageId: "Msg_15" }).then(() => { block.clear(); });
                     }).fail(error => {
                         alertError({ messageId: error.message });
+                         block.clear();
                     });
                 } else {
                     let newCategory = new AddPerInfoCtgModel(self.currentData().currentCtgSelected());
@@ -107,6 +108,7 @@ module nts.uk.com.view.cps005.a {
                         });
                     }).fail(error => {
                         alertError({ messageId: error.message });
+                         block.clear();
                     });
                 }
             }
