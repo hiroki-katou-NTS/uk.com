@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOut
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.attendance.KshstOutsideOtBrdAtenPK;
 
 /**
- * The Class JpaOvertimeBRDItemSetMemento.
+ * The Class JpaOutsideOTBRDItemSetMemento.
  */
 public class JpaOutsideOTBRDItemSetMemento implements OutsideOTBRDItemSetMemento {
 

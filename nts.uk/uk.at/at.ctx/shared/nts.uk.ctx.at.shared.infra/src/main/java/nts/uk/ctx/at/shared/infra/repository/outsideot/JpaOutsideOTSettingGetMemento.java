@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingGetMemento;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNote;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.KshstOverTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.KshstOutsideOtSet;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrdPK;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTime;
@@ -33,7 +33,7 @@ public class JpaOutsideOTSettingGetMemento implements OutsideOTSettingGetMemento
 	private List<KshstOutsideOtBrd> entityOvertimeBRDItems;
 	
 	/** The entity. */
-	private KshstOverTimeSet entity;
+	private KshstOutsideOtSet entity;
 	
 
 	/**
@@ -42,7 +42,7 @@ public class JpaOutsideOTSettingGetMemento implements OutsideOTSettingGetMemento
 	 * @param entity the entity
 	 * @param entityOvertimes the entity overtimes
 	 */
-	public JpaOutsideOTSettingGetMemento(KshstOverTimeSet entity,
+	public JpaOutsideOTSettingGetMemento(KshstOutsideOtSet entity,
 			List<KshstOutsideOtBrd> entityOvertimeBRDItems, List<KshstOverTime> entityOvertimes) {
 		entityOvertimeBRDItems.forEach(entityItem -> {
 			if (entityItem.getKshstOutsideOtBrdPK() == null) {

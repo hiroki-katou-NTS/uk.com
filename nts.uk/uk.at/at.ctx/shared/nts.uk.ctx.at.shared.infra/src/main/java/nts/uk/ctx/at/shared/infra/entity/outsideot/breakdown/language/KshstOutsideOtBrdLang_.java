@@ -8,18 +8,15 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KshstOverTimeLangBrdPK_.
+ * The Class KshstOverTimeLangBrd_.
  */
-@StaticMetamodel(KshstOverTimeLangBrdPK.class)
-public class KshstOverTimeLangBrdPK_ {
+@StaticMetamodel(KshstOutsideOtBrdLang.class)
+public class KshstOutsideOtBrdLang_ {
 
-	/** The cid. */
-	public static volatile SingularAttribute<KshstOverTimeLangBrdPK, String> cid;
+	/** The kshst over time lang brd PK. */
+	public static volatile SingularAttribute<KshstOutsideOtBrdLang, KshstOutsideOtBrdLangPK> kshstOutsideOtBrdLangPK;
 	
-	/** The brd item no. */
-	public static volatile SingularAttribute<KshstOverTimeLangBrdPK, Integer> brdItemNo;
-	
-	/** The language id. */
-	public static volatile SingularAttribute<KshstOverTimeLangBrdPK, String> languageId;
+	/** The name. */
+	public static volatile SingularAttribute<KshstOutsideOtBrdLang, String> name;
 	
 }

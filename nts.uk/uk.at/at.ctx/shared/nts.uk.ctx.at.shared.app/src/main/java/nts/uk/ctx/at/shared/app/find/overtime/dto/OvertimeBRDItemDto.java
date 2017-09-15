@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.overtime.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -37,6 +38,13 @@ public class OvertimeBRDItemDto implements OutsideOTBRDItemSetMemento{
 	/** The attendance item ids. */
 	private List<Integer> attendanceItemIds;
 	
+	public void defaultData(int breakdownItemNo){
+		this.useClassification = true;
+		this.breakdownItemNo = breakdownItemNo;
+		this.name = "";
+		this.productNumber = breakdownItemNo;
+		this.attendanceItemIds = new ArrayList<>();
+	}
 
 	/*
 	 * (non-Javadoc)

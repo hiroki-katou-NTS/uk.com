@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemName;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLangGetMemento;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.LanguageId;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOverTimeLangBrd;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOutsideOtBrdLang;
 
 /**
  * The Class JpaOutsideOTBRDItemLangGetMemento.
@@ -18,14 +18,14 @@ public class JpaOutsideOTBRDItemLangGetMemento implements OutsideOTBRDItemLangGe
 
 	
 	/** The entity. */
-	private KshstOverTimeLangBrd entity;
+	private KshstOutsideOtBrdLang entity;
 	
 	/**
 	 * Instantiates a new jpa overtime lang BRD item get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOutsideOTBRDItemLangGetMemento(KshstOverTimeLangBrd entity) {
+	public JpaOutsideOTBRDItemLangGetMemento(KshstOutsideOtBrdLang entity) {
 		this.entity = entity;
 	}
 
@@ -37,7 +37,7 @@ public class JpaOutsideOTBRDItemLangGetMemento implements OutsideOTBRDItemLangGe
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKshstOverTimeLangBrdPK().getCid());
+		return new CompanyId(this.entity.getKshstOutsideOtBrdLangPK().getCid());
 	}
 
 	/*
@@ -59,7 +59,7 @@ public class JpaOutsideOTBRDItemLangGetMemento implements OutsideOTBRDItemLangGe
 	 */
 	@Override
 	public LanguageId getLanguageId() {
-		return new LanguageId(this.entity.getKshstOverTimeLangBrdPK().getLanguageId());
+		return new LanguageId(this.entity.getKshstOutsideOtBrdLangPK().getLanguageId());
 	}
 
 	/*
@@ -70,7 +70,7 @@ public class JpaOutsideOTBRDItemLangGetMemento implements OutsideOTBRDItemLangGe
 	 */
 	@Override
 	public BreakdownItemNo getBreakdownItemNo() {
-		return BreakdownItemNo.valueOf(this.entity.getKshstOverTimeLangBrdPK().getBrdItemNo());
+		return BreakdownItemNo.valueOf(this.entity.getKshstOutsideOtBrdLangPK().getBrdItemNo());
 	}
 
 }

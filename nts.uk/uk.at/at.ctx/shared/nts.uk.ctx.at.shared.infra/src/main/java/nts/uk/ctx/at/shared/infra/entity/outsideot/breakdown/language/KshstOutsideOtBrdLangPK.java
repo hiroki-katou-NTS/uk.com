@@ -15,13 +15,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KshstOverTimeLangBrdPK.
+ * The Class KshstOutsideOtBrdLangPK.
  */
 
 @Getter
 @Setter
 @Embeddable
-public class KshstOverTimeLangBrdPK implements Serializable {
+public class KshstOutsideOtBrdLangPK implements Serializable {
     
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -47,7 +47,7 @@ public class KshstOverTimeLangBrdPK implements Serializable {
     /**
      * Instantiates a new kshst over time lang brd PK.
      */
-    public KshstOverTimeLangBrdPK() {
+    public KshstOutsideOtBrdLangPK() {
     }
 
     /**
@@ -57,7 +57,7 @@ public class KshstOverTimeLangBrdPK implements Serializable {
      * @param brdItemNo the brd item no
      * @param languageId the language id
      */
-    public KshstOverTimeLangBrdPK(String cid, int brdItemNo, String languageId) {
+    public KshstOutsideOtBrdLangPK(String cid, int brdItemNo, String languageId) {
         this.cid = cid;
         this.brdItemNo = brdItemNo;
         this.languageId = languageId;
@@ -69,10 +69,10 @@ public class KshstOverTimeLangBrdPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof KshstOverTimeLangBrdPK)) {
+		if (!(object instanceof KshstOutsideOtBrdLangPK)) {
 			return false;
 		}
-		KshstOverTimeLangBrdPK other = (KshstOverTimeLangBrdPK) object;
+		KshstOutsideOtBrdLangPK other = (KshstOutsideOtBrdLangPK) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;

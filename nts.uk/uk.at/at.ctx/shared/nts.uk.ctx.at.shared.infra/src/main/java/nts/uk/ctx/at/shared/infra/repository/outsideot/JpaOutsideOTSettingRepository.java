@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItemRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeRepository;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.KshstOverTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.KshstOutsideOtSet;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOutsideOtBrd;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTime;
 import nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown.JpaOutsideOTBRDItemSetMemento;
@@ -51,8 +51,8 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	public Optional<OutsideOTSetting> findById(String companyId) {
 
 		// call repository find entity setting
-		Optional<KshstOverTimeSet> entity = this.queryProxy().find(companyId,
-				KshstOverTimeSet.class);
+		Optional<KshstOutsideOtSet> entity = this.queryProxy().find(companyId,
+				KshstOutsideOtSet.class);
 
 		// call repository find all domain overtime
 		List<Overtime> domainOvertime = this.overtimeRepository.findAllUse(companyId);
@@ -83,7 +83,7 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 		}
 		// default data
 		return Optional.ofNullable(
-				this.toDomain(new KshstOverTimeSet(), entityOvertimeBRDItem, entityOvertime));
+				this.toDomain(new KshstOutsideOtSet(), entityOvertimeBRDItem, entityOvertime));
 	}
 
 	/*
@@ -95,10 +95,10 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	 */
 	@Override
 	public void save(OutsideOTSetting domain) {
-		KshstOverTimeSet entity = new KshstOverTimeSet();
+		KshstOutsideOtSet entity = new KshstOutsideOtSet();
 		// call repository find entity setting
-		Optional<KshstOverTimeSet> opEntity = this.queryProxy().find(domain.getCompanyId().v(),
-				KshstOverTimeSet.class);
+		Optional<KshstOutsideOtSet> opEntity = this.queryProxy().find(domain.getCompanyId().v(),
+				KshstOutsideOtSet.class);
 		
 		// check exist data
 		if(opEntity.isPresent()){
@@ -126,7 +126,7 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	 * @param entityOvertime the entity overtime
 	 * @return the outside OT setting
 	 */
-	private OutsideOTSetting toDomain(KshstOverTimeSet entity,
+	private OutsideOTSetting toDomain(KshstOutsideOtSet entity,
 			List<KshstOutsideOtBrd> entityOvertimeBRDItems, List<KshstOverTime> entityOvertime) {
 		return new OutsideOTSetting(
 				new JpaOutsideOTSettingGetMemento(entity, entityOvertimeBRDItems, entityOvertime));
@@ -138,8 +138,8 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kshst over time set
 	 */
-	private KshstOverTimeSet toEntity(OutsideOTSetting domain) {
-		KshstOverTimeSet entity = new KshstOverTimeSet();
+	private KshstOutsideOtSet toEntity(OutsideOTSetting domain) {
+		KshstOutsideOtSet entity = new KshstOutsideOtSet();
 		domain.saveToMemento(
 				new JpaOutsideOTSettingSetMemento(new ArrayList<>(), new ArrayList<>(), entity));
 		return entity;

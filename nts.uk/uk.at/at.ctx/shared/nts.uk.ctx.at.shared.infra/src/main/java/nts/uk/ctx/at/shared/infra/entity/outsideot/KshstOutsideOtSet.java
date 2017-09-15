@@ -17,13 +17,13 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KshstOverTimeSet.
+ * The Class KshstOutsideOtSet.
  */
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHST_OVER_TIME_SET")
-public class KshstOverTimeSet implements Serializable {
+@Table(name = "KSHST_OUTSIDE_OT_SET")
+public class KshstOutsideOtSet implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
@@ -48,7 +48,7 @@ public class KshstOverTimeSet implements Serializable {
     /**
      * Instantiates a new kshst over time set.
      */
-    public KshstOverTimeSet() {
+    public KshstOutsideOtSet() {
     }
 
     /**
@@ -56,7 +56,7 @@ public class KshstOverTimeSet implements Serializable {
      *
      * @param cid the cid
      */
-    public KshstOverTimeSet(String cid) {
+    public KshstOutsideOtSet(String cid) {
         this.cid = cid;
     }
 
@@ -66,7 +66,7 @@ public class KshstOverTimeSet implements Serializable {
      * @param cid the cid
      * @param calculationMethod the calculation method
      */
-    public KshstOverTimeSet(String cid, int calculationMethod) {
+    public KshstOutsideOtSet(String cid, int calculationMethod) {
         this.cid = cid;
         this.calculationMethod = calculationMethod;
     }
@@ -88,10 +88,10 @@ public class KshstOverTimeSet implements Serializable {
 	@Override
 	public boolean equals(Object object) {
 		// not set
-		if (!(object instanceof KshstOverTimeSet)) {
+		if (!(object instanceof KshstOutsideOtSet)) {
 			return false;
 		}
-		KshstOverTimeSet other = (KshstOverTimeSet) object;
+		KshstOutsideOtSet other = (KshstOutsideOtSet) object;
 		if ((this.cid == null && other.cid != null)
 				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;

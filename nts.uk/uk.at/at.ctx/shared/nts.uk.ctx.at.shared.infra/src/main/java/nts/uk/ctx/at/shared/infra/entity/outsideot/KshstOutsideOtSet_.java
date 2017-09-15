@@ -8,18 +8,18 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KshstOverTimeSet_.
+ * The Class KshstOutsideOtSet_.
  */
-@StaticMetamodel(KshstOverTimeSet.class)
-public class KshstOverTimeSet_ {
+@StaticMetamodel(KshstOutsideOtSet.class)
+public class KshstOutsideOtSet_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<KshstOverTimeSet, String> cid;
+	public static volatile SingularAttribute<KshstOutsideOtSet, String> cid;
 	
 	/** The note. */
-	public static volatile SingularAttribute<KshstOverTimeSet, String> note;
+	public static volatile SingularAttribute<KshstOutsideOtSet, String> note;
 	
 	/** The calculation method. */
-	public static volatile SingularAttribute<KshstOverTimeSet, Integer> calculationMethod;
+	public static volatile SingularAttribute<KshstOutsideOtSet, Integer> calculationMethod;
 
 }

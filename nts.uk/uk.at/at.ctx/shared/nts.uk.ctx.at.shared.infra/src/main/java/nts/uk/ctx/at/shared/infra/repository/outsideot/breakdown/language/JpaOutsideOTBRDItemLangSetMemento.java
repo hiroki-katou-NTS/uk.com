@@ -9,8 +9,8 @@ import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemName;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLangSetMemento;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.LanguageId;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOverTimeLangBrd;
-import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOverTimeLangBrdPK;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOutsideOtBrdLang;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOutsideOtBrdLangPK;
 
 /**
  * The Class JpaOutsideOTBRDItemLangSetMemento.
@@ -18,16 +18,16 @@ import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOverT
 public class JpaOutsideOTBRDItemLangSetMemento implements OutsideOTBRDItemLangSetMemento {
 	
 	/** The entity. */
-	private KshstOverTimeLangBrd entity;
+	private KshstOutsideOtBrdLang entity;
 	
 	/**
 	 * Instantiates a new jpa overtime lang BRD item set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOutsideOTBRDItemLangSetMemento(KshstOverTimeLangBrd entity) {
-		if(entity.getKshstOverTimeLangBrdPK() == null){
-			entity.setKshstOverTimeLangBrdPK(new KshstOverTimeLangBrdPK());
+	public JpaOutsideOTBRDItemLangSetMemento(KshstOutsideOtBrdLang entity) {
+		if(entity.getKshstOutsideOtBrdLangPK() == null){
+			entity.setKshstOutsideOtBrdLangPK(new KshstOutsideOtBrdLangPK());
 		}
 		this.entity = entity;
 	}
@@ -39,7 +39,7 @@ public class JpaOutsideOTBRDItemLangSetMemento implements OutsideOTBRDItemLangSe
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.entity.getKshstOverTimeLangBrdPK().setCid(companyId.v());
+		this.entity.getKshstOutsideOtBrdLangPK().setCid(companyId.v());
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class JpaOutsideOTBRDItemLangSetMemento implements OutsideOTBRDItemLangSe
 	 */
 	@Override
 	public void setLanguageId(LanguageId languageId) {
-		this.entity.getKshstOverTimeLangBrdPK().setLanguageId(languageId.v());
+		this.entity.getKshstOutsideOtBrdLangPK().setLanguageId(languageId.v());
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class JpaOutsideOTBRDItemLangSetMemento implements OutsideOTBRDItemLangSe
 	 */
 	@Override
 	public void setBreakdownItemNo(BreakdownItemNo breakdownItemNo) {
-		this.entity.getKshstOverTimeLangBrdPK().setBrdItemNo(breakdownItemNo.value);
+		this.entity.getKshstOutsideOtBrdLangPK().setBrdItemNo(breakdownItemNo.value);
 		
 	}
 
