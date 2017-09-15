@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.stamp;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * 
@@ -15,7 +16,7 @@ import lombok.Value;
  */
 @Value
 @EqualsAndHashCode(callSuper = false)
-public class ApplicationStampOnlineRecord {
+public class ApplicationStampOnlineRecord extends DomainObject {
 	private StampCombinationAtr stampCombinationAtr;
 	
 	/**

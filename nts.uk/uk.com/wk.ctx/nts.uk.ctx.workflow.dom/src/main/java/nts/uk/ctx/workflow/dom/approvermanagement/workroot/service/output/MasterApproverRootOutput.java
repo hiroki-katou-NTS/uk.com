@@ -6,8 +6,20 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@AllArgsConstructor
 public class MasterApproverRootOutput {
+	
 	CompanyApprovalInfor companyRootInfor;
+	/**
+	 * workplaceId, approver of workplace
+	 */
 	Map<String, WorkplaceApproverOutput> worplaceRootInfor;
+	
+	public MasterApproverRootOutput(CompanyApprovalInfor companyRootInfor,
+			Map<String, WorkplaceApproverOutput> worplaceRootInfor) {
+		super();
+		this.companyRootInfor = companyRootInfor;
+		this.worplaceRootInfor = worplaceRootInfor;
+	}
+	
+	
 }

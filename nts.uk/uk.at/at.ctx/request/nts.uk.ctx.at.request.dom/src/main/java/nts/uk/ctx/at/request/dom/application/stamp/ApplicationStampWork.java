@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.stamp;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * 
@@ -15,7 +16,7 @@ import lombok.Value;
  */
 @Value
 @EqualsAndHashCode(callSuper = false)
-public class ApplicationStampWork {
+public class ApplicationStampWork extends DomainObject {
 	private StampAtr stampAtr;
 	
 	/**
@@ -23,7 +24,7 @@ public class ApplicationStampWork {
 	 */
 	private Integer stampFrameNo;
 	
-	private StampGoOutReason stampGoOutReason;
+	private StampGoOutAtr stampGoOutReason;
 	
 	/**
 	 * 応援カード
@@ -55,7 +56,7 @@ public class ApplicationStampWork {
 	 */
 	private String endLocation;
 
-	public ApplicationStampWork(StampAtr stampAtr, Integer stampFrameNo, StampGoOutReason stampGoOutReason, String supportCard, 
+	public ApplicationStampWork(StampAtr stampAtr, Integer stampFrameNo, StampGoOutAtr stampGoOutReason, String supportCard, 
 			String supportLocationCD, Integer startTime, String startLocation, Integer endTime, String endLocation) {
 		super();
 		this.stampAtr = stampAtr;

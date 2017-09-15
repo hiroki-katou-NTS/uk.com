@@ -4,9 +4,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     import SystemType = kcp009.viewmodel.SystemType;
     export class ScreenModel {
 
-        dateRanger: KnockoutObservable<any>;
+        dateRanger: KnockoutObservable<any> = ko.observable(null);
         displayFormatOptions: KnockoutObservableArray<any>;
-        displayFormat: KnockoutObservable<number>;
+        displayFormat: KnockoutObservable<number> = ko.observable(null);
         ccg001: any;
         lstEmployee: KnockoutObservableArray<any>;
         baseDate: KnockoutObservable<any>;
@@ -18,6 +18,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         dailyPerfomanceData: KnockoutObservableArray<any>;
         cellStates: KnockoutObservableArray<any>;
         rowStates: KnockoutObservableArray<any>;
+        allData: Array<any>;
+        currentDate: KnockoutObservable<any>;
+        headerColors: KnockoutObservableArray<any>;
+        textColors: KnockoutObservableArray<any>;
+        lstDate: KnockoutObservableArray<any>;
+        selectedDate: KnockoutObservable<any>;
+        optionalHeader: Array<any> = [];
         employeeModeHeader: Array<any> = [
             {
                 headerText: 'ID',
@@ -54,7 +61,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 width: '35px',
                 ntsControl: 'Checkbox'
             }
-        ];;
+        ];
         dateModeHeader: Array<any> = [
             {
                 headerText: 'ID',
@@ -79,7 +86,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             },
             {
                 headerText: nts.uk.resource.getText("KDW003_32"),
-                key: 'employeeId',
+                key: 'employeeCode',
                 dataType: 'String',
                 width: '120px',
                 ntsControl: 'Label'
@@ -116,7 +123,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             },
             {
                 headerText: nts.uk.resource.getText("KDW003_32"),
-                key: 'employeeId',
+                key: 'employeeCode',
                 dataType: 'String',
                 width: '120px',
                 ntsControl: 'Label'
@@ -179,7 +186,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 isFixed: true
             },
             {
-                columnKey: 'employeeId',
+                columnKey: 'employeeCode',
                 isFixed: true
             },
             {
@@ -201,7 +208,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 isFixed: true
             },
             {
-                columnKey: 'employeeId',
+                columnKey: 'employeeCode',
                 isFixed: true
             },
             {
@@ -220,13 +227,25 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         constructor() {
             var self = this;
+            self.lstDate = ko.observableArray([]);
+            self.selectedDate = ko.observable(null);
             self.lstEmployee = ko.observableArray([]);
             self.selectedEmployee = ko.observable(null);
-            self.selectedEmployee.subscribe((val) => {
-                console.log(val);
+            self.headerColors = ko.observableArray([]);
+            self.textColors = ko.observableArray([]);
+            self.currentDate = ko.observable(null);
+            self.dateRanger.subscribe((dateRange) => {
+                if (dateRange) {
+                    self.selectedDate(dateRange.startDate);
+                    var elementDate = dateRange.startDate;
+                    while (!moment(elementDate, "YYYY/MM/DD").isAfter(dateRange.endDate)) {
+                        self.lstDate.push({date: elementDate});
+                        elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
+                    }
+                }
             });
-            self.dateRanger = ko.observable({
-                startDate: '2016-09-13',
+            self.dateRanger({
+                startDate: '2016/09/13',
                 endDate: '2016/10/13'
             });
             //            self.displayFormatOptions = ko.observableArray([
@@ -239,43 +258,54 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 { code: 1, name: "日付別" },
                 { code: 2, name: "エラー・アラーム" }
             ]);
-            self.displayFormat = ko.observable(0);
+            self.displayFormat.subscribe((val) => {
+                if (val == 0) {
+                    $("#emp-component").css("display", "block");
+                    $("#cbListDate").css("display", "none");
+                } else if (val == 1) {
+                    $("#cbListDate").css("display", "block");
+                    $("#emp-component").css("display", "none");
+                } else {
+                    $("#cbListDate").css("display", "none");
+                    $("#emp-component").css("display", "none");
+                }
+            });
+            self.displayFormat(0);
             self.headersGrid = ko.observableArray(self.employeeModeHeader);
             self.fixColGrid = ko.observableArray(self.employeeModeFixCol);
             self.sheetsGrid = ko.observableArray([]);
-            var data = [];
-            for (let i = 0; i < 31; i++) {
-                data.push({
-                    id: i,
-                    state: '',
-                    error: 'ER/AL',
-                    date: moment().add(i, 'd').locale('ja').format("MM/DD(dddd)"),
-                    sign: true,
-                    employeeId: '1234567890AE',
-                    employeeName: 'abc'
-                });
-            };
-            self.dailyPerfomanceData = ko.observableArray(data);
+            self.allData = [];
+
+            self.dailyPerfomanceData = ko.observableArray([]);
             self.cellStates = ko.observableArray([]);
             self.rowStates = ko.observableArray([]);
         }
 
         filterData(mode: number) {
             var self = this;
+            if (mode == 0) {
+                return _.filter(self.allData, (data) => { return data.employeeId == self.selectedEmployee() });
+            } else if (mode == 1) {
+                return _.filter(self.allData, (data) => { return data.date === moment(self.selectedDate()).format('YYYY/MM/DD') });
+            } else if (mode == 2) {
+                return _.filter(self.allData, (data) => { return data.error !== '' });
+            }
         }
 
         extraction() {
             var self = this;
+            self.headersGrid([]);
+            self.fixColGrid([]);
             if (self.displayFormat() == 0) {
-                self.headersGrid = ko.observableArray(self.employeeModeHeader);
-                self.fixColGrid = ko.observableArray(self.employeeModeFixCol);
+                self.fixColGrid(self.employeeModeFixCol);
             } else if (self.displayFormat() == 1) {
-                self.headersGrid = ko.observableArray(self.dateModeHeader);
-                self.fixColGrid = ko.observableArray(self.dateModeFixCol);
+                self.fixColGrid(self.dateModeFixCol);
             } else if (self.displayFormat() == 2) {
-                self.headersGrid = ko.observableArray(self.errorModeHeader);
-                self.fixColGrid = ko.observableArray(self.errorModeFixCol);
+                self.fixColGrid(self.errorModeFixCol);
             }
+            self.loadHeader(self.displayFormat());
+            self.dailyPerfomanceData(self.filterData(self.displayFormat()));
+            $("#grid2").ntsGrid("destroy");
             self.loadGrid();
         }
 
@@ -307,8 +337,26 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             var cellStates = [];
             cellStates.push({
-                rowId: 1,
-                columnKey: "date",
+                rowId: 2,
+                columnKey: "256",
+                state: [nts.uk.ui.jqueryExtentions.ntsGrid.color.Error]
+            });
+            cellStates.push({
+                rowId: 2,
+                columnKey: "257",
+                state: [nts.uk.ui.jqueryExtentions.ntsGrid.color.Alarm]
+            });
+            self.allData[2].error = 'ER/AL';
+            cellStates.push({
+                rowId: 5,
+                columnKey: "257",
+                state: [nts.uk.ui.jqueryExtentions.ntsGrid.color.Alarm]
+            });
+            self.allData[5].error = 'AL';
+            self.dailyPerfomanceData(self.filterData(self.displayFormat()));
+            cellStates.push({
+                rowId: 9,
+                columnKey: "258",
                 state: [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]
             });
             self.cellStates(cellStates);
@@ -332,10 +380,20 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 key: '',
                 color: ''
             });
+            self.headerColors(headerColors);
+
+            var textColor = {
+                rowId: 1,
+                columnKey: '256',
+                color: '#fff'
+            }
+            var textColors = [];
+            textColors.push(textColor);
+            self.textColors(textColors);
             $("#grid2").ntsGrid({
-                width: '500px',
-                height: '200px',
-                dataSource: ko.toJS(self.dailyPerfomanceData()),
+                width: '1000px',
+                height: '500px',
+                dataSource: self.dailyPerfomanceData(),
                 primaryKey: 'id',
                 rowVirtualization: true,
                 virtualization: true,
@@ -347,9 +405,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 autoAdjustHeight: true,
                 adjustVirtualHeights: true,
                 columns: self.headersGrid(),
+                hidePrimaryKey: true,
                 features: [
                     //                                { name: 'Sorting', type: 'local' },
-                    { name: 'Resizing' },
                     //                    { name: 'MultiColumnHeaders' },
                     //                                        { name: "Responsive",
                     //                                            enableVerticalRendering: true
@@ -372,6 +430,12 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     //                        columnSettings: summaries,
                     //                        resultTemplate: '{1}'
                     //                    }
+                    {
+                        name: 'Resizing',
+                        columnSettings: [{
+                            columnKey: 'id', allowResizing: false, minimumWidth: 0
+                        }]
+                    },
                 ],
                 ntsFeatures: [
                     { name: 'CopyPaste' },
@@ -388,8 +452,15 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         rows: self.rowStates()
                     },
                     {
+                        name: 'TextColor',
+                        rowId: 'rowId',
+                        columnKey: 'columnKey',
+                        color: 'color',
+                        colorsTable: self.textColors()
+                    },
+                    {
                         name: 'HeaderStyles',
-                        columns: headerColors
+                        columns: self.headerColors()
                     },
                     {
                         name: "Sheet",
@@ -397,7 +468,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         sheets: self.sheetsGrid()
                     },
                 ],
-                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true }]
+                ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
+                    { name: 'Image', source: 'ui-icon ui-icon-locked', controlType: 'Image' }]
             });
         }
 
@@ -411,15 +483,98 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 },
                 baseDate: moment(self.dateRanger().endDate).utc().toISOString()
             };
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
             service.startScreen(param).done((data) => {
                 self.lstEmployee(data.lstEmployee);
-                _.forEach(data.lstControlDisplayItem.lstHeader, (header) => {
-                    self.headersGrid.push(header);
-                });
+                let id = 0;
+                for (let i = 0; i < self.lstDate().length; i++) {
+                    for (let j = 0; j < self.lstEmployee().length; j++) {
+                        self.allData.push({
+                            id: id,
+                            state: '',
+                            error: '',
+                            date: self.lstDate()[i].date,
+                            sign: false,
+                            employeeId: self.lstEmployee()[j].id,
+                            employeeCode: self.lstEmployee()[j].code,
+                            employeeName: '日通太郎'
+                        });
+                        id++;
+                    };
+                };
+                self.selectedEmployee(self.lstEmployee()[0].id);
+                self.dailyPerfomanceData(self.filterData(self.displayFormat()));
+                self.optionalHeader = data.lstControlDisplayItem.lstHeader;
+                self.loadHeader(self.displayFormat());
                 self.sheetsGrid(data.lstControlDisplayItem.lstSheet);
+                self.sheetsGrid()[0].columns.push("col1");
+                self.sheetsGrid()[0].columns.push("col2");
+                self.sheetsGrid()[0].columns.push("col3");
+                self.sheetsGrid()[0].columns.push("col4");
+                self.sheetsGrid()[0].columns.push("col5");
+                self.sheetsGrid.valueHasMutated();
+                nts.uk.ui.block.clear();
                 dfd.resolve();
             });
             return dfd.promise();
+        }
+
+        loadHeader(mode) {
+            var self = this;
+            let tempList = [];
+            if (mode == 0) {
+                _.forEach(self.employeeModeHeader, (header) => {
+                    tempList.push(header);
+                });
+            } else if (mode == 1) {
+                _.forEach(self.dateModeHeader, (header) => {
+                    tempList.push(header);
+                });
+            } else if (mode == 2) {
+                _.forEach(self.errorModeHeader, (header) => {
+                    tempList.push(header);
+                });
+            }
+            _.forEach(self.optionalHeader, (header) => {
+                tempList.push(header);
+            });
+            tempList.push({
+                headerText: 'Column1',
+                key: 'col1',
+                dataType: 'string',
+                width: '150px',
+                color: '#ffffff'
+            });
+            tempList.push({
+                headerText: 'Column2',
+                key: 'col2',
+                dataType: 'string',
+                width: '200px',
+                color: '#ffffff'
+            });
+            tempList.push({
+                headerText: 'Column3',
+                key: 'col3',
+                dataType: 'string',
+                width: '100px',
+                color: '#ffffff'
+            });
+            tempList.push({
+                headerText: 'Column4',
+                key: 'col4',
+                dataType: 'string',
+                width: '150px',
+                color: '#ffffff'
+            });
+            tempList.push({
+                headerText: 'Column5',
+                key: 'col5',
+                dataType: 'string',
+                width: '150px',
+                color: '#ffffff'
+            });
+            self.headersGrid(tempList);
         }
     }
 

@@ -1,14 +1,16 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.employment;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
+import nts.uk.ctx.bs.employee.dom.employment.EmpExternalCode;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentCode;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentGetMemento;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentName;
-import nts.uk.ctx.bs.employee.infra.entity.employment.CemptEmployment;
+import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment;
+import nts.uk.shr.com.primitive.Memo;
 
 /**
  * The Class JpaEmploymentGetMemento.
@@ -16,14 +18,14 @@ import nts.uk.ctx.bs.employee.infra.entity.employment.CemptEmployment;
 public class JpaEmploymentGetMemento implements EmploymentGetMemento {
 
 	/** The typed value. */
-	private CemptEmployment typedValue;
+	private BsymtEmployment typedValue;
 	
 	/**
 	 * Instantiates a new jpa employment get memento.
 	 *
 	 * @param typedValue the typed value
 	 */
-	public JpaEmploymentGetMemento(CemptEmployment typedValue) {
+	public JpaEmploymentGetMemento(BsymtEmployment typedValue) {
 		super();
 		this.typedValue = typedValue;
 	}
@@ -33,7 +35,7 @@ public class JpaEmploymentGetMemento implements EmploymentGetMemento {
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.typedValue.getCemptEmploymentPK().getCid());
+		return new CompanyId(this.typedValue.getBsymtEmploymentPK().getCid());
 	}
 
 	/* (non-Javadoc)
@@ -41,7 +43,7 @@ public class JpaEmploymentGetMemento implements EmploymentGetMemento {
 	 */
 	@Override
 	public EmploymentCode getEmploymentCode() {
-		return new EmploymentCode(this.typedValue.getCemptEmploymentPK().getCode());
+		return new EmploymentCode(this.typedValue.getBsymtEmploymentPK().getCode());
 	}
 
 	/* (non-Javadoc)
@@ -53,21 +55,19 @@ public class JpaEmploymentGetMemento implements EmploymentGetMemento {
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.company.organization.employment.EmploymentGetMemento#getWorkClosureId()
+	 * @see nts.uk.ctx.bs.employee.dom.employment.EmploymentGetMemento#getEmpExternalcode()
 	 */
 	@Override
-	public Integer getWorkClosureId() {
-		// TODO Auto-generated method stub
-		return null;
+	public EmpExternalCode getEmpExternalcode() {
+		return new EmpExternalCode(this.typedValue.getEmpExternalCode());
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.company.organization.employment.EmploymentGetMemento#getSalaryClosureId()
+	 * @see nts.uk.ctx.bs.employee.dom.employment.EmploymentGetMemento#getMemo()
 	 */
 	@Override
-	public Integer getSalaryClosureId() {
-		// TODO Auto-generated method stub
-		return null;
+	public Memo getMemo() {
+		return new Memo(this.typedValue.getMemo());
 	}
 
 }

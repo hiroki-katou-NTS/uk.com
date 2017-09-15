@@ -19,6 +19,13 @@ public interface WorkplaceGetMemento {
 	public String getCompanyId();
 
 	/**
+	 * Gets the workplace id.
+	 *
+	 * @return the workplace id
+	 */
+	public WorkplaceId getWorkplaceId();
+	
+	/**
 	 * Gets the workplace history.
 	 *
 	 * @return the workplace history

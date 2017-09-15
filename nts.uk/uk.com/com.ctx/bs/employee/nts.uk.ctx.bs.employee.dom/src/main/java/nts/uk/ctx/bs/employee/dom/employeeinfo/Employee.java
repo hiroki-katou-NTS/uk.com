@@ -4,11 +4,14 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
 
 @Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Employee extends AggregateRoot {
 
 	/** The CompanyId */
@@ -36,9 +39,9 @@ public class Employee extends AggregateRoot {
 	private List<JobEntryHistory> listEntryJobHist;
 
 	public static Employee createFromJavaType(String companyId, String pId, String sId, String sCd, String companyMail,
-			String mobileMail, String companyMobile, List<JobEntryHistory> listEntryJobHist) {
+			String mobileMail, String companyMobile) {
 		return new Employee(companyId, pId, sId, new EmployeeCode(sCd), new EmployeeMail(companyMail),
-				new EmployeeMail(mobileMail), new CompanyMobile(companyMobile), listEntryJobHist);
+				new EmployeeMail(mobileMail), new CompanyMobile(companyMobile), null);
 	}
 
 }

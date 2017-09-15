@@ -729,6 +729,12 @@ public class ProgramsManager {
 	public static final Program CPS006B  = new Program(WebAppId.COM, ProgramIdConsts.CPS006B, "CPS005_37",
 			"/view/cps/006/b/index.xhtml");
 	
+	/**
+	 * CPS002E1
+	 */
+	public static final Program CPS002E  = new Program(WebAppId.COM, ProgramIdConsts.CPS002E, "CPS002_5",
+			"/view/cps/002/e/index.xhtml");
+	
 	
 	// TODO: Define new programs here.
 

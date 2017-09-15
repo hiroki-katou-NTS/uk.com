@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.infra.repository.setting.applicationreason;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -11,9 +12,12 @@ import nts.uk.ctx.at.request.infra.entity.setting.applicationformreason.KrqstApp
 
 @Stateless
 public class JpaApplicationReason extends JpaRepository implements ApplicationReasonRepository{
-	private static final String FINDBYCOMPANYID = "SELECT c FROM KrqstAppReason c WHERE c.krqstAppReasonPK.companyId = :companyId";
+	private static final String FINDBYCOMPANYID = "SELECT c FROM KrqstAppReason c "
+			+ "WHERE c.krqstAppReasonPK.companyId = :companyId";
 	
-	private static final String FINDBYAPPTYPE = FINDBYCOMPANYID + " c.krqstAppReasonPK.appType = :appType";
+	private static final String FINDBYAPPTYPE = FINDBYCOMPANYID + " AND c.krqstAppReasonPK.appType = :appType";
+	
+	private static final String FINDBYREASONID = FINDBYCOMPANYID + " AND c.krqstAppReasonPK.reasonID = :reasonID";
 	/**
 	 * get reason by companyid
 	 */
@@ -48,6 +52,18 @@ public class JpaApplicationReason extends JpaRepository implements ApplicationRe
 				.setParameter("appType", appType)
 				.getList(c ->toDomain(c));
 		return data;
+	}
+
+	/**
+	 * get reason by reasonID
+	 */
+	@Override
+	public Optional<ApplicationReason> getReasonById(String companyId, String reasonID) {
+		return this.queryProxy()
+				.query(FINDBYREASONID,KrqstAppReason.class)
+				.setParameter("companyId", companyId)
+				.setParameter("reasonID", reasonID)
+				.getSingle(c->toDomain(c));
 	}
 
 }

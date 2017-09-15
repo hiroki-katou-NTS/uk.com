@@ -1,23 +1,43 @@
 module nts.uk.at.view.kdl023.viewmodel {
 
     import baseService = nts.uk.at.view.kdl023.base.service;
+    import PatternReflection = nts.uk.at.view.kdl023.base.viewmodel.ReflectionSetting;
 
     export class ScreenModel {
         patternList: KnockoutObservableArray<any>;
-        selectedPatternCode: KnockoutObservable<string>;
-        start: KnockoutObservable<string>;
-        end: KnockoutObservable<string>;
-        returnedList: KnockoutObservableArray<any>;
         enableB: KnockoutComputed<boolean>;
+        isReflectionMethodEnable: KnockoutComputed<boolean>;
+
+        reflectionSetting: PatternReflection;
+        listWorkType: KnockoutObservableArray<baseService.model.WorkType>;
 
         constructor() {
             let self = this;
             self.patternList = ko.observableArray([]);
-            self.selectedPatternCode = ko.observable('');
-            self.start = ko.observable('');
-            self.end = ko.observable('');
+
+            // Default pattern reflection setting
+            let data = {
+                calendarStartDate: moment().startOf('month').format('YYYY-MM-DD'),
+                calendarEndDate: moment().endOf('month').format('YYYY-MM-DD'),
+                selectedPatternCd: '',
+                patternStartDate: moment().format('YYYY-MM-DD'),
+                reflectionMethod: 0, // Overwrite
+                statutorySetting: {
+                    useClassification: false,
+                    workTypeCode: ''
+                },
+                nonStatutorySetting: {
+                    useClassification: false,
+                    workTypeCode: ''
+                },
+                holidaySetting: {
+                    useClassification: false,
+                    workTypeCode: ''
+                }
+            }
+            self.reflectionSetting = new PatternReflection(data);
             self.enableB = ko.computed(() => {
-                if (self.start() && self.end()) {
+                if (self.reflectionSetting.calendarStartDate() && self.reflectionSetting.calendarEndDate()) {
                     if ($('.nts-input').ntsError('hasError')) {
                         return false;
                     }
@@ -25,9 +45,17 @@ module nts.uk.at.view.kdl023.viewmodel {
                 }
                 return false;
             });
-            self.returnedList = ko.observableArray([{ start: 'NONE', listText: ['NONE'] }]);
+            self.listWorkType = ko.observableArray(new Array<baseService.model.WorkType>());
+            self.isReflectionMethodEnable = ko.computed(() => {
+                return self.reflectionSetting.statutorySetting.useClassification() ||
+                    self.reflectionSetting.nonStatutorySetting.useClassification() ||
+                    self.reflectionSetting.holidaySetting.useClassification();
+            }).extend({ notify: 'always' });
         }
 
+        /**
+         * Start page.
+         */
         private startPage(): JQueryPromise<any> {
             let dfd = $.Deferred<any>();
             let self = this;
@@ -35,20 +63,42 @@ module nts.uk.at.view.kdl023.viewmodel {
                 if (res) {
                     self.patternList(res);
                 }
+                self.loadWorktypeList().done(() => dfd.resolve());
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res);
             }).always(() => {
-                dfd.resolve();
+                console.log(self.patternList());
             });
             return dfd.promise();
         }
 
+        /**
+         * Load worktype list.
+         */
+        private loadWorktypeList(): JQueryPromise<void> {
+            let self = this;
+            let dfd = $.Deferred<void>();
+            baseService.getAllWorkType().done(list => {
+                if (list && list.length > 0) {
+                    self.listWorkType(list);
+                }
+                dfd.resolve();
+            }).fail(res => {
+                nts.uk.ui.dialog.alertError(res);
+                dfd.fail();
+            });
+            return dfd.promise();
+        }
+
+        /**
+         * Validate input date.
+         */
         private isInvalidDate(): boolean {
             let self = this;
-            let startDate = moment(self.start());
-            let endDate = moment(self.end());
+            let startDate = moment(self.reflectionSetting.calendarStartDate());
+            let endDate = moment(self.reflectionSetting.calendarEndDate());
 
-            if (startDate.isAfter(endDate)) {
+            if (startDate.isSameOrAfter(endDate)) {
                 return true;
             }
 
@@ -60,13 +110,21 @@ module nts.uk.at.view.kdl023.viewmodel {
             return false;
         }
 
+        /**
+         * Open dialog A
+         */
         public gotoA(): void {
             let self = this;
-            nts.uk.ui.windows.setShared('patternCode', self.selectedPatternCode());
+            let data: baseService.model.ReflectionSetting = ko.toJS(self.reflectionSetting);
+            data.calendarStartDate = null;
+            data.calendarEndDate = null;
+            nts.uk.ui.windows.setShared('reflectionSetting', data);
             nts.uk.ui.windows.sub.modal('/view/kdl/023/a/index.xhtml');
-            nts.uk.ui.windows.setShared('startDate', undefined);
-            nts.uk.ui.windows.setShared('endDate', undefined);
         }
+
+        /**
+         * Open dialog B
+         */
         public gotoB(): void {
             let self = this;
 
@@ -75,15 +133,11 @@ module nts.uk.at.view.kdl023.viewmodel {
                 return;
             }
 
-            nts.uk.ui.windows.setShared('patternCode', self.selectedPatternCode());
-            nts.uk.ui.windows.setShared('startDate', self.start());
-            nts.uk.ui.windows.setShared('endDate', self.end());
+            nts.uk.ui.windows.setShared('reflectionSetting', ko.toJS(self.reflectionSetting));
             nts.uk.ui.windows.sub.modal('/view/kdl/023/b/index.xhtml').onClosed(() => {
-                let abc = nts.uk.ui.windows.getShared("listDateSetting");
-                if (abc) {
-                    self.returnedList(abc);
-                } else {
-                    self.returnedList([{ start: 'NONE', listText: ['NONE'] }]);
+                let dto = nts.uk.ui.windows.getShared("reflectionSetting");
+                if (dto) {
+                    self.reflectionSetting.fromDto(dto);
                 }
             });
         }

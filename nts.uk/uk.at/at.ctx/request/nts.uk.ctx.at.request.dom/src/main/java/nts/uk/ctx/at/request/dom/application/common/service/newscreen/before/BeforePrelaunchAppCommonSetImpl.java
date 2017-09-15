@@ -9,21 +9,17 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
+import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEarchCompany;
 import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEarchCompanyRepository;
 import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEarchWorkplace;
 import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEarchWorkplaceRepository;
 
 @Stateless
 public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommonSet {
-
-	@Inject
-	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	private ApplicationSettingRepository applicationSettingRepository;
@@ -50,6 +46,7 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		} else {
 			baseDate = GeneralDate.today();
 		}
+		// SessionContextProvider.get().put("baseDate", baseDate);
 		
 		// 申請本人の所属職場を含める上位職場を取得する ( Acquire the upper workplace to include the workplace of the applicant himself / herself )
 		List<String> workPlaceIDs = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, baseDate);
@@ -62,7 +59,10 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 			}
 		}
 		if(loopResult.size() == 0) {
-			requestOfEarchCompanyRepository.getRequestByCompany(companyID);
+			Optional<RequestOfEarchCompany> rqOptional = requestOfEarchCompanyRepository.getRequestByCompany(companyID);
+			// if(rqOptional.isPresent()) SessionContextProvider.get().put("appSet", rqOptional.get());
+		} else {
+			// SessionContextProvider.get().put("appSet", loopResult.get(0));
 		}
 		
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する ( Execute the algorithm "Acquire employee affiliation employment history" )
@@ -73,6 +73,7 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		// ドメインモデル「雇用別申請承認設定」を取得する ( Acquire the domain model "application approval setting by employment" )
 		// ApplicationCommonSetting obj1 = ApplicationApprovalSettingByEmployment.find(companyID, employeeCD);
 		// return obj1
+		
 	}
 	
 }
