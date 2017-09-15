@@ -1717,6 +1717,17 @@ var nts;
             }
             time_1.formatYearMonth = formatYearMonth;
             /**
+            * Format MonthDay
+            * @param  {any} [monthDay]  Input MonthDay
+            * @return {string}          Formatted MonthDay
+            */
+            function formatMonthDayLocalized(monthDay) {
+                monthDay = String(monthDay);
+                monthDay = uk.text.padLeft(monthDay, '0', 4);
+                return moment.utc(monthDay, "MMDD").format("MMMDo");
+            }
+            time_1.formatMonthDayLocalized = formatMonthDayLocalized;
+            /**
             * Format by pattern
             * @param  {Date}   [date]		 Input date
             * @param  {String} [inputFormat]  Input format
