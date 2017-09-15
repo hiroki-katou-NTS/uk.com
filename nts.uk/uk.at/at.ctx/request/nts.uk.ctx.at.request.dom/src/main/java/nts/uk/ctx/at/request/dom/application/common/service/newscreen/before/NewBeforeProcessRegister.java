@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 
 /**
@@ -19,7 +20,7 @@ public interface NewBeforeProcessRegister {
 	 * @param routeAtr
 	 * @param targetApp
 	 */
-	public void processBeforeRegister(String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate, int postAtr, int routeAtr, String targetApp);
+	public void processBeforeRegister(String companyID, String employeeID, GeneralDate date, PrePostAtr prePostAtr, int employmentRootAtr, int appType);
 	
 	/**
 	 * 1.入社前退職チェック

@@ -46,7 +46,8 @@ public class DailyPerformanceCorrectionProcessor {
 		});
 		AsyncTask getDisplayItemsAndErrorTask = AsyncTask.builder().withContexts().keepsTrack(true).build(() -> {
 			// Get closure of login user
-			ClosureDto clo = this.repo.getClosure(sId, baseDate);
+//			ClosureDto clo = this.repo.getClosure(sId, baseDate);
+			ClosureDto clo = new ClosureDto("", 1, true, null);
 			// システム日付を基準に1ヵ月前の期間を設定する
 			screenDto.setDateRange(dateRange);
 			// アルゴリズム「対象者を抽出する」を実行する (Tiến hành xử lý "Chiết suất đối tượng")
@@ -55,22 +56,24 @@ public class DailyPerformanceCorrectionProcessor {
 			} else {
 				screenDto.setLstEmployee(new ArrayList<>());
 			}
-			//TODO: create lst data
+			// create lst data
 			if (screenDto.getLstEmployee().size() > 0) {
 				List<GeneralDate> lstDate = dateRange.toListDate();
 				List<DPDataDto> lstData = new ArrayList<>();
-				screenDto.getLstEmployee().forEach(e->{
-					lstDate.forEach(d->{
-//						lstData.add(new DPDataDto("", "", d.toString("MM/DD"), false, employeeId, ""));
+				screenDto.getLstEmployee().forEach(e -> {
+					lstDate.forEach(d -> {
+						lstData.add(new DPDataDto("", "", d, false, e.getId(), e.getCode(), "日通太郎"));
 					});
 				});
+				screenDto.setLstData(lstData);
 			}
 			AsyncTask getDisplayItemsTask = AsyncTask.builder().withContexts().keepsTrack(true).build(() -> {
 				// アルゴリズム「表示項目を制御する」を実行する (Tiến hành xử lý "Điều khiển item hiển
 				// thị")
 				if (screenDto.getLstEmployee().size() > 0) {
-					screenDto.setLstControlDisplayItem(this.getControlDisplayItems(screenDto.getLstEmployee().stream()
-							.map(e -> e.getId()).collect(Collectors.toList()), screenDto.getDateRange()));
+					screenDto.setLstControlDisplayItem(this.getControlDisplayItems(
+							screenDto.getLstEmployee().stream().map(e -> e.getId()).collect(Collectors.toList()),
+							screenDto.getDateRange()));
 				}
 			});
 			es.execute(getDisplayItemsTask);
@@ -80,13 +83,38 @@ public class DailyPerformanceCorrectionProcessor {
 				 * thành tích tương ứng trong khoảng thời gian")
 				 */
 				if (screenDto.getLstEmployee().size() > 0) {
-					screenDto.setLstError(this.getDPErrorList(screenDto.getLstEmployee().stream()
-							.map(e -> e.getId()).collect(Collectors.toList()), screenDto.getDateRange()));
-					if (screenDto.getLstError().size() > 0) {
+					List<DPErrorDto> lstError = this.getDPErrorList(
+							screenDto.getLstEmployee().stream().map(e -> e.getId()).collect(Collectors.toList()),
+							screenDto.getDateRange());
+					if (lstError.size() > 0) {
 						// 対応するドメインモデル「勤務実績のエラーアラーム」をすべて取得する (Lấy về domain
 						// model "Lỗi và alarm của thành tích công việc")
-						screenDto.setLstErrorSetting(this.repo.getErrorSetting(screenDto.getLstError().stream()
-								.map(e -> e.getErrorCode()).collect(Collectors.toList())));
+						List<DPErrorSettingDto> lstErrorSetting = this.repo.getErrorSetting(
+								lstError.stream().map(e -> e.getErrorCode()).collect(Collectors.toList()));
+						lstError.forEach(error -> {
+							screenDto.getLstData().forEach(data -> {
+								if (data.getEmployeeId().equals(error.getEmployeeId())
+										&& data.getDate().equals(error.getProcessingDate())) {
+									String errorType = "";
+									for (int i = 0; i < lstErrorSetting.size(); i++) {
+										if (lstErrorSetting.get(i).getErrorAlarmCode().equals(error.getErrorCode())) {
+											errorType = lstErrorSetting.get(i).getTypeAtr() == 0 ? "ER" : "AL";
+										}
+									}
+									if (data.getError().equals("ER")) {
+										if (errorType.equals("AL")) {
+											data.setError(data.getError() + "/" + errorType);
+										}
+									} else if (data.getError().equals("AL")) {
+										if (errorType.equals("ER")) {
+											data.setError("ER/AL");
+										}
+									} else if (data.getError().equals("")) {
+										data.setError(errorType);
+									}
+								}
+							});
+						});
 					}
 				}
 			});
@@ -106,8 +134,7 @@ public class DailyPerformanceCorrectionProcessor {
 		List<String> lstEmployment = this.repo.getListEmployment(closureId);
 		Map<String, String> lstWorkplace = this.repo.getListWorkplace(sId, dateRange);
 		List<String> lstClassification = this.repo.getListClassification();
-		return this.repo.getListEmployee(lstJobTitle, lstEmployment,
-				lstWorkplace, lstClassification);
+		return this.repo.getListEmployee(lstJobTitle, lstEmployment, lstWorkplace, lstClassification);
 	}
 
 	private DPControlDisplayItem getControlDisplayItems(List<String> lstEmployee, DateRange dateRange) {

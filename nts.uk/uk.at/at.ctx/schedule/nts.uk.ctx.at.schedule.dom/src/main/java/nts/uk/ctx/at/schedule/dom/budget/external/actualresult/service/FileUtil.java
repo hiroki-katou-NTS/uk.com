@@ -115,7 +115,7 @@ public class FileUtil {
      */
     private static Map<Integer, List<String>> getListRecord(List<NtsCsvRecord> lstRecord, Integer standardColumn) {
         // TODO: getRowNumber(null) --> wait Kiban team fix.
-        return lstRecord.stream().collect(Collectors.toMap(item -> ((NtsCsvRecord) item).getRowNumber(null), item -> {
+        return lstRecord.stream().collect(Collectors.toMap(item -> ((NtsCsvRecord) item).getRowNumber(), item -> {
             NtsCsvRecord csvRecord = (NtsCsvRecord) item;
 
             List<String> result = new ArrayList<>();
