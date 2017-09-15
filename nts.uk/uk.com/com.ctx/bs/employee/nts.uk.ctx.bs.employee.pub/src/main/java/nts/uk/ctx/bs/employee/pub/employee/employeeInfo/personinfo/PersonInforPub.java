@@ -1,7 +1,5 @@
 package nts.uk.ctx.bs.employee.pub.employee.employeeInfo.personinfo;
 
-import java.util.List;
-
 /**
  * 
  * Interface Person information
@@ -10,7 +8,7 @@ import java.util.List;
 public interface PersonInforPub {
 
 	/**
-	 * Get List Employee by For request No.01
+	 * Get Informantion of Person by For request No.01
 	 */
 	PersonInfoDtoExport getPersonInfomation(String employeeId);
 
