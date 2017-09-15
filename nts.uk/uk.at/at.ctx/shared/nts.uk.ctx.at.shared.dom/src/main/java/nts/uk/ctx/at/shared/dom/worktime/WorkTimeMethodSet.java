@@ -34,6 +34,10 @@ public enum WorkTimeMethodSet {
 		return Enum_Fixed_Work.equals(this);
 	}
 	
+	/**
+	 * 流動勤務か判定する
+	 * @return 流動勤務である
+	 */
 	public boolean isFluidWork() {
 		return Enum_Fluid_Work.equals(this);
 	}

@@ -7,5 +7,13 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
  */
 public enum AcquisitionConditionsAtr {
 	All,
-	ForDeduction
+	ForDeduction;
+	
+	/**
+	 * 控除用か判定する
+	 * @return　控除用である
+	 */
+	public boolean isForDeduction() {
+		return ForDeduction.equals(this);
+	}
 }

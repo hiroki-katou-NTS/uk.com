@@ -12,9 +12,9 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRound
 public class FixRestSetting {
 	private TimeSpanWithRounding hours;
 	
-//	private ??? legalHolidayFrameNo;
-//	private ??? statutoryHolidayFrameNo;
-//	private ??? isNonStatutoryDayoffConstraintTime;
+	private HolidayWorkFrameNo legalHolidayFrameNo;
+	private HolidayWorkFrameNo statutoryHolidayFrameNo;
+	private HolidayWorkFrameNo isNonStatutoryDayoffConstraintTime;
 	
 	private boolean isLegalHolidayConstraintTime;
 	private boolean isNonStatutoryHolidayConstraintTime;

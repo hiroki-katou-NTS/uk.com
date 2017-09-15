@@ -10,7 +10,7 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.calcset.SetForNoStamp;
-import nts.uk.ctx.at.shared.dom.worktime.basicinformation.WorkTimeClassification;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidBreakTimeOfCalcMethod;
 
@@ -30,10 +30,10 @@ public class BreakManagement {
 	 * @return 休 時間の作
 	 */
 	
-	public List<TimeSheetOfDeductionItem> getBreakTimeSheet(WorkTimeClassification workTimeClassification,FixRestCalcMethod restCalc,SetForNoStamp noStampSet
+	public List<TimeSheetOfDeductionItem> getBreakTimeSheet(WorkTimeDivision workTimeDivision,FixRestCalcMethod restCalc,SetForNoStamp noStampSet
 															,FluidBreakTimeOfCalcMethod calcMethod) {
 		List<Optional<BreakTimeSheetOfDaily>> timeSheets = new ArrayList<Optional<BreakTimeSheetOfDaily>>();
-		if(workTimeClassification.isfluidFlex()) {
+		if(workTimeDivision.isfluidorFlex()) {
 			timeSheets.add(getFixedBreakTimeSheet(restCalc)); 
 		}
 		else {

@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collector;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWorkOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ScheduleTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.WorkInfomation;
 import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkTimeOfDaily;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet.OverTimeWorkSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
@@ -22,6 +26,7 @@ import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.TimeSheetWithUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixWeekdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.OverTimeHourSet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
@@ -30,7 +35,8 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
-@Value
+@Getter
+@RequiredArgsConstructor
 public class CalculationRangeOfOneDay {
 	
 	private FixWeekdayWorkTime fixWeekDayWorkTime;
@@ -41,7 +47,9 @@ public class CalculationRangeOfOneDay {
 	
 	private final WorkType workType;
 	
-	private WithinWorkTimeSheet withinWorkingHoursTimeSheet;
+	private WithinWorkTimeSheet withinWorkingTimeSheet;
+	
+	private OutsideWorkTimeSheet outsideWorkTimeSheet;
 	
 	private WorkingSystem workingSystem;
 	
@@ -70,11 +78,11 @@ public class CalculationRangeOfOneDay {
 	 * 就業時間内・外の処理
 	 */
 	public void theDayOfWorkTimesLoop() {
-		for(int workNumber = 1; workNumber <= dailyOfAttendanceLeavingWork.size(); workNumber++ ) {
+		for(int workNumber = 0; workNumber <= dailyOfAttendanceLeavingWork.size(); workNumber++ ) {
 			createWithinWorkTimeTimeSheet();
-			
+			/*就業外*/
 			/*勤務時間帯の計算*/
-			
+			collectCalculationResult();
 		}
 	}
 	
@@ -94,13 +102,18 @@ public class CalculationRangeOfOneDay {
 	 * 就業時間外時間帯の作成
 	 * 	 
 	 */
-	public void createOutOfWorkTimeSheet(WorkType workType,FixOffdayWorkTime fixOff, AttendanceLeavingWork attendanceLeave) {
+	public void createOutOfWorkTimeSheet(List<OverTimeHourSet> overTimeHourSet ,WorkType workType,FixOffdayWorkTime fixOff, AttendanceLeavingWork attendanceLeave,int workNo) {
 		if(workType.isWeekDayAttendance()) {
 			/*就業時間外時間帯の平日出勤の処理*/
+			
+			outsideWorkTimeSheet = new OutsideWorkTimeSheet(Optional.of(OverTimeWorkSheet.createOverWorkFrame(overTimeHourSet, workingSystem, attendanceLeave,workTime.getPredetermineTimeSet().getSpecifiedTimeSheet().getTimeSheets().get(1).getStartTime(), workNo)),null);
+			
+			//こっちのreturn は OverTimeWorkSheet型
 		}
 		else {
 			/*休日出勤*/
-			//return HolidayWorkTimeOfDaily.getHolidayWorkTimeOfDaily(fixOff.getWorkingTimes(), attendanceLeave);
+			outsideWorkTimeSheet = new OutsideWorkTimeSheet(null, Optional.of(HolidayWorkTimeOfDaily.getHolidayWorkTimeOfDaily(fixOff.getWorkingTimes(), attendanceLeave)));
+			//こっちのreturn は　HolidayWorkTimeOfDaily型
 			
 		}
 	}
@@ -118,6 +131,7 @@ public class CalculationRangeOfOneDay {
 			case Enum_Fixed_Work:
 				createWithinWorkTimeSheet();
 			case Enum_Fluid_Work:
+				/*流動勤務*/
 			case Enum_Jogging_Time:
 			case Enum_Overtime_Work:
 			default:
@@ -129,7 +143,6 @@ public class CalculationRangeOfOneDay {
 		/*控除時間帯の作成*/
 		//             //
 	}
-	
 	
 	/**
 	 * 流動勤務の時間帯作成

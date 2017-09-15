@@ -10,8 +10,6 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
  */
 @Value
 public class HolidayWorkFrameTimeSheet {
-//	private TimeWithDayAttr start;
-//	private TimeWithDayAttr end;
 	private TimeSpanForCalc timeSpan;
 	
 	

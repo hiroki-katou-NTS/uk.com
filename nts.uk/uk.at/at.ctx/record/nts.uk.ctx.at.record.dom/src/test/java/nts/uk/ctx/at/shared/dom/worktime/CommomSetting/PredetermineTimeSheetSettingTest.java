@@ -15,13 +15,13 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeUnit;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
-public class SpecifiedTimeSheetSettingTest {
+public class PredetermineTimeSheetSettingTest {
 
 	@Test
 	public void onedayWork() {
 		val work1 = new TimeSheetWithUseAtr(UseAtr.USE, new TimeWithDayAttr(9 * 60), new TimeWithDayAttr(12 * 60));
 		val work2 = new TimeSheetWithUseAtr(UseAtr.USE, new TimeWithDayAttr(13 * 60), new TimeWithDayAttr(18 * 60));
-		val target = new SpecifiedTimeSheetSetting(
+		val target = new PredetermineTimeSheetSetting(
 				Arrays.asList(work1, work2),
 				new TimeWithDayAttr(13 * 60),
 				new TimeWithDayAttr(13 * 60));
@@ -40,7 +40,7 @@ public class SpecifiedTimeSheetSettingTest {
 	public void morningWork() {
 		val work1 = new TimeSheetWithUseAtr(UseAtr.USE, new TimeWithDayAttr(9 * 60), new TimeWithDayAttr(12 * 60));
 		val work2 = new TimeSheetWithUseAtr(UseAtr.USE, new TimeWithDayAttr(13 * 60), new TimeWithDayAttr(18 * 60));
-		val target = new SpecifiedTimeSheetSetting(
+		val target = new PredetermineTimeSheetSetting(
 				Arrays.asList(work1, work2),
 				new TimeWithDayAttr(13 * 60),
 				new TimeWithDayAttr(13 * 60));

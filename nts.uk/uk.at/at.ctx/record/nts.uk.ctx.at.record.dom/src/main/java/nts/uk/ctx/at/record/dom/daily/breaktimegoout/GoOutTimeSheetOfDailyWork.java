@@ -1,12 +1,12 @@
 package nts.uk.ctx.at.record.dom.daily.breaktimegoout;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.AcquisitionConditionsAtr;
 
 /**
  * 日別実績の外出時間帯
@@ -25,9 +25,9 @@ public class GoOutTimeSheetOfDailyWork extends AggregateRoot{
 	 * @param 取得条件区分 
 	 * @return 不要な項目を削除した時間帯
 	 */
-	public List<GoOutTimeSheet> RemoveUnuseItemBaseOnAtr(boolean atr ) {
+	public List<GoOutTimeSheet> RemoveUnuseItemBaseOnAtr(AcquisitionConditionsAtr acqAtr ) {
 		
-		if(atr) {
+		if(acqAtr.isForDeduction()) {
 			return timeSheet.stream()
 					 .filter(tg -> tg.getGoOutReason().isPrivateOrUnion())
 					 .collect(Collectors.toList());
