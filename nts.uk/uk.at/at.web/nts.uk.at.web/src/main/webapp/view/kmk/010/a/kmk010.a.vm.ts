@@ -265,6 +265,7 @@ module nts.uk.at.view.kmk010.a {
                 this.name(dto.name);
                 this.languageName(dto.name);
                 this.productNumber(dto.productNumber);
+                self.attendanceItemIds(dto.attendanceItemIds);
                if(self.attendanceItemIds() && self.attendanceItemIds().length > 0){
                    nts.uk.at.view.kmk010.a.service.findAllDailyAttendanceItem().done(function(data) {
                        var selectedName: string[] = [];
@@ -304,6 +305,7 @@ module nts.uk.at.view.kmk010.a {
                         return i.attendanceItemId;
                     });
                     nts.uk.ui.windows.setShared('AllAttendanceObj',AllAttendanceObj);
+                    nts.uk.ui.windows.setShared('SelectedAttendanceId',self.attendanceItemIds());
                     nts.uk.ui.windows.setShared('Multiple',true);
                     nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml').onClosed(function(): any {
                         var lstDailyAttendanceId : number[]  = nts.uk.ui.windows.getShared('selectedChildAttendace');
