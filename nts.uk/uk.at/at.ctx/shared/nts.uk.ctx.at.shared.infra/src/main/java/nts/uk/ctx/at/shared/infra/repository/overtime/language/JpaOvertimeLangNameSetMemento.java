@@ -5,17 +5,17 @@
 package nts.uk.ctx.at.shared.infra.repository.overtime.language;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeName;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.overtime.language.LanguageId;
-import nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangNameSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.overtime.language.KshstOverTimeLangName;
-import nts.uk.ctx.at.shared.infra.entity.overtime.language.KshstOverTimeLangNamePK;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeName;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.LanguageId;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangSetMemento;
+import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeLangName;
+import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeLangNamePK;
 
 /**
  * The Class JpaOvertimeLangNameSetMemento.
  */
-public class JpaOvertimeLangNameSetMemento implements OvertimeLangNameSetMemento {
+public class JpaOvertimeLangNameSetMemento implements OvertimeNameLangSetMemento {
 	
 	/** The entity. */
 	private KshstOverTimeLangName entity;

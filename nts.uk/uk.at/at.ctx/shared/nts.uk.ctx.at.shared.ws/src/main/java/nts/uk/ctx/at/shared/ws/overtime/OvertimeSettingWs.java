@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.app.find.overtime.OvertimeSettingFinder;
 import nts.uk.ctx.at.shared.app.find.overtime.dto.OvertimeSettingDto;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeCalculationMethod;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
 
 /**
  * The Class CompanySettingWs.
@@ -48,7 +48,7 @@ public class OvertimeSettingWs extends WebService {
 	@POST
 	@Path("findAll/method")
 	public List<EnumConstant> findAllMethod() {
-		return EnumAdaptor.convertToValueNameList(OvertimeCalculationMethod.class);
+		return EnumAdaptor.convertToValueNameList(OutsideOTCalMed.class);
 	}
 	
 	/**

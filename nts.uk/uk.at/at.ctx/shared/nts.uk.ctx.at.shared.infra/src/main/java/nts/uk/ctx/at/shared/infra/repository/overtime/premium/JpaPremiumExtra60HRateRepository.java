@@ -17,11 +17,11 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.overtime.premium.extra.PremiumExtra60HRate;
-import nts.uk.ctx.at.shared.dom.overtime.premium.extra.PremiumExtra60HRateRepository;
-import nts.uk.ctx.at.shared.infra.entity.overtime.premium.KshstPremiumExt60hRate;
-import nts.uk.ctx.at.shared.infra.entity.overtime.premium.KshstPremiumExt60hRatePK_;
-import nts.uk.ctx.at.shared.infra.entity.overtime.premium.KshstPremiumExt60hRate_;
+import nts.uk.ctx.at.shared.dom.outsideot.premium.extra.PremiumExtra60HRate;
+import nts.uk.ctx.at.shared.dom.outsideot.premium.extra.PremiumExtra60HRateRepository;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRate;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRatePK_;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRate_;
 
 /**
  * The Class JpaPremiumExtra60HRateRepository.
