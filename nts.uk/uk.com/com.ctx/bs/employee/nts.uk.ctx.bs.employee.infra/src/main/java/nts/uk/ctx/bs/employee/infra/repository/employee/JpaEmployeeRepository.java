@@ -23,20 +23,11 @@ import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
 
 @Stateless
 public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepository {
-<<<<<<< HEAD
-	public final String SELECT_NO_WHERE = ""
-			+ " SELECT c.companyId,c.personId,c.bsydtEmployeePk.sId,"
-			+ " c.employeeCode,c.companyMail,c.companyMobileMail,"
-			+ " c.companyMobile,d.retireDate , d.bsydtJobEntryHistoryPk.entryDate , "
-			+ " d.hiringType , d.adoptDate"
-			+ " FROM BsydtEmployee c , BsymtJobEntryHistory d";
 
-	public final String SELECT_BY_EMP_CODE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
-			+ " AND c.employeeCode =:employeeCode "
-			+ " AND  d.bsydtJobEntryHistoryPk.entryDate <= :entryDate "
-			+ " AND d.retireDate >= :entryDate ";
-=======
->>>>>>> c191155df05db3db4ef1e59a1d8fc41e086137d4
+//	public final String SELECT_BY_EMP_CODE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
+//			+ " AND c.employeeCode =:employeeCode "
+//			+ " AND  d.bsydtJobEntryHistoryPk.entryDate <= :entryDate "
+//			+ " AND d.retireDate >= :entryDate ";
 
 	public final String SELECT_NO_WHERE = "SELECT c ,d FROM BsydtEmployee c , BsymtJobEntryHistory d";
 
@@ -64,18 +55,15 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 			+ " AND c.bsydtEmployeePk.sId = :sId";
 	
 
-<<<<<<< HEAD
-	public final String SELECT_BY_SID = SELECT_NO_WHERE + " WHERE c.bsydtEmployeePk.sId = :sId";
+//	public final String SELECT_BY_SID = SELECT_NO_WHERE + " WHERE c.bsydtEmployeePk.sId = :sId";
 	
 	public final String GET_LAST_EMPLOYEE = "SELECT c.kmnmtEmployeePK.employeeCode FROM KmnmtEmployee c "
 			+ " WHERE c.kmnmtEmployeePK.employeeCode LIKE CONCAT(:emlCode, '%')"
 			+ " ORDER BY  c.kmnmtEmployeePK.employeeCode DESC";
-=======
 	public final String SELECT_BY_STANDARDDATE = SELECT_NO_WHERE 
 			+ " WHERE c.companyId = :companyId"
 			+ " AND  d.bsydtJobEntryHistoryPk.entryDate <= :standardDate " 
 			+ " AND d.retireDate >= :standardDate ";
->>>>>>> c191155df05db3db4ef1e59a1d8fc41e086137d4
 
 
 	/**
