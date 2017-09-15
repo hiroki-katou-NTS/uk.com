@@ -23,10 +23,10 @@ public class Employee extends AggregateRoot {
 	/** The employeeId 社員ID */
 	private String sId;
 
-	/** The employeeCode  社員コード*/
+	/** The employeeCode 社員コード */
 	private EmployeeCode sCd;
 
-	/** The Company Mail  会社メールアドレス */
+	/** The Company Mail 会社メールアドレス */
 	private EmployeeMail companyMail;
 
 	/** The Company Mobile Mail - 会社携帯メールアドレス */
@@ -35,24 +35,12 @@ public class Employee extends AggregateRoot {
 	/** The Company Mobile 会社携帯電話番号 */
 	private CompanyMobile companyMobile;
 
-	/** The List JobEntryHistory 入社履歴*/
+	/** The List JobEntryHistory 入社履歴 */
 	private List<JobEntryHistory> listEntryJobHist;
 
 	public static Employee createFromJavaType(String companyId, String pId, String sId, String sCd, String companyMail,
 			String mobileMail, String companyMobile) {
-		return new Employee(
-				companyId,
-				pId, 
-				sId, 
-				new EmployeeCode(sCd), 
-				new EmployeeMail(companyMail),
-				new EmployeeMail(mobileMail), 
-				new CompanyMobile(companyMobile),
-				null);
+		return new Employee(companyId, pId, sId, new EmployeeCode(sCd), new EmployeeMail(companyMail),
+				new EmployeeMail(mobileMail), new CompanyMobile(companyMobile), null);
 	}
-<<<<<<< HEAD
-=======
-	
-
->>>>>>> c191155df05db3db4ef1e59a1d8fc41e086137d4
 }
