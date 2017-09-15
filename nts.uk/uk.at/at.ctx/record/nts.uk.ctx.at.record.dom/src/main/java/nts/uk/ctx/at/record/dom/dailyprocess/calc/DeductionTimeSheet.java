@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -212,4 +212,25 @@ public class DeductionTimeSheet {
 		}
 	}
 	
+	/**
+	 * 全控除項目の時間帯の合計を算出する
+	 * @return 控除時間
+	 */
+	public int calcDeductionAllTimeSheet(DeductionAtr dedAtr,TimeSpanForCalc workTimeSpan) {
+		List<TimeSheetOfDeductionItem> duplicatitedworkTime = getCalcRange(workTimeSpan);
+		int sumTime = 0;
+		for(TimeSheetOfDeductionItem dedItem :duplicatitedworkTime) {
+			sumTime += dedItem.calculationTimeSheet.lengthAsMinutes();
+		}
+		return sumTime;
+	}
+	
+	/**
+	 * 計算を行う範囲に存在する控除時間帯の抽出
+	 * @param workTimeSpan 計算範囲
+	 * @return　計算範囲内に存在する控除時間帯
+	 */
+	public List<TimeSheetOfDeductionItem> getCalcRange(TimeSpanForCalc workTimeSpan){
+		return forDeductionTimeZoneList.stream().filter(tc -> workTimeSpan.contains(tc.calculationTimeSheet.getSpan())).collect(Collectors.toList()); 
+	}
 }

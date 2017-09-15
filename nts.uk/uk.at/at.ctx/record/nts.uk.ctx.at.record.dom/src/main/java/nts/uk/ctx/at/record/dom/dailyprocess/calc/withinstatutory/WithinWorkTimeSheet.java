@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.AmPmClassification;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.TimeSheetWithUseAtr;
@@ -260,6 +261,34 @@ public class WithinWorkTimeSheet {
 		}
 		return correctedTimeSheet;
 	}
-
+	
+	
+	
+	
+	/**
+	 * 就業時間の計算(控除時間差し引いた後)
+	 * @return
+	 */
+	public int calcWorkTime(HolidayAdditionAtr holidayAdditionAtr) {
+		int workTime = calcWorkTimeBeforeDeductPremium(holidayAdditionAtr);
+		if(holidayAdditionAtr.isHolidayAddition()) {
+			/*休暇加算時間を計算*/
+			/*休暇加算時間を加算*/
+		}
+		return workTime;
+	}
+	
+	/**
+	 * 就業時間内時間枠の全枠分の就業時間を算出する
+	 * (所定内割増時間を差し引く前)
+	 * @return 就業時間
+	 */
+	public int calcWorkTimeBeforeDeductPremium(HolidayAdditionAtr holidayAdditionAtr,DeductionTimeSheet dedTimeSheet) {
+		int workTime = 0;
+		for(WithinWorkTimeFrame copyItem: withinWorkTimeFrame) {
+			workTime += copyItem.calcActualWorkTimeAndWorkTime(holidayAdditionAtr,dedTimeSheet);
+		}
+		return workTime;
+	}
 	
 }

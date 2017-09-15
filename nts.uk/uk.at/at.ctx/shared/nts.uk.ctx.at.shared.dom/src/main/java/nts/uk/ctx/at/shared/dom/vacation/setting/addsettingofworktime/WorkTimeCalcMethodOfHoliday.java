@@ -6,5 +6,5 @@ package nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime;
  *
  */
 public class WorkTimeCalcMethodOfHoliday {
-	
+	private CalculationByActualTimeAtr calculationByActualTime;
 }
