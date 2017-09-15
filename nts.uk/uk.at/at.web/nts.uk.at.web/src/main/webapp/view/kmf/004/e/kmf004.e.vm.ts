@@ -76,9 +76,6 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                             self.items.push(new Item(t));
                         }
                     }
-                    
-                    
-                    
                     self.selectedName(self.selectedOption().yearServiceName);
                     self.codeObject(ko.toJS(self.selectedOption().yearServiceCode));
                     self.check(false);
@@ -91,6 +88,9 @@ module nts.uk.at.view.kmf004.e.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             service.getAll().done((lstData: Array<viewmodel.Per>) => {
+                if(lstData.length == 0){
+                    self.check(true);
+                }
                 let sortedData = _.orderBy(lstData, ['yearServiceCode'], ['asc']);
                 self.lstPer(sortedData);
                 dfd.resolve();
@@ -113,6 +113,22 @@ module nts.uk.at.view.kmf004.e.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             service.getAll().done((lstData: KnockoutObservableArray<Per>) => {
+                if(lstData.length == 0){
+                    self.check(true);
+                    self.checkUpdate(false);
+                    self.items([]);
+                    for (let i = 0; i < 20; i++) {
+                        if(self.items()[i] == undefined){
+                            let t : item = {
+                            yearServiceNo: ko.mapping.fromJS(i),
+                            month: ko.mapping.fromJS(null),
+                            year: ko.mapping.fromJS(null),
+                            date: ko.mapping.fromJS(null)
+                            }
+                            self.items.push(new Item(t));
+                        }
+                    }
+                }
                 let sortedData : KnockoutObservableArray<any> = ko.observableArray([]);
                 sortedData(_.orderBy(lstData, ['yearServiceCode'], ['asc']));
                 self.lstPer(sortedData());
@@ -143,6 +159,11 @@ module nts.uk.at.view.kmf004.e.viewmodel {
         /** update or insert data when click button register **/
         register() {   
             let self = this;
+            $("#inpCode").trigger("validate");
+            $("inpPattern").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return;       
+            }
             let code = "";    
             var items = _.filter(self.items(), function(tam: item) {
                     return tam.date() || tam.month() || tam.year();
@@ -260,7 +281,10 @@ module nts.uk.at.view.kmf004.e.viewmodel {
         
         
         closeDialog(){
-            nts.uk.ui.windows.close();    
+            var t0 = performance.now(); 
+            nts.uk.ui.windows.close();
+             var t1 = performance.now();
+            console.log("Selection process " + (t1 - t0) + " milliseconds.");    
         }
         
     } 

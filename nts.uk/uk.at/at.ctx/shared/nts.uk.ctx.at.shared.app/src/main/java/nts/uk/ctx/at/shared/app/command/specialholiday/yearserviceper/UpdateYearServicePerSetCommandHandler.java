@@ -29,11 +29,11 @@ public class UpdateYearServicePerSetCommandHandler extends CommandHandler<Update
 		for(YearServicePerSet object : lst){
 			for(YearServicePerSetCommand obj : yearServicePerSets){
 				if(obj.getYear() == object.getYear()){
-					YearServicePerSet o = YearServicePerSet.update(companyId, obj.getSpecialHolidayCode(), obj.getYearServiceCode(), obj.getYearServiceNo(), obj.getYear(), obj.getMonth(), obj.getDate());
+					YearServicePerSet o = YearServicePerSet.createFromJavaType(companyId, obj.getSpecialHolidayCode(), obj.getYearServiceCode(), obj.getYearServiceNo(), obj.getYear(), obj.getMonth(), obj.getDate());
 					lstUpdate.add(o);
 				}
 				else{
-					YearServicePerSet a = YearServicePerSet.update(companyId, obj.getSpecialHolidayCode(), obj.getYearServiceCode(), obj.getYearServiceNo(), obj.getYear(), obj.getMonth(), obj.getDate());
+					YearServicePerSet a = YearServicePerSet.createFromJavaType(companyId, obj.getSpecialHolidayCode(), obj.getYearServiceCode(), obj.getYearServiceNo(), obj.getYear(), obj.getMonth(), obj.getDate());
 					lstInsert.add(a);
 				}
 			}

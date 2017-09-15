@@ -147,16 +147,6 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 			}
 			this.commandProxy().update(oldEntity);
 }
-//		KshstYearServicePer entity = toEntityPer(yearServicePer);
-//		KshstYearServicePer oldEntity = this.queryProxy().find(entity.kshstYearServicePerPK, KshstYearServicePer.class).get();
-//		oldEntity.yearServiceName = entity.yearServiceName;
-//		oldEntity.yearServiceCls = entity.yearServiceCls;
-//		if(yearServicePer.getYearServicePerSets() != null){
-//			oldEntity.listYearServicePerSet =  yearServicePer.getYearServicePerSets().stream()
-//											.map(x -> toEntityPerSet(x))
-//											.collect(Collectors.toList());
-//		}
-//		this.commandProxy().update(oldEntity);
 	
 	@Override
 	public void insertPer(YearServicePer yearServicePer) {
