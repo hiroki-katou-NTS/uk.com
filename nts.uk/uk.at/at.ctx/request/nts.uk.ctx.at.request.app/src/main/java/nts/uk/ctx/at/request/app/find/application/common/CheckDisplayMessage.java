@@ -9,12 +9,12 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 
 @Stateless
-public class GetDataBeforePreBootMode {
+public class CheckDisplayMessage {
 	@Inject
 	private BeforePreBootMode beforePreBootModeRepo;
 	
 	/**
-	 * B1-3 check hiển thị hay không hiển thị
+	 * A3-1 check hiển thị hay không hiển thị
 	 * @param applicationData
 	 * @param baseDate
 	 * @return
@@ -38,7 +38,12 @@ public class GetDataBeforePreBootMode {
 		}
 		return check;
 	}
-	
+	/**
+	 * B4-2 check hiển thị hay không hiển thị
+	 * @param applicationData
+	 * @param baseDate
+	 * @return
+	 */
 	public boolean checkDisplayAuthorizationComment(Application applicationData,
 			GeneralDate baseDate) {
 		boolean check = false;
