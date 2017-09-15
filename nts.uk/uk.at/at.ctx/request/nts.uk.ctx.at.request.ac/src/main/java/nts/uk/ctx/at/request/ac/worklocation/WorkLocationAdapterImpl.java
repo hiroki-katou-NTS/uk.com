@@ -34,8 +34,11 @@ public class WorkLocationAdapterImpl implements WorkLocationAdapter {
 	 * @return
 	 */
 	public WorkLocationImport toImport(WorkLocationPubExport export) {
-		return new WorkLocationImport(export.getWorkLocationCD(), export.getWorkLocationName(),
-				export.getHoriDistance(), export.getVertiDistance(), export.getLatitude(), export.getLongitude());
+		return new WorkLocationImport(export.getWorkLocationCD(), 
+				export.getWorkLocationName(),
+				export.getHoriDistance(), 
+				export.getVertiDistance(), 
+				export.getLatitude(), 
+				export.getLongitude());
 	}
-
 }

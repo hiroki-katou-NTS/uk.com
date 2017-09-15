@@ -37,7 +37,6 @@ public class GoBackDirectlyFinder {
 	public GoBackDirectlyDto getGoBackDirectlyByAppID(String appID) {
 		String companyID = AppContexts.user().companyId();
 		return goBackDirectRepo.findByApplicationID(companyID, appID).map(c -> convertToDto(c)).orElse(null);
-
 	}
 
 	/**
@@ -49,8 +48,10 @@ public class GoBackDirectlyFinder {
 	public GoBackDirectSettingDto getGoBackDirectSettingBySID(String SID) {
 		return convertSettingToDto(goBackCommon.getSettingData(SID));
 	}
+
 	/**
-	 * get Detail Data to 
+	 * get Detail Data to
+	 * 
 	 * @param appID
 	 * @return
 	 */
@@ -68,7 +69,7 @@ public class GoBackDirectlyFinder {
 				domain.getWorkLocationCD1(), domain.getGoWorkAtr2().value, domain.getBackHomeAtr2().value,
 				domain.getWorkTimeStart2().v(), domain.getWorkTimeEnd2().v(), domain.getWorkLocationCD2());
 	}
-	
+
 	/**
 	 * get Data of GoBackDirect with Application Setting
 	 * 

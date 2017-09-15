@@ -2,12 +2,20 @@ module nts.uk.at.view.kaf009.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     var paths = {
+        getAllWorkLocation: "at/record/worklocation/findall",
         getGoBackDirectly: "/at/request/application/gobackdirectly/getGoBackDirectlyByAppID",
         getGoBackDirectlySetting: "/at/request/application/gobackdirectly/getGoBackCommonSetting",
         getGoBackDirectDetail: "/at/request/application/gobackdirectly/getGoBackDirectDetail",
         insertGoBackDirectly: "/at/request/application/gobackdirectly/insertGoBackDirectly",
         updateGoBackDirectly: "/at/request/application/gobackdirectly/updateGoBackDirectly"
     }
+    /**
+     * get all Work Location  
+     */
+    export function getAllLocation(): JQueryPromise<any> {
+        return ajax("at", paths.getAllWorkLocation, {});
+    }
+
     /**
      * get GoBackDirectly
      */
@@ -39,6 +47,6 @@ module nts.uk.at.view.kaf009.a.service {
      * 
      */
     export function updateGoBackDirect(currentGoBack: viewmodel.IGoBackCommand): JQueryPromise<Array<any>> {
-        return ajax("at",paths.updateGoBackDirectly,currentGoBack);
+        return ajax("at", paths.updateGoBackDirectly, currentGoBack);
     }
 }

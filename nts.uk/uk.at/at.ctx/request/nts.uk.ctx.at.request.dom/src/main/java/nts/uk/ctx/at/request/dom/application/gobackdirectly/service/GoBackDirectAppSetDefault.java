@@ -1,11 +1,14 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.adapter.WorkLocationAdapter;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.adapter.dto.WorkLocationImport;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
@@ -38,12 +41,12 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		String workLocationName2 = workLocationAdapter.getByWorkLocationCD(companyID, goBackDirect.getWorkLocationCD2())
 				.getWorkLocationName();
 		String cd = goBackDirect.getWorkTypeCD().v();
-		
-		String workTypeName = "type name is ERROR"; 
-				
-				//workTypeRepo.findByPK(companyID, cd).get().getName().v();
+
+		String workTypeName = "type name is ERROR";
+		// workTypeRepo.findByPK(companyID, cd).get().getName().v();
 		String workTimeName = workTimeRepo.findByCode(companyID, goBackDirect.getSiftCd().v()).get()
 				.getWorkTimeDisplayName().getWorkTimeName().v();
+		// get List Work Location
 		/**
 		 * 
 		 */
