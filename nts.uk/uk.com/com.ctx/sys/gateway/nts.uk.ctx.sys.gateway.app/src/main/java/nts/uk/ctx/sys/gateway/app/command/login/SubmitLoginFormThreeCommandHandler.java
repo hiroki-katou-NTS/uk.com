@@ -187,7 +187,7 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 	 * @return the employee
 	 */
 	private EmployeeImport getEmployee(String companyId, String employeeCode) {
-		Optional<EmployeeImport> em = employeeAdapter.getByEmployeeCode(companyId, employeeCode);
+		Optional<EmployeeImport> em = employeeAdapter.getCurrentInfoByScd(companyId, employeeCode);
 		if (em.isPresent()) {
 			return em.get();
 		} else {

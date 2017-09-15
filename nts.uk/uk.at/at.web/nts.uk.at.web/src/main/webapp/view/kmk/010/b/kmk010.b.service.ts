@@ -1,19 +1,14 @@
 module nts.uk.at.view.kmk010.b {
     
     import OvertimeDto = nts.uk.at.view.kmk010.a.service.model.OvertimeDto;
+    import OvertimeLangNameDto = nts.uk.at.view.kmk010.a.service.model.OvertimeLangNameDto;
     
     export module service {
         var paths = {
-            findAllOvertime : "ctx/at/shared/overtime/findAll",
-            saveAllOvertime : "ctx/at/shared/overtime/save"
+            saveAllOvertime : "ctx/at/shared/overtime/save",
+            saveAllOvertimeLanguageName : "ctx/at/shared/overtime/language/name/saveAll"
         }
         
-         /**
-         * call service find all overtime
-         */
-        export function findAllOvertime(): JQueryPromise<OvertimeDto[]> {
-            return nts.uk.request.ajax('at', paths.findAllOvertime);
-        }
          /**
          * call service save all overtime
          */
@@ -21,15 +16,12 @@ module nts.uk.at.view.kmk010.b {
             return nts.uk.request.ajax('at', paths.saveAllOvertime, { overtimes: overtimes });
         }
         
-        
-        export module model {
-
-            export interface MonthlyPatternDto {
-                code: string;
-                name: string;
-            }
-                       
-        }
-
+        /**
+         * save all overtime language name
+         */
+        export function saveAllOvertimeLanguageName(overtimeLanguages: OvertimeLangNameDto[]): JQueryPromise<void> {
+            return nts.uk.request.ajax('at', paths.saveAllOvertimeLanguageName, { overtimeLanguages: overtimeLanguages });
+        } 
+                
     }
 }

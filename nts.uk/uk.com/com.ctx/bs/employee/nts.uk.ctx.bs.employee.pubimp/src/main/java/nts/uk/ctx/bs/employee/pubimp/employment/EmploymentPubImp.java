@@ -13,11 +13,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.employment.Employment;
-import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistoryRepository;
-import nts.uk.ctx.bs.employee.pub.employment.EmploymentExport;
+import nts.uk.ctx.bs.employee.dom.employment_old.Employment;
+import nts.uk.ctx.bs.employee.dom.employment_old.EmploymentRepository;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 
 /**
@@ -33,22 +32,6 @@ public class EmploymentPubImp implements SyEmploymentPub {
 	/** The employment history repository. */
 	@Inject
 	private AffEmploymentHistoryRepository employmentHistoryRepository;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.bs.employee.pub.employment.EmploymentPub#findByEmpCodes(java.
-	 * util.List)
-	 */
-	@Override
-	public List<EmploymentExport> findByEmpCodes(List<String> employmentCodes) {
-		return employmentRepository.findByEmpCodes(employmentCodes).stream()
-				.map(item -> new EmploymentExport(item.getCompanyId().v(), item.getWorkClosureId(),
-						item.getSalaryClosureId(), item.getEmploymentCode().v(),
-						item.getEmploymentName().v()))
-				.collect(Collectors.toList());
-	}
 
 	/*
 	 * (non-Javadoc)

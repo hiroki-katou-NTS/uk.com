@@ -1,0 +1,36 @@
+package nts.uk.ctx.at.request.app.command.application.stamp.command;
+
+import java.util.List;
+
+import lombok.Data;
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
+@Data
+public class AppStampCmd {
+	
+	private String appID;
+    
+    private String inputDate;
+    
+    private String enteredPerson;
+    
+    private String applicationDate;
+    
+    private String applicationReason;
+    
+    private String employeeID;
+	
+	private Integer stampRequestMode;
+	
+	private List<AppStampGoOutPermitCmd> appStampGoOutPermitCmds;
+	
+	private List<AppStampWorkCmd> appStampWorkCmds;
+	
+	private List<AppStampCancelCmd> appStampCancelCmds;
+	
+	private AppStampOnlineRecordCmd appStampOnlineRecordCmd;
+}
+

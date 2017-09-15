@@ -15,6 +15,7 @@ import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkApp
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommandHandler;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootFinder;
+import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataFullDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeAdapterInforFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeSearch;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeUnregisterFinder;
@@ -40,7 +41,7 @@ public class WorkAppApprovalRootWebService extends WebService{
  
 	@POST
 	@Path("getbycom")
-	public CommonApprovalRootDto getAllByCom(ParamDto param) {
+	public DataFullDto getAllByCom(ParamDto param) {
 		return this.comFinder.getAllCommonApprovalRoot(param);
 	}
 	

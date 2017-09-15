@@ -47,40 +47,6 @@ public interface SyWorkplacePub {
 	List<WkpCdNameExport> findByWkpId(String companyId, String workplaceId, GeneralDate baseDate);
 
 	/**
-	 * Find by wkp id.
-	 *
-	 * @param workplaceId the workplace id
-	 * @return the workplace export
-	 */
-	WorkplaceExport findByWkpId(String workplaceId);
-
-	/**
-	 * Find by wkp ids.
-	 *
-	 * @param workplaceIds the workplace ids
-	 * @return the list
-	 */
-	List<WorkplaceExport> findByWkpIds(List<String> workplaceIds);
-
-	/**
-	 * Find all workplace of company.
-	 *
-	 * @param companyId the company id
-	 * @param baseDate the base date
-	 * @return the list
-	 */
-	List<WorkplaceExport> findAllWorkplaceOfCompany(String companyId, GeneralDate baseDate);
-
-	/**
-	 * Find all hierarchy child.
-	 *
-	 * @param companyId the company id
-	 * @param workplaceId the workplace id
-	 * @return the list
-	 */
-	List<WorkplaceHierarchyExport> findAllHierarchyChild(String companyId, String workplaceId);
-
-	/**
 	 * Gets the workplace id.
 	 *
 	 * @param companyId the company id
@@ -89,4 +55,5 @@ public interface SyWorkplacePub {
 	 * @return the workplace id
 	 */
 	String getWorkplaceId(String companyId,String employeeId, GeneralDate baseDate);
+
 }

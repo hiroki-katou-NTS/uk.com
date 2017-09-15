@@ -159,3 +159,9 @@
 	margin-top: 10px;
 	margin-left: 80px;
 }
+
+#switch-language {
+	float: right;
+	margin-top: 3px;
+	margin-right: 52%;
+}

@@ -1,10 +1,11 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.employment;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
+import nts.uk.shr.com.primitive.Memo;
 
 /**
  * The Interface EmploymentGetMemento.
@@ -33,16 +34,16 @@ public interface EmploymentGetMemento {
 	EmploymentName getEmploymentName();
 	
 	/**
-	 * Gets the work closure id.
+	 * Gets the emp externalcode.
 	 *
-	 * @return the work closure id
+	 * @return the emp externalcode
 	 */
-	Integer getWorkClosureId();
+	EmpExternalCode getEmpExternalcode();
 	
 	/**
-	 * Gets the salary closure id.
+	 * Gets the memo.
 	 *
-	 * @return the salary closure id
+	 * @return the memo
 	 */
-	Integer getSalaryClosureId();
+	Memo getMemo();
 }

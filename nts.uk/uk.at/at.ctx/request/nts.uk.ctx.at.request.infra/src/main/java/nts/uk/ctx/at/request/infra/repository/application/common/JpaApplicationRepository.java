@@ -22,7 +22,8 @@ import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
 
 @Stateless
 public class JpaApplicationRepository extends JpaRepository implements ApplicationRepository {
-
+	private final String SEPERATE_REASON_STRING = ":";
+	
 	private final String SELECT_FROM_APPLICATION = "SELECT c FROM KafdtApplication c"
 			+ " WHERE c.kafdtApplicationPK.companyID = :companyID";
 	private final String SELECT_BY_CODE = SELECT_FROM_APPLICATION
@@ -38,7 +39,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				entity.inputDate, entity.enteredPersonSID,
 				new AppReason(entity.reversionReason), 
 				entity.applicationDate, 
-				new AppReason(entity.applicationReason),
+				new AppReason(entity.appReasonId + SEPERATE_REASON_STRING + entity.applicationReason),
 				EnumAdaptor.valueOf(entity.applicationType,ApplicationType.class),
 				entity.applicantSID, 
 				EnumAdaptor.valueOf(entity.reflectPlanScheReason,ReflectPlanScheReason.class), 
@@ -48,18 +49,22 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				EnumAdaptor.valueOf(entity.reflectPerScheReason,ReflectPerScheReason.class),
 				entity.reflectPerTime,
 				EnumAdaptor.valueOf(entity.reflectPerState,ReflectPlanPerState.class),
-				EnumAdaptor.valueOf(entity.reflectPerEnforce,ReflectPlanPerEnforce.class));
+				EnumAdaptor.valueOf(entity.reflectPerEnforce,ReflectPlanPerEnforce.class),
+				entity.startDate,
+				entity.endDate,
+				null);
 	}
 
 	private KafdtApplication toEntity(Application domain) {
-//		return new KafdtApplication(new KafdtApplicationPK(domain.getCompanyID(), domain.getApplicationID()),
-//				domain.getPrePostAtr().value, domain.getInputDate() , domain.getEnteredPersonSID(),
-//				domain.getReversionReason().v(), domain.getApplicationDate(), domain.getApplicationReason().v(),
-//				domain.getApplicationType().value, domain.getApplicantSID(), domain.getReflectPlanScheReason().value,
-//				domain.getReflectPlanTime(), domain.getReflectPlanState().value, domain.getReflectPlanEnforce().value,
-//				domain.getReflectPerScheReason().value, domain.getReflectPerTime(), domain.getReflectPerState().value,
-//				domain.getReflectPerEnforce().value);
-		return null;
+		String appReasonID = domain.getApplicationReason().v().split(SEPERATE_REASON_STRING)[0];
+		String appReason = domain.getApplicationReason().v().substring(appReasonID.length() + SEPERATE_REASON_STRING.length());
+		return new KafdtApplication(new KafdtApplicationPK(domain.getCompanyID(), domain.getApplicationID()), appReasonID,
+				domain.getPrePostAtr().value, domain.getInputDate() , domain.getEnteredPersonSID(),
+				domain.getReversionReason().v(), domain.getApplicationDate(), appReason,
+				domain.getApplicationType().value, domain.getApplicantSID(), domain.getReflectPlanScheReason().value,
+				domain.getReflectPlanTime(), domain.getReflectPlanState().value, domain.getReflectPlanEnforce().value,
+				domain.getReflectPerScheReason().value, domain.getReflectPerTime(), domain.getReflectPerState().value,
+				domain.getReflectPerEnforce().value, domain.getStartDate(), domain.getEndDate());
 	}
 
 	/**
@@ -117,6 +122,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		KafdtApplication newEntity = toEntity(application);
 		KafdtApplication updateEntity = this.queryProxy().find(newEntity.kafdtApplicationPK, KafdtApplication.class)
 				.get();
+		updateEntity.appReasonId = newEntity.appReasonId;
 		updateEntity.prePostAtr = newEntity.prePostAtr;
 		updateEntity.inputDate = newEntity.inputDate;
 		updateEntity.enteredPersonSID = newEntity.enteredPersonSID;
@@ -133,6 +139,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		updateEntity.reflectPerTime = newEntity.reflectPerTime;
 		updateEntity.reflectPerState = newEntity.reflectPerState;
 		updateEntity.reflectPerEnforce = newEntity.reflectPerEnforce;
+		updateEntity.startDate = newEntity.startDate;
+		updateEntity.endDate = newEntity.endDate;
 		this.commandProxy().update(updateEntity);
 	}
 

@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.valueobject.PeriodCurrentMonth;
@@ -25,12 +26,12 @@ public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithmService;
 	
-	public void processBeforeRegister(String companyID, String employeeID, GeneralDate startDate, GeneralDate endDate, int postAtr, int routeAtr, String targetApp){
-		retirementCheckBeforeJoinCompany(companyID, employeeID, startDate);
-		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID, employeeID, startDate);
-		if(endDate.after(startDate.addDays(31))) throw new BusinessException("Msg_277");
+	public void processBeforeRegister(String companyID, String employeeID, GeneralDate date, PrePostAtr postAtr, int routeAtr, int appType){
+		retirementCheckBeforeJoinCompany(companyID, employeeID, date);
+		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID, employeeID, date);
+		// if(endDate.after(startDate.addDays(31))) throw new BusinessException("Msg_277");
 		if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(periodCurrentMonth.getEndDate())) throw new BusinessException("Msg_276");
-		if(startDate.before(periodCurrentMonth.getStartDate())) throw new BusinessException("Msg_236");
+		// if(startDate.before(periodCurrentMonth.getStartDate())) throw new BusinessException("Msg_236");
 		/*
 		confirmRoot = from cache;
 		if(confirmRoot.ApprovedRouteErrorFlag==undefined) throw new BusinessException("Msg_238");
@@ -44,11 +45,11 @@ public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
 	
 	public void retirementCheckBeforeJoinCompany(String companyID, String employeeID, GeneralDate date){
 		/*
-		Employee e = Employee.find(employeeID); 
-		beforeData = Check Before Data;
-		if((beforeData.count >=1)&&(date<e.entryDate)) throw new BusinessException(Msg_235);
-		afterData = Check After Data;
-		if((afterData.count >=1)&&(date<e.retirementDate)) throw new BusinessException(Msg_391); 
+		Optional<Employee> e = Employee.find(employeeID); 
+		if(e.isPresent()){
+			if(date<e.entryDate) throw new BusinessException(Msg_235);
+			if(date<e.retirementDate) throw new BusinessException(Msg_391); 
+		}
 		*/
 	}
 	

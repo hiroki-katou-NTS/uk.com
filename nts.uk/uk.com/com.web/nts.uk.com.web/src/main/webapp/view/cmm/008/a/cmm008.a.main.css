@@ -1,7 +1,6 @@
 #ruled-line {
 	background-color: #7f7f7f;
-	margin-top: 15px;
-	margin-bottom: 15px;
+	margin-top: 25px;
 }
 
 #right-contents {
@@ -11,4 +10,14 @@
 }
 #left-content {
 	padding: 20px;
+}
+
+.tr-height {
+	height: 70px;
+}
+#right-contents div table {
+	margin-right: 40px;
+}
+.td-width {
+	width: 200px;
 }

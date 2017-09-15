@@ -105,7 +105,7 @@ subprojects {
         // Apache commons IO
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.31'
+		compile group: 'nts.gul', name: 'nts.gul', version: '0.31.1'
 		compile group: 'nts.arc', name: 'nts.arc', version: '0.42'
 	}
 }
@@ -698,6 +698,11 @@ project (':com.web:nts.uk.com.web') {
 		runtime project (':com.screen:nts.uk.screen.com.app')
 		runtime project (':com.screen:nts.uk.screen.com.infra')
 		runtime project (':com.screen:nts.uk.screen.com.ws')
+		
+		
+		runtime project (':com.file:nts.uk.file.com.ws')
+		runtime project (':com.file:nts.uk.file.com.app')
+		runtime project (':com.file:nts.uk.file.com.infra')
 		
 		// shr find implement
 		runtime group: 'pr.core', name: 'nts.uk.ctx.pr.core.ws', version: '0.1'

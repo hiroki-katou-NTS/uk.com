@@ -10,8 +10,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.ctx.at.shared.app.command.overtime.breakdown.OvertimeBRDItemSaveCommand;
-import nts.uk.ctx.at.shared.app.command.overtime.breakdown.OvertimeBRDItemSaveCommandHandler;
+import nts.uk.ctx.at.shared.app.command.overtime.holiday.SuperHD60HConMedSaveCommand;
+import nts.uk.ctx.at.shared.app.command.overtime.holiday.SuperHD60HConMedSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.overtime.SuperHD60HConMedFinder;
 import nts.uk.ctx.at.shared.app.find.overtime.dto.SuperHD60HConMedDto;
 
@@ -28,7 +28,7 @@ public class SuperHD60HConMedWs {
 	
 	/** The save. */
 	@Inject
-	private OvertimeBRDItemSaveCommandHandler save;
+	private SuperHD60HConMedSaveCommandHandler save;
 
 	/**
 	 * Find by id.
@@ -48,7 +48,7 @@ public class SuperHD60HConMedWs {
 	 */
 	@POST
 	@Path("save")
-	public void save(OvertimeBRDItemSaveCommand command) {
+	public void save(SuperHD60HConMedSaveCommand command) {
 		this.save.handle(command);
 	}
 }

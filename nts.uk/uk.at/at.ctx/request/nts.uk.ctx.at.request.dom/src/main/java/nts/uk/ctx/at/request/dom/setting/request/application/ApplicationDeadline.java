@@ -36,7 +36,7 @@ public class ApplicationDeadline extends AggregateRoot {
 	public static ApplicationDeadline createSimpleFromJavaType(String companyId,
 			int closureId, 
 			int userAtr,
-			String deadline,
+			int deadline,
 			int deadlineCriteria) {
 		return new ApplicationDeadline(companyId,
 				closureId,

@@ -100,12 +100,12 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 			currentEntity.setWorkTypeCD(goBackDirectly.getWorkTypeCD().v());
 			currentEntity.setSiftCD(goBackDirectly.getSiftCd().v());
 		}
-		this.commandProxy().update(goBackDirectly);
+		this.commandProxy().update(toEntity(goBackDirectly));
 	}
 
 	@Override
 	public void insert(GoBackDirectly goBackDirectly) {
-		this.commandProxy().insert(goBackDirectly);
+		this.commandProxy().insert(toEntity(goBackDirectly));
 	}
 
 	@Override

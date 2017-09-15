@@ -31,13 +31,13 @@ import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
  */
 @Stateless
 public class JpaPersonRepository extends JpaRepository implements PersonRepository {
-	public final String SELECT_NO_WHERE = "SELECT c FROM BpsdtPerson c";
+	public final String SELECT_NO_WHERE = "SELECT c FROM BpsmtPerson c";
 
 	public final String SELECT_BY_PERSON_IDS = SELECT_NO_WHERE
-			+ " WHERE c.bpsdtPersonPk.pId IN :pids";
+			+ " WHERE c.bpsmtPersonPk.pId IN :pids";
 
 	private static Person toDomain(BpsmtPerson entity) {
-		Person domain = Person.createFromJavaType(entity.bpsdtPersonPk.pId, entity.personName);
+		Person domain = Person.createFromJavaType(entity.bpsmtPersonPk.pId, entity.personName);
 		return domain;
 	}
 

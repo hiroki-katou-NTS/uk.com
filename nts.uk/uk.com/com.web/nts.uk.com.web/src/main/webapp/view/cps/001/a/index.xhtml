@@ -18,6 +18,7 @@
 			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
 
 			<com:stylefile path="cps001.a.style.css" />
+			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
 			<com:scriptfile path="cps001.a.service.js" />
 			<com:scriptfile path="cps001.a.vm.js" />
 			<com:scriptfile path="cps001.a.start.js" />
@@ -39,7 +40,7 @@
 					<div class="bg-green">
 						<table id="employees"
 							data-bind="ntsGridList: {								
-								height: 250,
+								height: 220,
 								dataSource: ko.observableArray([
 									{id: 1, name: 'name 1'},
 									{id: 2, name: 'name 2'},
@@ -49,7 +50,7 @@
 								primaryKey: 'id',
 								columns: [
 									{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-		                			{ headerText: '名称', key: 'name', width: 280, hidden: false }
+		                			{ headerText: '名称', key: 'name', width: 200, hidden: false }
 								],
 								multiple: false,
 								value: ko.observable(undefined)
@@ -77,7 +78,7 @@
 						<div class="layouttab">
 							<div
 								data-bind="ntsSearchBox: {
-									searchMode: 'filter',
+									searchMode: 'highlight',
 									targetKey: 'code',
 									comId: 'layouts',
 									items: ko.observableArray([]),
@@ -86,7 +87,7 @@
 									mode: 'igGrid'}"></div>
 							<table id="layouts"
 								data-bind="ntsGridList: {								
-									height: 250,
+									height: 200,
 									dataSource: ko.observableArray([
 										{id: 1, name: 'name 1'},
 										{id: 2, name: 'name 2'},
@@ -96,7 +97,7 @@
 									primaryKey: 'id',
 									columns: [
 										{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-			                			{ headerText: '名称', key: 'name', width: 255, hidden: false }
+			                			{ headerText: '名称', key: 'name', width: 175, hidden: false }
 									],
 									multiple: false,
 									value: ko.observable(undefined)
@@ -105,7 +106,7 @@
 						<div class="categorytab">
 							<div
 								data-bind="ntsSearchBox: {
-									searchMode: 'filter',
+									searchMode: 'highlight',
 									targetKey: 'code',
 									comId: 'categories',
 									items: ko.observableArray([]),
@@ -114,7 +115,7 @@
 									mode: 'igGrid'}"></div>
 							<table id="categories"
 								data-bind="ntsGridList: {								
-									height: 250,
+									height: 200,
 									dataSource: ko.observableArray([
 										{id: 1, name: 'name 1'},
 										{id: 2, name: 'name 2'},
@@ -124,7 +125,7 @@
 									primaryKey: 'id',
 									columns: [
 										{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-			                			{ headerText: '名称', key: 'name', width: 255, hidden: false }
+			                			{ headerText: '名称', key: 'name', width: 175, hidden: false }
 									],
 									multiple: false,
 									value: ko.observable(undefined)
@@ -134,20 +135,69 @@
 				</div>
 				<div class="right-area">
 					<div class="top-right-area cf">
-						<div class="avatar-group">
+						<div class="avatar-group" data-bind="with: person">
 							<div class="active-panel">
-								<img data-bind="attr: { src: false ? '' : 'images/avatar.png'}"  />
+								<img data-bind="attr: { src: avatar}" />
 							</div>
 						</div>
-						<div class="person-group">
-							<div class="active-panel"></div>
+						<div class="person-group" data-bind="with: person">
+							<div class="active-panel">
+								<table class="person-info">
+
+									<tbody>
+										<tr>
+											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_11')}</td>
+											<td colspan="3"></td>
+										</tr>
+										<tr>
+											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_12')}</td>
+											<td></td>
+											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_13')}</td>
+											<td></td>
+										</tr>
+										<tr>
+											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_14')}</td>
+											<td colspan="4"></td>
+										</tr>
+										<tr>
+											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_15')}</td>
+											<td></td>
+											<td class="bg-calendar-ym-set">#{i18n.getText('CPS001_16')}</td>
+											<td></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
 						</div>
 						<div class="action-group">
-							<div class="active-panel"></div>
-							<div class="active-panel"></div>
+							<div class="active-panel cf">
+								<div class="column">
+									<button class="btn btn-location">#{i18n.getText('CPS001_34')}</button>
+									<button class="btn btn-details"></button>
+								</div>
+								<div class="column">
+									<button class="btn btn-print"></button>
+								</div>
+							</div>
+							<div class="active-panel">
+								<a class="btn-goout"></a>
+							</div>
 						</div>
 					</div>
-					<div class="bottom-right-area"></div>
+					<div class="bottom-right-area">
+						<div class="form-group">
+							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_35')}</div>
+							<div data-bind="ntsDatePicker: {
+								value: ko.observable(''), 
+								dateFormat: 'YYYY/MM/DD'}"></div>
+							<button>#{i18n.getText('CPS001_37')}</button>
+						</div>
+						
+						<div  style="padding-top: 10px"
+							data-bind="ntsLayoutControl: { 
+								data: ko.observableArray([]),
+								editAble: false }"></div>
+					</div>
 				</div>
 			</div>
 		</ui:define>

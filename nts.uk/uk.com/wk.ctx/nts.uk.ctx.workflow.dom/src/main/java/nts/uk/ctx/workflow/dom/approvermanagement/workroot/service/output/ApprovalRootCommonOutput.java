@@ -10,7 +10,7 @@ public class ApprovalRootCommonOutput {
 	public String approvalId;
 	/**社員ID*/
 	private String employeeId;
-	/**社員ID*/
+	/**職場ID*/
 	private String workpalceId;
 	/**履歴ID*/
 	private String historyId;

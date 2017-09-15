@@ -3,3 +3,6 @@
 .ntsRadioBox {
     margin-bottom: 10px !important;
 }
+#radio-group-box {
+	display: inline-grid;margin-left: 130px;
+}

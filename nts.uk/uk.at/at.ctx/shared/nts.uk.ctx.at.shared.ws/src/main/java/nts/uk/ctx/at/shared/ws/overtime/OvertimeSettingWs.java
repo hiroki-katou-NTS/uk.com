@@ -16,11 +16,13 @@ import javax.ws.rs.core.MediaType;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.app.command.overtime.setting.OvertimeSettingSaveCommand;
+import nts.uk.ctx.at.shared.app.command.overtime.setting.OvertimeSettingSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.overtime.OvertimeSettingFinder;
 import nts.uk.ctx.at.shared.app.find.overtime.dto.OvertimeSettingDto;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeCalculationMethod;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
 
 /**
  * The Class CompanySettingWs.
@@ -32,6 +34,11 @@ public class OvertimeSettingWs extends WebService {
 	/** The finder. */
 	@Inject
 	private OvertimeSettingFinder finder;
+	
+	
+	/** The save. */
+	@Inject
+	private OvertimeSettingSaveCommandHandler save;
 
 	/**
 	 * Find all method.
@@ -41,7 +48,7 @@ public class OvertimeSettingWs extends WebService {
 	@POST
 	@Path("findAll/method")
 	public List<EnumConstant> findAllMethod() {
-		return EnumAdaptor.convertToValueNameList(OvertimeCalculationMethod.class);
+		return EnumAdaptor.convertToValueNameList(OutsideOTCalMed.class);
 	}
 	
 	/**
@@ -74,6 +81,17 @@ public class OvertimeSettingWs extends WebService {
 	@Path("findById")
 	public OvertimeSettingDto findById(){
 		return this.finder.findById();
+	}
+	
+	/**
+	 * Save.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("save")
+	public void save(OvertimeSettingSaveCommand command) {
+		this.save.handle(command);
 	}
 
 }

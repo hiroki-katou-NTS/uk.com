@@ -15,7 +15,7 @@ module nts.uk.pr.view.ksu006.b {
             isDone: KnockoutObservable<boolean>;
             executeId: KnockoutObservable<string>;
             dataError: KnockoutObservableArray<ErrorModel>;
-            listColumn: KnockoutObservableArray<NtsGridListColumn>;
+            listColumn: KnockoutObservableArray<any>;
             rowSelected: KnockoutObservable<string>;
             isGreaterThanTenError: KnockoutObservable<boolean>;
             taskId: KnockoutObservable<string>;
@@ -55,19 +55,23 @@ module nts.uk.pr.view.ksu006.b {
                 
                 // subscribe
                 self.isDone.subscribe((state) => {
-                    if (state) {
-                        if (self.numberFail() <= 0) {
-                            return;
-                        }
-                        self.loadDetailError().done(() => {
-                            self.hasError(true);
-                            nts.uk.ui.windows.getSelf().setSize(self.isGreaterThanTenError() ? 650 : 620, 920);
-                            $('#donwloadError').focus();
-                        });
+                    if (!state) {
+                        return;
                     }
+                    if (self.numberFail() <= 0) {
+                        return;
+                    }
+                    self.loadDetailError().done(() => {
+                        self.hasError(true);
+                        nts.uk.ui.windows.getSelf().setSize(self.isGreaterThanTenError() ? 650 : 620, 920);
+                        $('#donwloadError').focus();
+                    });
                 });
             }
 
+            /**
+             * startPage
+             */
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<void>();
@@ -75,6 +79,9 @@ module nts.uk.pr.view.ksu006.b {
                 return dfd.promise();
             }
             
+            /**
+             * execute
+             */
             public execute() {
                 let self = this;
                 // get extract condition
@@ -88,20 +95,26 @@ module nts.uk.pr.view.ksu006.b {
                     $('#stopExecute').focus();
                     self.executeId(res.executeId);
                     self.taskId(res.taskInfor.id);
+                    
+                    // updateState
                     self.updateState();
                 }).fail(function(res: any) {
                     self.showMessageError(res);
                 });
             }
             
+            /**
+             * updateState
+             */
             private updateState() {
                 let self = this;
                 // start count time
-                $('.countdown').downCount();
+                $('.countdown').startCount();
                 
                 nts.uk.deferred.repeat(conf => conf
                 .task(() => {
                     return nts.uk.request.asyncTask.getInfo(self.taskId()).done(function(res: any) {
+                        // update state on screen
                         if (res.running || res.succeeded || res.cancelled) {
                             _.forEach(res.taskDatas, item => {
                                 if (item.key == 'TOTAL_RECORD') {
@@ -115,12 +128,13 @@ module nts.uk.pr.view.ksu006.b {
                                 }
                             });
                         }
+                        // finish task
                         if (res.succeeded || res.failed || res.cancelled) {
                             self.isDone(true);
                             self.status(nts.uk.resource.getText("KSU006_217"));
                             
                             // end count time
-                            $('.countdown').stopCountDown();
+                            $('.countdown').stopCount();
                             if (res.error) {
                                 self.showMessageError(res.error);
                             }
@@ -134,6 +148,9 @@ module nts.uk.pr.view.ksu006.b {
                 }).pause(1000));
             }
             
+            /**
+             * downloadDetailError
+             */
             public downloadDetailError() {
                 let self = this;
                 nts.uk.ui.block.grayout();
@@ -145,6 +162,9 @@ module nts.uk.pr.view.ksu006.b {
                 });
             }
             
+            /**
+             * stopImporting
+             */
             public stopImporting() {
                 let self = this;
                 if (nts.uk.text.isNullOrEmpty(self.taskId())) {
@@ -154,23 +174,30 @@ module nts.uk.pr.view.ksu006.b {
                 nts.uk.request.asyncTask.requestToCancel(self.taskId());
             }
             
+            /**
+             * closeDialog
+             */
             public closeDialog() {
                 nts.uk.ui.windows.close();
             }
             
+            /**
+             * loadDetailError
+             */
             private loadDetailError(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 service.findErrors(self.executeId()).done(function(res: Array<ErrorModel>) {
-                    if (res) {
-                        self.dataError(res);
-                        if (res.length > 10) {
-                            self.isGreaterThanTenError(true);
-                            self.dataError(res.slice(0, 10));
-                        }
-                        for (let i = 0; i < self.dataError().length; i++) {
-                            self.dataError()[i].order = i;
-                        }
+                    if (!res) {
+                        return;
+                    }
+                    self.dataError(res);
+                    if (res.length > 10) {
+                        self.isGreaterThanTenError(true);
+                        self.dataError(res.slice(0, 10));
+                    }
+                    for (let i = 0; i < self.dataError().length; i++) {
+                        self.dataError()[i].order = i;
                     }
                     dfd.resolve();
                 }).fail((res: any) => {
@@ -179,11 +206,12 @@ module nts.uk.pr.view.ksu006.b {
                 return dfd.promise();
             }
             
+            /**
+             * showMessageError
+             */
             private showMessageError(res: any) {
                 if (res.businessException) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                } else {
-                    nts.uk.ui.dialog.alertError(res.message);
                 }
             }
         }
