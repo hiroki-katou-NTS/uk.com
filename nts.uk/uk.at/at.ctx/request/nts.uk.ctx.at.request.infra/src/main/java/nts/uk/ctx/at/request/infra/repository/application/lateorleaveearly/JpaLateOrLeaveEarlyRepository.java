@@ -1,19 +1,14 @@
 package nts.uk.ctx.at.request.infra.repository.application.lateorleaveearly;
 
-import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.Change;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.Select;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.TimeDay;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeavePK;
@@ -76,32 +71,37 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 	private LateOrLeaveEarly toDomain(Object[] joinEntity) {
 		KrqdtAppLateOrLeave appLateOrLeaveEntity = (KrqdtAppLateOrLeave) joinEntity[0];
 		KafdtApplication applicationEntity = (KafdtApplication) joinEntity[1];
-		return new LateOrLeaveEarly(appLateOrLeaveEntity.krqdtAppLateOrLeavePK.companyID, appLateOrLeaveEntity.krqdtAppLateOrLeavePK.appID,
-				applicationEntity.prePostAtr,
-				applicationEntity.inputDate, 
-				applicationEntity.enteredPersonSID, 
-				applicationEntity.reversionReason, 
-				applicationEntity.applicationDate,
-				applicationEntity.applicationReason, 
-				applicationEntity.applicationType, 
-				applicationEntity.applicantSID,
-				applicationEntity.reflectPlanScheReason, 
-				applicationEntity.reflectPlanTime,
-				applicationEntity.reflectPlanState, 
-				applicationEntity.reflectPlanEnforce,
-				applicationEntity.reflectPerScheReason, 
-				applicationEntity.reflectPerTime, 
-				applicationEntity.reflectPerState,
-				applicationEntity.reflectPerEnforce,
-				appLateOrLeaveEntity.actualCancelAtr,
-				appLateOrLeaveEntity.early1,
-				appLateOrLeaveEntity.earlyTime1,
-				appLateOrLeaveEntity.late1,
-				appLateOrLeaveEntity.lateTime1,
-				appLateOrLeaveEntity.early2 ,
-				appLateOrLeaveEntity.earlyTime2,
-				appLateOrLeaveEntity.late2,
-				appLateOrLeaveEntity.lateTime2);
+		
+		return new LateOrLeaveEarly (
+				appLateOrLeaveEntity.krqdtAppLateOrLeavePK.companyID, 
+				appLateOrLeaveEntity.krqdtAppLateOrLeavePK.appID,
+				 applicationEntity.prePostAtr,
+				 applicationEntity.inputDate,
+				 applicationEntity.enteredPersonSID,
+				 applicationEntity.reversionReason,
+				 applicationEntity.applicationDate,
+				 applicationEntity.applicationReason,
+				 applicationEntity.applicationType,
+				 applicationEntity.applicantSID,
+				 applicationEntity.reflectPlanScheReason,
+				 applicationEntity.reflectPlanTime,
+				 applicationEntity.reflectPlanState,
+				 applicationEntity.reflectPlanEnforce,
+				 applicationEntity.reflectPerScheReason,
+				 applicationEntity.reflectPerTime,
+				 applicationEntity.reflectPerState,
+				 applicationEntity.reflectPerEnforce,
+				 applicationEntity.startDate,
+				 applicationEntity.endDate,
+				 appLateOrLeaveEntity.actualCancelAtr,
+				 appLateOrLeaveEntity.early1,
+				 appLateOrLeaveEntity.earlyTime1,
+				 appLateOrLeaveEntity.late1,
+				 appLateOrLeaveEntity.lateTime1,
+				 appLateOrLeaveEntity.early2 ,
+				 appLateOrLeaveEntity.earlyTime2,
+			 	 appLateOrLeaveEntity.late2,
+				 appLateOrLeaveEntity.lateTime2);
 	}
 	
 	private KrqdtAppLateOrLeave toEntity (LateOrLeaveEarly domain){
@@ -118,7 +118,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 					domain.getLateTime2().v());
 	}
 	@Override
-	public AppReason findAppReason(String companyID, ApplicationType applicationType) {
+	public ApplicationReason findApplicationReason(String companyID, ApplicationType applicationType) {
 		// TODO Auto-generated method stub
 		return null;
 	};

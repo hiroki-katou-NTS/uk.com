@@ -9,13 +9,16 @@ module nts.uk.pr.view.ksu006.b {
 }
 interface JQuery {
 
-    downCount(options, callback);
-    stopCountDown(options, callback);
+    // start count
+    startCount();
+    
+    // stop count
+    stopCount();
 }
 
 (function($: any) {
     let interval;
-    $.fn.downCount = function(options, callback) {
+    $.fn.startCount = function(options?: any, callback?: any) {
         let settings = $.extend({
             date: null,
             offset: null
@@ -36,7 +39,7 @@ interface JQuery {
             let utc = date.getTime() + (date.getTimezoneOffset() * 60000);
 
             // set new Date object
-            let new_date = new Date(utc + (3600000 * settings.offset))
+            let new_date: any = new Date(utc + (3600000 * settings.offset))
 
             return new_date;
         };
@@ -55,7 +58,7 @@ interface JQuery {
             let current_date = currentDate(); // get fixed current date
 
             // difference of dates
-            let difference = current_date - original_date;
+            let difference: any = current_date - original_date;
 
             if (current_date >= target_date) {
                 // stop timer
@@ -74,9 +77,9 @@ interface JQuery {
 
             // calculate dates
 //            days = Math.floor(difference / _day)
-            let hours = Math.floor((difference % _day) / _hour),
-                minutes = Math.floor((difference % _hour) / _minute),
-                seconds = Math.floor((difference % _minute) / _second);
+            let hours: any = Math.floor((difference % _day) / _hour),
+                minutes: any = Math.floor((difference % _hour) / _minute),
+                seconds: any = Math.floor((difference % _minute) / _second);
 
             // fix dates so that it will show two digets
 //            days = (String(days).length >= 2) ? days : '0' + days;
@@ -106,7 +109,7 @@ interface JQuery {
         interval = setInterval(countdown, 1000);
     };
     
-    $.fn.stopCountDown = function(options, callback) {
+    $.fn.stopCount = function() {
          clearInterval(interval);
     };
 } (jQuery));

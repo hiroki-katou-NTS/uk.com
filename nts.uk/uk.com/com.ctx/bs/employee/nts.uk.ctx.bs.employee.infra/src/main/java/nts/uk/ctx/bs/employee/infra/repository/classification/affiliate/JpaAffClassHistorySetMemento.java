@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.classification.affiliate;
 
+import nts.uk.ctx.bs.employee.dom.classification.ClassificationCode;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistorySetMemento;
-import nts.uk.ctx.bs.employee.dom.classification.affiliate.ClassificationCode;
 import nts.uk.ctx.bs.employee.dom.common.history.Period;
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.KmnmtAffiliClassificationHist;
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.KmnmtAffiliClassificationHistPK;

@@ -19,11 +19,11 @@
 				</div>
 				<div id="contents-area">
 					<div class="label">打刻申請ガイドメッセージ</div>
-					<div><button class="caret-right">外出／育児／介護の許可申請</button></div>
-					<div><button class="caret-right">出勤／退勤漏れの申請</button></div>
-					<div><button class="caret-right">打刻の取消申請</button></div>
-					<div><button class="caret-right">レコーダイメージの申請</button></div>
-					<div><button class="caret-right">その他打刻申請</button></div>
+					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(0); }">外出／育児／介護の許可申請</button></div>
+					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(1); }">出勤／退勤漏れの申請</button></div>
+					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(2); }">打刻の取消申請</button></div>
+					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(3); }">レコーダイメージの申請</button></div>
+					<div><button class="caret-right" data-bind="click: function(){ openBCWindow(4); }">その他打刻申請</button></div>
 				</div>
 			</ui:define>
 		</ui:composition>

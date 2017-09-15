@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.basic.ws.company.organization.employee;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,9 +36,10 @@ public class EmployeeWebService extends WebService {
 	private EmployeeSearchQueryProcessor employeeQueryProcessor;
 	
 	@POST
-	@Path("getPersonIdByEmployeeCode/{employeeCode}")
-	public EmployeeDto getPersonIdByEmployeeCode(@PathParam("employeeCode") String employeeCode) {
-		return this.employeeFinder.getPersonIdByEmployeeCode(employeeCode).orElse(null);
+	@Path("getPersonIdByEmployeeCode/{employeeCode}/{baseDate}")
+	public EmployeeDto getPersonIdByEmployeeCode(@PathParam("employeeCode") String employeeCode, @PathParam("baseDate") Date baseDate) {
+		GeneralDate baseDateParam = GeneralDate.legacyDate(baseDate);
+		return this.employeeFinder.getPersonIdByEmployeeCode(employeeCode , baseDateParam).orElse(null);
 	}
 	
 	@POST

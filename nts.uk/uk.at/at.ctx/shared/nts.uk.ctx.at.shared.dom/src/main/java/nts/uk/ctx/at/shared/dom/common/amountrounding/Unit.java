@@ -9,7 +9,7 @@ import lombok.AllArgsConstructor;
 /**
  * The Enum Unit.
  */
-// 端数処理
+// 端数処理位置
 @AllArgsConstructor
 public enum Unit {
 

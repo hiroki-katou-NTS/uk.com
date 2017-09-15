@@ -23,7 +23,7 @@ import com.aspose.cells.WorksheetCollection;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExternalBudgetErrorDto;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.error.dto.ExternalBudgetErrorDto;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.export.ExportData;
 import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.export.ExtBudgetErrorGenerator;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;

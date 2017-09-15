@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverImport;
@@ -71,7 +72,7 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 						x.getApprovalForm(),
 						x.getBrowsingPhase(),
 						x.getOrderNumber(),
-						x.getApproverDtos().stream().map(a -> new ApproverImport(
+						CollectionUtil.isEmpty(x.getApproverDtos())? null: x.getApproverDtos().stream().map(a -> new ApproverImport(
 								a.getCompanyId(), 
 								a.getApprovalPhaseId(), 
 								a.getApproverId(), 

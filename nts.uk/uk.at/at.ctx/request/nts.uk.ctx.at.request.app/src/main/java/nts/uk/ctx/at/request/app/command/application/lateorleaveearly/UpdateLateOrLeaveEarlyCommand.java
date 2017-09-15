@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.app.command.application.lateorleaveearly;
 import lombok.Value;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
-import nts.uk.shr.com.context.AppContexts;
+import nts.arc.time.GeneralDate;
 
 @Value
 public class UpdateLateOrLeaveEarlyCommand {
@@ -11,6 +10,9 @@ public class UpdateLateOrLeaveEarlyCommand {
 
 	/** 申請ID */
 	private String appID;
+	
+   /** 申請日*/
+	private GeneralDate applicationDate;
 
 	/** 実績取消区分 */
 	private int actualCancelAtr;
@@ -39,20 +41,14 @@ public class UpdateLateOrLeaveEarlyCommand {
 	/** 遅刻時刻2 */
 	private int lateTime2;
 	
-	public LateOrLeaveEarly toDomain(String appID) {
-		new LateOrLeaveEarly(
-				AppContexts.user().companyId(),
-				appID,
-				this.actualCancelAtr,
-				this.early1,
-				this.earlyTime1,
-				this.late1,
-				this.lateTime1,
-				this.early2,
-				this.earlyTime2,
-				this.late2,
-				this.lateTime2);
-
-	}
+	/** 定型理由 typicalReason :DB reasonTemp */ 
+	
+	private String reasonTemp;
+	
+	/** 申請理由 appReason */
+	
+	private String appReason;
+	
+	
 
 }

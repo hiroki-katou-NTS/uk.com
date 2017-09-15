@@ -1,7 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.lateorleaveearly;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
@@ -15,7 +13,6 @@ import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
 
-
 /**
  * 
  * @author hieult
@@ -28,71 +25,73 @@ public class LateOrLeaveEarly extends Application {
 	/** 申請ID */
 	private final String appID;
 	/** 実績取消区分 */
-	@Setter private int actualCancelAtr;
+	@Setter
+	private int actualCancelAtr;
 	/** 早退1 */
-	@Setter private Select early1;
+	@Setter
+	private Select early1;
 	/** 早退時刻1 */
-	@Setter private TimeDay earlyTime1;
+	@Setter
+	private TimeDay earlyTime1;
 	/** 遅刻1 */
-	@Setter private Select late1;
+	@Setter
+	private Select late1;
 	/** 遅刻時刻1 */
-	@Setter private TimeDay lateTime1;
+	@Setter
+	private TimeDay lateTime1;
 	/** 早退2 */
-	@Setter private Select early2;
+	@Setter
+	private Select early2;
 	/** 早退時刻2 */
-	@Setter private TimeDay earlyTime2;
+	@Setter
+	private TimeDay earlyTime2;
 	/** 遅刻2 */
-	@Setter private Select late2;
+	@Setter
+	private Select late2;
 	/** 遅刻時刻2 */
-	@Setter private TimeDay lateTime2;
-	
+	@Setter
+	private TimeDay lateTime2;
+
 	/** All Agrs constructor */
-	public LateOrLeaveEarly(String companyID, String appID,
-			int prePostAtr,
-			GeneralDate inputDate, 
-			String enteredPersonSID, 
-			String reversionReason, 
-			GeneralDate applicationDate,
-			String applicationReason, 
-			int applicationType, 
-			String applicantSID,
-			int reflectPlanScheReason, 
-			BigDecimal reflectPlanTime,
-			int reflectPlanState, 
-			int reflectPlanEnforce,
-			int reflectPerScheReason, 
-			BigDecimal reflectPerTime, 
-			int reflectPerState,
-			int reflectPerEnforce,
-			int actualCancelAtr,  int  early1,
-			int earlyTime1, int late1,
-			int lateTime1, int early2 ,int earlyTime2,int late2,int lateTime2) {
-		super(companyID, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class),
-				inputDate, 
-				enteredPersonSID, 
-				new AppReason(reversionReason), 
-				applicationDate, 
-				new AppReason(applicationReason), 
-				EnumAdaptor.valueOf(applicationType,ApplicationType.class), 
-				applicantSID, 
-				EnumAdaptor.valueOf(reflectPlanScheReason,ReflectPlanScheReason.class), 
-				reflectPlanTime, 
-				EnumAdaptor.valueOf(reflectPlanState,ReflectPlanPerState.class), 
-				EnumAdaptor.valueOf(reflectPlanEnforce,ReflectPlanPerEnforce.class), 
-				EnumAdaptor.valueOf(reflectPerScheReason,ReflectPerScheReason.class), 
-				reflectPerTime, 
-				EnumAdaptor.valueOf(reflectPerState,ReflectPlanPerState.class), 
-				EnumAdaptor.valueOf(reflectPerEnforce,ReflectPlanPerEnforce.class));
+	public LateOrLeaveEarly(String companyID, String appID, int prePostAtr, GeneralDate inputDate,
+			String enteredPersonSID, String reversionReason, GeneralDate applicationDate, String applicationReason,
+			int applicationType, String applicantSID, int reflectPlanScheReason,
+			GeneralDate reflectPlanTime, int reflectPlanState, int reflectPlanEnforce,
+			int reflectPerScheReason, GeneralDate reflectPerTime, int reflectPerState,
+			int reflectPerEnforce,GeneralDate startDate,GeneralDate endDate, int actualCancelAtr, int early1, int earlyTime1, int late1, int lateTime1,
+			int early2, int earlyTime2, int late2, int lateTime2) {
+		super(companyID, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), inputDate, enteredPersonSID,
+				new AppReason(reversionReason), applicationDate, new AppReason(applicationReason),
+				EnumAdaptor.valueOf(applicationType, ApplicationType.class), applicantSID, EnumAdaptor.valueOf(reflectPlanScheReason, ReflectPlanScheReason.class),
+				reflectPlanTime, EnumAdaptor.valueOf(reflectPlanState, ReflectPlanPerState.class),
+				EnumAdaptor.valueOf(reflectPlanEnforce, ReflectPlanPerEnforce.class), EnumAdaptor.valueOf(reflectPerScheReason, ReflectPerScheReason.class),
+				reflectPerTime, EnumAdaptor.valueOf(reflectPerState, ReflectPlanPerState.class),
+				EnumAdaptor.valueOf(reflectPerEnforce, ReflectPlanPerEnforce.class),startDate,endDate);
 		this.companyID = companyID;
 		this.appID = appID;
 		this.actualCancelAtr = actualCancelAtr;
-		this.early1 = EnumAdaptor.valueOf(early1,Select.class);
-		this.earlyTime1 = EnumAdaptor.valueOf(earlyTime1,TimeDay.class);
-		this.late1 = EnumAdaptor.valueOf(late1,Select.class);
-		this.lateTime1 = EnumAdaptor.valueOf(lateTime1,TimeDay.class);
-		this.early2 = EnumAdaptor.valueOf(early2,Select.class);
-		this.earlyTime2 = EnumAdaptor.valueOf(earlyTime2,TimeDay.class);
-		this.late2 = EnumAdaptor.valueOf(late2,Select.class);
-		this.lateTime2 = EnumAdaptor.valueOf(lateTime2,TimeDay.class);
+		this.early1 = EnumAdaptor.valueOf(early1, Select.class);
+		this.earlyTime1 = EnumAdaptor.valueOf(earlyTime1, TimeDay.class);
+		this.late1 = EnumAdaptor.valueOf(late1, Select.class);
+		this.lateTime1 = EnumAdaptor.valueOf(lateTime1, TimeDay.class);
+		this.early2 = EnumAdaptor.valueOf(early2, Select.class);
+		this.earlyTime2 = EnumAdaptor.valueOf(earlyTime2, TimeDay.class);
+		this.late2 = EnumAdaptor.valueOf(late2, Select.class);
+		this.lateTime2 = EnumAdaptor.valueOf(lateTime2, TimeDay.class);
 	}
+
+	public void changeApplication(int actualCancelAtr, int early1,
+			int earlyTime1, int late1, int lateTime1, int early2, int earlyTime2, int late2, int lateTime2)
+	{
+		this.actualCancelAtr = actualCancelAtr;
+		this.early1 = EnumAdaptor.valueOf(early1, Select.class);
+		this.earlyTime1 = EnumAdaptor.valueOf(earlyTime1, TimeDay.class);
+		this.late1 = EnumAdaptor.valueOf(late1, Select.class);
+		this.lateTime1 = EnumAdaptor.valueOf(lateTime1, TimeDay.class);
+		this.early2 = EnumAdaptor.valueOf(early2, Select.class);
+		this.earlyTime2 = EnumAdaptor.valueOf(earlyTime2, TimeDay.class);
+		this.late2 = EnumAdaptor.valueOf(late2, Select.class);
+		this.lateTime2 = EnumAdaptor.valueOf(lateTime2, TimeDay.class);
+	}
+	
 }

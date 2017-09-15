@@ -17,13 +17,6 @@ public interface WorkplaceHistoryGetMemento {
 	public HistoryId getHistoryId();
 
 	/**
-	 * Gets the workplace id.
-	 *
-	 * @return the workplace id
-	 */
-	public WorkplaceId getWorkplaceId();
-
-	/**
 	 * Gets the period.
 	 *
 	 * @return the period

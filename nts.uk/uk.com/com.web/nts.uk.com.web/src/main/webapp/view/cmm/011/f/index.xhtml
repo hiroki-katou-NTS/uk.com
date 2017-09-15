@@ -25,8 +25,8 @@
 
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
-			<div style="padding: 30px;">
-				<div style="margin-right: 50px;"
+			<div style="padding: 25px;">
+				<div style="margin-right: 30px;"
 					data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM011_31',
 					['Com_Workplace'])}</div>
 				<span>#{i18n.getText('CMM011_32')}</span> <span
@@ -34,12 +34,13 @@
 				<span data-bind="text: workplaceName"></span>
 			</div>
 
-			<div style="display: inline-grid;margin-left: 150px;" data-bind="ntsRadioBoxGroup: {
+			<div id="radio-group-box" tabindex="19" data-bind="ntsRadioBoxGroup: {
+				name: '#[CMM011_31]',
 				options: itemList,
 				optionsValue: 'value',
 				optionsText: 'name',
 				value: selectedValBox,
-				enable: true}"></div>
+				enable: enableRadioGroup}"></div>
 
 			<div id="functions-area-bottom">
 				<button class="x-large proceed" tabindex="7"

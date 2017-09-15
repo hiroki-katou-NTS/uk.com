@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 482,
-					height : 320
+					width : 700,
+					height : 350
 				};
 			</script>
 			
@@ -26,17 +26,38 @@
 		<!-- PAGE CONTENT -->
 		<ui:define name="content">
 			<div id="contents-area">
-				<div id="left-content">
-					<button tabindex="1">#{i18n.getText('CMM011_8')}</button>
-					<button tabindex="2" style="margin-left: 10px;margin-right: 10px;">#{i18n.getText('CMM011_9',['Com_Workplace'])}</button>
-					<button tabindex="3" >#{i18n.getText('CMM011_20')}</button>
+				<div id="left-content" class="bg-green caret-right caret-inline caret-background pull-left" data-bind="with: workplaceHistory">
+					<div>
+						<button tabindex="1" data-bind="click: addHistory">#{i18n.getText('CMM011_18')}</button>
+						<button tabindex="2" style="margin-left: 4px;margin-right: 4px;" 
+							 data-bind="click: updateHistory">#{i18n.getText('CMM011_19',['Com_Workplace'])}</button>
+						<button tabindex="3" data-bind="click: removeHistory" >#{i18n.getText('CMM011_20')}</button>
+					</div>
+					
+					<div id="list-box" tabindex="4" data-bind="ntsListBox: {
+						name: '#[CMM011_22]',
+						options: lstWpkHistory,
+						optionsValue: 'historyId',
+						optionsText: 'textDisplay',
+						multiple: false,
+						value: selectedWpkHistory,
+						enable: true,
+						rows: 4,
+						columns: [
+							{ key: 'textDisplay', length: 15 }
+						]}"></div>
 				</div>
 
 				<div id="right-content">
+					<div style="margin-left: 35px;margin-right: 20px;" data-bind="ntsFormLabel: {required: true}">#{i18n.getText('CMM011_23')}</div>
+					<div tabindex="5"
+						data-bind="ntsDatePicker: {name: '#[CMM011_24]', required: true, value: startDate, dateFormat: 'YYYY/MM/DD'}"></div>
+					<span style="margin: 20px;">#{i18n.getText('CMM011_26')}</span> <span>#{i18n.getText('CMM011_27')}</span>
 				</div>
 			</div>
 			<div id="functions-area-bottom" >
-				<button class="large" tabindex="8">Close</button>
+				<button class="x-large proceed" tabindex="6" data-bind="click: execution">#{i18n.getText('CMM011_28')}</button>
+				<button class="large" tabindex="7" data-bind="click: close">#{i18n.getText('CMM011_30')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

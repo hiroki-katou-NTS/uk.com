@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.ws.application.common;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +23,9 @@ import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRe
 import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSubjectRequest;
 import nts.uk.ctx.at.request.app.find.application.common.GetDataBeforePreBootMode;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
+import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
+import nts.uk.ctx.at.request.app.find.application.requestofearch.InputMessageDeadline;
+import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 
 @Path("at/request/application")
@@ -48,7 +50,8 @@ public class ApplicationWebservice extends WebService {
 	@Inject 
 	private GetDataApprovalRootOfSubjectRequest getDataApprovalRoot;
 	
-	
+	@Inject 
+	private GetDataAppCfDetailFinder getDataAppCfDetailFinder;
 	
 	/**
 	 * get All application
@@ -137,6 +140,18 @@ public class ApplicationWebservice extends WebService {
 	@Path("checkdisplayauthorizationcomment")
 	public boolean checkAuthorizationComment( Application application,GeneralDate datebase) {
 		return this.getDataBeforePreBootMode.checkDisplayAuthorizationComment(application, datebase);
+	}
+	
+	
+	/**
+	 * lấy message và deadline trên màn hình
+	 * get message and deadline (getDataConfigDetail)
+	 * @return
+	 */
+	@POST
+	@Path("getmessagedeadline")
+	public OutputMessageDeadline getDataConfigDetail(InputMessageDeadline inputMessageDeadline) {
+		return this.getDataAppCfDetailFinder.getDataConfigDetail(inputMessageDeadline);
 	}
 	
 	/**
