@@ -23,11 +23,11 @@ import nts.uk.ctx.bs.employee.infra.entity.employee.KmnmtEmployee;
 @Stateless
 public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepository {
 	public final String SELECT_NO_WHERE = ""
-			+ "SELECT c.companyId,c.personId,c.bsydtEmployeePk.sId,"
-			+ "c.employeeCode,c.companyMail,c.companyMobileMail,"
-			+ "c.companyMobile,d.retireDate , d.bsydtJobEntryHistoryPk.entryDate , "
-			+ "d.hiringType , d.adoptDate"
-			+ "FROM BsydtEmployee c , BsymtJobEntryHistory d";
+			+ " SELECT c.companyId,c.personId,c.bsydtEmployeePk.sId,"
+			+ " c.employeeCode,c.companyMail,c.companyMobileMail,"
+			+ " c.companyMobile,d.retireDate , d.bsydtJobEntryHistoryPk.entryDate , "
+			+ " d.hiringType , d.adoptDate"
+			+ " FROM BsydtEmployee c , BsymtJobEntryHistory d";
 
 	public final String SELECT_BY_EMP_CODE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
 			+ " AND c.employeeCode =:employeeCode "
@@ -47,6 +47,10 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	public final String SELECT_BY_COMPANY_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId";
 
 	public final String SELECT_BY_SID = SELECT_NO_WHERE + " WHERE c.bsydtEmployeePk.sId = :sId";
+	
+	public final String GET_LAST_EMPLOYEE = "SELECT c.kmnmtEmployeePK.employeeCode FROM KmnmtEmployee c "
+			+ " WHERE c.kmnmtEmployeePK.employeeCode LIKE CONCAT(:emlCode, '%')"
+			+ " ORDER BY  c.kmnmtEmployeePK.employeeCode DESC";
 
 	/** The Constant DATE_FORMAT FROM Client */
 	private static final String DATE_FORMAT = "yyyy/MM/dd";
@@ -161,6 +165,22 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	public Optional<Employee> findBySid(String companyId, String employeeId) {
 		return this.queryProxy().query(SELECT_BY_SID, Object[].class).setParameter("companyId", companyId)
 				.setParameter("sId", employeeId).getSingle(c -> toDomain(c));
+	}
+
+
+	/*vinhpx*/
+	@Override
+	public String findLastEml(String startLetter) {
+		if(startLetter == null) startLetter = "";
+		List<Object[]> lst =  this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("emlCode", startLetter)
+				.getList();	
+		String returnStr = "";
+		if(lst.size() > 0) {
+			Object obj =  lst.get(0);
+			returnStr = obj.toString();
+		}
+		
+		return returnStr;
 	}
 
 }
