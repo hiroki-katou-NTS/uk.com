@@ -16,7 +16,7 @@ public class NumberRounding extends DomainObject{
 	
 	/** The unit. */
 	// 単位
-	private Unit roundingTime;
+	private Unit unit;
 	
 	/** The rounding. */
 	// 端数処理

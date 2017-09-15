@@ -2,24 +2,24 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.common.amountrounding;
+package nts.uk.ctx.at.record.dom.optitem.calculation;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * The Class AmountRounding.
+ * The Class SelectedAttendanceItem.
  */
-// 金額丸め
+// 選択勤怠項目
 @Getter
-public class AmountRounding extends DomainObject{
-	
-	/** The unit. */
-	// 単位
-	private Unit unit;
-	
-	/** The rounding. */
-	// 端数処理
-	private Rounding rounding;
+public class SelectedAttendanceItem extends DomainObject {
+
+	/** The attendance item id. */
+	// 勤怠項目ID
+	private String attendanceItemId;
+
+	/** The operator. */
+	// 演算子
+	private AddSubOperator operator;
 
 }
