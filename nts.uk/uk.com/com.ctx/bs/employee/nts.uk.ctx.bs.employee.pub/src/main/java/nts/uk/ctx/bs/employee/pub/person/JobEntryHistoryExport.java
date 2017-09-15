@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.pub.employee.employeeInfo.personinfo;
+package nts.uk.ctx.bs.employee.pub.person;
 
 import java.util.List;
 
@@ -17,7 +17,7 @@ import nts.arc.time.GeneralDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class JobEntryHistoryDtoExport {
+public class JobEntryHistoryExport {
 	
 	/** The CompanyId */
 	private String companyId;
