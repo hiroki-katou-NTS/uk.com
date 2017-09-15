@@ -6,7 +6,11 @@ import javax.inject.Inject;
 import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeProcessRegister;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -30,23 +34,29 @@ public class GoBackDirectlyDefault implements GoBackDirectlyService {
 	@Inject
 	GoBackDirectlyRepository goBackDirectRepo;
 	@Inject
+	ApplicationRepository appRepo;
+	@Inject
 	NewBeforeProcessRegister processBeforeRegister;
 	@Inject
 	GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
 
+	/**
+	 * 
+	 */
 	@Override
-	public void register(int approvalRoot, String employeeID, Application application, GoBackDirectly goBackDirectly) {
+	// public void register(int approvalRoot, String employeeID, Application
+	// application, GoBackDirectly goBackDirectly) {
+	public void register(int approvalRoot, String employeeID, String appID) {
 		String companyID = AppContexts.user().companyId();
 		/**
 		 * アルゴリズム「直行直帰登録前チェック」を実行する
 		 */
-		// Goi thang 2.1 len
-		//2017.09.01 DuDT: comment tam thoi theo ham da sua => DucPM sua lai sau
-//		processBeforeRegister.processBeforeRegister(companyID, 
-//				employeeID,
-//				application.getInputDate(), 
-//				goBackDirectly.getWorkTimeEnd1(),
-//				application.getPrePostAtr().value, approvalRoot, application.getApplicationType().toString());
+		GoBackDirectly goBackDirectly = goBackDirectRepo.findByApplicationID(companyID, appID).get();
+		Application application = appRepo.getAppById(companyID, appID).get();
+		GeneralDate date = application.getApplicationDate();
+		PrePostAtr prePost = application.getPrePostAtr();
+		ApplicationType appType = application.getApplicationType();
+		processBeforeRegister.processBeforeRegister(companyID, employeeID, date, prePost, approvalRoot, appType.value);
 		// if hasError return
 		// if no Error
 		// アルゴリズム「直行直帰するチェック」を実行する
@@ -111,16 +121,15 @@ public class GoBackDirectlyDefault implements GoBackDirectlyService {
 			// check Valid 1
 			CheckValidOutput validOut = this.goBackLateEarlyCheckValidity(goBackDirectly, goBackCommonSet);
 			if (validOut.isCheckValid1 && validOut.isCheckValid2) {
-				//アルゴリズム「1日分の勤怠時間を仮計算」を実行する
-				
+				// アルゴリズム「1日分の勤怠時間を仮計算」を実行する
 				// GOI 1日分の勤怠時間を仮計算 ben HIbetsuJisseki
-				int  attendanceTime = 0;
-				if(attendanceTime<0) {
+				int attendanceTime = 0;
+				if (attendanceTime < 0) {
 					throw new BusinessException("Msg_296");
-				}else {
-					//Lai check thang Time lan nua 
-					//Merge Node 1
-					if(attendanceTime<0) {
+				} else {
+					// Lai check thang Time lan nua
+					// Merge Node 1
+					if (attendanceTime < 0) {
 						throw new BusinessException("Msg_295");
 					}
 				}

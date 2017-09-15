@@ -508,3 +508,4 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         workLocationCd2: string;
     }
 }
+

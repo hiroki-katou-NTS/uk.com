@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
-import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 
@@ -12,7 +11,7 @@ public interface GoBackDirectlyService {
 	 * @param application
 	 * @param goBackDirectly
 	 */
-	public void register(int approvalRoot, String employeeID, Application application, GoBackDirectly goBackDirectly);
+	public void register(int approvalRoot, String employeeID, String appID);
 
 	/**
 	 * アルゴリズム「直行直帰するチェック」を実行する
@@ -29,10 +28,11 @@ public interface GoBackDirectlyService {
 	 * @return
 	 */
 	public GoBackDirectLateEarlyOuput goBackDirectLateEarlyCheck(GoBackDirectly goBackDirectly);
-	
+
 	/**
 	 * Check Validity
 	 * 
 	 */
-	public CheckValidOutput goBackLateEarlyCheckValidity(GoBackDirectly goBackDirectly,GoBackDirectlyCommonSetting goBackCommonSet);
+	public CheckValidOutput goBackLateEarlyCheckValidity(GoBackDirectly goBackDirectly,
+			GoBackDirectlyCommonSetting goBackCommonSet);
 }

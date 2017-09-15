@@ -50,8 +50,10 @@ public class JpaAppTypeDiscreteSetRepository extends JpaRepository implements Ap
 
 	@Override
 	public Optional<AppTypeDiscreteSetting> getAppTypeDiscreteSettingByAppType(String companyID, int appType) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().query(SELECT_WITH_APP_TYPE, KrqstAppTypeDiscrete.class)
+				.setParameter("companyID", companyID)
+				.setParameter("appType", appType)
+				.getSingle(c -> toDomain(c));
 	}
 
 }
