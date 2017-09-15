@@ -40,5 +40,4 @@ public class Employee extends AggregateRoot {
 		return new Employee(companyId, pId, sId, new EmployeeCode(sCd), new EmployeeMail(companyMail),
 				new EmployeeMail(mobileMail), new CompanyMobile(companyMobile), listEntryJobHist);
 	}
-
 }

@@ -56,4 +56,10 @@ public interface EmployeeRepository {
 	 * @return the optional
 	 */
 	Optional<Employee> findBySid(String companyId, String employeeId);
+	
+	/**
+	 * Find last employee in db
+	 * @return the optional
+	 */
+	String findLastEml(String startLetter);
 }
