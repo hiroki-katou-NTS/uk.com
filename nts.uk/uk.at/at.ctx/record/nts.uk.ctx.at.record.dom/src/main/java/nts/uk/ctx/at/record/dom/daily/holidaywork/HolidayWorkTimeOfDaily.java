@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixRestSetting;
 
@@ -30,7 +31,7 @@ public class HolidayWorkTimeOfDaily {
 	 * @param oneDayRange　１日の計算範囲.１日の範囲
 	 * @return
 	 */
-	public static HolidayWorkTimeOfDaily getHolidayWorkTimeOfDaily(List<FixRestSetting> fixTimeSet ,AttendanceLeavingWork attendanceLeave) {
+	public static HolidayWorkTimeSheet getHolidayWorkTimeOfDaily(List<FixRestSetting> fixTimeSet ,AttendanceLeavingWork attendanceLeave) {
 		
 		List<HolidayWorkFrameTimeSheet> holidayWorkTimeSheetList = new ArrayList<HolidayWorkFrameTimeSheet>();
 		List<HolidayWorkFrameTime> holidayWorkFrameTimeList = new ArrayList<HolidayWorkFrameTime>();
@@ -41,14 +42,16 @@ public class HolidayWorkTimeOfDaily {
 			timeSpan = attendanceLeaveSheet.getDuplicatedWith(holidayTimeSheet.getHours().getSpan());
 			/*控除時間帯を分割*/
 			/*遅刻早退処理*/
-			if(/*遅刻早退どっちの設定を見てもOKなので、どちらかの休出の場合でも計算するを見る*/) {
+		//	if(/*遅刻早退どっちの設定を見てもOKなので、どちらかの休出の場合でも計算するを見る*/) {
 				
-			}
+		//	}
 			/*休出時間帯の作成*/
 			
 			holidayWorkTimeSheetList.add(new HolidayWorkFrameTimeSheet(timeSpan.get()));
 		}
 		
-		return new HolidayWorkTimeOfDaily(holidayWorkTimeSheetList,holidayWorkFrameTimeList);
+		//return new HolidayWorkTimeOfDaily(holidayWorkTimeSheetList,holidayWorkFrameTimeList);
+		
+		return new HolidayWorkTimeSheet();
 	}
 }

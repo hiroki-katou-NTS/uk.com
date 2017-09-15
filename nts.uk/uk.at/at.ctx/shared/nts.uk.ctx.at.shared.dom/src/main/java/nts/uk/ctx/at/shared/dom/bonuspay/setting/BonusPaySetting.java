@@ -55,6 +55,7 @@ public class BonusPaySetting extends AggregateRoot {
 		for(BonusPayTimesheet bonusPayTimeSheet : lstBonusPayTimesheet) {
 			Optional<TimeSpanForCalc> duplicateSpan = calcRange.getDuplicatedWith(new TimeSpanForCalc(new TimeWithDayAttr(bonusPayTimeSheet.getStartTime().v())
 																							,new TimeWithDayAttr(bonusPayTimeSheet.getEndTime().v())));
+			
 		}
 	}
 

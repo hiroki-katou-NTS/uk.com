@@ -14,6 +14,7 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.worktime.AmPmClassification;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
@@ -269,9 +270,12 @@ public class WithinWorkTimeSheet {
 	 * 就業時間の計算(控除時間差し引いた後)
 	 * @return
 	 */
-	public int calcWorkTime(HolidayAdditionAtr holidayAdditionAtr) {
-		int workTime = calcWorkTimeBeforeDeductPremium(holidayAdditionAtr);
-		if(holidayAdditionAtr.isHolidayAddition()) {
+	public int calcWorkTime(CalculationByActualTimeAtr  calcActualTime,DeductionTimeSheet dedTimeSheet) {
+		
+		HolidayAdditionAtr holidayAddition = HolidayAdditionAtr.HolidayAddition.convertFromCalcByActualTimeToHolidayAdditionAtr(calcActualTime);
+		
+		int workTime = calcWorkTimeBeforeDeductPremium(holidayAddition ,dedTimeSheet);
+		if(holidayAddition.isHolidayAddition()) {
 			/*休暇加算時間を計算*/
 			/*休暇加算時間を加算*/
 		}

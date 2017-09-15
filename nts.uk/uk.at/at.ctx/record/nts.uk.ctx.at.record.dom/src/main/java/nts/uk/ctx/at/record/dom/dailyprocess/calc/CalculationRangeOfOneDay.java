@@ -18,6 +18,9 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTime
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.EmploymentContractHistory;
 import nts.uk.ctx.at.shared.dom.employment.statutory.worktime.employment.WorkingSystem;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodOfHoliday;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
@@ -82,10 +85,17 @@ public class CalculationRangeOfOneDay {
 			createWithinWorkTimeTimeSheet();
 			/*就業外*/
 			/*勤務時間帯の計算*/
-			collectCalculationResult();
 		}
 	}
-	
+	/**
+	 * 
+	 */
+	private void collectCalculationResult(WithinWorkTimeSheet withinTimeSheet, CalculationByActualTimeAtr actualTimeAtr,) {
+		int calcWithinWorkTime = withinTimeSheet.calcWorkTime(actualTimeAtr, dedTimeSheet);
+		/*法定労働時間取得*/
+		return /*法定労働時間*/ - calcWithinWorkTime;
+	}
+
 	/**
 	 * 就業時間内時間帯の作成
 	 * @param workType 勤務種類クラス

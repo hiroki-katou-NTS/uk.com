@@ -8,6 +8,6 @@ import lombok.Value;
  *
  */
 @Value
-public class StatutoryOverWorkSet {
+public class StatutoryOverTimeWorkSet {
 	private boolean AutoCalcStatutoryOverWork;
 }
