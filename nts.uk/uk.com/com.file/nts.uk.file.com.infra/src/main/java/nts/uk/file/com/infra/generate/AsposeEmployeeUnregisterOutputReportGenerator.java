@@ -29,13 +29,12 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsReportGenerator
 		implements EmployeeUnregisterOutputGenerator {
 
-	private static final String TEMPLATE_FILE = "report/1.xlsx";
+	private static final String TEMPLATE_FILE = "report/承認ルート未登録の社員のEXCEL出力.xlsx";
 
-	private static final String REPORT_FILE_NAME = "CMM018.xlsx";
+	private static final String REPORT_FILE_NAME = "承認ルート未登録の社員.xlsx";
 
 	private static final int[] COLUMN_INDEX = { 0, 1, 2, 3, 4, 5, 6 };
-
-	private static int startRow;
+	
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, EmployeeUnregisterOutputDataSoure dataSource) {
@@ -84,14 +83,10 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 		Worksheet worksheet = worksheets.get(0);
 		Cells cells = worksheet.getCells();
 		List<EmployeeUnregisterOutput> employeeUnregisLst = employee.getEmployeeUnregisterOutputLst();
-		this.startRow = 6;
-		int indexSheet = 0;
-
 		int x = 5;
 		for (int j = 0; j < employeeUnregisLst.size(); j++) {
 
 			int totalRowOfEmployee = employeeUnregisLst.get(j).getAppType().size();
-			System.out.println(x);
 			if (totalRowOfEmployee > 1) {
 				int numberOfPage = (x + totalRowOfEmployee) / 52;
 
@@ -136,31 +131,32 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 						style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
 						style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
 						appType.setStyle(style);
+						x++;
 					}
-
+					x = x + 1;
 					HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
-					hPageBreaks.add("H" + numberOfPage * 52);
+					hPageBreaks.add("H" + x);
 					VerticalPageBreakCollection vPageBreaks = worksheet.getVerticalPageBreaks();
-					vPageBreaks.add("H" + numberOfPage * 52);
-
-					x = (numberOfPage * 52) + 1;
+					vPageBreaks.add("H" + x);
+					
+					 x = x + 1;
 					cells.merge(x, 1, totalRowOfEmployee - numberOfRowMerge, 1, true);
 					Cell sCd1 = cells.get(x, COLUMN_INDEX[1]);
 					sCd1.setValue(employeeUnregisLst.get(j).getEmpInfor().getSCd());
 
-					cells.merge(x, 2, numberOfRowMerge, 1, true);
+					cells.merge(x, 2, totalRowOfEmployee - numberOfRowMerge, 1, true);
 					Cell pName1 = cells.get(x, COLUMN_INDEX[2]);
 					pName1.setValue(employeeUnregisLst.get(j).getEmpInfor().getPName());
 
-					cells.merge(x, 3, numberOfRowMerge, 1, true);
+					cells.merge(x, 3, totalRowOfEmployee - numberOfRowMerge, 1, true);
 					Cell wpCode1 = cells.get(x, COLUMN_INDEX[3]);
 					wpCode1.setValue(employeeUnregisLst.get(j).getEmpInfor().getWpCode());
 
-					cells.merge(x, 4, numberOfRowMerge, 1, true);
+					cells.merge(x, 4, totalRowOfEmployee - numberOfRowMerge, 1, true);
 					Cell wpName1 = cells.get(x, COLUMN_INDEX[4]);
 					wpName1.setValue(employeeUnregisLst.get(j).getEmpInfor().getWpName());
 
-					for (int k = 0; k < numberOfRowMerge; k++) {
+					for (int k = 0; k < totalRowOfEmployee - numberOfRowMerge; k++) {
 						Cell sCode = cells.get(x + k, COLUMN_INDEX[1]);
 						setTitleStyle(sCode);
 
@@ -183,7 +179,11 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 						style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
 						style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
 						appType.setStyle(style);
+						x++;
 					}
+					
+
+
 
 				} else {
 
@@ -203,17 +203,6 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 					Cell wpName = cells.get(x, COLUMN_INDEX[4]);
 					wpName.setValue(employeeUnregisLst.get(j).getEmpInfor().getWpName());
 
-					for (int i = 0; i < totalRowOfEmployee; i++) {
-
-						Cell appType = cells.get(x, COLUMN_INDEX[5]);
-						appType.setValue(employeeUnregisLst.get(j).getAppType().get(i));
-						Style style = appType.getStyle();
-						style.setPattern(BackgroundType.SOLID);
-						style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
-						style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
-						appType.setStyle(style);
-					}
-
 					for (int k = 0; k < totalRowOfEmployee; k++) {
 						Cell sCode = cells.get(x + k, COLUMN_INDEX[1]);
 						setTitleStyle(sCode);
@@ -227,18 +216,21 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 						Cell worplaceName = cells.get(x + k, COLUMN_INDEX[4]);
 						setTitleStyle(worplaceName);
 					}
+					for (int i = 0; i < totalRowOfEmployee; i++) {
+
+						Cell appType = cells.get(x, COLUMN_INDEX[5]);
+						appType.setValue(employeeUnregisLst.get(j).getAppType().get(i));
+						Style style = appType.getStyle();
+						style.setPattern(BackgroundType.SOLID);
+						style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
+						style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
+						appType.setStyle(style);
+						x++;
+					}
 
 				}
 
 			} else {
-
-				int numberOfPage = (x + 1) / 52;
-
-				int numberOfRowMerge = (52 * numberOfPage) - x;
-
-				if (numberOfRowMerge > 0) {
-
-				}
 
 				Cell sCd = cells.get(x, COLUMN_INDEX[1]);
 				sCd.setValue(employeeUnregisLst.get(j).getEmpInfor().getSCd());
@@ -255,7 +247,7 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 				Cell wpName = cells.get(x, COLUMN_INDEX[4]);
 				wpName.setValue(employeeUnregisLst.get(j).getEmpInfor().getWpName());
 				setTitleStyle(wpName);
-				
+
 				Cell appType = cells.get(x, COLUMN_INDEX[5]);
 				appType.setValue(employeeUnregisLst.get(j).getAppType().get(0));
 				Style style = appType.getStyle();
@@ -263,11 +255,10 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 				style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
 				style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
 				appType.setStyle(style);
+				x++;
 			}
 
 		}
-
-		this.startRow = x;
 
 	}
 

@@ -44,7 +44,7 @@ public class EmployeeUnregisterApprovalRootRepositoryImpl implements EmployeeUnr
 
 	private List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate) {
 		List<EmployeeApproveDto> lstEmps = new ArrayList<>();
-		for (int i = 0; i < 5; i = i + 2) {
+		for (int i = 0; i < 15; i = i + 2) {
 			EmployeeApproveDto emp = new EmployeeApproveDto();
 			emp.setCompanyId(companyId);
 			emp.setPId("CEC90E5D-1910-4271-A1F5-2DC27B53E3E5");
