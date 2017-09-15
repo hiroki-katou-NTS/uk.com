@@ -13,7 +13,9 @@ module nts.uk.at.view.kmk010.a {
             findAllOvertime : "ctx/at/shared/overtime/findAll",
             findAllOvertimeLanguageBRDItem : "ctx/at/shared/overtime/breakdown/language/findAll",
             findAllOvertimeBRDItem : "ctx/at/shared/overtime/breakdown/findAll",
-            findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems"
+            findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems",
+            checkManageSixtyHourVacationSetting: "ctx/at/shared/vacation/setting/sixtyhourvacation/com/check/manage"
+            
         }
 
         /**
@@ -103,6 +105,12 @@ module nts.uk.at.view.kmk010.a {
             return nts.uk.request.ajax('at', paths.findAllDailyAttendanceItem);
         }
 
+        /**
+         * call service check manage sixty hour vacation setting
+         */
+        export function checkManageSixtyHourVacationSetting(): JQueryPromise<model.SixtyHourVacationSettingCheckDto> {
+            return nts.uk.request.ajax('at', paths.checkManageSixtyHourVacationSetting);
+        }
         export module model {
 
             export interface EnumConstantDto {
@@ -162,6 +170,10 @@ module nts.uk.at.view.kmk010.a {
             export interface DailyAttendanceItemDto {
                 attendanceItemId: number;
                 attendanceItemName: string;
+            }
+            
+            export interface SixtyHourVacationSettingCheckDto{
+                manage: boolean;
             }
             
         }

@@ -18,6 +18,7 @@ module nts.uk.at.view.kmk010.a {
             lstUnit: EnumConstantDto[];
             lstRounding: EnumConstantDto[];
             languageId: string;
+            isManage : KnockoutObservable<boolean>;
             static LANGUAGE_ID_JAPAN = 'ja';
 
             constructor() {
@@ -26,6 +27,7 @@ module nts.uk.at.view.kmk010.a {
                 self.overtimeSettingModel = new OvertimeSettingModel();
                 self.superHD60HConMedModel = new SuperHD60HConMedModel();
                 self.languageId = 'ja';
+                self.isManage = ko.observable(true);
             }
 
             /**
@@ -45,6 +47,11 @@ module nts.uk.at.view.kmk010.a {
                     self.lstRounding = data;
                 });
 
+                // check manage call service
+                service.checkManageSixtyHourVacationSetting().done(function(data){
+                    self.isManage(data.manage);
+                });
+                
                 service.findByIdOvertimeSetting().done(function(dataOvertimeSetting) {
                     self.overtimeSettingModel.updateData(dataOvertimeSetting);
                     for (var brdItem of self.overtimeSettingModel.breakdownItems) {
