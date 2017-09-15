@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
@@ -17,22 +20,20 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
-@AllArgsConstructor
 public class LateTimeSheet {
 	
-//	private TimeWithDayAttr start;
-//	private TimeWithDayAttr end;
-//
-//	private LateTimeSheet(TimeWithDayAttr start, TimeWithDayAttr end) {
-//		this.start = start;
-//		this.end   = end;
+	@Getter
 	private TimeSpanForCalc forRecordTimeSheet;
+	@Getter
 	private TimeSpanForCalc forDeducationTimeSheet;
 	
 	
+	public LateTimeSheet(TimeSpanForCalc recordTimeSheet,TimeSpanForCalc deductionTimeSheet) {
+		this.forRecordTimeSheet = recordTimeSheet;
+		this.forDeducationTimeSheet = deductionTimeSheet;
+	}
 	
 	
-	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊	
 	/**
 	 * 遅刻時間の計算
 	 * @param specifiedTimeSheet
@@ -43,21 +44,22 @@ public class LateTimeSheet {
 	 * @return
 	 */
 	
-	public static LateTimeSheet lateTimeCalc(SpecifiedTimeSheetSetting specifiedTimeSheet,TimeWithDayAttr goWorkTime,int workNo
+	public static Optional<LateTimeSheet> lateTimeCalc(SpecifiedTimeSheetSetting specifiedTimeSheet,TimeWithDayAttr goWorkTime,int workNo
 			,WorkTimeCommonSet workTimeCommonSet,WithinWorkTimeSheet withinWorkTimeSheet, WorkTime workTime,DeductionTimeSheet deductionTimeSheet) {	
-		TimeSpanForCalc fordeduct;
-		TimeSpanForCalc forRec;
 		//出勤時刻と遅刻判断時刻を比較	
 		if(goWorkTime.greaterThan(withinWorkTimeSheet.getlateDecisionClock(workNo).getLateDecisionClock())/*猶予時間考慮した上で遅刻の場合*/
 				||workTimeCommonSet.getGraceTimeSet(LateLeaveEarlyClassification.LATE).isIncludeInWorkingHours()){//猶予時間を加算しない場合
-			fordeduct = lateTimeSheetCreate(goWorkTime, workTime, deductionTimeSheet,workNo/*,控除区分:控除*/);
-			forRec = lateTimeSheetCreate(goWorkTime, workTime, deductionTimeSheet,workNo/*,控除区分:計上*/);		
+			TimeSpanForCalc forDeduct = new TimeSpanForCalc(lateTimeSheetCreate(goWorkTime, workTime, deductionTimeSheet,workNo/*,控除区分:控除*/).getStart(),
+					lateTimeSheetCreate(goWorkTime, workTime, deductionTimeSheet,workNo/*,控除区分:控除*/).getEnd());
+			TimeSpanForCalc forRec = new TimeSpanForCalc(lateTimeSheetCreate(goWorkTime, workTime, deductionTimeSheet,workNo/*,控除区分:計上*/).getStart()
+					,lateTimeSheetCreate(goWorkTime, workTime, deductionTimeSheet,workNo/*,控除区分:計上*/).getEnd());		
 
 			//休暇時間相殺処理(未作成)
 			//遅刻猶予加算時間←0：00（未作成）
 			
+			return Optional.of(new LateTimeSheet(forRec,forDeduct));
 		}	
-		return new LateTimeSheet(fordeduct,forRec);
+		return null;//遅刻していない場合はNULLでよい？
 	}
 	
 	/**
@@ -101,8 +103,6 @@ public class LateTimeSheet {
 		return lateTimeSheet;
 	}
 	
-	
-	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
 	
 //	public void calcLateTime(計上控除区分) {
 //	}

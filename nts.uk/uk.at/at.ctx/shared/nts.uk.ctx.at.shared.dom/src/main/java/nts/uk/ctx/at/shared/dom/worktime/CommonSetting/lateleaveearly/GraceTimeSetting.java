@@ -11,6 +11,6 @@ import lombok.Value;
 public class GraceTimeSetting {
 
 	private LateLeaveEarlyGraceTime graceTime;
-	private boolean includeInWorkingHours;
+	private boolean includeInWorkingHours;//true:含める　false：含めない
 
 }

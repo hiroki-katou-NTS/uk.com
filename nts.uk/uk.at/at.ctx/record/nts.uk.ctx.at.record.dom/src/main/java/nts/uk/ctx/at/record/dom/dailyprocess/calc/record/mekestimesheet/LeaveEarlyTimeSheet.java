@@ -1,6 +1,9 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.val;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
@@ -18,11 +21,16 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 
-@AllArgsConstructor
 public class LeaveEarlyTimeSheet {
-	
+	@Getter
 	private TimeSpanForCalc forRecordTimeSheet;
+	@Getter
 	private TimeSpanForCalc forDeducationTimeSheet;
+	
+	public LeaveEarlyTimeSheet(TimeSpanForCalc recordTimeSheet,TimeSpanForCalc deductionTimeSheet) {
+		this.forRecordTimeSheet = recordTimeSheet;
+		this.forDeducationTimeSheet = deductionTimeSheet;
+	}
 	
 	
 	/**
@@ -36,21 +44,20 @@ public class LeaveEarlyTimeSheet {
 	 * @param deductionTimeSheet
 	 * @return
 	 */
-	public static LeaveEarlyTimeSheet leaveEarlyTimeCalc(SpecifiedTimeSheetSetting specifiedTimeSheet,TimeWithDayAttr leaveWorkTime,int workNo
+	public static Optional<LeaveEarlyTimeSheet> leaveEarlyTimeCalc(SpecifiedTimeSheetSetting specifiedTimeSheet,TimeWithDayAttr leaveWorkTime,int workNo
 			,WorkTimeCommonSet workTimeCommonSet,WithinWorkTimeSheet withinWorkTimeSheet, WorkTime workTime,DeductionTimeSheet deductionTimeSheet) {	
-		TimeSpanForCalc fordeduct;
-		TimeSpanForCalc forRec;
 		//出勤時刻と早退判断時刻を比較	
 		if(leaveWorkTime.lessThan(withinWorkTimeSheet.getleaveEarlyDecisionClock(workNo).getLeaveEarlyDecisionClock())/*猶予時間考慮した上で早退の場合*/
 				||workTimeCommonSet.getGraceTimeSet(LateLeaveEarlyClassification.LEAVEEARLY).isIncludeInWorkingHours()){//猶予時間を加算しない場合
-			fordeduct = leaveEarlyTimeSheetCreate(leaveWorkTime, workTime, deductionTimeSheet,workNo/*,控除区分:控除*/);
-			forRec = leaveEarlyTimeSheetCreate(leaveWorkTime, workTime, deductionTimeSheet,workNo/*,控除区分:計上*/);		
+			TimeSpanForCalc fordeduct = leaveEarlyTimeSheetCreate(leaveWorkTime, workTime, deductionTimeSheet,workNo/*,控除区分:控除*/);
+			TimeSpanForCalc forRec = leaveEarlyTimeSheetCreate(leaveWorkTime, workTime, deductionTimeSheet,workNo/*,控除区分:計上*/);		
 
 			//休暇時間相殺処理(未作成)
 			//早退猶予加算時間←0：00（未作成）
 			
+			return Optional.of(new LeaveEarlyTimeSheet(forRec,fordeduct));
 		}	
-		return new LeaveEarlyTimeSheet(fordeduct,forRec);
+		return null;
 	}
 	
 	

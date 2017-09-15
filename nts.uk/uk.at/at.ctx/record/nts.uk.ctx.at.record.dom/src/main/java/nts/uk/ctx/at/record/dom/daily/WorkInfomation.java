@@ -10,5 +10,6 @@ import lombok.Value;
 @Value
 public class WorkInfomation {
 	private String syainID;
+	private List<ScheduleTimeSheet> workScheduleTimeSheet;
 	
 }

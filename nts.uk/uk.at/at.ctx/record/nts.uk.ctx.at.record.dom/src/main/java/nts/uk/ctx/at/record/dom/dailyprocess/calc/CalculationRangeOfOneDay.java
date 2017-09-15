@@ -1,10 +1,14 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collector;
 
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWorkOfDaily;
+import nts.uk.ctx.at.record.dom.daily.ScheduleTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.WorkInfomation;
 import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -14,10 +18,12 @@ import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
+import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.TimeSheetWithUseAtr;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixOffdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixWeekdayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * 1日の計算範囲
@@ -94,7 +100,7 @@ public class CalculationRangeOfOneDay {
 		}
 		else {
 			/*休日出勤*/
-			return HolidayWorkTimeOfDaily.getHolidayWorkTimeOfDaily(fixOff.getWorkingTimes(), attendanceLeave);
+			//return HolidayWorkTimeOfDaily.getHolidayWorkTimeOfDaily(fixOff.getWorkingTimes(), attendanceLeave);
 			
 		}
 	}
@@ -123,4 +129,59 @@ public class CalculationRangeOfOneDay {
 		/*控除時間帯の作成*/
 		//             //
 	}
+	
+	
+	/**
+	 * 流動勤務の時間帯作成
+	 */
+	public void createFluidWork(WorkTime workTime) {
+		
+		//所定時間帯を取得する
+		getPredetermineTimeSet(workTime);
+		
+		//計算範囲を判断する
+		
+		
+		//遅刻時間を計算
+		
+	
+		
+		
+		
+		
+		
+		
+		
+	}
+	
+	public void getPredetermineTimeSet(WorkTime workTime) {
+		
+		//予定と実績が同じ勤務かどうか確認(仮作成)　　日別実績の勤務情報のクラスのメソッドを呼び出す予定
+		//日別実績の勤務情報のクラスから予定時間帯と勤務実績の勤務情報をもらう必要がある
+		boolean compareResult;//予定勤務と同じかどうか判断した結果
+		//予定時間帯
+		List<ScheduleTimeSheet> workScheduleTimeSheet;
+		//就業時間帯の設定　
+		WorkTime worktime;
+		
+		
+		if(compareResult) {
+			//予定勤務から参照
+			List<TimeSheetWithUseAtr> timeSheet = new ArrayList<TimeSheetWithUseAtr>();
+			for() {
+				
+			}
+			
+			
+		}else {
+			//就業時間帯から参照
+			
+		}
+		
+		//predetermineTimeSet.getSpecifiedTimeSheet().correctPredetermineTimeSheet
+		
+		
+	}
+	
+	
 }
