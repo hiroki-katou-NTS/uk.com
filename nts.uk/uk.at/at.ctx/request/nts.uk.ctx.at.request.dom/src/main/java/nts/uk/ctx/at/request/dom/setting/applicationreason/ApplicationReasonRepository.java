@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.setting.applicationreason;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ApplicationReasonRepository {
 	/**
@@ -16,4 +17,11 @@ public interface ApplicationReasonRepository {
 	 * @return
 	 */
 	List<ApplicationReason> getReasonByAppType(String companyId, int appType);
+	/**
+	 * get getReasonById by company id and reasonID
+	 * @param companyId
+	 * @param appType
+	 * @return
+	 */
+	Optional<ApplicationReason> getReasonById(String companyId, String reasonID);
 }

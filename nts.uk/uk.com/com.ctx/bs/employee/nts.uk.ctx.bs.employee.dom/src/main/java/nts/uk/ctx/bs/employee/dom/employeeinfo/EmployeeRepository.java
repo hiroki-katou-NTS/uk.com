@@ -21,7 +21,7 @@ public interface EmployeeRepository {
 	 * @param employeeCode the employee code
 	 * @return the person id by employee code
 	 */
-	Optional<Employee> findByEmployeeCode(String companyId, String employeeCode , GeneralDate entryDate);
+	Optional<Employee> findByEmployeeCode(String companyId, String employeeCode , GeneralDate standardDate);
 
 	/**
 	 * Gets the list person by list employee.
@@ -56,4 +56,8 @@ public interface EmployeeRepository {
 	 * @return the optional
 	 */
 	Optional<Employee> findBySid(String companyId, String employeeId);
+	
+	
+	List<Employee> getListEmpByStandardDate(String companyId , GeneralDate standardDate);
 }
+

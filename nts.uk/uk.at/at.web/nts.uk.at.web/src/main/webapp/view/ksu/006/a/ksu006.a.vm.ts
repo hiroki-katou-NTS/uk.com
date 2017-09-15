@@ -86,6 +86,17 @@ module nts.uk.at.view.ksu006.a {
                         nts.uk.ui.block.clear();
                     });
                 });
+                
+                self.isModeExecute.subscribe(newValue => {
+                    // initial mode
+                    if (newValue) {
+                        $('#comboExternalBudget').focus();
+                    }
+                    // execute mode
+                    else {
+                        $('#showDialogExternalBudget').focus();
+                    }
+                });
             }
 
             /**
@@ -108,7 +119,7 @@ module nts.uk.at.view.ksu006.a {
                         self.isModeExecute(true);
                         self.selectedExtBudgetCode(self.externalBudgetList()[0].code);
                     }
-                    $('#showDialogExternalBudget').focus();
+                    
                     nts.uk.ui.block.clear();
                     dfd.resolve();
                 });
@@ -128,8 +139,6 @@ module nts.uk.at.view.ksu006.a {
                     nts.uk.ui.dialog.alert("Line start not valid.");
                     return;
                 }
-
-                $('#comboExternalBudget').focus();
 
                 // upload file
                 self.uploadFile().done(function() {
@@ -193,6 +202,31 @@ module nts.uk.at.view.ksu006.a {
                     nts.uk.ui.block.clear();
                 });
             }
+            
+            /**
+             * getLabelPreview
+             */
+            public getLabelPreview(): any {
+                let self = this;
+                
+                // find name id
+                let nameId: string = "KSU006_19";
+                if (!self.isDataDailyUnit()) {
+                    nameId = "KSU006_121";
+                }
+                let nameJP: string = nts.uk.resource.getText(nameId);
+                let lstComponent: string[] = nameJP.split("\n");
+                
+                let result: any = {first: null, second: null};
+                
+                if (lstComponent.length <= 0) {
+                    result.first = nameJP;
+                } else {
+                    result.first = lstComponent[0];
+                    result.second = lstComponent[1];
+                }
+                return result;
+            }
 
             /**
              * checkUnitAtr: is Daily or Timezone?
@@ -218,7 +252,7 @@ module nts.uk.at.view.ksu006.a {
             /**
              * showDataPreview
              */
-            private showDataPreview() {
+            public showDataPreview() {
                 let self = this;
                 // reset value
                 self.resetDataPreview();
@@ -232,7 +266,14 @@ module nts.uk.at.view.ksu006.a {
                 // upload file input
                 self.uploadFile().done(function() {
                     self.validateFile().done(() => {
-                        self.loadDataPreview();
+                        self.loadDataPreview().done(() => {
+                            // calculate height cell of table when has a record.
+                            if (self.dataPreview().length == 1) {
+                                $(".first-row").css('cssText', 'height: 70px !important');
+                            } else {
+                                $(".first-row").css('cssText', 'height: 21px !important');
+                            }
+                        });
                     });
                 }).fail(function(res: any) {
                     self.showMessageError(res);
@@ -242,8 +283,10 @@ module nts.uk.at.view.ksu006.a {
             /**
              * loadDataPreview
              */
-            private loadDataPreview() {
+            private loadDataPreview(): JQueryPromise<any> {
                 let self = this;
+                let dfd = $.Deferred<any>();
+                
                 service.findDataPreview(self.toJSObject()).done((res: DataPreviewModel) => {
                     self.isDataDailyUnit(res.isDailyUnit);
 
@@ -252,9 +295,12 @@ module nts.uk.at.view.ksu006.a {
                     self.remainData(self.dataPreview().slice(1, self.dataPreview().length));
 
                     self.totalRecord(res.totalRecord);
+                    
+                    dfd.resolve();
                 }).fail(function(res: any) {
                     self.showMessageError(res);
                 });
+                return dfd.promise();
             }
 
             /**

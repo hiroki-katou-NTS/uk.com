@@ -10,7 +10,7 @@ import nts.arc.time.GeneralDate;
 
 /**
  * The Class EmployeeDto. 
- * Dto by Request List #18
+ * Dto by Request List #18 , #60
  */
 @Data
 @AllArgsConstructor

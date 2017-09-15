@@ -4,28 +4,29 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.overtime.setting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.overtime.Overtime;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeCalculationMethod;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeNote;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItem;
-import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSettingSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.overtime.KshstOverTime;
-import nts.uk.ctx.at.shared.infra.entity.overtime.KshstOverTimePK;
-import nts.uk.ctx.at.shared.infra.entity.overtime.breakdown.KshstOverTimeBrd;
-import nts.uk.ctx.at.shared.infra.entity.overtime.setting.KshstOverTimeSet;
-import nts.uk.ctx.at.shared.infra.repository.overtime.JpaOvertimeSetMemento;
-import nts.uk.ctx.at.shared.infra.repository.overtime.breakdown.JpaOvertimeBRDItemSetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNote;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.KshstOverTimeSet;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.KshstOverTimeBrd;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTime;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.overtime.KshstOverTimePK;
+import nts.uk.ctx.at.shared.infra.repository.outsideot.breakdown.JpaOvertimeBRDItemSetMemento;
+import nts.uk.ctx.at.shared.infra.repository.outsideot.overtime.JpaOvertimeSetMemento;
 
 /**
  * The Class JpaOvertimeSettingSetMemento.
  */
 @Getter
-public class JpaOvertimeSettingSetMemento implements OvertimeSettingSetMemento{
+public class JpaOvertimeSettingSetMemento implements OutsideOTSettingSetMemento{
 	
 	/** The entity overtimes. */
 	private List<KshstOverTime> entityOvertimes;
@@ -85,11 +86,11 @@ public class JpaOvertimeSettingSetMemento implements OvertimeSettingSetMemento{
 	 * setBreakdownItems(java.util.List)
 	 */
 	@Override
-	public void setBreakdownItems(List<OvertimeBRDItem> breakdownItems) {
+	public void setBreakdownItems(List<OutsideOTBRDItem> breakdownItems) {
 		this.entityOvertimeBRDItems = breakdownItems.stream().map(overtimeBRDItem -> {
 			KshstOverTimeBrd entityOvertimeBRDItem = new KshstOverTimeBrd();
-			overtimeBRDItem.saveToMemento(
-					new JpaOvertimeBRDItemSetMemento(entityOvertimeBRDItem, this.entity.getCid()));
+			overtimeBRDItem.saveToMemento(new JpaOvertimeBRDItemSetMemento(entityOvertimeBRDItem,
+					new ArrayList<>(), this.entity.getCid()));
 			return entityOvertimeBRDItem;
 		}).collect(Collectors.toList());
 
@@ -102,7 +103,7 @@ public class JpaOvertimeSettingSetMemento implements OvertimeSettingSetMemento{
 	 * OvertimeCalculationMethod)
 	 */
 	@Override
-	public void setCalculationMethod(OvertimeCalculationMethod calculationMethod) {
+	public void setCalculationMethod(OutsideOTCalMed calculationMethod) {
 		this.entity.setCalculationMethod(calculationMethod.value);
 	}
 

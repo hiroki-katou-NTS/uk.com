@@ -21,6 +21,10 @@ public class Workplace extends AggregateRoot{
 	// 会社ID
 	private String companyId;
 
+	/** The workplace id. */
+	//職場ID
+	private WorkplaceId workplaceId;
+	
 	/** The workplace history. */
 	//履歴
 	private List<WorkplaceHistory> workplaceHistory;
@@ -32,6 +36,7 @@ public class Workplace extends AggregateRoot{
 	 */
 	public Workplace(WorkplaceGetMemento memento) {
 		this.companyId = memento.getCompanyId();
+		this.workplaceId = memento.getWorkplaceId();
 		this.workplaceHistory = memento.getWorkplaceHistory();
 	}
 
@@ -42,6 +47,7 @@ public class Workplace extends AggregateRoot{
 	 */
 	public void saveToMemento(WorkplaceSetMemento memento) {
 		memento.setCompanyId(this.companyId);
+		memento.setWorkplaceId(this.workplaceId);
 		memento.setWorkplaceHistory(this.workplaceHistory);
 	}
 

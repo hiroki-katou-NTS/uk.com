@@ -4,20 +4,22 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.overtime.breakdown;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.overtime.ProductNumber;
-import nts.uk.ctx.at.shared.dom.overtime.UseClassification;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemName;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemGetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemName;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItemGetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.ProductNumber;
 
 /**
  * The Class OvertimeBRDItemSaveDto.
  */
 @Getter
 @Setter
-public class OvertimeBRDItemSaveDto implements OvertimeBRDItemGetMemento{
+public class OvertimeBRDItemSaveDto implements OutsideOTBRDItemGetMemento{
 
 	/** The use classification. */
 	private Boolean useClassification;
@@ -30,6 +32,9 @@ public class OvertimeBRDItemSaveDto implements OvertimeBRDItemGetMemento{
 
 	/** The product number. */
 	private Integer productNumber;
+	
+	/** The attendance item ids. */
+	private List<Integer> attendanceItemIds;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.shared.dom.overtime.OvertimeGetMemento#getUseClassification()
@@ -74,6 +79,18 @@ public class OvertimeBRDItemSaveDto implements OvertimeBRDItemGetMemento{
 	@Override
 	public ProductNumber getProductNumber() {
 		return ProductNumber.valueOf(this.productNumber);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemGetMemento#
+	 * getAttendanceItemIds()
+	 */
+	@Override
+	public List<Integer> getAttendanceItemIds() {
+		return this.attendanceItemIds;
 	}
 	
 

@@ -8,10 +8,14 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
@@ -20,6 +24,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 @Table(name="KRQDT_APP_STAMP")
 public class KrqdtAppStamp extends UkJpaEntity {
 	
@@ -32,7 +37,14 @@ public class KrqdtAppStamp extends UkJpaEntity {
 	@Column(name="APP_TIME")
 	public Integer appTime;
 	
-	@OneToMany(targetEntity=KrqdtAppStampDetail.class, cascade = CascadeType.ALL, mappedBy = "krqdpAppStamp", orphanRemoval = true)
+	@OneToOne(targetEntity=KafdtApplication.class, cascade = CascadeType.ALL, orphanRemoval = true)
+	@PrimaryKeyJoinColumns({
+		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
+		@PrimaryKeyJoinColumn(name="APP_ID",referencedColumnName="APP_ID")
+	})
+	public KafdtApplication kafdtApplication;
+	
+	@OneToMany(targetEntity=KrqdtAppStampDetail.class, cascade = CascadeType.ALL, mappedBy = "krqdtAppStamp", orphanRemoval = true)
 	@JoinTable(name = "KRQDT_APP_STAMP_DETAILS")
 	public List<KrqdtAppStampDetail> krqdtAppStampDetails;
 	
