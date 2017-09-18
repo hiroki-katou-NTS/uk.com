@@ -117,10 +117,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 				continue;
 			}
 			//ドメインモデル「社員」を取得する(lấy dữ liệu domain「社員」)
-			// TODO Viet sau khi QA duoc tra loi
-			EmployeeApproverOutput empInfor = new EmployeeApproverOutput("", ""); 
-			
-			
+			EmployeeApproverOutput empInfor = new EmployeeApproverOutput(root.getEmployeeId(), root.getEmployeeId()); 
 			psWootInfor = getAppInfors(psRoot, psWootInfor, companyID);
 			PersonApproverOutput psOutput = new PersonApproverOutput(empInfor, psWootInfor);
 			mapPsRootInfor.put(root.getEmployeeId(), psOutput);

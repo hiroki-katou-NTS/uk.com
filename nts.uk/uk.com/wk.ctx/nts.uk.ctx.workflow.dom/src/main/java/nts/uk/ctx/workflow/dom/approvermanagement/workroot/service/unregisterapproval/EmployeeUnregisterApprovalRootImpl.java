@@ -18,6 +18,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRep
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 
 @Stateless
@@ -30,7 +31,8 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 	private WorkplaceApprovalRootRepository wpRootRepository;
 	@Inject
 	private PersonApprovalRootRepository psRootRepository;
-	
+	@Inject
+	private PersonInforExportAdapter psInfor;
 	@Override
 	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate) {
 		List<EmployeeApproveDto> lstEmps = new ArrayList<>();
@@ -101,7 +103,7 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 			
 			if(!CollectionUtil.isEmpty(appTypes)) {
 				empInfo.setAppType(appTypes);
-				// TODO can phai them thong tin worplace cho employee
+				empInfor.setPName(psInfor.personName(empInfor.getSId()));
 				empInfo.setEmpInfor(empInfor);
 				lstUnRegister.add(empInfo);
 			}
