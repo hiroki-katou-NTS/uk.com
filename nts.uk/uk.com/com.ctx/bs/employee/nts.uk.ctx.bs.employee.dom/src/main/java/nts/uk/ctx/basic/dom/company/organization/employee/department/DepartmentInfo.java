@@ -37,35 +37,6 @@ public class DepartmentInfo extends AggregateRoot {
 	/** The dep generic name. */
 	/* 部門総称 */
 	private DepartmentGenericName depGenericName;
-
-	
-	/**
-	 * Instantiates a new department info.
-	 *
-	 * @param memento the memento
-	 */
-	public DepartmentInfo(DepartmentInfoGetMemento memento) {
-		this.companyId = memento.getCompanyId();
-		this.depHistoryId = memento.getDepHistoryId();
-		this.departmentId = memento.getDepartmentId();
-		this.departmentCode = memento.getDepartmentCode();
-		this.departmentName = memento.getDepartmentName();
-		this.depGenericName = memento.getDepGenericName();
-	}
-	
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(DepartmentInfoSetMemento memento) {
-		memento.setCompanyId(this.companyId);
-		memento.setDepHistoryId(this.depHistoryId);
-		memento.setDepartmentId(this.departmentId);
-		memento.setDepartmentCode(this.departmentCode);
-		memento.setDepartmentName(this.departmentName);
-		memento.setDepGenericName(this.depGenericName);
-	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

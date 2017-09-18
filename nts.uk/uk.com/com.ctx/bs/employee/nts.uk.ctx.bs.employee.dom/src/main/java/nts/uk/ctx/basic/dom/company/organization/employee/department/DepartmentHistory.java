@@ -21,24 +21,4 @@ public class DepartmentHistory extends DomainObject {
 	/** The period. */
 	/* 期間 */
 	private Period period; 
-	
-	/**
-	 * Instantiates a new department history.
-	 *
-	 * @param memento the memento
-	 */
-	public DepartmentHistory(DepartmentHistoryGetMemento memento) {
-		this.id = memento.getId();
-		this.period = memento.getPeriod();
-	}
-	
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(DepartmentHistorySetMemento memento) {
-		memento.setId(this.id);
-		memento.setPeriod(this.period);
-	}
 }

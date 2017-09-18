@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.basic.dom.company.organization.employee.department;
 
+import java.util.List;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
@@ -24,29 +26,7 @@ public class Department extends AggregateRoot {
 	
 	/** The histories. */
 	/* 部門履歴  */
-	private DepartmentHistory depHistory;
-	
-	/**
-	 * Instantiates a new department.
-	 *
-	 * @param memento the memento
-	 */
-	public Department(DepartmentGetMemento memento) {
-		this.companyId = memento.getCompanyId();
-		this.id = memento.getId();
-		this.depHistory = memento.getDepHistory();
-	}
-	
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento the memento
-	 */
-	public void saveToMemento(DepartmentSetMemento memento) {
-		memento.setCompanyId(this.companyId);
-		memento.setId(this.id);
-		memento.setDepHistory(this.depHistory);
-	}
+	private List<DepartmentHistory> depHistory;
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
