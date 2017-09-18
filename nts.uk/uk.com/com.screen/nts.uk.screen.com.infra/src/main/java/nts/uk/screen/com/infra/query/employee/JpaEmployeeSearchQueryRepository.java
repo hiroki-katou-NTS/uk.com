@@ -13,6 +13,7 @@ import entity.employeeinfo.BsymtEmployee;
 import entity.person.info.BpsmtPerson;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.infra.entity.department.BsymtDepartmentInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWorkplace;
 
 /**
@@ -27,36 +28,32 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 			+ "LEFT JOIN KmnmtAffiliWorkplaceHist h ON e.bsydtEmployeePk.sId = h.kmnmtAffiliWorkplaceHistPK.empId"
 			+ "	AND h.kmnmtAffiliWorkplaceHistPK.strD <= :baseDate"
 			+ " AND h.endD >= :baseDate "
-			+ "LEFT JOIN CwpmtWorkplace wp ON  wp.cwpmtWorkplacePK.wkpid = h.kmnmtAffiliWorkplaceHistPK.wkpId "
+			+ "LEFT JOIN CwpmtWorkplace wp ON  wp.cwpmtWorkplacePK.wkpid = h.kmnmtAffiliWorkplaceHistPK.wkpId"
+			+ " AND wp.cwpmtWorkplacePK.cid = e.companyId "
 			+ "LEFT JOIN BsymtAffiDepartment ad ON ad.sid = e.bsydtEmployeePk.sId"
 			+ " AND ad.strD <= :baseDate"
 			+ " AND ad.endD >= :baseDate "
 			+ "LEFT JOIN BsymtDepartmentHist dh ON dh.bsymtDepartmentHistPK.depId = ad.depId "
 			+ " AND dh.strD <= :baseDate"
 			+ " AND dh.endD >= :baseDate "
-			+ "WHERE e.employeeCode = :empCode";
+			+ " AND dh.bsymtDepartmentHistPK.cid = e.companyId "
+			+ "LEFT JOIN BsymtDepartmentInfo d ON d.bsymtDepartmentInfoPK.depId = dh.bsymtDepartmentHistPK.depId "
+			+ " AND d.bsymtDepartmentInfoPK.cid = e.companyId "
+			+ "WHERE e.employeeCode = :empCode "
+			+ " AND e.companyId = :companyId";
 
 	/* (non-Javadoc)
 	 * @see nts.uk.screen.com.infra.query.employee.EmployeeSearchQueryRepository
 	 * #findInAllEmployee(java.lang.String, nts.uk.screen.com.infra.query.employee.System, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public Optional<Kcp009EmployeeSearchData> findInAllEmployee(String code, System system, GeneralDate baseDate) {
+	public Optional<Kcp009EmployeeSearchData> findInAllEmployee(String code, System system, GeneralDate baseDate, String companyId) {
 		Object[] resultQuery = null;
 		try {
-			resultQuery = (Object[]) this.getEntityManager().createQuery("SELECT e, p, wp, d FROM BsydtEmployee e "
-					+ "LEFT JOIN BpsdtPerson p ON e.personId = p.bpsdtPersonPk.pId "
-					+ "LEFT JOIN KmnmtAffiliWorkplaceHist h ON h.kmnmtAffiliWorkplaceHistPK.empId = e.bsydtEmployeePk.sId"
-					+ "	AND h.kmnmtAffiliWorkplaceHistPK.strD <= :baseDate"
-					+ " AND h.endD >= :baseDate "
-					+ "LEFT JOIN CwpmtWorkplace wp ON  wp.cwpmtWorkplacePK.wkpid = h.kmnmtAffiliWorkplaceHistPK.wkpId "
-					+ "LEFT JOIN BsymtAffiDepartment dh ON dh.sid = e.bsydtEmployeePk.sId "
-					+ " AND dh.strD <= :baseDate"
-					+ " AND dh.endD >= :baseDate "
-					+ "LEFT JOIN BsymtDepartment d ON d.id = dh.depId "
-					+ "WHERE e.employeeCode = :empCode")
+			resultQuery = (Object[]) this.getEntityManager().createQuery(SEARCH_QUERY_STRING)
 				.setParameter("baseDate", baseDate)
 				.setParameter("empCode", code)
+				.setParameter("companyId", companyId)
 				.getSingleResult();
 		} catch (NoResultException e) {
 			return Optional.empty();
@@ -66,7 +63,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 		BsymtEmployee employee = (BsymtEmployee) resultQuery[0];
 		BpsmtPerson person = (BpsmtPerson) resultQuery[1];
 		CwpmtWorkplace workplace = resultQuery[2] == null ? null : (CwpmtWorkplace) resultQuery[2];
-//		BsymtDepartment department = resultQuery[3] == null ? null : (BsymtDepartment) resultQuery[3];
+		BsymtDepartmentInfo department = resultQuery[3] == null ? null : (BsymtDepartmentInfo) resultQuery[3];
 		
 		switch (system) {
 		case Employment:
@@ -83,7 +80,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 					.employeeId(employee.bsydtEmployeePk.sId)
 					.employeeCode(employee.employeeCode)
 					.businessName(person.businessName)
-//					.orgName(department.getName())
+					.orgName(department.getName())
 					.build());
 		}
 	}

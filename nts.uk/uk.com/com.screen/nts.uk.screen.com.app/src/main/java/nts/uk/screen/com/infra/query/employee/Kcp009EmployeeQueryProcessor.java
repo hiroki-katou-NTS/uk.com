@@ -11,6 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class Kcp009EmployeeQueryProcessor.
@@ -33,9 +34,10 @@ public class Kcp009EmployeeQueryProcessor {
 		EmployeeReferenceRange employeeReferenceRange = this.getEmployeeReferenceRange();
 		Optional<Kcp009EmployeeSearchData> foundEmployee = Optional.ofNullable(null);
 		GeneralDate systemDate = GeneralDate.today();
+		String companyId = AppContexts.user().companyId();
 		switch (employeeReferenceRange) {
 		case AllEmployee:
-			foundEmployee = this.employeeSearchQueryRepository.findInAllEmployee(code, system, systemDate);
+			foundEmployee = this.employeeSearchQueryRepository.findInAllEmployee(code, system, systemDate, companyId);
 		default:
 			break;
 		}

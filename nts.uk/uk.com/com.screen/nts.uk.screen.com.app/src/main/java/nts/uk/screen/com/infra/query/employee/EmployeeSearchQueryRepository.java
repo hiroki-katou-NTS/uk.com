@@ -18,5 +18,6 @@ public interface EmployeeSearchQueryRepository {
 	 *
 	 * @return the list
 	 */
-	Optional<Kcp009EmployeeSearchData> findInAllEmployee(String code, System system, GeneralDate baseDate);
+	Optional<Kcp009EmployeeSearchData> findInAllEmployee(String code, System system,
+			GeneralDate baseDate, String companyId);
 }

@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.infra.entity.company.organization.employee.department;
+package nts.uk.ctx.bs.employee.infra.entity.department;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
