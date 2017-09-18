@@ -8,17 +8,21 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.primitive.DecimalPrimitiveValue;
+import nts.arc.primitive.constraint.DecimalRange;
 
 /**
- * The Class OptionalItemInputValue.
+ * The Class InputValue.
  */
 // 任意項目入力値
 @Getter
+@DecimalRange(min = "0.00", max = "99999.99")
 public class InputValue extends DecimalPrimitiveValue<InputValue> {
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * Instantiates a new optional item input value.
+	 * Instantiates a new input value.
 	 *
 	 * @param rawValue the raw value
 	 */

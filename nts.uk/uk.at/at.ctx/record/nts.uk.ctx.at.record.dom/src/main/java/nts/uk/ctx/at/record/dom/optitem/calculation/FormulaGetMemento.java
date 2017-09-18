@@ -66,12 +66,12 @@ public interface FormulaGetMemento {
 	 *
 	 * @return the monthly rounding
 	 */
-	MonthlyRounding getMonthlyRounding();
+	Rounding getMonthlyRounding();
 
 	/**
 	 * Gets the daily rounding.
 	 *
 	 * @return the daily rounding
 	 */
-	DailyRounding getDailyRounding();
+	Rounding getDailyRounding();
 }

@@ -66,12 +66,12 @@ public interface FormulaSetMemento {
 	 *
 	 * @param rounding the new monthly rounding
 	 */
-	void setMonthlyRounding(MonthlyRounding rounding);
+	void setMonthlyRounding(Rounding rounding);
 
 	/**
 	 * Sets the daily rounding.
 	 *
 	 * @param rounding the new daily rounding
 	 */
-	void setDailyRounding(DailyRounding rounding);
+	void setDailyRounding(Rounding rounding);
 }

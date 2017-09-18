@@ -22,4 +22,23 @@ public class SelectedAttendanceItem extends DomainObject {
 	// 演算子
 	private AddSubOperator operator;
 
+	/**
+	 * Instantiates a new selected attendance item.
+	 *
+	 * @param memento the memento
+	 */
+	public SelectedAttendanceItem(SelectedAttendanceItemGetMemento memento) {
+		this.attendanceItemId = memento.getAttItemId();
+		this.operator = memento.getOperator();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(SelectedAttendanceItemSetMemento memento) {
+		memento.setAttItemId(this.attendanceItemId);
+		memento.setOperator(this.operator);
+	}
 }

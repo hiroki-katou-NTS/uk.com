@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class FormulaSettingItem.
  */
 // 計算式設定
 @Getter
-public class FormulaSettingItem extends AggregateRoot {
+public class FormulaSettingItem extends DomainObject {
 
 	/** The setting method. */
 	// 設定方法
@@ -20,7 +20,7 @@ public class FormulaSettingItem extends AggregateRoot {
 
 	/** The disp order. */
 	// 順番
-	private int dispOrder;
+	private SettingItemOrder dispOrder;
 
 	// ===================== Optional ======================= //
 	/** The input value. */
@@ -30,5 +30,30 @@ public class FormulaSettingItem extends AggregateRoot {
 	/** The formula item id. */
 	// 計算式項目ID
 	private FormulaId formulaItemId;
+
+	/**
+	 * Instantiates a new formula setting item.
+	 *
+	 * @param memento the memento
+	 */
+	public FormulaSettingItem(FormulaSettingItemGetMemento memento) {
+		super();
+		this.settingMethod = memento.getSettingMethod();
+		this.dispOrder = memento.getSettingItemOrder();
+		this.inputValue = memento.getInputValue();
+		this.formulaItemId = memento.getFormulaId();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FormulaSettingItemSetMemento memento) {
+		memento.setSettingMethod(this.settingMethod);
+		memento.setSettingItemOrder(this.dispOrder);
+		memento.setInputValue(this.inputValue);
+		memento.setFormulaId(this.formulaItemId);
+	}
 
 }

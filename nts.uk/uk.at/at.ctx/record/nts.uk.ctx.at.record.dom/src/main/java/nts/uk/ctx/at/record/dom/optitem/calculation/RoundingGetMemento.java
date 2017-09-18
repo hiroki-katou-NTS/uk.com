@@ -2,30 +2,36 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.app.find.optitem.calculation;
+package nts.uk.ctx.at.record.dom.optitem.calculation;
 
-import lombok.Getter;
-import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
 import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
- * The Class MonthlyRoundingDto.
+ * The Interface RoundingGetMemento.
  */
-@Getter
-@Setter
-public class MonthlyRoundingDto {
+public interface RoundingGetMemento {
 
-	/** The number rounding. */
-	// 数値丸め
-	private NumberRounding numberRounding;
+	/**
+	 * Gets the number rounding.
+	 *
+	 * @return the number rounding
+	 */
+	NumberRounding getNumberRounding();
 
-	/** The time rounding. */
-	// 時間丸め
-	private TimeRoundingSetting timeRounding;
+	/**
+	 * Gets the time rounding setting.
+	 *
+	 * @return the time rounding setting
+	 */
+	TimeRoundingSetting getTimeRoundingSetting();
 
-	/** The amount rounding. */
-	// 金額丸め
-	private AmountRounding amountRounding;
+	/**
+	 * Gets the amount rounding.
+	 *
+	 * @return the amount rounding
+	 */
+	AmountRounding getAmountRounding();
+
 }

@@ -22,4 +22,16 @@ public class AmountRounding extends DomainObject{
 	// 端数処理
 	private Rounding rounding;
 
+	/**
+	 * Instantiates a new amount rounding.
+	 *
+	 * @param unit the unit
+	 * @param rounding the rounding
+	 */
+	public AmountRounding(Unit unit, Rounding rounding) {
+		super();
+		this.unit = unit;
+		this.rounding = rounding;
+	}
+
 }

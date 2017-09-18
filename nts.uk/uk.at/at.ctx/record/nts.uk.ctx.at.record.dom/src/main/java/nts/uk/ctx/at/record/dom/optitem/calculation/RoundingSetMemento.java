@@ -4,29 +4,34 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
-import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
 import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 
 /**
- * The Class DailyRounding.
+ * The Interface RoundingSetMemento.
  */
-// 日別端数処理設定
-@Getter
-public class DailyRounding extends DomainObject {
+public interface RoundingSetMemento {
 
-	/** The number rounding. */
-	// 数値丸め
-	private NumberRounding numberRounding;
+	/**
+	 * Sets the number rounding.
+	 *
+	 * @param rounding the new number rounding
+	 */
+	void setNumberRounding(NumberRounding rounding);
 
-	/** The time rounding. */
-	// 時間丸め
-	private TimeRoundingSetting timeRounding;
+	/**
+	 * Sets the time rounding setting.
+	 *
+	 * @param rounding the new time rounding setting
+	 */
+	void setTimeRoundingSetting(TimeRoundingSetting rounding);
 
-	/** The amount rounding. */
-	// 金額丸め
-	private AmountRounding amountRounding;
+	/**
+	 * Sets the amount rounding.
+	 *
+	 * @param rounding the new amount rounding
+	 */
+	void setAmountRounding(AmountRounding rounding);
 
 }

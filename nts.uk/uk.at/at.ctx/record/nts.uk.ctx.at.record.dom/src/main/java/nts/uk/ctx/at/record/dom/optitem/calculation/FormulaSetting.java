@@ -28,4 +28,27 @@ public class FormulaSetting extends DomainObject {
 	// 計算式設定項目
 	private List<FormulaSettingItem> formulaSettingItems;
 
+	/**
+	 * Instantiates a new formula setting.
+	 *
+	 * @param memento the memento
+	 */
+	public FormulaSetting(FormulaSettingGetMemento memento) {
+		super();
+		this.minusSegment = memento.getMinusSegment();
+		this.operator = memento.getOperatorAtr();
+		this.formulaSettingItems = memento.getFormulaSettingItems();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(FormulaSettingSetMemento memento) {
+		memento.setMinusSegment(this.minusSegment);
+		memento.setOperatorAtr(this.operator);
+		memento.setFormulaSettingItems(this.formulaSettingItems);
+	}
+
 }
