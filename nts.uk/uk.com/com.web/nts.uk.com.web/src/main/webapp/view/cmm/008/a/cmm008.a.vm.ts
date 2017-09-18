@@ -1,5 +1,6 @@
 module nts.uk.com.view.cmm008.a {
     import EmploymentFindDto = service.model.EmploymentFindDto;
+    import blockUI = nts.uk.ui.block;
     
     export module viewmodel {
         export class ScreenModel {
@@ -38,7 +39,7 @@ module nts.uk.com.view.cmm008.a {
                 self.listComponentOption = {
                     isMultiSelect: false,
                     listType: ListType.EMPLOYMENT,
-                    selectType: SelectType.SELECT_FIRST_ITEM,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     selectedCode: self.employmentCode,
                     isDialog: false,
                 };
@@ -57,7 +58,6 @@ module nts.uk.com.view.cmm008.a {
                 // Load Component
                 $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
                     // Set Focus on Switch Button
-//                    $('#switch-btn').focus();
                     
                     // Get Data List
                     if (($('#emp-component').getDataList() == undefined) || ($('#emp-component').getDataList().length <= 0)) {
@@ -66,6 +66,11 @@ module nts.uk.com.view.cmm008.a {
                     else {
                         // Get Employment List after Load Component
                         self.empList($('#emp-component').getDataList());
+                        
+                        // Select first Item in Employment List
+                        self.employmentCode(self.empList()[0].code);
+                        
+                        // Find and bind selected Employment
                         self.loadEmployment();
                     }
                 });
@@ -148,11 +153,12 @@ module nts.uk.com.view.cmm008.a {
                 service.saveEmployment(command).done(() => {
                     self.isNewMode(false);
                     
+                    // ReLoad Component
 //                    self.listComponentOption.selectType = SelectType.SELECT_BY_SELECTED_CODE;
-//                    self.listComponentOption.selectedCode = self.employmentCode();
-                    // Load Component
                     $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
-                        // Find ClassificationBasicWork
+                        // Get Employment List after Load Component
+                        self.empList($('#emp-component').getDataList());
+                        // Find to Bind Employment
                         self.loadEmployment();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     });
@@ -172,10 +178,42 @@ module nts.uk.com.view.cmm008.a {
 
                 // Remove
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
-                    service.removeEmployment(self.employmentCode()).done(() => {
+                    let command = {
+                        employmentCode: self.employmentCode()
+                    }
+                    service.removeEmployment(command).done(() => {
                         self.isNewMode(false);
-                        nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                        // Find Employment
+                        
+                        // Filter selected Item
+                        var existItem = self.empList().filter((item) => {
+                            return item.code == self.employmentCode();
+                        })[0];
+                        
+                        // Check if selected item is the last item
+                        let index = self.empList().indexOf(existItem);
+                        let emplistLength = self.empList().length;
+                        if (index == (self.empList().length - 1)) {
+                            self.employmentCode(self.empList()[index - 1].code);
+//                            self.listComponentOption.selectedCode = self.empList()[index - 1].code;
+                        } else {
+                            self.employmentCode(self.empList()[index + 1].code);
+                        }
+                        
+                        // Reload Component
+//                        self.listComponentOption.selectType = SelectType.SELECT_BY_SELECTED_CODE;
+                        $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
+                            // Get Data List
+                            if (($('#emp-component').getDataList() == undefined) || ($('#emp-component').getDataList().length <= 0)) {
+                                self.isNewMode(true);
+                            }
+                            else {
+                                // Get Employment List after Load Component
+                                self.empList($('#emp-component').getDataList());
+                                // Find to bind Employment
+                                self.loadEmployment();
+                            }
+                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                        });
 
                         // Find ClassificationBasicWork
                         self.loadEmployment();
@@ -187,20 +225,44 @@ module nts.uk.com.view.cmm008.a {
             }
             
             /**
+             * Check the last Item in Employment List
+             */
+//            public isLastItem(selectedCode: string): boolean {
+//                let self = this;
+//                let index: number = 0;
+//                for(let item of self.empList()){
+//                    index++;
+//                    if(index == self.empList().length && selectedCode === item.code){
+//                        return true;
+//                    }   
+//                }
+//                return false;
+//            }
+            
+            
+            /**
              * Check Errors all input.
              */
             private hasError(): boolean {
-                return $('.nts-editor').ntsError('hasError');
+                var self = this;
+                self.clearErrors();
+                $('#empCode').ntsEditor("validate");
+                $('#empName').ntsEditor("validate");
+                if ($('.nts-input').ntsError('hasError')) {
+                    return true;
+                }
+                return false;
+//                return $('.nts-editor').ntsError('hasError');
             }
             
-            // Clear Errors Company Tab
+            // Clear Errors
             private clearErrors(): void {
                 var self = this;
 //                // Clear errors
-//                $('#empCode').ntsError('clear');
-//                $('#empName').ntsError('clear');
-//                $('#extCode').ntsError('clear');
-//                $('#memo').ntsError('clear');
+                $('#empCode').ntsError('clear');
+                $('#empName').ntsError('clear');
+                $('#extCode').ntsError('clear');
+                $('#memo').ntsError('clear');
                 // Clear error inputs
                 $('.nts-input').ntsError('clear');
             }
