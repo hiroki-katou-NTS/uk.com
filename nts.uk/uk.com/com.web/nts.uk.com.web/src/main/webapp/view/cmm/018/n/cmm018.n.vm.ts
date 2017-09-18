@@ -1,9 +1,9 @@
 module cmm018.n.viewmodel {
     export class ScreenModel {
         //Right table's properties.
-        items2: KnockoutObservableArray<ItemModel>;
-        columns2: KnockoutObservableArray<NtsGridListColumn>;
-        currentCodeList2: KnockoutObservableArray<any>;
+        applicationType: KnockoutObservableArray<ItemModel>;
+        columns: KnockoutObservableArray<NtsGridListColumn>;
+        currentAppType: KnockoutObservableArray<any>;
         count: number = 100;
 
         //Left filter area
@@ -17,14 +17,14 @@ module cmm018.n.viewmodel {
             var self = this;
 
             //Init right table.
-            self.items2 = ko.observableArray([]);
+            self.applicationType = ko.observableArray([]);
 
-            self.columns2 = ko.observableArray([
+            self.columns = ko.observableArray([
                 { headerText: '社員CD', key: 'code', width: 30, hidden: true},
                 { headerText: '申請一覧', key: 'name', width: 200 }
             ]);
 
-            self.currentCodeList2 = ko.observableArray([]);
+            self.currentAppType = ko.observableArray([]);
 
             //Init selectedEmployee
             self.selectedEmployee = ko.observableArray([]);
@@ -78,7 +78,7 @@ module cmm018.n.viewmodel {
                 let items = _.map(data, item => {
                     return new ItemModel(item);
                 });
-                self.items2(items);
+                self.applicationType(items);
 
                 dfd.resolve();
             });
@@ -92,6 +92,26 @@ module cmm018.n.viewmodel {
                 dfd.resolve();
             });
             return dfd.promise();
+        }
+        //閉じるボタン
+        closeDialog(){
+            nts.uk.ui.windows.close();    
+        }
+        //Exceｌ出力
+        printExcel(){
+            var self = this;
+            //対象社員を選択したかをチェックする(kiểm tra đã chọn nhân viên chưa?)
+            //対象者未選択(chưa chọn nhân viên)
+            if(self.selectedEmployee().length <= 0){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_184"});
+                return;
+            }
+            //出力対象申請を選択したかチェックする(check đã chọn đơn xin để xuất ra chưa?)
+            //出力対象未選択(chưa chọn đối tượng output)
+            if(self.currentAppType().length <= 0){
+                nts.uk.ui.dialog.alertError({ messageId: "Msg_199"});
+                return;    
+            }
         }
     }
 
