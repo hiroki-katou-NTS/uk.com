@@ -13,9 +13,15 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The class UpdateSpecialHolidayCommandHandler
+ * @author phongtq
+ *
+ */
 @Stateless
 public class UpdateSpecialHolidayCommandHandler extends CommandHandlerWithResult<AddSpecialHolidayCommand, List<String>> {
 
+	/** The Repository */
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
 
@@ -27,8 +33,12 @@ public class UpdateSpecialHolidayCommandHandler extends CommandHandlerWithResult
 		
 		// convert to domain
 		SpecialHoliday specialHoliday = addSpecialHolidayCommand.toDomain(companyId);
+		
+		// validate Special Holiday
 		specialHoliday.validate();
 		try {
+			
+			// validate Special Holiday Input
 			specialHoliday.validateInput();
 		} catch (BusinessException e) {
 			addMessage(errList, e.getMessageId());
@@ -48,6 +58,12 @@ public class UpdateSpecialHolidayCommandHandler extends CommandHandlerWithResult
 		return errList;
 		
 	}
+	
+	/**
+	 * Validate Special Holiday
+	 * @param errList
+	 * @param specialHoliday
+	 */
 	private void validate(List<String> errList, SpecialHoliday specialHoliday) {
 		if (specialHoliday.isMethodManageRemainNumber()) {
 			try {

@@ -28,6 +28,12 @@ import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdSubConditionPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdWorkType;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstSphdWorkTypePK;
 
+/**
+ * The class JpaSpecialHolidayRepository
+ * 
+ * @author phongtq
+ *
+ */
 @Stateless
 public class JpaSpecialHolidayRepository extends JpaRepository implements SpecialHolidayRepository {
 
@@ -41,7 +47,7 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		builderString.append(" WHERE e.kshstSpecialHolidayPK.companyId = :companyId");
 		builderString.append(" ORDER BY e.kshstSpecialHolidayPK.specialHolidayCode ASC");
 		SELECT_BY_CID = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM KshstSpecialHoliday e");
@@ -106,9 +112,14 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return kshstSpecialHoliday;
 	}
 
-
+	/**
+	 * Convert to Database Type Grant Regular
+	 * 
+	 * @param grantRegular
+	 * @return
+	 */
 	private KshstGrantRegular convertToDbTypeRegular(GrantRegular grantRegular) {
-		if(grantRegular == null){
+		if (grantRegular == null) {
 			return null;
 		}
 		KshstGrantRegular kshstGrantRegular = new KshstGrantRegular();
@@ -122,8 +133,14 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return kshstGrantRegular;
 	}
 
+	/**
+	 * Convert to Database Type Grant Periodic
+	 * 
+	 * @param grantPeriodic
+	 * @return
+	 */
 	private KshstGrantPeriodic convertToDbTypePeriodic(GrantPeriodic grantPeriodic) {
-		if(grantPeriodic == null){
+		if (grantPeriodic == null) {
 			return null;
 		}
 		KshstGrantPeriodic kshstGrantPeriodic = new KshstGrantPeriodic();
@@ -133,11 +150,18 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		kshstGrantPeriodic.splitAcquisition = grantPeriodic.getSplitAcquisition().value;
 		kshstGrantPeriodic.grantPerioricMethod = grantPeriodic.getGrantPeriodicMethod().value;
 		kshstGrantPeriodic.kshstGrantPeriodicPK = kshstGrantPeriodicPK;
-		
+
 		return kshstGrantPeriodic;
 	}
+
+	/**
+	 * Convert to Database Type Sphd Limit
+	 * 
+	 * @param sphdLimit
+	 * @return
+	 */
 	private KshstSphdLimit convertToDbTypeSphdLimit(SphdLimit sphdLimit) {
-		if(sphdLimit == null){
+		if (sphdLimit == null) {
 			return null;
 		}
 		KshstSphdLimit kshstSphdLimit = new KshstSphdLimit();
@@ -152,8 +176,14 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return kshstSphdLimit;
 	}
 
+	/**
+	 * Convert to Database Type Sub Condition
+	 * 
+	 * @param subCondition
+	 * @return
+	 */
 	private KshstSphdSubCondition convertToDbTypeSubCondition(SubCondition subCondition) {
-		if(subCondition == null){
+		if (subCondition == null) {
 			return null;
 		}
 		KshstSphdSubCondition kshstSphdSubCondition = new KshstSphdSubCondition();
@@ -173,8 +203,14 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return kshstSphdSubCondition;
 	}
 
+	/**
+	 * Convert to Database Type Grant Single
+	 * 
+	 * @param grantSingle
+	 * @return
+	 */
 	private KshstGrantSingle convertToDbTypeGrantSingle(GrantSingle grantSingle) {
-		if(grantSingle == null){
+		if (grantSingle == null) {
 			return null;
 		}
 		KshstGrantSingle kshstGrantSingle = new KshstGrantSingle();
@@ -282,17 +318,15 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		return this.queryProxy().query(SELECT_BY_CID, KshstSpecialHoliday.class).setParameter("companyId", companyId)
 				.getList(c -> convertToDomain(c));
 	}
-	
+
 	/**
 	 * Check Exists Special Holiday Code
 	 */
 	@Override
 	public boolean checkExists(String companyId, String specialHolidayCode) {
 		List<KshstSpecialHoliday> branchs = this.queryProxy().query(CHECK_BY_CID, KshstSpecialHoliday.class)
-       		 .setParameter("companyId", companyId)
-       		 .setParameter("specialHolidayCode", specialHolidayCode)
-       		 .getList();
-		
+				.setParameter("companyId", companyId).setParameter("specialHolidayCode", specialHolidayCode).getList();
+
 		return !branchs.isEmpty();
 	}
 
@@ -331,7 +365,6 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		this.commandProxy().update(entity);
 	}
 
-	
 	/**
 	 * Delete Special Holiday
 	 */
