@@ -6,8 +6,10 @@ package nts.uk.ctx.at.schedule.app.command.budget.external.actualresult;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -19,6 +21,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateful;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
@@ -566,9 +570,11 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         for (String formatDate : FORMAT_DATES) {
             try {
                 isInValidDateFormat = false;
-                importProcess.actualDate = new SimpleDateFormat(formatDate).parse(inputDate);
+                DateTimeFormatter dateTimeFormat = DateTimeFormatter.ofPattern(formatDate);
+                LocalDate localDate = LocalDate.parse(inputDate, dateTimeFormat);
+                importProcess.actualDate = Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
                 break;
-            } catch (ParseException e) {
+            } catch (DateTimeParseException e) {
                 isInValidDateFormat = true;
             }
         }
@@ -718,14 +724,18 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      */
     private Long convertVal(String value) {
         String CHARACTER_COLON = ":";
-        if (!value.contains(CHARACTER_COLON)) {
+        // error when case time not contain character ":" or format: hh:mm:ss
+        int limitCharacterColon = 1;
+        if (!value.contains(CHARACTER_COLON)
+                || StringUtils.countMatches(value, CHARACTER_COLON) > limitCharacterColon) {
             throw new BusinessException(new RawErrorMessage("Invalid format time of value."));
         }
-        // format time of value: 99:00
-        String[] arr = value.split(CHARACTER_COLON);
+        // format time of value: 99:00 (hh:mm)
+        String[] timeComponents = value.split(CHARACTER_COLON);
+        
         Integer HOUR = 60;
-        Long numberHour = Long.parseLong(arr[0]);
-        Long numberMinute = Long.parseLong(arr[1]);
+        Long numberHour = Long.parseLong(timeComponents[0]);
+        Long numberMinute = Long.parseLong(timeComponents[1]);
         return numberHour * HOUR + numberMinute;
     }
     
