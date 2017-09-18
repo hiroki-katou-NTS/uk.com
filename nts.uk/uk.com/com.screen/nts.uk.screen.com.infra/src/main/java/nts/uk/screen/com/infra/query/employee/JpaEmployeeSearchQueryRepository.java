@@ -24,8 +24,8 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 	
 	/** The Constant SEARCH_QUERY_STRING. */
 	private static final String SEARCH_QUERY_STRING = "SELECT e, p, wp, d From BsymtEmployee e "
-			+ "LEFT JOIN BpsdtPerson p ON e.personId = p.bpsdtPersonPk.pId "
-			+ "LEFT JOIN KmnmtAffiliWorkplaceHist h ON e.bsydtEmployeePk.sId = h.kmnmtAffiliWorkplaceHistPK.empId"
+			+ "LEFT JOIN BpsmtPerson p ON e.personId = p.bpsmtPersonPk.pId "
+			+ "LEFT JOIN KmnmtAffiliWorkplaceHist h ON h.kmnmtAffiliWorkplaceHistPK.empId = e.bsydtEmployeePk.sId"
 			+ "	AND h.kmnmtAffiliWorkplaceHistPK.strD <= :baseDate"
 			+ " AND h.endD >= :baseDate "
 			+ "LEFT JOIN CwpmtWorkplace wp ON  wp.cwpmtWorkplacePK.wkpid = h.kmnmtAffiliWorkplaceHistPK.wkpId"
@@ -39,6 +39,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 			+ " AND dh.bsymtDepartmentHistPK.cid = e.companyId "
 			+ "LEFT JOIN BsymtDepartmentInfo d ON d.bsymtDepartmentInfoPK.depId = dh.bsymtDepartmentHistPK.depId "
 			+ " AND d.bsymtDepartmentInfoPK.cid = e.companyId "
+			+ " AND d.bsymtDepartmentInfoPK.histId = dh.bsymtDepartmentHistPK.histId "
 			+ "WHERE e.employeeCode = :empCode "
 			+ " AND e.companyId = :companyId";
 
