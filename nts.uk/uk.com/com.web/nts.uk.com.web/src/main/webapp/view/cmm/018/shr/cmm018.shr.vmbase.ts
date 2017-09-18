@@ -25,14 +25,24 @@ module nts.uk.com.view.cmm018.shr {
         //data after grouping history
         export class DataFullDto{
             lstCompany: Array<DataDisplayComDto> ;
-            lstWorkplaceRoot: Array<WorkPlaceAppRootDto> ;
-            lstPersonRoot: Array<PersonAppRootDto> ;
+            lstWorkplace: Array<DataDisplayWpDto> ;
+            lstPerson: Array<DataDisplayPsDto> ;
         }
         //data after grouping history of company
         export class DataDisplayComDto{
             id: number;
             companyName: string;
             lstCompanyRoot: Array<CompanyAppRootDto> ;
+        }
+        //data after grouping history of work place
+        export class DataDisplayWpDto{
+            id: number;
+            lstWorkplaceRoot: Array<WorkPlaceAppRootDto> ;
+        }
+        //data after grouping history of person
+        export class DataDisplayPsDto{
+            id: number;
+            lstPersonRoot: Array<PersonAppRootDto> ;
         }
         //app type
         export class ApplicationType{
@@ -181,13 +191,10 @@ module nts.uk.com.view.cmm018.shr {
             workplaceId: string;
             /**社員ID*/
             employeeId: string;
-            /** mode is selected: まとめて登録モード(0)　－　申請個別登録モード(1)*/
-            selectedMode: number;
-            constructor(rootType: number, workplaceId: string, employeeId: string, selectedMode: number){
+            constructor(rootType: number, workplaceId: string, employeeId: string){
                 this.rootType = rootType;
                 this.workplaceId = workplaceId;
                 this.employeeId =  employeeId;
-                this.selectedMode = selectedMode;
             }
         }
         //data screen A,C,E
@@ -242,6 +249,7 @@ module nts.uk.com.view.cmm018.shr {
                 this.lstAppPhase = lstAppPhase;
             }
         }
+        //list display right
         export class CompanyAppRootADto{
             common: boolean;
             appTypeValue: number;
@@ -273,6 +281,27 @@ module nts.uk.com.view.cmm018.shr {
                 this.appPhase3 = appPhase3;
                 this.appPhase4 = appPhase4;
                 this.appPhase5 = appPhase5;
+            }
+        }
+        //list check root < 14
+        export class DataRootCheck{
+            /**承認ID*/
+            approvalId: string;
+            /**履歴ID*/
+            historyId: string;
+            /**申請種類*/
+            applicationType: number;
+            /**就業ルート区分*/
+            employmentRootAtr: number;
+            lstAppPhase: Array<ApprovalPhaseDto>;
+            constructor(approvalId: string, historyId: string,
+                        applicationType: number, employmentRootAtr: number,
+                        lstAppPhase: Array<ApprovalPhaseDto>){
+                this.approvalId = approvalId;
+                this.historyId = historyId;
+                this.applicationType = applicationType;
+                this.employmentRootAtr = employmentRootAtr;
+                this.lstAppPhase = lstAppPhase;
             }
         }
         //data screen C

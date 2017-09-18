@@ -13,19 +13,20 @@ module nts.uk.com.view.cmm018.a {
             isUpdate: KnockoutObservable<boolean> = ko.observable(true);
             listMode: KnockoutObservableArray<any>;
             selectedModeCode: KnockoutObservable<number> = ko.observable(1);
-            lstCompany: KnockoutObservableArray<vmbase.DataDisplayComDto>;
             columns: KnockoutObservableArray<any>;
-            listHistory: KnockoutObservableArray<vmbase.ListHistory>;
+            listHistory: KnockoutObservableArray<vmbase.ListHistory> = ko.observableArray([]);
             currentCode : KnockoutObservable<number>;
             lstItems: KnockoutObservableArray<vmbase.ListApproval>;
             lstDelete: KnockoutObservableArray<vmbase.RootDeleteDto>
             historyStr: KnockoutObservable<string>;
             lstNameAppType: KnockoutObservableArray<vmbase.ApplicationType>;
             approver: KnockoutObservableArray<vmbase.ApproverDto>;
-            listAppPhase: KnockoutObservableArray<vmbase.ApprovalPhaseDto>;
-            cpA: KnockoutObservableArray<vmbase.CompanyAppRootADto>;
+            //---list AppPhase---
+            listAppPhase: KnockoutObservableArray<vmbase.ApprovalPhaseDto> = ko.observableArray([]);
+            //---list data right---
+            cpA: KnockoutObservableArray<vmbase.CompanyAppRootADto> = ko.observableArray([]);
             checkAAA: KnockoutObservable<number> = ko.observable(0);
-            //----- list chua id history va approvalid
+            //----- list chua id history va approval id
             lstAppId: KnockoutObservableArray<string> = ko.observableArray([]);
             //-------data dialog I gui sang
             dataI: KnockoutObservable<vmbase.IData>;
@@ -41,13 +42,14 @@ module nts.uk.com.view.cmm018.a {
             listComponentOption: vmbase.ComponentOption;
             selectedItem: KnockoutObservable<string>;
             tabindex: number;
+            //__________Sidebar________
+            tabSelected: KnockoutObservable<number> = ko.observable(0);
+            lstCompany: KnockoutObservableArray<vmbase.DataDisplayComDto> = ko.observableArray([]);
+            lstWorkplace: KnockoutObservableArray<vmbase.DataDisplayWpDto> = ko.observableArray([]);
+            lstPerson: KnockoutObservableArray<vmbase.DataDisplayPsDto> = ko.observableArray([]);
             constructor() {
                 var self = this;
-                let itemBonus: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto([],null,null,null,null,null);
-                self.cpA = ko.observableArray([]);
-                self.lstCompany = ko.observableArray([]);
                 self.nameCompany  = ko.observable('Kakashi');
-                self.listAppPhase = ko.observableArray([]);
                 self.historyStr  = ko.observable('');
                 self.dataI = ko.observable(null);
                 self.listMode = ko.observableArray([
@@ -59,17 +61,93 @@ module nts.uk.com.view.cmm018.a {
                     { headerText: 'Id', key: 'id', hidden: true},
                     { headerText: nts.uk.resource.getText('CMM018_22'), key: 'dateRange' }
                 ]);
-                self.listHistory = ko.observableArray([]);
                 self.lstDelete = ko.observableArray([]);
                 self.startPage();
-                //subcribe
+                //---subscribe currentCode (list left)
                 self.currentCode.subscribe(function(codeChanged) {
                     let history = self.findHistory(codeChanged);
                     self.historyStr(history.dateRange);
-                    let lstCompany = self.findAppId(codeChanged);
-                    self.cpA(self.checklistRoot(lstCompany.lstCompanyRoot));
+                    let lstRoot: Array<vmbase.DataRootCheck> = [];
+                    //TH: tab company
+                    if(self.tabSelected() == 0){
+                        let lstCompany = self.findAppIdForCom(codeChanged);
+                       _.each(lstCompany.lstCompanyRoot, function(item){
+                            lstRoot.push(new vmbase.DataRootCheck(item.company.approvalId, item.company.historyId,
+                                            item.company.applicationType, item.company.employmentRootAtr, item.lstAppPhase));
+                        }); 
+                    }
+                    //TH: tab work place
+                    else if(self.tabSelected() == 1){
+                        let lstWorkplace: vmbase.DataDisplayWpDto = self.findAppIdForWp(codeChanged);
+                        _.each(lstWorkplace.lstWorkplaceRoot, function(item){
+                            lstRoot.push(new vmbase.DataRootCheck(item.workplace.approvalId, item.workplace.historyId,
+                                            item.workplace.applicationType, item.workplace.employmentRootAtr, item.lstAppPhase));
+                        });
+                    }
+                    //TH: tab person
+                    else{
+                        let lstPerson: vmbase.DataDisplayPsDto = self.findAppIdForPs(codeChanged);
+                        _.each(lstPerson.lstPersonRoot, function(item){
+                            lstRoot.push(new vmbase.DataRootCheck(item.person.approvalId, item.person.historyId,
+                                            item.person.applicationType, item.person.employmentRootAtr, item.lstAppPhase));
+                        });
+                    }
+                    self.cpA(self.checklistRoot(lstRoot));
+                    self.cpA.valueHasMutated();
                     //----delete dataI
                     self.dataI();
+                });
+                //---subscribe tab selected---
+                self.tabSelected.subscribe(function(codeChanged) {
+                    self.currentCode();
+                    self.historyStr('');
+                    let lstRoot: Array<vmbase.DataRootCheck> = [];
+                    //TH: tab company
+                    if(codeChanged == 0){
+                        let lstCompany = self.findAppIdForCom(self.currentCode());
+                       _.each(lstCompany.lstCompanyRoot, function(item){
+                            lstRoot.push(new vmbase.DataRootCheck(item.company.approvalId, item.company.historyId,
+                                            item.company.applicationType, item.company.employmentRootAtr, item.lstAppPhase));
+                        }); 
+                    }
+                    //TH: tab work place
+                    else if(codeChanged == 1){
+                        self.getDataWorkplace().done(function(){
+                            self.convertHistForWp(self.lstWorkplace());
+                            if(self.listHistory().length > 0){
+                                self.currentCode(self.listHistory()[0].id);
+                                let history = self.findHistory(self.currentCode());
+                                if(history !== undefined){
+                                    self.historyStr(history.dateRange);
+                                }
+                            }
+                           let lstWorkplace: vmbase.DataDisplayWpDto = self.findAppIdForWp(self.currentCode());
+                            _.each(lstWorkplace.lstWorkplaceRoot, function(item){
+                                lstRoot.push(new vmbase.DataRootCheck(item.workplace.approvalId, item.workplace.historyId,
+                                                item.workplace.applicationType, item.workplace.employmentRootAtr, item.lstAppPhase));
+                            }); 
+                        });;
+                    }
+                    //TH: tab person
+                    else{
+                        self.getDataPerson().done(function(){
+                            self.convertHistForPs(self.lstPerson());
+                            if(self.listHistory().length > 0){
+                                self.currentCode(self.listHistory()[0].id);
+                                let history = self.findHistory(self.currentCode());
+                                if(history !== undefined){
+                                    self.historyStr(history.dateRange);
+                                }
+                            }
+                            let lstPerson: vmbase.DataDisplayPsDto = self.findAppIdForPs(self.currentCode());
+                            _.each(lstPerson.lstPersonRoot, function(item){
+                                lstRoot.push(new vmbase.DataRootCheck(item.person.approvalId, item.person.historyId,
+                                                item.person.applicationType, item.person.employmentRootAtr, item.lstAppPhase));
+                            });
+                        });;
+                    }
+                    self.cpA(self.checklistRoot(lstRoot));
+                    self.cpA.valueHasMutated();
                 });
                 self.lstNameAppType = ko.observableArray([]);
                 self.selectedModeCode.subscribe(function(codeChanged) {
@@ -81,16 +159,16 @@ module nts.uk.com.view.cmm018.a {
                 });
                 //_______KCP009_______
                 self.employeeInputList = ko.observableArray([
-                    {id: '01', code: 'A000000000001', businessName: '日通　純一郎1', workplaceName: '名古屋支店', depName: 'Dep Name'}, 
-                    {id: '04', code: 'A000000000004', businessName: '日通　純一郎4', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                    {id: '05', code: 'A000000000005', businessName: '日通　純一郎5', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                    {id: '06', code: 'A000000000006', businessName: '日通　純一郎6', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                    {id: '07', code: 'A000000000007', businessName: '日通　純一郎7', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                    {id: '08', code: 'A000000000008', businessName: '日通　純一郎8', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                    {id: '09', code: 'A000000000009', businessName: '日通　純一郎9', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                    {id: '10', code: 'A000000000010', businessName: '日通　純一郎10', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                    {id: '11', code: 'A000000000011', businessName: '日通　純一郎11', workplaceName: '名古屋支店', depName: 'Dep Name'},
-                    {id: '02', code: 'A000000000002', businessName: '日通　純一郎2', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                    {id: 'a1', code: 'A000000000001', businessName: '日通　純一郎1', workplaceName: '名古屋支店', depName: 'Dep Name'}, 
+                    {id: 'a2', code: 'A000000000004', businessName: '日通　純一郎4', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                    {id: 'a3', code: 'A000000000005', businessName: '日通　純一郎5', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                    {id: 'a4', code: 'A000000000006', businessName: '日通　純一郎6', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                    {id: 'a5', code: 'A000000000007', businessName: '日通　純一郎7', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                    {id: 'a6', code: 'A000000000008', businessName: '日通　純一郎8', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                    {id: 'a7', code: 'A000000000009', businessName: '日通　純一郎9', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                    {id: 'a8', code: 'A000000000010', businessName: '日通　純一郎10', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                    {id: 'a9', code: 'A000000000011', businessName: '日通　純一郎11', workplaceName: '名古屋支店', depName: 'Dep Name'},
+                    {id: 'a10', code: 'A000000000002', businessName: '日通　純一郎2', workplaceName: '名古屋支店', depName: 'Dep Name'},
                     {id: '03', code: 'A000000000003', businessName: '日通　純一郎3', workplaceName: '名古屋支店', depName: 'Dep Name'}]);
                     
                 self.systemReference = ko.observable(vmbase.SystemType.EMPLOYMENT);
@@ -107,40 +185,82 @@ module nts.uk.com.view.cmm018.a {
                     selectedItem: self.selectedItem,
                     tabIndex: self.tabindex
                 };
-                 $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+                self.selectedItem.subscribe(function(codeChanged){
+                    alert(codeChanged);
+                });
+                //____________sidebar tab_____________
+                 $("#sidebar").ntsSideBar("init", {
+                    active: 0,
+                    activate: (event, info) => {
+                        switch(info.newIndex) {
+                            case 0:
+                            self.tabSelected(0);
+                                break;
+                            case 1://workplace
+                                self.tabSelected(1);
+                                break;
+                            default://employee
+                                self.tabSelected(2);
+                         }
+                    }
+                });
             }
             /**
              * startPage
-             * get all data
+             * get all data company
              */
             startPage(){
                 var self = this;
-                let param: vmbase.ParamDto = new vmbase.ParamDto(0,'','',1);
+                let param: vmbase.ParamDto = new vmbase.ParamDto(0,'','');
                 servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
                     if(data == null || data === undefined){
-//                        self.dataSource();
                         self.lstCompany()
                         return;
                     } 
                     console.log(data);
                     //list company
                     self.lstCompany(data.lstCompany);
-                    self.convertHist(self.lstCompany());
-                    if(self.listHistory().length > 0){
-                        self.currentCode(self.listHistory()[0].id);
-                    }
+                    self.convertHistForCom(data.lstCompany);
                     self.nameCompany(data.lstCompany[0].companyName);
                     //get name application tyle
                     servicebase.getNameAppType().done(function(lstName: Array<vmbase.ApplicationType>){
                         _.each(lstName, function(item){
                              self.lstNameAppType.push(new vmbase.ApplicationType(item.value, item.localizedName));
                         });
-                        self.cpA(self.checklistRoot(self.lstCompany()[0].lstCompanyRoot));
+                        if(self.listHistory().length > 0){
+                            self.currentCode(self.listHistory()[0].id);
+                        }
                     })
                     
                 })
             }
-            
+            getDataWorkplace(): JQueryPromise<any>{
+                var self = this;
+                var dfd = $.Deferred();
+                let param: vmbase.ParamDto = new vmbase.ParamDto(1,'000000000000000000000000000000000001','');
+                servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
+                    if(data == null || data === undefined){
+                        return;
+                    } 
+                    self.lstWorkplace(data.lstWorkplace);
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            getDataPerson(): JQueryPromise<any>{
+                var self = this;
+                var dfd = $.Deferred();
+                let param: vmbase.ParamDto = new vmbase.ParamDto(2,'000000000000000000000000000000000001','000426a2-181b-4c7f-abc8-6fff9f4f983a');
+                servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
+                    if(data == null || data === undefined){
+                        return;
+                    } 
+                    self.lstPerson(data.lstPerson);
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
             /*
                 open Dialog C
             */
@@ -245,7 +365,6 @@ module nts.uk.com.view.cmm018.a {
                                 b,data2.appPhase2,data2.appPhase3,data2.appPhase4,data2.appPhase5);
                         break;
                     case 2: 
-                        
                          a = new vmbase.CompanyAppRootADto(data2.common, appTypeValue, data2.appTypeName, approvalId, data2.historyId,
                                 data2.appPhase1,b,data2.appPhase3,data2.appPhase4,data2.appPhase5);
                         break;
@@ -300,11 +419,29 @@ module nts.uk.com.view.cmm018.a {
                 })
             }
             /**
-             * find appRootHist is selected
+             * find appRootHist is selected of company
              */
-            findAppId(value: number): vmbase.DataDisplayComDto {
+            findAppIdForCom(value: number): vmbase.DataDisplayComDto {
                 let self = this;
                 return _.find(self.lstCompany(), function(obj) {
+                    return obj.id == value;
+                })
+            }
+            /**
+             * find appRootHist is selected of work place
+             */
+            findAppIdForWp(value: number): vmbase.DataDisplayWpDto {
+                let self = this;
+                return _.find(self.lstWorkplace(), function(obj) {
+                    return obj.id == value;
+                })
+            }
+            /**
+             * find appRootHist is selected of person
+             */
+            findAppIdForPs(value: number): vmbase.DataDisplayPsDto {
+                let self = this;
+                return _.find(self.lstPerson(), function(obj) {
                     return obj.id == value;
                 })
             }
@@ -332,15 +469,45 @@ module nts.uk.com.view.cmm018.a {
                 
             }
             /**
-             * convert to lst history aa
+             * convert to list history company
              */
-            convertHist(lstCom: Array<vmbase.DataDisplayComDto>): void{
+            convertHistForCom(lstCom: Array<vmbase.DataDisplayComDto>): void{
                 var self = this;
                 let lstHist: Array<vmbase.ListHistory> = [];
                 self.listHistory([]);
                 _.each(lstCom, function(itemHist: vmbase.DataDisplayComDto){
                     let sDate = itemHist.lstCompanyRoot[0].company.startDate;
                     let eDate = itemHist.lstCompanyRoot[0].company.endDate;
+                    lstHist.push(new vmbase.ListHistory(itemHist.id, sDate + ' ~ ' + eDate, sDate, eDate));
+                });
+                 let a: Array<vmbase.ListHistory> =  _.orderBy(lstHist, ["dateRange"], ["desc"]);
+                self.listHistory(a);
+            }
+            /**
+             * convert to list history work place
+             */
+            convertHistForWp(lstWp: Array<vmbase.DataDisplayWpDto>): void{
+                var self = this;
+                let lstHist: Array<vmbase.ListHistory> = [];
+                self.listHistory([]);
+                _.each(lstWp, function(itemHist: vmbase.DataDisplayWpDto){
+                    let sDate = itemHist.lstWorkplaceRoot[0].workplace.startDate;
+                    let eDate = itemHist.lstWorkplaceRoot[0].workplace.endDate;
+                    lstHist.push(new vmbase.ListHistory(itemHist.id, sDate + ' ~ ' + eDate, sDate, eDate));
+                });
+                 let a: Array<vmbase.ListHistory> =  _.orderBy(lstHist, ["dateRange"], ["desc"]);
+                self.listHistory(a);
+            }
+            /**
+             * convert to list history for person
+             */
+            convertHistForPs(lstPs: Array<vmbase.DataDisplayPsDto>): void{
+                var self = this;
+                let lstHist: Array<vmbase.ListHistory> = [];
+                self.listHistory([]);
+                _.each(lstPs, function(itemHist: vmbase.DataDisplayPsDto){
+                    let sDate = itemHist.lstPersonRoot[0].person.startDate;
+                    let eDate = itemHist.lstPersonRoot[0].person.endDate;
                     lstHist.push(new vmbase.ListHistory(itemHist.id, sDate + ' ~ ' + eDate, sDate, eDate));
                 });
                  let a: Array<vmbase.ListHistory> =  _.orderBy(lstHist, ["dateRange"], ["desc"]);
@@ -364,34 +531,39 @@ module nts.uk.com.view.cmm018.a {
                 return listFix;
             }
              /**
-             * check lisr root (TH: <13)
+             * check lisr root (TH: <14)
              */
-            checklistRoot(root: Array<vmbase.CompanyAppRootDto>): Array<vmbase.CompanyAppRootADto>{
-                ///
+            checklistRoot(root: Array<vmbase.DataRootCheck>): Array<vmbase.CompanyAppRootADto>{
                  var self = this;
                 let lstbyApp: Array<vmbase.CompanyAppRootADto> = [];
+                let a: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto([],'abc','123',0,0,0);
+                //Them common type
                 _.each(root, function(itemRoot){
                     self.listAppPhase(self.checklist(itemRoot.lstAppPhase));
-                    if(itemRoot.company.applicationType == null && itemRoot.company.employmentRootAtr ==0){
-                        lstbyApp.push(new vmbase.CompanyAppRootADto(true, -1,' 共通ルート', itemRoot.company.approvalId,
-                                        itemRoot.company.historyId,
+                    //TH: co data
+                    if(itemRoot.applicationType == null && itemRoot.employmentRootAtr ==0){
+                        lstbyApp.push(new vmbase.CompanyAppRootADto(true, -1,' 共通ルート', itemRoot.approvalId,
+                                        itemRoot.historyId,
                                         self.listAppPhase()[0], self.listAppPhase()[1],self.listAppPhase()[2],
                                         self.listAppPhase()[3],self.listAppPhase()[4]));
                     }
                 });
+                //TH: khong co data
+                if(lstbyApp.length < 1){
+                    lstbyApp.push(new vmbase.CompanyAppRootADto(true, -1,' 共通ルート', '', '', a, a, a, a, a));
+                }
                 _.each(self.lstNameAppType(), function(item: vmbase.ApplicationType, index){
                     let check = false;
                     _.each(root, function(itemRoot){
-                        if(item.value != 14 && item.value == itemRoot.company.applicationType){
-                            lstbyApp.push(new vmbase.CompanyAppRootADto(false, item.value,item.localizedName, itemRoot.company.approvalId,
-                                    itemRoot.company.historyId,
+                        if(item.value != 14 && item.value == itemRoot.applicationType){
+                            lstbyApp.push(new vmbase.CompanyAppRootADto(false, item.value,item.localizedName, itemRoot.approvalId,
+                                    itemRoot.historyId,
                                     self.listAppPhase()[0], self.listAppPhase()[1],self.listAppPhase()[2],
                                     self.listAppPhase()[3],self.listAppPhase()[4]));
                             check = true;
                         }
                     });
                     if(!check && item.value != 14){//chua co du lieu
-                    let a: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto([],'abc','123',0,0,0);
                         lstbyApp.push(new vmbase.CompanyAppRootADto(false, item.value, item.localizedName,index,'',a,a,a,a,a));
                     }
                 })
@@ -487,21 +659,10 @@ module nts.uk.com.view.cmm018.a {
                     }
 //                    self.comRoot.valueHasMutated();
                 });
-                 $("#sidebar").ntsSideBar("init", {
-                    active: 0,
-                    activate: (event, info) => {
-                        console.log(info);
-                        switch(info.newIndex) {
-                            case 1://workplace
-                                break;
-                            default://employee
-                                 }
-                    }
-                });
             }
             getData(){
                 var self = this;
-                let param: vmbase.ParamDto = new vmbase.ParamDto(0,'','',0);
+                let param: vmbase.ParamDto = new vmbase.ParamDto(0,'','');
                 servicebase.getAllDataPr(param).done(function(data: vmbase.CommonApprovalRootDto) {    
                     if(data == null || data === undefined){
                         self.dataSourceB();
