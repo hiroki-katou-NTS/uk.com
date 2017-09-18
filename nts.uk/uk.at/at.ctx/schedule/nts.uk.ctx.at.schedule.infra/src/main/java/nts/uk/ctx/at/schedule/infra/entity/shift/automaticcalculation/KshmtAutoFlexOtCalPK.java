@@ -1,113 +1,91 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.entity.shift.automaticcalculation;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- *
- * @author NWS_THANHNC_PC
+ * The Class KshmtAutoFlexOtCalPK.
  */
+@Setter
+@Getter
 @Embeddable
 public class KshmtAutoFlexOtCalPK implements Serializable {
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 17)
-    @Column(name = "CID")
-    private String cid;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "WKPID")
-    private short wkpid;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "JOBID")
-    private short jobid;
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "AUTO_CAL_ATR")
-    private short autoCalAtr;
 
-    public KshmtAutoFlexOtCalPK() {
-    }
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
-    public KshmtAutoFlexOtCalPK(String cid, short wkpid, short jobid, short autoCalAtr) {
-        this.cid = cid;
-        this.wkpid = wkpid;
-        this.jobid = jobid;
-        this.autoCalAtr = autoCalAtr;
-    }
+	/** The cid. */
+	@Column(name = "CID")
+	private String cid;
 
-    public String getCid() {
-        return cid;
-    }
+	/** The wkpid. */
+	@Column(name = "WKPID")
+	private short wkpid;
 
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
+	/** The jobid. */
+	@Column(name = "JOBID")
+	private short jobid;
 
-    public short getWkpid() {
-        return wkpid;
-    }
+	/** The auto cal atr. */
+	@Column(name = "AUTO_CAL_ATR")
+	private short autoCalAtr;
 
-    public void setWkpid(short wkpid) {
-        this.wkpid = wkpid;
-    }
+	/**
+	 * Instantiates a new kshmt auto flex ot cal PK.
+	 */
+	public KshmtAutoFlexOtCalPK() {
+		super();
+	}
 
-    public short getJobid() {
-        return jobid;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (cid != null ? cid.hashCode() : 0);
+		hash += (int) wkpid;
+		hash += (int) jobid;
+		hash += (int) autoCalAtr;
+		return hash;
+	}
 
-    public void setJobid(short jobid) {
-        this.jobid = jobid;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof KshmtAutoFlexOtCalPK)) {
+			return false;
+		}
+		KshmtAutoFlexOtCalPK other = (KshmtAutoFlexOtCalPK) object;
+		if ((this.cid == null && other.cid != null)
+				|| (this.cid != null && !this.cid.equals(other.cid))) {
+			return false;
+		}
+		if (this.wkpid != other.wkpid) {
+			return false;
+		}
+		if (this.jobid != other.jobid) {
+			return false;
+		}
+		if (this.autoCalAtr != other.autoCalAtr) {
+			return false;
+		}
+		return true;
+	}
 
-    public short getAutoCalAtr() {
-        return autoCalAtr;
-    }
-
-    public void setAutoCalAtr(short autoCalAtr) {
-        this.autoCalAtr = autoCalAtr;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cid != null ? cid.hashCode() : 0);
-        hash += (int) wkpid;
-        hash += (int) jobid;
-        hash += (int) autoCalAtr;
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KshmtAutoFlexOtCalPK)) {
-            return false;
-        }
-        KshmtAutoFlexOtCalPK other = (KshmtAutoFlexOtCalPK) object;
-        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
-            return false;
-        }
-        if (this.wkpid != other.wkpid) {
-            return false;
-        }
-        if (this.jobid != other.jobid) {
-            return false;
-        }
-        if (this.autoCalAtr != other.autoCalAtr) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "entity.KshmtAutoFlexOtCalPK[ cid=" + cid + ", wkpid=" + wkpid + ", jobid=" + jobid + ", autoCalAtr=" + autoCalAtr + " ]";
-    }
-    
 }
