@@ -4,11 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.config.info.service.internal;
 
+import javax.ejb.Stateless;
+
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.service.WkpConfigInfoService;
 
 /**
  * The Class WkpConfigInfoServiceImpl.
  */
+@Stateless
 public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
 
 	/* (non-Javadoc)

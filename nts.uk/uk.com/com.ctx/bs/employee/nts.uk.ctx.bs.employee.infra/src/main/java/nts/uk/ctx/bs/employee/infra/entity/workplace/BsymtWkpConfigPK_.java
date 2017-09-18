@@ -8,11 +8,14 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class BsydtWkpConfigInfo_.
+ * The Class BsymtWkpConfigPK_.
  */
-@StaticMetamodel(BsydtWkpConfigInfo.class)
-public class BsydtWkpConfigInfo_ {
+@StaticMetamodel(BsymtWkpConfigPK.class)
+public class BsymtWkpConfigPK_ {
 
-	/** The bsydt wkp config info PK. */
-	public static volatile SingularAttribute<BsydtWkpConfigInfo, BsydtWkpConfigInfoPK> bsydtWkpConfigInfoPK;
+	/** The cid. */
+	public static volatile SingularAttribute<BsymtWkpConfigPK, String> cid;
+	
+	/** The history id. */
+	public static volatile SingularAttribute<BsymtWkpConfigPK, String> historyId;
 }

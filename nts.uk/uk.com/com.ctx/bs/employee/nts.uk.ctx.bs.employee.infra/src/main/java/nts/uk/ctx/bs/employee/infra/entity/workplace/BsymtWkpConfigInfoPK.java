@@ -10,27 +10,45 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
+/**
+ * The Class BsymtWkpConfigInfoPK.
+ */
 @Embeddable
-public class BsydtWkpConfigPK implements Serializable {
-    
+public class BsymtWkpConfigInfoPK implements Serializable {
+
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The cid. */
 	@NotNull
     @Column(name = "CID")
     private String cid;
 
-    @NotNull
+	/** The history id. */
+	@NotNull
     @Column(name = "HISTORY_ID")
     private String historyId;
 
-	public BsydtWkpConfigPK() {
+	/**
+	 * Instantiates a new bsymt wkp config info PK.
+	 */
+	public BsymtWkpConfigInfoPK() {
 	}
 
-	public BsydtWkpConfigPK(String cid, String historyId) {
+	/**
+	 * Instantiates a new bsymt wkp config info PK.
+	 *
+	 * @param cid the cid
+	 * @param historyId the history id
+	 */
+	public BsymtWkpConfigInfoPK(String cid, String historyId) {
         this.cid = cid;
         this.historyId = historyId;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
     @Override
     public int hashCode() {
         int hash = 0;
@@ -39,12 +57,15 @@ public class BsydtWkpConfigPK implements Serializable {
         return hash;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof BsydtWkpConfigPK)) {
+        if (!(object instanceof BsymtWkpConfigInfoPK)) {
             return false;
         }
-        BsydtWkpConfigPK other = (BsydtWkpConfigPK) object;
+        BsymtWkpConfigInfoPK other = (BsymtWkpConfigInfoPK) object;
         if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
             return false;
         }
@@ -54,9 +75,12 @@ public class BsydtWkpConfigPK implements Serializable {
         return true;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
-        return "entity.BsydtWkpConfigPK[ cid=" + cid + ", historyId=" + historyId + " ]";
+        return "entity.BsymtWkpConfigInfoPK[ cid=" + cid + ", historyId=" + historyId + " ]";
     }
     
 }

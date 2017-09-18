@@ -10,17 +10,17 @@ import javax.persistence.metamodel.StaticMetamodel;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class BsydtWkpConfig_.
+ * The Class BsymtWkpConfig_.
  */
-@StaticMetamodel(BsydtWkpConfig.class)
-public class BsydtWkpConfig_ {
+@StaticMetamodel(BsymtWkpConfig.class)
+public class BsymtWkpConfig_ {
 
-	/** The bsydt wkp config PK. */
-	public static volatile SingularAttribute<BsydtWkpConfig, BsydtWkpConfigPK> bsydtWkpConfigPK;
+	/** The bsymt wkp config PK. */
+	public static volatile SingularAttribute<BsymtWkpConfig, BsymtWkpConfigPK> bsymtWkpConfigPK;
 	
 	/** The str D. */
-	public static volatile SingularAttribute<BsydtWkpConfig, GeneralDate> strD;
+	public static volatile SingularAttribute<BsymtWkpConfig, GeneralDate> strD;
 	
 	/** The end D. */
-	public static volatile SingularAttribute<BsydtWkpConfig, GeneralDate> endD;
+	public static volatile SingularAttribute<BsymtWkpConfig, GeneralDate> endD;
 }

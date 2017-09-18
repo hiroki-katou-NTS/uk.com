@@ -19,4 +19,10 @@ public class JpaWorkplaceConfigInfoRepository implements WorkplaceConfigInfoRepo
 		return null;
 	}
 
+	@Override
+	public void add(WorkplaceConfigInfo workplaceConfigInfo) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
