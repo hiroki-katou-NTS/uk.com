@@ -10,13 +10,13 @@ import javax.persistence.metamodel.StaticMetamodel;
 import nts.arc.time.GeneralDate;
 
 /**
- * The Class BsymtWorkplace_.
+ * The Class BsymtWorkplaceHist_.
  */
 @StaticMetamodel(BsymtWorkplaceHist.class)
 public class BsymtWorkplaceHist_ {
 
-	/** The bsymt workplace PK. */
-	public static volatile SingularAttribute<BsymtWorkplaceHist, BsymtWorkplaceHistPK> bsymtWorkplacePK;
+	/** The bsymt workplace hist PK. */
+	public static volatile SingularAttribute<BsymtWorkplaceHist, BsymtWorkplaceHistPK> bsymtWorkplaceHistPK;
 	
 	/** The str D. */
 	public static volatile SingularAttribute<BsymtWorkplaceHist, GeneralDate> strD;
