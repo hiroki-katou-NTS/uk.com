@@ -42,7 +42,7 @@ public class GetDataAppCfDetailFinder {
 			// deadline ="事前申請の受付は"+date+"分から。事後申請の受付は"+date+"分まで。当月の申請は"+date+"まで";
 		}
 
-		if (inputMessageDeadline.getWorkplaceID().isEmpty()) {
+		if (inputMessageDeadline.getWorkplaceID()==null) {
 			// this is company
 			Optional<AppConfigDetailDto> appConfigDetailCom = detailCompanyRepo
 					.getRequestDetail(inputMessageDeadline.getCompanyID(), inputMessageDeadline.getAppType())
@@ -80,7 +80,7 @@ public class GetDataAppCfDetailFinder {
 				}
 				// if retrictPreMethodFlg is daycheck
 				if (appTypeDiscreteSetting.get().getRetrictPreMethodFlg().value == 1) {
-					date1.addDays(Integer.parseInt(appTypeDiscreteSetting.get().getRetrictPreDay().toString()));
+					date1 = date1.addDays(appTypeDiscreteSetting.get().getRetrictPreDay().value);
 
 					deadline = "事前申請の受付は" + date1.month() + "月" + date1.day() + "日  分から。" + "事後申請の受付は" + date2.month()
 							+ "月" + date2.day() + "日" + "分まで。" + "当月の申請は" + date3.month() + "月" + date3.day() + "日"

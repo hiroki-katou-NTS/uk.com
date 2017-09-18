@@ -3,54 +3,44 @@ module kaf000.a.viewmodel{
         /**
          * List
          */
-        //listPhase
-        listPhase: KnockoutObservableArray<model.AppApprovalPhase>;
         //listPhaseID
         listPhaseID: Array<String>;
-        //listFrame
-        listFrame: KnockoutObservableArray<model.ApprovalFrame>;
-        //listFrameByListPhaseId
-        listFrameByListPhase: KnockoutObservableArray<model.ApprovalFrame>;
-        //listFrameByListPhaseId
-        listFrameByListPhase1: KnockoutObservableArray<Array<model.ApprovalFrame>>;
-        //list appID 
-        listAppID : Array<String>;
         //List  Approval Root 
         listApprovalRoot :  KnockoutObservableArray<Array<model.ApprovalRootOutput>>;
         
         /**
          * obj input
          */
-        
+        //obj 
         objApprovalRootInput : KnockoutObservable<model.ObjApprovalRootInput>;
+        
+        //obj input
+        inputMessageDeadline : KnockoutObservable<model.InputMessageDeadline>;
+        //obj output message deadline
+        outputMessageDeadline : KnockoutObservable<model.OutputMessageDeadline>;
         constructor(){
             var self = this;
             /**
              * List
              */
             
-            self.listPhase = ko.observableArray([]);
-            self.listPhaseID = [];
-            self.listFrame = ko.observableArray([]);
-            self.listFrameByListPhase = ko.observableArray([]);
-            self.listFrameByListPhase1 = ko.observableArray([]);
-            self.listAppID = [];
             self.listApprovalRoot = ko.observableArray([]);
             //obj input approval root
             self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','90000000-0000-0000-0000-000000000001',1,1,new Date('2019-11-02 00:00:00')));
-            
+            //obj input get message deadline 
+            self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline("000000000000-0005",null,1,null));
+            //obj input get message deadline 
+            self.outputMessageDeadline = ko.observable(null);
         }
         
         start(): JQueryPromise<any> {
             
             let self = this;
             var dfd = $.Deferred();
-            //alert("sdfds");
-            //self.getAllPhase();
-            var dfdAllPhase = self.getAllPhase();
-            var dfdAllApprovalRoot = self.getAllApprovalRoot();
-            $.when(dfdAllPhase,dfdAllApprovalRoot).done((dfdAllPhaseData,dfdAllApprovalRootDât)=>{
-                self.getAllFrameByListPhaseId1(self.listPhaseID);
+            var dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
+            //var dfdAllApprovalRoot = self.getAllApprovalRoot();
+            $.when(dfdMessageDeadline).done((dfdAllApprovalRootData)=>{
+//                self.getAllFrameByListPhaseId1(self.listPhaseID);
                  dfd.resolve(); 
             });
             return dfd.promise();
@@ -60,56 +50,19 @@ module kaf000.a.viewmodel{
         getAllApprovalRoot(){
             var self = this;
             var dfd = $.Deferred<any>();
-            service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
-                self.listApprovalRoot(data);
-                dfd.resolve(data);    
-            });
+//            service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
+//                self.listApprovalRoot(data);
+//                dfd.resolve(data);    
+//            });
             return dfd.promise();
             
         }
-        
-        //getAllPhase
-        getAllPhase(){
-            let appID='000';
+         // getMessageDeadline
+        getMessageDeadline(inputMessageDeadline){
             var self = this;
             var dfd = $.Deferred<any>();
-            service.getAllPhaseByAppID(appID).done(function(data){
-                self.listPhase(data);
-                for(var i = 0;i<self.listPhase().length;i++){
-                    
-                        self.listPhaseID.push(self.listPhase()[i].phaseID);    
-                    }
-                dfd.resolve(data);    
-            });
-            return dfd.promise();
-        }
-        //getAllFrame
-        getAllFrame(phaseID){
-            var self = this;
-            var dfd = $.Deferred<any>();
-                service.getAllFrameByPhaseID(phaseID).done(function(data){
-                    self.listFrame(data);
-                    dfd.resolve(data);    
-                }); 
-            return dfd.promise();
-        }
-        
-        //get all frame by list phase ID
-        getAllFrameByListPhaseId(listPhaseID){
-            var self = this;
-            var dfd = $.Deferred<any>();
-                service.getAllFrameByListPhaseId(listPhaseID).done(function(data){
-                    self.listFrameByListPhase(data);
-                    dfd.resolve(data);    
-                }); 
-            return dfd.promise();
-        }
-         //get all frame by list phase ID 1
-        getAllFrameByListPhaseId1(listPhaseID){
-            var self = this;
-            var dfd = $.Deferred<any>();
-                service.getAllFrameByListPhaseId1(listPhaseID).done(function(data){
-                    self.listFrameByListPhase1(data);
+                service.getMessageDeadline(inputMessageDeadline).done(function(data){
+                    self.outputMessageDeadline(data);
                     dfd.resolve(data);    
                 }); 
             return dfd.promise();
@@ -268,7 +221,7 @@ module kaf000.a.viewmodel{
                         approvalPhaseId : String,
                         approverId : String,jobTitleId : String,
                         employeeId : String,orderNumber : number,
-                        approvalAtr : number,confirmPerson : number,){
+                        approvalAtr : number,confirmPerson : number){
                 this.approvalPhaseId = ko.observable(approvalPhaseId);
                 this.approverId  = ko.observable(approverId);
                 this.jobTitleId = ko.observable(jobTitleId); 
@@ -276,6 +229,7 @@ module kaf000.a.viewmodel{
                 this.orderNumber = ko.observable(orderNumber);
                 this.approvalAtr = ko.observable(approvalAtr); 
                 this.confirmPerson = ko.observable(confirmPerson);
+                }
         }//end class ApproverImport
         
         //class ObjApprovalRootInput    
@@ -295,6 +249,31 @@ module kaf000.a.viewmodel{
                 this.standardDate = standardDate; 
             }
         }//end class ObjApprovalRootInput
+        
+        //class InputMessageDeadline
+        export class InputMessageDeadline{
+            companyID : String;
+            workplaceID : String;
+            appType : number;
+            appDate : Date;
+            constructor(companyID : String,workplaceID : String,appType : number,appDate: Date){
+            this.companyID = companyID;
+            this.workplaceID = workplaceID;
+            this.appType = appType;
+            this.appDate = appDate;                
+            }
+            
+        }//end class InputMessageDeadline
+        
+        //class outputMessageDeadline
+        export class OutputMessageDeadline{
+            message : String;
+            deadline : String;
+            constructor(message : String,deadline : String){
+                this.message = message;
+                this.deadline = deadline;
+            }
+        }// end class outputMessageDeadline
         
     }
 }

@@ -57,7 +57,7 @@ public class GetAllDataAppPhaseFrame {
 			//get list approve accepted
 			List<ApproveAcceptedDto> listApproveAccepted = 
 					this.approveAcceptedRepo.getAllApproverAccepted(companyID, appApprovalPhase.getPhaseID())
-					.stream().map(c -> ApproveAcceptedDto.fromDomain(c)).collect(Collectors.toList());
+					.stream().map(c -> ApproveAcceptedDto.fromDomain(c)).collect(Collectors.toList());	
 			
 			OutputPhaseAndFrame outputPhaseAndFrame = new OutputPhaseAndFrame(appApprovalPhase, listFrame, listApproveAccepted);
 					

@@ -24,6 +24,7 @@ import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSu
 import nts.uk.ctx.at.request.app.find.application.common.CheckDisplayMessage;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
+import nts.uk.ctx.at.request.app.find.application.requestofearch.GetMessageReasonForRemand;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.InputMessageDeadline;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
 import nts.uk.ctx.at.request.dom.application.common.Application;
@@ -31,16 +32,6 @@ import nts.uk.ctx.at.request.dom.application.common.Application;
 @Path("at/request/application")
 @Produces("application/json")
 public class ApplicationWebservice extends WebService {
-	
-	@Inject
-	private CreateApplicationCommandHandler createApp;
-	
-	@Inject
-	private UpdateApplicationApproveHandler updateApp;
-	
-	@Inject
-	private DeleteApplicationCommandHandler deleteApp;
-	
 	@Inject 
 	private ApplicationFinder finderApp;
 	
@@ -52,6 +43,9 @@ public class ApplicationWebservice extends WebService {
 	
 	@Inject 
 	private GetDataAppCfDetailFinder getDataAppCfDetailFinder;
+	
+	@Inject
+	private GetMessageReasonForRemand getMessageReasonForRemand;
 	
 	/**
 	 * get All application
@@ -92,35 +86,7 @@ public class ApplicationWebservice extends WebService {
 	public Optional<ApplicationDto> getAppById(@PathParam("applicationID") String applicationID){
 		return this.finderApp.getAppById(applicationID);
 	}
-	/**
-	 * add new application
-	 * @return
-	 */
-	@POST
-	@Path("create")
-	public void createApplication(CreateApplicationCommand command) {
-		this.createApp.handle(command);
-	}
-	/**
-	 * update  application
-	 * @return
-	 */
-	@POST
-	@Path("updatetoapprove")
-	public void updateApplication(UpdateApplicationCommand command) {
-		this.updateApp.handle(command);
-	}
 	
-	/**
-	 * delete  application
-	 * @return
-	 */
-	@POST
-	@Path("delete")
-	public void deleteApplication( String applicationID) {
-		DeleteApplicationCommand command = new DeleteApplicationCommand(applicationID);
-		this.deleteApp.handle(command);
-	}
 	
 	/**
 	 * check display reason
@@ -153,6 +119,7 @@ public class ApplicationWebservice extends WebService {
 	public OutputMessageDeadline getDataConfigDetail(InputMessageDeadline inputMessageDeadline) {
 		return this.getDataAppCfDetailFinder.getDataConfigDetail(inputMessageDeadline);
 	}
+	//new InputMessageDeadline("000000000000-0005",null,1,null)
 	
 	/**
 	 * get data  ApprovalRootOfSubjectRequest
@@ -163,5 +130,14 @@ public class ApplicationWebservice extends WebService {
 	public List<ApprovalRootOfSubjectRequestDto> getDataApprovalRoot(ObjApprovalRootInput objApprovalRootInput) {
 		return this.getDataApprovalRoot.getApprovalRootOfSubjectRequest(objApprovalRootInput);
 	}
-	//List<ApprovalRootOutput>
+	
+	/**
+	 * get reason for remand
+	 * @return
+	 */
+	@POST
+	@Path("getreasonforremand")
+	public List<String> getReasonForRemand() {
+		return this.getMessageReasonForRemand.getMessageReasonForRemand("000");
+	}
 }
