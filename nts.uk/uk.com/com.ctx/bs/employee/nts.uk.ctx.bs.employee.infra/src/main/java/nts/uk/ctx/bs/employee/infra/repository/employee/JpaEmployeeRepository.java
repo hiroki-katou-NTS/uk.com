@@ -52,9 +52,9 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	// public final String SELECT_BY_SID = SELECT_NO_WHERE + " WHERE
 	// c.bsydtEmployeePk.sId = :sId";
 
-	public final String GET_LAST_EMPLOYEE = "SELECT c.kmnmtEmployeePK.employeeCode FROM KmnmtEmployee c "
-			+ " WHERE c.kmnmtEmployeePK.employeeCode LIKE CONCAT(:emlCode, '%')"
-			+ " ORDER BY  c.kmnmtEmployeePK.employeeCode DESC";
+	public final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployee c "
+			+ " WHERE c.employeeCode LIKE CONCAT(:emlCode, '%')"
+			+ " ORDER BY  c.employeeCode DESC";
 	public final String SELECT_BY_STANDARDDATE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
 			+ " AND  d.bsydtJobEntryHistoryPk.entryDate <= :standardDate " + " AND d.retireDate >= :standardDate ";
 

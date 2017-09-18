@@ -16,9 +16,9 @@ public class EmployeeBusinessIml implements EmployeeBusiness{
 	private EmployeeRepository employeeRepository;
 	
 	@Override
-	public String generateEmplCode(String startLetter) {
+	public String generateEmplCode(String startLetters) {
 		String returnString = "";
-		String lastEmployeeCode =  employeeRepository.findLastEml(startLetter);
+		String lastEmployeeCode =  employeeRepository.findLastEml(startLetters);
 		if(lastEmployeeCode.equals(""))
 			throw new BusinessException("Msg_505");
 		else{
@@ -61,6 +61,12 @@ public class EmployeeBusinessIml implements EmployeeBusiness{
 			}
 		}
 		return returnString;
+	}
+
+	@Override
+	public String generateCardNo(String startLetters) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
