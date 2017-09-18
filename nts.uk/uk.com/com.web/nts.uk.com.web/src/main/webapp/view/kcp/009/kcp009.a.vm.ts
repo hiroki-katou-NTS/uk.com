@@ -19,17 +19,17 @@ module kcp009.a.viewmodel {
             let self = this;
 //            self.empList = ko.observableArray([]);
             self.empList = ko.observableArray([
-            {id: '01', code: 'A000000000001', businessName: '日通　純一郎1', workplaceName: '名古屋支店', depName: 'Dep Name'}, 
-            {id: '04', code: 'A000000000004', businessName: '日通　純一郎4', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '05', code: 'A000000000005', businessName: '日通　純一郎5', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '06', code: 'A000000000006', businessName: '日通　純一郎6', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '07', code: 'A000000000007', businessName: '日通　純一郎7', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '08', code: 'A000000000008', businessName: '日通　純一郎8', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '09', code: 'A000000000009', businessName: '日通　純一郎9', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '10', code: 'A000000000010', businessName: '日通　純一郎10', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '11', code: 'A000000000011', businessName: '日通　純一郎11', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '02', code: 'A000000000002', businessName: '日通　純一郎2', workplaceName: '名古屋支店', depName: 'Dep Name'},
-            {id: '03', code: 'A000000000003', businessName: '日通　純一郎3', workplaceName: '名古屋支店', depName: 'Dep Name'}]);
+            {id: '000426a2-181b-4c7f-abc8-6fff9f4f983a', code: '1234567890BA', businessName: 'I', workplaceName: 'Webメニューの設定', depName: 'Dep Name'}, 
+            {id: '90000000-0000-0000-0000-000000000001', code: '1234567890AE', businessName: 'A', workplaceName: 'Webメニューの設定', depName: 'Dep Name'},
+            {id: '90000000-0000-0000-0000-000000000002', code: '000000000005', businessName: 'B', workplaceName: 'Webメニューの設定', depName: 'Dep Name'},
+            {id: '90000000-0000-0000-0000-000000000003', code: '000000000006', businessName: 'C', workplaceName: 'Webメニューの設定', depName: 'Dep Name'},
+            {id: '90000000-0000-0000-0000-000000000004', code: '000000000007', businessName: 'D', workplaceName: 'Webメニューの設定', depName: 'Dep Name'},
+            {id: '90000000-0000-0000-0000-000000000005', code: '000000000008', businessName: 'E', workplaceName: 'Webメニューの設定', depName: 'Dep Name'},
+            {id: '90000000-0000-0000-0000-000000000006', code: '000000000009', businessName: 'F', workplaceName: 'Webメニューの設定', depName: 'Dep Name'},
+            {id: '90000000-0000-0000-0000-000000000007', code: '000000000010', businessName: 'G', workplaceName: 'Webメニューの設定', depName: 'Dep Name'},
+            {id: '90000000-0000-0000-0000-000000000008', code: '000000000011', businessName: 'H', workplaceName: 'Webメニューの設定', depName: 'Dep Name'},
+            {id: '90000000-0000-0000-0000-000000000010', code: '1234567890AD', businessName: '日通　純一郎2', workplaceName: 'Webメニューの設定', depName: 'Dep Name'},
+            {id: '90000000-0000-0000-0000-000000000011', code: '1234567890AC', businessName: '日通　純一郎3', workplaceName: 'Webメニューの設定', depName: 'Dep Name'}]);
             self.systemType = ko.observable(SystemType.EMPLOYMENT);
             self.isDisplayOrganizationName = ko.observable(true);
             self.isDisplayOrganizationName.subscribe(function(value: boolean) {
@@ -53,6 +53,7 @@ module kcp009.a.viewmodel {
                 self.reloadComponent();
             });
             self.tabindex = 1;
+            
             // Initial listComponentOption
             self.listComponentOption = {
                 systemReference: self.systemType(),
@@ -74,6 +75,48 @@ module kcp009.a.viewmodel {
             self.listComponentOption.employeeInputList(self.empList());
             // Load listComponent
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+        }
+        
+//        private findAllEmp(): JQueryPromise<any> {
+//            let self = this;
+//            let dfd = $.Deferred<void>();
+//            service.findAllEmployee().done(function(data: Array<service.model.EmployeeSearchData>) {
+//                let empList = [];
+//                data.forEach(function(item) {
+//                    empList.push({id: item.employeeId, code: item.employeeCode, businessName: item.businessName, 
+//                    workplaceName: item.workplaceName, depName: 'Dep Name'});
+//                });
+//                self.empList(empList);
+//            });
+//        }
+        
+    }
+    
+    /**
+     * Module Service
+     */
+    export module service {
+        var paths: any = {
+            findAllEmployee: 'basic/organization/employee/allemployee'
+
+        }
+
+        export function findAllEmployee(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findAllEmployee, new Date());
+        }
+
+        /**
+         * Module Model
+         */
+        export module model {
+            export class EmployeeSearchData {
+                employeeId: string;
+                employeeCode: string;
+                businessName: string;
+                workplaceCode: string;
+                workplaceId: string;
+                workplaceName: string;
+            }
         }
     }
      
