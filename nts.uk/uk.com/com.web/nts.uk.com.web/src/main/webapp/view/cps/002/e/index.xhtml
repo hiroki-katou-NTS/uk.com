@@ -49,14 +49,14 @@
 					<table class="tblObtainedCode">
 						<tr>
 							<td>#{i18n.getText('CPS002_59')}</td>
-							<td data-bind="text: codeDisplay"></td>
+							<td data-bind="text: generateEmCode"></td>
 						</tr>
 					</table>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="">#{i18n.getText('CPS002_60')}</button>
-				<button data-bind="">#{i18n.getText('CPS002_61')}</button>
+				<button class="proceed x-large" data-bind="click: returnEmCode">#{i18n.getText('CPS002_60')}</button>
+				<button data-bind="click: close">#{i18n.getText('CPS002_61')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

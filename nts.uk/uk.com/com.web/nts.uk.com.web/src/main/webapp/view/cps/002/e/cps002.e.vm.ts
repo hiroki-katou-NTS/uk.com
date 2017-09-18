@@ -9,7 +9,7 @@ module cps002.e.vm {
     export class ViewModel {
         cardNoMode: KnockoutObservable<boolean> = ko.observable(false);
         txtEmployeeCode: KnockoutObservable<string> = ko.observable("");
-        codeDisplay: KnockoutObservable<string> = ko.observable("");
+        generateEmCode: KnockoutObservable<string> = ko.observable("");
         constructor() {
             let self = this;
             self.cardNoMode = getShared("cardNoMode");
@@ -23,8 +23,7 @@ module cps002.e.vm {
         getEmlCode(){
             let self = this;
             service.getEmlCode(self.txtEmployeeCode()).done(function(emCode){
-                console.log(emCode);
-                self.codeDisplay(emCode);
+                self.generateEmCode(emCode);
             
             }).fail(function(){
                  alertError({ messageId: "Msg_505" });
@@ -34,6 +33,19 @@ module cps002.e.vm {
         getCardNo(){
             let self = this;
              alertError({ messageId: "Msg_505" });
+        }
+        
+        returnEmCode(){
+            let self = this;
+            if(self.generateEmCode() != ""){
+                setShared("CPS002_PARAM", self.generateEmCode());
+                close();
+            }
+        }
+        
+        close(){
+            setShared("CPS002_PARAM", self.generateEmCode());
+            close();
         }
     }
 }

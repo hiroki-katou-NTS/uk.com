@@ -7,42 +7,26 @@
 <body>
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<title>コピー項目設定</title> 
+		
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 1050,
-					height : 750
+					width : 530,
+					height : 375
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="cps002.e.style.css" />
-			<com:scriptfile path="cps002.e.service.js" />
-			<com:scriptfile path="cps002.e.vm.js" />
-			<com:scriptfile path="cps002.e.start.js" />
+			<com:stylefile path="cps002.f.style.css" />
+			<com:scriptfile path="cps002.f.service.js" />
+			<com:scriptfile path="cps002.f.vm.js" />
+			<com:scriptfile path="cps002.f.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area">
-				<button class="proceed">#{i18n.getText('CPS002_64')}</button>
-				<button>#{i18n.getText('CPS002_65')}</button>
-			</div>
-			<div id="contents-area" class="cf">
-				<!-- Left site-->
-				<div>
-					<div>
-						<i class="icon icon-searchbox"></i>
-						<span class="relative label bg-green">
-							<i class="icon icon-searchbox"></i>
-						</span>
-						<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS002_66')}</div>
-					</div>
-						<div>
-						<input type="text" placeholder="名称で検索…"/>
-						<button>検索</button>
-					</div>
-				</div>			
+			<div id="contents-area" class="cf coverBlock">
+				
 			</div>
 			<div id="functions-area-bottom">
+				
 			</div>
 		</ui:define>
 	</ui:composition>
