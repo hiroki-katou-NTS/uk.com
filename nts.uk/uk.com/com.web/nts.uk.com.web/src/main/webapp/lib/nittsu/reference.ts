@@ -7,5 +7,6 @@
 /// <reference path="../generic/lodash/lodash.d.ts"/>
 /// <reference path="../generic/momentjs/moment.d.ts"/>
 /// <reference path="../generic/requirejs/require.d.ts"/>
+/// <reference path="viewcontext.d.ts"/>
 /// <reference path="nts.uk.com.web.nittsu.bundles.d.ts"/>
 

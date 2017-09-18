@@ -226,20 +226,21 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
                 return;
             }
-
-            switch (self.currentItem().itemTypeState.dataTypeState.dataTypeValue) {
-                case 1:
-                    return getText('Enum_DataTypeValue_STRING');
-                case 2:
-                    return getText('Enum_DataTypeValue_NUMERIC');
-                case 3:
-                    return getText('Enum_DataTypeValue_DATE');
-                case 4:
-                    return getText('Enum_DataTypeValue_TIME');
-                case 5:
-                    return getText('Enum_DataTypeValue_TIMEPOINT');
-                case 6:
-                    return getText('Enum_DataTypeValue_SELECTION');
+            if (self.itemType() == 2) {
+                switch (self.currentItem().itemTypeState.dataTypeState.dataTypeValue) {
+                    case 1:
+                        return getText('Enum_DataTypeValue_STRING');
+                    case 2:
+                        return getText('Enum_DataTypeValue_NUMERIC');
+                    case 3:
+                        return getText('Enum_DataTypeValue_DATE');
+                    case 4:
+                        return getText('Enum_DataTypeValue_TIME');
+                    case 5:
+                        return getText('Enum_DataTypeValue_TIMEPOINT');
+                    case 6:
+                        return getText('Enum_DataTypeValue_SELECTION');
+                }
             }
 
         }
@@ -318,12 +319,24 @@ module nts.uk.com.view.cps006.b.viewmodel {
         dataType() {
             let self = this;
 
+            if (self.currentItem().itemTypeState == null || self.itemType() === 1) {
+
+                return ;
+            }
+
+            return self.currentItem().itemTypeState.dataTypeState.dataTypeValue;
+
+        }
+
+        itemType() {
+            let self = this;
+
             if (self.currentItem().itemTypeState == null) {
 
                 return;
             }
 
-            return self.currentItem().itemTypeState.dataTypeState.dataTypeValue;
+            return self.currentItem().itemTypeState.itemType;
 
         }
 

@@ -51,7 +51,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				EnumAdaptor.valueOf(entity.reflectPerState,ReflectPlanPerState.class),
 				EnumAdaptor.valueOf(entity.reflectPerEnforce,ReflectPlanPerEnforce.class),
 				entity.startDate,
-				entity.endDate);
+				entity.endDate,
+				null);
 	}
 
 	private KafdtApplication toEntity(Application domain) {

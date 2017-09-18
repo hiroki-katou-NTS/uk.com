@@ -16,6 +16,8 @@ import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistoryGetMemento;
 @Setter
 public class WorkplaceHistoryDto {
 
+	public static final String WKP_HIST_DATE_FORMAT = "yyyy-MM-dd";
+	
 	/** The history id. */
 	//履歴ID
 	private String historyId;
@@ -31,7 +33,6 @@ public class WorkplaceHistoryDto {
 	
 	public class WorkplaceHistoryGetMementoImpl implements WorkplaceHistoryGetMemento{
 
-		public static final String WKP_HIST_DATE_FORMAT = "yyyy-MM-dd";
 		private WorkplaceHistoryDto workplaceHistoryDto;
 		
 		public WorkplaceHistoryGetMementoImpl(WorkplaceHistoryDto workplaceHistoryDto) {

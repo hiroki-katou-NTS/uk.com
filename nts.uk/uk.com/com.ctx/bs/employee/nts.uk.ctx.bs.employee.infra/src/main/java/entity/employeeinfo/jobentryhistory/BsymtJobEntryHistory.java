@@ -6,8 +6,12 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import entity.employeeinfo.BsymtEmployee;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
@@ -23,26 +27,30 @@ public class BsymtJobEntryHistory extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public BsymtJobEntryHistoryPk bsydtJobEntryHistoryPk;
 	
-	@Basic(optional = false)
 	@Column(name = "CID")
 	public String companyId;
 
 	
-	@Basic(optional = true)
 	@Column(name = "HIRING_TYPE")
 	public String hiringType;
 	
-	@Basic(optional = true)
 	@Column(name = "RETIRE_DATE")
 	public GeneralDate retireDate;
 	
-	@Basic(optional = true)
 	@Column(name = "ADOPT_DATE")
 	public GeneralDate adoptDate;
 
+	
+	@ManyToOne
+	@JoinColumns({
+        @JoinColumn(name = "SID", referencedColumnName = "SID", insertable = false, updatable = false)
+    })
+	public BsymtEmployee bsymtEmployee;
+	
 	
 	@Override
 	protected Object getKey() {
 		return this.bsydtJobEntryHistoryPk;
 	}
+	
 }

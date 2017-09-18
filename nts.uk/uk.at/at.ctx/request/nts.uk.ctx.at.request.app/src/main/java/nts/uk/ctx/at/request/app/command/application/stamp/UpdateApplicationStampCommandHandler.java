@@ -73,6 +73,7 @@ public class UpdateApplicationStampCommandHandler extends CommandHandler<AppStam
 					ReflectPlanPerEnforce.NOTTODO, 
 					null,
 					null,
+					null,
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
 					appStampCmd.getAppStampGoOutPermitCmds().stream().map(
 						x -> new ApplicationStampGoOutPermit(
@@ -109,6 +110,7 @@ public class UpdateApplicationStampCommandHandler extends CommandHandler<AppStam
 					null, 
 					ReflectPlanPerState.NOTREFLECTED, 
 					ReflectPlanPerEnforce.NOTTODO, 
+					null,
 					null,
 					null,
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
@@ -151,6 +153,7 @@ public class UpdateApplicationStampCommandHandler extends CommandHandler<AppStam
 					ReflectPlanPerEnforce.NOTTODO, 
 					null,
 					null,
+					null,
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
 					null,
 					null,
@@ -183,6 +186,7 @@ public class UpdateApplicationStampCommandHandler extends CommandHandler<AppStam
 					null, 
 					ReflectPlanPerState.NOTREFLECTED, 
 					ReflectPlanPerEnforce.NOTTODO,  
+					null,
 					null,
 					null,
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),

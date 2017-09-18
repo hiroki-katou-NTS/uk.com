@@ -10,11 +10,11 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.overtime.Overtime;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeCalculationMethod;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeNote;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItem;
-import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingSetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNote;
 
 /**
  * The Class OvertimeSettingDto.
@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSettingSetMemento;
 
 @Getter
 @Setter
-public class OvertimeSettingDto implements OvertimeSettingSetMemento{
+public class OvertimeSettingDto implements OutsideOTSettingSetMemento{
 
 	/** The note. */
 	private String note;
@@ -67,7 +67,7 @@ public class OvertimeSettingDto implements OvertimeSettingSetMemento{
 	 * setBreakdownItems(java.util.List)
 	 */
 	@Override
-	public void setBreakdownItems(List<OvertimeBRDItem> breakdownItems) {
+	public void setBreakdownItems(List<OutsideOTBRDItem> breakdownItems) {
 		this.breakdownItems = breakdownItems.stream().map(overtimeBRDItem -> {
 			OvertimeBRDItemDto dto = new OvertimeBRDItemDto();
 			overtimeBRDItem.saveToMemento(dto);
@@ -82,7 +82,7 @@ public class OvertimeSettingDto implements OvertimeSettingSetMemento{
 	 * OvertimeCalculationMethod)
 	 */
 	@Override
-	public void setCalculationMethod(OvertimeCalculationMethod calculationMethod) {
+	public void setCalculationMethod(OutsideOTCalMed calculationMethod) {
 		this.calculationMethod = calculationMethod.value;
 	}
 

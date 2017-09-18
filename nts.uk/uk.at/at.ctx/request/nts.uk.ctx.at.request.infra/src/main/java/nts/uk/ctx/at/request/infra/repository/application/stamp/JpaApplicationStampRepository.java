@@ -218,6 +218,7 @@ public class JpaApplicationStampRepository extends JpaRepository implements Appl
 				EnumAdaptor.valueOf(krqdtAppStamp.kafdtApplication.reflectPerEnforce, ReflectPlanPerEnforce.class),
 				null,
 				null,
+				null,
 				EnumAdaptor.valueOf(krqdtAppStamp.krqdpAppStamp.stampRequestMode, StampRequestMode.class), 
 				applicationStampGoOutPermits, 
 				applicationStampWorks, 
