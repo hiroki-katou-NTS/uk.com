@@ -10,10 +10,15 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The Class BsymtWkpConfigPK.
  */
 @Embeddable
+@Getter
+@Setter
 public class BsymtWkpConfigPK implements Serializable {
     
 	/** The Constant serialVersionUID. */

@@ -13,6 +13,8 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
@@ -21,6 +23,8 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * The Class BsymtWkpConfig.
  */
 @Entity
+@Getter
+@Setter
 @Table(name = "BSYMT_WKP_CONFIG")
 public class BsymtWkpConfig extends UkJpaEntity implements Serializable {
 	

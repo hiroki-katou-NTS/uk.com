@@ -13,14 +13,17 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 
 @Entity
+@Getter
+@Setter
 @Table(name = "BSYMT_WORKPLACE_HIST")
-
 public class BsymtWorkplaceHist extends UkJpaEntity implements Serializable {
     
 	private static final long serialVersionUID = 1L;

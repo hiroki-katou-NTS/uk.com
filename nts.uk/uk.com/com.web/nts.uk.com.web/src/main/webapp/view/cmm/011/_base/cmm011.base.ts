@@ -59,7 +59,7 @@ module nts.uk.com.view.cmm011 {
          * IHistory
          */
         export interface IHistory {
-            workplaceId: string;
+            workplaceId?: string;
             historyId: string;
             startDate: string;
             endDate: string;

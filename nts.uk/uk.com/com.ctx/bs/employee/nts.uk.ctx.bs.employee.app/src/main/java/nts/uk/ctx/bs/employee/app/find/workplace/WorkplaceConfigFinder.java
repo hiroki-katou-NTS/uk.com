@@ -4,9 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -33,14 +31,14 @@ public class WorkplaceConfigFinder {
 	 *            the company id
 	 * @return the list
 	 */
-	public List<WorkplaceConfigDto> findAllByCompanyId(String companyId) {
-		List<WorkplaceConfig> lstWorkplaceConfig = workplaceConfigRepository.findAllByCompanyId(companyId);
+	public WorkplaceConfigDto findAllByCompanyId() {
+		String companyId = AppContexts.user().companyId();
+		
+		WorkplaceConfig workplaceConfig = workplaceConfigRepository.findAllByCompanyId(companyId);
 
-		return lstWorkplaceConfig.stream().map(item -> {
-			WorkplaceConfigDto wkpConfigDto = new WorkplaceConfigDto();
-			item.saveToMemento(wkpConfigDto);
-			return wkpConfigDto;
-		}).collect(Collectors.toList());
+		WorkplaceConfigDto wkpConfigDto = new WorkplaceConfigDto();
+		workplaceConfig.saveToMemento(wkpConfigDto);
+		return wkpConfigDto;
 	}
 
 	/**

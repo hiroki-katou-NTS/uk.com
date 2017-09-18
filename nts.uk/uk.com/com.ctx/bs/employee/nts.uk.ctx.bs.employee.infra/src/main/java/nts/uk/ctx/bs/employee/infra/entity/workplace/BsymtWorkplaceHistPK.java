@@ -10,8 +10,13 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+
 
 @Embeddable
+@Getter
+@Setter
 public class BsymtWorkplaceHistPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

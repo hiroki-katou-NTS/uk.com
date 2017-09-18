@@ -38,6 +38,18 @@ public class WorkplaceWebService extends WebService {
 	private UpdateWorkplaceCommandHandler updateWorkplaceCommandHandler;
 
 	/**
+	 * Config hist.
+	 *
+	 * @param dto the dto
+	 * @return the workplace config dto
+	 */
+	@Path("configHist")
+	@POST
+	public WorkplaceConfigDto configHist(WorkplaceCommandDto dto) {
+		return this.wkpConfigFinder.findAllByCompanyId();
+	}
+	
+	/**
 	 * Find last config.
 	 *
 	 * @param dto the dto

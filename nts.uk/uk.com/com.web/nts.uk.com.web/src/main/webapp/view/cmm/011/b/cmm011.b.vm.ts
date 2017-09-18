@@ -15,6 +15,9 @@ module nts.uk.com.view.cmm011.b {
                 
                 self.workplaceHistory = ko.observable(new WorkplaceHistoryModel(self));
                 self.startDate = ko.observable(null);
+                self.workplaceHistory().selectedWpkHistory.subscribe(function(code) {
+                    self.startDate(self.workplaceHistory().lstWpkHistory().filter(item => item.historyId == code)[0].startDate);
+                });
             }
             
             /**
@@ -23,9 +26,19 @@ module nts.uk.com.view.cmm011.b {
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
-                
-                dfd.resolve();
-                
+                self.getAllHistory().done(function() {
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+            
+            private getAllHistory(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                service.findLstWkpConfigHistory().done(function(data) {
+                    self.workplaceHistory().init(data.wkpConfigHistory); 
+                    dfd.resolve();
+                });
                 return dfd.promise();
             }
             
@@ -78,7 +91,7 @@ module nts.uk.com.view.cmm011.b {
                 self.isAddMode = ko.observable(false);
                 self.isUpdateMode = ko.observable(false); 
                 
-                self.init();
+//                self.init();
                 
                 // subscribe
                 self.lstWpkHistory.subscribe(newList => {
@@ -90,14 +103,13 @@ module nts.uk.com.view.cmm011.b {
                 });
             }
             
-            init() {
+            init(data: Array<any>) {
                 let self = this;
-                let lstWpkHistory: Array<IHistory> = [
-                    {workplaceId: "ABC1", historyId: "ABC1", startDate: "2015/04/01", endDate: "9999/12/31"},
-                    {workplaceId: "ABC2", historyId: "ABC2", startDate: "2015/04/01", endDate: "9999/12/31"},
-                    {workplaceId: "ABC3", historyId: "ABC3", startDate: "2015/04/01", endDate: "9999/12/31"},
-                    {workplaceId: "ABC4", historyId: "ABC4", startDate: "2015/04/01", endDate: "9999/12/31"}
-                ]
+                let lstWpkHistory: Array<IHistory> = [];
+                data.forEach(function(item, index) {
+                    //workplaceId not key => ""
+                    lstWpkHistory.push({ workplaceId: "", historyId: item.historyId, startDate: item.period.startDate, endDate: item.period.endDate });
+                });
                 self.lstWpkHistory(lstWpkHistory);
                 self.selectFirst();
             }
