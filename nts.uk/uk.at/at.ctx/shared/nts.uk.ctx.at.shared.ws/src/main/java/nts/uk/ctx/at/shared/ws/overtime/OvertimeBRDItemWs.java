@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.app.command.overtime.breakdown.OvertimeBRDItemSaveCo
 import nts.uk.ctx.at.shared.app.command.overtime.breakdown.OvertimeBRDItemSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.overtime.OvertimeBRDItemFinder;
 import nts.uk.ctx.at.shared.app.find.overtime.dto.OvertimeBRDItemDto;
-import nts.uk.ctx.at.shared.dom.overtime.ProductNumber;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.ProductNumber;
 
 /**
  * The Class OvertimeBRDItemWs.

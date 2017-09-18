@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 /**
  * 
  * @author Doan Duy Hung
@@ -45,14 +46,14 @@ public class ApplicationStamp extends Application {
 			ReflectPlanScheReason reflectPlanScheReason, GeneralDate reflectPlanTime,
 			ReflectPlanPerState reflectPlanState, ReflectPlanPerEnforce reflectPlanEnforce,
 			ReflectPerScheReason reflectPerScheReason, GeneralDate reflectPerTime, ReflectPlanPerState reflectPerState,
-			ReflectPlanPerEnforce reflectPerEnforce, GeneralDate startDate, GeneralDate endDate, 
+			ReflectPlanPerEnforce reflectPerEnforce, GeneralDate startDate, GeneralDate endDate, List<AppApprovalPhase> listPhase,
 			StampRequestMode stampRequestMode, List<ApplicationStampGoOutPermit> applicationStampGoOutPermits,
 			List<ApplicationStampWork> applicationStampWorks, List<ApplicationStampCancel> applicationStampCancels,
 			ApplicationStampOnlineRecord applicationStampOnlineRecords) {
 		super(companyID, applicationID, prePostAtr, inputDate, enteredPersonSID, reversionReason, applicationDate,
 				applicationReason, applicationType, applicantSID, reflectPlanScheReason, reflectPlanTime,
 				reflectPlanState, reflectPlanEnforce, reflectPerScheReason, reflectPerTime, reflectPerState,
-				reflectPerEnforce, startDate, endDate);
+				reflectPerEnforce, startDate, endDate,listPhase);
 		this.stampRequestMode = stampRequestMode;
 		this.applicationStampGoOutPermits = applicationStampGoOutPermits;
 		this.applicationStampWorks = applicationStampWorks;
@@ -84,6 +85,7 @@ public class ApplicationStamp extends Application {
 				null, 
 				ReflectPlanPerState.NOTREFLECTED, 
 				ReflectPlanPerEnforce.NOTTODO, 
+				null,
 				null,
 				null,
 				stampRequestMode, 

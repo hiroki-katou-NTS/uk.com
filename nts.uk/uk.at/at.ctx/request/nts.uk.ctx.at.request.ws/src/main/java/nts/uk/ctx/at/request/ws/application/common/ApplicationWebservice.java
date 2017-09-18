@@ -21,7 +21,7 @@ import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
 import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSubjectRequest;
-import nts.uk.ctx.at.request.app.find.application.common.GetDataBeforePreBootMode;
+import nts.uk.ctx.at.request.app.find.application.common.CheckDisplayMessage;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.InputMessageDeadline;
@@ -45,7 +45,7 @@ public class ApplicationWebservice extends WebService {
 	private ApplicationFinder finderApp;
 	
 	@Inject 
-	private GetDataBeforePreBootMode getDataBeforePreBootMode; 
+	private CheckDisplayMessage getDataBeforePreBootMode; 
 	
 	@Inject 
 	private GetDataApprovalRootOfSubjectRequest getDataApprovalRoot;

@@ -17,6 +17,7 @@ module nts.uk.com.view.cmm018.l {
             printExcel(){
                 var self = this;
                 service.saveExcel(self.date());
+                //
             }
         }
     }

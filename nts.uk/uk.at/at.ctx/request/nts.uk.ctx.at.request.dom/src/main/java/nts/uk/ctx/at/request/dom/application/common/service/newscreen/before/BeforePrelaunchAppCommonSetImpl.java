@@ -8,7 +8,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.scoped.session.SessionContextProvider;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
@@ -47,7 +46,7 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		} else {
 			baseDate = GeneralDate.today();
 		}
-		SessionContextProvider.get().put("baseDate", baseDate);
+		// SessionContextProvider.get().put("baseDate", baseDate);
 		
 		// 申請本人の所属職場を含める上位職場を取得する ( Acquire the upper workplace to include the workplace of the applicant himself / herself )
 		List<String> workPlaceIDs = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, baseDate);
@@ -61,9 +60,9 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		}
 		if(loopResult.size() == 0) {
 			Optional<RequestOfEarchCompany> rqOptional = requestOfEarchCompanyRepository.getRequestByCompany(companyID);
-			if(rqOptional.isPresent()) SessionContextProvider.get().put("appSet", rqOptional.get());
+			// if(rqOptional.isPresent()) SessionContextProvider.get().put("appSet", rqOptional.get());
 		} else {
-			SessionContextProvider.get().put("appSet", loopResult.get(0));
+			// SessionContextProvider.get().put("appSet", loopResult.get(0));
 		}
 		
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する ( Execute the algorithm "Acquire employee affiliation employment history" )

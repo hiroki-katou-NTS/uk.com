@@ -151,7 +151,8 @@ public class JpaWorkTypeRepository extends JpaRepository implements WorkTypeRepo
 
 	@Override
 	public Optional<WorkType> findByPK(String companyId, String workTypeCd) {
-		return this.queryProxy().find(new KshmtWorkTypePK(companyId, workTypeCd), KshmtWorkType.class)
+		return this.queryProxy()
+				.find(new KshmtWorkTypePK(companyId, workTypeCd), KshmtWorkType.class)
 				.map(x -> toDomain(x));
 	}
 

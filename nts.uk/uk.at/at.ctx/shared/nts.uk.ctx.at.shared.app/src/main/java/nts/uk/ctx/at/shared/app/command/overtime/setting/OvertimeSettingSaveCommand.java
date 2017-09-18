@@ -6,7 +6,7 @@ package nts.uk.ctx.at.shared.app.command.overtime.setting;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSetting;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 
 @Getter
 @Setter
@@ -21,8 +21,8 @@ public class OvertimeSettingSaveCommand {
 	 * @param companyId the company id
 	 * @return the overtime setting
 	 */
-	public OvertimeSetting toDomain(String companyId){
+	public OutsideOTSetting toDomain(String companyId){
 		setting.setCompanyId(companyId);
-		return new OvertimeSetting(setting);
+		return new OutsideOTSetting(setting);
 	}
 }

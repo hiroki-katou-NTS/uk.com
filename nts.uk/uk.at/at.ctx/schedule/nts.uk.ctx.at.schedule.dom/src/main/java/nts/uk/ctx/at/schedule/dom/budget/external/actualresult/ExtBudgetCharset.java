@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresult;
 
 /**
- * The Enum CompletionState.
+ * The Enum ExtBudgetCharset.
  */
 public enum ExtBudgetCharset {
     
@@ -25,7 +25,7 @@ public enum ExtBudgetCharset {
     private final static ExtBudgetCharset[] values = ExtBudgetCharset.values();
 
     /**
-     * Instantiates a new nursing category.
+     * Instantiates a new ext budget charset.
      *
      * @param value the value
      * @param nameId the name id
@@ -41,7 +41,7 @@ public enum ExtBudgetCharset {
      * Value of.
      *
      * @param value the value
-     * @return the nursing category
+     * @return the ext budget charset
      */
     public static ExtBudgetCharset valueOf(Integer value) {
         // Invalid object.

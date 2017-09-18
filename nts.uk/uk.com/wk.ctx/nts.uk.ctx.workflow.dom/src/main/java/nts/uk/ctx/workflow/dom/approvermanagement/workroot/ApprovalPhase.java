@@ -13,7 +13,6 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 @Getter
-@Setter
 @AllArgsConstructor
 public class ApprovalPhase extends AggregateRoot{
 	/**会社ID*/
@@ -30,6 +29,7 @@ public class ApprovalPhase extends AggregateRoot{
 	private int orderNumber;
 	
 	/**承認者*/
+	@Setter
 	private List<Approver>  approvers;
 	
 	public static ApprovalPhase createSimpleFromJavaType(String companyId,
@@ -45,9 +45,7 @@ public class ApprovalPhase extends AggregateRoot{
 				browsingPhase,
 				orderNumber, null);
 	}
-	public static ApprovalPhase updateBranchId(ApprovalPhase approvalPhase, String branchId){
-		ApprovalPhase approvalPhaseNew = approvalPhase;
-		approvalPhaseNew.setBranchId(branchId);
-		return approvalPhaseNew;
+	public void updateBranchId(String branchId){
+		this.branchId = branchId;
 	}
 }

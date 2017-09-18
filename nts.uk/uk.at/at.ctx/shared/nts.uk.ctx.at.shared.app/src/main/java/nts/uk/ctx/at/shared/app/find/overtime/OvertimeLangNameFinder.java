@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.overtime.dto.OvertimeLangNameDto;
-import nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangName;
-import nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangNameRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLang;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -24,7 +24,7 @@ public class OvertimeLangNameFinder {
 
 	/** The repository. */
 	@Inject
-	private OvertimeLangNameRepository repository;
+	private OvertimeNameLangRepository repository;
 	
 	/**
 	 * Find all.
@@ -41,7 +41,7 @@ public class OvertimeLangNameFinder {
 		String companyId = loginUserContext.companyId();
 
 		// call repository find data
-		List<OvertimeLangName> overtimeLanguage = this.repository.findAll(companyId, languageId);
+		List<OvertimeNameLang> overtimeLanguage = this.repository.findAll(companyId, languageId);
 
 		return overtimeLanguage.stream().map(domain -> {
 			OvertimeLangNameDto dto = new OvertimeLangNameDto();
