@@ -73,7 +73,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 					.employeeId(employee.bsydtEmployeePk.sId)
 					.employeeCode(employee.employeeCode)
 					.businessName(person.businessName)
-					.orgName(workplace.getWkpname())
+					.orgName(workplace != null ? workplace.getWkpname() : null)
 					.build());
 		default:
 			// Get department
@@ -81,7 +81,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 					.employeeId(employee.bsydtEmployeePk.sId)
 					.employeeCode(employee.employeeCode)
 					.businessName(person.businessName)
-					.orgName(department.getName())
+					.orgName(department != null ? department.getName() : null)
 					.build());
 		}
 	}
