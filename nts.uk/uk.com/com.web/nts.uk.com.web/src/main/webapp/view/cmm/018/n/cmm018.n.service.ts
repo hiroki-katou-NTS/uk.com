@@ -5,9 +5,7 @@ module cmm018.n.service {
 
     export function getRightList() {
         let dfd = $.Deferred();
-        nts.uk.request.ajax(servicePath.getRightList).done(function(res) {
-            dfd.resolve(res);
-        });
+        nts.uk.request.ajax(servicePath.getRightList);
         return dfd.promise();
     };
 }

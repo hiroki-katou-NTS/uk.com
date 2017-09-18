@@ -74,7 +74,7 @@ module cmm018.n.viewmodel {
         getRightList() {
             let self = this;
             var dfd = $.Deferred();
-            service.getRightList().done(function(data) {
+            service.getRightList().done(function(data: any) {
                 let items = _.map(data, item => {
                     return new ItemModel(item);
                 });
