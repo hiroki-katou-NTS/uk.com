@@ -14,6 +14,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceConfigDto;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WorkplaceConfigFinder.
@@ -48,7 +49,9 @@ public class WorkplaceConfigFinder {
 	 * @param companyId the company id
 	 * @return the workplace config dto
 	 */
-	public WorkplaceConfigDto findLastestByCompanyId(String companyId) {
+	public WorkplaceConfigDto findLastestByCompanyId() {
+		String companyId = AppContexts.user().companyId();
+		
 		Optional<WorkplaceConfig> lstWorkplaceConfig = workplaceConfigRepository.findLastestByCompanyId(companyId);
 		if (lstWorkplaceConfig.isPresent()) {
 			WorkplaceConfigDto wkpConfigDto = new WorkplaceConfigDto();

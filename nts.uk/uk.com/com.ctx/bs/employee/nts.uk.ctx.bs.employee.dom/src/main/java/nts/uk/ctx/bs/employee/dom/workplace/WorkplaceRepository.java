@@ -14,6 +14,14 @@ import nts.arc.time.GeneralDate;
 public interface WorkplaceRepository {
 
 	/**
+	 * Adds the.
+	 *
+	 * @param wkp the wkp
+	 * @return the string
+	 */
+	String add(Workplace wkp);
+	
+	/**
 	 * Find by start date.
 	 *
 	 * @param companyId the company id
