@@ -3,7 +3,7 @@ package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 
-public interface GoBackDirectlyService {
+public interface GoBackDirectlyRegisterService {
 	/**
 	 * 直行直帰登録
 	 * 
@@ -34,5 +34,5 @@ public interface GoBackDirectlyService {
 	 * 
 	 */
 	public CheckValidOutput goBackLateEarlyCheckValidity(GoBackDirectly goBackDirectly,
-			GoBackDirectlyCommonSetting goBackCommonSet);
+			GoBackDirectlyCommonSetting goBackCommonSet, int line);
 }
