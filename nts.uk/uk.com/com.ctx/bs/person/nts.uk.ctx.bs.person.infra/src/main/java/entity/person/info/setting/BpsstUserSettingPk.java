@@ -1,4 +1,4 @@
-package entity.person.info;
+package entity.person.info.setting;
 
 import java.io.Serializable;
 
