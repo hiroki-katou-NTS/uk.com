@@ -2,42 +2,32 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.employee.department;
+package nts.uk.ctx.bs.employee.dom.department;
+
+import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 
 /**
- * The Class DepartmentInfo. 部門情報
+ * The Class Department. 部門
  */
 @Getter
-public class DepartmentInfo extends AggregateRoot {
-
+public class Department extends AggregateRoot {
+	
 	/** The company id. */
 	/* 会社ID */
 	private CompanyId companyId;
 	
-	/** The dep history id. */
-	/* 履歴ID */
-	private String depHistoryId;
+	/** The id. */
+	/* 会社コード */
+	private String id;
 	
-	/** The department id. */
-	/* 部門ID */
-	private String departmentId;
-	
-	/** The department code. */
-	/* 部門コード */
-	private DepartmentCode departmentCode;
-	
-	/** The department name. */
-	/* 部門名称 */
-	private DepartmentName departmentName;
-	
-	/** The dep generic name. */
-	/* 部門総称 */
-	private DepartmentGenericName depGenericName;
-	
+	/** The histories. */
+	/* 部門履歴  */
+	private List<DepartmentHistory> depHistory;
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -46,8 +36,7 @@ public class DepartmentInfo extends AggregateRoot {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
-		result = prime * result + ((depHistoryId == null) ? 0 : depHistoryId.hashCode());
-		result = prime * result + ((departmentId == null) ? 0 : departmentId.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
 
@@ -62,23 +51,20 @@ public class DepartmentInfo extends AggregateRoot {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		DepartmentInfo other = (DepartmentInfo) obj;
+		Department other = (Department) obj;
 		if (companyId == null) {
 			if (other.companyId != null)
 				return false;
 		} else if (!companyId.equals(other.companyId))
 			return false;
-		if (depHistoryId == null) {
-			if (other.depHistoryId != null)
+		if (id == null) {
+			if (other.id != null)
 				return false;
-		} else if (!depHistoryId.equals(other.depHistoryId))
-			return false;
-		if (departmentId == null) {
-			if (other.departmentId != null)
-				return false;
-		} else if (!departmentId.equals(other.departmentId))
+		} else if (!id.equals(other.id))
 			return false;
 		return true;
 	}
+	
+	
 	
 }

@@ -2,31 +2,29 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.employee.department;
-
-import java.util.List;
+package nts.uk.ctx.bs.employee.dom.department;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.employee.dom.common.CompanyId;
+import nts.uk.ctx.bs.employee.dom.common.history.Period;
 
 /**
- * The Class Department. 部門
+ * The Class AffiliationDepartment.
  */
 @Getter
-public class Department extends AggregateRoot {
-	
-	/** The company id. */
-	/* 会社ID */
-	private CompanyId companyId;
+public class AffiliationDepartment extends AggregateRoot {
 	
 	/** The id. */
-	/* 会社コード */
 	private String id;
 	
-	/** The histories. */
-	/* 部門履歴  */
-	private List<DepartmentHistory> depHistory;
+	/** The period. */
+	private Period period;
+	
+	/** The employee id. */
+	private String employeeId;
+	
+	/** The department id. */
+	private String departmentId;
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -35,7 +33,6 @@ public class Department extends AggregateRoot {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
 		return result;
 	}
@@ -51,12 +48,7 @@ public class Department extends AggregateRoot {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Department other = (Department) obj;
-		if (companyId == null) {
-			if (other.companyId != null)
-				return false;
-		} else if (!companyId.equals(other.companyId))
-			return false;
+		AffiliationDepartment other = (AffiliationDepartment) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -64,7 +56,4 @@ public class Department extends AggregateRoot {
 			return false;
 		return true;
 	}
-	
-	
-	
 }

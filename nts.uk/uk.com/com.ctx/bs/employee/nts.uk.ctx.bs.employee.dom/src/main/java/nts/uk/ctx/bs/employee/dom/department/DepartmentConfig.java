@@ -2,29 +2,27 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.dom.company.organization.employee.department;
+package nts.uk.ctx.bs.employee.dom.department;
+
+import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
 
 /**
- * The Class AffiliationDepartment.
+ * The Class DepartmentConfig.
  */
+//部門構成
 @Getter
-public class AffiliationDepartment extends AggregateRoot {
-	
-	/** The id. */
-	private String id;
-	
-	/** The period. */
-	private Period period;
-	
-	/** The employee id. */
-	private String employeeId;
-	
-	/** The department id. */
-	private String departmentId;
+public class DepartmentConfig extends AggregateRoot {
+
+	/** The company id. */
+	//会社ID
+	private String companyId;
+
+	/** The dep config history. */
+	//履歴
+	private List<DepartmentConfigHistory> depConfigHistory;
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
@@ -33,7 +31,7 @@ public class AffiliationDepartment extends AggregateRoot {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
 		return result;
 	}
 
@@ -46,14 +44,16 @@ public class AffiliationDepartment extends AggregateRoot {
 			return true;
 		if (obj == null)
 			return false;
-		if (getClass() != obj.getClass())
+		if (!(obj instanceof DepartmentConfig))
 			return false;
-		AffiliationDepartment other = (AffiliationDepartment) obj;
-		if (id == null) {
-			if (other.id != null)
+		DepartmentConfig other = (DepartmentConfig) obj;
+		if (companyId == null) {
+			if (other.companyId != null)
 				return false;
-		} else if (!id.equals(other.id))
+		} else if (!companyId.equals(other.companyId))
 			return false;
 		return true;
 	}
+
+	
 }
