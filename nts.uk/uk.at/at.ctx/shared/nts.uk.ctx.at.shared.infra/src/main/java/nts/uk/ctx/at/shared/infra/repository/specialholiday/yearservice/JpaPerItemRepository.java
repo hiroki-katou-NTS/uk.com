@@ -11,6 +11,7 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.YearServicePer;
 import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.YearServicePerSet;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.primitives.YearServiceCode;
 import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.repository.YearServicePerRepository;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceper.KshstYearServicePer;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceper.KshstYearServicePerPK;
@@ -71,7 +72,7 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 		}
 		YearServicePer domain = YearServicePer.createFromJavaType(entity.kshstYearServicePerPK.companyId,	
 																	entity.kshstYearServicePerPK.specialHolidayCode,
-																	entity.kshstYearServicePerPK.yearServiceCode,
+																	entity.kshstYearServicePerPK.yearServiceCode.v(),
 																	entity.yearServiceName,
 																	entity.yearServiceCls, 
 																	domls);
@@ -82,8 +83,8 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 		entity.kshstYearServicePerPK = new KshstYearServicePerPK(domain.getCompanyId(), 
 																domain.getSpecialHolidayCode(), 
 																domain.getYearServiceCode());
-		entity.yearServiceName = domain.getYearServiceName();
-		entity.yearServiceCls = domain.getYearServiceCls();
+		entity.yearServiceName = domain.getYearServiceName().v();
+		entity.yearServiceCls = domain.getYearServiceCls().value;
 		if(domain.getYearServicePerSets() != null){
 			entity.listYearServicePerSet = domain.getYearServicePerSets().stream()
 										.map(x->toEntityPerSet(x))
@@ -155,12 +156,12 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 	}
 	@Override
 	public Optional<YearServicePer> findPer(String companyId, String specialHolidayCode, String yearServiceCode) {
-		return this.queryProxy().find(new KshstYearServicePerPK(companyId, specialHolidayCode, yearServiceCode), KshstYearServicePer.class)
+		return this.queryProxy().find(new KshstYearServicePerPK(companyId, specialHolidayCode, new YearServiceCode(yearServiceCode)), KshstYearServicePer.class)
 				.map(c -> toDomainPer(c));
 	}
 	@Override
 	public void delete(String companyId, String specialHolidayCode, String yearServiceCode) {
-		KshstYearServicePerPK kshstYearServicePerPK = new KshstYearServicePerPK(companyId, specialHolidayCode, yearServiceCode);
+		KshstYearServicePerPK kshstYearServicePerPK = new KshstYearServicePerPK(companyId, specialHolidayCode, new YearServiceCode(yearServiceCode));
 		this.commandProxy().remove(KshstYearServicePer.class, kshstYearServicePerPK);
 	}
 }

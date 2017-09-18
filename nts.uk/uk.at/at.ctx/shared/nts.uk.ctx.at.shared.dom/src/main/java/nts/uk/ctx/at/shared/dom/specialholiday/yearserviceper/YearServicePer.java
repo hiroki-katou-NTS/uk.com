@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import nts.arc.enums.EnumAdaptor;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.YearServiceIdCls;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.primitives.YearServiceCode;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.primitives.YearServiceName;
 @Getter
 @AllArgsConstructor
 public class YearServicePer extends AggregateRoot{
@@ -14,14 +16,14 @@ public class YearServicePer extends AggregateRoot{
 	private String companyId;
 	/**コード**/
 	private String specialHolidayCode;
-	private String yearServiceCode;
+	private YearServiceCode yearServiceCode;
 	/**名称**/
-	private String yearServiceName;
-	private Integer yearServiceCls;
+	private YearServiceName yearServiceName;
+	private YearServiceIdCls yearServiceCls;
 	private List<YearServicePerSet> yearServicePerSets;
 	
-	public static YearServicePer createFromJavaType(String companyId, String specialHolidayCode, String yearServiceCode, String yearServiceName, Integer yearServiceCls, List<YearServicePerSet> yearServicePerSets){
-		return new YearServicePer(companyId, specialHolidayCode, yearServiceCode, yearServiceName, yearServiceCls, yearServicePerSets);
+	public static YearServicePer createFromJavaType(String companyId, String specialHolidayCode, String yearServiceCode, String yearServiceName, int yearServiceCls, List<YearServicePerSet> yearServicePerSets){
+		return new YearServicePer(companyId, specialHolidayCode,new YearServiceCode(yearServiceCode), new YearServiceName(yearServiceName), EnumAdaptor.valueOf(yearServiceCls, YearServiceIdCls.class) , yearServicePerSets);
 	}
 	
 //	public static YearServicePer update(String companyId, String specialHolidayCode, String yearServiceCode, String yearServiceName, Integer yearServiceCls, List<YearServicePerSet> yearServicePerSets){

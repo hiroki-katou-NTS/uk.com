@@ -167,11 +167,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         grantMethod: specialHolidayRes.grantMethod,
                         memo: specialHolidayRes.memo,
                         workTypeList: specialHolidayRes.workTypeList,
-                        grantRegular: self.toGrantRegularDto(specialHolidayRes.grantRegular),
-                        grantPeriodic: self.toGrantPeriodicDto(specialHolidayRes.grantPeriodic),
-                        sphdLimit: self.toSphdLimitDto(specialHolidayRes.sphdLimit),
+                        grantRegular: specialHolidayRes.grantRegular,
+                        grantPeriodic: specialHolidayRes.grantPeriodic,
+                        sphdLimit: specialHolidayRes.sphdLimit,
                         subCondition: self.toSubConditionDto(specialHolidayRes.subCondition),
-                        grantSingle: self.toGrantSingleDto(specialHolidayRes.grantSingle)
+                        grantSingle: specialHolidayRes.grantSingle
                     };
                     self.items.push(new model.SpecialHolidayDto(specialHoliday));
                 });
@@ -205,9 +205,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             return new model.SphdLimitDto(sphdLimit);
         }
 
-        toSubConditionDto(subCondition: any): model.SubConditionDto {
+        toSubConditionDto(subCondition: model.ISubConditionDto): model.ISubConditionDto {
             if (!subCondition) {
-                return new model.SubConditionDto({});
+                return subCondition;
             }
 
             subCondition.useGender = Number(subCondition.useGender) == 1;
@@ -217,7 +217,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
             // TODO--
 
-            return new model.SubConditionDto(subCondition);
+            return subCondition;
         }
 
         toGrantSingleDto(grantSingle: model.IGrantSingleDto): model.GrantSingleDto {
@@ -404,7 +404,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 });
                 self.workTypeNames(name.join(" + "));
 
-                var workTypeCodes = _.map(data, function(item: IWorkTypeModal) { return item.code; });
+                var workTypeCodes = _.map(data, function(item: any) { return item.code; });
                 self.currentItem().workTypeList(workTypeCodes);
             });
 
@@ -541,11 +541,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             grantMethod?: number;
             memo?: string;
             workTypeList?: Array<string>;
-            grantRegular?: GrantRegularDto;
-            grantPeriodic?: GrantPeriodicDto;
-            sphdLimit?: SphdLimitDto;
-            subCondition?: SubConditionDto;
-            grantSingle?: GrantSingleDto;
+            grantRegular?: IGrantRegularDto;
+            grantPeriodic?: IGrantPeriodic;
+            sphdLimit?: ISphdLimitDto;
+            subCondition?: ISubConditionDto;
+            grantSingle?: IGrantSingleDto;
         }
         export class SpecialHolidayDto {
             specialHolidayCode: KnockoutObservable<any>;
@@ -565,11 +565,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 this.grantMethod = ko.observable(param.grantMethod || 0);
                 this.memo = ko.observable(param.memo || '');
                 this.workTypeList = ko.observableArray(param.workTypeList || null);
-                this.grantRegular = ko.observable(param.grantRegular || new GrantRegularDto({}));
-                this.grantPeriodic = ko.observable(param.grantPeriodic || new GrantPeriodicDto({}));
-                this.sphdLimit = ko.observable(param.sphdLimit || new SphdLimitDto({}));
-                this.subCondition = ko.observable(param.subCondition || new SubConditionDto({}));
-                this.grantSingle = ko.observable(param.grantSingle || new GrantSingleDto({}));
+                this.grantRegular = ko.observable(param.grantRegular ? new GrantRegularDto(param.grantRegular) : new GrantRegularDto({}));
+                this.grantPeriodic = ko.observable(param.grantPeriodic? new GrantPeriodicDto(param.grantPeriodic) : new GrantPeriodicDto({}));
+                this.sphdLimit = ko.observable(param.sphdLimit ? new SphdLimitDto(param.sphdLimit) : new SphdLimitDto({}));
+                this.subCondition = ko.observable(param.subCondition ? new SubConditionDto(param.subCondition) : new SubConditionDto({}));
+                this.grantSingle = ko.observable(param.grantSingle ? new GrantSingleDto(param.grantSingle) : new GrantSingleDto({}));
             }
         }
 

@@ -7,6 +7,7 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.primitives.YearServiceCode;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,5 +21,5 @@ public class KshstYearServicePerPK implements Serializable{
 	public String specialHolidayCode;
 	/*コード*/
 	@Column(name = "YEAR_SERVICE_CD")
-	public String yearServiceCode;
+	public YearServiceCode yearServiceCode;
 }
