@@ -32,6 +32,9 @@ public class GrantRegular extends DomainObject {
 	/* 付与日定期方法 */
 	private GrantRegularMethod grantRegularMethod;
 
+	/**
+	 * Validate Input
+	 */
 	@Override
 	public void validate() {
 		super.validate();
@@ -54,6 +57,16 @@ public class GrantRegular extends DomainObject {
 		}
 	}
 
+	/**
+	 * Create from Java Type of Grant Regular
+	 * @param companyId
+	 * @param specialHolidayCode
+	 * @param grantStartDate
+	 * @param months
+	 * @param years
+	 * @param grantRegularMethod
+	 * @return
+	 */
 	public static GrantRegular createFromJavaType(String companyId, String specialHolidayCode,
 			GeneralDate grantStartDate, int months, int years, int grantRegularMethod) {
 		return new GrantRegular(companyId, new SpecialHolidayCode(specialHolidayCode), grantStartDate,

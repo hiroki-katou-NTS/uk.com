@@ -17,7 +17,7 @@ import nts.uk.shr.com.primitive.Memo;
 @Getter
 public class SpecialHoliday extends AggregateRoot {
 
-	/** 会社ID **/
+	/* 会社ID */
 	private String companyId;
 
 	/* 特別休暇コード */
@@ -31,38 +31,38 @@ public class SpecialHoliday extends AggregateRoot {
 
 	/* メモ */
 	private Memo memo;
-	
-	/**/
+
+	/* 作業タイプリスト */
 	private List<String> workTypeList;
-	
-	/**/
+
+	/* 定期的な付与日 */
 	private GrantRegular grantRegular;
-	
-	/**/
+
+	/* 付与日数定期 */
 	private GrantPeriodic grantPeriodic;
-	
-	/**/
+
+	/* 特別休暇の期限 */
 	private SphdLimit sphdLimit;
-	
+
 	/**/
 	private SubCondition subCondition;
-	
-	/**/
+
+	/* シングル付与 */
 	private GrantSingle grantSingle;
 
 	@Override
 	public void validate() {
-		super.validate(); 
+		super.validate();
 	}
-	
+
 	/**
 	 * Check Work Type
 	 */
-	public void validateInput(){
-		if(CollectionUtil.isEmpty(workTypeList)){
+	public void validateInput() {
+		if (CollectionUtil.isEmpty(workTypeList)) {
 			throw new BusinessException("Msg_12");
 		}
-		
+
 		if (this.isMethodManageRemainNumber()) {
 			this.grantSingle.validate();
 		} else {
@@ -72,27 +72,34 @@ public class SpecialHoliday extends AggregateRoot {
 			this.subCondition.validate();
 		}
 	}
-	
+
+	/**
+	 * Create from Java Type
+	 * 
+	 * @param companyId
+	 * @param specialHolidayCode
+	 * @param specialHolidayName
+	 * @param grantPeriodicCls
+	 * @param memo
+	 * @param workTypeList
+	 * @param grantRegular
+	 * @param grantPeriodic
+	 * @param sphdLimit
+	 * @param subCondition
+	 * @param grantSingle
+	 * @return
+	 */
 	public static SpecialHoliday createFromJavaType(String companyId, String specialHolidayCode,
-			String specialHolidayName, int grantPeriodicCls, String memo, List<String> workTypeList, 
-			GrantRegular grantRegular,
-			GrantPeriodic grantPeriodic,
-			SphdLimit sphdLimit,
-			SubCondition subCondition,
+			String specialHolidayName, int grantPeriodicCls, String memo, List<String> workTypeList,
+			GrantRegular grantRegular, GrantPeriodic grantPeriodic, SphdLimit sphdLimit, SubCondition subCondition,
 			GrantSingle grantSingle) {
 		return new SpecialHoliday(companyId, new SpecialHolidayCode(specialHolidayCode),
-				new SpecialHolidayName(specialHolidayName),
-				EnumAdaptor.valueOf(grantPeriodicCls, GrantMethod.class),
-				new Memo(memo),
-				workTypeList,
-				grantRegular,
-				grantPeriodic,
-				sphdLimit,
-				subCondition,
-				grantSingle);
+				new SpecialHolidayName(specialHolidayName), EnumAdaptor.valueOf(grantPeriodicCls, GrantMethod.class),
+				new Memo(memo), workTypeList, grantRegular, grantPeriodic, sphdLimit, subCondition, grantSingle);
 	}
-	
+
 	/**
+	 * Check Grant Method
 	 * 
 	 * @return
 	 */

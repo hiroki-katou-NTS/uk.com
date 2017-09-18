@@ -51,10 +51,10 @@
 				</com:ko-if>
 				<com:ko-if bind="currentTab()=='C'">
 					<!-- Buttons for C screen -->
-					<button class="newBtn" data-bind="click: $parent.viewmodelC.newBtn.bind($parent.viewmodelC)">#{i18n.getText('KMF004_1')}</button>
-					<button class="registerBtn proceed" data-bind="click: $parent.viewmodelC.registerBtn.bind($parent.viewmodelC)">#{i18n.getText('KMF004_2')}</button>
-					<button class="deleteBtn danger" data-bind="click: $parent.viewmodelC.deleteBtn.bind($parent.viewmodelC)">#{i18n.getText('KMF004_3')}</button>
-					<button class="closeBtn" data-bind="click: $parent.viewmodelC.closeBtn.bind($parent.viewmodelC)">#{i18n.getText('KMF004_4')}</button>
+					<button tab-index="1" class="newBtn" data-bind="click: $parent.viewmodelC.newBtn.bind($parent.viewmodelC), hasfocus: true">#{i18n.getText('KMF004_1')}</button>
+					<button tab-index="2" class="registerBtn proceed" data-bind="click: $parent.viewmodelC.registerBtn.bind($parent.viewmodelC)">#{i18n.getText('KMF004_2')}</button>
+					<button tab-index="3" class="deleteBtn danger" data-bind="click: $parent.viewmodelC.deleteBtn.bind($parent.viewmodelC), enable: $parent.viewmodelC.items().length>0">#{i18n.getText('KMF004_3')}</button>
+					<button tab-index="4" class="closeBtn" data-bind="click: $parent.viewmodelC.closeBtn.bind($parent.viewmodelC)">#{i18n.getText('KMF004_4')}</button>
 				</com:ko-if>
 			</div>
 			<div id="tabpanel-b" role="tabpanel" class="screen-b" data-bind="with: viewmodelB">
@@ -78,7 +78,7 @@
 				
 				<div class="help-button">
 					<button id="help" 
-						data-bind="ntsHelpButton: {image: 'IMG_KMF004_1.png', position: 'left top', enable: enable }">?</button>
+						data-bind="ntsHelpButton: {image: 'IMG_KMF004_1.png', position: 'left top', enable: true }">?</button>
 				</div>
 						
 				<hr />
