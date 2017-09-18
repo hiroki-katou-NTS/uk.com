@@ -4,7 +4,6 @@ import lombok.Value;
 
 @Value
 public class ObjDate {
-//	private String aprovalId;
 	private String startDate;
 	private String endDate;
 }

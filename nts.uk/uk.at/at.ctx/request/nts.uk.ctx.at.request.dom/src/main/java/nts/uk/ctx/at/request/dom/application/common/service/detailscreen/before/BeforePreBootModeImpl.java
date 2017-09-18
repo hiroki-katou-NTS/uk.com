@@ -24,7 +24,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
-import nts.uk.ctx.at.request.dom.application.common.valueobject.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

@@ -9,7 +9,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.other;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.valueobject.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 
 public interface OtherCommonAlgorithm {

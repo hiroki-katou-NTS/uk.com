@@ -36,29 +36,44 @@ public class CommonApprovalRootFinder {
 	private ApprovalPhaseRepository repoAppPhase;
 	@Inject
 	private ApproverRepository repoApprover;
-	
+	/**
+	 * getAllCommonApprovalRoot (grouping by history)
+	 * @param param
+	 * @return
+	 */
 	public DataFullDto getAllCommonApprovalRoot(ParamDto param){
+		//get all data by param
 		CommonApprovalRootDto a = getAllDataApprovalRoot(param);
 		//TH: company - domain 会社別就業承認ルート
 		if(param.getRootType() == 0){
+			//list company get from db
 			List<CompanyAppRootDto> lstCompanyRoot = a.getLstCompanyRoot();
-			ObjGrouping result = this.groupingMapping(a.getLstCompanyRoot());
+			List<ObjectDate> lstObjDate = new ArrayList<>();
+			lstCompanyRoot.forEach(item ->{
+				lstObjDate.add(new ObjectDate(item.getCompany().getApprovalId(), item.getCompany().getStartDate(), item.getCompany().getEndDate()));
+			});
+			//grouping history
+			ObjGrouping result = this.groupingMapping(lstObjDate);
 			List<ObjectDate> b = result.getLstkk();
 			List<ObjDate> lstTrung = result.getLstApprovalId();
 			List<DataDisplayComDto> kq = new ArrayList<>();
 			int index = 0;
+			//grouping companyRoot by history
 			for (ObjectDate objDate : b) {
 				List<CompanyAppRootDto> lstItem = new ArrayList<>();
 				ObjDate it = new ObjDate(objDate.getStartDate(), objDate.getEndDate());
-				if(lstTrung.contains(it)){// duoc gop
+				//TH: grouping
+				if(lstTrung.contains(it)){
 					for (CompanyAppRootDto com : lstCompanyRoot) {
 						if(com.getCompany().getStartDate().compareTo(objDate.getStartDate())==0 && com.getCompany().getEndDate().compareTo(objDate.getEndDate())==0){
 							lstItem.add(com);
 						}
 					}
-				}else{//khong duoc gop
+				}
+				//TH: not grouping
+				else{
 					for (CompanyAppRootDto com : lstCompanyRoot) {
-						if(com.getCompany().getApprovalId().compareTo(objDate.getAprovalId())==0){
+						if(com.getCompany().getApprovalId().compareTo(objDate.getApprovalId())==0){
 							lstItem.add(com);
 						}
 					}
@@ -68,27 +83,105 @@ public class CommonApprovalRootFinder {
 			}
 			return new DataFullDto(kq, null, null);
 		}
-		//TH: workplace - domain 職場別就業承認ルート
+		//TH: work place - domain 職場別就業承認ルート
 		if(param.getRootType() == 1){
-			return new DataFullDto(null, null, null);
+			//list work place get from db
+			List<WorkPlaceAppRootDto> lstWorkplaceRoot = a.getLstWorkplaceRoot();
+			List<ObjectDate> lstObjDate = new ArrayList<>();
+			lstWorkplaceRoot.forEach(item ->{
+				lstObjDate.add(new ObjectDate(item.getWorkplace().getApprovalId(), item.getWorkplace().getStartDate(), item.getWorkplace().getEndDate()));
+			});
+			//grouping history
+			ObjGrouping result = this.groupingMapping(lstObjDate);
+			List<ObjectDate> b = result.getLstkk();
+			List<ObjDate> lstTrung = result.getLstApprovalId();
+			List<DataDisplayWpDto> kq = new ArrayList<>();
+			int index = 0;
+			//grouping WorkplaceRoot by history
+			for (ObjectDate objDate : b) {
+				List<WorkPlaceAppRootDto> lstItem = new ArrayList<>();
+				ObjDate it = new ObjDate(objDate.getStartDate(), objDate.getEndDate());
+				//TH: grouping
+				if(lstTrung.contains(it)){
+					for (WorkPlaceAppRootDto wp : lstWorkplaceRoot) {
+						if(wp.getWorkplace().getStartDate().compareTo(objDate.getStartDate())==0 && wp.getWorkplace().getEndDate().compareTo(objDate.getEndDate())==0){
+							lstItem.add(wp);
+						}
+					}
+				}
+				//TH: not grouping
+				else{
+					for (WorkPlaceAppRootDto wp : lstWorkplaceRoot) {
+						if(wp.getWorkplace().getApprovalId().compareTo(objDate.getApprovalId())==0){
+							lstItem.add(wp);
+						}
+					}
+				}
+				kq.add(new DataDisplayWpDto(index, lstItem));
+				index++;
+			}
+			return new DataFullDto(null, kq, null);
 		}
 		//TH: person - domain 個人別就業承認ルート
 		else{
-			return new DataFullDto(null, null, null);
+			//list person get from db
+			List<PersonAppRootDto> lstPersonRoot = a.getLstPersonRoot();
+			List<ObjectDate> lstObjDate = new ArrayList<>();
+			lstPersonRoot.forEach(item ->{
+				lstObjDate.add(new ObjectDate(item.getPerson().getApprovalId(), item.getPerson().getStartDate(), item.getPerson().getEndDate()));
+			});
+			//grouping history
+			ObjGrouping result = this.groupingMapping(lstObjDate);
+			List<ObjectDate> b = result.getLstkk();
+			List<ObjDate> lstTrung = result.getLstApprovalId();
+			List<DataDisplayPsDto> kq = new ArrayList<>();
+			int index = 0;
+			//grouping PersonRoot by history
+			for (ObjectDate objDate : b) {
+				List<PersonAppRootDto> lstItem = new ArrayList<>();
+				ObjDate it = new ObjDate(objDate.getStartDate(), objDate.getEndDate());
+				//TH: grouping
+				if(lstTrung.contains(it)){
+					for (PersonAppRootDto ps : lstPersonRoot) {
+						if(ps.getPerson().getStartDate().compareTo(objDate.getStartDate())==0 && ps.getPerson().getEndDate().compareTo(objDate.getEndDate())==0){
+							lstItem.add(ps);
+						}
+					}
+				}
+				//TH: not grouping
+				else{
+					for (PersonAppRootDto ps : lstPersonRoot) {
+						if(ps.getPerson().getApprovalId().compareTo(objDate.getApprovalId())==0){
+							lstItem.add(ps);
+						}
+					}
+				}
+				kq.add(new DataDisplayPsDto(index, lstItem));
+				index++;
+			}
+			return new DataFullDto(null, null, kq);
 		}
-		
-
 	}
+	/**
+	 * getPrivate (not grouping)
+	 * @param param
+	 * @return
+	 */
 	public CommonApprovalRootDto getPrivate(ParamDto param){
 		return getAllDataApprovalRoot(param);
 	}
+	/**
+	 * get all data from db
+	 * @param param
+	 * @return
+	 */
 	private CommonApprovalRootDto getAllDataApprovalRoot(ParamDto param){
 		//user contexts
 		String companyId = AppContexts.user().companyId();
 		//get name company
-//		Optional<CompanyInfor> companyCurrent = comAdapter.getCurrentCompany();
-//		String companyName = companyCurrent == null ? "" : companyCurrent.get().getCompanyName();
-		String companyName = "KAkashi";
+		Optional<CompanyInfor> companyCurrent = comAdapter.getCurrentCompany();
+		String companyName = companyCurrent == null ? "" : companyCurrent.get().getCompanyName();
+//		String companyName = "KAkashi";
 		//TH: company - domain 会社別就業承認ルート
 		if(param.getRootType() == 0){
 			List<CompanyAppRootDto> lstComRoot = new ArrayList<>();
@@ -176,54 +269,50 @@ public class CommonApprovalRootFinder {
 	}
 	/**
 	 * grouping history
-	 * @param lstRoot
-	 * @return
+	 * @param lstRoot(List<ObjectDate>)
+	 * @return ObjGrouping
 	 */
-	private ObjGrouping groupingMapping(List<CompanyAppRootDto> lstRoot){
-		List<ComApprovalRootDto> origin = new ArrayList<ComApprovalRootDto>();
+	private ObjGrouping groupingMapping(List<ObjectDate> lstRoot){
 		List<ObjDate> result = new ArrayList<ObjDate>();
 		List<ObjectDate> kkk = new ArrayList<>();
 		List<ObjDate> check = new ArrayList<>();
-		lstRoot.forEach(item ->{
-			origin.add(item.getCompany());
-		});
 		boolean aaa = true;
-		for (ComApprovalRootDto date1 : origin) {
-			for (ComApprovalRootDto date2 : origin) {
-				if (date1.getApprovalId() != date2.getApprovalId() && isOverlap(date1,date2)){//chong cheo
+		for (ObjectDate date1 : lstRoot) {
+			for (ObjectDate date2 : lstRoot) {
+				if (date1.getApprovalId() != date2.getApprovalId() && isOverlap(date1,date2)){//overlap
 					aaa = false;
 					break;
 				}
 				aaa = true;
 			}
-			if(aaa){//khong bi chong cheo voi ai ca.
+			//TH: not overlap
+			if(aaa){
 				ObjDate xx = new ObjDate(date1.getStartDate(), date1.getEndDate());
-				if(!result.contains(xx)){//co roi
+				if(!result.contains(xx)){//exist
 					result.add(new ObjDate(date1.getStartDate(), date1.getEndDate()));
 					kkk.add(new ObjectDate(date1.getApprovalId(),date1.getStartDate(), date1.getEndDate()));
 				}else{
 					if(!check.contains(xx)){
 						check.add(new ObjDate(date1.getStartDate(), date1.getEndDate()));
 					}
-					
 				}
-			}else{//co bi chong cheo
+			}
+			//TH: overlap
+			else{
 				result.add(new ObjDate(date1.getStartDate(), date1.getEndDate()));
 				kkk.add(new ObjectDate(date1.getApprovalId(),date1.getStartDate(), date1.getEndDate()));
 			}
-
 		}
 		return new ObjGrouping(check, kkk);
-		
 	}
 	
 	/**
-	 * ktra date2 co nam trong date1 k? 
+	 * check if date1 isOverlap date2 ? 
 	 * @param date1
 	 * @param date2
-	 * @return
+	 * @return true, if date1 isOverlap date2
 	 */
-	public boolean isOverlap(ComApprovalRootDto date1, ComApprovalRootDto date2){
+	public boolean isOverlap(ObjectDate date1, ObjectDate date2){
 		/**
 		 * date 1.........|..............]..........
 		 * date 2............|......................
@@ -236,7 +325,7 @@ public class CommonApprovalRootFinder {
 		/**
 		 * date 1.........|..............]..........
 		 * date 2.....|........]....................
-		 * sDate2<sDate1 va eDate2>sDate1
+		 * sDate2 < sDate1 and eDate2 > sDate1
 		 */
 		if (date2.getStartDate().compareTo(date1.getStartDate()) < 0
 				&& date2.getEndDate().compareTo(date1.getStartDate()) > 0) {
@@ -245,7 +334,7 @@ public class CommonApprovalRootFinder {
 		/**
 		 * date 1.........|..............]..........
 		 * date 2.............]....................
-		 * sDate1<eDate2<eDate1
+		 * sDate1 < eDate2 < eDate1
 		 */
 		if (date1.getStartDate().compareTo(date2.getEndDate()) < 0
 				&& date2.getEndDate().compareTo(date1.getEndDate()) < 0) {
@@ -256,12 +345,11 @@ public class CommonApprovalRootFinder {
 
 	/**
 	 * Checks if is same date.
-	 *
 	 * @param date1 the date 1
 	 * @param date2 the date 2
 	 * @return true, if is same date
 	 */
-	public boolean isSameDate(ComApprovalRootDto date1, ComApprovalRootDto date2){
+	public boolean isSameDate(ObjectDate date1, ObjectDate date2){
 		if (date2.getStartDate().compareTo(date1.getStartDate()) == 0
 				&& date2.getEndDate().compareTo(date1.getEndDate()) == 0) {
 			return true;

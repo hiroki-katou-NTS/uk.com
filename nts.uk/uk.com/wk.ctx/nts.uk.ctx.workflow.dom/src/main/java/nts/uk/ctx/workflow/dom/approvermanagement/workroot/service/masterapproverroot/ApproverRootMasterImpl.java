@@ -184,7 +184,10 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		lstAppInfo = getPhaseApprover(companyID, root.getBranchId());
 		ApprovalForApplication wpAppInfo = new ApprovalForApplication(appId, appName, root.getStartDate(), root.getEndDate(), lstAppInfo);
 		wpRootInfor.add(wpAppInfo);
-		Collections.sort(wpRootInfor, Comparator.comparing(ApprovalForApplication:: getAppType));
+		if(!CollectionUtil.isEmpty(wpRootInfor)) {
+			Collections.sort(wpRootInfor, Comparator.comparing(ApprovalForApplication:: getAppType));
+		}
+		
 		return wpRootInfor;
 	}
 
@@ -196,7 +199,8 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	 * @param companyID
 	 * @return
 	 */
-	private ApprovalForApplication getApproval(ApprovalForApplication approvalForApplication,CompanyApprovalRoot comRoot, String companyID) {
+	private ApprovalForApplication getApproval(int appType, String appName, CompanyApprovalRoot comRoot, String companyID) {
+		ApprovalForApplication approvalForApplication = new ApprovalForApplication(appType, appName, null, null, null);
 		approvalForApplication.setStartDate(comRoot.getPeriod().getStartDate());
 		approvalForApplication.setEndDate(comRoot.getPeriod().getEndDate());
 		
@@ -221,7 +225,9 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			ApprovalRootMaster appRoot = new ApprovalRootMaster(phase.getOrderNumber(), phase.getApprovalForm().name, lstApprovers);
 			lstMatter.add(appRoot);
 		}
-		Collections.sort(lstMatter, Comparator.comparing(ApprovalRootMaster:: getPhaseNumber));
+		if(!CollectionUtil.isEmpty(lstMatter)) {
+			Collections.sort(lstMatter, Comparator.comparing(ApprovalRootMaster:: getPhaseNumber));
+		}
 		return lstMatter;
 	}
 	
@@ -237,34 +243,39 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDateOfCommon(companyID, baseDate);
 		Optional<CompanyInfor> comInfo = comAdapter.getCurrentCompany();
 		List<ApprovalForApplication> comApproverRoot =  new ArrayList<>();
-		ApprovalForApplication approvalForApplication = new ApprovalForApplication(0, rootCommon, null, null, null);
+		
 		if(!lstComs.isEmpty()) {
 			//lay du lieu voi truong hop 0: 共通(common)
 			Optional<CompanyApprovalRoot> opComCommon = lstComs.stream()
 					.filter(x -> x.getEmploymentRootAtr() == EmploymentRootAtr.COMMON)
 					.findAny();
-			if(opComCommon.isPresent()) {					
-				approvalForApplication = getApproval(approvalForApplication, opComCommon.get(), companyID);					
+			if(opComCommon.isPresent()) {	
+				ApprovalForApplication approvalForApplication = getApproval(0, rootCommon, opComCommon.get(), companyID);			
+				comApproverRoot.add(approvalForApplication);
 			}	
 		}
-		comApproverRoot.add(approvalForApplication);
+		//ApprovalForApplication approvalForApplication = new ApprovalForApplication(0, rootCommon, null, null, null);
+		
 		//Lap de lay du lieu theo app type
 		for(ApplicationType appType: ApplicationType.values()) {
-			approvalForApplication = new ApprovalForApplication(appType.value + 1, appType.nameId, null, null, null);
+			
 			//「会社別就業承認ルート」	
 			if(!lstComs.isEmpty()) {
 				Optional<CompanyApprovalRoot> comApps = lstComs
 						.stream()
 						.filter(x -> x.getApplicationType() == appType)
 						.findAny();
-				if(comApps.isPresent()) {						
-					approvalForApplication = getApproval(approvalForApplication, comApps.get(), companyID);
+				if(comApps.isPresent()) {	
+					ApprovalForApplication approvalForApplication = getApproval(appType.value + 1,appType.nameId, comApps.get(), companyID);
+					//thong tin các application da duoc set approver
+					comApproverRoot.add(approvalForApplication);
 				}
 			}					
-			//thong tin các application da duoc set approver
-			comApproverRoot.add(approvalForApplication);
+			
 		}
-		Collections.sort(comApproverRoot, Comparator.comparing(ApprovalForApplication:: getAppType));
+		if(!CollectionUtil.isEmpty(comApproverRoot)) {
+			Collections.sort(comApproverRoot, Comparator.comparing(ApprovalForApplication:: getAppType));
+		}		
 		CompanyApprovalInfor comMasterInfor = new CompanyApprovalInfor(comInfo, comApproverRoot);
 		return comMasterInfor;
 	}

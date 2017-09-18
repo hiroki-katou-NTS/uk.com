@@ -8,16 +8,16 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEarchCompanyRepository;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEarchWorkplaceRepository;
+import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCompanyRepository;
+import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachWorkplaceRepository;
 
 @Stateless
 public class GetDataAppCfDetailFinder {
 	@Inject
-	private RequestOfEarchCompanyRepository detailCompanyRepo;
+	private RequestOfEachCompanyRepository detailCompanyRepo;
 
 	@Inject
-	private RequestOfEarchWorkplaceRepository detailWorkplaceRepo;
+	private RequestOfEachWorkplaceRepository detailWorkplaceRepo;
 
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepo;
