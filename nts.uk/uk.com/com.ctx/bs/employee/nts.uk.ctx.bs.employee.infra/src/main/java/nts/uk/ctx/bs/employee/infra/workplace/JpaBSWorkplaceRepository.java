@@ -27,4 +27,16 @@ public class JpaBSWorkplaceRepository implements WorkplaceRepository {
 		return null;
 	}
 
+	@Override
+	public void updateLatestHistory(Workplace wkp) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeLatestHistory(String companyId, String workplaceId) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

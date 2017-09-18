@@ -13,6 +13,14 @@ import java.util.Optional;
 public interface WorkplaceConfigRepository {
 
 	/**
+	 * Adds the.
+	 *
+	 * @param workplaceConfig the workplace config
+	 * @return the string
+	 */
+	String add(WorkplaceConfig workplaceConfig);
+	
+	/**
 	 * Find all by company id.
 	 *
 	 * @param companyId the company id

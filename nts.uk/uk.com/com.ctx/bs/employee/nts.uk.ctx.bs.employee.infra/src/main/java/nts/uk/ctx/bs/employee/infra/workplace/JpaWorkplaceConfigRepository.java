@@ -55,4 +55,10 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
 //				.collect(Collectors.toList());
 	}
 
+	@Override
+	public String add(WorkplaceConfig workplaceConfig) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

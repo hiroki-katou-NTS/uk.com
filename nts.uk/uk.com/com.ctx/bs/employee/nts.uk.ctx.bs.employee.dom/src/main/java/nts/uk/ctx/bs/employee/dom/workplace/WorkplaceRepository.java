@@ -22,6 +22,21 @@ public interface WorkplaceRepository {
 	String add(Workplace wkp);
 	
 	/**
+	 * Update latest history.
+	 *
+	 * @param wkp the wkp
+	 */
+	void updateLatestHistory(Workplace wkp);
+	
+	/**
+	 * Removes the latest history.
+	 *
+	 * @param companyId the company id
+	 * @param workplaceId the workplace id
+	 */
+	void removeLatestHistory(String companyId,String workplaceId);
+	
+	/**
 	 * Find by start date.
 	 *
 	 * @param companyId the company id
