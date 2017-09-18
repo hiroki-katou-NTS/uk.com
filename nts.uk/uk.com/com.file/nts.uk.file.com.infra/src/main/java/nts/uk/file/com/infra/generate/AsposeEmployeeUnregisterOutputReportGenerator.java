@@ -34,7 +34,6 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 	private static final String REPORT_FILE_NAME = "承認ルート未登録の社員.xlsx";
 
 	private static final int[] COLUMN_INDEX = { 0, 1, 2, 3, 4, 5, 6 };
-	
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, EmployeeUnregisterOutputDataSoure dataSource) {
@@ -83,7 +82,7 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 		Worksheet worksheet = worksheets.get(0);
 		Cells cells = worksheet.getCells();
 		List<EmployeeUnregisterOutput> employeeUnregisLst = employee.getEmployeeUnregisterOutputLst();
-		int x = 5;
+		int x = 3;
 		for (int j = 0; j < employeeUnregisLst.size(); j++) {
 
 			int totalRowOfEmployee = employeeUnregisLst.get(j).getAppType().size();
@@ -133,13 +132,13 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 						appType.setStyle(style);
 						x++;
 					}
-					x = x + 1;
+					 x = x + 1;
 					HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
 					hPageBreaks.add("H" + x);
 					VerticalPageBreakCollection vPageBreaks = worksheet.getVerticalPageBreaks();
 					vPageBreaks.add("H" + x);
-					
-					 x = x + 1;
+
+					 x = x - 1;
 					cells.merge(x, 1, totalRowOfEmployee - numberOfRowMerge, 1, true);
 					Cell sCd1 = cells.get(x, COLUMN_INDEX[1]);
 					sCd1.setValue(employeeUnregisLst.get(j).getEmpInfor().getSCd());
@@ -181,9 +180,6 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 						appType.setStyle(style);
 						x++;
 					}
-					
-
-
 
 				} else {
 
