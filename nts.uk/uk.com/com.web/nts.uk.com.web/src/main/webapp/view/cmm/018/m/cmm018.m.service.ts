@@ -3,7 +3,7 @@ module nts.uk.com.view.cmm018.m {
          // Service paths.
         var servicePath = {
             searchModeEmployee: "workflow/approvermanagement/workroot/testMasterDat",
-            saveAsExcel : "company/approver/report/unRegister"
+            saveAsExcel : "approval/report/masterData"
                         
         } 
         export function searchModeEmployee(data: MasterApproverRootQuery) {
