@@ -8,10 +8,15 @@ module nts.uk.com.view.cps016.a.viewmodel {
     import textUK = nts.uk.text;
     import block = nts.uk.ui.block;
     export class ScreenModel {
-        listItems: KnockoutObservableArray<IItem> = ko.observableArray([]);
+        listItems: KnockoutObservableArray<ISelectionItem> = ko.observableArray([]);
+        //listItems: KnockoutObservableArray<SelectionItem> = ko.observableArray([]); //Chua phan biet duoc ->Suport:
+        selectedItemId: KnockoutObservable<String> = ko.observable('');
+        currentItem: KnockoutObservable<SelectionItem> = ko.observable(new SelectionItem({ selectionItemId: '', selectionItemName: '' }));
+        
+       
         item: KnockoutObservable<Item> = ko.observable(new Item({ id: '', name: '' }));
         rulesFirst: KnockoutObservableArray<IRule> = ko.observableArray([]);
-
+        
         constructor() {
             let self = this,
                 item: Item = self.item(),
@@ -26,6 +31,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 if (x) {
                     service.getItem(x).done((_item: IItem) => {
                         if (_item) {
+                            /*
                             item.name(_item.name);
                             item.numberCodeDigits(_item.numberCodeDigits);
                             item.numberDigits(_item.numberDigits);
@@ -34,24 +40,50 @@ module nts.uk.com.view.cps016.a.viewmodel {
                             item.share(_item.share);
                             item.notes(_item.notes);
                             item.enable(_item.enable);
+                            */
                         }
                     });
                 }
             });
-            item.id(1);
-            self.start();
+            //item.id(1);
         }
 
-        start() {
+        start(): JQueryPromise<any> {
             let self = this,
-                listItems: KnockoutObservableArray<IItem> = self.listItems;
+                dfd = $.Deferred();
+            // listItems: KnockoutObservableArray<IItem> = self.listItems;
+            // listItems.removeAll();
 
-            listItems.removeAll();
-            service.getItems().done((_items: Array<IItem>) => {
-                if (_items && _items.length) {
-                    _items.forEach(x => listItems.push(x));
+
+            //            service.getItems().done((_items: Array<IItem>) => {
+            //                if (_items && _items.length) {
+            //                    _items.forEach(x => listItems.push(x));
+            //}
+            //            });
+            self.listItems.removeAll();
+
+            /*
+            service.getAllSelectionItems().done(
+                function(itemList: Array<ISelectionItem>) {
+                    for (let item of itemList) {
+                        self.listItems().push(new SelectionItem(item));
+                    }
+                    dfd.resolve();
                 }
+            ).fail(function() {
+                dfd.resolve();
             });
+
+            return dfd.promise();
+            */
+
+            service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                if (itemList && itemList.length) {
+                    itemList.forEach(x => self.listItems.push(x));
+                } dfd.resolve();
+            });
+            return dfd.resolve();
+            
         }
 
         register() {
@@ -140,6 +172,41 @@ module nts.uk.com.view.cps016.a.viewmodel {
             self.share(param.share);
         }
     }
+
+
+
+    interface ISelectionItem {
+        selectionItemId: string;
+        selectionItemName: string;
+        Memo: string;
+        selectionItemClassification: number;
+        contractCode: string;
+        integrationCode: string;
+        formatSelection: any;
+    }
+
+    class SelectionItem {
+        selectionItemId: string;
+        selectionItemName: string;
+        Memo: string;
+        selectionItemClassification: number;
+        contractCode: string;
+        integrationCode: string;
+        formatSelection: any;
+        constructor(param: ISelectionItem) {
+            this.selectionItemId = param.selectionItemId;
+            this.selectionItemName = param.selectionItemName;
+            this.Memo = param.Memo;
+            this.selectionItemClassification = param.selectionItemClassification;
+            this.contractCode = param.contractCode;
+            this.integrationCode = param.integrationCode;
+            this.formatSelection = param.formatSelection;
+        }
+    }
+
+
+
+
 
     interface IRule {
         id: number;

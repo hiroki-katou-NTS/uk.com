@@ -41,11 +41,11 @@
 							<div style="width: 395px"
 								data-bind="ntsSearchBox: {
 									searchMode: 'filter',
-									targetKey: 'name', 
+									targetKey: 'selectionItemId', 
 									comId: 'single-list',
 									items: listItems, 
-									selectedKey: item.name, 
-									fields: ['name'], 
+									selectedKey: selectedItemId, 
+									fields: ['selectionItemName'], 
 									mode: 'igGrid'
 									}" />
 
@@ -53,25 +53,28 @@
 								data-bind="ntsGridList: {
 									height: 535,
 									options: listItems,
-									optionsValue: 'id',
+									optionsValue: 'selectionItemId',
 									columns: [
-						                { headerText: '', key: 'id', width: 0, hidden: true },
-						                { headerText: '', key: 'id', width: 20, hidden: false },
-						                { headerText: '#{i18n.getText('CPS016_7')}', key: 'name', width: 290, hidden: false }
+						                { headerText: '', key: 'selectionItemId', width: 20},
+						                { headerText: '#{i18n.getText('CPS016_7')}', key: 'selectionItemName', width: 290 }
 						            ],
 									multiple: false,
-									value: item().id}">
+									value: selectedItemId}">
 							</table>
 						</div>
 					</div>
 				</div>
-				<div id="right-content" data-bind="with: item">
+				<div id="right-content" data-bind="with: currentItem">
 					<div id="right-content" class="form-group">
 						<div class="row">
 							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_8')}</div>
 							<input style="width: 320px;"
-								data-bind="ntsTextEditor: {value: name}" />
+								data-bind="ntsTextEditor: {value: selectionItemName}" />
 						</div>
+
+
+
+<!-- 
 
 						<div class="row">
 							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_11')}</div>
@@ -121,6 +124,8 @@
 							<textarea style="width: 550px; height: 120px;"
 								data-bind="ntsMultilineEditor: { value: notes }" />
 						</div>
+						 -->
+						
 					</div>
 				</div>
 			</div>

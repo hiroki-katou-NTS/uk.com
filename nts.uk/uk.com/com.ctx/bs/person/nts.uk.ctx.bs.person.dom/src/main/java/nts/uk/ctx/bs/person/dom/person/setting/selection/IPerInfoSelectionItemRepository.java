@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.person.dom.person.setting.selection;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IPerInfoSelectionItemRepository {
 	
@@ -10,9 +11,9 @@ public interface IPerInfoSelectionItemRepository {
 	
 	void remove(PerInfoSelectionItem perInfoSelectionItem);
 	
-	List<PerInfoSelectionItem> getAllPerInfoSelectionItem();
+	List<PerInfoSelectionItem> getAllPerInfoSelectionItem(String contractCd);
 	
-	PerInfoSelectionItem getPerInfoSelectionItem(String selectionItemId);
+	Optional<PerInfoSelectionItem> getPerInfoSelectionItem(String selectionItemId);
 	
 	boolean checkExist(String selectionItemId);
 	

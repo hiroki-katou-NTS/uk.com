@@ -21,7 +21,7 @@ public class BpsmtSelectionItem extends UkJpaEntity implements Serializable {
 	public static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public BpsmtSelectionItemPK selectionItemId;
+	public BpsmtSelectionItemPK selectionItemPk;
 
 	@Basic(optional = false)
 	@Column(name = "SELECTION_ITEM_NAME")
@@ -62,7 +62,7 @@ public class BpsmtSelectionItem extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return selectionItemId;
+		return selectionItemPk;
 	}
 
 }

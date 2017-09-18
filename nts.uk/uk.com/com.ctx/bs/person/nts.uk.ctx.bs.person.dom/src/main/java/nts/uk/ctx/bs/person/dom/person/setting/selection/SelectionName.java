@@ -1,10 +1,10 @@
 package nts.uk.ctx.bs.person.dom.person.setting.selection;
 
-import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.IntegerPrimitiveValue;
 
-public class SelectionName extends StringPrimitiveValue<SelectionName>{
+public class SelectionName extends IntegerPrimitiveValue<SelectionName>{
 
-	public SelectionName(String rawValue) {
+	public SelectionName(int rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}
