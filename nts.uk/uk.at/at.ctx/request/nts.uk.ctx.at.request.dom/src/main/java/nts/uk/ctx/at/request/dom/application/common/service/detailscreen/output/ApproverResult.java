@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.dom.application.common.valueobject;
+package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output;
 
 import java.util.List;
 
