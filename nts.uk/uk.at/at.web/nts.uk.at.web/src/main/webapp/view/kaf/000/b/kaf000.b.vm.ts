@@ -11,10 +11,15 @@ module kaf000.b.viewmodel{
         listPhase: KnockoutObservableArray<model.AppApprovalPhase>;
         //listPhaseID
         listPhaseID: Array<String>;
-        //listFrameByListPhaseId
-        listFrameByListPhase1: KnockoutObservableArray<Array<model.ApprovalFrame>>;
         //list appID 
-        ListAppID : Array<String>;
+        listReasonByAppID : KnockoutObservableArray<String>;
+        
+        /**
+         * value obj 
+         */
+        listReasonToApprover : KnockoutObservable<String>;
+        reasonApp :KnockoutObservable<String>;
+        
         constructor(){
             var self = this;
             /**
@@ -23,19 +28,23 @@ module kaf000.b.viewmodel{
             
             self.listPhase = ko.observableArray([]);
             self.listPhaseID = [];
-            self.listFrameByListPhase1 = ko.observableArray([]);
-            self.ListAppID = [];
+            self.listReasonByAppID = ko.observableArray([]);
+            /**
+             * value obj
+             */
+            self.listReasonToApprover = ko.observable('');
+            self.reasonApp = ko.observable('');
+            
         }
         
         start(): JQueryPromise<any> {
             
             let self = this;
             var dfd = $.Deferred();
-            //alert("sdfds");
-            //self.getAllPhase();
-            var dfdAllPhase = self.getAllPhase();
-            $.when(dfdAllPhase).done((dfdAllPhaseData)=>{
-                self.getAllFrameByListPhaseId1(self.listPhaseID);
+            var dfdAllReasonByAppID = self.getAllReasonByAppID("000");
+            $.when(dfdAllReasonByAppID).done((dfdAllReasonByAppIDData)=>{
+                //self.listReasonByAppID(data);
+                
                  dfd.resolve(); 
             });
             return dfd.promise();
@@ -57,11 +66,17 @@ module kaf000.b.viewmodel{
             return dfd.promise();
         }
          //get all frame by list phase ID 1
-        getAllFrameByListPhaseId1(listPhaseID){
+        getAllReasonByAppID(appID){
             var self = this;
             var dfd = $.Deferred<any>();
-                service.getAllFrameByListPhaseId1(listPhaseID).done(function(data){
-                    self.listFrameByListPhase1(data);
+                service.getAllReasonByAppID(appID).done(function(data){
+                    self.listReasonByAppID(data);
+                    self.reasonApp(self.listReasonByAppID()[0].toString());
+                    for(var i = 1;i<self.listReasonByAppID().length;i++){
+                    self.listReasonToApprover(
+                        self.listReasonToApprover().toString() + self.listReasonByAppID()[i].toString() + "\n"
+                        );  
+                    }
                     dfd.resolve(data);    
                 }); 
             return dfd.promise();

@@ -136,8 +136,8 @@ public class ApplicationWebservice extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("getreasonforremand")
-	public List<String> getReasonForRemand() {
-		return this.getMessageReasonForRemand.getMessageReasonForRemand("000");
+	@Path("getreasonforremand/{applicationID}")
+	public List<String> getReasonForRemand(@PathParam("applicationID") String applicationID) {
+		return this.getMessageReasonForRemand.getMessageReasonForRemand(applicationID);
 	}
 }

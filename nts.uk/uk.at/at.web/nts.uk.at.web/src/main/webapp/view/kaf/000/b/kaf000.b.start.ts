@@ -6,8 +6,8 @@ __viewContext.ready(function() {
         screenModel9: new nts.uk.at.view.kaf009.b.viewmodel.ScreenModel()
     };
 
-    //totalModel.screenModel.start().done(function() {
+    totalModel.screenModel.start().done(function() {
         __viewContext.bind(totalModel);
-    //});
+    });
 });
 

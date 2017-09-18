@@ -68,7 +68,7 @@
 				<!-- B1_13 -->
 				<button  class="danger">#{i18n.getText('KAF000_24')}</button>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" data-bind="with: screenModel">
 				<!-- row1 -->
 				<div id="message-area"> 
 					<table >
@@ -87,28 +87,18 @@
 					</table>
 				</div>
 				<!-- row2 -->
-				<div id="message-area" style="margin-top: 16px;"> 
-					<table >
-						<tr>
-							<!-- A1_1 -->
-							<td class="message-td" >#{i18n.getText('KAF000_1')}</td>
-							<!-- A1_2 -->
-							<td class="message-td"> 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 </td>
-						</tr>
-						<tr>
-							<!-- A1_3 -->
-							<td class="message-td">#{i18n.getText('KAF000_2')}</td>
-							<!-- A1_4 -->
-							<td class="message-td"> 2017/11/12  ~ 2019/11/12</td>
-						</tr>
-					</table>
+				<div id="message-area" style="margin-top: 16px;">
+					<!-- B3_1 -->
+					<div class="message-td" >#{i18n.getText('KAF000_1')}</div>
+					<div class="message-td" data-bind="text : reasonApp"></div>
 				</div>
 				<!-- row 2 -->
 				<div style=" margin-top: 16px;margin-left: 39px;float: left;">
 					<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_28')}</div>
 				</div>	
 				<div style=" margin-top: 16px;">
-					<textarea id="input-text" rows="3" cols="86"></textarea>
+					<textarea style="width: 687px;height: 50px;" data-bind="ntsMultilineEditor: { value:  listReasonToApprover , constraint: 'ResidenceCode'}" />
+					
 				</div>
 				
 				<!-- Body -->
@@ -117,9 +107,9 @@
 					<ui:include src="../../002/cm/index.xhtml" />
 				</div>
 				
-				<div class="divKaf009" data-bind="with: screenModel9">
+		<!-- 		<div class="divKaf009" data-bind="with: screenModel9">
 					<ui:include src="../../009/b/index.xhtml"></ui:include>
-				</div>
+				</div> -->
 				<!-- end body -->
 				
 				<!-- Footer -->
@@ -129,7 +119,7 @@
 					
 				</div>
 				<BR />	
-				<div id="table-1" data-bind="with: screenModel">
+				<div id="table-1">
 					<table id="table-phase">
 						<thead>
 							<tr  class="bg-green">
@@ -140,7 +130,7 @@
 								<th class="name-app" style="width:111px;">#{i18n.getText('KAF000_30')}</th>
 							</tr>
 						</thead>
-						<tbody data-bind="foreach :listFrameByListPhase1 ">
+						<!-- <tbody data-bind="foreach :listFrameByListPhase1" >
 							<com:ko bind="$data" tag ="foreach">
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
@@ -152,7 +142,7 @@
 									<td><label>OK</label></td>
 								</tr>
 							</com:ko>
-						</tbody>
+						</tbody> -->
 					</table>
 				</div>
 				<!-- end footer -->
