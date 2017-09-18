@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -9,10 +11,12 @@ import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.valueobject.PeriodCurrentMonth;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
+import nts.uk.ctx.at.request.dom.application.common.UseAtr;
 
 @Stateless
 public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
@@ -21,7 +25,7 @@ public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
 	private EmployeeAdapter employeeAdaptor;
 	
 	@Inject
-	private ApplicationDeadlineRepository applicationDeadlineRepository;
+	private ApplicationDeadlineRepository appDeadlineRepository;
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithmService;
@@ -53,22 +57,21 @@ public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
 		*/
 	}
 	
-	public void deadlineApplicationCheck(String compnayID, String appID, GeneralDate appStartDate, GeneralDate appEndDate, GeneralDate startDate, GeneralDate endDate){
-		/*
-		ApplicationDeadlineSetting obj = find(ApplicationApprovalFunctionSetting.ApplicationDeadlineSetting.TighteningID = appID);
-		if(obj.useAtr == false) return;
-		Loop(startDate -> endDate) {
-			if(loopDate > appEndDate) return;
-			if(obj.deadline = workingDay) {
+	public void deadlineApplicationCheck(String companyID, String appID, GeneralDate appStartDate, GeneralDate appEndDate, GeneralDate startDate, GeneralDate endDate){
+		Optional<ApplicationDeadline> appDeadlineOp = appDeadlineRepository.getDeadlineByClosureId(companyID, Integer.parseInt(appID));
+		if(!appDeadlineOp.isPresent()) throw new RuntimeException();
+		ApplicationDeadline appDeadline = appDeadlineOp.get();
+		if(appDeadline.getUserAtr().equals(UseAtr.NOTUSE)) return;
+		for(GeneralDate loopDate = startDate; loopDate.beforeOrEquals(endDate); loopDate.addDays(1)){
+			GeneralDate deadline = null;
+			if(appDeadline.getDeadlineCriteria().equals(DeadlineCriteria.WORKING_DAY)) {
 				// Waiting for algorithm
 				// input: appEndDate, obj.deadline, 
 			} else {
-				// obj.deadline = calendarDay ???
-				deadline = appEndDate.addDay(obj.deadline);
+				deadline = appEndDate.addDays(appDeadline.getDeadline().v());
 			}
-			if(systemDate > deadline) throw new BusinessException("Msg_327"); 
+			if(GeneralDate.today().afterOrEquals(deadline)) throw new BusinessException("Msg_327"); 
 		}	
-		 */
 	}
 	
 	public void applicationAcceptanceRestrictionsCheck(InitValueAtr postAtr, GeneralDate startDate, GeneralDate endDate){

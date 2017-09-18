@@ -12,7 +12,7 @@ public class AppStampWorkCmd {
 	
 	private Integer stampFrameNo;
 	
-	private Integer stampGoOutReason;
+	private Integer stampGoOutAtr;
 	
 	private String supportCard;
 		

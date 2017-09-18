@@ -1,5 +1,9 @@
 module kaf000.b.viewmodel{
+    import kaf002 = nts.uk.at.view.kaf002;
     export class ScreenModel{
+        
+        cm = new kaf002.cm.viewmodel.ScreenModel();
+        
         /**
          * List
          */

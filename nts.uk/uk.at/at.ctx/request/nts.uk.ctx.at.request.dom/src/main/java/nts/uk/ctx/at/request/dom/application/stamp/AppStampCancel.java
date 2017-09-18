@@ -16,7 +16,7 @@ import nts.arc.layer.dom.DomainObject;
  */
 @Value
 @EqualsAndHashCode(callSuper = false)
-public class ApplicationStampCancel extends DomainObject {
+public class AppStampCancel extends DomainObject {
 	private StampAtr stampAtr;
 	
 	/**
@@ -29,7 +29,7 @@ public class ApplicationStampCancel extends DomainObject {
 	 */
 	private Integer cancelAtr;
 
-	public ApplicationStampCancel(StampAtr stampAtr, Integer stampFrameNo, Integer cancelAtr) {
+	public AppStampCancel(StampAtr stampAtr, Integer stampFrameNo, Integer cancelAtr) {
 		super();
 		this.stampAtr = stampAtr;
 		this.stampFrameNo = stampFrameNo;

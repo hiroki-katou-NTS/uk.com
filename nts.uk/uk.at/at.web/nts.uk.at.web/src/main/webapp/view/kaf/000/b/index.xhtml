@@ -52,7 +52,7 @@
 				<button >#{i18n.getText('KAF000_18')}</button>
 				
 				<!-- B1_8 -->
-				<div data-bind="with: cm" style="display: inline-block">
+				<div data-bind="with: screenModel.cm" style="display: inline-block">
 					<button class="proceed" data-bind="click: update">#{i18n.getText('KAF000_19')}</button>
 				</div>
 				
@@ -113,7 +113,7 @@
 				
 				<!-- Body -->
 <!-- 				<div style="height: 50px;background-color: gray ; margin-top: 30px;'">body</div> -->
-				<div data-bind="with: cm">
+				<div data-bind="with: screenModel.cm">
 					<ui:include src="../../002/cm/index.xhtml" />
 				</div>
 				

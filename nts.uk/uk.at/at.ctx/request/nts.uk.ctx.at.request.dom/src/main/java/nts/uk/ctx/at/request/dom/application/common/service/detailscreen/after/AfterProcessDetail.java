@@ -3,8 +3,8 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 import java.util.List;
 
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.valueobject.ApproverResult;
-import nts.uk.ctx.at.request.dom.application.common.valueobject.ApproverWhoApproved;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.ApproverResult;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.ApproverWhoApproved;
 /**
  * 
  * 4-2.詳細画面登録後の処理
