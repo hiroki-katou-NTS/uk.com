@@ -15,8 +15,11 @@ module nts.uk.com.view.cmm018.m {
             
             printExcel(){
                 var self = this;
-                var master = new service.MasterDto(self.date(), self.isCompany(), self.isWorkplace(), self.isPerson());
+                var master = new service.MasterApproverRootQuery(self.date(), self.isCompany(), self.isWorkplace(), self.isPerson());
                 service.searchModeEmployee(master);
+                service.saveAsExcel(master).done(function(data: service.MasterApproverRootQuery){
+                    console.log(data);
+                });
             }
         }
         
