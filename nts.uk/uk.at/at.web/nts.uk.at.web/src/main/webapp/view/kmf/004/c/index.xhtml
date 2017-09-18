@@ -25,7 +25,8 @@
 			<tr>
 				<td><div data-bind="ntsFormLabel: { required: true, constraint:['PersonalGrantDateCode','PersonalGrantDateName'] }">#{i18n.getText('KMF004_91')}</div></td>
 				<td>
-					<input class="input-code" id="input-code" data-bind="ntsTextEditor: { value: code, enable: editMode, constraint: 'PersonalGrantDateCode', required: true, name: '#[KMF004_87]' }, hasfocus: true" /> 
+					<input class="input-code" id="input-code" data-bind="ntsTextEditor: { value: code, enable: editMode, constraint: 'PersonalGrantDateCode', required: true, 
+																							name: '#[KMF004_87]', immediate: true, option: {autofill:true, filldirection:'left'} }, hasfocus: true" /> 
 					<input class="input-name" id="input-name" data-bind="ntsTextEditor: { value: name, constraint: 'PersonalGrantDateName', required: true, name: '#[KMF004_88]' }" />
 				</td>
 			</tr>

@@ -183,6 +183,7 @@ module nts.uk.at.view.kmf004 {
                 } else {
                     self.selectedId(0);
                     self.value("101");
+                    self.items.removeAll();
                     
                     for(var i = 0; i < 20; i++) {
                         var item : IItem = {
@@ -265,9 +266,10 @@ module nts.uk.at.view.kmf004 {
                         grantDateAtr: self.selectedId(),
                         grantDate: self.value(),
                         grantDateSets: ko.toJS(setData)
-                    };
+                    }; 
                     
                     service.addGrantDateCom(dataItem).done(function(data){
+                        self.bindData(dataItem)
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error.message);    
