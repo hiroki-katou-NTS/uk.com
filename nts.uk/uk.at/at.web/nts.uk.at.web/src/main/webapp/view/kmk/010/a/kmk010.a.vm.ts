@@ -183,7 +183,7 @@ module nts.uk.at.view.kmk010.a {
                         } 
                     });
                 }else {
-                    service.findAllOvertimeLanguageName(self.languageId).done(function(dataOvertimeLang){
+                    service.findAllOvertimeNameLanguage(self.languageId).done(function(dataOvertimeLang){
                         for (var overtime of self.outsideOTSettingModel.overtimes) {
                             for(var dtoOvertime of dataOvertimeLang){
                                 if(overtime.overtimeNo() == dtoOvertime.overtimeNo){
@@ -203,6 +203,14 @@ module nts.uk.at.view.kmk010.a {
                         } 
                     });
                 }
+            }
+            
+            /**
+             * function on click button export file excel
+             */
+            private exportFileExcelOutsideOTSetting(): void{
+                var self = this;
+                service.exportOutsideOTSettingExcel();    
             }
         }
         export class OvertimeModel {

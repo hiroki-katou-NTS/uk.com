@@ -11,10 +11,12 @@ module nts.uk.at.view.kmk010.a {
             saveSuperHD60HConMed: "ctx/at/shared/outsideot/holiday/save",
             findAllOvertimeNameLanguage: "ctx/at/shared/overtime/language/name/findAll",
             findAllOvertime : "ctx/at/shared/overtime/findAll",
-            findAllOvertimeLanguageBRDItem : "ctx/at/shared/overtime/breakdown/language/findAll",
-            findAllOutsideOTBRDItem : "ctx/at/shared/overtime/breakdown/findAll",
+            findAllOvertimeLanguageBRDItem : "ctx/at/shared/outsideot/breakdown/language/findAll",
+            findAllOutsideOTBRDItem : "ctx/at/shared/outsideot/breakdown/findAll",
             findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems",
-            checkManageSixtyHourVacationSetting: "ctx/at/shared/vacation/setting/sixtyhourvacation/com/check/manage"
+            checkManageSixtyHourVacationSetting: "ctx/at/shared/vacation/setting/sixtyhourvacation/com/check/manage",
+            exportOutsideOTSettingExcel: "at/shared/outsideot/export/excel"
+            
             
         }
 
@@ -111,6 +113,14 @@ module nts.uk.at.view.kmk010.a {
         export function checkManageSixtyHourVacationSetting(): JQueryPromise<model.SixtyHourVacationSettingCheckDto> {
             return nts.uk.request.ajax('at', paths.checkManageSixtyHourVacationSetting);
         }
+        
+        /**
+         * export file excel outside overtime setting
+         */
+        export function exportOutsideOTSettingExcel(): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcel + '/60');
+        }
+        
         export module model {
 
             export interface EnumConstantDto {
