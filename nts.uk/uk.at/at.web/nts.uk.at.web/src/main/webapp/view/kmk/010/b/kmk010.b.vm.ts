@@ -101,6 +101,12 @@ module nts.uk.at.view.kmk010.b {
                 }
 
             }
+            /**
+             * function by click button close dialog
+             */
+            private closeSaveOvertime(): void {
+                nts.uk.ui.windows.close();
+            }
         }
 
     }
