@@ -61,18 +61,6 @@ module kcp009.viewmodel {
             // Set SelectedItem: First Item
             self.selectedItem(data.employeeInputList().length > 0 ? data.employeeInputList()[0].id : null);
 
-            // Initial Binding from Selected Item
-            if (self.selectedItem()) {
-                var currentItem = self.empList().filter((item) => {
-                    return item.id == self.selectedItem();
-                })[0];
-                if (currentItem) {
-                    self.empDisplayCode(currentItem.code);
-                    self.empBusinessName(currentItem.businessName);
-                    self.organizationName((data.systemReference == SystemType.EMPLOYMENT) ? 
-                    currentItem.workplaceName : currentItem.depName);
-                }
-            }
             self.targetBtnText = data.targetBtnText;
             self.isDisplayOrganizationName = data.isDisplayOrganizationName;
             if (data.isDisplayOrganizationName) {
