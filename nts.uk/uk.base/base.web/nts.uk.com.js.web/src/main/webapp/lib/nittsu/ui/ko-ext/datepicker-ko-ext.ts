@@ -138,7 +138,9 @@ module nts.uk.ui.koExtentions {
                             $label.text("(" + time.formatPattern(newText, "", dayofWeekFormat) + ")");
                     }
                     
-                    $input.val(moment(result.parsedValue).format(ISOFormat));
+//                    if(!util.isNullOrEmpty(result.parsedValue)){
+//                        $input.val(moment(result.parsedValue).format(ISOFormat));    
+//                    }
                 }
             });
 
@@ -158,7 +160,9 @@ module nts.uk.ui.koExtentions {
                             $label.text("(" + time.formatPattern(newText, "", dayofWeekFormat) + ")");
                     }
                     
-                    $input.val(moment(result.parsedValue).format(ISOFormat));
+//                    if(!util.isNullOrEmpty(result.parsedValue)){
+//                        $input.val(moment(result.parsedValue).format(ISOFormat));    
+//                    }
                 }
             }));
             
