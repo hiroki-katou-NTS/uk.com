@@ -3203,6 +3203,7 @@ var nts;
                             isDecimalNumber = (this.option.decimallength > 0);
                             inputText = uk.text.replaceAll(inputText.toString(), this.option.groupseperator, '');
                         }
+                        inputText = inputText.trim();
                         var message = {};
                         var validateFail = false, max = 99999999, min = 0, mantissaMaxLength;
                         if (!util.isNullOrUndefined(this.constraint) && this.constraint.valueType === "HalfInt") {
@@ -5786,6 +5787,7 @@ var nts;
                             if (result.isValid) {
                                 $input.ntsError('clear');
                                 value(result.parsedValue);
+                                value.valueHasMutated();
                             }
                             else {
                                 var error = $input.ntsError('getError');
@@ -21004,4 +21006,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
