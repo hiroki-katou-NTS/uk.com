@@ -34,7 +34,6 @@ module nts.uk.at.view.kmk002.a {
                     self.calcFormulas.push(new Formula());
                 }
 
-
                 // mock data.
                 self.roundingRules = ko.observableArray([
                     { code: '1', name: '四捨五入' },
@@ -100,6 +99,34 @@ module nts.uk.at.view.kmk002.a {
                 self.loadFormula();
 
                 return dfd.promise();
+            }
+
+            /**
+             * Open dialog B
+             */
+            public openDialogB(): void {
+                //TODO
+                nts.uk.ui.windows.sub.modal('/view/kmk/002/b/index.xhtml');
+            }
+
+            /**
+             * Open dialog C
+             */
+            public openDialogC(): void {
+                //TODO
+                nts.uk.ui.windows.sub.modal('/view/kmk/002/c/index.xhtml');
+            }
+
+            /**
+             * Open dialog D
+             */
+            public openDialogD(): void {
+                let self = this;
+                //let dto = self.calcFormulas[0].toDto();
+                //nts.uk.ui.windows.setShared('shared', dto);
+                nts.uk.ui.windows.sub.modal('/view/kmk/002/d/index.xhtml').onClosed(() => {
+                    //TODO
+                });
             }
 
             /**
@@ -377,26 +404,39 @@ module nts.uk.at.view.kmk002.a {
         /**
          * Formula setting.
          */
-        class FormulaSetting {
-            minusSegment: number;
-            operator: number;
-            settingItems: Array<FormulaSettingItem>;
+        export class FormulaSetting {
+            minusSegment: KnockoutObservable<number>;
+            operator: KnockoutObservable<number>;
+            leftItem: FormulaSettingItem;
+            rightItem: FormulaSettingItem;
+
+            operatorDatasource: KnockoutObservableArray<any>;
+
             constructor() {
-                this.minusSegment = 0;
-                this.operator = 0;
-                this.settingItems = new Array<FormulaSettingItem>();
+                this.minusSegment =  ko.observable(0);
+                this.operator = ko.observable(0);
+                this.leftItem = new FormulaSettingItem();
+                this.rightItem = new FormulaSettingItem();
+                this.operatorDatasource = ko.observableArray([
+                    { code: '0', name: '+' },
+                    { code: '1', name: '-' },
+                    { code: '2', name: '*' },
+                    { code: '3', name: '/' }
+                ]);
             }
             public fromDto(dto: FormulaSettingDto) {
-                this.minusSegment = dto.minusSegment;
-                this.operator = dto.operator;
-                this.settingItems = []; //TODO
+                let self = this;
+                self.minusSegment(dto.minusSegment);
+                self.operator(dto.operator);
+                self.leftItem = <FormulaSettingItem>{}; //TODO
+                self.rightItem = <FormulaSettingItem>{};
             }
             public toDto(): any {
                 let self = this;
                 let dto: FormulaSettingDto = <FormulaSettingDto>{};
 
-                dto.minusSegment = this.minusSegment;
-                dto.operator = this.operator;
+                dto.minusSegment = self.minusSegment();
+                dto.operator = self.operator();
                 dto.settingItems = []; //TODO
 
                 return dto;

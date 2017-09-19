@@ -12,7 +12,7 @@
 				nts.uk.ctx.at.record.dom.optitem.OptionalItemName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kmk002.style.css" />
+			<com:stylefile path="kmk002.a.style.css" />
 			<com:scriptfile path="kmk002.a.start.js" />
 			<com:scriptfile path="kmk002.a.service.js" />
 			<com:scriptfile path="kmk002.a.vm.js" />
@@ -91,7 +91,10 @@
 											optionsText: 'name',
 											value: empConditionAtr,
 											enable: true }"></div>
-										<button>#{i18n.getText('KMK002_19')}</button></td>
+										<button data-bind="click: $parent.openDialogB">#{i18n.getText('KMK002_19')}(TEST B)</button>
+										<button data-bind="click: $parent.openDialogC">test C</button>
+										<button data-bind="click: $parent.openDialogD">test D</button>
+										</td>
 									<td></td>
 									
 									<!-- Calculation ResultRange -->

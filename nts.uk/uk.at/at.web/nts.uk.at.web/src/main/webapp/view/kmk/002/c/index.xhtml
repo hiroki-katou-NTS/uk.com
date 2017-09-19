@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 1200,
+					height : 520
+				};
+			</script>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="kmk002.c.start.js" />
+			<com:scriptfile path="kmk002.c.vm.js" />
+			<com:scriptfile path="kmk002.c.service.js" />
+			<com:stylefile path="kmk002.c.style.css" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area" style="display: none" data-bind="visible: true">
+				<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_24')}</div>
+				<label>test</label>
+				<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_34')}</div>
+				<label>test</label>
+				<hr/>
+			</div>
+			<div id="functions-area-bottom">
+				<button tabindex="8" class="x-large proceed">#{i18n.getText('KMK002_60')}</button>
+				<button tabindex="9">#{i18n.getText('KMK002_61')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
