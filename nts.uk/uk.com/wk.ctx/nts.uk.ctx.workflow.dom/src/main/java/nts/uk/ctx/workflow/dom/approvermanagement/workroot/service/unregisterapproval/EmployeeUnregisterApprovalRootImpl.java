@@ -18,6 +18,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
@@ -34,29 +35,11 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 	private PersonApprovalRootRepository psRootRepository;
 	@Inject
 	private PersonInforExportAdapter psInfor;
+	@Inject
+	private EmployeeApproveAdapter empInfor;
 	@Override
 	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate) {
-		List<EmployeeApproveDto> lstEmps = new ArrayList<>();
-		
-		for(int i = 0; i<15; i++) {
-			EmployeeApproveDto emp = new EmployeeApproveDto(companyId, 
-					"CE82367D-929C-4872-A51C-12BE4426EA6C",
-					"90000000-0000-0000-0000-000000000016", 
-					"000000000001", 
-					"日通システム　ベトナム　2", 
-					"C000000003", 
-					"Webメニューの設定１", "", baseDate, baseDate);	
-		}
-		
-//		emp.setPId("CE82367D-929C-4872-A51C-12BE4426EA6C");
-//		emp.setSId("90000000-0000-0000-0000-000000000016");
-//		emp.setSCd("000000000001");
-//		emp.setPName("日通システム　ベトナム　2");
-//		emp.setWpCode("C000000003");
-//		emp.setPName("Webメニューの設定１");
-//		lstEmps.add(emp);
-		//ドメインモデル「社員」を取得する(lấy dữ liệu domain「社員」)
-		// TODO thuc hien khi co tra loi QA
+		List<EmployeeApproveDto> lstEmps = empInfor.getEmployeesAtWorkByBaseDate(companyId, baseDate);
 		
 		//データが０件(data = 0)
 		if(CollectionUtil.isEmpty(lstEmps)) {
