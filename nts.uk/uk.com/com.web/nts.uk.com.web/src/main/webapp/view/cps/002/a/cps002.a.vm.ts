@@ -14,7 +14,7 @@ module cps002.a.vm {
             //Show/hide options
             isQuickSearchTab: ko.observable(true),
             isAdvancedSearchTab: ko.observable(true),
-            isAllReferableEmployee: ko.observable(true),
+            isAllReferableEmployee: ko.observable(true), 
             isOnlyMe: ko.observable(true),
             isEmployeeOfWorkplace: ko.observable(true),
             isEmployeeWorkplaceFollow: ko.observable(true),

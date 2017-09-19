@@ -13,9 +13,9 @@ module nts.uk.com.view.cmm018.i {
                 var self = this;
                 self.copyDataFlag = ko.observable(true);
                 self.dataSource = getShared('CMM018I_PARAM')||
-                        {name: 'Hatake Kakashi',startDate: '2021-11-02', startDateOld: '9999-12-31', check: 1, mode: 0};
+                        {name: 'Hatake Kakashi',startDate: '2021-11-02', check: 1, mode: 0};
                 self.item = ko.observable(self.dataSource.name);
-                self.beginStartDate = ko.observable(self.dataSource.startDate);
+                self.beginStartDate = ko.observable(moment(self.dataSource.startDate).add(1,'days').format("YYYY/MM/DD"));
                 self.newStartDate = ko.observable(null);
             }
             
@@ -28,9 +28,8 @@ module nts.uk.com.view.cmm018.i {
                     $("#startDateInput").ntsError('set', {messageId:"Msg_153"});
                     return;
                 }
-                let data: vmbase.IData = new vmbase.IData(self.newStartDate(), self.beginStartDate(), self.dataSource.check, self.dataSource.mode, self.copyDataFlag());
+                let data: vmbase.IData = new vmbase.IData(self.newStartDate(), self.dataSource.startDate, self.dataSource.check, self.dataSource.mode, self.copyDataFlag());
                 setShared('CMM018I_DATA', data);
-                console.log(data);
                 nts.uk.ui.windows.close(); 
             }
             

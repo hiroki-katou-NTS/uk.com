@@ -33,11 +33,12 @@ public class JpaWorkLocationRepository extends JpaRepository implements WorkLoca
 
 	@Override
 	public Optional<WorkLocation> findByCode(String companyID, String workPlaceCD) {
-		return this.queryProxy()
+		Optional<WorkLocation> test = this.queryProxy()
 				.query(SELECT_SINGLE, KwlmtWorkLocation.class)
 				.setParameter("companyID", companyID)
-				.setParameter("workPlaceCD", workPlaceCD)
+				.setParameter("workLocationCD", workPlaceCD)
 				.getSingle(c -> toDomain(c));
+		return test;
 	}
 
 	private WorkLocation toDomain(KwlmtWorkLocation entity) {
