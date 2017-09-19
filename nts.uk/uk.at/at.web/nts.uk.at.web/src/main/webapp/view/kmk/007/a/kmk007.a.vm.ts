@@ -199,40 +199,39 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                         return item.workTypeCode == newValue;
                     });
                     self.index(index);
-
-                    var itemWorkType = _.find(self.listWorkType(), function(item: IWorkType) {
-                        return item.workTypeCode == newValue;
+                    
+                    service.findWorkType(newValue).done(function(workTypeRes){
+                        var itemWorkType: any = ko.toJS(self.convertToModel(workTypeRes)); 
+                        //set current worktypeset
+                        self.currentOneDay(itemWorkType.oneDay);
+                        self.currentMorning(itemWorkType.morning);
+                        self.currentAfternoon(itemWorkType.afternoon);
+    
+                        //set current code 
+                        self.currentOneDayCls(itemWorkType.oneDayCls);
+                        self.currentMorningCls(itemWorkType.morningCls);
+                        self.currentAfternoonCls(itemWorkType.afternoonCls);
+    
+                        self.currentWorkType().workTypeCode(itemWorkType.workTypeCode);
+                        self.currentWorkType().name(itemWorkType.name);
+                        self.currentWorkType().nameNotJP(itemWorkType.nameNotJP);
+                        self.currentWorkType().dispName(self.langId() == 'ja' ? itemWorkType.name : itemWorkType.nameNotJP);
+                        self.currentWorkType().abbreviationName(itemWorkType.abbreviationName);
+                        self.currentWorkType().abNameNotJP(itemWorkType.abNameNotJP);
+                        self.currentWorkType().dispAbName(self.langId() == 'ja' ? itemWorkType.abbreviationName : itemWorkType.abNameNotJP);
+                        self.currentWorkType().symbolicName(itemWorkType.symbolicName);
+                        self.currentWorkType().abolishAtr(itemWorkType.abolishAtr);
+                        self.currentWorkType().memo(itemWorkType.memo);
+                        self.currentWorkType().workAtr(itemWorkType.workAtr);
+                        self.currentWorkType().oneDayCls(itemWorkType.oneDayCls);
+                        self.currentWorkType().morningCls(itemWorkType.morningCls);
+                        self.currentWorkType().afternoonCls(itemWorkType.afternoonCls);
+                        self.currentWorkType().calculatorMethod(itemWorkType.calculatorMethod);
+    
+                        self.setWorkTypeSet(self.currentWorkType().oneDay(), itemWorkType.oneDay);
+                        self.setWorkTypeSet(self.currentWorkType().morning(), itemWorkType.morning);
+                        self.setWorkTypeSet(self.currentWorkType().afternoon(), itemWorkType.afternoon);
                     });
-
-                    //set current worktypeset
-                    self.currentOneDay(itemWorkType.oneDay);
-                    self.currentMorning(itemWorkType.morning);
-                    self.currentAfternoon(itemWorkType.afternoon);
-
-                    //set current code 
-                    self.currentOneDayCls(itemWorkType.oneDayCls);
-                    self.currentMorningCls(itemWorkType.morningCls);
-                    self.currentAfternoonCls(itemWorkType.afternoonCls);
-
-                    self.currentWorkType().workTypeCode(itemWorkType.workTypeCode);
-                    self.currentWorkType().name(itemWorkType.name);
-                    self.currentWorkType().nameNotJP(itemWorkType.nameNotJP);
-                    self.currentWorkType().dispName(self.langId() == 'ja' ? itemWorkType.name : itemWorkType.nameNotJP);
-                    self.currentWorkType().abbreviationName(itemWorkType.abbreviationName);
-                    self.currentWorkType().abNameNotJP(itemWorkType.abNameNotJP);
-                    self.currentWorkType().dispAbName(self.langId() == 'ja' ? itemWorkType.abbreviationName : itemWorkType.abNameNotJP);
-                    self.currentWorkType().symbolicName(itemWorkType.symbolicName);
-                    self.currentWorkType().abolishAtr(itemWorkType.abolishAtr);
-                    self.currentWorkType().memo(itemWorkType.memo);
-                    self.currentWorkType().workAtr(itemWorkType.workAtr);
-                    self.currentWorkType().oneDayCls(itemWorkType.oneDayCls);
-                    self.currentWorkType().morningCls(itemWorkType.morningCls);
-                    self.currentWorkType().afternoonCls(itemWorkType.afternoonCls);
-                    self.currentWorkType().calculatorMethod(itemWorkType.calculatorMethod);
-
-                    self.setWorkTypeSet(self.currentWorkType().oneDay(), itemWorkType.oneDay);
-                    self.setWorkTypeSet(self.currentWorkType().morning(), itemWorkType.morning);
-                    self.setWorkTypeSet(self.currentWorkType().afternoon(), itemWorkType.afternoon);
                 } else {
                     self.isCreated(true);
                     $('#input-workTypeCode').focus();
@@ -540,60 +539,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                             dispOrder: item.dispOrder
                         });
 
-                        // one day
-                        if (item.workTypeSets.length > 0) {
-                            _.forEach(item.workTypeSets, function(itemWorkTypeSet) {
-                                if (itemWorkTypeSet.workAtr == WorkAtr.ONE_DAY) {
-                                    var workTypeSet = new WorkTypeSet({
-                                        workTypeCode: item.workTypeCode,
-                                        workAtr: itemWorkTypeSet.workAtr,
-                                        digestPublicHd: itemWorkTypeSet.digestPublicHd,
-                                        holidayAtr: itemWorkTypeSet.holidayAtr,
-                                        countHodiday: itemWorkTypeSet.countHodiday,
-                                        closeAtr: itemWorkTypeSet.closeAtr,
-                                        sumAbsenseNo: itemWorkTypeSet.sumAbsenseNo,
-                                        sumSpHodidayNo: itemWorkTypeSet.sumSpHodidayNo,
-                                        timeLeaveWork: itemWorkTypeSet.timeLeaveWork,
-                                        attendanceTime: itemWorkTypeSet.attendanceTime,
-                                        genSubHodiday: itemWorkTypeSet.genSubHodiday,
-                                        dayNightTimeAsk: itemWorkTypeSet.dayNightTimeAsk
-                                    })
-                                    workType.oneDay(workTypeSet);
-                                } else if (itemWorkTypeSet.workAtr == WorkAtr.MORNING) {
-                                    var workTypeSet = new WorkTypeSet({
-                                        workTypeCode: item.workTypeCode,
-                                        workAtr: itemWorkTypeSet.workAtr,
-                                        digestPublicHd: itemWorkTypeSet.digestPublicHd,
-                                        holidayAtr: itemWorkTypeSet.holidayAtr,
-                                        countHodiday: itemWorkTypeSet.countHodiday,
-                                        closeAtr: itemWorkTypeSet.closeAtr,
-                                        sumAbsenseNo: itemWorkTypeSet.sumAbsenseNo,
-                                        sumSpHodidayNo: itemWorkTypeSet.sumSpHodidayNo,
-                                        timeLeaveWork: itemWorkTypeSet.timeLeaveWork,
-                                        attendanceTime: itemWorkTypeSet.attendanceTime,
-                                        genSubHodiday: itemWorkTypeSet.genSubHodiday,
-                                        dayNightTimeAsk: itemWorkTypeSet.dayNightTimeAsk
-                                    })
-                                    workType.morning(workTypeSet);
-                                } else if (itemWorkTypeSet.workAtr == WorkAtr.AFTERNOON) {
-                                    var workTypeSet = new WorkTypeSet({
-                                        workTypeCode: item.workTypeCode,
-                                        workAtr: itemWorkTypeSet.workAtr,
-                                        digestPublicHd: itemWorkTypeSet.digestPublicHd,
-                                        holidayAtr: itemWorkTypeSet.holidayAtr,
-                                        countHodiday: itemWorkTypeSet.countHodiday,
-                                        closeAtr: itemWorkTypeSet.closeAtr,
-                                        sumAbsenseNo: itemWorkTypeSet.sumAbsenseNo,
-                                        sumSpHodidayNo: itemWorkTypeSet.sumSpHodidayNo,
-                                        timeLeaveWork: itemWorkTypeSet.timeLeaveWork,
-                                        attendanceTime: itemWorkTypeSet.attendanceTime,
-                                        genSubHodiday: itemWorkTypeSet.genSubHodiday,
-                                        dayNightTimeAsk: itemWorkTypeSet.dayNightTimeAsk
-                                    })
-                                    workType.afternoon(workTypeSet);
-                                }
-                            });
-                        }
                         self.listWorkType.push(ko.toJS(workType));
                     });
                     self.listWorkType(_.orderBy(self.listWorkType(), ['dispOrder', 'workTypeCode'], ['asc', 'asc']));
@@ -601,6 +546,87 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 dfd.resolve();
             }).fail((res) => { dfd.reject(); });
             return dfd.promise();
+        }
+        
+        /**
+         * Convert data to WorkType view model
+         */
+        private convertToModel(item): WorkType {
+            var self = this;
+            var workType = new WorkType({
+                workTypeCode: item.workTypeCode,
+                name: item.name,
+                abbreviationName: item.abbreviationName,
+                symbolicName: item.symbolicName,
+                abolishAtr: item.abolishAtr,
+                memo: item.memo,
+                workAtr: item.workAtr,
+                oneDayCls: item.oneDayCls,
+                morningCls: item.morningCls,
+                afternoonCls: item.afternoonCls,
+                calculatorMethod: item.calculatorMethod,
+                oneDay: ko.toJS(self.oneDay),
+                morning: ko.toJS(self.oneDay),
+                afternoon: ko.toJS(self.oneDay),
+                dispOrder: item.dispOrder
+            });
+
+            // one day
+            if (item.workTypeSets.length > 0) {
+                _.forEach(item.workTypeSets, function(itemWorkTypeSet) {
+                    if (itemWorkTypeSet.workAtr == WorkAtr.ONE_DAY) {
+                        var workTypeSet = new WorkTypeSet({
+                            workTypeCode: item.workTypeCode,
+                            workAtr: itemWorkTypeSet.workAtr,
+                            digestPublicHd: itemWorkTypeSet.digestPublicHd,
+                            holidayAtr: itemWorkTypeSet.holidayAtr,
+                            countHodiday: itemWorkTypeSet.countHodiday,
+                            closeAtr: itemWorkTypeSet.closeAtr,
+                            sumAbsenseNo: itemWorkTypeSet.sumAbsenseNo,
+                            sumSpHodidayNo: itemWorkTypeSet.sumSpHodidayNo,
+                            timeLeaveWork: itemWorkTypeSet.timeLeaveWork,
+                            attendanceTime: itemWorkTypeSet.attendanceTime,
+                            genSubHodiday: itemWorkTypeSet.genSubHodiday,
+                            dayNightTimeAsk: itemWorkTypeSet.dayNightTimeAsk
+                        })
+                        workType.oneDay(workTypeSet);
+                    } else if (itemWorkTypeSet.workAtr == WorkAtr.MORNING) {
+                        var workTypeSet = new WorkTypeSet({
+                            workTypeCode: item.workTypeCode,
+                            workAtr: itemWorkTypeSet.workAtr,
+                            digestPublicHd: itemWorkTypeSet.digestPublicHd,
+                            holidayAtr: itemWorkTypeSet.holidayAtr,
+                            countHodiday: itemWorkTypeSet.countHodiday,
+                            closeAtr: itemWorkTypeSet.closeAtr,
+                            sumAbsenseNo: itemWorkTypeSet.sumAbsenseNo,
+                            sumSpHodidayNo: itemWorkTypeSet.sumSpHodidayNo,
+                            timeLeaveWork: itemWorkTypeSet.timeLeaveWork,
+                            attendanceTime: itemWorkTypeSet.attendanceTime,
+                            genSubHodiday: itemWorkTypeSet.genSubHodiday,
+                            dayNightTimeAsk: itemWorkTypeSet.dayNightTimeAsk
+                        })
+                        workType.morning(workTypeSet);
+                    } else if (itemWorkTypeSet.workAtr == WorkAtr.AFTERNOON) {
+                        var workTypeSet = new WorkTypeSet({
+                            workTypeCode: item.workTypeCode,
+                            workAtr: itemWorkTypeSet.workAtr,
+                            digestPublicHd: itemWorkTypeSet.digestPublicHd,
+                            holidayAtr: itemWorkTypeSet.holidayAtr,
+                            countHodiday: itemWorkTypeSet.countHodiday,
+                            closeAtr: itemWorkTypeSet.closeAtr,
+                            sumAbsenseNo: itemWorkTypeSet.sumAbsenseNo,
+                            sumSpHodidayNo: itemWorkTypeSet.sumSpHodidayNo,
+                            timeLeaveWork: itemWorkTypeSet.timeLeaveWork,
+                            attendanceTime: itemWorkTypeSet.attendanceTime,
+                            genSubHodiday: itemWorkTypeSet.genSubHodiday,
+                            dayNightTimeAsk: itemWorkTypeSet.dayNightTimeAsk
+                        })
+                        workType.afternoon(workTypeSet);
+                    }
+                });
+            }
+            
+            return workType;
         }
 
         /**
