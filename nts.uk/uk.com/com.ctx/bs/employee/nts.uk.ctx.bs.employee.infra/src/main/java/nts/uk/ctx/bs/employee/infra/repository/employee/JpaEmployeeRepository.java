@@ -53,7 +53,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	// c.bsydtEmployeePk.sId = :sId";
 
 	public final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployee c "
-			+ " WHERE c.employeeCode LIKE CONCAT(:emlCode, '%')"
+			+ " WHERE c.companyId = :companyId AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
 			+ " ORDER BY  c.employeeCode DESC";
 	public final String SELECT_BY_STANDARDDATE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
 			+ " AND  d.bsydtJobEntryHistoryPk.entryDate <= :standardDate " + " AND d.retireDate >= :standardDate ";
@@ -226,10 +226,10 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 
 	/* vinhpx */
 	@Override
-	public String findLastEml(String startLetter) {
+	public String findLastEml(String companyId, String startLetter) {
 		if (startLetter == null)
 			startLetter = "";
-		List<Object[]> lst = this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("emlCode", startLetter).getList();
+		List<Object[]> lst = this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("companyId", companyId).setParameter("emlCode", startLetter).getList();
 		String returnStr = "";
 		if (lst.size() > 0) {
 			Object obj = lst.get(0);
