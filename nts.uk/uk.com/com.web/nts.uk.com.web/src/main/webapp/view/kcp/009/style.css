@@ -25,6 +25,9 @@
 .caret-inline:after {
 	color: black;
 }
+.show {
+	visibility: hidden;
+}
 
 table#employ_view {
 	border-left: none !important;
