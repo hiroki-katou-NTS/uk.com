@@ -33,7 +33,7 @@
 					<!-- A1_5: Button 登録 -->
 					<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_18')}</button>
 					<!-- A1_6: Button 未登録社員リスト -->
-					<button data-bind="click: function(){openDialogD(0)}, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_12')}</button>
+					<button>#{i18n.getText('CMM018_12')}</button>
 					<!-- A1_7: Button 承認者一覧 -->
 					<button data-bind="click: $data.openDialogI">#{i18n.getText('CMM018_14')}</button>
 					<!-- A1_8: Button マスタリスト -->
@@ -49,7 +49,7 @@
 								</td>
 								<td>
 									<!-- A1_10: 会社名 -->
-									<div style = "width: 750px" data-bind = "text: nameCompany"></div>
+									<div style = "width: 760px" data-bind = "text: nameCompany"></div>
 								</td>
 								<td>
 									<!-- A1_11: Label モード切替： -->
@@ -364,7 +364,7 @@
 					<!-- C1_5: Button 登録 -->
 					<button class="proceed" data-bind="click: function(){submitCalendar(0)}, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_18')}</button>
 					<!-- C1_6: Button 未登録社員リスト -->
-					<button data-bind="click: function(){openDialogD(0)}, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_12')}</button>
+					<button>#{i18n.getText('CMM018_12')}</button>
 					<!-- c1_7: Button 承認者一覧 -->
 					<button>#{i18n.getText('CMM018_14')}</button>
 					<!-- c1_8: Button マスタリスト -->
@@ -374,7 +374,7 @@
 					<div style="margin-top: 10px;">
 						<table>
 							<tr>
-								<td>
+								<td style = "width: 880px">
 								<div>Hatake - Kakashi</div>
 								</td>
 								<td>
@@ -690,7 +690,7 @@
 					<!-- E1_5: Button 登録 -->
 					<button class="proceed" data-bind="click: function(){submitCalendar(0)}, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_18')}</button>
 					<!-- E1_6: Button 未登録社員リスト -->
-					<button data-bind="click: function(){openDialogD(0)}, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_12')}</button>
+					<button>#{i18n.getText('CMM018_12')}</button>
 					<!-- E1_7: Button 承認者一覧 -->
 					<button >#{i18n.getText('CMM018_14')}</button>
 					<!-- E1_8: Button マスタリスト -->
@@ -701,7 +701,7 @@
 					<div style="margin-top: 10px;">
 						<table>
 							<tr>
-								<td>
+								<td style = "width: 880px">
 								<!-- KCP009 -->
 								<div id="emp-component"></div>
 								</td>
@@ -716,7 +716,7 @@
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: selectedModeCode,
-											enable: true}" style = "margin-left: 30px;"></div>
+											enable: true}"></div>
 								</td>
 							</tr>
 						</table>
