@@ -1,11 +1,13 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 /**
  * The Class EmployeeDto.
  */
 @Data
+@AllArgsConstructor
 public class EmployeeApproveDto {
 
 	/** The company id. */

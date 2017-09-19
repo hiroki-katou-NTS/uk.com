@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.infra.repository.setting.request.application.apptypediscretesetting;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -25,11 +26,12 @@ public class JpaAppTypeDiscreteSetRepository extends JpaRepository implements Ap
 
 	public final String SELECT_NO_WHERE = "SELECT c FROM KrqstAppTypeDiscrete c";
 
-	public final String SELECT_WITH_CID = SELECT_NO_WHERE + " WHERE c.krqstAppTypeDiscretePK.companyID := companyID";
+	public final String SELECT_WITH_CID = SELECT_NO_WHERE 
+			+ " WHERE c.krqstAppTypeDiscretePK.companyID = :companyID";
 
 	public final String SELECT_WITH_APP_TYPE = SELECT_NO_WHERE
-			+ " WHERE c.krqstAppTypeDiscretePK.companyID := companyID"
-			+ " AND c.krqstAppTypeDiscretePK.appType := appType ";
+			+ " WHERE c.krqstAppTypeDiscretePK.companyID = :companyID"
+			+ " AND c.krqstAppTypeDiscretePK.appType = :appType ";
 
 	private AppTypeDiscreteSetting toDomain(KrqstAppTypeDiscrete entity) {
 		return new AppTypeDiscreteSetting(entity.krqstAppTypeDiscretePK.companyID,
@@ -43,7 +45,7 @@ public class JpaAppTypeDiscreteSetRepository extends JpaRepository implements Ap
 				EnumAdaptor.valueOf(entity.retrictPreMethodFlg, CheckMethod.class),
 				EnumAdaptor.valueOf(entity.retrictPreUseFlg, UseAtr.class),
 				EnumAdaptor.valueOf(entity.retrictPreDay, RetrictDay.class),
-				EnumAdaptor.valueOf(entity.retrictPreTimeDay, RetrictPreTimeDay.class),
+				new RetrictPreTimeDay(BigDecimal.valueOf(entity.retrictPreTimeDay)),
 				EnumAdaptor.valueOf(entity.retrictPreCanAcceptFlg, PossibleAtr.class),
 				EnumAdaptor.valueOf(entity.retrictPostAllowFutureFlg, AllowAtr.class));
 	}
@@ -51,9 +53,9 @@ public class JpaAppTypeDiscreteSetRepository extends JpaRepository implements Ap
 	@Override
 	public Optional<AppTypeDiscreteSetting> getAppTypeDiscreteSettingByAppType(String companyID, int appType) {
 		return this.queryProxy().query(SELECT_WITH_APP_TYPE, KrqstAppTypeDiscrete.class)
-				.setParameter("companyID", companyID)
-				.setParameter("appType", appType)
-				.getSingle(c -> toDomain(c));
+			    .setParameter("companyID", companyID)
+			    .setParameter("appType", appType)
+			    .getSingle(c -> toDomain(c));
 	}
 
 }

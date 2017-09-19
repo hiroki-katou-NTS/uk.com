@@ -6,7 +6,7 @@ import lombok.Value;
 @Value
 public class DataFullDto {
 	private List<DataDisplayComDto> lstCompany;
-	private List<WorkPlaceAppRootDto> lstWorkplaceRoot;
-	private List<PersonAppRootDto> lstPersonRoot;
+	private List<DataDisplayWpDto> lstWorkplace;
+	private List<DataDisplayPsDto> lstPerson;
 
 }

@@ -5,7 +5,7 @@
 .dateControlBtn:FIRST-CHILD{ margin-left: 10px; }
 .dateControlBtn:LAST-CHILD{ margin-left: 40px; }
 #sidebar-area {
-	width: 80px;
+	width: 60px;
 }
 #left-contents {
 	width: 260px;

@@ -18,6 +18,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRep
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 
 @Stateless
@@ -30,25 +31,30 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 	private WorkplaceApprovalRootRepository wpRootRepository;
 	@Inject
 	private PersonApprovalRootRepository psRootRepository;
-	
+	@Inject
+	private PersonInforExportAdapter psInfor;
 	@Override
 	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate) {
 		List<EmployeeApproveDto> lstEmps = new ArrayList<>();
-		EmployeeApproveDto emp = new EmployeeApproveDto();
-		emp.setPId("CEC90E5D-1910-4271-A1F5-2DC27B53E3E5");
-		emp.setSId("90000000-0000-0000-0000-000000000012");
-		emp.setSCd("000000000002");
-		emp.setPName("日通システム　ベトナム　１");
-		emp.setWpCode("C000000002");
-		emp.setPName("Webメニューの設定");
-		lstEmps.add(emp);
-		emp.setPId("CE82367D-929C-4872-A51C-12BE4426EA6C");
-		emp.setSId("90000000-0000-0000-0000-000000000016");
-		emp.setSCd("000000000001");
-		emp.setPName("日通システム　ベトナム　2");
-		emp.setWpCode("C000000003");
-		emp.setPName("Webメニューの設定１");
-		lstEmps.add(emp);
+		
+		for(int i = 0; i<15; i++) {
+			EmployeeApproveDto emp = new EmployeeApproveDto();
+			emp.setPId("CEC90E5D-1910-4271-A1F5-2DC27B53E3E5");
+			emp.setSId("90000000-0000-0000-0000-000000000012");
+			emp.setSCd("000000000002");
+			emp.setPName("日通システム　ベトナム　１ " + i);
+			emp.setWpCode("C000000002");
+			emp.setPName("Webメニューの設定");
+			lstEmps.add(emp);
+		}
+		
+//		emp.setPId("CE82367D-929C-4872-A51C-12BE4426EA6C");
+//		emp.setSId("90000000-0000-0000-0000-000000000016");
+//		emp.setSCd("000000000001");
+//		emp.setPName("日通システム　ベトナム　2");
+//		emp.setWpCode("C000000003");
+//		emp.setPName("Webメニューの設定１");
+//		lstEmps.add(emp);
 		//ドメインモデル「社員」を取得する(lấy dữ liệu domain「社員」)
 		// TODO thuc hien khi co tra loi QA
 		
@@ -97,7 +103,7 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 			
 			if(!CollectionUtil.isEmpty(appTypes)) {
 				empInfo.setAppType(appTypes);
-				// TODO can phai them thong tin worplace cho employee
+				empInfor.setPName(psInfor.personName(empInfor.getSId()));
 				empInfo.setEmpInfor(empInfor);
 				lstUnRegister.add(empInfo);
 			}
