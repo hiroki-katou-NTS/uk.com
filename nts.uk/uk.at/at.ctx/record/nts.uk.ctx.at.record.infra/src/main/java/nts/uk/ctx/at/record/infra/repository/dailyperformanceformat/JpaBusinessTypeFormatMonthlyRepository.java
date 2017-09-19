@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.record.infra.repository.dailyperformanceformat;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.ejb.Stateless;

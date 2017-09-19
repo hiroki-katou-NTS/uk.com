@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.app.find.outsideot.overtime.OvertimeFinder;
 /**
  * The Class CompanySettingWs.
  */
-@Path("ctx/at/shared/overtime")
+@Path("ctx/at/shared/outsideot/overtime")
 @Produces(MediaType.APPLICATION_JSON)
 public class OvertimeWs extends WebService {
 	

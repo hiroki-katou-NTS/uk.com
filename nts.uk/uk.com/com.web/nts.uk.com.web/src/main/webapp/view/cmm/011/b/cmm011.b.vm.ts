@@ -9,12 +9,14 @@ module nts.uk.com.view.cmm011.b {
             
             workplaceHistory: KnockoutObservable<WorkplaceHistoryModel>;
             startDate: KnockoutObservable<string>;
+            endDate: KnockoutObservable<string>;
             
             constructor() {
                 let self = this;
                 
                 self.workplaceHistory = ko.observable(new WorkplaceHistoryModel(self));
-                self.startDate = ko.observable(null);
+                self.startDate = ko.observable('');
+                self.endDate = ko.observable('');
                 self.workplaceHistory().selectedWpkHistory.subscribe(function(code) {
                     self.startDate(self.workplaceHistory().lstWpkHistory().filter(item => item.historyId == code)[0].startDate);
                 });
@@ -36,12 +38,13 @@ module nts.uk.com.view.cmm011.b {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 service.findLstWkpConfigHistory().done(function(data) {
-                    if (data) {
+                    if (data.wkpConfigHistory&& data.wkpConfigHistory.length>0) {
                         self.workplaceHistory().init(data.wkpConfigHistory);
                         self.workplaceHistory().screenMode(ScreenMode.SelectionMode);
                     }
                     else {
                         self.workplaceHistory().screenMode(ScreenMode.NewMode);
+                        self.endDate(nts.uk.resource.getText("CMM011_27"));
                     } 
                     dfd.resolve();
                 });
@@ -52,6 +55,23 @@ module nts.uk.com.view.cmm011.b {
              * execution
              */
             public execution() {
+                var self =this;
+                //check screen mode
+                //new mode
+                if (self.workplaceHistory().screenMode() == ScreenMode.NewMode) {
+                    var data = {
+                        wkpConfigHistory: {
+                            historyId: '',
+                            period: {
+                                startDate: new Date(self.startDate()),
+                                endDate: new Date("9999-12-31")//TODO reset default date
+                            }
+                        }
+                    }
+                    service.registerWkpConfig(data).done(function() {
+                        alert("ok");
+                    });
+                } 
                 nts.uk.ui.windows.close();
             }
             
@@ -99,6 +119,7 @@ module nts.uk.com.view.cmm011.b {
                     // list empty or null -> new mode
                     if (!newList || newList.length <= 0) {
                         self.screenMode(ScreenMode.NewMode);
+                        self.screenModel.endDate(nts.uk.resource.getText("CMM011_27"));
                     }
                 });
                 self.addBtnControl = ko.computed(function() {
@@ -124,7 +145,9 @@ module nts.uk.com.view.cmm011.b {
                     lstWpkHistory.push({ workplaceId: "", historyId: item.historyId, startDate: item.period.startDate, endDate: item.period.endDate });
                 });
                 self.lstWpkHistory(lstWpkHistory);
-                self.selectFirst();
+                if (data && data.length > 0) {
+                    self.selectFirst();
+                }
             }
             
             /**

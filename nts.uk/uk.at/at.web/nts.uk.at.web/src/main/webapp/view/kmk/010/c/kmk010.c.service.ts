@@ -6,9 +6,9 @@ module nts.uk.at.view.kmk010.c {
     
     export module service {
         var paths = {
-            findAllProductNumber : "ctx/at/shared/overtime/breakdown/findAll/productNumber",
-            saveAllOutsideOTBRDItem : "ctx/at/shared/overtime/breakdown/save",
-            saveAllOvertimeLanguageBRDItem : "ctx/at/shared/overtime/breakdown/language/saveAll"
+            findAllProductNumber : "ctx/at/shared/outsideot/breakdown/findAll/productNumber",
+            saveAllOutsideOTBRDItem : "ctx/at/shared/outsideot/breakdown/save",
+            saveAllOvertimeLanguageBRDItem : "ctx/at/shared/outsideot/breakdown/language/saveAll"
         }
         
          /**
@@ -21,8 +21,8 @@ module nts.uk.at.view.kmk010.c {
          /**
          * call service save all overtime breakdown item
          */
-        export function saveAllOutsideOTBRDItem(OutsideOTBRDItems: OutsideOTBRDItemDto[]): JQueryPromise<void> {
-            return nts.uk.request.ajax('at', paths.saveAllOutsideOTBRDItem, { OutsideOTBRDItems: OutsideOTBRDItems });
+        export function saveAllOutsideOTBRDItem(overtimeBRDItems: OutsideOTBRDItemDto[]): JQueryPromise<void> {
+            return nts.uk.request.ajax('at', paths.saveAllOutsideOTBRDItem, { overtimeBRDItems: overtimeBRDItems });
         }
         
         /**

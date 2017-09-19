@@ -48,6 +48,13 @@ public class BsymtWkpConfig extends UkJpaEntity implements Serializable {
     private GeneralDate endD;
 
 
+	/**
+	 * Instantiates a new bsymt wkp config.
+	 */
+	public BsymtWkpConfig() {
+		super();
+	}
+    
     /* (non-Javadoc)
      * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
      */

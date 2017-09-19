@@ -57,13 +57,16 @@ module nts.uk.at.view.kdl023.viewmodel {
          * Start page.
          */
         private startPage(): JQueryPromise<any> {
+            nts.uk.ui.block.invisible();
             let dfd = $.Deferred<any>();
             let self = this;
             baseService.findAllPattern().done(res => {
                 if (res) {
                     self.patternList(res);
                 }
-                self.loadWorktypeList().done(() => dfd.resolve());
+                self.loadWorktypeList()
+                    .done(() => dfd.resolve())
+                    .always(() => nts.uk.ui.block.clear());
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res);
             }).always(() => {

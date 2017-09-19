@@ -27,7 +27,7 @@ public interface EmployeeInfoPub {
 	 *
 	 */
 
-	List<EmployeeInfoDtoExport> getEmployeesAtWorkByBaseDate(String companyId , String baseDate);
+	List<EmployeeInfoDtoExport> getEmployeesAtWorkByBaseDate(String companyId , GeneralDate baseDate);
 	
 	
 

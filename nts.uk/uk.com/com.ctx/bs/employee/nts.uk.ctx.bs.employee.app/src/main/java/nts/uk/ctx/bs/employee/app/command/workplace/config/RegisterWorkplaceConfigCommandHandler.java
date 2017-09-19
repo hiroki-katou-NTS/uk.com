@@ -12,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.service.WkpConfigInfoService;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class RegisterWorkplaceConfigCommandHandler.
@@ -32,9 +33,9 @@ public class RegisterWorkplaceConfigCommandHandler extends CommandHandler<Regist
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<RegisterWorkplaceConfigCommand> context) {
+		String companyId = AppContexts.user().companyId();
 		RegisterWorkplaceConfigCommand command = context.getCommand();
-		WorkplaceConfig workplaceConfig = command.toDomain();
-		String companyId = workplaceConfig.getCompanyId();
+		WorkplaceConfig workplaceConfig = command.toDomain(companyId);
 		
 		//add workplace config
 		String historyId = workplaceConfigRepository.add(workplaceConfig);

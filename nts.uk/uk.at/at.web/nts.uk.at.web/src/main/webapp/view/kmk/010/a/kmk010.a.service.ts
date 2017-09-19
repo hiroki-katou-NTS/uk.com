@@ -1,4 +1,5 @@
 module nts.uk.at.view.kmk010.a {
+    
     export module service {
         var paths = {
             findAllOvertimeCalculationMethod: "ctx/at/shared/outsideot/setting/findAll/method",
@@ -9,8 +10,8 @@ module nts.uk.at.view.kmk010.a {
             findByIdSuperHD60HConMed: "ctx/at/shared/outsideot/holiday/findById",
             saveOutsideOTSetting: "ctx/at/shared/outsideot/setting/save",
             saveSuperHD60HConMed: "ctx/at/shared/outsideot/holiday/save",
-            findAllOvertimeNameLanguage: "ctx/at/shared/overtime/language/name/findAll",
-            findAllOvertime : "ctx/at/shared/overtime/findAll",
+            findAllOvertimeNameLanguage: "ctx/at/shared/outsideot/overtime/name/language/findAll",
+            findAllOvertime : "ctx/at/shared/outsideot/overtime/findAll",
             findAllOvertimeLanguageBRDItem : "ctx/at/shared/outsideot/breakdown/language/findAll",
             findAllOutsideOTBRDItem : "ctx/at/shared/outsideot/breakdown/findAll",
             findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems",
