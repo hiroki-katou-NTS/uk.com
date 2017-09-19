@@ -102,13 +102,13 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					root.getApprovalId(), root.getEmployeeId(),
 					"", 
 					root.getHistoryId(),
-					root.getApplicationType() == null ? null: root.getApplicationType().value,
+					root.getApplicationType() == null ? 0: root.getApplicationType().value,
 					root.getPeriod().getEndDate(), 
 					root.getPeriod().getEndDate(), 
 					root.getBranchId(), 
 					root.getAnyItemApplicationId(),
-					root.getConfirmationRootType() == null ? null: root.getConfirmationRootType().value,
-					root.getEmploymentRootAtr() == null ? null: root.getEmploymentRootAtr().value); 
+					root.getConfirmationRootType() == null ? 0: root.getConfirmationRootType().value,
+					root.getEmploymentRootAtr() == null ? 0: root.getEmploymentRootAtr().value); 
 			//Neu da co person roi
 			if(!mapPsRootInfor.isEmpty() && mapPsRootInfor.containsKey(root.getEmployeeId())) {
 				PersonApproverOutput psApp = mapPsRootInfor.get(root.getEmployeeId());
@@ -141,13 +141,13 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					"",
 					root.getWorkplaceId(), 
 					root.getHistoryId(),
-					root.getApplicationType() == null ? null:  root.getApplicationType().value,
+					root.getApplicationType() == null ? 0:  root.getApplicationType().value,
 					root.getPeriod().getEndDate(), 
 					root.getPeriod().getEndDate(), 
 					root.getBranchId(), 
 					root.getAnyItemApplicationId(),
-					root.getConfirmationRootType()  == null ? null:  root.getConfirmationRootType().value,
-					root.getEmploymentRootAtr() == null ? null: root.getEmploymentRootAtr().value);
+					root.getConfirmationRootType()  == null ? 0:  root.getConfirmationRootType().value,
+					root.getEmploymentRootAtr() == null ? 0: root.getEmploymentRootAtr().value);
 			//Neu da co workplace roi
 			if(!mapWpRootInfor.isEmpty() && mapWpRootInfor.containsKey(root.getWorkplaceId())) {
 				WorkplaceApproverOutput wpApp = mapWpRootInfor.get(root.getWorkplaceId());						
@@ -173,7 +173,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		if(root.getEmploymentRootAtr() == EmploymentRootAtr.COMMON.value) {
 			appName = rootCommon;
 		}else if(root.getEmploymentRootAtr() == EmploymentRootAtr.APPLICATION.value) {
-			appId = root.getApplicationType() + 1;
+			appId = root.getApplicationType();
 			appName = EnumAdaptor.valueOf(root.getApplicationType(), ApplicationType.class).nameId;
 		}
 		List<ApprovalRootMaster> lstAppInfo = new ArrayList<>();
@@ -237,7 +237,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	private CompanyApprovalInfor getComApprovalInfor(String companyID, GeneralDate baseDate) {
 		//CompanyApprovalInfor comMasterInfor = null;
 		//ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain 「会社別就業承認ルート」)
-		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDateOfCommon(companyID, baseDate);
+		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDate(companyID, baseDate);
 		Optional<CompanyInfor> comInfo = comAdapter.getCurrentCompany();
 		List<ApprovalForApplication> comApproverRoot =  new ArrayList<>();
 		
