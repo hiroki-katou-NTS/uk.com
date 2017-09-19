@@ -104,6 +104,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 if (codeChanged !== null && codeChanged !== undefined) {
                     self.changedCode(codeChanged);
                     self.isEnableCode(false);
+                    $("#code-text2").focus();
                     nts.uk.ui.errors.clearAll();
                 }
             });
@@ -174,13 +175,15 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         grantSingle: specialHolidayRes.grantSingle
                     };
                     self.items.push(new model.SpecialHolidayDto(specialHoliday));
+                    
                 });
+                $("#code-text2").focus();
                 dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
                 dfd.reject(error);
             });
-
+            $("#code-text2").focus();
             return dfd.promise();
         }
 
@@ -366,7 +369,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         changedCode(value) {
             var self = this;
             self.currentItem(self.findSpecialHoliday(value));
-
             if (self.currentItem() != null) {
                 var names = self.getNames(self.workTypeList(), self.currentItem().workTypeList());
                 self.workTypeNames(names);
@@ -383,7 +385,6 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 self.inp_grantMethod(result.grantMethod());
                 return result;
             }
-
             return new model.SpecialHolidayDto({});
         }
 
