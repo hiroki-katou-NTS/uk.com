@@ -64,12 +64,12 @@ module nts.uk.com.view.cdl003.a {
                 var self = this;
                  if(self.isMultiple()){
                     if(!self.selectedMulCode() || self.selectedMulCode().length == 0){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" })
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
                         return;    
                     }    
                 }else {
                      if(!self.selectedSelCode || !self.selectedSelCode()){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" })
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
                         return;    
                     }      
                 }

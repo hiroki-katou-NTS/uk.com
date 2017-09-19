@@ -60,12 +60,12 @@ module nts.uk.com.view.cdl008.a {
                 var self = this;
                 if(self.isMultiple){
                     if(!self.selectedMulWorkplace() || self.selectedMulWorkplace().length == 0){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" })
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
                         return;    
                     }    
                 }else {
                      if(!self.selectedSelWorkplace || !self.selectedSelWorkplace()){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" })
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
                         return;    
                     }      
                 }
