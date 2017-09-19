@@ -117,12 +117,13 @@ module nts.uk.at.view.kmk010.a {
         /**
          * export file excel outside overtime setting
          */
-        export function exportOutsideOTSettingExcel(): JQueryPromise<any> {
-            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcel + '/60');
+        export function exportOutsideOTSettingExcel(languageId: string): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcel, {languageId: languageId});
         }
         
         export module model {
 
+            
             export interface EnumConstantDto {
                 value: number;
                 fieldName: string;

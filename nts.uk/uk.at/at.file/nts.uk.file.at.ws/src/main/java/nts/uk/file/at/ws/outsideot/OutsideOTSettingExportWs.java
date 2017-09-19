@@ -7,13 +7,13 @@ package nts.uk.file.at.ws.outsideot;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.file.at.app.outsideot.OutsideOTSettingExportService;
+import nts.uk.file.at.app.outsideot.OutsideOTSettingQuery;
 
 /**
  * The Class OutsideOTSettingExportWs.
@@ -29,12 +29,12 @@ public class OutsideOTSettingExportWs extends WebService{
 	/**
 	 * Export excel.
 	 *
-	 * @param executeId the execute id
+	 * @param query the query
 	 * @return the export service result
 	 */
     @POST
-    @Path("excel/{executeId}")
-    public ExportServiceResult exportExcel(@PathParam("executeId") String executeId) {
-        return this.service.start(executeId);
+    @Path("excel")
+    public ExportServiceResult exportExcel(OutsideOTSettingQuery query) {
+        return this.service.start(query);
     }
 }

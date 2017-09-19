@@ -7,12 +7,10 @@ package nts.uk.file.at.app.outsideot;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * The Class OutsideOTSettingData.
- */
 @Getter
 @Setter
-public class OutsideOTSettingData {
+public class OutsideOTSettingQuery {
 
-	
+	/** The language id. */
+	private String languageId;
 }

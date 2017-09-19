@@ -208,9 +208,9 @@ module nts.uk.at.view.kmk010.a {
             /**
              * function on click button export file excel
              */
-            private exportFileExcelOutsideOTSetting(): void{
+            private exportFileExcelOutsideOTSetting(): void {
                 var self = this;
-                service.exportOutsideOTSettingExcel();    
+                service.exportOutsideOTSettingExcel(self.languageId);
             }
         }
         export class OvertimeModel {
@@ -464,6 +464,7 @@ module nts.uk.at.view.kmk010.a {
                 var dto: SuperHD60HConMedDto = {
                     roundingTime: this.roundingTime(),
                     rounding: this.rounding(),
+                    setting: true,
                     superHolidayOccurrenceUnit: this.superHolidayOccurrenceUnit(),
                     premiumExtra60HRates: premiumExtra60HRates
                 };

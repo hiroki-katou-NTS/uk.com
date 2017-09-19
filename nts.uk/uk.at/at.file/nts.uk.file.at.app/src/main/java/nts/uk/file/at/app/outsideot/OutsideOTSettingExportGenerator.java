@@ -5,6 +5,7 @@
 package nts.uk.file.at.app.outsideot;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.uk.file.at.app.outsideot.data.OutsideOTSettingData;
 
 /**
  * The Interface OutsideOTSettingExportGenerator.
