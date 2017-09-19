@@ -6,8 +6,6 @@ package nts.uk.ctx.at.record.app.find.optitem.calculation;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.optitem.calculation.RoundingGetMemento;
 import nts.uk.ctx.at.record.dom.optitem.calculation.RoundingSetMemento;
 import nts.uk.ctx.at.shared.dom.common.amountrounding.AmountRounding;
 import nts.uk.ctx.at.shared.dom.common.numberrounding.NumberRounding;
@@ -18,7 +16,7 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
  */
 @Getter
 @Setter
-public class RoundingDto implements RoundingGetMemento, RoundingSetMemento {
+public class RoundingDto implements RoundingSetMemento {
 
 	/** The number rounding. */
 	// 数値丸め
@@ -40,46 +38,6 @@ public class RoundingDto implements RoundingGetMemento, RoundingSetMemento {
 
 	/** The amount unit. */
 	private int amountUnit;
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.optitem.calculation.RoundingGetMemento#
-	 * getNumberRounding()
-	 */
-	@Override
-	public NumberRounding getNumberRounding() {
-		return new NumberRounding(
-				EnumAdaptor.valueOf(this.numberUnit, nts.uk.ctx.at.shared.dom.common.numberrounding.Unit.class),
-				EnumAdaptor.valueOf(this.numberRounding,
-						nts.uk.ctx.at.shared.dom.common.numberrounding.Rounding.class));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.optitem.calculation.RoundingGetMemento#
-	 * getTimeRoundingSetting()
-	 */
-	@Override
-	public TimeRoundingSetting getTimeRoundingSetting() {
-		return new TimeRoundingSetting(
-				EnumAdaptor.valueOf(this.numberUnit, nts.uk.ctx.at.shared.dom.common.timerounding.Unit.class),
-				EnumAdaptor.valueOf(this.numberUnit, nts.uk.ctx.at.shared.dom.common.timerounding.Rounding.class));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.optitem.calculation.RoundingGetMemento#
-	 * getAmountRounding()
-	 */
-	@Override
-	public AmountRounding getAmountRounding() {
-		return new AmountRounding(
-				EnumAdaptor.valueOf(this.numberUnit, nts.uk.ctx.at.shared.dom.common.amountrounding.Unit.class),
-				EnumAdaptor.valueOf(this.numberUnit, nts.uk.ctx.at.shared.dom.common.amountrounding.Rounding.class));
-	}
 
 	/*
 	 * (non-Javadoc)

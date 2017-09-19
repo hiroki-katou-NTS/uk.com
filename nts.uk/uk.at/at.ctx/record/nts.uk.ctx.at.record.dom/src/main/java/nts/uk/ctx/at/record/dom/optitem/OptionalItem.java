@@ -29,10 +29,6 @@ public class OptionalItem extends AggregateRoot {
 	// 任意項目名称
 	private OptionalItemName optionalItemName;
 
-	/** The optional item atr. */
-	// 属性
-	private OptionalItemAtr optionalItemAtr;
-
 	/** The usage atr. */
 	// 任意項目利用区分
 	private OptionalItemUsageAtr usageAtr;
@@ -44,6 +40,10 @@ public class OptionalItem extends AggregateRoot {
 	/** The performance atr. */
 	// 実績区分
 	private PerformanceAtr performanceAtr;
+
+	/** The optional item atr. */
+	// 属性
+	private OptionalItemAtr optionalItemAtr;
 
 	/** The calculation result range. */
 	// 計算結果の範囲

@@ -30,6 +30,14 @@ public class Formula extends AggregateRoot {
 	// 任意項目NO
 	private OptionalItemNo optionalItemNo;
 
+	/** The symbol. */
+	// 記号
+	private Symbol symbol;
+
+	/** The formula atr. */
+	// 属性
+	private FormulaAtr formulaAtr;
+
 	/** The formula name. */
 	// 計算式名称
 	private FormulaName formulaName;
@@ -37,14 +45,6 @@ public class Formula extends AggregateRoot {
 	/** The formula setting. */
 	// 計算式設定
 	private CalcFormulaSetting formulaSetting;
-
-	/** The formula atr. */
-	// 属性
-	private FormulaAtr formulaAtr;
-
-	/** The symbol. */
-	// 記号
-	private Symbol symbol;
 
 	// ===================== Optional ======================= //
 	/** The monthly rounding. */

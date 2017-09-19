@@ -2,11 +2,12 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.app.find.optitem.calculation;
+package nts.uk.ctx.at.record.app.command.optitem.calculation;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.optitem.calculation.CalcFormulaSettingSetMemento;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.optitem.calculation.CalcFormulaSettingGetMemento;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalculationAtr;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSetting;
 import nts.uk.ctx.at.record.dom.optitem.calculation.ItemSelection;
@@ -16,7 +17,7 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.ItemSelection;
  */
 @Setter
 @Getter
-public class CalcFormulaSettingDto implements CalcFormulaSettingSetMemento {
+public class CalcFormulaSettingDto implements CalcFormulaSettingGetMemento {
 
 	/** The calculation atr. */
 	// 計算区分
@@ -32,32 +33,32 @@ public class CalcFormulaSettingDto implements CalcFormulaSettingSetMemento {
 	private ItemSelectionDto itemSelection;
 
 	/**
-	 * Sets the calculation atr.
+	 * Gets the calculation atr.
 	 *
-	 * @param calcAtr the new calculation atr
+	 * @return the calculation atr
 	 */
 	@Override
-	public void setCalculationAtr(CalculationAtr calcAtr) {
-		this.calcAtr = calcAtr.value;
+	public CalculationAtr getCalculationAtr() {
+		return EnumAdaptor.valueOf(this.calcAtr, CalculationAtr.class);
 	}
 
 	/**
-	 * Sets the formula setting.
+	 * Gets the formula setting.
 	 *
-	 * @param setting the new formula setting
+	 * @return the formula setting
 	 */
 	@Override
-	public void setFormulaSetting(FormulaSetting setting) {
-		setting.saveToMemento(this.formulaSetting);
+	public FormulaSetting getFormulaSetting() {
+		return new FormulaSetting(this.formulaSetting);
 	}
 
 	/**
-	 * Sets the item selection.
+	 * Gets the item selection.
 	 *
-	 * @param selection the new item selection
+	 * @return the item selection
 	 */
 	@Override
-	public void setItemSelection(ItemSelection selection) {
-		selection.saveToMemento(this.itemSelection);
+	public ItemSelection getItemSelection() {
+		return new ItemSelection(this.itemSelection);
 	}
 }

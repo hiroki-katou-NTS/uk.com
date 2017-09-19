@@ -7,7 +7,6 @@ package nts.uk.ctx.at.record.app.command.optitem;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.app.find.optitem.CalcResultRangeDto;
 import nts.uk.ctx.at.record.dom.optitem.CalcResultRange;
 import nts.uk.ctx.at.record.dom.optitem.EmpConditionAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
@@ -40,19 +39,19 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 
 	/** The usage classification. */
 	// 任意項目利用区分
-	private int usageClassification;
+	private int usageAtr;
 
 	/** The emp condition classification. */
 	// 雇用条件区分
-	private int empConditionClassification;
+	private int empConditionAtr;
 
 	/** The performance classification. */
 	// 実績区分
-	private int performanceClassification;
+	private int performanceAtr;
 
 	/** The calculation result range. */
 	// 計算結果の範囲
-	private CalcResultRangeDto calculationResultRange;
+	private CalcResultRangeDto calcResultRange;
 
 	/*
 	 * (non-Javadoc)
@@ -106,7 +105,7 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 	 */
 	@Override
 	public OptionalItemUsageAtr getOptionalItemUsageAtr() {
-		return EnumAdaptor.valueOf(this.usageClassification, OptionalItemUsageAtr.class);
+		return EnumAdaptor.valueOf(this.usageAtr, OptionalItemUsageAtr.class);
 	}
 
 	/*
@@ -117,7 +116,7 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 	 */
 	@Override
 	public EmpConditionAtr getEmpConditionAtr() {
-		return EnumAdaptor.valueOf(this.empConditionClassification, EmpConditionAtr.class);
+		return EnumAdaptor.valueOf(this.empConditionAtr, EmpConditionAtr.class);
 	}
 
 	/*
@@ -128,7 +127,7 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 	 */
 	@Override
 	public PerformanceAtr getPerformanceAtr() {
-		return EnumAdaptor.valueOf(this.performanceClassification, PerformanceAtr.class);
+		return EnumAdaptor.valueOf(this.performanceAtr, PerformanceAtr.class);
 	}
 
 	/*
@@ -139,6 +138,6 @@ public class OptionalItemSaveCommand implements OptionalItemGetMemento {
 	 */
 	@Override
 	public CalcResultRange getCalculationResultRange() {
-		return new CalcResultRange(this.calculationResultRange);
+		return new CalcResultRange(this.calcResultRange);
 	}
 }

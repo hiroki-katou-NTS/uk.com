@@ -2,14 +2,15 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.app.find.optitem.calculation;
+package nts.uk.ctx.at.record.app.command.optitem.calculation;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.dom.optitem.calculation.ItemSelectionSetMemento;
+import nts.arc.enums.EnumAdaptor;
+import nts.uk.ctx.at.record.dom.optitem.calculation.ItemSelectionGetMemento;
 import nts.uk.ctx.at.record.dom.optitem.calculation.MinusSegment;
 import nts.uk.ctx.at.record.dom.optitem.calculation.SelectedAttendanceItem;
 
@@ -18,7 +19,7 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.SelectedAttendanceItem;
  */
 @Getter
 @Setter
-public class ItemSelectionDto implements ItemSelectionSetMemento {
+public class ItemSelectionDto implements ItemSelectionGetMemento {
 
 	/** The minus segment. */
 	// マイナス区分
@@ -32,29 +33,24 @@ public class ItemSelectionDto implements ItemSelectionSetMemento {
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * nts.uk.ctx.at.record.dom.optitem.calculation.ItemSelectionSetMemento#
-	 * setMinusSegment(nts.uk.ctx.at.record.dom.optitem.calculation.
-	 * MinusSegment)
+	 * nts.uk.ctx.at.record.dom.optitem.calculation.ItemSelectionGetMemento#
+	 * getMinusSegment()
 	 */
 	@Override
-	public void setMinusSegment(MinusSegment segment) {
-		this.minusSegment = segment.value;
+	public MinusSegment getMinusSegment() {
+		return EnumAdaptor.valueOf(this.minusSegment, MinusSegment.class);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * nts.uk.ctx.at.record.dom.optitem.calculation.ItemSelectionSetMemento#
-	 * setListSelectedAttendanceItem(java.util.List)
+	 * nts.uk.ctx.at.record.dom.optitem.calculation.ItemSelectionGetMemento#
+	 * getListSelectedAttendanceItem()
 	 */
 	@Override
-	public void setListSelectedAttendanceItem(List<SelectedAttendanceItem> items) {
-		items.stream().map(item -> {
-			SelectedAttendanceItemDto dto = new SelectedAttendanceItemDto();
-			item.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
-
+	public List<SelectedAttendanceItem> getListSelectedAttendanceItem() {
+		return this.attendanceItems.stream().map(item -> new SelectedAttendanceItem(item))
+				.collect(Collectors.toList());
 	}
 }

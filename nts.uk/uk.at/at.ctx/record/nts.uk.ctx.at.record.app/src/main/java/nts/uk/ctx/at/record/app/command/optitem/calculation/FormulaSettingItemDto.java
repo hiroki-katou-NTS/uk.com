@@ -2,14 +2,15 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.record.app.find.optitem.calculation;
+package nts.uk.ctx.at.record.app.command.optitem.calculation;
 
 import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingItemSetMemento;
+import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingItemGetMemento;
 import nts.uk.ctx.at.record.dom.optitem.calculation.InputValue;
 import nts.uk.ctx.at.record.dom.optitem.calculation.SettingItemOrder;
 import nts.uk.ctx.at.record.dom.optitem.calculation.SettingMethod;
@@ -19,7 +20,7 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.SettingMethod;
  */
 @Getter
 @Setter
-public class FormulaSettingItemDto implements FormulaSettingItemSetMemento {
+public class FormulaSettingItemDto implements FormulaSettingItemGetMemento {
 
 	/** The setting method. */
 	// 設定方法
@@ -40,43 +41,43 @@ public class FormulaSettingItemDto implements FormulaSettingItemSetMemento {
 	private String formulaItemId;
 
 	/**
-	 * Sets the setting method.
+	 * Gets the setting method.
 	 *
-	 * @param method the new setting method
+	 * @return the setting method
 	 */
 	@Override
-	public void setSettingMethod(SettingMethod method) {
-		this.settingMethod = method.value;
+	public SettingMethod getSettingMethod() {
+		return EnumAdaptor.valueOf(this.settingMethod, SettingMethod.class);
 	}
 
 	/**
-	 * Sets the setting item order.
+	 * Gets the setting item order.
 	 *
-	 * @param order the new setting item order
+	 * @return the setting item order
 	 */
 	@Override
-	public void setSettingItemOrder(SettingItemOrder order) {
-		this.dispOrder = order.value;
+	public SettingItemOrder getSettingItemOrder() {
+		return EnumAdaptor.valueOf(this.dispOrder, SettingItemOrder.class);
 	}
 
 	/**
-	 * Sets the input value.
+	 * Gets the input value.
 	 *
-	 * @param value the new input value
+	 * @return the input value
 	 */
 	@Override
-	public void setInputValue(InputValue value) {
-		this.inputValue = value.v();
+	public InputValue getInputValue() {
+		return new InputValue(this.inputValue);
 	}
 
 	/**
-	 * Sets the formula id.
+	 * Gets the formula id.
 	 *
-	 * @param id the new formula id
+	 * @return the formula id
 	 */
 	@Override
-	public void setFormulaId(FormulaId id) {
-		this.formulaItemId = id.v();
+	public FormulaId getFormulaId() {
+		return new FormulaId(this.formulaItemId);
 	}
 
 }
