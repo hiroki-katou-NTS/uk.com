@@ -34,7 +34,9 @@ module kcp009.viewmodel {
             self.isDisplay = ko.observable(true);
             self.isShowEmpList = ko.observable(false);
             self.keySearch.subscribe((res) => {
-                self.searchEmp();
+                if (res) {
+                    self.searchEmp();
+                }
             });
         }
 
@@ -67,11 +69,8 @@ module kcp009.viewmodel {
                 if (currentItem) {
                     self.empDisplayCode(currentItem.code);
                     self.empBusinessName(currentItem.businessName);
-                    if (data.systemReference == SystemType.EMPLOYMENT) {
-                        self.organizationName(currentItem.workplaceName);
-                    } else {
-                        self.organizationName(currentItem.depName);
-                    }
+                    self.organizationName((data.systemReference == SystemType.EMPLOYMENT) ? 
+                    currentItem.workplaceName : currentItem.depName);
                 }
             }
             self.targetBtnText = data.targetBtnText;
@@ -80,23 +79,14 @@ module kcp009.viewmodel {
                 if (data.systemReference == SystemType.EMPLOYMENT) {
                     // Set Organization Designation if System Reference is Employment
                     self.organizationDesignation(nts.uk.resource.getText("Com_Workplace"));
-
                     // Set Organization name
-                    if (data.employeeInputList().length > 0) {
-                        self.organizationName(data.employeeInputList()[0].workplaceName);
-                    } else {
-                        self.organizationName(null);
-                    }
+                    self.organizationName((data.employeeInputList().length > 0) ? data.employeeInputList()[0].workplaceName : null);
                 } else {
                     // Set Organization Designation if System Reference is others
                     self.organizationDesignation(nts.uk.resource.getText("Com_Department"));
 
                     // Set Organization name
-                    if (data.employeeInputList().length > 0) {
-                        self.organizationName(data.employeeInputList()[0].depName);
-                    } else {
-                        self.organizationName(null);
-                    }
+                    self.organizationName((data.employeeInputList().length > 0) ? data.employeeInputList()[0].depName : null);
                 }
             } else {
                 self.organizationDesignation(null);
@@ -112,17 +102,14 @@ module kcp009.viewmodel {
                     if (currentItem) {
                         self.empDisplayCode(currentItem.code);
                         self.empBusinessName(currentItem.businessName);
-                        if (data.systemReference == SystemType.EMPLOYMENT) {
-                            self.organizationName(currentItem.workplaceName);
-                        } else {
-                            self.organizationName(currentItem.depName);
-                        }
+                        // Set OrganizationName
+                        self.organizationName((data.systemReference == SystemType.EMPLOYMENT) ? 
+                        currentItem.workplaceName: currentItem.depName);
                     }
                 } else {
                     self.empDisplayCode("");
                     self.empBusinessName("");
                     self.organizationName("");
-                    //                    self.selectedOrdinalNumber(0);
                 }
             });
             // Selected OrdinalNumber
@@ -206,6 +193,7 @@ module kcp009.viewmodel {
             let self = this;
             let dfd = $.Deferred<void>();
             //Acquire Employee from key
+            
             // System
             let system: string;
             switch (self.systemType) {
@@ -236,8 +224,6 @@ module kcp009.viewmodel {
                     let newEmpList: Array<EmployeeModel> = [];
                     newEmpList.push({ id: employee.employeeId, code: employee.employeeCode, businessName: employee.businessName });
                     self.empList(newEmpList);
-//                    dfd.resolve();
-//                    return;
                 }
                 self.selectedItem(employee.employeeId);
                 self.empDisplayCode(employee.employeeCode);
@@ -263,7 +249,7 @@ module kcp009.viewmodel {
             self.selectedItem(nextId);
         }
 
-        // Method to Next Employee
+        // Next Employee
         private nextEmp(): void {
             var self = this;
             var currentItem = self.empList().filter((item) => {
