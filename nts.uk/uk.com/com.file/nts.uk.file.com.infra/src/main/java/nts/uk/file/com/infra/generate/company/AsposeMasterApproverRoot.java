@@ -127,8 +127,6 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 					hPageBreaks.add("N" + firstRow);
 					VerticalPageBreakCollection vPageBreaks = worksheet.getVerticalPageBreaks();
 					vPageBreaks.add("N" + firstRow);
-
-					firstRow = firstRow + 1;
 				} else {
 
 					// print App name
@@ -147,27 +145,81 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 				int sizeOfApp = this.findMax(lstApproval.get(i));
 
-				/**
-				 * print App info
-				 */
+				int numberOfPage = (firstRow + sizeOfApp) / 52;
 
-				// print App name
-				cells.merge(firstRow, 1, sizeOfApp, 1, true);
-				Cell nameApp = cells.get(firstRow, COLUMN_INDEX[1]);
-				nameApp.setValue(lstApproval.get(i).getAppTypeName());
+				int numberOfRowMerge = (52 * numberOfPage) - firstRow;
+				// print phase Name 1 mergered
+				if (numberOfRowMerge > 0) {
+					/**
+					 * print App info
+					 */
 
-				// print start Date, end Date
-				cells.merge(firstRow, 2, sizeOfApp, 1, true);
-				Cell time = cells.get(firstRow, COLUMN_INDEX[2]);
-				time.setValue(lstApproval.get(i).getStartDate() + "～" + lstApproval.get(i).getEndDate());
+					// print App name
+					cells.merge(firstRow, 1, numberOfRowMerge, 1, true);
+					Cell nameApp = cells.get(firstRow, COLUMN_INDEX[1]);
+					nameApp.setValue(lstApproval.get(i).getAppTypeName());
 
-				// set style
-				for (int k = 0; k < sizeOfApp; k++) {
-					Cell sName = cells.get(firstRow + k, COLUMN_INDEX[1]);
-					setTitleStyle(sName);
+					// print start Date, end Date
+					cells.merge(firstRow, 2, numberOfRowMerge, 1, true);
+					Cell time = cells.get(firstRow, COLUMN_INDEX[2]);
+					time.setValue(lstApproval.get(i).getStartDate() + "～" + lstApproval.get(i).getEndDate());
 
-					Cell sTime = cells.get(firstRow + k, COLUMN_INDEX[2]);
-					setTitleStyle(sTime);
+					// set style
+					for (int k = 0; k < numberOfRowMerge; k++) {
+						Cell sName = cells.get(firstRow + k, COLUMN_INDEX[1]);
+						setTitleStyle(sName);
+
+						Cell sTime = cells.get(firstRow + k, COLUMN_INDEX[2]);
+						setTitleStyle(sTime);
+					}
+					
+					int oldRow = firstRow;
+					oldRow = oldRow + numberOfRowMerge + 1;
+					
+					// print App name
+					cells.merge(oldRow, 1, sizeOfApp - numberOfRowMerge, 1, true);
+					Cell nameAppMeger = cells.get(firstRow, COLUMN_INDEX[1]);
+					nameAppMeger.setValue(lstApproval.get(i).getAppTypeName());
+
+					// print start Date, end Date
+					cells.merge(oldRow, 2, sizeOfApp - numberOfRowMerge, 1, true);
+					Cell timeMerger = cells.get(firstRow, COLUMN_INDEX[2]);
+					timeMerger.setValue(lstApproval.get(i).getStartDate() + "～" + lstApproval.get(i).getEndDate());
+
+					// set style
+					for (int k = 0; k < sizeOfApp - numberOfRowMerge; k++) {
+						Cell sName = cells.get(oldRow + k, COLUMN_INDEX[1]);
+						setTitleStyle(sName);
+
+						Cell sTime = cells.get(oldRow + k, COLUMN_INDEX[2]);
+						setTitleStyle(sTime);
+					}
+
+				} else {
+
+					/**
+					 * print App info
+					 */
+
+					// print App name
+					cells.merge(firstRow, 1, sizeOfApp, 1, true);
+					Cell nameApp = cells.get(firstRow, COLUMN_INDEX[1]);
+					nameApp.setValue(lstApproval.get(i).getAppTypeName());
+
+					// print start Date, end Date
+					cells.merge(firstRow, 2, sizeOfApp, 1, true);
+					Cell time = cells.get(firstRow, COLUMN_INDEX[2]);
+					time.setValue(lstApproval.get(i).getStartDate() + "～" + lstApproval.get(i).getEndDate());
+
+					// set style
+					for (int k = 0; k < sizeOfApp; k++) {
+						Cell sName = cells.get(firstRow + k, COLUMN_INDEX[1]);
+						setTitleStyle(sName);
+
+						Cell sTime = cells.get(firstRow + k, COLUMN_INDEX[2]);
+						setTitleStyle(sTime);
+					}
+
 				}
 
 				// print each Phase info
@@ -220,7 +272,21 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 					setTitleStyle(sPName);
 				}
 
+				for (int index = 1; index < 13; index++) {
+					Cell oddCell = cells.get((firstRow + numberOfRowMerge), COLUMN_INDEX[index]);
+					setTitleStyle(oddCell);
+				}
+
 				oldRow = oldRow + numberOfRowMerge + 1;
+
+				// ngat trang
+				if (j == 4) {
+					HorizontalPageBreakCollection hPageBreaks = worksheet.getHorizontalPageBreaks();
+					hPageBreaks.add("N" + (firstRow + numberOfRowMerge + 1));
+					VerticalPageBreakCollection vPageBreaks = worksheet.getVerticalPageBreaks();
+					vPageBreaks.add("N" + (firstRow + numberOfRowMerge + 1));
+				}
+
 				// in ra sô dòng còn lại
 				// in ra name của phase
 				cells.merge(oldRow, indexCol, sizeOfApp - numberOfRowMerge, 1, true);
@@ -297,11 +363,11 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				}
 
 			}
-			if(j == 4) {
+			if (j == 4) {
 				firstRow = firstRow + sizeOfApp;
 			}
 			j = j + 1;
-			
+
 		} else if (numberOfPhase <= j && j <= 5) {
 
 			cells.merge(firstRow, indexCol, sizeOfApp, 1, true);
@@ -317,8 +383,8 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				Cell sPName = cells.get(firstRow + em, COLUMN_INDEX[indexCol + 1]);
 				setTitleStyle(sPName);
 			}
-			
-			if(j == 4) {
+
+			if (j == 4) {
 				firstRow = firstRow + sizeOfApp;
 			}
 			j = j + 1;

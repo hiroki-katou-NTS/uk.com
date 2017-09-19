@@ -266,7 +266,7 @@ public class MasterApproverRootRepositoryImpl implements MasterApproverRootRepos
 			}
 		}
 
-		for (int i = 10; i < 20; i++) {
+		for (int i = 0; i < 5; i++) {
 			comApproverRoot.add(approvalForApplication);
 		}
 
@@ -282,14 +282,17 @@ public class MasterApproverRootRepositoryImpl implements MasterApproverRootRepos
 				}
 			}
 			// thong tin các application da duoc set approver
-			for (int i = 0; i < 1000; i++) {
+			for (int i = 0; i < 5; i++) {
 				comApproverRoot.add(approvalForApplication);
 			}
 
 		}
 
 		List<ApprovalForApplication> a = new ArrayList<>();
+		for(int i = 0; i < 5 ; i++) {
 		a.addAll(comApproverRoot);
+		}
+		
 		Collections.sort(a, Comparator.comparing(ApprovalForApplication::getAppType));
 		CompanyApprovalInfor comMasterInfor = new CompanyApprovalInfor(comInfo, a);
 
