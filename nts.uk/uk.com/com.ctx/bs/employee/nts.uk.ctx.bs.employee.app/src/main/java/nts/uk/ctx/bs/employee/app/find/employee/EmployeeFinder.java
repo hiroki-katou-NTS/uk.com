@@ -86,7 +86,16 @@ public class EmployeeFinder {
 	 * @param startLetter
 	 * @return
 	 */
-	public String getGenerateEmplCode(String startLetter){
-		return employeeBusiness.generateEmplCode(startLetter);
+	public String getGenerateEmplCode(String startLetters){
+		return employeeBusiness.generateEmplCode(startLetters);
+	}
+	
+	/**
+	 * get generate card no
+	 * @param startLetter
+	 * @return
+	 */
+	public String getGenerateCardNo(String startLetters){
+		return employeeBusiness.generateCardNo(startLetters);
 	}
 }
