@@ -50,4 +50,8 @@ public interface PerInfoItemDefRepositoty {
 			String contractCd);
 
 	// Sonnlb Code
+	
+	//vinhpx start
+	int countPerInfoItemDefInCategory(String perInfoCategoryId, String contractCd);
+	//vinhpx end
 }

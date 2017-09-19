@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentFindDto;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -43,10 +44,10 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 		List<Employment> empList = this.repository.findAll(companyId);
 
 		// Save to Memento
-		return empList.stream().map(empoyment -> {
+		return empList.stream().map(employment -> {
 			EmploymentDto dto = new EmploymentDto();
-			dto.setCode(empoyment.getEmploymentCode().v());
-			dto.setName(empoyment.getEmploymentName().v());
+			dto.setCode(employment.getEmploymentCode().v());
+			dto.setName(employment.getEmploymentName().v());
 			return dto;
 		}).collect(Collectors.toList());
 	}
@@ -57,15 +58,17 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 	 * @see nts.uk.shr.find.employment.EmploymentFinder#findByCode(java.lang.String)
 	 */
 	@Override
-	public EmploymentDto findByCode(String employmentCode) {
+	public EmploymentFindDto findByCode(String employmentCode) {
 		String companyId = AppContexts.user().companyId();
-		EmploymentDto dto = new EmploymentDto();
+		EmploymentFindDto dto = new EmploymentFindDto();
 		Optional<Employment> employment = this.repository.findEmployment(companyId, employmentCode);
 		if (!employment.isPresent()) {
 			return null;
 		}
 		dto.setCode(employmentCode);
-		dto.setName(employment.get().toString());
+		dto.setName(employment.get().getEmploymentName().v());
+		dto.setEmpExternalCode(employment.get().getEmpExternalCode());
+		dto.setMemo(employment.get().getMemo());
 		return dto;
 	}
 }

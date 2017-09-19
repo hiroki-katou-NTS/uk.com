@@ -5,7 +5,7 @@ import nts.arc.layer.dom.AggregateRoot;
 public class EmployeeCardNumber extends AggregateRoot{
 	
 	/** The cardNumberId */
-	private String cardNumberId;
+	private CardNumberId cardNumberId;
 	
 	
 	/** The employeeId */

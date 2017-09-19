@@ -47,6 +47,12 @@ public class PerInfoCtgWebservice extends WebService {
 	public PerInfoCtgWithItemsNameDto getPerInfoCtgWithItemsName(@PathParam("Id") String id) {
 		return perInfoCtgFinder.getPerInfoCtgWithItemsName(id);
 	}
+	
+	@POST
+	@Path("find/perInfoCtgHasItems")
+	public List<PerInfoCtgFullDto> getPerInfoCtgHasItems(){
+		return perInfoCtgFinder.getAllPerInfoCategoryWithCondition();
+	}
 
 	@POST
 	@Path("findby/company")

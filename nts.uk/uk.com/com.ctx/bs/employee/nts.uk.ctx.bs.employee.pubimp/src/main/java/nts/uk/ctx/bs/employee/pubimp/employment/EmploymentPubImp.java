@@ -13,10 +13,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.employment.Employment;
-import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistoryRepository;
+import nts.uk.ctx.bs.employee.dom.employment_old.Employment;
+import nts.uk.ctx.bs.employee.dom.employment_old.EmploymentRepository;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 
 /**

@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.service.EmployeeBusiness;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -25,6 +26,9 @@ public class EmployeeFinder {
 	/** The employee repository. */
 	@Inject
 	private EmployeeRepository employeeRepository;
+	
+	@Inject 
+	private EmployeeBusiness employeeBusiness;
 	
 	/**
 	 * Gets the person id by employee code.
@@ -77,5 +81,21 @@ public class EmployeeFinder {
 				.map(item -> EmployeeDto.fromDomain(item)).collect(Collectors.toList());
 	}
 	
+	/**
+	 * get generate employee code
+	 * @param startLetter
+	 * @return
+	 */
+	public String getGenerateEmplCode(String startLetters){
+		return employeeBusiness.generateEmplCode(startLetters);
+	}
 	
+	/**
+	 * get generate card no
+	 * @param startLetter
+	 * @return
+	 */
+	public String getGenerateCardNo(String startLetters){
+		return employeeBusiness.generateCardNo(startLetters);
+	}
 }

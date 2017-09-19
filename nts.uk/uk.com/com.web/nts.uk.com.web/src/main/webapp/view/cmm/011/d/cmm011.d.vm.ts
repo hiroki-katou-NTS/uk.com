@@ -1,20 +1,18 @@
 module nts.uk.com.view.cmm011.d {
     export module viewmodel {
         
-        import WorkplaceHistory = base.WorkplaceHistoryAbstract;
-        import IHistory = nts.uk.com.view.cmm011.base.IHistory;
-        
         export class ScreenModel {
             
-            workplaceHistory: KnockoutObservable<WorkplaceHistoryModel>;
             startDate: KnockoutObservable<string>;
             
             constructor() {
                 let self = this;
-                self.workplaceHistory = ko.observable(new WorkplaceHistoryModel());
                 self.startDate = ko.observable(null);
             }
             
+            /**
+             * startPage
+             */
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
@@ -24,6 +22,9 @@ module nts.uk.com.view.cmm011.d {
                 return dfd.promise();
             }
             
+            /**
+             * execution
+             */
             public execution() {
                 let self = this;
                 
@@ -45,9 +46,13 @@ module nts.uk.com.view.cmm011.d {
                 nts.uk.ui.windows.close();
             }
             
+            /**
+             * validate
+             */
             private validate(): boolean {
                 let self = this;
                 
+                // clear all error
                 self.clearError();
                 
                 $('#start-date').ntsEditor('validate');
@@ -58,25 +63,27 @@ module nts.uk.com.view.cmm011.d {
                 return true;
             }
             
+            /**
+             * clearError
+             */
             private clearError() {
                 $('#start-date').ntsError('clear');
             }
             
+            /**
+             * close
+             */
             public close() {
                 nts.uk.ui.windows.close();
             }
             
-            public showMessageError(res: any) {
+            /**
+             * showMessageError
+             */
+            private showMessageError(res: any) {
                 if (res.businessException) {
                     nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
                 }
-            }
-        }
-        
-        class WorkplaceHistoryModel extends WorkplaceHistory {
-            
-            constructor() {
-                super();
             }
         }
     }

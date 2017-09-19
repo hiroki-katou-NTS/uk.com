@@ -19,7 +19,7 @@
 }
 
 #wkp_text {
-	width: 100px;
+	width: 120px;
 }
 
 .caret-inline:after {
@@ -29,17 +29,33 @@
 table#employ_view {
 	border-left: none !important;
 	border-right: none !important;
+	margin: 10px;
 }
 
 .none_border {
 	border-left: none;
 	border-right: none;
+	border-top: solid #ccc 1px;
+	border-bottom: solid #ccc 1px; 
 }
 
 .border-left {
 	border-right: none;
+	border-left: solid #ccc 1px;
+	border-top: solid #ccc 1px;
+	border-bottom: solid #ccc 1px; 
 }
 
 .border-right {
 	border-left: none;
+	border-right: solid #ccc 1px;
+	border-top: solid #ccc 1px;
+	border-bottom: solid #ccc 1px; 
+}
+td.employment-tdpad{
+	padding: 3px 5px 3px 5px;
+}
+.over_text{
+	overflow: auto;
+	height: 20px;
 }

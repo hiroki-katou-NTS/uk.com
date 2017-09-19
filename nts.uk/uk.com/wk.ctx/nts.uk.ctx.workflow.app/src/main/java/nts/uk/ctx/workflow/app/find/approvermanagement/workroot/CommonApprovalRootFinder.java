@@ -37,23 +37,58 @@ public class CommonApprovalRootFinder {
 	@Inject
 	private ApproverRepository repoApprover;
 	
-	public CommonApprovalRootDto getAllCommonApprovalRoot(ParamDto param){
-		return getAllDataApprovalRoot(param);
+	public DataFullDto getAllCommonApprovalRoot(ParamDto param){
+		CommonApprovalRootDto a = getAllDataApprovalRoot(param);
+		//TH: company - domain 会社別就業承認ルート
+		if(param.getRootType() == 0){
+			List<CompanyAppRootDto> lstCompanyRoot = a.getLstCompanyRoot();
+			ObjGrouping result = this.groupingMapping(a.getLstCompanyRoot());
+			List<ObjectDate> b = result.getLstkk();
+			List<ObjDate> lstTrung = result.getLstApprovalId();
+			List<DataDisplayComDto> kq = new ArrayList<>();
+			int index = 0;
+			for (ObjectDate objDate : b) {
+				List<CompanyAppRootDto> lstItem = new ArrayList<>();
+				ObjDate it = new ObjDate(objDate.getStartDate(), objDate.getEndDate());
+				if(lstTrung.contains(it)){// duoc gop
+					for (CompanyAppRootDto com : lstCompanyRoot) {
+						if(com.getCompany().getStartDate().compareTo(objDate.getStartDate())==0 && com.getCompany().getEndDate().compareTo(objDate.getEndDate())==0){
+							lstItem.add(com);
+						}
+					}
+				}else{//khong duoc gop
+					for (CompanyAppRootDto com : lstCompanyRoot) {
+						if(com.getCompany().getApprovalId().compareTo(objDate.getAprovalId())==0){
+							lstItem.add(com);
+						}
+					}
+				}
+				kq.add(new DataDisplayComDto(index,a.getCompanyName(), lstItem));
+				index++;
+			}
+			return new DataFullDto(kq, null, null);
+		}
+		//TH: workplace - domain 職場別就業承認ルート
+		if(param.getRootType() == 1){
+			return new DataFullDto(null, null, null);
+		}
+		//TH: person - domain 個人別就業承認ルート
+		else{
+			return new DataFullDto(null, null, null);
+		}
+		
+
 	}
 	public CommonApprovalRootDto getPrivate(ParamDto param){
-//		CommonApprovalRootDto root = getAllDataApprovalRoot(param);
-//		//TH: company - domain 会社別就業承認ルート
-//		if(param.getRootType()==0){
-//			
-//		}
 		return getAllDataApprovalRoot(param);
 	}
 	private CommonApprovalRootDto getAllDataApprovalRoot(ParamDto param){
 		//user contexts
 		String companyId = AppContexts.user().companyId();
 		//get name company
-		Optional<CompanyInfor> companyCurrent = comAdapter.getCurrentCompany();
-		String companyName = companyCurrent == null ? "" : companyCurrent.get().getCompanyName();
+//		Optional<CompanyInfor> companyCurrent = comAdapter.getCurrentCompany();
+//		String companyName = companyCurrent == null ? "" : companyCurrent.get().getCompanyName();
+		String companyName = "KAkashi";
 		//TH: company - domain 会社別就業承認ルート
 		if(param.getRootType() == 0){
 			List<CompanyAppRootDto> lstComRoot = new ArrayList<>();
@@ -80,16 +115,11 @@ public class CommonApprovalRootFinder {
 				//add in lstAppRoot
 				lstComRoot.add(new CompanyAppRootDto(companyApprovalRoot,lstApprovalPhase));
 			}
-			List<ObjDate> result = this.groupingMapping(lstComRoot);
-			if(result.isEmpty()){
-				return null;
-			}
-			return new CommonApprovalRootDto(companyName,lstComRoot, null, null,result);
+			return new CommonApprovalRootDto(companyName,lstComRoot, null, null);
 		}
 		//TH: workplace - domain 職場別就業承認ルート
 		if(param.getRootType() == 1){
 			List<WorkPlaceAppRootDto> lstWpRoot = new ArrayList<>();
-			List<ObjDate> result = new ArrayList<>();
 			//get all data from WorkplaceApprovalRoot (職場別就業承認ルート)
 			List<WpApprovalRootDto> lstWp = this.repoWorkplace.getAllWpApprovalRoot(companyId, param.getWorkplaceId())
 					.stream()
@@ -113,12 +143,11 @@ public class CommonApprovalRootFinder {
 				//add in lstAppRoot
 				lstWpRoot.add(new WorkPlaceAppRootDto(workplaceApprovalRoot,lstApprovalPhase));
 			}
-			return new CommonApprovalRootDto(companyName, null, lstWpRoot, null, result);
+			return new CommonApprovalRootDto(companyName, null, lstWpRoot, null);
 		}
 		//TH: person - domain 個人別就業承認ルート
 		else{
 			List<PersonAppRootDto> lstPsRoot = new ArrayList<>();
-			List<ObjDate> result = new ArrayList<>();
 			//get all data from PersonApprovalRoot (個人別就業承認ルート)
 			List<PsApprovalRootDto> lstPs = this.repo.getAllPsApprovalRoot(companyId, param.getEmployeeId())
 					.stream()
@@ -142,7 +171,7 @@ public class CommonApprovalRootFinder {
 				//add in lstAppRoot
 				lstPsRoot.add(new PersonAppRootDto(personApprovalRoot,lstApprovalPhase));
 			}
-			return new CommonApprovalRootDto(companyName, null, null, lstPsRoot, result);
+			return new CommonApprovalRootDto(companyName, null, null, lstPsRoot);
 		}
 	}
 	/**
@@ -150,30 +179,41 @@ public class CommonApprovalRootFinder {
 	 * @param lstRoot
 	 * @return
 	 */
-	private List<ObjDate> groupingMapping(List<CompanyAppRootDto> lstRoot){
+	private ObjGrouping groupingMapping(List<CompanyAppRootDto> lstRoot){
 		List<ComApprovalRootDto> origin = new ArrayList<ComApprovalRootDto>();
 		List<ObjDate> result = new ArrayList<ObjDate>();
+		List<ObjectDate> kkk = new ArrayList<>();
+		List<ObjDate> check = new ArrayList<>();
 		lstRoot.forEach(item ->{
 			origin.add(item.getCompany());
 		});
-		origin.forEach(date1 -> {
-			origin.forEach(date2 -> {
-				//ktra date2 co de len date1 k?
-				//neu dung thi add va nhay den phan tu tiep theo
-				//neu khong thi nhay xuong else
-				if (date1.getApprovalId() != date2.getApprovalId() && isOverlap(date1,date2)) {
-					result.add(new ObjDate(date1.getStartDate(), date1.getEndDate()));
-					System.out.println("them "+date1);
+		boolean aaa = true;
+		for (ComApprovalRootDto date1 : origin) {
+			for (ComApprovalRootDto date2 : origin) {
+				if (date1.getApprovalId() != date2.getApprovalId() && isOverlap(date1,date2)){//chong cheo
+					aaa = false;
+					break;
 				}
-				//ktra list result co date1 chua?
-				//chua co thi add, co roi thi thoi
-				else if (!result.contains(date1)) {
+				aaa = true;
+			}
+			if(aaa){//khong bi chong cheo voi ai ca.
+				ObjDate xx = new ObjDate(date1.getStartDate(), date1.getEndDate());
+				if(!result.contains(xx)){//co roi
 					result.add(new ObjDate(date1.getStartDate(), date1.getEndDate()));
-					System.out.println("co vao ko");
+					kkk.add(new ObjectDate(date1.getApprovalId(),date1.getStartDate(), date1.getEndDate()));
+				}else{
+					if(!check.contains(xx)){
+						check.add(new ObjDate(date1.getStartDate(), date1.getEndDate()));
+					}
+					
 				}
-			});
-		});
-		return result;
+			}else{//co bi chong cheo
+				result.add(new ObjDate(date1.getStartDate(), date1.getEndDate()));
+				kkk.add(new ObjectDate(date1.getApprovalId(),date1.getStartDate(), date1.getEndDate()));
+			}
+
+		}
+		return new ObjGrouping(check, kkk);
 		
 	}
 	
@@ -184,33 +224,33 @@ public class CommonApprovalRootFinder {
 	 * @return
 	 */
 	public boolean isOverlap(ComApprovalRootDto date1, ComApprovalRootDto date2){
-		//date1=date2 (sDate1 = sDate2 && eDate1 = eDate2)
-//		if(date1.getStartDate().compareTo(date2.getStartDate()) == 0 && date1.getEndDate().compareTo(date2.getEndDate()) == 0){
-//			return false;
-//		}
-//		//date2 nam ngoai date1(sDate1 > eDate2 or eDate1 < sDate2)
-//		if(date1.getStartDate().compareTo(date2.getEndDate()) < 0 || date1.getEndDate().compareTo(date2.getStartDate())<0){
-//			return false;
-//		}
 		/**
-		 * date 1.........|..............|..........
+		 * date 1.........|..............]..........
 		 * date 2............|......................
+		 * sDate1<sDate2
 		 */
-		if (date2.getStartDate().compareTo(date1.getStartDate()) >= 0
-				&& date2.getStartDate().compareTo(date1.getEndDate()) <= 0) {
-			//System.out.println(date2+" de len "+date1);
+		if (date2.getStartDate().compareTo(date1.getStartDate()) > 0
+				&& date2.getStartDate().compareTo(date1.getEndDate()) < 0) {
 			return true;
 		}
 		/**
-		 * date 1.........|..............|..........
-		 * date 2.....|........|....................
+		 * date 1.........|..............]..........
+		 * date 2.....|........]....................
+		 * sDate2<sDate1 va eDate2>sDate1
 		 */
-		if (date2.getStartDate().compareTo(date1.getStartDate()) <= 0
-				&& date2.getEndDate().compareTo(date1.getStartDate()) >= 0) {
-			//System.out.println(date2+" de len "+date1);
+		if (date2.getStartDate().compareTo(date1.getStartDate()) < 0
+				&& date2.getEndDate().compareTo(date1.getStartDate()) > 0) {
 			return true;
 		}
-		//System.out.println(date2+" zxczxcv khong de len "+date1);
+		/**
+		 * date 1.........|..............]..........
+		 * date 2.............]....................
+		 * sDate1<eDate2<eDate1
+		 */
+		if (date1.getStartDate().compareTo(date2.getEndDate()) < 0
+				&& date2.getEndDate().compareTo(date1.getEndDate()) < 0) {
+			return true;
+		}
 		return false;
 	}
 
@@ -224,10 +264,8 @@ public class CommonApprovalRootFinder {
 	public boolean isSameDate(ComApprovalRootDto date1, ComApprovalRootDto date2){
 		if (date2.getStartDate().compareTo(date1.getStartDate()) == 0
 				&& date2.getEndDate().compareTo(date1.getEndDate()) == 0) {
-			//System.out.println(date2+" trung lap "+date1);
 			return true;
 		}
-		//System.out.println(date2+" khong trung lap "+date1);
 		return false;
 	}
 }

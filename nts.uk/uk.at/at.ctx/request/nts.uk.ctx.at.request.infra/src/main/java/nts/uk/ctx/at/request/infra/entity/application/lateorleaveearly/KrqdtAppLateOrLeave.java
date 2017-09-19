@@ -25,31 +25,31 @@ public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 	public KrqdtAppLateOrLeavePK krqdtAppLateOrLeavePK;
 	
 	@Column(name = "ACTUAL_CANCEL_ATR")
-	public String actualCancelAtr;
+	public int actualCancelAtr;
 	
 	@Column(name = "EARLY1")
-	public String early1;
+	public int early1;
 	
 	@Column(name = "EARLY_TIME1")
-	public String earlyTime1;
+	public int earlyTime1;
 	
 	@Column(name = "LATE1")
-	public String late1;
+	public int late1;
 	
 	@Column(name = "LATE_TIME1")
-	public String lateTime1;
+	public int lateTime1;
 	
 	@Column(name = "EARLY2")
-	public String early2;
+	public int early2;
 	
 	@Column(name = "EARLY_TIME2")
-	public String earlyTime2;
+	public int earlyTime2;
 	
 	@Column(name = "LATE2")
-	public String late2;
+	public int late2;
 	
 	@Column(name = "LATE_TIME2")
-	public String lateTime2;
+	public int lateTime2;
 
 	
 	@Override

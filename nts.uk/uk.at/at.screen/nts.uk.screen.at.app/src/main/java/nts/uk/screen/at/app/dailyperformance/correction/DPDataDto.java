@@ -3,12 +3,10 @@
  */
 package nts.uk.screen.at.app.dailyperformance.correction;
 
-import java.util.HashMap;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 /**
  * @author hungnm
@@ -18,11 +16,12 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class DPDataDto {
-
+    private int id;
 	private String state;
     private String error;
-    private String date;
+    private GeneralDate date;
     private boolean sign;
     private String employeeId;
+    private String employeeCode;
     private String employeeName;
 }
