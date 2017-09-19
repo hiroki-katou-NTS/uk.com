@@ -1,10 +1,10 @@
-package nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.repository;
+package nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.repository;
 
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.YearServicePer;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.YearServicePerSet;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.YearServicePer;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.YearServicePerSet;
 
 public interface YearServicePerRepository {
 	/**

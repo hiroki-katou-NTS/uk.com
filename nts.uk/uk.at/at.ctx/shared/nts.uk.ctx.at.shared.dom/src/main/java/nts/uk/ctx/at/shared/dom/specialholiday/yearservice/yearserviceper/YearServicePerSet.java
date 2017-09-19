@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper;
+package nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,24 +42,32 @@ public class YearServicePerSet {
 	 * @param yearServicePerSetlst
 	 * author: Hoang Yen
 	 */
-	public static void validateInput(List<YearServicePerSet> yearServicePerSetlst){
+	public static List<String> validateInput(List<YearServicePerSet> yearServicePerSetlst){
 		List<Integer> yearLst = new ArrayList<>();
+		List<String> bugLst = new ArrayList<>();
 		for(YearServicePerSet item : yearServicePerSetlst){
-			yearLst.add(item.getYear()); 
-			// don't duplicate year
-			yearLst.contains(item);
-			// year must exist and year < 1 
-			if(item.getYear() == null || item.getYear() < 1){
-				throw new BusinessException("Msg_145");
+			if(yearLst.contains(item.getYear())){
+				new BusinessException("Msg_99");
+				bugLst.add("Msg_99");
+			}else{
+				yearLst.add(item.getYear());
 			}
 			// year and month must exsist
 			if(item.getYear() == null || item.getMonth() == null){
-				throw new BusinessException("Msg_100");
+				new BusinessException("Msg_100");
+				bugLst.add("Msg_100");
+			}
+			// year must exist and year < 1 
+			if(item.getYear() == null || item.getYear() < 1){
+				new BusinessException("Msg_145");
+				bugLst.add("Msg_145");
 			}
 			// date must exsist
 			if(item.getDate() == null){
-				throw new BusinessException("Msg_101");
+				new BusinessException("Msg_101");
+				bugLst.add("Msg_101");
 			}
 		}
+		return bugLst;
 	}
 }

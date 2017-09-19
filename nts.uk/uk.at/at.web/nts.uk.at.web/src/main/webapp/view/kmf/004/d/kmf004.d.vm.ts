@@ -17,7 +17,7 @@ module nts.uk.at.view.kmf004 {
             ]);
             currentTab: KnockoutObservable<string> = ko.observable('d');
 
-            //radio
+            //radio     
 
             constructor() {
                 let self = this;
@@ -174,8 +174,12 @@ module nts.uk.at.view.kmf004 {
                     yearServiceSets: ko.toJS(items)
                 }
 
-                service.update(dataTranfer).done(function(items) {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                service.update(dataTranfer).done(function(errors) {
+                    if (errors && errors.length > 0) {
+                        self.addListError(errors);
+                    } else {
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    }
                 }).fail(function(error) {
                     alert(error.message);
                 });
@@ -186,6 +190,23 @@ module nts.uk.at.view.kmf004 {
                 nts.uk.ui.windows.close();
                  var t1 = performance.now();
                 console.log("Selection process " + (t1 - t0) + " milliseconds.");   
+            }
+            
+            /**
+             * Set error
+             */
+            addListError(errorsRequest: Array<string>) {
+                var messages = {};
+                _.forEach(errorsRequest, function(err) {
+                    messages[err] = nts.uk.resource.getMessage(err);
+                });
+    
+                var errorVm = {
+                    messageId: errorsRequest,
+                    messages: messages
+                };
+    
+                nts.uk.ui.dialog.bundledErrors(errorVm);
             }
         }
         class BoxModel {

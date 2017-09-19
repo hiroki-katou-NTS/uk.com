@@ -6,15 +6,19 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.YearServicePerSet;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.repository.YearServicePerRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.YearServicePerSet;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.repository.YearServicePerRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class YearServicePerFinder {
 	@Inject
 	private YearServicePerRepository yearServicePerRep;
-	
+	/**
+	 * convert from domain to dto
+	 * @param yearServicePerSet
+	 * @return
+	 */
 	private YearServicePerSetDto fromDomain(YearServicePerSet yearServicePerSet){
 		YearServicePerSetDto yearServicePerSetDto = new YearServicePerSetDto();
 		yearServicePerSetDto.setSpecialHolidayCode(yearServicePerSet.getSpecialHolidayCode());
@@ -25,12 +29,20 @@ public class YearServicePerFinder {
 		yearServicePerSetDto.setDate(yearServicePerSet.getDate());
 		return yearServicePerSetDto;
 	}
-	
+	/**
+	 * find all year service per
+	 * @return
+	 */
 	public List<YearServicePerDto> finder(){
 		String companyId = AppContexts.user().companyId();
-		return this.yearServicePerRep.findAllPer(companyId).stream().map(item -> {
-			return new YearServicePerDto(item.getSpecialHolidayCode(), item.getYearServiceCode(), item.getYearServiceName(), item.getYearServiceCls(), 
-					item.getYearServicePerSets()
+		return this.yearServicePerRep.findAllPer(companyId)
+				.stream().
+				map(item -> {
+			return new YearServicePerDto(item.getSpecialHolidayCode(), 
+											item.getYearServiceCode().v(), 
+											item.getYearServiceName().v(), 
+											item.getYearServiceCls().value, 
+											item.getYearServicePerSets()
 					.stream()
 					.map(c -> fromDomain(c))
 					.collect(Collectors.toList())

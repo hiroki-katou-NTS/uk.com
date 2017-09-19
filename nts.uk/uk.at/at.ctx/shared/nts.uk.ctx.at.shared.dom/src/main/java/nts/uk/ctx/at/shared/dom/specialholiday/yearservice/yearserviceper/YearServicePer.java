@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper;
+package nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.YearServiceIdCls;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.primitives.YearServiceCode;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.primitives.YearServiceName;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.primitives.YearServiceCode;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.primitives.YearServiceName;
 @Getter
 @AllArgsConstructor
 public class YearServicePer extends AggregateRoot{

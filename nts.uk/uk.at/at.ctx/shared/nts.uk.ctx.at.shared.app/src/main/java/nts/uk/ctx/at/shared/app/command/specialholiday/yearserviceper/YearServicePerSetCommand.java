@@ -1,13 +1,10 @@
 package nts.uk.ctx.at.shared.app.command.specialholiday.yearserviceper;
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.YearServicePerSet;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.YearServicePerSet;
 
 @Data
-@Getter
-@Setter
+
 public class YearServicePerSetCommand{
 	/**コード**/
 	private String specialHolidayCode;

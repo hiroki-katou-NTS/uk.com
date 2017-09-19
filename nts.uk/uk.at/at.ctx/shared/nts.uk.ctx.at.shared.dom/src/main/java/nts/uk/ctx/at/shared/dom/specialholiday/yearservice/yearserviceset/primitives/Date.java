@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.specialholiday.yearserviceset.primitives;
+package nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.primitives;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;

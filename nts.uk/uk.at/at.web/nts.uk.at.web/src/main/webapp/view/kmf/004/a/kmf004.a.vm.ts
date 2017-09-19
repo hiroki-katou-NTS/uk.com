@@ -14,7 +14,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         //Tab Regular
         option1: KnockoutObservable<any>; 
         option2: KnockoutObservable<any>;
-
+   
         //
         date: KnockoutObservable<string>;
         roundingSplitAcquisition: KnockoutObservableArray<any>;

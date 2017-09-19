@@ -16,7 +16,7 @@ module nts.uk.at.view.kmf004.e.service {
 //        return nts.uk.request.ajax(paths.getAllPerSet + a + '/' + b);    
 //    }
     
-    export function update(command: viewmodel.Per): JQueryPromise<void>{
+    export function update(command: viewmodel.Per): JQueryPromise<Array<string>>{
         return nts.uk.request.ajax(paths.update, command);    
     }
     

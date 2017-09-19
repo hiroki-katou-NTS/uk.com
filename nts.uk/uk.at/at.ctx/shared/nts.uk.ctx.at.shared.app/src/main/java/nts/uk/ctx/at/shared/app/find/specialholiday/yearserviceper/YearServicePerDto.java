@@ -1,22 +1,19 @@
 package nts.uk.ctx.at.shared.app.find.specialholiday.yearserviceper;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Value;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.YearServiceIdCls;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.primitives.YearServiceCode;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.primitives.YearServiceName;
 /**
  * 
  * @author yennth
  *
  */
 @Data
-@Value
+@AllArgsConstructor
 public class YearServicePerDto {
 	private String specialHolidayCode;
-	private YearServiceCode yearServiceCode;
-	private YearServiceName yearServiceName;
-	private YearServiceIdCls yearServiceCls;
+	private String yearServiceCode;
+	private String yearServiceName;
+	private int yearServiceCls;
 	private List<YearServicePerSetDto> yearServicePerSets;
 }

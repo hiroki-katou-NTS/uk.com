@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.command.specialholiday.yearserviceper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,27 +14,31 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.YearServicePer;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.YearServicePerSet;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.repository.YearServicePerRepository;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.YearServicePer;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.YearServicePerSet;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.repository.YearServicePerRepository;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
-public class AddYearServicePerCommandHandler extends CommandHandler<AddYearServicePerCommand>{
+public class AddYearServicePerCommandHandler extends CommandHandlerWithResult<AddYearServicePerCommand, List<String>>{
 	@Inject
 	private YearServicePerRepository yearServicePerRep;
 
 	@Override
-	protected void handle(CommandHandlerContext<AddYearServicePerCommand> context) {
+	protected List<String> handle(CommandHandlerContext<AddYearServicePerCommand> context) {
 		String companyId = AppContexts.user().companyId();
+		List<String> errors = new ArrayList<>();
 		List<YearServicePerSet> yearServicePerSets = null;
 		if(context.getCommand().getYearServicePerSets() != null){
 			yearServicePerSets = context.getCommand().getYearServicePerSets()
 					.stream()
 					.map(x->x.toDomainPerSet(companyId, context.getCommand().getSpecialHolidayCode(), context.getCommand().getYearServiceCode(), x.getYearServiceNo()))
 					.collect(Collectors.toList());
-			YearServicePerSet.validateInput(yearServicePerSets);
+			errors = YearServicePerSet.validateInput(yearServicePerSets);
+		}
+		if(!errors.isEmpty()){
+			return errors;
 		}
 		YearServicePer yearServicePer = YearServicePer.createFromJavaType(companyId, 
 																			context.getCommand().getSpecialHolidayCode(), 
@@ -46,8 +51,10 @@ public class AddYearServicePerCommandHandler extends CommandHandler<AddYearServi
 																				context.getCommand().getYearServiceCode());
 		if(yearServicePerOld.isPresent()){
 			throw new BusinessException("Msg_3");
+		}else{
+			yearServicePerRep.insertPer(yearServicePer);
 		}
-		yearServicePerRep.insertPer(yearServicePer);
+		return errors;
 	}
 	
 }

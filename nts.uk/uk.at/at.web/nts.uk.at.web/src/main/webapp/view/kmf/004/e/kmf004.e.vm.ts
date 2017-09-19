@@ -53,7 +53,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                     }
                     console.log(self.display());
                 });
-            self.selectedCode.subscribe((code) => {
+            self.selectedCode.subscribe((code) => {   
                 if (code) {
                     let foundItem: Per = _.find(self.lstPer(), (item: Per) => {
                         return (ko.toJS(item.yearServiceCode) == code);
@@ -85,7 +85,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
 
         /** get data to list **/
         getData(): JQueryPromise<any>{
-            let self = this;
+            let self = this;  
             let dfd = $.Deferred();
             service.getAll().done((lstData: Array<viewmodel.Per>) => {
                 if(lstData.length == 0){
@@ -98,13 +98,6 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                     dfd.reject();
                     $('#inpCode').ntsError('set', error);
                 });
-            
-//            service.getAllSet().done((lstItem) => {
-//                self.items(lstItem); 
-//            }).fail(function(error){
-//                    dfd.reject();
-//                    alert(error.message);
-//                });
               return dfd.promise();      
         }
 
@@ -112,9 +105,11 @@ module nts.uk.at.view.kmf004.e.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            service.getAll().done((lstData: KnockoutObservableArray<Per>) => {
+            service.getAll().done((lstData: Array<Per>) => {
                 if(lstData.length == 0){
                     self.check(true);
+                    self.codeObject(null);
+                    self.selectedName(null);
                     self.checkUpdate(false);
                     self.items([]);
                     for (let i = 0; i < 20; i++) {
@@ -128,15 +123,16 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                             self.items.push(new Item(t));
                         }
                     }
+                }else{
+                    let sortedData : KnockoutObservableArray<any> = ko.observableArray([]);
+                    sortedData(_.orderBy(lstData, ['yearServiceCode'], ['asc']));
+                    self.lstPer(sortedData());
+                    self.selectedOption(self.lstPer()[0]);
+                    self.selectedCode(ko.toJS(self.lstPer()[0].yearServiceCode));
+                    self.selectedName(self.lstPer()[0].yearServiceName);
+                    self.codeObject(ko.toJS(self.lstPer()[0].yearServiceCode));
+                    dfd.resolve();
                 }
-                let sortedData : KnockoutObservableArray<any> = ko.observableArray([]);
-                sortedData(_.orderBy(lstData, ['yearServiceCode'], ['asc']));
-                self.lstPer(sortedData());
-                self.selectedOption(self.lstPer()[0]);
-                self.selectedCode(ko.toJS(self.lstPer()[0].yearServiceCode));
-                self.selectedName(self.lstPer()[0].yearServiceName);
-                self.codeObject(ko.toJS(self.lstPer()[0].yearServiceCode)); 
-                dfd.resolve();
             }).fail(function(error) {
                 dfd.reject();
                 $('#inpCode').ntsError('set', error);
@@ -186,11 +182,13 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                 if (nts.uk.ui.errors.hasError() === false) {
                     // update item to list  
                     if(self.checkUpdate() == true){
-                        service.update(dataTransfer).done(function(){
-                            self.getData().done(function(){
-                                self.selectedCode(code);
+                        service.update(dataTransfer).done(function(errors: Array<string>){
+                            self.selectedCode(code);    
+                            if (errors && errors.length > 0) {
+                                self.addListError(errors);
+                            }else{
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" }); 
-                            });
+                            }
                         }).fail(function(res){
                             $('#inpCode').ntsError('set', res);
                             });
@@ -287,13 +285,31 @@ module nts.uk.at.view.kmf004.e.viewmodel {
             console.log("Selection process " + (t1 - t0) + " milliseconds.");    
         }
         
+        /**
+             * Set error
+             */
+            addListError(errorsRequest: Array<string>) {
+                var messages = {};
+                _.forEach(errorsRequest, function(err) {
+                    messages[err] = nts.uk.resource.getMessage(err);
+                });
+    
+                var errorVm = {
+                    messageId: errorsRequest,
+                    messages: messages
+                };
+    
+                nts.uk.ui.dialog.bundledErrors(errorVm);
+            }
+        
+        
     } 
     export interface Per{
         specialHolidayCode: string
-        yearServiceCode: KnockoutObservable<string>;
+        yearServiceCode: string;
         yearServiceName: string;
         yearServiceCls: number;
-        yearServicePerSets: KnockoutObservableArray<Item>;
+        yearServicePerSets: Array<Item>;
     }
     
     export interface item{
