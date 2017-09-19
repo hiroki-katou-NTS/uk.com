@@ -408,15 +408,18 @@ module nts.uk.com.view.cmm018.shr {
             approvalPhaseId: string;
             /**承認形態*/
             approvalForm: number;
+            /**承認形態 Name*/
+            appFormName: string;
             /**閲覧フェーズ*/
             browsingPhase: number;
             /**順序*/
             orderNumber: number;
-            constructor(approver: Array<ApproverDto>, branchId: string, approvalPhaseId: string, approvalForm: number, browsingPhase: number, orderNumber: number){
+            constructor(approver: Array<ApproverDto>, branchId: string, approvalPhaseId: string, approvalForm: number, appFormName: string, browsingPhase: number, orderNumber: number){
                 this.approver = approver;
                 this.branchId = branchId;
                 this.approvalPhaseId = approvalPhaseId;
                 this.approvalForm = approvalForm;
+                this.appFormName = appFormName;
                 this.browsingPhase = browsingPhase;
                 this.orderNumber = orderNumber;
             }

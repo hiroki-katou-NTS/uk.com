@@ -181,7 +181,6 @@ public class CommonApprovalRootFinder {
 		//get name company
 		Optional<CompanyInfor> companyCurrent = comAdapter.getCurrentCompany();
 		String companyName = companyCurrent == null ? "" : companyCurrent.get().getCompanyName();
-//		String companyName = "KAkashi";
 		//TH: company - domain 会社別就業承認ルート
 		if(param.getRootType() == 0){
 			List<CompanyAppRootDto> lstComRoot = new ArrayList<>();
@@ -203,7 +202,7 @@ public class CommonApprovalRootFinder {
 								.collect(Collectors.toList());
 					//lst (ApprovalPhase + lst Approver)
 					lstApprovalPhase.add(new ApprovalPhaseDto(lstApprover, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
-							approvalPhase.getApprovalForm().value, approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
+							approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(), approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
 				}
 				//add in lstAppRoot
 				lstComRoot.add(new CompanyAppRootDto(companyApprovalRoot,lstApprovalPhase));
@@ -231,7 +230,7 @@ public class CommonApprovalRootFinder {
 							.collect(Collectors.toList());
 					//lst (ApprovalPhase + lst Approver)
 					lstApprovalPhase.add(new ApprovalPhaseDto(lstApprover, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
-							approvalPhase.getApprovalForm().value, approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
+							approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(), approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
 				}
 				//add in lstAppRoot
 				lstWpRoot.add(new WorkPlaceAppRootDto(workplaceApprovalRoot,lstApprovalPhase));
@@ -259,7 +258,7 @@ public class CommonApprovalRootFinder {
 							.collect(Collectors.toList());
 					//lst (ApprovalPhase + lst Approver)
 					lstApprovalPhase.add(new ApprovalPhaseDto(lstApprover, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
-							approvalPhase.getApprovalForm().value, approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
+							approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(),approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
 				}
 				//add in lstAppRoot
 				lstPsRoot.add(new PersonAppRootDto(personApprovalRoot,lstApprovalPhase));
@@ -338,20 +337,6 @@ public class CommonApprovalRootFinder {
 		 */
 		if (date1.getStartDate().compareTo(date2.getEndDate()) < 0
 				&& date2.getEndDate().compareTo(date1.getEndDate()) < 0) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Checks if is same date.
-	 * @param date1 the date 1
-	 * @param date2 the date 2
-	 * @return true, if is same date
-	 */
-	public boolean isSameDate(ObjectDate date1, ObjectDate date2){
-		if (date2.getStartDate().compareTo(date1.getStartDate()) == 0
-				&& date2.getEndDate().compareTo(date1.getEndDate()) == 0) {
 			return true;
 		}
 		return false;

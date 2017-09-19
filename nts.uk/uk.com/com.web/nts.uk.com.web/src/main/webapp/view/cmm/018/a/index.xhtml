@@ -152,8 +152,9 @@
 											</td>
 											<!-- A3_14: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,1)}"></button>
-												<div data-bind="text: appPhase1.approvalForm"></div>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,1)}"></button>
+												<div data-bind="text: appPhase1.appFormName"></div>
 											</td>
 											<!-- A3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
@@ -163,7 +164,9 @@
 											</div></td>
 											<!-- A3_17: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,2)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+													data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,2)}"></button>
+												<div data-bind="text: appPhase2.appFormName"></div>
 											</td>
 											<!-- A3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
@@ -173,7 +176,9 @@
 											</td>
 											<!-- A3_20: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,3)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,3)}"></button>
+												<div data-bind="text: appPhase3.appFormName"></div>
 											</td>
 											<!-- A3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
@@ -182,7 +187,9 @@
 												</div></td>
 											<!-- A3_23: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,4)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogK(appPhase4,approvalId,appTypeValue,4)}"></button>
+												<div data-bind="text: appPhase4.appFormName"></div>
 											</td>
 											<!-- A3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
@@ -192,7 +199,9 @@
 											</td>
 											<!-- A3_26: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,5)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogK(appPhase5,approvalId,appTypeValue,5)}"></button>
+												<div data-bind="text: appPhase5.appFormName"></div>
 											</td>
 											<!-- A3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
@@ -297,9 +306,10 @@
 												</div>
 											</td>
 											<!-- B3_14: -->
-											<td class="button_phase" data-bind="with: appPhase1">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parents[1].openDialogK(approvalPhaseId)}"></button>
-												<div data-bind="text: approvalForm"></div>
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogKB(appPhase1,approvalId,appTypeValue,1)}"></button>
+												<div data-bind="text: appPhase1.appFormName"></div>
 											</td>
 											<!-- B3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
@@ -308,9 +318,10 @@
 												</div>
 											</div></td>
 											<!-- B3_17: -->
-											<td class="button_phase" data-bind="with: appPhase2">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: approvalForm"></div>
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogKB(appPhase2,approvalId,appTypeValue,2)}"></button>
+												<div data-bind="text: appPhase2.appFormName"></div>
 											</td>
 											<!-- B3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
@@ -319,9 +330,10 @@
 												</div>
 											</td>
 											<!-- B3_20: -->
-											<td class="button_phase" data-bind="with: appPhase3">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: approvalForm"></div>
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogKB(appPhase3,approvalId,appTypeValue,3)}"></button>
+												<div data-bind="text: appPhase3.appFormName"></div>
 											</td>
 											<!-- B3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
@@ -329,9 +341,10 @@
 													<div data-bind="text: approverId"> <br /></div>
 												</div></td>
 											<!-- B3_23: -->
-											<td class="button_phase" data-bind="with: appPhase4">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: approvalForm"></div>
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogKB(appPhase4,approvalId,appTypeValue,4)}"></button>
+												<div data-bind="text: appPhase4.appFormName"></div>
 											</td>
 											<!-- B3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
@@ -340,9 +353,10 @@
 												</div>
 											</td>
 											<!-- B3_26: -->
-											<td class="button_phase" data-bind="with: appPhase5">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: approvalForm"></div>
+											<td class="button_phase">
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogKB(appPhase5,approvalId,appTypeValue,5)}"></button>
+												<div data-bind="text: appPhase5.appFormName"></div>
 											</td>
 											<!-- B3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
@@ -478,8 +492,9 @@
 											</td>
 											<!-- A3_14: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,1)}"></button>
-												<div data-bind="text: appPhase1.approvalForm"></div>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,1)}"></button>
+												<div data-bind="text: appPhase1.appFormName"></div>
 											</td>
 											<!-- A3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
@@ -489,7 +504,9 @@
 											</div></td>
 											<!-- A3_17: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,2)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogK(appPhase2,approvalId,appTypeValue,2)}"></button>
+												<div data-bind="text: appPhase2.appFormName"></div>
 											</td>
 											<!-- A3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
@@ -499,7 +516,9 @@
 											</td>
 											<!-- A3_20: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,3)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogK(appPhase3,approvalId,appTypeValue,3)}"></button>
+												<div data-bind="text: appPhase3.appFormName"></div>
 											</td>
 											<!-- A3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
@@ -508,7 +527,9 @@
 												</div></td>
 											<!-- A3_23: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,4)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogK(appPhase4,approvalId,appTypeValue,4)}"></button>
+												<div data-bind="text: appPhase4.appFormName"></div>
 											</td>
 											<!-- A3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
@@ -518,7 +539,9 @@
 											</td>
 											<!-- A3_26: -->
 											<td class="button_phase">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,5)}"></button>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parent.openDialogK(appPhase5,approvalId,appTypeValue,5)}"></button>
+											<div data-bind="text: appPhase5.appFormName"></div>
 											</td>
 											<!-- A3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
@@ -624,8 +647,9 @@
 											</td>
 											<!-- B3_14: -->
 											<td class="button_phase" data-bind="with: appPhase1">
-												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parents[1].openDialogK(approvalPhaseId)}"></button>
-												<div data-bind="text: approvalForm"></div>
+												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
+														data-bind="click: function(){$parents[1].openDialogK(approvalPhaseId)}"></button>
+												<div data-bind="text: appFormName"></div>
 											</td>
 											<!-- B3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
@@ -636,7 +660,7 @@
 											<!-- B3_17: -->
 											<td class="button_phase" data-bind="with: appPhase2">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: approvalForm"></div>
+												<div data-bind="text: appFormName"></div>
 											</td>
 											<!-- B3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
@@ -647,7 +671,7 @@
 											<!-- B3_20: -->
 											<td class="button_phase" data-bind="with: appPhase3">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: approvalForm"></div>
+												<div data-bind="text: appFormName"></div>
 											</td>
 											<!-- B3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
@@ -657,7 +681,7 @@
 											<!-- B3_23: -->
 											<td class="button_phase" data-bind="with: appPhase4">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: approvalForm"></div>
+												<div data-bind="text: appFormName"></div>
 											</td>
 											<!-- B3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
@@ -668,7 +692,7 @@
 											<!-- B3_26: -->
 											<td class="button_phase" data-bind="with: appPhase5">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: approvalForm"></div>
+												<div data-bind="text: appFormName"></div>
 											</td>
 											<!-- B3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
@@ -807,7 +831,7 @@
 											<!-- A3_14: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,1)}"></button>
-												<div data-bind="text: appPhase1.approvalForm"></div>
+												<div data-bind="text: appPhase1.appFormName"></div>
 											</td>
 											<!-- A3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
@@ -953,7 +977,7 @@
 											<!-- B3_14: -->
 											<td class="button_phase" data-bind="with: appPhase1">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parents[1].openDialogK(approvalPhaseId)}"></button>
-												<div data-bind="text: approvalForm"></div>
+												<div data-bind="text: appFormName"></div>
 											</td>
 											<!-- B3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
@@ -964,7 +988,7 @@
 											<!-- B3_17: -->
 											<td class="button_phase" data-bind="with: appPhase2">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: approvalForm"></div>
+												<div data-bind="text: appFormName"></div>
 											</td>
 											<!-- B3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
@@ -975,7 +999,7 @@
 											<!-- B3_20: -->
 											<td class="button_phase" data-bind="with: appPhase3">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: approvalForm"></div>
+												<div data-bind="text: appFormName"></div>
 											</td>
 											<!-- B3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
@@ -985,7 +1009,7 @@
 											<!-- B3_23: -->
 											<td class="button_phase" data-bind="with: appPhase4">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: approvalForm"></div>
+												<div data-bind="text: appFormName"></div>
 											</td>
 											<!-- B3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
@@ -996,7 +1020,7 @@
 											<!-- B3_26: -->
 											<td class="button_phase" data-bind="with: appPhase5">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;"></button>
-												<div data-bind="text: approvalForm"></div>
+												<div data-bind="text: appFormName"></div>
 											</td>
 											<!-- B3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
