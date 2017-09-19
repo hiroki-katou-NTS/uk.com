@@ -105,8 +105,14 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
 	 */
 	@Override
 	public String add(WorkplaceConfig workplaceConfig) {
-		// TODO Auto-generated method stub
-		return null;
+		this.commandProxy().insert(this.toEntity(workplaceConfig));
+		return workplaceConfig.getWkpConfigHistory().get(0).getHistoryId();
+	}
+	
+	private BsymtWkpConfig toEntity(WorkplaceConfig workplaceConfig) {
+		BsymtWkpConfig entity = new BsymtWkpConfig();
+		workplaceConfig.saveToMemento(new JpaWorkplaceConfigSetMemento(entity));
+		return entity;
 	}
 
 }

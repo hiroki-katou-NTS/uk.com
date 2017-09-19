@@ -14,6 +14,8 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.app.command.workplace.RegisterWorkplaceCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.RegisterWorkplaceCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.UpdateWorkplaceCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.workplace.config.RegisterWorkplaceConfigCommand;
+import nts.uk.ctx.bs.employee.app.command.workplace.config.RegisterWorkplaceConfigCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.workplace.WorkplaceConfigFinder;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceCommandDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceConfigDto;
@@ -28,6 +30,10 @@ public class WorkplaceWebService extends WebService {
 	/** The wkp config finder. */
 	@Inject
 	private WorkplaceConfigFinder wkpConfigFinder;
+	
+	/** The register workplace config command handler. */
+	@Inject
+	private RegisterWorkplaceConfigCommandHandler registerWorkplaceConfigCommandHandler;
 	
 	/** The register workplace command handler. */
 	@Inject
@@ -59,6 +65,17 @@ public class WorkplaceWebService extends WebService {
 	@POST
 	public WorkplaceConfigDto findLastConfig(WorkplaceCommandDto dto) {
 		return this.wkpConfigFinder.findLastestByCompanyId();
+	}
+	
+	/**
+	 * Register wkp config.
+	 *
+	 * @param command the command
+	 */
+	@Path("registerConfig")
+	@POST
+	public void registerWkpConfig(RegisterWorkplaceConfigCommand command) {
+		this.registerWorkplaceConfigCommandHandler.handle(command);
 	}
 	
 	/**

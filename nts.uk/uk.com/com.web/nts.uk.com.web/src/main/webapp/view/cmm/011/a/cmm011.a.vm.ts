@@ -399,7 +399,7 @@ module nts.uk.com.view.cmm011.a {
              */
             public updateWkpHistoryDialog() {
                 let self = this;
-                nts.uk.ui.windows.setShared("StartDateHistory", self.getSelectedHistory().startDate);
+                nts.uk.ui.windows.setShared("StartDateHistory", self.getSelectedHistoryByWkpId().startDate);
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/e/index.xhtml').onClosed(() => {
                 });
             }

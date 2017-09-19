@@ -34,6 +34,7 @@ module nts.uk.ui.koExtentions {
                 if (result.isValid) {
                     $input.ntsError('clear');
                     value(result.parsedValue);
+                    value.valueHasMutated();
                 } else {
                     let error = $input.ntsError('getError');
                     if (nts.uk.util.isNullOrUndefined(error) || error.messageText !== result.errorMessage) {

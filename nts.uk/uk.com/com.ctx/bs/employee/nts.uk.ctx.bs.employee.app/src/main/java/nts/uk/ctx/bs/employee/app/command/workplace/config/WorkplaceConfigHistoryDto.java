@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.workplace.config;
 
+import java.util.UUID;
+
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.employee.app.command.workplace.PeriodDto;
 import nts.uk.ctx.bs.employee.dom.workplace.Period;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistory;
@@ -58,6 +60,9 @@ public class WorkplaceConfigHistoryDto {
 		 */
 		@Override
 		public String getHistoryId() {
+			if (StringUtil.isNullOrEmpty(this.workplaceConfigHistoryDto.getHistoryId(), true)) {
+				return UUID.randomUUID().toString();
+			}
 			return this.workplaceConfigHistoryDto.getHistoryId();
 		}
 
@@ -66,11 +71,8 @@ public class WorkplaceConfigHistoryDto {
 		 */
 		@Override
 		public Period getPeriod() {
-			return new Period(
-					GeneralDate.fromString(this.workplaceConfigHistoryDto.getPeriod().getStartDate(),
-							WKP_CONFIG_HIST_DATE_FORMAT),
-					GeneralDate.fromString(this.workplaceConfigHistoryDto.getPeriod().getEndDate(),
-							WKP_CONFIG_HIST_DATE_FORMAT));
+			return new Period(this.workplaceConfigHistoryDto.getPeriod().getStartDate(),
+					this.workplaceConfigHistoryDto.getPeriod().getEndDate());
 		}
 
 	}

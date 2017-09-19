@@ -11,20 +11,20 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.enums.SettingUnit;
  *
  */
 @Getter
-public class DailyReportOperation extends AggregateRoot {
+public class DailyRecordOperation extends AggregateRoot {
 	
 	private String companyId;
 	
 	private SettingUnit settingUnit;
 
-	public DailyReportOperation(String companyId, SettingUnit settingUnit) {
+	public DailyRecordOperation(String companyId, SettingUnit settingUnit) {
 		super();
 		this.companyId = companyId;
 		this.settingUnit = settingUnit;
 	}
 	
-	public static DailyReportOperation createFromJavaType(String companyId, int settingUnit){
-		return new DailyReportOperation(companyId, EnumAdaptor.valueOf(settingUnit, SettingUnit.class));
+	public static DailyRecordOperation createFromJavaType(String companyId, int settingUnit){
+		return new DailyRecordOperation(companyId, EnumAdaptor.valueOf(settingUnit, SettingUnit.class));
 	}
 
 }
