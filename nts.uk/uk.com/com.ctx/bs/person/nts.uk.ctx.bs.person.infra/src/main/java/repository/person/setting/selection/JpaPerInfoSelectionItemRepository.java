@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import entity.person.setting.selection.BpsmtSelectionItem;
+import entity.person.setting.selection.BpsmtSelectionItemPK;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selection.IPerInfoSelectionItemRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoSelectionItem;
@@ -56,8 +57,11 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 
 	@Override
 	public Optional<PerInfoSelectionItem> getPerInfoSelectionItem(String selectionItemId) {
+		BpsmtSelectionItemPK pk = new BpsmtSelectionItemPK(selectionItemId);
+		return this.queryProxy().find(pk, BpsmtSelectionItem.class).map(c->toDomain(c));
+		
 		// TODO Auto-generated method stub
-		return null;
+		//return null;
 	}
 
 	@Override

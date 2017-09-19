@@ -41,10 +41,11 @@
 							<div style="width: 395px"
 								data-bind="ntsSearchBox: {
 									searchMode: 'filter',
-									targetKey: 'selectionItemId', 
+									targetKey: 'selectionItemName', 
 									comId: 'single-list',
 									items: listItems, 
-									selectedKey: selectedItemId, 
+									selected: perInfoSelectionItem().selectionItemId,
+									selectedKey: 'selectionItemId', 
 									fields: ['selectionItemName'], 
 									mode: 'igGrid'
 									}" />
@@ -53,18 +54,18 @@
 								data-bind="ntsGridList: {
 									height: 535,
 									options: listItems,
-									optionsValue: 'selectionItemId',
+									primaryKey: 'selectionItemId',
 									columns: [
 						                { headerText: '', key: 'selectionItemId', width: 20},
 						                { headerText: '#{i18n.getText('CPS016_7')}', key: 'selectionItemName', width: 290 }
 						            ],
 									multiple: false,
-									value: selectedItemId}">
+									value: perInfoSelectionItem().selectionItemId}">
 							</table>
 						</div>
 					</div>
 				</div>
-				<div id="right-content" data-bind="with: currentItem">
+				<div id="right-content" data-bind="with: perInfoSelectionItem">
 					<div id="right-content" class="form-group">
 						<div class="row">
 							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_8')}</div>
@@ -110,21 +111,22 @@
 							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_24')}</div>
 							<div data-bind="ntsCheckBox: { checked: enable }">グループ会社で共有する</div>
 						</div>
-
+-->
 						<div class="row">
 							<div class="coll" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CPS016_19')}</div>
 							<input style="width: 20px;"
-								data-bind="ntsTextEditor: {value: share}" />
+								data-bind="ntsTextEditor: {value: integrationCode}" />
 						</div>
-
+						 
+					
 						<div class="row">
 							<div class="coll" data-bind="ntsFormLabel: { required: false }">
 								<label>#{i18n.getText('CPS016_21')}</label>
 							</div>
 							<textarea style="width: 550px; height: 120px;"
-								data-bind="ntsMultilineEditor: { value: notes }" />
+								data-bind="ntsMultilineEditor: { value: memo }" />
 						</div>
-						 -->
+						
 						
 					</div>
 				</div>
