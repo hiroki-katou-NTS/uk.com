@@ -4,6 +4,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.masterapproverroot.ApproverRootMaster;
@@ -16,18 +17,22 @@ public class MasterApproverRootExportService extends ExportService<MasterApprove
 	private MasterApproverRootOutputGenerator masterGenerator;
 	
 	@Inject
-	private MasterApproverRootRepository masterRepo;
+	private ApproverRootMaster masterRoot;
 
 	@Override
 	protected void handle(ExportServiceContext<MasterApproverRootQuery> context) {
 		MasterApproverRootQuery query = context.getQuery();
 
 		String companyID = AppContexts.user().companyId();
-		MasterApproverRootOutput masterApp = this.masterRepo.getMasterInfo(companyID, query.getBaseDate(),
-				query.isChkCompany(), query.isChkWorkplace(), query.isChkPerson());
-		
-		//if(masterApp.getPersonRootInfor())
-		
+//		MasterApproverRootOutput masterApp = this.masterRoot.getMasterInfo(companyID, query.getBaseDate(),
+//				query.isChkCompany(), query.isChkWorkplace(), query.isChkPerson());
+		MasterApproverRootOutput masterApp = this.masterRoot.masterInfors(companyID, query.getBaseDate(), query.isChkCompany(), query.isChkWorkplace(), query.isChkPerson());
+		if(masterApp.getCompanyRootInfor().getLstComs().isEmpty()
+				&& masterApp.getWorplaceRootInfor().isEmpty()
+				&& masterApp.getPersonRootInfor().isEmpty()) {
+			throw new BusinessException("Msg_7");
+		}
+			
 		val dataSource = new MasterApproverRootOutputDataSource(masterApp);
 
 		// generate file

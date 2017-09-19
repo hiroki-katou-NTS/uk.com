@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 
 /**
  * 1-1.新規画面起動前申請共通設定を取得する
@@ -17,6 +19,6 @@ public interface BeforePrelaunchAppCommonSet {
 	 * @param targetApp
 	 * @param appDate
 	 */
-	public void prelaunchAppCommonSetService(String companyID, String employeeID, int rootAtr, int targetApp, GeneralDate appDate);
+	public AppCommonSettingOutput prelaunchAppCommonSetService(String companyID, String employeeID, int rootAtr, ApplicationType targetApp, GeneralDate appDate);
 	
 }

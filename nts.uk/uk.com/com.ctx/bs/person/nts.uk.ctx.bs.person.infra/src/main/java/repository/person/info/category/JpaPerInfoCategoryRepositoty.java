@@ -205,4 +205,5 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 		return new PpemtDateRangeItem(perInfoCtgPK, dateRangeItem.getStartDateItemId(),
 				dateRangeItem.getEndDateItemId(), dateRangeItem.getDateRangeItemId());
 	}
+
 }

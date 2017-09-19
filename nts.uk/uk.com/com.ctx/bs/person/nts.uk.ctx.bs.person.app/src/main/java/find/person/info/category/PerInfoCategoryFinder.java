@@ -1,5 +1,6 @@
 package find.person.info.category;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
+import nts.arc.error.BusinessException;
 import nts.arc.i18n.custom.IInternationalization;
 import nts.uk.ctx.bs.person.dom.person.info.category.HistoryTypes;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -37,6 +39,25 @@ public class PerInfoCategoryFinder {
 							p.getCategoryType().value, p.getIsFixed().value);
 				}).collect(Collectors.toList());
 	};
+	
+	public List<PerInfoCtgFullDto> getAllPerInfoCategoryWithCondition(){
+		//get all perinforcategory by company id
+		List<PersonInfoCategory> lstPerInfoCtg = perInfoCtgRepositoty.getAllPerInfoCategory(
+				AppContexts.user().companyId(), PersonInfoItemDefinition.ROOT_CONTRACT_CODE);
+		List<PersonInfoCategory> lstReturn  = new ArrayList<PersonInfoCategory>();
+		String contractCode = AppContexts.user().companyCode();
+		//get all PersonInfoItemDefinition 
+		for(PersonInfoCategory obj : lstPerInfoCtg){
+			if(pernfoItemDefRep.countPerInfoItemDefInCategory(obj.getPersonInfoCategoryId(), contractCode) > 0)
+				lstReturn.add(obj);
+		}
+		if(lstReturn.size() == 0) throw new BusinessException("Msg_352");
+		return PersonInfoCategory.getAllPerInfoCategoryWithCondition(lstReturn).stream().map(p -> {
+			return new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
+					p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
+					p.getCategoryType().value, p.getIsFixed().value);
+		}).collect(Collectors.toList());
+	}
 
 	public PerInfoCtgFullDto getPerInfoCtg(String perInfoCtgId) {
 		return perInfoCtgRepositoty.getPerInfoCategory(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)

@@ -3,7 +3,7 @@ module nts.uk.com.view.cmm018.l.service {
     // Service paths.
     var servicePath = {
         searchModeEmployee: "workflow/approvermanagement/workroot/testInUnregistry",
-        saveExcel: "employee/report/a"
+        saveExcel: "approval/report/employeeUnregister"
     }
     export function searchModeEmployee(baseDate: string) {
         return request.ajax('com', servicePath.searchModeEmployee, baseDate);
