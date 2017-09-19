@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
+import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveAdapter;
@@ -40,6 +41,8 @@ public class EmployeeApproveAdapterImpl implements EmployeeApproveAdapter {
 	private SyEmploymentPub employmentPub;
 	@Inject
 	private PersonInforExportAdapter psInfor;
+	@Inject
+	private EmployeeInfoPub emInfor;
 
 	/*
 	 * (non-Javadoc)
@@ -90,5 +93,23 @@ public class EmployeeApproveAdapterImpl implements EmployeeApproveAdapter {
 	@Override
 	public List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date) {		
 		return workplacePub.findWpkIdsBySid(companyId, employeeId, date);
+	}
+
+	@Override
+	public List<EmployeeApproveDto> getEmployeesAtWorkByBaseDate(String companyId, GeneralDate baseDate) {
+		List<EmployeeApproveDto> employeesInfor = emInfor.getEmployeesAtWorkByBaseDate(companyId, baseDate.toString())
+				.stream()
+				.map(x -> new EmployeeApproveDto(x.getCompanyId(), 
+						x.getPersonId(), 
+						x.getEmployeeId(), 
+						x.getEmployeeCode(), 
+						"",
+						"", 
+						"", 
+						"", 
+						baseDate,
+						baseDate))
+				.collect(Collectors.toList());
+		return employeesInfor;
 	}
 }

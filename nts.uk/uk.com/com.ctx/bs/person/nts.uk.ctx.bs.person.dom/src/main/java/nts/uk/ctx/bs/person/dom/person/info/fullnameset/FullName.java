@@ -1,8 +1,12 @@
 package nts.uk.ctx.bs.person.dom.person.info.fullnameset;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
+import nts.arc.primitive.constraint.StringMaxLength;
 
-//@StringMaxLength()
+@StringCharType(CharType.ALPHA_NUMERIC)
+@StringMaxLength(40)
 public class FullName extends StringPrimitiveValue<FullName>{
 	
 	/** The Constant serialVersionUID. */

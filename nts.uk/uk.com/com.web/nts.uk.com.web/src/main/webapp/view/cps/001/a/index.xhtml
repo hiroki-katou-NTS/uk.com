@@ -97,22 +97,30 @@
 									primaryKey: 'id',
 									columns: [
 										{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-			                			{ headerText: '名称', key: 'name', width: 175, hidden: false }
+			                			{ headerText: '名称', key: 'name', width: 190, hidden: false }
 									],
 									multiple: false,
 									value: ko.observable(undefined)
 							}"></table>
 						</div>
 						<div class="categorytab">
-							<div
-								data-bind="ntsSearchBox: {
-									searchMode: 'highlight',
-									targetKey: 'code',
-									comId: 'categories',
-									items: ko.observableArray([]),
-									selectedKey: 'code', 
-									fields: ['name', 'code'], 
-									mode: 'igGrid'}"></div>
+							<div class="form-group">
+							<button type="button">#{i18n.getText('CPS001_27')}</button>
+							<div id="combo-box" data-bind="ntsComboBox: {
+								options: ko.observableArray([
+										{id: 1, name: 'name 1'},
+										{id: 2, name: 'name 2'},
+										{id: 3, name: 'name 3'},
+										{id: 4, name: 'name 4'},
+										]),
+								optionsValue: 'id',
+								visibleItemsCount: 5,
+								value: ko.observable(undefined),
+								optionsText: 'name',
+								editable: false,
+								enable: true,
+								columns: [{ prop: 'name', length: 2 }]}"></div>
+							</div>
 							<table id="categories"
 								data-bind="ntsGridList: {								
 									height: 200,
@@ -125,7 +133,7 @@
 									primaryKey: 'id',
 									columns: [
 										{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-			                			{ headerText: '名称', key: 'name', width: 175, hidden: false }
+			                			{ headerText: '名称', key: 'name', width: 190, hidden: false }
 									],
 									multiple: false,
 									value: ko.observable(undefined)
@@ -172,11 +180,11 @@
 						<div class="action-group">
 							<div class="active-panel cf">
 								<div class="column">
-									<button class="btn btn-location">#{i18n.getText('CPS001_34')}</button>
-									<button class="btn btn-details"></button>
+									<button class="btn btn-location" type="button">#{i18n.getText('CPS001_34')}</button>
+									<button class="btn btn-details" type="button"></button>
 								</div>
 								<div class="column">
-									<button class="btn btn-print"></button>
+									<button class="btn btn-print" type="button"></button>
 								</div>
 							</div>
 							<div class="active-panel">

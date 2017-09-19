@@ -35,6 +35,10 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 
 	public final String SELECT_BY_PERSON_IDS = SELECT_NO_WHERE
 			+ " WHERE c.bpsmtPersonPk.pId IN :pids";
+	
+	public final String GET_LAST_EMPLOYEE = "SELECT c.cardNumberLetter FROM BpsstUserSetting c "
+			+ " WHERE c.companyId = :companyId AND c.cardNumberLetter LIKE CONCAT(:cardNo, '%')"
+			+ " ORDER BY  c.cardNumberLetter DESC";
 
 	private static Person toDomain(BpsmtPerson entity) {
 		Person domain = Person.createFromJavaType(entity.bpsmtPersonPk.pId, entity.personName);
@@ -70,5 +74,19 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	@Override
 	public Optional<Person> getByPersonId(String personId) {
 		return this.queryProxy().find(personId, BpsmtPerson.class).map(item -> toDomain(item));
+	}
+
+	@Override
+	public String getLastCardNo(String companyId, String startCardNoLetter) {
+		if (startCardNoLetter == null)
+			startCardNoLetter = "";
+		List<Object[]> lst = this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("companyId", companyId).setParameter("cardNo", startCardNoLetter).getList();
+		String returnStr = "";
+		if (lst.size() > 0) {
+			Object obj = lst.get(0);
+			returnStr = obj.toString();
+		}
+
+		return returnStr;
 	}
 }

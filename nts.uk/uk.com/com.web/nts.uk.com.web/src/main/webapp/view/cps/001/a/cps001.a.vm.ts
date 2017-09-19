@@ -3,7 +3,8 @@ module cps001.a.vm {
     import alert = nts.uk.ui.dialog.alert;
     import text = nts.uk.resource.getText;
 
-    let __viewContext: any = window['__viewContext'] || {},
+    let DEF_AVATAR = 'images/avatar.png',
+        __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
         unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
         invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
@@ -25,6 +26,7 @@ module cps001.a.vm {
             },
             onSearchOnlyClicked: (data: any) => {
                 let self = this;
+                console.log(data);
             },
             onSearchOfWorkplaceClicked: (dataList: Array<any>) => {
                 let self = this;
@@ -40,8 +42,9 @@ module cps001.a.vm {
         person: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ id: '' }));
 
         constructor() {
-            let self = this;
-            
+            let self = this,
+                person = self.person();
+
             self.start();
         }
 
@@ -70,14 +73,14 @@ module cps001.a.vm {
     interface IPersonInfo {
         id: string;
         code?: string;
-        avartar?: string;
+        avatar?: string;
         fullName?: string;
     }
 
     class PersonInfo {
         id: KnockoutObservable<string> = ko.observable('');
         code: KnockoutObservable<string> = ko.observable('');
-        avartar: KnockoutObservable<string> = ko.observable('');
+        avatar: KnockoutObservable<string> = ko.observable(DEF_AVATAR);
         fullName: KnockoutObservable<string> = ko.observable('');
 
         constructor(param: IPersonInfo) {
@@ -85,7 +88,7 @@ module cps001.a.vm {
 
             self.id(param.id || '');
             self.code(param.code || '');
-            self.avartar(param.avartar || '');
+            self.avatar(param.avatar || DEF_AVATAR);
             self.fullName(param.fullName || '');
         }
     }
