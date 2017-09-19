@@ -35,6 +35,7 @@ module nts.uk.at.view.kmk010.a {
              */
             startPage(): JQueryPromise<any> {
                 var self = this;
+                nts.uk.ui.block.invisible();
                 var dfd = $.Deferred();
 
                 // find all unit
@@ -54,9 +55,9 @@ module nts.uk.at.view.kmk010.a {
                 
                 service.findByIdOutsideOTSetting().done(function(dataOutsideOTSetting) {
                     self.outsideOTSettingModel.updateData(dataOutsideOTSetting);
-                    for (var brdItem of self.outsideOTSettingModel.breakdownItems) {
+                    for (var brdItem of self.outsideOTSettingModel.breakdownItems()) {
                         var rateBRDItems: PremiumExtra60HRateModel[] = [];
-                        for (var overtimeItem of self.outsideOTSettingModel.overtimes) {
+                        for (var overtimeItem of self.outsideOTSettingModel.overtimes()) {
                             var rateModel: PremiumExtra60HRateModel = new PremiumExtra60HRateModel();
                             rateModel.updateInfo(brdItem.breakdownItemNo(), overtimeItem.overtimeNo());
                             rateBRDItems.push(rateModel);
@@ -69,10 +70,40 @@ module nts.uk.at.view.kmk010.a {
                             self.superHD60HConMedModel.updateData(dataSuper);
                             self.updateDataSuperHolidayMethod(dataSuper);
                         });
+                        self.updateEnableInputRate();
+                        self.applyChangeEnableInputRate();
+                        nts.uk.ui.block.clear();
                         dfd.resolve(self);
                     });
                 });
                 return dfd.promise();
+            }
+            /**
+             * update enable input rate
+             */
+            private updateEnableInputRate():void{
+                var self = this;
+                for (var overtime of self.outsideOTSettingModel.overtimes()){
+                    for (var brdItem of self.outsideOTSettingModel.breakdownItems()) {
+                        for (var rateBRDItem of brdItem.rateBRDItems()) {
+                           if(rateBRDItem.overtimeNo() == overtime.overtimeNo()){
+                               rateBRDItem.updateEnable(overtime.superHoliday60HOccurs());
+                           } 
+                        }
+                    }
+                }    
+            }
+            /**
+             * apply change enable input rate
+             */
+            
+            private applyChangeEnableInputRate(): void{
+                var self = this;
+                for (var overtime of self.outsideOTSettingModel.overtimes()) {
+                    overtime.superHoliday60HOccurs.subscribe(function(){
+                       self.updateEnableInputRate(); 
+                    });
+                }
             }
 
             /**
@@ -81,8 +112,8 @@ module nts.uk.at.view.kmk010.a {
             private updateDataSuperHolidayMethod(dto: SuperHD60HConMedDto) {
                 if (dto.premiumExtra60HRates && dto.premiumExtra60HRates.length > 0) {
                     var self = this;
-                    for (var brdItem of self.outsideOTSettingModel.breakdownItems) {
-                        for (var rateBRDItem of brdItem.rateBRDItems) {
+                    for (var brdItem of self.outsideOTSettingModel.breakdownItems()) {
+                        for (var rateBRDItem of brdItem.rateBRDItems()) {
                             for (var rateBRDItemUpdate of dto.premiumExtra60HRates) {
                                 if (rateBRDItemUpdate.overtimeNo == rateBRDItem.overtimeNo()
                                     && rateBRDItemUpdate.breakdownItemNo == rateBRDItem.breakdownItemNo()) {
@@ -100,7 +131,7 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 nts.uk.ui.windows.setShared("languageId", self.languageId);
                 nts.uk.ui.windows.sub.modal("/view/kmk/010/b/index.xhtml").onClosed(function() {
-
+                    self.startPage();
                 });
             }
             /**
@@ -110,7 +141,7 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 nts.uk.ui.windows.setShared("languageId", self.languageId);
                 nts.uk.ui.windows.sub.modal("/view/kmk/010/c/index.xhtml").onClosed(function() {
-
+                    self.startPage();
                 });
             }
 
@@ -120,8 +151,8 @@ module nts.uk.at.view.kmk010.a {
             private toArrayRateDto(): PremiumExtra60HRateDto[] {
                 var dataRate: PremiumExtra60HRateDto[] = [];
                 var self = this;
-                for (var brdItem of self.outsideOTSettingModel.breakdownItems) {
-                    for (var rateItem of brdItem.rateBRDItems) {
+                for (var brdItem of self.outsideOTSettingModel.breakdownItems()) {
+                    for (var rateItem of brdItem.rateBRDItems()) {
                         dataRate.push(rateItem.toDto());
                     }
                 }
@@ -133,17 +164,20 @@ module nts.uk.at.view.kmk010.a {
              */
             private saveOutsideOTSetting(): void {
                 var self = this;
-                service.saveOutsideOTSetting(self.outsideOTSettingModel.toDto()).done(function() {
-                    var dto: SuperHD60HConMedDto = self.superHD60HConMedModel.toDto();
-                    dto.premiumExtra60HRates = self.toArrayRateDto();
-                    service.saveSuperHD60HConMed(dto).done(function() {
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                            // reload pa    
+                $('.nts-input').trigger("validate");
+                if (nts.uk.ui.errors.hasError() == false) {
+                    service.saveOutsideOTSetting(self.outsideOTSettingModel.toDto()).done(function() {
+                        var dto: SuperHD60HConMedDto = self.superHD60HConMedModel.toDto();
+                        dto.premiumExtra60HRates = self.toArrayRateDto();
+                        service.saveSuperHD60HConMed(dto).done(function() {
+                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                                self.startPage();
+                            });
                         });
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error);
                     });
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                });
+                }
             }
 
             /**
@@ -165,7 +199,7 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 if(self.languageId === ScreenModel.LANGUAGE_ID_JAPAN){
                     service.findAllOvertime().done(function(dataOvertime){
-                        for (var overtime of self.outsideOTSettingModel.overtimes) {
+                        for (var overtime of self.outsideOTSettingModel.overtimes()) {
                             for(var dtoOvertime of dataOvertime){
                                 if(overtime.overtimeNo() == dtoOvertime.overtimeNo){
                                     overtime.languageName(dtoOvertime.name);    
@@ -174,7 +208,7 @@ module nts.uk.at.view.kmk010.a {
                         } 
                     });    
                     service.findAllOutsideOTBRDItem().done(function(dataOvertimeBRD){
-                        for (var overtime of self.outsideOTSettingModel.breakdownItems) {
+                        for (var overtime of self.outsideOTSettingModel.breakdownItems()) {
                             for(var dtoOvertime of dataOvertimeBRD){
                                 if(overtime.breakdownItemNo() == dtoOvertime.breakdownItemNo){
                                     overtime.languageName(dtoOvertime.name);    
@@ -184,7 +218,7 @@ module nts.uk.at.view.kmk010.a {
                     });
                 }else {
                     service.findAllOvertimeNameLanguage(self.languageId).done(function(dataOvertimeLang){
-                        for (var overtime of self.outsideOTSettingModel.overtimes) {
+                        for (var overtime of self.outsideOTSettingModel.overtimes()) {
                             for(var dtoOvertime of dataOvertimeLang){
                                 if(overtime.overtimeNo() == dtoOvertime.overtimeNo){
                                     overtime.languageName(dtoOvertime.name);    
@@ -194,7 +228,7 @@ module nts.uk.at.view.kmk010.a {
                     });    
                     
                     service.findAllOvertimeLanguageBRDItem(self.languageId).done(function(dataOvertimeBRDLang){
-                        for (var overtime of self.outsideOTSettingModel.breakdownItems) {
+                        for (var overtime of self.outsideOTSettingModel.breakdownItems()) {
                             for(var dtoOvertime of dataOvertimeBRDLang){
                                 if(overtime.breakdownItemNo() == dtoOvertime.breakdownItemNo){
                                     overtime.languageName(dtoOvertime.name);    
@@ -258,7 +292,7 @@ module nts.uk.at.view.kmk010.a {
             name: KnockoutObservable<string>;
             languageName: KnockoutObservable<string>;
             productNumber: KnockoutObservable<number>;
-            rateBRDItems: PremiumExtra60HRateModel[];
+            rateBRDItems: KnockoutObservableArray<PremiumExtra60HRateModel>;
             attendanceItemIds: KnockoutObservableArray<number>;
             attendanceItemName: KnockoutObservable<string>;
 
@@ -268,7 +302,7 @@ module nts.uk.at.view.kmk010.a {
                 this.name = ko.observable('');
                 this.languageName = ko.observable('');
                 this.productNumber = ko.observable(0);
-                this.rateBRDItems = [];
+                this.rateBRDItems = ko.observableArray([]);
                 this.attendanceItemIds = ko.observableArray([]);
                 this.attendanceItemName = ko.observable('');
             }
@@ -307,7 +341,7 @@ module nts.uk.at.view.kmk010.a {
                 return dto;
             }
             public updateRateData(rateBRDItems: PremiumExtra60HRateModel[]): void {
-                this.rateBRDItems = rateBRDItems;
+                this.rateBRDItems(rateBRDItems);
             }
             /**
              * function on click button show dialog KDL021  
@@ -343,31 +377,34 @@ module nts.uk.at.view.kmk010.a {
         export class OutsideOTSettingModel {
             note: KnockoutObservable<string>;
             calculationMethod: KnockoutObservable<number>;
-            overtimes: OvertimeModel[];
-            breakdownItems: OutsideOTBRDItemModel[]
+            overtimes: KnockoutObservableArray<OvertimeModel>;
+            breakdownItems: KnockoutObservableArray<OutsideOTBRDItemModel>;
 
             constructor() {
                 this.note = ko.observable('');
                 this.calculationMethod = ko.observable(0);
-                this.overtimes = [];
-                this.breakdownItems = [];
+                this.overtimes = ko.observableArray([]);
+                this.breakdownItems = ko.observableArray([]);
             }
 
             updateData(dto: OutsideOTSettingDto) {
                 this.note(dto.note);
                 this.calculationMethod(dto.calculationMethod);
-                this.overtimes = [];
+                this.overtimes();
+                var dataOvertimeModel: OvertimeModel[] = [];
                 for (var overtime of dto.overtimes) {
                     var model: OvertimeModel = new OvertimeModel();
                     model.updateData(overtime);
-                    this.overtimes.push(model);
+                    dataOvertimeModel.push(model);
                 }
-                this.breakdownItems = [];
+                this.overtimes(dataOvertimeModel);
+                var dataBreakdownItemModel : OutsideOTBRDItemModel[] = [];
                 for (var overtimeBRD of dto.breakdownItems) {
                     var modelBRD: OutsideOTBRDItemModel = new OutsideOTBRDItemModel();
                     modelBRD.updateData(overtimeBRD);
-                    this.breakdownItems.push(modelBRD);
+                    dataBreakdownItemModel.push(modelBRD);
                 }
+                this.breakdownItems(dataBreakdownItemModel);
 
             }
 
@@ -375,11 +412,11 @@ module nts.uk.at.view.kmk010.a {
                 var overtimes: OvertimeDto[] = [];
                 var breakdownItems: OutsideOTBRDItemDto[] = [];
 
-                for (var modelOvertime of this.overtimes) {
+                for (var modelOvertime of this.overtimes()) {
                     overtimes.push(modelOvertime.toDto());
                 }
 
-                for (var modelBreakdown of this.breakdownItems) {
+                for (var modelBreakdown of this.breakdownItems()) {
                     breakdownItems.push(modelBreakdown.toDto());
                 }
 
@@ -398,11 +435,12 @@ module nts.uk.at.view.kmk010.a {
             overtimeNo: KnockoutObservable<number>;
             breakdownItemNo: KnockoutObservable<number>;
             premiumRate: KnockoutObservable<number>;
-
+            enableInput: KnockoutObservable<boolean>;
             constructor() {
                 this.overtimeNo = ko.observable(0);
                 this.breakdownItemNo = ko.observable(0);
                 this.premiumRate = ko.observable(0);
+                this.enableInput = ko.observable(true);
             }
 
             updateData(dto: PremiumExtra60HRateDto) {
@@ -423,7 +461,10 @@ module nts.uk.at.view.kmk010.a {
                 };
                 return dto;
             }
-
+            updateEnable(enableInput: boolean): void{
+               this.enableInput(enableInput); 
+            }
+            
         }
 
         export class SuperHD60HConMedModel {

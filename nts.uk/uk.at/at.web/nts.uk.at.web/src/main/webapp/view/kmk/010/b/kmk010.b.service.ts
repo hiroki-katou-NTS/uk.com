@@ -5,8 +5,8 @@ module nts.uk.at.view.kmk010.b {
     
     export module service {
         var paths = {
-            saveAllOvertime : "ctx/at/shared/overtime/save",
-            saveAllOvertimeLanguageName : "ctx/at/shared/overtime/language/name/saveAll"
+            saveAllOvertime : "ctx/at/shared/outsideot/overtime/save",
+            saveAllOvertimeLanguageName : "ctx/at/shared/outsideot/overtime/name/language/saveAll"
         }
         
          /**

@@ -69,39 +69,50 @@ module nts.uk.at.view.kmk010.c {
             /**
              * save overtime break down item on lick button save
              */
-            private saveOutsideOTBRDItem(): void{
-                var self = this;
-                if(self.languageId === ScreenModel.LANGUAGE_ID_JAPAN){
-                    // convert model to dto
-                    var overtimes: OutsideOTBRDItemDto[] = [];
-                    for (var model of self.lstOutsideOTBRDItemModel) {
-                        overtimes.push(model.toDto());
-                    }
+           private saveOutsideOTBRDItem(): void {
+               var self = this;
+               if (self.languageId === ScreenModel.LANGUAGE_ID_JAPAN) {
+                   // convert model to dto
+                   var overtimes: OutsideOTBRDItemDto[] = [];
+                   for (var model of self.lstOutsideOTBRDItemModel) {
+                       overtimes.push(model.toDto());
+                   }
 
-                    // call service save all overtime
-                    service.saveAllOutsideOTBRDItem(overtimes).done(function() {
-                        console.log('YES');
-                    }).fail(function(error) {
-
-                    });
-                }else {
-                     var overtimeLangNames: OutsideOTBRDItemLangDto[] = [];
-                    for(var model of self.lstOutsideOTBRDItemModel){
-                        var dto: OutsideOTBRDItemLangDto = {
-                            name: model.name(),
-                            languageId: self.languageId,
-                            breakdownItemNo: model.breakdownItemNo()
-                        };
-                        overtimeLangNames.push(dto); 
-                    }    
-                    // call service save all overtime language name
-                    service.saveAllOvertimeLanguageBRDItem(overtimeLangNames).done(function(){
-                        console.log('YES');
-                    }).fail(function(error){
-                        
-                    });    
-                }    
-            }
+                   // call service save all overtime
+                   service.saveAllOutsideOTBRDItem(overtimes).done(function() {
+                       nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                           nts.uk.ui.windows.close();
+                       });
+                   }).fail(function(error) {
+                       nts.uk.ui.dialog.alertError(error);
+                   });
+               } else {
+                   var overtimeLangNames: OutsideOTBRDItemLangDto[] = [];
+                   for (var model of self.lstOutsideOTBRDItemModel) {
+                       var dto: OutsideOTBRDItemLangDto = {
+                           name: model.name(),
+                           languageId: self.languageId,
+                           breakdownItemNo: model.breakdownItemNo()
+                       };
+                       overtimeLangNames.push(dto);
+                   }
+                   // call service save all overtime language name
+                   service.saveAllOvertimeLanguageBRDItem(overtimeLangNames).done(function() {
+                       nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                           nts.uk.ui.windows.close();
+                       });
+                   }).fail(function(error) {
+                       nts.uk.ui.dialog.alertError(error);
+                   });
+               }
+           }
+            
+            /**
+             * function by click button close dialog
+             */
+           private closeSaveOutsideOTBRDItem(): void {
+               nts.uk.ui.windows.close();
+           }
         }
 
     }
