@@ -33,7 +33,7 @@ public class PersonPubImp implements PersonPub {
 	@Override
 	public List<PubPersonDto> findByPersonIds(List<String> personIds) {
 		return personRepository.getPersonByPersonIds(personIds).stream()
-				.map(item -> new PubPersonDto(item.getPersonId().v(), item.getPersonNameGroup().getPersonName().v()))
+				.map(item -> new PubPersonDto(item.getPersonId(), item.getPersonNameGroup().getPersonName().v()))
 				.collect(Collectors.toList());
 	}
 
