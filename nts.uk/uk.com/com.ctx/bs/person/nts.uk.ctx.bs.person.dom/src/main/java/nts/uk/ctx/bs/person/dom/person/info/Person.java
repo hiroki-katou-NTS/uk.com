@@ -49,7 +49,7 @@ public class Person extends AggregateRoot {
 	/** The Hobby - 趣味 */
 	private Hobby hobBy;
 
-	/** The countryId - 国籍*/
+	/** The countryId - 国籍    chua xac dinh duoc PrimitiveValue*/
 	private Nationality countryId;
 
 	/** The Taste - 嗜好 */

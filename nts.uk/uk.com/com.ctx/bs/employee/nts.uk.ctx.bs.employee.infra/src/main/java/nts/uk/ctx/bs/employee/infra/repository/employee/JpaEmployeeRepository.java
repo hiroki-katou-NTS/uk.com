@@ -30,10 +30,10 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	// + " AND d.bsydtJobEntryHistoryPk.entryDate <= :entryDate "
 	// + " AND d.retireDate >= :entryDate ";
 
-	public final String SELECT_NO_WHERE = "SELECT c ,d FROM BsymtEmployee c , BsymtJobEntryHistory d";
+	public final String SELECT_NO_WHERE = "SELECT c FROM BsymtEmployee c";
 
 	public final String SELECT_BY_EMP_CODE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
-			+ " AND c.employeeCode =:employeeCode " + " AND  d.bsymtJobEntryHistoryPk.entryDate <= :entryDate "
+			+ " AND c.employeeCode =:employeeCode " + " AND  c.listEntryHist.bsymtJobEntryHistoryPk.entryDate <= :entryDate "
 			+ " AND d.retireDate >= :entryDate ";
 
 	public final String SELECT_BY_LIST_EMP_CODE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
@@ -56,7 +56,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 			+ " WHERE c.companyId = :companyId AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
 			+ " ORDER BY  c.employeeCode DESC";
 	public final String SELECT_BY_STANDARDDATE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
-			+ " AND  d.bsymtJobEntryHistoryPk.entryDate <= :standardDate " + " AND d.retireDate >= :standardDate ";
+			+ " AND  c.listEntryHist.bsymtJobEntryHistoryPk.entryDate <= :standardDate " + " AND c.listEntryHist.retireDate >= :standardDate ";
 
 	/**
 	 * convert entity BsymtEmployee to domain Employee
