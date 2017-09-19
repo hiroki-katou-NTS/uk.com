@@ -102,13 +102,13 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					root.getApprovalId(), root.getEmployeeId(),
 					"", 
 					root.getHistoryId(),
-					root.getApplicationType().value,
+					root.getApplicationType() == null ? null: root.getApplicationType().value,
 					root.getPeriod().getEndDate(), 
 					root.getPeriod().getEndDate(), 
 					root.getBranchId(), 
 					root.getAnyItemApplicationId(),
-					root.getConfirmationRootType().value,
-					root.getEmploymentRootAtr().value); 
+					root.getConfirmationRootType() == null ? null: root.getConfirmationRootType().value,
+					root.getEmploymentRootAtr() == null ? null: root.getEmploymentRootAtr().value); 
 			//Neu da co person roi
 			if(!mapPsRootInfor.isEmpty() && mapPsRootInfor.containsKey(root.getEmployeeId())) {
 				PersonApproverOutput psApp = mapPsRootInfor.get(root.getEmployeeId());
@@ -141,13 +141,13 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					"",
 					root.getWorkplaceId(), 
 					root.getHistoryId(),
-					root.getApplicationType().value,
+					root.getApplicationType() == null ? null:  root.getApplicationType().value,
 					root.getPeriod().getEndDate(), 
 					root.getPeriod().getEndDate(), 
 					root.getBranchId(), 
 					root.getAnyItemApplicationId(),
-					root.getConfirmationRootType().value,
-					root.getEmploymentRootAtr().value);
+					root.getConfirmationRootType()  == null ? null:  root.getConfirmationRootType().value,
+					root.getEmploymentRootAtr() == null ? null: root.getEmploymentRootAtr().value);
 			//Neu da co workplace roi
 			if(!mapWpRootInfor.isEmpty() && mapWpRootInfor.containsKey(root.getWorkplaceId())) {
 				WorkplaceApproverOutput wpApp = mapWpRootInfor.get(root.getWorkplaceId());						
