@@ -28,7 +28,8 @@
 						<tr>
 							<td class="firstLine">
 								<label>#{i18n.getText('CPS002_54')}</label>
-								<input type="text" data-bind="value: txtEmployeeCode"/>
+								<input type="text" maxlength="12" data-bind="value: txtEmployeeCode, visible: !cardNoMode"/>
+								<input type="text" maxlength="20" data-bind="value: txtCardNo, visible: cardNoMode"/>
 								<label data-bind="visible: !cardNoMode">#{i18n.getText('CPS002_56')}</label>
 								<label data-bind="visible: cardNoMode">#{i18n.getText('CPS002_62')}</label>
 							</td>							

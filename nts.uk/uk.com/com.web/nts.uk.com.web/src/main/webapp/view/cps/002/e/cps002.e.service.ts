@@ -4,13 +4,14 @@ module cps002.e.service{
     let basePath = "basic/organization/employee";
     let paths = {
         getEmlCode:"/getGenerateEmplCode",
-        getCardNo: ""
+        getCardNo: "/getGenerateCardNo"
     };
     
-    export function getEmlCode(startLetter){
-        return ajax("com", basePath+paths.getEmlCode, startLetter);
+    export function getEmlCode(startLetters){
+        return ajax("com", basePath+paths.getEmlCode, startLetters);
     }
     
-    export function getCardNo(){
+    export function getCardNo(startLetters){
+        return ajax("com", basePath+paths.getCardNo, startLetters);
     }
 }

@@ -8,7 +8,8 @@ module cps002.e.vm {
 
     export class ViewModel {
         cardNoMode: KnockoutObservable<boolean> = ko.observable(false);
-        txtEmployeeCode: KnockoutObservable<string> = ko.observable("");
+        txtEmployeeCode: KnockoutObservable<string> = ko.observable("").extend({maxLength: 12});
+        txtCardNo: KnockoutObservable<string> = ko.observable("").extend({maxLength: 20});
         generateEmCode: KnockoutObservable<string> = ko.observable("");
         constructor() {
             let self = this;
@@ -32,7 +33,12 @@ module cps002.e.vm {
         
         getCardNo(){
             let self = this;
-             alertError({ messageId: "Msg_505" });
+            service.getCardNo(self.txtCardNo()).done(function(emCode){
+                self.generateEmCode(emCode);
+            
+            }).fail(function(){
+                 alertError({ messageId: "Msg_505" });
+            });
         }
         
         returnEmCode(){
