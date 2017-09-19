@@ -23,15 +23,15 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "KSHST_OVER_TIME_LANG_NAME")
-public class KshstOverTimeLangName extends JpaEntity implements Serializable {
+@Table(name = "KSHST_OVER_TIME_NAME_LANG")
+public class KshstOverTimeNameLang extends JpaEntity implements Serializable {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
     /** The kshst over time lang name PK. */
     @EmbeddedId
-    protected KshstOverTimeLangNamePK kshstOverTimeLangNamePK;
+    protected KshstOverTimeNameLangPK kshstOverTimeNameLangPK;
     
     /** The name. */
     @Basic(optional = false)
@@ -42,16 +42,16 @@ public class KshstOverTimeLangName extends JpaEntity implements Serializable {
     /**
      * Instantiates a new kshst over time lang name.
      */
-    public KshstOverTimeLangName() {
+    public KshstOverTimeNameLang() {
     }
 
     /**
      * Instantiates a new kshst over time lang name.
      *
-     * @param kshstOverTimeLangNamePK the kshst over time lang name PK
+     * @param KshstOverTimeNameLangPK the kshst over time lang name PK
      */
-    public KshstOverTimeLangName(KshstOverTimeLangNamePK kshstOverTimeLangNamePK) {
-        this.kshstOverTimeLangNamePK = kshstOverTimeLangNamePK;
+    public KshstOverTimeNameLang(KshstOverTimeNameLangPK kshstOverTimeNameLangPK) {
+        this.kshstOverTimeNameLangPK = kshstOverTimeNameLangPK;
     }
 
     /**
@@ -61,8 +61,8 @@ public class KshstOverTimeLangName extends JpaEntity implements Serializable {
      * @param overTimeNo the over time no
      * @param languageId the language id
      */
-    public KshstOverTimeLangName(String cid, short overTimeNo, String languageId) {
-        this.kshstOverTimeLangNamePK = new KshstOverTimeLangNamePK(cid, overTimeNo, languageId);
+    public KshstOverTimeNameLang(String cid, int overTimeNo, String languageId) {
+        this.kshstOverTimeNameLangPK = new KshstOverTimeNameLangPK(cid, overTimeNo, languageId);
     }
 
     /**
@@ -70,17 +70,17 @@ public class KshstOverTimeLangName extends JpaEntity implements Serializable {
      *
      * @return the kshst over time lang name PK
      */
-    public KshstOverTimeLangNamePK getKshstOverTimeLangNamePK() {
-        return kshstOverTimeLangNamePK;
+    public KshstOverTimeNameLangPK getKshstOverTimeNameLangPK() {
+        return kshstOverTimeNameLangPK;
     }
 
     /**
      * Sets the kshst over time lang name PK.
      *
-     * @param kshstOverTimeLangNamePK the new kshst over time lang name PK
+     * @param KshstOverTimeNameLangPK the new kshst over time lang name PK
      */
-    public void setKshstOverTimeLangNamePK(KshstOverTimeLangNamePK kshstOverTimeLangNamePK) {
-        this.kshstOverTimeLangNamePK = kshstOverTimeLangNamePK;
+    public void setKshstOverTimeNameLangPK(KshstOverTimeNameLangPK kshstOverTimeNameLangPK) {
+        this.kshstOverTimeNameLangPK = kshstOverTimeNameLangPK;
     }
 
     /* (non-Javadoc)
@@ -89,7 +89,7 @@ public class KshstOverTimeLangName extends JpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (kshstOverTimeLangNamePK != null ? kshstOverTimeLangNamePK.hashCode() : 0);
+        hash += (kshstOverTimeNameLangPK != null ? kshstOverTimeNameLangPK.hashCode() : 0);
         return hash;
     }
 
@@ -99,13 +99,13 @@ public class KshstOverTimeLangName extends JpaEntity implements Serializable {
     @Override
 	public boolean equals(Object object) {
 		// not set
-		if (!(object instanceof KshstOverTimeLangName)) {
+		if (!(object instanceof KshstOverTimeNameLang)) {
 			return false;
 		}
-		KshstOverTimeLangName other = (KshstOverTimeLangName) object;
-		if ((this.kshstOverTimeLangNamePK == null && other.kshstOverTimeLangNamePK != null)
-				|| (this.kshstOverTimeLangNamePK != null
-						&& !this.kshstOverTimeLangNamePK.equals(other.kshstOverTimeLangNamePK))) {
+		KshstOverTimeNameLang other = (KshstOverTimeNameLang) object;
+		if ((this.kshstOverTimeNameLangPK == null && other.kshstOverTimeNameLangPK != null)
+				|| (this.kshstOverTimeNameLangPK != null
+						&& !this.kshstOverTimeNameLangPK.equals(other.kshstOverTimeNameLangPK))) {
 			return false;
 		}
 		return true;
@@ -116,7 +116,7 @@ public class KshstOverTimeLangName extends JpaEntity implements Serializable {
      */
     @Override
     public String toString() {
-        return "entity.KshstOverTimeLangName[ kshstOverTimeLangNamePK=" + kshstOverTimeLangNamePK + " ]";
+        return "entity.KshstOverTimeLangName[ KshstOverTimeNameLangPK=" + kshstOverTimeNameLangPK + " ]";
     }
 
 	/* (non-Javadoc)
@@ -124,7 +124,7 @@ public class KshstOverTimeLangName extends JpaEntity implements Serializable {
 	 */
 	@Override
 	protected Object getKey() {
-		return this.kshstOverTimeLangNamePK;
+		return this.kshstOverTimeNameLangPK;
 	}
     
 }

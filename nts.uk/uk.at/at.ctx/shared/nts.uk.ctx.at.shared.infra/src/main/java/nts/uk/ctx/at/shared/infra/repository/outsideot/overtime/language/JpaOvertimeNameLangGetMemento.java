@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeName;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.LanguageId;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangGetMemento;
-import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeLangName;
+import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeNameLang;
 
 /**
  * The Class JpaOvertimeNameLangGetMemento.
@@ -17,14 +17,14 @@ import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTime
 public class JpaOvertimeNameLangGetMemento implements OvertimeNameLangGetMemento{
 
 	/** The entity. */
-	private KshstOverTimeLangName entity;
+	private KshstOverTimeNameLang entity;
 	
 	/**
 	 * Instantiates a new jpa overtime name lang get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOvertimeNameLangGetMemento(KshstOverTimeLangName entity) {
+	public JpaOvertimeNameLangGetMemento(KshstOverTimeNameLang entity) {
 		this.entity = entity;
 	}
 	
@@ -32,19 +32,19 @@ public class JpaOvertimeNameLangGetMemento implements OvertimeNameLangGetMemento
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangNameGetMemento#
+	 * nts.uk.ctx.at.shared.dom.overtime.language.OvertimeNameLangGetMemento#
 	 * getCompanyId()
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.entity.getKshstOverTimeLangNamePK().getCid());
+		return new CompanyId(this.entity.getKshstOverTimeNameLangPK().getCid());
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangNameGetMemento#
+	 * nts.uk.ctx.at.shared.dom.overtime.language.OvertimeNameLangGetMemento#
 	 * getName()
 	 */
 	@Override
@@ -56,20 +56,20 @@ public class JpaOvertimeNameLangGetMemento implements OvertimeNameLangGetMemento
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangNameGetMemento#
+	 * nts.uk.ctx.at.shared.dom.overtime.language.OvertimeNameLangGetMemento#
 	 * getLanguageId()
 	 */
 	@Override
 	public LanguageId getLanguageId() {
-		return new LanguageId(this.entity.getKshstOverTimeLangNamePK().getLanguageId());
+		return new LanguageId(this.entity.getKshstOverTimeNameLangPK().getLanguageId());
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangNameGetMemento#getOvertimeNo()
+	 * @see nts.uk.ctx.at.shared.dom.overtime.language.OvertimeNameLangGetMemento#getOvertimeNo()
 	 */
 	@Override
 	public OvertimeNo getOvertimeNo() {
-		return OvertimeNo.valueOf(this.entity.getKshstOverTimeLangNamePK().getOverTimeNo());
+		return OvertimeNo.valueOf(this.entity.getKshstOverTimeNameLangPK().getOverTimeNo());
 	}
 	
 

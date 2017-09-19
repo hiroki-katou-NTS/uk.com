@@ -20,7 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Embeddable
-public class KshstOverTimeLangNamePK implements Serializable {
+public class KshstOverTimeNameLangPK implements Serializable {
     
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -46,7 +46,7 @@ public class KshstOverTimeLangNamePK implements Serializable {
     /**
      * Instantiates a new kshst over time lang name PK.
      */
-    public KshstOverTimeLangNamePK() {
+    public KshstOverTimeNameLangPK() {
     }
 
     /**
@@ -56,7 +56,7 @@ public class KshstOverTimeLangNamePK implements Serializable {
      * @param overTimeNo the over time no
      * @param languageId the language id
      */
-    public KshstOverTimeLangNamePK(String cid, int overTimeNo, String languageId) {
+    public KshstOverTimeNameLangPK(String cid, int overTimeNo, String languageId) {
         this.cid = cid;
         this.overTimeNo = overTimeNo;
         this.languageId = languageId;
@@ -81,10 +81,10 @@ public class KshstOverTimeLangNamePK implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof KshstOverTimeLangNamePK)) {
+        if (!(object instanceof KshstOverTimeNameLangPK)) {
             return false;
         }
-        KshstOverTimeLangNamePK other = (KshstOverTimeLangNamePK) object;
+        KshstOverTimeNameLangPK other = (KshstOverTimeNameLangPK) object;
         if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
             return false;
         }

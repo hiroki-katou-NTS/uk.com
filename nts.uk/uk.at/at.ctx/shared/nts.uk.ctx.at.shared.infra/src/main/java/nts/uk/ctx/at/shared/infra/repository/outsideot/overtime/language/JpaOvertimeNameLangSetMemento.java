@@ -9,25 +9,25 @@ import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeName;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.LanguageId;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeLangName;
-import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeLangNamePK;
+import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeNameLang;
+import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeNameLangPK;
 
 /**
- * The Class JpaOvertimeLangNameSetMemento.
+ * The Class JpaOvertimeNameLangSetMemento.
  */
-public class JpaOvertimeLangNameSetMemento implements OvertimeNameLangSetMemento {
+public class JpaOvertimeNameLangSetMemento implements OvertimeNameLangSetMemento {
 	
 	/** The entity. */
-	private KshstOverTimeLangName entity;
+	private KshstOverTimeNameLang entity;
 	
 	/**
 	 * Instantiates a new jpa overtime lang name set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaOvertimeLangNameSetMemento(KshstOverTimeLangName entity) {
-		if(entity.getKshstOverTimeLangNamePK() == null){
-			entity.setKshstOverTimeLangNamePK(new KshstOverTimeLangNamePK());
+	public JpaOvertimeNameLangSetMemento(KshstOverTimeNameLang entity) {
+		if(entity.getKshstOverTimeNameLangPK() == null){
+			entity.setKshstOverTimeNameLangPK(new KshstOverTimeNameLangPK());
 		}
 		this.entity = entity;
 	}
@@ -36,19 +36,19 @@ public class JpaOvertimeLangNameSetMemento implements OvertimeNameLangSetMemento
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangNameSetMemento#
+	 * nts.uk.ctx.at.shared.dom.overtime.language.OvertimeNameLangSetMemento#
 	 * setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.entity.getKshstOverTimeLangNamePK().setCid(companyId.v());
+		this.entity.getKshstOverTimeNameLangPK().setCid(companyId.v());
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangNameSetMemento#
+	 * nts.uk.ctx.at.shared.dom.overtime.language.OvertimeNameLangSetMemento#
 	 * setName(nts.uk.ctx.at.shared.dom.overtime.OvertimeName)
 	 */
 	@Override
@@ -60,24 +60,24 @@ public class JpaOvertimeLangNameSetMemento implements OvertimeNameLangSetMemento
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangNameSetMemento#
+	 * nts.uk.ctx.at.shared.dom.overtime.language.OvertimeNameLangSetMemento#
 	 * setLanguageId(nts.uk.ctx.at.shared.dom.overtime.language.LanguageId)
 	 */
 	@Override
 	public void setLanguageId(LanguageId languageId) {
-		this.entity.getKshstOverTimeLangNamePK().setLanguageId(languageId.v());
+		this.entity.getKshstOverTimeNameLangPK().setLanguageId(languageId.v());
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see
-	 * nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangNameSetMemento#
+	 * nts.uk.ctx.at.shared.dom.overtime.language.OvertimeNameLangSetMemento#
 	 * setOvertimeNo(nts.uk.ctx.at.shared.dom.overtime.OvertimeNo)
 	 */
 	@Override
 	public void setOvertimeNo(OvertimeNo overtimeNo) {
-		this.entity.getKshstOverTimeLangNamePK().setOverTimeNo(overtimeNo.value);
+		this.entity.getKshstOverTimeNameLangPK().setOverTimeNo(overtimeNo.value);
 	}
 	
 }

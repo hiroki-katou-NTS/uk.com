@@ -8,15 +8,15 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KshstOverTimeLangName_.
+ * The Class KshstOverTimeNameLang_.
  */
-@StaticMetamodel(KshstOverTimeLangName.class)
-public class KshstOverTimeLangName_ {
+@StaticMetamodel(KshstOverTimeNameLang.class)
+public class KshstOverTimeNameLang_ {
 
-	/** The kshst over time language name PK. */
-	public static volatile SingularAttribute<KshstOverTimeLangName, KshstOverTimeLangNamePK> kshstOverTimeLangNamePK;
+	/** The kshst over time name lang PK. */
+	public static volatile SingularAttribute<KshstOverTimeNameLang, KshstOverTimeNameLangPK> kshstOverTimeNameLangPK;
 	
 	/** The name. */
-	public static volatile SingularAttribute<KshstOverTimeLangName, String> name;
+	public static volatile SingularAttribute<KshstOverTimeNameLang, String> name;
 	
 }
