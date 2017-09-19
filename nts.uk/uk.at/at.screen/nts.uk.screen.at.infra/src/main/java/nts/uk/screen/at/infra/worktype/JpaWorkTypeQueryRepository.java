@@ -14,7 +14,7 @@ import nts.uk.screen.at.app.worktype.WorkTypeQueryRepository;
 import nts.uk.screen.at.app.worktype.WorkTypeSetDto;
 
 @Stateless
-public class JpaWorkTypeRepositoryQuery extends JpaRepository implements WorkTypeQueryRepository {
+public class JpaWorkTypeQueryRepository extends JpaRepository implements WorkTypeQueryRepository {
 	
 	private static final String SELECT_FROM_WORKTYPE = "SELECT c FROM KshmtWorkType c";
 

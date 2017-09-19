@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-public class WorkTypeQueryFind {
+public class WorkTypeProcessor {
 
 	@Inject
 	private WorkTypeQueryRepository workTypeQueryRepository;
