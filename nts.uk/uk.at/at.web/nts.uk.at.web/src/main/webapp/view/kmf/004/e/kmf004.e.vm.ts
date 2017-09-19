@@ -44,15 +44,14 @@ module nts.uk.at.view.kmf004.e.viewmodel {
             self.checkUpdate = ko.observable(true);
             self.display = ko.observable(false);
             self.items = ko.observableArray([]);
-            self.selectedId.subscribe((value) => {
-                    if (value == 0) {
-                        self.display(false);
-                    }
-                    else {
-                        self.display(true);
-                    }
-                    console.log(self.display());
-                });
+//            self.selectedId.subscribe((value) => {
+//                    if (value == 0) {
+//                        self.display(false);
+//                    }
+//                    else {
+//                        self.display(true);
+//                    }
+//                });
             self.selectedCode.subscribe((code) => {   
                 if (code) {
                     let foundItem: Per = _.find(self.lstPer(), (item: Per) => {
@@ -60,6 +59,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                     });
                     self.checkUpdate(true);
                     self.selectedOption(foundItem);
+                    self.selectedId(self.selectedOption().yearServiceCls);
                     self.selectedOption().yearServicePerSets;
                     self.items([]);
                     _.forEach(self.selectedOption().yearServicePerSets, o => {
@@ -128,6 +128,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                     sortedData(_.orderBy(lstData, ['yearServiceCode'], ['asc']));
                     self.lstPer(sortedData());
                     self.selectedOption(self.lstPer()[0]);
+                    self.selectedId(self.selectedOption().yearServiceCls);
                     self.selectedCode(ko.toJS(self.lstPer()[0].yearServiceCode));
                     self.selectedName(self.lstPer()[0].yearServiceName);
                     self.codeObject(ko.toJS(self.lstPer()[0].yearServiceCode));
@@ -173,7 +174,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                 specialHolidayCode: nts.uk.ui.windows.getShared('KMF004D_SPHD_CD'),
                 yearServiceCode: ko.toJS(self.codeObject()), 
                 yearServiceName: self.selectedName(),
-                yearServiceCls: 1,
+                yearServiceCls: self.selectedId(),
                 yearServicePerSets: ko.toJS(self.getListItems()),   
             }
             
@@ -183,12 +184,15 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                     // update item to list  
                     if(self.checkUpdate() == true){
                         service.update(dataTransfer).done(function(errors: Array<string>){
-                            self.selectedCode(code);    
-                            if (errors && errors.length > 0) {
-                                self.addListError(errors);
-                            }else{
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }); 
-                            }
+                            self.getData().done(function(){
+                                self.selectedCode(code);    
+                                if (errors && errors.length > 0) {
+                                    self.addListError(errors);
+                                }else{
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }); 
+                                }
+                            });
+              
                         }).fail(function(res){
                             $('#inpCode').ntsError('set', res);
                             });

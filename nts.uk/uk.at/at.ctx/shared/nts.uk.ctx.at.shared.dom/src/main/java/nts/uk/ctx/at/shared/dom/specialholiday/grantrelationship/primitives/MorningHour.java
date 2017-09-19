@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.dom.grantrelationship.primitives;
+package nts.uk.ctx.at.shared.dom.specialholiday.grantrelationship.primitives;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.PrimitiveValue;

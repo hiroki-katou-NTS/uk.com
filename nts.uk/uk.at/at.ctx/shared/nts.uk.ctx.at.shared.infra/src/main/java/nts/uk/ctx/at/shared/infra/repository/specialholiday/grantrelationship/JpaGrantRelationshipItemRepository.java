@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.repository.grantrelationship;
+package nts.uk.ctx.at.shared.infra.repository.specialholiday.grantrelationship;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,21 +7,26 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.grantrelationship.GrantRelationship;
-import nts.uk.ctx.at.shared.dom.grantrelationship.repository.GrantRelationshipRepository;
-import nts.uk.ctx.at.shared.infra.entity.grantrelationship.KshstGrantRelationshipItem;
-import nts.uk.ctx.at.shared.infra.entity.grantrelationship.KshstGrantRelationshipPK;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantrelationship.GrantRelationship;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantrelationship.repository.GrantRelationshipRepository;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantrelationship.KshstGrantRelationshipItem;
+import nts.uk.ctx.at.shared.infra.entity.specialholiday.grantrelationship.KshstGrantRelationshipPK;
 
+/**
+ * 
+ * @author yennth
+ *
+ */
 @Stateless
 public class JpaGrantRelationshipItemRepository extends JpaRepository implements GrantRelationshipRepository{
 	
 	private final String SELECT_NO_WHERE = "SELECT c FROM KshstGrantRelationshipItem c ";
 	private final String SELECT_ITEM = SELECT_NO_WHERE + "WHERE c.kshstGrantRelationshipPK.companyId = :companyId";
+	
 	/**
 	 * change from entity to domain
 	 * @param entity
 	 * @return
-	 * 
 	 * author: Hoang Yen
 	 */
 	private static GrantRelationship toDomain(KshstGrantRelationshipItem entity){
@@ -32,6 +37,12 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 																		entity.morningHour);
 		return domain;
 	}
+	
+	/**
+	 * change from domain to entity
+	 * @param domain
+	 * @return
+	 */
 	private static KshstGrantRelationshipItem toEntity(GrantRelationship domain){
 		val entity = new KshstGrantRelationshipItem();
 		entity.kshstGrantRelationshipPK = new KshstGrantRelationshipPK(domain.getCompanyId(), domain.getSpecialHolidayCode(), domain.getRelationshipCode());
@@ -39,6 +50,7 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 		entity.morningHour = domain.getMorningHour() != null ? domain.getMorningHour().v() : null;
 		return entity;
 	}
+	
 	/**
 	 * get all data
 	 * author: Hoang Yen
@@ -47,6 +59,7 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 	public List<GrantRelationship> findAll(String companyId) {
 		return this.queryProxy().query(SELECT_ITEM, KshstGrantRelationshipItem.class).setParameter("companyId", companyId).getList(c->toDomain(c));
 	}
+	
 	/**
 	 * update grant relationship
 	 * author: Hoang Yen
@@ -59,6 +72,7 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 		oldEntity.morningHour = grantRelationship.getMorningHour() != null ? grantRelationship.getMorningHour().v() : null;;
 		this.commandProxy().update(oldEntity);
 	}
+	
 	/**
 	 * insert grant relationship
 	 * author: Hoang Yen
@@ -67,6 +81,7 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 	public void insert(GrantRelationship grantRelationship) {
 		this.commandProxy().insert(toEntity(grantRelationship));
 	}
+	
 	/**
 	 * get grant relationship by code
 	 * author: Hoang Yen
@@ -75,6 +90,7 @@ public class JpaGrantRelationshipItemRepository extends JpaRepository implements
 	public Optional<GrantRelationship> findByCode(String companyId, int specialHolidayCode, String relationshipCode) {
 		return this.queryProxy().find(new KshstGrantRelationshipPK(companyId, specialHolidayCode, relationshipCode), KshstGrantRelationshipItem.class).map(c-> toDomain(c));
 	}
+	
 	/**
 	 * delete grant relation ship
 	 * author: Hoang Yen

@@ -9,7 +9,7 @@ module nts.uk.at.view.kmf004.g.viewmodel {
         grantRelationshipCode: KnockoutObservable<string>;
         // column in list
         gridListColumns: KnockoutObservableArray<any>;
-        // selected code 
+        // selected code    
         selectedCode: KnockoutObservable<string>;
         // selected item in the list 
         selectedOption: KnockoutObservable<GrantRelationship>;
@@ -89,7 +89,16 @@ module nts.uk.at.view.kmf004.g.viewmodel {
                     nts.uk.ui.errors.clearAll();
                 }
             });
-
+//            self.grantDay.subscribe((value) => {
+//                if(value){
+//                    self.grantSelected().grantRelationshipDay = value;    
+//                }     
+//            });
+//            self.morningHour.subscribe((value) => {
+//                if(value){
+//                    self.grantSelected().morningHour = value;    
+//                }     
+//            });
         }
 
         /** get data to list **/
@@ -141,10 +150,12 @@ module nts.uk.at.view.kmf004.g.viewmodel {
             
             nts.uk.ui.block.invisible();
             let specialHolidayCode = getShared("KMF004G_SPHD_CD");
-            let obj = new GrantRelationship(specialHolidayCode, self.selectedCode(), null, self.grantDay(), self.morningHour(), self.isAlreadySet());
+            let obj = new GrantRelationship(specialHolidayCode, self.selectedCode(), self.selectedName(), self.grantDay(), self.morningHour(), self.isAlreadySet());
             _.defer(() => {
                     service.insert(obj).done(function() {
                         self.getData().done(function() {
+                            self.isAlreadySet(true);
+                            self.grantSelected(obj);
                             nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         });
                     }).fail(function(error) {

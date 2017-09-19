@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.grantrelationship;
+package nts.uk.ctx.at.shared.infra.entity.specialholiday.grantrelationship;
 
 import java.io.Serializable;
 
@@ -10,13 +10,14 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+/**
+ * @author yennth
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "KSHST_GRANT_RELATIONSHIP")
-/**
- * @author yennth
- */
 public class KshstGrantRelationshipItem extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
