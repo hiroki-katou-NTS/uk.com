@@ -20,7 +20,9 @@ public class GetMessageReasonForRemand {
 		List<String> listReason = new ArrayList<>();
 		OutputGetAllDataApp ouput = getAllDataAppPhaseFrame.getAllDataAppPhaseFrame(appID);
 		//add reason B3_1 in list Reason
-		listReason.add( ouput.getApplicationDto().get().getApplicationReason());
+		if(ouput.getApplicationDto().isPresent()) {
+			listReason.add( ouput.getApplicationDto().get().getApplicationReason());
+		}
 		//get list phase 
 		List<OutputPhaseAndFrame> outputPhase =  ouput.getListOutputPhaseAndFrame();
 		//loop listPhase get list frame

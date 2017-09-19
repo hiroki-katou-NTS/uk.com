@@ -2,13 +2,13 @@ package nts.uk.ctx.at.request.dom.setting.requestofearch;
 
 import java.util.Optional;
 
-public interface RequestOfEarchWorkplaceRepository {
+public interface RequestOfEachWorkplaceRepository {
 	/**
 	 * get request by company id and workplace
 	 * @param appType
 	 * @return
 	 */
-	Optional<RequestOfEarchWorkplace> getRequest(String companyId,String workplaceId);
+	Optional<RequestOfEachWorkplace> getRequest(String companyId,String workplaceId);
 	/**
 	 * get workplace setting detail by app type
 	 * @param companyId

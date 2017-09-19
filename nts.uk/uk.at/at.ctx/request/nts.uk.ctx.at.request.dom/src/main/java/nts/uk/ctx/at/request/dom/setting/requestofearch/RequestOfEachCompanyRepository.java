@@ -2,13 +2,13 @@ package nts.uk.ctx.at.request.dom.setting.requestofearch;
 
 import java.util.Optional;
 
-public interface RequestOfEarchCompanyRepository {
+public interface RequestOfEachCompanyRepository {
 	/**
 	 * get request by company id
 	 * @param appType
 	 * @return
 	 */
-	Optional<RequestOfEarchCompany> getRequestByCompany(String companyId);
+	Optional<RequestOfEachCompany> getRequestByCompany(String companyId);
 	/**
 	 * get company  setting detail by apptype 
 	 * @param companyId

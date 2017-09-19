@@ -13,7 +13,7 @@ import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.Kaf
 
 @Stateless
 public class JpaApproveAcceptedRepository  extends JpaRepository implements ApproveAcceptedRepository{
-	private final String SELECT_FROM_APPROVE_ACCEPTED = "SELECT c FROM KafdtApplication c"
+	private final String SELECT_FROM_APPROVE_ACCEPTED = "SELECT c FROM KafdtApproveAccepted c"
 			+ " WHERE c.kafdtApproveAcceptedPK.companyID = :companyID "
 			+ " AND c.kafdtApproveAcceptedPK.phaseID = :phaseID ";
 	private final String SELECT_BY_CODE = SELECT_FROM_APPROVE_ACCEPTED

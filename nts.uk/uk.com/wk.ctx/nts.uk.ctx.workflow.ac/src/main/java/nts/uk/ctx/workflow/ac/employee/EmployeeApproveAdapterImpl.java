@@ -5,7 +5,9 @@
 package nts.uk.ctx.workflow.ac.employee;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -17,6 +19,7 @@ import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportAdapter;
 
 /**
  * The Class EmployeeApproveAdapterImpl.
@@ -35,6 +38,8 @@ public class EmployeeApproveAdapterImpl implements EmployeeApproveAdapter {
 	/** The employment pub. */
 	@Inject
 	private SyEmploymentPub employmentPub;
+	@Inject
+	private PersonInforExportAdapter psInfor;
 
 	/*
 	 * (non-Javadoc)
@@ -45,20 +50,19 @@ public class EmployeeApproveAdapterImpl implements EmployeeApproveAdapter {
 	 */
 	public List<EmployeeApproveDto> findByWpkIds(String companyId, List<String> workplaceIds,
 			GeneralDate baseDate) {
-		List<EmployeeExport> empDto = employeePub.findByWpkIds(companyId, workplaceIds, baseDate);
-		List<EmployeeApproveDto> lstEmployees = new ArrayList<>();
-		for (EmployeeExport employeeDto : empDto) {
-			EmployeeApproveDto appDto = new EmployeeApproveDto();
-			appDto.setCompanyId(employeeDto.getCompanyId());
-			appDto.setJoinDate(employeeDto.getJoinDate());
-			appDto.setPId(employeeDto.getPId());
-			appDto.setRetirementDate(employeeDto.getRetirementDate());
-			appDto.setSCd(employeeDto.getSCd());
-			appDto.setSId(employeeDto.getSId());
-			appDto.setSMail(employeeDto.getSMail());
-			lstEmployees.add(appDto);
-		}
-		return lstEmployees;
+		List<EmployeeApproveDto> empDto = employeePub.findByWpkIds(companyId, workplaceIds, baseDate)
+				.stream().map(x -> new EmployeeApproveDto(x.getCompanyId(),
+				x.getPId(), 
+				x.getSId(), 
+				x.getSCd(),
+				psInfor.personName(x.getSId()),
+				"", 
+				"",
+				x.getSMail(),
+				x.getRetirementDate(),
+				x.getJoinDate())).collect(Collectors.toList());
+		
+		return empDto;
 	}
 
 	/*

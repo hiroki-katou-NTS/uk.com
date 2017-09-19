@@ -1,6 +1,5 @@
 package nts.uk.ctx.at.request.app.command.application.stamp;
 
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -19,12 +18,12 @@ import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
-import nts.uk.ctx.at.request.dom.application.stamp.ApplicationStamp;
-import nts.uk.ctx.at.request.dom.application.stamp.ApplicationStampCancel;
-import nts.uk.ctx.at.request.dom.application.stamp.ApplicationStampDetailDomainService;
-import nts.uk.ctx.at.request.dom.application.stamp.ApplicationStampGoOutPermit;
-import nts.uk.ctx.at.request.dom.application.stamp.ApplicationStampOnlineRecord;
-import nts.uk.ctx.at.request.dom.application.stamp.ApplicationStampWork;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampCancel;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampDetailDomainService;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutPermit;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampWork;
 import nts.uk.ctx.at.request.dom.application.stamp.StampAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampCombinationAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampGoOutAtr;
@@ -36,23 +35,23 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class UpdateApplicationStampCommandHandler extends CommandHandler<AppStampCmd>{
+public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 	
 	@Inject
 	private ApplicationRepository applicationRepository;
 	
 	@Inject
-	private ApplicationStampDetailDomainService applicationStampDetailDomainService;
+	private AppStampDetailDomainService applicationStampDetailDomainService;
 	
 	@Override
 	protected void handle(CommandHandlerContext<AppStampCmd> context) {
 		String companyID = AppContexts.user().companyId();
 		AppStampCmd appStampCmd = context.getCommand();
-		ApplicationStamp applicationStamp = null;
+		AppStamp appStamp = null;
 		StampRequestMode stampRequestMode = EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class);
 		switch(stampRequestMode){
 			case STAMP_GO_OUT_PERMIT: 
-				applicationStamp = new ApplicationStamp(
+				appStamp = new AppStamp(
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
@@ -76,10 +75,10 @@ public class UpdateApplicationStampCommandHandler extends CommandHandler<AppStam
 					null,
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
 					appStampCmd.getAppStampGoOutPermitCmds().stream().map(
-						x -> new ApplicationStampGoOutPermit(
+						x -> new AppStampGoOutPermit(
 								EnumAdaptor.valueOf(x.getStampAtr(), StampAtr.class), 
 								x.getStampFrameNo(), 
-								EnumAdaptor.valueOf(x.getStampGoOutReason(), StampGoOutAtr.class), 
+								EnumAdaptor.valueOf(x.getStampGoOutAtr(), StampGoOutAtr.class), 
 								x.getStartTime(), 
 								x.getStartLocation(), 
 								x.getEndTime(), 
@@ -88,10 +87,10 @@ public class UpdateApplicationStampCommandHandler extends CommandHandler<AppStam
 					null,
 					null,
 					null); 
-				applicationStampDetailDomainService.appStampGoOutPermitUpdate(applicationStamp);
+				applicationStampDetailDomainService.appStampGoOutPermitUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp);
 				break;
 			case STAMP_ADDITIONAL: 
-				applicationStamp = new ApplicationStamp(
+				appStamp = new AppStamp(
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
@@ -116,10 +115,10 @@ public class UpdateApplicationStampCommandHandler extends CommandHandler<AppStam
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
 					null,
 					appStampCmd.getAppStampWorkCmds().stream().map(
-						x -> new ApplicationStampWork(
+						x -> new AppStampWork(
 								EnumAdaptor.valueOf(x.getStampAtr(), StampAtr.class), 
 								x.getStampFrameNo(), 
-								EnumAdaptor.valueOf(x.getStampGoOutReason(), StampGoOutAtr.class), 
+								EnumAdaptor.valueOf(x.getStampGoOutAtr(), StampGoOutAtr.class), 
 								x.getSupportCard(), 
 								x.getSupportLocationCD(), 
 								x.getStartTime(), 
@@ -129,10 +128,10 @@ public class UpdateApplicationStampCommandHandler extends CommandHandler<AppStam
 					).collect(Collectors.toList()),
 					null,
 					null);
-				applicationStampDetailDomainService.appStampWorkUpdate(applicationStamp);
+				applicationStampDetailDomainService.appStampWorkUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp);
 				break;
 			case STAMP_CANCEL: 
-				applicationStamp = new ApplicationStamp(
+				appStamp = new AppStamp(
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
@@ -158,16 +157,16 @@ public class UpdateApplicationStampCommandHandler extends CommandHandler<AppStam
 					null,
 					null,
 					appStampCmd.getAppStampCancelCmds().stream().map(
-						x -> new ApplicationStampCancel(
+						x -> new AppStampCancel(
 								EnumAdaptor.valueOf(x.getStampAtr(), StampAtr.class), 
 								x.getStampFrameNo(), 
 								x.getCancelAtr())	
 					).collect(Collectors.toList()),
 					null);
-				applicationStampDetailDomainService.appStampCancelUpdate(applicationStamp);
+				applicationStampDetailDomainService.appStampCancelUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp);
 				break;
 			case STAMP_ONLINE_RECORD: 
-				applicationStamp = new ApplicationStamp(
+				appStamp = new AppStamp(
 					companyID, 
 					appStampCmd.getAppID(),
 					PrePostAtr.POSTERIOR,
@@ -193,10 +192,10 @@ public class UpdateApplicationStampCommandHandler extends CommandHandler<AppStam
 					null,
 					null,
 					null,
-					new ApplicationStampOnlineRecord(
+					new AppStampOnlineRecord(
 							EnumAdaptor.valueOf(appStampCmd.getAppStampOnlineRecordCmd().getStampCombinationAtr(), StampCombinationAtr.class),
 							appStampCmd.getAppStampOnlineRecordCmd().getAppTime()));
-				applicationStampDetailDomainService.appStampOnlineRecordUpdate(applicationStamp);
+				applicationStampDetailDomainService.appStampOnlineRecordUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp);
 				break;
 			default:
 				break;

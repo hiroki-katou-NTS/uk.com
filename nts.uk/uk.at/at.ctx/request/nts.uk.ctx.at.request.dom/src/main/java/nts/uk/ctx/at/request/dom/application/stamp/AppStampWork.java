@@ -16,7 +16,7 @@ import nts.arc.layer.dom.DomainObject;
  */
 @Value
 @EqualsAndHashCode(callSuper = false)
-public class ApplicationStampWork extends DomainObject {
+public class AppStampWork extends DomainObject {
 	private StampAtr stampAtr;
 	
 	/**
@@ -24,7 +24,7 @@ public class ApplicationStampWork extends DomainObject {
 	 */
 	private Integer stampFrameNo;
 	
-	private StampGoOutAtr stampGoOutReason;
+	private StampGoOutAtr stampGoOutAtr;
 	
 	/**
 	 * 応援カード
@@ -56,12 +56,12 @@ public class ApplicationStampWork extends DomainObject {
 	 */
 	private String endLocation;
 
-	public ApplicationStampWork(StampAtr stampAtr, Integer stampFrameNo, StampGoOutAtr stampGoOutReason, String supportCard, 
+	public AppStampWork(StampAtr stampAtr, Integer stampFrameNo, StampGoOutAtr stampGoOutAtr, String supportCard, 
 			String supportLocationCD, Integer startTime, String startLocation, Integer endTime, String endLocation) {
 		super();
 		this.stampAtr = stampAtr;
 		this.stampFrameNo = stampFrameNo;
-		this.stampGoOutReason = stampGoOutReason;
+		this.stampGoOutAtr = stampGoOutAtr;
 		this.supportCard = supportCard;
 		this.supportLocationCD = supportLocationCD;
 		this.startTime = startTime;
