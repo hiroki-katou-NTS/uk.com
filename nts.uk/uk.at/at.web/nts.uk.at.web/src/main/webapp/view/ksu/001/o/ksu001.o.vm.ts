@@ -1,5 +1,6 @@
 module ksu001.o.viewmodel {
     import alert = nts.uk.ui.dialog.alert;
+    import setShare = nts.uk.ui.windows.setShared;
 
     export class ScreenModel {
         listWorkType: KnockoutObservableArray<WorkType>;
@@ -84,30 +85,42 @@ module ksu001.o.viewmodel {
             });
         }
 
+        openDialogO1(): void {
+            let self = this;
+            
+            $('#oViewModel').hide();
+            setShare('listWorkType', self.listWorkType());
+            setShare('listWorkTime', self.listWorkTime());
+            nts.uk.ui.windows.sub.modeless("/view/ksu/001/o1/index.xhtml").onClosed(() => {
+                $('#oViewModel').show();
+            });
+        }
+
         /**
          * find data in DB WORK_TYPE
          */
         findWorkType(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            service.getWorkType().done(function(data: WorkType[]) {
-                if (data.length > 0) {
-                    _.each(data, function(wT) {
-                        self.listWorkType.push(new WorkType({
-                            workTypeCode: wT.workTypeCode,
-                            sortOrder: wT.sortOrder,
-                            symbolicName: wT.symbolicName,
-                            name: wT.name,
-                            abbreviationName: wT.abbreviationName,
-                            memo: wT.memo,
-                            displayAtr: wT.displayAtr
-                        }));
-                    });
-                }
-                dfd.resolve();
-            }).fail(function() {
-                dfd.reject();
-            });
+            //            service.getWorkType().done(function(data: WorkType[]) {
+            //                if (data.length > 0) {
+            //                    _.each(data, function(wT) {
+            //                        self.listWorkType.push(new WorkType({
+            //                            workTypeCode: wT.workTypeCode,
+            //                            sortOrder: wT.sortOrder,
+            //                            symbolicName: wT.symbolicName,
+            //                            name: wT.name,
+            //                            abbreviationName: wT.abbreviationName,
+            //                            memo: wT.memo,
+            //                            displayAtr: wT.displayAtr
+            //                        }));
+            //                    });
+            //                }
+            //                dfd.resolve();
+            //            }).fail(function() {
+            //                dfd.reject();
+            //            });
+            dfd.resolve();
             return dfd.promise();
         }
 

@@ -93,9 +93,9 @@ module ksu001.a.viewmodel {
 
             self.selectedModeDisplay.subscribe(function(newValue) {
                 if (newValue == 1) {
-                    $('#oViewModel').addClass('oViewModelDisplay');
+                    $('#oViewModel').show();
                 } else {
-                    $('#oViewModel').removeClass('oViewModelDisplay');
+                    $('#oViewModel').hide();
                 }
             });
 
@@ -680,7 +680,8 @@ module ksu001.a.viewmodel {
                         popup: {
                             rows: [1],
                             provider: function() { return $("#popup-area8"); }
-                        }]
+                        }
+                    }]
             };
 
             //if haven't data in extable, only update header detail and header horizontal
@@ -757,6 +758,20 @@ module ksu001.a.viewmodel {
             };
 
             nts.uk.ui.dialog.bundledErrors(errorVm);
+        }
+
+        /**
+         * open dialog L
+         */
+        openDialogL(): void {
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/l/index.xhtml");
+        }
+        
+        /**
+         * open dialog N
+         */
+        openDialogN(): void {
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/n/index.xhtml");
         }
 
     }
