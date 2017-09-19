@@ -222,32 +222,31 @@ module nts.uk.com.view.cps006.b.viewmodel {
         genDatatypeValueText() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
-            if (self.itemType() == 2) {
-                switch (self.currentItem().itemTypeState.dataTypeState.dataTypeValue) {
-                    case 1:
-                        return getText('Enum_DataTypeValue_STRING');
-                    case 2:
-                        return getText('Enum_DataTypeValue_NUMERIC');
-                    case 3:
-                        return getText('Enum_DataTypeValue_DATE');
-                    case 4:
-                        return getText('Enum_DataTypeValue_TIME');
-                    case 5:
-                        return getText('Enum_DataTypeValue_TIMEPOINT');
-                    case 6:
-                        return getText('Enum_DataTypeValue_SELECTION');
-                }
+            switch (self.currentItem().itemTypeState.dataTypeState.dataTypeValue) {
+                case 1:
+                    return getText('Enum_DataTypeValue_STRING');
+                case 2:
+                    return getText('Enum_DataTypeValue_NUMERIC');
+                case 3:
+                    return getText('Enum_DataTypeValue_DATE');
+                case 4:
+                    return getText('Enum_DataTypeValue_TIME');
+                case 5:
+                    return getText('Enum_DataTypeValue_TIMEPOINT');
+                case 6:
+                    return getText('Enum_DataTypeValue_SELECTION');
             }
+
 
         }
 
         genStringItemDataTypeText() {
             let self = this;
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
@@ -262,7 +261,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         genStringItemTypeText() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
@@ -284,7 +283,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         genStringNumericItemMinusText() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
@@ -300,7 +299,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         genDateTypeText() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
@@ -319,9 +318,9 @@ module nts.uk.com.view.cps006.b.viewmodel {
         dataType() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null || self.itemType() === 1) {
+            if (self.itemType() === 1) {
 
-                return ;
+                return;
             }
 
             return self.currentItem().itemTypeState.dataTypeState.dataTypeValue;
@@ -333,7 +332,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
 
             if (self.currentItem().itemTypeState == null) {
 
-                return;
+                return 1;
             }
 
             return self.currentItem().itemTypeState.itemType;

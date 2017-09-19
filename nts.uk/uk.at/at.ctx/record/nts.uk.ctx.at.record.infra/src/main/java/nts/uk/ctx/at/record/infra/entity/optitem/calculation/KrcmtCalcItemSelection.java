@@ -1,0 +1,103 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.record.infra.entity.optitem.calculation;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.EmbeddedId;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+
+import lombok.Getter;
+import lombok.Setter;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
+
+/**
+ * The Class KrcmtCalcItemSelection.
+ */
+@Getter
+@Setter
+@Entity
+@Table(name = "KRCMT_CALC_ITEM_SELECTION")
+public class KrcmtCalcItemSelection extends UkJpaEntity implements Serializable {
+
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
+
+	/** The krcmt calc item selection PK. */
+	@EmbeddedId
+	protected KrcmtCalcItemSelectionPK krcmtCalcItemSelectionPK;
+
+	/** The calc atr. */
+	@Column(name = "CALC_ATR")
+	private short calcAtr;
+
+	/** The minus segment. */
+	@Column(name = "MINUS_SEGMENT")
+	private short minusSegment;
+
+	/** The operator. */
+	@Column(name = "OPERATOR")
+	private short operator;
+
+	/**
+	 * Instantiates a new krcmt calc item selection.
+	 */
+	public KrcmtCalcItemSelection() {
+		super();
+	}
+
+	/**
+	 * Instantiates a new krcmt calc item selection.
+	 *
+	 * @param krcmtCalcItemSelectionPK the krcmt calc item selection PK
+	 */
+	public KrcmtCalcItemSelection(KrcmtCalcItemSelectionPK krcmtCalcItemSelectionPK) {
+		this.krcmtCalcItemSelectionPK = krcmtCalcItemSelectionPK;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		int hash = 0;
+		hash += (krcmtCalcItemSelectionPK != null ? krcmtCalcItemSelectionPK.hashCode() : 0);
+		return hash;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object object) {
+		if (!(object instanceof KrcmtCalcItemSelection)) {
+			return false;
+		}
+		KrcmtCalcItemSelection other = (KrcmtCalcItemSelection) object;
+		if ((this.krcmtCalcItemSelectionPK == null && other.krcmtCalcItemSelectionPK != null)
+				|| (this.krcmtCalcItemSelectionPK != null
+						&& !this.krcmtCalcItemSelectionPK.equals(other.krcmtCalcItemSelectionPK))) {
+			return false;
+		}
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
+	 */
+	@Override
+	protected Object getKey() {
+		return this.krcmtCalcItemSelectionPK;
+	}
+
+}

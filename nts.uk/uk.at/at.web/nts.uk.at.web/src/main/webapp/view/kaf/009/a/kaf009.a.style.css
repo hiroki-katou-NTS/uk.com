@@ -113,3 +113,11 @@ button.nts-switch-button {
 	line-height: 40px;
 	margin-left: 20px;
 }
+/*Css commmnet*/
+.commentGo1,.commentGo2{
+	margin: 30px 0px 0px 115px;
+}
+
+.commentBack1,.commentBack2{
+	margin: 30px 0px 0px 50px;
+}

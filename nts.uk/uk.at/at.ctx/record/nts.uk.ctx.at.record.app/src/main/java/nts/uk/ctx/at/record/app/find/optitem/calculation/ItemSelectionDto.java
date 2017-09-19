@@ -7,8 +7,8 @@ package nts.uk.ctx.at.record.app.find.optitem.calculation;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.arc.enums.EnumAdaptor;
-import nts.uk.ctx.at.record.dom.optitem.calculation.ItemSelectionGetMemento;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.record.dom.optitem.calculation.ItemSelectionSetMemento;
 import nts.uk.ctx.at.record.dom.optitem.calculation.MinusSegment;
 import nts.uk.ctx.at.record.dom.optitem.calculation.SelectedAttendanceItem;
@@ -16,7 +16,9 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.SelectedAttendanceItem;
 /**
  * The Class ItemSelectionDto.
  */
-public class ItemSelectionDto implements ItemSelectionGetMemento, ItemSelectionSetMemento {
+@Getter
+@Setter
+public class ItemSelectionDto implements ItemSelectionSetMemento {
 
 	/** The minus segment. */
 	// マイナス区分
@@ -24,7 +26,7 @@ public class ItemSelectionDto implements ItemSelectionGetMemento, ItemSelectionS
 
 	/** The selected attendance items. */
 	// 選択勤怠項目
-	private List<SelectedAttendanceItemDto> selectedAttendanceItems;
+	private List<SelectedAttendanceItemDto> attendanceItems;
 
 	/*
 	 * (non-Javadoc)
@@ -54,30 +56,5 @@ public class ItemSelectionDto implements ItemSelectionGetMemento, ItemSelectionS
 			return dto;
 		}).collect(Collectors.toList());
 
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.record.dom.optitem.calculation.ItemSelectionGetMemento#
-	 * getMinusSegment()
-	 */
-	@Override
-	public MinusSegment getMinusSegment() {
-		return EnumAdaptor.valueOf(this.minusSegment, MinusSegment.class);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.record.dom.optitem.calculation.ItemSelectionGetMemento#
-	 * getListSelectedAttendanceItem()
-	 */
-	@Override
-	public List<SelectedAttendanceItem> getListSelectedAttendanceItem() {
-		return this.selectedAttendanceItems.stream().map(item -> new SelectedAttendanceItem(item))
-				.collect(Collectors.toList());
 	}
 }

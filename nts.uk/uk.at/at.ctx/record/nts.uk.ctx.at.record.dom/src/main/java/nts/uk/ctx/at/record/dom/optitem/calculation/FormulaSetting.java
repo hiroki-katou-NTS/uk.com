@@ -34,7 +34,6 @@ public class FormulaSetting extends DomainObject {
 	 * @param memento the memento
 	 */
 	public FormulaSetting(FormulaSettingGetMemento memento) {
-		super();
 		this.minusSegment = memento.getMinusSegment();
 		this.operator = memento.getOperatorAtr();
 		this.formulaSettingItems = memento.getFormulaSettingItems();

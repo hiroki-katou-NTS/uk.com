@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVac
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
 import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification;
 import nts.uk.ctx.bs.employee.infra.entity.employee.KmnmtEmployee;
-import nts.uk.ctx.bs.employee.infra.entity.employment.CemptEmployment;
+import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CjtmtJobTitle;
 import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWorkplace;
 import nts.uk.screen.at.app.dailyperformance.correction.ClosureDto;
@@ -259,10 +259,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<String> getListEmployment(Integer closureId) {
-		return this.queryProxy().query(SEL_EMPLOYMENT_BY_CLOSURE, CemptEmployment.class)
+		return this.queryProxy().query(SEL_EMPLOYMENT_BY_CLOSURE, BsymtEmployment.class)
 				.setParameter("companyId", AppContexts.user().companyId()).setParameter("closureId", closureId)
 				.getList().stream().map(e -> {
-					return e.getCemptEmploymentPK().getCode();
+					return e.getBsymtEmploymentPK().getCode();
 				}).collect(Collectors.toList());
 	}
 

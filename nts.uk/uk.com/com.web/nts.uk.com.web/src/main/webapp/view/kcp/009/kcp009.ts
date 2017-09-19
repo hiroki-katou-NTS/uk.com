@@ -20,7 +20,7 @@ module kcp009.viewmodel {
         isDisplay: KnockoutObservable<boolean>;
         isShowEmpList: KnockoutObservable<boolean>;
         tabIndex: number;
-        
+
         constructor() {
             var self = this;
             self.empList = ko.observableArray([]);
@@ -29,10 +29,15 @@ module kcp009.viewmodel {
             self.empBusinessName = ko.observable(null);
             self.organizationDesignation = ko.observable(null);
             self.organizationName = ko.observable(null);
-            
-            self.keySearch = ko.observable(null);
+
+            self.keySearch = ko.observable("");
             self.isDisplay = ko.observable(true);
             self.isShowEmpList = ko.observable(false);
+            self.keySearch.subscribe((res) => {
+                if (res) {
+                    self.searchEmp();
+                }
+            });
         }
 
         // Initialize Component
@@ -52,48 +57,24 @@ module kcp009.viewmodel {
             }
             self.empList(data.employeeInputList());
             self.selectedItem = data.selectedItem;
-            
+
             // Set SelectedItem: First Item
             self.selectedItem(data.employeeInputList().length > 0 ? data.employeeInputList()[0].id : null);
-            
-            // Initial Binding from Selected Item
-            if (self.selectedItem()) {
-                var currentItem = self.empList().filter((item) => {
-                    return item.id == self.selectedItem();
-                })[0];
-                if (currentItem) {
-                    self.empDisplayCode(currentItem.code);
-                    self.empBusinessName(currentItem.businessName);
-                    if (data.systemReference == SystemType.EMPLOYMENT) {
-                        self.organizationName(currentItem.workplaceName);
-                    } else {
-                        self.organizationName(currentItem.depName);
-                    }
-                }
-            }
+
             self.targetBtnText = data.targetBtnText;
             self.isDisplayOrganizationName = data.isDisplayOrganizationName;
             if (data.isDisplayOrganizationName) {
                 if (data.systemReference == SystemType.EMPLOYMENT) {
                     // Set Organization Designation if System Reference is Employment
                     self.organizationDesignation(nts.uk.resource.getText("Com_Workplace"));
-
                     // Set Organization name
-                    if (data.employeeInputList().length > 0) {
-                        self.organizationName(data.employeeInputList()[0].workplaceName);
-                    } else {
-                        self.organizationName(null);
-                    }
+                    self.organizationName((data.employeeInputList().length > 0) ? data.employeeInputList()[0].workplaceName : null);
                 } else {
                     // Set Organization Designation if System Reference is others
                     self.organizationDesignation(nts.uk.resource.getText("Com_Department"));
 
                     // Set Organization name
-                    if (data.employeeInputList().length > 0) {
-                        self.organizationName(data.employeeInputList()[0].depName);
-                    } else {
-                        self.organizationName(null);
-                    }
+                    self.organizationName((data.employeeInputList().length > 0) ? data.employeeInputList()[0].depName : null);
                 }
             } else {
                 self.organizationDesignation(null);
@@ -109,17 +90,14 @@ module kcp009.viewmodel {
                     if (currentItem) {
                         self.empDisplayCode(currentItem.code);
                         self.empBusinessName(currentItem.businessName);
-                        if (data.systemReference == SystemType.EMPLOYMENT) {
-                            self.organizationName(currentItem.workplaceName);
-                        } else {
-                            self.organizationName(currentItem.depName);
-                        }
+                        // Set OrganizationName
+                        self.organizationName((data.systemReference == SystemType.EMPLOYMENT) ? 
+                        currentItem.workplaceName: currentItem.depName);
                     }
                 } else {
                     self.empDisplayCode("");
                     self.empBusinessName("");
                     self.organizationName("");
-//                    self.selectedOrdinalNumber(0);
                 }
             });
             // Selected OrdinalNumber
@@ -180,7 +158,7 @@ module kcp009.viewmodel {
                         at: 'left bottom',
                         of: $('#function-tr')
                     },
-                    dismissible: false
+                    dismissible: false,
                 });
                 // Toggle
                 $('#btn_show_list').click(function() {
@@ -198,29 +176,55 @@ module kcp009.viewmodel {
             $("#items-list").toggle();
         }
 
-        private searchEmp(): void {
+        // Search Employee
+        private searchEmp(): JQueryPromise<any> {
             let self = this;
-            //TODO: Search...Temp position
-            //            // Get All Employee
-            //            var allEmp: Array<service.model.EmployeeSearchData> = [];
-            //            service.findAllEmployee().done(function(data: Array<service.model.EmployeeSearchData>) {
-            //                allEmp = data;
-            //            });
-            //            
-            //            var existItem = allEmp.filter((item) => {
-            //                // empCode
-            //                return item.employeeCode == self.keySearch();
-            //            })[0];
-            //            
-            //            if (existItem) {
-            //                // Get Workplace...
-            //                if (data.systemReference == SystemType.EMPLOYMENT) {
-            //                    
-            //                }
-            //            } else {
-            //                self.selectedItem(null);
-            //            }
-            // End Of Searching
+            let dfd = $.Deferred<void>();
+            //Acquire Employee from key
+            
+            // System
+            let system: string;
+            switch (self.systemType) {
+                case SystemType.EMPLOYMENT:
+                    system = 'emp';
+                    break;
+
+                case SystemType.PERSONNEL:
+                    system = 'hrm';
+                    break;
+
+                case SystemType.SALARY:
+                    system = 'sal';
+                    break;
+
+                case SystemType.ACCOUNTING:
+                    system = 'acc';
+                    break;
+            }
+            // Search
+            service.searchEmployee(self.keySearch(), system).done(function(employee: service.model.EmployeeSearchData) {
+                // find Exist Employee in List
+                let existItem = self.empList().filter((item) => {
+                    return item.code == employee.employeeCode;
+                })[0];
+
+                if (!existItem) {
+                    let newEmpList: Array<EmployeeModel> = [];
+                    newEmpList.push({ id: employee.employeeId, code: employee.employeeCode, businessName: employee.businessName });
+                    self.empList(newEmpList);
+                }
+                self.selectedItem(employee.employeeId);
+                self.empDisplayCode(employee.employeeCode);
+                self.empBusinessName(employee.businessName);
+                self.organizationName(employee.orgName);
+
+                dfd.resolve();
+                return;
+                
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+            });
+            return dfd.promise();
         }
 
         // Previous Employee
@@ -233,7 +237,7 @@ module kcp009.viewmodel {
             self.selectedItem(nextId);
         }
 
-        // Method to Next Employee
+        // Next Employee
         private nextEmp(): void {
             var self = this;
             var currentItem = self.empList().filter((item) => {
@@ -282,8 +286,12 @@ module kcp009.viewmodel {
      */
     export module service {
         var paths: any = {
-            // 
+            searchEmployee: 'screen/com/kcp009/employeesearch',
             findAllEmployee: 'basic/organization/employee/allemployee'
+        }
+
+        export function searchEmployee(employeeCode: string, system: string): JQueryPromise<model.EmployeeSearchData> {
+            return nts.uk.request.ajax('com', paths.searchEmployee + "/" + employeeCode + "/" + system);
         }
 
         export function findAllEmployee(): JQueryPromise<Array<model.EmployeeSearchData>> {
@@ -297,10 +305,8 @@ module kcp009.viewmodel {
             export class EmployeeSearchData {
                 employeeId: string;
                 employeeCode: string;
-                employeeName: string;
-                workplaceCode: string;
-                workplaceId: string;
-                workplaceName: string;
+                businessName: string;
+                orgName: string
             }
         }
     }

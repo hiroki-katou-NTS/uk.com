@@ -6,9 +6,9 @@ package nts.uk.ctx.at.record.app.find.optitem.calculation;
 
 import java.math.BigDecimal;
 
-import nts.arc.enums.EnumAdaptor;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingItemGetMemento;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingItemSetMemento;
 import nts.uk.ctx.at.record.dom.optitem.calculation.InputValue;
 import nts.uk.ctx.at.record.dom.optitem.calculation.SettingItemOrder;
@@ -17,7 +17,9 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.SettingMethod;
 /**
  * The Class FormulaSettingItemDto.
  */
-public class FormulaSettingItemDto implements FormulaSettingItemGetMemento, FormulaSettingItemSetMemento {
+@Getter
+@Setter
+public class FormulaSettingItemDto implements FormulaSettingItemSetMemento {
 
 	/** The setting method. */
 	// 設定方法
@@ -75,46 +77,6 @@ public class FormulaSettingItemDto implements FormulaSettingItemGetMemento, Form
 	@Override
 	public void setFormulaId(FormulaId id) {
 		this.formulaItemId = id.v();
-	}
-
-	/**
-	 * Gets the setting method.
-	 *
-	 * @return the setting method
-	 */
-	@Override
-	public SettingMethod getSettingMethod() {
-		return EnumAdaptor.valueOf(this.settingMethod, SettingMethod.class);
-	}
-
-	/**
-	 * Gets the setting item order.
-	 *
-	 * @return the setting item order
-	 */
-	@Override
-	public SettingItemOrder getSettingItemOrder() {
-		return EnumAdaptor.valueOf(this.dispOrder, SettingItemOrder.class);
-	}
-
-	/**
-	 * Gets the input value.
-	 *
-	 * @return the input value
-	 */
-	@Override
-	public InputValue getInputValue() {
-		return new InputValue(this.inputValue);
-	}
-
-	/**
-	 * Gets the formula id.
-	 *
-	 * @return the formula id
-	 */
-	@Override
-	public FormulaId getFormulaId() {
-		return new FormulaId(this.formulaItemId);
 	}
 
 }

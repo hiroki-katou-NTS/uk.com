@@ -6,10 +6,9 @@ module nts.uk.at.view.kmk002.a {
          */
         let servicePath: any = {
             findOptionalItemDetail: 'ctx/at/record/optionalitem/find',
-            saveOptionalItem: 'ctx/at/record/optionalitem/save',
-            removeOptionalItem: 'ctx/at/record/optionalitem/remove',
             findOptionalItemHeaders: 'ctx/at/record/optionalitem/findall',
             findAllFormula: 'ctx/at/record/optionalitem/formula/findall',
+            saveOptionalItem: 'ctx/at/record/optionalitem/save',
             saveFormula: 'ctx/at/record/optionalitem/formula/save'
         };
 
@@ -17,8 +16,8 @@ module nts.uk.at.view.kmk002.a {
             return nts.uk.request.ajax(servicePath.saveOptionalItem, command);
         }
 
-        export function saveFormula(command: Array<model.CalcFormulaDto>): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.saveFormula, {listCalcFormula: command});
+        export function saveFormula(command: Array<model.FormulaDto>): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.saveFormula, { listCalcFormula: command });
         }
 
         export function findOptionalItemDetail(): JQueryPromise<model.OptionalItemDto> {
@@ -29,12 +28,8 @@ module nts.uk.at.view.kmk002.a {
             return nts.uk.request.ajax(servicePath.findOptionalItemHeaders);
         }
 
-        export function findAllFormula(): JQueryPromise<Array<model.CalcFormulaDto>> {
+        export function findAllFormula(): JQueryPromise<Array<model.FormulaDto>> {
             return nts.uk.request.ajax(servicePath.findAllFormula);
-        }
-
-        export function removeOptionalItem(command: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.removeCompanySetting, command);
         }
 
         /**
@@ -47,6 +42,10 @@ module nts.uk.at.view.kmk002.a {
                 usageAtr: number;
                 performanceAtr: number;
             }
+
+            /**
+             * OptionalItemDto
+             */
             export interface OptionalItemDto {
                 optionalItemNo: string;
                 optionalItemName: string;
@@ -54,9 +53,12 @@ module nts.uk.at.view.kmk002.a {
                 usageAtr: number;
                 empConditionAtr: number;
                 performanceAtr: number;
-                calculationResultRange: CalculationResultRangeDto;
+                calcResultRange: CalcResultRangeDto;
             }
-            export interface CalculationResultRangeDto {
+            /**
+             * CalcResultRangeDto
+             */
+            export interface CalcResultRangeDto {
                 upperCheck: boolean;
                 lowerCheck: boolean;
                 numberUpper: number;
@@ -66,15 +68,68 @@ module nts.uk.at.view.kmk002.a {
                 timeUpper: number;
                 timeLower: number;
             }
-            export interface CalcFormulaDto {
+            /**
+             * CalcFormulaDto
+             */
+            export interface FormulaDto {
                 formulaId: string;
                 formulaName: string;
                 optionalItemNo: string;
-                formulaAtr: number;
                 symbolValue: string;
-                formulaSetting: any;
-                monthlyRounding: any;
-                dailyRounding: any;
+                formulaAtr: number;
+                calcFormulaSetting: CalcFormulaSettingDto;
+                monthlyRounding: RoundingDto;
+                dailyRounding: RoundingDto;
+            }
+            /**
+             * RoundingDto
+             */
+            export interface RoundingDto {
+                numberRounding: number;
+                numberUnit: number;
+                timeRounding: number;
+                timeUnit: number;
+                amountRounding: number;
+                amountUnit: number;
+            }
+            /**
+             * CalcFormulaSettingDto
+             */
+            export interface CalcFormulaSettingDto {
+                calcAtr: number;
+                formulaSetting: FormulaSettingDto;
+                itemSelection: ItemSelectionDto;
+            }
+            /**
+             * FormulaSettingDto
+             */
+            export interface FormulaSettingDto {
+                minusSegment: number;
+                operator: number;
+                settingItems: Array<SettingItemDto>;
+            }
+            /**
+             * SettingItemDto
+             */
+            export interface SettingItemDto {
+                settingMethod: number;
+                dispOrder: number;
+                inputValue: number;
+                formulaItemId: string;
+            }
+            /**
+             * ItemSelectionDto
+             */
+            export interface ItemSelectionDto {
+                minusSegment: number;
+                attendanceItems: Array<AttendanceItemDto>;
+            }
+            /**
+             * SelectedAttendanceItemDto
+             */
+            export interface AttendanceItemDto {
+                id: string;
+                operator: number;
             }
         }
 

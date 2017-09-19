@@ -8,7 +8,6 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaDto;
 
 /**
  * The Class CalcFormulaSaveCommand.
