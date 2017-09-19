@@ -8,7 +8,7 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
+					nts.uk.ctx.at.request.dom.application.common.AppReason
 					nts.uk.shr.com.time.TimeWithDayAttr
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
@@ -22,7 +22,7 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area" data-bind="with: mainModel">
-				<button class="proceed" data-bind="click: update" tabindex="1">#{i18n.getText('KAF009_3')}</button>
+				<button class="proceed" data-bind="click: insert" tabindex="1">#{i18n.getText('KAF009_3')}</button>
 				<button id="btnSpecSetting" data-bind="" tabindex="2">#{i18n.getText('KAF009_4')}</button>
 				<button data-bind="" tabindex="3">#{i18n.getText('KAF009_5')}</button>
 				<div class="btnSendMail"
@@ -30,9 +30,9 @@
 			</div>
 			<div id="contents-area">
 				<!-- Message area -->
-				<div data-bind="">
-					<ui:include src="../../000/a/index1.xhtml" />
-				</div>
+<!-- 				<div data-bind="with: commonModel"> -->
+<!-- 					<ui:include src="../../000/a/index1.xhtml" /> -->
+<!-- 				</div> -->
 				<!-- Main -->
 				<div class="mainScreen" data-bind="with :mainModel">
 					<ui:include src="../b/index.xhtml"></ui:include>

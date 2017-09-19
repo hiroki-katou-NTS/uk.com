@@ -39,14 +39,14 @@ module nts.uk.at.view.kaf009.a.service {
     /**
      * 
      */
-    export function insertGoBackDirect(currentGoBack: viewmodel.IGoBackCommand): JQueryPromise<Array<any>> {
+    export function insertGoBackDirect(currentGoBack: viewmodel.GoBackCommand): JQueryPromise<Array<any>> {
+        debugger;
         return ajax("at", paths.insertGoBackDirectly, currentGoBack);
-        //return ajax("at",paths.updateGoBackDirectly,currentGoBack);
     }
     /**
      * 
      */
-    export function updateGoBackDirect(currentGoBack: viewmodel.IGoBackCommand): JQueryPromise<Array<any>> {
+    export function updateGoBackDirect(currentGoBack: viewmodel.GoBackCommand): JQueryPromise<Array<any>> {
         return ajax("at", paths.updateGoBackDirectly, currentGoBack);
     }
 }

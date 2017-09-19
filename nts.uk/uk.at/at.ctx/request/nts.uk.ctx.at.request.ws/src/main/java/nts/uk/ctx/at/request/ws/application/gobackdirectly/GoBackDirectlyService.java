@@ -61,7 +61,7 @@ public class GoBackDirectlyService extends WebService {
 		return this.goBackDirectlyFinder.getGoBackDirectDetailByAppId(appID);
 	}
 	/**
-	 * 
+	 * insert
 	 * @param command
 	 */
 	@POST

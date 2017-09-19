@@ -26,11 +26,11 @@ public class CreateApplicationCommand {
 	/**
 	 * 申請ID
 	 */
-	private String applicationID;
+	String applicationID;
 	/**
 	 * 申請理由ID
 	 */
-	private String appReasonID;
+	String appReasonID;
 	/**
 	 * 事前事後区分
 	 */

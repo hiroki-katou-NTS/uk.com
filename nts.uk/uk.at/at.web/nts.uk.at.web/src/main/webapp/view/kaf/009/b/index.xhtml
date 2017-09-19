@@ -23,8 +23,7 @@
 		<div class="valign-center control-group">
 			<!--申請日付 -->
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_11')}</div>
-			<input id="inputdate"
-				data-bind="ntsTimeEditor: {value: appDate, inputFormat: 'date'}" />
+			<input id="inputdate" data-bind="ntsTimeEditor: {value: appDate, inputFormat: 'date'}" />
 		</div>
 		<!--勤務時間 １１１１１１１１１１１１１-->
 		<div class="valign-center control-group">
@@ -32,11 +31,12 @@
 			<div class="cell valign-center">
 				<div class="lblTitle" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF009_13')}</div>
 				<input id="inpStartTime1"
-					data-bind="ntsTimeWithDayEditor: { name: 'Time Start 1', constraint:'TimeWithDayAttr',value: timeStart1, enable: true, readonly: true, required: true }" />
+					data-bind="ntsTimeWithDayEditor: { name: 'Time Start 1', constraint:'TimeWithDayAttr',value: timeStart1, enable: true, readonly: false, required: true }" />
 				<label>#{i18n.getText('KAF009_14')}</label> <input id="inpEndTime1"
-					data-bind="ntsTimeWithDayEditor: {name: 'Time End 1', constraint:'TimeWithDayAttr', value: timeEnd1, enable: true, readonly: true, required: true}" />
+					data-bind="ntsTimeWithDayEditor: {name: 'Time End 1', constraint:'TimeWithDayAttr', value: timeEnd1, enable: true, readonly: false, required: true}" />
 				<!--選択場所　Button-->
-				<button id="btnLocation1" data-bind="click: function(){openLocationDialog(1)}">#{i18n.getText('KAF009_15')}</button>
+				<button id="btnLocation1"
+					data-bind="click: function(){openLocationDialog(1)}">#{i18n.getText('KAF009_15')}</button>
 				<label
 					data-bind="text : workLocationCD() + '   ' + workLocationName()"></label><br />
 			</div>
@@ -76,7 +76,8 @@
 			<label>#{i18n.getText('KAF009_14')}</label> <input id="inpEndTime2"
 				data-bind="ntsTimeWithDayEditor: {name: 'Time End 2', constraint:'TimeWithDayAttr',value: timeEnd2}" />
 			<!--選択場所　Button-->
-			<button id="btnLocation2" data-bind="click: function(){openLocationDialog(2)}">#{i18n.getText('KAF009_15')}</button>
+			<button id="btnLocation2"
+				data-bind="click: function(){openLocationDialog(2)}">#{i18n.getText('KAF009_15')}</button>
 			<label
 				data-bind="text : workLocationCD2() + '   ' + workLocationName2()"></label><br />
 			<!--line 2 -->
@@ -144,17 +145,13 @@
 								columns: [{ prop: 'reasonName', length: 10 }]}">
 			</div>
 		</div>
-		<!--直帰する -->
+		<!-- 申請理由（ラベル) -->
 		<div class="valign-center control-group">
 			<div class="lblTitle"
-				data-bind="ntsFormLabel: { constraint: 'PersonId'}">#{i18n.getText('KAF009_18')}</div>
-			<div id="multiline" data-bind="with: multilineeditor">
+				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF009_27')}</div>
+			<div id="multiline">
 				<textarea
-					data-bind="ntsMultilineEditor: {
-									value: value,
-									constraint: constraint,
-									option: option,
-									}" />
+					data-bind="ntsMultilineEditor: {value: multilContent,option: multilOption }" />
 			</div>
 		</div>
 	</div>

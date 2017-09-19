@@ -109,8 +109,6 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             //勤務を変更する
             self.workChangeAtr.subscribe(function() {
             });
-            
-            
             self.startPage();
         }
         /**
@@ -122,8 +120,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             //get Common Setting
             self.getAllWorkLocation();
             service.getGoBackSetting().done(function(settingData: CommonSetting) {
-                debugger;
-                console.log(settingData);
+                //console.log(settingData);
                 //get Reason
                 self.setReasonControl(settingData.listReasonDto);
                 //set employee Name
@@ -133,11 +130,12 @@ module nts.uk.at.view.kaf009.b.viewmodel {
                 //Get data 
                 //service.getGoBackDirectly().done(function(goBackDirectData: GoBackDirectData) {
                 service.getGoBackDirectDetail().done(function(detailData: any) {
-                    console.log(detailData);
+                    //console.log(detailData);
                     self.workTypeName(detailData.workTypeName);
                     self.siftName(detailData.workTimeName);
                     //Set Value of control
                     self.setValueControl(detailData.goBackDirectlyDto);
+                    debugger;
                     dfd.resolve();
                 }).fail(function() {
                     dfd.resolve();
@@ -187,10 +185,10 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         /**
          * find Work Location Name from Work Location Code
          */
-        findWorkLocationName(code:string){
+        findWorkLocationName(code: string) {
             let self = this;
-            let locationName : string = "";
-            let location : IWorkLocation = _.find(self.locationData, function(o){return o.workLocationCode == code});
+            let locationName: string = "";
+            let location: IWorkLocation = _.find(self.locationData, function(o) { return o.workLocationCode == code });
             locationName = location.workLocationName;
             return locationName;
         }

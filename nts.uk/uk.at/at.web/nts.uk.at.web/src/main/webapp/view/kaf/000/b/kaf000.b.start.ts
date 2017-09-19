@@ -7,6 +7,7 @@ __viewContext.ready(function() {
     };
 
     totalModel.screenModel.start().done(function() {
+        debugger;
         __viewContext.bind(totalModel);
     });
 });
