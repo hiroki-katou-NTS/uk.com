@@ -7,11 +7,11 @@ package nts.uk.ctx.at.shared.app.command.overtime.breakdown.language;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemName;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.language.OvertimeLangBRDItem;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.language.OvertimeLangBRDItemGetMemento;
-import nts.uk.ctx.at.shared.dom.overtime.language.LanguageId;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemName;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLang;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLangGetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.LanguageId;
 
 /**
  * The Class OvertimeLangBRDItemSaveDto.
@@ -35,8 +35,8 @@ public class OvertimeLangBRDItemSaveDto{
 	 * @param companyId the company id
 	 * @return the overtime lang name
 	 */
-	public OvertimeLangBRDItem toDomain(String companyId) {
-		return new OvertimeLangBRDItem(new OvertimeLangBRDItemGetMemento() {
+	public OutsideOTBRDItemLang toDomain(String companyId) {
+		return new OutsideOTBRDItemLang(new OutsideOTBRDItemLangGetMemento() {
 
 			@Override
 			public LanguageId getLanguageId() {

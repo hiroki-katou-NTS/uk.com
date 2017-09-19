@@ -204,6 +204,7 @@ module nts.uk.at.view.kmk010.a {
             overtime: KnockoutObservable<number>;
             overtimeNo: KnockoutObservable<number>;
             useClassification: KnockoutObservable<boolean>;
+            superHoliday60HOccurs: KnockoutObservable<boolean>;
 
             constructor() {
                 this.name = ko.observable('');
@@ -211,6 +212,7 @@ module nts.uk.at.view.kmk010.a {
                 this.overtime = ko.observable(0);
                 this.overtimeNo = ko.observable(0);
                 this.useClassification = ko.observable(true);
+                this.superHoliday60HOccurs = ko.observable(true);
             }
 
             updateData(dto: OvertimeDto) {
@@ -219,6 +221,7 @@ module nts.uk.at.view.kmk010.a {
                 this.overtime(dto.overtime);
                 this.overtimeNo(dto.overtimeNo);
                 this.useClassification(dto.useClassification);
+                this.superHoliday60HOccurs(dto.superHoliday60HOccurs);
             }
 
             toDto(): OvertimeDto {
@@ -226,7 +229,8 @@ module nts.uk.at.view.kmk010.a {
                     name: this.name(),
                     overtime: this.overtime(),
                     overtimeNo: this.overtimeNo(),
-                    useClassification: this.useClassification()
+                    useClassification: this.useClassification(),
+                    superHoliday60HOccurs: this.superHoliday60HOccurs()
                 };
                 return dto;
             }
@@ -240,6 +244,8 @@ module nts.uk.at.view.kmk010.a {
             languageName: KnockoutObservable<string>;
             productNumber: KnockoutObservable<number>;
             rateBRDItems: PremiumExtra60HRateModel[];
+            attendanceItemIds: KnockoutObservableArray<number>;
+            attendanceItemName: KnockoutObservable<string>;
 
             constructor() {
                 this.useClassification = ko.observable(true);
@@ -248,14 +254,30 @@ module nts.uk.at.view.kmk010.a {
                 this.languageName = ko.observable('');
                 this.productNumber = ko.observable(0);
                 this.rateBRDItems = [];
+                this.attendanceItemIds = ko.observableArray([]);
+                this.attendanceItemName = ko.observable('');
             }
 
            public updateData(dto: OvertimeBRDItemDto) {
+                var self = this;
                 this.useClassification(dto.useClassification);
                 this.breakdownItemNo(dto.breakdownItemNo);
                 this.name(dto.name);
                 this.languageName(dto.name);
                 this.productNumber(dto.productNumber);
+               if(self.attendanceItemIds() && self.attendanceItemIds().length > 0){
+                   nts.uk.at.view.kmk010.a.service.findAllDailyAttendanceItem().done(function(data) {
+                       var selectedName: string[] = [];
+                       for (var item of data) {
+                           for (var id of self.attendanceItemIds()) {
+                               if (id == item.attendanceItemId) {
+                                   selectedName.push(item.attendanceItemName);
+                               }
+                           }
+                       }
+                       self.attendanceItemName(selectedName.join(' + '));
+                   });
+               }
             }
 
             public toDto(): OvertimeBRDItemDto {
@@ -263,7 +285,8 @@ module nts.uk.at.view.kmk010.a {
                     useClassification: this.useClassification(),
                     breakdownItemNo: this.breakdownItemNo(),
                     name: this.name(),
-                    productNumber: this.productNumber()
+                    productNumber: this.productNumber(),
+                    attendanceItemIds: this.attendanceItemIds()
                 };
                 return dto;
             }
@@ -274,7 +297,30 @@ module nts.uk.at.view.kmk010.a {
              * function on click button show dialog KDL021  
              */
             public openDialogDailyAttendanceItems(): void {
-                alert(this.breakdownItemNo());
+                var self = this;
+                nts.uk.at.view.kmk010.a.service.findAllDailyAttendanceItem().done(function(data){
+                    // Map to model
+                    var AllAttendanceObj = data.map(i => {
+                        return i.attendanceItemId;
+                    });
+                    nts.uk.ui.windows.setShared('AllAttendanceObj',AllAttendanceObj);
+                    nts.uk.ui.windows.setShared('Multiple',true);
+                    nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml').onClosed(function(): any {
+                        var lstDailyAttendanceId : number[]  = nts.uk.ui.windows.getShared('selectedChildAttendace');
+                        self.attendanceItemIds(lstDailyAttendanceId);
+                        var selectedName: string[] = [];
+                        for(var item of data){
+                            for(var id of lstDailyAttendanceId){
+                                if(id == item.attendanceItemId){
+                                     selectedName.push(item.attendanceItemName);   
+                                }    
+                            }    
+                        }
+                        self.attendanceItemName(selectedName.join(' + '));
+                    });
+                }).fail(function(error){
+                    
+                });
             }
         }
         export class OvertimeSettingModel {

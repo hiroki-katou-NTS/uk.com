@@ -20,19 +20,19 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.language.OvertimeLangBRDItem;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.language.OvertimeLangBRDItemRepository;
-import nts.uk.ctx.at.shared.infra.entity.overtime.breakdown.language.KshstOverTimeLangBrd;
-import nts.uk.ctx.at.shared.infra.entity.overtime.breakdown.language.KshstOverTimeLangBrdPK_;
-import nts.uk.ctx.at.shared.infra.entity.overtime.breakdown.language.KshstOverTimeLangBrd_;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLang;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLangRepository;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOverTimeLangBrd;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOverTimeLangBrdPK_;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOverTimeLangBrd_;
 
 /**
  * The Class JpaOvertimeLangBRDItemRepository.
  */
 @Stateless
 public class JpaOvertimeLangBRDItemRepository extends JpaRepository
-		implements OvertimeLangBRDItemRepository {
+		implements OutsideOTBRDItemLangRepository {
 
 	
 	/** The Constant INDEX_FIRST. */
@@ -44,7 +44,7 @@ public class JpaOvertimeLangBRDItemRepository extends JpaRepository
 	 * OvertimeLangBRDItemRepository#findAll(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<OvertimeLangBRDItem> findAll(String companyId, String languageId) {
+	public List<OutsideOTBRDItemLang> findAll(String companyId, String languageId) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -93,7 +93,7 @@ public class JpaOvertimeLangBRDItemRepository extends JpaRepository
 	 * OvertimeLangBRDItemRepository#saveAll(java.util.List)
 	 */
 	@Override
-	public void saveAll(List<OvertimeLangBRDItem> domains) {
+	public void saveAll(List<OutsideOTBRDItemLang> domains) {
 		// check exist data
 		if (CollectionUtil.isEmpty(domains)) {
 			return;
@@ -105,7 +105,7 @@ public class JpaOvertimeLangBRDItemRepository extends JpaRepository
 		String languageId = domains.get(INDEX_FIRST).getLanguageId().v();
 
 		// to map over time
-		Map<BreakdownItemNo, OvertimeLangBRDItem> mapOvertimeLangBRD = this
+		Map<BreakdownItemNo, OutsideOTBRDItemLang> mapOvertimeLangBRD = this
 				.findAll(companyId, languageId).stream()
 				.collect(Collectors.toMap((overtimeLangBRDItem) -> {
 					return overtimeLangBRDItem.getBreakdownItemNo();
@@ -139,8 +139,8 @@ public class JpaOvertimeLangBRDItemRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the overtime lang BRD item
 	 */
-	private OvertimeLangBRDItem toDomain(KshstOverTimeLangBrd entity) {
-		return new OvertimeLangBRDItem(new JpaOvertimeLangBRDItemGetMemento(entity));
+	private OutsideOTBRDItemLang toDomain(KshstOverTimeLangBrd entity) {
+		return new OutsideOTBRDItemLang(new JpaOvertimeLangBRDItemGetMemento(entity));
 	}
 	
 	/**
@@ -149,7 +149,7 @@ public class JpaOvertimeLangBRDItemRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kshst over time lang brd
 	 */
-	private KshstOverTimeLangBrd toEntity(OvertimeLangBRDItem domain){
+	private KshstOverTimeLangBrd toEntity(OutsideOTBRDItemLang domain){
 		KshstOverTimeLangBrd entity = new KshstOverTimeLangBrd();
 		domain.saveToMemento(new JpaOvertimeLangBRDItemSetMemento(entity));
 		return entity;

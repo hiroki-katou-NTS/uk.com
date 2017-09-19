@@ -25,8 +25,7 @@
 					<button tabindex="2" class="buttonOther" >#{i18n.getText('KMK010_5')}</button>
 					<button tabindex="3" class="buttonOther" data-bind="click: openDialogOvertimeSetting" >#{i18n.getText('KMK010_6')}</button>
 					<button tabindex="4" class="buttonOther" data-bind="click: openDialogOvertimeBRDItem">#{i18n.getText('KMK010_7')}</button>
-					<button tabindex="5" class="buttonOther" >#{i18n.getText('KMK010_7')}</button>
-					<div id="switch-language"></div>
+					<div tabindex="5" id="switch-language"></div>
 				</div>
 				
 				<div id="contents-area" data-bind="with: overtimeSettingModel">
@@ -98,7 +97,7 @@
 								<tr class="bg-dark-green">
 									<com:ko tag="foreach" bind="overtimes">
 										<td>
-											<div data-bind="ntsCheckBox: { checked: useClassification }">#{i18n.getText('KMK010_20')}</div>
+											<div data-bind="ntsCheckBox: { checked: superHoliday60HOccurs }">#{i18n.getText('KMK010_20')}</div>
 										</td>
 									</com:ko>
 								</tr>

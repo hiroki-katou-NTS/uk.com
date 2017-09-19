@@ -11,8 +11,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItem;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -24,7 +24,7 @@ public class OvertimeBRDItemSaveCommandHandler extends CommandHandler<OvertimeBR
 
 	/** The repository. */
 	@Inject
-	private OvertimeBRDItemRepository repository;
+	private OutsideOTBRDItemRepository repository;
 	
 	/*
 	 * (non-Javadoc)
@@ -47,7 +47,7 @@ public class OvertimeBRDItemSaveCommandHandler extends CommandHandler<OvertimeBR
 		
 		// save all list overtime breakdown item
 		this.repository.saveAll(command.getOvertimeBRDItems().stream()
-				.map(dto -> new OvertimeBRDItem(dto)).collect(Collectors.toList()), companyId);
+				.map(dto -> new OutsideOTBRDItem(dto)).collect(Collectors.toList()), companyId);
 	}
 
 }

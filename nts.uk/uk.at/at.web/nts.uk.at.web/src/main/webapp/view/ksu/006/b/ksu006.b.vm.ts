@@ -15,7 +15,7 @@ module nts.uk.pr.view.ksu006.b {
             isDone: KnockoutObservable<boolean>;
             executeId: KnockoutObservable<string>;
             dataError: KnockoutObservableArray<ErrorModel>;
-            listColumn: KnockoutObservableArray<NtsGridListColumn>;
+            listColumn: KnockoutObservableArray<any>;
             rowSelected: KnockoutObservable<string>;
             isGreaterThanTenError: KnockoutObservable<boolean>;
             taskId: KnockoutObservable<string>;

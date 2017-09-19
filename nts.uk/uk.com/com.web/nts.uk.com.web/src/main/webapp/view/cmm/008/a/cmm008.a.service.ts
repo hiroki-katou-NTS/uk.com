@@ -5,28 +5,37 @@ module nts.uk.com.view.cmm008.a {
          */
         var paths: any = {
             findEmployment: 'basic/company/organization/employment/findById',
+            saveEmployment: 'basic/company/organization/employment/save',
+            removeEmployment: 'basic/company/organization/employment/remove'
+            
         };
 
         
-//        export function findRetentionYearly(): JQueryPromise<model.RetentionYearlyFindDto> {
-//            return nts.uk.request.ajax(paths.findRetentionYearlyByCompany);
-//        }
+        export function findEmployment(employmentCode: string): JQueryPromise<model.EmploymentFindDto> {
+            return nts.uk.request.ajax(paths.findEmployment + "/" + employmentCode);
+        }
 
+        export function saveEmployment(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.saveEmployment, command);
+        }
+        
+        export function removeEmployment(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.removeEmployment, command);
+        }
+        
         /**
         * Model namespace.
         */
-//        export module model {
-//            
-//            export class UpperLimitSettingFindDto{
-//                retentionYearsAmount: number;
-//                maxDaysCumulation: number; 
-//            }
-//            
-//            export class RetentionYearlyFindDto {
-//                upperLimitSetting: UpperLimitSettingFindDto;
-//                leaveAsWorkDays: boolean;
-//            }
-//            
-//        }
+        export module model {
+            
+            export class EmploymentFindDto{
+                code: string;
+                name: string;
+                empExternalCode: string;
+                memo: string;
+            }
+            
+            
+        }
     }
 }

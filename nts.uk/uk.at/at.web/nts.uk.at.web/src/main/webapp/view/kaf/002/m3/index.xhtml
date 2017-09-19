@@ -1,0 +1,39 @@
+<div class="table">
+	<div class="cell m3-column1">
+		<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL001_3')}</div>
+	</div>
+	<div class="cell" id="m3-div">
+		<div id="m3-backgroud"></div>
+		<table id="m3-table">
+			<thead>
+				<tr>
+					<td></td>
+					<td>
+						<span class="label m3-label">取消対象時刻</span>
+						<button data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button>
+					</td>
+				</tr>
+			</thead>
+			<tbody data-bind="foreach: appStampList">
+				<tr>
+					<td>
+						<span class="label m3-label">Demo</span>	
+					</td>
+					<td>
+						<span class="label m3-label">Demo</span>
+						<div class="cf m3-switch" data-bind="ntsSwitchButton: {
+							options: ko.observableArray([
+					            { code: 0, name: '外出' },
+					            { code: 1, name: '育児' }
+					        ]),
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: cancelAtr,
+							enable: true }"></div>
+					</td>
+				</tr>	
+			</tbody>
+		</table>	
+		
+	</div>
+</div>

@@ -10,6 +10,8 @@ import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReaso
 import nts.uk.ctx.at.request.app.find.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSettingDto;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectAppSet;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectAppSetService;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.service.GoBackDirectBasicData;
@@ -23,18 +25,43 @@ public class GoBackDirectlyFinder {
 	private GoBackDirectlyRepository goBackDirectRepo;
 	@Inject
 	private GoBackDirectCommonService goBackCommon;
+	@Inject
+	private GoBackDirectAppSetService goBackAppSet;
 
+	/**
+	 * Get GoBackDirectlyDto
+	 * 
+	 * @param appID
+	 * @return
+	 */
 	public GoBackDirectlyDto getGoBackDirectlyByAppID(String appID) {
 		String companyID = AppContexts.user().companyId();
 		return goBackDirectRepo.findByApplicationID(companyID, appID).map(c -> convertToDto(c)).orElse(null);
-
 	}
 
+	/**
+	 * convert to GoBackDirectSettingDto
+	 * 
+	 * @param SID
+	 * @return
+	 */
 	public GoBackDirectSettingDto getGoBackDirectSettingBySID(String SID) {
 		return convertSettingToDto(goBackCommon.getSettingData(SID));
 	}
 
-	// Convert to Dto
+	/**
+	 * get Detail Data to
+	 * 
+	 * @param appID
+	 * @return
+	 */
+	public GoBackDirectDetailDto getGoBackDirectDetailByAppId(String appID) {
+		return convertGoBackDirectData(goBackAppSet.getGoBackDirectAppSet(appID));
+	}
+
+	/**
+	 * Convert to GoBackDirectlyDto
+	 */
 	public GoBackDirectlyDto convertToDto(GoBackDirectly domain) {
 		return new GoBackDirectlyDto(domain.getCompanyID(), domain.getAppID(), domain.getWorkTypeCD().v(),
 				domain.getSiftCd().v(), domain.getWorkChangeAtr().value, domain.getGoWorkAtr1().value,
@@ -43,7 +70,24 @@ public class GoBackDirectlyFinder {
 				domain.getWorkTimeStart2().v(), domain.getWorkTimeEnd2().v(), domain.getWorkLocationCD2());
 	}
 
-	// Convert Data Setting to DTO
+	/**
+	 * get Data of GoBackDirect with Application Setting
+	 * 
+	 * @param domain
+	 * @return
+	 */
+	public GoBackDirectDetailDto convertGoBackDirectData(GoBackDirectAppSet domain) {
+		return new GoBackDirectDetailDto(convertToDto(domain.getGoBackDirectly()), domain.getPrePostAtr(),
+				domain.getWorkLocationName1(), domain.getWorkLocationName2(), domain.getWorkTypeName(),
+				domain.getWorkTimeName());
+	}
+
+	/**
+	 * Convert Data Setting to DTO
+	 * 
+	 * @param domain
+	 * @return
+	 */
 	public GoBackDirectSettingDto convertSettingToDto(GoBackDirectBasicData domain) {
 		return new GoBackDirectSettingDto(
 				domain.getGoBackDirectSet().map(c -> convertGoBackDirectlyCommonSettingDto(c)).get(),
@@ -51,30 +95,28 @@ public class GoBackDirectlyFinder {
 				domain.getListAppReason().stream().map(x -> convertReasonDto(x)).collect(Collectors.toList()));
 	}
 
+	/**
+	 * 
+	 * @param domain
+	 * @return
+	 */
 	public ApplicationReasonDto convertReasonDto(ApplicationReason domain) {
-		return new ApplicationReasonDto(
-				domain.getCompanyId(), 
-				domain.getAppType().value, 
-				domain.getReasonID(),
-				domain.getDispOrder(),
-				domain.getReasonTemp(),
-				domain.getDefaultFlg().value);
+		return new ApplicationReasonDto(domain.getCompanyId(), domain.getAppType().value, domain.getReasonID(),
+				domain.getDispOrder(), domain.getReasonTemp(), domain.getDefaultFlg().value);
 	}
 
+	/**
+	 * 
+	 * @param domain
+	 * @return
+	 */
 	public GoBackDirectlyCommonSettingDto convertGoBackDirectlyCommonSettingDto(GoBackDirectlyCommonSetting domain) {
-		return new GoBackDirectlyCommonSettingDto(
-				domain.getCompanyID(),
-				domain.getWorkChangeFlg().value,
-				domain.getWorkChangeTimeAtr().value,
-				domain.getPerformanceDisplayAtr().value,
-				domain.getContraditionCheckAtr().value,
-				domain.getGoBackWorkType().value,
-				domain.getLateLeaveEarlySettingAtr().value,
-				domain.getCommentContent1().v(),
-				domain.getCommentFontWeight1().value,
-				domain.getCommentFontColor1().v(),
-				domain.getCommentContent2().v(),
-				domain.getCommentFontWeight2().value,
+		return new GoBackDirectlyCommonSettingDto(domain.getCompanyID(), domain.getWorkChangeFlg().value,
+				domain.getWorkChangeTimeAtr().value, domain.getPerformanceDisplayAtr().value,
+				domain.getContraditionCheckAtr().value, domain.getGoBackWorkType().value,
+				domain.getLateLeaveEarlySettingAtr().value, domain.getCommentContent1().v(),
+				domain.getCommentFontWeight1().value, domain.getCommentFontColor1().v(),
+				domain.getCommentContent2().v(), domain.getCommentFontWeight2().value,
 				domain.getCommentFontColor2().v());
 	}
 }

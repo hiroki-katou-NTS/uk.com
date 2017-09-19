@@ -7,11 +7,11 @@ package nts.uk.ctx.at.shared.app.command.overtime.language;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeName;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.overtime.language.LanguageId;
-import nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangName;
-import nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangNameGetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeName;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.LanguageId;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLang;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangGetMemento;
 
 /**
  * The Class OvertimeLangNameSaveDto.
@@ -35,8 +35,8 @@ public class OvertimeLangNameSaveDto{
 	 * @param companyId the company id
 	 * @return the overtime lang name
 	 */
-	public OvertimeLangName toDomain(String companyId) {
-		return new OvertimeLangName(new OvertimeLangNameGetMemento() {
+	public OvertimeNameLang toDomain(String companyId) {
+		return new OvertimeNameLang(new OvertimeNameLangGetMemento() {
 
 			@Override
 			public OvertimeNo getOvertimeNo() {

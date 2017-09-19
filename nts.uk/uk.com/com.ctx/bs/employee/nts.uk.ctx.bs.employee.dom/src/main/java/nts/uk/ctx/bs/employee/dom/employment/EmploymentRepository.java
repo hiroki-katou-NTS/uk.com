@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.employment;
@@ -36,5 +36,28 @@ public interface EmploymentRepository {
 	 * @return the optional
 	 */
 	Optional<Employment> findEmployment(String companyCode, String employmentCode);
+	
+	/**
+	 * Insert.
+	 *
+	 * @param employment the employment
+	 */
+	void insert(Employment employment);
+	
+	/**
+	 * Update.
+	 *
+	 * @param employment the employment
+	 */
+	void update(Employment employment);
+	
+	
+	/**
+	 * Removes the.
+	 *
+	 * @param companyId the company id
+	 * @param employmentCode the employment code
+	 */
+	void remove(String companyId, String employmentCode);
 
 }

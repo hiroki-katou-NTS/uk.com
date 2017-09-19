@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.pub.employee.employeeInfo;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
@@ -19,5 +20,15 @@ public interface EmployeeInfoPub {
 	 *
 	 */
 	Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode , GeneralDate entryDate);
+	
+	/**
+	 * Get List Employee by companyId,baseDate 
+	 * For request No.60
+	 *
+	 */
+
+	List<EmployeeInfoDtoExport> getEmployeesAtWorkByBaseDate(String companyId , String baseDate);
+	
+	
 
 }
