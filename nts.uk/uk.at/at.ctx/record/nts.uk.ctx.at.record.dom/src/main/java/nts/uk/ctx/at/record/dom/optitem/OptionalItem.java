@@ -47,7 +47,7 @@ public class OptionalItem extends AggregateRoot {
 
 	/** The calculation result range. */
 	// 計算結果の範囲
-	private CalcResultRange calculationResultRange;
+	private CalcResultRange calcResultRange;
 
 	/**
 	 * Instantiates a new optional item.
@@ -62,7 +62,7 @@ public class OptionalItem extends AggregateRoot {
 		this.usageAtr = memento.getOptionalItemUsageAtr();
 		this.empConditionAtr = memento.getEmpConditionAtr();
 		this.performanceAtr = memento.getPerformanceAtr();
-		this.calculationResultRange = memento.getCalculationResultRange();
+		this.calcResultRange = memento.getCalculationResultRange();
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class OptionalItem extends AggregateRoot {
 		memento.setOptionalItemUsageAtr(this.usageAtr);
 		memento.setEmpConditionAtr(this.empConditionAtr);
 		memento.setPerformanceAtr(this.performanceAtr);
-		memento.setCalculationResultRange(this.calculationResultRange);
+		memento.setCalculationResultRange(this.calcResultRange);
 	}
 
 	/* (non-Javadoc)
