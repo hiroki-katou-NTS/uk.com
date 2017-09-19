@@ -201,6 +201,7 @@ module kcp009.viewmodel {
             $("#items-list").toggle();
         }
 
+        // Search Employee
         private searchEmp(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred<void>();
@@ -313,7 +314,6 @@ module kcp009.viewmodel {
         var paths: any = {
             searchEmployee: 'screen/com/kcp009/employeesearch',
             findAllEmployee: 'basic/organization/employee/allemployee'
-
         }
 
         export function searchEmployee(employeeCode: string, system: string): JQueryPromise<model.EmployeeSearchData> {

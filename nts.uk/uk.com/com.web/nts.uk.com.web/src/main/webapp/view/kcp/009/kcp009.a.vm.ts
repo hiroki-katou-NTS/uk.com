@@ -77,19 +77,6 @@ module kcp009.a.viewmodel {
             $('#emp-component').ntsLoadListComponent(self.listComponentOption);
         }
         
-//        private findAllEmp(): JQueryPromise<any> {
-//            let self = this;
-//            let dfd = $.Deferred<void>();
-//            service.findAllEmployee().done(function(data: Array<service.model.EmployeeSearchData>) {
-//                let empList = [];
-//                data.forEach(function(item) {
-//                    empList.push({id: item.employeeId, code: item.employeeCode, businessName: item.businessName, 
-//                    workplaceName: item.workplaceName, depName: 'Dep Name'});
-//                });
-//                self.empList(empList);
-//            });
-//        }
-        
     }
     
     /**
