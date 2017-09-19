@@ -70,7 +70,7 @@ public interface EmployeeRepository {
 	 * 
 	 * @return the optional
 	 */
-	String findLastEml(String startLetter);
+	String findLastEml(String companyId, String startLetter);
 
 	/**
 	 * 
