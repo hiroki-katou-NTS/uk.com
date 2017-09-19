@@ -4,7 +4,7 @@ module nts.uk.at.view.kmf004.a.service {
         deleteSpecialHoliday: "shared/specialholiday/delete",
         addSpecialHoliday: "shared/specialholiday/add",
         updateSpecialHoliday: "shared/specialholiday/update",
-        findWorkType: "at/share/worktype/findAll"
+        findWorkType: "at/screen/worktype/findAll"
     }
 
     export function findAllSpecialHoliday(): JQueryPromise<Array<viewmodel.model.ISpecialHolidayDto>> {
