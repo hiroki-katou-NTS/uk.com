@@ -4,9 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.workplace.config;
 
+import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -18,27 +17,26 @@ import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistory;
 @Setter
 public class RegisterWorkplaceConfigCommand {
 
-	/** The company id. */
-	//会社ID
-	private String companyId;
-
 	/** The wkp config history. */
 	//履歴
-	private Set<WorkplaceConfigHistoryDto> wkpConfigHistory;
+	private WorkplaceConfigHistoryDto wkpConfigHistory;
 	
 	/**
 	 * To domain.
 	 *
 	 * @return the workplace config
 	 */
-	public WorkplaceConfig toDomain(){
-		return new WorkplaceConfig(new WorkplaceConfigGetMementoImpl(this));
+	public WorkplaceConfig toDomain(String companyId){
+		return new WorkplaceConfig(new WorkplaceConfigGetMementoImpl(companyId,this));
 	}
 	
 	/**
 	 * The Class WorkplaceConfigGetMementoImpl.
 	 */
 	public class WorkplaceConfigGetMementoImpl implements WorkplaceConfigGetMemento{
+		
+		/** The company id. */
+		private String companyId; 
 
 		/** The register workplace config command. */
 		private RegisterWorkplaceConfigCommand registerWorkplaceConfigCommand;
@@ -48,7 +46,8 @@ public class RegisterWorkplaceConfigCommand {
 		 *
 		 * @param registerWorkplaceConfigCommand the register workplace config command
 		 */
-		public WorkplaceConfigGetMementoImpl(RegisterWorkplaceConfigCommand registerWorkplaceConfigCommand) {
+		public WorkplaceConfigGetMementoImpl(String companyId,RegisterWorkplaceConfigCommand registerWorkplaceConfigCommand) {
+			this.companyId = companyId;
 			this.registerWorkplaceConfigCommand = registerWorkplaceConfigCommand;
 		}
 
@@ -57,7 +56,7 @@ public class RegisterWorkplaceConfigCommand {
 		 */
 		@Override
 		public String getCompanyId() {
-			return this.registerWorkplaceConfigCommand.getCompanyId();
+			return this.companyId;
 		}
 
 		/* (non-Javadoc)
@@ -65,9 +64,7 @@ public class RegisterWorkplaceConfigCommand {
 		 */
 		@Override
 		public List<WorkplaceConfigHistory> getWkpConfigHistory() {
-			return this.registerWorkplaceConfigCommand.getWkpConfigHistory().stream().map(item->{
-				return item.toDomain();
-			}).collect(Collectors.toList());
+			return Arrays.asList(this.registerWorkplaceConfigCommand.getWkpConfigHistory().toDomain());
 		}
 		
 	}

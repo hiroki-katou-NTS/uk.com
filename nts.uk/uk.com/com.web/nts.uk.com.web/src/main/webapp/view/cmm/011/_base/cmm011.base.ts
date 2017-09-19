@@ -29,11 +29,19 @@ module nts.uk.com.view.cmm011 {
             }
             
             /**
-             * getSelectedHistory
+             * getSelectedHistoryByWkpId
              */
-            public getSelectedHistory(): IHistory {
+            public getSelectedHistoryByWkpId(): IHistory {
                 let self = this;
                 return self.lstWpkHistory().filter(item => item.workplaceId == self.selectedWpkHistory())[0];
+            }
+            
+            /**
+             * getSelectedHistoryByHistId
+             */
+            public getSelectedHistoryByHistId(historyId :string): IHistory {
+                let self = this;
+                return self.lstWpkHistory().filter(item => item.historyId == historyId)[0];
             }
             
             /**
@@ -57,7 +65,10 @@ module nts.uk.com.view.cmm011 {
             // is select first history
             public isSelectFirst() {
                 var self = this;
-                return self.selectedWpkHistory() == self.lstWpkHistory()[0].historyId;
+                if (self.lstWpkHistory().length > 0) {
+                    return self.selectedWpkHistory() == self.lstWpkHistory()[0].historyId;
+                }
+                return false;
             }
         }
         
