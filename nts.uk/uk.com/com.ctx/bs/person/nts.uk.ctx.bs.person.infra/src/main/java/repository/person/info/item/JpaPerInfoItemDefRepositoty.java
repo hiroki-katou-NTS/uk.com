@@ -155,6 +155,14 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SELECT_CHECK_ITEM_NAME_QUERY = "SELECT i.itemName"
 			+ " FROM PpemtPerInfoItem i WHERE i.perInfoCtgId = :perInfoCtgId AND i.itemName = :itemName"
 			+ " AND i.ppemtPerInfoItemPK.perInfoItemDefId != :perInfoItemDefId";
+	
+	private final static String COUNT_ITEMS_IN_CATEGORY = "SELECT COUNT(i)"
+			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
+			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd INNER JOIN PpemtPerInfoItemOrder io"
+			+ " ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId"
+			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL"
+			+ " ORDER BY io.disporder";
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -559,5 +567,14 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	}
 
 	// Sonnlb Code
+	
+	//vinhpx start
+	@Override
+	public int countPerInfoItemDefInCategory(String perInfoCategoryId, String contractCd) {
+		Optional<Object[]> a = this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCategoryId).getSingle();
+		return a.isPresent()?Integer.parseInt(a.get().toString()) : 0;
+	}
 
+	//vinhpx end
 }
