@@ -8,13 +8,12 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(4)
-@ZeroPaddedCode
-public class SampleCode extends CodePrimitiveValue<SampleCode> {
+public class SampleCodeNoPad extends CodePrimitiveValue<SampleCodeNoPad> {
 
     /** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
-	public SampleCode(String rawValue) {
+	public SampleCodeNoPad(String rawValue) {
         super(rawValue);
     }
     

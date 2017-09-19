@@ -28,6 +28,10 @@ public class DPHeaderDto {
 
 	private String color;
 
+	private boolean changedByOther;
+
+	private boolean changedByYou;
+
 	public DPHeaderDto(String key, String width) {
 		super();
 		this.key = key;
