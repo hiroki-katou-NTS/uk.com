@@ -65,18 +65,13 @@ table th, table td {
 	margin-left: 80px;
 }
 
-.landscape-setting, .vertical-scale-setting, .team-setting,
-	.people-setting, .rank-setting, .support-setting {
-	width: 109px;
-	margin-top: 10px;
+#work-setting, #company-setting {
+	margin-left: 10px;
 }
 
-.external-budget-record {
+#work-setting button, #company-setting button {
 	width: 109px;
-}
-
-.sort-order-setting {
-	width: 109px;
+	margin-bottom: 10px;
 }
 
 #top-area {
@@ -94,7 +89,7 @@ table th, table td {
 	height: 20px
 }
 
-.oViewModelDisplay {
+#oViewModel {
 	margin-left: 80px;
 	margin-top: 5px;
 	height: 85px
