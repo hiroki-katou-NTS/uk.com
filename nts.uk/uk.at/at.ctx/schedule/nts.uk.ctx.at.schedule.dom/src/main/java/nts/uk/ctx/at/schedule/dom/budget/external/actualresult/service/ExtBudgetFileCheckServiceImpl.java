@@ -98,7 +98,7 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
         String fileName = optional.get().getOriginalName().toLowerCase();
         boolean isValidSupportFileType = false;
         for (String item : LST_EXTENSION) {
-            if (fileName.contains(item)) {
+            if (fileName.endsWith(item)) {
                 isValidSupportFileType = true;
             }
         }
