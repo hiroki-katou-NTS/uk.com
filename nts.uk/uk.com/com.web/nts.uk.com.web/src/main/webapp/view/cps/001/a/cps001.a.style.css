@@ -7,7 +7,7 @@
 }
 
 #functions-area, #contents-area {
-	min-width: 1250px;
+	min-width: 1260px;
 }
 
 #contents-area .left-area, #contents-area .right-area {
@@ -167,6 +167,21 @@
 	display: inline-block;
 	vertical-align: middle;
 }
+
 #contents-area .layout-control .drag-panel {
 	min-width: 895px;
+}
+
+.ui-iggrid .ui-iggrid-tablebody .ui-state-hover,
+.ui-iggrid .ui-iggrid-tablebody .ui-state-active,
+.ui-iggrid .ui-iggrid-tablebody td {
+	border-top: none;
+}
+
+.ui-tabs .ui-tabs-panel {
+	padding: 10px;
+}
+
+.ui-igcombo-wrapper {
+	width: 155px;
 }

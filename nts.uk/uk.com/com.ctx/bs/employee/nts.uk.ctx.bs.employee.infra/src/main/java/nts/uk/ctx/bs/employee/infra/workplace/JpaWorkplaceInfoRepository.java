@@ -19,4 +19,10 @@ public class JpaWorkplaceInfoRepository implements WorkplaceInfoRepository {
 		return null;
 	}
 
+	@Override
+	public void update(WorkplaceInfo workplaceInfo) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

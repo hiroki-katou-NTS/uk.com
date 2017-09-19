@@ -102,11 +102,6 @@ module nts.uk.at.view.kdl023.viewmodel {
                 return true;
             }
 
-            let range = moment.duration(endDate.diff(startDate));
-            if (range.asDays() > 31) {
-                return true;
-            }
-
             return false;
         }
 
@@ -129,7 +124,7 @@ module nts.uk.at.view.kdl023.viewmodel {
             let self = this;
 
             if (self.isInvalidDate()) {
-                nts.uk.ui.dialog.alertError('- Start date must be before end date \n - Date range must be less than or equal 31 days.');
+                nts.uk.ui.dialog.alertError('- Start date must be before end date');
                 return;
             }
 

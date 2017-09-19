@@ -53,13 +53,19 @@ module nts.uk.com.view.cmm011 {
                     item.textDisplay = item.startDate + " " + nts.uk.resource.getText("CMM011_26") + " " + item.endDate;
                 })
             }
+            
+            // is select first history
+            public isSelectFirst() {
+                var self = this;
+                return self.selectedWpkHistory() == self.lstWpkHistory()[0].historyId;
+            }
         }
         
         /**
          * IHistory
          */
         export interface IHistory {
-            workplaceId: string;
+            workplaceId?: string;
             historyId: string;
             startDate: string;
             endDate: string;

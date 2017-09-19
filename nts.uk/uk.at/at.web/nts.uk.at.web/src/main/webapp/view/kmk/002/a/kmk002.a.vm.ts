@@ -1,8 +1,15 @@
 module nts.uk.at.view.kmk002.a {
     import OptionalItemDto = service.model.OptionalItemDto;
     import OptionalItemHeader = service.model.OptionalItemHeader;
-    import CalculationResultRangeDto = service.model.CalculationResultRangeDto;
-    import OptionalItemFormulaDto = service.model.CalcFormulaDto;
+    import CalcResultRangeDto = service.model.CalcResultRangeDto;
+    import FormulaDto = service.model.FormulaDto;
+    import CalcFormulaSettingDto = service.model.CalcFormulaSettingDto;
+    import FormulaSettingDto = service.model.FormulaSettingDto;
+    import ItemSelectionDto = service.model.ItemSelectionDto;
+    import SettingItemDto = service.model.SettingItemDto;;
+    import AttendanceItemDto = service.model.AttendanceItemDto;;
+    import RoundingDto = service.model.RoundingDto;;
+
     export module viewmodel {
 
         export class ScreenModel {
@@ -16,15 +23,15 @@ module nts.uk.at.view.kmk002.a {
 
             optionalItem: OptionalItem;
             optionalItemHeaders: Array<OptionalItemHeader>;
-            calcFormulas: Array<CalcFormula>;
+            calcFormulas: Array<Formula>;
 
             constructor() {
                 let self = this;
                 self.optionalItem = new OptionalItem();
                 self.optionalItemHeaders = new Array<OptionalItemHeader>();
-                self.calcFormulas = new Array<CalcFormula>();
+                self.calcFormulas = new Array<Formula>();
                 for (var i = 0; i < 5; i++) {
-                    self.calcFormulas.push(new CalcFormula());
+                    self.calcFormulas.push(new Formula());
                 }
 
 
@@ -146,8 +153,8 @@ module nts.uk.at.view.kmk002.a {
                     dfd.resolve();
                 }).fail().always();
 
-                //test
-                let test:Array<OptionalItemFormulaDto> = self.calcFormulas.map(item => {
+                //test formula
+                let test: Array<FormulaDto> = self.calcFormulas.map(item => {
                     return item.toDto();
                 });
                 console.log(test);
@@ -156,50 +163,9 @@ module nts.uk.at.view.kmk002.a {
             }
         }
 
-        class CalcFormula {
-            formulaId: string;
-            optionalItemNo: string;
-            formulaName: KnockoutObservable<string>;
-            formulaAtr: KnockoutObservable<number>;
-            symbolValue: KnockoutObservable<string>;
-            formulaSetting: any;
-            monthlyRounding: any;
-            dailyRounding: any;
-
-            constructor() {
-                this.formulaId = '000';
-                this.optionalItemNo = '000';
-                this.formulaName = ko.observable('asdvxzc');
-                this.formulaAtr = ko.observable(0);
-                this.symbolValue = ko.observable('asdvxzc');
-                // TODO.. mock data.
-                this.formulaSetting = '';
-                this.monthlyRounding = '';
-                this.dailyRounding = '';
-            }
-
-            public toDto() {
-                let self = this;
-                let dto: OptionalItemFormulaDto = <OptionalItemFormulaDto>{};
-                dto.formulaId = self.formulaId;
-                dto.optionalItemNo = self.optionalItemNo;
-                dto.formulaName = self.formulaName();
-                dto.formulaAtr = self.formulaAtr();
-                dto.symbolValue = self.symbolValue();
-
-                return dto;
-            }
-
-            public fromDto(dto: OptionalItemFormulaDto) {
-                let self = this;
-                self.formulaId = dto.formulaId;
-                self.optionalItemNo = dto.optionalItemNo;
-                self.formulaName(dto.formulaName);
-                self.formulaAtr(dto.formulaAtr);
-                self.symbolValue(dto.symbolValue);
-            }
-        }
-
+        /**
+         * The class OptionalItem
+         */
         class OptionalItem {
             optionalItemNo: string;
             optionalItemName: KnockoutObservable<string>;
@@ -218,10 +184,10 @@ module nts.uk.at.view.kmk002.a {
             constructor() {
                 this.optionalItemNo = '';
                 this.optionalItemName = ko.observable('');
-                this.optionalItemAtr = ko.observable(0);
-                this.usageAtr = ko.observable(0);
-                this.empConditionAtr = ko.observable(0);
-                this.performanceAtr = ko.observable(0);
+                this.optionalItemAtr = ko.observable(1);
+                this.usageAtr = ko.observable(1);
+                this.empConditionAtr = ko.observable(1);
+                this.performanceAtr = ko.observable(1);
                 this.calculationResultRange = new CalculationResultRange();
 
                 // Data source
@@ -255,7 +221,7 @@ module nts.uk.at.view.kmk002.a {
                 dto.usageAtr = self.usageAtr();
                 dto.empConditionAtr = self.empConditionAtr();
                 dto.performanceAtr = self.performanceAtr();
-                dto.calculationResultRange = self.calculationResultRange.toDto();
+                dto.calcResultRange = self.calculationResultRange.toDto();
 
                 return dto;
             }
@@ -268,10 +234,13 @@ module nts.uk.at.view.kmk002.a {
                 self.usageAtr(dto.usageAtr);
                 self.empConditionAtr(dto.empConditionAtr);
                 self.performanceAtr(dto.performanceAtr);
-                self.calculationResultRange.fromDto(dto.calculationResultRange);
+                self.calculationResultRange.fromDto(dto.calcResultRange);
             }
         }
 
+        /**
+         * The class CalculationResultRange
+         */
         class CalculationResultRange {
             upperCheck: KnockoutObservable<boolean>;
             lowerCheck: KnockoutObservable<boolean>;
@@ -285,15 +254,15 @@ module nts.uk.at.view.kmk002.a {
             constructor() {
                 this.upperCheck = ko.observable(false);
                 this.lowerCheck = ko.observable(false);
-                this.numberUpper = ko.observable(0);
-                this.numberLower = ko.observable(0);
-                this.amountUpper = ko.observable(0);
-                this.amountLower = ko.observable(0);
-                this.timeUpper = ko.observable(0);
-                this.timeLower = ko.observable(0);
+                this.numberUpper = ko.observable(1);
+                this.numberLower = ko.observable(1);
+                this.amountUpper = ko.observable(1);
+                this.amountLower = ko.observable(1);
+                this.timeUpper = ko.observable(1);
+                this.timeLower = ko.observable(1);
             }
 
-            public fromDto(dto: CalculationResultRangeDto): void {
+            public fromDto(dto: CalcResultRangeDto): void {
                 let self = this;
                 self.upperCheck(dto.upperCheck);
                 self.lowerCheck(dto.lowerCheck);
@@ -305,9 +274,9 @@ module nts.uk.at.view.kmk002.a {
                 self.amountLower(dto.amountLower);
             }
 
-            public toDto(): CalculationResultRangeDto {
+            public toDto(): CalcResultRangeDto {
                 let self = this;
-                let dto = <CalculationResultRangeDto>{};
+                let dto = <CalcResultRangeDto>{};
                 dto.upperCheck = self.upperCheck();
                 dto.lowerCheck = self.lowerCheck();
                 dto.numberUpper = self.numberUpper();
@@ -316,6 +285,256 @@ module nts.uk.at.view.kmk002.a {
                 dto.amountLower = self.amountLower();
                 dto.timeUpper = self.timeUpper();
                 dto.timeLower = self.timeLower();
+                return dto;
+            }
+        }
+
+        /**
+         * The class Formula
+         */
+        class Formula {
+            formulaId: string;
+            optionalItemNo: string;
+            formulaName: KnockoutObservable<string>;
+            formulaAtr: KnockoutObservable<number>;
+            symbolValue: string;
+            formulaSetting: CalcFormulaSetting;
+            monthlyRounding: Rounding;
+            dailyRounding: Rounding;
+
+            constructor() {
+                this.formulaId = '000';
+                this.optionalItemNo = '000';
+                this.formulaName = ko.observable('asdvxzc');
+                this.formulaAtr = ko.observable(1);
+                this.symbolValue = 'asdvxzc';
+                this.formulaSetting = new CalcFormulaSetting();
+                this.monthlyRounding = new Rounding();
+                this.dailyRounding = new Rounding();
+            }
+
+            public toDto() {
+                let self = this;
+                let dto: FormulaDto = <FormulaDto>{};
+
+                dto.formulaId = self.formulaId;
+                dto.optionalItemNo = self.optionalItemNo;
+                dto.formulaName = self.formulaName();
+                dto.formulaAtr = self.formulaAtr();
+                dto.symbolValue = self.symbolValue;
+                dto.calcFormulaSetting = self.formulaSetting.toDto()
+                dto.monthlyRounding = self.monthlyRounding.toDto();
+                dto.dailyRounding = self.dailyRounding.toDto();
+
+                return dto;
+            }
+
+            public fromDto(dto: FormulaDto) {
+                let self = this;
+                self.formulaId = dto.formulaId;
+                self.optionalItemNo = dto.optionalItemNo;
+                self.formulaName(dto.formulaName);
+                self.formulaAtr(dto.formulaAtr);
+                self.symbolValue = dto.symbolValue;
+                self.formulaSetting.fromDto(dto.calcFormulaSetting);
+                self.monthlyRounding.fromDto(dto.monthlyRounding);
+                self.dailyRounding.fromDto(dto.dailyRounding);
+            }
+        }
+
+        /**
+         * Calculation formula setting.
+         */
+        class CalcFormulaSetting {
+            calcAtr: KnockoutObservable<number>;
+            calcFormulaSetting: FormulaSetting;
+            itemSelection: ItemSelection;
+
+            constructor() {
+                this.calcAtr = ko.observable(1);
+                this.calcFormulaSetting = new FormulaSetting();
+                this.itemSelection = new ItemSelection();
+            }
+
+            public fromDto(dto: CalcFormulaSettingDto) {
+                this.calcAtr(dto.calcAtr);
+                this.calcFormulaSetting.fromDto(dto.formulaSetting);
+                this.itemSelection.fromDto(dto.itemSelection);
+
+            }
+            public toDto(): CalcFormulaSettingDto {
+                let self = this;
+                let dto: CalcFormulaSettingDto = <CalcFormulaSettingDto>{};
+
+                dto.calcAtr = this.calcAtr();
+                dto.formulaSetting = this.calcFormulaSetting.toDto();
+                dto.itemSelection = this.itemSelection.toDto();
+
+                return dto;
+            }
+        }
+
+        /**
+         * Formula setting.
+         */
+        class FormulaSetting {
+            minusSegment: number;
+            operator: number;
+            settingItems: Array<FormulaSettingItem>;
+            constructor() {
+                this.minusSegment = 0;
+                this.operator = 0;
+                this.settingItems = new Array<FormulaSettingItem>();
+            }
+            public fromDto(dto: FormulaSettingDto) {
+                this.minusSegment = dto.minusSegment;
+                this.operator = dto.operator;
+                this.settingItems = []; //TODO
+            }
+            public toDto(): any {
+                let self = this;
+                let dto: FormulaSettingDto = <FormulaSettingDto>{};
+
+                dto.minusSegment = this.minusSegment;
+                dto.operator = this.operator;
+                dto.settingItems = []; //TODO
+
+                return dto;
+            }
+        }
+
+        /**
+         * Formula setting item
+         */
+        class FormulaSettingItem {
+            settingMethod: KnockoutObservable<number>;
+            dispOrder: number;
+            inputValue: KnockoutObservable<number>;
+            formulaItemId: KnockoutObservable<string>;
+
+            constructor() {
+                this.settingMethod = ko.observable(1);
+                this.dispOrder = 0;
+                this.inputValue = ko.observable(1);
+                this.formulaItemId = ko.observable('');
+            }
+
+            public fromDto(dto: SettingItemDto) {
+                this.settingMethod(dto.settingMethod);
+                this.dispOrder = dto.dispOrder;
+                this.inputValue(dto.inputValue);
+                this.formulaItemId(dto.formulaItemId);
+            }
+
+            public toDto(): SettingItemDto {
+                let self = this;
+                let dto: SettingItemDto = <SettingItemDto>{};
+
+                dto.settingMethod = this.settingMethod();
+                dto.dispOrder = this.dispOrder;
+                dto.inputValue = this.inputValue();
+                dto.formulaItemId = this.formulaItemId();
+
+                return dto;
+            }
+        }
+
+        /**
+         * ItemSelection
+         */
+        class ItemSelection {
+            minusSegment: KnockoutObservable<number>;
+            attendanceItems: Array<AttendanceItem>;
+
+            constructor() {
+                this.minusSegment = ko.observable(1);
+                this.attendanceItems = []; //TODO
+            }
+
+            public fromDto(dto: ItemSelectionDto) {
+                this.minusSegment(dto.minusSegment);
+                this.attendanceItems = []; //TODO
+            }
+
+            public toDto(): ItemSelectionDto {
+                let self = this;
+                let dto: ItemSelectionDto = <ItemSelectionDto>{};
+
+                dto.minusSegment = this.minusSegment();
+                dto.attendanceItems = []; //TODO
+
+                return dto;
+            }
+        }
+
+        /**
+         * AttendanceItem
+         */
+        class AttendanceItem {
+            id: string;
+            operator: KnockoutObservable<number>;
+
+            constructor() {
+                this.id = 'asdf';
+                this.operator = ko.observable(1);
+            }
+
+            public fromDto(dto: AttendanceItemDto) {
+                this.id = dto.id;
+                this.operator(dto.operator);
+            }
+
+            public toDto(): AttendanceItemDto {
+                let self = this;
+                let dto: AttendanceItemDto = <AttendanceItemDto>{};
+
+                dto.id = this.id;
+                dto.operator = this.operator();
+
+                return dto;
+            }
+        }
+
+        /**
+         * Rounding
+         */
+        class Rounding {
+            numberRounding: KnockoutObservable<number>;
+            numberUnit: KnockoutObservable<number>;
+            amountRounding: KnockoutObservable<number>;
+            amountUnit: KnockoutObservable<number>;
+            timeRounding: KnockoutObservable<number>;
+            timeUnit: KnockoutObservable<number>;
+
+            constructor() {
+                this.numberRounding = ko.observable(1);
+                this.numberUnit = ko.observable(1);
+                this.amountRounding = ko.observable(1);
+                this.amountUnit = ko.observable(1);
+                this.timeRounding = ko.observable(1);
+                this.timeUnit = ko.observable(1);
+            }
+
+            public fromDto(dto: RoundingDto) {
+                this.numberRounding(dto.numberRounding);
+                this.numberUnit(dto.numberUnit);
+                this.amountRounding(dto.amountRounding);
+                this.amountUnit(dto.amountUnit);
+                this.timeRounding(dto.timeRounding);
+                this.timeUnit(dto.timeRounding);
+            }
+
+            public toDto(): RoundingDto {
+                let self = this;
+                let dto: RoundingDto = <RoundingDto>{};
+
+                dto.numberRounding = this.numberRounding();
+                dto.numberUnit = this.numberUnit();
+                dto.amountRounding = this.amountRounding();
+                dto.amountUnit = this.amountUnit();
+                dto.timeRounding = this.timeRounding();
+                dto.timeUnit = this.timeUnit();
+
                 return dto;
             }
         }

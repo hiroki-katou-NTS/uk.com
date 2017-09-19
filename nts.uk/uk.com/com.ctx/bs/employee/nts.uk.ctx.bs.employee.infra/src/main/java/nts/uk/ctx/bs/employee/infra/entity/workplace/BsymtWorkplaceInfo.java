@@ -12,11 +12,14 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "BSYMT_WORKPLACE_INFO")
-
 public class BsymtWorkplaceInfo extends UkJpaEntity implements Serializable {
     
 	private static final long serialVersionUID = 1L;

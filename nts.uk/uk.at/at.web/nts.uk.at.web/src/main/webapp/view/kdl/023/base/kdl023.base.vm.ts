@@ -828,6 +828,13 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 // Set calendar range.
                 self.calendarStartDate = moment(shared.calendarStartDate, 'YYYY-MM-DD');
                 self.calendarEndDate = moment(shared.calendarEndDate, 'YYYY-MM-DD');
+
+                // Date range must <= 31 days
+                // If end date parameter out of range -> set end date to 31 days after start date parameter.
+                let range = moment.duration(self.calendarEndDate.diff(self.calendarStartDate));
+                if (range.asDays() > 31) {
+                    self.calendarEndDate = moment(self.calendarStartDate).add(30, 'days');
+                }
                 self.startDate = self.calendarStartDate.date();
                 self.endDate = self.calendarEndDate.date();
                 self.yearMonthPicked(parseInt(self.calendarStartDate.format('YYYYMM')));

@@ -12,6 +12,13 @@ import java.util.Optional;
 public interface WorkplaceInfoRepository {
 
 	/**
+	 * Update.
+	 *
+	 * @param workplaceInfo the workplace info
+	 */
+	void update(WorkplaceInfo workplaceInfo);
+	
+	/**
 	 * Find by wkp id.
 	 *
 	 * @param wkpId the wkp id

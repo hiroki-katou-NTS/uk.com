@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.config;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -13,12 +12,20 @@ import java.util.Optional;
 public interface WorkplaceConfigRepository {
 
 	/**
+	 * Adds the.
+	 *
+	 * @param workplaceConfig the workplace config
+	 * @return the string
+	 */
+	String add(WorkplaceConfig workplaceConfig);
+	
+	/**
 	 * Find all by company id.
 	 *
 	 * @param companyId the company id
-	 * @return the list
+	 * @return the workplace config
 	 */
-	List<WorkplaceConfig> findAllByCompanyId(String companyId);
+	WorkplaceConfig findAllByCompanyId(String companyId);
 	
 	/**
 	 * Find lastest by company id.

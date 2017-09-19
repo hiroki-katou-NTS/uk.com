@@ -12,6 +12,13 @@ import java.util.List;
 public interface WorkplaceConfigInfoRepository {
 
 	/**
+	 * Adds the.
+	 *
+	 * @param workplaceConfigInfo the workplace config info
+	 */
+	void add(WorkplaceConfigInfo workplaceConfigInfo);
+	
+	/**
 	 * Find all.
 	 *
 	 * @param companyId the company id

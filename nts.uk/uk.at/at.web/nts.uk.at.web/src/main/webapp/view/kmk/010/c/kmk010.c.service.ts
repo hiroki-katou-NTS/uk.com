@@ -1,13 +1,13 @@
 module nts.uk.at.view.kmk010.c {
     
-    import OvertimeBRDItemDto = nts.uk.at.view.kmk010.a.service.model.OvertimeBRDItemDto;
+    import OutsideOTBRDItemDto = nts.uk.at.view.kmk010.a.service.model.OutsideOTBRDItemDto;
     import EnumConstantDto = nts.uk.at.view.kmk010.a.service.model.EnumConstantDto;
-    import OvertimeLangBRDItemDto = nts.uk.at.view.kmk010.a.service.model.OvertimeLangBRDItemDto;
+    import OutsideOTBRDItemLangDto = nts.uk.at.view.kmk010.a.service.model.OutsideOTBRDItemLangDto;
     
     export module service {
         var paths = {
             findAllProductNumber : "ctx/at/shared/overtime/breakdown/findAll/productNumber",
-            saveAllOvertimeBRDItem : "ctx/at/shared/overtime/breakdown/save",
+            saveAllOutsideOTBRDItem : "ctx/at/shared/overtime/breakdown/save",
             saveAllOvertimeLanguageBRDItem : "ctx/at/shared/overtime/breakdown/language/saveAll"
         }
         
@@ -21,14 +21,14 @@ module nts.uk.at.view.kmk010.c {
          /**
          * call service save all overtime breakdown item
          */
-        export function saveAllOvertimeBRDItem(overtimeBRDItems: OvertimeBRDItemDto[]): JQueryPromise<void> {
-            return nts.uk.request.ajax('at', paths.saveAllOvertimeBRDItem, { overtimeBRDItems: overtimeBRDItems });
+        export function saveAllOutsideOTBRDItem(OutsideOTBRDItems: OutsideOTBRDItemDto[]): JQueryPromise<void> {
+            return nts.uk.request.ajax('at', paths.saveAllOutsideOTBRDItem, { OutsideOTBRDItems: OutsideOTBRDItems });
         }
         
         /**
          * save all overtime language breakdown item
          */
-        export function saveAllOvertimeLanguageBRDItem(overtimeLanguages: OvertimeLangBRDItemDto[]): JQueryPromise<void> {
+        export function saveAllOvertimeLanguageBRDItem(overtimeLanguages: OutsideOTBRDItemLangDto[]): JQueryPromise<void> {
             return nts.uk.request.ajax('at', paths.saveAllOvertimeLanguageBRDItem, { overtimeLanguages: overtimeLanguages });
         } 
         
