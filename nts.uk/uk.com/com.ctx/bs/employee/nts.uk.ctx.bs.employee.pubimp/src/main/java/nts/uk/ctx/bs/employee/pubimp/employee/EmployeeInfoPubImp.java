@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.employee.pubimp.employee;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -16,6 +18,9 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 
 	@Inject
 	private EmployeeRepository repo;
+	
+	/** The Constant DATE_FORMAT FROM Client */
+	private static final String DATE_FORMAT = "yyyy/MM/dd";
 
 	@Override
 	public Optional<EmployeeInfoDtoExport> getEmployeeInfo(String companyId, String employeeCode, GeneralDate entryDate) {
@@ -31,6 +36,25 @@ public class EmployeeInfoPubImp implements EmployeeInfoPub {
 					_domain.getPId()));
 		}
 
+	}
+	
+	@Override
+	public List<EmployeeInfoDtoExport> getEmployeesAtWorkByBaseDate(String companyId, String standardDate) {
+	
+		GeneralDate _standardDate = GeneralDate.fromString(standardDate, DATE_FORMAT);
+		
+		List<Employee> listEmpDomain = repo.getListEmpByStandardDate(companyId, _standardDate);
+		
+		List<EmployeeInfoDtoExport> result = new ArrayList<>();
+		
+		if (!listEmpDomain.isEmpty()) {
+			listEmpDomain.forEach(c -> {
+				EmployeeInfoDtoExport empDto = new EmployeeInfoDtoExport(c.getCompanyId(), c.getSCd().v(), c.getSId(),
+						c.getPId());
+				result.add(empDto);
+			});
+		}
+		return result;
 	}
 
 }

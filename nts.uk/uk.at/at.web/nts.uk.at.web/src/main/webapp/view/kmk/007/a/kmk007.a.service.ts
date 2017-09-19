@@ -2,10 +2,11 @@ module nts.uk.at.view.kmk007.a.service {
 
     var paths: any = {
         findAll: "at/screen/worktype/findAll",
+        find: "at/share/worktype/findById/{0}",
         addWorkType: "at/share/worktype/add",
         removeWorkType: "at/share/worktype/remove",
         updateWorkType: "at/share/worktype/update",
-        findWorkTypeSet: "at/share/worktype/find/{0}",
+        findWorkTypeSet: "at/share/worktype/set/find/{0}",
         findByLangId: "at/share/worktype/getByCIdAndLangId",
         getAllAbsenceFrame: "at/share/worktype/absenceframe/findAll",
         getAllSpecialHolidayFrame: "at/share/worktype/specialholidayframe/findAll",
@@ -15,6 +16,11 @@ module nts.uk.at.view.kmk007.a.service {
 
     export function loadWorkType(): JQueryPromise<Array<any>> {
         var path = paths.findAll;
+        return nts.uk.request.ajax(path);
+    }
+    
+    export function findWorkType(workTypeCode: string): JQueryPromise<any> {
+        var path = nts.uk.text.format(paths.find, workTypeCode);
         return nts.uk.request.ajax(path);
     }
 

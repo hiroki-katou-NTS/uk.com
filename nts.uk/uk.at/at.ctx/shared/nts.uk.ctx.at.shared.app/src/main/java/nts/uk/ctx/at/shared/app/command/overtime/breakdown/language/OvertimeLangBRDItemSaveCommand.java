@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.language.OvertimeLangBRDItem;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLang;
 
 @Getter
 @Setter
@@ -24,7 +24,7 @@ public class OvertimeLangBRDItemSaveCommand {
 	 * @param companyId the company id
 	 * @return the list
 	 */
-	public List<OvertimeLangBRDItem> toListDomain(String companyId){
+	public List<OutsideOTBRDItemLang> toListDomain(String companyId){
 		return this.overtimeLanguages.stream().map(dto -> dto.toDomain(companyId))
 				.collect(Collectors.toList());
 	}

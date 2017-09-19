@@ -127,8 +127,8 @@ public class WorkTypeWebService extends WebService {
 	 */
 	@POST
 	@Path("findById/{workTypeCode}")
-	public WorkTypeDto findById(@PathParam("workTypeCode") String workTypeCode) {
-		return this.find.findById(workTypeCode);
+	public WorkTypeDto findByCode(@PathParam("workTypeCode") String workTypeCode) {
+		return this.find.findByCode(workTypeCode);
 	}
 
 	/**

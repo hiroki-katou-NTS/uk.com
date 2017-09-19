@@ -1,0 +1,124 @@
+<div>
+	<div class="table m1-table">
+		<div class="cell m1-column1">
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL001_3')}</div>
+		</div>
+		<div class="cell m1-column2">
+			<div class="cf m1-switch" data-bind="ntsSwitchButton: {
+						options: ko.observableArray([
+				            { code: 0, name: '外出' },
+				            { code: 1, name: '育児' },
+				            { code: 2, name: '介護' }
+				        ]),
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: stampAtr }"></div>
+		</div>
+	</div>
+	<div class="table m1-table">
+		<div class="cell m1-column1">
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL001_3')}</div>
+		</div>
+		<div class="cell m1-column2">
+			<div data-bind="foreach: appStampList">
+				<div data-bind="style: { display: $parent.stampAtr() == 0 ? '' : 'none' }">
+					<div class="panel panel-frame m1-panel">
+						<div class="table">
+							<div class="cell m1-column3">
+								<span class="label m1-label">外出</span>
+							</div>
+							<div class="cell">
+								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
+													name: 'Time With Day', 
+													constraint:'TimeWithDayAttr', 
+													value: startTime }" />	
+								<button>Normal</button>
+								<span class="label m1-label" data-bind="text: startLocation"></span>						
+							</div>
+						</div>
+						<div class="table">
+							<div class="cell m1-column3">
+								<span class="label m1-label">戻り</span>
+							</div>
+							<div class="cell">
+								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
+													name: 'Time With Day', 
+													constraint:'TimeWithDayAttr', 
+													value: endTime }" />	
+								<button>Normal</button>
+								<span class="label m1-label" data-bind="text: endLocation"></span>						
+							</div>
+						</div>
+						<div class="table">
+							<div class="cf m1-switch" data-bind="ntsSwitchButton: {
+												options: ko.observableArray([
+										            { code: 0, name: '私用' },
+										            { code: 1, name: '公用' },
+										            { code: 2, name: '有償' },
+										            { code: 3, name: '組合' }
+										        ]),
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: stampGoOutReason }"></div>	
+						</div>
+					</div>
+				</div>
+				<div data-bind="style: { display: $parent.stampAtr() == 1 ? '' : 'none' }">
+					<div class="panel panel-frame m1-panel">
+						<div class="table">
+							<div class="cell m1-column3">
+								<span class="label m1-label">開始</span>
+							</div>
+							<div class="cell">
+								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
+													name: 'Time With Day', 
+													constraint:'TimeWithDayAttr', 
+													value: startTime }" />						
+							</div>
+						</div>
+						<div class="table">
+							<div class="cell m1-column3">
+								<span class="label m1-label">終了</span>
+							</div>
+							<div class="cell">
+								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
+													name: 'Time With Day', 
+													constraint:'TimeWithDayAttr', 
+													value: endTime }" />						
+							</div>
+						</div>
+					</div>
+				</div>
+				<div data-bind="style: { display: $parent.stampAtr() == 2 ? '' : 'none' }">
+					<div class="panel panel-frame m1-panel">
+						<div class="table">
+							<div class="cell m1-column3">
+								<span class="label m1-label">開始</span>
+							</div>
+							<div class="cell">
+								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
+													name: 'Time With Day', 
+													constraint:'TimeWithDayAttr', 
+													value: startTime }" />							
+							</div>
+						</div>
+						<div class="table">
+							<div class="cell m1-column3">
+								<span class="label m1-label">終了</span>
+							</div>
+							<div class="cell">
+								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
+													name: 'Time With Day', 
+													constraint:'TimeWithDayAttr', 
+													value: endTime }" />							
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div>
+				<a class="hyperlink" href="#" data-bind="click: extendsModeEvent">アイコン無し、ただのリンク</a>
+			</div>
+		</div>
+	</div>
+</div>

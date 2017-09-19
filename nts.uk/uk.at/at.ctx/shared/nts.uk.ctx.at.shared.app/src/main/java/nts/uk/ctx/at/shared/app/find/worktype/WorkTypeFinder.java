@@ -101,15 +101,24 @@ public class WorkTypeFinder {
 	 *            the work type code
 	 * @return the work type dto
 	 */
-	public WorkTypeDto findById(String workTypeCode) {
+	public WorkTypeDto findByCode(String workTypeCode) {
 		// company id
 		String companyId = AppContexts.user().companyId();
-		Optional<WorkType> workType = this.workTypeRepo.findByPK(companyId, workTypeCode);
-		if (workType.isPresent()) {
-			return WorkTypeDto.fromDomain(workType.get());
+		Optional<WorkType> workTypeOpt = this.workTypeRepo.findByPK(companyId, workTypeCode);
+		if (!workTypeOpt.isPresent()) {
+			return null;
+		}
+		
+		WorkType workType = workTypeOpt.get();
+		WorkTypeDto workTypeDto = WorkTypeDto.fromDomain(workType);
+		// set work type setting
+		if (workType.getWorkTypeSetList() != null) {
+			List<WorkTypeSetDto> workTypeSetList = workType.getWorkTypeSetList().stream()
+					.map(x -> WorkTypeSetDto.fromDomain(x)).collect(Collectors.toList());
+			workTypeDto.setWorkTypeSets(workTypeSetList);
 		}
 
-		return null;
+		return workTypeDto;
 	}
 
 

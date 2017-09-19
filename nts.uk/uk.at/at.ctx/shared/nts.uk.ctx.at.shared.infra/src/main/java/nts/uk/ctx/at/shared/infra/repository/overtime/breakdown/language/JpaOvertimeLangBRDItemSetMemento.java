@@ -5,17 +5,17 @@
 package nts.uk.ctx.at.shared.infra.repository.overtime.breakdown.language;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemName;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.language.OvertimeLangBRDItemSetMemento;
-import nts.uk.ctx.at.shared.dom.overtime.language.LanguageId;
-import nts.uk.ctx.at.shared.infra.entity.overtime.breakdown.language.KshstOverTimeLangBrd;
-import nts.uk.ctx.at.shared.infra.entity.overtime.breakdown.language.KshstOverTimeLangBrdPK;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemName;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLangSetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.LanguageId;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOverTimeLangBrd;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOverTimeLangBrdPK;
 
 /**
  * The Class JpaOvertimeLangBRDItemSetMemento.
  */
-public class JpaOvertimeLangBRDItemSetMemento implements OvertimeLangBRDItemSetMemento {
+public class JpaOvertimeLangBRDItemSetMemento implements OutsideOTBRDItemLangSetMemento {
 	
 	/** The entity. */
 	private KshstOverTimeLangBrd entity;

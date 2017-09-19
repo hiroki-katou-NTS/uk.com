@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.overtime.dto.PremiumExtra60HRateDto;
-import nts.uk.ctx.at.shared.dom.overtime.premium.extra.PremiumExtra60HRate;
-import nts.uk.ctx.at.shared.dom.overtime.premium.extra.PremiumExtra60HRateRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.premium.extra.PremiumExtra60HRate;
+import nts.uk.ctx.at.shared.dom.outsideot.premium.extra.PremiumExtra60HRateRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 

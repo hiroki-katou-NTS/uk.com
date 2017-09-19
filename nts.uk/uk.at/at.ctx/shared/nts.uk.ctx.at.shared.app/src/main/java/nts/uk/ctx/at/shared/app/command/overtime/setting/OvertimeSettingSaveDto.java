@@ -12,18 +12,18 @@ import lombok.Setter;
 import nts.uk.ctx.at.shared.app.command.overtime.OvertimeSaveDto;
 import nts.uk.ctx.at.shared.app.command.overtime.breakdown.OvertimeBRDItemSaveDto;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.overtime.Overtime;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeCalculationMethod;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeNote;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItem;
-import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingGetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNote;
 
 /**
  * The Class OvertimeSettingSaveDto.
  */
 @Getter
 @Setter
-public class OvertimeSettingSaveDto implements OvertimeSettingGetMemento{
+public class OvertimeSettingSaveDto implements OutsideOTSettingGetMemento{
 
 	/** The note. */
 	private String note;
@@ -69,8 +69,8 @@ public class OvertimeSettingSaveDto implements OvertimeSettingGetMemento{
 	 * getCalculationMethod()
 	 */
 	@Override
-	public OvertimeCalculationMethod getCalculationMethod() {
-		return OvertimeCalculationMethod.valueOf(this.calculationMethod);
+	public OutsideOTCalMed getCalculationMethod() {
+		return OutsideOTCalMed.valueOf(this.calculationMethod);
 	}
 
 	/*
@@ -80,8 +80,8 @@ public class OvertimeSettingSaveDto implements OvertimeSettingGetMemento{
 	 * getBreakdownItems()
 	 */
 	@Override
-	public List<OvertimeBRDItem> getBreakdownItems() {
-		return this.breakdownItems.stream().map(dto -> new OvertimeBRDItem(dto))
+	public List<OutsideOTBRDItem> getBreakdownItems() {
+		return this.breakdownItems.stream().map(dto -> new OutsideOTBRDItem(dto))
 				.collect(Collectors.toList());
 	}
 

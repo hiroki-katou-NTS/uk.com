@@ -222,11 +222,10 @@ module nts.uk.com.view.cps006.b.viewmodel {
         genDatatypeValueText() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
-
             switch (self.currentItem().itemTypeState.dataTypeState.dataTypeValue) {
                 case 1:
                     return getText('Enum_DataTypeValue_STRING');
@@ -242,11 +241,12 @@ module nts.uk.com.view.cps006.b.viewmodel {
                     return getText('Enum_DataTypeValue_SELECTION');
             }
 
+
         }
 
         genStringItemDataTypeText() {
             let self = this;
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
@@ -261,7 +261,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         genStringItemTypeText() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
@@ -283,7 +283,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         genStringNumericItemMinusText() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
@@ -299,7 +299,7 @@ module nts.uk.com.view.cps006.b.viewmodel {
         genDateTypeText() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
@@ -318,12 +318,24 @@ module nts.uk.com.view.cps006.b.viewmodel {
         dataType() {
             let self = this;
 
-            if (self.currentItem().itemTypeState == null) {
+            if (self.itemType() === 1) {
 
                 return;
             }
 
             return self.currentItem().itemTypeState.dataTypeState.dataTypeValue;
+
+        }
+
+        itemType() {
+            let self = this;
+
+            if (self.currentItem().itemTypeState == null) {
+
+                return 1;
+            }
+
+            return self.currentItem().itemTypeState.itemType;
 
         }
 

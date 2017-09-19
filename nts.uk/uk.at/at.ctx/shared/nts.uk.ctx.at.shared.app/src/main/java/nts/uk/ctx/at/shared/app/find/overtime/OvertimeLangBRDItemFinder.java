@@ -11,8 +11,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.overtime.dto.OvertimeLangBRDItemDto;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.language.OvertimeLangBRDItem;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.language.OvertimeLangBRDItemRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLang;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLangRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -24,7 +24,7 @@ public class OvertimeLangBRDItemFinder {
 
 	/** The repository. */
 	@Inject
-	private OvertimeLangBRDItemRepository repository;
+	private OutsideOTBRDItemLangRepository repository;
 	
 	/**
 	 * Find all.
@@ -41,7 +41,7 @@ public class OvertimeLangBRDItemFinder {
 		String companyId = loginUserContext.companyId();
 
 		// call repository find data
-		List<OvertimeLangBRDItem> overtimeLanguage = this.repository.findAll(companyId, languageId);
+		List<OutsideOTBRDItemLang> overtimeLanguage = this.repository.findAll(companyId, languageId);
 
 		return overtimeLanguage.stream().map(domain -> {
 			OvertimeLangBRDItemDto dto = new OvertimeLangBRDItemDto();

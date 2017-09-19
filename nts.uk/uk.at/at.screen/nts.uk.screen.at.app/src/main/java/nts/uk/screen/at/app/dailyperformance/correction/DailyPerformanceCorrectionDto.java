@@ -32,10 +32,6 @@ public class DailyPerformanceCorrectionDto {
 	
 	private List<DPCellStateDto> lstCellState;
 	
-	private List<DPErrorDto> lstError;
-	
-	private List<DPErrorSettingDto> lstErrorSetting;
-	
 	private List<DPDataDto> lstData;
 
 	public DailyPerformanceCorrectionDto() {
