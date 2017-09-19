@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum GenderPerson {
-	/* 女性 */
-	Female(0),
-	/* 男性 */
+	/* 女 */
+	Female(2),
+	/* 男 */
 	Male(1);
 
 	public final int value;
