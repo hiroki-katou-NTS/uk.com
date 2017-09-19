@@ -36,7 +36,13 @@ module nts.uk.com.view.cmm011.b {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 service.findLstWkpConfigHistory().done(function(data) {
-                    self.workplaceHistory().init(data.wkpConfigHistory); 
+                    if (data) {
+                        self.workplaceHistory().init(data.wkpConfigHistory);
+                        self.workplaceHistory().screenMode(ScreenMode.SelectionMode);
+                    }
+                    else {
+                        self.workplaceHistory().screenMode(ScreenMode.NewMode);
+                    } 
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -74,10 +80,9 @@ module nts.uk.com.view.cmm011.b {
             screenModel: ScreenModel;
             
                // mode
-            isSelectionMode: KnockoutObservable<boolean>;
-            isNewMode: KnockoutObservable<boolean>;
-            isAddMode: KnockoutObservable<boolean>;
-            isUpdateMode: KnockoutObservable<boolean>;
+            screenMode: KnockoutObservable<number>;
+            addBtnControl: KnockoutObservable<boolean>;
+            updateBtnControl: KnockoutObservable<boolean>;
             
             constructor(screenModel: ScreenModel) {
                 super();
@@ -86,20 +91,28 @@ module nts.uk.com.view.cmm011.b {
                 self.screenModel = screenModel;
                 
                 // mode
-                self.isSelectionMode = ko.observable(false);
-                self.isNewMode = ko.observable(false);
-                self.isAddMode = ko.observable(false);
-                self.isUpdateMode = ko.observable(false); 
-                
-//                self.init();
-                
+                self.screenMode = ko.observable(null);
+
                 // subscribe
                 self.lstWpkHistory.subscribe(newList => {
                     
                     // list empty or null -> new mode
                     if (!newList || newList.length <= 0) {
-                        self.isNewMode(true);
+                        self.screenMode(ScreenMode.NewMode);
                     }
+                });
+                self.addBtnControl = ko.computed(function() {
+                    if (self.screenMode() == ScreenMode.SelectionMode || self.screenMode() == ScreenMode.UpdateMode) {
+                        return self.isSelectFirst();
+                    }
+                    return false;
+                });
+                
+                self.updateBtnControl = ko.computed(function() {
+                    if (self.screenMode() == ScreenMode.SelectionMode) {
+                        return self.isSelectFirst();
+                    }
+                    return false;
                 });
             }
             
@@ -119,7 +132,7 @@ module nts.uk.com.view.cmm011.b {
              */
             public addHistory() {
                 let self = this;
-                self.isAddMode(true);
+                self.screenMode(ScreenMode.AddMode);
             }
             
             /**
@@ -127,7 +140,7 @@ module nts.uk.com.view.cmm011.b {
              */
             public updateHistory() {
                 let self = this;
-                self.isUpdateMode(true);
+                self.screenMode(ScreenMode.UpdateMode);
             }
             
             /**
@@ -136,6 +149,14 @@ module nts.uk.com.view.cmm011.b {
             public removeHistory() {
                 let self = this;
             }
+        }
+        
+        //Screen mode define
+        export enum ScreenMode {
+            SelectionMode = 0,
+            NewMode = 1,
+            AddMode = 2,
+            UpdateMode = 3
         }
     }
 }

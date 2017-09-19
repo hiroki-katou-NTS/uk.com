@@ -28,10 +28,10 @@
 			<div id="contents-area">
 				<div id="left-content" class="bg-green caret-right caret-inline caret-background pull-left" data-bind="with: workplaceHistory">
 					<div>
-						<button tabindex="1" data-bind="click: addHistory">#{i18n.getText('CMM011_18')}</button>
+						<button tabindex="1" data-bind="click: addHistory,enable: addBtnControl">#{i18n.getText('CMM011_18')}</button>
 						<button tabindex="2" style="margin-left: 4px;margin-right: 4px;" 
-							 data-bind="click: updateHistory">#{i18n.getText('CMM011_19',['Com_Workplace'])}</button>
-						<button tabindex="3" data-bind="click: removeHistory" >#{i18n.getText('CMM011_20')}</button>
+							 data-bind="click: updateHistory,enable: updateBtnControl">#{i18n.getText('CMM011_19',['Com_Workplace'])}</button>
+						<button tabindex="3" data-bind="click: removeHistory,enable: addBtnControl" >#{i18n.getText('CMM011_20')}</button>
 					</div>
 					
 					<div id="list-box" tabindex="4" data-bind="ntsListBox: {
