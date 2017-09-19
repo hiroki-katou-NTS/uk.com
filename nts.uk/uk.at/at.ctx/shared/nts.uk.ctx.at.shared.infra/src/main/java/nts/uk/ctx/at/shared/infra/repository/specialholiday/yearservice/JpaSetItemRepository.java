@@ -9,9 +9,9 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearservicecom.YearServiceCom;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceset.YearServiceSet;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceset.repository.YearServiceComRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearservicecom.YearServiceCom;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.YearServiceSet;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.repository.YearServiceComRepository;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearservicecom.KshstYearServiceCom;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearservicecom.KshstYearServiceComPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceset.KshstYearServiceSet;

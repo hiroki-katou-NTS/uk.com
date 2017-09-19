@@ -1,9 +1,9 @@
 module nts.uk.at.view.kmf004.e {  
     __viewContext.ready(function() {
         let screenModel = new viewmodel.ScreenModel();
-        //screenModel.startPage().done(function() {
+//        screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
 //            $("#inpCode").focus();
-        //});
+//        });
     });
-}  
+}     

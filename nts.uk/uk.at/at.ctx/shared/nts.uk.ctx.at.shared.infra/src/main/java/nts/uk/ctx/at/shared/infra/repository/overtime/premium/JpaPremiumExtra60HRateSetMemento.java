@@ -4,12 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.infra.repository.overtime.premium;
 
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.overtime.premium.PremiumRate;
-import nts.uk.ctx.at.shared.dom.overtime.premium.extra.PremiumExtra60HRateSetMemento;
-import nts.uk.ctx.at.shared.infra.entity.overtime.premium.KshstPremiumExt60hRate;
-import nts.uk.ctx.at.shared.infra.entity.overtime.premium.KshstPremiumExt60hRatePK;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
+import nts.uk.ctx.at.shared.dom.outsideot.premium.PremiumRate;
+import nts.uk.ctx.at.shared.dom.outsideot.premium.extra.PremiumExtra60HRateSetMemento;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRate;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRatePK;
 
 /**
  * The Class JpaPremiumExtra60HRateSetMemento.

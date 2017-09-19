@@ -9,8 +9,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSetting;
-import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -22,7 +22,7 @@ public class OvertimeSettingSaveCommandHandler extends CommandHandler<OvertimeSe
 	
 	/** The repository. */
 	@Inject
-	private OvertimeSettingRepository repository;
+	private OutsideOTSettingRepository repository;
 
 	/*
 	 * (non-Javadoc)
@@ -44,7 +44,7 @@ public class OvertimeSettingSaveCommandHandler extends CommandHandler<OvertimeSe
 		OvertimeSettingSaveCommand command = context.getCommand();
 		
 		// to domain
-		OvertimeSetting domain = command.toDomain(companyId);
+		OutsideOTSetting domain = command.toDomain(companyId);
 		
 		// save domain
 		this.repository.save(domain);

@@ -16,7 +16,7 @@ module nts.uk.at.view.kmf004.d.service {
         return ajax("at", paths.add, command);
     }
 
-    export function update(command: Array<d.viewmodel.Item>): JQueryPromise<void>{
+    export function update(command: d.viewmodel.Item): JQueryPromise<void>{
         return ajax("at", paths.update, command);
     }    
 }

@@ -11,36 +11,14 @@ package nts.uk.ctx.at.request.dom.application.stamp;
  *
  */
 public enum StampAtr {
-
-	/**
-	 * 出勤／退勤
-	 */
+	
 	ATTENDANCE(0, "出勤／退勤"),
-
-	/**
-	 * 臨時
-	 */
-	EXTRAORDINARY(1, "臨時"),
 	
-	/**
-	 * 外出
-	 */
-	GO_OUT(2, "外出"),
+	GO_OUT(1, "外出/戻り"),
 	
-	/**
-	 * 育児
-	 */
-	CHILDCARE(3, "育児"),
+	CHILDCARE(2, "育児外出/育児戻り"),
 	
-	/**
-	 * 介護
-	 */
-	CARE(4, "介護"),
-	
-	/**
-	 * 応援
-	 */
-	SUPPORT(5, "応援");
+	SUPPORT(3, "応援入/応援出");
 
 	public final int value;
 

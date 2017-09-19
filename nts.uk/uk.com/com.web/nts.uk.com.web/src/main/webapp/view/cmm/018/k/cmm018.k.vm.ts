@@ -156,13 +156,13 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         //決定 button click
         submitClickButton(){
             var self = this;
-            setShared("CMM018K_DATA", { 
-                                        appType: self.appType(), //設定する対象申請名 
+            let data: shrVm.KData = { appType: self.appType(), //設定する対象申請名 
                                         formSetting: self.selectFormSet(),//承認形態
                                         approverInfor: self.approverList(),//承認者一覧
                                         confirmedPerson: self.selectedCbbCode(), //確定者
                                         selectTypeSet: self.selectTypeSet()
-                                        });
+                                        }
+            setShared("CMM018K_DATA",data );
             nts.uk.ui.windows.close();
         }
         

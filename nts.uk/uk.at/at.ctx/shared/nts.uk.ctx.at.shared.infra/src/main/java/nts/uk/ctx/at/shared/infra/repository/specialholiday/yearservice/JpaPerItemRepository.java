@@ -9,10 +9,9 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.YearServicePer;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.YearServicePerSet;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.primitives.YearServiceCode;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceper.repository.YearServicePerRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.YearServicePer;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.YearServicePerSet;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.repository.YearServicePerRepository;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceper.KshstYearServicePer;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceper.KshstYearServicePerPK;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.yearserviceper.KshstYearServicePerSet;
@@ -72,7 +71,7 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 		}
 		YearServicePer domain = YearServicePer.createFromJavaType(entity.kshstYearServicePerPK.companyId,	
 																	entity.kshstYearServicePerPK.specialHolidayCode,
-																	entity.kshstYearServicePerPK.yearServiceCode.v(),
+																	entity.kshstYearServicePerPK.yearServiceCode,
 																	entity.yearServiceName,
 																	entity.yearServiceCls, 
 																	domls);
@@ -82,7 +81,7 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 		val entity = new KshstYearServicePer();
 		entity.kshstYearServicePerPK = new KshstYearServicePerPK(domain.getCompanyId(), 
 																domain.getSpecialHolidayCode(), 
-																domain.getYearServiceCode());
+																domain.getYearServiceCode().v());
 		entity.yearServiceName = domain.getYearServiceName().v();
 		entity.yearServiceCls = domain.getYearServiceCls().value;
 		if(domain.getYearServicePerSets() != null){
@@ -132,7 +131,9 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 	}
 	@Override
 	public List<YearServicePer> findAllPer(String companyId) {
-		return this.queryProxy().query(SELECT_ITEM_PER, KshstYearServicePer.class).setParameter("companyId", companyId).getList(c->toDomainPer(c));
+		return this.queryProxy().query(SELECT_ITEM_PER, KshstYearServicePer.class)
+				.setParameter("companyId", companyId)
+				.getList(c->toDomainPer(c));
 	}
 	@Override
 	public void updatePer(YearServicePer yearServicePer) {
@@ -156,12 +157,12 @@ public class JpaPerItemRepository extends JpaRepository implements YearServicePe
 	}
 	@Override
 	public Optional<YearServicePer> findPer(String companyId, String specialHolidayCode, String yearServiceCode) {
-		return this.queryProxy().find(new KshstYearServicePerPK(companyId, specialHolidayCode, new YearServiceCode(yearServiceCode)), KshstYearServicePer.class)
+		return this.queryProxy().find(new KshstYearServicePerPK(companyId, specialHolidayCode, yearServiceCode), KshstYearServicePer.class)
 				.map(c -> toDomainPer(c));
 	}
 	@Override
 	public void delete(String companyId, String specialHolidayCode, String yearServiceCode) {
-		KshstYearServicePerPK kshstYearServicePerPK = new KshstYearServicePerPK(companyId, specialHolidayCode, new YearServiceCode(yearServiceCode));
+		KshstYearServicePerPK kshstYearServicePerPK = new KshstYearServicePerPK(companyId, specialHolidayCode, yearServiceCode);
 		this.commandProxy().remove(KshstYearServicePer.class, kshstYearServicePerPK);
 	}
 }

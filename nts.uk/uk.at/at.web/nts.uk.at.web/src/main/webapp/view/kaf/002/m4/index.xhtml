@@ -1,9 +1,9 @@
-<div class="table">
-	<div class="cell column1">
+<div class="table m4-table">
+	<div class="cell m4-column1">
 		<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL001_3')}</div>
 	</div>
-	<div class="cell column2">
-		<span data-bind="ntsComboBox: {
+	<div class="cell m4-column2">
+		<span class="m4-combo-box" data-bind="ntsComboBox: {
 				options: ko.observableArray([
 	                { code: 0, name: '前日' },
 	                { code: 1, name: '当日' },
@@ -11,14 +11,16 @@
 	                { code: 3, name: '翌々日' }
 	            ]),
 				optionsValue: 'code',
-				value: ko.observable(0),
+				value: appStamp().stampCombinationAtr,
 				optionsText: 'name',
 				enable: true,
 				columns: [
 					{ prop: 'name', length: 3 },
 				]}"></span>	
 		<div>
-			<input data-bind="ntsTimeEditor: {value: ko.observable('1990/01/01'), inputFormat: 'date'}" />
+			<input class="m4-time-editor" data-bind="ntsTimeEditor: {
+				value: appStamp().appTime, 
+				inputFormat: 'time'}" />
 		</div>
 	</div>
 </div>

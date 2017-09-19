@@ -60,7 +60,7 @@ public class WorkType extends AggregateRoot {
 	@Override
 	public void validate() {
 		super.validate();
-		if (this.workTypeCode.v() == "000") {
+		if ("000".equals(this.workTypeCode.v())) {
 			throw new BusinessException("Msg_385");
 		}
 

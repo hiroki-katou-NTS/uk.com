@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
@@ -14,6 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * @author ducpm
  *
  */
+@AllArgsConstructor
 @Value
 public class GoBackDirectly {
 	/**
@@ -76,26 +76,4 @@ public class GoBackDirectly {
 	 * 勤務場所選択２
 	 */
 	private String workLocationCD2;
-
-	public GoBackDirectly(String companyID, String appID, WorkTypeCode workTypeCD, SiftCode siftCd,
-			UseAtr workChangeAtr, UseAtr goWorkAtr1, UseAtr backHomeAtr1, WorkTimeGoBack workTimeStart1,
-			WorkTimeGoBack workTimeEnd1, String workLocationCD1, UseAtr goWorkAtr2, UseAtr backHomeAtr2,
-			WorkTimeGoBack workTimeStart2, WorkTimeGoBack workTimeEnd2, String workLocationCD2) {
-		this.companyID = companyID;
-		this.appID = appID;
-		this.workTypeCD = workTypeCD;
-		this.siftCd = siftCd;
-		this.workChangeAtr = workChangeAtr;
-		this.goWorkAtr1 = goWorkAtr1;
-		this.backHomeAtr1 = backHomeAtr1;
-		this.workTimeStart1 = workTimeStart1;
-		this.workTimeEnd1 = workTimeEnd1;
-		this.workLocationCD1 = workLocationCD1;
-		this.goWorkAtr2 = goWorkAtr2;
-		this.backHomeAtr2 = backHomeAtr2;
-		this.workTimeStart2 = workTimeStart2;
-		this.workTimeEnd2 = workTimeEnd2;
-		this.workLocationCD2 = workLocationCD2;
-	}
-
 }

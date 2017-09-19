@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.app.command.specialholiday.yearservicecom;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -7,11 +8,11 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearservicecom.YearServiceCom;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceset.YearServiceSet;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceset.repository.YearServiceComRepository;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearservicecom.YearServiceCom;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.YearServiceSet;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.repository.YearServiceComRepository;
 import nts.uk.shr.com.context.AppContexts;
 /**
  * update length Service Year Atr
@@ -19,23 +20,26 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */	
 @Stateless
-public class UpdateYearServiceComCommandHandler extends CommandHandler<UpdateYearServiceComCommand>{
+public class UpdateYearServiceComCommandHandler extends CommandHandlerWithResult<UpdateYearServiceComCommand, List<String>>{
 	@Inject
 	private YearServiceComRepository yearServiceComRep;
 	@Override
-	protected void handle(CommandHandlerContext<UpdateYearServiceComCommand> context) {
+	protected List<String> handle(CommandHandlerContext<UpdateYearServiceComCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		Optional<YearServiceCom> yearServiceComOld = yearServiceComRep.findCom(companyId, context.getCommand().getSpecialHolidayCode());
 		
+		List<String> errors = new ArrayList<>();
 		List<YearServiceSet> yearServiceSets = null;
 		if (context.getCommand().getYearServiceSets() != null) {
 			
 			yearServiceSets = context.getCommand().getYearServiceSets().stream()
 					.map(x -> x.toDomain(context.getCommand().getSpecialHolidayCode(), companyId))
 					.collect(Collectors.toList());
-			YearServiceSet.validateInput(yearServiceSets);
+			errors = YearServiceSet.validateInput(yearServiceSets);
 		}
-		
+		if(!errors.isEmpty()){
+			return errors;
+		}
 		YearServiceCom yearServiceComNew = YearServiceCom.createFromJavaType(
 				companyId, 
 				context.getCommand().getSpecialHolidayCode(), 
@@ -47,9 +51,10 @@ public class UpdateYearServiceComCommandHandler extends CommandHandler<UpdateYea
 		
 		if(!yearServiceComOld.isPresent()){
 			yearServiceComRep.insertCom(yearServiceComNew);
-			return;
+		} else {
+			yearServiceComRep.updateCom(yearServiceComNew);
 		}
 		
-		yearServiceComRep.updateCom(yearServiceComNew);
+		return errors;
 	}
 }
