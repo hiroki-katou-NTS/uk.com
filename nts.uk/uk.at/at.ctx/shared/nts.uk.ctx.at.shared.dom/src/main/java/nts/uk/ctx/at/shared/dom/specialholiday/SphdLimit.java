@@ -52,6 +52,18 @@ public class SphdLimit extends DomainObject {
 		}
 	}
 
+	/**
+	 * Create from Java Type of Sphd Limit
+	 * 
+	 * @param companyId
+	 * @param specialHolidayCode
+	 * @param specialVacationMonths
+	 * @param specialVacationYears
+	 * @param grantCarryForward
+	 * @param limitCarryoverDays
+	 * @param specialVacationMethod
+	 * @return
+	 */
 	public static SphdLimit createFromJavaType(String companyId, String specialHolidayCode, int specialVacationMonths,
 			int specialVacationYears, int grantCarryForward, int limitCarryoverDays, int specialVacationMethod) {
 		return new SphdLimit(companyId, new SpecialHolidayCode(specialHolidayCode),

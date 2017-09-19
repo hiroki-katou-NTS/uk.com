@@ -14,10 +14,17 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The class AddSpecialHolidayCommandHandler
+ * 
+ * @author phongtq
+ *
+ */
 @Transactional
 @RequestScoped
 public class AddSpecialHolidayCommandHandler extends CommandHandlerWithResult<AddSpecialHolidayCommand, List<String>> {
 
+	/** The Repository */
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
 
@@ -25,6 +32,7 @@ public class AddSpecialHolidayCommandHandler extends CommandHandlerWithResult<Ad
 	protected List<String> handle(CommandHandlerContext<AddSpecialHolidayCommand> context) {
 		List<String> errList = new ArrayList<String>();
 
+		// convert to domain
 		AddSpecialHolidayCommand addSpecialHolidayCommand = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 
@@ -36,9 +44,12 @@ public class AddSpecialHolidayCommandHandler extends CommandHandlerWithResult<Ad
 		}
 
 		SpecialHoliday specialHoliday = addSpecialHolidayCommand.toDomain(companyId);
+
+		// validate Special Holiday
 		specialHoliday.validate();
 
 		try {
+			// validate Special Holiday Input
 			specialHoliday.validateInput();
 		} catch (BusinessException e) {
 			addMessage(errList, e.getMessageId());
@@ -58,6 +69,12 @@ public class AddSpecialHolidayCommandHandler extends CommandHandlerWithResult<Ad
 		return errList;
 	}
 
+	/**
+	 * Validate Special Holiday
+	 * 
+	 * @param errList
+	 * @param specialHoliday
+	 */
 	private void validate(List<String> errList, SpecialHoliday specialHoliday) {
 		if (specialHoliday.isMethodManageRemainNumber()) {
 			try {
@@ -72,19 +89,19 @@ public class AddSpecialHolidayCommandHandler extends CommandHandlerWithResult<Ad
 			} catch (BusinessException e) {
 				addMessage(errList, e.getMessageId());
 			}
-			
+
 			try {
 				specialHoliday.getGrantPeriodic().checkGrantDay();
 			} catch (BusinessException e) {
 				addMessage(errList, e.getMessageId());
 			}
-			
+
 			try {
 				specialHoliday.getSphdLimit().checkTime();
 			} catch (BusinessException e) {
 				addMessage(errList, e.getMessageId());
-			} 
-			
+			}
+
 			try {
 				specialHoliday.getSubCondition().checkAge();
 			} catch (BusinessException e) {

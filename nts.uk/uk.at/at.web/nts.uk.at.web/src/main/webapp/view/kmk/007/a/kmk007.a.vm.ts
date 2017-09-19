@@ -23,7 +23,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         enableMethod: KnockoutObservable<boolean>;
         isCreated: KnockoutObservable<boolean>;
         index: KnockoutObservable<number>;
-
+        checkDisabled: KnockoutObservable<boolean> = ko.observable(false);
         isEnable: KnockoutObservable<boolean> = ko.observable(true);
         langId: KnockoutObservable<string> = ko.observable('ja');
 
@@ -190,7 +190,10 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             });
 
             self.currentCode.subscribe(function(newValue) {
+                nts.uk.ui.errors.clearAll();             
                 if (newValue) {
+                    self.checkDisabled(false);
+                    $('#input-workTypeName').focus();
                     self.isCreated(false);
                     var index = _.findIndex(self.listWorkType(), function(item: IWorkType) {
                         return item.workTypeCode == newValue;
@@ -232,6 +235,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     self.setWorkTypeSet(self.currentWorkType().afternoon(), itemWorkType.afternoon);
                 } else {
                     self.isCreated(true);
+                    $('#input-workTypeCode').focus();
+                    self.checkDisabled(true);
                 }
 
             });
@@ -239,8 +244,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             self.langId.subscribe(() => {
                 self.changeLanguage();
             });
-
-            debugger;
         }
 
 
@@ -302,7 +305,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             nts.uk.ui.windows.setShared("KMK007_WORK_TYPES", self.listWorkType());
 
             nts.uk.ui.windows.sub.modal("/view/kmk/007/c/index.xhtml").onClosed(() => {
-                self.getWorkType();
+                self.getWorkType();           
+                $('#single-list_container').focus();
             });
         }
 
@@ -312,6 +316,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             nts.uk.ui.windows.sub.modal("/view/kmk/007/b/index.xhtml").onClosed(() => {
                 self.getSpecialHolidayFrame();
                 self.getAbsenceFrame();
+                $('.combo-box-focus').focus();
             });
         }
 
@@ -449,10 +454,11 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 od = cwt.oneDay(),
                 mn = cwt.morning(),
                 af = cwt.afternoon();
+            self.checkDisabled(true);
 
             cwt.workTypeCode('');
-            cwt.name('');
-            cwt.abbreviationName('');
+            cwt.dispName('');
+            cwt.dispAbName('');
             cwt.symbolicName('');
             cwt.abolishAtr(0);
             cwt.memo('');

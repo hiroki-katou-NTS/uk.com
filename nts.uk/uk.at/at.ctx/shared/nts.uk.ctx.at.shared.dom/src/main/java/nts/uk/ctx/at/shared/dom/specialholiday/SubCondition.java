@@ -82,6 +82,23 @@ public class SubCondition extends DomainObject {
 		}
 	}
 
+	/**
+	 * Create from Java Type of Sub Condition
+	 * 
+	 * @param companyId
+	 * @param specialHolidayCode
+	 * @param useGender
+	 * @param useEmployee
+	 * @param useCls
+	 * @param useAge
+	 * @param genderAtr
+	 * @param limitAgeFrom
+	 * @param limitAgeTo
+	 * @param ageCriteriaAtr
+	 * @param ageBaseYearAtr
+	 * @param ageBaseDates
+	 * @return
+	 */
 	public static SubCondition createFromJavaType(String companyId, String specialHolidayCode, int useGender,
 			int useEmployee, int useCls, int useAge, int genderAtr, int limitAgeFrom, int limitAgeTo,
 			int ageCriteriaAtr, int ageBaseYearAtr, int ageBaseDates) {
