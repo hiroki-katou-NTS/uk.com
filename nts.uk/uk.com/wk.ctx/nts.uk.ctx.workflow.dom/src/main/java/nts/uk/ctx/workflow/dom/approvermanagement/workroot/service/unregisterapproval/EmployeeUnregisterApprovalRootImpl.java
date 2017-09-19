@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,14 +39,13 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 		List<EmployeeApproveDto> lstEmps = new ArrayList<>();
 		
 		for(int i = 0; i<15; i++) {
-			EmployeeApproveDto emp = new EmployeeApproveDto();
-			emp.setPId("CEC90E5D-1910-4271-A1F5-2DC27B53E3E5");
-			emp.setSId("90000000-0000-0000-0000-000000000012");
-			emp.setSCd("000000000002");
-			emp.setPName("日通システム　ベトナム　１ " + i);
-			emp.setWpCode("C000000002");
-			emp.setPName("Webメニューの設定");
-			lstEmps.add(emp);
+			EmployeeApproveDto emp = new EmployeeApproveDto(companyId, 
+					"CE82367D-929C-4872-A51C-12BE4426EA6C",
+					"90000000-0000-0000-0000-000000000016", 
+					"000000000001", 
+					"日通システム　ベトナム　2", 
+					"C000000003", 
+					"Webメニューの設定１", "", baseDate, baseDate);	
 		}
 		
 //		emp.setPId("CE82367D-929C-4872-A51C-12BE4426EA6C");
