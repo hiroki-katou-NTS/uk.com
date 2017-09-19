@@ -8,7 +8,7 @@ public enum SettingUnit {
 	// 0: 権限
 	AUTHORITY(0),
 	// 1: 勤務種別
-	WORKTYPE(1);
+	BUSINESSTYPE(1);
 
 	public final int value;
 	

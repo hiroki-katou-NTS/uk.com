@@ -16,7 +16,7 @@ import nts.arc.time.GeneralDate;
 @Setter
 @AllArgsConstructor
 public class DPDataDto {
-
+    private int id;
 	private String state;
     private String error;
     private GeneralDate date;
