@@ -300,15 +300,10 @@ module kcp009.viewmodel {
     export module service {
         var paths: any = {
             searchEmployee: 'screen/com/kcp009/employeesearch',
-            findAllEmployee: 'basic/organization/employee/allemployee'
         }
 
         export function searchEmployee(employeeCode: string, system: string): JQueryPromise<model.EmployeeSearchData> {
             return nts.uk.request.ajax('com', paths.searchEmployee + "/" + employeeCode + "/" + system);
-        }
-
-        export function findAllEmployee(): JQueryPromise<Array<model.EmployeeSearchData>> {
-            return nts.uk.request.ajax(paths.findAllEmployee, new Date());
         }
 
         /**
