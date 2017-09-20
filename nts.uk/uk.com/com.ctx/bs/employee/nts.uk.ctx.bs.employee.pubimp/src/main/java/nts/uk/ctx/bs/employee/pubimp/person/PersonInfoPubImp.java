@@ -32,7 +32,7 @@ public class PersonInfoPubImp implements IPersonInfoPub {
 		List<JobEntryHistoryExport> listJobEntryHist = new ArrayList<>();
 		if (checkEmpExit) {
 			employee = empRepo.getBySid(employeeId).get();
-			if (!employee.getListEntryJobHist().isEmpty()) {
+			if (employee.getListEntryJobHist() != null) {
 				employee.getListEntryJobHist().forEach(c -> {
 
 					listJobEntryHist.add(new JobEntryHistoryExport(c.getCompanyId(), c.getSId(), c.getHiringType().v(),

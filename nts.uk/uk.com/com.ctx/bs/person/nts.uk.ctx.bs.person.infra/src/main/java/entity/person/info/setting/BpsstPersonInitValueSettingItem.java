@@ -30,6 +30,23 @@ public class BpsstPersonInitValueSettingItem extends UkJpaEntity implements Seri
 	@Column(name = "REFERENCE_METHOD")
 	public int referenceMethod;
 	
+	@Basic(optional = true)
+	@Column(name = "SAVE_DATA_TYPE")
+	public int saveDataType;
+	
+	@Basic(optional = true)
+	@Column(name = "STRING_VAL")
+	public String stringValue;
+	
+	@Basic(optional = true)
+	@Column(name = "INT_VAL")
+	public int intValue;
+	
+	@Basic(optional = true)
+	@Column(name = "DATE_VAL")
+	public int dateValue;
+	
+	
 	@Override
 	protected Object getKey() {
 		return bpsstPersonInitValueSettingItemPk;
