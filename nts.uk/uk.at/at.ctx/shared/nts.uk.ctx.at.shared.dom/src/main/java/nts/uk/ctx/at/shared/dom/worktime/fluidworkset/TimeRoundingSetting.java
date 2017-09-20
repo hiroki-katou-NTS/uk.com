@@ -4,11 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.worktime.fluidworkset;
 
-import java.util.Arrays;
-import java.util.List;
 
 import lombok.Getter;
-import lombok.Value;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Unit.Direction;
