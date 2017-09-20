@@ -12,8 +12,60 @@ module nts.uk.at.view.kmk006.a {
             findPersonalEstablishment: "ctx/at/schedule/shift/estimate/personal/find",
             findAllPersonalSetting: "ctx/at/schedule/shift/estimate/personal/findAll",
             savePersonalEstablishment: "ctx/at/schedule/shift/estimate/personal/save",
-            deletePersonalEstablishment: "ctx/at/schedule/shift/estimate/personal/delete"
+            deletePersonalEstablishment: "ctx/at/schedule/shift/estimate/personal/delete",
+
+
+
+
+
+            findEnumAutoCalAtrOvertime: "ctx/at/schedule/shift/autocal/find/autocalatrovertime",
+            findEnumUseClassification: "ctx/at/schedule/shift/autocal/find/autocaluseclassification",
+            findEnumTimeLimitUpperLimitSetting: "ctx/at/schedule/shift/autocal/find/autocaltimelimitsetting",
+            findEnumUseUnitOvertimeSetting: "ctx/at/schedule/shift/autocal/find/autocaluseunitovertimesetting",
+            getComAutoCal: "ctx/at/schedule/shift/autocalcom/getautocalcom",
+            saveComAutoCal: "ctx/at/schedule/shift/autocalcom/save"
         }
+
+        export function findEnumAutoCalAtrOvertime(): JQueryPromise<Array<model.Enum>> {
+            return nts.uk.request.ajax(paths.findEnumAutoCalAtrOvertime);
+        }
+
+        export function findEnumUseClassification(): JQueryPromise<Array<model.Enum>> {
+            return nts.uk.request.ajax(paths.findEnumUseClassification);
+        }
+
+        export function findEnumTimeLimitUpperLimitSetting(): JQueryPromise<Array<model.Enum>> {
+            return nts.uk.request.ajax(paths.findEnumTimeLimitUpperLimitSetting);
+        }
+
+        export function findEnumUseUnitOvertimeSetting(): JQueryPromise<Array<model.Enum>> {
+            return nts.uk.request.ajax(paths.findEnumUseUnitOvertimeSetting);
+        }
+
+        /**
+        * save
+        */
+        export function saveComAutoCal(command: model.ComAutoCalSettingDto): JQueryPromise<void> {
+            return nts.uk.request.ajax("at", paths.saveComAutoCal, command);
+        }
+
+        /**
+        * get all total times
+        */
+        export function getComAutoCal(): JQueryPromise<model.ComAutoCalSettingDto> {
+            return nts.uk.request.ajax("at", paths.getComAutoCal);
+        }
+
+
+
+
+
+
+
+
+
+
+
 
         /**
          * call service get all monthly estimate time of company
@@ -33,7 +85,7 @@ module nts.uk.at.view.kmk006.a {
                 targetYear: targetYear
             });
         }
-        
+
         /**
         * call service delete estimate company
         */
@@ -42,7 +94,7 @@ module nts.uk.at.view.kmk006.a {
                 targetYear: targetYear
             });
         }
-        
+
         /**
          * call service get all monthly estimate time of employment
          */
@@ -72,7 +124,7 @@ module nts.uk.at.view.kmk006.a {
                 employmentCode: employmentCode
             });
         }
-        
+
         /**
          * call service get all monthly estimate time of personal
          */
@@ -92,7 +144,7 @@ module nts.uk.at.view.kmk006.a {
                 targetYear: targetYear
             });
         }
-        
+
         /**
         * call service delete estimate personal
         */
@@ -102,7 +154,7 @@ module nts.uk.at.view.kmk006.a {
                 targetYear: targetYear
             });
         }
-        
+
         /**
          * call service find setting estimate 
          */
@@ -113,19 +165,68 @@ module nts.uk.at.view.kmk006.a {
         /**
          * call service find all setting employment
          */
-        export function findAllEmploymentSetting(targetYear: number): JQueryPromise<model.EmploymentEstablishmentDto[]>{
-            return nts.uk.request.ajax('at', paths.findAllEmploymentSetting+'/'+targetYear);
+        export function findAllEmploymentSetting(targetYear: number): JQueryPromise<model.EmploymentEstablishmentDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllEmploymentSetting + '/' + targetYear);
         }
-        
+
         /**
          * call service find all setting personal
          */
         export function findAllPersonalSetting(targetYear: number): JQueryPromise<model.PersonalEstablishmentDto[]> {
             return nts.uk.request.ajax('at', paths.findAllPersonalSetting + '/' + targetYear);
         }
-        
+
         export module model {
-            
+            //modelauto
+
+            export interface ComAutoCalSettingDto {
+                normalOTTime: AutoCalOvertimeSettingDto;
+                flexOTTime: AutoCalFlexOvertimeSettingDto;
+                restTime: AutoCalRestTimeSettingDto;
+            }
+
+            export interface AutoCalFlexOvertimeSettingDto {
+                flexOtTime: AutoCalSettingDto;
+                flexOtNightTime: AutoCalSettingDto;
+            }
+
+            export interface AutoCalRestTimeSettingDto {
+                restTime: AutoCalSettingDto;
+                lateNightTime: AutoCalSettingDto;
+            }
+            export interface AutoCalOvertimeSettingDto {
+                earlyOtTime: AutoCalSettingDto;
+                earlyMidOtTime: AutoCalSettingDto;
+                normalOtTime: AutoCalSettingDto;
+                normalMidOtTime: AutoCalSettingDto;
+                legalOtTime: AutoCalSettingDto;
+                legalMidOtTime: AutoCalSettingDto;
+            }
+
+            export interface AutoCalSettingDto {
+                upLimitOtSet: number;
+                calAtr: number;
+            }
+
+
+
+
+
+
+
+
+            export class Enum {
+                value: number;
+                fieldName: string;
+                localizedName: string;
+
+                constructor(value: number, fieldName: string, localizedName: string) {
+                    this.value = value;
+                    this.fieldName = fieldName;
+                    this.localizedName = localizedName;
+                }
+            }
+
             export interface UsageSettingDto {
                 employmentSetting: boolean;
                 personalSetting: boolean;
@@ -149,7 +250,7 @@ module nts.uk.at.view.kmk006.a {
                 price5th: number;
 
             }
-            
+
             export interface EstimateDaysDto {
                 month: number;
                 days1st: number;
@@ -164,13 +265,13 @@ module nts.uk.at.view.kmk006.a {
                 monthlyEstimates: EstimateTimeDto[];
                 yearlyEstimate: EstimateTimeDto;
             }
-            
+
 
             export interface EstablishmentPriceDto {
                 monthlyEstimates: EstimatePriceDto[];
                 yearlyEstimate: EstimatePriceDto;
             }
-            
+
             export interface EstablishmentDaysDto {
                 monthlyEstimates: EstimateDaysDto[];
                 yearlyEstimate: EstimateDaysDto;
@@ -182,7 +283,7 @@ module nts.uk.at.view.kmk006.a {
                 estimateNumberOfDay: EstablishmentDaysDto;
                 setting: boolean;
             }
-            
+
 
             export interface EmploymentEstablishmentDto {
                 employmentCode: string;
@@ -200,7 +301,7 @@ module nts.uk.at.view.kmk006.a {
 
         }
     }
-    
+
 
 
 }

@@ -10,12 +10,13 @@
 			<span class="title">#{i18n.getText('Com_Company')}</span>
 		</ui:define>
 		<ui:define name="extended-action-bar">
-			<button tabindex="1" class="proceed" data-bind="click: saveCompanyEstablishment">#{i18n.getText('KSM001_1')}</button>
+			<button tabindex="1" class="proceed"
+				data-bind="click: saveCompanyEstablishment">#{i18n.getText('KSM001_1')}</button>
 			<button tabindex="4" data-bind="click: openDialogUsageSettingModel">#{i18n.getText('KSM001_3')}</button>
 		</ui:define>
 		<ui:define name="extended-111">
 			<div tabindex="6" id="comboTargetYear"
-					data-bind="ntsComboBox: {
+				data-bind="ntsComboBox: {
 				name: '#[KSM001_4]',
 				options: lstTargetYear,
 				optionsValue: 'year',
@@ -29,10 +30,13 @@
 				]}"></div>
 		</ui:define>
 		<ui:define name="extended-222">
-			<div data-bind="with: companyEstablishmentModel">
-				<div data-bind="ifnot: $parent.isLoading">
-					<ui:include src="data-table.xhtml" />
-				</div>
+
+			<div class="lableContent" style="margin-left: 20px;">
+				<label>#{i18n.getText('KMK006_13')}</label>
+			</div>
+			
+			<div data-bind="ifnot: $parent.isLoading">
+				<ui:include src="data-table.xhtml" />
 			</div>
 		</ui:define>
 	</ui:composition>
