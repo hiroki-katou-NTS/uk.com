@@ -7,10 +7,10 @@ package nts.uk.ctx.at.schedule.dom.shift.autocalsetting;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Interface AutoCalCompanySettingGetMemento.
+ * The Interface ComAutoCalSettingGetMemento.
  */
 public interface ComAutoCalSettingGetMemento {
-	
+
 	/**
 	 * Gets the company id.
 	 *
@@ -20,24 +20,24 @@ public interface ComAutoCalSettingGetMemento {
 	
 	
 	/**
-	 * Gets the auto cal overtime setting.
+	 * Gets the normal OT time.
 	 *
-	 * @return the auto cal overtime setting
+	 * @return the normal OT time
 	 */
-	AutoCalOvertimeSetting getAutoCalOvertimeSetting();
+	AutoCalOvertimeSetting getNormalOTTime();
 	
 	/**
-	 * Gets the auto cal flex overtime setting.
+	 * Gets the flex OT time.
 	 *
-	 * @return the auto cal flex overtime setting
+	 * @return the flex OT time
 	 */
-	AutoCalFlexOvertimeSetting getAutoCalFlexOvertimeSetting();
+	AutoCalFlexOvertimeSetting getFlexOTTime();
 	
 	/**
-	 * Gets the auto cal rest time setting.
+	 * Gets the rest time.
 	 *
-	 * @return the auto cal rest time setting
+	 * @return the rest time
 	 */
-	AutoCalRestTimeSetting getAutoCalRestTimeSetting();
+	AutoCalRestTimeSetting getRestTime();
 	
 }

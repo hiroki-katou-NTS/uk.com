@@ -5,45 +5,53 @@
 package nts.uk.ctx.at.schedule.dom.shift.autocalsetting;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
 /**
- * The Interface JobAutoCalSettingSetMemento.
+ * The Interface WkpAutoCalSettingSetMemento.
  */
-public interface JobAutoCalSettingSetMemento {
-	
+public interface WkpAutoCalSettingSetMemento {
+
 	/**
 	 * Sets the company id.
 	 *
 	 * @param companyId the new company id
 	 */
 	void  setCompanyId(CompanyId companyId);
+
 	
+
 	/**
-	 * Sets the position id.
+	 * Sets the wkp id.
 	 *
-	 * @param positionId the new position id
+	 * @param workplaceId the new wkp id
 	 */
-	void  setPositionId(PositionId positionId);
+	void  setWkpId(WorkplaceId workplaceId);
+
 	
+
 	/**
-	 * Sets the auto cal overtime setting.
+	 * Sets the normal OT time.
 	 *
-	 * @param autoCalOvertimeSetting the new auto cal overtime setting
+	 * @param normalOTTime the new normal OT time
 	 */
 	void  setNormalOTTime(AutoCalOvertimeSetting normalOTTime);
+
 	
+
 	/**
-	 * Sets the auto cal flex overtime setting.
+	 * Sets the flex OT time.
 	 *
-	 * @param autoCalFlexOvertimeSetting the new auto cal flex overtime setting
+	 * @param flexOTTime the new flex OT time
 	 */
 	void  setFlexOTTime(AutoCalFlexOvertimeSetting flexOTTime);
+
 	
+
 	/**
-	 * Sets the auto cal rest time setting.
+	 * Sets the rest time.
 	 *
-	 * @param autoCalRestTimeSetting the new auto cal rest time setting
+	 * @param restTime the new rest time
 	 */
 	void  setRestTime(AutoCalRestTimeSetting restTime);
-	
 }

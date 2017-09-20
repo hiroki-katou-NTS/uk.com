@@ -8,9 +8,9 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
 /**
- * The Interface WkpJobAutoCalSettingGetMemento.
+ * The Interface WkpAutoCalSettingGetMemento.
  */
-public interface WkpJobAutoCalSettingGetMemento {
+public interface WkpAutoCalSettingGetMemento {
 	
 	/**
 	 * Gets the company id.
@@ -27,12 +27,6 @@ public interface WkpJobAutoCalSettingGetMemento {
 	 */
 	WorkplaceId getWkpId();
 	
-	/**
-	 * Gets the position id.
-	 *
-	 * @return the position id
-	 */
-	PositionId getPositionId();
 
 	/**
 	 * Gets the normal OT time.
@@ -56,4 +50,6 @@ public interface WkpJobAutoCalSettingGetMemento {
 	 * @return the rest time
 	 */
 	AutoCalRestTimeSetting getRestTime();
+	
+	
 }
