@@ -6,10 +6,7 @@ module cps002.f.service{
         perInfoCtgHasItems:"/find/perInfoCtgHasItems"
     };
     
-    export function getPerInfoCtgHasItems(startLetter){
+    export function getPerInfoCtgHasItems(){
         return ajax("com", basePath+paths.perInfoCtgHasItems);
-    }
-    
-    export function getCardNo(){
     }
 }

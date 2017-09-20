@@ -156,13 +156,10 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			+ " FROM PpemtPerInfoItem i WHERE i.perInfoCtgId = :perInfoCtgId AND i.itemName = :itemName"
 			+ " AND i.ppemtPerInfoItemPK.perInfoItemDefId != :perInfoItemDefId";
 	
-	private final static String COUNT_ITEMS_IN_CATEGORY = "SELECT COUNT(i)"
+	private final static String COUNT_ITEMS_IN_CATEGORY = "SELECT COUNT(i.perInfoCtgId)"
 			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
 			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
-			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd INNER JOIN PpemtPerInfoItemOrder io"
-			+ " ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId"
-			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL"
-			+ " ORDER BY io.disporder";
+			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId";
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -571,9 +568,9 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	//vinhpx start
 	@Override
 	public int countPerInfoItemDefInCategory(String perInfoCategoryId, String contractCd) {
-		Optional<Object[]> a = this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
+		Optional<Long> a = this.queryProxy().query(COUNT_ITEMS_IN_CATEGORY, Long.class)
 				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCategoryId).getSingle();
-		return a.isPresent()?Integer.parseInt(a.get().toString()) : 0;
+		return a.isPresent() ? a.get().intValue() : 0;
 	}
 
 	//vinhpx end
