@@ -576,55 +576,28 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             });
 
             // one day
-            if (item.workTypeSets.length > 0) {
+            if (item.workTypeSets && item.workTypeSets.length > 0) {
                 _.forEach(item.workTypeSets, function(itemWorkTypeSet) {
+                    var workTypeSet = new WorkTypeSet({
+                        workTypeCode: item.workTypeCode,
+                        workAtr: itemWorkTypeSet.workAtr,
+                        digestPublicHd: itemWorkTypeSet.digestPublicHd,
+                        holidayAtr: itemWorkTypeSet.holidayAtr,
+                        countHodiday: itemWorkTypeSet.countHodiday,
+                        closeAtr: itemWorkTypeSet.closeAtr,
+                        sumAbsenseNo: itemWorkTypeSet.sumAbsenseNo,
+                        sumSpHodidayNo: itemWorkTypeSet.sumSpHodidayNo,
+                        timeLeaveWork: itemWorkTypeSet.timeLeaveWork,
+                        attendanceTime: itemWorkTypeSet.attendanceTime,
+                        genSubHodiday: itemWorkTypeSet.genSubHodiday,
+                        dayNightTimeAsk: itemWorkTypeSet.dayNightTimeAsk
+                    });
+                    
                     if (itemWorkTypeSet.workAtr == WorkAtr.ONE_DAY) {
-                        var workTypeSet = new WorkTypeSet({
-                            workTypeCode: item.workTypeCode,
-                            workAtr: itemWorkTypeSet.workAtr,
-                            digestPublicHd: itemWorkTypeSet.digestPublicHd,
-                            holidayAtr: itemWorkTypeSet.holidayAtr,
-                            countHodiday: itemWorkTypeSet.countHodiday,
-                            closeAtr: itemWorkTypeSet.closeAtr,
-                            sumAbsenseNo: itemWorkTypeSet.sumAbsenseNo,
-                            sumSpHodidayNo: itemWorkTypeSet.sumSpHodidayNo,
-                            timeLeaveWork: itemWorkTypeSet.timeLeaveWork,
-                            attendanceTime: itemWorkTypeSet.attendanceTime,
-                            genSubHodiday: itemWorkTypeSet.genSubHodiday,
-                            dayNightTimeAsk: itemWorkTypeSet.dayNightTimeAsk
-                        });
                         workType.oneDay(workTypeSet);
                     } else if (itemWorkTypeSet.workAtr == WorkAtr.MORNING) {
-                        var workTypeSet = new WorkTypeSet({
-                            workTypeCode: item.workTypeCode,
-                            workAtr: itemWorkTypeSet.workAtr,
-                            digestPublicHd: itemWorkTypeSet.digestPublicHd,
-                            holidayAtr: itemWorkTypeSet.holidayAtr,
-                            countHodiday: itemWorkTypeSet.countHodiday,
-                            closeAtr: itemWorkTypeSet.closeAtr,
-                            sumAbsenseNo: itemWorkTypeSet.sumAbsenseNo,
-                            sumSpHodidayNo: itemWorkTypeSet.sumSpHodidayNo,
-                            timeLeaveWork: itemWorkTypeSet.timeLeaveWork,
-                            attendanceTime: itemWorkTypeSet.attendanceTime,
-                            genSubHodiday: itemWorkTypeSet.genSubHodiday,
-                            dayNightTimeAsk: itemWorkTypeSet.dayNightTimeAsk
-                        });
                         workType.morning(workTypeSet);
                     } else if (itemWorkTypeSet.workAtr == WorkAtr.AFTERNOON) {
-                        var workTypeSet = new WorkTypeSet({
-                            workTypeCode: item.workTypeCode,
-                            workAtr: itemWorkTypeSet.workAtr,
-                            digestPublicHd: itemWorkTypeSet.digestPublicHd,
-                            holidayAtr: itemWorkTypeSet.holidayAtr,
-                            countHodiday: itemWorkTypeSet.countHodiday,
-                            closeAtr: itemWorkTypeSet.closeAtr,
-                            sumAbsenseNo: itemWorkTypeSet.sumAbsenseNo,
-                            sumSpHodidayNo: itemWorkTypeSet.sumSpHodidayNo,
-                            timeLeaveWork: itemWorkTypeSet.timeLeaveWork,
-                            attendanceTime: itemWorkTypeSet.attendanceTime,
-                            genSubHodiday: itemWorkTypeSet.genSubHodiday,
-                            dayNightTimeAsk: itemWorkTypeSet.dayNightTimeAsk
-                        });
                         workType.afternoon(workTypeSet);
                     }
                 });
