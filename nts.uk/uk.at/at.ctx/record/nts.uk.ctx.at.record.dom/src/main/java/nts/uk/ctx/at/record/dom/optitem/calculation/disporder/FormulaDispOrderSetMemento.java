@@ -39,5 +39,5 @@ public interface FormulaDispOrderSetMemento {
 	 *
 	 * @param dispOrder the new disp order
 	 */
-	void setDispOrder(int dispOrder);
+	void setDispOrder(DispOrder dispOrder);
 }

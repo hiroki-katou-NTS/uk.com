@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -42,6 +43,12 @@ public class FormulaSettingItem extends DomainObject {
 		this.dispOrder = memento.getSettingItemOrder();
 		this.inputValue = memento.getInputValue();
 		this.formulaItemId = memento.getFormulaId();
+
+		if(this.settingMethod == SettingMethod.NUMERICAL_INPUT) {
+			if (this.inputValue == null) {
+				throw new BusinessException("Msg_419");
+			}
+		}
 	}
 
 	/**
