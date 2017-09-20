@@ -136,6 +136,22 @@ module nts.uk.request {
             return new Locator(stack.join('/') + queryStringParts);
         }
     }
+    
+    export function writeDynamicConstraint(codes: Array<string>){
+        var dfd = $.Deferred();
+        ajax("constraint/getlist", codes).done(function(data: Array<any>){
+            if(nts.uk.util.isNullOrUndefined(__viewContext.primitiveValueConstraints)){
+                __viewContext.primitiveValueConstraints = {};
+            }
+            _.forEach(data, function(item){
+                __viewContext.primitiveValueConstraints[item.itemCode] = item;
+            });
+            dfd.resolve(data); 
+        }).fail(function(error){
+            dfd.reject(res);            
+        });        
+        return dfd.promise();
+    }
 
     export function ajax(path: string, data?: any, options?: any);
     export function ajax(webAppId: WebAppId, path: string, data?: any, options?: any) {
