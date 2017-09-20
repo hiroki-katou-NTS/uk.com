@@ -12,11 +12,12 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet.LeaveEarlyTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.AmPmClassification;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.TimeSheetWithUseAtr;
+import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.LateLeaveEarlyClassification;
 import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.LateLeaveEarlyGraceTime;
 import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.LateLeaveEarlySettingOfWorkTime;
@@ -59,70 +60,16 @@ public class WithinWorkTimeSheet {
 			DeductionTimeSheet deductionTimeSheet
 			) {
 		
-		val timeFrames = new ArrayList<WithinWorkTimeFrame>();
+
 		predetermineTimeSet.getSpecifiedTimeSheet().correctPredetermineTimeSheet(workType.getDailyWork());
 
-		//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊	
-		//遅刻判断時刻の作成
-		List<LateDecisionClock> lateDecisionClock = new ArrayList<LateDecisionClock>();
-		for(int workNo=1;workNo<3;workNo++) {//勤務回数分ループ		
-			val lateGraceTime = workTimeCommonSet.getGraceTimeSet(LateLeaveEarlyClassification.LEAVEEARLY).getGraceTime();//遅刻猶予時間の取得
-			TimeWithDayAttr lDecisionClock;
-			if(lateGraceTime.v().equals(0)){
-				//猶予時間が0：00の場合、所定時間の開始時刻を判断時刻にする
-				lDecisionClock = new TimeWithDayAttr(predetermineTimeSet.getSpecifiedTimeSheet().getMatchWorkNoTimeSheet(workNo).getStartTime().valueAsMinutes());			
-			}else {
-				//猶予時間帯の終了時刻の作成
-				val correctedEndTime = predetermineTimeSet.getSpecifiedTimeSheet().getMatchWorkNoTimeSheet(workNo).getTimeSpan().getStart().forwardByMinutes(lateGraceTime.minute());
-				//猶予時間帯の作成
-				TimeSpanForCalc correctedTimeSheet = new TimeSpanForCalc(predetermineTimeSet.getSpecifiedTimeSheet().getMatchWorkNoTimeSheet(workNo).getTimeSpan().getStart(),correctedEndTime);
-				//休憩種類ごとに休憩時間帯をループ
-				for(BreakTimeSheetOfDaily breakTimeSheet : deductionTimeSheet.getBreakTimeSheet().getBreakTimeSheetOfDaily()) {
-					for(BreakTimeSheet timeSheet : breakTimeSheet.getBreakTimeSheet()) {
-						//重複している時間帯を取得
-						Optional<TimeSpanForCalc> duplicatedTimeSheet = correctedTimeSheet.getDuplicatedWith(timeSheet.getTimeSheet());
-						if(duplicatedTimeSheet.isPresent()) {//重複している時間帯が存在する場合
-							//猶予時間帯の開始時刻を重複している時間分手前にズラす
-							correctedTimeSheet.getEnd().forwardByMinutes(duplicatedTimeSheet.get().lengthAsMinutes());
-						}				
-					}
-				}//補正後の猶予時間帯の開始時刻を判断時刻とする		
-				lDecisionClock = new TimeWithDayAttr(correctedTimeSheet.getStart().valueAsMinutes());
-			}
-			lateDecisionClock.add(workNo, new LateDecisionClock(lDecisionClock, workNo));			
-		}
-		//早退判断時刻の作成
-		List<LeaveEarlyDecisionClock> leaveEarlyDecisionClock = new ArrayList<LeaveEarlyDecisionClock>();
-		for(int workNo=1;workNo<3;workNo++) {//勤務回数分ループ
-			val leaveEarlyGraceTime = workTimeCommonSet.getGraceTimeSet(LateLeaveEarlyClassification.LEAVEEARLY).getGraceTime();//早退猶予時間の取得
-			TimeWithDayAttr lEDecisionClock;
-			if(leaveEarlyGraceTime.v().equals(0)){
-				//猶予時間が0：00の場合、所定時間の終了時刻を判断時刻にする
-				lEDecisionClock = new TimeWithDayAttr(predetermineTimeSet.getSpecifiedTimeSheet().getMatchWorkNoTimeSheet(workNo).getEndTime().valueAsMinutes());				
-			}else {
-				//猶予時間帯の開始時刻の作成
-				val correctedStartTime = predetermineTimeSet.getSpecifiedTimeSheet().getMatchWorkNoTimeSheet(workNo).getTimeSpan().getEnd().backByMinutes(leaveEarlyGraceTime.minute());
-				//猶予時間帯の作成
-				TimeSpanForCalc correctedTimeSheet = new TimeSpanForCalc(correctedStartTime,predetermineTimeSet.getSpecifiedTimeSheet().getMatchWorkNoTimeSheet(workNo).getTimeSpan().getEnd());
-				//休憩種類ごとに休憩時間帯をループ
-				for(BreakTimeSheetOfDaily breakTimeSheet : deductionTimeSheet.getBreakTimeSheet().getBreakTimeSheetOfDaily()) {
-					for(BreakTimeSheet timeSheet : breakTimeSheet.getBreakTimeSheet()) {
-						//重複している時間帯を取得
-						Optional<TimeSpanForCalc> duplicatedTimeSheet = correctedTimeSheet.getDuplicatedWith(timeSheet.getTimeSheet());
-						if(duplicatedTimeSheet.isPresent()) {//重複している時間帯が存在する場合
-							//猶予時間帯の開始時刻を重複している時間分手前にズラす
-							correctedTimeSheet.getStart().backByMinutes(duplicatedTimeSheet.get().lengthAsMinutes());
-						}				
-					}
-				}//補正後の猶予時間帯の開始時刻を判断時刻とする		
-				lEDecisionClock = new TimeWithDayAttr(correctedTimeSheet.getStart().valueAsMinutes());
-			}
-			leaveEarlyDecisionClock.add(workNo, new LeaveEarlyDecisionClock(lEDecisionClock,workNo));
-		}
-		//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊	
-				
+		//遅刻猶予時間の取得
+		val lateGraceTime = workTimeCommonSet.getLateSetting().getGraceTimeSetting();//引数でworkTimeCommonSet毎渡すように修正予定
+		//早退猶予時間の取得
+		val leaveEarlyGraceTime = workTimeCommonSet.getLeaveEarlySetting().getGraceTimeSetting();
+						
+		val timeFrames = new ArrayList<WithinWorkTimeFrame>();
 		val workingHourSet = createWorkingHourSet(workType, predetermineTimeSet, fixedWorkSetting);
-		
 		for (int frameNo = 0; frameNo < workingHourSet.toArray().length; frameNo++) {
 			for(WorkTimeOfTimeSheetSet duplicateTimeSheet :workingHourSet) {
 				timeFrames.add(new WithinWorkTimeFrame(frameNo, duplicateTimeSheet.getTimeSpan(), duplicateTimeSheet.getTimeSpan()));
@@ -131,7 +78,26 @@ public class WithinWorkTimeSheet {
 		
 		/*所定内割増時間の時間帯作成*/
 		
-		return new WithinWorkTimeSheet(timeFrames,leaveEarlyDecisionClock,lateDecisionClock);
+		return new WithinWorkTimeSheet(
+				timeFrames,
+				LeaveEarlyDecisionClock.createListOfAllWorks(predetermineTimeSet, deductionTimeSheet, leaveEarlyGraceTime),
+				LateDecisionClock.createListOfAllWorks(predetermineTimeSet, deductionTimeSheet, lateGraceTime));
+	}
+	
+	/**
+	 * 遅刻・早退時間を控除する
+	 */
+	public void deductLateAndLeaveEarly() {
+		
+	}
+	
+	/**
+	 * 指定した枠番の就業時間内時間枠を返す
+	 * @param frameNo
+	 * @return
+	 */
+	public WithinWorkTimeFrame getFrameAt(int frameNo) {
+		return this.withinWorkTimeFrame.get(frameNo);
 	}
 
 	/**
@@ -171,7 +137,7 @@ public class WithinWorkTimeSheet {
 		default:
 			throw new RuntimeException("unknown attendanceHolidayAttr" + attendanceHolidayAttr);
 		}
-	}
+	}	
 	
 	/**
 	 * 引数のNoと一致する遅刻判断時刻を取得する
@@ -186,7 +152,11 @@ public class WithinWorkTimeSheet {
 		return clockList.get(0);
 	}
 	
-	
+	/**
+	 * 引数のNoと一致する早退判断時刻を取得する
+	 * @param workNo
+	 * @return　早退判断時刻
+	 */
 	public LeaveEarlyDecisionClock getleaveEarlyDecisionClock(int workNo) {
 		List<LeaveEarlyDecisionClock> clockList = this.leaveEarlyDecisionClock.stream().filter(tc -> tc.getWorkNo()==workNo).collect(Collectors.toList());
 		if(clockList.size()>1) {
@@ -195,71 +165,5 @@ public class WithinWorkTimeSheet {
 		return clockList.get(0);
 	}
 	
-	
-	
-	/**
-	 * 遅刻早退時間帯の作成
-	 * @return
-	 */
-	public List<LateDecisionClock> lateLeaveEarlyTimeSheetCleate() {
-		List<LateDecisionClock> lateDecisionClock = new ArrayList<LateDecisionClock>();
-		for(int workNo=1;workNo<3;workNo++) {//勤務回数分ループ	
-			
-		}
-	}
-	
-	
-	/**
-	 * 遅刻判断時刻の取得
-	 * @return
-	 */
-	public TimeWithDayAttr getLateDecisionClock(WorkTimeCommonSet workTimeCommonSet,PredetermineTimeSet predetermineTimeSet,int workNo,DeductionTimeSheet deductionTimeSheet) {
-		LateLeaveEarlyGraceTime lateGraceTime = workTimeCommonSet.getGraceTimeSet(LateLeaveEarlyClassification.LEAVEEARLY).getGraceTime();//遅刻猶予時間の取得
-		TimeWithDayAttr lateDecisionClock = ;
-	
-	}
-	
-	/**
-	 * 遅刻判断時刻の作成
-	 * @param predetermineTimeSet
-	 * @param workNo
-	 * @param deductionTimeSheet
-	 * @param lateGraceTime
-	 * @return
-	 */
-	public TimeWithDayAttr lateDecisionClockCreate(PredetermineTimeSet predetermineTimeSet,int workNo,DeductionTimeSheet deductionTimeSheet,LateLeaveEarlyGraceTime lateGraceTime) {
-		if(lateGraceTime.v().equals(0)){
-			//猶予時間が0：00の場合、所定時間の開始時刻を判断時刻にする
-			TimeWithDayAttr lateDecisionClock = new TimeWithDayAttr(predetermineTimeSet.getSpecifiedTimeSheet().getMatchWorkNoTimeSheet(workNo).getStartTime().valueAsMinutes());			
-		}else {
-			//猶予時間帯の終了時刻の作成
-			val correctedEndTime = predetermineTimeSet.getSpecifiedTimeSheet().getMatchWorkNoTimeSheet(workNo).getTimeSpan().getStart().forwardByMinutes(lateGraceTime.minute());
-			//猶予時間帯の作成
-			TimeSpanForCalc correctedTimeSheet = new TimeSpanForCalc(predetermineTimeSet.getSpecifiedTimeSheet().getMatchWorkNoTimeSheet(workNo).getTimeSpan().getStart(),correctedEndTime);
-			//休憩種類ごとに休憩時間帯をループ
-			for(BreakTimeSheetOfDaily breakTimeSheet : deductionTimeSheet.getBreakTimeSheet().getBreakTimeSheetOfDaily()) {
-			
-				}
-			}//補正後の猶予時間帯の開始時刻を判断時刻とする		
-			TimeWithDayAttr lateDecisionClock = new TimeWithDayAttr(correctedTimeSheet.getStart().valueAsMinutes());	
-		}
-	
-	/**
-	 * 遅刻猶予時間帯と控除時間帯との重複チェック
-	 * @return
-	 */
-	public TimeSpanForCalc correctedTimeSheet(BreakTimeSheetOfDaily breakTimeSheet,TimeSpanForCalc correctedTimeSheet) {	
-		//休憩時間帯分ループ
-		for(BreakTimeSheet timeSheet : breakTimeSheet.getBreakTimeSheet()) {
-			//重複している時間帯を取得
-			Optional<TimeSpanForCalc> duplicatedTimeSheet = correctedTimeSheet.getDuplicatedWith(timeSheet.getTimeSheet());
-			if(duplicatedTimeSheet.isPresent()) {//重複している時間帯が存在する場合
-				//猶予時間帯の開始時刻を重複している時間分手前にズラす
-				correctedTimeSheet.getEnd().forwardByMinutes(duplicatedTimeSheet.get().lengthAsMinutes());
-			}		
-		}
-		return correctedTimeSheet;
-	}
-
 	
 }

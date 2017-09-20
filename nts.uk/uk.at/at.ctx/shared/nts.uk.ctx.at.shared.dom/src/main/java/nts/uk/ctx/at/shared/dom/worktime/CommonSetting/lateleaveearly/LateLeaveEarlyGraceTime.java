@@ -18,6 +18,4 @@ public class LateLeaveEarlyGraceTime extends TimeDurationPrimitiveValue<LateLeav
 	public LateLeaveEarlyGraceTime(int timeAsMinutes) {
 		super(timeAsMinutes);
 	}
-
-	
 }

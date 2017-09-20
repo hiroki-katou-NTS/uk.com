@@ -1,7 +1,6 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet;
+package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import lombok.RequiredArgsConstructor;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 

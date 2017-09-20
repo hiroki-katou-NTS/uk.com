@@ -64,27 +64,65 @@ public class TimeSpanForCalc extends DomainObject implements ComparableRange<Int
 	}
 
 	/**
-	 * 開始時刻と終了時刻を前にズラす
+	 * 開始時刻と終了時刻を戻す（前にズラす）
 	 * 
-	 * @param minutesToShiftAhead 移動させる時間（分）
+	 * @param minutesToShiftBack 移動させる時間（分）
 	 * @return ズラした後の開始時刻と終了時刻
 	 */
-	public TimeSpanForCalc shiftBack(int minutesToShiftAhead) {
-		return new TimeSpanForCalc(
-				this.start.shiftWithLimit(minutesToShiftAhead),
-				this.end.shiftWithLimit(minutesToShiftAhead));
+	public TimeSpanForCalc shiftBack(int minutesToShiftBack) {
+		return this.shiftAhead(-minutesToShiftBack);
 	}
 
 	/**
-	 * 開始時刻と終了時刻を後ろにズラす
+	 * 開始時刻と終了時刻を進める（後ろにズラす）
 	 * 
 	 * @param minutesToMoveBack　移動させる時間（分）
 	 * @return ズラした後の開始時刻と終了時刻
 	 */
-	public TimeSpanForCalc shiftAhead(int minutesToShiftBack) {
+	public TimeSpanForCalc shiftAhead(int minutesToShiftAhead) {
 		return new TimeSpanForCalc(
-				this.start.shiftWithLimit(-minutesToShiftBack),
-				this.end.shiftWithLimit(-minutesToShiftBack));
+				this.start.shiftWithLimit(minutesToShiftAhead),
+				this.end.shiftWithLimit(minutesToShiftAhead));
+	}
+	
+	/**
+	 * 開始時刻だけを戻す（前にずらす）
+	 * @param minutesToShiftBack
+	 * @return
+	 */
+	public TimeSpanForCalc shiftStartBack(int minutesToShiftBack) {
+		return this.shiftStartAhead(-minutesToShiftBack);
+	}
+	
+	/**
+	 * 終了時刻だけを進める（後ろにずらす）
+	 * @param minutesToShiftAhead
+	 * @return
+	 */
+	public TimeSpanForCalc shiftEndAhead(int minutesToShiftAhead) {
+		return new TimeSpanForCalc(
+				this.start,
+				this.end.shiftWithLimit(minutesToShiftAhead));
+	}
+	
+	/**
+	 * 終了時刻だけを戻す（前にずらす）
+	 * @param minutesToShiftBack
+	 * @return
+	 */
+	public TimeSpanForCalc shiftEndBack(int minutesToShiftBack) {
+		return this.shiftEndAhead(-minutesToShiftBack);
+	}
+	
+	/**
+	 * 開始時刻だけを進める（後ろにずらす）
+	 * @param minutesToShiftAhead
+	 * @return
+	 */
+	public TimeSpanForCalc shiftStartAhead(int minutesToShiftAhead) {
+		return new TimeSpanForCalc(
+				this.start.shiftWithLimit(minutesToShiftAhead),
+				this.end);
 	}
 	
 	/**
