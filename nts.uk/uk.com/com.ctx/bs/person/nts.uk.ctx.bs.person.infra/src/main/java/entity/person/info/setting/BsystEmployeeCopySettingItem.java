@@ -1,5 +1,7 @@
 package entity.person.info.setting;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -8,12 +10,13 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BSYST_EMP_COPY_SET_ITEM")
-public class BsystEmployeeCopySettingItem {
+public class BsystEmployeeCopySettingItem extends UkJpaEntity  implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
@@ -22,4 +25,10 @@ public class BsystEmployeeCopySettingItem {
 	@Basic(optional = false)
 	@Column(name = "COPY_CTG_ID")
 	public String copyCategoryId;
+
+	@Override
+	protected Object getKey() {
+		// TODO Auto-generated method stub
+		return BsystEmployeeCopySettingItemPk;
+	}
 }
