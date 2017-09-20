@@ -70,7 +70,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 		case Employment:
 			// Get work place.
 			return Optional.of(Kcp009EmployeeSearchData.builder()
-					.employeeId(employee.bsydtEmployeePk.sId)
+					.employeeId(employee.bsymtEmployeePk.sId)
 					.employeeCode(employee.employeeCode)
 					.businessName(person.businessName)
 					.orgName(workplace != null ? workplace.getWkpname() : null)
@@ -78,7 +78,7 @@ public class JpaEmployeeSearchQueryRepository extends JpaRepository implements E
 		default:
 			// Get department
 			return Optional.of(Kcp009EmployeeSearchData.builder()
-					.employeeId(employee.bsydtEmployeePk.sId)
+					.employeeId(employee.bsymtEmployeePk.sId)
 					.employeeCode(employee.employeeCode)
 					.businessName(person.businessName)
 					.orgName(department != null ? department.getName() : null)
