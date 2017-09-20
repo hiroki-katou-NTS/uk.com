@@ -2,6 +2,16 @@
 
 module nts.uk.ui.option {
     
+    // Generic Type
+    export type TextMode = "text" | "password";
+    export type FillDirection = "left" |"right";
+    export type Currency = "JPY" | "USD";
+    
+    var currenryPosition = {
+        "JPY" : "left",
+        "USD" : "right"
+    }
+    
     export abstract class EditorOptionBase {
         placeholder: string;
         width: string;
@@ -33,7 +43,7 @@ module nts.uk.ui.option {
             this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
             this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "";
             this.autofill = (option !== undefined && option.autofill !== undefined) ? option.autofill : false;
-            this.filldirection = (option !== undefined && option.filldirection !== undefined) ? option.filldirection : "right";
+            this.filldirection = (option !== undefined && option.filldirection !== undefined) ? option.filldirection : "left";
             this.fillcharacter = (option !== undefined && option.fillcharacter !== undefined) ? option.fillcharacter : "0";
         }
     }
@@ -169,14 +179,5 @@ module nts.uk.ui.option {
             this.width = (option !== undefined && option.width !== undefined ) ? option.width : "";
             this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "right";
         }
-    }
-    
-    export type TextMode = "text" | "password";
-    export type FillDirection = "left" |"right";
-    export type Currency = "JPY" | "USD";
-    
-    var currenryPosition = {
-        "JPY" : "left",
-        "USD" : "right"
     }
 }
