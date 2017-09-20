@@ -16,9 +16,9 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A1_001" tabindex="1">#{i18n.getText('CPS009_3')}</button>
+				<button id="A1_001" tabindex="1" data-bind="click: openDDialog">#{i18n.getText('CPS009_3')}</button>
 				<button id="A1_002" class="proceed" tabindex="2">#{i18n.getText('CPS009_4')}</button>
-				<button id="A1_003" tabindex="3">#{i18n.getText('CPS009_5')}</button>
+				<button id="A1_003" data-bind = "click: openCDialog" tabindex="3" >#{i18n.getText('CPS009_5')}</button>
 				<button id="A1_004" class="danger" tabindex="4">#{i18n.getText('CPS009_6')}</button>
 				<div class='float-right'>
 					<a class='goout' data-bind="ntsLinkButton: {}" tabindex="5">#{i18n.getText('CPS009_7')}</a>
@@ -85,7 +85,7 @@
 									position: 'right top',
 									enable: true }">?</button>
 								<input id="date"
-								data-bind="ntsTextEditor: {
+									data-bind="ntsTextEditor: {
 								value: currentCategory().categoryCode ,
 								enable: true,
 								immediate: false}"></input>

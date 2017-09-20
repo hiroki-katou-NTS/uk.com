@@ -43,13 +43,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
                 console.log(value);
                 self.currentCategory().setData({
                     categoryCode: value,
-                    categoryName: value, 
+                    categoryName: value,
                     itemList: self.itemList()
                 });
                 self.currentCategory.valueHasMutated();
             });
 
         }
+
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
@@ -63,13 +64,47 @@ module nts.uk.com.view.cps009.a.viewmodel {
             return dfd.promise();
         }
 
+        // thiet lap item hang loat
         openBDialog() {
-            
+
             let self = this;
-            
+
             setShared('categoryInfo', self.currentCategory());
             block.invisible();
             nts.uk.ui.windows.sub.modal('/view/cps/009/b/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                block.clear();
+            });
+
+        }
+
+        // copy initVal
+        openCDialog() {
+
+            let self = this;
+
+            setShared('categoryInfo', self.currentCategory());
+
+            block.invisible();
+
+            nts.uk.ui.windows.sub.modal('/view/cps/009/c/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                block.clear();
+            });
+
+        }
+
+
+        // new initVal
+        openDDialog() {
+
+            let self = this;
+
+            setShared('categoryInfo', self.currentCategory());
+
+            block.invisible();
+
+            nts.uk.ui.windows.sub.modal('/view/cps/009/d/index.xhtml', { title: '' }).onClosed(function(): any {
 
                 block.clear();
             });
