@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.find.grantrelationship;
+package nts.uk.ctx.at.shared.app.find.specialholiday.grantrelationship;
 
 import java.util.List;
 import java.util.Map;
@@ -7,17 +7,17 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.grantrelationship.GrantRelationship;
-import nts.uk.ctx.at.shared.dom.grantrelationship.repository.GrantRelationshipRepository;
 import nts.uk.ctx.at.shared.dom.relationship.Relationship;
 import nts.uk.ctx.at.shared.dom.relationship.repository.RelationshipRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantrelationship.GrantRelationship;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantrelationship.repository.GrantRelationshipRepository;
 import nts.uk.shr.com.context.AppContexts;
+
 /**
  * 
  * @author yennth
  *
  */
-
 @Stateless
 public class GrantRelationshipFinder {
 	@Inject

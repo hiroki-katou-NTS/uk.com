@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 800, height: 500 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="ksu001.n.main.css" />
+			<com:scriptfile path="ksu001.n.vm.js" />
+			<com:scriptfile path="ksu001.n.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button class="proceed" data-bind="enable: $root.errors.isEmpty">#{i18n.getText('KSU001_1301')}</button>
+				<button data-bind="click: closeDialog">#{i18n.getText('KSU001_1302')}</button>
+			</div>
+			<div id="contents-area">
+				<div id="content-top">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_1303')}</div>
+					<span class="code">000000001</span> <span>avacasda</span>
+					<hr />
+				</div>
+				<div id="content-bot">
+					<table class="table1">
+						<thead>
+							<tr>
+								<th>#{i18n.getText('CCG018_8')}</th>
+								<th>#{i18n.getText('CCG018_9')}</th>
+								<th>#{i18n.getText('CCG018_12')}</th>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: items">
+							<tr>
+								<td data-bind="text: code"></td>
+								<td data-bind="text: name"></td>
+								<td>
+									<div tabindex="-1" id="combo-box"
+										data-bind="ntsComboBox: {
+												options: $parent.comboRank,
+												optionsValue: 'code',
+												value: 'code',
+												optionsText: 'name',
+												editable: false,
+												enable: true,
+												columns: [
+													{ prop: 'name', length: 10 },
+												]}"></div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

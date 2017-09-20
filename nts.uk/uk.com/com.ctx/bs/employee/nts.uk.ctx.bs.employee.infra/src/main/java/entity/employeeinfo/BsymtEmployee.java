@@ -24,7 +24,7 @@ public class BsymtEmployee extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public BsymtEmployeePk bsydtEmployeePk;
+	public BsymtEmployeePk bsymtEmployeePk;
 
 	@Column(name = "PID")
 	public String personId;
@@ -49,6 +49,6 @@ public class BsymtEmployee extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		return this.bsydtEmployeePk;
+		return this.bsymtEmployeePk;
 	}
 }

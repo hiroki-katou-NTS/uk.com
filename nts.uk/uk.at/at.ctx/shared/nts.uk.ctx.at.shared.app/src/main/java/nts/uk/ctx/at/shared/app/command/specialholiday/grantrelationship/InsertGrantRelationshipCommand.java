@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.app.command.grantrelationship;
+package nts.uk.ctx.at.shared.app.command.specialholiday.grantrelationship;
 
 import lombok.Getter;
 import lombok.Setter;

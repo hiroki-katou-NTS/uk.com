@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.shared.infra.entity.grantrelationship;
+package nts.uk.ctx.at.shared.infra.entity.specialholiday.grantrelationship;
 
 import java.io.Serializable;
 

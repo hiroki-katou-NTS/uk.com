@@ -1,10 +1,14 @@
-package nts.uk.ctx.at.shared.dom.grantrelationship.repository;
+package nts.uk.ctx.at.shared.dom.specialholiday.grantrelationship.repository;
 
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.grantrelationship.GrantRelationship;
-
+import nts.uk.ctx.at.shared.dom.specialholiday.grantrelationship.GrantRelationship;
+/**
+ * 
+ * @author yennth
+ *
+ */
 public interface GrantRelationshipRepository {
 	/**
 	 * get all data
@@ -12,23 +16,27 @@ public interface GrantRelationshipRepository {
 	 * @return
 	 */
 	List<GrantRelationship> findAll(String companyId);
+	
 	/**
-	 * author: Hoang Yen
+	 * update item 
 	 * @param grantRelationship
 	 */
 	void update(GrantRelationship grantRelationship);
+	
 	/**
-	 * author: Hoang Yen
+	 * insert a item
 	 * @param grantRelationship
 	 */
 	void insert(GrantRelationship grantRelationship);
+	
 	/**
-	 * author: Hoang Yen
+	 * delete a item
 	 * @param grantRelationship
 	 */
 	void delete(String companyId, int specialHolidayCode, String relationshipCode);
+	
 	/**
-	 * 
+	 * find a item by code
 	 * @param companyId
 	 * @param specialHolidayCd
 	 * @param relationshipCd

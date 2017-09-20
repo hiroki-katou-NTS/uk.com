@@ -213,7 +213,7 @@ module nts.uk.ui.koExtentions {
                     let result = srh.search(searchKey, selectedItems);
                     if(nts.uk.util.isNullOrEmpty(result.options) && searchMode === "highlight"){
                         nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT"));
-                        return;        
+                        return false;        
                     }
                     
                     let selectedProperties = _.map(result.selectItems, primaryKey);
@@ -261,23 +261,26 @@ module nts.uk.ui.koExtentions {
                     });
                     
                     $container.data("searchKey", searchKey);  
-                }    
+                }
+                return true;    
             }
             
             var nextSearch = function() {
                 let searchKey = $input.val();
                 if(nts.uk.util.isNullOrEmpty(searchKey)) {
                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD"));
-                    return;        
+                    return false;        
                 }
-                search(searchKey);    
+                return search(searchKey);    
             }
             $input.keydown(function(event) {
                 if (event.which == 13) {
                     event.preventDefault();
-                    nextSearch();
+                    let result = nextSearch();
                     _.defer(() => {
-                        $input.focus();                
+                        if(result){
+                            $input.focus();         
+                        }                
                     });
                 }
             });
