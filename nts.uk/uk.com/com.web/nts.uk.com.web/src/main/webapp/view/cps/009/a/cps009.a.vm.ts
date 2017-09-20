@@ -12,40 +12,28 @@ module nts.uk.com.view.cps009.a.viewmodel {
         itemList: KnockoutObservableArray<any> = ko.observableArray([]);
         initValueList: KnockoutObservableArray<any> = ko.observableArray([]);
         categoryId: KnockoutObservable<string> = ko.observable('');
-        ctgColums: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: 'id', key: 'id', width: 100, hidden: true },
-            { headerText: text('CPS009_10'), key: 'categoryCode', width: 80 },
-            { headerText: text('CPS006_11'), key: 'categoryName', width: 160 }
-        ]);
-        itemValueLst: KnockoutObservableArray<any> = ko.observableArray(
-            [new ItemModel('1', '基本給'),
-                new ItemModel('2', '役職手当'),
-                new ItemModel('3', '基本給2')]);
-        selectionColumns = [{ prop: 'id', length: 4 },
-            { prop: 'itemName', length: 8 }];
-        currentCategory: KnockoutObservable<CategoryInfoDetail> = ko.observable(new CategoryInfoDetail({
-            categoryCode: '', categoryName: '', itemList: []
-        }));
-
-        comboItems = [new ItemModel('1', '基本給'),
-            new ItemModel('2', '役職手当'),
-            new ItemModel('3', '基本給2')];
-        comboColumns = [{ prop: 'code', length: 4 },
-            { prop: 'name', length: 8 }];
+        ctgColums: KnockoutObservableArray<any>;
+        itemValueLst: KnockoutObservableArray<any>;
+        selectionColumns: any;
+        currentCategory: KnockoutObservable<CategoryInfoDetail>;
+        comboItems: any;
+        comboColumns: any;
         items = _(new Array(10)).map((x, i) => new GridItem(i + 1)).value();
         constructor() {
 
             let self = this;
 
+            self.initValue();
             self.start();
 
             self.categoryId.subscribe(function(value: string) {
-                console.log(value);
+
                 self.currentCategory().setData({
                     categoryCode: value,
                     categoryName: value,
                     itemList: self.itemList()
                 });
+
                 self.currentCategory.valueHasMutated();
             });
 
@@ -62,6 +50,36 @@ module nts.uk.com.view.cps009.a.viewmodel {
             self.categoryId(self.categoryList()[0].id);
 
             return dfd.promise();
+        }
+
+        initValue() {
+            let self = this;
+
+            self.ctgColums = ko.observableArray([
+                { headerText: 'id', key: 'id', width: 100, hidden: true },
+                { headerText: text('CPS009_10'), key: 'categoryCode', width: 80 },
+                { headerText: text('CPS006_11'), key: 'categoryName', width: 160 }
+            ]);
+
+            self.itemValueLst = ko.observableArray(
+                [new ItemModel('1', '基本給'),
+                    new ItemModel('2', '役職手当'),
+                    new ItemModel('3', '基本給2')]);
+
+            self.selectionColumns = [{ prop: 'id', length: 4 },
+                { prop: 'itemName', length: 8 }];
+
+            self.currentCategory = ko.observable(new CategoryInfoDetail({
+                categoryCode: '', categoryName: '', itemList: []
+            }));
+
+            self.comboItems = [new ItemModel('1', '基本給'),
+                new ItemModel('2', '役職手当'),
+                new ItemModel('3', '基本給2')];
+
+            self.comboColumns = [{ prop: 'code', length: 4 },
+                { prop: 'name', length: 8 }];
+
         }
 
         // thiet lap item hang loat
