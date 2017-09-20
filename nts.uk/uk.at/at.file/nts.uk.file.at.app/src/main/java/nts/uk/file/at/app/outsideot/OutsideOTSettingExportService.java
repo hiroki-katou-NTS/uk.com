@@ -20,7 +20,10 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.app.find.outsideot.OutsideOTSettingFinder;
+import nts.uk.ctx.at.shared.app.find.outsideot.holiday.SuperHD60HConMedFinder;
 import nts.uk.ctx.at.shared.app.find.outsideot.premium.extra.PremiumExtra60HRateFinder;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
+import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLangRepository;
@@ -64,6 +67,10 @@ public class OutsideOTSettingExportService extends ExportService<OutsideOTSettin
     @Inject
     private PremiumExtra60HRateFinder premiumExtra60HRateFinder;
     
+    /** The super HD 60 H con med finder. */
+    @Inject
+    private SuperHD60HConMedFinder superHD60HConMedFinder;
+    
     /** The daily attendance item repository. */
     @Inject
     private DailyAttendanceItemRepository dailyAttendanceItemRepository;
@@ -86,6 +93,9 @@ public class OutsideOTSettingExportService extends ExportService<OutsideOTSettin
 	
 	/** The Constant START_OVERTIME_RATE. */
 	public static final int START_OVERTIME_RATE = 33;
+	
+	/** The Constant START_OVERTIME_RATE_NEXT. */
+	public static final int START_OVERTIME_RATE_NEXT = 34;
 		
 	/** The Constant START_BREAKDOWN_ITEM. */
 	public static final int START_BREAKDOWN_ITEM = 21;
@@ -236,14 +246,40 @@ public class OutsideOTSettingExportService extends ExportService<OutsideOTSettin
 	
 	/** The Constant NAME_VALUE_A15_1. */
 	private static final String NAME_VALUE_A15_2 = "KMK010_61";
+	
 	/** The Constant NUMBER_ROWS_A15_1. */
 	private static final int NUMBER_ROWS_A15_3 = 47;
+	
+	/** The Constant NUMBER_ROWS_A16_1. */
+	private static final int NUMBER_ROWS_A16_1 = 48;
+	
+	/** The Constant NUMBER_ROWS_A16_2. */
+	private static final int NUMBER_ROWS_A16_2 = 48;
+	
+	/** The Constant NUMBER_ROWS_A16_2. */
+	private static final int NUMBER_ROWS_A16_3 = 48;
+	
+	/** The Constant NUMBER_COLS_A16_1. */
+	private static final int NUMBER_COLS_A16_1 = 0;
+	
+	/** The Constant NUMBER_COLS_A16_2. */
+	private static final int NUMBER_COLS_A16_2 = 1;
+	
+	/** The Constant NUMBER_COLS_A16_3. */
+	private static final int NUMBER_COLS_A16_3 = 2;
 	
 	/** The Constant NUMBER_COLS_A15_1. */
 	private static final int NUMBER_COLS_A15_3 = 2;
 	
 	/** The Constant NAME_VALUE_A15_1. */
 	private static final String NAME_VALUE_A15_3= "KMK010_62";
+
+	/** The Constant TRUE_SETTING_RATE. */
+	private static final String TRUE_SETTING_RATE= "休暇発生する";
+	
+	/** The Constant FALSE_SETTING_RATE. */
+	private static final String FALSE_SETTING_RATE= "休暇発生しない";
+	
 	
     
     /*
@@ -309,6 +345,7 @@ public class OutsideOTSettingExportService extends ExportService<OutsideOTSettin
         data.setBreakdownLanguageData(breakdownNameLanguageData);
 		if (query.isManage()) {
 			data.setPremiumExtraRates(this.premiumExtra60HRateFinder.findAll());
+			data.setSuperHD60HConMed(this.superHD60HConMedFinder.findById());
 		}
 
 		Map<Integer, DailyAttendanceItem> mapAttendanceItem = this.dailyAttendanceItemRepository
@@ -457,6 +494,13 @@ private List<OutsideOTSettingReport> convertToListReport(OutsideOTSettingData da
 			reportData.add(new OutsideOTSettingReport(startRow, startCol, overtime.getName()));
 			startCol++;
 		});
+		startRow = START_OVERTIME_RATE_NEXT;
+		startCol = START_COL;
+		data.getSetting().getOvertimes().forEach(overtime -> {
+			reportData.add(new OutsideOTSettingReport(startRow, startCol,
+					overtime.getSuperHoliday60HOccurs() ? TRUE_SETTING_RATE : FALSE_SETTING_RATE));
+			startCol++;
+		});
 		startRow = START_PREMIUM_RATE;
 		startCol = START_COL_ZERO;
 		data.getSetting().getBreakdownItems().forEach(breakdownItem -> {
@@ -466,7 +510,7 @@ private List<OutsideOTSettingReport> convertToListReport(OutsideOTSettingData da
 				if (!CollectionUtil.isEmpty(data.getPremiumExtraRates())) {
 					data.getSetting().getOvertimes().forEach(overtime->{
 						startCol++;
-						if(overtime.getUseClassification()){
+						if(overtime.getUseClassification() && overtime.getSuperHoliday60HOccurs()){
 							data.getPremiumExtraRates().forEach(premiumExtraRate -> {
 								if (premiumExtraRate.getBreakdownItemNo() == breakdownItem
 										.getBreakdownItemNo()
@@ -478,7 +522,14 @@ private List<OutsideOTSettingReport> convertToListReport(OutsideOTSettingData da
 							});
 						}
 					});
-					
+
+					reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A16_1, NUMBER_COLS_A16_1,
+							Unit.valueOf(data.getSuperHD60HConMed().getRoundingTime()).nameId));
+					reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A16_2, NUMBER_COLS_A16_2,
+							Rounding.valueOf(data.getSuperHD60HConMed().getRounding()).nameId));
+					reportData.add(new OutsideOTSettingReport(NUMBER_ROWS_A16_3, NUMBER_COLS_A16_3,
+							this.toTimeView(
+									data.getSuperHD60HConMed().getSuperHolidayOccurrenceUnit())));
 				}
 			}
 			startRow++;
