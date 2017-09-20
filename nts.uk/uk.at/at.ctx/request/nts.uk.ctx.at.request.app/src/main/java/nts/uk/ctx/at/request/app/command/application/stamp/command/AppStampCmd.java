@@ -19,7 +19,9 @@ public class AppStampCmd {
     
     private String applicationDate;
     
-    private String applicationReason;
+    private String titleReason;
+    
+    private String detailReason;
     
     private String employeeID;
 	
