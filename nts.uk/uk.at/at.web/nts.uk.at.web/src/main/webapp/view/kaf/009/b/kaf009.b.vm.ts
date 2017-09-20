@@ -6,6 +6,9 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         employeeName: KnockoutObservable<string>;
         //Pre-POST
         prePostSelected: KnockoutObservable<number>;
+        workEnable: KnockoutObservable<boolean>;
+        workVisible : KnockoutObservable<boolean>;
+        typeSiftVisible : KnockoutObservable<boolean>;
         // 申請日付
         appDate: KnockoutObservable<string>;
         //TIME LINE 1
@@ -29,6 +32,11 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         //comment
         commentGo2: KnockoutObservable<string>;
         commentBack2: KnockoutObservable<string>;
+        //color, font Weight
+        colorGo: KnockoutObservable<string>;
+        colorBack: KnockoutObservable<string>;
+        fontWeightGo: KnockoutObservable<number>;
+        fontWeightBack: KnockoutObservable<number>;
         //Back Home 2
         selectedBack2: any;
         //Go Work 2
@@ -45,13 +53,12 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         reasonCombo: KnockoutObservableArray<ComboReason>;
         selectedReason: KnockoutObservable<string>;
         //MultilineEditor
-        multilineeditor: any;
+        multilContent: KnockoutObservable<string>;
+        multiOption: any;
         //Insert command
-        command: KnockoutObservable<IGoBackCommand>;
-
+        command: KnockoutObservable<GoBackCommand>;
         //list Work Location 
         locationData: Array<IWorkLocation>;
-
         constructor() {
             var self = this;
             self.command = ko.observable(null);
@@ -62,6 +69,9 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             self.appDate = ko.observable(moment().format('YYYY/MM/DD'));
             //PRE_POST Switch Button
             self.prePostSelected = ko.observable(1);
+            self.workEnable = ko.observable(true);
+            self.workVisible = ko.observable(true);
+            self.typeSiftVisible = ko.observable(true);
             //time Value 
             self.timeStart1 = ko.observable(0);
             self.timeEnd1 = ko.observable(0);
@@ -75,16 +85,20 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             //BackHome 2
             self.selectedBack2 = ko.observable(1);
             //Work Location 
-            self.workLocationCD = ko.observable('001');
-            self.workLocationName = ko.observable('Name1');
+            self.workLocationCD = ko.observable('');
+            self.workLocationName = ko.observable('');
             //Work Location 2
-            self.workLocationCD2 = ko.observable('002');
-            self.workLocationName2 = ko.observable('Name2');
+            self.workLocationCD2 = ko.observable('');
+            self.workLocationName2 = ko.observable('');
             //comment 
             self.commentGo1 = ko.observable('');
             self.commentBack1 = ko.observable('');
             self.commentGo2 = ko.observable('');
             self.commentBack2 = ko.observable('');
+            self.colorGo = ko.observable('#000000');
+            self.colorBack = ko.observable('#000000');
+            self.fontWeightGo = ko.observable(0);
+            self.fontWeightBack = ko.observable(0);
 
             //Checkbox 勤務を変更する
             self.workChangeAtr = ko.observable(true);
@@ -96,18 +110,16 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             self.reasonCombo = ko.observableArray([]);
             self.selectedReason = ko.observable('');
             //MultilineEditor 
-            self.multilineeditor = {
-                value: ko.observable(''),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                    resizeable: false,
-                    placeholder: "Placeholder for text editor",
-                    width: "500",
-                    textalign: "left"
-                })),
-            };
+            self.multilContent = ko.observable('');
+            self.multilOption = ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+                resizeable: false,
+                placeholder: "Placeholder for text editor",
+                width: "500",
+                textalign: "left",
+            }));
             //勤務を変更する
-            self.workChangeAtr.subscribe(function() {
+            self.workChangeAtr.subscribe(function(value) {
+                self.workEnable(value);
             });
             self.startPage();
         }
@@ -118,28 +130,29 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             //get Common Setting
-            self.getAllWorkLocation();
             service.getGoBackSetting().done(function(settingData: CommonSetting) {
-                //console.log(settingData);
                 //get Reason
                 self.setReasonControl(settingData.listReasonDto);
                 //set employee Name
                 self.employeeName(settingData.employeeName);
                 //set Common Setting
+                debugger;
                 self.setGoBackSetting(settingData.goBackSettingDto);
+                //get source Location 
+                //get all work Location source
+                self.getAllWorkLocation();
                 //Get data 
                 //service.getGoBackDirectly().done(function(goBackDirectData: GoBackDirectData) {
-                service.getGoBackDirectDetail().done(function(detailData: any) {
-                    //console.log(detailData);
-                    self.workTypeName(detailData.workTypeName);
-                    self.siftName(detailData.workTimeName);
-                    //Set Value of control
-                    self.setValueControl(detailData.goBackDirectlyDto);
-                    debugger;
-                    dfd.resolve();
-                }).fail(function() {
-                    dfd.resolve();
-                });
+                //                service.getGoBackDirectDetail().done(function(detailData: any) {
+                //                    self.workTypeName(detailData.workTypeName);
+                //                    self.siftName(detailData.workTimeName);
+                //                    //Set Value of control
+                //                    self.setValueControl(detailData.goBackDirectlyDto);
+                //                    
+                //}).fail(function() {
+                //                    dfd.resolve();
+                //                });
+                dfd.resolve();
             });
             return dfd.promise();
         }
@@ -149,7 +162,6 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         insert() {
             let self = this;
             service.insertGoBackDirect(self.getCommand(1)).done(function() {
-                //self.startPage();
                 alert("Insert Done");
             }).fail(function() {
 
@@ -200,14 +212,14 @@ module nts.uk.at.view.kaf009.b.viewmodel {
          */
         getCommand(mode: number) {
             let self = this;
-            let command: IGoBackCommand = new GoBackCommand();
-            if (mode == 1) {
-                command.appID = Math.random().toString();
-            } else {
-                command.appID = '469dce47-ba9c-4d38-844d-2f51927ce33b';
-            }
-            command.workTypeCd = self.workTypeCd();
-            command.siftCd = self.siftCd();
+            let command: GoBackCommand = new GoBackCommand();
+//            if (mode == 1) {
+//                command.appID = Math.random().toString();
+//            } else {
+//                command.appID = '469dce47-ba9c-4d38-844d-2f51927ce33b';
+//            }
+            command.workTypeCD = self.workTypeCd();
+            command.siftCD = self.siftCd();
             command.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
             command.goWorkAtr1 = self.selectedGo();
             command.backHomeAtr1 = self.selectedBack();
@@ -217,8 +229,21 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             command.backHomeAtr2 = self.selectedBack2();
             command.workTimeStart2 = self.timeStart2();
             command.workTimeEnd2 = self.timeEnd2();
-            command.workLocationCd1 = self.workLocationCD();
-            command.workLocationCd2 = self.workLocationCD2();
+            command.workLocationCD1 = self.workLocationCD();
+            command.workLocationCD2 = self.workLocationCD2();
+            command.appCommand = new ApplicationCommand(
+                self.selectedReason(),
+                self.prePostSelected(),
+                self.appDate(),
+                self.employeeName(),
+                self.multilContent(),
+                self.appDate(),
+                self.multilContent(),
+                self.employeeName(),
+                self.appDate(),
+                self.appDate(),
+                self.appDate(),
+                self.appDate());
             return command;
         }
 
@@ -232,9 +257,34 @@ module nts.uk.at.view.kaf009.b.viewmodel {
                 self.commentGo2(data.commentContent2);
                 self.commentBack1(data.commentContent1);
                 self.commentBack2(data.commentContent2);
+                self.colorGo(data.commentFontColor1);
+                self.colorBack(data.commentFontColor2);
+                self.fontWeightGo(data.commentFontWeight1);
+                self.fontWeightBack(data.commentFontWeight2);
+                switch(data.workChangeFlg){
+                    case 0:{
+                        
+                        break;
+                    }
+                    case 1:{
+                        //self.workChangeAtr(true);
+                        break;
+                    }
+                    case 2:{
+                        self.workVisible(false);
+                        break;
+                    }
+                    default :{
+                        //self.workChangeAtr(true);
+                        self.workVisible(false);
+                        self.typeSiftVisible(false);
+                        break;
+                    }
+                                      
+                }
+                self.workEnable(data.workChangeFlg == 1 ? true : false);
             }
         }
-
         /**
          * set data from Server 
          */
@@ -263,8 +313,8 @@ module nts.uk.at.view.kaf009.b.viewmodel {
          */
         setReasonControl(data: Array<ReasonDto>) {
             var self = this;
-            //self.reasonCombo();
             let comboSource: Array<ComboReason> = [];
+            comboSource.push(new ComboReason(0,'選択してください'));
             _.forEach(data, function(value: ReasonDto) {
                 comboSource.push(new ComboReason(value.displayOrder, value.reasonTemp));
             });
@@ -401,8 +451,6 @@ module nts.uk.at.view.kaf009.b.viewmodel {
 
     };
 
-
-
     /**
      * 
      * 直行直帰申請
@@ -470,43 +518,84 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         workLocationName: string;
     }
     /**
-     * interface GoBack Command to Update, Insert
+     * Application detail
      */
-    export interface IGoBackCommand {
-        appID: string;
-        workTypeCd: string;
-        siftCd: string;
-        workChangeAtr: number;
-        goWorkAtr1: number;
-        backHomeAtr1: number;
-        workTimeStart1: number;
-        workTimeEnd1: number;
-        workLocationCd1: string;
-
-        goWorkAtr2: number;
-        backHomeAtr2: number;
-        workTimeStart2: number;
-        workTimeEnd2: number;
-        workLocationCd2: string;
+    export class ApplicationCommand {
+        applicationID: string;
+        appReasonID: string;
+        prePostAtr: number;
+        inputDate: string;
+        enteredPersonSID: string;
+        reversionReason: string;
+        applicationDate: string;
+        applicationReason: string;
+        applicationType: number;
+        applicantSID: string;
+        reflectPlanScheReason: number;
+        reflectPlanTime: string;
+        reflectPlanState: number;
+        reflectPlanEnforce: number;
+        reflectPerScheReason: number;
+        reflectPerTime: string;
+        reflectPerState: number;
+        reflectPerEnforce: number;
+        startDate: string;
+        endDate: string;
+        listPhase: any;
+        constructor(
+            appReasonID: string,
+            prePostAtr: number,
+            inputDate: string,
+            enteredPersonSID: string,
+            reversionReason: string,
+            applicationDate: string,
+            applicationReason: string,
+            applicantSID: string,
+            reflectPlanTime: string,
+            reflectPerTime: string,
+            startDate: string,
+            endDate: string) {
+            this.applicationID = "";
+            this.appReasonID = appReasonID;
+            this.prePostAtr = prePostAtr;
+            this.inputDate = moment.utc(inputDate, "YYYY/MM/DD").toISOString();
+            this.enteredPersonSID = enteredPersonSID;
+            this.reversionReason = reversionReason;
+            this.applicationDate = moment.utc(applicationDate, "YYYY/MM/DD").toISOString();
+            this.applicationReason = applicationReason;
+            this.applicationType = 4;
+            this.applicantSID = applicantSID;
+            this.reflectPlanScheReason = 1;
+            this.reflectPlanTime = moment.utc(reflectPlanTime, "YYYY/MM/DD").toISOString();
+            this.reflectPlanState = 1;
+            this.reflectPlanEnforce = 1;
+            this.reflectPerScheReason = 1;
+            this.reflectPerTime = moment.utc(reflectPerTime, "YYYY/MM/DD").toISOString();
+            this.reflectPerState = 1;
+            this.reflectPerEnforce = 1;
+            this.startDate = moment.utc(startDate, "YYYY/MM/DD").toISOString();
+            this.endDate = moment.utc(endDate, "YYYY/MM/DD").toISOString();
+            this.listPhase = null;
+        }
     }
     /**
      * 
      */
-    class GoBackCommand implements IGoBackCommand {
-        appID: string;
-        workTypeCd: string;
-        siftCd: string;
+    export class GoBackCommand {
+        workTypeCD: string;
+        siftCD: string;
         workChangeAtr: number;
         goWorkAtr1: number;
         backHomeAtr1: number;
         workTimeStart1: number;
         workTimeEnd1: number;
-        workLocationCd1: string;
+        workLocationCD1: string;
         goWorkAtr2: number;
         backHomeAtr2: number;
         workTimeStart2: number;
         workTimeEnd2: number;
-        workLocationCd2: string;
+        workLocationCD2: string;
+        appCommand: ApplicationCommand = new ApplicationCommand("");
     }
 }
 

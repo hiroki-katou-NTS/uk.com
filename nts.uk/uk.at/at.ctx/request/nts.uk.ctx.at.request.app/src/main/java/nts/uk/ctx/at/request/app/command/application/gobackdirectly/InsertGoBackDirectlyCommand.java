@@ -9,16 +9,8 @@ import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCom
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor	
 public class InsertGoBackDirectlyCommand {
-	/**
-	 * 会社ID
-	 */
-	String companyID;
-	/**
-	 * 申請ID
-	 */
-	String appID;
 	/**
 	 * 勤務種類
 	 */

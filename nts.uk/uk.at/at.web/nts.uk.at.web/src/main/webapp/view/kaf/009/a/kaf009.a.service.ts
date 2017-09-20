@@ -40,7 +40,6 @@ module nts.uk.at.view.kaf009.a.service {
      * 
      */
     export function insertGoBackDirect(currentGoBack: viewmodel.GoBackCommand): JQueryPromise<Array<any>> {
-        debugger;
         return ajax("at", paths.insertGoBackDirectly, currentGoBack);
     }
     /**
