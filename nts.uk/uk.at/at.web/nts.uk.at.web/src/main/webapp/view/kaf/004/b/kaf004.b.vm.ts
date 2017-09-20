@@ -23,8 +23,10 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         selectedCode: KnockoutObservable<string>;
         //MultilineEditor
         appreason: KnockoutObservable<string>;
-        time:KnockoutObservable<string>;
-
+        time: KnockoutObservable<string>;
+        //Show Screen
+        showScreen: string;
+        
         constructor() {
             var self = this;
             //check sendMail
@@ -50,6 +52,8 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             self.selectedCode = ko.observable('0002')
             //MultilineEditor 
             self.appreason = ko.observable('');
+            //Show Screen
+            self.showScreen = nts.uk.ui.windows.getShared("ShowScreen");
         }
 
         startPage(): JQueryPromise<any> {
@@ -67,10 +71,10 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         /** Create Button Click */
         registryButtonClick() {
             var self = this;
-          
+
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
-                 var lateOrLeaveEarly: LateOrLeaveEarly = {
+                var lateOrLeaveEarly: LateOrLeaveEarly = {
                     appDate: self.date(),
                     sendMail: self.sendMail(),
                     late1: self.late1() ? 1 : 0,
@@ -83,11 +87,13 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     earlyTime2: self.earlyTime2(),
                     reasonTemp: self.selectedCode(),
                     appReason: self.appreason()
-                 };
-                  service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                    });
-                
+                };
+                service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alertError(res);
+                });
+
             }
 
         }
@@ -100,7 +106,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
 
     interface LateOrLeaveEarly {
         appDate: string;
-        sendMail:boolean
+        sendMail: boolean
         late1: number;
         lateTime1: number;
         early1: number;
