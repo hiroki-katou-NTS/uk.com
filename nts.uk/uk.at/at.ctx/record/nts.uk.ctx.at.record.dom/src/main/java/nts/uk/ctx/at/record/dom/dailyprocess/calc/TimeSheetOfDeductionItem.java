@@ -86,7 +86,7 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 	 * @param baseTimeSheet 現ループ中のリス　
 	 * @param compareTimeSheet　次のループで取り出すリス　
 	 */
-	public List<TimeSheetOfDeductionItem> DeplicateBreakGoOut(TimeSheetOfDeductionItem compareTimeSheet,WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage) {
+	public List<TimeSheetOfDeductionItem> DeplicateBreakGoOut(TimeSheetOfDeductionItem compareTimeSheet,WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage,boolean useFixedRestTime) {
 		List<TimeSheetOfDeductionItem> map = new ArrayList<TimeSheetOfDeductionItem>();
 		/*両方とも育児　*/
 		if(this.getDeductionAtr().isChildCare() && compareTimeSheet.getDeductionAtr().isChildCare()) {
@@ -109,8 +109,10 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		/*前半休憩、後半外出*/
 		else if((this.getDeductionAtr().isBreak() && compareTimeSheet.getDeductionAtr().isGoOut())){
 			if(setMethod.isFluidWork()) {
-				if(clockManage.isNotClockManage()) {
-					/*保留*/
+				if(!useFixedRestTime) {
+					if(clockManage.isNotClockManage()) {
+						return collectionBreakTime(this,compareTimeSheet);
+					}
 				}
 			}			
 			map.add(this);
@@ -120,9 +122,10 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		/*前半外出、後半休憩*/
 		else if(this.getDeductionAtr().isGoOut() && compareTimeSheet.getDeductionAtr().isBreak()){
 			if(setMethod.isFluidWork()) {
-				if(clockManage.isNotClockManage()) {
-					/*保留*/
-					return map;
+				if(!useFixedRestTime) {
+					if(clockManage.isNotClockManage()) {
+						return collectionBreakTime(compareTimeSheet,this);
+					}
 				}
 			}
 			map.add(new TimeSheetOfDeductionItem(this.calculationTimeSheet.getNotDuplicationWith(compareTimeSheet.calculationTimeSheet).get(),this.getGoOutReason(),this.getBreakAtr(),this.getDeductionAtr(),this.getWithinStatutoryAtr()));
@@ -147,6 +150,41 @@ public class TimeSheetOfDeductionItem extends CalculationTimeSheet{
 		map.add(this);
 		map.add(compareTimeSheet);
 		return map; 
+	}
+	
+	
+	
+	/**
+	 * 休憩と外出時間帯の重複部分を補正する
+	 * @param breakTimeSheet 休憩時間帯
+	 * @param goOutTimeSheet　外出時間帯
+	 * @return 補正後の休憩、外出時間帯
+	 */
+	public List<TimeSheetOfDeductionItem> collectionBreakTime(TimeSheetOfDeductionItem frontBreakTimeSheet, TimeSheetOfDeductionItem backGoOutTimeSheet){
+		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+		switch(frontBreakTimeSheet.calculationTimeSheet.checkDuplication(backGoOutTimeSheet.calculationTimeSheet)) {
+		case CONNOTATE_ENDTIME:
+		case SAME_SPAN:
+			returnList.add(new TimeSheetOfDeductionItem(frontBreakTimeSheet.calculationTimeSheet.shiftAhead(frontBreakTimeSheet.calculationTimeSheet.getDuplicatedWith(backGoOutTimeSheet.calculationTimeSheet).get().lengthAsMinutes()),frontBreakTimeSheet.getGoOutReason(),frontBreakTimeSheet.getBreakAtr(),frontBreakTimeSheet.getDeductionAtr(),frontBreakTimeSheet.getWithinStatutoryAtr()));
+			returnList.add(backGoOutTimeSheet);
+			return returnList;
+		case CONTAINED:
+			/*休憩を外出の後ろにずらす*/
+			returnList.add(new TimeSheetOfDeductionItem(frontBreakTimeSheet.calculationTimeSheet.shiftAhead(backGoOutTimeSheet.calculationTimeSheet.getEnd().valueAsMinutes() - frontBreakTimeSheet.calculationTimeSheet.getStart().valueAsMinutes()),frontBreakTimeSheet.getGoOutReason(),frontBreakTimeSheet.getBreakAtr(),frontBreakTimeSheet.getDeductionAtr(),frontBreakTimeSheet.getWithinStatutoryAtr()));
+			returnList.add(backGoOutTimeSheet);
+		case CONTAINS:
+		case CONNOTATE_BEGINTIME:
+			returnList.add(new TimeSheetOfDeductionItem(new TimeSpanForCalc(frontBreakTimeSheet.start(),backGoOutTimeSheet.start()),frontBreakTimeSheet.getGoOutReason(),frontBreakTimeSheet.getBreakAtr(),frontBreakTimeSheet.getDeductionAtr(),frontBreakTimeSheet.getWithinStatutoryAtr()));
+			returnList.add(backGoOutTimeSheet);
+			returnList.add(new TimeSheetOfDeductionItem(new TimeSpanForCalc(backGoOutTimeSheet.end(),frontBreakTimeSheet.calculationTimeSheet.getEnd().backByMinutes(backGoOutTimeSheet.calculationTimeSheet.lengthAsMinutes())),frontBreakTimeSheet.getGoOutReason(),frontBreakTimeSheet.getBreakAtr(),frontBreakTimeSheet.getDeductionAtr(),frontBreakTimeSheet.getWithinStatutoryAtr()));
+			return returnList;
+		case NOT_DUPLICATE:
+			returnList.add(frontBreakTimeSheet);
+			returnList.add(backGoOutTimeSheet);
+			return returnList;
+		default:
+			throw new RuntimeException("unknown duplicate Atr" + frontBreakTimeSheet.calculationTimeSheet.checkDuplication(backGoOutTimeSheet.calculationTimeSheet));
+		}
 	}
 	
 	

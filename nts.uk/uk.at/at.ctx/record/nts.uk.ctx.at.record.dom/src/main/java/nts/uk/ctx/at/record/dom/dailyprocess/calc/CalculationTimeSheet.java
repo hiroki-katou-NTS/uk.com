@@ -3,7 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.RequiredArgsConstructor;
+import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 
@@ -13,7 +13,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRound
  *
  */
 public abstract class CalculationTimeSheet {
-	
+	@Getter
 	protected TimeSpanWithRounding timeSheet;
 	protected final TimeSpanForCalc calculationTimeSheet;
 	protected final List<DeductionTimeSheet> deductionTimeSheets = new ArrayList<>();

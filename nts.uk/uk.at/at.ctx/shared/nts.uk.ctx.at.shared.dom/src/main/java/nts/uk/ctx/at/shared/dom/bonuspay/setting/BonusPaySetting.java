@@ -4,12 +4,15 @@
 package nts.uk.ctx.at.shared.dom.bonuspay.setting;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingCode;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPaySettingName;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * @author hungnm
@@ -46,6 +49,14 @@ public class BonusPaySetting extends AggregateRoot {
 			List<BonusPayTimesheet> lstBonusPayTimesheet, List<SpecBonusPayTimesheet> lstSpecBonusPayTimesheet) {
 		return new BonusPaySetting(companyId, new BonusPaySettingCode(code),
 				new BonusPaySettingName(name), lstBonusPayTimesheet, lstSpecBonusPayTimesheet);
+	}
+	
+	public List<BonusPayTimesheet> createBonusPayTimeSheetList(TimeSpanForCalc calcRange){
+		for(BonusPayTimesheet bonusPayTimeSheet : lstBonusPayTimesheet) {
+			Optional<TimeSpanForCalc> duplicateSpan = calcRange.getDuplicatedWith(new TimeSpanForCalc(new TimeWithDayAttr(bonusPayTimeSheet.getStartTime().v())
+																							,new TimeWithDayAttr(bonusPayTimeSheet.getEndTime().v())));
+			
+		}
 	}
 
 }

@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.List;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,13 +37,15 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 		int processedListNumber = 0;
 		while(originCopyList.size() - 1 > processedListNumber) {
 			for(int number = 0 ;  number < originCopyList.size()  ; number++) {
-				processedListNumber = number;
-				if(isDeplicated(originCopyList.get(number).calculationTimeSheet, originCopyList.get(number+1).calculationTimeSheet)){
-					int beforeCorrectSize = originCopyList.size();
-					originCopyList = convertFromDeductionItemToList(originCopyList,number, setMethod, clockManage);
-					if(originCopyList.size()>beforeCorrectSize) {
-						/*追加された*/
-						break;
+				for(int nextNumber = number + 1; nextNumber < originCopyList.size(); nextNumber++) {
+					processedListNumber = number;
+					if(isDeplicated(originCopyList.get(number).calculationTimeSheet, originCopyList.get(nextNumber).calculationTimeSheet)){
+						int beforeCorrectSize = originCopyList.size();
+						originCopyList = convertFromDeductionItemToList(originCopyList,number,nextNumber, setMethod, clockManage);
+						if(originCopyList.size()>beforeCorrectSize) {
+							/*追加された*/
+							break;
+						}
 					}
 				}
 			}
@@ -58,8 +62,8 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	 * @param clockManage
 	 * @return 調整後の値を入れたList
 	 */
-	private List<TimeSheetOfDeductionItem> convertFromDeductionItemToList(List<TimeSheetOfDeductionItem> originList,int number,WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage){
-		return ReplaceListItem(originList,originList.get(number).DeplicateBreakGoOut(originList.get(number+1),setMethod,clockManage),number);
+	private List<TimeSheetOfDeductionItem> convertFromDeductionItemToList(List<TimeSheetOfDeductionItem> originList,int number,int nextNumber,WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage){
+		return ReplaceListItem(originList,originList.get(number).DeplicateBreakGoOut(originList.get(nextNumber),setMethod,clockManage,true),number,nextNumber).stream().sorted((first,second) -> first.calculationTimeSheet.getStart().compareTo(second.calculationTimeSheet.getStart())).collect(Collectors.toList());
 	}
 	
 	/**
@@ -69,9 +73,10 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	 * @param number
 	 * @return
 	 */
-	private List<TimeSheetOfDeductionItem> ReplaceListItem(List<TimeSheetOfDeductionItem> nowList,List<TimeSheetOfDeductionItem> newItems,int number ) {
-		nowList.set(number, newItems.get(0));
-		nowList.set(number+1, newItems.get(1));
+	private List<TimeSheetOfDeductionItem> ReplaceListItem(List<TimeSheetOfDeductionItem> nowList,List<TimeSheetOfDeductionItem> newItems,int number,int nextNumber ) {
+		nowList.remove(number);
+		nowList.remove(nextNumber);
+		nowList.addAll(newItems);
 		return nowList;
 	}
 	
