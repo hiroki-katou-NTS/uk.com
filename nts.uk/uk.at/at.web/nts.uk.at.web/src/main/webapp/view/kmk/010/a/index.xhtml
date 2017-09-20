@@ -90,7 +90,7 @@
 									<td rowspan="2">#{i18n.getText('KMK010_16')}</td>
 									<td rowspan="2" colspan="2">#{i18n.getText('KMK010_17')}</td>
 									<td rowspan="2">#{i18n.getText('KMK010_18')}</td>
-									<com:ko tag="ifnot" bind="$parent.isManage()">
+									<com:ko tag="if" bind="$parent.isManage()">
 										<com:ko tag="foreach" bind="overtimes">
 											<td tabindex="-1">
 												<div tabindex="-1" class="overtimeName" data-bind="text: languageName"></div>
@@ -99,7 +99,7 @@
 									</com:ko>
 								</tr>
 								<tr class="bg-dark-green">
-									<com:ko tag="ifnot" bind="$parent.isManage()">
+									<com:ko tag="if" bind="$parent.isManage()">
 										<com:ko tag="foreach" bind="overtimes">
 											<td>
 												<div tabindex="10" data-bind="ntsCheckBox: { checked: superHoliday60HOccurs,name: '#[KMK010_20]' }">#{i18n.getText('KMK010_20')}</div>
@@ -125,7 +125,7 @@
 										<td>
 											<div class="overtimeName" data-bind="text: productNumber"></div>
 										</td>
-										<com:ko tag="ifnot" bind="$parents[1].isManage()">
+										<com:ko tag="if" bind="$parents[1].isManage()">
 											<com:ko tag="foreach" bind="rateBRDItems">
 												<td>
 													<div>
@@ -146,7 +146,7 @@
 							</table>
 						</div>
 					</div>
-					<com:ko tag="ifnot" bind="$parent.isManage">
+					<com:ko tag="if" bind="$parent.isManage">
 						<div class="rateBotton60H" tabindex="-1" >
 						</div>
 						<div class="overtimeRate60H" tabindex="-1">

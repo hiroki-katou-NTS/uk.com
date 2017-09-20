@@ -30,7 +30,6 @@ public class OutsideOTSettingData {
 	/** The breakdown language data. */
 	private List<OutsideOTBRDItemNameLangData> breakdownLanguageData;
 	
-	
 	/** The premium extra rates. */
 	private List<PremiumExtra60HRateDto> premiumExtraRates;
 	

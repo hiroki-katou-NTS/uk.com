@@ -4,13 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.outsideot.setting;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMed;
+import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMedRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.premium.extra.PremiumExtra60HRate;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -20,9 +26,16 @@ import nts.uk.shr.com.context.LoginUserContext;
 @Stateless
 public class OutsideOTSettingSaveCommandHandler extends CommandHandler<OutsideOTSettingSaveCommand>{
 	
-	/** The repository. */
+	/** The outside OT setting repository. */
 	@Inject
-	private OutsideOTSettingRepository repository;
+	private OutsideOTSettingRepository outsideOTSettingRepository;
+	
+	/** The super HD 60 H con med repository. */
+	@Inject
+	private SuperHD60HConMedRepository superHD60HConMedRepository;
+	
+	/** The Constant BEGIN_RATE_ZERO. */
+	public static final int BEGIN_RATE_ZERO = 0;
 
 	/*
 	 * (non-Javadoc)
@@ -44,10 +57,48 @@ public class OutsideOTSettingSaveCommandHandler extends CommandHandler<OutsideOT
 		OutsideOTSettingSaveCommand command = context.getCommand();
 		
 		// to domain
-		OutsideOTSetting domain = command.toDomain(companyId);
+		OutsideOTSetting domainSetting = command.toDomainSetting(companyId);
+		SuperHD60HConMed domainSupper = command.toDomainSuper(companyId);
+		
+		// check domain setting and supper
+		this.checkDomainSettingAndSuper(domainSetting, domainSupper);
 		
 		// save domain
-		this.repository.save(domain);
+		this.outsideOTSettingRepository.save(domainSetting);
+		this.superHD60HConMedRepository.save(domainSupper);
+	}
+	
+	/**
+	 * Check domain setting and super.
+	 *
+	 * @param domainSetting the domain setting
+	 * @param domainSupper the domain supper
+	 */
+	private void checkDomainSettingAndSuper(OutsideOTSetting domainSetting,
+			SuperHD60HConMed domainSupper) {
+		domainSetting.getOvertimes().forEach(overtime->{
+			if (overtime.isSuperHoliday60HOccurs() && this.checkSettingSupper(
+					domainSupper.getPremiumExtra60HRates(), overtime.getOvertimeNo().value)) {
+				throw new BusinessException("Msg_491");
+			}
+		});
+	}
+	
+	/**
+	 * Check setting supper.
+	 *
+	 * @param premiumExtra60HRates the premium extra 60 H rates
+	 * @param overtimeNo the overtime no
+	 * @return true, if successful
+	 */
+	private boolean checkSettingSupper(List<PremiumExtra60HRate> premiumExtra60HRates,
+			int overtimeNo) {
+		for(PremiumExtra60HRate rate: premiumExtra60HRates){
+			if(rate.getOvertimeNo().value == overtimeNo  && rate.getPremiumRate().v() > BEGIN_RATE_ZERO){
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

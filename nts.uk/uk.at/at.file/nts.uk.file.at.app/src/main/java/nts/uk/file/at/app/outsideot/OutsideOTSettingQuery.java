@@ -13,4 +13,7 @@ public class OutsideOTSettingQuery {
 
 	/** The language id. */
 	private String languageId;
+	
+	/** The is manage. */
+	private boolean manage;
 }

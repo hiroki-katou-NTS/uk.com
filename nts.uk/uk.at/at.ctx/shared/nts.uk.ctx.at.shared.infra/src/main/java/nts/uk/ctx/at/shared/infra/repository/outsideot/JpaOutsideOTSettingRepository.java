@@ -85,6 +85,51 @@ public class JpaOutsideOTSettingRepository extends JpaRepository
 		return Optional.ofNullable(
 				this.toDomain(new KshstOutsideOtSet(), entityOvertimeBRDItem, entityOvertime));
 	}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.shared.dom.overtime.OvertimeSettingRepository#findById(java
+	 * .lang.String)
+	 */
+	@Override
+	public Optional<OutsideOTSetting> reportById(String companyId) {
+
+		// call repository find entity setting
+		Optional<KshstOutsideOtSet> entity = this.queryProxy().find(companyId,
+				KshstOutsideOtSet.class);
+
+		// call repository find all domain overtime
+		List<Overtime> domainOvertime = this.overtimeRepository.findAll(companyId);
+
+		// call repository find all domain overtime break down item
+		List<OutsideOTBRDItem> domainOvertimeBrdItem = this.outsideOTBRDItemRepository
+				.findAll(companyId);
+
+		// domain to entity
+		List<KshstOverTime> entityOvertime = domainOvertime.stream().map(domain -> {
+			KshstOverTime entityItem = new KshstOverTime();
+			domain.saveToMemento(new JpaOvertimeSetMemento(entityItem, companyId));
+			return entityItem;
+		}).collect(Collectors.toList());
+
+		// domain to entity
+		List<KshstOutsideOtBrd> entityOvertimeBRDItem = domainOvertimeBrdItem.stream()
+				.map(domain -> {
+					KshstOutsideOtBrd entityItem = new KshstOutsideOtBrd();
+					domain.saveToMemento(new JpaOutsideOTBRDItemSetMemento(entityItem, companyId));
+					return entityItem;
+				}).collect(Collectors.toList());
+
+		// check exist data
+		if (entity.isPresent()) {
+			return Optional
+					.ofNullable(this.toDomain(entity.get(), entityOvertimeBRDItem, entityOvertime));
+		}
+		// default data
+		return Optional.ofNullable(
+				this.toDomain(new KshstOutsideOtSet(), entityOvertimeBRDItem, entityOvertime));
+	}
 
 	/*
 	 * (non-Javadoc)
