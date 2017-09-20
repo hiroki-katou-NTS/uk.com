@@ -4351,6 +4351,10 @@ var nts;
         (function (ui) {
             var option;
             (function (option_1) {
+                var currenryPosition = {
+                    "JPY": "left",
+                    "USD": "right"
+                };
                 var EditorOptionBase = (function () {
                     function EditorOptionBase() {
                     }
@@ -4366,7 +4370,7 @@ var nts;
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
                         this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "";
                         this.autofill = (option !== undefined && option.autofill !== undefined) ? option.autofill : false;
-                        this.filldirection = (option !== undefined && option.filldirection !== undefined) ? option.filldirection : "right";
+                        this.filldirection = (option !== undefined && option.filldirection !== undefined) ? option.filldirection : "left";
                         this.fillcharacter = (option !== undefined && option.fillcharacter !== undefined) ? option.fillcharacter : "0";
                     }
                     return TextEditorOption;
@@ -4450,10 +4454,6 @@ var nts;
                     return TimeWithDayAttrEditorOption;
                 }(EditorOptionBase));
                 option_1.TimeWithDayAttrEditorOption = TimeWithDayAttrEditorOption;
-                var currenryPosition = {
-                    "JPY": "left",
-                    "USD": "right"
-                };
             })(option = ui.option || (ui.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -5961,6 +5961,7 @@ var nts;
                     TextEditorProcessor.prototype.getFormatter = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
+                        this.editorOption.autofill = (constraint && constraint.isZeroPadded) ? constraint.isZeroPadded : this.editorOption.autofill;
                         return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: this.editorOption });
                     };
                     TextEditorProcessor.prototype.getValidator = function (data) {
