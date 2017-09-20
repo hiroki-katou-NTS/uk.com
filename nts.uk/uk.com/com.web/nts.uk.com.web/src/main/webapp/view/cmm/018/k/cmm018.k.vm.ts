@@ -121,7 +121,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             
             //check 
             $('#swap-list').on("swaplistgridsizeexceed", function(evt, $list, max) { 
-                alert('test');
+                nts.uk.ui.dialog.alertError({ messageId: 'Msg_300'});
             })
         }// end constructor
         
