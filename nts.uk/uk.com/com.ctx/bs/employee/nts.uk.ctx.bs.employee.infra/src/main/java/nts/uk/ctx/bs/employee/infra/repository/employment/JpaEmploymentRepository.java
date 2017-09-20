@@ -30,7 +30,7 @@ import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment_;
  * The Class JpaEmploymentRepository.
  */
 @Stateless
-public class JpaEmploymentRepository_old extends JpaRepository implements EmploymentRepository {
+public class JpaEmploymentRepository extends JpaRepository implements EmploymentRepository {
 
 	/*
 	 * (non-Javadoc)
