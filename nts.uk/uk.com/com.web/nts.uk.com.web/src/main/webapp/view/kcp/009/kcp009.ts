@@ -156,6 +156,11 @@ module kcp009.viewmodel {
                 $('#btn_show_list').click(function() {
                     $('#items-list').ntsPopup('toggle');
                 });
+                $('#search-input').on('keypress', function(e) {
+                    if (e.which == 13) {
+                        self.searchEmp();
+                    }
+                })
 
                 dfd.resolve();
             });
