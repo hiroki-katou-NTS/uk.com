@@ -19,6 +19,14 @@ public interface OutsideOTSettingRepository {
 	 */
 	public Optional<OutsideOTSetting> findById(String companyId);
 	
+	/**
+	 * Report by id.
+	 *
+	 * @param companyId the company id
+	 * @return the optional
+	 */
+	public Optional<OutsideOTSetting> reportById(String companyId);
+	
 	
 	/**
 	 * Save.

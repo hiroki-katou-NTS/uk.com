@@ -16,7 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 /**
- * The Class OvertimeSettingFinder.
+ * The Class OutsideOTSettingFinder.
  */
 @Stateless
 public class OutsideOTSettingFinder {
@@ -28,7 +28,7 @@ public class OutsideOTSettingFinder {
 	/**
 	 * Find by id.
 	 *
-	 * @return the overtime setting dto
+	 * @return the outside OT setting dto
 	 */
 	public OutsideOTSettingDto findById() {
 
@@ -48,6 +48,31 @@ public class OutsideOTSettingFinder {
 
 		return dto;
 
+	}
+	
+	/**
+	 * Report by id.
+	 *
+	 * @return the outside OT setting dto
+	 */
+	public OutsideOTSettingDto reportById() {
+		
+		// get login user
+		LoginUserContext loginUserContext = AppContexts.user();
+		
+		// get company id
+		String companyId = loginUserContext.companyId();
+		
+		// call repository find data
+		Optional<OutsideOTSetting> overtimeSetting = this.repository.reportById(companyId);
+		
+		OutsideOTSettingDto dto = new OutsideOTSettingDto();
+		if (overtimeSetting.isPresent()) {
+			overtimeSetting.get().saveToMemento(dto);
+		}
+		
+		return dto;
+		
 	}
 	
 	
