@@ -16,12 +16,13 @@
 		</div>
 		<div class="contents-area cf" data-bind="visible: true" style="display: none">
 			<div class="lineContent">
-				<div class="lableContent" >
+				<div class="lableContent" data-bind="visible: !isPersonSelected(), ntsFormLabel: {required: true}">
 					<label>#{i18n.getText('KSM001_4')}</label>
 				</div>
 				<div class="lableContentPersonal" data-bind="visible: isPersonSelected(), ntsFormLabel: {required: true}">
 					<label>#{i18n.getText('KSM001_4')}</label>
 				</div>
+				<ui:insert name="extended-111" />
 			</div>
 			<br/>
 			<div style="display: inline-flex">

@@ -1,5 +1,6 @@
 module nts.uk.at.view.kmk006.a {
 
+    import Enum = service.model.Enum;
     import EstimateTimeDto = service.model.EstimateTimeDto;
     import EstimatePriceDto = service.model.EstimatePriceDto;
     import EstimateDaysDto = service.model.EstimateDaysDto;
@@ -10,10 +11,33 @@ module nts.uk.at.view.kmk006.a {
     import EmploymentEstablishmentDto = service.model.EmploymentEstablishmentDto;
     import PersonalEstablishmentDto = service.model.PersonalEstablishmentDto;
     import UsageSettingDto = service.model.UsageSettingDto;
+    //importDto
+    import ComAutoCalSettingDto = service.model.ComAutoCalSettingDto;
+    import AutoCalOvertimeSettingDto = service.model.AutoCalOvertimeSettingDto;
+    import AutoCalRestTimeSettingDto = service.model.AutoCalRestTimeSettingDto;
+    import AutoCalFlexOvertimeSettingDto = service.model.AutoCalFlexOvertimeSettingDto;
+    import AutoCalSettingDto = service.model.AutoCalSettingDto;
+
+
+
+
 
     export module viewmodel {
 
         export class ScreenModel {
+            multiSelectedWorkplaceId: KnockoutObservable<string>;
+            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
+            treeGrid: TreeComponentOption;
+            autoCalAtrOvertimeEnum: Array<Enum>;
+            valueEnum: KnockoutObservable<number>;
+            selectedTab: KnockoutObservable<string>;
+            timeLimitUpperLimitEnum: Array<Enum>;
+            itemComAutoCalModel: ComAutoCalSettingModel;
+
+
+
+
+
             // Common
             usageSettingModel: UsageSettingModel;
             lstTargetYear: KnockoutObservableArray<any>;
@@ -49,7 +73,7 @@ module nts.uk.at.view.kmk006.a {
             employmentList: KnockoutObservableArray<UnitModel>;
 
             constructor() {
-                var self = this;  
+                var self = this;
 
                 // Initial common data.
                 self.usageSettingModel = new UsageSettingModel();
@@ -92,7 +116,7 @@ module nts.uk.at.view.kmk006.a {
                 // Employee tab
                 self.alreadySettingPersonal = ko.observableArray([]);
                 self.selectedEmployeeCode = ko.observable('');
-                self.baseDate = ko.observable(new Date());
+
                 self.selectedEmployee = ko.observableArray([]);
 
                 // Component option initial
@@ -161,8 +185,234 @@ module nts.uk.at.view.kmk006.a {
                         self.loadEmploymentEstablishment(currentYear, employmentCode, false);
                     }
                 });
+                self.baseDate = ko.observable(new Date());
+                self.multiSelectedWorkplaceId = ko.observable('');
+                self.alreadySettingList = ko.observableArray([]);
+                self.treeGrid = {
+                    isShowAlreadySet: true,
+                    isMultiSelect: true,
+                    treeType: TreeType.WORK_PLACE,
+                    selectedWorkplaceId: self.multiSelectedWorkplaceId,
+                    baseDate: self.baseDate,
+                    selectType: SelectionType.SELECT_FIRST_ITEM,
+                    isShowSelectButton: true,
+                    isDialog: false,
+                    alreadySettingList: self.alreadySettingList,
+                    maxRows: 10
+                };
+                self.autoCalAtrOvertimeEnum = [];
+                self.valueEnum = ko.observable(2);
+                self.selectedTab = ko.observable('tab-1');
+                self.timeLimitUpperLimitEnum = [];
+                self.itemComAutoCalModel = new ComAutoCalSettingModel();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             }
+            // All function
+            // load AutoCalAtrOvertimeEnum
+            private loadAutoCalAtrOvertimeEnum(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+
+                nts.uk.ui.block.invisible();
+
+                // get setting
+                service.findEnumAutoCalAtrOvertime().done(function(dataRes: Array<Enum>) {
+
+                    self.autoCalAtrOvertimeEnum = dataRes;
+
+                    nts.uk.ui.block.clear();
+
+                    dfd.resolve();
+                });
+
+                return dfd.promise();
+            }
+            // All function
+            // load AutoCalAtrOvertimeEnum
+            private loadTimeLimitUpperLimitSettingEnum(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+
+                nts.uk.ui.block.invisible();
+
+                // get setting
+                service.findEnumTimeLimitUpperLimitSetting().done(function(dataRes: Array<Enum>) {
+
+                    self.timeLimitUpperLimitEnum = dataRes;
+
+                    nts.uk.ui.block.clear();
+
+                    dfd.resolve();
+                });
+
+                return dfd.promise();
+            }
+
+
+            // load ComAutoCal
+            private loadComAutoCal(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+
+                //            nts.uk.ui.block.invisible();
+
+                service.getComAutoCal().done(function(data) {
+                    //                nts.uk.ui.block.clear();
+                    if (data) {
+                        self.itemComAutoCalModel.updateData(data);
+                    }
+                    if (self.itemComAutoCalModel) {
+                        self.valueEnum(self.autoCalAtrOvertimeEnum[self.itemComAutoCalModel.normalOTTime.earlyOtTime.upLimitOtSet()].value);
+                    }
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+
+                return dfd.promise();
+            }
+            
+            /**
+             * function on click saveCompanyAutoCal action
+             */
+            public saveCompanyAutoCal(): void {
+                if ($('.nts-input').ntsError('hasError')) {
+                    return;
+                };
+                nts.uk.ui.block.invisible();
+                var self = this;
+                
+                var dto: ComAutoCalSettingDto = {
+                    normalOTTime: self.itemComAutoCalModel.normalOTTime.toDto(),
+                    flexOTTime: self.itemComAutoCalModel.flexOTTime.toDto(),
+                    restTime: self.itemComAutoCalModel.restTime.toDto()
+                };
+
+                self.itemComAutoCalModel.updateData(self.itemComAutoCalModel.toDto());
+
+                service.saveComAutoCal(dto).done(function() {
+                    // show message 15
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        // reload pa    
+                        self.loadComAutoCal();
+                    });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
+
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             /**
              * call service load UsageSettingModel
@@ -187,12 +437,17 @@ module nts.uk.at.view.kmk006.a {
                 // Initial settings.
                 self.setSelectableYears();
                 self.loadUsageSettingModel();
-
+                self.loadTimeLimitUpperLimitSettingEnum();
+                // load all data  Enum
+                self.loadAutoCalAtrOvertimeEnum();
+                self.loadComAutoCal();
                 self.onSelectCompany().done(function() {
+                    $('#tree-grid').ntsTreeComponent(self.treeGrid);
                     dfd.resolve(self);
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
+
                 return dfd.promise();
             }
 
@@ -335,6 +590,7 @@ module nts.uk.at.view.kmk006.a {
                 self.isEmploymentSelected(true);
                 self.isLoading(true);
 
+                $('#tree-grid').ntsTreeComponent(self.treeGrid);
                 // Load employment list component.
                 $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption).done(function() {
                     self.employmentList($('#employmentSetting').getDataList());
@@ -398,8 +654,8 @@ module nts.uk.at.view.kmk006.a {
                         nts.uk.ui.block.clear();
                         dfd.resolve();
                     }).fail(res => {
-                    nts.uk.ui.dialog.alertError(res);
-                });
+                        nts.uk.ui.dialog.alertError(res);
+                    });
                 }
                 else {
                     nts.uk.ui.block.clear();
@@ -504,35 +760,7 @@ module nts.uk.at.view.kmk006.a {
                 return dfd.promise();
             }
 
-            /**
-             * function on click saveCompanyEstablishment action
-             */
-            public saveCompanyEstablishment(): void {
-                if ($('.nts-input').ntsError('hasError')) {
-                    return;
-                };
-                nts.uk.ui.block.invisible();
-                var self = this;
-                var dto: CompanyEstablishmentDto = {
-                    estimateTime: self.companyEstablishmentModel.estimateTimeModel.toDto(),
-                    estimatePrice: self.companyEstablishmentModel.estimatePriceModel.toDto(),
-                    estimateNumberOfDay: self.companyEstablishmentModel.estimateDaysModel.toDto()
-
-                };
-                service.saveCompanyEstablishment(self.companyEstablishmentModel.selectedYear(), dto).done(function() {
-                    // show message 15
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        // reload pa    
-                        self.loadCompanyEstablishment(self.companyEstablishmentModel.selectedYear(), false);
-                    });
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                }).always(() => {
-                    $('#comboTargetYear').focus();
-                    nts.uk.ui.block.clear();
-                });
-            }
-
+          
             /**
              * function on click deleteCompanyEstablishment action
              */
@@ -672,7 +900,7 @@ module nts.uk.at.view.kmk006.a {
                     });
                 });
             }
-    
+
             /**
              * open dialog UsageSettingModel (view model E)
              */
@@ -743,6 +971,245 @@ module nts.uk.at.view.kmk006.a {
             }
 
         }
+        // exportclass
+        export class TreeType {
+            static WORK_PLACE = 1;
+        }
+        //        SELECTIONTYPE
+        export class SelectionType {
+            static SELECT_BY_SELECTED_CODE = 1;
+            static SELECT_ALL = 2;
+            static SELECT_FIRST_ITEM = 3;
+            static NO_SELECT = 4;
+
+        }
+        //        ComAutoCalSettingModel
+        export class ComAutoCalSettingModel {
+            normalOTTime: AutoCalOvertimeSettingModel;
+            flexOTTime: AutoCalFlexOvertimeSettingModel;
+            restTime: AutoCalRestTimeSettingModel;
+
+            constructor() {
+                this.normalOTTime = new AutoCalOvertimeSettingModel();
+                this.flexOTTime = new AutoCalFlexOvertimeSettingModel();
+                this.restTime = new AutoCalRestTimeSettingModel();
+
+            }
+
+            updateData(dto: ComAutoCalSettingDto) {
+                this.normalOTTime.updateData(dto.normalOTTime);
+                this.flexOTTime.updateData(dto.flexOTTime);
+                this.restTime.updateData(dto.restTime);
+
+            }
+
+            toDto(): ComAutoCalSettingDto {
+                var dto: ComAutoCalSettingDto = {
+                    normalOTTime: this.normalOTTime.toDto(),
+                    flexOTTime: this.flexOTTime.toDto(),
+                    restTime: this.restTime.toDto()
+
+                };
+                return dto;
+            }
+            resetData() {
+                this.normalOTTime.resetData();
+                this.flexOTTime.resetData();
+                this.restTime.resetData();
+            }
+        }
+        //        AutoCalOvertimeSettingDto
+        export class AutoCalFlexOvertimeSettingModel {
+            flexOtTime: AutoCalSettingModel;
+            flexOtNightTime: AutoCalSettingModel;
+
+            constructor() {
+                this.flexOtTime = new AutoCalSettingModel();
+                this.flexOtNightTime = new AutoCalSettingModel();
+
+            }
+
+            updateData(dto: AutoCalFlexOvertimeSettingDto) {
+                this.flexOtTime.updateData(dto.flexOtNightTime);
+                this.flexOtNightTime.updateData(dto.flexOtNightTime);
+
+            }
+
+            toDto(): AutoCalFlexOvertimeSettingDto {
+                var dto: AutoCalFlexOvertimeSettingDto = {
+                    flexOtTime: this.flexOtTime.toDto(),
+                    flexOtNightTime: this.flexOtNightTime.toDto(),
+
+                };
+                return dto;
+            }
+            resetData() {
+                this.flexOtTime.resetData();
+                this.flexOtNightTime.resetData();
+            }
+        }
+
+        //        AutoCalRestTimeSettingDto
+        export class AutoCalRestTimeSettingModel {
+            restTime: AutoCalSettingModel;
+            lateNightTime: AutoCalSettingModel;
+
+            constructor() {
+                this.restTime = new AutoCalSettingModel();
+                this.lateNightTime = new AutoCalSettingModel();
+
+            }
+
+            updateData(dto: AutoCalRestTimeSettingDto) {
+                this.restTime.updateData(dto.restTime);
+                this.lateNightTime.updateData(dto.lateNightTime);
+
+            }
+
+            toDto(): AutoCalRestTimeSettingDto {
+                var dto: AutoCalRestTimeSettingDto = {
+                    restTime: this.restTime.toDto(),
+                    lateNightTime: this.lateNightTime.toDto(),
+
+                };
+                return dto;
+            }
+            resetData() {
+                this.restTime.resetData();
+                this.lateNightTime.resetData();
+            }
+        }
+        //        AutoCalFlexOvertimeSettingDto
+        export class AutoCalOvertimeSettingModel {
+            earlyOtTime: AutoCalSettingModel;
+            earlyMidOtTime: AutoCalSettingModel;
+            normalOtTime: AutoCalSettingModel;
+            normalMidOtTime: AutoCalSettingModel;
+            legalOtTime: AutoCalSettingModel;
+            legalMidOtTime: AutoCalSettingModel;
+
+            constructor() {
+                this.earlyOtTime = new AutoCalSettingModel();
+                this.earlyMidOtTime = new AutoCalSettingModel();
+                this.normalOtTime = new AutoCalSettingModel();
+                this.normalMidOtTime = new AutoCalSettingModel();
+                this.legalOtTime = new AutoCalSettingModel();
+                this.legalMidOtTime = new AutoCalSettingModel();
+
+            }
+
+            updateData(dto: AutoCalOvertimeSettingDto) {
+                this.earlyOtTime.updateData(dto.earlyOtTime);
+                this.earlyMidOtTime.updateData(dto.earlyMidOtTime);
+                this.normalOtTime.updateData(dto.normalOtTime);
+                this.normalMidOtTime.updateData(dto.normalMidOtTime);
+                this.legalOtTime.updateData(dto.legalOtTime);
+                this.legalMidOtTime.updateData(dto.legalMidOtTime);
+
+            }
+
+            toDto(): AutoCalOvertimeSettingDto {
+                var dto: AutoCalOvertimeSettingDto = {
+                    earlyOtTime: this.earlyOtTime.toDto(),
+                    earlyMidOtTime: this.earlyMidOtTime.toDto(),
+                    normalOtTime: this.normalOtTime.toDto(),
+                    normalMidOtTime: this.normalMidOtTime.toDto(),
+                    legalOtTime: this.legalOtTime.toDto(),
+                    legalMidOtTime: this.legalMidOtTime.toDto()
+
+                };
+                return dto;
+            }
+            resetData() {
+                this.earlyOtTime.resetData();
+                this.earlyMidOtTime.resetData();
+                this.normalOtTime.resetData();
+                this.normalMidOtTime.resetData();
+                this.legalOtTime.resetData();
+                this.legalMidOtTime.resetData();
+            }
+        }
+        //        AutoCalSettingDto
+        export class AutoCalSettingModel {
+            upLimitOtSet: KnockoutObservable<number>;
+            calAtr: KnockoutObservable<number>;
+            constructor() {
+                this.upLimitOtSet = ko.observable(1);
+                this.calAtr = ko.observable(1);
+            }
+            updateData(dto: AutoCalSettingDto) {
+                this.upLimitOtSet(dto.upLimitOtSet);
+                this.calAtr(dto.calAtr);
+            }
+
+            toDto(): AutoCalSettingDto {
+                var dto: AutoCalSettingDto = {
+                    upLimitOtSet: this.upLimitOtSet(),
+                    calAtr: this.calAtr(),
+                };
+                return dto;
+            }
+            resetData() {
+                this.upLimitOtSet(0);
+                this.calAtr(0);
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         export class EstimateTimeModel {
             month: KnockoutObservable<number>;

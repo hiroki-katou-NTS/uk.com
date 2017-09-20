@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
-import java.util.List;
-
 /**
  * The Interface FormulaSettingSetMemento.
  */
@@ -26,9 +24,16 @@ public interface FormulaSettingSetMemento {
 	void setOperatorAtr(OperatorAtr operator);
 
 	/**
-	 * Sets the formula setting items.
+	 * Sets the left item.
 	 *
-	 * @param listItem the new formula setting items
+	 * @param item the new left item
 	 */
-	void setFormulaSettingItems(List<FormulaSettingItem> listItem);
+	void setLeftItem(FormulaSettingItem item);
+
+	/**
+	 * Sets the right item.
+	 *
+	 * @param item the new right item
+	 */
+	void setRightItem(FormulaSettingItem item);
 }

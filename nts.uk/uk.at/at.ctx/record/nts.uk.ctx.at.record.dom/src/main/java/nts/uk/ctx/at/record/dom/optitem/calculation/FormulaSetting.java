@@ -4,9 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
-import java.util.List;
+import java.math.BigDecimal;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -26,7 +27,11 @@ public class FormulaSetting extends DomainObject {
 
 	/** The formula setting items. */
 	// 計算式設定項目
-	private List<FormulaSettingItem> formulaSettingItems;
+	private FormulaSettingItem leftItem;
+
+	// 計算式設定項目
+	/** The right item. */
+	private FormulaSettingItem rightItem;
 
 	/**
 	 * Instantiates a new formula setting.
@@ -36,7 +41,41 @@ public class FormulaSetting extends DomainObject {
 	public FormulaSetting(FormulaSettingGetMemento memento) {
 		this.minusSegment = memento.getMinusSegment();
 		this.operator = memento.getOperatorAtr();
-		this.formulaSettingItems = memento.getFormulaSettingItems();
+		this.leftItem = memento.getLeftItem();
+		this.rightItem = memento.getRightItem();
+
+		// Validate.
+		if (this.isBothItemInput()) {
+			throw new BusinessException("Msg_420");
+		}
+		if (this.isDivideByZero()) {
+			throw new BusinessException("Msg_638");
+		}
+	}
+
+	/**
+	 * Checks if is both item input.
+	 *
+	 * @return true, if is both item input
+	 */
+	private boolean isBothItemInput() {
+		if (this.leftItem.getSettingMethod() == SettingMethod.NUMERICAL_INPUT
+				&& this.rightItem.getSettingMethod() == SettingMethod.NUMERICAL_INPUT) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Checks if is divide by zero.
+	 *
+	 * @return true, if is divide by zero
+	 */
+	private boolean isDivideByZero() {
+		if (this.operator == OperatorAtr.DIVIDE && this.rightItem.getInputValue().v() == BigDecimal.ZERO) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -47,7 +86,8 @@ public class FormulaSetting extends DomainObject {
 	public void saveToMemento(FormulaSettingSetMemento memento) {
 		memento.setMinusSegment(this.minusSegment);
 		memento.setOperatorAtr(this.operator);
-		memento.setFormulaSettingItems(this.formulaSettingItems);
+		memento.setLeftItem(this.leftItem);
+		memento.setRightItem(this.rightItem);
 	}
 
 }

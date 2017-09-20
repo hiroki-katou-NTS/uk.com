@@ -10,13 +10,16 @@
 			<span class="title">#{i18n.getText('Com_Employment')}</span>
 		</ui:define>
 		<ui:define name="extended-action-bar">
-			<button tabindex="1" class="proceed" data-bind="enable: employmentEstablishmentModel.isEditable, click: saveEmploymentEstablishment">#{i18n.getText('KSM001_1')}</button>
-			<button tabindex="3" data-bind="enable: employmentEstablishmentModel.isEnableDelete">#{i18n.getText('KSM001_50')}</button>
-			<button tabindex="2" class="danger" data-bind="enable: employmentEstablishmentModel.isEnableDelete, click: deleteEmploymentEstablishment" >#{i18n.getText('KSM001_2')}</button>
+			<button tabindex="1" class="proceed"
+				data-bind="enable: employmentEstablishmentModel.isEditable, click: saveEmploymentEstablishment">#{i18n.getText('KSM001_1')}</button>
+			<button tabindex="3"
+				data-bind="enable: employmentEstablishmentModel.isEnableDelete">#{i18n.getText('KSM001_50')}</button>
+			<button tabindex="2" class="danger"
+				data-bind="enable: employmentEstablishmentModel.isEnableDelete, click: deleteEmploymentEstablishment">#{i18n.getText('KSM001_2')}</button>
 		</ui:define>
 		<ui:define name="extended-111">
 			<div tabindex="6" id="comboTargetYear"
-					data-bind="ntsComboBox: {
+				data-bind="ntsComboBox: {
 				name: '#[KSM001_4]',
 				options: lstTargetYear,
 				optionsValue: 'year',
@@ -28,18 +31,18 @@
 				columns: [
 					{ prop: 'year', length: 6 }
 				]}"></div>
-			<div style="margin-left: 150px" data-bind="ntsFormLabel: {required: true}">
-				<label>#{i18n.getText('KSM001_5')}</label>
-				<span data-bind="text: employmentName"></span>
+			<div style="margin-left: 150px" data-bind="ntsFormLabel: {}">
+				<label>#{i18n.getText('KSM001_5')}</label> <span
+					data-bind="text: employmentName"></span>
 			</div>
 		</ui:define>
 		<ui:define name="extended-222">
+
 			<div id="employmentSetting" class="employmentSettingContent"></div>
-			<com:ko tag="with" bind="employmentEstablishmentModel">
-				<div data-bind="ifnot: $parent.isLoading">
-					<ui:include src="data-table.xhtml"/>
-				</div>
-			</com:ko>
+			<div id="tree-grid"></div>
+			<div data-bind="ifnot: $parent.isLoading">
+				<ui:include src="data-table.xhtml" />
+			</div>
 		</ui:define>
 	</ui:composition>
 </body>

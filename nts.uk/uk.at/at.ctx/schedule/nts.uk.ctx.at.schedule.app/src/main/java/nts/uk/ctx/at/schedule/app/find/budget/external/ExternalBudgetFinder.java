@@ -124,8 +124,8 @@ public class ExternalBudgetFinder {
 
             // get list record
             List<List<String>> lstRecord = FileUtil.findContentFile(inputStream, extractCondition.getEncoding(),
-                    standardColumn);
-
+                        standardColumn).entrySet().stream().map(entry -> entry.getValue()).collect(Collectors.toList());
+            
             Integer lineStart = extractCondition.getStartLine().v();
 
             // check file empty data?

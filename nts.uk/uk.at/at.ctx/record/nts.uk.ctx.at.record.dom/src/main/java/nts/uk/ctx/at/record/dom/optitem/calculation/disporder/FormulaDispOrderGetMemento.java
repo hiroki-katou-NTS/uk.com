@@ -39,5 +39,5 @@ public interface FormulaDispOrderGetMemento {
 	 *
 	 * @return the disp order
 	 */
-	int getDispOrder();
+	DispOrder getDispOrder();
 }

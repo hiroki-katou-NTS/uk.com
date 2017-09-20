@@ -33,7 +33,7 @@ public class FormulaDispOrder extends AggregateRoot {
 
 	/** The disp order. */
 	// 並び順
-	private int dispOrder;
+	private DispOrder dispOrder;
 
 	/**
 	 * Instantiates a new formula disp order.

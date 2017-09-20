@@ -12,6 +12,12 @@ import lombok.Getter;
  * The Class AutoCalSetting.
  */
 // 自動計算設定
+
+/**
+ * Gets the cal atr.
+ *
+ * @return the cal atr
+ */
 @Getter
 public class AutoCalSetting extends ValueObject {
 
@@ -26,15 +32,23 @@ public class AutoCalSetting extends ValueObject {
 	/**
 	 * Instantiates a new auto cal setting.
 	 *
-	 * @param upLimitOtSet
-	 *            the up limit ot set
-	 * @param calAtr
-	 *            the cal atr
+	 * @param upLimitOtSet the up limit ot set
+	 * @param calAtr the cal atr
 	 */
-	public AutoCalSetting(TimeLimitUpperLimitSetting upLimitOtSet, AutoCalAtrOvertime calAtr) {
-		super();
-		this.upLimitOtSet = upLimitOtSet;
-		this.calAtr = calAtr;
+	
+	public AutoCalSetting(AutoCalSettingGetMemento memento) {
+		this.upLimitOtSet = memento.getUpLimitOtSet();
+		this.calAtr = memento.getcalAtr();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(AutoCalSettingSetMemento memento) {
+		memento.setAutoCalAtrOvertime(this.calAtr);
+		memento.setTimeLimitUpperLimitSetting(this.upLimitOtSet);
 	}
 
 }
