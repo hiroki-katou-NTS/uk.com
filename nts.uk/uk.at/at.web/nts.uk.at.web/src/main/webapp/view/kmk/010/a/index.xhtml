@@ -35,7 +35,7 @@
 						<div class="lableData" data-bind="ntsFormLabel: {required: true}">
 							<label>#{i18n.getText('KMK010_8')}</label>
 						</div>
-						<div tabindex="6" class="methodSelect" data-bind="ntsRadioBoxGroup: {
+						<div tabindex="6" id="selectMethodOutsideOT" class="methodSelect" data-bind="ntsRadioBoxGroup: {
 							options: $parent.calculationMethods,
 							optionsValue: 'value',
 							optionsText: 'localizedName',
@@ -69,7 +69,7 @@
 										<td>
 											<div>
 												<input tabindex="8" class="overtime" 
-													data-bind="ntsTimeEditor: {name: '#[KSM001_39]',
+													data-bind="ntsTimeEditor: {name: '#[KMK010_13]',
 													value: overtime,
 													inputFormat: 'time', 
 													mode: 'time',
