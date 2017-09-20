@@ -29,36 +29,28 @@ import nts.uk.shr.com.context.AppContexts;
 public class FormulaDto implements FormulaGetMemento, FormulaDispOrderGetMemento {
 
 	/** The optional item no. */
-	// 任意項目NO
 	private String optionalItemNo;
 
 	/** The symbol value. */
-	// 記号
 	private String symbolValue;
 
 	/** The order no. */
-	//並び順
 	private int orderNo;
 
 	/** The formula atr. */
-	// 属性
 	private int formulaAtr;
 
 	/** The formula name. */
-	// 計算式名称
 	private String formulaName;
 
 	/** The formula setting. */
-	// 計算式設定
 	private CalcFormulaSettingDto calcFormulaSetting;
 
 	// ===================== Optional ======================= //
 	/** The monthly rounding. */
-	// 月別端数処理
 	private RoundingDto monthlyRounding;
 
 	/** The daily rounding. */
-	// 日別端数処理
 	private RoundingDto dailyRounding;
 
 	/*

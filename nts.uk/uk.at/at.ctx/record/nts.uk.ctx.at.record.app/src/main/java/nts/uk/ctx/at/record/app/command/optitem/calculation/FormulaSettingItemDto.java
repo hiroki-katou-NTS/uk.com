@@ -23,21 +23,17 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.SettingMethod;
 public class FormulaSettingItemDto implements FormulaSettingItemGetMemento {
 
 	/** The setting method. */
-	// 設定方法
 	private int settingMethod;
 
 	/** The disp order. */
-	// 順番
 	private int dispOrder;
 
 	// ===================== Optional ======================= //
 	/** The input value. */
-	// 入力値
 	// TODO: de bigdecimal co chay ko?
 	private BigDecimal inputValue;
 
 	/** The formula item id. */
-	// 計算式項目ID
 	private String formulaItemId;
 
 	/**

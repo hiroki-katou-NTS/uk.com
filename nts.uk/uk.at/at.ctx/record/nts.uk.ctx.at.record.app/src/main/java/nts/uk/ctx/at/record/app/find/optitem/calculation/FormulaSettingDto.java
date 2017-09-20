@@ -19,19 +19,15 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.OperatorAtr;
 public class FormulaSettingDto implements FormulaSettingSetMemento {
 
 	/** The minus segment. */
-	// マイナス区分
 	private int minusSegment;
 
 	/** The operator. */
-	// 演算子
 	private int operator;
 
 	/** The lef item. */
-	// 計算式設定項目
 	private FormulaSettingItemDto lefItem;
 
 	/** The right item. */
-	// 計算式設定項目
 	private FormulaSettingItemDto rightItem;
 
 	/*

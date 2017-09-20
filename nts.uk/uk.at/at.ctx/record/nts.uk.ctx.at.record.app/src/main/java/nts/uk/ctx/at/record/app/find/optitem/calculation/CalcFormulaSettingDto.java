@@ -19,16 +19,13 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.ItemSelection;
 public class CalcFormulaSettingDto implements CalcFormulaSettingSetMemento {
 
 	/** The calculation atr. */
-	// 計算区分
 	private int calcAtr;
 
 	// ===================== Optional ======================= //
 	/** The formula setting. */
-	// 計算式設定
 	private FormulaSettingDto formulaSetting;
 
 	/** The item selection. */
-	// 計算項目選択
 	private ItemSelectionDto itemSelection;
 
 	/**

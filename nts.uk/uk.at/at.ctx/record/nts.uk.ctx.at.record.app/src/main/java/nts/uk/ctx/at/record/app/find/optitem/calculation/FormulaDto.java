@@ -24,40 +24,31 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class FormulaDto implements FormulaSetMemento {
 
 	/** The formula id. */
-	// 計算式ID
 	private String formulaId;
 
 	/** The optional item no. */
-	// 任意項目NO
 	private String optionalItemNo;
 
 	/** The symbol value. */
-	// 記号
 	private String symbolValue;
 
-	/** The disp order. */
-	//並び順
-	private int dispOrder;
+	/** The order no. */
+	private int orderNo;
 
 	/** The formula atr. */
-	// 属性
 	private int formulaAtr;
 
 	/** The formula name. */
-	// 計算式名称
 	private String formulaName;
 
 	/** The formula setting. */
-	// 計算式設定
 	private CalcFormulaSettingDto calcFormulaSetting;
 
 	// ===================== Optional ======================= //
 	/** The monthly rounding. */
-	// 月別端数処理
 	private RoundingDto monthlyRounding;
 
 	/** The daily rounding. */
-	// 日別端数処理
 	private RoundingDto dailyRounding;
 
 	/*

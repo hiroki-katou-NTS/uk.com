@@ -21,11 +21,9 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.SelectedAttendanceItem;
 public class ItemSelectionDto implements ItemSelectionSetMemento {
 
 	/** The minus segment. */
-	// マイナス区分
 	private int minusSegment;
 
 	/** The selected attendance items. */
-	// 選択勤怠項目
 	private List<SelectedAttendanceItemDto> attendanceItems;
 
 	/*

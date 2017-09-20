@@ -20,30 +20,25 @@ import nts.uk.ctx.at.record.dom.optitem.TimeRange;
 public class CalcResultRangeDto implements CalcResultRangeSetMemento {
 
 	/** The upper check. */
-	// 上限値チェック
 	private boolean upperCheck;
 
 	/** The lower check. */
-	// 下限値チェック
 	private boolean lowerCheck;
 
 	// ===================== Optional ======================= //
 	/** The number upper. */
-	// 回数範囲
 	private int numberUpper;
 
 	/** The number lower. */
 	private int numberLower;
 
 	/** The time upper. */
-	// 時間範囲
 	private int timeUpper;
 
 	/** The time lower. */
 	private int timeLower;
 
 	/** The amount upper. */
-	// 金額範囲
 	private int amountUpper;
 
 	/** The amount lower. */

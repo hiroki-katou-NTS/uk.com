@@ -24,19 +24,15 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 	
 	/** The optional item no. */
-	// 任意項目NO
 	private String itemNo;
 
 	/** The optional item name. */
-	// 任意項目名称
 	private String itemName;
 
 	/** The performance atr. */
-	// 実績区分
 	private int performanceAtr;
 
 	/** The usage classification. */
-	// 任意項目利用区分
 	private int usageAtr;
 
 	/*

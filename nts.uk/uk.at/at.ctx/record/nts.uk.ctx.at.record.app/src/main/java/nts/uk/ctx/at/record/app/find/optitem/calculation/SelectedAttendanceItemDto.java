@@ -17,11 +17,9 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.SelectedAttendanceItemSetMem
 public class SelectedAttendanceItemDto implements SelectedAttendanceItemSetMemento {
 
 	/** The attendance item id. */
-	// 勤怠項目ID
 	private String id;
 
 	/** The operator. */
-	// 演算子
 	private int operator;
 
 	/*

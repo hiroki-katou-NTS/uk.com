@@ -20,21 +20,18 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 public class RoundingDto implements RoundingGetMemento {
 
 	/** The number rounding. */
-	// 数値丸め
 	private int numberRounding;
 
 	/** The number unit. */
 	private int numberUnit;
 
 	/** The time rounding. */
-	// 時間丸め
 	private int timeRounding;
 
 	/** The time unit. */
 	private int timeUnit;
 
 	/** The amount rounding. */
-	// 金額丸め
 	private int amountRounding;
 
 	/** The amount unit. */
