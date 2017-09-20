@@ -20,7 +20,8 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.KrqdtAppLateOrLeavePK.companyID = :companyID";
 	private final String SELECT_SINGLE = "SELECT c, t"
 			+ " FROM KrqdtAppLateOrLeave c JOIN KafdtApplication t"
-			+ " ON c.krqdtAppLateOrLeave.appID = t.KafdtApplicationPK.applicationID";
+			+ " ON c.krqdtAppLateOrLeave.appID = t.KafdtApplicationPK.applicationID"
+			+ " WHERE c.krqdtAppLateOrLeavePK.appID = :appID AND c.krqdtAppLateOrLeavePK.companyID = :companyID";
 	@Override
 	public Optional<LateOrLeaveEarly> findByCode(String companyID, String appID) {
 		return this.queryProxy()

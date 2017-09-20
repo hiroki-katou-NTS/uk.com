@@ -21,7 +21,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 			<a class="goback" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KAF004_4')}</a>
-			<button class="proceed">#{i18n.getText('KAF004_8')}</button>
+			<button class="proceed" data-bind="click : registryButtonClick">#{i18n.getText('KAF004_8')}</button>
 			<button>#{i18n.getText('KAF004_9')}</button>
 			<div data-bind="ntsCheckBox: { checked: sendMail }">#{i18n.getText('KAF004_10')}</div>
 			</div>
@@ -40,21 +40,21 @@
 				<div class="valign-center control-group">
 					<div data-bind="ntsFormLabel: { constraint: 'PersonId', required: true }">#{i18n.getText('KAF004_13')}</div>
 					<div data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
-					<input data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time'}" />	
-					<div data-bind="text: ko.toJSON(lateTime1)"></div>
+					<input data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time'}" />	
+					<!-- <div data-bind="text: ko.toJSON(lateTime1)"></div> -->
 					<div data-bind="ntsCheckBox: { checked: early1 }">#{i18n.getText('KAF004_15')}</div>
-					<input data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time'}" /> <br/>
+					<input data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time'}" /> <br/>
 					<div class="valign-center control-group row4">
 						<div data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>	
-						<input class ="col1" data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time'}" />	
+						<input class ="col1" data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',mode: 'time'}" />	
 						<div data-bind="ntsCheckBox: { checked: early2 }">#{i18n.getText('KAF004_33')}</div>
-						<input class ="col2" data-bind="ntsTimeEditor: {value: earlyTime2, inputFormat: 'time'}" /> 
+						<input class ="col2" data-bind="ntsTimeEditor: {value: earlyTime2, inputFormat: 'time',mode: 'time'}" /> 
 					</div>
 				</div>
 				<div class="valign-center control-group">
 				<div data-bind="ntsFormLabel: { constraint: 'PersonId'}">#{i18n.getText('KAF004_17')}</div>
-				<div id="combo-box" data-bind="ntsComboBox: {
-						options: ListAppReason,
+				<!-- <div id="combo-box" data-bind="ntsComboBox: {
+						options: ListTypeReason,
 						optionsValue: 'code',
 						visibleItemsCount: 5,
 						value: selectedCode,
@@ -62,20 +62,34 @@
 						enable: true,
 						columns: [
 							{ prop: 'name', length: 10 },
-						]}"></div>
+						]}"></div> -->
+						<div id="combo-box" data-bind="ntsComboBox: {
+							options: ListTypeReason,
+							optionsValue: 'reasonID',
+							visibleItemsCount: 5,
+							value: selectedCode,
+							optionsText: 'reasonTemp',
+							enable: true,
+							columns: [
+								{ prop: 'reasonTemp', length: 4 },
+							
+							]}"></div>
 				</div>
 				<div class="valign-center control-group">
-				<div data-bind="ntsFormLabel: { constraint: 'PersonId'}">#{i18n.getText('KAF004_18')}</div>
-				<div id ="multiline" data-bind="with: multilineeditor">
-				<textarea data-bind="ntsMultilineEditor: {
-					value: value,
-					constraint: constraint,
-					option: option,
-					}" />
-		    	</div>
+					<div data-bind="ntsFormLabel: { constraint: 'PersonId'}">#{i18n.getText('KAF004_18')}</div>
+					<div id ="multiline" >
+						<textarea data-bind="ntsMultilineEditor: {
+							value: appreason,
+							constraint: 'ResidenceCode',
+							option: {
+								resizeable: false,
+		                    	width: '500'
+		                   	},
+							
+							}" />
+			    	</div>
 				</div>
-				</div>
-				
+			</div>
 			</div>
 		</ui:define>
 	</ui:composition>
