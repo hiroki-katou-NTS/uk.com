@@ -223,7 +223,7 @@ module nts.uk.request {
 
         return dfd.promise();
     }
-    export function uploadFile(data: FormData, option?: any): $.Deferred {
+    export function uploadFile(data: FormData, option?: any): JQueryPromise<any> {
         let dfd = $.Deferred();
         $.ajax({
             url: "/nts.uk.com.web/webapi/ntscommons/arc/filegate/upload",

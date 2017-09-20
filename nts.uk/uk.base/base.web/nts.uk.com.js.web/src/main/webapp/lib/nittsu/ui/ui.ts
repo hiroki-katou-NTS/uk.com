@@ -336,11 +336,11 @@ module nts.uk.ui {
      * Using for display info or confirm dialog
      */
     export module dialog {
-        export class DialogHeader {
+        interface DialogHeader {
             icon?: string;
             text?: string;
         }
-        export class Message {
+        interface Message {
             d: string;
             messageParams?: any[];
         }
