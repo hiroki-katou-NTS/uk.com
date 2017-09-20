@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.shift.automaticcalculation;
+package nts.uk.ctx.at.schedule.infra.entity.shift.autocalsetting;
 
 import java.io.Serializable;
 
@@ -18,12 +18,24 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * The Class KshmtAutoUseUnitSet.
  */
+
+/**
+ * Sets the wkp job cal set.
+ *
+ * @param wkpJobCalSet the new wkp job cal set
+ */
 @Setter
+
+/**
+ * Gets the wkp job cal set.
+ *
+ * @return the wkp job cal set
+ */
 @Getter
 @Entity
 @Table(name = "KSHMT_AUTO_USE_UNIT_SET")
 public class KshmtAutoUseUnitSet extends UkJpaEntity implements Serializable {
-    
+	
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
@@ -31,18 +43,18 @@ public class KshmtAutoUseUnitSet extends UkJpaEntity implements Serializable {
     @Id
     @Column(name = "CID")
     private String cid;
-    
+
     /** The job cal set. */
     @Column(name = "JOB_CAL_SET")
-    private short jobCalSet;
-    
+    private int jobCalSet;
+
     /** The wkp cal set. */
     @Column(name = "WKP_CAL_SET")
-    private short wkpCalSet;
-    
+    private int wkpCalSet;
+
     /** The wkp job cal set. */
     @Column(name = "WKP_JOB_CAL_SET")
-    private short wkpJobCalSet;
+    private int wkpJobCalSet;
 
     /**
      * Instantiates a new kshmt auto use unit set.
@@ -60,8 +72,9 @@ public class KshmtAutoUseUnitSet extends UkJpaEntity implements Serializable {
         this.cid = cid;
     }
 
+
     /* (non-Javadoc)
-     * @see java.lang.Object#hashCode()
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
      */
     @Override
     public int hashCode() {
@@ -71,10 +84,11 @@ public class KshmtAutoUseUnitSet extends UkJpaEntity implements Serializable {
     }
 
     /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
+     * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
      */
     @Override
     public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
         if (!(object instanceof KshmtAutoUseUnitSet)) {
             return false;
         }
@@ -85,6 +99,7 @@ public class KshmtAutoUseUnitSet extends UkJpaEntity implements Serializable {
         return true;
     }
 
+
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
@@ -92,5 +107,5 @@ public class KshmtAutoUseUnitSet extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return this.cid;
 	}
-
+    
 }

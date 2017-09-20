@@ -1,38 +1,53 @@
-/*
- * 
- */
-package nts.uk.ctx.at.schedule.infra.entity.shift.automaticcalculation;
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.at.schedule.infra.entity.shift.autocalsetting;
 
 import java.io.Serializable;
-import javax.persistence.Basic;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class KshmtAutoJobCalSetPK.
  */
+
+/**
+ * Gets the jobid.
+ *
+ * @return the jobid
+ */
+@Getter
+
+/**
+ * Sets the jobid.
+ *
+ * @param jobid the new jobid
+ */
+@Setter
 @Embeddable
 public class KshmtAutoJobCalSetPK implements Serializable {
     
+    /** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
+	
     /** The cid. */
-    @Basic(optional = false)
-    @NotNull
-    @Size(min = 1, max = 17)
     @Column(name = "CID")
     private String cid;
-    
+
     /** The jobid. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "JOBID")
-    private short jobid;
+    private String jobid;
 
     /**
      * Instantiates a new kshmt auto job cal set PK.
      */
     public KshmtAutoJobCalSetPK() {
+    	super();
     }
 
     /**
@@ -41,46 +56,11 @@ public class KshmtAutoJobCalSetPK implements Serializable {
      * @param cid the cid
      * @param jobid the jobid
      */
-    public KshmtAutoJobCalSetPK(String cid, short jobid) {
+    public KshmtAutoJobCalSetPK(String cid, String jobid) {
         this.cid = cid;
         this.jobid = jobid;
     }
 
-    /**
-     * Gets the cid.
-     *
-     * @return the cid
-     */
-    public String getCid() {
-        return cid;
-    }
-
-    /**
-     * Sets the cid.
-     *
-     * @param cid the new cid
-     */
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
-
-    /**
-     * Gets the jobid.
-     *
-     * @return the jobid
-     */
-    public short getJobid() {
-        return jobid;
-    }
-
-    /**
-     * Sets the jobid.
-     *
-     * @param jobid the new jobid
-     */
-    public void setJobid(short jobid) {
-        this.jobid = jobid;
-    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
@@ -89,7 +69,7 @@ public class KshmtAutoJobCalSetPK implements Serializable {
     public int hashCode() {
         int hash = 0;
         hash += (cid != null ? cid.hashCode() : 0);
-        hash += (int) jobid;
+        hash +=  (jobid != null ? jobid.hashCode() : 0);
         return hash;
     }
 
@@ -112,12 +92,4 @@ public class KshmtAutoJobCalSetPK implements Serializable {
         return true;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "entity.KshmtAutoJobCalSetPK[ cid=" + cid + ", jobid=" + jobid + " ]";
-    }
-    
 }
