@@ -1,21 +1,29 @@
 package nts.uk.ctx.at.request.infra.repository.application.common;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
 
 @Stateless
 public class JpaApplicationRepository extends JpaRepository implements ApplicationRepository {
-
+	private final String SEPERATE_REASON_STRING = ":";
+	
 	private final String SELECT_FROM_APPLICATION = "SELECT c FROM KafdtApplication c"
 			+ " WHERE c.kafdtApplicationPK.companyID = :companyID";
 	private final String SELECT_BY_CODE = SELECT_FROM_APPLICATION
@@ -24,22 +32,38 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	private final String SELECT_BY_APPTYPE = SELECT_FROM_APPLICATION + " AND c.applicationType = :applicationType";
 
 	private Application toDomain(KafdtApplication entity) {
-		return Application.createFromJavaType(entity.kafdtApplicationPK.companyID,
-				entity.kafdtApplicationPK.applicationID, entity.prePostAtr, entity.inputDate, entity.enteredPersonSID,
-				entity.reversionReason, entity.applicationDate, entity.applicationReason, entity.applicationType,
-				entity.applicantSID, entity.reflectPlanScheReason, entity.reflectPlanTime, entity.reflectPlanState,
-				entity.reflectPlanEnforce, entity.reflectPerScheReason, entity.reflectPerTime, entity.reflectPerState,
-				entity.reflectPerEnforce);
+		return new Application(
+				entity.kafdtApplicationPK.companyID,
+				entity.kafdtApplicationPK.applicationID,
+				EnumAdaptor.valueOf(entity.prePostAtr,PrePostAtr.class), 
+				entity.inputDate, entity.enteredPersonSID,
+				new AppReason(entity.reversionReason), 
+				entity.applicationDate, 
+				new AppReason(entity.appReasonId + SEPERATE_REASON_STRING + entity.applicationReason),
+				EnumAdaptor.valueOf(entity.applicationType,ApplicationType.class),
+				entity.applicantSID, 
+				EnumAdaptor.valueOf(entity.reflectPlanScheReason,ReflectPlanScheReason.class), 
+				entity.reflectPlanTime, 
+				EnumAdaptor.valueOf(entity.reflectPlanState,ReflectPlanPerState.class),
+				EnumAdaptor.valueOf(entity.reflectPlanEnforce,ReflectPlanPerEnforce.class), 
+				EnumAdaptor.valueOf(entity.reflectPerScheReason,ReflectPerScheReason.class),
+				entity.reflectPerTime,
+				EnumAdaptor.valueOf(entity.reflectPerState,ReflectPlanPerState.class),
+				EnumAdaptor.valueOf(entity.reflectPerEnforce,ReflectPlanPerEnforce.class),
+				entity.startDate,
+				entity.endDate);
 	}
 
 	private KafdtApplication toEntity(Application domain) {
-		return new KafdtApplication(new KafdtApplicationPK(domain.getCompanyID(), domain.getApplicationID()),
+		String appReasonID = domain.getApplicationReason().v().split(SEPERATE_REASON_STRING)[0];
+		String appReason = domain.getApplicationReason().v().substring(appReasonID.length() + SEPERATE_REASON_STRING.length());
+		return new KafdtApplication(new KafdtApplicationPK(domain.getCompanyID(), domain.getApplicationID()), appReasonID,
 				domain.getPrePostAtr().value, domain.getInputDate() , domain.getEnteredPersonSID(),
-				domain.getReversionReason().v(), domain.getApplicationDate(), domain.getApplicationReason().v(),
+				domain.getReversionReason().v(), domain.getApplicationDate(), appReason,
 				domain.getApplicationType().value, domain.getApplicantSID(), domain.getReflectPlanScheReason().value,
 				domain.getReflectPlanTime(), domain.getReflectPlanState().value, domain.getReflectPlanEnforce().value,
 				domain.getReflectPerScheReason().value, domain.getReflectPerTime(), domain.getReflectPerState().value,
-				domain.getReflectPerEnforce().value);
+				domain.getReflectPerEnforce().value, domain.getStartDate(), domain.getEndDate());
 	}
 
 	/**
@@ -97,6 +121,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		KafdtApplication newEntity = toEntity(application);
 		KafdtApplication updateEntity = this.queryProxy().find(newEntity.kafdtApplicationPK, KafdtApplication.class)
 				.get();
+		updateEntity.appReasonId = newEntity.appReasonId;
 		updateEntity.prePostAtr = newEntity.prePostAtr;
 		updateEntity.inputDate = newEntity.inputDate;
 		updateEntity.enteredPersonSID = newEntity.enteredPersonSID;
@@ -113,6 +138,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		updateEntity.reflectPerTime = newEntity.reflectPerTime;
 		updateEntity.reflectPerState = newEntity.reflectPerState;
 		updateEntity.reflectPerEnforce = newEntity.reflectPerEnforce;
+		updateEntity.startDate = newEntity.startDate;
+		updateEntity.endDate = newEntity.endDate;
 		this.commandProxy().update(updateEntity);
 	}
 

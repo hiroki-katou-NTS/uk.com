@@ -8,7 +8,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeAppr
 public class EmployeeUnregisterOutput {
 	private EmployeeApproveDto empInfor;
 	
-	private List<Integer> appType;
+	private List<String> appType;
 	
 	
 }

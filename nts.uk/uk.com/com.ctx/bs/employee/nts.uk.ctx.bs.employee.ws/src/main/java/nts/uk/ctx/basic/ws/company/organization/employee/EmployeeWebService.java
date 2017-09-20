@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.basic.ws.company.organization.employee;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -13,6 +14,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeDto;
@@ -24,7 +26,7 @@ import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchQuery;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchQueryProcessor;
 
 @Path("basic/organization/employee")
-@Produces(MediaType.APPLICATION_JSON)
+@Produces({"application/json", "text/plain"})
 public class EmployeeWebService extends WebService {
 
 	@Inject
@@ -35,9 +37,10 @@ public class EmployeeWebService extends WebService {
 	private EmployeeSearchQueryProcessor employeeQueryProcessor;
 	
 	@POST
-	@Path("getPersonIdByEmployeeCode/{employeeCode}")
-	public EmployeeDto getPersonIdByEmployeeCode(@PathParam("employeeCode") String employeeCode) {
-		return this.employeeFinder.getPersonIdByEmployeeCode(employeeCode).orElse(null);
+	@Path("getPersonIdByEmployeeCode/{employeeCode}/{baseDate}")
+	public EmployeeDto getPersonIdByEmployeeCode(@PathParam("employeeCode") String employeeCode, @PathParam("baseDate") Date baseDate) {
+		GeneralDate baseDateParam = GeneralDate.legacyDate(baseDate);
+		return this.employeeFinder.getPersonIdByEmployeeCode(employeeCode , baseDateParam).orElse(null);
 	}
 	
 	@POST
@@ -57,7 +60,17 @@ public class EmployeeWebService extends WebService {
 		return this.employeeFinder.getAllEmployee();
 	}
 	
+	@POST
+	@Path("getGenerateEmplCode")
+	public JavaTypeResult<String> getGenerateEmplCode(String startLetters){
+		return new JavaTypeResult<String> (this.employeeFinder.getGenerateEmplCode(startLetters));
+	}
 	
+	@POST
+	@Path("getGenerateCardNo")
+	public JavaTypeResult<String> getGenerateCardNo(String startLetters){
+		return new JavaTypeResult<String> (this.employeeFinder.getGenerateCardNo(startLetters));
+	}
 	/**
 	 * Search all employee.
 	 *

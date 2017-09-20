@@ -11,7 +11,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.service.EmployeeBusiness;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -25,13 +27,16 @@ public class EmployeeFinder {
 	@Inject
 	private EmployeeRepository employeeRepository;
 	
+	@Inject 
+	private EmployeeBusiness employeeBusiness;
+	
 	/**
 	 * Gets the person id by employee code.
 	 *
 	 * @param employeeCode the employee code
 	 * @return the person id by employee code
 	 */
-	public Optional<EmployeeDto> getPersonIdByEmployeeCode(String employeeCode) {
+	public Optional<EmployeeDto> getPersonIdByEmployeeCode(String employeeCode , GeneralDate entryDate) {
 		
 		//get login user
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -39,7 +44,7 @@ public class EmployeeFinder {
 		//get company id
 		String companyId = loginUserContext.companyId();
 		
-		return this.employeeRepository.findByEmployeeCode(companyId, employeeCode)
+		return this.employeeRepository.findByEmployeeCode(companyId, employeeCode, entryDate)
 				.map(item -> EmployeeDto.fromDomain(item));
 	}
 	
@@ -76,5 +81,21 @@ public class EmployeeFinder {
 				.map(item -> EmployeeDto.fromDomain(item)).collect(Collectors.toList());
 	}
 	
+	/**
+	 * get generate employee code
+	 * @param startLetter
+	 * @return
+	 */
+	public String getGenerateEmplCode(String startLetters){
+		return employeeBusiness.generateEmplCode(startLetters);
+	}
 	
+	/**
+	 * get generate card no
+	 * @param startLetter
+	 * @return
+	 */
+	public String getGenerateCardNo(String startLetters){
+		return employeeBusiness.generateCardNo(startLetters);
+	}
 }

@@ -7,53 +7,100 @@ package nts.uk.ctx.bs.employee.infra.repository.employee;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import entity.employeeinfo.BsydtEmployee;
+import entity.employeeinfo.BsymtEmployee;
+import entity.employeeinfo.jobentryhistory.BsymtJobEntryHistory;
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
-import nts.uk.ctx.bs.employee.infra.entity.employee.KmnmtEmployee;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.JobEntryHistory;
 
 @Stateless
 public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepository {
-	public final String SELECT_NO_WHERE = "SELECT c FROM BsydtEmployee c";
+
+	// public final String SELECT_BY_EMP_CODE = SELECT_NO_WHERE + " WHERE
+	// c.companyId = :companyId"
+	// + " AND c.employeeCode =:employeeCode "
+	// + " AND d.bsydtJobEntryHistoryPk.entryDate <= :entryDate "
+	// + " AND d.retireDate >= :entryDate ";
+
+	public final String SELECT_NO_WHERE = "SELECT c FROM BsymtEmployee c";
 
 	public final String SELECT_BY_EMP_CODE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
-			+ " AND c.employeeCode =:employeeCode";
+			+ " AND c.employeeCode =:employeeCode " + " AND  c.listEntryHist.bsymtJobEntryHistoryPk.entryDate <= :entryDate "
+			+ " AND d.retireDate >= :entryDate ";
 
 	public final String SELECT_BY_LIST_EMP_CODE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
-			+ " AND c.employeeCode IN :listEmployeeCode";
+			+ " AND c.employeeCode IN :listEmployeeCode ";
 
 	public final String SELECT_BY_LIST_EMP_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
-			+ " AND c.bsydtEmployeePk.sId IN :employeeIds";
+			+ " AND c.bsymtEmployeePk.sId IN :employeeIds ";
 
 	public final String SELECT_BY_COMPANY_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId";
 
-	public final String SELECT_BY_SID = SELECT_NO_WHERE + " WHERE c.bsydtEmployeePk.sId = :sId";
+	public final String SELECT_BY_SID = SELECT_NO_WHERE + " WHERE c.bsymtEmployeePk.sId = :sId";
 
-	private static Employee toDomain(BsydtEmployee entity) {
-		Employee domain = Employee.createFromJavaType(entity.companyId, entity.personId,
-				entity.bsydtEmployeePk.sId, entity.employeeCode, entity.companyMail, entity.retireDate,
-				entity.entryDate);
+	public final String SELECT_BY_CID_SID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
+			+ " AND c.bsymtEmployeePk.sId = :sId";
+
+	// public final String SELECT_BY_SID = SELECT_NO_WHERE + " WHERE
+	// c.bsydtEmployeePk.sId = :sId";
+
+	public final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployee c "
+			+ " WHERE c.companyId = :companyId AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
+			+ " ORDER BY  c.employeeCode DESC";
+	public final String SELECT_BY_STANDARDDATE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
+			+ " AND  c.listEntryHist.bsymtJobEntryHistoryPk.entryDate <= :standardDate " + " AND c.listEntryHist.retireDate >= :standardDate ";
+
+	/**
+	 * convert entity BsymtEmployee to domain Employee
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	private Employee toDomainEmployee(BsymtEmployee entity) {
+		val domain = Employee.createFromJavaType(entity.companyId, entity.personId, entity.bsymtEmployeePk.sId,
+				entity.employeeCode, entity.companyMail, entity.companyMobileMail, entity.companyMobile);
 		return domain;
 	}
 
-	private static Employee toDomainKmnmtEmployee(KmnmtEmployee entity) {
-		Employee domain = Employee.createFromJavaType(entity.kmnmtEmployeePK.companyId,
-				entity.kmnmtEmployeePK.personId, entity.kmnmtEmployeePK.employeeId, entity.kmnmtEmployeePK.employeeCode,
-				entity.employeeMail, entity.retirementDate, entity.joinDate);
+	/**
+	 * convert entity BsymtJobEntryHistory to domain JobEntryHistory
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	private JobEntryHistory toDomainJobEntryHist(BsymtJobEntryHistory entity) {
+
+		val domain = JobEntryHistory.createFromJavaType(entity.companyId, entity.bsymtJobEntryHistoryPk.sId,
+				entity.hiringType, entity.retireDate, entity.bsymtJobEntryHistoryPk.entryDate, entity.adoptDate);
 		return domain;
 	}
 
 	@Override
-	public Optional<Employee> findByEmployeeCode(String companyId, String employeeCode) {
-		Optional<Employee> person = this.queryProxy().query(SELECT_BY_EMP_CODE, BsydtEmployee.class)
+	public Optional<Employee> findByEmployeeCode(String companyId, String employeeCode, GeneralDate standardDate) {
+		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_EMP_CODE, BsymtEmployee.class)
 				.setParameter("companyId", companyId).setParameter("employeeCode", employeeCode)
-				.getSingle(c -> toDomain(c));
-		return person;
+				.setParameter("standardDate", standardDate).getSingleOrNull();
+
+		Employee person = new Employee();
+		if (entity != null) {
+			person = toDomainEmployee(entity);
+
+			List<JobEntryHistory> listJobEntry = new ArrayList<>();
+
+			if (!entity.listEntryHist.isEmpty()) {
+				person.setListEntryJobHist(
+						entity.listEntryHist.stream().map(c -> toDomainJobEntryHist(c)).collect(Collectors.toList()));
+			}
+		}
+		return Optional.of(person);
 	}
 
 	@Override
@@ -64,29 +111,33 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 			return new ArrayList<>();
 		}
 
-		List<Employee> lstPerson = this.queryProxy().query(SELECT_BY_LIST_EMP_CODE, BsydtEmployee.class)
-				.setParameter("companyId", companyId).setParameter("listEmployeeCode", listEmployeeCode)
-				.getList(c -> toDomain(c));
-		return lstPerson;
+		List<BsymtEmployee> listEmployyEntity = this.queryProxy().query(SELECT_BY_LIST_EMP_CODE, BsymtEmployee.class)
+				.setParameter("companyId", companyId).setParameter("listEmployeeCode", listEmployeeCode).getList();
+
+		return toListEmployee(listEmployyEntity);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository#
+	 * @see
+	 * nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository#
 	 * getAllEmployee(java.lang.String)
 	 */
 	@Override
 	public List<Employee> findAll(String companyId) {
-		List<Employee> lstPerson = this.queryProxy().query(SELECT_BY_COMPANY_ID, BsydtEmployee.class)
-				.setParameter("companyId", companyId).getList(c -> toDomain(c));
-		return lstPerson;
+
+		List<BsymtEmployee> listEmpEntity = this.queryProxy().query(SELECT_BY_COMPANY_ID, BsymtEmployee.class)
+				.setParameter("companyId", companyId).getList();
+
+		return toListEmployee(listEmpEntity);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository#
+	 * @see
+	 * nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository#
 	 * getListPersonByListEmployeeId(java.lang.String, java.util.List)
 	 */
 	@Override
@@ -96,22 +147,96 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 			return new ArrayList<>();
 		}
 
-		List<Employee> lstPerson = this.queryProxy().query(SELECT_BY_LIST_EMP_ID, BsydtEmployee.class)
-				.setParameter("companyId", companyId).setParameter("employeeIds", employeeIds)
-				.getList(c -> toDomain(c));
-		return lstPerson;
+		List<BsymtEmployee> listEmpEntity = this.queryProxy().query(SELECT_BY_LIST_EMP_ID, BsymtEmployee.class)
+				.setParameter("companyId", companyId).setParameter("employeeIds", employeeIds).getList();
+		return toListEmployee(listEmpEntity);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository#
+	 * @see
+	 * nts.uk.ctx.basic.dom.company.organization.employee.EmployeeRepository#
 	 * findBySid(java.lang.String)
 	 */
 	@Override
 	public Optional<Employee> findBySid(String companyId, String employeeId) {
-		return this.queryProxy().query(SELECT_BY_SID, BsydtEmployee.class).setParameter("companyId", companyId)
-				.setParameter("sId", employeeId).getSingle(c -> toDomain(c));
+
+		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_CID_SID, BsymtEmployee.class)
+				.setParameter("companyId", companyId).setParameter("sId", employeeId).getSingleOrNull();
+
+		Employee person = new Employee();
+		if (entity != null) {
+			person = toDomainEmployee(entity);
+
+			List<JobEntryHistory> listJobEntry = new ArrayList<>();
+
+			if (!entity.listEntryHist.isEmpty()) {
+				person.setListEntryJobHist(
+						entity.listEntryHist.stream().map(c -> toDomainJobEntryHist(c)).collect(Collectors.toList()));
+			}
+		}
+		return Optional.of(person);
+
+	}
+
+	/**
+	 * @param listEmpEntity
+	 * @return
+	 */
+	private List<Employee> toListEmployee(List<BsymtEmployee> listEmpEntity) {
+		List<Employee> lstPerson = new ArrayList<>();
+		if (!listEmpEntity.isEmpty()) {
+			listEmpEntity.stream().forEach(c -> {
+				Employee employee = toDomainEmployee(c);
+				employee.setListEntryJobHist(
+						c.listEntryHist.stream().map(d -> toDomainJobEntryHist(d)).collect(Collectors.toList()));
+				lstPerson.add(employee);
+			});
+		}
+		return lstPerson;
+	}
+
+	@Override
+	public List<Employee> getListEmpByStandardDate(String companyId, GeneralDate standardDate) {
+		List<BsymtEmployee> listEmpEntity = this.queryProxy().query(SELECT_BY_STANDARDDATE, BsymtEmployee.class)
+				.setParameter("companyId", companyId).setParameter("standardDate", standardDate).getList();
+
+		return toListEmployee(listEmpEntity);
+	}
+
+	@Override
+	public Optional<Employee> getBySid(String employeeId) {
+		BsymtEmployee entity = this.queryProxy().query(SELECT_BY_SID, BsymtEmployee.class)
+				.setParameter("sId", employeeId).getSingleOrNull();
+
+		Employee person = new Employee();
+		if (entity != null) {
+			person = toDomainEmployee(entity);
+
+			List<JobEntryHistory> listJobEntry = new ArrayList<>();
+
+			if (!entity.listEntryHist.isEmpty()) {
+				person.setListEntryJobHist(
+						entity.listEntryHist.stream().map(c -> toDomainJobEntryHist(c)).collect(Collectors.toList()));
+			}
+		}
+		return Optional.of(person);
+	}
+
+	/* vinhpx */
+	@Override
+	public String findLastEml(String companyId, String startLetter) {
+		if (startLetter == null)
+			startLetter = "";
+		List<Object[]> lst = this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("companyId", companyId).setParameter("emlCode", startLetter).getList();
+		String returnStr = "";
+		if (lst.size() > 0) {
+			Object obj = lst.get(0);
+			returnStr = obj.toString();
+		}
+
+		return returnStr;
 	}
 
 }

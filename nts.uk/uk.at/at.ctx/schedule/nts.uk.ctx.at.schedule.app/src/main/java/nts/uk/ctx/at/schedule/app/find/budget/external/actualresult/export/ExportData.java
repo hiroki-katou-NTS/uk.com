@@ -7,7 +7,7 @@ package nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.export;
 import java.util.List;
 
 import lombok.Builder;
-import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.dto.ExternalBudgetErrorDto;
+import nts.uk.ctx.at.schedule.app.find.budget.external.actualresult.error.dto.ExternalBudgetErrorDto;
 
 /**
  * The Class ExportData.

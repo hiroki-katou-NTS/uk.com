@@ -3,6 +3,7 @@
  */
 package nts.uk.screen.at.app.dailyperformance.correction;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -32,14 +33,11 @@ public class DailyPerformanceCorrectionDto {
 	
 	private List<DPCellStateDto> lstCellState;
 	
-	private List<DPErrorDto> lstError;
-	
-	private List<DPErrorSettingDto> lstErrorSetting;
-	
 	private List<DPDataDto> lstData;
 
 	public DailyPerformanceCorrectionDto() {
 		super();
+		this.lstCellState = new ArrayList<>();
 	}
 	
 }

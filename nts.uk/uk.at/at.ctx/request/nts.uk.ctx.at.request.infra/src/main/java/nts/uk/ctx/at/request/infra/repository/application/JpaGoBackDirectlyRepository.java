@@ -22,8 +22,8 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 	public final String SELECT_NO_WHERE = "SELECT c FROM KrqdtGoBackDirectly c";
 
 	public final String SELECT_WITH_APP_ID = SELECT_NO_WHERE 
-			+ " WHERE c.krqdtGoBackDirectlyPK.companyID := companyID"
-			+ " AND c.krqdtGoBackDirectlyPK.appID := appID ";
+			+ " WHERE c.krqdtGoBackDirectlyPK.companyID =:companyID"
+			+ " AND c.krqdtGoBackDirectlyPK.appID =:appID ";
 
 	/**
 	 * @param krqdtGoBackDirectly
@@ -44,7 +44,7 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 				EnumAdaptor.valueOf(entity.backHomeAtr2, UseAtr.class),
 				new WorkTimeGoBack(entity.workTimeStart2),
 				new WorkTimeGoBack(entity.workTimeEnd2), 
-				entity.workLocationCd1);
+				entity.workLocationCd2);
 	}
 
 	/**
@@ -61,14 +61,14 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		entity.workChangeAtr = domain.getWorkChangeAtr().value;
 		entity.workTimeStart1 = domain.getWorkTimeStart1().v();
 		entity.workTimeEnd1 = domain.getWorkTimeEnd1().v();
-		entity.workLocationCd1 = domain.getWorkLocationCD1();
 		entity.goWorkAtr1 = domain.getGoWorkAtr1().value;
 		entity.backHomeAtr1  = domain.getBackHomeAtr1().value;
+		entity.workLocationCd1 = domain.getWorkLocationCD1();
 		entity.workTimeStart2 = domain.getWorkTimeStart2().v();
 		entity.workTimeEnd2 = domain.getWorkTimeEnd2().v();
-		entity.workLocationCd2 = domain.getWorkLocationCD2();
 		entity.goWorkAtr2 = domain.getGoWorkAtr2().value;
 		entity.backHomeAtr2  = domain.getBackHomeAtr2().value;
+		entity.workLocationCd2 = domain.getWorkLocationCD2();
 		return entity;
 	}
 
@@ -100,12 +100,12 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 			currentEntity.setWorkTypeCD(goBackDirectly.getWorkTypeCD().v());
 			currentEntity.setSiftCD(goBackDirectly.getSiftCd().v());
 		}
-		this.commandProxy().update(goBackDirectly);
+		this.commandProxy().update(toEntity(goBackDirectly));
 	}
 
 	@Override
 	public void insert(GoBackDirectly goBackDirectly) {
-		this.commandProxy().insert(goBackDirectly);
+		this.commandProxy().insert(toEntity(goBackDirectly));
 	}
 
 	@Override

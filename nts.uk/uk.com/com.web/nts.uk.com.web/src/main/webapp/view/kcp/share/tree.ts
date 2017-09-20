@@ -211,7 +211,7 @@ module kcp.share.tree {
                     dfd.resolve();
                 })
                 
-                $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt, ui) {
+                $(document).delegate('#' + self.getComIdSearchBox(), "igtreegridrowsrendered", function(evt: any) {
                    self.addIconToAlreadyCol();
                 });
                 // defined function focus

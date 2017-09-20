@@ -18,6 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Entity
 @Table(name="KRQDT_APP_STAMP_DETAILS")
 public class KrqdtAppStampDetail extends UkJpaEntity {
 	
@@ -54,7 +55,7 @@ public class KrqdtAppStampDetail extends UkJpaEntity {
 		@PrimaryKeyJoinColumn(name="APP_ID",referencedColumnName="APP_ID"),
 		@PrimaryKeyJoinColumn(name="STAMP_REQUEST_MODE",referencedColumnName="STAMP_REQUEST_MODE")
 	})
-	private KrqdpAppStamp krqdpAppStamp;
+	private KrqdtAppStamp krqdtAppStamp;
 	
 	@Override
 	protected Object getKey() {

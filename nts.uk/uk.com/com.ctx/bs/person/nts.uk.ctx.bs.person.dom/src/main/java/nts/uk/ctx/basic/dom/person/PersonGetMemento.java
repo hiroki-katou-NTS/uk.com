@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.basic.dom.person;
 
-import nts.uk.ctx.bs.person.dom.person.info.PersonId;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
 
 /**
@@ -17,7 +16,7 @@ public interface PersonGetMemento {
 	 *
 	 * @return the person id
 	 */
-	PersonId getPersonId();
+	String getPersonId();
 	
 	
 	/**

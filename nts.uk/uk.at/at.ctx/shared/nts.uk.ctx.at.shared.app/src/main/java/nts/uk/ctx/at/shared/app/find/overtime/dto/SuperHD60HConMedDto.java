@@ -9,11 +9,12 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.overtime.holiday.SuperHD60HConMedSetMemento;
-import nts.uk.ctx.at.shared.dom.overtime.holiday.SuperHDOccUnit;
-import nts.uk.ctx.at.shared.dom.overtime.premium.extra.PremiumExtra60HRate;
+import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMedSetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHDOccUnit;
+import nts.uk.ctx.at.shared.dom.outsideot.premium.extra.PremiumExtra60HRate;
 
 /**
  * The Class SuperHD60HConMedDto.
@@ -85,11 +86,12 @@ public class SuperHD60HConMedDto implements SuperHD60HConMedSetMemento{
 	 */
 	@Override
 	public void setPremiumExtra60HRates(List<PremiumExtra60HRate> premiumExtra60HRates) {
-		this.premiumExtra60HRates = premiumExtra60HRates.stream().map(domain -> {
-			PremiumExtra60HRateDto dto = new PremiumExtra60HRateDto();
-			domain.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
-
+		if (!CollectionUtil.isEmpty(premiumExtra60HRates)) {
+			this.premiumExtra60HRates = premiumExtra60HRates.stream().map(domain -> {
+				PremiumExtra60HRateDto dto = new PremiumExtra60HRateDto();
+				domain.saveToMemento(dto);
+				return dto;
+			}).collect(Collectors.toList());
+		}
 	}
 }

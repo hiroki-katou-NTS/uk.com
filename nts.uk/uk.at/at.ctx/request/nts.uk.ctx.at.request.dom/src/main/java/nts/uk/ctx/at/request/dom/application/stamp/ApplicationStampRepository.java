@@ -1,6 +1,12 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
+import nts.arc.time.GeneralDate;
+
 public interface ApplicationStampRepository {
+	
+	public ApplicationStamp findByAppID(String companyID, String appID);
+	
+	public ApplicationStamp findByAppDate(String companyID, GeneralDate appDate, StampRequestMode stampRequestMode, String employeeID);
 	
 	public void addStampGoOutPermit(ApplicationStamp applicationStamp);
 	
@@ -17,13 +23,5 @@ public interface ApplicationStampRepository {
 	public void updateStampCancel(ApplicationStamp applicationStamp);
 	
 	public void updateStampOnlineRecord(ApplicationStamp applicationStamp);
-	
-	public void deleteStampGoOutPermit(ApplicationStamp applicationStamp);
-	
-	public void deleteStampWork(ApplicationStamp applicationStamp);
-	
-	public void deleteStampCancel(ApplicationStamp applicationStamp);
-	
-	public void deleteStampOnlineRecord(ApplicationStamp applicationStamp);
 	
 }

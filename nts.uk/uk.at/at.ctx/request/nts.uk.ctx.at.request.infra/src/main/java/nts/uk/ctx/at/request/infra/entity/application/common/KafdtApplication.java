@@ -22,7 +22,11 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KafdtApplicationPK kafdtApplicationPK;
-
+	/**
+	 * 申請理由ID
+	 */
+	@Column(name="APP_REASON_ID")
+	public String appReasonId;
 	/**
 	 * 事前事後区分
 	 */
@@ -77,7 +81,7 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
      * 予定反映日時
      */
 	@Column(name="REFLECT_PLAN_TIME")
-	public BigDecimal reflectPlanTime;
+	public GeneralDate reflectPlanTime;
 	/**
 	 * 予定反映状態
 	 */
@@ -97,7 +101,7 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	 * 実績反映日時
 	 */
 	@Column(name="REFLECT_PER_TIME")
-	public BigDecimal reflectPerTime;
+	public GeneralDate reflectPerTime;
 	/**
 	 * 予定反映状態
 	 */
@@ -108,6 +112,18 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	 */
 	@Column(name="REFLECT_PER_ENFORCE_ATR")
 	public int reflectPerEnforce;
+	
+	/**
+	 * 申請終了日
+	 */
+	@Column(name="APP_START_DATE")
+	public GeneralDate startDate;
+	
+	/**
+	 * 申請開始日
+	 */
+	@Column(name="APP_END_DATE")
+	public GeneralDate endDate;
 	
 	@Override
 	protected Object getKey() {

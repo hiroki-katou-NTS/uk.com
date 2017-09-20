@@ -4,32 +4,131 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.budget.external.actualresult.service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.csv.CSVFormat;
 
+import nts.gul.csv.CSVParsedResult;
+import nts.gul.csv.InvalidColumnsSizeException;
 import nts.gul.csv.NtsCsvReader;
+import nts.gul.csv.NtsCsvRecord;
+import nts.gul.csv.ParseCSVException;
+import nts.uk.ctx.at.schedule.dom.budget.external.UnitAtr;
 import nts.uk.ctx.at.schedule.dom.budget.external.actualresult.ExtBudgetCharset;
 
 /**
  * The Class FileUtil.
  */
 public class FileUtil {
+
+    /** The Constant MAX_COLUMN_DAILY. */
+    private static final Integer MAX_COLUMN_DAILY = 3;
+
+    /** The Constant MAX_COLUMN_TIME_ZONE. */
+    private static final Integer MAX_COLUMN_TIME_ZONE = 50;
     
     /**
-     * New csv reader.
+     * Find content file.
      *
+     * @param inputStream the input stream
      * @param valueEncoding the value encoding
-     * @return the nts csv reader
+     * @param standardColumn the standard column
+     * @return the list
      */
-    public static NtsCsvReader newCsvReader(Integer valueEncoding) {
+    public static List<List<String>> findContentFile(InputStream inputStream, Integer valueEncoding,
+            Integer standardColumn) {
+        // get encoding
         Charset charset = getCharset(valueEncoding);
+        
+        // get new line code of system
         String newLineCode = getNewLineCode();
-        return NtsCsvReader.newReader().withNoHeader().withChartSet(charset)
-                .withFormat(CSVFormat.EXCEL.withRecordSeparator(newLineCode)).skipEmptyLines(true);
+        
+        // get csv reader
+        NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().withCheckColumnsSize(standardColumn)
+                .withChartSet(charset).withFormat(CSVFormat.EXCEL.withRecordSeparator(newLineCode))
+                .skipEmptyLines(true);
+        
+        Map<Integer, List<String>> mapResult = new HashMap<>();
+        
+        try {
+            CSVParsedResult csvParsedResult = csvReader.parseWithCheckColumnEachRow(inputStream, standardColumn);
+
+            // map has column incorrect
+            Map<Integer, List<String>> mapError = getListError(csvParsedResult.getErrors());
+            mapResult.putAll(mapError);
+
+            // map column correct
+            Map<Integer, List<String>> mapRecord = getListRecord(csvParsedResult.getRecords(), standardColumn);
+            mapResult.putAll(mapRecord);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return mapResult.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(entry -> entry.getValue())
+                .collect(Collectors.toList());
     }
     
+    /**
+     * Gets the standard column.
+     *
+     * @param unitAtr the unit atr
+     * @return the standard column
+     */
+    public static Integer getStandardColumn(UnitAtr unitAtr) {
+        switch (unitAtr) {
+        case DAILY:
+            return MAX_COLUMN_DAILY;
+        case BYTIMEZONE:
+            return MAX_COLUMN_TIME_ZONE;
+        default:
+            throw new RuntimeException("Not unit atr suitable.");
+        }
+    }
+
+    /**
+     * Gets the list error.
+     *
+     * @param lstError the lst error
+     * @return the list error
+     */
+    private static Map<Integer, List<String>> getListError(List<ParseCSVException> lstError) {
+        return lstError.stream()
+                .collect(Collectors.toMap(item -> ((InvalidColumnsSizeException) item).getErrorRow(),
+                        item -> ((InvalidColumnsSizeException) item).getRowRawValues()));
+    }
+
+    /**
+     * Gets the list record.
+     *
+     * @param lstRecord the lst record
+     * @param standardColumn the standard column
+     * @return the list record
+     */
+    private static Map<Integer, List<String>> getListRecord(List<NtsCsvRecord> lstRecord, Integer standardColumn) {
+        // TODO: getRowNumber(null) --> wait Kiban team fix.
+        return lstRecord.stream().collect(Collectors.toMap(item -> ((NtsCsvRecord) item).getRowNumber(), item -> {
+            NtsCsvRecord csvRecord = (NtsCsvRecord) item;
+
+            List<String> result = new ArrayList<>();
+            for (int i = 0; i < standardColumn; i++) {
+                Object value = csvRecord.getColumn(i);
+                if (value != null) {
+                    result.add(value.toString());
+                }
+            }
+            return result;
+        }));
+    }
+
     /**
      * Gets the charset.
      *
@@ -45,7 +144,7 @@ public class FileUtil {
             return StandardCharsets.UTF_8;
         }
     }
-    
+
     /**
      * Gets the new line code.
      *
