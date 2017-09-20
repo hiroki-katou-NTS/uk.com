@@ -233,9 +233,10 @@ module kcp009.viewmodel {
 
                 dfd.resolve();
                 return;
-                
+
             }).fail(function(res) {
-                nts.uk.ui.dialog.alert(res.message);
+                nts.uk.ui.dialog.info({ messageId: "Msg_7" });
+//                nts.uk.ui.dialog.alert(res.message);
             });
             return dfd.promise();
         }
