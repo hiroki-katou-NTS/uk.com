@@ -97,7 +97,7 @@ public class EmployeeApproveAdapterImpl implements EmployeeApproveAdapter {
 
 	@Override
 	public List<EmployeeApproveDto> getEmployeesAtWorkByBaseDate(String companyId, GeneralDate baseDate) {
-		List<EmployeeApproveDto> employeesInfor = emInfor.getEmployeesAtWorkByBaseDate(companyId, baseDate.toString())
+		List<EmployeeApproveDto> employeesInfor = emInfor.getEmployeesAtWorkByBaseDate(companyId, baseDate)
 				.stream()
 				.map(x -> new EmployeeApproveDto(x.getCompanyId(), 
 						x.getPersonId(), 
