@@ -343,6 +343,7 @@ module nts.uk.at.view.kmk002.a {
             formulaName: KnockoutObservable<string>;
             formulaAtr: KnockoutObservable<TypeAtr>;
             symbolValue: string;
+            orderNo: KnockoutObservable<number>;
             calcFormulaSetting: CalcFormulaSetting;
             monthlyRounding: Rounding;
             dailyRounding: Rounding;
@@ -353,6 +354,7 @@ module nts.uk.at.view.kmk002.a {
                 this.formulaName = ko.observable('asdvxzc');
                 this.formulaAtr = ko.observable(1);
                 this.symbolValue = 'asdvxzc';
+                this.orderNo = ko.observable(1);
                 this.calcFormulaSetting = new CalcFormulaSetting();
                 this.monthlyRounding = new Rounding();
                 this.dailyRounding = new Rounding();
@@ -435,6 +437,13 @@ module nts.uk.at.view.kmk002.a {
                 this.operator = ko.observable(0);
                 this.leftItem = new FormulaSettingItem();
                 this.rightItem = new FormulaSettingItem();
+
+                // fixed 
+                this.leftItem.dispOrder = 1;
+                this.leftItem.settingMethod(0);
+                this.rightItem.dispOrder = 2;
+                this.rightItem.settingMethod(1);
+
                 this.operatorDatasource = ko.observableArray([
                     { code: '0', name: '+' },
                     { code: '1', name: '-' },
@@ -475,7 +484,7 @@ module nts.uk.at.view.kmk002.a {
 
             constructor() {
                 this.settingMethod = ko.observable(1);
-                this.dispOrder = 0;
+                this.dispOrder = 1;
                 this.inputValue = ko.observable(1);
                 this.formulaItemId = ko.observable('');
             }

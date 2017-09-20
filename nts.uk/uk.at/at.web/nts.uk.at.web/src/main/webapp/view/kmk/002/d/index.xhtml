@@ -13,6 +13,9 @@
 					height : 400
 				};
 			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.at.record.dom.optitem.calculation.InputValue
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmk002.d.style.css" />
 			<com:scriptfile path="../a/kmk002.a.vm.js" />
@@ -44,12 +47,12 @@
 						<tr>
 							<td>
 								<label class="ntsRadioBox">
-									<input type="radio" name="cbb-left-item" data-bind="checkedValue: 1, checked: leftItem.settingMethod, enable: true" />
+									<input type="radio" name="radio-left-item" data-bind="checkedValue: 1, checked: leftItem.settingMethod, enable: true" />
 									<span class="box"></span><span class="label" data-bind="text: '#{i18n.getText('KMK002_64')}'"></span>
 								</label>
-								<div tabindex="11"
+								<div tabindex="11" id="cbb-left-item" class="width-200"
 									data-bind="ntsComboBox: {
-											options: operatorDatasource,
+											options: $parent.zxcv,
 											optionsValue: 'code',
 											value: operator,
 											optionsText: 'name',
@@ -57,12 +60,12 @@
 											enable: true,
 											columns: [
 												{ prop: 'code', length: 1 },
-												{ prop: 'name', length: 1 },
+												{ prop: 'name', length: 10 },
 											]}">
 								</div>
 							</td>
 							<td rowspan="2">
-								<div tabindex="11"
+								<div tabindex="11" id="cbb-operator"
 									data-bind="ntsComboBox: {
 											options: operatorDatasource,
 											optionsValue: 'code',
@@ -77,12 +80,12 @@
 							</td>
 							<td>
 								<label class="ntsRadioBox">
-									<input type="radio" name="cbb-right-item" data-bind="checkedValue: 1, checked: leftItem.settingMethod, enable: true" />
+									<input type="radio" name="radio-right-item" data-bind="checkedValue: 1, checked: rightItem.settingMethod, enable: true" />
 									<span class="box"></span><span class="label" data-bind="text: '#{i18n.getText('KMK002_64')}'"></span>
 								</label>
-								<div tabindex="11"
+								<div tabindex="11" id="cbb-right-item" class="width-200"
 									data-bind="ntsComboBox: {
-											options: operatorDatasource,
+											options: $parent.zxcv,
 											optionsValue: 'code',
 											value: operator,
 											optionsText: 'name',
@@ -90,7 +93,7 @@
 											enable: true,
 											columns: [
 												{ prop: 'code', length: 1 },
-												{ prop: 'name', length: 1 },
+												{ prop: 'name', length: 10 },
 											]}">
 								</div>
 							</td>
@@ -98,41 +101,29 @@
 						<tr>
 							<td>
 								<label class="ntsRadioBox">
-									<input type="radio" name="cbb-left-item" data-bind="checkedValue: 1, checked: leftItem.settingMethod, enable: true" />
+									<input type="radio" name="radio-left-item" data-bind="checkedValue: 1, checked: leftItem.settingMethod, enable: true" />
 									<span class="box"></span><span class="label" data-bind="text: '#{i18n.getText('KMK002_65')}'"></span>
 								</label>
-								<div tabindex="11"
-									data-bind="ntsComboBox: {
-											options: operatorDatasource,
-											optionsValue: 'code',
-											value: operator,
-											optionsText: 'name',
-											editable: false,
-											enable: true,
-											columns: [
-												{ prop: 'code', length: 1 },
-												{ prop: 'name', length: 1 },
-											]}">
-								</div>
+								<input tabindex="5" id="inp-left-item" class="width-200"
+										data-bind="ntsTextEditor: {
+												  name: '//TODO #[KMK002_12]',
+		                                          value: leftItem.inputValue,
+		                                          constraint: 'InputValue', 
+		                                          enable: true, 
+		                                          required: false}"/>
 							</td>
 							<td>
 								<label class="ntsRadioBox">
-									<input type="radio" name="cbb-right-item" data-bind="checkedValue: 1, checked: leftItem.settingMethod, enable: true" />
+									<input type="radio" name="radio-right-item" data-bind="checkedValue: 1, checked: rightItem.settingMethod, enable: true" />
 									<span class="box"></span><span class="label" data-bind="text: '#{i18n.getText('KMK002_65')}'"></span>
 								</label>
-								<div tabindex="11"
-									data-bind="ntsComboBox: {
-											options: operatorDatasource,
-											optionsValue: 'code',
-											value: operator,
-											optionsText: 'name',
-											editable: false,
-											enable: true,
-											columns: [
-												{ prop: 'code', length: 1 },
-												{ prop: 'name', length: 1 },
-											]}">
-								</div>
+								<input tabindex="5" id="inp-right-item" class="width-200"
+										data-bind="ntsTextEditor: {
+												  name: '//TODO #[KMK002_12]',
+		                                          value: rightItem.inputValue,
+		                                          constraint: 'InputValue', 
+		                                          enable: true, 
+		                                          required: false}"/>
 							</td>
 						</tr>
 						<tr>
@@ -146,8 +137,8 @@
 				</table>
 			</div>
 			<div id="functions-area-bottom">
-				<button tabindex="9" class="x-large proceed">#{i18n.getText('KMK002_60')}</button>
-				<button tabindex="10">#{i18n.getText('KMK002_61')}</button>
+				<button tabindex="9" class="x-large proceed" data-bind="click: apply">#{i18n.getText('KMK002_60')}</button>
+				<button tabindex="10" data-bind="click: close">#{i18n.getText('KMK002_61')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

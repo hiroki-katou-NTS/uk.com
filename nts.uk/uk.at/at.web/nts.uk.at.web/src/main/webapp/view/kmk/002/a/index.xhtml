@@ -23,7 +23,7 @@
 				<button data-bind="click: openDialogC">test C</button>
 				<button data-bind="click: openDialogD">test D</button>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" style="display: none" data-bind="visible: true">
 				<table>
 					<tr>
 						<td>
@@ -76,7 +76,11 @@
 									</td>
 									<td>
 										<div tabindex="11"
-											data-bind="ntsCheckBox: { checked: calculationResultRange.upperCheck, enable: true, text: nts.uk.resource.getText('KMK002_26') }"></div>
+											data-bind="ntsCheckBox: {
+													name: '#[KMK002_26]',
+													checked: calculationResultRange.upperCheck,
+													enable: true,
+													text: nts.uk.resource.getText('KMK002_26') }"></div>
 										<input tabindex="12" id="upperLimit"
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_26]',
@@ -100,7 +104,11 @@
 									<!-- Calculation ResultRange -->
 									<td>
 										<div tabindex="13"
-											data-bind="ntsCheckBox: { checked: calculationResultRange.lowerCheck, enable: true, text: nts.uk.resource.getText('KMK002_27') }"></div>
+											data-bind="ntsCheckBox: {
+												name: '#[KMK002_27]',
+												checked: calculationResultRange.lowerCheck,
+												enable: true,
+												text: nts.uk.resource.getText('KMK002_27') }"></div>
 										<input tabindex="14" id="lowerLimit"
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_27]',

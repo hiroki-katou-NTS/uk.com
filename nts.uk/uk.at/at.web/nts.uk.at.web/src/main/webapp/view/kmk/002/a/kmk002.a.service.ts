@@ -75,6 +75,7 @@ module nts.uk.at.view.kmk002.a {
                 formulaId: string;
                 formulaName: string;
                 optionalItemNo: string;
+                orderNo: number;
                 symbolValue: string;
                 formulaAtr: TypeAtr;
                 calcFormulaSetting: CalcFormulaSettingDto;
