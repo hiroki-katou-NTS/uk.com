@@ -3203,6 +3203,7 @@ var nts;
                             isDecimalNumber = (this.option.decimallength > 0);
                             inputText = uk.text.replaceAll(inputText.toString(), this.option.groupseperator, '');
                         }
+                        inputText = inputText.trim();
                         var message = {};
                         var validateFail = false, max = 99999999, min = 0, mantissaMaxLength;
                         if (!util.isNullOrUndefined(this.constraint) && this.constraint.valueType === "HalfInt") {
@@ -4931,7 +4932,6 @@ var nts;
                                     else
                                         $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
                                 }
-                                $input.val(moment(result.parsedValue).format(ISOFormat));
                             }
                         });
                         $input.on('validate', (function (e) {
@@ -4948,7 +4948,6 @@ var nts;
                                     else
                                         $label.text("(" + uk.time.formatPattern(newText, "", dayofWeekFormat) + ")");
                                 }
-                                $input.val(moment(result.parsedValue).format(ISOFormat));
                             }
                         }));
                         new nts.uk.util.value.DefaultValue().onReset($input, data.value);
@@ -5786,6 +5785,7 @@ var nts;
                             if (result.isValid) {
                                 $input.ntsError('clear');
                                 value(result.parsedValue);
+                                value.valueHasMutated();
                             }
                             else {
                                 var error = $input.ntsError('getError');
@@ -7401,7 +7401,7 @@ var nts;
                                 var result_1 = srh_1.search(searchKey, selectedItems);
                                 if (nts.uk.util.isNullOrEmpty(result_1.options) && searchMode === "highlight") {
                                     nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOHIT"));
-                                    return;
+                                    return false;
                                 }
                                 var selectedProperties = _.map(result_1.selectItems, primaryKey);
                                 if (targetMode === 'igGrid') {
@@ -7438,21 +7438,24 @@ var nts;
                                 });
                                 $container.data("searchKey", searchKey);
                             }
+                            return true;
                         };
                         var nextSearch = function () {
                             var searchKey = $input.val();
                             if (nts.uk.util.isNullOrEmpty(searchKey)) {
                                 nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("FND_E_SEARCH_NOWORD"));
-                                return;
+                                return false;
                             }
-                            search(searchKey);
+                            return search(searchKey);
                         };
                         $input.keydown(function (event) {
                             if (event.which == 13) {
                                 event.preventDefault();
-                                nextSearch();
+                                var result_2 = nextSearch();
                                 _.defer(function () {
-                                    $input.focus();
+                                    if (result_2) {
+                                        $input.focus();
+                                    }
                                 });
                             }
                         });
