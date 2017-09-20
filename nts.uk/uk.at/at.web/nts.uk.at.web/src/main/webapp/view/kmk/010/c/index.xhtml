@@ -21,8 +21,8 @@
 			</ui:define>
 			<ui:define name="content">
 				<div id="functions-area">
-					<button tabindex="1" class="proceed" data-bind="click: saveOvertimeBRDItem" >#{i18n.getText('KMK010_47')}</button>
-					<button tabindex="2" class="buttonOther" >#{i18n.getText('KMK010_48')}</button>
+					<button tabindex="1" class="proceed" data-bind="click: saveOutsideOTBRDItem" >#{i18n.getText('KMK010_47')}</button>
+					<button tabindex="2" class="buttonOther" data-bind="click: closeSaveOutsideOTBRDItem" >#{i18n.getText('KMK010_48')}</button>
 				</div>
 				
 				<div class="contentDialog">
@@ -35,7 +35,7 @@
 								<td data-bind="text: textOvertimeName"></td>
 								<td>#{i18n.getText('KMK010_65')}</td>
 							</tr>
-							<com:ko tag="foreach" bind="lstOvertimeBRDItemModel">
+							<com:ko tag="foreach" bind="lstOutsideOTBRDItemModel">
 								<tr>
 									<td class="bg-green">
 										<div data-bind="ntsCheckBox: { checked: useClassification , enable: $parent.enableCheckbox }"></div>

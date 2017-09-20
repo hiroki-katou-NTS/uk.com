@@ -74,9 +74,11 @@ module nts.uk.at.view.kmk010.b {
 
                     // call service save all overtime
                     service.saveAllOvertime(overtimes).done(function() {
-                        console.log('YES');
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            nts.uk.ui.windows.close();
+                        });
                     }).fail(function(error) {
-
+                        nts.uk.ui.dialog.alertError(error);
                     });
                 }else {
                     var overtimeLangNames: OvertimeNameLangDto[] = [];
@@ -90,12 +92,20 @@ module nts.uk.at.view.kmk010.b {
                     }    
                     // call service save all overtime language name
                     service.saveAllOvertimeLanguageName(overtimeLangNames).done(function(){
-                        console.log('YES');
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            nts.uk.ui.windows.close();
+                        });
                     }).fail(function(error){
-                        
+                        nts.uk.ui.dialog.alertError(error);
                     });
                 }
 
+            }
+            /**
+             * function by click button close dialog
+             */
+            private closeSaveOvertime(): void {
+                nts.uk.ui.windows.close();
             }
         }
 

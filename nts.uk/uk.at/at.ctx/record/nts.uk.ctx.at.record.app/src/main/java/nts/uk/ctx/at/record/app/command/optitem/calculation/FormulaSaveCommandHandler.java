@@ -8,11 +8,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
+import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class OptionalItemSaveCommandHandler.
@@ -20,6 +23,9 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 @Stateless
 @Transactional
 public class FormulaSaveCommandHandler extends CommandHandler<FormulaSaveCommand> {
+
+	@Inject
+	private FormulaRepository repository;
 
 	/*
 	 * (non-Javadoc)
@@ -35,8 +41,10 @@ public class FormulaSaveCommandHandler extends CommandHandler<FormulaSaveCommand
 			return new Formula(item);
 		}).collect(Collectors.toList());
 
-		System.out.print(list);
-		// TODO... wait for infra.
+		// TODO
+		this.repository.remove(AppContexts.user().companyCode(), "itemNo");
+		this.repository.create(list);
+		;
 	}
 
 }

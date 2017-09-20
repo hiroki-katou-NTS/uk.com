@@ -269,8 +269,14 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
         }
         // get data cell from input csv
         List<String> result = new ArrayList<>();
-        for (String value : record) {
-            result.add(this.fillBlankValueIfNeed(value, importProcess.externalBudget.getBudgetAtr()));
+        for (int i = 0; i < record.size(); i++) {
+            String value = record.get(i);
+            // only fill blank value when it is value's column.
+            if (i >= INDEX_BEGIN_COL_VALUE) {
+                result.add(this.fillBlankValueIfNeed(value, importProcess.externalBudget.getBudgetAtr()));
+            } else {
+                result.add(value);
+            }
         }
         // check record has data?
         if (CollectionUtil.isEmpty(result)) {

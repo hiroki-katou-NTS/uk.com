@@ -37,7 +37,7 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 
 	/** The usage classification. */
 	// 任意項目利用区分
-	private int usageClassification;
+	private int usageAtr;
 
 	/*
 	 * (non-Javadoc)
@@ -95,7 +95,7 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setOptionalItemUsageAtr(OptionalItemUsageAtr optionalItemUsageClassification) {
-		this.usageClassification = optionalItemUsageClassification.value;
+		this.usageAtr = optionalItemUsageClassification.value;
 	}
 
 	/*
