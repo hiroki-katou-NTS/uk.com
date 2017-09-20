@@ -20,6 +20,8 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail">#{i18n.getText('KMK002_1')}</button>
+				<button data-bind="click: openDialogC">test C</button>
+				<button data-bind="click: openDialogD">test D</button>
 			</div>
 			<div id="contents-area">
 				<table>
@@ -27,13 +29,13 @@
 						<td>
 							<div style="width: 300px; margin-right: 30px; padding: 20px " class="caret-right caret-background bg-green">
 							<i class="icon icon-searchbox"></i>
-							<div data-bind="ntsSearchBox: {targetKey: 'code', mode:'igGrid', comId:'ahihi', items: roundingRules, 
-								selected: selectedCode, selectedKey: 'code', fields: ['name', 'code']}" />
+							<div data-bind="ntsSearchBox: {targetKey: 'itemNo', mode:'igGrid', comId:'ahihi', items: optionalItemHeaders, 
+								selected: selectedCode, selectedKey: 'itemNo', fields: ['itemNo', 'itemName']}" />
 							<table id="ahihi"
 								data-bind="ntsGridList: {
 							width: 300,
-							dataSource: roundingRules,
-							optionsValue: 'code',
+							dataSource: optionalItemHeaders,
+							optionsValue: 'itemNo',
 							columns: columns,
 							multiple: false,
 							value: selectedCode,
@@ -92,8 +94,6 @@
 											value: empConditionAtr,
 											enable: true }"></div>
 										<button data-bind="click: $parent.openDialogB">#{i18n.getText('KMK002_19')}(TEST B)</button>
-										<button data-bind="click: $parent.openDialogC">test C</button>
-										<button data-bind="click: $parent.openDialogD">test D</button>
 										</td>
 									<td></td>
 									

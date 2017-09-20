@@ -63,8 +63,8 @@ public class RoundingDto implements RoundingGetMemento {
 	@Override
 	public TimeRoundingSetting getTimeRoundingSetting() {
 		return new TimeRoundingSetting(
-				EnumAdaptor.valueOf(this.numberUnit, nts.uk.ctx.at.shared.dom.common.timerounding.Unit.class),
-				EnumAdaptor.valueOf(this.numberUnit, nts.uk.ctx.at.shared.dom.common.timerounding.Rounding.class));
+				EnumAdaptor.valueOf(this.timeUnit, nts.uk.ctx.at.shared.dom.common.timerounding.Unit.class),
+				EnumAdaptor.valueOf(this.timeRounding, nts.uk.ctx.at.shared.dom.common.timerounding.Rounding.class));
 	}
 
 	/*
@@ -76,7 +76,7 @@ public class RoundingDto implements RoundingGetMemento {
 	@Override
 	public AmountRounding getAmountRounding() {
 		return new AmountRounding(
-				EnumAdaptor.valueOf(this.numberUnit, nts.uk.ctx.at.shared.dom.common.amountrounding.Unit.class),
-				EnumAdaptor.valueOf(this.numberUnit, nts.uk.ctx.at.shared.dom.common.amountrounding.Rounding.class));
+				EnumAdaptor.valueOf(this.amountUnit, nts.uk.ctx.at.shared.dom.common.amountrounding.Unit.class),
+				EnumAdaptor.valueOf(this.amountRounding, nts.uk.ctx.at.shared.dom.common.amountrounding.Rounding.class));
 	}
 }
