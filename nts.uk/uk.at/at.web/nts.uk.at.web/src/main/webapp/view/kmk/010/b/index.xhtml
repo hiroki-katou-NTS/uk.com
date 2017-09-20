@@ -21,8 +21,8 @@
 			</ui:define>
 			<ui:define name="content">
 				<div id="functions-area">
-					<button tabindex="1" class="proceed" data-bind="click: saveOvertime" >#{i18n.getText('KMK010_40')}</button>
-					<button tabindex="2" class="buttonOther" >#{i18n.getText('KMK010_41')}</button>
+					<button tabindex="3" class="proceed" data-bind="click: saveOvertime" >#{i18n.getText('KMK010_40')}</button>
+					<button tabindex="4" class="buttonOther" data-bind="click: closeSaveOvertime">#{i18n.getText('KMK010_41')}</button>
 				</div>
 				
 				<div class="contentDialog">
@@ -36,14 +36,14 @@
 							</tr>
 							<com:ko tag="foreach" bind="lstOvertimeModel">
 								<tr>
-									<td class="bg-green">
-										<div data-bind="ntsCheckBox: { checked: useClassification, enable: $parent.enableCheckbox }"></div>
+									<td  class="bg-green">
+										<div tabindex="1" data-bind="ntsCheckBox: { checked: useClassification, enable: $parent.enableCheckbox }"></div>
 									</td>
 									<td>
 										<div data-bind="text: overtimeNo"></div>
 									</td>
 									<td>
-										<input data-bind="ntsTextEditor: {value: name, constraint: 'OvertimeName' }"/>
+										<input tabindex="2" data-bind="ntsTextEditor: {value: name, constraint: 'OvertimeName' }"/>
 									</td>
 								</tr>
 							</com:ko>

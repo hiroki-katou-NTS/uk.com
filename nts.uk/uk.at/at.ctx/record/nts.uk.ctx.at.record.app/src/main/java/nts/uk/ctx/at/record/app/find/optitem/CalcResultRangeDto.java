@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.optitem.AmountRange;
 import nts.uk.ctx.at.record.dom.optitem.CalcRangeCheck;
-import nts.uk.ctx.at.record.dom.optitem.CalcResultRangeGetMemento;
 import nts.uk.ctx.at.record.dom.optitem.CalcResultRangeSetMemento;
 import nts.uk.ctx.at.record.dom.optitem.NumberRange;
 import nts.uk.ctx.at.record.dom.optitem.TimeRange;
@@ -18,7 +17,7 @@ import nts.uk.ctx.at.record.dom.optitem.TimeRange;
  */
 @Getter
 @Setter
-public class CalcResultRangeDto implements CalcResultRangeSetMemento, CalcResultRangeGetMemento {
+public class CalcResultRangeDto implements CalcResultRangeSetMemento {
 
 	/** The upper check. */
 	// 上限値チェック
@@ -111,69 +110,6 @@ public class CalcResultRangeDto implements CalcResultRangeSetMemento, CalcResult
 	public void setAmountRange(AmountRange range) {
 		this.amountLower = range.getLowerLimit().v().intValue();
 		this.amountUpper = range.getUpperLimit().v().intValue();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.workrecord.CalculationResultRangeGetMemento#
-	 * getUpperLimit()
-	 */
-	@Override
-	public CalcRangeCheck getUpperLimit() {
-		return this.upperCheck ? CalcRangeCheck.SET : CalcRangeCheck.NOT_SET;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.workrecord.CalculationResultRangeGetMemento#
-	 * getLowerLimit()
-	 */
-	@Override
-	public CalcRangeCheck getLowerLimit() {
-		return this.upperCheck ? CalcRangeCheck.SET : CalcRangeCheck.NOT_SET;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.workrecord.CalculationResultRangeGetMemento#
-	 * getNumberRange()
-	 */
-	@Override
-	public NumberRange getNumberRange() {
-		// TODO...
-		return new NumberRange();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.workrecord.CalculationResultRangeGetMemento#
-	 * getTimeRange()
-	 */
-	@Override
-	public TimeRange getTimeRange() {
-		// TODO...
-		return new TimeRange();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.shared.dom.workrecord.CalculationResultRangeGetMemento#
-	 * getAmountRange()
-	 */
-	@Override
-	public AmountRange getAmountRange() {
-		// TODO...
-		return new AmountRange();
 	}
 
 }

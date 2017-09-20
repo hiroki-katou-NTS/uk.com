@@ -35,7 +35,7 @@
 						<div class="lableData" data-bind="ntsFormLabel: {required: true}">
 							<label>#{i18n.getText('KMK010_8')}</label>
 						</div>
-						<div class="methodSelect" data-bind="ntsRadioBoxGroup: {
+						<div tabindex="6" class="methodSelect" data-bind="ntsRadioBoxGroup: {
 							options: $parent.calculationMethods,
 							optionsValue: 'value',
 							optionsText: 'localizedName',
@@ -164,7 +164,7 @@
 									<label class="labelTwoRate" >#{i18n.getText('KMK010_28')}</label>
 								</div>
 								<div class="lableFourRate">
-									<div class="selectUnit" data-bind="ntsComboBox: {
+									<div tabindex="12" class="selectUnit" data-bind="ntsComboBox: {
 										options: $parent.lstUnit,
 										optionsValue: 'value',
 										visibleItemsCount: 10,
@@ -176,7 +176,7 @@
 											{ prop: 'localizedName', length: 2 },
 										]}"></div>
 										
-										<div class="selectRounding" data-bind="ntsComboBox: {
+										<div tabindex="13" class="selectRounding" data-bind="ntsComboBox: {
 										options: $parent.lstRounding,
 										optionsValue: 'value',
 										visibleItemsCount: 10,
@@ -197,7 +197,7 @@
 							<div class="overtimeRate60H3">
 								<div class="labelOneRate">
 									<label>#{i18n.getText('KMK010_30')}</label>
-									<input class="overtimeSelect" data-bind="ntsTimeEditor: {name: '#[KMK010_31]',
+									<input class="overtimeSelect" tabindex="14" data-bind="ntsTimeEditor: {name: '#[KMK010_31]',
 										value: $parent.superHD60HConMedModel.superHolidayOccurrenceUnit,
 										inputFormat: 'time', 
 										constraint: 'SuperHDOccUnit',

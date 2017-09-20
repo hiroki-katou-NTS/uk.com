@@ -5,11 +5,13 @@
 package nts.uk.ctx.at.record.app.command.optitem;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
 
 /**
  * The Class OptionalItemSaveCommandHandler.
@@ -17,6 +19,9 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
 @Stateless
 @Transactional
 public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemSaveCommand> {
+
+	@Inject
+	private OptionalItemRepository repository;
 
 	/*
 	 * (non-Javadoc)
@@ -28,8 +33,10 @@ public class OptionalItemSaveCommandHandler extends CommandHandler<OptionalItemS
 	@Override
 	protected void handle(CommandHandlerContext<OptionalItemSaveCommand> context) {
 		OptionalItem dom = new OptionalItem(context.getCommand());
-		System.out.print(dom);
-		// TODO... wait for infra.
+
+		//TODO
+		this.repository.update(dom);
+
 	}
 
 }

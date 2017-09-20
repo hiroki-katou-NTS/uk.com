@@ -37,19 +37,19 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 
 	/** The usage classification. */
 	// 任意項目利用区分
-	private int usageClassification;
+	private int usageAtr;
 
 	/** The emp condition classification. */
 	// 雇用条件区分
-	private int empConditionClassification;
+	private int empConditionAtr;
 
 	/** The performance classification. */
 	// 実績区分
-	private int performanceClassification;
+	private int performanceAtr;
 
 	/** The calculation result range. */
 	// 計算結果の範囲
-	private CalcResultRangeDto calculationResultRange;
+	private CalcResultRangeDto calcResultRange;
 
 	/*
 	 * (non-Javadoc)
@@ -107,7 +107,7 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setOptionalItemUsageAtr(OptionalItemUsageAtr optionalItemUsageClassification) {
-		this.usageClassification = optionalItemUsageClassification.value;
+		this.usageAtr = optionalItemUsageClassification.value;
 	}
 
 	/*
@@ -119,7 +119,7 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setEmpConditionAtr(EmpConditionAtr empConditionClassification) {
-		this.empConditionClassification = empConditionClassification.value;
+		this.empConditionAtr = empConditionClassification.value;
 	}
 
 	/*
@@ -131,7 +131,7 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setPerformanceAtr(PerformanceAtr performanceClassification) {
-		this.performanceClassification = performanceClassification.value;
+		this.performanceAtr = performanceClassification.value;
 	}
 
 	/*
@@ -143,6 +143,6 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setCalculationResultRange(CalcResultRange calculationResultRange) {
-		calculationResultRange.saveToMemento(this.calculationResultRange);
+		calculationResultRange.saveToMemento(this.calcResultRange);
 	}
 }
