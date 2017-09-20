@@ -17,10 +17,13 @@ public class BsymtWkpConfig_ {
 
 	/** The bsymt wkp config PK. */
 	public static volatile SingularAttribute<BsymtWkpConfig, BsymtWkpConfigPK> bsymtWkpConfigPK;
-	
+
 	/** The str D. */
 	public static volatile SingularAttribute<BsymtWkpConfig, GeneralDate> strD;
-	
+
 	/** The end D. */
 	public static volatile SingularAttribute<BsymtWkpConfig, GeneralDate> endD;
+
+	/** The bsymt wkp config. */
+	public static volatile SingularAttribute<BsymtWkpConfig, BsymtWkpConfig> bsymtWkpConfig;
 }

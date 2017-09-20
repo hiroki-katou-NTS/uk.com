@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.info;
 
+import java.util.List;
 import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
 
 /**
  * The Interface WorkplaceInfoRepository.
@@ -17,7 +20,7 @@ public interface WorkplaceInfoRepository {
 	 * @param workplaceInfo the workplace info
 	 */
 	void update(WorkplaceInfo workplaceInfo);
-	
+
 	/**
 	 * Find by wkp id.
 	 *
@@ -25,4 +28,23 @@ public interface WorkplaceInfoRepository {
 	 * @return the optional
 	 */
 	Optional<WorkplaceInfo> find(String companyId,String wkpId,String historyId);
+
+	/**
+	 * Find by wkp cd.
+	 *
+	 * @param wpkCode the wpk code
+	 * @param date the date
+	 * @return the list
+	 */
+	List<WorkplaceInfo> findByWkpCd(String companyId, String wpkCode, GeneralDate baseDate);
+
+	/**
+	 * Find by wkp id.
+	 *
+	 * @param companyId the company id
+	 * @param wkpId the wpk id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	Optional<WorkplaceInfo> findByWkpId(String wkpId, GeneralDate baseDate);
 }
