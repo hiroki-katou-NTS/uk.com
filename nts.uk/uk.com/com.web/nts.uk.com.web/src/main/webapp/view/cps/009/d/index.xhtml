@@ -7,6 +7,12 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 430,
+					height :180
+				};
+			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cps009.d.style.css" />
 			<com:scriptfile path="cps009.d.service.js" />
@@ -15,23 +21,33 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area">
-				<button id="register" class="proceed" tabindex="1"
-					data-bind="click: registerCategoryInfo">#{i18n.getText('CPS006_1')}</button>
-				<button id="sort" tabindex="2" data-bind="click: openCDL022Modal">#{i18n.getText('CPS006_2')}</button>
-				<div class='float-right'>
-					<a class='goout'
-						data-bind="ntsLinkButton: { jump: '/view/cps/005/a/index.xhtml'  }"
-						tabindex="3">#{i18n.getText('CPS006_49')}</a> <a class='goout'
-						data-bind="ntsLinkButton: { jump: '/view/cas/001/a/index.xhtml' }"
-						tabindex="4">#{i18n.getText('CPS006_3')}</a>
+			<div id="contents-area">
+				<div id="copy_row_1" style="margin-bottom: 5px;">
+					<label>#{i18n.getText('CPS009_26')}</label>
+					<div id="label_code" data-bind="ntsFormLabel: {required: true}"
+						class="form-label ">
+						<label>#{i18n.getText('CPS009_12')}</label>
+					</div>
+					<input id="roleCode"
+						data-bind="ntsTextEditor: {value: currentInitVal().itemCode,  
+										required: true, enable: true,
+										immediate: true}" />
+					<input id="roleName"
+						data-bind="ntsTextEditor: {value: currentInitVal().itemName,  
+										required: true, enable: true,
+										immediate: true}" />
+
+
 				</div>
+
 			</div>
-			<div id="contents-area" class="cf">
-				<div id="content-left">
-				</div>
-				<div id="content-right">
-				</div>
+			<div id='functions-area-bottom'>
+				<button id="registration" data-bind="click: newInitValue"
+					class="proceed x-large" tabindex="5">#{i18n.getText('CPS009_29')}
+				</button>
+				<button id="cancel" data-bind="click: cancelNewInitValue"
+					tabindex="6">#{i18n.getText('CPS009_30')}</button>
+
 			</div>
 		</ui:define>
 	</ui:composition>
