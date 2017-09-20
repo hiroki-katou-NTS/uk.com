@@ -36,7 +36,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	public final String SELECT_BY_PERSON_IDS = SELECT_NO_WHERE
 			+ " WHERE c.bpsmtPersonPk.pId IN :pids";
 	
-	public final String GET_LAST_EMPLOYEE = "SELECT c.cardNumberLetter FROM BpsstUserSetting c "
+	public final String GET_LAST_CARDNO = "SELECT c.cardNumberLetter FROM BpsstUserSetting c "
 			+ " WHERE c.companyId = :companyId AND c.cardNumberLetter LIKE CONCAT(:cardNo, '%')"
 			+ " ORDER BY  c.cardNumberLetter DESC";
 
@@ -80,7 +80,7 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	public String getLastCardNo(String companyId, String startCardNoLetter) {
 		if (startCardNoLetter == null)
 			startCardNoLetter = "";
-		List<Object[]> lst = this.queryProxy().query(GET_LAST_EMPLOYEE).setParameter("companyId", companyId).setParameter("cardNo", startCardNoLetter).getList();
+		List<Object[]> lst = this.queryProxy().query(GET_LAST_CARDNO).setParameter("companyId", companyId).setParameter("cardNo", startCardNoLetter).getList();
 		String returnStr = "";
 		if (lst.size() > 0) {
 			Object obj = lst.get(0);
