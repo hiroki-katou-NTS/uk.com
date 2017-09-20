@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -19,7 +20,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.file.storage.FileStorage;
 import nts.arc.layer.app.file.storage.StoredFileInfo;
 import nts.arc.layer.infra.file.storage.StoredFileStreamService;
-import nts.gul.collection.CollectionUtil;
 
 /**
  * The Class ExtBudgetFileCheckServiceImpl.
@@ -31,6 +31,7 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
     @Inject
     private StoredFileStreamService fileStreamService;
     
+    /** The file storage. */
     @Inject
     private FileStorage fileStorage;
 
@@ -67,8 +68,7 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
     /**
      * Find content file.
      *
-     * @param fileId
-     *            the file id
+     * @param fileId the file id
      * @return the input stream
      */
     private InputStream findContentFile(String fileId) {
@@ -87,8 +87,7 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
     /**
      * Valid file extension.
      *
-     * @param fileId
-     *            the file id
+     * @param fileId the file id
      */
     private void validFileExtension(String fileId) {
         Optional<StoredFileInfo> optional = this.fileStorage.getInfo(fileId);
@@ -110,19 +109,13 @@ public class ExtBudgetFileCheckServiceImpl implements ExtBudgetFileCheckService 
     /**
      * Valid limit record.
      *
-     * @param inputStream
-     *            the input stream
-     * @param encoding
-     *            the encoding
-     * @param standardColumn
-     *            the standard column
+     * @param inputStream the input stream
+     * @param encoding the encoding
+     * @param standardColumn the standard column
      */
     private void validLimitRecord(InputStream inputStream, Integer encoding, Integer standardColumn) {
-        List<List<String>> resutl = FileUtil.findContentFile(inputStream, encoding, standardColumn);
-        if (CollectionUtil.isEmpty(resutl)) {
-            return;
-        }
-        if (resutl.size() > MAX_RECORD) {
+        Map<Integer, List<String>> mapResult = FileUtil.findContentFile(inputStream, encoding, standardColumn);
+        if (mapResult.size() > MAX_RECORD) {
             throw new BusinessException("Msg_168");
         }
     }

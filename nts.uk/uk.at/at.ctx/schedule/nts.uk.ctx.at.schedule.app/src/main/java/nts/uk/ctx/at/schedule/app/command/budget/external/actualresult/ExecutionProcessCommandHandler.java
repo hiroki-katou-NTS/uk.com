@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 import javax.ejb.Stateful;
@@ -205,23 +206,24 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
     /**
      * Process input.
      *
+     * @param <C> the generic type
      * @param importProcess the import process
-     * @param setter the setter
+     * @param asyncTask the async task
      */
     private <C> void processInput(ImportProcess importProcess, AsyncCommandHandlerContext<C> asyncTask) {
         TaskDataSetter setter = asyncTask.getDataSetter();
         boolean isInterrupt = false;
         try {
             // get content of file input
-            List<List<String>> lstRecord = FileUtil.findContentFile(importProcess.inputStream,
+            Map<Integer, List<String>> mapRecord = FileUtil.findContentFile(importProcess.inputStream,
                     importProcess.extractCondition.getEncoding(),
                     FileUtil.getStandardColumn(importProcess.externalBudget.getUnitAtr()));
             // calculate total record and check has data
-            int calTotal = lstRecord.size() - importProcess.extractCondition.getStartLine().v() + 1;
+            int calTotal = mapRecord.size() - importProcess.extractCondition.getStartLine().v() + 1;
             if (calTotal > DEFAULT_VALUE) {
                 setter.updateData(TOTAL_RECORD, calTotal);
             }
-            Iterator<List<String>> recordIterator = lstRecord.iterator();
+            Iterator<Entry<Integer, List<String>>> recordIterator =  mapRecord.entrySet().iterator();
             while (recordIterator.hasNext()) {
                 /**
                  * check has interruption, if is interrupt, update table LOG
@@ -259,14 +261,17 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * Process line.
      *
      * @param importProcess the import process
-     * @param record the record
+     * @param entryRecord the entry record
      */
-    private void processLine(ImportProcess importProcess, List<String> record) {
-        importProcess.startLine++;
+    private void processLine(ImportProcess importProcess, Entry<Integer, List<String>> entryRecord) {
+        importProcess.startLine = entryRecord.getKey();
         // check line start read
         if (importProcess.startLine < importProcess.extractCondition.getStartLine().v()) {
             return;
         }
+        // get value of record file input
+        List<String> record = entryRecord.getValue();
+        
         // get data cell from input csv
         List<String> result = new ArrayList<>();
         for (int i = 0; i < record.size(); i++) {
@@ -292,14 +297,14 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
     }
     
     /**
-     * Fill value if need.
+     * Fill blank value if need.
      *
      * @param value the value
      * @param budgetAtr the budget atr
      * @return the string
      */
     private String fillBlankValueIfNeed(String value, BudgetAtr budgetAtr) {
-        if (!value.trim().isEmpty()) {
+        if (!value.isEmpty()) {
             return value;
         }
         // check type and file blank value: 0 or 00:00
@@ -564,7 +569,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * Valid date format.
      *
      * @param importProcess the import process
-     * @param inputDate the input date
+     * @param result the result
      */
     private void validDateFormat(ImportProcess importProcess, List<String> result) {
         // finish process of line.
@@ -606,7 +611,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * Valid workplace code.
      *
      * @param importProcess the import process
-     * @param workplaceCode the workplace code
+     * @param result the result
      */
     private void validWorkplaceCode(ImportProcess importProcess, List<String> result) {
         // finish process of line.
@@ -642,7 +647,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * Valid actual val.
      *
      * @param importProcess the import process
-     * @param lstValue the lst value
+     * @param result the result
      */
     private void validActualVal(ImportProcess importProcess, List<String> result) {
         // finish process of line.
@@ -825,6 +830,7 @@ public class ExecutionProcessCommandHandler extends AsyncCommandHandler<Executio
      * Gets the message by id.
      *
      * @param messageId the message id
+     * @param parameters the parameters
      * @return the message by id
      */
     private String getMessageById(String messageId, String... parameters) {
