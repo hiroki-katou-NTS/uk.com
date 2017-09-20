@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.optitem.calculation;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingItem;
@@ -67,23 +65,25 @@ public class FormulaSettingDto implements FormulaSettingSetMemento {
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingSetMemento#
-	 * setFormulaSettingItems(java.util.List)
+	 * setLeftItem(nts.uk.ctx.at.record.dom.optitem.calculation.
+	 * FormulaSettingItem)
 	 */
 	@Override
-	public void setFormulaSettingItems(List<FormulaSettingItem> listItem) {
-		listItem.forEach(item -> {
-			switch (item.getDispOrder()) {
-			case LEFT:
-				item.saveToMemento(this.lefItem);
-				break;
-			case RIGHT:
-				item.saveToMemento(this.rightItem);
-				break;
-			default:
-				// Do nothing.
-				break;
-			}
-		});
+	public void setLeftItem(FormulaSettingItem item) {
+		item.saveToMemento(this.lefItem);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingSetMemento#
+	 * setRightItem(nts.uk.ctx.at.record.dom.optitem.calculation.
+	 * FormulaSettingItem)
+	 */
+	@Override
+	public void setRightItem(FormulaSettingItem item) {
+		item.saveToMemento(this.rightItem);
 	}
 
 }

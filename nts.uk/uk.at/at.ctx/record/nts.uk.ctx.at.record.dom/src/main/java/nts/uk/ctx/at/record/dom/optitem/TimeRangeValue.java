@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.TimeRange;
  * The Class TimeRangeValue.
  */
 // 時間範囲値
-@TimeRange(max = "00:00", min = "744:00")
+@TimeRange(min = "00:00", max = "744:00")
 public class TimeRangeValue extends TimeDurationPrimitiveValue<TimeRangeValue> {
 
 	/** The Constant serialVersionUID. */

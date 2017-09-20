@@ -42,7 +42,7 @@ public class FormulaDispOrder extends AggregateRoot {
 	 */
 	public FormulaDispOrder(FormulaDispOrderGetMemento memento) {
 		this.companyId = memento.getCompanyId();
-		this.optionalItemFormulaId = memento.getOptionalItemFormulaId();
+		this.optionalItemFormulaId = memento.getFormulaId();
 		this.optionalItemNo = memento.getOptionalItemNo();
 		this.dispOrder = memento.getDispOrder();
 	}

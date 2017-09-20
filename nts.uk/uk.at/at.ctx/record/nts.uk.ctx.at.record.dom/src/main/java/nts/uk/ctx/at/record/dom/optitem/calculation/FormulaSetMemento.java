@@ -8,7 +8,7 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Interface OptionalItemFormulaSetMemento.
+ * The Interface FormulaSetMemento.
  */
 public interface FormulaSetMemento {
 
@@ -20,11 +20,11 @@ public interface FormulaSetMemento {
 	void setCompanyId(CompanyId cId);
 
 	/**
-	 * Sets the optional item formula id.
+	 * Sets the formula id.
 	 *
-	 * @param id the new optional item formula id
+	 * @param id the new formula id
 	 */
-	void setOptionalItemFormulaId(FormulaId id);
+	void setFormulaId(FormulaId id);
 
 	/**
 	 * Sets the optional item no.
@@ -34,25 +34,25 @@ public interface FormulaSetMemento {
 	void setOptionalItemNo(OptionalItemNo optItemNo);
 
 	/**
-	 * Sets the optional item formula name.
+	 * Sets the formula name.
 	 *
-	 * @param name the new optional item formula name
+	 * @param name the new formula name
 	 */
-	void setOptionalItemFormulaName(FormulaName name);
+	void setFormulaName(FormulaName name);
 
 	/**
-	 * Sets the optional item formula setting.
+	 * Sets the calc formula setting.
 	 *
-	 * @param setting the new optional item formula setting
+	 * @param setting the new calc formula setting
 	 */
-	void setOptionalItemFormulaSetting(CalcFormulaSetting setting);
+	void setCalcFormulaSetting(CalcFormulaSetting setting);
 
 	/**
-	 * Sets the calculation formula atr.
+	 * Sets the calc formula atr.
 	 *
-	 * @param atr the new calculation formula atr
+	 * @param atr the new calc formula atr
 	 */
-	void setCalculationFormulaAtr(FormulaAtr atr);
+	void setCalcFormulaAtr(FormulaAtr atr);
 
 	/**
 	 * Sets the symbol.

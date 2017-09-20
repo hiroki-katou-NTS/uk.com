@@ -32,7 +32,7 @@ public interface FormulaDispOrderGetMemento {
 	 *
 	 * @return the optional item formula id
 	 */
-	FormulaId getOptionalItemFormulaId();
+	FormulaId getFormulaId();
 
 	/**
 	 * Gets the disp order.

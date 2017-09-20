@@ -4,9 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.optitem.calculation;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
@@ -67,14 +64,23 @@ public class FormulaSettingDto implements FormulaSettingGetMemento {
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingGetMemento#
-	 * getFormulaSettingItems()
+	 * getLeftItem()
 	 */
 	@Override
-	public List<FormulaSettingItem> getFormulaSettingItems() {
-		List<FormulaSettingItem> list = new ArrayList<FormulaSettingItem>();
-		list.add(new FormulaSettingItem(this.leftItem));
-		list.add(new FormulaSettingItem(this.rightItem));
-		return list;
+	public FormulaSettingItem getLeftItem() {
+		return new FormulaSettingItem(this.leftItem);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingGetMemento#
+	 * getRightItem()
+	 */
+	@Override
+	public FormulaSettingItem getRightItem() {
+		return new FormulaSettingItem(this.rightItem);
 	}
 
 }

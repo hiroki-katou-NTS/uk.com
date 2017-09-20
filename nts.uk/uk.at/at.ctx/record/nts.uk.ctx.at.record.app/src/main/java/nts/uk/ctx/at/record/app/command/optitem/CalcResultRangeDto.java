@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.optitem;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.record.dom.optitem.AmountRange;
@@ -30,10 +32,10 @@ public class CalcResultRangeDto implements CalcResultRangeGetMemento {
 	// ===================== Optional ======================= //
 	/** The number upper. */
 	// 回数範囲
-	private int numberUpper;
+	private BigDecimal numberUpper;
 
 	/** The number lower. */
-	private int numberLower;
+	private BigDecimal numberLower;
 
 	/** The time upper. */
 	// 時間範囲
@@ -82,8 +84,7 @@ public class CalcResultRangeDto implements CalcResultRangeGetMemento {
 	 */
 	@Override
 	public NumberRange getNumberRange() {
-		// TODO...
-		return new NumberRange();
+		return new NumberRange(this.numberUpper, this.numberLower);
 	}
 
 	/*
@@ -95,8 +96,7 @@ public class CalcResultRangeDto implements CalcResultRangeGetMemento {
 	 */
 	@Override
 	public TimeRange getTimeRange() {
-		// TODO...
-		return new TimeRange();
+		return new TimeRange(this.timeUpper, this.timeLower);
 	}
 
 	/*
@@ -108,8 +108,7 @@ public class CalcResultRangeDto implements CalcResultRangeGetMemento {
 	 */
 	@Override
 	public AmountRange getAmountRange() {
-		// TODO...
-		return new AmountRange();
+		return new AmountRange(this.amountUpper, this.amountLower);
 	}
 
 }
