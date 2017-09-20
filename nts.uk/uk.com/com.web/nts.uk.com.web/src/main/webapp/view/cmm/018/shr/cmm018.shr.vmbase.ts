@@ -31,17 +31,20 @@ module nts.uk.com.view.cmm018.shr {
         //data after grouping history of company
         export class DataDisplayComDto{
             id: number;
+            overLap: boolean;
             companyName: string;
             lstCompanyRoot: Array<CompanyAppRootDto> ;
         }
         //data after grouping history of work place
         export class DataDisplayWpDto{
             id: number;
+            overLap: boolean;
             lstWorkplaceRoot: Array<WorkPlaceAppRootDto> ;
         }
         //data after grouping history of person
         export class DataDisplayPsDto{
             id: number;
+            overLap: boolean;
             lstPersonRoot: Array<PersonAppRootDto>;
         }
         //app type
@@ -59,11 +62,13 @@ module nts.uk.com.view.cmm018.shr {
             dateRange: string;
             startDate: string;
             endDate: string;
-            constructor(id: number, dateRange: string, startDate: string, endDate: string) {
+            overLap: string;
+            constructor(id: number, dateRange: string, startDate: string, endDate: string, overLap: string) {
                 this.id = id;
                 this.dateRange = dateRange;
                 this.startDate = startDate;
                 this.endDate = endDate;
+                this.overLap = overLap;
             }  
         }
         //screenA

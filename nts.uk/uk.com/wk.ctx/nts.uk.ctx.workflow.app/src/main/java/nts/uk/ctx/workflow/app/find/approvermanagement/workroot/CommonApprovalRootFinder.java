@@ -50,7 +50,7 @@ public class CommonApprovalRootFinder {
 			List<CompanyAppRootDto> lstCompanyRoot = a.getLstCompanyRoot();
 			List<ObjectDate> lstObjDate = new ArrayList<>();
 			lstCompanyRoot.forEach(item ->{
-				lstObjDate.add(new ObjectDate(item.getCompany().getApprovalId(), item.getCompany().getStartDate(), item.getCompany().getEndDate()));
+				lstObjDate.add(new ObjectDate(item.getCompany().getApprovalId(), item.getCompany().getStartDate(), item.getCompany().getEndDate(),false));
 			});
 			//grouping history
 			ObjGrouping result = this.groupingMapping(lstObjDate);
@@ -78,7 +78,7 @@ public class CommonApprovalRootFinder {
 						}
 					}
 				}
-				kq.add(new DataDisplayComDto(index,a.getCompanyName(), lstItem));
+				kq.add(new DataDisplayComDto(index,objDate.isOverlap(),a.getCompanyName(), lstItem));
 				index++;
 			}
 			return new DataFullDto(kq, null, null);
@@ -89,7 +89,7 @@ public class CommonApprovalRootFinder {
 			List<WorkPlaceAppRootDto> lstWorkplaceRoot = a.getLstWorkplaceRoot();
 			List<ObjectDate> lstObjDate = new ArrayList<>();
 			lstWorkplaceRoot.forEach(item ->{
-				lstObjDate.add(new ObjectDate(item.getWorkplace().getApprovalId(), item.getWorkplace().getStartDate(), item.getWorkplace().getEndDate()));
+				lstObjDate.add(new ObjectDate(item.getWorkplace().getApprovalId(), item.getWorkplace().getStartDate(), item.getWorkplace().getEndDate(),false));
 			});
 			//grouping history
 			ObjGrouping result = this.groupingMapping(lstObjDate);
@@ -117,7 +117,7 @@ public class CommonApprovalRootFinder {
 						}
 					}
 				}
-				kq.add(new DataDisplayWpDto(index, lstItem));
+				kq.add(new DataDisplayWpDto(index,objDate.isOverlap(), lstItem));
 				index++;
 			}
 			return new DataFullDto(null, kq, null);
@@ -128,7 +128,7 @@ public class CommonApprovalRootFinder {
 			List<PersonAppRootDto> lstPersonRoot = a.getLstPersonRoot();
 			List<ObjectDate> lstObjDate = new ArrayList<>();
 			lstPersonRoot.forEach(item ->{
-				lstObjDate.add(new ObjectDate(item.getPerson().getApprovalId(), item.getPerson().getStartDate(), item.getPerson().getEndDate()));
+				lstObjDate.add(new ObjectDate(item.getPerson().getApprovalId(), item.getPerson().getStartDate(), item.getPerson().getEndDate(),false));
 			});
 			//grouping history
 			ObjGrouping result = this.groupingMapping(lstObjDate);
@@ -156,7 +156,7 @@ public class CommonApprovalRootFinder {
 						}
 					}
 				}
-				kq.add(new DataDisplayPsDto(index, lstItem));
+				kq.add(new DataDisplayPsDto(index, objDate.isOverlap(), lstItem));
 				index++;
 			}
 			return new DataFullDto(null, null, kq);
@@ -289,7 +289,7 @@ public class CommonApprovalRootFinder {
 				ObjDate xx = new ObjDate(date1.getStartDate(), date1.getEndDate());
 				if(!result.contains(xx)){//exist
 					result.add(new ObjDate(date1.getStartDate(), date1.getEndDate()));
-					kkk.add(new ObjectDate(date1.getApprovalId(),date1.getStartDate(), date1.getEndDate()));
+					kkk.add(new ObjectDate(date1.getApprovalId(),date1.getStartDate(), date1.getEndDate(), false));
 				}else{
 					if(!check.contains(xx)){
 						check.add(new ObjDate(date1.getStartDate(), date1.getEndDate()));
@@ -299,7 +299,7 @@ public class CommonApprovalRootFinder {
 			//TH: overlap
 			else{
 				result.add(new ObjDate(date1.getStartDate(), date1.getEndDate()));
-				kkk.add(new ObjectDate(date1.getApprovalId(),date1.getStartDate(), date1.getEndDate()));
+				kkk.add(new ObjectDate(date1.getApprovalId(),date1.getStartDate(), date1.getEndDate(), true));
 			}
 		}
 		return new ObjGrouping(check, kkk);

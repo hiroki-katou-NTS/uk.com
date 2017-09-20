@@ -6,5 +6,6 @@ import lombok.Value;
 @Value
 public class DataDisplayWpDto {
 	private int id;
+	private boolean overLap;
 	private List<WorkPlaceAppRootDto> lstWorkplaceRoot;
 }
