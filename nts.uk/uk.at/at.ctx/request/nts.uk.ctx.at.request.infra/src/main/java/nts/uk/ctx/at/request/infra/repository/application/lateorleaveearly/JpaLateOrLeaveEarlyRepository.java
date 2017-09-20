@@ -95,7 +95,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 				 applicationEntity.startDate,
 				 applicationEntity.endDate,
 				 null,
-				 appLateOrLeaveEntity.actualCancelAtr,
+			//	 appLateOrLeaveEntity.actualCancelAtr,
 				 appLateOrLeaveEntity.early1,
 				 appLateOrLeaveEntity.earlyTime1,
 				 appLateOrLeaveEntity.late1,

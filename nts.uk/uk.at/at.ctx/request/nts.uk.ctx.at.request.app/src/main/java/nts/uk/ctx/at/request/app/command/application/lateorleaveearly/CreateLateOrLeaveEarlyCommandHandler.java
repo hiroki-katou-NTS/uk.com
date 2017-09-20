@@ -50,7 +50,7 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
         // 2-1.新規画面登録前の処理」
         // TODO: Change GeneralDate.today() to StartDate and EndDate
 		newBeforeProcessRegisterSerivce.processBeforeRegister(domainLateOrLeaveEarly.getCompanyID(),
-				AppContexts.user().employeeId(), GeneralDate.today(), GeneralDate.today(), domainLateOrLeaveEarly.getPrePostAtr().value, 1, "9");
+				AppContexts.user().employeeId(), GeneralDate.today(), domainLateOrLeaveEarly.getPrePostAtr(), 1, 9);
 		//2-2.新規画面登録時承認反映情報の整理」 registerApproveInfoservice.newScreenRegisterAtApproveInfoReflect(domainLateOrLeaveEarly.get, application);
 	
 		lateOrLeaveEarlyService.createLateOrLeaveEarly(domainLateOrLeaveEarly);
