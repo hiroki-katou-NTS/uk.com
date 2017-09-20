@@ -12,9 +12,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
         enable: KnockoutObservable<boolean>;
 
         //Tab Regular
-        option1: KnockoutObservable<any>; 
+        option1: KnockoutObservable<any>;
         option2: KnockoutObservable<any>;
-   
+
         //
         date: KnockoutObservable<string>;
         roundingSplitAcquisition: KnockoutObservableArray<any>;
@@ -175,7 +175,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                         grantSingle: specialHolidayRes.grantSingle
                     };
                     self.items.push(new model.SpecialHolidayDto(specialHoliday));
-                    
+
                 });
                 $("#code-text2").focus();
                 dfd.resolve();
@@ -232,9 +232,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
 
         addSpecialHoliday(): JQueryPromise<any> {
             var self = this;
-            $(".nts-input").trigger("validate");
-            $(".nts-editor").trigger("validate");
-            $(".ntsDatepicker").trigger("validate");
+            $("#code-text").trigger("validate");
+            $("#code-text2").trigger("validate");
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -254,12 +253,14 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 specialHoliday.subCondition.useEmployee = useEmployee ? 1 : 0;
                 specialHoliday.subCondition.useCls = useCls ? 1 : 0;
                 specialHoliday.subCondition.useAge = useAge ? 1 : 0;
-                
+
                 specialHoliday.grantSingle = null;
-                specialHoliday.grantRegular.grantStartDate = new Date(specialHoliday.grantRegular.grantStartDate);
+                if (specialHoliday.grantRegular.grantStartDate) {
+                    specialHoliday.grantRegular.grantStartDate = new Date(specialHoliday.grantRegular.grantStartDate);
+                }
             }
             specialHoliday.grantMethod = self.inp_grantMethod();
-            
+
             if (self.isEnableCode()) {
                 var emptyObjectRegular: model.IGrantRegularDto = {};
                 var emptyObjectPeriodic: model.IGrantPeriodic = {};
@@ -268,11 +269,11 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 var emptyObjectGrantSingle: model.IGrantSingleDto = {};
 
                 specialHoliday["grantMethod"] = self.inp_grantMethod();
-                
+
                 service.addSpecialHoliday(specialHoliday).done(function(errors) {
                     if (errors && errors.length > 0) {
-                        self.addListError(errors);    
-                    } else {                    
+                        self.addListError(errors);
+                    } else {
                         if (self.currentCode) {
                             nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
                             self.getAllSpecialHoliday().done(function() {
@@ -360,9 +361,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             self.visibleGrantSingle(false);
             self.visibleGrant(true);
             self.workTypeNames("");
-            nts.uk.ui.errors.clearAll();
             self.isEnableCode(true);
             $("#code-text").focus();
+            nts.uk.ui.errors.clearAll();
 
         }
 
@@ -441,7 +442,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             });
 
         }
-        
+
         /**
          * CDL002：雇用選択ダイアログ
          */
@@ -455,7 +456,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 self.currentItem().subCondition().clsCodes(selected);
             });
         }
-        
+
         /**
          * CDL003：分類選択ダイアログ
          */
@@ -567,7 +568,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 this.memo = ko.observable(param.memo || '');
                 this.workTypeList = ko.observableArray(param.workTypeList || null);
                 this.grantRegular = ko.observable(param.grantRegular ? new GrantRegularDto(param.grantRegular) : new GrantRegularDto({}));
-                this.grantPeriodic = ko.observable(param.grantPeriodic? new GrantPeriodicDto(param.grantPeriodic) : new GrantPeriodicDto({}));
+                this.grantPeriodic = ko.observable(param.grantPeriodic ? new GrantPeriodicDto(param.grantPeriodic) : new GrantPeriodicDto({}));
                 this.sphdLimit = ko.observable(param.sphdLimit ? new SphdLimitDto(param.sphdLimit) : new SphdLimitDto({}));
                 this.subCondition = ko.observable(param.subCondition ? new SubConditionDto(param.subCondition) : new SubConditionDto({}));
                 this.grantSingle = ko.observable(param.grantSingle ? new GrantSingleDto(param.grantSingle) : new GrantSingleDto({}));
@@ -589,7 +590,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             grantRegularMethod: KnockoutObservable<number>;
             constructor(param: IGrantRegularDto) {
                 this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
-                this.grantStartDate = ko.observable(param.grantStartDate || (new Date).toString()); //TODO PENDING KIBAN FIX
+                this.grantStartDate = ko.observable(param.grantStartDate || null); //TODO PENDING KIBAN FIX
                 this.months = ko.observable(param.months || null);
                 this.years = ko.observable(param.years || null);
                 this.grantRegularMethod = ko.observable(param.grantRegularMethod || 0);
@@ -655,7 +656,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             clsCodes?: Array<string>;
             empCodes?: Array<string>;
         }
-        
+
         export class SubConditionDto {
             specialHolidayCode: KnockoutObservable<string>;
             useGender: KnockoutObservable<boolean>;
@@ -670,7 +671,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             ageBaseDates: KnockoutObservable<number>;
             clsCodes: KnockoutObservableArray<string>;
             empCodes: KnockoutObservableArray<string>;
-            
+
             constructor(param: ISubConditionDto) {
                 this.specialHolidayCode = ko.observable(param.specialHolidayCode || '');
                 this.useGender = ko.observable(param.useGender || false);

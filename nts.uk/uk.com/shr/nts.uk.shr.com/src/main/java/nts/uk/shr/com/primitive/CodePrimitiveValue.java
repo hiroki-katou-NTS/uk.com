@@ -2,6 +2,7 @@ package nts.uk.shr.com.primitive;
 
 import java.util.Arrays;
 
+import lombok.val;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.PrimitiveValueConstraintPackage;
 import nts.arc.primitive.constraint.StringMaxLength;
@@ -32,12 +33,22 @@ public class CodePrimitiveValue<S> extends StringPrimitiveValue<CodePrimitiveVal
      * @return result
      */
     public boolean equals(String otherCode) {
-        return this.v().equals(otherCode.trim());
+        return this.v().equals(this.reviseRawValue(otherCode));
     }
     
     @Override
     protected String getRawValueToBeValidated() {
     	return this.v().trim();
+    }
+    
+    @Override
+    protected String reviseRawValue(String rawValue) {
+    	val zpc = this.getClass().getAnnotation(ZeroPaddedCode.class);
+    	if (zpc == null) {
+    		return rawValue;
+    	}
+    	
+    	return this.pad("0", true, rawValue);
     }
     
     /**

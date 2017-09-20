@@ -342,7 +342,7 @@ module nts.uk.ui.validation {
                 isDecimalNumber = (this.option.decimallength > 0)
                 inputText = text.replaceAll(inputText.toString(), this.option.groupseperator, '');
             }
-
+            inputText = inputText.trim();
             var message: any = {};
             var validateFail = false, max = 99999999, min = 0, mantissaMaxLength;
             if (!util.isNullOrUndefined(this.constraint) && this.constraint.valueType === "HalfInt") {

@@ -85,46 +85,46 @@
 					style="display: none; z-index: 100; visibility: visible; top: 95px; left: 872px;">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_301')}</div>
 					<hr></hr>
-					<div style="margin-left: 10px; margin-bottom: 10px">
+					<div id="work-setting">
 						<div>
-							<button tabindex="22" class="sort-order-setting">#{i18n.getText('KSU001_22')}</button>
+							<button tabindex="22">#{i18n.getText('KSU001_22')}</button>
 							<span>#{i18n.getText('KSU001_30')}</span>
 						</div>
 
 						<div>
-							<button tabindex="23" class="landscape-setting">#{i18n.getText('KSU001_25')}</button>
+							<button tabindex="23" data-bind="click: openDialogL">#{i18n.getText('KSU001_25')}</button>
 							<span>#{i18n.getText('KSU001_33')}</span>
 						</div>
 
 						<div>
-							<button tabindex="24" class="vertical-scale-setting">#{i18n.getText('KSU001_26')}</button>
+							<button tabindex="24">#{i18n.getText('KSU001_26')}</button>
 							<span>#{i18n.getText('KSU001_34')}</span>
 						</div>
 
 						<div>
-							<button tabindex="25" class="team-setting">#{i18n.getText('KSU001_27')}</button>
+							<button tabindex="25" data-bind="click: openDialogN">#{i18n.getText('KSU001_27')}</button>
 							<span>#{i18n.getText('KSU001_35')}</span>
 						</div>
 
 						<div>
-							<button tabindex="26" class="people-setting">#{i18n.getText('KSU001_28')}</button>
+							<button tabindex="26">#{i18n.getText('KSU001_28')}</button>
 							<span>#{i18n.getText('KSU001_36')}</span>
 						</div>
 
 						<div>
-							<button tabindex="27" class="rank-setting">#{i18n.getText('KSU001_29')}</button>
+							<button tabindex="27">#{i18n.getText('KSU001_29')}</button>
 							<span>#{i18n.getText('KSU001_37')}</span>
 						</div>
 					</div>
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_302')}</div>
 					<hr></hr>
-					<div style="margin-left: 10px">
+					<div id="company-setting">
 						<div>
-							<button tabindex="28" class="external-budget-record">#{i18n.getText('KSU001_23')}</button>
+							<button tabindex="28">#{i18n.getText('KSU001_23')}</button>
 							<span>#{i18n.getText('KSU001_31')}</span>
 						</div>
 						<div>
-							<button tabindex="29" class="support-setting">#{i18n.getText('KSU001_24')}</button>
+							<button tabindex="29">#{i18n.getText('KSU001_24')}</button>
 							<span>#{i18n.getText('KSU001_32')}</span>
 						</div>
 					</div>
@@ -316,7 +316,7 @@
 							</div>
 						</div>
 
-						<div id="oViewModel" data-bind="if: selectedModeDisplay() == 1">
+						<div id="oViewModel">
 							<div data-bind="with: $parent.viewO">
 								<ui:include src="../o/index.xhtml" />
 							</div>

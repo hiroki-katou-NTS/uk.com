@@ -60,7 +60,7 @@ public class SpecialHoliday extends AggregateRoot {
 	 */
 	public void validateInput() {
 		if (CollectionUtil.isEmpty(workTypeList)) {
-			throw new BusinessException("Msg_12");
+			throw new BusinessException("Msg_93");
 		}
 
 		if (this.isMethodManageRemainNumber()) {

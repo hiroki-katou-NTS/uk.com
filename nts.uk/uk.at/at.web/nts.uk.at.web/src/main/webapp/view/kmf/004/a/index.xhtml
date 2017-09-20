@@ -10,6 +10,7 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode
 				nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayName
+				nts.uk.ctx.at.shared.dom.specialholiday.grantday.FixNumberDays
 				nts.uk.shr.com.primitive.Memo
 				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
@@ -53,7 +54,7 @@
 							data-bind="ntsFormLabel: {required: true,constraint:['SpecialHolidayCode','SpecialHolidayName']}">#{i18n.getText('KMF004_9')}</div>
 						<span><input id="code-text"
 							style="width: 40px; margin-left: -1px;"
-							data-bind="ntsTextEditor: {value: specialHolidayCode, constraint:'SpecialHolidayCode', required: true, enable:$parent.isEnableCode, immediate: true ,option: {autofill:true, filldirection:'left'}, name: '#[KMF004_10]'}" /></span>
+							data-bind="ntsTextEditor: {value: specialHolidayCode,constraint:'SpecialHolidayCode' , required: true, enable:$parent.isEnableCode, immediate: true ,option: {autofill:true, filldirection:'left'}, name: '#[KMF004_10]'}" /></span>
 						<span><input id="code-text2" style="width: 180px"
 							data-bind="ntsTextEditor: {value: specialHolidayName, required: true, name: '#[KMF004_8]'}" /></span>
 						<div id="addtitional-set"
@@ -361,7 +362,8 @@
 												width: '60'}),
 												required: true,
 												enable: grantDaySingleType()==0,
-												name: '#[KMF004_31]'}" />
+												name: '#[KMF004_31]'},
+												constraint:'FixNumberDays'" />
 										</div>
 									</div>
 									<div>

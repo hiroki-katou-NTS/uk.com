@@ -100,13 +100,15 @@ public class SubCondition extends DomainObject {
 	 * @return
 	 */
 	public static SubCondition createFromJavaType(String companyId, String specialHolidayCode, int useGender,
-			int useEmployee, int useCls, int useAge, int genderAtr, int limitAgeFrom, int limitAgeTo,
+			int useEmployee, int useCls, int useAge, int genderAtr, Integer limitAgeFrom, Integer limitAgeTo,
 			int ageCriteriaAtr, int ageBaseYearAtr, int ageBaseDates) {
 		return new SubCondition(companyId, new SpecialHolidayCode(specialHolidayCode),
 				EnumAdaptor.valueOf(useGender, UseGender.class), EnumAdaptor.valueOf(useEmployee, UseEmployee.class),
 				EnumAdaptor.valueOf(useCls, UseCls.class), EnumAdaptor.valueOf(useAge, UseAge.class),
-				EnumAdaptor.valueOf(genderAtr, GenderAtr.class), new LimitAgeFrom(limitAgeFrom),
-				new LimitAgeTo(limitAgeTo), EnumAdaptor.valueOf(ageCriteriaAtr, AgeCriteriaAtr.class),
+				EnumAdaptor.valueOf(genderAtr, GenderAtr.class),
+				limitAgeFrom != null ? new LimitAgeFrom(limitAgeFrom) : null,
+				limitAgeTo != null ? new LimitAgeTo(limitAgeTo) : null,
+				EnumAdaptor.valueOf(ageCriteriaAtr, AgeCriteriaAtr.class),
 				EnumAdaptor.valueOf(ageBaseYearAtr, AgeBaseYearAtr.class), new AgeBaseDates(ageBaseDates));
 	}
 }

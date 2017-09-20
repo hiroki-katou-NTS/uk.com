@@ -48,7 +48,7 @@ public class SphdLimit extends DomainObject {
 			}
 		}
 		if (this.limitCarryoverDays == null || this.limitCarryoverDays.v() < 1) {
-			throw new BusinessException("Msg_98");
+			throw new BusinessException("Msg_104");
 		}
 	}
 
@@ -64,10 +64,11 @@ public class SphdLimit extends DomainObject {
 	 * @param specialVacationMethod
 	 * @return
 	 */
-	public static SphdLimit createFromJavaType(String companyId, String specialHolidayCode, int specialVacationMonths,
-			int specialVacationYears, int grantCarryForward, int limitCarryoverDays, int specialVacationMethod) {
+	public static SphdLimit createFromJavaType(String companyId, String specialHolidayCode, Integer specialVacationMonths,
+			Integer specialVacationYears, int grantCarryForward, int limitCarryoverDays, int specialVacationMethod) {
 		return new SphdLimit(companyId, new SpecialHolidayCode(specialHolidayCode),
-				new SpecialVacationMonths(specialVacationMonths), new SpecialVacationYears(specialVacationYears),
+				specialVacationMonths != null ? new SpecialVacationMonths(specialVacationMonths) : null, 
+				specialVacationYears != null ?  new SpecialVacationYears(specialVacationYears) : null,
 				EnumAdaptor.valueOf(grantCarryForward, GrantCarryForward.class),
 				new LimitCarryoverDays(limitCarryoverDays),
 				EnumAdaptor.valueOf(specialVacationMethod, SpecialVacationMethod.class));
