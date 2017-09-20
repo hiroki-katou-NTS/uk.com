@@ -10,6 +10,7 @@ import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.flexworkset.FlexWorkSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidWorkSetting;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -39,10 +40,12 @@ public class WorkTime extends AggregateRoot {
 	private FlexWorkSetting flexWorkSetting;
 
 	private PredetermineTimeSet predetermineTimeSet;
+	
+	private FluidWorkSetting fluidWorkSetting;
 
 	public WorkTime(SiftCode siftCD, String companyID, WorkTimeNote note, WorkTimeDivision workTimeDivision,
 			UseSetting dispAtr, WorkTimeDisplayName workTimeDisplayName, FixedWorkSetting fixedWorkSetting ,
-			FlexWorkSetting flexWorkSetting, PredetermineTimeSet predetermineTimeSet) {
+			FlexWorkSetting flexWorkSetting, PredetermineTimeSet predetermineTimeSet,FluidWorkSetting fluidWorkSetting) {
 		super();
 		this.siftCD = siftCD;
 		this.companyID = companyID;
@@ -53,6 +56,7 @@ public class WorkTime extends AggregateRoot {
 		this.fixedWorkSetting = fixedWorkSetting;
 		this.flexWorkSetting = flexWorkSetting;
 		this.predetermineTimeSet = predetermineTimeSet;
+		this.fluidWorkSetting = fluidWorkSetting;
 	}
 	
 	

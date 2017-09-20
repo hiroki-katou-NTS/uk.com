@@ -19,4 +19,8 @@ public class TimeSpanWithRounding extends TimeSpanForCalc {
 	public int roundedLengthAsMinutesWithDeductingBy(int deductingTimeAsMinutes) {
 		return this.rounding.get().round(this.lengthAsMinutes() - deductingTimeAsMinutes);
 	}
+	
+	public TimeSpanWithRounding newTimeSpan(TimeSpanForCalc newTimeSpan) {
+		return new TimeSpanWithRounding(newTimeSpan.getStart(), newTimeSpan.getEnd(), rounding);
+	}
 }

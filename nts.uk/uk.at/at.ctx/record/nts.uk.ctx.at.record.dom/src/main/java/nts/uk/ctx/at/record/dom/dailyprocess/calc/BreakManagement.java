@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import lombok.Value;
 import nts.gul.util.value.Finally;
@@ -10,6 +11,7 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeOfDaily;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.calcset.SetForNoStamp;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidBreakTimeOfCalcMethod;
@@ -131,5 +133,13 @@ public class BreakManagement {
 		return breakTimeSheetOfDaily.stream().filter(tc -> tc.getBreakClassification().isReferenceFromSchedule()).findFirst();
 	}
 	
-
+	/**
+	 * 指定した時間帯に含まれる休憩時間の合計値を返す
+	 * @param baseTimeSheet
+	 * @return
+	 */
+	public int sumBreakTimeIn(TimeSpanForCalc baseTimeSheet) {
+		return this.breakTimeSheetOfDaily.stream()
+				.collect(Collectors.summingInt(b -> b.sumBreakTimeIn(baseTimeSheet)));
+	}
 }

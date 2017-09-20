@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.fluidworkset;
 
 import lombok.Getter;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidWorkTimeSetting;
 
 /**
  * The Class WeekdayWorkTime.
@@ -14,7 +15,7 @@ import lombok.Getter;
 public class FluWeekdayWorkTime {
 
 	// 勤務時間帯
-	// private 流動勤務時間帯設定 workingTime;
+	private FluidWorkTimeSetting workTimeSheet;
 
 	/** The rest time. */
 	// 休憩時間帯

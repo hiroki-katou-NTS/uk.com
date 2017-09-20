@@ -33,4 +33,7 @@ public class PredetermineTimeSet extends AggregateRoot {
 		return this.dateStartTime.minute() + (int)this.rangeTimeDay.minute();
 	}
 
+	public TimeSheetWithUseAtr getTimeSheetOf(int workNo) {
+		return this.specifiedTimeSheet.getMatchWorkNoTimeSheet(workNo);
+	}
 }

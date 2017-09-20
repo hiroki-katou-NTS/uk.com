@@ -11,4 +11,5 @@ import lombok.Value;
 public class AttendanceLeavingWork {
 	private WorkStampWithActualStamp attendance;
 	private WorkStampWithActualStamp leaveWork;
+	private int workNo;
 }

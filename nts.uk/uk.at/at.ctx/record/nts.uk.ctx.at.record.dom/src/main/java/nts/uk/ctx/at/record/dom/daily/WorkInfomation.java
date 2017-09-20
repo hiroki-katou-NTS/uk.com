@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.record.dom.daily;
 
+import java.util.List;
+
 import lombok.Value;
 
 /**
@@ -11,5 +13,9 @@ import lombok.Value;
 public class WorkInfomation {
 	private String syainID;
 	private List<ScheduleTimeSheet> workScheduleTimeSheet;
+	
+	
+	
+	
 	
 }

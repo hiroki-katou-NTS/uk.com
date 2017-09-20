@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet;
+package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 /**
  * 残業枠時間
  * @author keisuke_hoshina

@@ -15,4 +15,12 @@ public class AttendanceLeavingWorkOfDaily {
 	private String syainID;
 	private WorkTimes workTimes;
 	private List<AttendanceLeavingWork> attendanceLeavingWorkTime;
+	
+	
+	public AttendanceLeavingWork getAttendanceLeavingWork(int workNo) {
+		
+		
+		
+	}
+	
 }
