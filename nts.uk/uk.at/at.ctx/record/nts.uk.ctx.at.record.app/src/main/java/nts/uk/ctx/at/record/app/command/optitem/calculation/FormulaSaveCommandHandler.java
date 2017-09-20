@@ -15,17 +15,24 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
+import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrder;
+import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrderRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class OptionalItemSaveCommandHandler.
+ * The Class FormulaSaveCommandHandler.
  */
 @Stateless
 @Transactional
 public class FormulaSaveCommandHandler extends CommandHandler<FormulaSaveCommand> {
 
+	/** The repository. */
 	@Inject
 	private FormulaRepository repository;
+
+	/** The order repo. */
+	@Inject
+	private FormulaDispOrderRepository orderRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -37,14 +44,22 @@ public class FormulaSaveCommandHandler extends CommandHandler<FormulaSaveCommand
 	@Override
 	protected void handle(CommandHandlerContext<FormulaSaveCommand> context) {
 		FormulaSaveCommand command = context.getCommand();
-		List<Formula> list = command.getListCalcFormula().stream().map(item -> {
+		String companyId = AppContexts.user().companyCode();
+
+		List<Formula> formulas = command.getListCalcFormula().stream().map(item -> {
 			return new Formula(item);
 		}).collect(Collectors.toList());
 
+		List<FormulaDispOrder> dispOrders = command.getListCalcFormula().stream().map(item -> {
+			return new FormulaDispOrder(item);
+		}).collect(Collectors.toList());
+
 		// TODO
-		this.repository.remove(AppContexts.user().companyCode(), "itemNo");
-		this.repository.create(list);
-		;
+		this.repository.remove(companyId, "itemNo");
+		this.orderRepo.remove(companyId, "itemNo");
+
+		this.repository.create(formulas);
+		this.orderRepo.create(dispOrders);
 	}
 
 }

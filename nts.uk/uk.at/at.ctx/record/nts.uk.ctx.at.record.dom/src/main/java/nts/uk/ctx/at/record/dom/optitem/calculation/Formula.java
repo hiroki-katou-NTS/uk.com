@@ -44,7 +44,7 @@ public class Formula extends AggregateRoot {
 
 	/** The formula setting. */
 	// 計算式設定
-	private CalcFormulaSetting formulaSetting;
+	private CalcFormulaSetting calcFormulaSetting;
 
 	// ===================== Optional ======================= //
 	/** The monthly rounding. */
@@ -62,11 +62,11 @@ public class Formula extends AggregateRoot {
 	 */
 	public Formula(FormulaGetMemento memento) {
 		this.companyId = memento.getCompanyId();
-		this.formulaId = memento.getOptionalItemFormulaId();
+		this.formulaId = memento.getFormulaId();
 		this.optionalItemNo = memento.getOptionalItemNo();
-		this.formulaName = memento.getOptionalItemFormulaName();
-		this.formulaSetting = memento.getOptionalItemFormulaSetting();
-		this.formulaAtr = memento.getCalculationFormulaAtr();
+		this.formulaName = memento.getFormulaName();
+		this.calcFormulaSetting = memento.getCalcFormulaSetting();
+		this.formulaAtr = memento.getCalcFormulaAtr();
 		this.symbol = memento.getSymbol();
 		this.monthlyRounding = memento.getMonthlyRounding();
 		this.dailyRounding = memento.getDailyRounding();
@@ -79,11 +79,11 @@ public class Formula extends AggregateRoot {
 	 */
 	public void saveToMemento(FormulaSetMemento memento) {
 		memento.setCompanyId(this.companyId);
-		memento.setOptionalItemFormulaId(this.formulaId);
+		memento.setFormulaId(this.formulaId);
 		memento.setOptionalItemNo(this.optionalItemNo);
-		memento.setOptionalItemFormulaName(this.formulaName);
-		memento.setOptionalItemFormulaSetting(this.formulaSetting);
-		memento.setCalculationFormulaAtr(this.formulaAtr);
+		memento.setFormulaName(this.formulaName);
+		memento.setCalcFormulaSetting(this.calcFormulaSetting);
+		memento.setCalcFormulaAtr(this.formulaAtr);
 		memento.setSymbol(this.symbol);
 		memento.setMonthlyRounding(this.monthlyRounding);
 		memento.setDailyRounding(this.dailyRounding);

@@ -24,36 +24,31 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class FormulaDto implements FormulaSetMemento {
 
 	/** The formula id. */
-	// 計算式ID
 	private String formulaId;
 
 	/** The optional item no. */
-	// 任意項目NO
 	private String optionalItemNo;
 
 	/** The symbol value. */
-	// 記号
 	private String symbolValue;
 
+	/** The order no. */
+	private int orderNo;
+
 	/** The formula atr. */
-	// 属性
 	private int formulaAtr;
 
 	/** The formula name. */
-	// 計算式名称
 	private String formulaName;
 
 	/** The formula setting. */
-	// 計算式設定
 	private CalcFormulaSettingDto calcFormulaSetting;
 
 	// ===================== Optional ======================= //
 	/** The monthly rounding. */
-	// 月別端数処理
 	private RoundingDto monthlyRounding;
 
 	/** The daily rounding. */
-	// 日別端数処理
 	private RoundingDto dailyRounding;
 
 	/*
@@ -75,7 +70,7 @@ public class FormulaDto implements FormulaSetMemento {
 	 * FormulaId)
 	 */
 	@Override
-	public void setOptionalItemFormulaId(FormulaId id) {
+	public void setFormulaId(FormulaId id) {
 		this.formulaId = id.v();
 	}
 
@@ -98,7 +93,7 @@ public class FormulaDto implements FormulaSetMemento {
 	 * FormulaName)
 	 */
 	@Override
-	public void setOptionalItemFormulaName(FormulaName name) {
+	public void setFormulaName(FormulaName name) {
 		this.formulaName = name.v();
 	}
 
@@ -110,7 +105,7 @@ public class FormulaDto implements FormulaSetMemento {
 	 * calculation.CalcFormulaSetting)
 	 */
 	@Override
-	public void setOptionalItemFormulaSetting(CalcFormulaSetting setting) {
+	public void setCalcFormulaSetting(CalcFormulaSetting setting) {
 		setting.saveToMemento(this.calcFormulaSetting);
 	}
 
@@ -122,7 +117,7 @@ public class FormulaDto implements FormulaSetMemento {
 	 * FormulaAtr)
 	 */
 	@Override
-	public void setCalculationFormulaAtr(FormulaAtr atr) {
+	public void setCalcFormulaAtr(FormulaAtr atr) {
 		this.formulaAtr = atr.value;
 	}
 

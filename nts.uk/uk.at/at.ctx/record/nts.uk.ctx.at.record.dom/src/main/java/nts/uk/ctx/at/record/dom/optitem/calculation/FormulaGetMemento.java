@@ -8,7 +8,7 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Interface OptionalItemFormulaGetMemento.
+ * The Interface FormulaGetMemento.
  */
 public interface FormulaGetMemento {
 
@@ -20,11 +20,11 @@ public interface FormulaGetMemento {
 	CompanyId getCompanyId();
 
 	/**
-	 * Gets the optional item formula id.
+	 * Gets the formula id.
 	 *
-	 * @return the optional item formula id
+	 * @return the formula id
 	 */
-	FormulaId getOptionalItemFormulaId();
+	FormulaId getFormulaId();
 
 	/**
 	 * Gets the optional item no.
@@ -34,25 +34,25 @@ public interface FormulaGetMemento {
 	OptionalItemNo getOptionalItemNo();
 
 	/**
-	 * Gets the optional item formula name.
+	 * Gets the formula name.
 	 *
-	 * @return the optional item formula name
+	 * @return the formula name
 	 */
-	FormulaName getOptionalItemFormulaName();
+	FormulaName getFormulaName();
 
 	/**
-	 * Gets the optional item formula setting.
+	 * Gets the calc formula setting.
 	 *
-	 * @return the optional item formula setting
+	 * @return the calc formula setting
 	 */
-	CalcFormulaSetting getOptionalItemFormulaSetting();
+	CalcFormulaSetting getCalcFormulaSetting();
 
 	/**
-	 * Gets the calculation formula atr.
+	 * Gets the calc formula atr.
 	 *
-	 * @return the calculation formula atr
+	 * @return the calc formula atr
 	 */
-	FormulaAtr getCalculationFormulaAtr();
+	FormulaAtr getCalcFormulaAtr();
 
 	/**
 	 * Gets the symbol.

@@ -4,9 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.optitem.calculation;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
@@ -23,18 +20,16 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.OperatorAtr;
 public class FormulaSettingDto implements FormulaSettingGetMemento {
 
 	/** The minus segment. */
-	// マイナス区分
 	private int minusSegment;
 
 	/** The operator. */
-	// 演算子
 	private int operator;
 
-	/** The formula setting items. */
-	// 計算式設定項目
-	private List<FormulaSettingItemDto> settingItems;
+	/** The left item. */
+	private FormulaSettingItemDto leftItem;
 
-	
+	/** The right item. */
+	private FormulaSettingItemDto rightItem;
 
 	/*
 	 * (non-Javadoc)
@@ -65,11 +60,23 @@ public class FormulaSettingDto implements FormulaSettingGetMemento {
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingGetMemento#
-	 * getFormulaSettingItems()
+	 * getLeftItem()
 	 */
 	@Override
-	public List<FormulaSettingItem> getFormulaSettingItems() {
-		return this.settingItems.stream().map(item -> new FormulaSettingItem(item)).collect(Collectors.toList());
+	public FormulaSettingItem getLeftItem() {
+		return new FormulaSettingItem(this.leftItem);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingGetMemento#
+	 * getRightItem()
+	 */
+	@Override
+	public FormulaSettingItem getRightItem() {
+		return new FormulaSettingItem(this.rightItem);
 	}
 
 }

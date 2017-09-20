@@ -11,6 +11,12 @@ import nts.arc.layer.dom.DomainObject;
  * The Class AutoCalRestTimeSetting.
  */
 // 休出時間の自動計算設定
+
+/**
+ * Gets the late night time.
+ *
+ * @return the late night time
+ */
 @Getter
 public class AutoCalRestTimeSetting extends DomainObject {
 
@@ -25,14 +31,22 @@ public class AutoCalRestTimeSetting extends DomainObject {
 	/**
 	 * Instantiates a new auto cal rest time setting.
 	 *
-	 * @param restTime
-	 *            the rest time
-	 * @param lateNightTime
-	 *            the late night time
+	 * @param restTime the rest time
+	 * @param lateNightTime the late night time
 	 */
-	public AutoCalRestTimeSetting(AutoCalSetting restTime, AutoCalSetting lateNightTime) {
+	public AutoCalRestTimeSetting(AutoCalRestTimeSettingGetMemento memento) {
 		super();
-		this.restTime = restTime;
-		this.lateNightTime = lateNightTime;
+		this.restTime = memento.getRestTime();
+		this.lateNightTime = memento.getLateNightTime();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(AutoCalRestTimeSettingSetMemento memento) {
+		memento.setLateNightTime(this.lateNightTime);
+		memento.setRestTime(this.restTime);
 	}
 }

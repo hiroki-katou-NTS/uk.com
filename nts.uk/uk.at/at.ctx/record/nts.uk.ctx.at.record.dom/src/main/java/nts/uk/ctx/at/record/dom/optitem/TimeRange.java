@@ -5,6 +5,8 @@
 package nts.uk.ctx.at.record.dom.optitem;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -13,7 +15,7 @@ import nts.arc.layer.dom.DomainObject;
 // 時間範囲
 // 事前条件 : 上限値≧下限値
 @Getter
-public class TimeRange extends DomainObject{
+public class TimeRange extends DomainObject {
 
 	/** The upper limit. */
 	// 上限値
@@ -22,4 +24,34 @@ public class TimeRange extends DomainObject{
 	/** The lower limit. */
 	// 下限値
 	private TimeRangeValue lowerLimit;
+
+	/**
+	 * Instantiates a new time range.
+	 *
+	 * @param upperLimit the upper limit
+	 * @param lowerLimit the lower limit
+	 */
+	public TimeRange(int upperLimit, int lowerLimit) {
+		super();
+		this.upperLimit = new TimeRangeValue(upperLimit);
+		this.lowerLimit = new TimeRangeValue(lowerLimit);
+
+		// Validate
+		if (this.isInvalidRange()) {
+			throw new BusinessException(new RawErrorMessage("Upper limit >= Lower limit"));
+		}
+	}
+
+	/**
+	 * Checks if is invalid range.
+	 *
+	 * @return true, if is invalid range
+	 */
+	private boolean isInvalidRange() {
+		if (this.upperLimit.lessThan(this.lowerLimit)) {
+			return true;
+		}
+		return false;
+	}
+
 }

@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
-import java.util.List;
-
 /**
  * The Interface FormulaSettingGetMemento.
  */
@@ -26,9 +24,16 @@ public interface FormulaSettingGetMemento {
 	OperatorAtr getOperatorAtr();
 
 	/**
-	 * Gets the formula setting items.
+	 * Gets the left item.
 	 *
-	 * @return the formula setting items
+	 * @return the left item
 	 */
-	List<FormulaSettingItem> getFormulaSettingItems();
+	FormulaSettingItem getLeftItem();
+
+	/**
+	 * Gets the right item.
+	 *
+	 * @return the right item
+	 */
+	FormulaSettingItem getRightItem();
 }

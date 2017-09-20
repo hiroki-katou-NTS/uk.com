@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.app.command.optitem.calculation;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalcFormulaSetting;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaAtr;
@@ -15,6 +16,8 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaName;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Rounding;
 import nts.uk.ctx.at.record.dom.optitem.calculation.Symbol;
+import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.DispOrder;
+import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrderGetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -23,39 +26,31 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Getter
 @Setter
-public class FormulaDto implements FormulaGetMemento {
-
-	/** The formula id. */
-	// 計算式ID
-	private String formulaId;
+public class FormulaDto implements FormulaGetMemento, FormulaDispOrderGetMemento {
 
 	/** The optional item no. */
-	// 任意項目NO
 	private String optionalItemNo;
 
 	/** The symbol value. */
-	// 記号
 	private String symbolValue;
 
+	/** The order no. */
+	private int orderNo;
+
 	/** The formula atr. */
-	// 属性
 	private int formulaAtr;
 
 	/** The formula name. */
-	// 計算式名称
 	private String formulaName;
 
 	/** The formula setting. */
-	// 計算式設定
 	private CalcFormulaSettingDto calcFormulaSetting;
 
 	// ===================== Optional ======================= //
 	/** The monthly rounding. */
-	// 月別端数処理
 	private RoundingDto monthlyRounding;
 
 	/** The daily rounding. */
-	// 日別端数処理
 	private RoundingDto dailyRounding;
 
 	/*
@@ -76,8 +71,9 @@ public class FormulaDto implements FormulaGetMemento {
 	 * getOptionalItemFormulaId()
 	 */
 	@Override
-	public FormulaId getOptionalItemFormulaId() {
-		return new FormulaId(this.formulaId);
+	public FormulaId getFormulaId() {
+		// Random Id.
+		return new FormulaId(IdentifierUtil.randomUniqueId());
 	}
 
 	/*
@@ -98,7 +94,7 @@ public class FormulaDto implements FormulaGetMemento {
 	 * getOptionalItemFormulaName()
 	 */
 	@Override
-	public FormulaName getOptionalItemFormulaName() {
+	public FormulaName getFormulaName() {
 		return new FormulaName(this.formulaName);
 	}
 
@@ -109,7 +105,7 @@ public class FormulaDto implements FormulaGetMemento {
 	 * getOptionalItemFormulaSetting()
 	 */
 	@Override
-	public CalcFormulaSetting getOptionalItemFormulaSetting() {
+	public CalcFormulaSetting getCalcFormulaSetting() {
 		return new CalcFormulaSetting(this.calcFormulaSetting);
 	}
 
@@ -120,7 +116,7 @@ public class FormulaDto implements FormulaGetMemento {
 	 * getCalculationFormulaAtr()
 	 */
 	@Override
-	public FormulaAtr getCalculationFormulaAtr() {
+	public FormulaAtr getCalcFormulaAtr() {
 		return EnumAdaptor.valueOf(this.formulaAtr, FormulaAtr.class);
 	}
 
@@ -156,5 +152,16 @@ public class FormulaDto implements FormulaGetMemento {
 	@Override
 	public Rounding getDailyRounding() {
 		return new Rounding(this.dailyRounding);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.optitem.calculation.disporder.
+	 * FormulaDispOrderGetMemento#getDispOrder()
+	 */
+	@Override
+	public DispOrder getDispOrder() {
+		return new DispOrder(this.orderNo);
 	}
 }

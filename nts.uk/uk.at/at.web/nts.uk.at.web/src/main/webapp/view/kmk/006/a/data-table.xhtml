@@ -7,8 +7,8 @@
 <body>
 	<ui:composition>
 		<div tabindex="9" id="tab-panel" class="tabPanel"
-			data-bind="ntsTabPanel: { dataSource: $parent.tabs, active: selectedTab}">
-			<div class="tab-content-1" data-bind="with: estimateTimeModel">
+			data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+			<div class="tab-content-1">
 				<div class="control-group">
 					<div class="pull-left">
 						<div data-bind="ntsFormLabel: {}">
@@ -31,14 +31,38 @@
 								<td>
 									<div>#{i18n.getText('KMK006_19')}</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
-
 								<td>
-									<div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: autoCalAtrOvertimeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
 							</tr>
 						</table>
 					</div>
@@ -54,20 +78,44 @@
 								<td>
 									<div>#{i18n.getText('KMK006_19')}</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
-
 								<td>
-									<div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: autoCalAtrOvertimeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
 							</tr>
 						</table>
 					</div>
 				</div>
 			</div>
-			<div class="tab-content-2" data-bind="with: estimatePriceModel">
+			<div class="tab-content-2">
 				<div class="control-group">
 					<div class="pull-left">
 						<div data-bind="ntsFormLabel: {}">
@@ -86,14 +134,38 @@
 								<td>
 									<div>#{i18n.getText('KMK006_19')}</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
-
 								<td>
-									<div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: autoCalAtrOvertimeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
 							</tr>
 						</table>
 					</div>
@@ -109,14 +181,38 @@
 								<td>
 									<div>#{i18n.getText('KMK006_19')}</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
-
 								<td>
-									<div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: autoCalAtrOvertimeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+ 									enable: true,
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
 							</tr>
 						</table>
 					</div>
@@ -138,14 +234,36 @@
 								<td>
 									<div>#{i18n.getText('KMK006_19')}</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
-
 								<td>
-									<div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: autoCalAtrOvertimeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
 							</tr>
 						</table>
 					</div>
@@ -161,14 +279,36 @@
 								<td>
 									<div>#{i18n.getText('KMK006_19')}</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
-
 								<td>
-									<div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: autoCalAtrOvertimeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
 							</tr>
 						</table>
 					</div>
@@ -190,14 +330,36 @@
 								<td>
 									<div>#{i18n.getText('KMK006_19')}</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
-
 								<td>
-									<div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: autoCalAtrOvertimeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
 							</tr>
 						</table>
 					</div>
@@ -213,20 +375,42 @@
 								<td>
 									<div>#{i18n.getText('KMK006_19')}</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
-
 								<td>
-									<div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: autoCalAtrOvertimeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
 							</tr>
 						</table>
 					</div>
 				</div>
 			</div>
-			<div class="tab-content-3" data-bind="with: estimateDaysModel">
+			<div class="tab-content-3">
 				<div class="control-group">
 
 					<div class="pull-left">
@@ -246,14 +430,36 @@
 								<td>
 									<div>#{i18n.getText('KMK006_19')}</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
-
 								<td>
-									<div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: autoCalAtrOvertimeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
 							</tr>
 						</table>
 					</div>
@@ -269,14 +475,36 @@
 								<td>
 									<div>#{i18n.getText('KMK006_19')}</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
-
 								<td>
-									<div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+									<div id="combo-box" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: autoCalAtrOvertimeEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
 								</td>
-								<td><input tabindex="4" id="itemname" style="width: 100px"
-									class="inputCheckBox" /></td>
+								<td><div class="inputDivLabel">#{i18n.getText('KMK006_20')}</div>
+								</td>
+								<td>
+									<div id="combo-boxTimeLimit" tabindex="6"
+										data-bind="ntsComboBox: {
+									name: '#[KMK009_14]',
+									options: timeLimitUpperLimitEnum,
+									optionsValue: 'value',
+									visibleItemsCount: 3,
+ 									value: valueEnum, 
+									optionsText: 'localizedName',
+									columns: [
+										{ prop: 'localizedName', length: 10 },
+									]}">
+									</div>
+								</td>
 							</tr>
 						</table>
 					</div>

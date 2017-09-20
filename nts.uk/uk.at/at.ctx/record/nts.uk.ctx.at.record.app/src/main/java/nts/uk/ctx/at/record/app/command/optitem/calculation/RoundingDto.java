@@ -20,21 +20,18 @@ import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
 public class RoundingDto implements RoundingGetMemento {
 
 	/** The number rounding. */
-	// 数値丸め
 	private int numberRounding;
 
 	/** The number unit. */
 	private int numberUnit;
 
 	/** The time rounding. */
-	// 時間丸め
 	private int timeRounding;
 
 	/** The time unit. */
 	private int timeUnit;
 
 	/** The amount rounding. */
-	// 金額丸め
 	private int amountRounding;
 
 	/** The amount unit. */
@@ -63,8 +60,8 @@ public class RoundingDto implements RoundingGetMemento {
 	@Override
 	public TimeRoundingSetting getTimeRoundingSetting() {
 		return new TimeRoundingSetting(
-				EnumAdaptor.valueOf(this.numberUnit, nts.uk.ctx.at.shared.dom.common.timerounding.Unit.class),
-				EnumAdaptor.valueOf(this.numberUnit, nts.uk.ctx.at.shared.dom.common.timerounding.Rounding.class));
+				EnumAdaptor.valueOf(this.timeUnit, nts.uk.ctx.at.shared.dom.common.timerounding.Unit.class),
+				EnumAdaptor.valueOf(this.timeRounding, nts.uk.ctx.at.shared.dom.common.timerounding.Rounding.class));
 	}
 
 	/*
@@ -76,7 +73,7 @@ public class RoundingDto implements RoundingGetMemento {
 	@Override
 	public AmountRounding getAmountRounding() {
 		return new AmountRounding(
-				EnumAdaptor.valueOf(this.numberUnit, nts.uk.ctx.at.shared.dom.common.amountrounding.Unit.class),
-				EnumAdaptor.valueOf(this.numberUnit, nts.uk.ctx.at.shared.dom.common.amountrounding.Rounding.class));
+				EnumAdaptor.valueOf(this.amountUnit, nts.uk.ctx.at.shared.dom.common.amountrounding.Unit.class),
+				EnumAdaptor.valueOf(this.amountRounding, nts.uk.ctx.at.shared.dom.common.amountrounding.Rounding.class));
 	}
 }

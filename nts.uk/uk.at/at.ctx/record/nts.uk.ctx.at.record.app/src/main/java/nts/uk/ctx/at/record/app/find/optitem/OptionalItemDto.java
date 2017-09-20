@@ -24,31 +24,24 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class OptionalItemDto implements OptionalItemSetMemento {
 
 	/** The optional item no. */
-	// 任意項目NO
 	private String optionalItemNo;
 
 	/** The optional item name. */
-	// 任意項目名称
 	private String optionalItemName;
 
 	/** The optional item atr. */
-	// 属性
 	private int optionalItemAtr;
 
 	/** The usage classification. */
-	// 任意項目利用区分
 	private int usageAtr;
 
 	/** The emp condition classification. */
-	// 雇用条件区分
 	private int empConditionAtr;
 
 	/** The performance classification. */
-	// 実績区分
 	private int performanceAtr;
 
 	/** The calculation result range. */
-	// 計算結果の範囲
 	private CalcResultRangeDto calcResultRange;
 
 	/*

@@ -32,12 +32,12 @@ public interface FormulaDispOrderGetMemento {
 	 *
 	 * @return the optional item formula id
 	 */
-	FormulaId getOptionalItemFormulaId();
+	FormulaId getFormulaId();
 
 	/**
 	 * Gets the disp order.
 	 *
 	 * @return the disp order
 	 */
-	int getDispOrder();
+	DispOrder getDispOrder();
 }

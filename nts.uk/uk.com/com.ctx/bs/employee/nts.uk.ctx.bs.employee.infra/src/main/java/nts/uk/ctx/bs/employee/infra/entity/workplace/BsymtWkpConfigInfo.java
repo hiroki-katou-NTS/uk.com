@@ -11,14 +11,17 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class BsymtWkpConfigInfo.
  */
 @Entity
+@Getter
+@Setter
 @Table(name = "BSYMT_WKP_CONFIG_INFO")
-
 public class BsymtWkpConfigInfo extends UkJpaEntity implements Serializable {
     
 	/** The Constant serialVersionUID. */
@@ -36,6 +39,13 @@ public class BsymtWkpConfigInfo extends UkJpaEntity implements Serializable {
     @Column(name = "HIERARCHY_CD")
     private String hierarchyCd;
 
+	/**
+	 * Instantiates a new bsymt wkp config info.
+	 */
+	public BsymtWkpConfigInfo() {
+		super();
+	}
+    
     /* (non-Javadoc)
      * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
      */
@@ -76,5 +86,4 @@ public class BsymtWkpConfigInfo extends UkJpaEntity implements Serializable {
 	protected Object getKey() {	
 		return this.bsymtWkpConfigInfoPK;
 	}
-    
 }

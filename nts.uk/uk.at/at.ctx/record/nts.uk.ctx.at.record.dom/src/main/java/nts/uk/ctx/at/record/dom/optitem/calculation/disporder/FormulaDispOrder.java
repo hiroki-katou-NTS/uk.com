@@ -33,7 +33,7 @@ public class FormulaDispOrder extends AggregateRoot {
 
 	/** The disp order. */
 	// 並び順
-	private int dispOrder;
+	private DispOrder dispOrder;
 
 	/**
 	 * Instantiates a new formula disp order.
@@ -42,7 +42,7 @@ public class FormulaDispOrder extends AggregateRoot {
 	 */
 	public FormulaDispOrder(FormulaDispOrderGetMemento memento) {
 		this.companyId = memento.getCompanyId();
-		this.optionalItemFormulaId = memento.getOptionalItemFormulaId();
+		this.optionalItemFormulaId = memento.getFormulaId();
 		this.optionalItemNo = memento.getOptionalItemNo();
 		this.dispOrder = memento.getDispOrder();
 	}

@@ -156,6 +156,11 @@ module kcp009.viewmodel {
                 $('#btn_show_list').click(function() {
                     $('#items-list').ntsPopup('toggle');
                 });
+                $('#search-input').on('keypress', function(e) {
+                    if (e.which == 13) {
+                        self.searchEmp();
+                    }
+                })
 
                 dfd.resolve();
             });
@@ -233,9 +238,10 @@ module kcp009.viewmodel {
 
                 dfd.resolve();
                 return;
-                
+
             }).fail(function(res) {
-                nts.uk.ui.dialog.alert(res.message);
+                nts.uk.ui.dialog.info({ messageId: "Msg_7" });
+//                nts.uk.ui.dialog.alert(res.message);
             });
             return dfd.promise();
         }
