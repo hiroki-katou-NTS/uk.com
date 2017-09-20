@@ -1,10 +1,16 @@
 package entity.person.info.setting;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 
-public class BsystEmployeeCopySettingPk {
+public class BsystEmployeeCopySettingPk implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	@Basic(optional = false)
 	@Column(name = "COPY_CTG_ID")
 	public String copyCategoryId;
