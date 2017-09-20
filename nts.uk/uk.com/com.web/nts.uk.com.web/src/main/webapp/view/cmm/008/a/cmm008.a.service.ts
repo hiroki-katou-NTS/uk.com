@@ -3,7 +3,7 @@ module nts.uk.com.view.cmm008.a {
         /**
          *  Service paths
          */
-        var paths: any = {
+        var paths = {
             findEmployment: 'basic/company/organization/employment/findById',
             saveEmployment: 'basic/company/organization/employment/save',
             removeEmployment: 'basic/company/organization/employment/remove'

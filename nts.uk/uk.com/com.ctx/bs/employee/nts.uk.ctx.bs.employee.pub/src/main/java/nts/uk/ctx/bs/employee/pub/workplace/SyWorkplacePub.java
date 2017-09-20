@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.pub.workplace;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
@@ -12,6 +13,16 @@ import nts.arc.time.GeneralDate;
  * The Interface WorkplacePub.
  */
 public interface SyWorkplacePub {
+
+	/**
+	 * Find by sid.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the optional
+	 */
+	// RequestList #30
+	Optional<WorkplaceInfoExport> findBySid(String employeeId, GeneralDate baseDate);
 
 	/**
 	 * Find wpk ids by wkp code.
@@ -44,7 +55,7 @@ public interface SyWorkplacePub {
 	 * @return the list
 	 */
 	// RequestList #66
-	List<WkpCdNameExport> findByWkpId(String companyId, String workplaceId, GeneralDate baseDate);
+	Optional<WkpCdNameExport> findByWkpId(String workplaceId, GeneralDate baseDate);
 
 	/**
 	 * Gets the workplace id.
