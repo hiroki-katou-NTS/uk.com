@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
+
 @Stateless
 public class JpaBSWorkplaceRepository implements WorkplaceRepository {
 
@@ -23,20 +24,26 @@ public class JpaBSWorkplaceRepository implements WorkplaceRepository {
 	@Override
 	public String add(Workplace wkp) {
 		// TODO Auto-generated method stub
-		//return historyId
+		// return historyId
 		return null;
 	}
 
 	@Override
 	public void updateLatestHistory(Workplace wkp) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void removeLatestHistory(String companyId, String workplaceId) {
 		// TODO Auto-generated method stub
-		
+
+	}
+
+	@Override
+	public List<Workplace> findByWkpIds(List<String> workplaceIds) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

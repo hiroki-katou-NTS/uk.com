@@ -8,7 +8,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -16,40 +15,21 @@ import lombok.Setter;
 /**
  * The Class BsymtWkpConfigPK.
  */
-@Embeddable
 @Getter
 @Setter
+@Embeddable
 public class BsymtWkpConfigPK implements Serializable {
     
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
 	/** The cid. */
-	@NotNull
     @Column(name = "CID")
     private String cid;
 
     /** The history id. */
-    @NotNull
     @Column(name = "HISTORY_ID")
     private String historyId;
-
-	/**
-	 * Instantiates a new bsymt wkp config PK.
-	 */
-	public BsymtWkpConfigPK() {
-	}
-
-	/**
-	 * Instantiates a new bsymt wkp config PK.
-	 *
-	 * @param cid the cid
-	 * @param historyId the history id
-	 */
-	public BsymtWkpConfigPK(String cid, String historyId) {
-        this.cid = cid;
-        this.historyId = historyId;
-    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
@@ -78,14 +58,6 @@ public class BsymtWkpConfigPK implements Serializable {
             return false;
         }
         return true;
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    @Override
-    public String toString() {
-        return "entity.BsymtWkpConfigPK[ cid=" + cid + ", historyId=" + historyId + " ]";
     }
     
 }
