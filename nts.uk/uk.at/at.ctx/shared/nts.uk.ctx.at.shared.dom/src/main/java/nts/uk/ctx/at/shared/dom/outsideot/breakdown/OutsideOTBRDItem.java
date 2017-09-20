@@ -7,7 +7,9 @@ package nts.uk.ctx.at.shared.dom.outsideot.breakdown;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 
 /**
@@ -36,12 +38,15 @@ public class OutsideOTBRDItem extends DomainObject{
 	/** The attendance item ids. */
 	// 集計項目一覧
 	private List<Integer> attendanceItemIds;
+	
+	/** The Constant MAX_SIZE_ATTENDANCE_ITEM. */
+	public static final int MAX_SIZE_ATTENDANCE_ITEM = 100;
 
 	
 	/**
-	 * Instantiates a new overtime BRD item.
+	 * Instantiates a new outside OTBRD item.
 	 *
-	 * @param mement the mement
+	 * @param memento the memento
 	 */
 	public OutsideOTBRDItem(OutsideOTBRDItemGetMemento memento) {
 		this.useClassification = memento.getUseClassification();
@@ -49,6 +54,38 @@ public class OutsideOTBRDItem extends DomainObject{
 		this.name = memento.getName();
 		this.productNumber = memento.getProductNumber();
 		this.attendanceItemIds = memento.getAttendanceItemIds();
+		
+		// validate domain
+		if (this.checkOverlapAttendanceItemId()) {
+			throw new BusinessException("Msg_487");
+		}
+		if (!CollectionUtil.isEmpty(this.attendanceItemIds)
+				&& this.attendanceItemIds.size() > MAX_SIZE_ATTENDANCE_ITEM) {
+			throw new BusinessException("Msg_489");
+		}
+	}
+	
+	/**
+	 * Check overlap attendance item id.
+	 *
+	 * @return true, if successful
+	 */
+	private boolean checkOverlapAttendanceItemId() {
+		if (this.useClassification.value == UseClassification.UseClass_NotUse.value) {
+			return false;
+		}
+		if (CollectionUtil.isEmpty(this.attendanceItemIds)) {
+			return false;
+		}
+
+		for (int index = 0; index < this.attendanceItemIds.size(); index++) {
+			for (int jndex = index + 1; jndex < this.attendanceItemIds.size(); jndex++) {
+				if (this.attendanceItemIds.get(index) == this.attendanceItemIds.get(jndex)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -63,6 +100,9 @@ public class OutsideOTBRDItem extends DomainObject{
 		memento.setProductNumber(this.productNumber);
 		memento.setAttendanceItemIds(this.attendanceItemIds);
 	}
+	
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
