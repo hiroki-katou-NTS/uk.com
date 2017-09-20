@@ -26,4 +26,36 @@ public enum StampGoOutReason {
 		return !isPrivateOrUnion();
 	}
 
+	
+	/**
+	 * 私用であるか判定する
+	 * @return 私用である
+	 */
+	public boolean isPrivate(){
+		return Private.equals(this);
+	}
+	
+	/**
+	 * 公用であるか判定する
+	 * @return 公用である
+	 */
+	public boolean isPublic() {
+		return Public.equals(this);
+	}
+	
+	/**
+	 * 有償であるか判定する
+	 * @return　有償である
+	 */
+	public boolean isCompensation() {
+		return Compensation.equals(this);
+	}
+	
+	/**
+	 * 組合であるか判定する
+	 * @return　組合である
+	 */
+	public boolean isUnion() {
+		return Union.equals(this);
+	}
 }

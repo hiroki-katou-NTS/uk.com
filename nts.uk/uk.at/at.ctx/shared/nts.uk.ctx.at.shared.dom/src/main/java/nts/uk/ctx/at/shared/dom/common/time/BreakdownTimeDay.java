@@ -10,10 +10,15 @@ import lombok.Value;
 @Value
 public class BreakdownTimeDay {
 
-	private int morning;
-	private int afternoon;
+	private AttendanceTime morning;
+	private AttendanceTime afternoon;
+	private AttendanceTime oneDay;
 	
+	/**
+	 * 所定労働時間の取得
+	 * @return　所定労働時間
+	 */
 	public int getPredetermineWorkTime(){
-		return this.morning + this.afternoon;
+		return this.morning.valueAsMinutes() + this.afternoon.valueAsMinutes();
 	}
 }

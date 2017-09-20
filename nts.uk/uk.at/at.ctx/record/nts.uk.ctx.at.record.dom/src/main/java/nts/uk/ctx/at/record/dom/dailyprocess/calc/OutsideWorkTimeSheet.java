@@ -2,8 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.Optional;
 
-import lombok.Getter;
-import lombok.Value;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet.OverTimeWorkSheet;
 
 /**
@@ -23,27 +21,27 @@ public class OutsideWorkTimeSheet {
 
 	/**
 	 * 残業時間帯のセッター
-	 * @param holidayWorkTimeSheet2
+	 * @param holidayWorkTimeSheet 残業時間帯
 	 */
 	private void setHolidayWorkTimeSheet(Optional<HolidayWorkTimeSheet> holidayWorkTimeSheet) {
 		if(holidayWorkTimeSheet.isPresent()) {
 			this.holidayWorkTimeSheet = holidayWorkTimeSheet;
 		}
 		else {
-			this.holidayWorkTimeSheet = null;
+			this.holidayWorkTimeSheet = Optional.empty();
 		}
 	}
 
 	/**
 	 * 休出時間帯のセッター
-	 * @param overTimeWorkSheet2
+	 * @param overTimeWorkSheet　休日出勤時間帯
 	 */
 	private void setOverTimeWorkSheet(Optional<OverTimeWorkSheet> overTimeWorkSheet) {
 		if(overTimeWorkSheet.isPresent()) {
 			this.overTimeWorkSheet = overTimeWorkSheet;
 		}
 		else {
-			this.overTimeWorkSheet = null;
+			this.overTimeWorkSheet = Optional.empty();
 		}
 	}
 	

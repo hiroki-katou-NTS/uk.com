@@ -25,4 +25,21 @@ public class HolidayWorkTimeSheet extends CalculationTimeSheet{
 		this.workHolidayTime = holidayWorkOfDaily;
 		
 	}
+	
+	
+	/**
+	 * 全ての休日出勤時間帯から休日出勤時間を算出する(休日出勤時間帯の合計の時間を取得し1日の範囲に返す)
+	 */
+	public int calcHolidayWorkTime() {
+		
+	}
+	
+	/**
+	 * 休日出勤時間帯の遅刻時間を計算する
+	 * @return 遅刻時間
+	 */
+	public int calcLateLeaveEarlyinHolidayWorkTime() {
+		
+	}
+	
 }

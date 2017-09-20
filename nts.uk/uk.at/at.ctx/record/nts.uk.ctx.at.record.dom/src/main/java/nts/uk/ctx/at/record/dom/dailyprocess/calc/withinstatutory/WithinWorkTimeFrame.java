@@ -51,8 +51,7 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet {
 		int actualTime = calcWorkTime(); 
 		actualTime = actualTime - dedTimeSheet.calcDeductionAllTimeSheet(DeductionAtr.Deduction, ((CalculationTimeSheet)this).getTimeSheet());
 		int workTime = calcActualTime(actualTime);
-		
-		
+		/*就業時間算出ロジックをここに*/
 		
 		return workTime;
 	}

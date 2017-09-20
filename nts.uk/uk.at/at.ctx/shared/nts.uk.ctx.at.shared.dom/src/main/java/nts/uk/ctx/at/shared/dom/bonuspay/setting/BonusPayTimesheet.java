@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.at.shared.dom.bonuspay.setting;
 
+import java.util.Optional;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
@@ -12,7 +14,9 @@ import nts.uk.ctx.at.shared.dom.bonuspay.enums.UnitAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.BonusPayTime;
 import nts.uk.ctx.at.shared.dom.bonuspay.primitives.TimeItemId;
+import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.shr.com.time.AttendanceClock;
+import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
  * @author hungnm
@@ -59,4 +63,13 @@ public class BonusPayTimesheet extends DomainObject {
 				EnumAdaptor.valueOf(roundingTimeAtr, UnitAtr.class),
 				EnumAdaptor.valueOf(roundingAtr, RoundingAtr.class));
 	}
+	
+	/**
+	 * 開始と終了時刻を入れ替え作り直す
+	 * @return 加給時間帯クラス
+	 */
+	public BonusPayTimesheet reCreateCalcRange(TimeSpanForCalc newRange) {
+		return new BonusPayTimesheet(this.timeSheetId,this.useAtr,this.getTimeItemId(),newRange.getStart(),newRange.getEnd(),this.getRoundingTimeAtr(),this.getRoundingAtr());
+	}
+	
 }
