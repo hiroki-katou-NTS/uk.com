@@ -9,44 +9,61 @@ module nts.uk.at.view.kmk002.a {
     import SettingItemDto = service.model.SettingItemDto;;
     import AttendanceItemDto = service.model.AttendanceItemDto;;
     import RoundingDto = service.model.RoundingDto;;
+    import EmpConditionAtr = service.model.EmpConditionAtr;
+    import PerformanceAtr = service.model.PerformanceAtr;
+    import UsageAtr = service.model.UsageAtr;
+    import TypeAtr = service.model.TypeAtr;
+    import CalcAtr = service.model.CalcAtr;
+    import SettingOrder = service.model.SettingOrder;
+    import SettingMethod = service.model.SettingMethod;
+    import MinusSegment = service.model.MinusSegment;
+    import Operator = service.model.Operator;
+    import NumberRounding = service.model.NumberRounding;
+    import NumberUnit = service.model.NumberUnit;
+    import AmountRounding = service.model.AmountRounding;
+    import AmountUnit = service.model.AmountUnit;
+    import TimeRounding = service.model.TimeRounding;
+    import TimeUnit = service.model.TimeUnit;
 
     export module viewmodel {
 
         export class ScreenModel {
-            roundingRules: KnockoutObservableArray<any>;
-            selectedRuleCode: any;
-            selectedCbb: any;
             checked: any;
             columns: any;
             selectedCode: KnockoutObservable<any>;
             name: KnockoutObservable<any>;
 
             optionalItem: OptionalItem;
-            optionalItemHeaders: Array<OptionalItemHeader>;
+            optionalItemHeaders: KnockoutObservableArray<OptionalItemHeader>;
             calcFormulas: Array<Formula>;
 
             constructor() {
                 let self = this;
                 self.optionalItem = new OptionalItem();
-                self.optionalItemHeaders = new Array<OptionalItemHeader>();
                 self.calcFormulas = new Array<Formula>();
-                for (var i = 0; i < 5; i++) {
-                    self.calcFormulas.push(new Formula());
-                }
 
                 // mock data.
-                self.roundingRules = ko.observableArray([
-                    { code: '1', name: '四捨五入' },
-                    { code: '2', name: '切り上げ' }
-                ]);
-                self.selectedRuleCode = ko.observable(1);
-                self.selectedCbb = ko.observable();
+                let mock = new Array<OptionalItemHeader>();
+                for (var i = 0; i < 5; i++) {
+                    self.calcFormulas.push(new Formula());
+                    let h = <OptionalItemHeader>{};
+                    h.itemNo = ''+i;
+                    h.itemName = name+i;
+                    h.performanceAtr = 1;
+                    h.usageAtr = 1;
+                    mock.push(h);
+                }
+
+                self.optionalItemHeaders = ko.observableArray(mock);
+                console.log(self.optionalItemHeaders());
                 self.checked = ko.observable();
                 self.selectedCode = ko.observable();
                 self.name = ko.observable('');
                 self.columns = ko.observableArray([
-                    { headerText: 'code', key: 'code', width: 100 },
-                    { headerText: 'name', key: 'name', width: 150 },
+                    { headerText: nts.uk.resource.getText('KMK002_7'), key: 'itemNo', width: 50 },
+                    { headerText: nts.uk.resource.getText('KMK002_8'), key: 'itemName', width: 100 },
+                    { headerText: nts.uk.resource.getText('KMK002_9'), key: 'performanceAtr', width: 50 },
+                    { headerText: nts.uk.resource.getText('KMK002_10'), key: 'usageAtr', width: 50 }
                 ]);
 
                 // ahihi
@@ -91,8 +108,6 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 self.loadOptionalItemHeaders().done(res => {
-                    console.log(self.optionalItem);
-                    console.log('name:' + self.optionalItem.optionalItemName());
                     dfd.resolve();
                 });
                 // Test.
@@ -122,8 +137,8 @@ module nts.uk.at.view.kmk002.a {
              */
             public openDialogD(): void {
                 let self = this;
-                //let dto = self.calcFormulas[0].toDto();
-                //nts.uk.ui.windows.setShared('shared', dto);
+                let dto = self.calcFormulas[0].calcFormulaSetting.formulaSetting.toDto();
+                nts.uk.ui.windows.setShared('shared', dto);
                 nts.uk.ui.windows.sub.modal('/view/kmk/002/d/index.xhtml').onClosed(() => {
                     //TODO
                 });
@@ -136,7 +151,7 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 service.findOptionalItemHeaders().done(res => {
-                    self.optionalItemHeaders = res;
+                    //TODO
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -150,7 +165,6 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 service.findAllFormula().done(res => {
-                    console.log(res);
                 });
                 return dfd.promise();
 
@@ -190,16 +204,20 @@ module nts.uk.at.view.kmk002.a {
             }
         }
 
+        /******************************************************************
+         ************************* VIEW MODEL *****************************
+         *****************************************************************/
+
         /**
          * The class OptionalItem
          */
         class OptionalItem {
             optionalItemNo: string;
             optionalItemName: KnockoutObservable<string>;
-            optionalItemAtr: KnockoutObservable<number>;
-            usageAtr: KnockoutObservable<number>;
-            empConditionAtr: KnockoutObservable<number>;
-            performanceAtr: KnockoutObservable<number>;
+            optionalItemAtr: KnockoutObservable<TypeAtr>;
+            usageAtr: KnockoutObservable<UsageAtr>;
+            empConditionAtr: KnockoutObservable<EmpConditionAtr>;
+            performanceAtr: KnockoutObservable<PerformanceAtr>;
             calculationResultRange: CalculationResultRange;
 
             // Switch button data source
@@ -323,9 +341,9 @@ module nts.uk.at.view.kmk002.a {
             formulaId: string;
             optionalItemNo: string;
             formulaName: KnockoutObservable<string>;
-            formulaAtr: KnockoutObservable<number>;
+            formulaAtr: KnockoutObservable<TypeAtr>;
             symbolValue: string;
-            formulaSetting: CalcFormulaSetting;
+            calcFormulaSetting: CalcFormulaSetting;
             monthlyRounding: Rounding;
             dailyRounding: Rounding;
 
@@ -335,7 +353,7 @@ module nts.uk.at.view.kmk002.a {
                 this.formulaName = ko.observable('asdvxzc');
                 this.formulaAtr = ko.observable(1);
                 this.symbolValue = 'asdvxzc';
-                this.formulaSetting = new CalcFormulaSetting();
+                this.calcFormulaSetting = new CalcFormulaSetting();
                 this.monthlyRounding = new Rounding();
                 this.dailyRounding = new Rounding();
             }
@@ -349,7 +367,7 @@ module nts.uk.at.view.kmk002.a {
                 dto.formulaName = self.formulaName();
                 dto.formulaAtr = self.formulaAtr();
                 dto.symbolValue = self.symbolValue;
-                dto.calcFormulaSetting = self.formulaSetting.toDto()
+                dto.calcFormulaSetting = self.calcFormulaSetting.toDto()
                 dto.monthlyRounding = self.monthlyRounding.toDto();
                 dto.dailyRounding = self.dailyRounding.toDto();
 
@@ -363,7 +381,7 @@ module nts.uk.at.view.kmk002.a {
                 self.formulaName(dto.formulaName);
                 self.formulaAtr(dto.formulaAtr);
                 self.symbolValue = dto.symbolValue;
-                self.formulaSetting.fromDto(dto.calcFormulaSetting);
+                self.calcFormulaSetting.fromDto(dto.calcFormulaSetting);
                 self.monthlyRounding.fromDto(dto.monthlyRounding);
                 self.dailyRounding.fromDto(dto.dailyRounding);
             }
@@ -373,19 +391,19 @@ module nts.uk.at.view.kmk002.a {
          * Calculation formula setting.
          */
         class CalcFormulaSetting {
-            calcAtr: KnockoutObservable<number>;
-            calcFormulaSetting: FormulaSetting;
+            calcAtr: KnockoutObservable<CalcAtr>;
+            formulaSetting: FormulaSetting;
             itemSelection: ItemSelection;
 
             constructor() {
                 this.calcAtr = ko.observable(1);
-                this.calcFormulaSetting = new FormulaSetting();
+                this.formulaSetting = new FormulaSetting();
                 this.itemSelection = new ItemSelection();
             }
 
             public fromDto(dto: CalcFormulaSettingDto) {
                 this.calcAtr(dto.calcAtr);
-                this.calcFormulaSetting.fromDto(dto.formulaSetting);
+                this.formulaSetting.fromDto(dto.formulaSetting);
                 this.itemSelection.fromDto(dto.itemSelection);
 
             }
@@ -394,7 +412,7 @@ module nts.uk.at.view.kmk002.a {
                 let dto: CalcFormulaSettingDto = <CalcFormulaSettingDto>{};
 
                 dto.calcAtr = this.calcAtr();
-                dto.formulaSetting = this.calcFormulaSetting.toDto();
+                dto.formulaSetting = this.formulaSetting.toDto();
                 dto.itemSelection = this.itemSelection.toDto();
 
                 return dto;
@@ -405,8 +423,8 @@ module nts.uk.at.view.kmk002.a {
          * Formula setting.
          */
         export class FormulaSetting {
-            minusSegment: KnockoutObservable<number>;
-            operator: KnockoutObservable<number>;
+            minusSegment: KnockoutObservable<MinusSegment>;
+            operator: KnockoutObservable<Operator>;
             leftItem: FormulaSettingItem;
             rightItem: FormulaSettingItem;
 
@@ -424,20 +442,23 @@ module nts.uk.at.view.kmk002.a {
                     { code: '3', name: '/' }
                 ]);
             }
+
             public fromDto(dto: FormulaSettingDto) {
                 let self = this;
                 self.minusSegment(dto.minusSegment);
                 self.operator(dto.operator);
-                self.leftItem = <FormulaSettingItem>{}; //TODO
-                self.rightItem = <FormulaSettingItem>{};
+                self.leftItem.fromDto(dto.leftItem);
+                self.rightItem.fromDto(dto.rightItem);
             }
+
             public toDto(): any {
                 let self = this;
                 let dto: FormulaSettingDto = <FormulaSettingDto>{};
 
                 dto.minusSegment = self.minusSegment();
                 dto.operator = self.operator();
-                dto.settingItems = []; //TODO
+                dto.leftItem = this.leftItem.toDto();
+                dto.rightItem = this.rightItem.toDto();
 
                 return dto;
             }
@@ -447,8 +468,8 @@ module nts.uk.at.view.kmk002.a {
          * Formula setting item
          */
         class FormulaSettingItem {
-            settingMethod: KnockoutObservable<number>;
-            dispOrder: number;
+            settingMethod: KnockoutObservable<SettingMethod>;
+            dispOrder: SettingOrder;
             inputValue: KnockoutObservable<number>;
             formulaItemId: KnockoutObservable<string>;
 
@@ -483,7 +504,7 @@ module nts.uk.at.view.kmk002.a {
          * ItemSelection
          */
         class ItemSelection {
-            minusSegment: KnockoutObservable<number>;
+            minusSegment: KnockoutObservable<MinusSegment>;
             attendanceItems: Array<AttendanceItem>;
 
             constructor() {
@@ -512,7 +533,7 @@ module nts.uk.at.view.kmk002.a {
          */
         class AttendanceItem {
             id: string;
-            operator: KnockoutObservable<number>;
+            operator: KnockoutObservable<Operator>;
 
             constructor() {
                 this.id = 'asdf';
@@ -539,12 +560,12 @@ module nts.uk.at.view.kmk002.a {
          * Rounding
          */
         class Rounding {
-            numberRounding: KnockoutObservable<number>;
-            numberUnit: KnockoutObservable<number>;
-            amountRounding: KnockoutObservable<number>;
-            amountUnit: KnockoutObservable<number>;
-            timeRounding: KnockoutObservable<number>;
-            timeUnit: KnockoutObservable<number>;
+            numberRounding: KnockoutObservable<NumberRounding>;
+            numberUnit: KnockoutObservable<NumberUnit>;
+            amountRounding: KnockoutObservable<AmountRounding>;
+            amountUnit: KnockoutObservable<AmountUnit>;
+            timeRounding: KnockoutObservable<TimeRounding>;
+            timeUnit: KnockoutObservable<TimeUnit>;
 
             constructor() {
                 this.numberRounding = ko.observable(1);
@@ -561,7 +582,7 @@ module nts.uk.at.view.kmk002.a {
                 this.amountRounding(dto.amountRounding);
                 this.amountUnit(dto.amountUnit);
                 this.timeRounding(dto.timeRounding);
-                this.timeUnit(dto.timeRounding);
+                this.timeUnit(dto.timeUnit);
             }
 
             public toDto(): RoundingDto {

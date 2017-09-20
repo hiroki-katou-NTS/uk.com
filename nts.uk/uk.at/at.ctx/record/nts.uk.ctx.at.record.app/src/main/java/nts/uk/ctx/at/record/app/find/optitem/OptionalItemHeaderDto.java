@@ -25,15 +25,15 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 	
 	/** The optional item no. */
 	// 任意項目NO
-	private String optionalItemNo;
+	private String itemNo;
 
 	/** The optional item name. */
 	// 任意項目名称
-	private String optionalItemName;
+	private String itemName;
 
-	/** The optional item atr. */
-	// 属性
-	private int optionalItemAtr;
+	/** The performance atr. */
+	// 実績区分
+	private int performanceAtr;
 
 	/** The usage classification. */
 	// 任意項目利用区分
@@ -59,7 +59,7 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setOptionalItemNo(OptionalItemNo optionalItemNo) {
-		this.optionalItemNo = optionalItemNo.v();
+		this.itemNo = optionalItemNo.v();
 	}
 
 	/*
@@ -71,7 +71,7 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setOptionalItemName(OptionalItemName optionalItemName) {
-		this.optionalItemName = optionalItemName.v();
+		this.itemName = optionalItemName.v();
 	}
 
 	/*
@@ -83,7 +83,7 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setOptionalItemAtr(OptionalItemAtr optionalItemAttribute) {
-		this.optionalItemAtr = optionalItemAttribute.value;
+		// Not used.
 	}
 
 	/*
@@ -119,7 +119,7 @@ public class OptionalItemHeaderDto implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setPerformanceAtr(PerformanceAtr performanceClassification) {
-		// Not used.
+		this.performanceAtr = performanceClassification.value;
 	}
 
 	/*

@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.record.app.find.optitem.calculation;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -29,9 +28,13 @@ public class FormulaSettingDto implements FormulaSettingSetMemento {
 	// 演算子
 	private int operator;
 
-	/** The formula setting items. */
+	/** The lef item. */
 	// 計算式設定項目
-	private List<FormulaSettingItemDto> settingItems;
+	private FormulaSettingItemDto lefItem;
+
+	/** The right item. */
+	// 計算式設定項目
+	private FormulaSettingItemDto rightItem;
 
 	/*
 	 * (non-Javadoc)
@@ -68,11 +71,19 @@ public class FormulaSettingDto implements FormulaSettingSetMemento {
 	 */
 	@Override
 	public void setFormulaSettingItems(List<FormulaSettingItem> listItem) {
-		this.settingItems = listItem.stream().map(item -> {
-			FormulaSettingItemDto dto = new FormulaSettingItemDto();
-			item.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
+		listItem.forEach(item -> {
+			switch (item.getDispOrder()) {
+			case LEFT:
+				item.saveToMemento(this.lefItem);
+				break;
+			case RIGHT:
+				item.saveToMemento(this.rightItem);
+				break;
+			default:
+				// Do nothing.
+				break;
+			}
+		});
 	}
 
 }

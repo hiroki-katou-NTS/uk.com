@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.command.optitem.calculation;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -30,11 +30,13 @@ public class FormulaSettingDto implements FormulaSettingGetMemento {
 	// 演算子
 	private int operator;
 
-	/** The formula setting items. */
+	/** The left item. */
 	// 計算式設定項目
-	private List<FormulaSettingItemDto> settingItems;
+	private FormulaSettingItemDto leftItem;
 
-	
+	/** The right item. */
+	// 計算式設定項目
+	private FormulaSettingItemDto rightItem;
 
 	/*
 	 * (non-Javadoc)
@@ -69,7 +71,10 @@ public class FormulaSettingDto implements FormulaSettingGetMemento {
 	 */
 	@Override
 	public List<FormulaSettingItem> getFormulaSettingItems() {
-		return this.settingItems.stream().map(item -> new FormulaSettingItem(item)).collect(Collectors.toList());
+		List<FormulaSettingItem> list = new ArrayList<FormulaSettingItem>();
+		list.add(new FormulaSettingItem(this.leftItem));
+		list.add(new FormulaSettingItem(this.rightItem));
+		return list;
 	}
 
 }
