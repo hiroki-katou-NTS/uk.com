@@ -15,7 +15,7 @@ module nts.uk.com.view.cmm011.b {
         export function registerWkpConfig(data): JQueryPromise<void>{
             return nts.uk.request.ajax(servicePath.registerWkpConfig,data);
         }
-        
+         
         /**
         * Model namespace.
         */

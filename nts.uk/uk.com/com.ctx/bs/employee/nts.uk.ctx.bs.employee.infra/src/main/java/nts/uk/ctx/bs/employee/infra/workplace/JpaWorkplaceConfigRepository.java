@@ -17,6 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
@@ -26,6 +27,7 @@ import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfig_;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHistPK_;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist_;
+import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWkpHierarchy_;
 
 /**
  * The Class JpaWorkplaceConfigRepository.
@@ -93,11 +95,8 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
 				.add(criteriaBuilder.equal(root.get(BsymtWorkplaceHist_.bsymtWorkplaceHistPK).get(BsymtWorkplaceHistPK_.cid), companyId));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-
-		// exclude select
+		cq.orderBy(criteriaBuilder.desc(root.get(BsymtWorkplaceHist_.strD)));
 		return null;
-//		return em.createQuery(cq).getResultList().stream().map(item -> this.histToDomain(item))
-//				.collect(Collectors.toList());
 	}
 
 	/* (non-Javadoc)
@@ -109,10 +108,55 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
 		return workplaceConfig.getWkpConfigHistory().get(0).getHistoryId();
 	}
 	
+	/**
+	 * To entity.
+	 *
+	 * @param workplaceConfig the workplace config
+	 * @return the bsymt wkp config
+	 */
 	private BsymtWkpConfig toEntity(WorkplaceConfig workplaceConfig) {
 		BsymtWkpConfig entity = new BsymtWkpConfig();
 		workplaceConfig.saveToMemento(new JpaWorkplaceConfigSetMemento(entity));
 		return entity;
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository#update(nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig)
+	 */
+	@Override
+	public void update(WorkplaceConfig wkpConfig,GeneralDate endĐate) {
+		BsymtWkpConfig entity = this.toEntity(wkpConfig);
+		//update end date
+		entity.setStrD(endĐate);
+		this.commandProxy().update(entity);
+	}
+
+	@Override
+	public Optional<WorkplaceConfig> findByHistId(String companyId,String prevHistId) {
+		List<WorkplaceConfigHistory> lstWorkplaceConfigHistory = new ArrayList<>();
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsymtWkpConfig> cq = criteriaBuilder.createQuery(BsymtWkpConfig.class);
+		Root<BsymtWkpConfig> root = cq.from(BsymtWkpConfig.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(BsymtWkpConfig_.bsymtWkpConfigPK).get(BsymtWkpConfigPK_.cid), companyId));
+		
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(BsymtWkpConfig_.bsymtWkpConfigPK).get(BsymtWkpConfigPK_.historyId), prevHistId));
+		
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// exclude select
+		lstWorkplaceConfigHistory = em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
+				.collect(Collectors.toList());
+		return Optional.of(new WorkplaceConfig(new JpaWorkplaceConfigGetMemento(companyId, lstWorkplaceConfigHistory)));
+	}
 }
