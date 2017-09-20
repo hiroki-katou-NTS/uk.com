@@ -24,7 +24,7 @@ public class ApprovalRootOutput {
 	/** 履歴ID */
 	private String historyId;
 	/** 申請種類 */
-	private int applicationType;
+	private Integer applicationType;
 	/** 開始日 */
 	private GeneralDate startDate;
 	/** 完了日 */
@@ -34,7 +34,7 @@ public class ApprovalRootOutput {
 	/** 任意項目申請ID */
 	private String anyItemApplicationId;
 	/** 確認ルート種類 */
-	private int confirmationRootType;
+	private Integer confirmationRootType;
 	/** 就業ルート区分 */
 	private int employmentRootAtr;
 	
@@ -46,8 +46,8 @@ public class ApprovalRootOutput {
 	private ErrorFlag errorFlag;
 	
 	public ApprovalRootOutput(String companyId, String workplaceId, String approvalId, String employeeId,
-			String historyId, int applicationType, GeneralDate startDate, GeneralDate endDate, String branchId,
-			String anyItemApplicationId, int confirmationRootType, int employmentRootAtr,
+			String historyId, Integer applicationType, GeneralDate startDate, GeneralDate endDate, String branchId,
+			String anyItemApplicationId, Integer confirmationRootType, int employmentRootAtr,
 			List<ApprovalPhaseImport> beforeApprovers, List<ApprovalPhaseOutput> afterApprovers) {
 		super();
 		this.companyId = companyId;

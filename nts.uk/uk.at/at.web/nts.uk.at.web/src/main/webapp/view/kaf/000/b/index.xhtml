@@ -52,9 +52,9 @@
 				<button >#{i18n.getText('KAF000_18')}</button>
 				
 				<!-- B1_8 -->
-				<div data-bind="with: screenModel.cm" style="display: inline-block">
+				<!-- <div data-bind="with: screenModel.cm" style="display: inline-block">
 					<button class="proceed" data-bind="click: update">#{i18n.getText('KAF000_19')}</button>
-				</div>
+				</div> -->
 				
 				<!-- B1_9 -->
 				<button >#{i18n.getText('KAF000_20')}</button>
@@ -103,9 +103,9 @@
 				
 				<!-- Body -->
 <!-- 				<div style="height: 50px;background-color: gray ; margin-top: 30px;'">body</div> -->
-				<div data-bind="with: screenModel.cm">
+				<!-- <div data-bind="with: screenModel.cm">
 					<ui:include src="../../002/cm/index.xhtml" />
-				</div>
+				</div> -->
 				
 		<!-- 		<div class="divKaf009" data-bind="with: screenModel9">
 					<ui:include src="../../009/b/index.xhtml"></ui:include>
@@ -119,7 +119,7 @@
 					
 				</div>
 				<BR />	
-				<div id="table-1">
+				<div id="table-1" data-bind="with: dataApplication">
 					<table id="table-phase">
 						<thead>
 							<tr  class="bg-green">
@@ -130,19 +130,20 @@
 								<th class="name-app" style="width:111px;">#{i18n.getText('KAF000_30')}</th>
 							</tr>
 						</thead>
-						<!-- <tbody data-bind="foreach :listFrameByListPhase1" >
-							<com:ko bind="$data" tag ="foreach">
+						<!-- foreach -->
+						<tbody data-bind="foreach : listOutputPhaseAndFrame" >
+							<com:ko bind="$data.listApprovalFrameDto" tag ="foreach">
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
-										<td class="bg-green" data-bind="attr: {rowspan: $parent.length},text: $data.phaseID">test</td>
+										<td class="bg-green" data-bind="attr: {rowspan: $parent.listApprovalFrameDto.length},text: $data.phaseID"></td>
 									</com:ko>
 									<td class="bg-green" ><label data-bind="text: $data.approverSID"></label></td>
 									<td><label data-bind="text: $data.reason"></label></td>
-									<td><label>????</label></td>
-									<td><label>OK</label></td>
+									<td><label data-bind="text: $data.approvalATR"></label></td>
+									<td><label data-bind="text: $data.reason"> </label></td>
 								</tr>
 							</com:ko>
-						</tbody> -->
+						</tbody> 
 					</table>
 				</div>
 				<!-- end footer -->
