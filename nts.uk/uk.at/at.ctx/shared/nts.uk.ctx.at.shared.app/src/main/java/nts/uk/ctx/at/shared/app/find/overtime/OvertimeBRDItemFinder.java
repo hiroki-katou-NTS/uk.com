@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.overtime.dto.OvertimeBRDItemDto;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItem;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.OvertimeBRDItemRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -20,7 +20,7 @@ public class OvertimeBRDItemFinder {
 	
 	/** The repository. */
 	@Inject
-	private OvertimeBRDItemRepository repository;
+	private OutsideOTBRDItemRepository repository;
 	
 	/**
 	 * Find by id.
@@ -36,7 +36,7 @@ public class OvertimeBRDItemFinder {
 		String companyId = loginUserContext.companyId();
 
 		// call repository find data
-		List<OvertimeBRDItem> overtimeBRDItems = this.repository.findAll(companyId);
+		List<OutsideOTBRDItem> overtimeBRDItems = this.repository.findAll(companyId);
 
 		return overtimeBRDItems.stream().map(domain -> {
 			OvertimeBRDItemDto dto = new OvertimeBRDItemDto();

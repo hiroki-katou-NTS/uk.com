@@ -20,19 +20,19 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangName;
-import nts.uk.ctx.at.shared.dom.overtime.language.OvertimeLangNameRepository;
-import nts.uk.ctx.at.shared.infra.entity.overtime.language.KshstOverTimeLangName;
-import nts.uk.ctx.at.shared.infra.entity.overtime.language.KshstOverTimeLangNamePK_;
-import nts.uk.ctx.at.shared.infra.entity.overtime.language.KshstOverTimeLangName_;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLang;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.OvertimeNameLangRepository;
+import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeLangName;
+import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeLangNamePK_;
+import nts.uk.ctx.at.shared.infra.entity.outside.overtime.language.KshstOverTimeLangName_;
 
 /**
  * The Class JpaOvertimeLangNameRepository.
  */
 @Stateless
 public class JpaOvertimeLangNameRepository extends JpaRepository
-		implements OvertimeLangNameRepository {
+		implements OvertimeNameLangRepository {
 	
 	/** The Constant INDEX_FIRST. */
 	public static final int INDEX_FIRST = 0;
@@ -45,7 +45,7 @@ public class JpaOvertimeLangNameRepository extends JpaRepository
 	 * findById(java.lang.String, int, java.lang.String)
 	 */
 	@Override
-	public List<OvertimeLangName> findAll(String companyId, String languageId) {
+	public List<OvertimeNameLang> findAll(String companyId, String languageId) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -96,7 +96,7 @@ public class JpaOvertimeLangNameRepository extends JpaRepository
 	 * saveAll(java.util.List)
 	 */
 	@Override
-	public void saveAll(List<OvertimeLangName> domains) {
+	public void saveAll(List<OvertimeNameLang> domains) {
 
 		// check exist data
 		if(CollectionUtil.isEmpty(domains)){
@@ -109,7 +109,7 @@ public class JpaOvertimeLangNameRepository extends JpaRepository
 		String languageId = domains.get(INDEX_FIRST).getLanguageId().v();
 		
 		// to map over time
-		Map<OvertimeNo, OvertimeLangName> mapOvertimeLange = this.findAll(companyId, languageId)
+		Map<OvertimeNo, OvertimeNameLang> mapOvertimeLange = this.findAll(companyId, languageId)
 				.stream().collect(Collectors.toMap((overtimeLang) -> {
 					return overtimeLang.getOvertimeNo();
 				}, Function.identity()));
@@ -144,8 +144,8 @@ public class JpaOvertimeLangNameRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the overtime lang name
 	 */
-	private OvertimeLangName toDomain(KshstOverTimeLangName entity) {
-		return new OvertimeLangName(new JpaOvertimeLangNameGetMemento(entity));
+	private OvertimeNameLang toDomain(KshstOverTimeLangName entity) {
+		return new OvertimeNameLang(new JpaOvertimeLangNameGetMemento(entity));
 	}
 	
 	/**
@@ -154,7 +154,7 @@ public class JpaOvertimeLangNameRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the kshst over time lang name
 	 */
-	private KshstOverTimeLangName toEntity(OvertimeLangName domain){
+	private KshstOverTimeLangName toEntity(OvertimeNameLang domain){
 		KshstOverTimeLangName entity = new KshstOverTimeLangName();
 		domain.saveToMemento(new JpaOvertimeLangNameSetMemento(entity));
 		return entity;

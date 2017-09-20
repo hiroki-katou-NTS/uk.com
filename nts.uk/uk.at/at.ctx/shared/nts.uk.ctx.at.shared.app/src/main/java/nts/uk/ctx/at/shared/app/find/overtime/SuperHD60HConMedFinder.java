@@ -10,8 +10,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.overtime.dto.SuperHD60HConMedDto;
-import nts.uk.ctx.at.shared.dom.overtime.holiday.SuperHD60HConMed;
-import nts.uk.ctx.at.shared.dom.overtime.holiday.SuperHD60HConMedRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMed;
+import nts.uk.ctx.at.shared.dom.outsideot.holiday.SuperHD60HConMedRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 

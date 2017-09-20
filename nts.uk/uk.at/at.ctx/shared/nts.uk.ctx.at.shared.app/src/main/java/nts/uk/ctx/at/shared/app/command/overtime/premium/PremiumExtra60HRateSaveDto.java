@@ -6,10 +6,10 @@ package nts.uk.ctx.at.shared.app.command.overtime.premium;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.overtime.premium.PremiumRate;
-import nts.uk.ctx.at.shared.dom.overtime.premium.extra.PremiumExtra60HRateGetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
+import nts.uk.ctx.at.shared.dom.outsideot.premium.PremiumRate;
+import nts.uk.ctx.at.shared.dom.outsideot.premium.extra.PremiumExtra60HRateGetMemento;
 
 /**
  * The Class PremiumExtra60HRateSaveDto.

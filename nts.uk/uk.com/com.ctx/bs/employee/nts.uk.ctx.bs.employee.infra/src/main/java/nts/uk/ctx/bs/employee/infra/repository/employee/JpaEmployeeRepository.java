@@ -30,24 +30,24 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	// + " AND d.bsydtJobEntryHistoryPk.entryDate <= :entryDate "
 	// + " AND d.retireDate >= :entryDate ";
 
-	public final String SELECT_NO_WHERE = "SELECT c ,d FROM BsydtEmployee c , BsymtJobEntryHistory d";
+	public final String SELECT_NO_WHERE = "SELECT c FROM BsymtEmployee c";
 
 	public final String SELECT_BY_EMP_CODE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
-			+ " AND c.employeeCode =:employeeCode " + " AND  d.bsydtJobEntryHistoryPk.entryDate <= :entryDate "
+			+ " AND c.employeeCode =:employeeCode " + " AND  c.listEntryHist.bsymtJobEntryHistoryPk.entryDate <= :entryDate "
 			+ " AND d.retireDate >= :entryDate ";
 
 	public final String SELECT_BY_LIST_EMP_CODE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
 			+ " AND c.employeeCode IN :listEmployeeCode ";
 
 	public final String SELECT_BY_LIST_EMP_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
-			+ " AND c.bsydtEmployeePk.sId IN :employeeIds ";
+			+ " AND c.bsymtEmployeePk.sId IN :employeeIds ";
 
 	public final String SELECT_BY_COMPANY_ID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId";
 
-	public final String SELECT_BY_SID = SELECT_NO_WHERE + " WHERE c.bsydtEmployeePk.sId = :sId";
+	public final String SELECT_BY_SID = SELECT_NO_WHERE + " WHERE c.bsymtEmployeePk.sId = :sId";
 
 	public final String SELECT_BY_CID_SID = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
-			+ " AND c.bsydtEmployeePk.sId = :sId";
+			+ " AND c.bsymtEmployeePk.sId = :sId";
 
 	// public final String SELECT_BY_SID = SELECT_NO_WHERE + " WHERE
 	// c.bsydtEmployeePk.sId = :sId";
@@ -55,8 +55,13 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	public final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployee c "
 			+ " WHERE c.companyId = :companyId AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
 			+ " ORDER BY  c.employeeCode DESC";
-	public final String SELECT_BY_STANDARDDATE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
-			+ " AND  d.bsydtJobEntryHistoryPk.entryDate <= :standardDate " + " AND d.retireDate >= :standardDate ";
+	
+	public final String SELECT_BY_STANDARDDATE = 
+		     "SELECT c FROM BsymtEmployee c "
+		   + " JOIN BsymtJobEntryHistory d ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
+		   + " WHERE c.companyId = :companyId "
+		   + " AND d.bsymtJobEntryHistoryPk.entryDate <= :standardDate"
+		   + " AND d.retireDate >= :standardDate";
 
 	/**
 	 * convert entity BsymtEmployee to domain Employee
@@ -65,7 +70,7 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	 * @return
 	 */
 	private Employee toDomainEmployee(BsymtEmployee entity) {
-		val domain = Employee.createFromJavaType(entity.companyId, entity.personId, entity.bsydtEmployeePk.sId,
+		val domain = Employee.createFromJavaType(entity.companyId, entity.personId, entity.bsymtEmployeePk.sId,
 				entity.employeeCode, entity.companyMail, entity.companyMobileMail, entity.companyMobile);
 		return domain;
 	}
@@ -78,8 +83,8 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	 */
 	private JobEntryHistory toDomainJobEntryHist(BsymtJobEntryHistory entity) {
 
-		val domain = JobEntryHistory.createFromJavaType(entity.companyId, entity.bsydtJobEntryHistoryPk.sId,
-				entity.hiringType, entity.retireDate, entity.bsydtJobEntryHistoryPk.entryDate, entity.adoptDate);
+		val domain = JobEntryHistory.createFromJavaType(entity.companyId, entity.bsymtJobEntryHistoryPk.sId,
+				entity.hiringType, entity.retireDate, entity.bsymtJobEntryHistoryPk.entryDate, entity.adoptDate);
 		return domain;
 	}
 
@@ -92,8 +97,6 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		Employee person = new Employee();
 		if (entity != null) {
 			person = toDomainEmployee(entity);
-
-			List<JobEntryHistory> listJobEntry = new ArrayList<>();
 
 			if (!entity.listEntryHist.isEmpty()) {
 				person.setListEntryJobHist(

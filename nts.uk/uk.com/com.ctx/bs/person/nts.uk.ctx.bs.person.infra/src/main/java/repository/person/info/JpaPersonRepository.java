@@ -18,6 +18,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import entity.person.info.BpsmtPerson;
+import entity.person.info.BpsmtPersonPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.infra.entity.person.CcgmtPerson;
@@ -33,10 +34,13 @@ import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 public class JpaPersonRepository extends JpaRepository implements PersonRepository {
 	public final String SELECT_NO_WHERE = "SELECT c FROM BpsmtPerson c";
 
-	public final String SELECT_BY_PERSON_IDS = SELECT_NO_WHERE
-			+ " WHERE c.bpsmtPersonPk.pId IN :pids";
 	
-	public final String GET_LAST_CARDNO = "SELECT c.cardNumberLetter FROM BpsstUserSetting c "
+	
+	public final String SELECT_BY_PERSON_IDS = SELECT_NO_WHERE + " WHERE c.bpsmtPersonPk.pId IN :pids";
+
+
+	public final String GET_LAST_CARD_NO = "SELECT c.cardNumberLetter FROM BpsstUserSetting c "
+
 			+ " WHERE c.companyId = :companyId AND c.cardNumberLetter LIKE CONCAT(:cardNo, '%')"
 			+ " ORDER BY  c.cardNumberLetter DESC";
 
@@ -48,39 +52,45 @@ public class JpaPersonRepository extends JpaRepository implements PersonReposito
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see
-	 * nts.uk.ctx.basic.dom.person.PersonRepository#getPersonByPersonId(java.
+	 * @see nts.uk.ctx.basic.dom.person.PersonRepository#getPersonByPersonId(java.
 	 * util.List)
 	 */
 	@Override
 	public List<Person> getPersonByPersonIds(List<String> personIds) {
 
 		// check exist input
-		if(CollectionUtil.isEmpty(personIds)){
+		if (CollectionUtil.isEmpty(personIds)) {
 			return new ArrayList<>();
 		}
-		
-		List<Person> lstPerson = this.queryProxy()
-				.query(SELECT_BY_PERSON_IDS, BpsmtPerson.class)
+
+		List<Person> lstPerson = this.queryProxy().query(SELECT_BY_PERSON_IDS, BpsmtPerson.class)
 				.setParameter("pids", personIds).getList(c -> toDomain(c));
-		
+
 		return lstPerson;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.person.PersonRepository#getByPersonId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.basic.dom.person.PersonRepository#getByPersonId(java.lang.String)
 	 */
 	@Override
 	public Optional<Person> getByPersonId(String personId) {
-		return this.queryProxy().find(personId, BpsmtPerson.class).map(item -> toDomain(item));
+		Optional<BpsmtPerson> person = this.queryProxy().find(new BpsmtPersonPk(personId), BpsmtPerson.class);
+		if (person.isPresent()) {
+			return Optional.of(toDomain(person.get()));
+		} else {
+			return Optional.empty();
+		}
 	}
 
 	@Override
 	public String getLastCardNo(String companyId, String startCardNoLetter) {
 		if (startCardNoLetter == null)
 			startCardNoLetter = "";
-		List<Object[]> lst = this.queryProxy().query(GET_LAST_CARDNO).setParameter("companyId", companyId).setParameter("cardNo", startCardNoLetter).getList();
+		List<Object[]> lst = this.queryProxy().query(GET_LAST_CARD_NO).setParameter("companyId", companyId).setParameter("cardNo", startCardNoLetter).getList();
+
 		String returnStr = "";
 		if (lst.size() > 0) {
 			Object obj = lst.get(0);

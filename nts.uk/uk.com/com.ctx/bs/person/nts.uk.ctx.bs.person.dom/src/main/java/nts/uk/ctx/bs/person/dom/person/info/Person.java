@@ -35,7 +35,7 @@ public class Person extends AggregateRoot {
 	private GenderPerson gender;
 
 	/** The person id - 個人ID */
-	private PersonId personId;
+	private String personId;
 
 	/** The Person Mail Address - 個人メールアドレス */
 	private PersonMailAddress mailAddress;
@@ -49,7 +49,7 @@ public class Person extends AggregateRoot {
 	/** The Hobby - 趣味 */
 	private Hobby hobBy;
 
-	/** The countryId - 国籍*/
+	/** The countryId - 国籍    chua xac dinh duoc PrimitiveValue*/
 	private Nationality countryId;
 
 	/** The Taste - 嗜好 */
@@ -57,10 +57,10 @@ public class Person extends AggregateRoot {
 	
 
 	public static Person createFromJavaType(String pId, String personName) {
-		return new Person(new PersonId(pId), new PersonNameGroup(new PersonName(personName)));
+		return new Person(pId, new PersonNameGroup(new PersonName(personName)));
 	}
 
-	public Person(PersonId personId, PersonNameGroup personNameGroup) {
+	public Person(String personId, PersonNameGroup personNameGroup) {
 		super();
 		this.personId = personId;
 		this.personNameGroup = personNameGroup;

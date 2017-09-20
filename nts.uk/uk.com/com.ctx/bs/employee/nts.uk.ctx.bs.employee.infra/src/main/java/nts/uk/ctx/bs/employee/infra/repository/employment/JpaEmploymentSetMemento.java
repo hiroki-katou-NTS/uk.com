@@ -1,15 +1,17 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.employment;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
+import nts.uk.ctx.bs.employee.dom.employment.EmpExternalCode;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentCode;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentName;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentSetMemento;
-import nts.uk.ctx.bs.employee.infra.entity.employment.CemptEmployment;
-import nts.uk.ctx.bs.employee.infra.entity.employment.CemptEmploymentPK;
+import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment;
+import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmploymentPK;
+import nts.uk.shr.com.primitive.Memo;
 
 /**
  * The Class JpaEmploymentSetMemento.
@@ -17,70 +19,77 @@ import nts.uk.ctx.bs.employee.infra.entity.employment.CemptEmploymentPK;
 public class JpaEmploymentSetMemento implements EmploymentSetMemento {
 
 	/** The typed value. */
-	private CemptEmployment typedValue;
-	
-	
+	private BsymtEmployment typedValue;
+
 	/**
 	 * Instantiates a new jpa employment set memento.
 	 *
-	 * @param typedValue the typed value
+	 * @param typedValue
+	 *            the typed value
 	 */
-	public JpaEmploymentSetMemento(CemptEmployment typedValue) {
+	public JpaEmploymentSetMemento(BsymtEmployment typedValue) {
 		super();
 		this.typedValue = typedValue;
-		if(this.typedValue.getCemptEmploymentPK() == null) {
-			this.typedValue.setCemptEmploymentPK(new CemptEmploymentPK());
+		if (this.typedValue.getBsymtEmploymentPK() == null) {
+			this.typedValue.setBsymtEmploymentPK(new BsymtEmploymentPK());
 		}
 	}
 
-	/**
-	 * Sets the company id.
-	 *
-	 * @param companyId the new company id
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.employment.EmploymentSetMemento#setCompanyId(
+	 * nts.uk.ctx.bs.employee.dom.common.CompanyId)
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.typedValue.getCemptEmploymentPK().setCid(companyId.v());
+		this.typedValue.getBsymtEmploymentPK().setCid(companyId.v());
 	}
 
-	/**
-	 * Sets the work closure id.
-	 *
-	 * @param workClosureId the new work closure id
-	 */
-	@Override
-	public void setWorkClosureId(Integer workClosureId) {
-		this.typedValue.setWorkClosureId(workClosureId);
-	}
-
-	/**
-	 * Sets the salary closure id.
-	 *
-	 * @param salaryClosureId the new salary closure id
-	 */
-	@Override
-	public void setSalaryClosureId(Integer salaryClosureId) {
-		this.typedValue.setSalaryClosureId(salaryClosureId);
-	}
-
-	/**
-	 * Sets the employment code.
-	 *
-	 * @param employmentCode the new employment code
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.employment.EmploymentSetMemento#
+	 * setEmploymentCode(nts.uk.ctx.bs.employee.dom.employment.EmploymentCode)
 	 */
 	@Override
 	public void setEmploymentCode(EmploymentCode employmentCode) {
-		this.typedValue.getCemptEmploymentPK().setCode(employmentCode.v());
+		this.typedValue.getBsymtEmploymentPK().setCode(employmentCode.v());
 	}
 
-	/**
-	 * Sets the employment name.
-	 *
-	 * @param employmentName the new employment name
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.employment.EmploymentSetMemento#
+	 * setEmploymentName(nts.uk.ctx.bs.employee.dom.employment.EmploymentName)
 	 */
 	@Override
 	public void setEmploymentName(EmploymentName employmentName) {
 		this.typedValue.setName(employmentName.v());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.bs.employee.dom.employment.EmploymentSetMemento#
+	 * setEmpExternalCode(nts.uk.ctx.bs.employee.dom.employment.EmpExternalCode)
+	 */
+	@Override
+	public void setEmpExternalCode(EmpExternalCode empExternalCode) {
+		this.typedValue.setEmpExternalCode(empExternalCode.v());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.employment.EmploymentSetMemento#setMemo(nts.uk
+	 * .shr.com.primitive.Memo)
+	 */
+	@Override
+	public void setMemo(Memo memo) {
+		this.typedValue.setMemo(memo.v());
 	}
 
 }

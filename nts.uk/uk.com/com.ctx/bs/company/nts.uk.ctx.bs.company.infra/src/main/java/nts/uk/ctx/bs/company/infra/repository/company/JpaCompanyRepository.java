@@ -27,7 +27,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		StringBuilder builderString = new StringBuilder();
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
-		builderString.append(" FROM BcmdtCompany e");
+		builderString.append(" FROM BcmmtCompany e");
 		builderString.append(" WHERE e.abolitionAtr = 0 ");
 		GETALLCOMPANY = builderString.toString();
 	}

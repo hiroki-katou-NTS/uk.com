@@ -32,13 +32,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
             new ItemModel('3', '基本給2')];
         comboColumns = [{ prop: 'code', length: 4 },
             { prop: 'name', length: 8 }];
-        items = (function() {
-            var list = [];
-            for (var i = 0; i < 15; i++) {
-                list.push(new GridItem(i));
-            }
-            return list;
-        })();
+        items = _(new Array(10)).map((x, i) => new GridItem(i + 1)).value();
         constructor() {
 
             let self = this;
@@ -47,9 +41,11 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             self.categoryId.subscribe(function(value: string) {
                 console.log(value);
-                self.currentCategory().setData(new CategoryInfoDetail({
-                    categoryCode: value, categoryName: value, itemList: self.itemList()
-                }));
+                self.currentCategory().setData({
+                    categoryCode: value,
+                    categoryName: value, 
+                    itemList: self.itemList()
+                });
                 self.currentCategory.valueHasMutated();
             });
 

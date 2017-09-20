@@ -11,8 +11,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.language.OvertimeLangBRDItem;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.language.OvertimeLangBRDItemRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLang;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLangRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -25,7 +25,7 @@ public class OvertimeLangBRDItemSaveCommandHandler
 
 	/** The repository. */
 	@Inject
-	private OvertimeLangBRDItemRepository repository;
+	private OutsideOTBRDItemLangRepository repository;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -46,7 +46,7 @@ public class OvertimeLangBRDItemSaveCommandHandler
 
 		
 		// to domain
-		List<OvertimeLangBRDItem> domains= command.toListDomain(companyId);
+		List<OutsideOTBRDItemLang> domains= command.toListDomain(companyId);
 
 		// save domain
 		this.repository.saveAll(domains);

@@ -66,7 +66,7 @@ public class ApplicationDto {
     /**
      * 予定反映日時
      */
-	private BigDecimal reflectPlanTime;
+	private GeneralDate reflectPlanTime;
 	
 	/**
 	 * 予定反映状態
@@ -86,7 +86,7 @@ public class ApplicationDto {
 	/**
 	 * 実績反映日時
 	 */
-	private BigDecimal reflectPerTime;
+	private GeneralDate reflectPerTime;
 	
 	/**
 	 * 予定反映状態
@@ -97,6 +97,10 @@ public class ApplicationDto {
 	 * 実績強制反映
 	 */
 	private int reflectPerEnforce;
+	
+	private GeneralDate startDate;
+	
+	private GeneralDate endDate;
 	
 	public static ApplicationDto fromDomain(Application domain) {
 		return new ApplicationDto(
@@ -117,7 +121,9 @@ public class ApplicationDto {
 				domain.getReflectPerScheReason().value, 
 				domain.getReflectPerTime(), 
 				domain.getReflectPerState().value, 
-				domain.getReflectPerEnforce().value
+				domain.getReflectPerEnforce().value,
+				domain.getStartDate(),
+				domain.getEndDate()
 				);
 	}
 

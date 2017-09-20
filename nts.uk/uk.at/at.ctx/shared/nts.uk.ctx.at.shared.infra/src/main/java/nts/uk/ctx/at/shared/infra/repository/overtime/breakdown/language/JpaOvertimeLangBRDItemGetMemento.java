@@ -5,16 +5,16 @@
 package nts.uk.ctx.at.shared.infra.repository.overtime.breakdown.language;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemName;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.BreakdownItemNo;
-import nts.uk.ctx.at.shared.dom.overtime.breakdown.language.OvertimeLangBRDItemGetMemento;
-import nts.uk.ctx.at.shared.dom.overtime.language.LanguageId;
-import nts.uk.ctx.at.shared.infra.entity.overtime.breakdown.language.KshstOverTimeLangBrd;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemName;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.outsideot.breakdown.language.OutsideOTBRDItemLangGetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.overtime.language.LanguageId;
+import nts.uk.ctx.at.shared.infra.entity.outsideot.breakdown.language.KshstOverTimeLangBrd;
 
 /**
  * The Class JpaOvertimeLangBRDItemGetMemento.
  */
-public class JpaOvertimeLangBRDItemGetMemento implements OvertimeLangBRDItemGetMemento {
+public class JpaOvertimeLangBRDItemGetMemento implements OutsideOTBRDItemLangGetMemento {
 
 	
 	/** The entity. */

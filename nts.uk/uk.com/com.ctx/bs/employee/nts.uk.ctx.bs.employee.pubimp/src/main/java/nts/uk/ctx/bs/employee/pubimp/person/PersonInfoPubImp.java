@@ -2,6 +2,7 @@ package nts.uk.ctx.bs.employee.pubimp.person;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -15,8 +16,7 @@ import nts.uk.ctx.bs.person.dom.person.info.Person;
 import nts.uk.ctx.bs.person.dom.person.info.PersonRepository;
 
 @Stateless
-public class PersonInfoPubImp implements IPersonInfoPub{
-	
+public class PersonInfoPubImp implements IPersonInfoPub {
 
 	@Inject
 	private EmployeeRepository empRepo;
@@ -32,36 +32,37 @@ public class PersonInfoPubImp implements IPersonInfoPub{
 		List<JobEntryHistoryExport> listJobEntryHist = new ArrayList<>();
 		if (checkEmpExit) {
 			employee = empRepo.getBySid(employeeId).get();
-			if (!employee.getListEntryJobHist().isEmpty()) {
+			if (employee.getListEntryJobHist() != null) {
 				employee.getListEntryJobHist().forEach(c -> {
-					
-					listJobEntryHist.add(new JobEntryHistoryExport(
-							c.getCompanyId(), 
-							c.getSId(), 
-							c.getHiringType().v(),
-							c.getRetirementDate(), 
-							c.getJoinDate(), 
-							c.getAdoptDate()));
-					
+
+					listJobEntryHist.add(new JobEntryHistoryExport(c.getCompanyId(), c.getSId(), c.getHiringType().v(),
+							c.getRetirementDate(), c.getJoinDate(), c.getAdoptDate()));
+
 				});
 				dto.setListJobEntryHist(listJobEntryHist);
 			} else {
 				dto.setListJobEntryHist(null);
 			}
-
-			boolean checkPersonExit = personRepo.getByPersonId(employee.getPId()).isPresent();
+			Optional<Person> _person = personRepo.getByPersonId(employee.getPId());
 			Person person = new Person();
-			if (checkPersonExit) {
-				person = personRepo.getByPersonId(employee.getPId()).get();
-				String businessName = person.getPersonNameGroup().getBusinessName().v();
-				if (businessName == null) {
-					businessName = person.getPersonNameGroup().getPersonName().v();
+			if (_person.isPresent()) {
+				person = _person.get();
+				String businessName = null;
+				if (person.getPersonNameGroup() != null) {
+					if (person.getPersonNameGroup().getBusinessName() != null) {
+						businessName = person.getPersonNameGroup().getBusinessName().v();
+					} else if (person.getPersonNameGroup().getPersonName() != null) {
+						businessName = person.getPersonNameGroup().getPersonName().v();
+					}
 				}
-				
-				dto.setEmployeeCode(employee.getSCd().v());
+				if (employee.getSCd() != null) {
+					dto.setEmployeeCode(employee.getSCd().v());
+				}
+				if (employee.getCompanyMail() != null) {
+					dto.setCompanyMail(employee.getCompanyMail().v());
+				}
 				dto.setEmployeeName(businessName);
 				dto.setEmployeeId(employee.getSId());
-				dto.setCompanyMail(employee.getCompanyMail().v());
 			}
 
 		}

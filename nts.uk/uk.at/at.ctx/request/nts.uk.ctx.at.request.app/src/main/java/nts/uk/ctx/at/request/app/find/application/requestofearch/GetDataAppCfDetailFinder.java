@@ -24,21 +24,23 @@ public class GetDataAppCfDetailFinder {
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepo;
 	
-	 public OutputMessageDeadline getDataConfigDetail(String companyID,String workplaceID,int appType){
+	 public OutputMessageDeadline getDataConfigDetail(InputMessageDeadline inputMessageDeadline){
 		String message = "";
 		String deadline = "";
 		GeneralDate date = GeneralDate.today();
 		
 		 Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepo
-				 .getAppTypeDiscreteSettingByAppType(companyID, appType);
+				 .getAppTypeDiscreteSettingByAppType(inputMessageDeadline.getCompanyID(), inputMessageDeadline.getAppType());
 		//事後申請の受付は7月27日分まで。
 		if(appTypeDiscreteSetting.get().getRetrictPostAllowFutureFlg().value  == 1 && 
 		   appTypeDiscreteSetting.get().getRetrictPreUseFlg().value == 1) {
 			deadline = "事後申請の受付は"+date+"分まで";
 		}
-		if(workplaceID.isEmpty()) {
+		if( inputMessageDeadline.getWorkplaceID().isEmpty()) {
 			//this is company
-			Optional<AppConfigDetailDto> appConfigDetailCom =  detailCompanyRepo.getRequestDetail(companyID, appType)
+			Optional<AppConfigDetailDto> appConfigDetailCom =  detailCompanyRepo.getRequestDetail(
+					inputMessageDeadline.getCompanyID(), 
+					inputMessageDeadline.getAppType())
 					.map(c -> AppConfigDetailDto.fromDomain(c));
 			if (appConfigDetailCom.isPresent()) { //ton tai
 				if(!appConfigDetailCom.get().getMemo().isEmpty()) {
@@ -47,8 +49,11 @@ public class GetDataAppCfDetailFinder {
 			}
 			
 		}else {
-			//this is company workplace
-			Optional<AppConfigDetailDto> appConfigDetailWP = detailWorkplaceRepo.getRequestDetail(companyID, workplaceID, appType)
+			//this is  workplace
+			Optional<AppConfigDetailDto> appConfigDetailWP = detailWorkplaceRepo.getRequestDetail(
+					inputMessageDeadline.getCompanyID(),
+					inputMessageDeadline.getWorkplaceID(),
+					inputMessageDeadline.getAppType())
 			.map(c -> AppConfigDetailDto.fromDomain(c));
 			if (appConfigDetailWP.isPresent()) { //ton tai
 				if(!appConfigDetailWP.get().getMemo().isEmpty()) {

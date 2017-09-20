@@ -10,8 +10,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.shared.app.find.overtime.dto.OvertimeSettingDto;
-import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSetting;
-import nts.uk.ctx.at.shared.dom.overtime.setting.OvertimeSettingRepository;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSetting;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -23,7 +23,7 @@ public class OvertimeSettingFinder {
 	
 	/** The repository. */
 	@Inject
-	private OvertimeSettingRepository repository;
+	private OutsideOTSettingRepository repository;
 	
 	/**
 	 * Find by id.
@@ -39,7 +39,7 @@ public class OvertimeSettingFinder {
 		String companyId = loginUserContext.companyId();
 
 		// call repository find data
-		Optional<OvertimeSetting> overtimeSetting = this.repository.findById(companyId);
+		Optional<OutsideOTSetting> overtimeSetting = this.repository.findById(companyId);
 
 		OvertimeSettingDto dto = new OvertimeSettingDto();
 		if (overtimeSetting.isPresent()) {
