@@ -114,15 +114,15 @@ module nts.uk.at.view.kmf004 {
                 self.items = ko.observableArray([]);
                 self.lst = ko.observableArray([]);
                 self.display = ko.observable(false);
-                self.selectedId.subscribe((value) => {
-                    if (value == 0) {
-                        self.display(false);
-                    }
-                    else {
-                        self.display(true);
-                    }
-                    console.log(self.display());
-                });
+//                self.selectedId.subscribe((value) => {
+//                    if (value == 0) {
+//                        self.display(false);
+//                    }
+//                    else {
+//                        self.display(true);
+//                    }
+//                    console.log(self.display());
+//                });
                 self.start();
             }
 
@@ -139,7 +139,9 @@ module nts.uk.at.view.kmf004 {
                                 year: lstData[i].year,
                                 date: lstData[i].date
                             };
-
+                            if(param.year == 0){
+                                param.year = null;   
+                            }
                             self.items.push(new Item(param));
                         } else {
                             var param: IItem = {
@@ -149,7 +151,7 @@ module nts.uk.at.view.kmf004 {
                                 date: null
                             };
                             self.items.push(new Item(param));
-                        }
+                        }  
                     }
                     dfd.resolve();
                 }).fail(function(error) {

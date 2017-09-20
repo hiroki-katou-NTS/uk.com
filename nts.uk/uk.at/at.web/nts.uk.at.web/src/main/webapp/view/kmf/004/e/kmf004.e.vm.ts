@@ -90,7 +90,11 @@ module nts.uk.at.view.kmf004.e.viewmodel {
             service.getAll().done((lstData: Array<viewmodel.Per>) => {
                 if(lstData.length == 0){
                     self.check(true);
+                    self.selectedId(0);
                 }
+//                for(let item : lstData){
+//                    
+//                }
                 let sortedData = _.orderBy(lstData, ['yearServiceCode'], ['asc']);
                 self.lstPer(sortedData);
                 dfd.resolve();
@@ -107,6 +111,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
             var dfd = $.Deferred();
             service.getAll().done((lstData: Array<Per>) => {
                 if(lstData.length == 0){
+                    self.selectedId(0);
                     self.check(true);
                     self.codeObject(null);
                     self.selectedName(null);
