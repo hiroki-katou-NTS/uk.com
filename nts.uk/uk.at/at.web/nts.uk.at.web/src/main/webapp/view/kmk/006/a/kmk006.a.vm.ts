@@ -32,7 +32,7 @@ module nts.uk.at.view.kmk006.a {
             valueEnum: KnockoutObservable<number>;
             selectedTab: KnockoutObservable<string>;
             timeLimitUpperLimitEnum: Array<Enum>;
-            itemComAutoCal: ComAutoCalSettingModel;
+            itemComAutoCalModel: ComAutoCalSettingModel;
 
 
 
@@ -204,7 +204,7 @@ module nts.uk.at.view.kmk006.a {
                 self.valueEnum = ko.observable(2);
                 self.selectedTab = ko.observable('tab-1');
                 self.timeLimitUpperLimitEnum = [];
-                self.itemComAutoCal = new ComAutoCalSettingModel();
+                self.itemComAutoCalModel = new ComAutoCalSettingModel();
 
 
 
@@ -290,7 +290,10 @@ module nts.uk.at.view.kmk006.a {
                 service.getComAutoCal().done(function(data) {
                     //                nts.uk.ui.block.clear();
                     if (data) {
-                        self.itemComAutoCal.updateData(data);
+                        self.itemComAutoCalModel.updateData(data);
+                    }
+                    if (self.itemComAutoCalModel) {
+                        self.valueEnum(self.autoCalAtrOvertimeEnum[self.itemComAutoCalModel.normalOTTime.earlyOtTime.upLimitOtSet()].value);
                     }
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res);
@@ -300,7 +303,78 @@ module nts.uk.at.view.kmk006.a {
 
                 return dfd.promise();
             }
+            
+            /**
+             * function on click saveCompanyAutoCal action
+             */
+            public saveCompanyAutoCal(): void {
+                if ($('.nts-input').ntsError('hasError')) {
+                    return;
+                };
+                nts.uk.ui.block.invisible();
+                var self = this;
+                
+                var dto: ComAutoCalSettingDto = {
+                    normalOTTime: self.itemComAutoCalModel.normalOTTime.toDto(),
+                    flexOTTime: self.itemComAutoCalModel.flexOTTime.toDto(),
+                    restTime: self.itemComAutoCalModel.restTime.toDto()
+                };
 
+                self.itemComAutoCalModel.updateData(self.itemComAutoCalModel.toDto());
+
+                service.saveComAutoCal(dto).done(function() {
+                    // show message 15
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        // reload pa    
+                        self.loadComAutoCal();
+                    });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
+
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
 
 
 
@@ -366,11 +440,7 @@ module nts.uk.at.view.kmk006.a {
                 self.loadTimeLimitUpperLimitSettingEnum();
                 // load all data  Enum
                 self.loadAutoCalAtrOvertimeEnum();
-                self.loadComAutoCal().done(function() {
-                    if (!self.itemComAutoCal) {
-                        self.valueEnum(self.autoCalAtrOvertimeEnum[self.itemComAutoCal.normalOTTime.flexOtTime.upLimitOtSet()].value);
-                    }
-                });
+                self.loadComAutoCal();
                 self.onSelectCompany().done(function() {
                     $('#tree-grid').ntsTreeComponent(self.treeGrid);
                     dfd.resolve(self);
@@ -690,35 +760,7 @@ module nts.uk.at.view.kmk006.a {
                 return dfd.promise();
             }
 
-            /**
-             * function on click saveCompanyEstablishment action
-             */
-            public saveCompanyEstablishment(): void {
-                if ($('.nts-input').ntsError('hasError')) {
-                    return;
-                };
-                nts.uk.ui.block.invisible();
-                var self = this;
-                var dto: CompanyEstablishmentDto = {
-                    estimateTime: self.companyEstablishmentModel.estimateTimeModel.toDto(),
-                    estimatePrice: self.companyEstablishmentModel.estimatePriceModel.toDto(),
-                    estimateNumberOfDay: self.companyEstablishmentModel.estimateDaysModel.toDto()
-
-                };
-                service.saveCompanyEstablishment(self.companyEstablishmentModel.selectedYear(), dto).done(function() {
-                    // show message 15
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                        // reload pa    
-                        self.loadCompanyEstablishment(self.companyEstablishmentModel.selectedYear(), false);
-                    });
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error);
-                }).always(() => {
-                    $('#comboTargetYear').focus();
-                    nts.uk.ui.block.clear();
-                });
-            }
-
+          
             /**
              * function on click deleteCompanyEstablishment action
              */
