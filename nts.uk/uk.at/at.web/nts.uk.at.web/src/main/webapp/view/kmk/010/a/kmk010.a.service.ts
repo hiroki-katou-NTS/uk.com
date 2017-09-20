@@ -8,8 +8,7 @@ module nts.uk.at.view.kmk010.a {
             findByIdOutsideOTSetting: "ctx/at/shared/outsideot/setting/findById",
             findAllPremiumExtra60HRate: "ctx/at/shared/outsideot/overtime/premium/extra/findAll",
             findByIdSuperHD60HConMed: "ctx/at/shared/outsideot/holiday/findById",
-            saveOutsideOTSetting: "ctx/at/shared/outsideot/setting/save",
-            saveSuperHD60HConMed: "ctx/at/shared/outsideot/holiday/save",
+            saveOutsideOTSettingAndSupperHD60H: "ctx/at/shared/outsideot/setting/save",
             findAllOvertimeNameLanguage: "ctx/at/shared/outsideot/overtime/name/language/findAll",
             findAllOvertime : "ctx/at/shared/outsideot/overtime/findAll",
             findAllOvertimeLanguageBRDItem : "ctx/at/shared/outsideot/breakdown/language/findAll",
@@ -65,16 +64,10 @@ module nts.uk.at.view.kmk010.a {
         /**
          * save overtime setting to service
          */
-        export function saveOutsideOTSetting(dto: model.OutsideOTSettingDto): JQueryPromise<void>{
-            return nts.uk.request.ajax(paths.saveOutsideOTSetting, { setting: dto });
+        export function saveOutsideOTSettingAndSupperHD60H(dtoSetting: model.OutsideOTSettingDto, dtoSuper: model.SuperHD60HConMedDto): JQueryPromise<void>{
+            return nts.uk.request.ajax(paths.saveOutsideOTSettingAndSupperHD60H, { setting: dtoSetting, superholidayConvertMethod :dtoSuper});
         }
 
-        /**
-         * save super holiday 60h method
-         */
-        export function saveSuperHD60HConMed(dto: model.SuperHD60HConMedDto): JQueryPromise<void> {
-            return nts.uk.request.ajax(paths.saveSuperHD60HConMed, { setting: dto });
-        }
         /**
          * find all overtime language name
          */
@@ -118,8 +111,8 @@ module nts.uk.at.view.kmk010.a {
         /**
          * export file excel outside overtime setting
          */
-        export function exportOutsideOTSettingExcel(languageId: string): JQueryPromise<any> {
-            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcel, {languageId: languageId});
+        export function exportOutsideOTSettingExcel(languageId: string, manage: boolean): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcel, { languageId: languageId, manage: manage });
         }
         
         export module model {

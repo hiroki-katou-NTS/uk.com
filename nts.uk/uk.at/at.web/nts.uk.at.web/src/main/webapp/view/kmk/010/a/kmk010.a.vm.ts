@@ -166,13 +166,11 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 $('.nts-input').trigger("validate");
                 if (nts.uk.ui.errors.hasError() == false) {
-                    service.saveOutsideOTSetting(self.outsideOTSettingModel.toDto()).done(function() {
-                        var dto: SuperHD60HConMedDto = self.superHD60HConMedModel.toDto();
-                        dto.premiumExtra60HRates = self.toArrayRateDto();
-                        service.saveSuperHD60HConMed(dto).done(function() {
-                            nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
-                                self.startPage();
-                            });
+                    var dtoSuper: SuperHD60HConMedDto = self.superHD60HConMedModel.toDto();
+                    dtoSuper.premiumExtra60HRates = self.toArrayRateDto();
+                    service.saveOutsideOTSettingAndSupperHD60H(self.outsideOTSettingModel.toDto(), dtoSuper).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            self.startPage();
                         });
                     }).fail(function(error) {
                         nts.uk.ui.dialog.alertError(error);
@@ -244,7 +242,14 @@ module nts.uk.at.view.kmk010.a {
              */
             private exportFileExcelOutsideOTSetting(): void {
                 var self = this;
-                service.exportOutsideOTSettingExcel(self.languageId);
+                // check manage call service
+                service.checkManageSixtyHourVacationSetting().done(function(data){
+                    self.isManage(data.manage);
+                    // call service export
+                    console.log(data.manage+' '+ self.isManage());
+                    
+                    service.exportOutsideOTSettingExcel(self.languageId, self.isManage());
+                });
             }
         }
         export class OvertimeModel {
