@@ -17,11 +17,9 @@ public class BsydtEmployeeRegistrationHistoryPk implements Serializable {
 
 	
 	@Basic(optional = false)
-	@Column(name = "REG_SID")
-	public String employeeRegisteredId;
-	/**
-	 * 
-	 */
+	@Column(name = "CID")
+	public String CompanyId;
+	
 	private static final long serialVersionUID = 1L;
 
 }
