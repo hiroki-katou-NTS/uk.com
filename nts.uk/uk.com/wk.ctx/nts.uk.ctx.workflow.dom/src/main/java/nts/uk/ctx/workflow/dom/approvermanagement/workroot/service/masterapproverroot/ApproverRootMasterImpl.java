@@ -242,7 +242,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDate(companyID, baseDate);
 		Optional<CompanyInfor> comInfo = comAdapter.getCurrentCompany();
 		List<ApprovalForApplication> comApproverRoot =  new ArrayList<>();
-		if(!CollectionUtil.isEmpty(lstComs)) {
+		if(CollectionUtil.isEmpty(lstComs)) {
 			return null;
 		}
 		
