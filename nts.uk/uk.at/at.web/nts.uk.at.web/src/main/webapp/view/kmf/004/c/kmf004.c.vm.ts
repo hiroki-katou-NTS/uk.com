@@ -227,6 +227,8 @@ module nts.uk.at.view.kmf004.c {
                     return;    
                 }
                 
+                nts.uk.ui.block.invisible();
+                
                 _.forEach(self.dataItems(), function(item) {
                     if(item.month() || item.year()) {
                         if(item.month() !== 0 || item.year() !== 0) {
@@ -289,6 +291,8 @@ module nts.uk.at.view.kmf004.c {
             deleteBtn(){
                 var self = this;
                 
+                nts.uk.ui.block.invisible();
+                
                 let count = 0;
                 for (let i = 0; i <= self.items().length; i++){
                     if(self.items()[i].code == self.singleSelectedCode()){
@@ -328,7 +332,7 @@ module nts.uk.at.view.kmf004.c {
                     }).always(function() {
                         nts.uk.ui.block.clear();      
                     });
-                });
+                }).ifNo(()=> { nts.uk.ui.block.clear(); });
             }
             
             /**

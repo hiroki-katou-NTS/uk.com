@@ -7,7 +7,7 @@ module nts.uk.at.view.kmf004.c.service {
         getPerByCode: "shared/specialholiday/getPerByCode/{0}/{1}",
         getPerSetByCode: "shared/specialholiday/getPerSetByCode/{0}/{1}",
         addPer: "shared/specialholiday/addPer",
-        UpdatePer: "shared/specialholiday/UpdatePer",
+        updatePer: "shared/specialholiday/updatePer",
         removePer: "shared/specialholiday/removePer"
     }
     
@@ -32,7 +32,7 @@ module nts.uk.at.view.kmf004.c.service {
     }  
     
     export function UpdatePer(data: GrantDatePerItem): JQueryPromise<any> {
-        var path = nts.uk.text.format(paths.UpdatePer);
+        var path = nts.uk.text.format(paths.updatePer);
         return nts.uk.request.ajax("at", path, data);
     }
     

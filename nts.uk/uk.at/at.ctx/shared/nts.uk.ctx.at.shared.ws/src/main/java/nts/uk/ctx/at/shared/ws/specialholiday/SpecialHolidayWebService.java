@@ -102,8 +102,8 @@ public class SpecialHolidayWebService extends WebService{
 	
 	@Path("addGrantDateCom")
 	@POST
-	public void add(GrantDateComCommand command) {
-		this.grantDateComCommandHandler.handle(command);
+	public JavaTypeResult<List<String>> add(GrantDateComCommand command) {
+		return new JavaTypeResult<List<String>>(this.grantDateComCommandHandler.handle(command));
 	}
 	
 	@Path("getPerByCode/{specialHolidayCode}/{personalGrantDateCode}")
@@ -124,9 +124,9 @@ public class SpecialHolidayWebService extends WebService{
 		return new JavaTypeResult<List<String>>(this.addGrantDatePerCommandHandler.handle(command));
 	}
 	
-	@Path("UpdatePer")
+	@Path("updatePer")
 	@POST
-	public JavaTypeResult<List<String>> UpdatePer(GrantDatePerCommand command) {
+	public JavaTypeResult<List<String>> updatePer(GrantDatePerCommand command) {
 		return new JavaTypeResult<List<String>>(this.updateGrantDatePerCommandHandler.handle(command));
 	}
 	

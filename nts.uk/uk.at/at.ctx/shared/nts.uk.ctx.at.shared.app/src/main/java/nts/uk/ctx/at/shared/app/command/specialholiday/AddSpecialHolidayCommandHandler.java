@@ -42,9 +42,8 @@ public class AddSpecialHolidayCommandHandler extends CommandHandlerWithResult<Ad
 		if (existsBranch) {
 			addMessage(errList, "Msg_3");
 		}
-
+		
 		SpecialHoliday specialHoliday = addSpecialHolidayCommand.toDomain(companyId);
-
 		// validate Special Holiday
 		specialHoliday.validate();
 

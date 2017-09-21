@@ -237,6 +237,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
+            nts.uk.ui.block.invisible();
             var specialHoliday = ko.toJS(self.currentItem());
             if (self.inp_grantMethod() == 0) {
                 specialHoliday.grantRegular = null;
@@ -269,7 +270,9 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 var emptyObjectGrantSingle: model.IGrantSingleDto = {};
 
                 specialHoliday["grantMethod"] = self.inp_grantMethod();
-
+                if(self.sphdList().length>19){
+                return;    
+                }
                 service.addSpecialHoliday(specialHoliday).done(function(errors) {
                     if (errors && errors.length > 0) {
                         self.addListError(errors);
@@ -326,6 +329,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             var index_of_itemDelete = _.findIndex(self.items(), function(item) {
                 return item.specialHolidayCode() == self.currentCode();
             });
+            nts.uk.ui.block.invisible();
             nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                 var specialholiday = {
                     specialHolidayCode: self.currentItem().specialHolidayCode()
@@ -347,6 +351,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                     });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
                 })
             }).ifNo(function() {
             });
