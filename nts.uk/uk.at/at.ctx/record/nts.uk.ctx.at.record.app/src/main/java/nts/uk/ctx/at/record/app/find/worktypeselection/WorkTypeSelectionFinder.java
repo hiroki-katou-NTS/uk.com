@@ -2,10 +2,13 @@ package nts.uk.ctx.at.record.app.find.worktypeselection;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+@Stateless
 public class WorkTypeSelectionFinder {
 
 	@Inject
