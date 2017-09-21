@@ -5,7 +5,7 @@ module nts.uk.at.view.kaf000.test.viewmodel{
     export class ScreenModel{
         appInfor : KnockoutObservableArray<ApproverDtoK> = ko.observableArray([]);
         //test
-        openDialogK() {
+        openDetail() {
             var self = this;
             //承認者
             self.appInfor.removeAll();
