@@ -12,8 +12,6 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet.LeaveEarlyTimeSheet;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -147,7 +145,7 @@ public class WithinWorkTimeSheet {
 		default:
 			throw new RuntimeException("unknown attendanceHolidayAttr" + attendanceHolidayAttr);
 		}
-	
+	}
 	/**
 	 * 引数のNoと一致する遅刻判断時刻を取得する
 	 * @param workNo
