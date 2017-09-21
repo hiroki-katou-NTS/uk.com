@@ -2582,6 +2582,22 @@ var nts;
                 return Locator;
             }());
             request.Locator = Locator;
+            function writeDynamicConstraint(codes) {
+                var dfd = $.Deferred();
+                ajax("constraint/getlist", codes).done(function (data) {
+                    if (nts.uk.util.isNullOrUndefined(__viewContext.primitiveValueConstraints)) {
+                        __viewContext.primitiveValueConstraints = {};
+                    }
+                    _.forEach(data, function (item) {
+                        __viewContext.primitiveValueConstraints[item.itemCode] = item;
+                    });
+                    dfd.resolve(data);
+                }).fail(function (error) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            request.writeDynamicConstraint = writeDynamicConstraint;
             function ajax(webAppId, path, data, options) {
                 if (typeof arguments[1] !== 'string') {
                     return ajax.apply(null, _.concat(location.currentAppId, arguments));
@@ -3129,8 +3145,11 @@ var nts;
                     function StringValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
+                        if (nts.uk.util.isNullOrUndefined(this.constraint)) {
+                            this.constraint = {};
+                        }
                         this.charType = uk.text.getCharType(primitiveValueName);
-                        this.required = option.required;
+                        this.required = (!nts.uk.util.isNullOrUndefined(option.required) && option.required) || this.constraint.required;
                     }
                     StringValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
@@ -3153,25 +3172,22 @@ var nts;
                             }
                             validateResult = this.charType.validate(inputText);
                             if (!validateResult.isValid) {
-                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, !util.isNullOrUndefined(this.constraint)
-                                        ? (!util.isNullOrUndefined(this.constraint.maxLength)
-                                            ? this.constraint.maxLength : 9999) : 9999]), validateResult.errorCode);
+                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, (!util.isNullOrUndefined(this.constraint.maxLength)
+                                        ? this.constraint.maxLength : 9999)]), validateResult.errorCode);
                                 return result;
                             }
                         }
-                        if (this.constraint !== undefined && this.constraint !== null) {
-                            if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
-                                var maxLength = this.constraint.maxLength;
-                                if (this.constraint.charType == "Any")
-                                    maxLength = maxLength / 2;
-                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
+                        if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
+                            var maxLength = this.constraint.maxLength;
+                            if (this.constraint.charType == "Any")
+                                maxLength = maxLength / 2;
+                            result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
+                            return result;
+                        }
+                        if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
+                            if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                                result.fail('This field is not valid with pattern!', '');
                                 return result;
-                            }
-                            if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
-                                if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                                    result.fail('This field is not valid with pattern!', '');
-                                    return result;
-                                }
                             }
                         }
                         result.success(inputText);
@@ -3184,6 +3200,9 @@ var nts;
                     function NumberValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
+                        if (util.isNullOrUndefined(this.constraint)) {
+                            this.constraint = {};
+                        }
                         this.option = option;
                     }
                     NumberValidator.prototype.validate = function (inputText) {
@@ -3191,7 +3210,7 @@ var nts;
                         var isDecimalNumber = false;
                         if (this.option !== undefined) {
                             if (nts.uk.util.isNullOrUndefined(inputText) || inputText.trim().length <= 0) {
-                                if (this.option['required'] === true && nts.uk.util.isNullOrEmpty(this.option['defaultValue'])) {
+                                if ((this.option['required'] === true || this.constraint["required"] === true) && nts.uk.util.isNullOrEmpty(this.option['defaultValue'])) {
                                     result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
                                     return result;
                                 }
@@ -3206,7 +3225,7 @@ var nts;
                         inputText = inputText.trim();
                         var message = {};
                         var validateFail = false, max = 99999999, min = 0, mantissaMaxLength;
-                        if (!util.isNullOrUndefined(this.constraint) && this.constraint.valueType === "HalfInt") {
+                        if (this.constraint.valueType === "HalfInt") {
                             if (!uk.ntsNumber.isHalfInt(inputText, message))
                                 validateFail = true;
                         }
@@ -3215,23 +3234,21 @@ var nts;
                         }
                         var value = isDecimalNumber ?
                             uk.ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
-                        if (!util.isNullOrUndefined(this.constraint)) {
-                            if (!util.isNullOrUndefined(this.constraint.max)) {
-                                max = this.constraint.max;
-                                if (value > this.constraint.max)
-                                    validateFail = true;
-                            }
-                            if (!util.isNullOrUndefined(this.constraint.min)) {
-                                min = this.constraint.min;
-                                if (value < this.constraint.min)
-                                    validateFail = true;
-                            }
-                            if (!util.isNullOrUndefined(this.constraint.mantissaMaxLength)) {
-                                mantissaMaxLength = this.constraint.mantissaMaxLength;
-                                var parts = String(value).split(".");
-                                if (parts[1] !== undefined && parts[1].length > mantissaMaxLength)
-                                    validateFail = true;
-                            }
+                        if (!util.isNullOrUndefined(this.constraint.max)) {
+                            max = this.constraint.max;
+                            if (value > this.constraint.max)
+                                validateFail = true;
+                        }
+                        if (!util.isNullOrUndefined(this.constraint.min)) {
+                            min = this.constraint.min;
+                            if (value < this.constraint.min)
+                                validateFail = true;
+                        }
+                        if (!util.isNullOrUndefined(this.constraint.mantissaMaxLength)) {
+                            mantissaMaxLength = this.constraint.mantissaMaxLength;
+                            var parts = String(value).split(".");
+                            if (parts[1] !== undefined && parts[1].length > mantissaMaxLength)
+                                validateFail = true;
                         }
                         if (validateFail) {
                             result.fail(nts.uk.resource.getMessage(message.id, [this.name, min, max, mantissaMaxLength]), message.id);
@@ -3258,8 +3275,11 @@ var nts;
                     function TimeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
+                        if (nts.uk.util.isNullOrUndefined(this.constraint)) {
+                            this.constraint = {};
+                        }
                         this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
-                        this.required = (option && option.required) ? option.required : false;
+                        this.required = ((option && option.required) ? option.required : false) || this.constraint.required === true;
                         this.valueType = (option && option.valueType) ? option.valueType : "string";
                         this.mode = (option && option.mode) ? option.mode : "";
                         this.acceptJapaneseCalendar = (option && option.acceptJapaneseCalendar) ? option.acceptJapaneseCalendar : true;
@@ -3291,28 +3311,26 @@ var nts;
                                 result.fail(msg, msgId);
                                 return result;
                             }
-                            if (!util.isNullOrUndefined(this.constraint)) {
-                                if (!util.isNullOrUndefined(this.constraint.max)) {
-                                    maxStr = this.constraint.max;
-                                    var max = uk.time.parseTime(this.constraint.max);
-                                    if (timeParse.success && (max.toValue() < timeParse.toValue())) {
-                                        var msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
-                                        result.fail(msg, "FND_E_TIME");
-                                        return result;
-                                    }
+                            if (!util.isNullOrUndefined(this.constraint.max)) {
+                                maxStr = this.constraint.max;
+                                var max = uk.time.parseTime(this.constraint.max);
+                                if (timeParse.success && (max.toValue() < timeParse.toValue())) {
+                                    var msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
+                                    result.fail(msg, "FND_E_TIME");
+                                    return result;
                                 }
-                                if (!util.isNullOrUndefined(this.constraint.min)) {
-                                    minStr = this.constraint.min;
-                                    var min = uk.time.parseTime(this.constraint.min);
-                                    if (timeParse.success && (min.toValue() > timeParse.toValue())) {
-                                        var msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
-                                        result.fail(msg, "FND_E_TIME");
-                                        return result;
-                                    }
+                            }
+                            if (!util.isNullOrUndefined(this.constraint.min)) {
+                                minStr = this.constraint.min;
+                                var min = uk.time.parseTime(this.constraint.min);
+                                if (timeParse.success && (min.toValue() > timeParse.toValue())) {
+                                    var msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
+                                    result.fail(msg, "FND_E_TIME");
+                                    return result;
                                 }
-                                if (!result.isValid && this.constraint.valueType === "Time") {
-                                    result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minStr, maxStr]), "FND_E_TIME");
-                                }
+                            }
+                            if (!result.isValid && this.constraint.valueType === "Time") {
+                                result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minStr, maxStr]), "FND_E_TIME");
                             }
                             return result;
                         }
@@ -3342,27 +3360,25 @@ var nts;
                             return result;
                         }
                         if (this.outputFormat === "time") {
-                            if (!util.isNullOrUndefined(this.constraint)) {
-                                var inputMoment = parseResult.toNumber(this.outputFormat) * (isMinuteTime ? -1 : 1);
-                                if (!util.isNullOrUndefined(this.constraint.max)) {
-                                    maxStr = this.constraint.max;
-                                    var maxMoment = moment.duration(maxStr);
-                                    if (parseResult.success && (maxMoment.hours() * 60 + maxMoment.minutes()) < inputMoment) {
-                                        result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]), "FND_E_CLOCK");
-                                        return result;
-                                    }
-                                }
-                                if (!util.isNullOrUndefined(this.constraint.min)) {
-                                    minStr = this.constraint.min;
-                                    var minMoment = moment.duration(minStr);
-                                    if (parseResult.success && (minMoment.hours() * 60 + minMoment.minutes()) > inputMoment) {
-                                        result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]), "FND_E_CLOCK");
-                                        return result;
-                                    }
-                                }
-                                if (!result.isValid && this.constraint.valueType === "Clock") {
+                            var inputMoment = parseResult.toNumber(this.outputFormat) * (isMinuteTime ? -1 : 1);
+                            if (!util.isNullOrUndefined(this.constraint.max)) {
+                                maxStr = this.constraint.max;
+                                var maxMoment = moment.duration(maxStr);
+                                if (parseResult.success && (maxMoment.hours() * 60 + maxMoment.minutes()) < inputMoment) {
                                     result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]), "FND_E_CLOCK");
+                                    return result;
                                 }
+                            }
+                            if (!util.isNullOrUndefined(this.constraint.min)) {
+                                minStr = this.constraint.min;
+                                var minMoment = moment.duration(minStr);
+                                if (parseResult.success && (minMoment.hours() * 60 + minMoment.minutes()) > inputMoment) {
+                                    result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]), "FND_E_CLOCK");
+                                    return result;
+                                }
+                            }
+                            if (!result.isValid && this.constraint.valueType === "Clock") {
+                                result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]), "FND_E_CLOCK");
                             }
                         }
                         return result;
@@ -3374,6 +3390,9 @@ var nts;
                     function TimeWithDayValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
+                        if (nts.uk.util.isNullOrUndefined(this.constraint)) {
+                            this.constraint = {};
+                        }
                         this.required = (option && option.required) ? option.required : false;
                     }
                     TimeWithDayValidator.prototype.validate = function (inputText) {
@@ -3390,10 +3409,8 @@ var nts;
                         }
                         var minValue = uk.time.minutesBased.clock.dayattr.MIN_VALUE;
                         var maxValue = uk.time.minutesBased.clock.dayattr.MAX_VALUE;
-                        if (!util.isNullOrUndefined(this.constraint)) {
-                            minValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.min).asMinutes);
-                            maxValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);
-                        }
+                        minValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.min).asMinutes);
+                        maxValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);
                         var parsed = uk.time.minutesBased.clock.dayattr.parseString(inputText);
                         if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
                             result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minValue.fullText, maxValue.fullText]), "FND_E_TIME");
