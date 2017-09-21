@@ -195,39 +195,7 @@ module nts.uk.at.view.kmf004 {
                     }
                 }
             }
-            
-            /**
-             * Validate data before save.
-             */
-            validateData(dataItems: any) {
-                // 経過年数は必ず１件以上必要
-                if(!dataItems){
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_144" });
-                    return false;
-                }
-                
-                // 0年0ヶ月は登録不可
-                for(var i = 0; i < dataItems.length; i++) {
-                    if(dataItems[i].grantDateYear == 0 && dataItems[i].grantDateMonth == 0){
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_95" });
-                        return false;
-                    }
-                }
-                
-                // 同じ経過年数の場合は登録不可
-                var valueArr = dataItems.map(function(item){ return item.grantDateYear });
-                var isDuplicate = valueArr.some(function(item, idx){ 
-                    return valueArr.indexOf(item) != idx 
-                });
-                
-                if(isDuplicate){
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_96" });
-                    return false;
-                }    
-                
-                return true;
-            }
-            
+                        
             /**
              * Save data to db.
              */
@@ -256,23 +224,24 @@ module nts.uk.at.view.kmf004 {
                     index++;
                 });
                 
-                var checkValidate = self.validateData(setData);  
+                var dataItem : service.ComItem = {
+                    specialHolidayCode: self.specialHolidayCode(),
+                    grantDateAtr: self.selectedId(),
+                    grantDate: self.value(),
+                    grantDateSets: ko.toJS(setData)
+                }; 
                 
-                if(checkValidate){
-                    var dataItem : service.ComItem = {
-                        specialHolidayCode: self.specialHolidayCode(),
-                        grantDateAtr: self.selectedId(),
-                        grantDate: self.value(),
-                        grantDateSets: ko.toJS(setData)
-                    }; 
-                    
-                    service.addGrantDateCom(dataItem).done(function(data){
-                        self.bindData(dataItem)
+                service.addGrantDateCom(dataItem).done(function(errors){
+                    if (!errors || errors.length == 0) {
+                        self.bindData(dataItem);
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    }).fail(function(error) {
-                        nts.uk.ui.dialog.alertError(error.message);    
-                    });
-                }
+                    } else {
+                        self.addListError(errors);
+                    }
+                    
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error.message);    
+                });
             }
             
             /**
@@ -280,6 +249,23 @@ module nts.uk.at.view.kmf004 {
              */
             cancel() {
                 nts.uk.ui.windows.close();
+            }
+            
+             /**
+             * Add list error.
+             */
+            addListError(errorsRequest: Array<string>) {
+                var messages = {};
+                _.forEach(errorsRequest, function(err) {
+                    messages[err] = nts.uk.resource.getMessage(err);
+                });
+    
+                var errorVm = {
+                    messageId: errorsRequest,
+                    messages: messages
+                };
+    
+                nts.uk.ui.dialog.bundledErrors(errorVm);
             }
         }
         

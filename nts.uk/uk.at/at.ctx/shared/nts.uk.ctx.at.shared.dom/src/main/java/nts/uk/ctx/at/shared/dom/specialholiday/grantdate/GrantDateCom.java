@@ -1,13 +1,13 @@
 	package nts.uk.ctx.at.shared.dom.specialholiday.grantdate;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
@@ -50,26 +50,28 @@ public class GrantDateCom extends DomainObject {
 	/* 
 	 * Validate function
 	 */
-	public void validateInput() {
+	public List<String> validateInput() {
+		List<String> errors = new ArrayList<>();
 		// 経過年数は必ず１件以上必要
 		if(CollectionUtil.isEmpty(this.grantDateSets)){
-			throw new BusinessException("Msg_144");
+			errors.add("Msg_144");
 		}
 					
+		Set<Integer> grantDateYears = new HashSet<>();
 		for (int i = 0; i < this.grantDateSets.size(); i++) {
 			GrantDateSet currentSet = this.grantDateSets.get(i);
 			
 			// 0年0ヶ月は登録不可
 			if(currentSet.getGrantDateYear().v() == 0 && currentSet.getGrantDateMonth().v() == 0){
-				throw new BusinessException("Msg_95");
+				errors.add("Msg_95");
 			}
 			
 			// 同じ経過年数の場合は登録不可
-			List<Integer> grantDateYears = this.grantDateSets.stream().map(x -> { return x.getGrantDateYear().v(); }).collect(Collectors.toList());
-			int countDuplicate = Collections.frequency(grantDateYears, currentSet.getGrantDateYear().v());
-			if(countDuplicate > 1){
-				throw new BusinessException("Msg_96");
+			if(!grantDateYears.add(currentSet.getGrantDateYear().v())){
+				errors.add("Msg_96");
 			}
 		}
+		
+		return errors;
 	}
 }
