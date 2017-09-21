@@ -59,7 +59,7 @@ module kaf000.b.viewmodel{
             var dfd = $.Deferred();
             var dfdAllReasonByAppID = self.getAllReasonByAppID("000");
             var dfdAllDataByAppID = self.getAllDataByAppID("000");
-            var dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
+            //var dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
             
             $.when(dfdAllReasonByAppID,dfdAllDataByAppID).done((dfdAllReasonByAppIDData,dfdAllDataByAppIDData)=>{
                 //self.listReasonByAppID(data);
