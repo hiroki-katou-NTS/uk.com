@@ -18,6 +18,6 @@ public class BpsstPersonInitValueSettingPk implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "PER_INIT_SET_ID")
-	public String personUnitValueSettingId;
+	public String settingId;
 
 }

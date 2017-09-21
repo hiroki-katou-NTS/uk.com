@@ -28,11 +28,11 @@ public class BpsstPersonInitValueSetting extends UkJpaEntity implements Serializ
 
 	@Basic(optional = false)
 	@Column(name = "PER_INIT_SET_CODE")
-	public String PersonInitValueSettingCode;
+	public String settingCode;
 
 	@Basic(optional = false)
 	@Column(name = "PER_INIT_SET_NAME")
-	public String PersonInitValueSettingName;
+	public String settingName;
 
 	@Override
 	protected Object getKey() {

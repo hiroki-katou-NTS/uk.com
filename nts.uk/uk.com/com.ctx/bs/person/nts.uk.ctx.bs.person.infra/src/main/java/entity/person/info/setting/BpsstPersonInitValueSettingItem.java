@@ -20,11 +20,11 @@ public class BpsstPersonInitValueSettingItem extends UkJpaEntity implements Seri
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public BpsstPersonInitValueSettingItemPk bpsstPersonInitValueSettingItemPk;
+	public BpsstPersonInitValueSettingItemPk settingItemPk;
 
 	@Basic(optional = false)
 	@Column(name = "PER_INIT_SET_CTG_ID")
-	public String personUnitValueSettingCtgId;
+	public String settingCtgId;
 
 	@Basic(optional = false)
 	@Column(name = "REFERENCE_METHOD")
@@ -49,7 +49,7 @@ public class BpsstPersonInitValueSettingItem extends UkJpaEntity implements Seri
 	
 	@Override
 	protected Object getKey() {
-		return bpsstPersonInitValueSettingItemPk;
+		return settingItemPk;
 	}
 
 }

@@ -1,6 +1,7 @@
 package nts.uk.ctx.bs.person.dom.person.setting.init;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PerInfoInitValueSettingRepository {
 	/**
@@ -11,6 +12,41 @@ public interface PerInfoInitValueSettingRepository {
 	 */
 	List<PerInfoInitValueSetting> getAllInitValueSetting(String companyId);
 
-	PerInfoInitValueSetting getDetailInitValSetting(String initValueSettingId);
+	/**
+	 * getDetailInitValSetting
+	 * 
+	 * @param initValueSettingId
+	 * @return PerInfoInitValueSetting
+	 */
+
+	Optional<PerInfoInitValueSetting> getDetailInitValSetting(String initValueSettingId);
+
+	/**
+	 * getDetailInitValSetting
+	 * 
+	 * @param companyId
+	 * @param setCode
+	 * @return PerInfoInitValueSetting
+	 */
+
+	Optional<PerInfoInitValueSetting> getDetailInitValSetting(String companyId, String setCode);
+
+	/**
+	 * update PerInfoInitValueSetting
+	 * @param domain
+	 */
+	void update(PerInfoInitValueSetting domain);
+
+	/**
+	 * insert PerInfoInitValueSetting
+	 * @param domain
+	 */
+	void insert(PerInfoInitValueSetting domain);
+
+	/**
+	 * delete initValueSettingId
+	 * @param initValueSettingId
+	 */
+	void delete(String initValueSettingId);
 
 }

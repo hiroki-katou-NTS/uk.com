@@ -20,15 +20,15 @@ public class BpsstPersonInitValueSettingCtg extends UkJpaEntity implements Seria
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public BpsstPersonInitValueSettingCtgPk bpsstPersonInitValueSettingCtgPk;
+	public BpsstPersonInitValueSettingCtgPk settingCtgPk;
 
 	@Basic(optional = false)
 	@Column(name = "PER_INIT_SET_ID")
-	public String personUnitValueSettingId;
+	public String settingId;
 
 	@Override
 	protected Object getKey() {
-		return bpsstPersonInitValueSettingCtgPk;
+		return settingCtgPk;
 	}
 
 }

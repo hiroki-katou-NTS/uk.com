@@ -6,6 +6,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
+    import modal = nts.uk.ui.windows.sub.modal;
 
     export class ViewModel {
         categoryList: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -89,7 +90,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             setShared('categoryInfo', self.currentCategory());
             block.invisible();
-            nts.uk.ui.windows.sub.modal('/view/cps/009/b/index.xhtml', { title: '' }).onClosed(function(): any {
+            modal('/view/cps/009/b/index.xhtml', { title: '' }).onClosed(function(): any {
 
                 block.clear();
             });
@@ -105,7 +106,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             block.invisible();
 
-            nts.uk.ui.windows.sub.modal('/view/cps/009/c/index.xhtml', { title: '' }).onClosed(function(): any {
+            modal('/view/cps/009/c/index.xhtml', { title: '' }).onClosed(function(): any {
 
                 block.clear();
             });
@@ -122,13 +123,14 @@ module nts.uk.com.view.cps009.a.viewmodel {
 
             block.invisible();
 
-            nts.uk.ui.windows.sub.modal('/view/cps/009/d/index.xhtml', { title: '' }).onClosed(function(): any {
+            modal('/view/cps/009/d/index.xhtml', { title: '' }).onClosed(function(): any {
 
                 block.clear();
             });
 
         }
     }
+    
     export interface ICategoryInfo {
         id: string;
         categoryName: string;
@@ -146,6 +148,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
 
     }
+    
     export interface IItemInfo {
         id: string;
         itemCode: string;
