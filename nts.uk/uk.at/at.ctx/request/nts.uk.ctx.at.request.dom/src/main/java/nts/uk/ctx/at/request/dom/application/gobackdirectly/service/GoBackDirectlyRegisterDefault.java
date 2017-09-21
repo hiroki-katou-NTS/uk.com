@@ -160,7 +160,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		if (goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.CHANGE
 				&& goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.DECIDECHANGE) {
 			// 勤務種類及び銃所時間帯はチェック対象
-			result.setSiftCd(goBackDirectly.getSiftCd());
+			result.setSiftCd(goBackDirectly.getSiftCD());
 			result.setWorkTypeCD(goBackDirectly.getWorkTypeCD());
 
 		} else if (goBackCommonSet.getWorkChangeFlg() == WorkChangeFlg.NOTCHANGE

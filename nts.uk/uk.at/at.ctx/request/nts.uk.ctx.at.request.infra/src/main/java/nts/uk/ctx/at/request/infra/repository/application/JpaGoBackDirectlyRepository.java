@@ -53,7 +53,7 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		entity.krqdtGoBackDirectlyPK.companyID = domain.getCompanyID();
 		entity.krqdtGoBackDirectlyPK.appID  = domain.getAppID();
 		entity.workTypeCD = domain.getWorkTypeCD().v();
-		entity.siftCD = domain.getSiftCd().v();
+		entity.siftCD = domain.getSiftCD().v();
 		entity.workChangeAtr = domain.getWorkChangeAtr().value;
 		entity.workTimeStart1 = domain.getWorkTimeStart1().v();
 		entity.workTimeEnd1 = domain.getWorkTimeEnd1().v();
@@ -70,10 +70,14 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 
 	@Override
 	public Optional<GoBackDirectly> findByApplicationID(String companyID, String appID) {
-		return this.queryProxy().query(SELECT_WITH_APP_ID, KrqdtGoBackDirectly.class)
+		Optional<GoBackDirectly> item =  this.queryProxy().query(SELECT_WITH_APP_ID, KrqdtGoBackDirectly.class)
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID)
 				.getSingle(c -> toDomain(c));
+		if(!item.isPresent()) {
+			return null;
+		}
+		return item;
 	}
 	/**
 	 * 
@@ -96,7 +100,7 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		
 		if(goBackDirectly.getWorkChangeAtr() == UseAtr.USE) {
 			currentEntity.setWorkTypeCD(goBackDirectly.getWorkTypeCD().v());
-			currentEntity.setSiftCD(goBackDirectly.getSiftCd().v());
+			currentEntity.setSiftCD(goBackDirectly.getSiftCD().v());
 		}
 		this.commandProxy().update(toEntity(goBackDirectly));
 	}

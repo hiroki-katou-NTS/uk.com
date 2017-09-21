@@ -163,7 +163,7 @@
 			<div id="combo-box"
 				data-bind="ntsComboBox: {
 								options: reasonCombo,
-								optionsValue: 'reasonCode',
+								optionsValue: 'reasonId',
 								optionsText: 'reasonName',
 								value: selectedReason,
 								enable: true,
@@ -176,7 +176,7 @@
 				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF009_27')}</div>
 			<div id="multiline">
 				<textarea
-					data-bind="ntsMultilineEditor: {value: multilContent,option: multilOption }" />
+					data-bind="ntsMultilineEditor: {value: multilContent,option: multiOption }" />
 			</div>
 		</div>
 	</div>

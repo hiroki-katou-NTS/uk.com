@@ -64,7 +64,7 @@ public class GoBackDirectlyFinder {
 	 */
 	public GoBackDirectlyDto convertToDto(GoBackDirectly domain) {
 		return new GoBackDirectlyDto(domain.getCompanyID(), domain.getAppID(), domain.getWorkTypeCD().v(),
-				domain.getSiftCd().v(), domain.getWorkChangeAtr().value, domain.getGoWorkAtr1().value,
+				domain.getSiftCD().v(), domain.getWorkChangeAtr().value, domain.getGoWorkAtr1().value,
 				domain.getBackHomeAtr1().value, domain.getWorkTimeStart1().v(), domain.getWorkTimeEnd1().v(),
 				domain.getWorkLocationCD1(), domain.getGoWorkAtr2().value, domain.getBackHomeAtr2().value,
 				domain.getWorkTimeStart2().v(), domain.getWorkTimeEnd2().v(), domain.getWorkLocationCD2());
@@ -77,9 +77,16 @@ public class GoBackDirectlyFinder {
 	 * @return
 	 */
 	public GoBackDirectDetailDto convertGoBackDirectData(GoBackDirectAppSet domain) {
-		return new GoBackDirectDetailDto(convertToDto(domain.getGoBackDirectly()), domain.getPrePostAtr(),
-				domain.getWorkLocationName1(), domain.getWorkLocationName2(), domain.getWorkTypeName(),
-				domain.getWorkTimeName());
+		return new GoBackDirectDetailDto(
+				convertToDto(domain.getGoBackDirectly()), 
+				domain.getPrePostAtr(),
+				domain.getWorkLocationName1(), 
+				domain.getWorkLocationName2(), 
+				domain.getWorkTypeName(),
+				domain.getWorkTimeName(),
+				domain.getAppReasonId(),
+				domain.getAppReason(),
+				domain.getAppDate());
 	}
 
 	/**

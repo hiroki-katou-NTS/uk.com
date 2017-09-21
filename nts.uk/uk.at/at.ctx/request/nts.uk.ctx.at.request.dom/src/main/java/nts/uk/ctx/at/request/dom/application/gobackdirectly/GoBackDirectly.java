@@ -31,7 +31,7 @@ public class GoBackDirectly extends AggregateRoot {
 	/**
 	 * 就業時間帯
 	 */
-	private SiftCode siftCd;
+	private SiftCode siftCD;
 	/**
 	 * 勤務を変更する
 	 */
@@ -77,13 +77,13 @@ public class GoBackDirectly extends AggregateRoot {
 	 */
 	private String workLocationCD2;
 
-	public GoBackDirectly(String companyID, String appID, String workTypeCD, String siftCd, int workChangeAtr,
+	public GoBackDirectly(String companyID, String appID, String workTypeCD, String siftCD, int workChangeAtr,
 			int goWorkAtr1, int backHomeAtr1, int workTimeStart1, int workTimeEnd1, String workLocationCD1,
 			int goWorkAtr2, int backHomeAtr2, int workTimeStart2, int workTimeEnd2, String workLocationCD2) {
 		this.companyID = companyID;
 		this.appID = appID;
 		this.workTypeCD = new WorkTypeCode(workTypeCD);
-		this.siftCd = new SiftCode(siftCd);
+		this.siftCD = new SiftCode(siftCD);
 		this.workChangeAtr = EnumAdaptor.valueOf(workChangeAtr, UseAtr.class);
 		this.goWorkAtr1 = EnumAdaptor.valueOf(goWorkAtr1, UseAtr.class);
 		this.backHomeAtr1 = EnumAdaptor.valueOf(backHomeAtr1, UseAtr.class);

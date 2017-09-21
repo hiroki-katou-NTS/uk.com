@@ -3,9 +3,9 @@ module nts.uk.at.view.kaf009.b.service {
     import format = nts.uk.text.format;
     var paths = {
         getAllWorkLocation: "at/record/worklocation/findall",
-        getGoBackDirectly: "/at/request/application/gobackdirectly/getGoBackDirectlyByAppID",
+        //getGoBackDirectly: "/at/request/application/gobackdirectly/getGoBackDirectlyByAppID",
         getGoBackDirectlySetting: "/at/request/application/gobackdirectly/getGoBackCommonSetting",
-        getGoBackDirectDetail: "/at/request/application/gobackdirectly/getGoBackDirectDetail",
+        getGoBackDirectDetail: "/at/request/application/gobackdirectly/getGoBackDirectDetail/{0}",
         insertGoBackDirectly: "/at/request/application/gobackdirectly/insertGoBackDirectly",
         updateGoBackDirectly: "/at/request/application/gobackdirectly/updateGoBackDirectly"
     }
@@ -19,9 +19,9 @@ module nts.uk.at.view.kaf009.b.service {
     /**
      * get GoBackDirectly
      */
-    export function getGoBackDirectly(): JQueryPromise<any> {
-        return ajax("at", paths.getGoBackDirectly, {});
-    }
+//    export function getGoBackDirectly(appID:string): JQueryPromise<any> {
+//        return ajax("at", paths.getGoBackDirectly, appID);
+//    }
 
     /**
      * get GoBackSetting
@@ -33,8 +33,9 @@ module nts.uk.at.view.kaf009.b.service {
     /**
      * get Go Back Detail Data
      */
-    export function getGoBackDirectDetail(): JQueryPromise<any> {
-        return ajax("at", paths.getGoBackDirectDetail, {});
+    export function getGoBackDirectDetail(appId:string): JQueryPromise<any> {
+        debugger;
+        return ajax("at", nts.uk.text.format(paths.getGoBackDirectDetail, appId));
     }
     /**
      * 

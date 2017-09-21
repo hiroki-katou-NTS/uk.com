@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.ws.application.gobackdirectly;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -34,8 +35,7 @@ public class GoBackDirectlyService extends WebService {
 	 */
 	@POST
 	@Path("getGoBackDirectlyByAppID")
-	public GoBackDirectlyDto getGoBackDirectlyByAppID() {
-		String appID = "1445DA47-3CF9-4B0A-B819-96D20721881C";
+	public GoBackDirectlyDto getGoBackDirectlyByAppID(String appID) {
 		return this.goBackDirectlyFinder.getGoBackDirectlyByAppID(appID);
 	}
 
@@ -55,9 +55,8 @@ public class GoBackDirectlyService extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("getGoBackDirectDetail")
-	public GoBackDirectDetailDto getGoBackDetailData() {
-		String appID = "1445DA47-3CF9-4B0A-B819-96D20721881C";
+	@Path("getGoBackDirectDetail/{appID}")
+	public GoBackDirectDetailDto getGoBackDetailData(@PathParam("appID") String appID) {
 		return this.goBackDirectlyFinder.getGoBackDirectDetailByAppId(appID);
 	}
 	/**

@@ -7,8 +7,8 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         //Pre-POST
         prePostSelected: KnockoutObservable<number>;
         workEnable: KnockoutObservable<boolean>;
-        workVisible : KnockoutObservable<boolean>;
-        typeSiftVisible : KnockoutObservable<boolean>;
+        workVisible: KnockoutObservable<boolean>;
+        typeSiftVisible: KnockoutObservable<boolean>;
         // 申請日付
         appDate: KnockoutObservable<string>;
         //TIME LINE 1
@@ -111,7 +111,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             self.selectedReason = ko.observable('');
             //MultilineEditor 
             self.multilContent = ko.observable('');
-            self.multilOption = ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+            self.multiOption = ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                 resizeable: false,
                 placeholder: "Placeholder for text editor",
                 width: "500",
@@ -131,48 +131,42 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             var dfd = $.Deferred();
             //get Common Setting
             service.getGoBackSetting().done(function(settingData: CommonSetting) {
+                debugger;
+                let appID : string = "e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d";
                 //get Reason
                 self.setReasonControl(settingData.listReasonDto);
                 //set employee Name
                 self.employeeName(settingData.employeeName);
                 //set Common Setting
-                debugger;
                 self.setGoBackSetting(settingData.goBackSettingDto);
-                //get source Location 
-                //get all work Location source
-                self.getAllWorkLocation();
                 //Get data 
-                //service.getGoBackDirectly().done(function(goBackDirectData: GoBackDirectData) {
-                //                service.getGoBackDirectDetail().done(function(detailData: any) {
-                //                    self.workTypeName(detailData.workTypeName);
-                //                    self.siftName(detailData.workTimeName);
-                //                    //Set Value of control
-                //                    self.setValueControl(detailData.goBackDirectlyDto);
-                //                    
-                //}).fail(function() {
-                //                    dfd.resolve();
-                //                });
+                service.getGoBackDirectDetail(appID).done(function(detailData: any) {
+                    debugger;
+                    //get all Location 
+                    self.getAllWorkLocation();
+                    self.workTypeName(detailData.workTypeName);
+                    self.siftName(detailData.workTimeName);
+                    self.workLocationName(detailData.workLocationName1);
+                    self.workLocationName2(detailData.workLocationName2);
+                    self.prePostSelected(detailData.prePostAtr);
+                    self.multilContent(detailData.appReason);
+                    self.selectedReason(detailData.appReasonId);
+                    self.appDate(detailData.appDate);
+                    //Set Value of control
+                    self.setValueControl(detailData.goBackDirectlyDto);
+                }).fail(function() {
+                    dfd.resolve();
+                });
                 dfd.resolve();
             });
             return dfd.promise();
-        }
-        /**
-         * insert
-         */
-        insert() {
-            let self = this;
-            service.insertGoBackDirect(self.getCommand(1)).done(function() {
-                alert("Insert Done");
-            }).fail(function() {
-
-            })
         }
         /**
          * update 
          */
         update() {
             let self = this;
-            service.updateGoBackDirect(self.getCommand(2)).done(function() {
+            service.updateGoBackDirect(self.getCommand()).done(function() {
                 //self.startPage();
                 alert("Update Done");
             }).fail(function() {
@@ -210,14 +204,10 @@ module nts.uk.at.view.kaf009.b.viewmodel {
          * 2: update 
          * 3: delete
          */
-        getCommand(mode: number) {
+        getCommand() {
             let self = this;
             let command: GoBackCommand = new GoBackCommand();
-//            if (mode == 1) {
-//                command.appID = Math.random().toString();
-//            } else {
-//                command.appID = '469dce47-ba9c-4d38-844d-2f51927ce33b';
-//            }
+            command.appID = "e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d";
             command.workTypeCD = self.workTypeCd();
             command.siftCD = self.siftCd();
             command.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
@@ -261,26 +251,26 @@ module nts.uk.at.view.kaf009.b.viewmodel {
                 self.colorBack(data.commentFontColor2);
                 self.fontWeightGo(data.commentFontWeight1);
                 self.fontWeightBack(data.commentFontWeight2);
-                switch(data.workChangeFlg){
-                    case 0:{
-                        
+                switch (data.workChangeFlg) {
+                    case 0: {
+
                         break;
                     }
-                    case 1:{
+                    case 1: {
                         //self.workChangeAtr(true);
                         break;
                     }
-                    case 2:{
+                    case 2: {
                         self.workVisible(false);
                         break;
                     }
-                    default :{
+                    default: {
                         //self.workChangeAtr(true);
                         self.workVisible(false);
                         self.typeSiftVisible(false);
                         break;
                     }
-                                      
+
                 }
                 self.workEnable(data.workChangeFlg == 1 ? true : false);
             }
@@ -290,7 +280,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
          */
         setValueControl(data: GoBackDirectData) {
             var self = this;
-            self.prePostSelected(data.workChangeAtr);
+            //self.prePostSelected(data.workChangeAtr);
             //Line 1
             self.timeStart1(data.workTimeStart1);
             self.timeEnd1(data.workTimeEnd1);
@@ -306,7 +296,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             //workType, Sift
             self.workChangeAtr(data.workChangeAtr == 1 ? true : false);
             self.workTypeCd(data.workTypeCD);
-            self.siftCd(data.siftCd);
+            self.siftCd(data.siftCD);
         }
         /**
          * set reason 
@@ -314,9 +304,9 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         setReasonControl(data: Array<ReasonDto>) {
             var self = this;
             let comboSource: Array<ComboReason> = [];
-            comboSource.push(new ComboReason(0,'選択してください'));
+            comboSource.push(new ComboReason(0, '選択してください',''));
             _.forEach(data, function(value: ReasonDto) {
-                comboSource.push(new ComboReason(value.displayOrder, value.reasonTemp));
+                comboSource.push(new ComboReason(value.displayOrder, value.reasonTemp,value.reasonID));
             });
             self.reasonCombo(_.orderBy(comboSource, 'reasonCode', 'asc'));
         }
@@ -450,6 +440,20 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         }
 
     };
+    /**
+     * 
+     */
+    class ComboReason {
+        reasonCode: number;
+        reasonName: string;
+        reasonId: string;
+
+        constructor(reasonCode: number, reasonName: string, reasonId:string) {
+            this.reasonCode = reasonCode;
+            this.reasonName = reasonName;
+            this.reasonId = reasonId;
+        }
+    }
 
     /**
      * 
@@ -458,7 +462,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
     class GoBackDirectData {
         appID: string;
         workTypeCD: string;
-        siftCd: string;
+        siftCD: string;
         workChangeAtr: number;
         goWorkAtr1: number;
         backHomeAtr1: number;
@@ -472,7 +476,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         workLocationCD2: string;
         constructor(appID: string,
             workTypeCD: string,
-            siftCd: string,
+            siftCD: string,
             workChangeAtr: number,
             goWorkAtr1: number,
             backHomeAtr1: number,
@@ -485,7 +489,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             workTimeEnd2: number,
             workLocationCD2: string) {
             this.appID = appID;
-            this.siftCd = siftCd;
+            this.siftCD = siftCD;
             this.workChangeAtr = workChangeAtr;
             this.goWorkAtr1 = goWorkAtr1;
             this.backHomeAtr1 = backHomeAtr1;
@@ -499,20 +503,9 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             this.workLocationCD2 = workLocationCD2;
         }
     }
-
     /**
      * 
      */
-    class ComboReason {
-        reasonCode: number;
-        reasonName: string;
-
-        constructor(reasonCode: number, reasonName: string) {
-            this.reasonCode = reasonCode;
-            this.reasonName = reasonName;
-        }
-    }
-
     interface IWorkLocation {
         workLocationCode: string;
         workLocationName: string;
@@ -582,6 +575,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
      * 
      */
     export class GoBackCommand {
+        appID:string;
         workTypeCD: string;
         siftCD: string;
         workChangeAtr: number;
@@ -595,7 +589,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         workTimeStart2: number;
         workTimeEnd2: number;
         workLocationCD2: string;
-        appCommand: ApplicationCommand = new ApplicationCommand("");
+        appCommand: ApplicationCommand;
     }
 }
 
