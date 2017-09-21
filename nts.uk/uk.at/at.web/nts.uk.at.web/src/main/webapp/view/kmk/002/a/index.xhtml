@@ -10,6 +10,9 @@
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 				nts.uk.ctx.at.record.dom.optitem.OptionalItemName
+				nts.uk.ctx.at.record.dom.optitem.NumberRangeValue
+				nts.uk.ctx.at.record.dom.optitem.TimeRangeValue
+				nts.uk.ctx.at.record.dom.optitem.AmountRangeValue
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kmk002.a.style.css" />
@@ -75,16 +78,27 @@
 										<div data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KMK002_25')}</div>
 									</td>
 									<td>
-										<div tabindex="11"
+										<div tabindex="11" id="cb-upper"
 											data-bind="ntsCheckBox: {
 													name: '#[KMK002_26]',
-													checked: calculationResultRange.upperCheck,
+													checked: calcResultRange.upperCheck,
 													enable: true,
 													text: nts.uk.resource.getText('KMK002_26') }"></div>
-										<input tabindex="12" id="upperLimit"
-										data-bind="ntsTextEditor: {
+										<input tabindex="12" id="inp-upper-number"
+										data-bind="if: ko.observable(false), ntsTextEditor: {
 												  name: '#[KMK002_26]',
-		                                          value: calculationResultRange.numberUpper}"/>
+		                                          value: calcResultRange.numberUpper,
+		                                          constraint: 'NumberRangeValue'}"/>
+										<input tabindex="12" id="inp-upper-amount"
+										data-bind="if: true, ntsTextEditor: {
+												  name: '#[KMK002_26]',
+		                                          value: calcResultRange.amountUpper,
+		                                          constraint: 'AmountRangeValue'}"/>
+										<input tabindex="12" id="inp-upper-time"
+										data-bind="if: false, ntsTextEditor: {
+												  name: '#[KMK002_26]',
+		                                          value: calcResultRange.timeUpper,
+		                                          constraint: 'TimeRangeValue'}"/>
 									</td>
 								</tr>
 								<tr>
@@ -103,16 +117,16 @@
 									
 									<!-- Calculation ResultRange -->
 									<td>
-										<div tabindex="13"
+										<div tabindex="13" id="cb-lower"
 											data-bind="ntsCheckBox: {
 												name: '#[KMK002_27]',
-												checked: calculationResultRange.lowerCheck,
+												checked: calcResultRange.lowerCheck,
 												enable: true,
 												text: nts.uk.resource.getText('KMK002_27') }"></div>
 										<input tabindex="14" id="lowerLimit"
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_27]',
-		                                          value: calculationResultRange.numberLower}"/>
+		                                          value: calcResultRange.numberLower}"/>
 									</td>
 								</tr>
 								<tr>
