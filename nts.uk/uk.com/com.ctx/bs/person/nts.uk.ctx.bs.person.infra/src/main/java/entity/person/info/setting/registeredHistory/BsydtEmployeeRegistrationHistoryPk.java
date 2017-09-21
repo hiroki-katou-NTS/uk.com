@@ -1,4 +1,4 @@
-package entity.person.info.setting;
+package entity.person.info.setting.registeredHistory;
 
 import java.io.Serializable;
 
@@ -13,14 +13,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class BsystEmployeeCopySettingItemPk implements Serializable  {
+public class BsydtEmployeeRegistrationHistoryPk implements Serializable {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+	
 	@Basic(optional = false)
-	@Column(name = "PER_INFO_ITEM_DEFINITION_ID")
-	public String perInfoItemDefId;
+	@Column(name = "CID")
+	public String CompanyId;
+	
+	private static final long serialVersionUID = 1L;
 
 }

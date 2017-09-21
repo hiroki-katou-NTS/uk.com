@@ -1,4 +1,4 @@
-package entity.person.info.setting;
+package entity.person.info.setting.innitValue;
 
 import java.io.Serializable;
 
@@ -15,20 +15,20 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BSYST_EMP_COPY_SET")
-public class BsystEmployeeCopySetting  extends UkJpaEntity implements Serializable {
+@Table(name = "BPSST_PER_INIT_SET_CTG")
+public class BpsstPersonInitValueSettingCtg extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public BsystEmployeeCopySettingPk BsystEmployeeCopySettingPk;
-	
+	public BpsstPersonInitValueSettingCtgPk bpsstPersonInitValueSettingCtgPk;
+
 	@Basic(optional = false)
-	@Column(name = "CID")
-	public String companyId;
+	@Column(name = "PER_INIT_SET_ID")
+	public String personUnitValueSettingId;
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
-		return null;
+		return bpsstPersonInitValueSettingCtgPk;
 	}
+
 }

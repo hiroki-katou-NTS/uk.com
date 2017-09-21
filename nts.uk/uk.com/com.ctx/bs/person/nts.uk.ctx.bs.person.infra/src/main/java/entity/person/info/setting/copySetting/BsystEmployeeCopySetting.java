@@ -1,4 +1,4 @@
-package entity.person.info.setting;
+package entity.person.info.setting.copySetting;
 
 import java.io.Serializable;
 
@@ -15,28 +15,20 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BPSST_PER_INIT_SET")
-public class BpsstPersonInitValueSetting extends UkJpaEntity implements Serializable {
+@Table(name = "BSYST_EMP_COPY_SET")
+public class BsystEmployeeCopySetting  extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public BpsstPersonInitValueSettingPk bpsstPersonInitValueSettingPk;
-
+	public BsystEmployeeCopySettingPk BsystEmployeeCopySettingPk;
+	
 	@Basic(optional = false)
 	@Column(name = "CID")
 	public String companyId;
 
-	@Basic(optional = false)
-	@Column(name = "PER_INIT_SET_CODE")
-	public String PersonInitValueSettingCode;
-
-	@Basic(optional = false)
-	@Column(name = "PER_INIT_SET_NAME")
-	public String PersonInitValueSettingName;
-
 	@Override
 	protected Object getKey() {
-		return bpsstPersonInitValueSettingPk;
+		// TODO Auto-generated method stub
+		return null;
 	}
-
 }

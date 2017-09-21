@@ -1,4 +1,4 @@
-package entity.person.info.setting;
+package entity.person.info.setting.innitValue;
 
 import java.io.Serializable;
 
@@ -15,29 +15,28 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BPSST_USER_SET")
-public class BsydtEmployeeRegistrationHistory extends UkJpaEntity implements Serializable {
+@Table(name = "BPSST_PER_INIT_SET")
+public class BpsstPersonInitValueSetting extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
 	@EmbeddedId
-	public BsydtEmployeeRegistrationHistoryPk bsydtEmployeeRegistrationHistoryPk;
+	public BpsstPersonInitValueSettingPk bpsstPersonInitValueSettingPk;
 
 	@Basic(optional = false)
-	@Column(name = "REG_SID")
-	public String RegisteredEmployeeID;
-
-	@Basic(optional = true)
-	@Column(name = "REG_DATE")
-	public String RegisteredDate;
+	@Column(name = "CID")
+	public String companyId;
 
 	@Basic(optional = false)
-	@Column(name = "LAST_REG_SID")
-	public String LastRegEmployeeID;
+	@Column(name = "PER_INIT_SET_CODE")
+	public String PersonInitValueSettingCode;
+
+	@Basic(optional = false)
+	@Column(name = "PER_INIT_SET_NAME")
+	public String PersonInitValueSettingName;
 
 	@Override
 	protected Object getKey() {
-		return bsydtEmployeeRegistrationHistoryPk;
+		return bpsstPersonInitValueSettingPk;
 	}
 
 }
