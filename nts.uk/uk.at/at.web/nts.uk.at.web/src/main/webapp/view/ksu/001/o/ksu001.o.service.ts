@@ -1,6 +1,6 @@
  module ksu001.o.service {
     var paths: any = {
-        getWorkType: "at/share/worktype/getByCIdAndDisplayAtr",
+        getWorkType: "screen/at/schedule/basicschedule/getListWorkType",
         getWorkTime: "screen/at/schedule/basicschedule/getListWorkTime"
     }
 

@@ -87,10 +87,13 @@ module ksu001.o.viewmodel {
 
         openDialogO1(): void {
             let self = this;
-            
+
             $('#oViewModel').hide();
             setShare('listWorkType', self.listWorkType());
             setShare('listWorkTime', self.listWorkTime());
+//            nts.uk.sessionStorage.setItemAsJson('listWorkType', self.listWorkType());
+//            nts.uk.sessionStorage.setItemAsJson('listWorkTime', self.listWorkTime());
+            
             nts.uk.ui.windows.sub.modeless("/view/ksu/001/o1/index.xhtml").onClosed(() => {
                 $('#oViewModel').show();
             });
@@ -102,24 +105,13 @@ module ksu001.o.viewmodel {
         findWorkType(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
-            //            service.getWorkType().done(function(data: WorkType[]) {
-            //                if (data.length > 0) {
-            //                    _.each(data, function(wT) {
-            //                        self.listWorkType.push(new WorkType({
-            //                            workTypeCode: wT.workTypeCode,
-            //                            sortOrder: wT.sortOrder,
-            //                            symbolicName: wT.symbolicName,
-            //                            name: wT.name,
-            //                            abbreviationName: wT.abbreviationName,
-            //                            memo: wT.memo,
-            //                            displayAtr: wT.displayAtr
-            //                        }));
-            //                    });
-            //                }
-            //                dfd.resolve();
-            //            }).fail(function() {
-            //                dfd.reject();
-            //            });
+            let arrWorkType: WorkType[] = [];
+            service.getWorkType().done(function(data: WorkType[]) {
+                self.listWorkType(data);
+                dfd.resolve();
+            }).fail(function() {
+                dfd.reject();
+            });
             dfd.resolve();
             return dfd.promise();
         }
@@ -145,7 +137,6 @@ module ksu001.o.viewmodel {
                     pmEndClock: undefined,
                     timeNumberCnt: undefined,
                 }));
-
                 // insert item 「なし」 with code = '000'
                 self.listWorkTime.push(new WorkTime({
                     siftCd: '000',
@@ -160,7 +151,6 @@ module ksu001.o.viewmodel {
                     pmEndClock: undefined,
                     timeNumberCnt: undefined,
                 }));
-
                 // insert item 「個人情報設定」 with code = '000'
                 self.listWorkTime.push(new WorkTime({
                     siftCd: '000',
@@ -181,10 +171,8 @@ module ksu001.o.viewmodel {
                         let workTimeObj: WorkTime = _.find(self.listWorkTime(), ['siftCd', wT.siftCd]);
                         if (workTimeObj && wT.timeNumberCnt == 1) {
                             workTimeObj.timeZone1 = nts.uk.time.parseTime(wT.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.pmEndClock, true).format();
-                            workTimeObj.labelDisplay = '  ' + workTimeObj.siftCd + (!!workTimeObj.symbol ? ' ' + workTimeObj.symbol : '') + ' ' + workTimeObj.name + ' ' + workTimeObj.timeZone1 + ' ' + workTimeObj.timeZone2 + ' ' + (!!workTimeObj.note ? '(' + workTimeObj.note + ')' : '');
                         } else if (workTimeObj && wT.timeNumberCnt == 2) {
                             workTimeObj.timeZone2 = nts.uk.time.parseTime(wT.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(wT.pmEndClock, true).format();
-                            workTimeObj.labelDisplay = '  ' + workTimeObj.siftCd + (!!workTimeObj.symbol ? ' ' + workTimeObj.symbol : '') + ' ' + workTimeObj.name + ' ' + workTimeObj.timeZone1 + ' ' + workTimeObj.timeZone2 + ' ' + (!!workTimeObj.note ? '(' + workTimeObj.note + ')' : '');
                         } else {
                             self.listWorkTime.push(new WorkTime({
                                 siftCd: wT.siftCd,
@@ -212,33 +200,25 @@ module ksu001.o.viewmodel {
 
     interface IWorkType {
         workTypeCode: string,
-        sortOrder: number,
         symbolicName: string,
         name: string,
         abbreviationName: string,
         memo: string,
-        displayAtr: number
     }
 
     class WorkType {
         workTypeCode: string;
-        sortOrder: number;
         symbolicName: string;
         name: string;
         abbreviationName: string;
         memo: string;
-        displayAtr: number;
-        labelDisplay: string;
 
         constructor(params: IWorkType) {
             this.workTypeCode = params.workTypeCode;
-            this.sortOrder = params.sortOrder;
             this.symbolicName = params.symbolicName;
             this.name = params.name;
             this.abbreviationName = params.abbreviationName;
             this.memo = params.memo;
-            this.displayAtr = params.displayAtr;
-            this.labelDisplay = '  ' + this.workTypeCode + ' ' + (!!this.symbolicName ? ' ' + this.symbolicName : '') + ' ' + this.name + (!!this.memo ? '( ' + this.memo + ' )' : '');
         }
     }
 
@@ -271,24 +251,22 @@ module ksu001.o.viewmodel {
         timeNumberCnt: number;
         timeZone1: string;
         timeZone2: string;
-        labelDisplay: string;
 
         constructor(params: IWorkTime) {
             this.siftCd = params.siftCd;
             this.name = params.name;
             this.abName = params.abName;
-            this.symbol = params.symbol;
+            this.symbol = params.symbol || '';
             this.dailyWorkAtr = params.dailyWorkAtr;
             this.methodAtr = params.methodAtr;
             this.displayAtr = params.displayAtr;
-            this.note = params.note;
+            this.note = params.note || '';
             this.codeName = this.siftCd + this.name;
             this.amStartClock = params.amStartClock;
             this.pmEndClock = params.pmEndClock;
             this.timeNumberCnt = params.timeNumberCnt;
             this.timeZone1 = this.timeNumberCnt == 1 ? nts.uk.time.parseTime(this.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.pmEndClock, true).format() : '';
             this.timeZone2 = this.timeNumberCnt == 2 ? nts.uk.time.parseTime(this.amStartClock, true).format() + nts.uk.resource.getText("KSU001_66") + nts.uk.time.parseTime(this.pmEndClock, true).format() : '';
-            this.labelDisplay = '  ' + this.siftCd + (!!this.symbol ? ' ' + this.symbol : '') + ' ' + this.name + ' ' + this.timeZone1 + ' ' + this.timeZone2 + ' ' + (!!this.note ? '(' + this.note + ')' : '');
         }
     }
 

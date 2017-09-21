@@ -764,6 +764,7 @@ module ksu001.a.viewmodel {
          * open dialog L
          */
         openDialogL(): void {
+            $('#popup-area5').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/l/index.xhtml");
         }
         
@@ -771,6 +772,7 @@ module ksu001.a.viewmodel {
          * open dialog N
          */
         openDialogN(): void {
+            $('#popup-area5').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/n/index.xhtml");
         }
 

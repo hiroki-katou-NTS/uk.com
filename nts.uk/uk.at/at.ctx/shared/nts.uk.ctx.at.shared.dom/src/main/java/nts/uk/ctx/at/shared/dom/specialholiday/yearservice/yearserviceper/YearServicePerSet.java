@@ -5,8 +5,9 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
-
+@Setter
 @Getter
 @AllArgsConstructor
 public class YearServicePerSet {
@@ -45,6 +46,11 @@ public class YearServicePerSet {
 	public static List<String> validateInput(List<YearServicePerSet> yearServicePerSetlst){
 		List<Integer> yearLst = new ArrayList<>();
 		List<String> bugLst = new ArrayList<>();
+		// have at least a item
+		if(yearServicePerSetlst.size() == 0){
+			new BusinessException("Msg_145");
+			bugLst.add("Msg_145");
+		}
 		for(YearServicePerSet item : yearServicePerSetlst){
 			if(yearLst.contains(item.getYear())){
 				new BusinessException("Msg_99");
@@ -53,19 +59,20 @@ public class YearServicePerSet {
 				yearLst.add(item.getYear());
 			}
 			// year and month must exsist
-			if(item.getYear() == null || item.getMonth() == null){
+			if(item.getYear() == null && item.getMonth() == null){
 				new BusinessException("Msg_100");
 				bugLst.add("Msg_100");
-			}
-			// year must exist and year < 1 
-			if(item.getYear() == null || item.getYear() < 1){
-				new BusinessException("Msg_145");
-				bugLst.add("Msg_145");
 			}
 			// date must exsist
 			if(item.getDate() == null){
 				new BusinessException("Msg_101");
 				bugLst.add("Msg_101");
+			}
+			if(item.getYear() == null && item.getMonth()!=null && item.getDate()!=null){
+				item.setYear(0);
+			}
+			if(item.getMonth() == null && item.getYear()!=null && item.getDate()!=null){
+				item.setMonth(0);
 			}
 		}
 		return bugLst;
