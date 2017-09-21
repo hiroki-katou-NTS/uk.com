@@ -2582,6 +2582,22 @@ var nts;
                 return Locator;
             }());
             request.Locator = Locator;
+            function writeDynamicConstraint(codes) {
+                var dfd = $.Deferred();
+                ajax("constraint/getlist", codes).done(function (data) {
+                    if (nts.uk.util.isNullOrUndefined(__viewContext.primitiveValueConstraints)) {
+                        __viewContext.primitiveValueConstraints = {};
+                    }
+                    _.forEach(data, function (item) {
+                        __viewContext.primitiveValueConstraints[item.itemCode] = item;
+                    });
+                    dfd.resolve(data);
+                }).fail(function (error) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            request.writeDynamicConstraint = writeDynamicConstraint;
             function ajax(webAppId, path, data, options) {
                 if (typeof arguments[1] !== 'string') {
                     return ajax.apply(null, _.concat(location.currentAppId, arguments));
@@ -21007,4 +21023,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
