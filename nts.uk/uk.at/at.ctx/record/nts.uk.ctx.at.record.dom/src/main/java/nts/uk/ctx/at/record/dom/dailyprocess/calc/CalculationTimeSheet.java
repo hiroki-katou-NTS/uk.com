@@ -78,8 +78,6 @@ public abstract class CalculationTimeSheet {
 	}
 	
 	
-	
-	
 	/**
 	 * 指定時間に従って時間帯の縮小
 	 * @return

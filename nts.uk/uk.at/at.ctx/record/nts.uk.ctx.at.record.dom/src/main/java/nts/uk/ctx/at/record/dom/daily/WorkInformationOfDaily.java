@@ -10,7 +10,7 @@ import lombok.Value;
  *
  */
 @Value
-public class WorkInfomation {
+public class WorkInformationOfDaily {
 	private String syainID;
 	private List<ScheduleTimeSheet> workScheduleTimeSheet;
 	
