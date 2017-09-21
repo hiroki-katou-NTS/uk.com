@@ -34,7 +34,7 @@ public class WkpConfigServiceImpl implements WkpConfigService {
 		Optional<WorkplaceConfig> wkpConfig = workplaceConfigRepository.findLastestByCompanyId(companyId);
 		if (wkpConfig.isPresent()) {
 			// check validate start date
-			if (wkpConfig.get().getWkpConfigHistory().get(0).getPeriod().getStartDate().before(addHistStart)) {
+			if (wkpConfig.get().getWkpConfigHistory().get(0).getPeriod().getStartDate().after(addHistStart)) {
 				throw new BusinessException("#Msg_102");
 			}
 		}

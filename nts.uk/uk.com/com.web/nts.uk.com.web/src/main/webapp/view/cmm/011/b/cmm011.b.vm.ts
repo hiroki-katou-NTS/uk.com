@@ -66,14 +66,14 @@ module nts.uk.com.view.cmm011.b {
                     case ScreenMode.SelectionMode:
                         break;
                     case ScreenMode.AddMode:
-                    self.caseAddMode();
+                        self.caseNewMode();
                         break;
                     case ScreenMode.UpdateMode:
                         break;
                     default: break;
                 }
                 nts.uk.ui.windows.setShared("sendParent", {
-                    startDate: self.startDate(),//TODO
+                    startDate: nts.uk.time.formatDate(new Date(self.startDate()), 'yyyy/MM/dd'),
                     endDate: "9999-12-31"//TODO reset default date
                 });
                 nts.uk.ui.windows.close();
@@ -94,20 +94,6 @@ module nts.uk.com.view.cmm011.b {
                 });
             }
             
-            private caseAddMode():void{
-                var self = this;
-                var data = {
-                    wkpConfigHistory: {
-                        historyId: '',
-                        period: {
-                            startDate: new Date(self.startDate()),
-                            endDate: new Date("9999-12-31")//TODO reset default date
-                        }
-                    }
-                }
-                service.registerWkpConfig(data).done(function() {
-                });
-            }
             /**
              * close
              */
