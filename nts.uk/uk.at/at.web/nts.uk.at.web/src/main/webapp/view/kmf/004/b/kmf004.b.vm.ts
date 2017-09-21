@@ -206,6 +206,8 @@ module nts.uk.at.view.kmf004 {
                     return;    
                 }
                 
+                nts.uk.ui.block.invisible();
+                
                 var setData = [];
                 var index = 1;
                 
@@ -241,6 +243,8 @@ module nts.uk.at.view.kmf004 {
                     
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error.message);    
+                }).always(function() {
+                    nts.uk.ui.block.clear();    
                 });
             }
             
