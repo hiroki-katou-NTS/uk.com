@@ -3883,7 +3883,7 @@ var nts;
                     sub.modal = modal;
                     function modeless(webAppId, path, options) {
                         if (typeof arguments[1] !== 'string') {
-                            return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                            return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                         }
                         if (webAppId == nts.uk.request.location.currentAppId) {
                             path = nts.uk.request.resolvePath(path);
@@ -10697,14 +10697,17 @@ var nts;
                         var fileName = data.filename;
                         var onchange = (data.onchange !== undefined) ? data.onchange : $.noop;
                         var onfilenameclick = (data.onfilenameclick !== undefined) ? data.onfilenameclick : $.noop;
-                        ;
                         var container = $(element);
-                        var $fileuploadContainer = $("<div class='nts-fileupload-container'></div>");
+                        var $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
                         var $fileBrowserButton = $("<button class='browser-button'></button>");
-                        var $fileNameLable = $("<span class='filenamelabel' style='margin-left: 5px;'></span> ");
-                        var $fileInput = $("<input style='display:none;' type='file' class='fileinput'/>");
+                        var $fileNameWrap = $("<span class='nts-editor-wrapped ntsControl'/>");
+                        var $fileNameInput = $("<input class='nts-editor nts-input' readonly='readonly'/>");
+                        var $fileNameLabel = $("<span class='filenamelabel hyperlink'></span> ");
+                        var $fileInput = $("<input type='file' class='fileinput'/>");
                         $fileuploadContainer.append($fileBrowserButton);
-                        $fileuploadContainer.append($fileNameLable);
+                        $fileNameWrap.append($fileNameInput);
+                        $fileuploadContainer.append($fileNameWrap);
+                        $fileuploadContainer.append($fileNameLabel);
                         $fileuploadContainer.append($fileInput);
                         $fileuploadContainer.appendTo(container);
                         $fileBrowserButton.click(function () {
@@ -10724,7 +10727,7 @@ var nts;
                             fileName(getSelectedFileName);
                             onchange(getSelectedFileName);
                         });
-                        $fileNameLable.click(function () {
+                        $fileNameLabel.click(function () {
                             onfilenameclick($(this).text());
                         });
                     };
@@ -10733,31 +10736,36 @@ var nts;
                         var fileName = ko.unwrap(data.filename);
                         var accept = (data.accept !== undefined) ? ko.unwrap(data.accept) : "";
                         var asLink = (data.aslink !== undefined) ? ko.unwrap(data.aslink) : false;
-                        var text = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "ファイルアップロード";
+                        var text = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "参照";
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var container = $(element);
                         container.find("input[type='file']").attr("accept", accept.toString());
-                        var $fileNameLable = container.find(".filenamelabel");
+                        var $fileNameWrap = container.find(".nts-editor-wrapped");
+                        var $fileNameInput = container.find(".nts-input");
+                        var $fileNameLabel = container.find(".filenamelabel");
                         if (container.data("file-name") !== fileName) {
                             container.data("file-name", "");
-                            $fileNameLable.text("");
+                            $fileNameInput.val("");
+                            $fileNameLabel.text("");
                             container.find("input[type='file']").val(null);
                             data.filename("");
                         }
                         else {
-                            $fileNameLable.text(fileName);
+                            $fileNameLabel.text(fileName);
+                            $fileNameInput.val(fileName);
                         }
                         if (asLink == true) {
-                            $fileNameLable.addClass("hyperlink");
-                            $fileNameLable.removeClass("standard-file-name");
+                            $fileNameLabel.removeClass("hidden");
+                            $fileNameWrap.addClass("hidden");
                         }
                         else {
-                            $fileNameLable.addClass("standard-file-name");
-                            $fileNameLable.removeClass("hyperlink");
+                            $fileNameLabel.addClass("hidden");
+                            $fileNameWrap.removeClass("hidden");
                         }
                         var $fileBrowserButton = container.find(".browser-button");
                         $fileBrowserButton.text(text);
                         $fileBrowserButton.prop("disabled", !enable);
+                        $fileNameInput.prop("disabled", !enable);
                     };
                     return NtsFileUploadBindingHandler;
                 }());
