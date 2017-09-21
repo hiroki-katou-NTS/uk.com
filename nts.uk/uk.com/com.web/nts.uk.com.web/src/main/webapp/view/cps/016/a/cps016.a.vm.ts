@@ -10,14 +10,23 @@ module nts.uk.com.view.cps016.a.viewmodel {
     export class ScreenModel {
         listItems: KnockoutObservableArray<ISelectionItem> = ko.observableArray([]);
         perInfoSelectionItem: KnockoutObservable<SelectionItem> = ko.observable(new SelectionItem({ selectionItemId: '', selectionItemName: '' }));
-        formatSelection: KnockoutObservable<FormatSelection> = ko.observable(new FormatSelection(undefined));
+        rulesFirst: KnockoutObservableArray<IRule> = ko.observableArray([]);
+
+        checkCreate: KnockoutObservable<boolean>;
 
         constructor() {
             let self = this,
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
-                
-                formatSelection: FormatSelection = self.formatSelection(),
-                _formatSelection: ISelectionItem = perInfoSelectionItem.formatSelection();// sai thi fai:
+                formatSelection = perInfoSelectionItem.formatSelection(),
+                classs = self.rulesFirst;
+
+            /* Check add/update*/
+            self.checkCreate = ko.observable(true);
+
+            classs([
+                { id: 1, name: "数値型" },
+                { id: 2, name: "英数型" }
+            ]);
 
             perInfoSelectionItem.selectionItemId.subscribe(x => {
                 if (x) {
@@ -26,19 +35,18 @@ module nts.uk.com.view.cps016.a.viewmodel {
                             perInfoSelectionItem.selectionItemName(_perInfoSelectionItem.selectionItemName);
                             perInfoSelectionItem.memo(_perInfoSelectionItem.memo);
                             perInfoSelectionItem.integrationCode(_perInfoSelectionItem.integrationCode);
-                            
-                            formatSelection.selectionCode(_formatSelection.
+
+                            let iformat = _perInfoSelectionItem.formatSelection;
+
+                            formatSelection.selectionCode(iformat.selectionCode);
+                            formatSelection.selectionCodeCharacter(iformat.selectionCodeCharacter);
+                            formatSelection.selectionName(iformat.selectionName);
+                            formatSelection.selectionExternalCode(iformat.selectionExternalCode);
                         }
                     });
                 }
+                self.checkCreate(false);
             });
-
-//            perInfoSelectionItem.formatSelection.subscribe(x => {
-//                let _format = self.formatSelection(),
-//                    _iformat = param.formatSelection;
-//            });
-
-
 
             /*
             perInfoSelectionItem.formatSelection.subscribe(x => {
@@ -56,26 +64,113 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 dfd = $.Deferred();
 
             self.listItems.removeAll();
-
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
                 if (itemList && itemList.length) {
                     itemList.forEach(x => self.listItems.push(x));
-                } dfd.resolve();
+                } else {
+                    self.registerDataSelectioItem();
+                }
+                self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                dfd.resolve();
             });
 
             return dfd.resolve();
         }
 
-        register() {
-            let self = this;
+        registerDataSelectioItem() {
+            let self = this,
+                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
+                formatSelection = perInfoSelectionItem.formatSelection();
 
+            nts.uk.ui.errors.clearAll();
+            perInfoSelectionItem.selectionItemName('');
+            perInfoSelectionItem.memo('');
+            perInfoSelectionItem.integrationCode('');
+            formatSelection.selectionCode('');
+            formatSelection.selectionName('');
+            formatSelection.selectionExternalCode('');
+
+            self.checkCreate(true);
+        }
+
+        addDataSelectioItem() {
+            var self = this;
+            if (self.checkCreate() == true) {
+                self.add();
+            } else {
+                self.update();
+            }
         }
 
         add() {
-            let self = this;
+            let self = this,
+                dfd = $.Deferred(),
+                currentItem: SelectionItem = self.perInfoSelectionItem(),
+                formatSelection = currentItem.formatSelection(),
+                command = {
+                    selectionItemId: currentItem.selectionItemId(),
+                    selectionItemName: currentItem.selectionItemName(),
+                    memo: currentItem.memo(),
+                    selectionItemClassification: currentItem.selectionItemClassification(),
+                    contractCode: currentItem.contractCode(),
+                    integrationCode: currentItem.integrationCode(),
+                    formatSelection: {
+                        selectionCode: currentItem.formatSelection().selectionCode(),
+                        selectionCodeCharacter: currentItem.formatSelection().selectionCodeCharacter(),
+                        selectionName: currentItem.formatSelection().selectionName(),
+                        selectionExternalCode: currentItem.formatSelection().selectionExternalCode()
+                    }
+                };
+
+            service.saveDataSelectionItem(command).done(function() {
+                service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                    if (itemList && itemList.length) {
+                        itemList.forEach(x => self.listItems.push(x));
+                    }
+                    self.listItems.removeAll();
+                });
+                self.listItems.valueHasMutated();
+            });
+            self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+            return dfd.resolve();
         }
 
-        remove() {
+        update() {
+            //alert('update');
+            let self = this,
+                dfd = $.Deferred(),
+                currentItem: SelectionItem = self.perInfoSelectionItem(),
+                formatSelection = currentItem.formatSelection(),
+                command = {
+                    selectionItemId: currentItem.selectionItemId(),
+                    selectionItemName: currentItem.selectionItemName(),
+                    memo: currentItem.memo(),
+                    selectionItemClassification: currentItem.selectionItemClassification(),
+                    contractCode: currentItem.contractCode(),
+                    integrationCode: currentItem.integrationCode(),
+                    formatSelection: {
+                        selectionCode: currentItem.formatSelection().selectionCode(),
+                        selectionCodeCharacter: currentItem.formatSelection().selectionCodeCharacter(),
+                        selectionName: currentItem.formatSelection().selectionName(),
+                        selectionExternalCode: currentItem.formatSelection().selectionExternalCode()
+                    }
+                };
+
+            service.updateDataSelectionItem(command).done(function() {
+                service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                    if (itemList && itemList.length) {
+                        itemList.forEach(x => self.listItems.push(x));
+                    }
+                    //self.listItems.removeAll();
+                });
+                self.listItems.valueHasMutated();
+            });
+            self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+            return dfd.resolve();
+        }
+
+
+        removeDataSelectioItem() {
             let self = this;
         }
     }
@@ -83,46 +178,14 @@ module nts.uk.com.view.cps016.a.viewmodel {
     interface ISelectionItem {
         selectionItemId: string;
         selectionItemName: string;
-        memo: string;
-        selectionItemClassification: number;
-        contractCode: string;
-        integrationCode: string;
-        formatSelection: IFormatSelection;
-
+        memo?: string;
+        selectionItemClassification?: number;
+        contractCode?: string;
+        integrationCode?: string;
+        formatSelection?: IFormatSelection;
         //formatSelection: SELECTION_ENUM;
+        enable: KnockoutObservable<boolean>;
     }
-
-    interface IFormatSelection {
-        selectionCode: number;
-        selectionCodeCharacter: number;
-        selectionName: number;
-        selectionExternalCode: number;
-    }
-
-    class FormatSelection {
-        selectionCode: KnockoutObservable<number> = ko.observable(0);
-        selectionCodeCharacter: KnockoutObservable<number> = ko.observable(0);
-        selectionName: KnockoutObservable<number> = ko.observable(0);
-        selectionExternalCode: KnockoutObservable<number> = ko.observable(0);
-
-        constructor(param: IFormatSelection) {
-            let self = this;
-            if (param) {
-                self.selectionCode(param.selectionCode || 0);
-                self.selectionCodeCharacter(param.selectionCodeCharacter || 0);
-                self.selectionName(param.selectionName || 0);
-                self.selectionExternalCode(param.selectionExternalCode || 0);
-            }
-        }
-    }
-
-    /*
-    enum SELECTION_ENUM {
-        NUMBER = 1,
-        STRING = 2,
-        BOOLEAN = 3
-    }
-    */
 
     class SelectionItem {
         selectionItemId: KnockoutObservable<string> = ko.observable('');
@@ -131,8 +194,8 @@ module nts.uk.com.view.cps016.a.viewmodel {
         selectionItemClassification: KnockoutObservable<number> = ko.observable('');
         contractCode: KnockoutObservable<string> = ko.observable('');
         integrationCode: KnockoutObservable<string> = ko.observable('');
-
         formatSelection: KnockoutObservable<FormatSelection> = ko.observable(new FormatSelection(undefined));
+        enable: KnockoutObservable<boolean> = ko.observable(true);
         //formatSelection: KnockoutObservable<forSel> = ko.observable(SELECTION_ENUM.NUMBER);
 
         constructor(param: ISelectionItem) {
@@ -143,15 +206,56 @@ module nts.uk.com.view.cps016.a.viewmodel {
             self.selectionItemClassification(param.selectionItemClassification || '');
             self.contractCode(param.contractCode || '');
             self.integrationCode(param.integrationCode || '');
+            self.enable(param.enable || '');
+
 
             let _format = self.formatSelection(),
                 _iformat = param.formatSelection;
 
-            _format.selectionCode(_iformat.selectionCode);
-            _format.selectionCodeCharacter(_iformat.selectionCodeCharacter);
-            _format.selectionName(_iformat.selectionName);
-            _format.selectionExternalCode(_iformat.selectionExternalCode);
+            if (_iformat) {
+                _format.selectionCode(_iformat.selectionCode);
+                _format.selectionCodeCharacter(_iformat.selectionCodeCharacter);
+                _format.selectionName(_iformat.selectionName);
+                _format.selectionExternalCode(_iformat.selectionExternalCode);
+            }
             //self.formatSelection(new FormatSelection(param.formatSelection));
         }
     }
+
+    interface IFormatSelection {
+        selectionCode: number;
+        selectionCodeCharacter: number;
+        selectionName: number;
+        selectionExternalCode: number;
+    }
+
+    class FormatSelection {
+        selectionCode: KnockoutObservable<number> = ko.observable('');
+        selectionCodeCharacter: KnockoutObservable<number> = ko.observable('');
+        selectionName: KnockoutObservable<number> = ko.observable('');
+        selectionExternalCode: KnockoutObservable<number> = ko.observable('');
+
+        constructor(param: IFormatSelection) {
+            let self = this;
+            if (param) {
+                self.selectionCode(param.selectionCode || '');
+                self.selectionCodeCharacter(param.selectionCodeCharacter || '');
+                self.selectionName(param.selectionName || '');
+                self.selectionExternalCode(param.selectionExternalCode || '');
+            }
+        }
+    }
+
+    interface IRule {
+        id: number;
+        name: string;
+    }
+
+    /*
+    enum SELECTION_ENUM {
+        NUMBER = 1,
+        STRING = 2,
+        BOOLEAN = 3
+    }
+    */
 }

@@ -22,12 +22,12 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A_BTN_NEW" data-bind="click : register">#{i18n.getText('CPS016_1')}</button>
+				<button id="A_BTN_NEW" data-bind="click : registerDataSelectioItem">#{i18n.getText('CPS016_1')}</button>
 				<button id="A_BTN_REGISTER" class="proceed"
-					data-bind="click : add, enable: $root.errors.isEmpty">#{i18n.getText('CPS016_2')}</button>
+					data-bind="click : addDataSelectioItem, enable: $root.errors.isEmpty">#{i18n.getText('CPS016_2')}</button>
 				<button id="A_BTN_COPPY">マスタ修正ログ</button>
 				<button id="A_BTN_DELETE" class="danger"
-					data-bind="click : remove, enable: $root.errors.isEmpty">#{i18n.getText('CPS016_3')}</button>
+					data-bind="click : removeDataSelectioItem, enable: $root.errors.isEmpty">#{i18n.getText('CPS016_3')}</button>
 				<button tabindex="4" id="A_BTN_CPS016_4">#{i18n.getText('CPS016_4')}</button>
 				<button class="goout" id="A_BTN_JUMP">#{i18n.getText('CPS016_23')}</button>
 
@@ -55,8 +55,9 @@
 									height: 535,
 									options: listItems,
 									primaryKey: 'selectionItemId',
+									showNumbering:true,
 									columns: [
-						                { headerText: '', key: 'selectionItemId', width: 20},
+						                { headerText: '', key: 'selectionItemId', width: 20 ,hidden:true},
 						                { headerText: '#{i18n.getText('CPS016_7')}', key: 'selectionItemName', width: 290 }
 						            ],
 									multiple: false,
@@ -69,13 +70,17 @@
 					<div id="right-content" class="form-group">
 						<div class="row">
 							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_8')}</div>
+							<!-- 							<input style="width: 320px;" -->
+							<!-- 								data-bind="ntsTextEditor: {value: selectionItemName}" /> -->
 							<input style="width: 320px;"
-								data-bind="ntsTextEditor: {value: selectionItemName}" />
+								data-bind="ntsTextEditor: {
+									value: selectionItemName,
+									constraint: 'selectionItemName',
+									option: '',
+									required: true,
+									enable: true,
+									readonly: false}" />
 						</div>
-
-
-
-<!-- 
 
 						<div class="row">
 							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_11')}</div>
@@ -84,41 +89,79 @@
 											options: $parent.rulesFirst,
 											optionsValue: 'id',
 											optionsText: 'name',
-											value: numberCodeDigits,
+											value: 1,
 											enable: true }">
 							</div>
 						</div>
 
-						<div class="row">
+						<!--  
+						<div class="row" data-bind="with: formatSelection">
 							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_13')}</div>
 							<input style="width: 20px;"
-								data-bind="ntsTextEditor: {value: numberDigits}" />
+								data-bind="ntsTextEditor: {value: selectionCode}" />
+						</div>
+-->
+						<div class="row" data-bind="with: formatSelection">
+							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_13')}</div>
+							<input style="width: 20px;"
+								data-bind="ntsTextEditor: {
+									value: selectionCode,
+									constraint: 'SelectionCode',
+									option: '',
+									required: true,
+									enable: true,
+									readonly: false}" />
 						</div>
 
-						<div class="row">
+						<div class="row" data-bind="with: formatSelection">
 							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_15')}</div>
+							<!-- 							<input style="width: 20px;" -->
+							<!-- 								data-bind="ntsTextEditor: {value: formatSelection().selectionName}" /> -->
 							<input style="width: 20px;"
-								data-bind="ntsTextEditor: {value: numberExternalCodeDigits}" />
+								data-bind="ntsTextEditor: {
+									value: selectionCode,
+									constraint: 'SelectionCode',
+									option: '',
+									required: true,
+									enable: true,
+									readonly: false}" />
 						</div>
 
-						<div class="row">
+
+						<div class="row" data-bind="with: formatSelection">
 							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_17')}</div>
+							<!-- 							<input style="width: 20px;" -->
+							<!-- 								data-bind="ntsTextEditor: {value: formatSelection().selectionExternalCode}" /> -->
 							<input style="width: 20px;"
-								data-bind="ntsTextEditor: {value: integrationCode}" />
+								data-bind="ntsTextEditor: {
+									value: selectionExternalCode,
+									constraint: '',
+									option: '',
+									required: true,
+									enable: true,
+									readonly: false}" />
 						</div>
 
 						<div class="row">
 							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_24')}</div>
 							<div data-bind="ntsCheckBox: { checked: enable }">グループ会社で共有する</div>
 						</div>
--->
+
 						<div class="row">
 							<div class="coll" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CPS016_19')}</div>
+<!-- 							<input style="width: 20px;" -->
+<!-- 								data-bind="ntsTextEditor: {value: integrationCode}" /> -->
 							<input style="width: 20px;"
-								data-bind="ntsTextEditor: {value: integrationCode}" />
+								data-bind="ntsTextEditor: {
+									value: integrationCode,
+									constraint: '',
+									option: '',
+									required: true,
+									enable: true,
+									readonly: false}" />
 						</div>
-						 
-					
+
+
 						<div class="row">
 							<div class="coll" data-bind="ntsFormLabel: { required: false }">
 								<label>#{i18n.getText('CPS016_21')}</label>
@@ -126,8 +169,8 @@
 							<textarea style="width: 550px; height: 120px;"
 								data-bind="ntsMultilineEditor: { value: memo }" />
 						</div>
-						
-						
+
+
 					</div>
 				</div>
 			</div>

@@ -1,0 +1,14 @@
+package command.person.setting.selection;
+
+import lombok.Value;
+
+@Value
+public class RemoveSelectionItemCommand {
+	private String selectionItemId;
+	private String selectionItemName;
+	private String memo;
+	private int selectionItemClassification;
+	private String contractCode;
+	private String integrationCode;
+	private FormatSelectionCommand formatSelection;
+}

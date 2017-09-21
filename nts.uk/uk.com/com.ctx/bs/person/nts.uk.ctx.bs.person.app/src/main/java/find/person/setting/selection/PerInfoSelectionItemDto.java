@@ -7,7 +7,7 @@ import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoSelectionItem;
 public class PerInfoSelectionItemDto {
 	private String selectionItemId;
 	private String selectionItemName;
-	private String Memo;
+	private String memo;
 	private int selectionItemClassification;
 	private String contractCode;
 	private String integrationCode;
