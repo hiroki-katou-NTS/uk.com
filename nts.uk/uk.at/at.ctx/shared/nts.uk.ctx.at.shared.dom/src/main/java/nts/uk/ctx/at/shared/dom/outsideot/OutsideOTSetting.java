@@ -16,6 +16,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNote;
 
 /**
+ * OT = Overtime
  * The Class OutsideOTSetting.
  */
 //時間外超過設定

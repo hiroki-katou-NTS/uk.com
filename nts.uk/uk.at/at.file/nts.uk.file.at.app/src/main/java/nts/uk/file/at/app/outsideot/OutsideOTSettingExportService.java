@@ -21,7 +21,6 @@ import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.repository.DailyAttendanceItemRepository;
 import nts.uk.ctx.at.shared.app.find.outsideot.OutsideOTSettingFinder;
 import nts.uk.ctx.at.shared.app.find.outsideot.holiday.SuperHD60HConMedFinder;
-import nts.uk.ctx.at.shared.app.find.outsideot.premium.extra.PremiumExtra60HRateFinder;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Rounding;
 import nts.uk.ctx.at.shared.dom.common.timerounding.Unit;
 import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTCalMed;
@@ -61,12 +60,7 @@ public class OutsideOTSettingExportService extends ExportService<OutsideOTSettin
     /** The outside OTBRD item lang repository. */
     @Inject
     private OutsideOTBRDItemLangRepository outsideOTBRDItemLangRepository;
-    
-
-    /** The premium extra 60 H rate finder. */
-    @Inject
-    private PremiumExtra60HRateFinder premiumExtra60HRateFinder;
-    
+        
     /** The super HD 60 H con med finder. */
     @Inject
     private SuperHD60HConMedFinder superHD60HConMedFinder;
@@ -344,7 +338,7 @@ public class OutsideOTSettingExportService extends ExportService<OutsideOTSettin
         data.setOvertimeLanguageData(overtimeNameLanguageData);
         data.setBreakdownLanguageData(breakdownNameLanguageData);
 		if (query.isManage()) {
-			data.setPremiumExtraRates(this.premiumExtra60HRateFinder.findAll());
+			data.setPremiumExtraRates(this.superHD60HConMedFinder.findAll());
 			data.setSuperHD60HConMed(this.superHD60HConMedFinder.findById());
 		}
 
