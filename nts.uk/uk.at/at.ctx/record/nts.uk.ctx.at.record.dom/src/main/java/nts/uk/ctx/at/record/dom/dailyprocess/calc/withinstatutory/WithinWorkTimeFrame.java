@@ -4,11 +4,13 @@ import java.util.Optional;
 
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyManagementTimeFrame;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.GraceTimeSetting;
@@ -174,5 +176,35 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLea
 		return this.leaveEarlyTimeSheet.get();
 	}
 	
+	/**
+	 * 実働時間を求め、就業時間を計算する
+	 * @param holidayAdditionAtr
+	 * @param dedTimeSheet
+	 * @return
+	 */
+	public int calcActualWorkTimeAndWorkTime(HolidayAdditionAtr holidayAdditionAtr,DeductionTimeSheet dedTimeSheet) {
+		int actualTime = calcWorkTime(); 
+		actualTime = actualTime - dedTimeSheet.calcDeductionAllTimeSheet(DeductionAtr.Deduction, ((CalculationTimeSheet)this).getTimeSheet());
+		int workTime = calcActualTime(actualTime);
+		/*就業時間算出ロジックをここに*/
+		return workTime;
+	}
 	
+	/**
+	 * 実働時間を計算する
+	 * @param actualTime
+	 * @return　実働時間
+	 */
+	public int calcActualTime(int actualTime) {
+		int workTime = 0;
+		return workTime;
+	}
+	
+	/**
+	 * 就業時間を計算する
+	 * @return　就業時間
+	 */
+	public int calcWorkTime() {
+		return ((CalculationTimeSheet)this).getTimeSheet().lengthAsMinutes();
+	}
 }
