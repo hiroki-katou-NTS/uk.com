@@ -311,7 +311,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
         private openDiablogC() {
             var self = this,
                 lwtData = ko.toJS(self.listWorkType);
-
             nts.uk.ui.windows.setShared("KMK007_WORK_TYPES", lwtData);
 
             nts.uk.ui.windows.sub.modal("/view/kmk/007/c/index.xhtml").onClosed(() => {
@@ -334,6 +333,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
          * Insert work type
          */
         private addWorkType(): any {
+            nts.uk.ui.block.grayout();
             var self = this,
                 workType = self.currentWorkType(),
                 length = workType.workTypeCode().length,
@@ -385,6 +385,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                     nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
                 }).fail(function(error) {
                     nts.uk.ui.dialog.alertError(error.message);
+                }).then(function() {
+                    nts.uk.ui.block.clear();
                 });
             }
         }
@@ -406,6 +408,8 @@ module nts.uk.at.view.kmk007.a.viewmodel {
          */
         private removeWorkType(): any {
             let self = this;
+            nts.uk.ui.block.grayout();
+
             let workTypeCd = self.currentCode();
 
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
@@ -423,7 +427,9 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 }).fail(function(error) {
                     self.isCreated(false);
                     nts.uk.ui.dialog.alertError(error.message);
-                });;
+                }).then(function() {
+                    nts.uk.ui.block.clear();
+                });
             });
         }
 
@@ -740,10 +746,13 @@ module nts.uk.at.view.kmk007.a.viewmodel {
          */
         private exportExcel(): void {
             var self = this;
+            nts.uk.ui.block.grayout();
             let langId = self.langId();
             service.saveAsExcel(langId).done(function() {
             }).fail(function(error) {
                 nts.uk.ui.dialog.alertError(error.message);
+            }).then(function() {
+                nts.uk.ui.block.clear();
             });
         }
     }

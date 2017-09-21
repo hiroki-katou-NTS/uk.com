@@ -16,9 +16,8 @@ module ksu001.o1.viewmodel {
 
         constructor() {
             let self = this;
-            self.listWorkType = ko.observableArray(getShare('listWorkType'));
-            self.listWorkTime = ko.observableArray(getShare('listWorkTime'));
-
+            self.listWorkType = ko.observableArray(getShare("listWorkType"));
+            self.listWorkTime = ko.observableArray(getShare("listWorkTime"));
             self.roundingRules = ko.observableArray([
                 { code: '1', name: nts.uk.resource.getText("KSU001_71") },
                 { code: '2', name: nts.uk.resource.getText("KSU001_72") }
@@ -89,7 +88,7 @@ module ksu001.o1.viewmodel {
                 $("#extable").exTable("stickUndo");
             });
         }
-        
+                
         /**
          * Close dialog
          */
