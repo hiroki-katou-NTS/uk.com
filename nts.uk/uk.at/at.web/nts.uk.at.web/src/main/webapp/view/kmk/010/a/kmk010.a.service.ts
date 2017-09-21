@@ -3,6 +3,7 @@ module nts.uk.at.view.kmk010.a {
     export module service {
         var paths = {
             findAllOvertimeCalculationMethod: "ctx/at/shared/outsideot/setting/findAll/method",
+            findAllAttendanceItemOvertime: "ctx/at/shared/outsideot/setting/findAll/attendanceItem",
             findAllOvertimeUnit: "ctx/at/shared/outsideot/setting/findAll/unit",
             findAllOvertimeRounding: "ctx/at/shared/outsideot/setting/findAll/rounding",
             findByIdOutsideOTSetting: "ctx/at/shared/outsideot/setting/findById",
@@ -115,6 +116,12 @@ module nts.uk.at.view.kmk010.a {
             return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcel, { languageId: languageId, manage: manage });
         }
         
+        /**
+         * call service find all attendance item overtime
+         */
+        export function findAllAttendanceItemOvertime(): JQueryPromise<number[]> {
+            return nts.uk.request.ajax('at', paths.findAllAttendanceItemOvertime);
+        }
         export module model {
 
             

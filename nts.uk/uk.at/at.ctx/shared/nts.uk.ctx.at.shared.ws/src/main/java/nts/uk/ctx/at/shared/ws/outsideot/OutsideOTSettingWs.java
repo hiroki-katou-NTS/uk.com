@@ -73,6 +73,17 @@ public class OutsideOTSettingWs extends WebService {
 	}
 	
 	/**
+	 * Find all attendance item.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("findAll/attendanceItem")
+	public List<Integer> findAllAttendanceItem() {
+		return this.finder.getAllAttendanceItem();
+	}
+	
+	/**
 	 * Find by id.
 	 *
 	 * @return the outside OT setting dto
