@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.at.shared.dom.bonuspay.setting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,7 +20,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @Getter
-public class BonusPaySetting extends AggregateRoot {
+public class BonusPaySetting extends AggregateRoot{
 
 	private String companyId;
 
@@ -51,12 +52,47 @@ public class BonusPaySetting extends AggregateRoot {
 				new BonusPaySettingName(name), lstBonusPayTimesheet, lstSpecBonusPayTimesheet);
 	}
 	
+	/**
+	 * 加給時間帯と特定日加給時間帯を１つにまとめる
+	 * @param calcRange
+	 * @return 加給時間帯リスト
+	 */
 	public List<BonusPayTimesheet> createBonusPayTimeSheetList(TimeSpanForCalc calcRange){
-		for(BonusPayTimesheet bonusPayTimeSheet : lstBonusPayTimesheet) {
-			Optional<TimeSpanForCalc> duplicateSpan = calcRange.getDuplicatedWith(new TimeSpanForCalc(new TimeWithDayAttr(bonusPayTimeSheet.getStartTime().v())
-																							,new TimeWithDayAttr(bonusPayTimeSheet.getEndTime().v())));
-			
-		}
+		List<BonusPayTimesheet> Bpay = new ArrayList<BonusPayTimesheet>();
+		Bpay.addAll(getDuplicateBonusPayTimeList(calcRange));
+		Bpay.addAll(getDuplicateSpecBonusPayTimeList(calcRange));
+		return Bpay;
 	}
 
+	/**
+	 * 計算範囲との重複期間をリストにする(加給時間帯)
+	 * @param calcRange 計算範囲
+	 * @return　開始と終了を更新した加給時間帯
+	 */
+	public List<BonusPayTimesheet> getDuplicateBonusPayTimeList(TimeSpanForCalc calcRange){
+		List<BonusPayTimesheet> returnList = new ArrayList<BonusPayTimesheet>();
+		for(BonusPayTimesheet timesheet : lstBonusPayTimesheet){
+			Optional<TimeSpanForCalc> newRange = calcRange.getDuplicatedWith(new TimeSpanForCalc(new TimeWithDayAttr(timesheet.getStartTime().valueAsMinutes()),new TimeWithDayAttr(timesheet.getEndTime().valueAsMinutes())));
+			if(newRange.isPresent()) {
+				returnList.add(timesheet.reCreateCalcRange(newRange.get()));
+			}
+		}
+		return returnList;
+	}
+	
+	/**
+	 * 計算範囲と重複期間をリストにする(特定日加給時間帯)
+	 * @param calcRange 計算範囲
+	 * @return
+	 */
+	public List<BonusPayTimesheet> getDuplicateSpecBonusPayTimeList(TimeSpanForCalc calcRange){
+		List<BonusPayTimesheet> returnList = new ArrayList<BonusPayTimesheet>();
+		for(SpecBonusPayTimesheet timesheet : lstSpecBonusPayTimesheet){
+			Optional<TimeSpanForCalc> newRange = calcRange.getDuplicatedWith(new TimeSpanForCalc(new TimeWithDayAttr(timesheet.getStartTime().valueAsMinutes()),new TimeWithDayAttr(timesheet.getEndTime().valueAsMinutes())));
+			if(newRange.isPresent()) {
+				returnList.add(timesheet.reCreate(newRange.get()));
+			}
+		}
+		return returnList;
+	}
 }

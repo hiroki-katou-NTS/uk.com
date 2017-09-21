@@ -12,6 +12,9 @@ import lombok.val;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet.LeaveEarlyTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet.LeaveEarlyTimeSheet;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
@@ -59,7 +62,8 @@ public class WithinWorkTimeSheet {
 			PredetermineTimeSet predetermineTimeSet,
 			FixedWorkSetting fixedWorkSetting,
 			WorkTimeCommonSet workTimeCommonSet,
-			DeductionTimeSheet deductionTimeSheet
+			DeductionTimeSheet deductionTimeSheet,
+			BonusPaySetting bonusPaySetting
 			) {
 		
 
@@ -72,9 +76,13 @@ public class WithinWorkTimeSheet {
 						
 		val timeFrames = new ArrayList<WithinWorkTimeFrame>();
 		val workingHourSet = createWorkingHourSet(workType, predetermineTimeSet, fixedWorkSetting);
+		WithinWorkTimeFrame newTimeFrame;
 		for (int frameNo = 0; frameNo < workingHourSet.toArray().length; frameNo++) {
 			for(WorkTimeOfTimeSheetSet duplicateTimeSheet :workingHourSet) {
-				timeFrames.add(new WithinWorkTimeFrame(frameNo, duplicateTimeSheet.getTimeSpan(), duplicateTimeSheet.getTimeSpan()));
+				newTimeFrame = new WithinWorkTimeFrame(frameNo, duplicateTimeSheet.getTimeSpan(), duplicateTimeSheet.getTimeSpan());
+				newTimeFrame.bonusPaySetting.createBonusPayTimeSheetList();
+				
+				timeFrames.add();
 			}
 		}
 		
@@ -139,7 +147,6 @@ public class WithinWorkTimeSheet {
 		default:
 			throw new RuntimeException("unknown attendanceHolidayAttr" + attendanceHolidayAttr);
 		}
-	}	
 	
 	/**
 	 * 引数のNoと一致する遅刻判断時刻を取得する
@@ -168,4 +175,11 @@ public class WithinWorkTimeSheet {
 	}
 	
 	
+	/**
+	 * 日別計算の遅刻早退時間の計算
+	 * @return
+	 */
+	public int calcLateLeaveEarlyinWithinWorkTime() {
+		
+	}
 }

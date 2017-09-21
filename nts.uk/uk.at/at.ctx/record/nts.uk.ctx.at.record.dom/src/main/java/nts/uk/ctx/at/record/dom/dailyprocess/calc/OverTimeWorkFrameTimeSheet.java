@@ -15,15 +15,20 @@ public class OverTimeWorkFrameTimeSheet extends CalculationTimeSheet{
 	
 	private final OverTimeWorkFrameTime overWorkFrameTime;
 	
+	private final boolean goEarly;
+	
+	private final 
 	
 	public OverTimeWorkFrameTimeSheet(
 			TimeSpanWithRounding timesheet
 			,int frameNo
 			,TimeSpanForCalc calculationTimeSheet
-			,OverTimeWorkFrameTime overTimeWorkFrameTime) {
+			,OverTimeWorkFrameTime overTimeWorkFrameTime
+			,boolean goEarly) {
 		super(timesheet,calculationTimeSheet);
 		this.frameNo = frameNo;
 		this.overWorkFrameTime = overTimeWorkFrameTime;
+		this.goEarly = goEarly;
 	}
 	
 	/**

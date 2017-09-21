@@ -27,6 +27,7 @@ public class PredetermineTimeSet extends AggregateRoot {
 	
 	private PredetermineTimeSheetSetting specifiedTimeSheet;
 	
+	private SetAdditionToWorkTime additionSet;
 	
 	public int getPredetermineEndTime() {
 		return this.dateStartTime.minute() + (int)this.rangeTimeDay.minute();

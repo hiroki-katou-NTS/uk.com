@@ -13,13 +13,17 @@ public enum WorkingSystem {
 
 
 	/**
-	 * 労働制が就業計算対象外か判定
+	 * 就業計算対象外であるか判定する
 	 * @return　就業計算対象外である
 	 */
 	public boolean isExcludedWorkingCalculate() {
 		return this.equals(ExcludedWorkingCalculate);
 	}
 	
+	/**
+	 * 変形労働であるか判定する
+	 * @return　変形労働である
+	 */
 	public boolean isVariableWorkingTimeWork() {
 		return this.equals(VariableWorkingTimeWork);
 	}

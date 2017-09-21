@@ -48,7 +48,6 @@ public class OverTimeWorkSheet {
 												AttendanceLeavingWork attendanceLeave,TimeWithDayAttr secondStartTime,int workNo) {
 		OverTimeWorkSheet overTimeWorkSheet = new OverTimeWorkSheet(OverTimeWorkOfDaily.of(overTimeHourSet,attendanceLeave,secondStartTime,workNo));
 		overTimeWorkSheet = dicisionCalcVariableWork(workingSystem,overTimeWorkSheet);
-		
 		return 
 	}
 	
@@ -56,57 +55,55 @@ public class OverTimeWorkSheet {
 	 * 変形基準内時間の計算をするか判定
 	 * @param workingSystem 労働制
 	 */
-	public static OverTimeWorkSheet dicisionCalcVariableWork(WorkingSystem workingSystem,OverTimeWorkSheet overTimeWorkSheet) {
-		
+	public OverTimeWorkSheet dicisionCalcVariableWork(WorkingSystem workingSystem,OverTimeWorkSheet overTimeWorkSheet
+															,BreakdownTimeDay breakdownTimeDay,DailyTime dailyTime) {
+		if(workingSystem.isVariableWorkingTimeWork()) {
+			/*基準内残業時間を計算する*/
+			hurikaesyori(calcDeformationCriterionOvertime(dailyTime.valueAsMinutes(),breakdownTimeDay.getPredetermineWorkTime()));
+			/*振替処理*/
+		}
 		return overTimeWorkSheet;
 	}
-	
-	
-	public void hurikaesyori(oneRange,daily) {
-		int ableDeformationTime = calcDeformationCriterionOvertime(oneRange, daily);
-		int overTime = 0;
-		for(OverTimeWorkFrameTimeSheet overTimeWork : dailyOverWorkTime) {
-			overTime = calcOverTimeWorkSheet(DeductionTimeSheet,overTimeWork);
-			if(overTime<0) {
-				break;
-			}
-		}
-				
-	}
-
-	/**
-	 * 変形基準内残業の計算
-	 * @param oneRange 所定労働時間
-	 * @param daily　法定労働時間
-	 * @return 変形基準内残業
-	 */
-	public int calcDeformationCriterionOvertime(oneRange,daily) {
-		return oneRange - daily;
-	}
-	
-	
-	
 	/**
 	 * 法定内残業時間の計算をするか判定
 	 * @param statutoryOverWorkSet 法定内残業設定クラス
 	 */
-	public static OverTimeWorkSheet calcStatutory(StatutoryOverTimeWorkSet statutorySet,OverTimeWorkSheet overTimeWorkSheet) {
+	public OverTimeWorkSheet calcStatutory(StatutoryOverTimeWorkSet statutorySet,DailyTime dailyTime) {
 		if(statutorySet.isAutoCalcStatutoryOverWork()) {
-			
+			/*法定内基準時間を計算する*/
+			hurikaesyori(calcDeformationCriterionOvertime(dailyTime.valueAsMinutes(),calcOverTimeWork()));
+			/*振替処理*/
 		}
-		
+	}
+
+	
+	/**
+	 * 振替処理
+	 * @param oneRange
+	 */
+	public void hurikaesyori(int ableRangeTime) {
+		int overTime = 0;
+		/*残業時間帯分のループ*/
+		for(OverTimeWorkFrameTimeSheet overTimeWork : dailyOverWorkTime.getOverTimeWorkFrameTimeSheet()) {
+			overTime = calcOverTimeWorkSheet(DeductionTimeSheet,overTimeWork);
+			overTimeWork.
+			if(overTime<0) {
+				break;
+			}
+		}
+	}
+
+	/**
+	 * 振替にできる時間の計算
+	 * @param statutoryTime 法定労働時間
+	 * @param 
+	 * @return 変形基準内残業にできるじかん
+	 */
+	public  int calcDeformationCriterionOvertime(int statutoryTime,int predetermineWorkTime) {
+		return statutoryTime - predetermineWorkTime;
 	}
 	
 
-
-	public int calcPredetermineOverTimeWork(WithinWorkTimeSheet withinWorkTimeSheet ) {
-		int preOverTime = 0;
-		
-		withinWorkTimeSheet.calcWorkTime()
-		
-		return preOverTime;
-	}
-	
 	
 	/**
 	 * 残業時間枠の計算
@@ -138,8 +135,17 @@ public class OverTimeWorkSheet {
 	 * @return　残業時間
 	 */
 	public int calcOverTimeWorkSheet(DeductionTimeSheet dedTimeSheet,OverTimeWorkFrameTimeSheet overTimeWorkFrameTimeSheet) {
-		int dedTime = dedTimeSheet.calcDeductionAllTimeSheet(DeductionAtr., overTimeWorkFrameTimeSheet.getTimeSheet().getSpan());
+		int dedTime = dedTimeSheet.calcDeductionAllTimeSheet(, overTimeWorkFrameTimeSheet.getTimeSheet().getSpan());
 		int overTimeWork = overTimeWorkFrameTimeSheet.getTimeSheet().getSpan().lengthAsMinutes() - dedTime;
 		return overTimeWork;
+	}
+	
+	/**
+	 * 残業時間の計算(残業時間帯の合計の時間を取得し1日の範囲に返す)
+	 * @return
+	 */
+	public int calcOverTimeWork() {
+		int overTimeWorkTime = 0;
+		return overTimeWorkTime;
 	}
 }

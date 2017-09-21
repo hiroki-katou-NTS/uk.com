@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.List;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import lombok.Getter;

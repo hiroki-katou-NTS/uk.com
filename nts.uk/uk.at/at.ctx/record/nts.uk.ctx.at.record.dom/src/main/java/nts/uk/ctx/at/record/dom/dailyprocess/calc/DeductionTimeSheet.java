@@ -11,8 +11,13 @@ import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWorkOfDaily;
+<<<<<<< HEAD
+import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+=======
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
+>>>>>>> ecbaab4d216f774ac42e77cba6dd2c7cb9b42598
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.GoOutTimeSheetOfDailyWork;
 import nts.uk.ctx.at.record.dom.daily.calcset.SetForNoStamp;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -216,11 +221,121 @@ public class DeductionTimeSheet {
 	}
 	
 	/**
+<<<<<<< HEAD
+	 * 全控除項目の時間帯の合計を算出する
+	 * @return 控除時間
+	 */
+	public int calcDeductionAllTimeSheet(DeductionAtr dedAtr,TimeSpanForCalc workTimeSpan) {
+		List<TimeSheetOfDeductionItem> duplicatitedworkTime = getCalcRange(workTimeSpan);
+		int sumTime = 0;
+		for(TimeSheetOfDeductionItem dedItem :duplicatitedworkTime) {
+			sumTime += dedItem.calculationTimeSheet.lengthAsMinutes();
+		}
+		return sumTime;
+	}
+	
+	/**
+	 * 休憩時間帯の合計時間を算出する
+	 * @param deductionTimeSheetList
+	 * @return
+	 */
+	public int calcDeductionTotalTime(List<TimeSheetOfDeductionItem> deductionItemTimeSheetList) {
+		int totalTime = 0;
+		for(TimeSheetOfDeductionItem deductionItemTimeSheet: deductionItemTimeSheetList) {
+			totalTime += deductionItemTimeSheet.calcTotalTime();
+		}
+		return totalTime;
+	}
+	
+	/**
+	 * 計算を行う範囲に存在する控除時間帯の抽出
+	 * @param workTimeSpan 計算範囲
+	 * @return　計算範囲内に存在する控除時間帯
+=======
 	 * 引数の時間帯に重複する休憩時間帯の合計時間（分）を返す
 	 * @param baseTimeSheet
 	 * @return
+>>>>>>> ecbaab4d216f774ac42e77cba6dd2c7cb9b42598
 	 */
 	public int sumBreakTimeIn(TimeSpanForCalc baseTimeSheet) {
 		return this.breakTimeSheet.sumBreakTimeIn(baseTimeSheet);
 	}
+	
+	/**
+	 * 算出された休憩時間の合計を取得する
+	 * @param dedAtr
+	 * @return
+	 */
+	public DeductionTotalTime getTotalBreakTime(DeductionAtr dedAtr) {
+		DeductionTotalTime dedTotalTime;
+		switch(dedAtr) {
+		case Appropriate:
+			dedTotalTime = getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()));
+		case Deduction:
+			dedTotalTime = getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isBreak()).collect(Collectors.toList()));
+		default:
+			throw new RuntimeException("unknown DeductionAtr" + dedAtr);
+		}
+		return dedTotalTime;
+	}
+	
+	/**
+	 * 算出された外出時間の合計を取得する
+	 * @param dedAtr
+	 * @return
+	 */
+	public List<DeductionTotalTime> getTotalGoOutTime(DeductionAtr dedAtr) {
+		List<DeductionTotalTime> dedTotalTimeList;
+		switch(dedAtr) {
+		case Appropriate:
+			dedTotalTimeList.add(getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isBreak())
+																						.filter(tc -> tc.getGoOutReason().get().isPrivate())
+																						.collect(Collectors.toList())));
+			dedTotalTimeList.add(getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isBreak())
+																						.filter(tc -> tc.getGoOutReason().get().isCompensation())
+																						.collect(Collectors.toList())));
+			dedTotalTimeList.add(getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isBreak())
+																						.filter(tc -> tc.getGoOutReason().get().isPublic())
+																						.collect(Collectors.toList())));
+			dedTotalTimeList.add(getDeductionTotalTime(forDeductionTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isBreak())
+																						.filter(tc -> tc.getGoOutReason().get().isUnion())
+																						.collect(Collectors.toList())));
+		case Deduction:
+			dedTotalTimeList.add(getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isBreak())
+																						.filter(tc -> tc.getGoOutReason().get().isPrivate())
+																						.collect(Collectors.toList())));
+			dedTotalTimeList.add(getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isBreak())
+																						.filter(tc -> tc.getGoOutReason().get().isCompensation())
+																						.collect(Collectors.toList())));
+			dedTotalTimeList.add(getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isBreak())
+																						.filter(tc -> tc.getGoOutReason().get().isPublic())
+																						.collect(Collectors.toList())));
+			dedTotalTimeList.add(getDeductionTotalTime(forRecordTimeZoneList.stream().filter(tc -> tc.getDeductionAtr().isBreak())
+																						.filter(tc -> tc.getGoOutReason().get().isUnion())
+																						.collect(Collectors.toList())));
+		default:
+			throw new RuntimeException("unknown DeductionAtr" + dedAtr);
+		}
+		return dedTotalTimeList;
+	}
+	
+
+	/**
+	 * 法定内・外、総裁時間から合計時間算出
+	 * @param deductionTimeSheetList　
+	 * @return
+	 */
+	public DeductionTotalTime getDeductionTotalTime(List<TimeSheetOfDeductionItem> deductionTimeSheetList) {
+		int statutoryTotalTime         = calcDeductionTotalTime(deductionTimeSheetList.stream()
+																					  .filter(tc -> tc.getWithinStatutoryAtr().isWithinStatutory())
+																					  .collect(Collectors.toList()));
+		int excessOfStatutoryTotalTime = calcDeductionTotalTime(deductionTimeSheetList.stream()
+																					  .filter(tc -> tc.getWithinStatutoryAtr().isExcessOfStatutory())
+																					  .collect(Collectors.toList()));
+		return DeductionTotalTime.of(TimeWithCalculation.of(new AttendanceTime(statutoryTotalTime+excessOfStatutoryTotalTime)
+															,new AttendanceTime(statutoryTotalTime)
+															,new AttendanceTime(excessOfStatutoryTotalTime)));
+	}
+	
+
 }

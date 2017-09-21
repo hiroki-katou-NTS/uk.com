@@ -2,6 +2,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collector;
 
 import lombok.Getter;
@@ -91,12 +92,28 @@ public class CalculationRangeOfOneDay {
 			/*勤務時間帯の計算*/
 		}
 	}
+	
 	/**
-	 * 
+	 * 時間の計算結果をまとめて扱う
+	 * @param withinTimeSheet 計算用就業時間帯
+	 * @param overTimeWorkSheet　計算用残業時間帯
+	 * @param holidayWorkTimeSheet　計算用休出時間帯
+	 * @param deductionTimeSheet　計算用控除時間帯
+	 * @param actualTimeAtr
 	 */
-	private void collectCalculationResult(WithinWorkTimeSheet withinTimeSheet, CalculationByActualTimeAtr actualTimeAtr,) {
+	private void collectCalculationResult(WithinWorkTimeSheet  withinTimeSheet,
+										  OverTimeWorkSheet    overTimeWorkSheet,
+										  HolidayWorkTimeSheet holidayWorkTimeSheet,
+										  DeductionTimeSheet deductionTimeSheet,
+										  CalculationByActualTimeAtr actualTimeAtr) {
 		int calcWithinWorkTime = withinTimeSheet.calcWorkTime(actualTimeAtr, dedTimeSheet);
-		/*法定労働時間取得*/
+		int overTimeWorkTime = overTimeWorkSheet.calcOverTimeWork()；/*残業時間の計算*/
+		int holidayWorkTime = holidayWorkTimeSheet.calcHolidayWorkTime();/*休日出勤の計算*/
+		int deductionBreakTime = deductionTimeSheet.getTotalBreakTime(DeductionAtr.Deduction);
+		int recordBreakTime = deductionTimeSheet.getTotalBreakTime(DeductionAtr.Appropriate);/*計上用の休憩時間の計算*/
+		int deductionGoOutTime = deductionTimeSheet.getTotalGoOutTime(DeductionAtr.Deduction);/*控除用の外出時間の計算*/
+		int recordGoOutTime = deductionTimeSheet.getTotalGoOutTime(DeductionAtr.Appropriate);/*計上用の外出時間の計算*/
+		
 		return /*法定労働時間*/ - calcWithinWorkTime;
 	}
 
@@ -119,16 +136,11 @@ public class CalculationRangeOfOneDay {
 	public void createOutOfWorkTimeSheet(List<OverTimeHourSet> overTimeHourSet ,WorkType workType,FixOffdayWorkTime fixOff, AttendanceLeavingWork attendanceLeave,int workNo) {
 		if(workType.isWeekDayAttendance()) {
 			/*就業時間外時間帯の平日出勤の処理*/
-			
-			outsideWorkTimeSheet = new OutsideWorkTimeSheet(Optional.of(OverTimeWorkSheet.createOverWorkFrame(overTimeHourSet, workingSystem, attendanceLeave,workTime.getPredetermineTimeSet().getSpecifiedTimeSheet().getTimeSheets().get(1).getStartTime(), workNo)),null);
-			
-			//こっちのreturn は OverTimeWorkSheet型
+			outsideWorkTimeSheet = new OutsideWorkTimeSheet(Optional.of(OverTimeWorkSheet.createOverWorkFrame(overTimeHourSet, workingSystem, attendanceLeave,workTime.getPredetermineTimeSet().getSpecifiedTimeSheet().getTimeSheets().get(1).getStartTime(), workNo)),Optional.empty());
 		}
 		else {
 			/*休日出勤*/
-			outsideWorkTimeSheet = new OutsideWorkTimeSheet(null, Optional.of(HolidayWorkTimeOfDaily.getHolidayWorkTimeOfDaily(fixOff.getWorkingTimes(), attendanceLeave)));
-			//こっちのreturn は　HolidayWorkTimeOfDaily型
-			
+			outsideWorkTimeSheet = new OutsideWorkTimeSheet(Optional.empty(), Optional.of(HolidayWorkTimeOfDaily.getHolidayWorkTimeOfDaily(fixOff.getWorkingTimes(), attendanceLeave)));
 		}
 	}
 
