@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.application.stamp;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampSetOutput;
 /**
  * 
@@ -12,7 +13,7 @@ import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampSetOutput;
 public interface AppStampNewDomainService {
 	
 	// 打刻申請（新規）起動前処理
-	public AppStampSetOutput appStampPreProcess(String companyID, String employeeID, GeneralDate appDate);
+	public AppStampNewPreOutput appStampPreProcess(String companyID, String employeeID, GeneralDate appDate);
 	
 	// 外出／育児／介護の申請の新規登録
 	public void appStampGoOutPermitRegister(String titleReason, String detailReason, AppStamp appStamp);

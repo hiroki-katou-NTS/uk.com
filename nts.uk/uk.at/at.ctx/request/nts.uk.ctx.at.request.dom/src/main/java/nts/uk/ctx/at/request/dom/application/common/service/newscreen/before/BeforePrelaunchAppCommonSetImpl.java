@@ -75,10 +75,10 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		}
 		
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する ( Execute the algorithm "Acquire employee affiliation employment history" )
-		String employeeCD = employeeAdaptor.getEmploymentCode(companyID, employeeID, baseDate);
+		/*String employeeCD = employeeAdaptor.getEmploymentCode(companyID, employeeID, baseDate);
 		if(employeeCD!=null) {
 			throw new BusinessException("Msg_426");
-		}
+		}*/
 		// ドメインモデル「雇用別申請承認設定」を取得する ( Acquire the domain model "application approval setting by employment" )
 		// ApplicationCommonSetting obj1 = ApplicationApprovalSettingByEmployment.find(companyID, employeeCD);
 		// return obj1
