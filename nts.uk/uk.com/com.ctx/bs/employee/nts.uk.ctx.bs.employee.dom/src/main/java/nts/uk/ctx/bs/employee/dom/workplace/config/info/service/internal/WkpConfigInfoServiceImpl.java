@@ -41,17 +41,6 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
 			workplaceConfigInfoRepository.addList(wkp);
 		}
 	}
-	
-	/**
-	 * Convert list.
-	 *
-	 * @param convert the convert
-	 * @param addNewHistId the add new hist id
-	 * @return the workplace config info
-	 */
-	private WorkplaceConfigInfo convertList(WorkplaceConfigInfo convert, String addNewHistId) {
-		return new WorkplaceConfigInfo(convert, new HistoryId(addNewHistId));
-	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.info.service.WkpConfigInfoService#updatePrevious(java.lang.String, nts.arc.time.GeneralDate)
