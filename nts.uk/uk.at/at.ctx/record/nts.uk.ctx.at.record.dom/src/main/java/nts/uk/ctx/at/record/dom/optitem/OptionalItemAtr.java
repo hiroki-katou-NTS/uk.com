@@ -10,9 +10,9 @@ package nts.uk.ctx.at.record.dom.optitem;
 // 任意項目の属性
 public enum OptionalItemAtr {
 
-	/** The times. */
+	/** The number. */
 	// 回数
-	TIMES(0, "Enum_OptionalItemAtr_TIMES", "回数"),
+	NUMBER(0, "Enum_OptionalItemAtr_NUMBER", "回数"),
 
 	/** The amount. */
 	// 金額
