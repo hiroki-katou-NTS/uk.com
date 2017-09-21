@@ -3443,6 +3443,11 @@ button.nts-switch-button[disabled]:hover {
   background-color: #FFF;
 }
 
+.nts-grid-wrapper table tr td,
+.nts-grid-wrapper table tr th.ui-iggrid-header {
+	border-color: #AAB7B8;
+}
+
 .nts-grid-wrapper table tr td.ui-state-hover,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover,
 .nts-grid tr td.ui-state-hover,
