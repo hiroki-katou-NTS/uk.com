@@ -11,13 +11,10 @@ import lombok.val;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWorkOfDaily;
-<<<<<<< HEAD
 import nts.uk.ctx.at.record.dom.daily.DeductionTotalTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
-=======
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
->>>>>>> ecbaab4d216f774ac42e77cba6dd2c7cb9b42598
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.GoOutTimeSheetOfDailyWork;
 import nts.uk.ctx.at.record.dom.daily.calcset.SetForNoStamp;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
@@ -221,7 +218,6 @@ public class DeductionTimeSheet {
 	}
 	
 	/**
-<<<<<<< HEAD
 	 * 全控除項目の時間帯の合計を算出する
 	 * @return 控除時間
 	 */
@@ -248,14 +244,9 @@ public class DeductionTimeSheet {
 	}
 	
 	/**
-	 * 計算を行う範囲に存在する控除時間帯の抽出
-	 * @param workTimeSpan 計算範囲
-	 * @return　計算範囲内に存在する控除時間帯
-=======
 	 * 引数の時間帯に重複する休憩時間帯の合計時間（分）を返す
 	 * @param baseTimeSheet
 	 * @return
->>>>>>> ecbaab4d216f774ac42e77cba6dd2c7cb9b42598
 	 */
 	public int sumBreakTimeIn(TimeSpanForCalc baseTimeSheet) {
 		return this.breakTimeSheet.sumBreakTimeIn(baseTimeSheet);
@@ -337,5 +328,13 @@ public class DeductionTimeSheet {
 															,new AttendanceTime(excessOfStatutoryTotalTime)));
 	}
 	
+	/**
+	 * 計算を行う範囲に存在する控除時間帯の抽出
+	 * @param workTimeSpan 計算範囲
+	 * @return　計算範囲内に存在する控除時間帯
+	 */
+	public List<TimeSheetOfDeductionItem> getCalcRange(TimeSpanForCalc workTimeSpan){
+		return forDeductionTimeZoneList.stream().filter(tc -> workTimeSpan.contains(tc.calculationTimeSheet.getSpan())).collect(Collectors.toList());
+	}
 
 }

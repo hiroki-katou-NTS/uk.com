@@ -50,7 +50,7 @@ public abstract class CalculationTimeSheet {
 	 * @return 
 	 */
 	public int calcTotalTime() {
-		int calcTime = calculationTimeSheet.lengthAsMinutes() - /*控除時間の算出*/;
+		int calcTime = minusDeductionTime();
 		/*丸め設定*/
 		return calcTime;
 	}
@@ -59,7 +59,7 @@ public abstract class CalculationTimeSheet {
 	 * 時間帯に含んでいる控除時間を差し引いた時間を計算する(メモ：トリガー)
 	 * @return 時間
 	 */
-	public int calcTime() {
+	public int minusDeductionTime() {
 		if(deductionTimeSheets.isEmpty()) return 0 ;
 		return calculationTimeSheet.lengthAsMinutes() - recursiveTotalTime() ;
 	}
