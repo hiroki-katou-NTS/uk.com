@@ -152,6 +152,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
         
         /** update or insert data when click button register **/
         register() {   
+            nts.uk.ui.block.invisible();
             let self = this;
             $("#inpCode").trigger("validate");
             $("inpPattern").trigger("validate");
@@ -180,15 +181,16 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                 if (nts.uk.ui.errors.hasError() === false) {
                     // update item to list  
                     if(self.checkUpdate() == true){
-                        $("#inpPattern").focus();
+                        $("#inpPattern").focus();   
                         service.update(dataTransfer).done(function(errors: Array<string>){
                             self.getData().done(function(){
                                 self.selectedCode(code);   
-                                $("#inpPattern").focus(); 
                                 if (errors && errors.length > 0) {
                                     self.addListError(errors);
                                 }else{
-                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }); 
+                                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                                        $("#inpPattern").focus();
+                                    }); 
                                 }
                             });
               
@@ -202,16 +204,18 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                         // insert item to list
                         service.add(dataTransfer).done(function(){
                             self.getData().done(function(){
-                                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                                self.selectedCode(code);  
-                                $("#inpPattern").focus();
+                                nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                                    self.selectedCode(code);  
+                                    $("#inpPattern").focus();
+                                });
                             });
                         }).fail(function(res){
                             $('#inpCode').ntsError('set', res);
                         });
                     }
                 }
-            });    
+            }); 
+            nts.uk.ui.block.clear();   
         } 
         
         //  new mode 

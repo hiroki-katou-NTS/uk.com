@@ -151,6 +151,7 @@ module nts.uk.at.view.kmf004 {
             }
 
             register() {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 let b = this.value();
                 let a = self.items();
@@ -177,6 +178,7 @@ module nts.uk.at.view.kmf004 {
                 }).fail(function(error) {
                     alert(error.message);
                 });
+                nts.uk.ui.block.clear();
             }   
    
             closeDialog() {
