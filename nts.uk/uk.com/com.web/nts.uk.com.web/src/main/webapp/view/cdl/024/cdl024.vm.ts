@@ -9,6 +9,15 @@ module nts.uk.at.view.cdl024.viewmodel {
                 codeList = self.currentCodeList;
         }
 
+        closeDialog(){
+             nts.uk.ui.windows.close();
+        }
+        
+        sendAttribute(){
+            nts.uk.ui.windows.setShared("currentCodeList", this.currentCodeList);
+            nts.uk.ui.windows.close();
+        }    
+        
         startPage(): JQueryPromise<any> {
             let self = this,
                 items = self.items,
