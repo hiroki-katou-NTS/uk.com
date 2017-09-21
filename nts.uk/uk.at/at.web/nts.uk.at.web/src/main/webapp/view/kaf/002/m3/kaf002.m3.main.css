@@ -6,7 +6,7 @@
 	margin-left: 5px;
 }
 #m3-div {
-	width: 400px;
+	width: 500px;
 	height: 343px;
 	outline-style: solid;
 	outline-color: #999999;
@@ -19,7 +19,7 @@
 	outline-width: 1px;
 	position: absolute;
 	max-height: 343px;
-	max-width: 400px;
+	max-width: 500px;
 }
 #m3-table thead {
 	background-color: #CFF1A5;
@@ -38,8 +38,8 @@
 	width: 100px;
 }
 #m3-table > tbody > tr > td:LAST-CHILD {
-	min-width: 299px;
-	width: 299px;
+	min-width: 399px;
+	width: 399px;
 }
 #m3-backgroud {
 	background-color: #CFF1A5;
@@ -52,4 +52,7 @@
 }
 .m3-switch > .nts-switch-button {
 	width: 80px;
+}
+.m3-time-detail {
+	width: 215px;
 }

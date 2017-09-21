@@ -1,3 +1,6 @@
+.m1-inline-div {
+	display: inline-block;
+}
 .m1-table {
 	margin-top: 5px;
 	margin-bottom: 5px;
@@ -13,7 +16,7 @@
 	width: 95px;
 }
 .m1-panel {
-	width: 400px;	
+	width: 500px;	
 	margin-bottom: 3px;
 	padding: 3px;
 }
@@ -26,4 +29,11 @@
 }
 .m1-switch > .nts-switch-button {
 	width: 80px;
+}
+.m1DisableEdit {
+	color: #999999;
+}
+.m1-checkBox {
+	margin-left: 3px;
+	margin-right: -7px;
 }

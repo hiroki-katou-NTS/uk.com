@@ -1,30 +1,75 @@
 module nts.uk.at.view.kaf002.shr {
     export module vmbase {
+        export interface AppStampNewSetDto {
+            appCommonSettingDto: AppCommonSettingDto;
+            appStampSetDto: AppStampSetDto;        
+        }
+        
+        export interface AppCommonSettingDto {
+            generalDate: string;
+            applicationSettingDto: string;  
+            requestOfEachCommonDtos: string;
+            appTypeDiscreteSettingDtos: string;
+            applicationDeadlineDtos: string;
+        }   
+        
+        export interface AppStampSetDto {
+            stampRequestSettingDto: StampRequestSettingDto;
+            applicationReasonDtos: ApplicationReasonDto[];
+        }
+        
+        export interface ApplicationReasonDto {
+            companyId: string;
+            appType: number;
+            reasonID: string;
+            displayOrder: number;
+            reasonTemp: string;
+            defaultFlg: number;
+        }
+        
+        export interface StampRequestSettingDto {
+            companyID: string;
+            topComment: string;
+            topCommentFontColor: string;
+            topCommentFontWeight: number;
+            bottomComment: string;
+            bottomCommentFontColor: string;
+            bottomCommentFontWeight: number;
+            resultDisp: number;
+            supFrameDispNO: number;
+            stampPlaceDisp: number;
+            stampAtr_Work_Disp: number;
+            stampAtr_GoOut_Disp: number;
+            stampAtr_Care_Disp: number;
+            stampAtr_Sup_Disp: number;
+            stampGoOutAtr_Private_Disp: number;
+            stampGoOutAtr_Public_Disp: number;
+            stampGoOutAtr_Compensation_Disp: number;
+            stampGoOutAtr_Union_Disp: number;
+        }
+        
         export class Application {
             applicationID: KnockoutObservable<string>; // 申請ID
-            prePostAtr: KnockoutObservable<number>; // 事前事後区分
             inputDate: KnockoutObservable<string>; // 入力日
             enteredPerson: KnockoutObservable<string>; // 入力者
-            applicationDate: KnockoutObservable<string>; // 申請日
-            applicationReason: KnockoutObservable<string>; // 申請理由
-            applicationType: KnockoutObservable<number>; // 申請種類
+            appDate: KnockoutObservable<string>; // 申請日
+            titleReason: KnockoutObservable<string>; 
+            contentReason: KnockoutObservable<string>;
             employeeID: KnockoutObservable<string>; // 申請者
             constructor( 
                 applicationID: string,
-                prePostAtr: number,
                 inputDate: string,
                 enteredPerson: string,
-                applicationDate: string,
-                applicationReason: string,
-                applicationType: number,
+                appDate: string,
+                titleReason: string,
+                contentReason: string,
                 employeeID: string){
                     this.applicationID = ko.observable(applicationID);  
-                    this.prePostAtr = ko.observable(prePostAtr);
                     this.inputDate = ko.observable(inputDate);
                     this.enteredPerson = ko.observable(enteredPerson);
-                    this.applicationDate = ko.observable(applicationDate);
-                    this.applicationReason = ko.observable(applicationReason);
-                    this.applicationType = ko.observable(applicationType);
+                    this.appDate = ko.observable(appDate);
+                    this.titleReason = ko.observable(titleReason);
+                    this.contentReason = ko.observable(contentReason);
                     this.employeeID = ko.observable(employeeID);
             }
         }
@@ -32,58 +77,88 @@ module nts.uk.at.view.kaf002.shr {
         export class AppStampGoOutPermit {
             stampAtr: KnockoutObservable<number>;
             stampFrameNo: KnockoutObservable<number>;
-            stampGoOutReason: KnockoutObservable<number>;
+            stampGoOutAtr: KnockoutObservable<number>;
             startTime: KnockoutObservable<number>;
             startLocation: KnockoutObservable<string>;
             endTime: KnockoutObservable<number>;
-            endLocation: KnockoutObservable<string>;    
+            endLocation: KnockoutObservable<string>;  
+            startTimeDisp: KnockoutObservable<boolean>; 
+            startLocationDisp: KnockoutObservable<boolean>; 
+            endTimeDisp: KnockoutObservable<boolean>; 
+            endLocationDisp: KnockoutObservable<boolean>;    
             constructor(
                 stampAtr: number,
                 stampFrameNo: number,
-                stampGoOutReason: number,
+                stampGoOutAtr: number,
                 startTime: number,
                 startLocation: string,
                 endTime: number,
-                endLocation: string){
+                endLocation: string,
+                startTimeDisp: boolean, 
+                startLocationDisp: boolean,
+                endTimeDisp: boolean, 
+                endLocationDisp: boolean){
                     this.stampAtr = ko.observable(stampAtr);
                     this.stampFrameNo = ko.observable(stampFrameNo);
-                    this.stampGoOutReason = ko.observable(stampGoOutReason);
+                    this.stampGoOutAtr = ko.observable(stampGoOutAtr);
                     this.startTime = ko.observable(startTime);
                     this.startLocation = ko.observable(startLocation);
                     this.endTime = ko.observable(endTime);
                     this.endLocation = ko.observable(endLocation);
+                    this.startTimeDisp = ko.observable(startTimeDisp);
+                    this.startLocationDisp = ko.observable(startLocationDisp);
+                    this.endTimeDisp = ko.observable(endTimeDisp);
+                    this.endLocationDisp = ko.observable(endLocationDisp);
             }
         }
         
         export class AppStampWork {
             stampAtr: KnockoutObservable<number>;
             stampFrameNo: KnockoutObservable<number>;
-            stampGoOutReason: KnockoutObservable<number>;
+            stampGoOutAtr: KnockoutObservable<number>;
             supportCard: KnockoutObservable<string>;
             supportLocationCD: KnockoutObservable<string>;
+            supportCardDisp: KnockoutObservable<boolean>;  
+            supportLocationDisp: KnockoutObservable<boolean>; 
             startTime: KnockoutObservable<number>;
             startLocation: KnockoutObservable<string>;
             endTime: KnockoutObservable<number>;
             endLocation: KnockoutObservable<string>;   
+            startTimeDisp: KnockoutObservable<boolean>; 
+            startLocationDisp: KnockoutObservable<boolean>; 
+            endTimeDisp: KnockoutObservable<boolean>; 
+            endLocationDisp: KnockoutObservable<boolean>; 
             constructor(
                 stampAtr: number,
                 stampFrameNo: number,
-                stampGoOutReason: number,
+                stampGoOutAtr: number,
                 supportCard: string,
                 supportLocationCD: string,
+                supportCardDisp: boolean,
+                supportLocationDisp: boolean,
                 startTime: number,
                 startLocation: string,
                 endTime: number,
-                endLocation: string){
+                endLocation: string,
+                startTimeDisp: boolean, 
+                startLocationDisp: boolean,
+                endTimeDisp: boolean,
+                endLocationDisp: boolean){
                     this.stampAtr = ko.observable(stampAtr);
                     this.stampFrameNo = ko.observable(stampFrameNo);
-                    this.stampGoOutReason = ko.observable(stampGoOutReason);
+                    this.stampGoOutAtr = ko.observable(stampGoOutAtr);
                     this.supportCard = ko.observable(supportCard);
-                    this.supportLocationCD = ko.observable(supportLocationCD);
+                    this.supportLocationCD = ko.observable(supportCardDisp);
+                    this.supportCardDisp = ko.observable(supportLocationCD);
+                    this.supportLocationDisp = ko.observable(supportLocationDisp);
                     this.startTime = ko.observable(startTime);
                     this.startLocation = ko.observable(startLocation);
                     this.endTime = ko.observable(endTime);
                     this.endLocation = ko.observable(endLocation);
+                    this.startTimeDisp = ko.observable(startTimeDisp);
+                    this.startLocationDisp = ko.observable(startLocationDisp);
+                    this.endTimeDisp = ko.observable(endTimeDisp);
+                    this.endLocationDisp = ko.observable(endLocationDisp);
             }
         }
         
@@ -106,5 +181,35 @@ module nts.uk.at.view.kaf002.shr {
                 this.appTime = ko.observable(appTime);        
             }
         }
+        
+        export class InputReason {
+            id: string;
+            content: string; 
+            constructor(id: string, content: string){
+                this.id = id;
+                this.content = content;        
+            }
+        }
+        
+        export class CommentUI {
+            text: KnockoutObservable<string>; 
+            color: KnockoutObservable<string>; 
+            fontWeight: KnockoutObservable<number>;     
+            constructor(text: string, color: string, fontWeight: number){
+                this.text = ko.observable(text);
+                this.color = ko.observable(color);
+                this.fontWeight = ko.observable(fontWeight);      
+            }
+        }
+        
+        export class StampCombination {
+            value: number;
+            name: string;
+            constructor(value: number, name: string) {
+                this.value = value;
+                this.name = name;    
+            }    
+        }
+        
     }
 }
