@@ -80,7 +80,7 @@ public class WithinWorkTimeSheet {
 				newTimeFrame = new WithinWorkTimeFrame(frameNo, duplicateTimeSheet.getTimeSpan(), duplicateTimeSheet.getTimeSpan());
 				newTimeFrame.bonusPaySetting.createBonusPayTimeSheetList();
 				
-				timeFrames.add();
+//				timeFrames.add();
 			}
 		}
 		
@@ -145,7 +145,6 @@ public class WithinWorkTimeSheet {
 		default:
 			throw new RuntimeException("unknown attendanceHolidayAttr" + attendanceHolidayAttr);
 		}
-	}
 	/**
 	 * 引数のNoと一致する遅刻判断時刻を取得する
 	 * @param workNo
