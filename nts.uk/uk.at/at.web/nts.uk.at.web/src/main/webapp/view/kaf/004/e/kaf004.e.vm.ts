@@ -1,5 +1,5 @@
-module nts.uk.at.view.kaf004.b.viewmodel {
-    export class ScreenModel {
+module nts.uk.at.view.kaf004.e.viewmodel {
+    export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
         // date editor
         date: KnockoutObservable<string>;
         //latetime editor
@@ -28,6 +28,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         showScreen: string;
         
         constructor() {
+            super();
             var self = this;
             //check sendMail
             self.sendMail = ko.observable(true);
@@ -55,6 +56,10 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             //Show Screen
             self.showScreen = __viewContext.transferred.value.showScreen;
         }
+        
+        update(): JQueryPromise<any> {
+            
+        }
 
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -67,7 +72,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
 
             return dfd.promise();
         }
-        
+
         /** Create Button Click */
         registryButtonClick() {
             var self = this;

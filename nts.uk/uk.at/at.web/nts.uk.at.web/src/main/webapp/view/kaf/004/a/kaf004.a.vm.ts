@@ -19,23 +19,18 @@ module nts.uk.at.view.kaf004.a.viewmodel {
         openBDialog() {
             var self = this;
             nts.uk.ui.windows.setShared("ShowScreen", "B");
-            nts.uk.ui.windows.sub.modal("/view/kaf/004/b/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
-                var self = this;
-            });
-        }
+            nts.uk.request.jump("/view/kaf/004/b/index.xhtml", {showScreen: "B"});
+            }
         openCDialog() {
             var self = this;
              nts.uk.ui.windows.setShared("ShowScreen", "C");
-            nts.uk.ui.windows.sub.modal("/view/kaf/004/b/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
-                var self = this;
-            });
+            nts.uk.request.jump("/view/kaf/004/b/index.xhtml", {showScreen: "C"});
         }
         openDDialog() {
             var self = this;
             nts.uk.ui.windows.setShared("ShowScreen", "D");
-            nts.uk.ui.windows.sub.modal("/view/kaf/004/b/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
-                var self = this;
-            });
+            nts.uk.request.jump("/view/kaf/004/b/index.xhtml", {showScreen: "D"});
         }
+      
     }
 }
