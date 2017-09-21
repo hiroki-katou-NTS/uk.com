@@ -191,8 +191,8 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 $("#switch-language").ntsSwitchMasterLanguage();
 
-                $("#switch-language").on("selectionChanged", function(event, arg1, arg2) {
-                    self.languageId = event.eventPhase.
+                $("#switch-language").on("selectionChanged", function(event: any, arg1, arg2) {
+                    self.languageId = event.detail.languageId;
                     self.updateLanguage();
                 });
             }
