@@ -69,13 +69,6 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLea
 	 * @param graceTimeSetting
 	 * @param workTimeCalcMethodDetailOfHoliday
 	 */
-<<<<<<< HEAD
-	public int calcActualWorkTimeAndWorkTime(HolidayAdditionAtr holidayAdditionAtr,DeductionTimeSheet dedTimeSheet) {
-		int actualTime = calcWorkTime(); 
-		actualTime = actualTime - dedTimeSheet.calcDeductionAllTimeSheet(DeductionAtr.Deduction, ((CalculationTimeSheet)this).getTimeSheet());
-		int workTime = calcActualTime(actualTime);
-		/*就業時間算出ロジックをここに*/
-=======
 	public void deductByLateLeaveEarly(
 			WorkTime workTime,
 			TimeWithDayAttr goWorkTime,
@@ -131,7 +124,6 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLea
 		}
 		
 		this.deductByLeaveEarly(graceTimeSetting, workTimeCalcMethodDetailOfHoliday);	
->>>>>>> ecbaab4d216f774ac42e77cba6dd2c7cb9b42598
 		
 	}
 
