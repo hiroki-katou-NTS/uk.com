@@ -33,11 +33,11 @@ public class KrcstCalcResultRange extends UkJpaEntity implements Serializable {
 
 	/** The upper limit atr. */
 	@Column(name = "UPPER_LIMIT_ATR")
-	private short upperLimitAtr;
+	private int upperLimitAtr;
 
 	/** The lower limit atr. */
 	@Column(name = "LOWER_LIMIT_ATR")
-	private short lowerLimitAtr;
+	private int lowerLimitAtr;
 
 	/** The upper time range. */
 	@Column(name = "UPPER_TIME_RANGE")
@@ -72,7 +72,8 @@ public class KrcstCalcResultRange extends UkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new krcst calc result range.
 	 *
-	 * @param krcstCalcResultRangePK the krcst calc result range PK
+	 * @param krcstCalcResultRangePK
+	 *            the krcst calc result range PK
 	 */
 	public KrcstCalcResultRange(KrcstCalcResultRangePK krcstCalcResultRangePK) {
 		this.krcstCalcResultRangePK = krcstCalcResultRangePK;

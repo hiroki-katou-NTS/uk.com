@@ -33,5 +33,5 @@ public interface EmpConditionSetMemento {
 	 *
 	 * @param empConditions the emp conditions
 	 */
-	void SetEmpConditions(List<EmploymentCondition> empConditions);
+	void setEmpConditions(List<EmploymentCondition> empConditions);
 }
