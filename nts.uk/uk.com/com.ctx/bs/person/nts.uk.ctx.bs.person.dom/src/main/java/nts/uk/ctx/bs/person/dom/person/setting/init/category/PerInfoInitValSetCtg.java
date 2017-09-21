@@ -10,17 +10,17 @@ public class PerInfoInitValSetCtg extends AggregateRoot {
 	private String initValueSettingId;
 
 	// 個人情報カテゴリID
-	private String initValueSettingCtgId;
+	private String perInfoCtgId;
 
 	/**
 	 * @Contructors PerInfoInitValSetCtg
 	 * @param initValueSettingId
-	 * @param initValueSettingCtgId
+	 * @param perInfoCtgId
 	 */
-	public PerInfoInitValSetCtg(String initValueSettingId, String initValueSettingCtgId) {
+	public PerInfoInitValSetCtg(String initValueSettingId, String perInfoCtgId) {
 		super();
 		this.initValueSettingId = initValueSettingId;
-		this.initValueSettingCtgId = initValueSettingCtgId;
+		this.perInfoCtgId = perInfoCtgId;
 	}
 
 	/**

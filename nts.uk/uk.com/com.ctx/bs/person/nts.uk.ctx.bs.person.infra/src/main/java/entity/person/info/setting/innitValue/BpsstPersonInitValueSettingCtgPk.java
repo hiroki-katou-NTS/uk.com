@@ -17,7 +17,7 @@ public class BpsstPersonInitValueSettingCtgPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Basic(optional = false)
-	@Column(name = "PER_INIT_SET_CTG_ID")
-	public String settingCtgId;
+	@Column(name = "PER_INFO_CTG_ID")
+	public String perInfoCtgId;
 
 }

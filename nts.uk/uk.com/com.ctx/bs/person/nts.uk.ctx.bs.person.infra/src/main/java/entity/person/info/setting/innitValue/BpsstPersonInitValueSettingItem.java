@@ -27,8 +27,8 @@ public class BpsstPersonInitValueSettingItem extends UkJpaEntity implements Seri
 	public String settingCtgId;
 
 	@Basic(optional = false)
-	@Column(name = "REFERENCE_METHOD")
-	public int referenceMethod;
+	@Column(name = "REF_METHOD_ATR")
+	public int refMethodAtr;
 	
 	@Basic(optional = true)
 	@Column(name = "SAVE_DATA_TYPE")
