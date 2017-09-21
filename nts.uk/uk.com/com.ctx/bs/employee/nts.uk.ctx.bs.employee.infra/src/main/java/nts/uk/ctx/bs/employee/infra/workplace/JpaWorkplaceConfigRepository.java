@@ -103,9 +103,8 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
 	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository#add(nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig)
 	 */
 	@Override
-	public String add(WorkplaceConfig workplaceConfig) {
+	public void add(WorkplaceConfig workplaceConfig) {
 		this.commandProxy().insert(this.toEntity(workplaceConfig));
-		return workplaceConfig.getWkpConfigHistory().get(0).getHistoryId();
 	}
 	
 	/**

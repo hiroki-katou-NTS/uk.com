@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
+import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.service.WkpConfigService;
 
@@ -23,7 +24,9 @@ public class WkpConfigServiceImpl implements WkpConfigService {
 
 	/** The workplace config repository. */
 	@Inject
-	WorkplaceConfigRepository workplaceConfigRepository;
+	private WorkplaceConfigRepository workplaceConfigRepository;
+	
+	private static final int INDEX_FIRST = 0;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.service.WkpConfigService#validateAddHistory(java.lang.String, nts.arc.time.GeneralDate)
@@ -31,15 +34,17 @@ public class WkpConfigServiceImpl implements WkpConfigService {
 	@Override
 	public String validateAddHistory(String companyId, GeneralDate addHistStart) {
 		// get first hist
-		Optional<WorkplaceConfig> wkpConfig = workplaceConfigRepository.findLastestByCompanyId(companyId);
-		if (wkpConfig.isPresent()) {
-			// check validate start date
-			if (wkpConfig.get().getWkpConfigHistory().get(0).getPeriod().getStartDate().after(addHistStart)) {
-				throw new BusinessException("#Msg_102");
-			}
+		Optional<WorkplaceConfig> optional = workplaceConfigRepository.findLastestByCompanyId(companyId);
+		if (!optional.isPresent()) {
+		    return null;
+		}
+		WorkplaceConfigHistory latestWkpConfigHist = optional.get().getWkpConfigHistory().get(INDEX_FIRST);
+		// check validate start date
+		if (latestWkpConfigHist.getPeriod().getStartDate().after(addHistStart)) {
+			throw new BusinessException("Msg_102");
 		}
 		//return first histId 
-		return wkpConfig.get().getWkpConfigHistory().get(0).getHistoryId();
+		return latestWkpConfigHist.getHistoryId();
 	}
 
 	/* (non-Javadoc)
