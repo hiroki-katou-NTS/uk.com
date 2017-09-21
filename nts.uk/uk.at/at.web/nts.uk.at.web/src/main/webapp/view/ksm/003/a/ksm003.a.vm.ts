@@ -25,12 +25,6 @@ module nts.uk.at.view.ksm003.a {
             // Dirty checker
             dirtyChecker: nts.uk.ui.DirtyChecker;
 
-
-            multiSelectedWorkplaceId: KnockoutObservable<string>;
-            baseDate: KnockoutObservable<Date>;
-            alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
-            treeGrid: TreeComponentOption;
-            
             constructor() {
 
                 var self = this;
@@ -60,31 +54,7 @@ module nts.uk.at.view.ksm003.a {
                         self.clearError();
                     }
                 });
-                self.baseDate = ko.observable(new Date());
-                self.multiSelectedWorkplaceId = ko.observable('');
-                self.alreadySettingList = ko.observableArray([]);
-                self.treeGrid = {
-                    isShowAlreadySet: true,
-                    isMultiSelect: false,
-                    treeType: TreeType.WORK_PLACE,
-                    selectedWorkplaceId: self.multiSelectedWorkplaceId,
-                    baseDate: self.baseDate,
-                    selectType: SelectionType.SELECT_FIRST_ITEM,
-                    isShowSelectButton: true,
-                    isDialog: false,
-                    alreadySettingList: self.alreadySettingList,
-                };
-//                self.treeGrid = {
-//                isShowAlreadySet: self.isShowAlreadySet(),
-//                isMultiSelect: self.isMultipleTreeGrid(),
-//                treeType: TreeType.WORK_PLACE,
-//                selectedWorkplaceId: self.getSelectedWorkplaceId(),
-//                baseDate: self.baseDate,
-//                selectType: self.selectedSelectionType(), 
-//                isShowSelectButton: self.isShowSelectButton(),
-//                isDialog: self.isDialog(),
-//                alreadySettingList: self.alreadySettingList
-//            };
+
             }
 
             /**
@@ -97,20 +67,16 @@ module nts.uk.at.view.ksm003.a {
 
                 self.isEditting(false);
                 // Init
-                $('#tree-grid').ntsTreeComponent(self.treeGrid).done(function(){
-                        console.log('YES');   
-                        self.loadAllDailyPatternItems().done(() => {
-                        if (self.itemLst().length > 0) {
-                            self.selectedCode(self.itemLst()[0].patternCode);
-                            $("#inpPattern").focus();
-                        } else {
-                            self.switchNewMode();
-                        }
-                        self.clearError();
-                        dfd.resolve();
-                    }); 
+                self.loadAllDailyPatternItems().done(() => {
+                    if (self.itemLst().length > 0) {
+                        self.selectedCode(self.itemLst()[0].patternCode);
+                        $("#inpPattern").focus();
+                    } else {
+                        self.switchNewMode();
+                    }
+                    self.clearError();
+                    dfd.resolve();
                 });
-                
 
                 return dfd.promise();
             }
@@ -337,29 +303,7 @@ module nts.uk.at.view.ksm003.a {
                 nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml', { title: nts.uk.resource.getText('KDL003_1') });
             }
         }
-        export class TreeType {
-            static WORK_PLACE = 1;
-        }
-        export class SelectType {
-            static SELECT_BY_SELECTED_CODE = 1;
-            static SELECT_ALL = 2;
-            static SELECT_FIRST_ITEM = 3;
-            static NO_SELECT = 4;
-        }
-        export class SelectionType {
-            static SELECT_BY_SELECTED_CODE = 1;
-            static SELECT_ALL = 2;
-            static SELECT_FIRST_ITEM = 3;
-            static NO_SELECT = 4;
-        }
-        export class UnitAlreadySettingModel {
-            code: string;
-            isAlreadySetting: boolean;
-            constructor(code: string, isAlreadySetting: boolean) {
-                this.code = code;
-                this.isAlreadySetting = isAlreadySetting;
-            }
-        }
+
         // define model     
         export module model {
             var VAL_ROW_COUNT = 10;
