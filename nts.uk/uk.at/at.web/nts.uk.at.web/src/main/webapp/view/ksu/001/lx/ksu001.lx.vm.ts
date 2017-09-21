@@ -7,14 +7,20 @@ module ksu001.lx.viewmodel {
         selectedTeam: KnockoutObservable<any> = ko.observable();
         columnsTeam: KnockoutObservableArray<NtsGridListColumn> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KSU001_1110"), key: 'code', width: 60 },
-            { headerText: nts.uk.resource.getText("KSU001_1111"), key: 'name', width: 120 },
-            { headerText: nts.uk.resource.getText("KSU001_1112"), key: 'amountOfPeople', width: 60 },
+            { headerText: nts.uk.resource.getText("KSU001_1111"), key: 'name', width: 120 }
         ]);
+
+        teamCode: KnockoutObservable<string> = ko.observable('');
+        teamName: KnockoutObservable<string> = ko.observable('');
 
         constructor() {
             let self = this;
+
+            for (let i = 1; i < 20; i++) {
+                self.listTeam.push(new ItemModel('00' + i, '基本給'));
+            }
         }
-        
+
         /**
          * Close dialog
          */
@@ -22,5 +28,14 @@ module ksu001.lx.viewmodel {
             nts.uk.ui.windows.close();
         }
 
+    }
+
+    class ItemModel {
+        code: string;
+        name: string;
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
+        }
     }
 } 

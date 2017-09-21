@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 900, height: 700 };</script>
+			<script>var dialogSize = { width: 800, height: 420 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.lx.main.css" />
 			<com:scriptfile path="ksu001.lx.vm.js" />
@@ -34,7 +34,11 @@
 							}"></table>
 				</div>
 
-				<div id="content-right"></div>
+				<div id="content-right">
+					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_1137')}</div>
+					<input data-bind="ntsTextEditor: {value: teamCode}" />
+					<input data-bind="ntsTextEditor: {value: teamName}" />
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
