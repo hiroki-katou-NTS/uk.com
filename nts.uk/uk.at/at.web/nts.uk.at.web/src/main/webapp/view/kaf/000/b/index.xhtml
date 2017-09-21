@@ -76,13 +76,13 @@
 							<!-- A1_1 -->
 							<td class="message-td" >#{i18n.getText('KAF000_1')}</td>
 							<!-- A1_2 -->
-							<td class="message-td"> 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 </td>
+							<td class="message-td"><div data-bind="text:outputMessageDeadline().message" ></div></td>
 						</tr>
 						<tr>
 							<!-- A1_3 -->
 							<td class="message-td">#{i18n.getText('KAF000_2')}</td>
 							<!-- A1_4 -->
-							<td class="message-td"> 2017/11/12  ~ 2019/11/12</td>
+							<td class="message-td"><div data-bind="text:outputMessageDeadline().deadline" ></div></td>
 						</tr>
 					</table>
 				</div>
@@ -102,12 +102,12 @@
 				</div>
 				
 				<!-- Body -->
-<!-- 				<div style="height: 50px;background-color: gray ; margin-top: 30px;'">body</div> -->
+ 				<div style="height: 50px;background-color: gray ; margin-top: 30px;'">body</div> -->
 				<!-- <div data-bind="with: screenModel.cm">
 					<ui:include src="../../002/cm/index.xhtml" />
-				</div> -->
+				</div>--> 
 				
-		<!-- 		<div class="divKaf009" data-bind="with: screenModel9">
+				<!-- <div class="divKaf009" data-bind="with: screenModel9">
 					<ui:include src="../../009/b/index.xhtml"></ui:include>
 				</div> -->
 				<!-- end body -->
@@ -132,13 +132,15 @@
 						</thead>
 						<!-- foreach -->
 						<tbody data-bind="foreach : listOutputPhaseAndFrame" >
-							<com:ko bind="$data.listApprovalFrameDto" tag ="foreach">
+							<com:ko bind="$data.listApproveAcceptedForView" tag ="foreach">
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
 										<td class="bg-green" data-bind="attr: {rowspan: $parent.listApprovalFrameDto.length},text: $data.phaseID"></td>
 									</com:ko>
 									<td class="bg-green" ><label data-bind="text: $data.approverSID"></label></td>
-									<td><label data-bind="text: $data.reason"></label></td>
+										<td>
+											<label data-bind="text: $data.approverSID2"></label>
+										</td>
 									<td><label data-bind="text: $data.approvalATR"></label></td>
 									<td><label data-bind="text: $data.reason"> </label></td>
 								</tr>

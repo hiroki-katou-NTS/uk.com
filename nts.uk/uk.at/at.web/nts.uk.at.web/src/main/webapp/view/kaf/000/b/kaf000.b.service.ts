@@ -2,7 +2,8 @@
     var paths = {
         getAllDataByAppID: "at/request/application/getalldatabyappid",
         getAllReasonByAppID : "at/request/application/getreasonforremand",
-        getDetailCheck :  "at/request/application/getdetailcheck"
+        getDetailCheck :  "at/request/application/getdetailcheck",
+        getMessageDeadline : "at/request/application/getmessagedeadline"
     }
      /**
       * get all phase by applicationID
@@ -23,4 +24,11 @@
      export function getDetailCheck(inputGetDetailCheck) : JQueryPromise<any>{
          return nts.uk.request.ajax("at",paths.getDetailCheck,inputGetDetailCheck);
      }  
+     
+      /**
+      * get getMessageDeadline
+      */
+     export function getMessageDeadline(inputMessageDeadline ) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.getMessageDeadline,inputMessageDeadline);
+     }
  }

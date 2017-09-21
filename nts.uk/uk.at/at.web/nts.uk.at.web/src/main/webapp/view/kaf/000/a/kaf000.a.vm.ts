@@ -7,6 +7,8 @@ module kaf000.a.viewmodel{
         listPhaseID: Array<String>;
         //List  Approval Root 
         listApprovalRoot :  KnockoutObservableArray<Array<model.ApprovalRootOutput>>;
+         //Item  Approval Root 
+        approvalRoot :  KnockoutObservableArray<model.ApprovalRootOutput>;
         
         /**
          * obj input
@@ -25,6 +27,8 @@ module kaf000.a.viewmodel{
              */
             
             self.listApprovalRoot = ko.observableArray([]);
+            //item approval root
+            self.approvalRoot = ko.observableArray([]);
             //obj input approval root
             self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','000426a2-181b-4c7f-abc8-6fff9f4f983a',1,1,new Date('2022-01-01 00:00:00')));
             //obj input get message deadline 
@@ -52,6 +56,7 @@ module kaf000.a.viewmodel{
             var dfd = $.Deferred<any>();
             service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
                 self.listApprovalRoot(data);
+                self.approvalRoot(self.listApprovalRoot()[0]);
                 dfd.resolve(data);    
             });
             return dfd.promise();

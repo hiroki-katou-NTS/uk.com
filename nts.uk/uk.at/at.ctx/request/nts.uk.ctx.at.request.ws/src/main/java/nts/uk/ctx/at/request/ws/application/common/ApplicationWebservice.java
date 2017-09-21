@@ -170,7 +170,7 @@ public class ApplicationWebservice extends WebService {
 	@POST
 	@Path("getdetailcheck")
 	public DetailedScreenPreBootModeOutput getDetailCheck(InputGetDetailCheck inputGetDetailCheck){ 
-		
+		//GeneralDate generalDate = GeneralDate.fromString(inputGetDetailCheck.getBaseDate(), "YYYY/MM/DD");
 		return this.beforePreBootMode.getDetailedScreenPreBootMode(inputGetDetailCheck.getApplication(),inputGetDetailCheck.getBaseDate());
 	}
 }
