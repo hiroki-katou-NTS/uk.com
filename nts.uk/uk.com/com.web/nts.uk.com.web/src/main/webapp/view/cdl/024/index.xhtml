@@ -10,8 +10,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 860,
-					height : 630
+					width : 460,
+					height : 600
 				};
 			</script>
 			
@@ -28,20 +28,22 @@
 			</div>
 			<div id="contents-area">
 			
-				<div class="label">#{i18n.getText('CDL024_6')}</div>
+				<div id="label1" class="label">#{i18n.getText('CDL024_6')}</div>
 				
 				<!--SINGLESELECT FILTER MODE EXAMPLE-->
-				<div style="width: 700px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
-					items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />		
-				<table id="multi-list" data-bind="ntsGridList: {
-					height: 320,
-					options: items,
-					optionsValue: 'code',
-					columns: columns,
-					multiple: true,
-					value: currentCodeList
-				}"></table>
-	
+				<div id="filterArea">
+					<div style="width: 400px" data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'code', comId: 'multi-list', 
+						items: items, selected: currentCodeList, selectedKey: 'code', fields: ['name', 'code'], mode: 'igGrid'}" />		
+					<table id="multi-list" data-bind="ntsGridList: {
+						height: 320,
+						options: items,
+						optionsValue: 'code',
+						columns: [{ headerText: 'コード', prop: 'code', width: 100 },
+					            { headerText: '名称', prop: 'name', width: 230 }],
+						multiple: true,
+						value: currentCodeList
+					}"></table>
+				</div>
 			</div>
 			
 			<div id="functions-area-bottom">
