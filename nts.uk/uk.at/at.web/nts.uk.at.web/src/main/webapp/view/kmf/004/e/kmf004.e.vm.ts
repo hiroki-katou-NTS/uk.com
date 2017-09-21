@@ -44,20 +44,13 @@ module nts.uk.at.view.kmf004.e.viewmodel {
             self.checkUpdate = ko.observable(true);
             self.display = ko.observable(false);
             self.items = ko.observableArray([]);
-//            self.selectedId.subscribe((value) => {
-//                    if (value == 0) {
-//                        self.display(false);
-//                    }
-//                    else {
-//                        self.display(true);
-//                    }
-//                });
             self.selectedCode.subscribe((code) => {   
                 if (code) {
                     let foundItem: Per = _.find(self.lstPer(), (item: Per) => {
                         return (ko.toJS(item.yearServiceCode) == code);
                     });
                     self.checkUpdate(true);
+                    $("#inpPattern").focus();
                     self.selectedOption(foundItem);
                     self.selectedId(self.selectedOption().yearServiceCls);
                     self.selectedOption().yearServicePerSets;
@@ -92,9 +85,6 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                     self.check(true);
                     self.selectedId(0);
                 }
-//                for(let item : lstData){
-//                    
-//                }
                 let sortedData = _.orderBy(lstData, ['yearServiceCode'], ['asc']);
                 self.lstPer(sortedData);
                 dfd.resolve();
@@ -112,6 +102,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
             service.getAll().done((lstData: Array<Per>) => {
                 if(lstData.length == 0){
                     self.selectedId(0);
+                    $("#inpCode").focus();
                     self.check(true);
                     self.codeObject(null);
                     self.selectedName(null);
@@ -131,6 +122,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                 }else{
                     let sortedData : KnockoutObservableArray<any> = ko.observableArray([]);
                     sortedData(_.orderBy(lstData, ['yearServiceCode'], ['asc']));
+                     $("#inpPattern").focus();
                     self.lstPer(sortedData());
                     self.selectedOption(self.lstPer()[0]);
                     self.selectedId(self.selectedOption().yearServiceCls);
@@ -188,9 +180,11 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                 if (nts.uk.ui.errors.hasError() === false) {
                     // update item to list  
                     if(self.checkUpdate() == true){
+                        $("#inpPattern").focus();
                         service.update(dataTransfer).done(function(errors: Array<string>){
                             self.getData().done(function(){
-                                self.selectedCode(code);    
+                                self.selectedCode(code);   
+                                $("#inpPattern").focus(); 
                                 if (errors && errors.length > 0) {
                                     self.addListError(errors);
                                 }else{
@@ -210,6 +204,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                             self.getData().done(function(){
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                                 self.selectedCode(code);  
+                                $("#inpPattern").focus();
                             });
                         }).fail(function(res){
                             $('#inpCode').ntsError('set', res);
@@ -225,6 +220,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
             let self = this;
             self.check(true);
             self.checkUpdate(false);
+            $("#inpCode").focus(); 
             self.selectedCode("");
             self.codeObject("");
             self.selectedName("");
@@ -238,8 +234,6 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                     }
                     self.items.push(new Item(t));
             }
-
-//            $("#inpCode").focus(); 
 //            $("#inpCode").ntsError('clear');
             nts.uk.ui.errors.clearAll();                 
 //            var t1 = performance.now();

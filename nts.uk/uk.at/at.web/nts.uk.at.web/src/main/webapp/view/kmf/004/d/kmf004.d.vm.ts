@@ -114,23 +114,15 @@ module nts.uk.at.view.kmf004 {
                 self.items = ko.observableArray([]);
                 self.lst = ko.observableArray([]);
                 self.display = ko.observable(false);
-//                self.selectedId.subscribe((value) => {
-//                    if (value == 0) {
-//                        self.display(false);
-//                    }
-//                    else {
-//                        self.display(true);
-//                    }
-//                    console.log(self.display());
-//                });
                 self.start();
             }
-
+ 
             start() {
                 var self = this;
                 var dfd = $.Deferred();
                 service.findAll().done((lstData) => {
                     self.items([]);
+                    $("#button_radio").focus();
                     for (let i = 0; i < 20; i++) {
                         if (lstData[i]) {
                             var param: IItem = {
@@ -139,9 +131,6 @@ module nts.uk.at.view.kmf004 {
                                 year: lstData[i].year,
                                 date: lstData[i].date
                             };
-                            if(param.year == 0){
-                                param.year = null;   
-                            }
                             self.items.push(new Item(param));
                         } else {
                             var param: IItem = {
@@ -177,10 +166,13 @@ module nts.uk.at.view.kmf004 {
                 }
 
                 service.update(dataTranfer).done(function(errors) {
+                    self.start();
                     if (errors && errors.length > 0) {
                         self.addListError(errors);
                     } else {
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function(){
+                            $("#button_radio").focus();
+                        });
                     }
                 }).fail(function(error) {
                     alert(error.message);

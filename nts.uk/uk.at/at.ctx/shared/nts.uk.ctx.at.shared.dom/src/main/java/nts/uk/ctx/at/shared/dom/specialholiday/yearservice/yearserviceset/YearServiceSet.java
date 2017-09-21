@@ -58,11 +58,7 @@ public class YearServiceSet {
 				new BusinessException("Msg_100");
 				bugLst.add("Msg_100");
 			}
-			// year must exsist and year < 1
-			if(item.getYear() != null && !(item.getYear() >= 1)){
-				new BusinessException("Msg_145");
-				bugLst.add("Msg_145");
-			}
+			
 			// date must exsist
 			if(item.getDate() == null){
 				new BusinessException("Msg_101");
