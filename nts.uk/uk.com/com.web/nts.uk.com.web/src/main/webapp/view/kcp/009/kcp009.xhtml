@@ -42,11 +42,13 @@
 							<span data-bind="text: selectedNumberOfPeople"></span><span>#{i18n.getText('KCP009_1')}</span>
 						</div></td>
 					<td class="border-right employment-tdpad"><input
-						data-bind="ntsTextEditor: {
+						type="search"
+						id="search-input"
+						data-bind=" ntsTextEditor: {
 								value: keySearch,
 								name: '#[KCP009_2]',
 								option: {width: '100',enable: true}
-								}, attr: {tabindex: tabIndex}" />
+								}, attr: {tabindex: tabIndex}"  />
 					</td>
 					<td id="wkp_title_text" class="bg-green border-left border-right employment-tdpad"
 						data-bind="visible: isDisplayOrganizationName">
@@ -60,8 +62,7 @@
 				</tr>
 			</table>
 		</div>
-
-		<div id="items-list" data-bind="visible: isShowEmpList">
+		<div id="items-list" style="visibility: hidden;">
 				
 				<div id="list-box" data-bind="ntsListBox: {
 					options: empList,

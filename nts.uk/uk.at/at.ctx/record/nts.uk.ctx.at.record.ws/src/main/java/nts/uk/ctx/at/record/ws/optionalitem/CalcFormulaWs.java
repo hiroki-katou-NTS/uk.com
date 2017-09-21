@@ -12,10 +12,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.optionalitem.calculationformula.CalcFormulaSaveCommand;
-import nts.uk.ctx.at.record.app.command.optionalitem.calculationformula.CalcFormulaSaveCommandHandler;
-import nts.uk.ctx.at.record.app.find.optionalitem.calculationformula.CalcFormulaDto;
-import nts.uk.ctx.at.record.app.find.optionalitem.calculationformula.CalcFormulaFinder;
+import nts.uk.ctx.at.record.app.command.optitem.calculation.FormulaSaveCommand;
+import nts.uk.ctx.at.record.app.command.optitem.calculation.FormulaSaveCommandHandler;
+import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaDto;
+import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaFinder;
 
 /**
  * The Class CalcFormulaWs.
@@ -26,11 +26,11 @@ public class CalcFormulaWs extends WebService {
 
 	/** The finder. */
 	@Inject
-	private CalcFormulaFinder finder;
+	private FormulaFinder finder;
 
 	/** The handler. */
 	@Inject
-	CalcFormulaSaveCommandHandler handler;
+	FormulaSaveCommandHandler handler;
 
 	/**
 	 * Find all.
@@ -39,7 +39,7 @@ public class CalcFormulaWs extends WebService {
 	 */
 	@POST
 	@Path("findall")
-	public List<CalcFormulaDto> findAll() {
+	public List<FormulaDto> findAll() {
 		return finder.findAll();
 	}
 
@@ -50,7 +50,7 @@ public class CalcFormulaWs extends WebService {
 	 */
 	@POST
 	@Path("save")
-	public void save(CalcFormulaSaveCommand command) {
+	public void save(FormulaSaveCommand command) {
 		this.handler.handle(command);
 	}
 }

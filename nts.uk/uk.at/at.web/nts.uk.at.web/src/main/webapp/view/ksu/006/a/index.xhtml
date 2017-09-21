@@ -47,7 +47,7 @@
 								enable: true,
 								columns: [
 									{ prop: 'code', length: 3 },
-									{ prop: 'name', length: 5}
+									{ prop: 'name', length: 10}
 								]}" style="width: 230px;margin-right: 10px;">
 							</div>
 							<button id="showDialogExternalBudget" tabindex="4" data-bind="click: openDialogExternalBudget">#{i18n.getText('KSU006_5')}</button>
@@ -109,7 +109,7 @@
 					<tr>
 						<td></td>
 						<td>
-							<button style="width: 92%;" tabindex="9" class="large caret-bottom" 
+							<button style="width: 94.5%;" tabindex="9" class="large caret-bottom" 
 								data-bind="click: showDataPreview, enable: (isModeExecute() &amp;&amp; $root.errors.isEmpty)">
 								#{i18n.getText('KSU006_11')}</button>
 						</td>

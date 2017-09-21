@@ -165,9 +165,9 @@ public class MasterApproverRootRepositoryImpl implements MasterApproverRootRepos
 
 			// ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」) tra ra 1 list nhung thuc chat chi
 			// co 1 du lieu
-			List<WorkplaceApproverDto> wpInfors = wpAdapter.findByWkpId(companyID, root.getWorkplaceId(), baseDate);
+			WorkplaceApproverDto wpInfors = wpAdapter.findByWkpId(root.getWorkplaceId(), baseDate).get();
 			wpRootInfor = getAppInfors(wpRoot, wpRootInfor, companyID);
-			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpInfors.get(0), wpRootInfor);
+			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpInfors, wpRootInfor);
 			mapWpRootInfor.put(root.getWorkplaceId(), wpOutput);
 		}
 
