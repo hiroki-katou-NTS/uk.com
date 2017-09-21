@@ -47,7 +47,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         workTypeCd: KnockoutObservable<string>;
         workTypeName: KnockoutObservable<string>;
         //勤務種類
-        siftCd: KnockoutObservable<string>;
+        siftCD: KnockoutObservable<string>;
         siftName: KnockoutObservable<string>;
         //comboBox 定型理由
         reasonCombo: KnockoutObservableArray<ComboReason>;
@@ -104,7 +104,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             self.workChangeAtr = ko.observable(true);
             self.workTypeCd = ko.observable('');
             self.workTypeName = ko.observable('');
-            self.siftCd = ko.observable('');
+            self.siftCD = ko.observable('');
             self.siftName = ko.observable('');
             //ComboBox Reason
             self.reasonCombo = ko.observableArray([]);
@@ -209,7 +209,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             let command: GoBackCommand = new GoBackCommand();
             command.appID = "e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d";
             command.workTypeCD = self.workTypeCd();
-            command.siftCD = self.siftCd();
+            command.siftCD = self.siftCD();
             command.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
             command.goWorkAtr1 = self.selectedGo();
             command.backHomeAtr1 = self.selectedBack();
@@ -296,7 +296,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             //workType, Sift
             self.workChangeAtr(data.workChangeAtr == 1 ? true : false);
             self.workTypeCd(data.workTypeCD);
-            self.siftCd(data.siftCD);
+            self.siftCD(data.siftCD);
         }
         /**
          * set reason 
@@ -353,7 +353,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
                 workTypeCodes: workTypeCodes,
                 selectedWorkTypeCode: self.workTypeCd(),
                 workTimeCodes: workTimeCodes,
-                selectedWorkTimeCode: self.siftCd()
+                selectedWorkTimeCode: self.siftCD()
             }, true);
 
             nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
@@ -362,7 +362,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
                 if (childData) {
                     self.workTypeCd(childData.selectedWorkTypeCode);
                     self.workTypeName(childData.selectedWorkTypeName);
-                    self.siftCd(childData.selectedWorkTimeCode);
+                    self.siftCD(childData.selectedWorkTimeCode);
                     self.siftName(childData.selectedWorkTimeName);
                 }
             })
