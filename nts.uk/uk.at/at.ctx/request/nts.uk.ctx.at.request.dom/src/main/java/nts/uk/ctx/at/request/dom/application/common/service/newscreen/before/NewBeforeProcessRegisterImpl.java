@@ -15,6 +15,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodC
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
 import nts.uk.ctx.at.request.dom.application.common.UseAtr;
 
@@ -38,6 +39,7 @@ public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
 		// if(startDate.before(periodCurrentMonth.getStartDate())) throw new BusinessException("Msg_236");
 		/*
 		confirmRoot = from cache;
+		ApproFrame.ApprovarSID
 		if(confirmRoot.ApprovedRouteErrorFlag==undefined) throw new BusinessException("Msg_238");
 		if(confirmRoot.ApprovedRouteErrorFlag.count==0) throw new BusinessException("Msg_324");
 		if(confirmRoot.ApprovedRouteErrorFlag.count>=10) throw new BusinessException("Msg_237");
@@ -74,12 +76,13 @@ public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
 		}	
 	}
 	
-	public void applicationAcceptanceRestrictionsCheck(InitValueAtr postAtr, GeneralDate startDate, GeneralDate endDate){
-		if(postAtr.equals(InitValueAtr.POST)){
+	public void applicationAcceptanceRestrictionsCheck(PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate){
+		if(postAtr.equals(PrePostAtr.POSTERIOR)){
 			
 		}
 		/*
 		if(postAtr == afterApplication){ // 事前事後区分 == 事後(Xin sau)
+			AppTypeDiscreteSetting
 			if(AdvanceAcceptanceRestriction.doNotAllowFutureDays == false) {  //  「事前の受付制限」．未来日許可しない
 				return;
 			} else { 

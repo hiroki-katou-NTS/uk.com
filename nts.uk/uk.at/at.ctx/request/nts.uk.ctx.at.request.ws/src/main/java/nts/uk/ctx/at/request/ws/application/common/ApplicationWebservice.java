@@ -22,12 +22,17 @@ import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
 import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSubjectRequest;
 import nts.uk.ctx.at.request.app.find.application.common.CheckDisplayMessage;
+import nts.uk.ctx.at.request.app.find.application.common.GetAllDataAppPhaseFrame;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
+import nts.uk.ctx.at.request.app.find.application.common.OutputGetAllDataApp;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetMessageReasonForRemand;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.InputMessageDeadline;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
 import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 
 @Path("at/request/application")
 @Produces("application/json")
@@ -46,6 +51,12 @@ public class ApplicationWebservice extends WebService {
 	
 	@Inject
 	private GetMessageReasonForRemand getMessageReasonForRemand;
+	
+	@Inject
+	private GetAllDataAppPhaseFrame getAllDataAppPhaseFrame;
+	
+	@Inject
+	private BeforePreBootMode beforePreBootMode; 
 	
 	/**
 	 * get All application
@@ -139,5 +150,27 @@ public class ApplicationWebservice extends WebService {
 	@Path("getreasonforremand/{applicationID}")
 	public List<String> getReasonForRemand(@PathParam("applicationID") String applicationID) {
 		return this.getMessageReasonForRemand.getMessageReasonForRemand(applicationID);
+	}
+	
+
+	/**
+	 * get add data by appID (info,list<phase>,fram
+	 * @return
+	 */
+	@POST
+	@Path("getalldatabyappid/{applicationID}")
+	public OutputGetAllDataApp getAllDataAppPhaseFrame(@PathParam("applicationID") String applicationID){
+		return this.getAllDataAppPhaseFrame.getAllDataAppPhaseFrame(applicationID);
+	}
+	
+	/**
+	 * get getDetailedScreenPreBootMode (check)
+	 * @return
+	 */
+	@POST
+	@Path("getdetailcheck")
+	public DetailedScreenPreBootModeOutput getDetailCheck(InputGetDetailCheck inputGetDetailCheck){ 
+		//GeneralDate generalDate = GeneralDate.fromString(inputGetDetailCheck.getBaseDate(), "YYYY/MM/DD");
+		return this.beforePreBootMode.getDetailedScreenPreBootMode(inputGetDetailCheck.getApplication(),inputGetDetailCheck.getBaseDate());
 	}
 }

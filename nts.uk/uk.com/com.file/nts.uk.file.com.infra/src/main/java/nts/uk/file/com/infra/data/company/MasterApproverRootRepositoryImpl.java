@@ -124,7 +124,7 @@ public class MasterApproverRootRepositoryImpl implements MasterApproverRootRepos
 			PersonApproverOutput psOutput = new PersonApproverOutput(empInfor, psWootInfor);
 			mapPsRootInfor.put(root.getEmployeeId(), psOutput);
 		}
-		
+
 		// Traversing Map
 		Set set = mapPsRootInfor.entrySet();// Converting to Set so that we can traverse
 		Iterator itr = set.iterator();
@@ -133,7 +133,7 @@ public class MasterApproverRootRepositoryImpl implements MasterApproverRootRepos
 			Map.Entry entry = (Map.Entry) itr.next();
 			System.out.println(entry.getKey() + " " + entry.getValue());
 		}
-		
+
 		return mapPsRootInfor;
 	}
 
@@ -165,9 +165,9 @@ public class MasterApproverRootRepositoryImpl implements MasterApproverRootRepos
 
 			// ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」) tra ra 1 list nhung thuc chat chi
 			// co 1 du lieu
-			List<WorkplaceApproverDto> wpInfors = wpAdapter.findByWkpId(companyID, root.getWorkplaceId(), baseDate);
+			WorkplaceApproverDto wpInfors = wpAdapter.findByWkpId(root.getWorkplaceId(), baseDate).get();
 			wpRootInfor = getAppInfors(wpRoot, wpRootInfor, companyID);
-			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpInfors.get(0), wpRootInfor);
+			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpInfors, wpRootInfor);
 			mapWpRootInfor.put(root.getWorkplaceId(), wpOutput);
 		}
 
@@ -265,7 +265,11 @@ public class MasterApproverRootRepositoryImpl implements MasterApproverRootRepos
 				approvalForApplication = getApproval(approvalForApplication, opComCommon.get(), companyID);
 			}
 		}
-		comApproverRoot.add(approvalForApplication);
+
+		for (int i = 0; i < 5; i++) {
+			comApproverRoot.add(approvalForApplication);
+		}
+
 		// Lap de lay du lieu theo app type
 		for (ApplicationType appType : ApplicationType.values()) {
 			approvalForApplication = new ApprovalForApplication(appType.value + 1, appType.nameId, null, null, null);
@@ -278,13 +282,20 @@ public class MasterApproverRootRepositoryImpl implements MasterApproverRootRepos
 				}
 			}
 			// thong tin các application da duoc set approver
-			comApproverRoot.add(approvalForApplication);
+			for (int i = 0; i < 5; i++) {
+				comApproverRoot.add(approvalForApplication);
+			}
+
 		}
-		Collections.sort(comApproverRoot, Comparator.comparing(ApprovalForApplication::getAppType));
-		CompanyApprovalInfor comMasterInfor = new CompanyApprovalInfor(comInfo, comApproverRoot);
+
+		List<ApprovalForApplication> a = new ArrayList<>();
+		for(int i = 0; i < 5 ; i++) {
+		a.addAll(comApproverRoot);
+		}
 		
-		
-		
+		Collections.sort(a, Comparator.comparing(ApprovalForApplication::getAppType));
+		CompanyApprovalInfor comMasterInfor = new CompanyApprovalInfor(comInfo, a);
+
 		return comMasterInfor;
 	}
 

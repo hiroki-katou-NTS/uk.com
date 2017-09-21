@@ -18,12 +18,6 @@ public class Employment extends AggregateRoot {
 	/** 会社ID. */
 	private CompanyId companyId;
 	
-	/** 就業締めID. */
-	private Integer workClosureId;
-	
-	/** 給与締めID. */
-	private Integer salaryClosureId;
-	
 	/** 雇用コード. */
 	private EmploymentCode employmentCode;
 	

@@ -6,6 +6,7 @@ package nts.uk.ctx.bs.person.dom.person.info;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.person.PersonGetMemento;
@@ -19,6 +20,7 @@ import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonNameGroup;
 // 個人
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Person extends AggregateRoot {
 
 	/** The Birthday */
@@ -33,7 +35,7 @@ public class Person extends AggregateRoot {
 	private GenderPerson gender;
 
 	/** The person id - 個人ID */
-	private PersonId personId;
+	private String personId;
 
 	/** The Person Mail Address - 個人メールアドレス */
 	private PersonMailAddress mailAddress;
@@ -47,7 +49,7 @@ public class Person extends AggregateRoot {
 	/** The Hobby - 趣味 */
 	private Hobby hobBy;
 
-	/** The countryId - 国籍*/
+	/** The countryId - 国籍    chua xac dinh duoc PrimitiveValue*/
 	private Nationality countryId;
 
 	/** The Taste - 嗜好 */
@@ -55,10 +57,10 @@ public class Person extends AggregateRoot {
 	
 
 	public static Person createFromJavaType(String pId, String personName) {
-		return new Person(new PersonId(pId), new PersonNameGroup(new PersonName(personName)));
+		return new Person(pId, new PersonNameGroup(new PersonName(personName)));
 	}
 
-	public Person(PersonId personId, PersonNameGroup personNameGroup) {
+	public Person(String personId, PersonNameGroup personNameGroup) {
 		super();
 		this.personId = personId;
 		this.personNameGroup = personNameGroup;

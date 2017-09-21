@@ -20,12 +20,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BSYDT_JOB_ENTRY_HISTORY")
+@Table(name = "BSYMT_JOB_ENTRY_HISTORY")
 public class BsymtJobEntryHistory extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public BsymtJobEntryHistoryPk bsydtJobEntryHistoryPk;
+	public BsymtJobEntryHistoryPk bsymtJobEntryHistoryPk;
 	
 	@Column(name = "CID")
 	public String companyId;
@@ -50,7 +50,7 @@ public class BsymtJobEntryHistory extends UkJpaEntity implements Serializable {
 	
 	@Override
 	protected Object getKey() {
-		return this.bsydtJobEntryHistoryPk;
+		return this.bsymtJobEntryHistoryPk;
 	}
 	
 }

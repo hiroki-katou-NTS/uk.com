@@ -16,7 +16,6 @@ import nts.uk.ctx.at.shared.dom.outsideot.premium.extra.PremiumExtra60HRate;
  * The Class SuperHD60HConMed.
  */
 // 60H超休への換算方法
-
 @Getter
 public class SuperHD60HConMed extends AggregateRoot{
 

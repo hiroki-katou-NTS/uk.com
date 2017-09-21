@@ -11,59 +11,72 @@ import nts.arc.layer.dom.DomainObject;
  * The Class AutoCalOvertimeSetting.
  */
 /// 残業時間の自動計算設定
+
+/**
+ * Gets the legal mid ot time.
+ *
+ * @return the legal mid ot time
+ */
 @Getter
 public class AutoCalOvertimeSetting extends DomainObject {
 
-	/** The Early OT time. */
+	/** The early ot time. */
 	// 早出残業時間
 	private AutoCalSetting earlyOtTime;
 
-	/** The Early mid OT time. */
+	/** The early mid ot time. */
 	// 早出深夜残業時間
 	private AutoCalSetting earlyMidOtTime;
 
-	/** The Normal OT time. */
+	/** The normal ot time. */
 	// 普通残業時間
 	private AutoCalSetting normalOtTime;
 
-	/** The Normal mid OT time. */
+	/** The normal mid ot time. */
 	// 普通深夜残業時間
 	private AutoCalSetting normalMidOtTime;
 
-	/** The Legal OT time. */
+	/** The legal ot time. */
 	// 法定内残業時間
 	private AutoCalSetting legalOtTime;
 
-	/** The Legal mid OT time. */
+	/** The legal mid ot time. */
 	// 法定内深夜残業時間
 	private AutoCalSetting legalMidOtTime;
 
 	/**
 	 * Instantiates a new auto cal overtime setting.
 	 *
-	 * @param earlyOTTime
-	 *            the early OT time
-	 * @param earlyMidOTTime
-	 *            the early mid OT time
-	 * @param normalOTTime
-	 *            the normal OT time
-	 * @param normalMidOTTime
-	 *            the normal mid OT time
-	 * @param legalOTTime
-	 *            the legal OT time
-	 * @param legalMidOTTime
-	 *            the legal mid OT time
+	 * @param earlyOTTime the early OT time
+	 * @param earlyMidOTTime the early mid OT time
+	 * @param normalOTTime the normal OT time
+	 * @param normalMidOTTime the normal mid OT time
+	 * @param legalOTTime the legal OT time
+	 * @param legalMidOTTime the legal mid OT time
 	 */
-	public AutoCalOvertimeSetting(AutoCalSetting earlyOTTime, AutoCalSetting earlyMidOTTime,
-			AutoCalSetting normalOTTime, AutoCalSetting normalMidOTTime, AutoCalSetting legalOTTime,
-			AutoCalSetting legalMidOTTime) {
+	public AutoCalOvertimeSetting(AutoCalOvertimeSettingGetMemento memento) {
 		super();
-		this.earlyOtTime = earlyOTTime;
-		this.earlyMidOtTime = earlyMidOTTime;
-		this.normalOtTime = normalOTTime;
-		this.normalMidOtTime = normalMidOTTime;
-		this.legalOtTime = legalOTTime;
-		this.legalMidOtTime = legalMidOTTime;
+		this.earlyOtTime = memento.getEarlyOtTime();
+		this.earlyMidOtTime = memento.getEarlyMidOtTime();
+		this.normalOtTime = memento.getNormalOtTime();
+		this.normalMidOtTime = memento.getNormalMidOtTime();
+		this.legalOtTime = memento.getLegalOtTime();
+		this.legalMidOtTime = memento.getLegalMidOtTime();
 	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(AutoCalOvertimeSettingSetMemento memento) {
+		memento.setEarlyOtTime(this.earlyOtTime);
+		memento.setEarlyMidOtTime(this.earlyMidOtTime);
+		memento.setLegalMidOtTime(this.legalMidOtTime);
+		memento.setLegalOtTime(this.legalOtTime);
+		memento.setNormalMidOtTime(this.normalMidOtTime);
+		memento.setNormalOtTime(this.normalOtTime);
+	}
+
 
 }

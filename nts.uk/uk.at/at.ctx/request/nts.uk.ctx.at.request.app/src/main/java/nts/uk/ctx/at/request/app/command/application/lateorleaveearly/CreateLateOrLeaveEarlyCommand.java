@@ -23,9 +23,11 @@ public class CreateLateOrLeaveEarlyCommand {
     /** 申請日*/
 	private GeneralDate applicationDate;
 	
-	/** 実績取消区分 */
+/*	*//** 実績取消区分 *//*
 	
-	private int actualCancelAtr;
+	private int actualCancelAtr;*/
+	
+	private boolean sendMail;
 	
 	/** 早退1 */
 	private int early1;

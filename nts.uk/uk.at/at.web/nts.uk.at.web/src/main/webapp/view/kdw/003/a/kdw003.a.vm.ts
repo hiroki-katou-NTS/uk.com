@@ -2,6 +2,58 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     import ComponentOption = kcp009.viewmodel.ComponentOption;
     import EmployeeModel = kcp009.viewmodel.EmployeeModel;
     import SystemType = kcp009.viewmodel.SystemType;
+    var LIST_FIX_HEADER = [
+        {
+            headerText: 'ID',
+            key: 'id',
+            dataType: 'String',
+            width: '30px',
+            ntsControl: 'Label'
+        },
+        {
+            headerText: '状<br/>態',
+            key: 'state',
+            dataType: 'String',
+            width: '30px',
+            ntsControl: 'Label'
+        },
+        {
+            headerText: 'ER/AL',
+            key: 'error',
+            dataType: 'String',
+            width: '60px',
+            ntsControl: 'Label'
+        },
+        {
+            headerText: nts.uk.resource.getText("KDW003_41"),
+            key: 'date',
+            dataType: 'String',
+            width: '90px',
+            ntsControl: 'Label'
+        },
+        {
+            headerText: nts.uk.resource.getText("KDW003_42"),
+            key: 'sign',
+            dataType: 'boolean',
+            width: '35px',
+            ntsControl: 'Checkbox'
+        },
+        {
+            headerText: nts.uk.resource.getText("KDW003_32"),
+            key: 'employeeCode',
+            dataType: 'String',
+            width: '120px',
+            ntsControl: 'Label'
+        },
+        {
+            headerText: nts.uk.resource.getText("KDW003_33"),
+            key: 'employeeName',
+            dataType: 'String',
+            width: '120px',
+            ntsControl: 'Label'
+        },
+    ];
+
     export class ScreenModel {
 
         dateRanger: KnockoutObservable<any> = ko.observable(null);
@@ -26,129 +78,28 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         selectedDate: KnockoutObservable<any>;
         optionalHeader: Array<any> = [];
         employeeModeHeader: Array<any> = [
-            {
-                headerText: 'ID',
-                key: 'id',
-                dataType: 'String',
-                width: '30px',
-                ntsControl: 'Label'
-            },
-            {
-                headerText: '状<br/>態',
-                key: 'state',
-                dataType: 'String',
-                width: '30px',
-                ntsControl: 'Label'
-            },
-            {
-                headerText: 'ER/AL',
-                key: 'error',
-                dataType: 'String',
-                width: '60px',
-                ntsControl: 'Label'
-            },
-            {
-                headerText: nts.uk.resource.getText("KDW003_41"),
-                key: 'date',
-                dataType: 'String',
-                width: '110px',
-                ntsControl: 'Label'
-            },
-            {
-                headerText: nts.uk.resource.getText("KDW003_42"),
-                key: 'sign',
-                dataType: 'boolean',
-                width: '35px',
-                ntsControl: 'Checkbox'
-            }
+            LIST_FIX_HEADER[0],
+            LIST_FIX_HEADER[1],
+            LIST_FIX_HEADER[2],
+            LIST_FIX_HEADER[3],
+            LIST_FIX_HEADER[4]
         ];
         dateModeHeader: Array<any> = [
-            {
-                headerText: 'ID',
-                key: 'id',
-                dataType: 'String',
-                width: '30px',
-                ntsControl: 'Label'
-            },
-            {
-                headerText: '状<br/>態',
-                key: 'state',
-                dataType: 'String',
-                width: '30px',
-                ntsControl: 'Label'
-            },
-            {
-                headerText: 'ER/AL',
-                key: 'error',
-                dataType: 'String',
-                width: '60px',
-                ntsControl: 'Label'
-            },
-            {
-                headerText: nts.uk.resource.getText("KDW003_32"),
-                key: 'employeeCode',
-                dataType: 'String',
-                width: '120px',
-                ntsControl: 'Label'
-            },
-            {
-                headerText: nts.uk.resource.getText("KDW003_33"),
-                key: 'employeeName',
-                dataType: 'String',
-                width: '120px',
-                ntsControl: 'Label'
-            },
-            {
-                headerText: nts.uk.resource.getText("KDW003_42"),
-                key: 'sign',
-                dataType: 'boolean',
-                width: '35px',
-                ntsControl: 'Checkbox'
-            }
+            LIST_FIX_HEADER[0],
+            LIST_FIX_HEADER[1],
+            LIST_FIX_HEADER[2],
+            LIST_FIX_HEADER[5],
+            LIST_FIX_HEADER[6],
+            LIST_FIX_HEADER[4],
         ];
         errorModeHeader: Array<any> = [
-            {
-                headerText: 'ID',
-                key: 'id',
-                dataType: 'String',
-                width: '30px',
-                ntsControl: 'Label'
-            },
-            {
-                headerText: '状<br/>態',
-                key: 'state',
-                dataType: 'String',
-                width: '30px',
-                ntsControl: 'Label'
-            },
-            {
-                headerText: nts.uk.resource.getText("KDW003_32"),
-                key: 'employeeCode',
-                dataType: 'String',
-                width: '120px',
-                ntsControl: 'Label'
-            },
-            {
-                headerText: nts.uk.resource.getText("KDW003_33"),
-                key: 'employeeName',
-                dataType: 'String',
-                width: '120px',
-                ntsControl: 'Label'
-            },
-            {
-                headerText: nts.uk.resource.getText("KDW003_41"),
-                key: 'date',
-                dataType: 'String',
-                width: '110px',
-                ntsControl: 'Label'
-            },
-            {
-                headerText: nts.uk.resource.getText("KDW003_42"),
-                key: 'sign',
-                dataType: 'boolean',
-                width: '35px',
-                ntsControl: 'Checkbox'
-            }
+            LIST_FIX_HEADER[0],
+            LIST_FIX_HEADER[1],
+            LIST_FIX_HEADER[2],
+            LIST_FIX_HEADER[5],
+            LIST_FIX_HEADER[6],
+            LIST_FIX_HEADER[3],
+            LIST_FIX_HEADER[4],
         ];
         employeeModeFixCol: Array<any> = [
             {
@@ -208,6 +159,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 isFixed: true
             },
             {
+                columnKey: 'error',
+                isFixed: true
+            },
+            {
                 columnKey: 'employeeCode',
                 isFixed: true
             },
@@ -239,7 +194,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     self.selectedDate(dateRange.startDate);
                     var elementDate = dateRange.startDate;
                     while (!moment(elementDate, "YYYY/MM/DD").isAfter(dateRange.endDate)) {
-                        self.lstDate.push({date: elementDate});
+                        self.lstDate.push({ date: elementDate });
                         elementDate = moment(elementDate, "YYYY/MM/DD").add(1, 'd').format("YYYY/MM/DD");
                     }
                 }
@@ -248,15 +203,10 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 startDate: '2016/09/13',
                 endDate: '2016/10/13'
             });
-            //            self.displayFormatOptions = ko.observableArray([
-            //                {code: 0, name: nts.uk.resource.getText("Enum_DisplayFormat_Individual")},
-            //                {code: 1, name: nts.uk.resource.getText("Enum_DisplayFormat_ByDate")},
-            //                {code: 2, name: nts.uk.resource.getText("Enum_DisplayFormat_ErrorAlarm")}
-            //            ]);
             self.displayFormatOptions = ko.observableArray([
-                { code: 0, name: "個人別" },
-                { code: 1, name: "日付別" },
-                { code: 2, name: "エラー・アラーム" }
+                { code: 0, name: nts.uk.resource.getText("Enum_DisplayFormat_Individual") },
+                { code: 1, name: nts.uk.resource.getText("Enum_DisplayFormat_ByDate") },
+                { code: 2, name: nts.uk.resource.getText("Enum_DisplayFormat_ErrorAlarm") }
             ]);
             self.displayFormat.subscribe((val) => {
                 if (val == 0) {
@@ -275,10 +225,84 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.fixColGrid = ko.observableArray(self.employeeModeFixCol);
             self.sheetsGrid = ko.observableArray([]);
             self.allData = [];
-
             self.dailyPerfomanceData = ko.observableArray([]);
             self.cellStates = ko.observableArray([]);
             self.rowStates = ko.observableArray([]);
+        }
+
+        isDisableRow(id) {
+            var self = this;
+            for (let i = 0; i < self.rowStates().length; i++) {
+                return self.rowStates()[i].rowId == id;
+            }
+        }
+
+        isDisableSign(id) {
+            var self = this;
+            for (let i = 0; i < self.cellStates().length; i++) {
+                return self.cellStates()[i].rowId == id && self.cellStates()[i].columnKey == 'sign';
+            }
+        }
+
+        signAll() {
+            var self = this;
+            _.forEach(self.dailyPerfomanceData(), (data) => {
+                if (!self.isDisableRow(data.id)) {
+                    data.sign = true;
+                }
+            });
+            self.dailyPerfomanceData.valueHasMutated();
+            $("#grid2").ntsGrid("destroy");
+            self.loadGrid();
+        }
+
+        setColorWeekend() {
+            var self = this;
+            self.textColors([]);
+            _.forEach(self.dailyPerfomanceData(), (data) => {
+                if (moment(data.date, "YYYY/MM/DD").day() == 6) {
+                    self.textColors.push({
+                        rowId: data.id,
+                        columnKey: 'date',
+                        color: '#4F81BD'
+                    });
+                } else if (moment(data.date, "YYYY/MM/DD").day() == 0) {
+                    self.textColors.push({
+                        rowId: data.id,
+                        columnKey: 'date',
+                        color: '#e51010'
+                    });
+                }
+            });
+        }
+
+        setHeaderColor() {
+            var self = this;
+            self.headerColors([]);
+            _.forEach(self.headersGrid(), (header) => {
+                if (header.color) {
+                    self.headerColors.push({
+                        key: header.key,
+                        color: header.color
+                    });
+                }
+            });
+        }
+
+        formatDate(lstData) {
+            var self = this;
+            return lstData.map((data) => {
+                return {
+                    id: data.id,
+                    state: data.state,
+                    error: data.error,
+                    date: moment(data.date, "YYYY/MM/DD").format("MM/DD(dd)"),
+                    sign: data.sign,
+                    employeeId: data.employeeId,
+                    employeeCode: data.employeeCode,
+                    employeeName: data.employeeName
+                }
+            });
         }
 
         filterData(mode: number) {
@@ -305,7 +329,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             self.loadHeader(self.displayFormat());
             self.dailyPerfomanceData(self.filterData(self.displayFormat()));
-            $("#grid2").ntsGrid("destroy");
+            $("#dpGrid").ntsGrid("destroy");
             self.loadGrid();
         }
 
@@ -330,78 +354,24 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 allowSummaries: true
             }
             var summaries = [];
-            var cellState: ICellState = {
-                rowId: 0,
-                columnKey: "salary",
-                state: [nts.uk.ui.jqueryExtentions.ntsGrid.color.Error, nts.uk.ui.jqueryExtentions.ntsGrid.color.Alarm]
-            }
-            var cellStates = [];
-            cellStates.push({
-                rowId: 2,
-                columnKey: "256",
-                state: [nts.uk.ui.jqueryExtentions.ntsGrid.color.Error]
-            });
-            cellStates.push({
-                rowId: 2,
-                columnKey: "257",
-                state: [nts.uk.ui.jqueryExtentions.ntsGrid.color.Alarm]
-            });
-            self.allData[2].error = 'ER/AL';
-            cellStates.push({
-                rowId: 5,
-                columnKey: "257",
-                state: [nts.uk.ui.jqueryExtentions.ntsGrid.color.Alarm]
-            });
-            self.allData[5].error = 'AL';
-            self.dailyPerfomanceData(self.filterData(self.displayFormat()));
-            cellStates.push({
-                rowId: 9,
-                columnKey: "258",
-                state: [nts.uk.ui.jqueryExtentions.ntsGrid.color.Disable]
-            });
-            self.cellStates(cellStates);
             var rowState = {
                 rowId: 0,
                 disable: true
             }
-            let rowStates = [];
-            rowStates.push(rowState);
-            self.rowStates(rowStates);
-            //            var gridData: IGridData = {
-            //                id: 0,
-            //                code: 0,
-            //                name: 'ko',
-            //                salary: 10
-            //            }
-
-            var headerColors = [];
-
-            headerColors.push({
-                key: '',
-                color: ''
-            });
-            self.headerColors(headerColors);
-
-            var textColor = {
-                rowId: 1,
-                columnKey: '256',
-                color: '#fff'
-            }
-            var textColors = [];
-            textColors.push(textColor);
-            self.textColors(textColors);
-            $("#grid2").ntsGrid({
-                width: '1000px',
+            self.setHeaderColor();
+            self.setColorWeekend();
+            $("#dpGrid").ntsGrid({
+                width: (window.screen.availWidth - 200) + "px",
                 height: '500px',
-                dataSource: self.dailyPerfomanceData(),
+                dataSource: self.formatDate(self.dailyPerfomanceData()),
                 primaryKey: 'id',
                 rowVirtualization: true,
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 enter: 'right',
-                autoFitWindow: true,
+                autoFitWindow: false,
                 preventEditInError: false,
-                // avgRowHeight: 36,
+                avgRowHeight: 20,
                 autoAdjustHeight: true,
                 adjustVirtualHeights: true,
                 columns: self.headersGrid(),
@@ -487,32 +457,13 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             nts.uk.ui.block.grayout();
             service.startScreen(param).done((data) => {
                 self.lstEmployee(data.lstEmployee);
-                let id = 0;
-                for (let i = 0; i < self.lstDate().length; i++) {
-                    for (let j = 0; j < self.lstEmployee().length; j++) {
-                        self.allData.push({
-                            id: id,
-                            state: '',
-                            error: '',
-                            date: self.lstDate()[i].date,
-                            sign: false,
-                            employeeId: self.lstEmployee()[j].id,
-                            employeeCode: self.lstEmployee()[j].code,
-                            employeeName: '日通太郎'
-                        });
-                        id++;
-                    };
-                };
+                self.allData = data.lstData;
+                self.cellStates(data.lstCellState);
                 self.selectedEmployee(self.lstEmployee()[0].id);
                 self.dailyPerfomanceData(self.filterData(self.displayFormat()));
                 self.optionalHeader = data.lstControlDisplayItem.lstHeader;
                 self.loadHeader(self.displayFormat());
                 self.sheetsGrid(data.lstControlDisplayItem.lstSheet);
-                self.sheetsGrid()[0].columns.push("col1");
-                self.sheetsGrid()[0].columns.push("col2");
-                self.sheetsGrid()[0].columns.push("col3");
-                self.sheetsGrid()[0].columns.push("col4");
-                self.sheetsGrid()[0].columns.push("col5");
                 self.sheetsGrid.valueHasMutated();
                 nts.uk.ui.block.clear();
                 dfd.resolve();
@@ -538,41 +489,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             }
             _.forEach(self.optionalHeader, (header) => {
                 tempList.push(header);
-            });
-            tempList.push({
-                headerText: 'Column1',
-                key: 'col1',
-                dataType: 'string',
-                width: '150px',
-                color: '#ffffff'
-            });
-            tempList.push({
-                headerText: 'Column2',
-                key: 'col2',
-                dataType: 'string',
-                width: '200px',
-                color: '#ffffff'
-            });
-            tempList.push({
-                headerText: 'Column3',
-                key: 'col3',
-                dataType: 'string',
-                width: '100px',
-                color: '#ffffff'
-            });
-            tempList.push({
-                headerText: 'Column4',
-                key: 'col4',
-                dataType: 'string',
-                width: '150px',
-                color: '#ffffff'
-            });
-            tempList.push({
-                headerText: 'Column5',
-                key: 'col5',
-                dataType: 'string',
-                width: '150px',
-                color: '#ffffff'
             });
             self.headersGrid(tempList);
         }
@@ -600,6 +516,8 @@ module nts.uk.at.view.kdw003.a.viewmodel {
         dataType: string;
         width: string;
         ntsControl: string;
+        changedByOther: boolean;
+        changedByYou: boolean;
     }
 
     interface IFixedColumn {

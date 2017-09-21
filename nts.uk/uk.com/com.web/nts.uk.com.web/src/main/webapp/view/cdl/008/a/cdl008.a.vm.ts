@@ -11,20 +11,27 @@ module nts.uk.com.view.cdl008.a {
         * Screen Model.
         */
         export class ScreenModel {
-            selectedCodeWorkplace: KnockoutObservableArray<string>;
+            selectedMulWorkplace: KnockoutObservableArray<string>;
+            selectedSelWorkplace: KnockoutObservable<string>;
             baseDate: KnockoutObservable<Date>;
             workplaces: TreeComponentOption;
             isMultiple: boolean;
             constructor(){
                 var self = this;
                 self.baseDate = ko.observable(new Date());
-                self.selectedCodeWorkplace = ko.observableArray([]);
+                self.selectedMulWorkplace = ko.observableArray([]);
+                self.selectedSelWorkplace = ko.observable('');
                 self.isMultiple = false;
                 var inputCDL008 = nts.uk.ui.windows.getShared('inputCDL008');
                 if(inputCDL008){
                     self.baseDate(inputCDL008.baseDate);
                     self.isMultiple = inputCDL008.isMultiple;
-                    self.selectedCodeWorkplace(inputCDL008.canSelected);    
+                    if (self.isMultiple) {
+                        self.selectedMulWorkplace(inputCDL008.canSelected);
+                    }   
+                    else {
+                        self.selectedSelWorkplace(inputCDL008.canSelected);
+                    } 
                 }
                 
                 self.workplaces = {
@@ -33,10 +40,16 @@ module nts.uk.com.view.cdl008.a {
                     treeType: TreeType.WORK_PLACE,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
                     isShowSelectButton: true,
-                    selectedWorkplaceId: self.selectedCodeWorkplace,
                     baseDate: self.baseDate,
                     isDialog: true,
-                    maxRows : 12
+                    selectedWorkplaceId : null, 
+                    maxRows: 12
+                }
+                if (self.isMultiple) {
+                    self.workplaces.selectedWorkplaceId = self.selectedMulWorkplace;
+                }
+                else {
+                    self.workplaces.selectedWorkplaceId = self.selectedSelWorkplace;
                 }
             }
             
@@ -45,7 +58,23 @@ module nts.uk.com.view.cdl008.a {
              */
             private selectedWorkplace() :void {
                 var self = this;
-                nts.uk.ui.windows.setShared('outputCDL008', { selectedCode: self.selectedCodeWorkplace() });
+                if(self.isMultiple){
+                    if(!self.selectedMulWorkplace() || self.selectedMulWorkplace().length == 0){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        return;    
+                    }    
+                }else {
+                     if(!self.selectedSelWorkplace || !self.selectedSelWorkplace()){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_643" });
+                        return;    
+                    }      
+                }
+                
+                var selectedCode : any = self.selectedMulWorkplace();
+                if (!self.isMultiple) {
+                    selectedCode = self.selectedSelWorkplace();
+                }
+                nts.uk.ui.windows.setShared('outputCDL008', { selectedCode: selectedCode });
                 nts.uk.ui.windows.close();    
             }
             /**

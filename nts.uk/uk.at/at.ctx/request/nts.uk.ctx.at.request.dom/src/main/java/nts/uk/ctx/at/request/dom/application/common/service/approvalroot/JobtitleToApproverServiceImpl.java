@@ -89,7 +89,10 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 		JobTitleImport jobOfApprover = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobTitleId, baseDate);
 		// 申請の
 		JobTitleImport jobOfRequest = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobOfEmp.getPositionId(), baseDate);
-		if (jobOfRequest.getPositionCode().compareTo(jobOfApprover.getPositionCode()) < 0) {
+		if(jobOfApprover ==null || jobOfRequest==null ) {
+			return false;
+		}
+		if (jobOfRequest.getSequenceCode().compareTo(jobOfApprover.getSequenceCode()) < 0) {
 			return true;
 		}
 		

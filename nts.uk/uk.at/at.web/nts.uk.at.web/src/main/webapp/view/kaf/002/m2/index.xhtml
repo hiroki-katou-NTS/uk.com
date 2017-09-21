@@ -1,7 +1,7 @@
 <div>
 	<div class="table">
 		<div class="cell m2-column1">
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL001_3')}</div>
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_17')}</div>
 		</div>
 		<div class="cell m2-column2">
 			<div data-bind="foreach: appStampList">
@@ -12,12 +12,20 @@
 								<span class="label m2-label">出勤</span>
 							</div>
 							<div class="cell">
-								<input class="m2-time-editor" data-bind="ntsTimeWithDayEditor: { 
-													name: 'Time With Day', 
-													constraint:'TimeWithDayAttr', 
-													value: startTime }" />	
-								<button>Normal</button>
-								<span class="label m2-label" data-bind="text: startLocation"></span>						
+								<div class="m2-inline-div">
+									<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: startTimeDisp }"></div>
+									<input class="m2-time-editor" data-bind="ntsTimeWithDayEditor: { 
+														name: 'Time With Day', 
+														constraint:'TimeWithDayAttr', 
+														value: startTime,
+														required: true,
+														enable: startTimeDisp }" />		
+								</div>
+								<div data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? 'inline-block' : 'none' }">
+									<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: startLocationDisp }"></div>
+									<button data-bind="enable: startLocationDisp">#{i18n.getText('KAF002_14')}</button>
+									<span class="label m2-label" data-bind="text: startLocation, css: { m2DisableEdit: !startLocationDisp() }"></span>	
+								</div>					
 							</div>
 						</div>
 						<div class="table">
@@ -25,12 +33,20 @@
 								<span class="label m2-label">退勤</span>
 							</div>
 							<div class="cell">
-								<input class="m2-time-editor" data-bind="ntsTimeWithDayEditor: { 
-													name: 'Time With Day', 
-													constraint:'TimeWithDayAttr', 
-													value: endTime }" />	
-								<button>Normal</button>
-								<span class="label m2-label" data-bind="text: endLocation"></span>						
+								<div class="m2-inline-div">
+									<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: endTimeDisp }"></div>
+									<input class="m2-time-editor" data-bind="ntsTimeWithDayEditor: { 
+														name: 'Time With Day', 
+														constraint:'TimeWithDayAttr', 
+														value: endTime, 
+														required: true,
+														enable: endTimeDisp }" />	
+								</div>
+								<div data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? 'inline-block' : 'none' }">
+									<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: endLocationDisp }"></div>					
+									<button data-bind="enable: endLocationDisp">#{i18n.getText('KAF002_14')}</button>
+									<span class="label m2-label" data-bind="text: endLocation, css: { m2DisableEdit: !endLocationDisp() }"></span>	
+								</div>					
 							</div>
 						</div>
 					</div>

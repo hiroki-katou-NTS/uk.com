@@ -161,9 +161,13 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 		ErrorFlag errorFlag = ErrorFlag.NO_ERROR;
 		for (ApprovalPhaseImport phase : beforeDatas) {
 			if (!CollectionUtil.isEmpty(phase.getApproverDtos())) {
-				
-				List<ApproverInfo> afterApprovers = afterDatas.stream().filter(x -> x.getApprovalPhaseId().equals(phase.getApprovalPhaseId())).findFirst().get().getApprovers();
-				int approverCounts = afterApprovers.size();
+				int approverCounts = 0;
+				List<ApproverInfo> afterApprovers = new ArrayList<>();
+				if(!CollectionUtil.isEmpty(afterDatas)) {
+					afterApprovers = afterDatas.stream().filter(x -> x.getApprovalPhaseId().equals(phase.getApprovalPhaseId())).findFirst().get().getApprovers();
+					approverCounts = afterApprovers.size();
+				}
+				//int approverCounts = afterApprovers.size();
 				
 				// １フェーズにトータルの実際の承認者 > 10
 				if (approverCounts > 10) {
@@ -226,7 +230,9 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 						// 職位の場合
 						List<ApproverInfo> approversOfJob = this.jobtitleToAppService.convertToApprover(cid, sid,
 								baseDate, x.getJobTitleId());
-						approversResult.addAll(approversOfJob);
+						if(approversOfJob != null) {
+							approversResult.addAll(approversOfJob);
+						}
 					}
 				});
 				

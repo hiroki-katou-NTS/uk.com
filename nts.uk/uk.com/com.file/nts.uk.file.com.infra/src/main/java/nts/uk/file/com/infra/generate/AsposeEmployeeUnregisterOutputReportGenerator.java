@@ -273,13 +273,4 @@ public class AsposeEmployeeUnregisterOutputReportGenerator extends AsposeCellsRe
 		cell.setStyle(style);
 	}
 
-	private void setTitleBreakPage(Cell cell) {
-		Style style = cell.getStyle();
-		style.setPattern(BackgroundType.SOLID);
-		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
-		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
-		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.DOTTED, Color.getGray());
-		cell.setStyle(style);
-
-	}
 }

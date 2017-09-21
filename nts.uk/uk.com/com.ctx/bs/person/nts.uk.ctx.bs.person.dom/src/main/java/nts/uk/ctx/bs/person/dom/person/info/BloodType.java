@@ -1,12 +1,29 @@
 package nts.uk.ctx.bs.person.dom.person.info;
 
-import nts.arc.primitive.StringPrimitiveValue;
+import lombok.AllArgsConstructor;
 
-public class BloodType extends StringPrimitiveValue<BloodType>{
+@AllArgsConstructor
+public enum BloodType {
 
-	public BloodType(String rawValue) {
-		super(rawValue);
-		// TODO Auto-generated constructor stub
-	}
+	/* None */
+	Unselected(0),
+	/* O RH+ */
+	ORhPlus(3),
+	/* O RH- */
+	ORhSub(7),
+	/* A RH+ */
+	ARhPlus(1),
+	/* A RH- */
+	ARhSub(5),
+	/* B RH+ */
+	BRhPlus(2),
+	/* B RH- */
+	BRhSub(6),
+	/* AB RH+ */
+	ABRhPlus(4),
+	/* AB RH- */
+	ABRhSub(8);
+
+	public final int value;
 
 }

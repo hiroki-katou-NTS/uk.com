@@ -9,7 +9,7 @@
      export function getDataApprovalRoot(objApprovalRootInput ) : JQueryPromise<Array<any>>{
          return nts.uk.request.ajax("at",paths.getDataApprovalRoot,objApprovalRootInput);
      }
-     getMessageDeadline
+     
      /**
       * get getMessageDeadline
       */

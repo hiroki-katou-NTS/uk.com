@@ -7,6 +7,8 @@ module kaf000.a.viewmodel{
         listPhaseID: Array<String>;
         //List  Approval Root 
         listApprovalRoot :  KnockoutObservableArray<Array<model.ApprovalRootOutput>>;
+         //Item  Approval Root 
+        approvalRoot :  KnockoutObservableArray<model.ApprovalRootOutput>;
         
         /**
          * obj input
@@ -25,8 +27,10 @@ module kaf000.a.viewmodel{
              */
             
             self.listApprovalRoot = ko.observableArray([]);
+            //item approval root
+            self.approvalRoot = ko.observableArray([]);
             //obj input approval root
-            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','90000000-0000-0000-0000-000000000001',1,1,new Date('2019-11-02 00:00:00')));
+            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','000426a2-181b-4c7f-abc8-6fff9f4f983a',1,1,new Date('2022-01-01 00:00:00')));
             //obj input get message deadline 
             self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline("000000000000-0005",null,1,null));
             //obj input get message deadline 
@@ -38,8 +42,8 @@ module kaf000.a.viewmodel{
             let self = this;
             var dfd = $.Deferred();
             var dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
-            //var dfdAllApprovalRoot = self.getAllApprovalRoot();
-            $.when(dfdMessageDeadline).done((dfdAllApprovalRootData)=>{
+            var dfdAllApprovalRoot = self.getAllApprovalRoot();
+            $.when(dfdMessageDeadline,dfdAllApprovalRoot).done((dfdMessageDeadlineData,dfdAllApprovalRootData)=>{
 //                self.getAllFrameByListPhaseId1(self.listPhaseID);
                  dfd.resolve(); 
             });
@@ -50,10 +54,11 @@ module kaf000.a.viewmodel{
         getAllApprovalRoot(){
             var self = this;
             var dfd = $.Deferred<any>();
-//            service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
-//                self.listApprovalRoot(data);
-//                dfd.resolve(data);    
-//            });
+            service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
+                self.listApprovalRoot(data);
+                self.approvalRoot(self.listApprovalRoot()[0]);
+                dfd.resolve(data);    
+            });
             return dfd.promise();
             
         }

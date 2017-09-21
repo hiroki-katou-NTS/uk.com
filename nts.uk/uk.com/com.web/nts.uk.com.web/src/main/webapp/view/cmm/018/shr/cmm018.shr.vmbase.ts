@@ -22,7 +22,7 @@ module nts.uk.com.view.cmm018.shr {
             confirmedPerson: string; //確定者
             selectTypeSet: number;
         }
-        //data after grouping history
+        //data after grouping history (get from db)
         export class DataFullDto{
             lstCompany: Array<DataDisplayComDto> ;
             lstWorkplace: Array<DataDisplayWpDto> ;
@@ -31,18 +31,21 @@ module nts.uk.com.view.cmm018.shr {
         //data after grouping history of company
         export class DataDisplayComDto{
             id: number;
+            overLap: boolean;
             companyName: string;
             lstCompanyRoot: Array<CompanyAppRootDto> ;
         }
         //data after grouping history of work place
         export class DataDisplayWpDto{
             id: number;
+            overLap: boolean;
             lstWorkplaceRoot: Array<WorkPlaceAppRootDto> ;
         }
         //data after grouping history of person
         export class DataDisplayPsDto{
             id: number;
-            lstPersonRoot: Array<PersonAppRootDto> ;
+            overLap: boolean;
+            lstPersonRoot: Array<PersonAppRootDto>;
         }
         //app type
         export class ApplicationType{
@@ -59,11 +62,13 @@ module nts.uk.com.view.cmm018.shr {
             dateRange: string;
             startDate: string;
             endDate: string;
-            constructor(id: number, dateRange: string, startDate: string, endDate: string) {
+            overLap: string;
+            constructor(id: number, dateRange: string, startDate: string, endDate: string, overLap: string) {
                 this.id = id;
                 this.dateRange = dateRange;
                 this.startDate = startDate;
                 this.endDate = endDate;
+                this.overLap = overLap;
             }  
         }
         //screenA
@@ -218,6 +223,22 @@ module nts.uk.com.view.cmm018.shr {
                 this.approvalId = approvalId;
                 this.nameAppType = nameAppType;
                 this.lstbyApp = lstbyApp;
+            }
+        }
+        //data check list left view model B
+        export class DataCheckModeB{
+            approvalId: string;
+            startDate: string;
+            endDate: string;
+            applicationType: number;
+            employmentRootAtr: number;
+            constructor(approvalId: string, startDate: string, endDate: string, 
+                applicationType: number, employmentRootAtr: number){
+                    this.approvalId = approvalId;
+                    this.startDate = startDate;
+                    this.endDate = endDate;
+                    this.applicationType = applicationType;
+                    this.employmentRootAtr = employmentRootAtr;
             }
         }
         export class DataTree{
@@ -392,15 +413,18 @@ module nts.uk.com.view.cmm018.shr {
             approvalPhaseId: string;
             /**承認形態*/
             approvalForm: number;
+            /**承認形態 Name*/
+            appFormName: string;
             /**閲覧フェーズ*/
             browsingPhase: number;
             /**順序*/
             orderNumber: number;
-            constructor(approver: Array<ApproverDto>, branchId: string, approvalPhaseId: string, approvalForm: number, browsingPhase: number, orderNumber: number){
+            constructor(approver: Array<ApproverDto>, branchId: string, approvalPhaseId: string, approvalForm: number, appFormName: string, browsingPhase: number, orderNumber: number){
                 this.approver = approver;
                 this.branchId = branchId;
                 this.approvalPhaseId = approvalPhaseId;
                 this.approvalForm = approvalForm;
+                this.appFormName = appFormName;
                 this.browsingPhase = browsingPhase;
                 this.orderNumber = orderNumber;
             }

@@ -21,6 +21,7 @@ import nts.uk.ctx.at.shared.app.command.vacation.setting.sixtyhours.Emp60HourVac
 import nts.uk.ctx.at.shared.app.command.vacation.setting.sixtyhours.Emp60HourVacationSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.SixtyHourVacationFinder;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.dto.Emp60HourVacationDto;
+import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.dto.SixtyHourVacationSettingCheckDto;
 import nts.uk.ctx.at.shared.app.find.vacation.setting.sixtyhours.dto.SixtyHourVacationSettingDto;
 import nts.uk.ctx.at.shared.dom.vacation.setting.ManageDistinct;
 import nts.uk.ctx.at.shared.dom.vacation.setting.SixtyHourExtra;
@@ -142,5 +143,16 @@ public class SixtyHourVacationWebService {
 	@Path("enum/timedigestiveunit")
 	public List<EnumConstant> getTimeDigestiveUnit() {
 		return EnumAdaptor.convertToValueNameList(TimeDigestiveUnit.class);
+	}
+	
+	/**
+	 * Check manange setting.
+	 *
+	 * @return the sixty hour vacation setting check dto
+	 */
+	@POST
+	@Path("com/check/manage")
+	public SixtyHourVacationSettingCheckDto checkManangeSetting() {
+		return this.sixtyHourVacationFinder.checkManangeSetting();
 	}
 }

@@ -50,7 +50,7 @@ public class CommonApprovalRootFinder {
 			List<CompanyAppRootDto> lstCompanyRoot = a.getLstCompanyRoot();
 			List<ObjectDate> lstObjDate = new ArrayList<>();
 			lstCompanyRoot.forEach(item ->{
-				lstObjDate.add(new ObjectDate(item.getCompany().getApprovalId(), item.getCompany().getStartDate(), item.getCompany().getEndDate()));
+				lstObjDate.add(new ObjectDate(item.getCompany().getApprovalId(), item.getCompany().getStartDate(), item.getCompany().getEndDate(),false));
 			});
 			//grouping history
 			ObjGrouping result = this.groupingMapping(lstObjDate);
@@ -78,7 +78,7 @@ public class CommonApprovalRootFinder {
 						}
 					}
 				}
-				kq.add(new DataDisplayComDto(index,a.getCompanyName(), lstItem));
+				kq.add(new DataDisplayComDto(index,objDate.isOverlap(),a.getCompanyName(), lstItem));
 				index++;
 			}
 			return new DataFullDto(kq, null, null);
@@ -89,7 +89,7 @@ public class CommonApprovalRootFinder {
 			List<WorkPlaceAppRootDto> lstWorkplaceRoot = a.getLstWorkplaceRoot();
 			List<ObjectDate> lstObjDate = new ArrayList<>();
 			lstWorkplaceRoot.forEach(item ->{
-				lstObjDate.add(new ObjectDate(item.getWorkplace().getApprovalId(), item.getWorkplace().getStartDate(), item.getWorkplace().getEndDate()));
+				lstObjDate.add(new ObjectDate(item.getWorkplace().getApprovalId(), item.getWorkplace().getStartDate(), item.getWorkplace().getEndDate(),false));
 			});
 			//grouping history
 			ObjGrouping result = this.groupingMapping(lstObjDate);
@@ -117,7 +117,7 @@ public class CommonApprovalRootFinder {
 						}
 					}
 				}
-				kq.add(new DataDisplayWpDto(index, lstItem));
+				kq.add(new DataDisplayWpDto(index,objDate.isOverlap(), lstItem));
 				index++;
 			}
 			return new DataFullDto(null, kq, null);
@@ -128,7 +128,7 @@ public class CommonApprovalRootFinder {
 			List<PersonAppRootDto> lstPersonRoot = a.getLstPersonRoot();
 			List<ObjectDate> lstObjDate = new ArrayList<>();
 			lstPersonRoot.forEach(item ->{
-				lstObjDate.add(new ObjectDate(item.getPerson().getApprovalId(), item.getPerson().getStartDate(), item.getPerson().getEndDate()));
+				lstObjDate.add(new ObjectDate(item.getPerson().getApprovalId(), item.getPerson().getStartDate(), item.getPerson().getEndDate(),false));
 			});
 			//grouping history
 			ObjGrouping result = this.groupingMapping(lstObjDate);
@@ -156,7 +156,7 @@ public class CommonApprovalRootFinder {
 						}
 					}
 				}
-				kq.add(new DataDisplayPsDto(index, lstItem));
+				kq.add(new DataDisplayPsDto(index, objDate.isOverlap(), lstItem));
 				index++;
 			}
 			return new DataFullDto(null, null, kq);
@@ -181,7 +181,6 @@ public class CommonApprovalRootFinder {
 		//get name company
 		Optional<CompanyInfor> companyCurrent = comAdapter.getCurrentCompany();
 		String companyName = companyCurrent == null ? "" : companyCurrent.get().getCompanyName();
-//		String companyName = "KAkashi";
 		//TH: company - domain 会社別就業承認ルート
 		if(param.getRootType() == 0){
 			List<CompanyAppRootDto> lstComRoot = new ArrayList<>();
@@ -203,7 +202,7 @@ public class CommonApprovalRootFinder {
 								.collect(Collectors.toList());
 					//lst (ApprovalPhase + lst Approver)
 					lstApprovalPhase.add(new ApprovalPhaseDto(lstApprover, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
-							approvalPhase.getApprovalForm().value, approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
+							approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(), approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
 				}
 				//add in lstAppRoot
 				lstComRoot.add(new CompanyAppRootDto(companyApprovalRoot,lstApprovalPhase));
@@ -231,7 +230,7 @@ public class CommonApprovalRootFinder {
 							.collect(Collectors.toList());
 					//lst (ApprovalPhase + lst Approver)
 					lstApprovalPhase.add(new ApprovalPhaseDto(lstApprover, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
-							approvalPhase.getApprovalForm().value, approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
+							approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(), approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
 				}
 				//add in lstAppRoot
 				lstWpRoot.add(new WorkPlaceAppRootDto(workplaceApprovalRoot,lstApprovalPhase));
@@ -259,7 +258,7 @@ public class CommonApprovalRootFinder {
 							.collect(Collectors.toList());
 					//lst (ApprovalPhase + lst Approver)
 					lstApprovalPhase.add(new ApprovalPhaseDto(lstApprover, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
-							approvalPhase.getApprovalForm().value, approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
+							approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(),approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
 				}
 				//add in lstAppRoot
 				lstPsRoot.add(new PersonAppRootDto(personApprovalRoot,lstApprovalPhase));
@@ -290,7 +289,7 @@ public class CommonApprovalRootFinder {
 				ObjDate xx = new ObjDate(date1.getStartDate(), date1.getEndDate());
 				if(!result.contains(xx)){//exist
 					result.add(new ObjDate(date1.getStartDate(), date1.getEndDate()));
-					kkk.add(new ObjectDate(date1.getApprovalId(),date1.getStartDate(), date1.getEndDate()));
+					kkk.add(new ObjectDate(date1.getApprovalId(),date1.getStartDate(), date1.getEndDate(), false));
 				}else{
 					if(!check.contains(xx)){
 						check.add(new ObjDate(date1.getStartDate(), date1.getEndDate()));
@@ -300,7 +299,7 @@ public class CommonApprovalRootFinder {
 			//TH: overlap
 			else{
 				result.add(new ObjDate(date1.getStartDate(), date1.getEndDate()));
-				kkk.add(new ObjectDate(date1.getApprovalId(),date1.getStartDate(), date1.getEndDate()));
+				kkk.add(new ObjectDate(date1.getApprovalId(),date1.getStartDate(), date1.getEndDate(), true));
 			}
 		}
 		return new ObjGrouping(check, kkk);
@@ -338,20 +337,6 @@ public class CommonApprovalRootFinder {
 		 */
 		if (date1.getStartDate().compareTo(date2.getEndDate()) < 0
 				&& date2.getEndDate().compareTo(date1.getEndDate()) < 0) {
-			return true;
-		}
-		return false;
-	}
-
-	/**
-	 * Checks if is same date.
-	 * @param date1 the date 1
-	 * @param date2 the date 2
-	 * @return true, if is same date
-	 */
-	public boolean isSameDate(ObjectDate date1, ObjectDate date2){
-		if (date2.getStartDate().compareTo(date1.getStartDate()) == 0
-				&& date2.getEndDate().compareTo(date1.getEndDate()) == 0) {
 			return true;
 		}
 		return false;

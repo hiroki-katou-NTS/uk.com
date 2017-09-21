@@ -12,9 +12,19 @@ module nts.uk.at.view.kaf004.c.viewmodel {
 
             var dfd = $.Deferred();
 
-            dfd.resolve();
+            dfd.resolve(); 
 
             return dfd.promise();
+        }
+           openEDialog() {
+            var self = this;
+            nts.uk.ui.windows.setShared("ShowScreen", "E");
+            nts.uk.request.jump("/view/kaf/004/b/index.xhtml", {showScreen: "E"});
+        }
+          openFDialog() {
+            var self = this;
+            nts.uk.ui.windows.setShared("ShowScreen", "F");
+            nts.uk.request.jump("/view/kaf/004/b/index.xhtml", {showScreen: "F"});
         }
     }
 }

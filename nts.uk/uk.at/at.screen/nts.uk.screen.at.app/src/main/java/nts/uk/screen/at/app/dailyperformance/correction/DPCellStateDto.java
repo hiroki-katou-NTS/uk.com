@@ -5,6 +5,7 @@ package nts.uk.screen.at.app.dailyperformance.correction;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,13 +15,13 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@AllArgsConstructor
 public class DPCellStateDto {
 
 	private Integer rowId;
 	
     private String columnKey;
     
-    //0: Alarm, 1: Error
-    private List<Integer> state;
+    private List<String> state;
     
 }

@@ -27,7 +27,7 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVac
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
 import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification;
 import nts.uk.ctx.bs.employee.infra.entity.employee.KmnmtEmployee;
-import nts.uk.ctx.bs.employee.infra.entity.employment.CemptEmployment;
+import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CjtmtJobTitle;
 import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWorkplace;
 import nts.uk.screen.at.app.dailyperformance.correction.ClosureDto;
@@ -106,12 +106,12 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT closure FROM KclmtClosure closure JOIN ");
-		builderString.append("CemptEmployment emp JOIN ");
+		builderString.append("BsymtEmployment emp JOIN ");
 		builderString.append("KmnmtAffiliEmploymentHist hist ");
 		builderString.append("WHERE hist.kmnmtEmploymentHistPK.empId = :sId ");
 		builderString.append("AND hist.kmnmtEmploymentHistPK.strD <= :baseDate AND hist.endD >= :baseDate ");
-		builderString.append("AND emp.cemptEmploymentPK.cid = :companyId ");
-		builderString.append("AND emp.cemptEmploymentPK.code = hist.kmnmtEmploymentHistPK.emptcd ");
+		builderString.append("AND emp.bsymtEmploymentPK.cid = :companyId ");
+		builderString.append("AND emp.bsymtEmploymentPK.code = hist.kmnmtEmploymentHistPK.emptcd ");
 		builderString.append("AND closure.kclmtClosurePK.cid = :companyId ");
 		builderString.append("AND closure.kclmtClosurePK.closureId = emp.workClosureId");
 		SEL_CLOSURE = builderString.toString();
@@ -129,7 +129,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 		builderString = new StringBuilder();
 		builderString.append(
-				"SELECT e FROM CemptEmployment e WHERE e.cemptEmploymentPK.cid = :companyId AND e.workClosureId = :closureId");
+				"SELECT e FROM BsymtEmployment e WHERE e.bsymtEmploymentPK.cid = :companyId");
 		SEL_EMPLOYMENT_BY_CLOSURE = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -259,10 +259,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<String> getListEmployment(Integer closureId) {
-		return this.queryProxy().query(SEL_EMPLOYMENT_BY_CLOSURE, CemptEmployment.class)
-				.setParameter("companyId", AppContexts.user().companyId()).setParameter("closureId", closureId)
+		return this.queryProxy().query(SEL_EMPLOYMENT_BY_CLOSURE, BsymtEmployment.class)
+				.setParameter("companyId", AppContexts.user().companyId())
 				.getList().stream().map(e -> {
-					return e.getCemptEmploymentPK().getCode();
+					return e.getBsymtEmploymentPK().getCode();
 				}).collect(Collectors.toList());
 	}
 
