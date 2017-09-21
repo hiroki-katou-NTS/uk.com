@@ -1,4 +1,4 @@
-package entity.person.info.setting;
+package entity.person.info.setting.innitValue;
 
 import java.io.Serializable;
 
@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class BpsstPersonInitValueSettingItemPk implements Serializable {
+public class BpsstPersonInitValueSettingPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Basic(optional = false)
-	@Column(name = "PER_INFO_ITEM_DEFINITION_ID")
-	public String perInfoItemDefId;
+	@Column(name = "PER_INIT_SET_ID")
+	public String settingId;
 
 }

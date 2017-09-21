@@ -1,4 +1,4 @@
-package entity.person.info.setting;
+package entity.person.info.setting.registeredHistory;
 
 import java.io.Serializable;
 
