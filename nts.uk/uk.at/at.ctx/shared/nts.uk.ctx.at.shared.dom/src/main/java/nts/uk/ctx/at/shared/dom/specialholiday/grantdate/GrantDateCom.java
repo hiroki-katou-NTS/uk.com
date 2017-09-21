@@ -9,6 +9,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode;
 
 /**
@@ -50,17 +51,17 @@ public class GrantDateCom extends DomainObject {
 	 * Validate function
 	 */
 	public void validateInput() {
+		// 経過年数は必ず１件以上必要
+		if(CollectionUtil.isEmpty(this.grantDateSets)){
+			throw new BusinessException("Msg_144");
+		}
+					
 		for (int i = 0; i < this.grantDateSets.size(); i++) {
 			GrantDateSet currentSet = this.grantDateSets.get(i);
 			
 			// 0年0ヶ月は登録不可
 			if(currentSet.getGrantDateYear().v() == 0 && currentSet.getGrantDateMonth().v() == 0){
 				throw new BusinessException("Msg_95");
-			}
-						
-			// 経過年数は必ず１件以上必要
-			if(currentSet.getGrantDateYear().v() < 1){
-				throw new BusinessException("Msg_144");
 			}
 			
 			// 同じ経過年数の場合は登録不可

@@ -228,8 +228,8 @@ module nts.uk.at.view.kmf004.c {
                 }
                 
                 _.forEach(self.dataItems(), function(item) {
-                    if(item.month() != null && item.year() != null) {
-                        if(item.month() !== 0 && item.year() !== 0) {
+                    if(item.month() || item.year()) {
+                        if(item.month() !== 0 || item.year() !== 0) {
                             perSetData.push({
                                 specialHolidayCode: self.specialHolidayCode(),
                                 personalGrantDateCode: self.code(),

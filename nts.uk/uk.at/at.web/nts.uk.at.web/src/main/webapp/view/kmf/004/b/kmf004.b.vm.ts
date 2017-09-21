@@ -200,21 +200,19 @@ module nts.uk.at.view.kmf004 {
              * Validate data before save.
              */
             validateData(dataItems: any) {
+                // 経過年数は必ず１件以上必要
+                if(!dataItems){
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_144" });
+                    return false;
+                }
+                
                 // 0年0ヶ月は登録不可
                 for(var i = 0; i < dataItems.length; i++) {
                     if(dataItems[i].grantDateYear == 0 && dataItems[i].grantDateMonth == 0){
                         nts.uk.ui.dialog.alert({ messageId: "Msg_95" });
                         return false;
                     }
-                } 
-                
-                // 経過年数は必ず１件以上必要
-                for(var i = 0; i < dataItems.length; i++) {
-                    if(dataItems[i].grantDateYear < 1){
-                        nts.uk.ui.dialog.alert({ messageId: "Msg_144" });
-                        return false;
-                    }
-                }   
+                }
                 
                 // 同じ経過年数の場合は登録不可
                 var valueArr = dataItems.map(function(item){ return item.grantDateYear });
@@ -244,8 +242,8 @@ module nts.uk.at.view.kmf004 {
                 var index = 1;
                 
                 _.forEach(self.items(), function(item) {
-                    if(item.month() != null && item.year() != null) {
-                        if(item.month() !== 0 && item.year() !== 0) {
+                    if(item.month() || item.year()) {
+                        if(item.month() !== 0 || item.year() !== 0) {
                             setData.push({
                                 specialHolidayCode: self.specialHolidayCode(),
                                 grantDateNo: index,
