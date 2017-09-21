@@ -61,6 +61,12 @@ public class OutsideOTSetting extends AggregateRoot{
 		if (!checkUseBreakdownItem()) {
 			throw new BusinessException("Msg_485");
 		}
+		if(CollectionUtil.isEmpty(this.overtimes)){
+			throw new BusinessException("Msg_486");
+		}
+		if (!checkUseOvertime()) {
+			throw new BusinessException("Msg_486");
+		}
 		if(this.checkOverlapProductNumber()){
 			throw new BusinessException("Msg_490");
 		}
@@ -75,6 +81,20 @@ public class OutsideOTSetting extends AggregateRoot{
 		for (OutsideOTBRDItem breakdownItem : this.breakdownItems) {
 			if (breakdownItem
 					.getUseClassification().value == UseClassification.UseClass_Use.value) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Check use overtime.
+	 *
+	 * @return true, if successful
+	 */
+	private boolean checkUseOvertime() {
+		for (Overtime overtime : this.overtimes) {
+			if (overtime.getUseClassification().value == UseClassification.UseClass_Use.value) {
 				return true;
 			}
 		}

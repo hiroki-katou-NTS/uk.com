@@ -4,13 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.outsideot.overtime;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -45,9 +49,34 @@ public class OvertimeSaveCommandHandler extends CommandHandler<OvertimeSaveComma
 		// get command
 		OvertimeSaveCommand command = context.getCommand();
 		
+		// to domains
+		List<Overtime> domains = command.getOvertimes().stream().map(dto -> new Overtime(dto))
+				.collect(Collectors.toList());
+		
+		// validate domains
+		if(CollectionUtil.isEmpty(domains)){
+			throw new BusinessException("Msg_486");
+		}
+		if (!checkUseOvertime(domains)) {
+			throw new BusinessException("Msg_486");
+		}
+		
 		// save all list overtime
-		this.repository.saveAll(command.getOvertimes().stream().map(dto -> new Overtime(dto))
-				.collect(Collectors.toList()), companyId);
+		this.repository.saveAll(domains, companyId);
 	}
 
+	/**
+	 * Check use overtime.
+	 *
+	 * @param domains the domains
+	 * @return true, if successful
+	 */
+	private boolean checkUseOvertime(List<Overtime> domains) {
+		for (Overtime overtime : domains) {
+			if (overtime.getUseClassification().value == UseClassification.UseClass_Use.value) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
