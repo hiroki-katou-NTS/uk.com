@@ -73,17 +73,6 @@ public class WorkTypeWebService extends WebService {
 	}
 
 	/**
-	 * Gets the by C id and display atr.
-	 *
-	 * @return the by C id and display atr
-	 */
-	@POST
-	@Path("getByCIdAndDisplayAtr")
-	public List<WorkTypeDto> getByCIdAndDisplayAtr() {
-		return this.find.findByCIdAndDisplayAtr();
-	}
-
-	/**
 	 * Find all.
 	 *
 	 * @return the list

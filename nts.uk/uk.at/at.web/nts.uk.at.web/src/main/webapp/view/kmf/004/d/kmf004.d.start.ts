@@ -10,7 +10,6 @@ module nts.uk.at.view.kmf004.d {
             viewmodelE: new kmf004.e.viewmodel.ScreenModel()
         };
         __viewContext.bind(__viewContext.viewModel);
-        $("#button_radio").focus();
         // show active tab panel 
         $('.navigator li a.active').trigger('click');
     });

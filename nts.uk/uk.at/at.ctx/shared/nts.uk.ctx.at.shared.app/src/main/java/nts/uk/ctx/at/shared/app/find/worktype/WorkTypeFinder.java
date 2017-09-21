@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.shared.dom.worktype.DeprecateClassification;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.ctx.at.shared.dom.worktype.language.WorkTypeLanguage;
@@ -79,19 +78,6 @@ public class WorkTypeFinder {
 		String companyId = AppContexts.user().companyId();
 		return this.workTypeRepo.findNotDeprecated(companyId).stream().map(dom -> WorkTypeDto.fromDomain(dom))
 				.collect(Collectors.toList());
-	}
-
-	/**
-	 * Find by companyId and DeprecateClassification = Deprecated (added by
-	 * sonnh1)
-	 * 
-	 * @return List WorkTypeDto
-	 */
-	public List<WorkTypeDto> findByCIdAndDisplayAtr() {
-		// company id
-		String companyId = AppContexts.user().companyId();
-		return this.workTypeRepo.findByCIdAndDisplayAtr(companyId, DeprecateClassification.NotDeprecated.value).stream()
-				.map(c -> WorkTypeDto.fromDomain(c)).collect(Collectors.toList());
 	}
 
 	/**
