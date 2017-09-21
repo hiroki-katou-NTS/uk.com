@@ -23,10 +23,10 @@ public class EmpCondition extends AggregateRoot {
 	private CompanyId companyId;
 
 	// 任意項目NO
-	private OptionalItemNo optionalItemNo;
+	private OptionalItemNo optItemNo;
 
 	// 雇用条件
-	private List<EmploymentCondition> employmentConditions;
+	private List<EmploymentCondition> empConditions;
 
 	/**
 	 * Instantiates a new applicable emp condition.
@@ -35,8 +35,8 @@ public class EmpCondition extends AggregateRoot {
 	 */
 	public EmpCondition(EmpConditionGetMemento memento) {
 		this.companyId = memento.getCompanyId();
-		this.optionalItemNo = memento.getOptionalItemNo();
-		this.employmentConditions = memento.getEmploymentConditions();
+		this.optItemNo = memento.getOptionalItemNo();
+		this.empConditions = memento.getEmploymentConditions();
 	}
 
 	/**
@@ -46,8 +46,8 @@ public class EmpCondition extends AggregateRoot {
 	 */
 	public void saveToMemento(EmpConditionSetMemento memento) {
 		memento.setCompanyId(this.companyId);
-		memento.setOptionalItemNo(this.optionalItemNo);
-		memento.SetEmpConditions(this.employmentConditions);
+		memento.setOptionalItemNo(this.optItemNo);
+		memento.SetEmpConditions(this.empConditions);
 	}
 
 	/* (non-Javadoc)
@@ -58,7 +58,7 @@ public class EmpCondition extends AggregateRoot {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
-		result = prime * result + ((optionalItemNo == null) ? 0 : optionalItemNo.hashCode());
+		result = prime * result + ((optItemNo == null) ? 0 : optItemNo.hashCode());
 		return result;
 	}
 
@@ -79,10 +79,10 @@ public class EmpCondition extends AggregateRoot {
 				return false;
 		} else if (!companyId.equals(other.companyId))
 			return false;
-		if (optionalItemNo == null) {
-			if (other.optionalItemNo != null)
+		if (optItemNo == null) {
+			if (other.optItemNo != null)
 				return false;
-		} else if (!optionalItemNo.equals(other.optionalItemNo))
+		} else if (!optItemNo.equals(other.optItemNo))
 			return false;
 		return true;
 	}

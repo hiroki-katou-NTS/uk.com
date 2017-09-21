@@ -1,93 +1,85 @@
 module nts.uk.com.view.cdl003.a {
 
-    import ClassificationFindDto = service.model.ClassificationFindDto;
-    export module viewmodel {
+    import ListType = kcp.share.list.ListType;
+    import SelectType = kcp.share.list.SelectType;
+    import ComponentOption = kcp.share.list.ComponentOption;
 
+    export module viewmodel {
+        /**
+        * Screen Model.
+        */
         export class ScreenModel {
-            columns: KnockoutObservableArray<any>;
-            classifications: KnockoutObservableArray<ClassificationFindDto>;
-            selectedMulCode: KnockoutObservableArray<string>;
-            selectedSelCode: KnockoutObservable<string>;
-            isMultiple: KnockoutObservable<boolean>;
-            searchOption: any;
-            constructor() {
+            selectedMulClassification: KnockoutObservableArray<string>;
+            selectedSelClassification: KnockoutObservable<string>;
+            classifications: ComponentOption;
+            isMultiple: boolean;
+            isShowNoSelectRow: boolean;
+            constructor(){
                 var self = this;
-                var fields: Array<string> = ['name', 'code'];
-                self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KCP002_2"), key: 'code', width: 100 },
-                    { headerText: nts.uk.resource.getText("KCP002_3"), key: 'name', width: 150 }
-                ]);
-                self.classifications = ko.observableArray([]);
-                self.selectedMulCode = ko.observableArray([]);
-                self.selectedSelCode = ko.observable('');
-                
-                
-                self.isMultiple = ko.observable(true);
+                self.selectedMulClassification = ko.observableArray([]);
+                self.selectedSelClassification = ko.observable('');
+                self.isMultiple = false;
+                self.isShowNoSelectRow = false;
                 var inputCDL003 = nts.uk.ui.windows.getShared('inputCDL003');
-                self.searchOption = {
-                    searchMode: 'filter',
-                    targetKey: 'code',
-                    comId: 'classificationSelect',
-                    items: self.classifications,
-                    selected: null,
-                    selectedKey: 'code',
-                    fields: fields,
-                    mode: 'igGrid'
-                }
                 if(inputCDL003){
-                    self.isMultiple(inputCDL003.isMultiple);
-                    if (self.isMultiple()) {
-                        self.selectedMulCode(inputCDL003.canSelected);
-                        self.searchOption.selected = self.selectedMulCode; 
-                    } else {
-                        self.selectedSelCode(inputCDL003.canSelected);
-                        self.searchOption.selected = self.selectedSelCode;
-                    }
+                    self.isMultiple = inputCDL003.isMultiple;
+                    self.isShowNoSelectRow = inputCDL003.showNoSelection;
+                    if (self.isMultiple) {
+                        self.selectedMulClassification(inputCDL003.canSelected);
+                    }   
+                    else {
+                        self.selectedSelClassification(inputCDL003.canSelected);
+                    } 
                 }
-           }
+                
+                self.classifications = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: self.isMultiple,
+                    listType: ListType.Classification,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    isShowNoSelectRow:  self.isShowNoSelectRow,
+                    selectedCode: null,
+                    isDialog: true,
+                    maxRows: 12
+                }
+                if (self.isMultiple) {
+                    self.classifications.selectedCode = self.selectedMulClassification;
+                }
+                else {
+                    self.classifications.selectedCode = self.selectedSelClassification;
+                }
+            }
+            
             /**
-             * start page when init data
+             * function on click button selected classification
              */
-           public startPage(): JQueryPromise<any> {
-               var self = this;
-               var dfd = $.Deferred();
-               service.findAllClassifications().done(function(data) {
-                   self.classifications(data);
-                   dfd.resolve(self);
-               });
-               return dfd.promise();
-           }
-            /**
-             * save classification code to parent
-             */
-            private saveClassificationCodes(): void{
+            private selectedClassification() :void {
                 var self = this;
-                 if(self.isMultiple()){
-                    if(!self.selectedMulCode() || self.selectedMulCode().length == 0){
+                if(self.isMultiple){
+                    if(!self.selectedMulClassification() || self.selectedMulClassification().length == 0){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
                         return;    
                     }    
                 }else {
-                     if(!self.selectedSelCode || !self.selectedSelCode()){
+                     if(!self.selectedSelClassification || !self.selectedSelClassification()){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
                         return;    
                     }      
                 }
-                 var selectedCode : any = self.selectedMulCode();
-                if (!self.isMultiple()) {
-                    selectedCode = self.selectedSelCode();
+                
+                var selectedCode : any = self.selectedMulClassification();
+                if (!self.isMultiple) {
+                    selectedCode = self.selectedSelClassification();
                 }
-                nts.uk.ui.windows.setShared('outputCDL003',{selectedCode: selectedCode});
-                nts.uk.ui.windows.close();
+                nts.uk.ui.windows.setShared('outputCDL003', { selectedCode: selectedCode });
+                nts.uk.ui.windows.close();    
             }
-            
             /**
              * close windows
              */
-            private closeClassificationCodes(): void{
+            private closeWindows(): void{
                 nts.uk.ui.windows.close();  
             }
         }
-
     }
 }
