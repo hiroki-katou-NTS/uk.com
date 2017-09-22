@@ -35,9 +35,8 @@ public class AutoCalFlexOvertimeSettingDto implements AutoCalFlexOvertimeSetting
 	 */
 	@Override
 	public void setFlexOtTime(AutoCalSetting flexOtTime) {
-		AutoCalSettingDto dto = new AutoCalSettingDto();
-		flexOtTime.saveToMemento(dto);
-		this.flexOtTime = dto;
+		this.flexOtTime = new AutoCalSettingDto(flexOtTime.getUpLimitOtSet().value,
+				flexOtTime.getCalAtr().value);
 
 	}
 
@@ -50,10 +49,8 @@ public class AutoCalFlexOvertimeSettingDto implements AutoCalFlexOvertimeSetting
 	 */
 	@Override
 	public void setFlexOtNightTime(AutoCalSetting flexOtNightTime) {
-		AutoCalSettingDto dto = new AutoCalSettingDto();
-		flexOtNightTime.saveToMemento(dto);
-		this.flexOtNightTime = dto;
-
+		this.flexOtNightTime = new AutoCalSettingDto(flexOtNightTime.getUpLimitOtSet().value,
+				flexOtNightTime.getCalAtr().value);
 	}
 
 }
