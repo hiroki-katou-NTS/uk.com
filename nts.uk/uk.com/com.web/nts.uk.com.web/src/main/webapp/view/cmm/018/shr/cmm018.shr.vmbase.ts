@@ -2,11 +2,34 @@ module nts.uk.com.view.cmm018.shr {
     export module vmbase {
         //data register
         export class DataResigterDto{
-            lstDelete: Array<RootDeleteDto>;
-            objAddHist: IData; 
+            /**就業ルート区分: 会社(0)　－　職場(1)　－　社員(2)*/
+            rootType: number;
+            checkDelete: boolean;
+            checkAddHist: boolean;
+            checkAddRoot: boolean;
+            checkEdit: boolean;
+            workpplaceId: string;
+            employeeId: string;
+            lstDelete: Array<DataDeleteDto>;
+            objAddHist: IData;
+            constructor(rootType: number, checkDelete: boolean,
+                checkAddHist: boolean, checkAddRoot: boolean,
+                checkEdit: boolean, workpplaceId: string,
+                employeeId: string, lstDelete: Array<DataDeleteDto>,
+                objAddHist: IData){
+                    this.rootType = rootType;
+                    this.checkDelete = checkDelete;
+                    this.checkAddHist = checkAddHist;
+                    this.checkAddRoot = checkAddRoot;
+                    this.checkEdit = checkEdit;
+                    this.workpplaceId = workpplaceId;
+                    this.employeeId = employeeId;
+                    this.lstDelete = lstDelete;
+                    this.objAddHist = objAddHist;
+            }
         }
         //data root delete
-        export class RootDeleteDto{
+        export class DataDeleteDto{
             approvalId: string;
             historyId: string;  
             constructor(approvalId: string, historyId: string){
@@ -93,6 +116,7 @@ module nts.uk.com.view.cmm018.shr {
             check: number;
             /** まとめて設定モード(0) - 申請個別設定モード(1)*/
             mode: number;
+            lstAppType: Array<String>;
         }
         //ScreenI
         export class IData{
@@ -106,16 +130,19 @@ module nts.uk.com.view.cmm018.shr {
             mode: number;
             /** 履歴から引き継ぐか、初めから作成するかを選択する*/
             copyDataFlag: boolean;
+            lstAppType: Array<number>;
             constructor(startDate: string,
                 startDateOld: string,
                 check: number,
                 mode: number,
-                copyDataFlag: boolean){
+                copyDataFlag: boolean,
+                lstAppType: Array<number>){
                     this.startDate = startDate;
                     this.startDateOld = startDateOld;
                     this.check = check;
                     this.mode = mode;
                     this.copyDataFlag = copyDataFlag;
+                    this.lstAppType = lstAppType;
             }
         }
         //ScreenJ

@@ -11,6 +11,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.RegisterAppApprovalRootCommand;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.RegisterAppApprovalRootCommandHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommandHandler;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootDto;
@@ -35,9 +37,10 @@ public class WorkAppApprovalRootWebService extends WebService{
 	private EmployeeAdapterInforFinder employeeInfor;
 	@Inject
 	private UpdateWorkAppApprovalRByHistCommandHandler updateHist;
-	
 	@Inject
 	private EmployeeUnregisterFinder empUnregister;
+	@Inject
+	private RegisterAppApprovalRootCommandHandler updateRoot;
  
 	@POST
 	@Path("getbycom")
@@ -85,5 +88,10 @@ public class WorkAppApprovalRootWebService extends WebService{
 	public MasterApproverRootOutput masterInfor(MasterApproverRootDto dto) {
 		MasterApproverRootOutput data = empUnregister.masterInfors(dto);
 		return data;
+	}
+	@POST
+	@Path("updateRoot")
+	public void updateRoot(RegisterAppApprovalRootCommand command){
+		updateRoot.handle(command);
 	}
 }
