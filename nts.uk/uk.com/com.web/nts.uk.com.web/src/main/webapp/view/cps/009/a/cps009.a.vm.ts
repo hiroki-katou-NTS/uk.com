@@ -6,50 +6,40 @@ module nts.uk.com.view.cps009.a.viewmodel {
     import getShared = nts.uk.ui.windows.getShared;
     import setShared = nts.uk.ui.windows.setShared;
     import block = nts.uk.ui.block;
+    import modal = nts.uk.ui.windows.sub.modal;
 
     export class ViewModel {
         categoryList: KnockoutObservableArray<any> = ko.observableArray([]);
         itemList: KnockoutObservableArray<any> = ko.observableArray([]);
         initValueList: KnockoutObservableArray<any> = ko.observableArray([]);
         categoryId: KnockoutObservable<string> = ko.observable('');
-        ctgColums: KnockoutObservableArray<any> = ko.observableArray([
-            { headerText: 'id', key: 'id', width: 100, hidden: true },
-            { headerText: text('CPS009_10'), key: 'categoryCode', width: 80 },
-            { headerText: text('CPS006_11'), key: 'categoryName', width: 160 }
-        ]);
-        itemValueLst: KnockoutObservableArray<any> = ko.observableArray(
-            [new ItemModel('1', '基本給'),
-                new ItemModel('2', '役職手当'),
-                new ItemModel('3', '基本給2')]);
-        selectionColumns = [{ prop: 'id', length: 4 },
-            { prop: 'itemName', length: 8 }];
-        currentCategory: KnockoutObservable<CategoryInfoDetail> = ko.observable(new CategoryInfoDetail({
-            categoryCode: '', categoryName: '', itemList: []
-        }));
-
-        comboItems = [new ItemModel('1', '基本給'),
-            new ItemModel('2', '役職手当'),
-            new ItemModel('3', '基本給2')];
-        comboColumns = [{ prop: 'code', length: 4 },
-            { prop: 'name', length: 8 }];
+        ctgColums: KnockoutObservableArray<any>;
+        itemValueLst: KnockoutObservableArray<any>;
+        selectionColumns: any;
+        currentCategory: KnockoutObservable<CategoryInfoDetail>;
+        comboItems: any;
+        comboColumns: any;
         items = _(new Array(10)).map((x, i) => new GridItem(i + 1)).value();
         constructor() {
 
             let self = this;
 
+            self.initValue();
             self.start();
 
             self.categoryId.subscribe(function(value: string) {
-                console.log(value);
+
                 self.currentCategory().setData({
                     categoryCode: value,
-                    categoryName: value, 
+                    categoryName: value,
                     itemList: self.itemList()
                 });
+
                 self.currentCategory.valueHasMutated();
             });
 
         }
+
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
@@ -63,19 +53,84 @@ module nts.uk.com.view.cps009.a.viewmodel {
             return dfd.promise();
         }
 
-        openBDialog() {
-            
+        initValue() {
             let self = this;
-            
+
+            self.ctgColums = ko.observableArray([
+                { headerText: 'id', key: 'id', width: 100, hidden: true },
+                { headerText: text('CPS009_10'), key: 'categoryCode', width: 80 },
+                { headerText: text('CPS006_11'), key: 'categoryName', width: 160 }
+            ]);
+
+            self.itemValueLst = ko.observableArray(
+                [new ItemModel('1', '基本給'),
+                    new ItemModel('2', '役職手当'),
+                    new ItemModel('3', '基本給2')]);
+
+            self.selectionColumns = [{ prop: 'id', length: 4 },
+                { prop: 'itemName', length: 8 }];
+
+            self.currentCategory = ko.observable(new CategoryInfoDetail({
+                categoryCode: '', categoryName: '', itemList: []
+            }));
+
+            self.comboItems = [new ItemModel('1', '基本給'),
+                new ItemModel('2', '役職手当'),
+                new ItemModel('3', '基本給2')];
+
+            self.comboColumns = [{ prop: 'code', length: 4 },
+                { prop: 'name', length: 8 }];
+
+        }
+
+        // thiet lap item hang loat
+        openBDialog() {
+
+            let self = this;
+
             setShared('categoryInfo', self.currentCategory());
             block.invisible();
-            nts.uk.ui.windows.sub.modal('/view/cps/009/b/index.xhtml', { title: '' }).onClosed(function(): any {
+            modal('/view/cps/009/b/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                block.clear();
+            });
+
+        }
+
+        // copy initVal
+        openCDialog() {
+
+            let self = this;
+
+            setShared('categoryInfo', self.currentCategory());
+
+            block.invisible();
+
+            modal('/view/cps/009/c/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                block.clear();
+            });
+
+        }
+
+
+        // new initVal
+        openDDialog() {
+
+            let self = this;
+
+            setShared('categoryInfo', self.currentCategory());
+
+            block.invisible();
+
+            modal('/view/cps/009/d/index.xhtml', { title: '' }).onClosed(function(): any {
 
                 block.clear();
             });
 
         }
     }
+    
     export interface ICategoryInfo {
         id: string;
         categoryName: string;
@@ -93,6 +148,7 @@ module nts.uk.com.view.cps009.a.viewmodel {
         }
 
     }
+    
     export interface IItemInfo {
         id: string;
         itemCode: string;

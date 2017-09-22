@@ -1,35 +1,39 @@
-.coverBlock{text-align: center;}
-.coverBlock .tblInput{margin: auto}
-.coverBlock .tblInput td{ padding: 5px 0px;}
-.coverBlock .tblInput td input{
-	border-radius: 3px; 
-	border: 1px solid #7F7F7F;
-	width: 150px;
-	height: 27px;
+
+#functions-area .btnRight{
+	margin-right: 35px;
 }
-.tblInput .secondLine{font-size: 12px;}
-.btnGetEmlCode{
-	margin-top: 25px;
-	margin-bottom: 5px;
+#functions-area .btnLeft{
+	margin-left: 30px;
 }
-.caretGetEmlCode{
-	color: #AEEE60;
+#contents-area table.cover{
+	margin: 30px 10px 20px 30px;
 }
-.tblObtainedCode{
-	margin: 30px auto;
+#contents-area div.caret-background{
+	width: 250px;
+	height: 470px;
+	background-color: #E0F59E;
 }
-.caret-bottom:after {
-    border-top: 1em solid;
-    border-right: 2.5em solid transparent;
-    border-left: 2.5em solid transparent;
-    font-size: 20px;
+#contents-area div.leftCover{
+	padding-left: 25px;
+	padding-top: 10px;
 }
-.tblObtainedCode td{
-	border: 1px solid #7F7F7F;
-	width: 140px;
-	height: 33px;
+#contents-area div.leftCover input.txtSearch{
+	margin: 10px 0px;
 	padding-left: 10px;
+	width: 150px;
+	height: 28px;
+	border: 1px solid #7F7F7F;
+	border-radius: 3px;
 }
-.tblObtainedCode td:first-child{
-	background-color: #E6F4B5
+#singleList_container{
+	margin-top: 5px;
+}
+.blockTblCover{margin-top: 5px;}
+.leftGrid{
+	padding-left: 50px;
+	vertical-align: top;
+}
+.leftFormLabel{margin-bottom: 20px;}
+.txtCheckBox{
+	margin-top: 1px;
 }

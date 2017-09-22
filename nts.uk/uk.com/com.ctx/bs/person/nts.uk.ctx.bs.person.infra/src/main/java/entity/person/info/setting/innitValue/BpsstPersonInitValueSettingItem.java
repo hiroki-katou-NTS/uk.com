@@ -1,4 +1,4 @@
-package entity.person.info.setting;
+package entity.person.info.setting.innitValue;
 
 import java.io.Serializable;
 
@@ -20,19 +20,36 @@ public class BpsstPersonInitValueSettingItem extends UkJpaEntity implements Seri
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public BpsstPersonInitValueSettingItemPk bpsstPersonInitValueSettingItemPk;
+	public BpsstPersonInitValueSettingItemPk settingItemPk;
 
 	@Basic(optional = false)
 	@Column(name = "PER_INIT_SET_CTG_ID")
-	public String personUnitValueSettingCtgId;
+	public String settingCtgId;
 
 	@Basic(optional = false)
-	@Column(name = "REFERENCE_METHOD")
-	public int referenceMethod;
+	@Column(name = "REF_METHOD_ATR")
+	public int refMethodAtr;
+	
+	@Basic(optional = true)
+	@Column(name = "SAVE_DATA_TYPE")
+	public int saveDataType;
+	
+	@Basic(optional = true)
+	@Column(name = "STRING_VAL")
+	public String stringValue;
+	
+	@Basic(optional = true)
+	@Column(name = "INT_VAL")
+	public int intValue;
+	
+	@Basic(optional = true)
+	@Column(name = "DATE_VAL")
+	public int dateValue;
+	
 	
 	@Override
 	protected Object getKey() {
-		return bpsstPersonInitValueSettingItemPk;
+		return settingItemPk;
 	}
 
 }
