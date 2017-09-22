@@ -44,6 +44,7 @@
 .avatar-group {
 	width: 108px;
 	height: 147px;
+	cursor: pointer;
 }
 
 .person-group {
@@ -159,11 +160,11 @@
 	padding: 5px;
 }
 
-.form-group {
+.form-group:not(.item-classification) {
 	margin-bottom: 5px;
 }
 
-.form-group>* {
+.form-group:not(.item-classification)>* {
 	display: inline-block;
 	vertical-align: middle;
 }

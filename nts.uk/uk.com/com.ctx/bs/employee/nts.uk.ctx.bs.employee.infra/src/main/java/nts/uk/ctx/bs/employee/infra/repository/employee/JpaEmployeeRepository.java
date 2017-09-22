@@ -98,8 +98,6 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		if (entity != null) {
 			person = toDomainEmployee(entity);
 
-			List<JobEntryHistory> listJobEntry = new ArrayList<>();
-
 			if (!entity.listEntryHist.isEmpty()) {
 				person.setListEntryJobHist(
 						entity.listEntryHist.stream().map(c -> toDomainJobEntryHist(c)).collect(Collectors.toList()));
