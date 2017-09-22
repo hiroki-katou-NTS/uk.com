@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 
 @Getter
@@ -16,4 +17,5 @@ public class GoBackDirectAppSet {
 	String appReasonId;
 	String appReason;
 	String appDate;
+	AppCommonSettingOutput appCommonSetOut;
 }

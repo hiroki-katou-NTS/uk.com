@@ -6,6 +6,9 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.adapter.WorkLocationAdapter;
@@ -37,6 +40,9 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 
 	@Inject
 	private ApplicationRepository appRepo;
+	
+	@Inject 
+	private BeforePrelaunchAppCommonSet preLaunch;
 
 	@Override
 	public GoBackDirectAppSet getGoBackDirectAppSet(String appID) {
@@ -67,6 +73,15 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		}
 		appDate = app.getApplicationDate().toString("yyyy/MM/dd");
 		/**
+		 * Get 1.1
+		 */
+		AppCommonSettingOutput commonSettting = preLaunch.prelaunchAppCommonSetService(
+				companyID, 
+				app.getApplicantSID(), 
+				1, 
+				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, 
+				app.getApplicationDate());
+		/**
 		 * 
 		 */
 		data.goBackDirectly = goBackDirect;
@@ -78,6 +93,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		data.appReason = appReason;
 		data.prePostAtr = prePostAtr;
 		data.appDate = appDate;
+		data.appCommonSetOut = commonSettting;
 		return data;
 	}
 }
