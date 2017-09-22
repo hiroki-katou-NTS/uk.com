@@ -216,7 +216,7 @@
 											data-bind="checkedValue: 2, checked: specialVacationMethod, enable: true" />
 											<span class="box"></span><span class="label">#{i18n.getText('KMF004_44')}</span>
 											<span class="label">#{i18n.getText('KMF004_45')}</span>
-										</label> <input style="width: 40px;"
+										</label> <input style="width: 40px;" id="specialVacationMonths"
 											data-bind="ntsNumberEditor: {
 												value: specialVacationMonths,
 												option: ko.mapping.fromJS({
@@ -225,7 +225,7 @@
 												required: ko.computed(function(){ return specialVacationMethod()==2 &amp;&amp; $parent.inp_grantMethod() == 1;}),
 												enable: specialVacationMethod()==2,
 												name: '#[KMF004_45]'}" />
-										<input style="width: 40px;"
+										<input style="width: 40px;" id="specialVacationYears"
 											data-bind="ntsNumberEditor: {
 												value: specialVacationYears,
 												option: ko.mapping.fromJS({
@@ -295,7 +295,7 @@
 								</div>
 								<div>
 									<div style="" data-bind="ntsCheckBox: { checked: useAge }">#{i18n.getText('KMF004_56')}</div>
-									<input style="width: 30px; margin-left: 66px; margin-top: 5px;"
+									<input style="width: 30px; margin-left: 66px; margin-top: 5px;" id="limitAgeFrom"
 										data-bind="ntsNumberEditor: {
 												value: limitAgeFrom,
 												option: ko.mapping.fromJS({
@@ -304,7 +304,7 @@
 												required: ko.computed(function(){ return useAge()==1 &amp;&amp; $parent.inp_grantMethod() == 1;}),
 												enable: useAge()==1,
 												name: '#[KMF004_56]'}" />
-									<span >～</span> <input style="width: 30px; margin-top: 3px;"
+									<span >～</span> <input style="width: 30px; margin-top: 3px;"  id="limitAgeTo"
 										data-bind="ntsNumberEditor: {
 												value: limitAgeTo,
 												option: ko.mapping.fromJS({

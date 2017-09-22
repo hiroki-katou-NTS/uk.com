@@ -78,8 +78,8 @@ public class SpecialHolidayWebService extends WebService{
 
 	@Path("update")
 	@POST
-	public void update(AddSpecialHolidayCommand command) {
-		this.updateSpecialHolidayCommandHandler.handle(command);
+	public JavaTypeResult<List<String>> update(AddSpecialHolidayCommand command) {
+		return new JavaTypeResult<List<String>>(this.updateSpecialHolidayCommandHandler.handle(command));
 	}
 
 	@Path("delete")
