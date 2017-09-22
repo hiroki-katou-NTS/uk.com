@@ -54,8 +54,8 @@ public class FileUtil {
         String newLineCode = getNewLineCode();
         
         // get csv reader
-        NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().withCheckColumnsSize(standardColumn)
-                .skipEmptyLines(true).withChartSet(charset)
+        NtsCsvReader csvReader = NtsCsvReader.newReader().withNoHeader().skipEmptyLines(true)
+                .withCheckColumnsSize(standardColumn).withChartSet(charset)
                 .withFormat(CSVFormat.EXCEL.withRecordSeparator(newLineCode));
         
         Map<Integer, List<String>> mapResult = new HashMap<>();
