@@ -2677,35 +2677,14 @@ var nts;
             }
             request.syncAjax = syncAjax;
             function uploadFile(data, option) {
-                var dfd = $.Deferred();
-                $.ajax({
+                return $.ajax({
                     url: "/nts.uk.com.web/webapi/ntscommons/arc/filegate/upload",
                     type: 'POST',
                     data: data,
                     cache: false,
                     contentType: false,
-                    processData: false,
-                    success: function (data, textStatus, jqXHR) {
-                        if (option.onSuccess) {
-                            option.onSuccess();
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        if (option.onFail) {
-                            option.onFail();
-                        }
-                    }
-                }).done(function (res) {
-                    if (res !== undefined && res.businessException) {
-                        dfd.reject(res);
-                    }
-                    else {
-                        dfd.resolve(res);
-                    }
-                }).fail(function (res) {
-                    dfd.reject(res);
+                    processData: false
                 });
-                return dfd.promise();
             }
             request.uploadFile = uploadFile;
             function exportFile(path, data, options) {
@@ -2788,6 +2767,10 @@ var nts;
                     return dfd.promise();
                 }
                 specials.donwloadFile = donwloadFile;
+                function isFileExist(fileId) {
+                    return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
+                }
+                specials.isFileExist = isFileExist;
             })(specials = request.specials || (request.specials = {}));
             function jump(path, data) {
                 uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
