@@ -11,7 +11,7 @@ module nts.uk.ui.koExtentions {
 
         init($input: JQuery, data: any) {
             var self = this;
-            var value: (newText: string) => {} = data.value;
+            var value: KnockoutObservable<any> = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
             var immediate: boolean = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');

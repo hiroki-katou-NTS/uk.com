@@ -667,7 +667,7 @@ var nts;
                     result.push([p, key[p]]);
                 }
                 result.sort(function (a, b) {
-                    return a > b;
+                    return (a > b) ? 1 : (a < b) ? -1 : 0;
                 });
                 return result.toString();
             }
@@ -3911,18 +3911,6 @@ var nts;
             ui.localize = localize;
             var dialog;
             (function (dialog) {
-                var DialogHeader = (function () {
-                    function DialogHeader() {
-                    }
-                    return DialogHeader;
-                }());
-                dialog.DialogHeader = DialogHeader;
-                var Message = (function () {
-                    function Message() {
-                    }
-                    return Message;
-                }());
-                dialog.Message = Message;
                 function getMaxZIndex() {
                     var overlayElements = parent.$(".ui-widget-overlay");
                     var max = 12000;
@@ -4803,13 +4791,9 @@ var nts;
                             _.forEach(columns, function (item, i) {
                                 var charLength = item.length;
                                 var width = charLength * maxWidthCharacter + 10;
-                                $dropDownOptions.find('.nts-combo-column-' + i).width(width);
-                                if (i != columns.length - 1) {
-                                    $dropDownOptions.find('.nts-combo-column-' + i).css({ 'float': 'left' });
-                                }
+                                $dropDownOptions.find('.nts-combo-column-' + i).css("width", width);
                                 totalWidth += width + 10;
                             });
-                            $dropDownOptions.find('.nts-combo-item').css({ 'min-width': totalWidth });
                             container.css({ 'min-width': totalWidth });
                         }
                         container.data("columns", columns);

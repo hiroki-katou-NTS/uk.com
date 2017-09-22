@@ -2428,25 +2428,27 @@ button.nts-switch-button[disabled]:hover {
 /* line 8, ../sass/components/_combobox.scss */
 .nts-combo-item {
   height: 20px;
+  font-size: 0px;
+  white-space: nowrap;
 }
-
-/* line 11, ../sass/components/_combobox.scss */
-.nts-column {
+/* line 13, ../sass/components/_combobox.scss */
+.nts-combo-item .nts-column {
+  display: inline-block;
   height: 20px;
   overflow: hidden;
   margin-right: 5px;
 }
 
-/* line 18, ../sass/components/_combobox.scss */
+/* line 22, ../sass/components/_combobox.scss */
 .ui-state-active {
   border-color: #0096f2;
 }
-/* line 21, ../sass/components/_combobox.scss */
+/* line 25, ../sass/components/_combobox.scss */
 .ui-state-active:focus {
   border-color: #0096f2;
 }
 
-/* line 27, ../sass/components/_combobox.scss */
+/* line 31, ../sass/components/_combobox.scss */
 .compact-grid .ui-igcombo-wrapper {
   height: 27px;
 }
