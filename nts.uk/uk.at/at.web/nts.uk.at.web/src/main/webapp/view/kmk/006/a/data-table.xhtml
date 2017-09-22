@@ -17,7 +17,7 @@
 					</div>
 					<div tabindex="-1" class="pull-left helpButton">
 						<button tabindex="-1"
-							data-bind="ntsHelpButton: {image: 'image/img002.png', position: 'right top', enable: true }">?</button>
+							data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_4.png', position: 'right top', enable: true }">?</button>
 					</div>
 					<br></br> <br></br> <br></br>
 					<div>
@@ -29,7 +29,7 @@
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
-									<div>#{i18n.getText('KMK006_19')}</div>
+									<div  class="inputDivLabelMain">#{i18n.getText('KMK006_19')}</div>
 								</td>
 								<td>
 									<div id="combo-box" tabindex="6"
@@ -38,7 +38,7 @@
 									options: autoCalAtrOvertimeEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumNorEarAtr, 
  									enable: true,
 									optionsText: 'localizedName',
 									columns: [
@@ -55,7 +55,7 @@
 									options: timeLimitUpperLimitEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumNorEarLi, 
  									enable: true,
 									optionsText: 'localizedName',
 									columns: [
@@ -76,7 +76,7 @@
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
-									<div>#{i18n.getText('KMK006_19')}</div>
+									<div class="inputDivLabelMain" >#{i18n.getText('KMK006_19')}</div>
 								</td>
 								<td>
 									<div id="combo-box" tabindex="6"
@@ -85,7 +85,7 @@
 									options: autoCalAtrOvertimeEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumNorEarMidAtr, 
  									enable: true,
 									optionsText: 'localizedName',
 									columns: [
@@ -102,7 +102,7 @@
 									options: timeLimitUpperLimitEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumNorEarMidLi, 
  									enable: true,
 									optionsText: 'localizedName',
 									columns: [
@@ -132,7 +132,7 @@
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
-									<div>#{i18n.getText('KMK006_19')}</div>
+									<div class="inputDivLabelMain" >#{i18n.getText('KMK006_19')}</div>
 								</td>
 								<td>
 									<div id="combo-box" tabindex="6"
@@ -141,7 +141,7 @@
 									options: autoCalAtrOvertimeEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumNorNorAtr, 
  									enable: true,
 									optionsText: 'localizedName',
 									columns: [
@@ -158,7 +158,7 @@
 									options: timeLimitUpperLimitEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumNorNorLi, 
  									enable: true,
 									optionsText: 'localizedName',
 									columns: [
@@ -179,7 +179,7 @@
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
-									<div>#{i18n.getText('KMK006_19')}</div>
+									<div class="inputDivLabelMain" >#{i18n.getText('KMK006_19')}</div>
 								</td>
 								<td>
 									<div id="combo-box" tabindex="6"
@@ -188,7 +188,7 @@
 									options: autoCalAtrOvertimeEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumNorNorMidAtr, 
  									enable: true,
 									optionsText: 'localizedName',
 									columns: [
@@ -205,7 +205,7 @@
 									options: timeLimitUpperLimitEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumNorNorMidLi, 
  									enable: true,
 									optionsText: 'localizedName',
 									columns: [
@@ -232,7 +232,7 @@
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
-									<div>#{i18n.getText('KMK006_19')}</div>
+									<div class="inputDivLabelMain" >#{i18n.getText('KMK006_19')}</div>
 								</td>
 								<td>
 									<div id="combo-box" tabindex="6"
@@ -241,7 +241,7 @@
 									options: autoCalAtrOvertimeEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumNorLegAtr, 
 									optionsText: 'localizedName',
 									columns: [
 										{ prop: 'localizedName', length: 10 },
@@ -257,7 +257,7 @@
 									options: timeLimitUpperLimitEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumNorLegLi, 
 									optionsText: 'localizedName',
 									columns: [
 										{ prop: 'localizedName', length: 10 },
@@ -277,7 +277,7 @@
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
-									<div>#{i18n.getText('KMK006_19')}</div>
+									<div class="inputDivLabelMain" >#{i18n.getText('KMK006_19')}</div>
 								</td>
 								<td>
 									<div id="combo-box" tabindex="6"
@@ -286,7 +286,7 @@
 									options: autoCalAtrOvertimeEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumNorLegMidAtr, 
 									optionsText: 'localizedName',
 									columns: [
 										{ prop: 'localizedName', length: 10 },
@@ -302,7 +302,7 @@
 									options: timeLimitUpperLimitEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumNorLegMidLi, 
 									optionsText: 'localizedName',
 									columns: [
 										{ prop: 'localizedName', length: 10 },
@@ -328,7 +328,7 @@
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
-									<div>#{i18n.getText('KMK006_19')}</div>
+									<div class="inputDivLabelMain" >#{i18n.getText('KMK006_19')}</div>
 								</td>
 								<td>
 									<div id="combo-box" tabindex="6"
@@ -337,7 +337,7 @@
 									options: autoCalAtrOvertimeEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumFleTimeAtr, 
 									optionsText: 'localizedName',
 									columns: [
 										{ prop: 'localizedName', length: 10 },
@@ -353,7 +353,7 @@
 									options: timeLimitUpperLimitEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumFleTimeLi, 
 									optionsText: 'localizedName',
 									columns: [
 										{ prop: 'localizedName', length: 10 },
@@ -373,7 +373,7 @@
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
-									<div>#{i18n.getText('KMK006_19')}</div>
+									<div class="inputDivLabelMain" >#{i18n.getText('KMK006_19')}</div>
 								</td>
 								<td>
 									<div id="combo-box" tabindex="6"
@@ -382,7 +382,7 @@
 									options: autoCalAtrOvertimeEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumFleTimeNigAtr, 
 									optionsText: 'localizedName',
 									columns: [
 										{ prop: 'localizedName', length: 10 },
@@ -398,7 +398,7 @@
 									options: timeLimitUpperLimitEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumFleTimeNigLi, 
 									optionsText: 'localizedName',
 									columns: [
 										{ prop: 'localizedName', length: 10 },
@@ -428,7 +428,7 @@
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
-									<div>#{i18n.getText('KMK006_19')}</div>
+									<div class="inputDivLabelMain" >#{i18n.getText('KMK006_19')}</div>
 								</td>
 								<td>
 									<div id="combo-box" tabindex="6"
@@ -437,7 +437,7 @@
 									options: autoCalAtrOvertimeEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumResResAtr, 
 									optionsText: 'localizedName',
 									columns: [
 										{ prop: 'localizedName', length: 10 },
@@ -453,7 +453,7 @@
 									options: timeLimitUpperLimitEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumResResLi, 
 									optionsText: 'localizedName',
 									columns: [
 										{ prop: 'localizedName', length: 10 },
@@ -473,7 +473,7 @@
 							data-bind="attr: {'name': nts.uk.resource.getText('KSM001_30')}">
 							<tr class="row">
 								<td>
-									<div>#{i18n.getText('KMK006_19')}</div>
+									<div class="inputDivLabelMain" >#{i18n.getText('KMK006_19')}</div>
 								</td>
 								<td>
 									<div id="combo-box" tabindex="6"
@@ -482,7 +482,7 @@
 									options: autoCalAtrOvertimeEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumResLatAtr, 
 									optionsText: 'localizedName',
 									columns: [
 										{ prop: 'localizedName', length: 10 },
@@ -498,7 +498,7 @@
 									options: timeLimitUpperLimitEnum,
 									optionsValue: 'value',
 									visibleItemsCount: 3,
- 									value: valueEnum, 
+ 									value: valueEnumResLatLi, 
 									optionsText: 'localizedName',
 									columns: [
 										{ prop: 'localizedName', length: 10 },

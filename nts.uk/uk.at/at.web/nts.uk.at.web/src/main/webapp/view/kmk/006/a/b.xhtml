@@ -15,28 +15,47 @@
 			<button tabindex="4" data-bind="click: openDialogUsageSettingModel">#{i18n.getText('KSM001_3')}</button>
 		</ui:define>
 		<ui:define name="extended-111">
-			<div tabindex="6" id="comboTargetYear"
-				data-bind="ntsComboBox: {
-				name: '#[KSM001_4]',
-				options: lstTargetYear,
-				optionsValue: 'year',
-				visibleItemsCount: 5,
-				value: companyEstablishmentModel.selectedYear,
-				optionsText: 'year',
-				editable: false,
-				enable: true,
-				columns: [
-					{ prop: 'year', length: 6 }
-				]}"></div>
 		</ui:define>
 		<ui:define name="extended-222">
+			<div class="personalEstablishment">
+				<table class="table-label">
+					<tr style="margin-top: 10px">
+						<td class="pull-left">
+							<div class="lableContent" style="margin-left: 20px;">
+								<label>#{i18n.getText('KMK006_13')}</label>
+							</div>
+						</td>
+						<td class="pull-right">
+							<div class="pull-left">
+								<div data-bind="ntsFormLabel: {}">
+									<label>#{i18n.getText('KMK006_17')}</label>
+								</div>
+							</div>
+							<div tabindex="-1" class="pull-left helpButton">
+								<button tabindex="-1"
+									data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_2.png', position: 'right top', enable: true }">?</button>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="pull-left"></td>
+						<td class="pull-right">
+							<div class="pull-left">
+								<div data-bind="ntsFormLabel: {}">
+									<label>#{i18n.getText('KMK006_17')}</label>
+								</div>
+							</div>
+							<div tabindex="-1" class="pull-left helpButton">
+								<button tabindex="-1"
+									data-bind="ntsHelpButton: {image: 'image/IMG_KMK006_3.png', position: 'right top', enable: true }">?</button>
+							</div>
+						</td>
+					</tr>
+				</table>
 
-			<div class="lableContent" style="margin-left: 20px;">
-				<label>#{i18n.getText('KMK006_13')}</label>
-			</div>
-			
-			<div data-bind="ifnot: $parent.isLoading">
-				<ui:include src="data-table.xhtml" />
+				<div data-bind="ifnot: $parent.isLoading">
+					<ui:include src="data-table.xhtml" />
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

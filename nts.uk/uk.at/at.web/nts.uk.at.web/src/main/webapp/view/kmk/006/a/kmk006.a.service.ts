@@ -23,8 +23,41 @@ module nts.uk.at.view.kmk006.a {
             findEnumTimeLimitUpperLimitSetting: "ctx/at/schedule/shift/autocal/find/autocaltimelimitsetting",
             findEnumUseUnitOvertimeSetting: "ctx/at/schedule/shift/autocal/find/autocaluseunitovertimesetting",
             getComAutoCal: "ctx/at/schedule/shift/autocalcom/getautocalcom",
-            saveComAutoCal: "ctx/at/schedule/shift/autocalcom/save"
+            saveComAutoCal: "ctx/at/schedule/shift/autocalcom/save",
+            saveJobAutoCal: "ctx/at/schedule/shift/autocaljob/save",
+            saveWkpAutoCal: "ctx/at/schedule/shift/autocalwkp/save",
+            saveWkpJobAutoCal: "ctx/at/schedule/shift/autocalwkpjob/save",
+            getJobAutoCal: "ctx/at/schedule/shift/autocaljob/getautocaljob",
+            getWkpAutoCal: "ctx/at/schedule/shift/autocalwkp/getautocalwkp",
+            getWkpJobAutoCal: "ctx/at/schedule/shift/autocalwkpjob/getautocalwkpjob",
+            deleteJobAutoCal: "ctx/at/schedule/shift/autocaljob/delete",
+            deleteWkpAutoCal: "ctx/at/schedule/shift/autocalwkp/delete",
+            deleteWkpJobAutoCal: "ctx/at/schedule/shift/autocalwkpjob/delete"
         }
+
+        /**
+        * delete divergence reason
+       */
+        export function deleteJobAutoCal(jobId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", paths.deleteJobAutoCal + '/' + jobId);
+        }
+
+
+        /**
+        * delete divergence reason
+       */
+        export function deleteWkpAutoCal(wkpId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", paths.deleteWkpAutoCal + '/' + wkpId);
+        }
+
+
+        /**
+        * delete divergence reason
+       */
+        export function deleteWkpJobAutoCal(wkpId: string,jobId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax("at", paths.deleteWkpJobAutoCal + '/' + wkpId + '/' + jobId);
+        }
+
 
         export function findEnumAutoCalAtrOvertime(): JQueryPromise<Array<model.Enum>> {
             return nts.uk.request.ajax(paths.findEnumAutoCalAtrOvertime);
@@ -48,13 +81,40 @@ module nts.uk.at.view.kmk006.a {
         export function saveComAutoCal(command: model.ComAutoCalSettingDto): JQueryPromise<void> {
             return nts.uk.request.ajax("at", paths.saveComAutoCal, command);
         }
-
         /**
-        * get all total times
-        */
+      * save
+      */
+        export function saveJobAutoCal(command: model.JobAutoCalSettingDto): JQueryPromise<void> {
+            return nts.uk.request.ajax("at", paths.saveJobAutoCal, command);
+        }
+        /**
+      * save
+      */
+        export function saveWkpAutoCal(command: model.WkpAutoCalSettingDto): JQueryPromise<void> {
+            return nts.uk.request.ajax("at", paths.saveWkpAutoCal, command);
+        }
+        /**
+      * save
+      */
+        export function saveWkpJobAutoCal(command: model.WkpJobAutoCalSettingDto): JQueryPromise<void> {
+            return nts.uk.request.ajax("at", paths.saveWkpJobAutoCal, command);
+        }
+
         export function getComAutoCal(): JQueryPromise<model.ComAutoCalSettingDto> {
             return nts.uk.request.ajax("at", paths.getComAutoCal);
         }
+
+        export function getJobAutoCal(jobId: string): JQueryPromise<model.JobAutoCalSettingDto> {
+            return nts.uk.request.ajax("at", paths.getJobAutoCal + '/' + jobId);
+        }
+
+        export function getWkpAutoCal(wkpId: string): JQueryPromise<model.WkpAutoCalSettingDto> {
+            return nts.uk.request.ajax("at", paths.getWkpAutoCal + '/' + wkpId);
+        }
+        export function getWkpJobAutoCal(wkpId: string, jobId: string): JQueryPromise<model.WkpJobAutoCalSettingDto> {
+            return nts.uk.request.ajax("at", paths.getWkpJobAutoCal + '/' + wkpId + '/' + jobId);
+        }
+
 
 
 
@@ -178,6 +238,28 @@ module nts.uk.at.view.kmk006.a {
 
         export module model {
             //modelauto
+
+            export interface WkpJobAutoCalSettingDto {
+                wkpId: string;
+                jobId: string;
+                normalOTTime: AutoCalOvertimeSettingDto;
+                flexOTTime: AutoCalFlexOvertimeSettingDto;
+                restTime: AutoCalRestTimeSettingDto;
+            }
+
+            export interface WkpAutoCalSettingDto {
+                wkpId: string;
+                normalOTTime: AutoCalOvertimeSettingDto;
+                flexOTTime: AutoCalFlexOvertimeSettingDto;
+                restTime: AutoCalRestTimeSettingDto;
+            }
+
+            export interface JobAutoCalSettingDto {
+                jobId: string;
+                normalOTTime: AutoCalOvertimeSettingDto;
+                flexOTTime: AutoCalFlexOvertimeSettingDto;
+                restTime: AutoCalRestTimeSettingDto;
+            }
 
             export interface ComAutoCalSettingDto {
                 normalOTTime: AutoCalOvertimeSettingDto;

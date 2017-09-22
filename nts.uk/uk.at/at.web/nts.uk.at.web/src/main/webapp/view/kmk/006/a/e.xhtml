@@ -7,15 +7,15 @@
 <body>
 	<ui:composition template="base.xhtml">
 		<ui:define name="title">
-			<span class="title">#{i18n.getText('Com_Employment')}</span>
+			<span class="title">#{i18n.getText('Com_Person')}</span>
 		</ui:define>
 		<ui:define name="extended-action-bar">
 			<button tabindex="1" class="proceed"
-				data-bind="click: saveWkpAutoCal">#{i18n.getText('KSM001_1')}</button>
+				data-bind="click: saveWkpJobAutoCal">#{i18n.getText('KSM001_1')}</button>
 			<button tabindex="3"
-				data-bind="enable: employmentEstablishmentModel.isEnableDelete">#{i18n.getText('KSM001_50')}</button>
+				data-bind="enable: personalEstablishmentModel.isEnableDelete">#{i18n.getText('KSM001_50')}</button>
 			<button tabindex="2" class="danger"
-				data-bind="enable: employmentEstablishmentModel.isEnableDelete, click: deleteEmploymentEstablishment">#{i18n.getText('KSM001_2')}</button>
+				data-bind="enable: personalEstablishmentModel.isEnableDelete, click: deletePersonalEstablishment">#{i18n.getText('KSM001_2')}</button>
 		</ui:define>
 		<ui:define name="extended-111">
 			<div tabindex="6" id="comboTargetYear"
@@ -24,7 +24,7 @@
 				options: lstTargetYear,
 				optionsValue: 'year',
 				visibleItemsCount: 5,
-				value: employmentEstablishmentModel.selectedYear,
+				value: personalEstablishmentModel.selectedYear,
 				optionsText: 'year',
 				editable: false,
 				enable: true,
@@ -33,14 +33,19 @@
 				]}"></div>
 		</ui:define>
 		<ui:define name="extended-222">
-			<div id="tree-grid-srcc" style="margin-left: 30px; margin-top: 35px"></div>
-			<div class="personalEstablishment">
+			<div class="pull-right"
+				style="margin-top: 10px; margin-right: 50px; margin-bottom: 50px; margin-left: 80px">
+				<div style="margin-top: 30px" id="tree-grid"></div>
+				<div style="margin-top: 30px" id="jobtitles"></div>
+			</div>
+
+			<div class="pull-left">
 				<table class="table-label">
 					<tr style="margin-top: 10px">
 						<td class="pull-left">
 							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_11')}</div>
-							<span data-bind="text: valueEnumNorNorLi"></span> <span
-							data-bind="text: valueEnumNorNorLi"></span>
+							<span data-bind="text: valueEnumNorNorLi"></span>
+							<span data-bind="text: valueEnumNorNorLi"></span>
 						</td>
 						<td class="pull-right">
 							<div class="pull-left">
@@ -55,7 +60,11 @@
 						</td>
 					</tr>
 					<tr>
-						<td class="pull-left"></td>
+						<td class="pull-left">
+							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_11')}</div>
+							<span data-bind="text: valueEnumNorNorLi"></span>
+							<span data-bind="text: valueEnumNorNorLi"></span>
+						</td>
 						<td class="pull-right">
 							<div class="pull-left">
 								<div data-bind="ntsFormLabel: {}">

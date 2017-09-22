@@ -17,7 +17,9 @@ module nts.uk.at.view.kmk006.a {
     import AutoCalRestTimeSettingDto = service.model.AutoCalRestTimeSettingDto;
     import AutoCalFlexOvertimeSettingDto = service.model.AutoCalFlexOvertimeSettingDto;
     import AutoCalSettingDto = service.model.AutoCalSettingDto;
-
+    import JobAutoCalSettingDto = service.model.JobAutoCalSettingDto;
+    import WkpAutoCalSettingDto = service.model.WkpAutoCalSettingDto;
+    import WkpJobAutoCalSettingDto = service.model.WkpJobAutoCalSettingDto;
 
 
 
@@ -29,10 +31,81 @@ module nts.uk.at.view.kmk006.a {
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             treeGrid: TreeComponentOption;
             autoCalAtrOvertimeEnum: Array<Enum>;
-            valueEnum: KnockoutObservable<number>;
             selectedTab: KnockoutObservable<string>;
             timeLimitUpperLimitEnum: Array<Enum>;
             itemComAutoCalModel: ComAutoCalSettingModel;
+            itemWkpAutoCalModel: WkpAutoCalSettingModel;
+            itemJobAutoCalModel: JobAutoCalSettingModel;
+            itemWkpJobAutoCalModel: WkpJobAutoCalSettingModel;
+
+            // define value Enum
+            valueEnumNorEarLi: KnockoutObservable<number>;
+            valueEnumNorEarAtr: KnockoutObservable<number>;
+            valueEnumNorEarMidLi: KnockoutObservable<number>;
+            valueEnumNorEarMidAtr: KnockoutObservable<number>;
+            valueEnumNorNorLi: KnockoutObservable<number>;
+            valueEnumNorNorAtr: KnockoutObservable<number>;
+            valueEnumNorNorMidLi: KnockoutObservable<number>;
+            valueEnumNorNorMidAtr: KnockoutObservable<number>;
+            valueEnumNorLegLi: KnockoutObservable<number>;
+            valueEnumNorLegAtr: KnockoutObservable<number>;
+            valueEnumNorLegMidLi: KnockoutObservable<number>;
+            valueEnumNorLegMidAtr: KnockoutObservable<number>;
+            valueEnumFleTimeLi: KnockoutObservable<number>;
+            valueEnumFleTimeAtr: KnockoutObservable<number>;
+            valueEnumFleTimeNigLi: KnockoutObservable<number>;
+            valueEnumFleTimeNigAtr: KnockoutObservable<number>;
+            valueEnumResResLi: KnockoutObservable<number>;
+            valueEnumResResAtr: KnockoutObservable<number>;
+            valueEnumResLatLi: KnockoutObservable<number>;
+            valueEnumResLatAtr: KnockoutObservable<number>;
+
+            listComponentOption: any;
+            selectedCode: KnockoutObservable<string>;
+            multiSelectedCode: KnockoutObservableArray<string>;
+            isShowAlreadySet: KnockoutObservable<boolean>;
+            isDialog: KnockoutObservable<boolean>;
+            isShowNoSelectRow: KnockoutObservable<boolean>;
+            isMultiSelect: KnockoutObservable<boolean>;
+            jobTitleList: KnockoutObservableArray<UnitModel>;
+            selectedCurrentJob: KnockoutObservable<string>;
+            selectedCurrentWkp: KnockoutObservable<string>;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -190,21 +263,106 @@ module nts.uk.at.view.kmk006.a {
                 self.alreadySettingList = ko.observableArray([]);
                 self.treeGrid = {
                     isShowAlreadySet: true,
-                    isMultiSelect: true,
+                    isMultiSelect: false,
                     treeType: TreeType.WORK_PLACE,
                     selectedWorkplaceId: self.multiSelectedWorkplaceId,
                     baseDate: self.baseDate,
                     selectType: SelectionType.SELECT_FIRST_ITEM,
                     isShowSelectButton: true,
-                    isDialog: false,
+                    isDialog: true,
                     alreadySettingList: self.alreadySettingList,
                     maxRows: 10
                 };
-                self.autoCalAtrOvertimeEnum = [];
-                self.valueEnum = ko.observable(2);
-                self.selectedTab = ko.observable('tab-1');
-                self.timeLimitUpperLimitEnum = [];
                 self.itemComAutoCalModel = new ComAutoCalSettingModel();
+                self.itemJobAutoCalModel = new JobAutoCalSettingModel();
+                self.itemWkpAutoCalModel = new WkpAutoCalSettingModel();
+                self.itemWkpJobAutoCalModel = new WkpJobAutoCalSettingModel();
+                self.selectedTab = ko.observable('tab-1');
+
+                self.autoCalAtrOvertimeEnum = [];
+
+                self.timeLimitUpperLimitEnum = [];
+                self.valueEnumNorEarLi = ko.observable(2);
+                self.valueEnumNorEarAtr = ko.observable(2);
+                self.valueEnumNorEarMidLi = ko.observable(2);
+                self.valueEnumNorEarMidAtr = ko.observable(2);
+                self.valueEnumNorNorLi = ko.observable(2);
+                self.valueEnumNorNorAtr = ko.observable(2);
+                self.valueEnumNorNorMidLi = ko.observable(2);
+                self.valueEnumNorNorMidAtr = ko.observable(2);
+                self.valueEnumNorLegLi = ko.observable(2);
+                self.valueEnumNorLegAtr = ko.observable(2);
+                self.valueEnumNorLegMidLi = ko.observable(2);
+                self.valueEnumNorLegMidAtr = ko.observable(2);
+                self.valueEnumFleTimeLi = ko.observable(2);
+                self.valueEnumFleTimeAtr = ko.observable(2);
+                self.valueEnumFleTimeNigLi = ko.observable(2);
+                self.valueEnumFleTimeNigAtr = ko.observable(2);
+                self.valueEnumResResLi = ko.observable(2);
+                self.valueEnumResResAtr = ko.observable(2);
+                self.valueEnumResLatLi = ko.observable(2);
+                self.valueEnumResLatAtr = ko.observable(2);
+
+                self.selectedCode = ko.observable('1');
+                self.selectedCurrentJob = ko.observable('1');
+                self.selectedCurrentWkp = ko.observable('1');
+                self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
+                self.isShowAlreadySet = ko.observable(false);
+                self.alreadySettingList = ko.observableArray([
+                    { code: '1', isAlreadySetting: true },
+                    { code: '2', isAlreadySetting: true }
+                ]);
+                self.isDialog = ko.observable(false);
+                self.isShowNoSelectRow = ko.observable(false);
+                self.isMultiSelect = ko.observable(false);
+                self.listComponentOption = {
+                    baseDate: self.baseDate,
+                    isShowAlreadySet: self.isShowAlreadySet(),
+                    isMultiSelect: self.isMultiSelect(),
+                    listType: ListType.JOB_TITLE,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectedCode: self.selectedCode,
+                    isDialog: self.isDialog(),
+                    isShowNoSelectRow: self.isShowNoSelectRow(),
+                    alreadySettingList: self.alreadySettingList
+                };
+                self.jobTitleList = ko.observableArray<UnitModel>([]);
+
+
+                //subscribe 
+                self.multiSelectedWorkplaceId.subscribe(function(codeChanged) {
+                    self.selectedCurrentWkp(codeChanged);
+                    self.loadJobAutoCal(codeChanged);
+
+                });
+
+                //subscribe 
+                self.selectedCode.subscribe(function(codeChanged) {
+                    self.selectedCurrentJob(codeChanged);
+                    self.loadWkpAutoCal(codeChanged);
+                });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -293,7 +451,8 @@ module nts.uk.at.view.kmk006.a {
                         self.itemComAutoCalModel.updateData(data);
                     }
                     if (self.itemComAutoCalModel) {
-                        self.valueEnum(self.autoCalAtrOvertimeEnum[self.itemComAutoCalModel.normalOTTime.earlyOtTime.upLimitOtSet()].value);
+                        // load get all value enum
+                        self.reLoadListEnum(self.itemComAutoCalModel);
                     }
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res);
@@ -303,7 +462,140 @@ module nts.uk.at.view.kmk006.a {
 
                 return dfd.promise();
             }
-            
+
+
+            // load  JobAutoCal
+            private loadJobAutoCal(jobId: string): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+
+                //            nts.uk.ui.block.invisible();
+
+                service.getJobAutoCal(jobId).done(function(data) {
+                    //                nts.uk.ui.block.clear();
+                    if (data) {
+                        self.itemJobAutoCalModel.updateData(data);
+                    }
+                    if (self.itemJobAutoCalModel) {
+                        // load get all value enum
+                        self.reLoadListEnum(self.itemJobAutoCalModel);
+
+                    }
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+
+                return dfd.promise();
+            }
+
+            // load  JobAutoCal
+            private loadWkpAutoCal(wkpId: string): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+
+                //            nts.uk.ui.block.invisible();
+
+                service.getWkpAutoCal(wkpId).done(function(data) {
+                    //                nts.uk.ui.block.clear();
+                    if (data) {
+                        self.itemWkpAutoCalModel.updateData(data);
+                    }
+                    if (self.itemWkpAutoCalModel) {
+                        // load get all value enum
+                        self.reLoadListEnum(self.itemWkpAutoCalModel);
+
+                    }
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+
+                return dfd.promise();
+            }
+
+            // load  JobAutoCal
+            private loadWkpJobAutoCal(wkpId: string, jobId: string): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+
+                //            nts.uk.ui.block.invisible();
+
+                service.getWkpJobAutoCal(wkpId, jobId).done(function(data) {
+                    //                nts.uk.ui.block.clear();
+                    if (data) {
+                        self.itemWkpJobAutoCalModel.updateData(data);
+                    }
+                    if (self.itemWkpJobAutoCalModel) {
+                        // load get all value enum
+                        self.reLoadListEnum(self.itemWkpJobAutoCalModel);
+
+                    }
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res);
+                }).always(function() {
+                    nts.uk.ui.block.clear();
+                });
+
+                return dfd.promise();
+            }
+
+            private reLoadListEnum(list: any): void {
+                var self = this;
+                self.valueEnumNorEarLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.earlyOtTime.upLimitOtSet()].value);
+                self.valueEnumNorEarAtr(self.autoCalAtrOvertimeEnum[list.normalOTTime.earlyOtTime.calAtr()].value);
+                self.valueEnumNorEarMidLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.earlyMidOtTime.upLimitOtSet()].value);
+                self.valueEnumNorEarMidAtr(self.autoCalAtrOvertimeEnum[list.normalOTTime.earlyMidOtTime.calAtr()].value);
+                self.valueEnumNorNorLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.normalOtTime.upLimitOtSet()].value);
+                self.valueEnumNorNorAtr(self.autoCalAtrOvertimeEnum[list.normalOTTime.normalOtTime.calAtr()].value);
+                self.valueEnumNorNorMidLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.normalMidOtTime.upLimitOtSet()].value);
+                self.valueEnumNorNorMidAtr(self.autoCalAtrOvertimeEnum[list.normalOTTime.normalMidOtTime.calAtr()].value);
+                self.valueEnumNorLegLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.legalOtTime.upLimitOtSet()].value);
+                self.valueEnumNorLegAtr(self.autoCalAtrOvertimeEnum[list.normalOTTime.legalOtTime.calAtr()].value);
+                self.valueEnumNorLegMidLi(self.autoCalAtrOvertimeEnum[list.normalOTTime.legalMidOtTime.upLimitOtSet()].value);
+                self.valueEnumNorLegMidAtr(self.autoCalAtrOvertimeEnum[list.normalOTTime.legalMidOtTime.calAtr()].value);
+                self.valueEnumFleTimeLi(self.autoCalAtrOvertimeEnum[list.flexOTTime.flexOtTime.upLimitOtSet()].value);
+                self.valueEnumFleTimeAtr(self.autoCalAtrOvertimeEnum[list.flexOTTime.flexOtTime.calAtr()].value);
+                self.valueEnumFleTimeNigLi(self.autoCalAtrOvertimeEnum[list.flexOTTime.flexOtNightTime.upLimitOtSet()].value);
+                self.valueEnumFleTimeNigAtr(self.autoCalAtrOvertimeEnum[list.flexOTTime.flexOtNightTime.calAtr()].value);
+                self.valueEnumResResLi(self.autoCalAtrOvertimeEnum[list.restTime.restTime.upLimitOtSet()].value);
+                self.valueEnumResResAtr(self.autoCalAtrOvertimeEnum[list.restTime.restTime.calAtr()].value);
+                self.valueEnumResLatLi(self.autoCalAtrOvertimeEnum[list.restTime.lateNightTime.upLimitOtSet()].value);
+                self.valueEnumResLatAtr(self.autoCalAtrOvertimeEnum[list.restTime.lateNightTime.calAtr()].value);
+
+            }
+
+            private saveListEnum(list: any): void {
+                var self = this;
+                list.normalOTTime.earlyOtTime.upLimitOtSet(self.valueEnumNorEarLi());
+                list.normalOTTime.earlyOtTime.calAtr(self.valueEnumNorEarAtr());
+                list.normalOTTime.earlyMidOtTime.upLimitOtSet(self.valueEnumNorEarMidLi());
+                list.normalOTTime.earlyMidOtTime.calAtr(self.valueEnumNorEarMidAtr());
+                list.normalOTTime.normalOtTime.upLimitOtSet(self.valueEnumNorNorLi());
+                list.normalOTTime.normalOtTime.calAtr(self.valueEnumNorNorAtr());
+                list.normalOTTime.normalMidOtTime.upLimitOtSet(self.valueEnumNorNorMidLi());
+                list.normalOTTime.normalMidOtTime.calAtr(self.valueEnumNorNorMidAtr());
+                list.normalOTTime.legalOtTime.upLimitOtSet(self.valueEnumNorLegLi());
+                list.normalOTTime.legalOtTime.calAtr(self.valueEnumNorLegAtr());
+                list.normalOTTime.legalMidOtTime.upLimitOtSet(self.valueEnumNorLegMidLi());
+                list.normalOTTime.legalMidOtTime.calAtr(self.valueEnumNorLegMidAtr());
+                list.flexOTTime.flexOtTime.upLimitOtSet(self.valueEnumFleTimeLi());
+                list.flexOTTime.flexOtTime.calAtr(self.valueEnumFleTimeAtr());
+                list.flexOTTime.flexOtNightTime.upLimitOtSet(self.valueEnumFleTimeNigLi());
+                list.flexOTTime.flexOtNightTime.calAtr(self.valueEnumFleTimeNigAtr());
+                list.restTime.restTime.upLimitOtSet(self.valueEnumResResLi());
+                list.restTime.restTime.calAtr(self.valueEnumResResAtr());
+                list.restTime.lateNightTime.upLimitOtSet(self.valueEnumResLatLi());
+                list.restTime.lateNightTime.calAtr(self.valueEnumResLatAtr());
+
+
+            }
+
+
+
+
             /**
              * function on click saveCompanyAutoCal action
              */
@@ -313,7 +605,10 @@ module nts.uk.at.view.kmk006.a {
                 };
                 nts.uk.ui.block.invisible();
                 var self = this;
-                
+
+                // save enum
+                self.saveListEnum(self.itemComAutoCalModel);
+
                 var dto: ComAutoCalSettingDto = {
                     normalOTTime: self.itemComAutoCalModel.normalOTTime.toDto(),
                     flexOTTime: self.itemComAutoCalModel.flexOTTime.toDto(),
@@ -335,46 +630,257 @@ module nts.uk.at.view.kmk006.a {
                 });
             }
 
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
+            /**
+            * function on click saveCompanyAutoCal action
+            */
+            public saveJobAutoCal(jobId: string): void {
+                if ($('.nts-input').ntsError('hasError')) {
+                    return;
+                };
+                nts.uk.ui.block.invisible();
+                var self = this;
+
+                // save enum
+                self.saveListEnum(self.itemJobAutoCalModel);
+
+
+                var dto: JobAutoCalSettingDto = {
+                    jobId: jobId,
+                    normalOTTime: self.itemComAutoCalModel.normalOTTime.toDto(),
+                    flexOTTime: self.itemComAutoCalModel.flexOTTime.toDto(),
+                    restTime: self.itemComAutoCalModel.restTime.toDto()
+                };
+
+                self.itemJobAutoCalModel.updateData(self.itemJobAutoCalModel.toDto());
+
+                service.saveJobAutoCal(dto).done(function() {
+                    // show message 15
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        // reload pa    
+                        self.loadJobAutoCal(jobId);
+                    });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
+
+            /**
+            * function on click saveCompanyAutoCal action
+            */
+            public saveWkpAutoCal(wkpId: string): void {
+                if ($('.nts-input').ntsError('hasError')) {
+                    return;
+                };
+                nts.uk.ui.block.invisible();
+                var self = this;
+
+                // save enum
+                self.saveListEnum(self.itemWkpAutoCalModel);
+
+
+                var dto: WkpAutoCalSettingDto = {
+                    wkpId: wkpId,
+                    normalOTTime: self.itemComAutoCalModel.normalOTTime.toDto(),
+                    flexOTTime: self.itemComAutoCalModel.flexOTTime.toDto(),
+                    restTime: self.itemComAutoCalModel.restTime.toDto()
+                };
+
+                self.itemWkpAutoCalModel.updateData(self.itemWkpAutoCalModel.toDto());
+
+                service.saveWkpAutoCal(dto).done(function() {
+                    // show message 15
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        // reload pa    
+                        self.loadWkpAutoCal(wkpId);
+                    });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
+
+
+            public saveWkpJobAutoCal(wkpId: string, jobId: string): void {
+                if ($('.nts-input').ntsError('hasError')) {
+                    return;
+                };
+                nts.uk.ui.block.invisible();
+                var self = this;
+
+                // save enum
+
+                self.saveListEnum(self.itemWkpJobAutoCalModel);
+
+
+                var dto: WkpJobAutoCalSettingDto = {
+                    wkpId: wkpId,
+                    jobId: jobId,
+                    normalOTTime: self.itemComAutoCalModel.normalOTTime.toDto(),
+                    flexOTTime: self.itemComAutoCalModel.flexOTTime.toDto(),
+                    restTime: self.itemComAutoCalModel.restTime.toDto()
+                };
+
+                self.itemWkpJobAutoCalModel.updateData(self.itemWkpJobAutoCalModel.toDto());
+
+                service.saveWkpJobAutoCal(dto).done(function() {
+                    // show message 15
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        // reload pa    
+                        self.loadWkpJobAutoCal(wkpId, jobId);
+                    });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
+                }).always(() => {
+                    nts.uk.ui.block.clear();
+                });
+            }
+
+            // delete Pattern
+            public deleteJobAutoCal() {
+                let self = this;
+
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    nts.uk.ui.block.grayout();
+
+                    service.deleteJobAutoCal(self.selectedCurrentJob()).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            self.loadJobAutoCal(self.selectedCurrentJob());
+                        });
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                }).ifNo(function() {
+                    nts.uk.ui.block.clear();
+                    return;
+                });
+
+            }
+
+            // delete Pattern
+            public deleteWkpAutoCal() {
+                let self = this;
+
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    nts.uk.ui.block.grayout();
+
+                    service.deleteWkpAutoCal(self.selectedCurrentWkp()).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            self.loadJobAutoCal(self.selectedCurrentWkp());
+                        });
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                }).ifNo(function() {
+                    nts.uk.ui.block.clear();
+                    return;
+                });
+
+            }
+
+            // delete Pattern
+            public deleteWkpJobAutoCal() {
+                let self = this;
+
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
+                    nts.uk.ui.block.grayout();
+
+                    service.deleteWkpJobAutoCal(self.selectedCurrentJob(), self.selectedCurrentWkp()).done(function() {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            self.loadWkpJobAutoCal(self.selectedCurrentJob(), self.selectedCurrentWkp());
+                        });
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
+                    }).always(function() {
+                        nts.uk.ui.block.clear();
+                    });
+                }).ifNo(function() {
+                    nts.uk.ui.block.clear();
+                    return;
+                });
+
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -442,7 +948,6 @@ module nts.uk.at.view.kmk006.a {
                 self.loadAutoCalAtrOvertimeEnum();
                 self.loadComAutoCal();
                 self.onSelectCompany().done(function() {
-                    $('#tree-grid').ntsTreeComponent(self.treeGrid);
                     dfd.resolve(self);
                 }).always(() => {
                     nts.uk.ui.block.clear();
@@ -590,18 +1095,24 @@ module nts.uk.at.view.kmk006.a {
                 self.isEmploymentSelected(true);
                 self.isLoading(true);
 
-                $('#tree-grid').ntsTreeComponent(self.treeGrid);
-                // Load employment list component.
-                $('#employmentSetting').ntsListComponent(self.lstEmploymentComponentOption).done(function() {
-                    self.employmentList($('#employmentSetting').getDataList());
-                    self.loadEmploymentEstablishment(self.employmentEstablishmentModel.selectedYear(), self.selectedEmploymentCode(), true);
-                    self.updateEmploymentEstimateSetting(self.employmentEstablishmentModel.selectedYear());
-                }).always(() => {
-                    $('#comboTargetYear').focus();
+                $('#tree-grid-srcc').ntsTreeComponent(self.treeGrid);
+            }
+
+            public onSelectWkpJob(): void {
+                $('.nts-input').ntsError('clear');
+                var self = this;
+                self.employeeName = ko.observable('');
+
+                // Update flags.
+                self.isCompanySelected(false);
+                self.isEmploymentSelected(false);
+                self.isPersonSelected(true);
+                self.isLoading(true);
+                $('#jobtitles').ntsListComponent(self.listComponentOption);
+                $('#tree-grid').ntsTreeComponent(self.treeGrid).done(function() {
                 });
 
             }
-
             /**
              * call service find all personal setting => view UI
              */
@@ -670,7 +1181,6 @@ module nts.uk.at.view.kmk006.a {
             public onSelectPerson(): void {
                 $('.nts-input').ntsError('clear');
                 var self = this;
-                nts.uk.ui.block.invisible();
                 self.employeeName = ko.observable('');
 
                 // Update flags.
@@ -678,7 +1188,7 @@ module nts.uk.at.view.kmk006.a {
                 self.isEmploymentSelected(false);
                 self.isPersonSelected(true);
                 self.isLoading(true);
-
+                $('#component-items-list').ntsListComponent(self.listComponentOption);
 
             }
             /**
@@ -760,7 +1270,7 @@ module nts.uk.at.view.kmk006.a {
                 return dfd.promise();
             }
 
-          
+
             /**
              * function on click deleteCompanyEstablishment action
              */
@@ -983,6 +1493,130 @@ module nts.uk.at.view.kmk006.a {
             static NO_SELECT = 4;
 
         }
+
+        export class WkpJobAutoCalSettingModel {
+            wkpId: KnockoutObservable<string>;
+            jobId: KnockoutObservable<string>;
+            normalOTTime: AutoCalOvertimeSettingModel;
+            flexOTTime: AutoCalFlexOvertimeSettingModel;
+            restTime: AutoCalRestTimeSettingModel;
+
+            constructor() {
+                this.wkpId = ko.observable('');
+                this.jobId = ko.observable('');
+                this.normalOTTime = new AutoCalOvertimeSettingModel();
+                this.flexOTTime = new AutoCalFlexOvertimeSettingModel();
+                this.restTime = new AutoCalRestTimeSettingModel();
+
+            }
+
+            updateData(dto: WkpJobAutoCalSettingDto) {
+                this.wkpId(dto.wkpId);
+                this.jobId(dto.jobId);
+                this.normalOTTime.updateData(dto.normalOTTime);
+                this.flexOTTime.updateData(dto.flexOTTime);
+                this.restTime.updateData(dto.restTime);
+
+            }
+
+            toDto(): WkpJobAutoCalSettingDto {
+                var dto: WkpJobAutoCalSettingDto = {
+                    wkpId: this.wkpId(),
+                    jobId: this.jobId(),
+                    normalOTTime: this.normalOTTime.toDto(),
+                    flexOTTime: this.flexOTTime.toDto(),
+                    restTime: this.restTime.toDto()
+                };
+                return dto;
+            }
+            resetData() {
+                this.wkpId('');
+                this.jobId('');
+                this.normalOTTime.resetData();
+                this.flexOTTime.resetData();
+                this.restTime.resetData();
+            }
+        }
+
+        export class WkpAutoCalSettingModel {
+            wkpId: KnockoutObservable<string>;
+            normalOTTime: AutoCalOvertimeSettingModel;
+            flexOTTime: AutoCalFlexOvertimeSettingModel;
+            restTime: AutoCalRestTimeSettingModel;
+
+            constructor() {
+                this.wkpId = ko.observable('');
+                this.normalOTTime = new AutoCalOvertimeSettingModel();
+                this.flexOTTime = new AutoCalFlexOvertimeSettingModel();
+                this.restTime = new AutoCalRestTimeSettingModel();
+
+            }
+
+            updateData(dto: WkpAutoCalSettingDto) {
+                this.wkpId(dto.wkpId);
+                this.normalOTTime.updateData(dto.normalOTTime);
+                this.flexOTTime.updateData(dto.flexOTTime);
+                this.restTime.updateData(dto.restTime);
+
+            }
+
+            toDto(): WkpAutoCalSettingDto {
+                var dto: WkpAutoCalSettingDto = {
+                    wkpId: this.wkpId(),
+                    normalOTTime: this.normalOTTime.toDto(),
+                    flexOTTime: this.flexOTTime.toDto(),
+                    restTime: this.restTime.toDto()
+                };
+                return dto;
+            }
+            resetData() {
+                this.wkpId('');
+                this.normalOTTime.resetData();
+                this.flexOTTime.resetData();
+                this.restTime.resetData();
+            }
+        }
+
+
+        export class JobAutoCalSettingModel {
+            jobId: KnockoutObservable<string>;
+            normalOTTime: AutoCalOvertimeSettingModel;
+            flexOTTime: AutoCalFlexOvertimeSettingModel;
+            restTime: AutoCalRestTimeSettingModel;
+
+            constructor() {
+                this.jobId = ko.observable('');
+                this.normalOTTime = new AutoCalOvertimeSettingModel();
+                this.flexOTTime = new AutoCalFlexOvertimeSettingModel();
+                this.restTime = new AutoCalRestTimeSettingModel();
+
+            }
+
+            updateData(dto: JobAutoCalSettingDto) {
+                this.jobId(dto.jobId);
+                this.normalOTTime.updateData(dto.normalOTTime);
+                this.flexOTTime.updateData(dto.flexOTTime);
+                this.restTime.updateData(dto.restTime);
+
+            }
+
+            toDto(): JobAutoCalSettingDto {
+                var dto: JobAutoCalSettingDto = {
+                    jobId: this.jobId(),
+                    normalOTTime: this.normalOTTime.toDto(),
+                    flexOTTime: this.flexOTTime.toDto(),
+                    restTime: this.restTime.toDto()
+                };
+                return dto;
+            }
+            resetData() {
+                this.jobId('');
+                this.normalOTTime.resetData();
+                this.flexOTTime.resetData();
+                this.restTime.resetData();
+            }
+        }
+
         //        ComAutoCalSettingModel
         export class ComAutoCalSettingModel {
             normalOTTime: AutoCalOvertimeSettingModel;

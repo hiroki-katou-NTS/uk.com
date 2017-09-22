@@ -10,13 +10,16 @@
 			<span class="title">#{i18n.getText('Com_Person')}</span>
 		</ui:define>
 		<ui:define name="extended-action-bar">
-			<button tabindex="1" class="proceed" data-bind="enable: personalEstablishmentModel.isEditable, click: savePersonalEstablishment">#{i18n.getText('KSM001_1')}</button>
-			<button tabindex="3" data-bind="enable: personalEstablishmentModel.isEnableDelete">#{i18n.getText('KSM001_50')}</button>
-			<button tabindex="2" class="danger" data-bind="enable: personalEstablishmentModel.isEnableDelete, click: deletePersonalEstablishment">#{i18n.getText('KSM001_2')}</button>
+			<button tabindex="1" class="proceed"
+				data-bind="click: saveJobAutoCal">#{i18n.getText('KSM001_1')}</button>
+			<button tabindex="3"
+				data-bind="enable: personalEstablishmentModel.isEnableDelete">#{i18n.getText('KSM001_50')}</button>
+			<button tabindex="2" class="danger"
+				data-bind="click: deleteJobAutoCal">#{i18n.getText('KSM001_2')}</button>
 		</ui:define>
 		<ui:define name="extended-111">
 			<div tabindex="6" id="comboTargetYear"
-					data-bind="ntsComboBox: {
+				data-bind="ntsComboBox: {
 				name: '#[KSM001_4]',
 				options: lstTargetYear,
 				optionsValue: 'year',
@@ -28,16 +31,47 @@
 				columns: [
 					{ prop: 'year', length: 6 }
 				]}"></div>
-			<div style="margin-left: 205px" data-bind="ntsFormLabel: {required: true}">
-				<label>#{i18n.getText('KSM001_6')}</label>
-				<span data-bind="text: employeeName"></span>
-			</div>
 		</ui:define>
 		<ui:define name="extended-222">
-			<div id="employeeSearch" class="contentkcp005" tabindex="-1"></div>
-			<div data-bind="with: personalEstablishmentModel" class="personalEstablishment">
+			<div id="component-items-list"
+				style="margin-left: 80px; margin-top: 35px"></div>
+			<div class="personalEstablishment">
+				<table class="table-label">
+					<tr style="margin-top: 10px">
+						<td class="pull-left">
+							<div data-bind="ntsFormLabel: {required: true }">#{i18n.getText('KMK009_11')}</div>
+							<span data-bind="text: valueEnumNorNorLi"></span> <span
+							data-bind="text: valueEnumNorNorLi"></span>
+						</td>
+						<td class="pull-right">
+							<div class="pull-left">
+								<div data-bind="ntsFormLabel: {}">
+									<label>#{i18n.getText('KMK006_17')}</label>
+								</div>
+							</div>
+							<div tabindex="-1" class="pull-left helpButton">
+								<button tabindex="-1"
+									data-bind="ntsHelpButton: {image: 'image/img002.png', position: 'right top', enable: true }">?</button>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class="pull-left"></td>
+						<td class="pull-right">
+							<div class="pull-left">
+								<div data-bind="ntsFormLabel: {}">
+									<label>#{i18n.getText('KMK006_17')}</label>
+								</div>
+							</div>
+							<div tabindex="-1" class="pull-left helpButton">
+								<button tabindex="-1"
+									data-bind="ntsHelpButton: {image: 'image/img002.png', position: 'right top', enable: true }">?</button>
+							</div>
+						</td>
+					</tr>
+				</table>
 				<div data-bind="ifnot: $parent.isLoading">
-					<ui:include src="data-table.xhtml"/>
+					<ui:include src="data-table.xhtml" />
 				</div>
 			</div>
 		</ui:define>
