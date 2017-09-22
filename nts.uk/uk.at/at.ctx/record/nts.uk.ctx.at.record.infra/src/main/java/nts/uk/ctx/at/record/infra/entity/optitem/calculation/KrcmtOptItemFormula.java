@@ -5,10 +5,16 @@
 package nts.uk.ctx.at.record.infra.entity.optitem.calculation;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -37,11 +43,18 @@ public class KrcmtOptItemFormula extends UkJpaEntity implements Serializable {
 
 	/** The formula atr. */
 	@Column(name = "FORMULA_ATR")
-	private short formulaAtr;
+	private int formulaAtr;
 
 	/** The symbol. */
 	@Column(name = "SYMBOL")
 	private String symbol;
+
+	/** The krcmt formula roundings. */
+	@JoinColumns({
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false) })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	private List<KrcmtFormulaRounding> krcmtFormulaRoundings;
 
 	/**
 	 * Instantiates a new krcmt opt item formula.
@@ -53,7 +66,8 @@ public class KrcmtOptItemFormula extends UkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new krcmt opt item formula.
 	 *
-	 * @param krcmtOptItemFormulaPK the krcmt opt item formula PK
+	 * @param krcmtOptItemFormulaPK
+	 *            the krcmt opt item formula PK
 	 */
 	public KrcmtOptItemFormula(KrcmtOptItemFormulaPK krcmtOptItemFormulaPK) {
 		this.krcmtOptItemFormulaPK = krcmtOptItemFormulaPK;

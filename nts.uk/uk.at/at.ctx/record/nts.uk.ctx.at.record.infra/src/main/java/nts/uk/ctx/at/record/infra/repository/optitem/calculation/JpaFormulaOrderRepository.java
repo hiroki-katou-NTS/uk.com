@@ -4,14 +4,25 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrder;
 import nts.uk.ctx.at.record.dom.optitem.calculation.disporder.FormulaDispOrderRepository;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporder;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporderPK_;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.disporder.KrcstFormulaDisporder_;
 
 /**
  * The Class JpaFormulaOrderRepository.
@@ -27,8 +38,13 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 	 */
 	@Override
 	public void create(List<FormulaDispOrder> listFormula) {
-		// TODO Auto-generated method stub
+		listFormula.stream().forEach(item -> {
+			KrcstFormulaDisporder entity = new KrcstFormulaDisporder();
 
+			item.saveToMemento(new JpaFormulaDispOrderSetMemento(entity));
+
+			this.commandProxy().update(entity);
+		});
 	}
 
 	/*
@@ -39,8 +55,13 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 	 */
 	@Override
 	public void remove(String comId, String optItemNo) {
-		// TODO Auto-generated method stub
+		List<KrcstFormulaDisporder> entities = this.findByItemNo(comId, optItemNo);
 
+		if (CollectionUtil.isEmpty(entities)) {
+			return;
+		}
+
+		this.commandProxy().removeAll(entities);
 	}
 
 	/*
@@ -51,9 +72,51 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 	 * java.lang.String)
 	 */
 	@Override
-	public List<Formula> findByOptItemNo(String companyId, String optItemNo) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<FormulaDispOrder> findByOptItemNo(String companyId, String optItemNo) {
+		List<KrcstFormulaDisporder> entities = this.findByItemNo(companyId, optItemNo);
+
+		if (CollectionUtil.isEmpty(entities)) {
+			return Collections.emptyList();
+		}
+
+		return entities.stream()
+				.map(item -> new FormulaDispOrder(new JpaFormulaDispOrderGetMemento(item)))
+				.collect(Collectors.toList());
+	}
+
+	/**
+	 * Find by item no.
+	 *
+	 * @param comId
+	 *            the com id
+	 * @param optItemNo
+	 *            the opt item no
+	 * @return the list
+	 */
+	private List<KrcstFormulaDisporder> findByItemNo(String comId, String optItemNo) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Create builder
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+
+		// Create query
+		CriteriaQuery<KrcstFormulaDisporder> cq = builder.createQuery(KrcstFormulaDisporder.class);
+
+		// From table
+		Root<KrcstFormulaDisporder> root = cq.from(KrcstFormulaDisporder.class);
+
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Add where condition
+		predicateList.add(builder.equal(root.get(KrcstFormulaDisporder_.krcstFormulaDisporderPK)
+				.get(KrcstFormulaDisporderPK_.cid), comId));
+		predicateList.add(builder.equal(root.get(KrcstFormulaDisporder_.krcstFormulaDisporderPK)
+				.get(KrcstFormulaDisporderPK_.optionalItemNo), optItemNo));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		// Get results
+		return em.createQuery(cq).getResultList();
 	}
 
 }
