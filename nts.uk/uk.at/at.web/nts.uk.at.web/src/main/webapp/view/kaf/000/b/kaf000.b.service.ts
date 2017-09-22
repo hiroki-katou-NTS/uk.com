@@ -1,4 +1,4 @@
- module kaf000.b.service{
+ module nts.uk.at.view.kaf000.b.service{
     var paths = {
         getAllDataByAppID: "at/request/application/getalldatabyappid",
         getAllReasonByAppID : "at/request/application/getreasonforremand",

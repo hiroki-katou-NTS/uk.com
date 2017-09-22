@@ -8,10 +8,22 @@
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
 			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-					nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.shr.com.primitive.PersonId
+				nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.ctx.at.request.dom.application.common.AppReason
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../002/cm/kaf002.cm.main.css" />
+			<com:stylefile path="../../002/m1/kaf002.m1.main.css" />
+			<com:stylefile path="../../002/m2/kaf002.m2.main.css" />
+			<com:stylefile path="../../002/m3/kaf002.m3.main.css" />
+			<com:stylefile path="../../002/m4/kaf002.m4.main.css" />
+			<com:stylefile path="../../002/m5/kaf002.m5.main.css" />
+			<com:stylefile path="../../004/e/kaf004.e.style.css" />
+			<com:stylefile path="../../009/b/kaf009.b.style.css" />
+			<com:stylefile path="kaf000.b.main.css" />
+			<com:scriptfile path="kaf000.b.vm.js" />
+			<com:scriptfile path="kaf000.b.service.js" />
 			<com:scriptfile path="../../002/shr/kaf002.shr.service.js" />
 			<com:scriptfile path="../../002/shr/kaf002.shr.vm.js" />
 			<com:scriptfile path="../../002/m1/kaf002.m1.vm.js" />
@@ -19,19 +31,11 @@
 			<com:scriptfile path="../../002/m3/kaf002.m3.vm.js" />
 			<com:scriptfile path="../../002/m4/kaf002.m4.vm.js" />
 			<com:scriptfile path="../../002/m5/kaf002.m5.vm.js" />
-			<com:scriptfile path="../../002/cm/kaf002.cm.vm.js" />
-			<com:stylefile path="../../002/cm/kaf002.cm.main.css" />
-			<com:stylefile path="../../002/m1/kaf002.m1.main.css" />
-			<com:stylefile path="../../002/m2/kaf002.m2.main.css" />
-			<com:stylefile path="../../002/m3/kaf002.m3.main.css" />
-			<com:stylefile path="../../002/m4/kaf002.m4.main.css" />
-			<com:stylefile path="../../002/m5/kaf002.m5.main.css" />
-			<com:stylefile path="../../009/b/kaf009.b.style.css" />
-			<com:stylefile path="kaf000.b.main.css" />
-			<com:scriptfile path="kaf000.b.service.js" />
-			<com:scriptfile path="kaf000.b.vm.js" />
+			<com:scriptfile path="../../004/e/kaf004.e.vm.js" />
+			<com:scriptfile path="../../004/e/kaf004.e.service.js" />
 			<com:scriptfile path="../../009/b/kaf009.b.service.js" />
 			<com:scriptfile path="../../009/b/kaf009.b.vm.js" />
+			<com:scriptfile path="../../002/cm/kaf002.cm.vm.js" />
 			<com:scriptfile path="kaf000.b.start.js" />
 		</ui:define>
 		<ui:define name="content">
@@ -68,7 +72,7 @@
 				<!-- B1_13 -->
 				<button  class="danger">#{i18n.getText('KAF000_24')}</button>
 			</div>
-			<div id="contents-area" data-bind="with: screenModel">
+			<div id="contents-area">
 				<!-- row1 -->
 				<div id="message-area"> 
 					<table >
@@ -102,7 +106,13 @@
 				</div>
 				
 				<!-- Body -->
- 				<div style="height: 50px;background-color: gray ; margin-top: 30px;'">body</div> -->
+				<com:ko-if bind="appType() == 7">
+					<ui:include src="../../002/cm/index.xhtml" />
+				</com:ko-if>
+				<com:ko-if bind="appType() == 9">
+					<ui:include src="../../004/e/index.xhtml" />
+				</com:ko-if>
+<!--  				<div style="height: 50px;background-color: gray ; margin-top: 30px;'">body</div> -->
 				<!-- <div data-bind="with: screenModel.cm">
 					<ui:include src="../../002/cm/index.xhtml" />
 				</div>--> 
