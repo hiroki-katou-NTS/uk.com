@@ -1,14 +1,14 @@
 <div>
 	<div class="table m1-table">
 		<div class="cell m1-column1">
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL001_3')}</div>
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_16')}</div>
 		</div>
 		<div class="cell m1-column2">
 			<div class="cf m1-switch" data-bind="ntsSwitchButton: {
 						options: ko.observableArray([
-				            { code: 0, name: '外出' },
-				            { code: 1, name: '育児' },
-				            { code: 2, name: '介護' }
+				            { code: 1, name: '#{i18n.getText('KAF002_31')}' },
+				            { code: 2, name: '#{i18n.getText('KAF002_32')}' },
+				            { code: 3, name: '#{i18n.getText('KAF002_33')}' }
 				        ]),
 						optionsValue: 'code',
 						optionsText: 'name',
@@ -17,75 +17,65 @@
 	</div>
 	<div class="table m1-table">
 		<div class="cell m1-column1">
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL001_3')}</div>
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_17')}</div>
 		</div>
 		<div class="cell m1-column2">
 			<div data-bind="foreach: appStampList">
-				<div data-bind="style: { display: $parent.stampAtr() == 0 ? '' : 'none' }">
+				<div data-bind="style: { display: $parent.stampAtr() == 1 ? '' : 'none' }">
 					<div class="panel panel-frame m1-panel">
 						<div class="table">
 							<div class="cell m1-column3">
-								<span class="label m1-label">外出</span>
+								<span class="label m1-label" data-bind="text: '外出'+($index()+1)"></span>
 							</div>
 							<div class="cell">
-								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
+								<div class="m1-inline-div">
+									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: startTimeDisp }"></div>
+									<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
 													name: 'Time With Day', 
 													constraint:'TimeWithDayAttr', 
-													value: startTime }" />	
-								<button>Normal</button>
-								<span class="label m1-label" data-bind="text: startLocation"></span>						
+													value: startTime,
+													required: true,
+													enable: startTimeDisp }" />	
+								</div>
+								<div data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? 'inline-block' : 'none' }">
+									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: startLocationDisp }"></div>
+									<button data-bind="enable: startLocationDisp">#{i18n.getText('KAF002_14')}</button>
+									<span class="label m1-label" data-bind="text: startLocation, css: { m1DisableEdit: !startLocationDisp() }"></span>
+								</div>					
 							</div>
 						</div>
 						<div class="table">
 							<div class="cell m1-column3">
-								<span class="label m1-label">戻り</span>
+								<span class="label m1-label" data-bind="text: '戻り'+($index()+1)"></span>
 							</div>
 							<div class="cell">
-								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
+								<div class="m1-inline-div">
+									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: endTimeDisp }"></div>
+									<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
 													name: 'Time With Day', 
 													constraint:'TimeWithDayAttr', 
-													value: endTime }" />	
-								<button>Normal</button>
-								<span class="label m1-label" data-bind="text: endLocation"></span>						
+													value: endTime,
+													required: true,
+													enable: endTimeDisp }" />	
+								</div>	
+								<div data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? 'inline-block' : 'none' }">
+									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: endLocationDisp }"></div>
+									<button data-bind="enable: endLocationDisp">#{i18n.getText('KAF002_14')}</button>
+									<span class="label m1-label" data-bind="text: endLocation, css: { m1DisableEdit: !endLocationDisp() }"></span>	
+								</div>			
 							</div>
 						</div>
 						<div class="table">
 							<div class="cf m1-switch" data-bind="ntsSwitchButton: {
 												options: ko.observableArray([
-										            { code: 0, name: '私用' },
-										            { code: 1, name: '公用' },
-										            { code: 2, name: '有償' },
-										            { code: 3, name: '組合' }
+										            { code: 0, name: '#{i18n.getText('KAF002_40')}' },
+										            { code: 1, name: '#{i18n.getText('KAF002_41')}' },
+										            { code: 2, name: '#{i18n.getText('KAF002_42')}' },
+										            { code: 3, name: '#{i18n.getText('KAF002_43')}' }
 										        ]),
 												optionsValue: 'code',
 												optionsText: 'name',
-												value: stampGoOutReason }"></div>	
-						</div>
-					</div>
-				</div>
-				<div data-bind="style: { display: $parent.stampAtr() == 1 ? '' : 'none' }">
-					<div class="panel panel-frame m1-panel">
-						<div class="table">
-							<div class="cell m1-column3">
-								<span class="label m1-label">開始</span>
-							</div>
-							<div class="cell">
-								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
-													name: 'Time With Day', 
-													constraint:'TimeWithDayAttr', 
-													value: startTime }" />						
-							</div>
-						</div>
-						<div class="table">
-							<div class="cell m1-column3">
-								<span class="label m1-label">終了</span>
-							</div>
-							<div class="cell">
-								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
-													name: 'Time With Day', 
-													constraint:'TimeWithDayAttr', 
-													value: endTime }" />						
-							</div>
+												value: stampGoOutAtr }"></div>	
 						</div>
 					</div>
 				</div>
@@ -93,24 +83,62 @@
 					<div class="panel panel-frame m1-panel">
 						<div class="table">
 							<div class="cell m1-column3">
-								<span class="label m1-label">開始</span>
+								<span class="label m1-label" data-bind="text: '開始'+($index()+1)"></span>
 							</div>
 							<div class="cell">
+								<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: startTimeDisp }"></div>
 								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
 													name: 'Time With Day', 
 													constraint:'TimeWithDayAttr', 
-													value: startTime }" />							
+													value: startTime,
+													required: true,
+													enable: startTimeDisp }" />						
 							</div>
 						</div>
 						<div class="table">
 							<div class="cell m1-column3">
-								<span class="label m1-label">終了</span>
+								<span class="label m1-label" data-bind="text: '終了'+($index()+1)"></span>
 							</div>
 							<div class="cell">
+								<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: endTimeDisp }"></div>
 								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
 													name: 'Time With Day', 
 													constraint:'TimeWithDayAttr', 
-													value: endTime }" />							
+													value: endTime,
+													required: true,
+													enable: endTimeDisp }" />						
+							</div>
+						</div>
+					</div>
+				</div>
+				<div data-bind="style: { display: $parent.stampAtr() == 3 ? '' : 'none' }">
+					<div class="panel panel-frame m1-panel">
+						<div class="table">
+							<div class="cell m1-column3">
+								<span class="label m1-label" data-bind="text: '開始'+($index()+1)"></span>
+							</div>
+							<div class="cell">
+								<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: startTimeDisp }"></div>
+								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
+													name: 'Time With Day', 
+													constraint:'TimeWithDayAttr', 
+													value: startTime,
+													required: true,
+													enable: startTimeDisp }" />							
+							</div>
+						</div>
+						<div class="table">
+							<div class="cell m1-column3">
+								<span class="label m1-label" data-bind="text: '終了'+($index()+1)"></span>
+							</div>
+							<div class="cell">
+								<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: endTimeDisp }"></div>
+								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
+													name: 'Time With Day', 
+													constraint:'TimeWithDayAttr', 
+													value: endTime,
+													required: true,
+													enable: endTimeDisp }" />							
 							</div>
 						</div>
 					</div>

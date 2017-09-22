@@ -6,14 +6,11 @@ package nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,33 +25,66 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Setter
 @Entity
 @Table(name = "KMNMT_AFFI_WORKPLACE_HIST")
-@XmlRootElement
 public class KmnmtAffiliWorkplaceHist extends UkJpaEntity implements Serializable {
 
-    /** The Constant serialVersionUID. */
-    private static final long serialVersionUID = 1L;
-    
-    /** The kmnmt workplace hist PK. */
-    @EmbeddedId
-    protected KmnmtAffiliWorkplaceHistPK kmnmtAffiliWorkplaceHistPK;
-  
-    
-    /** The end D. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "END_D")
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
+
+	/** The kmnmt affili workplace hist PK. */
+	@EmbeddedId
+	protected KmnmtAffiliWorkplaceHistPK kmnmtAffiliWorkplaceHistPK;
+
+	/** The end D. */
+	@Column(name = "END_D")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate endD;
 
-    /**
-     * Instantiates a new kmnmt emp workplace hist.
-     */
-    public KmnmtAffiliWorkplaceHist() {
-    }
+	/**
+	 * Instantiates a new kmnmt affili workplace hist.
+	 */
+	public KmnmtAffiliWorkplaceHist() {
+		super();
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((kmnmtAffiliWorkplaceHistPK == null) ? 0
+				: kmnmtAffiliWorkplaceHistPK.hashCode());
+		return result;
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		KmnmtAffiliWorkplaceHist other = (KmnmtAffiliWorkplaceHist) obj;
+		if (kmnmtAffiliWorkplaceHistPK == null) {
+			if (other.kmnmtAffiliWorkplaceHistPK != null)
+				return false;
+		} else if (!kmnmtAffiliWorkplaceHistPK.equals(other.kmnmtAffiliWorkplaceHistPK))
+			return false;
+		return true;
+	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override

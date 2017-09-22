@@ -5,16 +5,12 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import lombok.val;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
 import nts.uk.ctx.at.request.infra.entity.application.gobackdirectly.KrqdtGoBackDirectly;
 import nts.uk.ctx.at.request.infra.entity.application.gobackdirectly.KrqdtGoBackDirectlyPK;
-import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
-import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
 
 @Stateless
 public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBackDirectlyRepository {
@@ -32,18 +28,18 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 	private GoBackDirectly toDomain(KrqdtGoBackDirectly entity) {
 		return new GoBackDirectly(entity.krqdtGoBackDirectlyPK.companyID, 
 				entity.krqdtGoBackDirectlyPK.appID,
-				new WorkTypeCode(entity.workTypeCD), 
-				new SiftCode(entity.siftCD),
-				EnumAdaptor.valueOf(entity.workChangeAtr, UseAtr.class),
-				EnumAdaptor.valueOf(entity.goWorkAtr1, UseAtr.class),
-				EnumAdaptor.valueOf(entity.backHomeAtr1, UseAtr.class),
-				new WorkTimeGoBack(entity.workTimeStart1),
-				new WorkTimeGoBack(entity.workTimeEnd1), 
+				entity.workTypeCD, 
+				entity.siftCD,
+				entity.workChangeAtr,
+				entity.goWorkAtr1,
+				entity.backHomeAtr1,
+				entity.workTimeStart1,
+				entity.workTimeEnd1, 
 				entity.workLocationCd1,
-				EnumAdaptor.valueOf(entity.goWorkAtr2, UseAtr.class),
-				EnumAdaptor.valueOf(entity.backHomeAtr2, UseAtr.class),
-				new WorkTimeGoBack(entity.workTimeStart2),
-				new WorkTimeGoBack(entity.workTimeEnd2), 
+				entity.goWorkAtr2,
+				entity.backHomeAtr2,
+				entity.workTimeStart2,
+				entity.workTimeEnd2, 
 				entity.workLocationCd2);
 	}
 
@@ -57,7 +53,7 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		entity.krqdtGoBackDirectlyPK.companyID = domain.getCompanyID();
 		entity.krqdtGoBackDirectlyPK.appID  = domain.getAppID();
 		entity.workTypeCD = domain.getWorkTypeCD().v();
-		entity.siftCD = domain.getSiftCd().v();
+		entity.siftCD = domain.getSiftCD().v();
 		entity.workChangeAtr = domain.getWorkChangeAtr().value;
 		entity.workTimeStart1 = domain.getWorkTimeStart1().v();
 		entity.workTimeEnd1 = domain.getWorkTimeEnd1().v();
@@ -74,12 +70,18 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 
 	@Override
 	public Optional<GoBackDirectly> findByApplicationID(String companyID, String appID) {
-		return this.queryProxy().query(SELECT_WITH_APP_ID, KrqdtGoBackDirectly.class)
+		Optional<GoBackDirectly> item =  this.queryProxy().query(SELECT_WITH_APP_ID, KrqdtGoBackDirectly.class)
 				.setParameter("companyID", companyID)
 				.setParameter("appID", appID)
 				.getSingle(c -> toDomain(c));
+		if(!item.isPresent()) {
+			return null;
+		}
+		return item;
 	}
-
+	/**
+	 * 
+	 */
 	@Override
 	public void update(GoBackDirectly goBackDirectly) {
 		//get current Entity
@@ -98,16 +100,20 @@ public class JpaGoBackDirectlyRepository extends JpaRepository implements GoBack
 		
 		if(goBackDirectly.getWorkChangeAtr() == UseAtr.USE) {
 			currentEntity.setWorkTypeCD(goBackDirectly.getWorkTypeCD().v());
-			currentEntity.setSiftCD(goBackDirectly.getSiftCd().v());
+			currentEntity.setSiftCD(goBackDirectly.getSiftCD().v());
 		}
 		this.commandProxy().update(toEntity(goBackDirectly));
 	}
-
+	/**
+	 * 
+	 */
 	@Override
 	public void insert(GoBackDirectly goBackDirectly) {
 		this.commandProxy().insert(toEntity(goBackDirectly));
 	}
-
+	/**
+	 * 
+	 */
 	@Override
 	public void delete(GoBackDirectly goBackDirectly) {
 		this.commandProxy()

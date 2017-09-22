@@ -1,3 +1,6 @@
+.m2-inline-div {
+	display: inline-block;
+}
 .m2-column1 {
 	width: 150px;
 	vertical-align: top;	
@@ -9,7 +12,7 @@
 	width: 95px;
 }
 .m2-panel {
-	width: 400px;	
+	width: 550px;	
 	margin-bottom: 3px;
 	padding: 3px;
 }
@@ -19,4 +22,11 @@
 }
 .m2-time-editor {
 	width: 80px;
+}
+.m2DisableEdit {
+	color: #999999;
+}
+.m2-checkBox {
+	margin-left: 3px;
+	margin-right: -7px;
 }

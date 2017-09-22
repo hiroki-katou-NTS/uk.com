@@ -3,27 +3,34 @@ module nts.uk.at.view.kaf002.m1 {
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
     export module viewmodel {
         export class ScreenModel {
-            stampAtr: KnockoutObservable<number> = ko.observable(0);
+            stampAtr: KnockoutObservable<number> = ko.observable(1);
             extendsMode: KnockoutObservable<boolean> = ko.observable(false);
             appStampList: KnockoutObservableArray<vmbase.AppStampGoOutPermit> = ko.observableArray([
-                new vmbase.AppStampGoOutPermit(this.stampAtr(),1,0,0,'',0,''),
-                new vmbase.AppStampGoOutPermit(this.stampAtr(),2,0,0,'',0,''),
-                new vmbase.AppStampGoOutPermit(this.stampAtr(),3,0,0,'',0,'')
+                new vmbase.AppStampGoOutPermit(this.stampAtr(),1,0,0,'start1',0,'end1', true, true, true, true),
+                new vmbase.AppStampGoOutPermit(this.stampAtr(),2,0,0,'start2',0,'end2', true, true, true, true),
+                new vmbase.AppStampGoOutPermit(this.stampAtr(),3,0,0,'start3',0,'end3', true, true, true, true)
             ]);
-            
+            supFrameNo: number = 10;
+            stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             constructor(){
                 var self = this;
                 self.stampAtr.subscribe(()=>{ self.extendsMode(false); });
                 self.extendsMode.subscribe((v)=>{ 
                     if(v){
-                        for(let i=4;i<=10;i++) {
-                            self.appStampList.push(new vmbase.AppStampGoOutPermit(self.stampAtr(),i,0,0,'',0,''));    
+                        for(let i=4;i<=self.supFrameNo;i++) {
+                            self.appStampList.push(new vmbase.AppStampGoOutPermit(self.stampAtr(),i,0,0,'',0,'',true, true, true, true));    
                         } 
                     } else {
-                        self.appStampList.remove((o) => { return o.stampFrameNo() > 2 });   
+                        self.appStampList.remove((o) => { return o.stampFrameNo() > 3 });   
                     } 
                 });        
-            }       
+            }
+            
+            start(data: vmbase.StampRequestSettingDto){
+                var self = this;    
+                self.supFrameNo = data.supFrameDispNO > 10 ? 10 : data.supFrameDispNO;
+                self.stampPlaceDisplay(data.stampPlaceDisp);
+            }
             
             extendsModeEvent(){
                 var self = this;
@@ -36,8 +43,9 @@ module nts.uk.at.view.kaf002.m1 {
                     appID: "",
                     inputDate: application.inputDate(),
                     enteredPerson: application.enteredPerson(),
-                    applicationDate: application.applicationDate(),
-                    applicationReason: application.applicationReason(),
+                    applicationDate: application.appDate(),
+                    titleReason: application.titleReason(), 
+                    detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 0,
                     appStampGoOutPermitCmds: ko.mapping.toJS(self.appStampList()),
@@ -54,8 +62,9 @@ module nts.uk.at.view.kaf002.m1 {
                     appID: "f49b73a6-a3ff-4db5-938a-51435a34cb85",
                     inputDate: application.inputDate(),
                     enteredPerson: application.enteredPerson(),
-                    applicationDate: application.applicationDate(),
-                    applicationReason: application.applicationReason(),
+                    applicationDate: application.appDate(),
+                    titleReason: application.titleReason(), 
+                    detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 0,
                     appStampGoOutPermitCmds: ko.mapping.toJS(self.appStampList()),

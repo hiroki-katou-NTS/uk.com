@@ -22,6 +22,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeAppr
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverAdaptor;
 
 @Stateless
 public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterApprovalRoot{
@@ -37,6 +38,8 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 	private PersonInforExportAdapter psInfor;
 	@Inject
 	private EmployeeApproveAdapter empInfor;
+	@Inject
+	private WorkplaceApproverAdaptor wpNameInfor;
 	@Override
 	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate) {
 		List<EmployeeApproveDto> lstEmps = empInfor.getEmployeesAtWorkByBaseDate(companyId, baseDate);
@@ -66,8 +69,8 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 		List<PersonApprovalRoot> psInfo = psRootRepository.findAllByBaseDate(companyId, baseDate);
 		//承認ルート未登録出力対象としてリスト
 		List<EmployeeUnregisterOutput> lstUnRegister = new ArrayList<>();
-		EmployeeUnregisterOutput empInfo = new EmployeeUnregisterOutput();
 		for(EmployeeApproveDto empInfor: lstEmps) {
+			EmployeeUnregisterOutput empInfo = new EmployeeUnregisterOutput();
 			List<String> appTypes = new ArrayList<>();
 			for(ApplicationType appType: ApplicationType.values()) {
 				//社員の対象申請の承認ルートを取得する(lấy dữ liệu approve route của đối tượng đơn xin của nhân viên)
@@ -85,6 +88,7 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 			}
 			
 			if(!CollectionUtil.isEmpty(appTypes)) {
+				
 				empInfo.setAppType(appTypes);
 				empInfor.setPName(psInfor.personName(empInfor.getSId()));
 				empInfo.setEmpInfor(empInfor);

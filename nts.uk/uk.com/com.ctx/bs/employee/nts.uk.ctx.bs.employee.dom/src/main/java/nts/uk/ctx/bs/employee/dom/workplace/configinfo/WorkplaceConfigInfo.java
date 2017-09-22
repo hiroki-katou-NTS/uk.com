@@ -52,6 +52,19 @@ public class WorkplaceConfigInfo extends AggregateRoot {
 		this.historyId = memento.getHistoryId();
 		this.wkpHierarchy = memento.getWkpHierarchy();
 	}
+	
+	/**
+	 * Instantiates a new workplace config info.
+	 *
+	 * @param convert the convert
+	 * @param historyId the history id
+	 */
+	public WorkplaceConfigInfo(WorkplaceConfigInfo convert,String historyId)
+	{
+		this.companyId = convert.getCompanyId();
+		this.historyId = new HistoryId(historyId);
+		this.wkpHierarchy = convert.getWkpHierarchy();
+	}
 
 	/*
 	 * (non-Javadoc)

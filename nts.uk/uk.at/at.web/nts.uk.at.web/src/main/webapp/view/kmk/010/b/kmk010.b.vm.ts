@@ -2,7 +2,7 @@ module nts.uk.at.view.kmk010.b {
 
     import OvertimeDto = nts.uk.at.view.kmk010.a.service.model.OvertimeDto;
     import OvertimeModel = nts.uk.at.view.kmk010.a.viewmodel.OvertimeModel;
-    import OvertimeLangNameDto = nts.uk.at.view.kmk010.a.service.model.OvertimeLangNameDto;
+    import OvertimeNameLangDto = nts.uk.at.view.kmk010.a.service.model.OvertimeNameLangDto;
     
     export module viewmodel {
 
@@ -40,7 +40,7 @@ module nts.uk.at.view.kmk010.b {
                    } else {
                        self.textOvertimeName(nts.uk.resource.getText('KMK010_63'));
                        self.enableCheckbox(false);
-                       nts.uk.at.view.kmk010.a.service.findAllOvertimeLanguageName(self.languageId).done(function(dataLanguageName){
+                       nts.uk.at.view.kmk010.a.service.findAllOvertimeNameLanguage(self.languageId).done(function(dataLanguageName){
                            if (dataLanguageName && dataLanguageName.length > 0) {
                                for(var dataLang of dataLanguageName){
                                     for(var model of self.lstOvertimeModel){
@@ -74,14 +74,16 @@ module nts.uk.at.view.kmk010.b {
 
                     // call service save all overtime
                     service.saveAllOvertime(overtimes).done(function() {
-                        console.log('YES');
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            nts.uk.ui.windows.close();
+                        });
                     }).fail(function(error) {
-
+                        nts.uk.ui.dialog.alertError(error);
                     });
                 }else {
-                    var overtimeLangNames: OvertimeLangNameDto[] = [];
+                    var overtimeLangNames: OvertimeNameLangDto[] = [];
                     for(var model of self.lstOvertimeModel){
-                        var dto: OvertimeLangNameDto = {
+                        var dto: OvertimeNameLangDto = {
                             name: model.name(),
                             languageId: self.languageId,
                             overtimeNo: model.overtimeNo()
@@ -90,12 +92,20 @@ module nts.uk.at.view.kmk010.b {
                     }    
                     // call service save all overtime language name
                     service.saveAllOvertimeLanguageName(overtimeLangNames).done(function(){
-                        console.log('YES');
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                            nts.uk.ui.windows.close();
+                        });
                     }).fail(function(error){
-                        
+                        nts.uk.ui.dialog.alertError(error);
                     });
                 }
 
+            }
+            /**
+             * function by click button close dialog
+             */
+            private closeSaveOvertime(): void {
+                nts.uk.ui.windows.close();
             }
         }
 

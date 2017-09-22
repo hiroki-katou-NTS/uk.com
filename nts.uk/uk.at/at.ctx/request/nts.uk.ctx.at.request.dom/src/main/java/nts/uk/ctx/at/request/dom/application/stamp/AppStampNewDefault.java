@@ -11,8 +11,9 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheck
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.AfterProcessRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeProcessRegister;
-import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampSetOutput;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 /**
  * 
  * @author Doan Duy Hung
@@ -46,13 +47,14 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	private AppStampCommonDomainService appStampCommonDomainService;
 
 	@Override
-	public AppStampSetOutput appStampPreProcess(String companyID, String employeeID, GeneralDate appDate) {
-		this.prelaunchAppCommonSetService.prelaunchAppCommonSetService(
-				companyID, 
-				employeeID, 
-				1, // EmploymentRootAtr.APPLICATION 就業ルート区分.申請
-				ApplicationType.STAMP_APPLICATION, 
-				appDate);
+	public AppStampNewPreOutput appStampPreProcess(String companyID, String employeeID, GeneralDate appDate) {
+		AppStampNewPreOutput appStampNewPreOutput = new AppStampNewPreOutput();
+		appStampNewPreOutput.appCommonSettingOutput = this.prelaunchAppCommonSetService.prelaunchAppCommonSetService(
+															companyID, 
+															employeeID, 
+															1, // EmploymentRootAtr.APPLICATION 就業ルート区分.申請
+															ApplicationType.STAMP_APPLICATION, 
+															appDate);
 		this.startApprovalRootService.getApprovalRootPattern(
 				companyID, 
 				employeeID, 
@@ -60,7 +62,8 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 				ApplicationType.STAMP_APPLICATION.value, 
 				appDate);
 		this.newScreenStartCheckErrorService.checkError(ApplicationType.STAMP_APPLICATION.value);
-		return this.appStampCommonDomainService.appStampSet(companyID);
+		appStampNewPreOutput.appStampSetOutput = this.appStampCommonDomainService.appStampSet(companyID);
+		return appStampNewPreOutput;
 	}
 
 	@Override
@@ -99,14 +102,14 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	// 打刻申請の新規登録
 	private void appStampRegistration(AppStamp appStamp) {
 		StampRequestMode StampRequestMode = appStamp.getStampRequestMode();
-		this.processBeforeRegisterService.processBeforeRegister(
+		/*this.processBeforeRegisterService.processBeforeRegister(
 				appStamp.getCompanyID(), 
 				appStamp.getApplicantSID(), 
 				appStamp.getApplicationDate(), 
 				appStamp.getPrePostAtr(), 
 				1, // EmploymentRootAtr.APPLICATION 就業ルート区分.申請
 				appStamp.getApplicationType().value);
-		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appStamp.getApplicantSID(), appStamp);
+		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appStamp.getApplicantSID(), appStamp);*/
 		switch(StampRequestMode){
 			case STAMP_GO_OUT_PERMIT: appStampRepository.addStampGoOutPermit(appStamp);break;
 			case STAMP_ADDITIONAL: appStampRepository.addStampWork(appStamp);break;
@@ -114,6 +117,6 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 			case STAMP_ONLINE_RECORD: appStampRepository.addStampOnlineRecord(appStamp);break;
 			default: break;
 		}
-		this.processAfterRegisterService.processAfterRegister(appStamp.getCompanyID(), appStamp.getApplicationID());
+		// this.processAfterRegisterService.processAfterRegister(appStamp.getCompanyID(), appStamp.getApplicationID());
 	}
 }

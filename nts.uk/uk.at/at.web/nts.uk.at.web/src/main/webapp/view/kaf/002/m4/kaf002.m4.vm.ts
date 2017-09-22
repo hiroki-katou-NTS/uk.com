@@ -4,8 +4,26 @@ module nts.uk.at.view.kaf002.m4 {
     export module viewmodel {
         export class ScreenModel {
             appStamp: KnockoutObservable<vmbase.AppStampOnlineRecord> = ko.observable(new vmbase.AppStampOnlineRecord(0,0)); 
+            supFrameNo: number = 10;
+            stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
+            stampCombinationList: KnockoutObservableArray<vmbase.StampCombination> = ko.observableArray([]);  
             constructor(){
                 
+            }
+            
+            start(data: vmbase.StampRequestSettingDto){
+                var self = this;    
+                self.supFrameNo = data.supFrameDispNO;
+                self.stampPlaceDisplay(data.stampPlaceDisp);
+                service.getStampCombinationAtr().done(data => {
+                    let a = [];
+                    _.forEach(data, (item, index) => {
+                        a.push(new vmbase.StampCombination(index, item.name));        
+                    });   
+                    self.stampCombinationList(a);
+                }).fail(res => {
+                    console.log(res);
+                });
             }
             
             register(application : vmbase.Application){
@@ -14,8 +32,9 @@ module nts.uk.at.view.kaf002.m4 {
                     appID: "",
                     inputDate: application.inputDate(),
                     enteredPerson: application.enteredPerson(),
-                    applicationDate: application.applicationDate(),
-                    applicationReason: application.applicationReason(),
+                    applicationDate: application.appDate(),
+                    titleReason: application.titleReason(), 
+                    detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 3,
                     appStampGoOutPermitCmds: null,
@@ -32,8 +51,9 @@ module nts.uk.at.view.kaf002.m4 {
                     appID: application.applicationID,
                     inputDate: application.inputDate(),
                     enteredPerson: application.enteredPerson(),
-                    applicationDate: application.applicationDate(),
-                    applicationReason: application.applicationReason(),
+                    applicationDate: application.appDate(),
+                    titleReason: application.titleReason(), 
+                    detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 3,
                     appStampGoOutPermitCmds: null,

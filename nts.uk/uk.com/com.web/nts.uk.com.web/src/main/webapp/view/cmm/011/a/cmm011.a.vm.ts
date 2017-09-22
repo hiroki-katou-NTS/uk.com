@@ -94,7 +94,11 @@ module nts.uk.com.view.cmm011.a {
              * configureWkpDialog
              */
             public configureWkpDialog() {
+                var self = this;
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/b/index.xhtml').onClosed(() => {
+                    var dialogData = nts.uk.ui.windows.getShared("sendParent");
+                    self.strDWorkplace(dialogData.startDate);
+                    self.endDWorkplace(dialogData.endDate);
                 });
             }
             
@@ -399,7 +403,7 @@ module nts.uk.com.view.cmm011.a {
              */
             public updateWkpHistoryDialog() {
                 let self = this;
-                nts.uk.ui.windows.setShared("StartDateHistory", self.getSelectedHistory().startDate);
+                nts.uk.ui.windows.setShared("StartDateHistory", self.getSelectedHistoryByWkpId().startDate);
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/e/index.xhtml').onClosed(() => {
                 });
             }

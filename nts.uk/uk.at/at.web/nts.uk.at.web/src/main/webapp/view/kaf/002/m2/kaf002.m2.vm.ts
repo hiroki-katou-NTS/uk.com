@@ -5,21 +5,29 @@ module nts.uk.at.view.kaf002.m2 {
         export class ScreenModel {
             extendsMode: KnockoutObservable<boolean> = ko.observable(false);
             appStampList: KnockoutObservableArray<vmbase.AppStampWork> = ko.observableArray([
-                new vmbase.AppStampWork(4,1,0,'','',0,'',0,''),
-                new vmbase.AppStampWork(4,2,0,'','',0,'',0,''),
-                new vmbase.AppStampWork(4,3,0,'','',0,'',0,'')
+                new vmbase.AppStampWork(0,1,0,'spCode1','spLocation1',true,true,0,'start1',0,'end1',true,true,true,true),
+                new vmbase.AppStampWork(0,2,0,'spCode2','spLocation2',true,true,0,'start2',0,'end2',true,true,true,true),
+                new vmbase.AppStampWork(0,3,0,'spCode3','spLocation3',true,true,0,'start3',0,'end3',true,true,true,true)
             ]);    
+            supFrameNo: number = 10;
+            stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             constructor(){
                 var self = this;
                 self.extendsMode.subscribe((v)=>{ 
                     if(v){
-                        for(let i=4;i<=10;i++) {
-                            self.appStampList.push(new vmbase.AppStampWork(4,i,0,'','',0,'',0,''));    
+                        for(let i=4;i<=self.supFrameNo;i++) {
+                            self.appStampList.push(new vmbase.AppStampWork(0,i,0,'','',true,true,0,'',0,'',true,true,true,true));    
                         } 
                     } else {
-                        self.appStampList.remove((o) => { return o.stampFrameNo() > 2 });   
+                        self.appStampList.remove((o) => { return o.stampFrameNo() > 3 });   
                     } 
                 });        
+            }
+            
+            start(data: vmbase.StampRequestSettingDto){
+                var self = this;    
+                self.supFrameNo = data.supFrameDispNO > 10 ? 10 : data.supFrameDispNO;
+                self.stampPlaceDisplay(data.stampPlaceDisp);
             }
             
             extendsModeEvent(){
@@ -33,8 +41,9 @@ module nts.uk.at.view.kaf002.m2 {
                     appID: "",
                     inputDate: application.inputDate(),
                     enteredPerson: application.enteredPerson(),
-                    applicationDate: application.applicationDate(),
-                    applicationReason: application.applicationReason(),
+                    applicationDate: application.appDate(),
+                    titleReason: application.titleReason(), 
+                    detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 1,
                     appStampGoOutPermitCmds: null,
@@ -51,8 +60,9 @@ module nts.uk.at.view.kaf002.m2 {
                     appID: application.applicationID,
                     inputDate: application.inputDate(),
                     enteredPerson: application.enteredPerson(),
-                    applicationDate: application.applicationDate(),
-                    applicationReason: application.applicationReason(),
+                    applicationDate: application.appDate(),
+                    titleReason: application.titleReason(), 
+                    detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 1,
                     appStampGoOutPermitCmds: null,

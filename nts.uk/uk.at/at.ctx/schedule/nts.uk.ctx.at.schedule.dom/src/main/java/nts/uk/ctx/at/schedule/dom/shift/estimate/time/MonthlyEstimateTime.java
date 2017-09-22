@@ -10,7 +10,8 @@ import nts.arc.primitive.constraint.TimeRange;
 /**
  * The Class MonthlyEstimateTime.
  */
-@TimeRange(max = "999:59", min = "00:00")
+// 月間時間
+@TimeRange(max = "744:00", min = "00:00")
 public class MonthlyEstimateTime extends TimeDurationPrimitiveValue<MonthlyEstimateTime> {
 
 	/**

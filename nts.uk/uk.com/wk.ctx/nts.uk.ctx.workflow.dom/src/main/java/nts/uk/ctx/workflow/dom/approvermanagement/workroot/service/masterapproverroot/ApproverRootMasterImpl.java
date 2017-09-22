@@ -160,9 +160,9 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			}
 			
 			//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」) tra ra 1 list nhung thuc chat chi co 1 du lieu
-			List<WorkplaceApproverDto> wpInfors = wpAdapter.findByWkpId(companyID, root.getWorkplaceId(), baseDate);			
+			Optional<WorkplaceApproverDto> wpInfors = wpAdapter.findByWkpId( root.getWorkplaceId(), baseDate);			
 			wpRootInfor = getAppInfors(wpRoot, wpRootInfor, companyID);
-			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpInfors.get(0), wpRootInfor);
+			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpInfors.get(), wpRootInfor);
 			mapWpRootInfor.put(root.getWorkplaceId(), wpOutput);
 		}
 		return mapWpRootInfor;
@@ -242,7 +242,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDate(companyID, baseDate);
 		Optional<CompanyInfor> comInfo = comAdapter.getCurrentCompany();
 		List<ApprovalForApplication> comApproverRoot =  new ArrayList<>();
-		if(!CollectionUtil.isEmpty(lstComs)) {
+		if(CollectionUtil.isEmpty(lstComs)) {
 			return null;
 		}
 		

@@ -53,7 +53,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             //MultilineEditor 
             self.appreason = ko.observable('');
             //Show Screen
-            self.showScreen = nts.uk.ui.windows.getShared("ShowScreen");
+            self.showScreen = __viewContext.transferred.value.showScreen;
         }
 
         startPage(): JQueryPromise<any> {
@@ -67,7 +67,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
 
             return dfd.promise();
         }
-
+        
         /** Create Button Click */
         registryButtonClick() {
             var self = this;

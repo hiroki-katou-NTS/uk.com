@@ -8,10 +8,22 @@
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
 			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-					nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.shr.com.primitive.PersonId
+				nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.ctx.at.request.dom.application.common.AppReason
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../002/cm/kaf002.cm.main.css" />
+			<com:stylefile path="../../002/m1/kaf002.m1.main.css" />
+			<com:stylefile path="../../002/m2/kaf002.m2.main.css" />
+			<com:stylefile path="../../002/m3/kaf002.m3.main.css" />
+			<com:stylefile path="../../002/m4/kaf002.m4.main.css" />
+			<com:stylefile path="../../002/m5/kaf002.m5.main.css" />
+			<com:stylefile path="../../004/e/kaf004.e.style.css" />
+			<com:stylefile path="../../009/b/kaf009.b.style.css" />
+			<com:stylefile path="kaf000.b.main.css" />
+			<com:scriptfile path="kaf000.b.vm.js" />
+			<com:scriptfile path="kaf000.b.service.js" />
 			<com:scriptfile path="../../002/shr/kaf002.shr.service.js" />
 			<com:scriptfile path="../../002/shr/kaf002.shr.vm.js" />
 			<com:scriptfile path="../../002/m1/kaf002.m1.vm.js" />
@@ -19,19 +31,11 @@
 			<com:scriptfile path="../../002/m3/kaf002.m3.vm.js" />
 			<com:scriptfile path="../../002/m4/kaf002.m4.vm.js" />
 			<com:scriptfile path="../../002/m5/kaf002.m5.vm.js" />
-			<com:scriptfile path="../../002/cm/kaf002.cm.vm.js" />
-			<com:stylefile path="../../002/cm/kaf002.cm.main.css" />
-			<com:stylefile path="../../002/m1/kaf002.m1.main.css" />
-			<com:stylefile path="../../002/m2/kaf002.m2.main.css" />
-			<com:stylefile path="../../002/m3/kaf002.m3.main.css" />
-			<com:stylefile path="../../002/m4/kaf002.m4.main.css" />
-			<com:stylefile path="../../002/m5/kaf002.m5.main.css" />
-			<com:stylefile path="../../009/b/kaf009.b.style.css" />
-			<com:stylefile path="kaf000.b.main.css" />
-			<com:scriptfile path="kaf000.b.service.js" />
-			<com:scriptfile path="kaf000.b.vm.js" />
+			<com:scriptfile path="../../004/e/kaf004.e.vm.js" />
+			<com:scriptfile path="../../004/e/kaf004.e.service.js" />
 			<com:scriptfile path="../../009/b/kaf009.b.service.js" />
 			<com:scriptfile path="../../009/b/kaf009.b.vm.js" />
+			<com:scriptfile path="../../002/cm/kaf002.cm.vm.js" />
 			<com:scriptfile path="kaf000.b.start.js" />
 		</ui:define>
 		<ui:define name="content">
@@ -52,9 +56,9 @@
 				<button >#{i18n.getText('KAF000_18')}</button>
 				
 				<!-- B1_8 -->
-				<div data-bind="with: screenModel.cm" style="display: inline-block">
+				<!-- <div data-bind="with: screenModel.cm" style="display: inline-block">
 					<button class="proceed" data-bind="click: update">#{i18n.getText('KAF000_19')}</button>
-				</div>
+				</div> -->
 				
 				<!-- B1_9 -->
 				<button >#{i18n.getText('KAF000_20')}</button>
@@ -68,7 +72,7 @@
 				<!-- B1_13 -->
 				<button  class="danger">#{i18n.getText('KAF000_24')}</button>
 			</div>
-			<div id="contents-area" data-bind="with: screenModel">
+			<div id="contents-area">
 				<!-- row1 -->
 				<div id="message-area"> 
 					<table >
@@ -76,13 +80,13 @@
 							<!-- A1_1 -->
 							<td class="message-td" >#{i18n.getText('KAF000_1')}</td>
 							<!-- A1_2 -->
-							<td class="message-td"> 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 </td>
+							<td class="message-td"><div data-bind="text:outputMessageDeadline().message" ></div></td>
 						</tr>
 						<tr>
 							<!-- A1_3 -->
 							<td class="message-td">#{i18n.getText('KAF000_2')}</td>
 							<!-- A1_4 -->
-							<td class="message-td"> 2017/11/12  ~ 2019/11/12</td>
+							<td class="message-td"><div data-bind="text:outputMessageDeadline().deadline" ></div></td>
 						</tr>
 					</table>
 				</div>
@@ -102,12 +106,18 @@
 				</div>
 				
 				<!-- Body -->
-<!-- 				<div style="height: 50px;background-color: gray ; margin-top: 30px;'">body</div> -->
-				<div data-bind="with: screenModel.cm">
+				<com:ko-if bind="appType() == 7">
 					<ui:include src="../../002/cm/index.xhtml" />
-				</div>
+				</com:ko-if>
+				<com:ko-if bind="appType() == 9">
+					<ui:include src="../../004/e/index.xhtml" />
+				</com:ko-if>
+<!--  				<div style="height: 50px;background-color: gray ; margin-top: 30px;'">body</div> -->
+				<!-- <div data-bind="with: screenModel.cm">
+					<ui:include src="../../002/cm/index.xhtml" />
+				</div>--> 
 				
-		<!-- 		<div class="divKaf009" data-bind="with: screenModel9">
+				<!-- <div class="divKaf009" data-bind="with: screenModel9">
 					<ui:include src="../../009/b/index.xhtml"></ui:include>
 				</div> -->
 				<!-- end body -->
@@ -119,7 +129,7 @@
 					
 				</div>
 				<BR />	
-				<div id="table-1">
+				<div id="table-1" data-bind="with: dataApplication">
 					<table id="table-phase">
 						<thead>
 							<tr  class="bg-green">
@@ -130,19 +140,22 @@
 								<th class="name-app" style="width:111px;">#{i18n.getText('KAF000_30')}</th>
 							</tr>
 						</thead>
-						<!-- <tbody data-bind="foreach :listFrameByListPhase1" >
-							<com:ko bind="$data" tag ="foreach">
+						<!-- foreach -->
+						<tbody data-bind="foreach : listOutputPhaseAndFrame" >
+							<com:ko bind="$data.listApproveAcceptedForView" tag ="foreach">
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
-										<td class="bg-green" data-bind="attr: {rowspan: $parent.length},text: $data.phaseID">test</td>
+										<td class="bg-green" data-bind="attr: {rowspan: $parent.listApprovalFrameDto.length},text: $data.phaseID"></td>
 									</com:ko>
 									<td class="bg-green" ><label data-bind="text: $data.approverSID"></label></td>
-									<td><label data-bind="text: $data.reason"></label></td>
-									<td><label>????</label></td>
-									<td><label>OK</label></td>
+										<td>
+											<label data-bind="text: $data.approverSID2"></label>
+										</td>
+									<td><label data-bind="text: $data.approvalATR"></label></td>
+									<td><label data-bind="text: $data.reason"> </label></td>
 								</tr>
 							</com:ko>
-						</tbody> -->
+						</tbody> 
 					</table>
 				</div>
 				<!-- end footer -->

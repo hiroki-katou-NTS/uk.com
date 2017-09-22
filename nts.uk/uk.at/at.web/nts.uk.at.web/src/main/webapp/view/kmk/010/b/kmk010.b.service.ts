@@ -1,12 +1,12 @@
 module nts.uk.at.view.kmk010.b {
     
     import OvertimeDto = nts.uk.at.view.kmk010.a.service.model.OvertimeDto;
-    import OvertimeLangNameDto = nts.uk.at.view.kmk010.a.service.model.OvertimeLangNameDto;
+    import OvertimeNameLangDto = nts.uk.at.view.kmk010.a.service.model.OvertimeNameLangDto;
     
     export module service {
         var paths = {
-            saveAllOvertime : "ctx/at/shared/overtime/save",
-            saveAllOvertimeLanguageName : "ctx/at/shared/overtime/language/name/saveAll"
+            saveAllOvertime : "ctx/at/shared/outsideot/overtime/save",
+            saveAllOvertimeLanguageName : "ctx/at/shared/outsideot/overtime/name/language/saveAll"
         }
         
          /**
@@ -19,7 +19,7 @@ module nts.uk.at.view.kmk010.b {
         /**
          * save all overtime language name
          */
-        export function saveAllOvertimeLanguageName(overtimeLanguages: OvertimeLangNameDto[]): JQueryPromise<void> {
+        export function saveAllOvertimeLanguageName(overtimeLanguages: OvertimeNameLangDto[]): JQueryPromise<void> {
             return nts.uk.request.ajax('at', paths.saveAllOvertimeLanguageName, { overtimeLanguages: overtimeLanguages });
         } 
                 

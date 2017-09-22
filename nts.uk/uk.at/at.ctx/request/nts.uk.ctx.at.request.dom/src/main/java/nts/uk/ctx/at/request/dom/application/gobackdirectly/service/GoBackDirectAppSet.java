@@ -13,4 +13,7 @@ public class GoBackDirectAppSet {
 	String workLocationName2;
 	String workTypeName;
 	String workTimeName;
+	String appReasonId;
+	String appReason;
+	String appDate;
 }

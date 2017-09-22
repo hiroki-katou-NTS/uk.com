@@ -68,7 +68,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	/**
-	 * Get ALL applicatio
+	 * Get ALL application
 	 */
 	@Override
 	public List<Application> getAllApplication(String companyID) {

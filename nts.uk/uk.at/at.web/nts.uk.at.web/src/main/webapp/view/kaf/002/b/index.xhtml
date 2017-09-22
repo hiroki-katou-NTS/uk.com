@@ -32,22 +32,22 @@
 			
 			<ui:define name="content">
 				<div id="functions-area">
-					<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">振込元銀行の登録へ</a>
-					<button class="proceed" data-bind="click: register">Proceed</button>
-					<button>Normal</button>
-					<button>Normal</button>
-					<div data-bind="ntsCheckBox: { checked: true }">Enable</div>
+					<a class="goback" data-bind="ntsLinkButton: { jump: '../a/index.xhtml' }">#{i18n.getText('KAF002_45')}</a>
+					<button class="proceed" data-bind="click: register">#{i18n.getText('KAF002_46')}</button>
+					<button>#{i18n.getText('KAF002_47')}</button>
+					<button>#{i18n.getText('KAF002_48')}</button>
+					<div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KAF002_49')}</div>
 				</div>
 				<div id="contents-area">
-					<div>
+					<div data-bind="with: kaf000_a2">
 						<ui:include src="../../000/a/index1.xhtml" />	
 					</div>
 					<div data-bind="with: cm">
 						<ui:include src="../cm/index.xhtml" />
 					</div>	
-					<div data-bind="with: kaf000_a2">
+					<!-- <div data-bind="with: kaf000_a2">
 						<ui:include src="../../000/a/index2.xhtml" />	
-					</div>
+					</div> -->
 				</div>
 			</ui:define>
 		</ui:composition>

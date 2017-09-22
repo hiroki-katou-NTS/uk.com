@@ -60,9 +60,7 @@ public class AfterProcessRegisterImpl implements AfterProcessRegister {
 	
 	public List<String> acquireDestinationList(Application application){
 		List<String> destinationList = new ArrayList<>();
-		Optional<Application> appOp = applicationRepository.getAppById(application.getCompanyID(), application.getApplicationID());
-		Application app = appOp.get();
-		if(app.getReflectPerState().equals(ReflectPlanPerState.NOTREFLECTED)) return destinationList;
+		if(application.getReflectPerState().equals(ReflectPlanPerState.NOTREFLECTED)) return destinationList;
 		List<AppApprovalPhase> appApprovalPhases = appApprovalPhaseRepository.findPhaseByAppID(application.getCompanyID(), application.getApplicationID());
 		for( AppApprovalPhase appApprovalPhase : appApprovalPhases) {
 			if(appApprovalPhase.getApprovalATR().equals(ApprovalAtr.DENIAL)||appApprovalPhase.getApprovalATR().equals(ApprovalAtr.REMAND)){

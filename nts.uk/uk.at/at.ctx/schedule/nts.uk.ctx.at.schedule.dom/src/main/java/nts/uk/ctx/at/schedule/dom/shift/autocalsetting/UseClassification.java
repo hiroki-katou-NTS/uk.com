@@ -12,11 +12,11 @@ public enum UseClassification {
 
 	/** The not use. */
 	// 使用しない
-	NOT_USE(0, "Enum_UseClassification_Not_Use", "使用しない"),
+	NOT_USE(0, "使用しない", "Enum_UseClassification_Not_Use"),
 
 	/** The use. */
 	// 使用する
-	USE(1, "Enum_UseClassification_Use", "使用する");
+	USE(1, "使用する", "Enum_UseClassification_Use");
 
 	/** The value. */
 	public int value;

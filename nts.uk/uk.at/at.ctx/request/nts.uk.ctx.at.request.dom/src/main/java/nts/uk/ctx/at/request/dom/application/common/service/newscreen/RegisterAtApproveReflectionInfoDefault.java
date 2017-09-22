@@ -19,11 +19,18 @@ import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcessImpl;
+import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * 2-2.新規画面登録時承認反映情報の整理
+ * 
+ * @author ducpm
+ *
+ */
 @Stateless
-public class RegisterAtApproveReflectionInfoDefault
-		implements RegisterAtApproveReflectionInfoService {
+public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApproveReflectionInfoService {
 
 	@Inject
 	private ApplicationRepository appRepo;
@@ -37,10 +44,18 @@ public class RegisterAtApproveReflectionInfoDefault
 	// @Inject
 	private AfterApprovalProcessImpl approvalProcess;
 
+	/**
+	 * 3-1.承認代行情報の取得処理
+	 */
+	@Inject
+	private ApprovalAgencyInformation appAgencyInfoService;
+
 	@Override
-	public void newScreenRegisterAtApproveInfoReflect(String empID, Application application) {
+	public void newScreenRegisterAtApproveInfoReflect(String SID, Application application) {
 		String appID = application.getApplicationID();
+		// アルゴリズム「承認情報の整理」を実行する
 		this.organizationOfApprovalInfo(appID);
+		// アルゴリズム「実績反映状態の判断」を実行する
 		this.performanceReflectedStateJudgment(appID);
 	}
 
@@ -83,9 +98,7 @@ public class RegisterAtApproveReflectionInfoDefault
 						}
 					}
 				}
-				//
 				// ApprovalForm /** 承認形態 */
-				//
 				// 「承認フェーズ」．承認形態をチェックする
 			} else {
 
@@ -144,8 +157,9 @@ public class RegisterAtApproveReflectionInfoDefault
 						// 未承認の承認者一覧を取得する」を実行する
 						List<String> listUnApproved = approvalProcess.actualReflectionStateDecision(appID,
 								appPhase.getPhaseID(), ApprovalAtr.UNAPPROVED);
-						// GOi HAM 3.1
-						// ==>> tra ve FLG allApprovalFlg
+						// 3-1.承認代行情報の取得処理
+						ApprovalAgencyInformationOutput agency = this.appAgencyInfoService
+								.getApprovalAgencyInformation(companyID, listUnApproved);
 						/*
 						 * if(allApprovalFlg){ flgApprovalDone = true; }else{ flgApprovalDone = false; }
 						 */
@@ -163,7 +177,6 @@ public class RegisterAtApproveReflectionInfoDefault
 
 				// 承認フェーズ枠番 = ループ中の「承認フェーズ」．順序
 			}
-
 			// ドメインモデル「承認フェーズ」．承認区分が承認済(「承認フェーズ」．承認区分 = 承認済)
 			// KHONG LAM GI CA
 		}

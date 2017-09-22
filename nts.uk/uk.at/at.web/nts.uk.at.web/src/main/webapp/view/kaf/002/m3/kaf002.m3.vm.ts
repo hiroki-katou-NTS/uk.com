@@ -15,8 +15,16 @@ module nts.uk.at.view.kaf002.m3 {
                 new vmbase.AppStampCancel(4,9,0),
                 new vmbase.AppStampCancel(4,10,0)
             ]); 
+            supFrameNo: number = 10;
+            stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             constructor(){
                 
+            }
+            
+            start(data: vmbase.StampRequestSettingDto){
+                var self = this;    
+                self.supFrameNo = data.supFrameDispNO;
+                self.stampPlaceDisplay(data.stampPlaceDisp);
             }
             
             register(application : vmbase.Application){
@@ -25,8 +33,9 @@ module nts.uk.at.view.kaf002.m3 {
                     appID: "",
                     inputDate: application.inputDate(),
                     enteredPerson: application.enteredPerson(),
-                    applicationDate: application.applicationDate(),
-                    applicationReason: application.applicationReason(),
+                    applicationDate: application.appDate(),
+                    titleReason: application.titleReason(), 
+                    detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 2,
                     appStampGoOutPermitCmds: null,
@@ -43,8 +52,9 @@ module nts.uk.at.view.kaf002.m3 {
                     appID: application.applicationID,
                     inputDate: application.inputDate(),
                     enteredPerson: application.enteredPerson(),
-                    applicationDate: application.applicationDate(),
-                    applicationReason: application.applicationReason(),
+                    applicationDate: application.appDate(),
+                    titleReason: application.titleReason(), 
+                    detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 2,
                     appStampGoOutPermitCmds: null,
