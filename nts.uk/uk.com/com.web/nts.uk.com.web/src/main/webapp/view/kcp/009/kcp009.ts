@@ -224,18 +224,24 @@ module kcp009.viewmodel {
                     return item.code == employee.employeeCode;
                 })[0];
 
-                if (!existItem) {
+                if (existItem) {
+                    // Set Selected Item
+                    self.selectedItem(existItem.id);
+                    self.empDisplayCode(existItem.code);
+                    self.empBusinessName(existItem.businessName);
+                    // Set OrganizationName
+                    self.organizationName((self.systemType == SystemType.EMPLOYMENT) ?
+                        existItem.workplaceName : existItem.depName);
+                } else {
                     let newEmpList: Array<EmployeeModel> = [];
                     newEmpList.push({ id: employee.employeeId, code: employee.employeeCode, businessName: employee.businessName });
                     self.empList(newEmpList);
-//                    return;
+                    // Set Selected Item
+                    self.selectedItem(employee.employeeId);
+                    self.empDisplayCode(employee.employeeCode);
+                    self.empBusinessName(employee.businessName);
+                    self.organizationName(employee.orgName);
                 }
-                self.selectedItem(existItem.id);
-                self.empDisplayCode(existItem.code);
-                self.empBusinessName(existItem.businessName);
-                // Set OrganizationName
-                self.organizationName((self.systemType == SystemType.EMPLOYMENT) ?
-                    existItem.workplaceName : existItem.depName);
 
             }).fail(function(res) {
                 if (res.messageId === 'Msg_7') {
