@@ -155,7 +155,9 @@ module kcp009.viewmodel {
                 $('#search-input').on('keypress', function(e) {
                     if (e.which == 13) {
                         self.keySearch($('#search-input').val());
-                        self.searchEmp();
+                        if (self.keySearch()) {
+                            self.searchEmp();
+                        }
                     }
                 })
 
