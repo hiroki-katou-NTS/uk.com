@@ -2,6 +2,7 @@ module nts.uk.com.view.cdl003.a {
 
     import ListType = kcp.share.list.ListType;
     import SelectType = kcp.share.list.SelectType;
+    import UnitModel = kcp.share.list.UnitModel;
     import ComponentOption = kcp.share.list.ComponentOption;
 
     export module viewmodel {
@@ -55,24 +56,49 @@ module nts.uk.com.view.cdl003.a {
              */
             private selectedClassification() :void {
                 var self = this;
+                var dataList: UnitModel[] = $("#classification").getDataList();
                 if(self.isMultiple){
-                    if(!self.selectedMulClassification() || self.selectedMulClassification().length == 0){
+                    var selectedCodes: string[] = self.getSelectByMul(self.selectedMulClassification(), dataList);
+                    if(!selectedCodes || selectedCodes.length == 0){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
-                        return;    
-                    }    
+                        return;
+                    }
+                    nts.uk.ui.windows.setShared('outputCDL003', { selectedCode: selectedCodes });
+                    nts.uk.ui.windows.close();    
                 }else {
-                     if(!self.selectedSelClassification || !self.selectedSelClassification()){
+                     var selectedCode: string = self.getSelectBySel(self.selectedSelClassification(), dataList);
+                    if(!selectedCode){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
-                        return;    
-                    }      
+                        return;
+                    }
+                    nts.uk.ui.windows.setShared('outputCDL003', { selectedCode: selectedCode });
+                    nts.uk.ui.windows.close();    
                 }
                 
-                var selectedCode : any = self.selectedMulClassification();
-                if (!self.isMultiple) {
-                    selectedCode = self.selectedSelClassification();
+            }
+            
+            /**
+             * check selected code
+             */
+            private getSelectBySel(selected: string, selectedCodes: UnitModel[]): string {
+                let a = _.find(selectedCodes, x => x.code === selected);
+                if (a) {
+                    return a.code;
                 }
-                nts.uk.ui.windows.setShared('outputCDL003', { selectedCode: selectedCode });
-                nts.uk.ui.windows.close();    
+                return undefined;
+            }
+            /**
+             * check selected array code
+             */
+            private getSelectByMul(selected: string[], selectedCodes: UnitModel[]): string[] {
+                var resSeleted: string[] = [];
+                for (var selectedCode of selected) {
+                    if (this.getSelectBySel(selectedCode, selectedCodes)) {
+                        resSeleted.push(selectedCode);
+                    }
+                }
+
+                return resSeleted;
             }
             /**
              * close windows
