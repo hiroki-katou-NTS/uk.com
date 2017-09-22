@@ -9,8 +9,12 @@
 		<ui:define name="htmlHead">
 			<title>#{i18n.getText('CPS008_1')}</title>
 			<com:ValidatorScript>
-					nts.uk.ctx.bs.person.dom.person.layout.LayoutCode
-					nts.uk.ctx.bs.person.dom.person.layout.LayoutName
+					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionItemName
+					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionCode
+					nts.uk.ctx.bs.person.dom.person.setting.selection.IntegrationCode
+					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionName
+					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionExternalCode
+					nts.uk.ctx.bs.person.dom.person.setting.selection.Memo
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
@@ -69,7 +73,7 @@
 				<div id="right-content" data-bind="with: perInfoSelectionItem">
 					<div id="right-content" class="form-group">
 						<div class="row">
-							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_8')}</div>
+							<div class="coll" data-bind="ntsFormLabel: {  constraint: 'SelectionItemName',required: true }">#{i18n.getText('CPS016_8')}</div>
 							<!-- 							<input style="width: 320px;" -->
 							<!-- 								data-bind="ntsTextEditor: {value: selectionItemName}" /> -->
 							<input style="width: 320px;"
@@ -102,9 +106,9 @@
 						</div>
 -->
 						<div class="row" data-bind="with: formatSelection">
-							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_13')}</div>
+							<div class="coll" data-bind="ntsFormLabel: {constraint: 'SelectionCode', required: true }">#{i18n.getText('CPS016_13')}</div>
 							<input style="width: 20px;"
-								data-bind="ntsTextEditor: {
+								data-bind="ntsNumberEditor :{
 									value: selectionCode,
 									constraint: 'SelectionCode',
 									option: '',
@@ -114,13 +118,13 @@
 						</div>
 
 						<div class="row" data-bind="with: formatSelection">
-							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_15')}</div>
+							<div class="coll" data-bind="ntsFormLabel: {constraint: 'SelectionName', required: true }">#{i18n.getText('CPS016_15')}</div>
 							<!-- 							<input style="width: 20px;" -->
 							<!-- 								data-bind="ntsTextEditor: {value: formatSelection().selectionName}" /> -->
 							<input style="width: 20px;"
-								data-bind="ntsTextEditor: {
-									value: selectionCode,
-									constraint: 'SelectionCode',
+								data-bind="ntsNumberEditor : {
+									value: selectionName,
+									constraint: 'SelectionName',
 									option: '',
 									required: true,
 									enable: true,
@@ -129,13 +133,13 @@
 
 
 						<div class="row" data-bind="with: formatSelection">
-							<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS016_17')}</div>
+							<div class="coll" data-bind="ntsFormLabel: {constraint: 'SelectionExternalCode', required: true }">#{i18n.getText('CPS016_17')}</div>
 							<!-- 							<input style="width: 20px;" -->
 							<!-- 								data-bind="ntsTextEditor: {value: formatSelection().selectionExternalCode}" /> -->
 							<input style="width: 20px;"
-								data-bind="ntsTextEditor: {
+								data-bind="ntsNumberEditor : {
 									value: selectionExternalCode,
-									constraint: '',
+									constraint: 'SelectionExternalCode',
 									option: '',
 									required: true,
 									enable: true,
@@ -148,13 +152,13 @@
 						</div>
 
 						<div class="row">
-							<div class="coll" data-bind="ntsFormLabel: { required: false }">#{i18n.getText('CPS016_19')}</div>
+							<div class="coll" data-bind="ntsFormLabel: {constraint: 'IntegrationCode', required: false }">#{i18n.getText('CPS016_19')}</div>
 <!-- 							<input style="width: 20px;" -->
 <!-- 								data-bind="ntsTextEditor: {value: integrationCode}" /> -->
 							<input style="width: 20px;"
 								data-bind="ntsTextEditor: {
 									value: integrationCode,
-									constraint: '',
+									constraint: 'IntegrationCode',
 									option: '',
 									required: true,
 									enable: true,
@@ -163,7 +167,7 @@
 
 
 						<div class="row">
-							<div class="coll" data-bind="ntsFormLabel: { required: false }">
+							<div class="coll" data-bind="ntsFormLabel: {constraint: 'Memo', required: false }">
 								<label>#{i18n.getText('CPS016_21')}</label>
 							</div>
 							<textarea style="width: 550px; height: 120px;"

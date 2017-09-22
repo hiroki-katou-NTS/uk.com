@@ -14,8 +14,6 @@ public class PerInfoSelectionItem {
 	private String contractCode;
 	private IntegrationCode integrationCode;
 	private FormatSelection formatSelection;
-
-	public static String ROOT_CONTRACT_CODE = "000000000000";
 	
 	public static PerInfoSelectionItem createFromJavaType(String selectionItemId, String selectionItemName, String memo,
 			int selectionItemClsAtr, String contractCd, String integrationCd, int selectionCd, int characterTypeAtr,

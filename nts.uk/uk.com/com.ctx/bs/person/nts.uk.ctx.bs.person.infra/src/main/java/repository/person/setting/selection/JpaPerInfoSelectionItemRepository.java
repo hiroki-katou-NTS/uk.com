@@ -19,11 +19,9 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	private static final String SELECT_ALL_PERSON_INFO_SELECTION_ITEMS_BY_CONTRACTCODE_QUERY = SELECT_ALL
 			+ " WHERE si.contractCd = :contractCd";
 
-
-
 	@Override
 	public void add(PerInfoSelectionItem domain) {
-		
+
 		this.commandProxy().insert(toEntity(domain));
 
 	}
@@ -31,14 +29,12 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	@Override
 	public void update(PerInfoSelectionItem domain) {
 		this.commandProxy().update(toEntity(domain));
-		//neu la update, lay thang ID cu, dk moi thi con update() ->insert();
-
 	}
 
 	@Override
-	public void remove(PerInfoSelectionItem perInfoSelectionItem) {
-		// TODO Auto-generated method stub
-
+	public void remove(PerInfoSelectionItem domain) {
+		BpsmtSelectionItemPK pk = new BpsmtSelectionItemPK(toEntity(domain).selectionItemPk.selectionItemId);
+		this.commandProxy().remove(BpsmtSelectionItem.class, pk);
 	}
 
 	@Override
@@ -70,17 +66,11 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 
 	private static BpsmtSelectionItem toEntity(PerInfoSelectionItem domain) {
 		BpsmtSelectionItemPK key = new BpsmtSelectionItemPK(domain.getSelectionItemId());
-		return new BpsmtSelectionItem(
-				key,
-				domain.getSelectionItemName().v(), 
-				domain.getContractCode(),
-				domain.getIntegrationCode().v(), 
-				domain.getSelectionItemClassification().value,
-				domain.getFormatSelection().getSelectionCode().v(), 
-				domain.getFormatSelection().getSelectionName().v(),
+		return new BpsmtSelectionItem(key, domain.getSelectionItemName().v(), domain.getContractCode(),
+				domain.getIntegrationCode().v(), domain.getSelectionItemClassification().value,
+				domain.getFormatSelection().getSelectionCode().v(), domain.getFormatSelection().getSelectionName().v(),
 				domain.getFormatSelection().getSelectionExternalCode().v(),
-				domain.getFormatSelection().getSelectionCodeCharacter().value,
-				domain.getMemo().v());
+				domain.getFormatSelection().getSelectionCodeCharacter().value, domain.getMemo().v());
 
 	}
 

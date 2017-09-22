@@ -10,6 +10,8 @@ import javax.ws.rs.Produces;
 
 import command.person.setting.selection.AddSelectionItemCommand;
 import command.person.setting.selection.AddSelectionItemCommandHandler;
+import command.person.setting.selection.RemoveSelectionItemCommand;
+import command.person.setting.selection.RemoveSelectionItemCommandHandler;
 import command.person.setting.selection.UpdateSelectionItemCommand;
 import command.person.setting.selection.UpdateSelectionItemCommandHandler;
 import find.person.setting.selection.PerInfoSelectionItemDto;
@@ -28,6 +30,9 @@ public class PerInfoSelectionItemWebservice extends WebService {
 
 	@Inject
 	private UpdateSelectionItemCommandHandler updateCommandHandler;
+	
+	@Inject
+	private RemoveSelectionItemCommandHandler removeCommandHandler;
 
 	@POST
 	@Path("findAll")
@@ -51,6 +56,12 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	@Path("updateSelectionItem")
 	public void updateSelectionItem(UpdateSelectionItemCommand command) {
 		this.updateCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("removeSelectionItem")
+	public void removeSelectionItem(RemoveSelectionItemCommand command) {
+		this.removeCommandHandler.handle(command);
 	}
 
 }

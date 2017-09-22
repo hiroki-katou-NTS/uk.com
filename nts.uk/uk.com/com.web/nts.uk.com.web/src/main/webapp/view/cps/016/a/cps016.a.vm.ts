@@ -11,7 +11,6 @@ module nts.uk.com.view.cps016.a.viewmodel {
         listItems: KnockoutObservableArray<ISelectionItem> = ko.observableArray([]);
         perInfoSelectionItem: KnockoutObservable<SelectionItem> = ko.observable(new SelectionItem({ selectionItemId: '', selectionItemName: '' }));
         rulesFirst: KnockoutObservableArray<IRule> = ko.observableArray([]);
-
         checkCreate: KnockoutObservable<boolean>;
 
         constructor() {
@@ -20,7 +19,6 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 formatSelection = perInfoSelectionItem.formatSelection(),
                 classs = self.rulesFirst;
 
-            /* Check add/update*/
             self.checkCreate = ko.observable(true);
 
             classs([
@@ -30,6 +28,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             perInfoSelectionItem.selectionItemId.subscribe(x => {
                 if (x) {
+                    nts.uk.ui.errors.clearAll();
                     service.getPerInfoSelectionItem(x).done((_perInfoSelectionItem: ISelectionItem) => {
                         if (_perInfoSelectionItem) {
                             perInfoSelectionItem.selectionItemName(_perInfoSelectionItem.selectionItemName);
@@ -37,7 +36,6 @@ module nts.uk.com.view.cps016.a.viewmodel {
                             perInfoSelectionItem.integrationCode(_perInfoSelectionItem.integrationCode);
 
                             let iformat = _perInfoSelectionItem.formatSelection;
-
                             formatSelection.selectionCode(iformat.selectionCode);
                             formatSelection.selectionCodeCharacter(iformat.selectionCodeCharacter);
                             formatSelection.selectionName(iformat.selectionName);
@@ -62,19 +60,18 @@ module nts.uk.com.view.cps016.a.viewmodel {
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-
             self.listItems.removeAll();
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
                 if (itemList && itemList.length) {
                     itemList.forEach(x => self.listItems.push(x));
+                    self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
                 } else {
                     self.registerDataSelectioItem();
                 }
-                self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+
                 dfd.resolve();
             });
-
-            return dfd.resolve();
+            return dfd.promise();
         }
 
         registerDataSelectioItem() {
@@ -92,19 +89,28 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             self.checkCreate(true);
         }
+        validate() {
+            $(".nts-editor").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return false;
+            }
+            return true;
+        }
 
         addDataSelectioItem() {
             var self = this;
-            if (self.checkCreate() == true) {
-                self.add();
-            } else {
-                self.update();
+
+            if (self.validate()) {
+                if (self.checkCreate() == true) {
+                    self.add();
+                } else {
+                    self.update();
+                }
             }
         }
 
         add() {
             let self = this,
-                dfd = $.Deferred(),
                 currentItem: SelectionItem = self.perInfoSelectionItem(),
                 formatSelection = currentItem.formatSelection(),
                 command = {
@@ -122,25 +128,23 @@ module nts.uk.com.view.cps016.a.viewmodel {
                     }
                 };
 
-            service.saveDataSelectionItem(command).done(function() {
+            service.saveDataSelectionItem(command).done(function(selectId) {
                 service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
                     if (itemList && itemList.length) {
                         itemList.forEach(x => self.listItems.push(x));
                     }
-                    self.listItems.removeAll();
                 });
+                self.listItems.removeAll();
                 self.listItems.valueHasMutated();
+                self.perInfoSelectionItem().selectionItemId(selectId);
             });
-            self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
-            return dfd.resolve();
         }
 
         update() {
-            //alert('update');
             let self = this,
-                dfd = $.Deferred(),
                 currentItem: SelectionItem = self.perInfoSelectionItem(),
                 formatSelection = currentItem.formatSelection(),
+                oldIndex = _.findIndex(self.listItems(), function(o) { return o.selectionItemId == currentItem.selectionItemId(); }),
                 command = {
                     selectionItemId: currentItem.selectionItemId(),
                     selectionItemName: currentItem.selectionItemName(),
@@ -158,20 +162,69 @@ module nts.uk.com.view.cps016.a.viewmodel {
 
             service.updateDataSelectionItem(command).done(function() {
                 service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                    self.listItems.removeAll();
                     if (itemList && itemList.length) {
                         itemList.forEach(x => self.listItems.push(x));
                     }
-                    //self.listItems.removeAll();
+
+                    let newItem = itemList[oldIndex];
+                    currentItem.selectionItemId(newItem.selectionItemId);
+                    alert('Update Thanh Cong!');
                 });
+
                 self.listItems.valueHasMutated();
             });
-            self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
-            return dfd.resolve();
         }
 
-
         removeDataSelectioItem() {
-            let self = this;
+            let self = this,
+                items = ko.unwrap(self.listItems),
+                currentItem: SelectionItem = self.perInfoSelectionItem(),
+                formatSelection = currentItem.formatSelection(),
+                oldIndex = _.findIndex(self.listItems(), function(o) { return o.selectionItemId == currentItem.selectionItemId(); }),// lay thang index 
+                lastIndex = items.length - 1,// gia tri index giam 1
+                command = {
+                    selectionItemId: currentItem.selectionItemId(),
+                    selectionItemName: currentItem.selectionItemName(),
+                    memo: currentItem.memo(),
+                    selectionItemClassification: currentItem.selectionItemClassification(),
+                    contractCode: currentItem.contractCode(),
+                    integrationCode: currentItem.integrationCode(),
+                    formatSelection: {
+                        selectionCode: currentItem.formatSelection().selectionCode(),
+                        selectionCodeCharacter: currentItem.formatSelection().selectionCodeCharacter(),
+                        selectionName: currentItem.formatSelection().selectionName(),
+                        selectionExternalCode: currentItem.formatSelection().selectionExternalCode()
+                    }
+                };
+
+            if (items.length > 0) {
+                service.removeDataSelectionItem(command).done(function() {
+
+                    service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                        self.listItems.removeAll();
+
+                        if (itemList && itemList.length) {
+                            itemList.forEach(x => self.listItems.push(x));
+                            if (oldIndex == lastIndex) {
+                                oldIndex--;
+                            }
+
+                            let newItem = itemList[oldIndex];
+                            currentItem.selectionItemId(newItem.selectionItemId);
+                        } else {
+                            self.registerDataSelectioItem();
+                        }
+
+                    });
+
+                    self.listItems.valueHasMutated();
+                });
+
+            } else {
+                alert('Not data!!');
+                self.registerDataSelectioItem();
+            }
         }
     }
 

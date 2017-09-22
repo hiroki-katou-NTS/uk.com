@@ -5,7 +5,9 @@ module nts.uk.com.view.cps016.a.service {
         getAllSelectionItems: "ctx/bs/person/info/setting/selection/findAll",
         getPerInfoSelectionItem: "ctx/bs/person/info/setting/selection/findItem/{0}",
         saveDataSelectionItem: "ctx/bs/person/info/setting/selection/addSelectionItem",
-        updateDataSelectionItem: "ctx/bs/person/info/setting/selection/updateSelectionItem"
+        updateDataSelectionItem: "ctx/bs/person/info/setting/selection/updateSelectionItem",
+        removeDataSelectionItem: "ctx/bs/person/info/setting/selection/removeSelectionItem"
+        
     }
 
     export function getAllSelectionItems() {
@@ -23,5 +25,9 @@ module nts.uk.com.view.cps016.a.service {
     
     export function updateDataSelectionItem(command) {
         return ajax(paths.updateDataSelectionItem, command);
+    }
+    
+    export function removeDataSelectionItem(command) {
+        return ajax(paths.removeDataSelectionItem, command);
     }
 }
