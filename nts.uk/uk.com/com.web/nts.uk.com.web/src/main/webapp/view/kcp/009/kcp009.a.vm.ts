@@ -27,7 +27,7 @@ module kcp009.a.viewmodel {
             {id: '90000000-0000-0000-0000-000000000005', code: '000000000008', businessName: 'F', workplaceName: '雇用名称', depName: '部門7'},
             {id: '90000000-0000-0000-0000-000000000009', code: '000000000009', businessName: 'G', workplaceName: '外部予算実績受入職場ID', depName: '部門8'},
             {id: '90000000-0000-0000-0000-000000000007', code: '000000000010', businessName: 'H', workplaceName: '算実績受入年月日', depName: '部門9'},
-            {id: '90000000-0000-0000-0000-000000000009', code: '000000000011', businessName: 'I', workplaceName: '個人情報レイアウトコード', depName: '部門10'},
+            {id: '90000000-0000-0000-0000-000000000008', code: '000000000011', businessName: 'I', workplaceName: '個人情報レイアウトコード', depName: '部門10'},
             {id: '90000000-0000-0000-0000-000000000010', code: '1234567890AD', businessName: 'K', workplaceName: '個人情報レイアウト名称', depName: '部門11'},
             {id: '90000000-0000-0000-0000-000000000011', code: '1234567890AC', businessName: 'J', workplaceName: '個人情報', depName: '部門12' },
             {id: '90000000-0000-0000-0000-000000000012', code: '000000000002', businessName: 'D', workplaceName: '名称', depName: '部門13'},
