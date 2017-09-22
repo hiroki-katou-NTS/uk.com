@@ -26,8 +26,6 @@ public class WkpConfigServiceImpl implements WkpConfigService {
 	@Inject
 	private WorkplaceConfigRepository workplaceConfigRepository;
 	
-	private static final int INDEX_FIRST = 0;
-
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.service.WkpConfigService#validateAddHistory(java.lang.String, nts.arc.time.GeneralDate)
 	 */
@@ -38,7 +36,7 @@ public class WkpConfigServiceImpl implements WkpConfigService {
 		if (!optional.isPresent()) {
 		    return null;
 		}
-		WorkplaceConfigHistory latestWkpConfigHist = optional.get().getWkpConfigHistory().get(INDEX_FIRST);
+		WorkplaceConfigHistory latestWkpConfigHist = optional.get().getWkpConfigHistoryLatest();
 		// check validate start date
 		if (latestWkpConfigHist.getPeriod().getStartDate().after(addHistStart)) {
 			throw new BusinessException("Msg_102");

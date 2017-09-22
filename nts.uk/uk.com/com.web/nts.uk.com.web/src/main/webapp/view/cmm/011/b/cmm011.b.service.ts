@@ -5,7 +5,7 @@ module nts.uk.com.view.cmm011.b {
          */
         var servicePath: any = {
             getListWkpConfigHistory: "bs/employee/workplace/configure/findAll",
-            saveWkpConfig: "bs/employee/workplace//configure/save"
+            saveWkpConfig: "bs/employee/workplace/configure/save"
         };
         
         /**

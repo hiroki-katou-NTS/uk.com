@@ -103,14 +103,16 @@ module nts.uk.com.view.cmm011.b {
             private toJSonDate(isRespondParent?: boolean): any {
                 let self = this;
                 let startDate: any = new Date(self.startDate());
+                let endDate: any = new Date("9999-12-31");
                 
                 // convert date respond parent screen
                 if (isRespondParent) {
                     startDate = nts.uk.time.formatDate(startDate, 'yyyy/MM/dd');
+                    endDate = nts.uk.time.formatDate(endDate, 'yyyy/MM/dd');
                 }
                 return {
                     startDate: startDate,
-                    endDate: new Date("9999-12-31") //TODO: CMM011_27
+                    endDate: endDate //TODO: CMM011_27
                 }
             }
             
