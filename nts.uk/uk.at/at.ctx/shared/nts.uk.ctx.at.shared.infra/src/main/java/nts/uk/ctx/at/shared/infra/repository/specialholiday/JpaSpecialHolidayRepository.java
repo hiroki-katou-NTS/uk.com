@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.specialholiday.SpecialVacationMethod;
 import nts.uk.ctx.at.shared.dom.specialholiday.SphdLimit;
 import nts.uk.ctx.at.shared.dom.specialholiday.SubCondition;
 import nts.uk.ctx.at.shared.dom.specialholiday.UseAge;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantDaySingleType;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantPeriodic;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegular;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegularMethod;
@@ -226,7 +227,9 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		KshstGrantSinglePK kshstGrantSinglePK = new KshstGrantSinglePK(grantSingle.getCompanyId(),
 				grantSingle.getSpecialHolidayCode().v());
 		kshstGrantSingle.grantDaySingleType = grantSingle.getGrantDaySingleType().value;
-		kshstGrantSingle.fixNumberDays = grantSingle.getFixNumberDays().v();
+		if (GrantDaySingleType.FixDay.equals(grantSingle.getGrantDaySingleType())) {
+			kshstGrantSingle.fixNumberDays = grantSingle.getFixNumberDays().v();
+		}
 		kshstGrantSingle.makeInvitation = grantSingle.getMakeInvitation().value;
 		kshstGrantSingle.holidayExcusionAtr = grantSingle.getHolidayExclusionAtr().value;
 		kshstGrantSingle.kshstGrantSinglePK = kshstGrantSinglePK;

@@ -261,6 +261,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             
             var specialHoliday = ko.toJS(self.currentItem());
             if (self.inp_grantMethod() == 0) {
+                $("#fixNumberDays").trigger("validate");
                 specialHoliday.grantRegular = null;
                 specialHoliday.grantPeriodic = null;
                 specialHoliday.sphdLimit = null;
