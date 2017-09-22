@@ -52,7 +52,9 @@ public class KrcmtOptItemFormula extends UkJpaEntity implements Serializable {
 	/** The krcmt formula roundings. */
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
-			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false) })
+			@JoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO", insertable = false, updatable = false),
+			@JoinColumn(name = "FORMULA_ID", referencedColumnName = "FORMULA_ID", insertable = false, updatable = false)
+			})
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
 	private List<KrcmtFormulaRounding> krcmtFormulaRoundings;
 
