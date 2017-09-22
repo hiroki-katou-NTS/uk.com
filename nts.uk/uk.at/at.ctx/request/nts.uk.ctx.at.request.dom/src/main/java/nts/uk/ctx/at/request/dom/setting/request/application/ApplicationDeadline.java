@@ -2,6 +2,8 @@ package nts.uk.ctx.at.request.dom.setting.request.application;
 
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.common.UseAtr;
@@ -11,27 +13,29 @@ import nts.uk.ctx.at.request.dom.application.common.UseAtr;
  * @author dudt
  *
  */
+@Value
+@EqualsAndHashCode(callSuper=false)
 @AllArgsConstructor
 public class ApplicationDeadline extends AggregateRoot {
 	/**　会社ID*/
-	public String companyId;
+	private String companyId;
 	/**
 	 * 締めＩＤ
 	 */
-	public int closureId;
+	private int closureId;
 	
 	/**
 	 * 利用区分
 	 */
-	public UseAtr userAtr;
+	private UseAtr userAtr;
 	/**
 	 * 月間日数
 	 */
-	public Deadline deadline;
+	private Deadline deadline;
 	/**
 	 * 締切基準
 	 */
-	public DeadlineCriteria deadlineCriteria;
+	private DeadlineCriteria deadlineCriteria;
 
 	public static ApplicationDeadline createSimpleFromJavaType(String companyId,
 			int closureId, 

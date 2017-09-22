@@ -6,8 +6,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.request.app.command.application.stamp.RegisterApplicationStampCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.stamp.UpdateApplicationStampCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.stamp.RegisterAppStampCommandHandler;
+import nts.uk.ctx.at.request.app.command.application.stamp.UpdateAppStampCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
 import nts.uk.ctx.at.request.app.find.application.stamp.AppStampFinder;
 /**
@@ -23,15 +23,15 @@ public class ApplicationStampWebService extends WebService {
 	private AppStampFinder appStampFinder;
 	
 	@Inject 
-	private RegisterApplicationStampCommandHandler registerApplicationStampCommandHandler;
+	private RegisterAppStampCommandHandler registerApplicationStampCommandHandler;
 	
 	@Inject
-	private UpdateApplicationStampCommandHandler updateApplicationStampCommandHandler;
+	private UpdateAppStampCommandHandler updateApplicationStampCommandHandler;
 	
 	@POST
-	@Path("findByAppID")
-	public void findByAppID(){
-		this.appStampFinder.findByAppID();
+	@Path("newAppStampInitiative")
+	public void newAppStampInitiative(){
+		this.appStampFinder.newAppStampPreProcess();
 	}
 	
 	@POST

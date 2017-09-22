@@ -40,7 +40,9 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 				+ " AND c.endDate >= :baseDate"
 				+ " AND c.employmentRootAtr = 0";
 	
-
+	private final String FIND_ALL_BY_BASEDATE = FIND_BY_CID
+			+ " AND c.startDate <= :baseDate"
+			+ " AND c.endDate >= :baseDate";
 	/**
 	 * get All Company Approval Root
 	 * @param companyId
@@ -190,5 +192,12 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 		entity.confirmationRootType = (domain.getConfirmationRootType() == null ? null : domain.getConfirmationRootType().value);
 		entity.employmentRootAtr = domain.getEmploymentRootAtr().value;
 		return entity;
+	}
+	@Override
+	public List<CompanyApprovalRoot> findByBaseDate(String cid, GeneralDate baseDate) {
+		return this.queryProxy().query(FIND_ALL_BY_BASEDATE, WwfmtComApprovalRoot.class)
+				.setParameter("companyId", cid)
+				.setParameter("baseDate", baseDate)
+				.getList(c->toDomainComApR(c));
 	}
 }

@@ -37,5 +37,8 @@ module nts.uk.com.view.cmm018.test.viewmodel{
         openDialogM(){
            windows.sub.modal("/view/cmm/018/m/index.xhtml", { title: "", dialogClass: "no-close" });
         }
+        openDialogN(){
+           windows.sub.modal("/view/cmm/018/n/index.xhtml", { title: "", dialogClass: "no-close" });
+        }
     }   
 }

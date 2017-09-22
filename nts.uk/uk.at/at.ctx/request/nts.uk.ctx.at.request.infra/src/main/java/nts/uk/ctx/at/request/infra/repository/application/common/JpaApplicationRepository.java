@@ -39,7 +39,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				entity.inputDate, entity.enteredPersonSID,
 				new AppReason(entity.reversionReason), 
 				entity.applicationDate, 
-				new AppReason(entity.appReasonId + SEPERATE_REASON_STRING + entity.applicationReason),
+				entity.appReasonId ==null?new AppReason(entity.applicationReason):new AppReason(entity.appReasonId + SEPERATE_REASON_STRING + entity.applicationReason),
 				EnumAdaptor.valueOf(entity.applicationType,ApplicationType.class),
 				entity.applicantSID, 
 				EnumAdaptor.valueOf(entity.reflectPlanScheReason,ReflectPlanScheReason.class), 
@@ -51,7 +51,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				EnumAdaptor.valueOf(entity.reflectPerState,ReflectPlanPerState.class),
 				EnumAdaptor.valueOf(entity.reflectPerEnforce,ReflectPlanPerEnforce.class),
 				entity.startDate,
-				entity.endDate);
+				entity.endDate,
+				null);
 	}
 
 	private KafdtApplication toEntity(Application domain) {
