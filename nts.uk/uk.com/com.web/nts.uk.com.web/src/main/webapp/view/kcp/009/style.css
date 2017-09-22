@@ -65,3 +65,6 @@ td.employment-tdpad{
 	overflow: auto;
 	height: 20px;
 }
+#search-input{
+	width: 100px;
+}
