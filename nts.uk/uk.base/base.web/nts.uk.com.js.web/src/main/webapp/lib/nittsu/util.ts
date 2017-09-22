@@ -760,7 +760,7 @@
                 result.push([p,key[p]]);
             }
             result.sort(function(a,b){
-                return a>b;    
+                return (a > b) ? 1 : (a < b) ? -1 : 0;    
             });
             return result.toString();
         }    

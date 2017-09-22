@@ -14,6 +14,7 @@ __viewContext.ready(function() {
         fileInfo: KnockoutObservable<any>;
         textId: KnockoutObservable<string>;
         accept: KnockoutObservableArray<string>;
+        asLink: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
         onchange: (filename) => void;
         onfilenameclick: (filename) => void;
@@ -24,6 +25,7 @@ __viewContext.ready(function() {
             this.fileInfo = ko.observable(null);
             this.accept = ko.observableArray([".png", '.gif', '.jpg', '.jpeg']);
             this.textId = ko.observable("KMF004_106");
+            this.asLink = ko.observable(true);
             this.enable = ko.observable(true);
             this.onchange = (filename) => {
                 console.log(filename);
