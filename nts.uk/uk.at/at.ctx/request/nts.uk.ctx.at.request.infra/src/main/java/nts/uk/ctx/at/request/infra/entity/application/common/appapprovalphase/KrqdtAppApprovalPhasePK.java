@@ -35,4 +35,5 @@ public class KrqdtAppApprovalPhasePK implements Serializable{
 	@NotNull
 	@Column(name = "PHASE_ID")
 	public String phaseID;
+	
 }

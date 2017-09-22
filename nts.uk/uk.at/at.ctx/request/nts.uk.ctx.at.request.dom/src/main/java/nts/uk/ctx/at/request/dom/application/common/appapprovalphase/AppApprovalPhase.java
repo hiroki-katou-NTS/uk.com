@@ -45,19 +45,16 @@ public class AppApprovalPhase extends DomainObject {
 	 */
 	
 	private List<ApprovalFrame> listFrame;
-	/**
-	 * list approverAccepted
-	 */
-	private List<ApproveAccepted> listApproveAccepted;
+	
 
 	public static AppApprovalPhase createFromJavaType(
 			String companyID , String appID , String phaseID ,
-			int approvalForm , int dispOrder , int approvalATR,List<ApprovalFrame> listFrame,List<ApproveAccepted> listApproveAccepted ){
+			int approvalForm , int dispOrder , int approvalATR,List<ApprovalFrame> listFrame ){
 		return new AppApprovalPhase (
 				companyID , appID , phaseID ,
 				EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),
 				dispOrder,EnumAdaptor.valueOf(approvalATR, ApprovalAtr.class),
-				listFrame,listApproveAccepted) ;
+				listFrame) ;
 }
 	
 	/**

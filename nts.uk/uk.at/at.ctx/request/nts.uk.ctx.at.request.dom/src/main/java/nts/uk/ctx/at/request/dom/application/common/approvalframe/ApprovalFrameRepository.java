@@ -38,7 +38,7 @@ public interface ApprovalFrameRepository {
 	 * @param dispOrder
 	 * @return
 	 */
-	Optional<ApprovalFrame> findByCode(String companyID , String phaseID , int dispOrder);
+	Optional<ApprovalFrame> findByCode(String companyID , String phaseID , int dispOrder,String approverSID);
 
 	List<ApprovalFrame> findByPhaseID(String companyID, String phaseID);
 	/**
@@ -63,7 +63,7 @@ public interface ApprovalFrameRepository {
 	 * @param appID
 	 * @param phaseID
 	 */
-	void delete (String companyID , String phaseID , int dispOrder );
+	void delete (String companyID , String phaseID , int dispOrder, String approverSID );
 	/**
 	 * get list frame by list phase
 	 * @param listPhase

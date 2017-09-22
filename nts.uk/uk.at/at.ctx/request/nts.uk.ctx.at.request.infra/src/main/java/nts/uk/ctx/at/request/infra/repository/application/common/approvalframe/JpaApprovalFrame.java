@@ -24,7 +24,8 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 	private final String SELECT_SINGLE = "SELECT c FROM KrqdtApprovalFrame c"
 			+ " WHERE c.krqdtApprovalFramePK.companyID = :companyID"
 			+ " AND c.krqdtApprovalFramePK.phaseID = :phaseID"
-			+ " AND c.krqdtApprovalFramePK.dispOrder = :dispOrder ";
+			+ " AND c.krqdtApprovalFramePK.dispOrder = :dispOrder "
+			+ " AND c.krqdtApprovalFramePK.approverSID = :approverSID ";
 	//get List Phase
 	private final String SELECT_BY_PHASE_ID = SELECT
 			+ " WHERE c.krqdtApprovalFramePK.companyID = :companyID"
@@ -33,10 +34,11 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.krqdtAppLateOrLeavePK.companyID = :companyID";
 
 	@Override
-	public Optional<ApprovalFrame> findByCode(String companyID, String phaseID, int dispOrder) {
+	public Optional<ApprovalFrame> findByCode(String companyID, String phaseID, int dispOrder,String approverSID) {
 		return this.queryProxy().query(SELECT_SINGLE, KrqdtApprovalFrame.class).setParameter("companyID", companyID)
 				.setParameter("phaseID", phaseID)
 				.setParameter("dispOrder", dispOrder)
+				.setParameter("approverSID", approverSID)
 				.getSingle(c -> toDomain(c));
 	}
 
@@ -51,7 +53,6 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 		KrqdtApprovalFrame newEntity = toEntity(approvalFrame);
 		KrqdtApprovalFrame updateEntity = this.queryProxy()
 				.find(newEntity.krqdtApprovalFramePK, KrqdtApprovalFrame.class).get();
-		updateEntity.approverSID = newEntity.approverSID;
 		updateEntity.approvalATR = newEntity.approvalATR;
 		updateEntity.confirmATR = newEntity.confirmATR;
 		updateEntity.approvalDate = newEntity.approvalDate;
@@ -62,8 +63,8 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 	}
 
 	@Override
-	public void delete(String companyID, String phaseID, int dispOrder) {
-		this.commandProxy().remove(KrqdtApprovalFrame.class, new KrqdtApprovalFramePK(companyID, phaseID, dispOrder));
+	public void delete(String companyID, String phaseID, int dispOrder,String approverSID) {
+		this.commandProxy().remove(KrqdtApprovalFrame.class, new KrqdtApprovalFramePK(companyID, phaseID, dispOrder,approverSID));
 		this.getEntityManager().flush();
 	}
 
@@ -80,19 +81,19 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 				entity.krqdtApprovalFramePK.companyID,
 				entity.krqdtApprovalFramePK.phaseID, 
 				entity.krqdtApprovalFramePK.dispOrder, 
-				entity.approverSID,
+				entity.krqdtApprovalFramePK.approverSID,
 				Integer.valueOf(entity.approvalATR).intValue(), 
 				Integer.valueOf(entity.confirmATR).intValue(),
 				entity.approvalDate,
 				entity.reason,
-				entity.representerSID
+				entity.representerSID,
+				null
 				);
 	}
 
 	private KrqdtApprovalFrame toEntity(ApprovalFrame domain) {
 		return new KrqdtApprovalFrame(
-				new KrqdtApprovalFramePK(domain.getCompanyID(), domain.getPhaseID(), domain.getDispOrder()),
-				domain.getApproverSID(), 
+				new KrqdtApprovalFramePK(domain.getCompanyID(), domain.getPhaseID(), domain.getDispOrder(),domain.getApproverSID()),
 				domain.getApprovalATR().value,
 				domain.getConfirmATR().value,
 				domain.getApprovalDate(),

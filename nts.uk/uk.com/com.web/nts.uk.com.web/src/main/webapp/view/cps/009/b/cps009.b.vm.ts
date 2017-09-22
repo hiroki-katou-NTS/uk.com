@@ -44,9 +44,15 @@ module nts.uk.com.view.cps009.b.viewmodel {
                         itemName: "A"
                     }));
             }
-
-
-
+        }
+        
+        registerItems(){
+            close();
+        
+        }
+        
+        closeDialog(){
+            close();
         }
 
 

@@ -26,8 +26,6 @@ public class KrqdtApprovalFrame extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrqdtApprovalFramePK krqdtApprovalFramePK;
 	
-	@Column(name = "APPROVER_SID")
-	public String approverSID;
 	
 	@Column(name = "APPROVAL_ATR")
 	public int approvalATR;

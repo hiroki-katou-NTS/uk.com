@@ -1,4 +1,4 @@
-module kaf000.a.viewmodel{
+module nts.uk.at.view.kaf000.a.viewmodel{
     export class ScreenModel{
         /**
          * List
@@ -54,7 +54,7 @@ module kaf000.a.viewmodel{
         getAllApprovalRoot(){
             var self = this;
             var dfd = $.Deferred<any>();
-            service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
+            nts.uk.at.view.kaf000.a.service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
                 self.listApprovalRoot(data);
                 self.approvalRoot(self.listApprovalRoot()[0]);
                 dfd.resolve(data);    
@@ -66,7 +66,7 @@ module kaf000.a.viewmodel{
         getMessageDeadline(inputMessageDeadline){
             var self = this;
             var dfd = $.Deferred<any>();
-                service.getMessageDeadline(inputMessageDeadline).done(function(data){
+                nts.uk.at.view.kaf000.a.service.getMessageDeadline(inputMessageDeadline).done(function(data){
                     self.outputMessageDeadline(data);
                     dfd.resolve(data);    
                 }); 
