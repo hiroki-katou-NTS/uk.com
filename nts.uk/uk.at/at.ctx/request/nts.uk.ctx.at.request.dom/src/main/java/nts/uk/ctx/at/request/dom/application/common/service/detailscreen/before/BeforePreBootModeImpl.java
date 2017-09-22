@@ -53,9 +53,9 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		// Output variables
 		User outputUser = null;
 		ReflectPlanPerState outputStatus = null;
-		Boolean outputAuthorizableFlags = null;
-		ApprovalAtr outputApprovalATR = null;
-		Boolean outputAlternateExpiration = null;
+		boolean outputAuthorizableFlags = false;
+		ApprovalAtr outputApprovalATR = ApprovalAtr.UNAPPROVED;
+		boolean outputAlternateExpiration = false;
 
 		PeriodCurrentMonth listDate = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID,
 				employeeID, baseDate);
@@ -70,7 +70,10 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		List<ApprovalFrame> filtedApprovalFrame = listApprovalFrame.stream()
 				.filter(e -> e.getApproverSID() == employeeID).collect(Collectors.toList());
 		boolean isUserIsApprover = !filtedApprovalFrame.isEmpty();
-		String approverSID = filtedApprovalFrame.get(0).getApproverSID();
+		String approverSID = null;
+		if(!filtedApprovalFrame.isEmpty()) {
+			approverSID = filtedApprovalFrame.get(0).getApproverSID();
+		}
 		//get status
 		if (startDate.after(applicationData.getApplicationDate()) == false) {
 			outputStatus = applicationData.getReflectPlanState();
