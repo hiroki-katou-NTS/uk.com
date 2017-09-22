@@ -8,10 +8,13 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHoliday;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
+import nts.uk.ctx.at.shared.dom.specialholiday.SpecialVacationMethod;
 import nts.uk.ctx.at.shared.dom.specialholiday.SphdLimit;
 import nts.uk.ctx.at.shared.dom.specialholiday.SubCondition;
+import nts.uk.ctx.at.shared.dom.specialholiday.UseAge;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantPeriodic;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegular;
+import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantRegularMethod;
 import nts.uk.ctx.at.shared.dom.specialholiday.grantday.GrantSingle;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantPeriodic;
 import nts.uk.ctx.at.shared.infra.entity.specialholiday.KshstGrantPeriodicPK;
@@ -126,8 +129,10 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		KshstGrantRegularPK kshstGrantRegularPK = new KshstGrantRegularPK(grantRegular.getCompanyId(),
 				grantRegular.getSpecialHolidayCode().v());
 		kshstGrantRegular.grantStartDate = grantRegular.getGrantStartDate();
-		kshstGrantRegular.months = grantRegular.getMonths().v();
-		kshstGrantRegular.years = grantRegular.getYears().v();
+		if (GrantRegularMethod.GrantStartDateSpecify.equals(grantRegular.getGrantRegularMethod())) {
+			kshstGrantRegular.months = grantRegular.getMonths().v();
+			kshstGrantRegular.years = grantRegular.getYears().v();
+		}
 		kshstGrantRegular.grantRegularMethod = grantRegular.getGrantRegularMethod().value;
 		kshstGrantRegular.kshstGrantRegularPK = kshstGrantRegularPK;
 		return kshstGrantRegular;
@@ -167,8 +172,10 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		KshstSphdLimit kshstSphdLimit = new KshstSphdLimit();
 		KshstSphdLimitPK kshstSphdLimitPK = new KshstSphdLimitPK(sphdLimit.getCompanyId(),
 				sphdLimit.getSpecialHolidayCode().v());
-		kshstSphdLimit.specialVacationMonths = sphdLimit.getSpecialVacationMonths().v();
-		kshstSphdLimit.specialVacationYears = sphdLimit.getSpecialVacationYears().v();
+		if (SpecialVacationMethod.AvailableGrantDateDesignate.equals(sphdLimit.getSpecialVacationMethod())) {
+			kshstSphdLimit.specialVacationMonths = sphdLimit.getSpecialVacationMonths().v();
+			kshstSphdLimit.specialVacationYears = sphdLimit.getSpecialVacationYears().v();
+		}
 		kshstSphdLimit.grantCarryForward = sphdLimit.getGrantCarryForward().value;
 		kshstSphdLimit.limitCarryoverDays = sphdLimit.getLimitCarryoverDays().v();
 		kshstSphdLimit.specialVacationMethod = sphdLimit.getSpecialVacationMethod().value;
@@ -194,8 +201,10 @@ public class JpaSpecialHolidayRepository extends JpaRepository implements Specia
 		kshstSphdSubCondition.useCls = subCondition.getUseCls().value;
 		kshstSphdSubCondition.useAge = subCondition.getUseAge().value;
 		kshstSphdSubCondition.genderAtr = subCondition.getGenderAtr().value;
-		kshstSphdSubCondition.limitAgeFrom = subCondition.getLimitAgeFrom().v();
-		kshstSphdSubCondition.limitAgeTo = subCondition.getLimitAgeTo().v();
+		if (UseAge.Allow.equals(subCondition.getUseAge())) {
+			kshstSphdSubCondition.limitAgeFrom = subCondition.getLimitAgeFrom().v();
+			kshstSphdSubCondition.limitAgeTo = subCondition.getLimitAgeTo().v();
+		}
 		kshstSphdSubCondition.ageCriteriaAtr = subCondition.getAgeCriteriaAtr().value;
 		kshstSphdSubCondition.ageBaseYearAtr = subCondition.getAgeBaseYearAtr().value;
 		kshstSphdSubCondition.ageBaseDates = subCondition.getAgeBaseDates().v();
