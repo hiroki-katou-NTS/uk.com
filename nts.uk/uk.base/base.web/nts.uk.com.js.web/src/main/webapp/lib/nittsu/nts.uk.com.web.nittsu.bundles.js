@@ -11158,7 +11158,7 @@ var nts;
                         }
                         validation.scanValidators($(self), options.columns);
                         var cellFormatter = new color.CellFormatter($(this), options.ntsFeatures);
-                        $(this).addClass('compact-grid nts-grid');
+                        $(this).addClass('compact-grid nts-grid').wrap($("<div class='nts-grid-wrapper'/>"));
                         var columnControlTypes = {};
                         var columnSpecialTypes = {};
                         var formatColumn = function (column) {
@@ -13714,8 +13714,7 @@ var nts;
                             function configButtons($grid, sheets) {
                                 if ($grid.closest(".nts-grid-container").length > 0)
                                     return;
-                                var gridWrapper = $("<div class='nts-grid-wrapper'/>");
-                                $grid.wrap($("<div class='nts-grid-container'/>")).wrap(gridWrapper);
+                                $grid.closest(".nts-grid-wrapper").wrap($("<div class='nts-grid-container'/>"));
                                 var gridContainer = $grid.closest(".nts-grid-container");
                                 var sheetButtonsWrapper = $("<div class='nts-grid-sheet-buttons'/>").appendTo(gridContainer);
                                 var sheetMng = $grid.data(internal.SHEETS);
