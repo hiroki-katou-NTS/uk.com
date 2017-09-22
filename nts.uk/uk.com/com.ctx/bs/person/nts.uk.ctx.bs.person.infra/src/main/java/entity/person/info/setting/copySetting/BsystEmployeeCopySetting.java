@@ -29,6 +29,6 @@ public class BsystEmployeeCopySetting  extends UkJpaEntity implements Serializab
 	@Override
 	protected Object getKey() {
 		// TODO Auto-generated method stub
-		return null;
+		return BsystEmployeeCopySettingPk;
 	}
 }

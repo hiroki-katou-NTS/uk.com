@@ -667,7 +667,7 @@ var nts;
                     result.push([p, key[p]]);
                 }
                 result.sort(function (a, b) {
-                    return a > b;
+                    return (a > b) ? 1 : (a < b) ? -1 : 0;
                 });
                 return result.toString();
             }
@@ -2582,6 +2582,22 @@ var nts;
                 return Locator;
             }());
             request.Locator = Locator;
+            function writeDynamicConstraint(codes) {
+                var dfd = $.Deferred();
+                ajax("constraint/getlist", codes).done(function (data) {
+                    if (nts.uk.util.isNullOrUndefined(__viewContext.primitiveValueConstraints)) {
+                        __viewContext.primitiveValueConstraints = {};
+                    }
+                    _.forEach(data, function (item) {
+                        __viewContext.primitiveValueConstraints[item.itemCode] = item;
+                    });
+                    dfd.resolve(data);
+                }).fail(function (error) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            request.writeDynamicConstraint = writeDynamicConstraint;
             function ajax(webAppId, path, data, options) {
                 if (typeof arguments[1] !== 'string') {
                     return ajax.apply(null, _.concat(location.currentAppId, arguments));
@@ -3129,8 +3145,11 @@ var nts;
                     function StringValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
+                        if (nts.uk.util.isNullOrUndefined(this.constraint)) {
+                            this.constraint = {};
+                        }
                         this.charType = uk.text.getCharType(primitiveValueName);
-                        this.required = option.required;
+                        this.required = (!nts.uk.util.isNullOrUndefined(option.required) && option.required) || this.constraint.required;
                     }
                     StringValidator.prototype.validate = function (inputText, option) {
                         var result = new ValidationResult();
@@ -3153,25 +3172,22 @@ var nts;
                             }
                             validateResult = this.charType.validate(inputText);
                             if (!validateResult.isValid) {
-                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, !util.isNullOrUndefined(this.constraint)
-                                        ? (!util.isNullOrUndefined(this.constraint.maxLength)
-                                            ? this.constraint.maxLength : 9999) : 9999]), validateResult.errorCode);
+                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, (!util.isNullOrUndefined(this.constraint.maxLength)
+                                        ? this.constraint.maxLength : 9999)]), validateResult.errorCode);
                                 return result;
                             }
                         }
-                        if (this.constraint !== undefined && this.constraint !== null) {
-                            if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
-                                var maxLength = this.constraint.maxLength;
-                                if (this.constraint.charType == "Any")
-                                    maxLength = maxLength / 2;
-                                result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
+                        if (this.constraint.maxLength !== undefined && uk.text.countHalf(inputText) > this.constraint.maxLength) {
+                            var maxLength = this.constraint.maxLength;
+                            if (this.constraint.charType == "Any")
+                                maxLength = maxLength / 2;
+                            result.fail(nts.uk.resource.getMessage(validateResult.errorMessage, [this.name, maxLength]), validateResult.errorCode);
+                            return result;
+                        }
+                        if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
+                            if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
+                                result.fail('This field is not valid with pattern!', '');
                                 return result;
-                            }
-                            if (!util.isNullOrUndefined(option) && option.isCheckExpression === true) {
-                                if (!uk.text.isNullOrEmpty(this.constraint.stringExpression) && !this.constraint.stringExpression.test(inputText)) {
-                                    result.fail('This field is not valid with pattern!', '');
-                                    return result;
-                                }
                             }
                         }
                         result.success(inputText);
@@ -3184,6 +3200,9 @@ var nts;
                     function NumberValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
+                        if (util.isNullOrUndefined(this.constraint)) {
+                            this.constraint = {};
+                        }
                         this.option = option;
                     }
                     NumberValidator.prototype.validate = function (inputText) {
@@ -3191,7 +3210,7 @@ var nts;
                         var isDecimalNumber = false;
                         if (this.option !== undefined) {
                             if (nts.uk.util.isNullOrUndefined(inputText) || inputText.trim().length <= 0) {
-                                if (this.option['required'] === true && nts.uk.util.isNullOrEmpty(this.option['defaultValue'])) {
+                                if ((this.option['required'] === true || this.constraint["required"] === true) && nts.uk.util.isNullOrEmpty(this.option['defaultValue'])) {
                                     result.fail(nts.uk.resource.getMessage('FND_E_REQ_INPUT', [this.name]), 'FND_E_REQ_INPUT');
                                     return result;
                                 }
@@ -3206,7 +3225,7 @@ var nts;
                         inputText = inputText.trim();
                         var message = {};
                         var validateFail = false, max = 99999999, min = 0, mantissaMaxLength;
-                        if (!util.isNullOrUndefined(this.constraint) && this.constraint.valueType === "HalfInt") {
+                        if (this.constraint.valueType === "HalfInt") {
                             if (!uk.ntsNumber.isHalfInt(inputText, message))
                                 validateFail = true;
                         }
@@ -3215,23 +3234,21 @@ var nts;
                         }
                         var value = isDecimalNumber ?
                             uk.ntsNumber.getDecimal(inputText, this.option.decimallength) : parseInt(inputText);
-                        if (!util.isNullOrUndefined(this.constraint)) {
-                            if (!util.isNullOrUndefined(this.constraint.max)) {
-                                max = this.constraint.max;
-                                if (value > this.constraint.max)
-                                    validateFail = true;
-                            }
-                            if (!util.isNullOrUndefined(this.constraint.min)) {
-                                min = this.constraint.min;
-                                if (value < this.constraint.min)
-                                    validateFail = true;
-                            }
-                            if (!util.isNullOrUndefined(this.constraint.mantissaMaxLength)) {
-                                mantissaMaxLength = this.constraint.mantissaMaxLength;
-                                var parts = String(value).split(".");
-                                if (parts[1] !== undefined && parts[1].length > mantissaMaxLength)
-                                    validateFail = true;
-                            }
+                        if (!util.isNullOrUndefined(this.constraint.max)) {
+                            max = this.constraint.max;
+                            if (value > this.constraint.max)
+                                validateFail = true;
+                        }
+                        if (!util.isNullOrUndefined(this.constraint.min)) {
+                            min = this.constraint.min;
+                            if (value < this.constraint.min)
+                                validateFail = true;
+                        }
+                        if (!util.isNullOrUndefined(this.constraint.mantissaMaxLength)) {
+                            mantissaMaxLength = this.constraint.mantissaMaxLength;
+                            var parts = String(value).split(".");
+                            if (parts[1] !== undefined && parts[1].length > mantissaMaxLength)
+                                validateFail = true;
                         }
                         if (validateFail) {
                             result.fail(nts.uk.resource.getMessage(message.id, [this.name, min, max, mantissaMaxLength]), message.id);
@@ -3258,8 +3275,11 @@ var nts;
                     function TimeValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
+                        if (nts.uk.util.isNullOrUndefined(this.constraint)) {
+                            this.constraint = {};
+                        }
                         this.outputFormat = (option && option.outputFormat) ? option.outputFormat : "";
-                        this.required = (option && option.required) ? option.required : false;
+                        this.required = ((option && option.required) ? option.required : false) || this.constraint.required === true;
                         this.valueType = (option && option.valueType) ? option.valueType : "string";
                         this.mode = (option && option.mode) ? option.mode : "";
                         this.acceptJapaneseCalendar = (option && option.acceptJapaneseCalendar) ? option.acceptJapaneseCalendar : true;
@@ -3291,28 +3311,26 @@ var nts;
                                 result.fail(msg, msgId);
                                 return result;
                             }
-                            if (!util.isNullOrUndefined(this.constraint)) {
-                                if (!util.isNullOrUndefined(this.constraint.max)) {
-                                    maxStr = this.constraint.max;
-                                    var max = uk.time.parseTime(this.constraint.max);
-                                    if (timeParse.success && (max.toValue() < timeParse.toValue())) {
-                                        var msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
-                                        result.fail(msg, "FND_E_TIME");
-                                        return result;
-                                    }
+                            if (!util.isNullOrUndefined(this.constraint.max)) {
+                                maxStr = this.constraint.max;
+                                var max = uk.time.parseTime(this.constraint.max);
+                                if (timeParse.success && (max.toValue() < timeParse.toValue())) {
+                                    var msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
+                                    result.fail(msg, "FND_E_TIME");
+                                    return result;
                                 }
-                                if (!util.isNullOrUndefined(this.constraint.min)) {
-                                    minStr = this.constraint.min;
-                                    var min = uk.time.parseTime(this.constraint.min);
-                                    if (timeParse.success && (min.toValue() > timeParse.toValue())) {
-                                        var msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
-                                        result.fail(msg, "FND_E_TIME");
-                                        return result;
-                                    }
+                            }
+                            if (!util.isNullOrUndefined(this.constraint.min)) {
+                                minStr = this.constraint.min;
+                                var min = uk.time.parseTime(this.constraint.min);
+                                if (timeParse.success && (min.toValue() > timeParse.toValue())) {
+                                    var msg = nts.uk.resource.getMessage("FND_E_TIME", [this.name, this.constraint.min, this.constraint.max]);
+                                    result.fail(msg, "FND_E_TIME");
+                                    return result;
                                 }
-                                if (!result.isValid && this.constraint.valueType === "Time") {
-                                    result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minStr, maxStr]), "FND_E_TIME");
-                                }
+                            }
+                            if (!result.isValid && this.constraint.valueType === "Time") {
+                                result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minStr, maxStr]), "FND_E_TIME");
                             }
                             return result;
                         }
@@ -3342,27 +3360,25 @@ var nts;
                             return result;
                         }
                         if (this.outputFormat === "time") {
-                            if (!util.isNullOrUndefined(this.constraint)) {
-                                var inputMoment = parseResult.toNumber(this.outputFormat) * (isMinuteTime ? -1 : 1);
-                                if (!util.isNullOrUndefined(this.constraint.max)) {
-                                    maxStr = this.constraint.max;
-                                    var maxMoment = moment.duration(maxStr);
-                                    if (parseResult.success && (maxMoment.hours() * 60 + maxMoment.minutes()) < inputMoment) {
-                                        result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]), "FND_E_CLOCK");
-                                        return result;
-                                    }
-                                }
-                                if (!util.isNullOrUndefined(this.constraint.min)) {
-                                    minStr = this.constraint.min;
-                                    var minMoment = moment.duration(minStr);
-                                    if (parseResult.success && (minMoment.hours() * 60 + minMoment.minutes()) > inputMoment) {
-                                        result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]), "FND_E_CLOCK");
-                                        return result;
-                                    }
-                                }
-                                if (!result.isValid && this.constraint.valueType === "Clock") {
+                            var inputMoment = parseResult.toNumber(this.outputFormat) * (isMinuteTime ? -1 : 1);
+                            if (!util.isNullOrUndefined(this.constraint.max)) {
+                                maxStr = this.constraint.max;
+                                var maxMoment = moment.duration(maxStr);
+                                if (parseResult.success && (maxMoment.hours() * 60 + maxMoment.minutes()) < inputMoment) {
                                     result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]), "FND_E_CLOCK");
+                                    return result;
                                 }
+                            }
+                            if (!util.isNullOrUndefined(this.constraint.min)) {
+                                minStr = this.constraint.min;
+                                var minMoment = moment.duration(minStr);
+                                if (parseResult.success && (minMoment.hours() * 60 + minMoment.minutes()) > inputMoment) {
+                                    result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]), "FND_E_CLOCK");
+                                    return result;
+                                }
+                            }
+                            if (!result.isValid && this.constraint.valueType === "Clock") {
+                                result.fail(nts.uk.resource.getMessage("FND_E_CLOCK", [this.name, minStr, maxStr]), "FND_E_CLOCK");
                             }
                         }
                         return result;
@@ -3374,6 +3390,9 @@ var nts;
                     function TimeWithDayValidator(name, primitiveValueName, option) {
                         this.name = name;
                         this.constraint = getConstraint(primitiveValueName);
+                        if (nts.uk.util.isNullOrUndefined(this.constraint)) {
+                            this.constraint = {};
+                        }
                         this.required = (option && option.required) ? option.required : false;
                     }
                     TimeWithDayValidator.prototype.validate = function (inputText) {
@@ -3390,10 +3409,8 @@ var nts;
                         }
                         var minValue = uk.time.minutesBased.clock.dayattr.MIN_VALUE;
                         var maxValue = uk.time.minutesBased.clock.dayattr.MAX_VALUE;
-                        if (!util.isNullOrUndefined(this.constraint)) {
-                            minValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.min).asMinutes);
-                            maxValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);
-                        }
+                        minValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.min).asMinutes);
+                        maxValue = uk.time.minutesBased.clock.dayattr.create(uk.time.minutesBased.clock.dayattr.parseString(this.constraint.max).asMinutes);
                         var parsed = uk.time.minutesBased.clock.dayattr.parseString(inputText);
                         if (!parsed.success || parsed.asMinutes < minValue || parsed.asMinutes > maxValue) {
                             result.fail(nts.uk.resource.getMessage("FND_E_TIME", [this.name, minValue.fullText, maxValue.fullText]), "FND_E_TIME");
@@ -3866,7 +3883,7 @@ var nts;
                     sub.modal = modal;
                     function modeless(webAppId, path, options) {
                         if (typeof arguments[1] !== 'string') {
-                            return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                            return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                         }
                         if (webAppId == nts.uk.request.location.currentAppId) {
                             path = nts.uk.request.resolvePath(path);
@@ -3894,18 +3911,6 @@ var nts;
             ui.localize = localize;
             var dialog;
             (function (dialog) {
-                var DialogHeader = (function () {
-                    function DialogHeader() {
-                    }
-                    return DialogHeader;
-                }());
-                dialog.DialogHeader = DialogHeader;
-                var Message = (function () {
-                    function Message() {
-                    }
-                    return Message;
-                }());
-                dialog.Message = Message;
                 function getMaxZIndex() {
                     var overlayElements = parent.$(".ui-widget-overlay");
                     var max = 12000;
@@ -4351,6 +4356,10 @@ var nts;
         (function (ui) {
             var option;
             (function (option_1) {
+                var currenryPosition = {
+                    "JPY": "left",
+                    "USD": "right"
+                };
                 var EditorOptionBase = (function () {
                     function EditorOptionBase() {
                     }
@@ -4366,7 +4375,7 @@ var nts;
                         this.width = (option !== undefined && option.width !== undefined) ? option.width : "";
                         this.textalign = (option !== undefined && option.textalign !== undefined) ? option.textalign : "";
                         this.autofill = (option !== undefined && option.autofill !== undefined) ? option.autofill : false;
-                        this.filldirection = (option !== undefined && option.filldirection !== undefined) ? option.filldirection : "right";
+                        this.filldirection = (option !== undefined && option.filldirection !== undefined) ? option.filldirection : "left";
                         this.fillcharacter = (option !== undefined && option.fillcharacter !== undefined) ? option.fillcharacter : "0";
                     }
                     return TextEditorOption;
@@ -4450,10 +4459,6 @@ var nts;
                     return TimeWithDayAttrEditorOption;
                 }(EditorOptionBase));
                 option_1.TimeWithDayAttrEditorOption = TimeWithDayAttrEditorOption;
-                var currenryPosition = {
-                    "JPY": "left",
-                    "USD": "right"
-                };
             })(option = ui.option || (ui.option = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -4786,13 +4791,9 @@ var nts;
                             _.forEach(columns, function (item, i) {
                                 var charLength = item.length;
                                 var width = charLength * maxWidthCharacter + 10;
-                                $dropDownOptions.find('.nts-combo-column-' + i).width(width);
-                                if (i != columns.length - 1) {
-                                    $dropDownOptions.find('.nts-combo-column-' + i).css({ 'float': 'left' });
-                                }
+                                $dropDownOptions.find('.nts-combo-column-' + i).css("width", width);
                                 totalWidth += width + 10;
                             });
-                            $dropDownOptions.find('.nts-combo-item').css({ 'min-width': totalWidth });
                             container.css({ 'min-width': totalWidth });
                         }
                         container.data("columns", columns);
@@ -5961,6 +5962,7 @@ var nts;
                     TextEditorProcessor.prototype.getFormatter = function (data) {
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
+                        this.editorOption.autofill = (constraint && constraint.isZeroPadded) ? constraint.isZeroPadded : this.editorOption.autofill;
                         return new uk.text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: this.editorOption });
                     };
                     TextEditorProcessor.prototype.getValidator = function (data) {
@@ -10679,14 +10681,17 @@ var nts;
                         var fileName = data.filename;
                         var onchange = (data.onchange !== undefined) ? data.onchange : $.noop;
                         var onfilenameclick = (data.onfilenameclick !== undefined) ? data.onfilenameclick : $.noop;
-                        ;
                         var container = $(element);
-                        var $fileuploadContainer = $("<div class='nts-fileupload-container'></div>");
+                        var $fileuploadContainer = $("<div class='nts-fileupload-container cf'></div>");
                         var $fileBrowserButton = $("<button class='browser-button'></button>");
-                        var $fileNameLable = $("<span class='filenamelabel' style='margin-left: 5px;'></span> ");
-                        var $fileInput = $("<input style='display:none;' type='file' class='fileinput'/>");
+                        var $fileNameWrap = $("<span class='nts-editor-wrapped ntsControl'/>");
+                        var $fileNameInput = $("<input class='nts-editor nts-input' readonly='readonly'/>");
+                        var $fileNameLabel = $("<span class='filenamelabel hyperlink'></span> ");
+                        var $fileInput = $("<input type='file' class='fileinput'/>");
                         $fileuploadContainer.append($fileBrowserButton);
-                        $fileuploadContainer.append($fileNameLable);
+                        $fileNameWrap.append($fileNameInput);
+                        $fileuploadContainer.append($fileNameWrap);
+                        $fileuploadContainer.append($fileNameLabel);
                         $fileuploadContainer.append($fileInput);
                         $fileuploadContainer.appendTo(container);
                         $fileBrowserButton.click(function () {
@@ -10706,7 +10711,7 @@ var nts;
                             fileName(getSelectedFileName);
                             onchange(getSelectedFileName);
                         });
-                        $fileNameLable.click(function () {
+                        $fileNameLabel.click(function () {
                             onfilenameclick($(this).text());
                         });
                     };
@@ -10715,31 +10720,36 @@ var nts;
                         var fileName = ko.unwrap(data.filename);
                         var accept = (data.accept !== undefined) ? ko.unwrap(data.accept) : "";
                         var asLink = (data.aslink !== undefined) ? ko.unwrap(data.aslink) : false;
-                        var text = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "ファイルアップロード";
+                        var text = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "参照";
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var container = $(element);
                         container.find("input[type='file']").attr("accept", accept.toString());
-                        var $fileNameLable = container.find(".filenamelabel");
+                        var $fileNameWrap = container.find(".nts-editor-wrapped");
+                        var $fileNameInput = container.find(".nts-input");
+                        var $fileNameLabel = container.find(".filenamelabel");
                         if (container.data("file-name") !== fileName) {
                             container.data("file-name", "");
-                            $fileNameLable.text("");
+                            $fileNameInput.val("");
+                            $fileNameLabel.text("");
                             container.find("input[type='file']").val(null);
                             data.filename("");
                         }
                         else {
-                            $fileNameLable.text(fileName);
+                            $fileNameLabel.text(fileName);
+                            $fileNameInput.val(fileName);
                         }
                         if (asLink == true) {
-                            $fileNameLable.addClass("hyperlink");
-                            $fileNameLable.removeClass("standard-file-name");
+                            $fileNameLabel.removeClass("hidden");
+                            $fileNameWrap.addClass("hidden");
                         }
                         else {
-                            $fileNameLable.addClass("standard-file-name");
-                            $fileNameLable.removeClass("hyperlink");
+                            $fileNameLabel.addClass("hidden");
+                            $fileNameWrap.removeClass("hidden");
                         }
                         var $fileBrowserButton = container.find(".browser-button");
                         $fileBrowserButton.text(text);
                         $fileBrowserButton.prop("disabled", !enable);
+                        $fileNameInput.prop("disabled", !enable);
                     };
                     return NtsFileUploadBindingHandler;
                 }());
@@ -11148,7 +11158,7 @@ var nts;
                         }
                         validation.scanValidators($(self), options.columns);
                         var cellFormatter = new color.CellFormatter($(this), options.ntsFeatures);
-                        $(this).addClass('compact-grid nts-grid');
+                        $(this).addClass('compact-grid nts-grid').wrap($("<div class='nts-grid-wrapper'/>"));
                         var columnControlTypes = {};
                         var columnSpecialTypes = {};
                         var formatColumn = function (column) {
@@ -13704,8 +13714,7 @@ var nts;
                             function configButtons($grid, sheets) {
                                 if ($grid.closest(".nts-grid-container").length > 0)
                                     return;
-                                var gridWrapper = $("<div class='nts-grid-wrapper'/>");
-                                $grid.wrap($("<div class='nts-grid-container'/>")).wrap(gridWrapper);
+                                $grid.closest(".nts-grid-wrapper").wrap($("<div class='nts-grid-container'/>"));
                                 var gridContainer = $grid.closest(".nts-grid-container");
                                 var sheetButtonsWrapper = $("<div class='nts-grid-sheet-buttons'/>").appendTo(gridContainer);
                                 var sheetMng = $grid.data(internal.SHEETS);

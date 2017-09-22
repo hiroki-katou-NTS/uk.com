@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 
 import nts.gul.csv.CSVParsedResult;
 import nts.gul.csv.InvalidColumnsSizeException;
@@ -41,9 +43,9 @@ public class FileUtil {
      * @param inputStream the input stream
      * @param valueEncoding the value encoding
      * @param standardColumn the standard column
-     * @return the list
+     * @return the map
      */
-    public static List<List<String>> findContentFile(InputStream inputStream, Integer valueEncoding,
+    public static Map<Integer, List<String>> findContentFile(InputStream inputStream, Integer valueEncoding,
             Integer standardColumn) {
         // get encoding
         Charset charset = getCharset(valueEncoding);
@@ -73,8 +75,7 @@ public class FileUtil {
         }
         return mapResult.entrySet().stream()
                 .sorted(Map.Entry.comparingByKey())
-                .map(entry -> entry.getValue())
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
     
     /**
@@ -102,6 +103,12 @@ public class FileUtil {
      */
     private static Map<Integer, List<String>> getListError(List<ParseCSVException> lstError) {
         return lstError.stream()
+                .filter(item -> {
+                    InvalidColumnsSizeException record = (InvalidColumnsSizeException) item;
+                    
+                    // ignore line blank. Rules pattern of line blank: empty row or,,,
+                    return !Strings.isEmpty(StringUtils.join(record.getRowRawValues(), Strings.EMPTY));
+                })
                 .collect(Collectors.toMap(item -> ((InvalidColumnsSizeException) item).getErrorRow(),
                         item -> ((InvalidColumnsSizeException) item).getRowRawValues()));
     }
@@ -114,19 +121,25 @@ public class FileUtil {
      * @return the list record
      */
     private static Map<Integer, List<String>> getListRecord(List<NtsCsvRecord> lstRecord, Integer standardColumn) {
-        // TODO: getRowNumber(null) --> wait Kiban team fix.
-        return lstRecord.stream().collect(Collectors.toMap(item -> ((NtsCsvRecord) item).getRowNumber(), item -> {
-            NtsCsvRecord csvRecord = (NtsCsvRecord) item;
-
-            List<String> result = new ArrayList<>();
-            for (int i = 0; i < standardColumn; i++) {
-                Object value = csvRecord.getColumn(i);
-                if (value != null) {
-                    result.add(value.toString());
-                }
-            }
-            return result;
-        }));
+        return lstRecord.stream()
+                .filter(item -> {
+                    NtsCsvRecord record = (NtsCsvRecord) item;
+                    
+                    List<String> result = new ArrayList<>();
+                    for (int i = 0; i < standardColumn; i++) {
+                        result.add((String) record.getColumn(i));
+                    }
+                    // ignore line blank. Rules pattern of line blank: empty row or ",,,"
+                    return !Strings.isEmpty(StringUtils.join(result, Strings.EMPTY));
+                }).collect(Collectors.toMap(item -> ((NtsCsvRecord) item).getRowNumber(), item -> {
+                    NtsCsvRecord csvRecord = (NtsCsvRecord) item;
+        
+                    List<String> result = new ArrayList<>();
+                    for (int i = 0; i < standardColumn; i++) {
+                        result.add(String.valueOf(csvRecord.getColumn(i)));
+                    }
+                    return result;
+                }));
     }
 
     /**

@@ -278,6 +278,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         setHeaderColor() {
             var self = this;
+            self.headerColors([]);
             _.forEach(self.headersGrid(), (header) => {
                 if (header.color) {
                     self.headerColors.push({
@@ -360,7 +361,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.setHeaderColor();
             self.setColorWeekend();
             $("#dpGrid").ntsGrid({
-                width: '1100px',
+                width: (window.screen.availWidth - 200) + "px",
                 height: '500px',
                 dataSource: self.formatDate(self.dailyPerfomanceData()),
                 primaryKey: 'id',

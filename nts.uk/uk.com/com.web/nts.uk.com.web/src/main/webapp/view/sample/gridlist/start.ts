@@ -16,7 +16,7 @@ module nts.uk.ui.gridlist {
                 this.items = ko.observableArray([]);
                 this.dragItems = ko.observableArray([]);
                 
-                for(let i = 1; i < 100; i++) {
+                for(let i = 1; i <= 100; i++) {
                     this.items.push(new ItemModel('00' + i, '基本給 基本給', "description " + i, i%3 === 0, "2010/1/1"));
                     this.dragItems.push(new ItemModel('00' + i, '基本給 ', "description " + i, i%3 === 0, "2010/1/1"));
                 }
@@ -26,7 +26,11 @@ module nts.uk.ui.gridlist {
                     { headerText: '名称', key: 'name', width: 150, columnCssClass: "test" }, 
                     { headerText: '説明', key: 'description', width: 150 }, 
                     { headerText: '説明1', key: 'other1', width: 150},
-                    { headerText: '説明2', key: 'other2', width: 150, isDateColumn: true, format: 'YYYY/MM/DD' } 
+                    { headerText: '説明2', key: 'other2', width: 150, isDateColumn: true, format: 'YYYY/MM/DD' } ,
+                    { headerText: '説明2', key: 'deletable', width: 100, hidden: true} ,
+                    { headerText: 'Test Tabindex', key: 'test tab', width: 150, unbound: true,
+                        template: '{{if(${deletable}) == "true"}}<a href="#" tabindex="1">Test Tab Order</a>{{/if}}' 
+                    }
                 ]);                 
                 this.currentCode = ko.observable();
                 this.currentCodeList = ko.observableArray([]);
