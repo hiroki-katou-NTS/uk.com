@@ -258,6 +258,8 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 specialHoliday.grantSingle = null;
                 if (specialHoliday.grantRegular.grantStartDate) {
                     specialHoliday.grantRegular.grantStartDate = new Date(specialHoliday.grantRegular.grantStartDate);
+                } else {
+                    specialHoliday.grantRegular.grantStartDate = null;    
                 }
             }
             specialHoliday.grantMethod = self.inp_grantMethod();
