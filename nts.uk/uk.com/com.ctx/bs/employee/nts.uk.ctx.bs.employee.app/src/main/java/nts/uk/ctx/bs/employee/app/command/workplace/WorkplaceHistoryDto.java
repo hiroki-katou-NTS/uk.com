@@ -6,7 +6,6 @@ package nts.uk.ctx.bs.employee.app.command.workplace;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 import nts.uk.ctx.bs.employee.dom.workplace.Period;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
@@ -46,9 +45,8 @@ public class WorkplaceHistoryDto {
 
 		@Override
 		public Period getPeriod() {
-			return new Period(
-					GeneralDate.fromString(this.workplaceHistoryDto.getPeriod().getStartDate(), WKP_HIST_DATE_FORMAT),
-					GeneralDate.fromString(this.workplaceHistoryDto.getPeriod().getEndDate(), WKP_HIST_DATE_FORMAT));
+			return new Period(this.workplaceHistoryDto.getPeriod().getStartDate(),
+					this.workplaceHistoryDto.getPeriod().getEndDate());
 		}
 	}
 }

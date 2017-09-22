@@ -9,10 +9,10 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.at.record.dom.optionalitem.OptionalItemName
+				nts.uk.ctx.at.record.dom.optitem.OptionalItemName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="kmk002.style.css" />
+			<com:stylefile path="kmk002.a.style.css" />
 			<com:scriptfile path="kmk002.a.start.js" />
 			<com:scriptfile path="kmk002.a.service.js" />
 			<com:scriptfile path="kmk002.a.vm.js" />
@@ -20,20 +20,22 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail">#{i18n.getText('KMK002_1')}</button>
+				<button data-bind="click: openDialogC">test C</button>
+				<button data-bind="click: openDialogD">test D</button>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" style="display: none" data-bind="visible: true">
 				<table>
 					<tr>
 						<td>
 							<div style="width: 300px; margin-right: 30px; padding: 20px " class="caret-right caret-background bg-green">
 							<i class="icon icon-searchbox"></i>
-							<div data-bind="ntsSearchBox: {targetKey: 'code', mode:'igGrid', comId:'ahihi', items: roundingRules, 
-								selected: selectedCode, selectedKey: 'code', fields: ['name', 'code']}" />
+							<div data-bind="ntsSearchBox: {targetKey: 'itemNo', mode:'igGrid', comId:'ahihi', items: optionalItemHeaders, 
+								selected: selectedCode, selectedKey: 'itemNo', fields: ['itemNo', 'itemName']}" />
 							<table id="ahihi"
 								data-bind="ntsGridList: {
 							width: 300,
-							dataSource: roundingRules,
-							optionsValue: 'code',
+							dataSource: optionalItemHeaders,
+							optionsValue: 'itemNo',
 							columns: columns,
 							multiple: false,
 							value: selectedCode,
@@ -74,7 +76,11 @@
 									</td>
 									<td>
 										<div tabindex="11"
-											data-bind="ntsCheckBox: { checked: calculationResultRange.upperCheck, enable: true, text: nts.uk.resource.getText('KMK002_26') }"></div>
+											data-bind="ntsCheckBox: {
+													name: '#[KMK002_26]',
+													checked: calculationResultRange.upperCheck,
+													enable: true,
+													text: nts.uk.resource.getText('KMK002_26') }"></div>
 										<input tabindex="12" id="upperLimit"
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_26]',
@@ -91,13 +97,18 @@
 											optionsText: 'name',
 											value: empConditionAtr,
 											enable: true }"></div>
-										<button>#{i18n.getText('KMK002_19')}</button></td>
+										<button data-bind="click: $parent.openDialogB">#{i18n.getText('KMK002_19')}(TEST B)</button>
+										</td>
 									<td></td>
 									
 									<!-- Calculation ResultRange -->
 									<td>
 										<div tabindex="13"
-											data-bind="ntsCheckBox: { checked: calculationResultRange.lowerCheck, enable: true, text: nts.uk.resource.getText('KMK002_27') }"></div>
+											data-bind="ntsCheckBox: {
+												name: '#[KMK002_27]',
+												checked: calculationResultRange.lowerCheck,
+												enable: true,
+												text: nts.uk.resource.getText('KMK002_27') }"></div>
 										<input tabindex="14" id="lowerLimit"
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_27]',

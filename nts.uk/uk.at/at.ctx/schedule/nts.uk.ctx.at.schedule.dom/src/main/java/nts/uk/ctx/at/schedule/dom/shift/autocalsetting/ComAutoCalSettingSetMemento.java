@@ -7,35 +7,35 @@ package nts.uk.ctx.at.schedule.dom.shift.autocalsetting;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Interface AutoCalCompanySettingSetMemento.
+ * The Interface ComAutoCalSettingSetMemento.
  */
 public interface ComAutoCalSettingSetMemento {
 	
 	/**
 	 * Sets the company id.
 	 *
-	 * @param setCompanyId the new company id
+	 * @param companyId the new company id
 	 */
-	void  setCompanyId(CompanyId setCompanyId);
+	void  setCompanyId(CompanyId companyId);
 	
 	/**
-	 * Sets the auto cal overtime setting.
+	 * Sets the normal OT time.
 	 *
-	 * @param autoCalOvertimeSetting the new auto cal overtime setting
+	 * @param normalOTTime the new normal OT time
 	 */
-	void  setAutoCalOvertimeSetting(AutoCalOvertimeSetting autoCalOvertimeSetting);	
+	void  setNormalOTTime(AutoCalOvertimeSetting normalOTTime);	
 	
 	/**
-	 * Sets the auto cal flex overtime setting.
+	 * Sets the flex OT time.
 	 *
-	 * @param autoCalFlexOvertimeSetting the new auto cal flex overtime setting
+	 * @param flexOTTime the new flex OT time
 	 */
-	void  setAutoCalFlexOvertimeSetting(AutoCalFlexOvertimeSetting autoCalFlexOvertimeSetting);	
+	void  setFlexOTTime(AutoCalFlexOvertimeSetting flexOTTime);	
 	
 	/**
-	 * Sets the auto cal rest time setting.
+	 * Sets the rest time.
 	 *
-	 * @param autoCalFlexOvertimeSetting the new auto cal rest time setting
+	 * @param restTime the new rest time
 	 */
-	void  setAutoCalRestTimeSetting(AutoCalRestTimeSetting autoCalFlexOvertimeSetting);	
+	void  setRestTime(AutoCalRestTimeSetting restTime);	
 }

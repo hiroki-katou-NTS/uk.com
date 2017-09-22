@@ -6,14 +6,15 @@ package nts.uk.ctx.bs.employee.app.command.workplace;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 @Getter
 @Setter
 public class PeriodDto {
 
 	/** The start date. */
-	private String startDate;
+	private GeneralDate startDate;
 	
 	/** The end date. */
-	private String endDate;
+	private GeneralDate endDate;
 }

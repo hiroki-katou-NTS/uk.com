@@ -4,9 +4,10 @@ module nts.uk.com.view.cdl003.a {
     export module viewmodel {
 
         export class ScreenModel {
-            columns: KnockoutObservableArray<NtsGridListColumn>;
+            columns: KnockoutObservableArray<any>;
             classifications: KnockoutObservableArray<ClassificationFindDto>;
-            selectedCode: KnockoutObservableArray<string>;
+            selectedMulCode: KnockoutObservableArray<string>;
+            selectedSelCode: KnockoutObservable<string>;
             isMultiple: KnockoutObservable<boolean>;
             searchOption: any;
             constructor() {
@@ -17,22 +18,31 @@ module nts.uk.com.view.cdl003.a {
                     { headerText: nts.uk.resource.getText("KCP002_3"), key: 'name', width: 150 }
                 ]);
                 self.classifications = ko.observableArray([]);
-                self.selectedCode = ko.observableArray([]);
+                self.selectedMulCode = ko.observableArray([]);
+                self.selectedSelCode = ko.observable('');
+                
+                
+                self.isMultiple = ko.observable(true);
+                var inputCDL003 = nts.uk.ui.windows.getShared('inputCDL003');
                 self.searchOption = {
                     searchMode: 'filter',
                     targetKey: 'code',
                     comId: 'classificationSelect',
                     items: self.classifications,
-                    selected: self.selectedCode,
+                    selected: null,
                     selectedKey: 'code',
                     fields: fields,
                     mode: 'igGrid'
                 }
-                self.isMultiple = ko.observable(true);
-                var inputCDL003 = nts.uk.ui.windows.getShared('inputCDL003');
                 if(inputCDL003){
-                    self.selectedCode(inputCDL003.canSelected);
-                    self.isMultiple(inputCDL003.isMultiple);    
+                    self.isMultiple(inputCDL003.isMultiple);
+                    if (self.isMultiple()) {
+                        self.selectedMulCode(inputCDL003.canSelected);
+                        self.searchOption.selected = self.selectedMulCode; 
+                    } else {
+                        self.selectedSelCode(inputCDL003.canSelected);
+                        self.searchOption.selected = self.selectedSelCode;
+                    }
                 }
            }
             /**
@@ -52,7 +62,22 @@ module nts.uk.com.view.cdl003.a {
              */
             private saveClassificationCodes(): void{
                 var self = this;
-                nts.uk.ui.windows.setShared('outputCDL003',{selectedCode: self.selectedCode()});
+                 if(self.isMultiple()){
+                    if(!self.selectedMulCode() || self.selectedMulCode().length == 0){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
+                        return;    
+                    }    
+                }else {
+                     if(!self.selectedSelCode || !self.selectedSelCode()){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
+                        return;    
+                    }      
+                }
+                 var selectedCode : any = self.selectedMulCode();
+                if (!self.isMultiple()) {
+                    selectedCode = self.selectedSelCode();
+                }
+                nts.uk.ui.windows.setShared('outputCDL003',{selectedCode: selectedCode});
                 nts.uk.ui.windows.close();
             }
             
