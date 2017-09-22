@@ -10,16 +10,16 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class KrcstApplEmpConPK_.
  */
-@StaticMetamodel(KrcstApplEmpCon.class)
+@StaticMetamodel(KrcstApplEmpConPK.class)
 public class KrcstApplEmpConPK_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<KrcstApplEmpCon, String> cid;
+	public static volatile SingularAttribute<KrcstApplEmpConPK, String> cid;
 
 	/** The optional item no. */
-	public static volatile SingularAttribute<KrcstApplEmpCon, String> optionalItemNo;
+	public static volatile SingularAttribute<KrcstApplEmpConPK, String> optionalItemNo;
 
 	/** The emp cd. */
-	public static volatile SingularAttribute<KrcstApplEmpCon, String> empCd;
+	public static volatile SingularAttribute<KrcstApplEmpConPK, String> empCd;
 
 }

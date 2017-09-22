@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem.calculation;
 
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -52,7 +53,7 @@ public interface FormulaSetMemento {
 	 *
 	 * @param atr the new calc formula atr
 	 */
-	void setCalcFormulaAtr(FormulaAtr atr);
+	void setCalcFormulaAtr(OptionalItemAtr atr);
 
 	/**
 	 * Sets the symbol.

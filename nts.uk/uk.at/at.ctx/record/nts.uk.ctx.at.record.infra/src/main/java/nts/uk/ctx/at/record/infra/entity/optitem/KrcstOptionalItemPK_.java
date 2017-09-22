@@ -8,15 +8,15 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KrcstCalcResultRangePK_.
+ * The Class KrcstOptionalItemPK_.
  */
-@StaticMetamodel(KrcstCalcResultRangePK.class)
+@StaticMetamodel(KrcstOptionalItemPK.class)
 public class KrcstOptionalItemPK_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<KrcstCalcResultRangePK, String> cid;
+	public static volatile SingularAttribute<KrcstOptionalItemPK, String> cid;
 
 	/** The optional item no. */
-	public static volatile SingularAttribute<KrcstCalcResultRangePK, String> optionalItemNo;
+	public static volatile SingularAttribute<KrcstOptionalItemPK, String> optionalItemNo;
 
 }

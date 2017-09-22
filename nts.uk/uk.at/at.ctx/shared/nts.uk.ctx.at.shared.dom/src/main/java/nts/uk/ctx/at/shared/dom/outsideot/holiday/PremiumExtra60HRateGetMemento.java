@@ -2,11 +2,10 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.dom.outsideot.premium.extra;
+package nts.uk.ctx.at.shared.dom.outsideot.holiday;
 
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.outsideot.premium.PremiumRate;
 
 /**
  * The Interface PremiumExtra60HRateGetMemento.

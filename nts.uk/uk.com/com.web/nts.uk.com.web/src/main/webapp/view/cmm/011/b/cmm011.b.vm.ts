@@ -16,10 +16,7 @@ module nts.uk.com.view.cmm011.b {
                 
                 self.workplaceHistory = ko.observable(new WorkplaceHistoryModel(self));
                 self.startDate = ko.observable('');
-                self.endDate = ko.observable('');
-                self.workplaceHistory().selectedWpkHistory.subscribe(function(code) {
-                    self.startDate(self.workplaceHistory().lstWpkHistory().filter(item => item.historyId == code)[0].startDate);
-                });
+                self.endDate = ko.observable(nts.uk.resource.getText("CMM011_27"));
             }
             
             /**
@@ -28,24 +25,7 @@ module nts.uk.com.view.cmm011.b {
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
-                self.getAllHistory().done(function() {
-                    dfd.resolve();
-                });
-                return dfd.promise();
-            }
-            
-            private getAllHistory(): JQueryPromise<void> {
-                let self = this;
-                let dfd = $.Deferred<void>();
-                service.findLstWkpConfigHistory().done(function(data) {
-                    if (data.wkpConfigHistory&& data.wkpConfigHistory.length>0) {
-                        self.workplaceHistory().init(data.wkpConfigHistory);
-                        self.workplaceHistory().screenMode(ScreenMode.SelectionMode);
-                    }
-                    else {
-                        self.workplaceHistory().screenMode(ScreenMode.NewMode);
-                        self.endDate(nts.uk.resource.getText("CMM011_27"));
-                    } 
+                self.workplaceHistory().findAllHistory().done(function() {
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -55,59 +35,85 @@ module nts.uk.com.view.cmm011.b {
              * execution
              */
             public execution() {
-                var self = this;
+                let self = this;
                 //check screen mode
-                
-                switch(self.workplaceHistory().screenMode())
-                {
-                    case ScreenMode.NewMode://new mode
-                        self.caseNewMode();
-                        break;
-                    case ScreenMode.SelectionMode:
-                        break;
-                    case ScreenMode.AddMode:
-                    self.caseAddMode();
-                        break;
-                    case ScreenMode.UpdateMode:
-                        break;
-                    default: break;
+                if (self.workplaceHistory().screenMode() == ScreenMode.SelectionMode) {
+                    self.shareData();
+                    return;
                 }
-                nts.uk.ui.windows.setShared("sendParent", {
-                    startDate: self.startDate(),//TODO
-                    endDate: "9999-12-31"//TODO reset default date
+                // save history
+                self.save();
+            }
+            
+            /**
+             * save
+             */
+            private save(): void {
+                let self = this;
+                service.saveWkpConfig(self.toJSonCommand()).done(function() {
+                    // find all new history
+                    self.workplaceHistory().findAllHistory().done(() => {
+                        self.shareData();
+                    })
+                }).fail((res: any) => {
+                    self.showMessageError(res);
                 });
+            }
+            
+            /**
+             * shareData
+             */
+            private shareData() {
+                let self = this;
+                nts.uk.ui.windows.setShared("ShareDateScreenParent", self.toJSonDate(true));
                 nts.uk.ui.windows.close();
             }
             
-            private caseNewMode():void{
-                var self =this;
-                var data = {
-                    wkpConfigHistory: {
-                        historyId: '',
-                        period: {
-                            startDate: new Date(self.startDate()),
-                            endDate: new Date("9999-12-31")//TODO reset default date
-                        }
-                    }
+            /**
+             * toJSonCommand
+             */
+            private toJSonCommand(): any {
+                let self = this;
+                let command: any = {};
+                
+                let isAddMode: any = null;
+                
+                // check mode: add or update?
+                if (self.workplaceHistory().screenMode() == ScreenMode.NewMode
+                    || self.workplaceHistory().screenMode() == ScreenMode.AddMode) {
+                    isAddMode =  true;
                 }
-                service.registerWkpConfig(data).done(function() {
-                });
+                else if (self.workplaceHistory().screenMode() == ScreenMode.UpdateMode) {
+                    isAddMode = false;
+                }
+                command.isAddMode = isAddMode;
+                
+                // information of history
+                let wkpConfigHistory: any = {};
+                wkpConfigHistory.historyId = null;
+                wkpConfigHistory.period = self.toJSonDate();
+                command.wkpConfigHistory = wkpConfigHistory;
+                
+                return command;
             }
             
-            private caseAddMode():void{
-                var self = this;
-                var data = {
-                    wkpConfigHistory: {
-                        historyId: '',
-                        period: {
-                            startDate: new Date(self.startDate()),
-                            endDate: new Date("9999-12-31")//TODO reset default date
-                        }
-                    }
+            /**
+             * toJSonDate
+             */
+            private toJSonDate(isRespondParent?: boolean): any {
+                let self = this;
+                let startDate: any = new Date(self.startDate());
+                
+                // convert date respond parent screen
+                if (isRespondParent) {
+                    startDate = nts.uk.time.formatDate(startDate, 'yyyy/MM/dd');
                 }
-                service.registerWkpConfig(data).done(function() {
-                });
+                return {
+                    startDate: startDate,
+                    endDate: new Date("9999-12-31") //TODO: CMM011_27
+                }
             }
+            
             /**
              * close
              */
@@ -130,57 +136,50 @@ module nts.uk.com.view.cmm011.b {
          */
         class WorkplaceHistoryModel extends WorkplaceHistory {
             
-            screenModel: ScreenModel;
+            parentModel: ScreenModel;
             
-               // mode
+           // mode
             screenMode: KnockoutObservable<number>;
             addBtnControl: KnockoutObservable<boolean>;
             updateBtnControl: KnockoutObservable<boolean>;
             
-            constructor(screenModel: ScreenModel) {
+            constructor(parentModel: ScreenModel) {
                 super();
                 let self = this;
                 
-                self.screenModel = screenModel;
+                self.parentModel = parentModel;
                 
                 // mode
                 self.screenMode = ko.observable(null);
 
-                // subscribe
-                self.lstWpkHistory.subscribe(newList => {
-                    
-                    // list empty or null -> new mode
-                    if (!newList || newList.length <= 0) {
-                        self.screenMode(ScreenMode.NewMode);
-                        self.screenModel.endDate(nts.uk.resource.getText("CMM011_27"));
-                    }
-                });
                 self.addBtnControl = ko.computed(function() {
                     if (self.screenMode() == ScreenMode.SelectionMode || self.screenMode() == ScreenMode.UpdateMode) {
-                        return self.isSelectFirst();
+                        return self.isSelectedLatestHistory();
+                    }
+                    return false;
+                });
+                self.updateBtnControl = ko.computed(function() {
+                    if (self.screenMode() == ScreenMode.SelectionMode) {
+                        return self.isSelectedLatestHistory();
                     }
                     return false;
                 });
                 
-                self.updateBtnControl = ko.computed(function() {
-                    if (self.screenMode() == ScreenMode.SelectionMode) {
-                        return self.isSelectFirst();
+                // subscribe
+                self.lstWpkHistory.subscribe(newList => {
+                    // list empty or null -> new mode
+                    if (!newList || newList.length <= 0) {
+                        self.screenMode(ScreenMode.NewMode);
+                        self.parentModel.endDate(nts.uk.resource.getText("CMM011_27"));
+                    } else {
+                        self.screenMode(ScreenMode.SelectionMode);
                     }
-                    return false;
                 });
-            }
-            
-            init(data: Array<any>) {
-                let self = this;
-                let lstWpkHistory: Array<IHistory> = [];
-                data.forEach(function(item, index) {
-                    //workplaceId not key => ""
-                    lstWpkHistory.push({ workplaceId: "", historyId: item.historyId, startDate: item.period.startDate, endDate: item.period.endDate });
+                self.selectedWpkHistory.subscribe(function(newCode) {
+                    let detail: IHistory = self.getSelectedHistoryByHistId(newCode);
+                    self.parentModel.startDate(detail.startDate);
+                    self.parentModel.endDate(detail.endDate);
                 });
-                self.lstWpkHistory(lstWpkHistory);
-                if (data && data.length > 0) {
-                    self.selectFirst();
-                }
             }
             
             /**
@@ -205,10 +204,45 @@ module nts.uk.com.view.cmm011.b {
             public removeHistory() {
                 let self = this;
             }
+            
+            /**
+             * findAllHistory
+             */
+            public findAllHistory(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                service.findLstWkpConfigHistory().done(function(data: any) {
+                    if (data.wkpConfigHistory && data.wkpConfigHistory.length > 0) {
+                        self.init(data.wkpConfigHistory);
+                    }
+                    dfd.resolve();
+                }).fail((res: any) => {
+                    self.parentModel.showMessageError(res);
+                });
+                return dfd.promise();
+            }
+            
+            /**
+             * init
+             */
+            private init(data: Array<any>) {
+                let self = this;
+                let lstWpkHistory: Array<IHistory> = [];
+                data.forEach(function(item, index) {
+                    //workplaceId not key => ""
+                    lstWpkHistory.push({ workplaceId: "", historyId: item.historyId, startDate: item.period.startDate, endDate: item.period.endDate });
+                });
+                self.lstWpkHistory(lstWpkHistory);
+                
+                // if has data, select first
+                if (data && data.length > 0) {
+                    self.selectFirst();
+                }
+            }
         }
         
         //Screen mode define
-        export enum ScreenMode {
+        enum ScreenMode {
             SelectionMode = 0,
             NewMode = 1,
             AddMode = 2,

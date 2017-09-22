@@ -34,11 +34,6 @@ module kcp009.viewmodel {
             self.keySearch = ko.observable("");
             self.isDisplay = ko.observable(true);
             self.isShowEmpList = ko.observable(false);
-            self.keySearch.subscribe((key) => {
-                if (key) {
-                    self.searchEmp();
-                }
-            });
         }
 
         // Initialize Component
@@ -156,8 +151,10 @@ module kcp009.viewmodel {
                 $('#btn_show_list').click(function() {
                     $('#items-list').ntsPopup('toggle');
                 });
+                // Enter keypress
                 $('#search-input').on('keypress', function(e) {
                     if (e.which == 13) {
+                        self.keySearch($('#search-input').val());
                         self.searchEmp();
                     }
                 })
@@ -195,9 +192,8 @@ module kcp009.viewmodel {
         }
 
         // Search Employee
-        private searchEmp(): JQueryPromise<any> {
+        private searchEmp(): void {
             let self = this;
-            let dfd = $.Deferred<void>();
             //Acquire Employee from key
             
             // System
@@ -230,20 +226,20 @@ module kcp009.viewmodel {
                     let newEmpList: Array<EmployeeModel> = [];
                     newEmpList.push({ id: employee.employeeId, code: employee.employeeCode, businessName: employee.businessName });
                     self.empList(newEmpList);
+//                    return;
                 }
                 self.selectedItem(employee.employeeId);
                 self.empDisplayCode(employee.employeeCode);
                 self.empBusinessName(employee.businessName);
                 self.organizationName(employee.orgName);
 
-                dfd.resolve();
-                return;
-
             }).fail(function(res) {
-                nts.uk.ui.dialog.info({ messageId: "Msg_7" });
-//                nts.uk.ui.dialog.alert(res.message);
+                if (res.messageId === 'Msg_7') {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_7" });
+                } else {
+                    nts.uk.ui.dialog.alert(res.message);
+                }
             });
-            return dfd.promise();
         }
 
         // Previous Employee
@@ -309,7 +305,7 @@ module kcp009.viewmodel {
         }
 
         export function searchEmployee(employeeCode: string, system: string): JQueryPromise<model.EmployeeSearchData> {
-            return nts.uk.request.ajax('com', paths.searchEmployee + "/" + employeeCode + "/" + system);
+            return nts.uk.request.ajax('com', paths.searchEmployee, { employeeCode: employeeCode , system: system});
         }
 
         /**

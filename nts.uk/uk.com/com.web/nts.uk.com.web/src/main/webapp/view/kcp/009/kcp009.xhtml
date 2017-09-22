@@ -48,7 +48,7 @@
 								value: keySearch,
 								name: '#[KCP009_2]',
 								option: {width: '100',enable: true}
-								}, attr: {tabindex: tabIndex}"  />
+								}, attr: {tabindex: tabIndex}, valueUpdate: 'afterkeydown'"  />
 					</td>
 					<td id="wkp_title_text" class="bg-green border-left border-right employment-tdpad"
 						data-bind="visible: isDisplayOrganizationName">
@@ -56,7 +56,7 @@
 							<span data-bind="text: organizationDesignation"></span>
 						</div>
 					</td>
-					<td class="employment-tdpad border-right" id="wkp_text" data-bind="visible: isDisplayOrganizationName"><div class="over_text">
+					<td class="employment-tdpad border-right" id="wkp_text" data-bind="visible: isDisplayOrganizationName"><div>
 							<span data-bind="text: organizationName"></span>
 						</div></td>
 				</tr>

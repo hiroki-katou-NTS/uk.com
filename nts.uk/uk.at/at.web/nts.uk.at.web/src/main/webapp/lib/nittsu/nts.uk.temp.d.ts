@@ -78,6 +78,8 @@ interface JQuery {
      * init calendar component.
      */
     ntsCalendar(action: string, option: any);
+    
+    ntsSwitchMasterLanguage(): void;
 }
 
 interface UnitModel {

@@ -19,7 +19,7 @@
 }
 
 #wkp_text {
-	width: 120px;
+	width: 150px;
 }
 
 .caret-inline:after {
@@ -33,6 +33,9 @@ table#employ_view {
 	border-left: none !important;
 	border-right: none !important;
 	margin: 10px;
+}
+#employ_view tr {
+	height: 42px;
 }
 
 .none_border {

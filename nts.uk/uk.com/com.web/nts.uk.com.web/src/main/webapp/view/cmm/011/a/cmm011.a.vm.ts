@@ -94,9 +94,9 @@ module nts.uk.com.view.cmm011.a {
              * configureWkpDialog
              */
             public configureWkpDialog() {
-                var self = this;
+                let self = this;
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/b/index.xhtml').onClosed(() => {
-                    var dialogData = nts.uk.ui.windows.getShared("sendParent");
+                    let dialogData = nts.uk.ui.windows.getShared("ShareDateScreenParent");
                     self.strDWorkplace(dialogData.startDate);
                     self.endDWorkplace(dialogData.endDate);
                 });
