@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.app.find.workplace;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -20,7 +21,7 @@ public class WorkplaceConfigInfoFinder {
 	private WorkplaceConfigInfoRepository workplaceConfigInfoRepository;
 	
 	public List<WorkplaceConfigInfoDto> findAll(String companyId,String historyId){
-		List<WorkplaceConfigInfo> lstWorkplaceConfigInfo = workplaceConfigInfoRepository.findAll(companyId, historyId);
+		Optional<WorkplaceConfigInfo> workplaceConfigInfo = workplaceConfigInfoRepository.find(companyId, historyId);
 		//TODO convert to tree data
 		return null;
 	}

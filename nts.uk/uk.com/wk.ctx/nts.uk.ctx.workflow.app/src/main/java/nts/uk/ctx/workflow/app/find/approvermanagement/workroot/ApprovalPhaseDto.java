@@ -13,8 +13,11 @@ public class ApprovalPhaseDto {
 	private String approvalPhaseId;
 	/**承認形態*/
 	private int approvalForm;
+	/**承認形態 Name*/
+	private String appFormName;
 	/**閲覧フェーズ*/
 	private int browsingPhase;
 	/**順序*/
 	private int orderNumber;
+	
 }

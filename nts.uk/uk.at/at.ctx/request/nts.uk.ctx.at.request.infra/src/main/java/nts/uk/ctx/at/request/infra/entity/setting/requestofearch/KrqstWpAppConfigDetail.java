@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -90,6 +93,13 @@ public class KrqstWpAppConfigDetail  extends UkJpaEntity implements Serializable
 	 */
 	@Column(name = "REQUIRED_INSTRUCTION_FLG")
 	public int requiredInstructionFlg;
+	
+	@ManyToOne
+	@PrimaryKeyJoinColumns({
+		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
+		@PrimaryKeyJoinColumn(name="WKP_ID",referencedColumnName="WKP_ID")
+	})
+	private KrqstWpAppConfig krqstWpAppConfig;
 	
 	/**
 	 * 

@@ -77,4 +77,13 @@ public interface CompanyApprovalRootRepository {
 	 * @return
 	 */
 	List<CompanyApprovalRoot> findByBaseDateOfCommon(String cid, GeneralDate baseDate);
+	
+	/**
+	 * ドメインモデル「会社別就業承認ルート」を取得する
+	 * 
+	 * @param cid
+	 * @param baseDate
+	 * @return
+	 */
+	List<CompanyApprovalRoot> findByBaseDate(String cid, GeneralDate baseDate);
 }

@@ -119,6 +119,10 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 self.setDataForCbb();
             })
             
+            //check 
+            $('#swap-list').on("swaplistgridsizeexceed", function(evt, $list, max) { 
+                alert('test');
+            })
         }// end constructor
         
         setDataForCbb(){
@@ -181,7 +185,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             for (var item: service.model.EmployeeSearchDto of dataList) {
                 dataRes.push({
                     code: item.scd,
-                    name: item.pName
+                    name: item.pname
                 });
             }
             return dataRes;

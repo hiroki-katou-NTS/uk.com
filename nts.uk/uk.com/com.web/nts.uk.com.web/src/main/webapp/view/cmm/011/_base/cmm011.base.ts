@@ -29,11 +29,19 @@ module nts.uk.com.view.cmm011 {
             }
             
             /**
-             * getSelectedHistory
+             * getSelectedHistoryByWkpId
              */
-            public getSelectedHistory(): IHistory {
+            public getSelectedHistoryByWkpId(): IHistory {
                 let self = this;
                 return self.lstWpkHistory().filter(item => item.workplaceId == self.selectedWpkHistory())[0];
+            }
+            
+            /**
+             * getSelectedHistoryByHistId
+             */
+            public getSelectedHistoryByHistId(historyId :string): IHistory {
+                let self = this;
+                return self.lstWpkHistory().filter(item => item.historyId == historyId)[0];
             }
             
             /**
@@ -53,13 +61,22 @@ module nts.uk.com.view.cmm011 {
                     item.textDisplay = item.startDate + " " + nts.uk.resource.getText("CMM011_26") + " " + item.endDate;
                 })
             }
+            
+            // is select first history
+            public isSelectFirst() {
+                var self = this;
+                if (self.lstWpkHistory().length > 0) {
+                    return self.selectedWpkHistory() == self.lstWpkHistory()[0].historyId;
+                }
+                return false;
+            }
         }
         
         /**
          * IHistory
          */
         export interface IHistory {
-            workplaceId: string;
+            workplaceId?: string;
             historyId: string;
             startDate: string;
             endDate: string;

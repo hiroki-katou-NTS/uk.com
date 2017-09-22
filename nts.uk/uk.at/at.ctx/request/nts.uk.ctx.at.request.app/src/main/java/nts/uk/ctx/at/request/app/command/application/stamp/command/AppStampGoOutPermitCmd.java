@@ -12,7 +12,7 @@ public class AppStampGoOutPermitCmd {
 	
 	private Integer stampFrameNo;
 	
-	private Integer stampGoOutReason;
+	private Integer stampGoOutAtr;
 	
 	private Integer startTime;
 	
