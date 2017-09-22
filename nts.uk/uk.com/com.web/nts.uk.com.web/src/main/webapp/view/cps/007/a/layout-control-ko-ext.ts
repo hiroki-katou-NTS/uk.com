@@ -710,85 +710,6 @@ module nts.custombinding {
                             opts.sortable.isEnabled(false);
                         }
                     }
-                },
-                // render primative value to viewContext
-                primitiveConst = () => {
-                    let __viewContext: any = window['__viewContext'] || {},
-                        icls: Array<IItemClassification> = ko.unwrap(opts.sortable.data);
-
-                    _(icls)
-                        .map((x: IItemClassification) => x.listItemDf)
-                        .flatten()
-                        .filter(x => !!x)
-                        .each((x: IItemDefinition) => {
-                            let dts = (x.itemTypeState || <IItemTypeState>{}).dataTypeState,
-                                constraint: any = {
-                                    text: x.itemName,
-                                    required: !!x.isRequired,
-                                    valueType: 'String'
-                                };
-
-                            if (dts) {
-                                switch (dts.dataTypeValue) {
-                                    default:
-                                    case ITEM_SINGLE_TYPE.STRING:
-                                        constraint.valueType = "String";
-                                        constraint.maxLength = dts.stringItemLength || 0;
-                                        constraint.stringExpression = '';
-
-                                        switch (dts.stringItemType) {
-                                            default:
-                                            case ITEM_STRING_TYPE.ANY:
-                                                constraint.charType = 'Alphabet';
-                                                break;
-                                            case ITEM_STRING_TYPE.ANYHALFWIDTH:
-                                                constraint.charType = 'AnyHalfWidth';
-                                                break;
-                                            case ITEM_STRING_TYPE.ALPHANUMERIC:
-                                                constraint.charType = 'AlphaNumeric';
-                                                break;
-                                            case ITEM_STRING_TYPE.NUMERIC:
-                                                constraint.charType = 'Numeric';
-                                                if (dts.decimalPart == 0) {
-                                                    constraint.valueType = "Integer";
-                                                } else {
-                                                    constraint.valueType = "Decimal";
-                                                    constraint.mantissaMaxLength = dts.decimalPart;
-                                                }
-                                                constraint.min = dts.NumericItemMax;
-                                                constraint.max = dts.NumericItemMin;
-                                                break;
-                                            case ITEM_STRING_TYPE.KANA:
-                                                constraint.charType = 'Kana';
-                                                break;
-                                        }
-                                        break;
-                                    case ITEM_SINGLE_TYPE.NUMERIC:
-                                        if (dts.decimalPart == 0) {
-                                            constraint.valueType = "Integer";
-                                        } else {
-                                            constraint.valueType = "Decimal";
-                                            constraint.mantissaMaxLength = dts.decimalPart;
-                                        }
-                                        constraint.max = dts.NumericItemMax;
-                                        constraint.min = dts.NumericItemMin;
-                                        break;
-                                    case ITEM_SINGLE_TYPE.DATE:
-                                        constraint.valueType = "";
-                                        break;
-                                    case ITEM_SINGLE_TYPE.TIME:
-                                        constraint.valueType = "Time";
-                                        break;
-                                    case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                        constraint.valueType = "Clock";
-                                        break;
-                                    case ITEM_SINGLE_TYPE.SELECTION:
-                                        constraint.valueType = "";
-                                        break;
-                                }
-                            }
-                            __viewContext["primitiveValueConstraints"][x.itemCode] = constraint;
-                        });
                 };
 
             $(() => {
@@ -949,7 +870,6 @@ module nts.custombinding {
                             break;
                     }
                 });
-                primitiveConst();
                 opts.sortable.isEditable.valueHasMutated();
             });
 
