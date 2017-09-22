@@ -12,6 +12,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -56,7 +57,8 @@ public class KrcstOptionalItem extends UkJpaEntity implements Serializable {
 
 	/** The krcst calc result range. */
 	@OneToOne(optional = true, cascade = CascadeType.ALL)
-	@PrimaryKeyJoinColumn
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO") })
 	public KrcstCalcResultRange krcstCalcResultRange;
 
 	/**
