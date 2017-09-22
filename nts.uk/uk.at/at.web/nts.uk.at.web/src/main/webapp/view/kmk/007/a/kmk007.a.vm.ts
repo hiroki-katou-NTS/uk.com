@@ -333,7 +333,6 @@ module nts.uk.at.view.kmk007.a.viewmodel {
          * Insert work type
          */
         private addWorkType(): any {
-            nts.uk.ui.block.grayout();
             var self = this,
                 workType = self.currentWorkType(),
                 length = workType.workTypeCode().length,
@@ -373,22 +372,23 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             $("#symbolic-name-input").trigger("validate");
             $("#memo-input").trigger("validate");
 
-            if (nts.uk.ui.errors.hasError()) {
+            if (nts.uk.ui.errors.hasError()) { 
                 return;
-            } else {
-                service.addWorkType(self.isCreated(), command).done(function() {
-                    self.isCreated(false);
-                    self.getWorkType().done(function() {
-                        self.currentCode(workType.workTypeCode());
-                    });
-
-                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
-                }).fail(function(error) {
-                    nts.uk.ui.dialog.alertError(error.message);
-                }).then(function() {
-                    nts.uk.ui.block.clear();
+            } 
+        
+            nts.uk.ui.block.invisible();
+            service.addWorkType(self.isCreated(), command).done(function() {
+                self.isCreated(false);
+                self.getWorkType().done(function() {
+                    self.currentCode(workType.workTypeCode());
                 });
-            }
+
+                nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
+            }).fail(function(error) {
+                nts.uk.ui.dialog.alertError(error.message);
+            }).then(function() {
+                nts.uk.ui.block.clear();
+            });
         }
 
         /**
