@@ -49,6 +49,10 @@ public class KrcmtOptItemFormula extends UkJpaEntity implements Serializable {
 	@Column(name = "SYMBOL")
 	private String symbol;
 
+	/** The calc atr. */
+	@Column(name = "CALC_ATR")
+	private int calcAtr;
+	
 	/** The krcmt formula roundings. */
 	@JoinColumns({
 			@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
