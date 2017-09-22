@@ -1,4 +1,4 @@
-package entity.person.info.setting;
+package entity.person.info.setting.user;
 
 import java.io.Serializable;
 
@@ -25,10 +25,6 @@ public class BpsstUserSetting extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "SCD_VALUE")
 	public String employeeCodeValue;
-	
-	@Basic(optional = false)
-	@Column(name = "CID")
-	public String companyId;
 
 	@Basic(optional = false)
 	@Column(name = "RECENT_REGISTRATION")

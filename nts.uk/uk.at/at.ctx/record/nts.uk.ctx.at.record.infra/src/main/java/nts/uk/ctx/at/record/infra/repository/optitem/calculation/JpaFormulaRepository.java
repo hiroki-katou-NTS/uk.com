@@ -28,8 +28,6 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	@Override
 	public void create(List<Formula> listFormula) {
 		System.out.println(listFormula);
-		// TODO Auto-generated method stub
-
 	}
 
 	/*
@@ -41,7 +39,6 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	 */
 	@Override
 	public void remove(String comId, String optItemNo) {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -53,7 +50,6 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	 */
 	@Override
 	public List<Formula> findByOptItemNo(String companyId, String optItemNo) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
