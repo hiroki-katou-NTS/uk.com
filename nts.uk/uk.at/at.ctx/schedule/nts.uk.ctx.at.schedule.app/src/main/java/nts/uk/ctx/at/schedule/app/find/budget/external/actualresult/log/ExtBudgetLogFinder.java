@@ -62,7 +62,8 @@ public class ExtBudgetLogFinder {
                     domain.saveToMemento(dto);
                     
                     // set external budget name
-                    dto.extBudgetName = mapBudget.get(domain.getExtBudgetCode().v());
+                    String extBudgetName = mapBudget.get(domain.getExtBudgetCode().v());
+                    dto.extBudgetName = extBudgetName == null ? "未設定" : extBudgetName;
                     return dto;
                 })
                 .collect(Collectors.toList());
