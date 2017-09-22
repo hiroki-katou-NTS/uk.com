@@ -32,4 +32,7 @@ public class KrqdtApprovalFramePK implements Serializable {
 	@Column(name = "DISPORDER")
 	public int dispOrder;
 
+	@NotNull
+	@Column(name = "APPROVER_SID")
+	public String approverSID;
 }

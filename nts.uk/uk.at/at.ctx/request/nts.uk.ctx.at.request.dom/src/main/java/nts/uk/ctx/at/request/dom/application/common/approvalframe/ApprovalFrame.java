@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.common.approvalframe;
 
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +10,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.Reason;
 
 /**
@@ -50,15 +53,21 @@ public class ApprovalFrame extends DomainObject {
 	/** 代行者 */
 	@Setter
 	private String representerSID;
+	
+	/**
+	 * list approverAccepted
+	 */
+	private List<ApproveAccepted> listApproveAccepted;
 
 	public static ApprovalFrame createFromJavaType( String companyID , String phaseID , int dispOrder , String approverSID ,
-			int approvalATR  , int confirmATR ,GeneralDate approvalDate,String reason,String representerSID ){
+			int approvalATR  , int confirmATR ,GeneralDate approvalDate,String reason,String representerSID ,List<ApproveAccepted> listApproveAccepted){
 		return new ApprovalFrame (companyID , phaseID , dispOrder , approverSID ,
 									EnumAdaptor.valueOf(approvalATR , ApprovalAtr.class) ,
 									EnumAdaptor.valueOf(confirmATR, ConfirmAtr.class),
 									approvalDate ,
 									new Reason(reason),
-									representerSID);
+									representerSID,
+									listApproveAccepted);
 	}
 	
 	

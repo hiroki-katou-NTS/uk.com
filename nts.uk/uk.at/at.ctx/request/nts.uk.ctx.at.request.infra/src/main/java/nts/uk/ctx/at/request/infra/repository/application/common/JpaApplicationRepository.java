@@ -174,4 +174,5 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		return null;
 	}
 
+
 }

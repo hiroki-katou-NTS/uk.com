@@ -68,7 +68,6 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 				Integer.valueOf(entity.approvalForm).intValue(),
 				Integer.valueOf(entity.dispOrder).intValue(),
 				Integer.valueOf(entity.approvalATR).intValue(),
-				null,
 				null);
 	}
 	private KrqdtAppApprovalPhase toEntity (AppApprovalPhase domain){
