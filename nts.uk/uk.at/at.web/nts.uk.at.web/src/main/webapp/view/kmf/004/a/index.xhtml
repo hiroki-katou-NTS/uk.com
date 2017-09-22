@@ -27,7 +27,7 @@
 					<button id="REGISTER_BTN" class="proceed"
 						data-bind="click: addSpecialHoliday, enable: $root.errors.isEmpty">#{i18n.getText('KMF004_2')}</button>
 					<button id="DELETE_BTN" class="danger"
-						data-bind="click: deleteSpecialHoliday">#{i18n.getText('KMF004_3')}</button>
+						data-bind="click: deleteSpecialHoliday, enable: !isEnableCode()">#{i18n.getText('KMF004_3')}</button>
 					<button id="SETTING_BTN" data-bind="click: openHDialog, enable: sphdList().length > 0">#{i18n.getText('KMF004_5')}</button>
 				</div>
 			</div>
