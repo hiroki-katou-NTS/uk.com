@@ -7,7 +7,7 @@ module nts.uk.at.view.kmk010.a {
             findAllOvertimeUnit: "ctx/at/shared/outsideot/setting/findAll/unit",
             findAllOvertimeRounding: "ctx/at/shared/outsideot/setting/findAll/rounding",
             findByIdOutsideOTSetting: "ctx/at/shared/outsideot/setting/findById",
-            findAllPremiumExtra60HRate: "ctx/at/shared/outsideot/overtime/premium/extra/findAll",
+            findAllPremiumExtra60HRate: "ctx/at/shared/outsideot/holiday/findAll/premiumExtra",
             findByIdSuperHD60HConMed: "ctx/at/shared/outsideot/holiday/findById",
             saveOutsideOTSettingAndSupperHD60H: "ctx/at/shared/outsideot/setting/save",
             findAllOvertimeNameLanguage: "ctx/at/shared/outsideot/overtime/name/language/findAll",

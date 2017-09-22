@@ -2,8 +2,7 @@
     var paths = {
         getAllPhaseByAppID: "at/request/appapprovalphase/getallphase",
         getAllFrameByPhaseID: "at/request/approvalframe/getallframe",
-        getAllFrameByListPhaseId : "at/request/approvalframe/getallframebylistphaseid",
-        getAllFrameByListPhaseId1 : "at/request/approvalframe/getallframebylistphaseid1"
+        getAllReasonByAppID : "at/request/application/getreasonforremand"
     }
      /**
       * get all phase by applicationID
@@ -12,9 +11,10 @@
          return nts.uk.request.ajax("at",paths.getAllPhaseByAppID+"/"+appID);
      }  
      /**
-      * get all frame by list phase ID 1
+      * get all reason by applicationID
       */
-     export function getAllFrameByListPhaseId1(listPhaseId) : JQueryPromise<Array<Array<any>>>{
-         return nts.uk.request.ajax("at",paths.getAllFrameByListPhaseId1,listPhaseId);
-     }
+     export function getAllReasonByAppID(appID) : JQueryPromise<Array<any>>{
+         return nts.uk.request.ajax("at",paths.getAllReasonByAppID+"/"+appID);
+     }  
+     
  }

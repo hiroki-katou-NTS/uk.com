@@ -36,7 +36,7 @@ public class KrqstAppTypeDiscrete extends UkJpaEntity{
 	@Column(name = "DISPLAY_REASON_FLG")
 	public int displayReasonFlg;
 	
-	@Column(name = "RETRICT_PRE_METHOD_FLG")
+	@Column(name = "RETRICT_PRE_METHOD_CHECK_FLG")
 	public int retrictPreMethodFlg;
 
 	@Column(name = "RETRICT_PRE_USE_FLG")

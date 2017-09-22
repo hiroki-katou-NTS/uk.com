@@ -31,7 +31,9 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
 	public void copyWkpConfigInfoHist(String companyId, String firstHistoryId, String addNewHistId) {
 		//get all WorkplaceConfigInfo of old hist
 		Optional<WorkplaceConfigInfo> wkpConfigInfo = workplaceConfigInfoRepository.find(companyId, firstHistoryId);
-		
+		if (!wkpConfigInfo.isPresent()) {
+		    return;
+		}
 		if (!wkpConfigInfo.get().getWkpHierarchy().isEmpty()) {
 			WorkplaceConfigInfo wkp = wkpConfigInfo.get();
 			// convert new list

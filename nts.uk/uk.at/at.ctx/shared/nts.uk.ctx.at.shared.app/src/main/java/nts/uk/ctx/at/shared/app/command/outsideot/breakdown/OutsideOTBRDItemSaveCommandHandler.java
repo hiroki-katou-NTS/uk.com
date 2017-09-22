@@ -14,9 +14,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -29,7 +29,7 @@ public class OutsideOTBRDItemSaveCommandHandler extends CommandHandler<OutsideOT
 
 	/** The repository. */
 	@Inject
-	private OutsideOTBRDItemRepository repository;
+	private OutsideOTSettingRepository repository;
 	
 	/*
 	 * (non-Javadoc)
@@ -62,7 +62,7 @@ public class OutsideOTBRDItemSaveCommandHandler extends CommandHandler<OutsideOT
 		}
 		
 		// save all list overtime breakdown item
-		this.repository.saveAll(domains, companyId);
+		this.repository.saveAllBRDItem(domains, companyId);
 	}
 	
 	/**

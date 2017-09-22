@@ -166,10 +166,14 @@ module nts.uk.at.view.kmk010.a {
              */
             private saveOutsideOTSetting(): void {
                 var self = this;
+                // validate
                 $('.nts-input').trigger("validate");
-                if (nts.uk.ui.errors.hasError() == false) {
+                
+                // check exist error
+                if (!nts.uk.ui.errors.hasError()) {
                     var dtoSuper: SuperHD60HConMedDto = self.superHD60HConMedModel.toDto();
                     dtoSuper.premiumExtra60HRates = self.toArrayRateDto();
+                    // save all
                     service.saveOutsideOTSettingAndSupperHD60H(self.outsideOTSettingModel.toDto(), dtoSuper).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             self.startPage();
@@ -187,7 +191,7 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 $("#switch-language").ntsSwitchMasterLanguage();
 
-                $("#switch-language").on("selectionChanged", function(event, arg1, arg2) {
+                $("#switch-language").on("selectionChanged", function(event: any, arg1, arg2) {
                     self.languageId = event.detail.languageId;
                     self.updateLanguage();
                 });

@@ -47,7 +47,7 @@ public class EmpCondition extends AggregateRoot {
 	public void saveToMemento(EmpConditionSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setOptionalItemNo(this.optItemNo);
-		memento.SetEmpConditions(this.empConditions);
+		memento.setEmpConditions(this.empConditions);
 	}
 
 	/* (non-Javadoc)

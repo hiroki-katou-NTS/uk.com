@@ -4,16 +4,22 @@ module nts.uk.com.view.cmm011.b {
          *  Service paths
          */
         var servicePath: any = {
-            getListWkpConfigHistory: "bs/employee/workplace/configHist",
-            registerWkpConfig: "bs/employee/workplace/registerConfig"
+            getListWkpConfigHistory: "bs/employee/workplace/configure/findAll",
+            saveWkpConfig: "bs/employee/workplace/configure/save"
         };
-        //get list history
+        
+        /**
+         * findLstWkpConfigHistory
+         */
         export function findLstWkpConfigHistory(): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.getListWkpConfigHistory);
         }
-        //register history
-        export function registerWkpConfig(data): JQueryPromise<void>{
-            return nts.uk.request.ajax(servicePath.registerWkpConfig,data);
+        
+        /**
+         * saveWkpConfig
+         */
+        export function saveWkpConfig(command: any): JQueryPromise<void>{
+            return nts.uk.request.ajax(servicePath.saveWkpConfig, command);
         }
          
         /**

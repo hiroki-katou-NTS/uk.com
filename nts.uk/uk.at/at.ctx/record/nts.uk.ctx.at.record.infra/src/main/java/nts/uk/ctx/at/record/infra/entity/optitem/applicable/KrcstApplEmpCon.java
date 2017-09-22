@@ -33,7 +33,7 @@ public class KrcstApplEmpCon extends UkJpaEntity implements Serializable {
 
 	/** The emp appl atr. */
 	@Column(name = "EMP_APPL_ATR")
-	private short empApplAtr;
+	private int empApplAtr;
 
 	/**
 	 * Instantiates a new krcst appl emp con.
@@ -45,7 +45,8 @@ public class KrcstApplEmpCon extends UkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new krcst appl emp con.
 	 *
-	 * @param krcstApplEmpConPK the krcst appl emp con PK
+	 * @param krcstApplEmpConPK
+	 *            the krcst appl emp con PK
 	 */
 	public KrcstApplEmpCon(KrcstApplEmpConPK krcstApplEmpConPK) {
 		this.krcstApplEmpConPK = krcstApplEmpConPK;
@@ -75,7 +76,8 @@ public class KrcstApplEmpCon extends UkJpaEntity implements Serializable {
 		}
 		KrcstApplEmpCon other = (KrcstApplEmpCon) object;
 		if ((this.krcstApplEmpConPK == null && other.krcstApplEmpConPK != null)
-				|| (this.krcstApplEmpConPK != null && !this.krcstApplEmpConPK.equals(other.krcstApplEmpConPK))) {
+				|| (this.krcstApplEmpConPK != null
+						&& !this.krcstApplEmpConPK.equals(other.krcstApplEmpConPK))) {
 			return false;
 		}
 		return true;

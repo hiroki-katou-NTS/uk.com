@@ -1,10 +1,13 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
+import lombok.Getter;
+
 /**
  * 承認形態
  * @author hoatt
  *
  */
+@Getter
 public enum ApprovalForm {
 	/** 全員承認*/
 	EVERYONE_APPROVED(1, "全員承認"),

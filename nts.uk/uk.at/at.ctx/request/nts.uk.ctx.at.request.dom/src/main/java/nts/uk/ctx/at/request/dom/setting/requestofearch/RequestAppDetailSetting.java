@@ -1,9 +1,10 @@
 package nts.uk.ctx.at.request.dom.setting.requestofearch;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.UseAtr;
 /**
@@ -13,7 +14,8 @@ import nts.uk.ctx.at.request.dom.application.common.UseAtr;
  */
 @Getter
 @AllArgsConstructor
-public class RequestAppDetailSetting extends AggregateRoot {
+@EqualsAndHashCode(callSuper=false)
+public class RequestAppDetailSetting extends DomainObject {
 	/**
 	 *　会社Iｄ 	
 	 */

@@ -45,7 +45,7 @@ public class EmpConditionDto implements EmpConditionSetMemento {
 	 * SetEmpConditions(java.util.List)
 	 */
 	@Override
-	public void SetEmpConditions(List<EmploymentCondition> empConditions) {
+	public void setEmpConditions(List<EmploymentCondition> empConditions) {
 		this.empConditions = empConditions.stream()
 				.map(item -> new EmploymentConditionDto(item.getEmpCd(), item.getEmpApplicableAtr().value))
 				.collect(Collectors.toList());

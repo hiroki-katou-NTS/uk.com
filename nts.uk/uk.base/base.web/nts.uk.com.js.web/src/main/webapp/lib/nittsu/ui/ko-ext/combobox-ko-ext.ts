@@ -169,13 +169,9 @@ module nts.uk.ui.koExtentions {
                 _.forEach(columns, function(item, i) {
                     var charLength: number = item.length;
                     var width = charLength * maxWidthCharacter + 10;
-                    $dropDownOptions.find('.nts-combo-column-' + i).width(width);
-                    if (i != columns.length - 1) {
-                        $dropDownOptions.find('.nts-combo-column-' + i).css({ 'float': 'left' });
-                    }
+                    $dropDownOptions.find('.nts-combo-column-' + i).css("width", width);
                     totalWidth += width + 10;
                 });
-                $dropDownOptions.find('.nts-combo-item').css({ 'min-width': totalWidth });
                 container.css({ 'min-width': totalWidth });
             }
 
