@@ -3,6 +3,11 @@
   background-color: #FFF;
 }
 
+.nts-grid-wrapper table tr td,
+.nts-grid-wrapper table tr th.ui-iggrid-header {
+	border-color: #AAB7B8;
+}
+
 .nts-grid-wrapper table tr td.ui-state-hover,
 .nts-grid-wrapper table tr.ui-ig-altrecord td.ui-state-hover,
 .nts-grid tr td.ui-state-hover,
@@ -21,7 +26,7 @@
 	background-color: #CCC;
 	color: gray;
 }
-.ui-iggrid .ui-iggrid-tablebody td{
+.ui-iggrid .ui-iggrid-tablebody td {
 	height: 21px;
 }
 .nts-grid-wrapper table tr td.ntsgrid-calc,

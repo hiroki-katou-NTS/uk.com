@@ -75,7 +75,7 @@ public class SaveWorkplaceConfigCommandHandler extends CommandHandler<WorkplaceC
         // add workplace config and return add new historyId
         workplaceConfigRepository.add(workplaceConfig);
         
-        String addNewHistId = workplaceConfig.getWkpConfigHistory().get(0).getHistoryId();
+        String addNewHistId = workplaceConfig.getWkpConfigHistoryLatest().getHistoryId();
 
         // copy latest ConfigInfoHist from fisrtHistId
         wkpConfigInfoService.copyWkpConfigInfoHist(companyId, fisrtHistId, addNewHistId);

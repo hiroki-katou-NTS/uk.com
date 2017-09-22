@@ -41,4 +41,11 @@ public interface EmployeeApproveAdapter {
 	 * @return
 	 */
 	List<String> findWpkIdsBySid(String companyId, String employeeId, GeneralDate date);
+	/**
+	 * 基準日、会社IDに一致するすべての社員を取得する(在職中の社員）
+	 * @param companyId
+	 * @param baseDate
+	 * @return
+	 */
+	List<EmployeeApproveDto> getEmployeesAtWorkByBaseDate(String companyId , GeneralDate baseDate);
 }

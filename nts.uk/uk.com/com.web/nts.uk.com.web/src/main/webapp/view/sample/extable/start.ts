@@ -248,7 +248,7 @@ __viewContext.ready(function () {
     
     let tts = function(rData, rowIdx, colKey) {
         if (rowIdx % 2 === 0) {
-            return $("<div/>").css({ width: "60px", height: "50px").html(rData[colKey] + rowIdx);
+            return $("<div/>").css({ width: "60px", height: "50px"}).html(rData[colKey] + rowIdx);
         }
     };
     let middleColumns = [
@@ -362,7 +362,7 @@ __viewContext.ready(function () {
         features: [{
             name: "HeaderRowHeight",
             rows: { 0: "45px", 1: "30px" }   
-        }
+        }]
 //        , {
 //            name: "HeaderCellStyle",
 //            decorator: detailHeaderDeco

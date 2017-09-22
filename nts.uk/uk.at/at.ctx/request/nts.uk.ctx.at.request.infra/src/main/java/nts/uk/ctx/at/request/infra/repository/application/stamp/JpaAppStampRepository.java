@@ -1,0 +1,343 @@
+package nts.uk.ctx.at.request.infra.repository.application.stamp;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.AppReason;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampCancel;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutPermit;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampWork;
+import nts.uk.ctx.at.request.dom.application.stamp.StampAtr;
+import nts.uk.ctx.at.request.dom.application.stamp.StampCombinationAtr;
+import nts.uk.ctx.at.request.dom.application.stamp.StampGoOutAtr;
+import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
+import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
+import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
+import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdpAppStamp;
+import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdpAppStampDetail;
+import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
+import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStampDetail;
+/**
+ * 
+ * @author Doan Duy Hung
+ *
+ */
+@Stateless
+public class JpaAppStampRepository extends JpaRepository implements AppStampRepository {
+	
+	private final String FIND_BY_APP_ID = "SELECT a FROM KrqdtAppStamp a "
+			+ "WHERE a.krqdpAppStamp.companyID = :companyID "
+			+ "AND a.krqdpAppStamp.appID = :appID";
+	
+	@Override
+	public AppStamp findByAppID(String companyID, String appID) {
+		return this.queryProxy().query(FIND_BY_APP_ID, KrqdtAppStamp.class)
+				.setParameter("companyID", companyID)
+				.setParameter("appID", appID)
+				.getSingleOrNull(x -> convertToDomainAppStamp(x));
+	} 
+	
+	@Override
+	public AppStamp findByAppDate(String companyID, GeneralDate appDate, StampRequestMode stampRequestMode, String employeeID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	@Override
+	public void addStampGoOutPermit(AppStamp appStamp) {
+		this.commandProxy().insert(convertToAppStampEntity(appStamp));
+	}
+
+	@Override
+	public void addStampWork(AppStamp appStamp) {
+		this.commandProxy().insert(convertToAppStampEntity(appStamp));
+	}
+
+	@Override
+	public void addStampCancel(AppStamp appStamp) {
+		this.commandProxy().insert(convertToAppStampEntity(appStamp));
+	}
+
+	@Override
+	public void addStampOnlineRecord(AppStamp appStamp) {
+		this.commandProxy().insert(convertToAppStampEntity(appStamp));
+	}
+
+	@Override
+	public void updateStampGoOutPermit(AppStamp appStamp) {
+		Optional<KrqdtAppStamp> optional = this.queryProxy().find(new KrqdpAppStamp(
+				appStamp.getCompanyID(), 
+				appStamp.getApplicationID(), 
+				appStamp.getStampRequestMode().value), KrqdtAppStamp.class);
+		if(!optional.isPresent()) throw new RuntimeException();
+		KrqdtAppStamp krqdtAppStamp = optional.get();
+		krqdtAppStamp.kafdtApplication.appReasonId = appStamp.getApplicationReason().v().split(":")[0];
+		krqdtAppStamp.kafdtApplication.applicationReason = appStamp.getApplicationReason().v().split(":")[1].substring(1);
+		for(int i=0;i<appStamp.getAppStampGoOutPermits().size();i++){
+			krqdtAppStamp.krqdtAppStampDetails.get(i).startTime = appStamp.getAppStampGoOutPermits().get(i).getStartTime();
+			krqdtAppStamp.krqdtAppStampDetails.get(i).startLocationCD = appStamp.getAppStampGoOutPermits().get(i).getStartLocation();
+			krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampGoOutPermits().get(i).getEndTime();
+			krqdtAppStamp.krqdtAppStampDetails.get(i).endLocationCD = appStamp.getAppStampGoOutPermits().get(i).getEndLocation();
+		}
+		this.commandProxy().update(krqdtAppStamp);
+		
+	}
+
+	@Override
+	public void updateStampWork(AppStamp appStamp) {
+		Optional<KrqdtAppStamp> optional = this.queryProxy().find(new KrqdpAppStamp(
+				appStamp.getCompanyID(), 
+				appStamp.getApplicationID(), 
+				appStamp.getStampRequestMode().value), KrqdtAppStamp.class);
+		if(!optional.isPresent()) throw new RuntimeException();
+		KrqdtAppStamp krqdtAppStamp = optional.get();
+		krqdtAppStamp.kafdtApplication.appReasonId = appStamp.getApplicationReason().v().split(":")[0];
+		krqdtAppStamp.kafdtApplication.applicationReason = appStamp.getApplicationReason().v().split(":")[1].substring(1);
+		for(int i=0;i<appStamp.getAppStampWorks().size();i++){
+			krqdtAppStamp.krqdtAppStampDetails.get(i).supportCard = appStamp.getAppStampWorks().get(i).getSupportCard();
+			krqdtAppStamp.krqdtAppStampDetails.get(i).supportLocationCD = appStamp.getAppStampWorks().get(i).getSupportLocationCD();
+			krqdtAppStamp.krqdtAppStampDetails.get(i).startTime = appStamp.getAppStampWorks().get(i).getStartTime();
+			krqdtAppStamp.krqdtAppStampDetails.get(i).startLocationCD = appStamp.getAppStampWorks().get(i).getStartLocation();
+			krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampWorks().get(i).getEndTime();
+			krqdtAppStamp.krqdtAppStampDetails.get(i).endLocationCD = appStamp.getAppStampWorks().get(i).getEndLocation();
+		}
+		this.commandProxy().update(krqdtAppStamp);
+		
+	}
+
+	@Override
+	public void updateStampCancel(AppStamp appStamp) {
+		Optional<KrqdtAppStamp> optional = this.queryProxy().find(new KrqdpAppStamp(
+				appStamp.getCompanyID(), 
+				appStamp.getApplicationID(), 
+				appStamp.getStampRequestMode().value), KrqdtAppStamp.class);
+		if(!optional.isPresent()) throw new RuntimeException();
+		KrqdtAppStamp krqdtAppStamp = optional.get();
+		krqdtAppStamp.kafdtApplication.appReasonId = appStamp.getApplicationReason().v().split(":")[0];
+		krqdtAppStamp.kafdtApplication.applicationReason = appStamp.getApplicationReason().v().split(":")[1].substring(1);
+		for(int i=0;i<appStamp.getAppStampCancels().size();i++){
+			krqdtAppStamp.krqdtAppStampDetails.get(i).cancelAtr = appStamp.getAppStampCancels().get(i).getCancelAtr();
+		}
+		this.commandProxy().update(krqdtAppStamp);
+		
+	}
+
+	@Override
+	public void updateStampOnlineRecord(AppStamp appStamp) {
+		Optional<KrqdtAppStamp> optional = this.queryProxy().find(new KrqdpAppStamp(
+				appStamp.getCompanyID(), 
+				appStamp.getApplicationID(), 
+				appStamp.getStampRequestMode().value), KrqdtAppStamp.class);
+		if(!optional.isPresent()) throw new RuntimeException();
+		KrqdtAppStamp krqdtAppStamp = optional.get();
+		krqdtAppStamp.kafdtApplication.appReasonId = appStamp.getApplicationReason().v().split(":")[0];
+		krqdtAppStamp.kafdtApplication.applicationReason = appStamp.getApplicationReason().v().split(":")[1].substring(1);
+		krqdtAppStamp.combinationAtr = appStamp.getAppStampOnlineRecords().getStampCombinationAtr().value;
+		krqdtAppStamp.appTime = appStamp.getAppStampOnlineRecords().getAppTime();
+		this.commandProxy().update(krqdtAppStamp);
+		
+	}
+	
+	private AppStamp convertToDomainAppStamp(KrqdtAppStamp krqdtAppStamp){
+		List<AppStampGoOutPermit> appStampGoOutPermits = new ArrayList<AppStampGoOutPermit>();
+		List<AppStampWork> appStampWorks = new ArrayList<AppStampWork>();
+		List<AppStampCancel> appStampCancels = new ArrayList<AppStampCancel>();
+		AppStampOnlineRecord appStampOnlineRecord = null;
+		switch(krqdtAppStamp.krqdpAppStamp.stampRequestMode) {
+			case 0:
+				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
+					AppStampGoOutPermit appStampGoOutPermit = new AppStampGoOutPermit(
+							EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetails.stampAtr, StampAtr.class), 
+							krqdtAppStampDetail.krqdpAppStampDetails.stampFrameNo, 
+							EnumAdaptor.valueOf(krqdtAppStampDetail.goOutReasonAtr, StampGoOutAtr.class), 
+							krqdtAppStampDetail.startTime, 
+							krqdtAppStampDetail.startLocationCD, 
+							krqdtAppStampDetail.endTime, 
+							krqdtAppStampDetail.endLocationCD);
+					appStampGoOutPermits.add(appStampGoOutPermit);
+				}
+				break;
+			case 1: 
+				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
+					AppStampWork appStampWork = new AppStampWork(
+							EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetails.stampAtr, StampAtr.class),  
+							krqdtAppStampDetail.krqdpAppStampDetails.stampFrameNo, 
+							EnumAdaptor.valueOf(krqdtAppStampDetail.goOutReasonAtr, StampGoOutAtr.class), 
+							krqdtAppStampDetail.supportCard, 
+							krqdtAppStampDetail.supportLocationCD, 
+							krqdtAppStampDetail.startTime, 
+							krqdtAppStampDetail.startLocationCD, 
+							krqdtAppStampDetail.endTime, 
+							krqdtAppStampDetail.endLocationCD);
+					appStampWorks.add(appStampWork);
+				}
+				break;
+			case 2: 
+				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
+					AppStampCancel appStampCancel = new AppStampCancel(
+							EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetails.stampAtr, StampAtr.class),  
+							krqdtAppStampDetail.krqdpAppStampDetails.stampFrameNo, 
+							krqdtAppStampDetail.cancelAtr);
+					appStampCancels.add(appStampCancel);
+				}
+				break;
+			case 3: 
+				appStampOnlineRecord = new AppStampOnlineRecord(
+						EnumAdaptor.valueOf(krqdtAppStamp.combinationAtr, StampCombinationAtr.class), 
+						krqdtAppStamp.appTime);
+				break;
+			default:
+				break;
+				
+		}
+		AppStamp appStamp = new AppStamp(
+				krqdtAppStamp.krqdpAppStamp.companyID,
+				krqdtAppStamp.krqdpAppStamp.appID,
+				EnumAdaptor.valueOf(krqdtAppStamp.kafdtApplication.prePostAtr, PrePostAtr.class),
+				krqdtAppStamp.kafdtApplication.inputDate, 
+				krqdtAppStamp.kafdtApplication.enteredPersonSID, 
+				new AppReason(krqdtAppStamp.kafdtApplication.reversionReason), 
+				krqdtAppStamp.kafdtApplication.applicationDate, 
+				new AppReason(krqdtAppStamp.kafdtApplication.appReasonId+": "+krqdtAppStamp.kafdtApplication.applicationReason), 
+				EnumAdaptor.valueOf(krqdtAppStamp.kafdtApplication.applicationType, ApplicationType.class), 
+				krqdtAppStamp.kafdtApplication.applicantSID, 
+				EnumAdaptor.valueOf(krqdtAppStamp.kafdtApplication.reflectPlanScheReason, ReflectPlanScheReason.class), 
+				krqdtAppStamp.kafdtApplication.reflectPlanTime, 
+				EnumAdaptor.valueOf(krqdtAppStamp.kafdtApplication.reflectPlanState, ReflectPlanPerState.class), 
+				EnumAdaptor.valueOf(krqdtAppStamp.kafdtApplication.reflectPlanEnforce, ReflectPlanPerEnforce.class), 
+				EnumAdaptor.valueOf(krqdtAppStamp.kafdtApplication.reflectPerScheReason, ReflectPerScheReason.class),
+				krqdtAppStamp.kafdtApplication.reflectPerTime, 
+				EnumAdaptor.valueOf(krqdtAppStamp.kafdtApplication.reflectPerState, ReflectPlanPerState.class), 
+				EnumAdaptor.valueOf(krqdtAppStamp.kafdtApplication.reflectPerEnforce, ReflectPlanPerEnforce.class),
+				null,
+				null,
+				null,
+				EnumAdaptor.valueOf(krqdtAppStamp.krqdpAppStamp.stampRequestMode, StampRequestMode.class), 
+				appStampGoOutPermits, 
+				appStampWorks, 
+				appStampCancels, 
+				appStampOnlineRecord);
+		return appStamp;
+	}
+	
+	private KrqdtAppStamp convertToAppStampEntity(AppStamp appStamp){
+		KrqdtAppStamp krqdtAppStamp = new KrqdtAppStamp(
+				new KrqdpAppStamp(
+						appStamp.getCompanyID(), 
+						appStamp.getApplicationID(), 
+						appStamp.getStampRequestMode().value), 
+				null, 
+				null, 
+				new KafdtApplication(
+						new KafdtApplicationPK(
+								appStamp.getCompanyID(), 
+								appStamp.getApplicationID()), 
+						appStamp.getApplicationReason().v().split(":")[0],
+						appStamp.getPrePostAtr().value, 
+						appStamp.getInputDate(), 
+						appStamp.getEnteredPersonSID(), 
+						appStamp.getReversionReason().v(), 
+						appStamp.getApplicationDate(), 
+						appStamp.getApplicationReason().v().split(":")[1].substring(1), 
+						appStamp.getApplicationType().value, 
+						appStamp.getApplicantSID(), 
+						appStamp.getReflectPlanScheReason().value, 
+						null, 
+						appStamp.getReflectPlanState().value, 
+						appStamp.getReflectPlanEnforce().value, 
+						appStamp.getReflectPerScheReason().value, 
+						null, 
+						appStamp.getReflectPerState().value, 
+						appStamp.getReflectPerEnforce().value,
+						null,
+						null),
+				null);
+		List<KrqdtAppStampDetail> krqdtAppStampDetails = new ArrayList<KrqdtAppStampDetail>();
+		switch(appStamp.getStampRequestMode()) {
+			case STAMP_GO_OUT_PERMIT:
+				for(AppStampGoOutPermit appStampGoOutPermit : appStamp.getAppStampGoOutPermits()){
+					krqdtAppStampDetails.add(new KrqdtAppStampDetail(
+							new KrqdpAppStampDetail(
+									appStamp.getCompanyID(), 
+									appStamp.getApplicationID(), 
+									appStamp.getStampRequestMode().value, 
+									appStampGoOutPermit.getStampAtr().value, 
+									appStampGoOutPermit.getStampFrameNo()), 
+							appStampGoOutPermit.getStampGoOutAtr().value, 
+							appStampGoOutPermit.getStartTime(), 
+							appStampGoOutPermit.getStartLocation(), 
+							appStampGoOutPermit.getEndTime(), 
+							appStampGoOutPermit.getEndLocation(), 
+							null, 
+							null, 
+							null, 
+							null));
+				}
+				krqdtAppStamp.krqdtAppStampDetails = krqdtAppStampDetails;
+				break;
+			case STAMP_ADDITIONAL:
+				for(AppStampWork appStampWork : appStamp.getAppStampWorks()){
+					krqdtAppStampDetails.add(new KrqdtAppStampDetail(
+							new KrqdpAppStampDetail(
+									appStamp.getCompanyID(), 
+									appStamp.getApplicationID(), 
+									appStamp.getStampRequestMode().value, 
+									appStampWork.getStampAtr().value, 
+									appStampWork.getStampFrameNo()),
+							appStampWork.getStampGoOutAtr().value, 
+							appStampWork.getStartTime(), 
+							appStampWork.getStartLocation(), 
+							appStampWork.getEndTime(), 
+							appStampWork.getEndLocation(), 
+							appStampWork.getSupportCard(), 
+							appStampWork.getSupportLocationCD(), 
+							null, 
+							null));
+				}
+				krqdtAppStamp.krqdtAppStampDetails = krqdtAppStampDetails;
+				break;
+			case STAMP_CANCEL:
+				for(AppStampCancel appStampCancel : appStamp.getAppStampCancels()){
+					krqdtAppStampDetails.add(new KrqdtAppStampDetail(
+							new KrqdpAppStampDetail(
+									appStamp.getCompanyID(), 
+									appStamp.getApplicationID(), 
+									appStamp.getStampRequestMode().value, 
+									appStampCancel.getStampAtr().value, 
+									appStampCancel.getStampFrameNo()),
+							null, 
+							null, 
+							null, 
+							null, 
+							null, 
+							null, 
+							null, 
+							appStampCancel.getCancelAtr(), 
+							null));
+				}
+				krqdtAppStamp.krqdtAppStampDetails = krqdtAppStampDetails;
+				break;
+			case STAMP_ONLINE_RECORD:
+				krqdtAppStamp.combinationAtr = appStamp.getAppStampOnlineRecords().getStampCombinationAtr().value;
+				krqdtAppStamp.appTime = appStamp.getAppStampOnlineRecords().getAppTime();
+				break;
+			default: break;
+		}
+		return krqdtAppStamp;
+	}
+}

@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common;
 
+import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +8,7 @@ import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 
 /**
  * domain : 申請 (application)
@@ -106,6 +108,11 @@ public class Application extends AggregateRoot{
 	 */
 	private GeneralDate endDate;
 	
+	/**
+	 * List Phase
+	 */
+	private List<AppApprovalPhase> listPhase;
+	
 	public static Application createFromJavaType(
 			String companyID,
 			int prePostAtr,
@@ -125,7 +132,8 @@ public class Application extends AggregateRoot{
 			int reflectPerState,
 			int reflectPerEnforce,
 			GeneralDate startDate,
-			GeneralDate endDate) {
+			GeneralDate endDate,
+			List<AppApprovalPhase> listPhase) {
 		return new  Application(
 				companyID, 
 				UUID.randomUUID().toString(),
@@ -146,7 +154,8 @@ public class Application extends AggregateRoot{
 				EnumAdaptor.valueOf(reflectPerState,ReflectPlanPerState.class), 
 				EnumAdaptor.valueOf(reflectPerEnforce,ReflectPlanPerEnforce.class),
 				startDate,
-				endDate);
+				endDate,
+				listPhase);
 	}
 	
 	/**
