@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.outsideot.breakdown;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
@@ -13,7 +14,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 
 /**
- * The Class OutsideOTBRDItem.
+ * The Class Outside overtime breakdown item.
  */
 // 時間外超過の内訳項目
 @Getter
@@ -41,6 +42,9 @@ public class OutsideOTBRDItem extends DomainObject{
 	
 	/** The Constant MAX_SIZE_ATTENDANCE_ITEM. */
 	public static final int MAX_SIZE_ATTENDANCE_ITEM = 100;
+	
+	/** The Constant SIZE_ONE. */
+	public static final int SIZE_ONE = 1;
 
 	
 	/**
@@ -56,7 +60,7 @@ public class OutsideOTBRDItem extends DomainObject{
 		this.attendanceItemIds = memento.getAttendanceItemIds();
 		
 		// validate domain
-		if (this.checkOverlapAttendanceItemId()) {
+		if (this.isOverlapAttendanceItemId()) {
 			throw new BusinessException("Msg_487");
 		}
 		if (!CollectionUtil.isEmpty(this.attendanceItemIds)
@@ -66,23 +70,21 @@ public class OutsideOTBRDItem extends DomainObject{
 	}
 	
 	/**
-	 * Check overlap attendance item id.
+	 * Checks if is overlap attendance item id.
 	 *
-	 * @return true, if successful
+	 * @return true, if is overlap attendance item id
 	 */
-	private boolean checkOverlapAttendanceItemId() {
-		if (this.useClassification.value == UseClassification.UseClass_NotUse.value) {
+	private boolean isOverlapAttendanceItemId() {
+		if (this.useClassification == UseClassification.UseClass_NotUse) {
 			return false;
 		}
 		if (CollectionUtil.isEmpty(this.attendanceItemIds)) {
 			return false;
 		}
 
-		for (int index = 0; index < this.attendanceItemIds.size(); index++) {
-			for (int jndex = index + 1; jndex < this.attendanceItemIds.size(); jndex++) {
-				if (this.attendanceItemIds.get(index) == this.attendanceItemIds.get(jndex)) {
-					return true;
-				}
+		for (int item : this.attendanceItemIds) {
+			if (Collections.frequency(this.attendanceItemIds, item) > SIZE_ONE) {
+				return true;
 			}
 		}
 		return false;

@@ -5,9 +5,9 @@
 package nts.uk.ctx.at.shared.infra.repository.outsideot.premium;
 
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.outsideot.holiday.PremiumExtra60HRateSetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.holiday.PremiumRate;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.outsideot.premium.PremiumRate;
-import nts.uk.ctx.at.shared.dom.outsideot.premium.extra.PremiumExtra60HRateSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRate;
 import nts.uk.ctx.at.shared.infra.entity.outsideot.premium.KshstPremiumExt60hRatePK;
 

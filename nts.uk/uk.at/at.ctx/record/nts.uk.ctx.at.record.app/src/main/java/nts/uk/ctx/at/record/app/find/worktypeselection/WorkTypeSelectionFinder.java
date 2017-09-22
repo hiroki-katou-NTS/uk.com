@@ -7,7 +7,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypesRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * @author anhvd
+ *
+ */
 @Stateless
 public class WorkTypeSelectionFinder {
 

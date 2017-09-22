@@ -8,9 +8,9 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalcFormulaSetting;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaAtr;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaGetMemento;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaName;
@@ -116,8 +116,8 @@ public class FormulaDto implements FormulaGetMemento, FormulaDispOrderGetMemento
 	 * getCalculationFormulaAtr()
 	 */
 	@Override
-	public FormulaAtr getCalcFormulaAtr() {
-		return EnumAdaptor.valueOf(this.formulaAtr, FormulaAtr.class);
+	public OptionalItemAtr getCalcFormulaAtr() {
+		return EnumAdaptor.valueOf(this.formulaAtr, OptionalItemAtr.class);
 	}
 
 	/*

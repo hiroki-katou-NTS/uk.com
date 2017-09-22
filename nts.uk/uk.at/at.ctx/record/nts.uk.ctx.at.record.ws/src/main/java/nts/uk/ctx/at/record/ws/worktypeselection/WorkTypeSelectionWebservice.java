@@ -8,6 +8,10 @@ import javax.ws.rs.Produces;
 import nts.uk.ctx.at.record.app.find.worktypeselection.WorkTypeSelectionDto;
 import nts.uk.ctx.at.record.app.find.worktypeselection.WorkTypeSelectionFinder;
 
+/**
+ * @author anhvd
+ *
+ */
 @Path("at/record/worktypeselection")
 @Produces("application/json")
 public class WorkTypeSelectionWebservice {

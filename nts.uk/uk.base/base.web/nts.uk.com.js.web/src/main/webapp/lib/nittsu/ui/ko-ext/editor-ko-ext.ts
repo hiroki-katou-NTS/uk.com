@@ -11,7 +11,7 @@ module nts.uk.ui.koExtentions {
 
         init($input: JQuery, data: any) {
             var self = this;
-            var value: (newText: string) => {} = data.value;
+            var value: KnockoutObservable<any> = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
             var immediate: boolean = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
@@ -226,6 +226,7 @@ module nts.uk.ui.koExtentions {
         getFormatter(data: any): format.IFormatter {
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
+            this.editorOption.autofill = (constraint && constraint.isZeroPadded) ? constraint.isZeroPadded : this.editorOption.autofill;
             return new text.StringFormatter({ constraintName: constraintName, constraint: constraint, editorOption: this.editorOption });
         }
 

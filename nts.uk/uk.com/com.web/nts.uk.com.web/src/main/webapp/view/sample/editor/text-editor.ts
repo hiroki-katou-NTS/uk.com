@@ -1,51 +1,42 @@
 __viewContext.ready(function () {
     class ScreenModel {
+        defaultvalue: KnockoutObservable<string>;
         value: KnockoutObservable<string>;
-        texteditor: any;
-        employeeeditor: any;
-        
+        valueKana: KnockoutObservable<string>;
+        valueUan: KnockoutObservable<string>;
+        option: nts.uk.ui.option.ITextEditorOption;
+        required: KnockoutObservable<boolean>;
+        enable: KnockoutObservable<boolean>;
+        readonly: KnockoutObservable<boolean>;
+                
         constructor() {
             var self = this;
-            self.value = ko.observable("123");
-            // TextEditor
-            self.texteditor = {
-                value: ko.observable(''),
-                valueKana: ko.observable(''), 
-                valueUan: ko.observable(''),
-                defaultValue: ko.observable(''),
-                constraint: '',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "Placeholder for text editor",
-                    width: "",
-                    textalign: "left",
-                    autofill: false,
-                    filldirection: "left",
-                    fillcharacter: "0"
-                })), 
-                required: ko.observable(false),
-                enable: ko.observable(true),
-                readonly: ko.observable(false),
-                clear: function(){
-                    $("#text-1").ntsError("clear");    
-                },
-                setDefault: function() {
-                    var self = this;
-                    nts.uk.util.value.reset($("#text-1"), self.defaultValue() !== '' ? self.defaultValue() : undefined);
-                }
-            }; 
-            // EmployeeCodeEditor
-            self.employeeeditor = {
-                value: ko.observable('19'),
-                constraint: 'EmployeeCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    filldirection: "right",
-                    fillcharacter: "0"
-                })),
-                required: ko.observable(false),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
+            self.defaultvalue = ko.observable('');
+            self.value = ko.observable("");
+            self.valueKana = ko.observable('');
+            self.valueUan = ko.observable('');
+            self.required = ko.observable(false),
+            self.enable = ko.observable(true),
+            self.readonly = ko.observable(false),
+
+            self.option = new nts.uk.ui.option.TextEditorOption({
+                textmode: "text",
+                placeholder: "Placeholder for text editor",
+                width: "",
+                textalign: "left",
+                autofill: true,
+                filldirection: "left",
+                fillcharacter: "0"
+            });
+        }
+        
+        clear(): void {
+            $("#text-1").ntsError("clear");
+        }
+        
+        setDefault(): void {
+            var self = this;
+            nts.uk.util.value.reset($("#text-1"), self.defaultvalue() !== '' ? self.defaultvalue() : undefined);
         }
     }
 
