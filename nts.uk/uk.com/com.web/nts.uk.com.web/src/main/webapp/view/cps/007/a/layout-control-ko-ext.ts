@@ -10,6 +10,7 @@ module nts.custombinding {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    import writeConstraint = nts.uk.request.writeDynamicConstraint;
 
     export class LetControl implements KnockoutBindingHandler {
         init = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
@@ -229,7 +230,7 @@ module nts.custombinding {
                             <div class="form-group item-classification">
                                <div data-bind="if: $data.layoutItemType == 0">
                                     <div data-bind="let: { item: $data.listItemDf[0] || {}, listItemDf: $data.listItemDf}" class="item-control">
-                                        <div data-bind="ntsFormLabel: { constraint: item.itemCode, required: !!_.find(listItemDf, function(x) { return !!x.isRequired; }) }, text: className || '#NA'"></div>
+                                        <div data-bind="ntsFormLabel: { /*constraint: item.itemCode,*/ required: !!_.find(listItemDf, function(x) { return !!x.isRequired; }) }, text: className || '#NA'"></div>
                                         <div data-bind="if: (item.itemTypeState || {}).itemType == 1" class="set-items">
                                             <div data-bind="foreach: _.filter(listItemDf, function(x, i) { return i != 0; })" class="set-item-list">
                                                 <div data-bind="template: { 
@@ -809,9 +810,17 @@ module nts.custombinding {
             $.extend(opts.sortable, { data: access.data });
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
                 // remove all sibling sperators
-                let maps = _(data)
+                let maps: Array<number> = _(data)
                     .map((x, i) => (x.layoutItemType == 2) ? i : -1)
-                    .filter(x => x != -1).value();
+                    .filter(x => x != -1).value(),
+                    icls: Array<IItemClassification> = ko.unwrap(opts.sortable.data),
+                    idfcs: Array<string> = _(icls)
+                        .map(x => x.listItemDf)
+                        .flatten()
+                        .filter(x => !!x)
+                        .map((x: IItemDefinition) => x.id)
+                        .uniq()
+                        .value();
 
                 _.each(maps, (t, i) => {
                     if (maps[i + 1] == t + 1) {
@@ -870,8 +879,14 @@ module nts.custombinding {
                             break;
                     }
                 });
+                // write constraint to viewContext
+                if (idfcs && idfcs.length) {
+                    writeConstraint(idfcs);
+                }
+                
                 opts.sortable.isEditable.valueHasMutated();
             });
+            opts.sortable.data.valueHasMutated();
 
             // extend data of sortable with valueAccessor beforeMove prop
             if (access.beforeMove) {
