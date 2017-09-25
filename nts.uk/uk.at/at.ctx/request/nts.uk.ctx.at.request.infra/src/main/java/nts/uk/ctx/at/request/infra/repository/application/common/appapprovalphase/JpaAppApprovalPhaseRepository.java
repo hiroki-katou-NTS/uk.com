@@ -73,9 +73,9 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 	private KrqdtAppApprovalPhase toEntity (AppApprovalPhase domain){
 		return new KrqdtAppApprovalPhase (
 					new KrqdtAppApprovalPhasePK(domain.getCompanyID(), domain.getAppID(), domain.getPhaseID()),
-					domain.getApprovalForm().toString(),
+					domain.getApprovalForm().value,
 					domain.getDispOrder(),
-					domain.getApprovalATR().toString()
+					domain.getApprovalATR().value
 					);
 	}
 

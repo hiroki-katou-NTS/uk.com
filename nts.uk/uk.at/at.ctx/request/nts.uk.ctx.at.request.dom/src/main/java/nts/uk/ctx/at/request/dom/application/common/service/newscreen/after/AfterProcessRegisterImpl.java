@@ -50,12 +50,12 @@ public class AfterProcessRegisterImpl implements AfterProcessRegister {
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, application.getApplicationType().value);
 		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 		if(appTypeDiscreteSetting.getSendMailWhenRegisterFlg().equals(AppCanAtr.NOTCAN)) return;
-		List<String> destinationList = acquireDestinationList(application);
+		/*List<String> destinationList = acquireDestinationList(application);
 		if(destinationList.size() < 1) return;
 		for(String destination : destinationList) {
-			// sendMail(obj);
-			// Imported(Employment)[Employee]; // Imported(就業)「社員」 ??? 
-		}
+			sendMail(obj);
+			Imported(Employment)[Employee]; // Imported(就業)「社員」 ??? 
+		}*/
 	}
 	
 	public List<String> acquireDestinationList(Application application){

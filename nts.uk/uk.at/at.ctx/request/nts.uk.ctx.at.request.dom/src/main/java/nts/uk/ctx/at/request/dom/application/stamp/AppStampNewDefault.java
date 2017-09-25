@@ -1,10 +1,18 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
+import java.util.List;
+import java.util.UUID;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
+import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartApprovalRootService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
@@ -45,6 +53,12 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	
 	@Inject
 	private AppStampCommonDomainService appStampCommonDomainService;
+	
+	@Inject
+	private AppApprovalPhaseRepository appApprovalPhaseRepository;
+	
+	@Inject
+	private ApproveAcceptedRepository approveAcceptedRepository; 
 
 	@Override
 	public AppStampNewPreOutput appStampPreProcess(String companyID, String employeeID, GeneralDate appDate) {
@@ -55,47 +69,48 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 															1, // EmploymentRootAtr.APPLICATION 就業ルート区分.申請
 															ApplicationType.STAMP_APPLICATION, 
 															appDate);
-		this.startApprovalRootService.getApprovalRootPattern(
+		/*this.startApprovalRootService.getApprovalRootPattern(
 				companyID, 
 				employeeID, 
 				1, // EmploymentRootAtr.APPLICATION 就業ルート区分.申請
 				ApplicationType.STAMP_APPLICATION.value, 
-				appDate);
+				appDate);*/
 		this.newScreenStartCheckErrorService.checkError(ApplicationType.STAMP_APPLICATION.value);
 		appStampNewPreOutput.appStampSetOutput = this.appStampCommonDomainService.appStampSet(companyID);
 		return appStampNewPreOutput;
 	}
 
 	@Override
-	public void appStampGoOutPermitRegister(String titleReason, String detailReason, AppStamp appStamp) {
+	public void appStampGoOutPermitRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
 		this.appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
 		this.appStampCommonDomainService.validateReason(appStamp);
 		this.appStampRegistration(appStamp);
 	}
 
 	@Override
-	public void appStampWorkRegister(String titleReason, String detailReason, AppStamp appStamp) {
+	public void appStampWorkRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
 		this.appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
 		this.appStampCommonDomainService.validateReason(appStamp);
 		this.appStampRegistration(appStamp);
 	}
 
 	@Override
-	public void appStampCancelRegister(String titleReason, String detailReason, AppStamp appStamp) {
+	public void appStampCancelRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
 		this.appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
 		this.appStampCommonDomainService.validateReason(appStamp);
 		this.appStampRegistration(appStamp);
 	}
 
 	@Override
-	public void appStampOnlineRecordRegister(String titleReason, String detailReason, AppStamp appStamp) {
+	public void appStampOnlineRecordRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
 		this.appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
-		this.appStampCommonDomainService.validateReason(appStamp);
+		// this.appStampCommonDomainService.validateReason(appStamp);
 		this.appStampRegistration(appStamp);
+		this.approvalRegistration(appApprovalPhases, appStamp.getApplicationID());
 	}
 
 	@Override
-	public void appStampOtherRegister(String titleReason, String detailReason, AppStamp appStamp) {
+	public void appStampOtherRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
 		
 	}
 	
@@ -118,5 +133,23 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 			default: break;
 		}
 		// this.processAfterRegisterService.processAfterRegister(appStamp.getCompanyID(), appStamp.getApplicationID());
+	}
+	
+	private void approvalRegistration(List<AppApprovalPhase> appApprovalPhases, String appID){
+		appApprovalPhases.forEach(appApprovalPhase -> {
+			appApprovalPhase.setAppID(appID);
+			String phaseID = UUID.randomUUID().toString();
+			appApprovalPhase.setPhaseID(phaseID);
+			appApprovalPhaseRepository.create(appApprovalPhase);
+			appApprovalPhase.getListFrame().forEach(approvalFrame -> {
+				approvalFrame.getListApproveAccepted().forEach(appAccepted -> {
+					approveAcceptedRepository.createApproverAccepted(ApproveAccepted.createFromJavaType(
+							appAccepted.getCompanyID(), 
+							phaseID, 
+							appAccepted.getDispOrder(), 
+							appAccepted.getApproverSID()));
+				});
+			});
+		});
 	}
 }

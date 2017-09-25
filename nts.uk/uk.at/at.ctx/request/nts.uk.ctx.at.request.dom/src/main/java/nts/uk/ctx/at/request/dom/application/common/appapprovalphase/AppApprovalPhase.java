@@ -24,9 +24,11 @@ public class AppApprovalPhase extends DomainObject {
 	private String companyID;
 
 	/** 申請ID */
+	@Setter
 	private String appID;
 
 	/** フェーズID */
+	@Setter
 	private String phaseID;
 
 	/** 承認形態 */
