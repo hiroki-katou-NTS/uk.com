@@ -160,9 +160,14 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			}
 			
 			//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」) tra ra 1 list nhung thuc chat chi co 1 du lieu
-			Optional<WorkplaceApproverDto> wpInfors = wpAdapter.findByWkpId( root.getWorkplaceId(), baseDate);			
+			//Optional<WorkplaceApproverDto> wpInfors = wpAdapter.findByWkpId( root.getWorkplaceId(), baseDate);			
+			// fix data
+			WorkplaceApproverDto  wpDto = new WorkplaceApproverDto(root.getWorkplaceId(), "A");
 			wpRootInfor = getAppInfors(wpRoot, wpRootInfor, companyID);
-			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpInfors.get(), wpRootInfor);
+			
+			// fix data
+			//WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpInfors.get(), wpRootInfor);
+			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpDto, wpRootInfor);
 			mapWpRootInfor.put(root.getWorkplaceId(), wpOutput);
 		}
 		return mapWpRootInfor;
@@ -219,7 +224,8 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		for(ApprovalPhase phase: getAllIncludeApprovers) {
 			List<String> lstApprovers = new ArrayList<>();
 			for(Approver approver: phase.getApprovers()) {
-				lstApprovers.add(psInfor.personName(approver.getEmployeeId()));
+				//lstApprovers.add(psInfor.personName(approver.getEmployeeId()));
+				lstApprovers.add(approver.getEmployeeId());
 			}
 			ApprovalRootMaster appRoot = new ApprovalRootMaster(phase.getOrderNumber(), phase.getApprovalForm().name, lstApprovers);
 			lstMatter.add(appRoot);
