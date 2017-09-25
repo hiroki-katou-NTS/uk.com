@@ -23,11 +23,11 @@ import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceConfigDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceHierarchyDto;
 
 /**
- * The Class WorkplaceConfigWs.
+ * The Class WorkplaceConfigWebService.
  */
 @Path("bs/employee/workplace/config")
 @Produces(MediaType.APPLICATION_JSON)
-public class WorkplaceConfigWs extends WebService {
+public class WorkplaceConfigWebService extends WebService {
 
     /** The wkp config finder. */
     @Inject
@@ -37,14 +37,14 @@ public class WorkplaceConfigWs extends WebService {
     @Inject
     private SaveWorkplaceConfigCommandHandler saveHandler;
 
+    /** The wkp config info finder. */
     @Inject
     private WorkplaceConfigInfoFinder wkpConfigInfoFinder;
     
     /**
      * Find all wkp configure.
      *
-     * @param dto
-     *            the dto
+     * @param dto the dto
      * @return the workplace config dto
      */
     @Path("findAll")
@@ -56,8 +56,7 @@ public class WorkplaceConfigWs extends WebService {
     /**
      * Save wkp config.
      *
-     * @param command
-     *            the command
+     * @param command the command
      */
     @Path("save")
     @POST
@@ -65,6 +64,12 @@ public class WorkplaceConfigWs extends WebService {
         this.saveHandler.handle(command);
     }
 
+    /**
+     * Wkp config info find.
+     *
+     * @param findObject the find object
+     * @return the list
+     */
     @Path("info/find")
     @POST
     public List<WorkplaceHierarchyDto> wkpConfigInfoFind(WkpConfigInfoFindObject findObject) {

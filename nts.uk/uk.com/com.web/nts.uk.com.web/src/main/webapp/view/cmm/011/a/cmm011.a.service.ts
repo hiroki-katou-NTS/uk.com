@@ -11,17 +11,11 @@ module nts.uk.com.view.cmm011.a {
             let dfd = $.Deferred();
             nts.uk.request.ajax(servicePath.findLstWorkPlace,{startDate: baseDate}).done(function(res: Array<model.TreeWorkplace>) {
                 let list = _.map(res, function(item) {
-                    return new model.TreeWorkplace(item.workplaceId, item.code, item.name, item.heirarchyCode, item.childs);
+                    return new model.TreeWorkplace(item.workplaceId, item.code, item.name, item.hierarchyCode, item.childs);
                 });
 
                 dfd.resolve(list);
             });
-            // TODO: fake data
-//            let res: Array<model.TreeWorkplace> = viewmodel.ScreenModel.fakeDataWorkplace();
-//            let list = _.map(res, function(item) {
-//                return new model.TreeWorkplace(item.workplaceId, item.code, item.name, item.heirarchyCode, item.childs);
-//            });
-//            dfd.resolve(list);
             return dfd.promise();
         }
         
@@ -35,19 +29,19 @@ module nts.uk.com.view.cmm011.a {
                 code: string;
                 name: string;
                 nodeText: string;
-                heirarchyCode: string;
+                hierarchyCode: string;
                 level: number;
                 childs: Array<TreeWorkplace>;
 
-                constructor(workplaceId: string, code: string, name: string, heirarchyCode: string,
+                constructor(workplaceId: string, code: string, name: string, hierarchyCode: string,
                     childs: Array<TreeWorkplace>) {
                     let self = this;
                     self.workplaceId = workplaceId;
                     self.code = code;
                     self.name = name;
                     self.nodeText = code + " " + name;
-                    self.heirarchyCode = heirarchyCode;
-                    self.level = heirarchyCode.length / 3;
+                    self.hierarchyCode = hierarchyCode;
+                    self.level = hierarchyCode.length / 3;
                     self.childs = childs;
                 }
             }

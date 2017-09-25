@@ -273,10 +273,10 @@ module nts.uk.com.view.cmm011.a {
             public isValidLimitHeirachy(): boolean {
                 let self = this;
                 let lengthElementSameHeirachies: number = self.treeArray().filter(item => {
-                    if (item.heirarchyCode.length != self.selectedHeirarchyCd.length) {
+                    if (item.hierarchyCode.length != self.selectedHeirarchyCd.length) {
                         return false;
                     }
-                    let parentHeirarchyCd: string = item.heirarchyCode.substr(0, item.heirarchyCode.length - 3);
+                    let parentHeirarchyCd: string = item.hierarchyCode.substr(0, item.hierarchyCode.length - 3);
                     let parentSelectedHeirarchyCd: string = self.selectedHeirarchyCd.substr(0,
                         self.selectedHeirarchyCd.length - 3);
                     return parentHeirarchyCd == parentSelectedHeirarchyCd;
@@ -290,14 +290,14 @@ module nts.uk.com.view.cmm011.a {
              */
             private getSelectedHeirarchyCd(): string {
                 let self = this;
-                let heirarchyCode: string = "";
+                let hierarchyCode: string = "";
                 for(let item of self.treeArray()) {
                     if (item.workplaceId == self.selectedWpkId()) {
-                        heirarchyCode = item.heirarchyCode;
+                        hierarchyCode = item.hierarchyCode;
                         break;
                     }
                 }
-                return heirarchyCode;
+                return hierarchyCode;
             }
             
             /**
@@ -341,7 +341,7 @@ module nts.uk.com.view.cmm011.a {
             private convertMapHeirarchy(): any {
                 let self = this;
                 return _.reduce(self.treeArray(), function(hash: any, value: any) {
-                    let key: any = value['heirarchyCode'];
+                    let key: any = value['hierarchyCode'];
                     hash[key] = value['name'];
                     return hash;
                 }, {});
@@ -361,7 +361,7 @@ module nts.uk.com.view.cmm011.a {
                         workplaceId: item.workplaceId,
                         name: item.name,
                         nodeText: item.nodeText,
-                        heirarchyCode: item.heirarchyCode,
+                        hierarchyCode: item.hierarchyCode,
                         level: item.level,
                     });
                 })
