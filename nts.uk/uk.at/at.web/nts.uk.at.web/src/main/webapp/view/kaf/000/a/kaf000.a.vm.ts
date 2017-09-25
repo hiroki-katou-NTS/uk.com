@@ -21,7 +21,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         //obj output message deadline
         outputMessageDeadline : KnockoutObservable<model.OutputMessageDeadline>;
         constructor(){
-            var self = this;
+            let self = this;
             /**
              * List
              */
@@ -40,9 +40,9 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         start(): JQueryPromise<any> {
             
             let self = this;
-            var dfd = $.Deferred();
-            var dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
-            var dfdAllApprovalRoot = self.getAllApprovalRoot();
+            let dfd = $.Deferred();
+            let dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
+            let dfdAllApprovalRoot = self.getAllApprovalRoot();
             $.when(dfdMessageDeadline,dfdAllApprovalRoot).done((dfdMessageDeadlineData,dfdAllApprovalRootData)=>{
 //                self.getAllFrameByListPhaseId1(self.listPhaseID);
                  dfd.resolve(); 
@@ -52,11 +52,13 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         
         //get all listApprovalRoot
         getAllApprovalRoot(){
-            var self = this;
-            var dfd = $.Deferred<any>();
+            let self = this;
+            let dfd = $.Deferred<any>();
             nts.uk.at.view.kaf000.a.service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
                 self.listApprovalRoot(data);
-                self.approvalRoot(self.listApprovalRoot()[0]);
+                if(self.listApprovalRoot().length>0){
+                    self.approvalRoot(self.listApprovalRoot()[0]);
+                }
                 dfd.resolve(data);    
             });
             return dfd.promise();
@@ -64,8 +66,8 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         }
          // getMessageDeadline
         getMessageDeadline(inputMessageDeadline){
-            var self = this;
-            var dfd = $.Deferred<any>();
+            let self = this;
+            let dfd = $.Deferred<any>();
                 nts.uk.at.view.kaf000.a.service.getMessageDeadline(inputMessageDeadline).done(function(data){
                     self.outputMessageDeadline(data);
                     dfd.resolve(data);    

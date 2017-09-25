@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSu
 import nts.uk.ctx.at.request.app.find.application.common.GetDataCheckDetail;
 import nts.uk.ctx.at.request.app.find.application.common.CheckDisplayMessage;
 import nts.uk.ctx.at.request.app.find.application.common.GetAllDataAppPhaseFrame;
+import nts.uk.ctx.at.request.app.find.application.common.GetAllNameByAppID;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
 import nts.uk.ctx.at.request.app.find.application.common.OutputDetailCheckDto;
 import nts.uk.ctx.at.request.app.find.application.common.OutputGetAllDataApp;
@@ -51,6 +52,9 @@ public class ApplicationWebservice extends WebService {
 	
 	@Inject
 	private GetDataCheckDetail getDataCheckDetail; 
+	
+	@Inject
+	private GetAllNameByAppID getAllNameByAppID;
 	
 	/**
 	 * get All application
@@ -166,5 +170,17 @@ public class ApplicationWebservice extends WebService {
 	public OutputDetailCheckDto getDetailCheck(InputGetDetailCheck inputGetDetailCheck){
 		
 		return this.getDataCheckDetail.getDataCheckDetail(inputGetDetailCheck);
+	}
+	
+	/**
+	 * get getDetailedScreenPreBootMode (check)
+	 * @return
+	 */
+	
+	@POST
+	@Path("getallnamebyappid")
+	public List<String> getAllNameByAppID(){
+		
+		return this.getAllNameByAppID.getAllNameByAppID("000");
 	}
 }

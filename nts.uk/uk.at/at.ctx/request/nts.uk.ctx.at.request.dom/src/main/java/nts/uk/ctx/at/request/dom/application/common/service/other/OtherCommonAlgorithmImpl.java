@@ -87,8 +87,8 @@ public class OtherCommonAlgorithmImpl implements OtherCommonAlgorithm {
 	@Override
 	public PrePostAtr preliminaryJudgmentProcessing(ApplicationType appType, GeneralDate appDate) {
 		GeneralDate systemDate = GeneralDate.today();
-		BigDecimal systemTime = BigDecimal.valueOf(GeneralDateTime.now().localDateTime().getHour()*60 
-				+ GeneralDateTime.now().localDateTime().getMinute());
+		Integer systemTime = GeneralDateTime.now().localDateTime().getHour()*60 
+				+ GeneralDateTime.now().localDateTime().getMinute();
 		String companyID = AppContexts.user().companyId();
 		PrePostAtr prePostAtr = null;
 		Optional<AppTypeDiscreteSetting> appTypeDisc = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value);
