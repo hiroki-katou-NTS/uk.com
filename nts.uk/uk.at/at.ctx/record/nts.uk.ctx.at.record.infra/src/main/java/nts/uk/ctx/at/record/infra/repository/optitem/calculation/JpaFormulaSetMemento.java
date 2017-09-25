@@ -17,95 +17,118 @@ import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormula
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Class JpaFormulaDispOrderSetMemento.
+ * The Class JpaFormulaSetMemento.
  */
-public class JpaFormulaSetMemento implements FormulaSetMemento {
-
-	/** The type value. */
-	private KrcmtOptItemFormula typeValue;
+public class JpaFormulaSetMemento implements FormulaSetMemento{
+	
+	/** The entity. */
+	private KrcmtOptItemFormula entity;
+	
+	/**
+	 * Instantiates a new jpa formula set memento.
+	 *
+	 * @param entity the entity
+	 */
+	public JpaFormulaSetMemento(KrcmtOptItemFormula entity) {
+		if (entity.getKrcmtOptItemFormulaPK() == null) {
+			entity.setKrcmtOptItemFormulaPK(new KrcmtOptItemFormulaPK());
+		}
+		this.entity = entity;
+	}
 
 	/**
-	 * Instantiates a new jpa formula disp order set memento.
+	 * Sets the company id.
 	 *
-	 * @param typeValue
-	 *            the type value
-	 */
-	public JpaFormulaSetMemento(KrcmtOptItemFormula typeValue) {
-		KrcmtOptItemFormulaPK krcmtOptItemFormulaPK = typeValue.getKrcmtOptItemFormulaPK();
-
-		// Check PK exist
-		if (krcmtOptItemFormulaPK == null) {
-			krcmtOptItemFormulaPK = new KrcmtOptItemFormulaPK();
-		}
-
-		typeValue.setKrcmtOptItemFormulaPK(krcmtOptItemFormulaPK);
-
-		this.typeValue = typeValue;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionSetMemento#
-	 * setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
+	 * @param cId the new company id
 	 */
 	@Override
-	public void setCompanyId(CompanyId comId) {
-		KrcmtOptItemFormulaPK krcmtOptItemFormulaPK = typeValue.getKrcmtOptItemFormulaPK();
-		krcmtOptItemFormulaPK.setCid(comId.v());
-		this.typeValue.setKrcmtOptItemFormulaPK(krcmtOptItemFormulaPK);
+	public void setCompanyId(CompanyId cId) {
+		this.entity.getKrcmtOptItemFormulaPK().setCid(cId.v());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionSetMemento#
-	 * setOptionalItemNo(nts.uk.ctx.at.record.dom.optitem.OptionalItemNo)
+	/**
+	 * Sets the formula id.
+	 *
+	 * @param id the new formula id
 	 */
-	@Override
-	public void setOptionalItemNo(OptionalItemNo optNo) {
-		KrcmtOptItemFormulaPK krcmtOptItemFormulaPK = typeValue.getKrcmtOptItemFormulaPK();
-		krcmtOptItemFormulaPK.setOptionalItemNo(optNo.v());
-		this.typeValue.setKrcmtOptItemFormulaPK(krcmtOptItemFormulaPK);
-	}
-
 	@Override
 	public void setFormulaId(FormulaId id) {
-		KrcmtOptItemFormulaPK krcmtOptItemFormulaPK = typeValue.getKrcmtOptItemFormulaPK();
-		krcmtOptItemFormulaPK.setFormulaId(id.v());
-		this.typeValue.setKrcmtOptItemFormulaPK(krcmtOptItemFormulaPK);
+		this.entity.getKrcmtOptItemFormulaPK().setFormulaId(id.v());
 	}
 
+	/**
+	 * Sets the optional item no.
+	 *
+	 * @param optItemNo the new optional item no
+	 */
+	@Override
+	public void setOptionalItemNo(OptionalItemNo optItemNo) {
+		this.entity.getKrcmtOptItemFormulaPK().setOptionalItemNo(optItemNo.v());
+	}
+
+	/**
+	 * Sets the formula name.
+	 *
+	 * @param name the new formula name
+	 */
 	@Override
 	public void setFormulaName(FormulaName name) {
-		this.typeValue.setFormulaName(name.v());
+		this.entity.setFormulaName(name.v());
 	}
 
+	/**
+	 * Sets the calc formula setting.
+	 *
+	 * @param setting the new calc formula setting
+	 */
 	@Override
 	public void setCalcFormulaSetting(CalcFormulaSetting setting) {
-		// this.typeValue.set
+		// TODO Auto-generated method stub
+		
 	}
 
+	/**
+	 * Sets the calc formula atr.
+	 *
+	 * @param atr the new calc formula atr
+	 */
 	@Override
 	public void setCalcFormulaAtr(OptionalItemAtr atr) {
-		// TODO: check lại
-		this.typeValue.setFormulaAtr(atr.value);
+		// TODO Auto-generated method stub
+		
 	}
 
+	/**
+	 * Sets the symbol.
+	 *
+	 * @param symbol the new symbol
+	 */
 	@Override
 	public void setSymbol(Symbol symbol) {
-		this.typeValue.setSymbol(symbol.v());
+		this.entity.setSymbol(symbol.v());
+		
 	}
 
+	/**
+	 * Sets the monthly rounding.
+	 *
+	 * @param rounding the new monthly rounding
+	 */
 	@Override
 	public void setMonthlyRounding(Rounding rounding) {
 		// TODO Auto-generated method stub
+		
 	}
 
+	/**
+	 * Sets the daily rounding.
+	 *
+	 * @param rounding the new daily rounding
+	 */
 	@Override
 	public void setDailyRounding(Rounding rounding) {
 		// TODO Auto-generated method stub
-
+		
 	}
 
 }

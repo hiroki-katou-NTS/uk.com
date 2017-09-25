@@ -27,10 +27,8 @@ public enum RoundingAtr {
 	/**
 	 * Instantiates a new rounding atr.
 	 *
-	 * @param value
-	 *            the value
-	 * @param nameId
-	 *            the name id
+	 * @param value the value
+	 * @param nameId the name id
 	 */
 	private RoundingAtr(int value, String nameId) {
 		this.value = value;
