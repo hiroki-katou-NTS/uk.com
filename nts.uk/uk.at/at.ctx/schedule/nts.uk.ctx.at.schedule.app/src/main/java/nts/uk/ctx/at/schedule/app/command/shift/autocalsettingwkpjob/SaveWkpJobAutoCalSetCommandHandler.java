@@ -9,7 +9,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpJobAutoCalSetting;
@@ -26,8 +25,12 @@ public class SaveWkpJobAutoCalSetCommandHandler extends CommandHandler<WkpJobAut
 	@Inject
 	private WkpJobAutoCalSettingRepository wkpJobAutoCalSettingRepo;
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<WkpJobAutoCalSetCommand> context) {
@@ -41,16 +44,15 @@ public class SaveWkpJobAutoCalSetCommandHandler extends CommandHandler<WkpJobAut
 		Optional<WkpJobAutoCalSetting> result = this.wkpJobAutoCalSettingRepo.getAllWkpJobAutoCalSetting(companyId,
 				command.getWkp(), command.getJob());
 
-		// Check exist
-		if (!result.isPresent()) {
-			throw new BusinessException("Msg_3");
-		}
-
 		// Convert to domain
 		WkpJobAutoCalSetting AutoCalSetting = command.toDomain(companyId);
 
-		// Alway has 30 items and allow update only
-		this.wkpJobAutoCalSettingRepo.update(AutoCalSetting);
+		// check add or update
+		if (!result.isPresent()) {
+			this.wkpJobAutoCalSettingRepo.add(AutoCalSetting);
+		} else {
+			this.wkpJobAutoCalSettingRepo.update(AutoCalSetting);
+		}
 	}
 
 }

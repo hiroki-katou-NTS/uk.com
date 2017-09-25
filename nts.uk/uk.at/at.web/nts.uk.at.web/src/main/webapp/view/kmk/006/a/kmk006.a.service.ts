@@ -17,7 +17,7 @@ module nts.uk.at.view.kmk006.a {
 
 
 
-
+            findEnumUnitAutoCal: "ctx/at/schedule/shift/autocalunit/find/autocalunit",
             findEnumAutoCalAtrOvertime: "ctx/at/schedule/shift/autocal/find/autocalatrovertime",
             findEnumUseClassification: "ctx/at/schedule/shift/autocal/find/autocaluseclassification",
             findEnumTimeLimitUpperLimitSetting: "ctx/at/schedule/shift/autocal/find/autocaltimelimitsetting",
@@ -54,7 +54,7 @@ module nts.uk.at.view.kmk006.a {
         /**
         * delete divergence reason
        */
-        export function deleteWkpJobAutoCal(wkpId: string,jobId: string): JQueryPromise<any> {
+        export function deleteWkpJobAutoCal(wkpId: string, jobId: string): JQueryPromise<any> {
             return nts.uk.request.ajax("at", paths.deleteWkpJobAutoCal + '/' + wkpId + '/' + jobId);
         }
 
@@ -113,6 +113,9 @@ module nts.uk.at.view.kmk006.a {
         }
         export function getWkpJobAutoCal(wkpId: string, jobId: string): JQueryPromise<model.WkpJobAutoCalSettingDto> {
             return nts.uk.request.ajax("at", paths.getWkpJobAutoCal + '/' + wkpId + '/' + jobId);
+        }
+        export function getEnumUnitAutoCal(): JQueryPromise<model.UnitAutoCalSettingDto> {
+            return nts.uk.request.ajax("at", paths.findEnumUnitAutoCal);
         }
 
 
@@ -290,7 +293,11 @@ module nts.uk.at.view.kmk006.a {
                 calAtr: number;
             }
 
-
+            export interface UnitAutoCalSettingDto {
+                useJobSet: boolean;
+                useWkpSet: boolean;
+                useJobwkpSet: boolean;
+            }
 
 
 

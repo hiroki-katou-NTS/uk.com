@@ -42,16 +42,14 @@ public class SaveJobAutoCalSetCommandHandler extends CommandHandler<JobAutoCalSe
         // Find details
         Optional<JobAutoCalSetting> result = this.jobAutoCalSettingRepo.getAllJobAutoCalSetting(companyId, command.getJobID());
 
-        // Check exist
-        if (!result.isPresent()) {
-            throw new BusinessException("Msg_3");
-        }
-        
         // Convert to domain
         JobAutoCalSetting jobAutoCalSetting = command.toDomain(companyId);
 
-        // Alway has 30 items and allow update only
-		this.jobAutoCalSettingRepo.update(jobAutoCalSetting);
+        if (!result.isPresent()) {
+			this.jobAutoCalSettingRepo.add(jobAutoCalSetting);
+		} else {
+			this.jobAutoCalSettingRepo.update(jobAutoCalSetting);
+		}
 	}
 
 }

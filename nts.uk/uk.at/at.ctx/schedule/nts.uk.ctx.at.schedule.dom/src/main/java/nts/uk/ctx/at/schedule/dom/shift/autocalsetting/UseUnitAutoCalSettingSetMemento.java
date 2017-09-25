@@ -4,10 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.autocalsetting;
 
+import nts.uk.ctx.at.shared.dom.common.CompanyId;
+
 /**
  * The Interface UseUnitAutoCalSettingSetMemento.
  */
 public interface UseUnitAutoCalSettingSetMemento {
+	
+	void  setCompanyId(CompanyId companyId);
 	
 	/**
 	 * Sets the use job set.

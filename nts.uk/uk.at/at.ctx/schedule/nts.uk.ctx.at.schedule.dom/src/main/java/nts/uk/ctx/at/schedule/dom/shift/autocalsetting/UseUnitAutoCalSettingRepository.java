@@ -7,23 +7,25 @@ package nts.uk.ctx.at.schedule.dom.shift.autocalsetting;
 import java.util.Optional;
 
 /**
- * The Interface ComAutoCalSettingRepository.
+ * The Interface UseUnitAutoCalSettingRepository.
  */
-public interface ComAutoCalSettingRepository {
+public interface UseUnitAutoCalSettingRepository {
 
+	
 	/**
 	 * Update.
 	 *
-	 * @param comAutoCalSetting the com auto cal setting
+	 * @param useUnitAutoCalSetting the use unit auto cal setting
 	 */
-    void update(ComAutoCalSetting comAutoCalSetting);
+    void update(UseUnitAutoCalSetting useUnitAutoCalSetting);
     
+
+
 	/**
-	 * Gets the all com auto cal setting.
+	 * Gets the all use unit auto cal setting.
 	 *
 	 * @param companyId the company id
-	 * @return the all com auto cal setting
+	 * @return the all use unit auto cal setting
 	 */
-    Optional<ComAutoCalSetting> getAllComAutoCalSetting(String companyId);
-
+    Optional<UseUnitAutoCalSetting> getAllUseUnitAutoCalSetting(String companyId);
 }
