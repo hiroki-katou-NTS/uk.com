@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.ws.workplace.config;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -14,15 +16,18 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.app.command.workplace.config.SaveWorkplaceConfigCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.config.WorkplaceConfigCommand;
 import nts.uk.ctx.bs.employee.app.find.workplace.WorkplaceConfigFinder;
+import nts.uk.ctx.bs.employee.app.find.workplace.WorkplaceConfigInfoFinder;
+import nts.uk.ctx.bs.employee.app.find.workplace.dto.WkpConfigInfoFindObject;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceCommandDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceConfigDto;
+import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceHierarchyDto;
 
 /**
- * The Class WorkplaceConfigWs.
+ * The Class WorkplaceConfigWebService.
  */
-@Path("bs/employee/workplace/configure")
+@Path("bs/employee/workplace/config")
 @Produces(MediaType.APPLICATION_JSON)
-public class WorkplaceConfigWs extends WebService {
+public class WorkplaceConfigWebService extends WebService {
 
     /** The wkp config finder. */
     @Inject
@@ -32,11 +37,14 @@ public class WorkplaceConfigWs extends WebService {
     @Inject
     private SaveWorkplaceConfigCommandHandler saveHandler;
 
+    /** The wkp config info finder. */
+    @Inject
+    private WorkplaceConfigInfoFinder wkpConfigInfoFinder;
+    
     /**
      * Find all wkp configure.
      *
-     * @param dto
-     *            the dto
+     * @param dto the dto
      * @return the workplace config dto
      */
     @Path("findAll")
@@ -48,8 +56,7 @@ public class WorkplaceConfigWs extends WebService {
     /**
      * Save wkp config.
      *
-     * @param command
-     *            the command
+     * @param command the command
      */
     @Path("save")
     @POST
@@ -57,4 +64,15 @@ public class WorkplaceConfigWs extends WebService {
         this.saveHandler.handle(command);
     }
 
+    /**
+     * Wkp config info find.
+     *
+     * @param findObject the find object
+     * @return the list
+     */
+    @Path("info/find")
+    @POST
+    public List<WorkplaceHierarchyDto> wkpConfigInfoFind(WkpConfigInfoFindObject findObject) {
+        return this.wkpConfigInfoFinder.findAll(findObject.getStartDate());
+    }
 }

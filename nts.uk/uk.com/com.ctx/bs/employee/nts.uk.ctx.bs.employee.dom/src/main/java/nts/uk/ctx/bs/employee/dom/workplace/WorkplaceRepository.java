@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.dom.workplace;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
@@ -53,5 +54,21 @@ public interface WorkplaceRepository {
 	 * @return the list
 	 */
 	List<Workplace> findByWkpIds(List<String> workplaceIds);
+	
+	/**
+	 * Find latest by workplace id.
+	 *
+	 * @param workplaceId the workplace id
+	 * @return the optional
+	 */
+	Optional<Workplace> findLatestByWorkplaceId(String workplaceId);
 
+	/**
+	 * Find by workplace id.
+	 *
+	 * @param companyId the company id
+	 * @param workplaceId the workplace id
+	 * @return the optional
+	 */
+	Optional<Workplace> findByWorkplaceId(String companyId,String workplaceId);
 }

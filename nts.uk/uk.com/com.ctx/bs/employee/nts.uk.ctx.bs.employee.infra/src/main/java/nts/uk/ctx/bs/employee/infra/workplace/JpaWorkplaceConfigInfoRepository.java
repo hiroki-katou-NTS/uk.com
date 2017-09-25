@@ -17,6 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceHierarchy;
@@ -96,11 +97,16 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository implements W
 			BsymtWkpConfigInfoPK pk = new BsymtWkpConfigInfoPK();
 			pk.setCid(wkpConfigInfo.getCompanyId());
 			pk.setHistoryId(wkpConfigInfo.getHistoryId().v());
+			pk.setWkpid(item.getWorkplaceId().v());
 			entity.setBsymtWkpConfigInfoPK(pk);
-			entity.setWkpid(item.getWorkplaceId().v());
 			entity.setHierarchyCd(item.getHierarchyCode().v());
 			return entity;
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public Optional<WorkplaceConfigInfo> findByStartDate(String companyId, GeneralDate startDate) {
+		return null;
 	}
 
 }

@@ -20,6 +20,8 @@ module nts.uk.at.view.kmk006.a {
     import JobAutoCalSettingDto = service.model.JobAutoCalSettingDto;
     import WkpAutoCalSettingDto = service.model.WkpAutoCalSettingDto;
     import WkpJobAutoCalSettingDto = service.model.WkpJobAutoCalSettingDto;
+    import UnitAutoCalSettingDto = service.model.UnitAutoCalSettingDto;
+
 
 
 
@@ -70,9 +72,20 @@ module nts.uk.at.view.kmk006.a {
             jobTitleList: KnockoutObservableArray<UnitModel>;
             selectedCurrentJob: KnockoutObservable<string>;
             selectedCurrentWkp: KnockoutObservable<string>;
-
-
-
+            useUnitAutoCalSettingModel: UnitAutoCalSettingModel;
+            treeItemName: KnockoutObservable<string>;
+            componentItemName: KnockoutObservable<string>;
+            treeItemCode: KnockoutObservable<string>;
+            componentItemCode: KnockoutObservable<string>;
+            enableEnumNorLegLi: KnockoutObservable<boolean>;
+            enableEnumNorLegMidLi: KnockoutObservable<boolean>;
+            enableEnumNorNorLi: KnockoutObservable<boolean>;
+            enableEnumNorNorMidLi: KnockoutObservable<boolean>;
+            enableEnumNorEarLi: KnockoutObservable<boolean>;
+            enableEnumNorEarMidLi: KnockoutObservable<boolean>;
+            enableEnumFleTimeLi: KnockoutObservable<boolean>;
+            enableEnumResResLi: KnockoutObservable<boolean>;
+            enableEnumResLatLi: KnockoutObservable<boolean>;
 
 
 
@@ -150,6 +163,7 @@ module nts.uk.at.view.kmk006.a {
 
                 // Initial common data.
                 self.usageSettingModel = new UsageSettingModel();
+                self.useUnitAutoCalSettingModel = new UnitAutoCalSettingModel();
                 this.tabs = ko.observableArray([
                     { id: 'tab-1', title: nts.uk.resource.getText("KMK006_14"), content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: nts.uk.resource.getText("KMK006_15"), content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
@@ -304,8 +318,8 @@ module nts.uk.at.view.kmk006.a {
                 self.valueEnumResLatAtr = ko.observable(2);
 
                 self.selectedCode = ko.observable('1');
-                self.selectedCurrentJob = ko.observable('1');
-                self.selectedCurrentWkp = ko.observable('1');
+                self.selectedCurrentJob = ko.observable('');
+                self.selectedCurrentWkp = ko.observable('');
                 self.multiSelectedCode = ko.observableArray(['0', '1', '4']);
                 self.isShowAlreadySet = ko.observable(false);
                 self.alreadySettingList = ko.observableArray([
@@ -315,6 +329,10 @@ module nts.uk.at.view.kmk006.a {
                 self.isDialog = ko.observable(false);
                 self.isShowNoSelectRow = ko.observable(false);
                 self.isMultiSelect = ko.observable(false);
+                self.treeItemName = ko.observable('');
+                self.componentItemName = ko.observable('');
+                self.treeItemCode = ko.observable('');
+                self.componentItemCode = ko.observable('');
                 self.listComponentOption = {
                     baseDate: self.baseDate,
                     isShowAlreadySet: self.isShowAlreadySet(),
@@ -333,13 +351,55 @@ module nts.uk.at.view.kmk006.a {
                 self.multiSelectedWorkplaceId.subscribe(function(codeChanged) {
                     self.selectedCurrentWkp(codeChanged);
                     self.loadJobAutoCal(codeChanged);
-
+                    let data = $('#tree-grid-srcc').getDataList();
+                    for (let ent of data) {
+                        if (ent.workplaceId == codeChanged) {
+                            self.treeItemName(ent.name);
+                            self.treeItemCode(ent.code);
+                        }
+                    }
                 });
 
                 //subscribe 
                 self.selectedCode.subscribe(function(codeChanged) {
                     self.selectedCurrentJob(codeChanged);
                     self.loadWkpAutoCal(codeChanged);
+                    let data = $('#component-items-list').getDataList();
+                    for (let ent of data) {
+                        if (ent.id == codeChanged) {
+                            self.componentItemName(ent.name);
+                            self.componentItemCode(ent.code);
+                        }
+                    }
+                });
+
+
+                self.enableEnumNorLegLi = ko.computed(function() {
+                    return self.valueEnumNorLegAtr() != 2;
+                });
+                self.enableEnumNorLegMidLi = ko.computed(function() {
+                    return self.valueEnumNorLegMidAtr() != 2;
+                });
+                self.enableEnumNorNorLi = ko.computed(function() {
+                    return self.valueEnumNorNorAtr() != 2;
+                });
+                self.enableEnumNorNorMidLi = ko.computed(function() {
+                    return self.valueEnumNorNorMidAtr() != 2;
+                });
+                self.enableEnumNorEarLi = ko.computed(function() {
+                    return self.valueEnumNorEarAtr() != 2;
+                });
+                self.enableEnumNorEarMidLi = ko.computed(function() {
+                    return self.valueEnumNorEarMidAtr() != 2;
+                });
+                self.enableEnumFleTimeLi = ko.computed(function() {
+                    return self.valueEnumFleTimeAtr() != 2;
+                });
+                self.enableEnumResResLi = ko.computed(function() {
+                    return self.valueEnumResResAtr() != 2;
+                });
+                self.enableEnumResLatLi = ko.computed(function() {
+                    return self.valueEnumResLatAtr() != 2;
                 });
 
 
@@ -933,6 +993,18 @@ module nts.uk.at.view.kmk006.a {
             }
 
             /**
+            * call service load UseUnitAutoCalSettingModel
+            */
+            private loadUseUnitAutoCalSettingModel(): void {
+                var self = this;
+                service.getEnumUnitAutoCal().done(function(data) {
+                    self.useUnitAutoCalSettingModel.updateData(data);
+                }).fail(res => {
+                    nts.uk.ui.dialog.alertError(res);
+                });
+            }
+
+            /**
             * start page data 
             */
             public startPage(): JQueryPromise<any> {
@@ -943,6 +1015,7 @@ module nts.uk.at.view.kmk006.a {
                 // Initial settings.
                 self.setSelectableYears();
                 self.loadUsageSettingModel();
+                self.loadUseUnitAutoCalSettingModel();
                 self.loadTimeLimitUpperLimitSettingEnum();
                 // load all data  Enum
                 self.loadAutoCalAtrOvertimeEnum();
@@ -1086,7 +1159,6 @@ module nts.uk.at.view.kmk006.a {
             */
             public onSelectEmployment(): void {
                 $('.nts-input').ntsError('clear');
-                nts.uk.ui.block.invisible();
                 var self = this;
 
                 // Update flags.
@@ -1094,8 +1166,9 @@ module nts.uk.at.view.kmk006.a {
                 self.isPersonSelected(false);
                 self.isEmploymentSelected(true);
                 self.isLoading(true);
-
-                $('#tree-grid-srcc').ntsTreeComponent(self.treeGrid);
+                $('#tree-grid-srcc').ntsTreeComponent(self.treeGrid).done(function() {
+                    self.isLoading(false);
+                });
             }
 
             public onSelectWkpJob(): void {
@@ -1416,9 +1489,9 @@ module nts.uk.at.view.kmk006.a {
              */
             private openDialogUsageSettingModel(): void {
                 var self = this;
-                nts.uk.ui.windows.sub.modal("/view/ksm/001/e/index.xhtml").onClosed(function() {
+                nts.uk.ui.windows.sub.modal("/view/kmk/006/e/index.xhtml").onClosed(function() {
                     $('#comboTargetYear').focus();
-                    self.loadUsageSettingModel();
+                    self.loadUseUnitAutoCalSettingModel();
                 });
             }
 
@@ -1786,6 +1859,38 @@ module nts.uk.at.view.kmk006.a {
             resetData() {
                 this.upLimitOtSet(0);
                 this.calAtr(0);
+            }
+        }
+
+        export class UnitAutoCalSettingModel {
+            useJobSet: KnockoutObservable<boolean>;
+            useWkpSet: KnockoutObservable<boolean>;
+            useJobwkpSet: KnockoutObservable<boolean>;
+            constructor() {
+                this.useJobSet = ko.observable(true);
+                this.useWkpSet = ko.observable(true);
+                this.useJobwkpSet = ko.observable(true);
+
+            }
+            updateData(dto: UnitAutoCalSettingDto) {
+                this.useJobSet(dto.useJobSet);
+                this.useWkpSet(dto.useWkpSet);
+                this.useJobwkpSet(dto.useJobwkpSet);
+
+            }
+
+            toDto(): UnitAutoCalSettingDto {
+                var dto: UnitAutoCalSettingDto = {
+                    useJobSet: this.useJobSet(),
+                    useWkpSet: this.useWkpSet(),
+                    useJobwkpSet: this.useJobwkpSet()
+                };
+                return dto;
+            }
+            resetData() {
+                this.useJobSet(true);
+                this.useWkpSet(true);
+                this.useJobwkpSet(true);
             }
         }
 

@@ -3,6 +3,7 @@ module nts.uk.at.view.kmk002.d {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            $("#radio-left-selection").focus();
         });
     });
 }

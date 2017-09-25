@@ -20,7 +20,7 @@ public class JpaWorkplaceHierarchyGetMemento implements WorkplaceHierarchyGetMem
 
 	@Override
 	public WorkplaceId getWorkplaceId() {
-		return new WorkplaceId(this.entity.getWkpid());
+		return new WorkplaceId(this.entity.getBsymtWkpConfigInfoPK().getWkpid());
 	}
 
 	@Override

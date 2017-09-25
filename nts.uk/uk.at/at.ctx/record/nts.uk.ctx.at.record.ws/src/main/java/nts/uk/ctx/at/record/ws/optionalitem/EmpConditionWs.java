@@ -7,6 +7,7 @@ package nts.uk.ctx.at.record.ws.optionalitem;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.uk.ctx.at.record.app.command.optitem.applicable.EmpConditionSaveCommand;
@@ -35,9 +36,9 @@ public class EmpConditionWs {
 	 * @return the emp condition dto
 	 */
 	@POST
-	@Path("find")
-	public EmpConditionDto find() {
-		return this.finder.find();
+	@Path("find/{itemNo}")
+	public EmpConditionDto find(@PathParam("itemNo") String itemNo) {
+		return this.finder.find(itemNo);
 	}
 
 	/**

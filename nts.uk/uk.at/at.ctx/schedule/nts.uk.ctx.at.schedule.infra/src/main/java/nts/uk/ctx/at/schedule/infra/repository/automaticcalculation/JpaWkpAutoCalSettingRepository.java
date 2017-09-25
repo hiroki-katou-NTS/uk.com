@@ -25,18 +25,31 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 	 */
 	@Override
 	public void update(WkpAutoCalSetting wkpAutoCalSetting) {
-		Optional<KshmtAutoWkpCalSet> optional = this.queryProxy().find(
+		this.commandProxy().update(this.toEntity(wkpAutoCalSetting));
+		this.getEntityManager().flush();
+		
+	}
+	
+
+	/**
+	 * To entity.
+	 *
+	 * @param jobAutoCalSetting the job auto cal setting
+	 * @return the kshmt auto job cal set
+	 */
+	private KshmtAutoWkpCalSet toEntity(WkpAutoCalSetting wkpAutoCalSetting) {
+		Optional<KshmtAutoWkpCalSet> optinal = this.queryProxy().find(
 				new KshmtAutoWkpCalSetPK(wkpAutoCalSetting.getCompanyId().v(), wkpAutoCalSetting.getWkpId().v()),
 				KshmtAutoWkpCalSet.class);
-
-		if (!optional.isPresent()) {
-			throw new RuntimeException("Auto wkp not existed.");
+		KshmtAutoWkpCalSet entity = null;
+		if (!optinal.isPresent()) {
+			entity = optinal.get();
+		} else {
+			entity = new KshmtAutoWkpCalSet();
 		}
-
-		KshmtAutoWkpCalSet entity = optional.get();
-		wkpAutoCalSetting.saveToMemento(new JpaWkpAutoCalSettingSetMemento(entity));
-		this.commandProxy().update(entity);
-		
+		JpaWkpAutoCalSettingSetMemento memento = new JpaWkpAutoCalSettingSetMemento(entity);
+		wkpAutoCalSetting.saveToMemento(memento);
+		return entity;
 	}
 
 	/* (non-Javadoc)
@@ -62,6 +75,13 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 	public void delete(String cid, String wkpId) {
 		this.commandProxy().remove(KshmtAutoWkpCalSet.class, new KshmtAutoWkpCalSetPK(cid, wkpId));
 
+	}
+
+	@Override
+	public void add(WkpAutoCalSetting wkpAutoCalSetting) {
+		this.commandProxy().insert(this.toEntity(wkpAutoCalSetting));
+		this.getEntityManager().flush();
+		
 	}
 
 }

@@ -47,4 +47,12 @@ public interface WorkplaceInfoRepository {
 	 * @return the list
 	 */
 	Optional<WorkplaceInfo> findByWkpId(String wkpId, GeneralDate baseDate);
+	
+	/**
+	 * Find latest by workplace id.
+	 *
+	 * @param wkpId the wkp id
+	 * @return the optional
+	 */
+	Optional<WorkplaceInfo> findLatestByWorkplaceId(String wkpId);
 }

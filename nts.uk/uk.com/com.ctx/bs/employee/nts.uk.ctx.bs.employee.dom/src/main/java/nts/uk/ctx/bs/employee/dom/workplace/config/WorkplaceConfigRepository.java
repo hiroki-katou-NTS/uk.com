@@ -52,4 +52,14 @@ public interface WorkplaceConfigRepository {
 	 * @return the optional
 	 */
 	Optional<WorkplaceConfig> findLastestByCompanyId(String companyId);
+	
+	/**
+	 * Find by start date.
+	 *
+	 * @param companyId the company id
+	 * @param startDate the start date
+	 * @return the optional
+	 */
+	Optional<WorkplaceConfig> findByStartDate(String companyId,GeneralDate startDate);
+
 }

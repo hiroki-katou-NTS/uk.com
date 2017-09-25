@@ -29,19 +29,30 @@ public class JpaWkpJobAutoCalSettingRepository extends JpaRepository implements 
 	 */
 	@Override
 	public void update(WkpJobAutoCalSetting wkpJobAutoCalSetting) {
-		Optional<KshmtAutoWkpJobCal> optional = this.queryProxy()
+		this.commandProxy().update(this.toEntity(wkpJobAutoCalSetting));
+		this.getEntityManager().flush();
+	}
+	
+	/**
+	 * To entity.
+	 *
+	 * @param wkpJobAutoCalSetting the wkp job auto cal setting
+	 * @return the kshmt auto wkp job cal
+	 */
+	private KshmtAutoWkpJobCal toEntity(WkpJobAutoCalSetting wkpJobAutoCalSetting) {
+		Optional<KshmtAutoWkpJobCal> optinal = this.queryProxy()
 				.find(new KshmtAutoWkpJobCalPK(wkpJobAutoCalSetting.getCompanyId().v(),
 						wkpJobAutoCalSetting.getJobId().v(), wkpJobAutoCalSetting.getJobId().v()),
 						KshmtAutoWkpJobCal.class);
-
-		if (!optional.isPresent()) {
-			throw new RuntimeException("Auto wkp Job not existed.");
+		KshmtAutoWkpJobCal entity = null;
+		if (!optinal.isPresent()) {
+			entity = optinal.get();
+		} else {
+			entity = new KshmtAutoWkpJobCal();
 		}
-
-		KshmtAutoWkpJobCal entity = optional.get();
-		wkpJobAutoCalSetting.saveToMemento(new JpaWkpJobAutoCalSettingSetMemento(entity));
-		this.commandProxy().update(entity);
-
+		JpaWkpJobAutoCalSettingSetMemento memento = new JpaWkpJobAutoCalSettingSetMemento(entity);
+		wkpJobAutoCalSetting.saveToMemento(memento);
+		return entity;
 	}
 
 	/*
@@ -73,6 +84,16 @@ public class JpaWkpJobAutoCalSettingRepository extends JpaRepository implements 
 	public void delete(String cid, String wkpId, String jobId) {
 		this.commandProxy().remove(KshmtAutoWkpJobCal.class, new KshmtAutoWkpJobCalPK(cid, wkpId, jobId));
 
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpJobAutoCalSettingRepository#add(nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpJobAutoCalSetting)
+	 */
+	@Override
+	public void add(WkpJobAutoCalSetting wkpJobAutoCalSetting) {
+		this.commandProxy().insert(this.toEntity(wkpJobAutoCalSetting));
+		this.getEntityManager().flush();
+		
 	}
 
 }

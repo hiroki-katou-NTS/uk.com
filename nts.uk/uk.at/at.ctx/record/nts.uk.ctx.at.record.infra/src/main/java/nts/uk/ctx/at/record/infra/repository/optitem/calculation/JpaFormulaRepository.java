@@ -44,8 +44,12 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	 * java.util.List)
 	 */
 	@Override
-	public void create(List<Formula> listFormula) {
-		System.out.println(listFormula);
+	public void create(List<Formula> domains) {
+		this.commandProxy().insertAll(domains.stream().map(domain -> {
+			KrcmtOptItemFormula entity = new KrcmtOptItemFormula();
+			domain.saveToMemento(new JpaFormulaSetMemento(entity));
+			return entity;
+		}).collect(Collectors.toList()));
 	}
 
 	/*
@@ -57,7 +61,7 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 	 */
 	@Override
 	public void remove(String comId, String optItemNo) {
-
+		this.commandProxy().removeAll(this.findAllFormulaEntity(comId, optItemNo));
 	}
 
 	/*
@@ -213,5 +217,7 @@ public class JpaFormulaRepository extends JpaRepository implements FormulaReposi
 		// exclude select
 		return query.getResultList();
 	}
+	
+	
 
 }

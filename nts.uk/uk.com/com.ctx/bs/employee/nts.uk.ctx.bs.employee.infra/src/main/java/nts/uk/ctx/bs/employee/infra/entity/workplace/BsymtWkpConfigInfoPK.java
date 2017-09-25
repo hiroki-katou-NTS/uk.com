@@ -31,38 +31,50 @@ public class BsymtWkpConfigInfoPK implements Serializable {
 	@Column(name = "HISTORY_ID")
 	private String historyId;
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/** The wkpid. */
+	@Column(name = "WKPID")
+	private String wkpid;
+
+	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
-		int hash = 0;
-		hash += (cid != null ? cid.hashCode() : 0);
-		hash += (historyId != null ? historyId.hashCode() : 0);
-		return hash;
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((cid == null) ? 0 : cid.hashCode());
+		result = prime * result + ((historyId == null) ? 0 : historyId.hashCode());
+		result = prime * result + ((wkpid == null) ? 0 : wkpid.hashCode());
+		return result;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
+	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
-	public boolean equals(Object object) {
-		if (!(object instanceof BsymtWkpConfigInfoPK)) {
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
 			return false;
-		}
-		BsymtWkpConfigInfoPK other = (BsymtWkpConfigInfoPK) object;
-		if ((this.cid == null && other.cid != null)
-				|| (this.cid != null && !this.cid.equals(other.cid))) {
+		if (!(obj instanceof BsymtWkpConfigInfoPK))
 			return false;
-		}
-		if ((this.historyId == null && other.historyId != null)
-				|| (this.historyId != null && !this.historyId.equals(other.historyId))) {
+		BsymtWkpConfigInfoPK other = (BsymtWkpConfigInfoPK) obj;
+		if (cid == null) {
+			if (other.cid != null)
+				return false;
+		} else if (!cid.equals(other.cid))
 			return false;
-		}
+		if (historyId == null) {
+			if (other.historyId != null)
+				return false;
+		} else if (!historyId.equals(other.historyId))
+			return false;
+		if (wkpid == null) {
+			if (other.wkpid != null)
+				return false;
+		} else if (!wkpid.equals(other.wkpid))
+			return false;
 		return true;
 	}
 
