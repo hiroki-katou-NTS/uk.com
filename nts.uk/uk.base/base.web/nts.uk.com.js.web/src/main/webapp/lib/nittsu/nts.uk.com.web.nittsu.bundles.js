@@ -2677,35 +2677,14 @@ var nts;
             }
             request.syncAjax = syncAjax;
             function uploadFile(data, option) {
-                var dfd = $.Deferred();
-                $.ajax({
+                return $.ajax({
                     url: "/nts.uk.com.web/webapi/ntscommons/arc/filegate/upload",
                     type: 'POST',
                     data: data,
                     cache: false,
                     contentType: false,
-                    processData: false,
-                    success: function (data, textStatus, jqXHR) {
-                        if (option.onSuccess) {
-                            option.onSuccess();
-                        }
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        if (option.onFail) {
-                            option.onFail();
-                        }
-                    }
-                }).done(function (res) {
-                    if (res !== undefined && res.businessException) {
-                        dfd.reject(res);
-                    }
-                    else {
-                        dfd.resolve(res);
-                    }
-                }).fail(function (res) {
-                    dfd.reject(res);
+                    processData: false
                 });
-                return dfd.promise();
             }
             request.uploadFile = uploadFile;
             function exportFile(path, data, options) {
@@ -2788,6 +2767,10 @@ var nts;
                     return dfd.promise();
                 }
                 specials.donwloadFile = donwloadFile;
+                function isFileExist(fileId) {
+                    return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
+                }
+                specials.isFileExist = isFileExist;
             })(specials = request.specials || (request.specials = {}));
             function jump(path, data) {
                 uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
@@ -20909,20 +20892,37 @@ var nts;
                             fileInput = $(this).find("input[type='file']").get(0);
                         }
                         if (fileInput !== undefined) {
-                            var file_2 = fileInput.files;
-                            if (file_2.length > 0) {
+                            var files = fileInput.files;
+                            if (files.length > 0) {
+                                if (files[0].size == 0) {
+                                    dfd.reject({ message: nts.uk.resource.getMessage("Msg_158"), messageId: "Msg_158" });
+                                    return dfd.promise();
+                                }
                                 var formData = new FormData();
                                 formData.append("stereotype", option.stereoType);
-                                formData.append("userfile", file_2[0]);
-                                formData.append("filename", file_2[0].name);
-                                return nts.uk.request.uploadFile(formData, option);
+                                formData.append("userfile", files[0]);
+                                formData.append("filename", files[0].name);
+                                nts.uk.request.uploadFile(formData, option).done(function (data, textStatus, jqXHR) {
+                                    if (data !== undefined && data.businessException) {
+                                        if (option.onFail)
+                                            option.onFail();
+                                        dfd.reject(data);
+                                    }
+                                    else {
+                                        if (option.onSuccess)
+                                            option.onSuccess();
+                                        dfd.resolve(data);
+                                    }
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    dfd.reject({ message: "Please check your network", messageId: "0" });
+                                });
                             }
                             else {
-                                dfd.reject({ message: "please select file", messageId: "-1" });
+                                dfd.reject({ message: "Please select file", messageId: "0" });
                             }
                         }
                         else {
-                            dfd.reject({ messageId: "0", message: "can not find control" });
+                            dfd.reject({ messageId: "0", message: "Can not find control" });
                         }
                         return dfd.promise();
                     };
