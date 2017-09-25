@@ -23,8 +23,8 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button type="button" class="proceed btnLeft" data-bind="">#{i18n.getText('CPS002_64')}</button>
-				<button type="button" class="btnRight" data-bind="" style="float: right">#{i18n.getText('CPS002_65')}</button>
+				<button type="button" class="proceed btnLeft" data-bind="click: register">#{i18n.getText('CPS002_64')}</button>
+				<button type="button" class="btnRight" data-bind="click: close" style="float: right">#{i18n.getText('CPS002_65')}</button>
 				<div style="clear: both"></div>
 			</div>
 			<div id="contents-area" class="cf coverBlock">
@@ -36,17 +36,17 @@
 								<div class="leftCover">
 									<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS002_66')}</div>	
 									<div>
-										<input type="text" placeholder="名称で検索…" data-bind="" class="txtSearch"/>
-										<button type="button" class="caret-bottom caret-inline">検索</button>
+										<input type="text" placeholder="名称で検索…" data-bind="value: txtSearch" class="txtSearch"/>
+										<button type="button" class="caret-bottom caret-inline" data-bind="click: searchByName">検索</button>
 									</div>	
 									<div class="blockTblCover">
 										<table id="singleList" data-bind="ntsGridList:{
 											height: 350,
 											dataSource: lstCategory,
-											primaryKey: 'categoryCode',
+											primaryKey: 'id',
 											columns: columns,
 											multiple: false,
-											value: currentCode
+											value: currentPerInfoCtg
 										}">
 										</table>
 									</div>
@@ -60,8 +60,9 @@
 									height: 400,
 									dataSource: lstPerInfoItemDef,
 									columns: columnPerInfoItemDef,
-									multiple: false,
-									value: perInfoItemDefList
+									primaryKey: 'id',
+									multiple: true,
+									value: currentPerInfoItem
 								}" >
 								</table>
 							</div>
