@@ -40,10 +40,10 @@
 							<div id="step1_content_top">
 								<div id="step1_content_top_left">
 									<div class="div_line">
-										<div class="top_left_col1">
+										<div class="step1_top_left_col1">
 											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_103')}</div>
 										</div>
-										<div class="top_left_col2">
+										<div class="step1_top_left_col2">
 											<div
 												data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
 										</div>
@@ -51,20 +51,20 @@
 									</div>
 
 									<div class="div_line">
-										<div class="top_left_col1">
+										<div class="step1_top_left_col1">
 											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_104')}</div>
 										</div>
-										<div class="top_left_col2">
+										<div class="step1_top_left_col2">
 											<input data-bind="ntsTextEditor: {value: simpleValue}" />
 											<button>#{i18n.getText('CPS002_17')}</button>
 										</div>
 									</div>
 
 									<div class="div_line">
-										<div class="top_left_col1">
+										<div class="step1_top_left_col1">
 											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_105')}</div>
 										</div>
-										<div class="top_left_col2">
+										<div class="step1_top_left_col2">
 											<input
 												data-bind="ntsTextEditor: {
 											value: simpleValue,
@@ -75,10 +75,10 @@
 									</div>
 
 									<div class="div_line">
-										<div class="top_left_col1">
+										<div class="step1_top_left_col1">
 											<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_18')}</div>
 										</div>
-										<div class="top_left_col2">
+										<div class="step1_top_left_col2">
 											<input data-bind="ntsTextEditor: {value: simpleValue}" />
 											<button>#{i18n.getText('CPS002_17')}</button>
 										</div>
@@ -102,6 +102,43 @@
 										</div>
 										<label><b>#{i18n.getText('CPS002_21')}</b></label>
 									</div>
+								</div>
+							</div>
+							<hr id="top_hr" />
+							<div id="step1_content_bottom">
+								<div class="div_line">
+									<div data-bind="ntsFormLabel: { required:true   }">#{i18n.getText('CPS002_23')}</div>
+								</div>
+
+								<div class="div_line">
+									<label id="step1_bot_des">#{i18n.getText('CPS002_24')}</label>
+								</div>
+
+								<div class="div_line">
+									<div class="step1_bot_col1">
+										<div id="init_select"
+											data-bind="ntsRadioBoxGroup: {
+														options: itemList ,
+														optionsValue: 'id' ,
+														optionsText: 'name' ,
+														value: selectedId ,
+														enable: enable
+														       		}">
+										</div>
+									</div>
+
+									<div class="step1_bot_col2">
+										<div class="div_line">
+											<button>#{i18n.getText('CPS002_30')}</button>
+										</div>
+										<div class="div_line">
+											<button>#{i18n.getText('CPS002_31')}</button>
+										</div>
+									</div>
+								</div>
+								<div class='div_line'>
+									<button class="large proceed" id="step1_next_btn">
+										#{i18n.getText('CPS002_29')}</button>
 								</div>
 							</div>
 						</div>
