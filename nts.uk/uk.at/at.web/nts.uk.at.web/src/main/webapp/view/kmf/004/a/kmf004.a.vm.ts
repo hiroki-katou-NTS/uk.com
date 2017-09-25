@@ -230,21 +230,45 @@ module nts.uk.at.view.kmf004.a.viewmodel {
             return new model.GrantSingleDto(grantSingle);
         }
 
+        /**
+         * Trigger by grant method
+         */
+        triggerByGrantMethod(): void {
+            var self = this;
+            if (model.GrantRegularMethod.GrantStartDateSpecify == self.currentItem().grantRegular().grantRegularMethod()) {
+                $("#grant-start-date").trigger("validate");
+                $("#months").trigger("validate");
+                $("#years").trigger("validate");
+            }
+            if (model.GrantPeriodicMethod.Allow == self.currentItem().grantPeriodic().grantPeriodicMethod()) {
+                $("#grant-day").trigger("validate");    
+            }
+            if (model.SpecialVacationMethod.AvailableGrantDateDesignate == self.currentItem().sphdLimit().specialVacationMethod()) {
+                $("#specialVacationMonths").trigger("validate");
+                $("#specialVacationYears").trigger("validate");
+            }
+            var useAge = self.currentItem().subCondition().useAge() ? 1 : 0;
+            if (model.UseAtr.Use == useAge) {
+                $("#limitAgeFrom").trigger("validate");
+                $("#limitAgeTo").trigger("validate");    
+            }
+        }
+        
         addSpecialHoliday(): JQueryPromise<any> {
             var self = this;
             $("#code-text").trigger("validate");
             $("#code-text2").trigger("validate");
-            if (nts.uk.ui.errors.hasError()) {
-                return;
-            }
-            nts.uk.ui.block.invisible();
+            
             var specialHoliday = ko.toJS(self.currentItem());
             if (self.inp_grantMethod() == 0) {
+                $("#fixNumberDays").trigger("validate");
                 specialHoliday.grantRegular = null;
                 specialHoliday.grantPeriodic = null;
                 specialHoliday.sphdLimit = null;
                 specialHoliday.subCondition = null;
             } else {
+                self.triggerByGrantMethod();
+                
                 var useGender = specialHoliday.subCondition.useGender;
                 var useEmployee = specialHoliday.subCondition.useEmployee;
                 var useCls = specialHoliday.subCondition.useCls;
@@ -258,10 +282,19 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 specialHoliday.grantSingle = null;
                 if (specialHoliday.grantRegular.grantStartDate) {
                     specialHoliday.grantRegular.grantStartDate = new Date(specialHoliday.grantRegular.grantStartDate);
+                } else {
+                    specialHoliday.grantRegular.grantStartDate = null;    
                 }
             }
             specialHoliday.grantMethod = self.inp_grantMethod();
 
+            // check error form
+            if (nts.uk.ui.errors.hasError()) {
+                return;
+            }
+            
+            nts.uk.ui.block.invisible();
+            
             if (self.isEnableCode()) {
                 var emptyObjectRegular: model.IGrantRegularDto = {};
                 var emptyObjectPeriodic: model.IGrantPeriodic = {};
@@ -270,9 +303,7 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 var emptyObjectGrantSingle: model.IGrantSingleDto = {};
 
                 specialHoliday["grantMethod"] = self.inp_grantMethod();
-                if(self.sphdList().length>19){
-                return;    
-                }
+                
                 service.addSpecialHoliday(specialHoliday).done(function(errors) {
                     if (errors && errors.length > 0) {
                         self.addListError(errors);
@@ -292,11 +323,15 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 })
             }
             else {
-                service.updateSpecialHoliday(specialHoliday).done(function(res) {
-                    nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
-                    self.getAllSpecialHoliday().done(function() {
-                        self.currentCode(self.currentItem().specialHolidayCode());
-                    });
+                service.updateSpecialHoliday(specialHoliday).done(function(errors) {
+                    if (errors && errors.length > 0) {
+                        self.addListError(errors);
+                    } else {
+                        nts.uk.ui.dialog.info(nts.uk.resource.getMessage("Msg_15"));
+                        self.getAllSpecialHoliday().done(function() {
+                            self.currentCode(self.currentItem().specialHolidayCode());
+                        });
+                    }
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message);
                 }).always(function() {
@@ -715,6 +750,34 @@ module nts.uk.at.view.kmf004.a.viewmodel {
                 this.makeInvitation = ko.observable(param.makeInvitation || 0);
                 this.holidayExclusionAtr = ko.observable(param.holidayExclusionAtr || 0);
             }
+        }
+        
+        export enum GrantRegularMethod {
+            /* 付与開始日を指定して付与する */
+            GrantStartDateSpecify = 0,
+            /* 付与日テーブルを参照して付与する */
+            ReferGrantDateTable  
+        }
+        
+        export enum GrantPeriodicMethod {
+            /* 許可する */
+            Allow = 0,
+            /* 許可しない */
+            DoNotAllow    
+        }
+        
+        export enum SpecialVacationMethod {
+            /** 0- 無期限 **/
+            IndefinitePeriod = 0,
+            /** 1- 次回付与日まで使用可能 **/
+            AvailableUntilNextGrantDate,
+            /** 2- 付与日から指定期間まで使用可能 **/
+            AvailableGrantDateDesignate
+        }
+        
+        export enum UseAtr {
+            NotUse = 0,
+            Use
         }
     }
 }
