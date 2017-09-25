@@ -29,6 +29,29 @@
 				<label>#{i18n.getText('KMK002_45')}</label>
 				<button tabindex="3">#{i18n.getText('KMK002_46')}</button>
 				<button tabindex="4">#{i18n.getText('KMK002_47')}</button>
+				<table>
+					<tr class="bg-green">
+						<td></td>
+						<td>#{i18n.getText('KMK002_49')}</td>
+						<td>#{i18n.getText('KMK002_50')}</td>
+					</tr>
+					<com:ko tag="foreach" bind="empCondition.empConditions">
+						<tr>
+							<td class="bg-green" data-bind="text: empCd"></td>
+							<td data-bind="text: empName"></td>
+							<td>
+								<div tabindex="7"
+											data-bind="ntsSwitchButton: {
+											name: '#[KMK002_13]',
+											options: switchds,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: empApplicableAtr,
+											enable: true }"></div>
+							</td>
+						</tr>
+					</com:ko>
+				</table>
 			</div>
 		</ui:define>
 	</ui:composition>
