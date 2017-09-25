@@ -61,7 +61,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         
         
         constructor(appType: number) {
-            var self = this;
+            let self = this;
             // Metadata
             self.appID =ko.observable("000"); 
             //__viewContext.transferred.value.appID;
@@ -110,75 +110,63 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         start(): JQueryPromise<any> {
 
             let self = this;
-            var dfd = $.Deferred();
-            var dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
-            var dfdAllReasonByAppID = self.getAllReasonByAppID("000");
-            var dfdAllDataByAppID = self.getAllDataByAppID("000");
-            var dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
+            let dfd = $.Deferred();
+            let dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
+            let dfdAllReasonByAppID = self.getAllReasonByAppID("000");
+            let dfdAllDataByAppID = self.getAllDataByAppID("000");
+            let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
             
 
             $.when(dfdAllReasonByAppID, dfdAllDataByAppID,dfdGetDetailCheck).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData,dfdGetDetailCheck) => {
                 //self.listReasonByAppID(data);
                 //self.getDetailCheck(self.inputDetail());
-                self.checkDisplay();
+                self.checkDisplayStart();
                 dfd.resolve();
             });
             return dfd.promise();
         }   
-        
-        checkDisplay(){
-            var self = this;
-            self.outputDetailCheck();
-            
-            if(self.outputDetailCheck().user ==1 || self.outputDetailCheck().user ==2){
-                //b1_7
-                self.enableRelease(true);
-                
-                
-                if(self.outputDetailCheck().authorizableFlags == true){
-                    //例：ログイン者の承認区分が未承認
-                    if(self.outputDetailCheck().approvalATR == 0){
-                        self.enableApprove(true);
-                        self.enableDeny(true);
-                        self.visibleApproval(false);
-                        self.visibleDenial(false);     
-                    }
+        // check display start
+        checkDisplayStart(){
+            let self = this;
+            if(self.outputDetailCheck() != null){
+                if(self.outputDetailCheck().user ==1 || self.outputDetailCheck().user ==2){
+                    //b1_7
+                    self.enableRelease(true);
                     
-                    //ログイン者の承認区分が承認済
-                    if(self.outputDetailCheck().approvalATR == 1){
+                    
+                    if(self.outputDetailCheck().authorizableFlags == true){
+                        //例：ログイン者の承認区分が未承認
+                        if(self.outputDetailCheck().approvalATR == 0){
+                            self.enableApprove(true);
+                            self.enableDeny(true);
+                            self.visibleApproval(false);
+                            self.visibleDenial(false);     
+                        }
+                        
+                        //ログイン者の承認区分が承認済
+                        if(self.outputDetailCheck().approvalATR == 1){
+                            self.enableApprove(false);
+                            self.enableDeny(true);
+                            self.visibleApproval(true);
+                            self.visibleDenial(false);        
+                        }
+                        
+                        //例：ログイン者の承認区分が否認
+                        if(self.outputDetailCheck().approvalATR == 2){
+                            self.enableApprove(true);
+                            self.enableDeny(false);     
+                            self.visibleApproval(false);
+                            self.visibleDenial(true);   
+                        }
+                    }else{
                         self.enableApprove(false);
-                        self.enableDeny(true);
-                        self.visibleApproval(true);
-                        self.visibleDenial(false);        
-                    }
-                    
-                    //例：ログイン者の承認区分が否認
-                    if(self.outputDetailCheck().approvalATR == 2){
-                        self.enableApprove(true);
-                        self.enableDeny(false);     
+                        self.enableDeny(false);
                         self.visibleApproval(false);
-                        self.visibleDenial(true);   
+                        self.visibleDenial(false);   
                     }
-                }else{
-                    self.enableApprove(false);
-                    self.enableDeny(false);
-                }
-                    
+                }     
             }
             
-            if(self.outputDetailCheck().authorizableFlags ==true && self.outputDetailCheck().alternateExpiration ==false){
-                self.enableApprove(true);//b1_4
-                self.enableDeny(true);//b1_5
-            }
-            
-            //ログイン者の承認区分：承認済、否認 
-            if(self.outputDetailCheck().approvalATR ==1 || self.outputDetailCheck().approvalATR ==2){
-                self.enableRelease(true);
-            }
-            //ログイン者の承認区分：未承認                      
-            if(self.outputDetailCheck().approvalATR ==0){
-                 self.enableRelease(false);
-            }
             
             if(self.outputDetailCheck().user ==0 || self.outputDetailCheck().user ==1|| self.outputDetailCheck().user ==99){
                 //b1_8
@@ -190,25 +178,50 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     //b1_13
                 }
             }
-            if(self.outputDetailCheck().reflectPlanState ==0 ||self.outputDetailCheck().reflectPlanState ==1){
-                //b1_8
-                self.enableRegistration(true)
-                //b1_12  
-                self.enableDelete(true) 
-            }
             
-            if(self.outputDetailCheck().reflectPlanState ==4){
-                //b1_13
-                self.enableCancel(true) 
-            }
+        } // end checkDisplayStart
+        
+        //check checkDisplayAction
+        checkDisplayAction(){
+            let self = this;
+            if(self.outputDetailCheck() != null){
+                if(self.outputDetailCheck().authorizableFlags ==true && self.outputDetailCheck().alternateExpiration ==false){
+                    self.enableApprove(true);//b1_4
+                    self.enableDeny(true);//b1_5
+                    self.visibleApproval(true); //b1_14
+                    self.visibleDenial(true);  //b1_15
+                }
             
-                  
+                //b1_7
+                //ログイン者の承認区分：承認済、否認 
+                if(self.outputDetailCheck().approvalATR ==1 || self.outputDetailCheck().approvalATR ==2){
+                    self.enableRelease(true);
+                }
+                //ログイン者の承認区分：未承認                      
+                if(self.outputDetailCheck().approvalATR ==0){
+                     self.enableRelease(false);
+                }
+                
+                
+                if(self.outputDetailCheck().reflectPlanState ==0 ||self.outputDetailCheck().reflectPlanState ==1){
+                    //b1_8
+                    self.enableRegistration(true)
+                    //b1_12  
+                    self.enableDelete(true) 
+                }
+                
+                if(self.outputDetailCheck().reflectPlanState ==4){
+                    //b1_13
+                    self.enableCancel(true) 
+                }        
+            }    
+        
         }
 
         // getMessageDeadline
         getMessageDeadline(inputMessageDeadline) {
-            var self = this;
-            var dfd = $.Deferred<any>();
+            let self = this;
+            let dfd = $.Deferred<any>();
             service.getMessageDeadline(inputMessageDeadline).done(function(data) {
                 self.outputMessageDeadline(data);
                 dfd.resolve(data);
@@ -218,8 +231,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         //getAll data by App ID
         getAllDataByAppID(appID) {
-            var self = this;
-            var dfd = $.Deferred<any>();
+            let self = this;
+            let dfd = $.Deferred<any>();
             service.getAllDataByAppID(appID).done(function(data) {
                 let temp = data.listOutputPhaseAndFrame;
                 _.forEach(temp, function(phase) {
@@ -249,25 +262,26 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         }
         //get all reason by app ID
         getAllReasonByAppID(appID) {
-            var self = this;
-            var dfd = $.Deferred<any>();
+            let self = this;
+            let dfd = $.Deferred<any>();
             service.getAllReasonByAppID(appID).done(function(data) {
                 self.listReasonByAppID(data);
-                self.reasonApp(self.listReasonByAppID()[0].toString());
-                for (var i = 1; i < self.listReasonByAppID().length; i++) {
-                    self.listReasonToApprover(
-                        self.listReasonToApprover().toString() + self.listReasonByAppID()[i].toString() + "\n"
-                    );
+                if(self.listReasonByAppID().length>0){
+                    self.reasonApp(self.listReasonByAppID()[0].toString());
+                    for (let i = 1; i < self.listReasonByAppID().length; i++) {
+                        self.listReasonToApprover(
+                            self.listReasonToApprover().toString() + self.listReasonByAppID()[i].toString() + "\n"
+                        );
+                    }
                 }
-
                 dfd.resolve(data);
             });
             return dfd.promise();
         }
         //get detail check 
         getDetailCheck(inputGetDetail) {
-            var self = this;
-            var dfd = $.Deferred<any>();
+            let self = this;
+            let dfd = $.Deferred<any>();
             service.getDetailCheck(inputGetDetail).done(function(data) {
                 //
                 self.outputDetailCheck(data);

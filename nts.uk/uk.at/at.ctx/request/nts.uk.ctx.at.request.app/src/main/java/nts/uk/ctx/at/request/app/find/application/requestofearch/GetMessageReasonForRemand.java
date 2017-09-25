@@ -22,6 +22,8 @@ public class GetMessageReasonForRemand {
 		//add reason B3_1 in list Reason
 		if(ouput.getApplicationDto().isPresent()) {
 			listReason.add( ouput.getApplicationDto().get().getApplicationReason());
+		}else {
+			listReason.add("");
 		}
 		//get list phase 
 		List<OutputPhaseAndFrame> outputPhase =  ouput.getListOutputPhaseAndFrame();
@@ -31,7 +33,11 @@ public class GetMessageReasonForRemand {
 			List<ApprovalFrameDto> list = outputPhaseAndFrame.getListApprovalFrameDto();
 			//loop list frame get reason approver
 			for(ApprovalFrameDto approvalFrameDto :list ) {
-				listReason.add(approvalFrameDto.getReason());
+				if(approvalFrameDto.getReason().isEmpty()) {
+					listReason.add("");
+				}else {
+					listReason.add(approvalFrameDto.getReason());
+				}
 			}
 		}
 		//list[0] = B3_1 Reason in Domain : Application
