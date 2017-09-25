@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.optitem;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,10 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.optitem.OptionalItem;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemName;
-import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemRepository;
-import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -26,7 +22,7 @@ public class OptionalItemFinder {
 
 	/** The repo. */
 	@Inject
-	private OptionalItemRepository repo;
+	private OptionalItemRepository repository;
 
 	/**
 	 * Find.
@@ -35,13 +31,8 @@ public class OptionalItemFinder {
 	 */
 	public OptionalItemDto find(String optionalItemNo) {
 		OptionalItemDto dto = new OptionalItemDto();
-		//OptionalItem dom = this.repo.find(AppContexts.user().companyId(), optionalItemNo).get();
-		//dom.saveToMemento(dto);
-
-		// TODO mock data
-		dto.setCalcResultRange(new CalcResultRangeDto());
-		dto.setOptionalItemNo(new OptionalItemNo("1"));
-		dto.setOptionalItemName(new OptionalItemName("abcx"));
+		OptionalItem dom = this.repository.find(AppContexts.user().companyId(), optionalItemNo).get();
+		dom.saveToMemento(dto);
 		return dto;
 	}
 
@@ -51,23 +42,13 @@ public class OptionalItemFinder {
 	 * @return the list
 	 */
 	public List<OptionalItemHeaderDto> findAll() {
-		//List<OptionalItem> list = this.repo.findAll(AppContexts.user().companyId());
-		List<OptionalItem> list = new ArrayList<OptionalItem>();
-
+		List<OptionalItem> list = this.repository.findAll(AppContexts.user().companyId());
 		List<OptionalItemHeaderDto> listDto = list.stream().map(item -> {
 			OptionalItemHeaderDto dto = new OptionalItemHeaderDto();
 			item.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());
 
-		for (int i = 0; i < 10; i++) {
-			OptionalItemHeaderDto dto = new OptionalItemHeaderDto();
-			dto.setItemNo(""+i);
-			dto.setItemName("item"+i);
-			dto.setUsageAtr(1);
-			dto.setPerformanceAtr(PerformanceAtr.DAILY_PERFORMANCE);
-			listDto.add(dto);
-		}
 
 		return listDto;
 	}

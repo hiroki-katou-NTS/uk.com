@@ -54,9 +54,21 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 	 */
 	@Override
 	public Optional<EmpCondition> find(String companyId, String optionalItemNo) {
-		return null;
+
+		List<KrcstApplEmpCon> entityEmpCons = this.findByItemNo(companyId, optionalItemNo);
+
+		EmpCondition domain = new EmpCondition(new JpaEmpConditionGetMemento(entityEmpCons));
+
+		return Optional.ofNullable(domain);
 	}
 
+	/**
+	 * Find by item no.
+	 *
+	 * @param companyId the company id
+	 * @param optionalItemNo the optional item no
+	 * @return the list
+	 */
 	private List<KrcstApplEmpCon> findByItemNo(String companyId, String optionalItemNo) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
