@@ -32,10 +32,11 @@
 						<td>
 							<div style="width: 300px; margin-right: 30px; padding: 20px " class="caret-right caret-background bg-green">
 							<i class="icon icon-searchbox"></i>
-							<div data-bind="ntsSearchBox: {targetKey: 'itemNo', mode:'igGrid', comId:'ahihi', items: optionalItemHeaders, 
+							<div tabindex="2" data-bind="ntsSearchBox: {targetKey: 'itemNo', mode:'igGrid', comId:'tbl-master-list', items: optionalItemHeaders, 
 								selected: selectedCode, selectedKey: 'itemNo', fields: ['itemNo', 'itemName']}" />
-							<table id="ahihi"
+							<table tabindex="4" id="tbl-master-list"
 								data-bind="ntsGridList: {
+								name: '#[KMK002_6]',
 							width: 300,
 							dataSource: optionalItemHeaders,
 							optionsValue: 'itemNo',
@@ -64,8 +65,9 @@
 								<tr>
 									<!-- Usage Atr -->
 									<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_13')}</div></td>
-									<td><div
+									<td><div tabindex="7"
 											data-bind="ntsSwitchButton: {
+											name: '#[KMK002_13]',
 											options: usageClsDatasource,
 											optionsValue: 'code',
 											optionsText: 'name',
@@ -84,34 +86,44 @@
 													checked: calcResultRange.upperCheck,
 													enable: true,
 													text: nts.uk.resource.getText('KMK002_26') }"></div>
+													
+													<com:ko tag="if" bind="isNumberSelected()">
 										<input tabindex="12" id="inp-upper-number"
-										data-bind="if: ko.observable(false), ntsTextEditor: {
+										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_26]',
 		                                          value: calcResultRange.numberUpper,
 		                                          constraint: 'NumberRangeValue'}"/>
+		                                          </com:ko>
+		                                          
+		                                          <com:ko tag="if" bind="isAmountSelected()">
 										<input tabindex="12" id="inp-upper-amount"
-										data-bind="if: true, ntsTextEditor: {
+										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_26]',
 		                                          value: calcResultRange.amountUpper,
 		                                          constraint: 'AmountRangeValue'}"/>
+		                                          </com:ko>
+		                                          
+		                                          <com:ko tag="if" bind="isTimeSelected()">
 										<input tabindex="12" id="inp-upper-time"
-										data-bind="if: false, ntsTextEditor: {
+										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_26]',
 		                                          value: calcResultRange.timeUpper,
 		                                          constraint: 'TimeRangeValue'}"/>
+		                                          </com:ko>
 									</td>
 								</tr>
 								<tr>
 									<!-- EmpCondition Atr -->
 									<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_16')}</div></td>
-									<td><div
+									<td><div tabindex="8"
 											data-bind="ntsSwitchButton: {
+											name: '#[KMK002_16]',
 											options: empConClsDatasource,
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: empConditionAtr,
 											enable: true }"></div>
-										<button data-bind="click: $parent.openDialogB">#{i18n.getText('KMK002_19')}(TEST B)</button>
+										<button data-bind="click: $parent.openDialogB">#{i18n.getText('KMK002_19')}</button>
 										</td>
 									<td></td>
 									
@@ -123,17 +135,38 @@
 												checked: calcResultRange.lowerCheck,
 												enable: true,
 												text: nts.uk.resource.getText('KMK002_27') }"></div>
-										<input tabindex="14" id="lowerLimit"
+
+										<com:ko tag="if" bind="isNumberSelected()">
+										<input tabindex="14" id="inp-lower-number"
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_27]',
-		                                          value: calcResultRange.numberLower}"/>
+		                                          value: calcResultRange.numberLower,
+		                                          constraint: 'NumberRangeValue'}"/>
+		                                          </com:ko>
+		                                
+		                                <com:ko tag="if" bind="isTimeSelected()">
+										<input tabindex="14" id="inp-lower-time"
+										data-bind="ntsTextEditor: {
+												  name: '#[KMK002_27]',
+		                                          value: calcResultRange.timeLower,
+		                                          constraint: 'TimeRangeValue'}"/>
+		                                          </com:ko>
+	
+										<com:ko tag="if" bind="isAmountSelected()">
+										<input tabindex="14" id="inp-lower-amount"
+										data-bind="ntsTextEditor: {
+												  name: '#[KMK002_27]',
+		                                          value: calcResultRange.amountLower,
+		                                          constraint: 'AmountRangeValue'}"/>
+		                                </com:ko>
 									</td>
 								</tr>
 								<tr>
 									<!-- Performance Atr -->
 									<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_20')}</div></td>
-									<td><div
+									<td><div tabindex="9"
 											data-bind="ntsSwitchButton: {
+											name: '#[KMK002_21]',
 											options: perfClsDatasource,
 											optionsValue: 'code',
 											optionsText: 'name',
@@ -144,8 +177,9 @@
 								<tr>
 									<!-- optionalItemAtr -->
 									<td><div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KMK002_24')}</div></td>
-									<td><div tabindex="11"
+									<td><div tabindex="10" style="width: 100px"
 											data-bind="ntsComboBox: {
+													name: '#[KMK002_24]',
 													options: atrDataSource,
 													optionsValue: 'code',
 													value: optionalItemAtr,

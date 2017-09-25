@@ -23,7 +23,7 @@ module nts.uk.at.view.kmk002.d {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                let dto = nts.uk.ui.windows.getShared("shared");
+                let dto = nts.uk.ui.windows.getShared("formulaSetting");
                 self.formulaSetting.fromDto(dto);
                 console.log(dto);
                 dfd.resolve();
@@ -35,7 +35,7 @@ module nts.uk.at.view.kmk002.d {
              */
             public apply(): void {
                 let self = this;
-                nts.uk.ui.windows.setShared('returned', self.formulaSetting.toDto());
+                nts.uk.ui.windows.setShared('formulaSetting', self.formulaSetting.toDto());
                 self.close();
             }
 

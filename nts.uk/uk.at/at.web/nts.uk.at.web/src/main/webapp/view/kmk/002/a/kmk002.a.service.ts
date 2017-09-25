@@ -7,7 +7,7 @@ module nts.uk.at.view.kmk002.a {
         let servicePath: any = {
             findOptionalItemDetail: 'ctx/at/record/optionalitem/find',
             findOptionalItemHeaders: 'ctx/at/record/optionalitem/findall',
-            findAllFormula: 'ctx/at/record/optionalitem/formula/findall',
+            findFormulas: 'ctx/at/record/optionalitem/formula/findbyitemno',
             saveOptionalItem: 'ctx/at/record/optionalitem/save',
             saveFormula: 'ctx/at/record/optionalitem/formula/save'
         };
@@ -20,16 +20,16 @@ module nts.uk.at.view.kmk002.a {
             return nts.uk.request.ajax(servicePath.saveFormula, { listCalcFormula: command });
         }
 
-        export function findOptionalItemDetail(): JQueryPromise<model.OptionalItemDto> {
-            return nts.uk.request.ajax(servicePath.findCompanySetting + '/' + '');
+        export function findOptionalItemDetail(itemNo: string): JQueryPromise<model.OptionalItemDto> {
+            return nts.uk.request.ajax(servicePath.findOptionalItemDetail + '/' + itemNo);
         }
 
         export function findOptionalItemHeaders(): JQueryPromise<Array<model.OptionalItemHeader>> {
             return nts.uk.request.ajax(servicePath.findOptionalItemHeaders);
         }
 
-        export function findAllFormula(): JQueryPromise<Array<model.FormulaDto>> {
-            return nts.uk.request.ajax(servicePath.findAllFormula);
+        export function findFormulas(itemNo: string): JQueryPromise<Array<model.FormulaDto>> {
+            return nts.uk.request.ajax(servicePath.findFormulas + '/' + itemNo);
         }
 
         /**
@@ -146,7 +146,7 @@ module nts.uk.at.view.kmk002.a {
                 USED = 1
             }
             export enum TypeAtr {
-                TIMES = 0,
+                NUMBER = 0,
                 AMOUNT = 1,
                 TIME = 2
             }
