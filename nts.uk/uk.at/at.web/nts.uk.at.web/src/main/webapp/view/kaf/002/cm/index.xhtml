@@ -41,27 +41,27 @@
 															'font-weight': topComment().fontWeight() === 1 ? 'bold' : 'normal' 
 														}"></div>
 					<div>
-						<div data-bind="style: { display: stampRequestMode() == 0 ? '' : 'none' }">
+						<div data-bind="if: stampRequestMode() == 0">
 							<div data-bind="with: m1">
 								<ui:include src="../m1/index.xhtml" />
 							</div>
 						</div>		
-						<div data-bind="style: { display: stampRequestMode() == 1 ? '' : 'none' }">
+						<div data-bind="if: stampRequestMode() == 1">
 							<div data-bind="with: m2">
 								<ui:include src="../m2/index.xhtml" />
 							</div>
 						</div>	
-						<div data-bind="style: { display: stampRequestMode() == 2 ? '' : 'none' }">
+						<div data-bind="if: stampRequestMode() == 2">
 							<div data-bind="with: m3">
 								<ui:include src="../m3/index.xhtml" />
 							</div>
 						</div>	
-						<div data-bind="style: { display: stampRequestMode() == 3 ? '' : 'none' }">
+						<div data-bind="if: stampRequestMode() == 3">
 							<div data-bind="with: m4">
 								<ui:include src="../m4/index.xhtml" />
 							</div>
 						</div>	
-						<div data-bind="style: { display: stampRequestMode() == 4 ? '' : 'none' }">
+						<div data-bind="if: stampRequestMode() == 4">
 							<div data-bind="with: m5">
 								<ui:include src="../m5/index.xhtml" />
 							</div>

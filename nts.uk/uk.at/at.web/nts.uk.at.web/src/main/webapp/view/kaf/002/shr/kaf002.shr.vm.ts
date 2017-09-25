@@ -117,7 +117,7 @@ module nts.uk.at.view.kaf002.shr {
             stampFrameNo: KnockoutObservable<number>;
             stampGoOutAtr: KnockoutObservable<number>;
             supportCard: KnockoutObservable<string>;
-            supportLocationCD: KnockoutObservable<string>;
+            supportLocation: KnockoutObservable<string>;
             supportCardDisp: KnockoutObservable<boolean>;  
             supportLocationDisp: KnockoutObservable<boolean>; 
             startTime: KnockoutObservable<number>;
@@ -133,7 +133,7 @@ module nts.uk.at.view.kaf002.shr {
                 stampFrameNo: number,
                 stampGoOutAtr: number,
                 supportCard: string,
-                supportLocationCD: string,
+                supportLocation: string,
                 supportCardDisp: boolean,
                 supportLocationDisp: boolean,
                 startTime: number,
@@ -148,8 +148,8 @@ module nts.uk.at.view.kaf002.shr {
                     this.stampFrameNo = ko.observable(stampFrameNo);
                     this.stampGoOutAtr = ko.observable(stampGoOutAtr);
                     this.supportCard = ko.observable(supportCard);
-                    this.supportLocationCD = ko.observable(supportCardDisp);
-                    this.supportCardDisp = ko.observable(supportLocationCD);
+                    this.supportLocation = ko.observable(supportLocation);
+                    this.supportCardDisp = ko.observable(supportCardDisp);
                     this.supportLocationDisp = ko.observable(supportLocationDisp);
                     this.startTime = ko.observable(startTime);
                     this.startLocation = ko.observable(startLocation);
@@ -182,6 +182,56 @@ module nts.uk.at.view.kaf002.shr {
             }
         }
         
+        export class AppApprovalPhase {
+            phaseID: string;
+            approvalForm: number;
+            dispOrder: number;
+            approvalATR: number;
+            approvalFrameCmds: Array<ApprovalFrame>;   
+            constructor(phaseID: string, approvalForm: number, dispOrder: number, approvalATR: number, approvalFrameCmds: Array<ApprovalFrame>){
+                this.phaseID = phaseID;
+                this.approvalForm = approvalForm;
+                this.dispOrder = dispOrder;
+                this.approvalATR = approvalATR;
+                this.approvalFrameCmds = approvalFrameCmds;     
+            }
+        }
+        
+        export class ApprovalFrame {
+            phaseID: string;
+            dispOrder: number;
+            approverSID: string;
+            approvalATR: number;
+            confirmATR: number;
+            approvalDate: string;
+            reason: string;
+            representerSID: string;
+            approveAcceptedCmds: Array<ApproveAccepted>;
+            constructor(phaseID: string, dispOrder: number, approverSID: string, approvalATR: number, confirmATR: number,
+                approvalDate: string, reason: string, representerSID: string, approveAcceptedCmds: Array<ApproveAccepted>){
+                this.phaseID = phaseID;
+                this.dispOrder = dispOrder; 
+                this.approverSID = approverSID;
+                this.approvalATR = approvalATR;
+                this.confirmATR = confirmATR;
+                this.approvalDate = approvalDate;
+                this.reason = reason;
+                this.representerSID = representerSID;
+                this.approveAcceptedCmds = approveAcceptedCmds;   
+            }     
+        }
+        
+        export class ApproveAccepted {
+            phaseID: string;
+            dispOrder: number;
+            approverSID: string;   
+            constructor(phaseID: string, dispOrder: number, approverSID: string){
+                this.phaseID = phaseID;
+                this.dispOrder = dispOrder;
+                this.approverSID = approverSID;     
+            }
+        }
+        
         export class InputReason {
             id: string;
             content: string; 
@@ -211,5 +261,9 @@ module nts.uk.at.view.kaf002.shr {
             }    
         }
         
+        export enum Enum {
+            WORK = 0,
+            GOOUT = 1   
+        }
     }
 }
