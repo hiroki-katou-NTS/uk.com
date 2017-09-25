@@ -67,8 +67,20 @@ module cps001.a.vm {
 
         deleteEmployee() {
             let self = this;
-            
-            modal('../b/index.xhtml').onClosed(() => {});
+
+            modal('../b/index.xhtml').onClosed(() => { });
+        }
+
+        unManagerEmployee() {
+            let self = this;
+
+            modal('../c/index.xhtml').onClosed(() => { });
+        }
+
+        pickLocation() {
+            let self = this;
+
+            modal('../e/index.xhtml').onClosed(() => { });
         }
 
         saveData() {
