@@ -15,7 +15,6 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         listWorkType: KnockoutObservableArray<WorkType>;
         listWorkTime: KnockoutObservableArray<WorkTime>;
         patternStartDate: moment.Moment;
-        patternEndDate: moment.Moment;
         calendarStartDate: moment.Moment;
         calendarEndDate: moment.Moment;
 
@@ -29,6 +28,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         isOutOfCalendarRange: KnockoutObservable<boolean>;
         isDataEmpty: boolean;
         buttonReflectPatternText: KnockoutObservable<string>;
+        shared: ReflectionSettingDto;
 
         // Calendar component
         calendarData: KnockoutObservable<any>;
@@ -337,7 +337,8 @@ module nts.uk.at.view.kdl023.base.viewmodel {
          */
         private getOptionDates(): Array<OptionDate> {
             let self = this;
-            self.reflectionSetting.patternStartDate = self.patternStartDate.format('YYYY-MM-DD');
+            // Update pattern start date value of reflection setting.
+            self.reflectionSetting.patternStartDate(self.patternStartDate.format('YYYY-MM-DD'));
 
             // Get calendar's range.
             let range = self.calendarEndDate.diff(self.calendarStartDate, 'days') + 1;
@@ -751,14 +752,15 @@ module nts.uk.at.view.kdl023.base.viewmodel {
 
                 // Set pattern range.
                 self.patternStartDate = moment(parsedYm, 'YYYY-MM').startOf('month');
-                self.patternEndDate = moment(parsedYm, 'YYYY-MM').endOf('month');
-                if (patternStartDate) {
-                    self.patternStartDate = moment(patternStartDate, 'YYYY-MM-DD');
-                }
 
                 // Set calendar range.
                 self.calendarStartDate = moment(self.patternStartDate);
-                self.calendarEndDate = moment(self.patternEndDate);
+                self.calendarEndDate = moment(self.patternStartDate).endOf('month');
+
+                // Set pattern start date if has been set.
+                if (patternStartDate) {
+                    self.patternStartDate = moment(patternStartDate, 'YYYY-MM-DD');
+                }
 
                 // Load holiday list.
                 self.loadHolidayList().done(() => {
@@ -769,8 +771,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Is on screen B.
             else {
                 // Reset pattern range.
-                self.patternStartDate = moment(self.calendarStartDate);
-                self.patternEndDate = moment(self.calendarEndDate);
+                self.patternStartDate = moment(self.shared.patternStartDate);
                 if (patternStartDate) {
                     self.patternStartDate = moment(patternStartDate, 'YYYY-MM-DD');
                 }
@@ -811,36 +812,36 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let dfd = $.Deferred<void>();
 
             // Get param from caller screen.
-            let shared: ReflectionSettingDto = nts.uk.ui.windows.getShared("reflectionSetting");
+            self.shared = nts.uk.ui.windows.getShared("reflectionSetting");
 
             // Get default value if data not exist.
-            if (!shared) {
-                shared = self.getDefaultPatternReflection();
+            if (!self.shared) {
+                self.shared = self.getDefaultPatternReflection();
             }
 
             // Init patternReflection setting.
-            self.reflectionSetting = new ReflectionSetting(shared);
+            self.reflectionSetting = new ReflectionSetting(self.shared);
 
             // Is on screen B.
-            if (shared.calendarStartDate && shared.calendarEndDate) {
+            if (self.shared.calendarStartDate && self.shared.calendarEndDate) {
                 self.isOnScreenA(false);
 
                 // Set calendar range.
-                self.calendarStartDate = moment(shared.calendarStartDate, 'YYYY-MM-DD');
-                self.calendarEndDate = moment(shared.calendarEndDate, 'YYYY-MM-DD');
+                self.calendarStartDate = moment(self.shared.calendarStartDate, 'YYYY-MM-DD');
+                self.calendarEndDate = moment(self.shared.calendarEndDate, 'YYYY-MM-DD');
 
                 // Date range must <= 31 days
                 // If end date parameter out of range -> set end date to 31 days after start date parameter.
                 let range = moment.duration(self.calendarEndDate.diff(self.calendarStartDate));
                 if (range.asDays() > 31) {
-                    self.calendarEndDate = moment(self.calendarStartDate).add(30, 'days');
+                    self.calendarEndDate = moment(self.calendarStartDate).add(1, 'months').subtract(1, 'days');
                 }
                 self.startDate = self.calendarStartDate.date();
                 self.endDate = self.calendarEndDate.date();
                 self.yearMonthPicked(parseInt(self.calendarStartDate.format('YYYYMM')));
 
                 // Set pattern range.
-                self.setPatternRange(shared.patternStartDate);
+                self.setPatternRange(self.shared.patternStartDate);
 
                 // Load holiday list.
                 self.loadHolidayList().done(() => dfd.resolve());
@@ -850,7 +851,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             // Is on screen A
             else {
                 self.isOnScreenA(true);
-                self.setPatternRange(shared.patternStartDate).done(() => dfd.resolve());
+                self.setPatternRange(self.shared.patternStartDate).done(() => dfd.resolve());
             }
 
             return dfd.promise();
@@ -862,7 +863,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
         calendarStartDate: KnockoutObservable<string>;
         calendarEndDate: KnockoutObservable<string>;
         selectedPatternCd: KnockoutObservable<string>;
-        patternStartDate: string;
+        patternStartDate: KnockoutObservable<string>;
         reflectionMethod: KnockoutObservable<ReflectionMethod>;
         statutorySetting: DayOffSetting;
         nonStatutorySetting: DayOffSetting;
@@ -872,11 +873,29 @@ module nts.uk.at.view.kdl023.base.viewmodel {
             let self = this;
             self.calendarStartDate = ko.observable(data.calendarStartDate ? data.calendarStartDate : '');
             self.calendarEndDate = ko.observable(data.calendarEndDate ? data.calendarEndDate : '');
+            self.patternStartDate = ko.observable(data.patternStartDate);
             self.selectedPatternCd = ko.observable(data.selectedPatternCd);
             self.reflectionMethod = ko.observable(data.reflectionMethod);
             self.statutorySetting = new DayOffSetting(data.statutorySetting);
             self.nonStatutorySetting = new DayOffSetting(data.nonStatutorySetting);
             self.holidaySetting = new DayOffSetting(data.holidaySetting);
+        }
+
+        public static newSetting(): ReflectionSetting {
+            let newSetting = <service.model.ReflectionSetting>{};
+            newSetting.calendarStartDate = moment().startOf('month').format('YYYY-MM-DD');
+            newSetting.calendarEndDate = moment().endOf('month').format('YYYY-MM-DD');
+            newSetting.selectedPatternCd = '';
+            newSetting.patternStartDate = newSetting.calendarStartDate;
+            newSetting.reflectionMethod = 0;
+            let dummy = <service.model.DayOffSetting>{};
+            dummy.useClassification = false;
+            dummy.workTypeCode = '';
+            newSetting.statutorySetting = dummy;
+            newSetting.nonStatutorySetting = dummy;
+            newSetting.holidaySetting = dummy;
+
+            return new ReflectionSetting(newSetting);
         }
 
         public fromDto(dto: service.model.ReflectionSetting) {
@@ -886,7 +905,7 @@ module nts.uk.at.view.kdl023.base.viewmodel {
                 self.calendarEndDate(dto.calendarEndDate);
             }
             self.selectedPatternCd(dto.selectedPatternCd);
-            self.patternStartDate = dto.patternStartDate;
+            self.patternStartDate(dto.patternStartDate);
             self.reflectionMethod(dto.reflectionMethod);
             self.statutorySetting.fromDto(dto.statutorySetting);
             self.nonStatutorySetting.fromDto(dto.nonStatutorySetting);
