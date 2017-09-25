@@ -19,17 +19,19 @@ module kcp009.a.viewmodel {
             let self = this;
 //            self.empList = ko.observableArray([]);
             self.empList = ko.observableArray([
-            {id: '000426a2-181b-4c7f-abc8-6fff9f4f983a', code: '1234567890BA', businessName: 'I', workplaceName: 'Webメニューの設定', depName: '部門1'}, 
-            {id: '90000000-0000-0000-0000-000000000001', code: '1234567890AE', businessName: 'A', workplaceName: 'Webメニューの設定', depName: '部門2'},
-            {id: '90000000-0000-0000-0000-000000000002', code: '000000000005', businessName: 'B', workplaceName: 'テスト情報', depName: '部門3'},
-            {id: '90000000-0000-0000-0000-000000000003', code: '000000000006', businessName: 'C', workplaceName: 'カレンダーの登録', depName: '部門4'},
-            {id: '90000000-0000-0000-0000-000000000004', code: '000000000007', businessName: 'D', workplaceName: 'カレンダーの登録', depName: '部門5'},
-            {id: '90000000-0000-0000-0000-000000000005', code: '000000000008', businessName: 'E', workplaceName: 'ベトナムレビュー', depName: '部門6'},
-            {id: '90000000-0000-0000-0000-000000000009', code: '000000000009', businessName: 'F', workplaceName: '個人情報レイアウトコード', depName: '部門7'},
-            {id: '90000000-0000-0000-0000-000000000007', code: '000000000010', businessName: 'G', workplaceName: '外部予算実績受', depName: '部門8'},
-            {id: '90000000-0000-0000-0000-000000000008', code: '000000000011', businessName: 'H', workplaceName: '算実績受入年月', depName: '部門9'},
-            {id: '90000000-0000-0000-0000-000000000010', code: '1234567890AD', businessName: 'G', workplaceName: '個人情報レイアウ', depName: '部門11'},
-            {id: '90000000-0000-0000-0000-000000000011', code: '1234567890AC', businessName: 'H', workplaceName: '個人情報', depName: '部門12'}]);
+            {id: '90000000-0000-0000-0000-000000000001', code: '000000000001', businessName: 'A', workplaceName: 'Webメニューの設定', depName: '部門2'},
+            {id: '90000000-0000-0000-0000-000000000002', code: '000000000002', businessName: 'B', workplaceName: 'テスト情報', depName: '部門3'},
+            {id: '90000000-0000-0000-0000-000000000003', code: '000000000003', businessName: 'C', workplaceName: 'カレンダーの登録', depName: '部門4'},
+            {id: '90000000-0000-0000-0000-000000000004', code: '000000000004', businessName: 'D', workplaceName: 'カレンダーの登録', depName: '部門5'},
+            {id: '90000000-0000-0000-0000-000000000005', code: '000000000005', businessName: 'E', workplaceName: 'ベトナムレビュー', depName: '部門6'},
+            {id: '90000000-0000-0000-0000-000000000006', code: '000000000006', businessName: 'F', workplaceName: '雇用名称', depName: '部門7'},
+            {id: '90000000-0000-0000-0000-000000000007', code: '000000000007', businessName: 'G', workplaceName: '外部予算実績受入職場ID', depName: '部門8'},
+            {id: '90000000-0000-0000-0000-000000000008', code: '000000000008', businessName: 'H', workplaceName: '算実績受入年月日', depName: '部門9'},
+            {id: '90000000-0000-0000-0000-000000000009', code: '000000000009', businessName: 'I', workplaceName: '個人情報レイアウトコード', depName: '部門10'},
+            {id: '90000000-0000-0000-0000-000000000010', code: '000000000010', businessName: 'K', workplaceName: '個人情報レイアウト名称', depName: '部門11'},
+            {id: '90000000-0000-0000-0000-000000000011', code: '000000000011', businessName: 'J', workplaceName: '個人情報', depName: '部門12' },
+            {id: '90000000-0000-0000-0000-000000000012', code: '000000000012', businessName: 'D', workplaceName: '名称', depName: '部門13'},
+            {id: '90000000-0000-0000-0000-000000000013', code: '000000000013', businessName: 'C', workplaceName: '個人情報', depName: '部門14'}]);
             self.systemType = ko.observable(SystemType.EMPLOYMENT);
             self.isDisplayOrganizationName = ko.observable(true);
             self.isDisplayOrganizationName.subscribe(function(value: boolean) {

@@ -62,9 +62,11 @@ module nts.uk.com.view.cmm011 {
                 })
             }
             
-            // is select first history
-            public isSelectFirst() {
-                var self = this;
+            /**
+             * isSelectedLatestHistory
+             */
+            public isSelectedLatestHistory() {
+                let self = this;
                 if (self.lstWpkHistory().length > 0) {
                     return self.selectedWpkHistory() == self.lstWpkHistory()[0].historyId;
                 }

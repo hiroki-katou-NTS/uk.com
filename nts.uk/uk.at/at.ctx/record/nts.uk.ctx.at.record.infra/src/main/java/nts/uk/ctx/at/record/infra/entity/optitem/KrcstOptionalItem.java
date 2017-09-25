@@ -6,9 +6,13 @@ package nts.uk.ctx.at.record.infra.entity.optitem;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -37,19 +41,25 @@ public class KrcstOptionalItem extends UkJpaEntity implements Serializable {
 
 	/** The optional item atr. */
 	@Column(name = "OPTIONAL_ITEM_ATR")
-	private short optionalItemAtr;
+	private int optionalItemAtr;
 
 	/** The usage atr. */
 	@Column(name = "USAGE_ATR")
-	private short usageAtr;
+	private int usageAtr;
 
 	/** The performance atr. */
 	@Column(name = "PERFORMANCE_ATR")
-	private short performanceAtr;
+	private int performanceAtr;
 
 	/** The emp condition atr. */
 	@Column(name = "EMP_CONDITION_ATR")
-	private short empConditionAtr;
+	private int empConditionAtr;
+
+	/** The krcst calc result range. */
+	@OneToOne(optional = true, cascade = CascadeType.ALL)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO") })
+	public KrcstCalcResultRange krcstCalcResultRange;
 
 	/**
 	 * Instantiates a new krcst optional item.
@@ -61,7 +71,8 @@ public class KrcstOptionalItem extends UkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new krcst optional item.
 	 *
-	 * @param krcstOptionalItemPK the krcst optional item PK
+	 * @param krcstOptionalItemPK
+	 *            the krcst optional item PK
 	 */
 	public KrcstOptionalItem(KrcstOptionalItemPK krcstOptionalItemPK) {
 		this.krcstOptionalItemPK = krcstOptionalItemPK;
@@ -91,7 +102,8 @@ public class KrcstOptionalItem extends UkJpaEntity implements Serializable {
 		}
 		KrcstOptionalItem other = (KrcstOptionalItem) object;
 		if ((this.krcstOptionalItemPK == null && other.krcstOptionalItemPK != null)
-				|| (this.krcstOptionalItemPK != null && !this.krcstOptionalItemPK.equals(other.krcstOptionalItemPK))) {
+				|| (this.krcstOptionalItemPK != null
+						&& !this.krcstOptionalItemPK.equals(other.krcstOptionalItemPK))) {
 			return false;
 		}
 		return true;

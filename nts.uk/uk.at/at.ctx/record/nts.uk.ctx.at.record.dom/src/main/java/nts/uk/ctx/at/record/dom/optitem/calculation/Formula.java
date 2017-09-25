@@ -6,6 +6,7 @@ package nts.uk.ctx.at.record.dom.optitem.calculation;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
@@ -36,7 +37,7 @@ public class Formula extends AggregateRoot {
 
 	/** The formula atr. */
 	// 属性
-	private FormulaAtr formulaAtr;
+	private OptionalItemAtr formulaAtr;
 
 	/** The formula name. */
 	// 計算式名称
