@@ -1,78 +1,42 @@
-#functions-area button ~ .ntsControl {
-	margin-left: 15px;
+@import url("base.css");
+
+/*A1_002*/
+#init_setting_btn {
+	margin-right: 200px;
+	float: right;
 }
 
-#functions-area button+.ntsControl {
-	margin-left: 300px;
-}
-
-#contents-area .left-area, #contents-area .right-area {
+.top_left_col1 {
+	width: 100px;
 	float: left;
 }
 
-#contents-area .left-area {
-	width: 320px;
-	margin-left: 85px;
-}
-
-#contents-area .left-area .bg-green {
-	padding: 12px;
-}
-
-#contents-area .right-area {
-	width: 1015px;
-	padding-left: 5px;
-}
-
-#contents-area .left-area #lefttabs {
-	margin-top: 15px;
-}
-
-#contents-area .left-area #lefttabs .ui-tabs-panel {
-	min-height: 300px;
-}
-
-#contents-area .left-area #lefttabs .ntsSearchBox.ntsSearchBox_Component
-	{
-	min-width: 131px;
-}
-
-.avatar-group, .person-group, .action-group {
+.top_left_col2 {
 	float: left;
-	padding: 0 5px;
 }
 
-.avatar-group {
-	width:108px;
-	height: 147px;
-}
-
-.person-group {
+#step1_content_top_left {
+	float: left;
 	width: 600px;
-	height: 147px;
 }
 
-.action-group {
-	width: 220px;
+#step1_content_top_right {
+	float: left;
+	width: 250px;
 }
 
-.active-panel {
-	width: 100%;   
-	min-height: 64px;
-    height: 100%;
-	border: 1px solid #999999;
-	margin-bottom: 10px;
+.nts-wizard.vertical>.steps {
+	width: 250px !important;
 }
 
-.active-panel:before {
-	content: '';
-	display: block;
-	background-color: #00B050;
-	display: block;
-	background-color: #00B050;
-	height: 7px;
+.nts-wizard.vertical>.content {
+	width: 1000px;
 }
 
-.avatar-group img {
-	padding: 5px 2px 2px 5px;
+#wizard {
+	width: auto !important;
+}
+
+#top_right_hr {
+	margin-top: 40px;
 }

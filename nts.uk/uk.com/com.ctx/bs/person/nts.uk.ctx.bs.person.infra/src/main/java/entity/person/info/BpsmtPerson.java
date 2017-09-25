@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BPSMT_PERSON")
-public class BpsmtPerson  extends UkJpaEntity implements Serializable {
+public class BpsmtPerson extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
@@ -34,31 +34,31 @@ public class BpsmtPerson  extends UkJpaEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "GENDER")
 	public int gender;
-	
+
 	@Basic(optional = false)
 	@Column(name = "PERSON_MOBILE")
 	public String personMobile;
-	
+
 	@Basic(optional = false)
 	@Column(name = "PERSON_MAIL_ADDERSS")
 	public String personMailAddress;
-	
+
 	@Basic(optional = true)
 	@Column(name = "HOBBY")
 	public String hobby;
-	
+
 	@Basic(optional = true)
 	@Column(name = "TASTE")
 	public String taste;
-	
+
 	@Basic(optional = true)
 	@Column(name = "NATIONALITY")
 	public String nationality;
-	
+
 	@Basic(optional = false)
 	@Column(name = "PERSON_NAME")
 	public String personName;
-	
+
 	@Basic(optional = true)
 	@Column(name = "PERSON_NAME_KANA")
 	public String personNameKana;
@@ -90,7 +90,7 @@ public class BpsmtPerson  extends UkJpaEntity implements Serializable {
 	@Basic(optional = true)
 	@Column(name = "TODOKEDE_OLD_FULLNAME")
 	public String todokedeOldFullName;
-	
+
 	@Override
 	protected Object getKey() {
 		return this.bpsmtPersonPk;
