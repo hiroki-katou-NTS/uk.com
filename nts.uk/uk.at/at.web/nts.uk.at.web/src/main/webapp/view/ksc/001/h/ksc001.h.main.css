@@ -1,0 +1,13 @@
+.lable-line{
+	display: block;
+    margin-bottom: 20px;
+}
+a.nounderline {
+	text-decoration: none;
+}
+.ui-dialog-titlebar-close{
+	display: none !important;
+}
+.date-range{
+	margin-left: 60px;
+}
