@@ -90,7 +90,7 @@ module nts.uk.com.view.cmm011.a {
                 return dfd.promise();
             }
             
-            private  getTree():void{
+            private getTree():void{
                 var self = this;
                 service.findLstWorkPlace(new Date()).done(()=>{
                     
@@ -205,6 +205,10 @@ module nts.uk.com.view.cmm011.a {
                 
                 // subscribe
                 self.lstWorkplace.subscribe(dataList => {
+                    // update nodeText, level of tree
+                    self.updateTree(self.lstWorkplace());
+                    
+                    // convert tree to array
                     self.treeArray(self.convertTreeToArray(dataList));
                 });
                 self.selectedWpkId.subscribe(newValue => {
@@ -225,7 +229,7 @@ module nts.uk.com.view.cmm011.a {
                     self.lstWorkplace(res);
                     
                     // calculate width of cell nodeText
-                    self.calWidthColText()
+                    self.calWidthColText();
                     dfd.resolve();
                 }).fail((res: any) => {
                     self.screenModel.showMessageError(res);
@@ -283,6 +287,21 @@ module nts.uk.com.view.cmm011.a {
                 }).length;
                 let maxHeirarchies: number = 999;
                 return lengthElementSameHeirachies < maxHeirarchies;
+            }
+            
+            /**
+             * updateTree
+             */
+            private updateTree(dataList: Array<TreeWorkplace>) {
+                let self = this;
+                for (let item of dataList) {
+                    item.nodeText = item.code + " " + item.name;
+                    item.level = item.hierarchyCode.length / 3;
+                    
+                    if (item.childs) {
+                        self.updateTree(item.childs);
+                    }
+                }
             }
             
             /**
