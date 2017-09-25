@@ -4,24 +4,24 @@ module nts.uk.com.view.cmm011.a {
          *  Service paths
          */
         var servicePath: any = {
-            findLstWorkPlace: "basic/organization/findworkplace",
+            findLstWorkPlace: "bs/employee/workplace/config/info/find",
         };
         
         export function findLstWorkPlace(baseDate: Date): JQueryPromise<Array<model.TreeWorkplace>> {
             let dfd = $.Deferred();
-//            nts.uk.request.ajax(servicePath.findLstWorkPlace + "/" + baseDate).done(function(res: Array<model.TreeWorkplace>) {
-//                let list = _.map(res, function(item) {
-//                    return new model.TreeWorkplace(item.workplaceId, item.code, item.name, item.heirarchyCode, item.childs);
-//                });
-//
-//                dfd.resolve(list);
-//            });
-            // TODO: fake data
-            let res: Array<model.TreeWorkplace> = viewmodel.ScreenModel.fakeDataWorkplace();
-            let list = _.map(res, function(item) {
-                return new model.TreeWorkplace(item.workplaceId, item.code, item.name, item.heirarchyCode, item.childs);
+            nts.uk.request.ajax(servicePath.findLstWorkPlace,{startDate: baseDate}).done(function(res: Array<model.TreeWorkplace>) {
+                let list = _.map(res, function(item) {
+                    return new model.TreeWorkplace(item.workplaceId, item.code, item.name, item.heirarchyCode, item.childs);
+                });
+
+                dfd.resolve(list);
             });
-            dfd.resolve(list);
+            // TODO: fake data
+//            let res: Array<model.TreeWorkplace> = viewmodel.ScreenModel.fakeDataWorkplace();
+//            let list = _.map(res, function(item) {
+//                return new model.TreeWorkplace(item.workplaceId, item.code, item.name, item.heirarchyCode, item.childs);
+//            });
+//            dfd.resolve(list);
             return dfd.promise();
         }
         

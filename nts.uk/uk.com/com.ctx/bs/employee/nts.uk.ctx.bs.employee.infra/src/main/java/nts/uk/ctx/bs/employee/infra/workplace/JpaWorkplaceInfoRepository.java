@@ -99,4 +99,32 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		return Optional.of(lstWkpInfo.get(0));
 	}
 
+	@Override
+	public Optional<WorkplaceInfo> findLatestByWorkplaceId(String wkpId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsymtWorkplaceInfo> cq = criteriaBuilder.createQuery(BsymtWorkplaceInfo.class);
+		Root<BsymtWorkplaceInfo> root = cq.from(BsymtWorkplaceInfo.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid), wkpId));
+		cq.orderBy(
+				criteriaBuilder.desc(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.strD)));
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		List<WorkplaceInfo> lstWkpInfo = em.createQuery(cq).getResultList().stream().map(item -> {
+			return new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item));
+		}).collect(Collectors.toList());
+		if (lstWkpInfo.isEmpty()) {
+			return Optional.of(null);
+		}
+		return Optional.of(lstWkpInfo.get(0));
+	}
+
 }

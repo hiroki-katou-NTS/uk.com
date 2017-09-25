@@ -158,4 +158,33 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
 				.collect(Collectors.toList());
 		return Optional.of(new WorkplaceConfig(new JpaWorkplaceConfigGetMemento(companyId, lstWorkplaceConfigHistory)));
 	}
+
+	@Override
+	public Optional<WorkplaceConfig> findByStartDate(String companyId,GeneralDate startDate) {
+		List<WorkplaceConfigHistory> lstWorkplaceConfigHistory = new ArrayList<>();
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsymtWkpConfig> cq = criteriaBuilder.createQuery(BsymtWkpConfig.class);
+		Root<BsymtWkpConfig> root = cq.from(BsymtWkpConfig.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(BsymtWkpConfig_.bsymtWkpConfigPK).get(BsymtWkpConfigPK_.cid), companyId));
+
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(BsymtWkpConfig_.strD), startDate));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// exclude select
+		lstWorkplaceConfigHistory = em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
+				.collect(Collectors.toList());
+		return Optional.of(new WorkplaceConfig(new JpaWorkplaceConfigGetMemento(companyId, lstWorkplaceConfigHistory)));
+	}
 }

@@ -5,15 +5,17 @@
 package nts.uk.ctx.bs.employee.infra.workplace;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 
 @Stateless
-public class JpaBSWorkplaceRepository implements WorkplaceRepository {
+public class JpaBSWorkplaceRepository extends JpaRepository implements WorkplaceRepository {
 
 	@Override
 	public List<Workplace> findByStartDate(String companyId, GeneralDate date) {
@@ -42,6 +44,12 @@ public class JpaBSWorkplaceRepository implements WorkplaceRepository {
 
 	@Override
 	public List<Workplace> findByWkpIds(List<String> workplaceIds) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<Workplace> findLatestByWorkplaceId(String workplaceId) {
 		// TODO Auto-generated method stub
 		return null;
 	}

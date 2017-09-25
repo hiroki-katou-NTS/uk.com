@@ -31,7 +31,7 @@ module nts.uk.com.view.cmm011.a {
             constructor() {
                 let self = this;
                 
-                self.strDWorkplace = ko.observable("2016/04/01");
+                self.strDWorkplace = ko.observable("2000/10/11");
                 self.endDWorkplace = ko.observable("9999/12/31");
                 self.treeWorkplace = ko.observable(new TreeWorkplaceModel(self));
                 self.workplaceHistory = ko.observable(new WorkplaceHistoryModel());
@@ -90,6 +90,12 @@ module nts.uk.com.view.cmm011.a {
                 return dfd.promise();
             }
             
+            private  getTree():void{
+                var self = this;
+                service.findLstWorkPlace(new Date()).done(()=>{
+                    
+                });
+            }
             /**
              * configureWkpDialog
              */

@@ -6,6 +6,8 @@ package nts.uk.ctx.bs.employee.dom.workplace.configinfo;
 
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 /**
  * The Interface WorkplaceConfigInfoRepository.
  */
@@ -33,4 +35,13 @@ public interface WorkplaceConfigInfoRepository {
 	 * @return the optional
 	 */
 	Optional<WorkplaceConfigInfo> find(String companyId, String historyId);
+	
+	/**
+	 * Find by start date.
+	 *
+	 * @param companyId the company id
+	 * @param startDate the start date
+	 * @return the optional
+	 */
+	Optional<WorkplaceConfigInfo> findByStartDate(String companyId, GeneralDate startDate);
 }

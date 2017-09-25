@@ -4,20 +4,33 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace.configinfo.HierarchyCode;
 import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceHierarchySetMemento;
 
+@Getter
+@Setter
 public class WorkplaceHierarchyDto implements WorkplaceHierarchySetMemento {
 
 	/** The workplace id. */
-	// 職場ID
 	public String workplaceId;
 
 	/** The hierarchy code. */
-	// 階層コード
 	public String hierarchyCode;
+	
+	/** The name. */
+	public String name;
+	
+	/** The code. */
+	public String code;
 
+	/** The childs. */
+	private List<WorkplaceHierarchyDto> childs;
+	
 	@Override
 	public void setWorkplaceId(WorkplaceId workplaceId) {
 		this.workplaceId = workplaceId.v();
@@ -27,5 +40,4 @@ public class WorkplaceHierarchyDto implements WorkplaceHierarchySetMemento {
 	public void setHierarchyCode(HierarchyCode hierarchyCode) {
 		this.hierarchyCode = hierarchyCode.v();
 	}
-
 }
