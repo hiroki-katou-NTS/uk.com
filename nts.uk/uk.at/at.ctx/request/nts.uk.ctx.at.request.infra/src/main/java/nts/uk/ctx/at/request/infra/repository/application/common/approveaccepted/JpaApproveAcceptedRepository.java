@@ -21,20 +21,24 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 			+ " AND c.kafdtApproveAcceptedPK.approverSID = :approverSID";
 	
 	private ApproveAccepted toDomain(KafdtApproveAccepted entity) {
-		return ApproveAccepted.createFromJavaType(entity.kafdtApproveAcceptedPK.companyID, 
+		// 2017.09.25
+		/*return ApproveAccepted.createFromJavaType(entity.kafdtApproveAcceptedPK.companyID, 
 				entity.kafdtApproveAcceptedPK.phaseID, 
 				entity.kafdtApproveAcceptedPK.dispOrder, 
 				entity.kafdtApproveAcceptedPK.approverSID
-				);
+				);*/
+		return null;
 	}
 	
 	private KafdtApproveAccepted toEntity(ApproveAccepted domain) {
-		return new KafdtApproveAccepted( 
+		// 2017.09.25
+		/*return new KafdtApproveAccepted( 
 				new KafdtApproveAcceptedPK(
 					domain.getCompanyID(),
 					domain.getPhaseID(),
 					domain.getDispOrder(),
-					domain.getApproverSID()));
+					domain.getApproverSID()));*/
+		return null;
 	}
 	
 	/**

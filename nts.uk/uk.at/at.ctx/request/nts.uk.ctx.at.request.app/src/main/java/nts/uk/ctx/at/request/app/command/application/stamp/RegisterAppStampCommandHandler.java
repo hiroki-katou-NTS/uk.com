@@ -49,7 +49,7 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 		String companyID = AppContexts.user().companyId();
 		AppStampCmd appStampCmd = context.getCommand();
 		AppStamp appStamp = null;
-		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
+		/*List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
 				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
 						companyID, 
 						"", 
@@ -75,7 +75,8 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 										)).collect(Collectors.toList())
 								)).collect(Collectors.toList())
 						))
-				.collect(Collectors.toList());
+				.collect(Collectors.toList());*/
+		List<AppApprovalPhase> appApprovalPhases = new ArrayList<>();
 		StampRequestMode stampRequestMode = EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class);
 		switch(stampRequestMode){
 			case STAMP_GO_OUT_PERMIT: 

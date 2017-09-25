@@ -143,11 +143,10 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 			appApprovalPhaseRepository.create(appApprovalPhase);
 			appApprovalPhase.getListFrame().forEach(approvalFrame -> {
 				approvalFrame.getListApproveAccepted().forEach(appAccepted -> {
-					approveAcceptedRepository.createApproverAccepted(ApproveAccepted.createFromJavaType(
+					/*approveAcceptedRepository.createApproverAccepted(new ApproveAccepted.createFromJavaType(
 							appAccepted.getCompanyID(), 
 							phaseID, 
-							appAccepted.getDispOrder(), 
-							appAccepted.getApproverSID()));
+							appAccepted.getApproverSID()));*/
 				});
 			});
 		});
