@@ -12,6 +12,7 @@ import entity.person.info.category.PpemtPerInfoCtgCm;
 import entity.person.info.category.PpemtPerInfoCtgCmPK;
 import entity.person.info.category.PpemtPerInfoCtgOrder;
 import entity.person.info.category.PpemtPerInfoCtgPK;
+import entity.person.info.setting.BsystEmployeeCopySetting;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -51,6 +52,19 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	private final static String SELECT_CHECK_CTG_NAME_QUERY = "SELECT c.categoryName"
 			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName"
 			+ " AND c.ppemtPerInfoCtgPK.perInfoCtgId != :ctgId";
+	
+	private final static String COUNT_PERINFOCTGIN_COPYSETING = "SELECT COUNT(i) FROM BsystEmployeeCopySetting i "
+			+ "WHERE i.BsystEmployeeCopySettingPk.categoryId = :categoryId AND i.companyId = :companyId";
+	
+	private final static String SELECT_CATEGORY_BY_NAME = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
+			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
+			+ " co.categoryParentCd, co.categoryType, co.personEmployeeType, co.fixedAtr, po.disporder"
+			+ " FROM PpemtPerInfoCtg ca INNER JOIN PpemtPerInfoCtgCm co"
+			+ " ON ca.categoryCd = co.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " INNER JOIN PpemtPerInfoCtgOrder po ON ca.cid = po.cid AND"
+			+ " ca.ppemtPerInfoCtgPK.perInfoCtgId = po.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE co.ppemtPerInfoCtgCmPK.contractCd = :contractCd AND ca.cid = :cid"
+			+ " AND ca.categoryName LIKE CONCAT('%', :categoryName, '%') ORDER BY po.disporder";
 
 	@Override
 	public List<PersonInfoCategory> getAllPerInfoCategory(String companyId, String contractCd) {
@@ -206,4 +220,36 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 				dateRangeItem.getEndDateItemId(), dateRangeItem.getDateRangeItemId());
 	}
 
+	//vinhpx: start
+	@Override
+	public boolean checkPerInfoCtgAlreadyCopy(String perInfoCtgId, String companyId) {
+		Optional<Long> a = this.queryProxy().query(COUNT_PERINFOCTGIN_COPYSETING, Long.class)
+				.setParameter("categoryId", perInfoCtgId).setParameter("companyId", companyId).getSingle();
+		return a.isPresent() ? (a.get().intValue() > 0 ? true: false) : false;
+	}
+	
+	@Override
+	public void updatePerInfoCtgInCopySetting(String perInfoCtgId, String companyId) {
+		boolean alreadyExist = checkPerInfoCtgAlreadyCopy( perInfoCtgId,  companyId);		
+		if(!alreadyExist){
+			BsystEmployeeCopySetting obj = new BsystEmployeeCopySetting();
+			obj.BsystEmployeeCopySettingPk.categoryId = perInfoCtgId;
+			obj.companyId = companyId;
+			getEntityManager().persist(obj);
+		}		
+	}	
+	
+	@Override
+	public List<PersonInfoCategory> getPerInfoCategoryByName(String companyId, String contractCd, String name) {
+		return this.queryProxy().query(SELECT_CATEGORY_BY_NAME, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("cid", companyId)
+				.setParameter("categoryName", name).getList(c -> {
+					return createDomainFromEntity(c);
+				});
+	}
+	//vinhpx: end
+
+	
+
+	
 }

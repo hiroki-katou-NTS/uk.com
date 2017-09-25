@@ -20,6 +20,6 @@ public class BsystEmployeeCopySettingPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Basic(optional = false)
 	@Column(name = "COPY_CTG_ID")
-	public String copyCategoryId;
+	public String categoryId;
 
 }

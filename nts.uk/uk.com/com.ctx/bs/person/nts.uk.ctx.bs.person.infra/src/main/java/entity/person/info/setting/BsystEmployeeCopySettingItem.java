@@ -24,7 +24,7 @@ public class BsystEmployeeCopySettingItem extends UkJpaEntity  implements Serial
 	
 	@Basic(optional = false)
 	@Column(name = "COPY_CTG_ID")
-	public String copyCategoryId;
+	public String categoryId;
 
 	@Override
 	protected Object getKey() {
