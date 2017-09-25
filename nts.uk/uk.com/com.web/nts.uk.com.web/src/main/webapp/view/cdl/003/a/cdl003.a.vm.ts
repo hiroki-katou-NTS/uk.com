@@ -1,68 +1,111 @@
 module nts.uk.com.view.cdl003.a {
 
-    import ClassificationFindDto = service.model.ClassificationFindDto;
-    export module viewmodel {
+    import ListType = kcp.share.list.ListType;
+    import SelectType = kcp.share.list.SelectType;
+    import UnitModel = kcp.share.list.UnitModel;
+    import ComponentOption = kcp.share.list.ComponentOption;
 
+    export module viewmodel {
+        /**
+        * Screen Model.
+        */
         export class ScreenModel {
-            columns: KnockoutObservableArray<NtsGridListColumn>;
-            classifications: KnockoutObservableArray<ClassificationFindDto>;
-            selectedCode: KnockoutObservableArray<string>;
-            isMultiple: KnockoutObservable<boolean>;
-            searchOption: any;
-            constructor() {
+            selectedMulClassification: KnockoutObservableArray<string>;
+            selectedSelClassification: KnockoutObservable<string>;
+            classifications: ComponentOption;
+            isMultiple: boolean;
+            isShowNoSelectRow: boolean;
+            constructor(){
                 var self = this;
-                var fields: Array<string> = ['name', 'code'];
-                self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KCP002_2"), key: 'code', width: 100 },
-                    { headerText: nts.uk.resource.getText("KCP002_3"), key: 'name', width: 150 }
-                ]);
-                self.classifications = ko.observableArray([]);
-                self.selectedCode = ko.observableArray([]);
-                self.searchOption = {
-                    searchMode: 'filter',
-                    targetKey: 'code',
-                    comId: 'classificationSelect',
-                    items: self.classifications,
-                    selected: self.selectedCode,
-                    selectedKey: 'code',
-                    fields: fields,
-                    mode: 'igGrid'
-                }
-                self.isMultiple = ko.observable(true);
+                self.selectedMulClassification = ko.observableArray([]);
+                self.selectedSelClassification = ko.observable('');
+                self.isMultiple = false;
+                self.isShowNoSelectRow = false;
                 var inputCDL003 = nts.uk.ui.windows.getShared('inputCDL003');
                 if(inputCDL003){
-                    self.selectedCode(inputCDL003.canSelected);
-                    self.isMultiple(inputCDL003.isMultiple);    
+                    self.isMultiple = inputCDL003.isMultiple;
+                    self.isShowNoSelectRow = inputCDL003.showNoSelection;
+                    if (self.isMultiple) {
+                        self.selectedMulClassification(inputCDL003.canSelected);
+                    }   
+                    else {
+                        self.selectedSelClassification(inputCDL003.canSelected);
+                    } 
                 }
-           }
-            /**
-             * start page when init data
-             */
-           public startPage(): JQueryPromise<any> {
-               var self = this;
-               var dfd = $.Deferred();
-               service.findAllClassifications().done(function(data) {
-                   self.classifications(data);
-                   dfd.resolve(self);
-               });
-               return dfd.promise();
-           }
-            /**
-             * save classification code to parent
-             */
-            private saveClassificationCodes(): void{
-                var self = this;
-                nts.uk.ui.windows.setShared('outputCDL003',{selectedCode: self.selectedCode()});
-                nts.uk.ui.windows.close();
+                
+                self.classifications = {
+                    isShowAlreadySet: false,
+                    isMultiSelect: self.isMultiple,
+                    listType: ListType.Classification,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    isShowNoSelectRow:  self.isShowNoSelectRow,
+                    selectedCode: null,
+                    isDialog: true,
+                    maxRows: 12
+                }
+                if (self.isMultiple) {
+                    self.classifications.selectedCode = self.selectedMulClassification;
+                }
+                else {
+                    self.classifications.selectedCode = self.selectedSelClassification;
+                }
             }
             
             /**
+             * function on click button selected classification
+             */
+            private selectedClassification() :void {
+                var self = this;
+                var dataList: UnitModel[] = $("#classification").getDataList();
+                if(self.isMultiple){
+                    var selectedCodes: string[] = self.getSelectByMul(self.selectedMulClassification(), dataList);
+                    if(!selectedCodes || selectedCodes.length == 0){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
+                        return;
+                    }
+                    nts.uk.ui.windows.setShared('outputCDL003', { selectedCode: selectedCodes });
+                    nts.uk.ui.windows.close();    
+                }else {
+                     var selectedCode: string = self.getSelectBySel(self.selectedSelClassification(), dataList);
+                    if(!selectedCode){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
+                        return;
+                    }
+                    nts.uk.ui.windows.setShared('outputCDL003', { selectedCode: selectedCode });
+                    nts.uk.ui.windows.close();    
+                }
+                
+            }
+            
+            /**
+             * check selected code
+             */
+            private getSelectBySel(selected: string, selectedCodes: UnitModel[]): string {
+                let a = _.find(selectedCodes, x => x.code === selected);
+                if (a) {
+                    return a.code;
+                }
+                return undefined;
+            }
+            /**
+             * check selected array code
+             */
+            private getSelectByMul(selected: string[], selectedCodes: UnitModel[]): string[] {
+                var resSeleted: string[] = [];
+                for (var selectedCode of selected) {
+                    if (this.getSelectBySel(selectedCode, selectedCodes)) {
+                        resSeleted.push(selectedCode);
+                    }
+                }
+
+                return resSeleted;
+            }
+            /**
              * close windows
              */
-            private closeClassificationCodes(): void{
+            private closeWindows(): void{
                 nts.uk.ui.windows.close();  
             }
         }
-
     }
 }

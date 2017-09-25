@@ -4,9 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,6 +12,7 @@ import javax.inject.Inject;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceConfigDto;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WorkplaceConfigFinder.
@@ -32,14 +31,14 @@ public class WorkplaceConfigFinder {
 	 *            the company id
 	 * @return the list
 	 */
-	public List<WorkplaceConfigDto> findAllByCompanyId(String companyId) {
-		List<WorkplaceConfig> lstWorkplaceConfig = workplaceConfigRepository.findAllByCompanyId(companyId);
+	public WorkplaceConfigDto findAllByCompanyId() {
+		String companyId = AppContexts.user().companyId();
+		
+		WorkplaceConfig workplaceConfig = workplaceConfigRepository.findAllByCompanyId(companyId);
 
-		return lstWorkplaceConfig.stream().map(item -> {
-			WorkplaceConfigDto wkpConfigDto = new WorkplaceConfigDto();
-			item.saveToMemento(wkpConfigDto);
-			return wkpConfigDto;
-		}).collect(Collectors.toList());
+		WorkplaceConfigDto wkpConfigDto = new WorkplaceConfigDto();
+		workplaceConfig.saveToMemento(wkpConfigDto);
+		return wkpConfigDto;
 	}
 
 	/**
@@ -48,7 +47,9 @@ public class WorkplaceConfigFinder {
 	 * @param companyId the company id
 	 * @return the workplace config dto
 	 */
-	public WorkplaceConfigDto findLastestByCompanyId(String companyId) {
+	public WorkplaceConfigDto findLastestByCompanyId() {
+		String companyId = AppContexts.user().companyId();
+		
 		Optional<WorkplaceConfig> lstWorkplaceConfig = workplaceConfigRepository.findLastestByCompanyId(companyId);
 		if (lstWorkplaceConfig.isPresent()) {
 			WorkplaceConfigDto wkpConfigDto = new WorkplaceConfigDto();

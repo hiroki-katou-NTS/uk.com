@@ -136,6 +136,22 @@ module nts.uk.request {
             return new Locator(stack.join('/') + queryStringParts);
         }
     }
+    
+    export function writeDynamicConstraint(codes: Array<string>){
+        var dfd = $.Deferred();
+        ajax("constraint/getlist", codes).done(function(data: Array<any>){
+            if(nts.uk.util.isNullOrUndefined(__viewContext.primitiveValueConstraints)){
+                __viewContext.primitiveValueConstraints = {};
+            }
+            _.forEach(data, function(item){
+                __viewContext.primitiveValueConstraints[item.itemCode] = item;
+            });
+            dfd.resolve(data); 
+        }).fail(function(error){
+            dfd.reject(res);            
+        });        
+        return dfd.promise();
+    }
 
     export function ajax(path: string, data?: any, options?: any);
     export function ajax(webAppId: WebAppId, path: string, data?: any, options?: any) {
@@ -223,37 +239,15 @@ module nts.uk.request {
 
         return dfd.promise();
     }
-    export function uploadFile(data: FormData, option?: any): $.Deferred {
-        let dfd = $.Deferred();
-        $.ajax({
+    export function uploadFile(data: FormData, option?: any): JQueryPromise<any> {
+        return $.ajax({
             url: "/nts.uk.com.web/webapi/ntscommons/arc/filegate/upload",
             type: 'POST',
             data: data,
             cache: false,
             contentType: false,
-            processData: false,
-            success: function(data, textStatus, jqXHR) {
-                if (option.onSuccess) {
-                    option.onSuccess();
-                }
-
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-                if (option.onFail) {
-                    option.onFail();
-                }
-
-            }
-        }).done(function(res) {
-            if (res !== undefined && res.businessException) {
-                dfd.reject(res);
-            } else {
-                dfd.resolve(res);
-            }
-        }).fail(function(res) {
-            dfd.reject(res);
+            processData: false
         });
-        return dfd.promise();
     }
 
     export function exportFile(path: string, data?: any, options?: any) {
@@ -273,9 +267,8 @@ module nts.uk.request {
                     specials.donwloadFile(res.id);
                     dfd.resolve(res);
                 }
-
             })
-            .fail(res => {
+            .fail((res: any) => {
                 dfd.reject(res);
             });
 
@@ -337,6 +330,11 @@ module nts.uk.request {
             });
             return dfd.promise();
         }
+        
+        export function isFileExist(fileId: string): boolean {
+            return ajax("com", "/shr/infra/file/storage/isexist/" + fileId);
+        }
+        
     }
 
 
@@ -357,6 +355,7 @@ module nts.uk.request {
 
         return destination.rawUrl;
     }
+
     export function liveView(fileId: string);
     export function liveView(webAppId: WebAppId, fileId: string): string {
         let liveViewPath = "/webapi/shr/infra/file/storage/liveview/";

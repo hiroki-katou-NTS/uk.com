@@ -1,12 +1,14 @@
 package nts.uk.ctx.at.request.app.command.application.common;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.shr.com.context.AppContexts;
 /**
@@ -117,6 +119,10 @@ public class CreateApplicationCommand {
 	 * 申請開始日
 	 */
 	private GeneralDate endDate;
+	/**
+	 * list phase
+	 */
+	private List<AppApprovalPhaseDto> listPhase;
 	
 	public Application toDomain() {
 		return Application.createFromJavaType(
@@ -138,6 +144,7 @@ public class CreateApplicationCommand {
 				this.reflectPerState,  
 				this.reflectPerEnforce,
 				this.startDate,
-				this.endDate);
+				this.endDate,
+				null);
 	}
 }

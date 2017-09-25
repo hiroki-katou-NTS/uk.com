@@ -1,19 +1,24 @@
 module nts.uk.at.view.kmk010.a {
+    
     export module service {
         var paths = {
-            findAllOvertimeCalculationMethod: "ctx/at/shared/overtime/setting/findAll/method",
-            findAllOvertimeUnit: "ctx/at/shared/overtime/setting/findAll/unit",
-            findAllOvertimeRounding: "ctx/at/shared/overtime/setting/findAll/rounding",
-            findByIdOvertimeSetting: "ctx/at/shared/overtime/setting/findById",
-            findAllPremiumExtra60HRate: "ctx/at/shared/overtime/premium/extra/findAll",
-            findByIdSuperHD60HConMed: "ctx/at/shared/overtime/super/holiday/findById",
-            saveOvertimeSetting: "ctx/at/shared/overtime/setting/save",
-            saveSuperHD60HConMed: "ctx/at/shared/overtime/super/holiday/save",
-            findAllOvertimeLanguageName: "ctx/at/shared/overtime/language/name/findAll",
-            findAllOvertime : "ctx/at/shared/overtime/findAll",
-            findAllOvertimeLanguageBRDItem : "ctx/at/shared/overtime/breakdown/language/findAll",
-            findAllOvertimeBRDItem : "ctx/at/shared/overtime/breakdown/findAll",
-            findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems"
+            findAllOvertimeCalculationMethod: "ctx/at/shared/outsideot/setting/findAll/method",
+            findAllAttendanceItemOvertime: "ctx/at/shared/outsideot/setting/findAll/attendanceItem",
+            findAllOvertimeUnit: "ctx/at/shared/outsideot/setting/findAll/unit",
+            findAllOvertimeRounding: "ctx/at/shared/outsideot/setting/findAll/rounding",
+            findByIdOutsideOTSetting: "ctx/at/shared/outsideot/setting/findById",
+            findAllPremiumExtra60HRate: "ctx/at/shared/outsideot/holiday/findAll/premiumExtra",
+            findByIdSuperHD60HConMed: "ctx/at/shared/outsideot/holiday/findById",
+            saveOutsideOTSettingAndSupperHD60H: "ctx/at/shared/outsideot/setting/save",
+            findAllOvertimeNameLanguage: "ctx/at/shared/outsideot/overtime/name/language/findAll",
+            findAllOvertime : "ctx/at/shared/outsideot/overtime/findAll",
+            findAllOvertimeLanguageBRDItem : "ctx/at/shared/outsideot/breakdown/language/findAll",
+            findAllOutsideOTBRDItem : "ctx/at/shared/outsideot/breakdown/findAll",
+            findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems",
+            checkManageSixtyHourVacationSetting: "ctx/at/shared/vacation/setting/sixtyhourvacation/com/check/manage",
+            exportOutsideOTSettingExcel: "at/shared/outsideot/export/excel"
+            
+            
         }
 
         /**
@@ -40,8 +45,8 @@ module nts.uk.at.view.kmk010.a {
         /**
          * find all data overtime calculation method
          */
-        export function findByIdOvertimeSetting(): JQueryPromise<model.OvertimeSettingDto> {
-            return nts.uk.request.ajax(paths.findByIdOvertimeSetting);
+        export function findByIdOutsideOTSetting(): JQueryPromise<model.OutsideOTSettingDto> {
+            return nts.uk.request.ajax(paths.findByIdOutsideOTSetting);
         }
         
         /**
@@ -60,21 +65,15 @@ module nts.uk.at.view.kmk010.a {
         /**
          * save overtime setting to service
          */
-        export function saveOvertimeSetting(dto: model.OvertimeSettingDto): JQueryPromise<void>{
-            return nts.uk.request.ajax(paths.saveOvertimeSetting, { setting: dto });
+        export function saveOutsideOTSettingAndSupperHD60H(dtoSetting: model.OutsideOTSettingDto, dtoSuper: model.SuperHD60HConMedDto): JQueryPromise<void>{
+            return nts.uk.request.ajax(paths.saveOutsideOTSettingAndSupperHD60H, { setting: dtoSetting, superholidayConvertMethod :dtoSuper});
         }
 
         /**
-         * save super holiday 60h method
-         */
-        export function saveSuperHD60HConMed(dto: model.SuperHD60HConMedDto): JQueryPromise<void> {
-            return nts.uk.request.ajax(paths.saveSuperHD60HConMed, { setting: dto });
-        }
-        /**
          * find all overtime language name
          */
-        export function findAllOvertimeLanguageName(languageId: string): JQueryPromise<model.OvertimeLangNameDto[]> {
-            return nts.uk.request.ajax(paths.findAllOvertimeLanguageName + '/' + languageId);
+        export function findAllOvertimeNameLanguage(languageId: string): JQueryPromise<model.OvertimeNameLangDto[]> {
+            return nts.uk.request.ajax(paths.findAllOvertimeNameLanguage + '/' + languageId);
         }
         
          /**
@@ -87,14 +86,14 @@ module nts.uk.at.view.kmk010.a {
         /**
          * find all overtime language breakdown item
          */
-        export function findAllOvertimeLanguageBRDItem(languageId: string): JQueryPromise<model.OvertimeLangBRDItemDto[]> {
+        export function findAllOvertimeLanguageBRDItem(languageId: string): JQueryPromise<model.OutsideOTBRDItemLangDto[]> {
             return nts.uk.request.ajax('at', paths.findAllOvertimeLanguageBRDItem + '/' + languageId);
         } 
         /**
          * call service find all overtime breakdown item
          */
-        export function findAllOvertimeBRDItem(): JQueryPromise<model.OvertimeBRDItemDto[]> {
-            return nts.uk.request.ajax('at', paths.findAllOvertimeBRDItem);
+        export function findAllOutsideOTBRDItem(): JQueryPromise<model.OutsideOTBRDItemDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllOutsideOTBRDItem);
         }
         /**
          * call service find all daily attendance item
@@ -103,8 +102,29 @@ module nts.uk.at.view.kmk010.a {
             return nts.uk.request.ajax('at', paths.findAllDailyAttendanceItem);
         }
 
+        /**
+         * call service check manage sixty hour vacation setting
+         */
+        export function checkManageSixtyHourVacationSetting(): JQueryPromise<model.SixtyHourVacationSettingCheckDto> {
+            return nts.uk.request.ajax('at', paths.checkManageSixtyHourVacationSetting);
+        }
+        
+        /**
+         * export file excel outside overtime setting
+         */
+        export function exportOutsideOTSettingExcel(languageId: string, manage: boolean): JQueryPromise<any> {
+            return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcel, { languageId: languageId, manage: manage });
+        }
+        
+        /**
+         * call service find all attendance item overtime
+         */
+        export function findAllAttendanceItemOvertime(): JQueryPromise<number[]> {
+            return nts.uk.request.ajax('at', paths.findAllAttendanceItemOvertime);
+        }
         export module model {
 
+            
             export interface EnumConstantDto {
                 value: number;
                 fieldName: string;
@@ -119,7 +139,7 @@ module nts.uk.at.view.kmk010.a {
                 superHoliday60HOccurs: boolean;
             }
 
-            export interface OvertimeBRDItemDto {
+            export interface OutsideOTBRDItemDto {
                 useClassification: boolean;
                 breakdownItemNo: number;
                 name: string;
@@ -127,11 +147,11 @@ module nts.uk.at.view.kmk010.a {
                 attendanceItemIds: number[];
             }
             
-            export interface OvertimeSettingDto {
+            export interface OutsideOTSettingDto {
                 note: string;
                 calculationMethod: number;
                 overtimes: OvertimeDto[];
-                breakdownItems: OvertimeBRDItemDto[];
+                breakdownItems: OutsideOTBRDItemDto[];
             }
             export interface PremiumExtra60HRateDto {
                 overtimeNo: number;
@@ -147,13 +167,13 @@ module nts.uk.at.view.kmk010.a {
                 premiumExtra60HRates: PremiumExtra60HRateDto[];
             }
             
-            export interface OvertimeLangNameDto {
+            export interface OvertimeNameLangDto {
                 name: string;
                 languageId: string;
                 overtimeNo: number;
             }
             
-            export interface OvertimeLangBRDItemDto {
+            export interface OutsideOTBRDItemLangDto {
                 name: string;
                 languageId: string;
                 breakdownItemNo: number;
@@ -162,6 +182,10 @@ module nts.uk.at.view.kmk010.a {
             export interface DailyAttendanceItemDto {
                 attendanceItemId: number;
                 attendanceItemName: string;
+            }
+            
+            export interface SixtyHourVacationSettingCheckDto{
+                manage: boolean;
             }
             
         }

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.outsideot.holiday;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -26,4 +27,21 @@ public interface SuperHD60HConMedRepository {
 	 * @param domain the domain
 	 */
 	public void save(SuperHD60HConMed domain);
+	
+	/**
+	 * Find all premium rate.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	public List<PremiumExtra60HRate> findAllPremiumRate(String companyId);
+	
+	
+	/**
+	 * Save all premium rate.
+	 *
+	 * @param premiumExtras the premium extras
+	 * @param companyId the company id
+	 */
+	public void saveAllPremiumRate(List<PremiumExtra60HRate> premiumExtras, String companyId);
 }

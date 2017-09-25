@@ -9,33 +9,38 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEarchCompany;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEarchCompanyRepository;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEarchWorkplace;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEarchWorkplaceRepository;
+import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCompany;
+import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCompanyRepository;
+import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachWorkplace;
+import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachWorkplaceRepository;
 
 @Stateless
 public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommonSet {
 	
+	private final String BASE_DATE_CACHE_KEY = "baseDate";
+	
 	@Inject
-	private ApplicationSettingRepository applicationSettingRepository;
+	private ApplicationSettingRepository appSettingRepository;
 	
 	@Inject
 	private EmployeeAdapter employeeAdaptor;
 	
 	@Inject
-	private RequestOfEarchWorkplaceRepository requestOfEarchWorkplaceRepository;
+	private RequestOfEachWorkplaceRepository requestOfEachWorkplaceRepository;
 	
 	@Inject
-	private RequestOfEarchCompanyRepository requestOfEarchCompanyRepository;
+	private RequestOfEachCompanyRepository requestOfEachCompanyRepository;
 	
-	public void prelaunchAppCommonSetService(String companyID, String employeeID, int rootAtr, int targetApp, GeneralDate appDate){
+	public AppCommonSettingOutput prelaunchAppCommonSetService(String companyID, String employeeID, int rootAtr, ApplicationType targetApp, GeneralDate appDate){
+		AppCommonSettingOutput appCommonSettingOutput = new AppCommonSettingOutput();
 		GeneralDate baseDate = null;
-		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository.getApplicationSettingByComID(companyID);
+		Optional<ApplicationSetting> applicationSettingOp = appSettingRepository.getApplicationSettingByComID(companyID);
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		if(applicationSetting.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)){
 			if(appDate!=null){
@@ -46,22 +51,26 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		} else {
 			baseDate = GeneralDate.today();
 		}
-		// SessionContextProvider.get().put("baseDate", baseDate);
+		appCommonSettingOutput.generalDate = baseDate;
+		// SessionContextProvider.get().put(BASE_DATE_CACHE_KEY, baseDate);
 		
 		// 申請本人の所属職場を含める上位職場を取得する ( Acquire the upper workplace to include the workplace of the applicant himself / herself )
 		List<String> workPlaceIDs = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, baseDate);
-		List<RequestOfEarchWorkplace> loopResult = new ArrayList<>();
+		List<RequestOfEachWorkplace> loopResult = new ArrayList<>();
 		for(String workPlaceID : workPlaceIDs) {
-			Optional<RequestOfEarchWorkplace> requestOfEarchWorkplaceOp = requestOfEarchWorkplaceRepository.getRequest(companyID, workPlaceID);
+			Optional<RequestOfEachWorkplace> requestOfEarchWorkplaceOp = requestOfEachWorkplaceRepository.getRequest(companyID, workPlaceID);
 			if(requestOfEarchWorkplaceOp.isPresent()) {
 				loopResult.add(requestOfEarchWorkplaceOp.get());
 				break;
 			}
 		}
 		if(loopResult.size() == 0) {
-			Optional<RequestOfEarchCompany> rqOptional = requestOfEarchCompanyRepository.getRequestByCompany(companyID);
-			// if(rqOptional.isPresent()) SessionContextProvider.get().put("appSet", rqOptional.get());
+			Optional<RequestOfEachCompany> rqOptional = requestOfEachCompanyRepository.getRequestByCompany(companyID);
+			if(rqOptional.isPresent())
+				appCommonSettingOutput.requestOfEachCommon = rqOptional.get();
+			// SessionContextProvider.get().put("appSet", rqOptional.get());
 		} else {
+				appCommonSettingOutput.requestOfEachCommon = loopResult.get(0);
 			// SessionContextProvider.get().put("appSet", loopResult.get(0));
 		}
 		
@@ -74,6 +83,7 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		// ApplicationCommonSetting obj1 = ApplicationApprovalSettingByEmployment.find(companyID, employeeCD);
 		// return obj1
 		
+		return appCommonSettingOutput;
 	}
 	
 }

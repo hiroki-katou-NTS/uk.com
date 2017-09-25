@@ -12,6 +12,12 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
  * The Class ComAutoCalSetting.
  */
 // 会社別自動計算設定
+
+/**
+ * Gets the rest time.
+ *
+ * @return the rest time
+ */
 @Getter
 public class ComAutoCalSetting extends AggregateRoot {
 
@@ -31,6 +37,34 @@ public class ComAutoCalSetting extends AggregateRoot {
 	// 休出時間
 	private AutoCalRestTimeSetting restTime;
 
+	/**
+	 * Instantiates a new com auto cal setting.
+	 *
+	 * @param companyId the company id
+	 * @param normalOTTime the normal OT time
+	 * @param flexOTTime the flex OT time
+	 * @param restTime the rest time
+	 */
+	public ComAutoCalSetting(ComAutoCalSettingGetMemento memento) {
+		super();
+		this.companyId = memento.getCompanyId();
+		this.normalOTTime = memento.getNormalOTTime();
+		this.flexOTTime = memento.getFlexOTTime();
+		this.restTime = memento.getRestTime();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(ComAutoCalSettingSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setFlexOTTime(this.flexOTTime);
+		memento.setNormalOTTime(this.normalOTTime);
+		memento.setRestTime(this.restTime);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -65,4 +99,6 @@ public class ComAutoCalSetting extends AggregateRoot {
 			return false;
 		return true;
 	}
+
+	
 }

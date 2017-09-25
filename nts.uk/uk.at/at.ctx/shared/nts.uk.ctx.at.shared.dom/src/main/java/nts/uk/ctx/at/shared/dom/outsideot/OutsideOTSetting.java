@@ -7,13 +7,16 @@ package nts.uk.ctx.at.shared.dom.outsideot;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNote;
 
 /**
+ * OT = Overtime
  * The Class OutsideOTSetting.
  */
 //時間外超過設定
@@ -51,6 +54,71 @@ public class OutsideOTSetting extends AggregateRoot{
 		this.breakdownItems = memento.getBreakdownItems();
 		this.calculationMethod = memento.getCalculationMethod();
 		this.overtimes = memento.getOvertimes();
+		
+		// validate domain
+		if(CollectionUtil.isEmpty(this.breakdownItems)){
+			throw new BusinessException("Msg_485");
+		}
+		if (!checkUseBreakdownItem()) {
+			throw new BusinessException("Msg_485");
+		}
+		if(CollectionUtil.isEmpty(this.overtimes)){
+			throw new BusinessException("Msg_486");
+		}
+		if (!checkUseOvertime()) {
+			throw new BusinessException("Msg_486");
+		}
+		if(this.checkOverlapProductNumber()){
+			throw new BusinessException("Msg_490");
+		}
+	}
+	
+	/**
+	 * Check use breakdown item.
+	 *
+	 * @return true, if successful
+	 */
+	private boolean checkUseBreakdownItem() {
+		for (OutsideOTBRDItem breakdownItem : this.breakdownItems) {
+			if (breakdownItem
+					.getUseClassification().value == UseClassification.UseClass_Use.value) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Check use overtime.
+	 *
+	 * @return true, if successful
+	 */
+	private boolean checkUseOvertime() {
+		for (Overtime overtime : this.overtimes) {
+			if (overtime.getUseClassification().value == UseClassification.UseClass_Use.value) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
+	 * Check overlap product number.
+	 *
+	 * @return true, if successful
+	 */
+	private boolean checkOverlapProductNumber() {
+		for (OutsideOTBRDItem breakdownItem1 : this.breakdownItems) {
+			for (OutsideOTBRDItem breakdownItem2 : this.breakdownItems) {
+				if (breakdownItem1.getBreakdownItemNo().value != breakdownItem2
+						.getBreakdownItemNo().value
+						&& breakdownItem1.getProductNumber().value == breakdownItem2
+								.getProductNumber().value) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 

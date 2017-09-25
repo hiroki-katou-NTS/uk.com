@@ -2,6 +2,10 @@ module cps001.a.vm {
     import info = nts.uk.ui.dialog.info;
     import alert = nts.uk.ui.dialog.alert;
     import text = nts.uk.resource.getText;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
+    import showDialog = nts.uk.ui.dialog;
 
     let DEF_AVATAR = 'images/avatar.png',
         __viewContext: any = window['__viewContext'] || {},
@@ -40,6 +44,7 @@ module cps001.a.vm {
         };
 
         person: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ id: '' }));
+        layout: KnockoutObservable<any> = ko.observable({ items: ko.observableArray([]) });
 
         constructor() {
             let self = this,
@@ -49,8 +54,33 @@ module cps001.a.vm {
         }
 
         start() {
-            let self = this;
+            let self = this,
+                layout = self.layout();
+
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
+
+            // demo data layout
+            service.getData().done(x => {
+                layout.items(x.itemsClassification);
+            });
+        }
+
+        deleteEmployee() {
+            let self = this;
+
+            modal('../b/index.xhtml').onClosed(() => { });
+        }
+
+        unManagerEmployee() {
+            let self = this;
+
+            modal('../c/index.xhtml').onClosed(() => { });
+        }
+
+        pickLocation() {
+            let self = this;
+
+            modal('../e/index.xhtml').onClosed(() => { });
         }
 
         saveData() {

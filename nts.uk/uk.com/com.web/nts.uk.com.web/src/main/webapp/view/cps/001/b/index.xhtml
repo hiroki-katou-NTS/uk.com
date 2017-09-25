@@ -10,8 +10,8 @@
 			<title>#{i18n.getText('CPS001_2')}</title>
 			<script type='text/javascript'>
 				var dialogSize = {
-					width : 570,
-					height : 540
+					width : 470,
+					height : 440
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
@@ -23,10 +23,26 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
+				<div class="form-group">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_45')}</div>
+					<span class="text-inform">#{i18n.getText('CPS001_47')}</span>
+				</div>
+				<div class="form-group">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_46')}</div>
+					<textarea data-bind="ntsMultilineEditor: {
+						value: ko.observable(''),
+						/*constraint: '',*/
+						option: {},
+						enable: true,
+						readonly: false,
+						immediate: false}">
+						</textarea>
+				</div>
+				<div class="text-bottom" data-bind="html: nts.uk.resource.getText('CPS001_48').replace(/\n/g, '&lt;br/&gt;')"></div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="click: pushData">#{i18n.getText('CPS001_1')}</button>
-				<button data-bind="click: close">#{i18n.getText('CPS001_1')}</button>
+				<button class="danger x-large" data-bind="click: pushData">#{i18n.getText('CPS001_43')}</button>
+				<button data-bind="click: close">#{i18n.getText('CPS001_44')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

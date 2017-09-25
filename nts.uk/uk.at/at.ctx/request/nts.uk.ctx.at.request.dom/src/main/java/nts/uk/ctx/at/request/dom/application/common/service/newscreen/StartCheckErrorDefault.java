@@ -11,7 +11,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestAppDetailSetting;
-import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEarchCompanyRepository;
+import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCompanyRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -25,7 +25,7 @@ public class StartCheckErrorDefault implements StartCheckErrorService {
 	 * 申請詳細設定
 	 */
 	@Inject
-	private RequestOfEarchCompanyRepository requestRepo;
+	private RequestOfEachCompanyRepository requestRepo;
 	/**
 	 * 申請設定
 	 */

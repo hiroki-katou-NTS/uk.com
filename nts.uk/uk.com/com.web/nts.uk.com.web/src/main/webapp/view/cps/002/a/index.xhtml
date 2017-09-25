@@ -9,145 +9,144 @@
 		<ui:define name="htmlHead">
 			<title>#{i18n.getText('CPS001_1')}</title>
 			<com:scriptfile set="IGNITE" />
-
-			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.service.js"
-				of="/nts.uk.com.web" />
-			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
-
-			<com:stylefile path="cps001.a.style.css" />
-			<com:scriptfile path="cps001.a.service.js" />
-			<com:scriptfile path="cps001.a.vm.js" />
-			<com:scriptfile path="cps001.a.start.js" />
+			<com:stylefile path="cps002.a.style.css" />
+			<com:scriptfile path="cps002.a.service.js" />
+			<com:scriptfile path="cps002.a.vm.js" />
+			<com:scriptfile path="cps002.a.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button type="button" class="proceed" data-bind="click: saveData">#{i18n.getText('CPS001_4')}</button>
-				<button type="button">#{i18n.getText('CPS001_5')}</button>
-				<button type="button" class="danger">#{i18n.getText('CPS001_6')}</button>
-				<a class="goout"
-					data-bind="ntsLinkButton: { jump: './index.xhtml' }">#{i18n.getText('CPS001_7')}</a>
-				<a class="goout"
-					data-bind="ntsLinkButton: { jump: './index.xhtml' }">#{i18n.getText('CPS001_8')}</a>
+				<button id="init_setting_btn">#{i18n.getText('CPS002_11')}</button>
+
 			</div>
 			<div id="contents-area" class="cf">
-				<div id="ccgcomponent"></div>
-				<div class="left-area">
-					<div class="bg-green">
-						<table id="employees"
-							data-bind="ntsGridList: {								
-								height: 250,
-								dataSource: ko.observableArray([
-									{id: 1, name: 'name 1'},
-									{id: 2, name: 'name 2'},
-									{id: 3, name: 'name 3'},
-									{id: 4, name: 'name 4'},
-									]),
-								primaryKey: 'id',
-								columns: [
-									{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-		                			{ headerText: '名称', key: 'name', width: 280, hidden: false }
-								],
-								multiple: false,
-								value: ko.observable(undefined)
-							}"></table>
+				<div id="wizard"
+					data-bind="ntsWizard: {steps: stepList, theme: 'yellow'}"
+					class="cf">
+					<div class="header">
+						<div class="image"
+							data-icon="../../../lib/nittsu/ui/style/images/ntsWizard/start-images.jpg"></div>
+						<div class="content">#{i18n.getText('CPS002_12')}</div>
 					</div>
-					<div id="lefttabs"
-						data-bind="ntsTabPanel: {
-							dataSource: [
-								{
-									id: 'layout', 
-									title: nts.uk.resource.getText('CPS001_23'), 
-									content: '.layouttab', 
-									enable: ko.observable(true), 
-									visible: ko.observable(true)
-								},
-								{
-									id: 'category', 
-									title: nts.uk.resource.getText('CPS001_24'), 
-									content: '.categorytab', 
-									enable: ko.observable(true), 
-									visible: ko.observable(true)
-								}], 
-							active: ko.observable('layout')
-							}">
-						<div class="layouttab">
-							<div
-								data-bind="ntsSearchBox: {
-									searchMode: 'filter',
-									targetKey: 'code',
-									comId: 'layouts',
-									items: ko.observableArray([]),
-									selectedKey: 'code', 
-									fields: ['name', 'code'], 
-									mode: 'igGrid'}"></div>
-							<table id="layouts"
-								data-bind="ntsGridList: {								
-									height: 250,
-									dataSource: ko.observableArray([
-										{id: 1, name: 'name 1'},
-										{id: 2, name: 'name 2'},
-										{id: 3, name: 'name 3'},
-										{id: 4, name: 'name 4'},
-										]),
-									primaryKey: 'id',
-									columns: [
-										{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-			                			{ headerText: '名称', key: 'name', width: 255, hidden: false }
-									],
-									multiple: false,
-									value: ko.observable(undefined)
-							}"></table>
-						</div>
-						<div class="categorytab">
-							<div
-								data-bind="ntsSearchBox: {
-									searchMode: 'filter',
-									targetKey: 'code',
-									comId: 'categories',
-									items: ko.observableArray([]),
-									selectedKey: 'code', 
-									fields: ['name', 'code'], 
-									mode: 'igGrid'}"></div>
-							<table id="categories"
-								data-bind="ntsGridList: {								
-									height: 250,
-									dataSource: ko.observableArray([
-										{id: 1, name: 'name 1'},
-										{id: 2, name: 'name 2'},
-										{id: 3, name: 'name 3'},
-										{id: 4, name: 'name 4'},
-										]),
-									primaryKey: 'id',
-									columns: [
-										{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-			                			{ headerText: '名称', key: 'name', width: 255, hidden: false }
-									],
-									multiple: false,
-									value: ko.observable(undefined)
-							}"></table>
-						</div>
+					<div class="steps">
+						<div class="step-1">#{i18n.getText('CPS002_13')}</div>
+						<div class="step-2">#{i18n.getText('CPS002_14')}</div>
+						<div class="step-3">#{i18n.getText('CPS002_15')}</div>
+						<div class="end step-4">#{i18n.getText('CPS002_16')}</div>
 					</div>
-				</div>
-				<div class="right-area">
-					<div class="top-right-area cf">
-						<div class="avatar-group">
-							<div class="active-panel">
-								<img data-bind="attr: { src: false ? '' : 'images/avatar.png'}"  />
+					<div class="contents">
+						<div class="step-1">
+							<div id="step1_content_top">
+								<div id="step1_content_top_left">
+									<div class="div_line">
+										<div class="step1_top_left_col1">
+											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_103')}</div>
+										</div>
+										<div class="step1_top_left_col2">
+											<div
+												data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+										</div>
+
+									</div>
+
+									<div class="div_line">
+										<div class="step1_top_left_col1">
+											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_104')}</div>
+										</div>
+										<div class="step1_top_left_col2">
+											<input data-bind="ntsTextEditor: {value: simpleValue}" />
+											<button>#{i18n.getText('CPS002_17')}</button>
+										</div>
+									</div>
+
+									<div class="div_line">
+										<div class="step1_top_left_col1">
+											<div data-bind="ntsFormLabel: {  required: true }">#{i18n.getText('CPS002_105')}</div>
+										</div>
+										<div class="step1_top_left_col2">
+											<input
+												data-bind="ntsTextEditor: {
+											value: simpleValue,
+											option: {
+												 width: '300' 
+												 }}" />
+										</div>
+									</div>
+
+									<div class="div_line">
+										<div class="step1_top_left_col1">
+											<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_18')}</div>
+										</div>
+										<div class="step1_top_left_col2">
+											<input data-bind="ntsTextEditor: {value: simpleValue}" />
+											<button>#{i18n.getText('CPS002_17')}</button>
+										</div>
+									</div>
+
+								</div>
+								<div id="step1_content_top_right">
+									<div class="div_line">
+										<label>#{i18n.getText('CPS002_19')}</label>
+									</div>
+									<hr id="top_right_hr" />
+									<div class="div_line">
+										<div class="last_reg_title">
+											<b>#{i18n.getText('CPS002_20')}</b>
+										</div>
+										<label><b>#{i18n.getText('CPS002_21')}</b> </label>
+									</div>
+									<div class="div_line">
+										<div class="last_reg_title">
+											<b>#{i18n.getText('CPS002_22')} </b>
+										</div>
+										<label><b>#{i18n.getText('CPS002_21')}</b></label>
+									</div>
+								</div>
+							</div>
+							<hr id="top_hr" />
+							<div id="step1_content_bottom">
+								<div class="div_line">
+									<div data-bind="ntsFormLabel: { required:true   }">#{i18n.getText('CPS002_23')}</div>
+								</div>
+
+								<div class="div_line">
+									<label id="step1_bot_des">#{i18n.getText('CPS002_24')}</label>
+								</div>
+
+								<div class="div_line">
+									<div class="step1_bot_col1">
+										<div id="init_select"
+											data-bind="ntsRadioBoxGroup: {
+														options: itemList ,
+														optionsValue: 'id' ,
+														optionsText: 'name' ,
+														value: selectedId ,
+														enable: enable
+														       		}">
+										</div>
+									</div>
+
+									<div class="step1_bot_col2">
+										<div class="div_line">
+											<button>#{i18n.getText('CPS002_30')}</button>
+										</div>
+										<div class="div_line">
+											<button>#{i18n.getText('CPS002_31')}</button>
+										</div>
+									</div>
+								</div>
+								<div class='div_line'>
+									<button class="large proceed" id="step1_next_btn">
+										#{i18n.getText('CPS002_29')}</button>
+								</div>
 							</div>
 						</div>
-						<div class="person-group">
-							<div class="active-panel"></div>
-						</div>
-						<div class="action-group">
-							<div class="active-panel"></div>
-							<div class="active-panel"></div>
-						</div>
+						<div class="step-2">contents step2</div>
+						<div class="step-3">contents step3</div>
+						<div class="step-4">contents step4</div>
 					</div>
-					<div class="bottom-right-area"></div>
+
 				</div>
 			</div>
 		</ui:define>

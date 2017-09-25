@@ -26,47 +26,54 @@ public class PersonInfoPubImp implements IPersonInfoPub {
 
 	@Override
 	public PersonInfoExport getPersonInfo(String employeeId) {
-		boolean checkEmpExit = empRepo.getBySid(employeeId).isPresent();
-		Employee employee = new Employee();
-		PersonInfoExport dto = new PersonInfoExport();
-		List<JobEntryHistoryExport> listJobEntryHist = new ArrayList<>();
-		if (checkEmpExit) {
-			employee = empRepo.getBySid(employeeId).get();
-			if (employee.getListEntryJobHist() != null) {
-				employee.getListEntryJobHist().forEach(c -> {
-
-					listJobEntryHist.add(new JobEntryHistoryExport(c.getCompanyId(), c.getSId(), c.getHiringType().v(),
-							c.getRetirementDate(), c.getJoinDate(), c.getAdoptDate()));
-
-				});
-				dto.setListJobEntryHist(listJobEntryHist);
-			} else {
-				dto.setListJobEntryHist(null);
-			}
-			Optional<Person> _person = personRepo.getByPersonId(employee.getPId());
-			Person person = new Person();
-			if (_person.isPresent()) {
-				person = _person.get();
-				String businessName = null;
-				if (person.getPersonNameGroup() != null) {
-					if (person.getPersonNameGroup().getBusinessName() != null) {
-						businessName = person.getPersonNameGroup().getBusinessName().v();
-					} else if (person.getPersonNameGroup().getPersonName() != null) {
-						businessName = person.getPersonNameGroup().getPersonName().v();
-					}
-				}
-				if (employee.getSCd() != null) {
-					dto.setEmployeeCode(employee.getSCd().v());
-				}
-				if (employee.getCompanyMail() != null) {
-					dto.setCompanyMail(employee.getCompanyMail().v());
-				}
-				dto.setEmployeeName(businessName);
-				dto.setEmployeeId(employee.getSId());
-			}
-
+		Optional<Employee> employeeOpt = empRepo.getBySid(employeeId);
+		PersonInfoExport perResult = null;
+		
+		if (employeeOpt.isPresent()) {
+			Employee employee = employeeOpt.get();
+			perResult = new PersonInfoExport();
+			
+			setEmployeeInfo(employee, perResult);
+			
+			setPersonInfo(employee.getPId(), perResult);
+			
 		}
-		return dto;
+		return perResult;
+	}
+
+	private void setPersonInfo(String pId, PersonInfoExport perResult) {
+		Optional<Person> _person = personRepo.getByPersonId(pId);
+		if (_person.isPresent()) {
+			Person person = _person.get();
+			String businessName = "";
+			if (person.getPersonNameGroup() != null) {
+				if (person.getPersonNameGroup().getBusinessName() != null) {
+					businessName = person.getPersonNameGroup().getBusinessName().v();
+				} else if (person.getPersonNameGroup().getPersonName() != null) {
+					businessName = person.getPersonNameGroup().getPersonName().v();
+				}
+			}
+			perResult.setEmployeeName(businessName);
+		}
+	}
+
+	private void setEmployeeInfo(Employee employee, PersonInfoExport perResult) {
+		perResult.setEmployeeId(employee.getSId());
+		if (employee.getSCd() != null) {
+			perResult.setEmployeeCode(employee.getSCd().v());
+		}
+		if (employee.getCompanyMail() != null) {
+			perResult.setCompanyMail(employee.getCompanyMail().v());
+		}
+		
+		if (employee.getListEntryJobHist() != null) {
+			List<JobEntryHistoryExport> listJobEntryHist = new ArrayList<>();
+			employee.getListEntryJobHist().forEach(c -> {
+				listJobEntryHist.add(new JobEntryHistoryExport(c.getCompanyId(), c.getSId(), c.getHiringType().v(),
+						c.getRetirementDate(), c.getJoinDate(), c.getAdoptDate()));
+			});
+			perResult.setListJobEntryHist(listJobEntryHist);
+		}
 	}
 
 }

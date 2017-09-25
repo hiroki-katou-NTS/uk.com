@@ -4,13 +4,24 @@ module nts.uk.com.view.cmm011.b {
          *  Service paths
          */
         var servicePath: any = {
-//            findLstWorkPlace: "basic/organization/findworkplace",
+            getListWkpConfigHistory: "bs/employee/workplace/configure/findAll",
+            saveWkpConfig: "bs/employee/workplace/configure/save"
         };
         
-//        export function findLstWorkPlace(baseDate: Date): JQueryPromise<Array<model.TreeWorkplace>> {
-//            return nts.uk.request.ajax(servicePath.findLstWorkPlace + "/" + baseDate);
-//        }
+        /**
+         * findLstWkpConfigHistory
+         */
+        export function findLstWkpConfigHistory(): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.getListWkpConfigHistory);
+        }
         
+        /**
+         * saveWkpConfig
+         */
+        export function saveWkpConfig(command: any): JQueryPromise<void>{
+            return nts.uk.request.ajax(servicePath.saveWkpConfig, command);
+        }
+         
         /**
         * Model namespace.
         */

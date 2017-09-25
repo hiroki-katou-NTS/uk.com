@@ -12,11 +12,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.record.app.command.optionalitem.OptionalItemSaveCommand;
-import nts.uk.ctx.at.record.app.command.optionalitem.OptionalItemSaveCommandHandler;
-import nts.uk.ctx.at.record.app.find.optionalitem.OptionalItemDto;
-import nts.uk.ctx.at.record.app.find.optionalitem.OptionalItemFinder;
-import nts.uk.ctx.at.record.app.find.optionalitem.OptionalItemHeaderDto;
+import nts.uk.ctx.at.record.app.command.optitem.OptionalItemSaveCommand;
+import nts.uk.ctx.at.record.app.command.optitem.OptionalItemSaveCommandHandler;
+import nts.uk.ctx.at.record.app.find.optitem.OptionalItemDto;
+import nts.uk.ctx.at.record.app.find.optitem.OptionalItemFinder;
+import nts.uk.ctx.at.record.app.find.optitem.OptionalItemHeaderDto;
 
 /**
  * The Class OptionalItemWs.

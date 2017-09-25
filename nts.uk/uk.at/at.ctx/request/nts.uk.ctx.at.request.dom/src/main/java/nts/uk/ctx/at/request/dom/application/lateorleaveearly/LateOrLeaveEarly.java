@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.lateorleaveearly;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
@@ -12,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 
 /**
  * 
@@ -58,7 +61,7 @@ public class LateOrLeaveEarly extends Application {
 			int applicationType, String applicantSID, int reflectPlanScheReason,
 			GeneralDate reflectPlanTime, int reflectPlanState, int reflectPlanEnforce,
 			int reflectPerScheReason, GeneralDate reflectPerTime, int reflectPerState,
-			int reflectPerEnforce,GeneralDate startDate,GeneralDate endDate, int actualCancelAtr, int early1, int earlyTime1, int late1, int lateTime1,
+			int reflectPerEnforce,GeneralDate startDate,GeneralDate endDate,List<AppApprovalPhase> listPhase, int actualCancelAtr, int early1, int earlyTime1, int late1, int lateTime1,
 			int early2, int earlyTime2, int late2, int lateTime2) {
 		super(companyID, appID, EnumAdaptor.valueOf(prePostAtr, PrePostAtr.class), inputDate, enteredPersonSID,
 				new AppReason(reversionReason), applicationDate, new AppReason(applicationReason),
@@ -66,7 +69,7 @@ public class LateOrLeaveEarly extends Application {
 				reflectPlanTime, EnumAdaptor.valueOf(reflectPlanState, ReflectPlanPerState.class),
 				EnumAdaptor.valueOf(reflectPlanEnforce, ReflectPlanPerEnforce.class), EnumAdaptor.valueOf(reflectPerScheReason, ReflectPerScheReason.class),
 				reflectPerTime, EnumAdaptor.valueOf(reflectPerState, ReflectPlanPerState.class),
-				EnumAdaptor.valueOf(reflectPerEnforce, ReflectPlanPerEnforce.class),startDate,endDate);
+				EnumAdaptor.valueOf(reflectPerEnforce, ReflectPlanPerEnforce.class),startDate,endDate,listPhase);
 		this.companyID = companyID;
 		this.appID = appID;
 		this.actualCancelAtr = actualCancelAtr;
