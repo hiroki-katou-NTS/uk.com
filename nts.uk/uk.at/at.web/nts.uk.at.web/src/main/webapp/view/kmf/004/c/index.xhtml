@@ -68,30 +68,30 @@
 			</thead>
 			
 			<tbody data-bind="foreach: dataItems">
-					<tr>
-						<td data-bind="text: $index() + 1"></td>
-						<td class="hidden-right-border">
-							<input id="year" data-bind="ntsNumberEditor: {
-									value: year, 
-									constraint: 'GrantDateYear',
-									name: '#[KMF004_81]',
-									option: ko.mapping.fromJS({
-										unitID: 'YEARS',
-										width: '50'
-									})}" />
-						</td>
-						<td>
-							<input id="month" data-bind="ntsNumberEditor: {
-									value: month, 
-									constraint: 'GrantDateMonth',
-									name: '#[KMF004_82]',
-									option: ko.mapping.fromJS({
-										unitID: 'MONTHS',
-										width: '60'
-									})}" />
-						</td>
-					</tr>
-				</tbody>
+				<tr>
+					<td data-bind="text: $index() + 1"></td>
+					<td class="hidden-right-border">
+						<input id="year" data-bind="ntsNumberEditor: {
+								value: year, 
+								constraint: 'GrantDateYear',
+								name: '#[KMF004_81]',
+								option: ko.mapping.fromJS({
+									unitID: 'YEARS',
+									width: '50'
+								})}" />
+					</td>
+					<td>
+						<input id="month" data-bind="ntsNumberEditor: {
+								value: month, 
+								constraint: 'GrantDateMonth',
+								name: '#[KMF004_82]',
+								option: ko.mapping.fromJS({
+									unitID: 'MONTHS',
+									width: '60'
+								})}" />
+					</td>
+				</tr>
+			</tbody>
 		</table>
 		
 	</div>
