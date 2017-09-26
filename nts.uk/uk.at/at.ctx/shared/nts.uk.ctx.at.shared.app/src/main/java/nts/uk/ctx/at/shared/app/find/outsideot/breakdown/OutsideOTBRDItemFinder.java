@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.app.find.outsideot.breakdown;
 
 import java.util.ArrayList;
@@ -9,9 +13,9 @@ import javax.inject.Inject;
 
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.app.find.outsideot.dto.OutsideOTBRDItemDto;
+import nts.uk.ctx.at.shared.dom.outsideot.OutsideOTSettingRepository;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItem;
-import nts.uk.ctx.at.shared.dom.outsideot.breakdown.OutsideOTBRDItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -23,10 +27,10 @@ public class OutsideOTBRDItemFinder {
 	
 	/** The repository. */
 	@Inject
-	private OutsideOTBRDItemRepository repository;
+	private OutsideOTSettingRepository repository;
 	
 	/**
-	 * Find by id.
+	 * Find all.
 	 *
 	 * @return the list
 	 */
@@ -39,7 +43,7 @@ public class OutsideOTBRDItemFinder {
 		String companyId = loginUserContext.companyId();
 
 		// call repository find data
-		List<OutsideOTBRDItem> overtimeBRDItems = this.repository.findAll(companyId);
+		List<OutsideOTBRDItem> overtimeBRDItems = this.repository.findAllBRDItem(companyId);
 
 		// check exist data
 		if(CollectionUtil.isEmpty(overtimeBRDItems)){

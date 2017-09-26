@@ -4,23 +4,65 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.dom.optitem;
 
-import lombok.AllArgsConstructor;
-
 /**
  * The Enum PerformanceClassification.
  */
 // 任意項目利用区分
-@AllArgsConstructor
 public enum PerformanceAtr {
 
 	/** The monthly performance. */
 	// 月別実績
-	MONTHLY_PERFORMANCE(0),
+	MONTHLY_PERFORMANCE(0, "Enum_PerformanceAtr_MONTHLY_PERFORMANCE", "月別実績"),
 
 	/** The daily performance. */
 	// 日別実績
-	DAILY_PERFORMANCE(1);
+	DAILY_PERFORMANCE(1, "Enum_PerformanceAtr_DAILY_PERFORMANCE", "日別実績");
 
 	/** The value. */
-	public final int value;
+	public int value;
+
+	/** The name id. */
+	public String nameId;
+
+	/** The description. */
+	public String description;
+
+	/** The Constant values. */
+	private final static PerformanceAtr[] values = PerformanceAtr.values();
+
+	/**
+	 * Instantiates a new performance atr.
+	 *
+	 * @param value the value
+	 * @param nameId the name id
+	 * @param description the description
+	 */
+	private PerformanceAtr(int value, String nameId, String description) {
+		this.value = value;
+		this.nameId = nameId;
+		this.description = description;
+	}
+
+	/**
+	 * Value of.
+	 *
+	 * @param value the value
+	 * @return the emp condition atr
+	 */
+	public static PerformanceAtr valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (PerformanceAtr val : PerformanceAtr.values) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
+	}
 }

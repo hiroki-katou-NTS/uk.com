@@ -1,0 +1,213 @@
+@CHARSET "UTF-8";
+
+/* 
+	Screen H styles 
+*/
+#sidebar-area {
+    width: 120px;
+}
+
+.contents-area {
+    padding: 20px 58px;
+}
+
+table.item-setting {
+    margin-top: 20px;
+}
+
+table.item-setting thead tr td {
+	background-color: #c7f391 !important;
+}
+
+table.item-setting tr {
+	height: 40px;
+}
+
+table.item-setting td {
+	border: 1px solid #CCC;
+	padding: 5px;
+}
+
+table.item-setting tr td:first-child {
+	background-color: #edfac2;
+}
+
+.advance-setting {
+	width: 78px;
+}
+
+/* 
+	Screen A styles 
+*/
+.contents-area-a {
+    padding: 20px;
+}
+
+.left-contents {
+	float: left;
+}
+
+.right-contents {
+	float: left;
+}
+
+table.input-form-a tr {
+	height: 60px;
+}
+
+.input-code {
+	width: 18px;
+}
+
+.work-collection {
+	padding-left: 30px;
+}
+
+.help-box {
+	margin-left: 20px;
+}
+
+.switch-box {
+	padding-left: 20px;
+}
+
+table.calculator-items {
+    margin-top: 10px;
+}
+
+table.calculator-items thead {
+	background-color: #c7f391;
+}
+
+table.calculator-items tr {
+	height: 32px;
+}
+
+table.calculator-items td {
+	border-bottom: 1px solid #CCC;
+	border-top: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+    text-align: center;
+    padding: 0px 3px;
+}
+
+table.calculator-items thead, table.calculator-items tbody {
+	display: block;
+}
+
+table.calculator-items tbody {
+	height: 350px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	border: 1px solid #CCC;
+}
+
+.attributes {
+	min-width: 0 !important;
+	width: 80px !important;
+}
+
+.item-name {
+	width: 120px;	
+}
+
+.display-atr {
+	min-width: 0 !important;
+	width: 100px !important;
+}
+
+.total {
+	min-width: 0 !important;
+	width: 100px !important;
+}
+
+.rounding {
+	min-width: 0 !important;
+	width: 120px !important;
+}
+
+.fraction {
+	min-width: 0 !important;
+	width: 120px !important;
+}
+
+.cbx-list-header {
+    width: 32px;
+}
+
+.number-header {
+	width: 32px;
+}
+
+.attribute-header {
+	width: 80px;
+}
+
+.name-header {
+	width: 150px;
+}
+
+.setting-header {
+	width: 464px;
+}
+
+.display-atr-header {
+	width: 110px;
+}
+
+.total-header {
+	width: 110px;
+}
+
+.rounding-header {
+	width: 130px;
+}
+
+.fraction-header {
+	width: 130px;
+}
+
+.cbx-list-item {
+    width: 31px;
+    height: 42px;
+}
+
+.number-item {
+	width: 32px;
+}
+
+.attribute-item {
+	width: 80px;
+}
+
+.name-item {
+	width: 150px;
+}
+
+.method-item {
+	width: 210px;
+}
+
+.help-btn-item {
+	width: 40px;
+}
+
+.formula-item {
+	width: 200px;
+}
+
+.display-atr-item {
+	width: 110px;
+}
+
+.total-item {
+	width: 110px;
+}
+
+.rounding-item {
+	width: 130px;
+}
+
+.fraction-item {
+	width: 130px;
+}

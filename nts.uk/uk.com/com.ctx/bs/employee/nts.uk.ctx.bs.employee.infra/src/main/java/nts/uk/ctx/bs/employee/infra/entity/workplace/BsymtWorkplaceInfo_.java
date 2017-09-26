@@ -18,4 +18,7 @@ public class BsymtWorkplaceInfo_ {
 	
 	/** The wkpcd. */
 	public static volatile SingularAttribute<BsymtWorkplaceInfo, String> wkpcd;
+	
+	/** The bsymt workplace hist. */
+	public static volatile SingularAttribute<BsymtWorkplaceInfo, BsymtWorkplaceHist> bsymtWorkplaceHist;
 }

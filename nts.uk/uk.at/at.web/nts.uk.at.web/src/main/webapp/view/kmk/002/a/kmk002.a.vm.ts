@@ -47,8 +47,8 @@ module nts.uk.at.view.kmk002.a {
                 for (var i = 0; i < 5; i++) {
                     self.calcFormulas.push(new Formula());
                     let h = <OptionalItemHeader>{};
-                    h.itemNo = ''+i;
-                    h.itemName = name+i;
+                    h.itemNo = '' + i;
+                    h.itemName = name + i;
                     h.performanceAtr = 1;
                     h.usageAtr = 1;
                     mock.push(h);
@@ -109,6 +109,7 @@ module nts.uk.at.view.kmk002.a {
                 let dfd = $.Deferred<void>();
                 self.loadOptionalItemHeaders().done(res => {
                     dfd.resolve();
+                    self.loadOptionalItemDetail();
                 });
                 // Test.
                 self.loadFormula();
@@ -176,10 +177,43 @@ module nts.uk.at.view.kmk002.a {
             private loadOptionalItemDetail(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                service.findOptionalItemDetail().done(res => {
-                    self.optionalItem.fromDto(res);
-                    dfd.resolve();
-                });
+
+                // TODO tinh sau
+//                service.findOptionalItemDetail().done(res => {
+//                    self.optionalItem.fromDto(res); 
+//                });
+
+                //TODO: dang test
+                 // Sua phan loai thanh tich
+                    self.optionalItem.performanceAtr.subscribe(value => {
+                        // Neu co formulas roi.
+                        //if (self.calcFormulas.length > 0) {
+                        if (1 > 0) { //test
+                            nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_506')).ifYes( () => {
+                                // xoa het formulas.
+                                // cap nhat gia tri moi.
+                            }).ifNo( () => {
+                                // de nguyen gia tri cu.
+                            });
+                        }
+                    });
+
+                    // Sua phan loai thuoc tinh
+                    self.optionalItem.optionalItemAtr.subscribe(value => {
+                        // Check xem co formulas va pham vi tinh toan chua
+                        //if (self.calcFormulas.length > 0) {
+                        if (1 > 0) { // test
+                            nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_573')).ifYes( () => {
+                                // xoa het formulas.
+                                // xoa pham phi tinh toan
+                                // cap nhat gia tri moi.
+                            }).ifNo( () => {
+                                // de nguyen gia tri cu.
+                            });
+                        }
+                    });
+
+                dfd.resolve();
                 return dfd.promise();
             }
 
@@ -218,7 +252,7 @@ module nts.uk.at.view.kmk002.a {
             usageAtr: KnockoutObservable<UsageAtr>;
             empConditionAtr: KnockoutObservable<EmpConditionAtr>;
             performanceAtr: KnockoutObservable<PerformanceAtr>;
-            calculationResultRange: CalculationResultRange;
+            calcResultRange: CalculationResultRange;
 
             // Switch button data source
             usageClsDatasource: KnockoutObservableArray<any>;
@@ -233,7 +267,7 @@ module nts.uk.at.view.kmk002.a {
                 this.usageAtr = ko.observable(1);
                 this.empConditionAtr = ko.observable(1);
                 this.performanceAtr = ko.observable(1);
-                this.calculationResultRange = new CalculationResultRange();
+                this.calcResultRange = new CalculationResultRange();
 
                 // Data source
                 this.usageClsDatasource = ko.observableArray([
@@ -266,7 +300,7 @@ module nts.uk.at.view.kmk002.a {
                 dto.usageAtr = self.usageAtr();
                 dto.empConditionAtr = self.empConditionAtr();
                 dto.performanceAtr = self.performanceAtr();
-                dto.calcResultRange = self.calculationResultRange.toDto();
+                dto.calcResultRange = self.calcResultRange.toDto();
 
                 return dto;
             }
@@ -279,7 +313,7 @@ module nts.uk.at.view.kmk002.a {
                 self.usageAtr(dto.usageAtr);
                 self.empConditionAtr(dto.empConditionAtr);
                 self.performanceAtr(dto.performanceAtr);
-                self.calculationResultRange.fromDto(dto.calcResultRange);
+                self.calcResultRange.fromDto(dto.calcResultRange);
             }
         }
 
@@ -358,6 +392,35 @@ module nts.uk.at.view.kmk002.a {
                 this.calcFormulaSetting = new CalcFormulaSetting();
                 this.monthlyRounding = new Rounding();
                 this.dailyRounding = new Rounding();
+
+                //TODO dang test.
+                // Sua phan loai thuoc tinh
+                    this.formulaAtr.subscribe(value => {
+                        // Kiem tra formula nay co cai dat chua
+                        //if (self.calcFormulas.length > 0) {
+                        if (1 > 0) { //test
+                            nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_192')).ifYes( () => {
+                                // xoa cai dat
+                                // cap nhat gia tri moi.
+                            }).ifNo( () => {
+                                // de nguyen gia tri cu.
+                            });
+                        }
+                    });
+
+                // Sua phan loai tinh toan
+                    this.calcFormulaSetting.calcAtr.subscribe(value => {
+                        // Kiem tra formula nay co cai dat chua
+                        //if (self.calcFormulas.length > 0) {
+                        if (1 > 0) { //test
+                            nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_126')).ifYes( () => {
+                                // xoa cai dat
+                                // cap nhat gia tri moi.
+                            }).ifNo( () => {
+                                // de nguyen gia tri cu.
+                            });
+                        }
+                    });
             }
 
             public toDto() {
@@ -433,7 +496,7 @@ module nts.uk.at.view.kmk002.a {
             operatorDatasource: KnockoutObservableArray<any>;
 
             constructor() {
-                this.minusSegment =  ko.observable(0);
+                this.minusSegment = ko.observable(0);
                 this.operator = ko.observable(0);
                 this.leftItem = new FormulaSettingItem();
                 this.rightItem = new FormulaSettingItem();

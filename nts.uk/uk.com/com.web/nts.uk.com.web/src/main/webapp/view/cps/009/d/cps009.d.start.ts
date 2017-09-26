@@ -1,6 +1,6 @@
-module nts.uk.com.view.cps009.a {
+module nts.uk.com.view.cps009.d {
     __viewContext.ready(function() {
-        __viewContext["viewModel"] = new viewmodel.ScreenModel();
+        __viewContext["viewModel"] = new viewmodel.ViewModel();
         __viewContext.bind(__viewContext["viewModel"]);
     });
 }
