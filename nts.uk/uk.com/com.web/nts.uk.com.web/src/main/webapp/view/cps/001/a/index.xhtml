@@ -42,16 +42,11 @@
 						<table id="employees"
 							data-bind="ntsGridList: {								
 								height: 220,
-								dataSource: ko.observableArray([
-									{id: 1, name: 'name 1'},
-									{id: 2, name: 'name 2'},
-									{id: 3, name: 'name 3'},
-									{id: 4, name: 'name 4'},
-									]),
-								primaryKey: 'id',
+								dataSource: listEmployees,
+								primaryKey: 'employeeId',
 								columns: [
-									{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-		                			{ headerText: '名称', key: 'name', width: 200, hidden: false }
+									{ headerText: 'コード', key: 'employeeId', width: 100, hidden: true },
+		                			{ headerText: '名称', key: 'employeeName', width: 200, hidden: false }
 								],
 								multiple: false,
 								value: ko.observable(undefined)
