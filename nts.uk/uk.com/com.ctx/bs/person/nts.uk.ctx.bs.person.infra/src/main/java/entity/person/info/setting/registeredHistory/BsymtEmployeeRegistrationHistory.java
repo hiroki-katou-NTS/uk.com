@@ -15,17 +15,17 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "BPSST_USER_SET")
-public class BsydtEmployeeRegistrationHistory extends UkJpaEntity implements Serializable {
+@Table(name = "BSYMT_EMP_REG_HISTORY")
+public class BsymtEmployeeRegistrationHistory extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public BsydtEmployeeRegistrationHistoryPk bsydtEmployeeRegistrationHistoryPk;
+	public BsymtEmployeeRegistrationHistoryPk bsydtEmployeeRegistrationHistoryPk;
 
 	@Basic(optional = false)
-	@Column(name = "REG_SID")
-	public String RegisteredEmployeeID;
+	@Column(name = "CID")
+	public String CompanyId;
 
 	@Basic(optional = true)
 	@Column(name = "REG_DATE")

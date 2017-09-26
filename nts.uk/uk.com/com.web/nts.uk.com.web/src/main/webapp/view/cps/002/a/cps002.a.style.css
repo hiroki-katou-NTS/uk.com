@@ -1,10 +1,19 @@
 @import url("base.css");
 
 /*A1_002*/
+#emp_reg_info_wizard>.steps {
+	height: 700px
+}
+
 #init_setting_btn {
 	margin-right: 200px;
 	float: right;
 }
+
+#emp_reg_info_wizard>.content {
+	background: none;
+}
+
 /* step1 */
 .step1_top_left_col1 {
 	width: 100px;
@@ -31,9 +40,10 @@
 
 .nts-wizard.vertical>.content {
 	width: 1000px;
+	min-height: 43em;
 }
 
-#wizard {
+#emp_reg_info_wizard {
 	width: auto !important;
 }
 
@@ -67,7 +77,7 @@
 
 .step1_bot_col1 {
 	float: left;
-	width: 300px;
+	width: 350px;
 }
 
 .step1_bot_col2 {
@@ -89,6 +99,53 @@
 
 #step1_next_btn {
 	margin-left: 50px;
+}
+
+.next_btn {
 	width: 120px;
 }
 /* step1 */
+
+/* step 2 */
+#ccgcomponent {
+	margin-left: 250px;
+}
+
+#step2_content {
+	margin-left: 20px;
+}
+
+#step2_des {
+	margin-left: -10px;
+}
+
+.step2_col1 {
+	width: 150px;
+	float: left;
+}
+
+.step2_col2 {
+	float: left;
+}
+
+#search_panel {
+	margin-top: 25px;
+}
+
+#search_box {
+	height: 700px;
+	width: 200px;
+	position: relative;
+	border-radius: 5px;
+	padding: 0px 5px 10px 25px;
+}
+
+#value_item {
+	padding: 15px 0px 0px 30px;
+}
+
+#init_list {
+	
+}
+
+/* step 2 */
