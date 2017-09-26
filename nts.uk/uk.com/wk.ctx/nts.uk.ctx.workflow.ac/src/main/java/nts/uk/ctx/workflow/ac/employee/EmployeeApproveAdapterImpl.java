@@ -58,7 +58,7 @@ public class EmployeeApproveAdapterImpl implements EmployeeApproveAdapter {
 				x.getPId(), 
 				x.getSId(), 
 				x.getSCd(),
-				psInfor.personName(x.getSId()),
+				psInfor.getPersonInfo(x.getSId()).getEmployeeName(),
 				"", 
 				"",
 				x.getSMail(),

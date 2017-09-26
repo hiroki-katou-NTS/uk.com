@@ -26,6 +26,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRep
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportAdapter;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportDto;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalForApplication;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootCommonOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootMaster;
@@ -106,7 +107,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					"", 
 					root.getHistoryId(),
 					root.getApplicationType() == null ? 0: root.getApplicationType().value,
-					root.getPeriod().getEndDate(), 
+					root.getPeriod().getStartDate(), 
 					root.getPeriod().getEndDate(), 
 					root.getBranchId(), 
 					root.getAnyItemApplicationId(),
@@ -119,8 +120,9 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 				psWootInfor = getAppInfors(psRoot, psWootInfor, companyID);
 				continue;
 			}
-			//ドメインモデル「社員」を取得する(lấy dữ liệu domain「社員」)
-			EmployeeApproverOutput empInfor = new EmployeeApproverOutput(root.getEmployeeId(), root.getEmployeeId()); 
+			//ドメインモデル「社員」を取得する(lấy dữ liệu domain「社員」)		
+			PersonInforExportDto psInfos = psInfor.getPersonInfo(root.getEmployeeId());
+			EmployeeApproverOutput empInfor = new EmployeeApproverOutput(psInfos.getEmployeeCode(), psInfos.getEmployeeName()); 
 			psWootInfor = getAppInfors(psRoot, psWootInfor, companyID);
 			PersonApproverOutput psOutput = new PersonApproverOutput(empInfor, psWootInfor);
 			mapPsRootInfor.put(root.getEmployeeId(), psOutput);
@@ -145,7 +147,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					root.getWorkplaceId(), 
 					root.getHistoryId(),
 					root.getApplicationType() == null ? 0:  root.getApplicationType().value,
-					root.getPeriod().getEndDate(), 
+					root.getPeriod().getStartDate(), 
 					root.getPeriod().getEndDate(), 
 					root.getBranchId(), 
 					root.getAnyItemApplicationId(),
@@ -225,7 +227,8 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			List<String> lstApprovers = new ArrayList<>();
 			for(Approver approver: phase.getApprovers()) {
 				//lstApprovers.add(psInfor.personName(approver.getEmployeeId()));
-				lstApprovers.add(approver.getEmployeeId());
+				
+				lstApprovers.add(psInfor.getPersonInfo(approver.getEmployeeId()).getEmployeeName());
 			}
 			ApprovalRootMaster appRoot = new ApprovalRootMaster(phase.getOrderNumber(), phase.getApprovalForm().name, lstApprovers);
 			lstMatter.add(appRoot);
