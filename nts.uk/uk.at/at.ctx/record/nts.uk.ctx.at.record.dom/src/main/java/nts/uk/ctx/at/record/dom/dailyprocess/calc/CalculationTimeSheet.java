@@ -98,7 +98,7 @@ public abstract class CalculationTimeSheet {
 	 * @return 時間
 	 */
 	public int minusDeductionTime() {
-		if(deductionTimeSheets.isEmpty()) return 0 ;
+		if(deductionTimeSheets.isEmpty()) return calculationTimeSheet.lengthAsMinutes() ;
 		return calculationTimeSheet.lengthAsMinutes() - recursiveTotalTime() ;
 	}
 	
