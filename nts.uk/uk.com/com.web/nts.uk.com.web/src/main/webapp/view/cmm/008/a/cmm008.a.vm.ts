@@ -14,6 +14,12 @@ module nts.uk.com.view.cmm008.a {
                 var self = this;
                 self.enableDelete = ko.observable(true);
                 self.employmentModel = ko.observable(new EmploymentModel);
+                self.employmentModel().employmentCode.subscribe(function(code) {
+                    if (code) {
+                        self.clearErrors();
+                        self.loadEmployment(code);
+                    }
+                });
                 self.selectedCode = ko.observable("");
                 self.selectedCode.subscribe(function(empCode) {
                     if (empCode) {
@@ -21,8 +27,8 @@ module nts.uk.com.view.cmm008.a {
                         self.loadEmployment(empCode);
                         self.enableDelete(true);
                     } else {
-                        self.clearData();
                         self.enableDelete(false);
+                        self.clearData();
                     }
                 });
 
@@ -35,19 +41,7 @@ module nts.uk.com.view.cmm008.a {
                     isDialog: false,
                 };
 
-                //                self.isNewMode = ko.computed(function() {
-                //                    return !self.isSelectedEmp() || self.empList().length <= 0;
-                //                });
                 self.empList = ko.observableArray<ItemModel>([]);
-//                self.isNewMode.subscribe(function(data: boolean) {
-//                    if (data) {
-//                        // Focus on 
-//                        $('#empCode').focus();
-//                    } else {
-//                        // Focus on 
-//                        $('#empName').focus();
-//                    }
-//                });
                 self.enableEmpCode = ko.observable(false);
             }
 
@@ -55,7 +49,7 @@ module nts.uk.com.view.cmm008.a {
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
-                //                
+                blockUI.invisible();
                 // Load Component
                 $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
                     // Set Focus on Switch Button
@@ -75,21 +69,24 @@ module nts.uk.com.view.cmm008.a {
                         // Find and bind selected Employment
                         self.loadEmployment(self.selectedCode());
                     }
+                    blockUI.clear();
                 });
-                // Focus on 
-                //                $('#empName').focus();
                 dfd.resolve();
                 return dfd.promise();
             }
 
+            /**
+             * load Employment
+             */
             private loadEmployment(code: string): void {
                 let self = this;
-                service.findEmployment(self.selectedCode()).done(function(employment) {
+                service.findEmployment(code).done(function(employment) {
                     if (employment) {
                         self.selectedCode(employment.code);
                         self.employmentModel().updateEmpData(employment);
                         self.employmentModel().isEnableCode(false);
                         self.enableDelete(true);
+                        $('#empName').focus();
                     }
                 });
             }
@@ -102,6 +99,8 @@ module nts.uk.com.view.cmm008.a {
                 self.selectedCode("");
                 self.employmentModel().resetEmpData();
                 self.enableDelete(false);
+                self.clearErrors();
+                $('#empCode').focus();
             }
 
             /**
@@ -109,12 +108,13 @@ module nts.uk.com.view.cmm008.a {
              */
             private createNewEmployment(): void {
                 let self = this;
-                self.clearData();
                 self.clearErrors();
-                // Focus on 
-                $('#empCode').focus();
+                self.clearData();
             }
 
+            /**
+             * Create Employment
+             */
             private createEmployment(): void {
                 let self = this;
                 // Validate
@@ -127,6 +127,7 @@ module nts.uk.com.view.cmm008.a {
                     empExternalCode: self.employmentModel().empExternalCode(),
                     memo: self.employmentModel().memo()
                 };
+                blockUI.invisible();
                 service.saveEmployment(command).done(() => {
                     // ReLoad Component
                     $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
@@ -135,8 +136,6 @@ module nts.uk.com.view.cmm008.a {
                         self.enableDelete(true);
                         self.employmentModel().isEnableCode(false);
                         self.selectedCode(self.employmentModel().employmentCode());
-                        // Find to Bind Employment
-//                        self.loadEmployment();
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     });
                     // Focus on 
@@ -147,18 +146,23 @@ module nts.uk.com.view.cmm008.a {
                         // Focus on Employment name
                         $('#empName').focus();
                     }
+                    blockUI.clear();
                 }).fail(error => {
                     nts.uk.ui.dialog.alertError(error);
+                    blockUI.clear();
                 });
             }
 
+            /**
+             * Delete Employment
+             */
             private deleteEmployment(): void {
                 let self = this;
                 // Validate
                 if (self.hasError()) {
                     return;
                 }
-
+                blockUI.invisible();
                 // Remove
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     let command = {
@@ -211,33 +215,10 @@ module nts.uk.com.view.cmm008.a {
                         blockUI.clear();
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
+                        blockUI.clear();
                     });
                 });
             }
-            
-            private resetData(): void {
-                let self = this;
-                
-            }
-            
-            private reloadPage(): void {
-                let self = this;
-            }
-
-            /**
-             * Check the last Item in Employment List
-             */
-            //            public isLastItem(selectedCode: string): boolean {
-            //                let self = this;
-            //                let index: number = 0;
-            //                for(let item of self.empList()){
-            //                    index++;
-            //                    if(index == self.empList().length && selectedCode === item.code){
-            //                        return true;
-            //              //                }
-            //                return false;
-            //            }
-
 
             /**
              * Check Errors all input.
@@ -325,7 +306,9 @@ module nts.uk.com.view.cmm008.a {
             static NO_SELECT = 4;
         }
 
-        // Class ItemModel
+        /**
+         * Class ItemModel
+         */
         class ItemModel {
             code: string;
             name: string;
