@@ -37,7 +37,7 @@ module nts.uk.at.view.kaf002.m1 {
                 self.extendsMode(!self.extendsMode());   
             }
             
-            register(application : vmbase.Application){
+            register(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
                 let command = {
                     appID: "",
@@ -51,7 +51,8 @@ module nts.uk.at.view.kaf002.m1 {
                     appStampGoOutPermitCmds: ko.mapping.toJS(self.appStampList()),
                     appStampWorkCmds: null,
                     appStampCancelCmds: null,
-                    appStampOnlineRecordCmd: null   
+                    appStampOnlineRecordCmd: null,
+                    appApprovalPhaseCmds: approvalList   
                 }
                 service.insert(command);   
             }
@@ -73,6 +74,17 @@ module nts.uk.at.view.kaf002.m1 {
                     appStampOnlineRecordCmd: null   
                 }
                 service.update(command);  
+            }
+            
+            openSelectLocationDialog(timeType: string, frameNo: number){
+                var self = this;
+                nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', false);
+                nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
+                    if(nts.uk.ui.windows.getShared("KDL010workLocation")!=null){
+                        let workLocation = nts.uk.ui.windows.getShared("KDL010workLocation");
+                        self.appStampList()[frameNo][timeType+'Location'](workLocation);     
+                    }
+                });      
             }
         }
     }

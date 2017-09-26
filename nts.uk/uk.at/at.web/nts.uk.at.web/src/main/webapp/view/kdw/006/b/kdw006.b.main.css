@@ -1,0 +1,33 @@
+textarea{
+	height: 81px;
+}
+
+#button1 {
+	width: 75px;
+	margin-left: 64px;
+}
+
+#textBox {
+	margin-left: -49px;
+    margin-top: 19px;
+	display: inline-block;
+}
+
+#label2 {
+	float: left;
+	display: inline-block;
+	margin: 26px 10px 20px 55px;
+}
+
+#switchBtn1 {
+	margin: 26px 20px 20px 10px;
+}
+
+#label1 {
+	display: inline-block;
+	margin: 26px 10px 20px 55px;
+}
+
+.ntsControl {
+	padding-left: 54px;
+}

@@ -26,7 +26,7 @@ module nts.uk.at.view.kaf002.m4 {
                 });
             }
             
-            register(application : vmbase.Application){
+            register(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
                 let command = {
                     appID: "",
@@ -40,7 +40,8 @@ module nts.uk.at.view.kaf002.m4 {
                     appStampGoOutPermitCmds: null,
                     appStampWorkCmds: null, 
                     appStampCancelCmds: null,
-                    appStampOnlineRecordCmd: ko.mapping.toJS(self.appStamp())
+                    appStampOnlineRecordCmd: ko.mapping.toJS(self.appStamp()),
+                    appApprovalPhaseCmds: approvalList 
                 }
                 service.insert(command);     
             }

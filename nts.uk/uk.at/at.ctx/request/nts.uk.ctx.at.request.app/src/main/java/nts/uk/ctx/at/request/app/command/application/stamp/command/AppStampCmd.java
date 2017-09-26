@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.command.application.stamp.command;
 import java.util.List;
 
 import lombok.Data;
+import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.AppApprovalPhaseCmd;
 /**
  * 
  * @author Doan Duy Hung
@@ -34,5 +35,7 @@ public class AppStampCmd {
 	private List<AppStampCancelCmd> appStampCancelCmds;
 	
 	private AppStampOnlineRecordCmd appStampOnlineRecordCmd;
+	
+	private List<AppApprovalPhaseCmd> appApprovalPhaseCmds;
 }
 

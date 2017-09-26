@@ -4,11 +4,11 @@ module nts.uk.at.view.kaf002.cm {
         import kaf002 = nts.uk.at.view.kaf002;
         let __viewContext: any = window["__viewContext"] || {};
         export class ScreenModel {
-            m1 = new kaf002.m1.viewmodel.ScreenModel();
-            m2 = new kaf002.m2.viewmodel.ScreenModel();
-            m3 = new kaf002.m3.viewmodel.ScreenModel();
-            m4 = new kaf002.m4.viewmodel.ScreenModel();
-            m5 = new kaf002.m5.viewmodel.ScreenModel();
+            m1: kaf002.m1.viewmodel.ScreenModel;
+            m2: kaf002.m2.viewmodel.ScreenModel;
+            m3: kaf002.m3.viewmodel.ScreenModel;
+            m4: kaf002.m4.viewmodel.ScreenModel;
+            m5: kaf002.m5.viewmodel.ScreenModel;
             stampRequestMode: KnockoutObservable<number> = ko.observable(0);
             screenMode: KnockoutObservable<number> = ko.observable(0);
             resultDisplay: KnockoutObservable<number> = ko.observable(0);
@@ -17,15 +17,22 @@ module nts.uk.at.view.kaf002.cm {
             currentReason: KnockoutObservable<vmbase.InputReason> = ko.observable('');
             topComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',0)); 
             botComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',0));
-            constructor(){
+            approvalList: Array<vmbase.AppApprovalPhase> = [];
+            constructor(stampRequestMode: number, screenMode: number){
                 var self = this;
-                __viewContext.transferred.ifPresent(data => {
-                    self.stampRequestMode(data.stampRequestMode);
-                    self.screenMode(data.screenMode);
-                });
+                self.stampRequestMode(stampRequestMode);
+                self.screenMode(screenMode);
+                switch(self.stampRequestMode()){
+                    case 0: self.m1 = new kaf002.m1.viewmodel.ScreenModel();break;    
+                    case 1: self.m2 = new kaf002.m2.viewmodel.ScreenModel();break;  
+                    case 2: self.m3 = new kaf002.m3.viewmodel.ScreenModel();break; 
+                    case 3: self.m4 = new kaf002.m4.viewmodel.ScreenModel();break; 
+                    case 4: self.m5 = new kaf002.m5.viewmodel.ScreenModel();break; 
+                    default: break;
+                } 
                 
             }
-            start(data: vmbase.AppStampNewSetDto){
+            start(data: vmbase.AppStampNewSetDto, approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
                 self.resultDisplay(data.appStampSetDto.stampRequestSettingDto.resultDisp);
                 self.application().appDate(data.appCommonSettingDto.generalDate);
@@ -50,17 +57,46 @@ module nts.uk.at.view.kaf002.cm {
                     case 4: self.m5.start(data.appStampSetDto.stampRequestSettingDto);break; 
                     default: break;
                 } 
+                
+                self.approvalList = [];
+                _.forEach(approvalList, appPhase => {
+                    let b = new vmbase.AppApprovalPhase(
+                        appPhase.approvalPhaseId,
+                        appPhase.approvalForm,
+                        appPhase.orderNumber,
+                        1,
+                        []); 
+                    _.forEach(appPhase.approverDtos, appFrame => {
+                        let c = new vmbase.ApprovalFrame(
+                            appFrame.approvalPhaseId,
+                            appFrame.orderNumber,
+                            appFrame.approverId,
+                            appFrame.approvalAtr,
+                            appFrame.confirmPerson,
+                            self.application().inputDate(),
+                            "",
+                            "",
+                            []);
+                        let d = new vmbase.ApproveAccepted(
+                            appFrame.approvalPhaseId,
+                            appFrame.orderNumber,
+                            appFrame.employeeId);
+                        c.approveAcceptedCmds.push(d);
+                        b.approvalFrameCmds.push(c);   
+                    });
+                    self.approvalList.push(b);    
+                });
             }
             
             register(){
                 var self = this;
                 self.application().titleReason(_.find(self.inputReasons(), o => o.id = self.currentReason()).id);
                 switch(self.stampRequestMode()){
-                    case 0: self.m1.register(self.application());break;    
-                    case 1: self.m2.register(self.application());break;  
-                    case 2: self.m3.register(self.application());break; 
-                    case 3: self.m4.register(self.application());break; 
-                    case 4: self.m5.register(self.application());break; 
+                    case 0: self.m1.register(self.application(), self.approvalList);break;    
+                    case 1: self.m2.register(self.application(), self.approvalList);break;  
+                    case 2: self.m3.register(self.application(), self.approvalList);break; 
+                    case 3: self.m4.register(self.application(), self.approvalList);break; 
+                    case 4: self.m5.register(self.application(), self.approvalList);break; 
                     default: break;
                 }    
             }

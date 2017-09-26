@@ -28,17 +28,43 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         //application
         objApp: KnockoutObservable<model.ApplicationDto>;
         inputDetail: KnockoutObservable<model.InputGetDetailCheck>;
-        outputDetail: KnockoutObservable<model.DetailedScreenPreBootModeOutput>;
 
         //obj input
         inputMessageDeadline: KnockoutObservable<model.InputMessageDeadline>;
         //obj output message deadline
         outputMessageDeadline: KnockoutObservable<model.OutputMessageDeadline>;
-
+        //obj DetailedScreenPreBootModeOutput
+        outputDetailCheck :  KnockoutObservable<model.DetailedScreenPreBootModeOutput>;
+        /**
+         * enable button
+         */
+        //enable Approve
+        enableApprove : KnockoutObservable<boolean>;
+        //enable Deny
+        enableDeny : KnockoutObservable<boolean>;
+        //enable Release
+        enableRelease : KnockoutObservable<boolean>;
+        //enable Registration
+        enableRegistration :KnockoutObservable<boolean>;
+        //enable enableDelete
+        enableDelete : KnockoutObservable<boolean>;
+        //enable enableCancel
+        enableCancel: KnockoutObservable<boolean>;
+        
+        /**
+         * visible
+         */
+        //visible Approval
+        visibleApproval : KnockoutObservable<boolean>;
+        //visible Denial
+        visibleDenial : KnockoutObservable<boolean>;
+        
+        
         constructor(appType: number) {
-            var self = this;
+            let self = this;
             // Metadata
-            self.appID = __viewContext.transferred.value.appID;
+            self.appID =ko.observable("000"); 
+            //__viewContext.transferred.value.appID;
             self.appType = ko.observable(appType);
             
             /**
@@ -54,14 +80,29 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.reasonApp = ko.observable('');
             self.dataApplication = ko.observable(null);
             //application
-            self.objApp = ko.observable(null);
-            self.inputDetail = ko.observable(null);
-            self.outputDetail = ko.observable(null);
+            self.objApp = (null);
+            self.inputDetail = ko.observable(new model.InputGetDetailCheck("000", "2022/01/01"));
+            self.outputDetailCheck = ko.observable(null);
 
             //obj input get message deadline 
             self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline("000000000000-0005", null, 1, null));
             //obj input get message deadline 
             self.outputMessageDeadline = ko.observable(null);
+            
+            /**
+             * enable
+             */
+            self.enableApprove = ko.observable(false);
+            self.enableDeny = ko.observable(false);
+            self.enableRelease = ko.observable(false);
+            self.enableRegistration = ko.observable(false);
+            self.enableDelete = ko.observable(false);
+            self.enableCancel = ko.observable(false);
+            /**
+             * visible
+             */
+            self.visibleApproval = ko.observable(false)
+            self.visibleDenial = ko.observable(false)
         }
                 
         abstract update(): any;
@@ -69,24 +110,118 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         start(): JQueryPromise<any> {
 
             let self = this;
-            var dfd = $.Deferred();
-            var dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
-            var dfdAllReasonByAppID = self.getAllReasonByAppID("000");
-            var dfdAllDataByAppID = self.getAllDataByAppID("000");
+            let dfd = $.Deferred();
+            let dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
+            let dfdAllReasonByAppID = self.getAllReasonByAppID("000");
+            let dfdAllDataByAppID = self.getAllDataByAppID("000");
+            let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
+            
 
-
-            $.when(dfdAllReasonByAppID, dfdAllDataByAppID).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData) => {
+            $.when(dfdAllReasonByAppID, dfdAllDataByAppID,dfdGetDetailCheck).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData,dfdGetDetailCheck) => {
                 //self.listReasonByAppID(data);
                 //self.getDetailCheck(self.inputDetail());
+                self.checkDisplayStart();
                 dfd.resolve();
             });
             return dfd.promise();
+        }   
+        // check display start
+        checkDisplayStart(){
+            let self = this;
+            if(self.outputDetailCheck() != null){
+                if(self.outputDetailCheck().user ==1 || self.outputDetailCheck().user ==2){
+                    //b1_7
+                    self.enableRelease(true);
+                    
+                    
+                    if(self.outputDetailCheck().authorizableFlags == true){
+                        //例：ログイン者の承認区分が未承認
+                        if(self.outputDetailCheck().approvalATR == 0){
+                            self.enableApprove(true);
+                            self.enableDeny(true);
+                            self.visibleApproval(false);
+                            self.visibleDenial(false);     
+                        }
+                        
+                        //ログイン者の承認区分が承認済
+                        if(self.outputDetailCheck().approvalATR == 1){
+                            self.enableApprove(false);
+                            self.enableDeny(true);
+                            self.visibleApproval(true);
+                            self.visibleDenial(false);        
+                        }
+                        
+                        //例：ログイン者の承認区分が否認
+                        if(self.outputDetailCheck().approvalATR == 2){
+                            self.enableApprove(true);
+                            self.enableDeny(false);     
+                            self.visibleApproval(false);
+                            self.visibleDenial(true);   
+                        }
+                    }else{
+                        self.enableApprove(false);
+                        self.enableDeny(false);
+                        self.visibleApproval(false);
+                        self.visibleDenial(false);   
+                    }
+                }     
+            }
+            
+            
+            if(self.outputDetailCheck().user ==0 || self.outputDetailCheck().user ==1|| self.outputDetailCheck().user ==99){
+                //b1_8
+                self.enableRegistration(true)
+                //b1_12  
+                self.enableDelete(true)  
+                
+                if(true){
+                    //b1_13
+                }
+            }
+            
+        } // end checkDisplayStart
+        
+        //check checkDisplayAction
+        checkDisplayAction(){
+            let self = this;
+            if(self.outputDetailCheck() != null){
+                if(self.outputDetailCheck().authorizableFlags ==true && self.outputDetailCheck().alternateExpiration ==false){
+                    self.enableApprove(true);//b1_4
+                    self.enableDeny(true);//b1_5
+                    self.visibleApproval(true); //b1_14
+                    self.visibleDenial(true);  //b1_15
+                }
+            
+                //b1_7
+                //ログイン者の承認区分：承認済、否認 
+                if(self.outputDetailCheck().approvalATR ==1 || self.outputDetailCheck().approvalATR ==2){
+                    self.enableRelease(true);
+                }
+                //ログイン者の承認区分：未承認                      
+                if(self.outputDetailCheck().approvalATR ==0){
+                     self.enableRelease(false);
+                }
+                
+                
+                if(self.outputDetailCheck().reflectPlanState ==0 ||self.outputDetailCheck().reflectPlanState ==1){
+                    //b1_8
+                    self.enableRegistration(true)
+                    //b1_12  
+                    self.enableDelete(true) 
+                }
+                
+                if(self.outputDetailCheck().reflectPlanState ==4){
+                    //b1_13
+                    self.enableCancel(true) 
+                }        
+            }    
+        
         }
 
         // getMessageDeadline
         getMessageDeadline(inputMessageDeadline) {
-            var self = this;
-            var dfd = $.Deferred<any>();
+            let self = this;
+            let dfd = $.Deferred<any>();
             service.getMessageDeadline(inputMessageDeadline).done(function(data) {
                 self.outputMessageDeadline(data);
                 dfd.resolve(data);
@@ -96,8 +231,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         //getAll data by App ID
         getAllDataByAppID(appID) {
-            var self = this;
-            var dfd = $.Deferred<any>();
+            let self = this;
+            let dfd = $.Deferred<any>();
             service.getAllDataByAppID(appID).done(function(data) {
                 let temp = data.listOutputPhaseAndFrame;
                 _.forEach(temp, function(phase) {
@@ -121,40 +256,92 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 });
                 data.listOutputPhaseAndFrame = temp;
                 self.dataApplication(data);
-                //get obj application
-                self.objApp(self.dataApplication().applicationDto);
-                self.inputDetail(new model.InputGetDetailCheck(self.objApp(), new Date('2022-01-01 00:00:00')));
                 dfd.resolve(data);
             });
             return dfd.promise();
         }
         //get all reason by app ID
         getAllReasonByAppID(appID) {
-            var self = this;
-            var dfd = $.Deferred<any>();
+            let self = this;
+            let dfd = $.Deferred<any>();
             service.getAllReasonByAppID(appID).done(function(data) {
                 self.listReasonByAppID(data);
-                self.reasonApp(self.listReasonByAppID()[0].toString());
-                for (var i = 1; i < self.listReasonByAppID().length; i++) {
-                    self.listReasonToApprover(
-                        self.listReasonToApprover().toString() + self.listReasonByAppID()[i].toString() + "\n"
-                    );
+                if(self.listReasonByAppID().length>0){
+                    self.reasonApp(self.listReasonByAppID()[0].toString());
+                    for (let i = 1; i < self.listReasonByAppID().length; i++) {
+                        self.listReasonToApprover(
+                            self.listReasonToApprover().toString() + self.listReasonByAppID()[i].toString() + "\n"
+                        );
+                    }
                 }
-
                 dfd.resolve(data);
             });
             return dfd.promise();
         }
         //get detail check 
         getDetailCheck(inputGetDetail) {
-            var self = this;
-            var dfd = $.Deferred<any>();
+            let self = this;
+            let dfd = $.Deferred<any>();
             service.getDetailCheck(inputGetDetail).done(function(data) {
                 //
+                self.outputDetailCheck(data);
                 dfd.resolve(data);
             });
             return dfd.promise();
         }
+        
+        /**
+         *  btn Approve
+         */
+        btnApprove(){
+            
+        }
+         /**
+         *  btn Deny
+         */
+        btnDeny(){
+            
+        }
+        
+         /**
+         *  btn Release
+         */
+        btnRelease(){
+            
+        }
+        
+        /**
+         *  btn Registration
+         */
+        btnRegistration(){
+            
+        }
+        /**
+         *  btn References 
+         */
+        btnReferences(){
+            
+        }
+        /**
+         *  btn SendEmail 
+         */
+        btnSendEmail(){
+            
+        }
+        /**
+         *  btn Delete 
+         */
+        btnDelete(){
+            
+        }
+        /**
+         *  btn Cancel 
+         */
+        btnCancel(){
+            
+        }
+        
+        
     }
 
     export module model {
@@ -295,11 +482,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         //class InputGetDetailCheck 
         export class InputGetDetailCheck {
-            applicationDto: ApplicationDto;
-            baseDate: Date;
-            constructor(applicationDto: ApplicationDto,
-                baseDate: Date) {
-                this.applicationDto = applicationDto;
+            applicationID: String;
+            baseDate: String ;
+            constructor(applicationID: String,
+                baseDate: String) {
+                this.applicationID = applicationID;
                 this.baseDate = baseDate;
 
             }

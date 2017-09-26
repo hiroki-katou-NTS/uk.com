@@ -27,7 +27,7 @@ module nts.uk.at.view.kaf002.m3 {
                 self.stampPlaceDisplay(data.stampPlaceDisp);
             }
             
-            register(application : vmbase.Application){
+            register(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
                 let command = {
                     appID: "",
@@ -41,7 +41,8 @@ module nts.uk.at.view.kaf002.m3 {
                     appStampGoOutPermitCmds: null,
                     appStampWorkCmds: null, 
                     appStampCancelCmds: ko.mapping.toJS(self.appStampList()),
-                    appStampOnlineRecordCmd: null  
+                    appStampOnlineRecordCmd: null,
+                    appApprovalPhaseCmds: approvalList   
                 }
                 service.insert(command);
             }

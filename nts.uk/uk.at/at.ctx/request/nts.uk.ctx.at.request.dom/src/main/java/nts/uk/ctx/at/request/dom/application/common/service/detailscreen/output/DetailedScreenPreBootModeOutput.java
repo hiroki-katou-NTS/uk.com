@@ -11,10 +11,10 @@ public class DetailedScreenPreBootModeOutput {
 	//ステータス
 	ReflectPlanPerState reflectPlanState;
 	//承認できるフラグ
-	Boolean authorizableFlags;
+	boolean authorizableFlags;
 	//ログイン者の承認区分
 	ApprovalAtr approvalATR;
 	//代行期限切れフラグ
-	Boolean alternateExpiration;
+	boolean alternateExpiration;
 	
 }
