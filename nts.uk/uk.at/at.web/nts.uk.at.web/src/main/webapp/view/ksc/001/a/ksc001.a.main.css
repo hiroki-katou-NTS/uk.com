@@ -1,0 +1,33 @@
+@CHARSET "UTF-8";
+
+.label_selectAction {
+	margin-top: 10px;
+	width: 100%;
+}
+
+.imageSettings {
+	cursor: pointer;
+}
+
+.buttonImage {
+	margin-top: 10px;
+	width: 300px;
+}
+
+.buttonImage:hover {
+	border: 2px solid #d0d0d0;
+	border-radius: 5px;
+	width: 300px;
+}
+
+.buttonImageSetting:hover {
+	border: 2px solid #d0d0d0;
+	border-radius: 5px;
+	width: 330px;
+}
+
+.buttonImageSetting {
+	margin-top: 10px;
+	width: 330px;
+	margin-left: 25px;
+}
