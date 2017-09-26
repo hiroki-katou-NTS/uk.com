@@ -30,7 +30,7 @@ public class CalcFormulaWs extends WebService {
 
 	/** The handler. */
 	@Inject
-	FormulaSaveCommandHandler handler;
+	private FormulaSaveCommandHandler handler;
 
 	/**
 	 * Find all.

@@ -3,10 +3,11 @@ module nts.uk.at.view.kmk010.a {
     export module service {
         var paths = {
             findAllOvertimeCalculationMethod: "ctx/at/shared/outsideot/setting/findAll/method",
+            findAllAttendanceItemOvertime: "ctx/at/shared/outsideot/setting/findAll/attendanceItem",
             findAllOvertimeUnit: "ctx/at/shared/outsideot/setting/findAll/unit",
             findAllOvertimeRounding: "ctx/at/shared/outsideot/setting/findAll/rounding",
             findByIdOutsideOTSetting: "ctx/at/shared/outsideot/setting/findById",
-            findAllPremiumExtra60HRate: "ctx/at/shared/outsideot/overtime/premium/extra/findAll",
+            findAllPremiumExtra60HRate: "ctx/at/shared/outsideot/holiday/findAll/premiumExtra",
             findByIdSuperHD60HConMed: "ctx/at/shared/outsideot/holiday/findById",
             saveOutsideOTSettingAndSupperHD60H: "ctx/at/shared/outsideot/setting/save",
             findAllOvertimeNameLanguage: "ctx/at/shared/outsideot/overtime/name/language/findAll",
@@ -115,6 +116,12 @@ module nts.uk.at.view.kmk010.a {
             return nts.uk.request.exportFile(paths.exportOutsideOTSettingExcel, { languageId: languageId, manage: manage });
         }
         
+        /**
+         * call service find all attendance item overtime
+         */
+        export function findAllAttendanceItemOvertime(): JQueryPromise<number[]> {
+            return nts.uk.request.ajax('at', paths.findAllAttendanceItemOvertime);
+        }
         export module model {
 
             

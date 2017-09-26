@@ -7,6 +7,7 @@ package nts.uk.ctx.bs.employee.dom.workplace.configinfo;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 
@@ -23,6 +24,7 @@ public class WorkplaceConfigInfo extends AggregateRoot {
 
 	/** The history id. */
 	// 履歴ID
+	@Setter
 	private HistoryId historyId;
 
 	/** The wkp hierarchy. */
@@ -51,19 +53,6 @@ public class WorkplaceConfigInfo extends AggregateRoot {
 		this.companyId = memento.getCompanyId();
 		this.historyId = memento.getHistoryId();
 		this.wkpHierarchy = memento.getWkpHierarchy();
-	}
-	
-	/**
-	 * Instantiates a new workplace config info.
-	 *
-	 * @param convert the convert
-	 * @param historyId the history id
-	 */
-	public WorkplaceConfigInfo(WorkplaceConfigInfo convert,String historyId)
-	{
-		this.companyId = convert.getCompanyId();
-		this.historyId = new HistoryId(historyId);
-		this.wkpHierarchy = convert.getWkpHierarchy();
 	}
 
 	/*
