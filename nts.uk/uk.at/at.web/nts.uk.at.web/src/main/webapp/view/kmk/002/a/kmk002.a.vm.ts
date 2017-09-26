@@ -572,6 +572,13 @@ module nts.uk.at.view.kmk002.a {
                 this.formulaItemId = ko.observable('');
             }
 
+            public isInputValue(): boolean {
+                if (this.settingMethod() == 0) {
+                    return false;
+                }
+                return true;
+            }
+
             public fromDto(dto: SettingItemDto) {
                 this.settingMethod(dto.settingMethod);
                 this.dispOrder = dto.dispOrder;

@@ -5,6 +5,8 @@ module nts.uk.at.view.kmk002.d {
 
         export class ScreenModel {
             formulaSetting: FormulaSetting;
+            formulaAtr: string;
+            formulaName: string;
             zxcv: KnockoutObservableArray<any>;
 
             constructor() {
@@ -24,6 +26,13 @@ module nts.uk.at.view.kmk002.d {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 let dto = nts.uk.ui.windows.getShared("formulaSetting");
+
+                // mock.
+                self.formulaAtr = nts.uk.resource.getText('KMK002_70'); // time
+                //self.formulaAtr = nts.uk.resource.getText('KMK002_71'); // number
+                //self.formulaAtr = nts.uk.resource.getText('KMK002_72'); // amount
+                self.formulaName = 'aaaaa';
+
                 self.formulaSetting.fromDto(dto);
                 console.log(dto);
                 dfd.resolve();
@@ -35,8 +44,28 @@ module nts.uk.at.view.kmk002.d {
              */
             public apply(): void {
                 let self = this;
-                nts.uk.ui.windows.setShared('formulaSetting', self.formulaSetting.toDto());
-                self.close();
+                if (self.isValid()) {
+                    nts.uk.ui.windows.setShared('formulaSetting', self.formulaSetting.toDto());
+                    self.close();
+                }
+            }
+
+            private isValid(): boolean {
+                let self = this;
+                if (self.formulaSetting.operator() == 3 && self.formulaSetting.rightItem.inputValue() == 0) {
+                    // Divide by zero
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_638" });
+                    return false;
+                }
+                if (self.formulaSetting.rightItem.settingMethod() == 1 && self.formulaSetting.leftItem.settingMethod() == 1) {
+                    // both item setting method = number.
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_420" });
+                    return false;
+                }
+                //TODO Msg_114
+                //TODO Msg_419 de required?
+                return true;
+
             }
 
             /**
