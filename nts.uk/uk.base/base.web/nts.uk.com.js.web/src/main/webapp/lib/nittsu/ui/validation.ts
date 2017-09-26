@@ -577,4 +577,41 @@ module nts.uk.ui.validation {
         else
             return __viewContext.primitiveValueConstraints[primitiveValueName];
     }
+    
+    export interface ConstraintDescriptor{
+        itemCode: string;
+        required?: boolean;
+    }
+    
+    export interface StringConstraintDescriptor extends ConstraintDescriptor{
+        maxLength: number;
+        charType: string;
+        paddingCharacter: string;
+        isPaddingLeft: boolean;
+        isPadding: boolean;
+        stringExpression: string;
+    }
+    
+    export interface NumericConstraintDescriptor extends ConstraintDescriptor{
+        min: number;
+        max: number;
+        valueType: string;
+        mantissaMaxLength: number; 
+    }
+    
+    export interface TimeConstraintDescriptor extends ConstraintDescriptor{
+        min: string;
+        max: string;
+        valueType: string;
+    }
+    
+    export function writeConstraint(constraintName: string, constraint: ConstraintDescriptor){
+        __viewContext.primitiveValueConstraints[constraintName] = constraint;
+    }
+    
+    export function writeConstraints(constraints: Array<ConstraintDescriptor>){
+        _.forEach(constraints, function (constraint: ConstraintDescriptor){
+            __viewContext.primitiveValueConstraints[constraint.itemCode] = constraint;        
+        });
+    }
 }
