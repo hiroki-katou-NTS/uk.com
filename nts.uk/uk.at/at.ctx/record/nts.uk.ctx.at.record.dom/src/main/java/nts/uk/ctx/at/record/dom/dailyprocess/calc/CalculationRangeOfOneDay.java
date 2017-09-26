@@ -12,7 +12,6 @@ import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWorkOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ScheduleTimeSheet;
-import nts.uk.ctx.at.record.dom.daily.WorkInfomation;
 import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
