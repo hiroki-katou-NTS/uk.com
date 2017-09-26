@@ -71,10 +71,10 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
 	}
 
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository#findLastestByCompanyId(java.lang.String)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository#findLatestByCompanyId(java.lang.String)
 	 */
 	@Override
-	public Optional<WorkplaceConfig> findLastestByCompanyId(String companyId) {
+	public Optional<WorkplaceConfig> findLatestByCompanyId(String companyId) {
 		List<WorkplaceConfigHistory> lstWorkplaceConfigHistory = new ArrayList<>();
 		// get entity manager
 		EntityManager em = this.getEntityManager();

@@ -23,7 +23,7 @@ public class UpdateWorkplaceCommandHandler extends CommandHandler<RegisterWorkpl
 		RegisterWorkplaceCommand command = context.getCommand();
 		
 		Workplace wkp = command.toDomain();
-		workplaceRepository.updateLatestHistory(wkp);
+		workplaceRepository.update(wkp);
 	}
 
 }

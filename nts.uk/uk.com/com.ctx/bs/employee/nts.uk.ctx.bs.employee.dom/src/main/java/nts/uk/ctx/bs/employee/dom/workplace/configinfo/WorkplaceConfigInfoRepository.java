@@ -27,6 +27,7 @@ public interface WorkplaceConfigInfoRepository {
 	 */
 	void addList(WorkplaceConfigInfo WkpConfigInfo);
 	
+	
 	/**
 	 * Find.
 	 *

@@ -172,4 +172,5 @@ public class WorkplaceConfigInfoFinder {
 			pushToList(currentItemChilds, dto, hierarchyCode.substring(3, hierarchyCode.length()), searchCode);
 		}
 	}
+	
 }

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import lombok.Getter;
@@ -50,6 +52,23 @@ public class Workplace extends AggregateRoot{
 		memento.setWorkplaceId(this.workplaceId);
 		memento.setWorkplaceHistory(this.workplaceHistory);
 	}
+	
+	/**
+	 * Gets the wkp history latest.
+	 *
+	 * @return the wkp history latest
+	 */
+	public WorkplaceHistory getWkpHistoryLatest() {
+        // sort desc
+        Collections.sort(this.workplaceHistory, new Comparator<WorkplaceHistory>() {
+            @Override
+            public int compare(WorkplaceHistory obj1, WorkplaceHistory obj2) {
+                return obj2.getPeriod().getStartDate().compareTo(obj1.getPeriod().getStartDate());
+            }
+        });
+        int indexLatestHist = 0;
+        return this.workplaceHistory.get(indexLatestHist);
+    }
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

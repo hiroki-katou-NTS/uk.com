@@ -35,9 +35,11 @@ public class RegisterWorkplaceCommandHandler extends CommandHandler<RegisterWork
 			return;
 		}
 		//add workplace 
-		String historyId = workplaceRepository.add(wkp);
+		workplaceRepository.add(wkp);
+		
+		String historyIdLatest = wkp.getWkpHistoryLatest().getHistoryId().v();
 		//copy wkp hist
-		workplaceInfoService.copyWorkplaceHistory(companyId, workplaceId, historyId);
+		workplaceInfoService.copyWorkplaceHistory(companyId, workplaceId, historyIdLatest);
 	}
 
 }

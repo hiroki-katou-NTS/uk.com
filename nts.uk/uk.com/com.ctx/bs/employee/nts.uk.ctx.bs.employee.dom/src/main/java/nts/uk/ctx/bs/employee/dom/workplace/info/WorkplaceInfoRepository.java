@@ -22,6 +22,15 @@ public interface WorkplaceInfoRepository {
 	void update(WorkplaceInfo workplaceInfo);
 
 	/**
+     * Removes the.
+     *
+     * @param companyId the company id
+     * @param workplaceId the workplace id
+     * @param historyId the history id
+     */
+    void remove(String companyId, String workplaceId, String historyId);
+	
+	/**
 	 * Find by wkp id.
 	 *
 	 * @param wkpId the wkp id

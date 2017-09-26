@@ -117,6 +117,9 @@ module nts.uk.com.view.cmm011.a {
                 let self = this;
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/b/index.xhtml').onClosed(() => {
                     let dialogData = nts.uk.ui.windows.getShared("ShareDateScreenParent");
+                    if (!dialogData) {
+                        return;
+                    }
                     self.strDWorkplace(dialogData.startDate);
                     self.endDWorkplace(dialogData.endDate);
                 });
