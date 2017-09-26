@@ -42,7 +42,7 @@ public class SaveWkpJobAutoCalSetCommandHandler extends CommandHandler<WkpJobAut
 
 		// Find details
 		Optional<WkpJobAutoCalSetting> result = this.wkpJobAutoCalSettingRepo.getAllWkpJobAutoCalSetting(companyId,
-				command.getWkp(), command.getJob());
+				command.getWkpId(), command.getJobId());
 
 		// Convert to domain
 		WkpJobAutoCalSetting AutoCalSetting = command.toDomain(companyId);

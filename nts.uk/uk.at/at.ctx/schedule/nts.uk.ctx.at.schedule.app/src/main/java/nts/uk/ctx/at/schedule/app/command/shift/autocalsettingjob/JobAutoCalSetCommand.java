@@ -40,7 +40,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JobAutoCalSetCommand {
 	
 	/** The job ID. */
-	private String jobID;
+	private String jobId;
 	
 	/** The normal OT time. */
 	// 残業時間
@@ -105,7 +105,7 @@ public class JobAutoCalSetCommand {
 		 */
 		@Override
 		public PositionId getPositionId() {
-			return new PositionId(this.command.getJobID());
+			return new PositionId(this.command.getJobId());
 		}
 
 

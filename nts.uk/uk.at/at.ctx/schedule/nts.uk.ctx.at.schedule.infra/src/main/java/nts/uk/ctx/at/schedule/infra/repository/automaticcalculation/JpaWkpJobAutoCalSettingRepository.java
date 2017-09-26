@@ -45,7 +45,7 @@ public class JpaWkpJobAutoCalSettingRepository extends JpaRepository implements 
 						wkpJobAutoCalSetting.getJobId().v(), wkpJobAutoCalSetting.getJobId().v()),
 						KshmtAutoWkpJobCal.class);
 		KshmtAutoWkpJobCal entity = null;
-		if (!optinal.isPresent()) {
+		if (optinal.isPresent()) {
 			entity = optinal.get();
 		} else {
 			entity = new KshmtAutoWkpJobCal();

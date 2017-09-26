@@ -41,10 +41,10 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 public class WkpJobAutoCalSetCommand {
 
 	/** The wkp. */
-	private String wkp;
+	private String wkpId;
 
 	/** The job. */
-	private String job;
+	private String jobId;
 
 	/** The normal OT time. */
 	// 残業時間
@@ -140,7 +140,7 @@ public class WkpJobAutoCalSetCommand {
 		 */
 		@Override
 		public WorkplaceId getWkpId() {
-			return new WorkplaceId(this.command.getWkp());
+			return new WorkplaceId(this.command.getWkpId());
 		}
 
 		/* (non-Javadoc)
@@ -148,7 +148,7 @@ public class WkpJobAutoCalSetCommand {
 		 */
 		@Override
 		public PositionId getPositionId() {
-			return new PositionId(this.command.getJob());
+			return new PositionId(this.command.getJobId());
 		}
 
 	}

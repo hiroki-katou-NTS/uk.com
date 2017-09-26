@@ -13,14 +13,14 @@
 			<button tabindex="1" class="proceed"
 				data-bind="click: saveWkpJobAutoCal">#{i18n.getText('KMK006_9')}</button>
 			<button tabindex="2" class="danger"
-				data-bind="enable: personalEstablishmentModel.isEnableDelete, click: deletePersonalEstablishment">#{i18n.getText('KMK006_26')}</button>
+				data-bind="click: deleteWkpJobAutoCal">#{i18n.getText('KMK006_26')}</button>
 		</ui:define>
 		<ui:define name="extended-111">
 			<div class="lableContentPersonal"
 				data-bind="ntsFormLabel: {required: true}">
 				<label>#{i18n.getText('KSM001_4')}</label>
 			</div>
-			<div tabindex="6" id="comboTargetYear"
+			<!-- <div tabindex="6" id="comboTargetYear"
 				data-bind="ntsComboBox: {
 				name: '#[KMK006_26]',
 				options: lstTargetYear,
@@ -32,7 +32,7 @@
 				enable: true,
 				columns: [
 					{ prop: 'year', length: 6 }
-				]}"></div>
+				]}"></div> -->
 		</ui:define>
 		<ui:define name="extended-222">
 			<div class="pull-right"

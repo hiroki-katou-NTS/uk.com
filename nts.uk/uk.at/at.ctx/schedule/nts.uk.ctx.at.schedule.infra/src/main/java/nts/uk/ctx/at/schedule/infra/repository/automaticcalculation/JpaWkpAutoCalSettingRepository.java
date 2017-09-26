@@ -18,23 +18,34 @@ import nts.uk.ctx.at.schedule.infra.entity.shift.autocalsetting.KshmtAutoWkpCalS
  * The Class JpaWkpAutoCalSettingRepository.
  */
 @Stateless
-public class JpaWkpAutoCalSettingRepository extends JpaRepository implements WkpAutoCalSettingRepository{
+public class JpaWkpAutoCalSettingRepository extends JpaRepository implements WkpAutoCalSettingRepository {
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpAutoCalSettingRepository#update(nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpAutoCalSetting)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.
+	 * WkpAutoCalSettingRepository#update(nts.uk.ctx.at.schedule.dom.shift.
+	 * autocalsetting.WkpAutoCalSetting)
 	 */
 	@Override
 	public void update(WkpAutoCalSetting wkpAutoCalSetting) {
 		this.commandProxy().update(this.toEntity(wkpAutoCalSetting));
 		this.getEntityManager().flush();
-		
+
 	}
-	
+
+	@Override
+	public void add(WkpAutoCalSetting wkpAutoCalSetting) {
+		this.commandProxy().insert(this.toEntity(wkpAutoCalSetting));
+		this.getEntityManager().flush();
+
+	}
 
 	/**
 	 * To entity.
 	 *
-	 * @param jobAutoCalSetting the job auto cal setting
+	 * @param jobAutoCalSetting
+	 *            the job auto cal setting
 	 * @return the kshmt auto job cal set
 	 */
 	private KshmtAutoWkpCalSet toEntity(WkpAutoCalSetting wkpAutoCalSetting) {
@@ -42,7 +53,7 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 				new KshmtAutoWkpCalSetPK(wkpAutoCalSetting.getCompanyId().v(), wkpAutoCalSetting.getWkpId().v()),
 				KshmtAutoWkpCalSet.class);
 		KshmtAutoWkpCalSet entity = null;
-		if (!optinal.isPresent()) {
+		if (optinal.isPresent()) {
 			entity = optinal.get();
 		} else {
 			entity = new KshmtAutoWkpCalSet();
@@ -52,36 +63,37 @@ public class JpaWkpAutoCalSettingRepository extends JpaRepository implements Wkp
 		return entity;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpAutoCalSettingRepository#getAllWkpAutoCalSetting(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.
+	 * WkpAutoCalSettingRepository#getAllWkpAutoCalSetting(java.lang.String,
+	 * java.lang.String)
 	 */
 	@Override
 	public Optional<WkpAutoCalSetting> getAllWkpAutoCalSetting(String companyId, String wkpId) {
 		KshmtAutoWkpCalSetPK kshmtAutoWkpCalSetPK = new KshmtAutoWkpCalSetPK(companyId, wkpId);
 
-		Optional<KshmtAutoWkpCalSet> optKshmtAutoWkpCalSet = this.queryProxy().find(kshmtAutoWkpCalSetPK, KshmtAutoWkpCalSet.class);
+		Optional<KshmtAutoWkpCalSet> optKshmtAutoWkpCalSet = this.queryProxy().find(kshmtAutoWkpCalSetPK,
+				KshmtAutoWkpCalSet.class);
 
 		if (!optKshmtAutoWkpCalSet.isPresent()) {
 			return Optional.empty();
 		}
-		
+
 		return Optional.of(new WkpAutoCalSetting(new JpaWkpAutoCalSettingGetMemento(optKshmtAutoWkpCalSet.get())));
 	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpAutoCalSettingRepository#delete(java.lang.String, java.lang.String)
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.
+	 * WkpAutoCalSettingRepository#delete(java.lang.String, java.lang.String)
 	 */
 	@Override
 	public void delete(String cid, String wkpId) {
 		this.commandProxy().remove(KshmtAutoWkpCalSet.class, new KshmtAutoWkpCalSetPK(cid, wkpId));
 
-	}
-
-	@Override
-	public void add(WkpAutoCalSetting wkpAutoCalSetting) {
-		this.commandProxy().insert(this.toEntity(wkpAutoCalSetting));
-		this.getEntityManager().flush();
-		
 	}
 
 }
