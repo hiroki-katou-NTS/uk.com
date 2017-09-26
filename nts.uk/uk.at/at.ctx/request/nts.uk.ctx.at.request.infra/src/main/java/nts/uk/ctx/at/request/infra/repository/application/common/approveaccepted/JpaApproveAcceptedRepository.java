@@ -31,7 +31,7 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 		return null;
 	}
 	
-	private KafdtApproveAccepted toEntity(ApproveAccepted domain) {
+	private KafdtApproveAccepted toEntity(ApproveAccepted domain, String frameID) {
 		// 2017.09.25
 		/*return new KafdtApproveAccepted( 
 				new KafdtApproveAcceptedPK(
@@ -71,13 +71,13 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 	 * add new Approve Accepted
 	 */
 	@Override
-	public void createApproverAccepted(ApproveAccepted approveAccepted) {
-		this.commandProxy().insert(toEntity(approveAccepted));
+	public void createApproverAccepted(ApproveAccepted approveAccepted, String frameID) {
+		this.commandProxy().insert(toEntity(approveAccepted, frameID));
 	}
 
 	@Override
-	public void updateApproverAccepted(ApproveAccepted approveAccepted) {
-		KafdtApproveAccepted newEntity = toEntity(approveAccepted);
+	public void updateApproverAccepted(ApproveAccepted approveAccepted, String frameID) {
+		KafdtApproveAccepted newEntity = toEntity(approveAccepted, frameID);
 		KafdtApproveAccepted updateEntity = this.queryProxy()
 				.find(newEntity.kafdtApproveAcceptedPK, KafdtApproveAccepted.class).get();
 		updateEntity.approvalATR = newEntity.approvalATR;

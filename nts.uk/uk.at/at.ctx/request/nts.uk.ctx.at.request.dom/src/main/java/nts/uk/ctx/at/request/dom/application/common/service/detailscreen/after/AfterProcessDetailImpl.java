@@ -73,7 +73,7 @@ public class AfterProcessDetailImpl implements AfterProcessDetail {
 					x.changeReason(new Reason(""));
 					x.changeApprovalDate(null);
 				});
-				approvalFrameRepository.update(approvalFrame);
+				approvalFrameRepository.update(approvalFrame, appApprovalPhase.getPhaseID());
 			}
 		}
 		if (approverWhoApproveds.size() < 1)
