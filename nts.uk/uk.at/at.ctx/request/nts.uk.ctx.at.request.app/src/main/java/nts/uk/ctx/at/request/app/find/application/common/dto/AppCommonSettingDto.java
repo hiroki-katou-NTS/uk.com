@@ -5,13 +5,14 @@ import java.util.stream.Collectors;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.Value;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.RequestOfEachCommonDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.ApplicationDeadlineDto;
 import nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingDto;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 
 @AllArgsConstructor
-@NoArgsConstructor
+@Value
 public class AppCommonSettingDto {
 	public String generalDate;
 	
