@@ -46,14 +46,24 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 			val designer = this.createContext(TEMPLATE_FILE);
 			Workbook workbook = designer.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
-			Worksheet worksheet = worksheets.get(0);
-			// set up page prepare print
-			this.printPage(worksheet);
-			this.printCompanyOfApproval(worksheets, dataSource);
 
-			Worksheet workplaceSheet = worksheets.get(1);
-			this.printWorkPlacePage(workplaceSheet);
-			this.printWorkplaceOfApproval(worksheets, dataSource);
+			if (dataSource.isCheckCompany() && dataSource.getMasterApproverRootOutput().getCompanyRootInfor() != null) {
+				Worksheet worksheet = worksheets.get(0);
+				// set up page prepare print
+				this.printPage(worksheet);
+				this.printCompanyOfApproval(worksheets, dataSource);
+			} else {
+				throw new BusinessException("Report can not print!");
+			}
+
+			if (dataSource.isCheckWorplace()
+					&& !dataSource.getMasterApproverRootOutput().getWorplaceRootInfor().isEmpty()) {
+				Worksheet workplaceSheet = worksheets.get(1);
+				this.printWorkPlacePage(workplaceSheet);
+				this.printWorkplaceOfApproval(worksheets, dataSource);
+			} else {
+				throw new BusinessException(" Report can not print!");
+			}
 
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
@@ -91,8 +101,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 		pageSetup.setFirstPageNumber(1);
 		pageSetup.setPrintArea("A1:N");
 	}
-	
-	
+
 	/**
 	 * PRINT PAGE PERSON
 	 * 
@@ -277,7 +286,8 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 					int numberOfPhase = lstApproval.get(i).getLstApproval().size();
 					for (int x = 3; x <= 11; x = x + 2) {
-						this.printPhaseOfCompany(worksheets, cells, x, firstRow, sizeOfApp, lstApproval, i, j, numberOfPhase);
+						this.printPhaseOfCompany(worksheets, cells, x, firstRow, sizeOfApp, lstApproval, i, j,
+								numberOfPhase);
 						j = j + 1;
 					}
 
@@ -289,8 +299,8 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 	}
 
-	private void printPhaseOfCompany(WorksheetCollection worksheets, Cells cells, int indexCol, int firstRow, int sizeOfApp,
-			List<ApprovalForApplication> lstApproval, int i, int j, int numberOfPhase) {
+	private void printPhaseOfCompany(WorksheetCollection worksheets, Cells cells, int indexCol, int firstRow,
+			int sizeOfApp, List<ApprovalForApplication> lstApproval, int i, int j, int numberOfPhase) {
 		Worksheet worksheet = worksheets.get(0);
 		if (j < numberOfPhase) {
 			int oldRow = firstRow;
@@ -638,10 +648,12 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 					// in ra số phase còn lai
 
+					// luu gia tri numberOfRowMerge
+					int oldRowMerge= numberOfRowMerge;
 					for (int phase = 0; phase < lstApp.size(); phase++) {
 						if (lstApp.get(phase).getPersonName().size() > numberOfRowMerge) {
-							for (int mer = numberOfRowMerge; mer > 0; mer--) {
-								lstApp.get(phase).getPersonName().remove(mer);
+							for (; oldRowMerge > 0; oldRowMerge--) {
+								lstApp.get(phase).getPersonName().remove(0);
 							}
 						} else {
 							lstApp.get(phase).getPersonName().clear();
@@ -650,6 +662,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 					int numberOfNotMerger = (sizeOfForm - numberOfRowMerge);
 					this.printPhaseOfWorkplace(worksheets, cells, firstRow, numberOfNotMerger, lstApp, false);
+					firstRow = firstRow + 1;
 
 				}
 

@@ -11,5 +11,9 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.Master
 @Setter
 @Getter
 public class MasterApproverRootOutputDataSource {
-	MasterApproverRootOutput masterApproverRootOutput;
+	private MasterApproverRootOutput masterApproverRootOutput;
+	private boolean isCheckCompany;
+	private boolean isCheckPerson;
+	private boolean isCheckWorplace;
+	
 }
