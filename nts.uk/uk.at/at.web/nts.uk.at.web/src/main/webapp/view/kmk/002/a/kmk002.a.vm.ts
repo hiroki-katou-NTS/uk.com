@@ -132,9 +132,9 @@ module nts.uk.at.view.kmk002.a {
             public openDialogD(): void {
                 let self = this;
                 let dto = new FormulaSetting().toDto();
-                nts.uk.ui.windows.setShared('formulaSetting', dto);
+                nts.uk.ui.windows.setShared('formulaParams', dto);
                 nts.uk.ui.windows.sub.modal('/view/kmk/002/d/index.xhtml').onClosed(() => {
-                    let dto = nts.uk.ui.windows.getShared("formulaSetting");
+                    let dto = nts.uk.ui.windows.getShared("formulaReturned");
                     console.log(dto);
                     //TODO: lay gia tri tra ve
                 });
@@ -570,6 +570,13 @@ module nts.uk.at.view.kmk002.a {
                 this.dispOrder = 1;
                 this.inputValue = ko.observable(1);
                 this.formulaItemId = ko.observable('');
+            }
+
+            public isInputValue(): boolean {
+                if (this.settingMethod() == 0) {
+                    return false;
+                }
+                return true;
             }
 
             public fromDto(dto: SettingItemDto) {
