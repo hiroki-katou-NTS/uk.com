@@ -16,13 +16,13 @@ import nts.uk.ctx.bs.employee.dom.common.CompanyId;
  */
 @Getter
 @Setter
-public class ClassificationFindDto implements ClassificationSetMemento{
+public class ClassificationFindDto implements ClassificationSetMemento {
 	
 	/** The code. */
-	private String code;
+	private String classificationCode;
 	
 	/** The name. */
-	private String name;
+	private String classificationName;
 
 	/*
 	 * (non-Javadoc)
@@ -45,7 +45,7 @@ public class ClassificationFindDto implements ClassificationSetMemento{
 	 */
 	@Override
 	public void setManagementCategoryCode(ClassificationCode managementCategoryCode) {
-		this.code = managementCategoryCode.v();
+		this.classificationCode = managementCategoryCode.v();
 		
 	}
 
@@ -58,7 +58,7 @@ public class ClassificationFindDto implements ClassificationSetMemento{
 	 */
 	@Override
 	public void setManagementCategoryName(ClassificationName managementCategoryName) {
-		this.name = managementCategoryName.v();
+		this.classificationName = managementCategoryName.v();
 		
 	}
 

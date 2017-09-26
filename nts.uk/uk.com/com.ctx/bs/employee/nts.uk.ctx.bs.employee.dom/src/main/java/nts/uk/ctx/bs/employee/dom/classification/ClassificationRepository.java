@@ -5,8 +5,21 @@
 package nts.uk.ctx.bs.employee.dom.classification;
 
 import java.util.List;
+import java.util.Optional;
 
+/**
+ * The Interface ClassificationRepository.
+ */
 public interface ClassificationRepository {
+	
+	/**
+	 * Find classification.
+	 *
+	 * @param companyId the company id
+	 * @param classificationCode the classification code
+	 * @return the optional
+	 */
+	Optional<Classification> findClassification(String companyId, String classificationCode);
 	
 	/**
 	 * Adds the.
@@ -22,7 +35,13 @@ public interface ClassificationRepository {
 	 */
 	void update(Classification managementCategory);
 	
-	
+	/**
+	 * Remove.
+	 *
+	 * @param companyId the company id
+	 * @param classificationCode the classification code
+	 */
+	void remove(String companyId, String classificationCode);
 	
 	/**
 	 * Gets the all management category.
