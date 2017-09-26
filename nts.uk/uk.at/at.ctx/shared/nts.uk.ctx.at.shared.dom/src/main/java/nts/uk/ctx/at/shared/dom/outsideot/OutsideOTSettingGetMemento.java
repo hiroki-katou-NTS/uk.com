@@ -12,6 +12,7 @@ import nts.uk.ctx.at.shared.dom.outsideot.overtime.Overtime;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNote;
 
 /**
+ * OT = Overtime
  * The Interface OutsideOTSettingGetMemento.
  */
 public interface OutsideOTSettingGetMemento {

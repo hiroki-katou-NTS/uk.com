@@ -17,9 +17,8 @@ public interface WorkplaceConfigRepository {
 	 * Adds the.
 	 *
 	 * @param workplaceConfig the workplace config
-	 * @return the string
 	 */
-	String add(WorkplaceConfig workplaceConfig);
+	void add(WorkplaceConfig workplaceConfig);
 	
 	/**
 	 * Update.

@@ -6,9 +6,9 @@ package nts.uk.ctx.at.record.app.find.optitem.calculation;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalcFormulaSetting;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaAtr;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaName;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSetMemento;
@@ -117,7 +117,7 @@ public class FormulaDto implements FormulaSetMemento {
 	 * FormulaAtr)
 	 */
 	@Override
-	public void setCalcFormulaAtr(FormulaAtr atr) {
+	public void setCalcFormulaAtr(OptionalItemAtr atr) {
 		this.formulaAtr = atr.value;
 	}
 

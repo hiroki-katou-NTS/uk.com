@@ -3,8 +3,8 @@ module cps001.a.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getData': '',
-        'saveData': ''
+        'getData': 'ctx/bs/person/newlayout/get',
+        'saveData': 'ctx/bs/person/newlayout/save'
     };
 
     export function getData() {

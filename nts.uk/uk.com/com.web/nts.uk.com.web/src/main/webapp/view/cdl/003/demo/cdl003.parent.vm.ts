@@ -5,11 +5,13 @@ module nts.uk.com.view.cdl003.parent.viewmodel {
         canSelectClassificationCodes: KnockoutObservable<string>;
         selectClassificationCodes: KnockoutObservable<string>;
         selectMode: KnockoutObservable<boolean>;
+        showNoSelection: KnockoutObservable<boolean>;
         constructor() {
             var self = this;
             //construct codes 
             self.canSelectClassificationCodes = ko.observable('0000000001,0000000002,0000000003,0000000005');
             self.selectMode = ko.observable(true);
+            self.showNoSelection = ko.observable(false);
             self.selectClassificationCodes = ko.observable('');
         }
 
@@ -21,6 +23,7 @@ module nts.uk.com.view.cdl003.parent.viewmodel {
             let canSelected = self.canSelectClassificationCodes() ? self.canSelectClassificationCodes().split(',') : [];
             nts.uk.ui.windows.setShared('inputCDL003', {
                 canSelected: canSelected,
+                showNoSelection: self.showNoSelection(),
                 isMultiple: self.selectMode()
             }, true);
 
