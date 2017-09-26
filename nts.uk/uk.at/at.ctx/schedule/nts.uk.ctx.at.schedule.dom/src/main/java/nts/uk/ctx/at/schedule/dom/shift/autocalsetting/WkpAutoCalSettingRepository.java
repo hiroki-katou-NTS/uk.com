@@ -17,6 +17,14 @@ public interface WkpAutoCalSettingRepository {
 	 * @param wkpAutoCalSetting the wkp auto cal setting
 	 */
     void update(WkpAutoCalSetting wkpAutoCalSetting);
+    
+    /**
+     * Add.
+     *
+     * @param wkpAutoCalSetting the wkp auto cal setting
+     */
+    void add(WkpAutoCalSetting wkpAutoCalSetting);
+
 
 	/**
 	 * Gets the all wkp auto cal setting.
@@ -28,11 +36,11 @@ public interface WkpAutoCalSettingRepository {
     Optional<WkpAutoCalSetting> getAllWkpAutoCalSetting(String companyId, String wkpId);
     
 	/**
-     * Deleted.
-     *
-     * @param cid the cid
-     * @param patternCd the pattern cd
-     */
+	 * Delete.
+	 *
+	 * @param cid the cid
+	 * @param wkpId the wkp id
+	 */
     void delete(String cid, String wkpId);
 
 }

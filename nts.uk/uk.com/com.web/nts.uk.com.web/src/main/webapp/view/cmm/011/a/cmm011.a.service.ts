@@ -5,17 +5,26 @@ module nts.uk.com.view.cmm011.a {
          */
         var servicePath: any = {
             findLstWorkPlace: "bs/employee/workplace/config/info/find",
+            findWkpHistList: "bs/employee/workplace/hist",
         };
-        
+
+        /**
+         * findLstWorkPlace
+         */
         export function findLstWorkPlace(baseDate: Date): JQueryPromise<Array<model.TreeWorkplace>> {
-            return nts.uk.request.ajax(servicePath.findLstWorkPlace,{startDate: baseDate});
+            return nts.uk.request.ajax(servicePath.findLstWorkPlace, { startDate: baseDate });
         }
-        
+        /**
+         * getLstWkpHist
+         */
+        export function getLstWkpHist(wkpId: string): JQueryPromise<model.Workplace> {
+            return nts.uk.request.ajax(servicePath.findWkpHistList + "/" + wkpId);
+        }
+
         /**
         * Model namespace.
         */
         export module model {
-            
             export interface TreeWorkplace {
                 workplaceId: string;
                 code: string;
@@ -24,6 +33,22 @@ module nts.uk.com.view.cmm011.a {
                 hierarchyCode: string;
                 level?: number;
                 childs: Array<TreeWorkplace>;
+            }
+
+            export interface Workplace {
+                companyId: string;
+                workplaceId: string;
+                workplaceHistory: Array<WorkplaceHistory>;
+            }
+
+            export interface WorkplaceHistory {
+                historyId: string;
+                period: Period;
+            }
+
+            export interface Period {
+                startDate: string;
+                endDate: string;
             }
         }
     }

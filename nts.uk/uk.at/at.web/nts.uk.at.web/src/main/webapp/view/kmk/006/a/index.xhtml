@@ -29,9 +29,9 @@
 		<ui:define name="sidebar">
 			<ul tabindex="-1"  class="navigator">
 				<li data-bind="click: onSelectCompany" ><a tabindex="-1" href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li data-bind="click: onSelectEmployment, visible: usageSettingModel.settingEmployment"><a tabindex="-1" href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
-				<li data-bind="click: onSelectPerson, visible: usageSettingModel.settingPersonal"><a tabindex="-1" href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Jobtitle')}</a></li>
-				<li data-bind="click: onSelectWkpJob, visible: usageSettingModel.settingPersonal"><a tabindex="-1" href="#tabpanel-4" role="tab-navigator">#{i18n.getText('KMK006_6')}</a></li> 
+				<li data-bind="click: onSelectEmployment, visible: useUnitAutoCalSettingModel.useWkpSet"><a tabindex="-1" href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
+				<li data-bind="click: onSelectPerson, visible: useUnitAutoCalSettingModel.useJobSet"><a tabindex="-1" href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Jobtitle')}</a></li>
+				<li data-bind="click: onSelectWkpJob, visible: useUnitAutoCalSettingModel.useJobwkpSet"><a tabindex="-1" href="#tabpanel-4" role="tab-navigator">#{i18n.getText('KMK006_6')}</a></li> 
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">

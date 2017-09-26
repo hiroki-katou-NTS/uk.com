@@ -17,6 +17,14 @@ public interface JobAutoCalSettingRepository {
 	 * @param jobAutoCalSetting the job auto cal setting
 	 */
     void update(JobAutoCalSetting jobAutoCalSetting);
+    
+
+	/**
+	 * Add.
+	 *
+	 * @param jobAutoCalSetting the job auto cal setting
+	 */
+    void add(JobAutoCalSetting jobAutoCalSetting);
 
 	/**
 	 * Gets the all job auto cal setting.

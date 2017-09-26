@@ -18,6 +18,12 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
  *
  * @return the rest time
  */
+
+/**
+ * Gets the rest time.
+ *
+ * @return the rest time
+ */
 @Getter
 public class WkpAutoCalSetting extends AggregateRoot {
 

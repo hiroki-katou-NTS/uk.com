@@ -130,43 +130,6 @@ module nts.uk.com.view.cmm011.a {
                 });
             }
             
-            static fakeDataWorkplace(): Array<TreeWorkplace> {
-                return [
-                    new TreeWorkplace("001", '001', 'Name001', "001", [
-                        new TreeWorkplace('001001', '001001', 'Name001001', '001001', [
-                            new TreeWorkplace('001001001', '001001001', 'Name001001001', '001001001', [])
-                        ]),
-                        new TreeWorkplace('001002', '001002', 'Name001002', '001002', [])
-                    ]),
-                    new TreeWorkplace('002', '002', 'Name002', '002', [
-                        new TreeWorkplace('002001', '002001', 'Name002001', '002001', []),
-                        new TreeWorkplace('002002', '002002', 'Name002002', '002002', [
-                            new TreeWorkplace('002002001', '002002001', 'Name002002001', '002002001', [])
-                        ])
-                    ]),
-                    new TreeWorkplace('003', '003', 'Name003', '003', [
-                        new TreeWorkplace('003001', '003001', 'Name003001', '003001', []),
-                        new TreeWorkplace('003002', '003002', 'Name003002', '003002', [
-                            new TreeWorkplace('003002001', '003002001', 'Name003002001', '003002001', [])
-                        ])
-                    ]),
-                    new TreeWorkplace('004', '004', 'Name004', '004', []),
-                    new TreeWorkplace('005', '005', 'Name005', '005', [
-                        new TreeWorkplace('005001', '005001', 'Name005001', '005001', []),
-                        new TreeWorkplace('005002', '005002', 'Name005002', '005002', [
-                            new TreeWorkplace('005002001', '005002001', 'Name005002001', '005002001', [
-                                new TreeWorkplace('005002001001', '005002001001', 'Name005002001001', '005002001001', [
-                                    new TreeWorkplace('005002001001001', '005002001001001', 'Name005002001001001', '005002001001001', []),
-                                    new TreeWorkplace('005002001001002', '005002001001002', 'Name005002001001002', '005002001001002', [
-                                        new TreeWorkplace('005002001001001001', '005002001001001001', '005002001001001001', '005002001001001001', [])
-                                    ])
-                                ])
-                            ])
-                        ])
-                    ]),
-                ];
-            }
-            
             /**
              * showMessageError
              */
@@ -211,8 +174,20 @@ module nts.uk.com.view.cmm011.a {
                     // convert tree to array
                     self.treeArray(self.convertTreeToArray(dataList));
                 });
+                
+                //subscribe selected wkp Id
                 self.selectedWpkId.subscribe(newValue => {
                     self.selectedHeirarchyCd = self.getSelectedHeirarchyCd();
+                    //TODO get wkp list hist by wkpId
+                    service.getLstWkpHist(newValue).done(function(data: any) {
+
+                        let lstWpkHistory = _.map(data.workplaceHistory, (item:any) => {
+                            return { workplaceId: data.workplaceId, historyId: item.historyId, startDate: item.period.startDate, endDate: item.period.endDate };
+                        });
+                        //observable lst hist
+                        self.screenModel.workplaceHistory().lstWpkHistory(lstWpkHistory);
+                        //TODO
+                    });
                 });
                 self.treeArray.subscribe(newArray => {
                     self.mapHeirarchy = self.convertMapHeirarchy();

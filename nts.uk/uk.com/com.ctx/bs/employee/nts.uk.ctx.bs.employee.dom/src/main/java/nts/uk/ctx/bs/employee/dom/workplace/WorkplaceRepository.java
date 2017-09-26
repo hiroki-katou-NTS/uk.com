@@ -63,4 +63,12 @@ public interface WorkplaceRepository {
 	 */
 	Optional<Workplace> findLatestByWorkplaceId(String workplaceId);
 
+	/**
+	 * Find by workplace id.
+	 *
+	 * @param companyId the company id
+	 * @param workplaceId the workplace id
+	 * @return the optional
+	 */
+	Optional<Workplace> findByWorkplaceId(String companyId,String workplaceId);
 }
