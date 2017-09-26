@@ -7,8 +7,15 @@
 <body>
 	<ui:composition template="/master/base.xhtml">
 		<ui:define name="htmlHead">
-			<title>#{i18n.getText('CPS001_1')}</title>
 			<com:scriptfile set="IGNITE" />
+
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js"
+				of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+
 			<com:stylefile path="cps002.a.style.css" />
 			<com:scriptfile path="cps002.a.service.js" />
 			<com:scriptfile path="cps002.a.vm.js" />
@@ -21,7 +28,10 @@
 
 			</div>
 			<div id="contents-area" class="cf">
-				<div id="wizard"
+				<div data-bind="visible:selectedId()===1">
+					<div id="ccgcomponent"></div>
+				</div>
+				<div id="emp_reg_info_wizard"
 					data-bind="ntsWizard: {steps: stepList, theme: 'yellow'}"
 					class="cf">
 					<div class="header">
@@ -34,8 +44,10 @@
 						<div class="step-2">#{i18n.getText('CPS002_14')}</div>
 						<div class="step-3">#{i18n.getText('CPS002_15')}</div>
 						<div class="end step-4">#{i18n.getText('CPS002_16')}</div>
+
 					</div>
 					<div class="contents">
+						<!-- step1 -->
 						<div class="step-1">
 							<div id="step1_content_top">
 								<div id="step1_content_top_left">
@@ -137,17 +149,147 @@
 									</div>
 								</div>
 								<div class='div_line'>
-									<button class="large proceed" id="step1_next_btn">
-										#{i18n.getText('CPS002_29')}</button>
+									<button class="large proceed next_btn" id="step1_next_btn"
+										data-bind="click:next">#{i18n.getText('CPS002_29')}</button>
 								</div>
 							</div>
 						</div>
-						<div class="step-2">contents step2</div>
-						<div class="step-3">contents step3</div>
-						<div class="step-4">contents step4</div>
+						<!-- step1 -->
+
+						<!-- step2 -->
+
+						<div class="step-2">
+							<div id="step2_content">
+								<div class="div_line">
+									<com:ko-if bind="selectedId()===1">
+										<label id="step2_des">#{i18n.getText('CPS002_32')}</label>
+									</com:ko-if>
+									<com:ko-if bind="selectedId()===2">
+										<label id="step2_des">#{i18n.getText('CPS002_39')}</label>
+									</com:ko-if>
+								</div>
+
+								<com:ko-if bind="selectedId()===2">
+									<div class="float_left " id="search_panel">
+										<div id="search_box" class="bg-green">
+											<i class="icon icon-searchbox"></i>
+											<div class="div_line">
+												<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_47')}</div>
+											</div>
+											<div class="div_line">
+												<div style="width: 190px"
+													data-bind="ntsSearchBox: {
+															targetKey: 'id',
+															mode:'igGrid', 
+															comId:'init_list', 
+															items: itemList , 
+															selected: currentCode , 
+															selectedKey: 'id', fields: ['name']}" />
+
+											</div>
+											<div class="div_line">
+												<table id="init_list"
+													data-bind="ntsGridList: {								
+															height: 350,
+															dataSource: itemList ,
+															primaryKey: 'id',
+															columns: columns,
+															multiple: false,
+															value: currentCode ,
+															rows:15
+														}">
+												</table>
+
+											</div>
+										</div>
+									</div>
+
+								</com:ko-if>
+								<div class="float_left" id="value_item">
+									<com:ko-if bind="selectedId()===1">
+
+										<div class="div_line">
+											<div class="step2_col1">
+												<div data-bind="ntsFormLabel: { required:true   }">#{i18n.getText('CPS002_33')}</div>
+											</div>
+											<div class="step2_col2"></div>
+										</div>
+									</com:ko-if>
+									<com:ko-if bind="selectedId()===2">
+
+										<div class="div_line">
+											<div class="step2_col1">
+												<div data-bind="ntsFormLabel: { required:true   }">#{i18n.getText('CPS002_46')}</div>
+											</div>
+											<div class="step2_col2"></div>
+										</div>
+
+									</com:ko-if>
+
+									<div class="div_line">
+										<div class="step2_col1">
+											<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_34')}</div>
+										</div>
+										<div class="step2_col2">
+											<div id="combo-box"
+												data-bind="ntsComboBox: {
+													options: itemList,
+													optionsValue: 'id',
+													visibleItemsCount: 5,
+													value: selectedCode,
+													optionsText: 'name',
+													editable: false,
+													enable: true,
+													columns: [
+														{ prop: 'name', length: 10 },
+													]}">
+											</div>
+
+										</div>
+									</div>
+									<div class='div_line'>
+										<button class="prev_btn" id="step2_prev_btn"
+											data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>
+										<button class="large proceed next_btn" id="step2_next_btn"
+											data-bind="click:next">#{i18n.getText('CPS002_29')}</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!-- step2 -->
+
+						<!-- step3 -->
+						<div class="step-3">
+							<div class="div_line">
+								<label id="step3_des">#{i18n.getText('CPS002_51')}</label>
+							</div>
+							<div class="div_line">
+								<div class="active-panel">
+									<img src='images/avatar.png' />
+								</div>
+							</div>
+
+							<div class='div_line'>
+								<com:ko-if bind="selectedId()!==3">
+									<button class="prev_btn" id="step2_prev_btn"
+										data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>
+								</com:ko-if>
+								<com:ko-if bind="selectedId()===3">
+									<button class="prev_btn" id="step2_prev_btn"
+										data-bind="click:prev">#{i18n.getText('CPS002_52')}</button>
+								</com:ko-if>
+
+								<button class="large proceed next_btn" id="step2_next_btn"
+									data-bind="click:next">#{i18n.getText('CPS002_29')}</button>
+							</div>
+
+						</div>
+						<!-- step3 -->
+						<div class="step-4"></div>
 					</div>
 
 				</div>
+
 			</div>
 		</ui:define>
 	</ui:composition>

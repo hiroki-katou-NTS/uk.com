@@ -13,7 +13,7 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class BsydtEmpInfoCtgDataPk implements Serializable {
+public class BsymtEmpInfoCtgDataPk implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
