@@ -50,7 +50,9 @@ public class GoBackDirectlyFinder {
 	 * @return
 	 */
 	public GoBackDirectDetailDto getGoBackDirectDetailByAppId(String appID) {
-		return GoBackDirectDetailDto.convertToDto(goBackAppSet.getGoBackDirectAppSet(appID));
+		return GoBackDirectDetailDto.convertToDto(
+				goBackAppSet.getGoBackDirectAppSet(appID)
+			);
 	}
 
 	

@@ -81,6 +81,7 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 				1, 
 				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, 
 				app.getApplicationDate());
+		
 		/**
 		 * 
 		 */

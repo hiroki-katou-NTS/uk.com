@@ -11,18 +11,28 @@ module nts.uk.at.view.kaf000.test.viewmodel {
             self.appInfor.push(new ApproverDtoK('e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d', 7));
             self.appInfor.push(new ApproverDtoK('1445DA47-3CF9-4B0A-B819-96D20721881C', 9));
         }
-        openKaf002b() {
-            var self = this;
-            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", self.appInfor()[1]);
-        }
-        openKaf004e() {
-            var self = this;
-            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", self.appInfor()[2]);
-        }
+        /**
+         * open　直行直帰申請
+         */
         openKaf009b() {
             var self = this;
             nts.uk.request.jump("/view/kaf/000/b/index.xhtml", self.appInfor()[0]);
         }
+        /**
+         * 
+         */
+        openKaf002b() {
+            var self = this;
+            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", self.appInfor()[1]);
+        }
+        /**
+         * 
+         */
+        openKaf004e() {
+            var self = this;
+            nts.uk.request.jump("/view/kaf/000/b/index.xhtml", self.appInfor()[2]);
+        }
+        
     }
     export class ApproverDtoK {
         appID: string;

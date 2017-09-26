@@ -26,9 +26,17 @@ public class GoBackDirectDetailDto {
 	 * @return
 	 */
 	public static GoBackDirectDetailDto convertToDto(GoBackDirectAppSet domain) {
-		return new GoBackDirectDetailDto(GoBackDirectlyDto.convertToDto(domain.getGoBackDirectly()),
-				domain.getPrePostAtr(), domain.getWorkLocationName1(), domain.getWorkLocationName2(),
-				domain.getWorkTypeName(), domain.getWorkTimeName(), domain.getAppReasonId(), domain.getAppReason(),
-				domain.getAppDate(), AppCommonSettingDto.convertToDto(domain.getAppCommonSetOut()));
+		return new GoBackDirectDetailDto(
+				GoBackDirectlyDto.convertToDto(
+				domain.getGoBackDirectly()),
+				domain.getPrePostAtr(), 
+				domain.getWorkLocationName1(), 
+				domain.getWorkLocationName2(),
+				domain.getWorkTypeName(), 
+				domain.getWorkTimeName(), 
+				domain.getAppReasonId(), 
+				domain.getAppReason(),
+				domain.getAppDate(), 
+				AppCommonSettingDto.convertToDto(domain.getAppCommonSetOut()));
 	}
 }
