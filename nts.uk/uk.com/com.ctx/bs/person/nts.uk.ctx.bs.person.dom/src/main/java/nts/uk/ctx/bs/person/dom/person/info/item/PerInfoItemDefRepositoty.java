@@ -52,6 +52,15 @@ public interface PerInfoItemDefRepositoty {
 	// Sonnlb Code
 	
 	//vinhpx start
-	int countPerInfoItemDefInCategory(String perInfoCategoryId, String contractCd);
+	int countPerInfoItemDefInCategory(String perInfoCategoryId, String companyId);
+	
+	int countPerInfoItemDefInCopySetting(String perInfoItemDefId, String companyId);
+	
+	List<PersonInfoItemDefinition> getPerInfoItemByCtgId(String perInfoCategoryId, String companyId, String contractCd);
+	
+	void removePerInfoItemInCopySetting(String perInforCtgId, String companyId);
+	
+	void updatePerInfoItemInCopySetting(String perInforCtgId, List<String> perInfoItemDefIds);
+	
 	//vinhpx end
 }
