@@ -210,7 +210,7 @@
 													value: $parents[1].allowPersonRef ,
 													enable: true }"></div>
 												</div>
-												<com:ko-if bind="categoryType === 3">
+												<com:ko-if bind="$parents[1].isHistoryNotCons()">
 													<div>
 														<span id="A4_011">#{i18n.getText('CAS001_28')}</span>
 														<div id="A4_012" class="cf margin_left_10"
