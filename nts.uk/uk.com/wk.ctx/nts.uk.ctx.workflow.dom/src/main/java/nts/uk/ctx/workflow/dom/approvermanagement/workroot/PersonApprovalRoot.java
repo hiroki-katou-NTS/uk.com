@@ -80,10 +80,9 @@ public class PersonApprovalRoot extends AggregateRoot{
 			confirmationRootType == null ? null : EnumAdaptor.valueOf(confirmationRootType, ConfirmationRootType.class),
 			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class));
 	}
-	public static PersonApprovalRoot updateSdateEdate(PersonApprovalRoot psApprovalRoot, String sDate, String eDate){
+	public static PersonApprovalRoot updateSdateEdate(PersonApprovalRoot psApprovalRoot, String eDate){
 		PersonApprovalRoot ps = psApprovalRoot;
-		ApprovalPeriod period = ApprovalPeriod.createSimpleFromJavaType(sDate, eDate);
-		ps.setPeriod(period);
+		ps.period.updateEndate(eDate);
 		return ps;
 	}
 }

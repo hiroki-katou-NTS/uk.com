@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -7,12 +8,14 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.ApprovalRootService;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApprovalRootOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ErrorFlag;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
@@ -20,8 +23,6 @@ import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesett
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
-import nts.uk.ctx.at.request.dom.application.common.UseAtr;
 
 @Stateless
 public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
@@ -38,30 +39,33 @@ public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 	
+	@Inject
+	private ApprovalRootService approvalRootService;
+	
 	public void processBeforeRegister(String companyID, String employeeID, GeneralDate date, PrePostAtr postAtr, int routeAtr, int appType){
-		retirementCheckBeforeJoinCompany(companyID, employeeID, date);
-		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID, employeeID, date);
+		// retirementCheckBeforeJoinCompany(companyID, employeeID, date);
+		// PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID, employeeID, date);
 		// if(endDate.after(startDate.addDays(31))) throw new BusinessException("Msg_277");
 		// if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(periodCurrentMonth.getEndDate())) throw new BusinessException("Msg_276");
 		// if(startDate.before(periodCurrentMonth.getStartDate())) throw new BusinessException("Msg_236");
-		/*
-		confirmRoot = from cache;
-		ApproFrame.ApprovarSID
-		if(confirmRoot.ApprovedRouteErrorFlag==undefined) throw new BusinessException("Msg_238");
-		if(confirmRoot.ApprovedRouteErrorFlag.count==0) throw new BusinessException("Msg_324");
-		if(confirmRoot.ApprovedRouteErrorFlag.count>=10) throw new BusinessException("Msg_237");
-		if(passwordLevel!=0) deadlineApplicationCheck();
-		if(passwordLevel!=0) applicationAcceptanceRestrictionsCheck();
-		confirmationCheck();
-		*/
+		List<ApprovalRootOutput> approvalRootOutputs = approvalRootService.getApprovalRootOfSubjectRequest(companyID, employeeID, routeAtr, appType, date);
+		ApprovalRootOutput approvalRootOutput = approvalRootOutputs.get(0);
+		if(approvalRootOutput.getErrorFlag().equals(ErrorFlag.NO_CONFIRM_PERSON)) throw new BusinessException("Msg_238");
+		if(approvalRootOutput.getErrorFlag().equals(ErrorFlag.APPROVER_UP_10)) throw new BusinessException("Msg_237");
+		if(approvalRootOutput.getErrorFlag().equals(ErrorFlag.NO_APPROVER)) throw new BusinessException("Msg_324");
+		// if(passwordLevel!=0) deadlineApplicationCheck();
+		// if(passwordLevel!=0) applicationAcceptanceRestrictionsCheck();
+		confirmationCheck(companyID, employeeID, date);
 	}
 	
+	// moi nguoi chi co the o mot cty vao mot thoi diem
+	// check xem nguoi xin con trong cty k
 	public void retirementCheckBeforeJoinCompany(String companyID, String employeeID, GeneralDate date){
 		/*
 		Optional<Employee> e = Employee.find(employeeID); 
 		if(e.isPresent()){
 			if(date<e.entryDate) throw new BusinessException(Msg_235);
-			if(date<e.retirementDate) throw new BusinessException(Msg_391); 
+			if(date>e.retirementDate) throw new BusinessException(Msg_391); 
 		}
 		*/
 	}

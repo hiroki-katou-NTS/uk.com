@@ -18,7 +18,7 @@ import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.Krqdt
  *
  */
 @Stateless
-public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepository {
+public class JpaApprovalFrameRepository extends JpaRepository implements ApprovalFrameRepository {
 
 	private final String SELECT = "SELECT c FROM KrqdtApprovalFrame c ";
 	private final String SELECT_SINGLE = "SELECT c FROM KrqdtApprovalFrame c"
@@ -43,14 +43,14 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 	}
 
 	@Override
-	public void create(ApprovalFrame approvalFrame) {
-		this.commandProxy().insert(toEntity(approvalFrame));
+	public void create(ApprovalFrame approvalFrame, String phaseID) {
+		this.commandProxy().insert(toEntity(approvalFrame, phaseID));
 
 	}
 
 	@Override
-	public void update(ApprovalFrame approvalFrame) {
-		KrqdtApprovalFrame newEntity = toEntity(approvalFrame);
+	public void update(ApprovalFrame approvalFrame, String phaseID) {
+		KrqdtApprovalFrame newEntity = toEntity(approvalFrame, phaseID);
 		KrqdtApprovalFrame updateEntity = this.queryProxy()
 				.find(newEntity.krqdtApprovalFramePK, KrqdtApprovalFrame.class).get();
 		this.commandProxy().update(updateEntity);
@@ -72,32 +72,18 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 	}
 
 	private ApprovalFrame toDomain(KrqdtApprovalFrame entity) {
-		// 2017.09.25
-		/*return ApprovalFrame.createFromJavaType(
+		return ApprovalFrame.createFromJavaType(
 				entity.krqdtApprovalFramePK.companyID,
-				entity.krqdtApprovalFramePK.phaseID, 
-				entity.krqdtApprovalFramePK.dispOrder, 
-				entity.krqdtApprovalFramePK.approverSID,
-				Integer.valueOf(entity.approvalATR).intValue(), 
-				Integer.valueOf(entity.confirmATR).intValue(),
-				entity.approvalDate,
-				entity.reason,
-				entity.representerSID,
-				null
-				);*/
-		return null;
+				entity.krqdtApprovalFramePK.frameID, 
+				entity.dispOrder, 
+				null);
 	}
 
-	private KrqdtApprovalFrame toEntity(ApprovalFrame domain) {
-		// 2017.09.25
-		/*return new KrqdtApprovalFrame(
-				new KrqdtApprovalFramePK(domain.getCompanyID(), domain.getPhaseID(), domain.getDispOrder(),domain.getApproverSID()),
-				domain.getApprovalATR().value,
-				domain.getConfirmATR().value,
-				domain.getApprovalDate(),
-				domain.getReason().v(),
-				domain.getRepresenterSID());*/
-		return null;
+	private KrqdtApprovalFrame toEntity(ApprovalFrame domain, String phaseID) {
+		return new KrqdtApprovalFrame(
+				new KrqdtApprovalFramePK(domain.getCompanyID(), domain.getFrameID()),
+				phaseID,
+				domain.getDispOrder());
 	}
 	
 	/**

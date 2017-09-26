@@ -24,9 +24,9 @@ public interface ApproveAcceptedRepository {
 	 * create approver accepted
 	 * @param approveAccepted
 	 */
-	void createApproverAccepted(ApproveAccepted approveAccepted);
+	void createApproverAccepted(ApproveAccepted approveAccepted, String frameID);
 	
-	void updateApproverAccepted(ApproveAccepted approveAccepted);
+	void updateApproverAccepted(ApproveAccepted approveAccepted, String frameID);
 
 	/**
 	 * delete approver accepted by code

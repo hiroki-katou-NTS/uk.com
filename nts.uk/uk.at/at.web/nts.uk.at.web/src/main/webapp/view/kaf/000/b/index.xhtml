@@ -82,13 +82,13 @@
 				<!-- row1 -->
 				<div id="message-area"> 
 					<table >
-						<tr>
+						<tr data-bind =  "if : outputMessageDeadline() != null">
 							<!-- A1_1 -->
 							<td class="message-td" >#{i18n.getText('KAF000_1')}</td>
 							<!-- A1_2 -->
 							<td class="message-td"><div data-bind="text:outputMessageDeadline().message" ></div></td>
-						</tr>
-						<tr>
+						</tr >
+						<tr data-bind =  "if : outputMessageDeadline() != null">
 							<!-- A1_3 -->
 							<td class="message-td">#{i18n.getText('KAF000_2')}</td>
 							<!-- A1_4 -->
@@ -117,6 +117,9 @@
 				</com:ko-if>
 				<com:ko-if bind="appType() == 9">
 					<ui:include src="../../004/e/index.xhtml" />
+				</com:ko-if>
+				<com:ko-if bind="appType() == 4">
+					<ui:include src="../../009/b/index.xhtml" />
 				</com:ko-if>
 <!--  				<div style="height: 50px;background-color: gray ; margin-top: 30px;'">body</div> -->
 				<!-- <div data-bind="with: screenModel.cm">

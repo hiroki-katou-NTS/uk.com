@@ -25,6 +25,8 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalForApplication;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootMaster;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeApproverOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.PersonApproverOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WorkplaceApproverOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverDto;
 import nts.uk.file.com.app.company.approval.MasterApproverRootOutputDataSource;
@@ -47,22 +49,36 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 			Workbook workbook = designer.getWorkbook();
 			WorksheetCollection worksheets = workbook.getWorksheets();
 
-			if (dataSource.isCheckCompany() && dataSource.getMasterApproverRootOutput().getCompanyRootInfor() != null) {
-				Worksheet worksheet = worksheets.get(0);
-				// set up page prepare print
-				this.printPage(worksheet);
-				this.printCompanyOfApproval(worksheets, dataSource);
+			if (dataSource.isCheckCompany()) {
+				if (dataSource.getMasterApproverRootOutput().getCompanyRootInfor() != null) {
+					Worksheet worksheet = worksheets.get(0);
+					// set up page prepare print
+					this.printPage(worksheet);
+					this.printCompanyOfApproval(worksheets, dataSource);
+				}
 			} else {
-				throw new BusinessException("Report can not print!");
+				worksheets.get(0).setVisible(false);
 			}
 
-			if (dataSource.isCheckWorplace()
-					&& !dataSource.getMasterApproverRootOutput().getWorplaceRootInfor().isEmpty()) {
-				Worksheet workplaceSheet = worksheets.get(1);
-				this.printWorkPlacePage(workplaceSheet);
-				this.printWorkplaceOfApproval(worksheets, dataSource);
+			if (dataSource.isCheckWorplace()) {
+				if (!dataSource.getMasterApproverRootOutput().getWorplaceRootInfor().isEmpty()) {
+
+					Worksheet workplaceSheet = worksheets.get(1);
+					this.printWorkPlacePage(workplaceSheet);
+					this.printWorkplace(worksheets, dataSource);
+				}
 			} else {
-				throw new BusinessException(" Report can not print!");
+				worksheets.get(1).setVisible(false);
+			}
+
+			if (dataSource.isCheckPerson()) {
+				if (!dataSource.getMasterApproverRootOutput().getPersonRootInfor().isEmpty()) {
+					Worksheet personSheet = worksheets.get(2);
+					this.printPersonPage(personSheet);
+					this.printPerson(worksheets, dataSource);
+				}
+			} else {
+				worksheets.get(2).setVisible(false);
 			}
 
 			designer.getDesigner().setWorkbook(workbook);
@@ -520,12 +536,176 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 			j = j + 1;
 
 		}
-
-		// }
 	}
 
-	private void printWorkplaceOfApproval(WorksheetCollection worksheets,
-			MasterApproverRootOutputDataSource dataSource) {
+	/**
+	 * PRINT ALL PERSON
+	 * 
+	 * @param worksheets
+	 * @param dataSource
+	 */
+	private void printPerson(WorksheetCollection worksheets, MasterApproverRootOutputDataSource dataSource) {
+		Worksheet worksheet = worksheets.get(2);
+		Cells cells = worksheet.getCells();
+		Map<String, PersonApproverOutput> lstPerson = dataSource.getMasterApproverRootOutput().getPersonRootInfor();
+		if (lstPerson.size() == 0) {
+			throw new BusinessException(new RawErrorMessage("Person list is empty"));
+
+		}
+
+		int firstRow = 3;
+		for (Map.Entry m : lstPerson.entrySet()) {
+			PersonApproverOutput person = (PersonApproverOutput) m.getValue();
+			firstRow = this.printEachPerson(worksheets, cells, firstRow, person);
+
+		}
+
+	}
+
+	/**
+	 * PRINT EACH WORKPLACE
+	 * 
+	 * @param worksheets
+	 * @param cells
+	 * @param firstRow
+	 * @param person
+	 * @return
+	 */
+	private int printEachPerson(WorksheetCollection worksheets, Cells cells, int firstRow,
+			PersonApproverOutput person) {
+
+		EmployeeApproverOutput wpInfor = person.getEmployeeInfo();
+		List<ApprovalForApplication> lstAppprove = person.getPsRootInfo();
+
+		// set "【職場】"
+		Cell workPlace = cells.get(firstRow, COLUMN_INDEX[1]);
+		workPlace.setValue("【個人】");
+
+		// set worplace Name, workplace Code
+		Cell workPlaceCode = cells.get(firstRow, COLUMN_INDEX[2]);
+		workPlaceCode.setValue(wpInfor.getEId() + " " + wpInfor.getEName());
+
+		// tăng rowIndex lên 1
+		firstRow = firstRow + 1;
+
+		for (int i = 0; i < lstAppprove.size(); i++) {
+			ApprovalForApplication app = lstAppprove.get(i);
+			int sizeOfForm = this.findMax(app);
+
+			int numberOfPage = (firstRow + sizeOfForm) / 52;
+
+			int numberOfRowMerge = (52 * numberOfPage) - firstRow;
+			if (numberOfRowMerge < 0) {
+
+				// in ra name app , time app
+
+				cells.merge(firstRow, 1, sizeOfForm, 1, true);
+				Cell appName = cells.get(firstRow, COLUMN_INDEX[1]);
+				appName.setValue(app.getAppTypeName());
+
+				cells.merge(firstRow, 2, sizeOfForm, 1, true);
+				Cell timeName = cells.get(firstRow, COLUMN_INDEX[2]);
+				timeName.setValue(app.getStartDate() + "~" + app.getEndDate());
+
+				for (int k = 0; k < sizeOfForm; k++) {
+					Cell sName = cells.get(firstRow + k, COLUMN_INDEX[1]);
+					setTitleStyle(sName);
+					Cell sTimeName = cells.get(firstRow + k, COLUMN_INDEX[2]);
+					setTitleStyle(sTimeName);
+
+				}
+
+				// in ra cac phase
+
+				List<ApprovalRootMaster> lstApp = lstAppprove.get(i).getLstApproval();
+				this.printPhaseOfApproval(worksheets, cells, firstRow, sizeOfForm, lstApp, false);
+
+				firstRow = firstRow + sizeOfForm;
+			} else {
+
+				// in ra name app , time app
+
+				cells.merge(firstRow, 1, numberOfRowMerge, 1, true);
+				Cell appName = cells.get(firstRow, COLUMN_INDEX[1]);
+				appName.setValue(app.getAppTypeName());
+
+				cells.merge(firstRow, 2, numberOfRowMerge, 1, true);
+				Cell timeName = cells.get(firstRow, COLUMN_INDEX[2]);
+				timeName.setValue(app.getStartDate() + "~" + app.getEndDate());
+
+				for (int k = 0; k < numberOfRowMerge; k++) {
+					Cell sName = cells.get(firstRow + k, COLUMN_INDEX[1]);
+					setTitleStyle(sName);
+					Cell sTimeName = cells.get(firstRow + k, COLUMN_INDEX[2]);
+					setTitleStyle(sTimeName);
+
+				}
+
+				// in ra cac phase
+
+				List<ApprovalRootMaster> lstApp = lstAppprove.get(i).getLstApproval();
+				this.printPhaseOfApproval(worksheets, cells, firstRow, numberOfRowMerge, lstApp, true);
+
+				// ngắt trang
+				HorizontalPageBreakCollection hPageBreaks = worksheets.get(1).getHorizontalPageBreaks();
+				hPageBreaks.add("N" + (firstRow + numberOfRowMerge + 1));
+				VerticalPageBreakCollection vPageBreaks = worksheets.get(1).getVerticalPageBreaks();
+				vPageBreaks.add("N" + (firstRow + numberOfRowMerge + 1));
+
+				// tăng chỉ số của row lên
+				firstRow = firstRow + numberOfRowMerge;
+
+				// in ra thành phần còn lại lstApp chưa đc in ra
+				if (sizeOfForm - numberOfRowMerge > 0) {
+					cells.merge(firstRow, 1, (sizeOfForm - numberOfRowMerge), 1, true);
+					Cell appNameMergerd = cells.get(firstRow, COLUMN_INDEX[1]);
+					appNameMergerd.setValue(app.getAppTypeName());
+
+					cells.merge(firstRow, 2, (sizeOfForm - numberOfRowMerge), 1, true);
+					Cell timeNameMerger = cells.get(firstRow, COLUMN_INDEX[2]);
+					timeNameMerger.setValue(app.getStartDate() + "~" + app.getEndDate());
+
+					for (int k = 0; k < (sizeOfForm - numberOfRowMerge); k++) {
+						Cell sName = cells.get(firstRow + k, COLUMN_INDEX[1]);
+						setTitleStyle(sName);
+						Cell sTimeName = cells.get(firstRow + k, COLUMN_INDEX[2]);
+						setTitleStyle(sTimeName);
+
+					}
+
+					// in ra số phase còn lai
+
+					// luu gia tri numberOfRowMerge
+					int oldRowMerge = numberOfRowMerge;
+					for (int phase = 0; phase < lstApp.size(); phase++) {
+						if (lstApp.get(phase).getPersonName().size() > numberOfRowMerge) {
+							for (; oldRowMerge > 0; oldRowMerge--) {
+								lstApp.get(phase).getPersonName().remove(0);
+							}
+						} else {
+							lstApp.get(phase).getPersonName().clear();
+						}
+					}
+
+					int numberOfNotMerger = (sizeOfForm - numberOfRowMerge);
+					this.printPhaseOfApproval(worksheets, cells, firstRow, numberOfNotMerger, lstApp, false);
+					firstRow = firstRow + 1;
+
+				}
+
+			}
+		}
+		return firstRow;
+
+	}
+
+	/**
+	 * PRINT ALL WORKPLACE
+	 * 
+	 * @param worksheets
+	 * @param dataSource
+	 */
+	private void printWorkplace(WorksheetCollection worksheets, MasterApproverRootOutputDataSource dataSource) {
 		Worksheet worksheet = worksheets.get(1);
 		Cells cells = worksheet.getCells();
 		Map<String, WorkplaceApproverOutput> lstWorkplace = dataSource.getMasterApproverRootOutput()
@@ -544,6 +724,15 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 	}
 
+	/**
+	 * PRINT EACH WORKPLACE
+	 * 
+	 * @param worksheets
+	 * @param cells
+	 * @param firstRow
+	 * @param workplace
+	 * @return
+	 */
 	private int printEachWorkplace(WorksheetCollection worksheets, Cells cells, int firstRow,
 			WorkplaceApproverOutput workplace) {
 
@@ -591,7 +780,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				// in ra cac phase
 
 				List<ApprovalRootMaster> lstApp = lstAppprove.get(i).getLstApproval();
-				this.printPhaseOfWorkplace(worksheets, cells, firstRow, sizeOfForm, lstApp, false);
+				this.printPhaseOfApproval(worksheets, cells, firstRow, sizeOfForm, lstApp, false);
 
 				firstRow = firstRow + sizeOfForm;
 			} else {
@@ -617,7 +806,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				// in ra cac phase
 
 				List<ApprovalRootMaster> lstApp = lstAppprove.get(i).getLstApproval();
-				this.printPhaseOfWorkplace(worksheets, cells, firstRow, numberOfRowMerge, lstApp, true);
+				this.printPhaseOfApproval(worksheets, cells, firstRow, numberOfRowMerge, lstApp, true);
 
 				// ngắt trang
 				HorizontalPageBreakCollection hPageBreaks = worksheets.get(1).getHorizontalPageBreaks();
@@ -649,7 +838,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 					// in ra số phase còn lai
 
 					// luu gia tri numberOfRowMerge
-					int oldRowMerge= numberOfRowMerge;
+					int oldRowMerge = numberOfRowMerge;
 					for (int phase = 0; phase < lstApp.size(); phase++) {
 						if (lstApp.get(phase).getPersonName().size() > numberOfRowMerge) {
 							for (; oldRowMerge > 0; oldRowMerge--) {
@@ -661,7 +850,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 					}
 
 					int numberOfNotMerger = (sizeOfForm - numberOfRowMerge);
-					this.printPhaseOfWorkplace(worksheets, cells, firstRow, numberOfNotMerger, lstApp, false);
+					this.printPhaseOfApproval(worksheets, cells, firstRow, numberOfNotMerger, lstApp, false);
 					firstRow = firstRow + 1;
 
 				}
@@ -672,7 +861,17 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 	}
 
-	private void printPhaseOfWorkplace(WorksheetCollection worksheets, Cells cells, int firstRow, int sizeOfForm,
+	/**
+	 * PRINT PHASE OF WORKPLACE
+	 * 
+	 * @param worksheets
+	 * @param cells
+	 * @param firstRow
+	 * @param sizeOfForm
+	 * @param lstApp
+	 * @param isBreak
+	 */
+	private void printPhaseOfApproval(WorksheetCollection worksheets, Cells cells, int firstRow, int sizeOfForm,
 			List<ApprovalRootMaster> lstApp, boolean isBreak) {
 		int numberOfPhase = lstApp.size();
 		if (numberOfPhase < 5) {

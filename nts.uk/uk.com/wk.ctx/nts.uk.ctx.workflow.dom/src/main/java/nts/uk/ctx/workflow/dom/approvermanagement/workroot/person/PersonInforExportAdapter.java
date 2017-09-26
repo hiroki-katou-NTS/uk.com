@@ -10,5 +10,5 @@ public interface PersonInforExportAdapter {
 	 * @param sID
 	 * @return
 	 */
-	String personName(String sID);
+	PersonInforExportDto getPersonInfo(String sID);
 }

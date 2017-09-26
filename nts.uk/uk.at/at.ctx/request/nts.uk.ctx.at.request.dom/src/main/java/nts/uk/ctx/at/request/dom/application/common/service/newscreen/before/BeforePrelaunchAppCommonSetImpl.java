@@ -7,8 +7,11 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import org.eclipse.persistence.config.TunerType;
+
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
@@ -22,8 +25,6 @@ import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachWorkplaceRe
 
 @Stateless
 public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommonSet {
-	
-	private final String BASE_DATE_CACHE_KEY = "baseDate";
 	
 	@Inject
 	private ApplicationSettingRepository appSettingRepository;
@@ -41,7 +42,9 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		AppCommonSettingOutput appCommonSettingOutput = new AppCommonSettingOutput();
 		GeneralDate baseDate = null;
 		Optional<ApplicationSetting> applicationSettingOp = appSettingRepository.getApplicationSettingByComID(companyID);
+		if(!applicationSettingOp.isPresent()) throw new RuntimeException();
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
+		appCommonSettingOutput.applicationSetting = applicationSetting;
 		if(applicationSetting.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)){
 			if(appDate!=null){
 				baseDate = GeneralDate.today();
@@ -52,7 +55,6 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 			baseDate = GeneralDate.today();
 		}
 		appCommonSettingOutput.generalDate = baseDate;
-		// SessionContextProvider.get().put(BASE_DATE_CACHE_KEY, baseDate);
 		
 		// 申請本人の所属職場を含める上位職場を取得する ( Acquire the upper workplace to include the workplace of the applicant himself / herself )
 		List<String> workPlaceIDs = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, baseDate);
@@ -66,14 +68,12 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		}
 		if(loopResult.size() == 0) {
 			Optional<RequestOfEachCompany> rqOptional = requestOfEachCompanyRepository.getRequestByCompany(companyID);
-			if(rqOptional.isPresent())
+			if(rqOptional.isPresent()) {
 				appCommonSettingOutput.requestOfEachCommon = rqOptional.get();
-			// SessionContextProvider.get().put("appSet", rqOptional.get());
+			} 
 		} else {
 				appCommonSettingOutput.requestOfEachCommon = loopResult.get(0);
-			// SessionContextProvider.get().put("appSet", loopResult.get(0));
 		}
-		
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する ( Execute the algorithm "Acquire employee affiliation employment history" )
 		/*String employeeCD = employeeAdaptor.getEmploymentCode(companyID, employeeID, baseDate);
 		if(employeeCD!=null) {

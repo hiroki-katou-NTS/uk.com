@@ -1,6 +1,6 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -143,7 +143,18 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 	public void addWpApprovalRoot(WorkplaceApprovalRoot wpAppRoot) {
 		this.commandProxy().insert(toEntityWpApR(wpAppRoot));
 	}
-	
+	/**
+	 * add All Workplace Approval Root
+	 * @param wpAppRoot
+	 */
+	@Override
+	public void addAllWpApprovalRoot(List<WorkplaceApprovalRoot> wpAppRoot) {
+		List<WwfmtWpApprovalRoot> lstEntity = new ArrayList<>();
+		for (WorkplaceApprovalRoot wp : wpAppRoot) {
+			lstEntity.add(toEntityWpApR(wp));
+		}
+		this.commandProxy().insert(lstEntity);
+	}
 	/**
 	 * update Workplace Approval Root
 	 * @param wpAppRoot
@@ -161,7 +172,28 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		x.setEmploymentRootAtr(a.employmentRootAtr);
 		this.commandProxy().update(x);
 	}
-	
+	/**
+	 * update All Workplace Approval Root
+	 * @param wpAppRoot
+	 */
+	@Override
+	public void updateAllWpApprovalRoot(List<WorkplaceApprovalRoot> wpAppRoot) {
+		List<WwfmtWpApprovalRoot> lstEntity = new ArrayList<>();
+		for (WorkplaceApprovalRoot wp : wpAppRoot) {
+			WwfmtWpApprovalRoot a = toEntityWpApR(wp);
+			WwfmtWpApprovalRoot x = this.queryProxy().find(a.wwfmtWpApprovalRootPK, WwfmtWpApprovalRoot.class).get();
+			x.setStartDate(a.startDate);
+			x.setEndDate(a.endDate);
+			x.setApplicationType(a.applicationType);
+			x.setBranchId(a.branchId);
+			x.setAnyItemAppId(a.anyItemAppId);
+			x.setConfirmationRootType(a.confirmationRootType);
+			x.setEmploymentRootAtr(a.employmentRootAtr);
+			lstEntity.add(x);
+		}
+		
+		this.commandProxy().update(lstEntity);
+	}
 	/**
 	 * delete Person Approval Root
 	 * @param companyId

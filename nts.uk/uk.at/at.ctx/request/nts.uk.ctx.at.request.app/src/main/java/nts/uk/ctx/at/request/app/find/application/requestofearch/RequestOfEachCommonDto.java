@@ -16,7 +16,10 @@ public class RequestOfEachCommonDto {
 	List<RequestAppDetailSettingDto> requestOfEachCommonDtos;
 
 	public static RequestOfEachCommonDto convertToDto(RequestOfEachCommon domain) {
-		return new RequestOfEachCommonDto(domain.getRequestAppDetailSettings().stream()
-				.map(x -> RequestAppDetailSettingDto.convertToDto(x)).collect(Collectors.toList()));
+		if(domain==null) return null;
+		return new RequestOfEachCommonDto(
+				domain.getRequestAppDetailSettings().stream()
+				.map(x -> RequestAppDetailSettingDto.convertToDto(x))
+				.collect(Collectors.toList()));
 	}
 }

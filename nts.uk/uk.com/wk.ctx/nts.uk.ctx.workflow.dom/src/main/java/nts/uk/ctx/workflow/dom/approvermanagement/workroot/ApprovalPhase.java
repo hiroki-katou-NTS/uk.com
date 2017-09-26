@@ -37,15 +37,19 @@ public class ApprovalPhase extends AggregateRoot{
 			String approvalPhaseId,
 			int approvalForm,
 			int browsingPhase,
-			int orderNumber){
+			int orderNumber,
+			List<Approver>  approvers){
 		return new ApprovalPhase(companyId,
 				branchId,
 				approvalPhaseId,
 				EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),
 				browsingPhase,
-				orderNumber, null);
+				orderNumber, approvers);
 	}
 	public void updateBranchId(String branchId){
 		this.branchId = branchId;
+	}
+	public void updateAppPhaseId(String approvalPhaseId){
+		this.approvalPhaseId = approvalPhaseId;
 	}
 }

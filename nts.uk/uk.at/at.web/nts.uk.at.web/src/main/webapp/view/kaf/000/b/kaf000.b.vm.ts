@@ -223,6 +223,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getMessageDeadline(inputMessageDeadline).done(function(data) {
+                debugger;
                 self.outputMessageDeadline(data);
                 dfd.resolve(data);
             });

@@ -46,7 +46,7 @@ public interface ApprovalFrameRepository {
 	 * 
 	 * @param approvalFrame
 	 */
-	void create(ApprovalFrame approvalFrame);
+	void create(ApprovalFrame approvalFrame, String phaseID);
 
 	/**
 	 * Update ApprovalFrame
@@ -54,7 +54,7 @@ public interface ApprovalFrameRepository {
 	 * @param approvalFrame
 	 */
 
-	void update(ApprovalFrame approvalFrame);
+	void update(ApprovalFrame approvalFrame, String phaseID);
 
 	/**
 	 * Delete ApprovalFrame
