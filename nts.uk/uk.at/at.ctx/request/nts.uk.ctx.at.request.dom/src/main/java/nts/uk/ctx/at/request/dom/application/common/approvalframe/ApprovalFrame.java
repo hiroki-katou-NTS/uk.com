@@ -25,7 +25,7 @@ public class ApprovalFrame extends DomainObject {
 	/** 会社ID */
 	private String companyID;
 	
-	/** フェーズID */
+	/** 承認枠ID */
 	private String frameID ;
 	
 	/** 順序 */

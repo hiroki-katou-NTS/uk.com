@@ -18,7 +18,7 @@ public class GetAllNameByAppID {
 	private GetAllDataAppPhaseFrame getAllDataAppPhaseFrame;
 	
 	public List<String> getAllNameByAppID(String appID){
-		String name1 = employeeAdapter.getEmployeeName("90000000-0000-0000-0000-000000000001");
+ 		String name1 = employeeAdapter.getEmployeeName("90000000-0000-0000-0000-000000000001");
 //		List<String> listName = new  ArrayList<>();
 //		OutputGetAllDataApp dataApp = getAllDataAppPhaseFrame.getAllDataAppPhaseFrame(appID);
 //		for(OutputPhaseAndFrame outputPhaseAndFrame:dataApp.getListOutputPhaseAndFrame()) {
