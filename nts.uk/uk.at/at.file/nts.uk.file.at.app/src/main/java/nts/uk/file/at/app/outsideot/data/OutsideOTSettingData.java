@@ -12,6 +12,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.dom.dailyattendanceitem.DailyAttendanceItem;
 import nts.uk.ctx.at.shared.app.find.outsideot.dto.OutsideOTSettingDto;
 import nts.uk.ctx.at.shared.app.find.outsideot.dto.PremiumExtra60HRateDto;
+import nts.uk.ctx.at.shared.app.find.outsideot.dto.SuperHD60HConMedDto;
 
 /**
  * The Class OutsideOTSettingData.
@@ -32,6 +33,9 @@ public class OutsideOTSettingData {
 	
 	/** The premium extra rates. */
 	private List<PremiumExtra60HRateDto> premiumExtraRates;
+	
+	/** The super HD 60 H con med. */
+	private SuperHD60HConMedDto superHD60HConMed;
 	
 	/** The map attendance item. */
 	private Map<Integer, DailyAttendanceItem> mapAttendanceItem;

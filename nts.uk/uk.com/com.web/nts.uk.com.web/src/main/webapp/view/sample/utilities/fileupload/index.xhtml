@@ -50,6 +50,10 @@
 					<button data-bind="click: preview">Preview</button>
 					<div id="file-review"></div>
 					<br/>
+					<h3>Check file exist</h3>
+					<button data-bind="click: isExist">IsExist</button>
+					<div id="check-exist"></div>
+					<br/>
 					<h3>Get file information</h3>
 					<button data-bind="click: getInfo">Get Info</button>
 					<div data-bind="text: ko.toJSON(fileInfo)"></div>

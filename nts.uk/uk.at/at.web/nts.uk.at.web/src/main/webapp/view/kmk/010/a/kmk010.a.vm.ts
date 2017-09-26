@@ -75,6 +75,8 @@ module nts.uk.at.view.kmk010.a {
                         nts.uk.ui.block.clear();
                         dfd.resolve(self);
                     });
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error);
                 });
                 return dfd.promise();
             }
@@ -164,10 +166,14 @@ module nts.uk.at.view.kmk010.a {
              */
             private saveOutsideOTSetting(): void {
                 var self = this;
+                // validate
                 $('.nts-input').trigger("validate");
-                if (nts.uk.ui.errors.hasError() == false) {
+                
+                // check exist error
+                if (!nts.uk.ui.errors.hasError()) {
                     var dtoSuper: SuperHD60HConMedDto = self.superHD60HConMedModel.toDto();
                     dtoSuper.premiumExtra60HRates = self.toArrayRateDto();
+                    // save all
                     service.saveOutsideOTSettingAndSupperHD60H(self.outsideOTSettingModel.toDto(), dtoSuper).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             self.startPage();
@@ -185,7 +191,7 @@ module nts.uk.at.view.kmk010.a {
                 var self = this;
                 $("#switch-language").ntsSwitchMasterLanguage();
 
-                $("#switch-language").on("selectionChanged", function(event, arg1, arg2) {
+                $("#switch-language").on("selectionChanged", function(event: any, arg1, arg2) {
                     self.languageId = event.detail.languageId;
                     self.updateLanguage();
                 });
@@ -353,29 +359,28 @@ module nts.uk.at.view.kmk010.a {
              */
             public openDialogDailyAttendanceItems(): void {
                 var self = this;
-                nts.uk.at.view.kmk010.a.service.findAllDailyAttendanceItem().done(function(data){
+                nts.uk.at.view.kmk010.a.service.findAllDailyAttendanceItem().done(function(dataAllItem){
                     // Map to model
-                    var AllAttendanceObj = data.map(i => {
-                        return i.attendanceItemId;
-                    });
-                    nts.uk.ui.windows.setShared('AllAttendanceObj',AllAttendanceObj);
-                    nts.uk.ui.windows.setShared('SelectedAttendanceId',self.attendanceItemIds());
-                    nts.uk.ui.windows.setShared('Multiple',true);
-                    nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml').onClosed(function(): any {
-                        var lstDailyAttendanceId : number[]  = nts.uk.ui.windows.getShared('selectedChildAttendace');
-                        self.attendanceItemIds(lstDailyAttendanceId);
-                        var selectedName: string[] = [];
-                        for(var item of data){
-                            for(var id of lstDailyAttendanceId){
-                                if(id == item.attendanceItemId){
-                                     selectedName.push(item.attendanceItemName);   
-                                }    
-                            }    
-                        }
-                        self.attendanceItemName(selectedName.join(' + '));
+                    nts.uk.at.view.kmk010.a.service.findAllAttendanceItemOvertime().done(function(dataCanSelecte) {
+                        nts.uk.ui.windows.setShared('AllAttendanceObj', dataCanSelecte);
+                        nts.uk.ui.windows.setShared('SelectedAttendanceId', self.attendanceItemIds());
+                        nts.uk.ui.windows.setShared('Multiple', true);
+                        nts.uk.ui.windows.sub.modal('/view/kdl/021/a/index.xhtml').onClosed(function(): any {
+                            var lstDailyAttendanceId: number[] = nts.uk.ui.windows.getShared('selectedChildAttendace');
+                            self.attendanceItemIds(lstDailyAttendanceId);
+                            var selectedName: string[] = [];
+                            for (var item of dataAllItem) {
+                                for (var id of lstDailyAttendanceId) {
+                                    if (id == item.attendanceItemId) {
+                                        selectedName.push(item.attendanceItemName);
+                                    }
+                                }
+                            }
+                            self.attendanceItemName(selectedName.join(' + '));
+                        });
                     });
                 }).fail(function(error){
-                    
+                    nts.uk.ui.dialog.alertError(error);
                 });
             }
         }

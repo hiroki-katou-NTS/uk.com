@@ -18,3 +18,7 @@
 	margin-left: 6px;
 	vertical-align: 12px;
 }
+/* remove close button */
+.ui-dialog-titlebar-close{
+	display: none !important;
+}

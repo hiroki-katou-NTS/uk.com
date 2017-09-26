@@ -8,9 +8,38 @@ module nts.uk.com.view.cps009.c.viewmodel {
     import block = nts.uk.ui.block;
 
     export class ViewModel {
+
+        currentInitVal: KnockoutObservable<ItemInitValue> = ko.observable(new ItemInitValue(
+            {
+                id: "",
+                itemCode: "0001",
+                itemName: "A"
+            }));
+
+        isCopy: KnockoutObservable<boolean> = ko.observable(false);
+
+
         constructor() {
 
 
+        }
+
+        copyInitValue() {
+
+            let self = this,
+                copyObj = {
+                    isCopy: self.isCopy(),
+                    itemCode: self.currentInitVal().itemCode(),
+                    itemName: self.currentInitVal().itemName()
+                }
+
+            close();
+
+        }
+
+        cancelCopyInitValue() {
+
+            close();
         }
 
 
@@ -18,4 +47,46 @@ module nts.uk.com.view.cps009.c.viewmodel {
 
     }
 
+    export interface IItemInitValue {
+
+        id: string;
+
+        itemCode: string;
+
+        itemName: string;
+
+    }
+
+    export class ItemInitValue {
+
+        id: KnockoutObservable<string>;
+
+        itemCode: KnockoutObservable<string>;
+
+        itemName: KnockoutObservable<string>;
+
+        constructor(params: IItemInitValue) {
+
+            let self = this;
+
+            self.id = ko.observable(params.id || "");
+
+            self.itemCode = ko.observable(params.itemCode || "");
+
+            self.itemName = ko.observable(params.itemName || "");
+
+        }
+
+        setData(params: any) {
+
+            let self = this;
+
+            self.id(params.id || "");
+
+            self.itemCode(params.itemCode || "");
+
+            self.itemName(params.itemName || "");
+        }
+
+    }
 }

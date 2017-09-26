@@ -7,7 +7,6 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceper.primitives.YearServiceCode;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor

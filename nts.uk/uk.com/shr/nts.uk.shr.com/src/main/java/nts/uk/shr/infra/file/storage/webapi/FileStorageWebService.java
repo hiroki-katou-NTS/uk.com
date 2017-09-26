@@ -71,14 +71,21 @@ public class FileStorageWebService {
 		return Response.ok(fileInputStream, fileInfo.getMimeType()).encoding("UTF-8")
 				.header("Content-Disposition", "inline").build();
 	}
-	
+
 	@POST
 	@Path("infor/{fileid}")
-	public StoredFileInfo getFileInfor(@PathParam("fileid") String fileId){
+	public StoredFileInfo getFileInfor(@PathParam("fileid") String fileId) {
 		Optional<StoredFileInfo> storagedFileInfor = this.fileInfoRepository.find(fileId);
-		 if(!storagedFileInfor.isPresent()){
-			 new RuntimeException("stored file info is not found.");
-		 }
-		 return storagedFileInfor.get();
+		if (!storagedFileInfor.isPresent()) {
+			new RuntimeException("stored file info is not found.");
+		}
+		return storagedFileInfor.get();
 	}
+
+	@POST
+	@Path("isexist/{fileid}")
+	public boolean checkFileExist(@PathParam("fileid") String fileId) {
+		return this.fileInfoRepository.find(fileId).isPresent();
+	}
+
 }
