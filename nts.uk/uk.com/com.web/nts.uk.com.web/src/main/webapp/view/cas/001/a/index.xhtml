@@ -240,20 +240,20 @@
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: otherAllowDelHis ,
+													value: otherAllowAddHis ,
 													enable: $parents[1].allowOtherRef()===1 }"></div></td>
 															<td><div id="A4_025" class="cf"
 																	data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: otherAllowAddHis ,
+													value:  otherAllowDelHis,
 													enable: $parents[1].allowOtherRef()===1 }"></div></td>
 															<td><div id="A4_026"
 																	data-bind="ntsComboBox: {
 														options: $parents[1].itemListCbb,
 														optionsValue: 'code',
-														value: otherPastHisAuth ,
+														value: otherFutureHisAuth ,
 														optionsText: 'name',
 														editable: false,
 														enable: $parents[1].allowOtherRef()===1 ,
@@ -264,7 +264,7 @@
 																	data-bind="ntsComboBox: {
 														options: $parents[1].itemListCbb,
 														optionsValue: 'code',
-														value: otherFutureHisAuth ,
+														value: otherPastHisAuth ,
 														optionsText: 'name',
 														editable: false,
 														enable: $parents[1].allowOtherRef()===1 ,
@@ -279,20 +279,20 @@
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: selfAllowDelHis ,
+													value:  selfAllowAddHis,
 													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
 															<td><div id="A4_021" class="cf"
 																	data-bind="ntsSwitchButton: {
 													options:  $parents[1].roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: selfAllowAddHis ,
+													value: selfAllowDelHis ,
 													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
 															<td><div id="A4_022"
 																	data-bind="ntsComboBox: {
 														options: $parents[1].itemListCbb,
 														optionsValue: 'code',
-														value: selfPastHisAuth ,
+														value:  selfFutureHisAuth,
 														optionsText: 'name',
 														editable: false,
 														enable: $parents[1].allowPersonRef() === 1 ,
@@ -303,7 +303,7 @@
 																	data-bind="ntsComboBox: {
 														options: $parents[1].itemListCbb,
 														optionsValue: 'code',
-														value: selfFutureHisAuth ,
+														value: selfPastHisAuth ,
 														optionsText: 'name',
 														editable: false,
 														enable: $parents[1].allowPersonRef() === 1  ,
