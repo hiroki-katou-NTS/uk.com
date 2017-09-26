@@ -53,18 +53,13 @@ public class JpaApprovalFrame extends JpaRepository implements ApprovalFrameRepo
 		KrqdtApprovalFrame newEntity = toEntity(approvalFrame);
 		KrqdtApprovalFrame updateEntity = this.queryProxy()
 				.find(newEntity.krqdtApprovalFramePK, KrqdtApprovalFrame.class).get();
-		updateEntity.approvalATR = newEntity.approvalATR;
-		updateEntity.confirmATR = newEntity.confirmATR;
-		updateEntity.approvalDate = newEntity.approvalDate;
-		updateEntity.reason = newEntity.reason;
-		updateEntity.representerSID = newEntity.representerSID;
 		this.commandProxy().update(updateEntity);
 
 	}
 
 	@Override
-	public void delete(String companyID, String phaseID, int dispOrder,String approverSID) {
-		this.commandProxy().remove(KrqdtApprovalFrame.class, new KrqdtApprovalFramePK(companyID, phaseID, dispOrder,approverSID));
+	public void delete(ApprovalFrame approvalFrame) {
+		this.commandProxy().remove(KrqdtApprovalFrame.class, new KrqdtApprovalFramePK(approvalFrame.getCompanyID(), approvalFrame.getFrameID()));
 		this.getEntityManager().flush();
 	}
 

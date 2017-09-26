@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
+import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFrame;
 import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAccepted;
 import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAcceptedPK;
 
@@ -73,15 +74,27 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 	public void createApproverAccepted(ApproveAccepted approveAccepted) {
 		this.commandProxy().insert(toEntity(approveAccepted));
 	}
-	
-	/**
-	 * delete approve accepted
-	 */
+
 	@Override
-	public void deleteApproverAccepted(String companyID, String phaseID, int dispOrder, String approverSID) {
+	public void updateApproverAccepted(ApproveAccepted approveAccepted) {
+		KafdtApproveAccepted newEntity = toEntity(approveAccepted);
+		KafdtApproveAccepted updateEntity = this.queryProxy()
+				.find(newEntity.kafdtApproveAcceptedPK, KafdtApproveAccepted.class).get();
+		updateEntity.approvalATR = newEntity.approvalATR;
+		updateEntity.confirmATR = newEntity.confirmATR;
+		updateEntity.approvalDate = newEntity.approvalDate;
+		updateEntity.reason = newEntity.reason;
+		updateEntity.representerSID = newEntity.representerSID;
+		this.commandProxy().update(updateEntity);
+		
+	}
+
+	@Override
+	public void deleteApproverAccepted(ApproveAccepted approveAccepted) {
 		this.commandProxy()
-		.remove(KafdtApproveAccepted.class,new KafdtApproveAcceptedPK(companyID,phaseID,dispOrder,approverSID));
+		.remove(KafdtApproveAccepted.class,new KafdtApproveAcceptedPK(approveAccepted.getCompanyID(), approveAccepted.getAppAcceptedID()));
 		this.getEntityManager().flush();
+		
 	}
 
 }

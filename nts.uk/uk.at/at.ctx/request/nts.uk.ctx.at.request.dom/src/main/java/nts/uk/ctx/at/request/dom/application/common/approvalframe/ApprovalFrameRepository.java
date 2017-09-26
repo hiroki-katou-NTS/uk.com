@@ -63,7 +63,7 @@ public interface ApprovalFrameRepository {
 	 * @param appID
 	 * @param phaseID
 	 */
-	void delete (String companyID , String phaseID , int dispOrder, String approverSID );
+	void delete (ApprovalFrame approvalFrame);
 	/**
 	 * get list frame by list phase
 	 * @param listPhase

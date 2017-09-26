@@ -26,6 +26,9 @@ public class KrqdtAppApprovalPhase extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrqdtAppApprovalPhasePK krqdtAppApprovalPhasePK;
 	
+	@Column(name = "APP_ID")
+	public String appID;
+	
 	@Column(name = "APPROVAL_FORM")
 	public int approvalForm;
 	

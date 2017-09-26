@@ -25,6 +25,8 @@ public interface ApproveAcceptedRepository {
 	 * @param approveAccepted
 	 */
 	void createApproverAccepted(ApproveAccepted approveAccepted);
+	
+	void updateApproverAccepted(ApproveAccepted approveAccepted);
 
 	/**
 	 * delete approver accepted by code
@@ -32,6 +34,6 @@ public interface ApproveAcceptedRepository {
 	 * @param phaseID
 	 * @param dispOrder
 	 */
-	void deleteApproverAccepted(String companyID , String phaseID , int dispOrder,String approverSID);
+	void deleteApproverAccepted(ApproveAccepted approveAccepted);
 
 }
