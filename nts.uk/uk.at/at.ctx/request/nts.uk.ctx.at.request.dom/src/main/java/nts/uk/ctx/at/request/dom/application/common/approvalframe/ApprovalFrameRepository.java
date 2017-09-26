@@ -46,7 +46,7 @@ public interface ApprovalFrameRepository {
 	 * 
 	 * @param approvalFrame
 	 */
-	void create(ApprovalFrame approvalFrame);
+	void create(ApprovalFrame approvalFrame, String phaseID);
 
 	/**
 	 * Update ApprovalFrame
@@ -54,7 +54,7 @@ public interface ApprovalFrameRepository {
 	 * @param approvalFrame
 	 */
 
-	void update(ApprovalFrame approvalFrame);
+	void update(ApprovalFrame approvalFrame, String phaseID);
 
 	/**
 	 * Delete ApprovalFrame
@@ -63,7 +63,7 @@ public interface ApprovalFrameRepository {
 	 * @param appID
 	 * @param phaseID
 	 */
-	void delete (String companyID , String phaseID , int dispOrder, String approverSID );
+	void delete (ApprovalFrame approvalFrame);
 	/**
 	 * get list frame by list phase
 	 * @param listPhase

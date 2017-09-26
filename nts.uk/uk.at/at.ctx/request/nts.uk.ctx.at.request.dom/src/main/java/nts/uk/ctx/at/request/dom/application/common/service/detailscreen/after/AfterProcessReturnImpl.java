@@ -83,7 +83,7 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 						x.changeReason(new Reason(""));
 						x.changeApprovalDate(null);
 					});
-					frameRepo.update(approvalFrame);
+					frameRepo.update(approvalFrame, appApprovalPhase.getPhaseID());
 				}
 				//2017.09.25 DuDT
 			}
@@ -125,7 +125,7 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 						x.changeReason(new Reason(""));
 						x.changeApprovalDate(null);
 					});
-					frameRepo.update(approvalFrame);
+					frameRepo.update(approvalFrame, listPhase.get(i).getPhaseID());
 				}
 				// 2017.09.25
 			}

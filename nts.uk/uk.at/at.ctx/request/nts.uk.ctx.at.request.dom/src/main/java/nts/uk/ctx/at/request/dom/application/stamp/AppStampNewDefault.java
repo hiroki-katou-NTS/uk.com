@@ -69,12 +69,6 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 															1, // EmploymentRootAtr.APPLICATION 就業ルート区分.申請
 															ApplicationType.STAMP_APPLICATION, 
 															appDate);
-		/*this.startApprovalRootService.getApprovalRootPattern(
-				companyID, 
-				employeeID, 
-				1, // EmploymentRootAtr.APPLICATION 就業ルート区分.申請
-				ApplicationType.STAMP_APPLICATION.value, 
-				appDate);*/
 		this.newScreenStartCheckErrorService.checkError(ApplicationType.STAMP_APPLICATION.value);
 		appStampNewPreOutput.appStampSetOutput = this.appStampCommonDomainService.appStampSet(companyID);
 		return appStampNewPreOutput;
@@ -111,7 +105,10 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 
 	@Override
 	public void appStampOtherRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
-		
+		this.appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
+		// this.appStampCommonDomainService.validateReason(appStamp);
+		this.appStampRegistration(appStamp);
+		this.approvalRegistration(appApprovalPhases, appStamp.getApplicationID());
 	}
 	
 	// 打刻申請の新規登録
