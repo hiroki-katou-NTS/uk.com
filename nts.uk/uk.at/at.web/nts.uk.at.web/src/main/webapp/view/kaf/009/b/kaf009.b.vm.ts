@@ -1,5 +1,5 @@
 module nts.uk.at.view.kaf009.b.viewmodel {
-    export class ScreenModel {
+    export class ScreenModel extends kaf000.b.viewmodel.ScreenModel{
         //current Data
         curentGoBackDirect: KnockoutObservable<GoBackDirectData>;
         //申請者
@@ -59,7 +59,8 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         command: KnockoutObservable<GoBackCommand>;
         //list Work Location 
         locationData: Array<IWorkLocation>;
-        constructor() {
+        constructor(appType:number) {
+            super(appType);
             var self = this;
             self.command = ko.observable(null);
             self.locationData = [];
@@ -121,12 +122,12 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             self.workChangeAtr.subscribe(function(value) {
                 self.workEnable(value);
             });
-            self.startPage();
+            self.start();
         }
         /**
          * 
          */
-        startPage(): JQueryPromise<any> {
+        start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             //get Common Setting

@@ -45,9 +45,10 @@ public class AfterDetailScreenProcessImpl implements AfterDetailScreenProcess {
 			//List<String> listApproverID = detailedScreenAfterApprovalProcessService.actualReflectionStateDecision(appID, appApprovalPhase.getPhaseID(), appApprovalPhase.getApprovalATR());
 			List<ApprovalFrame> listApprovalFrame = approvalFrameRepository.getAllApproverByPhaseID(companyID, appApprovalPhase.getPhaseID());
 			if (!listApprovalFrame.isEmpty()) {
-				if (listApprovalFrame.stream().filter(f -> f.getApprovalATR() != ApprovalAtr.UNAPPROVED).count() > 0) {
+				// 2017.09.25
+				/*if (listApprovalFrame.stream().filter(f -> f.getApprovalATR() != ApprovalAtr.UNAPPROVED).count() > 0) {
 					
-				}
+				}*/
 			}
 		}
 		

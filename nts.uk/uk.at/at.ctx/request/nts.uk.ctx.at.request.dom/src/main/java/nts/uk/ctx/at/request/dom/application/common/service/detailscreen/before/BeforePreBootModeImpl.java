@@ -53,9 +53,9 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		// Output variables
 		User outputUser = null;
 		ReflectPlanPerState outputStatus = null;
-		Boolean outputAuthorizableFlags = null;
-		ApprovalAtr outputApprovalATR = null;
-		Boolean outputAlternateExpiration = null;
+		boolean outputAuthorizableFlags = false;
+		ApprovalAtr outputApprovalATR = ApprovalAtr.UNAPPROVED;
+		boolean outputAlternateExpiration = false;
 
 		PeriodCurrentMonth listDate = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID,
 				employeeID, baseDate);
@@ -67,10 +67,17 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		List<ApprovalFrame> listApprovalFrame = approvalFrameRepository.getAllApproverByPhaseID(companyID,
 				appApprovalPhase.getPhaseID());
 		// Check if current user has in list Approver
-		List<ApprovalFrame> filtedApprovalFrame = listApprovalFrame.stream()
-				.filter(e -> e.getApproverSID() == employeeID).collect(Collectors.toList());
+		//2017.09.25
+		/*List<ApprovalFrame> filtedApprovalFrame = listApprovalFrame.stream()
+				.filter(e -> e.getApproverSID() == employeeID).collect(Collectors.toList());*/
+		List<ApprovalFrame> filtedApprovalFrame = new ArrayList<>();
+		//2017.09.25
 		boolean isUserIsApprover = !filtedApprovalFrame.isEmpty();
-		String approverSID = filtedApprovalFrame.get(0).getApproverSID();
+		String approverSID = null;
+		if(!filtedApprovalFrame.isEmpty()) {
+			//approverSID = filtedApprovalFrame.get(0).getApproverSID();
+			approverSID = "";
+		}
 		//get status
 		if (startDate.after(applicationData.getApplicationDate()) == false) {
 			outputStatus = applicationData.getReflectPlanState();
@@ -156,7 +163,8 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		List<ApprovalFrame> listApprovalFrame = approvalFrameRepository.getAllApproverByPhaseID(companyID,
 				appApprovalPhase.getPhaseID());
 		for (ApprovalFrame approvalFrame : listApprovalFrame) {
-			if (approvalFrame.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
+			//2017.09.25
+/*			if (approvalFrame.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
 				if (listApprovalFrame.contains(employeeID)) {
 					outputAuthorizableflags = true;
 					outputApprovalATR = ApprovalAtr.UNAPPROVED;
@@ -168,8 +176,10 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				}
 			} else {
 				outputApprovalATR = ApprovalAtr.APPROVED;
-			}
+			}*/
+			//2017.09.25
 		}
+		
 		return new CanBeApprovedOutput(true, ApprovalAtr.UNAPPROVED, false);
 	}
 	/** 14-2.3.3 Can be approvedDential */
@@ -183,8 +193,9 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		List<ApprovalFrame> listApprovalFrame = approvalFrameRepository.getAllApproverByPhaseID(companyID,
 				appApprovalPhase.getPhaseID());
 		for (ApprovalFrame approvalFrame : listApprovalFrame) {
+			//2017.09.25
 			// Whether the loginer is an approver
-			if (approvalFrame.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
+/*			if (approvalFrame.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
 				// (login employee ID)
 				if (approvalFrame.getApproverSID() == employeeID) {
 					return new CanBeApprovedOutput(true, ApprovalAtr.DENIAL, false);
@@ -211,7 +222,9 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 					}
 				}
 
-			}
+			}*/
+			
+			//2017.09.25
 		}
 
 		return new CanBeApprovedOutput(outputAuthorizableflags, ApprovalAtr.DENIAL, outputAlternateExpiration);
@@ -230,7 +243,8 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		List<ApprovalFrame> listApprovalFrame = approvalFrameRepository.getAllApproverByPhaseID(companyID,
 				appApprovalPhase.getPhaseID());
 		for (ApprovalFrame approvalFrame : listApprovalFrame) {
-			if (employeeID == approvalFrame.getApproverSID()) {
+			//2017.09.25
+			/*if (employeeID == approvalFrame.getApproverSID()) {
 				outputAuthorizableflags = true;
 				return new CanBeApprovedOutput(outputAuthorizableflags, outputApprovalATR, outputAlternateExpiration);
 			} else {
@@ -241,7 +255,9 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 					return new CanBeApprovedOutput(outputAuthorizableflags, outputApprovalATR,
 							outputAlternateExpiration);
 				}
-			}
+			}*/
+			
+			//2017.09.25
 		}
 		return new CanBeApprovedOutput(outputAuthorizableflags, outputApprovalATR, outputAlternateExpiration);
 	}
@@ -261,7 +277,8 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				appApprovalPhase.getPhaseID());
 		if (appApprovalPhase.getApprovalForm() == ApprovalForm.EVERYONEAPPROVED) {
 			for (ApprovalFrame approvalFrame : listApprovalFrame) {
-				if (employeeID == approvalFrame.getApproverSID()) {
+				//2017.09.25
+				/*if (employeeID == approvalFrame.getApproverSID()) {
 					return new CanBeApprovedOutput(true, ApprovalAtr.APPROVED, false);
 				} else {
 					if (employeeID == approvalFrame.getRepresenterSID()) {
@@ -269,11 +286,13 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 						return new CanBeApprovedOutput(true, ApprovalAtr.APPROVED,
 								decideAgencyExpired.isOutputAlternateExpiration());
 					}
-				}
+				}*/
+				//2017.09.25
 			}
 			return new CanBeApprovedOutput(outputAuthorizableflags, outputApprovalATR, outputAlternateExpiration);
 		} else {
-			List<ApprovalFrame> someoneApprovalConfirm = listApprovalFrame.stream()
+			//2017.09.25
+			/*List<ApprovalFrame> someoneApprovalConfirm = listApprovalFrame.stream()
 					.filter(f -> f.getConfirmATR() == ConfirmAtr.USEATR_USE).collect(Collectors.toList());
 			for (ApprovalFrame approvalFrame : listApprovalFrame) {
 				if (!someoneApprovalConfirm.isEmpty()) {
@@ -309,7 +328,9 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 						}
 					}
 				}
-			}
+			}*/
+			
+			//2017.09.25
 			return new CanBeApprovedOutput(outputAuthorizableflags, outputApprovalATR, outputAlternateExpiration);
 		}
 	}

@@ -21,7 +21,7 @@
 		</div>
 		<div class="cell m1-column2">
 			<div data-bind="foreach: appStampList">
-				<div data-bind="style: { display: $parent.stampAtr() == 1 ? '' : 'none' }">
+				<div data-bind="if: $parent.stampAtr() == 1">
 					<div class="panel panel-frame m1-panel">
 						<div class="table">
 							<div class="cell m1-column3">
@@ -37,9 +37,9 @@
 													required: true,
 													enable: startTimeDisp }" />	
 								</div>
-								<div data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? 'inline-block' : 'none' }">
+								<div class="m1-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: startLocationDisp }"></div>
-									<button data-bind="enable: startLocationDisp">#{i18n.getText('KAF002_14')}</button>
+									<button data-bind="click: function(){ $parent.openSelectLocationDialog('start', $index()) }, enable: startLocationDisp">#{i18n.getText('KAF002_14')}</button>
 									<span class="label m1-label" data-bind="text: startLocation, css: { m1DisableEdit: !startLocationDisp() }"></span>
 								</div>					
 							</div>
@@ -58,9 +58,9 @@
 													required: true,
 													enable: endTimeDisp }" />	
 								</div>	
-								<div data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? 'inline-block' : 'none' }">
+								<div class="m1-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: endLocationDisp }"></div>
-									<button data-bind="enable: endLocationDisp">#{i18n.getText('KAF002_14')}</button>
+									<button data-bind="click: function(){ $parent.openSelectLocationDialog('end', $index()) }, enable: endLocationDisp">#{i18n.getText('KAF002_14')}</button>
 									<span class="label m1-label" data-bind="text: endLocation, css: { m1DisableEdit: !endLocationDisp() }"></span>	
 								</div>			
 							</div>
@@ -79,7 +79,7 @@
 						</div>
 					</div>
 				</div>
-				<div data-bind="style: { display: $parent.stampAtr() == 2 ? '' : 'none' }">
+				<div data-bind="if: $parent.stampAtr() == 2">
 					<div class="panel panel-frame m1-panel">
 						<div class="table">
 							<div class="cell m1-column3">
@@ -111,7 +111,7 @@
 						</div>
 					</div>
 				</div>
-				<div data-bind="style: { display: $parent.stampAtr() == 3 ? '' : 'none' }">
+				<div data-bind="if: $parent.stampAtr() == 3">
 					<div class="panel panel-frame m1-panel">
 						<div class="table">
 							<div class="cell m1-column3">

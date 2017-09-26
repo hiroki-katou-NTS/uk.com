@@ -13,6 +13,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
+import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 
 /**
@@ -32,7 +33,10 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	/** The workplace pub. */
 	@Inject
 	private SyWorkplacePub workplacePub;
-
+	
+	@Inject
+	private IPersonInfoPub personPub;
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -69,5 +73,16 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	@Override
 	public String getWorkplaceId(String companyId, String employeeId, GeneralDate baseDate) {
 		return this.workplacePub.getWorkplaceId(companyId, employeeId, baseDate);
+	}
+
+	/**
+	 * 
+	 * @param sID
+	 * @return
+	 */
+	@Override
+	public String getEmployeeName(String sID) {
+		String test = this.personPub.getPersonInfo(sID).getEmployeeName();
+		return test;
 	}
 }

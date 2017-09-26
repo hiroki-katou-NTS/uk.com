@@ -40,24 +40,26 @@ public class PerInfoCategoryFinder {
 				}).collect(Collectors.toList());
 	};
 	
+	//vinhpx: start
 	public List<PerInfoCtgFullDto> getAllPerInfoCategoryWithCondition(){
 		//get all perinforcategory by company id
 		List<PersonInfoCategory> lstPerInfoCtg = perInfoCtgRepositoty.getAllPerInfoCategory(
 				AppContexts.user().companyId(), PersonInfoItemDefinition.ROOT_CONTRACT_CODE);
 		List<PersonInfoCategory> lstReturn  = new ArrayList<PersonInfoCategory>();
-		String contractCode = AppContexts.user().companyCode();
+		String contractCode = AppContexts.user().contractCode();
 		//get all PersonInfoItemDefinition 
 		for(PersonInfoCategory obj : lstPerInfoCtg){
 			if(pernfoItemDefRep.countPerInfoItemDefInCategory(obj.getPersonInfoCategoryId(), contractCode) > 0)
 				lstReturn.add(obj);
 		}
 		if(lstReturn.size() == 0) throw new BusinessException("Msg_352");
-		return PersonInfoCategory.getAllPerInfoCategoryWithCondition(lstReturn).stream().map(p -> {
-			return new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
+		return PersonInfoCategory.getAllPerInfoCategoryWithCondition(lstReturn).stream().map(p -> 
+			new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
 					p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
-					p.getCategoryType().value, p.getIsFixed().value);
-		}).collect(Collectors.toList());
+					p.getCategoryType().value, p.getIsFixed().value)
+		).collect(Collectors.toList());
 	}
+	//vinhpx: end
 
 	public PerInfoCtgFullDto getPerInfoCtg(String perInfoCtgId) {
 		return perInfoCtgRepositoty.getPerInfoCategory(perInfoCtgId, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)

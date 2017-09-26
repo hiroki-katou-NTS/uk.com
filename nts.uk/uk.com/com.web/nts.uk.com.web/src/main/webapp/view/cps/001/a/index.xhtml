@@ -28,7 +28,7 @@
 			<div id="functions-area">
 				<button type="button" class="proceed" data-bind="click: saveData">#{i18n.getText('CPS001_4')}</button>
 				<button type="button">#{i18n.getText('CPS001_5')}</button>
-				<button type="button" class="danger">#{i18n.getText('CPS001_6')}</button>
+				<button type="button" class="danger" data-bind="click: deleteEmployee">#{i18n.getText('CPS001_6')}</button>
 				<a class="goout"
 					data-bind="ntsLinkButton: { jump: './index.xhtml' }">#{i18n.getText('CPS001_7')}</a>
 				<a class="goout"
@@ -203,8 +203,8 @@
 						
 						<div  style="padding-top: 10px"
 							data-bind="ntsLayoutControl: { 
-								data: ko.observableArray([]),
-								editAble: false }"></div>
+								data: layout().items,
+								editAble: 2 }"></div>
 					</div>
 				</div>
 			</div>

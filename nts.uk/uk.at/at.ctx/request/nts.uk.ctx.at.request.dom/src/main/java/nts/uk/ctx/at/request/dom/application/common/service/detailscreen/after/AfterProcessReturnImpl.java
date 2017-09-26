@@ -16,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApproval
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.Reason;
 import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ObjApproverRepresenterOutput;
@@ -64,15 +65,27 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 				// set value setApprovalForm and setApprovalATR = null
 				phaseRepo.update(appApprovalPhase);
 				List<ApprovalFrame> listFrame = frameRepo.getAllApproverByPhaseID(appApprovalPhase.getCompanyID(), appApprovalPhase.getPhaseID());
+				//2017.09.25 DuDT
+//				for(ApprovalFrame approvalFrame:listFrame) {
+//					approvalFrame.setApprovalATR(null);
+//					approvalFrame.setApprovalDate(null);
+//					approvalFrame.setApproverSID(null);
+//					approvalFrame.setReason(null);
+//					approvalFrame.setRepresenterSID(null);
+//					// set value frame =  null
+//					frameRepo.update(approvalFrame);
+//				}
 				for(ApprovalFrame approvalFrame:listFrame) {
-					approvalFrame.setApprovalATR(null);
-					approvalFrame.setApprovalDate(null);
-					approvalFrame.setApproverSID(null);
-					approvalFrame.setReason(null);
-					approvalFrame.setRepresenterSID(null);
-					// set value frame =  null
-					frameRepo.update(approvalFrame);
+					approvalFrame.getListApproveAccepted().forEach(x -> {
+						x.changeApprovalATR(ApprovalAtr.UNAPPROVED);
+						x.changeApproverSID("");
+						x.changeRepresenterSID("");
+						x.changeReason(new Reason(""));
+						x.changeApprovalDate(null);
+					});
+					frameRepo.update(approvalFrame, appApprovalPhase.getPhaseID());
 				}
+				//2017.09.25 DuDT
 			}
 			
 			
@@ -93,7 +106,8 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 				List<ApprovalFrame> listFrame = frameRepo.getAllApproverByPhaseID(
 						listPhase.get(i).getCompanyID(), 
 						listPhase.get(i).getPhaseID());
-				for(ApprovalFrame approvalFrame:listFrame) {
+				// 2017.09.25
+				/*for(ApprovalFrame approvalFrame:listFrame) {
 					approvalFrame.setApprovalATR(null);
 					approvalFrame.setApprovalDate(null);
 					approvalFrame.setApproverSID(null);
@@ -101,7 +115,19 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 					approvalFrame.setRepresenterSID(null);
 					// set value frame =  null
 					frameRepo.update(approvalFrame);
+				}*/
+				
+				for(ApprovalFrame approvalFrame:listFrame) {
+					approvalFrame.getListApproveAccepted().forEach(x -> {
+						x.changeApprovalATR(ApprovalAtr.UNAPPROVED);
+						x.changeApproverSID("");
+						x.changeRepresenterSID("");
+						x.changeReason(new Reason(""));
+						x.changeApprovalDate(null);
+					});
+					frameRepo.update(approvalFrame, listPhase.get(i).getPhaseID());
 				}
+				// 2017.09.25
 			}
 			//check : send mail when register = can
 			if(appSetting.get().getSendMailWhenRegisterFlg() == AppCanAtr.CAN) {

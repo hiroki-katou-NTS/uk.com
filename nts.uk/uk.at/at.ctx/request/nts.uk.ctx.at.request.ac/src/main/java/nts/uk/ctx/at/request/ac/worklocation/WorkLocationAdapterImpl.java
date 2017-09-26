@@ -9,7 +9,11 @@ import nts.uk.ctx.at.record.pub.worklocation.WorkLocationPub;
 import nts.uk.ctx.at.record.pub.worklocation.WorkLocationPubExport;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.adapter.WorkLocationAdapter;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.adapter.dto.WorkLocationImport;
-
+/**
+ * 
+ * @author ducpm
+ *
+ */
 @Stateless
 public class WorkLocationAdapterImpl implements WorkLocationAdapter {
 

@@ -90,7 +90,8 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 			if(!CollectionUtil.isEmpty(appTypes)) {
 				
 				empInfo.setAppType(appTypes);
-				empInfor.setPName(psInfor.personName(empInfor.getSId()));
+				
+				empInfor.setPName(psInfor.getPersonInfo(empInfor.getSId()).getEmployeeName());
 				empInfo.setEmpInfor(empInfor);
 				lstUnRegister.add(empInfo);
 			}

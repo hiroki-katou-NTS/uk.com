@@ -7,9 +7,9 @@ package nts.uk.ctx.at.shared.app.find.outsideot.dto;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.outsideot.breakdown.BreakdownItemNo;
+import nts.uk.ctx.at.shared.dom.outsideot.holiday.PremiumExtra60HRateSetMemento;
+import nts.uk.ctx.at.shared.dom.outsideot.holiday.PremiumRate;
 import nts.uk.ctx.at.shared.dom.outsideot.overtime.OvertimeNo;
-import nts.uk.ctx.at.shared.dom.outsideot.premium.PremiumRate;
-import nts.uk.ctx.at.shared.dom.outsideot.premium.extra.PremiumExtra60HRateSetMemento;
 
 /**
  * The Class PremiumExtra60HRateDto.

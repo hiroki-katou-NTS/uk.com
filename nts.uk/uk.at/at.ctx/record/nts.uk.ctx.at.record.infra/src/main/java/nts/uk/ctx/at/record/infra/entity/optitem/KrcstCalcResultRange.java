@@ -6,9 +6,13 @@ package nts.uk.ctx.at.record.infra.entity.optitem;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -33,11 +37,11 @@ public class KrcstCalcResultRange extends UkJpaEntity implements Serializable {
 
 	/** The upper limit atr. */
 	@Column(name = "UPPER_LIMIT_ATR")
-	private short upperLimitAtr;
+	private int upperLimitAtr;
 
 	/** The lower limit atr. */
 	@Column(name = "LOWER_LIMIT_ATR")
-	private short lowerLimitAtr;
+	private int lowerLimitAtr;
 
 	/** The upper time range. */
 	@Column(name = "UPPER_TIME_RANGE")
@@ -63,6 +67,11 @@ public class KrcstCalcResultRange extends UkJpaEntity implements Serializable {
 	@Column(name = "LOWER_AMOUNT_RANGE")
 	private Integer lowerAmountRange;
 
+	@OneToOne(optional = true, cascade = CascadeType.ALL)
+	@PrimaryKeyJoinColumns({ @PrimaryKeyJoinColumn(name = "CID", referencedColumnName = "CID"),
+			@PrimaryKeyJoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO") })
+	public KrcstCalcResultRange krcstCalcResultRange;
+
 	/**
 	 * Instantiates a new krcst calc result range.
 	 */
@@ -72,7 +81,8 @@ public class KrcstCalcResultRange extends UkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new krcst calc result range.
 	 *
-	 * @param krcstCalcResultRangePK the krcst calc result range PK
+	 * @param krcstCalcResultRangePK
+	 *            the krcst calc result range PK
 	 */
 	public KrcstCalcResultRange(KrcstCalcResultRangePK krcstCalcResultRangePK) {
 		this.krcstCalcResultRangePK = krcstCalcResultRangePK;

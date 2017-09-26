@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.common.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AprovalPersonFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
@@ -11,6 +12,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.PriorityFLg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.ReflectionFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.AppDisplayAtr;
+
 /**
  * 
  * @author Doan Duy Hung
@@ -42,4 +44,33 @@ public class ApplicationSettingDto {
 	public Integer scheReflectFlg;
 	public Integer priorityTimeReflectFlg;
 	public Integer attendentTimeReflectFlg;
+
+	public static ApplicationSettingDto convertToDto(ApplicationSetting appSetting) {
+		if(appSetting==null) return null;
+		return new ApplicationSettingDto(
+				appSetting.getCompanyID(), 
+				appSetting.getAppActLockFlg().value,
+				appSetting.getAppEndWorkFlg().value, 
+				appSetting.getAppActConfirmFlg().value,
+				appSetting.getAppOvertimeNightFlg().value, 
+				appSetting.getAppActMonthConfirmFlg().value,
+				appSetting.getRequireAppReasonFlg().value, 
+				appSetting.getDisplayPrePostFlg().value,
+				appSetting.getDisplaySearchTimeFlg().value, 
+				appSetting.getManualSendMailAtr().value,
+				appSetting.getBaseDateFlg().value, 
+				appSetting.getAdvanceExcessMessDispAtr().value,
+				appSetting.getHwAdvanceDispAtr().value, 
+				appSetting.getHwActualDispAtr().value,
+				appSetting.getActualExcessMessDispAtr().value, 
+				appSetting.getOtAdvanceDispAtr().value,
+				appSetting.getOtActualDispAtr().value, 
+				appSetting.getWarningDateDispAtr().v(),
+				appSetting.getAppReasonDispAtr().value, 
+				appSetting.getAppContentChangeFlg().value,
+				appSetting.getPersonApprovalFlg().value, 
+				appSetting.getScheReflectFlg().value,
+				appSetting.getPriorityTimeReflectFlg().value, 
+				appSetting.getAttendentTimeReflectFlg().value);
+	}
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.application.gobackdirectly;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 
 @AllArgsConstructor
 @Value
@@ -66,4 +67,26 @@ public class GoBackDirectlyDto {
 	 * 勤務場所選択２
 	 */
 	String workLocationCD2;
+	
+	/**
+	 * Convert to GoBackDirectlyDto
+	 */
+	public static GoBackDirectlyDto convertToDto(GoBackDirectly domain) {
+		return new GoBackDirectlyDto(
+				domain.getCompanyID(), 
+				domain.getAppID(), 
+				domain.getWorkTypeCD().v(),
+				domain.getSiftCD().v(), 
+				domain.getWorkChangeAtr().value, 
+				domain.getGoWorkAtr1().value,
+				domain.getBackHomeAtr1().value, 
+				domain.getWorkTimeStart1().v(), 
+				domain.getWorkTimeEnd1().v(),
+				domain.getWorkLocationCD1(), 
+				domain.getGoWorkAtr2().value, 
+				domain.getBackHomeAtr2().value,
+				domain.getWorkTimeStart2().v(), 
+				domain.getWorkTimeEnd2().v(), 
+				domain.getWorkLocationCD2());
+	}
 }

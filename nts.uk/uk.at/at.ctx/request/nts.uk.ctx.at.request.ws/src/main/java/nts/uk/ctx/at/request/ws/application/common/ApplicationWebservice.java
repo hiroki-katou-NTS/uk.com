@@ -11,19 +11,16 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
-import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.common.DeleteApplicationCommand;
-import nts.uk.ctx.at.request.app.command.application.common.DeleteApplicationCommandHandler;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommand;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationFinder;
 import nts.uk.ctx.at.request.app.find.application.common.ApprovalRootOfSubjectRequestDto;
 import nts.uk.ctx.at.request.app.find.application.common.GetDataApprovalRootOfSubjectRequest;
+import nts.uk.ctx.at.request.app.find.application.common.GetDataCheckDetail;
 import nts.uk.ctx.at.request.app.find.application.common.CheckDisplayMessage;
 import nts.uk.ctx.at.request.app.find.application.common.GetAllDataAppPhaseFrame;
+import nts.uk.ctx.at.request.app.find.application.common.GetAllNameByAppID;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
+import nts.uk.ctx.at.request.app.find.application.common.OutputDetailCheckDto;
 import nts.uk.ctx.at.request.app.find.application.common.OutputGetAllDataApp;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetMessageReasonForRemand;
@@ -31,8 +28,6 @@ import nts.uk.ctx.at.request.app.find.application.requestofearch.InputMessageDea
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 
 @Path("at/request/application")
 @Produces("application/json")
@@ -56,7 +51,10 @@ public class ApplicationWebservice extends WebService {
 	private GetAllDataAppPhaseFrame getAllDataAppPhaseFrame;
 	
 	@Inject
-	private BeforePreBootMode beforePreBootMode; 
+	private GetDataCheckDetail getDataCheckDetail; 
+	
+	@Inject
+	private GetAllNameByAppID getAllNameByAppID;
 	
 	/**
 	 * get All application
@@ -169,8 +167,20 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("getdetailcheck")
-	public DetailedScreenPreBootModeOutput getDetailCheck(InputGetDetailCheck inputGetDetailCheck){ 
-		//GeneralDate generalDate = GeneralDate.fromString(inputGetDetailCheck.getBaseDate(), "YYYY/MM/DD");
-		return this.beforePreBootMode.getDetailedScreenPreBootMode(inputGetDetailCheck.getApplication(),inputGetDetailCheck.getBaseDate());
+	public OutputDetailCheckDto getDetailCheck(InputGetDetailCheck inputGetDetailCheck){
+		
+		return this.getDataCheckDetail.getDataCheckDetail(inputGetDetailCheck);
+	}
+	
+	/**
+	 * get getDetailedScreenPreBootMode (check)
+	 * @return
+	 */
+	
+	@POST
+	@Path("getallnamebyappid")
+	public List<String> getAllNameByAppID(){
+		
+		return this.getAllNameByAppID.getAllNameByAppID("000");
 	}
 }

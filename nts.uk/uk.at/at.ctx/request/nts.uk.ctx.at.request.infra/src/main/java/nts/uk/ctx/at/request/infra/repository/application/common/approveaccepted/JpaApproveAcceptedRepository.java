@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
+import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFrame;
 import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAccepted;
 import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAcceptedPK;
 
@@ -21,20 +22,24 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 			+ " AND c.kafdtApproveAcceptedPK.approverSID = :approverSID";
 	
 	private ApproveAccepted toDomain(KafdtApproveAccepted entity) {
-		return ApproveAccepted.createFromJavaType(entity.kafdtApproveAcceptedPK.companyID, 
+		// 2017.09.25
+		/*return ApproveAccepted.createFromJavaType(entity.kafdtApproveAcceptedPK.companyID, 
 				entity.kafdtApproveAcceptedPK.phaseID, 
 				entity.kafdtApproveAcceptedPK.dispOrder, 
 				entity.kafdtApproveAcceptedPK.approverSID
-				);
+				);*/
+		return null;
 	}
 	
-	private KafdtApproveAccepted toEntity(ApproveAccepted domain) {
-		return new KafdtApproveAccepted( 
+	private KafdtApproveAccepted toEntity(ApproveAccepted domain, String frameID) {
+		// 2017.09.25
+		/*return new KafdtApproveAccepted( 
 				new KafdtApproveAcceptedPK(
 					domain.getCompanyID(),
 					domain.getPhaseID(),
 					domain.getDispOrder(),
-					domain.getApproverSID()));
+					domain.getApproverSID()));*/
+		return null;
 	}
 	
 	/**
@@ -66,18 +71,30 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 	 * add new Approve Accepted
 	 */
 	@Override
-	public void createApproverAccepted(ApproveAccepted approveAccepted) {
-		this.commandProxy().insert(toEntity(approveAccepted));
+	public void createApproverAccepted(ApproveAccepted approveAccepted, String frameID) {
+		this.commandProxy().insert(toEntity(approveAccepted, frameID));
 	}
-	
-	/**
-	 * delete approve accepted
-	 */
+
 	@Override
-	public void deleteApproverAccepted(String companyID, String phaseID, int dispOrder, String approverSID) {
+	public void updateApproverAccepted(ApproveAccepted approveAccepted, String frameID) {
+		KafdtApproveAccepted newEntity = toEntity(approveAccepted, frameID);
+		KafdtApproveAccepted updateEntity = this.queryProxy()
+				.find(newEntity.kafdtApproveAcceptedPK, KafdtApproveAccepted.class).get();
+		updateEntity.approvalATR = newEntity.approvalATR;
+		updateEntity.confirmATR = newEntity.confirmATR;
+		updateEntity.approvalDate = newEntity.approvalDate;
+		updateEntity.reason = newEntity.reason;
+		updateEntity.representerSID = newEntity.representerSID;
+		this.commandProxy().update(updateEntity);
+		
+	}
+
+	@Override
+	public void deleteApproverAccepted(ApproveAccepted approveAccepted) {
 		this.commandProxy()
-		.remove(KafdtApproveAccepted.class,new KafdtApproveAcceptedPK(companyID,phaseID,dispOrder,approverSID));
+		.remove(KafdtApproveAccepted.class,new KafdtApproveAcceptedPK(approveAccepted.getCompanyID(), approveAccepted.getAppAcceptedID()));
 		this.getEntityManager().flush();
+		
 	}
 
 }

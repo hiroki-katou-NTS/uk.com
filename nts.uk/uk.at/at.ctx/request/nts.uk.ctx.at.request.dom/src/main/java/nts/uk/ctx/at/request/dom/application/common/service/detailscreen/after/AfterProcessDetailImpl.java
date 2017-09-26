@@ -66,12 +66,14 @@ public class AfterProcessDetailImpl implements AfterProcessDetail {
 			appApprovalPhase.setApprovalATR(ApprovalAtr.UNAPPROVED);
 			List<ApprovalFrame> approvalFrames = approvalFrameRepository.getAllApproverByPhaseID(companyID, appID);
 			for (ApprovalFrame approvalFrame : approvalFrames) {
-				approvalFrame.setApprovalATR(ApprovalAtr.UNAPPROVED);
-				approvalFrame.setApproverSID("");
-				approvalFrame.setRepresenterSID("");
-				approvalFrame.setReason(new Reason(""));
-				approvalFrame.setApprovalDate(null);
-				approvalFrameRepository.update(approvalFrame);
+				approvalFrame.getListApproveAccepted().forEach(x -> {
+					x.changeApprovalATR(ApprovalAtr.UNAPPROVED);
+					x.changeApproverSID("");
+					x.changeRepresenterSID("");
+					x.changeReason(new Reason(""));
+					x.changeApprovalDate(null);
+				});
+				approvalFrameRepository.update(approvalFrame, appApprovalPhase.getPhaseID());
 			}
 		}
 		if (approverWhoApproveds.size() < 1)
@@ -108,14 +110,16 @@ public class AfterProcessDetailImpl implements AfterProcessDetail {
 			if(!approverList.isEmpty()){
 				List<ApprovalFrame> approvalFrames = approvalFrameRepository.getAllApproverByPhaseID(appApprovalPhase.getCompanyID(), appApprovalPhase.getAppID());
 				for(ApprovalFrame approvalFrame : approvalFrames) {
-					if(approvalFrame.getApprovalATR().equals(ApprovalAtr.APPROVED)){
-						if(Strings.isNotEmpty(approvalFrame.getRepresenterSID())){
-							approverResult.getApproverWhoApproveds().add(new ApproverWhoApproved(approvalFrame.getRepresenterSID(), true));
-						} else {
-							approverResult.getApproverWhoApproveds().add(new ApproverWhoApproved(approvalFrame.getApproverSID(), false));
-						}
-						// approverList.add(approvalFrame.approverList);
-					}	
+					approvalFrame.getListApproveAccepted().forEach(x -> {
+						if(x.getApprovalATR().equals(ApprovalAtr.APPROVED)){
+							if(Strings.isNotEmpty(x.getRepresenterSID())){
+								approverResult.getApproverWhoApproveds().add(new ApproverWhoApproved(x.getRepresenterSID(), true));
+							} else {
+								approverResult.getApproverWhoApproveds().add(new ApproverWhoApproved(x.getApproverSID(), false));
+							}
+							// approverList.add(approvalFrame.approverList);
+						}	
+					});
 				}
 			}
 		}

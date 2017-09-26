@@ -21,9 +21,9 @@
 														required: true,
 														enable: startTimeDisp }" />		
 								</div>
-								<div data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? 'inline-block' : 'none' }">
+								<div class="m2-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 									<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: startLocationDisp }"></div>
-									<button data-bind="enable: startLocationDisp">#{i18n.getText('KAF002_14')}</button>
+									<button data-bind="click: function(){ $parent.openSelectLocationDialog('start', $index()) }, enable: startLocationDisp">#{i18n.getText('KAF002_14')}</button>
 									<span class="label m2-label" data-bind="text: startLocation, css: { m2DisableEdit: !startLocationDisp() }"></span>	
 								</div>					
 							</div>
@@ -42,9 +42,9 @@
 														required: true,
 														enable: endTimeDisp }" />	
 								</div>
-								<div data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? 'inline-block' : 'none' }">
+								<div class="m2-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 									<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: endLocationDisp }"></div>					
-									<button data-bind="enable: endLocationDisp">#{i18n.getText('KAF002_14')}</button>
+									<button data-bind="click: function(){ $parent.openSelectLocationDialog('end', $index()) }, enable: endLocationDisp">#{i18n.getText('KAF002_14')}</button>
 									<span class="label m2-label" data-bind="text: endLocation, css: { m2DisableEdit: !endLocationDisp() }"></span>	
 								</div>					
 							</div>

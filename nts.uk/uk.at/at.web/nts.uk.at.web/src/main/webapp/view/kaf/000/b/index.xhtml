@@ -47,15 +47,16 @@
 				<!-- B1_3 -->
 				<button><i class="icon icon-button-arrow-right"></i></button>
 				<!-- B1_4 -->
-				<button class="proceed">#{i18n.getText('KAF000_15')}</button>
+				<button class="proceed" data-bind="click: btnApprove, enable: enableApprove">#{i18n.getText('KAF000_15')}</button>
 				<!-- B1_5 -->
-				<button >#{i18n.getText('KAF000_16')}</button>
+				<button data-bind="click: btnDeny, enable: enableDeny" >#{i18n.getText('KAF000_16')}</button>
 				<!-- B1_6 -->
 				<button >#{i18n.getText('KAF000_17')}</button>
 				<!-- B1_7 -->
-				<button >#{i18n.getText('KAF000_18')}</button>
+				<button data-bind="click: btnRelease, enable: enableRelease" >#{i18n.getText('KAF000_18')}</button>
 				
 				<!-- B1_8 -->
+				<button class="proceed" data-bind="click: update , enable : enableRegistration">#{i18n.getText('KAF000_19')}</button>	
 				<!-- <div data-bind="with: screenModel.cm" style="display: inline-block">
 					<button class="proceed" data-bind="click: update">#{i18n.getText('KAF000_19')}</button>
 				</div> -->
@@ -63,26 +64,31 @@
 				<!-- B1_9 -->
 				<button >#{i18n.getText('KAF000_20')}</button>
 				<!-- B1_10 -->
-				<button >#{i18n.getText('KAF000_21')}</button>
+				<button data-bind="click: btnReferences" >#{i18n.getText('KAF000_21')}</button>
 				<!-- B1_11 -->
-				<button >#{i18n.getText('KAF000_22')}</button>
+				<button data-bind="click: btnSendEmail" >#{i18n.getText('KAF000_22')}</button>
 				
 				<!-- B1_12 -->
-				<button  class="danger">#{i18n.getText('KAF000_23')}</button>
+				<button  class="danger" data-bind="click: btnDelete , enable : enableDelete" >#{i18n.getText('KAF000_23')}</button>
+				
 				<!-- B1_13 -->
-				<button  class="danger">#{i18n.getText('KAF000_24')}</button>
+				<button  class="danger" data-bind="click: btnCancel , enable : enableCancel">#{i18n.getText('KAF000_24')}</button>
+				<br></br>
+				<div id="comment"> 
+					<label data-bind=" visible : visibleApproval">【承認】</label><label style="margin-left: 25px;" data-bind=" visible : visibleDenial">【否認】</label>
+				</div>
 			</div>
 			<div id="contents-area">
 				<!-- row1 -->
 				<div id="message-area"> 
 					<table >
-						<tr>
+						<tr data-bind =  "if : outputMessageDeadline() != null">
 							<!-- A1_1 -->
 							<td class="message-td" >#{i18n.getText('KAF000_1')}</td>
 							<!-- A1_2 -->
 							<td class="message-td"><div data-bind="text:outputMessageDeadline().message" ></div></td>
-						</tr>
-						<tr>
+						</tr >
+						<tr data-bind =  "if : outputMessageDeadline() != null">
 							<!-- A1_3 -->
 							<td class="message-td">#{i18n.getText('KAF000_2')}</td>
 							<!-- A1_4 -->
@@ -111,6 +117,9 @@
 				</com:ko-if>
 				<com:ko-if bind="appType() == 9">
 					<ui:include src="../../004/e/index.xhtml" />
+				</com:ko-if>
+				<com:ko-if bind="appType() == 4">
+					<ui:include src="../../009/b/index.xhtml" />
 				</com:ko-if>
 <!--  				<div style="height: 50px;background-color: gray ; margin-top: 30px;'">body</div> -->
 				<!-- <div data-bind="with: screenModel.cm">
@@ -147,7 +156,7 @@
 									<com:ko bind="$index() === 0" tag="if">
 										<td class="bg-green" data-bind="attr: {rowspan: $parent.listApprovalFrameDto.length},text: $data.phaseID"></td>
 									</com:ko>
-									<td class="bg-green" ><label data-bind="text: $data.approverSID"></label></td>
+									<td class="bg-green" ><label data-bind="text: $data.dispOrder"></label></td>
 										<td>
 											<label data-bind="text: $data.approverSID2"></label>
 										</td>
