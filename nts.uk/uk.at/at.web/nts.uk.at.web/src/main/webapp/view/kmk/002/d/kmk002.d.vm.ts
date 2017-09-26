@@ -25,7 +25,7 @@ module nts.uk.at.view.kmk002.d {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                let dto = nts.uk.ui.windows.getShared("formulaSetting");
+                let dto = nts.uk.ui.windows.getShared('formulaParams');
 
                 // mock.
                 self.formulaAtr = nts.uk.resource.getText('KMK002_70'); // time
@@ -45,11 +45,14 @@ module nts.uk.at.view.kmk002.d {
             public apply(): void {
                 let self = this;
                 if (self.isValid()) {
-                    nts.uk.ui.windows.setShared('formulaSetting', self.formulaSetting.toDto());
+                    nts.uk.ui.windows.setShared('formulaReturned', self.formulaSetting.toDto());
                     self.close();
                 }
             }
 
+            /**
+             * Data input validation
+             */
             private isValid(): boolean {
                 let self = this;
                 if (self.formulaSetting.operator() == 3 && self.formulaSetting.rightItem.inputValue() == 0) {
@@ -62,8 +65,20 @@ module nts.uk.at.view.kmk002.d {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_420" });
                     return false;
                 }
+                if (self.formulaSetting.rightItem.settingMethod() == 1 && !self.formulaSetting.rightItem.inputValue()) {
+                    // required input
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_419" });
+                    return false;
+                }
+                if (self.formulaSetting.leftItem.settingMethod() == 1 && !self.formulaSetting.leftItem.inputValue()) {
+                    // required input
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_419" });
+                    return false;
+                }
+                if ($('.nts-editor').ntsError('hasError')) {
+                    return false;
+                }
                 //TODO Msg_114
-                //TODO Msg_419 de required?
                 return true;
 
             }
