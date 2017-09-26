@@ -13,12 +13,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class BsydtEmployeeRegistrationHistoryPk implements Serializable {
+public class BsymtEmployeeRegistrationHistoryPk implements Serializable {
 
 	
 	@Basic(optional = false)
-	@Column(name = "CID")
-	public String CompanyId;
+	@Column(name = "REG_SID")
+	public String RegisteredEmployeeID;
+	
 	
 	private static final long serialVersionUID = 1L;
 
