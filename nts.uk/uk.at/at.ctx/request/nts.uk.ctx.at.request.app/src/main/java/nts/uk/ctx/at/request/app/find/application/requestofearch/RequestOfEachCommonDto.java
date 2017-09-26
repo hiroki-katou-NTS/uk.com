@@ -16,6 +16,7 @@ public class RequestOfEachCommonDto {
 	List<RequestAppDetailSettingDto> requestOfEachCommonDtos;
 
 	public static RequestOfEachCommonDto convertToDto(RequestOfEachCommon domain) {
+		if(domain==null) return null;
 		return new RequestOfEachCommonDto(
 				domain.getRequestAppDetailSettings().stream()
 				.map(x -> RequestAppDetailSettingDto.convertToDto(x))

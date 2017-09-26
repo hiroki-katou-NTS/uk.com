@@ -46,6 +46,7 @@ public class ApplicationSettingDto {
 	public Integer attendentTimeReflectFlg;
 
 	public static ApplicationSettingDto convertToDto(ApplicationSetting appSetting) {
+		if(appSetting==null) return null;
 		return new ApplicationSettingDto(
 				appSetting.getCompanyID(), 
 				appSetting.getAppActLockFlg().value,
