@@ -6,6 +6,8 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
@@ -26,23 +28,11 @@ public class KrqdtApprovalFrame extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	public KrqdtApprovalFramePK krqdtApprovalFramePK;
 	
+	@Column(name = "PHASE_ID")
+	public String phaseID;
 	
-	@Column(name = "APPROVAL_ATR")
-	public int approvalATR;
-
-	@Column(name = "CONFIRM_ATR")
-	public int confirmATR;
-	
-	
-	
-	@Column(name="APPROVAL_DATE")
-	public GeneralDate approvalDate;
-	
-	@Column(name="REASON")
-	public String reason;
-	
-	@Column(name="REPRESENTER_SID")
-	public String representerSID; 
+	@Column(name = "DISPORDER")
+	public int dispOrder;
 	
 	@Override
 	protected Object getKey() {
