@@ -16,7 +16,10 @@ import nts.uk.ctx.bs.employee.app.command.workplace.RegisterWorkplaceCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.RegisterWorkplaceCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.UpdateWorkplaceCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.workplace.BSWorkplaceFinder;
+import nts.uk.ctx.bs.employee.app.find.workplace.WorkplaceInfoFinder;
+import nts.uk.ctx.bs.employee.app.find.workplace.dto.WkpInfoFindObject;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceDto;
+import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceInfoDto;
 
 /**
  * The Class WorkplaceWebService.
@@ -36,6 +39,10 @@ public class WorkplaceWebService extends WebService {
 	/** The workplace finder. */
 	@Inject
 	private BSWorkplaceFinder workplaceFinder;
+	
+	/** The workplace info finder. */
+	@Inject
+	private WorkplaceInfoFinder workplaceInfoFinder;
 	
 	/**
 	 * Adds the workplace history.
@@ -63,5 +70,11 @@ public class WorkplaceWebService extends WebService {
 	@POST
 	public WorkplaceDto getListWorkplaceHistory(@PathParam("wkpId") String wkpId) {
 		return this.workplaceFinder.findByWorkplaceId(wkpId);
+	}
+	
+	@Path("find")
+	@POST
+	public WorkplaceInfoDto getWorkplaceInfoByHistoryId(WkpInfoFindObject findObj) {
+		return this.workplaceInfoFinder.find(findObj);
 	}
 }

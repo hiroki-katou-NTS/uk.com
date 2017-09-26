@@ -69,6 +69,10 @@ module nts.uk.com.view.cmm011.a {
                     self.wkpDisplayName(obj.wkpDisplayName + " " + newValue);
                     self.wkpFullName(obj.wkpFullName + " " + newValue);
                 });
+                self.workplaceHistory().selectedWpkHistory.subscribe((historyId) => {
+                    //load workplace info by historyId
+                    self.getAndBindWkpInfo(self.treeWorkplace().selectedWpkId(), self.workplaceHistory().selectedWpkHistory());
+                });
             }
             
             /**
@@ -90,12 +94,22 @@ module nts.uk.com.view.cmm011.a {
                 return dfd.promise();
             }
             
-            private getTree():void{
+            /**
+             * get And Bind WkpInfo data to screen 
+             */
+            private getAndBindWkpInfo(wkpId:string, historyId:string):void{
                 var self = this;
-                service.findLstWorkPlace(new Date()).done(()=>{
-                    
+                service.getWkpInfoByHistId(wkpId,historyId).done(function(data:any) {
+                    if (data) {
+                        self.workplaceCode(data.workplaceCode);
+                        self.workplaceName(data.workplaceName);
+                        self.wkpDisplayName(data.wkpDisplayName);
+                        self.wkpFullName(data.wkpGenericName);
+                        self.externalCode(data.outsideWkpCode);
+                    }
                 });
             }
+            
             /**
              * configureWkpDialog
              */
@@ -157,7 +171,7 @@ module nts.uk.com.view.cmm011.a {
 
             constructor(screenModel: ScreenModel) {
                 let self = this;
-
+                self.screenModel = screenModel;
                 self.treeColumns = ko.observableArray([
                     { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
                     { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: 250, dataType: "string" }
@@ -184,8 +198,10 @@ module nts.uk.com.view.cmm011.a {
                         let lstWpkHistory = _.map(data.workplaceHistory, (item:any) => {
                             return { workplaceId: data.workplaceId, historyId: item.historyId, startDate: item.period.startDate, endDate: item.period.endDate };
                         });
-                        //observable lst hist
-                        self.screenModel.workplaceHistory().lstWpkHistory(lstWpkHistory);
+                        //update list hist
+                        if (self.screenModel) {
+                            self.screenModel.workplaceHistory().init(lstWpkHistory);
+                        }
                         //TODO
                     });
                 });
@@ -217,7 +233,9 @@ module nts.uk.com.view.cmm011.a {
              */
             public selectFirst() {
                 let self = this;
-                self.selectedWpkId(self.lstWorkplace()[0].workplaceId);
+                if (self.lstWorkplace() && (self.lstWorkplace().length > 0)) {
+                    self.selectedWpkId(self.lstWorkplace()[0].workplaceId);
+                }
             }
             
             /**
@@ -371,19 +389,13 @@ module nts.uk.com.view.cmm011.a {
             constructor() {
                 super();
                 let self = this;
-                
-                self.init();
+                //list is empty 
+                self.init([]);
             }
             
-            init() {
+            init(data: any) {
                 let self = this;
-                let lstWpkHistory: Array<IHistory> = [
-                    {workplaceId: "ABC1", historyId: "ABC1", startDate: "2015/04/01", endDate: "9999/12/31"},
-                    {workplaceId: "ABC2", historyId: "ABC2", startDate: "2015/04/01", endDate: "9999/12/31"},
-                    {workplaceId: "ABC3", historyId: "ABC3", startDate: "2015/04/01", endDate: "9999/12/31"},
-                    {workplaceId: "ABC4", historyId: "ABC4", startDate: "2015/04/01", endDate: "9999/12/31"}
-                ]
-                self.lstWpkHistory(lstWpkHistory);
+                self.lstWpkHistory(data);
                 self.selectFirst();
             }
             

@@ -25,21 +25,56 @@ import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfoPK_;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceInfo_;
 
+/**
+ * The Class JpaWorkplaceInfoRepository.
+ */
 @Stateless
 public class JpaWorkplaceInfoRepository extends JpaRepository implements WorkplaceInfoRepository {
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#find(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public Optional<WorkplaceInfo> find(String companyId, String wkpId, String historyId) {
-		// TODO Auto-generated method stub
-		return null;
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<BsymtWorkplaceInfo> cq = criteriaBuilder.createQuery(BsymtWorkplaceInfo.class);
+		Root<BsymtWorkplaceInfo> root = cq.from(BsymtWorkplaceInfo.class);
+
+		// select root
+		cq.select(root);
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.cid), companyId));
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid), wkpId));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.historyId), historyId));
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		List<BsymtWorkplaceInfo> lst = em.createQuery(cq).getResultList();
+		if (lst.isEmpty()) {
+			return Optional.empty();
+		} else {
+			return Optional.of(new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(lst.get(0))));
+		}
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#update(nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo)
+	 */
 	@Override
 	public void update(WorkplaceInfo workplaceInfo) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#findByWkpCd(java.lang.String, java.lang.String, nts.arc.time.GeneralDate)
+	 */
 	@Override
 	public List<WorkplaceInfo> findByWkpCd(String companyId, String wpkCode, GeneralDate baseDate) {
 		// get entity manager
@@ -68,6 +103,9 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		}).collect(Collectors.toList());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#findByWkpId(java.lang.String, nts.arc.time.GeneralDate)
+	 */
 	@Override
 	public Optional<WorkplaceInfo> findByWkpId(String wpkId, GeneralDate baseDate) {
 		// get entity manager
@@ -99,6 +137,9 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 		return Optional.of(lstWkpInfo.get(0));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#findLatestByWorkplaceId(java.lang.String)
+	 */
 	@Override
 	public Optional<WorkplaceInfo> findLatestByWorkplaceId(String wkpId) {
 		// get entity manager

@@ -6,6 +6,7 @@ module nts.uk.com.view.cmm011.a {
         var servicePath: any = {
             findLstWorkPlace: "bs/employee/workplace/config/info/find",
             findWkpHistList: "bs/employee/workplace/hist",
+            findHistInfoByHistId: "bs/employee/workplace/find",
         };
 
         /**
@@ -14,6 +15,7 @@ module nts.uk.com.view.cmm011.a {
         export function findLstWorkPlace(baseDate: Date): JQueryPromise<Array<model.TreeWorkplace>> {
             return nts.uk.request.ajax(servicePath.findLstWorkPlace, { startDate: baseDate });
         }
+        
         /**
          * getLstWkpHist
          */
@@ -21,6 +23,13 @@ module nts.uk.com.view.cmm011.a {
             return nts.uk.request.ajax(servicePath.findWkpHistList + "/" + wkpId);
         }
 
+        /**
+         * getLstWkpHist
+         */
+        export function getWkpInfoByHistId(wkpId: string, historyId: string): JQueryPromise<model.Workplace> {
+            return nts.uk.request.ajax(servicePath.findHistInfoByHistId, { workplaceId: wkpId, historyId: historyId });
+        }
+        
         /**
         * Model namespace.
         */
