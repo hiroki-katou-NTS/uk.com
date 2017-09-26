@@ -225,6 +225,49 @@
 											</div>
 											<div id="auth_group_table">
 												<com:ko-if bind="categoryType === 2">
+													<table id="multi_auth_table" class="auth_table">
+														<tr>
+															<th></th>
+															<th style="width: 150px;">#{i18n.getText('CAS001_40')}</th>
+															<th style="width: 150px;">#{i18n.getText('CAS001_41')}</th>
+														</tr>
+														<tr>
+															<th>#{i18n.getText('CAS001_30')}</th>
+															<td><div id="A4_033" class="cf"
+																	data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selfAllowDelMulti ,
+													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
+															<td><div id="A4_034" class="cf"
+																	data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selfAllowAddMulti ,
+													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
+														</tr>
+														<tr>
+															<th>#{i18n.getText('CAS001_31')}</th>
+															<td><div id="A4_035" class="cf"
+																	data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: otherAllowDelMulti ,
+													enable: $parents[1].allowOtherRef()===1 }"></div></td>
+															<td><div id="A4_036" class="cf"
+																	data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: otherAllowAddMulti ,
+													enable: $parents[1].allowOtherRef()===1 }"></div></td>
+														</tr>
+													</table>
+												</com:ko-if>
+												<com:ko-if bind="categoryType === 3">
 													<table id="history_auth_table" class="auth_table">
 														<tr>
 															<th></th>
@@ -312,49 +355,6 @@
 														]}"></div></td>
 
 
-														</tr>
-													</table>
-												</com:ko-if>
-												<com:ko-if bind="categoryType === 3">
-													<table id="multi_auth_table" class="auth_table">
-														<tr>
-															<th></th>
-															<th style="width: 150px;">#{i18n.getText('CAS001_40')}</th>
-															<th style="width: 150px;">#{i18n.getText('CAS001_41')}</th>
-														</tr>
-														<tr>
-															<th>#{i18n.getText('CAS001_30')}</th>
-															<td><div id="A4_033" class="cf"
-																	data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selfAllowDelMulti ,
-													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
-															<td><div id="A4_034" class="cf"
-																	data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selfAllowAddMulti ,
-													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
-														</tr>
-														<tr>
-															<th>#{i18n.getText('CAS001_31')}</th>
-															<td><div id="A4_035" class="cf"
-																	data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: otherAllowDelMulti ,
-													enable: $parents[1].allowOtherRef()===1 }"></div></td>
-															<td><div id="A4_036" class="cf"
-																	data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: otherAllowAddMulti ,
-													enable: $parents[1].allowOtherRef()===1 }"></div></td>
 														</tr>
 													</table>
 												</com:ko-if>
