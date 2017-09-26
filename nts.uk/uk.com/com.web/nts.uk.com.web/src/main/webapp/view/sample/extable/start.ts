@@ -145,7 +145,7 @@ __viewContext.ready(function () {
     let detailContentDs = [];
     let leftmostDs = [];
     let middleDs = [], updateMiddleDs = [];
-    let horzSumContentDs = [], leftHorzContentDs = [], vertSumContentDs = [];
+    let horzSumContentDs = [], leftHorzContentDs = [], vertSumContentDs = [], newVertSumContentDs = [];
     for (let i = 0; i < 300; i++) {
         detailContentDs.push(new ExItem(i.toString()));
         leftmostDs.push({　empId: i.toString(), empName: "社員名" + i });
@@ -156,6 +156,7 @@ __viewContext.ready(function () {
         if (i % 7 === 0) detailContentDeco.push(new CellColor("_3", i.toString(), "cell-light-green", 0));
         if (i < 1000) timeRanges.push(new TimeRange("_2", i.toString(), "17:00", "7:00", 1));
         vertSumContentDs.push({ empId: i.toString(), noCan: 6, noGet: 6 });
+        newVertSumContentDs.push({ empId: i.toString(), time: "0:00", plan: "30:00"});
     }
     for (let i = 0; i < 10; i++) {
         horzSumContentDs.push({ itemId: i.toString(), empId: "", __25: "1.0", __26: "1.4", __27: "0.3", __28: "0.9", __29: "1.0", __30: "1.0", __31: "3.3", 
@@ -233,8 +234,8 @@ __viewContext.ready(function () {
             key: "_31", width: "100px", handlerType: "input", dataType: "time/time"
         }];
     
-    let leftmostColumns = [{ key: "empName", headerText: "社員名", width: "160px", icon: "ui-icon ui-icon-contact", 
-            iconWidth: "35px", control: "link", handler: function(rData, rowIdx, key) { alert(rowIdx); } }];
+    let leftmostColumns = [{ key: "empName", headerText: "社員名", width: "160px", icon: { for: "body", class: "ui-icon ui-icon-contact", width: "35px" }, 
+        control: "link", handler: function(rData, rowIdx, key) { alert(rowIdx); } }];
     let leftmostHeader = {
         columns: leftmostColumns,
         rowHeight: "75px",
@@ -248,7 +249,7 @@ __viewContext.ready(function () {
     
     let tts = function(rData, rowIdx, colKey) {
         if (rowIdx % 2 === 0) {
-            return $("<div/>").css({ width: "60px", height: "50px").html(rData[colKey] + rowIdx);
+            return $("<div/>").css({ width: "60px", height: "50px" }).html(rData[colKey] + rowIdx);
         }
     };
     let middleColumns = [
@@ -342,7 +343,8 @@ __viewContext.ready(function () {
     };
     
     let leftHorzColumns = [
-        { headerText: "項目名", key: "itemName", width: "200px" },
+        { headerText: "項目名", key: "itemName", width: "200px", 
+            icon: { for: "header", class: "ui-icon ui-icon-calculator", width: "35px", popup: function() { return $("#popup-items2"); }}},
         { headerText: "合計", key: "sum", width: "100px" }
     ];
     let leftHorzSumHeader = {
@@ -362,7 +364,7 @@ __viewContext.ready(function () {
         features: [{
             name: "HeaderRowHeight",
             rows: { 0: "45px", 1: "30px" }   
-        }
+        }]
 //        , {
 //            name: "HeaderCellStyle",
 //            decorator: detailHeaderDeco
@@ -378,7 +380,8 @@ __viewContext.ready(function () {
     
     let vertSumColumns = [
         { 
-            headerText: "公休日数",
+            headerText: "公休日数", icon: { for: "header", class: "ui-icon ui-icon-calculator", width: "35px", 
+                popup: function() { return $("#popup-items"); }},
             group: [
                 { headerText: "可能数", key: "noCan", width: "100px" },
                 { headerText: "取得数", key: "noGet", width: "100px" }
@@ -400,16 +403,17 @@ __viewContext.ready(function () {
     };
     new nts.uk.ui.exTable.ExTable($("#extable"), { 
             headerHeight: "75px", bodyRowHeight: "50px", bodyHeight: "400px", 
-            horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "200px",
+            horizontalSumHeaderHeight: "75px", horizontalSumBodyHeight: "140px",
             horizontalSumBodyRowHeight: "20px",
             areaResize: true, 
             bodyHeightMode: "dynamic",
             windowXOccupation: 120,
-            windowYOccupation: 100,
+            windowYOccupation: 300,
             updateMode: "stick",
             pasteOverWrite: true,
             stickOverWrite: true,
             viewMode: "shortName",
+            secondaryTable: $("#subtable"),
             determination: {
                 rows: [0],
                 columns: ["empName"]
@@ -426,6 +430,68 @@ __viewContext.ready(function () {
         .VerticalSumHeader(vertSumHeader).VerticalSumContent(vertSumContent)
         .LeftHorzSumHeader(leftHorzSumHeader).LeftHorzSumContent(leftHorzSumContent)
         .HorizontalSumHeader(horizontalSumHeader).HorizontalSumContent(horizontalSumContent).create();
+    
+    
+    let leftHorzColumns2 = [
+        { headerText: "項目名", key: "itemName", width: "200px" },
+        { headerText: "合計", key: "sum", width: "100px" }
+    ];
+//    let leftHorzColumns2 = [
+//        { headerText: "1", group: [
+//            { headerText: "2", group: [ 
+//                { headerText: "4", key: "itemName", width: "100px" },
+//                { headerText: "5", key: "5", width: "100" }]},
+//            { headerText: "3", group: [
+//                { headerText: "6", key: "6", width: "50px" },
+//                { headerText: "7", key: "7", width: "50px" }
+//            ]}
+//        ]}
+//    ];
+    
+    let leftHorzSumHeader2 = {
+        columns: leftHorzColumns2,
+        rowHeight: "75px",
+        width: "362px",
+//        features: [{
+//            name: "HeaderRowHeight",
+//            rows: { 0: "30px", 1: "30px", 2: "15px" }   
+//        }]
+    };
+    let leftHorzSumContent2 = {
+        columns: leftHorzColumns2,
+        dataSource: leftHorzContentDs,
+        primaryKey: "itemId"
+    }; 
+    
+    let detailColumns2 = _.forEach(_.cloneDeep(detailColumns), function(c) {
+        delete c["handlerType"];
+    });
+    let horizontalSumHeader2 = {
+        columns: detailColumns2,
+        dataSource: detailHeaderDs,
+        width: "700px",
+        features: [{
+            name: "HeaderRowHeight",
+            rows: { 0: "45px", 1: "30px" }   
+        }]
+    };
+    let horizontalSumContent2 = {
+        columns: detailColumns2,
+        dataSource: horzSumContentDs,
+        primaryKey: "itemId"
+    };
+    new nts.uk.ui.exTable.ExTable($("#subtable"), { 
+        headerHeight: "75px", bodyRowHeight: "20px", bodyHeight: "140px",
+        horizontalSumBodyRowHeight: "20px",
+        areaResize: false, 
+        bodyHeightMode: "fixed",
+        updateMode: "edit",
+        windowXOccupation: 120,
+        windowYOccupation: 600,
+        primaryTable: $("#extable") 
+        })
+    .LeftmostHeader(leftHorzSumHeader2).LeftmostContent(leftHorzSumContent2)
+    .DetailHeader(horizontalSumHeader2).DetailContent(horizontalSumContent2).create();
     
         $("#extable").on("extablecellupdated", function() {
         });
@@ -574,4 +640,31 @@ __viewContext.ready(function () {
         $("#open-dialog").click(function() {
             nts.uk.ui.windows.sub.modal("/view/sample/extable/dialog/sample.xhtml");
         });
+    
+    let newVertSumColumns = [
+    { 
+        headerText: "残業管理", icon: { for: "header", class: "ui-icon ui-icon-calculator", width: "35px", 
+            popup: function() { return $("#popup-items"); }},
+        group: [
+            { headerText: "残業時間", key: "time", width: "100px" },
+            { headerText: "計画", key: "plan", width: "100px" }
+        ]
+    }
+    ];
+    let newVertSumHeader = {
+        columns: newVertSumColumns,
+        width: "200px",
+        features: [{
+            name: "HeaderRowHeight",
+            rows: { 0: "30px", 1: "45px" }   
+        }]
+    };
+    let newVertSumContent = {
+        columns: newVertSumColumns,
+        dataSource: newVertSumContentDs,
+        primaryKey: "empId"
+    };
+    $("#item-select").click(function() {
+        $("#extable").exTable("updateTable", "verticalSummaries", newVertSumHeader, newVertSumContent);
+    });
 });
