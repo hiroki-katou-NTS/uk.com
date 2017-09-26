@@ -54,11 +54,10 @@ public class Approver extends DomainObject{
 				EnumAdaptor.valueOf(approvalAtr, ApprovalAtr.class),
 				EnumAdaptor.valueOf(confirmPerson, ConfirmPerson.class));
 	}
-	public static Approver updateApprovalPhaseId(Approver approver){
-		String approvalPhaseId = UUID.randomUUID().toString();
-		Approver approverNew = approver;
-		approverNew.setApprovalPhaseId(approvalPhaseId);
-		return approverNew;
+	public void updateApprovalPhaseId(String approvalPhaseId){
+		this.approvalPhaseId = approvalPhaseId;
 	}
-	
+	public void updateApproverId(String approverId){
+		this.approverId = approverId;
+	}
 }

@@ -1,6 +1,5 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,6 +67,12 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param wpAppRoot
 	 */
 	void addWpApprovalRoot(WorkplaceApprovalRoot wpAppRoot);
+	/**
+	 * add All Workplace Approval Root
+	 * 
+	 * @param wpAppRoot
+	 */
+	void addAllWpApprovalRoot(List<WorkplaceApprovalRoot> wpAppRoot);
 
 	/**
 	 * update Workplace Approval Root
@@ -75,6 +80,12 @@ public interface WorkplaceApprovalRootRepository {
 	 * @param wpAppRoot
 	 */
 	void updateWpApprovalRoot(WorkplaceApprovalRoot wpAppRoot);
+	/**
+	 * update All Workplace Approval Root
+	 * 
+	 * @param wpAppRoot
+	 */
+	void updateAllWpApprovalRoot(List<WorkplaceApprovalRoot> wpAppRoot);
 
 	/**
 	 * delete Person Approval Root

@@ -1,5 +1,7 @@
 package nts.uk.ctx.workflow.app.command.approvermanagement.workroot;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 @Getter
@@ -7,7 +9,7 @@ import lombok.Setter;
 public class AddHistoryDto {
 
 	/**申請種類*/
-	private Integer applicationType;
+	private List<Integer> lstAppType;
 	/**開始日*/
 	private String startDate;
 	/**開始日 Old*/
@@ -16,4 +18,5 @@ public class AddHistoryDto {
 	private int mode;
 	/**履歴から引き継ぐか、初めから作成するかを選択する*/
 	private boolean copyDataFlag;
+	private boolean overLap;
 }

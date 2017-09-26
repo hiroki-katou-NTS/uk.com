@@ -14,7 +14,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         selectTypeSet: KnockoutObservable<number> = ko.observable(0);
         //承認形態
         formSetting: KnockoutObservableArray<ButtonSelect> = ko.observableArray([]);
-        selectFormSet: KnockoutObservable<number> = ko.observable(0);
+        selectFormSet: KnockoutObservable<number> = ko.observable(1);
         currentCalendarWorkPlace: KnockoutObservableArray<SimpleObject> = ko.observableArray([]);
         employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
         multiSelectedWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -86,8 +86,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             self.typeSetting.push(new ButtonSelect(0, resource.getText('CMM018_56')));
             self.typeSetting.push(new ButtonSelect(1, resource.getText('CMM018_57')));
             //承認形態
-            self.formSetting.push(new ButtonSelect(0, resource.getText('CMM018_63')));
-            self.formSetting.push(new ButtonSelect(1, resource.getText('CMM018_66')));
+            self.formSetting.push(new ButtonSelect(1, resource.getText('CMM018_63')));
+            self.formSetting.push(new ButtonSelect(2, resource.getText('CMM018_66')));
             
             //選択された承認者一覧
             self.columns = ko.observableArray([
@@ -164,7 +164,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                                         formSetting: self.selectFormSet(),//承認形態
                                         approverInfor: self.approverList(),//承認者一覧
                                         confirmedPerson: self.selectedCbbCode(), //確定者
-                                        selectTypeSet: self.selectTypeSet()
+                                        selectTypeSet: self.selectTypeSet(),
+                                        approvalFormName: self.selectFormSet() == 1 ? resource.getText('CMM018_63') : resource.getText('CMM018_66')
                                         }
             setShared("CMM018K_DATA",data );
             nts.uk.ui.windows.close();
