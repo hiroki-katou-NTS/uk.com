@@ -31,9 +31,17 @@
 								style="margin-right: 10px">Open Dialog</BUTTON>
 							<br></br><br></br>
 							<div>
-							<p>Selected Code(s):</p>
-							<p data-bind="text: getSelectedItemCode()"></p>
+							<p><b>Selected Code(s):</b></p>
+							<p data-bind="text: getSelectedItemCode()"></p><br></br>
 							</div>
+							<div data-bind="ntsCheckBox:{checked: isDisplayUnselect}">Show NoSelection Item<br></br></div>
+							<p><b>Single/Multiple Selection</b></p>
+							<div class="cf" data-bind="ntsSwitchButton: {
+														options: selectionOption,
+														optionsValue: 'code',
+														optionsText: 'name',
+														value: selectedOption,
+														enable: true }"></div>
 						</div>
 						<hr></hr>
 					</div>
