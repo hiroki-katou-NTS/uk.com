@@ -37,10 +37,9 @@ public class JpaEmpConditionRepository extends JpaRepository implements EmpCondi
 	 */
 	@Override
 	public void update(EmpCondition dom) {
-		List<KrcstApplEmpCon> optEntitylist = this.findByItemNo(dom.getCompanyId().v(),
-				dom.getOptItemNo().v());
-
-		dom.saveToMemento(new JpaEmpConditionSetMemento(optEntitylist));
+		JpaEmpConditionSetMemento memento = new JpaEmpConditionSetMemento();
+		dom.saveToMemento(memento);
+		List<KrcstApplEmpCon> optEntitylist = memento.getTypeValues();
 
 		this.commandProxy().updateAll(optEntitylist);
 	}
