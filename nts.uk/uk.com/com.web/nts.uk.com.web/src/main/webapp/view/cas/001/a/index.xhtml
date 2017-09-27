@@ -38,17 +38,16 @@
 			</div>
 			<div id="contents-area" class="cf">
 				<div id="content">
-					<div id="content-left" class="bg-green">
+					<div id="content-left" class="bg-green caret-right caret-background">
 						<div style="margin-left: 15px;">
 							<table id="A2_001"
-								data-bind="ntsGridList: {		
-						showNumbering:true,
+								data-bind="ntsGridList: {
 						dataSource: personRoleList ,
 						primaryKey: 'roleId' ,
 						columns: [
 						{ headerText: '#{i18n.getText('CAS001_8')}', key: 'roleId', width: 50, hidden : true},
 						{ headerText: '#{i18n.getText('CAS001_8')}', key: 'roleCode', width: 50},
-				        { headerText: '#{i18n.getText('CAS001_9')}', key: 'roleName', width: 120 } ] ,
+				        { headerText: '#{i18n.getText('CAS001_9')}', key: 'roleName', width: 170 } ] ,
 						multiple: false,
 						value: currentRoleId,
 						rows:5 }">
@@ -65,7 +64,9 @@
 						 	selected: currentCategoryId,
 						 	selectedKey: 'categoryId',
 						 	fields: ['categoryName'],
-						 	mode: 'igGrid'}" />
+						 	mode: 'igGrid',
+						 	placeHolder:'名称で検索'}
+						 	" />
 							<table id="A2_008"
 								data-bind="ntsGridList: {	
 						dataSource: RoleCategoryList ,
