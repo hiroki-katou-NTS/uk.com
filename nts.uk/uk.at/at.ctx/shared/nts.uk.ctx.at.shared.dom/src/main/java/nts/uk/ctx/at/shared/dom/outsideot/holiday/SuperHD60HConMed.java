@@ -10,13 +10,11 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.timerounding.TimeRoundingSetting;
-import nts.uk.ctx.at.shared.dom.outsideot.premium.extra.PremiumExtra60HRate;
 
 /**
  * The Class SuperHD60HConMed.
  */
 // 60H超休への換算方法
-
 @Getter
 public class SuperHD60HConMed extends AggregateRoot{
 

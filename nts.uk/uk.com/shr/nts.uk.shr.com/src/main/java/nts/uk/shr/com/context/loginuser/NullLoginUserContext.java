@@ -3,6 +3,8 @@ package nts.uk.shr.com.context.loginuser;
 import java.io.Serializable;
 
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.context.loginuser.role.DefaultLoginUserRoles;
+import nts.uk.shr.com.context.loginuser.role.LoginUserRoles;
 
 public class NullLoginUserContext implements LoginUserContext, Serializable {
 
@@ -21,11 +23,6 @@ public class NullLoginUserContext implements LoginUserContext, Serializable {
 
 	@Override
 	public String userId() {
-		return null;
-	}
-
-	@Override
-	public String loginCode() {
 		return null;
 	}
 
@@ -57,6 +54,11 @@ public class NullLoginUserContext implements LoginUserContext, Serializable {
 	@Override
 	public String employeeCode() {
 		return "1234567890AB";
+	}
+
+	@Override
+	public LoginUserRoles roles() {
+		return new DefaultLoginUserRoles();
 	}
 
 }

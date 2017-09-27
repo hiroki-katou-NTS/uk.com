@@ -27,6 +27,8 @@ module cps001.b.vm {
     }
 
     interface IModelDto {
-        
+        id: string;    
     }
+    
+    
 }

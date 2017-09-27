@@ -30,10 +30,10 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	// + " AND d.bsydtJobEntryHistoryPk.entryDate <= :entryDate "
 	// + " AND d.retireDate >= :entryDate ";
 
-	public final String SELECT_NO_WHERE = "SELECT c ,d FROM BsymtEmployee c , BsymtJobEntryHistory d";
+	public final String SELECT_NO_WHERE = "SELECT c FROM BsymtEmployee c";
 
 	public final String SELECT_BY_EMP_CODE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
-			+ " AND c.employeeCode =:employeeCode " + " AND  d.bsymtJobEntryHistoryPk.entryDate <= :entryDate "
+			+ " AND c.employeeCode =:employeeCode " + " AND  c.listEntryHist.bsymtJobEntryHistoryPk.entryDate <= :entryDate "
 			+ " AND d.retireDate >= :entryDate ";
 
 	public final String SELECT_BY_LIST_EMP_CODE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
@@ -55,8 +55,13 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	public final String GET_LAST_EMPLOYEE = "SELECT c.employeeCode FROM BsymtEmployee c "
 			+ " WHERE c.companyId = :companyId AND c.employeeCode LIKE CONCAT(:emlCode, '%')"
 			+ " ORDER BY  c.employeeCode DESC";
-	public final String SELECT_BY_STANDARDDATE = SELECT_NO_WHERE + " WHERE c.companyId = :companyId"
-			+ " AND  d.bsymtJobEntryHistoryPk.entryDate <= :standardDate " + " AND d.retireDate >= :standardDate ";
+	
+	public final String SELECT_BY_STANDARDDATE = 
+		     "SELECT c FROM BsymtEmployee c "
+		   + " JOIN BsymtJobEntryHistory d ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
+		   + " WHERE c.companyId = :companyId "
+		   + " AND d.bsymtJobEntryHistoryPk.entryDate <= :standardDate"
+		   + " AND d.retireDate >= :standardDate";
 
 	/**
 	 * convert entity BsymtEmployee to domain Employee
@@ -92,8 +97,6 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		Employee person = new Employee();
 		if (entity != null) {
 			person = toDomainEmployee(entity);
-
-			List<JobEntryHistory> listJobEntry = new ArrayList<>();
 
 			if (!entity.listEntryHist.isEmpty()) {
 				person.setListEntryJobHist(
@@ -169,8 +172,6 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		if (entity != null) {
 			person = toDomainEmployee(entity);
 
-			List<JobEntryHistory> listJobEntry = new ArrayList<>();
-
 			if (!entity.listEntryHist.isEmpty()) {
 				person.setListEntryJobHist(
 						entity.listEntryHist.stream().map(c -> toDomainJobEntryHist(c)).collect(Collectors.toList()));
@@ -214,7 +215,6 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 		if (entity != null) {
 			person = toDomainEmployee(entity);
 
-			List<JobEntryHistory> listJobEntry = new ArrayList<>();
 
 			if (!entity.listEntryHist.isEmpty()) {
 				person.setListEntryJobHist(

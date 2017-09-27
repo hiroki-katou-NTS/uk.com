@@ -19,17 +19,23 @@
 }
 
 #wkp_text {
-	width: 120px;
+	width: 150px;
 }
 
 .caret-inline:after {
 	color: black;
+}
+.show {
+	visibility: hidden;
 }
 
 table#employ_view {
 	border-left: none !important;
 	border-right: none !important;
 	margin: 10px;
+}
+#employ_view tr {
+	height: 42px;
 }
 
 .none_border {
@@ -58,4 +64,7 @@ td.employment-tdpad{
 .over_text{
 	overflow: auto;
 	height: 20px;
+}
+#search-input{
+	width: 100px;
 }

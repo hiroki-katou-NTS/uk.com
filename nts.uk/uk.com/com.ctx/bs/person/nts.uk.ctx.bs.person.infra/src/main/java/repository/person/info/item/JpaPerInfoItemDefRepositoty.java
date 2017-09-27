@@ -17,6 +17,7 @@ import entity.person.info.item.PpemtPerInfoItemCm;
 import entity.person.info.item.PpemtPerInfoItemCmPK;
 import entity.person.info.item.PpemtPerInfoItemOrder;
 import entity.person.info.item.PpemtPerInfoItemPK;
+import entity.person.info.setting.copySetting.BsystEmployeeCopySettingItem;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;
@@ -155,14 +156,23 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	private final static String SELECT_CHECK_ITEM_NAME_QUERY = "SELECT i.itemName"
 			+ " FROM PpemtPerInfoItem i WHERE i.perInfoCtgId = :perInfoCtgId AND i.itemName = :itemName"
 			+ " AND i.ppemtPerInfoItemPK.perInfoItemDefId != :perInfoItemDefId";
-	
-	private final static String COUNT_ITEMS_IN_CATEGORY = "SELECT COUNT(i)"
+	//vinhpx: start
+	private final static String SELECT_PERINFOITEM_BYCTGID = "SELECT i.ppemtPerInfoItemPK.perInfoItemDefId, i.itemName "
 			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
-			+ " INNER JOIN PpemtPerInfoItemCm ic ON c.categoryCd = ic.ppemtPerInfoItemCmPK.categoryCd"
-			+ " AND i.itemCd = ic.ppemtPerInfoItemCmPK.itemCd INNER JOIN PpemtPerInfoItemOrder io"
-			+ " ON io.ppemtPerInfoItemPK.perInfoItemDefId = i.ppemtPerInfoItemPK.perInfoItemDefId AND io.perInfoCtgId = i.perInfoCtgId"
-			+ " WHERE ic.ppemtPerInfoItemCmPK.contractCd = :contractCd AND i.perInfoCtgId = :perInfoCtgId AND ic.itemParentCd IS NULL"
-			+ " ORDER BY io.disporder";
+			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId";
+	
+	private final static String COUNT_ITEMS_IN_CATEGORY = "SELECT COUNT(i.perInfoCtgId)"
+			+ " FROM PpemtPerInfoItem i INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE c.cid = :companyId AND i.perInfoCtgId = :perInfoCtgId";
+	
+	private final static String COUNT_ITEMS_IN_COPYITEM = "SELECT COUNT(i) FROM BsystEmployeeCopySettingItem i "
+			+ "JOIN PpemtPerInfoCtg c ON c.perInfoCtgId = i.categoryId "
+			+ "WHERE i.BsystEmployeeCopySettingItemPk.perInfoItemDefId = :perInfoItemDefId AND c.cid = :companyId";
+	
+	private final static String REMOVE_PERINFOITEM_IN_COPYITEM = "DELETE i FROM BsystEmployeeCopySettingItem i"
+			+ " JOIN PpemtPerInfoCtg c ON c.perInfoCtgId = i.categoryId "
+			+ " WHERE i.categoryId = :categoryId AND c.cid = :companyId";
+	//vinhpx: end
 
 	@Override
 	public List<PersonInfoItemDefinition> getAllPerInfoItemDefByCategoryId(String perInfoCtgId, String contractCd) {
@@ -570,10 +580,43 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 	
 	//vinhpx start
 	@Override
-	public int countPerInfoItemDefInCategory(String perInfoCategoryId, String contractCd) {
-		Optional<Object[]> a = this.queryProxy().query(SELECT_ITEMS_BY_CATEGORY_ID_QUERY, Object[].class)
-				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", perInfoCategoryId).getSingle();
-		return a.isPresent()?Integer.parseInt(a.get().toString()) : 0;
+	public int countPerInfoItemDefInCategory(String perInfoCategoryId, String companyId) {
+		Optional<Long> a = this.queryProxy().query(COUNT_ITEMS_IN_CATEGORY, Long.class)
+				.setParameter("companyId", companyId).setParameter("perInfoCtgId", perInfoCategoryId).getSingle();
+		return a.isPresent() ? a.get().intValue() : 0;
+	}
+
+	@Override
+	public List<PersonInfoItemDefinition> getPerInfoItemByCtgId(String perInfoCategoryId, String companyId, String contractCd) {
+		return this.queryProxy().query(SELECT_PERINFOITEM_BYCTGID, Object[].class)
+				.setParameter("companyId", companyId).setParameter("perInfoCtgId", perInfoCategoryId)
+				.getList(i -> {
+					return PersonInfoItemDefinition.createFromEntityMap(String.valueOf(i[0]), perInfoCategoryId, String.valueOf(i[1]));
+				});
+	}
+
+	@Override
+	public int countPerInfoItemDefInCopySetting(String perInfoItemDefId, String companyId) {
+		Optional<Long> a = this.queryProxy().query(COUNT_ITEMS_IN_COPYITEM, Long.class)
+				.setParameter("companyId", companyId).setParameter("perInfoItemDefId", perInfoItemDefId).getSingle();
+		return a.isPresent() ? a.get().intValue() : 0;
+	}
+
+	@Override
+	public void removePerInfoItemInCopySetting(String perInforCtgId, String companyId) {
+		getEntityManager().createQuery(REMOVE_PERINFOITEM_IN_COPYITEM).setParameter("", perInforCtgId)
+		.setParameter("", companyId).executeUpdate();	
+	}
+
+	@Override
+	public void updatePerInfoItemInCopySetting(String perInforCtgId, List<String> perInfoItemDefIds) {
+		BsystEmployeeCopySettingItem obj;
+		for(String perInfoItemDefId : perInfoItemDefIds){
+			obj = new BsystEmployeeCopySettingItem();
+			obj.BsystEmployeeCopySettingItemPk.perInfoItemDefId = perInfoItemDefId;
+			obj.categoryId = perInforCtgId;
+			getEntityManager().persist(obj);
+		}		
 	}
 
 	//vinhpx end

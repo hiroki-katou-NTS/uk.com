@@ -20,22 +20,23 @@
 		</ui:define>
 
 		<ui:define name="content">
+			<div id="functions-area"></div>
 			<div id="contents-area">
 				<div id="side-menu" class="cf"></div>
 				<div id="content" class="cf">
 					<h1>File Uploading</h1>
 					<h2>Demo</h2>
-					<h3>File Upload Control</h3>
 					<div id="file-upload" data-bind="ntsFileUpload:{
 						filename: filename,
 						accept: accept,
 						text: textId,
-						aslink: true,
+						aslink: asLink,
 						enable: enable,
 						onchange: onchange,
 						onfilenameclick: onfilenameclick
 					}"></div>
 					<br/>
+					<div data-bind="ntsCheckBox: { checked: asLink }">As Link</div>
 					<div data-bind="ntsCheckBox: { checked: enable }">Enable</div>
 					<input data-bind="ntsTextEditor: { value: fileId, option: { width: '310' } }" />
 					<br/><br/>
@@ -48,6 +49,10 @@
 					<h3>Preview file</h3>
 					<button data-bind="click: preview">Preview</button>
 					<div id="file-review"></div>
+					<br/>
+					<h3>Check file exist</h3>
+					<button data-bind="click: isExist">IsExist</button>
+					<div id="check-exist"></div>
 					<br/>
 					<h3>Get file information</h3>
 					<button data-bind="click: getInfo">Get Info</button>
@@ -70,7 +75,7 @@
 	filename: filename,
 	accept: accept,
 	text: textId,
-	aslink: true,
+	aslink: asLink,
 	enable: enable,
 	onchange: onchange,
 	onfilenameclick: onfilenameclick
@@ -100,6 +105,7 @@
     fileInfo: KnockoutObservable<any>;
     textId: KnockoutObservable<string>;
     accept: KnockoutObservableArray<string>;
+    asLink: KnockoutObservable<boolean>;
     enable: KnockoutObservable<boolean>;
     onchange: (filename) => void;
     onfilenameclick: (filename) => void;
@@ -110,6 +116,7 @@
         this.fileInfo = ko.observable(null);
         this.accept = ko.observableArray([".png", '.gif', '.jpg', '.jpeg']);
         this.textId = ko.observable("KMF004_106");
+        this.asLink = ko.observable(true);
         this.enable = ko.observable(true);
         this.onchange = (filename) => {
             console.log(filename);
@@ -207,7 +214,7 @@ public InputStream getFileContent(String fileId){
 											<td>
 												<b>Type:</b> KnockoutObservable&lt;boolean&gt; | boolean<br/>
 												<b>Default:</b> false<br/>
-												Determine the label display file name will be show as hyper link or not
+												Determine the label display file name will be show as hyperlink or readonly-input
 											</td>
 										</tr>
 										<tr>

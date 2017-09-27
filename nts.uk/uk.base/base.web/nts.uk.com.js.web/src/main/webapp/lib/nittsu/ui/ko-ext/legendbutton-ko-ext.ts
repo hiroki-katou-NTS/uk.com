@@ -32,14 +32,14 @@ module nts.uk.ui.koExtentions {
     
     interface LegendItem {
         cssClass: LegendCssClass;
-        colorCode: String;
-        labelText: String;
+        colorCode: string;
+        labelText: string;
         
     }
     
     interface LegendCssClass {
-        className: String;
-        colorPropertyName: String;
+        className: string;
+        colorPropertyName: string;
     }
     
     function getColorCodeFromItem(legendItem: LegendItem) {

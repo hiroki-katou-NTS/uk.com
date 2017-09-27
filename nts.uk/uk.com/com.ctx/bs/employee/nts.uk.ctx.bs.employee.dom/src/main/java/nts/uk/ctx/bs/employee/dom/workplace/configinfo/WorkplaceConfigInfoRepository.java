@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.configinfo;
 
-import java.util.List;
+import java.util.Optional;
 
 /**
  * The Interface WorkplaceConfigInfoRepository.
@@ -12,11 +12,25 @@ import java.util.List;
 public interface WorkplaceConfigInfoRepository {
 
 	/**
-	 * Find all.
+	 * Adds the.
+	 *
+	 * @param workplaceConfigInfo the workplace config info
+	 */
+	void add(WorkplaceConfigInfo workplaceConfigInfo);
+	
+	/**
+	 * Adds the list.
+	 *
+	 * @param WkpConfigInfo the wkp config info
+	 */
+	void addList(WorkplaceConfigInfo WkpConfigInfo);
+	
+	/**
+	 * Find.
 	 *
 	 * @param companyId the company id
 	 * @param historyId the history id
-	 * @return the list
+	 * @return the optional
 	 */
-	List<WorkplaceConfigInfo> findAll(String companyId, String historyId);
+	Optional<WorkplaceConfigInfo> find(String companyId, String historyId);
 }

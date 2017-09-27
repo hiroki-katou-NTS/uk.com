@@ -4,8 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.config;
 
-import java.util.List;
 import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
 
 /**
  * The Interface WorkplaceConfigRepository.
@@ -13,12 +14,36 @@ import java.util.Optional;
 public interface WorkplaceConfigRepository {
 
 	/**
+	 * Adds the.
+	 *
+	 * @param workplaceConfig the workplace config
+	 */
+	void add(WorkplaceConfig workplaceConfig);
+	
+	/**
+	 * Update.
+	 *
+	 * @param wkpConfig the wkp config
+	 * @param endĐate the end đate
+	 */
+	void update(WorkplaceConfig wkpConfig,GeneralDate endĐate);
+	
+	/**
 	 * Find all by company id.
 	 *
 	 * @param companyId the company id
-	 * @return the list
+	 * @return the workplace config
 	 */
-	List<WorkplaceConfig> findAllByCompanyId(String companyId);
+	WorkplaceConfig findAllByCompanyId(String companyId);
+	
+	/**
+	 * Find by hist id.
+	 *
+	 * @param companyId the company id
+	 * @param prevHistId the prev hist id
+	 * @return the optional
+	 */
+	Optional<WorkplaceConfig> findByHistId(String companyId,String prevHistId);
 	
 	/**
 	 * Find lastest by company id.

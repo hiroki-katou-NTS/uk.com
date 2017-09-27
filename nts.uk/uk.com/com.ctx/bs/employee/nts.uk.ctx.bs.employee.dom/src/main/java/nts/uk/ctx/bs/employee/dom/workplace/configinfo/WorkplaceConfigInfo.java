@@ -7,6 +7,7 @@ package nts.uk.ctx.bs.employee.dom.workplace.configinfo;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 
@@ -23,6 +24,7 @@ public class WorkplaceConfigInfo extends AggregateRoot {
 
 	/** The history id. */
 	// 履歴ID
+	@Setter
 	private HistoryId historyId;
 
 	/** The wkp hierarchy. */

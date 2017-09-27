@@ -16,10 +16,22 @@ public class NumberRounding extends DomainObject{
 	
 	/** The unit. */
 	// 単位
-	private Unit roundingTime;
+	private Unit unit;
 	
 	/** The rounding. */
 	// 端数処理
 	private Rounding rounding;
+
+	/**
+	 * Instantiates a new number rounding.
+	 *
+	 * @param unit the unit
+	 * @param rounding the rounding
+	 */
+	public NumberRounding(Unit unit, Rounding rounding) {
+		super();
+		this.unit = unit;
+		this.rounding = rounding;
+	}
 
 }

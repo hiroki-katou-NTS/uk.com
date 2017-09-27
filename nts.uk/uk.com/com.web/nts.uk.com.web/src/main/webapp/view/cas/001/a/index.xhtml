@@ -110,7 +110,7 @@
 													options: $parent.roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: allowMapUpload,
+													value: allowAvatarUpload ,
 													enable: true }"></div>
 												</td>
 												<td>
@@ -119,7 +119,7 @@
 													options: $parent.roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value:  allowMapBrowse,
+													value: allowAvatarRef ,
 													enable: true }"></div>
 												</td>
 											</tr>
@@ -130,7 +130,7 @@
 													options: $parent.roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: allowDocUpload ,
+													value: allowMapUpload ,
 													enable: true }"></div>
 												</td>
 												<td>
@@ -139,7 +139,7 @@
 													options: $parent.roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: allowDocRef ,
+													value: allowMapBrowse ,
 													enable: true }"></div>
 												</td>
 											</tr>
@@ -150,7 +150,7 @@
 													options: $parent.roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: allowAvatarUpload ,
+													value: allowDocUpload ,
 													enable: true }"></div>
 												</td>
 												<td>
@@ -159,7 +159,7 @@
 													options: $parent.roundingRules,
 													optionsValue: 'code',
 													optionsText: 'name',
-													value: allowAvatarRef ,
+													value:  allowDocRef,
 													enable: true }"></div>
 												</td>
 											</tr>
@@ -210,7 +210,7 @@
 													value: $parents[1].allowPersonRef ,
 													enable: true }"></div>
 												</div>
-												<com:ko-if bind="categoryType === 3">
+												<com:ko-if bind="$parents[1].isHistoryNotCons()">
 													<div>
 														<span id="A4_011">#{i18n.getText('CAS001_28')}</span>
 														<div id="A4_012" class="cf margin_left_10"
@@ -225,97 +225,6 @@
 											</div>
 											<div id="auth_group_table">
 												<com:ko-if bind="categoryType === 2">
-													<table id="history_auth_table" class="auth_table">
-														<tr>
-															<th></th>
-															<th style="width: 150px;">#{i18n.getText('CAS001_32')}</th>
-															<th style="width: 150px;">#{i18n.getText('CAS001_33')}</th>
-															<th style="width: 150px;">#{i18n.getText('CAS001_34')}</th>
-															<th style="width: 150px;">#{i18n.getText('CAS001_35')}</th>
-														</tr>
-														<tr>
-															<th>#{i18n.getText('CAS001_30')}</th>
-															<td><div id="A4_024" class="cf"
-																	data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: otherAllowDelHis ,
-													enable: $parents[1].allowOtherRef()===1 }"></div></td>
-															<td><div id="A4_025" class="cf"
-																	data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: otherAllowAddHis ,
-													enable: $parents[1].allowOtherRef()===1 }"></div></td>
-															<td><div id="A4_026"
-																	data-bind="ntsComboBox: {
-														options: $parents[1].itemListCbb,
-														optionsValue: 'code',
-														value: otherPastHisAuth ,
-														optionsText: 'name',
-														editable: false,
-														enable: $parents[1].allowOtherRef()===1 ,
-														columns: [
-															{ prop: 'name', length: 5 },
-														]}"></div></td>
-															<td><div id="A4_027"
-																	data-bind="ntsComboBox: {
-														options: $parents[1].itemListCbb,
-														optionsValue: 'code',
-														value: otherFutureHisAuth ,
-														optionsText: 'name',
-														editable: false,
-														enable: $parents[1].allowOtherRef()===1 ,
-														columns: [
-															{ prop: 'name', length: 5 },
-														]}"></div></td>
-														</tr>
-														<tr>
-															<th>#{i18n.getText('CAS001_31')}</th>
-															<td><div id="A4_020" class="cf"
-																	data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selfAllowDelHis ,
-													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
-															<td><div id="A4_021" class="cf"
-																	data-bind="ntsSwitchButton: {
-													options:  $parents[1].roundingRules,
-													optionsValue: 'code',
-													optionsText: 'name',
-													value: selfAllowAddHis ,
-													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
-															<td><div id="A4_022"
-																	data-bind="ntsComboBox: {
-														options: $parents[1].itemListCbb,
-														optionsValue: 'code',
-														value: selfPastHisAuth ,
-														optionsText: 'name',
-														editable: false,
-														enable: $parents[1].allowPersonRef() === 1 ,
-														columns: [
-															{ prop: 'name', length: 5 },
-														]}"></div></td>
-															<td><div id="A4_023"
-																	data-bind="ntsComboBox: {
-														options: $parents[1].itemListCbb,
-														optionsValue: 'code',
-														value: selfFutureHisAuth ,
-														optionsText: 'name',
-														editable: false,
-														enable: $parents[1].allowPersonRef() === 1  ,
-														columns: [
-															{ prop: 'name', length: 5 },
-														]}"></div></td>
-
-
-														</tr>
-													</table>
-												</com:ko-if>
-												<com:ko-if bind="categoryType === 3">
 													<table id="multi_auth_table" class="auth_table">
 														<tr>
 															<th></th>
@@ -355,6 +264,97 @@
 													optionsText: 'name',
 													value: otherAllowAddMulti ,
 													enable: $parents[1].allowOtherRef()===1 }"></div></td>
+														</tr>
+													</table>
+												</com:ko-if>
+												<com:ko-if bind="categoryType === 3">
+													<table id="history_auth_table" class="auth_table">
+														<tr>
+															<th></th>
+															<th style="width: 150px;">#{i18n.getText('CAS001_32')}</th>
+															<th style="width: 150px;">#{i18n.getText('CAS001_33')}</th>
+															<th style="width: 150px;">#{i18n.getText('CAS001_34')}</th>
+															<th style="width: 150px;">#{i18n.getText('CAS001_35')}</th>
+														</tr>
+														<tr>
+															<th>#{i18n.getText('CAS001_30')}</th>
+															<td><div id="A4_024" class="cf"
+																	data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: otherAllowAddHis ,
+													enable: $parents[1].allowOtherRef()===1 }"></div></td>
+															<td><div id="A4_025" class="cf"
+																	data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value:  otherAllowDelHis,
+													enable: $parents[1].allowOtherRef()===1 }"></div></td>
+															<td><div id="A4_026"
+																	data-bind="ntsComboBox: {
+														options: $parents[1].itemListCbb,
+														optionsValue: 'code',
+														value: otherFutureHisAuth ,
+														optionsText: 'name',
+														editable: false,
+														enable: $parents[1].allowOtherRef()===1 ,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div></td>
+															<td><div id="A4_027"
+																	data-bind="ntsComboBox: {
+														options: $parents[1].itemListCbb,
+														optionsValue: 'code',
+														value: otherPastHisAuth ,
+														optionsText: 'name',
+														editable: false,
+														enable: $parents[1].allowOtherRef()===1 ,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div></td>
+														</tr>
+														<tr>
+															<th>#{i18n.getText('CAS001_31')}</th>
+															<td><div id="A4_020" class="cf"
+																	data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value:  selfAllowAddHis,
+													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
+															<td><div id="A4_021" class="cf"
+																	data-bind="ntsSwitchButton: {
+													options:  $parents[1].roundingRules,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selfAllowDelHis ,
+													enable: $parents[1].allowPersonRef() === 1 }"></div></td>
+															<td><div id="A4_022"
+																	data-bind="ntsComboBox: {
+														options: $parents[1].itemListCbb,
+														optionsValue: 'code',
+														value:  selfFutureHisAuth,
+														optionsText: 'name',
+														editable: false,
+														enable: $parents[1].allowPersonRef() === 1 ,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div></td>
+															<td><div id="A4_023"
+																	data-bind="ntsComboBox: {
+														options: $parents[1].itemListCbb,
+														optionsValue: 'code',
+														value: selfPastHisAuth ,
+														optionsText: 'name',
+														editable: false,
+														enable: $parents[1].allowPersonRef() === 1  ,
+														columns: [
+															{ prop: 'name', length: 5 },
+														]}"></div></td>
+
+
 														</tr>
 													</table>
 												</com:ko-if>

@@ -9,7 +9,7 @@ module nts.uk.com.view.cdl008.parent.viewmodel {
         constructor() {
             var self = this;
             //construct codes 
-            self.canSelectWorkplaceIds = ko.observable('000000000000000000000000000000000002,000000000000000000000000000000000003,0000000001,0000000002,0000000003,0000000005');
+            self.canSelectWorkplaceIds = ko.observable('000000000000000000000000000000000002,000000000000000000000000000000000003');
             self.selectMode = ko.observable(true);
             self.selectWorkplaceIds = ko.observable('');
             self.baseDate = ko.observable(new Date());

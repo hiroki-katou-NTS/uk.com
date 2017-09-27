@@ -4,14 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.at.shared.dom.outsideot.breakdown;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.shared.dom.outsideot.UseClassification;
 
 /**
- * The Class OutsideOTBRDItem.
+ * The Class Outside overtime breakdown item.
  */
 // 時間外超過の内訳項目
 @Getter
@@ -36,12 +39,18 @@ public class OutsideOTBRDItem extends DomainObject{
 	/** The attendance item ids. */
 	// 集計項目一覧
 	private List<Integer> attendanceItemIds;
+	
+	/** The Constant MAX_SIZE_ATTENDANCE_ITEM. */
+	public static final int MAX_SIZE_ATTENDANCE_ITEM = 100;
+	
+	/** The Constant SIZE_ONE. */
+	public static final int SIZE_ONE = 1;
 
 	
 	/**
-	 * Instantiates a new overtime BRD item.
+	 * Instantiates a new outside OTBRD item.
 	 *
-	 * @param mement the mement
+	 * @param memento the memento
 	 */
 	public OutsideOTBRDItem(OutsideOTBRDItemGetMemento memento) {
 		this.useClassification = memento.getUseClassification();
@@ -49,6 +58,36 @@ public class OutsideOTBRDItem extends DomainObject{
 		this.name = memento.getName();
 		this.productNumber = memento.getProductNumber();
 		this.attendanceItemIds = memento.getAttendanceItemIds();
+		
+		// validate domain
+		if (this.isOverlapAttendanceItemId()) {
+			throw new BusinessException("Msg_487");
+		}
+		if (!CollectionUtil.isEmpty(this.attendanceItemIds)
+				&& this.attendanceItemIds.size() > MAX_SIZE_ATTENDANCE_ITEM) {
+			throw new BusinessException("Msg_489");
+		}
+	}
+	
+	/**
+	 * Checks if is overlap attendance item id.
+	 *
+	 * @return true, if is overlap attendance item id
+	 */
+	private boolean isOverlapAttendanceItemId() {
+		if (this.useClassification == UseClassification.UseClass_NotUse) {
+			return false;
+		}
+		if (CollectionUtil.isEmpty(this.attendanceItemIds)) {
+			return false;
+		}
+
+		for (int item : this.attendanceItemIds) {
+			if (Collections.frequency(this.attendanceItemIds, item) > SIZE_ONE) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	/**
@@ -63,6 +102,9 @@ public class OutsideOTBRDItem extends DomainObject{
 		memento.setProductNumber(this.productNumber);
 		memento.setAttendanceItemIds(this.attendanceItemIds);
 	}
+	
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.config;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import lombok.Getter;
@@ -42,6 +44,23 @@ public class WorkplaceConfig extends AggregateRoot {
 	public WorkplaceConfig(WorkplaceConfigGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.wkpConfigHistory = memento.getWkpConfigHistory();
+	}
+	
+	/**
+	 * Gets the wkp config history latest.
+	 *
+	 * @return the wkp config history latest
+	 */
+	public WorkplaceConfigHistory getWkpConfigHistoryLatest() {
+	    // sort desc
+	    Collections.sort(this.wkpConfigHistory, new Comparator<WorkplaceConfigHistory>() {
+	        @Override
+	        public int compare(WorkplaceConfigHistory obj1, WorkplaceConfigHistory obj2) {
+	            return obj2.getPeriod().getStartDate().compareTo(obj1.getPeriod().getStartDate());
+	        }
+        });
+	    int indexLatestHist = 0;
+	    return this.wkpConfigHistory.get(indexLatestHist);
 	}
 
 	/* (non-Javadoc)

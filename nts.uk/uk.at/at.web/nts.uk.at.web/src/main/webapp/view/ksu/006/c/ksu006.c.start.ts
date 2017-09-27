@@ -5,9 +5,9 @@ module nts.uk.pr.view.ksu006.c {
             __viewContext.bind(screenModel);
             $('#dateRangePickerLog').find('.ntsStartDatePicker').focus();
             $(document).delegate('#single-list', "iggridrowsrendered", function() {
-                if (screenModel.isFilterData) {
+//                if (screenModel.isFilterData) {
                     screenModel.eventClick(screenModel.dataLog());
-                }
+//                }
             });
         });
     });
