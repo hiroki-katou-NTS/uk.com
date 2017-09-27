@@ -137,7 +137,8 @@
 					<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
 					
 				</div>
-				<BR />	
+				
+				<div style="clear:both"></div>
 				<div id="table-1" data-bind="with: dataApplication">
 					<table id="table-phase">
 						<thead>
@@ -151,20 +152,24 @@
 						</thead>
 						<!-- foreach -->
 						<tbody data-bind="foreach : listOutputPhaseAndFrame" >
-							<com:ko bind="$data.listApproveAcceptedForView" tag ="foreach">
+							<com:ko bind="$data.listApprovalFrameDto" tag ="foreach">
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
-										<td class="bg-green" data-bind="attr: {rowspan: $parent.listApprovalFrameDto.length},text: $data.phaseID"></td>
-									</com:ko>
-									<td class="bg-green" ><label data-bind="text: $data.dispOrder"></label></td>
-										<td>
-											<label data-bind="text: $data.approverSID2"></label>
+										<td class="bg-green" data-bind="attr: {rowspan: $parent.listApprovalFrameDto.length}">
+											フェーズ<label data-bind="text: $parent.appApprovalPhaseDto.phaseID"></label>
 										</td>
-									<td><label data-bind="text: $data.approvalATR"></label></td>
-									<td><label data-bind="text: $data.reason"> </label></td>
+									</com:ko>
+									<td class="bg-green" >
+										承認者<label data-bind="text: $data.dispOrder"></label>
+									</td>
+									<td>
+										<label data-bind="text: $data.nameAll"></label>
+									</td>
+									<td><label data-bind="text: $data.approveAll"></label></td>
+									<td><label data-bind="text: $data.reasonAll"> </label></td>
 								</tr>
 							</com:ko>
-						</tbody> 
+						</tbody>  
 					</table>
 				</div>
 				<!-- end footer -->

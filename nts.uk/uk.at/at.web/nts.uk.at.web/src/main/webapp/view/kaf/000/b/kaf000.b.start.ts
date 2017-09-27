@@ -4,7 +4,7 @@ import kaf002 = nts.uk.at.view.kaf002;
 __viewContext.ready(function() {
     var appType: number = Number(__viewContext.transferred.value.appType);
     var screenModel: any = {};
-    debugger;
+    //debugger;
     if (appType == 7) {
         screenModel = new kaf002.c.viewmodel.ScreenModel(appType);
     } else if (appType == 9) {

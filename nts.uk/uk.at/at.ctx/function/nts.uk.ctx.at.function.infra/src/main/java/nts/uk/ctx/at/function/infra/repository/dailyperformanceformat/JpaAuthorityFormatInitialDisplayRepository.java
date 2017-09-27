@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.dailyperformanceformat;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFormatInitialDisplay;
@@ -8,6 +10,7 @@ import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFor
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtDailyPerformanceDisplay;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtDailyPerformanceDisplayPK;
 
+@Stateless
 public class JpaAuthorityFormatInitialDisplayRepository extends JpaRepository
 		implements AuthorityFormatInitialDisplayRepository {
 

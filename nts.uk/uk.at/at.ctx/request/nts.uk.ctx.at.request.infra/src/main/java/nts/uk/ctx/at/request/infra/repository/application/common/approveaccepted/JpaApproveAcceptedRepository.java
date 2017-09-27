@@ -16,40 +16,45 @@ import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.Kaf
 public class JpaApproveAcceptedRepository  extends JpaRepository implements ApproveAcceptedRepository{
 	private final String SELECT_FROM_APPROVE_ACCEPTED = "SELECT c FROM KafdtApproveAccepted c"
 			+ " WHERE c.kafdtApproveAcceptedPK.companyID = :companyID "
-			+ " AND c.kafdtApproveAcceptedPK.phaseID = :phaseID ";
+			+ " AND c.frameID = :frameID ";
 	private final String SELECT_BY_CODE = SELECT_FROM_APPROVE_ACCEPTED
 			+ " AND c.kafdtApproveAcceptedPK.dispOrder = :dispOrder"
 			+ " AND c.kafdtApproveAcceptedPK.approverSID = :approverSID";
 	
 	private ApproveAccepted toDomain(KafdtApproveAccepted entity) {
-		// 2017.09.25
-		/*return ApproveAccepted.createFromJavaType(entity.kafdtApproveAcceptedPK.companyID, 
-				entity.kafdtApproveAcceptedPK.phaseID, 
-				entity.kafdtApproveAcceptedPK.dispOrder, 
-				entity.kafdtApproveAcceptedPK.approverSID
-				);*/
-		return null;
+		return ApproveAccepted.createFromJavaType(
+				entity.kafdtApproveAcceptedPK.companyID, 
+				entity.kafdtApproveAcceptedPK.appAccedtedID, 
+				entity.approverSID, 
+				entity.approvalATR, 
+				entity.confirmATR, 
+				entity.approvalDate, 
+				entity.reason, 
+				entity.representerSID);
 	}
 	
 	private KafdtApproveAccepted toEntity(ApproveAccepted domain, String frameID) {
-		// 2017.09.25
-		/*return new KafdtApproveAccepted( 
+		return new KafdtApproveAccepted(
 				new KafdtApproveAcceptedPK(
-					domain.getCompanyID(),
-					domain.getPhaseID(),
-					domain.getDispOrder(),
-					domain.getApproverSID()));*/
-		return null;
+						domain.getCompanyID(), 
+						domain.getAppAcceptedID()), 
+				frameID, 
+				domain.getApproverSID(), 
+				domain.getApprovalATR().value, 
+				domain.getConfirmATR().value, 
+				domain.getApprovalDate(), 
+				domain.getReason().v(), 
+				domain.getRepresenterSID());
 	}
 	
 	/**
 	 * get all approve accepted
 	 */
 	@Override
-	public List<ApproveAccepted> getAllApproverAccepted(String companyID, String phaseID) {
+	public List<ApproveAccepted> getAllApproverAccepted(String companyID, String frameID) {
 		return this.queryProxy().query(SELECT_FROM_APPROVE_ACCEPTED, KafdtApproveAccepted.class)
 				.setParameter("companyID", companyID)
-				.setParameter("phaseID", phaseID)
+				.setParameter("frameID", frameID)
 				.getList(c->toDomain(c));
 	}
 	
