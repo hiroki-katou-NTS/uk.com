@@ -26,4 +26,6 @@ public class ApproverImport {
 	private int approvalAtr;
 	/**確定者*/
 	private int confirmPerson;
+	
+	private String employeeName;
 }

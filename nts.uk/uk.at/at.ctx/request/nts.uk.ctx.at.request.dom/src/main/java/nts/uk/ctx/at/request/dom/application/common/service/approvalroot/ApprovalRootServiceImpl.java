@@ -136,7 +136,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 	 * @param cid
 	 * @param sid
 	 * @param baseDate
-	 * @param branchIds
+	 * @param branchIds	
 	 */
 	@Override
 	public List<ApprovalRootOutput> adjustmentData(String cid, String sid, GeneralDate baseDate,  List<ApprovalRootOutput> appDatas) {
