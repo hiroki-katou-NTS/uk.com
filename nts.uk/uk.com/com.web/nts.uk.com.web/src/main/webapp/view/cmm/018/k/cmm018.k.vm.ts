@@ -3,7 +3,6 @@ module nts.uk.com.view.cmm018.k.viewmodel{
     import getShared = nts.uk.ui.windows.getShared;
     import windows = nts.uk.ui.windows;
     import resource = nts.uk.resource;
-    import UnitModel = kcp.share.list.UnitModel;
     import shrVm = cmm018.shr.vmbase;
     import service = cmm018.k.service;
     export class ScreenModel{
@@ -16,7 +15,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         formSetting: KnockoutObservableArray<ButtonSelect> = ko.observableArray([]);
         selectFormSet: KnockoutObservable<number> = ko.observable(1);
         currentCalendarWorkPlace: KnockoutObservableArray<SimpleObject> = ko.observableArray([]);
-        employeeList: KnockoutObservableArray<UnitModel> = ko.observableArray([]);
+        employeeList: KnockoutObservableArray<shrVm.ApproverDtoK> = ko.observableArray([]);
         multiSelectedWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
         approverList : KnockoutObservableArray<shrVm.ApproverDtoK> = ko.observableArray([]);
         currentApproveCodeLst: KnockoutObservableArray<any> = ko.observableArray([]);
@@ -54,24 +53,23 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM');            
             if(data !== undefined){
                 //設定する対象申請名
-                self.appType(data.appType);
+                self.appType(data.appTypeName);
                 //承認形態
                 self.selectFormSet(data.formSetting);                
                 
                 self.setDataForSwapList(self.selectTypeSet());
-                //承認者一覧
+                //承認者一覧                
                 if(data.approverInfor.length > 0){
-                    _.forEach(data.approverInfor, function(sID: string)){
-                        service.getPersonInfor(sID).done(function(data){
-                            self.approverList.push(new shrVm.ApproverDtoK(data.sID, data.employeeCode, data.employeeName));
-                        })
-                    }
-                }               
+                    _.forEach(data.approverInfor, function(sID){
+                        service.getPersonInfor(sID).done(function(data: any){
+                            self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName));
+                        })                            
+                    })    
+                }else{
+                    self.setDataForCbb();    
+                }
                 
-                self.approverList(data.approverInfor);
                 
-                
-                self.setDataForCbb();
                 //確定者
                 var index = self.approverList().indexOf(data.confirmedPerson());
                 if(index != -1){
@@ -80,7 +78,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                     self.selectedCbbCode("");
                 }
                 //承認者の登録(個人別): 非表示
-                if(data.tab === 0){
+                if(data.tab === 2){
                     $('#typeSetting').hide();
                     self.selectTypeSet(0);    
                 }else{
@@ -101,7 +99,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             
             //選択された承認者一覧
             self.columns = ko.observableArray([
-                    { headerText: 'id', prop: 'id', width: '0%' },
+                    { headerText: 'id', prop: 'id', width: '0%', hidden: true },
                     { headerText: resource.getText('CMM018_69'), prop: 'code', width: '40%' },
                     { headerText: resource.getText('CMM018_70'), prop: 'name', width: '60%' }
                 ])
@@ -141,7 +139,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             self.itemListCbb.removeAll();
             self.itemListCbb.push(new shrVm.ApproverDtoK('','','指定しない'));
             if(self.approverList().length > 0){
-                _.forEach(self.approverList(),function(item){
+                _.forEach(self.approverList(),function(item: shrVm.ApproverDtoK){
                     self.itemListCbb.push(item);    
                 })
             }
@@ -190,11 +188,12 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         /**
          * function convert dto to model init data 
          */        
-        public toUnitModelList(dataList: service.model.EmployeeSearchDto[]): Array<UnitModel> {
-            var dataRes: UnitModel[] = [];
+        public toUnitModelList(dataList: service.model.EmployeeSearchDto[]): Array<shrVm.ApproverDtoK> {
+            var dataRes: shrVm.ApproverDtoK[] = [];
 
             for (var item: service.model.EmployeeSearchDto of dataList) {
                 dataRes.push({
+                    id: item.sid,
                     code: item.scd,
                     name: item.pname
                 });
