@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatDaily;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatDailyRepository;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItem;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtAuthorityDailyItemPK;
@@ -22,6 +23,10 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 	private static final String UPDATE_BY_KEY;
 
 	private static final String IS_EXIST_DATA;
+
+	private static final String DEL_BY_KEY;
+
+	private static final String REMOVE_EXIST_DATA;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -58,19 +63,33 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 		builderString
 				.append("WHERE a.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
 		IS_EXIST_DATA = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM KfnmtAuthorityDailyItem a ");
+		builderString.append("WHERE a.kfnmtAuthorityDailyItemPK.companyId = :companyId ");
+		builderString
+				.append("AND a.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		DEL_BY_KEY = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM KfnmtAuthorityDailyItem a ");
+		builderString.append("WHERE a.kfnmtAuthorityDailyItemPK.attendanceItemId IN :attendanceItemIds ");
+		REMOVE_EXIST_DATA = builderString.toString();
 	}
 
 	@Override
-	public List<AuthorityFomatDaily> getAuthorityFormatDaily(String companyId, String dailyPerformanceFormatCode) {
+	public List<AuthorityFomatDaily> getAuthorityFormatDaily(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode) {
 		return this.queryProxy().query(FIND, KfnmtAuthorityDailyItem.class).setParameter("companyId", companyId)
-				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode).getList(f -> toDomain(f));
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v()).getList(f -> toDomain(f));
 	}
 
 	@Override
-	public List<AuthorityFomatDaily> getAuthorityFormatDailyDetail(String companyId, String dailyPerformanceFormatCode,
+	public List<AuthorityFomatDaily> getAuthorityFormatDailyDetail(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode,
 			BigDecimal sheetNo) {
 		return this.queryProxy().query(FIND_DETAIL, KfnmtAuthorityDailyItem.class).setParameter("companyId", companyId)
-				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode).setParameter("sheetNo", sheetNo)
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v()).setParameter("sheetNo", sheetNo)
 				.getList(f -> toDomain(f));
 	}
 
@@ -91,9 +110,21 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public boolean checkExistData(String dailyPerformanceFormatCode) {
+	public boolean checkExistCode(DailyPerformanceFormatCode dailyPerformanceFormatCode) {
 		return this.queryProxy().query(IS_EXIST_DATA, long.class)
-				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode).getSingle().get() > 0;
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v()).getSingle().get() > 0;
+	}
+
+	@Override
+	public void remove(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode) {
+		this.getEntityManager().createQuery(DEL_BY_KEY).setParameter("companyId", companyId)
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v()).executeUpdate();
+	}
+
+	@Override
+	public void deleteExistData(List<Integer> attendanceItemIds) {
+		this.getEntityManager().createQuery(REMOVE_EXIST_DATA).setParameter("attendanceItemIds", attendanceItemIds)
+				.executeUpdate();
 	}
 
 	private static AuthorityFomatDaily toDomain(KfnmtAuthorityDailyItem kfnmtAuthorityDailyItem) {
