@@ -29,8 +29,9 @@ public abstract class CalculationTimeSheet {
 	protected final TimeSpanForCalc calcrange;
 	protected List<TimeSheetOfDeductionItem> deductionTimeSheets = new ArrayList<>();
 	protected List<BonusPayTimesheet> bonusPayTimeSheet;
-	protected Optional<MidNightTimeSheet> midNightTimeSheet;
 	protected List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet;
+	protected Optional<MidNightTimeSheet> midNightTimeSheet;
+
 	
 	
 	/**
@@ -43,14 +44,16 @@ public abstract class CalculationTimeSheet {
 								TimeSpanForCalc calcrange,
 								List<TimeSheetOfDeductionItem> deductionTimeSheets,
 								List<BonusPayTimesheet> bonusPayTimeSheet,
-								Optional<MidNightTimeSheet> midNighttimeSheet,
-								List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet) {
+								List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet,
+								Optional<MidNightTimeSheet> midNighttimeSheet
+								) {
 		this.timeSheet = timeSheet;
 		this.calcrange = calcrange;
 		this.deductionTimeSheets = deductionTimeSheets;
 		this.bonusPayTimeSheet = bonusPayTimeSheet;
-		this.midNightTimeSheet = midNighttimeSheet;
 		this.specifiedBonusPayTimeSheet = specifiedBonusPayTimeSheet;
+		this.midNightTimeSheet = midNighttimeSheet;
+
 		
 	}
 	
