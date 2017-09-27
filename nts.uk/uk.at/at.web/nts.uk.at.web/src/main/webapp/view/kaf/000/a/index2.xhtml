@@ -23,8 +23,8 @@
 							<com:ko bind="$data.approverDtos" tag="foreach">
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
-										<td class="bg-green">
-											フェーズ<label data-bind="attr: {rowspan: $parent.approverDtos.length},text: $data.approvalPhaseId"></label>
+										<td class="bg-green" data-bind="attr: {rowspan: $parent.approverDtos.length}">
+											フェーズ<label data-bind="text: $data.approvalPhaseId"></label>
 										</td>
 									</com:ko>
 									<td class="bg-green">
