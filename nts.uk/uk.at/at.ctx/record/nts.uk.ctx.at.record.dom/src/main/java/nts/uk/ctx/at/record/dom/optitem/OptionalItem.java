@@ -56,7 +56,7 @@ public class OptionalItem extends AggregateRoot {
 	 */
 	public OptionalItem(OptionalItemGetMemento memento) {
 		this.companyId = memento.getCompanyId();
-		this.optionalItemNo = new OptionalItemNo("1");
+		this.optionalItemNo = memento.getOptionalItemNo();
 		this.optionalItemName = memento.getOptionalItemName();
 		this.optionalItemAtr = memento.getOptionalItemAtr();
 		this.usageAtr = memento.getOptionalItemUsageAtr();
