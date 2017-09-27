@@ -152,7 +152,7 @@ module cps008.a.viewmodel {
             }).fail((error: any) => {
                 unblock();
                 if (error.message == 'Msg_3') {
-                    showDialog.alert(Text('Msg_3')).then(function() {
+                    showDialog.alert({ messageId: "Msg_3" }).then(function() {
                         $("#A_INP_CODE").focus();
                     });
                 }
@@ -207,7 +207,7 @@ module cps008.a.viewmodel {
 
                     }).fail((error: any) => {
                         if (error.message == 'Msg_3') {
-                            showDialog.alert(Text('Msg_3')).then(function() {
+                            showDialog.alert({ messageId: "Msg_3" }).then(function() {
                                 unblock();
                                 self.start(data.code);
                             });
@@ -251,7 +251,7 @@ module cps008.a.viewmodel {
                         });
                     }
 
-                    showDialog.info(Text('Msg_16')).then(function() {
+                    showDialog.info({ messageId: "Msg_16" }).then(function() {
                         unblock();
                     });
                 }).fail((error: any) => {
