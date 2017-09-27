@@ -9,37 +9,68 @@ import nts.uk.ctx.at.shared.dom.category.HoriTotalCategory;
  * @author yennth
  *
  */
+import nts.uk.ctx.at.shared.dom.category.TotalEvalOrder;
 public interface HoriTotalCategoryRepository {
+	
 	/**
-	 * get all data
+	 * get all hori total category data
 	 * @param companyId
 	 * @return
 	 */
-	List<HoriTotalCategory> findAll(String companyId);
+	List<HoriTotalCategory> findAllCate(String companyId);
 	
 	/**
-	 * update a item 
+	 * update a hori total category 
 	 * @param aggregateCategory
 	 */
-	void updae(HoriTotalCategory aggregateCategory);
+	void updateCate(HoriTotalCategory horiTotalCategory);
 	
 	/**
-	 * insert a item
+	 * insert a hori total category
 	 * @param aggregateCategory
 	 */
-	void insert(HoriTotalCategory aggregateCategory);
+	void insertCate(HoriTotalCategory horiTotalCategory);
 	
 	/**
-	 * delete a item
+	 * delete a hori total category
 	 * @param companyId
 	 * @param categoryCode
 	 */
-	void delete(String companyId, String categoryCode);
+	void deleteCate(String companyId, String categoryCode);
 	
 	/**
+	 * find a hori total category by categoryCode
 	 * @param company
 	 * @param categoryCode
 	 * @return
 	 */
-	Optional<HoriTotalCategory> findByCode(String company, String categoryCode);
+	Optional<HoriTotalCategory> findCateByCode(String companyId, String categoryCode);
+	
+	/**
+	 * find all total eval order
+	 * @param companyId
+	 * @return
+	 */
+	List<TotalEvalOrder> findAllOrder (String companyId);
+	
+	/**
+	 * update list total eval order
+	 * @param totalEvalOrders
+	 */
+	void updateOrder(List<TotalEvalOrder> totalEvalOrders);
+	
+	/**
+	 * insert list total eval order
+	 * @param totalEvalOrders
+	 */
+	void insertOrder(List<TotalEvalOrder> totalEvalOrders);
+	
+	/**
+	 * find list total eval order by code
+	 * @param companyId
+	 * @param categoryCode
+	 * @param totalItemNo
+	 * @return
+	 */
+	List<TotalEvalOrder> findOrder(String companyId, String categoryCode, Integer totalItemNo);
 }

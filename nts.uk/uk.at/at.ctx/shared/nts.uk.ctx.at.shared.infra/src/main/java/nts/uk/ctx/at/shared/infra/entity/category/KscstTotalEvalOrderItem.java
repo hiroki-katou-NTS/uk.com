@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -22,6 +25,12 @@ public class KscstTotalEvalOrderItem extends UkJpaEntity implements Serializable
 	/** 並び順 */
 	@Column(name = "DISPORDER")
 	public Integer dispOrder;
+	
+	@ManyToOne
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSCST_HORI_TOTAL_CATEGORY.CID", insertable = false, updatable = false),
+			@JoinColumn(name = "CATEGORY_CD", referencedColumnName = "KSCST_HORI_TOTAL_CATEGORY.CATEGORY_CD", insertable = false, updatable = false)
+	})
+	public KscstHoriTotalCategoryItem kscstHoriTotalCategory;
 	
 	@Override
 	protected Object getKey() {
