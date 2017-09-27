@@ -10,7 +10,7 @@ module nts.custombinding {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    import writeConstraint = nts.uk.request.writeDynamicConstraint;
+    //import writeConstraint = nts.uk.request.writeDynamicConstraint;
 
     export class LetControl implements KnockoutBindingHandler {
         init = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
@@ -251,7 +251,7 @@ module nts.custombinding {
                                     </div>
                                 </div>
                                 <div data-bind="if: $data.layoutItemType == 1" class="item-controls">
-                                    <div data-bind="ntsFormLabel: { required: !!_.find($data.listItemDf, function(x) { return !!x.isRequired; }) }, text: className || '#NA'"></div>
+                                    <div data-bind="ntsFormLabel: { /*constraint: item.itemCode,*/ required: !!_.find($data.listItemDf, function(x) { return !!x.isRequired; }) }, text: className || '#NA'"></div>
                                     <div data-bind="let: { items: listItemDf }" class="multiple-items">
                                         <table>
                                             <thead>
@@ -290,7 +290,7 @@ module nts.custombinding {
                         <div data-bind="if: $data.info.stringItemLength < 40">
                             <input data-bind="ntsTextEditor: {
                                     value: $data.info.value,
-                                    constraint: $data.itemCode,
+                                    /*constraint: $data.itemCode,*/
                                     required: false, 
                                     option: {
                                         textmode: 'text',
@@ -305,7 +305,7 @@ module nts.custombinding {
                         <div data-bind="if: $data.info.stringItemLength >= 40">
                             <textarea data-bind="ntsMultilineEditor: {
                                 value: $data.info.value,
-                                constraint: $data.itemCode,
+                                /*constraint: $data.itemCode,*/
                                 option: {
                                     textmode: 'text',
                                     placeholder: $data.itemName
@@ -318,14 +318,14 @@ module nts.custombinding {
                     <div data-bind="if: $data.info.dataTypeValue == 2" class="numeric">
                         <input data-bind="ntsNumberEditor: { 
                                     value: $data.info.value,
-                                    constraint: $data.itemCode,
+                                    /*constraint: $data.itemCode,*/
                                     enable: true,
                                     readonly: $data.info.readonly }, attr: { title: $data.itemName }" />
                     </div>
                     <div data-bind="if: $data.info.dataTypeValue == 3" class="date">
                         <div data-bind="ntsDatePicker: {
                                     value: $data.info.value,
-                                    constraint: $data.itemCode,
+                                    /*constraint: $data.itemCode,*/
                                     dateFormat: 'YYYY/MM/DD',
                                     enable: $data.info.editable,
                                     readonly: $data.info.readonly
@@ -334,7 +334,7 @@ module nts.custombinding {
                     <div data-bind="if: $data.info.dataTypeValue == 4" class="time">
                         <input data-bind="ntsTimeEditor: {
                             value: $data.info.value,
-                            constraint: $data.itemCode,
+                            /*constraint: $data.itemCode,*/
                             inputFormat: 'HH:mm',
                             enable: true,
                             readonly: $data.info.readonly }, attr: { placeholder: $data.itemName }" />
@@ -342,7 +342,7 @@ module nts.custombinding {
                     <div data-bind="if: $data.info.dataTypeValue == 5" class="timepoint">
                         <input data-bind="ntsTimeEditor: {
                             value: $data.info.value, 
-                            constraint: $data.itemCode,
+                            /*constraint: $data.itemCode,*/
                             inputFormat: 'HH:mm',
                             enable: true,
                             readonly:  $data.info.readonly
@@ -354,7 +354,7 @@ module nts.custombinding {
                             optionsValue: 'code',
                             visibleItemsCount: 5,
                             value: $data.info.value,
-                            constraint: $data.itemCode,
+                            /*constraint: $data.itemCode,*/
                             optionsText: 'name',
                             editable: $data.info.editable,
                             enable: true,
@@ -605,33 +605,35 @@ module nts.custombinding {
                                     }
                                 },
                                 pushItems = (defs: Array<IItemDefinition>) => {
-                                    _.each(defs, def => {
-                                        let item: IItemClassification = {
-                                            layoutID: random(),
-                                            dispOrder: -1,
-                                            personInfoCategoryID: undefined,
-                                            layoutItemType: IT_CLA_TYPE.ITEM,
-                                            listItemDf: []
-                                        };
+                                    _(defs)
+                                        .filter(x => !x.isAbolition) // remove all item if it's abolition
+                                        .each(def => {
+                                            let item: IItemClassification = {
+                                                layoutID: random(),
+                                                dispOrder: -1,
+                                                personInfoCategoryID: undefined,
+                                                layoutItemType: IT_CLA_TYPE.ITEM,
+                                                listItemDf: []
+                                            };
 
-                                        def.dispOrder = -1;
-                                        item.listItemDf = [def];
-                                        item.className = def.itemName;
-                                        item.personInfoCategoryID = def.perInfoCtgId;
+                                            def.dispOrder = -1;
+                                            item.listItemDf = [def];
+                                            item.className = def.itemName;
+                                            item.personInfoCategoryID = def.perInfoCtgId;
 
-                                        // setitem
-                                        if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
-                                            services.getItemsByIds(def.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
-                                                if (defs && defs.length) {
-                                                    _(defs).orderBy(x => x.dispOrder).each((x, i) => { x.dispOrder = i + 1; item.listItemDf.push(x) });
+                                            // setitem
+                                            if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
+                                                services.getItemsByIds(def.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
+                                                    if (defs && defs.length) {
+                                                        _(defs).filter(x => !x.isAbolition).orderBy(x => x.dispOrder).each((x, i) => { x.dispOrder = i + 1; item.listItemDf.push(x) });
 
-                                                    opts.sortable.pushItem(item);
-                                                }
-                                            });
-                                        } else {
-                                            opts.sortable.pushItem(item);
-                                        }
-                                    });
+                                                        opts.sortable.pushItem(item);
+                                                    }
+                                                });
+                                            } else {
+                                                opts.sortable.pushItem(item);
+                                            }
+                                        });
                                 };
 
                             if (!defs || !defs.length) {
@@ -822,6 +824,11 @@ module nts.custombinding {
                         .uniq()
                         .value();
 
+                // write constraint to viewContext
+                if (idfcs && idfcs.length) {
+                    //writeConstraint(idfcs);
+                }
+
                 _.each(maps, (t, i) => {
                     if (maps[i + 1] == t + 1) {
                         _.remove(data, (m: IItemClassification) => {
@@ -879,11 +886,7 @@ module nts.custombinding {
                             break;
                     }
                 });
-                // write constraint to viewContext
-                if (idfcs && idfcs.length) {
-                    writeConstraint(idfcs);
-                }
-                
+
                 opts.sortable.isEditable.valueHasMutated();
             });
             opts.sortable.data.valueHasMutated();
@@ -923,11 +926,13 @@ module nts.custombinding {
                 opts.listbox.options.removeAll();
 
                 if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
+                    opts.comboxbox.options.removeAll();
                     services.getCats().done((data: any) => {
                         if (data && data.categoryList && data.categoryList.length) {
                             let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition);
 
                             if (cats && cats.length) {
+                                
                                 opts.comboxbox.options(cats);
                                 if (opts.comboxbox.value() == cats[0].id) {
                                     opts.comboxbox.value.valueHasMutated();
@@ -955,16 +960,18 @@ module nts.custombinding {
                             // map Array<IItemGroup> to Array<IItemDefinition>
                             // 「個人情報項目定義」が取得できなかった「項目グループ」以外を、画面項目「グループ一覧」に表示する
                             // remove groups when it does not contains any item definition (by hql)
-                            let _items: Array<IItemDefinition> = _.map(data, x => {
-                                return {
-                                    id: x.personInfoItemGroupID,
-                                    itemName: x.fieldGroupName,
-                                    itemTypeState: undefined,
-                                    dispOrder: x.dispOrder
-                                };
+                            _.each(data, group => {
+                                services.getItemByGroup(group.personInfoItemGroupID).done((data: Array<IItemDefinition>) => {
+                                    if (data && data.length) {
+                                        opts.listbox.options.push({
+                                            id: group.personInfoItemGroupID,
+                                            itemName: group.fieldGroupName,
+                                            itemTypeState: undefined,
+                                            dispOrder: group.dispOrder
+                                        });
+                                    }
+                                });
                             });
-
-                            opts.listbox.options(_items);
                         }
                     });
                 }
@@ -1143,7 +1150,11 @@ module nts.custombinding {
 
                         // push all item to sortable when done
                         $.when.apply($, dfds).then(function() {
-                            opts.sortable.pushItems(_.flatten(arguments) as Array<IItemDefinition>, true);
+                            // remove all item if it's abolition
+                            let items = _.filter(_.flatten(arguments) as Array<IItemDefinition>, x => !x.isAbolition);
+                            if (items && items.length) {
+                                opts.sortable.pushItems(items, true);
+                            }
                         });
                     }
                 }
