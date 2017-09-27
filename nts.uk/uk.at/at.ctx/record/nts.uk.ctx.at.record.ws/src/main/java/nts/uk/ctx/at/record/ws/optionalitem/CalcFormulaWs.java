@@ -16,6 +16,7 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.optitem.calculation.FormulaSaveCommand;
 import nts.uk.ctx.at.record.app.command.optitem.calculation.FormulaSaveCommandHandler;
 import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaDto;
+import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaEnumDto;
 import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaFinder;
 
 /**
@@ -54,5 +55,16 @@ public class CalcFormulaWs extends WebService {
 	@Path("save")
 	public void save(FormulaSaveCommand command) {
 		this.handler.handle(command);
+	}
+
+	/**
+	 * Gets the enum.
+	 *
+	 * @return the enum
+	 */
+	@POST
+	@Path("getenum")
+	public FormulaEnumDto getEnum() {
+		return FormulaEnumDto.init();
 	}
 }
