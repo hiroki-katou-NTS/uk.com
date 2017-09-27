@@ -18,7 +18,6 @@ public class UpdatePerInfoItemDefCopyCommandHandler extends CommandHandler<Updat
 	protected void handle(CommandHandlerContext<UpdatePerInfoItemDefCopy> context) {
 		UpdatePerInfoItemDefCopy command = context.getCommand();
 		String companyId = AppContexts.user().companyId();	
-		
 		//delete object
 		perInfoItemDefRepositoty.removePerInfoItemInCopySetting(command.getPerInfoCtgId(), companyId);
 		
