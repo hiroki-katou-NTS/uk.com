@@ -930,15 +930,46 @@ module nts.custombinding {
                     services.getCats().done((data: any) => {
                         if (data && data.categoryList && data.categoryList.length) {
                             let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition);
-
                             if (cats && cats.length) {
-                                
-                                opts.comboxbox.options(cats);
-                                if (opts.comboxbox.value() == cats[0].id) {
-                                    opts.comboxbox.value.valueHasMutated();
-                                } else {
-                                    opts.comboxbox.value(cats[0].id);
-                                }
+                                let dfds: Array<JQueryDeferred<any>> = [];
+                                // check item define count in category
+                                _.each(cats, cat => {
+                                    switch (cat.categoryType) {
+                                        case IT_CAT_TYPE.SINGLE:
+                                        case IT_CAT_TYPE.CONTINU:
+                                        case IT_CAT_TYPE.NODUPLICATE:
+                                            let dfs = $.Deferred();
+                                            services.getItemByCat(cat.id).done((data: Array<IItemDefinition>) => {
+                                                if (data && data.length) {
+                                                    opts.comboxbox.options.push(cat);
+                                                }
+                                                dfs.resolve(true);
+                                            }).fail(dfs.reject(false));
+
+                                            dfds.push(dfs);
+                                            break;
+                                        case IT_CAT_TYPE.MULTI:
+                                        case IT_CAT_TYPE.DUPLICATE:
+                                            opts.comboxbox.options.push(cat);
+                                            break;
+                                    }
+                                });
+
+                                // select first item when check done
+                                $.when.apply($, dfds).then(function() {
+                                    if (ko.toJS(opts.comboxbox.options).length) {
+                                        if (opts.comboxbox.value() == cats[0].id) {
+                                            opts.comboxbox.value.valueHasMutated();
+                                        } else {
+                                            opts.comboxbox.value(cats[0].id);
+                                        }
+                                    } else {
+                                        // show message if hasn't any category
+                                        if (ko.toJS(opts.sortable.isEnabled)) {
+                                            alert(text('Msg_288')).then(opts.callback);
+                                        }
+                                    }
+                                });
                             } else {
                                 // show message if hasn't any category
                                 if (ko.toJS(opts.sortable.isEnabled)) {
