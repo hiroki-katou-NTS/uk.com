@@ -17,33 +17,59 @@ module nts.uk.at.view.kmk002.b {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                service.find('001').done(res => {
-                    //TODO testing.
-                    self.empCondition.fromDto(res);
-                    self.empCondition.initNtsGrid();
 
-                    console.log(self.empCondition);
-                    dfd.resolve();
-                });
+                // Get param from parent screen
+                let itemNo = nts.uk.ui.windows.getShared("paramForB");
+
+                self.loadEmpCondition(itemNo).done(() => dfd.resolve());
                 return dfd.promise();
             }
 
+            /**
+             * Load employment applicable condition.
+             */
+            private loadEmpCondition(itemNo: string): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+                service.find(itemNo).done(res => {
+
+                    // Convert to viewmodel
+                    self.empCondition.fromDto(res);
+
+                    // init ntsGrid
+                    self.empCondition.initNtsGrid();
+
+                    dfd.resolve();
+                });
+                return dfd.promise();
+
+            }
+
+            /**
+             * Triggered on click button apply all.
+             */
             public applyAll(): void {
                 let self = this;
                 self.empCondition.applyAll();
                 self.empCondition.updateNtsGrid();
             }
 
+            /**
+             * Triggered on click button not apply all.
+             */
             public notApplyAll(): void {
                 let self = this;
                 self.empCondition.notApplyAll();
                 self.empCondition.updateNtsGrid();
             }
 
+            /**
+             * Triggered On click button save.
+             */
             public save(): void {
                 let self = this;
-                let dto = self.empCondition.toDto();
-                console.log(dto);
+                let command = self.empCondition.toDto();
+                service.save(command);
             }
 
         }
@@ -67,6 +93,7 @@ module nts.uk.at.view.kmk002.b {
                 let self = this;
                 self.optionalItemNo = dto.optionalItemNo;
                 self.empConditions = dto.empConditions.map(item => new Condition(item));
+                //self.updateNtsGrid();
             }
 
             public toDto(): EmpConditionDto {
@@ -96,6 +123,7 @@ module nts.uk.at.view.kmk002.b {
             public updateNtsGrid(): void {
                 let self = this;
                 _.each(self.empConditions, item => {
+                    delete item.empCd;
                     $("#grid-emp-condition").ntsGrid("updateRow", item.empCd, item);
                 });
             }
@@ -132,7 +160,7 @@ module nts.uk.at.view.kmk002.b {
             constructor(dto: ConditionDto) {
                 this.empCd = dto.empCd;
                 this.empName = dto.empName;
-                this.empApplicableAtr = 0;
+                this.empApplicableAtr = dto.empApplicableAtr;
             }
 
             public apply(): void {
