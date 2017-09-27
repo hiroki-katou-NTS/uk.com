@@ -45,7 +45,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	
 	
 	@Override
-	public ScreenAfterDelete screenAfterDelete(Application applicationData, String appID) {
+	public ScreenAfterDelete screenAfterDelete(String appID) {
 		String companyID = AppContexts.user().companyId();
 		AppCanAtr sendMailWhenApprovalFlg = null;
 		ApprovalAtr approvalAtr = null;
@@ -58,7 +58,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 			 * ドメインモデル「申請」．「承認フェーズ」1～5の順でループする(loop xử lý theo thứ tự
 			 * domain「申請」．「承認フェーズ」1～5)
 			 */
-			List<AppApprovalPhase> listAppApprovalPhase = appApprovalPhaseRepository.findPhaseByAppID(companyID, applicationData.getApplicationID());
+			List<AppApprovalPhase> listAppApprovalPhase = appApprovalPhaseRepository.findPhaseByAppID(companyID, appID);
 			for (AppApprovalPhase appApprovalPhase : listAppApprovalPhase) {
 				// 8-2.3.1
 				List<String> listApproverID = detailedScreenAfterApprovalProcessService.actualReflectionStateDecision(appApprovalPhase.getAppID(), appApprovalPhase.getPhaseID(), appApprovalPhase.getApprovalATR());

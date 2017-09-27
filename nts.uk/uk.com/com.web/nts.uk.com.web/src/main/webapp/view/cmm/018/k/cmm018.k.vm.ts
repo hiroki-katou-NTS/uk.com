@@ -51,7 +51,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         constructor(){
             var self = this;            
             //設定対象
-            let data: any = getShared('CMM018K_PARAM');            
+            let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM');            
             if(data !== undefined){
                 //設定する対象申請名
                 self.appType(data.appType);
@@ -60,7 +60,17 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 
                 self.setDataForSwapList(self.selectTypeSet());
                 //承認者一覧
+                if(data.approverInfor.length > 0){
+                    _.forEach(data.approverInfor, function(sID: string)){
+                        service.getPersonInfor(sID).done(function(data){
+                            self.approverList.push(new shrVm.ApproverDtoK(data.sID, data.employeeCode, data.employeeName));
+                        })
+                    }
+                }               
+                
                 self.approverList(data.approverInfor);
+                
+                
                 self.setDataForCbb();
                 //確定者
                 var index = self.approverList().indexOf(data.confirmedPerson());

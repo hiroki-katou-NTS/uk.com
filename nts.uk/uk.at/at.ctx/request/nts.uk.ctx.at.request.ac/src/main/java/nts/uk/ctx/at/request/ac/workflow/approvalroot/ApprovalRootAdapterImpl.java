@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverImport;
@@ -25,6 +26,9 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 
 	@Inject
 	private ApprovalRootPub approvalRootPub;
+	
+	@Inject
+	private EmployeeAdapter employeeAdapter;
 	
 	@Override
 	public List<PersonApprovalRootImport> findByBaseDate(String cid, String sid, GeneralDate baseDate, int appType) {
@@ -80,7 +84,8 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 								a.getEmployeeId(), 
 								a.getOrderNumber(), 
 								a.getApprovalAtr(), 
-								a.getConfirmPerson()))
+								a.getConfirmPerson(),
+								employeeAdapter.getEmployeeName(a.getEmployeeId())))
 						.collect(Collectors.toList())
 			    )).collect(Collectors.toList());
 	}

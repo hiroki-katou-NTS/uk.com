@@ -5,6 +5,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterProcessDetail;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeProcessRegister;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.FactoryLateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeaveEarlyService;
@@ -23,6 +25,12 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
 
 	@Inject
 	private FactoryLateOrLeaveEarly factoryLateOrLeaveEarly;
+	
+	@Inject
+	private DetailBeforeProcessRegister detailBeforeProcessRegisterService;
+	
+	@Inject AfterProcessDetail afterProcessDetailSerivce;
+	
 	@Override
 	protected void handle(CommandHandlerContext<UpdateLateOrLeaveEarlyCommand> context) {
 		UpdateLateOrLeaveEarlyCommand command = context.getCommand();
@@ -38,7 +46,22 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
         		command.getEarlyTime2(),
         		command.getLate2(),
         		command.getLateTime2());
+		
+		//「4-1.詳細画面登録前の処理」を実行する 
+		detailBeforeProcessRegisterService.processBeforeDetailScreenRegistration(
+				domainLateOrLeaveEarly.getCompanyID(),
+				//ApplicantSID = EmployeeID
+				domainLateOrLeaveEarly.getApplicantSID(),
+				domainLateOrLeaveEarly.getApplicationDate(), 9,
+				domainLateOrLeaveEarly.getApplicationID(),
+				domainLateOrLeaveEarly.getPrePostAtr());
+		
+		//ドメインモデル「遅刻早退取消申請」の更新する
+		//Update the domain model 'Cancellation for late arrival cancellation'
 		lateOrLeaveEarlyService.updateLateOrLeaveEarly(domainLateOrLeaveEarly);
+		
+		//「4-2.詳細画面登録後の処理」を実行する
+		afterProcessDetailSerivce.processAfterDetailScreenRegistration(domainLateOrLeaveEarly.getCompanyID(), domainLateOrLeaveEarly.getAppID());
 		
 	}
 	

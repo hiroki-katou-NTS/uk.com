@@ -2,9 +2,7 @@ package nts.uk.ctx.at.request.app.command.application.lateorleaveearly;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
-import nts.uk.shr.com.context.AppContexts;
+
 
 /**
  * 
@@ -18,7 +16,6 @@ public class CreateLateOrLeaveEarlyCommand {
 	
 	/** 申請ID */
 	private String appID;
-	
 	
     /** 申請日*/
 	private GeneralDate applicationDate;

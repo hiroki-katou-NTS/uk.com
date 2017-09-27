@@ -294,21 +294,36 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         /**
          *  btn Approve
          */
-        btnApprove(){
-            
+        btnApprove(appID){
+            let self = this;
+            let dfd = $.Deferred<any>();
+            service.approveApp(appID).done(function() {
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
          /**
          *  btn Deny
          */
-        btnDeny(){
-            
+        btnDeny(appID){
+            let self = this;
+            let dfd = $.Deferred<any>();
+            service.denyApp(appID).done(function() {
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
         
          /**
          *  btn Release
          */
-        btnRelease(){
-            
+        btnRelease(appID){
+            let self = this;
+            let dfd = $.Deferred<any>();
+            service.releaseApp(appID).done(function() {
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
         
         /**
@@ -321,25 +336,43 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          *  btn References 
          */
         btnReferences(){
-            
+            let self = this;
+            // send (Cid,Eid,date) in screen KDL004
+            //nts.uk.request.jump("/view/kdl/004/a/index.xhtml");
         }
         /**
          *  btn SendEmail 
          */
         btnSendEmail(){
-            
+             let self = this;
+            // send (Cid, appId , content, Eid, date) in screen KDL030
+            //nts.uk.request.jump("/view/kdl/030/a/index.xhtml");
         }
         /**
          *  btn Delete 
          */
-        btnDelete(){
-            
+        btnDelete(appID){
+            let self = this;
+            let dfd = $.Deferred<any>();
+            if(confirm("Are you sure ?")){
+                service.deleteApp(appID).done(function() {
+                    dfd.resolve();
+                });
+            }    
+            return dfd.promise();
         }
         /**
          *  btn Cancel 
          */
-        btnCancel(){
-            
+        btnCancel(appID){
+            let self = this;
+            let dfd = $.Deferred<any>();
+            if(confirm("Are you sure ?")){
+                service.cancelApp(appID).done(function() {
+                    dfd.resolve();
+                });
+            }
+            return dfd.promise();
         }
         
         
@@ -439,46 +472,43 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         // class AppApprovalPhase
         export class AppApprovalPhase {
-            appID: KnockoutObservable<String>;
-            phaseID: KnockoutObservable<String>;
-            approvalForm: KnockoutObservable<number>;
-            dispOrder: KnockoutObservable<number>;
-            approvalATR: KnockoutObservable<number>;
+            appID: String;
+            phaseID: String;
+            approvalForm: number;
+            dispOrder: number;
+            approvalATR: number;
             constructor(appID: String, phaseID: String, approvalForm: number, dispOrder: number, approvalATR: number) {
-                this.appID = ko.observable(appID);
-                this.phaseID = ko.observable(phaseID);
-                this.approvalForm = ko.observable(approvalForm);
-                this.dispOrder = ko.observable(dispOrder);
-                this.approvalATR = ko.observable(approvalATR);
+                this.appID = appID;
+                this.phaseID = phaseID;
+                this.approvalForm = approvalForm;
+                this.dispOrder = dispOrder;
+                this.approvalATR = approvalATR;
             }
         }
 
         // class ApprovalFrame
         export class ApprovalFrame {
-            phaseID: KnockoutObservable<String>;
-            dispOrder: KnockoutObservable<number>;
-            approverSID: KnockoutObservable<String>;
-            approvalATR: KnockoutObservable<number>;
-            confirmATR: KnockoutObservable<number>;
-            approvalDate: KnockoutObservable<String>;
-            reason: KnockoutObservable<String>;
-            representerSID: KnockoutObservable<String>;
-            constructor(phaseID: String, dispOrder: number, approverSID: String, approvalATR: number,
-                confirmATR: number, approvalDate: String, reason: String, representerSID: String) {
-                this.phaseID = ko.observable(phaseID);
-                this.dispOrder = ko.observable(dispOrder);
-                this.approverSID = ko.observable(approverSID);
-                this.approvalATR = ko.observable(approvalATR);
-                this.confirmATR = ko.observable(confirmATR);
-                this.approvalDate = ko.observable(approvalDate);
-                this.reason = ko.observable(reason);
-                this.representerSID = ko.observable(representerSID);
+            frameID : String;
+            phaseID: String;
+            dispOrder:number;
+            constructor(frameID : String,phaseID: String, dispOrder: number) {
+                this.frameID = frameID;
+                this.phaseID = phaseID;
+                this.dispOrder = dispOrder;
+                
             }
         }//end class frame  
 
         //class ApproveAccepted
         export class ApproveAccepted {
-
+            appAccedtedID : String;
+            frameID: String;
+            approverSID: String;
+            approvalATR: number;
+            confirmATR: number;
+            approvalDate: String;
+            reason: String;
+            representerSID: String;
         }//end class ApproveAccepted
 
         //class InputGetDetailCheck 

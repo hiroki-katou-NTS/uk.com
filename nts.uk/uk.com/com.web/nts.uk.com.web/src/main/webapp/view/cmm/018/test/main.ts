@@ -4,7 +4,7 @@ module nts.uk.com.view.cmm018.test.viewmodel{
     import windows = nts.uk.ui.windows;
     import shrVm = cmm018.shr.vmbase;
     export class ScreenModel{
-        approverInfor : KnockoutObservableArray<shrVm.ApproverDtoK> = ko.observableArray([]);
+        approverInfor : KnockoutObservableArray<string> = ko.observableArray([]);
         confirmedPerson : KnockoutObservable<string> = ko.observable("");
         selectTypeSet : KnockoutObservable<number> = ko.observable(0);
         //test
@@ -12,14 +12,13 @@ module nts.uk.com.view.cmm018.test.viewmodel{
             var self = this;
             //承認者
             self.approverInfor.removeAll();
-            self.approverInfor.push(new shrVm.ApproverDtoK('35453433352534','A00000000001','日通システム'));
-            self.approverInfor.push(new shrVm.ApproverDtoK('35351453345344','A00000000002','尾林　日通システム'));
-            self.approverInfor.push(new shrVm.ApproverDtoK('35334534534534','A00000000003','日通システム　ベトナム'));
-            self.approverInfor.push(new shrVm.ApproverDtoK('35394534333534','A00000000004','日通システム　日本'));
-            self.approverInfor.push(new shrVm.ApproverDtoK('35745343534534','A00000000005','日通システム　武藤'));
+            self.approverInfor.push("CE82367D-929C-4872-A51C-12BE4426EB6C");
+            self.approverInfor.push("CE82367D-929C-4872-A51C-12BE4426EC6C");
+
             //確定者 code
             self.confirmedPerson('A00000000001');
-            setShared("CMM008K_PARAM", { 
+            
+            setShared("CMM018K_PARAM", { 
                                         appType: "0", //設定する対象申請名 
                                         formSetting: 0,//0: 全員確認、１：誰か一人
                                         approverInfor: self.approverInfor(),//承認者一覧
