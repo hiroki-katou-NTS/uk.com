@@ -11,6 +11,8 @@ import nts.arc.time.YearMonth;
 /**
  * The Class ClosureMonth.
  */
+
+// 当月
 @Getter
 public class ClosureMonth extends DomainObject{
 	
