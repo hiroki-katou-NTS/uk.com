@@ -61,7 +61,7 @@ public abstract class CalculationTimeSheet {
 	 */
 	public TimeSpanForCalc reCreateTreatAsSiteiTimeEnd(int transTime,OverTimeWorkFrameTimeSheet overTimeWork) {
 		TimeSpanForCalc copySpan = calcrange;
-		return overTimeWork.syukusyou(copySpan.lengthAsMinutes() - transTime);
+		return overTimeWork.reduceUntilSpecifiedTime(copySpan.lengthAsMinutes() - transTime);
 	}
 	
 	/**
@@ -69,16 +69,16 @@ public abstract class CalculationTimeSheet {
 	 * @param assingnTime 指定時間
 	 * @return 縮小後の時間帯
 	 */
-	public TimeSpanForCalc syukusyou(int assignTime) {
+	public TimeSpanWithRounding reduceUntilSpecifiedTime(int assignTime) {
 		int shortened = calcTotalTime() - assignTime;
 		int newEnd = timeSheet.getStart().valueAsMinutes() + shortened;
 		
-		TimeSpanForCalc newTimeSpan = new TimeSpanForCalc(new TimeWithDayAttr(shortened),new TimeWithDayAttr(newEnd));
+		TimeSpanWithRounding newTimeSpan = new TimeSpanWithRounding(new TimeWithDayAttr(shortened),new TimeWithDayAttr(newEnd),this.timeSheet.getRounding());
 		List<TimeSheetOfDeductionItem> refineList = duplicateNewTimeSpan(newTimeSpan);
 		int deductionTime = 0;
 		for(TimeSheetOfDeductionItem deductionItem : refineList) {
 			deductionTime = deductionItem.calcTotalTime();
-			newTimeSpan = new TimeSpanForCalc(new TimeWithDayAttr(shortened),new TimeWithDayAttr(newEnd + deductionTime));
+			newTimeSpan = new TimeSpanWithRounding(new TimeWithDayAttr(shortened),new TimeWithDayAttr(newEnd + deductionTime), this.timeSheet.getRounding());
 		}
 		return newTimeSpan;
 	}
@@ -274,7 +274,7 @@ public abstract class CalculationTimeSheet {
 	 * 
 	 */
 	public void calcBonusPay(BonusPayTimeItemSetting bonusPayTimeSet) {
-		
+		for(BonusPayTimesheet )
 	}
 	
 }
