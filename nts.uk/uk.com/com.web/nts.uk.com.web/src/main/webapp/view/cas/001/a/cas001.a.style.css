@@ -208,3 +208,7 @@
 	width: 200px;
 	float: left;
 }
+
+#selected_all_ckb {
+	margin-left: 7px;
+}
