@@ -5,16 +5,16 @@ module demo.a.viewmodel {
         selectedItem: KnockoutObservable<any>;
         isMultiSelect: KnockoutObservable<boolean>;
         isDisplayUnselect: KnockoutObservable<boolean>;
-        selecType: SelectType;
         selectedCode: KnockoutObservable<string>;
         selectedCodes: KnockoutObservableArray<string>;
         
         selectionOption: KnockoutObservableArray<any>;
         selectedOption: KnockoutObservable<number>;
+        selectionTypeList: KnockoutObservableArray<any>;
+        selectedType: KnockoutObservable<number>;
         constructor() {
             var self = this;
             self.isMultiSelect = ko.observable(true);
-            self.selecType = SelectType.SELECT_BY_SELECTED_CODE;
             self.selectedCodes = ko.observableArray(['01', '04']);
             self.selectedCode = ko.observable('02');
             self.selectedItem = ko.observable(self.isMultiSelect() ? self.selectedCodes() : self.selectedCode());
@@ -26,6 +26,9 @@ module demo.a.viewmodel {
                     }
                     self.selectedItem(self.selectedCodes());
                 } else {
+                    if (self.selectedType() == SelectType.SELECT_ALL) {
+                        self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);
+                    }
                     self.selectedItem(self.selectedCode());
                 }
             });
@@ -33,6 +36,7 @@ module demo.a.viewmodel {
             self.isDisplayUnselect.subscribe(function(data) {
                 if (data && self.isMultiSelect()) {
                     nts.uk.ui.dialog.alert("Displaying Unselect Item is not available for Multiple Selection!");
+                    self.isDisplayUnselect(false);
                 }
             })
             
@@ -50,13 +54,25 @@ module demo.a.viewmodel {
                     self.isMultiSelect(true);
                 }
             });
+            self.selectionTypeList = ko.observableArray([
+                { code: 1, name: 'By Selected Code' },
+                { code: 2, name: 'Select All Items' },
+                { code: 3, name: 'Select First Item' },
+                { code: 4, name: 'Select None' }
+            ]);
+            self.selectedType = ko.observable(1);
+            self.selectedType.subscribe(function(data: number) {
+                if (data == SelectType.SELECT_ALL && !self.isMultiSelect()) {
+                    nts.uk.ui.dialog.alert("Select All is not available for Single Selection!");
+                }
+            });
         }
         // Open Dialog CDL002
         private openDialog() {
             let self = this;
             setShared('CDL002Params', {
                 isMultiSelect: self.isMultiSelect(),
-                selecType: self.selecType,
+                selecType: self.selectedType(),
                 selectedCodes: self.selectedItem(),
                 showNoSelection: self.isDisplayUnselect(),
             }, true);
@@ -65,6 +81,7 @@ module demo.a.viewmodel {
                 var output = getShared('CDL002Output');
                 if (output) {
                     self.selectedItem(output);
+                    self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);
                 }
             });
         }
