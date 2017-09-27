@@ -84,6 +84,7 @@
 												data-bind="ntsTextEditor: {
 															value: code,
 															constraint: 'LayoutCode',
+															required:true,
 															enable: $parent.layout().id() == undefined }" />
 										</div>
 
@@ -92,6 +93,7 @@
 												data-bind="ntsTextEditor: {
 															value: name,
 															constraint: 'LayoutName',
+															required:true,
 															enable: true
 											}" />
 										</div>
