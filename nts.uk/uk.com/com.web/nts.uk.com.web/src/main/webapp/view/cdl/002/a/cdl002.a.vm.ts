@@ -12,11 +12,6 @@ module nts.uk.com.view.cdl002.a {
             
             constructor() {
                 let self = this;
-//                self.selectedCodes = ko.observableArray(['11']);
-//                self.isMultiSelect = ko.observable(true);
-//                self.isDisplayUnselect = ko.observable(true);
-//                self.selecType = ko.observable(SelectType.NO_SELECT);
-//                isMultiple: boolean = getShared('isMultipleSelection');
                 var params = getShared('CDL002Params');
                 self.isMultiSelect = ko.observable(params.isMultiSelect);
                 if (!self.isMultiSelect() && params.selecType == SelectType.SELECT_ALL) {

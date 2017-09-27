@@ -10,16 +10,12 @@ module nts.uk.com.view.cmm008.a {
             listComponentOption: any;
             empList: KnockoutObservableArray<ItemModel>;
             enableEmpCode: KnockoutObservable<boolean>;
+            mode: KnockoutObservable<Mode>;
+            
             constructor() {
                 var self = this;
                 self.enableDelete = ko.observable(true);
                 self.employmentModel = ko.observable(new EmploymentModel);
-                self.employmentModel().employmentCode.subscribe(function(code) {
-                    if (code) {
-                        self.clearErrors();
-                        self.loadEmployment(code);
-                    }
-                });
                 self.selectedCode = ko.observable("");
                 self.selectedCode.subscribe(function(empCode) {
                     if (empCode) {
@@ -27,11 +23,12 @@ module nts.uk.com.view.cmm008.a {
                         self.loadEmployment(empCode);
                         self.enableDelete(true);
                     } else {
-                        self.enableDelete(false);
                         self.clearData();
+                        self.enableDelete(false);
                     }
                 });
-
+                self.mode = ko.observable(Mode.UPDATE);
+                
                 // Initial listComponentOption
                 self.listComponentOption = {
                     isMultiSelect: false,
@@ -50,14 +47,15 @@ module nts.uk.com.view.cmm008.a {
                 var dfd = $.Deferred<void>();
                 var self = this;
                 blockUI.invisible();
+                
                 // Load Component
                 $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
-                    // Set Focus on Switch Button
 
                     // Get Data List
                     if (($('#emp-component').getDataList() == undefined) || ($('#emp-component').getDataList().length <= 0)) {
                         self.enableDelete(false);
                         self.clearData();
+                        self.mode(Mode.ADD);
                     }
                     else {
                         // Get Employment List after Load Component
@@ -68,6 +66,7 @@ module nts.uk.com.view.cmm008.a {
 
                         // Find and bind selected Employment
                         self.loadEmployment(self.selectedCode());
+                        self.mode(Mode.UPDATE);
                     }
                     blockUI.clear();
                 });
@@ -86,6 +85,7 @@ module nts.uk.com.view.cmm008.a {
                         self.employmentModel().updateEmpData(employment);
                         self.employmentModel().isEnableCode(false);
                         self.enableDelete(true);
+                        self.mode(Mode.UPDATE);
                         $('#empName').focus();
                     }
                 });
@@ -100,16 +100,8 @@ module nts.uk.com.view.cmm008.a {
                 self.employmentModel().resetEmpData();
                 self.enableDelete(false);
                 self.clearErrors();
+                self.mode(Mode.ADD);
                 $('#empCode').focus();
-            }
-
-            /**
-             * Create New Employment
-             */
-            private createNewEmployment(): void {
-                let self = this;
-                self.clearErrors();
-                self.clearData();
             }
 
             /**
@@ -125,7 +117,8 @@ module nts.uk.com.view.cmm008.a {
                     employmentCode: self.employmentModel().employmentCode(),
                     employmentName: self.employmentModel().employmentName(),
                     empExternalCode: self.employmentModel().empExternalCode(),
-                    memo: self.employmentModel().memo()
+                    memo: self.employmentModel().memo(),
+                    mode: self.mode()
                 };
                 blockUI.invisible();
                 service.saveEmployment(command).done(() => {
@@ -284,6 +277,14 @@ module nts.uk.com.view.cmm008.a {
                 this.empExternalCode(dto.empExternalCode);
                 this.memo(dto.memo);
             }
+        }
+        
+        /**
+         * Mode
+         */
+        export class Mode {
+            static ADD = 1;
+            static UPDATE = 2;
         }
         
         /**
