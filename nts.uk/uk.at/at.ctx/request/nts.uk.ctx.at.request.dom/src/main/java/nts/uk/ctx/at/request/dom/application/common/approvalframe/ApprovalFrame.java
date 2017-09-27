@@ -26,6 +26,7 @@ public class ApprovalFrame extends DomainObject {
 	private String companyID;
 	
 	/** 承認枠ID */
+	@Setter
 	private String frameID ;
 	
 	/** 順序 */

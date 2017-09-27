@@ -19,6 +19,7 @@ public class ApproveAccepted extends DomainObject {
 	/** 会社ID */
 	private String companyID;
 	/** フェーズID */
+	@Setter
 	private String appAcceptedID ;
 	
 	/** 承認者 */
