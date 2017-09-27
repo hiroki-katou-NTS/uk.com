@@ -14,6 +14,7 @@ import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyAttendanc
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyAttendanceAuthorityDetailDto;
 import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyAttendanceItemAuthorityDto;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatInitialDisplayRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatMonthlyRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -22,13 +23,16 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class DailyPerformanceAuthorityFinder {
 
 	@Inject
-	private AttendanceItemFinder attendanceItemFinder;
+	private AttendanceItemListFinder attendanceItemFinder;
 
 	@Inject
 	private AuthorityDailyDetailFinder authorityDailyDetailFinder;
 
 	@Inject
 	private AuthorityFormatMonthlyRepository authorityFormatMonthlyRepository;
+	
+	@Inject
+	private AuthorityFormatInitialDisplayRepository authorityFormatInitialDisplayRepository;
 
 	public DailyAttendanceItemAuthorityDto findAll(String dailyPerformanceFormatCode, BigDecimal sheetNo) {
 		LoginUserContext login = AppContexts.user();
@@ -39,7 +43,7 @@ public class DailyPerformanceAuthorityFinder {
 
 		if (attendanceItemDtos.isEmpty()) {
 			DailyAttendanceItemAuthorityDto dailyAttendanceItemAuthorityDto = new DailyAttendanceItemAuthorityDto(null,
-					null, null);
+					null, null, 0);
 			return dailyAttendanceItemAuthorityDto;
 		}
 		Map<Integer, AttendanceItemDto> attendanceItemMaps = attendanceItemDtos.stream()
@@ -64,9 +68,14 @@ public class DailyPerformanceAuthorityFinder {
 								f.getDisplayOrder(), f.getColumnWidth());
 					return null;
 				}).collect(Collectors.toList());
+		
+		Integer isDefaultInitial = 0;
+		if(this.authorityFormatInitialDisplayRepository.checkExistData(new DailyPerformanceFormatCode(dailyPerformanceFormatCode))){
+			isDefaultInitial = 1;
+		} else isDefaultInitial = 0;
 
 		DailyAttendanceItemAuthorityDto dailyAttendanceItemAuthorityDto = new DailyAttendanceItemAuthorityDto(
-				attendanceItemDtos, dailyAttendanceAuthorityMonthlyDto, dailyAttendanceAuthorityDailyDto);
+				attendanceItemDtos, dailyAttendanceAuthorityMonthlyDto, dailyAttendanceAuthorityDailyDto, isDefaultInitial);
 		return dailyAttendanceItemAuthorityDto;
 	}
 }
