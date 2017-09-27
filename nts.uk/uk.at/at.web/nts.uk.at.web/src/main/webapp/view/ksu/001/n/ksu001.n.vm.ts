@@ -1,55 +1,42 @@
-module ksu001.n.viewmodel {
-    import alert = nts.uk.ui.dialog.alert;
-    import getShare = nts.uk.ui.windows.getShared;
+module nts.uk.com.view.ksu001.n.viewmodel {
+    import error = nts.uk.ui.errors;
+    import text = nts.uk.resource.getText;
+    import close = nts.uk.ui.windows.close;
+    import dialog = nts.uk.ui.dialog;
+    import getShared = nts.uk.ui.windows.getShared;
+    import setShared = nts.uk.ui.windows.setShared;
+    import block = nts.uk.ui.block;
 
-    export class ScreenModel {
+    export class ViewModel {
         listRank: KnockoutObservableArray<any> = ko.observableArray([]);
+        currentCode: KnockoutObservable<any>;
         singleSelectedCode: KnockoutObservable<any> = ko.observable();
-
+        comboItems = [new ItemModel('1', 'A'),
+            new ItemModel('2', 'B'),
+            new ItemModel('3', 'C')];
+        comboColumns = [{ prop: 'name', length: 8 }];
+        items = _(new Array(10)).map((x, i) => new RankItems(i + 1)).value();
         constructor() {
             let self = this;
             for (let i = 1; i < 20; i++) {
-                self.listRank.push(new RankItems('00' + i, '基本給', 'S'));
+                self.listRank.push(new RankItems(i));
             }
-
-            self.initGrid();
+            self.start();
         }
-
-        initGrid(): void {
-            let self = this;
-            var comboItems = [new ItemModel('1', 'S'),
-                new ItemModel('2', 'A'),
-                new ItemModel('3', 'B')];
-
-            var comboColumns = [{ prop: 'name', length: 2 }];
-
-            $("#grid2").ntsGrid({
-                width: '420px',
-                height: '315px',
-                dataSource: self.listRank(),
-                primaryKey: 'rankCode',
-                virtualization: true,
-                virtualizationMode: 'continuous',
-                columns: [
-                    { headerText: nts.uk.resource.getText("KSU001_1322"), key: 'rankCode', dataType: 'string', width: '150px' },
-                    { headerText: nts.uk.resource.getText("KSU001_1323"), key: 'rankName', dataType: 'string', width: '150px' },
-                    { headerText: nts.uk.resource.getText("KSU001_1324"), key: 'rank', dataType: 'string', width: '100px', ntsControl: 'Combobox' },
-                ],
-                features: [{ name: 'Sorting', type: 'local' }],
-                ntsControls: [
-                    { name: 'Combobox', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true }]
-            });
+        start(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+            return dfd.promise();
         }
-
-        /**
-         * Close dialog
-         */
-        closeDialog(): void {
-            nts.uk.ui.windows.close();
-        }
+            /**
+             * Close dialog
+             */
+            closeDialog(): void {
+                nts.uk.ui.windows.close();
+            }
     }
 
-    class ItemModel {
+    export class ItemModel {
         code: string;
         name: string;
 
@@ -58,16 +45,14 @@ module ksu001.n.viewmodel {
             this.name = name;
         }
     }
-
-    class RankItems {
+    export  class RankItems {
         rankCode: string;
         rankName: string;
         rank: string;
-
-        constructor(rankCode: string, rankName: string, rank: string) {
-            this.rankCode = rankCode;
-            this.rankName = rankName;
-            this.rank = rank;
+        constructor(index:number) {
+            this.rankCode = '00000000'+index;
+            this.rankName = 'ABC';
+            this.rank = String(index % 3 +1) ;
         }
-    }
+    }   
 }
