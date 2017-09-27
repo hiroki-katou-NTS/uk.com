@@ -22,7 +22,6 @@ import nts.uk.ctx.at.record.app.find.dailyperformanceformat.dto.BusinessTypeDto;
 public class BusinessTypeWebService extends WebService {
 	@Inject
 	private BusinessTypesFinder findAll;
-	private BusinessTypesFinder findByCode;
 	@Inject
 	private AddBusinessTypeNameCommandHandler add;
 	@Inject
@@ -41,7 +40,7 @@ public class BusinessTypeWebService extends WebService {
 	@POST
 	@Path("findByCode")
 	public BusinessTypeDto getBusinessType(String businessTypeCode){
-		return this.findByCode.findByCode(businessTypeCode);
+		return this.findAll.findByCode(businessTypeCode);
 	}
 	/**
 	 * insert new business type name
