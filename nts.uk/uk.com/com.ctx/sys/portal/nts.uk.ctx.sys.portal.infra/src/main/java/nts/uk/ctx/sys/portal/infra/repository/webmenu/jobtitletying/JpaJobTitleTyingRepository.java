@@ -1,15 +1,12 @@
 package nts.uk.ctx.sys.portal.infra.repository.webmenu.jobtitletying;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTying;
 import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTyingRepository;
 import nts.uk.ctx.sys.portal.infra.entity.webmenu.jobtitletying.CcgstJobTitleTying;
@@ -20,12 +17,18 @@ import nts.uk.ctx.sys.portal.infra.entity.webmenu.jobtitletying.CcgstJobTitleTyi
  */
 @Stateless
 public class JpaJobTitleTyingRepository extends JpaRepository implements JobTitleTyingRepository {
+	
 	private final String SEL = "SELECT s FROM CcgstJobTitleTying s ";
+	
 	private final String FIND_WEB_MENU_CODE = SEL + "WHERE s.ccgstJobTitleTyingPK.companyId = :companyId "
 			+ "AND s.ccgstJobTitleTyingPK.jobId in :jobId ";
 	
 	private final String DELETE_WEB_MENU_CODE = "DELETE FROM CcgstJobTitleTying s WHERE s.ccgstJobTitleTyingPK.companyId = :companyId"
 			+ " AND s.webMenuCode = :webMenuCode ";
+	
+	private final String DELETE_BY_LIST_JOBID = "DELETE FROM CcgstJobTitleTying s WHERE s.ccgstJobTitleTyingPK.companyId = :companyId"
+			+ " AND s.ccgstJobTitleTyingPK.jobId IN :listJobId";
+
 
 	/**
 	 * convert entity to domain CcgstJobTitleTying
@@ -55,19 +58,7 @@ public class JpaJobTitleTyingRepository extends JpaRepository implements JobTitl
 		return this.queryProxy().query(FIND_WEB_MENU_CODE, CcgstJobTitleTying.class)
 				.setParameter("companyId", companyId).setParameter("jobId", jobId).getList(t -> toDomain(t));
 	}
-	/**
-	 * update menu code 
-	 */
-	@Override
-	public void updateMenuCode(List<JobTitleTying> lstJobTitleTying) {
-		List<CcgstJobTitleTying> lstEntity = new ArrayList<>();
-		for(JobTitleTying jobTitleTying: lstJobTitleTying){
-			CcgstJobTitleTying ccgstjtt = toEntity(jobTitleTying);
-			CcgstJobTitleTying ccgstjtti = this.queryProxy().find(ccgstjtt.ccgstJobTitleTyingPK, CcgstJobTitleTying.class).get();
-			ccgstjtti.setWebMenuCode(ccgstjtt.webMenuCode);
-			lstEntity.add(ccgstjtti);
-		}
-	}
+	
 	/**
 	 * insert menu code 
 	 */
@@ -85,6 +76,14 @@ public class JpaJobTitleTyingRepository extends JpaRepository implements JobTitl
 		this.getEntityManager().createQuery(DELETE_WEB_MENU_CODE)
 		.setParameter("companyId", companyId)
 		.setParameter("webMenuCode", webMenuCode)
+		.executeUpdate();
+	}
+
+	@Override
+	public void removeByListJobId(String companyId, List<String> listJobId) {
+		this.getEntityManager().createQuery(DELETE_BY_LIST_JOBID)
+		.setParameter("companyId", companyId)
+		.setParameter("listJobId", listJobId)
 		.executeUpdate();
 	}
 }

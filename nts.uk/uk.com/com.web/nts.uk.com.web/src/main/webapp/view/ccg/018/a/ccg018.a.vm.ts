@@ -8,7 +8,7 @@ module ccg018.a.viewmodel {
         ]);
         currentTab: KnockoutObservable<TabModel>;
         baseModel: base.result.BaseResultModel;
-        
+
         constructor() {
             let self = this;
             self.tabs().map((t) => {
@@ -17,12 +17,12 @@ module ccg018.a.viewmodel {
                     self.title(t.name());
                 }
             });
-            
+
             self.currentTab = ko.observable(self.tabs()[0]);
             self.baseModel = new base.result.BaseResultModel();
-            
+
         };
-               
+
         /**
          * start page
          */
@@ -32,12 +32,12 @@ module ccg018.a.viewmodel {
             $.when(self.findBySystemMenuCls(), self.findDataForAfterLoginDis(), self.findByCId()).done(function() {
                 dfd.resolve();
             }).fail(function(err) {
-                dfd.reject();  
+                dfd.reject();
             });
-            
+
             return dfd.promise();
         }
-        
+
         changeTab(tab: TabModel): any {
             let self = this,
                 oldtab: TabModel = _.find(self.tabs(), t => t.active());
@@ -45,27 +45,33 @@ module ccg018.a.viewmodel {
             self.currentTab(tab);
             self.title(tab.name());
             self.tabs().map(t => (t.id() != tab.id()) && t.active(false));
-        
+
             // Clean binding area.
             var resultArea = $(".screen-content");
             resultArea.html("");
             ko.cleanNode(resultArea.get(0));
-            
+
             // call start function on view at here
             switch (tab.id()) {
                 case 'a1':
                     var viewmodelA1 = new ccg018.a1.viewmodel.ScreenModel(self.baseModel);
-                    $(resultArea).load(viewmodelA1.screenTemplateUrl(), function() {    
-                        viewmodelA1.searchByDate().done(function(){
+                    $(resultArea).load(viewmodelA1.screenTemplateUrl(), function() {
+                        viewmodelA1.searchByDate().done(function() {
                             ko.applyBindings(viewmodelA1, resultArea.children().get(0));
                             ko.applyBindings(viewmodelA1, resultArea.children().get(1));
+                            if (viewmodelA1.categorySet() == 0) {
+                                $("#width-tbody").addClass("width-tbody");
+                            } else {
+                                $("#width-tbody").removeClass("width-tbody");
+                            }
+                            $('#A2-2').focus();
                         });
                     });
                     break;
                 case 'b':
                     var viewmodelB = new ccg018.b.viewmodel.ScreenModel(self.baseModel);
-                    $(resultArea).load(viewmodelB.screenTemplateUrl(), function() {    
-                        viewmodelB.start().done(function(){
+                    $(resultArea).load(viewmodelB.screenTemplateUrl(), function() {
+                        viewmodelB.start().done(function() {
                             ko.applyBindings(viewmodelB, resultArea.children().get(0));
                             ko.applyBindings(viewmodelB, resultArea.children().get(1));
                         });
@@ -74,7 +80,7 @@ module ccg018.a.viewmodel {
             }
             $('.screen-' + tab.id().toLowerCase()).trigger('click');
         }
-        
+
         /**
          * find data in table STANDARD_MENU with companyId and 
          * afterLoginDisplay = 1 (display)  or System = 0(common) and MenuClassification = 8(top page)
@@ -105,7 +111,7 @@ module ccg018.a.viewmodel {
                 });
             return dfd.promise();
         }
-        
+
         /**
          * Find data in table STANDARD_MENU base on CompanyId and System = 0(common) and MenuClassification = 8(top page)
          * Return array comboItemsAsTopPage 
@@ -123,7 +129,7 @@ module ccg018.a.viewmodel {
                             system: 0,
                             menuCls: 0
                         }));
- 
+
                         _.forEach(data, function(x) {
                             self.baseModel.comboItemsAsTopPage.push(new ComboBox({
                                 code: x.code,
@@ -139,7 +145,7 @@ module ccg018.a.viewmodel {
                 });
             return dfd.promise();
         }
-        
+
         /**
          * get categorySet in DB TOPPAGE_SET base on companyId
          */
@@ -169,7 +175,7 @@ module ccg018.a.viewmodel {
         active: KnockoutObservable<boolean>;
         display: KnockoutObservable<boolean>;
         templateUrl: KnockoutObservable<string>;
-        
+
         constructor(param: any) {
             this.id = ko.observable(param.id);
             this.name = ko.observable(param.name);
@@ -178,7 +184,7 @@ module ccg018.a.viewmodel {
             this.templateUrl = ko.observable(param.templateUrl);
         }
     }
-    
+
     interface IComboBox {
         code: string;
         name: string;

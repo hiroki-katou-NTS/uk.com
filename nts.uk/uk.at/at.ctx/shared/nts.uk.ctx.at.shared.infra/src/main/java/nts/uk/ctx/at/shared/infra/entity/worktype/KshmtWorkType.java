@@ -17,6 +17,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.shared.infra.entity.worktype.language.KshmtWorkTypeLanguage;
 import nts.uk.ctx.at.shared.infra.entity.worktype.worktypedisporder.KshmtWorkTypeOrder;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -76,6 +77,9 @@ public class KshmtWorkType extends UkJpaEntity implements Serializable{
     
     @OneToOne(cascade = CascadeType.ALL, mappedBy="workType", orphanRemoval = true)
     public KshmtWorkTypeOrder kshmtWorkTypeOrder;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="workType", orphanRemoval = true)
+    public List<KshmtWorkTypeLanguage> workTypeLanguage;
     
 	@Override
 	protected Object getKey() {

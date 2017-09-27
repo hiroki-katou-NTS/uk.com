@@ -22,7 +22,7 @@ public class KshstGrantDateSetPK implements Serializable {
 	@Column(name = "SPHD_CD")
 	public String specialHolidayCode;
 
-	/* 付与日の種類 */
-	@Column(name = "GRANT_DATE_TYPE")
-	public int grantDateType;
+	/* 付与日の数 */
+	@Column(name = "GRANT_DATE_NO")
+	public int grantDateNo;
 }
