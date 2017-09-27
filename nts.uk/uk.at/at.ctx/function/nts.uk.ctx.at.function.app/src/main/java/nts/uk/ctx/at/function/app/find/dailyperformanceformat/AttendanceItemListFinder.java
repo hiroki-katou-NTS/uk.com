@@ -20,7 +20,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  *
  */
 @Stateless
-public class AttendanceItemFinder {
+public class AttendanceItemListFinder {
 	
 	@Inject
 	private DailyAttendanceItemNameDomainService dailyAttendanceItemNameDomainService;

@@ -28,7 +28,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class AuthorityDailyDetailFinder {
 
 	@Inject
-	private AttendanceItemFinder attendanceItemFinder;
+	private AttendanceItemListFinder attendanceItemFinder;
 
 	@Inject
 	private AuthorityFormatDailyRepository authorityFormatDailyRepository;

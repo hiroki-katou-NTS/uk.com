@@ -12,5 +12,7 @@ public class DailyAttendanceItemAuthorityDto {
 	private List<DailyAttendanceAuthorityDetailDto> dailyAttendanceAuthorityMonthlyDto;
 	
 	private DailyAttendanceAuthorityDailyDto dailyAttendanceAuthorityDailyDto;
+	
+	private int isDefaultInitial;
 
 }
