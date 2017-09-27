@@ -88,11 +88,22 @@ module nts.uk.com.view.cas001.a.viewmodel {
             $(function() {
                 $('#anotherSelectedAll_auth, #seftSelectedAll_auth').on('click', '.nts-switch-button', function() {
 
-                    let parrentId = $(this).parent().attr('id');
-
-                    for (let item of self.currentRole().currentCategory().roleItemList()) {
-                        parrentId == 'anotherSelectedAll_auth' ? item.otherAuth = self.anotherSelectedAll() : item.selfAuth = self.seftSelectedAll();
+                    let parrentId = $(this).parent().attr('id'),
+                        selectItemList: Array<any> = $("#item_role_table_body").igGrid("selectedRows"),
+                        currentList = self.currentRole().currentCategory().roleItemList();
+                    ;
+                    
+                    if (selectItemList.length === 0) {
+                        dialog({ messageId: "Msg_664" });
+                        return;
                     }
+                    
+                    _.forEach(selectItemList, function(item) {
+                        let selectItem = _.find(currentList, function(i) {
+                            return i.personItemDefId === item.id;
+                        });
+                        parrentId == 'anotherSelectedAll_auth' ? selectItem.otherAuth = self.anotherSelectedAll() : selectItem.selfAuth = self.seftSelectedAll();
+                    });
 
                     $("#item_role_table_body").igGrid("option", "dataSource", self.currentRole().currentCategory().roleItemList());
 
