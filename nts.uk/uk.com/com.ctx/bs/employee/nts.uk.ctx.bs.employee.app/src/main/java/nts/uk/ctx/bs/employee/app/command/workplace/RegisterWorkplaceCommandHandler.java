@@ -27,6 +27,7 @@ public class RegisterWorkplaceCommandHandler extends CommandHandler<RegisterWork
 
 		RegisterWorkplaceCommand command = context.getCommand();
 		Workplace wkp = command.toDomain();
+		//TODO check validate code=0 and check register same history  
 		String companyId = wkp.getCompanyId();
 		String workplaceId = wkp.getWorkplaceId().v();
 		

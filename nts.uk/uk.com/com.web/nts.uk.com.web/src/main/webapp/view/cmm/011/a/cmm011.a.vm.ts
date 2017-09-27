@@ -111,6 +111,23 @@ module nts.uk.com.view.cmm011.a {
             }
             
             /**
+             * save workplace
+             */
+            public saveWorkplace() {
+                var self = this;
+                service.registerWkp(self.collectWkpData()).done(function() {
+
+                });
+            }
+
+            /**
+             * Collect workplace data 
+             */
+            public collectWkpData() {
+                var self = this;
+            }
+            
+            /**
              * configureWkpDialog
              */
             public configureWkpDialog() {

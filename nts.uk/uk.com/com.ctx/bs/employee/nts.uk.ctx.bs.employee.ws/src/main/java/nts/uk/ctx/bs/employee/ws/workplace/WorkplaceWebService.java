@@ -77,4 +77,11 @@ public class WorkplaceWebService extends WebService {
 	public WorkplaceInfoDto getWorkplaceInfoByHistoryId(WkpInfoFindObject findObj) {
 		return this.workplaceInfoFinder.find(findObj);
 	}
+	
+	@Path("register")
+	@POST
+	public void registerWkp(RegisterWorkplaceCommand command) {
+		this.registerWorkplaceCommandHandler.handle(command);
+		;
+	}
 }

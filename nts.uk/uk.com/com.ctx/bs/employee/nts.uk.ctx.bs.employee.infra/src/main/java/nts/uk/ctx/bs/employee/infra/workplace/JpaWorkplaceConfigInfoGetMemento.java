@@ -7,8 +7,8 @@ package nts.uk.ctx.bs.employee.infra.workplace;
 import java.util.List;
 
 import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceConfigInfoGetMemento;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceHierarchy;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoGetMemento;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 
 /**
  * The Class JpaWorkplaceConfigInfoGetMemento.

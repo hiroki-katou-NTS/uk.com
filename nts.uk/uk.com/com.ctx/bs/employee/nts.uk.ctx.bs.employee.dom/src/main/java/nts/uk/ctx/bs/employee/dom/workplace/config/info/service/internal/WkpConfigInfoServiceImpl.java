@@ -10,9 +10,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.service.WkpConfigInfoService;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceConfigInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceConfigInfoRepository;
 
 /**
  * The Class WkpConfigInfoServiceImpl.

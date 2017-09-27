@@ -18,9 +18,9 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceConfigInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceConfigInfoRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceHierarchy;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfigInfo;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfigInfoPK;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfigInfoPK_;

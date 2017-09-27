@@ -20,9 +20,9 @@ import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.service.WkpConfigService;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceConfigInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 
 /**
