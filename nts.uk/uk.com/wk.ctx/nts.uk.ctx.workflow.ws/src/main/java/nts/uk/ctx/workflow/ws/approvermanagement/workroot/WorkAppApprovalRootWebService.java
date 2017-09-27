@@ -25,6 +25,8 @@ import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.MasterApproverRo
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ParamDto;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportAdapter;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportDto;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
 @Path("workflow/approvermanagement/workroot")
@@ -41,7 +43,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	private EmployeeUnregisterFinder empUnregister;
 	@Inject
 	private RegisterAppApprovalRootCommandHandler updateRoot;
- 
+	@Inject
+	private PersonInforExportAdapter psInfo;
 	@POST
 	@Path("getbycom")
 	public DataFullDto getAllByCom(ParamDto param) {
@@ -93,5 +96,10 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@Path("updateRoot")
 	public void updateRoot(RegisterAppApprovalRootCommand command){
 		updateRoot.handle(command);
+	}
+	@POST
+	@Path("getInforPerson")
+	public PersonInforExportDto getPsInfor(String SID) {
+		return psInfo.getPersonInfo(SID);
 	}
 }
