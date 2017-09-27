@@ -928,8 +928,9 @@ module nts.custombinding {
                 if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
                     opts.comboxbox.options.removeAll();
                     services.getCats().done((data: any) => {
+                        console.log(data);
                         if (data && data.categoryList && data.categoryList.length) {
-                            let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition);
+                            let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition && !x.categoryParentCode);
                             if (cats && cats.length) {
                                 let dfds: Array<JQueryDeferred<any>> = [];
                                 // check item define count in category
@@ -1273,6 +1274,7 @@ module nts.custombinding {
         categoryName: string;
         categoryType: IT_CAT_TYPE;
         isAbolition?: number;
+        categoryParentCode?: string;
     }
 
     interface IItemGroup {
