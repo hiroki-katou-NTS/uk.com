@@ -92,12 +92,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         selectItemList: Array<any> = $("#item_role_table_body").igGrid("selectedRows"),
                         currentList = self.currentRole().currentCategory().roleItemList();
                     ;
-                    
+
                     if (selectItemList.length === 0) {
                         dialog({ messageId: "Msg_664" });
                         return;
                     }
-                    
+
                     _.forEach(selectItemList, function(item) {
                         let selectItem = _.find(currentList, function(i) {
                             return i.personItemDefId === item.id;
@@ -270,30 +270,25 @@ module nts.uk.com.view.cas001.a.viewmodel {
         reload(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred(),
-                personRole = self.currentRole();
+                personRole = self.currentRole(),
+                selectedId = self.currentCategoryId(),
+                grid = $("#item_role_table_body");;
 
-            service.getPersonRoleAuth(personRole.roleId).done(function(result: IPersonRole) {
+            personRole.loadRoleCategoriesList(personRole.roleId).done(function() {
 
-                personRole.loadRoleCategoriesList(personRole.roleId).done(function() {
+                if (self.RoleCategoryList().length > 0) {
 
-                    personRole.setRoleAuth(result);
+                    self.currentRole().currentCategory().loadRoleItems(self.currentRoleId(), selectedId).done(function() {
 
-                    if (self.RoleCategoryList().length > 0) {
+                    });
 
-                        let selectedId = self.currentCategoryId();
+                }
+                else {
+                    dialog({ messageId: "Msg_217" });
+                }
 
-                        self.currentCategoryId("");
+                dfd.resolve();
 
-                        self.currentCategoryId(selectedId);
-
-                    }
-                    else {
-                        dialog({ messageId: "Msg_217" });
-                    }
-
-                    dfd.resolve();
-
-                });
             });
 
             return dfd.promise();
@@ -388,6 +383,22 @@ module nts.uk.com.view.cas001.a.viewmodel {
             let self = this,
                 currentCtg = self.currentRole().currentCategory();
             return (currentCtg.categoryType !== 1 && currentCtg.personEmployeeType === 2);
+        }
+
+        genCategoryTypeText() {
+            let self = this,
+                currentCtgType = self.currentRole().currentCategory().categoryType;
+
+            switch (currentCtgType) {
+                case 1: return getText('Enum_CategoryType_SINGLEINFO');
+                case 2: return getText('Enum_CategoryType_MULTIINFO');
+                case 3: return getText('Enum_CategoryType_CONTINUOUSHISTORY');
+                case 4: return getText('Enum_CategoryType_NODUPLICATEHISTORY');
+                case 5: return getText('Enum_CategoryType_DUPLICATEHISTORY');
+                case 6: return getText('Enum_CategoryType_CONTINUOUSHISTORY');
+                default: return '';
+
+            }
         }
     }
     export interface IPersonRole {
@@ -518,14 +529,11 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
         constructor(param: IPersonRoleCategory) {
             let self = this;
-            let screenModel = __viewContext['screenModel'];
             self.categoryId = param ? param.categoryId : '';
             self.categoryName = param ? param.categoryName : '';
             self.categoryType = param ? param.categoryType : 0;
             self.setting = param ? param.setting : 0;
             self.personEmployeeType = param ? param.personEmployeeType : 0;
-            screenModel.allowPersonRef(param ? param.allowPersonRef : 0);
-            screenModel.allowOtherRef(param ? param.allowOtherRef : 0);
             self.allowOtherCompanyRef = ko.observable(param ? param.allowOtherCompanyRef : 0);
             self.selfPastHisAuth = ko.observable(param ? param.selfPastHisAuth : 1);
             self.selfFutureHisAuth = ko.observable(param ? param.selfFutureHisAuth : 1);
@@ -543,8 +551,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
         setCategoryAuth(param: IPersonRoleCategory) {
 
-            let self = this;
-            let screenModel = __viewContext['screenModel'];
+            let self = this,
+                screenModel = __viewContext['screenModel'];
             screenModel.allowPersonRef(param ? param.allowPersonRef : 0);
             screenModel.allowOtherRef(param ? param.allowOtherRef : 0);
             self.allowOtherCompanyRef = ko.observable(param ? param.allowOtherCompanyRef : 0);
@@ -563,8 +571,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
         }
 
         loadRoleItems(roleId, CategoryId): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
+            let self = this,
+                dfd = $.Deferred(),
+                grid = $("#item_role_table_body"),
+                screenModel = __viewContext['screenModel'];
+
+
 
             block.invisible();
 
@@ -578,8 +590,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 if (self.roleItemList().length < 1) {
                     dialog({ messageId: "Msg_217" });
                 }
+                grid.igGrid("option", "dataSource", self.roleItemList());
 
-                $("#item_role_table_body").igGrid("option", "dataSource", self.roleItemList());
+                grid.ntsGrid(screenModel.allowOtherRef() == 0 ? "disableNtsControls" : "enableNtsControls", "otherAuth", "SwitchButtons");
+                grid.ntsGrid(screenModel.allowPersonRef() == 0 ? "disableNtsControls" : "enableNtsControls", "selfAuth", "SwitchButtons");
 
                 block.clear();
 
