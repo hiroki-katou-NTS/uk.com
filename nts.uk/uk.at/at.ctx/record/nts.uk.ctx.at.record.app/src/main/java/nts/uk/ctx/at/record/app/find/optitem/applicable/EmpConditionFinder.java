@@ -30,7 +30,9 @@ public class EmpConditionFinder {
 	public EmpConditionDto find(String itemNo) {
 		EmpConditionDto dto = new EmpConditionDto();
 		Optional<EmpCondition> dom = this.repo.find(AppContexts.user().companyId(), itemNo);
-		dom.get().saveToMemento(dto);
+		if (dom.isPresent()) {
+			dom.get().saveToMemento(dto);
+		}
 		return dto;
 	}
 }
