@@ -40,6 +40,13 @@ public class KrcstDailyRecOpeDisp extends UkJpaEntity{
 	
 	@Column(name = "YEAR_HD_DISP_RES_ATR")
 	public BigDecimal yearHdDispResAtr;
+	
+	/**
+	 * 
+	 */
+	public KrcstDailyRecOpeDisp() {
+		super();
+	}
 
 	@Override
 	protected Object getKey() {

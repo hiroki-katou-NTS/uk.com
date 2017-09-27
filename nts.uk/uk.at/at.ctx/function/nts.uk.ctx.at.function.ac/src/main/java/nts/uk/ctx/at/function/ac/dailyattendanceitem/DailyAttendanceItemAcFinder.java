@@ -26,4 +26,13 @@ public class DailyAttendanceItemAcFinder implements DailyAttendanceItemAdapter {
 		}).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<DailyAttendanceItemAdapterDto> getDailyAttendanceItemList(String companyId) {
+		return this.dailyAttendanceItemPub.getDailyAttendanceItemList(companyId).stream().map(f -> {
+			return new DailyAttendanceItemAdapterDto(f.getCompanyId(), f.getAttendanceItemId(), f.getAttendanceName(),
+					f.getDisplayNumber(), f.getUserCanUpdateAtr(), f.getDailyAttendanceAtr(),
+					f.getNameLineFeedPosition());
+		}).collect(Collectors.toList());
+	}
+	
 }

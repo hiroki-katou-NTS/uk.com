@@ -3414,6 +3414,16 @@ var nts;
                         return __viewContext.primitiveValueConstraints[primitiveValueName];
                 }
                 validation.getConstraint = getConstraint;
+                function writeConstraint(constraintName, constraint) {
+                    __viewContext.primitiveValueConstraints[constraintName] = constraint;
+                }
+                validation.writeConstraint = writeConstraint;
+                function writeConstraints(constraints) {
+                    _.forEach(constraints, function (constraint) {
+                        __viewContext.primitiveValueConstraints[constraint.itemCode] = constraint;
+                    });
+                }
+                validation.writeConstraints = writeConstraints;
             })(validation = ui.validation || (ui.validation = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -21016,4 +21026,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
