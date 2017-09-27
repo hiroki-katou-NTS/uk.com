@@ -20,13 +20,26 @@ public class DailyAttendanceItemRecPubImpl implements DailyAttendanceItemRecPub 
 	@Override
 	public List<DailyAttendanceItemRecPubDto> getDailyAttendanceItem(String companyId,
 			List<Integer> dailyAttendanceItemIds) {
-		List<DailyAttendanceItem> dailyAttendanceItemList = this.dailyAttendanceItemRepository.getListById(companyId, dailyAttendanceItemIds);
-		
+		List<DailyAttendanceItem> dailyAttendanceItemList = this.dailyAttendanceItemRepository.getListById(companyId,
+				dailyAttendanceItemIds);
+
 		List<DailyAttendanceItemRecPubDto> attendanceItemPubDtos = dailyAttendanceItemList.stream().map(f -> {
+			return new DailyAttendanceItemRecPubDto(f.getCompanyId(), f.getAttendanceItemId(),
+					f.getAttendanceName().v(), f.getDisplayNumber(), f.getUserCanUpdateAtr().value,
+					f.getDailyAttendanceAtr().value, f.getNameLineFeedPosition());
+		}).collect(Collectors.toList());
+
+		return attendanceItemPubDtos;
+	}
+
+	@Override
+	public List<DailyAttendanceItemRecPubDto> getDailyAttendanceItemList(String companyId) {
+		List<DailyAttendanceItem> attendanceItems = this.dailyAttendanceItemRepository.getList(companyId);
+		
+		List<DailyAttendanceItemRecPubDto> dailyAttendanceItemRecPubDtos = attendanceItems.stream().map(f -> {
 			return new DailyAttendanceItemRecPubDto(f.getCompanyId(), f.getAttendanceItemId(), f.getAttendanceName().v(), f.getDisplayNumber(), f.getUserCanUpdateAtr().value, f.getDailyAttendanceAtr().value, f.getNameLineFeedPosition());
 		}).collect(Collectors.toList());
-		
-		return attendanceItemPubDtos;
+		return dailyAttendanceItemRecPubDtos;
 	}
 
 }

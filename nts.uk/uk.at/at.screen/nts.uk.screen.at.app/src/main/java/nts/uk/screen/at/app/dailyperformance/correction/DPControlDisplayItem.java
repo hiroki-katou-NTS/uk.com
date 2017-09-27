@@ -4,6 +4,7 @@
 package nts.uk.screen.at.app.dailyperformance.correction;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Data;
 
@@ -17,14 +18,45 @@ public class DPControlDisplayItem {
 	private List<DPSheetDto> lstSheet;
 	// header dtos
 	private List<DPHeaderDto> lstHeader;
-	
-	public void addColumnsToSheet(List<FormatDPCorrectionDto> lstFormat){
-		lstFormat.forEach(f->{
+
+	public void addColumnsToSheet(List<FormatDPCorrectionDto> lstFormat) {
+		lstFormat.forEach(f -> {
 			this.lstSheet.forEach(s -> {
-				if(f.getSheetNo().equals(s.getName())){
+				if (f.getSheetNo().equals(s.getName())) {
 					s.addColumn(String.valueOf(f.getAttendanceItemId()));
 				}
 			});
+		});
+	}
+
+	public void setHeaderText(List<DPAttendanceItem> lstAttendanceItem) {
+		lstAttendanceItem.stream().forEach(i -> {
+			Optional<DPHeaderDto> header = this.getLstHeader().stream()
+					.filter(h -> h.getKey().equals(String.valueOf(i.getId()))).findFirst();
+			if (header.isPresent()) {
+				header.get().setHeaderText(i);
+			}
+		});
+	}
+
+	public void setHeaderColor(List<DPAttendanceItemControl> lstAttendanceItemControl) {
+		lstAttendanceItemControl.stream().forEach(i -> {
+			Optional<DPHeaderDto> header = this.getLstHeader().stream()
+					.filter(h -> h.getKey().equals(String.valueOf(i.getAttendanceItemId()))).findFirst();
+			if (header.isPresent()) {
+				header.get().setHeaderColor(i);
+			}
+		});
+	}
+
+	public void setColumnsAccessModifier(List<DPBusinessTypeControl> lstDPBusinessTypeControl) {
+		lstDPBusinessTypeControl.stream().forEach(i -> {
+			Optional<DPHeaderDto> header = this.getLstHeader().stream()
+					.filter(h -> h.getKey().equals(String.valueOf(i.getAttendanceItemId()))).findFirst();
+			if (header.isPresent()) {
+				header.get().setChangedByOther(i.isChangedByOther());
+				header.get().setChangedByYou(i.isChangedByYou());
+			}
 		});
 	}
 }

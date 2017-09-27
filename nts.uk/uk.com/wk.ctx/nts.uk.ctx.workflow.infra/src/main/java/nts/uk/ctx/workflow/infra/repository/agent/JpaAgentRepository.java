@@ -60,8 +60,8 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append(" FROM CmmmtAgent e");
 		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId"); 
 		builderString.append(" AND e.cmmmtAgentPK.employeeId = :employeeId");
-		builderString.append(" AND e.startDate <= :startDate");
-		builderString.append(" AND e.endDate => :endDate");
+		builderString.append(" AND e.startDate >= :startDate");
+		builderString.append(" AND e.endDate <= :endDate");
 		SELECT_AGENT_SID_DATE = builderString.toString();
 		
 		}
@@ -140,8 +140,8 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		return this.queryProxy().query(SELECT_AGENT_SID_DATE, CmmmtAgent.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
-				.setParameter("startDate", companyId)
-				.setParameter("endDate", companyId)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
 				.getList(c -> convertToDomain(c));
 	}
 	
