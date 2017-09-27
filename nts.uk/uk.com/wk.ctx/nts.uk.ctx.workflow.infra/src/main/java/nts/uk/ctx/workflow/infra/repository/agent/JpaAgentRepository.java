@@ -140,8 +140,8 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		return this.queryProxy().query(SELECT_AGENT_SID_DATE, CmmmtAgent.class)
 				.setParameter("companyId", companyId)
 				.setParameter("employeeId", employeeId)
-				.setParameter("startDate", companyId)
-				.setParameter("endDate", companyId)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
 				.getList(c -> convertToDomain(c));
 	}
 	
