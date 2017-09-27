@@ -41,7 +41,7 @@ public class JpaJobAutoCalSettingRepository extends JpaRepository implements Job
 				new KshmtAutoJobCalSetPK(jobAutoCalSetting.getCompanyId().v(), jobAutoCalSetting.getJobId().v()),
 				KshmtAutoJobCalSet.class);
 		KshmtAutoJobCalSet entity = null;
-		if (!optinal.isPresent()) {
+		if (optinal.isPresent()) {
 			entity = optinal.get();
 		} else {
 			entity = new KshmtAutoJobCalSet();

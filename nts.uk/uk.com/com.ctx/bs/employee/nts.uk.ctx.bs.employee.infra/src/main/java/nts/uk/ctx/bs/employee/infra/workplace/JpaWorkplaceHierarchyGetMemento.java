@@ -5,8 +5,8 @@
 package nts.uk.ctx.bs.employee.infra.workplace;
 
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.HierarchyCode;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceHierarchyGetMemento;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.HierarchyCode;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchyGetMemento;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfigInfo;
 
 public class JpaWorkplaceHierarchyGetMemento implements WorkplaceHierarchyGetMemento {

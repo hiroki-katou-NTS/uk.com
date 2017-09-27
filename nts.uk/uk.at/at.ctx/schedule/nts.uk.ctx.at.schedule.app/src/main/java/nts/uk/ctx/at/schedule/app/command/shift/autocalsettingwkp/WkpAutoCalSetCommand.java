@@ -30,7 +30,7 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 @Getter
 public class WkpAutoCalSetCommand {
 	
-	private String wkp;
+	private String wkpId;
 
 	/** The normal OT time. */
 	// 残業時間
@@ -94,7 +94,7 @@ public class WkpAutoCalSetCommand {
 
 		@Override
 		public WorkplaceId getWkpId() {
-			return new WorkplaceId(this.command.getWkp());
+			return new WorkplaceId(this.command.getWkpId());
 		}
 
 		/*

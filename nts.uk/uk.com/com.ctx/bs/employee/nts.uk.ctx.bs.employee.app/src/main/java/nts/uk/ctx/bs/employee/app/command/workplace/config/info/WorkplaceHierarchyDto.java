@@ -7,9 +7,9 @@ package nts.uk.ctx.bs.employee.app.command.workplace.config.info;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.HierarchyCode;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceHierarchy;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceHierarchyGetMemento;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.HierarchyCode;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchyGetMemento;
 
 @Getter
 @Setter

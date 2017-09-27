@@ -17,11 +17,11 @@ import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceHierarchyDto;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.HierarchyCode;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.service.WkpConfigInfoService;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.HierarchyCode;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceConfigInfo;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceConfigInfoRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceHierarchy;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -172,4 +172,5 @@ public class WorkplaceConfigInfoFinder {
 			pushToList(currentItemChilds, dto, hierarchyCode.substring(3, hierarchyCode.length()), searchCode);
 		}
 	}
+	
 }

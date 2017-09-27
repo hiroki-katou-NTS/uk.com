@@ -286,6 +286,7 @@ module nts.uk.at.view.kmk006.a {
                         // load get all value enum
                         self.reLoadListEnum(self.itemComAutoCalModel);
                     }
+                    dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res);
                 }).always(function() {
@@ -465,7 +466,7 @@ module nts.uk.at.view.kmk006.a {
             /**
             * function on click saveCompanyAutoCal action
             */
-            public saveJobAutoCal(jobId: string): void {
+            public saveJobAutoCal(): void {
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
                 };
@@ -474,7 +475,7 @@ module nts.uk.at.view.kmk006.a {
 
                 // save enum
                 self.saveListEnum(self.itemJobAutoCalModel);
-
+                var jobId = self.selectedCurrentJob();
 
                 var dto: JobAutoCalSettingDto = {
                     jobId: jobId,
@@ -501,7 +502,7 @@ module nts.uk.at.view.kmk006.a {
             /**
             * function on click saveCompanyAutoCal action
             */
-            public saveWkpAutoCal(wkpId: string): void {
+            public saveWkpAutoCal(): void {
                 if ($('.nts-input').ntsError('hasError')) {
                     return;
                 };
@@ -510,7 +511,7 @@ module nts.uk.at.view.kmk006.a {
 
                 // save enum
                 self.saveListEnum(self.itemWkpAutoCalModel);
-
+                var wkpId = self.selectedCurrentWkp();
 
                 var dto: WkpAutoCalSettingDto = {
                     wkpId: wkpId,
@@ -545,6 +546,8 @@ module nts.uk.at.view.kmk006.a {
                 // save enum
 
                 self.saveListEnum(self.itemWkpJobAutoCalModel);
+                var jobId = self.selectedCurrentJob();
+                var wkpId = self.selectedCurrentWkp();
 
 
                 var dto: WkpJobAutoCalSettingDto = {
@@ -665,13 +668,37 @@ module nts.uk.at.view.kmk006.a {
                 self.loadTimeLimitUpperLimitSettingEnum();
                 // load all data  Enum
                 self.loadAutoCalAtrOvertimeEnum();
-                self.loadComAutoCal().done(function() {
+                self.loadComAutoCal();
+                self.onSelectCompany().done(function() {
                     dfd.resolve(self);
                 }).always(() => {
                     nts.uk.ui.block.clear();
                 });
+                dfd.resolve(self);
 
                 return dfd.promise();
+            }
+
+            /**
+         * on click tab panel company action event
+         */
+            public onSelectCompany(): JQueryPromise<void> {
+                $('.nts-input').ntsError('clear');
+                var self = this;
+                var dfd = $.Deferred<void>();
+
+                self.isLoading(true);
+
+                return dfd.promise();
+            }
+
+            public onSelectPerson(): void {
+                $('.nts-input').ntsError('clear');
+                var self = this;
+
+                self.isLoading(true);
+                $('#component-items-list').ntsListComponent(self.listComponentOption);
+
             }
 
 
@@ -685,18 +712,18 @@ module nts.uk.at.view.kmk006.a {
                 // Update flags.
                 self.isLoading(true);
                 $('#tree-grid-srcc').ntsTreeComponent(self.treeGrid).done(function() {
-                    self.isLoading(false);
                 });
             }
 
             public onSelectWkpJob(): void {
                 $('.nts-input').ntsError('clear');
                 var self = this;
-
+                var dfd = $.Deferred<any>();
                 // Update flags.
                 self.isLoading(true);
                 $('#jobtitles').ntsListComponent(self.listComponentOption);
                 $('#tree-grid').ntsTreeComponent(self.treeGrid).done(function() {
+                    dfd.resolve();
                 });
 
             }
@@ -720,7 +747,6 @@ module nts.uk.at.view.kmk006.a {
             private openDialogUsageSettingModel(): void {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/kmk/006/e/index.xhtml").onClosed(function() {
-                    $('#comboTargetYear').focus();
                     self.loadUseUnitAutoCalSettingModel();
                 });
             }
@@ -731,7 +757,6 @@ module nts.uk.at.view.kmk006.a {
             private openDialogCommonSetting(): void {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/ksm/001/f/index.xhtml").onClosed(function() {
-                    $('#comboTargetYear').focus();
                 });
             }
 

@@ -111,12 +111,32 @@ module nts.uk.com.view.cmm011.a {
             }
             
             /**
+             * save workplace
+             */
+            public saveWorkplace() {
+                var self = this;
+                service.registerWkp(self.collectWkpData()).done(function() {
+
+                });
+            }
+
+            /**
+             * Collect workplace data 
+             */
+            public collectWkpData() {
+                var self = this;
+            }
+            
+            /**
              * configureWkpDialog
              */
             public configureWkpDialog() {
                 let self = this;
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/b/index.xhtml').onClosed(() => {
                     let dialogData = nts.uk.ui.windows.getShared("ShareDateScreenParent");
+                    if (!dialogData) {
+                        return;
+                    }
                     self.strDWorkplace(dialogData.startDate);
                     self.endDWorkplace(dialogData.endDate);
                 });

@@ -47,7 +47,6 @@
 														required: true, 
 														enable: isEnableCode()}"
 									tabindex="7" /> 
-									<!-- enable: enableEmpCode() -->
 								<input id="empName" data-bind="ntsTextEditor: {
 														name: '#[CMM008_8]',
 														value: employmentName, 
@@ -82,15 +81,7 @@
 										</div>
 									</td>
 									<td class="padding-left">
-										<!-- <input data-bind="ntsTextEditor: {
-														name: '#[CMM008_10]',
-														value: memo, 
-														constraint: 'Memo',
-														option: { width: '300px', height: '100px' },
-														enable: true}" tabindex="10"/> -->
 										<div>
-											<!-- <TEXTAREA id="input-text" rows="5" cols="35"
-												data-bind="value: memo, name: '#[CMM008_10]'"></TEXTAREA> -->
 											<textarea id="memo" tabindex="10" data-bind="ntsMultilineEditor: { value: memo, name: '#[CMM008_10]', constraint: 'Memo', option: { width: '290px', height: '150px'}}" />
 										</div>
 									</td>

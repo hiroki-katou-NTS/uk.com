@@ -7,6 +7,7 @@ module nts.uk.com.view.cmm011.a {
             findLstWorkPlace: "bs/employee/workplace/config/info/find",
             findWkpHistList: "bs/employee/workplace/hist",
             findHistInfoByHistId: "bs/employee/workplace/find",
+            registerWkp: "bs/employee/workplace/register",
         };
 
         /**
@@ -28,6 +29,13 @@ module nts.uk.com.view.cmm011.a {
          */
         export function getWkpInfoByHistId(wkpId: string, historyId: string): JQueryPromise<model.Workplace> {
             return nts.uk.request.ajax(servicePath.findHistInfoByHistId, { workplaceId: wkpId, historyId: historyId });
+        }
+        
+         /**
+         * registerWkp
+         */
+        export function registerWkp(data: any): JQueryPromise<model.Workplace> {
+            return nts.uk.request.ajax(servicePath.registerWkp, data);
         }
         
         /**

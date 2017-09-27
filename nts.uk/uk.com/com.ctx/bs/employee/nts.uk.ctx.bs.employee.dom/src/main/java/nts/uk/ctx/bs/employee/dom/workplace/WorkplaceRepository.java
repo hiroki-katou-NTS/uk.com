@@ -20,22 +20,22 @@ public interface WorkplaceRepository {
 	 * @param wkp the wkp
 	 * @return the string
 	 */
-	String add(Workplace wkp);
+	void add(Workplace wkp);
 
 	/**
-	 * Update latest history.
+	 * Update.
 	 *
 	 * @param wkp the wkp
 	 */
-	void updateLatestHistory(Workplace wkp);
+	void update(Workplace wkp);
 
 	/**
-	 * Removes the latest history.
+	 * Removes the by wkp id.
 	 *
 	 * @param companyId the company id
 	 * @param workplaceId the workplace id
 	 */
-	void removeLatestHistory(String companyId,String workplaceId);
+	void removeByWkpId(String companyId,String workplaceId);
 
 	/**
 	 * Find by start date.

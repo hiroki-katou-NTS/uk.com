@@ -46,12 +46,12 @@ public interface WorkplaceConfigRepository {
 	Optional<WorkplaceConfig> findByHistId(String companyId,String prevHistId);
 	
 	/**
-	 * Find lastest by company id.
+	 * Find latest by company id.
 	 *
 	 * @param companyId the company id
 	 * @return the optional
 	 */
-	Optional<WorkplaceConfig> findLastestByCompanyId(String companyId);
+	Optional<WorkplaceConfig> findLatestByCompanyId(String companyId);
 	
 	/**
 	 * Find by start date.

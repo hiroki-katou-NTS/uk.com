@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.workplace.configinfo;
+package nts.uk.ctx.bs.employee.dom.workplace.config.info;
 
 import java.util.Optional;
 
@@ -26,6 +26,7 @@ public interface WorkplaceConfigInfoRepository {
 	 * @param WkpConfigInfo the wkp config info
 	 */
 	void addList(WorkplaceConfigInfo WkpConfigInfo);
+	
 	
 	/**
 	 * Find.
