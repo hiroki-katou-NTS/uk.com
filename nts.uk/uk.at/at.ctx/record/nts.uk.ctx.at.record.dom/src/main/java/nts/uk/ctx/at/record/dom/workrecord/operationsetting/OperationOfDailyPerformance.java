@@ -5,16 +5,16 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 @Getter
-public class OperationOfDailyPerformance extends AggregateRoot{
-	
+public class OperationOfDailyPerformance extends AggregateRoot {
+
 	private CompanyId companyId;
-	
+
 	private FunctionalRestriction functionalRestriction;
-	
+
 	private DisplayRestriction displayRestriction;
-	
+
 	private SettingUnit settingUnit;
-	
+
 	private RegisterTotaltimeCheer comment;
 
 	/**
@@ -33,5 +33,17 @@ public class OperationOfDailyPerformance extends AggregateRoot{
 		this.settingUnit = settingUnit;
 		this.comment = new RegisterTotaltimeCheer(comment);
 	}
-	
+
+	public void updateBaseInfor(SettingUnit settingUnit, String comment) {
+		this.settingUnit = settingUnit;
+		this.comment = new RegisterTotaltimeCheer(comment);
+	}
+
+	public void updateDisplayRestriction(DisplayRestriction displayRestriction) {
+		this.displayRestriction = displayRestriction;
+	}
+
+	public void updateFunctionalRestriction(FunctionalRestriction functionalRestriction) {
+		this.functionalRestriction = functionalRestriction;
+	}
 }

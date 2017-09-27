@@ -41,6 +41,27 @@ public class DisplayRestriction {
 		this.compensatory = compensatory;
 		this.substitution = substitution;
 	}
+	
+	/**
+	 * @param yearDisplayAtr
+	 * @param yearRemainingNumberCheck
+	 * @param savingYearDisplayAtr
+	 * @param savingYearRemainingNumberCheck
+	 * @param compensatoryDisplayAtr
+	 * @param compensatoryRemainingNumberCheck
+	 * @param substitutionDisplayAtr
+	 * @param substitutionRemainingNumberCheck
+	 */
+	public DisplayRestriction(Boolean yearDisplayAtr, Boolean yearRemainingNumberCheck, 
+			Boolean savingYearDisplayAtr, Boolean savingYearRemainingNumberCheck,
+			Boolean compensatoryDisplayAtr, Boolean compensatoryRemainingNumberCheck, 
+			Boolean substitutionDisplayAtr, Boolean substitutionRemainingNumberCheck) {
+		super();
+		this.year = new LeaveHolidayRestriction(yearDisplayAtr, yearRemainingNumberCheck);
+		this.savingYear = new LeaveHolidayRestriction(savingYearDisplayAtr, savingYearRemainingNumberCheck);
+		this.compensatory = new LeaveHolidayRestriction(compensatoryDisplayAtr, compensatoryRemainingNumberCheck);
+		this.substitution = new LeaveHolidayRestriction(substitutionDisplayAtr, substitutionRemainingNumberCheck);
+	}
 
 	/**
 	 * @param yearDisplayAtr
