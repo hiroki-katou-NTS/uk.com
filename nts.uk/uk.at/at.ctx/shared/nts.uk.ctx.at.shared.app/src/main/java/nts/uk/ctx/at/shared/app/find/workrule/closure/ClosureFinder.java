@@ -27,30 +27,29 @@ import nts.uk.shr.com.context.LoginUserContext;
  */
 @Stateless
 public class ClosureFinder {
-	
+
 	/** The repository. */
 	@Inject
 	private ClosureRepository repository;
-	
+
 	/** The repository history. */
 	@Inject
 	private ClosureHistoryRepository repositoryHistory;
-	
-	
+
 	/**
 	 * Find all.
 	 *
 	 * @return the list
 	 */
-	public List<ClosureFindDto> findAll(){
-		
+	public List<ClosureFindDto> findAll() {
+
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
-		
-		//get company id
+
+		// get company id
 		String companyId = loginUserContext.companyId();
-		
-		return this.repository.findAll(companyId).stream().map(closure->{
+
+		return this.repository.findAll(companyId).stream().map(closure -> {
 			ClosureFindDto dto = new ClosureFindDto();
 			closure.saveToMemento(dto);
 			return dto;
@@ -60,53 +59,54 @@ public class ClosureFinder {
 	/**
 	 * Find by id.
 	 *
-	 * @param closureId the closure id
+	 * @param closureId
+	 *            the closure id
 	 * @return the closure find dto
 	 */
-	public ClosureFindDto findById(int closureId){
-		
+	public ClosureFindDto findById(int closureId) {
+
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
-		
-		//get company id
+
+		// get company id
 		String companyId = loginUserContext.companyId();
-		
+
 		// call service
-		Optional<Closure> closure = this.repository.findById(companyId, closureId); 
-		
+		Optional<Closure> closure = this.repository.findById(companyId, closureId);
+
 		ClosureFindDto dto = new ClosureFindDto();
-		
+
 		List<ClosureHistory> closureHistories = this.repositoryHistory.findByClosureId(companyId,
 				closureId);
-		
+
 		// exist data
-		if(closure.isPresent()){
+		if (closure.isPresent()) {
 
 			// to data
 			closure.get().setClosureHistories(closureHistories);
 			closure.get().saveToMemento(dto);
-			
-			Optional<ClosureHistory> closureHisory = this.repositoryHistory.
-					findBySelectedYearMonth(companyId, closureId,
-							closure.get().getClosureMonth().getProcessingDate().v());
-			
-			if(closureHisory.isPresent()){
+
+			Optional<ClosureHistory> closureHisory = this.repositoryHistory.findBySelectedYearMonth(
+					companyId, closureId, closure.get().getClosureMonth().getProcessingYm().v());
+
+			if (closureHisory.isPresent()) {
 				ClosureHistoryMasterDto closureSelected = new ClosureHistoryMasterDto();
 				closureHisory.get().saveToMemento(closureSelected);
 				dto.setClosureSelected(closureSelected);
 			}
 		}
-		
+
 		return dto;
 	}
-	
+
 	/**
 	 * Detail master.
 	 *
-	 * @param master the master
+	 * @param master
+	 *            the master
 	 * @return the closure detail dto
 	 */
-	public ClosureDetailDto findByMaster(ClosureHistoryInDto master){
+	public ClosureDetailDto findByMaster(ClosureHistoryInDto master) {
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
 
@@ -125,10 +125,12 @@ public class ClosureFinder {
 		if (closure.isPresent()) {
 			closure.get().saveToMemento(dto);
 		}
-		
-		if(closureHistory.isPresent()){
+
+		if (closureHistory.isPresent()) {
 			closureHistory.get().saveToMemento(dto);
 		}
+
 		return dto;
 	}
+
 }
