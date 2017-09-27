@@ -23,7 +23,7 @@ public class UpdateApplicationDelete {
 		Application application = appRepo.getAppById(companyID, appID).get();
 		
 		//5.2(hieult)
-		afterProcessDelete.screenAfterDelete(application, appID);
+		afterProcessDelete.screenAfterDelete( appID);
 		
 		//refresh man hinh, k hien thi don xin da xoa 
 		

@@ -24,14 +24,15 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	@Inject
 	LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
 
-	@Inject
-	ApplicationRepository applicationRepository;
+//	@Inject
+//	ApplicationRepository applicationRepository;
 
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
 
-	@Inject
-	ApplicationSettingRepository applicationSetting;
+//	@Inject
+//	ApplicationSettingRepository applicationSetting;
+	
 
 	@Override
 	public boolean isExist(String companyID, String appID) {
@@ -47,6 +48,15 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
 				.getApplicationSettingByComID(lateOrLeaveEarly.getCompanyID());
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
+		int prePost = lateOrLeaveEarly.getPrePostAtr().value;
+		int lateTime1 = lateOrLeaveEarly.getLateTime1().valueAsMinutes();
+		int earlyTime1 = lateOrLeaveEarly.getEarlyTime1().valueAsMinutes();
+		int lateTime2 = lateOrLeaveEarly.getLateTime2().valueAsMinutes();
+		int earlyTime2 = lateOrLeaveEarly.getEarlyTime2().valueAsMinutes();
+		int late1 = lateOrLeaveEarly.getLate1().value;
+		int late2 = lateOrLeaveEarly.getLate2().value;
+		int early1 = lateOrLeaveEarly.getEarly1().value;
+		int early2 = lateOrLeaveEarly.getEarly2().value;
 
 		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
 				&& Strings.isEmpty(lateOrLeaveEarly.getApplicationReason().v())) {
@@ -54,19 +64,11 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		}
 
 		// 遅刻時刻早退時刻がともに設定されているとき、遅刻時刻≧早退時刻 (#Msg_381#)
-		int lateTime1 = lateOrLeaveEarly.getLateTime1().valueAsMinutes();
-		int earlyTime1 = lateOrLeaveEarly.getEarlyTime1().valueAsMinutes();
-		int lateTime2 = lateOrLeaveEarly.getLateTime2().valueAsMinutes();
-		int earlyTime2 = lateOrLeaveEarly.getEarlyTime2().valueAsMinutes();
 
-		if (lateTime1 >= earlyTime1 && lateTime2 >= earlyTime2) {
+		if (lateTime1 >= earlyTime1 && lateTime2 >= earlyTime2 && prePost == 0) {
 			throw new BusinessException("Msg_381");
 		}
 		// 遅刻、早退、遅刻2、早退2のいずれか１つはチェック必須(#Msg_382#)
-		int late1 = lateOrLeaveEarly.getLate1().value;
-		int late2 = lateOrLeaveEarly.getLate2().value;
-		int early1 = lateOrLeaveEarly.getEarly1().value;
-		int early2 = lateOrLeaveEarly.getEarly2().value;
 
 		int checkSelect = late1 + late2 + early1 + early2;
 		if (checkSelect == 0) {
@@ -75,7 +77,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 
 		// [画面Bのみ]遅刻、早退、遅刻2、早退2のチェックがある遅刻時刻、早退時刻は入力必須(#Msg_470#)
 		int checkInputTime = lateTime1 + lateTime2 + earlyTime1 + earlyTime2;
-		if (checkInputTime <= 0) {
+		if (checkInputTime <= 0 && prePost == 0) {
 			throw new BusinessException("Msg_470");
 		}
 		// Add LateOrLeaveEarly
@@ -84,13 +86,48 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 
 	@Override
 	public void updateLateOrLeaveEarly(LateOrLeaveEarly lateOrLeaveEarly) {
-		// TODO Auto-generated method stub
+		
+		Optional<ApplicationSetting> applicationSettingOp = applicationSettingRepository
+				.getApplicationSettingByComID(lateOrLeaveEarly.getCompanyID());
+		ApplicationSetting applicationSetting = applicationSettingOp.get();
+
+		int lateTime1 = lateOrLeaveEarly.getLateTime1().valueAsMinutes();
+		int earlyTime1 = lateOrLeaveEarly.getEarlyTime1().valueAsMinutes();
+		int lateTime2 = lateOrLeaveEarly.getLateTime2().valueAsMinutes();
+		int earlyTime2 = lateOrLeaveEarly.getEarlyTime2().valueAsMinutes();
+		int prePost = lateOrLeaveEarly.getPrePostAtr().value;
+		int late1 = lateOrLeaveEarly.getLate1().value;
+		int late2 = lateOrLeaveEarly.getLate2().value;
+		int early1 = lateOrLeaveEarly.getEarly1().value;
+		int early2 = lateOrLeaveEarly.getEarly2().value;
+		int checkInputTime = lateTime1 + lateTime2 + earlyTime1 + earlyTime2;
+		// 遅刻時刻早退時刻がともに設定されているとき、遅刻時刻≧早退時刻 (#Msg_381#)
+		if (lateTime1 >= earlyTime1 && lateTime2 >= earlyTime2 && prePost == 0) {
+			throw new BusinessException("Msg_381");
+		}
+		// 遅刻、早退、遅刻2、早退2のいずれか１つはチェック必須(#Msg_382#)
+
+		int checkSelect = late1 + late2 + early1 + early2;
+		if (checkSelect == 0) {
+			throw new BusinessException("Msg_382");
+		}
+		//申請承認設定->申請設定->申請制限設定.申請理由が必須＝trueのとき、申請理由が未入力 (#Msg_115#)
+		if (applicationSetting.getRequireAppReasonFlg().equals(RequiredFlg.REQUIRED)
+				&& Strings.isEmpty(lateOrLeaveEarly.getApplicationReason().v())) {
+			throw new BusinessException("Msg_115");
+		}
+		if (checkInputTime <= 0 && prePost == 0) {
+			throw new BusinessException("Msg_470");
+		}
+		
+		
 
 	}
 
 	@Override
 	public void deleteLateOrLeaveEarly(String companyID, String appID) {
-		// TODO Auto-generated method stub
+		// 5-2.詳細画面削除後の処理
+		//TODO
 
 	}
 
