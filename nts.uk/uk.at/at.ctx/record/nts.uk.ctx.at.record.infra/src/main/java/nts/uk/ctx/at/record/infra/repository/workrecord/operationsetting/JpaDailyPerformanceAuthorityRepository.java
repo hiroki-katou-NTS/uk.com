@@ -6,6 +6,7 @@ package nts.uk.ctx.at.record.infra.repository.workrecord.operationsetting;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -13,6 +14,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthority;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthorityRepoInterface;
 import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceAut;
+import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPerformanceAutPk;
 
 /**
  * @author danpv
@@ -38,6 +40,32 @@ public class JpaDailyPerformanceAuthorityRepository extends JpaRepository
 			results.add(new DailyPerformanceAuthority(roleId, ent.pk.functionNo, availability));
 		});
 		return results;
+	}
+
+	@Override
+	public void saveDailyPerformanceAuthority(DailyPerformanceAuthority daiPerAuthority) {
+		KrcmtDaiPerformanceAutPk primaryKey = new KrcmtDaiPerformanceAutPk(daiPerAuthority.getRoleID(),
+				daiPerAuthority.getFunctionNo().v());
+		Optional<KrcmtDaiPerformanceAut> daiPerAthrOptional = this.queryProxy().find(primaryKey,
+				KrcmtDaiPerformanceAut.class);
+		if (daiPerAthrOptional.isPresent()) {
+			KrcmtDaiPerformanceAut entity = daiPerAthrOptional.get();
+			entity.availability = bigDecimalValue(daiPerAuthority.isAvailability());
+			this.commandProxy().update(entity);
+		} else {
+			KrcmtDaiPerformanceAut entity = new KrcmtDaiPerformanceAut();
+			entity.pk = primaryKey;
+			entity.availability = bigDecimalValue(daiPerAuthority.isAvailability());
+			this.commandProxy().insert(entity);
+		}
+	}
+
+	private BigDecimal bigDecimalValue(boolean check) {
+		if (check) {
+			return new BigDecimal(1);
+		} else {
+			return new BigDecimal(0);
+		}
 	}
 
 }

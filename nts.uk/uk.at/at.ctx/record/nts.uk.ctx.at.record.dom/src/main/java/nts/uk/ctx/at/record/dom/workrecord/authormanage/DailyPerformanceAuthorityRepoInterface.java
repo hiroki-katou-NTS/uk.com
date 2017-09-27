@@ -12,5 +12,7 @@ import java.util.List;
 public interface DailyPerformanceAuthorityRepoInterface {
 	
 	public List<DailyPerformanceAuthority> getDailyPerformanceAuthorities(String roleId);
+	
+	public void saveDailyPerformanceAuthority(DailyPerformanceAuthority daiPerAuthority);
 
 }
