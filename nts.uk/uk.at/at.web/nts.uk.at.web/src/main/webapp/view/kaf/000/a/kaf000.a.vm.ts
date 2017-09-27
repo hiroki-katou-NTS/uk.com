@@ -183,12 +183,14 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             approvalPhaseId : KnockoutObservable<String>;
             isConfirmPerson : KnockoutObservable<boolean>;
             orderNumber : KnockoutObservable<number>;
+            name : KnockoutObservable<String>;
             constructor(sid : String,approvalPhaseId : String,
-                        isConfirmPerson : boolean,orderNumber : number){
+                        isConfirmPerson : boolean,orderNumber : number,name : String){
                 this.sid = ko.observable(sid);
                 this.approvalPhaseId = ko.observable(approvalPhaseId);
                 this.isConfirmPerson  = ko.observable(isConfirmPerson);
                 this.orderNumber = ko.observable(orderNumber); 
+                this.name = ko.observable(name); 
                 
             }
         }//end class ApproverInfo

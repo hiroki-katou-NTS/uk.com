@@ -58,6 +58,8 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 	@Inject
 	private ApplicationSettingRepository appSettingRepository;
 	
+	@Inject
+	private EmployeeAdapter employeeAdapter;
 	/**
 	 * 1.社員の対象申請の承認ルートを取得する
 	 * 
@@ -134,7 +136,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 	 * @param cid
 	 * @param sid
 	 * @param baseDate
-	 * @param branchIds
+	 * @param branchIds	
 	 */
 	@Override
 	public List<ApprovalRootOutput> adjustmentData(String cid, String sid, GeneralDate baseDate,  List<ApprovalRootOutput> appDatas) {
@@ -225,7 +227,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 				approvers.stream().forEach(x -> {
 					// 個人の場合
 					if (x.getApprovalAtr() == 0) {
-						approversResult.add(new ApproverInfo(x.getEmployeeId(), x.getApprovalPhaseId(), true, x.getOrderNumber()));
+						approversResult.add(new ApproverInfo(x.getEmployeeId(), x.getApprovalPhaseId(), true, x.getOrderNumber(),employeeAdapter.getEmployeeName(x.getEmployeeId())));
 					} else if (x.getApprovalAtr() == 1) {
 						// 職位の場合
 						List<ApproverInfo> approversOfJob = this.jobtitleToAppService.convertToApprover(cid, sid,

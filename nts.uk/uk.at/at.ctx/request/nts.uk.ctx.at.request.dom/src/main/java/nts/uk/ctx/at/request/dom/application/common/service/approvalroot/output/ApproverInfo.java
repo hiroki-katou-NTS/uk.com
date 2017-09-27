@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 承認者IDリスト
@@ -22,4 +23,6 @@ public class ApproverInfo {
 	private boolean isConfirmPerson;
 	/**順序*/
 	private int orderNumber;
+	
+	private String name;
 }
