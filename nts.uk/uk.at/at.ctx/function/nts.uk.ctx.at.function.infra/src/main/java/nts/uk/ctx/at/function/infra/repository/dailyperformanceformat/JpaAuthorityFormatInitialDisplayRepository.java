@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.function.infra.repository.dailyperformanceformat;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFormatInitialDisplay;
@@ -8,6 +10,7 @@ import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFor
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtDailyPerformanceDisplay;
 import nts.uk.ctx.at.function.infra.entity.dailyperformanceformat.KfnmtDailyPerformanceDisplayPK;
 
+@Stateless
 public class JpaAuthorityFormatInitialDisplayRepository extends JpaRepository
 		implements AuthorityFormatInitialDisplayRepository {
 
@@ -16,6 +19,8 @@ public class JpaAuthorityFormatInitialDisplayRepository extends JpaRepository
 	private static final String UPDATE_BY_KEY;
 
 	private static final String IS_EXIST_DATA;
+
+	private static final String IS_EXIST_DATA_BY_CID;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -39,6 +44,12 @@ public class JpaAuthorityFormatInitialDisplayRepository extends JpaRepository
 		builderString.append(
 				"WHERE a.kfnmtDailyPerformanceDisplayPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
 		IS_EXIST_DATA = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM KfnmtDailyPerformanceDisplay a ");
+		builderString.append("WHERE a.kfnmtDailyPerformanceDisplayPK.companyId = :companyId ");
+		IS_EXIST_DATA_BY_CID = builderString.toString();
 	}
 
 	@Override
@@ -62,6 +73,12 @@ public class JpaAuthorityFormatInitialDisplayRepository extends JpaRepository
 	public boolean checkExistData(DailyPerformanceFormatCode dailyPerformanceFormatCode) {
 		return this.queryProxy().query(IS_EXIST_DATA, long.class)
 				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v()).getSingle().get() > 0;
+	}
+
+	@Override
+	public boolean checkExistDataByCompanyId(String companyId) {
+		return this.queryProxy().query(IS_EXIST_DATA_BY_CID, long.class).setParameter("companyId", companyId)
+				.getSingle().get() > 0;
 	}
 
 	private KfnmtDailyPerformanceDisplay toEntity(AuthorityFormatInitialDisplay authorityFormatInitialDisplay) {

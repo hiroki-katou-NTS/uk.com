@@ -12,4 +12,6 @@ public interface AuthorityFormatInitialDisplayRepository {
 	void remove(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode);
 	
 	boolean checkExistData(DailyPerformanceFormatCode dailyPerformanceFormatCode);
+	
+	boolean checkExistDataByCompanyId(String companyId);
 }
