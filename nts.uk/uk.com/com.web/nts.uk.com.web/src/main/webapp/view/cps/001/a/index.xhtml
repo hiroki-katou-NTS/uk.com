@@ -70,7 +70,7 @@
 									enable: ko.observable(true), 
 									visible: ko.observable(true)
 								}], 
-							active: ko.observable('layout')
+							active: tabActive
 							}">
 						<div class="layouttab">
 							<div
@@ -192,19 +192,28 @@
 						</div>
 					</div>
 					<div class="bottom-right-area">
-						<div class="form-group">
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_35')}</div>
-							<div
-								data-bind="ntsDatePicker: {
+						<div class="layout-input" data-bind="css: { 'hidden': tabActive() != 'layout'}">
+							<div class="form-group">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_35')}</div>
+								<div
+									data-bind="ntsDatePicker: {
 								value: ko.observable(''), 
 								dateFormat: 'YYYY/MM/DD'}"></div>
-							<button>#{i18n.getText('CPS001_37')}</button>
-						</div>
+								<button>#{i18n.getText('CPS001_37')}</button>
+							</div>
 
-						<div style="padding-top: 10px"
-							data-bind="ntsLayoutControl: { 
+							<div style="padding-top: 10px"
+								data-bind="ntsLayoutControl: { 
 								data: layout().items,
 								editAble: 2 }"></div>
+						</div>
+						<div class="category-input" data-bind="css: { 'hidden': tabActive() != 'category'}">
+							<div class="title">category</div>
+							<div style="padding-top: 10px"
+								data-bind="ntsLayoutControl: { 
+								data: layout().items,
+								editAble: 2 }"></div>
+						</div>
 					</div>
 				</div>
 			</div>

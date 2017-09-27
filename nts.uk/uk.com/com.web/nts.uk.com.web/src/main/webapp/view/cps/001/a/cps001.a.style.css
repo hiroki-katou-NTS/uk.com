@@ -10,32 +10,32 @@
 	min-width: 1260px;
 }
 
-@media (min-width: 1280px) {
+@media ( min-width : 1280px) {
 	#functions-area, #contents-area {
-		overflow-x: hidden;  
+		overflow-x: hidden;
 	}
 }
 
-#contents-area .left-area, #contents-area .right-area {
+#contents-area>.left-area, #contents-area .right-area {
 	float: left;
 }
 
-#contents-area .left-area {
+#contents-area>.left-area {
 	width: 280px;
 	margin-left: 85px;
 }
 
-#contents-area .left-area .bg-green {
+#contents-area>.left-area .bg-green {
 	padding: 12px;
 	height: 255px;
 }
 
-#contents-area .right-area {
+#contents-area>.right-area {
 	padding-left: 15px;
 	width: 860px;
 }
 
-#contents-area .left-area #lefttabs {
+#contents-area>.left-area #lefttabs {
 	margin-top: 15px;
 }
 
@@ -167,38 +167,36 @@
 	padding: 5px;
 }
 
-.form-group:not(.item-classification) {
+.form-group:not (.item-classification ) {
 	margin-bottom: 5px;
 }
 
-.form-group:not(.item-classification)>* {
+.form-group:not (.item-classification )>* {
 	display: inline-block;
 	vertical-align: middle;
 }
 
 #contents-area .layout-control .drag-panel {
-	min-width: 830px;
+	min-width: 845px;
 }
 
-.ui-iggrid .ui-iggrid-tablebody .ui-state-hover,
-.ui-iggrid .ui-iggrid-tablebody .ui-state-active,
-.ui-iggrid .ui-iggrid-tablebody td {
+.ui-iggrid .ui-iggrid-tablebody .ui-state-hover, .ui-iggrid .ui-iggrid-tablebody .ui-state-active,
+	.ui-iggrid .ui-iggrid-tablebody td {
 	border-top: none;
 }
 
 #employees_container .ui-iggrid-headertable th:last-child,
-#employees_container .ui-iggrid-tablebody td.ui-state-hover:last-child,
-#employees_container .ui-iggrid-tablebody td.ui-state-active:last-child,
-#employees_container .ui-iggrid-tablebody td:last-child {
-	border-left: none;	
+	#employees_container .ui-iggrid-tablebody td.ui-state-hover:last-child,
+	#employees_container .ui-iggrid-tablebody td.ui-state-active:last-child,
+	#employees_container .ui-iggrid-tablebody td:last-child {
+	border-left: none;
 }
 
-
 #employees_container .ui-iggrid-headertable th:first-child,
-#employees_container .ui-iggrid-tablebody td.ui-state-hover:first-child,
-#employees_container .ui-iggrid-tablebody td.ui-state-active:first-child,
-#employees_container .ui-iggrid-tablebody td:first-child {
-	border-right: none;	
+	#employees_container .ui-iggrid-tablebody td.ui-state-hover:first-child,
+	#employees_container .ui-iggrid-tablebody td.ui-state-active:first-child,
+	#employees_container .ui-iggrid-tablebody td:first-child {
+	border-right: none;
 }
 
 .ui-tabs .ui-tabs-panel {
@@ -211,5 +209,13 @@
 
 .caret-background.caret-right:after {
 	top: 40px;
-	border-width: 35px 10px 
+	border-width: 35px 10px
+}
+
+
+
+.category-input>.title {
+	display: block;
+	line-height: 37px;
+	background-color: #cee6ff;
 }

@@ -57,6 +57,7 @@ module cps001.a.vm {
             }
         };
 
+        tabActive: KnockoutObservable<string> = ko.observable('layout');
         person: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ personId: '' }));
         layout: KnockoutObservable<any> = ko.observable({ items: ko.observableArray([]) });
         listEmployees: KnockoutObservableArray<IEmployeeInfo> = ko.observableArray([]);
