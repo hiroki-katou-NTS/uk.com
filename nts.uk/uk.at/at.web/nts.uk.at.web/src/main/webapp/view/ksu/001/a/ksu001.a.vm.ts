@@ -328,8 +328,8 @@ module ksu001.a.viewmodel {
                         menu: {
                             rows: [0],
                             items: [
-                                { id: "日付別", text: "日付別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
-                                { id: "シフト別", text: "シフト別", selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
+                                { id: "日付別", text: nts.uk.resource.getText("KSU001_325"), selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-calendar" },
+                                { id: "シフト別", text: nts.uk.resource.getText("KSU001_326"), selectHandler: function(id) { alert(id); }, icon: "ui-icon ui-icon-star" }
                             ]
                         },
                         popup: {
@@ -436,6 +436,10 @@ module ksu001.a.viewmodel {
                 pasteOverWrite: true,
                 stickOverWrite: true,
                 viewMode: "shortName",
+                determination: {
+                    rows: [0, 1],
+                    columns: ["empName"]
+                },
             })
                 .LeftmostHeader(leftmostHeader).LeftmostContent(leftmostContent)
                 .MiddleHeader(middleHeader).MiddleContent(middleContent)
@@ -767,7 +771,7 @@ module ksu001.a.viewmodel {
             $('#popup-area5').ntsPopup('hide');
             nts.uk.ui.windows.sub.modal("/view/ksu/001/l/index.xhtml");
         }
-        
+
         /**
          * open dialog N
          */
