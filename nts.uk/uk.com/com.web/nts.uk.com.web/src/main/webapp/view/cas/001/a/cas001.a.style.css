@@ -1,5 +1,10 @@
 @import url("base.css");
 
+#content {
+	width: 1200px;
+	margin-bottom: 20px;
+}
+
 #A1_004 {
 	margin-left: 15px !important;
 }
@@ -203,3 +208,4 @@
 	width: 200px;
 	float: left;
 }
+
