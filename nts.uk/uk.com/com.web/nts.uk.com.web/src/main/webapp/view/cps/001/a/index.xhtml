@@ -28,7 +28,8 @@
 			<div id="functions-area">
 				<button type="button" class="proceed" data-bind="click: saveData">#{i18n.getText('CPS001_4')}</button>
 				<button type="button" data-bind="click: unManagerEmployee">#{i18n.getText('CPS001_5')}</button>
-				<button type="button" class="danger" data-bind="click: deleteEmployee">#{i18n.getText('CPS001_6')}</button>
+				<button type="button" class="danger"
+					data-bind="click: deleteEmployee">#{i18n.getText('CPS001_6')}</button>
 				<a class="goout"
 					data-bind="ntsLinkButton: { jump: './index.xhtml' }">#{i18n.getText('CPS001_7')}</a>
 				<a class="goout"
@@ -41,16 +42,11 @@
 						<table id="employees"
 							data-bind="ntsGridList: {								
 								height: 220,
-								dataSource: ko.observableArray([
-									{id: 1, name: 'name 1'},
-									{id: 2, name: 'name 2'},
-									{id: 3, name: 'name 3'},
-									{id: 4, name: 'name 4'},
-									]),
-								primaryKey: 'id',
+								dataSource: listEmployees,
+								primaryKey: 'employeeId',
 								columns: [
-									{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-		                			{ headerText: '名称', key: 'name', width: 200, hidden: false }
+									{ headerText: 'コード', key: 'employeeId', width: 100, hidden: true },
+		                			{ headerText: '名称', key: 'employeeName', width: 200, hidden: false }
 								],
 								multiple: false,
 								value: ko.observable(undefined)
@@ -105,8 +101,9 @@
 						</div>
 						<div class="categorytab">
 							<div class="form-group">
-							<button type="button">#{i18n.getText('CPS001_27')}</button>
-							<div id="combo-box" data-bind="ntsComboBox: {
+								<button type="button">#{i18n.getText('CPS001_27')}</button>
+								<div id="combo-box"
+									data-bind="ntsComboBox: {
 								options: ko.observableArray([
 										{id: 1, name: 'name 1'},
 										{id: 2, name: 'name 2'},
@@ -180,7 +177,8 @@
 						<div class="action-group">
 							<div class="active-panel cf">
 								<div class="column">
-									<button class="btn btn-location" type="button" data-bind="click: pickLocation">#{i18n.getText('CPS001_34')}</button>
+									<button class="btn btn-location" type="button"
+										data-bind="click: pickLocation">#{i18n.getText('CPS001_34')}</button>
 									<button class="btn btn-details" type="button"></button>
 								</div>
 								<div class="column">
@@ -195,13 +193,14 @@
 					<div class="bottom-right-area">
 						<div class="form-group">
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_35')}</div>
-							<div data-bind="ntsDatePicker: {
+							<div
+								data-bind="ntsDatePicker: {
 								value: ko.observable(''), 
 								dateFormat: 'YYYY/MM/DD'}"></div>
-							<button>#{i18n.getText('CPS001_37')}</button>
+							<button data-bind="click:next">#{i18n.getText('CPS001_37')}</button>
 						</div>
-						
-						<div  style="padding-top: 10px"
+
+						<div style="padding-top: 10px"
 							data-bind="ntsLayoutControl: { 
 								data: layout().items,
 								editAble: 2 }"></div>

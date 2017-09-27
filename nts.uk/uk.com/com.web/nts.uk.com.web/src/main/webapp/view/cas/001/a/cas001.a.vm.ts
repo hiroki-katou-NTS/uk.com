@@ -372,6 +372,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
             return new PersonRoleCommand(self.currentRole());
 
         }
+
+        isHistoryNotCons() {
+            let self = this,
+                currentCtg = self.currentRole().currentCategory();
+            return (currentCtg.categoryType !== 1 && currentCtg.personEmployeeType === 2);
+        }
     }
     export interface IPersonRole {
         roleId: string;
@@ -389,6 +395,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         categoryName: string;
         setting: number;
         categoryType: number;
+        personEmployeeType: number;
         allowPersonRef: number;
         allowOtherRef: number;
         allowOtherCompanyRef: number;
@@ -482,6 +489,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         categoryName: string;
         categoryType: number;
         setting: number;
+        personEmployeeType: number;
         allowOtherCompanyRef: KnockoutObservable<number>;
         selfPastHisAuth: KnockoutObservable<number>;
         selfFutureHisAuth: KnockoutObservable<number>;
@@ -504,6 +512,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             self.categoryName = param ? param.categoryName : '';
             self.categoryType = param ? param.categoryType : 0;
             self.setting = param ? param.setting : 0;
+            self.personEmployeeType = param ? param.personEmployeeType : 0;
             screenModel.allowPersonRef(param ? param.allowPersonRef : 0);
             screenModel.allowOtherRef(param ? param.allowOtherRef : 0);
             self.allowOtherCompanyRef = ko.observable(param ? param.allowOtherCompanyRef : 0);
