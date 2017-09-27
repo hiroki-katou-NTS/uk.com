@@ -16,6 +16,8 @@
 	</div>
 	
 	<div class="right-contents">
+		<button class="proceed" data-bind="click: $parent.viewmodelA.openDialog.bind($parent.viewmodelA, 1)">FX</button>
+		
 		<table class="input-form-a">
 			<tr>
 				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KML002_8')}</div></td>
@@ -39,7 +41,7 @@
 				</td>
 				<td class="work-collection"><div data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_10')}</div></td>
 				<td class="help-box"><button id="help" 
-						data-bind="ntsHelpButton: {image: 'IMG_KMF004_1.png', position: 'left top', enable: true }">?</button>
+						data-bind="ntsHelpButton: {image: '../a/KML002_2.png', position: 'left top', enable: true }">?</button>
 				</td>
 				<td class="switch-box">
 					<div class="cf"
@@ -67,12 +69,22 @@
 				<td></td>
 			</tr>
 			<tr>
-				<td><button class="" data-bind="click: $parent.viewmodelA.addLineBtn.bind($parent.viewmodelA)">#{i18n.getText('KML002_14')}</button>
+				<td><button data-bind="click: $parent.viewmodelA.addLineBtn.bind($parent.viewmodelA)">#{i18n.getText('KML002_14')}</button>
 					<button class="danger" data-bind="click: $parent.viewmodelA.deleteLineBtn.bind($parent.viewmodelA)">#{i18n.getText('KML002_15')}</button></td>
 				<td></td>
 				<td></td>
 				<td></td>
 				<td></td>
+			</tr>
+		</table>
+				
+		<table class="link-notes">
+			<tr>
+				<td>
+					<a id="toggle-popup" class="toggle-popup" href="#">#{i18n.getText('KML002_97')}</a>
+					
+					<div id="popup-area" class="popup-area popup-panel" style="display: none; z-index: 100; visibility: visible; top: 417px; left: 355.5px;">#{i18n.getText('KML002_13')}</div>
+				</td>
 			</tr>
 		</table>
 		
@@ -116,8 +128,9 @@
 							value: settingMethod,
 							enable: true }"></div>
 					</td>
-					<td class="help-btn-item"><button id="help" 
-						data-bind="ntsHelpButton: {image: 'IMG_KML002_1.png', position: 'left top', enable: true }">fx</button></td>
+					<td class="help-btn-item">
+						<button class="formula-setting-btn" data-bind="click: $parent.formulaSettingDialog.bind($parent.viewmodelA)"></button>
+					</td>
 					<td class="formula-item"><div data-bind="ntsText: { value: formula }"></div></td>
 					<td class="display-atr-item">
 						<div class="display-atr" data-bind="ntsComboBox: {
@@ -166,5 +179,10 @@
 				</tr>
 			</tbody>
 		</table>
+		
+		<div class="up-down-button">
+			<button class="auto-height" data-bind="click: $parent.viewmodelA.upBtn.bind($parent.viewmodelA)"><i class="icon icon-button-arrow-top"/></button>
+			<button class="auto-height down-btn" data-bind="click: $parent.viewmodelA.downBtn.bind($parent.viewmodelA)"><i class="icon icon-button-arrow-bottom"/></button>
+		</div>
 	</div>
 </div>
