@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.infra.workplace;
+package nts.uk.ctx.bs.employee.infra.repository.workplace;
 
 import java.util.List;
 import java.util.stream.Collectors;
