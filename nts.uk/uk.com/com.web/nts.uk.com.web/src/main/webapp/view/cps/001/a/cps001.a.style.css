@@ -60,11 +60,11 @@
 }
 
 .action-group {
-	width: 190px;
+	width: 194px;
 }
 
 .action-group .column {
-	width: 90px;
+	width: 92px;
 	margin-left: 1px;
 	padding: 3px 0 3px 5px;
 	box-sizing: border-box;
@@ -164,7 +164,7 @@
 }
 
 .bottom-right-area {
-	padding: 5px;
+	padding-top: 5px;
 }
 
 .form-group:not (.item-classification ) {
@@ -177,7 +177,7 @@
 }
 
 #contents-area .layout-control .drag-panel {
-	min-width: 845px;
+	min-width: 860px;
 }
 
 .ui-iggrid .ui-iggrid-tablebody .ui-state-hover, .ui-iggrid .ui-iggrid-tablebody .ui-state-active,

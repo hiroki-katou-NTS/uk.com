@@ -19,7 +19,8 @@ module cps002.f.service{
     }
     
     export function updatePerInfoCtgCopy(categoryId){
-        return ajax("com", basePathPerInfoCtg + paths.updatePerInfoCtgCopy, categoryId);
+        let command = {perInfoCtgId:categoryId};
+        return ajax("com", basePathPerInfoCtg + paths.updatePerInfoCtgCopy, command);
     }
     
     export function updatePerInfoItemCopy(perInfoCtgId, perInfoItemDefIds){
@@ -27,7 +28,7 @@ module cps002.f.service{
             perInfoCtgId: perInfoCtgId,
             perInfoItemDefIds: perInfoItemDefIds
         };
-        return ajax("com", basePathPerInfoItem + updatePerInfoItemCopy, command);
+        return ajax("com", basePathPerInfoItem + paths.updatePerInfoItemCopy, command);
     }
     
 }

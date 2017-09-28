@@ -11,7 +11,7 @@
 					nts.uk.ctx.bs.employee.dom.classification.ClassificationCode
 					nts.uk.ctx.bs.employee.dom.classification.ClassificationName
 					nts.uk.shr.com.primitive.Memo
-				</com:ValidatorScript>
+			</com:ValidatorScript>
 			<com:stylefile path="cmm014.a.main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="cmm014.a.start.js" />
@@ -27,11 +27,11 @@
 				<button id="A_BTN_001" data-bind="click: initRegisterClassification"
 					class="btnStyle">新規</button>
 				<button id="A_BTN_002"
-					data-bind="click: RegisterClassification , enable: $root.errors.isEmpty"
+					data-bind="click: registerClassification , enable: $root.errors.isEmpty"
 					class="proceed btnStyle">登録</button>
 				<button id="A_BTN_003">マスタ修正ログ</button>
 				<button id="A_BTN_004"
-					data-bind="click: DeleteClassification , enable: hasCellphone"
+					data-bind="click: deleteClassification , enable: hasCellphone"
 					class="danger btnStyle">削除</button>
 
 			</div>
@@ -45,6 +45,8 @@
 						<div style="float: left">
 							<div id="test"
 								data-bind="ntsSearchBox: {
+									targetKey: 'classificationCode',
+									mode:'igGrid',
                                     comId: 'single-list',
                                     items: dataSource,         
                                     selected: currentCode, 
@@ -60,7 +62,8 @@
                                             optionsValue: 'classificationCode',
                                             columns: columns,
                                             multiple: false,
-                                            value: currentCode}"
+                                            value: currentCode,
+                                            primaryKey: 'classificationCode'}"
 								class="cf">
 							</table>
 						</div>

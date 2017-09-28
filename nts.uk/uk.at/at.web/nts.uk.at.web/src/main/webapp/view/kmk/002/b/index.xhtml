@@ -9,12 +9,14 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 1200,
-					height : 520
+					width : 400,
+					height : 600
 				};
 			</script>
 			<com:stylefile path="kmk002.b.style.css" />
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js"  of="/nts.uk.com.js.web"/>
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js"  of="/nts.uk.com.js.web"/>
 			<com:scriptfile path="kmk002.b.start.js" />
 			<com:scriptfile path="kmk002.b.vm.js" />
 			<com:scriptfile path="kmk002.b.service.js" />
@@ -22,13 +24,14 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button tabindex="1" class="x-large proceed">#{i18n.getText('KMK002_1')}</button>
-				<button tabindex="2">#{i18n.getText('KMK002_44')}</button>
+				<button id="btn-apply" tabindex="1" data-bind="click: save" class="proceed">#{i18n.getText('KMK002_1')}</button>
+				<button id="btn-close" tabindex="2">#{i18n.getText('KMK002_44')}</button>
 			</div>
-			<div id="contents-area" style="display: none" data-bind="visible: true">
-				<label>#{i18n.getText('KMK002_45')}</label>
-				<button tabindex="3">#{i18n.getText('KMK002_46')}</button>
-				<button tabindex="4">#{i18n.getText('KMK002_47')}</button>
+			<div id="contents-area" style="display: none; padding-top: 10px; padding-left: 20px" data-bind="visible: true">
+				<div id="lbl-desc">#{i18n.getText('KMK002_45')}</div>
+				<button tabindex="3" data-bind="click: applyAll" id="func-apply-all">#{i18n.getText('KMK002_46')}</button>
+				<button tabindex="4" data-bind="click: notApplyAll">#{i18n.getText('KMK002_47')}</button>
+				<table data-bind="name: '#[KMK002_48]'" id="grid-emp-condition"></table>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -136,6 +136,7 @@ public class OptionalItemDto implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setCalculationResultRange(CalcResultRange calculationResultRange) {
+		this.calcResultRange = new CalcResultRangeDto();
 		calculationResultRange.saveToMemento(this.calcResultRange);
 	}
 }

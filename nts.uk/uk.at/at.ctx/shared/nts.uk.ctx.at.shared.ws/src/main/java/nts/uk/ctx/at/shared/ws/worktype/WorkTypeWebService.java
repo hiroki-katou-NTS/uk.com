@@ -73,17 +73,6 @@ public class WorkTypeWebService extends WebService {
 	}
 
 	/**
-	 * Gets the by C id and display atr.
-	 *
-	 * @return the by C id and display atr
-	 */
-	@POST
-	@Path("getByCIdAndDisplayAtr")
-	public List<WorkTypeDto> getByCIdAndDisplayAtr() {
-		return this.find.findByCIdAndDisplayAtr();
-	}
-
-	/**
 	 * Find all.
 	 *
 	 * @return the list
@@ -127,8 +116,8 @@ public class WorkTypeWebService extends WebService {
 	 */
 	@POST
 	@Path("findById/{workTypeCode}")
-	public WorkTypeDto findById(@PathParam("workTypeCode") String workTypeCode) {
-		return this.find.findById(workTypeCode);
+	public WorkTypeDto findByCode(@PathParam("workTypeCode") String workTypeCode) {
+		return this.find.findByCode(workTypeCode);
 	}
 
 	/**
@@ -174,8 +163,8 @@ public class WorkTypeWebService extends WebService {
 	 */
 	@POST
 	@Path("getByCIdAndLangId/{langId}")
-	public List<WorkTypeDto> checkLanguageWorkType(@PathParam("langId") String langId) {
-		return this.find.checkLanguageWorkType(langId);
+	public List<WorkTypeDto> findWorkTypeLanguage(@PathParam("langId") String langId) {
+		return this.find.findWorkTypeLanguage(langId);
 	}
 
 	/**

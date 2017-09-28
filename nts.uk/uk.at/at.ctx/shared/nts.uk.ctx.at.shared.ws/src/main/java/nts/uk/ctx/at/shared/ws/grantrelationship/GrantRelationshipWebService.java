@@ -8,14 +8,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.shared.app.command.grantrelationship.DeleteGrantRelationshipCommand;
-import nts.uk.ctx.at.shared.app.command.grantrelationship.DeleteGrantRelationshipCommandHandler;
-import nts.uk.ctx.at.shared.app.command.grantrelationship.InsertGrantRelationshipCommand;
-import nts.uk.ctx.at.shared.app.command.grantrelationship.InsertGrantRelationshipCommandHandler;
-/*import nts.uk.ctx.at.shared.app.command.grantrelationship.UpdateGrantRelationshipCommand;
-import nts.uk.ctx.at.shared.app.command.grantrelationship.UpdateGrantRelationshipCommandHandler;*/
-import nts.uk.ctx.at.shared.app.find.grantrelationship.GrantRelationshipDto;
-import nts.uk.ctx.at.shared.app.find.grantrelationship.GrantRelationshipFinder;
+import nts.uk.ctx.at.shared.app.command.specialholiday.grantrelationship.DeleteGrantRelationshipCommand;
+import nts.uk.ctx.at.shared.app.command.specialholiday.grantrelationship.DeleteGrantRelationshipCommandHandler;
+import nts.uk.ctx.at.shared.app.command.specialholiday.grantrelationship.InsertGrantRelationshipCommand;
+import nts.uk.ctx.at.shared.app.command.specialholiday.grantrelationship.InsertGrantRelationshipCommandHandler;
+import nts.uk.ctx.at.shared.app.find.specialholiday.grantrelationship.GrantRelationshipDto;
+import nts.uk.ctx.at.shared.app.find.specialholiday.grantrelationship.GrantRelationshipFinder;
 @Path("at/shared/grantrelationship")
 @Produces("application/json")
 public class GrantRelationshipWebService extends WebService{

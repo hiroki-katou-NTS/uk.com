@@ -25,9 +25,9 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button data-bind="click: createNewEmployment" tabindex="1">#{i18n.getText('CMM008_1')}</button>
+				<button data-bind="click: clearData" tabindex="1">#{i18n.getText('CMM008_1')}</button>
 				<button class="proceed" data-bind="click: createEmployment, enable: $root.errors.isEmpty" tabindex="2">#{i18n.getText('CMM008_2')}</button>
-				<button class="danger" id="btnDelete" data-bind = "click: deleteEmployment, enable: !isNewMode()" tabindex="4">#{i18n.getText('CMM008_4')}</button>
+				<button class="danger" id="btnDelete" data-bind = "click: deleteEmployment, enable: enableDelete()" tabindex="4">#{i18n.getText('CMM008_4')}</button>
 			</div>
 			<div id="contents-area">
 				<table>
@@ -35,7 +35,7 @@
 						<td id="left-content">
 							<div id="emp-component" tabindex="6"></div>
 						</td>
-						<td id="right-contents">
+						<td id="right-contents" data-bind="with: employmentModel">
 						
 							<div class="td-width" data-bind="ntsFormLabel: {required: true, constraint: ['EmploymentCode', 'EmploymentName']}"><label>#{i18n.getText('CMM008_6')}</label></div>
 							<div style="display: inline-block; padding-left: 10px">
@@ -45,8 +45,8 @@
 														constraint: 'EmploymentCode', 
 														option: { width: '35px' },
 														required: true, 
-														enable: isNewMode()}"
-									tabindex="7" />
+														enable: isEnableCode()}"
+									tabindex="7" /> 
 								<input id="empName" data-bind="ntsTextEditor: {
 														name: '#[CMM008_8]',
 														value: employmentName, 
@@ -65,7 +65,7 @@
 											<label>#{i18n.getText('CMM008_9')}</label>
 										</div>
 									</td>
-									<td>
+									<td class="padding-left">
 										<input id="extCode" data-bind="ntsTextEditor: {
 														name: '#[CMM008_9]',
 														value: empExternalCode, 
@@ -80,16 +80,8 @@
 											<label>#{i18n.getText('CMM008_10')}</label>
 										</div>
 									</td>
-									<td>
-										<!-- <input data-bind="ntsTextEditor: {
-														name: '#[CMM008_10]',
-														value: memo, 
-														constraint: 'Memo',
-														option: { width: '300px', height: '100px' },
-														enable: true}" tabindex="10"/> -->
+									<td class="padding-left">
 										<div>
-											<!-- <TEXTAREA id="input-text" rows="5" cols="35"
-												data-bind="value: memo, name: '#[CMM008_10]'"></TEXTAREA> -->
 											<textarea id="memo" tabindex="10" data-bind="ntsMultilineEditor: { value: memo, name: '#[CMM008_10]', constraint: 'Memo', option: { width: '290px', height: '150px'}}" />
 										</div>
 									</td>

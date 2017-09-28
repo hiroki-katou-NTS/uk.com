@@ -59,46 +59,50 @@ module cmm044.d.viewmodel {
             var dfd = $.Deferred();
             self.personList.removeAll();
             service.findAgentByDate(self.dateValue().startDate, self.dateValue().endDate).done(function(agent_arr: Array<model.AgentDto>) {
+
                 if (agent_arr.length == 0) {
-                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_7"));
-                } else {
-                    _.each(agent_arr, x => {
-                        employeeIds.push(x.employeeId);
-                        if (x.agentSid1) {
-                            employeeIds.push(x.agentSid1);
-                        }
-
-                        if (x.agentSid2) {
-                            employeeIds.push(x.agentSid2);
-                        }
-
-                        if (x.agentSid3) {
-                            employeeIds.push(x.agentSid3);
-                        }
-
-                        if (x.agentSid4) {
-                            employeeIds.push(x.agentSid4);
-                        }
+                    nts.uk.ui.dialog.alert(nts.uk.resource.getMessage("Msg_7")).then(() => {
+                        self.dateValue({ startDate: '', endDate: '' });
                     });
-
-                    var employeUniqIds = _.uniq(employeeIds);
-
-                    self.findEmployee(employeUniqIds).done(function() {
-                        _.forEach(agent_arr, function(agent: model.AgentDto) {
-                            var employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
-                                return e.employeeId == agent.employeeId;
-                            });
-                            self.personList.push(new AgentData(employee.employeeCode, employee.employeeName, employee.workplaceCode, employee.workplaceName, employee.jobTitleName, agent.startDate, agent.endDate, self.tabs()[0].title, self.getAgentAppType(agent.agentAppType1, agent.agentSid1), self.getEmpNameAgentAppType(agent.agentAppType1, agent.agentSid1), self.getColSpanAgentAppType(agent.agentAppType1)));
-                            self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[1].title, self.getAgentAppType(agent.agentAppType2, agent.agentSid2), self.getEmpNameAgentAppType(agent.agentAppType2, agent.agentSid2), self.getColSpanAgentAppType(agent.agentAppType2)));
-                            self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[2].title, self.getAgentAppType(agent.agentAppType3, agent.agentSid3), self.getEmpNameAgentAppType(agent.agentAppType3, agent.agentSid3), self.getColSpanAgentAppType(agent.agentAppType3)));
-                            self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[3].title, self.getAgentAppType(agent.agentAppType4, agent.agentSid4), self.getEmpNameAgentAppType(agent.agentAppType4, agent.agentSid4), self.getColSpanAgentAppType(agent.agentAppType4)));
-                        });
-                    });
-
-                    dfd.resolve();
+                    return;
                 }
+
+                _.each(agent_arr, x => {
+                    employeeIds.push(x.employeeId);
+                    if (x.agentSid1) {
+                        employeeIds.push(x.agentSid1);
+                    }
+
+                    if (x.agentSid2) {
+                        employeeIds.push(x.agentSid2);
+                    }
+
+                    if (x.agentSid3) {
+                        employeeIds.push(x.agentSid3);
+                    }
+
+                    if (x.agentSid4) {
+                        employeeIds.push(x.agentSid4);
+                    }
+                });
+
+                var employeUniqIds = _.uniq(employeeIds);
+
+                self.findEmployee(employeUniqIds).done(function() {
+                    _.forEach(agent_arr, function(agent: model.AgentDto) {
+                        var employee = _.find(self.dataPerson(), function(e: service.EmployeeResult) {
+                            return e.employeeId == agent.employeeId;
+                        });
+                        self.personList.push(new AgentData(employee.employeeCode, employee.employeeName, employee.workplaceCode, employee.workplaceName, employee.jobTitleName, agent.startDate, agent.endDate, self.tabs()[0].title, self.getAgentAppType(agent.agentAppType1, agent.agentSid1), self.getEmpNameAgentAppType(agent.agentAppType1, agent.agentSid1), self.getColSpanAgentAppType(agent.agentAppType1)));
+                        self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[1].title, self.getAgentAppType(agent.agentAppType2, agent.agentSid2), self.getEmpNameAgentAppType(agent.agentAppType2, agent.agentSid2), self.getColSpanAgentAppType(agent.agentAppType2)));
+                        self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[2].title, self.getAgentAppType(agent.agentAppType3, agent.agentSid3), self.getEmpNameAgentAppType(agent.agentAppType3, agent.agentSid3), self.getColSpanAgentAppType(agent.agentAppType3)));
+                        self.personList.push(new AgentData("", "", "", "", "", "", "", self.tabs()[3].title, self.getAgentAppType(agent.agentAppType4, agent.agentSid4), self.getEmpNameAgentAppType(agent.agentAppType4, agent.agentSid4), self.getColSpanAgentAppType(agent.agentAppType4)));
+                    });
+                });
+                dfd.resolve();
+
             }).fail(function(error) {
-                alert(error.message);
+                nts.uk.ui.dialog.alertError(error.message);
                 dfd.reject(error);
             });
             return dfd.promise();

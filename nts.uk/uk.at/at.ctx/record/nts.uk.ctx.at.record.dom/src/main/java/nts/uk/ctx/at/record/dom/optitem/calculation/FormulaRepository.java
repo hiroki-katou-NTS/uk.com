@@ -14,9 +14,9 @@ public interface FormulaRepository {
 	/**
 	 * Creates the.
 	 *
-	 * @param listFormula the list formula
+	 * @param domains the domains
 	 */
-	void create(List<Formula> listFormula);
+	void create(List<Formula> domains);
 
 	/**
 	 * Removes the.

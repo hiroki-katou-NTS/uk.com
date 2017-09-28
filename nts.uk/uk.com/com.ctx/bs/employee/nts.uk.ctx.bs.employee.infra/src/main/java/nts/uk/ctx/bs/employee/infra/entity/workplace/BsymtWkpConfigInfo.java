@@ -36,10 +36,6 @@ public class BsymtWkpConfigInfo extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	protected BsymtWkpConfigInfoPK bsymtWkpConfigInfoPK;
 
-	/** The wkpid. */
-	@Column(name = "WKPID")
-	private String wkpid;
-
 	/** The hierarchy cd. */
 	@Column(name = "HIERARCHY_CD")
 	private String hierarchyCd;

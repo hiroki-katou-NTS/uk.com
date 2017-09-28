@@ -52,23 +52,22 @@ public class WorkType extends AggregateRoot {
 
 	// 出勤率の計算
 	private CalculateMethod calculateMethod;
-	
+
 	private List<WorkTypeSet> workTypeSetList;
-	
+
 	private Integer dispOrder;
-	
+
 	@Override
 	public void validate() {
 		super.validate();
-		if (this.workTypeCode.v() == "000") {
+		if ("000".equals(this.workTypeCode.v())) {
 			throw new BusinessException("Msg_385");
 		}
 
 		WorkTypeClassification moringType = this.dailyWork.getMorning();
 		WorkTypeClassification afternoonType = this.dailyWork.getAfternoon();
 		if (this.dailyWork.getWorkTypeUnit() == WorkTypeUnit.MonringAndAfternoon) {
-			if ((moringType == afternoonType && (moringType != WorkTypeClassification.Attendance
-					|| moringType == WorkTypeClassification.SpecialHoliday))
+			if ((moringType == afternoonType && (moringType != WorkTypeClassification.Absence || moringType == WorkTypeClassification.SpecialHoliday))
 					|| (moringType == WorkTypeClassification.Pause && afternoonType == WorkTypeClassification.Shooting)
 					|| (moringType == WorkTypeClassification.Shooting
 							&& afternoonType == WorkTypeClassification.Pause)) {
@@ -105,7 +104,7 @@ public class WorkType extends AggregateRoot {
 		this.deprecate = deprecate;
 		this.calculateMethod = calculateMethod;
 	}
-	
+
 	/**
 	 * 
 	 * @param companyId
@@ -121,7 +120,6 @@ public class WorkType extends AggregateRoot {
 		this.name = name;
 		this.abbreviationName = abbreviationName;
 	}
-
 
 	/**
 	 * Creates the simple from java type.
@@ -157,20 +155,31 @@ public class WorkType extends AggregateRoot {
 				dailyWork, EnumAdaptor.valueOf(deprecate, DeprecateClassification.class),
 				EnumAdaptor.valueOf(calculateMethod, CalculateMethod.class));
 	}
-	
+
 	/**
 	 * Set work type set
+	 * 
 	 * @param workTypeList
 	 */
 	public void setWorkTypeSet(List<WorkTypeSet> workTypeList) {
 		this.workTypeSetList = workTypeList;
 	}
-	
+
 	/**
 	 * Set display order
+	 * 
 	 * @param order
 	 */
 	public void setDisplayOrder(int dispOrder) {
 		this.dispOrder = dispOrder;
+	}
+
+	/**
+	 * Check OneDay Morning Afternoon
+	 * 
+	 * @return
+	 */
+	public boolean isOneDay() {
+		return this.dailyWork.getWorkTypeUnit() == WorkTypeUnit.OneDay;
 	}
 }

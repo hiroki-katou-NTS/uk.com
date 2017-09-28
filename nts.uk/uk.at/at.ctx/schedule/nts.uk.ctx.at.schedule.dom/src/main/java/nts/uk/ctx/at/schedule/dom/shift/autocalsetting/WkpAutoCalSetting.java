@@ -10,6 +10,16 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
 /**
+ * The Class WkpAutoCalSetting.
+ */
+
+/**
+ * Gets the rest time.
+ *
+ * @return the rest time
+ */
+
+/**
  * Gets the rest time.
  *
  * @return the rest time
@@ -36,25 +46,36 @@ public class WkpAutoCalSetting extends AggregateRoot {
 	/** The rest time. */
 	//休出時間
 	private AutoCalRestTimeSetting restTime;
+	
+	
+	/**
+	 * Instantiates a new wkp auto cal setting.
+	 *
+	 * @param memento the memento
+	 */
+	public WkpAutoCalSetting(WkpAutoCalSettingGetMemento memento ) {
+		super();
+		this.companyId = memento.getCompanyId();
+		this.wkpId = memento.getWkpId();
+		this.normalOTTime = memento.getNormalOTTime();
+		this.flexOTTime = memento.getFlexOTTime();
+		this.restTime = memento.getRestTime();
+	}
+	
 
 	/**
-	 * Instantiates a new auto cal workplace setting.
+	 * Save to memento.
 	 *
-	 * @param companyId the company id
-	 * @param wkpId the wkp id
-	 * @param normalOTTime the normal OT time
-	 * @param flexOTTime the flex OT time
-	 * @param restTime the rest time
+	 * @param memento the memento
 	 */
-	public WkpAutoCalSetting(CompanyId companyId, WorkplaceId wkpId, AutoCalOvertimeSetting normalOTTime,
-			AutoCalFlexOvertimeSetting flexOTTime, AutoCalRestTimeSetting restTime) {
-		super();
-		this.companyId = companyId;
-		this.wkpId = wkpId;
-		this.normalOTTime = normalOTTime;
-		this.flexOTTime = flexOTTime;
-		this.restTime = restTime;
+	public void saveToMemento(WkpAutoCalSettingSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setWkpId(this.wkpId);
+		memento.setFlexOTTime(this.flexOTTime);
+		memento.setNormalOTTime(this.normalOTTime);
+		memento.setRestTime(this.restTime);
 	}
+
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
