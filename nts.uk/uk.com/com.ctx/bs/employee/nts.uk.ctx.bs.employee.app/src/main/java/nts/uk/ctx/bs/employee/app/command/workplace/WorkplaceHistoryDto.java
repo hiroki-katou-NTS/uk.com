@@ -4,8 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.workplace;
 
+import java.util.UUID;
+
 import lombok.Getter;
 import lombok.Setter;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 import nts.uk.ctx.bs.employee.dom.workplace.Period;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
@@ -40,6 +43,9 @@ public class WorkplaceHistoryDto {
 
 		@Override
 		public HistoryId getHistoryId() {
+			if (StringUtil.isNullOrEmpty(this.workplaceHistoryDto.historyId, true)) {
+				return new HistoryId(UUID.randomUUID().toString());
+			}
 			return new HistoryId(this.workplaceHistoryDto.getHistoryId());
 		}
 

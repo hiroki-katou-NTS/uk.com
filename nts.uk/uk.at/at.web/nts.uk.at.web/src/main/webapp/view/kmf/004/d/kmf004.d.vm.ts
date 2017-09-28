@@ -12,11 +12,12 @@ module nts.uk.at.view.kmf004 {
             title: KnockoutObservable<string> = ko.observable('');
             removeAble: KnockoutObservable<boolean> = ko.observable(true);
             tabs: KnockoutObservableArray<TabModel> = ko.observableArray([
-                new TabModel({ id: 'D', name: getText('Com_Company'), active: true }),
-                new TabModel({ id: 'E', name: getText('Com_Person') })
+                new TabModel({ id: 'd', name: getText('Com_Company'), active: true }),
+                new TabModel({ id: 'e', name: getText('Com_Person') })
             ]);
+            currentTab: KnockoutObservable<string> = ko.observable('d');
 
-            //radio
+            //radio     
 
             constructor() {
                 let self = this;
@@ -49,15 +50,17 @@ module nts.uk.at.view.kmf004 {
 
                 // call start function on view at here
                 switch (tab.id) {
-                    case 'D':
+                    case 'd':
+                        self.currentTab('d');
                         if (!!view.viewmodelD && typeof view.viewmodelD.start == 'function') {
                             view.viewmodelD.start();
                         }
                         break;
-                    case 'E':
-//                        if (!!view.viewmodelE && typeof view.viewmodelE.start == 'function') {
-//                            view.viewmodelE.start();
-//                        }
+                    case 'e':
+                        self.currentTab('e');
+                        if (!!view.viewmodelE && typeof view.viewmodelE.startPage == 'function') {
+                            view.viewmodelE.startPage();
+                        }
                         break;
                 }
             }
@@ -107,48 +110,37 @@ module nts.uk.at.view.kmf004 {
                 ]);
                 self.value = ko.observable('');
                 self.enable = ko.observable(true);
-                self.selectedId = ko.observable(null);
+                self.selectedId = ko.observable(0);
                 self.items = ko.observableArray([]);
                 self.lst = ko.observableArray([]);
                 self.display = ko.observable(false);
-                self.selectedId.subscribe((value) => {
-                    if (value == 0) {
-                        self.display(false);
-                    }
-                    else {
-                        self.display(true);
-                    }
-                    console.log(self.display());
-                });
                 self.start();
             }
-
+ 
             start() {
                 var self = this;
                 var dfd = $.Deferred();
                 service.findAll().done((lstData) => {
-                    //                    self.items(lstData);
+                    self.items([]);
+                    $("#button_radio").focus();
                     for (let i = 0; i < 20; i++) {
                         if (lstData[i]) {
                             var param: IItem = {
-                                yearServiceType: lstData[i].yearServiceType,
                                 yearServiceNo: i + 1,
                                 month: lstData[i].month,
                                 year: lstData[i].year,
                                 date: lstData[i].date
                             };
-
                             self.items.push(new Item(param));
                         } else {
                             var param: IItem = {
-                                yearServiceType: 0,
                                 yearServiceNo: i + 1,
                                 month: null,
                                 year: null,
                                 date: null
                             };
                             self.items.push(new Item(param));
-                        }
+                        }  
                     }
                     dfd.resolve();
                 }).fail(function(error) {
@@ -159,6 +151,7 @@ module nts.uk.at.view.kmf004 {
             }
 
             register() {
+                nts.uk.ui.block.invisible();
                 var self = this;
                 let b = this.value();
                 let a = self.items();
@@ -166,22 +159,50 @@ module nts.uk.at.view.kmf004 {
                 var items = _.filter(self.items(), function(item: Item) {
                     return item.date() || item.month() || item.year();
                 });
-                               
+
                 var dataTranfer = {
-                    specialHolidayCode: '01', // TODO
+                    specialHolidayCode: nts.uk.ui.windows.getShared('KMF004D_SPHD_CD'), // TODO
                     lengthServiceYearAtr: self.selectedId(),
                     yearServiceSets: ko.toJS(items)
                 }
 
-                service.update(dataTranfer).done(function(items) {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                }).fail(function(error){
-                        alert(error.message);
-                    });
-            }
-
+                service.update(dataTranfer).done(function(errors) {
+                    self.start();
+                    if (errors && errors.length > 0) {
+                        self.addListError(errors);
+                    } else {
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function(){
+                            $("#button_radio").focus();
+                        });
+                    }
+                }).fail(function(error) {
+                    alert(error.message);
+                });
+                nts.uk.ui.block.clear();
+            }   
+   
             closeDialog() {
+                var t0 = performance.now(); 
                 nts.uk.ui.windows.close();
+                 var t1 = performance.now();
+                console.log("Selection process " + (t1 - t0) + " milliseconds.");   
+            }
+            
+            /**
+             * Set error
+             */
+            addListError(errorsRequest: Array<string>) {
+                var messages = {};
+                _.forEach(errorsRequest, function(err) {
+                    messages[err] = nts.uk.resource.getMessage(err);
+                });
+    
+                var errorVm = {
+                    messageId: errorsRequest,
+                    messages: messages
+                };
+    
+                nts.uk.ui.dialog.bundledErrors(errorVm);
             }
         }
         class BoxModel {
@@ -192,9 +213,8 @@ module nts.uk.at.view.kmf004 {
                 self.id = id;
                 self.name = name;
             }
-        }
+        }  
         export class Item {
-            yearServiceType: KnockoutObservable<number>;
             yearServiceNo: KnockoutObservable<number>;
             month: KnockoutObservable<number>;
             year: KnockoutObservable<number>;
@@ -202,7 +222,6 @@ module nts.uk.at.view.kmf004 {
 
             constructor(param: IItem) {
                 var self = this;
-                self.yearServiceType = ko.observable(param.yearServiceType);
                 self.yearServiceNo = ko.observable(param.yearServiceNo);
                 self.month = ko.observable(param.month);
                 self.year = ko.observable(param.year);
@@ -210,7 +229,6 @@ module nts.uk.at.view.kmf004 {
             }
         }
         export interface IItem {
-            yearServiceType: number;
             yearServiceNo: number
             month: number;
             year: number;

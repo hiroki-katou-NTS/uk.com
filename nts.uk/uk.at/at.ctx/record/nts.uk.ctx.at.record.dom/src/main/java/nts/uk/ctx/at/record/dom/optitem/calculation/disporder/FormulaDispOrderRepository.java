@@ -35,5 +35,5 @@ public interface FormulaDispOrderRepository {
 	 * @param optItemNo the opt item no
 	 * @return the list
 	 */
-	List<Formula> findByOptItemNo(String companyId, String optItemNo);
+	List<FormulaDispOrder> findByOptItemNo(String companyId, String optItemNo);
 }

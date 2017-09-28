@@ -101,9 +101,10 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             $(".ntsColorPicker_Container").trigger("validate");
             var menuCls = null;
             var code = null;
-            
-            validateNameInput($(".menu-bar-name"),'#[CCG013_18]', self.nameMenuBar().trim(), 'MenuBarName');
-            
+            var name = null;
+
+            validateNameInput($(".menu-bar-name"), '#[CCG013_18]', self.nameMenuBar().trim(), 'MenuBarName');
+
             if (nts.uk.ui.errors.hasError()) {
                 return;
             }
@@ -113,20 +114,42 @@ module nts.uk.sys.view.ccg013.b.viewmodel {
             if (standMenu) {
                 menuCls = standMenu.classification;
                 code = standMenu.code;
+                name = standMenu.displayName;
             }
-            var menuBar = new MenuBar({
-                code: code,
-                nameMenuBar: self.nameMenuBar(),
-                letterColor: self.letterColor(),
-                backgroundColor: self.backgroundColor(),
-                selectedRadioAtcClass: self.selectedRadioAtcClass(),
-                system: self.selectedCodeSystemSelect(),
-                menuCls: menuCls,
-            });
-            windows.setShared("CCG013B_MenuBar", menuBar);
-            self.cancel_Dialog();
+
+            if (self.selectedRadioAtcClass() == 1) {
+                if (self.selectedStandardMenuKey() !== '') {
+                    var menuBar = new MenuBar({
+                        code: code,
+                        nameMenuBar: name,
+                        letterColor: self.letterColor(),
+                        backgroundColor: self.backgroundColor(),
+                        selectedRadioAtcClass: self.selectedRadioAtcClass(),
+                        system: self.selectedCodeSystemSelect(),
+                        menuCls: menuCls,
+                    });
+                    windows.setShared("CCG013B_MenuBar", menuBar);
+                    self.cancel_Dialog();
+                } else {
+                    var textMsg218 = nts.uk.resource.getMessage("Msg_218",[nts.uk.resource.getText("CCG013_105")]);
+                    nts.uk.ui.dialog.alertError(textMsg218);
+                    return;
+                }
+            } else {
+                var menuBar = new MenuBar({
+                    code: code,
+                    nameMenuBar: self.nameMenuBar(),
+                    letterColor: self.letterColor(),
+                    backgroundColor: self.backgroundColor(),
+                    selectedRadioAtcClass: self.selectedRadioAtcClass(),
+                    system: self.selectedCodeSystemSelect(),
+                    menuCls: menuCls,
+                });
+                windows.setShared("CCG013B_MenuBar", menuBar);
+                self.cancel_Dialog();
+            }
         }
-        
+
         /** Select by Index: Start & Delete case */
         private selectStandardMenuByIndex(index: number) {
             var self = this;

@@ -17,6 +17,9 @@ public class EmploymentConditionDto {
 	/** The emp cd. */
 	private String empCd;
 
+	/** The emp name. */
+	private String empName;
+
 	/** The emp applicable atr. */
 	private int empApplicableAtr;
 
@@ -28,6 +31,7 @@ public class EmploymentConditionDto {
 	 */
 	public EmploymentConditionDto(String empCd, int empApplicableAtr) {
 		this.empCd = empCd;
+		this.empName = "name"; //TODO testing
 		this.empApplicableAtr = empApplicableAtr;
 	}
 

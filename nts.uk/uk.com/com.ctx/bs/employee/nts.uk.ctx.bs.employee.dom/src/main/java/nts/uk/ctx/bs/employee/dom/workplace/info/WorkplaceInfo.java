@@ -86,6 +86,17 @@ public class WorkplaceInfo extends AggregateRoot {
 		memento.setOutsideWkpCode(this.outsideWkpCode);
 	}
 
+	/**
+	 * Clone with history id.
+	 *
+	 * @param historyId the history id
+	 * @return the workplace info
+	 */
+	public WorkplaceInfo cloneWithHistoryId(String historyId) {
+		this.historyId = new HistoryId(historyId);
+		return this;
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
