@@ -22,9 +22,20 @@ public class KrcmtWorktypeChangeablePk {
 	public String empCode;
 
 	@Column(name = "WORKTYPE_GROUP_NO")
-	public BigDecimal worktypeGroupNo;
+	public BigDecimal workTypeGroupNo;
 
 	@Column(name = "WORKTYPE_CODE")
-	public String worktypeCode;
+	public String workTypeCode;
 
+	public KrcmtWorktypeChangeablePk() {
+		super();
+	}
+
+	public KrcmtWorktypeChangeablePk(String cid, String empCode, BigDecimal workTypeGroupNo, String workTypeCode) {
+		super();
+		this.cid = cid;
+		this.empCode = empCode;
+		this.workTypeGroupNo = workTypeGroupNo;
+		this.workTypeCode = workTypeCode;
+	}
 }

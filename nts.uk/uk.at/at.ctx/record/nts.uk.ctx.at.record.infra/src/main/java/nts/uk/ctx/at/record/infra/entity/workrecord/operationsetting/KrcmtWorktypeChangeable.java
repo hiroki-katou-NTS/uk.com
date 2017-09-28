@@ -16,13 +16,23 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  */
 @Entity
 @Table(name = "KRCMT_WORKTYPE_CHANGEABLE")
-public class KrcmtWorktypeChangeable extends UkJpaEntity{
-	
+public class KrcmtWorktypeChangeable extends UkJpaEntity {
+
 	@EmbeddedId
 	public KrcmtWorktypeChangeablePk pk;
-	
+
 	@Column(name = "WORKTYPE_GROUP_NAME")
-	public String worktypeGroupName;
+	public String workTypeGroupName;
+
+	public KrcmtWorktypeChangeable() {
+		super();
+	}
+
+	public KrcmtWorktypeChangeable(KrcmtWorktypeChangeablePk pk, String workTypeGroupName) {
+		super();
+		this.pk = pk;
+		this.workTypeGroupName = workTypeGroupName;
+	}
 
 	@Override
 	protected Object getKey() {
