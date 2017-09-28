@@ -7,22 +7,28 @@ module nts.uk.com.view.cdl002.a {
             selectedCodes: KnockoutObservable<any>;
             isMultiSelect: KnockoutObservable<boolean>;
             isDisplayUnselect: KnockoutObservable<boolean>;
+            selecType: KnockoutObservable<SelectType>;
             listComponentOption: any;
             
             constructor() {
-                let self = this,
-                isMultiple: boolean = getShared('isMultipleSelection');
-                self.selectedCodes = ko.observable(getShared('selectedCodes'));
-                self.isMultiSelect = ko.observable(isMultiple);
+                let self = this;
+                var params = getShared('CDL002Params');
+                self.isMultiSelect = ko.observable(params.isMultiSelect);
+                if (!self.isMultiSelect() && params.selecType == SelectType.SELECT_ALL) {
+                    self.selecType = ko.observable(SelectType.NO_SELECT);
+                } else {
+                    self.selecType = ko.observable(params.selecType);
+                }
+                self.selectedCodes = ko.observable(params.selectedCodes);
                 
                 // If Selection Mode is Multiple Then not show Unselected Row
-                self.isDisplayUnselect = ko.observable(isMultiple ? false : getShared('isDisplayUnselect'));
+                self.isDisplayUnselect = ko.observable(self.isMultiSelect() ? false : params.showNoSelection);
                 
                 // Initial listComponentOption
                 self.listComponentOption = {
                     isMultiSelect: self.isMultiSelect(),
                     listType: ListType.EMPLOYMENT,
-                    selectType: 1,
+                    selectType: self.selecType(),
                     selectedCode: self.selectedCodes,
                     isDialog: true,
                     isShowNoSelectRow: self.isDisplayUnselect(),
@@ -42,7 +48,11 @@ module nts.uk.com.view.cdl002.a {
              */
             decideData = () => {
                 let self = this;
-                setShared('selectedCodes', self.selectedCodes());
+                if((self.isMultiSelect() && self.selectedCodes().length == 0) || (!self.selectedCodes())) {
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
+                        return;
+                }
+                setShared('CDL002Output', self.selectedCodes());
                 close();
             }
         }
@@ -55,6 +65,16 @@ module nts.uk.com.view.cdl002.a {
             static Classification = 2;
             static JOB_TITLE = 3;
             static EMPLOYEE = 4;
+        }
+        
+        /**
+         * class SelectType
+         */
+        export class SelectType {
+            static SELECT_BY_SELECTED_CODE = 1;
+            static SELECT_ALL = 2;
+            static SELECT_FIRST_ITEM = 3;
+            static NO_SELECT = 4;
         }
     }
 }

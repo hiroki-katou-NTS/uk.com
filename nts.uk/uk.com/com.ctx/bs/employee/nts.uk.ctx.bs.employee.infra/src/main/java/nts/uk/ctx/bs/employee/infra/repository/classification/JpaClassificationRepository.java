@@ -6,6 +6,7 @@ package nts.uk.ctx.bs.employee.infra.repository.classification;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -20,6 +21,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.classification.Classification;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
 import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification;
+import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassificationPK;
 import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassificationPK_;
 import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification_;
 
@@ -30,6 +32,16 @@ import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification_;
 public class JpaClassificationRepository extends JpaRepository
 	implements ClassificationRepository {
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository#findClassification(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Optional<Classification> findClassification(String companyId, String classificationCode) {
+		return this.queryProxy()
+				.find(new CclmtClassificationPK(companyId, classificationCode), CclmtClassification.class)
+				.map(e -> this.toDomain(e));
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -52,6 +64,16 @@ public class JpaClassificationRepository extends JpaRepository
 	@Override
 	public void update(Classification managementCategory) {
 		this.commandProxy().update(this.toEntity(managementCategory));
+	}
+	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository#remove(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void remove(String companyId, String classificationCode) {
+		this.commandProxy().remove(
+				CclmtClassification.class, 
+				new CclmtClassificationPK(companyId, classificationCode));
 	}
 
 	/*
@@ -98,7 +120,7 @@ public class JpaClassificationRepository extends JpaRepository
 	/**
 	 * To entity.
 	 *
-	 * @param managementCategory the management category
+	 * @param domain the domain
 	 * @return the cclmt management category
 	 */
 	private CclmtClassification toEntity(Classification domain){
@@ -116,5 +138,4 @@ public class JpaClassificationRepository extends JpaRepository
 	private Classification toDomain(CclmtClassification entity){
 		return new Classification(new JpaClassificationGetMemento(entity));
 	}
-
 }

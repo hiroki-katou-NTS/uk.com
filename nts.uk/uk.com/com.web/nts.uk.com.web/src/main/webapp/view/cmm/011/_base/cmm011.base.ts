@@ -25,7 +25,9 @@ module nts.uk.com.view.cmm011 {
              */
             public selectFirst() {
                 let self = this;
-                self.selectedWpkHistory(self.lstWpkHistory()[0].historyId);
+                if (self.lstWpkHistory() && self.lstWpkHistory().length > 0) {
+                    self.selectedWpkHistory(self.lstWpkHistory()[0].historyId);
+                }
             }
             
             /**
