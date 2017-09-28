@@ -16,7 +16,7 @@ import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.Kaf
 public class JpaApproveAcceptedRepository  extends JpaRepository implements ApproveAcceptedRepository{
 	private final String SELECT_FROM_APPROVE_ACCEPTED = "SELECT c FROM KafdtApproveAccepted c"
 			+ " WHERE c.kafdtApproveAcceptedPK.companyID = :companyID "
-			+ " AND c.kafdtApproveAcceptedPK.phaseID = :phaseID ";
+			+ " AND c.frameID = :frameID ";
 	private final String SELECT_BY_CODE = SELECT_FROM_APPROVE_ACCEPTED
 			+ " AND c.kafdtApproveAcceptedPK.dispOrder = :dispOrder"
 			+ " AND c.kafdtApproveAcceptedPK.approverSID = :approverSID";
@@ -51,10 +51,10 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 	 * get all approve accepted
 	 */
 	@Override
-	public List<ApproveAccepted> getAllApproverAccepted(String companyID, String phaseID) {
+	public List<ApproveAccepted> getAllApproverAccepted(String companyID, String frameID) {
 		return this.queryProxy().query(SELECT_FROM_APPROVE_ACCEPTED, KafdtApproveAccepted.class)
 				.setParameter("companyID", companyID)
-				.setParameter("phaseID", phaseID)
+				.setParameter("frameID", frameID)
 				.getList(c->toDomain(c));
 	}
 	

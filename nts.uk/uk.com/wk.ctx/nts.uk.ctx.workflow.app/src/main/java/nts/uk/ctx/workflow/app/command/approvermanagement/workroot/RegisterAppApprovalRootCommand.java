@@ -27,7 +27,7 @@ public class RegisterAppApprovalRootCommand {
 	private boolean checkEdit;
 	
 	private boolean checkDelete;
-	private List<DataDeleteDto> lstDelete;
+	//list db
 	private List<Integer> lstAppType;
 	
 	private String startDate;
