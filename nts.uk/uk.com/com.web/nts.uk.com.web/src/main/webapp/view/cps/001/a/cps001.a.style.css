@@ -36,7 +36,7 @@
 }
 
 #contents-area>.left-area #lefttabs {
-	margin-top: 15px;
+	margin-top: 5px;
 }
 
 #lefttabs .ntsSearchBox.ntsSearchBox_Component {
@@ -203,8 +203,16 @@
 	padding: 10px;
 }
 
+.search-box {
+	margin-bottom: 15px;
+}
+.search-box>* {
+	display: inline-block;
+	vertical-align: middle;
+} 
+
 .ui-igcombo-wrapper {
-	width: 155px;
+	width: 195px;
 }
 
 .caret-background.caret-right:after {

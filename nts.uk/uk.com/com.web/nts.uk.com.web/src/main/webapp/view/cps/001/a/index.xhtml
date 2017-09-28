@@ -31,9 +31,9 @@
 				<button type="button" class="danger"
 					data-bind="click: deleteEmployee">#{i18n.getText('CPS001_6')}</button>
 				<a class="goout"
-					data-bind="ntsLinkButton: { jump: './index.xhtml' }">#{i18n.getText('CPS001_7')}</a>
+					data-bind="ntsLinkButton: { jump: './../../../cas/001/a/index.xhtml' }">#{i18n.getText('CPS001_7')}</a>
 				<a class="goout"
-					data-bind="ntsLinkButton: { jump: './index.xhtml' }">#{i18n.getText('CPS001_8')}</a>
+					data-bind="ntsLinkButton: { jump: './../../../cps/008/a/index.xhtml' }">#{i18n.getText('CPS001_8')}</a>
 			</div>
 			<div id="contents-area" class="cf">
 				<div id="ccgcomponent"></div>
@@ -84,24 +84,19 @@
 									mode: 'igGrid'}"></div>
 							<table id="layouts"
 								data-bind="ntsGridList: {								
-									height: 200,
-									dataSource: ko.observableArray([
-										{id: 1, name: 'name 1'},
-										{id: 2, name: 'name 2'},
-										{id: 3, name: 'name 3'},
-										{id: 4, name: 'name 4'},
-										]),
-									primaryKey: 'id',
+									rows: 10,
+									dataSource: listLayout,
+									primaryKey: 'maintenanceLayoutID',
 									columns: [
-										{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-			                			{ headerText: '名称', key: 'name', width: 190, hidden: false }
+										{ headerText: 'コード', key: 'maintenanceLayoutID', width: 100, hidden: true },
+			                			{ headerText: '名称', key: 'layoutName', width: 232, hidden: false }
 									],
 									multiple: false,
-									value: ko.observable(undefined)
+									value: currentLayout().maintenanceLayoutID
 							}"></table>
 						</div>
 						<div class="categorytab">
-							<div class="form-group">
+							<div class="form-group search-box">
 								<button type="button">#{i18n.getText('CPS001_27')}</button>
 								<div id="combo-box"
 									data-bind="ntsComboBox: {
@@ -121,7 +116,7 @@
 							</div>
 							<table id="categories"
 								data-bind="ntsGridList: {								
-									height: 200,
+									rows: 10,
 									dataSource: ko.observableArray([
 										{id: 1, name: 'name 1'},
 										{id: 2, name: 'name 2'},
@@ -131,7 +126,7 @@
 									primaryKey: 'id',
 									columns: [
 										{ headerText: 'コード', key: 'id', width: 100, hidden: true },
-			                			{ headerText: '名称', key: 'name', width: 190, hidden: false }
+			                			{ headerText: '名称', key: 'name', width: 232, hidden: false }
 									],
 									multiple: false,
 									value: ko.observable(undefined)
@@ -204,14 +199,14 @@
 
 							<div style="padding-top: 10px"
 								data-bind="ntsLayoutControl: { 
-								data: layout().items,
+								data: currentLayout().listItemClsDto,
 								editAble: 2 }"></div>
 						</div>
 						<div class="category-input" data-bind="css: { 'hidden': tabActive() != 'category'}">
 							<div class="title">category</div>
 							<div style="padding-top: 10px"
 								data-bind="ntsLayoutControl: { 
-								data: layout().items,
+								data: currentLayout().listItemClsDto,
 								editAble: 2 }"></div>
 						</div>
 					</div>
