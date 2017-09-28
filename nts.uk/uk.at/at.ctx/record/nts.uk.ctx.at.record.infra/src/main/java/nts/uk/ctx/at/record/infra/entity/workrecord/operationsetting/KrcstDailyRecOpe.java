@@ -28,5 +28,11 @@ public class KrcstDailyRecOpe extends UkJpaEntity{
 		return this.cid;
 	}
 
-	
+	/**
+	 * 
+	 */
+	public KrcstDailyRecOpe() {
+		super();
+	}
+
 }

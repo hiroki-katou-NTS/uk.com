@@ -12,7 +12,7 @@ module ksu001.l.viewmodel {
         ]);
 
         listEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
-        selectedEmployeeSwap: KnockoutObservable<any> = ko.observable();
+        selectedEmployeeSwap: KnockoutObservableArray<any> = ko.observableArray([]);
         columnsSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn> = ko.observableArray([
             { headerText: nts.uk.resource.getText("KSU001_1119"), key: 'code', width: 120 },
             { headerText: nts.uk.resource.getText("KSU001_1120"), key: 'name', width: 90 },
@@ -26,6 +26,7 @@ module ksu001.l.viewmodel {
                 self.listTeam.push(new ItemModel('00' + i, '基本給', i + '人'));
                 self.listEmployeeSwap.push(new ItemModel('00' + i, '基本給', i + '人'));
             }
+            self.selectedEmployeeSwap = ko.observableArray([]);
         }
 
         /**
