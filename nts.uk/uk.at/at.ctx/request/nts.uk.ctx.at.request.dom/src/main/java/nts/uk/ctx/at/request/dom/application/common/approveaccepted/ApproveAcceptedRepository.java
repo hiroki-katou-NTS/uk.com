@@ -10,7 +10,7 @@ public interface ApproveAcceptedRepository {
 	 * @param phaseID
 	 * @return
 	 */
-	List<ApproveAccepted> getAllApproverAccepted(String companyID , String phaseID);
+	List<ApproveAccepted> getAllApproverAccepted(String companyID , String frameID);
 	/**
 	 * get approver accepted by code
 	 * @param companyID

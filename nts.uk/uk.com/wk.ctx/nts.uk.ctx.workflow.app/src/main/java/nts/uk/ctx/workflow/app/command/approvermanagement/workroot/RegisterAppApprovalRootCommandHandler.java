@@ -360,11 +360,12 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		}
 		String companyId = AppContexts.user().companyId();
 		Optional<ApprovalPhase> appPh1 = repoAppPhase.getApprovalPhase(companyId, branchId, appPhaseN1.getApprovalPhaseId());
-		if(appPh1.isPresent()){//add new appPh and Approver
+		if(!appPh1.isPresent()){//add new appPh and Approver
 			String approvalPhaseId = UUID.randomUUID().toString();
 			appPhaseN1.updateAppPhaseId(approvalPhaseId);
 			List<Approver>  approvers = appPhaseN1.getApprovers();
 			for (Approver approver : approvers) {
+				approver.updateApprovalPhaseId(approvalPhaseId);
 				approver.updateApproverId(UUID.randomUUID().toString());
 			}
 			repoApprover.addAllApprover(approvers);
@@ -391,7 +392,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			return null;
 		}
 		String companyId = AppContexts.user().companyId();
-		String approvalPhaseId =UUID.randomUUID().toString();
+		String approvalPhaseId = appPhase.getApprovalPhaseId();
 		List<ApproverDto> approver = appPhase.getApprover();
 		List<Approver> lstApp = new ArrayList<>();
 		for (ApproverDto approverDto : approver) {

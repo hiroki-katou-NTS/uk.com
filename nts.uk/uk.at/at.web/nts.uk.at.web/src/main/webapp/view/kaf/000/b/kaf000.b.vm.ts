@@ -112,15 +112,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             let dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
-            let dfdAllReasonByAppID = self.getAllReasonByAppID("000");
+            //let dfdAllReasonByAppID = self.getAllReasonByAppID("000");
             let dfdAllDataByAppID = self.getAllDataByAppID("000");
-            let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
+            //let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
             
 
-            $.when(dfdAllReasonByAppID, dfdAllDataByAppID,dfdGetDetailCheck).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData,dfdGetDetailCheck) => {
+            $.when( dfdAllDataByAppID).done(( dfdAllDataByAppIDData) => {
                 //self.listReasonByAppID(data);
                 //self.getDetailCheck(self.inputDetail());
-                self.checkDisplayStart();
+                //self.checkDisplayStart();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -223,7 +223,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getMessageDeadline(inputMessageDeadline).done(function(data) {
-                debugger;
                 self.outputMessageDeadline(data);
                 dfd.resolve(data);
             });
@@ -235,27 +234,27 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getAllDataByAppID(appID).done(function(data) {
-                let temp = data.listOutputPhaseAndFrame;
-                _.forEach(temp, function(phase) {
-                    let listApproveAcceptedForView = [];
-                    //con cai clone la de clone ra 1 array moi, tranh bi anh huong array goc(tạo ra 1 bản sao)
-                    // _.sortBy sắp xếp theo dispOrder,
-                    let frameTemp = _.sortBy(_.clone(phase.listApprovalFrameDto), ['dispOrder']);
-                    for (var i = 0; i < frameTemp.length; i++) {
-                        let frame = frameTemp[i];
-                        let sameOrder = _.filter(phase.listApproveAcceptedDto, function(f) {
-                            return frame["dispOrder"] === f["dispOrder"];
-                        });
-                        let approverSID = "";
-                        _.forEach(sameOrder, function(so) {
-                            approverSID += (nts.uk.util.isNullOrEmpty(approverSID) ? "" : ", ") + so["approverSID"];
-                        });
-                        frame["approverSID2"] = approverSID;
-                        listApproveAcceptedForView.push(frame);
-                    }
-                    phase["listApproveAcceptedForView"] = listApproveAcceptedForView;
-                });
-                data.listOutputPhaseAndFrame = temp;
+//                let temp = data.listOutputPhaseAndFrame;
+//                _.forEach(temp, function(phase) {
+//                    let listApproveAcceptedForView = [];
+//                    //con cai clone la de clone ra 1 array moi, tranh bi anh huong array goc(tạo ra 1 bản sao)
+//                    // _.sortBy sắp xếp theo dispOrder,
+//                    let frameTemp = _.sortBy(_.clone(phase.listApprovalFrameDto), ['dispOrder']);
+//                    for (var i = 0; i < frameTemp.length; i++) {
+//                        let frame = frameTemp[i];
+//                        let sameOrder = _.filter(phase.listApproveAcceptedDto, function(f) {
+//                            return frame["dispOrder"] === f["dispOrder"];
+//                        });
+//                        let approverSID = "";
+//                        _.forEach(sameOrder, function(so) {
+//                            approverSID += (nts.uk.util.isNullOrEmpty(approverSID) ? "" : ", ") + so["approverSID"];
+//                        });
+//                        frame["approverSID2"] = approverSID;
+//                        listApproveAcceptedForView.push(frame);
+//                    }
+//                    phase["listApproveAcceptedForView"] = listApproveAcceptedForView;
+//                });
+//                data.listOutputPhaseAndFrame = temp;
                 self.dataApplication(data);
                 dfd.resolve(data);
             });
@@ -458,14 +457,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         export class OutputPhaseAndFrame {
             appApprovalPhase: AppApprovalPhase;
             listApprovalFrame: Array<ApprovalFrame>;
-            listApproveAccepted: Array<ApproveAccepted>;
             constructor(
                 appApprovalPhase: AppApprovalPhase,
-                listApprovalFrame: Array<ApprovalFrame>,
-                listApproveAccepted: Array<ApproveAccepted>) {
+                listApprovalFrame: Array<ApprovalFrame>) {
                 this.appApprovalPhase = appApprovalPhase;
                 this.listApprovalFrame = listApprovalFrame;
-                this.listApproveAccepted = listApproveAccepted;
             }
         }//end class OutputPhaseAndFrame
 
@@ -491,10 +487,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             frameID : String;
             phaseID: String;
             dispOrder:number;
-            constructor(frameID : String,phaseID: String, dispOrder: number) {
+            listApproveAccepted: Array<ApproveAccepted>;
+            constructor(frameID : String,phaseID: String, dispOrder: number,listApproveAccepted: Array<ApproveAccepted>) {
                 this.frameID = frameID;
                 this.phaseID = phaseID;
                 this.dispOrder = dispOrder;
+                this.listApproveAccepted = listApproveAccepted;
                 
             }
         }//end class frame  

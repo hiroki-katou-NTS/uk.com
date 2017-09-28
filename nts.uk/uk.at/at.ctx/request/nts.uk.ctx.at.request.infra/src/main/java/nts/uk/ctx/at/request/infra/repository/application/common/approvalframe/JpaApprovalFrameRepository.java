@@ -29,7 +29,7 @@ public class JpaApprovalFrameRepository extends JpaRepository implements Approva
 	//get List Phase
 	private final String SELECT_BY_PHASE_ID = SELECT
 			+ " WHERE c.krqdtApprovalFramePK.companyID = :companyID"
-			+ " AND c.krqdtApprovalFramePK.phaseID = :phaseID";
+			+ " AND c.phaseID = :phaseID";
 	
 	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.krqdtAppLateOrLeavePK.companyID = :companyID";
 

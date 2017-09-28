@@ -7,27 +7,27 @@ package nts.uk.ctx.at.shared.dom.workrule.closure;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.YearMonth;
+
 /**
  * The Interface ClosureRepository.
  */
 public interface ClosureRepository {
-	
+
 	/**
 	 * Adds the.
 	 *
 	 * @param closure the closure
 	 */
 	void add(Closure closure);
-	
-	
+
 	/**
 	 * Update.
 	 *
 	 * @param closure the closure
 	 */
 	void update(Closure closure);
-	
-	
+
 	/**
 	 * Gets the all closure.
 	 *
@@ -35,8 +35,7 @@ public interface ClosureRepository {
 	 * @return the all closure
 	 */
 	List<Closure> findAll(String companyId);
-	
-	
+
 	/**
 	 * Find by id.
 	 *

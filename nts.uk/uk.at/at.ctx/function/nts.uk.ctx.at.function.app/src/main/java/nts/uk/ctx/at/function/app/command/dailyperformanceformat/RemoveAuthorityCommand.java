@@ -12,5 +12,7 @@ import lombok.NoArgsConstructor;
 public class RemoveAuthorityCommand {
 	
 	private String dailyPerformanceFormatCode;
+	
+	private int isDefaultInitial;
 
 }

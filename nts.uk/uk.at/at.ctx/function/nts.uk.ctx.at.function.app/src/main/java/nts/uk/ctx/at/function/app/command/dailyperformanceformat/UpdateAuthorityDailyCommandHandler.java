@@ -9,10 +9,12 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatDaily;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFormatInitialDisplay;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFormatSheet;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatName;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatDailyRepository;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatInitialDisplayRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatSheetRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -26,6 +28,9 @@ public class UpdateAuthorityDailyCommandHandler extends CommandHandler<UpdateAut
 	@Inject
 	private AuthorityFormatSheetRepository authorityFormatSheetRepository;
 
+	@Inject
+	private AuthorityFormatInitialDisplayRepository authorityFormatInitialDisplayRepository;
+
 	@Override
 	protected void handle(CommandHandlerContext<UpdateAuthorityDailyCommand> context) {
 		LoginUserContext login = AppContexts.user();
@@ -35,7 +40,8 @@ public class UpdateAuthorityDailyCommandHandler extends CommandHandler<UpdateAut
 
 		// List attendanceItemId in DB
 		List<Integer> attendanceItemIdsInDB = this.authorityFormatDailyRepository
-				.getAuthorityFormatDailyDetail(companyId,new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()), command.getSheetNo())
+				.getAuthorityFormatDailyDetail(companyId,
+						new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()), command.getSheetNo())
 				.stream().map(f -> {
 					return f.getAttendanceItemId();
 				}).collect(Collectors.toList());
@@ -93,6 +99,17 @@ public class UpdateAuthorityDailyCommandHandler extends CommandHandler<UpdateAut
 				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()), command.getSheetNo(),
 				command.getSheetName());
 		this.authorityFormatSheetRepository.update(authorityFormatSheet);
+
+		AuthorityFormatInitialDisplay authorityFormatInitialDisplay = new AuthorityFormatInitialDisplay(companyId,
+				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()));
+		if (command.getIsDefaultInitial() == 1) {
+			if (!this.authorityFormatInitialDisplayRepository.checkExistDataByCompanyId(companyId)) {
+				this.authorityFormatInitialDisplayRepository.add(authorityFormatInitialDisplay);
+			} else {
+				this.authorityFormatInitialDisplayRepository.update(companyId,
+						new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()));
+			}
+		}
 
 	}
 

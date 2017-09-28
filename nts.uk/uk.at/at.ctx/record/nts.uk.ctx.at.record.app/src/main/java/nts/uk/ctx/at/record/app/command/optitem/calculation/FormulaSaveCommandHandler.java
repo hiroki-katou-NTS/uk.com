@@ -34,6 +34,9 @@ public class FormulaSaveCommandHandler extends CommandHandler<FormulaSaveCommand
 	@Inject
 	private FormulaDispOrderRepository orderRepo;
 
+	
+	/** The Constant FIRST_ITEM. */
+	public static final int FIRST_ITEM = 0;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -44,7 +47,7 @@ public class FormulaSaveCommandHandler extends CommandHandler<FormulaSaveCommand
 	@Override
 	protected void handle(CommandHandlerContext<FormulaSaveCommand> context) {
 		FormulaSaveCommand command = context.getCommand();
-		String companyId = AppContexts.user().companyCode();
+		String companyId = AppContexts.user().companyId();
 
 		List<Formula> formulas = command.getListCalcFormula().stream().map(item -> {
 			return new Formula(item);
@@ -54,9 +57,9 @@ public class FormulaSaveCommandHandler extends CommandHandler<FormulaSaveCommand
 			return new FormulaDispOrder(item);
 		}).collect(Collectors.toList());
 
-		// TODO
-		this.repository.remove(companyId, "itemNo");
-		this.orderRepo.remove(companyId, "itemNo");
+		String optionalItemNo = formulas.get(FIRST_ITEM).getOptionalItemNo().v();
+		this.repository.remove(companyId, optionalItemNo);
+		this.orderRepo.remove(companyId, optionalItemNo);
 
 		this.repository.create(formulas);
 		this.orderRepo.create(dispOrders);

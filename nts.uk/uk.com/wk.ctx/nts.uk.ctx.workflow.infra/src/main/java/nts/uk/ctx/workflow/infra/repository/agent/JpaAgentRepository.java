@@ -43,8 +43,8 @@ public class JpaAgentRepository extends JpaRepository implements AgentRepository
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmmmtAgent e");
 		builderString.append(" WHERE e.cmmmtAgentPK.companyId = :companyId");
-		builderString.append(" AND e.startDate >= :startDate");
-		builderString.append(" AND e.endDate <= :endDate");
+		builderString.append(" AND NOT (e.startDate > :endDate");
+		builderString.append(" OR e.endDate < :startDate)");
 		builderString.append(" ORDER BY e.startDate DESC");
 		SELECT_AGENT_BY_DATE = builderString.toString(); 
 		

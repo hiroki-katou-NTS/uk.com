@@ -1,20 +1,99 @@
 <div class="contents-area cf">
-	<div id="tree-grid"></div>
-	<div class="information">
-		<div>#{i18n.getText('KMK005_75',['#Com_Workplace'])}</div>
-		<hr />
-		<div class="controls-group" data-bind="with: model">
-			<div class="form-group">
-				<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK005_76',['#Com_Workplace'])}</div>
-				<label data-bind="text: wname">H1_4</label>
-			</div>
-			<div class="form-group">
-				<div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMK005_73')}</div>
-				<button
-					data-bind="click: $parent.openBonusPaySettingDialog.bind($parent)">#{i18n.getText('KMK005_74')}</button>
-				<label data-bind="text: id">H1_7</label> <label
-					data-bind="text: name">H1_8</label>
+	<div class="left-contents">
+		<div class="grid-area" data-bind="ntsPanel:{width: '250px', height: '435px', direction: 'right', showIcon: false, visible: true}">
+			<div data-bind="ntsFormLabel: { required: false }" class="form-label-1">#{i18n.getText('KMF004_83')}</div>
+			
+			<div class="items-tbl">
+				<table id="treegridItems"
+					data-bind="ntsGridList: {
+						width: 250,
+						height: 370,
+						options: items,
+						optionsValue: 'code',
+						columns: columns,
+						multiple: false,
+						value: singleSelectedCode
+					}">
+				</table>
 			</div>
 		</div>
 	</div>
+	
+	<div class="right-contents">
+	
+		<table class="form-input-tbl">
+			<tr>
+				<td><div data-bind="ntsFormLabel: { required: true, constraint:['PersonalGrantDateCode','PersonalGrantDateName'] }">#{i18n.getText('KMF004_91')}</div></td>
+				<td>
+					<input class="input-code" id="input-code" data-bind="ntsTextEditor: { value: code, enable: editMode, constraint: 'PersonalGrantDateCode', required: true, 
+																							name: '#[KMF004_87]', immediate: true, option: {autofill:true, filldirection:'left'} }, hasfocus: true" /> 
+					<input class="input-name" id="input-name" data-bind="ntsTextEditor: { value: name, constraint: 'PersonalGrantDateName', required: true, name: '#[KMF004_88]' }" />
+				</td>
+			</tr>
+			<tr></tr>
+			<tr>
+				<td><div data-bind="ntsFormLabel: { required: true }">#{i18n.getText('KMF004_73')}</div></td>
+				<td>
+					<div class="base-date-inputs">
+						<div id="radio" style=""
+							data-bind="ntsRadioBoxGroup: {
+															options: itemList,
+															optionsValue: 'code',
+															optionsText: 'name',
+															value: selectedBaseDateId,
+															enable: true}">
+						</div>
+						
+						<div id="monthdays" class="standardDate" data-bind="ntsMonthDays: {value: standardDate, enable: standardDateEnable}"/>
+					</div>
+				</td>
+			</tr>
+		</table>
+		
+		<div class="left-text-header">#{i18n.getText('KMF004_79')}</div>
+		
+		<div class="left-help-btn">
+			<button id="help" 
+						data-bind="ntsHelpButton: {image: 'IMG_KMF004_1.png', position: 'left top', enable: true }">?</button>
+		</div>
+		
+		<hr/>
+		
+		<table class="data-setting-time">
+			<thead>
+				<tr>
+					<td width="19"></td>
+					<td colspan="2" width="160">#{i18n.getText('KMF004_80')}</td>
+				</tr>
+			</thead>
+			
+			<tbody data-bind="foreach: dataItems">
+				<tr>
+					<td data-bind="text: $index() + 1"></td>
+					<td class="hidden-right-border">
+						<input id="year" data-bind="ntsNumberEditor: {
+								value: year, 
+								constraint: 'GrantDateYear',
+								name: '#[KMF004_81]',
+								option: ko.mapping.fromJS({
+									unitID: 'YEARS',
+									width: '50'
+								})}" />
+					</td>
+					<td>
+						<input id="month" data-bind="ntsNumberEditor: {
+								value: month, 
+								constraint: 'GrantDateMonth',
+								name: '#[KMF004_82]',
+								option: ko.mapping.fromJS({
+									unitID: 'MONTHS',
+									width: '60'
+								})}" />
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		
+	</div>
+	
 </div>

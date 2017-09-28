@@ -17,7 +17,7 @@ module nts.uk.at.view.kmf004 {
                 new TabModel({ id: 'B', name: getText('Com_Company'), active: true }),
                 new TabModel({ id: 'C', name: getText('Com_Person') })
             ]);
-
+            currentTab: KnockoutObservable<string> = ko.observable('B');
             //radio
 
             constructor() {
@@ -52,11 +52,13 @@ module nts.uk.at.view.kmf004 {
                 // call start function on view at here
                 switch (tab.id) {
                     case 'B':
+                        self.currentTab('B');
                         if (!!view.viewmodelB && typeof view.viewmodelB.start == 'function') {
                             view.viewmodelB.start();
                         }
                         break;
                     case 'C':
+                        self.currentTab('C');
                         if (!!view.viewmodelC && typeof view.viewmodelC.start == 'function') {
                             view.viewmodelC.start();
                         }
@@ -99,6 +101,7 @@ module nts.uk.at.view.kmf004 {
             value: KnockoutObservable<string>;
             enable: KnockoutObservable<boolean>;
             items: KnockoutObservableArray<Item>;
+            specialHolidayCode: KnockoutObservable<string>;
             
             constructor() {
                 let self = this;
@@ -109,20 +112,32 @@ module nts.uk.at.view.kmf004 {
                 ]);
 
                 self.value = ko.observable('');
-                self.enable = ko.observable(true);
+                self.enable = ko.observable(false);
                 self.selectedId = ko.observable(0);
                 self.items = ko.observableArray([]);
+                
+                self.selectedId.subscribe(function(value) {
+                    if(value == 1){
+                        self.enable(true);
+                    } else {
+                        self.enable(false);
+                    }
+                }); 
+                
+                // Get special holiday code from A screen
+                self.specialHolidayCode = ko.observable(getShared("KMF004B_SPHD_CD"));
+                
                 self.start();
             }
 
+            /**
+             * Start page.
+             */
             start() {
                 var self = this;
                 var dfd = $.Deferred();
                 
-                // Get special holiday code from A screen
-                var sphdCd = 01;
-            
-                service.findByCode(sphdCd).done(function(data){
+                service.getComByCode(self.specialHolidayCode()).done(function(data){
                     self.bindData(data);                
                     dfd.resolve();
                 }).fail(function(res) {
@@ -132,29 +147,129 @@ module nts.uk.at.view.kmf004 {
                 return dfd.promise();
             }
             
+            /**
+             * Bind data.
+             */
             bindData(data: any) {
                 var self = this;
             
-                self.items.removeAll();
-                
-                //Update case
-                for(var i = 0; i < data.length; i++){
-                    var item : IItem = {
-                        year: data[i].year,
-                        month: data[i].month
-                    };
+                if(data != undefined) {
+                    self.items.removeAll();
                     
-                    self.items.push(new Item(item));
+                    self.selectedId(data.grantDateAtr);
+                    self.value(data.grantDate);
+                    
+                    service.getAllSetByCode(data.specialHolidayCode).done(function(data: Array<any>){
+                        for(var i = 0; i < data.length; i++){
+                            var item : IItem = {
+                                year: data[i].grantDateYear,
+                                month: data[i].grantDateMonth
+                            };
+                            
+                            self.items.push(new Item(item));
+                        }
+                        
+                        for(var i = data.length; i < 20; i++) {
+                            var item : IItem = {
+                                year: null,
+                                month: null
+                            };
+                            
+                            self.items.push(new Item(item));    
+                        }
+                    }).fail(function(res) {
+                          
+                    });
+                } else {
+                    self.selectedId(0);
+                    self.value("101");
+                    self.items.removeAll();
+                    
+                    for(var i = 0; i < 20; i++) {
+                        var item : IItem = {
+                            year: null,
+                            month: null
+                        };
+                        
+                        self.items.push(new Item(item));    
+                    }
+                }
+            }
+                        
+            /**
+             * Save data to db.
+             */
+            saveData(){
+                var self = this;
+                
+                if (nts.uk.ui.errors.hasError()) {
+                    return;    
                 }
                 
-                for(var i = data.length; i < 20; i++) {
-                    var item : IItem = {
-                        year: null,
-                        month: null
-                    };
+                nts.uk.ui.block.invisible();
+                
+                var setData = [];
+                var index = 1;
+                
+                _.forEach(self.items(), function(item) {
+                    if(item.month() || item.year()) {
+                        if(item.month() !== 0 || item.year() !== 0) {
+                            setData.push({
+                                specialHolidayCode: self.specialHolidayCode(),
+                                grantDateNo: index,
+                                grantDateMonth: Number(item.month()),
+                                grantDateYear: Number(item.year())
+                            });
+                        }
+                    }
                     
-                    self.items.push(new Item(item));    
-                }
+                    index++;
+                });
+                
+                var dataItem : service.ComItem = {
+                    specialHolidayCode: self.specialHolidayCode(),
+                    grantDateAtr: self.selectedId(),
+                    grantDate: self.value(),
+                    grantDateSets: ko.toJS(setData)
+                }; 
+                
+                service.addGrantDateCom(dataItem).done(function(errors){
+                    if (!errors || errors.length == 0) {
+                        self.bindData(dataItem);
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    } else {
+                        self.addListError(errors);
+                    }
+                    
+                }).fail(function(error) {
+                    nts.uk.ui.dialog.alertError(error.message);    
+                }).always(function() {
+                    nts.uk.ui.block.clear();    
+                });
+            }
+            
+            /**
+             * Close dialog.
+             */
+            cancel() {
+                nts.uk.ui.windows.close();
+            }
+            
+             /**
+             * Add list error.
+             */
+            addListError(errorsRequest: Array<string>) {
+                var messages = {};
+                _.forEach(errorsRequest, function(err) {
+                    messages[err] = nts.uk.resource.getMessage(err);
+                });
+    
+                var errorVm = {
+                    messageId: errorsRequest,
+                    messages: messages
+                };
+    
+                nts.uk.ui.dialog.bundledErrors(errorVm);
             }
         }
         

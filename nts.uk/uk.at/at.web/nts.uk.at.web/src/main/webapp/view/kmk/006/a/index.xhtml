@@ -29,9 +29,9 @@
 		<ui:define name="sidebar">
 			<ul tabindex="-1"  class="navigator">
 				<li data-bind="click: onSelectCompany" ><a tabindex="-1" href="#tabpanel-1" role="tab-navigator" class="active">#{i18n.getText('Com_Company')}</a></li>
-				<li data-bind="click: onSelectEmployment, visible: usageSettingModel.settingEmployment"><a tabindex="-1" href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Employment')}</a></li>
-				<li data-bind="click: onSelectPerson, visible: usageSettingModel.settingPersonal"><a tabindex="-1" href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
-				<li data-bind="click: onSelectPerson, visible: usageSettingModel.settingPersonal"><a tabindex="-1" href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
+				<li data-bind="click: onSelectEmployment, visible: useUnitAutoCalSettingModel.useWkpSet"><a tabindex="-1" href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
+				<li data-bind="click: onSelectPerson, visible: useUnitAutoCalSettingModel.useJobSet"><a tabindex="-1" href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Jobtitle')}</a></li>
+				<li data-bind="click: onSelectWkpJob, visible: useUnitAutoCalSettingModel.useJobwkpSet"><a tabindex="-1" href="#tabpanel-4" role="tab-navigator">#{i18n.getText('KMK006_6')}</a></li> 
 			</ul>
 		</ui:define>
 		<ui:define name="sidebar-content">
@@ -42,19 +42,19 @@
 				<!-- </com:ko> -->
 			</div>
 			<div id="tabpanel-2" role="tabpanel">
-				<com:ko tag="if" bind="isEmploymentSelected()">
+				<!-- <com:ko tag="if" bind="isEmploymentSelected()"> -->
 					<ui:include src="c.xhtml" />
-				</com:ko>
+				<!-- </com:ko> -->
 			</div>
 			<div id="tabpanel-3" role="tabpanel">
-				<com:ko tag="if" bind="isPersonSelected()">
+<!-- 				<com:ko tag="if" bind="isPersonSelected()"> -->
 					<ui:include src="d.xhtml" />
-				</com:ko>
+<!-- 				</com:ko> -->
 			</div>
-			<div id="tabpanel-3" role="tabpanel">
-				<com:ko tag="if" bind="isPersonSelected()">
-					<ui:include src="d.xhtml" />
-				</com:ko>
+			<div id="tabpanel-4" role="tabpanel">
+				 <!-- <com:ko tag="if" bind="isPersonSelected()">  -->
+					<ui:include src="e.xhtml" />
+				<!--  </com:ko>  -->
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -2,18 +2,33 @@ package nts.uk.ctx.at.shared.dom.worktype.worktypedisporder;
 
 import lombok.Getter;
 
+/** 
+ * 
+ * 勤務種類の並び順
+ * @author sonnh
+ *
+ */
 @Getter
 public class WorkTypeDispOrder {
 	
-	/** The company id. */
-	/*会社ID*/
+
+	/**
+	 * The company id
+	 * 会社ID
+	 */
 	private String companyId;
 	
-	/** The work type code. */
-	/*勤務種類コード*/
+	/**
+	 * The work type code
+	 * 勤務種類コード
+	 */
 	private String workTypeCode;
 	
-	/*並び順*/
+
+	/**
+	 * display order
+	 * 並び順
+	 */
 	private int disporder;
 
 	/**
