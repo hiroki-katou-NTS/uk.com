@@ -14,8 +14,6 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceInfoDto;
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
@@ -65,14 +63,14 @@ public class RegisterWorkplaceCommandHandler extends CommandHandler<RegisterWork
 		//Update endDate previous history
 		if(StringUtil.isNullOrEmpty(lateHistId,true))
 		{
-			this.updatePreviousHistory(late.getWkpHistoryLatest(),wkp.getWkpHistoryLatest().getPeriod().getStartDate());
+//			this.updatePreviousHistory(late.getWkpHistoryLatest(),wkp.getWkpHistoryLatest().getPeriod().getStartDate());
 		}
 		// copy workplace info by historyId
 		this.copyWorkplaceInfo(companyId,workplaceId,lateHistId,addHistId);
 	}
 
 	private void updatePreviousHistory(WorkplaceHistory wkpHistory, GeneralDate startDate) {
-		Optional<Workplace> updateOp = workplaceRepository.findByWorkplaceId(companyId, workplaceId)
+//		Optional<Workplace> updateOp = workplaceRepository.findByWorkplaceId(companyId, workplaceId)
 	}
 
 	/**
