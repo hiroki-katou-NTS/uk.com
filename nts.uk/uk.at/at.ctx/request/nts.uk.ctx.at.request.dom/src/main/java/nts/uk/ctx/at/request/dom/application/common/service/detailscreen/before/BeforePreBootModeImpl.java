@@ -9,6 +9,8 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
@@ -16,12 +18,12 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalFor
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.CanBeApprovedOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DecideAgencyExpiredOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
-import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -43,7 +45,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 	AfterApprovalProcess detailedScreenAfterApprovalProcessService;
 
 	@Inject
-	ApprovalAgencyInformation approvalAgencyInformationService;
+	AgentAdapter approvalAgencyInformationService;
 
 	@Override
 	public DetailedScreenPreBootModeOutput getDetailedScreenPreBootMode(Application applicationData,
@@ -66,6 +68,11 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				.findPhaseByAppID(companyID, applicationData.getApplicationID()).get(0);
 		List<ApprovalFrame> listApprovalFrame = approvalFrameRepository.getAllApproverByPhaseID(companyID,
 				appApprovalPhase.getPhaseID());
+		//tu viet 27/9/2017
+		for(ApprovalFrame approvalFrame : listApprovalFrame ) {
+			approvalFrame.setListApproveAccepted(approvalFrame.getListApproveAccepted());
+		}
+		
 		// Check if current user has in list Approver
 		//2017.09.25
 		/*List<ApprovalFrame> filtedApprovalFrame = listApprovalFrame.stream()
@@ -341,7 +348,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		String employeeID = AppContexts.user().employeeId();
 		List<String> approver = null;
 		//Get list
-		ApprovalAgencyInformationOutput approvalAgencyInformationOutput = approvalAgencyInformationService
+		AgentPubImport approvalAgencyInformationOutput = approvalAgencyInformationService
 				.getApprovalAgencyInformation(companyID, approver);
 		List<String> outputApprover = approvalAgencyInformationOutput.getListApproverAndRepresenterSID().stream()
 				.map(x -> x.getApprover()).collect(Collectors.toList());

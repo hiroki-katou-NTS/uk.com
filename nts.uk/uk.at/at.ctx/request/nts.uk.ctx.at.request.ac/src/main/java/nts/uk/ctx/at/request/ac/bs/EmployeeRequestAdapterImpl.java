@@ -20,7 +20,7 @@ import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
  * The Class EmployeeAdaptorImpl.
  */
 @Stateless
-public class EmployeeAdapterImpl implements EmployeeAdapter {
+public class EmployeeRequestAdapterImpl implements EmployeeAdapter {
 
 	/** The employee pub. */
 	@Inject
