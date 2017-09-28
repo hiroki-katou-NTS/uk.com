@@ -16,6 +16,8 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
@@ -35,8 +37,6 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.Employ
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.PersonApproverOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WorkplaceApproverOutput;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverAdaptor;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverDto;
 import nts.uk.file.com.app.company.approval.MasterApproverRootRepository;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
@@ -53,7 +53,7 @@ public class MasterApproverRootRepositoryImpl implements MasterApproverRootRepos
 	@Inject
 	private CompanyAdapter comAdapter;
 	@Inject
-	private WorkplaceApproverAdaptor wpAdapter;
+	private WorkplaceAdapter wpAdapter;
 	@Inject
 	private ApprovalPhaseRepository phaseRepository;
 
@@ -165,7 +165,7 @@ public class MasterApproverRootRepositoryImpl implements MasterApproverRootRepos
 
 			// ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」) tra ra 1 list nhung thuc chat chi
 			// co 1 du lieu
-			WorkplaceApproverDto wpInfors = wpAdapter.findByWkpId(root.getWorkplaceId(), baseDate).get();
+			WorkplaceImport wpInfors = wpAdapter.findByWkpId(root.getWorkplaceId(), baseDate).get();
 			wpRootInfor = getAppInfors(wpRoot, wpRootInfor, companyID);
 			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpInfors, wpRootInfor);
 			mapWpRootInfor.put(root.getWorkplaceId(), wpOutput);
