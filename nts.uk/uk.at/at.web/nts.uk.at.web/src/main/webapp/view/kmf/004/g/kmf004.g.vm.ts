@@ -89,16 +89,6 @@ module nts.uk.at.view.kmf004.g.viewmodel {
                     nts.uk.ui.errors.clearAll();
                 }
             });
-//            self.grantDay.subscribe((value) => {
-//                if(value){
-//                    self.grantSelected().grantRelationshipDay = value;    
-//                }     
-//            });
-//            self.morningHour.subscribe((value) => {
-//                if(value){
-//                    self.grantSelected().morningHour = value;    
-//                }     
-//            });
         }
 
         /** get data to list **/
