@@ -64,7 +64,8 @@ public interface AffJobTitleHistoryRepository {
 	 */
 	default List<AffJobTitleHistory> findBySid(String employeeId) {
 		// Get result & Return
-		return this.findWithRelativeOptions(Arrays.asList(employeeId), Collections.emptyList(), null);
+		return this.findWithRelativeOptions(Arrays.asList(employeeId), Collections.emptyList(),
+				null);
 	}
 
 	/**
@@ -88,6 +89,21 @@ public interface AffJobTitleHistoryRepository {
 
 		// Return
 		return Optional.of(result.get(FIRST_ITEM_INDEX));
+	}
+
+	/**
+	 * Find by job id.
+	 *
+	 * @param jobId
+	 *            the job id
+	 * @param baseDate
+	 *            the base date
+	 * @return the list
+	 */
+	default List<AffJobTitleHistory> findByJobId(String jobId, GeneralDate baseDate) {
+		// Get result & Return
+		return this.findWithRelativeOptions(Collections.emptyList(), Arrays.asList(jobId),
+				baseDate);
 	}
 
 	/**
