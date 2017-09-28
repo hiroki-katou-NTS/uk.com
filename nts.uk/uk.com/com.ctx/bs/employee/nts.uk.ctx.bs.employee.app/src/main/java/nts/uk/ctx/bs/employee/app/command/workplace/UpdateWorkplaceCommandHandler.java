@@ -11,6 +11,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
+import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class UpdateWorkplaceCommandHandler extends CommandHandler<RegisterWorkplaceCommand>{
 
@@ -21,8 +22,8 @@ public class UpdateWorkplaceCommandHandler extends CommandHandler<RegisterWorkpl
 	protected void handle(CommandHandlerContext<RegisterWorkplaceCommand> context) {
 		//Update history of latest history
 		RegisterWorkplaceCommand command = context.getCommand();
-		
-		Workplace wkp = command.toDomain();
+		String companyId = AppContexts.user().companyId();
+		Workplace wkp = command.toDomain(companyId);
 		workplaceRepository.update(wkp);
 	}
 

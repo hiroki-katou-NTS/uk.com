@@ -66,18 +66,35 @@ public class WorkplaceWebService extends WebService {
 		this.updateWorkplaceCommandHandler.handle(command);
 	}
 	
+	/**
+	 * Gets the list workplace history.
+	 *
+	 * @param wkpId the wkp id
+	 * @return the list workplace history
+	 */
 	@Path("hist/{wkpId}")
 	@POST
 	public WorkplaceDto getListWorkplaceHistory(@PathParam("wkpId") String wkpId) {
 		return this.workplaceFinder.findByWorkplaceId(wkpId);
 	}
 	
+	/**
+	 * Gets the workplace info by history id.
+	 *
+	 * @param findObj the find obj
+	 * @return the workplace info by history id
+	 */
 	@Path("find")
 	@POST
 	public WorkplaceInfoDto getWorkplaceInfoByHistoryId(WkpInfoFindObject findObj) {
 		return this.workplaceInfoFinder.find(findObj);
 	}
 	
+	/**
+	 * Register wkp.
+	 *
+	 * @param command the command
+	 */
 	@Path("register")
 	@POST
 	public void registerWkp(RegisterWorkplaceCommand command) {

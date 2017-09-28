@@ -4,12 +4,12 @@ module nts.uk.com.view.cmm011.d {
          *  Service paths
          */
         var servicePath: any = {
-//            findLstWorkPlace: "basic/organization/findworkplace",
+            addWorkplaceHistory: "bs/employee/workplace/register",
         };
         
-//        export function findLstWorkPlace(baseDate: Date): JQueryPromise<Array<model.TreeWorkplace>> {
-//            return nts.uk.request.ajax(servicePath.findLstWorkPlace + "/" + baseDate);
-//        }
+        export function registerWorkplaceHistory(data:any): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.addWorkplaceHistory,data);
+        }
         
         /**
         * Model namespace.

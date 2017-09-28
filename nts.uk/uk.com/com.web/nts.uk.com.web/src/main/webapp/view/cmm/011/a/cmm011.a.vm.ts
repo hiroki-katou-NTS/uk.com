@@ -34,7 +34,7 @@ module nts.uk.com.view.cmm011.a {
                 self.strDWorkplace = ko.observable("2000/10/11");
                 self.endDWorkplace = ko.observable("9999/12/31");
                 self.treeWorkplace = ko.observable(new TreeWorkplaceModel(self));
-                self.workplaceHistory = ko.observable(new WorkplaceHistoryModel());
+                self.workplaceHistory = ko.observable(new WorkplaceHistoryModel(self));
                 
                 self.workplaceCode = ko.observable(null);
                 self.externalCode = ko.observable(null);
@@ -406,9 +406,12 @@ module nts.uk.com.view.cmm011.a {
          */
         class WorkplaceHistoryModel extends WorkplaceHistory {
             
-            constructor() {
+            parentModel : ScreenModel;
+            
+            constructor(parentModel : ScreenModel) {
                 super();
                 let self = this;
+                self.parentModel = parentModel;
                 //list is empty 
                 self.init([]);
             }
@@ -424,8 +427,7 @@ module nts.uk.com.view.cmm011.a {
              */
             public addWkpHistoryDialog() {
                 let self = this;
-                let startDateLatest: string = self.lstWpkHistory()[0].startDate;
-                nts.uk.ui.windows.setShared("StartDateLatestHistory", startDateLatest);
+                nts.uk.ui.windows.setShared("selectedWkpId",self.parentModel.treeWorkplace().selectedWpkId());
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/d/index.xhtml').onClosed(() => {
                 });
             }
