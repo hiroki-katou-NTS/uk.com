@@ -238,10 +238,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
                     }
                     self.items.push(new Item(t));
             }
-//            $("#inpCode").ntsError('clear');
             nts.uk.ui.errors.clearAll();                 
-//            var t1 = performance.now();
-//            console.log("Selection process " + (t1 - t0) + " milliseconds.");
         }
         /** remove item from list **/
         remove() {
@@ -286,10 +283,7 @@ module nts.uk.at.view.kmf004.e.viewmodel {
         
         
         closeDialog(){
-            var t0 = performance.now(); 
             nts.uk.ui.windows.close();
-             var t1 = performance.now();
-            console.log("Selection process " + (t1 - t0) + " milliseconds.");    
         }
         
         /**

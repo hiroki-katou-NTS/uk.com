@@ -1,11 +1,8 @@
-module nts.uk.at.view.kml002.c.viewmodel {
+module nts.uk.at.view.kml002.f.viewmodel {
     export class ScreenModel {
         columns: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
         items: KnockoutObservableArray<ItemModel>;
-        categoryItems: KnockoutObservableArray<any>;
-        catCode: KnockoutObservable<number>;
-        checked: KnockoutObservable<boolean>;
         rightItemcolumns: KnockoutObservable<any>;
         currentRightCodeList: KnockoutObservableArray<any>;
         rightItems: KnockoutObservableArray<NewItemModel>;
@@ -22,21 +19,12 @@ module nts.uk.at.view.kml002.c.viewmodel {
             
             self.currentCodeList = ko.observableArray([]);
             
-            self.categoryItems = ko.observableArray([
-                { catCode: 0, catName: nts.uk.resource.getText("KML002_29") },
-                { catCode: 1, catName: nts.uk.resource.getText("KML002_32") }
-            ]);
-            
             self.rightItemcolumns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KML002_36"), prop: 'adOrSub', width: 80 },
                 { headerText: nts.uk.resource.getText("KML002_7"), prop: 'name', width: 160, formatter: _.escape }
             ]);
             
             self.currentRightCodeList = ko.observableArray([]);
-            
-            self.catCode = ko.observable(0);
-            
-            self.checked = ko.observable(true);
         }
 
         /**

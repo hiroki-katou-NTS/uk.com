@@ -348,21 +348,171 @@ i.icon.icon-button-arrow-left {
     margin: 10px 0px;
 }
 
+.grid-area-c {
+    float: left;
+    margin-top: 8px;
+    margin-left: 10px;
+}
+
 /* 
 	Screen D styles 
 */
+.cbx-checked-d {
+	float: left;
+    margin: 0 0 12px -5px;
+    width: 100%;
+}
 
+.right-tbl-d {
+    float: left;
+    margin: 110px 24px;
+    height: 160px;
+}
+
+.function-btns-d {
+	float: left;
+    width: 50px;
+    margin: 180px -28px;
+    height: 70px;
+}
+
+.grid-area-d {
+	margin: 10px;
+	float: left;
+}
 
 /* 
 	Screen E styles 
 */
+.cal-method-selection {
+	margin: 20px;
+}
 
+.grid-area-e {
+    float: left;
+    margin: 0 20px;
+}
+
+.cbx-checked-e {
+    float: left;
+    margin: 10px 0px 12px -5px;
+    width: 100%;
+}
+
+input.ntsSearchBox.nts-editor.ntsSearchBox_Component {
+    width: 230px !important;
+}
+
+.function-btns-e {
+    float: left;
+    width: 50px;
+    margin: 240px -28px;
+    height: 0px;
+}
+
+.right-tbl-e {
+    float: left;
+    margin: 155px 24px;
+    height: 160px;
+}
+
+.checked-a-method {
+	float: left;
+    margin: 0px 0px 12px -5px;
+    width: 100%;
+}
+
+.function-btns-a-method {
+    float: left;
+    width: 50px;
+    margin: 140px -28px;
+    height: 70px;
+}
+
+.right-tbl-a-method {
+    float: left;
+    margin: 110px 24px;
+    height: 160px;
+    display: inline-flex;
+}
+
+.time-item-title {
+    margin: 57px 433px;
+    position: absolute;
+    padding: 10px;
+	width: 320px;
+	border-bottom: 1px solid #CCC;
+	float: left;
+}
+
+.unit-price-title {
+    margin: 57px 804px;
+    width: 90px;
+    position: absolute;
+    padding: 10px;
+	border-bottom: 1px solid #CCC;
+	float: right;
+}
+
+.unit-price-items {
+    min-width: 0 !important;
+    width: 100px;
+}
+
+.tbl-unit-price {
+	margin-left: 40px;
+}
+
+.multiplication {
+	width: 30px;
+}
+
+.rounding-setting {
+	float:left;
+	margin: -58px 12px;
+}
+
+table.tbl-rounding td {
+    padding: 12px;
+}
 
 /* 
 	Screen F styles 
 */
+.function-btns-f {
+	float: left;
+    width: 50px;
+    margin: 152px -28px;
+    height: 70px;
+}
 
+.right-tbl-f {
+    float: left;
+    margin: 80px 24px;
+    height: 160px;
+}
 
 /* 
 	Screen G styles 
 */
+table.unit-price-selection tr {
+	height: 20px;
+}
+
+table.unit-price-selection td {
+	padding: 10px 25px;
+}
+
+.method-form-lbl {
+    margin: 5px 25px;
+    width: 375px;
+}
+
+.method-selection {
+    margin: 0px 46px !important;
+    width: 270px;
+}
+
+.method-selection label.ntsRadioBox {
+    padding: 5px;
+}
