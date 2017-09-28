@@ -92,7 +92,7 @@ public class PerInfoCategoryFinder {
 				.getAllPerInfoCategory(AppContexts.user().companyId(),AppContexts.user().contractCode())
 				.stream().map(p -> {
 					return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-							p.getCategoryType().value, p.getIsAbolition().value);
+							p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v());
 				}).collect(Collectors.toList());
 
 		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
@@ -104,7 +104,7 @@ public class PerInfoCategoryFinder {
 				.getAllPerInfoCategory(PersonInfoCategory.ROOT_COMPANY_ID, PersonInfoItemDefinition.ROOT_CONTRACT_CODE)
 				.stream().map(p -> {
 					return new PerInfoCtgShowDto(p.getPersonInfoCategoryId(), p.getCategoryName().v(),
-							p.getCategoryType().value, p.getIsAbolition().value);
+							p.getCategoryType().value, p.getIsAbolition().value, p.getCategoryParentCode().v());
 				}).collect(Collectors.toList());
 
 		List<EnumConstant> historyTypes = EnumAdaptor.convertToValueNameList(HistoryTypes.class, internationalization);
