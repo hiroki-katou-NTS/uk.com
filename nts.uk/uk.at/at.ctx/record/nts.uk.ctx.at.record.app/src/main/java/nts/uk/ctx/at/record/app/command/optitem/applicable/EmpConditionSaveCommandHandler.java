@@ -5,10 +5,13 @@
 package nts.uk.ctx.at.record.app.command.optitem.applicable;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.record.dom.optitem.applicable.EmpCondition;
+import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionRepository;
 
 /**
  * The Class EmpConditionSaveCommandHandler.
@@ -16,6 +19,9 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 @Stateless
 @Transactional
 public class EmpConditionSaveCommandHandler extends CommandHandler<EmpConditionSaveCommand> {
+
+	@Inject
+	private EmpConditionRepository repo;
 
 	/*
 	 * (non-Javadoc)
@@ -26,8 +32,8 @@ public class EmpConditionSaveCommandHandler extends CommandHandler<EmpConditionS
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<EmpConditionSaveCommand> context) {
-		// TODO Auto-generated method stub
-
+		EmpCondition dom = new EmpCondition(context.getCommand());
+		this.repo.update(dom);
 	}
 
 }

@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.dom.workplace.config.service;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistory;
 
 /**
  * The Interface WkpConfigService.
@@ -12,19 +13,20 @@ import nts.arc.time.GeneralDate;
 public interface WkpConfigService {
 
 	/**
-	 * Validate add history.
-	 *
-	 * @param companyId the company id
-	 * @param addHistStart the add hist start
-	 * @return the string
-	 */
-	String validateAddHistory(String companyId, GeneralDate addHistStart);
-	
-	/**
 	 * Update prev history.
 	 *
 	 * @param prevHistId the prev hist id
 	 * @param endĐate the end đate
 	 */
 	void updatePrevHistory(String companyId,String prevHistId,GeneralDate endĐate);
+	
+	/**
+	 * Update wkp history if need.
+	 *
+	 * @param companyId the company id
+	 * @param latestWkpConfigHist the latest wkp config hist
+	 * @param newHistStartDate the new hist start date
+	 */
+    void updateWkpHistoryIfNeed(String companyId, WorkplaceConfigHistory latestWkpConfigHist,
+            GeneralDate newHistStartDate);
 }

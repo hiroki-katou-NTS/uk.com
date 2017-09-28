@@ -1,0 +1,368 @@
+@CHARSET "UTF-8";
+
+/* 
+	Screen H styles 
+*/
+#sidebar-area {
+    width: 120px;
+}
+
+.contents-area {
+    padding: 20px 58px;
+}
+
+table.item-setting {
+    margin-top: 20px;
+}
+
+table.item-setting thead tr td {
+	background-color: #c7f391 !important;
+}
+
+table.item-setting tr {
+	height: 40px;
+}
+
+table.item-setting td {
+	border: 1px solid #CCC;
+	padding: 5px;
+}
+
+table.item-setting tr td:first-child {
+	background-color: #edfac2;
+}
+
+.advance-setting {
+	width: 78px;
+}
+
+/* 
+	Screen A styles 
+*/
+.contents-area-a {
+    padding: 20px;
+}
+
+.left-contents {
+	float: left;
+}
+
+.right-contents {
+	float: left;
+}
+
+table.input-form-a tr {
+	height: 60px;
+}
+
+.input-code {
+	width: 18px;
+}
+
+.work-collection {
+	padding-left: 30px;
+}
+
+.help-box {
+	margin-left: 20px;
+}
+
+.switch-box {
+	padding-left: 20px;
+}
+
+table.calculator-items {
+    margin-top: 10px;
+    float: left;
+}
+
+table.calculator-items thead {
+	background-color: #c7f391;
+}
+
+table.calculator-items tr {
+	height: 32px;
+}
+
+table.calculator-items td {
+	border-bottom: 1px solid #CCC;
+	border-top: 1px solid #CCC;
+	border-left: 1px solid #CCC;    
+    padding: 0px 3px;
+}
+
+table.calculator-items thead, table.calculator-items tbody {
+	display: block;
+}
+
+table.calculator-items tbody {
+	height: 350px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	border: 1px solid #CCC;
+}
+
+table.calculator-items thead td:nth-child(1), table.calculator-items thead td:nth-child(2) {
+	text-align: center;
+}
+
+table.calculator-items tbody td {
+	text-align: center;
+}
+
+.attributes {
+	min-width: 0 !important;
+	width: 80px !important;
+}
+
+.item-name {
+	width: 120px;	
+}
+
+.display-atr {
+	min-width: 0 !important;
+	width: 100px !important;
+}
+
+.total {
+	min-width: 0 !important;
+	width: 100px !important;
+}
+
+.rounding {
+	min-width: 0 !important;
+	width: 120px !important;
+}
+
+.fraction {
+	min-width: 0 !important;
+	width: 120px !important;
+}
+
+.cbx-list-header {
+    width: 32px;
+}
+
+.number-header {
+	width: 32px;
+}
+
+.attribute-header {
+	width: 80px;
+}
+
+.name-header {
+	width: 150px;
+}
+
+.setting-header {
+	width: 464px;
+}
+
+.display-atr-header {
+	width: 110px;
+}
+
+.total-header {
+	width: 110px;
+}
+
+.rounding-header {
+	width: 130px;
+}
+
+.fraction-header {
+	width: 130px;
+}
+
+.cbx-list-item {
+    width: 31px;
+    height: 42px;
+}
+
+.number-item {
+	width: 32px;
+}
+
+.attribute-item {
+	width: 80px;
+}
+
+.name-item {
+	width: 150px;
+}
+
+.method-item {
+	width: 210px;
+}
+
+.help-btn-item {
+	width: 40px;
+}
+
+.formula-item {
+	width: 200px;
+}
+
+.display-atr-item {
+	width: 110px;
+}
+
+.total-item {
+	width: 110px;
+}
+
+.rounding-item {
+	width: 130px;
+}
+
+.fraction-item {
+	width: 130px;
+}
+
+table.link-notes {
+	width: 95.5%;
+}
+
+table.link-notes td {
+	text-align: right;
+}
+
+.up-down-button {
+	float: right;
+    width: 30px;
+    padding: 16px;
+    margin-top: 132px;
+}
+
+.down-btn {
+	margin-top: 30px;
+}
+
+.formula-setting-btn {
+    background: url(../002/a/KML002_1.png) no-repeat scroll 0 0 transparent;
+    width: 28px;
+    height: 28px;
+}
+
+/* 
+	Screen B styles 
+*/
+table.cal-formula-form-data td {
+    padding: 10px 10px;
+}
+
+table.cal-formula-form-data td:nth-child(3) {
+	width: 50px;
+}
+
+table.cal-formula-input-form {
+    margin: 0 20px;
+}
+
+table.cal-formula-input-form td {
+    padding: 10px 10px;
+}
+
+.project-item {
+	min-width: 0 !important;
+    width: 160px !important;
+}
+
+.numerical {
+	width: 139px;
+}
+
+.operator-item {
+	min-width: 0 !important;
+    width: 60px !important;
+}
+
+table.cal-formula-input-form tr:nth-child(1) td:nth-child(1), table.cal-formula-input-form tr:nth-child(1) td:nth-child(2),
+table.cal-formula-input-form tr:nth-child(1) td:nth-child(4), table.cal-formula-input-form tr:nth-child(1) td:nth-child(5) {
+	border-bottom: 1px solid #B1B1B1;
+}
+
+input.ui-igcombo-field.ui-corner-all.ui-unselectable {
+	text-align: center;
+}
+
+.ntsControl.radio-wrapper.reset-element {
+	margin-top: -12px;
+}
+
+label.ntsRadioBox {
+    padding: 15px 0;
+}
+
+/* 
+	Screen C styles 
+*/
+.form-lbl {
+	float: left;
+}
+
+.categories {
+	float: left;
+    margin-top: 2px;
+    width: 132px;
+}
+
+.cbx-checked {
+	float: left;
+    margin: 10px -5px;
+    width: 100%;
+}
+
+.search-box {
+	float: left;
+}
+
+.grid-area {
+	float: left;
+}
+
+.right-tbl {
+    float: left;
+    margin: 152px 24px;
+    height: 160px;
+}
+
+.function-btns {
+	float: left;
+	width: 50px;
+    margin: 205px -28px;
+    height: 70px;
+}
+
+button.addition, button.subtraction, button.left-btn {
+	width: 32px;
+}
+
+button.subtraction, button.left-btn {
+    margin-top: 24px;
+}
+
+i.icon.icon-button-arrow-left {
+	width: 20px;
+    margin: 10px 0px;
+}
+
+/* 
+	Screen D styles 
+*/
+
+
+/* 
+	Screen E styles 
+*/
+
+
+/* 
+	Screen F styles 
+*/
+
+
+/* 
+	Screen G styles 
+*/

@@ -26,4 +26,13 @@ public interface BasicScheduleScreenRepository {
 	 * @return
 	 */
 	List<WorkTimeScreenDto> getListWorkTime(String companyId, int displayAtr);
+
+	/**
+	 * Find by companyId and deprecateCls.
+	 *
+	 * @param companyId
+	 * @param deprecateCls
+	 * @return List WorkType
+	 */
+	List<WorkTypeScreenDto> findByCIdAndDeprecateCls(String companyId, int deprecateCls);
 }

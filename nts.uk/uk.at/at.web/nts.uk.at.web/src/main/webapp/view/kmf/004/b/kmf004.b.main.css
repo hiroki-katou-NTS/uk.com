@@ -39,8 +39,12 @@ table.data-items tbody {
 	border: 1px solid #CCC;
 }
 
+table.data-items tr td:first-child{
+	background-color: #c7f391;
+}
+
 .screen-b{
-	padding: 40px;
+    padding: 0 40px 0px 40px;
 }
 
 .title {
@@ -49,4 +53,15 @@ table.data-items tbody {
 
 .hidden-right-border{
     border-right-style: hidden;
+}
+
+.setting-title{
+	float: left;
+	width: -webkit-fill-available;
+    padding: 15px 0px;
+}
+
+.help-button{
+	float: right;
+	margin: -40px 0px;
 }

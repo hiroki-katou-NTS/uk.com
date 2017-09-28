@@ -51,10 +51,22 @@ module nts.uk.com.view.cmm011.b {
             private save(): void {
                 let self = this;
                 service.saveWkpConfig(self.toJSonCommand()).done(function() {
-                    // find all new history
-                    self.workplaceHistory().findAllHistory().done(() => {
-                        self.shareData();
-                    })
+                    
+                    if (self.workplaceHistory().screenMode() != ScreenMode.UpdateMode) {
+                        // find all new history
+                        self.workplaceHistory().findAllHistory().done(() => {
+                            self.shareData();
+                        });
+                    }
+                    // mode update
+                    else {
+                        nts.uk.ui.dialog.info({ messageId: "Msg_81", messageParams: [] }).then(() => {
+                            // find all new history
+                            self.workplaceHistory().findAllHistory().done(() => {
+                                self.shareData();
+                            });
+                        });
+                    }
                 }).fail((res: any) => {
                     self.showMessageError(res);
                 });

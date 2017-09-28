@@ -5,7 +5,6 @@ package nts.uk.screen.at.app.dailyperformance.correction;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import nts.arc.time.GeneralDate;
 
@@ -42,7 +41,7 @@ public interface DailyPerformanceScreenRepo {
 	List<String> getListJobTitle(DateRange dateRange);
 
 	// Get list employment by closure
-	List<String> getListEmployment(Integer closureId);
+	List<String> getListEmployment();
 
 	// Get list workplace of login user
 	Map<String, String> getListWorkplace(String employeeId, DateRange dateRange);

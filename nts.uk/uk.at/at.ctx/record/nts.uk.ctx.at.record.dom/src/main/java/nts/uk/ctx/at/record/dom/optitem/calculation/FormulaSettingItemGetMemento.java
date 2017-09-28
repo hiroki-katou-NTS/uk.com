@@ -8,6 +8,12 @@ package nts.uk.ctx.at.record.dom.optitem.calculation;
  * The Interface FormulaSettingItemGetMemento.
  */
 public interface FormulaSettingItemGetMemento {
+	/**
+	 * Gets the setting item order.
+	 *
+	 * @return the setting item order
+	 */
+	SettingItemOrder getSettingItemOrder();
 
 	/**
 	 * Gets the setting method.
@@ -16,12 +22,6 @@ public interface FormulaSettingItemGetMemento {
 	 */
 	SettingMethod getSettingMethod();
 
-	/**
-	 * Gets the setting item order.
-	 *
-	 * @return the setting item order
-	 */
-	SettingItemOrder getSettingItemOrder();
 
 	/**
 	 * Gets the input value.

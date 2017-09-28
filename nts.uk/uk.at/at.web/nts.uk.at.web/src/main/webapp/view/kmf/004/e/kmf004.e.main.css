@@ -1,32 +1,85 @@
-div[class^=screen-h] {
-	padding-top: 30px;
-	padding-left: 30px;
+#left-content{
+    float: left;
+    margin-left: 10px !important;
+    margin-top: 12px;
+    width: 360px;
+    height: 460px;
 }
-
-.screen-h .panel.ntsPanel {
-	margin-right: 35px;
-}
-
-.screen-h .infomation,
-.screen-h .panel.ntsPanel {
+#right-content{
 	float: left;
+    margin: 12px 0px 0 30px;
+    height: 200px;
+}
+#label{
+	
+	overflow: inline-block;
+	margin-left: 0px;
+}
+.nts-input{
+	width: 45px;
+}
+#inpPattern{
+	width: 170px !important;
+}
+#label_caret{
+	float: left;
+	margin-left: 20px;
+	margin-top: 10px;
+}
+#label_down{
+	margin-top: 10px;
+}
+#help{
+	margin-left: 300px; 
+}
+
+table td.radio-text{
+    vertical-align: top;
+}
+
+div#button_radio{
+	    width: 310px;
+    margin: 12px 0;
+}
+label.ntsRadioBox {
+    height: 27px;
+}	
+table.data-items thead {
+	background-color: #c7f391;
+}
+
+table.data-items tr {
+	height: 32px;
+}
+
+table.data-items td {
+	border-bottom: 1px solid #CCC;
+	border-top: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+	padding: 4px 12px;
+    text-align: center;
+}
+
+table.data-items thead, table.data-items tbody {
 	display: block;
 }
 
-.screen-h .controls-group {
-	padding-left: 30px;
+table.data-items tbody {
+	height: 400px;
+	overflow-y: auto;
+	overflow-x: hidden;
+	border: 1px solid #CCC;
 }
 
-.screen-h .form-group {
-	margin-bottom: 10px;
+td.hidden-right-border{
+	    border-right-style: hidden;
 }
 
-.screen-h #tree-grid{
-	width: 500px;
-	float: left;
-	margin-right: 30px; 
+.data-items{
+	    width: 296px;
+	    margin-top: 10px;
 }
 
-.screen-h .ntsSearchBox {
-	min-width: 300px;
+#text{
+	margin-left: 0px;
 }
