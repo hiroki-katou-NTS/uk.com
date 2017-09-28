@@ -11,8 +11,8 @@ module cps002.g.vm {
     export class ViewModel {
         
         roundingRules: KnockoutObservableArray<any> = ko.observableArray([
-            { code: 1, name: getText('CPS002_89') },
-            { code: 0, name: getText('CPS002_90') }
+            { code: "1", name: getText('CPS002_89') },
+            { code: "0", name: getText('CPS002_90') }
         ]);
         selectedRuleCode: KnockoutObservable<string> = ko.observable("");
         empCodeValue: KnockoutObservable<string> = ko.observable("");
@@ -27,13 +27,17 @@ module cps002.g.vm {
        
         register(){
             let self = this;
-            let objectSending = {
-                empCodeValue: self.empCodeValue(),
-                cardNoValue: self.cardNoValue(),
-                txtEmpCodeLetter: self.empCodeValue() == "1" ? "" : self.txtEmpCodeLetter(),
-                txtCardNo: self.cardNoValue() == "1" ? "" : self.txtCardNo()
+            let command = {
+                employeeId: "-1",
+                empCodeValType: parseInt(self.empCodeValue()),
+                cardNoValType: parseInt(self.cardNoValue()),
+                empCodeLetter: parseInt(self.empCodeValue()) != 1 ? "" : self.txtEmpCodeLetter(),
+                cardNoLetter: parseInt(self.cardNoValue()) != 1 ? "" : self.txtCardNo(),
+                recentRegType: parseInt(self.selectedRuleCode())
             };
+            service.setUserSetting(command);
         }
+        close(){close();}
         
     }
 }

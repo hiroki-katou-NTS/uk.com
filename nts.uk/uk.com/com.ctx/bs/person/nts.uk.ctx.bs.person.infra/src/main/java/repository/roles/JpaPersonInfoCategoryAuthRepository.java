@@ -18,8 +18,10 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implements PersonInfoCategoryAuthRepository {
 
 	private final String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
-			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, cm.personEmployeeType,"
 			+ " CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
+			+ " CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NOT NULL  THEN 'True' ELSE 'False' END AS IsConfig,"
+			+ "(select count(ii) from PpemtPerInfoItem ii where ii.perInfoCtgId=c.ppemtPerInfoCtgPK.perInfoCtgId and  ii.abolitionAtr =0) as count_i ,"
+			+ "(select count(ia) from PpemtPersonItemAuth ia where ia.ppemtPersonItemAuthPk.personInfoCategoryAuthId=c.ppemtPerInfoCtgPK.perInfoCtgId and ia.ppemtPersonItemAuthPk.roleId=p.ppemtPersonCategoryAuthPk.roleId) as count_ia"
 			+ " FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm"
 			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd"
 			+ " AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd" + " INNER JOIN PpemtPerInfoCtgOrder co"
@@ -48,6 +50,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	private final String DEL_BY_ROLE_ID = " DELETE  FROM PpemtPersonCategoryAuth c"
 			+ " WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId";
 
+
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
 		val domain = PersonInfoCategoryAuth.createFromJavaType(entity.ppemtPersonCategoryAuthPk.roleId,
 				entity.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId, entity.allowPersonRef, entity.allowOtherRef,
@@ -71,7 +74,8 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			domain.setAllowOtherRef(Integer.valueOf(entity[5].toString()));
 		}
 		domain.setPersonEmployeeType(Integer.valueOf(entity[6].toString()));
-		domain.setSetting(Boolean.valueOf(entity[7].toString()));
+		boolean isHigher = Integer.valueOf(entity[8].toString()) > Integer.valueOf(entity[9].toString());
+		domain.setSetting(!isHigher ? Boolean.valueOf(entity[7].toString()) : false);
 		return domain;
 	}
 
@@ -107,7 +111,15 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 
 	@Override
 	public void update(PersonInfoCategoryAuth domain) {
-		this.commandProxy().update(toEntity(domain));
+
+		Optional<PpemtPersonCategoryAuth> opt = this.queryProxy().find(
+				new PpemtPersonCategoryAuthPk(domain.getRoleId(), domain.getPersonInfoCategoryAuthId()),
+				PpemtPersonCategoryAuth.class);
+
+		if (opt.isPresent()) {
+
+			this.commandProxy().update(opt.get().updateFromDomain(domain));
+		}
 
 	}
 
@@ -159,7 +171,6 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	public void deleteByRoleId(String roleId) {
 		this.getEntityManager().createQuery(DEL_BY_ROLE_ID).setParameter("roleId", roleId).executeUpdate();
 		this.getEntityManager().flush();
-
 	}
 
 }

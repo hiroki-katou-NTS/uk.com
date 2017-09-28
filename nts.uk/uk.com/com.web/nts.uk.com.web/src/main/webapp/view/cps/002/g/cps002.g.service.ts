@@ -4,7 +4,7 @@ module cps002.g.service{
    
     let path = "ctx/bs/person/info/setting/user/update/updateUserSetting";
     
-    export function setUserSetting(objectSending){
-        return ajax("com", path, objectSending);
+    export function setUserSetting(command){
+        return ajax( "com",path, command);
     }
 }

@@ -89,7 +89,15 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 
 	@Override
 	public void update(PersonInfoItemAuth domain) {
-		this.commandProxy().update(toEntity(domain));
+
+		Optional<PpemtPersonItemAuth> opt = this.queryProxy().find(new PpemtPersonItemAuthPk(domain.getRoleId(),
+				domain.getPersonCategoryAuthId(), domain.getPersonItemDefId()), PpemtPersonItemAuth.class);
+		
+		if (opt.isPresent()) {
+			
+			this.commandProxy().update(opt.get().updateFromDomain(domain));
+			
+		}
 
 	}
 
