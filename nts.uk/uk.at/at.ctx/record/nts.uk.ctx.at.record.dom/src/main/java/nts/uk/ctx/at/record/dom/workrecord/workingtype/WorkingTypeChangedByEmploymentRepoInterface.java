@@ -14,5 +14,7 @@ public interface WorkingTypeChangedByEmploymentRepoInterface {
 
 	public WorkingTypeChangedByEmployment getWorkingTypeChangedByEmployment(CompanyId companyId,
 			EmploymentCode empCode);
+	
+	public void saveWorkingTypeChangedByEmployment(WorkingTypeChangedByEmployment workingType);
 
 }
