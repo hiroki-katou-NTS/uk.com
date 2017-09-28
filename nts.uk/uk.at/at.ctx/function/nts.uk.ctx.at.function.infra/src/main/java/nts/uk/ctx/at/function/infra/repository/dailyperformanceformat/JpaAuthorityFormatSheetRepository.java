@@ -47,7 +47,6 @@ public class JpaAuthorityFormatSheetRepository extends JpaRepository implements 
 		builderString.append("WHERE a.kfnmtAuthorityFormSheetPK.companyId = :companyId ");
 		builderString
 				.append("AND a.kfnmtAuthorityFormSheetPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
-		builderString.append("AND a.kfnmtAuthorityFormSheetPK.sheetNo = :sheetNo ");
 		DEL_BY_KEY = builderString.toString();
 	}
 
@@ -74,10 +73,9 @@ public class JpaAuthorityFormatSheetRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public void remove(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode, BigDecimal sheetNo) {
+	public void remove(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode) {
 		this.getEntityManager().createQuery(DEL_BY_KEY).setParameter("companyId", companyId)
-				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v())
-				.setParameter("sheetNo", sheetNo).executeUpdate();
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v()).executeUpdate();
 	}
 
 	private static AuthorityFormatSheet toDomain(KfnmtAuthorityFormSheet kfnmtAuthorityFormSheet) {

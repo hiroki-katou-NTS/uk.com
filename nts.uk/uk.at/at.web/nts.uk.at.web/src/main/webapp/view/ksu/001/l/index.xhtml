@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 1120, height: 700 };</script>
+			<script>var dialogSize = { width: 1250, height: 700 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksu001.l.main.css" />
 			<com:scriptfile path="ksu001.l.vm.js" />
@@ -62,19 +62,23 @@
 								<div class="formlabel-class" data-bind="ntsFormLabel: {}">#{i18n.getText('KSU001_1117')}</div>
 								<hr style="width: 280px" />
 							</div>
-							<!-- <div id="swap-list"
+						</div>
+					</div>
+				</div>
+				<div id="swap-list"
 								data-bind="ntsSwapList: {
-										showSearchBox: { showLeft : true, showRight: true},
+										showSearchBox: { showLeft : true, showRight: false},
 										height: 330,
+										width : 700,
 										dataSource: listEmployeeSwap,
 										primaryKey: 'code',
 										columns: columnsSwap,
 										value: selectedEmployeeSwap,
 										searchMode: 'filter',
 										multiple: true,
-									}"></div> -->
-						</div>
-					</div>
+										showSort:{ showLeft : false, showRight: false}
+										
+									}">
 				</div>
 			</div>
 		</ui:define>

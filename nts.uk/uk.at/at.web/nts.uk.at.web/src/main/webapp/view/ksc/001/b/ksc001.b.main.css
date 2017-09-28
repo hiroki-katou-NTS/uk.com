@@ -1,0 +1,78 @@
+.navigation-label {
+	margin-left: 20px;
+	vertical-align: 12px;
+}
+
+.create-creation {
+	background-image: url(./IMG_KSC001_1.png);
+	background-size: 100%;
+	height: 109px;
+	width: 327px;
+	background-repeat: no-repeat;
+	margin-left: 20px;
+}
+
+.history-reference {
+	background-image: url(./IMG_KSC001_2.png);
+	background-size: 100%;
+	height: 109px;
+	width: 327px;
+	background-repeat: no-repeat;
+	margin-left: 60px;
+}
+
+#wizard {
+	margin-top: 140px;
+}
+
+#ccgcomponent {
+	margin-left: 320px;
+}
+
+.contentC {
+	margin-left: 60px;
+}
+
+.labelSchedule {
+	margin-left: 30px;
+	margin-top: 10px;
+}
+
+.helpButton {
+	margin-left: 15px;
+}
+
+.selectSchedule {
+	margin-left: 15px;
+}
+
+button.nts-switch-button {
+	min-width: 80px;
+}
+
+.radioboxCase {
+	margin-top: 15px;
+}
+
+.radioboxProcessClassification {
+	margin-top: 15px;
+	margin-left: 45px;
+}
+
+.checkboxSetting {
+	margin-top: 15px;
+	margin-left: 65px;
+}
+
+.checkboxSettingEnd {
+	margin-top: 25px;
+	margin-left: 25px;
+}
+
+.checkboxOne {
+	width: 180px;
+}
+
+.labelSettingEnd {
+	margin-left: 55px;
+}
