@@ -241,15 +241,17 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     $(ds)
                         .each(
                         function(index, el: any) {
-                            let CheckboxCell = $("#item_role_table_body").igGrid("cellAt", 0, index);
-                            let IsConfigCell = $("#item_role_table_body").igGrid("cellAt", 1, index);
-                            let NameCell = $("#item_role_table_body").igGrid("cellAt", 2, index);
+                            let CheckboxCell = $("#item_role_table_body").igGrid("cellAt", 1, index);
+                            let IsConfigCell = $("#item_role_table_body").igGrid("cellAt", 2, index);
+                            let NameCell     = $("#item_role_table_body").igGrid("cellAt", 3, index);
 
                             if (el.requiredAtr == '1') {
                                 $(CheckboxCell).addClass('requiredCell');
                                 $(IsConfigCell).addClass('requiredCell');
                                 $(NameCell).addClass('requiredCell');
                             }
+                            $(CheckboxCell).addClass('checkbox_float_left');
+
                         });
                 },
                 columns: [
