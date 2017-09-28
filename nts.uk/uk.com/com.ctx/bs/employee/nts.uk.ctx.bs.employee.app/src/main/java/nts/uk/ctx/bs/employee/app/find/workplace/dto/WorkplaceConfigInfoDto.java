@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceConfigInfoSetMemento;
-import nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceHierarchy;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoSetMemento;
+import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 
 /**
  * The Class WorkplaceConfigInfoDto.

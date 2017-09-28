@@ -30,7 +30,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             //item approval root
             self.approvalRoot = ko.observableArray([]);
             //obj input approval root
-            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','000426a2-181b-4c7f-abc8-6fff9f4f983a',1,1,new Date('2022-01-01 00:00:00')));
+            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','90000000-0000-0000-0000-000000000001',1,1,new Date('2017-01-02 00:00:00')));
             //obj input get message deadline 
             self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline("000000000000-0005",null,1,null));
             //obj input get message deadline 
@@ -183,12 +183,14 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             approvalPhaseId : KnockoutObservable<String>;
             isConfirmPerson : KnockoutObservable<boolean>;
             orderNumber : KnockoutObservable<number>;
+            name : KnockoutObservable<String>;
             constructor(sid : String,approvalPhaseId : String,
-                        isConfirmPerson : boolean,orderNumber : number){
+                        isConfirmPerson : boolean,orderNumber : number,name : String){
                 this.sid = ko.observable(sid);
                 this.approvalPhaseId = ko.observable(approvalPhaseId);
                 this.isConfirmPerson  = ko.observable(isConfirmPerson);
                 this.orderNumber = ko.observable(orderNumber); 
+                this.name = ko.observable(name); 
                 
             }
         }//end class ApproverInfo

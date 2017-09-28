@@ -49,11 +49,14 @@ table.control {
 
 #imageName {
 	cursor: pointer;
-	color: blue;
-	text-decoration: underline;
 	width: 200px;
 	overflow: hidden;
 	display: inline-block;
+}
+
+.text-blue-underline {
+	color: blue;
+	text-decoration: underline;
 }
 
 .description {

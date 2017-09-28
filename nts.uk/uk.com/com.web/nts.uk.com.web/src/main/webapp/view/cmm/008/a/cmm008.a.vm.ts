@@ -1,151 +1,112 @@
 module nts.uk.com.view.cmm008.a {
-    import EmploymentFindDto = service.model.EmploymentFindDto;
+    import EmploymentDto = service.model.EmploymentDto;
     import blockUI = nts.uk.ui.block;
 
     export module viewmodel {
         export class ScreenModel {
-            isNewMode: KnockoutObservable<boolean>;
-            employmentCode: KnockoutObservable<string>;
-            employmentName: KnockoutObservable<string>;
-            empExternalCode: KnockoutObservable<string>;
-            memo: KnockoutObservable<string>;
+            enableDelete: KnockoutObservable<boolean>;
+            employmentModel: KnockoutObservable<EmploymentModel>;
+            selectedCode: KnockoutObservable<string>;
             listComponentOption: any;
             empList: KnockoutObservableArray<ItemModel>;
-            employment: EmploymentSaveDto;
-
+            enableEmpCode: KnockoutObservable<boolean>;
+            mode: KnockoutObservable<Mode>;
+            
             constructor() {
                 var self = this;
-                self.isNewMode = ko.observable(true);
-                self.employmentCode = ko.observable("");
-                self.empExternalCode = ko.observable("");
-                self.employmentCode.subscribe(function(empCode) {
+                self.enableDelete = ko.observable(true);
+                self.employmentModel = ko.observable(new EmploymentModel);
+                self.selectedCode = ko.observable("");
+                self.selectedCode.subscribe(function(empCode) {
                     if (empCode) {
                         self.clearErrors();
-                        self.loadEmployment();
+                        self.loadEmployment(empCode);
+                        self.enableDelete(true);
                     } else {
                         self.clearData();
-                        self.isNewMode(true);
-                        return;
+                        self.enableDelete(false);
                     }
                 });
-                self.employmentName = ko.observable("");
-                self.empExternalCode = ko.observable("");
-                self.memo = ko.observable("");
-
+                self.mode = ko.observable(Mode.UPDATE);
+                
                 // Initial listComponentOption
                 self.listComponentOption = {
                     isMultiSelect: false,
                     listType: ListType.EMPLOYMENT,
                     selectType: SelectType.SELECT_BY_SELECTED_CODE,
-                    selectedCode: self.employmentCode,
+                    selectedCode: self.selectedCode,
                     isDialog: false,
                 };
 
-                //                self.isNewMode = ko.computed(function() {
-                //                    return !self.isSelectedEmp() || self.empList().length <= 0;
-                //                });
                 self.empList = ko.observableArray<ItemModel>([]);
-                self.isNewMode.subscribe(function(data: boolean) {
-                    if (data) {
-                        // Focus on 
-                        $('#empCode').focus();
-                    } else {
-                        // Focus on 
-                        $('#empName').focus();
-                    }
-                });
+                self.enableEmpCode = ko.observable(false);
             }
 
             // Start Page
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
-                //                
+                blockUI.invisible();
+                
                 // Load Component
                 $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
-                    // Set Focus on Switch Button
 
                     // Get Data List
                     if (($('#emp-component').getDataList() == undefined) || ($('#emp-component').getDataList().length <= 0)) {
-                        self.isNewMode(true);
+                        self.enableDelete(false);
+                        self.clearData();
+                        self.mode(Mode.ADD);
                     }
                     else {
                         // Get Employment List after Load Component
                         self.empList($('#emp-component').getDataList());
 
                         // Select first Item in Employment List
-                        self.employmentCode(self.empList()[0].code);
+                        self.selectedCode(self.empList()[0].code);
 
                         // Find and bind selected Employment
-                        self.loadEmployment();
+                        self.loadEmployment(self.selectedCode());
+                        self.mode(Mode.UPDATE);
                     }
+                    blockUI.clear();
                 });
-                // Focus on 
-                //                $('#empName').focus();
                 dfd.resolve();
                 return dfd.promise();
             }
 
-            private loadEmployment(): JQueryPromise<void> {
+            /**
+             * load Employment
+             */
+            private loadEmployment(code: string): void {
                 let self = this;
-                let dfd = $.Deferred<void>();
-                service.findEmployment(self.employmentCode()).done(function(employment) {
+                service.findEmployment(code).done(function(employment) {
                     if (employment) {
-                        self.employmentCode(employment.code);
-                        self.employmentName(employment.name);
-                        self.empExternalCode(employment.empExternalCode);
-                        self.memo(employment.memo);
-                        self.isNewMode(false);
-                    } else {
-                        //                        self.employmentCode("");
-                        //                        self.employmentName("");
-                        //                        self.empExternalCode("");
-                        //                        self.memo("");
-                        self.isNewMode(true);
+                        self.selectedCode(employment.code);
+                        self.employmentModel().updateEmpData(employment);
+                        self.employmentModel().isEnableCode(false);
+                        self.enableDelete(true);
+                        self.mode(Mode.UPDATE);
+                        $('#empName').focus();
                     }
-                    dfd.resolve();
                 });
-                return dfd.promise();
             }
 
+            /**
+             * Clear Data
+             */
             private clearData(): void {
                 let self = this;
-                self.isNewMode(true);
-                self.employmentCode("");
-                self.employmentName("");
-                self.empExternalCode("");
-                self.memo("");
-            }
-
-
-            //            
-            //            /**
-            //             * Bind Employment
-            //             */
-            //            private bindEmployment(employment: any): void {
-            //                let self = this;
-            //                if (employment) {
-            //                    self.employmentCode(employment.code);
-            //                    self.employmentName(employment.name);
-            //                    self.empExternalCode(employment.empExternalCode);
-            //                    self.memo(employment.memo);
-            //                    self.isNewMode(false);
-            //                } else {
-            //                    self.employmentCode("");
-            //                    self.employmentN          //                    self.empExternalCode("");
-            //                    self.memo("");
-            //                    self.isNewMode(true);
-            //                }
-            //            }
-
-            private createNewEmployment(): void {
-                let self = this;
-                self.clearData();
+                self.selectedCode("");
+                self.employmentModel().resetEmpData();
+                self.enableDelete(false);
                 self.clearErrors();
-                // Focus on 
+                self.mode(Mode.ADD);
                 $('#empCode').focus();
             }
 
+            /**
+             * Create Employment
+             */
             private createEmployment(): void {
                 let self = this;
                 // Validate
@@ -153,21 +114,21 @@ module nts.uk.com.view.cmm008.a {
                     return;
                 }
                 var command = {
-                    employmentCode: self.employmentCode(),
-                    employmentName: self.employmentName(),
-                    empExternalCode: self.empExternalCode(),
-                    memo: self.memo()
+                    employmentCode: self.employmentModel().employmentCode(),
+                    employmentName: self.employmentModel().employmentName(),
+                    empExternalCode: self.employmentModel().empExternalCode(),
+                    memo: self.employmentModel().memo(),
+                    mode: self.mode()
                 };
+                blockUI.invisible();
                 service.saveEmployment(command).done(() => {
-                    self.isNewMode(false);
-
                     // ReLoad Component
-                    //                    self.listComponentOption.selectType = SelectType.SELECT_BY_SELECTED_CODE;
                     $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
                         // Get Employment List after Load Component
                         self.empList($('#emp-component').getDataList());
-                        // Find to Bind Employment
-                        self.loadEmployment();
+                        self.enableDelete(true);
+                        self.employmentModel().isEnableCode(false);
+                        self.selectedCode(self.employmentModel().employmentCode());
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     });
                     // Focus on 
@@ -178,53 +139,58 @@ module nts.uk.com.view.cmm008.a {
                         // Focus on Employment name
                         $('#empName').focus();
                     }
+                    blockUI.clear();
                 }).fail(error => {
                     nts.uk.ui.dialog.alertError(error);
+                    blockUI.clear();
                 });
             }
 
+            /**
+             * Delete Employment
+             */
             private deleteEmployment(): void {
                 let self = this;
                 // Validate
                 if (self.hasError()) {
                     return;
                 }
-
+                blockUI.invisible();
                 // Remove
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                     let command = {
-                        employmentCode: self.employmentCode()
+                        employmentCode: self.employmentModel().employmentCode()
                     }
                     service.removeEmployment(command).done(() => {
-                        self.isNewMode(false);
-
-                        // Filter selected Item
-                        var existItem = self.empList().filter((item) => {
-                            return item.code == self.employmentCode();
-                        })[0];
-
-                        // Check if selected item is the last item
-                        let index = self.empList().indexOf(existItem);
-                        let emplistLength = self.empList().length;
-                        if (index == (self.empList().length - 1)) {
-                            self.employmentCode(self.empList()[index - 1].code);
-                            //                            self.listComponentOption.selectedCode = self.empList()[index - 1].code;
-                        } else {
-                            self.employmentCode(self.empList()[index + 1].code);
-                        }
-
                         // Reload Component
-                        //                        self.listComponentOption.selectType = SelectType.SELECT_BY_SELECTED_CODE;
                         $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
+                            // Filter selected Item
+                            var existItem = self.empList().filter((item) => {
+                                return item.code == self.employmentModel().employmentCode();
+                            })[0];
+
+                            // Check if selected item is the last item
+//                            let index = self.empList().indexOf(existItem);
+
                             // Get Data List
                             if (($('#emp-component').getDataList() == undefined) || ($('#emp-component').getDataList().length <= 0)) {
-                                self.isNewMode(true);
+                                self.enableDelete(false);
                             }
                             else {
+                                self.enableDelete(true);
+                                let index = self.empList().indexOf(existItem);
                                 // Get Employment List after Load Component
                                 self.empList($('#emp-component').getDataList());
+                                let emplistLength = self.empList().length;
+                                if (index == (self.empList().length)) {
+                                    self.selectedCode(self.empList()[index - 1].code);
+                                } else {
+                                    self.selectedCode(self.empList()[index].code);
+                                }
+
+                                
                                 // Find to bind Employment
-                                self.loadEmployment();
+                                self.loadEmployment(self.selectedCode());
                             }
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" });
                             
@@ -238,29 +204,14 @@ module nts.uk.com.view.cmm008.a {
                             }
                         });
 
-                        // Find ClassificationBasicWork
-                        self.loadEmployment();
+                        self.loadEmployment(self.selectedCode());
                         blockUI.clear();
                     }).fail((res) => {
                         nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
+                        blockUI.clear();
                     });
                 });
             }
-
-            /**
-             * Check the last Item in Employment List
-             */
-            //            public isLastItem(selectedCode: string): boolean {
-            //                let self = this;
-            //                let index: number = 0;
-            //                for(let item of self.empList()){
-            //                    index++;
-            //                    if(index == self.empList().length && selectedCode === item.code){
-            //                        return true;
-            //              //                }
-            //                return false;
-            //            }
-
 
             /**
              * Check Errors all input.
@@ -291,21 +242,51 @@ module nts.uk.com.view.cmm008.a {
 
         }
 
-        export class EmploymentSaveDto {
+        /**
+         * EmploymentModel
+         */
+        export class EmploymentModel {
             employmentCode: KnockoutObservable<string>;
             employmentName: KnockoutObservable<string>;
             empExternalCode: KnockoutObservable<string>;
             memo: KnockoutObservable<string>;
-
+            isEnableCode: KnockoutObservable<boolean>;
+            
             constructor() {
-                let self = this;
-                self.employmentCode = ko.observable('');
-                self.employmentName = ko.observable('');
-                self.empExternalCode = ko.observable('');
-                self.memo = ko.observable('');
+                this.employmentCode = ko.observable("");
+                this.employmentName = ko.observable("");
+                this.empExternalCode = ko.observable("");
+                this.memo = ko.observable("");
+                this.isEnableCode = ko.observable(true);
+            }
+            
+            resetEmpData() {
+                this.employmentCode('');
+                this.employmentName('');
+                this.empExternalCode('');
+                this.memo('');
+                this.isEnableCode(true);
+                this.employmentCode.subscribe(function() {
+                    
+                });
+            }
+            
+            updateEmpData(dto: EmploymentDto) {
+                this.employmentCode(dto.code);
+                this.employmentName(dto.name);
+                this.empExternalCode(dto.empExternalCode);
+                this.memo(dto.memo);
             }
         }
-
+        
+        /**
+         * Mode
+         */
+        export class Mode {
+            static ADD = 1;
+            static UPDATE = 2;
+        }
+        
         /**
         * List Type
         */
@@ -326,7 +307,9 @@ module nts.uk.com.view.cmm008.a {
             static NO_SELECT = 4;
         }
 
-        // Class ItemModel
+        /**
+         * Class ItemModel
+         */
         class ItemModel {
             code: string;
             name: string;

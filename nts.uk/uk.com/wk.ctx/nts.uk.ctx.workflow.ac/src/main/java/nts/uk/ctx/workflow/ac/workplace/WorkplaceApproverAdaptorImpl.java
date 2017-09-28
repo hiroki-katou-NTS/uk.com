@@ -12,14 +12,14 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverAdaptor;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverDto;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 
 /**
  * The Class WorkplaceApproverAdaptorImpl.
  */
 @Stateless
-public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdaptor {
+public class WorkplaceApproverAdaptorImpl implements WorkplaceAdapter {
 
 	/** The wp pub. */
 	@Inject
@@ -33,7 +33,7 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdaptor {
 	 * nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public Optional<WorkplaceApproverDto> findByWkpId(String workplaceId, GeneralDate baseDate) {
+	public Optional<WorkplaceImport> findByWkpId(String workplaceId, GeneralDate baseDate) {
 		Optional<WkpCdNameExport> optWkpCdNameExport = this.wpPub.findByWkpId(workplaceId,
 				baseDate);
 
@@ -44,7 +44,7 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdaptor {
 
 		// Return
 		WkpCdNameExport x = optWkpCdNameExport.get();
-		return Optional.of(new WorkplaceApproverDto(x.getWkpCode(), x.getWkpName()));
+		return Optional.of(new WorkplaceImport(x.getWkpCode(), x.getWkpName()));
 	}
 
 }

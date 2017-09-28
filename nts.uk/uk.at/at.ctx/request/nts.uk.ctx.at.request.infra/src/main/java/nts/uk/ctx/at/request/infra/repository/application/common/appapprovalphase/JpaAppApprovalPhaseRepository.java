@@ -23,7 +23,7 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 	//get List Phase by appID
 	private final String SELECT_BY_APP_ID = "SELECT c FROM KrqdtAppApprovalPhase c"
 			+ " WHERE c.krqdtAppApprovalPhasePK.companyID = :companyID"
-			+ " AND c.krqdtAppApprovalPhasePK.appID = :appID";
+			+ " AND c.appID = :appID";
 	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.krqdtAppApprovalPhasePK.companyID = :companyID";
 	
 	

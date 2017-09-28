@@ -31,6 +31,13 @@ public interface SpecialHolidayRepository {
 	 */
 	void update(SpecialHoliday specialHoliday);
 	
-	
+	/**
+	 * Check exist Special Holiday Code
+	 * @param companyCode
+	 * @param specialHolidayCode
+	 * @return
+	 */
 	boolean checkExists(String companyCode, String specialHolidayCode);
+	
+	
 }

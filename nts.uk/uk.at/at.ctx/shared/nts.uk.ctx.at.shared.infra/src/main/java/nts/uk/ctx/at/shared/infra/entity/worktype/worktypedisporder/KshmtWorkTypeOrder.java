@@ -28,7 +28,7 @@ public class KshmtWorkTypeOrder extends UkJpaEntity implements Serializable {
 	
 	/*並び順*/
 	@Column(name = "DISPORDER")
-	public int dispOrder;
+	public Integer dispOrder;
 	
 	@OneToOne
     @JoinColumns({

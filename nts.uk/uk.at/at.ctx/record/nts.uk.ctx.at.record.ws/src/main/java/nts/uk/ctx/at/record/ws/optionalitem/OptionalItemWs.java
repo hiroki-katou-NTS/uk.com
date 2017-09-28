@@ -9,11 +9,13 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.optitem.OptionalItemSaveCommand;
 import nts.uk.ctx.at.record.app.command.optitem.OptionalItemSaveCommandHandler;
+import nts.uk.ctx.at.record.app.find.optitem.OptItemEnumDto;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemDto;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemFinder;
 import nts.uk.ctx.at.record.app.find.optitem.OptionalItemHeaderDto;
@@ -39,9 +41,9 @@ public class OptionalItemWs extends WebService {
 	 * @return the optional item dto
 	 */
 	@POST
-	@Path("find")
-	public OptionalItemDto find() {
-		return this.finder.find();
+	@Path("find/{itemNo}")
+	public OptionalItemDto find(@PathParam("itemNo") String itemNo) {
+		return this.finder.find(itemNo);
 	}
 
 	/**
@@ -64,6 +66,17 @@ public class OptionalItemWs extends WebService {
 	@Path("save")
 	public void save(OptionalItemSaveCommand command) {
 		this.handler.handle(command);
+	}
+
+	/**
+	 * Gets the enum.
+	 *
+	 * @return the enum
+	 */
+	@POST
+	@Path("getenum")
+	public OptItemEnumDto getEnum() {
+		return OptItemEnumDto.init();
 	}
 
 }

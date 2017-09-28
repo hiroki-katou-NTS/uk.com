@@ -29,7 +29,7 @@ public class JpaApprovalFrameRepository extends JpaRepository implements Approva
 	//get List Phase
 	private final String SELECT_BY_PHASE_ID = SELECT
 			+ " WHERE c.krqdtApprovalFramePK.companyID = :companyID"
-			+ " AND c.krqdtApprovalFramePK.phaseID = :phaseID";
+			+ " AND c.phaseID = :phaseID";
 	
 	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.krqdtAppLateOrLeavePK.companyID = :companyID";
 
@@ -65,10 +65,15 @@ public class JpaApprovalFrameRepository extends JpaRepository implements Approva
 
 	@Override
 	public List<ApprovalFrame> getAllApproverByPhaseID(String companyID, String phaseID) {
-		return this.queryProxy().query(SELECT_BY_PHASE_ID, KrqdtApprovalFrame.class)
+		List<ApprovalFrame> list  =  this.queryProxy().query(SELECT_BY_PHASE_ID, KrqdtApprovalFrame.class)
 				.setParameter("companyID", companyID)
 				.setParameter("phaseID", phaseID)
 				.getList(c -> toDomain(c));
+		List<KrqdtApprovalFrame> list1 = this.queryProxy().query(SELECT_BY_PHASE_ID, KrqdtApprovalFrame.class)
+				.setParameter("companyID", companyID)
+				.setParameter("phaseID", phaseID)
+				.getList();
+		return list;
 	}
 
 	private ApprovalFrame toDomain(KrqdtApprovalFrame entity) {

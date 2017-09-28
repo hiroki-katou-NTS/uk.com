@@ -23,8 +23,10 @@ import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeSearch;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeUnregisterFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.MasterApproverRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ParamDto;
+import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
 @Path("workflow/approvermanagement/workroot")
@@ -41,7 +43,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	private EmployeeUnregisterFinder empUnregister;
 	@Inject
 	private RegisterAppApprovalRootCommandHandler updateRoot;
- 
+	@Inject
+	private PersonAdapter psInfo;
 	@POST
 	@Path("getbycom")
 	public DataFullDto getAllByCom(ParamDto param) {
@@ -55,7 +58,7 @@ public class WorkAppApprovalRootWebService extends WebService{
 	}
 	@POST
 	@Path("getEmployeesInfo")
-	public List<EmployeeApproveDto> findByWpkIds(EmployeeSearch employeeSearch){
+	public List<EmployeeImport> findByWpkIds(EmployeeSearch employeeSearch){
 		return employeeInfor.findEmployeeByWpIdAndBaseDate(employeeSearch.getWorkplaceCodes(), employeeSearch.getBaseDate());		
 	}
 	 @POST
@@ -93,5 +96,10 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@Path("updateRoot")
 	public void updateRoot(RegisterAppApprovalRootCommand command){
 		updateRoot.handle(command);
+	}
+	@POST
+	@Path("getInforPerson")
+	public PersonImport getPsInfor(String SID) {
+		return psInfo.getPersonInfo(SID);
 	}
 }

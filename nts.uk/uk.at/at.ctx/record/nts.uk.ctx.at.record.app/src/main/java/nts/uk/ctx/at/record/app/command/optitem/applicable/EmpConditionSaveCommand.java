@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.record.app.find.optitem.applicable.EmploymentConditionDto;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmpConditionGetMemento;
 import nts.uk.ctx.at.record.dom.optitem.applicable.EmploymentCondition;

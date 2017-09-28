@@ -25,7 +25,8 @@ public class ApprovalFrame extends DomainObject {
 	/** 会社ID */
 	private String companyID;
 	
-	/** フェーズID */
+	/** 承認枠ID */
+	@Setter
 	private String frameID ;
 	
 	/** 順序 */
@@ -34,6 +35,7 @@ public class ApprovalFrame extends DomainObject {
 	/**
 	 * list approverAccepted
 	 */
+	@Setter
 	private List<ApproveAccepted> listApproveAccepted;
 
 	public static ApprovalFrame createFromJavaType( String companyID , String frameID , int dispOrder , List<ApproveAccepted> listApproveAccepted){

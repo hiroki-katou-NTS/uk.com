@@ -117,10 +117,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
             
 
-            $.when(dfdAllReasonByAppID, dfdAllDataByAppID,dfdGetDetailCheck).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData,dfdGetDetailCheck) => {
-                //self.listReasonByAppID(data);
-                //self.getDetailCheck(self.inputDetail());
-                self.checkDisplayStart();
+            $.when( dfdAllReasonByAppID,dfdAllDataByAppID,dfdGetDetailCheck).done((dfdAllReasonByAppIDData,dfdAllDataByAppIDData,dfdGetDetailCheckData) => {
+                
+                //self.checkDisplayStart();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -223,7 +222,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getMessageDeadline(inputMessageDeadline).done(function(data) {
-                debugger;
                 self.outputMessageDeadline(data);
                 dfd.resolve(data);
             });
@@ -235,27 +233,27 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             service.getAllDataByAppID(appID).done(function(data) {
-                let temp = data.listOutputPhaseAndFrame;
-                _.forEach(temp, function(phase) {
-                    let listApproveAcceptedForView = [];
-                    //con cai clone la de clone ra 1 array moi, tranh bi anh huong array goc(tạo ra 1 bản sao)
-                    // _.sortBy sắp xếp theo dispOrder,
-                    let frameTemp = _.sortBy(_.clone(phase.listApprovalFrameDto), ['dispOrder']);
-                    for (var i = 0; i < frameTemp.length; i++) {
-                        let frame = frameTemp[i];
-                        let sameOrder = _.filter(phase.listApproveAcceptedDto, function(f) {
-                            return frame["dispOrder"] === f["dispOrder"];
-                        });
-                        let approverSID = "";
-                        _.forEach(sameOrder, function(so) {
-                            approverSID += (nts.uk.util.isNullOrEmpty(approverSID) ? "" : ", ") + so["approverSID"];
-                        });
-                        frame["approverSID2"] = approverSID;
-                        listApproveAcceptedForView.push(frame);
-                    }
-                    phase["listApproveAcceptedForView"] = listApproveAcceptedForView;
-                });
-                data.listOutputPhaseAndFrame = temp;
+//                let temp = data.listOutputPhaseAndFrame;
+//                _.forEach(temp, function(phase) {
+//                    let listApproveAcceptedForView = [];
+//                    //con cai clone la de clone ra 1 array moi, tranh bi anh huong array goc(tạo ra 1 bản sao)
+//                    // _.sortBy sắp xếp theo dispOrder,
+//                    let frameTemp = _.sortBy(_.clone(phase.listApprovalFrameDto), ['dispOrder']);
+//                    for (var i = 0; i < frameTemp.length; i++) {
+//                        let frame = frameTemp[i];
+//                        let sameOrder = _.filter(phase.listApproveAcceptedDto, function(f) {
+//                            return frame["dispOrder"] === f["dispOrder"];
+//                        });
+//                        let approverSID = "";
+//                        _.forEach(sameOrder, function(so) {
+//                            approverSID += (nts.uk.util.isNullOrEmpty(approverSID) ? "" : ", ") + so["approverSID"];
+//                        });
+//                        frame["approverSID2"] = approverSID;
+//                        listApproveAcceptedForView.push(frame);
+//                    }
+//                    phase["listApproveAcceptedForView"] = listApproveAcceptedForView;
+//                });
+//                data.listOutputPhaseAndFrame = temp;
                 self.dataApplication(data);
                 dfd.resolve(data);
             });
@@ -294,21 +292,36 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         /**
          *  btn Approve
          */
-        btnApprove(){
-            
+        btnApprove(appID){
+            let self = this;
+            let dfd = $.Deferred<any>();
+            service.approveApp(appID).done(function() {
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
          /**
          *  btn Deny
          */
-        btnDeny(){
-            
+        btnDeny(appID){
+            let self = this;
+            let dfd = $.Deferred<any>();
+            service.denyApp(appID).done(function() {
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
         
          /**
          *  btn Release
          */
-        btnRelease(){
-            
+        btnRelease(appID){
+            let self = this;
+            let dfd = $.Deferred<any>();
+            service.releaseApp(appID).done(function() {
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
         
         /**
@@ -321,25 +334,43 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          *  btn References 
          */
         btnReferences(){
-            
+            let self = this;
+            // send (Cid,Eid,date) in screen KDL004
+            //nts.uk.request.jump("/view/kdl/004/a/index.xhtml");
         }
         /**
          *  btn SendEmail 
          */
         btnSendEmail(){
-            
+             let self = this;
+            // send (Cid, appId , content, Eid, date) in screen KDL030
+            //nts.uk.request.jump("/view/kdl/030/a/index.xhtml");
         }
         /**
          *  btn Delete 
          */
-        btnDelete(){
-            
+        btnDelete(appID){
+            let self = this;
+            let dfd = $.Deferred<any>();
+            if(confirm("Are you sure ?")){
+                service.deleteApp(appID).done(function() {
+                    dfd.resolve();
+                });
+            }    
+            return dfd.promise();
         }
         /**
          *  btn Cancel 
          */
-        btnCancel(){
-            
+        btnCancel(appID){
+            let self = this;
+            let dfd = $.Deferred<any>();
+            if(confirm("Are you sure ?")){
+                service.cancelApp(appID).done(function() {
+                    dfd.resolve();
+                });
+            }
+            return dfd.promise();
         }
         
         
@@ -425,60 +456,56 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         export class OutputPhaseAndFrame {
             appApprovalPhase: AppApprovalPhase;
             listApprovalFrame: Array<ApprovalFrame>;
-            listApproveAccepted: Array<ApproveAccepted>;
             constructor(
                 appApprovalPhase: AppApprovalPhase,
-                listApprovalFrame: Array<ApprovalFrame>,
-                listApproveAccepted: Array<ApproveAccepted>) {
+                listApprovalFrame: Array<ApprovalFrame>) {
                 this.appApprovalPhase = appApprovalPhase;
                 this.listApprovalFrame = listApprovalFrame;
-                this.listApproveAccepted = listApproveAccepted;
             }
         }//end class OutputPhaseAndFrame
 
 
         // class AppApprovalPhase
         export class AppApprovalPhase {
-            appID: KnockoutObservable<String>;
-            phaseID: KnockoutObservable<String>;
-            approvalForm: KnockoutObservable<number>;
-            dispOrder: KnockoutObservable<number>;
-            approvalATR: KnockoutObservable<number>;
+            appID: String;
+            phaseID: String;
+            approvalForm: number;
+            dispOrder: number;
+            approvalATR: number;
             constructor(appID: String, phaseID: String, approvalForm: number, dispOrder: number, approvalATR: number) {
-                this.appID = ko.observable(appID);
-                this.phaseID = ko.observable(phaseID);
-                this.approvalForm = ko.observable(approvalForm);
-                this.dispOrder = ko.observable(dispOrder);
-                this.approvalATR = ko.observable(approvalATR);
+                this.appID = appID;
+                this.phaseID = phaseID;
+                this.approvalForm = approvalForm;
+                this.dispOrder = dispOrder;
+                this.approvalATR = approvalATR;
             }
         }
 
         // class ApprovalFrame
         export class ApprovalFrame {
-            phaseID: KnockoutObservable<String>;
-            dispOrder: KnockoutObservable<number>;
-            approverSID: KnockoutObservable<String>;
-            approvalATR: KnockoutObservable<number>;
-            confirmATR: KnockoutObservable<number>;
-            approvalDate: KnockoutObservable<String>;
-            reason: KnockoutObservable<String>;
-            representerSID: KnockoutObservable<String>;
-            constructor(phaseID: String, dispOrder: number, approverSID: String, approvalATR: number,
-                confirmATR: number, approvalDate: String, reason: String, representerSID: String) {
-                this.phaseID = ko.observable(phaseID);
-                this.dispOrder = ko.observable(dispOrder);
-                this.approverSID = ko.observable(approverSID);
-                this.approvalATR = ko.observable(approvalATR);
-                this.confirmATR = ko.observable(confirmATR);
-                this.approvalDate = ko.observable(approvalDate);
-                this.reason = ko.observable(reason);
-                this.representerSID = ko.observable(representerSID);
+            frameID : String;
+            phaseID: String;
+            dispOrder:number;
+            listApproveAccepted: Array<ApproveAccepted>;
+            constructor(frameID : String,phaseID: String, dispOrder: number,listApproveAccepted: Array<ApproveAccepted>) {
+                this.frameID = frameID;
+                this.phaseID = phaseID;
+                this.dispOrder = dispOrder;
+                this.listApproveAccepted = listApproveAccepted;
+                
             }
         }//end class frame  
 
         //class ApproveAccepted
         export class ApproveAccepted {
-
+            appAccedtedID : String;
+            frameID: String;
+            approverSID: String;
+            approvalATR: number;
+            confirmATR: number;
+            approvalDate: String;
+            reason: String;
+            representerSID: String;
         }//end class ApproveAccepted
 
         //class InputGetDetailCheck 

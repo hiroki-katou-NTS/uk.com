@@ -23,12 +23,12 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalForApplication;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootMaster;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeApproverOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.PersonApproverOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WorkplaceApproverOutput;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverDto;
 import nts.uk.file.com.app.company.approval.MasterApproverRootOutputDataSource;
 import nts.uk.file.com.app.company.approval.MasterApproverRootOutputGenerator;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
@@ -736,7 +736,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 	private int printEachWorkplace(WorksheetCollection worksheets, Cells cells, int firstRow,
 			WorkplaceApproverOutput workplace) {
 
-		WorkplaceApproverDto wpInfor = workplace.getWpInfor();
+		WorkplaceImport wpInfor = workplace.getWpInfor();
 		List<ApprovalForApplication> lstAppprove = workplace.getWpRootInfor();
 
 		// set "【職場】"

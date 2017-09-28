@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -131,20 +132,54 @@ public class JpaCompanyApprovalRootRepository extends JpaRepository implements C
 		this.commandProxy().insert(toEntityComApR(comAppRoot));
 	}
 	/**
+	 * add All Company Approval Root
+	 * @param comAppRoot
+	 */
+	@Override
+	public void addAllComApprovalRoot(List<CompanyApprovalRoot> comAppRoot) {
+		List<WwfmtComApprovalRoot> lstEntity = new ArrayList<>();
+		for (CompanyApprovalRoot com : comAppRoot) {
+			lstEntity.add(toEntityComApR(com));
+		}
+		this.commandProxy().insertAll(lstEntity);
+	}
+	/**
+	 * update All Company Approval Root
+	 * @param comAppRoot
+	 */
+	@Override
+	public void updateAllComApprovalRoot(List<CompanyApprovalRoot> comAppRoot) {
+		List<WwfmtComApprovalRoot> lstEntity = new ArrayList<>();
+		for (CompanyApprovalRoot com : comAppRoot) {
+			WwfmtComApprovalRoot a = toEntityComApR(com);
+			WwfmtComApprovalRoot x = this.queryProxy().find(a.wwfmtComApprovalRootPK, WwfmtComApprovalRoot.class).get();
+			x.setStartDate(a.startDate);
+			x.setEndDate(a.endDate);
+			x.setApplicationType(a.applicationType);
+			x.setBranchId(a.branchId);
+			x.setAnyItemAppId(a.anyItemAppId);
+			x.setConfirmationRootType(a.confirmationRootType);
+			x.setEmploymentRootAtr(a.employmentRootAtr);
+			lstEntity.add(x);
+		}
+		this.commandProxy().updateAll(lstEntity);
+	}
+	/**
 	 * update Company Approval Root
+	 * 
 	 * @param comAppRoot
 	 */
 	@Override
 	public void updateComApprovalRoot(CompanyApprovalRoot comAppRoot) {
-		WwfmtComApprovalRoot a = toEntityComApR(comAppRoot);
-		WwfmtComApprovalRoot x = this.queryProxy().find(a.wwfmtComApprovalRootPK, WwfmtComApprovalRoot.class).get();
-		x.setStartDate(a.startDate);
-		x.setEndDate(a.endDate);
-		x.setApplicationType(a.applicationType);
-		x.setBranchId(a.branchId);
-		x.setAnyItemAppId(a.anyItemAppId);
-		x.setConfirmationRootType(a.confirmationRootType);
-		x.setEmploymentRootAtr(a.employmentRootAtr);
+			WwfmtComApprovalRoot a = toEntityComApR(comAppRoot);
+			WwfmtComApprovalRoot x = this.queryProxy().find(a.wwfmtComApprovalRootPK, WwfmtComApprovalRoot.class).get();
+			x.setStartDate(a.startDate);
+			x.setEndDate(a.endDate);
+			x.setApplicationType(a.applicationType);
+			x.setBranchId(a.branchId);
+			x.setAnyItemAppId(a.anyItemAppId);
+			x.setConfirmationRootType(a.confirmationRootType);
+			x.setEmploymentRootAtr(a.employmentRootAtr);
 		this.commandProxy().update(x);
 	}
 	/**

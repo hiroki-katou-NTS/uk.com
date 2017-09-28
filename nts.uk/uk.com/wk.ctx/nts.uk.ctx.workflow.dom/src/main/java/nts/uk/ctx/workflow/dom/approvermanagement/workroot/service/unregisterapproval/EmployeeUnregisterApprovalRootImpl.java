@@ -10,6 +10,10 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
@@ -18,11 +22,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveAdapter;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverAdaptor;
 
 @Stateless
 public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterApprovalRoot{
@@ -35,14 +35,14 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 	@Inject
 	private PersonApprovalRootRepository psRootRepository;
 	@Inject
-	private PersonInforExportAdapter psInfor;
+	private PersonAdapter psInfor;
 	@Inject
-	private EmployeeApproveAdapter empInfor;
+	private EmployeeAdapter empInfor;
 	@Inject
-	private WorkplaceApproverAdaptor wpNameInfor;
+	private WorkplaceAdapter wpNameInfor;
 	@Override
 	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate) {
-		List<EmployeeApproveDto> lstEmps = empInfor.getEmployeesAtWorkByBaseDate(companyId, baseDate);
+		List<EmployeeImport> lstEmps = empInfor.getEmployeesAtWorkByBaseDate(companyId, baseDate);
 		
 		//データが０件(data = 0)
 		if(CollectionUtil.isEmpty(lstEmps)) {
@@ -69,7 +69,7 @@ public class EmployeeUnregisterApprovalRootImpl implements  EmployeeUnregisterAp
 		List<PersonApprovalRoot> psInfo = psRootRepository.findAllByBaseDate(companyId, baseDate);
 		//承認ルート未登録出力対象としてリスト
 		List<EmployeeUnregisterOutput> lstUnRegister = new ArrayList<>();
-		for(EmployeeApproveDto empInfor: lstEmps) {
+		for(EmployeeImport empInfor: lstEmps) {
 			EmployeeUnregisterOutput empInfo = new EmployeeUnregisterOutput();
 			List<String> appTypes = new ArrayList<>();
 			for(ApplicationType appType: ApplicationType.values()) {

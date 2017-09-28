@@ -11,11 +11,12 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcess;
-import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
@@ -38,7 +39,7 @@ public class AfterProcessRegisterImpl implements AfterProcessRegister {
 	private AfterApprovalProcess detailedScreenAfterApprovalProcessService;
 	
 	@Inject
-	private ApprovalAgencyInformation approvalAgencyInformationService;
+	private AgentAdapter approvalAgencyInformationService;
 	
 	@Inject
 	private DestinationJudgmentProcess destinationJudgmentProcessService;
@@ -89,7 +90,7 @@ public class AfterProcessRegisterImpl implements AfterProcessRegister {
 				}
 				
 				// アルゴリズム「承認代行情報の取得処理」を実行する ( Executes the algorithm "acquisition process of approval substitution information" )
-				ApprovalAgencyInformationOutput agencyInformationOutput = approvalAgencyInformationService.getApprovalAgencyInformation(appApprovalPhase.getCompanyID(), unApPhases);
+				AgentPubImport agencyInformationOutput = approvalAgencyInformationService.getApprovalAgencyInformation(appApprovalPhase.getCompanyID(), unApPhases);
 				
 				// アルゴリズム「送信先の判断処理」を実行する ( Executes the algorithm "destination determination process" )
 				List<String> result = destinationJudgmentProcessService.getDestinationJudgmentProcessService(agencyInformationOutput.getListApproverAndRepresenterSID());

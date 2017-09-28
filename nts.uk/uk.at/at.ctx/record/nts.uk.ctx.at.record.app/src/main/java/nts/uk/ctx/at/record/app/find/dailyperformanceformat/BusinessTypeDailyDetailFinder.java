@@ -18,8 +18,6 @@ import nts.uk.ctx.at.record.dom.dailyperformanceformat.BusinessTypeFormatDaily;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.primitivevalue.BusinessTypeCode;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessFormatSheetRepository;
 import nts.uk.ctx.at.record.dom.dailyperformanceformat.repository.BusinessTypeFormatDailyRepository;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceItem;
-import nts.uk.ctx.at.shared.dom.attendance.AttendanceItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -33,9 +31,6 @@ public class BusinessTypeDailyDetailFinder {
 
 	@Inject
 	private AttendanceItemsFinder attendanceItemsFinder;
-
-	@Inject
-	private AttendanceItemRepository attendanceItemRepository;
 
 	@Inject
 	private BusinessTypeFormatDailyRepository workTypeFormatDailyRepository;
@@ -57,10 +52,6 @@ public class BusinessTypeDailyDetailFinder {
 		List<BusinessTypeFormatDetailDto> businessTypeFormatDetailDtos = new ArrayList<>();
 		if(!businessTypeFormatDailies.isEmpty()){			
 			businessTypeFormatDetailDtos = businessTypeFormatDailies.stream().map(f -> {
-//				Optional<AttendanceItem> attendanceItem = this.attendanceItemRepository.getAttendanceItemDetail(companyId,
-//						f.getAttendanceItemId());
-//				return new BusinessTypeFormatDetailDto(f.getAttendanceItemId(), attendanceItem.get().getDislayNumber(),
-//						attendanceItem.get().getAttendanceName().v(), f.getOrder(), f.getColumnWidth());
 				if (attendanceItemMaps.containsKey(f.getAttendanceItemId()))
 					return new BusinessTypeFormatDetailDto(f.getAttendanceItemId(), attendanceItemMaps.get(f.getAttendanceItemId()).getAttendanceItemDisplayNumber(),
 							attendanceItemMaps.get(f.getAttendanceItemId()).getAttendanceItemName(), f.getOrder(), f.getColumnWidth());

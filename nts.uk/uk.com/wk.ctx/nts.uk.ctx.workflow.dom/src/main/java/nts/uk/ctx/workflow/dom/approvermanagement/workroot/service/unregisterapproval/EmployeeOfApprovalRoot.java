@@ -3,11 +3,11 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterap
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
 /**
  * 02.社員の対象申請の承認ルートを取得する
  * @author dudt
@@ -28,7 +28,7 @@ public interface EmployeeOfApprovalRoot {
 			List<CompanyApprovalRoot> lstCompanyRootInfor,
 			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor,
 			List<PersonApprovalRoot> lstPersonRootInfor,
-			EmployeeApproveDto empInfor, 
+			EmployeeImport empInfor, 
 			ApplicationType appType,
 			GeneralDate baseDate);
 }

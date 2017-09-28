@@ -3,8 +3,50 @@
         getAllDataByAppID: "at/request/application/getalldatabyappid",
         getAllReasonByAppID : "at/request/application/getreasonforremand",
         getDetailCheck :  "at/request/application/getdetailcheck",
-        getMessageDeadline : "at/request/application/getmessagedeadline"
+        getMessageDeadline : "at/request/application/getmessagedeadline",
+        approveApp : "at/request/application/approveapp",
+        denyApp : "at/request/application/denyapp",
+        releaseApp : "at/request/application/releaseapp",
+        cancelApp : "at/request/application/cancelapp",
+        deleteApp : "at/request/application/deleteapp"
     }
+     
+     /**
+      * approve application
+      */
+     export function approveApp(appID) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.approveApp+"/"+appID);
+     }  
+     
+     /**
+      * deny  application
+      */
+     export function denyApp(appID) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.denyApp+"/"+appID);
+     }
+     
+      /**
+      * release   application
+      */
+     export function releaseApp(appID) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.releaseApp+"/"+appID);
+     }
+     
+      /**
+      * cancel application
+      */
+     export function cancelApp(appID) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.cancelApp+"/"+appID);
+     }
+     
+     /**
+      * delete application
+      */
+     export function deleteApp(appID) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.deleteApp+"/"+appID);
+     }
+     
+     
      /**
       * get all phase by applicationID
       */

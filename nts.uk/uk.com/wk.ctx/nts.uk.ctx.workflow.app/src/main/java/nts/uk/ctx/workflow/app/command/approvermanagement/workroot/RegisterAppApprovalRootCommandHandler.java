@@ -9,10 +9,13 @@ import java.util.UUID;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ApprovalPhaseDto;
+import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ApproverDto;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranch;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranchRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
@@ -38,281 +41,396 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	private ApprovalPhaseRepository repoAppPhase;
 	@Inject
 	private ApproverRepository repoApprover;
+	@Inject
+	private ApprovalBranchRepository repoBranch;
 	@Override
 	protected void handle(CommandHandlerContext<RegisterAppApprovalRootCommand> context) {
-		String workpplaceId = context.getCommand().getWorkpplaceId(); 
-		String employeeId = context.getCommand().getEmployeeId();
-		//TH: Delete root
-		if(context.getCommand().isCheckDelete()){//delete
-			List<DataDeleteDto> lstDelete = context.getCommand().getLstDelete();
-			delete(lstDelete,context.getCommand().getRootType(), workpplaceId, employeeId);
-		}
-		//TH: add history
-		if(context.getCommand().isCheckAddHist()){
-			List<AddHistoryDto> lstHist = context.getCommand().getLstAddHist();
-			addHistory(lstHist, workpplaceId, employeeId);
-			//TH: update AppPhase + Edit Approver
-			if(context.getCommand().isCheckEdit()){
-				
-			}
-		}
-		//TH: add root
-		if(context.getCommand().isCheckAddRoot()){
-			
-			
-		}
-		
-	}
-	private void delete(List<DataDeleteDto> lstDelete, int rootType, String workpplaceId, String employeeId){
-		String companyId = AppContexts.user().companyId();
-		//TH: company - domain 会社別就業承認ルート
+		//____________New__________
+		String historyId = UUID.randomUUID().toString();
+		RegisterAppApprovalRootCommand data = context.getCommand();
+		int rootType = data.getRootType();
+		//TH: company
 		if(rootType == 0){
-			for (DataDeleteDto dataDeleteDto : lstDelete) {
-				//get root from db
-				Optional<CompanyApprovalRoot> com = repoCom.getComApprovalRoot(companyId, dataDeleteDto.getApprovalId(), dataDeleteDto.getHistoryId());
-				if(com.isPresent()){//exist
-					CompanyApprovalRoot comRoot = com.get();
-					//get appPhase
-					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, comRoot.getBranchId());
-					for (ApprovalPhase approvalPhase : lstAPhase) {
-						//delete All Approver By Approval Phase Id
-						repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
-					}
-					//delete All Approval Phase By Branch Id
-					repoAppPhase.deleteAllAppPhaseByBranchId(companyId, comRoot.getBranchId());
-					//delete root
-					repoCom.deleteComApprovalRoot(companyId, dataDeleteDto.getApprovalId(), dataDeleteDto.getHistoryId());
-				}
-			}
+			registerCom(data, historyId);
 		}
-		//TH: workplace - domain 職場別就業承認ルート
+		//TH: work place
 		else if(rootType == 1){
-			for (DataDeleteDto dataDeleteDto : lstDelete) {
-				//get Work place root from db
-				Optional<WorkplaceApprovalRoot> wp = repoWorkplace.getWpApprovalRoot(companyId, dataDeleteDto.getApprovalId(), workpplaceId, dataDeleteDto.getHistoryId());
-				if(wp.isPresent()){//exist
-					WorkplaceApprovalRoot wpRoot = wp.get();
-					//get appPhase
-					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, wpRoot.getBranchId());
-					for (ApprovalPhase approvalPhase : lstAPhase) {
-						//delete All Approver By Approval Phase Id
-						repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
-					}
-					//delete All Approval Phase By Branch Id
-					repoAppPhase.deleteAllAppPhaseByBranchId(companyId, wpRoot.getBranchId());
-					//delete Work place root
-					repoWorkplace.deleteWpApprovalRoot(companyId, dataDeleteDto.getApprovalId(), workpplaceId, dataDeleteDto.getHistoryId());
-				}
-			}
+			registerWp(data, historyId);
 		}
-		//TH: person - domain 個人別就業承認ルート
+		//TH: person
 		else{
-			for (DataDeleteDto dataDeleteDto : lstDelete) {
-				//get person root from db
-				Optional<PersonApprovalRoot> ps = repoPerson.getPsApprovalRoot(companyId, dataDeleteDto.getApprovalId(), employeeId, dataDeleteDto.getHistoryId());
-				if(ps.isPresent()){//exist
-					PersonApprovalRoot psRoot = ps.get();
-					//get appPhase
-					List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, psRoot.getBranchId());
-					for (ApprovalPhase approvalPhase : lstAPhase) {
-						//delete All Approver By Approval Phase Id
-						repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
-					}
-					//delete All Approval Phase By Branch Id
-					repoAppPhase.deleteAllAppPhaseByBranchId(companyId, psRoot.getBranchId());
-					//delete person root 
-					repoPerson.deletePsApprovalRoot(companyId, dataDeleteDto.getApprovalId(), employeeId, dataDeleteDto.getHistoryId());
-				}
-			}
+			registerPs(data, historyId);
 		}
 	}
-	/**
-	 * add history
-	 * @param context
-	 */
-	private void addHistory(List<AddHistoryDto> context, String workpplaceId, String employeeId) {
+
+	private void registerCom(RegisterAppApprovalRootCommand data,String historyId){
 		String companyId = AppContexts.user().companyId();
-		List<AddHistoryDto>  lstAddItem = context;
-		for (AddHistoryDto addItem : lstAddItem) {
-			String historyId = UUID.randomUUID().toString();
-			String approvalId = UUID.randomUUID().toString();
-			String branchId = UUID.randomUUID().toString();
-			String startDate = addItem.getStartDate();
-			GeneralDate sDate = GeneralDate.localDate(LocalDate.parse(startDate));
-			GeneralDate eDate = sDate.addDays(-1);
-			String endDateNew = eDate.toString();
-			String endDateS = "9999/12/31";
-			GeneralDate endDate = GeneralDate.fromString(endDateS, "yyyy-MM-dd");
-			//TH: company - domain 会社別就業承認ルート
-			if(addItem.getMode() == 0){
-				//com root new
-				CompanyApprovalRoot comAppRootNew = CompanyApprovalRoot.createSimpleFromJavaType(companyId,
-						approvalId, historyId,
-						addItem.getApplicationType(),
-						addItem.getStartDate(),
-						endDateS, branchId, null, null,
-						addItem.getApplicationType() == null ? 0 : 1);
-				//find history previous
-				List<CompanyApprovalRoot> lstOld= repoCom.getComApprovalRootByEdate(companyId, endDate, addItem.getApplicationType());
-				//TH: history previous is not exist
-				if(lstOld.isEmpty()){
-					//copy/new
-					repoCom.addComApprovalRoot(comAppRootNew);
+		List<CompanyAppRootADto> root = data.getRoot();
+		boolean checkAddHist = data.isCheckAddHist();
+		String startDate = data.getStartDate().replace("/", "-");
+		String endDateOld = data.getEndDate().replace("/", "-");
+		GeneralDate sDate = GeneralDate.localDate(LocalDate.parse(startDate));
+		GeneralDate eDate = sDate.addDays(-1);
+		String endDateNew = eDate.toString().replace("/", "-");
+		String endDateS = "9999-12-31";
+		GeneralDate endDate = GeneralDate.fromString(endDateS, "yyyy-MM-dd");
+		GeneralDate endDateUpdate = GeneralDate.fromString(endDateOld, "yyyy-MM-dd");
+		//TH: create history new
+		if(checkAddHist){
+			//Tạo root có ls mới với appType ở dữ liệu bên phải.
+			//Update root có ls trước đó của những root mới được tạo ở trên.
+			List<CompanyApprovalRoot> listCom = new ArrayList<>();
+			List<CompanyApprovalRoot> listComPre = new ArrayList<>();
+			List<ApprovalBranch> lstBranch = new ArrayList<>();
+			for (CompanyAppRootADto commonRoot : root) {
+				Integer type = commonRoot.getAppTypeValue();
+				String branchId = UUID.randomUUID().toString();
+				//root right
+				CompanyApprovalRoot com = CompanyApprovalRoot.createSimpleFromJavaType(companyId, 
+									UUID.randomUUID().toString(), historyId, type, startDate, endDateS,
+									branchId, null, null, type == null ? 0 : 1);
+				//branch
+				ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
+				lstBranch.add(branch);
+				listCom.add(com);
+				//get root old by end date and type
+				List<CompanyApprovalRoot> comOld = repoCom.getComApprovalRootByEdate(companyId, endDate, type);
+				if(!comOld.isEmpty()){
+					//update ls cu
+					CompanyApprovalRoot comPre = CompanyApprovalRoot.updateSdateEdate(comOld.get(0), endDateNew);
+					listComPre.add(comPre);
 				}
-				//TH: history previous is exist
-				else{
-					CompanyApprovalRoot com = lstOld.get(0);
-					//追加する履歴を最新の履歴の開始年月日と比較する
-					if(!checkStartDate(com.getPeriod().getStartDate().toString(),addItem.getStartDate())){
-						throw new BusinessException("Msg_153");
-					}
-					//update history previous
-					CompanyApprovalRoot comPre = CompanyApprovalRoot.updateSdateEdate(com, com.getPeriod().getStartDate().toString(), endDateNew);
-					//TH: copy
-					if(addItem.isCopyDataFlag()){
-						repoCom.addComApprovalRoot(comAppRootNew);
-						repoCom.updateComApprovalRoot(comPre);
-						//copy data from history pre -> history new
-						//get lst APhase of history pre
-						List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, com.getBranchId());
-						List<ApprovalPhase> lstAPhaseNew = new ArrayList<ApprovalPhase>();
-						for (ApprovalPhase approvalPhase : lstAPhase) {
-							//get lst Approver
-							List<Approver> lstApprover = repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
-							List<Approver> lstApproverNew = new ArrayList<Approver>();
-							for (Approver approver : lstApprover) {
-								lstApproverNew.add(Approver.updateApprovalPhaseId(approver));
-							}
-							//update lst Approver New
-							repoApprover.addAllApprover(lstApproverNew);
-							//convert
-							approvalPhase.updateBranchId(branchId);
-							lstAPhaseNew.add(approvalPhase);
-						}
-						//update lst APhase
-						repoAppPhase.addAllApprovalPhase(lstAPhaseNew);
-					}
-					//TH: new
-					else{
-						repoCom.addComApprovalRoot(comAppRootNew);
-						repoCom.updateComApprovalRoot(comPre);
+				//Add approval
+				addApproval(commonRoot, 0, branchId, checkAddHist);
+			}
+			//Add ls new, update ls old, add branch
+			repoCom.addAllComApprovalRoot(listCom);
+			repoCom.updateAllComApprovalRoot(listComPre);
+			repoBranch.addAllBranch(lstBranch);
+		}
+		//TH: update history old
+		else{
+			List<Integer> lstAppTypeDb = data.getLstAppType();
+			List<Integer> lstAppTypeUi = new ArrayList<>();
+			for (CompanyAppRootADto commonRoot : root) {
+				lstAppTypeUi.add(commonRoot.getAppTypeValue());
+			}
+			//delete root not display in screen
+			for (Integer type : lstAppTypeDb) {
+				if(!lstAppTypeUi.contains(type)){
+					List<CompanyApprovalRoot> lstCom = repoCom.getComApprovalRootByEdate(companyId, endDateUpdate, type);
+					if(!lstCom.isEmpty()){
+						CompanyApprovalRoot com = lstCom.get(0);
+						//==========
+						deleteAppPh(com.getBranchId());
+						//=======
+						repoCom.deleteComApprovalRoot(companyId, com.getApprovalId(), com.getHistoryId());
 					}
 				}
 			}
-			//TH: workplace - domain 職場別就業承認ルート
-			if(addItem.getMode() == 1){
-				WorkplaceApprovalRoot wpAppRootNew = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId,
-						approvalId, workpplaceId, historyId,
-						addItem.getApplicationType(),
-						addItem.getStartDate(),
-						endDateS, branchId, null, null,
-						addItem.getApplicationType() == null ? 0 : 1);
-				//find history previous
-				List<WorkplaceApprovalRoot> lstOld= repoWorkplace.getWpApprovalRootByEdate(companyId, workpplaceId, endDate, addItem.getApplicationType());
-				if(lstOld.isEmpty()){// history previous is not exist
-					//copy/new
-					repoWorkplace.addWpApprovalRoot(wpAppRootNew);
-				}else{// history previous is exist
-					WorkplaceApprovalRoot wp = lstOld.get(0);
-					//追加する履歴を最新の履歴の開始年月日と比較する
-					if(!checkStartDate(wp.getPeriod().getStartDate().toString(),addItem.getStartDate())){
-						throw new BusinessException("Msg_153");
-					}
-					//update history previous
-					WorkplaceApprovalRoot wpPre = WorkplaceApprovalRoot.updateSdateEdate(wp, wp.getPeriod().getStartDate().toString(), endDateNew);
-					//TH: copy
-					if(addItem.isCopyDataFlag()){
-						repoWorkplace.addWpApprovalRoot(wpAppRootNew);
-						repoWorkplace.updateWpApprovalRoot(wpPre);
-						//copy data from history pre -> history new
-						//get lst APhase of history pre
-						List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, wp.getBranchId());
-						List<ApprovalPhase> lstAPhaseNew = new ArrayList<ApprovalPhase>();
-						for (ApprovalPhase approvalPhase : lstAPhase) {
-							//get lst Approver
-							List<Approver> lstApprover = repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
-							List<Approver> lstApproverNew = new ArrayList<Approver>();
-							for (Approver approver : lstApprover) {
-								lstApproverNew.add(Approver.updateApprovalPhaseId(approver));
-							}
-							//update lst Approver New
-							repoApprover.addAllApprover(lstApproverNew);
-							//convert
-							approvalPhase.updateBranchId(branchId);
-							lstAPhaseNew.add(approvalPhase);
-						}
-						//update lst APhase
-						repoAppPhase.addAllApprovalPhase(lstAPhaseNew);
-					}
-					//TH: new
-					else{
-						repoWorkplace.addWpApprovalRoot(wpAppRootNew);
-						repoWorkplace.updateWpApprovalRoot(wpPre);
+			//update root display in screen
+			updateRoot(lstAppTypeUi, root);
+		}
+	}
+	/**
+	 * register work place
+	 * @param data
+	 * @param historyId
+	 */
+	private void registerWp(RegisterAppApprovalRootCommand data,String historyId){
+		String companyId = AppContexts.user().companyId();
+		List<CompanyAppRootADto> root = data.getRoot();
+		String workplaceId = data.getWorkpplaceId();
+		boolean checkAddHist = data.isCheckAddHist();
+		String startDate = data.getStartDate().replace("/", "-");
+		String endDateOld = data.getEndDate().replace("/", "-");
+		GeneralDate sDate = GeneralDate.localDate(LocalDate.parse(startDate));
+		GeneralDate eDate = sDate.addDays(-1);
+		String endDateNew = eDate.toString().replace("/", "-");
+		String endDateS = "9999-12-31";
+		GeneralDate endDate = GeneralDate.fromString(endDateS, "yyyy-MM-dd");
+		GeneralDate endDateUpdate = GeneralDate.fromString(endDateOld, "yyyy-MM-dd");
+		//TH: create history new
+		if(checkAddHist){
+			//Tạo root có ls mới với appType ở dữ liệu bên phải.
+			//Update root có ls trước đó của những root mới được tạo ở trên.
+			List<WorkplaceApprovalRoot> listWp = new ArrayList<>();
+			List<WorkplaceApprovalRoot> listWpPre = new ArrayList<>();
+			List<ApprovalBranch> lstBranch = new ArrayList<>();
+			for (CompanyAppRootADto commonRoot : root) {
+				Integer type = commonRoot.getAppTypeValue();
+				String branchId = UUID.randomUUID().toString();
+				WorkplaceApprovalRoot com = WorkplaceApprovalRoot.createSimpleFromJavaType(companyId, 
+									UUID.randomUUID().toString(), workplaceId, historyId, type, startDate, endDateS,
+									branchId, null, null, type == null ? 0 : 1);
+				ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
+				lstBranch.add(branch);
+				listWp.add(com);
+				List<WorkplaceApprovalRoot> psOld = repoWorkplace.getWpApprovalRootByEdate(companyId, workplaceId, endDate, type);
+				if(!psOld.isEmpty()){
+					//update ls cu
+					WorkplaceApprovalRoot psPre = WorkplaceApprovalRoot.updateSdateEdate(psOld.get(0), endDateNew);
+					listWpPre.add(psPre);
+				}
+				//Add approval
+				addApproval(commonRoot, 0, branchId, checkAddHist);
+			}
+			//Add ls new, update ls old, add branch
+			repoWorkplace.addAllWpApprovalRoot(listWp);
+			repoWorkplace.updateAllWpApprovalRoot(listWpPre);
+			repoBranch.addAllBranch(lstBranch);
+		}
+		//TH: update history old
+		else{
+			List<Integer> lstAppTypeDb = data.getAddHist().getLstAppType();
+			List<Integer> lstAppTypeUi = new ArrayList<>();
+			for (CompanyAppRootADto commonRoot : root) {
+				lstAppTypeUi.add(commonRoot.getAppTypeValue());
+			}
+			//delete root not display in screen
+			for (Integer type : lstAppTypeDb) {
+				if(!lstAppTypeUi.contains(type)){
+					List<WorkplaceApprovalRoot> lstWp = repoWorkplace.getWpApprovalRootByEdate(companyId, workplaceId, endDateUpdate, type);
+					if(!lstWp.isEmpty()){
+						WorkplaceApprovalRoot wp = lstWp.get(0);
+						//==========
+						deleteAppPh(wp.getBranchId());
+						//=======
+						repoCom.deleteComApprovalRoot(companyId, wp.getApprovalId(), wp.getHistoryId());
 					}
 				}
 			}
-			//TH: person - domain 個人別就業承認ルート
-			if(addItem.getMode() == 2){
-				PersonApprovalRoot psAppRootNew = PersonApprovalRoot.createSimpleFromJavaType(companyId,
-						approvalId, employeeId, historyId,
-						addItem.getApplicationType(),
-						addItem.getStartDate(),
-						endDateS, branchId, null, null,
-						addItem.getApplicationType() == null ? 0 : 1);
-				//find history previous
-				List<PersonApprovalRoot> lstOld= repoPerson.getPsApprovalRootByEdate(companyId, employeeId, endDate, addItem.getApplicationType());
-				if(lstOld.isEmpty()){// history previous is not exist
-					//copy/new
-					repoPerson.addPsApprovalRoot(psAppRootNew);
-				}else{// history previous is exist
-					PersonApprovalRoot ps = lstOld.get(0);
-					//追加する履歴を最新の履歴の開始年月日と比較する
-					if(!checkStartDate(ps.getPeriod().getStartDate().toString(),addItem.getStartDate())){
-						throw new BusinessException("Msg_153");
-					}
-					//update history previous
-					PersonApprovalRoot psPre = PersonApprovalRoot.updateSdateEdate(ps, ps.getPeriod().getStartDate().toString(), endDateNew);
-					//TH: copy
-					if(addItem.isCopyDataFlag()){
-						repoPerson.addPsApprovalRoot(psAppRootNew);
-						repoPerson.updatePsApprovalRoot(psPre);
-						//copy data from history pre -> history new
-						//get lst APhase of history pre
-						List<ApprovalPhase> lstAPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, ps.getBranchId());
-						List<ApprovalPhase> lstAPhaseNew = new ArrayList<ApprovalPhase>();
-						for (ApprovalPhase approvalPhase : lstAPhase) {
-							//get lst Approver
-							List<Approver> lstApprover = repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
-							List<Approver> lstApproverNew = new ArrayList<Approver>();
-							for (Approver approver : lstApprover) {
-								lstApproverNew.add(Approver.updateApprovalPhaseId(approver));
-							}
-							//update lst Approver New
-							repoApprover.addAllApprover(lstApproverNew);
-							//convert
-							approvalPhase.updateBranchId(branchId);
-							lstAPhaseNew.add(approvalPhase);
-						}
-						//update lst APhase
-						repoAppPhase.addAllApprovalPhase(lstAPhaseNew);
-					}else{//new
-						repoPerson.addPsApprovalRoot(psAppRootNew);
-						repoPerson.updatePsApprovalRoot(psPre);
+			//update root display in screen
+			updateRoot(lstAppTypeUi, root);
+		}
+	}
+	/**
+	 * register person
+	 * @param data
+	 * @param historyId
+	 */
+	private void registerPs(RegisterAppApprovalRootCommand data,String historyId){
+		String companyId = AppContexts.user().companyId();
+		List<CompanyAppRootADto> root = data.getRoot();
+		String employeeId = data.getEmployeeId(); 
+		boolean checkAddHist = data.isCheckAddHist();
+		String startDate = data.getStartDate().replace("/", "-");
+		String endDateOld = data.getEndDate().replace("/", "-");
+		GeneralDate sDate = GeneralDate.localDate(LocalDate.parse(startDate));
+		GeneralDate eDate = sDate.addDays(-1);
+		String endDateNew = eDate.toString().replace("/", "-");
+		String endDateS = "9999-12-31";
+		GeneralDate endDate = GeneralDate.fromString(endDateS, "yyyy-MM-dd");
+		GeneralDate endDateUpdate = GeneralDate.fromString(endDateOld, "yyyy-MM-dd");
+		//TH: create history new
+		if(checkAddHist){
+			//Tạo root có ls mới với appType ở dữ liệu bên phải.
+			//Update root có ls trước đó của những root mới được tạo ở trên.
+			List<PersonApprovalRoot> listPs = new ArrayList<>();
+			List<PersonApprovalRoot> listPsPre = new ArrayList<>();
+			List<ApprovalBranch> lstBranch = new ArrayList<>();
+			for (CompanyAppRootADto commonRoot : root) {
+				Integer type = commonRoot.getAppTypeValue();
+				String branchId = UUID.randomUUID().toString();
+				PersonApprovalRoot com = PersonApprovalRoot.createSimpleFromJavaType(companyId, 
+									UUID.randomUUID().toString(), employeeId, historyId, type, startDate, endDateS,
+									branchId, null, null, type == null ? 0 : 1);
+				ApprovalBranch branch = new ApprovalBranch(companyId,branchId,1);
+				lstBranch.add(branch);
+				listPs.add(com);
+				List<PersonApprovalRoot> psOld = repoPerson.getPsApprovalRootByEdate(companyId, employeeId, endDate, type);
+				if(!psOld.isEmpty()){
+					//update ls cu
+					PersonApprovalRoot psPre = PersonApprovalRoot.updateSdateEdate(psOld.get(0), endDateNew);
+					listPsPre.add(psPre);
+				}
+				//Add approval
+				addApproval(commonRoot, 0, branchId, checkAddHist);
+			}
+			//Add ls new, update ls old, add branch
+			repoPerson.addAllPsApprovalRoot(listPs);
+			repoPerson.updateAllPsApprovalRoot(listPsPre);
+			repoBranch.addAllBranch(lstBranch);
+		}
+		//TH: update history old
+		else{
+			List<Integer> lstAppTypeDb = data.getAddHist().getLstAppType();
+			List<Integer> lstAppTypeUi = new ArrayList<>();
+			for (CompanyAppRootADto commonRoot : root) {
+				lstAppTypeUi.add(commonRoot.getAppTypeValue());
+			}
+			//delete root not display in screen
+			for (Integer type : lstAppTypeDb) {
+				if(!lstAppTypeUi.contains(type)){
+					List<PersonApprovalRoot> lstPs = repoPerson.getPsApprovalRootByEdate(companyId, employeeId, endDateUpdate, type);
+					if(!lstPs.isEmpty()){
+						PersonApprovalRoot ps = lstPs.get(0);
+						//==========
+						deleteAppPh(ps.getBranchId());
+						//=======
+						repoCom.deleteComApprovalRoot(companyId, ps.getApprovalId(), ps.getHistoryId());
 					}
 				}
+			}
+			//update root display in screen
+			updateRoot(lstAppTypeUi, root);
+		}
+	}
+	/**
+	 * Add new history
+	 * @param root
+	 * @param lstAddHist
+	 * @param rootType
+	 * @param startDate
+	 * @param endDate
+	 * @param branchId
+	 */
+	private void addApproval(CompanyAppRootADto commonRoot, int rootType, String branchId, boolean checkAddHist){
+		if(commonRoot == null){
+			return;
+		}
+		List<ApprovalPhase> listAppPhase = new ArrayList<>();
+		deleteAppPh(branchId);
+		ApprovalPhase appPhaseN1 = checkAppPh(commonRoot.getAppPhase1(), branchId);
+		ApprovalPhase appPhaseN2 = checkAppPh(commonRoot.getAppPhase2(), branchId);
+		ApprovalPhase appPhaseN3 = checkAppPh(commonRoot.getAppPhase3(), branchId);
+		ApprovalPhase appPhaseN4 = checkAppPh(commonRoot.getAppPhase4(), branchId);
+		ApprovalPhase appPhaseN5 = checkAppPh(commonRoot.getAppPhase5(), branchId);
+		if(appPhaseN1 != null){
+			listAppPhase.add(appPhaseN1);
+		}
+		if(appPhaseN2 != null){
+			listAppPhase.add(appPhaseN2);
+		}
+		if(appPhaseN3 != null){
+			listAppPhase.add(appPhaseN3);
+		}
+		if(appPhaseN4 != null){
+			listAppPhase.add(appPhaseN4);
+		}
+		if(appPhaseN5 != null){
+			listAppPhase.add(appPhaseN5);
+		}
+		for (ApprovalPhase approvalPhase : listAppPhase) {
+			repoApprover.addAllApprover(approvalPhase.getApprovers());
+		}
+		repoAppPhase.addAllApprovalPhase(listAppPhase);
+	}
+
+	/**
+	 * TH: update
+	 * update root display in screen
+	 */
+	private void updateRoot(List<Integer> lstAppTypeUi, List<CompanyAppRootADto> root){
+		//update root display in screen
+		for (Integer type : lstAppTypeUi) {
+			CompanyAppRootADto commonRoot = findRoot(root, type);
+			String branchId = commonRoot.getBranchId();
+			ApprovalPhase appPhaseN1 = checkAppPh(commonRoot.getAppPhase1(), branchId);
+			ApprovalPhase appPhaseN2 = checkAppPh(commonRoot.getAppPhase2(), branchId);
+			ApprovalPhase appPhaseN3 = checkAppPh(commonRoot.getAppPhase3(), branchId);
+			ApprovalPhase appPhaseN4 = checkAppPh(commonRoot.getAppPhase4(), branchId);
+			ApprovalPhase appPhaseN5 = checkAppPh(commonRoot.getAppPhase5(), branchId);
+			//Xu ly them,sua,xoa appPh and approver
+			if(appPhaseN1 != null && appPhaseN1.getApprovalForm().value != 0){
+				addAppPhase(appPhaseN1,branchId);
+			}
+			if(appPhaseN2 != null && appPhaseN2.getApprovalForm().value != 0){
+				addAppPhase(appPhaseN2,branchId);
+			}
+			if(appPhaseN3 != null && appPhaseN3.getApprovalForm().value != 0){
+				addAppPhase(appPhaseN3,branchId);
+			}
+			if(appPhaseN4 != null && appPhaseN4.getApprovalForm().value != 0){
+				addAppPhase(appPhaseN4,branchId);
+			}
+			if(appPhaseN5 != null && appPhaseN5.getApprovalForm().value != 0){
+				addAppPhase(appPhaseN5,branchId);
 			}
 		}
 	}
 	/**
-	 * check 編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
-	 * @param sDatePre
-	 * @param sDateCur
+	 * add appPhase
+	 * @param appPhaseN1
+	 * @param branchId
+	 */
+	private void addAppPhase(ApprovalPhase appPhaseN1, String branchId){
+		if(appPhaseN1 == null){
+			return;
+		}
+		String companyId = AppContexts.user().companyId();
+		Optional<ApprovalPhase> appPh1 = repoAppPhase.getApprovalPhase(companyId, branchId, appPhaseN1.getApprovalPhaseId());
+		if(!appPh1.isPresent()){//add new appPh and Approver
+			String approvalPhaseId = UUID.randomUUID().toString();
+			appPhaseN1.updateAppPhaseId(approvalPhaseId);
+			List<Approver>  approvers = appPhaseN1.getApprovers();
+			for (Approver approver : approvers) {
+				approver.updateApprovalPhaseId(approvalPhaseId);
+				approver.updateApproverId(UUID.randomUUID().toString());
+			}
+			repoApprover.addAllApprover(approvers);
+			repoAppPhase.addApprovalPhase(appPhaseN1);
+		}else{//update
+			repoApprover.deleteAllApproverByAppPhId(companyId, appPhaseN1.getApprovalPhaseId());
+			List<Approver>  approvers = appPhaseN1.getApprovers();
+			for (Approver approver : approvers) {
+				approver.updateApprovalPhaseId(appPhaseN1.getApprovalPhaseId());
+				approver.updateApproverId(UUID.randomUUID().toString());
+			}
+			repoApprover.addAllApprover(approvers);
+			repoAppPhase.updateApprovalPhase(appPhaseN1);
+		}
+	}
+	/**
+	 * check AppPhase(add or not add)
+	 * @param appPhase
+	 * @param branchId
 	 * @return
 	 */
-	public boolean checkStartDate(String sDatePre, String sDateCur){
-		if(sDateCur.compareTo(sDatePre)>0){
-			return true;
+	private ApprovalPhase checkAppPh(ApprovalPhaseDto appPhase, String branchId){
+		if(appPhase.getApprovalForm() == null || appPhase.getApprovalForm().intValue() == 0 ){//khong co
+			return null;
 		}
-		return false;
+		String companyId = AppContexts.user().companyId();
+		String approvalPhaseId = appPhase.getApprovalPhaseId();
+		List<ApproverDto> approver = appPhase.getApprover();
+		List<Approver> lstApp = new ArrayList<>();
+		for (ApproverDto approverDto : approver) {
+			lstApp.add(Approver.createSimpleFromJavaType(companyId, branchId,
+					approvalPhaseId, UUID.randomUUID().toString(), null, approverDto.getEmployeeId(), approverDto.getOrderNumber(), approverDto.getApprovalAtr(), approverDto.getConfirmPerson()));
+		}
+		return ApprovalPhase.createSimpleFromJavaType(companyId, branchId,
+				approvalPhaseId , appPhase.getApprovalForm(),
+				appPhase.getBrowsingPhase(), appPhase.getOrderNumber(),lstApp);
+	}
+	/**
+	 * find root
+	 * @param root
+	 * @param appTypeValue
+	 * @return
+	 */
+	private CompanyAppRootADto findRoot(List<CompanyAppRootADto> root, Integer appTypeValue){
+		for (CompanyAppRootADto companyAppRootADto : root) {
+			if(companyAppRootADto.getAppTypeValue() == appTypeValue){
+				return companyAppRootADto;
+			}
+		}
+		return null;
+	}
+	/**
+	 * delete
+	 * @param branchId
+	 */
+	private void deleteAppPh(String branchId){
+		String companyId = AppContexts.user().companyId();
+		List<ApprovalPhase> lstAppPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, branchId);
+		if(!lstAppPhase.isEmpty()){
+			for (ApprovalPhase approvalPhase : lstAppPhase) {
+				//delete All Approver By Approval Phase Id
+				repoApprover.deleteAllApproverByAppPhId(companyId, approvalPhase.getApprovalPhaseId());
+			}
+			//delete All Approval Phase By Branch Id
+			repoAppPhase.deleteAllAppPhaseByBranchId(companyId, branchId);
+		}
 	}
 }

@@ -8,11 +8,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
 import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -36,6 +39,9 @@ public class GetAllDataAppPhaseFrame {
 	@Inject 
 	private ApproveAcceptedRepository approveAcceptedRepo;
 	
+	@Inject
+	private EmployeeAdapter employeeAdapter;
+	
 	public OutputGetAllDataApp getAllDataAppPhaseFrame(String applicationID) {
 		
 		String companyID = AppContexts.user().companyId();
@@ -55,11 +61,45 @@ public class GetAllDataAppPhaseFrame {
 					this.approvalFrameRepository.getAllApproverByPhaseID(companyID, appApprovalPhase.getPhaseID())
 					.stream().map(approvalFrame -> ApprovalFrameDto.fromDomain(approvalFrame)).collect(Collectors.toList());
 			//get list approve accepted
-			List<ApproveAcceptedDto> listApproveAccepted = 
-					this.approveAcceptedRepo.getAllApproverAccepted(companyID, appApprovalPhase.getPhaseID())
-					.stream().map(c -> ApproveAcceptedDto.fromDomain(c)).collect(Collectors.toList());	
+			for(ApprovalFrameDto approvalFrameDto:listFrame) {
+				List<ApproveAcceptedDto> listApproveAccepted = 
+					this.approveAcceptedRepo.getAllApproverAccepted(companyID, approvalFrameDto.getFrameID())
+					.stream().map(c -> ApproveAcceptedDto.fromDomain(c)).collect(Collectors.toList());
+				//set list approveAccepted to frame
+				approvalFrameDto.setListApproveAcceptedDto(listApproveAccepted);
+			}
+			//set value : reasonAll,ApproveAll,nameAll to frame
+			for(ApprovalFrameDto approvalFrameDto:listFrame) {
+				String nameAll = "";
+				String approveAll ="";
+				String reasonAll = "";
+				//duyet list approveaccepted to frame
+				for(ApproveAcceptedDto approveAcceptedDto : approvalFrameDto.getListApproveAcceptedDto() ) {
+					String str ="";
+					String str1 ="";
+					String str2 ="";
+					String name = "";
+					name = employeeAdapter.getEmployeeName(approveAcceptedDto.getApproverSID());
+					if(name != "" && nameAll != "" ) {
+						str = ",";
+					}
+					if( approveAll != "" ) {
+						str1 = ",";
+					}
+					if( approveAcceptedDto.getReason().isEmpty() == false  && reasonAll != "" ) {
+						str2 = ",";
+					}
+					approveAll += str1 + EnumAdaptor.valueOf(approveAcceptedDto.getApprovalATR(), ApprovalAtr.class);
+					reasonAll += str2 + approveAcceptedDto.getReason() ;
+					nameAll += str + name;
+					
+				}//end for approveAccepted
+				approvalFrameDto.setNameAll(nameAll);
+				approvalFrameDto.setApproveAll(approveAll);
+				approvalFrameDto.setReasonAll(reasonAll);
+			}//end for listFrame
 			
-			OutputPhaseAndFrame outputPhaseAndFrame = new OutputPhaseAndFrame(appApprovalPhase, listFrame, listApproveAccepted);
+			OutputPhaseAndFrame outputPhaseAndFrame = new OutputPhaseAndFrame(appApprovalPhase, listFrame);
 					
 			listOutputPhaseAndFrame.add(outputPhaseAndFrame);
 			

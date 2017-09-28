@@ -13,6 +13,7 @@ import nts.uk.ctx.at.record.dom.optitem.OptionalItemSetMemento;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemUsageAtr;
 import nts.uk.ctx.at.record.dom.optitem.PerformanceAtr;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRange;
+import nts.uk.ctx.at.record.infra.entity.optitem.KrcstCalcResultRangePK;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItem;
 import nts.uk.ctx.at.record.infra.entity.optitem.KrcstOptionalItemPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -23,26 +24,25 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 
 	/** The type value. */
-	private KrcstOptionalItem typeValue;
+	private KrcstOptionalItem entity;
 
 	/**
 	 * Instantiates a new jpa optional item set memento.
 	 *
-	 * @param typeValue
-	 *            the type value
+	 * @param entity the entity
 	 */
-	public JpaOptionalItemSetMemento(KrcstOptionalItem typeValue) {
+	public JpaOptionalItemSetMemento(KrcstOptionalItem entity) {
 
-		KrcstOptionalItemPK krcstOptionalItemPK = typeValue.getKrcstOptionalItemPK();
+		KrcstOptionalItemPK krcstOptionalItemPK = entity.getKrcstOptionalItemPK();
 
 		// Check PK exist
 		if (krcstOptionalItemPK == null) {
 			krcstOptionalItemPK = new KrcstOptionalItemPK();
 		}
 
-		typeValue.setKrcstOptionalItemPK(krcstOptionalItemPK);
+		entity.setKrcstOptionalItemPK(krcstOptionalItemPK);
 
-		this.typeValue = typeValue;
+		this.entity = entity;
 	}
 
 	/*
@@ -54,9 +54,7 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setCompanyId(CompanyId comId) {
-		KrcstOptionalItemPK krcstOptionalItemPK = typeValue.getKrcstOptionalItemPK();
-		krcstOptionalItemPK.setCid(comId.v());
-		this.typeValue.setKrcstOptionalItemPK(krcstOptionalItemPK);
+		this.entity.getKrcstOptionalItemPK().setCid(comId.v());
 	}
 
 	/*
@@ -68,9 +66,7 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setOptionalItemNo(OptionalItemNo optionalItemNo) {
-		KrcstOptionalItemPK krcstOptionalItemPK = typeValue.getKrcstOptionalItemPK();
-		krcstOptionalItemPK.setOptionalItemNo(optionalItemNo.v());
-		this.typeValue.setKrcstOptionalItemPK(krcstOptionalItemPK);
+		this.entity.getKrcstOptionalItemPK().setOptionalItemNo(optionalItemNo.v());
 	}
 
 	/*
@@ -81,7 +77,7 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setOptionalItemName(OptionalItemName optionalItemName) {
-		this.typeValue.setOptionalItemName(optionalItemName.v());
+		this.entity.setOptionalItemName(optionalItemName.v());
 	}
 
 	/*
@@ -92,7 +88,7 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setOptionalItemAtr(OptionalItemAtr optionalItemAtr) {
-		this.typeValue.setOptionalItemAtr(optionalItemAtr.value);
+		this.entity.setOptionalItemAtr(optionalItemAtr.value);
 	}
 
 	/*
@@ -104,7 +100,7 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setOptionalItemUsageAtr(OptionalItemUsageAtr optionalItemUsageAtr) {
-		this.typeValue.setUsageAtr(optionalItemUsageAtr.value);
+		this.entity.setUsageAtr(optionalItemUsageAtr.value);
 	}
 
 	/*
@@ -115,7 +111,7 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setEmpConditionAtr(EmpConditionAtr empConditionAtr) {
-		this.typeValue.setEmpConditionAtr(empConditionAtr.value);
+		this.entity.setEmpConditionAtr(empConditionAtr.value);
 	}
 
 	/*
@@ -127,7 +123,7 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setPerformanceAtr(PerformanceAtr performanceAtr) {
-		this.typeValue.setPerformanceAtr(performanceAtr.value);
+		this.entity.setPerformanceAtr(performanceAtr.value);
 	}
 
 	/*
@@ -139,13 +135,24 @@ public class JpaOptionalItemSetMemento implements OptionalItemSetMemento {
 	 */
 	@Override
 	public void setCalculationResultRange(CalcResultRange calculationResultRange) {
-		KrcstCalcResultRange krcstCalcResultRange = this.typeValue.getKrcstCalcResultRange();
-		if (krcstCalcResultRange == null) {
-			krcstCalcResultRange = new KrcstCalcResultRange();
+		KrcstCalcResultRange entityRange = this.entity.getKrcstCalcResultRange();
+		
+		// check entity null
+		if (entityRange == null) {
+			entityRange = new KrcstCalcResultRange();
 		}
-		calculationResultRange
-				.saveToMemento(new JpaCalcResultRangeSetMemento(krcstCalcResultRange));
-		this.typeValue.setKrcstCalcResultRange(krcstCalcResultRange);
+		// check pk entity null
+		if(entityRange.getKrcstCalcResultRangePK() == null){
+			entityRange.setKrcstCalcResultRangePK(new KrcstCalcResultRangePK());
+		}
+		
+		entityRange.getKrcstCalcResultRangePK()
+				.setCid(this.entity.getKrcstOptionalItemPK().getCid());
+		entityRange.getKrcstCalcResultRangePK()
+				.setOptionalItemNo(this.entity.getKrcstOptionalItemPK().getOptionalItemNo());
+		
+		calculationResultRange.saveToMemento(new JpaCalcResultRangeSetMemento(entityRange));
+		this.entity.setKrcstCalcResultRange(entityRange);
 	}
 
 }

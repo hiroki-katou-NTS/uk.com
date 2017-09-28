@@ -13,6 +13,4 @@ public class OutputPhaseAndFrame {
 	AppApprovalPhaseDto appApprovalPhaseDto;
 	//list frame
 	List<ApprovalFrameDto> listApprovalFrameDto;
-	//list ApproveAcceptedDto (nguoi da xac nhan)
-	List<ApproveAcceptedDto> listApproveAcceptedDto;
 }
