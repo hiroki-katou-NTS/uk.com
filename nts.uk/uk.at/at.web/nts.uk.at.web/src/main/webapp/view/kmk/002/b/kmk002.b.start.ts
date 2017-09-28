@@ -3,6 +3,8 @@ module nts.uk.at.view.kmk002.b {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            // init NtsGrid
+            screenModel.empCondition.initNtsGrid();
         });
     });
 }

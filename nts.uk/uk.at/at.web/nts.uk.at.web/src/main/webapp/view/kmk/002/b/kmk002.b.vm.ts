@@ -39,9 +39,6 @@ module nts.uk.at.view.kmk002.b {
                     // Convert to viewmodel
                     self.empCondition.fromDto(res);
 
-                    // init ntsGrid
-                    self.empCondition.initNtsGrid();
-
                     dfd.resolve();
                 });
                 return dfd.promise();
