@@ -18,9 +18,6 @@ module nts.uk.at.view.kmk002.a {
         export class ScreenModel {
             optionalItemHeader: OptionalItemHeader;
 
-            optItemEnum: OptItemEnum;
-            formulaEnum: FormulaEnum;
-
             constructor() {
                 let self = this;
                 self.optionalItemHeader = new OptionalItemHeader();
@@ -36,6 +33,7 @@ module nts.uk.at.view.kmk002.a {
                 nts.uk.ui.block.invisible();
                 $.when(self.loadEnum(),
                     self.optionalItemHeader.loadOptionalItemHeaders().done(res => {
+                        self.optionalItemHeader.initialize();
                         dfd.resolve();
                     }).always(() => nts.uk.ui.block.clear()));
                 // Test.
@@ -47,7 +45,12 @@ module nts.uk.at.view.kmk002.a {
             private loadEnum(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                dfd.resolve();
+                $.when(service.getFormulaEnum(),
+                    service.getOptItemEnum()).done((formulaEnum, optItemEnum) => {
+                        Enums.optItemEnum = optItemEnum;
+                        Enums.formulaEnum = formulaEnum;
+                        dfd.resolve();
+                    });
                 return dfd.promise();
             }
 
@@ -68,7 +71,7 @@ module nts.uk.at.view.kmk002.a {
             empConditionAtr: KnockoutObservable<number>;
             performanceAtr: KnockoutObservable<number>;
             calcResultRange: CalculationResultRange;
-            calcFormulas: KnockoutObservableArray<Formula>;
+            calcFormulas: Array<Formula>;
             applyFormula: KnockoutObservable<string>;
 
             // Switch button data source
@@ -88,7 +91,7 @@ module nts.uk.at.view.kmk002.a {
                 this.empConditionAtr = ko.observable(1);
                 this.performanceAtr = ko.observable(1);
                 this.calcResultRange = new CalculationResultRange();
-                this.calcFormulas = ko.observableArray<Formula>([]);
+                this.calcFormulas = new Array<Formula>();
                 this.applyFormula = ko.observable('test');
                 this.hasChanged = false;
 
@@ -177,12 +180,17 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Load formula
              */
-            private loadFormulas(itemNo: string): JQueryPromise<void> {
+            public loadFormulas(itemNo: string): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
                 service.findFormulas(itemNo).done(res => {
-                    let list: Array<Formula> = res.map(item => new Formula().fromDto(item));
-                    self.calcFormulas(list);
+                    let list: Array<Formula> = res.map(item => {
+                        let formula = new Formula();
+                        formula.fromDto(item);
+                        return formula;
+                    });
+                    self.calcFormulas = list;
+                    dfd.resolve();
                 });
                 return dfd.promise();
 
@@ -208,18 +216,19 @@ module nts.uk.at.view.kmk002.a {
                     { code: '2', name: 'TIME' }];
                 let comboColumns = [{ prop: 'name', length: 1 }];
 
-                $("#tbl-calc-formula1").ntsGrid({
-                    width: '970px',
-                    height: '400px',
+                $("#tbl-calc-formula").ntsGrid({
+                    width: '1000px',
+                    height: '300px',
                     dataSource: self.calcFormulas,
                     primaryKey: 'formulaId',
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     columns: [
+                        { headerText: 'ID', key: 'formulaId', dataType: 'string', width: '50px', hidden: true },
                         { headerText: 'SYMBOL', key: 'symbolValue', dataType: 'string', width: '50px' },
                         { headerText: 'ATR', key: 'formulaAtr', dataType: 'number', width: '230px', ntsControl: 'Combobox' },
                         { headerText: 'NAME', key: 'formulaName', dataType: 'string', width: '50px' },
-                        //                        { headerText: 'CALC_ATR', key: 'formulaAtr', dataType: 'number', width: '290px', ntsControl: 'SwitchButtons' },
+                        { headerText: 'CALC_ATR', key: 'calcAtr', dataType: 'number', width: '290px', ntsControl: 'SwitchButtons' },
                         //                        { headerText: 'OPEN_DIALOG', key: 'open', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' },
                         //                        { headerText: 'TEXT', key: 'formulaName', dataType: 'string', width: '50px' },
                         //                        { headerText: 'DAILY_UNIT', key: 'formulaAtr', dataType: 'string', width: '230px', ntsControl: 'DailyUnit' },
@@ -232,8 +241,8 @@ module nts.uk.at.view.kmk002.a {
                     ntsFeatures: [{ name: 'CopyPaste' }],
                     ntsControls: [
                         {
-                            name: 'SwitchButtons', options: [{ value: 0, text: 'Option 1' }, { value: 1, text: 'Option 2' }],
-                            optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true
+                            name: 'SwitchButtons', options: Enums.formulaEnum.calcAtr,
+                            optionsValue: 'value', optionsText: 'localizedName', controlType: 'SwitchButtons', enable: true
                         },
                         //                        { name: 'DailyUnit', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
                         //                        { name: 'DailyRounding', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
@@ -384,13 +393,24 @@ module nts.uk.at.view.kmk002.a {
                     { headerText: nts.uk.resource.getText('KMK002_10'), key: 'usageAtr', width: 50 }
                 ]);
 
-                self.selectedCode.subscribe(itemNo => {
-                    if (itemNo) {
-                        self.loadOptionalItemDetail(itemNo);
-                        //self.loadFormulas(itemNo);
-                    }
-                });
+            }
 
+            public initialize(): void {
+                let self = this;
+                let itemNo = self.optionalItemHeaders()[0].itemNo;
+                // Select first item
+                self.selectedCode(itemNo);
+                self.loadOptionalItemDetail(itemNo).done(() => {
+                    // init ntsGrid
+                    self.optionalItem.initIgGrid();
+
+                    // init selected code subscribe
+                    self.selectedCode.subscribe(itemNo => {
+                        if (itemNo) {
+                            self.loadOptionalItemDetail(itemNo);
+                        }
+                    });
+                });
             }
 
             /**
@@ -421,8 +441,6 @@ module nts.uk.at.view.kmk002.a {
                 let dfd = $.Deferred<void>();
                 service.findOptionalItemHeaders().done(res => {
                     self.optionalItemHeaders(res);
-                    // Select first item.
-                    self.selectedCode(res[0].itemNo);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -438,9 +456,9 @@ module nts.uk.at.view.kmk002.a {
 
                 service.findOptionalItemDetail(itemNo).done(res => {
                     self.optionalItem.fromDto(res);
+                    self.optionalItem.loadFormulas(itemNo).done(() => dfd.resolve());
                 });
 
-                dfd.resolve();
                 return dfd.promise();
             }
         }
@@ -451,53 +469,65 @@ module nts.uk.at.view.kmk002.a {
         class Formula {
             formulaId: string;
             optionalItemNo: string;
-            formulaName: KnockoutObservable<string>;
-            formulaAtr: KnockoutObservable<number>;
+            formulaName: string;
+            formulaAtr: number;
             symbolValue: string;
-            orderNo: KnockoutObservable<number>;
-            calcFormulaSetting: CalcFormulaSetting;
+            orderNo: number;
+
+            // Calculation setting
+            calcAtr: number;
+            formulaSetting: FormulaSetting;
+            itemSelection: ItemSelection;
+
+            //Rounding
             monthlyRounding: Rounding;
             dailyRounding: Rounding;
 
             constructor() {
                 this.formulaId = '000';
                 this.optionalItemNo = '000';
-                this.formulaName = ko.observable('asdvxzc');
-                this.formulaAtr = ko.observable(1);
+                this.formulaName = 'asdvxzc';
+                this.formulaAtr = 1;
                 this.symbolValue = 'asdvxzc';
-                this.orderNo = ko.observable(1);
-                this.calcFormulaSetting = new CalcFormulaSetting();
+                this.orderNo = 1;
+
+                // Calculation setting.
+                this.calcAtr = 1;
+                this.formulaSetting = new FormulaSetting();
+                this.itemSelection = new ItemSelection();
+
+                // Rounding
                 this.monthlyRounding = new Rounding();
                 this.dailyRounding = new Rounding();
 
                 //TODO dang test.
                 // Sua phan loai thuoc tinh
-                this.formulaAtr.subscribe(value => {
-                    // Kiem tra formula nay co cai dat chua
-                    //if (self.calcFormulas.length > 0) {
-                    if (1 > 0) { //test
-                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_192')).ifYes(() => {
-                            // xoa cai dat
-                            // cap nhat gia tri moi.
-                        }).ifNo(() => {
-                            // de nguyen gia tri cu.
-                        });
-                    }
-                });
+                //                this.formulaAtr.subscribe(value => {
+                //                    // Kiem tra formula nay co cai dat chua
+                //                    //if (self.calcFormulas.length > 0) {
+                //                    if (1 > 0) { //test
+                //                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_192')).ifYes(() => {
+                //                            // xoa cai dat
+                //                            // cap nhat gia tri moi.
+                //                        }).ifNo(() => {
+                //                            // de nguyen gia tri cu.
+                //                        });
+                //                    }
+                //                });
 
                 // Sua phan loai tinh toan
-                this.calcFormulaSetting.calcAtr.subscribe(value => {
-                    // Kiem tra formula nay co cai dat chua
-                    //if (self.calcFormulas.length > 0) {
-                    if (1 > 0) { //test
-                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_126')).ifYes(() => {
-                            // xoa cai dat
-                            // cap nhat gia tri moi.
-                        }).ifNo(() => {
-                            // de nguyen gia tri cu.
-                        });
-                    }
-                });
+                //                this.calcAtr.subscribe(value => {
+                //                    // Kiem tra formula nay co cai dat chua
+                //                    //if (self.calcFormulas.length > 0) {
+                //                    if (1 > 0) { //test
+                //                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_126')).ifYes(() => {
+                //                            // xoa cai dat
+                //                            // cap nhat gia tri moi.
+                //                        }).ifNo(() => {
+                //                            // de nguyen gia tri cu.
+                //                        });
+                //                    }
+                //                });
             }
 
             public toDto(): FormulaDto {
@@ -506,10 +536,18 @@ module nts.uk.at.view.kmk002.a {
 
                 dto.formulaId = self.formulaId;
                 dto.optionalItemNo = self.optionalItemNo;
-                dto.formulaName = self.formulaName();
-                dto.formulaAtr = self.formulaAtr();
+                dto.formulaName = self.formulaName;
+                dto.formulaAtr = self.formulaAtr;
                 dto.symbolValue = self.symbolValue;
-                dto.calcFormulaSetting = self.calcFormulaSetting.toDto()
+
+                // Calc setting
+                let calcSetting = <CalcFormulaSettingDto>{};
+                calcSetting.calcAtr = self.calcAtr;
+                calcSetting.formulaSetting = self.formulaSetting.toDto();
+                calcSetting.itemSelection = self.itemSelection.toDto();
+                dto.calcFormulaSetting = calcSetting;
+
+                // Rounding
                 dto.monthlyRounding = self.monthlyRounding.toDto();
                 dto.dailyRounding = self.dailyRounding.toDto();
 
@@ -520,44 +558,18 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 self.formulaId = dto.formulaId;
                 self.optionalItemNo = dto.optionalItemNo;
-                self.formulaName(dto.formulaName);
-                self.formulaAtr(dto.formulaAtr);
+                self.formulaName = dto.formulaName;
+                self.formulaAtr = dto.formulaAtr;
                 self.symbolValue = dto.symbolValue;
-                self.calcFormulaSetting.fromDto(dto.calcFormulaSetting);
+
+                // Calc setting
+                self.calcAtr = 1; //TODO test
+                //self.formulaSetting.fromDto(dto.calcFormulaSetting.formulaSetting);
+                //self.itemSelection.fromDto(dto.calcFormulaSetting.itemSelection);
+
+                // rounding
                 self.monthlyRounding.fromDto(dto.monthlyRounding);
                 self.dailyRounding.fromDto(dto.dailyRounding);
-            }
-        }
-
-        /**
-         * Calculation formula setting.
-         */
-        class CalcFormulaSetting {
-            calcAtr: KnockoutObservable<number>;
-            formulaSetting: FormulaSetting;
-            itemSelection: ItemSelection;
-
-            constructor() {
-                this.calcAtr = ko.observable(1);
-                this.formulaSetting = new FormulaSetting();
-                this.itemSelection = new ItemSelection();
-            }
-
-            public fromDto(dto: CalcFormulaSettingDto): void {
-                this.calcAtr(dto.calcAtr);
-                this.formulaSetting.fromDto(dto.formulaSetting);
-                this.itemSelection.fromDto(dto.itemSelection);
-
-            }
-            public toDto(): CalcFormulaSettingDto {
-                let self = this;
-                let dto: CalcFormulaSettingDto = <CalcFormulaSettingDto>{};
-
-                dto.calcAtr = this.calcAtr();
-                dto.formulaSetting = this.formulaSetting.toDto();
-                dto.itemSelection = this.itemSelection.toDto();
-
-                return dto;
             }
         }
 
@@ -733,12 +745,13 @@ module nts.uk.at.view.kmk002.a {
             }
 
             public fromDto(dto: RoundingDto): void {
-                this.numberRounding(dto.numberRounding);
-                this.numberUnit(dto.numberUnit);
-                this.amountRounding(dto.amountRounding);
-                this.amountUnit(dto.amountUnit);
-                this.timeRounding(dto.timeRounding);
-                this.timeUnit(dto.timeUnit);
+                //TODO
+                //                this.numberRounding(dto.numberRounding);
+                //                this.numberUnit(dto.numberUnit);
+                //                this.amountRounding(dto.amountRounding);
+                //                this.amountUnit(dto.amountUnit);
+                //                this.timeRounding(dto.timeRounding);
+                //                this.timeUnit(dto.timeUnit);
             }
 
             public toDto(): RoundingDto {
@@ -754,6 +767,11 @@ module nts.uk.at.view.kmk002.a {
 
                 return dto;
             }
+        }
+
+        class Enums {
+            static optItemEnum: OptItemEnum;
+            static formulaEnum: FormulaEnum;
         }
 
     }
