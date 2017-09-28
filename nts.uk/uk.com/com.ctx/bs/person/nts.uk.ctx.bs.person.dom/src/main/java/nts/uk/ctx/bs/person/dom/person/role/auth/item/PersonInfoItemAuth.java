@@ -35,7 +35,7 @@ public class PersonInfoItemAuth extends AggregateRoot{
 	}
 	public static PersonInfoItemAuth createFromJavaType(String roleId, String personCategoryAuthId,
 			String personItemDefId, int selfAuth, int otherAuth){
-		return new PersonInfoItemAuth(roleId, personCategoryAuthId,personItemDefId,
+		return new PersonInfoItemAuth(roleId, personCategoryAuthId, personItemDefId,
 				EnumAdaptor.valueOf(selfAuth, PersonInfoAuthType.class),
 				EnumAdaptor.valueOf(otherAuth, PersonInfoAuthType.class));
 	}
