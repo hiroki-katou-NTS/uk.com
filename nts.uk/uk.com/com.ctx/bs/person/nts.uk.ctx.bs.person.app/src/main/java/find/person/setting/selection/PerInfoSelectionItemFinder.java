@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.bs.person.dom.person.setting.selection.IPerInfoSelectionItemRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoHistorySelectionRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoSelectionItem;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -17,6 +18,9 @@ public class PerInfoSelectionItemFinder {
 	@Inject
 	private IPerInfoSelectionItemRepository perInfoSelectionItemRepo;
 
+	@Inject
+	private PerInfoHistorySelectionRepository historySelectionRepo;
+
 	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem() {
 		// contracCode cua user dang dang nhap
 		String contractCode = AppContexts.user().contractCode();
@@ -24,13 +28,15 @@ public class PerInfoSelectionItemFinder {
 				.map(i -> PerInfoSelectionItemDto.fromDomain(i)).collect(Collectors.toList());
 	}
 
+	// selectionItemId
 	public PerInfoSelectionItemDto getPerInfoSelectionItem(String selectionItemId) {
+		//get selectionItemId
 		Optional<PerInfoSelectionItem> opt = this.perInfoSelectionItemRepo.getPerInfoSelectionItem(selectionItemId);
-		if(!opt.isPresent()){
+		
+		//check selectionItemId
+		if (!opt.isPresent()) {
 			return null;
 		}
 		return PerInfoSelectionItemDto.fromDomain(opt.get());
-		
-
 	}
 }

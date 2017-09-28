@@ -17,10 +17,11 @@ public class UpdateSelectionItemCommandHandler extends CommandHandler<UpdateSele
 	@Override
 	protected void handle(CommandHandlerContext<UpdateSelectionItemCommand> context) {
 		UpdateSelectionItemCommand command = context.getCommand();
-		PerInfoSelectionItem domain = PerInfoSelectionItem.createFromJavaType(command.getSelectionItemId(), command.getSelectionItemName(),
-				command.getMemo(), command.getSelectionItemClassification(), AppContexts.user().contractCode(),
+		PerInfoSelectionItem domain = PerInfoSelectionItem.createFromJavaType(command.getSelectionItemId(),
+				command.getSelectionItemName(), command.getMemo(),
+				command.isSelectionItemClassification() == true ? 1 : 0, AppContexts.user().contractCode(),
 				command.getIntegrationCode(), command.getFormatSelection().getSelectionCode(),
-				command.getFormatSelection().getSelectionCodeCharacter(),
+				command.getFormatSelection().isSelectionCodeCharacter() == true ? 1 : 0,
 				command.getFormatSelection().getSelectionName(),
 				command.getFormatSelection().getSelectionExternalCode());
 		this.perInfoSelectionItemRepo.update(domain);

@@ -7,7 +7,7 @@ public class UpdateSelectionItemCommand {
 	private String selectionItemId;
 	private String selectionItemName;
 	private String memo;
-	private int selectionItemClassification;
+	private boolean selectionItemClassification;
 	private String contractCode;
 	private String integrationCode;
 	private FormatSelectionCommand formatSelection;

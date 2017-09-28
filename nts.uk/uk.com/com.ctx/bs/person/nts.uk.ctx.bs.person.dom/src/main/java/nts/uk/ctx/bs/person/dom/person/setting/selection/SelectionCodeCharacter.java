@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import nts.arc.primitive.constraint.IntegerRange;
 
 @AllArgsConstructor // 
+@IntegerRange(max = 1, min = 0)
 public enum SelectionCodeCharacter {
 	/** kjk */
 	Number(0),

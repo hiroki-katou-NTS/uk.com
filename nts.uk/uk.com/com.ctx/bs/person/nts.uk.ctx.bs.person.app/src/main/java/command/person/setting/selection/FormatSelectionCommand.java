@@ -5,7 +5,7 @@ import lombok.Value;
 @Value
 public class FormatSelectionCommand {
 	private int selectionCode;
-	private int selectionCodeCharacter;
+	private boolean selectionCodeCharacter;
 	private int selectionName;
 	private int selectionExternalCode;
 }
