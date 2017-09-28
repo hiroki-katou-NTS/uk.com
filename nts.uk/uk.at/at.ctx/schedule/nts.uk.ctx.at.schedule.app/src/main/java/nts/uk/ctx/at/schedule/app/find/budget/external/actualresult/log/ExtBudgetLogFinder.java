@@ -42,18 +42,15 @@ public class ExtBudgetLogFinder {
      * @return the list
      */
     public List<ExternalBudgetLogDto> findExternalBudgetLog(ExternalBudgetQuery query) {
-        LoginUserContext user = AppContexts.user();
-        
-        // find external budget setting
-        Map<String, String> mapBudget = this.externalBudgetRepo.findAll(user.companyId()).stream()
-                .collect(Collectors.toMap(item -> item.getExternalBudgetCd().v(),
-                        item -> item.getExternalBudgetName().v()));
-        
         // check choose at least state completion ?
         if (CollectionUtil.isEmpty(query.getListState())) {
             throw new BusinessException("Msg_166");
         }
-        
+        LoginUserContext user = AppContexts.user();
+        // find external budget setting
+        Map<String, String> mapBudget = this.externalBudgetRepo.findAll(user.companyId()).stream()
+                .collect(Collectors.toMap(item -> item.getExternalBudgetCd().v(),
+                        item -> item.getExternalBudgetName().v()));
         List<ExternalBudgetLog> lstLog = this.extBudgetLogRepo.findExternalBudgetLog(user.employeeId(),
                 query.getStartDate(), query.getEndDate(), query.getListState());
         return lstLog.stream()
@@ -63,9 +60,11 @@ public class ExtBudgetLogFinder {
                     
                     // set external budget name
                     String extBudgetName = mapBudget.get(domain.getExtBudgetCode().v());
-                    dto.extBudgetName = extBudgetName == null ? "未設定" : extBudgetName;
+                    if (extBudgetName == null) {
+                        extBudgetName = "未設定";
+                    }
+                    dto.extBudgetName = extBudgetName;
                     return dto;
-                })
-                .collect(Collectors.toList());
+                }).collect(Collectors.toList());
     }
 }
