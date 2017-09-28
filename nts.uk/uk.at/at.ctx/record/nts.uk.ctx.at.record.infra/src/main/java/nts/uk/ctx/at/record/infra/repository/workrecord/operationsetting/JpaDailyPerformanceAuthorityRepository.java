@@ -24,12 +24,13 @@ import nts.uk.ctx.at.record.infra.entity.workrecord.operationsetting.KrcmtDaiPer
 public class JpaDailyPerformanceAuthorityRepository extends JpaRepository
 		implements DailyPerformanceAuthorityRepoInterface {
 
-	private final String GET_DAI_PER_AUTH_WITH_ROLE = "SELECT da FROM KrcmtDaiPerformanceAut WHERE da.pk.roleId =: roleId";
+	private final String GET_DAI_PER_AUTH_WITH_ROLE = "SELECT da FROM KrcmtDaiPerformanceAut da WHERE da.pk.roleId =:roleId";
 
 	@Override
 	public List<DailyPerformanceAuthority> getDailyPerformanceAuthorities(String roleId) {
 		List<KrcmtDaiPerformanceAut> entities = this.queryProxy()
-				.query(GET_DAI_PER_AUTH_WITH_ROLE, KrcmtDaiPerformanceAut.class).getList();
+				.query(GET_DAI_PER_AUTH_WITH_ROLE, KrcmtDaiPerformanceAut.class)
+				.setParameter("roleId", roleId).getList();
 		List<DailyPerformanceAuthority> results = new ArrayList<>();
 		entities.forEach(ent -> {
 			BigDecimal avaiBigDecimal = ent.availability;
