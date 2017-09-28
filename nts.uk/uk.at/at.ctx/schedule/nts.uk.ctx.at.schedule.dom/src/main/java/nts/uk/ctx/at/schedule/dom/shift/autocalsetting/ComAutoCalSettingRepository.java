@@ -17,7 +17,7 @@ public interface ComAutoCalSettingRepository {
 	 * @param comAutoCalSetting the com auto cal setting
 	 */
     void update(ComAutoCalSetting comAutoCalSetting);
-
+    
 	/**
 	 * Gets the all com auto cal setting.
 	 *

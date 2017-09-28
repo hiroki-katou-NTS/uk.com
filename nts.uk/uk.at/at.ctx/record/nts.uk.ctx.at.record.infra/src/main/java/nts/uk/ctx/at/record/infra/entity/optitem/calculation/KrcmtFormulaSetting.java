@@ -32,21 +32,18 @@ public class KrcmtFormulaSetting extends UkJpaEntity implements Serializable {
 	@EmbeddedId
 	protected KrcmtFormulaSettingPK krcmtFormulaSettingPK;
 
-	/** The calc atr. */
-	@Column(name = "CALC_ATR")
-	private short calcAtr;
 
 	/** The minus segment. */
 	@Column(name = "MINUS_SEGMENT")
-	private short minusSegment;
+	private int minusSegment;
 
 	/** The operator. */
 	@Column(name = "OPERATOR")
-	private short operator;
+	private int operator;
 
 	/** The left set method. */
 	@Column(name = "LEFT_SET_METHOD")
-	private short leftSetMethod;
+	private int leftSetMethod;
 
 	/** The left input val. */
 	@Column(name = "LEFT_INPUT_VAL")
@@ -58,7 +55,7 @@ public class KrcmtFormulaSetting extends UkJpaEntity implements Serializable {
 
 	/** The right set method. */
 	@Column(name = "RIGHT_SET_METHOD")
-	private short rightSetMethod;
+	private int rightSetMethod;
 
 	/** The right input val. */
 	@Column(name = "RIGHT_INPUT_VAL")

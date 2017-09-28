@@ -3,13 +3,24 @@
 	width: 800px;
 	height: 600px;
 }
-.inputDivLabelMain{
-	margin-top: 20px;
+.table-label {
+	width: 800px;
 	margin-left: 30px;
+}
+
+.label-checkbox {
+	width: 800px;
+	margin-left: 30px;
+}
+
+.inputDivLabelMain{
+	margin-left: 30px;
+	margin-right: 20px;
 }
 
 .inputDivLabel{
 	margin-left: 10px;
+	margin-right: 20px;
 }
 
 .inputCheckBox {

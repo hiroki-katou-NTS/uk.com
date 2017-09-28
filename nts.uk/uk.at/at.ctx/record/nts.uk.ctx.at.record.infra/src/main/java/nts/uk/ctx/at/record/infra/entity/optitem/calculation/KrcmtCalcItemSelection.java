@@ -31,17 +31,13 @@ public class KrcmtCalcItemSelection extends UkJpaEntity implements Serializable 
 	@EmbeddedId
 	protected KrcmtCalcItemSelectionPK krcmtCalcItemSelectionPK;
 
-	/** The calc atr. */
-	@Column(name = "CALC_ATR")
-	private short calcAtr;
-
 	/** The minus segment. */
 	@Column(name = "MINUS_SEGMENT")
-	private short minusSegment;
+	private int minusSegment;
 
 	/** The operator. */
 	@Column(name = "OPERATOR")
-	private short operator;
+	private int operator;
 
 	/**
 	 * Instantiates a new krcmt calc item selection.

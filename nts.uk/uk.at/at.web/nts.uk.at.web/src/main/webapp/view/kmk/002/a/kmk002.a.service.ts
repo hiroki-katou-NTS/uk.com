@@ -7,10 +7,20 @@ module nts.uk.at.view.kmk002.a {
         let servicePath: any = {
             findOptionalItemDetail: 'ctx/at/record/optionalitem/find',
             findOptionalItemHeaders: 'ctx/at/record/optionalitem/findall',
-            findAllFormula: 'ctx/at/record/optionalitem/formula/findall',
+            findFormulas: 'ctx/at/record/optionalitem/formula/findbyitemno',
             saveOptionalItem: 'ctx/at/record/optionalitem/save',
-            saveFormula: 'ctx/at/record/optionalitem/formula/save'
+            saveFormula: 'ctx/at/record/optionalitem/formula/save',
+            getFormulaEnum: 'ctx/at/record/optionalitem/formula/getenum',
+            getOptItemEnum: 'ctx/at/record/optionalitem/getenum'
         };
+
+        export function getFormulaEnum(): JQueryPromise<model.FormulaEnum> {
+            return nts.uk.request.ajax(servicePath.getFormulaEnum);
+        }
+
+        export function getOptItemEnum(): JQueryPromise<model.OptItemEnum> {
+            return nts.uk.request.ajax(servicePath.getOptItemEnum);
+        }
 
         export function saveOptionalItem(command: model.OptionalItemDto): JQueryPromise<any> {
             return nts.uk.request.ajax(servicePath.saveOptionalItem, command);
@@ -20,16 +30,16 @@ module nts.uk.at.view.kmk002.a {
             return nts.uk.request.ajax(servicePath.saveFormula, { listCalcFormula: command });
         }
 
-        export function findOptionalItemDetail(): JQueryPromise<model.OptionalItemDto> {
-            return nts.uk.request.ajax(servicePath.findCompanySetting + '/' + '');
+        export function findOptionalItemDetail(itemNo: string): JQueryPromise<model.OptionalItemDto> {
+            return nts.uk.request.ajax(servicePath.findOptionalItemDetail + '/' + itemNo);
         }
 
         export function findOptionalItemHeaders(): JQueryPromise<Array<model.OptionalItemHeader>> {
             return nts.uk.request.ajax(servicePath.findOptionalItemHeaders);
         }
 
-        export function findAllFormula(): JQueryPromise<Array<model.FormulaDto>> {
-            return nts.uk.request.ajax(servicePath.findAllFormula);
+        export function findFormulas(itemNo: string): JQueryPromise<Array<model.FormulaDto>> {
+            return nts.uk.request.ajax(servicePath.findFormulas + '/' + itemNo);
         }
 
         /**
@@ -39,8 +49,8 @@ module nts.uk.at.view.kmk002.a {
             export interface OptionalItemHeader {
                 itemNo: string;
                 itemName: string;
-                usageAtr: UsageAtr;
-                performanceAtr: PerformanceAtr;
+                usageAtr: number;
+                performanceAtr: number;
             }
 
             /**
@@ -49,10 +59,10 @@ module nts.uk.at.view.kmk002.a {
             export interface OptionalItemDto {
                 optionalItemNo: string;
                 optionalItemName: string;
-                optionalItemAtr: TypeAtr;
-                usageAtr: UsageAtr;
-                empConditionAtr: EmpConditionAtr;
-                performanceAtr: PerformanceAtr;
+                optionalItemAtr: number;
+                usageAtr: number;
+                empConditionAtr: number;
+                performanceAtr: number;
                 calcResultRange: CalcResultRangeDto;
             }
             /**
@@ -77,7 +87,7 @@ module nts.uk.at.view.kmk002.a {
                 optionalItemNo: string;
                 orderNo: number;
                 symbolValue: string;
-                formulaAtr: TypeAtr;
+                formulaAtr: number;
                 calcFormulaSetting: CalcFormulaSettingDto;
                 monthlyRounding: RoundingDto;
                 dailyRounding: RoundingDto;
@@ -86,18 +96,18 @@ module nts.uk.at.view.kmk002.a {
              * RoundingDto
              */
             export interface RoundingDto {
-                numberRounding: NumberRounding;
-                numberUnit: NumberUnit;
-                timeRounding: TimeRounding;
-                timeUnit: TimeUnit;
-                amountRounding: AmountRounding;
-                amountUnit: AmountUnit;
+                numberRounding: number;
+                numberUnit: number;
+                timeRounding: number;
+                timeUnit: number;
+                amountRounding: number;
+                amountUnit: number;
             }
             /**
              * CalcFormulaSettingDto
              */
             export interface CalcFormulaSettingDto {
-                calcAtr: CalcAtr;
+                calcAtr: number;
                 formulaSetting: FormulaSettingDto;
                 itemSelection: ItemSelectionDto;
             }
@@ -105,8 +115,8 @@ module nts.uk.at.view.kmk002.a {
              * FormulaSettingDto
              */
             export interface FormulaSettingDto {
-                minusSegment: MinusSegment;
-                operator: Operator;
+                minusSegment: number;
+                operator: number;
                 leftItem: SettingItemDto;
                 rightItem: SettingItemDto;
             }
@@ -114,8 +124,8 @@ module nts.uk.at.view.kmk002.a {
              * SettingItemDto
              */
             export interface SettingItemDto {
-                settingMethod: SettingMethod;
-                dispOrder: SettingOrder;
+                settingMethod: number;
+                dispOrder: number;
                 inputValue: number;
                 formulaItemId: string;
             }
@@ -123,7 +133,7 @@ module nts.uk.at.view.kmk002.a {
              * ItemSelectionDto
              */
             export interface ItemSelectionDto {
-                minusSegment: MinusSegment;
+                minusSegment: number;
                 attendanceItems: Array<AttendanceItemDto>;
             }
             /**
@@ -131,102 +141,60 @@ module nts.uk.at.view.kmk002.a {
              */
             export interface AttendanceItemDto {
                 id: string;
-                operator: Operator;
-            }
-            export enum EmpConditionAtr {
-                NO_CONDITION = 0,
-                WITH_CONDITION = 1
-            }
-            export enum PerformanceAtr {
-                MONTHLY = 0,
-                DAILY = 1
-            }
-            export enum UsageAtr {
-                NOT_USED = 0,
-                USED = 1
+                operator: number;
             }
             export enum TypeAtr {
-                TIMES = 0,
+                NUMBER = 0,
                 AMOUNT = 1,
                 TIME = 2
             }
-            export enum CalcAtr {
-                ITEM_SELECTION = 0,
-                FORMULA_SETTING = 1
+            export class FormulaEnum {
+                formulaAtr: EnumConstantDto[];
+                calcAtr: EnumConstantDto[];
+                minusSegment: EnumConstantDto[];
+                operatorAtr: EnumConstantDto[];
+                settingMethod: EnumConstantDto[];
+                dispOrder: EnumConstantDto[];
+                addSubAtr: EnumConstantDto[];
+                amountRounding: EnumConstantDto[];
+                timeRounding: EnumConstantDto[];
+                numberRounding: EnumConstantDto[];
             }
-            export enum SettingOrder {
-                LEFT = 1,
-                RIGHT = 2
+            export class OptItemEnum {
+                formulaAtr: EnumConstantDto[];
+                calcAtr: EnumConstantDto[];
+                minusSegment: EnumConstantDto[];
+                operatorAtr: EnumConstantDto[];
+                settingMethod: EnumConstantDto[];
+                dispOrder: EnumConstantDto[];
+                addSubAtr: EnumConstantDto[];
+                amountRounding: EnumConstantDto[];
+                timeRounding: EnumConstantDto[];
+                numberRounding: EnumConstantDto[];
+
             }
-            export enum SettingMethod {
-                ITEM_SELECTION = 0,
-                NUMERICAL_INPUT = 1
+            export interface EnumConstantDto {
+                value: number;
+                fieldName: string;
+                localizedName: string;
             }
-            export enum MinusSegment {
-                NOT_TREATED_AS_ZERO = 0,
-                TREATED_AS_ZERO = 1
-            }
-            export enum Operator {
-                ADD = 0,
-                SUBTRACT = 1,
-                MULTIPLY = 2,
-                DIVIDE = 3
-            }
-            export enum NumberRounding {
-                TRUNCATION = 0,
-                ROUND_UP = 1,
-                DOWN_4_UP_5 = 5
-            }
-            export enum NumberUnit {
-                NONE = 0,
-                INT_1_DIGITS = 1,
-                INT_2_DIGITS = 2,
-                INT_3_DIGITS = 3,
-                INT_4_DIGITS = 4,
-                INT_5_DIGITS = 5,
-                INT_6_DIGITS = 6,
-                INT_7_DIGITS = 7,
-                INT_8_DIGITS = 8,
-                INT_9_DIGITS = 9,
-                INT_10_DIGITS = 10,
-                INT_11_DIGITS = 11,
-                DECIMAL_1ST = 12,
-                DECIMAL_2ND = 13,
-                DECIMAL_3RD = 14
-            }
-            export enum AmountRounding {
-                TRUNCATION = 0,
-                ROUND_UP = 1,
-                DOWN_1_UP_2 = 2,
-                DOWN_2_UP_3 = 3,
-                DOWN_3_UP_4 = 4,
-                DOWN_4_UP_5 = 5,
-                DOWN_5_UP_6 = 6,
-                DOWN_6_UP_7 = 7,
-                DOWN_7_UP_8 = 8,
-                DOWN_8_UP_9 = 9
-            }
-            export enum AmountUnit {
-                ONE_YEN = 1,
-                TEN_YEN = 10,
-                ONE_HUNDRED_YEN = 100,
-                ONE_THOUSAND_YEN = 1000
-            }
-            export enum TimeRounding {
-                ROUNDING_DOWN = 0,
-                ROUNDING_UP = 1,
-                ROUNDING_DOWN_OVER = 2
-            }
-            export enum TimeUnit {
-                ROUNDING_TIME_1MIN = 1,
-                ROUNDING_TIME_5MIN = 5,
-                ROUNDING_TIME_6MIN = 6,
-                ROUNDING_TIME_10MIN = 10,
-                ROUNDING_TIME_15MIN = 15,
-                ROUNDING_TIME_20MIN = 20,
-                ROUNDING_TIME_30MIN = 30,
-                ROUNDING_TIME_60MIN = 60
-            }
+
+//            export abstract class EnumAdaptor {
+//                public valueOf(fieldName: string, enumConstant: EnumConstantDto[]): number {
+//                    let result = _.find(enumConstant, item => item.fieldName == fieldName);
+//                    if (result) {
+//                        return result.value;
+//                    }
+//                    throw 'VALUE NOT FOUND';
+//                }
+//                public fieldNameOf(value: number, enumConstant: EnumConstantDto[]): string {
+//                    let result = _.find(enumConstant, item => item.value == value);
+//                    if (result) {
+//                        return result.fieldName;
+//                    }
+//                    throw 'FIELDNAME NOT FOUND';
+//                }
+//            }
         }
 
     }

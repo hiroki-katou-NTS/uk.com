@@ -37,7 +37,7 @@ public class KrcmtFormulaRoundingPK implements Serializable {
 
 	/** The rounding atr. */
 	@Column(name = "ROUNDING_ATR")
-	private short roundingAtr;
+	private int roundingAtr;
 
 	/**
 	 * Instantiates a new krcmt formula rounding PK.
@@ -46,22 +46,9 @@ public class KrcmtFormulaRoundingPK implements Serializable {
 		super();
 	}
 
-	/**
-	 * Instantiates a new krcmt formula rounding PK.
-	 *
-	 * @param cid the cid
-	 * @param optionalItemNo the optional item no
-	 * @param formulaId the formula id
-	 * @param roundingAtr the rounding atr
-	 */
-	public KrcmtFormulaRoundingPK(String cid, String optionalItemNo, String formulaId, short roundingAtr) {
-		this.cid = cid;
-		this.optionalItemNo = optionalItemNo;
-		this.formulaId = formulaId;
-		this.roundingAtr = roundingAtr;
-	}
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -75,7 +62,9 @@ public class KrcmtFormulaRoundingPK implements Serializable {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
