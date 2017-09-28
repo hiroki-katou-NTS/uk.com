@@ -6,7 +6,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-	<ui:composition template="../../../../master/sidebar.xhtml">
+	<ui:composition template="/master/sidebar.xhtml">
 	
 		<ui:define name="sidebar-head">
 			<script>
@@ -17,32 +17,67 @@
 			</script>
 			
 			<com:scriptfile set="IGNITE" />
+			
 			<com:stylefile path="kdw006.b.main.css" />
+			<com:stylefile path="../c/kdw006.c.main.css" />
+			<com:stylefile path="../d/kdw006.d.main.css" />
+			<com:stylefile path="../e/kdw006.e.main.css" />
+			<com:stylefile path="../g/kdw006.g.main.css" />
+
 			<com:scriptfile path="kdw006.b.start.js" />
 			<com:scriptfile path="kdw006.b.vm.js" />
 			<com:scriptfile path="kdw006.b.service.js" />
+			<com:scriptfile path="../c/kdw006.c.vm.js" />
+			<com:scriptfile path="../c/kdw006.c.service.js" />
+			<com:scriptfile path="../d/kdw006.d.vm.js" />
+			<com:scriptfile path="../d/kdw006.d.service.js" />
+			<com:scriptfile path="../e/kdw006.e.service.js" />
+			<com:scriptfile path="../e/kdw006.e.vm.js" />
+			<com:scriptfile path="../g/kdw006.g.service.js" />
+			<com:scriptfile path="../g/kdw006.g.vm.js" />
+			
 		</ui:define>
 		
 		<ui:define name="sidebar">
-			<ul class="navigator">
-				<li><a href="#tabpanel-1" role="tab-navigator" class="active" >#{i18n.getText('KDW006_20')}</a></li>
-				<li><a href="#tabpanel-2" role="tab-navigator">#{i18n.getText('KDW006_21')}</a></li>
+			<div data-bind="with: tabView">
+				<ul class="navigator" data-bind="foreach: tabs().filter(function(t) { return t.display() == true})">
+					<li><a
+						data-bind="text: name, click: changeTab, css: { 'active': active }, attr: { href: '#tabpanel-' + id.toLowerCase() }"></a></li>
+				</ul>
+			</div>
+		
+			<!-- <ul class="navigator">
+				<li><a href="#tabpanel-1" role="tab-navigator">#{i18n.getText('KDW006_20')}</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" class="active" >#{i18n.getText('KDW006_21')}</a></li>
 				<li><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('KDW006_22')}</a></li>
 				<li><a href="#tabpanel-4" role="tab-navigator">#{i18n.getText('KDW006_23')}</a></li>
 				<li><a href="#tabpanel-5" role="tab-navigator">#{i18n.getText('KDW006_58')}</a></li>
-			</ul>
+			</ul> -->
 		</ui:define>
 		
 		<ui:define name="sidebar-content">
-			<div id="tabpanel-1" role="tabpanel">
 			
-				<div class="sidebar-content-header">
-					<span class="title">#{i18n.getText('KDW006_20')}</span>
-					
-					<a class="goback" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KDW006_25')}</a>
-					
-					<button id="button1" class="danger" data-bind="click: update">#{i18n.getText('KDW006_26')}</button>
-				</div>
+			<div class="sidebar-content-header" data-bind="with: tabView">
+				<span class="title" data-bind="text: title"></span> 
+				
+				<a class="myLinkButton" data-bind="click: navigateView"> 
+					<span class="myLinkButtonText">#{i18n.getText('KDW006_25')}</span>
+				</a>
+				
+				<button class="proceed" data-bind="click: saveData">#{i18n.getText('KDW006_26')}</button>
+				
+			</div>
+			
+			<!-- <div class="sidebar-content-header">
+				<span class="title">#{i18n.getText('KDW006_20')}</span>
+				
+				<a class="goback" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KDW006_25')}</a>
+				
+				<button id="button1" class="danger" data-bind="click: update">#{i18n.getText('KDW006_26')}</button>
+			</div> -->
+			
+			<div id="tabpanel-b" role="tabpanel" class="screen-b" data-bind="with: viewmodelB">
+				
 				<div class="contents-area">
 					<div id="label1">
 						<div class="label">#{i18n.getText('KDW006_27')}</div>
@@ -73,18 +108,30 @@
 				
 			</div>
 			
-			<div id="tabpanel-2" role="tabpanel">
+			<div id="tabpanel-c" role="tabpanel" class="screen-c" data-bind="with: viewmodelC">
 			
-				<div class="sidebar-content-header">
-					<span class="title">操作</span>
-					<button class="proceed">操作</button>
-					<button>の間</button>
-					<button>操作がなかったため</button>
-					<button>接続を切断しました</button>
-				</div>
-				<div class="contents-area">Content 2</div>
-				
+				<ui:include src="../c/index.xhtml" />		
+						
 			</div>
+			
+			<div id="tabpanel-d" role="tabpanel" class="screen-d" data-bind="with: viewmodelD">
+			
+				<ui:include src="../d/index.xhtml" />		
+						
+			</div>
+			
+			<div id="tabpanel-e" role="tabpanel" class="screen-e" data-bind="with: viewmodelE">
+			
+				<ui:include src="../e/index.xhtml" />		
+						
+			</div>
+			
+			<div id="tabpanel-g" role="tabpanel" class="screen-g" data-bind="with: viewmodelG">
+			
+				<ui:include src="../g/index.xhtml" />		
+						
+			</div>
+			
 		</ui:define>
 	</ui:composition>
 </body>
