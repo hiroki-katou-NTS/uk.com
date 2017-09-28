@@ -8,7 +8,7 @@ module nts.uk.at.view.kmk002.c {
             findByTime: "at/shared/worktime/findByTime",
             isWorkTimeSettingNeeded: "at/schedule/basicschedule/isWorkTimeSettingNeeded",
             checkPairWorkTypeWorkTime: "at/schedule/basicschedule/checkPairWorkTypeWorkTime",
-
+            findAllDailyAttendanceItem: "at/record/businesstype/attendanceItem/getAttendanceItems"
         }
 
         /**
@@ -58,6 +58,27 @@ module nts.uk.at.view.kmk002.c {
          */
         export function checkPairWorkTypeWorkTime(workTypeCode: string, workTimeCode): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.checkPairWorkTypeWorkTime + '/' + workTypeCode + '/' + workTimeCode);
+        }
+     
+        /**
+         * call service find all daily attendance item
+         */
+        export function findAllDailyAttendanceItem(): JQueryPromise<model.DailyAttendanceItemDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllDailyAttendanceItem);
+        }
+        
+        export module model {
+            export interface DailyAttendanceItemDto {
+                attendanceItemId: number;
+                attendanceItemName: string;
+            }
+            
+            export interface SelectDailyAttendanceItemDto {
+                operator: number;
+                operatorText:  string;
+                attendanceItemId: number;
+                attendanceItemName: string;
+            }
         }
     }
 }

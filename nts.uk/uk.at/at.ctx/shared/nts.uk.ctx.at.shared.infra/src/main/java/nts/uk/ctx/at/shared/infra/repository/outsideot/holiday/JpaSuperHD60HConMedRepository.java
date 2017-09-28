@@ -57,8 +57,7 @@ public class JpaSuperHD60HConMedRepository extends JpaRepository
 					this.toEntityPremiumExtraRate(companyId, premiumExtra60HRates)));
 		}
 		// default data
-		return Optional.ofNullable(this.toDomain(new KshstSuperHdConMed(),
-				this.toEntityPremiumExtraRate(companyId, premiumExtra60HRates)));
+		return Optional.empty();
 	}
 	
 	/*

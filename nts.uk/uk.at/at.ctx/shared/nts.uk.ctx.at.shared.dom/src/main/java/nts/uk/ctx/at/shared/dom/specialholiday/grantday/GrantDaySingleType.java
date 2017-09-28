@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum GrantDaySingleType {
-	/* 固定日数を付与する */
+	/** 0- 固定日数を付与する */
 	FixDay(0),
-	/* 続柄を参照して付与する */
+	/** 1- 続柄を参照して付与する */
 	ReferRelationship(1);
 
 	public final int value;

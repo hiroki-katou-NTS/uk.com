@@ -12,15 +12,15 @@ public enum OptionalItemAtr {
 
 	/** The number. */
 	// 回数
-	NUMBER(0, "Enum_OptionalItemAtr_NUMBER", "回数"),
+	NUMBER(1, "Enum_OptionalItemAtr_NUMBER", "回数"),
 
 	/** The amount. */
 	// 金額
-	AMOUNT(1, "Enum_OptionalItemAtr_AMOUNT", "金額"),
+	AMOUNT(2, "Enum_OptionalItemAtr_AMOUNT", "金額"),
 
 	/** The time. */
 	// 時間
-	TIME(2, "Enum_OptionalItemAtr_TIME", "時間");
+	TIME(0, "Enum_OptionalItemAtr_TIME", "時間");
 
 	/** The value. */
 	public int value;

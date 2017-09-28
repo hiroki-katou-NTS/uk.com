@@ -17,12 +17,12 @@ public class KrcmtCalcItemSelection_ {
 	public static volatile SingularAttribute<KrcmtCalcItemSelection, KrcmtCalcItemSelectionPK> krcmtCalcItemSelectionPK;
 
 	/** The calc atr. */
-	public static volatile SingularAttribute<KrcmtCalcItemSelection, Short> calcAtr;
+	public static volatile SingularAttribute<KrcmtCalcItemSelection, Integer> calcAtr;
 
 	/** The minus segment. */
-	public static volatile SingularAttribute<KrcmtCalcItemSelection, Short> minusSegment;
+	public static volatile SingularAttribute<KrcmtCalcItemSelection, Integer> minusSegment;
 
 	/** The operator. */
-	public static volatile SingularAttribute<KrcmtCalcItemSelection, Short> operator;
+	public static volatile SingularAttribute<KrcmtCalcItemSelection, Integer> operator;
 
 }

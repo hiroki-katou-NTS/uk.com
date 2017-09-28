@@ -38,15 +38,16 @@
 			<div id="contents-area" class="cf">
 				<div id="ccgcomponent"></div>
 				<div class="left-area">
-					<div class="bg-green">
+					<div class="bg-green caret-right caret-background">
 						<table id="employees"
-							data-bind="ntsGridList: {								
-								height: 220,
+							data-bind="ntsGridList: {
+								rows: 10,
 								dataSource: listEmployees,
 								primaryKey: 'employeeId',
 								columns: [
 									{ headerText: 'コード', key: 'employeeId', width: 100, hidden: true },
-		                			{ headerText: '名称', key: 'employeeName', width: 200, hidden: false }
+		                			{ headerText: '名称', key: 'employeeCode', width: 115, hidden: false },
+		                			{ headerText: '', key: 'employeeName', width: 125, hidden: false }
 								],
 								multiple: false,
 								value: ko.observable(undefined)
@@ -69,7 +70,7 @@
 									enable: ko.observable(true), 
 									visible: ko.observable(true)
 								}], 
-							active: ko.observable('layout')
+							active: tabActive
 							}">
 						<div class="layouttab">
 							<div
@@ -191,19 +192,28 @@
 						</div>
 					</div>
 					<div class="bottom-right-area">
-						<div class="form-group">
-							<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_35')}</div>
-							<div
-								data-bind="ntsDatePicker: {
+						<div class="layout-input" data-bind="css: { 'hidden': tabActive() != 'layout'}">
+							<div class="form-group">
+								<div data-bind="ntsFormLabel: {}">#{i18n.getText('CPS001_35')}</div>
+								<div
+									data-bind="ntsDatePicker: {
 								value: ko.observable(''), 
 								dateFormat: 'YYYY/MM/DD'}"></div>
-							<button data-bind="click:next">#{i18n.getText('CPS001_37')}</button>
-						</div>
+								<button>#{i18n.getText('CPS001_37')}</button>
+							</div>
 
-						<div style="padding-top: 10px"
-							data-bind="ntsLayoutControl: { 
+							<div style="padding-top: 10px"
+								data-bind="ntsLayoutControl: { 
 								data: layout().items,
 								editAble: 2 }"></div>
+						</div>
+						<div class="category-input" data-bind="css: { 'hidden': tabActive() != 'category'}">
+							<div class="title">category</div>
+							<div style="padding-top: 10px"
+								data-bind="ntsLayoutControl: { 
+								data: layout().items,
+								editAble: 2 }"></div>
+						</div>
 					</div>
 				</div>
 			</div>

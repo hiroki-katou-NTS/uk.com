@@ -21,9 +21,6 @@ import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 @Getter
 @Setter
 public class RegisterWorkplaceCommand {
-
-	/** The company id. */
-	private String companyId;
 	
 	/** The workplace id. */
 	private String workplaceId;
@@ -31,20 +28,23 @@ public class RegisterWorkplaceCommand {
 	/** The workplace history. */
 	private Set<WorkplaceHistoryDto> workplaceHistory;
 	
-	public Workplace toDomain(){
-		return new Workplace(new WorkplaceGetMementoImpl(this));
+	public Workplace toDomain(String companyId){
+		return new Workplace(new WorkplaceGetMementoImpl(companyId,this));
 	}
 	public class WorkplaceGetMementoImpl implements WorkplaceGetMemento{
 		
+		private String companyId;
+		
 		private RegisterWorkplaceCommand workplaceCommand;
 
-		public WorkplaceGetMementoImpl(RegisterWorkplaceCommand workplaceCommand) {
+		public WorkplaceGetMementoImpl(String companyId,RegisterWorkplaceCommand workplaceCommand) {
+			this.companyId = companyId;
 			this.workplaceCommand = workplaceCommand;
 		}
 
 		@Override
 		public String getCompanyId() {
-			return workplaceCommand.companyId;
+			return this.companyId;
 		}
 
 		@Override

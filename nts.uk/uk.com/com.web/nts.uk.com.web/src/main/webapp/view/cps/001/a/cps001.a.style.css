@@ -10,25 +10,32 @@
 	min-width: 1260px;
 }
 
-#contents-area .left-area, #contents-area .right-area {
+@media ( min-width : 1280px) {
+	#functions-area, #contents-area {
+		overflow-x: hidden;
+	}
+}
+
+#contents-area>.left-area, #contents-area .right-area {
 	float: left;
 }
 
-#contents-area .left-area {
-	width: 240px;
+#contents-area>.left-area {
+	width: 280px;
 	margin-left: 85px;
 }
 
-#contents-area .left-area .bg-green {
+#contents-area>.left-area .bg-green {
 	padding: 12px;
-	height: 220px;
+	height: 255px;
 }
 
-#contents-area .right-area {
-	padding-left: 5px;
+#contents-area>.right-area {
+	padding-left: 15px;
+	width: 860px;
 }
 
-#contents-area .left-area #lefttabs {
+#contents-area>.left-area #lefttabs {
 	margin-top: 15px;
 }
 
@@ -38,26 +45,26 @@
 
 .avatar-group, .person-group, .action-group {
 	float: left;
-	padding: 0 5px;
+	padding: 0 1px;
 }
 
 .avatar-group {
-	width: 108px;
+	width: 110px;
 	height: 147px;
 	cursor: pointer;
 }
 
 .person-group {
-	width: 575px;
+	width: 550px;
 	height: 147px;
 }
 
 .action-group {
-	width: 200px;
+	width: 194px;
 }
 
 .action-group .column {
-	width: 95px;
+	width: 92px;
 	margin-left: 1px;
 	padding: 3px 0 3px 5px;
 	box-sizing: border-box;
@@ -98,7 +105,7 @@
 .action-group .btn-goout {
 	cursor: pointer;
 	display: block;
-	min-height: 42px;
+	min-height: 51px;
 	line-height: 42px;
 	padding-left: 60px;
 	background-repeat: no-repeat;
@@ -114,7 +121,7 @@
 	height: 100%;
 	box-sizing: border-box;
 	border: 1px solid #999999;
-	margin-bottom: 10px;
+	margin-bottom: 2px;
 }
 
 .active-panel:before {
@@ -157,26 +164,39 @@
 }
 
 .bottom-right-area {
-	padding: 5px;
+	padding-top: 5px;
 }
 
-.form-group:not(.item-classification) {
+.form-group:not (.item-classification ) {
 	margin-bottom: 5px;
 }
 
-.form-group:not(.item-classification)>* {
+.form-group:not (.item-classification )>* {
 	display: inline-block;
 	vertical-align: middle;
 }
 
 #contents-area .layout-control .drag-panel {
-	min-width: 895px;
+	min-width: 860px;
 }
 
-.ui-iggrid .ui-iggrid-tablebody .ui-state-hover,
-.ui-iggrid .ui-iggrid-tablebody .ui-state-active,
-.ui-iggrid .ui-iggrid-tablebody td {
+.ui-iggrid .ui-iggrid-tablebody .ui-state-hover, .ui-iggrid .ui-iggrid-tablebody .ui-state-active,
+	.ui-iggrid .ui-iggrid-tablebody td {
 	border-top: none;
+}
+
+#employees_container .ui-iggrid-headertable th:last-child,
+	#employees_container .ui-iggrid-tablebody td.ui-state-hover:last-child,
+	#employees_container .ui-iggrid-tablebody td.ui-state-active:last-child,
+	#employees_container .ui-iggrid-tablebody td:last-child {
+	border-left: none;
+}
+
+#employees_container .ui-iggrid-headertable th:first-child,
+	#employees_container .ui-iggrid-tablebody td.ui-state-hover:first-child,
+	#employees_container .ui-iggrid-tablebody td.ui-state-active:first-child,
+	#employees_container .ui-iggrid-tablebody td:first-child {
+	border-right: none;
 }
 
 .ui-tabs .ui-tabs-panel {
@@ -185,4 +205,17 @@
 
 .ui-igcombo-wrapper {
 	width: 155px;
+}
+
+.caret-background.caret-right:after {
+	top: 40px;
+	border-width: 35px 10px
+}
+
+
+
+.category-input>.title {
+	display: block;
+	line-height: 37px;
+	background-color: #cee6ff;
 }

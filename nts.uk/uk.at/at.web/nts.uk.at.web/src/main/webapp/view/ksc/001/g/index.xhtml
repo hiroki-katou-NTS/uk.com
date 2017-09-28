@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="ksc001.g.vm.js" />
+				<com:scriptfile path="ksc001.g.start.js" />
+				<com:stylefile path="ksc001.g.main.css" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area">
+					<!-- Go back Style -->
+					<a class="goback" data-bind="ntsLinkButton: { jump: '/view/ksc/001/a/index.xhtml' }">
+						#{i18n.getText('KSC001_40')}
+					</a>
+				</div>
+				<div id="contents-area">
+					<label class="navigation-label">#{i18n.getText('KSC001_62')}</label>
+					<div class="ksc001-panel" 
+						data-bind="ntsPanel:{
+									width: '760px',
+					 				height: '480px',
+					  				direction: 'right',
+									showIcon: true,
+					   	 			visible: true}">
+					    
+						<div class="label-ksc001-63" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_63')}</div>
+						<div class="date-range-ksc001" id="daterangepicker" tabindex="1" 
+								data-bind="ntsDateRangePicker: {
+									 required: required,
+									 enable: enable,
+									 showNextPrevious: true,
+									 value: dateValue,
+									 maxRange: 'oneMonth',
+									 startName:'#{i18n.getText('KSC001_72')}',
+									 endName:'#{i18n.getText('KSC001_73')}',
+									 name:'#{i18n.getText('KSC001_63')}',
+									 showNextPrevious:false
+									 }" />
+						<button class=" search-btn-ksc001 search-btn caret-bottom ntsSearchBox_Component" tabindex="0">
+								#{i18n.getText('KSC001_64')}</button>
+						<div style="clear:both;"></div>
+						<div>
+						
+							<label class="explanation-lb">#{i18n.getText('KSC001_65')}</label>
+						</div>
+						<table id="fixed-table">
+							<colgroup>
+								<col width="100px"/>
+								<col width="120px"/>
+								<col width="120px"/>
+								<col width="200px"/>
+								<col width="120px"/>
+								<col width="100px"/>
+								
+							</colgroup>
+							<thead>
+								<tr>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_66')}</th>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_67')}</th>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_68')}</th>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_31')}</th>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_69')}</th>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_70')}</th>
+								</tr>
+							</thead>
+							<tbody >
+								<tr>
+									<td>2016/11/06</td>
+									<td>A00000099</td>
+									<td>就業承認</td>
+									<td>2016/11/06~2016/11/30</td>
+									<td>承認</td>
+									<td><button class="create-creation" data-bind="click : openDialog">#{i18n.getText('KSC001_71')}</button></td>
+								</tr>
+								<tr>
+									<td>2016/11/06</td>
+									<td>A00000099</td>
+									<td>就業承認</td>
+									<td>2016/11/06~2016/11/30</td>
+									<td>承認</td>
+									<td><button class="create-creation" data-bind="click : openDialog">#{i18n.getText('KSC001_71')}</button></td>
+								</tr>
+								<tr>
+									<td>2016/11/06</td>
+									<td>A00000099</td>
+									<td>就業承認</td>
+									<td>2016/11/06~2016/11/30</td>
+									<td>承認</td>
+									<td><button class="create-creation" data-bind="click : openDialog">#{i18n.getText('KSC001_71')}</button></td>
+								</tr>
+								<tr>
+									<td>2016/11/06</td>
+									<td>A00000099</td>
+									<td>就業承認</td>
+									<td>2016/11/06~2016/11/30</td>
+									<td>承認</td>
+									<td><button class="create-creation" data-bind="click : openDialog">#{i18n.getText('KSC001_71')}</button></td>
+								</tr>
+								<tr>
+									<td>2016/11/06</td>
+									<td>A00000099</td>
+									<td>就業承認</td>
+									<td>2016/11/06~2016/11/30</td>
+									<td>承認</td>
+									<td><button class="create-creation" data-bind="click : openDialog">#{i18n.getText('KSC001_71')}</button></td>
+								</tr>
+								<tr>
+									<td>2016/11/06</td>
+									<td>A00000099</td>
+									<td>就業承認</td>
+									<td>2016/11/06~2016/11/30</td>
+									<td>承認</td>
+									<td><button class="create-creation" data-bind="click : openDialog">#{i18n.getText('KSC001_71')}</button></td>
+								</tr>
+								<tr>
+									<td>2016/11/06</td>
+									<td>A00000099</td>
+									<td>就業承認</td>
+									<td>2016/11/06~2016/11/30</td>
+									<td>承認</td>
+									<td><button class="create-creation" data-bind="click : openDialog">#{i18n.getText('KSC001_71')}</button></td>
+								</tr>
+								<tr>
+									<td>2016/11/06</td>
+									<td>A00000099</td>
+									<td>就業承認</td>
+									<td>2016/11/06~2016/11/30</td>
+									<td>承認</td>
+									<td><button class="create-creation" data-bind="click : openDialog">#{i18n.getText('KSC001_71')}</button></td>
+								</tr>
+								<tr>
+									<td>2016/11/06</td>
+									<td>A00000099</td>
+									<td>就業承認</td>
+									<td>2016/11/06~2016/11/30</td>
+									<td>承認</td>
+									<td><button class="create-creation" data-bind="click : openDialog">#{i18n.getText('KSC001_71')}</button></td>
+								</tr>
+								<tr>
+									<td>2016/11/06</td>
+									<td>A00000099</td>
+									<td>就業承認</td>
+									<td>2016/11/06~2016/11/30</td>
+									<td>承認</td>
+									<td><button class="create-creation" data-bind="click : openDialog">#{i18n.getText('KSC001_71')}</button></td>
+								</tr>
+								<tr>
+									<td>2016/11/06</td>
+									<td>A00000099</td>
+									<td>就業承認</td>
+									<td>2016/11/06~2016/11/30</td>
+									<td>承認</td>
+									<td><button class="create-creation" data-bind="click : openDialog">#{i18n.getText('KSC001_71')}</button></td>
+								</tr>
+								<tr>
+									<td>2016/11/06</td>
+									<td>A00000099</td>
+									<td>就業承認</td>
+									<td>2016/11/06~2016/11/30</td>
+									<td>承認</td>
+									<td><button class="create-creation" data-bind="click : openDialog">#{i18n.getText('KSC001_71')}</button></td>
+								</tr>
+								<tr>
+									<td>2016/11/06</td>
+									<td>A00000099</td>
+									<td>就業承認</td>
+									<td>2016/11/06~2016/11/30</td>
+									<td>承認</td>
+									<td><button class="create-creation" data-bind="click : openDialog">#{i18n.getText('KSC001_71')}</button></td>
+								</tr>
+							</tbody>
+						</table>
+					</div> 	
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

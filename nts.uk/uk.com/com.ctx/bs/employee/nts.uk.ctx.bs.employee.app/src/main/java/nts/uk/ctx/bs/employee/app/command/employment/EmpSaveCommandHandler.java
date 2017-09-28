@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
@@ -25,6 +26,12 @@ public class EmpSaveCommandHandler extends CommandHandler<EmpSaveCommand> {
 	@Inject
 	private EmploymentRepository repository;
 	
+	 /** The Constant ADD. */
+ 	public static final int ADD = 1;
+	 
+ 	/** The Constant UPDATE. */
+ 	public static final int UPDATE = 2;
+	
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
@@ -38,12 +45,17 @@ public class EmpSaveCommandHandler extends CommandHandler<EmpSaveCommand> {
 		
 		Employment employment = new Employment(command);
 		
-		// Find Employment
+		// Find exist Employment
 		Optional<Employment> empOptional = this.repository.findEmployment(companyId, command.getEmploymentCode().v());
 		
 		// Update
 		if (empOptional.isPresent()) {
-			this.repository.update(employment);
+			// Check ADD mode
+			if (command.getMode() == ADD) {
+				throw new BusinessException("Msg_3");
+			} else {
+				this.repository.update(employment);
+			}
 			return;
 		}
 		// Create
