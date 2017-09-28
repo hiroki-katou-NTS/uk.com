@@ -1,33 +1,23 @@
-@CHARSET "UTF-8";
-
-.label_selectAction {
-	margin-top: 10px;
-	width: 100%;
+.navigation-label {
+	margin-left: 20px;
+	vertical-align: 12px;
 }
 
-.imageSettings {
-	cursor: pointer;
+.create-creation {
+	background-image: url(../image/IMG_KSC001_1.png);
+	background-size: 100%;
+	height: 109px;
+	width: 327px;
+	background-repeat: no-repeat;
+	margin-left: 20px;
 }
 
-.buttonImage {
-	margin-top: 10px;
-	width: 300px;
+.history-reference {
+	background-image: url(../image/IMG_KSC001_2.png);
+	background-size: 100%;
+	height: 109px;
+	width: 327px;
+	background-repeat: no-repeat;
+	margin-left: 60px;
 }
 
-.buttonImage:hover {
-	border: 2px solid #d0d0d0;
-	border-radius: 5px;
-	width: 300px;
-}
-
-.buttonImageSetting:hover {
-	border: 2px solid #d0d0d0;
-	border-radius: 5px;
-	width: 330px;
-}
-
-.buttonImageSetting {
-	margin-top: 10px;
-	width: 330px;
-	margin-left: 25px;
-}

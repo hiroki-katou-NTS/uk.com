@@ -67,5 +67,32 @@ module ksu001.a {
         $('.setting').click(function() {
             $('#popup-area5').toggle();
         });
+
+        //popup A3-20
+        $('#popup-area6').ntsPopup({
+            position: {
+                my: 'left top',
+                at: 'left bottom',
+                of: $('.setting-button')
+            }
+        });
+
+        $('.setting-button').click(function() {
+            $('#popup-area6').toggle();
+        });
+
+        //popup A2-2
+        $('#popup-area7').ntsPopup({
+            position: {
+                my: 'left top',
+                at: 'left bottom',
+                of: $('.done')
+            }
+        });
+
+        $('.done').click(function() {
+            $('#popup-area7').toggle();
+        });
+
     }
 }

@@ -1,6 +1,8 @@
 module nts.uk.at.view.ksc001.a {
     __viewContext.ready(function() {
-        var screenModel = new viewmodel.ScreenModel();
-        __viewContext.bind(screenModel);    
+        let screenModel = new nts.uk.at.view.ksc001.a.viewmodel.ScreenModel();
+        screenModel.startPage().done(function() {
+            __viewContext.bind(screenModel);
+        });
     });
 }

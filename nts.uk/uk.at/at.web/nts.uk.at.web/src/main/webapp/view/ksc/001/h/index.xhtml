@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 1200, height: 350 };</script>
+			<com:stylefile path="ksc001.h.main.css" />
+			<com:scriptfile path="ksc001.h.vm.js" />
+			<com:scriptfile path="ksc001.h.start.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div class="lable-line">
+					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
+					<label class="date-range">2016/11/01~2016/11/30</label>
+				</div>
+				<table id="fixed-table">
+							<colgroup>
+								<col width="180px"/>
+								<col width="180px"/>
+								<col width="100px"/>
+								<col width="250px"/>
+								<col width="200px"/>
+								<col width="100px"/>
+								<col width="100px"/>
+							</colgroup>
+							<thead>
+								<tr>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_49')}</th>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_76')}</th>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_50')}</th>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_77')}</th>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_30')}</th>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_32')}</th>
+									<th class="ui-widget-header" rowspan="2">#{i18n.getText('KSC001_78')}</th>
+									
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td><label>2016/11/30 12:19:10</label></td>
+									<td><label>2016/11/30 15:20:20</label></td>
+									<td><label>00:05:00</label></td>
+									<td><label>
+											<p>就業承認</p>
+											<p>就業承認</p>
+											<p>就業承認</p>
+											<p>就業承認</p>
+											<p>就業承認</p>
+											<p>就業承認</p>
+											<p>就業承認</p>
+											<p>就業承認</p>
+										</label></td>
+									<td><label></label></td>
+									<td>
+										<a class="nounderline" href="javascript:void(0);" 
+											data-bind="click: openDialogI" >
+												33人
+										</a>
+									</td>
+									<td>
+										<a class="nounderline" href="javascript:void(0);"
+											 data-bind="click : openDialogK" >
+												2人
+										</a>
+									</td>
+								</tr>
+							</tbody>
+				</table>
+			</div>
+			<div id="functions-area-bottom">
+				<button class="large" data-bind="click: closeDialog">#{i18n.getText('KSC001_61')}</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

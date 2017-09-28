@@ -12,10 +12,10 @@ public class SphdLimitCommand {
 	private String specialHolidayCode;
 	
 	/*月数*/
-	private int specialVacationMonths;
+	private Integer specialVacationMonths;
 	
 	/*年数*/
-	private int specialVacationYears;
+	private Integer specialVacationYears;
 	
 	/*付与日数を繰り越す*/
 	private int grantCarryForward;

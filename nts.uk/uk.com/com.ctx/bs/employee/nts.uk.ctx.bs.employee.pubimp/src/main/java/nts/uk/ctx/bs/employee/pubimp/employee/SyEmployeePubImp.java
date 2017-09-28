@@ -5,16 +5,22 @@
 package nts.uk.ctx.bs.employee.pubimp.employee;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.access.person.SyPersonAdapter;
+import nts.uk.ctx.bs.employee.dom.access.person.dto.PersonImport;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.Employee;
 import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
+import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistory;
+import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
+import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 
@@ -28,9 +34,17 @@ public class SyEmployeePubImp implements SyEmployeePub {
 	@Inject
 	private EmployeeRepository employeeRepository;
 
+	/** The person repository. */
+	@Inject
+	private SyPersonAdapter syPersonAdapter;
+
 	/** The workplace history repository. */
 	@Inject
 	private AffWorkplaceHistoryRepository workplaceHistoryRepository;
+
+	/** The aff job title history repository. */
+	@Inject
+	private AffJobTitleHistoryRepository affJobTitleHistoryRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -52,17 +66,50 @@ public class SyEmployeePubImp implements SyEmployeePub {
 				employeeIds);
 
 		// Return
-		return employeeList.stream().map(item -> {
-			EmployeeExport dto = new EmployeeExport();
-			dto.setCompanyId(item.getCompanyId());
-			dto.setPId(item.getPId());
-			dto.setSId(item.getSId());
-			dto.setSCd(item.getSCd().v());
-			dto.setSMail(item.getCompanyMail().v());
-			dto.setRetirementDate(item.getListEntryJobHist().get(0).getRetirementDate());
-			dto.setJoinDate(item.getListEntryJobHist().get(0).getJoinDate());
-			return dto;
-		}).collect(Collectors.toList());
+		return employeeList.stream()
+				.map(item -> EmployeeExport.builder().companyId(item.getCompanyId())
+						.pId(item.getPId()).sId(item.getSId()).sCd(item.getSCd().v())
+						.sMail(item.getCompanyMail().v())
+						.retirementDate(item.getListEntryJobHist().get(0).getRetirementDate())
+						.joinDate(item.getListEntryJobHist().get(0).getJoinDate()).build())
+				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub#getConcurrentEmployee(
+	 * java.lang.String, java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<ConcurrentEmployeeExport> getConcurrentEmployee(String companyId, String jobId,
+			GeneralDate baseDate) {
+		// Query
+		List<AffJobTitleHistory> affJobTitleHistories = this.affJobTitleHistoryRepository
+				.findByJobId(jobId, baseDate);
+
+		List<String> employeeIds = affJobTitleHistories.stream()
+				.map(AffJobTitleHistory::getEmployeeId).collect(Collectors.toList());
+
+		List<Employee> employeeList = this.employeeRepository.findByListEmployeeId(companyId,
+				employeeIds);
+
+		List<String> personIds = employeeList.stream().map(Employee::getPId)
+				.collect(Collectors.toList());
+
+		List<PersonImport> persons = this.syPersonAdapter.findByPersonIds(personIds);
+
+		Map<String, String> personNameMap = persons.stream()
+				.collect(Collectors.toMap(PersonImport::getPersonId, PersonImport::getPersonName));
+
+		// Return
+		// TODO: Du san Q&A for jobCls #
+		return employeeList.stream()
+				.map(item -> ConcurrentEmployeeExport.builder().employeeId(item.getSId())
+						.employeeCd(item.getSCd().v()).personName(personNameMap.get(item.getPId()))
+						.jobId(jobId).jobCls(null).build())
+				.collect(Collectors.toList());
 	}
 
 }
