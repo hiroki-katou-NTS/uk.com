@@ -12,7 +12,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
         perInfoSelectionItem: KnockoutObservable<SelectionItem> = ko.observable(new SelectionItem({ selectionItemId: '', selectionItemName: '' }));
         rulesFirst: KnockoutObservableArray<IRule>;
         checkCreate: KnockoutObservable<boolean>;
-        
+
         constructor() {
             let self = this,
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
@@ -110,11 +110,12 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 currentItem: SelectionItem = self.perInfoSelectionItem(),
                 listItems: Array<SelectionItem> = self.listItems(),
                 formatSelection = currentItem.formatSelection(),
-                command = ko.toJS(currentItem),// truyen vao tat ca thuoc tinh cua 1 Item: Su dung ToJS()
-                _selectionItemName = _.find(listItems, x => x.selectionItemName == currentItem.selectionItemName());
+                command = ko.toJS(currentItem);
 
+            //「個人情報の選択項目」を登録する
             service.saveDataSelectionItem(command).done(function(selectId) {
                 self.listItems.removeAll();
+                //画面項目「選択項目名称一覧：選択項目名称一覧」を登録する
                 service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
                     if (itemList && itemList.length) {
                         itemList.forEach(x => self.listItems.push(x));
@@ -122,7 +123,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 });
                 self.listItems.valueHasMutated();
                 self.perInfoSelectionItem().selectionItemId(selectId);
-            }).fail(error => {
+            }).fail(error => {//情報メッセージ「#Msg_513」を表示する
                 alertError({ messageId: "Msg_513" });
             });
         }
@@ -135,9 +136,13 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 oldIndex = _.findIndex(self.listItems(), function(o) { return o.selectionItemId == currentItem.selectionItemId(); }),
                 command = ko.toJS(currentItem);
 
+            //「個人情報の選択項目」を更新する
             service.updateDataSelectionItem(command).done(function() {
                 self.listItems.removeAll();
+
+                //情報メッセージ「#Msg_15」を表示する
                 confirm({ messageId: "Msg_15" }).ifYes(() => {
+                    //画面項目「選択項目名称一覧：選択項目名称一覧」を更新する
                     service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
                         if (itemList && itemList.length) {
                             itemList.forEach(x => self.listItems.push(x));
@@ -218,7 +223,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
             self.selectionItemClassification(param.selectionItemClassification === 1 ? true : false);
             self.contractCode(param.contractCode || '');
             self.integrationCode(param.integrationCode || '');
-            
+
             let _format = self.formatSelection(),
                 _iformat = param.formatSelection;
             if (_iformat) {

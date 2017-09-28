@@ -46,7 +46,6 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 				.setParameter("selectionItemId", selectionItemId).getList(c -> toDomain(c));
 	}
 	
-	// check histId
 	public Optional<PerInfoHistorySelection> getHistorySelectionItem(String histId) {
 		BpsmtHistorySelectionPK pkHistorySelection = new BpsmtHistorySelectionPK(histId);
 		return this.queryProxy().find(pkHistorySelection, BpsmtHistorySelection.class).map(c -> toDomain(c));

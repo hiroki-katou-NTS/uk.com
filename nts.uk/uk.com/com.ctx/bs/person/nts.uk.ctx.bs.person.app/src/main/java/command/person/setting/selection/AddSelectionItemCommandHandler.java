@@ -36,12 +36,16 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 		String rootCID = PersonInfoCategory.ROOT_COMPANY_ID;
 		String newHistId = IdentifierUtil.randomUniqueId();
 
+		// ドメインモデル「個人情報の選択項目」のエラーチェック
 		Optional<PerInfoSelectionItem> opt = this.perInfoSelectionItemRepo
 				.checkItemName(command.getSelectionItemName());
-		if (opt.isPresent()) {// neu da ton tai SelectionItemName
+
+		// 「選択項目名称」は重複してはならない
+		if (opt.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("Msg_513"));
 		}
 
+		// ドメインモデル「個人情報の選択項目」を追加登録する
 		PerInfoSelectionItem domain = PerInfoSelectionItem.createFromJavaType(newId, command.getSelectionItemName(),
 				command.getMemo(), command.isSelectionItemClassification() == true ? 1 : 0,
 				AppContexts.user().contractCode(), command.getIntegrationCode(),
@@ -50,24 +54,29 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 				command.getFormatSelection().getSelectionName(),
 				command.getFormatSelection().getSelectionExternalCode());
 
+		// 「個人情報の選択項目」を追加登録する
 		this.perInfoSelectionItemRepo.add(domain);
 
-		// check SelectionItemClassification: true/false
+		// ドメインモデル「選択肢履歴」を登録する
 		boolean itemClassification = command.isSelectionItemClassification();
 		GeneralDate startDate = GeneralDate.ymd(1900, 1, 1);
 		GeneralDate endDate = GeneralDate.ymd(9999, 12, 31);
-		if (itemClassification == true) {
+
+		// 画面項目「グループ会社で共有する：選択項目区分をチェックする」
+		if (itemClassification == true) {// TRUE → 0会社の場合
 			PerInfoHistorySelection domainHist = PerInfoHistorySelection.historySelection(newHistId, newId, rootCID,
 					endDate, startDate);
 
+			// 0会社の場合:「選択肢履歴」を登録する
 			this.historySelectionRepository.add(domainHist);
-		} else {
-			List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;// todo
+		} else {// FALSE → 全会社 の場合
+			List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
 			for (String cid : companyIdList) {
 				newHistId = IdentifierUtil.randomUniqueId();
 				PerInfoHistorySelection domainHist = PerInfoHistorySelection.historySelection(newHistId, newId, cid,
 						endDate, startDate);
 
+				// 全会社 の場合:「選択肢履歴」を登録する
 				this.historySelectionRepository.add(domainHist);
 			}
 
@@ -75,6 +84,7 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 			PerInfoHistorySelection domainHist = PerInfoHistorySelection.historySelection(newHistId, newId, rootCID,
 					endDate, startDate);
 
+			// 0会社の場合: 「選択肢履歴」を登録する
 			this.historySelectionRepository.add(domainHist);
 		}
 

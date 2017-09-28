@@ -16,6 +16,8 @@ public class UpdateSelectionItemCommandHandler extends CommandHandler<UpdateSele
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateSelectionItemCommand> context) {
+
+		// ドメインモデル「個人情報の選択項目」を登録する
 		UpdateSelectionItemCommand command = context.getCommand();
 		PerInfoSelectionItem domain = PerInfoSelectionItem.createFromJavaType(command.getSelectionItemId(),
 				command.getSelectionItemName(), command.getMemo(),
@@ -24,6 +26,8 @@ public class UpdateSelectionItemCommandHandler extends CommandHandler<UpdateSele
 				command.getFormatSelection().isSelectionCodeCharacter() == true ? 1 : 0,
 				command.getFormatSelection().getSelectionName(),
 				command.getFormatSelection().getSelectionExternalCode());
+
+		// 選択項目ID:「個人情報の選択項目」を登録する
 		this.perInfoSelectionItemRepo.update(domain);
 	}
 
