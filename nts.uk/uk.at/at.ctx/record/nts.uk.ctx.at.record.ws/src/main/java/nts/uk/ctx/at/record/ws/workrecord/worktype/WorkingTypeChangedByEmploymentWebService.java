@@ -27,7 +27,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Path("at/record/workrecord/worktype/")
-@Produces("appliction/json")
+@Produces("application/json")
 public class WorkingTypeChangedByEmploymentWebService {
 
 	@Inject

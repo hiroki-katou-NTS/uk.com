@@ -12,8 +12,6 @@ import lombok.Data;
 @Data
 public class AuthFuncRest {
 	
-	private String roleID;
-
 	/**
 	 * 日別実績の機能NO
 	 */

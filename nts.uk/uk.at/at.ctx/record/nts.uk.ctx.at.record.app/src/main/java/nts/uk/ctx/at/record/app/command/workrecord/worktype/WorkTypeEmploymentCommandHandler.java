@@ -32,12 +32,12 @@ public class WorkTypeEmploymentCommandHandler extends CommandHandler<WorkTypeEmp
 	protected void handle(CommandHandlerContext<WorkTypeEmploymentCommand> context) {
 		WorkTypeEmploymentCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		String empCode = AppContexts.user().employeeCode();
+		String employmentCode = command.getEmploymentCode();
 		List<ChangeableWorktypeGroup> changeableWorkTypeGroups = command.getGroups().stream()
 				.map(group -> new ChangeableWorktypeGroup(group.getNo(), group.getName(), group.getWorkTypeList()))
 				.collect(Collectors.toList());
 		WorkingTypeChangedByEmployment workingType = new WorkingTypeChangedByEmployment(new CompanyId(companyId),
-				new EmploymentCode(empCode), changeableWorkTypeGroups);
+				new EmploymentCode(employmentCode), changeableWorkTypeGroups);
 		workTypeRepo.saveWorkingTypeChangedByEmployment(workingType);
 	}
 
