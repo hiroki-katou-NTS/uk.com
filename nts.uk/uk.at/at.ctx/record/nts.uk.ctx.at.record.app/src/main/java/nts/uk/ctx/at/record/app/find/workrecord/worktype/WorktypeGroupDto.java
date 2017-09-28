@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class WorktypeGroupDto {
+public class WorkTypeGroupDto {
 
 	private int no;
 
