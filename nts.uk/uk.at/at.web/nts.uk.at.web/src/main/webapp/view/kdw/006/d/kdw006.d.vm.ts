@@ -4,6 +4,10 @@ module nts.uk.at.view.kdw006.d {
             constructor() {
             }
 
+            saveData(){
+                alert('screen d');
+            }
+            
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
