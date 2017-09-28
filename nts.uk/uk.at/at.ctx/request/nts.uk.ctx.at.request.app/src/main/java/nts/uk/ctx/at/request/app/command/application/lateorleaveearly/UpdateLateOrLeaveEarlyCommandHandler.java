@@ -54,6 +54,7 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
 				domainLateOrLeaveEarly.getApplicantSID(),
 				domainLateOrLeaveEarly.getApplicationDate(), 9,
 				domainLateOrLeaveEarly.getApplicationID(),
+				
 				domainLateOrLeaveEarly.getPrePostAtr());
 		
 		//ドメインモデル「遅刻早退取消申請」の更新する

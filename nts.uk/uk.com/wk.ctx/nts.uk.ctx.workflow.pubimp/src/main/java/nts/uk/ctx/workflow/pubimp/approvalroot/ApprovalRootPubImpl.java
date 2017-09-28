@@ -8,156 +8,132 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.ApprovalRootService;
+import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.JobtitleToApproverService;
+import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApprovalPhaseOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApprovalRootOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApproverInfo;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.pub.approvalroot.ApprovalRootPub;
 import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalPhaseExport;
-import nts.uk.ctx.workflow.pub.approvalroot.export.ComApprovalRootExport;
-import nts.uk.ctx.workflow.pub.approvalroot.export.ApproverExport;
-import nts.uk.ctx.workflow.pub.approvalroot.export.PersonApprovalRootExport;
-import nts.uk.ctx.workflow.pub.approvalroot.export.WkpApprovalRootExport;
+import nts.uk.ctx.workflow.pub.approvalroot.export.ApprovalRootExport;
+import nts.uk.ctx.workflow.pub.approvalroot.export.ApproverInfoExport;
+import nts.uk.ctx.workflow.pub.approvalroot.export.ErrorFlag;
 
 @Stateless
-public class ApprovalRootPubImpl implements ApprovalRootPub{
+public class ApprovalRootPubImpl implements ApprovalRootPub {
+
+	@Inject
+	private ApprovalRootService approvalRootService;
 	
 	@Inject
-	private PersonApprovalRootRepository personAppRootRepository;
-	
-	@Inject 
-	private WorkplaceApprovalRootRepository wkpAppRootRepository;
-	
-	@Inject 
-	private CompanyApprovalRootRepository companyAppRootRepository;
-	
-	@Inject
-	private ApprovalPhaseRepository appPhaseRepository;
-	
+	private JobtitleToApproverService jobtitleToApproverService;
+
 	@Override
-	public List<PersonApprovalRootExport> findByBaseDate(String cid, String sid, GeneralDate standardDate, int appType) {
-		return this.personAppRootRepository.findByBaseDate(cid, sid, standardDate, appType).stream()
-				.map(x -> this.toPersonAppRootExport(x)).collect(Collectors.toList());
+	public List<ApprovalRootExport> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,
+			int appType, GeneralDate standardDate) {
+		List<ApprovalRootOutput> approvalData = this.approvalRootService.getApprovalRootOfSubjectRequest(cid, sid, employmentRootAtr, appType, standardDate);
+		if (CollectionUtil.isEmpty(approvalData)) {
+			return null;
+		}
+		
+		return approvalData.stream().map(x -> { 
+			ApprovalRootExport export =  new ApprovalRootExport(
+					x.getCompanyId(), 
+					x.getWorkplaceId(), 
+					x.getApprovalId(), 
+					x.getEmployeeId(), 
+					x.getHistoryId(), 
+					x.getStartDate(), 
+					x.getEndDate(), 
+					x.getBranchId(), 
+					x.getAnyItemApplicationId()); 
+					
+			export.addDataType(x.getApplicationType(), x.getConfirmationRootType(), x.getEmploymentRootAtr());
+			export.addBeforeApprovers(this.convertApprovalPhaseListBefore(x.getBeforeApprovers()));
+			export.addAfterApprovers(this.convertApprovalPhaseListAfter(x.getAfterApprovers()));
+			return export;
+			}).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<PersonApprovalRootExport> findByBaseDateOfCommon(String cid, String sid, GeneralDate standardDate) {
-		return this.personAppRootRepository.findByBaseDateOfCommon(cid, sid, standardDate).stream()
-				.map(x -> this.toPersonAppRootExport(x)).collect(Collectors.toList());
+	public List<ApprovalRootExport> adjustmentData(String cid, String sid, GeneralDate baseDate,
+			List<ApprovalRootExport> appDatas) {
+		// TODO Auto-generated method stub
+		return null;
 	}
-	
+
 	@Override
-	public List<WkpApprovalRootExport> findWkpByBaseDate(String cid, String workplaceId, GeneralDate baseDate, int appType) {
-		return this.wkpAppRootRepository.findByBaseDate(cid, workplaceId, baseDate, appType).stream()
-				.map(x -> this.toWkpAppRootExport(x)).collect(Collectors.toList());
-	}
-	
-	@Override
-	public List<WkpApprovalRootExport> findWkpByBaseDateOfCommon(String cid, String workplaceId, GeneralDate baseDate) {
-		return this.wkpAppRootRepository.findByBaseDateOfCommon(cid, workplaceId, baseDate).stream()
-				.map(x -> this.toWkpAppRootExport(x)).collect(Collectors.toList());
-	}
-	
-	@Override
-	public List<ComApprovalRootExport> findCompanyByBaseDate(String cid, GeneralDate baseDate, int appType) {
-		return this.companyAppRootRepository.findByBaseDate(cid, baseDate, appType).stream()
-				.map(x -> this.toComAppRootExport(x)).collect(Collectors.toList());
-	}
-	
-	@Override
-	public List<ComApprovalRootExport> findCompanyByBaseDateOfCommon(String cid, GeneralDate baseDate) {
-		return this.companyAppRootRepository.findByBaseDateOfCommon(cid, baseDate).stream()
-				.map(x -> this.toComAppRootExport(x)).collect(Collectors.toList());
-	}
-	
-	@Override
-	public List<ApprovalPhaseExport> findApprovalPhaseByBranchId(String cid, String branchId) {
-		return this.appPhaseRepository.getAllIncludeApprovers(cid, branchId).stream()
-				.map(x -> new ApprovalPhaseExport(
-						x.getCompanyId(),
-						x.getBranchId(),
-						x.getApprovalPhaseId(),
-						x.getApprovalForm().value,
-						x.getBrowsingPhase(),
-						x.getOrderNumber(),
-						CollectionUtil.isEmpty(x.getApprovers())? null: x.getApprovers().stream().map(a -> new ApproverExport(
-								a.getCompanyId(), 
-								a.getApprovalPhaseId(), 
-								a.getApproverId(), 
-								a.getJobTitleId(), 
-								a.getEmployeeId(), 
-								a.getOrderNumber(), 
-								a.getApprovalAtr().value, 
-								a.getConfirmPerson().value))
-						.collect(Collectors.toList())
-			    )).collect(Collectors.toList());
+	public ErrorFlag checkError(List<ApprovalPhaseExport> beforeDatas, List<ApprovalPhaseExport> afterDatas) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	/**
-	 * convert to Person
+	 * Convert before adjustment data
 	 * 
-	 * @param root
+	 * @param beforeApprovers
 	 * @return
 	 */
-	private PersonApprovalRootExport toPersonAppRootExport(PersonApprovalRoot root) {
-		return new PersonApprovalRootExport(
-				root.getCompanyId(),
-				root.getApprovalId(),
-				root.getEmployeeId(),
-				root.getHistoryId(),
-				root.getApplicationType()==null?null:root.getApplicationType().value,
-				root.getPeriod().getStartDate(),
-				root.getPeriod().getEndDate(),
-				root.getBranchId(),
-				root.getAnyItemApplicationId(),
-				root.getConfirmationRootType() == null?null:root.getConfirmationRootType().value,
-				root.getEmploymentRootAtr().value
-	    );
+	private List<ApprovalPhaseExport> convertApprovalPhaseListBefore(List<ApprovalPhase> beforeApprovers) {
+		return beforeApprovers.stream()
+				.map(m -> {
+					ApprovalPhaseExport phase = new ApprovalPhaseExport(
+							m.getCompanyId(), 
+							m.getBranchId(), 
+							m.getApprovalPhaseId(), 
+							m.getApprovalForm().value, 
+							m.getBrowsingPhase(), 
+							m.getOrderNumber());
+					
+					phase.addApproverList(m.getApprovers().stream().map(a -> 
+								new ApproverInfoExport(
+										a.getEmployeeId(), 
+										a.getApprovalPhaseId(), 
+										a.getConfirmPerson() == ConfirmPerson.CONFIRM? true: false,
+									    a.getOrderNumber())).collect(Collectors.toList()));
+					return phase;
+			}).collect(Collectors.toList());
+	}
+
+	/**
+	 * convert after adjustment data
+	 * @param beforeApprovers
+	 * @return
+	 */
+	private List<ApprovalPhaseExport> convertApprovalPhaseListAfter(List<ApprovalPhaseOutput> beforeApprovers) {
+		return beforeApprovers.stream()
+				.map(m -> {
+					ApprovalPhaseExport phase = new ApprovalPhaseExport(
+							m.getCompanyId(), 
+							m.getBranchId(), 
+							m.getApprovalPhaseId(), 
+							m.getApprovalForm(), 
+							m.getBrowsingPhase(), 
+							m.getOrderNumber());
+					
+					phase.addApproverList(m.getApprovers().stream().map(a -> {
+							ApproverInfoExport export = new ApproverInfoExport(a.getSid(), a.getApprovalPhaseId(), a.isConfirmPerson(), a.getOrderNumber());
+							export.addEmployeeName(a.getName());
+							return export;
+						}).collect(Collectors.toList()));
+					return phase;
+			}).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ApproverInfoExport> convertToApprover(String cid, String sid, GeneralDate baseDate, String jobTitleId) {
+		List<ApproverInfo> approvers = this.jobtitleToApproverService.convertToApprover(cid, sid, baseDate, jobTitleId);
+		if (!CollectionUtil.isEmpty(approvers)) {
+			return approvers.stream().map(x -> {
+				ApproverInfoExport export = new ApproverInfoExport(x.getSid(), x.getApprovalPhaseId(), x.isConfirmPerson(), x.getOrderNumber());
+				export.addEmployeeName(x.getName());
+				return export;
+			}).collect(Collectors.toList());
+		}
+		
+		return null;
 	}
 	
-	/**
-	 * convert to Workplace
-	 * 
-	 * @param root
-	 * @return
-	 */
-	private WkpApprovalRootExport toWkpAppRootExport(WorkplaceApprovalRoot root) {
-		return new WkpApprovalRootExport(
-				root.getCompanyId(),
-				root.getApprovalId(),
-				root.getWorkplaceId(),
-				root.getHistoryId(),
-				root.getApplicationType()==null?null:root.getApplicationType().value,
-				root.getPeriod().getStartDate(),
-				root.getPeriod().getEndDate(),
-				root.getBranchId(),
-				root.getAnyItemApplicationId(),
-				root.getConfirmationRootType() == null?null:root.getConfirmationRootType().value,
-				root.getEmploymentRootAtr().value
-	    );
-	}
-	
-	/**
-	 * convert to Company
-	 * 
-	 * @param root
-	 * @return
-	 */
-	private ComApprovalRootExport toComAppRootExport(CompanyApprovalRoot root) {
-		return new ComApprovalRootExport(
-				root.getCompanyId(),
-				root.getApprovalId(),
-				root.getHistoryId(),
-				root.getApplicationType()==null?null:root.getApplicationType().value,
-				root.getPeriod().getStartDate(),
-				root.getPeriod().getEndDate(),
-				root.getBranchId(),
-				root.getAnyItemApplicationId(),
-				root.getConfirmationRootType() == null?null:root.getConfirmationRootType().value,
-				root.getEmploymentRootAtr().value
-	    );
-	}
 }
