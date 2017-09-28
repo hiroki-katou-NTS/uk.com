@@ -33,6 +33,6 @@ public class ConcurrentEmployeeExport {
 
 	/** The job cls. */
 	// 本務兼務区分
-	private Integer jobCls;
+	private JobClassification jobCls;
 
 }

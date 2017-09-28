@@ -22,6 +22,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
+import nts.uk.ctx.bs.employee.pub.employee.JobClassification;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 
 /**
@@ -108,7 +109,7 @@ public class SyEmployeePubImp implements SyEmployeePub {
 		return employeeList.stream()
 				.map(item -> ConcurrentEmployeeExport.builder().employeeId(item.getSId())
 						.employeeCd(item.getSCd().v()).personName(personNameMap.get(item.getPId()))
-						.jobId(jobId).jobCls(null).build())
+						.jobId(jobId).jobCls(JobClassification.Principal).build())
 				.collect(Collectors.toList());
 	}
 
