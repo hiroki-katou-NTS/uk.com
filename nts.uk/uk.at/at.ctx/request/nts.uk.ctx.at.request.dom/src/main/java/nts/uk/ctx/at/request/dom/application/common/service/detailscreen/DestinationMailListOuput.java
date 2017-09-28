@@ -7,9 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
 public class DestinationMailListOuput {
 	List<String> destinationMail;
-	int phaseFrameNumber;
+	List<Integer> phaseFrameNumber;
 }

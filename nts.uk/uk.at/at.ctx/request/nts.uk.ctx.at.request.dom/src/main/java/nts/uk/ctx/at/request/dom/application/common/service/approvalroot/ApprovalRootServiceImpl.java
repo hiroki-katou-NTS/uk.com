@@ -250,10 +250,11 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 					//get 承認設定 
 					Optional<ApplicationSetting> appSetting = this.appSettingRepository.getApplicationSettingByComID(cid);
 					if (appSetting.isPresent()) {
+						/*
 						if (appSetting.get().getPersonApprovalFlg() == AprovalPersonFlg.OTHER) {
 							// 申請本人社員IDを承認者IDリストから消す
 							approverIds.remove(sid);
-						}
+						}*/
 					}
 					
 					// remove duplicate data
