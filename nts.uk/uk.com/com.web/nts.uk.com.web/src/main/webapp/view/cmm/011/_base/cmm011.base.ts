@@ -7,16 +7,24 @@ module nts.uk.com.view.cmm011 {
         export abstract class WorkplaceHistoryAbstract {
 
             lstWpkHistory: KnockoutObservableArray<IHistory>;
-            selectedWpkHistory: KnockoutObservable<string>;
+            selectedHistoryId: KnockoutObservable<string>;
             
             constructor() {
                 let self = this;
                 self.lstWpkHistory = ko.observableArray([]);
-                self.selectedWpkHistory = ko.observable(null);
+                self.selectedHistoryId = ko.observable(null);
                 
                 // lstWpkHistory subscribe
                 self.lstWpkHistory.subscribe((newLstHistory) => {
+                    if (!newLstHistory) {
+                        return;
+                    }
+                    
+                    // set name display
                     self.fillTextDisplay();
+                    
+                    // set selected first
+                    self.selectFirst();
                 });
             }
             
@@ -25,33 +33,15 @@ module nts.uk.com.view.cmm011 {
              */
             public selectFirst() {
                 let self = this;
-                if (self.lstWpkHistory() && self.lstWpkHistory().length > 0) {
-                    self.selectedWpkHistory(self.lstWpkHistory()[0].historyId);
-                }
-            }
-            
-            /**
-             * getSelectedHistoryByWkpId
-             */
-            public getSelectedHistoryByWkpId(): IHistory {
-                let self = this;
-                return self.lstWpkHistory().filter(item => item.workplaceId == self.selectedWpkHistory())[0];
+                self.selectedHistoryId(self.lstWpkHistory()[0].historyId);
             }
             
             /**
              * getSelectedHistoryByHistId
              */
-            public getSelectedHistoryByHistId(historyId :string): IHistory {
+            public getSelectedHistoryByHistId(): IHistory {
                 let self = this;
-                return self.lstWpkHistory().filter(item => item.historyId == historyId)[0];
-            }
-            
-            /**
-             * isWorkplaceHistoryLatest
-             */
-            public isWorkplaceHistoryLatest(): boolean {
-                let self = this;
-                return self.selectedWpkHistory() == self.lstWpkHistory()[0].workplaceId;
+                return self.lstWpkHistory().filter(item => item.historyId == self.selectedHistoryId())[0];
             }
             
             /**
@@ -70,7 +60,7 @@ module nts.uk.com.view.cmm011 {
             public isSelectedLatestHistory() {
                 let self = this;
                 if (self.lstWpkHistory().length > 0) {
-                    return self.selectedWpkHistory() == self.lstWpkHistory()[0].historyId;
+                    return self.selectedHistoryId() == self.lstWpkHistory()[0].historyId;
                 }
                 return false;
             }

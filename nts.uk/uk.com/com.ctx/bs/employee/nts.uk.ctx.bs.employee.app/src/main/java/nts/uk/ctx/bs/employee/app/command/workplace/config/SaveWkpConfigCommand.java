@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.workplace.config;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -14,11 +14,11 @@ import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigGetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistory;
 
 /**
- * The Class WorkplaceConfigCommand.
+ * The Class WkpConfigCommand.
  */
 @Getter
 @Setter
-public class WorkplaceConfigCommand {
+public class SaveWkpConfigCommand {
 
     /** The is add mode. */
     private Boolean isAddMode;
@@ -47,7 +47,7 @@ public class WorkplaceConfigCommand {
         private String companyId;
 
         /** The register workplace config command. */
-        private WorkplaceConfigCommand registerWorkplaceConfigCommand;
+        private SaveWkpConfigCommand registerWorkplaceConfigCommand;
 
         /**
          * Instantiates a new workplace config get memento impl.
@@ -57,7 +57,7 @@ public class WorkplaceConfigCommand {
          * @param registerWorkplaceConfigCommand
          *            the register workplace config command
          */
-        public WorkplaceConfigGetMementoImpl(String companyId, WorkplaceConfigCommand registerWorkplaceConfigCommand) {
+        public WorkplaceConfigGetMementoImpl(String companyId, SaveWkpConfigCommand registerWorkplaceConfigCommand) {
             this.companyId = companyId;
             this.registerWorkplaceConfigCommand = registerWorkplaceConfigCommand;
         }
@@ -83,7 +83,9 @@ public class WorkplaceConfigCommand {
          */
         @Override
         public List<WorkplaceConfigHistory> getWkpConfigHistory() {
-            return Arrays.asList(this.registerWorkplaceConfigCommand.getWkpConfigHistory().toDomain());
+            List<WorkplaceConfigHistory> lstWkpConfigHistory = new ArrayList<>();
+            lstWkpConfigHistory.add(this.registerWorkplaceConfigCommand.getWkpConfigHistory().toDomain());
+            return lstWkpConfigHistory;
         }
 
     }
