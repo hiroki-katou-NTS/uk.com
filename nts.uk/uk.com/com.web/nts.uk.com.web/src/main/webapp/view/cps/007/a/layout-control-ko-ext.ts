@@ -10,7 +10,7 @@ module nts.custombinding {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import writeConstraint = nts.uk.ui.validation.writeConstraint;
-    //import writeConstraint = nts.uk.request.writeDynamicConstraint;
+    
 
     export class LetControl implements KnockoutBindingHandler {
         init = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {

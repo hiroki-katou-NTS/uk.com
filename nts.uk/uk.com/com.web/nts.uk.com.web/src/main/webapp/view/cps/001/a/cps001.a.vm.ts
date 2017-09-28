@@ -58,27 +58,56 @@ module cps001.a.vm {
         };
 
         tabActive: KnockoutObservable<string> = ko.observable('layout');
-        person: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ personId: '' }));
-        layout: KnockoutObservable<any> = ko.observable({ items: ko.observableArray([]) });
+
         listEmployees: KnockoutObservableArray<IEmployeeInfo> = ko.observableArray([]);
+
+        person: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ personId: '' }));
+
+        listLayout: KnockoutObservableArray<ILayout> = ko.observableArray([]);
+        currentLayout: KnockoutObservable<Layout> = ko.observable(new Layout());
+
+
 
         constructor() {
             let self = this,
-                person = self.person();
+                person = self.person(),
+                layout = self.currentLayout();
+
+            self.tabActive.subscribe(x => {
+                if (x) {
+                    if (x == 'layout') { // layout mode
+                        self.listLayout.removeAll();
+                        service.getAllLayout().done((data: Array<ILayout>) => {
+                            if (data && data.length) {
+                                self.listLayout(data);
+                                layout.maintenanceLayoutID(data[0].maintenanceLayoutID);
+                            }
+                        });
+                    } else { // category mode
+                    }
+                }
+            });
+
+            self.tabActive.valueHasMutated();
+
+            layout.maintenanceLayoutID.subscribe(x => {
+                if (x) {
+                    service.getCurrentLayout(x).done((data: ILayout) => {
+                        layout.layoutCode(data.layoutCode || '');
+                        layout.layoutName(data.layoutName || '');
+
+                        layout.listItemClsDto(data.listItemClsDto || []);
+                    });
+                }
+            });
 
             self.start();
         }
 
         start() {
-            let self = this,
-                layout = self.layout();
+            let self = this;
 
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
-
-            // demo data layout
-            service.getData().done(x => {
-                layout.items(x.itemsClassification);
-            });
         }
 
         deleteEmployee() {
@@ -113,6 +142,31 @@ module cps001.a.vm {
                 unblock();
                 alert(mes.message);
             });
+        }
+    }
+
+    interface ILayout {
+        layoutCode?: string;
+        layoutName?: string;
+        maintenanceLayoutID: string;
+        listItemClsDto?: Array<any>;
+    }
+
+    class Layout {
+        layoutCode: KnockoutObservable<string> = ko.observable('');
+        layoutName: KnockoutObservable<string> = ko.observable('');
+        maintenanceLayoutID: KnockoutObservable<string> = ko.observable('');
+        listItemClsDto: KnockoutObservableArray<any> = ko.observableArray([]);
+
+        constructor(param?: ILayout) {
+            let self = this;
+            if (param) {
+                self.layoutCode(param.layoutCode || '');
+                self.layoutName(param.layoutName || '');
+                self.maintenanceLayoutID(param.maintenanceLayoutID || '');
+
+                self.listItemClsDto(param.listItemClsDto || []);
+            }
         }
     }
 

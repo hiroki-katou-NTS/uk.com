@@ -3,9 +3,20 @@ module cps001.a.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'getData': 'ctx/bs/person/newlayout/get',
-        'saveData': 'ctx/bs/person/newlayout/save'
+        layout: {
+            getAll: "ctx/bs/person/maintenance/findAll",
+            getDetails: "ctx/bs/person/maintenance/findOne/{0}"
+        },
+        saveData: ''
     };
+
+    export function getAllLayout() {
+        return ajax(paths.layout.getAll);
+    };
+
+    export function getCurrentLayout(id: string) {
+        return ajax(format(paths.layout.getDetails, id));
+    }
 
     export function getData() {
         return ajax(paths.getData);
