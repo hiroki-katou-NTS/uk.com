@@ -9,204 +9,250 @@ module nts.uk.com.view.cps016.a.viewmodel {
     import block = nts.uk.ui.block;
     export class ScreenModel {
         listItems: KnockoutObservableArray<ISelectionItem> = ko.observableArray([]);
-        //listItems: KnockoutObservableArray<SelectionItem> = ko.observableArray([]); //Chua phan biet duoc ->Suport:
-        selectedItemId: KnockoutObservable<String> = ko.observable('');
-        currentItem: KnockoutObservable<SelectionItem> = ko.observable(new SelectionItem({ selectionItemId: '', selectionItemName: '' }));
-        
-       
-        item: KnockoutObservable<Item> = ko.observable(new Item({ id: '', name: '' }));
-        rulesFirst: KnockoutObservableArray<IRule> = ko.observableArray([]);
+        perInfoSelectionItem: KnockoutObservable<SelectionItem> = ko.observable(new SelectionItem({ selectionItemId: '', selectionItemName: '' }));
+        rulesFirst: KnockoutObservableArray<IRule>;
+        checkCreate: KnockoutObservable<boolean>;
         
         constructor() {
             let self = this,
-                item: Item = self.item(),
-                classs = self.rulesFirst;
-
-            classs([
-                { id: 1, name: "数値型" },
-                { id: 2, name: "英数型" }
+                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
+                formatSelection = perInfoSelectionItem.formatSelection();
+            self.checkCreate = ko.observable(true);
+            self.rulesFirst = ko.observableArray([
+                { id: 0, name: "数値型" },
+                { id: 1, name: "英数型" }
             ]);
 
-            item.id.subscribe(x => {
+            //selectionItemIdのsubscribe
+            perInfoSelectionItem.selectionItemId.subscribe(x => {
                 if (x) {
-                    service.getItem(x).done((_item: IItem) => {
-                        if (_item) {
-                            /*
-                            item.name(_item.name);
-                            item.numberCodeDigits(_item.numberCodeDigits);
-                            item.numberDigits(_item.numberDigits);
-                            item.numberExternalCodeDigits(_item.numberExternalCodeDigits);
-                            item.integrationCode(_item.integrationCode);
-                            item.share(_item.share);
-                            item.notes(_item.notes);
-                            item.enable(_item.enable);
-                            */
+                    nts.uk.ui.errors.clearAll();
+                    service.getPerInfoSelectionItem(x).done((_perInfoSelectionItem: ISelectionItem) => {
+                        if (_perInfoSelectionItem) {
+                            perInfoSelectionItem.selectionItemName(_perInfoSelectionItem.selectionItemName);
+                            perInfoSelectionItem.memo(_perInfoSelectionItem.memo);
+                            perInfoSelectionItem.integrationCode(_perInfoSelectionItem.integrationCode);
+                            perInfoSelectionItem.selectionItemClassification(_perInfoSelectionItem.selectionItemClassification === 1 ? true : false);
+
+                            let iformat = _perInfoSelectionItem.formatSelection;
+                            formatSelection.selectionCode(iformat.selectionCode);
+                            formatSelection.selectionCodeCharacter(iformat.selectionCodeCharacter);
+                            formatSelection.selectionName(iformat.selectionName);
+                            formatSelection.selectionExternalCode(iformat.selectionExternalCode);
                         }
                     });
                 }
+                self.checkCreate(false);
             });
-            //item.id(1);
         }
 
+        //開始
         start(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred();
-            // listItems: KnockoutObservableArray<IItem> = self.listItems;
-            // listItems.removeAll();
 
-
-            //            service.getItems().done((_items: Array<IItem>) => {
-            //                if (_items && _items.length) {
-            //                    _items.forEach(x => listItems.push(x));
-            //}
-            //            });
-            self.listItems.removeAll();
-
-            /*
-            service.getAllSelectionItems().done(
-                function(itemList: Array<ISelectionItem>) {
-                    for (let item of itemList) {
-                        self.listItems().push(new SelectionItem(item));
-                    }
-                    dfd.resolve();
+            nts.uk.ui.errors.clearAll();
+            service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                if (itemList && itemList.length) {
+                    itemList.forEach(x => self.listItems.push(x));
+                    self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                } else {
+                    self.registerDataSelectioItem();
                 }
-            ).fail(function() {
                 dfd.resolve();
             });
 
             return dfd.promise();
-            */
-
-            service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
-                if (itemList && itemList.length) {
-                    itemList.forEach(x => self.listItems.push(x));
-                } dfd.resolve();
-            });
-            return dfd.resolve();
-            
         }
 
-        register() {
+        //新規ボタン
+        registerDataSelectioItem() {
             let self = this,
-                item: Item = self.item();
+                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
+                formatSelection = perInfoSelectionItem.formatSelection();
 
-            item.name('');
-            item.numberCodeDigits(1);
-            item.numberDigits('');
-            item.numberExternalCodeDigits('');
-            item.integrationCode('');
-            item.share('');
-            item.notes('');
-            item.enable('');
-
+            nts.uk.ui.errors.clearAll();
+            perInfoSelectionItem.selectionItemName('');
+            perInfoSelectionItem.memo('');
+            perInfoSelectionItem.integrationCode('');
+            perInfoSelectionItem.selectionItemClassification(false);
+            formatSelection.selectionCode('');
+            formatSelection.selectionName('');
+            formatSelection.selectionExternalCode('');
+            formatSelection.selectionCodeCharacter(false);
+            self.checkCreate(true);
         }
 
+        validate() {
+            $(".nts-editor").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return false;
+            }
+            return true;
+        }
+
+        //登録ボタン
+        addDataSelectioItem() {
+            var self = this;
+
+            if (self.validate()) {
+                if (self.checkCreate() == true) {
+                    self.add();
+                } else {
+                    self.update();
+                }
+            }
+        }
+
+        //新規モード
         add() {
             let self = this,
-                item: Item = self.item(),
-                listItems: Array<Item> = self.listItems(),
-                _item: IItem = ko.toJS(item);
+                currentItem: SelectionItem = self.perInfoSelectionItem(),
+                listItems: Array<SelectionItem> = self.listItems(),
+                formatSelection = currentItem.formatSelection(),
+                command = ko.toJS(currentItem),// truyen vao tat ca thuoc tinh cua 1 Item: Su dung ToJS()
+                _selectionItemName = _.find(listItems, x => x.selectionItemName == currentItem.selectionItemName());
 
-            self.listItems.push(_item);
-            self.listItems.valueHasMutated();
+            service.saveDataSelectionItem(command).done(function(selectId) {
+                self.listItems.removeAll();
+                service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                    if (itemList && itemList.length) {
+                        itemList.forEach(x => self.listItems.push(x));
+                    }
+                });
+                self.listItems.valueHasMutated();
+                self.perInfoSelectionItem().selectionItemId(selectId);
+            }).fail(error => {
+                alertError({ messageId: "Msg_513" });
+            });
         }
 
-        remove() {
+        //更新モード
+        update() {
             let self = this,
-                item: Item = self.item(),
-                listItems: Array<Item> = self.listItems(),
-                _id = _.find(listItems, x => x.id == item.id());
+                currentItem: SelectionItem = self.perInfoSelectionItem(),
+                formatSelection = currentItem.formatSelection(),
+                oldIndex = _.findIndex(self.listItems(), function(o) { return o.selectionItemId == currentItem.selectionItemId(); }),
+                command = ko.toJS(currentItem);
 
-            if (!_id) {
-                alert('ko co item de delete!!');
-            } else {
-                var cmt = confirm("You want to delete?");
-                if (cmt == true) {
-                    _.remove(listItems, x => x.id == item.id());
-                    self.register();
+            service.updateDataSelectionItem(command).done(function() {
+                self.listItems.removeAll();
+                confirm({ messageId: "Msg_15" }).ifYes(() => {
+                    service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                        if (itemList && itemList.length) {
+                            itemList.forEach(x => self.listItems.push(x));
+                        }
+
+                        let newItem = itemList[oldIndex];
+                        currentItem.selectionItemId(newItem.selectionItemId);
+                    });
                     self.listItems.valueHasMutated();
-                }
+                }).ifNo(() => {
+                    return;
+                })
+            });
+        }
+
+        //削除ボタン
+        removeDataSelectioItem() {
+            let self = this,
+                items = ko.unwrap(self.listItems),
+                currentItem: SelectionItem = self.perInfoSelectionItem(),
+                formatSelection = currentItem.formatSelection(),
+                oldIndex = _.findIndex(self.listItems(), function(o) { return o.selectionItemId == currentItem.selectionItemId(); }),
+                command = ko.toJS(currentItem),
+                lastIndex = items.length - 1;
+
+            if (items.length > 0) {
+                confirm({ messageId: "Msg_551" }).ifYes(() => {
+                    service.removeDataSelectionItem(command).done(function() {
+                        self.listItems.removeAll();
+                        service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                            if (itemList && itemList.length) {
+                                itemList.forEach(x => self.listItems.push(x));
+                                if (oldIndex == lastIndex) {
+                                    oldIndex--;
+                                }
+                                let newItem = itemList[oldIndex];
+                                currentItem.selectionItemId(newItem.selectionItemId);
+                            } else {
+                                self.registerDataSelectioItem();
+                            }
+                        });
+                        self.listItems.valueHasMutated();
+                    });
+                }).ifNo(() => {
+                    return;
+                })
+            } else {
+                alert('Not data!!');
+                self.registerDataSelectioItem();
             }
         }
     }
 
-    interface IItem {
-        id: number;
-        code?: string;
-        name: string;
-        numberCodeDigits: number;
-        numberDigits: number;
-        numberExternalCodeDigits: number;
-        integrationCode: number;
-        notes: string;
-        share: number;
-        checked: KnockoutObservable<boolean>;
-        enable: KnockoutObservable<boolean>;
-    }
-
-    class Item {
-        id: KnockoutObservable<number> = ko.observable('');
-        code: KnockoutObservable<string> = ko.observable('');
-        name: KnockoutObservable<string> = ko.observable('');
-        numberCodeDigits: KnockoutObservable<number> = ko.observable(1);
-        numberDigits: KnockoutObservable<number> = ko.observable(1);
-        numberExternalCodeDigits: KnockoutObservable<number> = ko.observable(1);
-        integrationCode: KnockoutObservable<number> = ko.observable(1);
-        share: KnockoutObservable<number> = ko.observable(1);
-        notes: KnockoutObservable<string> = ko.observable('');
-        checked: KnockoutObservable<boolean> = ko.observable(true);
-        enable: KnockoutObservable<boolean> = ko.observable(true);
-
-        constructor(param: IItem) {
-            let self = this;
-            self.id(param.id);
-            self.code(param.code || '');
-            self.name(param.name || '');
-            self.numberCodeDigits(param.numberCodeDigits || '');
-            self.numberDigits(param.numberDigits || '');
-            self.numberExternalCodeDigits(param.numberExternalCodeDigits || '');
-            self.integrationCode(param.integrationCode || '');
-            self.notes(param.notes || '');
-            self.checked(param.checked);
-            self.enable(param.enable);
-            self.share(param.share);
-        }
-    }
-
-
-
     interface ISelectionItem {
         selectionItemId: string;
         selectionItemName: string;
-        Memo: string;
-        selectionItemClassification: number;
-        contractCode: string;
-        integrationCode: string;
-        formatSelection: any;
+        memo?: string;
+        selectionItemClassification?: number;
+        contractCode?: string;
+        integrationCode?: string;
+        formatSelection?: IFormatSelection;
     }
 
     class SelectionItem {
-        selectionItemId: string;
-        selectionItemName: string;
-        Memo: string;
-        selectionItemClassification: number;
-        contractCode: string;
-        integrationCode: string;
-        formatSelection: any;
+        selectionItemId: KnockoutObservable<string> = ko.observable('');
+        selectionItemName: KnockoutObservable<string> = ko.observable('');
+        memo: KnockoutObservable<string> = ko.observable('');
+        selectionItemClassification: KnockoutObservable<boolean> = ko.observable(false);
+        contractCode: KnockoutObservable<string> = ko.observable('');
+        integrationCode: KnockoutObservable<string> = ko.observable('');
+        formatSelection: KnockoutObservable<FormatSelection> = ko.observable(new FormatSelection(undefined));
+
         constructor(param: ISelectionItem) {
-            this.selectionItemId = param.selectionItemId;
-            this.selectionItemName = param.selectionItemName;
-            this.Memo = param.Memo;
-            this.selectionItemClassification = param.selectionItemClassification;
-            this.contractCode = param.contractCode;
-            this.integrationCode = param.integrationCode;
-            this.formatSelection = param.formatSelection;
+            let self = this;
+            self.selectionItemId(param.selectionItemId || '');
+            self.selectionItemName(param.selectionItemName || '');
+            self.memo(param.memo || '');
+            self.selectionItemClassification(param.selectionItemClassification === 1 ? true : false);
+            self.contractCode(param.contractCode || '');
+            self.integrationCode(param.integrationCode || '');
+            
+            let _format = self.formatSelection(),
+                _iformat = param.formatSelection;
+            if (_iformat) {
+                _format.selectionCode(_iformat.selectionCode);
+                _format.selectionCodeCharacter(_iformat.selectionCodeCharacter);
+                _format.selectionName(_iformat.selectionName);
+                _format.selectionExternalCode(_iformat.selectionExternalCode);
+            }
         }
     }
 
+    interface IFormatSelection {
+        selectionCode: number;
+        selectionCodeCharacter?: number;
+        selectionName: number;
+        selectionExternalCode: number;
+    }
 
+    class FormatSelection {
+        selectionCode: KnockoutObservable<number> = ko.observable('');
+        selectionCodeCharacter: KnockoutObservable<boolean> = ko.observable(false);
+        selectionName: KnockoutObservable<number> = ko.observable('');
+        selectionExternalCode: KnockoutObservable<number> = ko.observable('');
 
-
+        constructor(param: IFormatSelection) {
+            let self = this;
+            if (param) {
+                self.selectionCode(param.selectionCode || '');
+                self.selectionCodeCharacter(param.selectionCodeCharacter === 1 ? true : false);
+                self.selectionName(param.selectionName || '');
+                self.selectionExternalCode(param.selectionExternalCode || '');
+            }
+        }
+    }
 
     interface IRule {
         id: number;
