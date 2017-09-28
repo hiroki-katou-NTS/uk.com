@@ -21,10 +21,8 @@ module nts.uk.com.view.cmm008.a {
                     if (empCode) {
                         self.clearErrors();
                         self.loadEmployment(empCode);
-                        self.enableDelete(true);
                     } else {
                         self.clearData();
-                        self.enableDelete(false);
                     }
                 });
                 self.mode = ko.observable(Mode.UPDATE);
@@ -42,7 +40,9 @@ module nts.uk.com.view.cmm008.a {
                 self.enableEmpCode = ko.observable(false);
             }
 
-            // Start Page
+            /**
+             * Start Page
+             */
             public startPage(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
                 var self = this;
@@ -53,9 +53,7 @@ module nts.uk.com.view.cmm008.a {
 
                     // Get Data List
                     if (($('#emp-component').getDataList() == undefined) || ($('#emp-component').getDataList().length <= 0)) {
-                        self.enableDelete(false);
                         self.clearData();
-                        self.mode(Mode.ADD);
                     }
                     else {
                         // Get Employment List after Load Component
@@ -66,7 +64,6 @@ module nts.uk.com.view.cmm008.a {
 
                         // Find and bind selected Employment
                         self.loadEmployment(self.selectedCode());
-                        self.mode(Mode.UPDATE);
                     }
                     blockUI.clear();
                 });
@@ -122,23 +119,19 @@ module nts.uk.com.view.cmm008.a {
                 };
                 blockUI.invisible();
                 service.saveEmployment(command).done(() => {
-                    // ReLoad Component
-                    $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
-                        // Get Employment List after Load Component
-                        self.empList($('#emp-component').getDataList());
-                        self.enableDelete(true);
-                        self.employmentModel().isEnableCode(false);
-                        self.selectedCode(self.employmentModel().employmentCode());
-                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
+                        
+                        // ReLoad Component
+                        $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
+                            // Get Employment List after Load Component
+                            self.empList($('#emp-component').getDataList());
+                            self.enableDelete(true);
+                            self.employmentModel().isEnableCode(false);
+                            self.selectedCode(self.employmentModel().employmentCode());
+                            $('#empName').focus();
+                        });
                     });
-                    // Focus on 
-                    if (self.empList().length <= 0) {
-                        // Focus on Employment Code
-                        $('#empCode').focus();
-                    } else {
-                        // Focus on Employment name
-                        $('#empName').focus();
-                    }
+                    
                     blockUI.clear();
                 }).fail(error => {
                     nts.uk.ui.dialog.alertError(error);
@@ -155,61 +148,51 @@ module nts.uk.com.view.cmm008.a {
                 if (self.hasError()) {
                     return;
                 }
-                blockUI.invisible();
+                
                 // Remove
                 nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                    
                     let command = {
                         employmentCode: self.employmentModel().employmentCode()
                     }
+                    blockUI.invisible();
                     service.removeEmployment(command).done(() => {
-                        // Reload Component
-                        $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
-                            // Filter selected Item
-                            var existItem = self.empList().filter((item) => {
-                                return item.code == self.employmentModel().employmentCode();
-                            })[0];
+                        nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
+                            // Reload Component
+                            $('#emp-component').ntsListComponent(self.listComponentOption).done(function() {
+                                // Filter selected Item
+                                var existItem = self.empList().filter((item) => {
+                                    return item.code == self.employmentModel().employmentCode();
+                                })[0];
 
-                            // Check if selected item is the last item
-//                            let index = self.empList().indexOf(existItem);
-
-                            // Get Data List
-                            if (($('#emp-component').getDataList() == undefined) || ($('#emp-component').getDataList().length <= 0)) {
-                                self.enableDelete(false);
-                            }
-                            else {
-                                self.enableDelete(true);
-                                let index = self.empList().indexOf(existItem);
-                                // Get Employment List after Load Component
-                                self.empList($('#emp-component').getDataList());
-                                let emplistLength = self.empList().length;
-                                if (index == (self.empList().length)) {
-                                    self.selectedCode(self.empList()[index - 1].code);
-                                } else {
-                                    self.selectedCode(self.empList()[index].code);
+                                // Check Data List
+                                if (($('#emp-component').getDataList() == undefined) || ($('#emp-component').getDataList().length <= 0)) {
+                                    self.clearData();
                                 }
-
-                                
-                                // Find to bind Employment
-                                self.loadEmployment(self.selectedCode());
-                            }
-                            nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                            
-                            // Focus on 
-                            if (self.empList().length <= 0) {
-                                // Focus on Employment Code
-                                $('#empCode').focus();
-                            } else {
-                                // Focus on Employment name
-                                $('#empName').focus();
-                            }
+                                else {
+                                    self.enableDelete(true);
+                                    let index = self.empList().indexOf(existItem);
+                                    // Get Employment List after Load Component
+                                    self.empList($('#emp-component').getDataList());
+                                    let emplistLength = self.empList().length;
+                                    if (index == (self.empList().length)) {
+                                        self.selectedCode(self.empList()[index - 1].code);
+                                    } else {
+                                        self.selectedCode(self.empList()[index].code);
+                                    }
+                                }
+                            });
                         });
-
-                        self.loadEmployment(self.selectedCode());
+                        
+                        
                         blockUI.clear();
                     }).fail((res) => {
-                        nts.uk.ui.dialog.alertError(res.message).then(() => { nts.uk.ui.block.clear(); });
-                        blockUI.clear();
+                        nts.uk.ui.dialog.alertError(res.message).then(() => {blockUI.clear();});
+                        
                     });
+                }).ifNo(function() {
+                    blockUI.clear();
+                    $('#empName').focus();
                 });
             }
 
@@ -228,7 +211,9 @@ module nts.uk.com.view.cmm008.a {
                 //                return $('.nts-editor').ntsError('hasError');
             }
 
-            // Clear Errors
+            /**
+             * Clear Errors
+             */
             private clearErrors(): void {
                 var self = this;
                 //                // Clear errors
@@ -259,7 +244,9 @@ module nts.uk.com.view.cmm008.a {
                 this.memo = ko.observable("");
                 this.isEnableCode = ko.observable(true);
             }
-            
+            /**
+             * Reset Data
+             */
             resetEmpData() {
                 this.employmentCode('');
                 this.employmentName('');
@@ -271,6 +258,9 @@ module nts.uk.com.view.cmm008.a {
                 });
             }
             
+            /**
+             * update Data
+             */
             updateEmpData(dto: EmploymentDto) {
                 this.employmentCode(dto.code);
                 this.employmentName(dto.name);
