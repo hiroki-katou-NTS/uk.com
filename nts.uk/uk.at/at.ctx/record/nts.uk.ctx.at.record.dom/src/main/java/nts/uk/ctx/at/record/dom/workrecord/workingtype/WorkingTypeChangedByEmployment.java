@@ -23,4 +23,11 @@ public class WorkingTypeChangedByEmployment extends AggregateRoot {
 
 	private List<ChangeableWorktypeGroup> changeableWorkTypeGroups;
 
+	public WorkingTypeChangedByEmployment(CompanyId companyId, EmploymentCode empCode,
+			List<ChangeableWorktypeGroup> changeableWorkTypeGroups) {
+		this.companyId = companyId;
+		this.empCode = empCode;
+		this.changeableWorkTypeGroups = changeableWorkTypeGroups;
+	}
+
 }
