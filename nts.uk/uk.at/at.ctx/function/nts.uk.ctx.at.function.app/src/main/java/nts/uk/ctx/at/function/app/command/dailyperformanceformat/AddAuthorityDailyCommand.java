@@ -24,5 +24,7 @@ public class AddAuthorityDailyCommand {
 	private String sheetName;
 	
 	private List<DailyAttendanceAuthorityDetailDto> dailyAttendanceAuthorityDetailDtos;
+	
+	private int isDefaultInitial;
 
 }

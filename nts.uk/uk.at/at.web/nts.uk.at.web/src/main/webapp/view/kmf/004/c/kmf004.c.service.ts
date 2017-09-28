@@ -3,35 +3,58 @@ module nts.uk.at.view.kmf004.c.service {
     import format = nts.uk.text.format;
 
     let paths: any = {
-        'gets': 'at/share/wpBonusPaySetting/getListWPBonusPaySetting',
-        'get': 'at/share/wpBonusPaySetting/getWPBPSetting/{0}',
-        'save': 'at/share/wpBonusPaySetting/saveWpBonsPaySetting',
-        getName: 'at/share/bonusPaySetting/getBonusPaySetting/{0}'
+        getAllPerByCode: "shared/specialholiday/getAllPerByCode/{0}",
+        getPerByCode: "shared/specialholiday/getPerByCode/{0}/{1}",
+        getPerSetByCode: "shared/specialholiday/getPerSetByCode/{0}/{1}",
+        addPer: "shared/specialholiday/addPer",
+        updatePer: "shared/specialholiday/updatePer",
+        removePer: "shared/specialholiday/removePer"
+    }
+    
+    export function getAllPerByCode(specialHolidayCode: string): JQueryPromise<GrantDatePerItem> {
+        var path = nts.uk.text.format(paths.getAllPerByCode, specialHolidayCode);
+        return nts.uk.request.ajax("at", path);
     }
 
-    export function getData(data: Array<string>) {
-        return ajax(paths.gets, data);
+    export function getPerByCode(specialHolidayCode: string, personalGrantDateCode: string): JQueryPromise<GrantDatePerItem> {
+        var path = nts.uk.text.format(paths.getPerByCode, specialHolidayCode, personalGrantDateCode);
+        return nts.uk.request.ajax("at", path);
     }
-
-    export function getSetting(wid: string) {
-        if (!wid) {
-            return $.Deferred().resolve(undefined).promise();
-        }
-        return ajax(format(paths.get, wid));
+    
+    export function getPerSetByCode(specialHolidayCode: string, personalGrantDateCode: string): JQueryPromise<GrantDatePerSetItem> {
+        var path = nts.uk.text.format(paths.getPerSetByCode, specialHolidayCode, personalGrantDateCode);
+        return nts.uk.request.ajax("at", path);
     }
-
-    export function getName(bonusPaySettingCode) {
-        return ajax(format(paths.getName, bonusPaySettingCode));
+    
+    export function addPer(data: GrantDatePerItem): JQueryPromise<any> {
+        var path = nts.uk.text.format(paths.addPer);
+        return nts.uk.request.ajax("at", path, data);
+    }  
+    
+    export function UpdatePer(data: GrantDatePerItem): JQueryPromise<any> {
+        var path = nts.uk.text.format(paths.updatePer);
+        return nts.uk.request.ajax("at", path, data);
     }
-
-    export function saveData(command) {
-
-        // if remove action
-        if (!command.bonusPaySettingCode || command.bonusPaySettingCode == '000') {
-            command.action = 1;
-        }
-
-        // push to webservice
-        return ajax(paths.save, command);
+    
+    export function removePer(specialHolidayCode: string, personalGrantDateCode: string): JQueryPromise<any> {
+        var path = nts.uk.text.format(paths.removePer);
+        return nts.uk.request.ajax("at", path, {specialHolidayCode: specialHolidayCode, personalGrantDateCode: personalGrantDateCode});
+    } 
+    
+    export interface GrantDatePerItem {
+        specialHolidayCode: string;
+        personalGrantDateCode: string;
+        personalGrantDateName: string;
+        grantDate: number;
+        grantDateAtr: number;
+        grantDatePerSet: Array<GrantDatePerSetItem>;
+    }
+    
+    export interface GrantDatePerSetItem {
+        specialHolidayCode: string;
+        personalGrantDateCode: string;
+        grantDateNo: number;
+        grantDateMonth: number;
+        grantDateYear: number;
     }
 }

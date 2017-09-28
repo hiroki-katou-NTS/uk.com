@@ -13,28 +13,28 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 @Getter
-public class DailyPerformanceAuthority extends AggregateRoot{
+public class DailyPerformanceAuthority extends AggregateRoot {
 
 	/**
 	 * ロールID
 	 */
-	// タイプID	
+	// タイプID
 	private String roleID;
-	
-	/**
-	 * 利用区分
-	 */
-	private boolean availability;
-	
+
 	/**
 	 * 日別実績の機能NO
 	 */
 	private DailyPerformanceFunctionNo functionNo;
-	
-	public DailyPerformanceAuthority(String roleId, boolean availability, BigDecimal functionNo) {
+
+	/**
+	 * 利用区分
+	 */
+	private boolean availability;
+
+	public DailyPerformanceAuthority(String roleId, BigDecimal functionNo, boolean availability) {
 		this.roleID = roleId;
-		this.availability = availability;
 		this.functionNo = new DailyPerformanceFunctionNo(functionNo);
+		this.availability = availability;
 	}
-	
+
 }

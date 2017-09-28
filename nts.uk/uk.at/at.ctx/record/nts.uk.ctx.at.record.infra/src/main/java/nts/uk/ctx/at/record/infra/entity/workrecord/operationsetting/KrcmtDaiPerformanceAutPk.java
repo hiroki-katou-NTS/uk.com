@@ -7,11 +7,21 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class KrcmtDaiPerformanceAutPk {
-	
+
 	@Column(name = "ROLE_ID")
-	public BigDecimal roleId;
-	
+	public String roleId;
+
 	@Column(name = "FUNCTION_NO")
 	public BigDecimal functionNo;
+
+	public KrcmtDaiPerformanceAutPk() {
+		super();
+	}
+
+	public KrcmtDaiPerformanceAutPk(String roleId, BigDecimal functionNo) {
+		super();
+		this.roleId = roleId;
+		this.functionNo = functionNo;
+	}
 
 }

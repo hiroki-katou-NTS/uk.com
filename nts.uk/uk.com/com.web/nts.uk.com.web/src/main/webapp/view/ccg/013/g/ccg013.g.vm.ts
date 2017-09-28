@@ -46,7 +46,8 @@ module ccg013.g.viewmodel {
                 self.items.removeAll();
                 _.forEach(self.infoList, function(item: ItemModel) {
                     item.primaryKey = item.webMenuCode + item.order;
-                   self.items.push(new ItemModel(item.primaryKey, item.webMenuCode, item.webMenuName, item.order));})
+                    self.items.push(new ItemModel(item.primaryKey, item.webMenuCode, item.webMenuName, item.order));
+                })
                 if (value && value.personId) {
                     service.findPerson(value.personId).done(function(data) {
                         if (data && data.length > 0) {
@@ -55,7 +56,7 @@ module ccg013.g.viewmodel {
                                     return currentItem.webMenuCode == item.webMenuCode;
                                 });
                                 if (webPerson) {
-                                    self.currentCodeList.push(webPerson); 
+                                    self.currentCodeList.push(webPerson);
                                 }
                             });
                         }
@@ -77,13 +78,13 @@ module ccg013.g.viewmodel {
             self.newCurrentCodeList = ko.observableArray([]);
             self.selectedEmployee = ko.observableArray([]);
             self.showinfoSelectedEmployee = ko.observable(false);
-            
+
         }
         start() {
             let self = this;
             self.initCCG001();
         }
-        
+
         addPersonType() {
             var self = this;
             var items = []
@@ -91,21 +92,26 @@ module ccg013.g.viewmodel {
                 _.each(self.currentCodeList(), function(x) {
                     items.push(x.webMenuCode);
                 })
+                
+                //if selected = 0, not allow register
+                if (self.currentCodeList().length == 0) {
+                    return;
+                }
+
                 if (self.currentCodeList().length <= 10) {
                     var dataTranfer = {
                         employeeId: self.empSelectedItem().personId,
-                        webMenuCodes: items,    
+                        webMenuCodes: items,
                     }
-                        service.addPerson(dataTranfer).done(function(res) {
+                    service.addPerson(dataTranfer).done(function(res) {
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    }
-                            ).fail(function(res) {
+                    }).fail(function(res) {
                         nts.uk.ui.dialog.alertError(res.message);
-                    })  
+                    })
                 } else { nts.uk.ui.dialog.info({ messageId: "Msg_73" }); }
             }
             return;
-            
+
         }
 
         initCCG001() {
@@ -147,7 +153,7 @@ module ccg013.g.viewmodel {
         searchEmployee(dataEmployee: EmployeeSearchDto[]) {
             var self = this;
             self.empItems.removeAll();
-            
+
             _.forEach(dataEmployee, function(item: EmployeeSearchDto) {
                 self.empItems.push(new PersonModel({
                     personId: item.employeeId,

@@ -10,10 +10,12 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatDaily;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFormatInitialDisplay;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFormatSheet;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatName;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatDailyRepository;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatInitialDisplayRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatSheetRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -26,6 +28,9 @@ public class AddAuthorityDailyCommandHandler extends CommandHandler<AddAuthority
 
 	@Inject
 	private AuthorityFormatSheetRepository authorityFormatSheetRepository;
+
+	@Inject
+	private AuthorityFormatInitialDisplayRepository authorityFormatInitialDisplayRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<AddAuthorityDailyCommand> context) {
@@ -42,11 +47,12 @@ public class AddAuthorityDailyCommandHandler extends CommandHandler<AddAuthority
 							new DailyPerformanceFormatName(command.getDailyPerformanceFormatName()), f.getOrder(),
 							f.getColumnWidth());
 				}).collect(Collectors.toList());
-		
-		if(this.authorityFormatDailyRepository.checkExistCode(new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()))){
+
+		if (this.authorityFormatDailyRepository
+				.checkExistCode(new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()))) {
 			throw new BusinessException("#Msg_3");
 		} else {
-			this.authorityFormatDailyRepository.add(authorityFomatDailies);			
+			this.authorityFormatDailyRepository.add(authorityFomatDailies);
 		}
 
 		AuthorityFormatSheet authorityFormatSheet = new AuthorityFormatSheet(companyId,
@@ -54,6 +60,17 @@ public class AddAuthorityDailyCommandHandler extends CommandHandler<AddAuthority
 				command.getSheetName());
 
 		this.authorityFormatSheetRepository.add(authorityFormatSheet);
+
+		AuthorityFormatInitialDisplay authorityFormatInitialDisplay = new AuthorityFormatInitialDisplay(companyId,
+				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()));
+		if (command.getIsDefaultInitial() == 1) {
+			if (!this.authorityFormatInitialDisplayRepository.checkExistDataByCompanyId(companyId)) {
+				this.authorityFormatInitialDisplayRepository.add(authorityFormatInitialDisplay);
+			} else {
+				this.authorityFormatInitialDisplayRepository.update(companyId,
+						new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()));
+			}
+		}
 	}
 
 }

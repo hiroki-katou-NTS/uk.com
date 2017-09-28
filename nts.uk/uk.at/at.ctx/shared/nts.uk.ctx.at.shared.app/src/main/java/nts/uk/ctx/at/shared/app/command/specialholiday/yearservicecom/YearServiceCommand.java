@@ -2,7 +2,7 @@ package nts.uk.ctx.at.shared.app.command.specialholiday.yearservicecom;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.shared.dom.specialholiday.yearserviceset.YearServiceSet;
+import nts.uk.ctx.at.shared.dom.specialholiday.yearservice.yearserviceset.YearServiceSet;
 
 @Data
 @AllArgsConstructor
@@ -24,7 +24,6 @@ public class YearServiceCommand {
 				companyId, 
 				specialHoliday, 
 				yearServiceNo, 
-				yearServiceType,
 				year, 
 				month, 
 				date);
