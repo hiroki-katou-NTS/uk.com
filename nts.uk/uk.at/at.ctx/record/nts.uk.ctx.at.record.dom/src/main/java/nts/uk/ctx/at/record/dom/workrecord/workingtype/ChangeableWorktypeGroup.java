@@ -26,4 +26,10 @@ public class ChangeableWorktypeGroup {
 		this.name = new ChangeableWorkTypeGroupName(name);
 		this.workTypeList = new HashSet<>();
 	}
+	
+	public ChangeableWorktypeGroup(int no, String name, Set<String> workTypeList) {
+		this.no = no;
+		this.name = new ChangeableWorkTypeGroupName(name);
+		this.workTypeList = workTypeList;
+	}
 }
