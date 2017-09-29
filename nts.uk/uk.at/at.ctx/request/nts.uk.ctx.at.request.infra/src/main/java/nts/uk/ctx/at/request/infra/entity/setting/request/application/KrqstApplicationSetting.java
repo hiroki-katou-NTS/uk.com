@@ -77,9 +77,6 @@ public class KrqstApplicationSetting extends UkJpaEntity {
 	@Column(name = "APP_CONTENT_CHANGE_FLG")
 	public int appContentChangeFlg;
 
-	@Column(name = "PERSON_APPROVAL_FLG")
-	public int personApprovalFlg;
-
 	@Column(name = "SCHE_REFLECT_FLG")
 	public int scheReflectFlg;
 
