@@ -22,8 +22,7 @@ public class CurrentMonth extends DomainObject {
 	/**
 	 * Instantiates a new current month.
 	 *
-	 * @param value
-	 *            the value
+	 * @param value the value
 	 */
 	public CurrentMonth(Integer value) {
 		this.processingYm = YearMonth.of(value);

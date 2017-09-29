@@ -67,6 +67,18 @@ public class ClosureWs {
 		return this.finder.findById(closureId);
 	}
 	
+	/**
+	 * Find period by id.
+	 *
+	 * @param closureId the closure id
+	 * @return the period
+	 */
+	@POST
+	@Path("findPeriodById/{closureId}")
+	public Period findPeriodById(@PathParam("closureId") int closureId) {
+		return this.finder.findByIdGetMonthDay(closureId);
+	}
+	
 	
 	/**
 	 * Find by master.
