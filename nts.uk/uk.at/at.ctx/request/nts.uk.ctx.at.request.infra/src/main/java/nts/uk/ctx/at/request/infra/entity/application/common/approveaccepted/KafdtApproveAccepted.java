@@ -6,7 +6,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -48,6 +47,4 @@ public class KafdtApproveAccepted extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return kafdtApproveAcceptedPK;
 	}
-	
-
 }
