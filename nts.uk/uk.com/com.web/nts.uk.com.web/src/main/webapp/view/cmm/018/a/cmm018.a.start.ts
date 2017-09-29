@@ -9,7 +9,12 @@ module nts.uk.com.view.cmm018.a.start {
             viewmodelA: new cmm018.a.viewmodelA.ScreenModel(transferData),
             viewmodelB: new cmm018.a.viewmodelB.ScreenModel()
         };
-        __viewContext.bind(__viewContext.viewModel);
+//        __viewContext.viewModel.viewmodelA.startPage(transferData).done(function(){
+             __viewContext.bind(__viewContext.viewModel);
+//        });
+           
+        
+        
          
     });
     
