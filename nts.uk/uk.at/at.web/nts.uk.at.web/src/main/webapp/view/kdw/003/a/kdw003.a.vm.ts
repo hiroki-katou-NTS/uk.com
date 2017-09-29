@@ -460,7 +460,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             if (self.sheetsGrid().length > 0) {
                 lstNtsFeature.push({
                     name: "Sheet",
-                    initialDisplay: "1",
+                    initialDisplay: self.sheetsGrid()[0].name,
                     sheets: self.sheetsGrid()
                 });
             }
