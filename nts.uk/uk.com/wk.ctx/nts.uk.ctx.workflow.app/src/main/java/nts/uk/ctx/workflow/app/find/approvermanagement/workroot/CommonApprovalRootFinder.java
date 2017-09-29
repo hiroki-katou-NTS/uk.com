@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
@@ -15,8 +17,6 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportAdapter;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportDto;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
@@ -40,7 +40,7 @@ public class CommonApprovalRootFinder {
 	@Inject
 	private ApproverRepository repoApprover;
 	@Inject
-	private PersonInforExportAdapter adapterPerson;
+	private PersonAdapter adapterPerson;
 	/**
 	 * getAllCommonApprovalRoot (grouping by history)
 	 * @param param
@@ -358,7 +358,7 @@ public class CommonApprovalRootFinder {
 		}
 		return false;
 	}
-	private PersonInforExportDto getPersonInfo(String employeeId){
+	private PersonImport getPersonInfo(String employeeId){
 		return adapterPerson.getPersonInfo(employeeId);
 	}
 }
