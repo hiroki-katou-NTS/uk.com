@@ -105,7 +105,7 @@ module nts.uk.com.view.cps005.b {
             removeData() {
                 let self = this,
                     removeModel = new RemoveItemModel(self.currentItemData().perInfoItemSelectCode());
-                block.invisible();
+                //block.invisible();
                 if (!self.currentItemData().perInfoItemSelectCode()) return;
                 let indexItemDelete = _.findIndex(self.currentItemData().personInfoItemList(), function(item) { return item.id == removeModel.perInfoItemDefId; });
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
@@ -134,8 +134,6 @@ module nts.uk.com.view.cps005.b {
                     }).fail(error => {
                         alertError({ messageId: error.message });
                     });
-                }).ifNo(() => {
-                    return;
                 })
             }
 
@@ -259,16 +257,16 @@ module nts.uk.com.view.cps005.b {
     }
 
     export class StringItemModel {
-        stringItemType: KnockoutObservable<number> = ko.observable(4);
+        stringItemType: KnockoutObservable<number> = ko.observable(1);
         stringItemTypeText: KnockoutObservable<string> = ko.observable("");
-        stringItemLength: KnockoutObservable<number> = ko.observable(1);
+        stringItemLength: KnockoutObservable<number> = ko.observable(null);
         stringItemDataType: KnockoutObservable<number> = ko.observable(2);
         stringItemDataTypeText: KnockoutObservable<string> = ko.observable("");
         constructor(data: IStringItem) {
             let self = this;
             if (!data) return;
-            self.stringItemType(data.stringItemType || 4);
-            self.stringItemLength(data.stringItemLength || 1);
+            self.stringItemType(data.stringItemType || 1);
+            self.stringItemLength(data.stringItemLength || null);
             self.stringItemDataType(data.stringItemDataType || 2);
         }
     }
@@ -279,8 +277,8 @@ module nts.uk.com.view.cps005.b {
         numericItemAmountText: KnockoutObservable<string> = ko.observable("");
         numericItemMinus: KnockoutObservable<number> = ko.observable(1);
         numericItemMinusText: KnockoutObservable<string> = ko.observable("");
-        decimalPart: KnockoutObservable<number> = ko.observable(0);
-        integerPart: KnockoutObservable<number> = ko.observable(0);
+        decimalPart: KnockoutObservable<number> = ko.observable(null);
+        integerPart: KnockoutObservable<number> = ko.observable(null);
         constructor(data: INumericItem) {
             let self = this;
             if (!data) return;
@@ -288,28 +286,28 @@ module nts.uk.com.view.cps005.b {
             self.numericItemMax(data.numericItemMax || null);
             self.numericItemAmount(data.numericItemAmount);
             self.numericItemMinus(data.numericItemMinus);
-            self.decimalPart(data.decimalPart || 0);
-            self.integerPart(data.integerPart || 0);
+            self.decimalPart(data.decimalPart || null);
+            self.integerPart(data.integerPart || null);
         }
     }
     export class TimeItemModel {
-        timeItemMin: KnockoutObservable<number> = ko.observable(0);
-        timeItemMax: KnockoutObservable<number> = ko.observable(0);
+        timeItemMin: KnockoutObservable<number> = ko.observable(null);
+        timeItemMax: KnockoutObservable<number> = ko.observable(null);
         constructor(data: ITimeItem) {
             let self = this;
             if (!data) return;
-            self.timeItemMin(data.min || 0);
-            self.timeItemMax(data.max || 0);
+            self.timeItemMin(data.min || null);
+            self.timeItemMax(data.max || null);
         }
     }
     export class TimePointItemModel {
-        timePointItemMin: KnockoutObservable<number> = ko.observable(0);
-        timePointItemMax: KnockoutObservable<number> = ko.observable(0);
+        timePointItemMin: KnockoutObservable<number> = ko.observable(null);
+        timePointItemMax: KnockoutObservable<number> = ko.observable(null);
         constructor(data: ITimePointItem) {
             let self = this;
             if (!data) return;
-            self.timePointItemMin(data.timePointItemMin || 0);
-            self.timePointItemMax(data.timePointItemMax || 0);
+            self.timePointItemMin(data.timePointItemMin || null);
+            self.timePointItemMax(data.timePointItemMax || null);
         }
     }
     export class DateItemModel {

@@ -15,13 +15,13 @@ import nts.arc.layer.infra.data.entity.JpaEntity;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "BSYDT_EMP_INFO_CTG_DATA")
-public class BsydtEmpInfoCtgData extends JpaEntity implements Serializable {
+@Table(name = "BSYMT_EMP_INFO_CTG_DATA")
+public class BsymtEmpInfoCtgData extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public BsydtEmpInfoCtgDataPk bsydtEmpInfoCtgDataPk;
+	public BsymtEmpInfoCtgDataPk bsydtEmpInfoCtgDataPk;
 
 	@Basic(optional = false)
 	@Column(name = "RECORD_ID")

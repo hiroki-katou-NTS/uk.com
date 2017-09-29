@@ -27,7 +27,7 @@ public class AuthFuncRestrictionCommandHandler extends CommandHandler<AuthFuncRe
 	protected void handle(CommandHandlerContext<AuthFuncRestrictionCommand> context) {
 		AuthFuncRestrictionCommand commmand = context.getCommand();
 		commmand.getAuthFuncRests().forEach(element -> {
-			DailyPerformanceAuthority daiPerAuth = new DailyPerformanceAuthority(element.getRoleID(),
+			DailyPerformanceAuthority daiPerAuth = new DailyPerformanceAuthority(commmand.getRoleId(),
 					new BigDecimal(element.getFunctionNo()), element.isAvailability());
 			daiPerAuthRepo.saveDailyPerformanceAuthority(daiPerAuth);
 		});

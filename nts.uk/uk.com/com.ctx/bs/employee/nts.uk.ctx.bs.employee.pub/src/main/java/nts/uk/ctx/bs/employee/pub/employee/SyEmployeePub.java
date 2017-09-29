@@ -23,4 +23,14 @@ public interface SyEmployeePub {
 	 */
 	List<EmployeeExport> findByWpkIds(String companyId, List<String> workplaceIds, GeneralDate baseDate);
 
+	/**
+	 * Gets the concurrent employee.
+	 *
+	 * @param companyId the company id
+	 * @param jobId the job id
+	 * @param baseDate the base date
+	 * @return the concurrent employee
+	 */
+	// RequestList #77
+	List<ConcurrentEmployeeExport> getConcurrentEmployee(String companyId, String jobId, GeneralDate baseDate);
 }

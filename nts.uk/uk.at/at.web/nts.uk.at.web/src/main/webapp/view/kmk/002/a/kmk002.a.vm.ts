@@ -136,6 +136,8 @@ module nts.uk.at.view.kmk002.a {
                 let dfd = $.Deferred<void>();
                 service.findOptionalItemHeaders().done(res => {
                     self.optionalItemHeaders(res);
+                    // Select first item.
+                    self.selectedCode(res[0].itemNo);
                     dfd.resolve();
                 });
                 return dfd.promise();
