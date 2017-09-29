@@ -474,7 +474,7 @@ module nts.uk.com.view.cmm018.shr {
             /**社員ID*/
             employeeId: string;
             /**社員Name*/
-            employeeName: string;
+            name: string;
             /**順序*/
             orderNumber: number;
             /**区分*/

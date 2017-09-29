@@ -797,9 +797,10 @@ module nts.uk.com.view.cmm018.a {
                     });
                    let a: vmbase.CompanyAppRootADto = null;
                     let approver: Array<vmbase.ApproverDto> = [];
+                    let approvalAtr = data.selectTypeSet; 
                     _.each(data.approverInfor, function(item){
                         let confirmedPerson = (data.formSetting == 2)&&(item.id == data.confirmedPerson) ? 1 : 0;
-                        approver.push(new vmbase.ApproverDto('','', item.id,item.name,1,1,confirmedPerson));
+                        approver.push(new vmbase.ApproverDto('',approvalAtr == 1 ? item.id : null, approvalAtr == 0 ? item.id : null,item.name,1,approvalAtr,confirmedPerson));
                     });
                    let b: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto(approver,'','',data.formSetting,data.approvalFormName, 0,int);
                 switch(int){
@@ -1616,11 +1617,12 @@ export interface GroupOption {
                         return;
                     }
                     let tmp: vmbase.CompanyAppRootADto = self.comRoot();
-                   let a: vmbase.CompanyAppRootADto = null;
+                    let a: vmbase.CompanyAppRootADto = null;
                     let approver: Array<vmbase.ApproverDto> = [];
+                    let approvalAtr = data.selectTypeSet;
                     _.each(data.approverInfor, function(item){
                         let confirmedPerson = (data.formSetting == 2)&&(item.id == data.confirmedPerson) ? 1 : 0;
-                        approver.push(new vmbase.ApproverDto('','', item.id,item.name,1,1,confirmedPerson));
+                        approver.push(new vmbase.ApproverDto('',approvalAtr == 1 ? item.id : null, approvalAtr == 0 ? item.id : null,item.name,1,approvalAtr,confirmedPerson));
                     });
                    let b: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto(approver,'','',data.formSetting,data.approvalFormName,0,int);
                 switch(int){
