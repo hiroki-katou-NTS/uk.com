@@ -7,23 +7,23 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveAdapter;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
 @Stateless
 public class EmployeeOfApprovalRootImpl implements EmployeeOfApprovalRoot{
 	@Inject
-	private EmployeeApproveAdapter employeeApproveAdapter;
+	private EmployeeAdapter employeeApproveAdapter;
 	@Override
 	public boolean lstEmpApprovalRoot(String companyId,
 			List<CompanyApprovalRoot> lstCompanyRootInfor,
 			List<WorkplaceApprovalRoot> lstWorkpalceRootInfor,
 			List<PersonApprovalRoot> lstPersonRootInfor,
-			EmployeeApproveDto empInfor, 
+			EmployeeImport empInfor, 
 			ApplicationType appType,
 			GeneralDate baseDate) {
 		//check ドメインモデル「個人別就業承認ルート」(domain 「個人別就業承認ルート」) ※ 就業ルート区分(申請か、確認か、任意項目か)

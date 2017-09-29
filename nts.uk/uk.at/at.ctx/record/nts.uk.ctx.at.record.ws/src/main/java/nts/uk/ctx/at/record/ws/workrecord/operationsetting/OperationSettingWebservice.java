@@ -64,7 +64,7 @@ public class OperationSettingWebservice extends WebService {
 		if (dom == null) {
 			return null;
 		}
-		return new DisplayRestrictionDto(companyId, dom.getYear().isDisplayAtr(),
+		return new DisplayRestrictionDto( dom.getYear().isDisplayAtr(),
 				dom.getYear().isRemainingNumberCheck(), dom.getSavingYear().isDisplayAtr(),
 				dom.getSavingYear().isRemainingNumberCheck(), dom.getCompensatory().isDisplayAtr(),
 				dom.getCompensatory().isRemainingNumberCheck(), dom.getSubstitution().isDisplayAtr(),
@@ -80,10 +80,10 @@ public class OperationSettingWebservice extends WebService {
 		if (d == null) {
 			return null;
 		}
-		return new FunctionalRestrictionDto(companyId, d.getRegisteredTotalTimeCheer(), d.getCompleteDisplayOneMonth(),
+		return new FunctionalRestrictionDto(d.getRegisteredTotalTimeCheer(), d.getCompleteDisplayOneMonth(),
 				d.getUseWorkDetail(), d.getRegisterActualExceed(), d.getConfirmSubmitApp(), d.getUseInitialValueSet(),
 				d.getStartAppScreen(), d.getDisplayConfirmMessage(), d.getUseSupervisorConfirm(),
-				d.getSupervisorConfirmError(), d.getUseConfirmByYourself(), d.getYourselfConfirmError());
+				d.getSupervisorConfirmError().value, d.getUseConfirmByYourself(), d.getYourselfConfirmError().value);
 	}
 
 	@POST

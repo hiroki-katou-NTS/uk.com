@@ -24,14 +24,14 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	@Inject
 	LateOrLeaveEarlyRepository lateOrLeaveEarlyRepository;
 
-//	@Inject
-//	ApplicationRepository applicationRepository;
+	@Inject
+	ApplicationRepository applicationRepository;
 
 	@Inject
 	ApplicationSettingRepository applicationSettingRepository;
 
-//	@Inject
-//	ApplicationSettingRepository applicationSetting;
+	@Inject
+	ApplicationSettingRepository applicationSetting;
 	
 
 	@Override

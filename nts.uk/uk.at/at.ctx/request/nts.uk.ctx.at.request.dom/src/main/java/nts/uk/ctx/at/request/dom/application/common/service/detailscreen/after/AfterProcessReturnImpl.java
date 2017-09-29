@@ -11,15 +11,15 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.Reason;
-import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ObjApproverRepresenterOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
@@ -41,7 +41,7 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 	@Inject
 	private AppTypeDiscreteSettingRepository appTypeSettingRepo;
 	@Inject
-	private ApprovalAgencyInformation  approvalAgencyInformationServiceRepo;
+	private AgentAdapter  approvalAgencyInformationServiceRepo;
 	@Inject
 	private DestinationJudgmentProcess destinationJudgmentProcessServiceRepo;
 	
@@ -134,7 +134,7 @@ public class AfterProcessReturnImpl implements AfterProcessReturn {
 				//get 8.2 -> 3 -> 3.1
 				List<String> listApprover = new ArrayList<>();
 				//get List Approver And RepresenterSID
-				List<ObjApproverRepresenterOutput> getListApproverRep = approvalAgencyInformationServiceRepo
+				List<ApproverRepresenterImport> getListApproverRep = approvalAgencyInformationServiceRepo
 						.getApprovalAgencyInformation(
 						application.getCompanyID(), 
 						listApprover).getListApproverAndRepresenterSID();

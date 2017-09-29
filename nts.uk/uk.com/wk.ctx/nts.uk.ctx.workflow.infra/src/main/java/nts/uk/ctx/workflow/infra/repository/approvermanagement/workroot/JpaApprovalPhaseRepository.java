@@ -75,7 +75,7 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		List<ApprovalPhase> result = new ArrayList<>();
 		enPhases.stream().forEach(x -> {
 			ApprovalPhase dPhase = toDomainApPhase(x);
-			dPhase.setApprovers(x.wwfmtAppovers.stream().map(a -> toDomainApprover(a)).collect(Collectors.toList()));
+			dPhase.addApproverList(x.wwfmtAppovers.stream().map(a -> toDomainApprover(a)).collect(Collectors.toList()));
 			result.add(dPhase);
 		});
 		

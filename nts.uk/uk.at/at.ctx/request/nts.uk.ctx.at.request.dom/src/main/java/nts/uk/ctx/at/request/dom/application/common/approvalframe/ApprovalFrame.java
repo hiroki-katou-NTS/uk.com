@@ -35,6 +35,7 @@ public class ApprovalFrame extends DomainObject {
 	/**
 	 * list approverAccepted
 	 */
+	@Setter
 	private List<ApproveAccepted> listApproveAccepted;
 
 	public static ApprovalFrame createFromJavaType( String companyID , String frameID , int dispOrder , List<ApproveAccepted> listApproveAccepted){

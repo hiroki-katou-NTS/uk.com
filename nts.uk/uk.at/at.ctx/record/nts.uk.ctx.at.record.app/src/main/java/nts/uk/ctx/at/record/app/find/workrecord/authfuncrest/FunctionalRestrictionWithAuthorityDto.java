@@ -16,8 +16,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class FunctionalRestrictionWithAuthorityDto {
 
-	private String roleID;
-
 	/**
 	 * 日別実績の機能NO
 	 */
@@ -38,9 +36,8 @@ public class FunctionalRestrictionWithAuthorityDto {
 	 */
 	private String description;
 
-	public FunctionalRestrictionWithAuthorityDto(String roleId, int functionNo, String displayname,
+	public FunctionalRestrictionWithAuthorityDto(int functionNo, String displayname,
 			String description) {
-		this.roleID = roleId;
 		this.functionNo = functionNo;
 		this.displayName = displayname;
 		this.description = description;

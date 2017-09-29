@@ -14,6 +14,10 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
@@ -25,8 +29,6 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportAdapter;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportDto;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalForApplication;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootCommonOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootMaster;
@@ -35,8 +37,6 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.Employ
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.PersonApproverOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WorkplaceApproverOutput;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverAdaptor;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverDto;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 @Stateless
@@ -50,11 +50,11 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	@Inject
 	private CompanyAdapter comAdapter;
 	@Inject
-	private WorkplaceApproverAdaptor wpAdapter;
+	private WorkplaceAdapter wpAdapter;
 	@Inject
 	private ApprovalPhaseRepository phaseRepository;
 	@Inject
-	private PersonInforExportAdapter psInfor;
+	private PersonAdapter psInfor;
 	
 	private final String rootCommon = "共通ルート";
 	@Override
@@ -121,7 +121,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 				continue;
 			}
 			//ドメインモデル「社員」を取得する(lấy dữ liệu domain「社員」)		
-			PersonInforExportDto psInfos = psInfor.getPersonInfo(root.getEmployeeId());
+			PersonImport psInfos = psInfor.getPersonInfo(root.getEmployeeId());
 			EmployeeApproverOutput empInfor = new EmployeeApproverOutput(psInfos.getEmployeeCode(), psInfos.getEmployeeName()); 
 			psWootInfor = getAppInfors(psRoot, psWootInfor, companyID);
 			PersonApproverOutput psOutput = new PersonApproverOutput(empInfor, psWootInfor);
@@ -162,9 +162,9 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			}
 			
 			//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」) tra ra 1 list nhung thuc chat chi co 1 du lieu
-			WorkplaceApproverDto wpInfors = wpAdapter.findByWkpId( root.getWorkplaceId(), baseDate).get();			
+			WorkplaceImport wpInfors = wpAdapter.findByWkpId( root.getWorkplaceId(), baseDate).get();			
 			// fix data
-			WorkplaceApproverDto  wpDto = new WorkplaceApproverDto(wpInfors.getWkpCode(), wpInfors.getWkpName());
+			WorkplaceImport  wpDto = new WorkplaceImport(wpInfors.getWkpCode(), wpInfors.getWkpName());
 			wpRootInfor = getAppInfors(wpRoot, wpRootInfor, companyID);
 			
 			// fix data
