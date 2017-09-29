@@ -107,7 +107,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	public PersonImport getPsInfor(String SID) {
 		return psInfo.getPersonInfo(SID);
 	}
-	
+	@POST
+	@Path("getInforJobTitle")
 	public List<JobTitleImport> findAllJobTitle(GeneralDate baseDate){
 		return adapterFinder.findAllJobTitle(baseDate);
 	}

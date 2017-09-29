@@ -105,6 +105,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 ])
             //change 個人設定　or 職位設定
             self.selectTypeSet.subscribe(function(newValue){
+                self.approverList.removeAll();
                 self.setDataForSwapList(newValue);
             })
             //職場リスト            
@@ -147,8 +148,9 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         //set data in swap-list
         setDataForSwapList(selectTypeSet: number){
             var self = this;
+            
             //個人設定 (employee setting)
-            if(selectTypeSet === 0){
+            if(selectTypeSet === 0){                
                 var employeeSearch = new service.model.EmployeeSearchInDto();
                 employeeSearch.baseDate = self.standardDate();
                 employeeSearch.workplaceCodes = self.treeGrid.selectedWorkplaceId();
@@ -159,8 +161,17 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 })
             //職位設定(job setting)
             }else{
-            
-                
+                service.getJobTitleInfor(self.standardDate()).done(function(data: string){
+                    _.forEach(data, function(value: service.model.JobtitleInfor){
+                        var job = new shrVm.ApproverDtoK;
+                        job.id = value.positionId;
+                        job.code = value.positionCode;
+                        job.name = value.positionName;
+                        self.employeeList.push(job);
+                    })    
+                }).fail(function(res: any){
+                    nts.uk.ui.dialog.alert(res.messageId);
+                })
             }    
         } 
         
