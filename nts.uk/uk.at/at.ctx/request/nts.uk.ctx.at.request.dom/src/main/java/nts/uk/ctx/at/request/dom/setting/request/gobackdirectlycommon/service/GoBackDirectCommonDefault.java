@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
@@ -21,6 +22,9 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 
 	@Inject
 	ApplicationReasonRepository appFormRepo;
+	
+	@Inject 
+	EmployeeAdapter employeeAdapter;
 
 	@Override
 	public GoBackDirectBasicData getSettingData(String SID) {
@@ -32,9 +36,10 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 		dataSetting.setGoBackDirectSet(goBackCommonSet);
 		// アルゴリズム「社員IDから社員を取得する」を実行する
 		// lay dc cai ten thang Nhan vien
-		String employeeName = AppContexts.user().personId();
+		//String employeeName = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());
+		String employeeName ="test";
 		// TEST
-		dataSetting.setEmployeeName("90000000-0000-0000-0000-000000000001");
+		dataSetting.setEmployeeName(employeeName);
 		// ドメインモデル「申請定型理由」を取得
 		List<ApplicationReason> listReason = appFormRepo.getReasonByAppType(companyID,
 				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);

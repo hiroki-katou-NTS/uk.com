@@ -21,15 +21,14 @@
 			<com:scriptfile path="kmk002.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
+		<com:ko tag="with" bind="optionalItemHeader">
 			<div id="functions-area">
 				<button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail">#{i18n.getText('KMK002_1')}</button>
-				<button data-bind="click: openDialogC">test C</button>
-				<button data-bind="click: openDialogD">test D</button>
 			</div>
 			<div id="contents-area" style="display: none" data-bind="visible: true">
 				<table>
 					<tr>
-						<td>
+						<td style="vertical-align: top;">
 							<div style="width: 300px; margin-right: 30px; padding: 20px " class="caret-right caret-background bg-green">
 							<i class="icon icon-searchbox"></i>
 							<div tabindex="2" data-bind="ntsSearchBox: {targetKey: 'itemNo', mode:'igGrid', comId:'tbl-master-list', items: optionalItemHeaders, 
@@ -48,7 +47,8 @@
 						</div>
 						</td>
 						<td style="vertical-align: top;">
-							<table class="control-group" data-bind="with: optionalItem">
+						<com:ko tag="with" bind="optionalItem">
+							<table class="control-group">
 
 							<!-- Optional Item view model -->
 							
@@ -202,23 +202,29 @@
 								</tr>
 								<tr>
 									<td colspan="5"><span>#{i18n.getText('KMK002_31')}</span>
-										<input style="width: 700px" id="cha biet la cai gi"
+										<input style="width: 700px" id="inp-apply-formula"
 										data-bind="ntsTextEditor: {
-		                                          value: $parent.name,
+		                                          value: applyFormula,
 		                                          enable: false,
 		                                          readonly: true,
 		                                          required: false}"/>
+		                                <button data-bind="click: openDialogC">test C</button>
+										<button data-bind="click: openDialogD">test D</button>
 									</td>
 								</tr>
 								<!-- Optional Item formula view model -->
 								<tr>
-									<td colspan="10"><table id="tbl-calc-formula"></table></td>
+									<td colspan="10">
+										<table id="tbl-calc-formula"></table>
+									</td>
 								</tr>
 							</table>
+						</com:ko>
 						</td>
 					</tr>
 				</table>
 			</div>
+		</com:ko>
 		</ui:define>
 	</ui:composition>
 </body>

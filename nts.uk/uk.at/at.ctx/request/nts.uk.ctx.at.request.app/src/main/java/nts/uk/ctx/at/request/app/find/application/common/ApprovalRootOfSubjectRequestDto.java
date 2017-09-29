@@ -5,8 +5,7 @@ import java.util.List;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseImport;
-import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApprovalPhaseOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApprovalRootOutput;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
 
 @Value
 public class ApprovalRootOfSubjectRequestDto {
@@ -37,12 +36,12 @@ public class ApprovalRootOfSubjectRequestDto {
 	
 	private List<ApprovalPhaseImport> beforeApprovers;
 	
-	private List<ApprovalPhaseOutput> afterApprovers;
+	private List<ApprovalPhaseImport> afterApprovers;
 	
 	/** エラーフラグ*/
 	private int errorFlag;
 	 
-	public static ApprovalRootOfSubjectRequestDto fromDomain(ApprovalRootOutput domain ) {
+	public static ApprovalRootOfSubjectRequestDto fromDomain(ApprovalRootImport domain ) {
 		return new ApprovalRootOfSubjectRequestDto(
 				domain.getCompanyId(),
 				domain.getWorkplaceId(), 

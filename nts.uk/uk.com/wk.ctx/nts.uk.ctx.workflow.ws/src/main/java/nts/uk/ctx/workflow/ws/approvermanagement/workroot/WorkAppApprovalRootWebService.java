@@ -11,6 +11,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.RegisterAppApprovalRootCommand;
+import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.RegisterAppApprovalRootCommandHandler;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommand;
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommandHandler;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootDto;
@@ -21,8 +23,10 @@ import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeSearch;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeUnregisterFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.MasterApproverRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ParamDto;
+import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
 @Path("workflow/approvermanagement/workroot")
@@ -35,10 +39,12 @@ public class WorkAppApprovalRootWebService extends WebService{
 	private EmployeeAdapterInforFinder employeeInfor;
 	@Inject
 	private UpdateWorkAppApprovalRByHistCommandHandler updateHist;
-	
 	@Inject
 	private EmployeeUnregisterFinder empUnregister;
- 
+	@Inject
+	private RegisterAppApprovalRootCommandHandler updateRoot;
+	@Inject
+	private PersonAdapter psInfo;
 	@POST
 	@Path("getbycom")
 	public DataFullDto getAllByCom(ParamDto param) {
@@ -52,7 +58,7 @@ public class WorkAppApprovalRootWebService extends WebService{
 	}
 	@POST
 	@Path("getEmployeesInfo")
-	public List<EmployeeApproveDto> findByWpkIds(EmployeeSearch employeeSearch){
+	public List<EmployeeImport> findByWpkIds(EmployeeSearch employeeSearch){
 		return employeeInfor.findEmployeeByWpIdAndBaseDate(employeeSearch.getWorkplaceCodes(), employeeSearch.getBaseDate());		
 	}
 	 @POST
@@ -85,5 +91,15 @@ public class WorkAppApprovalRootWebService extends WebService{
 	public MasterApproverRootOutput masterInfor(MasterApproverRootDto dto) {
 		MasterApproverRootOutput data = empUnregister.masterInfors(dto);
 		return data;
+	}
+	@POST
+	@Path("updateRoot")
+	public void updateRoot(RegisterAppApprovalRootCommand command){
+		updateRoot.handle(command);
+	}
+	@POST
+	@Path("getInforPerson")
+	public PersonImport getPsInfor(String SID) {
+		return psInfo.getPersonInfo(SID);
 	}
 }

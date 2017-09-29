@@ -25,11 +25,6 @@ public class KrqdtApprovalFramePK implements Serializable {
 	public String companyID;
 
 	@NotNull
-	@Column(name = "PHASE_ID")
-	public String phaseID;
-
-	@NotNull
-	@Column(name = "DISPORDER")
-	public int dispOrder;
-
+	@Column(name = "FRAME_ID")
+	public String frameID;
 }

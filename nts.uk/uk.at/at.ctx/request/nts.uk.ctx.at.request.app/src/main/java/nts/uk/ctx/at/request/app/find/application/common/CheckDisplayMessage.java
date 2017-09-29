@@ -31,8 +31,8 @@ public class CheckDisplayMessage {
 		if(detailedScreenPreBootModeOutput.getReflectPlanState().value ==0 || 
 				detailedScreenPreBootModeOutput.getReflectPlanState().value ==1) {
 			check = true;
-			if(detailedScreenPreBootModeOutput.getAuthorizableFlags()==true && 
-					detailedScreenPreBootModeOutput.getAlternateExpiration() ==true) {
+			if(detailedScreenPreBootModeOutput.isAuthorizableFlags() == true && 
+					detailedScreenPreBootModeOutput.isAlternateExpiration() ==true) {
 				check = false;
 			}
 		}
@@ -52,8 +52,8 @@ public class CheckDisplayMessage {
 		if(detailedScreenPreBootModeOutput.getUser().value ==0 || 
 				detailedScreenPreBootModeOutput.getUser().value ==1) {
 			check = true;
-			if(detailedScreenPreBootModeOutput.getAuthorizableFlags()==true && 
-					detailedScreenPreBootModeOutput.getAlternateExpiration() ==true) {
+			if(detailedScreenPreBootModeOutput.isAuthorizableFlags()==true && 
+					detailedScreenPreBootModeOutput.isAlternateExpiration() ==true) {
 				check = false;
 			}
 		}

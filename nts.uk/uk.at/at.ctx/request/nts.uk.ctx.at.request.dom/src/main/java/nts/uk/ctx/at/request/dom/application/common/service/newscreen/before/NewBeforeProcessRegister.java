@@ -47,7 +47,7 @@ public interface NewBeforeProcessRegister {
 	 * @param startDate 申請する開始日
 	 * @param endDate 申請する終了日
 	 */
-	public void applicationAcceptanceRestrictionsCheck(InitValueAtr postAtr, GeneralDate startDate, GeneralDate endDate);
+	public void applicationAcceptanceRestrictionsCheck(PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate);
 	
 	/**
 	 * 3.確定チェック

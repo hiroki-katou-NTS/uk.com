@@ -43,7 +43,7 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository
 			if (!map.containsKey(ent.pk.workTypeGroupNo.intValue())) {
 				group = new ChangeableWorktypeGroup(ent.pk.workTypeGroupNo.intValue(), ent.workTypeGroupName);
 			} else {
-				group = map.get(ent.pk.workTypeGroupNo);
+				group = map.get(ent.pk.workTypeGroupNo.intValue());
 			}
 			group.getWorkTypeList().add(ent.pk.workTypeCode);
 			map.put(ent.pk.workTypeGroupNo.intValue(), group);

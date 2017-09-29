@@ -15,6 +15,8 @@ import nts.uk.ctx.at.record.app.find.workrecord.worktype.WorkTypeGroupDto;
 @Data
 public class WorkTypeEmploymentCommand {
 	
+	private String employmentCode;
+	
 	private List<WorkTypeGroupDto> groups;
 
 }

@@ -6,20 +6,20 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveAdapter;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
+import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class EmployeeAdapterInforFinder {
 	@Inject
-	private EmployeeApproveAdapter employeeInfor;
+	private EmployeeAdapter employeeInfor;
 	/**
 	 * find employee by workplaceId and base date
 	 * @param workplaceIds
 	 * @param baseDate
 	 * @return
 	 */
-	public List<EmployeeApproveDto> findEmployeeByWpIdAndBaseDate(List<String> workplaceIds, GeneralDate baseDate){
+	public List<EmployeeImport> findEmployeeByWpIdAndBaseDate(List<String> workplaceIds, GeneralDate baseDate){
 		return employeeInfor.findByWpkIds(AppContexts.user().companyId(), workplaceIds, baseDate);
 	}
 	/**

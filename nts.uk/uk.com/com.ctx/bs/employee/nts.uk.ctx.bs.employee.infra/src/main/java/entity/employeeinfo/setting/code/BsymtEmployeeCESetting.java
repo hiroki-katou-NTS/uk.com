@@ -25,7 +25,7 @@ public class BsymtEmployeeCESetting extends UkJpaEntity implements Serializable 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private BsymtEmployeeCESettingPk bsydtEmployeeCESettingPk;
+	private BsymtEmployeeCESettingPk bsymtEmployeeCESettingPk;
 
 	@Basic(optional = false)
 	@Column(name = "CODE_EDIT_METHOD_ATR")
@@ -37,6 +37,6 @@ public class BsymtEmployeeCESetting extends UkJpaEntity implements Serializable 
 
 	@Override
 	protected Object getKey() {
-		return this.bsydtEmployeeCESettingPk;
+		return this.bsymtEmployeeCESettingPk;
 	}
 }

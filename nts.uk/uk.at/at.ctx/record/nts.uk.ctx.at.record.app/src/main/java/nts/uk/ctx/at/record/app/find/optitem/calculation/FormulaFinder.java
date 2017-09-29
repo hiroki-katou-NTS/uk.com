@@ -12,6 +12,8 @@ import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
+import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaName;
+import nts.uk.ctx.at.record.dom.optitem.calculation.Symbol;
 
 /**
  * The Class FormulaFinder.
@@ -38,6 +40,8 @@ public class FormulaFinder {
 		for (int i = 0; i < 10; i++) {
 			FormulaDto dto = new FormulaDto();
 			dto.setFormulaId(new FormulaId(""+i));
+			dto.setFormulaName(new FormulaName("name"+i));
+			dto.setSymbol(new Symbol("symbol"+i));
 			listDto.add(dto);
 		}
 		return listDto;

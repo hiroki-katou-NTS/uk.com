@@ -8,10 +8,9 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayCode
-				nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayName
-				nts.uk.ctx.at.shared.dom.specialholiday.grantday.FixNumberDays
-				nts.uk.shr.com.primitive.Memo
+				nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryCode
+				nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryName
+				nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.Memo
 				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kml004.a.main.css" />
@@ -24,15 +23,15 @@
 			<div id="functions-area">
 				<div class="container">
  					<!-- A1_1 -->
-					<button id="NEW_BTN" data-bind="click : initSpecialHoliday">#{i18n.getText('KML004_1')}</button>
+					<button id="NEW_BTN" data-bind="click : newMode">#{i18n.getText('KML004_1')}</button>
 					<!-- A1_2 -->
 					<button id="REGISTER_BTN" class="proceed"
-						data-bind="click: addSpecialHoliday, enable: $root.errors.isEmpty">#{i18n.getText('KML004_2')}</button>
+						data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KML004_2')}</button>
 					<!-- A1_3 -->	
 					<button id="DELETE_BTN" class="danger"
-						data-bind="click: deleteSpecialHoliday, enable: !isEnableCode()">#{i18n.getText('KML004_3')}</button>
+						data-bind="click: remove, enable: lstCate().length >0">#{i18n.getText('KML004_3')}</button>
 					<!-- A1_4 -->
-					<button id="SETTING_BTN" data-bind="click: openHDialog, enable: sphdList().length > 0">#{i18n.getText('KML004_5')}</button>
+					<button id="Close_BTN" data-bind="click: close">#{i18n.getText('KML004_4')}</button>
 				</div>
 			</div>
 			<div id="contents-area">
@@ -45,35 +44,34 @@
 							data-bind="ntsGridList: {	
 								width: 300,
 								height: 300,
-								dataSource: sphdList,
-								primaryKey: 'specialHolidayCode',
-								columns: columns,
+								dataSource: lstCate,
+								optionsValue: 'cateCode',
+								columns: gridListColumns,
 								multiple: false,								
-								value: currentCode
-						}"></table>
+								value: selectedCode}"></table>
 					</div>
 				</div>
 				<div class="right-content">
-					<div class="control-group" data-bind="with: currentItem">
+					<div class="control-group" data-bind="with: selectedOption">
 						<!-- A3_1 -->
 						<div id="code-sphd"
-							data-bind="ntsFormLabel: {required: true,constraint:['SpecialHolidayCode','SpecialHolidayName']}">#{i18n.getText('KMF004_9')}</div>
+							data-bind="ntsFormLabel: {required: true,constraint:['CategoryCode','CategoryName']}">#{i18n.getText('KML004_8')}</div>
 						<!-- A3_2 -->	
 						<span><input id="code-text"
 							style="width: 40px; margin-left: -1px;"
-							data-bind="ntsTextEditor: {value: specialHolidayCode,constraint:'SpecialHolidayCode' , required: true, enable:$parent.isEnableCode, immediate: true ,option: {autofill:true, filldirection:'left'}, name: '#[KMF004_10]'}" /></span>
+							data-bind="ntsTextEditor: {value: categoryCode, constraint:'CategoryCode' , required: true, enable:$parent.checkUpdate, immediate: true ,option: {autofill:true, filldirection:'left'}, name: '#[KML004_9]'}" /></span>
 						<!-- A3_3 -->	
 						<span><input id="code-text2" style="width: 180px"
-							data-bind="ntsTextEditor: {value: specialHolidayName, required: true, name: '#[KMF004_8]'}" /></span>
+							data-bind="ntsTextEditor: {value: categoryName, required: true, name: '#[KML004_10]'}" /></span>
 						<div id="memo">
 							<!-- A4_1 -->
 							<div id="lbl-memo"
 								style="margin-top: 10px; vertical-align: text-bottom;"
-								data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KMF004_16')}</div>
+								data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KML004_11')}</div>
 							<!-- A4_2 -->
-							<textarea style="width: 516px; height: 50px; margin-left: 87px; margin-top: 10px; position: absolute;"
+							<textarea style="width: 516px; height: 50px; margin-left: 92px; margin-top: 10px; position: absolute;"
 								id="txta-memo"
-								data-bind="ntsMultilineEditor: {value: memo,name: '#[KMF004_16]',constraint: 'Memo'}" />
+								data-bind="ntsMultilineEditor: {value: memo, name: '#[KML004_11]',constraint: 'Memo'}" />
 						</div>
 						<hr style = "margin-top : 50px"/>
 						#{i18n.getText('KML004_12')}<br />

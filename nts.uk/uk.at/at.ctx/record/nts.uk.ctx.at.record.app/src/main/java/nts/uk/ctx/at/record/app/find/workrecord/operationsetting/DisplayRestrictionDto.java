@@ -16,8 +16,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class DisplayRestrictionDto {
 	
-	private String cid;
-
 	private Boolean yearDisplayAtr;
 	
 	private Boolean yearRemainingNumberCheck;

@@ -1,11 +1,18 @@
 package nts.uk.ctx.at.request.app.find.application.common.approvalframe;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Setter;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.common.ApproveAcceptedDto;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.Reason;
 
 /**
@@ -13,47 +20,29 @@ import nts.uk.ctx.at.request.dom.application.common.approveaccepted.Reason;
  * @author hieult
  *
  */
-@Value
+@Data
+@AllArgsConstructor
 public class ApprovalFrameDto {
-	/** 会社ID */
+
 	private String companyID;
-	
-	/** フェーズID */
-	private String phaseID ;
-	
-	/** 順序 */
+	private String frameID ;
 	private int dispOrder;
 	
-	/** 承認者 */
-	private String approverSID;
+	private List<ApproveAcceptedDto> listApproveAcceptedDto;
 	
-	/** 承認区分 */
-	private ApprovalAtr approvalATR;
-
-	/** 確定区分 */
-	private ConfirmAtr confirmATR;
+	private String nameAll;
 	
-	/** 日付 */
-	private GeneralDate approvalDate;
+	private String approveAll;
 	
-	/** 理由 */
-	private String reason;
-	
-	/** 代行者 */
-	private String representerSID;
+	private String reasonAll;
 	
 	
 	public static ApprovalFrameDto fromDomain(ApprovalFrame domain){
 		
 		return new ApprovalFrameDto (
 				domain.getCompanyID(),
-				domain.getPhaseID(),
+				domain.getFrameID(),
 				domain.getDispOrder(),
-				domain.getApproverSID(),
-				domain.getApprovalATR(),
-				domain.getConfirmATR(),
-				domain.getApprovalDate(),
-				domain.getReason().toString(),
-				domain.getRepresenterSID());
+				null,null,null,null);
 	}
 }

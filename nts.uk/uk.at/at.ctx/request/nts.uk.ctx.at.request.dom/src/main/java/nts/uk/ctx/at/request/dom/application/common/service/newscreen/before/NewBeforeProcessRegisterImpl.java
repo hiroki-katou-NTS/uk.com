@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.before;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -7,16 +8,21 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.UseAtr;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.DeadlineCriteria;
-import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.primitive.InitValueAtr;
-import nts.uk.ctx.at.request.dom.application.common.UseAtr;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
+import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
 
 @Stateless
 public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
@@ -30,29 +36,36 @@ public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithmService;
 	
+	@Inject
+	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	
+	@Inject
+	private ApprovalRootAdapter approvalRootService;
+	
 	public void processBeforeRegister(String companyID, String employeeID, GeneralDate date, PrePostAtr postAtr, int routeAtr, int appType){
-		retirementCheckBeforeJoinCompany(companyID, employeeID, date);
-		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID, employeeID, date);
+		// retirementCheckBeforeJoinCompany(companyID, employeeID, date);
+		// PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID, employeeID, date);
 		// if(endDate.after(startDate.addDays(31))) throw new BusinessException("Msg_277");
-		if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(periodCurrentMonth.getEndDate())) throw new BusinessException("Msg_276");
+		// if(periodCurrentMonth.getStartDate().addYears(1).beforeOrEquals(periodCurrentMonth.getEndDate())) throw new BusinessException("Msg_276");
 		// if(startDate.before(periodCurrentMonth.getStartDate())) throw new BusinessException("Msg_236");
-		/*
-		confirmRoot = from cache;
-		if(confirmRoot.ApprovedRouteErrorFlag==undefined) throw new BusinessException("Msg_238");
-		if(confirmRoot.ApprovedRouteErrorFlag.count==0) throw new BusinessException("Msg_324");
-		if(confirmRoot.ApprovedRouteErrorFlag.count>=10) throw new BusinessException("Msg_237");
-		if(passwordLevel!=0) deadlineApplicationCheck();
-		if(passwordLevel!=0) applicationAcceptanceRestrictionsCheck();
-		confirmationCheck();
-		*/
+		List<ApprovalRootImport> approvalRootOutputs = approvalRootService.getApprovalRootOfSubjectRequest(companyID, employeeID, routeAtr, appType, date);
+		ApprovalRootImport approvalRootOutput = approvalRootOutputs.get(0);
+		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_CONFIRM_PERSON)) throw new BusinessException("Msg_238");
+		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.APPROVER_UP_10)) throw new BusinessException("Msg_237");
+		if(approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_APPROVER)) throw new BusinessException("Msg_324");
+		// if(passwordLevel!=0) deadlineApplicationCheck();
+		// if(passwordLevel!=0) applicationAcceptanceRestrictionsCheck();
+		confirmationCheck(companyID, employeeID, date);
 	}
 	
+	// moi nguoi chi co the o mot cty vao mot thoi diem
+	// check xem nguoi xin con trong cty k
 	public void retirementCheckBeforeJoinCompany(String companyID, String employeeID, GeneralDate date){
 		/*
 		Optional<Employee> e = Employee.find(employeeID); 
 		if(e.isPresent()){
 			if(date<e.entryDate) throw new BusinessException(Msg_235);
-			if(date<e.retirementDate) throw new BusinessException(Msg_391); 
+			if(date>e.retirementDate) throw new BusinessException(Msg_391); 
 		}
 		*/
 	}
@@ -74,60 +87,35 @@ public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
 		}	
 	}
 	
-	public void applicationAcceptanceRestrictionsCheck(InitValueAtr postAtr, GeneralDate startDate, GeneralDate endDate){
-		if(postAtr.equals(InitValueAtr.POST)){
-			
-		}
-		/*
-		if(postAtr == afterApplication){ // 事前事後区分 == 事後(Xin sau)
-			if(AdvanceAcceptanceRestriction.doNotAllowFutureDays == false) {  //  「事前の受付制限」．未来日許可しない
+	public void applicationAcceptanceRestrictionsCheck(PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate){
+		GeneralDate systemDate = GeneralDate.today();
+		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType("", ApplicationType.STAMP_APPLICATION.value);
+		if(!appTypeDiscreteSettingOp.isPresent()) throw new RuntimeException();
+		AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
+		if(postAtr.equals(PrePostAtr.POSTERIOR)){
+			if(appTypeDiscreteSetting.getRetrictPostAllowFutureFlg().equals(AllowAtr.NOTALLOW)){
 				return;
-			} else { 
-				// 今日までの事後申請を登録する制限
-				
-					例：システム日付:2017/7/14
-					2017/7/13の事後申請を登録。。。ＯＫ
-					2017/7/14の事後申請を登録。。。ＯＫ
-					2017/7/15の事後申請を登録。。。ＮＧ
-						
-				if(startDate>systemDate||endDate>systemDate) { //  systemDate <=> システム日付 
+			} else {
+				if(startDate.after(systemDate)||endDate.after(systemDate)){
 					throw new BusinessException("Msg_328");
 				} else {
 					return;
 				}
 			}
-		} else { 
-			// postAtr == beforeApplication, 事前事後区分 == 事前(Xin trước)
-			if(AdvanceAcceptanceRestriction.useAtr == false) {  //  事前の受付制限」．利用区分
+		} else {
+			if(appTypeDiscreteSetting.getRetrictPreUseFlg().equals(UseAtr.NOTUSE)){
 				return;
 			} else {
-				Loop(startDate -> endDate) {
-					if(AdvanceAcceptanceRestriction.method == dayCheck){ // 「事前の受付制限」．チェック方法 == 日数
-						limitDay = systemDate + AdvanceAcceptanceRestriction.day 
-						
-						// 受付制限日 = システム日付 + 「事前の受付制限」．日数
-
-						例）「事前の受付制限」．日数 == 2　システム日付 == 2017/7/14 
-						受付制限日 = 2017/7/16
-						2017/7/15の事前申請を登録。。。ＮＧ
-						2017/7/16の事前申請を登録。。。ＯＫ
-						2017/7/17の事前申請を登録。。。ＯＫ
-						
-						
-						例）「事前の受付制限」．日数 == 0　システム日付 == 2017/7/14 
-						受付制限日 = 2017/7/14
-						2017/7/13の事前申請を登録。。。ＮＧ
-						2017/7/14の事前申請を登録。。。ＯＫ
-						2017/7/15の事前申請を登録。。。ＯＫ
-																			
-						if(loopDay < limitDay) throw new BusinessException("Msg_327");
+				for(GeneralDate loopDay = startDate;loopDay.beforeOrEquals(endDate);loopDay.addDays(1)){
+					if(appTypeDiscreteSetting.getRetrictPreMethodFlg().equals(CheckMethod.DAYCHECK)){
+						GeneralDate limitDay = systemDate.addDays(appTypeDiscreteSetting.getRetrictPreDay().value);
+						if(loopDay.before(limitDay)) throw new BusinessException("Msg_327");
 					} else {
-						// 「事前の受付制限」．チェック方法 == 時刻
-						if(loopDay < systemDate) {
+						if(loopDay.before(systemDate)){
 							throw new BusinessException("Msg_327");
-						} else if(loopDay == systemDate){
-							limitDay = AdvanceAcceptanceRestriction.hourAndMinutes 
-							
+						} else if(loopDay.equals(systemDate)){
+							/*limitDay = AdvanceAcceptanceRestriction.hourAndMinutes 
+									
 							// 受付制限日時 = 「事前の受付制限」．時分
 								システム日時 = System.DateTime.Nowのhour * 60 + System.DateTime.Nowのminute;
 								
@@ -137,13 +125,12 @@ public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
 								システム日時 = 1080(18:00)今日の事前申請を登録。。。ＯＫ
 								システム日時 = 1081(18:01)今日の事前申請を登録。。。ＮＧ 
 								
-							if(systemDate > limitDay) throw new BusinessException("Msg_327");
+							if(systemDate > limitDay) throw new BusinessException("Msg_327");*/
 						}
 					}
 				}
 			}
 		}
-		*/
 	}
 	
 	public void confirmationCheck(String companyID, String employeeID, GeneralDate appDate){

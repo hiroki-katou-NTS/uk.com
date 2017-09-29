@@ -6,5 +6,6 @@ import lombok.Value;
 @Value
 public class DataDisplayPsDto {
 	private int id;
+	private boolean overLap;
 	private List<PersonAppRootDto> lstPersonRoot;
 }

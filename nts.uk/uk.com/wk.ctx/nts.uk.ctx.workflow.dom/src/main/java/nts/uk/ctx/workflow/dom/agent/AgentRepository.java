@@ -80,12 +80,12 @@ public interface AgentRepository {
 	List<Agent> findByCid(String companyId);
 	
 	/**
-	 * Find all gent by condition
+	 * Find agents by list employee
 	 * @param companyId company id
 	 * @param employeeId employee id
 	 * @param startDate start date
 	 * @param endDate end date
 	 * @return list of agent
 	 */
-	List<Agent> find(String companyId, String employeeId, GeneralDate startDate, GeneralDate endDate);
+	List<Agent> find(String companyId, List<String> employeeIds, GeneralDate baseDate);
 }

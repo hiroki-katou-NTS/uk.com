@@ -1,29 +1,25 @@
 module nts.uk.at.view.kml004.a.service {
      var paths: any = {
-        findAllSpecialHoliday: "shared/specialholiday/findByCid/",
-        deleteSpecialHoliday: "shared/specialholiday/delete",
-        addSpecialHoliday: "shared/specialholiday/add",
-        updateSpecialHoliday: "shared/specialholiday/update",
-        findWorkType: "at/screen/worktype/findAll"
-    }
-
-    export function findAllSpecialHoliday(): JQueryPromise<Array<viewmodel.model.ISpecialHolidayDto>> {
-        return nts.uk.request.ajax("at",paths.findAllSpecialHoliday);
-    }
-
-    export function deleteSpecialHoliday(specialholiday: any) { 
-        return nts.uk.request.ajax("at",paths.deleteSpecialHoliday, specialholiday)
-    }
-
-    export function addSpecialHoliday(specialholiday: any) {
-        return nts.uk.request.ajax("at", paths.addSpecialHoliday, specialholiday);
-    }
-
-    export function updateSpecialHoliday(specialholiday: any) {
-        return nts.uk.request.ajax("at",paths.updateSpecialHoliday, specialholiday);
+        findAllCate: "at/schedule/schedulehorizontal/findAllCate/",
+        findAllItem: "at/schedule/schedulehorizontal/findItem/",
+        remove: "at/schedule/schedulehorizontal/delete",
+        add: "at/schedule/schedulehorizontal/add",
+        update: "at/schedule/schedulehorizontal/update",
     }
     
-     export function findWorkType(): JQueryPromise<any> {
-        return nts.uk.request.ajax("at",paths.findWorkType);
+    export function getAll(){
+        return nts.uk.request.ajax(paths.findAllCate); 
+    }
+    
+    export function update(command: viewmodel.TotalCategory): JQueryPromise<void>{
+        return nts.uk.request.ajax(paths.update, command);    
+    }
+    
+    export function add(command: viewmodel.TotalCategory): JQueryPromise<void>{
+        return nts.uk.request.ajax(paths.add, command);    
+    }
+    
+    export function remove(command: viewmodel.TotalCategory): JQueryPromise<void>{
+        return nts.uk.request.ajax(paths.remove, command);    
     }
 }

@@ -9,8 +9,8 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 400,
-					height : 600
+					width : 377,
+					height : 522
 				};
 			</script>
 			<com:stylefile path="kmk002.b.style.css" />
@@ -25,7 +25,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="btn-apply" tabindex="1" data-bind="click: save" class="proceed">#{i18n.getText('KMK002_1')}</button>
-				<button id="btn-close" tabindex="2">#{i18n.getText('KMK002_44')}</button>
+				<button id="btn-close" tabindex="2" data-bind="click: close">#{i18n.getText('KMK002_44')}</button>
 			</div>
 			<div id="contents-area" style="display: none; padding-top: 10px; padding-left: 20px" data-bind="visible: true">
 				<div id="lbl-desc">#{i18n.getText('KMK002_45')}</div>

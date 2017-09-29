@@ -36,6 +36,9 @@ public class GetDataAppCfDetailFinder {
 		// 「事後の受付制限」．未来日許可しないがtrue、その他は利用しない
 		// if : RetrictPostAllowFutureFlg = true(allow)s và RetrictPreUseFlg = false(not
 		// use)
+		if(!appTypeDiscreteSetting.isPresent()) {
+			return new  OutputMessageDeadline("","");
+		}
 		if (appTypeDiscreteSetting.get().getRetrictPostAllowFutureFlg().value == 1
 				&& appTypeDiscreteSetting.get().getRetrictPreUseFlg().value == 0) {
 			deadline = "事後申請の受付は" + date2 + "分まで";

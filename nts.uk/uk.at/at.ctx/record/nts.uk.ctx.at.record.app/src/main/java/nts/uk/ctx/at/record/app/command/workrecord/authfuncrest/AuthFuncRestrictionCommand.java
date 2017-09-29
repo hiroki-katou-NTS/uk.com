@@ -13,6 +13,8 @@ import lombok.Data;
  */
 @Data
 public class AuthFuncRestrictionCommand {
+	
+	private String roleId;
 
 	private List<AuthFuncRest> authFuncRests;
 	

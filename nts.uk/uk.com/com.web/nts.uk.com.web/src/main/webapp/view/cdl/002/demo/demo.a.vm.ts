@@ -64,6 +64,7 @@ module demo.a.viewmodel {
             self.selectedType.subscribe(function(data: number) {
                 if (data == SelectType.SELECT_ALL && !self.isMultiSelect()) {
                     nts.uk.ui.dialog.alert("Select All is not available for Single Selection!");
+                    self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);
                 }
             });
         }
