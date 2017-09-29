@@ -1,47 +1,36 @@
 @CHARSET "UTF-8";
 
-.lableData {
+.contentSchedule {
+	margin-top: 15px;
 	margin-left: 20px;
-	width: 110px;
-	margin-top: 10px;
-	vertical-align: super;
 }
 
-.lableDataFull {
-	margin-left: 20px;
-	width: 96%;
-	margin-top: 10px;
+.labelFirstBold {
+	font-weight: bold;
 }
 
-.settingColor {
-	margin-top: 25px;
+.tableSchedule {
+	margin-top: 20px;
 }
 
-.border-all td {
+.tableSchedule td {
 	border: solid grey 1px;
-	text-align: center;
-	padding-top: 3px;
-	padding-bottom: 3px;
-	padding-right: 5px;
-	padding-left: 5px;
-	min-width: 85px;
-	max-width: 100px;
 }
 
-.bg-dark-green {
-	background-color: #C7F391;
+.titleScheduleSetting {
+	width: 200px;
 }
 
-.detailSetting {
-	margin-top: 25px;
-	height: 60px;
+.valueScheduleSetting {
+	width: 350px;
 }
 
-.settingTime {
-	margin-left: 20px;
+.buttonErrorOutput {
+	margin-top: 15px;
+	float: right;
+	margin-right: 15px;
 }
 
-#comboYearlyCon {
-	width: 100px;
-	margin-left: 10px;
+.tableErrorLog {
+	margin-top: 60px;
 }
