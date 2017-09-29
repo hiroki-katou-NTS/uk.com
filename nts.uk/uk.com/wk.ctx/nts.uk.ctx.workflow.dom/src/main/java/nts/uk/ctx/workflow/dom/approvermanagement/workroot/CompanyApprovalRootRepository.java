@@ -42,6 +42,12 @@ public interface CompanyApprovalRootRepository {
 	 * @param comAppRoot
 	 */
 	void addComApprovalRoot(CompanyApprovalRoot comAppRoot);
+	/**
+	 * add All Company Approval Root
+	 * 
+	 * @param comAppRoot
+	 */
+	void addAllComApprovalRoot(List<CompanyApprovalRoot> comAppRoot);
 
 	/**
 	 * update Company Approval Root
@@ -49,6 +55,12 @@ public interface CompanyApprovalRootRepository {
 	 * @param comAppRoot
 	 */
 	void updateComApprovalRoot(CompanyApprovalRoot comAppRoot);
+	/**
+	 * update All Company Approval Root
+	 * 
+	 * @param comAppRoot
+	 */
+	void updateAllComApprovalRoot(List<CompanyApprovalRoot> comAppRoot);
 
 	/**
 	 * delete Company Approval Root

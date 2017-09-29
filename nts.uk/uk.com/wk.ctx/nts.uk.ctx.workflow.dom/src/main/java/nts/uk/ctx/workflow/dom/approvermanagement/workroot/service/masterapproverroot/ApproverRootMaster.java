@@ -3,7 +3,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.masterapprov
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
 
 /**

@@ -79,8 +79,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
                     pk.setWkpid(workplaceId);
                     pk.setHistoryId(item.getHistoryId().v());
                     return pk;
-                })
-                .collect(Collectors.toList());
+                }).collect(Collectors.toList());
         this.commandProxy().removeAll(BsymtWorkplaceHist.class, lstPrimaryKey);
     }
 
@@ -92,9 +91,29 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
      * java.lang.String, nts.arc.time.GeneralDate)
      */
     @Override
-    public List<Workplace> findByStartDate(String companyId, GeneralDate date) {
-        // TODO Auto-generated method stub
-        return null;
+    public Optional<Workplace> findByStartDate(String companyId, GeneralDate date) {
+     // get entity manager
+        EntityManager em = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+        CriteriaQuery<BsymtWorkplaceHist> cq = criteriaBuilder.createQuery(BsymtWorkplaceHist.class);
+        Root<BsymtWorkplaceHist> root = cq.from(BsymtWorkplaceHist.class);
+
+        // select root
+        cq.select(root);
+
+        // add where
+        List<Predicate> lstpredicateWhere = new ArrayList<>();
+        lstpredicateWhere.add(criteriaBuilder.equal(root.get(BsymtWorkplaceHist_.strD), date));
+
+        cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+        
+        List<BsymtWorkplaceHist> lstBsymtWorkplaceHist = em.createQuery(cq).getResultList();
+        // check empty
+        if (CollectionUtil.isEmpty(lstBsymtWorkplaceHist)) {
+            return Optional.empty();
+        }
+        return Optional.of(new Workplace(new JpaWorkplaceGetMemento(lstBsymtWorkplaceHist)));
     }
 
     /*
@@ -106,7 +125,6 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
      */
     @Override
     public List<Workplace> findByWkpIds(List<String> workplaceIds) {
-        // TODO Auto-generated method stub
         if (CollectionUtil.isEmpty(workplaceIds)) {
             return null;
         }
@@ -123,34 +141,23 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
         // add where
         List<Predicate> predicateList = new ArrayList<>();
         
-        
         Expression<String> exp = root.get(BsymtWorkplaceHist_.bsymtWorkplaceHistPK).get(BsymtWorkplaceHistPK_.wkpid);
         predicateList.add(exp.in(workplaceIds));
         
         cq.where(predicateList.toArray(new Predicate[] {}));
+        cq.orderBy(criteriaBuilder.desc(root.get(BsymtWorkplaceHist_.strD)));
+        
         List<BsymtWorkplaceHist> lstBsymtWorkplaceHist = em.createQuery(cq).getResultList();
-        
-//        Map<String, BsymtWorkplaceHist> mapEntity = em.createQuery(cq).getResultList().stream()
-//                .filter(item -> Collections.frequency(c, o))
-//                .collect(Collectors.toMap(item -> , valueMapper));
-        
-        
-//        return lstBsymtWorkplaceHist.stream().map(item -> {
-//            return new Workplace(new JpaWorkplaceGetMemento(companyId, workplaceId, lstBsymtWorkplaceHist))
-//        });
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository#
-     * findLatestByWorkplaceId(java.lang.String)
-     */
-    @Override
-    public Optional<Workplace> findLatestByWorkplaceId(String workplaceId) {
-        // TODO Auto-generated method stub
-        return null;
+        // check empty
+        if (CollectionUtil.isEmpty(lstBsymtWorkplaceHist)) {
+            return null;
+        }
+        return workplaceIds.stream().map(wkpId -> {
+            List<BsymtWorkplaceHist> subListEntity = lstBsymtWorkplaceHist.stream()
+                    .filter(entity -> entity.getBsymtWorkplaceHistPK().getWkpid().equals(wkpId))
+                    .collect(Collectors.toList());
+            return new Workplace(new JpaWorkplaceGetMemento(subListEntity));
+        }).collect(Collectors.toList());
     }
 
     /*
@@ -179,15 +186,20 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
                 root.get(BsymtWorkplaceHist_.bsymtWorkplaceHistPK).get(BsymtWorkplaceHistPK_.wkpid), workplaceId));
 
         cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+        cq.orderBy(criteriaBuilder.desc(root.get(BsymtWorkplaceHist_.strD)));
+        
         List<BsymtWorkplaceHist> lstBsymtWorkplaceHist = em.createQuery(cq).getResultList();
-        return Optional.of(new Workplace(new JpaWorkplaceGetMemento(companyId, workplaceId, lstBsymtWorkplaceHist)));
+        // check empty
+        if (CollectionUtil.isEmpty(lstBsymtWorkplaceHist)) {
+            return Optional.empty();
+        }
+        return Optional.of(new Workplace(new JpaWorkplaceGetMemento(lstBsymtWorkplaceHist)));
     }
 
     /**
      * To entity.
      *
-     * @param workplace
-     *            the workplace
+     * @param workplace the workplace
      * @return the list
      */
     private List<BsymtWorkplaceHist> toEntity(Workplace workplace) {

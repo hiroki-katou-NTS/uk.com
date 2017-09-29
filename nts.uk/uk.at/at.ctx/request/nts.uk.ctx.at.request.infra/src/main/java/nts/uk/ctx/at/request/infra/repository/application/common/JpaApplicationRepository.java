@@ -68,7 +68,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 	/**
-	 * Get ALL applicatio
+	 * Get ALL application
 	 */
 	@Override
 	public List<Application> getAllApplication(String companyID) {
@@ -173,5 +173,6 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		// TODO Auto-generated method stub
 		return null;
 	}
+
 
 }

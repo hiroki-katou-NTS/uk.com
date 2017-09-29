@@ -2,11 +2,41 @@ module nts.uk.com.view.cmm018.shr {
     export module vmbase {
         //data register
         export class DataResigterDto{
-            lstDelete: Array<RootDeleteDto>;
-            objAddHist: IData; 
+            /**就業ルート区分: 会社(0)　－　職場(1)　－　社員(2)*/
+            rootType: number;
+            checkDelete: boolean;
+            checkAddHist: boolean;
+            checkAddRoot: boolean;
+            checkEdit: boolean;
+            workpplaceId: string;
+            employeeId: string;
+            startDate: string;
+            endDate: string;
+            addHist: IData;
+            lstAppType: Array<number>;
+            root: Array<CompanyAppRootADto>;
+            constructor(rootType: number, checkDelete: boolean,
+                checkAddHist: boolean, checkAddRoot: boolean,
+                checkEdit: boolean, workpplaceId: string,
+                employeeId: string, startDate: string, endDate: string,
+                addHist: IData,lstAppType: Array<number>,
+                root: Array<CompanyAppRootADto>){
+                    this.rootType = rootType;
+                    this.checkDelete = checkDelete;
+                    this.checkAddHist = checkAddHist;
+                    this.checkAddRoot = checkAddRoot;
+                    this.checkEdit = checkEdit;
+                    this.workpplaceId = workpplaceId;
+                    this.employeeId = employeeId;
+                    this.startDate = startDate; 
+                    this.endDate = endDate;
+                    this.addHist = addHist;
+                    this.lstAppType = lstAppType;
+                    this.root = root;
+            }
         }
         //data root delete
-        export class RootDeleteDto{
+        export class DataDeleteDto{
             approvalId: string;
             historyId: string;  
             constructor(approvalId: string, historyId: string){
@@ -21,6 +51,7 @@ module nts.uk.com.view.cmm018.shr {
             approverInfor: Array<ApproverDtoK>;//承認者一覧
             confirmedPerson: string; //確定者
             selectTypeSet: number;
+            approvalFormName: string;
         }
         //data after grouping history (get from db)
         export class DataFullDto{
@@ -31,17 +62,20 @@ module nts.uk.com.view.cmm018.shr {
         //data after grouping history of company
         export class DataDisplayComDto{
             id: number;
+            overLap: boolean;
             companyName: string;
             lstCompanyRoot: Array<CompanyAppRootDto> ;
         }
         //data after grouping history of work place
         export class DataDisplayWpDto{
             id: number;
+            overLap: boolean;
             lstWorkplaceRoot: Array<WorkPlaceAppRootDto> ;
         }
         //data after grouping history of person
         export class DataDisplayPsDto{
             id: number;
+            overLap: boolean;
             lstPersonRoot: Array<PersonAppRootDto>;
         }
         //app type
@@ -59,11 +93,13 @@ module nts.uk.com.view.cmm018.shr {
             dateRange: string;
             startDate: string;
             endDate: string;
-            constructor(id: number, dateRange: string, startDate: string, endDate: string) {
+            overLap: string;
+            constructor(id: number, dateRange: string, startDate: string, endDate: string, overLap: string) {
                 this.id = id;
                 this.dateRange = dateRange;
                 this.startDate = startDate;
                 this.endDate = endDate;
+                this.overLap = overLap;
             }  
         }
         //screenA
@@ -88,6 +124,7 @@ module nts.uk.com.view.cmm018.shr {
             check: number;
             /** まとめて設定モード(0) - 申請個別設定モード(1)*/
             mode: number;
+            lstAppType: Array<String>;
         }
         //ScreenI
         export class IData{
@@ -101,16 +138,19 @@ module nts.uk.com.view.cmm018.shr {
             mode: number;
             /** 履歴から引き継ぐか、初めから作成するかを選択する*/
             copyDataFlag: boolean;
+            lstAppType: Array<number>;
             constructor(startDate: string,
                 startDateOld: string,
                 check: number,
                 mode: number,
-                copyDataFlag: boolean){
+                copyDataFlag: boolean,
+                lstAppType: Array<number>){
                     this.startDate = startDate;
                     this.startDateOld = startDateOld;
                     this.check = check;
                     this.mode = mode;
                     this.copyDataFlag = copyDataFlag;
+                    this.lstAppType = lstAppType;
             }
         }
         //ScreenJ
@@ -272,6 +312,7 @@ module nts.uk.com.view.cmm018.shr {
             appTypeName: string;
             approvalId: string;
             historyId: string;
+            branchId: string;
             appPhase1: ApprovalPhaseDto;
             appPhase2: ApprovalPhaseDto;
             appPhase3: ApprovalPhaseDto;
@@ -281,7 +322,7 @@ module nts.uk.com.view.cmm018.shr {
             appTypeValue: number,
             appTypeName: string,
             approvalId: string,
-            historyId: string,
+            historyId: string,branchId: string,
             appPhase1: ApprovalPhaseDto, 
             appPhase2: ApprovalPhaseDto, 
             appPhase3: ApprovalPhaseDto,
@@ -292,6 +333,7 @@ module nts.uk.com.view.cmm018.shr {
                 this.appTypeName = appTypeName;
                 this.approvalId =  approvalId;
                 this.historyId = historyId;
+                this.branchId = branchId;
                 this.appPhase1 = appPhase1;
                 this.appPhase2 = appPhase2;
                 this.appPhase3 = appPhase3;
@@ -309,14 +351,16 @@ module nts.uk.com.view.cmm018.shr {
             applicationType: number;
             /**就業ルート区分*/
             employmentRootAtr: number;
+            branchId: string;
             lstAppPhase: Array<ApprovalPhaseDto>;
             constructor(approvalId: string, historyId: string,
-                        applicationType: number, employmentRootAtr: number,
+                        applicationType: number, employmentRootAtr: number, branchId: string,
                         lstAppPhase: Array<ApprovalPhaseDto>){
                 this.approvalId = approvalId;
                 this.historyId = historyId;
                 this.applicationType = applicationType;
                 this.employmentRootAtr = employmentRootAtr;
+                this.branchId =  branchId;
                 this.lstAppPhase = lstAppPhase;
             }
         }

@@ -17,26 +17,19 @@ import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist;
  */
 public class JpaWorkplaceGetMemento implements WorkplaceGetMemento {
 
-	/** The company id. */
-	private String companyId;
-
-	/** The workplace id. */
-	private String workplaceId;
+	/** The lst workplace history. */
+	private List<BsymtWorkplaceHist> lstWorkplaceHistory;
 	
-	/** The workplace history. */
-	private List<BsymtWorkplaceHist> workplaceHistory;
+	/** The Constant ELEMENT_FIRST. */
+	private static final Integer ELEMENT_FIRST = 0;
 	
 	/**
 	 * Instantiates a new jpa workplace get memento.
 	 *
-	 * @param companyId the company id
-	 * @param workplaceId the workplace id
 	 * @param lstWorkplaceHistory the lst workplace history
 	 */
-	public JpaWorkplaceGetMemento(String companyId, String workplaceId, List<BsymtWorkplaceHist> lstWorkplaceHistory) {
-		this.companyId = companyId;
-		this.workplaceId = workplaceId;
-		this.workplaceHistory = lstWorkplaceHistory;
+	public JpaWorkplaceGetMemento(List<BsymtWorkplaceHist> lstWorkplaceHistory) {
+		this.lstWorkplaceHistory = lstWorkplaceHistory;
 	}
 
 	/* (non-Javadoc)
@@ -44,7 +37,7 @@ public class JpaWorkplaceGetMemento implements WorkplaceGetMemento {
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.companyId;
+		return this.lstWorkplaceHistory.get(ELEMENT_FIRST).getBsymtWorkplaceHistPK().getCid();
 	}
 
 	/* (non-Javadoc)
@@ -52,7 +45,7 @@ public class JpaWorkplaceGetMemento implements WorkplaceGetMemento {
 	 */
 	@Override
 	public WorkplaceId getWorkplaceId() {
-		return new WorkplaceId(this.workplaceId);
+	    return new WorkplaceId(this.lstWorkplaceHistory.get(ELEMENT_FIRST).getBsymtWorkplaceHistPK().getWkpid());
 	}
 
 	/* (non-Javadoc)
@@ -60,9 +53,8 @@ public class JpaWorkplaceGetMemento implements WorkplaceGetMemento {
 	 */
 	@Override
 	public List<WorkplaceHistory> getWorkplaceHistory() {
-		return this.workplaceHistory.stream().map(item -> {
-			return new WorkplaceHistory(new JpaWorkplaceHistoryGetMemento(item));
-		}).collect(Collectors.toList());
+		return this.lstWorkplaceHistory.stream().map(item -> new WorkplaceHistory(new JpaWorkplaceHistoryGetMemento(item)))
+		        .collect(Collectors.toList());
 	}
 
 }

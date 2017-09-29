@@ -42,9 +42,9 @@ public interface WorkplaceRepository {
 	 *
 	 * @param companyId the company id
 	 * @param date the date
-	 * @return the list
+	 * @return the optional
 	 */
-    List<Workplace> findByStartDate(String companyId, GeneralDate date);
+    Optional<Workplace> findByStartDate(String companyId, GeneralDate date);
 	
 	
 	/**
@@ -54,14 +54,6 @@ public interface WorkplaceRepository {
 	 * @return the list
 	 */
 	List<Workplace> findByWkpIds(List<String> workplaceIds);
-	
-	/**
-	 * Find latest by workplace id.
-	 *
-	 * @param workplaceId the workplace id
-	 * @return the optional
-	 */
-	Optional<Workplace> findLatestByWorkplaceId(String workplaceId);
 
 	/**
 	 * Find by workplace id.

@@ -39,7 +39,13 @@ public class AppStampCommonDefault implements AppStampCommonDomainService {
 	
 	@Override
 	public void appReasonCheck(String titleReason, String detailReason, AppStamp appStamp) {
-		
+		String tReason = Strings.trimToNull(titleReason);
+		String dReason = Strings.trimToNull(detailReason);
+		if(Strings.isEmpty(tReason)&&Strings.isEmpty(dReason)){
+			appStamp.setApplicationReason(new AppReason(""));
+		} else {
+			appStamp.setApplicationReason(new AppReason(tReason+": "+dReason));
+		}
 	}
 
 	@Override

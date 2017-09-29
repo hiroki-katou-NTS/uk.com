@@ -1,244 +1,308 @@
 <div>
 	<div class="table m5-table">
 		<div class="cell m5-column1">
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL001_3')}</div>
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_16')}</div>
 		</div>
 		<div class="cell m5-column2">
 			<div class="cf m5-switch" data-bind="ntsSwitchButton: {
 						options: ko.observableArray([
-				            { code: 0, name: '外出' },
-				            { code: 1, name: '育児' },
-				            { code: 2, name: '介護' },
-				            { code: 3, name: '育児' },
-				            { code: 4, name: '介護' }
+				            { code: 0, name: '出勤／退勤' },
+				            { code: 1, name: '外出' },
+				            { code: 2, name: '育児' },
+				            { code: 3, name: '介護' },
+				            { code: 4, name: '応援' }
 				        ]),
 						optionsValue: 'code',
 						optionsText: 'name',
-						value: ko.observable(0),
+						value: stampAtr,
 						enable: true }"></div>
 		</div>
 	</div>
 	<div class="table m5-table">
 		<div class="cell m5-column1">
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KDL001_3')}</div>
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_17')}</div>
 		</div>
 		<div class="cell m5-column2">
-			<div id="m5-div-a" style="display: none">
-				<table id="m5-table-a">
-					<thead>
-						<tr>
-							<td></td>
-							<td>
-								<span class="label">Demo</span>
-							</td>
-							<td>
-								<span class="label">Demo</span>
-							</td>
-						</tr>
-					</thead>
-					<tbody data-bind="foreach: [0,1,2,3,4,5,6,7,8,9]">
-						<tr>
-							<td>
-								<span class="label">Demo</span>	
-							</td>
-							<td>
-								<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
-														name: 'Time With Day', 
-														constraint:'TimeWithDayAttr', 
-														value: ko.observable(1200) }" />	
-								<button>Normal</button>
-								<span class="label">Demo</span>	
-							</td>
-							<td>
-								<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
-														name: 'Time With Day', 
-														constraint:'TimeWithDayAttr', 
-														value: ko.observable(1200) }" />	
-								<button>Normal</button>
-								<span class="label">Demo</span>	
-							</td>
-						</tr>	
-					</tbody>
-				</table>	
-				<div id="m5-backgroud-a"></div>
+			<div data-bind="if: stampAtr() == 0">
+				<div id="m5-div-a">
+					<div id="m5-backgroud-a"></div>
+					<table id="m5-table-a">
+						<thead>
+							<tr>
+								<td></td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_22')}</span>
+								</td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_23')}</span>
+								</td>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: appStampList">
+							<tr>
+								<td>
+									<span class="label">Demo</span>	
+								</td>
+								<td>
+									<div class="m5-inline-div">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: startTimeDisp }"></div>
+										<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+																name: 'Time With Day', 
+																constraint:'TimeWithDayAttr', 
+																value: startTime,
+																required: true,
+																enable: startTimeDisp }" />	
+									</div>
+									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: startLocationDisp }"></div>
+										<button data-bind="click: function(){ $parent.openSelectLocationDialog('start', $index()) }, enable: startLocationDisp">#{i18n.getText('KAF002_14')}</button>
+										<span class="label" data-bind="text: startLocation, css: { m5DisableEdit: !startLocationDisp() }"></span>	
+									</div>
+								</td>
+								<td>
+									<div class="m5-inline-div">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: endTimeDisp }"></div>
+										<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+																name: 'Time With Day', 
+																constraint:'TimeWithDayAttr', 
+																value: endTime,
+																required: true,
+																enable: endTimeDisp }" />
+									</div>
+									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: endLocationDisp }"></div>
+										<button data-bind="click: function(){ $parent.openSelectLocationDialog('end', $index()) }, enable: endLocationDisp">#{i18n.getText('KAF002_14')}</button>
+										<span class="label" data-bind="text: endLocation, css: { m5DisableEdit: !endLocationDisp() }"></span>	
+									</div>
+								</td>
+							</tr>	
+						</tbody>
+					</table>	
+				</div>
 			</div>
-			<div id="m5-div-b" style="display: none">
-				<table id="m5-table-b">
-					<thead>
-						<tr>
-							<td></td>
-							<td>
-								<span class="label">Demo</span>
-							</td>
-							<td>
-								<span class="label">Demo</span>
-							</td>
-							<td>
-								<span class="label">Demo</span>
-							</td>
-						</tr>
-					</thead>
-					<tbody data-bind="foreach: [0,1,2,3,4,5,6,7,8]">
-						<tr>
-							<td>
-								<span class="label">Demo</span>	
-							</td>
-							<td>
-								<span class="m5-combo-box" data-bind="ntsComboBox: {
-											options: ko.observableArray([
-								                { code: 0, name: '前日' },
-								                { code: 1, name: '当日' },
-								                { code: 2, name: '翌日' },
-								                { code: 3, name: '翌々日' }
-								            ]),
-											optionsValue: 'code',
-											value: ko.observable(0),
-											optionsText: 'name',
-											enable: true,
-											columns: [
-												{ prop: 'name', length: 3 },
-											]}"></span>	
-							</td>
-							<td>
-								<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
-														name: 'Time With Day', 
-														constraint:'TimeWithDayAttr', 
-														value: ko.observable(1200) }" />	
-								<button>Normal</button>
-								<span class="label">Demo</span>	
-							</td>
-							<td>
-								<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
-														name: 'Time With Day', 
-														constraint:'TimeWithDayAttr', 
-														value: ko.observable(1200) }" />	
-								<button>Normal</button>
-								<span class="label">Demo</span>	
-							</td>
-						</tr>	
-					</tbody>
-				</table>
-				<div id="m5-backgroud-b"></div>	
+			<div data-bind="if: stampAtr() == 1">
+				<div id="m5-div-b">
+					<div id="m5-backgroud-b"></div>	
+					<table id="m5-table-b">
+						<thead>
+							<tr>
+								<td></td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_24')}</span>
+								</td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_22')}</span>
+								</td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_23')}</span>
+								</td>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: appStampList">
+							<tr>
+								<td>
+									<span class="label" data-bind="text: '外出時間 '+($index()+1)"></span>	
+								</td>
+								<td>
+									<span class="m5-combo-box" data-bind="ntsComboBox: {
+												options: ko.observableArray([
+									                { code: 0, name: '#{i18n.getText('KAF002_40')}' },
+										            { code: 1, name: '#{i18n.getText('KAF002_41')}' },
+										            { code: 2, name: '#{i18n.getText('KAF002_42')}' },
+										            { code: 3, name: '#{i18n.getText('KAF002_43')}' }
+									            ]),
+												optionsValue: 'code',
+												value: ko.observable(0),
+												optionsText: 'name',
+												enable: true,
+												columns: [
+													{ prop: 'name', length: 3 },
+												]}"></span>	
+								</td>
+								<td>
+									<div class="m5-inline-div">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: startTimeDisp }"></div>
+										<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+																name: 'Time With Day', 
+																constraint:'TimeWithDayAttr', 
+																value: startTime,
+																required: true,
+																enable: startTimeDisp }" />	
+									</div>
+									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: startLocationDisp }"></div>
+										<button data-bind="click: function(){ $parent.openSelectLocationDialog('start', $index()) }, enable: startLocationDisp">#{i18n.getText('KAF002_14')}</button>
+										<span class="label" data-bind="text: startLocation, css: { m5DisableEdit: !startLocationDisp() }"></span>	
+									</div>
+								</td>
+								<td>
+									<div class="m5-inline-div">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: endTimeDisp }"></div>
+										<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+																name: 'Time With Day', 
+																constraint:'TimeWithDayAttr', 
+																value: endTime,
+																required: true,
+																enable: endTimeDisp }" />
+									</div>
+									<div class="m5-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: endLocationDisp }"></div>
+										<button data-bind="click: function(){ $parent.openSelectLocationDialog('end', $index()) }, enable: endLocationDisp">#{i18n.getText('KAF002_14')}</button>
+										<span class="label" data-bind="text: endLocation, css: { m5DisableEdit: !endLocationDisp() }"></span>	
+									</div>	
+								</td>
+							</tr>	
+						</tbody>
+					</table>
+				</div>
 			</div>
-			<div id="m5-div-c" style="display: none">
-				<table id="m5-table-c">
-					<thead>
-						<tr>
-							<td></td>
-							<td>
-								<span class="label">Demo</span>
-							</td>
-							<td>
-								<span class="label">Demo</span>
-							</td>
-						</tr>
-					</thead>
-					<tbody data-bind="foreach: [0,1,2,3,4,5,6,7,8,9]">
-						<tr>
-							<td>
-								<span class="label">Demo</span>	
-							</td>
-							<td>
-								<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
-														name: 'Time With Day', 
-														constraint:'TimeWithDayAttr', 
-														value: ko.observable(1200) }" />	
-							</td>
-							<td>
-								<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
-														name: 'Time With Day', 
-														constraint:'TimeWithDayAttr', 
-														value: ko.observable(1200) }" />
-							</td>
-						</tr>	
-					</tbody>
-				</table>	
-				<div id="m5-backgroud-c"></div>
+			<div data-bind="if: stampAtr() == 2">
+				<div id="m5-div-c">
+					<div id="m5-backgroud-c"></div>
+					<table id="m5-table-c">
+						<thead>
+							<tr>
+								<td></td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_22')}</span>
+								</td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_23')}</span>
+								</td>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: appStampList">
+							<tr>
+								<td>
+									<span class="label" data-bind="text: '育児時間 '+($index()+1)"></span>	
+								</td>
+								<td>
+									<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: startTimeDisp }"></div>
+									<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+															name: 'Time With Day', 
+															constraint:'TimeWithDayAttr', 
+															value: startTime,
+															required: true,
+															enable: startTimeDisp }" />	
+								</td>
+								<td>
+									<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: endTimeDisp }"></div>
+									<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+															name: 'Time With Day', 
+															constraint:'TimeWithDayAttr', 
+															value: endTime,
+															required: true,
+															enable: endTimeDisp }" />
+								</td>
+							</tr>	
+						</tbody>
+					</table>	
+				</div>
 			</div>
-			<div id="m5-div-d" style="display: none">
-				<table id="m5-table-d">
-					<thead>
-						<tr>
-							<td></td>
-							<td>
-								<span class="label">Demo</span>
-							</td>
-							<td>
-								<span class="label">Demo</span>
-							</td>
-						</tr>
-					</thead>
-					<tbody data-bind="foreach: [0,1,2,3,4,5,6,7,8,9]">
-						<tr>
-							<td>
-								<span class="label">Demo</span>	
-							</td>
-							<td>
-								<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
-														name: 'Time With Day', 
-														constraint:'TimeWithDayAttr', 
-														value: ko.observable(1200) }" />	
-							</td>
-							<td>
-								<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
-														name: 'Time With Day', 
-														constraint:'TimeWithDayAttr', 
-														value: ko.observable(1200) }" />
-							</td>
-						</tr>	
-					</tbody>
-				</table>	
-				<div id="m5-backgroud-d"></div>
+			<div data-bind="if: stampAtr() == 3">
+				<div id="m5-div-d">
+					<div id="m5-backgroud-d"></div>
+					<table id="m5-table-d">
+						<thead>
+							<tr>
+								<td></td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_22')}</span>
+								</td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_23')}</span>
+								</td>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: appStampList">
+							<tr>
+								<td>
+									<span class="label" data-bind="text: '介護時間 '+($index()+1)"></span>	
+								</td>
+								<td>
+									<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: startTimeDisp }"></div>
+									<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+															name: 'Time With Day', 
+															constraint:'TimeWithDayAttr', 
+															value: startTime,
+															required: true,
+															enable: startTimeDisp }" />	
+								</td>
+								<td>
+									<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: endTimeDisp }"></div>
+									<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+															name: 'Time With Day', 
+															constraint:'TimeWithDayAttr', 
+															value: endTime,
+															required: true,
+															enable: endTimeDisp }" />
+								</td>
+							</tr>	
+						</tbody>
+					</table>	
+				</div>
 			</div>
-			<div id="m5-div-e" style="display: ">
-				<table id="m5-table-e">
-					<thead>
-						<tr>
-							<td></td>
-							<td>
-								<span class="label">Demo</span>
-							</td>
-							<td>
-								<span class="label">Demo</span>
-							</td>
-							<td>
-								<span class="label">Demo</span>
-							</td>
-							<td>
-								<span class="label">Demo</span>
-							</td>
-						</tr>
-					</thead>
-					<tbody data-bind="foreach: [0,1,2,3,4,5,6,7,8,9]">
-						<tr>
-							<td>
-								<span class="label">Demo</span>	
-							</td>
-							<td>
-								<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
-														name: 'Time With Day', 
-														constraint:'TimeWithDayAttr', 
-														value: ko.observable(1200) }" />	
-							</td>
-							<td>
-								<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
-														name: 'Time With Day', 
-														constraint:'TimeWithDayAttr', 
-														value: ko.observable(1200) }" />
-							</td>
-							<td>	
-								<button>Normal</button>
-								<span class="label">Demo</span>	
-							</td>
-							<td>
-								<button>Normal</button>
-								<span class="label">Demo</span>	
-							</td>
-						</tr>	
-					</tbody>
-				</table>	
-				<div id="m5-backgroud-e"></div>
-			</div>
+			<div data-bind="if: stampAtr() == 4">
+				<div id="m5-div-e" data-bind="style: { width: stampPlaceDisplay() == 1 ? '874px' : '653px' }">
+					<div id="m5-backgroud-e"></div>
+					<table id="m5-table-e">
+						<thead>
+							<tr>
+								<td></td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_22')}</span>
+								</td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_23')}</span>
+								</td>
+								<td>
+									<span class="label">#{i18n.getText('KAF002_25')}</span>
+								</td>
+								<td data-bind="style: { display: stampPlaceDisplay() == 1 ? '' : 'none' }">
+									<span class="label">#{i18n.getText('KAF002_26')}</span>
+								</td>
+							</tr>
+						</thead>
+						<tbody data-bind="foreach: appStampList">
+							<tr>
+								<td>
+									<span class="label" data-bind="text: '応援時間 '+($index()+1)"></span>	
+								</td>
+								<td>
+									<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: startTimeDisp }"></div>
+									<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+															name: 'Time With Day', 
+															constraint:'TimeWithDayAttr', 
+															value: startTime,
+															required: true,
+															enable: startTimeDisp }" />	
+								</td>
+								<td>
+									<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: endTimeDisp }"></div>
+									<input class="m5-time-editor" data-bind="ntsTimeWithDayEditor: { 
+															name: 'Time With Day', 
+															constraint:'TimeWithDayAttr', 
+															value: endTime,
+															required: true,
+															enable: endTimeDisp }" />
+								</td>
+								<td>	
+									<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: supportCardDisp }"></div>
+									<button data-bind="click: function(){ $parent.openSelectCardDialog($index()) }, enable: supportCardDisp">#{i18n.getText('KAF002_15')}</button>
+									<span class="label" data-bind="text: supportCard, css: { m5DisableEdit: !supportCardDisp() }"></span>	
+								</td>
+								<td data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? '' : 'none' }">
+									<div data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? 'inline-block' : 'none' }">
+										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: supportLocationDisp }"></div>
+										<button data-bind="click: function(){ $parent.openSelectLocationDialog('support', $index()) }, enable: supportLocationDisp">#{i18n.getText('KAF002_14')}</button>
+										<span class="label" data-bind="text: supportLocation, css: { m5DisableEdit: !supportLocationDisp() }"></span>	
+									</div>
+								</td>
+							</tr>	
+						</tbody>
+					</table>	
+				</div>
+			</div>		
 		</div>
 	</div>
 </div>

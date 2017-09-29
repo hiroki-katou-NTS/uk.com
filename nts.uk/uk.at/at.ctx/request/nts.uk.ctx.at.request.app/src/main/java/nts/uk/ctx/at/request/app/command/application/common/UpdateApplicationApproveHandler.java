@@ -3,26 +3,15 @@ package nts.uk.ctx.at.request.app.command.application.common;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-
-import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.app.command.CommandHandler;
-import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeProcessRegister;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateApplicationApproveHandler extends CommandHandler<UpdateApplicationCommand> {
+public class UpdateApplicationApproveHandler {
 
 	@Inject
 	private ApplicationRepository appRepo;
@@ -34,11 +23,12 @@ public class UpdateApplicationApproveHandler extends CommandHandler<UpdateApplic
 	@Inject 
 	private AfterApprovalProcess afterApprovalProcessRepo;
 	
-	@Override
-	protected void handle(CommandHandlerContext<UpdateApplicationCommand> context) {
+
+	public void approveApp(String appID) {
 		String companyID = AppContexts.user().companyId();
-		UpdateApplicationCommand appCommand = context.getCommand();
-		Application application = appCommand.toDomain();
+		
+		Application application = appRepo.getAppById(companyID, appID).get();
+
 		//if approve
 		//4-1.
 		beforeRegisterRepo.processBeforeDetailScreenRegistration(
@@ -46,27 +36,17 @@ public class UpdateApplicationApproveHandler extends CommandHandler<UpdateApplic
 				application.getApplicantSID(), 
 				application.getApplicationDate(), 
 				1, 
-				appCommand.getApplicationID(),
+				appID,
 				application.getPrePostAtr());
 
 		//8.2.1.
-		afterApprovalProcessRepo.invidialApplicationErrorCheck(appCommand.getApplicationID());
+		afterApprovalProcessRepo.invidialApplicationErrorCheck(appID);
 		//8.2.2.
-		afterApprovalProcessRepo.invidialApplicationUpdate(appCommand.getApplicationID());
+		afterApprovalProcessRepo.invidialApplicationUpdate(appID);
 		//8-2.
 		afterApprovalProcessRepo.detailScreenAfterApprovalProcess(companyID, 
-				appCommand.getApplicationID(), 
+				appID, 
 				application);
-	
-//		Optional<Application> app = appRepo.getAppById(companyID, appCommand.getApplicationID());
-//		
-//		
-//		if(app.isPresent()) {
-//			appRepo.updateApplication(application);
-//		}else {
-//			throw new BusinessException("K ton tai");
-//		}
-		
 	}
 
 }

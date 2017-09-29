@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.app.find.setting.applicationreason;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 
 /**
  * 申請定型理由
@@ -17,7 +18,7 @@ public class ApplicationReasonDto {
 	 * 申請種類
 	 */
 	int appType;
-	
+
 	/**
 	 * 理由ID
 	 */
@@ -34,6 +35,20 @@ public class ApplicationReasonDto {
 	 * 既定
 	 */
 	int defaultFlg;
-	
-		
+
+	/**
+	 * 
+	 * @param domain
+	 * @return
+	 */
+	public static ApplicationReasonDto convertToDto(ApplicationReason domain) {
+		return new ApplicationReasonDto(
+				domain.getCompanyId(), 
+				domain.getAppType().value, 
+				domain.getReasonID(),
+				domain.getDispOrder(), 
+				domain.getReasonTemp(), 
+				domain.getDefaultFlg().value);
+	}
+
 }

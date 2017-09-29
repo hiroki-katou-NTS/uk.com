@@ -5,9 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -24,11 +22,7 @@ public class AfterDetailScreenProcessFinder {
 	@Inject
 	private AppApprovalPhaseRepository appApprovalPhaseRepository;
 	
-	public Optional<AfterDetailScreenProcessDto> findByCode(){
-		String companyID = AppContexts.user().companyId();
-		String appID = IdentifierUtil.randomUniqueId();
-		String phaseID = IdentifierUtil.randomUniqueId();
-		
+	public Optional<AfterDetailScreenProcessDto> findByCode(String companyID , String appID , String phaseID){
 		return this.appApprovalPhaseRepository
 				.findByCode(companyID, appID, phaseID)
 				.map(appApprovalPhase -> AfterDetailScreenProcessDto.fromDomain(appApprovalPhase) );

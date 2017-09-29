@@ -4,7 +4,6 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 /**
@@ -29,7 +28,6 @@ public class ApprovalPhase extends AggregateRoot{
 	private int orderNumber;
 	
 	/**承認者*/
-	@Setter
 	private List<Approver>  approvers;
 	
 	public static ApprovalPhase createSimpleFromJavaType(String companyId,
@@ -37,15 +35,23 @@ public class ApprovalPhase extends AggregateRoot{
 			String approvalPhaseId,
 			int approvalForm,
 			int browsingPhase,
-			int orderNumber){
+			int orderNumber,
+			List<Approver>  approvers){
 		return new ApprovalPhase(companyId,
 				branchId,
 				approvalPhaseId,
 				EnumAdaptor.valueOf(approvalForm, ApprovalForm.class),
 				browsingPhase,
-				orderNumber, null);
+				orderNumber, approvers);
 	}
 	public void updateBranchId(String branchId){
 		this.branchId = branchId;
+	}
+	public void updateAppPhaseId(String approvalPhaseId){
+		this.approvalPhaseId = approvalPhaseId;
+	}
+	
+	public void addApproverList(List<Approver> approvers) {
+		this.approvers = approvers;
 	}
 }

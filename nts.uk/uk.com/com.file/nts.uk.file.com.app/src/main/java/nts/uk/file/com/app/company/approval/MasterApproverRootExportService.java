@@ -15,25 +15,27 @@ import nts.uk.shr.com.context.AppContexts;
 public class MasterApproverRootExportService extends ExportService<MasterApproverRootQuery> {
 	@Inject
 	private MasterApproverRootOutputGenerator masterGenerator;
-	
+
 	@Inject
 	private ApproverRootMaster masterRoot;
 
 	@Override
 	protected void handle(ExportServiceContext<MasterApproverRootQuery> context) {
 		MasterApproverRootQuery query = context.getQuery();
-
 		String companyID = AppContexts.user().companyId();
-//		MasterApproverRootOutput masterApp = this.masterRoot.getMasterInfo(companyID, query.getBaseDate(),
-//				query.isChkCompany(), query.isChkWorkplace(), query.isChkPerson());
-		MasterApproverRootOutput masterApp = this.masterRoot.masterInfors(companyID, query.getBaseDate(), query.isChkCompany(), query.isChkWorkplace(), query.isChkPerson());
-		if(masterApp.getCompanyRootInfor().getLstComs().isEmpty()
-				&& masterApp.getWorplaceRootInfor().isEmpty()
+		
+		// get data
+		MasterApproverRootOutput masterApp = this.masterRoot.masterInfors(companyID, query.getBaseDate(),
+				query.isChkCompany(), query.isChkWorkplace(), query.isChkPerson());
+		
+		// check condition
+		if (masterApp.getCompanyRootInfor() == null && masterApp.getWorplaceRootInfor().isEmpty()
 				&& masterApp.getPersonRootInfor().isEmpty()) {
 			throw new BusinessException("Msg_7");
 		}
-			
-		val dataSource = new MasterApproverRootOutputDataSource(masterApp);
+
+		val dataSource = new MasterApproverRootOutputDataSource(masterApp, query.isChkCompany(), query.isChkPerson(),
+				query.isChkWorkplace());
 
 		// generate file
 		this.masterGenerator.generate(context.getGeneratorContext(), dataSource);

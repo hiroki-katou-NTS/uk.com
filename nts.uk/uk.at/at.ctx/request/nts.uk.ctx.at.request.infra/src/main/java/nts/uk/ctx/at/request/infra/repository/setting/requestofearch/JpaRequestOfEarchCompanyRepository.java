@@ -20,7 +20,7 @@ public class JpaRequestOfEarchCompanyRepository extends JpaRepository implements
 
 	private static final String FIND = "SELECT c "
 			+ "FROM KrqstComAppConfig c "
-			+ "WHERE c.krqstComAppConfigPK.companyId = :companyId ";
+			+ "WHERE c.companyId = :companyId ";
 	private static final String FINDDETAIL = "SELECT C "
 			+ "FROM KrqstComAppConfigDetail c "
 			+ "WHERE c.krqstWpAppConfigDetailPK.companyId = :companyId "

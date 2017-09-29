@@ -1,11 +1,8 @@
 package nts.uk.ctx.at.request.app.find.application.lateorleaveearly;
 
-import lombok.Setter;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
-import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 /**
  * 
  * @author hieult
@@ -19,6 +16,9 @@ public class LateOrLeaveEarlyDto {
 		
 		/** 申請ID */
 		private String appID;
+		
+		 /** 申請理由ID */
+			private String appReasonID;
 		
 		/** 申請者*/
 		private String applicantName;
@@ -53,20 +53,17 @@ public class LateOrLeaveEarlyDto {
 		
 		/** 遅刻時刻2 */
 		private int lateTime2;
-		
-		/** 定型理由 typicalReason :DB reasonTemp */ 
-		
-		private String reasonTemp;
-		
+				
 		/** 申請理由 appReason */
-		
 		private String appReason;
-		
-		
-		public static LateOrLeaveEarlyDto fromDomain ( LateOrLeaveEarly domain, ApplicationReason appReason){
-			return	 new LateOrLeaveEarlyDto(
+				
+		public static LateOrLeaveEarlyDto fromDomain(LateOrLeaveEarly domain){
+			String appReasonID = domain.getApplicationReason().v().split(":")[0];
+			String appReasonString = domain.getApplicationReason().v().substring(appReasonID.length() + 1);
+			return new LateOrLeaveEarlyDto(
 					domain.getCompanyID(),
 					domain.getAppID(),
+					appReasonID,
 					//Get ApplicationName
 					domain.getApplicantSID(),
 					domain.getApplicationDate(),
@@ -79,8 +76,7 @@ public class LateOrLeaveEarlyDto {
 					domain.getEarlyTime2().minute(),
 			    	domain.getLate2().value,
 			    	domain.getLateTime2().minute(),
-			    	appReason.reasonTemp,
-					domain.getApplicationReason().v());
+			    	appReasonString);
 			
 	
 		

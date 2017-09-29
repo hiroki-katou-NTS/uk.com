@@ -5,6 +5,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.ScreenA
 
 public interface AfterProcessDelete {
 
-	public ScreenAfterDelete screenAfterDelete (Application applicationData , String appID);
+	public ScreenAfterDelete screenAfterDelete (String appID);
 
 }

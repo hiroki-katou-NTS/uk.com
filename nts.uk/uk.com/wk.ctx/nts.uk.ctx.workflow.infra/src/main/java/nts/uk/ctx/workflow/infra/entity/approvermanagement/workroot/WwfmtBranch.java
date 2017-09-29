@@ -24,7 +24,7 @@ public class WwfmtBranch extends UkJpaEntity implements Serializable{
 	@EmbeddedId
 	public WwfmtBranchPK wwfmtBranchPK;
 	/**番号*/
-	@Column(name = "NUMBER")
+	@Column(name = "BRANCH_NO")
 	public int number;
 
 	@Override
