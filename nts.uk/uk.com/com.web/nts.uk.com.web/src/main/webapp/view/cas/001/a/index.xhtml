@@ -32,7 +32,8 @@
 						data-bind="click:OpenCModal,enable:(personRoleList().length &gt; 0)">#{i18n.getText('CAS001_4')}</button>
 					<!-- 	<button id="A1_004" class="danger">#{i18n.getText('CAS001_5')}</button> -->
 					<div class="float-right">
-						<a id="A1_005" class="goout " data-bind="ntsLinkButton: { }">#{i18n.getText('CAS001_6')}</a>
+						<a id="A1_005" class="goout "
+							data-bind="ntsLinkButton: { jump: '/view/cps/001/a/index.xhtml' }">#{i18n.getText('CAS001_6')}</a>
 					</div>
 				</div>
 			</div>
@@ -364,8 +365,6 @@
 														columns: [
 															{ prop: 'name', length: 5 },
 														]}"></div></td>
-
-
 															</tr>
 														</table>
 													</com:ko-if>
