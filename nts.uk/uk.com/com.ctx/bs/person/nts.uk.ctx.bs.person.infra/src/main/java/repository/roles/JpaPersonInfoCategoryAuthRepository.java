@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implements PersonInfoCategoryAuthRepository {
 
 	private final String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
-			+ " CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
+			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, cm.personEmployeeType,"
 			+ " CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NOT NULL  THEN 'True' ELSE 'False' END AS IsConfig,"
 			+ "(select count(ii) from PpemtPerInfoItem ii where ii.perInfoCtgId=c.ppemtPerInfoCtgPK.perInfoCtgId and  ii.abolitionAtr =0) as count_i ,"
 			+ "(select count(ia) from PpemtPersonItemAuth ia where ia.ppemtPersonItemAuthPk.personInfoCategoryAuthId=c.ppemtPerInfoCtgPK.perInfoCtgId and ia.ppemtPersonItemAuthPk.roleId=p.ppemtPersonCategoryAuthPk.roleId) as count_ia"
@@ -49,7 +49,6 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 
 	private final String DEL_BY_ROLE_ID = " DELETE  FROM PpemtPersonCategoryAuth c"
 			+ " WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId";
-
 
 	private static PersonInfoCategoryAuth toDomain(PpemtPersonCategoryAuth entity) {
 		val domain = PersonInfoCategoryAuth.createFromJavaType(entity.ppemtPersonCategoryAuthPk.roleId,
