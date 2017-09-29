@@ -6,12 +6,20 @@ package nts.uk.ctx.at.schedule.app.command.shift.autocalsetting;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSettingGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.TimeLimitUpperLimitSetting;
 
 /**
  * The Class AutoCalOvertimeSettingDto.
+ */
+
+/**
+ * Sets the legal mid ot time.
+ *
+ * @param legalMidOtTime the new legal mid ot time
  */
 @Setter
 
@@ -20,8 +28,14 @@ import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalSetting;
  *
  * @return the legal mid ot time
  */
+
+/**
+ * Gets the legal mid ot time.
+ *
+ * @return the legal mid ot time
+ */
 @Getter
-public class AutoCalOvertimeSettingDto  {
+public class AutoCalOvertimeSettingDto {
 
 	/** The early ot time. */
 	// 早出残業時間
@@ -79,34 +93,59 @@ public class AutoCalOvertimeSettingDto  {
 			this.command = command;
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSettingGetMemento#getEarlyOtTime()
+		 */
 		@Override
 		public AutoCalSetting getEarlyOtTime() {
-			return this.command.getEarlyOtTime().toDomain();
+			return new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(command.getEarlyOtTime().getUpLimitOtSet()),
+					AutoCalAtrOvertime.valueOf(command.getEarlyOtTime().getCalAtr()));
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSettingGetMemento#getEarlyMidOtTime()
+		 */
 		@Override
 		public AutoCalSetting getEarlyMidOtTime() {
-			return this.command.getEarlyMidOtTime().toDomain();
+			return new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(command.getEarlyMidOtTime().getUpLimitOtSet()),
+					AutoCalAtrOvertime.valueOf(command.getEarlyMidOtTime().getCalAtr()));
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSettingGetMemento#getNormalOtTime()
+		 */
 		@Override
 		public AutoCalSetting getNormalOtTime() {
-			return this.command.getNormalOtTime().toDomain();
+			return new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(command.getNormalOtTime().getUpLimitOtSet()),
+					AutoCalAtrOvertime.valueOf(command.getNormalOtTime().getCalAtr()));
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSettingGetMemento#getNormalMidOtTime()
+		 */
 		@Override
 		public AutoCalSetting getNormalMidOtTime() {
-			return this.command.getNormalMidOtTime().toDomain();
+			return new AutoCalSetting(
+					TimeLimitUpperLimitSetting.valueOf(command.getNormalMidOtTime().getUpLimitOtSet()),
+					AutoCalAtrOvertime.valueOf(command.getNormalMidOtTime().getCalAtr()));
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSettingGetMemento#getLegalOtTime()
+		 */
 		@Override
 		public AutoCalSetting getLegalOtTime() {
-			return this.command.getLegalOtTime().toDomain();
+			return new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(command.getLegalOtTime().getUpLimitOtSet()),
+					AutoCalAtrOvertime.valueOf(command.getLegalOtTime().getCalAtr()));
 		}
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSettingGetMemento#getLegalMidOtTime()
+		 */
 		@Override
 		public AutoCalSetting getLegalMidOtTime() {
-			return this.command.getLegalMidOtTime().toDomain();
+			return new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(command.getLegalMidOtTime().getUpLimitOtSet()),
+					AutoCalAtrOvertime.valueOf(command.getLegalMidOtTime().getCalAtr()));
 		}
 	}
 }

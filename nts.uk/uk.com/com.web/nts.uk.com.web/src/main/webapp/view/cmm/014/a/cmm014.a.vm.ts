@@ -1,8 +1,8 @@
 module cmm014.a.viewmodel {
-
+        
     export class ScreenModel {
 
-        dataSource: KnockoutObservableArray<viewmodel.model.ClassificationDto>;
+        dataSource: KnockoutObservableArray<viewmodel.model.ClassificationModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCode: KnockoutObservable<string>;
         currentCodeList: KnockoutObservableArray<any>;
@@ -14,6 +14,7 @@ module cmm014.a.viewmodel {
         itemdata_update: any;
         dirty: nts.uk.ui.DirtyChecker;
         notAlert: KnockoutObservable<boolean>;
+        
         constructor() {
             var self = this;
             self.dataSource = ko.observableArray([]);
@@ -25,7 +26,7 @@ module cmm014.a.viewmodel {
 
             self.currentCode = ko.observable(null);
             self.currentCodeList = ko.observableArray([]);
-            self.currentItem = ko.observable(new viewmodel.model.InputField(new viewmodel.model.ClassificationDto(), true));
+            self.currentItem = ko.observable(new viewmodel.model.InputField(new viewmodel.model.ClassificationModel(), true));
             self.multilineeditor = ko.observable(null);
             self.itemdata_add = ko.observable(null);
             self.itemdata_update = ko.observable(null);
@@ -33,7 +34,7 @@ module cmm014.a.viewmodel {
             self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
             self.notAlert = ko.observable(true);
 
-            self.currentCode.subscribe((function(codeChanged) {
+            self.currentCode.subscribe((codeChanged) => {
                 //self.currentItem(self.findObj(codeChanged));
                 if (codeChanged == null) {
                     return;
@@ -43,13 +44,15 @@ module cmm014.a.viewmodel {
                     return;
                 }
                 if (self.dirty.isDirty()) {
-                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
-                        self.currentItem(new viewmodel.model.InputField(self.findObj(codeChanged), false));
-                        self.dirty.reset();
-                    }).ifNo(function() {
-                        self.notAlert(false);
-                        self.currentCode(self.currentItem().INP_002_code());
-                    });
+                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
+                        .ifYes(() => {
+                            self.currentItem(new viewmodel.model.InputField(self.findObj(codeChanged), false));
+                            self.dirty.reset();
+                        })
+                        .ifNo(() => {
+                            self.notAlert(false);
+                            self.currentCode(self.currentItem().INP_002_code());
+                        });
                 } else {
                     self.currentItem(new viewmodel.model.InputField(self.findObj(codeChanged), false));
                     self.dirty.reset();
@@ -58,13 +61,13 @@ module cmm014.a.viewmodel {
                 if (self.currentItem() != null) {
                     self.hasCellphone(true);
                 }
-            }));
+            });
         }
 
         findObj(value: string): any {
             let self = this;
-            var itemModel = null;
-            _.find(self.dataSource(), function(obj: viewmodel.model.ClassificationDto) {
+            var itemModel: viewmodel.model.ClassificationModel = null;
+            _.find(self.dataSource(), (obj: viewmodel.model.ClassificationModel) => {
                 if (obj.classificationCode == value) {
                     itemModel = obj;
                 }
@@ -75,15 +78,18 @@ module cmm014.a.viewmodel {
         initRegisterClassification() {
             var self = this;
             if (self.dirty.isDirty()) {
-                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
-                    self.currentItem().refresh();
-                    self.dirty.reset();
-                    self.currentCode(null);
-                    $("#A_INP_002").focus();
-                    $("#test input").val("");
-                    self.hasCellphone(false);
-                }).ifNo(function() {
-                });
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
+                    .ifYes(() => {
+                        self.currentItem().refresh();
+                        self.dirty.reset();
+                        self.currentCode(null);
+                        $("#A_INP_002").focus();
+                        $("#test input").val("");
+                        self.hasCellphone(false);
+                    })
+                    .ifNo(() => {
+                        
+                    });
             } else {
                 self.currentItem().refresh();
                 self.dirty.reset();
@@ -108,49 +114,64 @@ module cmm014.a.viewmodel {
             return true;
         }
 
-        RegisterClassification() {
+        registerClassification() {
             var self = this;
             var dfd = $.Deferred<any>();
             if (self.checkInput()) {
                 if (self.dataSource().length === 0) {
-                    let classification = new viewmodel.model.ClassificationDto(self.currentItem().INP_002_code(), self.currentItem().INP_003_name(), self.currentItem().INP_004_notes());
-                    service.addClassification(classification).done(function() {
-                        self.getClassificationList_first();
-                    }).fail(function(res) {
-                        if (res.messageId == "ER05") {
-                            alert("入力したコードは既に存在しています。\r\n コードを確認してください。 ");
-                        }
-                        dfd.reject(res);
-                    })
+                    let classification = new viewmodel.model.ClassificationModel(
+                        self.currentItem().INP_002_code(), 
+                        self.currentItem().INP_003_name(), 
+                        self.currentItem().INP_004_notes());
+                    service.addClassification(classification)
+                        .done(() => {
+                            self.getClassificationList_first();
+                        })
+                        .fail((res: any) => {
+                            if (res.messageId == "ER05") {
+                                alert("入力したコードは既に存在しています。\r\n コードを確認してください。 ");
+                            }
+                            dfd.reject(res);
+                        });
                 }
                 for (let i = 0; i < self.dataSource().length; i++) {
                     if (self.currentItem().INP_002_code() == self.dataSource()[i].classificationCode && self.currentItem().INP_002_enable() == false) {
                         var classification_old = self.dataSource()[i];
-                        var classification_update = new viewmodel.model.ClassificationDto(self.currentItem().INP_002_code(), self.currentItem().INP_003_name(), self.currentItem().INP_004_notes());
-                        service.updateClassification(classification_update).done(function() {
-                            self.itemdata_update(classification_update);
-                            self.getClassificationList_afterUpdateClassification();
-                        }).fail(function(res) {
-                            if (res.messageId == "ER026") {
-                                alert("更新対象のデータが存在しません。");
-                            }
-                            dfd.reject(res);
-                        })
+                        var classification_update = new viewmodel.model.ClassificationModel(
+                            self.currentItem().INP_002_code(), 
+                            self.currentItem().INP_003_name(), 
+                            self.currentItem().INP_004_notes());
+                        service.updateClassification(classification_update)
+                            .done(() => {
+                                self.itemdata_update(classification_update);
+                                self.getClassificationList_afterUpdateClassification();
+                            })
+                            .fail((res: any) => {
+                                if (res.messageId == "ER026") {
+                                    alert("更新対象のデータが存在しません。");
+                                }
+                                dfd.reject(res);
+                            });
                         break;
                     } else if (self.currentItem().INP_002_code() != self.dataSource()[i].classificationCode
                         && i == self.dataSource().length - 1
                         && self.currentItem().INP_002_enable() == true) {
-                        var classification_new = new viewmodel.model.ClassificationDto(self.currentItem().INP_002_code(), self.currentItem().INP_003_name(), self.currentItem().INP_004_notes());
-                        service.addClassification(classification_new).done(function() {
-                            self.itemdata_add(classification_new);
-                            self.dirty.reset();
-                            self.getClassificationList_afterAddClassification();
-                        }).fail(function(res) {
-                            if (res.messageId == "ER05") {
-                                alert("入力したコードは既に存在しています。\r\n コードを確認してください。");
-                            }
-                            dfd.reject(res);
-                        })
+                        var classification_new = new viewmodel.model.ClassificationModel(
+                            self.currentItem().INP_002_code(), 
+                            self.currentItem().INP_003_name(), 
+                            self.currentItem().INP_004_notes());
+                        service.addClassification(classification_new)
+                            .done(() => {
+                                self.itemdata_add(classification_new);
+                                self.dirty.reset();
+                                self.getClassificationList_afterAddClassification();
+                            })
+                            .fail((res: any) => {
+                                if (res.messageId == "ER05") {
+                                    alert("入力したコードは既に存在しています。\r\n コードを確認してください。");
+                                }
+                                dfd.reject(res);
+                            });
                         break;
                     } else if (self.currentItem().INP_002_code() == self.dataSource()[i].classificationCode && self.currentItem().INP_002_enable() == true) {
                         alert("入力したコードは既に存在しています。\r\n コードを確認してください。  ");
@@ -162,16 +183,16 @@ module cmm014.a.viewmodel {
             }
         }
 
-        DeleteClassification() {
+        deleteClassification() {
             var self = this;
             var dfd = $.Deferred<any>();
             if (self.dataSource().length > 0) {
-                var item = new model.RemoveClassificationCommand(self.currentItem().INP_002_code());
+                var item = new viewmodel.model.RemoveClassificationCommand(self.currentItem().INP_002_code());
                 self.index_of_itemDelete = self.dataSource().indexOf(self.findObj(self.currentItem().INP_002_code()));
                 nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
-                    service.removeClassification(item).done(function(res) {
+                    service.removeClassification(item).done(function(res: any) {
                         self.getClassificationList_aftefDelete();
-                    }).fail(function(res) {
+                    }).fail(function(res: any) {
                         if (res.messageId == "ER06") {
                             alert("対象データがありません。");
                         }
@@ -187,7 +208,7 @@ module cmm014.a.viewmodel {
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
-            service.getAllClassification().done(function(classification_arr: Array<model.ClassificationDto>) {
+            service.findAllClassification().done(function(classification_arr: Array<viewmodel.model.ClassificationModel>) {
                 if (classification_arr.length > 0) {
                     self.dataSource(classification_arr);
                     self.currentCode(self.dataSource()[0].classificationCode);
@@ -196,7 +217,7 @@ module cmm014.a.viewmodel {
                     $("#A_INP_002").focus();
                 }
                 dfd.resolve();
-            }).fail(function(error) {
+            }).fail(function(error: any) {
                 alert(error.message);
             })
             dfd.resolve();
@@ -206,7 +227,7 @@ module cmm014.a.viewmodel {
         getClassificationList(): any {
             var self = this;
             var dfd = $.Deferred<any>();
-            service.getAllClassification().done(function(classification_arr: Array<model.ClassificationDto>) {
+            service.findAllClassification().done(function(classification_arr: Array<viewmodel.model.ClassificationModel>) {
                 self.dataSource(classification_arr);
                 self.currentItem().INP_002_code(self.dataSource()[0].classificationCode);
                 self.currentItem().INP_003_name(self.dataSource()[0].classificationName);
@@ -216,18 +237,18 @@ module cmm014.a.viewmodel {
                 }
                 self.notAlert(true);
                 dfd.resolve();
-            }).fail(function(error) {
+            }).fail(function(error: any) {
                 alert(error.message);
             })
             dfd.resolve();
             return dfd.promise();
-
         }
+        
         // get list Classification after insert
         getClassificationList_afterUpdateClassification(): any {
             var self = this;
             var dfd = $.Deferred<any>();
-            service.getAllClassification().done(function(classification_arr: Array<model.ClassificationDto>) {
+            service.findAllClassification().done(function(classification_arr: Array<viewmodel.model.ClassificationModel>) {
                 self.dataSource(classification_arr);
 
                 if (self.dataSource().length > 1) {
@@ -235,19 +256,19 @@ module cmm014.a.viewmodel {
                 }
 
                 dfd.resolve();
-            }).fail(function(error) {
+            }).fail(function(error: any) {
                 alert(error.message);
             })
             self.notAlert(true);
             dfd.resolve();
-            return dfd.promise();
-
+            return dfd.promise();  
         }
+        
         // get list Classification after insert
         getClassificationList_first(): any {
             var self = this;
             var dfd = $.Deferred<any>();
-            service.getAllClassification().done(function(classification_arr: Array<model.ClassificationDto>) {
+            service.findAllClassification().done(function(classification_arr: Array<viewmodel.model.ClassificationModel>) {
                 self.dataSource(classification_arr);
                 self.currentCode(self.dataSource()[0].classificationCode);
                 let i = self.dataSource().length;
@@ -259,36 +280,33 @@ module cmm014.a.viewmodel {
                 }
                 self.notAlert(true);
                 dfd.resolve();
-            }).fail(function(error) {
+            }).fail(function(error: any) {
                 alert(error.message);
             })
             dfd.resolve();
-            return dfd.promise();
-
+            return dfd.promise();   
         }
-
 
         // get list Classification after insert
         getClassificationList_afterAddClassification(): any {
             var self = this;
             var dfd = $.Deferred<any>();
-            service.getAllClassification().done(function(classification_arr: Array<model.ClassificationDto>) {
+            service.findAllClassification().done(function(classification_arr: Array<viewmodel.model.ClassificationModel>) {
                 self.dataSource(classification_arr);
 
                 self.currentCode(self.itemdata_add().classificationCode);
                 dfd.resolve();
-            }).fail(function(error) {
+            }).fail(function(error: any) {
                 alert(error.messageId);
             })
-            return dfd.promise();
-
+            return dfd.promise();  
         }
 
         // get list Classification after remove
         getClassificationList_aftefDelete(): any {
             var self = this;
             var dfd = $.Deferred<any>();
-            service.getAllClassification().done(function(classification_arr: Array<model.ClassificationDto>) {
+            service.findAllClassification().done(function(classification_arr: Array<viewmodel.model.ClassificationModel>) {
                 self.dataSource(classification_arr);
 
                 if (self.dataSource().length > 0) {
@@ -303,34 +321,32 @@ module cmm014.a.viewmodel {
                 }
                 self.notAlert(true);
                 dfd.resolve();
-            }).fail(function(error) {
+            }).fail(function(error: any) {
                 alert(error.message);
             })
             dfd.resolve();
-            return dfd.promise();
-
-        }
-
-
-    }
-
+            return dfd.promise();   
+        }      
+    }     
+    
     /**
-    *  model
+    * Model namespace.
     */
     export module model {
-
+        
         export class InputField {
             INP_002_enable: KnockoutObservable<boolean>;
             INP_003_name: KnockoutObservable<string>;
             INP_004_notes: KnockoutObservable<string>;
             INP_002_code: KnockoutObservable<string>;
-            constructor(classification: ClassificationDto, enable) {
+            
+            constructor(classification: ClassificationModel, enable: boolean) {
                 this.INP_002_code = ko.observable(classification.classificationCode);
                 this.INP_003_name = ko.observable(classification.classificationName);
                 this.INP_004_notes = ko.observable(classification.memo);
                 this.INP_002_enable = ko.observable(enable);
             }
-
+            
             refresh() {
                 var self = this;
                 self.INP_002_enable(true);
@@ -340,10 +356,11 @@ module cmm014.a.viewmodel {
             }
         }
 
-        export class ClassificationDto {
+        export class ClassificationModel {
             classificationCode: string;
             classificationName: string;
             memo: string;
+            
             constructor(classificationCode?: string, classificationName?: string, memo?: string) {
                 this.classificationCode = classificationCode;
                 this.classificationName = classificationName;
@@ -353,12 +370,10 @@ module cmm014.a.viewmodel {
 
         export class RemoveClassificationCommand {
             classificationCode: string;
+            
             constructor(classificationCode: string) {
                 this.classificationCode = classificationCode;
             }
-
         }
-    }
-
-
+    }    
 }

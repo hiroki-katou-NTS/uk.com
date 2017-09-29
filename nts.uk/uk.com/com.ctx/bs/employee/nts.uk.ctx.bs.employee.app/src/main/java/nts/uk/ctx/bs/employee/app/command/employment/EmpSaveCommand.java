@@ -32,6 +32,9 @@ public class EmpSaveCommand implements EmploymentGetMemento {
 	/** The memo. */
 	private String memo;
 	
+	/** The mode. */
+	private int mode;
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.employment.EmploymentGetMemento#getCompanyId()
 	 */

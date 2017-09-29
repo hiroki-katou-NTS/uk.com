@@ -55,9 +55,11 @@ public class MonthlyPatternUpdateCommandHandler extends CommandHandler<MonthlyPa
 				domain.getMonthlyPatternCode().v());
 		
 		// add
-		if(!monthlyPattern.isPresent()){
+		if (!monthlyPattern.isPresent()) {
 			this.repository.add(domain);
+			return;
 		}
+		
 		// call repository update domain
 		this.repository.update(domain);
 	}

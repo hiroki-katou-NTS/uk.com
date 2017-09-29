@@ -10,9 +10,14 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * The Class KshmtAutoWkpJobCal.
  */
+@Setter
+@Getter
 @Entity
 @Table(name = "KSHMT_AUTO_WKP_JOB_CAL")
 public class KshmtAutoWkpJobCal extends KshmtAutoCalSet implements Serializable {

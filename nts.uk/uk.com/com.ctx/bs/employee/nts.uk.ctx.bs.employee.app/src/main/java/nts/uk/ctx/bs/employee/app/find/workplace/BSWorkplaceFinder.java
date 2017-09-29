@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.app.find.workplace;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -14,6 +15,7 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceDto;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WorkplaceFinder.
@@ -42,5 +44,22 @@ public class BSWorkplaceFinder {
 			item.saveToMemento(wkpDto);
 			return wkpDto;
 		}).collect(Collectors.toList());
+	}
+	
+	/**
+	 * Find by workplace id.
+	 *
+	 * @param workplaceId the workplace id
+	 * @return the workplace dto
+	 */
+	public WorkplaceDto findByWorkplaceId(String workplaceId) {
+		String companyId = AppContexts.user().companyId();
+		Optional<Workplace> wkp = workplaceRepository.findByWorkplaceId(companyId, workplaceId);
+		if (wkp.isPresent()) {
+			WorkplaceDto wkpDto = new WorkplaceDto();
+			wkp.get().saveToMemento(wkpDto);
+			return wkpDto;
+		}
+		return null;
 	}
 }

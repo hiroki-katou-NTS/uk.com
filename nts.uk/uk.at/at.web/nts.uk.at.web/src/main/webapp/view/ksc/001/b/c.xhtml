@@ -6,7 +6,7 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-		<div class="contentView">
+		<div class="contentC">
 			<div>
 				<label>#{i18n.getText('KSC001_2')}</label>
 			</div>
@@ -21,47 +21,48 @@
 					enable: true }"></div>
 					<button class="helpButton" tabindex="-1" data-bind="ntsHelpButton: {image: '../image/IMG_KSC001_3.png', position: 'right top', enable: true }">?</button>
 			</div>
-			
-			<div class="radioboxCase">
-				<div data-bind="ntsRadioButton: {checked: checkAllCase, enable: true, optionText: '#{i18n.getText('KSC001_4')}' }" />
+			<div class="selectionCase">
+				<div class="radioboxCase">
+					<div data-bind="ntsRadioButton: {checked: checkAllCase, enable: true, optionText: '#{i18n.getText('KSC001_4')}' }" />
+				</div>
+				<div class="radioboxCase">
+					<div data-bind="ntsRadioButton: {checked: checkAllCase, enable: true, optionText: '#{i18n.getText('KSC001_5')}' }" />
+				</div>	
+					<div class="radioboxCase">
+					<label>#{i18n.getText('KSC001_6')}</label>
+				</div>
+				<div class="radioboxProcessClassification">
+					<div data-bind="ntsRadioButton: {checked: checkAllCase, enable: true, optionText: '#{i18n.getText('KSC001_7')}' }" />
+				</div>
+				<div class="radioboxProcessClassification">
+					<div data-bind="ntsRadioButton: {checked: checkAllCase, enable: true, optionText: '#{i18n.getText('KSC001_8')}' }" />
+				</div>	
+				
+				<div class="checkboxSetting">
+					<div class="checkboxOne" data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_15')}</div>
+					<div data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_13')}</div>
+				</div>
+				<div class="checkboxSetting">
+					<div class="checkboxOne" data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_11')}</div>
+					<div data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_14')}</div>
+				</div>
+				<div class="checkboxSetting">
+					<div class="checkboxOne" data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_12')}</div>
+					<div data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_16')}</div>
+				</div>
 			</div>
-			<div class="radioboxCase">
-				<div data-bind="ntsRadioButton: {checked: checkAllCase, enable: true, optionText: '#{i18n.getText('KSC001_5')}' }" />
-			</div>	
-			
-			<div class="radioboxCase">
-				<label>#{i18n.getText('KSC001_6')}</label>
-			</div>
-			<div class="radioboxProcessClassification">
-				<div data-bind="ntsRadioButton: {checked: checkAllCase, enable: true, optionText: '#{i18n.getText('KSC001_7')}' }" />
-			</div>
-			<div class="radioboxProcessClassification">
-				<div data-bind="ntsRadioButton: {checked: checkAllCase, enable: true, optionText: '#{i18n.getText('KSC001_8')}' }" />
-			</div>	
-			
-			<div class="checkboxSetting">
-				<div class="checkboxOne" data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_15')}</div>
-				<div data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_13')}</div>
-			</div>
-			<div class="checkboxSetting">
-				<div class="checkboxOne" data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_11')}</div>
-				<div data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_14')}</div>
-			</div>
-			<div class="checkboxSetting">
-				<div class="checkboxOne" data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_12')}</div>
-				<div data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_16')}</div>
-			</div>
-			
 			<div class="checkboxSettingEnd">
 				<div data-bind="ntsCheckBox: { checked: checkAllCase }">#{i18n.getText('KSC001_17')}</div>
 			</div>
-			
 			<div class="labelSettingEnd">
 				<label>#{i18n.getText('KSC001_18')}</label>
 			</div>
-			
-			<button class="large">#{i18n.getText('KSC001_19')}</button>
-			<button class="proceed x-large">#{i18n.getText('KSC001_20')}</button>
+			<div class="buttonBeginPrevious">
+				<button data-bind="click: previousPageC">#{i18n.getText('KSC001_19')}</button>
+			</div>
+			<div class="buttonBeginNext">
+				<button class="proceed large" data-bind="click: nextPageC">#{i18n.getText('KSC001_20')}</button>
+			</div>
 		</div>
 		
 	</ui:composition>

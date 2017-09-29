@@ -10,32 +10,16 @@ module nts.uk.at.view.kdl023.viewmodel {
 
         reflectionSetting: PatternReflection;
         listWorkType: KnockoutObservableArray<baseService.model.WorkType>;
+        returnedSetting: PatternReflection;
 
         constructor() {
             let self = this;
             self.patternList = ko.observableArray([]);
 
             // Default pattern reflection setting
-            let data = {
-                calendarStartDate: moment().startOf('month').format('YYYY-MM-DD'),
-                calendarEndDate: moment().endOf('month').format('YYYY-MM-DD'),
-                selectedPatternCd: '',
-                patternStartDate: moment().format('YYYY-MM-DD'),
-                reflectionMethod: 0, // Overwrite
-                statutorySetting: {
-                    useClassification: false,
-                    workTypeCode: ''
-                },
-                nonStatutorySetting: {
-                    useClassification: false,
-                    workTypeCode: ''
-                },
-                holidaySetting: {
-                    useClassification: false,
-                    workTypeCode: ''
-                }
-            }
-            self.reflectionSetting = new PatternReflection(data);
+            self.reflectionSetting = PatternReflection.newSetting();
+            self.returnedSetting = PatternReflection.newSetting();
+
             self.enableB = ko.computed(() => {
                 if (self.reflectionSetting.calendarStartDate() && self.reflectionSetting.calendarEndDate()) {
                     if ($('.nts-input').ntsError('hasError')) {
@@ -70,7 +54,6 @@ module nts.uk.at.view.kdl023.viewmodel {
             }).fail(res => {
                 nts.uk.ui.dialog.alertError(res);
             }).always(() => {
-                console.log(self.patternList());
             });
             return dfd.promise();
         }
@@ -133,9 +116,9 @@ module nts.uk.at.view.kdl023.viewmodel {
 
             nts.uk.ui.windows.setShared('reflectionSetting', ko.toJS(self.reflectionSetting));
             nts.uk.ui.windows.sub.modal('/view/kdl/023/b/index.xhtml').onClosed(() => {
-                let dto = nts.uk.ui.windows.getShared("reflectionSetting");
+                let dto = nts.uk.ui.windows.getShared('returnedData');
                 if (dto) {
-                    self.reflectionSetting.fromDto(dto);
+                    self.returnedSetting.fromDto(dto);
                 }
             });
         }

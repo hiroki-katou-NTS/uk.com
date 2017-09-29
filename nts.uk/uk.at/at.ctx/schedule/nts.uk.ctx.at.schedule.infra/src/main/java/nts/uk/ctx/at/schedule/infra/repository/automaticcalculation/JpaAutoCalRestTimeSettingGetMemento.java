@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.automaticcalculation;
 
+import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalRestTimeSettingGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalSetting;
+import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.TimeLimitUpperLimitSetting;
 import nts.uk.ctx.at.schedule.infra.entity.shift.autocalsetting.KshmtAutoCalSet;
 
 /**
@@ -31,7 +33,8 @@ public class JpaAutoCalRestTimeSettingGetMemento implements AutoCalRestTimeSetti
 	 */
 	@Override
 	public AutoCalSetting getRestTime() {
-		return new AutoCalSetting(new JpaAutoCalSettingGetMemento(this.entity));
+		return new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(this.entity.getRestTimeLimit()),
+				AutoCalAtrOvertime.valueOf(this.entity.getLegalMidOtTimeAtr()));
 	}
 
 	/* (non-Javadoc)
@@ -39,7 +42,8 @@ public class JpaAutoCalRestTimeSettingGetMemento implements AutoCalRestTimeSetti
 	 */
 	@Override
 	public AutoCalSetting getLateNightTime() {
-		return new AutoCalSetting(new JpaAutoCalSettingGetMemento(this.entity));
+		return new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(this.entity.getLateNightTimeLimit()),
+				AutoCalAtrOvertime.valueOf(this.entity.getLateNightTimeAtr()));
 	}
 
 }

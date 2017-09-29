@@ -33,7 +33,7 @@ public class KrcstFormulaDisporder extends UkJpaEntity implements Serializable {
 
 	/** The disporder. */
 	@Column(name = "DISPORDER")
-	private short disporder;
+	private int disporder;
 
 	/**
 	 * Instantiates a new krcst formula disporder.
@@ -45,7 +45,8 @@ public class KrcstFormulaDisporder extends UkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new krcst formula disporder.
 	 *
-	 * @param krcstFormulaDisporderPK the krcst formula disporder PK
+	 * @param krcstFormulaDisporderPK
+	 *            the krcst formula disporder PK
 	 */
 	public KrcstFormulaDisporder(KrcstFormulaDisporderPK krcstFormulaDisporderPK) {
 		this.krcstFormulaDisporderPK = krcstFormulaDisporderPK;

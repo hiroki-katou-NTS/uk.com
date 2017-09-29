@@ -4,10 +4,13 @@ module nts.uk.com.view.cmm011.d {
         export class ScreenModel {
             
             startDate: KnockoutObservable<string>;
-            
+            endDate: KnockoutObservable<string>;
             constructor() {
                 let self = this;
-                self.startDate = ko.observable(null);
+                self.startDate = ko.observable('');
+                //TODO change when update text resource
+//                self.endDate = ko.observable(nts.uk.resource.getText("CMM011_27"));
+                self.endDate = ko.observable(nts.uk.resource.getText("CMM011_27"));
             }
             
             /**
@@ -16,9 +19,7 @@ module nts.uk.com.view.cmm011.d {
             public startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
-                
                 dfd.resolve();
-                
                 return dfd.promise();
             }
             
@@ -27,22 +28,22 @@ module nts.uk.com.view.cmm011.d {
              */
             public execution() {
                 let self = this;
-                
+                let data = {
+                    workplaceId: nts.uk.ui.windows.getShared("selectedWkpId"),
+                    workplaceHistory: [{
+                        historyId: '',
+                        period: {
+                            startDate: self.startDate(),
+                            endDate: new Date("9999-12-31")
+                        }
+                    }]
+                }
                 if (!self.validate()) {
                     return;
                 }
-                // TODO: save database
-//                let startDateLatest: string = nts.uk.ui.windows.getShared("StartDateLatestHistory");
-                
-                // valid start date
-//                let latestDate: Date = new Date(startDateLatest);
-//                let inputDate: Date = new Date(self.startDate());
-//                if (inputDate <= latestDate) {
-//                    nts.uk.ui.dialog.alertError({ messageId: "Msg_102" }).then(() => { 
-//                        nts.uk.ui.windows.close();
-//                    });
-//                    return;
-//                }
+                service.registerWorkplaceHistory(data).done(function(){
+                    
+                }).fail();//TODO fails show message
                 nts.uk.ui.windows.close();
             }
             
