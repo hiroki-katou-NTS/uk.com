@@ -17,6 +17,7 @@ import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkApp
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommandHandler;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootFinder;
+import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataAdapterFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataFullDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeAdapterInforFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeSearch;
@@ -24,7 +25,9 @@ import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeUnregist
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.MasterApproverRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ParamDto;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
@@ -45,6 +48,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	private RegisterAppApprovalRootCommandHandler updateRoot;
 	@Inject
 	private PersonAdapter psInfo;
+	@Inject
+	private DataAdapterFinder adapterFinder;
 	@POST
 	@Path("getbycom")
 	public DataFullDto getAllByCom(ParamDto param) {
@@ -101,5 +106,9 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@Path("getInforPerson")
 	public PersonImport getPsInfor(String SID) {
 		return psInfo.getPersonInfo(SID);
+	}
+	
+	public List<JobTitleImport> findAllJobTitle(GeneralDate baseDate){
+		return adapterFinder.findAllJobTitle(baseDate);
 	}
 }
