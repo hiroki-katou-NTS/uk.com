@@ -1,30 +1,31 @@
 module nts.uk.at.view.ksc001.a {
-
-    
     export module viewmodel {
-
         export class ScreenModel {
             constructor() {
-                var self = this;
             }
-            
-             // 締め期間確認 
             /**
-             * open dialog D
+             * get data on start page
              */
-            public openMasterSettingDialog(): void {
-                nts.uk.request.jump("/view/ksm/005/b/index.xhtml");
+            startPage(): JQueryPromise<any> {
+                 let self = this;
+                let dfd = $.Deferred();
+                dfd.resolve();
+                return dfd.promise();
             }
-    
             /**
-             * open dialog Assignment setting (init screen c)
+             * request to create creation screen
              */
-            public openAssignmentSettingDialog(): void {
-                nts.uk.request.jump("/view/ksm/005/c/index.xhtml");
+            createScreen(): void {
+                let self = this;
+                nts.uk.request.jump("/view/ksc/001/b/index.xhtml");
             }
-
+            /**
+             * request to reference history screen
+             */
+            referenceHistoryScreen(): void {
+                let self = this;
+                nts.uk.request.jump("/view/ksc/001/g/index.xhtml");
+            }
         }
-        
-
     }
 }

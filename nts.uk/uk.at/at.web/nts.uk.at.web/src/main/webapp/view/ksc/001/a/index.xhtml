@@ -7,27 +7,25 @@
 	<body>
 		<ui:composition template="../../../../master/base.xhtml">
 			<ui:define name="htmlHead">
-				<com:stylefile path="ksc001.a.main.css" />
 				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="ksc001.a.start.js" />
 				<com:scriptfile path="ksc001.a.vm.js" />
+				<com:scriptfile path="ksc001.a.start.js" />
+				<com:stylefile path="ksc001.a.main.css" />
 			</ui:define>
-	
+			
 			<ui:define name="content">
 				<div tabindex="-1" id="functions-area">
-				</div>
 				
-				<div tabindex="-1" id="contents-area">
-					<label tabindex="-1" class="pull-left label_selectAction">#{i18n.getText('KSC001_1')}</label>
-					<div class="buttonImage pull-left">
-						<img class="imageSettings" data-bind="click: openMasterSettingDialog" src="../image/IMG_KSC001_1.png"></img>
-					</div>
-					<div class="buttonImageSetting pull-left">
-						<img class="imageSettings" data-bind="click: openAssignmentSettingDialog" src="../image/IMG_KSC001_2.png"></img>
-					</div>
 				</div>
-				
+				<div id="ccgcomponent"></div>
+				<div id="contents-area">
+					<label class="navigation-label">#{i18n.getText('KSC001_1')}</label>
+					<div class="button-image">
+						<button class="create-creation" data-bind="click : createScreen" ></button>
+						<button class="history-reference" data-bind="click : referenceHistoryScreen" ></button>
+					</div>	
+				</div>
 			</ui:define>
 		</ui:composition>
-	</body>
+   	</body>
 </html>

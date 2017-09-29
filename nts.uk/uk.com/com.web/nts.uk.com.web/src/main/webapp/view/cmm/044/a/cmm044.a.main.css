@@ -23,7 +23,7 @@
 }
 
 .ntsControl.ntsProfile {
-	width: 644px;
+	min-width: 680px;
 	border: 1px solid #ccc;
 	background-repeat: no-repeat;
 	background-position: right 228px top 1px;
@@ -64,11 +64,12 @@
 .ntsControl.ntsProfile .nts-label.nts-name:before {
 	content: '↵';
 	position: absolute;
-    margin-left: 439px;
-    margin-top: -11px;
+	margin-top: -11px;
 	font-size: 2em;
 	color: #ccc;
 	display: inline-block;
+	right: 10px;
+	z-index: 999;
 }
 
 .ntsControl.ntsProfile .nts-editor {
@@ -192,8 +193,20 @@
 }
 
 .right-container {
-	width: 478px;
+	min-width: 600px;
 	height: 31px;
+	position: relative;
+}
+
+.right-container .nts-editor.nts-input {
+	position: absolute;
+	top: -5px;
+	right: 5px;
+}
+
+.right-container .nts-label.nts-person {
+	position: absolute;
+	right: 170px;
 }
 
 #contents-area {

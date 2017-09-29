@@ -10,15 +10,18 @@
 								editable:  false,
 								enable: true,
 								columns: [
-									{ prop: 'labelDisplay', length: 30 }]}">
+									{ prop: 'workTypeCode', length: 2 },
+									{ prop: 'symbolicName', length: 2 },
+									{ prop: 'name', length: 6 },
+									{ prop: 'memo', length: 10 }]}">
 		</div>
 		<div id="group-button">
 			<button tabindex="37">#{i18n.getText('KSU001_69')}</button>
-			<button tabindex="38" >#{i18n.getText('KSU001_70')}</button>
+			<button tabindex="38">#{i18n.getText('KSU001_70')}</button>
 			<button tabindex="39" id="stick-undo">
 				<img src="undo.png" style="width: 15px;" />
 			</button>
-			<button tabindex="40">
+			<button tabindex="40" data-bind="click: openDialogO1">
 				<img src="popup.png"
 					style="width: 13px; margin-left: -4px; padding-bottom: 5px;" />
 			</button>
@@ -41,7 +44,12 @@
 										editable:  false,
 										enable: true,
 										columns: [
-											{ prop: 'labelDisplay', length: 50 },]}">
+											{ prop: 'siftCd', length: 2 },
+											{ prop: 'symbol', length: 2 },
+											{ prop: 'name', length: 5 },
+											{ prop: 'timeZone1', length: 5 },
+											{ prop: 'timeZone2', length: 5 },
+											{ prop: 'note', length: 5 },]}">
 		</div>
 
 		<div tabindex="36" id="switch-o" class="cf1"

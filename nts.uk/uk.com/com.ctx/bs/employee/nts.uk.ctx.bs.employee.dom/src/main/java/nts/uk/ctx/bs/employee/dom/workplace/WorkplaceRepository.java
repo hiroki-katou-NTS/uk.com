@@ -38,30 +38,12 @@ public interface WorkplaceRepository {
     void removeByWkpId(String companyId, String workplaceId);
 
 	/**
-	 * Find by start date.
-	 *
-	 * @param companyId the company id
-	 * @param date the date
-	 * @return the list
-	 */
-    List<Workplace> findByStartDate(String companyId, GeneralDate date);
-	
-	
-	/**
 	 * Find all workplace.
 	 *
 	 * @param workplaceId the workplace id
 	 * @return the list
 	 */
 	List<Workplace> findByWkpIds(List<String> workplaceIds);
-	
-	/**
-	 * Find latest by workplace id.
-	 *
-	 * @param workplaceId the workplace id
-	 * @return the optional
-	 */
-	Optional<Workplace> findLatestByWorkplaceId(String workplaceId);
 
 	/**
 	 * Find by workplace id.

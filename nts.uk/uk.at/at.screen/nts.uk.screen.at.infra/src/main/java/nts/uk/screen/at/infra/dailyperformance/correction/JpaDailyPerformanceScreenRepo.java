@@ -145,18 +145,18 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT DISTINCT s FROM KmnmtEmployee s ");
-		builderString.append("JOIN KmnmtAffiliClassificationHist c ");
-		builderString.append("JOIN KmnmtAffiliEmploymentHist e ");
-		builderString.append("JOIN KmnmtAffiliJobTitleHist j ");
+//		builderString.append("JOIN KmnmtAffiliClassificationHist c ");
+//		builderString.append("JOIN KmnmtAffiliEmploymentHist e ");
+//		builderString.append("JOIN KmnmtAffiliJobTitleHist j ");
 		builderString.append("JOIN KmnmtAffiliWorkplaceHist w ");
-		builderString.append("WHERE c.kmnmtClassificationHistPK.clscd IN :lstClas ");
-		builderString.append("AND e.kmnmtEmploymentHistPK.emptcd IN :lstEmp ");
-		builderString.append("AND j.kmnmtJobTitleHistPK.jobId IN :lstJob ");
-		builderString.append("AND w.kmnmtAffiliWorkplaceHistPK.wkpId IN :lstWkp ");
-		builderString.append("AND s.kmnmtEmployeePK.employeeId = c.kmnmtClassificationHistPK.empId ");
-		builderString.append("OR s.kmnmtEmployeePK.employeeId = e.kmnmtEmploymentHistPK.empId ");
-		builderString.append("OR s.kmnmtEmployeePK.employeeId = j.kmnmtJobTitleHistPK.empId ");
-		builderString.append("OR s.kmnmtEmployeePK.employeeId = w.kmnmtAffiliWorkplaceHistPK.empId ");
+		builderString.append("WHERE w.kmnmtAffiliWorkplaceHistPK.wkpId IN :lstWkp ");
+//		builderString.append("AND e.kmnmtEmploymentHistPK.emptcd IN :lstEmp ");
+//		builderString.append("AND j.kmnmtJobTitleHistPK.jobId IN :lstJob ");
+//		builderString.append("AND c.kmnmtClassificationHistPK.clscd IN :lstClas ");
+		builderString.append("AND s.kmnmtEmployeePK.employeeId = w.kmnmtAffiliWorkplaceHistPK.empId ");
+//		builderString.append("OR s.kmnmtEmployeePK.employeeId = e.kmnmtEmploymentHistPK.empId ");
+//		builderString.append("OR s.kmnmtEmployeePK.employeeId = j.kmnmtJobTitleHistPK.empId ");
+//		builderString.append("OR s.kmnmtEmployeePK.employeeId = c.kmnmtClassificationHistPK.empId ");
 		SEL_EMPLOYEE = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -258,7 +258,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	}
 
 	@Override
-	public List<String> getListEmployment(Integer closureId) {
+	public List<String> getListEmployment() {
 		return this.queryProxy().query(SEL_EMPLOYMENT_BY_CLOSURE, BsymtEmployment.class)
 				.setParameter("companyId", AppContexts.user().companyId())
 				.getList().stream().map(e -> {
@@ -287,8 +287,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification) {
-		return this.queryProxy().query(SEL_EMPLOYEE, KmnmtEmployee.class).setParameter("lstClas", lstClassification)
-				.setParameter("lstEmp", lstEmployment).setParameter("lstJob", lstJobTitle)
+		return this.queryProxy().query(SEL_EMPLOYEE, KmnmtEmployee.class)
+//				.setParameter("lstClas", lstClassification)
+//				.setParameter("lstEmp", lstEmployment)
+//				.setParameter("lstJob", lstJobTitle)
 				.setParameter("lstWkp", lstWorkplace.keySet().stream().collect(Collectors.toList())).getList().stream()
 				.map(s -> {
 					if (s.kmnmtEmployeePK.employeeId.equals(AppContexts.user().employeeId())) {

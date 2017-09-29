@@ -12,7 +12,7 @@ public class GrantSingleCommand {
 	private int grantDaySingleType;
 
 	/* 固定付与日数 */
-	private int fixNumberDays;
+	private Integer fixNumberDays;
 
 	/* 忌引とする */
 	private int makeInvitation;

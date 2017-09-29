@@ -19,6 +19,7 @@ public class PersonInfoCategory extends AggregateRoot {
 	private IsAbolition isAbolition;
 	private CategoryType categoryType;
 	private IsFixed isFixed;
+	private boolean alreadyCopy;
 
 	public final static String ROOT_COMPANY_ID = "000000000000-0000";
 

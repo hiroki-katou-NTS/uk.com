@@ -25,19 +25,19 @@ public class BpsmtFamily extends JpaEntity implements Serializable {
 	public BpsmtFamilyPk ppsmtFamilyPk;
 
 	@Basic(optional = false)
-	@Column(name = "WORK_STUDENT_TYPE_ATR")
+	@Column(name = "WORK_STUDENT_TYPE")
 	public int workStudentType;
 
 	@Basic(optional = false)
-	@Column(name = "TOG_SEP_DIV_ATR")
-	public int TogSepDiv;
+	@Column(name = "TOG_SEP_DIV_TYPE")
+	public int TogSepDivType;
 
 	@Basic(optional = false)
 	@Column(name = "TODUKEDE_NAME")
 	public String todukedeName;
 
 	@Basic(optional = false)
-	@Column(name = "SUP_CARE_TYPE_ATR")
+	@Column(name = "SUP_CARE_ATR")
 	public int SupportCareType;
 
 	@Basic(optional = false)

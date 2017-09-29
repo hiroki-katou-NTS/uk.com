@@ -8,9 +8,14 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.shared.dom.specialholiday.SpecialHolidayRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The class RemoveSpecialHolidayCommandHandler
+ * @author phongtq
+ *
+ */
 @Stateless
 public class RemoveSpecialHolidayCommandHandler extends CommandHandler<RemoveSpecialHolidayCommand> {
-	
+	/** The Respository */
 	@Inject
 	private SpecialHolidayRepository specialHolidayRepository;
 	
