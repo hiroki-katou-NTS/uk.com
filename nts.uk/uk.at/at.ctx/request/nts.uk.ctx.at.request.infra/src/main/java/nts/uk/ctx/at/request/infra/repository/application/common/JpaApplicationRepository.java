@@ -64,7 +64,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				domain.getApplicationType().value, domain.getApplicantSID(), domain.getReflectPlanScheReason().value,
 				domain.getReflectPlanTime(), domain.getReflectPlanState().value, domain.getReflectPlanEnforce().value,
 				domain.getReflectPerScheReason().value, domain.getReflectPerTime(), domain.getReflectPerState().value,
-				domain.getReflectPerEnforce().value, domain.getStartDate(), domain.getEndDate());
+				domain.getReflectPerEnforce().value, domain.getStartDate(), domain.getEndDate(),null);
 	}
 
 	/**

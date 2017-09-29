@@ -90,7 +90,7 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 								k.getConfirmATR().value,
 								k.getApprovalDate(),
 								k.getReason().v(),
-								k.getRepresenterSID());
+								k.getRepresenterSID(),null);
 					}).collect(Collectors.toList());
 			
 			KrqdtApprovalFramePK krqdtApprovalFramePK = new KrqdtApprovalFramePK(domain.getCompanyID(), x.getFrameID());

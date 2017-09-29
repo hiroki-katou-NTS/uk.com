@@ -44,7 +44,7 @@ public class JpaApproveAcceptedRepository  extends JpaRepository implements Appr
 				domain.getConfirmATR().value, 
 				domain.getApprovalDate(), 
 				domain.getReason().v(), 
-				domain.getRepresenterSID());
+				domain.getRepresenterSID(),null);
 	}
 	
 	/**

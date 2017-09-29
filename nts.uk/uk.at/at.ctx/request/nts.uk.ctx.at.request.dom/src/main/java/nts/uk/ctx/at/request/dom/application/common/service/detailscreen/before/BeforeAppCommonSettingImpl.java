@@ -44,7 +44,7 @@ public class BeforeAppCommonSettingImpl implements BeforeAppCommonSetting {
 		
 	
 		
-		Optional<Application> applicationInfo = getAllDataAppPhaseFrame.getAllDataAppPhaseFrame(appID).getApplicationDto();
+		Optional<Application> applicationInfo = getAllDataAppPhaseFrame.getAllDataAppPhaseFrame(appID).getApplication();
 		Application appInfor = applicationInfo.get();
 		// TODO: Tra Application Setting tu 1-1
 		ApplicationSetting appCommonSetting = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, app.getApplicationType(),appInfor.getApplicationDate()).applicationSetting;
