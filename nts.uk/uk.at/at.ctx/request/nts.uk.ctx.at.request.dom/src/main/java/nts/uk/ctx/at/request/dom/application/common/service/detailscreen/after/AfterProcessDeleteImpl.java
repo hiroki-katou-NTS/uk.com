@@ -71,10 +71,10 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 					
 					/** 3-2 */
 					listDestination = destinationJudgmentProcessService.getDestinationJudgmentProcessService(listApproverRepresenter);
-					/*
+					
 					//Add listDestination to listSender
 					List<String> listSender = new ArrayList<String>(listDestination);
-					listSender.addAll(listApproverID);*/
+					listSender.addAll(listApproverID);
 					if(approvalAtr != ApprovalAtr.APPROVED){
 						break;
 					}					
