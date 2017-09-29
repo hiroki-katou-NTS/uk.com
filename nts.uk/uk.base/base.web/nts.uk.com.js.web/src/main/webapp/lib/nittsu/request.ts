@@ -148,7 +148,7 @@ module nts.uk.request {
             });
             dfd.resolve(data); 
         }).fail(function(error){
-            dfd.reject(res);            
+            dfd.reject(error);            
         });        
         return dfd.promise();
     }
