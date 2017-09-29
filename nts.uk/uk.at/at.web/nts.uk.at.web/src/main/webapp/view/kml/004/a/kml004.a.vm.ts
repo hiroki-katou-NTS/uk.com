@@ -2,47 +2,53 @@ module nts.uk.at.view.kml004.a.viewmodel {
     
     export class ScreenModel {
         // list Category A2_1
-        lstCate: KnockoutObservableArray<TotalCategory>;
+        lstCate: KnockoutObservableArray<ITotalCategory>;
         // column in list
         gridListColumns: KnockoutObservableArray<any>;
         // selected code 
         selectedCode: KnockoutObservable<string>;
         // selected item
         selectedOption: KnockoutObservable<TotalCategory>;    
-        // binding to text box name A3_3
-        selectedName: KnockoutObservable<string>;
-        // binding to text box code A3_2
-//        codeObject: KnockoutObservable<string>;
         // check new mode or not
         check: KnockoutObservable<boolean>;
         // check update or insert
         checkUpdate: KnockoutObservable<boolean>;
         // check enable delete button
         checkDelete: KnockoutObservable<boolean>;
+        // list eval item in the left
+        items: KnockoutObservableArray<EvalItem>;
+        // columns in the left
+        columns : KnockoutObservableArray<any>;
+        // selected in the left list
+        currentCodeList: KnockoutObservable<number>;
         constructor() {
             let self = this;
             self.gridListColumns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KML004_6"), key: 'categoryCode', width: 100 },
-                { headerText: nts.uk.resource.getText("KML004_7"), key: 'categoryName', width: 200, formatter: _.escape}
+                { headerText: nts.uk.resource.getText("KML004_6"), key: 'categoryCode', width: 50 },
+                { headerText: nts.uk.resource.getText("KML004_7"), key: 'categoryName', width: 250, formatter: _.escape}
             ]);
+            
+            self.columns = ko.observableArray([
+                { headerText: nts.uk.resource.getText("KML004_14"), key: 'totalItemNo', width: 50 },
+                { headerText: nts.uk.resource.getText("KML004_15"), key: 'totalItemName', width: 250, formatter: _.escape}
+            ]);
+            
             self.lstCate = ko.observableArray([]);
             self.selectedCode = ko.observable("");
-            self.selectedName = ko.observable("");
             self.selectedOption = ko.observable(null);
             self.check = ko.observable(false);
-//            self.codeObject = ko.observable("");
             self.checkUpdate = ko.observable(true);
             self.checkDelete = ko.observable(true);
+            self.items = ko.observableArray([]);
+            self.currentCodeList = ko.observable(null);
             self.selectedCode.subscribe((value) => {
                 if (value) {
-                    let foundItem = _.find(self.lstCate(), (item: TotalCategory) => {
-                        return item.categoryCode() == value;
+                    let foundItem = _.find(self.lstCate(), (item: ITotalCategory) => {
+                        return item.categoryCode == value;
                     });
                     self.checkUpdate(true);
                     self.checkDelete(true);
                     self.selectedOption(new TotalCategory(foundItem));
-//                    self.selectedName(self.selectedOption().categoryName);
-//                    self.codeObject(self.selectedOption().categoryCode);
                     self.check(false);
                 }
             });
@@ -52,15 +58,31 @@ module nts.uk.at.view.kml004.a.viewmodel {
         getData(): JQueryPromise<any>{
             let self = this;
             let dfd = $.Deferred();
-            service.getAll().done((lstData: Array<viewmodel.TotalCategory>) => {
-                let sortedData: Array<viewmodel.TotalCategory> = _.orderBy(lstData, ['categoryCode'], ['asc']);
-                self.lstCate(sortedData);
-                dfd.resolve();
+            service.getAll().done((lstData) => {
+                let sortedData = _.orderBy(lstData, ['totalItemNo'], ['asc']);
+                _.forEach(sortedData, function(item: ITotalCategory){
+                    self.lstCate.push(item);
+                });
+                console.log(self.lstCate());
+//                dfd.resolve();
             }).fail(function(error){
                     dfd.reject();
                     alert(error.message);
                 }) 
               return dfd.promise();      
+        }
+        
+        /** get list eval item **/
+        getEvalItem(): JQueryPromise<any>{
+            let self = this;
+            let dfd = $.Deferred();
+            service.getItem().done((lstItem) => {
+                let sortedData = _.orderBy(lstItem, ['totalItemNo'], ['asc']);
+                _.forEach(sortedData, function(item: EvalItem){
+                    self.items.push(item);
+                });
+            });
+            return dfd.promise();
         }
 
         /** get data when start dialog **/
@@ -69,17 +91,19 @@ module nts.uk.at.view.kml004.a.viewmodel {
             let dfd = $.Deferred();
             let array=[];
             let list=[];
-            self.getData().done(function(){
-                if(self.lstCate().length == 0){
-                    self.clearFrom();
-                    self.checkDelete(false);  
-                }
-                else{
-//                    $("#inpPattern").focus();
-                    self.selectedCode(self.lstCate()[0].categoryCode());
-                }
-                
-                dfd.resolve();
+            self.getEvalItem().done(function(){
+                self.currentCodeList(self.items()[0].totalItemNo);  
+                // get list category
+                self.getData().done(function(){
+                    if(self.lstCate().length == 0){
+                        self.clearFrom();
+                        self.checkDelete(false);  
+                    }
+                    else{
+                        self.selectedCode(self.lstCate()[0].categoryCode);
+                    }
+                    dfd.resolve();
+                });
             });
             return dfd.promise();
         }  
@@ -134,8 +158,6 @@ module nts.uk.at.view.kml004.a.viewmodel {
             self.check(true);
             self.checkUpdate(false);
             self.selectedCode("");
-//            self.codeObject("");
-            self.selectedName("");
             $("#inpCode").focus(); 
             nts.uk.ui.errors.clearAll();                 
         }
@@ -193,8 +215,8 @@ module nts.uk.at.view.kml004.a.viewmodel {
     
     export interface ITotalCategory{
         categoryCode: string;
-        categoryName?: string;
-        memo?: string;     
+        categoryName: string;
+        memo: string;     
     }
     
     export class TotalCategory{
@@ -204,9 +226,18 @@ module nts.uk.at.view.kml004.a.viewmodel {
         constructor(param: ITotalCategory){
             let self = this;
             this.categoryCode = ko.observable(param.categoryCode);
-            this.categoryName = ko.observable(param.categoryName || "");
-            this.memo = ko.observable(param.memo || "");   
+            this.categoryName = ko.observable(param.categoryName);
+            this.memo = ko.observable(param.memo);   
         } 
+    }
+    
+    export class EvalItem{
+        totalItemNo: number;
+        totalItemName: string;
+        constructor(totalItemNo: number, totalItemName: string){
+            this.totalItemNo = totalItemNo;
+            this.totalItemName = totalItemName
+        }     
     }
 }
 
