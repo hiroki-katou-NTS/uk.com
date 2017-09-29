@@ -6,6 +6,8 @@ import java.util.Optional;
 public interface PersonInfoItemAuthRepository {
 
 	List<PersonInfoItemDetail> getAllItemDetail(String roleId, String personInfoCategoryAuthId,String contractCd);
+	
+	List<PersonInfoItemAuth> getAllItemAuth(String roleId, String categoryId);
 
 	Optional<PersonInfoItemAuth> getItemDetai(String roleId, String categoryId, String perInfoItemDefId);
 
@@ -14,4 +16,6 @@ public interface PersonInfoItemAuthRepository {
 	void update(PersonInfoItemAuth domain);
 
 	void delete(String roleId, String personCategoryAuthId, String personItemDefId);
+	
+	void deleteByRoleId(String roleId);
 }

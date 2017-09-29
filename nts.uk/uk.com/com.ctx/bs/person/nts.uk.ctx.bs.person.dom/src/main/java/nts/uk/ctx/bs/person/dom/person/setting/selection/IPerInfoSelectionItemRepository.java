@@ -9,12 +9,16 @@ public interface IPerInfoSelectionItemRepository {
 	
 	void update(PerInfoSelectionItem perInfoSelectionItem);
 	
-	void remove(PerInfoSelectionItem perInfoSelectionItem);
+	void remove(String selectionItemId);
 	
 	List<PerInfoSelectionItem> getAllPerInfoSelectionItem(String contractCd);
 	
 	Optional<PerInfoSelectionItem> getPerInfoSelectionItem(String selectionItemId);
 	
 	boolean checkExist(String selectionItemId);
+
+	Optional<PerInfoSelectionItem>  checkItemName(String selectionItemName);// check trung name!
+
+	Optional<PerInfoSelectionItem> checkItemClassification(String selectionItemClassification);// check selectionItemClassification
 	
 }

@@ -91,7 +91,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                     let parrentId = $(this).parent().attr('id'),
                         currentList = self.currentRole().currentCategory().roleItemList(),
-                        selectItemList: Array<any> = _.find(currentList, (i) => {
+                        selectItemList = _.find(currentList, (i) => {
                             return i.isChecked;
                         });
 
@@ -109,6 +109,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     $("#item_role_table_body").igGrid("option", "dataSource", currentList);
 
                 });
+                
+               
             });
 
             self.checkboxSelectedAll.subscribe((newValue) => {
@@ -241,15 +243,17 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     $(ds)
                         .each(
                         function(index, el: any) {
-                            let CheckboxCell = $("#item_role_table_body").igGrid("cellAt", 0, index);
-                            let IsConfigCell = $("#item_role_table_body").igGrid("cellAt", 1, index);
-                            let NameCell = $("#item_role_table_body").igGrid("cellAt", 2, index);
+                            let CheckboxCell = $("#item_role_table_body").igGrid("cellAt", 1, index);
+                            let IsConfigCell = $("#item_role_table_body").igGrid("cellAt", 2, index);
+                            let NameCell     = $("#item_role_table_body").igGrid("cellAt", 3, index);
 
                             if (el.requiredAtr == '1') {
                                 $(CheckboxCell).addClass('requiredCell');
                                 $(IsConfigCell).addClass('requiredCell');
                                 $(NameCell).addClass('requiredCell');
                             }
+                            $(CheckboxCell).addClass('checkbox_float_left');
+
                         });
                 },
                 columns: [
@@ -432,7 +436,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
     export interface IPersonRoleCategory {
         categoryId: string;
         categoryName: string;
-        setting: number;
+        setting: boolean;
         categoryType: number;
         personEmployeeType: number;
         allowPersonRef: number;
@@ -527,7 +531,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         categoryId: string;
         categoryName: string;
         categoryType: number;
-        setting: number;
+        setting: boolean;
         personEmployeeType: number;
         allowOtherCompanyRef: KnockoutObservable<number>;
         selfPastHisAuth: KnockoutObservable<number>;
@@ -549,7 +553,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             self.categoryId = param ? param.categoryId : '';
             self.categoryName = param ? param.categoryName : '';
             self.categoryType = param ? param.categoryType : 0;
-            self.setting = param ? param.setting : 0;
+            self.setting = param ? param.setting : false;
             self.personEmployeeType = param ? param.personEmployeeType : 0;
             self.allowOtherCompanyRef = ko.observable(param ? param.allowOtherCompanyRef : 0);
             self.selfPastHisAuth = ko.observable(param ? param.selfPastHisAuth : 1);
@@ -612,6 +616,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 grid.ntsGrid(screenModel.allowOtherRef() == 0 ? "disableNtsControls" : "enableNtsControls", "otherAuth", "SwitchButtons");
                 grid.ntsGrid(screenModel.allowPersonRef() == 0 ? "disableNtsControls" : "enableNtsControls", "selfAuth", "SwitchButtons");
                 grid.ntsGrid(screenModel.isDisableAll() ? "disableNtsControls" : "enableNtsControls", "isChecked", "CheckBox");
+
+                screenModel.RoleCategoryList.valueHasMutated();
 
                 block.clear();
 

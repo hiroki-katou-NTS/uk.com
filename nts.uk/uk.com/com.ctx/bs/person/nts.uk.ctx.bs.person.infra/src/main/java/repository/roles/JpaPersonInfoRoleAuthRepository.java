@@ -16,8 +16,7 @@ import nts.uk.ctx.bs.person.dom.person.role.auth.PersonInfoRoleAuthRepository;
 public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements PersonInfoRoleAuthRepository {
 	private final String SEL_NO_WHERE = "SELECT c FROM PpemtPersonRoleAuth c";
 
-	private final String SEL_ROLE_AUTH_BY_ROLE_ID = SEL_NO_WHERE 
-			+ " WHERE c.ppemtPersonRoleAuthPk.roleId=:roleId"
+	private final String SEL_ROLE_AUTH_BY_ROLE_ID = SEL_NO_WHERE + " WHERE c.ppemtPersonRoleAuthPk.roleId=:roleId"
 			+ " AND c.companyId=:companyId";
 
 	private static PersonInfoRoleAuth toDomain(PpemtPersonRoleAuth entity) {
@@ -49,8 +48,7 @@ public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements Pe
 	@Override
 	public Optional<PersonInfoRoleAuth> getDetailPersonRoleAuth(String roleId, String companyId) {
 		return this.queryProxy().query(SEL_ROLE_AUTH_BY_ROLE_ID, PpemtPersonRoleAuth.class)
-				.setParameter("roleId", roleId)
-				.setParameter("companyId", companyId).getSingle().map(e -> {
+				.setParameter("roleId", roleId).setParameter("companyId", companyId).getSingle().map(e -> {
 					return Optional.of(toDomain(e));
 				}).orElse(Optional.empty());
 	}
@@ -64,7 +62,14 @@ public class JpaPersonInfoRoleAuthRepository extends JpaRepository implements Pe
 
 	@Override
 	public void update(PersonInfoRoleAuth domain) {
-		this.commandProxy().update(toEntity(domain));
+
+		Optional<PpemtPersonRoleAuth> opt = this.queryProxy().find(new PpemtPersonRoleAuthPk(domain.getRoleId()),
+				PpemtPersonRoleAuth.class);
+		if (opt.isPresent()) {
+
+			this.commandProxy().update(opt.get().updateFromDomain(domain));
+
+		}
 
 	}
 
