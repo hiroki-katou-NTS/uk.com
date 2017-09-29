@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.app.find.workplace;
+package nts.uk.ctx.bs.employee.app.find.workplace.info;
 
 import java.util.Optional;
 

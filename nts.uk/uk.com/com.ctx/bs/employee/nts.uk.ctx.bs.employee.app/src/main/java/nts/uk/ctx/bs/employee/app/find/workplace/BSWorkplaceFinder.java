@@ -32,13 +32,13 @@ public class BSWorkplaceFinder {
 	 * @return the workplace dto
 	 */
 	public WorkplaceDto findByWorkplaceId(String workplaceId) {
-		String companyId = AppContexts.user().companyId();
-		Optional<Workplace> wkp = workplaceRepository.findByWorkplaceId(companyId, workplaceId);
-		if (wkp.isPresent()) {
-			WorkplaceDto wkpDto = new WorkplaceDto();
-			wkp.get().saveToMemento(wkpDto);
-			return wkpDto;
-		}
-		return null;
+        String companyId = AppContexts.user().companyId();
+        Optional<Workplace> wkp = workplaceRepository.findByWorkplaceId(companyId, workplaceId);
+        if (!wkp.isPresent()) {
+            return null;
+        }
+        WorkplaceDto wkpDto = new WorkplaceDto();
+        wkp.get().saveToMemento(wkpDto);
+        return wkpDto;
 	}
 }

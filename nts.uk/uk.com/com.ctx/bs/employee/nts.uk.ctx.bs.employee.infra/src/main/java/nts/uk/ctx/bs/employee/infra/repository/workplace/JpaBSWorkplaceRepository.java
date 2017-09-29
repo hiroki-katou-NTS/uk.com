@@ -116,10 +116,7 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 		cq.orderBy(criteriaBuilder.desc(root.get(BsymtWorkplaceHist_.strD)));
 
 		List<BsymtWorkplaceHist> lstBsymtWorkplaceHist = em.createQuery(cq).getResultList();
-		// check empty
-		if (CollectionUtil.isEmpty(lstBsymtWorkplaceHist)) {
-			return null;
-		}
+		
 		return workplaceIds.stream().map(wkpId -> {
 			List<BsymtWorkplaceHist> subListEntity = lstBsymtWorkplaceHist.stream()
 					.filter(entity -> entity.getBsymtWorkplaceHistPK().getWkpid().equals(wkpId))
@@ -167,6 +164,40 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 		return Optional.of(new Workplace(new JpaWorkplaceGetMemento(lstBsymtWorkplaceHist)));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository#findByHistoryId(java.lang.String, java.lang.String)
+	 */
+	@Override
+    public Optional<Workplace> findByHistoryId(String companyId, String historyId) {
+	 // get entity manager
+        EntityManager em = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+        CriteriaQuery<BsymtWorkplaceHist> cq = criteriaBuilder
+                .createQuery(BsymtWorkplaceHist.class);
+        Root<BsymtWorkplaceHist> root = cq.from(BsymtWorkplaceHist.class);
+
+        // select root
+        cq.select(root);
+
+        // add where
+        List<Predicate> lstpredicateWhere = new ArrayList<>();
+        lstpredicateWhere.add(criteriaBuilder.equal(
+                root.get(BsymtWorkplaceHist_.bsymtWorkplaceHistPK).get(BsymtWorkplaceHistPK_.cid), companyId));
+        lstpredicateWhere.add(criteriaBuilder.equal(
+                root.get(BsymtWorkplaceHist_.bsymtWorkplaceHistPK).get(BsymtWorkplaceHistPK_.historyId), historyId));
+
+        cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+        cq.orderBy(criteriaBuilder.desc(root.get(BsymtWorkplaceHist_.strD)));
+
+        List<BsymtWorkplaceHist> lstBsymtWorkplaceHist = em.createQuery(cq).getResultList();
+        // check empty
+        if (CollectionUtil.isEmpty(lstBsymtWorkplaceHist)) {
+            return Optional.empty();
+        }
+        return Optional.of(new Workplace(new JpaWorkplaceGetMemento(lstBsymtWorkplaceHist)));
+    }
+	
 	/**
 	 * To entity.
 	 *

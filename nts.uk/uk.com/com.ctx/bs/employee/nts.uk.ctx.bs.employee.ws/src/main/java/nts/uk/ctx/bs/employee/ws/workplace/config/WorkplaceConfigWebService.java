@@ -17,12 +17,12 @@ import nts.uk.ctx.bs.employee.app.command.workplace.config.DeleteWkpConfigComman
 import nts.uk.ctx.bs.employee.app.command.workplace.config.DeleteWkpConfigCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.config.SaveWkpConfigCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.config.SaveWkpConfigCommand;
-import nts.uk.ctx.bs.employee.app.find.workplace.WorkplaceConfigFinder;
-import nts.uk.ctx.bs.employee.app.find.workplace.WorkplaceConfigInfoFinder;
-import nts.uk.ctx.bs.employee.app.find.workplace.dto.WkpConfigInfoFindObject;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.WorkplaceConfigFinder;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WkpConfigInfoFindObject;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceConfigDto;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceHierarchyDto;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.info.WorkplaceConfigInfoFinder;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceCommandDto;
-import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceConfigDto;
-import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceHierarchyDto;
 
 /**
  * The Class WorkplaceConfigWebService.
