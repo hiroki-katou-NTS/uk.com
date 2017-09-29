@@ -53,13 +53,27 @@ public class KrqdtAppApprovalPhase extends UkJpaEntity implements Serializable {
     })
 	public KafdtApplication application;
 	
-	
 	@OneToMany(mappedBy="approvalPhase", cascade = CascadeType.ALL)
 	public List<KrqdtApprovalFrame> approvalFrames;
-
+	
+	public KrqdtAppApprovalPhase(KrqdtAppApprovalPhasePK krqdtAppApprovalPhasePK, String appID, int approvalForm,
+			int dispOrder, int approvalATR, List<KrqdtApprovalFrame> approvalFrames) {
+		super();
+		this.krqdtAppApprovalPhasePK = krqdtAppApprovalPhasePK;
+		this.appID = appID;
+		this.approvalForm = approvalForm;
+		this.dispOrder = dispOrder;
+		this.approvalATR = approvalATR;
+		this.approvalFrames = approvalFrames;
+	}
+	
 	@Override
 	protected Object getKey() {
 		return krqdtAppApprovalPhasePK;
 	}
+
+
+
+	
 
 }

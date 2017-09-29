@@ -64,6 +64,20 @@ public class KafdtApproveAccepted extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		return kafdtApproveAcceptedPK;
 	}
+
+
+	public KafdtApproveAccepted(KafdtApproveAcceptedPK kafdtApproveAcceptedPK, String frameID, String approverSID,
+			int approvalATR, int confirmATR, GeneralDate approvalDate, String reason, String representerSID) {
+		super();
+		this.kafdtApproveAcceptedPK = kafdtApproveAcceptedPK;
+		this.frameID = frameID;
+		this.approverSID = approverSID;
+		this.approvalATR = approvalATR;
+		this.confirmATR = confirmATR;
+		this.approvalDate = approvalDate;
+		this.reason = reason;
+		this.representerSID = representerSID;
+	}
 	
 
 }
