@@ -186,10 +186,12 @@ module nts.uk.com.view.cps005.b {
                 if (newItemDef.singleItem.dataType === 4) {
                     if (newItemDef.singleItem.timeItemMin === null) {
                         $("#timeItemMin").focus();
+                        newItemDef.singleItem.hintTimeMin("");
                         block.clear();
                         return;
                     } else if (newItemDef.singleItem.timeItemMax === null) {
                         $("#timeItemMax").focus();
+                        newItemDef.singleItem.hintTimeMax("");
                         block.clear();
                         return;
                     }
@@ -268,6 +270,8 @@ module nts.uk.com.view.cps005.b {
 
                     });
                 });
+
+
             }
         }
     }
@@ -319,7 +323,6 @@ module nts.uk.com.view.cps005.b {
                     }
                 }
             }
-
         }
     }
 
@@ -360,6 +363,8 @@ module nts.uk.com.view.cps005.b {
     export class TimeItemModel {
         timeItemMin: KnockoutObservable<number> = ko.observable(null);
         timeItemMax: KnockoutObservable<number> = ko.observable(null);
+        hintTimeItemMin: KnockoutObservable<string> = ko.observable('0:00');
+        hintTimeItemMax: KnockoutObservable<string> = ko.observable('0:00');
         constructor(data: ITimeItem) {
             let self = this;
             if (!data) return;
@@ -370,6 +375,8 @@ module nts.uk.com.view.cps005.b {
     export class TimePointItemModel {
         timePointItemMin: KnockoutObservable<number> = ko.observable();
         timePointItemMax: KnockoutObservable<number> = ko.observable();
+        hintTimeMin: KnockoutObservable<string> = ko.observable('0.00');
+        hintTimeMax: KnockoutObservable<string> = ko.observable('0.00');
         constructor(data: ITimePointItem) {
             let self = this;
             if (!data) return;
