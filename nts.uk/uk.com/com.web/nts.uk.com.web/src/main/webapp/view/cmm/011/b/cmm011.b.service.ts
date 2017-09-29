@@ -6,6 +6,7 @@ module nts.uk.com.view.cmm011.b {
         var servicePath: any = {
             getListWkpConfigHistory: "bs/employee/workplace/config/findAll",
             saveWkpConfig: "bs/employee/workplace/config/save",
+            removeWkpConfig: "bs/employee/workplace/config/remove",
         };
         
         /**
@@ -20,6 +21,13 @@ module nts.uk.com.view.cmm011.b {
          */
         export function saveWkpConfig(command: any): JQueryPromise<void>{
             return nts.uk.request.ajax(servicePath.saveWkpConfig, command);
+        }
+        
+        /**
+         * removeWkpConfig
+         */
+        export function removeWkpConfig(command: any): JQueryPromise<void>{
+            return nts.uk.request.ajax(servicePath.removeWkpConfig, command);
         }
          
         /**

@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen;
 
 import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ApprovalInfoOutput;
 
 /**
  * 2-2.新規画面登録時承認反映情報の整理
@@ -19,7 +18,7 @@ public interface RegisterAtApproveReflectionInfoService {
 	 * 
 	 * @param appID
 	 */
-	public ApprovalInfoOutput organizationOfApprovalInfo(String appID);
+	public void organizationOfApprovalInfo(String appID);
 	
 	/**
 	 *実績反映状態の判断 

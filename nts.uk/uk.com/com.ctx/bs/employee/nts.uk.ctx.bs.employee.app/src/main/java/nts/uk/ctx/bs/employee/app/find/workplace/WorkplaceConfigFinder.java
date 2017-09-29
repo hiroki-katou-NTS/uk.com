@@ -49,7 +49,7 @@ public class WorkplaceConfigFinder {
 	public WorkplaceConfigDto findLatestByCompanyId() {
 		String companyId = AppContexts.user().companyId();
 		
-		Optional<WorkplaceConfig> lstWorkplaceConfig = workplaceConfigRepository.findLatestByCompanyId(companyId);
+		Optional<WorkplaceConfig> lstWorkplaceConfig = workplaceConfigRepository.findWorkplaceByCompanyId(companyId);
 		if (lstWorkplaceConfig.isPresent()) {
 			WorkplaceConfigDto wkpConfigDto = new WorkplaceConfigDto();
 			lstWorkplaceConfig.get().saveToMemento(wkpConfigDto);

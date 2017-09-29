@@ -47,6 +47,9 @@ public class WkpConfigServiceImpl implements WkpConfigService {
     @Inject
     private WorkplaceInfoRepository workplaceInfoRepo;
 
+    /** The Constant ELEMENT_FIRST. */
+    private static final Integer ELEMENT_FIRST = 0;
+    
     /*
      * (non-Javadoc)
      * 
@@ -56,10 +59,14 @@ public class WkpConfigServiceImpl implements WkpConfigService {
      */
     @Override
     public void updatePrevHistory(String companyId, String prevHistId, GeneralDate endĐate) {
-        Optional<WorkplaceConfig> wkpConfig = workplaceConfigRepository.findByHistId(companyId, prevHistId);
-        if (wkpConfig.isPresent()) {
-            workplaceConfigRepository.update(wkpConfig.get(), endĐate);
+        Optional<WorkplaceConfig> optional = workplaceConfigRepository.findByHistId(companyId, prevHistId);
+        if (!optional.isPresent()) {
+            throw new RuntimeException(String.format("History id %s didn't existed.", prevHistId));
         }
+        WorkplaceConfig wkpConfig = optional.get();
+        // set end date of previous history
+        wkpConfig.getWkpConfigHistory().get(ELEMENT_FIRST).getPeriod().setEndDate(endĐate);
+        workplaceConfigRepository.update(wkpConfig);
     }
 
     /*
@@ -77,7 +84,7 @@ public class WkpConfigServiceImpl implements WkpConfigService {
         String historyId = latestWkpConfigHist.getHistoryId();
         Optional<WorkplaceConfigInfo> optionalWkpConfigInfo = this.wkpConfigInfoRepo.find(companyId, historyId);
         if (!optionalWkpConfigInfo.isPresent()) {
-            throw new RuntimeException("Not existed history id: " + historyId);
+            return;
         }
         // find all workplace by historyId
         List<String> lstWkpId = optionalWkpConfigInfo.get().getWkpHierarchy().stream()
@@ -104,7 +111,6 @@ public class WkpConfigServiceImpl implements WkpConfigService {
         List<WorkplaceHistory> lstNewWkpHistory = new ArrayList<>();
         for (WorkplaceHistory wkpHistory : workplace.getWorkplaceHistory()) {
             GeneralDate startDateWkpHist = wkpHistory.getPeriod().getStartDate();
-            // TODO: case newStartDateHist > startDateWkpHist ???
             // not equal
             if (!startDateWkpHist.equals(startDateHistCurrent)) {
                 continue;

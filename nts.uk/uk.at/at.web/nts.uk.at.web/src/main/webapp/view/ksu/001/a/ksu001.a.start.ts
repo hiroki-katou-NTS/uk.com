@@ -94,5 +94,18 @@ module ksu001.a {
             $('#popup-area7').toggle();
         });
 
+        //popup A3-24
+        $('#popup-area9').ntsPopup({
+            position: {
+                my: 'left top',
+                at: 'left bottom',
+                of: $('.color-button')
+            }
+        });
+
+        $('.color-button').click(function() {
+            $('#popup-area9').toggle();
+        });
+
     }
 }

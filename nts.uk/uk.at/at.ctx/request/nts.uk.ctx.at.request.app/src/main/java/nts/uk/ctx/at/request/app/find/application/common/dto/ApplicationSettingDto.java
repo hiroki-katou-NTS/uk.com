@@ -40,6 +40,7 @@ public class ApplicationSettingDto {
 	public Integer warningDateDispAtr;
 	public Integer appReasonDispAtr;
 	public Integer appContentChangeFlg;
+	public Integer personApprovalFlg;
 	public Integer scheReflectFlg;
 	public Integer priorityTimeReflectFlg;
 	public Integer attendentTimeReflectFlg;
@@ -67,6 +68,7 @@ public class ApplicationSettingDto {
 				appSetting.getWarningDateDispAtr().v(),
 				appSetting.getAppReasonDispAtr().value, 
 				appSetting.getAppContentChangeFlg().value,
+				appSetting.getPersonApprovalFlg().value, 
 				appSetting.getScheReflectFlg().value,
 				appSetting.getPriorityTimeReflectFlg().value, 
 				appSetting.getAttendentTimeReflectFlg().value);
