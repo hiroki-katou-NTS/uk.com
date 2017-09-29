@@ -81,13 +81,13 @@ public class DeleteWkpConfigCommandHandler extends CommandHandler<DeleteWkpConfi
             throw new BusinessException("Msg_55");
         }
         
+        // remove workplace config history
+        this.wkpConfigRepo.removeWkpConfigHist(companyId, command.getHistoryId());
+        
         // update end date of previous history (below history that is removed)
         int idxprevHistLatest = 1;
         String prevHistIdLatest = wkpConfig.getWkpConfigHistory().get(idxprevHistLatest).getHistoryId();
         this.wkpConfigService.updatePrevHistory(companyId, prevHistIdLatest, GeneralDate.fromString(MAX_DATE, DATE_FORMAT));
-        
-        // remove workplace config history
-        this.wkpConfigRepo.removeWkpConfigHist(companyId, command.getHistoryId());
         
         // find all workplace of history that is removed
         Optional<WorkplaceConfigInfo> optionalWkpConfigInfo = this.wkpConfigInfoRepo.find(companyId,
