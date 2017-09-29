@@ -109,6 +109,8 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     $("#item_role_table_body").igGrid("option", "dataSource", currentList);
 
                 });
+                
+               
             });
 
             self.checkboxSelectedAll.subscribe((newValue) => {
