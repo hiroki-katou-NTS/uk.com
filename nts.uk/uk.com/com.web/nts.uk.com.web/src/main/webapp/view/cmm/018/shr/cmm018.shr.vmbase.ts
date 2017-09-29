@@ -192,7 +192,7 @@ module nts.uk.com.view.cmm018.shr {
         //ScrenJ
         export interface JData_Param{
             /** name */
-            name: string
+            name?: string
             /**開始日*/
             startDate: string;
             /**終了日*/
@@ -207,8 +207,6 @@ module nts.uk.com.view.cmm018.shr {
             mode: number;
             /** 編集対象期間履歴が重なっているかチェックする*/
             overlapFlag: boolean;
-            /**開始日 previous*/
-            startDatePrevious: string;
             /** list history and approvalId */
             lstUpdate: Array<UpdateHistoryDto>;
         }
@@ -475,6 +473,8 @@ module nts.uk.com.view.cmm018.shr {
             jobTitleId: string;
             /**社員ID*/
             employeeId: string;
+            /**社員Name*/
+            employeeName: string;
             /**順序*/
             orderNumber: number;
             /**区分*/
@@ -482,16 +482,35 @@ module nts.uk.com.view.cmm018.shr {
             /**確定者*/
             confirmPerson: number;
             constructor(approverId: string, jobTitleId: string,
-                employeeId: string, orderNumber: number,
+                employeeId: string, employeeName: string,orderNumber: number,
                 approvalAtr: number, confirmPerson: number)
             {
                 this.approverId = approverId;
                 this.jobTitleId = jobTitleId;
                 this.employeeId = employeeId;
                 this.orderNumber = orderNumber;
+                this.employeeName = employeeName;
                 this.approvalAtr = approvalAtr;
                 this.confirmPerson = confirmPerson;
             }
+            
+        }
+        export class EmployeeKcp009{
+                id: string;
+                code: string;
+                businessName: string;
+                workplaceName: string;
+                depName: string;
+            constructor(id: string, code: string,
+                businessName: string, workplaceName: string,depName: string)
+            {
+                this.id = id;
+                this.code = code;
+                this.businessName = businessName;
+                this.workplaceName = workplaceName;
+                this.depName = depName;
+            }
+            
         }
         export class ProcessHandler {
             
@@ -538,7 +557,7 @@ module nts.uk.com.view.cmm018.shr {
         export interface ComponentOption {
             systemReference: SystemType;
             isDisplayOrganizationName: boolean;
-            employeeInputList: KnockoutObservableArray<EmployeeModel>;
+            employeeInputList: KnockoutObservableArray<EmployeeKcp009>;
             targetBtnText: string;
             selectedItem: KnockoutObservable<string>;
             tabIndex: number;

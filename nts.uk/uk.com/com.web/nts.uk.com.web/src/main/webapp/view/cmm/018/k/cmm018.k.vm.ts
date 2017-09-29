@@ -114,7 +114,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             //change 承認形態
             self.selectFormSet.subscribe(function(newValues){
                 //承認形態が誰か一人を選択する場合
-                if(newValues === 0){
+                if(newValues === 2){
                     self.cbbEnable(true);
                 }else{
                     //承認形態が全員承認を選択する場合

@@ -10,10 +10,13 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApproverRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportAdapter;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportDto;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 import nts.uk.shr.com.context.AppContexts;
@@ -36,6 +39,8 @@ public class CommonApprovalRootFinder {
 	private ApprovalPhaseRepository repoAppPhase;
 	@Inject
 	private ApproverRepository repoApprover;
+	@Inject
+	private PersonInforExportAdapter adapterPerson;
 	/**
 	 * getAllCommonApprovalRoot (grouping by history)
 	 * @param param
@@ -191,17 +196,21 @@ public class CommonApprovalRootFinder {
 								.collect(Collectors.toList());
 			for (ComApprovalRootDto companyApprovalRoot : lstCom) {
 				List<ApprovalPhaseDto> lstApprovalPhase = new ArrayList<>();
-				List<ApproverDto> lstApprover = new ArrayList<ApproverDto>();
+				List<ApproverDto> lstApproverDto = new ArrayList<ApproverDto>();
+				List<Approver> listApprover = new ArrayList<Approver>();
 				//get All Approval Phase by BranchId
 				List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, companyApprovalRoot.getBranchId());
 				for (ApprovalPhase approvalPhase : lstAppPhase) {
 					//get All Approver By ApprovalPhaseId
-					lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId())
-								.stream()
-								.map(c->ApproverDto.fromDomain(c))
+					listApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+					lstApproverDto = listApprover.stream()
+								.map(c->{
+									String employeeName = c.getEmployeeId() == null ? "" : getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName();
+									return ApproverDto.fromDomain(c,employeeName);
+									})
 								.collect(Collectors.toList());
 					//lst (ApprovalPhase + lst Approver)
-					lstApprovalPhase.add(new ApprovalPhaseDto(lstApprover, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
+					lstApprovalPhase.add(new ApprovalPhaseDto(lstApproverDto, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
 							approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(), approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
 				}
 				//add in lstAppRoot
@@ -219,17 +228,21 @@ public class CommonApprovalRootFinder {
 					.collect(Collectors.toList());
 			for (WpApprovalRootDto workplaceApprovalRoot : lstWp) {
 				List<ApprovalPhaseDto> lstApprovalPhase = new ArrayList<>();
-				List<ApproverDto> lstApprover = new ArrayList<>();
+				List<ApproverDto> lstApproverDto = new ArrayList<>();
+				List<Approver> lstApprover = new ArrayList<>();
 				//get All Approval Phase by BranchId
 				List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, workplaceApprovalRoot.getBranchId());
 				for (ApprovalPhase approvalPhase : lstAppPhase) {
 					//get All Approver By ApprovalPhaseId
-					lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId())
-							.stream()
-							.map(c->ApproverDto.fromDomain(c))
+					lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+					lstApproverDto = lstApprover.stream()
+							.map(c->{
+								String employeeName = c.getEmployeeId() == null ? "" : getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName();
+								return ApproverDto.fromDomain(c,employeeName);
+								})
 							.collect(Collectors.toList());
 					//lst (ApprovalPhase + lst Approver)
-					lstApprovalPhase.add(new ApprovalPhaseDto(lstApprover, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
+					lstApprovalPhase.add(new ApprovalPhaseDto(lstApproverDto, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
 							approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(), approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
 				}
 				//add in lstAppRoot
@@ -247,17 +260,21 @@ public class CommonApprovalRootFinder {
 					.collect(Collectors.toList());
 			for (PsApprovalRootDto personApprovalRoot : lstPs) {
 				List<ApprovalPhaseDto> lstApprovalPhase = new ArrayList<>();
-				List<ApproverDto> lstApprover = new ArrayList<>();
+				List<Approver> lstApprover = new ArrayList<>();
+				List<ApproverDto> lstApproverDto = new ArrayList<>();
 				//get All Approval Phase by BranchId
 				List<ApprovalPhase> lstAppPhase = this.repoAppPhase.getAllApprovalPhasebyCode(companyId, personApprovalRoot.getBranchId());
 				for (ApprovalPhase approvalPhase : lstAppPhase) {
 					//get All Approver By ApprovalPhaseId
-					lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId())
-							.stream()
-							.map(c->ApproverDto.fromDomain(c))
+					lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
+					lstApproverDto = lstApprover.stream()
+							.map(c->{
+								String employeeName = c.getEmployeeId() == null ? "" : getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName();
+								return ApproverDto.fromDomain(c,employeeName);
+								})
 							.collect(Collectors.toList());
 					//lst (ApprovalPhase + lst Approver)
-					lstApprovalPhase.add(new ApprovalPhaseDto(lstApprover, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
+					lstApprovalPhase.add(new ApprovalPhaseDto(lstApproverDto, approvalPhase.getBranchId(),approvalPhase.getApprovalPhaseId(),
 							approvalPhase.getApprovalForm().value, approvalPhase.getApprovalForm().getName(),approvalPhase.getBrowsingPhase(), approvalPhase.getOrderNumber()));
 				}
 				//add in lstAppRoot
@@ -311,7 +328,7 @@ public class CommonApprovalRootFinder {
 	 * @param date2
 	 * @return true, if date1 isOverlap date2
 	 */
-	public boolean isOverlap(ObjectDate date1, ObjectDate date2){
+	private boolean isOverlap(ObjectDate date1, ObjectDate date2){
 		/**
 		 * date 1.........|..............]..........
 		 * date 2............|......................
@@ -340,5 +357,8 @@ public class CommonApprovalRootFinder {
 			return true;
 		}
 		return false;
+	}
+	private PersonInforExportDto getPersonInfo(String employeeId){
+		return adapterPerson.getPersonInfo(employeeId);
 	}
 }

@@ -22,7 +22,7 @@ module nts.uk.com.view.cmm018.j {
                 lstItem.push(new vmbase.UpdateHistoryDto('1','1'));
                 lstItem.push(new vmbase.UpdateHistoryDto('0','2'));
                 var data: vmbase.JData_Param = nts.uk.ui.windows.getShared('CMM018J_PARAM')|| 
-                        {name: 'Hatake Kakashi',startDate: '2021-11-02', endDate: '9999-12-31', workplaceId: '123', employeeId: 'abc', check: 1, mode: 1, overlapFlag: true, startDatePrevious: '2020-11-02', lstUpdate: lstItem};
+                        {name: 'Hatake Kakashi',startDate: '2021-11-02', endDate: '9999-12-31', workplaceId: '123', employeeId: 'abc', check: 1, mode: 1, overlapFlag: true, lstUpdate: lstItem};
                 self.dataSource = data;
                 self.item(self.dataSource.name);
                 self.newStartDate = ko.observable(self.dataSource.startDate);//startDate
