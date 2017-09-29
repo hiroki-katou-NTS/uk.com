@@ -10,8 +10,8 @@ module nts.uk.at.view.kmk002.a {
     import AttendanceItemDto = nts.uk.at.view.kmk002.a.service.model.AttendanceItemDto;;
     import RoundingDto = nts.uk.at.view.kmk002.a.service.model.RoundingDto;;
     import TypeAtr = nts.uk.at.view.kmk002.a.service.model.TypeAtr;
-    import OptItemEnum = nts.uk.at.view.kmk002.a.service.model.OptItemEnum;;
-    import FormulaEnum = nts.uk.at.view.kmk002.a.service.model.FormulaEnum;;
+    import OptItemEnumDto = nts.uk.at.view.kmk002.a.service.model.OptItemEnumDto;;
+    import FormulaEnumDto = nts.uk.at.view.kmk002.a.service.model.FormulaEnumDto;;
 
     export module viewmodel {
 
@@ -211,10 +211,7 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
 
                 // data source
-                let comboItems = [{ code: '0', name: 'TIMES' },
-                    { code: '1', name: 'AMOUNT' },
-                    { code: '2', name: 'TIME' }];
-                let comboColumns = [{ prop: 'name', length: 1 }];
+                let comboColumns = [{ prop: 'localizedName', length: 10 }];
 
                 $("#tbl-calc-formula").ntsGrid({
                     width: '1000px',
@@ -225,30 +222,30 @@ module nts.uk.at.view.kmk002.a {
                     virtualizationMode: 'continuous',
                     columns: [
                         { headerText: 'ID', key: 'formulaId', dataType: 'string', width: '50px', hidden: true },
-                        { headerText: 'SYMBOL', key: 'symbolValue', dataType: 'string', width: '50px' },
-                        { headerText: 'ATR', key: 'formulaAtr', dataType: 'number', width: '230px', ntsControl: 'Combobox' },
-                        { headerText: 'NAME', key: 'formulaName', dataType: 'string', width: '50px' },
-                        { headerText: 'CALC_ATR', key: 'calcAtr', dataType: 'number', width: '290px', ntsControl: 'SwitchButtons' },
-                        //                        { headerText: 'OPEN_DIALOG', key: 'open', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' },
-                        //                        { headerText: 'TEXT', key: 'formulaName', dataType: 'string', width: '50px' },
-                        //                        { headerText: 'DAILY_UNIT', key: 'formulaAtr', dataType: 'string', width: '230px', ntsControl: 'DailyUnit' },
-                        //                        { headerText: 'DAILY_ROUNDING', key: 'formulaAtr', dataType: 'string', width: '230px', ntsControl: 'DailyRounding' },
-                        //                        { headerText: 'MONTHLY_UNIT', key: 'formulaAtr', dataType: 'string', width: '230px', ntsControl: 'MonthlyUnit' },
-                        //                        { headerText: 'MONTHLY_ROUNDING', key: 'formulaAtr', dataType: 'string', width: '230px', ntsControl: 'MonthlyRounding' }
+                        { headerText: nts.uk.resource.getText('KMK002_33'), key: 'symbolValue', dataType: 'string', width: '50px' },
+                        { headerText: nts.uk.resource.getText('KMK002_24'), key: 'formulaAtr', dataType: 'number', width: '100px', ntsControl: 'FormulaAtr' },
+                        { headerText: nts.uk.resource.getText('KMK002_34'), key: 'formulaName', dataType: 'string', width: '150px' },
+                        { headerText: nts.uk.resource.getText('KMK002_35'), key: 'calcAtr', dataType: 'number', width: '200px', ntsControl: 'SwitchButtons' },
+                        { headerText: nts.uk.resource.getText('KMK002_35'), key: 'open', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' },
+                        { headerText: nts.uk.resource.getText('KMK002_35'), key: 'formulaName', dataType: 'string', width: '150px' },
+                        { headerText: nts.uk.resource.getText('KMK002_36'), key: 'dailyUnit', dataType: 'number', width: '100px', ntsControl: 'DailyUnit' },
+                        { headerText: nts.uk.resource.getText('KMK002_37'), key: 'dailyRounding', dataType: 'number', width: '100px', ntsControl: 'DailyRounding' },
+                        { headerText: nts.uk.resource.getText('KMK002_38'), key: 'monthlyUnit', dataType: 'number', width: '100px', ntsControl: 'MonthlyUnit' },
+                        { headerText: nts.uk.resource.getText('KMK002_39'), key: 'monthlyRounding', dataType: 'number', width: '100px', ntsControl: 'MonthlyRounding' }
                     ],
-                    //features: [{ name: 'Resizing' }],
-                    features: [{ name: 'Sorting', type: 'local' }],
+                    features: [{ name: 'Resizing' }],
                     ntsFeatures: [{ name: 'CopyPaste' }],
                     ntsControls: [
                         {
                             name: 'SwitchButtons', options: Enums.formulaEnum.calcAtr,
                             optionsValue: 'value', optionsText: 'localizedName', controlType: 'SwitchButtons', enable: true
                         },
-                        //                        { name: 'DailyUnit', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-                        //                        { name: 'DailyRounding', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-                        //                        { name: 'MonthlyUnit', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-                        //                        { name: 'MonthlyRounding', options: comboItems, optionsValue: 'code', optionsText: 'name', columns: comboColumns, controlType: 'ComboBox', enable: true },
-                        //                        { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' }
+                        { name: 'FormulaAtr', options: Enums.formulaEnum.formulaAtr, optionsValue: 'value', optionsText: 'localizedName', columns: comboColumns, controlType: 'ComboBox', enable: true },
+                        { name: 'DailyUnit', options: Enums.formulaEnum.timeRounding.unit, optionsValue: 'value', optionsText: 'localizedName', columns: comboColumns, controlType: 'ComboBox', enable: true },
+                        { name: 'DailyRounding', options:  Enums.formulaEnum.timeRounding.rounding, optionsValue: 'value', optionsText: 'localizedName', columns: comboColumns, controlType: 'ComboBox', enable: true },
+                        { name: 'MonthlyUnit', options: Enums.formulaEnum.timeRounding.unit, optionsValue: 'value', optionsText: 'localizedName', columns: comboColumns, controlType: 'ComboBox', enable: true },
+                        { name: 'MonthlyRounding', options: Enums.formulaEnum.timeRounding.rounding, optionsValue: 'value', optionsText: 'localizedName', columns: comboColumns, controlType: 'ComboBox', enable: true },
+                        { name: 'Button', text: 'Open', click: self.openDialogD, controlType: 'Button' }
                     ]
                 });
             }
@@ -480,8 +477,10 @@ module nts.uk.at.view.kmk002.a {
             itemSelection: ItemSelection;
 
             //Rounding
-            monthlyRounding: Rounding;
-            dailyRounding: Rounding;
+            monthlyRounding: number;
+            monthlyUnit: number;
+            dailyRounding: number;
+            dailyUnit: number;
 
             constructor() {
                 this.formulaId = '000';
@@ -497,8 +496,10 @@ module nts.uk.at.view.kmk002.a {
                 this.itemSelection = new ItemSelection();
 
                 // Rounding
-                this.monthlyRounding = new Rounding();
-                this.dailyRounding = new Rounding();
+                this.monthlyRounding = 1;
+                this.monthlyUnit = 1;
+                this.dailyRounding = 1;
+                this.dailyUnit = 1;
 
                 //TODO dang test.
                 // Sua phan loai thuoc tinh
@@ -568,8 +569,8 @@ module nts.uk.at.view.kmk002.a {
                 //self.itemSelection.fromDto(dto.calcFormulaSetting.itemSelection);
 
                 // rounding
-                self.monthlyRounding.fromDto(dto.monthlyRounding);
-                self.dailyRounding.fromDto(dto.dailyRounding);
+//                self.monthlyRounding.fromDto(dto.monthlyRounding);
+//                self.dailyRounding.fromDto(dto.dailyRounding);
             }
         }
 
@@ -724,54 +725,9 @@ module nts.uk.at.view.kmk002.a {
             }
         }
 
-        /**
-         * Rounding
-         */
-        class Rounding {
-            numberRounding: KnockoutObservable<number>;
-            numberUnit: KnockoutObservable<number>;
-            amountRounding: KnockoutObservable<number>;
-            amountUnit: KnockoutObservable<number>;
-            timeRounding: KnockoutObservable<number>;
-            timeUnit: KnockoutObservable<number>;
-
-            constructor() {
-                this.numberRounding = ko.observable(1);
-                this.numberUnit = ko.observable(1);
-                this.amountRounding = ko.observable(1);
-                this.amountUnit = ko.observable(1);
-                this.timeRounding = ko.observable(1);
-                this.timeUnit = ko.observable(1);
-            }
-
-            public fromDto(dto: RoundingDto): void {
-                //TODO
-                //                this.numberRounding(dto.numberRounding);
-                //                this.numberUnit(dto.numberUnit);
-                //                this.amountRounding(dto.amountRounding);
-                //                this.amountUnit(dto.amountUnit);
-                //                this.timeRounding(dto.timeRounding);
-                //                this.timeUnit(dto.timeUnit);
-            }
-
-            public toDto(): RoundingDto {
-                let self = this;
-                let dto: RoundingDto = <RoundingDto>{};
-
-                dto.numberRounding = this.numberRounding();
-                dto.numberUnit = this.numberUnit();
-                dto.amountRounding = this.amountRounding();
-                dto.amountUnit = this.amountUnit();
-                dto.timeRounding = this.timeRounding();
-                dto.timeUnit = this.timeUnit();
-
-                return dto;
-            }
-        }
-
         class Enums {
-            static optItemEnum: OptItemEnum;
-            static formulaEnum: FormulaEnum;
+            static optItemEnum: OptItemEnumDto;
+            static formulaEnum: FormulaEnumDto;
         }
 
     }
