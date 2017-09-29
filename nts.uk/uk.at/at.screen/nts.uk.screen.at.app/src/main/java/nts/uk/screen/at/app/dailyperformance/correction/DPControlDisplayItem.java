@@ -3,6 +3,7 @@
  */
 package nts.uk.screen.at.app.dailyperformance.correction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,12 @@ public class DPControlDisplayItem {
 	private List<DPSheetDto> lstSheet;
 	// header dtos
 	private List<DPHeaderDto> lstHeader;
+	
+	public DPControlDisplayItem() {
+		super();
+		this.lstSheet = new ArrayList<>();
+		this.lstHeader = new ArrayList<>();
+	}
 
 	public void addColumnsToSheet(List<FormatDPCorrectionDto> lstFormat) {
 		lstFormat.forEach(f -> {
@@ -59,4 +66,5 @@ public class DPControlDisplayItem {
 			}
 		});
 	}
+	
 }
