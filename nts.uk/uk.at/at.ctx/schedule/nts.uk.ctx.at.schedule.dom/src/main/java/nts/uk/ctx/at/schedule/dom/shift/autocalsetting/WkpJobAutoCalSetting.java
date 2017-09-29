@@ -10,9 +10,15 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
 /**
- * The Class AutoCalWorkplaceJobSetting.
+ * The Class WkpJobAutoCalSetting.
  */
 // 職場・職位別自動計算設定
+
+/**
+ * Gets the rest time.
+ *
+ * @return the rest time
+ */
 @Getter
 public class WkpJobAutoCalSetting extends AggregateRoot {
 
@@ -41,31 +47,32 @@ public class WkpJobAutoCalSetting extends AggregateRoot {
 	private AutoCalRestTimeSetting restTime;
 
 	/**
-	 * Instantiates a new auto cal workplace job setting.
+	 * Instantiates a new wkp job auto cal setting.
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @param wkpId
-	 *            the wkp id
-	 * @param jobId
-	 *            the job id
-	 * @param normalOTTime
-	 *            the normal OT time
-	 * @param flexOTTime
-	 *            the flex OT time
-	 * @param restTime
-	 *            the rest time
+	 * @param memento the memento
 	 */
-	public WkpJobAutoCalSetting(CompanyId companyId, WorkplaceId wkpId, PositionId jobId,
-			AutoCalOvertimeSetting normalOTTime, AutoCalFlexOvertimeSetting flexOTTime,
-			AutoCalRestTimeSetting restTime) {
+	public WkpJobAutoCalSetting(WkpJobAutoCalSettingGetMemento memento) {
 		super();
-		this.companyId = companyId;
-		this.wkpId = wkpId;
-		this.jobId = jobId;
-		this.normalOTTime = normalOTTime;
-		this.flexOTTime = flexOTTime;
-		this.restTime = restTime;
+		this.companyId = memento.getCompanyId();
+		this.wkpId = memento.getWkpId();
+		this.jobId = memento.getPositionId();
+		this.normalOTTime = memento.getNormalOTTime();
+		this.flexOTTime = memento.getFlexOTTime();
+		this.restTime = memento.getRestTime();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(WkpJobAutoCalSettingSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setWkpId(this.wkpId);
+		memento.setPositionId(this.jobId);
+		memento.setFlexOTTime(this.flexOTTime);
+		memento.setNormalOTTime(this.normalOTTime);
+		memento.setRestTime(this.restTime);
 	}
 
 	/*

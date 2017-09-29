@@ -148,8 +148,6 @@ module nts.uk.at.view.ksu006.a {
                         self.openDialogProgress();
                     });
                     dfd.resolve();
-                }).fail(function(res: any) {
-                    self.showMessageError(res);
                 });
             }
 
@@ -275,8 +273,6 @@ module nts.uk.at.view.ksu006.a {
                             }
                         });
                     });
-                }).fail(function(res: any) {
-                    self.showMessageError(res);
                 });
             }
 
@@ -369,7 +365,7 @@ module nts.uk.at.view.ksu006.a {
                     self.fileId(inforFileUpload[0].id);
                     dfd.resolve();
                 }).fail(function(res: any) {
-                    self.showMessageError(res);
+                    nts.uk.ui.dialog.alertError(res);
                 });
                 return dfd.promise();
             }

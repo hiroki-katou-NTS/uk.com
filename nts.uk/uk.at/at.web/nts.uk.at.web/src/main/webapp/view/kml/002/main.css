@@ -516,3 +516,15 @@ table.unit-price-selection td {
 .method-selection label.ntsRadioBox {
     padding: 5px;
 }
+
+/*
+Screen K
+*/
+#combo-box1{
+ min-width: 50px!important;
+ width: 70px!important;
+}
+#combo-box2{
+ min-width: 50px!important;
+ width: 70px!important;
+}

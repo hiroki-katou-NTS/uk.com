@@ -21,7 +21,7 @@ module nts.uk.at.view.kdl023.b.viewmodel {
                     self.closeDialog();
                 });
             } else {
-                nts.uk.ui.windows.setShared('reflectionSetting', ko.toJS(self.reflectionSetting));
+                nts.uk.ui.windows.setShared('returnedData', ko.toJS(self.reflectionSetting));
                 self.closeDialog();
             }
         }

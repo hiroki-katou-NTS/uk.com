@@ -33,7 +33,7 @@
 				<button tabindex="1" data-bind="click: createWkpDialog,
 						enable: isNewMode ? true : isEnableButton">
 						#{i18n.getText('CMM011_6')}</button>
-				<button class="proceed" tabindex="2" data-bind="enable: isValidWorplace">#{i18n.getText('CMM011_5',['Com_Workplace'])}</button>
+				<button class="proceed" tabindex="2" data-bind="click: saveWorkplace, enable: isValidWorplace">#{i18n.getText('CMM011_5',['Com_Workplace'])}</button>
 				<button class="proceed" tabindex="3" data-bind="enable: isValidWorplace" style="margin-left: 200px;">#{i18n.getText('CMM011_7')}</button>
 				<!-- END A1_1 ~ A1_3 -->
 			</div>

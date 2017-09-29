@@ -4,52 +4,68 @@ module nts.uk.com.view.cmm011.a {
          *  Service paths
          */
         var servicePath: any = {
-            findLstWorkPlace: "basic/organization/findworkplace",
+            findLstWorkPlace: "bs/employee/workplace/config/info/find",
+            findWkpHistList: "bs/employee/workplace/hist",
+            findHistInfoByHistId: "bs/employee/workplace/find",
+            registerWkp: "bs/employee/workplace/register",
         };
-        
+
+        /**
+         * findLstWorkPlace
+         */
         export function findLstWorkPlace(baseDate: Date): JQueryPromise<Array<model.TreeWorkplace>> {
-            let dfd = $.Deferred();
-//            nts.uk.request.ajax(servicePath.findLstWorkPlace + "/" + baseDate).done(function(res: Array<model.TreeWorkplace>) {
-//                let list = _.map(res, function(item) {
-//                    return new model.TreeWorkplace(item.workplaceId, item.code, item.name, item.heirarchyCode, item.childs);
-//                });
-//
-//                dfd.resolve(list);
-//            });
-            // TODO: fake data
-            let res: Array<model.TreeWorkplace> = viewmodel.ScreenModel.fakeDataWorkplace();
-            let list = _.map(res, function(item) {
-                return new model.TreeWorkplace(item.workplaceId, item.code, item.name, item.heirarchyCode, item.childs);
-            });
-            dfd.resolve(list);
-            return dfd.promise();
+            return nts.uk.request.ajax(servicePath.findLstWorkPlace, { startDate: baseDate });
+        }
+        
+        /**
+         * getLstWkpHist
+         */
+        export function getLstWkpHist(wkpId: string): JQueryPromise<model.Workplace> {
+            return nts.uk.request.ajax(servicePath.findWkpHistList + "/" + wkpId);
+        }
+
+        /**
+         * getLstWkpHist
+         */
+        export function getWkpInfoByHistId(wkpId: string, historyId: string): JQueryPromise<model.Workplace> {
+            return nts.uk.request.ajax(servicePath.findHistInfoByHistId, { workplaceId: wkpId, historyId: historyId });
+        }
+        
+         /**
+         * registerWkp
+         */
+        export function registerWkp(data: any): JQueryPromise<model.Workplace> {
+            return nts.uk.request.ajax(servicePath.registerWkp, data);
         }
         
         /**
         * Model namespace.
         */
         export module model {
-            
-            export class TreeWorkplace {
+            export interface TreeWorkplace {
                 workplaceId: string;
                 code: string;
                 name: string;
-                nodeText: string;
-                heirarchyCode: string;
-                level: number;
+                nodeText?: string;
+                hierarchyCode: string;
+                level?: number;
                 childs: Array<TreeWorkplace>;
+            }
 
-                constructor(workplaceId: string, code: string, name: string, heirarchyCode: string,
-                    childs: Array<TreeWorkplace>) {
-                    let self = this;
-                    self.workplaceId = workplaceId;
-                    self.code = code;
-                    self.name = name;
-                    self.nodeText = code + " " + name;
-                    self.heirarchyCode = heirarchyCode;
-                    self.level = heirarchyCode.length / 3;
-                    self.childs = childs;
-                }
+            export interface Workplace {
+                companyId: string;
+                workplaceId: string;
+                workplaceHistory: Array<WorkplaceHistory>;
+            }
+
+            export interface WorkplaceHistory {
+                historyId: string;
+                period: Period;
+            }
+
+            export interface Period {
+                startDate: string;
+                endDate: string;
             }
         }
     }

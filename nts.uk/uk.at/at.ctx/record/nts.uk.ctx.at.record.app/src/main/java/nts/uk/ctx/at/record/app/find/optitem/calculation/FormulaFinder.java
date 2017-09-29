@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
+import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
 
 /**
  * The Class FormulaFinder.
@@ -23,7 +24,7 @@ public class FormulaFinder {
 	 *
 	 * @return the list
 	 */
-	public List<FormulaDto> findAll() {
+	public List<FormulaDto> findByItemNo(String itemNo) {
 		// this.repo.findAll(AppContexts.user().companyId());
 		// TODO mock data
 		List<Formula> list = new ArrayList<Formula>();
@@ -34,6 +35,11 @@ public class FormulaFinder {
 			return dto;
 		}).collect(Collectors.toList());
 
+		for (int i = 0; i < 10; i++) {
+			FormulaDto dto = new FormulaDto();
+			dto.setFormulaId(new FormulaId(""+i));
+			listDto.add(dto);
+		}
 		return listDto;
 	}
 }
