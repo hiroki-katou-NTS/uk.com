@@ -1,15 +1,23 @@
 package nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
+import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFrame;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -42,6 +50,14 @@ public class KafdtApproveAccepted extends UkJpaEntity implements Serializable {
 	
 	@Column(name="REPRESENTER_SID")
 	public String representerSID; 
+	
+	@ManyToOne
+	@JoinColumns({
+        @JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
+        @JoinColumn(name="FRAME_ID", referencedColumnName="FRAME_ID", insertable = false, updatable = false)
+    })
+	public KrqdtApprovalFrame approvalFrame;
+	
 	
 	@Override
 	protected Object getKey() {

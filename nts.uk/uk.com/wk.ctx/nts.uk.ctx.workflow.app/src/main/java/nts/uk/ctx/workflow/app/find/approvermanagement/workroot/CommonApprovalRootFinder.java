@@ -8,8 +8,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
@@ -41,6 +45,8 @@ public class CommonApprovalRootFinder {
 	private ApproverRepository repoApprover;
 	@Inject
 	private PersonAdapter adapterPerson;
+	@Inject
+	private WorkplaceAdapter adapterWp;
 	/**
 	 * getAllCommonApprovalRoot (grouping by history)
 	 * @param param
@@ -221,8 +227,16 @@ public class CommonApprovalRootFinder {
 		//TH: workplace - domain 職場別就業承認ルート
 		if(param.getRootType() == 1){
 			List<WorkPlaceAppRootDto> lstWpRoot = new ArrayList<>();
+			String workplaceId = param.getWorkplaceId();
+			if(StringUtil.isNullOrEmpty(workplaceId, true)){
+				GeneralDate baseDate = GeneralDate.today();
+				Optional<WorkplaceImport> workplace = adapterWp.findByWkpId(AppContexts.user().employeeId(), baseDate);
+				if(workplace.isPresent()){
+					workplaceId = workplace.get().getWkpCode();//TAM THOI
+				}
+			}
 			//get all data from WorkplaceApprovalRoot (職場別就業承認ルート)
-			List<WpApprovalRootDto> lstWp = this.repoWorkplace.getAllWpApprovalRoot(companyId, param.getWorkplaceId())
+			List<WpApprovalRootDto> lstWp = this.repoWorkplace.getAllWpApprovalRoot(companyId, workplaceId)
 					.stream()
 					.map(c->WpApprovalRootDto.fromDomain(c))
 					.collect(Collectors.toList());
