@@ -10,7 +10,7 @@
 				<div id="label-1">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
 				</div>
-				<div id="table-1" data-bind="if: approvalRoot().length != 0">
+				<div id="table-1" >
 					<table id="table-phase" data-bind="with:approvalRoot">
 						<thead>
 							<tr class="bg-green">
@@ -20,10 +20,10 @@
 							</tr>
 						</thead>
 						 <tbody data-bind="foreach : beforeApprovers">
-							<com:ko bind="$data.approverDtos" tag="foreach">
+							<com:ko bind="$data.approvers" tag="foreach">
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
-										<td class="bg-green" data-bind="attr: {rowspan: $parent.approverDtos.length}">
+										<td class="bg-green" data-bind="attr: {rowspan: $parent.approvers.length}">
 											フェーズ<label data-bind="text: $data.approvalPhaseId"></label>
 										</td>
 									</com:ko>
@@ -31,7 +31,7 @@
 										承認者<label data-bind="text: $data.orderNumber"></label>
 									</td>
 									<td>
-										<label data-bind="text: $data.employeeName"></label>
+										<label data-bind="text: $data.employeeId"></label>
 									</td>
 								</tr>
 							</com:ko>
