@@ -44,6 +44,14 @@ public class WorkplaceConfig extends AggregateRoot {
 	public WorkplaceConfig(WorkplaceConfigGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.wkpConfigHistory = memento.getWkpConfigHistory();
+		
+		// sort start date desc
+        Collections.sort(this.wkpConfigHistory, new Comparator<WorkplaceConfigHistory>() {
+            @Override
+            public int compare(WorkplaceConfigHistory obj1, WorkplaceConfigHistory obj2) {
+                return obj2.getPeriod().getStartDate().compareTo(obj1.getPeriod().getStartDate());
+            }
+        });
 	}
 	
 	/**
@@ -52,17 +60,10 @@ public class WorkplaceConfig extends AggregateRoot {
 	 * @return the wkp config history latest
 	 */
 	public WorkplaceConfigHistory getWkpConfigHistoryLatest() {
-	    // sort desc
-	    Collections.sort(this.wkpConfigHistory, new Comparator<WorkplaceConfigHistory>() {
-	        @Override
-	        public int compare(WorkplaceConfigHistory obj1, WorkplaceConfigHistory obj2) {
-	            return obj2.getPeriod().getStartDate().compareTo(obj1.getPeriod().getStartDate());
-	        }
-        });
 	    int indexLatestHist = 0;
 	    return this.wkpConfigHistory.get(indexLatestHist);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */

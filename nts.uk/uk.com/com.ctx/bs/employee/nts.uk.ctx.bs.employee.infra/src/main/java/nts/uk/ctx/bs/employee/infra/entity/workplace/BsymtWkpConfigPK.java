@@ -31,6 +31,23 @@ public class BsymtWkpConfigPK implements Serializable {
     @Column(name = "HISTORY_ID")
     private String historyId;
 
+    /**
+     * Instantiates a new bsymt wkp config PK.
+     */
+    public BsymtWkpConfigPK() {
+    }
+    
+    /**
+     * Instantiates a new bsymt wkp config PK.
+     *
+     * @param cid the cid
+     * @param historyId the history id
+     */
+    public BsymtWkpConfigPK(String cid, String historyId) {
+        this.cid = cid;
+        this.historyId = historyId;
+    }
+    
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */

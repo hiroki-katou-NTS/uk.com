@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceHierarchyDto;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
@@ -36,42 +37,36 @@ public class WorkplaceConfigInfoFinder {
 	private WorkplaceConfigInfoRepository workplaceConfigInfoRepository;
 
 	@Inject
-	private WorkplaceRepository workplaceRepository;
-
-	@Inject
 	private WorkplaceInfoRepository workplaceInfoRepository;
 
 	@Inject
 	private WorkplaceConfigRepository wkpConfigRepository;
 
 	public List<WorkplaceHierarchyDto> findAll(GeneralDate strD) {
-		// TODO add new param config hist start date
-		// histId: history of config
 		// get all WorkplaceConfigInfo with StartDate
-		String companyId = AppContexts.user().companyId();
-		Optional<WorkplaceConfig> wkpConfig = wkpConfigRepository.findByStartDate(companyId,strD);
-		if (wkpConfig.isPresent()) {
-			String historyId = wkpConfig.get().getWkpConfigHistory().get(0).getHistoryId();
-			Optional<WorkplaceConfigInfo> wkpConfigInfo = workplaceConfigInfoRepository.find(companyId, historyId);
+        String companyId = AppContexts.user().companyId();
+        Optional<WorkplaceConfig> optionalWkpConfig = wkpConfigRepository.findByStartDate(companyId, strD);
+        if (!optionalWkpConfig.isPresent()) {
+            return null;
+        }
+        String historyId = optionalWkpConfig.get().getWkpConfigHistoryLatest().getHistoryId();
+        Optional<WorkplaceConfigInfo> optionalWkpConfigInfo = workplaceConfigInfoRepository.find(companyId, historyId);
 
-			if (wkpConfigInfo.isPresent()) {
-				if (wkpConfigInfo.get().getWkpHierarchy().isEmpty()) {
-					throw new BusinessException("Msg_373");
-				} else {
-					// get list hierarchy
-					List<WorkplaceHierarchy> lstHierarchy = wkpConfigInfo.get().getWkpHierarchy();
-					List<WorkplaceInfo> lstWkpInfo = new ArrayList<>();
-					lstHierarchy.stream().forEach(item -> {
-						lstWkpInfo.add(workplaceInfoRepository.findLatestByWorkplaceId(item.getWorkplaceId().v()).get());
-					});
+        if (!optionalWkpConfigInfo.isPresent()) {
+            return null;
+        }
+        WorkplaceConfigInfo wkpConfigInfo = optionalWkpConfigInfo.get();
+        if (wkpConfigInfo.getWkpHierarchy().isEmpty()) {
+            throw new BusinessException("Msg_373");
+        }
+        // get list hierarchy
+        List<WorkplaceHierarchy> lstHierarchy = wkpConfigInfo.getWkpHierarchy();
+        List<WorkplaceInfo> lstWkpInfo = new ArrayList<>();
+        lstHierarchy.stream().forEach(item -> {
+            lstWkpInfo.add(workplaceInfoRepository.findLatestByWorkplaceId(item.getWorkplaceId().v()).get());
+        });
 
-					List<WorkplaceHierarchyDto> lst = this.convertToTree(lstWkpInfo, lstHierarchy);
-					// TODO add list hierarchy to Dto
-					return lst;
-				}
-			}
-		}
-		return null;
+        return this.convertToTree(lstWkpInfo, lstHierarchy);
 	}
 
 	/**
@@ -86,8 +81,7 @@ public class WorkplaceConfigInfoFinder {
 	private List<WorkplaceHierarchyDto> convertToTree(List<WorkplaceInfo> lstWkpInfo,
 			List<WorkplaceHierarchy> lstHierarchy) {
 		// define convert tree function
-		List<WorkplaceHierarchyDto> lstReturn = new ArrayList<>();
-		return createTree(lstWkpInfo, lstHierarchy, lstReturn);
+		return createTree(lstWkpInfo, lstHierarchy, new ArrayList<>());
 	}
 
 	/**
