@@ -92,7 +92,8 @@
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_26]',
 		                                          value: calcResultRange.numberUpper,
-		                                          constraint: 'NumberRangeValue'}"/>
+		                                          constraint: 'NumberRangeValue',
+		                                          enable: calcResultRange.upperCheck}"/>
 		                                          </com:ko>
 		                                          
 		                                          <com:ko tag="if" bind="isAmountSelected()">
@@ -100,7 +101,8 @@
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_26]',
 		                                          value: calcResultRange.amountUpper,
-		                                          constraint: 'AmountRangeValue'}"/>
+		                                          constraint: 'AmountRangeValue',
+		                                          enable: calcResultRange.upperCheck}"/>
 		                                          </com:ko>
 		                                          
 		                                          <com:ko tag="if" bind="isTimeSelected()">
@@ -108,7 +110,8 @@
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_26]',
 		                                          value: calcResultRange.timeUpper,
-		                                          constraint: 'TimeRangeValue'}"/>
+		                                          constraint: 'TimeRangeValue',
+		                                          enable: calcResultRange.upperCheck}"/>
 		                                          </com:ko>
 									</td>
 								</tr>
@@ -141,7 +144,8 @@
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_27]',
 		                                          value: calcResultRange.numberLower,
-		                                          constraint: 'NumberRangeValue'}"/>
+		                                          constraint: 'NumberRangeValue',
+		                                          enable: calcResultRange.lowerCheck}"/>
 		                                          </com:ko>
 		                                
 		                                <com:ko tag="if" bind="isTimeSelected()">
@@ -149,7 +153,8 @@
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_27]',
 		                                          value: calcResultRange.timeLower,
-		                                          constraint: 'TimeRangeValue'}"/>
+		                                          constraint: 'TimeRangeValue',
+		                                          enable: calcResultRange.lowerCheck}"/>
 		                                          </com:ko>
 	
 										<com:ko tag="if" bind="isAmountSelected()">
@@ -157,7 +162,8 @@
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_27]',
 		                                          value: calcResultRange.amountLower,
-		                                          constraint: 'AmountRangeValue'}"/>
+		                                          constraint: 'AmountRangeValue',
+		                                          enable: calcResultRange.lowerCheck}"/>
 		                                </com:ko>
 									</td>
 								</tr>
@@ -194,10 +200,10 @@
 								
 							<!-- Optional Item view model -->
 								<tr>
-									<td><button tabindex="15">#{i18n.getText('KMK002_28')}</button></td>
+									<td><button tabindex="15" data-bind="click: addFormulaAbove">#{i18n.getText('KMK002_28')}</button></td>
 									<td>
-										<button tabindex="16">#{i18n.getText('KMK002_29')}</button>
-										<button tabindex="17" class="danger">#{i18n.getText('KMK002_30')}</button>
+										<button tabindex="16" data-bind="click: addFormulaBelow">#{i18n.getText('KMK002_29')}</button>
+										<button tabindex="17" data-bind="click: removeFormula" class="danger">#{i18n.getText('KMK002_30')}</button>
 									</td>
 								</tr>
 								<tr>
