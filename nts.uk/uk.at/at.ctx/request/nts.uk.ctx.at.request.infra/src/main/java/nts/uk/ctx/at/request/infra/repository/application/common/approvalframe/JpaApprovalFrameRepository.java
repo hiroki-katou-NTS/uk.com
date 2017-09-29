@@ -98,7 +98,7 @@ public class JpaApprovalFrameRepository extends JpaRepository implements Approva
 					c.getConfirmATR().value,
 					c.getApprovalDate(),
 					c.getReason().v(),
-					c.getRepresenterSID());
+					c.getRepresenterSID(),null);
 		}).collect(Collectors.toList());
 		return new KrqdtApprovalFrame(
 				new KrqdtApprovalFramePK(domain.getCompanyID(), domain.getFrameID()),
