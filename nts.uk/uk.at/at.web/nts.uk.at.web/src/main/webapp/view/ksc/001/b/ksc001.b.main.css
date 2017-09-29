@@ -96,6 +96,10 @@
 	margin-left: 15px;
 }
 
+.labelRangeDate {
+	margin-left: 15px;
+}
+
 button.nts-switch-button {
 	min-width: 80px;
 }
@@ -184,4 +188,12 @@ button.nts-switch-button {
 
 .labelCenter {
 	margin-top: 8px;
+}
+
+.rangeLabel {
+	padding: 10px 5px 6px 5px;
+}
+
+.rangeDatePicker {
+	padding-top: 4px;
 }
