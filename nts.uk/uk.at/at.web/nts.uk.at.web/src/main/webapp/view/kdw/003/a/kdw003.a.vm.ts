@@ -117,10 +117,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             {
                 columnKey: 'date',
                 isFixed: true
-            },
-            {
-                columnKey: 'sign',
-                isFixed: true
             }
         ];
         dateModeFixCol: Array<any> = [
@@ -142,10 +138,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             },
             {
                 columnKey: 'employeeName',
-                isFixed: true
-            },
-            {
-                columnKey: 'sign',
                 isFixed: true
             }
         ];
@@ -172,10 +164,6 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             },
             {
                 columnKey: 'date',
-                isFixed: true
-            },
-            {
-                columnKey: 'sign',
                 isFixed: true
             }
         ];
@@ -228,6 +216,34 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             self.dailyPerfomanceData = ko.observableArray([]);
             self.cellStates = ko.observableArray([]);
             self.rowStates = ko.observableArray([]);
+        }
+
+        startPage(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            var param = {
+                dateRange: {
+                    startDate: moment(self.dateRanger().startDate).utc().toISOString(),
+                    endDate: moment(self.dateRanger().endDate).utc().toISOString()
+                },
+                baseDate: moment(self.dateRanger().endDate).utc().toISOString()
+            };
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.block.grayout();
+            service.startScreen(param).done((data) => {
+                self.lstEmployee(data.lstEmployee);
+                self.allData = data.lstData;
+                self.cellStates(data.lstCellState);
+                self.selectedEmployee(self.lstEmployee()[0].id);
+                self.dailyPerfomanceData(self.filterData(self.displayFormat()));
+                self.optionalHeader = data.lstControlDisplayItem.lstHeader;
+                self.loadHeader(self.displayFormat());
+                self.sheetsGrid(data.lstControlDisplayItem.lstSheet);
+                self.sheetsGrid.valueHasMutated();
+                nts.uk.ui.block.clear();
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
 
         isDisableRow(id) {
@@ -407,68 +423,48 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                         }]
                     },
                 ],
-                ntsFeatures: [
-                    { name: 'CopyPaste' },
-                    { name: 'CellEdit' },
-                    {
-                        name: 'CellState',
-                        rowId: 'rowId',
-                        columnKey: 'columnKey',
-                        state: 'state',
-                        states: self.cellStates()
-                    },
-                    {
-                        name: 'RowState',
-                        rows: self.rowStates()
-                    },
-                    {
-                        name: 'TextColor',
-                        rowId: 'rowId',
-                        columnKey: 'columnKey',
-                        color: 'color',
-                        colorsTable: self.textColors()
-                    },
-                    {
-                        name: 'HeaderStyles',
-                        columns: self.headerColors()
-                    },
-                    {
-                        name: "Sheet",
-                        initialDisplay: "1",
-                        sheets: self.sheetsGrid()
-                    },
-                ],
+                ntsFeatures: self.createNtsFeatures(),
                 ntsControls: [{ name: 'Checkbox', options: { value: 1, text: '' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                     { name: 'Image', source: 'ui-icon ui-icon-locked', controlType: 'Image' }]
             });
         }
 
-        startPage(): JQueryPromise<any> {
+        createNtsFeatures() {
             var self = this;
-            var dfd = $.Deferred();
-            var param = {
-                dateRange: {
-                    startDate: moment(self.dateRanger().startDate).utc().toISOString(),
-                    endDate: moment(self.dateRanger().endDate).utc().toISOString()
+            let lstNtsFeature = [
+                { name: 'CopyPaste' },
+                { name: 'CellEdit' },
+                {
+                    name: 'CellState',
+                    rowId: 'rowId',
+                    columnKey: 'columnKey',
+                    state: 'state',
+                    states: self.cellStates()
                 },
-                baseDate: moment(self.dateRanger().endDate).utc().toISOString()
-            };
-            nts.uk.ui.block.invisible();
-            nts.uk.ui.block.grayout();
-            service.startScreen(param).done((data) => {
-                self.lstEmployee(data.lstEmployee);
-                self.allData = data.lstData;
-                self.cellStates(data.lstCellState);
-                self.selectedEmployee(self.lstEmployee()[0].id);
-                self.dailyPerfomanceData(self.filterData(self.displayFormat()));
-                self.optionalHeader = data.lstControlDisplayItem.lstHeader;
-                self.loadHeader(self.displayFormat());
-                self.sheetsGrid(data.lstControlDisplayItem.lstSheet);
-                self.sheetsGrid.valueHasMutated();
-                nts.uk.ui.block.clear();
-                dfd.resolve();
-            });
-            return dfd.promise();
+                {
+                    name: 'RowState',
+                    rows: self.rowStates()
+                },
+                {
+                    name: 'TextColor',
+                    rowId: 'rowId',
+                    columnKey: 'columnKey',
+                    color: 'color',
+                    colorsTable: self.textColors()
+                },
+                {
+                    name: 'HeaderStyles',
+                    columns: self.headerColors()
+                }
+            ];
+            if (self.sheetsGrid().length > 0) {
+                lstNtsFeature.push({
+                    name: "Sheet",
+                    initialDisplay: "1",
+                    sheets: self.sheetsGrid()
+                });
+            }
+            return lstNtsFeature;
         }
 
         loadHeader(mode) {
