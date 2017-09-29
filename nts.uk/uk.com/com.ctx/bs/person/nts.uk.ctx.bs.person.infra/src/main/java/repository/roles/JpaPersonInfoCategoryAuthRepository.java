@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implements PersonInfoCategoryAuthRepository {
 
 	private final String SELECT_CATEGORY_BY_PERSON_ROLE_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
-			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, "
+			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, cm.personEmployeeType,"
 			+ " CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
 			+ " FROM PpemtPerInfoCtg c"
 			+ " INNER JOIN PpemtPerInfoCtgCm cm"
@@ -37,13 +37,14 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	
 	private final String SEL_CATEGORY_BY_ROLEID = "SELECT c FROM PpemtPersonCategoryAuth c  WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId ";
 
-	private final String SEL_CATEGORY_BY_ABOLITION_ATR = "SELECT  c.perInfoCtgId, d.categoryCd, d.categoryName, d.abolitionAtr, c.abolitionAtr, c.requiredAtr, "
-			+ "CASE WHEN c.perInfoCtgId IS NULL THEN 'False' ELSE 'True' END AS IsConfig" + " FROM PpemtPerInfoCtg d "
+	private final String SEL_CATEGORY_BY_ABOLITION_ATR = "SELECT  c.perInfoCtgId, d.categoryCd, d.categoryName, d.abolitionAtr, c.abolitionAtr, c.requiredAtr, cm.personEmployeeType , "
+			+ "CASE WHEN c.perInfoCtgId IS NULL THEN 'False' ELSE 'True' END AS IsConfig" 
+			+ " FROM PpemtPerInfoCtg d "
 			+ " INNER JOIN   PpemtPerInfoItem c " + " ON  d.ppemtPerInfoCtgPK.perInfoCtgId = c.perInfoCtgId"
 			+ " WHERE d.cid = :CID  AND d.abolitionAtr = 0 AND c.abolitionAtr = 0";
 	
 	private final String SEL_ALL_CATEGORY = "SELECT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName, "
-			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, "
+			+ " cm.categoryType, p.allowPersonRef, p.allowOtherRef, cm.personEmployeeType ,"
 			+ "CASE WHEN p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
 			+ " FROM PpemtPerInfoCtg c LEFT JOIN PpemtPersonCategoryAuth p "
 			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
@@ -60,7 +61,7 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 				entity.otherAllowDelMulti);
 		return domain;
 	}
-
+	
 	private static PersonInfoCategoryDetail toDomain(Object[] entity) {
 		val domain = new PersonInfoCategoryDetail();
 		domain.setCategoryId(entity[0].toString());
@@ -73,7 +74,8 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 		if (entity[5] != null) {
 			domain.setAllowOtherRef(Integer.valueOf(entity[5].toString()));
 		}
-		domain.setSetting(Boolean.valueOf(entity[6].toString()));
+		domain.setPersonEmployeeType(Integer.valueOf(entity[6].toString()));
+		domain.setSetting(Boolean.valueOf(entity[7].toString()));
 		return domain;
 	}
 

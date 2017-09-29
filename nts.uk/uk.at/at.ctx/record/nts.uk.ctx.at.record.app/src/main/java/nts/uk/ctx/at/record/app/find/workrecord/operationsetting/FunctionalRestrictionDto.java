@@ -17,8 +17,6 @@ import nts.uk.ctx.at.record.dom.workrecord.operationsetting.ConfirmationOfManage
 @AllArgsConstructor
 public class FunctionalRestrictionDto {
 	
-	private String cid;
-	
 	// * 総労働時間≠応援の総労働時間合計のときに登録することが出来る
 	private Boolean registeredTotalTimeCheer;
 
@@ -47,12 +45,12 @@ public class FunctionalRestrictionDto {
 	private Boolean useSupervisorConfirm;
 	
 	// * エラーがある場合の上司確認
-	private ConfirmationOfManagerOrYouself supervisorConfirmError;
+	private int supervisorConfirmError;
 
 	// * 本人確認を利用する
 	private Boolean useConfirmByYourself;
 
 	// * エラーがある場合の本人確認
-	private ConfirmationOfManagerOrYouself yourselfConfirmError;
+	private int yourselfConfirmError;
 
 }

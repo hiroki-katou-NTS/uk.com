@@ -93,12 +93,12 @@ public class JpaOperationOfDailyPerformanceRepository extends JpaRepository
 			if (krcstDailyRecOpeDispOpt.isPresent()) {
 				// update
 				KrcstDailyRecOpeDisp entity = krcstDailyRecOpeDispOpt.get();
-				updateKrcstDailyRecOpeDisp(entity, domain.getDisplayRestriction());
+				updateKrcstDailyRecOpeDisp(entity, domain);
 				this.commandProxy().update(entity);
 			} else {
 				// insert
 				KrcstDailyRecOpeDisp entity = new KrcstDailyRecOpeDisp();
-				updateKrcstDailyRecOpeDisp(entity, domain.getDisplayRestriction());
+				updateKrcstDailyRecOpeDisp(entity, domain);
 				this.commandProxy().insert(entity);
 			}
 		}
@@ -107,12 +107,12 @@ public class JpaOperationOfDailyPerformanceRepository extends JpaRepository
 			if (krcstDailyRecOpeFunOpt.isPresent()) {
 				// update
 				KrcstDailyRecOpeFun entity = krcstDailyRecOpeFunOpt.get();
-				updateKrcstDailyRecOpeFun(entity, domain.getFunctionalRestriction());
+				updateKrcstDailyRecOpeFun(entity, domain);
 				this.commandProxy().update(entity);
 			} else {
 				// insert
 				KrcstDailyRecOpeFun entity = new KrcstDailyRecOpeFun();
-				updateKrcstDailyRecOpeFun(entity, domain.getFunctionalRestriction());
+				updateKrcstDailyRecOpeFun(entity, domain);
 				this.commandProxy().insert(entity);
 			}
 		}
@@ -124,34 +124,40 @@ public class JpaOperationOfDailyPerformanceRepository extends JpaRepository
 		entity.comment = domain.getComment().toString();
 	}
 
-	private void updateKrcstDailyRecOpeDisp(KrcstDailyRecOpeDisp entity, DisplayRestriction domain) {
-		entity.savingYearHdDispResCheck = booleanToBigDecimal(domain.getSavingYear().isRemainingNumberCheck());
-		entity.savingYearHdDispResAtr = booleanToBigDecimal(domain.getSavingYear().isDisplayAtr());
+	private void updateKrcstDailyRecOpeDisp(KrcstDailyRecOpeDisp entity, OperationOfDailyPerformance domain) {
 
-		entity.comHdDispResCheck = booleanToBigDecimal(domain.getCompensatory().isRemainingNumberCheck());
-		entity.comHdDispResAtr = booleanToBigDecimal(domain.getCompensatory().isDisplayAtr());
+		entity.cid = domain.getCompanyId().v();
+		DisplayRestriction dispRest = domain.getDisplayRestriction();
 
-		entity.subHdDispResCheck = booleanToBigDecimal(domain.getSubstitution().isRemainingNumberCheck());
-		entity.subHdDispResAtr = booleanToBigDecimal(domain.getSubstitution().isDisplayAtr());
+		entity.savingYearHdDispResCheck = booleanToBigDecimal(dispRest.getSavingYear().isRemainingNumberCheck());
+		entity.savingYearHdDispResAtr = booleanToBigDecimal(dispRest.getSavingYear().isDisplayAtr());
 
-		entity.yearHdDispResCheck = booleanToBigDecimal(domain.getYear().isRemainingNumberCheck());
-		entity.yearHdDispResAtr = booleanToBigDecimal(domain.getYear().isDisplayAtr());
+		entity.comHdDispResCheck = booleanToBigDecimal(dispRest.getCompensatory().isRemainingNumberCheck());
+		entity.comHdDispResAtr = booleanToBigDecimal(dispRest.getCompensatory().isDisplayAtr());
+
+		entity.subHdDispResCheck = booleanToBigDecimal(dispRest.getSubstitution().isRemainingNumberCheck());
+		entity.subHdDispResAtr = booleanToBigDecimal(dispRest.getSubstitution().isDisplayAtr());
+
+		entity.yearHdDispResCheck = booleanToBigDecimal(dispRest.getYear().isRemainingNumberCheck());
+		entity.yearHdDispResAtr = booleanToBigDecimal(dispRest.getYear().isDisplayAtr());
 	}
 
-	private void updateKrcstDailyRecOpeFun(KrcstDailyRecOpeFun entity, FunctionalRestriction domain) {
-		entity.registerTotalTimeCheerAtr = booleanToBigDecimal(domain.getRegisteredTotalTimeCheer());
-		entity.completedDisOneMonthAtr = booleanToBigDecimal(domain.getCompleteDisplayOneMonth());
-		entity.disConfirmMessageAtr = booleanToBigDecimal(domain.getDisplayConfirmMessage());
-		entity.useInitialValueSetAtr = booleanToBigDecimal(domain.getUseInitialValueSet());
-		entity.useWorkDetailAtr = booleanToBigDecimal(domain.getUseWorkDetail());
-		entity.registerActualExceedAtr = booleanToBigDecimal(domain.getRegisterActualExceed());
-		entity.startAppScreenAtr = booleanToBigDecimal(domain.getStartAppScreen());
-		entity.confirmSubmitAppAtr = booleanToBigDecimal(domain.getConfirmSubmitApp());
-		entity.confirmByYourselfAtr = booleanToBigDecimal(domain.getUseConfirmByYourself());
-		entity.initialValueSettingAtr = booleanToBigDecimal(domain.getUseInitialValueSet());
-		entity.confirmBySupervisorAtr = booleanToBigDecimal(domain.getUseSupervisorConfirm());
-		entity.yourselfConfirmWhenError = new BigDecimal(domain.getYourselfConfirmError().value);
-		entity.supervisorConfirmWhenError = new BigDecimal(domain.getSupervisorConfirmError().value);
+	private void updateKrcstDailyRecOpeFun(KrcstDailyRecOpeFun entity, OperationOfDailyPerformance domain) {
+		entity.cid = domain.getCompanyId().v();
+		FunctionalRestriction funcRest = domain.getFunctionalRestriction();
+		entity.registerTotalTimeCheerAtr = booleanToBigDecimal(funcRest.getRegisteredTotalTimeCheer());
+		entity.completedDisOneMonthAtr = booleanToBigDecimal(funcRest.getCompleteDisplayOneMonth());
+		entity.disConfirmMessageAtr = booleanToBigDecimal(funcRest.getDisplayConfirmMessage());
+		entity.useInitialValueSetAtr = booleanToBigDecimal(funcRest.getUseInitialValueSet());
+		entity.useWorkDetailAtr = booleanToBigDecimal(funcRest.getUseWorkDetail());
+		entity.registerActualExceedAtr = booleanToBigDecimal(funcRest.getRegisterActualExceed());
+		entity.startAppScreenAtr = booleanToBigDecimal(funcRest.getStartAppScreen());
+		entity.confirmSubmitAppAtr = booleanToBigDecimal(funcRest.getConfirmSubmitApp());
+		entity.confirmByYourselfAtr = booleanToBigDecimal(funcRest.getUseConfirmByYourself());
+		entity.initialValueSettingAtr = booleanToBigDecimal(funcRest.getUseInitialValueSet());
+		entity.confirmBySupervisorAtr = booleanToBigDecimal(funcRest.getUseSupervisorConfirm());
+		entity.yourselfConfirmWhenError = new BigDecimal(funcRest.getYourselfConfirmError().value);
+		entity.supervisorConfirmWhenError = new BigDecimal(funcRest.getSupervisorConfirmError().value);
 	}
 
 	private BigDecimal booleanToBigDecimal(boolean value) {
