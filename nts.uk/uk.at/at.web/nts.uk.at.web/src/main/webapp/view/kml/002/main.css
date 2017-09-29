@@ -211,3 +211,16 @@ table.calculator-items tbody {
 .fraction-item {
 	width: 130px;
 }
+
+/*
+Screen K
+*/
+#combo-box1{
+	min-width: 50px!important;
+	width: 70px!important;
+}
+#combo-box2{
+	min-width: 50px!important;
+	width: 70px!important;
+}
+    

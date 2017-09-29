@@ -93,20 +93,20 @@ module nts.uk.at.view.kml002 {
             }
         }
     }
-    
+
     export module h.viewmodel {
         export class ScreenModel {
             useCls: KnockoutObservableArray<any>;
             useClsSelected: any;
-            
+
             constructor() {
                 var self = this;
-                
+
                 self.useCls = ko.observableArray([
                     { code: '0', name: nts.uk.resource.getText("KML002_99") },
                     { code: '1', name: nts.uk.resource.getText("KML002_100") }
                 ]);
-                self.useClsSelected = ko.observable(0);     
+                self.useClsSelected = ko.observable(0);
             }
 
             /**
@@ -115,15 +115,25 @@ module nts.uk.at.view.kml002 {
             start() {
                 var self = this;
                 var dfd = $.Deferred();
-                                
-                    dfd.resolve();
-    
+
+                dfd.resolve();
+
                 return dfd.promise();
             }
-            
+
             registrationBtn() {
                 var self = this;
-                
+
+            }
+            openIDialog() {
+                let self = this;
+                nts.uk.ui.windows.sub.modal('/view/kml/002/i/index.xhtml').onClosed(function(): any {
+                });
+            }
+            openLDialog() {
+                let self = this;
+                nts.uk.ui.windows.sub.modal('/view/kml/002/l/index.xhtml').onClosed(function(): any {
+                });
             }
         }
     }
