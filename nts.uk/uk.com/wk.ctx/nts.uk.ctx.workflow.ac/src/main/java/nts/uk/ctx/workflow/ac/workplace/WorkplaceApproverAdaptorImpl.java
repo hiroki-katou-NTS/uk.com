@@ -45,7 +45,7 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceAdapter {
 
 		// Return
 		WkpCdNameExport x = optWkpCdNameExport.get();
-		return Optional.of(new WorkplaceImport(x.getWkpCode(), x.getWkpName()));
+		return Optional.of(new WorkplaceImport("", x.getWkpCode(), x.getWkpName()));
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceAdapter {
 	@Override
 	public WorkplaceImport findBySid(String employeeId, GeneralDate baseDate) {
 		WorkplaceInfoExport data = wpPub.findBySid(employeeId, baseDate).get();
-		WorkplaceImport result = new WorkplaceImport(data.getWorkplaceCode(), data.getWorkplaceName());
+		WorkplaceImport result = new WorkplaceImport(data.getWorkplaceId(), data.getWorkplaceCode(), data.getWorkplaceName());
 		return result;
 	}
 

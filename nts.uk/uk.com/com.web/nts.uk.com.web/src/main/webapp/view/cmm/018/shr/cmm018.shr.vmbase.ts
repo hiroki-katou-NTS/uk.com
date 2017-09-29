@@ -482,14 +482,14 @@ module nts.uk.com.view.cmm018.shr {
             /**確定者*/
             confirmPerson: number;
             constructor(approverId: string, jobTitleId: string,
-                employeeId: string, employeeName: string,orderNumber: number,
+                employeeId: string, name: string,orderNumber: number,
                 approvalAtr: number, confirmPerson: number)
             {
                 this.approverId = approverId;
                 this.jobTitleId = jobTitleId;
                 this.employeeId = employeeId;
                 this.orderNumber = orderNumber;
-                this.employeeName = employeeName;
+                this.name = name;
                 this.approvalAtr = approvalAtr;
                 this.confirmPerson = confirmPerson;
             }

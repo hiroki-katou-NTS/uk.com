@@ -397,7 +397,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		List<Approver> lstApp = new ArrayList<>();
 		for (ApproverDto approverDto : approver) {
 			lstApp.add(Approver.createSimpleFromJavaType(companyId, branchId,
-					approvalPhaseId, UUID.randomUUID().toString(), null, approverDto.getEmployeeId(), approverDto.getOrderNumber(), approverDto.getApprovalAtr(), approverDto.getConfirmPerson()));
+					approvalPhaseId, UUID.randomUUID().toString(), approverDto.getJobTitleId(), approverDto.getEmployeeId(), approverDto.getOrderNumber(), approverDto.getApprovalAtr(), approverDto.getConfirmPerson()));
 		}
 		return ApprovalPhase.createSimpleFromJavaType(companyId, branchId,
 				approvalPhaseId , appPhase.getApprovalForm(),
