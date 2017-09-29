@@ -14,7 +14,6 @@ import nts.arc.layer.dom.AggregateRoot;
 /**
  * The Class Workplace.
  */
-
 @Getter
 //職場
 public class Workplace extends AggregateRoot{

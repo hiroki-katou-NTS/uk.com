@@ -4,14 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceDto;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
@@ -28,30 +25,10 @@ public class BSWorkplaceFinder {
 	private WorkplaceRepository workplaceRepository;
 
 	/**
-	 * Find by start date.
-	 *
-	 * @param companyId the company id
-	 * @param date the date
-	 * @return the list
-	 */
-	public List<WorkplaceDto> findByStartDate(String companyId, GeneralDate date) {
-	    // TODO: check again
-//		List<Workplace> lstWkp = workplaceRepository.findByStartDate(companyId, date);
-//		if (lstWkp.isEmpty()) {
-//			return null;
-//		}
-//		return lstWkp.stream().map(item -> {
-//			WorkplaceDto wkpDto = new WorkplaceDto();
-//			item.saveToMemento(wkpDto);
-//			return wkpDto;
-//		}).collect(Collectors.toList());
-		return null;
-	}
-	
-	/**
 	 * Find by workplace id.
 	 *
-	 * @param workplaceId the workplace id
+	 * @param workplaceId
+	 *            the workplace id
 	 * @return the workplace dto
 	 */
 	public WorkplaceDto findByWorkplaceId(String workplaceId) {
