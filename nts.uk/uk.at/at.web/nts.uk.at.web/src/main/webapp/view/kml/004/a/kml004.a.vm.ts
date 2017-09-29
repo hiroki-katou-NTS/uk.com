@@ -17,10 +17,15 @@ module nts.uk.at.view.kml004.a.viewmodel {
         checkDelete: KnockoutObservable<boolean>;
         // list eval item in the left
         items: KnockoutObservableArray<EvalItem>;
+        // column order in the right
+        newColumns: KnockoutObservableArray<any>;
         // columns in the left
         columns : KnockoutObservableArray<any>;
         // selected in the left list
-        currentCodeList: KnockoutObservable<number>;
+        currentCodeList: KnockoutObservableArray<number>;
+        // list in the right
+        newItems: KnockoutObservableArray<EvalOrder>;
+        
         constructor() {
             let self = this;
             self.gridListColumns = ko.observableArray([
@@ -29,8 +34,14 @@ module nts.uk.at.view.kml004.a.viewmodel {
             ]);
             
             self.columns = ko.observableArray([
-                { headerText: nts.uk.resource.getText("KML004_14"), key: 'totalItemNo', width: 50 },
-                { headerText: nts.uk.resource.getText("KML004_15"), key: 'totalItemName', width: 250, formatter: _.escape}
+                { headerText: nts.uk.resource.getText("KML004_14"), key: 'totalItemNo', width: 500 },
+                { headerText: nts.uk.resource.getText("KML004_15"), key: 'totalItemName', width: 100, formatter: _.escape}
+            ]);
+            
+            self.newColumns = ko.observableArray([
+                { headerText: nts.uk.resource.getText("KML004_17"), key: 'totalItemNo', width: 50 },
+                { headerText: nts.uk.resource.getText("KML004_18"), key: 'totalItemName', width: 100},
+                { headerText: nts.uk.resource.getText(""), key: 'totalItemName', width: 50}
             ]);
             
             self.lstCate = ko.observableArray([]);
@@ -40,7 +51,8 @@ module nts.uk.at.view.kml004.a.viewmodel {
             self.checkUpdate = ko.observable(true);
             self.checkDelete = ko.observable(true);
             self.items = ko.observableArray([]);
-            self.currentCodeList = ko.observable(null);
+            self.currentCodeList = ko.observableArray([]);
+            self.newItems = ko.observableArray([]);
             self.selectedCode.subscribe((value) => {
                 if (value) {
                     let foundItem = _.find(self.lstCate(), (item: ITotalCategory) => {
@@ -63,13 +75,13 @@ module nts.uk.at.view.kml004.a.viewmodel {
                 _.forEach(sortedData, function(item: ITotalCategory){
                     self.lstCate.push(item);
                 });
-                console.log(self.lstCate());
-//                dfd.resolve();
+                console.log(self.lstCate());  
+                dfd.resolve();
             }).fail(function(error){
                     dfd.reject();
                     alert(error.message);
                 }) 
-              return dfd.promise();      
+              return dfd.promise();         
         }
         
         /** get list eval item **/
@@ -81,6 +93,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
                 _.forEach(sortedData, function(item: EvalItem){
                     self.items.push(item);
                 });
+                dfd.resolve();
             });
             return dfd.promise();
         }
@@ -91,10 +104,9 @@ module nts.uk.at.view.kml004.a.viewmodel {
             let dfd = $.Deferred();
             let array=[];
             let list=[];
-            self.getEvalItem().done(function(){
-                self.currentCodeList(self.items()[0].totalItemNo);  
-                // get list category
-                self.getData().done(function(){
+            
+            self.getData().done(function(data2){
+                    console.log(data2);
                     if(self.lstCate().length == 0){
                         self.clearFrom();
                         self.checkDelete(false);  
@@ -104,10 +116,16 @@ module nts.uk.at.view.kml004.a.viewmodel {
                     }
                     dfd.resolve();
                 });
+            
+            self.getEvalItem().done(function(data1){
+                console.log(data1);
+                //self.currentCodeList(self.items()[0].totalItemNo);  
+                // get list category
+                dfd.resolve();
             });
             return dfd.promise();
         }  
-        
+        add(){}
         /** update or insert data when click button register **/
         register() {
 //            let self = this;
@@ -213,21 +231,26 @@ module nts.uk.at.view.kml004.a.viewmodel {
         
     }
     
+    
+    
     export interface ITotalCategory{
         categoryCode: string;
         categoryName: string;
-        memo: string;     
+        memo: string;
+        totalEvalOrders: Array<EvalItem>;     
     }
     
     export class TotalCategory{
         categoryCode: KnockoutObservable<string>;
         categoryName: KnockoutObservable<string>;
         memo: KnockoutObservable<string>;
+        totalEvalOrders: KnockoutObservableArray<any>;
         constructor(param: ITotalCategory){
             let self = this;
             this.categoryCode = ko.observable(param.categoryCode);
             this.categoryName = ko.observable(param.categoryName);
-            this.memo = ko.observable(param.memo);   
+            this.memo = ko.observable(param.memo); 
+            this.totalEvalOrders = ko.observableArray([param.totalEvalOrders]);
         } 
     }
     
@@ -238,6 +261,19 @@ module nts.uk.at.view.kml004.a.viewmodel {
             this.totalItemNo = totalItemNo;
             this.totalItemName = totalItemName
         }     
+    }
+    
+    export class EvalOrder{
+        categoryCode: string;
+        totalItemNo: number;
+        totalItemName: string;
+        disporder: number;
+        constructor(categoryCode: string, totalItemNo: number, totalItemName: string, disporder: number){
+            this.categoryCode = categoryCode;
+            this.totalItemNo = totalItemNo;
+            this.totalItemName = totalItemName;
+            this.disporder = disporder;     
+        }
     }
 }
 

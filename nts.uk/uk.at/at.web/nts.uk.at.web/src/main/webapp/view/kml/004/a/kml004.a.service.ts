@@ -7,7 +7,7 @@ module nts.uk.at.view.kml004.a.service {
         update: "at/schedule/schedulehorizontal/update",
     }
     
-    export function getAll(){
+    export function getAll(){   
         return nts.uk.request.ajax(paths.findAllCate); 
     }
     

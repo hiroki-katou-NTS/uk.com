@@ -56,3 +56,12 @@ div#memo .nts-editor-wrapped {
 	margin-top: 20px;
 	margin-left: 420px;
 }
+
+.move-function{
+	margin-top: -300px;
+}
+
+.chane-position-function{
+	margin: -90px 0px 0px 910px;
+	float: left;
+}

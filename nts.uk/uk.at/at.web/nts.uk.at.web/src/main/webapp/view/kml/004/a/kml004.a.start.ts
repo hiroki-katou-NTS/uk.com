@@ -5,4 +5,4 @@ module nts.uk.at.view.kml004.a {
             __viewContext.bind(screenModel);
         });
     });
-} 
+}   
