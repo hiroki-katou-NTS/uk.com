@@ -34,6 +34,7 @@ module nts.uk.at.view.kaf009.b.service {
      * get Go Back Detail Data
      */
     export function getGoBackDirectDetail(appId:string): JQueryPromise<any> {
+        debugger;
         return ajax("at", nts.uk.text.format(paths.getGoBackDirectDetail, appId));
     }
     /**
