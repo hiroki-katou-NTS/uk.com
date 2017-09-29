@@ -22,9 +22,7 @@ import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccep
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DestinationMailListOuput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ApprovalInfoOutput;
-//import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
@@ -52,7 +50,7 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 		//アルゴリズム「承認情報の整理」を実行する
 		ApprovalInfoOutput  approvalInfo = reflectionInfoService.organizationOfApprovalInfo(appID);
 		//共通アルゴリズム「実績反映状態の判断」を実行する
-		this.judgmentActualReflection(application);
+		this.judgmentActualReflection(approvalInfo.getAppApprovalPhase());
 		//ドメインモデル「申請」と紐付き「承認情報」「反映情報」をUpdateする
 		// get domain 申請種類別設定
 		Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getApplicationType().value);
@@ -195,12 +193,11 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	 * @return
 	 */
 	@Override
-	public void judgmentActualReflection(Application application) {
+	public void judgmentActualReflection(List<AppApprovalPhase> listPhase) {
 		boolean allApprovedFlg = false;
 		String companyID = AppContexts.user().companyId();
-		String appID = application.getApplicationID();
-		// get List 5 承認 Phase
-		List<AppApprovalPhase> listPhase = approvalPhaseRepo.findPhaseByAppID(companyID, appID);
+		String appID = listPhase.get(0).getAppID();
+		Application application = appRepo.getAppById(companyID,appID).get();
 		for (AppApprovalPhase phase : listPhase) {
 			// 承認フェーズ」．承認区分が承認済以外の場合(「承認フェーズ」．承認区分 ≠ 承認済
 			if (phase.getApprovalATR() != ApprovalAtr.APPROVED) {
