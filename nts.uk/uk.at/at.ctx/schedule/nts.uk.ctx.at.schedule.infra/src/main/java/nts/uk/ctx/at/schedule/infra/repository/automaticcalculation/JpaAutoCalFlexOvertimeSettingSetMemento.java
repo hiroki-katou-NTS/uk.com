@@ -32,9 +32,4 @@ public class JpaAutoCalFlexOvertimeSettingSetMemento implements AutoCalFlexOvert
 		this.entity.setFlexOtTimeLimit(flexOtTime.getCalAtr().value);
 	}
 
-	@Override
-	public void setFlexOtNightTime(AutoCalSetting flexOtNightTime) {
-		this.entity.setFlexOtNightTimeAtr(flexOtNightTime.getCalAtr().value);
-		this.entity.setFlexOtNightTimeLimit(flexOtNightTime.getUpLimitOtSet().value);
-	}
 }

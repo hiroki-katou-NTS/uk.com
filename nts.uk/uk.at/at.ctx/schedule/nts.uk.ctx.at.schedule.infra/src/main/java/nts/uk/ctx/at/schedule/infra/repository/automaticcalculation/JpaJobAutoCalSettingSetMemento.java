@@ -10,6 +10,7 @@ import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.JobAutoCalSettingSetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.PositionId;
 import nts.uk.ctx.at.schedule.infra.entity.shift.autocalsetting.KshmtAutoJobCalSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.autocalsetting.KshmtAutoJobCalSetPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
@@ -26,6 +27,9 @@ public class JpaJobAutoCalSettingSetMemento implements JobAutoCalSettingSetMemen
 	 * @param entity the entity
 	 */
 	public JpaJobAutoCalSettingSetMemento(KshmtAutoJobCalSet entity) {
+		if (entity.getKshmtAutoJobCalSetPK() == null) {
+			entity.setKshmtAutoJobCalSetPK(new KshmtAutoJobCalSetPK());
+		}
 		this.entity = entity;
 	}
 
@@ -34,8 +38,10 @@ public class JpaJobAutoCalSettingSetMemento implements JobAutoCalSettingSetMemen
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.entity.getKshmtAutoJobCalSetPK().setCid(companyId.v());
-
+		KshmtAutoJobCalSetPK pk = entity.getKshmtAutoJobCalSetPK();
+		pk.setCid(companyId.v());
+		this.entity.setKshmtAutoJobCalSetPK(pk);	
+		
 	}
 
 	/* (non-Javadoc)
@@ -43,7 +49,9 @@ public class JpaJobAutoCalSettingSetMemento implements JobAutoCalSettingSetMemen
 	 */
 	@Override
 	public void setPositionId(PositionId positionId) {
-		this.entity.getKshmtAutoJobCalSetPK().setJobid(positionId.v());
+		KshmtAutoJobCalSetPK pk = entity.getKshmtAutoJobCalSetPK();
+		pk.setJobid(positionId.v());
+		this.entity.setKshmtAutoJobCalSetPK(pk);	
 
 	}
 
@@ -81,8 +89,6 @@ public class JpaJobAutoCalSettingSetMemento implements JobAutoCalSettingSetMemen
 	 */
 	@Override
 	public void setFlexOTTime(AutoCalFlexOvertimeSetting flexOTTime) {
-		this.entity.setFlexOtNightTimeAtr(flexOTTime.getFlexOtNightTime().getCalAtr().value);
-		this.entity.setFlexOtNightTimeLimit(flexOTTime.getFlexOtNightTime().getUpLimitOtSet().value);
 		this.entity.setFlexOtTimeAtr(flexOTTime.getFlexOtTime().getCalAtr().value);
 		this.entity.setFlexOtTimeLimit(flexOTTime.getFlexOtTime().getUpLimitOtSet().value);
 

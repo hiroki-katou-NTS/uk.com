@@ -9,6 +9,7 @@ import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpAutoCalSettingSetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.shift.autocalsetting.KshmtAutoWkpCalSet;
+import nts.uk.ctx.at.schedule.infra.entity.shift.autocalsetting.KshmtAutoWkpCalSetPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
@@ -26,15 +27,20 @@ public class JpaWkpAutoCalSettingSetMemento implements WkpAutoCalSettingSetMemen
 	 * @param entity the entity
 	 */
 	public JpaWkpAutoCalSettingSetMemento(KshmtAutoWkpCalSet entity) {
+		if (entity.getKshmtAutoWkpCalSetPK() == null) {
+			entity.setKshmtAutoWkpCalSetPK(new KshmtAutoWkpCalSetPK());
+		}
 		this.entity = entity;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpAutoCalSettingSetMemento#setCompanyId(nts.uk.ctx.at.shared.dom.common.CompanyId)
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.entity.getKshmtAutoWkpCalSetPK().setCid(companyId.v());
+		KshmtAutoWkpCalSetPK pk = entity.getKshmtAutoWkpCalSetPK();
+		pk.setCid(companyId.v());
+		this.entity.setKshmtAutoWkpCalSetPK(pk);
 
 	}
 
@@ -43,7 +49,9 @@ public class JpaWkpAutoCalSettingSetMemento implements WkpAutoCalSettingSetMemen
 	 */
 	@Override
 	public void setWkpId(WorkplaceId workplaceId) {
-		this.entity.getKshmtAutoWkpCalSetPK().setWkpid(workplaceId.v());
+		KshmtAutoWkpCalSetPK pk = entity.getKshmtAutoWkpCalSetPK();
+		pk.setWkpid(workplaceId.v());
+		this.entity.setKshmtAutoWkpCalSetPK(pk);
 
 	}
 
@@ -77,8 +85,6 @@ public class JpaWkpAutoCalSettingSetMemento implements WkpAutoCalSettingSetMemen
 	 */
 	@Override
 	public void setFlexOTTime(AutoCalFlexOvertimeSetting flexOTTime) {
-		this.entity.setFlexOtNightTimeAtr(flexOTTime.getFlexOtNightTime().getCalAtr().value);
-		this.entity.setFlexOtNightTimeLimit(flexOTTime.getFlexOtNightTime().getUpLimitOtSet().value);
 		this.entity.setFlexOtTimeAtr(flexOTTime.getFlexOtTime().getCalAtr().value);
 		this.entity.setFlexOtTimeLimit(flexOTTime.getFlexOtTime().getUpLimitOtSet().value);
 
