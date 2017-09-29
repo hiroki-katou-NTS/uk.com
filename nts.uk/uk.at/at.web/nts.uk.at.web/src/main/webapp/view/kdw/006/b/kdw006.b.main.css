@@ -1,8 +1,12 @@
-button{
+#sidebar-area{
+	width: 118px;
+}
+
+.screen-b button{
 	width: 75px;
 }
 
-textarea{
+.screen-b textarea{
 	height: 81px;
 }
 
@@ -11,23 +15,23 @@ textarea{
 	margin-left: 64px;
 }
 
-#textBox {
+.screen-b #textBox {
 	margin-left: -49px;
     margin-top: 19px;
 	display: inline-block;
 }
 
-#label2 {
+.screen-b #label2 {
 	float: left;
 	display: inline-block;
 	margin: 26px 10px 20px 55px;
 }
 
-#switchBtn1 {
+.screen-b #switchBtn1 {
 	margin: 26px 20px 20px 10px;
 }
 
-#label1 {
+.screen-b #label1 {
 	display: inline-block;
 	margin: 26px 10px 20px 55px;
 }

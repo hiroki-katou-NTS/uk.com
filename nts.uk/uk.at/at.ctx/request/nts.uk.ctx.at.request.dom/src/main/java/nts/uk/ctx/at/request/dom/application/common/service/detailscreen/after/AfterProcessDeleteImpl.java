@@ -7,14 +7,14 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.ScreenAfterDelete;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ObjApproverRepresenterOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -36,15 +36,15 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	@Inject
 	private AfterProcessDelete DetailedScreenProcessAfterDeleteSevice;
 
-	/*@Inject
-	private ApprovalAgencyInformation approvalAgencyInformationService;*/
+	@Inject
+	private AgentAdapter approvalAgencyInformationService;
 	
 	@Inject
 	private DestinationJudgmentProcess destinationJudgmentProcessService;
 	
 	
 	@Override
-	public ScreenAfterDelete screenAfterDelete(String companyID ,String appID) {
+	public ScreenAfterDelete screenAfterDelete(String appID) {
 		String companyID = AppContexts.user().companyId();
 		AppCanAtr sendMailWhenApprovalFlg = null;
 		ApprovalAtr approvalAtr = null;
@@ -66,11 +66,11 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 					List<String> approver = new ArrayList<String>();
 					
 					/** 3-1 アルゴリズム「承認代行情報の取得処理」を実行する(thực hiện xử lý 「承認代行情報の取得処理」)*/
-		/*		cho 3-1  	ApprovalAgencyInformationOutput approvalAgencyInformationOutput = approvalAgencyInformationService.getApprovalAgencyInformation(companyID, approver);
-					List<ObjApproverRepresenterOutput> listApproverRepresenter = approvalAgencyInformationOutput.getListApproverAndRepresenterSID();
+					AgentPubImport agentPubImport = approvalAgencyInformationService.getApprovalAgencyInformation(companyID, approver);
+					List<ApproverRepresenterImport> listApproverRepresenter = agentPubImport.getListApproverAndRepresenterSID();
 					
-					*//** 3-2 *//*
-				listDestination = destinationJudgmentProcessService.getDestinationJudgmentProcessService(listApproverRepresenter);*/
+					/** 3-2 */
+					listDestination = destinationJudgmentProcessService.getDestinationJudgmentProcessService(listApproverRepresenter);
 					/*
 					//Add listDestination to listSender
 					List<String> listSender = new ArrayList<String>(listDestination);

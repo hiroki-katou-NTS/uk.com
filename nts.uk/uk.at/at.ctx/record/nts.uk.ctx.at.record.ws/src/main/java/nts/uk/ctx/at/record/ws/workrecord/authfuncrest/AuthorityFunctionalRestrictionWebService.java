@@ -9,12 +9,15 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.record.app.command.workrecord.authfuncrest.AuthFuncRestrictionCommand;
+import nts.uk.ctx.at.record.app.command.workrecord.authfuncrest.AuthFuncRestrictionCommandHandler;
 import nts.uk.ctx.at.record.app.find.workrecord.authfuncrest.EmployeeRoleDto;
 import nts.uk.ctx.at.record.app.find.workrecord.authfuncrest.FunctionalRestrictionWithAuthorityDto;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthority;
@@ -42,9 +45,12 @@ public class AuthorityFunctionalRestrictionWebService extends WebService {
 
 	@Inject
 	private DailyPerformanceAuthorityRepoInterface dailyPerAuthRepo;
+	
+	@Inject
+	private AuthFuncRestrictionCommandHandler authFuncRestHandler;
 
 	@GET
-	@Path("findemployeeroles")
+	@Path("find-emp-roles")
 	public List<EmployeeRoleDto> getEmployeeRoles() {
 		String companyId = AppContexts.user().companyId();
 		List<EmployeeRole> employeeRoles = emplRoleRepo.getEmployeeRoles(new CompanyId(companyId));
@@ -63,8 +69,9 @@ public class AuthorityFunctionalRestrictionWebService extends WebService {
 
 		// function-No , function-name, function-description
 		List<FunctionalRestrictionWithAuthorityDto> results = new ArrayList<>();
-		daiPerfFunctions.forEach(dpFunc -> results.add(new FunctionalRestrictionWithAuthorityDto(roleId,
-				dpFunc.getFunctionNo().v().intValue(), dpFunc.getDisplayName().v(), dpFunc.getDescription().v())));
+		daiPerfFunctions.forEach(
+				dpFunc -> results.add(new FunctionalRestrictionWithAuthorityDto(dpFunc.getFunctionNo().v().intValue(),
+						dpFunc.getDisplayName().v(), dpFunc.getDescription().v())));
 
 		// function-availability
 		results.forEach(dto -> {
@@ -75,6 +82,12 @@ public class AuthorityFunctionalRestrictionWebService extends WebService {
 			});
 		});
 		return results;
+	}
+	
+	@POST
+	@Path("register")
+	public void registerAuthFuncRestriction(AuthFuncRestrictionCommand command) {
+		authFuncRestHandler.handle(command);
 	}
 
 }

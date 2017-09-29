@@ -12,6 +12,8 @@ import lombok.val;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
@@ -26,7 +28,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DecideAgencyExpiredOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.User;
-import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.PeriodCurrentMonth;
@@ -48,7 +49,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 	AfterApprovalProcess detailedScreenAfterApprovalProcessService;
 
 	@Inject
-	ApprovalAgencyInformation approvalAgencyInformationService;
+	AgentAdapter approvalAgencyInformationService;
 
 	@Inject
 	ApproveAcceptedRepository approveAcceptedRepository;
@@ -74,6 +75,11 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				.findPhaseByAppID(companyID, applicationData.getApplicationID()).get(0);
 		List<ApprovalFrame> listApprovalFrame = approvalFrameRepository.getAllApproverByPhaseID(companyID,
 				appApprovalPhase.getPhaseID());
+		//tu viet 27/9/2017
+		for(ApprovalFrame approvalFrame : listApprovalFrame ) {
+			approvalFrame.setListApproveAccepted(approvalFrame.getListApproveAccepted());
+		}
+		
 		// Check if current user has in list Approver
 		boolean isUserIsApprover = decideByApprover(applicationData);
 		String approverSID = null;
@@ -171,7 +177,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		for (ApprovalFrame approvalFrame : listApprovalFrame) {
 
 			List<ApproveAccepted> listApproveAccepted = approveAcceptedRepository
-					.getAllApproverAccepted(approvalFrame.getFrameID());
+					.getAllApproverAccepted(approvalFrame.getCompanyID(),approvalFrame.getFrameID());
 			for (ApproveAccepted approveAccepted : listApproveAccepted) {
 				// 「承認枠」．承認区分が未承認
 				// "Approval frame".Approval ATR =Not Approved
@@ -189,7 +195,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 							// DecideAgencyExpiredOutput decideAgencyExpired =
 						// decideAgencyExpired(approvalFrame);
 						List<String> approver = null;
-						 ApprovalAgencyInformationOutput approvalAgencyInformationOutput =approvalAgencyInformationService.getApprovalAgencyInformation(companyID,approver);
+						AgentPubImport approvalAgencyInformationOutput =approvalAgencyInformationService.getApprovalAgencyInformation(companyID,approver);
 						 
 						 if(approvalAgencyInformationOutput.getListRepresenterSID().contains(employeeID)){
 							 outputAuthorizableflags = true;
@@ -243,7 +249,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				appApprovalPhase.getPhaseID());
 		for (ApprovalFrame approvalFrame : listApprovalFrame) {
 			List<ApproveAccepted> listApproveAccepted = approveAcceptedRepository
-					.getAllApproverAccepted(approvalFrame.getFrameID());
+					.getAllApproverAccepted(approvalFrame.getCompanyID(),approvalFrame.getFrameID());
 			for (ApproveAccepted approveAccepted : listApproveAccepted) {
 				// Whether the loginer is an approver
 				if (approveAccepted.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
@@ -296,7 +302,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 
 		for (ApprovalFrame approvalFrame : listApprovalFrame) {
 			List<ApproveAccepted> listApproveAccepted = approveAcceptedRepository
-					.getAllApproverAccepted(approvalFrame.getFrameID());
+					.getAllApproverAccepted(approvalFrame.getCompanyID(),approvalFrame.getFrameID());
 			for (ApproveAccepted approveAccepted : listApproveAccepted) {
 				if (employeeID == approveAccepted.getApproverSID()) {
 					outputAuthorizableflags = true;
@@ -335,7 +341,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		if (appApprovalPhase.getApprovalForm() == ApprovalForm.EVERYONEAPPROVED) {
 			for (ApprovalFrame approvalFrame : listApprovalFrame) {
 				List<ApproveAccepted> listApproveAccepted = approveAcceptedRepository
-						.getAllApproverAccepted(approvalFrame.getFrameID());
+						.getAllApproverAccepted(approvalFrame.getCompanyID(),approvalFrame.getFrameID());
 				for (ApproveAccepted approveAccepted : listApproveAccepted) {
 					if (employeeID == approveAccepted.getApproverSID()) {
 						return new CanBeApprovedOutput(true, ApprovalAtr.APPROVED, false);
@@ -359,7 +365,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			 */
 			for (ApprovalFrame approvalFrame : listApprovalFrame) {
 				List<ApproveAccepted> listApproveAccepted = approveAcceptedRepository
-						.getAllApproverAccepted(approvalFrame.getFrameID());
+						.getAllApproverAccepted(approvalFrame.getCompanyID(),approvalFrame.getFrameID());
 				for (ApproveAccepted approveAccepted : listApproveAccepted) {
 					List<ApproveAccepted> someoneApprovalConfirm = listApproveAccepted.stream()
 							.filter(f -> f.getConfirmATR() == ConfirmAtr.USEATR_USE).collect(Collectors.toList());
@@ -411,8 +417,9 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
 		List<String> approver = null;
-		// Get list
-		ApprovalAgencyInformationOutput approvalAgencyInformationOutput = approvalAgencyInformationService
+
+		//Get list
+		AgentPubImport approvalAgencyInformationOutput = approvalAgencyInformationService
 				.getApprovalAgencyInformation(companyID, approver);
 		List<String> outputApprover = approvalAgencyInformationOutput.getListApproverAndRepresenterSID().stream()
 				.map(x -> x.getApprover()).collect(Collectors.toList());

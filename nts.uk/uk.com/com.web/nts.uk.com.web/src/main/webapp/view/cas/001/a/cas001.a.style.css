@@ -1,5 +1,10 @@
 @import url("base.css");
 
+#content {
+	width: 1200px;
+	margin-bottom: 20px;
+}
+
 #A1_004 {
 	margin-left: 15px !important;
 }
@@ -41,7 +46,7 @@
 }
 
 #content-left>.caret-bottom {
-	margin-left: 50px;
+	margin-left: 80px;
 	font-size: 20px;
 }
 
@@ -202,4 +207,8 @@
 .line_col_2 {
 	width: 200px;
 	float: left;
+}
+
+#selected_all_ckb {
+	margin-left: 7px;
 }

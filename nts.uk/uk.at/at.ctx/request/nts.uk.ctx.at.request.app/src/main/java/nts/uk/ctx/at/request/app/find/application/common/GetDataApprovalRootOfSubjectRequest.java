@@ -8,15 +8,13 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
-import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.ApprovalRootService;
-import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApprovalPhaseOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApproverInfo;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 
 @Stateless
 public class GetDataApprovalRootOfSubjectRequest {
 	
 	@Inject 
-	private ApprovalRootService approvalRootRepo;
+	private ApprovalRootAdapter approvalRootRepo;
 	
 	@Inject
 	private EmployeeAdapter employeeAdapter;

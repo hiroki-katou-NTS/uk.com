@@ -112,14 +112,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             let dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
-            //let dfdAllReasonByAppID = self.getAllReasonByAppID("000");
+            let dfdAllReasonByAppID = self.getAllReasonByAppID("000");
             let dfdAllDataByAppID = self.getAllDataByAppID("000");
-            //let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
+            let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
             
 
-            $.when( dfdAllDataByAppID).done(( dfdAllDataByAppIDData) => {
-                //self.listReasonByAppID(data);
-                //self.getDetailCheck(self.inputDetail());
+            $.when( dfdAllReasonByAppID,dfdAllDataByAppID,dfdGetDetailCheck).done((dfdAllReasonByAppIDData,dfdAllDataByAppIDData,dfdGetDetailCheckData) => {
+                
                 //self.checkDisplayStart();
                 dfd.resolve();
             });

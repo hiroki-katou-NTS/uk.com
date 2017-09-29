@@ -11,6 +11,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
@@ -20,7 +22,6 @@ import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameR
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcessImpl;
-import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -49,7 +50,7 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 	 * 3-1.承認代行情報の取得処理
 	 */
 	@Inject
-	private ApprovalAgencyInformation appAgencyInfoService;
+	private AgentAdapter appAgencyInfoService;
 
 	@Override
 	public void newScreenRegisterAtApproveInfoReflect(String SID, Application application) {
@@ -235,7 +236,7 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 						List<String> listUnApproved = approvalProcess.actualReflectionStateDecision(appID,
 								appPhase.getPhaseID(), ApprovalAtr.UNAPPROVED);
 						// 3-1.承認代行情報の取得処理
-						ApprovalAgencyInformationOutput agency = this.appAgencyInfoService
+						AgentPubImport agency = this.appAgencyInfoService
 								.getApprovalAgencyInformation(companyID, listUnApproved);
 						/*
 						 * if(allApprovalFlg){ flgApprovalDone = true; }else{ flgApprovalDone = false; }

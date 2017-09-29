@@ -17,11 +17,14 @@ module nts.uk.at.view.kmk002.b {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
+                nts.uk.ui.block.invisible();
 
                 // Get param from parent screen
                 let itemNo = nts.uk.ui.windows.getShared("paramForB");
 
-                self.loadEmpCondition(itemNo).done(() => dfd.resolve());
+                self.loadEmpCondition(itemNo)
+                    .done(() => dfd.resolve())
+                    .always(() => nts.uk.ui.block.clear());
                 return dfd.promise();
             }
 
@@ -35,9 +38,6 @@ module nts.uk.at.view.kmk002.b {
 
                     // Convert to viewmodel
                     self.empCondition.fromDto(res);
-
-                    // init ntsGrid
-                    self.empCondition.initNtsGrid();
 
                     dfd.resolve();
                 });
@@ -69,7 +69,19 @@ module nts.uk.at.view.kmk002.b {
             public save(): void {
                 let self = this;
                 let command = self.empCondition.toDto();
-                service.save(command);
+                nts.uk.ui.block.invisible();
+                service.save(command)
+                    .done(() => {
+                        nts.uk.ui.block.clear();
+                        nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => self.close());
+                    });
+            }
+
+            /**
+             * Close dialog
+             */
+            public close(): void {
+                nts.uk.ui.windows.close();
             }
 
         }
@@ -93,7 +105,6 @@ module nts.uk.at.view.kmk002.b {
                 let self = this;
                 self.optionalItemNo = dto.optionalItemNo;
                 self.empConditions = dto.empConditions.map(item => new Condition(item));
-                //self.updateNtsGrid();
             }
 
             public toDto(): EmpConditionDto {
@@ -106,45 +117,54 @@ module nts.uk.at.view.kmk002.b {
                 return dto;
             }
 
+            /**
+             * Apply all employment
+             */
             public applyAll(): void {
                 let self = this;
-                console.log(self.empConditions);
-                _.each(self.empConditions, item => item.apply() );
-                console.log(self.empConditions);
+                _.each(self.empConditions, item => item.apply());
             }
 
+            /**
+             * Not apply all employment
+             */
             public notApplyAll(): void {
                 let self = this;
-                console.log(self.empConditions);
-                _.each(self.empConditions, item => item.notApply() );
-                console.log(self.empConditions);
+                _.each(self.empConditions, item => item.notApply());
             }
 
+            /**
+             * Update nts grid.
+             */
             public updateNtsGrid(): void {
                 let self = this;
                 _.each(self.empConditions, item => {
-                    delete item.empCd;
-                    $("#grid-emp-condition").ntsGrid("updateRow", item.empCd, item);
+                    let data = { empName: item.empName, empApplicableAtr: item.empApplicableAtr };
+                    $("#grid-emp-condition").ntsGrid("updateRow", item.empCd, data);
                 });
             }
 
+            /**
+             * Init nts grid.
+             */
             public initNtsGrid(): void {
                 let self = this;
                 $("#grid-emp-condition").ntsGrid({
-                    width: '300px',
-                    height: '400px',
+                    width: '322px',
+                    height: '315px',
                     dataSource: this.empConditions,
                     primaryKey: 'empCd',
                     virtualization: true,
                     virtualizationMode: 'continuous',
                     columns: [
-                        { headerText: '', key: 'empCd', dataType: 'string', width: '50px', hidden: true },
-                        { headerText: nts.uk.resource.getText("KMK002_49"), key: 'empName', dataType: 'string', width: '100px' },
-                        { headerText: nts.uk.resource.getText("KMK002_50"), key: 'empApplicableAtr', dataType: 'number', width: '150px', ntsControl: 'SwitchButtons' },
+                        { headerText: '', key: 'empCd', dataType: 'string', hidden: true},
+                        { headerText: nts.uk.resource.getText("KMK002_49"), key: 'empName', dataType: 'string'},
+                        { headerText: nts.uk.resource.getText("KMK002_50"), key: 'empApplicableAtr', dataType: 'number', ntsControl: 'SwitchButtons' },
                     ],
                     features: [{ name: 'Resizing' }],
                     ntsFeatures: [{ name: 'CopyPaste' }],
-                    ntsControls: [{ name: 'SwitchButtons', options: this.switchds,
+                    ntsControls: [{
+                        name: 'SwitchButtons', options: this.switchds,
                         optionsValue: 'code', optionsText: 'name', controlType: 'SwitchButtons', enable: true
                     }]
                 });
@@ -163,10 +183,16 @@ module nts.uk.at.view.kmk002.b {
                 this.empApplicableAtr = dto.empApplicableAtr;
             }
 
+            /**
+             * Set emp to apply
+             */
             public apply(): void {
                 this.empApplicableAtr = 1;
             }
 
+            /**
+             * Set emp to not apply 
+             */
             public notApply(): void {
                 this.empApplicableAtr = 0;
             }
