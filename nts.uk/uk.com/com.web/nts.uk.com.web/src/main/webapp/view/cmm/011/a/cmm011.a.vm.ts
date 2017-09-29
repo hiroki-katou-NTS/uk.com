@@ -31,10 +31,10 @@ module nts.uk.com.view.cmm011.a {
             constructor() {
                 let self = this;
                 
-                self.strDWorkplace = ko.observable("2016/04/01");
+                self.strDWorkplace = ko.observable("2000/10/11");
                 self.endDWorkplace = ko.observable("9999/12/31");
                 self.treeWorkplace = ko.observable(new TreeWorkplaceModel(self));
-                self.workplaceHistory = ko.observable(new WorkplaceHistoryModel());
+                self.workplaceHistory = ko.observable(new WorkplaceHistoryModel(self));
                 
                 self.workplaceCode = ko.observable(null);
                 self.externalCode = ko.observable(null);
@@ -69,6 +69,10 @@ module nts.uk.com.view.cmm011.a {
                     self.wkpDisplayName(obj.wkpDisplayName + " " + newValue);
                     self.wkpFullName(obj.wkpFullName + " " + newValue);
                 });
+                self.workplaceHistory().selectedWpkHistory.subscribe((historyId) => {
+                    //load workplace info by historyId
+                    self.getAndBindWkpInfo(self.treeWorkplace().selectedWpkId(), self.workplaceHistory().selectedWpkHistory());
+                });
             }
             
             /**
@@ -91,12 +95,48 @@ module nts.uk.com.view.cmm011.a {
             }
             
             /**
+             * get And Bind WkpInfo data to screen 
+             */
+            private getAndBindWkpInfo(wkpId:string, historyId:string):void{
+                var self = this;
+                service.getWkpInfoByHistId(wkpId,historyId).done(function(data:any) {
+                    if (data) {
+                        self.workplaceCode(data.workplaceCode);
+                        self.workplaceName(data.workplaceName);
+                        self.wkpDisplayName(data.wkpDisplayName);
+                        self.wkpFullName(data.wkpGenericName);
+                        self.externalCode(data.outsideWkpCode);
+                    }
+                });
+            }
+            
+            /**
+             * save workplace
+             */
+            public saveWorkplace() {
+                var self = this;
+                service.registerWkp(self.collectWkpData()).done(function() {
+
+                });
+            }
+
+            /**
+             * Collect workplace data 
+             */
+            public collectWkpData() {
+                var self = this;
+            }
+            
+            /**
              * configureWkpDialog
              */
             public configureWkpDialog() {
                 let self = this;
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/b/index.xhtml').onClosed(() => {
                     let dialogData = nts.uk.ui.windows.getShared("ShareDateScreenParent");
+                    if (!dialogData) {
+                        return;
+                    }
                     self.strDWorkplace(dialogData.startDate);
                     self.endDWorkplace(dialogData.endDate);
                 });
@@ -122,43 +162,6 @@ module nts.uk.com.view.cmm011.a {
                         self.creationType = creationType;
                     }
                 });
-            }
-            
-            static fakeDataWorkplace(): Array<TreeWorkplace> {
-                return [
-                    new TreeWorkplace("001", '001', 'Name001', "001", [
-                        new TreeWorkplace('001001', '001001', 'Name001001', '001001', [
-                            new TreeWorkplace('001001001', '001001001', 'Name001001001', '001001001', [])
-                        ]),
-                        new TreeWorkplace('001002', '001002', 'Name001002', '001002', [])
-                    ]),
-                    new TreeWorkplace('002', '002', 'Name002', '002', [
-                        new TreeWorkplace('002001', '002001', 'Name002001', '002001', []),
-                        new TreeWorkplace('002002', '002002', 'Name002002', '002002', [
-                            new TreeWorkplace('002002001', '002002001', 'Name002002001', '002002001', [])
-                        ])
-                    ]),
-                    new TreeWorkplace('003', '003', 'Name003', '003', [
-                        new TreeWorkplace('003001', '003001', 'Name003001', '003001', []),
-                        new TreeWorkplace('003002', '003002', 'Name003002', '003002', [
-                            new TreeWorkplace('003002001', '003002001', 'Name003002001', '003002001', [])
-                        ])
-                    ]),
-                    new TreeWorkplace('004', '004', 'Name004', '004', []),
-                    new TreeWorkplace('005', '005', 'Name005', '005', [
-                        new TreeWorkplace('005001', '005001', 'Name005001', '005001', []),
-                        new TreeWorkplace('005002', '005002', 'Name005002', '005002', [
-                            new TreeWorkplace('005002001', '005002001', 'Name005002001', '005002001', [
-                                new TreeWorkplace('005002001001', '005002001001', 'Name005002001001', '005002001001', [
-                                    new TreeWorkplace('005002001001001', '005002001001001', 'Name005002001001001', '005002001001001', []),
-                                    new TreeWorkplace('005002001001002', '005002001001002', 'Name005002001001002', '005002001001002', [
-                                        new TreeWorkplace('005002001001001001', '005002001001001001', '005002001001001001', '005002001001001001', [])
-                                    ])
-                                ])
-                            ])
-                        ])
-                    ]),
-                ];
             }
             
             /**
@@ -188,7 +191,7 @@ module nts.uk.com.view.cmm011.a {
 
             constructor(screenModel: ScreenModel) {
                 let self = this;
-
+                self.screenModel = screenModel;
                 self.treeColumns = ko.observableArray([
                     { headerText: "", key: 'workplaceId', dataType: "string", hidden: true },
                     { headerText: nts.uk.resource.getText("KCP004_5"), key: 'nodeText', width: 250, dataType: "string" }
@@ -199,10 +202,28 @@ module nts.uk.com.view.cmm011.a {
                 
                 // subscribe
                 self.lstWorkplace.subscribe(dataList => {
+                    // update nodeText, level of tree
+                    self.updateTree(self.lstWorkplace());
+                    
+                    // convert tree to array
                     self.treeArray(self.convertTreeToArray(dataList));
                 });
+                
+                //subscribe selected wkp Id
                 self.selectedWpkId.subscribe(newValue => {
                     self.selectedHeirarchyCd = self.getSelectedHeirarchyCd();
+                    //TODO get wkp list hist by wkpId
+                    service.getLstWkpHist(newValue).done(function(data: any) {
+
+                        let lstWpkHistory = _.map(data.workplaceHistory, (item:any) => {
+                            return { workplaceId: data.workplaceId, historyId: item.historyId, startDate: item.period.startDate, endDate: item.period.endDate };
+                        });
+                        //update list hist
+                        if (self.screenModel) {
+                            self.screenModel.workplaceHistory().init(lstWpkHistory);
+                        }
+                        //TODO
+                    });
                 });
                 self.treeArray.subscribe(newArray => {
                     self.mapHeirarchy = self.convertMapHeirarchy();
@@ -219,7 +240,7 @@ module nts.uk.com.view.cmm011.a {
                     self.lstWorkplace(res);
                     
                     // calculate width of cell nodeText
-                    self.calWidthColText()
+                    self.calWidthColText();
                     dfd.resolve();
                 }).fail((res: any) => {
                     self.screenModel.showMessageError(res);
@@ -232,7 +253,9 @@ module nts.uk.com.view.cmm011.a {
              */
             public selectFirst() {
                 let self = this;
-                self.selectedWpkId(self.lstWorkplace()[0].workplaceId);
+                if (self.lstWorkplace() && (self.lstWorkplace().length > 0)) {
+                    self.selectedWpkId(self.lstWorkplace()[0].workplaceId);
+                }
             }
             
             /**
@@ -267,10 +290,10 @@ module nts.uk.com.view.cmm011.a {
             public isValidLimitHeirachy(): boolean {
                 let self = this;
                 let lengthElementSameHeirachies: number = self.treeArray().filter(item => {
-                    if (item.heirarchyCode.length != self.selectedHeirarchyCd.length) {
+                    if (item.hierarchyCode.length != self.selectedHeirarchyCd.length) {
                         return false;
                     }
-                    let parentHeirarchyCd: string = item.heirarchyCode.substr(0, item.heirarchyCode.length - 3);
+                    let parentHeirarchyCd: string = item.hierarchyCode.substr(0, item.hierarchyCode.length - 3);
                     let parentSelectedHeirarchyCd: string = self.selectedHeirarchyCd.substr(0,
                         self.selectedHeirarchyCd.length - 3);
                     return parentHeirarchyCd == parentSelectedHeirarchyCd;
@@ -280,18 +303,33 @@ module nts.uk.com.view.cmm011.a {
             }
             
             /**
+             * updateTree
+             */
+            private updateTree(dataList: Array<TreeWorkplace>) {
+                let self = this;
+                for (let item of dataList) {
+                    item.nodeText = item.code + " " + item.name;
+                    item.level = item.hierarchyCode.length / 3;
+                    
+                    if (item.childs) {
+                        self.updateTree(item.childs);
+                    }
+                }
+            }
+            
+            /**
              * getSelectedHeirarchyCd
              */
             private getSelectedHeirarchyCd(): string {
                 let self = this;
-                let heirarchyCode: string = "";
+                let hierarchyCode: string = "";
                 for(let item of self.treeArray()) {
                     if (item.workplaceId == self.selectedWpkId()) {
-                        heirarchyCode = item.heirarchyCode;
+                        hierarchyCode = item.hierarchyCode;
                         break;
                     }
                 }
-                return heirarchyCode;
+                return hierarchyCode;
             }
             
             /**
@@ -335,7 +373,7 @@ module nts.uk.com.view.cmm011.a {
             private convertMapHeirarchy(): any {
                 let self = this;
                 return _.reduce(self.treeArray(), function(hash: any, value: any) {
-                    let key: any = value['heirarchyCode'];
+                    let key: any = value['hierarchyCode'];
                     hash[key] = value['name'];
                     return hash;
                 }, {});
@@ -355,7 +393,7 @@ module nts.uk.com.view.cmm011.a {
                         workplaceId: item.workplaceId,
                         name: item.name,
                         nodeText: item.nodeText,
-                        heirarchyCode: item.heirarchyCode,
+                        hierarchyCode: item.hierarchyCode,
                         level: item.level,
                     });
                 })
@@ -368,22 +406,19 @@ module nts.uk.com.view.cmm011.a {
          */
         class WorkplaceHistoryModel extends WorkplaceHistory {
             
-            constructor() {
+            parentModel : ScreenModel;
+            
+            constructor(parentModel : ScreenModel) {
                 super();
                 let self = this;
-                
-                self.init();
+                self.parentModel = parentModel;
+                //list is empty 
+                self.init([]);
             }
             
-            init() {
+            init(data: any) {
                 let self = this;
-                let lstWpkHistory: Array<IHistory> = [
-                    {workplaceId: "ABC1", historyId: "ABC1", startDate: "2015/04/01", endDate: "9999/12/31"},
-                    {workplaceId: "ABC2", historyId: "ABC2", startDate: "2015/04/01", endDate: "9999/12/31"},
-                    {workplaceId: "ABC3", historyId: "ABC3", startDate: "2015/04/01", endDate: "9999/12/31"},
-                    {workplaceId: "ABC4", historyId: "ABC4", startDate: "2015/04/01", endDate: "9999/12/31"}
-                ]
-                self.lstWpkHistory(lstWpkHistory);
+                self.lstWpkHistory(data);
                 self.selectFirst();
             }
             
@@ -392,8 +427,7 @@ module nts.uk.com.view.cmm011.a {
              */
             public addWkpHistoryDialog() {
                 let self = this;
-                let startDateLatest: string = self.lstWpkHistory()[0].startDate;
-                nts.uk.ui.windows.setShared("StartDateLatestHistory", startDateLatest);
+                nts.uk.ui.windows.setShared("selectedWkpId",self.parentModel.treeWorkplace().selectedWpkId());
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/d/index.xhtml').onClosed(() => {
                 });
             }

@@ -35,14 +35,14 @@ module nts.uk.pr.view.ksu006.c {
                     { headerText: "", key: 'executeId', dataType: "string", hidden: true, formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_311"), key: 'startDate', width: 175, dataType: 'date', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_312"), key: 'endDate', width: 175, dataType: 'date', formatter: _.escape},
-                    { headerText: nts.uk.resource.getText("KSU006_313"), key: 'extBudgetName', width: 150, dataType: 'string', formatter: _.escape},
+                    { headerText: nts.uk.resource.getText("KSU006_313"), key: 'extBudgetName', width: 180, dataType: 'string', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_314"), key: 'fileName', width: 200, dataType: 'string', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_315"), key: 'statusDes', width: 70, dataType: 'string', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_316"), key: 'numberSuccess', width: 70, dataType: 'number', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_317"), key: 'numberFail', width: 70, dataType: 'number', formatter: _.escape},
                     { headerText: nts.uk.resource.getText("KSU006_318"), key: 'download', width: 100, dataType: 'string', formatter: _.escape,
                         template: "{{if(${numberFail}) > 0}} <span id='download-log-${executeId}' style='text-decoration: underline;color: blue;'"
-                            + "data-execute='${executeId}' tabindex='7'>" + nts.uk.resource.getText("KSU006_319") + "</span>{{/if}}"}
+                            + "data-execute='${executeId}'>" + nts.uk.resource.getText("KSU006_319") + "</span>{{/if}}"}
                 ]);
                 self.rowSelected = ko.observable('');
                 

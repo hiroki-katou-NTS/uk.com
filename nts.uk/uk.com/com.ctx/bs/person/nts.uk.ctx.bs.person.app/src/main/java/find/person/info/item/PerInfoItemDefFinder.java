@@ -160,6 +160,20 @@ public class PerInfoItemDefFinder {
 
 	// mapping data from domain to DTO
 
+	//vinhpx: start
+	public List<PerInfoItemDefMapDto> getPerInfoDefById(String perInfoCategoryId){
+		String companyId = AppContexts.user().companyId();
+		String contractId = AppContexts.user().contractCode();
+		return pernfoItemDefRep.getPerInfoItemByCtgId(perInfoCategoryId, 
+				companyId, contractId).stream().map(item ->{
+					//boolean alreadyCopy = pernfoItemDefRep.countPerInfoItemDefInCopySetting(perInfoCategoryId, companyId) > 0 ? true : false;
+					boolean alreadyCopy = true;
+					return new PerInfoItemDefMapDto(item.getPerInfoItemDefId(), item.getPerInfoCategoryId(),
+							item.getItemName().v(), alreadyCopy);
+				}).collect(Collectors.toList());
+	}
+	//vinhpx: end
+	
 	private List<PerInfoItemDefDto> mappingItemAndOrder(List<PersonInfoItemDefinition> itemDefs,
 			List<PerInfoItemDefOrder> itemOrders) {
 		return itemDefs.stream().map(i -> {
@@ -224,5 +238,7 @@ public class PerInfoItemDefFinder {
 			return null;
 		}
 	}
+	
+	
 
 }

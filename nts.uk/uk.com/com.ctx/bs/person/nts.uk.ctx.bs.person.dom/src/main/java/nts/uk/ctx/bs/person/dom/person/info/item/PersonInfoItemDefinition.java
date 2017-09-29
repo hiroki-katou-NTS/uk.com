@@ -68,6 +68,20 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 		this.systemRequired = SystemRequired.NONE_REQUIRED;
 		this.requireChangable = RequireChangable.REQUIRED;
 	}
+	
+	private PersonInfoItemDefinition(String perInfoItemDefId, String perInfoCategoryId, String itemName) {
+		super();
+		this.perInfoItemDefId = perInfoItemDefId;
+		this.perInfoCategoryId = perInfoCategoryId;
+		this.itemCode = new ItemCode("");
+		this.itemParentCode = new ItemCode("");
+		this.itemName = new ItemName(itemName);
+		this.isAbolition = IsAbolition.NOT_ABOLITION;
+		this.isFixed = IsFixed.NOT_FIXED;
+		this.isRequired = IsRequired.REQUIRED;
+		this.systemRequired = SystemRequired.NONE_REQUIRED;
+		this.requireChangable = RequireChangable.REQUIRED;
+	}
 
 	public static PersonInfoItemDefinition createFromJavaType(String personInfoCategoryId, String itemCode,
 			String itemParentCode, String itemName, int isAbolition, int isFixed, int isRequired) {
@@ -85,6 +99,10 @@ public class PersonInfoItemDefinition extends AggregateRoot {
 	public static PersonInfoItemDefinition createForAddItem(String perInfoCategoryId, String itemCode,
 			String itemParentCode, String itemName) {
 		return new PersonInfoItemDefinition(perInfoCategoryId, itemCode, itemParentCode, itemName);
+	}
+	
+	public static PersonInfoItemDefinition createFromEntityMap(String perInfoItemDefId, String perInfoCategoryId, String itemName) {
+		return new PersonInfoItemDefinition(perInfoItemDefId, perInfoCategoryId, itemName);
 	}
 
 	public void setItemTypeState(ItemTypeState itemTypeState) {

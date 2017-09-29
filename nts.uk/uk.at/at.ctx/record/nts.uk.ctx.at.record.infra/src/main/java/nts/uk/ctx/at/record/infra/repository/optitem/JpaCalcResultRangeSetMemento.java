@@ -28,12 +28,10 @@ public class JpaCalcResultRangeSetMemento implements CalcResultRangeSetMemento {
 	 */
 	public JpaCalcResultRangeSetMemento(KrcstCalcResultRange typeValue) {
 		KrcstCalcResultRangePK krcstCalcResultRangePK = typeValue.getKrcstCalcResultRangePK();
-
 		// Check PK exist
 		if (krcstCalcResultRangePK == null) {
 			krcstCalcResultRangePK = new KrcstCalcResultRangePK();
 		}
-
 		typeValue.setKrcstCalcResultRangePK(krcstCalcResultRangePK);
 
 		this.typeValue = typeValue;

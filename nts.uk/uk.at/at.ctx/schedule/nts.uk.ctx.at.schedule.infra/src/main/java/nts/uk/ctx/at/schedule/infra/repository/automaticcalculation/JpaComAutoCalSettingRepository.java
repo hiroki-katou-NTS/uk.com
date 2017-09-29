@@ -46,7 +46,6 @@ public class JpaComAutoCalSettingRepository extends JpaRepository implements Com
 		if (!optKshmtAutoComCalSet.isPresent()) {
 			return Optional.empty();
 		}
-		Optional<ComAutoCalSetting> a = Optional.of(new ComAutoCalSetting(new JpaComAutoCalSettingGetMemento(optKshmtAutoComCalSet.get())));
 		return Optional.of(new ComAutoCalSetting(new JpaComAutoCalSettingGetMemento(optKshmtAutoComCalSet.get())));
 	}
 

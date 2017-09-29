@@ -42,68 +42,80 @@ public class AutoCalOvertimeSettingDto implements AutoCalOvertimeSettingSetMemen
 	// 法定内深夜残業時間
 	private AutoCalSettingDto legalMidOtTime;
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSettingSetMemento#setEarlyOtTime(nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalSetting)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.
+	 * AutoCalOvertimeSettingSetMemento#setEarlyOtTime(nts.uk.ctx.at.schedule.
+	 * dom.shift.autocalsetting.AutoCalSetting)
 	 */
 	@Override
 	public void setEarlyOtTime(AutoCalSetting earlyOtTime) {
-		AutoCalSettingDto dto = new AutoCalSettingDto();
-		earlyOtTime.saveToMemento(dto);
-		this.earlyOtTime = dto;
-
+		this.earlyOtTime = new AutoCalSettingDto(earlyOtTime.getUpLimitOtSet().value, earlyOtTime.getCalAtr().value);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSettingSetMemento#setEarlyMidOtTime(nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalSetting)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.
+	 * AutoCalOvertimeSettingSetMemento#setEarlyMidOtTime(nts.uk.ctx.at.schedule
+	 * .dom.shift.autocalsetting.AutoCalSetting)
 	 */
 	@Override
 	public void setEarlyMidOtTime(AutoCalSetting earlyMidOtTime) {
-		AutoCalSettingDto dto = new AutoCalSettingDto();
-		earlyMidOtTime.saveToMemento(dto);
-		this.earlyMidOtTime = dto;
+		this.earlyMidOtTime = new AutoCalSettingDto(earlyMidOtTime.getUpLimitOtSet().value,
+				earlyMidOtTime.getCalAtr().value);
 
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSettingSetMemento#setNormalOtTime(nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalSetting)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.
+	 * AutoCalOvertimeSettingSetMemento#setNormalOtTime(nts.uk.ctx.at.schedule.
+	 * dom.shift.autocalsetting.AutoCalSetting)
 	 */
 	@Override
 	public void setNormalOtTime(AutoCalSetting normalOtTime) {
-		AutoCalSettingDto dto = new AutoCalSettingDto();
-		normalOtTime.saveToMemento(dto);
-		this.normalOtTime = dto;
-
+		this.normalOtTime = new AutoCalSettingDto(normalOtTime.getUpLimitOtSet().value, normalOtTime.getCalAtr().value);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSettingSetMemento#setNormalMidOtTime(nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalSetting)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.
+	 * AutoCalOvertimeSettingSetMemento#setNormalMidOtTime(nts.uk.ctx.at.
+	 * schedule.dom.shift.autocalsetting.AutoCalSetting)
 	 */
 	@Override
 	public void setNormalMidOtTime(AutoCalSetting normalMidOtTime) {
-		AutoCalSettingDto dto = new AutoCalSettingDto();
-		normalMidOtTime.saveToMemento(dto);
-		this.normalMidOtTime = dto;
-
+		this.normalMidOtTime = new AutoCalSettingDto(normalMidOtTime.getUpLimitOtSet().value,
+				normalMidOtTime.getCalAtr().value);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSettingSetMemento#setLegalOtTime(nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalSetting)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.
+	 * AutoCalOvertimeSettingSetMemento#setLegalOtTime(nts.uk.ctx.at.schedule.
+	 * dom.shift.autocalsetting.AutoCalSetting)
 	 */
 	@Override
 	public void setLegalOtTime(AutoCalSetting legalOtTime) {
-		AutoCalSettingDto dto = new AutoCalSettingDto();
-		legalOtTime.saveToMemento(dto);
-		this.legalOtTime = dto;
+		this.legalOtTime = new AutoCalSettingDto(legalOtTime.getUpLimitOtSet().value, legalOtTime.getCalAtr().value);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSettingSetMemento#setLegalMidOtTime(nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalSetting)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.
+	 * AutoCalOvertimeSettingSetMemento#setLegalMidOtTime(nts.uk.ctx.at.schedule
+	 * .dom.shift.autocalsetting.AutoCalSetting)
 	 */
 	@Override
 	public void setLegalMidOtTime(AutoCalSetting legalMidOtTime) {
-		AutoCalSettingDto dto = new AutoCalSettingDto();
-		legalMidOtTime.saveToMemento(dto);
-		this.legalMidOtTime = dto;
+		this.legalMidOtTime = new AutoCalSettingDto(legalMidOtTime.getUpLimitOtSet().value,
+				legalMidOtTime.getCalAtr().value);
 
 	}
 

@@ -10,15 +10,23 @@ module nts.uk.com.view.cmm008.a {
             
         };
 
-        
-        export function findEmployment(employmentCode: string): JQueryPromise<model.EmploymentFindDto> {
+        /**
+         * Find Employment
+         */
+        export function findEmployment(employmentCode: string): JQueryPromise<model.EmploymentDto> {
             return nts.uk.request.ajax(paths.findEmployment + "/" + employmentCode);
         }
 
+        /**
+         * Save Employment
+         */
         export function saveEmployment(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.saveEmployment, command);
         }
         
+        /**
+         * Remove Employment
+         */
         export function removeEmployment(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.removeEmployment, command);
         }
@@ -28,7 +36,10 @@ module nts.uk.com.view.cmm008.a {
         */
         export module model {
             
-            export class EmploymentFindDto{
+            /**
+             * class EmploymentDto
+             */
+            export class EmploymentDto{
                 code: string;
                 name: string;
                 empExternalCode: string;

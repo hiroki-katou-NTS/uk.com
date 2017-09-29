@@ -42,15 +42,14 @@ public class WorkplaceConfigFinder {
 	}
 
 	/**
-	 * Find lastest by company id.
+	 * Find latest by company id.
 	 *
-	 * @param companyId the company id
 	 * @return the workplace config dto
 	 */
-	public WorkplaceConfigDto findLastestByCompanyId() {
+	public WorkplaceConfigDto findLatestByCompanyId() {
 		String companyId = AppContexts.user().companyId();
 		
-		Optional<WorkplaceConfig> lstWorkplaceConfig = workplaceConfigRepository.findLastestByCompanyId(companyId);
+		Optional<WorkplaceConfig> lstWorkplaceConfig = workplaceConfigRepository.findLatestByCompanyId(companyId);
 		if (lstWorkplaceConfig.isPresent()) {
 			WorkplaceConfigDto wkpConfigDto = new WorkplaceConfigDto();
 			lstWorkplaceConfig.get().saveToMemento(wkpConfigDto);
