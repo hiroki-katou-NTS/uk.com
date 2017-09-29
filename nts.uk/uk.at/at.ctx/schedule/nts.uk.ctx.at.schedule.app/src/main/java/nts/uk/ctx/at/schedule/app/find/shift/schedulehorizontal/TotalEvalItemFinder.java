@@ -21,8 +21,8 @@ public class TotalEvalItemFinder {
 	 */
 	private TotalEvalItemDto fromDomain(TotalEvalItem totalEvalItem){
 		TotalEvalItemDto totalEvalItemDto = new TotalEvalItemDto();
-		totalEvalItemDto.setTotalItemNo(totalEvalItemDto.getTotalItemNo());
-		totalEvalItemDto.setTotalItemName(totalEvalItemDto.getTotalItemName());
+		totalEvalItemDto.setTotalItemNo(totalEvalItem.getTotalItemNo().v());
+		totalEvalItemDto.setTotalItemName(totalEvalItem.getTotalItemName().v());
 		return totalEvalItemDto;
 	}
 	
