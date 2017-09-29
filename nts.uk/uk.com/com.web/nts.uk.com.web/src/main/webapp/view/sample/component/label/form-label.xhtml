@@ -28,7 +28,7 @@
 						<h1>FormLabel</h1>
 						<h2>Overview</h2>
 		            	<div data-bind="ntsFormLabel: {}"><span>レイア</span><span style="font-size:1.4rem;">アウトコ</span><span>ウトコード</span></div><br /><br />
-		            	<div data-bind="ntsFormLabel: { constraint: 'ResidenceCode', enable: false }">レイアウトコード</div><br /><br />
+		            	<div data-bind="ntsFormLabel: { constraint: 'ResidenceCode', enable: false, text: text }"></div><br /><br />
 		            	<div data-bind="ntsFormLabel: { constraint: constraint, required: true }">レイアウトコード</div><br /><br />
 		            	<div data-bind="ntsFormLabel: { constraint: 'ResidenceCode', inline: inline, required: required, enable: enable}">レイアウトコード</div><br />
 						<article class="cf">
@@ -55,6 +55,13 @@
 											</tr>
 										</thead>
 										<tbody>
+											<tr>
+												<td>text<br/><i>(optional)</i></td>
+												<td>
+													<b>Type:</b> KnockoutObservable&lt;string&gt; | string<br/>
+													Text for formlabel
+												</td>
+											</tr>
 											<tr>
 												<td>constraint<br/><i>(optional)</i></td>
 												<td>
