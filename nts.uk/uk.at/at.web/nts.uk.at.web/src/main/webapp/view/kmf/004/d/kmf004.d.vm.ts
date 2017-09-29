@@ -182,10 +182,7 @@ module nts.uk.at.view.kmf004 {
             }   
    
             closeDialog() {
-                var t0 = performance.now(); 
                 nts.uk.ui.windows.close();
-                 var t1 = performance.now();
-                console.log("Selection process " + (t1 - t0) + " milliseconds.");   
             }
             
             /**

@@ -45,9 +45,12 @@ public class KrcstApplEmpConPK implements Serializable {
 	/**
 	 * Instantiates a new krcst appl emp con PK.
 	 *
-	 * @param cid the cid
-	 * @param optionalItemNo the optional item no
-	 * @param empCd the emp cd
+	 * @param cid
+	 *            the cid
+	 * @param optionalItemNo
+	 *            the optional item no
+	 * @param empCd
+	 *            the emp cd
 	 */
 	public KrcstApplEmpConPK(String cid, String optionalItemNo, String empCd) {
 		this.cid = cid;
@@ -80,14 +83,17 @@ public class KrcstApplEmpConPK implements Serializable {
 			return false;
 		}
 		KrcstApplEmpConPK other = (KrcstApplEmpConPK) object;
-		if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+		if ((this.cid == null && other.cid != null)
+				|| (this.cid != null && !this.cid.equals(other.cid))) {
 			return false;
 		}
 		if ((this.optionalItemNo == null && other.optionalItemNo != null)
-				|| (this.optionalItemNo != null && !this.optionalItemNo.equals(other.optionalItemNo))) {
+				|| (this.optionalItemNo != null
+						&& !this.optionalItemNo.equals(other.optionalItemNo))) {
 			return false;
 		}
-		if ((this.empCd == null && other.empCd != null) || (this.empCd != null && !this.empCd.equals(other.empCd))) {
+		if ((this.empCd == null && other.empCd != null)
+				|| (this.empCd != null && !this.empCd.equals(other.empCd))) {
 			return false;
 		}
 		return true;

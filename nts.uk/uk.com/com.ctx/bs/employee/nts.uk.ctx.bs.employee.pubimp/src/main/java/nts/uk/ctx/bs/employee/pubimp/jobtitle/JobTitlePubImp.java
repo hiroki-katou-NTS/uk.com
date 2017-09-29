@@ -131,4 +131,24 @@ public class JobTitlePubImp implements SyJobTitlePub {
 				.build());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub#findByBaseDate(java.
+	 * lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public List<JobTitleExport> findAll(String companyId, GeneralDate baseDate) {
+		// Query
+		List<JobTitle> jobTitleDtos = this.jobTitleRepository.findAll(companyId, baseDate);
+
+		// Return
+		return jobTitleDtos.stream().map(item -> JobTitleExport.builder()
+				.companyId(item.getCompanyId().v()).positionId(item.getPositionId().v())
+				.positionCode(item.getPositionCode().v()).positionName(item.getPositionName().v())
+				.sequenceCode(item.getSequenceCode().v()).startDate(item.getPeriod().getStartDate())
+				.endDate(item.getPeriod().getEndDate()).build()).collect(Collectors.toList());
+	}
+
 }

@@ -9,12 +9,14 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.record.app.command.optitem.calculation.FormulaSaveCommand;
 import nts.uk.ctx.at.record.app.command.optitem.calculation.FormulaSaveCommandHandler;
 import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaDto;
+import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaEnumDto;
 import nts.uk.ctx.at.record.app.find.optitem.calculation.FormulaFinder;
 
 /**
@@ -30,17 +32,18 @@ public class CalcFormulaWs extends WebService {
 
 	/** The handler. */
 	@Inject
-	FormulaSaveCommandHandler handler;
+	private FormulaSaveCommandHandler handler;
 
 	/**
-	 * Find all.
+	 * Find by item no.
 	 *
+	 * @param itemNo the item no
 	 * @return the list
 	 */
 	@POST
-	@Path("findall")
-	public List<FormulaDto> findAll() {
-		return finder.findAll();
+	@Path("findbyitemno/{itemNo}")
+	public List<FormulaDto> findByItemNo(@PathParam("itemNo") String itemNo) {
+		return finder.findByItemNo(itemNo);
 	}
 
 	/**
@@ -52,5 +55,16 @@ public class CalcFormulaWs extends WebService {
 	@Path("save")
 	public void save(FormulaSaveCommand command) {
 		this.handler.handle(command);
+	}
+
+	/**
+	 * Gets the enum.
+	 *
+	 * @return the enum
+	 */
+	@POST
+	@Path("getenum")
+	public FormulaEnumDto getEnum() {
+		return FormulaEnumDto.init();
 	}
 }

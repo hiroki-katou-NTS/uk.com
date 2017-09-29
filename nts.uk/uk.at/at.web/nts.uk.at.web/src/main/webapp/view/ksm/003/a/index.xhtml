@@ -13,8 +13,6 @@
 				nts.uk.ctx.at.schedule.dom.shift.pattern.daily.Days	
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
-			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web"/>
 			<com:stylefile path="ksm003.a.main.css" />
 			<com:scriptfile path="ksm003.a.service.js" />
 			<com:scriptfile path="ksm003.a.vm.js" />
@@ -60,8 +58,80 @@
 						</table>
 					</div>
 				</div>
-				<div id="right-content" style="float: left;">
-					<div id="tree-grid"></div>
+				<div id="right-content" style="float: left;"
+					data-bind="with: detail">
+					<table>
+						<colgroup>
+							<col width="213px" />
+							<col width="*" />
+						</colgroup>
+						<tr class="row">
+							<td>
+								<!-- B3_1: Label -->
+								<div
+									data-bind="ntsFormLabel: {required: true,constraint:['PatternCode','PatternName'] }">#{i18n.getText('KSM003_28')}
+								</div>
+							</td>
+							<td>
+								<!-- B3_2: Pattern code --> 
+								<input tabindex="5" class="nts-input" id="inpCode" 
+								data-bind="ntsTextEditor: {
+										  name: '#[KSM003_36]',
+                                          value: patternCode,
+                                          constraint: 'PatternCode',
+                                          enable: !$parent.isEditting(),
+                                          required: true}" />
+								<!-- B3_3:Pattern Name--> 
+								<input tabindex="6" class="nts-input" id="inpPattern"
+								data-bind="ntsTextEditor: {
+										  name: '#[KSM003_37]',
+                                          value: patternName,
+                                          constraint: 'PatternName',
+                                          required: true}" />
+							</td>
+						</tr>
+					</table>
+					<div>
+						<!-- B3_1: Label -->
+						<!-- B2_2: List Pattern Value-->
+						<div>#{i18n.getText('KSM003_29')}</div>
+						 <div class="control-group" > 
+							<table class="border-all tbl-monthly" id="tblDailyPatternVals">
+								<THEAD>
+									<tr class="bg-green">
+										<td></td>
+										<td>#{i18n.getText('KSM003_30')}</td>
+										<td>#{i18n.getText('KSM003_31')}</td>
+										<td>#{i18n.getText('KSM003_32')}</td>
+									</tr>
+								</THEAD>
+								<TBODY>
+									<com:ko tag="foreach" bind="dailyPatternVals">
+										<tr>
+											<td >
+												<div >
+													<button class="buttonEvent" tabindex="-1"
+														style="width: 80px"
+														data-bind="attr: {id: 'btnVal' + dispOrder}, click: openDialogWorkDays">
+														#{i18n.getText('KSM003_34')} </button>
+												</div>
+											</td>
+											<td>
+												<div  style="width: 200px" data-bind="text: workTypeInfo "></div>
+											</td>
+											<td>
+												<div  style="width: 200px" data-bind="text: workingInfo "></div>
+											</td>
+											<td ><input tabindex="7"  class="nts-input"
+												data-bind="attr: {id: 'days' + dispOrder}, ntsNumberEditor: { name: '#[KSM003_32]', value: days, constraint: 'Days', enable:true}" style="width: 30px ;"/> #{i18n.getText('KSM003_33')} 
+												
+											</td>
+										</tr>
+									</com:ko>
+								</TBODY>
+							</table>
+						</div>
+					</div>
 				</div>
 			</div>
 		</ui:define>

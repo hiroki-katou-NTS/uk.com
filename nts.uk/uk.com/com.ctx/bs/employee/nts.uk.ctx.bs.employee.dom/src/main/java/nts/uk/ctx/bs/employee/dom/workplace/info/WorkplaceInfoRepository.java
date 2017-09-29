@@ -22,6 +22,15 @@ public interface WorkplaceInfoRepository {
 	void update(WorkplaceInfo workplaceInfo);
 
 	/**
+     * Removes the.
+     *
+     * @param companyId the company id
+     * @param workplaceId the workplace id
+     * @param historyId the history id
+     */
+    void remove(String companyId, String workplaceId, String historyId);
+	
+	/**
 	 * Find by wkp id.
 	 *
 	 * @param wkpId the wkp id
@@ -47,4 +56,12 @@ public interface WorkplaceInfoRepository {
 	 * @return the list
 	 */
 	Optional<WorkplaceInfo> findByWkpId(String wkpId, GeneralDate baseDate);
+	
+	/**
+	 * Find latest by workplace id.
+	 *
+	 * @param wkpId the wkp id
+	 * @return the optional
+	 */
+	Optional<WorkplaceInfo> findLatestByWorkplaceId(String wkpId);
 }

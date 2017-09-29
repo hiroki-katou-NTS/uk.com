@@ -10,6 +10,7 @@ module nts.custombinding {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
+    //import writeConstraint = nts.uk.request.writeDynamicConstraint;
 
     export class LetControl implements KnockoutBindingHandler {
         init = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
@@ -131,7 +132,6 @@ module nts.custombinding {
                     }
 
                     .layout-control .item-classification div.item-controls table {
-                        min-width: 385px;
                         max-width: 600px;
                     }
 
@@ -149,6 +149,10 @@ module nts.custombinding {
 
                     .layout-control .item-classification div.item-controls table td {
                         line-height: 24px;
+                    }
+
+                    .layout-control .item-classification div.item-controls table .nts-editor.nts-input{
+                        max-width: 73px !important;
                     }
 
                     .layout-control .item-classification div.item-sperator>hr {
@@ -224,12 +228,19 @@ module nts.custombinding {
                     <div class="drag-panel">
                         <div id="cps007_srt_control">
                             <div class="form-group item-classification">
-                                <div data-bind="if: $data.layoutItemType == 0">
+                               <div data-bind="if: $data.layoutItemType == 0">
                                     <div data-bind="let: { item: $data.listItemDf[0] || {}, listItemDf: $data.listItemDf}" class="item-control">
-                                        <div data-bind="ntsFormLabel: { constraint: item.itemCode, required: !!_.find(listItemDf, x => x.isRequired) }, text: className || '#NA'"></div>
+                                        <div data-bind="ntsFormLabel: { /*constraint: item.itemCode,*/ required: !!_.find(listItemDf, function(x) { return !!x.isRequired; }) }, text: className || '#NA'"></div>
                                         <div data-bind="if: (item.itemTypeState || {}).itemType == 1" class="set-items">
                                             <div data-bind="foreach: _.filter(listItemDf, function(x, i) { return i != 0; })" class="set-item-list">
-                                                <div data-bind="template: { name: 'itemtemplate', data: { itemCode: $data.itemCode, itemName: $data.itemName, info: $data.itemTypeState.dataTypeState } }" class="set-item"></div>
+                                                <div data-bind="template: { 
+                                                        name: 'itemtemplate', 
+                                                        data: { 
+                                                            itemCode: $data.itemCode, 
+                                                            itemName: $data.itemName, 
+                                                            info: $data.itemTypeState.dataTypeState
+                                                        } 
+                                                    }" class="set-item"></div>
                                             </div>            
                                         </div>
                                         <div data-bind="if: (item.itemTypeState || {}).itemType == 2" class="single-items">
@@ -240,7 +251,7 @@ module nts.custombinding {
                                     </div>
                                 </div>
                                 <div data-bind="if: $data.layoutItemType == 1" class="item-controls">
-                                    <div data-bind="ntsFormLabel: {}, text: className || '#NA'"></div>
+                                    <div data-bind="ntsFormLabel: { /*constraint: item.itemCode,*/ required: !!_.find($data.listItemDf, function(x) { return !!x.isRequired; }) }, text: className || '#NA'"></div>
                                     <div data-bind="let: { items: listItemDf }" class="multiple-items">
                                         <table>
                                             <thead>
@@ -248,16 +259,17 @@ module nts.custombinding {
                                                     <th data-bind="text: itemName"></th>
                                                 </tr>
                                             </thead>
-                                            <tbody data-bind="foreach: [1, 2, 3]">
-                                                <tr data-bind="foreach: items">
+                                            <tbody data-bind="foreach:  { data: listItemDfValues, as: 'row' }">
+                                                <tr data-bind="foreach: { data: row, as: 'column' }">
                                                     <td data-bind="template: { 
                                                             name: 'itemtemplate', 
                                                             data: {
-                                                                itemCode: $data.itemCode,
-                                                                itemName: $data.itemName, 
-                                                                info: $data.itemTypeState.dataTypeState
+                                                                itemCode: column.item.itemCode,
+                                                                itemName: column.item.itemName, 
+                                                                info: column.item.itemTypeState.dataTypeState,
+                                                                value: column.item.value,
                                                             }
-                                                        }">
+                                                        }, attr: {row: column.row, column: col }">
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -278,7 +290,7 @@ module nts.custombinding {
                         <div data-bind="if: $data.info.stringItemLength < 40">
                             <input data-bind="ntsTextEditor: {
                                     value: $data.info.value,
-                                    constraint: $data.itemCode,
+                                    /*constraint: $data.itemCode,*/
                                     required: false, 
                                     option: {
                                         textmode: 'text',
@@ -293,6 +305,7 @@ module nts.custombinding {
                         <div data-bind="if: $data.info.stringItemLength >= 40">
                             <textarea data-bind="ntsMultilineEditor: {
                                 value: $data.info.value,
+                                /*constraint: $data.itemCode,*/
                                 option: {
                                     textmode: 'text',
                                     placeholder: $data.itemName
@@ -305,20 +318,23 @@ module nts.custombinding {
                     <div data-bind="if: $data.info.dataTypeValue == 2" class="numeric">
                         <input data-bind="ntsNumberEditor: { 
                                     value: $data.info.value,
+                                    /*constraint: $data.itemCode,*/
                                     enable: true,
                                     readonly: $data.info.readonly }, attr: { title: $data.itemName }" />
                     </div>
                     <div data-bind="if: $data.info.dataTypeValue == 3" class="date">
                         <div data-bind="ntsDatePicker: {
-                                    value: $data.info.value, 
+                                    value: $data.info.value,
+                                    /*constraint: $data.itemCode,*/
                                     dateFormat: 'YYYY/MM/DD',
-                                    enable: false,
+                                    enable: $data.info.editable,
                                     readonly: $data.info.readonly
                                 }, attr: { title: $data.itemName }"></div>
                     </div>
                     <div data-bind="if: $data.info.dataTypeValue == 4" class="time">
                         <input data-bind="ntsTimeEditor: {
-                            value: $data.info.value, 
+                            value: $data.info.value,
+                            /*constraint: $data.itemCode,*/
                             inputFormat: 'HH:mm',
                             enable: true,
                             readonly: $data.info.readonly }, attr: { placeholder: $data.itemName }" />
@@ -326,6 +342,7 @@ module nts.custombinding {
                     <div data-bind="if: $data.info.dataTypeValue == 5" class="timepoint">
                         <input data-bind="ntsTimeEditor: {
                             value: $data.info.value, 
+                            /*constraint: $data.itemCode,*/
                             inputFormat: 'HH:mm',
                             enable: true,
                             readonly:  $data.info.readonly
@@ -337,6 +354,7 @@ module nts.custombinding {
                             optionsValue: 'code',
                             visibleItemsCount: 5,
                             value: $data.info.value,
+                            /*constraint: $data.itemCode,*/
                             optionsText: 'name',
                             editable: $data.info.editable,
                             enable: true,
@@ -587,33 +605,35 @@ module nts.custombinding {
                                     }
                                 },
                                 pushItems = (defs: Array<IItemDefinition>) => {
-                                    _.each(defs, def => {
-                                        let item: IItemClassification = {
-                                            layoutID: random(),
-                                            dispOrder: -1,
-                                            personInfoCategoryID: undefined,
-                                            layoutItemType: IT_CLA_TYPE.ITEM,
-                                            listItemDf: []
-                                        };
+                                    _(defs)
+                                        .filter(x => !x.isAbolition) // remove all item if it's abolition
+                                        .each(def => {
+                                            let item: IItemClassification = {
+                                                layoutID: random(),
+                                                dispOrder: -1,
+                                                personInfoCategoryID: undefined,
+                                                layoutItemType: IT_CLA_TYPE.ITEM,
+                                                listItemDf: []
+                                            };
 
-                                        def.dispOrder = -1;
-                                        item.listItemDf = [def];
-                                        item.className = def.itemName;
-                                        item.personInfoCategoryID = def.perInfoCtgId;
+                                            def.dispOrder = -1;
+                                            item.listItemDf = [def];
+                                            item.className = def.itemName;
+                                            item.personInfoCategoryID = def.perInfoCtgId;
 
-                                        // setitem
-                                        if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
-                                            services.getItemsByIds(def.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
-                                                if (defs && defs.length) {
-                                                    _(defs).orderBy(x => x.dispOrder).each((x, i) => { x.dispOrder = i + 1; item.listItemDf.push(x) });
+                                            // setitem
+                                            if (def.itemTypeState.itemType == ITEM_TYPE.SET) {
+                                                services.getItemsByIds(def.itemTypeState.items).done((defs: Array<IItemDefinition>) => {
+                                                    if (defs && defs.length) {
+                                                        _(defs).filter(x => !x.isAbolition).orderBy(x => x.dispOrder).each((x, i) => { x.dispOrder = i + 1; item.listItemDf.push(x) });
 
-                                                    opts.sortable.pushItem(item);
-                                                }
-                                            });
-                                        } else {
-                                            opts.sortable.pushItem(item);
-                                        }
-                                    });
+                                                        opts.sortable.pushItem(item);
+                                                    }
+                                                });
+                                            } else {
+                                                opts.sortable.pushItem(item);
+                                            }
+                                        });
                                 };
 
                             if (!defs || !defs.length) {
@@ -693,79 +713,14 @@ module nts.custombinding {
                             opts.sortable.isEnabled(false);
                         }
                     }
-                },
-                // render primative value to viewContext
-                primitiveConst = () => {
-                    let __viewContext: any = window['__viewContext'] || {},
-                        icls: Array<IItemClassification> = ko.unwrap(opts.sortable.data);
-
-                    _(icls)
-                        .map((x: IItemClassification) => x.listItemDf)
-                        .flatten()
-                        .filter(x => !!x)
-                        .each((x: IItemDefinition) => {
-                            let dts = (x.itemTypeState || <IItemTypeState>{}).dataTypeState,
-                                constraint: any = {
-                                    required: !!x.isRequired,
-                                    valueType: 'String'
-                                };
-
-                            if (dts) {
-                                switch (dts.dataTypeValue) {
-                                    default:
-                                    case ITEM_SINGLE_TYPE.STRING:
-                                        constraint.valueType = "String";
-                                        constraint.maxLength = dts.stringItemLength || 0;
-                                        switch (dts.stringItemType) {
-                                            default:
-                                            case ITEM_STRING_TYPE.ANY:
-                                                constraint.charType = 'Alphabet';
-                                                break;
-                                            case ITEM_STRING_TYPE.ANYHALFWIDTH:
-                                                constraint.charType = 'AnyHalfWidth';
-                                                break;
-                                            case ITEM_STRING_TYPE.ALPHANUMERIC:
-                                                constraint.charType = 'AlphaNumeric';
-                                                break;
-                                            case ITEM_STRING_TYPE.NUMERIC:
-                                                constraint.charType = 'Numeric';
-                                                break;
-                                            case ITEM_STRING_TYPE.KANA:
-                                                constraint.charType = 'Kana';
-                                                break;
-                                        }
-                                        break;
-                                    case ITEM_SINGLE_TYPE.NUMERIC:
-                                        if (dts.decimalPart == 0) {
-                                            constraint.valueType = "Integer";
-                                        } else {
-                                            constraint.valueType = "Decimal";
-                                            constraint.mantissaMaxLength = dts.decimalPart;
-                                            constraint.max = dts.NumericItemMax;
-                                            constraint.min = dts.NumericItemMin;
-                                        }
-                                        break;
-                                    case ITEM_SINGLE_TYPE.DATE:
-                                        constraint.valueType = "";
-                                        break;
-                                    case ITEM_SINGLE_TYPE.TIME:
-                                        constraint.valueType = "Time";
-                                        break;
-                                    case ITEM_SINGLE_TYPE.TIMEPOINT:
-                                        constraint.valueType = "Clock";
-                                        break;
-                                    case ITEM_SINGLE_TYPE.SELECTION:
-                                        constraint.valueType = "";
-                                        break;
-                                }
-                            }
-                            __viewContext["primitiveValueConstraints"][x.itemCode] = constraint;
-                        });
                 };
 
-            if (!$('#layout_style').length) {
-                $('head').append(self.style);
-            }
+            $(() => {
+                if (!$('#layout_style').length) {
+                    $('head').append(self.style);
+                }
+            });
+
 
             $element
                 .append(self.tmp)
@@ -856,9 +811,37 @@ module nts.custombinding {
             // extend data of sortable with valueAccessor data prop
             $.extend(opts.sortable, { data: access.data });
             opts.sortable.data.subscribe((data: Array<IItemClassification>) => {
+                // remove all sibling sperators
+                let maps: Array<number> = _(data)
+                    .map((x, i) => (x.layoutItemType == 2) ? i : -1)
+                    .filter(x => x != -1).value(),
+                    icls: Array<IItemClassification> = ko.unwrap(opts.sortable.data),
+                    idfcs: Array<string> = _(icls)
+                        .map(x => x.listItemDf)
+                        .flatten()
+                        .filter(x => !!x)
+                        .map((x: IItemDefinition) => x.id)
+                        .uniq()
+                        .value();
+
+                // write constraint to viewContext
+                if (idfcs && idfcs.length) {
+                    //writeConstraint(idfcs);
+                }
+
+                _.each(maps, (t, i) => {
+                    if (maps[i + 1] == t + 1) {
+                        _.remove(data, (m: IItemClassification) => {
+                            let item: IItemClassification = data[maps[i + 1]];
+                            return item && item.layoutItemType == 2 && item.layoutID == m.layoutID;
+                        });
+                    }
+                });
                 _.each(data, (x, i) => {
                     x.dispOrder = i + 1;
                     x.layoutID = random();
+
+                    // observable value for edit mode
                     _.each(x.listItemDf, e => {
                         if (e.itemTypeState && e.itemTypeState.dataTypeState) {
                             if (!e.itemTypeState.dataTypeState.value) {
@@ -866,10 +849,47 @@ module nts.custombinding {
                             }
                         }
                     });
+
+                    switch (x.layoutItemType) {
+                        case IT_CLA_TYPE.ITEM:
+                            let item = x.listItemDf && x.listItemDf[0];
+                            if (item.itemTypeState.itemType == ITEM_TYPE.SINGLE) {
+                                x.listItemDfValues = ko.observableArray([{
+                                    item: $.extend({}, item),
+                                    value: ko.observable(undefined)
+                                }]);
+                            } else {
+                                x.listItemDfValues = ko.observableArray(_.map(Array((x.listItemDf || []).length), (_x, i) => {
+                                    return {
+                                        col: i,
+                                        item: $.extend({}, x.listItemDf[i]),
+                                        value: ko.observable(undefined)
+                                    };
+                                }));
+                            }
+                            break;
+                        case IT_CLA_TYPE.LIST:
+                            x.listItemDfValues = ko.observableArray(
+                                _.map(Array(3), (_x, i) => {
+                                    return _.map(Array((x.listItemDf || []).length), (__x, j) => {
+                                        return {
+                                            row: i,
+                                            col: j,
+                                            item: $.extend({}, x.listItemDf[j]),
+                                            value: ko.observable(undefined)
+                                        };
+                                    });
+                                }));
+                            break;
+                        case IT_CLA_TYPE.SPER:
+                            x.listItemDfValues = undefined;
+                            break;
+                    }
                 });
-                primitiveConst();
+
                 opts.sortable.isEditable.valueHasMutated();
             });
+            opts.sortable.data.valueHasMutated();
 
             // extend data of sortable with valueAccessor beforeMove prop
             if (access.beforeMove) {
@@ -906,17 +926,51 @@ module nts.custombinding {
                 opts.listbox.options.removeAll();
 
                 if (mode == CAT_OR_GROUP.CATEGORY) { // get item by category
+                    opts.comboxbox.options.removeAll();
                     services.getCats().done((data: any) => {
+                        console.log(data);
                         if (data && data.categoryList && data.categoryList.length) {
-                            let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition);
+                            let cats = _.filter(data.categoryList, (x: IItemCategory) => !x.isAbolition && !x.categoryParentCode);
+                            if (cats && cats.length) {
+                                let dfds: Array<JQueryDeferred<any>> = [];
+                                // check item define count in category
+                                _.each(cats, cat => {
+                                    switch (cat.categoryType) {
+                                        case IT_CAT_TYPE.SINGLE:
+                                        case IT_CAT_TYPE.CONTINU:
+                                        case IT_CAT_TYPE.NODUPLICATE:
+                                            let dfs = $.Deferred();
+                                            services.getItemByCat(cat.id).done((data: Array<IItemDefinition>) => {
+                                                if (data && data.length) {
+                                                    opts.comboxbox.options.push(cat);
+                                                }
+                                                dfs.resolve(true);
+                                            }).fail(dfs.reject(false));
 
-                            if (cats.length) {
-                                opts.comboxbox.options(cats);
-                                if (opts.comboxbox.value() == cats[0].id) {
-                                    opts.comboxbox.value.valueHasMutated();
-                                } else {
-                                    opts.comboxbox.value(cats[0].id);
-                                }
+                                            dfds.push(dfs);
+                                            break;
+                                        case IT_CAT_TYPE.MULTI:
+                                        case IT_CAT_TYPE.DUPLICATE:
+                                            opts.comboxbox.options.push(cat);
+                                            break;
+                                    }
+                                });
+
+                                // select first item when check done
+                                $.when.apply($, dfds).then(function() {
+                                    if (ko.toJS(opts.comboxbox.options).length) {
+                                        if (opts.comboxbox.value() == cats[0].id) {
+                                            opts.comboxbox.value.valueHasMutated();
+                                        } else {
+                                            opts.comboxbox.value(cats[0].id);
+                                        }
+                                    } else {
+                                        // show message if hasn't any category
+                                        if (ko.toJS(opts.sortable.isEnabled)) {
+                                            alert(text('Msg_288')).then(opts.callback);
+                                        }
+                                    }
+                                });
                             } else {
                                 // show message if hasn't any category
                                 if (ko.toJS(opts.sortable.isEnabled)) {
@@ -938,16 +992,18 @@ module nts.custombinding {
                             // map Array<IItemGroup> to Array<IItemDefinition>
                             // 「個人情報項目定義」が取得できなかった「項目グループ」以外を、画面項目「グループ一覧」に表示する
                             // remove groups when it does not contains any item definition (by hql)
-                            let _items: Array<IItemDefinition> = _.map(data, x => {
-                                return {
-                                    id: x.personInfoItemGroupID,
-                                    itemName: x.fieldGroupName,
-                                    itemTypeState: undefined,
-                                    dispOrder: x.dispOrder
-                                };
+                            _.each(data, group => {
+                                services.getItemByGroup(group.personInfoItemGroupID).done((data: Array<IItemDefinition>) => {
+                                    if (data && data.length) {
+                                        opts.listbox.options.push({
+                                            id: group.personInfoItemGroupID,
+                                            itemName: group.fieldGroupName,
+                                            itemTypeState: undefined,
+                                            dispOrder: group.dispOrder
+                                        });
+                                    }
+                                });
                             });
-
-                            opts.listbox.options(_items);
                         }
                     });
                 }
@@ -1067,7 +1123,8 @@ module nts.custombinding {
 
                                 if (data.category && data.category.id && data.chooseItems && data.chooseItems.length) {
                                     services.getCat(data.category.id).done((_cat: IItemCategory) => {
-                                        if (_cat.isAbolition) {
+
+                                        if (!_cat || !!_cat.isAbolition) {
                                             return;
                                         }
 
@@ -1125,7 +1182,11 @@ module nts.custombinding {
 
                         // push all item to sortable when done
                         $.when.apply($, dfds).then(function() {
-                            opts.sortable.pushItems(_.flatten(arguments) as Array<IItemDefinition>, true);
+                            // remove all item if it's abolition
+                            let items = _.filter(_.flatten(arguments) as Array<IItemDefinition>, x => !x.isAbolition);
+                            if (items && items.length) {
+                                opts.sortable.pushItems(items, true);
+                            }
                         });
                     }
                 }
@@ -1213,6 +1274,7 @@ module nts.custombinding {
         categoryName: string;
         categoryType: IT_CAT_TYPE;
         isAbolition?: number;
+        categoryParentCode?: string;
     }
 
     interface IItemGroup {
@@ -1227,7 +1289,8 @@ module nts.custombinding {
         className?: string; // only for display if classification is set or duplication item
         personInfoCategoryID?: string;
         layoutItemType: IT_CLA_TYPE;
-        listItemDf: Array<IItemDefinition>;
+        listItemDf: Array<IItemDefinition>; // layoutItemType == 0 ? [1] : layoutItemType == 1 ? [A, B, C] : undefined;
+        listItemDfValues?: any; // {value: } || [{c: 1, value: }, {c: 2, value: }], [[{r: 1, c: 1, value: }, {}], [{}, {}], [{}, {}], [{}, {}]] , undefined
     }
 
     interface IItemDefinition {
@@ -1376,5 +1439,6 @@ module nts.custombinding {
         ENUM = 3
     }
 }
+
 ko.bindingHandlers['let'] = new nts.custombinding.LetControl();
 ko.bindingHandlers["ntsLayoutControl"] = new nts.custombinding.LayoutControl();

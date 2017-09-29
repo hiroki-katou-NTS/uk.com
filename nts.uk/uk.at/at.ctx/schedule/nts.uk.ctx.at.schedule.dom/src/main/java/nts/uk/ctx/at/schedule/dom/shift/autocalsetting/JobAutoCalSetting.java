@@ -9,9 +9,15 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 
 /**
- * The Class AutoCalJobSetting.
+ * The Class JobAutoCalSetting.
  */
 // 職位別自動計算設定
+
+/**
+ * Gets the rest time.
+ *
+ * @return the rest time
+ */
 @Getter
 public class JobAutoCalSetting extends AggregateRoot {
 
@@ -34,6 +40,38 @@ public class JobAutoCalSetting extends AggregateRoot {
 	/** The rest time. */
 	// 休出時間
 	private AutoCalRestTimeSetting restTime;
+
+	/**
+	 * Instantiates a new job auto cal setting.
+	 *
+	 * @param companyId the company id
+	 * @param jobId the job id
+	 * @param normalOTTime the normal OT time
+	 * @param flexOTTime the flex OT time
+	 * @param restTime the rest time
+	 */
+	public JobAutoCalSetting(JobAutoCalSettingGetMemento memento ) {
+		super();
+		this.companyId = memento.getCompanyId();
+		this.jobId = memento.getPositionId();
+		this.normalOTTime = memento.getNormalOTTime();
+		this.flexOTTime = memento.getFlexOTTime();
+		this.restTime = memento.getRestTime();
+	}
+	
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(JobAutoCalSettingSetMemento memento) {
+		memento.setCompanyId(this.companyId);
+		memento.setPositionId(this.jobId);
+		memento.setFlexOTTime(this.flexOTTime);
+		memento.setNormalOTTime(this.normalOTTime);
+		memento.setRestTime(this.restTime);
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -75,4 +113,5 @@ public class JobAutoCalSetting extends AggregateRoot {
 			return false;
 		return true;
 	}
+
 }

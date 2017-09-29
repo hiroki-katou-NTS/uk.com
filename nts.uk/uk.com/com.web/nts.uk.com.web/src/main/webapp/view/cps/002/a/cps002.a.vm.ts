@@ -3,18 +3,35 @@ module cps002.a.vm {
     import alert = nts.uk.ui.dialog.alert;
     import text = nts.uk.resource.getText;
 
-    let __viewContext: any = window['__viewContext'] || {},
-        block = window["nts"]["uk"]["ui"]["block"]["grayout"],
-        unblock = window["nts"]["uk"]["ui"]["block"]["clear"],
-        invisible = window["nts"]["uk"]["ui"]["block"]["invisible"];
-
     export class ViewModel {
+        stepList = [
+            { content: '.step-1' },
+            { content: '.step-2' },
+            { content: '.step-3' },
+            { content: '.step-4' }
+        ];
+        date: KnockoutObservable<Date> = ko.observable(nts.uk.time.UTCDate(2000, 0, 1));
+        simpleValue: KnockoutObservable<String> = ko.observable('pikamieo');
+        itemList: KnockoutObservableArray<any> = ko.observableArray([
+            new BoxModel(1, text('CPS002_26')),
+            new BoxModel(2, text('CPS002_27')),
+            new BoxModel(3, text('CPS002_28'))
+        ]);
+        selectedId: KnockoutObservable<number> = ko.observable(1);
+        enable: KnockoutObservable<boolean> = ko.observable(true);
+        selectedCode: KnockoutObservable<number> = ko.observable(1);
+        columns = ko.observableArray([
+            { headerText: text('CPS002_44'), key: 'id', width: 40, },
+            { headerText: text('CPS002_45'), key: 'name', width: 130, },
+        ]);
+        currentCode = ko.observable(1);
+
         ccgcomponent: any = {
             baseDate: ko.observable(new Date()),
             //Show/hide options
             isQuickSearchTab: ko.observable(true),
             isAdvancedSearchTab: ko.observable(true),
-            isAllReferableEmployee: ko.observable(true), 
+            isAllReferableEmployee: ko.observable(true),
             isOnlyMe: ko.observable(true),
             isEmployeeOfWorkplace: ko.observable(true),
             isEmployeeWorkplaceFollow: ko.observable(true),
@@ -25,6 +42,7 @@ module cps002.a.vm {
             },
             onSearchOnlyClicked: (data: any) => {
                 let self = this;
+                console.log(data);
             },
             onSearchOfWorkplaceClicked: (dataList: Array<any>) => {
                 let self = this;
@@ -36,57 +54,45 @@ module cps002.a.vm {
                 let self = this;
             }
         };
-
-        person: KnockoutObservable<PersonInfo> = ko.observable(new PersonInfo({ id: '' }));
-
         constructor() {
-            let self = this;
-            
-            self.start();
-        }
-
-        start() {
             let self = this;
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
         }
 
-        saveData() {
+        next() {
             let self = this;
 
-            // push data layout to webservice
-            block();
-            service.saveData({}).done(() => {
-                self.start();
-                info({ messageId: "Msg_15" }).then(function() {
-                    unblock();
-                });
-            }).fail((mes) => {
-                unblock();
-                alert(mes.message);
-            });
+            $('#emp_reg_info_wizard').ntsWizard("next");
+            if (self.selectedId() === 3) {
+                $('#emp_reg_info_wizard').ntsWizard("goto", 2);
+            }
+
+        }
+
+        prev() {
+            let self = this;
+
+            $('#emp_reg_info_wizard').ntsWizard("prev");
+
+
+        }
+
+        getStep() {
+            if (nts.uk.ui._viewModel === undefined) {
+                return 0;
+            }
+            return $('#emp_reg_info_wizard').ntsWizard("getCurrentStep");
         }
     }
 
-    interface IPersonInfo {
-        id: string;
-        code?: string;
-        avartar?: string;
-        fullName?: string;
-    }
-
-    class PersonInfo {
-        id: KnockoutObservable<string> = ko.observable('');
-        code: KnockoutObservable<string> = ko.observable('');
-        avartar: KnockoutObservable<string> = ko.observable('');
-        fullName: KnockoutObservable<string> = ko.observable('');
-
-        constructor(param: IPersonInfo) {
-            let self = this;
-
-            self.id(param.id || '');
-            self.code(param.code || '');
-            self.avartar(param.avartar || '');
-            self.fullName(param.fullName || '');
+    class BoxModel {
+        id: number;
+        name: string;
+        constructor(id, name) {
+            var self = this;
+            self.id = id;
+            self.name = name;
         }
     }
+
 }

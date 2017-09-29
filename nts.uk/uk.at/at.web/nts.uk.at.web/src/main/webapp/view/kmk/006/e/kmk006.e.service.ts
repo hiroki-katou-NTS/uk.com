@@ -1,18 +1,19 @@
 module nts.uk.at.view.kmk006.e {
-    
-    import UsageSettingDto = nts.uk.at.view.ksm001.a.service.model.UsageSettingDto;
-    
+
+    import UnitAutoCalSettingDto = nts.uk.at.view.kmk006.a.service.model.UnitAutoCalSettingDto;
+
     export module service {
         var paths = {
-            saveCompanySettingEstimate: "ctx/at/schedule/shift/estimate/usagesetting/save"
+            saveUnitAutoCal: "ctx/at/schedule/shift/autocalunit/save",
         }
 
         /**
-         * call service save UsageSettingDto
-         */
-        export function saveCompanySettingEstimate(dto: UsageSettingDto){
-            return nts.uk.request.ajax('at', paths.saveCompanySettingEstimate, dto);
+        * save
+        */
+        export function saveUnitAutoCal(command: UnitAutoCalSettingDto): JQueryPromise<void> {
+            return nts.uk.request.ajax("at", paths.saveUnitAutoCal, command);
         }
+        
 
     }
 }

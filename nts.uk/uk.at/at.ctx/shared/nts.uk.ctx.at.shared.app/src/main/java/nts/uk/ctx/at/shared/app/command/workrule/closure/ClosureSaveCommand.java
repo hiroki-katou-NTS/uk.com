@@ -8,10 +8,11 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureMonth;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 
@@ -102,11 +103,11 @@ public class ClosureSaveCommand {
 		 * )
 		 */
 		@Override
-		public ClosureMonth getClosureMonth() {
+		public CurrentMonth getClosureMonth() {
 			if (command.getUseClassification() == 1) {
-				return new ClosureMonth(command.getMonth());
+				return new CurrentMonth(command.getMonth());
 			}
-			return new ClosureMonth(MIN_YEAR_MONTH);
+			return new CurrentMonth(MIN_YEAR_MONTH);
 		}
 
 		/*
@@ -117,6 +118,12 @@ public class ClosureSaveCommand {
 		 */
 		@Override
 		public List<ClosureHistory> getClosureHistories() {
+			return null;
+		}
+
+		@Override
+		public List<EmploymentCode> getEmpCodes() {
+			// TODO Auto-generated method stub
 			return null;
 		}
 

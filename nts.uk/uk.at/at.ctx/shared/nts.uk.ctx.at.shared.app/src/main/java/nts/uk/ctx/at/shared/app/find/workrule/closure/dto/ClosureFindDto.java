@@ -9,8 +9,9 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureMonth;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureSetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
@@ -79,8 +80,8 @@ public class ClosureFindDto implements ClosureSetMemento{
 	 * nts.uk.ctx.at.shared.dom.workrule.closure.ClosureMonth)
 	 */
 	@Override
-	public void setClosureMonth(ClosureMonth month) {
-		this.month = month.getProcessingDate().v();
+	public void setClosureMonth(CurrentMonth month) {
+		this.month = month.getProcessingYm().v();
 	}
 
 	/*
@@ -96,6 +97,11 @@ public class ClosureFindDto implements ClosureSetMemento{
 			history.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public void setEmpCodes(List<EmploymentCode> empCodes) {
+		// TODO Auto-generated method stub
 	}
 	
 

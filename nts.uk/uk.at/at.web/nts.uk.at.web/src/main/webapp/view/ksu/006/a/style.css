@@ -65,3 +65,6 @@ td.dataPreview {
 	padding-top: 9px !important;
 	float: left;
 }
+#file-upload {
+	width: 406px;
+}
