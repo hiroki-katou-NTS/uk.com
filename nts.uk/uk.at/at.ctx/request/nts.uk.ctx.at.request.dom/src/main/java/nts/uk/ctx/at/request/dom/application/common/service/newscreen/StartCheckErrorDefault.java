@@ -9,9 +9,9 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.UseAtr;
-import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.ApprovalRootService;
-import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ApprovalRootOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.approvalroot.output.ErrorFlag;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFlagImport;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
@@ -37,8 +37,8 @@ public class StartCheckErrorDefault implements StartCheckErrorService {
 	@Inject
 	private ApplicationSettingRepository appSettingRepo;
 
-	@Inject
-	private ApprovalRootService approvalRootService;
+	@Inject 
+	private ApprovalRootAdapter approvalRootRepo;
 
 	@Override
 	public void checkError(int appType) {
@@ -56,15 +56,15 @@ public class StartCheckErrorDefault implements StartCheckErrorService {
 				// 「申請設定」．承認ルートの基準日がシステム日付時点の場合
 				if (appSet.get().getBaseDateFlg() == BaseDateFlg.SYSTEM_DATE) {
 					// lay tu Cache
-					List<ApprovalRootOutput> approvalRootOutputs = approvalRootService
+					List<ApprovalRootImport> approvalRootOutputs = approvalRootRepo
 							.getApprovalRootOfSubjectRequest(companyId, employeeId, 1, appType, GeneralDate.today());
 					
-					ApprovalRootOutput approvalRootOutput = approvalRootOutputs.get(0);
-					if (approvalRootOutput.getErrorFlag().equals(ErrorFlag.NO_CONFIRM_PERSON))
+					ApprovalRootImport approvalRootOutput = approvalRootOutputs.get(0);
+					if (approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_CONFIRM_PERSON))
 						throw new BusinessException("Msg_238");
-					if (approvalRootOutput.getErrorFlag().equals(ErrorFlag.APPROVER_UP_10))
+					if (approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.APPROVER_UP_10))
 						throw new BusinessException("Msg_237");
-					if (approvalRootOutput.getErrorFlag().equals(ErrorFlag.NO_APPROVER))
+					if (approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_APPROVER))
 						throw new BusinessException("Msg_324");
 				} else {
 					// 「申請設定」．承認ルートの基準日が申請対象日時点の場合

@@ -11,6 +11,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
@@ -21,7 +23,7 @@ import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ApprovalInfoOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
+//import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -50,7 +52,7 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 	 * 3-1.承認代行情報の取得処理
 	 */
 	@Inject
-	private ApprovalAgencyInformation appAgencyInfoService;
+	private AgentAdapter approvalAgencyInformationService;
 
 	@Override
 	public void newScreenRegisterAtApproveInfoReflect(String SID, Application application) {
@@ -87,7 +89,7 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 						//(ループ中の「承認枠」)承認区分=「承認済」、承認者=ログイン者の社員ID、代行者=空
 					}else {
 						//アルゴリズム「承認代行情報の取得処理」を実行する
-						ApprovalAgencyInformationOutput agency = this.appAgencyInfoService.getApprovalAgencyInformation(companyID, lstApproverIds);
+						AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(companyID, lstApproverIds);
 						//返す結果の承認代行者リスト. Contains(ログイン者社員ID)
 						if(agency.getListRepresenterSID().contains(loginEmp)) {
 							//(ドメインモデル「承認枠」)承認区分=「承認済」、承認者=空、代行者=ログイン者の社員ID
@@ -117,7 +119,7 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 							} else {
 								// goi XU LI 3.1 ==>> lay thang dai dien xac nhan
 								//アルゴリズム「承認代行情報の取得処理」を実行する
-								ApprovalAgencyInformationOutput agency = this.appAgencyInfoService.getApprovalAgencyInformation(companyID, lstApproverIds);
+								AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(companyID, lstApproverIds);
 								if(!agency.isFlag()){ 
 									flgApprovalDone = false; 
 								}
@@ -127,7 +129,7 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 							if (accepted.getApprovalATR() == ApprovalAtr.APPROVED) {
 								flgApprovalDone = true;
 							} else {
-								ApprovalAgencyInformationOutput agency = this.appAgencyInfoService.getApprovalAgencyInformation(companyID, lstApproverIds);
+								AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(companyID, lstApproverIds);
 								if(!agency.isFlag()){ 
 									flgApprovalDone = false; 
 								}
@@ -151,7 +153,7 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 					//未承認の承認者一覧を取得する
 					List<String> listUnApprover = approvalProcess.actualReflectionStateDecision(appID, appPhase.getPhaseID(),ApprovalAtr.UNAPPROVED);
 					//承認代行情報の取得処理
-					ApprovalAgencyInformationOutput agency = this.appAgencyInfoService.getApprovalAgencyInformation(companyID, listUnApprover);
+					AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(companyID, listUnApprover);
 					if(!agency.isFlag()) {
 						flgApprovalDone = false;
 					}
@@ -199,7 +201,7 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 				// Lay danh sach nguoi xac nhan TU
 				List<String> listApprover = approvalProcess.actualReflectionStateDecision(appID, phase.getPhaseID(), ApprovalAtr.APPROVED);
 				// Thuc hien lay danh sach nguoi xac nhan dai dien, PATH setting
-				ApprovalAgencyInformationOutput agency = this.appAgencyInfoService.getApprovalAgencyInformation(companyID, listApprover);
+				AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(companyID, listApprover);
 				if (!agency.isFlag()) {
 					continue;
 				}

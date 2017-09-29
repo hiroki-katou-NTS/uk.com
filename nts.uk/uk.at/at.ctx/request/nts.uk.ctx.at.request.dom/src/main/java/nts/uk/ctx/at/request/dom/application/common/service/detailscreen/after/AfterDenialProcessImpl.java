@@ -12,6 +12,8 @@ import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
@@ -19,8 +21,6 @@ import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
-import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
@@ -50,7 +50,8 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 	private AppTypeDiscreteSettingRepository discreteRepo;
 
 	@Inject
-	private ApprovalAgencyInformation appAgencyInfoService;
+	private AgentAdapter approvalAgencyInformationService;
+
 
 	@Override
 	public boolean canDeniedCheck(String companyID, String appID, int startOrderNum, List<AppApprovalPhase> listPhase) {
@@ -127,7 +128,7 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 						}
 					} else {
 						// 3-1.承認代行情報の取得処理
-						ApprovalAgencyInformationOutput agency = this.appAgencyInfoService
+						AgentPubImport agency = this.approvalAgencyInformationService
 								.getApprovalAgencyInformation(companyID, approverIds);
 						if (agency.getListApproverAndRepresenterSID().contains(loginEmp)) {
 							// (ドメインモデル「承認枠」)承認区分=「否認」、承認者=空、代行者=ログイン者の社員ID

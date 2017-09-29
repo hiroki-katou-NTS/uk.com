@@ -11,6 +11,8 @@ import javax.inject.Inject;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
@@ -20,7 +22,7 @@ import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccep
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DestinationMailListOuput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ApprovalInfoOutput;
-import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
+//import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
@@ -41,7 +43,7 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	@Inject
 	private RegisterAtApproveReflectionInfoService reflectionInfoService;
 	@Inject
-	private ApprovalAgencyInformation appAgencyInfoService;
+	private AgentAdapter approvalAgencyInformationService;
 	@Inject
 	private DestinationJudgmentProcess destinationJudgmentProcessService;
 
@@ -171,7 +173,7 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 						List<String> listNotApprover = this.actualReflectionStateDecision(appID, phase.getPhaseID(), ApprovalAtr.UNAPPROVED);
 						if(!listNotApprover.isEmpty()) {
 							//アルゴリズム「承認代行情報の取得処理」を実行する
-							ApprovalAgencyInformationOutput agency = this.appAgencyInfoService.getApprovalAgencyInformation(AppContexts.user().companyId(), listNotApprover);
+							AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(AppContexts.user().companyId(), listNotApprover);
 							//アルゴリズム「送信先の判断処理」を実行する
 							List<String> listDestination  = destinationJudgmentProcessService.getDestinationJudgmentProcessService(agency.getListApproverAndRepresenterSID());
 							if(!listDestination.isEmpty()) {
@@ -205,7 +207,7 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 				List<String> lstApprover = this.actualReflectionStateDecision(appID, phase.getPhaseID(),ApprovalAtr.APPROVED);
 				if(!lstApprover.isEmpty()) {
 					// 承認者の代行情報リスト
-					ApprovalAgencyInformationOutput agency = this.appAgencyInfoService.getApprovalAgencyInformation(companyID, lstApprover);
+					AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(companyID, lstApprover);
 					if(agency.isFlag()) {
 						allApprovedFlg = true;
 					}else {
