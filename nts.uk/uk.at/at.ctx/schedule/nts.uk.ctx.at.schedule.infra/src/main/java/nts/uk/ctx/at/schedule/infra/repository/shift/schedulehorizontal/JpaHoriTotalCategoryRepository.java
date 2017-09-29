@@ -10,10 +10,12 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCategory;
+import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalItem;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.repository.HoriTotalCategoryRepository;
 import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscstHoriTotalCategoryItem;
 import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscstHoriTotalCategoryPK;
+import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscstTotalEvalItem;
 import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscstTotalEvalOrderItem;
 import nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal.KscstTotalEvalOrderPK;
 @Stateless
@@ -25,7 +27,10 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	private final String SELECT_ORDER_NO_WHERE = "SELECT c FROM KscstTotalEvalOrderItem c ";
 	private final String SELECT_ORDER_ITEM = SELECT_ORDER_NO_WHERE + "WHERE c.kscstTotalEvalOrderPK.companyId = :companyId ";
 	private final String SELECT_ORDER_CD_ITEM = SELECT_ORDER_ITEM + " AND c.kscstTotalEvalOrderPK.categoryCode = :categoryCode AND c.kscstTotalEvalOrderPK.totalItemNo = :totalItemNo";
-	
+	// total eval item
+	private final String SELECT_ITEM_NO_WHERE = "SELECT c FROM KscstTotalEvalItem c ";
+	private final String SELECT_ITEM = SELECT_ITEM_NO_WHERE + "WHERE c.kscstTotalEvalItemPK.companyId = :companyId";
+	private final String SELECT_ITEM_CD = SELECT_ITEM + "AND c.kscstTotalEvalItemPK.totalItemNo = :totalItemNo";
 	/**
 	 * change total eval order entity to total eval order domain
 	 * @param entity
@@ -92,6 +97,19 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 										.collect(Collectors.toList());
 		}
 		return entity;
+	}
+	
+	/**
+	 * change total eval item entity to total eval item domain
+	 * @param entity
+	 * @return
+	 * author: Hoang Yen
+	 */
+	private static TotalEvalItem toDomainItem(KscstTotalEvalItem entity){
+		TotalEvalItem domain = TotalEvalItem.createFromJavaType(entity.kscstTotalEvalItemPK.companyId, 
+				entity.kscstTotalEvalItemPK.totalItemNo,
+				entity.totalItemName);
+		return domain;
 	}
 	
 	/**
@@ -201,5 +219,20 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 				.setParameter("categoryCode", categoryCode)
 				.setParameter("totalItemNo", totalItemNo)
 				.getList(c -> toDomainOrder(c));
+	}
+
+	@Override
+	public List<TotalEvalItem> findAllItem(String companyId) {
+		return this.queryProxy().query(SELECT_ITEM, KscstTotalEvalItem.class)
+				.setParameter("companyId", companyId)
+				.getList(c -> toDomainItem(c));
+	}
+
+	@Override
+	public List<TotalEvalItem> findEvalItem(String companyId, int totalItemNo) {
+		return this.queryProxy().query(SELECT_ITEM_CD, KscstTotalEvalItem.class)
+				.setParameter("companyId", companyId)
+				.setParameter("totalItemNo", totalItemNo)
+				.getList(c -> toDomainItem(c));
 	}
 }

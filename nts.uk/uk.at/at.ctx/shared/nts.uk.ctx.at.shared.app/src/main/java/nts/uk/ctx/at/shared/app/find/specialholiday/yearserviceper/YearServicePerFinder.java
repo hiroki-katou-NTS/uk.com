@@ -36,8 +36,8 @@ public class YearServicePerFinder {
 	public List<YearServicePerDto> finder(){
 		String companyId = AppContexts.user().companyId();
 		return this.yearServicePerRep.findAllPer(companyId)
-				.stream().
-				map(item -> {
+				.stream()
+				.map(item -> {
 			return new YearServicePerDto(item.getSpecialHolidayCode(), 
 											item.getYearServiceCode().v(), 
 											item.getYearServiceName().v(), 

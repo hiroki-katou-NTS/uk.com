@@ -24,9 +24,8 @@ public interface WorkplaceConfigRepository {
 	 * Update.
 	 *
 	 * @param wkpConfig the wkp config
-	 * @param endĐate the end đate
 	 */
-	void update(WorkplaceConfig wkpConfig,GeneralDate endĐate);
+	void update(WorkplaceConfig wkpConfig);
 	
 	/**
 	 * Find all by company id.
@@ -43,15 +42,15 @@ public interface WorkplaceConfigRepository {
 	 * @param prevHistId the prev hist id
 	 * @return the optional
 	 */
-	Optional<WorkplaceConfig> findByHistId(String companyId,String prevHistId);
+	Optional<WorkplaceConfig> findByHistId(String companyId, String prevHistId);
 	
 	/**
-	 * Find latest by company id.
+	 * Find workplace by company id.
 	 *
 	 * @param companyId the company id
 	 * @return the optional
 	 */
-	Optional<WorkplaceConfig> findLatestByCompanyId(String companyId);
+	Optional<WorkplaceConfig> findWorkplaceByCompanyId(String companyId);
 	
 	/**
 	 * Find by start date.
@@ -60,6 +59,14 @@ public interface WorkplaceConfigRepository {
 	 * @param startDate the start date
 	 * @return the optional
 	 */
-	Optional<WorkplaceConfig> findByStartDate(String companyId,GeneralDate startDate);
+	Optional<WorkplaceConfig> findByStartDate(String companyId, GeneralDate startDate);
 
+	/**
+	 * Removes the wkp config hist.
+	 *
+	 * @param companyId the company id
+	 * @param historyId the history id
+	 */
+	void removeWkpConfigHist(String companyId, String historyId);
+	
 }

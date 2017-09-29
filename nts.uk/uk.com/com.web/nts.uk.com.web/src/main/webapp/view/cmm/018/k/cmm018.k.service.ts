@@ -3,7 +3,8 @@ module nts.uk.com.view.cmm018.k.service{
     // Service paths.
     var servicePath = {
         searchModeEmployee: "workflow/approvermanagement/workroot/getEmployeesInfo",
-        personInfor: "workflow/approvermanagement/workroot/getInforPerson"
+        personInfor: "workflow/approvermanagement/workroot/getInforPerson",
+        JobTitleInfor: "workflow/approvermanagement/workroot/getInforJobTitle"
     }    
     /**
      * search data mode employee
@@ -16,6 +17,10 @@ module nts.uk.com.view.cmm018.k.service{
         return nts.uk.request.ajax('com', servicePath.personInfor, SID);
     }
     
+    export function getJobTitleInfor(baseDate: any){
+        return nts.uk.request.ajax('com', servicePath.JobTitleInfor, baseDate);
+    }
+    
     export module model{
         export class EmployeeSearchInDto {
                 baseDate: Date;
@@ -26,7 +31,7 @@ module nts.uk.com.view.cmm018.k.service{
                 pid: string;
                 sid: string;
                 scd: string;
-                pName: string;
+                pname: string;
 
                 employeeName: string;
 
@@ -42,6 +47,22 @@ module nts.uk.com.view.cmm018.k.service{
             employeeCode: string;
             employeeName: string;
             companyMail: string;    
+        }
+        
+        export class JobtitleInfor{
+            /** The company id. */
+            companyId: string;
+            /** The position id. */
+            positionId: string;
+            /** The position code. */
+            positionCode: string;
+            /** The position name. */
+            positionName: string;
+             /** The sequence code. */
+            sequenceCode: string;
+            startDate: Date;
+            /** The end date. */
+            endDate: Date;    
         }
     }
 }

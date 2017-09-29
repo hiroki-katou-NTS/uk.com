@@ -89,7 +89,7 @@ module nts.uk.com.view.cmm011.b {
                 let command: any = {};
                 
                 let isAddMode: any = null;
-                
+                let historyId: string = null;
                 // check mode: add or update?
                 if (self.workplaceHistory().screenMode() == ScreenMode.NewMode
                     || self.workplaceHistory().screenMode() == ScreenMode.AddMode) {
@@ -97,12 +97,13 @@ module nts.uk.com.view.cmm011.b {
                 }
                 else if (self.workplaceHistory().screenMode() == ScreenMode.UpdateMode) {
                     isAddMode = false;
+                    historyId = self.workplaceHistory().getSelectedHistoryByHistId().historyId;
                 }
                 command.isAddMode = isAddMode;
                 
                 // information of history
                 let wkpConfigHistory: any = {};
-                wkpConfigHistory.historyId = null;
+                wkpConfigHistory.historyId = historyId;
                 wkpConfigHistory.period = self.toJSonDate();
                 command.wkpConfigHistory = wkpConfigHistory;
                 
@@ -114,8 +115,14 @@ module nts.uk.com.view.cmm011.b {
              */
             private toJSonDate(isRespondParent?: boolean): any {
                 let self = this;
+                
                 let startDate: any = new Date(self.startDate());
                 let endDate: any = new Date("9999-12-31");
+                
+                // if selection mode, reset start date (startDate cann't be initial)
+                if (self.workplaceHistory().screenMode() == ScreenMode.SelectionMode) {
+                    startDate = new Date(self.workplaceHistory().getSelectedHistoryByHistId().startDate);
+                }
                 
                 // convert date respond parent screen
                 if (isRespondParent) {
@@ -189,8 +196,8 @@ module nts.uk.com.view.cmm011.b {
                         self.screenMode(ScreenMode.SelectionMode);
                     }
                 });
-                self.selectedWpkHistory.subscribe(function(newCode) {
-                    let detail: IHistory = self.getSelectedHistoryByHistId(newCode);
+                self.selectedHistoryId.subscribe(function(newCode) {
+                    let detail: IHistory = self.getSelectedHistoryByHistId();
                     self.parentModel.startDate(detail.startDate);
                     self.parentModel.endDate(detail.endDate);
                 });
@@ -217,6 +224,16 @@ module nts.uk.com.view.cmm011.b {
              */
             public removeHistory() {
                 let self = this;
+                nts.uk.ui.dialog.confirm({messageId: 'Msg_18'}).ifYes(() => {
+                    let command: any = {};
+                    command.historyId = self.selectedHistoryId();
+                    
+                    service.removeWkpConfig(command).done(() => {
+                        self.findAllHistory();
+                    }).fail((res: any) => {
+                        self.parentModel.showMessageError(res);
+                    });
+                });
             }
             
             /**
@@ -244,7 +261,8 @@ module nts.uk.com.view.cmm011.b {
                 let lstWpkHistory: Array<IHistory> = [];
                 data.forEach(function(item, index) {
                     //workplaceId not key => ""
-                    lstWpkHistory.push({ workplaceId: "", historyId: item.historyId, startDate: item.period.startDate, endDate: item.period.endDate });
+                    lstWpkHistory.push({ workplaceId: "", historyId: item.historyId, startDate: item.period.startDate,
+                        endDate: item.period.endDate });
                 });
                 self.lstWpkHistory(lstWpkHistory);
                 

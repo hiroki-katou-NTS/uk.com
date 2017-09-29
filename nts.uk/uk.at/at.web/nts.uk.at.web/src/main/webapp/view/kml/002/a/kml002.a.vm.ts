@@ -190,7 +190,27 @@ module nts.uk.at.view.kml002.a.viewmodel {
             var self = this;
             
             if(conditionNo == 1) {
+                nts.uk.ui.windows.sub.modal("/view/kml/002/b/index.xhtml").onClosed(() => {
+                
+                }); 
+            } else if(conditionNo == 2) {
                 nts.uk.ui.windows.sub.modal("/view/kml/002/c/index.xhtml").onClosed(() => {
+                
+                }); 
+            } else if(conditionNo == 3) {
+                nts.uk.ui.windows.sub.modal("/view/kml/002/d/index.xhtml").onClosed(() => {
+                
+                }); 
+            } else if(conditionNo == 4) {
+                nts.uk.ui.windows.sub.modal("/view/kml/002/e/index.xhtml").onClosed(() => {
+                
+                }); 
+            } else if(conditionNo == 5) {
+                nts.uk.ui.windows.sub.modal("/view/kml/002/f/index.xhtml").onClosed(() => {
+                
+                }); 
+            } else if(conditionNo == 6) {
+                nts.uk.ui.windows.sub.modal("/view/kml/002/g/index.xhtml").onClosed(() => {
                 
                 }); 
             }

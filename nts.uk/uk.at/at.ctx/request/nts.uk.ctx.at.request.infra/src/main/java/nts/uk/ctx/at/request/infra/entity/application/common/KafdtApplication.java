@@ -2,21 +2,15 @@ package nts.uk.ctx.at.request.infra.entity.application.common;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -130,9 +124,6 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	 */
 	@Column(name="APP_END_DATE")
 	public GeneralDate endDate;
-	
-	@OneToMany(mappedBy="application", cascade = CascadeType.ALL)
-	public List<KrqdtAppApprovalPhase> appApprovalPhases;
 	
 	@Override
 	protected Object getKey() {

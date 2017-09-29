@@ -10,7 +10,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCategory;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.repository.HoriTotalCategoryRepository;
@@ -30,6 +29,12 @@ public class UpdateHoriTotalCategoryCommandHandler extends CommandHandler<Update
 			totalEvalOrders = context.getCommand().getTotalEvalOrders().stream()
 									.map(x -> x.toDomainOrder(companyId, context.getCommand().getCategoryCode()))
 									.collect(Collectors.toList());
+		}
+		if(!horiOld.isPresent()){
+			throw new RuntimeException("対象データがありません。");
+		}else{
+			HoriTotalCategory horiNew = HoriTotalCategory.createFromJavaType(companyId, context.getCommand().getCategoryCode(), context.getCommand().getCategoryName(), context.getCommand().getMemo(), totalEvalOrders);
+			horiRep.updateCate(horiNew);
 		}
 	}
 

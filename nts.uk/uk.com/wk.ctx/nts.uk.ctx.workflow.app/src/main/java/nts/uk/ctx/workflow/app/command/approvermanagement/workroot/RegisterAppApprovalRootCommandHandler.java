@@ -182,7 +182,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		}
 		//TH: update history old
 		else{
-			List<Integer> lstAppTypeDb = data.getAddHist().getLstAppType();
+			List<Integer> lstAppTypeDb = data.getLstAppType();
 			List<Integer> lstAppTypeUi = new ArrayList<>();
 			for (CompanyAppRootADto commonRoot : root) {
 				lstAppTypeUi.add(commonRoot.getAppTypeValue());
@@ -254,7 +254,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		}
 		//TH: update history old
 		else{
-			List<Integer> lstAppTypeDb = data.getAddHist().getLstAppType();
+			List<Integer> lstAppTypeDb = data.getLstAppType();
 			List<Integer> lstAppTypeUi = new ArrayList<>();
 			for (CompanyAppRootADto commonRoot : root) {
 				lstAppTypeUi.add(commonRoot.getAppTypeValue());
