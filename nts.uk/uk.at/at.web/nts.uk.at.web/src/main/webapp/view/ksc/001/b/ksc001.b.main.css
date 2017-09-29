@@ -21,16 +21,20 @@
 	margin-left: 60px;
 }
 
-#wizard {
-	margin-top: 140px;
+.contentB {
+	margin-left: 70px;
+	height: 700px;
 }
 
-#ccgcomponent {
-	margin-left: 320px;
+.periodCovered {
+	border: 1px solid #ccc !important;
+	border-radius: 5px;
+	padding: 5px;
+	display: inline-flex;
+	width: 600px;
 }
-
-.contentC {
-	margin-left: 60px;
+.periodChangeValue{
+	margin-left: 15px;
 }
 
 .labelSchedule {
@@ -75,4 +79,18 @@ button.nts-switch-button {
 
 .labelSettingEnd {
 	margin-left: 55px;
+}
+
+.nts-wizard.vertical>.steps {
+	height: 800px;
+}
+
+.nts-wizard.vertical>.content {
+	height: 800px;
+	margin: 0 0 0 0;
+	background: none;
+}
+
+.nts-wizard>.content>.body {
+	padding: 0;
 }

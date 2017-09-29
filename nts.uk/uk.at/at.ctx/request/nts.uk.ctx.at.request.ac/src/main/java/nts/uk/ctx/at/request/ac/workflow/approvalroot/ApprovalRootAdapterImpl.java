@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.ac.workflow.approvalroot;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalPhaseImport;
@@ -32,8 +34,15 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 	@Override
 	public List<ApprovalRootImport> getApprovalRootOfSubjectRequest(String cid, String sid, int employmentRootAtr,
 			int appType, GeneralDate standardDate) {
-		return this.approvalRootPub.getApprovalRootOfSubjectRequest(cid, sid, employmentRootAtr, appType, standardDate).stream()
-		.map(x -> this.convertApprovalRootImport(x)).collect(Collectors.toList());
+		 if(CollectionUtil.isEmpty(
+				 this.approvalRootPub.getApprovalRootOfSubjectRequest(cid, sid, employmentRootAtr, appType, standardDate))){
+			 return Collections.emptyList();
+		 }
+		 
+		 
+		List<ApprovalRootImport> temp = this.approvalRootPub.getApprovalRootOfSubjectRequest(cid, sid, employmentRootAtr, appType, standardDate).stream()
+				.map(x -> this.convertApprovalRootImport(x)).collect(Collectors.toList());
+		return  temp;
 	}
 	/**
 	 * convert ApprovalRootExport to ApprovalRootImport
@@ -41,7 +50,7 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 	 * @return
 	 */
 	private ApprovalRootImport convertApprovalRootImport(ApprovalRootExport export) {
-		return new ApprovalRootImport(
+		ApprovalRootImport temp =  new ApprovalRootImport(
 				export.getCompanyId(),
 				export.getWorkplaceId(),
 				export.getApprovalId(),
@@ -51,7 +60,17 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 				export.getEndDate(),
 				export.getBranchId(),
 				export.getAnyItemApplicationId()
+				
 				);
+		temp.addBeforeApprovers(
+				export.getBeforeApprovers().stream()
+				.map(x -> this.convertApprovalPhaseImport(x)).collect(Collectors.toList())
+				);
+		temp.addAfterApprovers(
+				export.getAfterApprovers().stream()
+				.map(x -> this.convertApprovalPhaseImport(x)).collect(Collectors.toList())
+				);
+		return temp;
 		
 	}
 	/**
@@ -79,7 +98,7 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 	 * @return
 	 */
 	private ApprovalPhaseImport convertApprovalPhaseImport(ApprovalPhaseExport  approvalPhaseExport) {
-		return new  ApprovalPhaseImport(
+		ApprovalPhaseImport temp = new  ApprovalPhaseImport(
 				approvalPhaseExport.getCompanyId(),
 				approvalPhaseExport.getBranchId(),
 				approvalPhaseExport.getApprovalPhaseId(),
@@ -87,6 +106,8 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 				approvalPhaseExport.getBrowsingPhase(),
 				approvalPhaseExport.getOrderNumber()
 				);
+		temp.addApproverList(approvalPhaseExport.getApprovers().stream().map(x -> this.convertApproverInfoImport(x)).collect(Collectors.toList()));
+		return temp;
 		
 	}
 	

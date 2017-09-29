@@ -35,15 +35,17 @@ public class BSWorkplaceFinder {
 	 * @return the list
 	 */
 	public List<WorkplaceDto> findByStartDate(String companyId, GeneralDate date) {
-		List<Workplace> lstWkp = workplaceRepository.findByStartDate(companyId, date);
-		if (lstWkp.isEmpty()) {
-			return null;
-		}
-		return lstWkp.stream().map(item -> {
-			WorkplaceDto wkpDto = new WorkplaceDto();
-			item.saveToMemento(wkpDto);
-			return wkpDto;
-		}).collect(Collectors.toList());
+	    // TODO: check again
+//		List<Workplace> lstWkp = workplaceRepository.findByStartDate(companyId, date);
+//		if (lstWkp.isEmpty()) {
+//			return null;
+//		}
+//		return lstWkp.stream().map(item -> {
+//			WorkplaceDto wkpDto = new WorkplaceDto();
+//			item.saveToMemento(wkpDto);
+//			return wkpDto;
+//		}).collect(Collectors.toList());
+		return null;
 	}
 	
 	/**

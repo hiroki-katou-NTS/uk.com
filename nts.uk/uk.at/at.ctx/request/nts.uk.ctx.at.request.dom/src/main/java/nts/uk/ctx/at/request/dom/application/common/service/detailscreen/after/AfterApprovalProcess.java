@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 import java.util.List;
 
 import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DestinationMailListOuput;
 
@@ -27,16 +26,11 @@ public interface AfterApprovalProcess {
 	public void invidialApplicationUpdate(String appID);
 
 	/**
-	 * 3.1 : 承認者一覧を取得する : ApprovalATR.APPROVED 
-	 * 3.2 : 未承認の承認者一覧を取得する : ApprovalATR.UNAPPROVED
+	 * 3.実績反映状態の判断 3.1 : 承認者一覧を取得する : ApprovalATR.APPROVED 
+	 * 3.2 : 未承認の承認者一覧を取得する : #ApprovalATR.APPROVED
 	 */
 	public List<String> actualReflectionStateDecision(String appID, String phaseID, ApprovalAtr approvalAtr);
-	
-	/**
-	 * 3.実績反映状態の判断 
-	 */
-	public void judgmentActualReflection(List<AppApprovalPhase> listPhase);
-	
+
 	/**
 	 * 4.メール送信先リストを取得する	
 	 * 

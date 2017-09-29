@@ -20,7 +20,7 @@ public class ApprovalRootOfSubjectRequestDto {
 	/** 履歴ID */
 	private String historyId;
 	/** 申請種類 */
-	private int applicationType;
+	private Integer applicationType;
 	/** 開始日 */
 	private GeneralDate startDate;
 	/** 完了日 */
@@ -30,18 +30,19 @@ public class ApprovalRootOfSubjectRequestDto {
 	/** 任意項目申請ID */
 	private String anyItemApplicationId;
 	/** 確認ルート種類 */
-	private int confirmationRootType;
+	private Integer confirmationRootType;
 	/** 就業ルート区分 */
-	private int employmentRootAtr;
+	private Integer employmentRootAtr;
 	
 	private List<ApprovalPhaseImport> beforeApprovers;
 	
 	private List<ApprovalPhaseImport> afterApprovers;
 	
 	/** エラーフラグ*/
-	private int errorFlag;
+	private Integer errorFlag;
 	 
 	public static ApprovalRootOfSubjectRequestDto fromDomain(ApprovalRootImport domain ) {
+		Integer errorFlag = (domain.getErrorFlag() != null) ? domain.getErrorFlag().value : null;
 		return new ApprovalRootOfSubjectRequestDto(
 				domain.getCompanyId(),
 				domain.getWorkplaceId(), 
@@ -57,7 +58,7 @@ public class ApprovalRootOfSubjectRequestDto {
 				domain.getEmploymentRootAtr(), 
 				domain.getBeforeApprovers(),
 				domain.getAfterApprovers(),
-				domain.getErrorFlag().value
+				errorFlag
 				);
 	}
 }

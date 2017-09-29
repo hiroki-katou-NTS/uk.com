@@ -27,17 +27,16 @@
 						data-bind="ntsGridList: {								
 								height: 255,
 								dataSource: listTeam,
-								primaryKey: 'code',
+								primaryKey: 'code'	,
 								columns: columnsTeam,
 								multiple: false,
 								value: selectedTeam
 							}"></table>
 				</div>
-
 				<div id="content-right">
-					<div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_1137')}</div>
-					<input data-bind="ntsTextEditor: {value: teamCode}" />
-					<input data-bind="ntsTextEditor: {value: teamName}" />
+					 <div data-bind="ntsFormLabel: {required: true}">#{i18n.getText('KSU001_1137')}</div>
+					 <input data-bind="ntsTextEditor: {value: teamCode}" />
+					 <input data-bind="ntsTextEditor: {value: teamName}" />
 				</div>
 			</div>
 		</ui:define>

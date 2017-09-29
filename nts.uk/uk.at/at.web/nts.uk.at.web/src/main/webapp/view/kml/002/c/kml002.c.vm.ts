@@ -6,7 +6,6 @@ module nts.uk.at.view.kml002.c.viewmodel {
         categoryItems: KnockoutObservableArray<any>;
         catCode: KnockoutObservable<number>;
         checked: KnockoutObservable<boolean>;
-        
         rightItemcolumns: KnockoutObservable<any>;
         currentRightCodeList: KnockoutObservableArray<any>;
         rightItems: KnockoutObservableArray<NewItemModel>;

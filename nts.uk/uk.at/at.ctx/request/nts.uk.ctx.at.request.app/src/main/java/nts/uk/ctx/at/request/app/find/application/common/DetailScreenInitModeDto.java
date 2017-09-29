@@ -41,7 +41,6 @@ public class DetailScreenInitModeDto {
 
 	private AppCanAtr appContentChangeFlg;
 
-
 	private ReflectionFlg scheReflectFlg;
 
 	private PriorityFLg priorityTimeReflectFlg;
