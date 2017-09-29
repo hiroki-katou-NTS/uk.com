@@ -45,8 +45,8 @@ public class KrqdtApprovalFrame extends UkJpaEntity implements Serializable {
 	
 	@ManyToOne
 	@JoinColumns({
-        @JoinColumn(name="CID", referencedColumnName="CID"),
-        @JoinColumn(name="PHASE_ID", referencedColumnName="PHASE_ID")
+        @JoinColumn(name="CID", referencedColumnName="CID", insertable = false, updatable = false),
+        @JoinColumn(name="PHASE_ID", referencedColumnName="PHASE_ID", insertable = false, updatable = false)
     })
 	public KrqdtAppApprovalPhase approvalPhase;
 	
