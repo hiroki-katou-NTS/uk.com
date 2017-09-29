@@ -7,8 +7,6 @@ package nts.uk.ctx.at.shared.dom.workrule.closure;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.time.YearMonth;
-
 /**
  * The Interface ClosureRepository.
  */

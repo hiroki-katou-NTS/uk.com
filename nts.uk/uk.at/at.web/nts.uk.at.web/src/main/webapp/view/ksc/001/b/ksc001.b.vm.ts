@@ -1,6 +1,8 @@
 module nts.uk.at.view.ksc001.b {
 
     import NtsWizardStep = service.model.NtsWizardStep;
+    import PeriodDto = service.model.PeriodDto;
+    import UserInfoDto = service.model.UserInfoDto;
 
     export module viewmodel {
         export class ScreenModel {
@@ -18,7 +20,8 @@ module nts.uk.at.view.ksc001.b {
             checkAllCase: KnockoutObservable<boolean>;
             enable: KnockoutObservable<boolean>;
             required: KnockoutObservable<boolean>;
-            dateValue: KnockoutObservable<any>;
+            periodStartDate: KnockoutObservable<Date>;
+            periodEndDate: KnockoutObservable<Date>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
 
@@ -36,17 +39,6 @@ module nts.uk.at.view.ksc001.b {
 
                 self.startDateString = ko.observable("");
                 self.endDateString = ko.observable("");
-                self.dateValue = ko.observable({});
-
-                self.startDateString.subscribe(function(value) {
-                    self.dateValue().startDate = value;
-                    self.dateValue.valueHasMutated();
-                });
-
-                self.endDateString.subscribe(function(value) {
-                    self.dateValue().endDate = value;
-                    self.dateValue.valueHasMutated();
-                });
                 self.stepList = [
                     { content: '.step-1' },
                     { content: '.step-2' },
@@ -58,7 +50,8 @@ module nts.uk.at.view.ksc001.b {
                 self.alreadySettingPersonal = ko.observableArray([]);
                 self.showinfoSelectedEmployee = ko.observable(false);
                 self.baseDate = ko.observable(new Date());
-
+                self.periodStartDate = ko.observable(new Date());
+                self.periodEndDate = ko.observable(new Date());
                 self.checkAllCase = ko.observable(true);
                 self.ccgcomponent = {
                     baseDate: self.baseDate,
@@ -109,27 +102,53 @@ module nts.uk.at.view.ksc001.b {
                 self.selectedRuleCode = ko.observable(1);
 
             }
+            /**
+             * get user login
+             */
+            public getUserLogin(): UserInfoDto {
+                var userinfo: UserInfoDto = { companyId: '000000000000-0001', employeeId: '000426a2-181b-4c7f-abc8-6fff9f4f983a' };
+                return userinfo;
 
-            begin() {
-                $('#wizard').ntsWizard("begin");
             }
-            end() {
-                $('#wizard').ntsWizard("end");
+            /**
+             * save to client service PersonalSchedule
+            */
+            private savePersonalSchedule(employeeId: string, data: PersonalSchedule): void{
+                nts.uk.characteristics.save("PersonalSchedule_"+employeeId, data);
             }
-            next() {
+            
+            /**
+             * find by client service PersonalSchedule
+            */
+            private findPersonalScheduleByEmployeeId(employeeId: string):  JQueryPromise<PersonalSchedule>{
+                return nts.uk.characteristics.restore("PersonalSchedule_"+employeeId);
+            }
+            /**
+             * function next wizard by on click button 
+             */
+            private next(): void {
                 $('#wizard').ntsWizard("next");
             }
-            previous() {
+            /**
+             * function previous wizard by on click button 
+             */
+            private previous(): void {
                 $('#wizard').ntsWizard("prev");
             }
-            getCurrentStep() {
-                alert($('#wizard').ntsWizard("getCurrentStep"));
-            }
-            goto() {
-                var index = this.stepList.indexOf(this.stepSelected());
-                $('#wizard').ntsWizard("goto", index);
-            }
+            /**
+           * start page data 
+           */
+            public startPage(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
 
+                service.findPeriodById(1).done(function(data) {
+                    self.periodStartDate(data.startDate);
+                    self.periodEndDate(data.endDate);
+                    dfd.resolve(self);
+                });
+                return dfd.promise();
+            }
             /**
             * apply ccg001 search data to kcp005
             */
@@ -169,7 +188,13 @@ module nts.uk.at.view.ksc001.b {
              */
             private nextPageEmployee(): void {
                 var self = this;
-                self.next();
+                // check selection employee 
+                if (self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0) {
+                    self.next();
+                }
+                else {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_206' });
+                }
             }
             /**
              * function previous page by selection employee goto page (C)
@@ -211,11 +236,135 @@ module nts.uk.at.view.ksc001.b {
              */
             private finish(): void {
                 var self = this;
-                 nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function() {
+                nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function() {
                 });
             }
 
         }
+
+        // 休日反映方法
+        export enum ReflectionMethod {
+            // 上書き反映
+            OVERWRITE = 0,
+
+            // 穴埋め反映
+            FILLINTHEBLANK = 1
+        }
+
+        // 実施区分
+        export enum ImplementAtr {
+            // 通常作成
+            GENERALLY_CREATED = 0,
+
+            // 再作成
+            RECREATE = 1
+        }
+
+        // 再作成区分
+        export enum ReCreateAtr {
+            // 全件
+            ALLCASE = 0,
+
+            // 未確定データのみ
+            ONLYUNCONFIRM = 1
+        }
+
+        // 作成方法区分
+        export enum CreateMethodAtr {
+            // 個人情報
+            PERSONAL_INFO = 0,
+
+            // パターンスケジュール
+            PATTERN_SCHEDULE = 1,
+
+            // 過去スケジュールコピー
+            COPY_PAST_SCHEDULE = 2
+        }
+
+        // 処理実行区分
+        export enum ProcessExecutionAtr {
+            // もう一度作り直す 
+            REBUILD = 0,
+
+            // 再設定する
+            RECONFIG = 1
+        }
+
+        // 利用区分
+        export enum UseAtr {
+            // 使用しない
+            NOTUSE = 0,
+
+            // 使用する
+            USE = 1
+        }
+
+        // 個人スケジュールの作成
+        export class PersonalSchedule {
+            // パターンコード
+            patternCode: string;
+
+            // パターン開始日
+            patternStartDate: Date;
+
+            // マスタ情報再設定
+            resetMasterInfo: boolean;
+
+            // 休日反映方法
+            holidayReflect: ReflectionMethod;
+
+            // 休職休業再設定
+            resetAbsentHolidayBusines: boolean;
+
+            // 作成方法区分
+            createMethodAtr: CreateMethodAtr
+
+            // 作成時に確定済みにする
+            confirm: boolean;
+
+            // 再作成区分
+            reCreateAtr: ReCreateAtr;
+
+            // 処理実行区分
+            processExecutionAtr: ProcessExecutionAtr;
+
+            //実施区分
+            implementAtr: ImplementAtr;
+
+            // 就業時間帯再設定
+            resetWorkingHours: boolean;
+
+            // 法内休日利用区分
+            legalHolidayUseAtr: UseAtr
+
+            // 法内休日勤務種類
+            legalHolidayWorkType: string;
+
+            // 法外休日利用区分
+            statutoryHolidayUseAtr: UseAtr;
+
+            //法外休日勤務種類
+            statutoryHolidayWorkType: string
+
+            // 申し送り時間再設定
+            resetTimeAssignment: boolean;
+
+            // 直行直帰再設定
+            resetDirectLineBounce: boolean;
+
+            // 社員ID
+            employeeId: string;
+
+            // 祝日利用区分
+            holidayUseAtr: UseAtr;
+
+            // 祝日勤務種類
+            holidayWorkType: string;
+
+            // 育児介護時間再設定
+            resetTimeChildCare: boolean;
+        }
+
         export class ListType {
             static EMPLOYMENT = 1;
             static Classification = 2;
