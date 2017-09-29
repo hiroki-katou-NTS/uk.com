@@ -13,7 +13,7 @@ __viewContext.ready(function () {
             // Set parent value
             nts.uk.ui.windows.setShared("parentValue", this.value());
             nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-            nts.uk.ui.windows.sub.modal("/view/sample/window/subwindow.xhtml").onClosed(() => {
+            nts.uk.ui.windows.sub.modal("/view/sample/functionwrap/window/subwindow.xhtml").onClosed(() => {
                 // Get child value
                 var returnValue = nts.uk.ui.windows.getShared("childValue");
                 alert("My child say: " + returnValue);
