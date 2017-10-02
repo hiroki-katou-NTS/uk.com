@@ -12,33 +12,21 @@
 			</div>
 			<div class="lableCaseAll cf">
 				<div class="labelSelection" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_29')}</div>
-				<div class="labelContents">
-					<label>Eeeeeeeeeeeeeeeeeeeeeeeeeee a3eeeeeeea adjfhds fdhsfjhds jfhsdjfhjsd fjsdhfjh sjafhjas fhjashfjhjasfhjashdfjs dhfjhsjahfjashfkjhasjifhsafhdkjashfkjahkjsfhkjashfj kahfjhajfhaskjhfjahjdfhajdhjahfdsfdsfds
-					dskjfhdskfdkjsfhdjsf djshfj ashfjhajhjdhjadh asdjfhja dsfjahfjhasyewfhskjafhauihfjahkjf haskj hfjahkjhkjhfjkdhsjfhajs hfawifhsjhfjsh fjdhsauiwhfjsahjf hsajfhasuifhas]
-					
-					sdjfhdsjfh dsjifhjs dhfjashuiwhfjdshfja8iweufiod ashfewiarupoahfkjas fiayhiowueroiadfkhawf ydsadifskdfhayurinsdfhsdj eiwridshfkdshfkjsd iewuifsdhafkds f
-					skdfdskfuwo9efdshfkds triashkashflksahdithafshas fa
-					sdfkdhsf </label>
+				<div class="labelContents"  data-bind="foreach: lstLabelInfomation">
+					<label data-bind="text: $data"/>
 				</div>
 			</div>
 			<div class="lableCaseAll cf">
 				<div class="labelSelection" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_30')}</div>
-				<div class="labelContents">
-					<label>Eeeeeeeeeeeeeeeeeeeeeeeeeee a3eeeeeeea adjfhds fdhsfjhds jfhsdjfhjsd fjsdhfjh sjafhjas fhjashfjhjasfhjashdfjs dhfjhsjahfjashfkjhasjifhsafhdkjashfkjahkjsfhkjashfj kahfjhajfhaskjhfjahjdfhajdhjahfdsfdsfds
-					dskjfhdskfdkjsfhdjsf djshfj ashfjhajhjdhjadh asdjfhja dsfjahfjhasyewfhskjafhauihfjahkjf haskj hfjahkjhkjhfjkdhsjfhajs hfawifhsjhfjsh fjdhsauiwhfjsahjf hsajfhasuifhas]
-					
-					sdjfhdsjfh dsjifhjs dhfjashuiwhfjdshfja8iweufiod ashfewiarupoahfkjas fiayhiowueroiadfkhawf ydsadifskdfhayurinsdfhsdj eiwridshfkdshfkjsd iewuifsdhafkds f
-					skdfdskfuwo9efdshfkds triashkashflksahdithafshas fa
-					sdfkdhsf </label>
-				</div>
+				<label class="labelCenter" data-bind="text: infoCreateMethod"></label>
 			</div>
 			<div class="lableCaseAll cf">
 				<div class="labelSelection" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
-				<label class="labelCenter">AAAAAAAAAAAAAAAAAAAAA</label>
+				<label class="labelCenter" data-bind="text: infoPeriodDate"></label>
 			</div>	
 			<div class="lableCaseAll cf">
 				<div class="labelSelection" data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_32')}</div>
-				<label class="labelCenter">BBBBBBBBBBBB</label>
+				<label class="labelCenter" data-bind="text: lengthEmployeeSelected"></label>
 			</div>	
 			<div class="buttonBeginPrevious">
 				<button data-bind="click: previousPageE">#{i18n.getText('KSC001_33')}</button>

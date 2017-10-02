@@ -11,3 +11,6 @@ a.nounderline {
 .date-range{
 	margin-left: 60px;
 }
+table.fixed-table > tbody > tr > td {
+	white-space: unset !important;
+}

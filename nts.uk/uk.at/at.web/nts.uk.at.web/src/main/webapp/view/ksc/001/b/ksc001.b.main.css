@@ -92,7 +92,11 @@
 	margin-left: 15px;
 }
 
-.selectSchedule {
+.selectImplementAtr {
+	margin-left: 15px;
+}
+
+.labelRangeDate {
 	margin-left: 15px;
 }
 
@@ -124,7 +128,7 @@ button.nts-switch-button {
 	margin-left: 20px;
 }
 
-.radioboxProcessClassification {
+.radioboxProcessExecutionAtr {
 	margin-top: 15px;
 	margin-left: 45px;
 }
@@ -180,8 +184,18 @@ button.nts-switch-button {
 	width: 500px;
 	white-space: pre-line;
 	padding: 5px;
+	max-height: 300px;
+	overflow-y: scroll;
 }
 
 .labelCenter {
 	margin-top: 8px;
+}
+
+.rangeLabel {
+	padding: 10px 5px 6px 5px;
+}
+
+.rangeDatePicker {
+	padding-top: 4px;
 }
