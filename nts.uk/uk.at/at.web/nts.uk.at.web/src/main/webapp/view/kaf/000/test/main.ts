@@ -4,7 +4,8 @@ module nts.uk.at.view.kaf000.test.viewmodel {
     import windows = nts.uk.ui.windows;
     export class ScreenModel {
         appInfor: KnockoutObservableArray<ApproverDtoK> = ko.observableArray([]);
-        
+        startDate: KnockoutObservable<any> = ko.observable(new Date());
+        endDate: KnockoutObservable<any> = ko.observable(new Date());
         constructor() {
             var self = this;
             self.appInfor.push(new ApproverDtoK('e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d', 4));
@@ -32,7 +33,13 @@ module nts.uk.at.view.kaf000.test.viewmodel {
             var self = this;
             nts.uk.request.jump("/view/kaf/000/b/index.xhtml", self.appInfor()[2]);
         }
-        
+        openDetailScreen(){
+            var self = this;
+            var data = new service.dateInfor;
+            data.startDate = self.startDate();
+            data.endate = self.endDate();
+            var dataInfor = service.getAppId(data);
+        }
     }
     export class ApproverDtoK {
         appID: string;
