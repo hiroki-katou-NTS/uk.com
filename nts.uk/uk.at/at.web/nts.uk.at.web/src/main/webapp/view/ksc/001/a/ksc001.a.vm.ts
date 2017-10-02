@@ -24,7 +24,7 @@ module nts.uk.at.view.ksc001.a {
              */
             referenceHistoryScreen(): void {
                 let self = this;
-                nts.uk.request.jump("/view/ksc/001/g/index.xhtml");
+               nts.uk.request.jump("/view/ksc/001/g/index.xhtml");
             }
         }
     }

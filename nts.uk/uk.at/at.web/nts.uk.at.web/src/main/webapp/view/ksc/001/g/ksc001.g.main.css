@@ -22,3 +22,6 @@
 .ui-dialog-titlebar-close{
 	display: none !important;
 }
+.caret-right:after{
+	border-left: none !important; 
+}
