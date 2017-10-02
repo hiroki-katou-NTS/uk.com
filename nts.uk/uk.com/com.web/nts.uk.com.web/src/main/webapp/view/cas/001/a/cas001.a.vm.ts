@@ -139,12 +139,10 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
                 });
 
-
-
-                $('#anotherSelectedAll_auth').keyup(function(event) {
-
+                $('.selected_all_auth').keyup(function(event) {
+                    let id = $(this).attr('id');
                     let code = event.keyCode,
-                        currentValue = self.anotherSelectedAll(),
+                        currentValue = id === 'anotherSelectedAll_auth' ? self.anotherSelectedAll() : self.seftSelectedAll(),
                         Value = currentValue;
                     switch (code) {
                         case 37:
@@ -159,48 +157,16 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         return;
                     }
 
-                    self.changeAll($(this).attr('id'), Value);
+                    self.changeAll(id, Value);
 
                 });
 
-                $('#seftSelectedAll_auth').keyup(function(event) {
+                $('.ui-iggrid-header').on('focus', function() {
 
-                    let code = event.keyCode,
-                        currentValue = self.seftSelectedAll(),
-                        Value = currentValue;
-                    switch (code) {
-                        case 37:
-                        case 38: Value = currentValue - 1;
-                            break;
-                        case 39:
-                        case 40: Value = currentValue + 1;
-                            break;
-                    }
-
-                    if (Value === currentValue) {
-                        return;
-                    }
-
-                    self.changeAll($(this).attr('id'), Value);
-
-
-                });
-
-                $('#item_role_table_body_otherAuth').on('focus', function() {
-
-                    if (!!self.allowOtherRef()) {
-                        $('#anotherSelectedAll_auth').focus();
+                    if ($(this).find('.nts-switch-button').is(':enabled')) {
+                        $(this).find('.selected_all_auth').focus();
                     }
                 });
-
-                $('#item_role_table_body_selfAuth').on('focus', function() {
-
-                    if (!!self.allowPersonRef()) {
-                        $('#seftSelectedAll_auth').focus();
-                    }
-                });
-
-
             });
         }
 
