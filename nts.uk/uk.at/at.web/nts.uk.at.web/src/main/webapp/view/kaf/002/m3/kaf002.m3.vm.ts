@@ -15,24 +15,34 @@ module nts.uk.at.view.kaf002.m3 {
                 new vmbase.AppStampCancel(4,9,0),
                 new vmbase.AppStampCancel(4,10,0)
             ]); 
+            supFrameNo: number = 10;
+            stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             constructor(){
                 
             }
             
-            register(application : vmbase.Application){
+            start(data: vmbase.StampRequestSettingDto){
+                var self = this;    
+                self.supFrameNo = data.supFrameDispNO;
+                self.stampPlaceDisplay(data.stampPlaceDisp);
+            }
+            
+            register(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
                 let command = {
                     appID: "",
                     inputDate: application.inputDate(),
                     enteredPerson: application.enteredPerson(),
-                    applicationDate: application.applicationDate(),
-                    applicationReason: application.applicationReason(),
+                    applicationDate: application.appDate(),
+                    titleReason: application.titleReason(), 
+                    detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 2,
                     appStampGoOutPermitCmds: null,
                     appStampWorkCmds: null, 
                     appStampCancelCmds: ko.mapping.toJS(self.appStampList()),
-                    appStampOnlineRecordCmd: null  
+                    appStampOnlineRecordCmd: null,
+                    appApprovalPhaseCmds: approvalList   
                 }
                 service.insert(command);
             }
@@ -43,8 +53,9 @@ module nts.uk.at.view.kaf002.m3 {
                     appID: application.applicationID,
                     inputDate: application.inputDate(),
                     enteredPerson: application.enteredPerson(),
-                    applicationDate: application.applicationDate(),
-                    applicationReason: application.applicationReason(),
+                    applicationDate: application.appDate(),
+                    titleReason: application.titleReason(), 
+                    detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 2,
                     appStampGoOutPermitCmds: null,

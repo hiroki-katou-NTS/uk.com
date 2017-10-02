@@ -18,8 +18,8 @@ public class JpaRequestOfEarchWorkplaceRepository extends JpaRepository implemen
 
 	private static final String FIND = "SELECT c "
 			+ "FROM KrqstWpAppConfig c "
-			+ "WHERE c.KrqstWpAppConfigPK.companyId = :companyId "
-			+ "AND c.KrqstWpAppConfigPK.workplaceId = :workplaceId";
+			+ "WHERE c.krqstWpAppConfigPK.companyId = :companyId "
+			+ "AND c.krqstWpAppConfigPK.workplaceId = :workplaceId";
 	
 	private static final String FINDDETAIL = "SELECT c "
 			+ "FROM KrqstWpAppConfigDetail c "

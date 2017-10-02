@@ -12,14 +12,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.bs.employee.app.command.workplace.RegisterWorkplaceCommand;
-import nts.uk.ctx.bs.employee.app.command.workplace.RegisterWorkplaceCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.workplace.SaveWkpHistoryCommand;
+import nts.uk.ctx.bs.employee.app.command.workplace.SaveWkpHistoryCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.UpdateWorkplaceCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.workplace.BSWorkplaceFinder;
-import nts.uk.ctx.bs.employee.app.find.workplace.WorkplaceInfoFinder;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WkpInfoFindObject;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceDto;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceInfoDto;
+import nts.uk.ctx.bs.employee.app.find.workplace.info.WorkplaceInfoFinder;
 
 /**
  * The Class WorkplaceWebService.
@@ -30,7 +30,7 @@ public class WorkplaceWebService extends WebService {
 	
 	/** The register workplace command handler. */
 	@Inject
-	private RegisterWorkplaceCommandHandler registerWorkplaceCommandHandler;
+	private SaveWkpHistoryCommandHandler registerWorkplaceCommandHandler;
 	
 	/** The update workplace command handler. */
 	@Inject
@@ -51,7 +51,7 @@ public class WorkplaceWebService extends WebService {
 	 */
 	@Path("hist/add")
 	@POST
-	public void addWorkplaceHistory(RegisterWorkplaceCommand command) {
+	public void addWorkplaceHistory(SaveWkpHistoryCommand command) {
 		this.registerWorkplaceCommandHandler.handle(command);
 	}
 	
@@ -62,7 +62,7 @@ public class WorkplaceWebService extends WebService {
 	 */
 	@Path("hist/update")
 	@POST
-	public void updateWorkplaceHistory(RegisterWorkplaceCommand command) {
+	public void updateWorkplaceHistory(SaveWkpHistoryCommand command) {
 		this.updateWorkplaceCommandHandler.handle(command);
 	}
 	
@@ -95,10 +95,9 @@ public class WorkplaceWebService extends WebService {
 	 *
 	 * @param command the command
 	 */
-	@Path("register")
+	@Path("register/history")
 	@POST
-	public void registerWkp(RegisterWorkplaceCommand command) {
+	public void registerWkp(SaveWkpHistoryCommand command) {
 		this.registerWorkplaceCommandHandler.handle(command);
-		;
 	}
 }

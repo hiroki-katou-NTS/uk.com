@@ -6,8 +6,8 @@
 	margin: 5px 0px 0px 40px;
 }
 
-.valign-center.control-group.switch {
-	margin-left: 113px;
+.row-cell-margin {
+	margin: 5px 0px 5px 5px;
 }
 
 .block {
@@ -19,20 +19,28 @@
 	border-bottom: 2px solid #808080;
 	padding-bottom: 10px;
 }
-
-#inpEndTime1, #inpEndTime2 {
-	margin-left: 100px;
+/*Set margin button */
+.location-button {
+	margin: 5px 0px 0px -45px;
 }
 
+.link-label {
+	margin-left: 55px;
+}
+/*Set Width*/
 input.nts-editor.nts-input.reset-element {
 	text-align: center;
-	width: 77px;
+	width: 70px;
+}
+
+button.nts-switch-button {
+	width: 92px;
 }
 
 input#inputdate.nts-editor.nts-input.reset-element {
 	width: 85px;
 }
-
+/*Set Width*/
 input.col1.nts-editor.nts-input.reset-element {
 	margin-left: 22px;
 }
@@ -72,7 +80,7 @@ div.form-label.broken {
 .left-contents {
 	margin-top: 10px;
 	float: left;
-	width: 810px;
+	width: 930px;
 }
 
 .right-contents {
@@ -94,15 +102,11 @@ div.form-label.broken {
 }
 
 .mainScreen {
-	height: 620px;
+	height: 730	px;
 }
 
 #label-1 {
 	margin-left: 20px;
-}
-
-button.nts-switch-button {
-	width: 100px;
 }
 
 .lstApprover {
@@ -112,12 +116,4 @@ button.nts-switch-button {
 .lblSiftCd, .lblWorkTypeCd {
 	line-height: 40px;
 	margin-left: 20px;
-}
-/*Css commmnet*/
-.commentGo1,.commentGo2{
-	margin: 30px 0px 0px 115px;
-}
-
-.commentBack1,.commentBack2{
-	margin: 30px 0px 0px 50px;
 }

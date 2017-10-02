@@ -3,8 +3,8 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         // date editor
         date: KnockoutObservable<string>;
         //latetime editor
-        lateTime1: KnockoutObservable<string>;
-        lateTime2: KnockoutObservable<string>;
+        lateTime1: KnockoutObservable<number>;
+        lateTime2: KnockoutObservable<number>;
         //check send mail
         sendMail: KnockoutObservable<boolean>;
         //check late
@@ -14,80 +14,108 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         early1: KnockoutObservable<boolean>;
         early2: KnockoutObservable<boolean>;
         //labor time
-        earlyTime1: KnockoutObservable<string>;
-        earlyTime2: KnockoutObservable<string>;
+        earlyTime1: KnockoutObservable<number>;
+        earlyTime2: KnockoutObservable<number>;
         //combobox
-        ListTypicalReason: KnockoutObservableArray<TypicalReason>;
+        ListTypeReason: KnockoutObservableArray<TypeReason>;
         itemName: KnockoutObservable<string>;
         currentCode: KnockoutObservable<number>
         selectedCode: KnockoutObservable<string>;
         //MultilineEditor
-        multilineeditor: any;
-
+        appreason: KnockoutObservable<string>;
+        time: KnockoutObservable<string>;
+        //Show Screen
+        showScreen: string;
+        
         constructor() {
             var self = this;
             //check sendMail
             self.sendMail = ko.observable(true);
             //date editor
-            self.date = ko.observable("2017/01/08");
+            self.date = ko.observable("");
             //time editor
-            self.lateTime1 = ko.observable("12:00");
-            self.lateTime2 = ko.observable("12:30");
+            self.lateTime1 = ko.observable(0);
+            self.lateTime2 = ko.observable(0);
             //check late
-            self.late1 = ko.observable(true);
-            self.late2 = ko.observable(true);
+            self.late1 = ko.observable(false);
+            self.late2 = ko.observable(false);
             // check early
             self.early1 = ko.observable(false);
             self.early2 = ko.observable(false);
             //labor time 
-            self.earlyTime1 = ko.observable("5:00");
-            self.earlyTime2 = ko.observable("6:00");
+            self.earlyTime1 = ko.observable(0);
+            self.earlyTime2 = ko.observable(0);
             //combobox
-            self.ListTypicalReason = ko.observableArray([
-                new TypicalReason('1', 'name1'),
-                new TypicalReason('2', 'name2'),
-                new TypicalReason('3', 'name3')
-            ]);
+            self.ListTypeReason = ko.observableArray([]);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
             self.selectedCode = ko.observable('0002')
             //MultilineEditor 
-            self.multilineeditor = {
-                value: ko.observable(''),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                    resizeable: false,
-                    placeholder: "Placeholder for text editor",
-                    width: "500",
-                    textalign: "left"
-                })),
-            };
-
+            self.appreason = ko.observable('');
+            //Show Screen
+            self.showScreen = __viewContext.transferred.value.showScreen;
         }
 
         startPage(): JQueryPromise<any> {
             var self = this;
-
             var dfd = $.Deferred();
 
-            dfd.resolve();
+            service.getByCode().done(function(data) {
+                self.ListTypeReason(data.listApplicationReasonDto);
+                dfd.resolve();
+            });
 
             return dfd.promise();
         }
+        
+        /** Create Button Click */
+        registryButtonClick() {
+            var self = this;
+
+            $(".nts-input").trigger("validate");
+            if (!$(".nts-input").ntsError("hasError")) {
+                var lateOrLeaveEarly: LateOrLeaveEarly = {
+                    appDate: self.date(),
+                    sendMail: self.sendMail(),
+                    late1: self.late1() ? 1 : 0,
+                    lateTime1: self.lateTime1(),
+                    early1: self.early1() ? 1 : 0,
+                    earlyTime1: self.earlyTime1(),
+                    late2: self.late2() ? 1 : 0,
+                    lateTime2: self.lateTime2(),
+                    early2: self.early2() ? 1 : 0,
+                    earlyTime2: self.earlyTime2(),
+                    reasonTemp: self.selectedCode(),
+                    appReason: self.appreason()
+                };
+                service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                }).fail((res) => {
+                    nts.uk.ui.dialog.alertError(res);
+                });
+
+            }
+
+        }
     }
 
-    class LateOrLeaveEarly {
-        applicant: string;
+    interface TypeReason {
+        reasonID: string;
+        reasonTemp: string;
+    }
+
+    interface LateOrLeaveEarly {
         appDate: string;
-        late1: string;
-        lateTime1: string;
-        early1: string;
-        earlyTime1: string;
-        late2: string;
-        lateTime2: string;
-        early2: string;
-        earlyTime2: string;
-        typeReason: string;
+        sendMail: boolean
+        late1: number;
+        lateTime1: number;
+        early1: number;
+        earlyTime1: number;
+        late2: number;
+        lateTime2: number;
+        early2: number;
+        earlyTime2: number;
+        reasonTemp: string;
         appReason: string;
     }
 }

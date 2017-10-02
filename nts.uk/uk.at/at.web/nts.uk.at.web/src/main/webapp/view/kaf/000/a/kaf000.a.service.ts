@@ -1,4 +1,4 @@
- module kaf000.a.service{
+ module nts.uk.at.view.kaf000.a.service{
     var paths = {
         getDataApprovalRoot : "at/request/application/getdataapprovalroot",
         getMessageDeadline : "at/request/application/getmessagedeadline"
@@ -9,7 +9,7 @@
      export function getDataApprovalRoot(objApprovalRootInput ) : JQueryPromise<Array<any>>{
          return nts.uk.request.ajax("at",paths.getDataApprovalRoot,objApprovalRootInput);
      }
-     getMessageDeadline
+     
      /**
       * get getMessageDeadline
       */

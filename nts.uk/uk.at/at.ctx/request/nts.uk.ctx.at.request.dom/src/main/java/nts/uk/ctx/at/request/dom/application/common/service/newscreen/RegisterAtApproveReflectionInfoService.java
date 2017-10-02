@@ -11,7 +11,7 @@ public interface RegisterAtApproveReflectionInfoService {
 	 * @param empID
 	 * @param application
 	 */
-	public void newScreenRegisterAtApproveInfoReflect(String empID, Application application);
+	public void newScreenRegisterAtApproveInfoReflect(String SID, Application application);
 
 	/**
 	 * 承認情報の整理

@@ -12,8 +12,8 @@ import nts.uk.ctx.bs.employee.dom.setting.code.IEmployeeCESettingRepository;
 
 @Stateless
 public class JpaEmployeeCESettingRepository extends JpaRepository implements IEmployeeCESettingRepository {
-	public static final String SELECT_ALL = "SELECT s FROM BsydtEmployeeCESetting s";
-	public static final String SELECT_BY_COM_ID = SELECT_ALL + " WHERE s.bsydtEmployeeCESettingPk.cId = :companyId";
+	public static final String SELECT_ALL = "SELECT s FROM BsymtEmployeeCESetting s";
+	public static final String SELECT_BY_COM_ID = SELECT_ALL + " WHERE s.bsymtEmployeeCESettingPk.cId = :companyId";
 
 	@Override
 	public Optional<EmployeeCESetting> getByComId(String companyId) {
@@ -65,7 +65,7 @@ public class JpaEmployeeCESettingRepository extends JpaRepository implements IEm
 	}
 
 	private EmployeeCESetting toDomain(BsymtEmployeeCESetting entity) {
-		return EmployeeCESetting.createFromJavaType(entity.getBsydtEmployeeCESettingPk().getCId(),
+		return EmployeeCESetting.createFromJavaType(entity.getBsymtEmployeeCESettingPk().getCId(),
 				entity.getCeMethodAtr(), entity.getDigitNumb());
 	}
 

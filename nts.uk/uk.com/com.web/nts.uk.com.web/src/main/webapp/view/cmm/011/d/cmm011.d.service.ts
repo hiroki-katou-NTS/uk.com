@@ -4,7 +4,7 @@ module nts.uk.com.view.cmm011.d {
          *  Service paths
          */
         var servicePath: any = {
-            addWorkplaceHistory: "bs/employee/workplace/register",
+            addWorkplaceHistory: "bs/employee/workplace/register/history",
         };
         
         export function registerWorkplaceHistory(data:any): JQueryPromise<void> {

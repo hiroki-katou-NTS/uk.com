@@ -29,10 +29,7 @@ public class KrqdtAppApprovalPhasePK implements Serializable{
 	public String companyID;
 	
 	@NotNull
-	@Column(name = "APP_ID")
-	public String appID;
-	
-	@NotNull
 	@Column(name = "PHASE_ID")
 	public String phaseID;
+	
 }

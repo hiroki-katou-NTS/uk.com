@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.ws.application.stamp;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -10,6 +12,8 @@ import nts.uk.ctx.at.request.app.command.application.stamp.RegisterAppStampComma
 import nts.uk.ctx.at.request.app.command.application.stamp.UpdateAppStampCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
 import nts.uk.ctx.at.request.app.find.application.stamp.AppStampFinder;
+import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
+import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
 /**
  * 
  * @author Doan Duy Hung
@@ -30,8 +34,8 @@ public class ApplicationStampWebService extends WebService {
 	
 	@POST
 	@Path("newAppStampInitiative")
-	public void newAppStampInitiative(){
-		this.appStampFinder.newAppStampPreProcess();
+	public AppStampNewPreDto newAppStampInitiative(){
+		return this.appStampFinder.newAppStampPreProcess();
 	}
 	
 	@POST
@@ -44,6 +48,12 @@ public class ApplicationStampWebService extends WebService {
 	@Path("update")
 	public void update(AppStampCmd command){
 		this.updateApplicationStampCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("enum/stampCombination")
+	public List<StampCombinationDto> getStampCombinationAtr(){
+		return this.appStampFinder.getStampCombinationAtr();
 	}
 	
 }

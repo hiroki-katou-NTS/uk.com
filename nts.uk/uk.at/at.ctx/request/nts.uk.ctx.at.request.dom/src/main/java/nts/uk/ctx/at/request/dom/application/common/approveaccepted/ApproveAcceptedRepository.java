@@ -10,7 +10,7 @@ public interface ApproveAcceptedRepository {
 	 * @param phaseID
 	 * @return
 	 */
-	List<ApproveAccepted> getAllApproverAccepted(String companyID , String phaseID);
+	List<ApproveAccepted> getAllApproverAccepted(String companyID , String frameID);
 	/**
 	 * get approver accepted by code
 	 * @param companyID
@@ -24,7 +24,9 @@ public interface ApproveAcceptedRepository {
 	 * create approver accepted
 	 * @param approveAccepted
 	 */
-	void createApproverAccepted(ApproveAccepted approveAccepted);
+	void createApproverAccepted(ApproveAccepted approveAccepted, String frameID);
+	
+	void updateApproverAccepted(ApproveAccepted approveAccepted, String frameID);
 
 	/**
 	 * delete approver accepted by code
@@ -32,6 +34,6 @@ public interface ApproveAcceptedRepository {
 	 * @param phaseID
 	 * @param dispOrder
 	 */
-	void deleteApproverAccepted(String companyID , String phaseID , int dispOrder,String approverSID);
+	void deleteApproverAccepted(ApproveAccepted approveAccepted);
 
 }

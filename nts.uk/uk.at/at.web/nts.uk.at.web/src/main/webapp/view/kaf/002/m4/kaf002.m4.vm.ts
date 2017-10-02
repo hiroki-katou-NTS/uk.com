@@ -4,24 +4,44 @@ module nts.uk.at.view.kaf002.m4 {
     export module viewmodel {
         export class ScreenModel {
             appStamp: KnockoutObservable<vmbase.AppStampOnlineRecord> = ko.observable(new vmbase.AppStampOnlineRecord(0,0)); 
+            supFrameNo: number = 10;
+            stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
+            stampCombinationList: KnockoutObservableArray<vmbase.StampCombination> = ko.observableArray([]);  
             constructor(){
                 
             }
             
-            register(application : vmbase.Application){
+            start(data: vmbase.StampRequestSettingDto){
+                var self = this;    
+                self.supFrameNo = data.supFrameDispNO;
+                self.stampPlaceDisplay(data.stampPlaceDisp);
+                service.getStampCombinationAtr().done(data => {
+                    let a = [];
+                    _.forEach(data, (item, index) => {
+                        a.push(new vmbase.StampCombination(index, item.name));        
+                    });   
+                    self.stampCombinationList(a);
+                }).fail(res => {
+                    console.log(res);
+                });
+            }
+            
+            register(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
                 let command = {
                     appID: "",
                     inputDate: application.inputDate(),
                     enteredPerson: application.enteredPerson(),
-                    applicationDate: application.applicationDate(),
-                    applicationReason: application.applicationReason(),
+                    applicationDate: application.appDate(),
+                    titleReason: application.titleReason(), 
+                    detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 3,
                     appStampGoOutPermitCmds: null,
                     appStampWorkCmds: null, 
                     appStampCancelCmds: null,
-                    appStampOnlineRecordCmd: ko.mapping.toJS(self.appStamp())
+                    appStampOnlineRecordCmd: ko.mapping.toJS(self.appStamp()),
+                    appApprovalPhaseCmds: approvalList 
                 }
                 service.insert(command);     
             }
@@ -32,8 +52,9 @@ module nts.uk.at.view.kaf002.m4 {
                     appID: application.applicationID,
                     inputDate: application.inputDate(),
                     enteredPerson: application.enteredPerson(),
-                    applicationDate: application.applicationDate(),
-                    applicationReason: application.applicationReason(),
+                    applicationDate: application.appDate(),
+                    titleReason: application.titleReason(), 
+                    detailReason: application.contentReason(),
                     employeeID: application.employeeID(),
                     stampRequestMode: 3,
                     appStampGoOutPermitCmds: null,

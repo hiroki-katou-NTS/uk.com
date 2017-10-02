@@ -9,7 +9,7 @@ import java.util.UUID;
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.bs.employee.app.command.workplace.PeriodDto;
+import nts.uk.ctx.bs.employee.app.command.workplace.dto.PeriodDto;
 import nts.uk.ctx.bs.employee.dom.workplace.Period;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistoryGetMemento;

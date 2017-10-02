@@ -3,6 +3,11 @@
 	height: 68px;
 	width: 800px;
 	margin-left: 39px;
+	margin-top: 15px;
+}
+#comment{
+	margin-left: 311px;
+    padding-top: 8px;
 }
 
 .message-td {
