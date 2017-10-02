@@ -116,7 +116,6 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			List<PersonApprovalRoot> lstPersonRootInfor,
 			String companyID, 
 			String sId, 
-			ApplicationType appType,
 			GeneralDate baseDate) {
 		//ドメインモデル「個人別就業承認ルート」を取得する(láy du lieu domain「個人別就業承認ルート」 ): 申請本人の社員ID, 就業ルート区分(共通)
 		List<PersonApprovalRoot> lstPsCommonRoots = lstPersonRootInfor

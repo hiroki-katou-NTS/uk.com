@@ -1,6 +1,7 @@
 package nts.uk.ctx.workflow.ws.approvermanagement.workroot;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
@@ -17,21 +18,23 @@ import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkApp
 import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkAppApprovalRByHistCommandHandler;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootFinder;
-import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataAdapterFinder;
+import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataServiceAdapterFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataFullDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeAdapterInforFinder;
+import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeRegisterApprovalRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeSearch;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeUnregisterFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.MasterApproverRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ParamDto;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
-import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WpApproverAsAppOutput;
 @Path("workflow/approvermanagement/workroot")
 @Produces("application/json")
 public class WorkAppApprovalRootWebService extends WebService{
@@ -49,7 +52,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@Inject
 	private PersonAdapter psInfo;
 	@Inject
-	private DataAdapterFinder adapterFinder;
+	private DataServiceAdapterFinder adapterFinder;
+	
 	@POST
 	@Path("getbycom")
 	public DataFullDto getAllByCom(ParamDto param) {
@@ -112,4 +116,18 @@ public class WorkAppApprovalRootWebService extends WebService{
 	public List<JobTitleImport> findAllJobTitle(GeneralDate baseDate){
 		return adapterFinder.findAllJobTitle(baseDate);
 	}
+	/**
+	 * 
+	 * @param baseDate
+	 * @param lstEmpIds
+	 * @param rootAtr:　申請共通を選んだとrootAtr：０、以外：１
+	 * @param lstApps
+	 * @return
+	 */
+	@POST
+	@Path("getEmployeeRegisterApprovalRoot")
+	public void lstEmps(EmployeeRegisterApprovalRootDto data){
+		adapterFinder.lstEmps(data);
+	}
+	
 }
