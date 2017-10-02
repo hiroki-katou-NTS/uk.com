@@ -8,6 +8,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.UseAtr;
@@ -25,7 +26,7 @@ import nts.uk.ctx.at.request.dom.setting.request.application.common.AllowAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.CheckMethod;
 
 @Stateless
-public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
+public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	
 	@Inject
 	private EmployeeAdapter employeeAdaptor;
@@ -43,6 +44,7 @@ public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
 	private ApprovalRootAdapter approvalRootService;
 	
 	public void processBeforeRegister(String companyID, String employeeID, GeneralDate date, PrePostAtr postAtr, int routeAtr, int appType){
+		
 		// retirementCheckBeforeJoinCompany(companyID, employeeID, date);
 		// PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID, employeeID, date);
 		// if(endDate.after(startDate.addDays(31))) throw new BusinessException("Msg_277");
@@ -88,6 +90,7 @@ public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
 	}
 	
 	public void applicationAcceptanceRestrictionsCheck(PrePostAtr postAtr, GeneralDate startDate, GeneralDate endDate){
+		GeneralDateTime systemDateTime = GeneralDateTime.now();
 		GeneralDate systemDate = GeneralDate.today();
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType("", ApplicationType.STAMP_APPLICATION.value);
 		if(!appTypeDiscreteSettingOp.isPresent()) throw new RuntimeException();
@@ -114,18 +117,9 @@ public class NewBeforeProcessRegisterImpl implements NewBeforeProcessRegister {
 						if(loopDay.before(systemDate)){
 							throw new BusinessException("Msg_327");
 						} else if(loopDay.equals(systemDate)){
-							/*limitDay = AdvanceAcceptanceRestriction.hourAndMinutes 
-									
-							// 受付制限日時 = 「事前の受付制限」．時分
-								システム日時 = System.DateTime.Nowのhour * 60 + System.DateTime.Nowのminute;
-								
-								例）「事前の受付制限」．時分 = 1080(18:00)
-								
-								システム日時 = 1079(17:59)今日の事前申請を登録。。。ＯＫ
-								システム日時 = 1080(18:00)今日の事前申請を登録。。。ＯＫ
-								システム日時 = 1081(18:01)今日の事前申請を登録。。。ＮＧ 
-								
-							if(systemDate > limitDay) throw new BusinessException("Msg_327");*/
+							Integer limitDay = appTypeDiscreteSetting.getRetrictPreTimeDay().v();
+							Integer systemTime = systemDateTime.hours() * 60 + systemDateTime.minutes();
+							if(systemTime > limitDay) throw new BusinessException("Msg_327");
 						}
 					}
 				}

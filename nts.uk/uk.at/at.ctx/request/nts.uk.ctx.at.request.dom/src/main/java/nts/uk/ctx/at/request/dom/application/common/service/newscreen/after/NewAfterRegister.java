@@ -9,7 +9,7 @@ import nts.uk.ctx.at.request.dom.application.common.Application;
  * 2-3.新規画面登録後の処理
  *
  */
-public interface AfterProcessRegister {
+public interface NewAfterRegister {
 	
 	/**
 	 * 2-3.新規画面登録後の処理
