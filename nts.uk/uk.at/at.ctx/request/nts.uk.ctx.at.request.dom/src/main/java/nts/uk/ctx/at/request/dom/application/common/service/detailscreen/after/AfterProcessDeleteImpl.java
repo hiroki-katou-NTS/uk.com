@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
@@ -15,6 +16,7 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApproval
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.ScreenAfterDelete;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -42,10 +44,15 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	@Inject
 	private DestinationJudgmentProcess destinationJudgmentProcessService;
 	
+	@Inject
+	private  EmployeeAdapter  employeeAdapter;
+	
+	
+	
 	
 	@Override
-	public ScreenAfterDelete screenAfterDelete(String appID) {
-		String companyID = AppContexts.user().companyId();
+	public ScreenAfterDelete screenAfterDelete(String companyID,String appID) {
+		
 		AppCanAtr sendMailWhenApprovalFlg = null;
 		ApprovalAtr approvalAtr = null;
 		
@@ -86,6 +93,11 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		if (converList != null) {
 			// TODOgui mail cho ng xac nhan
 			// TODO lay thong tin Imported
+			List<String> lstMail = new ArrayList<>();
+			for(String employeeId: converList){
+				String mail = employeeAdapter.getEmployeeInfor(employeeId).getCompanyMail();
+				lstMail.add(mail);
+			}
 		}
 
 		//TODO delete domaim Application
