@@ -34,6 +34,12 @@ public class KrcmtOptItemFormula extends UkJpaEntity implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The Constant ITEM_SELECTION. */
+	public static final int ITEM_SELECTION = 0;
+
+	/** The Constant FORMULA_SETTING. */
+	public static final int FORMULA_SETTING = 1;
+
 	/** The krcmt opt item formula PK. */
 	@EmbeddedId
 	protected KrcmtOptItemFormulaPK krcmtOptItemFormulaPK;
