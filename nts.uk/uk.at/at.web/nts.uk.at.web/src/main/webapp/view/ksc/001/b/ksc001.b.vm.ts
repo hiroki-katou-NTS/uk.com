@@ -6,10 +6,13 @@ module nts.uk.at.view.ksc001.b {
 
     export module viewmodel {
         export class ScreenModel {
+            
+            // step setup
             stepList: Array<NtsWizardStep>;
             stepSelected: KnockoutObservable<NtsWizardStep>;
+            
+            // setup ccg001
             ccgcomponent: GroupOption;
-            showinfoSelectedEmployee: KnockoutObservable<boolean>;
 
             // Options
             baseDate: KnockoutObservable<Date>;
@@ -61,7 +64,6 @@ module nts.uk.at.view.ksc001.b {
                 self.selectedEmployee = ko.observableArray([]);
                 self.selectedEmployeeCode = ko.observableArray([]);
                 self.alreadySettingPersonal = ko.observableArray([]);
-                self.showinfoSelectedEmployee = ko.observable(false);
                 self.baseDate = ko.observable(new Date());
                 self.periodStartDate = ko.observable(new Date());
                 self.periodEndDate = ko.observable(new Date());
@@ -113,7 +115,6 @@ module nts.uk.at.view.ksc001.b {
                         self.applyKCP005ContentSearch(dataList);
                     },
                     onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
-                        self.showinfoSelectedEmployee(true);
                         self.applyKCP005ContentSearch(dataEmployee);
                     }
 
@@ -253,11 +254,24 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 // check selection employee 
                 if (self.selectedEmployeeCode && self.selectedEmployee() && self.selectedEmployeeCode().length > 0) {
-                    self.next();
+                    var user: UserInfoDto = self.getUserLogin();
+                    self.findPersonalScheduleByEmployeeId(user.employeeId).done(function(data){
+                        self.updatePersonalScheduleData(data);
+                        self.next();
+                    }).fail(function(error){
+                        console.log(error);   
+                    });
                 }
                 else {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_206' });
                 }
+            }
+            
+            /**
+             * update PersonalSchedule by find by employee id login
+             */
+            private updatePersonalScheduleData(data: PersonalSchedule): void {
+                var self = this;
             }
             /**
              * function previous page by selection employee goto page (C)
@@ -354,7 +368,64 @@ module nts.uk.at.view.ksc001.b {
                 nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function() {
                 });
             }
+            
+            /**
+             * open dialog KDL023
+             */
+            private showDialogKDL023(): void{
+                var self = this;
+                var data: PersonalSchedule = new PersonalSchedule();
+                nts.uk.ui.windows.setShared('reflectionSetting', self.convertPersonalScheduleToReflectionSetting(data));
+                nts.uk.ui.windows.sub.modal('/view/kdl/023/b/index.xhtml').onClosed(() => {
+                    let dto = nts.uk.ui.windows.getShared('returnedData');
+                    console.log(dto);
+                });
+            }
+            /**
+             * convert data personal schedule to refelctionSetting
+             */
+            private convertPersonalScheduleToReflectionSetting(data: PersonalSchedule): ReflectionSetting{
+                var self = this;    
+                var dto: ReflectionSetting = {
+                    calendarStartDate: moment(self.periodStartDate()).format('YYYY-MM-DD'),
+                    calendarEndDate: moment(self.periodEndDate()).format('YYYY-MM-DD'),
+                    selectedPatternCd: data.patternCode,
+                    patternStartDate: moment(data.patternStartDate).format('YYYY-MM-DD'),
+                    reflectionMethod: data.holidayReflect,
+                    statutorySetting: self.convertWorktypeSetting(data.statutoryHolidayUseAtr, data.statutoryHolidayWorkType),
+                    holidaySetting: self.convertWorktypeSetting(data.holidayUseAtr, data.holidayWorkType),
+                    nonStatutorySetting: self.convertWorktypeSetting(data.legalHolidayUseAtr, data.legalHolidayWorkType)
+                };
+                return dto;
+            } 
+            
+            /**
+             * convert work type setting
+             */
+            private convertWorktypeSetting(use: number, worktypeCode: string): DayOffSetting {
+                var data: DayOffSetting = {
+                    useClassification: use == UseAtr.USE,
+                    workTypeCode: worktypeCode
+                };
+                return data;
+            }
 
+        }
+        
+        export interface DayOffSetting {
+            useClassification: boolean;
+            workTypeCode: string;
+        }
+        
+        export interface ReflectionSetting {
+            calendarStartDate?: string;
+            calendarEndDate?: string;
+            selectedPatternCd: string;
+            patternStartDate: string; // 'YYYY-MM-DD'
+            reflectionMethod: ReflectionMethod;
+            statutorySetting: DayOffSetting;
+            nonStatutorySetting: DayOffSetting;
+            holidaySetting: DayOffSetting;
         }
 
         // 休日反映方法
@@ -478,6 +549,31 @@ module nts.uk.at.view.ksc001.b {
 
             // 育児介護時間再設定
             resetTimeChildCare: boolean;
+            
+            constructor() {
+                var self = this;
+                self.patternCode = '11';
+                self.patternStartDate = new Date();
+                self.resetMasterInfo = false;
+                self.holidayReflect = ReflectionMethod.OVERWRITE;
+                self.resetAbsentHolidayBusines = false;
+                self.createMethodAtr = CreateMethodAtr.PERSONAL_INFO;
+                self.confirm = false;
+                self.reCreateAtr = ReCreateAtr.ALLCASE;
+                self.processExecutionAtr = ProcessExecutionAtr.REBUILD;
+                self.implementAtr = ImplementAtr.GENERALLY_CREATED;
+                self.resetWorkingHours =  false;
+                self.legalHolidayUseAtr = UseAtr.NOTUSE;
+                self.legalHolidayWorkType = '';
+                self.statutoryHolidayUseAtr = UseAtr.NOTUSE;
+                self.statutoryHolidayWorkType = '';
+                self.resetTimeAssignment = false;
+                self.resetDirectLineBounce = false;
+                self.employeeId = '';
+                self.holidayUseAtr = UseAtr.NOTUSE;
+                self.holidayWorkType = '';
+                self.resetTimeChildCare = false;
+            }
         }
 
         export class RadioBoxModel {
