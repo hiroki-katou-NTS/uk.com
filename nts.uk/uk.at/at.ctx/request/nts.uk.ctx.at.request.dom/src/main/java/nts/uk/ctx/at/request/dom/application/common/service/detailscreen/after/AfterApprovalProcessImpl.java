@@ -19,6 +19,7 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DestinationMailListOuput;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ApprovalInfoOutput;
@@ -44,6 +45,9 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	private AgentAdapter approvalAgencyInformationService;
 	@Inject
 	private DestinationJudgmentProcess destinationJudgmentProcessService;
+	
+	@Inject
+	private ApproveAcceptedRepository approveAcceptedRepository;
 
 	@Override
 	public void detailScreenAfterApprovalProcess(String companyID, String appID, Application application) {
@@ -129,8 +133,12 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 		List<String> lstApprover = new ArrayList<>();
 		List<String> lstNotApprover = new ArrayList<>();
 		List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(AppContexts.user().companyId(), phaseID);
+		for(ApprovalFrame approvalFrame : listFrame ) {
+			List<ApproveAccepted> listApproveAccepted = approveAcceptedRepository.getAllApproverAccepted(approvalFrame.getCompanyID(), approvalFrame.getFrameID());
+			approvalFrame.setListApproveAccepted(listApproveAccepted);
+		}
 		for (ApprovalFrame frame : listFrame) {
-			if(!frame.getListApproveAccepted().isEmpty()) {
+			if(frame.getListApproveAccepted() !=null) {
 				for(ApproveAccepted x : frame.getListApproveAccepted()){
 					if (x.getApprovalATR() == ApprovalAtr.APPROVED) {
 						lstApprover.add(x.getApproverSID());

@@ -24,14 +24,14 @@
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
 										<td class="bg-green" data-bind="attr: {rowspan: $parent.approvers.length}">
-											フェーズ<label data-bind="text: $data.approvalPhaseId"></label>
+											フェーズ<label data-bind="text: $parent.orderNumber"></label>
 										</td>
 									</com:ko>
 									<td class="bg-green">
 										承認者<label data-bind="text: $data.orderNumber"></label>
 									</td>
 									<td>
-										<label data-bind="text: $data.employeeId"></label>
+										<label data-bind="text: $data.name"></label>
 									</td>
 								</tr>
 							</com:ko>

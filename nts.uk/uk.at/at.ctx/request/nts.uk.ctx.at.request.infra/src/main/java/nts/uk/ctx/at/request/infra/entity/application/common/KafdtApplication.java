@@ -120,7 +120,7 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	@Column(name="REFLECT_PER_TIME")
 	public GeneralDate reflectPerTime;
 	/**
-	 * 予定反映状態
+	 * 実績反映状態
 	 */
 	@Column(name="REFLECT_PER_STATE")
 	public int reflectPerState;
