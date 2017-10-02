@@ -143,7 +143,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                     let id = $(this).attr('id');
                     let code = event.keyCode,
                         currentValue = id === 'anotherSelectedAll_auth' ? self.anotherSelectedAll() : self.seftSelectedAll(),
-                        Value = currentValue;
+                        Value;
                     switch (code) {
                         case 37:
                         case 38: Value = currentValue - 1;
@@ -153,7 +153,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                             break;
                     }
 
-                    if (Value === currentValue) {
+                    if (!Value) {
                         return;
                     }
 

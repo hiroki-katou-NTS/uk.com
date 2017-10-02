@@ -62,19 +62,22 @@ module cps002.a.vm {
         next() {
             let self = this;
 
-            $('#emp_reg_info_wizard').ntsWizard("next");
             if (self.selectedId() === 3) {
                 $('#emp_reg_info_wizard').ntsWizard("goto", 2);
+                return;
             }
+            $('#emp_reg_info_wizard').ntsWizard("next");
+
 
         }
 
         prev() {
             let self = this;
-
+            if (self.selectedId() === 3) {
+                $('#emp_reg_info_wizard').ntsWizard("goto", 0);
+                return;
+            }
             $('#emp_reg_info_wizard').ntsWizard("prev");
-
-
         }
 
         getStep() {
@@ -82,6 +85,10 @@ module cps002.a.vm {
                 return 0;
             }
             return $('#emp_reg_info_wizard').ntsWizard("getCurrentStep");
+        }
+
+        finish() {
+
         }
     }
 

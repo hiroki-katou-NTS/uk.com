@@ -149,7 +149,7 @@
 									</div>
 								</div>
 								<div class='div_line'>
-									<button class="large proceed next_btn" id="step1_next_btn"
+									<button class="large proceed next_btn" id="next_btn"
 										data-bind="click:next">#{i18n.getText('CPS002_29')}</button>
 								</div>
 							</div>
@@ -206,25 +206,17 @@
 
 								</com:ko-if>
 								<div class="float_left" id="value_item">
-									<com:ko-if bind="selectedId()===1">
-
-										<div class="div_line">
-											<div class="step2_col1">
+									<div class="div_line">
+										<div class="step2_col1">
+											<com:ko-if bind="selectedId()===1">
 												<div data-bind="ntsFormLabel: { required:true   }">#{i18n.getText('CPS002_33')}</div>
-											</div>
-											<div class="step2_col2"></div>
-										</div>
-									</com:ko-if>
-									<com:ko-if bind="selectedId()===2">
-
-										<div class="div_line">
-											<div class="step2_col1">
+											</com:ko-if>
+											<com:ko-if bind="selectedId()===2">
 												<div data-bind="ntsFormLabel: { required:true   }">#{i18n.getText('CPS002_46')}</div>
-											</div>
-											<div class="step2_col2"></div>
+											</com:ko-if>
 										</div>
-
-									</com:ko-if>
+										<div class="step2_col2"></div>
+									</div>
 
 									<div class="div_line">
 										<div class="step2_col1">
@@ -250,7 +242,7 @@
 									<div class='div_line'>
 										<button class="prev_btn" id="step2_prev_btn"
 											data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>
-										<button class="large proceed next_btn" id="step2_next_btn"
+										<button class="large proceed next_btn" id="next_btn"
 											data-bind="click:next">#{i18n.getText('CPS002_29')}</button>
 									</div>
 								</div>
@@ -279,8 +271,8 @@
 										data-bind="click:prev">#{i18n.getText('CPS002_52')}</button>
 								</com:ko-if>
 
-								<button class="large proceed next_btn" id="step2_next_btn"
-									data-bind="click:next">#{i18n.getText('CPS002_29')}</button>
+								<button class="large proceed next_btn" id="next_btn"
+									data-bind="click:finish">#{i18n.getText('CPS002_53')}</button>
 							</div>
 
 						</div>
