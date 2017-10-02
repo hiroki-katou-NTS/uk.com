@@ -12,6 +12,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
@@ -40,6 +41,9 @@ public class SaveWkpHistoryCommandHandler extends CommandHandler<SaveWkpHistoryC
     @Inject
     private WorkplaceService wkpService;
 
+    /** The Constant MIN_SIZE. */
+    private static final Integer MIN_SIZE = 1;
+    
     /*
      * (non-Javadoc)
      * 
@@ -58,14 +62,9 @@ public class SaveWkpHistoryCommandHandler extends CommandHandler<SaveWkpHistoryC
             throw new RuntimeException(String.format("Didn't existed workplace %s .", command.getWorkplaceId()));
         }
         Workplace workplace = optionalWorkplace.get();
-        WorkplaceHistory latestWkpHistory = workplace.getWkpHistoryLatest();
-
-        // validate add new history
-        HistoryUtil.validStartDate(Boolean.TRUE, latestWkpHistory.getPeriod().getStartDate(),
-                command.getWorkplaceHistory().getPeriod().getStartDate());
 
         if (command.getIsAddMode()) {
-            this.addkpHistory(companyId, command, latestWkpHistory);
+            this.addkpHistory(companyId, command, workplace);
         } else {
             this.updateWkpHistory(companyId, command, workplace);
         }
@@ -78,11 +77,21 @@ public class SaveWkpHistoryCommandHandler extends CommandHandler<SaveWkpHistoryC
      * @param command the command
      * @param latestWkpHistory the latest wkp history
      */
-    private void addkpHistory(String companyId, SaveWkpHistoryCommand command, WorkplaceHistory latestWkpHistory) {
+    private void addkpHistory(String companyId, SaveWkpHistoryCommand command, Workplace workplace) {
         Workplace wkpCommand = command.toDomain(companyId);
         // add workplace
         this.workplaceRepository.add(wkpCommand);
-
+        
+        if (CollectionUtil.isEmpty(workplace.getWorkplaceHistory())) {
+            return;
+        }
+        
+        WorkplaceHistory latestWkpHistory = workplace.getWkpHistoryLatest();
+        
+        // validate add new history
+        HistoryUtil.validStartDate(Boolean.TRUE, latestWkpHistory.getPeriod().getStartDate(),
+                command.getWorkplaceHistory().getPeriod().getStartDate());
+        
         // Update endDate previous history
         int dayOfAgo = -1;
         this.wkpService.updatePreviousHistory(companyId, latestWkpHistory.getHistoryId().v(),
@@ -101,9 +110,17 @@ public class SaveWkpHistoryCommandHandler extends CommandHandler<SaveWkpHistoryC
      */
     private void updateWkpHistory(String companyId, SaveWkpHistoryCommand command, Workplace workplaceDatabase) {
         this.workplaceRepository.update(command.toDomain(companyId));
-
+        
+        if (workplaceDatabase.getWorkplaceHistory().size() == MIN_SIZE) {
+            return;
+        }
+        
         int idxPrevLatestHist = 1;
         WorkplaceHistory prevWkpLatest = workplaceDatabase.getWorkplaceHistory().get(idxPrevLatestHist);
+        
+        // validate new start date of history
+        HistoryUtil.validStartDate(workplaceDatabase.getWkpHistoryLatest().getPeriod(), prevWkpLatest.getPeriod(),
+                command.getWorkplaceHistory().getPeriod().getStartDate());
 
         // set end date of previous history (below of history latest)
         int dayOfAgo = -1;

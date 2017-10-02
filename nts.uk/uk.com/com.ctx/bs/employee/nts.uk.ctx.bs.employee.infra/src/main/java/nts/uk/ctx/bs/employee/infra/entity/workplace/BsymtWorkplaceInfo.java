@@ -57,7 +57,7 @@ public class BsymtWorkplaceInfo extends UkJpaEntity implements Serializable {
 	private String wkpOutsideCode;
 
 	/** The bsymt wkp config info. */
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({
 			@PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
 	public BsymtWorkplaceHist bsymtWorkplaceHist;

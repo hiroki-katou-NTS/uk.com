@@ -12,9 +12,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.bs.employee.app.command.workplace.DeleteWkpHistoryCommand;
+import nts.uk.ctx.bs.employee.app.command.workplace.DeleteWkpHistoryCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.SaveWkpHistoryCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.SaveWkpHistoryCommandHandler;
-import nts.uk.ctx.bs.employee.app.command.workplace.UpdateWorkplaceCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.workplace.BSWorkplaceFinder;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WkpInfoFindObject;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceDto;
@@ -28,13 +29,13 @@ import nts.uk.ctx.bs.employee.app.find.workplace.info.WorkplaceInfoFinder;
 @Produces(MediaType.APPLICATION_JSON)
 public class WorkplaceWebService extends WebService {
 	
-	/** The register workplace command handler. */
+	/** The save wkp history command handler. */
 	@Inject
-	private SaveWkpHistoryCommandHandler registerWorkplaceCommandHandler;
+	private SaveWkpHistoryCommandHandler saveWkpHistoryCommandHandler;
 	
-	/** The update workplace command handler. */
+	/** The delete wkp history handler. */
 	@Inject
-	private UpdateWorkplaceCommandHandler updateWorkplaceCommandHandler;
+	private DeleteWkpHistoryCommandHandler deleteWkpHistoryHandler;
 
 	/** The workplace finder. */
 	@Inject
@@ -52,18 +53,7 @@ public class WorkplaceWebService extends WebService {
 	@Path("hist/add")
 	@POST
 	public void addWorkplaceHistory(SaveWkpHistoryCommand command) {
-		this.registerWorkplaceCommandHandler.handle(command);
-	}
-	
-	/**
-	 * Update workplace history.
-	 *
-	 * @param command the command
-	 */
-	@Path("hist/update")
-	@POST
-	public void updateWorkplaceHistory(SaveWkpHistoryCommand command) {
-		this.updateWorkplaceCommandHandler.handle(command);
+		this.saveWkpHistoryCommandHandler.handle(command);
 	}
 	
 	/**
@@ -84,20 +74,31 @@ public class WorkplaceWebService extends WebService {
 	 * @param findObj the find obj
 	 * @return the workplace info by history id
 	 */
-	@Path("find")
+	@Path("findHistInfo")
 	@POST
 	public WorkplaceInfoDto getWorkplaceInfoByHistoryId(WkpInfoFindObject findObj) {
 		return this.workplaceInfoFinder.find(findObj);
 	}
 	
 	/**
-	 * Register wkp.
+	 * Save wkp history.
 	 *
 	 * @param command the command
 	 */
-	@Path("register/history")
+	@Path("history/save")
 	@POST
-	public void registerWkp(SaveWkpHistoryCommand command) {
-		this.registerWorkplaceCommandHandler.handle(command);
+	public void saveWkpHistory(SaveWkpHistoryCommand command) {
+		this.saveWkpHistoryCommandHandler.handle(command);
 	}
+	
+	/**
+	 * Removes the wkp history.
+	 *
+	 * @param command the command
+	 */
+	@Path("history/remove")
+    @POST
+    public void removeWkpHistory(DeleteWkpHistoryCommand command) {
+        this.deleteWkpHistoryHandler.handle(command);
+    }
 }

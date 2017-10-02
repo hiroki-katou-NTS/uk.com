@@ -90,7 +90,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
     @Override
     public void remove(String companyId, String workplaceId, String historyId) {
         this.commandProxy().remove(BsymtWorkplaceInfo.class,
-                new BsymtWorkplaceInfoPK(companyId, historyId, workplaceId));
+                new BsymtWorkplaceInfoPK(companyId, workplaceId, historyId));
     }
 
     /*
@@ -171,7 +171,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
      * findLatestByWorkplaceId(java.lang.String)
      */
     @Override
-    public Optional<WorkplaceInfo> findLatestByWorkplaceId(String wkpId) {
+    public Optional<WorkplaceInfo> findLatestByWkpId(String wkpId) {
         // get entity manager
         EntityManager em = this.getEntityManager();
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
