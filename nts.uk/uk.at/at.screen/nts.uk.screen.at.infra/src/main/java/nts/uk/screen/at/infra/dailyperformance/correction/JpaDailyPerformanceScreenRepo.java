@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import entity.employeeinfo.BsymtEmployee;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.record.infra.entity.dailyattendanceitem.KrcmtDailyAttendanceItem;
@@ -26,7 +27,6 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.sixtyhours.KshstCom60h
 import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVacation;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
 import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification;
-import nts.uk.ctx.bs.employee.infra.entity.employee.KmnmtEmployee;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CjtmtJobTitle;
 import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWorkplace;
@@ -144,7 +144,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		SEL_WORKPLACE = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT DISTINCT s FROM KmnmtEmployee s ");
+		builderString.append("SELECT DISTINCT s FROM BsymtEmployee s ");
 //		builderString.append("JOIN KmnmtAffiliClassificationHist c ");
 //		builderString.append("JOIN KmnmtAffiliEmploymentHist e ");
 //		builderString.append("JOIN KmnmtAffiliJobTitleHist j ");
@@ -153,10 +153,10 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 //		builderString.append("AND e.kmnmtEmploymentHistPK.emptcd IN :lstEmp ");
 //		builderString.append("AND j.kmnmtJobTitleHistPK.jobId IN :lstJob ");
 //		builderString.append("AND c.kmnmtClassificationHistPK.clscd IN :lstClas ");
-		builderString.append("AND s.kmnmtEmployeePK.employeeId = w.kmnmtAffiliWorkplaceHistPK.empId ");
-//		builderString.append("OR s.kmnmtEmployeePK.employeeId = e.kmnmtEmploymentHistPK.empId ");
-//		builderString.append("OR s.kmnmtEmployeePK.employeeId = j.kmnmtJobTitleHistPK.empId ");
-//		builderString.append("OR s.kmnmtEmployeePK.employeeId = c.kmnmtClassificationHistPK.empId ");
+		builderString.append("AND s.bsymtEmployeePk.sId = w.kmnmtAffiliWorkplaceHistPK.empId ");
+//		builderString.append("OR s.bsymtEmployeePk.sId = e.kmnmtEmploymentHistPK.empId ");
+//		builderString.append("OR s.bsymtEmployeePk.sId = j.kmnmtJobTitleHistPK.empId ");
+//		builderString.append("OR s.bsymtEmployeePk.sId = c.kmnmtClassificationHistPK.empId ");
 		SEL_EMPLOYEE = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -287,19 +287,19 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	@Override
 	public List<DailyPerformanceEmployeeDto> getListEmployee(List<String> lstJobTitle, List<String> lstEmployment,
 			Map<String, String> lstWorkplace, List<String> lstClassification) {
-		return this.queryProxy().query(SEL_EMPLOYEE, KmnmtEmployee.class)
+		return this.queryProxy().query(SEL_EMPLOYEE, BsymtEmployee.class)
 //				.setParameter("lstClas", lstClassification)
 //				.setParameter("lstEmp", lstEmployment)
 //				.setParameter("lstJob", lstJobTitle)
 				.setParameter("lstWkp", lstWorkplace.keySet().stream().collect(Collectors.toList())).getList().stream()
 				.map(s -> {
-					if (s.kmnmtEmployeePK.employeeId.equals(AppContexts.user().employeeId())) {
-						return new DailyPerformanceEmployeeDto(s.kmnmtEmployeePK.employeeId,
-								s.kmnmtEmployeePK.employeeCode, "", lstWorkplace.values().stream().findFirst().get(),
+					if (s.bsymtEmployeePk.sId.equals(AppContexts.user().employeeId())) {
+						return new DailyPerformanceEmployeeDto(s.bsymtEmployeePk.sId,
+								s.employeeCode, "", lstWorkplace.values().stream().findFirst().get(),
 								"", true);
 					} else {
-						return new DailyPerformanceEmployeeDto(s.kmnmtEmployeePK.employeeId,
-								s.kmnmtEmployeePK.employeeCode, "", lstWorkplace.values().stream().findFirst().get(),
+						return new DailyPerformanceEmployeeDto(s.bsymtEmployeePk.sId,
+								s.employeeCode, "", lstWorkplace.values().stream().findFirst().get(),
 								"", false);
 					}
 				}).collect(Collectors.toList());

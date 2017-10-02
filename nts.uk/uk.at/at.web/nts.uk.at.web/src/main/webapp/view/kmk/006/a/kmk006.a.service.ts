@@ -139,7 +139,6 @@ module nts.uk.at.view.kmk006.a {
 
             export interface AutoCalFlexOvertimeSettingDto {
                 flexOtTime: AutoCalSettingDto;
-                flexOtNightTime: AutoCalSettingDto;
             }
 
             export interface AutoCalRestTimeSettingDto {

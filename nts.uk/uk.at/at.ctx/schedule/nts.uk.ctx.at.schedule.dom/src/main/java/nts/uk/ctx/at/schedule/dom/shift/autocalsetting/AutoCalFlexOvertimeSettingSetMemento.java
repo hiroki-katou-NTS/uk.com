@@ -14,12 +14,5 @@ public interface AutoCalFlexOvertimeSettingSetMemento {
 	 * @param flexOtTime the new flex ot time
 	 */
 	void  setFlexOtTime(AutoCalSetting flexOtTime);
-	
-	/**
-	 * Sets the flex ot night time.
-	 *
-	 * @param flexOtNightTime the new flex ot night time
-	 */
-	void  setFlexOtNightTime(AutoCalSetting flexOtNightTime);
-	
+		
 }

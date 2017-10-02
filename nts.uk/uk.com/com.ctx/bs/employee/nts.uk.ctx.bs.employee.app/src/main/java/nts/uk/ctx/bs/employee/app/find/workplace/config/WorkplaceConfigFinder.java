@@ -2,14 +2,14 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.app.find.workplace;
+package nts.uk.ctx.bs.employee.app.find.workplace.config;
 
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceConfigDto;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceConfigDto;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfig;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -34,27 +34,13 @@ public class WorkplaceConfigFinder {
 	public WorkplaceConfigDto findAllByCompanyId() {
 		String companyId = AppContexts.user().companyId();
 		
-		WorkplaceConfig workplaceConfig = workplaceConfigRepository.findAllByCompanyId(companyId);
-
+		Optional<WorkplaceConfig> optional = workplaceConfigRepository.findAllByCompanyId(companyId);
+        if (!optional.isPresent()) {
+            return null;
+        }
 		WorkplaceConfigDto wkpConfigDto = new WorkplaceConfigDto();
-		workplaceConfig.saveToMemento(wkpConfigDto);
+		optional.get().saveToMemento(wkpConfigDto);
 		return wkpConfigDto;
 	}
-
-	/**
-	 * Find latest by company id.
-	 *
-	 * @return the workplace config dto
-	 */
-	public WorkplaceConfigDto findLatestByCompanyId() {
-		String companyId = AppContexts.user().companyId();
-		
-		Optional<WorkplaceConfig> lstWorkplaceConfig = workplaceConfigRepository.findWorkplaceByCompanyId(companyId);
-		if (lstWorkplaceConfig.isPresent()) {
-			WorkplaceConfigDto wkpConfigDto = new WorkplaceConfigDto();
-			lstWorkplaceConfig.get().saveToMemento(wkpConfigDto);
-			return wkpConfigDto;
-		}
-		return null;
-	}
+	
 }

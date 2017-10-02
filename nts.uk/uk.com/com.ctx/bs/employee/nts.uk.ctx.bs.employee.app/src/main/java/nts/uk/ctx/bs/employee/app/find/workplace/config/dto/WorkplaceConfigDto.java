@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.app.find.workplace.dto;
+package nts.uk.ctx.bs.employee.app.find.workplace.config.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
