@@ -5,10 +5,12 @@ module nts.uk.at.view.kdw008.a {
             newMode: KnockoutObservable<boolean>;
             isUpdate: boolean;
 
-            currentBusinessTypeCode: KnockoutObservable<string>;
-            currentBusinessTypeName: KnockoutObservable<string>;
+            checked: KnockoutObservable<boolean>;
 
-            currentBusinessType: KnockoutObservable<BusinessTypeDetailModel>;
+            currentDailyFormatCode: KnockoutObservable<string>;
+            currentDailyFormatName: KnockoutObservable<string>;
+
+            currentBusinessType: KnockoutObservable<AuthorityDetailModel>;
 
             // list businessType
             businessTypeList: KnockoutObservableArray<BusinessTypeModel>;
@@ -21,14 +23,14 @@ module nts.uk.at.view.kdw008.a {
             selectedSheetNo: KnockoutObservable<number>;
 
             //swap list tab 1
-            monthlyDetailList: KnockoutObservableArray<BusinessTypeFormatDetailModel>;
+            monthlyDetailList: KnockoutObservableArray<DailyAttendanceAuthorityDetailDto>;
             columns3: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             currentCodeListSwapMonthly: KnockoutObservableArray<any>;
-            businessTypeFormatMonthlyValue: KnockoutObservableArray<AttendanceItemModel>;
+            authorityFormatMonthlyValue: KnockoutObservableArray<AttendanceItemModel>;
 
             //swap list tab 2
             currentCodeListSwap2: KnockoutObservableArray<any>;
-            businessTypeFormatDailyValue: KnockoutObservableArray<AttendanceItemModel>;
+            authorityFormatDailyValue: KnockoutObservableArray<AttendanceItemModel>;
             columns2: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             selectedSheetName: KnockoutObservable<string>;
 
@@ -40,17 +42,19 @@ module nts.uk.at.view.kdw008.a {
                 self.newMode = ko.observable(false);
                 self.isUpdate = true;
 
-                self.currentBusinessTypeCode = ko.observable('');
-                self.currentBusinessTypeName = ko.observable('');
+                self.checked = ko.observable(false);
+
+                self.currentDailyFormatCode = ko.observable('');
+                self.currentDailyFormatName = ko.observable('');
 
                 self.selectedSheetName = ko.observable('');
 
                 self.businessTypeList = ko.observableArray([]);
-                self.currentBusinessType = ko.observable(new BusinessTypeDetailModel(null));
+                self.currentBusinessType = ko.observable(new AuthorityDetailModel(null));
 
                 self.columns1 = ko.observableArray([
-                    { headerText: 'コード', key: 'businessTypeCode', width: 100 },
-                    { headerText: '勤務種別名称', key: 'businessTypeName', width: 150, formatter: _.escape }
+                    { headerText: 'コード', key: 'dailyPerformanceFormatCode', width: 100 },
+                    { headerText: '勤務種別名称', key: 'dailyPerformanceFormatName', width: 150, formatter: _.escape }
                 ]);
                 this.selectedCode = ko.observable();
 
@@ -67,15 +71,15 @@ module nts.uk.at.view.kdw008.a {
 
                 //swap list 1
                 self.monthlyDetailList = ko.observableArray([]);
-                self.businessTypeFormatMonthlyValue = ko.observableArray([]);
+                self.authorityFormatMonthlyValue = ko.observableArray([]);
                 var monthlySwapList = [];
                 self.currentCodeListSwapMonthly = ko.observableArray(monthlySwapList);
                 this.currentCodeListSwapMonthly.subscribe(function(value) {
                     console.log(value);
                 });
                 self.tabs = ko.observableArray([
-                    { id: 'tab-1', title: '月次項目', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-2', title: '日次項目', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
+                    { id: 'tab-1', title: '日次項目', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-2', title: '月次項目', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.selectedTab = ko.observable('tab-1');
 
@@ -103,18 +107,18 @@ module nts.uk.at.view.kdw008.a {
                 this.currentCodeListSwap2.subscribe(function(value) {
                     console.log(value);
                 });
-                self.businessTypeFormatDailyValue = ko.observableArray([]);
+                self.authorityFormatDailyValue = ko.observableArray([]);
 
                 self.selectedCode.subscribe(newValue => {
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
                     let empSelect = _.find(self.businessTypeList(), bus => {
-                        return bus.businessTypeCode == newValue;
+                        return bus.dailyPerformanceFormatCode == newValue;
                     });
                     if (empSelect) {
-                        self.currentBusinessTypeCode(empSelect.businessTypeCode);
-                        self.currentBusinessTypeName(empSelect.businessTypeName);
+                        self.currentDailyFormatCode(empSelect.dailyPerformanceFormatCode);
+                        self.currentDailyFormatName(empSelect.dailyPerformanceFormatName);
                     }
-                    self.getDetail(self.currentBusinessTypeCode());
+                    self.getDetail(self.currentDailyFormatCode());
                 });
 
             }
@@ -123,13 +127,13 @@ module nts.uk.at.view.kdw008.a {
                 let self = this;
                 let dfd = $.Deferred();
                 self.businessTypeList([]);
-                new service.Service().getBusinessType().done(function(data: Array<IBusinessType>) {
+                new service.Service().getBusinessType().done(function(data: Array<IDailyPerformanceFormatType>) {
                     if (data && data.length > 0) {
                         self.businessTypeList(_.map(data, item => { return new BusinessTypeModel(item) }));
-                        self.currentBusinessTypeCode(self.businessTypeList()[0].businessTypeCode);
-                        self.currentBusinessTypeName(self.businessTypeList()[0].businessTypeName);
-                        self.selectedCode(self.businessTypeList()[0].businessTypeCode);
-                        self.getDetail(self.businessTypeList()[0].businessTypeCode);
+                        self.currentDailyFormatCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
+                        self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
+                        self.selectedCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
+                        self.getDetail(self.businessTypeList()[0].dailyPerformanceFormatCode);
                     } else {
                         self.setNewMode();
                     }
@@ -141,28 +145,33 @@ module nts.uk.at.view.kdw008.a {
 
             setNewMode() {
                 let self = this;
-                self.businessTypeList([]);
                 self.newMode(true);
                 self.isUpdate = false;
-                self.currentBusinessType(new BusinessTypeDetailModel(null));
-                self.currentBusinessTypeCode(null);
-                self.currentBusinessTypeName('');
+                self.currentDailyFormatCode(null);
+                self.currentDailyFormatName('');
                 self.selectedCode(null);
+                self.getDetail(self.selectedCode());
+                self.checked(false);
             }
 
-            getDetail(businessTypeCode: string) {
+            getDetail(dailyPerformanceFormatCode: string) {
                 let self = this,
                     dfd = $.Deferred();
-                new service.Service().getDailyPerformance(businessTypeCode, self.selectedSheetNo()).done(function(data: IBusinessTypeDetail) {
+                new service.Service().getDailyPerformance(dailyPerformanceFormatCode, self.selectedSheetNo()).done(function(data: IDailyPerformanceFormatTypeDetail) {
                     if (data) {
-                        self.businessTypeFormatMonthlyValue([]);
-                        self.businessTypeFormatDailyValue([]);
-                        self.currentBusinessType(new BusinessTypeDetailModel(data));
+                        if (data.isDefaultInitial == 1) {
+                            self.checked(true);
+                        } else {
+                            self.checked(false);
+                        }
+                        self.authorityFormatMonthlyValue([]);
+                        self.authorityFormatDailyValue([]);
+                        self.currentBusinessType(new AuthorityDetailModel(data));
                         self.currentBusinessType().attendanceItemDtos.valueHasMutated();
-                        // show data tab 1
-                        data.businessTypeFormatMonthlyDtos = _.sortBy(data.businessTypeFormatMonthlyDtos, ["order"]);
-                        if (data.businessTypeFormatMonthlyDtos) {
-                            var attendanceItemModelMonthly = _.map(data.businessTypeFormatMonthlyDtos, item => {
+                        // show data tab 2
+                        data.dailyAttendanceAuthorityMonthlyDto = _.sortBy(data.dailyAttendanceAuthorityMonthlyDto, ["order"]);
+                        if (data.dailyAttendanceAuthorityMonthlyDto) {
+                            var attendanceItemModelMonthly = _.map(data.dailyAttendanceAuthorityMonthlyDto, item => {
                                 var obj = {
                                     attendanceItemId: item.attendanceItemId,
                                     attendanceItemName: item.attendanceItemName,
@@ -170,18 +179,18 @@ module nts.uk.at.view.kdw008.a {
                                 };
                                 return new AttendanceItemModel(obj);
                             });
-                            self.businessTypeFormatMonthlyValue(attendanceItemModelMonthly);
+                            self.authorityFormatMonthlyValue(attendanceItemModelMonthly);
 
-                        } else self.businessTypeFormatMonthlyValue([]);
-                        //show data tab 2
+                        } else self.authorityFormatMonthlyValue([]);
+                        //show data tab 1
                         //self.selectedSheetNo(data.businessTypeFormatDailyDto.sheetNo);
-                        if(data.businessTypeFormatDailyDto == null){
-                           self.selectedSheetName("");
-                        } else self.selectedSheetName(data.businessTypeFormatDailyDto.sheetName);
+                        if (data.dailyAttendanceAuthorityDailyDto == null) {
+                            self.selectedSheetName("");
+                        } else self.selectedSheetName(data.dailyAttendanceAuthorityDailyDto.sheetName);
                         self.currentBusinessType().attendanceItemDtos.valueHasMutated();
-                        if (data.businessTypeFormatDailyDto != null && data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos) {
-                            data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos = _.sortBy(data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos, ["order"]);
-                            var attendanceItemModelDaily = _.map(data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos, item => {
+                        if (data.dailyAttendanceAuthorityDailyDto != null && data.dailyAttendanceAuthorityDailyDto.dailyAttendanceAuthorityDetailDtos) {
+                            data.dailyAttendanceAuthorityDailyDto.dailyAttendanceAuthorityDetailDtos = _.sortBy(data.dailyAttendanceAuthorityDailyDto.dailyAttendanceAuthorityDetailDtos, ["order"]);
+                            var attendanceItemModelDaily = _.map(data.dailyAttendanceAuthorityDailyDto.dailyAttendanceAuthorityDetailDtos, item => {
                                 var daily = {
                                     attendanceItemId: item.attendanceItemId,
                                     attendanceItemName: item.attendanceItemName,
@@ -189,9 +198,9 @@ module nts.uk.at.view.kdw008.a {
                                 }
                                 return new AttendanceItemModel(daily);
                             });
-                            self.businessTypeFormatDailyValue(attendanceItemModelDaily);
+                            self.authorityFormatDailyValue(attendanceItemModelDaily);
                         } else {
-                            self.businessTypeFormatDailyValue([]);
+                            self.authorityFormatDailyValue([]);
                         }
 
                     } else {
@@ -205,20 +214,38 @@ module nts.uk.at.view.kdw008.a {
 
             }
 
+            remove() {
+                let self = this;
+                let isDefaultInitial = 0;
+                if (self.checked() == true) {
+                    let isDefaultInitial = 1;
+                }
+                var removeAuthorityDto = {
+                    dailyPerformanceFormatCode: self.currentDailyFormatCode(),
+                    isDefaultInitial: isDefaultInitial
+                }
+                nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
+                    .ifYes(() => {
+                        new service.Service().removeAuthorityDailyFormat(removeAuthorityDto);
+                        //                        self.getDetail(self.businessTypeList()[1].dailyPerformanceFormatCode);
+                        self.reloadData();
+                    });
+            }
+
             addOrUpdateClick() {
                 let self = this;
-                if (!self.isUpdate) {
-                    self.updateData();
-                    return;
-                }
+                //                if (!self.isUpdate) {
+                //                    self.updateData();
+                //                    return;
+                //                }
                 self.register();
             }
 
             register() {
                 let self = this;
                 //add or update Monthly
-                var businessTypeFormatDetailDtos = _.map(self.businessTypeFormatMonthlyValue(), item => {
-                    var indexOfItem = _.findIndex(self.businessTypeFormatMonthlyValue(), { attendanceItemId: item.attendanceItemId });
+                var authorityFormatDetailDtos = _.map(self.authorityFormatMonthlyValue(), item => {
+                    var indexOfItem = _.findIndex(self.authorityFormatMonthlyValue(), { attendanceItemId: item.attendanceItemId });
                     var obj = {
                         attendanceItemId: item.attendanceItemId,
                         dislayNumber: item.attendanceItemDisplayNumber,
@@ -226,18 +253,18 @@ module nts.uk.at.view.kdw008.a {
                         order: indexOfItem,
                         columnWidth: 0
                     };
-                    return new BusinessTypeFormatDetailModel(obj);
+                    return new DailyAttendanceAuthorityDetailDto(obj);
                 })
-                var addOrUpdateBusinessFormatMonthly = new AddBusinessFormatMonthly(self.currentBusinessTypeCode(), businessTypeFormatDetailDtos);
-                if (self.currentBusinessType().businessTypeFormatMonthlyDtos().length > 0) {
+                var addOrUpdateBusinessFormatMonthly = new AddAuthorityFormatMonthly(self.currentDailyFormatCode(), authorityFormatDetailDtos);
+                if (self.currentBusinessType().dailyAttendanceAuthorityMonthlyDto().length > 0) {
                     new service.Service().updateMonthlyDetail(addOrUpdateBusinessFormatMonthly);
                 } else {
                     new service.Service().addMonthlyDetail(addOrUpdateBusinessFormatMonthly);
                 }
 
                 //add or update Daily
-                var businessTypeFormatDetailDailyDto = _.map(self.businessTypeFormatDailyValue(), item => {
-                    var indexOfDaily = _.findIndex(self.businessTypeFormatDailyValue(), { attendanceItemId: item.attendanceItemId });
+                var businessTypeFormatDetailDailyDto = _.map(self.authorityFormatDailyValue(), item => {
+                    var indexOfDaily = _.findIndex(self.authorityFormatDailyValue(), { attendanceItemId: item.attendanceItemId });
                     var monthly = {
                         attendanceItemId: item.attendanceItemId,
                         dislayNumber: item.attendanceItemDisplayNumber,
@@ -245,20 +272,47 @@ module nts.uk.at.view.kdw008.a {
                         order: indexOfDaily,
                         columnWidth: 0
                     };
-                    return new BusinessTypeFormatDetailModel(monthly);
+                    return new DailyAttendanceAuthorityDetailDto(monthly);
                 });
-                var addOrUpdateBusinessFormatDaily = new AddBusinessFormatDaily(self.currentBusinessTypeCode(), self.selectedSheetNo(), self.selectedSheetName(), businessTypeFormatDetailDailyDto);
-                if (self.currentBusinessType().businessTypeFormatDailyDto().businessTypeFormatDetailDtos.length > 0) {
+
+                if (self.checked() == true) {
+                    var addOrUpdateBusinessFormatDaily = new AddAuthorityFormatDaily(self.currentDailyFormatCode(), self.currentDailyFormatName(), self.selectedSheetNo(), self.selectedSheetName(), businessTypeFormatDetailDailyDto, 1);
+                } else {
+                    var addOrUpdateBusinessFormatDaily = new AddAuthorityFormatDaily(self.currentDailyFormatCode(), self.currentDailyFormatName(), self.selectedSheetNo(), self.selectedSheetName(), businessTypeFormatDetailDailyDto, 0);
+                }
+
+                if (self.currentBusinessType().dailyAttendanceAuthorityDailyDto() != null && self.currentBusinessType().dailyAttendanceAuthorityDailyDto().dailyAttendanceAuthorityDetailDtos.length > 0) {
                     new service.Service().updateDailyDetail(addOrUpdateBusinessFormatDaily);
                 } else {
                     new service.Service().addDailyDetail(addOrUpdateBusinessFormatDaily);
                 }
                 nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                self.getDetail(self.currentBusinessTypeCode());
+                //self.getDetail(self.currentDailyFormatCode());
+                self.reloadData();
             }
-            
-            dialog(){
-               nts.uk.ui.windows.sub.modal("../c/index.xhtml"); 
+
+            reloadData() {
+                let self = this,
+                    dfd = $.Deferred();
+                self.businessTypeList([]);
+                new service.Service().getBusinessType().done(function(data: Array<IDailyPerformanceFormatType>) {
+                    if (data && data.length > 0) {
+                        self.businessTypeList(_.map(data, item => { return new BusinessTypeModel(item) }));
+                        self.currentDailyFormatCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
+                        self.currentDailyFormatName(self.businessTypeList()[0].dailyPerformanceFormatName);
+                        self.selectedCode(self.businessTypeList()[0].dailyPerformanceFormatCode);
+                        self.getDetail(self.businessTypeList()[0].dailyPerformanceFormatCode);
+                    } else {
+                        self.setNewMode();
+                    }
+                    dfd.resolve();
+                });
+
+                return dfd.promise();
+            }
+
+            dialog() {
+                nts.uk.ui.windows.sub.modal("../c/index.xhtml");
             }
 
         }
@@ -272,37 +326,41 @@ module nts.uk.at.view.kdw008.a {
             }
         }
 
-        export class AddBusinessFormatMonthly {
-            businesstypeCode: string;
-            businessTypeFormatDetailDtos: Array<BusinessTypeFormatDetailModel>;
-            constructor(businessTypeCode: string, businessTypeFormatDetailDtos: Array<BusinessTypeFormatDetailModel>) {
+        export class AddAuthorityFormatMonthly {
+            dailyPerformanceFormatCode: string;
+            dailyAttendanceAuthorityDetailDtos: Array<DailyAttendanceAuthorityDetailDto>;
+            constructor(dailyPerformanceFormatCode: string, dailyAttendanceAuthorityDetailDtos: Array<DailyAttendanceAuthorityDetailDto>) {
                 let self = this;
-                self.businesstypeCode = businessTypeCode || "";
-                self.businessTypeFormatDetailDtos = businessTypeFormatDetailDtos || [];
+                self.dailyPerformanceFormatCode = dailyPerformanceFormatCode || "";
+                self.dailyAttendanceAuthorityDetailDtos = dailyAttendanceAuthorityDetailDtos || [];
             }
         }
 
-        export class AddBusinessFormatDaily {
-            businesstypeCode: string;
+        export class AddAuthorityFormatDaily {
+            dailyPerformanceFormatCode: string;
+            dailyPerformanceFormatName: string;
             sheetNo: number;
             sheetName: string;
-            businessTypeFormatDetailDtos: Array<BusinessTypeFormatDetailModel>;
-            constructor(businesstypeCode: string, sheetNo: number, sheetName: string, businessTypeFormatDetailDtos: Array<BusinessTypeFormatDetailModel>) {
-                this.businesstypeCode = businesstypeCode || "";
+            dailyAttendanceAuthorityDetailDtos: Array<DailyAttendanceAuthorityDetailDto>;
+            isDefaultInitial: number;
+            constructor(dailyPerformanceFormatCode: string, dailyPerformanceFormatName: string, sheetNo: number, sheetName: string, dailyAttendanceAuthorityDetailDtos: Array<DailyAttendanceAuthorityDetailDto>, isDefaultInitial: number) {
+                this.dailyPerformanceFormatCode = dailyPerformanceFormatCode || "";
+                this.dailyPerformanceFormatName = dailyPerformanceFormatName || "";
                 this.sheetNo = sheetNo || 0;
                 this.sheetName = sheetName || "";
-                this.businessTypeFormatDetailDtos = businessTypeFormatDetailDtos || [];
+                this.dailyAttendanceAuthorityDetailDtos = dailyAttendanceAuthorityDetailDtos || [];
+                this.isDefaultInitial = isDefaultInitial;
             }
         }
 
         export class BusinessTypeModel {
-            businessTypeCode: string;
-            businessTypeName: string;
-            constructor(data: IBusinessType) {
+            dailyPerformanceFormatCode: string;
+            dailyPerformanceFormatName: string;
+            constructor(data: IDailyPerformanceFormatType) {
                 let self = this;
                 if (!data) return;
-                self.businessTypeCode = data.businessTypeCode || "";
-                self.businessTypeName = data.businessTypeName || "";
+                self.dailyPerformanceFormatCode = data.dailyPerformanceFormatCode || "";
+                self.dailyPerformanceFormatName = data.dailyPerformanceFormatName || "";
             }
         }
 
@@ -318,13 +376,13 @@ module nts.uk.at.view.kdw008.a {
             }
         }
 
-        export class BusinessTypeFormatDetailModel {
+        export class DailyAttendanceAuthorityDetailDto {
             attendanceItemId: number = 0;
             dislayNumber: number = 0;
             attendanceItemName: string = '';
             order: number = 0;
             columnWidth: number = 0;
-            constructor(data: IBusinessTypeFormatDetail) {
+            constructor(data: IAuthorityFormatDetail) {
                 if (!data) return;
                 this.attendanceItemId = data.attendanceItemId || 0;
                 this.dislayNumber = data.dislayNumber || 0;
@@ -334,55 +392,58 @@ module nts.uk.at.view.kdw008.a {
             }
         }
 
-        export class BusinessTypeFormatDailyModel {
+        export class DailyAttendanceAuthorityDailyDto {
             sheetNo: number;
             sheetName: string;
-            businessTypeFormatDetailDtos: Array<BusinessTypeFormatDetailModel>;
-            constructor(sheetNo: number, sheetName: string, businessTypeFormatDetailDtos: Array<BusinessTypeFormatDetailModel>) {
+            dailyAttendanceAuthorityDetailDtos: Array<DailyAttendanceAuthorityDetailDto>;
+            constructor(sheetNo: number, sheetName: string, dailyAttendanceAuthorityDetailDtos: Array<DailyAttendanceAuthorityDetailDto>) {
                 this.sheetNo = sheetNo || 0;
                 this.sheetName = sheetName || "";
-                this.businessTypeFormatDetailDtos = businessTypeFormatDetailDtos || [];
+                this.dailyAttendanceAuthorityDetailDtos = dailyAttendanceAuthorityDetailDtos || [];
             }
         }
 
-        export class BusinessTypeDetailModel {
+        export class AuthorityDetailModel {
             attendanceItemDtos: KnockoutObservableArray<AttendanceItemModel> = ko.observableArray([]);
-            businessTypeFormatDailyDto: KnockoutObservable<BusinessTypeFormatDailyModel> = ko.observable(new BusinessTypeFormatDailyModel(null));
-            businessTypeFormatMonthlyDtos: KnockoutObservableArray<BusinessTypeFormatDetailModel> = ko.observableArray([]);
-            constructor(data: IBusinessTypeDetail) {
+            dailyAttendanceAuthorityDailyDto: KnockoutObservable<DailyAttendanceAuthorityDailyDto> = ko.observable(new DailyAttendanceAuthorityDailyDto(null, null, null));
+            dailyAttendanceAuthorityMonthlyDto: KnockoutObservableArray<DailyAttendanceAuthorityDetailDto> = ko.observableArray([]);
+            isDefaultInitial: number = 0;
+            constructor(data: IDailyPerformanceFormatTypeDetail) {
                 if (!data) return;
                 this.attendanceItemDtos(data.attendanceItemDtos ? _.map(data.attendanceItemDtos, item => { return new AttendanceItemModel(item) }) : []);
-                this.businessTypeFormatDailyDto(data.businessTypeFormatDailyDto ? new BusinessTypeFormatDailyModel(data.businessTypeFormatDailyDto.sheetNo, data.businessTypeFormatDailyDto.sheetName, data.businessTypeFormatDailyDto.businessTypeFormatDetailDtos) : null);
-                this.businessTypeFormatMonthlyDtos(data.businessTypeFormatMonthlyDtos ? _.map(data.businessTypeFormatMonthlyDtos, item => { return new BusinessTypeFormatDetailModel(item) }) : []);
+                this.dailyAttendanceAuthorityDailyDto(data.dailyAttendanceAuthorityDailyDto ? new DailyAttendanceAuthorityDailyDto(data.dailyAttendanceAuthorityDailyDto.sheetNo, data.dailyAttendanceAuthorityDailyDto.sheetName, data.dailyAttendanceAuthorityDailyDto.dailyAttendanceAuthorityDetailDtos) : null);
+                this.dailyAttendanceAuthorityMonthlyDto(data.dailyAttendanceAuthorityMonthlyDto ? _.map(data.dailyAttendanceAuthorityMonthlyDto, item => { return new DailyAttendanceAuthorityDetailDto(item) }) : []);
+                this.isDefaultInitial = data.isDefaultInitial;
             }
         }
 
-        export interface IBusinessTypeDetail {
+        export interface IDailyPerformanceFormatTypeDetail {
             attendanceItemDtos: Array<IAttendanceItem>;
-            businessTypeFormatDailyDto: IBusinessTypeFormatDaily;
-            businessTypeFormatMonthlyDtos: Array<IBusinessTypeFormatDetail>;
+            dailyAttendanceAuthorityDailyDto: IAuthorityFormatDaily;
+            dailyAttendanceAuthorityMonthlyDto: Array<IAuthorityFormatDetail>;
+            isDefaultInitial: number;
         }
 
-        export interface IBusinessType {
-            businessTypeCode: string;
-            businessTypeName: string;
+        export interface IDailyPerformanceFormatType {
+            dailyPerformanceFormatCode: string;
+            dailyPerformanceFormatName: string;
         }
         export interface IAttendanceItem {
             attendanceItemId: number;
             attendanceItemName: string;
             attendanceItemDisplayNumber: number;
         }
-        export interface IBusinessTypeFormatDetail {
+        export interface IAuthorityFormatDetail {
             attendanceItemId: number;
             dislayNumber: number;
             attendanceItemName: string;
             order: number;
             columnWidth: number;
         }
-        export interface IBusinessTypeFormatDaily {
+        export interface IAuthorityFormatDaily {
             sheetNo: number;
             sheetName: string;
-            businessTypeFormatDetailDtos: Array<IBusinessTypeFormatDetail>;
+            dailyAttendanceAuthorityDetailDtos: Array<IAuthorityFormatDetail>;
         }
 
     }

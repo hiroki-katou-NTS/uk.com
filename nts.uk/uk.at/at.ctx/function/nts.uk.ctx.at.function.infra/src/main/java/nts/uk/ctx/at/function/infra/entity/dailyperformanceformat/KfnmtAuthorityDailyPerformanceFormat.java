@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.function.infra.entity.dailyperformanceformat;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -20,23 +19,19 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KFNMT_AUT_DAILY_ITEM")
-public class KfnmtAuthorityDailyItem extends UkJpaEntity implements Serializable {
-	
+@Table(name = "KFNMT_AUT_DAI_PER_FORMAT")
+public class KfnmtAuthorityDailyPerformanceFormat extends UkJpaEntity implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public KfnmtAuthorityDailyItemPK kfnmtAuthorityDailyItemPK;
+	public KfnmtAuthorityDailyPerformanceFormatPK kfnmtAuthorityDailyPerformanceFormatPK;
 	
-	@Column(name = "DISPLAY_ORDER")
-	public int displayOrder;
-
-	@Column(name = "COLUMN_WIDTH")
-	public BigDecimal columnWidth;
+	@Column(name = "DAILY_PERFORMANCE_FORMAT_NAME")
+	public String dailyPerformanceFormatName;
 
 	@Override
 	protected Object getKey() {
-		return this.kfnmtAuthorityDailyItemPK;
+		return this.kfnmtAuthorityDailyPerformanceFormatPK;
 	}
-
 }

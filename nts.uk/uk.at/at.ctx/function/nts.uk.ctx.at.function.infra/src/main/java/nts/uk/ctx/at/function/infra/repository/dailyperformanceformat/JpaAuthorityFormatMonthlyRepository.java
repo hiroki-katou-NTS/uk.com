@@ -37,7 +37,7 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 		builderString = new StringBuilder();
 		builderString.append("UPDATE KfnmtAuthorityMonthlyItem a ");
 		builderString.append(
-				"SET a.displayOrder = :displayOrder , a.columnWidth = :columnWidth , a.dailyPerformanceFormatName = :dailyPerformanceFormatName");
+				"SET a.displayOrder = :displayOrder , a.columnWidth = :columnWidth ");
 		builderString.append("WHERE a.kfnmtAuthorityMonthlyItemPK.companyId = :companyId ");
 		builderString
 				.append("AND a.kfnmtAuthorityMonthlyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
@@ -84,7 +84,6 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 				.setParameter("dailyPerformanceFormatCode", authorityFomatMonthly.getDailyPerformanceFormatCode().v())
 				.setParameter("attendanceItemId", authorityFomatMonthly.getAttendanceItemId())
 				.setParameter("displayOrder", authorityFomatMonthly.getDisplayOrder())
-				.setParameter("dailyPerformanceFormatName", authorityFomatMonthly.getDailyPerformanceFormatName().v())
 				.setParameter("columnWidth", authorityFomatMonthly.getColumnWidth()).executeUpdate();
 	}
 
@@ -110,7 +109,7 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 				kfnmtAuthorityMonthlyItem.kfnmtAuthorityMonthlyItemPK.companyId,
 				kfnmtAuthorityMonthlyItem.kfnmtAuthorityMonthlyItemPK.dailyPerformanceFormatCode,
 				kfnmtAuthorityMonthlyItem.kfnmtAuthorityMonthlyItemPK.attendanceItemId,
-				kfnmtAuthorityMonthlyItem.dailyPerformanceFormatName, kfnmtAuthorityMonthlyItem.displayOrder,
+				kfnmtAuthorityMonthlyItem.displayOrder,
 				kfnmtAuthorityMonthlyItem.columnWidth);
 		return authorityFomatMonthly;
 	}
@@ -123,7 +122,6 @@ public class JpaAuthorityFormatMonthlyRepository extends JpaRepository implement
 		entity.kfnmtAuthorityMonthlyItemPK.dailyPerformanceFormatCode = authorityFomatMonthly
 				.getDailyPerformanceFormatCode().v();
 		entity.kfnmtAuthorityMonthlyItemPK.attendanceItemId = authorityFomatMonthly.getAttendanceItemId();
-		entity.dailyPerformanceFormatName = authorityFomatMonthly.getDailyPerformanceFormatName().v();
 		entity.columnWidth = authorityFomatMonthly.getColumnWidth();
 		entity.displayOrder = authorityFomatMonthly.getDisplayOrder();
 

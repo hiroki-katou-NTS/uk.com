@@ -28,52 +28,38 @@
 					data-bind="ntsLinkButton: { jump: '../../006/index.xhtml' }">#{i18n.getText('KDW008_30')}</a>
 
 				<span id="button2">
+					<button class="proceed" data-bind="click : setNewMode">#{i18n.getText('KDW008_2')}</button>
 					<button class="proceed" data-bind="click : addOrUpdateClick">#{i18n.getText('KDW008_3')}</button>
+					<button class="proceed" data-bind="click : remove">#{i18n.getText('KDW008_4')}</button>
 				</span> <span id="button3">
 					<button class="proceed" data-bind="click : dialog">並び順の設定</button>
 				</span>
 			</div>
 
 			<div id="contents-area">
-				<div class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW008_25')}</div>
+				<div class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW008_6')}</div>
 
 				<table id="single-list"
 					data-bind="ntsGridList: {								
 					height: 240,
 					dataSource: businessTypeList,
-					primaryKey: 'businessTypeCode',
+					primaryKey: 'dailyPerformanceFormatCode',
 					columns: columns1,
 					multiple: false,
 					value: selectedCode
 				}"></table>
 				<div>
 					<span id="label2" class="label">#{i18n.getText('KDW008_7')}</span>
-					<span id="label3" class="label"
-						data-bind="text: currentBusinessTypeCode"></span> <span
-						id="label4" class="label">#{i18n.getText('KDW008_8')}</span> <span
-						id="label5" class="label"
-						data-bind="text: currentBusinessTypeName"></span>
+					<input data-bind="ntsTextEditor: {value: currentDailyFormatCode}" />
+<!-- 					<span id="label3" class="label" data-bind="text: currentDailyFormatCode"></span> -->
+					<span id="label4" class="label">#{i18n.getText('KDW008_8')}</span>
+					<input data-bind="ntsTextEditor: {value: currentDailyFormatName}" />
+<!-- 					<span id="label5" class="label" data-bind="text: currentDailyFormatName"></span> --><br></br>
+					<div id="checkbox1" data-bind="ntsCheckBox: { checked: checked }">#{i18n.getText('KDW008_32')}</div>
 				</div>
 				<div id="tab-panel"
 					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
 					<div class="tab-content-1" style="height: 500px; width: 900px">
-						<div style="margin-top: 10px" id="swap-list"
-							data-bind="ntsSwapList: {
-							showSearchBox: { showLeft : true, showRight: true},
-							height: 456,
-							dataSource: currentBusinessType().attendanceItemDtos,
-							primaryKey: 'attendanceItemId',
-							columns: columns3,
-							value: businessTypeFormatMonthlyValue,
-							searchMode: 'filter',
-							searchCriterion: ['attendanceItemName','attendanceItemId'],
-							draggable: true,
-							multipleDrag: { left: true, right: false },
-							innerDrag: { left: false, right: true },
-							outerDrag: { left: true, right: true } 
-						}"></div>
-					</div>
-					<div class="tab-content-2" style="height: 500px; width: 900px">
 						<div>
 							<span class="label">#{i18n.getText('KDW008_23')}</span>
 							<div id="A_SEL_002"
@@ -97,9 +83,26 @@
 							dataSource: currentBusinessType().attendanceItemDtos,
 							primaryKey: 'attendanceItemId',
 							columns: columns2,
-							value: businessTypeFormatDailyValue,
+							value: authorityFormatDailyValue,
 							searchMode: 'filter',
 							searchCriterion: ['currentBusinessType().attendanceItemName','currentBusinessType().attendanceItemId'],
+							draggable: true,
+							multipleDrag: { left: true, right: false },
+							innerDrag: { left: false, right: true },
+							outerDrag: { left: true, right: true } 
+						}"></div>
+					</div>
+					<div class="tab-content-2" style="height: 500px; width: 900px">
+						<div style="margin-top: 10px" id="swap-list"
+							data-bind="ntsSwapList: {
+							showSearchBox: { showLeft : true, showRight: true},
+							height: 456,
+							dataSource: currentBusinessType().attendanceItemDtos,
+							primaryKey: 'attendanceItemId',
+							columns: columns3,
+							value: authorityFormatMonthlyValue,
+							searchMode: 'filter',
+							searchCriterion: ['attendanceItemName','attendanceItemId'],
 							draggable: true,
 							multipleDrag: { left: true, right: false },
 							innerDrag: { left: false, right: true },
