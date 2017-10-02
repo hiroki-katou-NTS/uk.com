@@ -2,22 +2,22 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.work.executionlog;
+package nts.uk.ctx.at.schedule.dom.executionlog;
 
 /**
- * The Enum ReCreateAtr.
+ * The Enum ExecutionStatus.
  */
-// 再作成区分
-public enum ReCreateAtr {
+// 実行状況
+public enum ExecutionStatus {
 
-	/** The all case. */
-	// 全件
-	ALLCASE(0, "Enum_ReCreateAtr_allCase", "全件"),
+	/** The not created. */
+	// 未作成
+	NOT_CREATED(0, "Enum_ExecutionStatus_notCreated", "未作成"),
 
-	/** The only un confirm. */
-	// 未確定データのみ
-	ONLYUNCONFIRM(1, "Enum_ReCreateAtr_onlyUnconfirm", "未確定データのみ");
-
+	/** The created. */
+	// 作成済み
+	CREATED(1, "Enum_ExecutionStatus_created", "作成済み");
+	
 	/** The value. */
 	public final int value;
 
@@ -28,16 +28,16 @@ public enum ReCreateAtr {
 	public final String description;
 
 	/** The Constant values. */
-	private final static ReCreateAtr[] values = ReCreateAtr.values();
+	private final static ExecutionStatus[] values = ExecutionStatus.values();
 
 	/**
-	 * Instantiates a new re create atr.
+	 * Instantiates a new execution status.
 	 *
 	 * @param value the value
 	 * @param nameId the name id
 	 * @param description the description
 	 */
-	private ReCreateAtr(int value, String nameId, String description) {
+	private ExecutionStatus(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
@@ -47,16 +47,16 @@ public enum ReCreateAtr {
 	 * Value of.
 	 *
 	 * @param value the value
-	 * @return the re create atr
+	 * @return the execution status
 	 */
-	public static ReCreateAtr valueOf(Integer value) {
+	public static ExecutionStatus valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (ReCreateAtr val : ReCreateAtr.values) {
+		for (ExecutionStatus val : ExecutionStatus.values) {
 			if (val.value == value) {
 				return val;
 			}

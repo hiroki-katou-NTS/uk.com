@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.work.executionlog;
+package nts.uk.ctx.at.schedule.infra.entity.executionlog;
 
 import java.io.Serializable;
 
@@ -39,12 +39,6 @@ public class KscmtScheduleErrLog extends UkJpaEntity implements Serializable {
     @Column(name = "ERR_CONTENT")
     private String errContent;
     
-    /** The ymd. */
-    @Basic(optional = false)
-    @NotNull
-    @Column(name = "YMD")
-    private int ymd;
-
     /**
      * Instantiates a new kscmt schedule err log.
      */
@@ -67,9 +61,9 @@ public class KscmtScheduleErrLog extends UkJpaEntity implements Serializable {
      * @param exeId the exe id
      * @param sid the sid
      */
-    public KscmtScheduleErrLog(String exeId, String sid) {
-        this.kscmtScheduleErrLogPK = new KscmtScheduleErrLogPK(exeId, sid);
-    }
+	public KscmtScheduleErrLog(String exeId, String sid, int ymd) {
+		this.kscmtScheduleErrLogPK = new KscmtScheduleErrLogPK(exeId, sid, ymd);
+	}
 
     /**
      * Gets the kscmt schedule err log PK.

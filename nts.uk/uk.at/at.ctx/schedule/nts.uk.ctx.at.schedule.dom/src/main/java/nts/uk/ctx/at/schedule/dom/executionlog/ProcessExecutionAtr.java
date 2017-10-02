@@ -2,22 +2,22 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.work.executionlog;
+package nts.uk.ctx.at.schedule.dom.executionlog;
 
 /**
- * The Enum ExecutionStatus.
+ * The Enum ProcessExecutionAtr.
  */
-// 実行状況
-public enum ExecutionStatus {
+// 処理実行区分
+public enum ProcessExecutionAtr {
 
-	/** The not created. */
-	// 未作成
-	NOT_CREATED(0, "Enum_ExecutionStatus_notCreated", "未作成"),
+	/** The rebuild. */
+	// もう一度作り直す
+	REBUILD(0, "Enum_ProcessExecutionAtr_rebuild", "もう一度作り直す"),
 
-	/** The created. */
-	// 作成済み
-	CREATED(1, "Enum_ExecutionStatus_created", "作成済み");
-	
+	/** The reconfig. */
+	// 再設定する
+	RECONFIG(1, "Enum_ProcessExecutionAtr_reconfig", "就業時間帯区分");
+
 	/** The value. */
 	public final int value;
 
@@ -28,16 +28,16 @@ public enum ExecutionStatus {
 	public final String description;
 
 	/** The Constant values. */
-	private final static ExecutionStatus[] values = ExecutionStatus.values();
+	private final static ProcessExecutionAtr[] values = ProcessExecutionAtr.values();
 
 	/**
-	 * Instantiates a new execution status.
+	 * Instantiates a new process execution atr.
 	 *
 	 * @param value the value
 	 * @param nameId the name id
 	 * @param description the description
 	 */
-	private ExecutionStatus(int value, String nameId, String description) {
+	private ProcessExecutionAtr(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
@@ -47,16 +47,16 @@ public enum ExecutionStatus {
 	 * Value of.
 	 *
 	 * @param value the value
-	 * @return the execution status
+	 * @return the process execution atr
 	 */
-	public static ExecutionStatus valueOf(Integer value) {
+	public static ProcessExecutionAtr valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (ExecutionStatus val : ExecutionStatus.values) {
+		for (ProcessExecutionAtr val : ProcessExecutionAtr.values) {
 			if (val.value == value) {
 				return val;
 			}

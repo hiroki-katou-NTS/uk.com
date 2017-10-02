@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.work.executionlog;
+package nts.uk.ctx.at.schedule.infra.entity.executionlog;
 
 import java.io.Serializable;
 

@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.infra.entity.work.executionlog;
+package nts.uk.ctx.at.schedule.infra.entity.executionlog;
 
 import java.io.Serializable;
 
@@ -15,18 +15,18 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class KscmtScheduleCreatorPK.
+ * The Class KscmtScheduleErrLogPK.
  */
 @Getter
 @Setter
 @Embeddable
-public class KscmtScheduleCreatorPK implements Serializable {
+public class KscmtScheduleErrLogPK implements Serializable {
     
     /** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-
+	
 	/** The exe id. */
-    @Basic(optional = false)
+	@Basic(optional = false)
     @NotNull
     @Column(name = "EXE_ID")
     private String exeId;
@@ -36,21 +36,66 @@ public class KscmtScheduleCreatorPK implements Serializable {
     @NotNull
     @Column(name = "SID")
     private String sid;
+    
+    /** The ymd. */
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "YMD")
+    private int ymd;
 
     /**
-     * Instantiates a new kscmt schedule creator PK.
+     * Instantiates a new kscmt schedule err log PK.
      */
-    public KscmtScheduleCreatorPK() {
+    public KscmtScheduleErrLogPK() {
     }
 
     /**
-     * Instantiates a new kscmt schedule creator PK.
+     * Instantiates a new kscmt schedule err log PK.
      *
      * @param exeId the exe id
      * @param sid the sid
+     * @param ymd the ymd
      */
-    public KscmtScheduleCreatorPK(String exeId, String sid) {
+    public KscmtScheduleErrLogPK(String exeId, String sid, int ymd) {
         this.exeId = exeId;
+        this.sid = sid;
+        this.ymd = ymd;
+    }
+
+
+    /**
+     * Gets the exe id.
+     *
+     * @return the exe id
+     */
+    public String getExeId() {
+        return exeId;
+    }
+
+    /**
+     * Sets the exe id.
+     *
+     * @param exeId the new exe id
+     */
+    public void setExeId(String exeId) {
+        this.exeId = exeId;
+    }
+
+    /**
+     * Gets the sid.
+     *
+     * @return the sid
+     */
+    public String getSid() {
+        return sid;
+    }
+
+    /**
+     * Sets the sid.
+     *
+     * @param sid the new sid
+     */
+    public void setSid(String sid) {
         this.sid = sid;
     }
 
@@ -70,12 +115,10 @@ public class KscmtScheduleCreatorPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		// TODO: Warning - this method won't work in the case the id fields are
-		// not set
-		if (!(object instanceof KscmtScheduleCreatorPK)) {
+		if (!(object instanceof KscmtScheduleErrLogPK)) {
 			return false;
 		}
-		KscmtScheduleCreatorPK other = (KscmtScheduleCreatorPK) object;
+		KscmtScheduleErrLogPK other = (KscmtScheduleErrLogPK) object;
 		if ((this.exeId == null && other.exeId != null)
 				|| (this.exeId != null && !this.exeId.equals(other.exeId))) {
 			return false;
@@ -92,7 +135,7 @@ public class KscmtScheduleCreatorPK implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return "entity.KscmtScheduleCreatorPK[ exeId=" + exeId + ", sid=" + sid + " ]";
+		return "entity.KscmtScheduleErrLogPK[ exeId=" + exeId + ", sid=" + sid + " ]";
 	}
 	
     

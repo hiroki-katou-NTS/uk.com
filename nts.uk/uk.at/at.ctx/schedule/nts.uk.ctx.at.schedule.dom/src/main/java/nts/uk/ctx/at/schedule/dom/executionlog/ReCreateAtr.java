@@ -2,21 +2,21 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.work.executionlog;
+package nts.uk.ctx.at.schedule.dom.executionlog;
 
 /**
- * The Enum ImplementAtr.
+ * The Enum ReCreateAtr.
  */
-// 実施区分
-public enum ImplementAtr {
+// 再作成区分
+public enum ReCreateAtr {
 
-	/** The generally created. */
-	// 通常作成
-	GENERALLY_CREATED(0, "Enum_ImplementAtr_generallyCreated", "通常作成"),
+	/** The all case. */
+	// 全件
+	ALLCASE(0, "Enum_ReCreateAtr_allCase", "全件"),
 
-	/** The recreate. */
-	// 再作成
-	RECREATE(1, "Enum_ImplementAtr_reCreate", "再作成");
+	/** The only un confirm. */
+	// 未確定データのみ
+	ONLYUNCONFIRM(1, "Enum_ReCreateAtr_onlyUnconfirm", "未確定データのみ");
 
 	/** The value. */
 	public final int value;
@@ -28,16 +28,16 @@ public enum ImplementAtr {
 	public final String description;
 
 	/** The Constant values. */
-	private final static ImplementAtr[] values = ImplementAtr.values();
+	private final static ReCreateAtr[] values = ReCreateAtr.values();
 
 	/**
-	 * Instantiates a new implement atr.
+	 * Instantiates a new re create atr.
 	 *
 	 * @param value the value
 	 * @param nameId the name id
 	 * @param description the description
 	 */
-	private ImplementAtr(int value, String nameId, String description) {
+	private ReCreateAtr(int value, String nameId, String description) {
 		this.value = value;
 		this.nameId = nameId;
 		this.description = description;
@@ -47,16 +47,16 @@ public enum ImplementAtr {
 	 * Value of.
 	 *
 	 * @param value the value
-	 * @return the implement atr
+	 * @return the re create atr
 	 */
-	public static ImplementAtr valueOf(Integer value) {
+	public static ReCreateAtr valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (ImplementAtr val : ImplementAtr.values) {
+		for (ReCreateAtr val : ReCreateAtr.values) {
 			if (val.value == value) {
 				return val;
 			}

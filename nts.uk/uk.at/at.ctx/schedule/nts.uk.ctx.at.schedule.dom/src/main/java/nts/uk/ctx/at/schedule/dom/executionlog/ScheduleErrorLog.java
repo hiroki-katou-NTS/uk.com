@@ -2,25 +2,30 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.schedule.dom.work.executionlog;
+package nts.uk.ctx.at.schedule.dom.executionlog;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 
 /**
- * The Class ScheduleCreator.
+ * The Class ScheduleErrorLog.
  */
-// スケジュール作成対象者
+// スケジュール作成エラーログ
 @Getter
-public class ScheduleCreator extends AggregateRoot{
+public class ScheduleErrorLog extends AggregateRoot{
+	
+	/** The error content. */
+	// エラー内容
+	private String errorContent;
 	
 	/** The execution id. */
 	// 実行ID
 	private String executionId;
 	
-	/** The execution status. */
-	// 実行状況
-	private ExecutionStatus executionStatus;
+	/** The date. */
+	// 年月日
+	private GeneralDate date;
 	
 	/** The employee id. */
 	// 社員ID
