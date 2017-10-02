@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.infra.login;
+package nts.uk.ctx.sys.gateway.infra.repository.login;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +18,8 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.gateway.dom.login.User;
 import nts.uk.ctx.sys.gateway.dom.login.UserRepository;
-import nts.uk.ctx.sys.gateway.entity.login.SgwmtUser;
-import nts.uk.ctx.sys.gateway.entity.login.SgwmtUser_;
+import nts.uk.ctx.sys.gateway.infra.entity.login.SgwmtUser;
+import nts.uk.ctx.sys.gateway.infra.entity.login.SgwmtUser_;
 
 /**
  * The Class JpaUserRepository.

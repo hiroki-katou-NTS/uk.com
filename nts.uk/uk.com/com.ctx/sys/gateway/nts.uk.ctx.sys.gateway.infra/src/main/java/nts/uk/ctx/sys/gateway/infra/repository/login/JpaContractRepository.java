@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.infra.login;
+package nts.uk.ctx.sys.gateway.infra.repository.login;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +18,8 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
-import nts.uk.ctx.sys.gateway.entity.login.SgwdtContract;
-import nts.uk.ctx.sys.gateway.entity.login.SgwdtContract_;
+import nts.uk.ctx.sys.gateway.infra.entity.login.SgwdtContract;
+import nts.uk.ctx.sys.gateway.infra.entity.login.SgwdtContract_;
 
 /**
  * The Class JpaContractRepository.
