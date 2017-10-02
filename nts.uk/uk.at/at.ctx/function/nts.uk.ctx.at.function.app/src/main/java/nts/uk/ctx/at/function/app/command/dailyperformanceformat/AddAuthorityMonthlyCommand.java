@@ -16,7 +16,5 @@ public class AddAuthorityMonthlyCommand {
 
 	private String dailyPerformanceFormatCode;
 	
-	private String dailyPerformanceFormatName;
-	
 	private List<DailyAttendanceAuthorityDetailDto> dailyAttendanceAuthorityDetailDtos;
 }
