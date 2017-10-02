@@ -445,6 +445,12 @@ module nts.uk.com.view.cmm011.a {
                 let self = this;
                 nts.uk.ui.windows.setShared("selectedWkpId",self.parentModel.treeWorkplace().selectedWpkId());
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/d/index.xhtml').onClosed(() => {
+                    let isModeAdd: boolean = nts.uk.ui.windows.getShared("ModeAddHistory");
+                    
+                    // reload workplace history
+                    if (isModeAdd) {
+                        self.loadWkpHistoryByWkpId(self.parentModel.treeWorkplace().selectedWpkId());
+                    }
                 });
             }
             
@@ -455,6 +461,12 @@ module nts.uk.com.view.cmm011.a {
                 let self = this;
                 nts.uk.ui.windows.setShared("StartDateHistory", self.getSelectedHistoryByHistId().startDate);
                 nts.uk.ui.windows.sub.modal('/view/cmm/011/e/index.xhtml').onClosed(() => {
+                    let isUpdateAdd: boolean = nts.uk.ui.windows.getShared("ModeUpdateHistory");
+                    
+                    // reload workplace history
+                    if (isUpdateAdd) {
+                        self.loadWkpHistoryByWkpId(self.parentModel.treeWorkplace().selectedWpkId());
+                    }
                 });
             }
             

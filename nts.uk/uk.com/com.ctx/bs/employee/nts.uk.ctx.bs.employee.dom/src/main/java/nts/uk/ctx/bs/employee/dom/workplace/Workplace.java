@@ -14,7 +14,6 @@ import nts.arc.layer.dom.AggregateRoot;
 /**
  * The Class Workplace.
  */
-
 @Getter
 //職場
 public class Workplace extends AggregateRoot{
@@ -40,6 +39,14 @@ public class Workplace extends AggregateRoot{
 		this.companyId = memento.getCompanyId();
 		this.workplaceId = memento.getWorkplaceId();
 		this.workplaceHistory = memento.getWorkplaceHistory();
+		
+		// sort by start date desc 
+        Collections.sort(this.workplaceHistory, new Comparator<WorkplaceHistory>() {
+            @Override
+            public int compare(WorkplaceHistory obj1, WorkplaceHistory obj2) {
+                return obj2.getPeriod().getStartDate().compareTo(obj1.getPeriod().getStartDate());
+            }
+        });
 	}
 
 	/**
@@ -59,13 +66,6 @@ public class Workplace extends AggregateRoot{
 	 * @return the wkp history latest
 	 */
 	public WorkplaceHistory getWkpHistoryLatest() {
-        // sort desc
-        Collections.sort(this.workplaceHistory, new Comparator<WorkplaceHistory>() {
-            @Override
-            public int compare(WorkplaceHistory obj1, WorkplaceHistory obj2) {
-                return obj2.getPeriod().getStartDate().compareTo(obj1.getPeriod().getStartDate());
-            }
-        });
         int indexLatestHist = 0;
         return this.workplaceHistory.get(indexLatestHist);
     }
