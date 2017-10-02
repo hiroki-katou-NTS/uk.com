@@ -15,16 +15,31 @@ module nts.uk.at.view.ksc001.b {
             baseDate: KnockoutObservable<Date>;
             selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
 
-            selectSchedules: KnockoutObservableArray<any>;
-            selectedRuleCode: any;
-            checkAllCase: KnockoutObservable<boolean>;
-            enable: KnockoutObservable<boolean>;
-            required: KnockoutObservable<boolean>;
+            selectImplementAtr: KnockoutObservableArray<RadioBoxModel>;
+            selectedImplementAtrCode: KnockoutObservable<number>;
+            checkReCreateAtrAllCase: KnockoutObservable<boolean>;
+            checkReCreateAtrOnlyUnConfirm: KnockoutObservable<boolean>;
+            checkProcessExecutionAtrRebuild: KnockoutObservable<boolean>;
+            checkProcessExecutionAtrReconfig: KnockoutObservable<boolean>;
+            checkCreateMethodAtrPersonalInfo: KnockoutObservable<boolean>;
+            checkCreateMethodAtrPatternSchedule: KnockoutObservable<boolean>;
+            checkCreateMethodAtrCopyPastSchedule: KnockoutObservable<boolean>;
+            resetWorkingHours: KnockoutObservable<boolean>;
+            resetDirectLineBounce: KnockoutObservable<boolean>;
+            resetMasterInfo: KnockoutObservable<boolean>;
+            resetTimeChildCare: KnockoutObservable<boolean>;
+            resetAbsentHolidayBusines: KnockoutObservable<boolean>;
+            resetTimeAssignment: KnockoutObservable<boolean>;
+            confirm: KnockoutObservable<boolean>;
             periodStartDate: KnockoutObservable<Date>;
             periodEndDate: KnockoutObservable<Date>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
 
+            lstLabelInfomation: KnockoutObservableArray<string>;
+            infoCreateMethod: KnockoutObservable<string>;
+            infoPeriodDate: KnockoutObservable<string>;
+            lengthEmployeeSelected: KnockoutObservable<string>;
             // Employee tab
             lstPersonComponentOption: any;
             selectedEmployeeCode: KnockoutObservableArray<string>;
@@ -34,8 +49,6 @@ module nts.uk.at.view.ksc001.b {
             ccgcomponentPerson: GroupOption;
             constructor() {
                 var self = this;
-                self.enable = ko.observable(true);
-                self.required = ko.observable(true);
 
                 self.startDateString = ko.observable("");
                 self.endDateString = ko.observable("");
@@ -52,7 +65,20 @@ module nts.uk.at.view.ksc001.b {
                 self.baseDate = ko.observable(new Date());
                 self.periodStartDate = ko.observable(new Date());
                 self.periodEndDate = ko.observable(new Date());
-                self.checkAllCase = ko.observable(true);
+                self.checkReCreateAtrOnlyUnConfirm = ko.observable(false);
+                self.checkReCreateAtrAllCase = ko.observable(true);
+                self.checkProcessExecutionAtrRebuild = ko.observable(true);
+                self.checkProcessExecutionAtrReconfig = ko.observable(false);
+                self.resetWorkingHours = ko.observable(false);
+                self.resetDirectLineBounce = ko.observable(false);
+                self.resetMasterInfo = ko.observable(false);
+                self.resetTimeChildCare = ko.observable(false);
+                self.resetAbsentHolidayBusines = ko.observable(false);
+                self.resetTimeAssignment = ko.observable(false);
+                self.confirm = ko.observable(false);
+                self.checkCreateMethodAtrPersonalInfo = ko.observable(true);
+                self.checkCreateMethodAtrPatternSchedule = ko.observable(false);
+                self.checkCreateMethodAtrCopyPastSchedule = ko.observable(false);
                 self.ccgcomponent = {
                     baseDate: self.baseDate,
                     //Show/hide options
@@ -93,14 +119,51 @@ module nts.uk.at.view.ksc001.b {
 
                 }
                 self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
+                var lstRadioBoxModelImplementAtr: RadioBoxModel[] = [];
+                lstRadioBoxModelImplementAtr.push(new RadioBoxModel(ImplementAtr.GENERALLY_CREATED, nts.uk.resource.getText("KSC001_74")));
+                lstRadioBoxModelImplementAtr.push(new RadioBoxModel(ImplementAtr.RECREATE, nts.uk.resource.getText("KSC001_75")));
+                self.selectImplementAtr = ko.observableArray(lstRadioBoxModelImplementAtr);
+                self.selectedImplementAtrCode = ko.observable(ImplementAtr.GENERALLY_CREATED);
 
+                // update ReCreateAtr
+                self.checkReCreateAtrAllCase.subscribe(function(check: boolean) {
+                    self.checkReCreateAtrOnlyUnConfirm(!check);
+                });
+                self.checkReCreateAtrOnlyUnConfirm.subscribe(function(check: boolean) {
+                    self.checkReCreateAtrAllCase(!check);
+                });
 
-                self.selectSchedules = ko.observableArray([
-                    { code: '1', name: nts.uk.resource.getText("KSC001_74") },
-                    { code: '2', name: nts.uk.resource.getText("KSC001_75") }
-                ]);
-                self.selectedRuleCode = ko.observable(1);
-
+                // update ProcessExecutionAtr
+                self.checkProcessExecutionAtrRebuild.subscribe(function(check: boolean) {
+                    self.checkProcessExecutionAtrReconfig(!check);
+                });
+                self.checkProcessExecutionAtrReconfig.subscribe(function(check: boolean) {
+                    self.checkProcessExecutionAtrRebuild(!check);
+                });
+                
+                // update CreateMethodAtr
+                self.checkCreateMethodAtrPersonalInfo.subscribe(function(check: boolean){
+                   if(check){
+                      self.checkCreateMethodAtrPatternSchedule(!check);      
+                      self.checkCreateMethodAtrCopyPastSchedule(!check);      
+                   } 
+                });
+                self.checkCreateMethodAtrPatternSchedule.subscribe(function(check: boolean){
+                   if(check){
+                      self.checkCreateMethodAtrPersonalInfo(!check);      
+                      self.checkCreateMethodAtrCopyPastSchedule(!check);      
+                   } 
+                });
+                self.checkCreateMethodAtrCopyPastSchedule.subscribe(function(check: boolean){
+                   if(check){
+                      self.checkCreateMethodAtrPersonalInfo(!check);      
+                      self.checkCreateMethodAtrPatternSchedule(!check);      
+                   } 
+                });
+                self.lstLabelInfomation = ko.observableArray([]);
+                self.infoCreateMethod = ko.observable('');
+                self.infoPeriodDate = ko.observable('');
+                self.lengthEmployeeSelected = ko.observable('');
             }
             /**
              * get user login
@@ -113,15 +176,15 @@ module nts.uk.at.view.ksc001.b {
             /**
              * save to client service PersonalSchedule
             */
-            private savePersonalSchedule(employeeId: string, data: PersonalSchedule): void{
-                nts.uk.characteristics.save("PersonalSchedule_"+employeeId, data);
+            private savePersonalSchedule(employeeId: string, data: PersonalSchedule): void {
+                nts.uk.characteristics.save("PersonalSchedule_" + employeeId, data);
             }
-            
+
             /**
              * find by client service PersonalSchedule
             */
-            private findPersonalScheduleByEmployeeId(employeeId: string):  JQueryPromise<PersonalSchedule>{
-                return nts.uk.characteristics.restore("PersonalSchedule_"+employeeId);
+            private findPersonalScheduleByEmployeeId(employeeId: string): JQueryPromise<PersonalSchedule> {
+                return nts.uk.characteristics.restore("PersonalSchedule_" + employeeId);
             }
             /**
              * function next wizard by on click button 
@@ -222,6 +285,58 @@ module nts.uk.at.view.ksc001.b {
              */
             private nextPageD(): void {
                 var self = this;
+                var lstLabelInfomation: string[] = [];
+                if (self.selectedImplementAtrCode() == ImplementAtr.GENERALLY_CREATED) {
+                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_35"));
+                } else {
+                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_36"));
+                }
+                self.lstLabelInfomation(lstLabelInfomation);
+                if (self.checkReCreateAtrAllCase()) {
+                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")+nts.uk.resource.getText("KSC001_4"));
+                }
+                if (self.checkReCreateAtrOnlyUnConfirm()) {
+                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")+nts.uk.resource.getText("KSC001_5"));
+                }
+                if (self.checkProcessExecutionAtrRebuild()) {
+                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")+nts.uk.resource.getText("KSC001_7"));
+                }
+                if (self.checkProcessExecutionAtrReconfig()) {
+                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")+nts.uk.resource.getText("KSC001_8"));
+                }
+                if (self.resetWorkingHours()) {
+                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_15"));
+                }
+                if (self.resetDirectLineBounce()) {
+                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_11"));
+                }
+                if (self.resetMasterInfo()) {
+                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_12"));
+                }
+                if (self.resetTimeChildCare()) {
+                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_13"));
+                }
+                if (self.resetAbsentHolidayBusines()) {
+                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_14"));
+                }
+                if (self.resetTimeAssignment()) {
+                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_16"));
+                }
+                if (self.confirm()) {
+                    lstLabelInfomation.push(nts.uk.resource.getText("KSC001_17"));
+                }
+                self.lstLabelInfomation(lstLabelInfomation);
+                if(self.checkCreateMethodAtrPersonalInfo()){
+                    self.infoCreateMethod(nts.uk.resource.getText("KSC001_22"));    
+                }
+                if(self.checkCreateMethodAtrPatternSchedule()){
+                    self.infoCreateMethod(nts.uk.resource.getText("KSC001_23"));    
+                }
+                if(self.checkCreateMethodAtrCopyPastSchedule()){
+                    self.infoCreateMethod(nts.uk.resource.getText("KSC001_39",["2017/10/10"]));    
+                }
+                self.infoPeriodDate(nts.uk.resource.getText("KSC001_46",[moment(self.periodStartDate()).format('YYYY/MM/DD'),(moment(self.periodEndDate()).format('YYYY/MM/DD'))]));
+                self.lengthEmployeeSelected(nts.uk.resource.getText("KSC001_47",[self.selectedEmployeeCode().length]));
                 self.next();
             }
             /**
@@ -365,6 +480,14 @@ module nts.uk.at.view.ksc001.b {
             resetTimeChildCare: boolean;
         }
 
+        export class RadioBoxModel {
+            id: number;
+            name: string;
+            constructor(id: number, name: string) {
+                this.id = id;
+                this.name = name;
+            }
+        }
         export class ListType {
             static EMPLOYMENT = 1;
             static Classification = 2;
