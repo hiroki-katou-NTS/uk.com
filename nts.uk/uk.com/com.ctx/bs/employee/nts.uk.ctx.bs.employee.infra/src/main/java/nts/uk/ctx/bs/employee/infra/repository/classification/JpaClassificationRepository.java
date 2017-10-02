@@ -20,10 +20,12 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.employee.dom.classification.Classification;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationRepository;
+import nts.uk.ctx.bs.employee.infra.entity.classification.BsymtClassification;
+import nts.uk.ctx.bs.employee.infra.entity.classification.BsymtClassificationPK;
+import nts.uk.ctx.bs.employee.infra.entity.classification.BsymtClassificationPK_;
+import nts.uk.ctx.bs.employee.infra.entity.classification.BsymtClassification_;
 import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification;
 import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassificationPK;
-import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassificationPK_;
-import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification_;
 
 /**
  * The Class JpaManagementCategoryRepository.
@@ -38,7 +40,7 @@ public class JpaClassificationRepository extends JpaRepository
 	@Override
 	public Optional<Classification> findClassification(String companyId, String classificationCode) {
 		return this.queryProxy()
-				.find(new CclmtClassificationPK(companyId, classificationCode), CclmtClassification.class)
+				.find(new BsymtClassificationPK(companyId, classificationCode), BsymtClassification.class)
 				.map(e -> this.toDomain(e));
 	}
 	
@@ -89,12 +91,11 @@ public class JpaClassificationRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		// call CCLMT_MANAGEMENT_CATEGORY (CclmtManagementCategory SQL)
-		CriteriaQuery<CclmtClassification> cq = criteriaBuilder
-			.createQuery(CclmtClassification.class);
+		CriteriaQuery<BsymtClassification> cq = criteriaBuilder
+			.createQuery(BsymtClassification.class);
 
 		// root data
-		Root<CclmtClassification> root = cq.from(CclmtClassification.class);
+		Root<BsymtClassification> root = cq.from(BsymtClassification.class);
 
 		// select root
 		cq.select(root);
@@ -104,13 +105,13 @@ public class JpaClassificationRepository extends JpaRepository
 
 		// eq company id
 		lstpredicateWhere
-			.add(criteriaBuilder.equal(root.get(CclmtClassification_.cclmtClassificationPK)
-				.get(CclmtClassificationPK_.cid), companyId));
+			.add(criteriaBuilder.equal(root.get(BsymtClassification_.bsymtClassificationPK)
+				.get(BsymtClassificationPK_.cid), companyId));
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
 		// creat query
-		TypedQuery<CclmtClassification> query = em.createQuery(cq);
+		TypedQuery<BsymtClassification> query = em.createQuery(cq);
 
 		// exclude select
 		return query.getResultList().stream().map(category -> toDomain(category))
@@ -123,8 +124,8 @@ public class JpaClassificationRepository extends JpaRepository
 	 * @param domain the domain
 	 * @return the cclmt management category
 	 */
-	private CclmtClassification toEntity(Classification domain){
-		CclmtClassification entity = new CclmtClassification();
+	private BsymtClassification toEntity(Classification domain){
+		BsymtClassification entity = new BsymtClassification();
 		domain.saveToMemento(new JpaClassificationSetMemento(entity));
 		return entity;
 	}
@@ -135,7 +136,7 @@ public class JpaClassificationRepository extends JpaRepository
 	 * @param entity the entity
 	 * @return the management category
 	 */
-	private Classification toDomain(CclmtClassification entity){
+	private Classification toDomain(BsymtClassification entity){
 		return new Classification(new JpaClassificationGetMemento(entity));
 	}
 }

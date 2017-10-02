@@ -10,6 +10,7 @@ import nts.uk.ctx.bs.employee.dom.classification.ClassificationCode;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationName;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationSetMemento;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
+import nts.uk.shr.com.primitive.Memo;
 
 /**
  * The Class ClassificationFindDto.
@@ -23,6 +24,9 @@ public class ClassificationFindDto implements ClassificationSetMemento {
 	
 	/** The name. */
 	private String classificationName;
+	
+	/** Memo. */
+	private String memo;
 
 	/*
 	 * (non-Javadoc)
@@ -59,6 +63,19 @@ public class ClassificationFindDto implements ClassificationSetMemento {
 	@Override
 	public void setManagementCategoryName(ClassificationName managementCategoryName) {
 		this.classificationName = managementCategoryName.v();
+		
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.basic.dom.company.organization.category.
+	 * ManagementCategorySetMemento#setManagementCategoryMemo(nts.uk.ctx.basic.
+	 * dom.company.organization.category.ManagementCategoryName)
+	 */
+	@Override
+	public void setManagementCategoryMemo(Memo managementCategoryMemo) {
+		this.memo = managementCategoryMemo.v();
 		
 	}
 

@@ -84,7 +84,7 @@ module cmm014.a.viewmodel {
                         self.dirty.reset();
                         self.currentCode(null);
                         $("#A_INP_002").focus();
-                        $("#test input").val("");
+                        $("#A_INP_004").val("");
                         self.hasCellphone(false);
                     })
                     .ifNo(() => {
@@ -95,7 +95,7 @@ module cmm014.a.viewmodel {
                 self.dirty.reset();
                 self.currentCode(null);
                 $("#A_INP_002").focus();
-                $("#test input").val("");
+                $("#A_INP_004").val("");
                 self.hasCellphone(false);
             }
         }
