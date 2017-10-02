@@ -10,7 +10,7 @@
 				<div id="label-1">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
 				</div>
-				<div id="table-1" >
+				<div id="table-1" data-bind="if: approvalRoot() != null" >
 					<table id="table-phase" data-bind="with:approvalRoot">
 						<thead>
 							<tr class="bg-green">
@@ -24,14 +24,14 @@
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
 										<td class="bg-green" data-bind="attr: {rowspan: $parent.approvers.length}">
-											フェーズ<label data-bind="text: $data.approvalPhaseId"></label>
+											フェーズ<label data-bind="text: $parent.orderNumber"></label>
 										</td>
 									</com:ko>
 									<td class="bg-green">
 										承認者<label data-bind="text: $data.orderNumber"></label>
 									</td>
 									<td>
-										<label data-bind="text: $data.employeeId"></label>
+										<label data-bind="text: $data.name"></label>
 									</td>
 								</tr>
 							</com:ko>
