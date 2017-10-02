@@ -22,9 +22,6 @@ public class AutoCalFlexOvertimeSettingDto implements AutoCalFlexOvertimeSetting
 	// フレックス超過時間
 	private AutoCalSettingDto flexOtTime;
 
-	/** The flex ot night time. */
-	// フレックス超過深夜時間
-	private AutoCalSettingDto flexOtNightTime;
 
 	/*
 	 * (non-Javadoc)
@@ -38,19 +35,6 @@ public class AutoCalFlexOvertimeSettingDto implements AutoCalFlexOvertimeSetting
 		this.flexOtTime = new AutoCalSettingDto(flexOtTime.getUpLimitOtSet().value,
 				flexOtTime.getCalAtr().value);
 
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.
-	 * AutoCalFlexOvertimeSettingSetMemento#setFlexOtNightTime(nts.uk.ctx.at.
-	 * schedule.dom.shift.autocalsetting.AutoCalSetting)
-	 */
-	@Override
-	public void setFlexOtNightTime(AutoCalSetting flexOtNightTime) {
-		this.flexOtNightTime = new AutoCalSettingDto(flexOtNightTime.getUpLimitOtSet().value,
-				flexOtNightTime.getCalAtr().value);
 	}
 
 }

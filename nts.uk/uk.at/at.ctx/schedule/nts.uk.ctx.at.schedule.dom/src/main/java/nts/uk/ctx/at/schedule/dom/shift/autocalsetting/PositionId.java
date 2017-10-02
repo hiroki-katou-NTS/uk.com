@@ -4,15 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.shift.autocalsetting;
 
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
  * The Class PositionId.
  */
-@StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(36)
 public class PositionId extends CodePrimitiveValue<PositionId> {
 
@@ -22,8 +19,7 @@ public class PositionId extends CodePrimitiveValue<PositionId> {
 	/**
 	 * Instantiates a new position id.
 	 *
-	 * @param rawValue
-	 *            the raw value
+	 * @param rawValue the raw value
 	 */
 	public PositionId(String rawValue) {
 		super(rawValue);

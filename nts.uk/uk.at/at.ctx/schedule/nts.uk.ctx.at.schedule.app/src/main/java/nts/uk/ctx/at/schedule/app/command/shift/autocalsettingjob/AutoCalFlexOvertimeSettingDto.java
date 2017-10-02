@@ -5,7 +5,6 @@ import lombok.Setter;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalFlexOvertimeSettingGetMemento;
-import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalOvertimeSettingGetMemento;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.TimeLimitUpperLimitSetting;
 
@@ -17,9 +16,6 @@ public class AutoCalFlexOvertimeSettingDto {
 	// フレックス超過時間
 	private AutoCalSettingDto flexOtTime;
 
-	/** The flex ot night time. */
-	// フレックス超過深夜時間
-	private AutoCalSettingDto flexOtNightTime;
 
 	/**
 	 * To domain.
@@ -62,12 +58,6 @@ public class AutoCalFlexOvertimeSettingDto {
 					AutoCalAtrOvertime.valueOf(command.getFlexOtTime().getCalAtr()));
 		}
 
-		@Override
-		public AutoCalSetting getFlexOtNightTime() {
-			return new AutoCalSetting(
-					TimeLimitUpperLimitSetting.valueOf(command.getFlexOtNightTime().getUpLimitOtSet()),
-					AutoCalAtrOvertime.valueOf(command.getFlexOtNightTime().getCalAtr()));
-		}
 
 	}
 

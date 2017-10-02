@@ -14,9 +14,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class KshmtAutoWkpCalSetPK_ {
 	
     /** The cid. */
-    public static volatile SingularAttribute<KshmtAutoWkpJobCalPK_, String> cid; 
+    public static volatile SingularAttribute<KshmtAutoWkpCalSetPK, String> cid; 
     
     /** The wpkid. */
-    public static volatile SingularAttribute<KshmtAutoWkpJobCalPK_, String> wpkid;
+    public static volatile SingularAttribute<KshmtAutoWkpCalSetPK, String> wpkid;
     
 }

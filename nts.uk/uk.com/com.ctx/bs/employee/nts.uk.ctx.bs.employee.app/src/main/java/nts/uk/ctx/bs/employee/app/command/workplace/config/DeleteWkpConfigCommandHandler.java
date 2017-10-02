@@ -12,7 +12,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -22,6 +21,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.service.WkpConfigService;
+import nts.uk.ctx.bs.employee.dom.workplace.util.HistoryUtil;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -47,9 +47,6 @@ public class DeleteWkpConfigCommandHandler extends CommandHandler<DeleteWkpConfi
     @Inject
     private WkpConfigService wkpConfigService;
     
-    /** The Constant NUMBER_ELEMENT_MIN. */
-    private static final Integer NUMBER_ELEMENT_MIN = 1;
-    
     /** The Constant DATE_FORMAT. */
     private static final String DATE_FORMAT = "yyyy/MM/dd";
     
@@ -64,22 +61,16 @@ public class DeleteWkpConfigCommandHandler extends CommandHandler<DeleteWkpConfi
         String companyId = AppContexts.user().companyId();
         
         // find all workplace configure by companyId
-        Optional<WorkplaceConfig> optionalWkpConfig = wkpConfigRepo.findWorkplaceByCompanyId(companyId);
+        Optional<WorkplaceConfig> optionalWkpConfig = wkpConfigRepo.findAllByCompanyId(companyId);
         if (!optionalWkpConfig.isPresent()) {
             throw new RuntimeException("Didn't exist workplce configure.");
         }
         WorkplaceConfig wkpConfig = optionalWkpConfig.get();
         
-        // Don't remove when only has 1 history
-        if (wkpConfig.getWkpConfigHistory().size() == NUMBER_ELEMENT_MIN) {
-            throw new BusinessException("Msg_57");
-        }
         DeleteWkpConfigCommand command = context.getCommand();
         
-        // check history remove latest ?
-        if (!command.getHistoryId().equals(wkpConfig.getWkpConfigHistoryLatest().getHistoryId())) {
-            throw new BusinessException("Msg_55");
-        }
+        // valid history latest
+        HistoryUtil.validHistoryLatest(wkpConfig, command.getHistoryId());
         
         // remove workplace config history
         this.wkpConfigRepo.removeWkpConfigHist(companyId, command.getHistoryId());
