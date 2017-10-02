@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.entity.login;
+package nts.uk.ctx.sys.gateway.infra.entity.login;
 
 import java.io.Serializable;
 import java.util.Date;

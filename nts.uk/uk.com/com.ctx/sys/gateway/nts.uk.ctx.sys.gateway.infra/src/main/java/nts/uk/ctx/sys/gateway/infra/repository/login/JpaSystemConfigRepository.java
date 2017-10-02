@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.infra.login;
+package nts.uk.ctx.sys.gateway.infra.repository.login;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +16,7 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.sys.gateway.dom.login.SystemConfig;
 import nts.uk.ctx.sys.gateway.dom.login.SystemConfigRepository;
-import nts.uk.ctx.sys.gateway.entity.login.SgwstSystemConfig;
+import nts.uk.ctx.sys.gateway.infra.entity.login.SgwstSystemConfig;
 
 /**
  * The Class JpaSystemConfigRepository.

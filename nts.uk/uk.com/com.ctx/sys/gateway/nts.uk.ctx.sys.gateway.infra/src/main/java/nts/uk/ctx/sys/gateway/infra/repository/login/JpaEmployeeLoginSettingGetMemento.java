@@ -2,12 +2,12 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.infra.login;
+package nts.uk.ctx.sys.gateway.infra.repository.login;
 
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.login.EmployeeLoginSettingGetMemento;
 import nts.uk.ctx.sys.gateway.dom.login.ManageDistinct;
-import nts.uk.ctx.sys.gateway.entity.login.SgwstEmployeeLoginSet;
+import nts.uk.ctx.sys.gateway.infra.entity.login.SgwstEmployeeLoginSet;
 
 /**
  * The Class JpaEmployeeLoginSettingGetMemento.

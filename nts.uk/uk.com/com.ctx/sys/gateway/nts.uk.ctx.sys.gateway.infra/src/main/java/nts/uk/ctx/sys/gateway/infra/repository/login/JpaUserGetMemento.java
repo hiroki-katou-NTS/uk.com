@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.infra.login;
+package nts.uk.ctx.sys.gateway.infra.repository.login;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
@@ -11,7 +11,7 @@ import nts.uk.ctx.sys.gateway.dom.login.LoginId;
 import nts.uk.ctx.sys.gateway.dom.login.MailAddress;
 import nts.uk.ctx.sys.gateway.dom.login.UserGetMemento;
 import nts.uk.ctx.sys.gateway.dom.login.UserName;
-import nts.uk.ctx.sys.gateway.entity.login.SgwmtUser;
+import nts.uk.ctx.sys.gateway.infra.entity.login.SgwmtUser;
 
 /**
  * The Class JpaUserGetMemento.

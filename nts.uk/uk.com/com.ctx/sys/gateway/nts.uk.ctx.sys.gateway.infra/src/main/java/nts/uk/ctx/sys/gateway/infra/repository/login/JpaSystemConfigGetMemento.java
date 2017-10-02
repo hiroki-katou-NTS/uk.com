@@ -2,11 +2,11 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.infra.login;
+package nts.uk.ctx.sys.gateway.infra.repository.login;
 
 import nts.uk.ctx.sys.gateway.dom.login.InstallForm;
 import nts.uk.ctx.sys.gateway.dom.login.SystemConfigGetMemento;
-import nts.uk.ctx.sys.gateway.entity.login.SgwstSystemConfig;
+import nts.uk.ctx.sys.gateway.infra.entity.login.SgwstSystemConfig;
 
 /**
  * The Class JpaSystemConfigGetMemento.

@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.entity.login;
+package nts.uk.ctx.sys.gateway.infra.entity.login;
 
 import java.io.Serializable;
 
@@ -19,37 +19,29 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Getter
 @Setter
 @Entity
-@Table(name = "SGWST_EMPLOYEE_LOGIN_SET")
+@Table(name = "SGWST_SYSTEM_CONFIG")
 
 /**
- * Instantiates a new sgwst employee login set.
+ * Instantiates a new sgwst system config.
  */
 @NoArgsConstructor
-public class SgwstEmployeeLoginSet extends UkJpaEntity implements Serializable {
+public class SgwstSystemConfig extends UkJpaEntity implements Serializable {
+	
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 1L;
     
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
-
-    /** The contract cd. */
+    /** The install form. */
     @Id
-    @Column(name = "CONTRACT_CD")
-    private String contractCd;
-    
-    /** The form 2 permit atr. */
-    @Column(name = "FORM2_PERMIT_ATR")
-    private short form2PermitAtr;
-    
-    /** The form 3 permit atr. */
-    @Column(name = "FORM3_PERMIT_ATR")
-    private short form3PermitAtr;
+    @Column(name = "INSTALL_FORM")
+    private Short installForm;
 
     /**
-     * Instantiates a new sgwst employee login set.
+     * Instantiates a new sgwst system config.
      *
-     * @param contractCd the contract cd
+     * @param installForm the install form
      */
-    public SgwstEmployeeLoginSet(String contractCd) {
-        this.contractCd = contractCd;
+    public SgwstSystemConfig(Short installForm) {
+        this.installForm = installForm;
     }
 
     /* (non-Javadoc)
@@ -58,7 +50,7 @@ public class SgwstEmployeeLoginSet extends UkJpaEntity implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (contractCd != null ? contractCd.hashCode() : 0);
+        hash += (installForm != null ? installForm.hashCode() : 0);
         return hash;
     }
 
@@ -67,22 +59,21 @@ public class SgwstEmployeeLoginSet extends UkJpaEntity implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-        if (!(object instanceof SgwstEmployeeLoginSet)) {
+        if (!(object instanceof SgwstSystemConfig)) {
             return false;
         }
-        SgwstEmployeeLoginSet other = (SgwstEmployeeLoginSet) object;
-        if ((this.contractCd == null && other.contractCd != null) || (this.contractCd != null && !this.contractCd.equals(other.contractCd))) {
+        SgwstSystemConfig other = (SgwstSystemConfig) object;
+        if ((this.installForm == null && other.installForm != null) || (this.installForm != null && !this.installForm.equals(other.installForm))) {
             return false;
         }
         return true;
     }
-
+   
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
 	 */
 	@Override
 	protected Object getKey() {
-		return this.contractCd;
+		return this.installForm;
 	}
-    
 }
