@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition>
+		<div class="contentD">
+			<div>
+				<label>#{i18n.getText('KSC001_21')}</label>
+			</div>
+			<div class="radioboxCaseAll">
+				<div class="radioboxCase">
+					<div data-bind="ntsRadioButton: {checked: checkCreateMethodAtrPersonalInfo, enable: true, optionText: '#{i18n.getText('KSC001_22')}' }" />
+				</div>
+				<div class="radioboxCase">
+					<div data-bind="ntsRadioButton: {checked: checkCreateMethodAtrPatternSchedule, enable: true, optionText: '#{i18n.getText('KSC001_23')}' }" /> 
+					<button class="buttonCase" data-bind="click: showDialogKDL023">#{i18n.getText('KSC001_25')}</button>
+				</div>
+				<div class="radioboxCase">
+					<div data-bind="ntsRadioButton: {checked: checkCreateMethodAtrCopyPastSchedule, enable: true, optionText: '#{i18n.getText('KSC001_24')}' }" />
+				</div>
+			</div>
+			<div class="lableCase">
+				<label>#{i18n.getText('KSC001_26')}</label>
+				<button class="buttonCase">#{i18n.getText('KSC001_26')}</button>
+			</div>	
+			<div class="buttonBeginPrevious">
+				<button data-bind="click: previousPageD">#{i18n.getText('KSC001_27')}</button>
+			</div>
+			<div class="buttonBeginNext">
+				<button class="proceed large" data-bind="click: nextPageD">#{i18n.getText('KSC001_20')}</button>
+			</div>
+		</div>
+		
+	</ui:composition>
+</body>
+</html>

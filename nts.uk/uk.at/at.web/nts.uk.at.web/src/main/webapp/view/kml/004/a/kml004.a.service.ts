@@ -7,8 +7,12 @@ module nts.uk.at.view.kml004.a.service {
         update: "at/schedule/schedulehorizontal/update",
     }
     
-    export function getAll(){
+    export function getAll(){   
         return nts.uk.request.ajax(paths.findAllCate); 
+    }
+    
+    export function getItem(){
+        return nts.uk.request.ajax(paths.findAllItem);
     }
     
     export function update(command: viewmodel.TotalCategory): JQueryPromise<void>{

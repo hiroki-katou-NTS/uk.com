@@ -43,7 +43,25 @@ button.nts-switch-button {
 	margin-left: 45px;
 }
 
-
 div#memo .nts-editor-wrapped {
 	position: absolute;
+}
+
+#insert_btn{
+	margin-top: 70px;
+	margin-left: 420px;
+}
+
+#remove-items{
+	margin-top: 20px;
+	margin-left: 420px;
+}
+
+.move-function{
+	margin-top: -300px;
+}
+
+.chane-position-function{
+	margin: -90px 0px 0px 910px;
+	float: left;
 }

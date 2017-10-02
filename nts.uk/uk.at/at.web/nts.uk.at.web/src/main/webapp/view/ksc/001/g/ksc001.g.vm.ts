@@ -7,6 +7,7 @@ module nts.uk.at.view.ksc001.g {
             dateValue: KnockoutObservable<any>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
+            items:KnockoutObservableArray<GridItem>;
             constructor() {
                 let self = this;
                 self.enable = ko.observable(true);
@@ -25,6 +26,11 @@ module nts.uk.at.view.ksc001.g {
                     self.dateValue().endDate = value;
                     self.dateValue.valueHasMutated();
                 });
+                let list:Array<GridItem> = [];
+                    for (var i = 0; i < 50; i++) {
+                        list.push(new GridItem(i));
+                    }
+                self.items = ko.observableArray(list);
             }
             /**
              * get data on start page
@@ -48,7 +54,26 @@ module nts.uk.at.view.ksc001.g {
             });
             blockUI.clear();
             }
-
+        }
+        
+        export class GridItem {
+            id: number;
+            exeDay: string;
+            exeEmployeeCode: string;
+            exeEmployeeName: string;
+            targetPeriod: string;
+            status: string;
+            exeId:string;
+            constructor(id: number) {
+                this.id = id;
+                this.exeDay = "2017/12/12";
+                this.exeEmployeeCode = "A0000000"+id;
+                this.exeEmployeeName = "日通システム　名"+id;
+                this.targetPeriod = "2017/12/12 ~ 2017/12/12";
+                this.status = "完了　（エラーあり）";
+                this.exeId = id.toString();
+                //TODO
+            }
         }
     }
 }
