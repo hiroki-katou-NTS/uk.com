@@ -36,5 +36,8 @@ public class ApprovalPeriod {
 	public static ApprovalPeriod createSimpleFromJavaType(String startDate, String endDate){
 		return new ApprovalPeriod(GeneralDate.fromString(startDate, "yyyy-MM-dd"),GeneralDate.fromString(endDate, "yyyy-MM-dd"));
 	}
+	public void updateEndate(String endDate){
+		this.endDate = GeneralDate.fromString(endDate, "yyyy-MM-dd");
+	}
 
 }

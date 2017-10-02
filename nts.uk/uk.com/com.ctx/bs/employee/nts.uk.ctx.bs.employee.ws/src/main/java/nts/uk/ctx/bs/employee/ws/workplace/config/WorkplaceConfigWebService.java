@@ -13,14 +13,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.bs.employee.app.command.workplace.config.SaveWorkplaceConfigCommandHandler;
-import nts.uk.ctx.bs.employee.app.command.workplace.config.WorkplaceConfigCommand;
-import nts.uk.ctx.bs.employee.app.find.workplace.WorkplaceConfigFinder;
-import nts.uk.ctx.bs.employee.app.find.workplace.WorkplaceConfigInfoFinder;
-import nts.uk.ctx.bs.employee.app.find.workplace.dto.WkpConfigInfoFindObject;
+import nts.uk.ctx.bs.employee.app.command.workplace.config.DeleteWkpConfigCommand;
+import nts.uk.ctx.bs.employee.app.command.workplace.config.DeleteWkpConfigCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.workplace.config.SaveWkpConfigCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.workplace.config.SaveWkpConfigCommand;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.WorkplaceConfigFinder;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WkpConfigInfoFindObject;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceConfigDto;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceHierarchyDto;
+import nts.uk.ctx.bs.employee.app.find.workplace.config.info.WorkplaceConfigInfoFinder;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceCommandDto;
-import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceConfigDto;
-import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceHierarchyDto;
 
 /**
  * The Class WorkplaceConfigWebService.
@@ -35,8 +37,12 @@ public class WorkplaceConfigWebService extends WebService {
 
     /** The save handler. */
     @Inject
-    private SaveWorkplaceConfigCommandHandler saveHandler;
+    private SaveWkpConfigCommandHandler saveHandler;
 
+    /** The remove handler. */
+    @Inject
+    private DeleteWkpConfigCommandHandler removeHandler;
+    
     /** The wkp config info finder. */
     @Inject
     private WorkplaceConfigInfoFinder wkpConfigInfoFinder;
@@ -60,8 +66,19 @@ public class WorkplaceConfigWebService extends WebService {
      */
     @Path("save")
     @POST
-    public void saveWkpConfig(WorkplaceConfigCommand command) {
+    public void saveWkpConfig(SaveWkpConfigCommand command) {
         this.saveHandler.handle(command);
+    }
+    
+    /**
+     * Removes the wkp config.
+     *
+     * @param command the command
+     */
+    @Path("remove")
+    @POST
+    public void removeWkpConfig(DeleteWkpConfigCommand command) {
+        this.removeHandler.handle(command);
     }
 
     /**

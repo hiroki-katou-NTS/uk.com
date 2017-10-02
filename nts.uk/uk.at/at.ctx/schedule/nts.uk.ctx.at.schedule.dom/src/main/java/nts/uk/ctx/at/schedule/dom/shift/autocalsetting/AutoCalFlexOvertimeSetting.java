@@ -17,6 +17,12 @@ import nts.arc.layer.dom.DomainObject;
  *
  * @return the flex ot night time
  */
+
+/**
+ * Gets the flex ot time.
+ *
+ * @return the flex ot time
+ */
 @Getter
 public class AutoCalFlexOvertimeSetting extends DomainObject {
 
@@ -24,20 +30,14 @@ public class AutoCalFlexOvertimeSetting extends DomainObject {
 	// フレックス超過時間
 	private AutoCalSetting flexOtTime;
 
-	/** The flex ot night time. */
-	// フレックス超過深夜時間
-	private AutoCalSetting flexOtNightTime;
-
 	/**
 	 * Instantiates a new auto cal flex overtime setting.
 	 *
-	 * @param flexOtTimeSet the flex ot time set
-	 * @param flexOtNightTimeSet the flex ot night time set
+	 * @param memento the memento
 	 */
 	public AutoCalFlexOvertimeSetting(AutoCalFlexOvertimeSettingGetMemento memento) {
 		super();
 		this.flexOtTime = memento.getFlexOtTime();
-		this.flexOtNightTime = memento.getFlexOtNightTime();
 	}
 	
 	/**
@@ -46,7 +46,6 @@ public class AutoCalFlexOvertimeSetting extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(AutoCalFlexOvertimeSettingSetMemento memento) {
-		memento.setFlexOtNightTime(this.flexOtNightTime);
 		memento.setFlexOtTime(this.flexOtTime);
 	}
 

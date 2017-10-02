@@ -15,10 +15,11 @@ public interface WkpConfigService {
 	/**
 	 * Update prev history.
 	 *
+	 * @param companyId the company id
 	 * @param prevHistId the prev hist id
 	 * @param endĐate the end đate
 	 */
-	void updatePrevHistory(String companyId,String prevHistId,GeneralDate endĐate);
+    void updatePrevHistory(String companyId, String prevHistId, GeneralDate endĐate);
 	
 	/**
 	 * Update wkp history if need.

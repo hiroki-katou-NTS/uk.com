@@ -14,11 +14,11 @@ module nts.uk.at.view.kmk002.a {
             getOptItemEnum: 'ctx/at/record/optionalitem/getenum'
         };
 
-        export function getFormulaEnum(): JQueryPromise<model.FormulaEnum> {
+        export function getFormulaEnum(): JQueryPromise<model.FormulaEnumDto> {
             return nts.uk.request.ajax(servicePath.getFormulaEnum);
         }
 
-        export function getOptItemEnum(): JQueryPromise<model.OptItemEnum> {
+        export function getOptItemEnum(): JQueryPromise<model.OptItemEnumDto> {
             return nts.uk.request.ajax(servicePath.getOptItemEnum);
         }
 
@@ -148,7 +148,7 @@ module nts.uk.at.view.kmk002.a {
                 AMOUNT = 1,
                 TIME = 2
             }
-            export class FormulaEnum {
+            export interface FormulaEnumDto {
                 formulaAtr: EnumConstantDto[];
                 calcAtr: EnumConstantDto[];
                 minusSegment: EnumConstantDto[];
@@ -156,22 +156,19 @@ module nts.uk.at.view.kmk002.a {
                 settingMethod: EnumConstantDto[];
                 dispOrder: EnumConstantDto[];
                 addSubAtr: EnumConstantDto[];
-                amountRounding: EnumConstantDto[];
-                timeRounding: EnumConstantDto[];
-                numberRounding: EnumConstantDto[];
+                amountRounding: RoundingDto;
+                timeRounding: RoundingDto;
+                numberRounding: RoundingDto;
             }
-            export class OptItemEnum {
-                formulaAtr: EnumConstantDto[];
-                calcAtr: EnumConstantDto[];
-                minusSegment: EnumConstantDto[];
-                operatorAtr: EnumConstantDto[];
-                settingMethod: EnumConstantDto[];
-                dispOrder: EnumConstantDto[];
-                addSubAtr: EnumConstantDto[];
-                amountRounding: EnumConstantDto[];
-                timeRounding: EnumConstantDto[];
-                numberRounding: EnumConstantDto[];
-
+            export interface RoundingDto {
+                unit: EnumConstantDto[];
+                rounding: EnumConstantDto[];
+            }
+            export interface OptItemEnumDto {
+                itemAtr: EnumConstantDto[];
+                useAtr: EnumConstantDto[];
+                empConditionAtr: EnumConstantDto[];
+                performanceAtr: EnumConstantDto[];
             }
             export interface EnumConstantDto {
                 value: number;

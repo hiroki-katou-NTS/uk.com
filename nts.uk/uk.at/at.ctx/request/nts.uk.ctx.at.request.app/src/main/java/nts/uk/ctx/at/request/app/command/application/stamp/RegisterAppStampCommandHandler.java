@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.app.command.application.stamp;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -9,8 +11,16 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.command.application.common.approveaccepted.ApproveAcceptedCmd;
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
+import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
+import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.Reason;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCancel;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutPermit;
@@ -39,6 +49,34 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 		String companyID = AppContexts.user().companyId();
 		AppStampCmd appStampCmd = context.getCommand();
 		AppStamp appStamp = null;
+		/*List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
+				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
+						companyID, 
+						"", 
+						appApprovalPhaseCmd.phaseID, 
+						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
+						appApprovalPhaseCmd.dispOrder, 
+						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) , 
+						appApprovalPhaseCmd.getApprovalFrameCmds().stream().map(approvalFrame -> new ApprovalFrame(
+								companyID, 
+								approvalFrame.phaseID, 
+								approvalFrame.dispOrder, 
+								approvalFrame.approverSID, 
+								EnumAdaptor.valueOf(approvalFrame.approvalATR, ApprovalAtr.class) , 
+								EnumAdaptor.valueOf(approvalFrame.confirmATR, ConfirmAtr.class) , 
+								GeneralDate.fromString(approvalFrame.approvalDate, "yyyy/MM/dd") , 
+								new Reason(approvalFrame.reason), 
+								approvalFrame.representerSID, 
+								approvalFrame.approveAcceptedCmds.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
+										companyID, 
+										approveAccepted.phaseID, 
+										approveAccepted.dispOrder, 
+										approveAccepted.approverSID
+										)).collect(Collectors.toList())
+								)).collect(Collectors.toList())
+						))
+				.collect(Collectors.toList());*/
+		List<AppApprovalPhase> appApprovalPhases = new ArrayList<>();
 		StampRequestMode stampRequestMode = EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class);
 		switch(stampRequestMode){
 			case STAMP_GO_OUT_PERMIT: 
@@ -63,7 +101,7 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 					null,
 					null,
 					null);
-				applicationStampNewDomainService.appStampGoOutPermitRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp);
+				applicationStampNewDomainService.appStampGoOutPermitRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			case STAMP_ADDITIONAL: 
 				appStamp = AppStamp.createFromJavaType(
@@ -89,7 +127,7 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 					).collect(Collectors.toList()),
 					null,
 					null);
-				applicationStampNewDomainService.appStampGoOutPermitRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp);
+				applicationStampNewDomainService.appStampWorkRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			case STAMP_CANCEL: 
 				appStamp = AppStamp.createFromJavaType(
@@ -109,7 +147,7 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 								x.getCancelAtr())	
 					).collect(Collectors.toList()),
 					null);
-				applicationStampNewDomainService.appStampGoOutPermitRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp);
+				applicationStampNewDomainService.appStampCancelRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			case STAMP_ONLINE_RECORD: 
 				appStamp = AppStamp.createFromJavaType(
@@ -126,7 +164,7 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 					new AppStampOnlineRecord(
 							EnumAdaptor.valueOf(appStampCmd.getAppStampOnlineRecordCmd().getStampCombinationAtr(), StampCombinationAtr.class),
 							appStampCmd.getAppStampOnlineRecordCmd().getAppTime()));
-				applicationStampNewDomainService.appStampGoOutPermitRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp);
+				applicationStampNewDomainService.appStampOnlineRecordRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			default:
 				break;

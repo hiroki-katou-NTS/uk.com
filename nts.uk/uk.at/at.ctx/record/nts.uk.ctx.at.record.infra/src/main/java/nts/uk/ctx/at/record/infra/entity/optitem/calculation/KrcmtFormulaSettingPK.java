@@ -45,6 +45,18 @@ public class KrcmtFormulaSettingPK implements Serializable {
 	/**
 	 * Instantiates a new krcmt formula setting PK.
 	 *
+	 * @param pk the pk
+	 */
+	public KrcmtFormulaSettingPK(KrcmtOptItemFormulaPK pk) {
+		super();
+		this.cid = pk.getCid();
+		this.optionalItemNo = pk.getOptionalItemNo();
+		this.formulaId = pk.getFormulaId();
+	}
+
+	/**
+	 * Instantiates a new krcmt formula setting PK.
+	 *
 	 * @param cid the cid
 	 * @param optionalItemNo the optional item no
 	 * @param formulaId the formula id

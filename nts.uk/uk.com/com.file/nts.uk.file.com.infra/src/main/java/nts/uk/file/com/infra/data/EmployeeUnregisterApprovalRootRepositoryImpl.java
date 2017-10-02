@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
@@ -18,7 +19,6 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.EmployeeApproveDto;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval.EmployeeOfApprovalRoot;
 import nts.uk.file.com.app.EmployeeUnregisterApprovalRootRepository;
@@ -43,9 +43,9 @@ public class EmployeeUnregisterApprovalRootRepositoryImpl implements EmployeeUnr
 	}
 
 	private List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate) {
-		List<EmployeeApproveDto> lstEmps = new ArrayList<>();
+		List<EmployeeImport> lstEmps = new ArrayList<>();
 		for (int i = 0; i < 15; i = i + 2) {
-			EmployeeApproveDto emp = new EmployeeApproveDto();
+			EmployeeImport emp = new EmployeeImport();
 			emp.setCompanyId(companyId);
 			emp.setPId("CEC90E5D-1910-4271-A1F5-2DC27B53E3E5");
 			emp.setSId("90000000-0000-0000-0000-000000000016");
@@ -101,7 +101,7 @@ public class EmployeeUnregisterApprovalRootRepositoryImpl implements EmployeeUnr
 		// 承認ルート未登録出力対象としてリスト
 		List<EmployeeUnregisterOutput> lstUnRegister = new ArrayList<>();
 		EmployeeUnregisterOutput empInfo = new EmployeeUnregisterOutput();
-		for (EmployeeApproveDto empInfor : lstEmps) {
+		for (EmployeeImport empInfor : lstEmps) {
 			List<String> appTypes = new ArrayList<>();
 			for (ApplicationType appType : ApplicationType.values()) {
 				// 社員の対象申請の承認ルートを取得する(lấy dữ liệu approve route của đối tượng đơn xin của nhân

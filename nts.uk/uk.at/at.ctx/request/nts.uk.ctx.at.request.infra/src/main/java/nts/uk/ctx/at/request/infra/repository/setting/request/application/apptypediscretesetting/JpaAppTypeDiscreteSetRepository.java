@@ -45,7 +45,8 @@ public class JpaAppTypeDiscreteSetRepository extends JpaRepository implements Ap
 				EnumAdaptor.valueOf(entity.retrictPreMethodFlg, CheckMethod.class),
 				EnumAdaptor.valueOf(entity.retrictPreUseFlg, UseAtr.class),
 				EnumAdaptor.valueOf(entity.retrictPreDay, RetrictDay.class),
-				new RetrictPreTimeDay(BigDecimal.valueOf(entity.retrictPreTimeDay)),
+				//new RetrictPreTimeDay(Interger.valueOf(entity.retrictPreTimeDay)),
+				new RetrictPreTimeDay(entity.retrictPreTimeDay),
 				EnumAdaptor.valueOf(entity.retrictPreCanAcceptFlg, PossibleAtr.class),
 				EnumAdaptor.valueOf(entity.retrictPostAllowFutureFlg, AllowAtr.class));
 	}

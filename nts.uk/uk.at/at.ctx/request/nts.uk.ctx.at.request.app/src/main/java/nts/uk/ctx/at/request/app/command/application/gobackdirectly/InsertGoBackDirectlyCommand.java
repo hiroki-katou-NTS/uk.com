@@ -4,20 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.at.request.app.command.application.common.CreateApplicationCommand;
 
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor	
 public class InsertGoBackDirectlyCommand {
-	/**
-	 * 会社ID
-	 */
-	String companyID;
-	/**
-	 * 申請ID
-	 */
-	String appID;
 	/**
 	 * 勤務種類
 	 */
@@ -25,7 +18,7 @@ public class InsertGoBackDirectlyCommand {
 	/**
 	 * 就業時間帯
 	 */
-	String siftCd;
+	String siftCD;
 	/**
 	 * 勤務を変更する
 	 */
@@ -70,4 +63,8 @@ public class InsertGoBackDirectlyCommand {
 	 * 勤務場所選択２
 	 */
 	String workLocationCD2;
+	/**
+	 * Application Detail
+	 */
+	CreateApplicationCommand appCommand;
 }

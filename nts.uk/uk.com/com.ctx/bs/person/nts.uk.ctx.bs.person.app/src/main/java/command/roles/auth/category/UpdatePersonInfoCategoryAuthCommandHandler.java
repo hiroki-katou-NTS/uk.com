@@ -43,19 +43,18 @@ public class UpdatePersonInfoCategoryAuthCommandHandler extends CommandHandler<U
 				PersonInfoRoleAuth addRoleAuth = PersonInfoRoleAuth.createFromDefaultValue(p.getRoleId(), companyId);
 				this.roleAuthRepo.add(addRoleAuth);
 				this.categoryAuthRepo.add(addCategoryAuth);
-				
+
 			} else {
-				
+
 				List<PersonInfoCategoryAuth> categoryLst = this.categoryAuthRepo
 						.getAllCategoryAuthByRoleId(p.getRoleId());
 				if (categoryLst.size() > 0) {
 					categoryLst.stream().forEach(c -> {
 
-						PersonInfoCategoryAuth categoryAuth = this.categoryAuthRepo.getDetailPersonCategoryAuthByPId(p.getRoleId(), p.getCategoryId())
-								.orElse(null);
+						PersonInfoCategoryAuth categoryAuth = this.categoryAuthRepo
+								.getDetailPersonCategoryAuthByPId(p.getRoleId(), p.getCategoryId()).orElse(null);
 						if (categoryAuth != null) {
-							PersonInfoCategoryAuth updateCategory = PersonInfoCategoryAuth.createFromJavaType(
-									p.getRoleId(), p.getCategoryId(), p.getAllowPersonRef(), p.getAllowOtherRef(),
+							categoryAuth.updateFromJavaType(p.getAllowPersonRef(), p.getAllowOtherRef(),
 									categoryAuth.getAllowOtherCompanyRef().value,
 									categoryAuth.getSelfPastHisAuth().value, categoryAuth.getSelfFutureHisAuth().value,
 									categoryAuth.getSelfAllowAddHis().value, categoryAuth.getSelfAllowDelHis().value,
@@ -66,15 +65,15 @@ public class UpdatePersonInfoCategoryAuthCommandHandler extends CommandHandler<U
 									categoryAuth.getSelfAllowDelMulti().value,
 									categoryAuth.getOtherAllowAddMulti().value,
 									categoryAuth.getOtherAllowDelMulti().value);
-							this.categoryAuthRepo.update(updateCategory);
-							
+							this.categoryAuthRepo.update(categoryAuth);
+
 						} else {
-							
+
 							this.categoryAuthRepo.add(addCategoryAuth);
 						}
 					});
 				} else {
-					
+
 					this.categoryAuthRepo.add(addCategoryAuth);
 				}
 

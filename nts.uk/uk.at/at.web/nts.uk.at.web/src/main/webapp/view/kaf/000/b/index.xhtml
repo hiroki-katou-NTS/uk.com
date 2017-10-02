@@ -8,10 +8,22 @@
 	<ui:composition template="../../../../master/sidebar.xhtml">
 		<ui:define name="sidebar-head">
 			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
-					nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.shr.com.primitive.PersonId
+				nts.uk.shr.com.time.TimeWithDayAttr
+				nts.uk.ctx.at.request.dom.application.common.AppReason
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="../../002/cm/kaf002.cm.main.css" />
+			<com:stylefile path="../../002/m1/kaf002.m1.main.css" />
+			<com:stylefile path="../../002/m2/kaf002.m2.main.css" />
+			<com:stylefile path="../../002/m3/kaf002.m3.main.css" />
+			<com:stylefile path="../../002/m4/kaf002.m4.main.css" />
+			<com:stylefile path="../../002/m5/kaf002.m5.main.css" />
+			<com:stylefile path="../../004/e/kaf004.e.style.css" />
+			<com:stylefile path="../../009/b/kaf009.b.style.css" />
+			<com:stylefile path="kaf000.b.main.css" />
+			<com:scriptfile path="kaf000.b.vm.js" />
+			<com:scriptfile path="kaf000.b.service.js" />
 			<com:scriptfile path="../../002/shr/kaf002.shr.service.js" />
 			<com:scriptfile path="../../002/shr/kaf002.shr.vm.js" />
 			<com:scriptfile path="../../002/m1/kaf002.m1.vm.js" />
@@ -19,19 +31,11 @@
 			<com:scriptfile path="../../002/m3/kaf002.m3.vm.js" />
 			<com:scriptfile path="../../002/m4/kaf002.m4.vm.js" />
 			<com:scriptfile path="../../002/m5/kaf002.m5.vm.js" />
-			<com:scriptfile path="../../002/cm/kaf002.cm.vm.js" />
-			<com:stylefile path="../../002/cm/kaf002.cm.main.css" />
-			<com:stylefile path="../../002/m1/kaf002.m1.main.css" />
-			<com:stylefile path="../../002/m2/kaf002.m2.main.css" />
-			<com:stylefile path="../../002/m3/kaf002.m3.main.css" />
-			<com:stylefile path="../../002/m4/kaf002.m4.main.css" />
-			<com:stylefile path="../../002/m5/kaf002.m5.main.css" />
-			<com:stylefile path="../../009/b/kaf009.b.style.css" />
-			<com:stylefile path="kaf000.b.main.css" />
-			<com:scriptfile path="kaf000.b.service.js" />
-			<com:scriptfile path="kaf000.b.vm.js" />
+			<com:scriptfile path="../../004/e/kaf004.e.vm.js" />
+			<com:scriptfile path="../../004/e/kaf004.e.service.js" />
 			<com:scriptfile path="../../009/b/kaf009.b.service.js" />
 			<com:scriptfile path="../../009/b/kaf009.b.vm.js" />
+			<com:scriptfile path="../../002/cm/kaf002.cm.vm.js" />
 			<com:scriptfile path="kaf000.b.start.js" />
 		</ui:define>
 		<ui:define name="content">
@@ -43,46 +47,52 @@
 				<!-- B1_3 -->
 				<button><i class="icon icon-button-arrow-right"></i></button>
 				<!-- B1_4 -->
-				<button class="proceed">#{i18n.getText('KAF000_15')}</button>
+				<button class="proceed" data-bind="click: btnApprove, enable: enableApprove">#{i18n.getText('KAF000_15')}</button>
 				<!-- B1_5 -->
-				<button >#{i18n.getText('KAF000_16')}</button>
+				<button data-bind="click: btnDeny, enable: enableDeny" >#{i18n.getText('KAF000_16')}</button>
 				<!-- B1_6 -->
 				<button >#{i18n.getText('KAF000_17')}</button>
 				<!-- B1_7 -->
-				<button >#{i18n.getText('KAF000_18')}</button>
+				<button data-bind="click: btnRelease, enable: enableRelease" >#{i18n.getText('KAF000_18')}</button>
 				
 				<!-- B1_8 -->
-				<div data-bind="with: screenModel.cm" style="display: inline-block">
+				<button class="proceed" data-bind="click: update , enable : enableRegistration">#{i18n.getText('KAF000_19')}</button>	
+				<!-- <div data-bind="with: screenModel.cm" style="display: inline-block">
 					<button class="proceed" data-bind="click: update">#{i18n.getText('KAF000_19')}</button>
-				</div>
+				</div> -->
 				
 				<!-- B1_9 -->
 				<button >#{i18n.getText('KAF000_20')}</button>
 				<!-- B1_10 -->
-				<button >#{i18n.getText('KAF000_21')}</button>
+				<button data-bind="click: btnReferences" >#{i18n.getText('KAF000_21')}</button>
 				<!-- B1_11 -->
-				<button >#{i18n.getText('KAF000_22')}</button>
+				<button data-bind="click: btnSendEmail" >#{i18n.getText('KAF000_22')}</button>
 				
 				<!-- B1_12 -->
-				<button  class="danger">#{i18n.getText('KAF000_23')}</button>
+				<button  class="danger" data-bind="click: btnDelete , enable : enableDelete" >#{i18n.getText('KAF000_23')}</button>
+				
 				<!-- B1_13 -->
-				<button  class="danger">#{i18n.getText('KAF000_24')}</button>
+				<button  class="danger" data-bind="click: btnCancel , enable : enableCancel">#{i18n.getText('KAF000_24')}</button>
+				<br></br>
+				<div id="comment"> 
+					<label data-bind=" visible : visibleApproval">【承認】</label><label style="margin-left: 25px;" data-bind=" visible : visibleDenial">【否認】</label>
+				</div>
 			</div>
-			<div id="contents-area" data-bind="with: screenModel">
+			<div id="contents-area">
 				<!-- row1 -->
 				<div id="message-area"> 
 					<table >
-						<tr>
+						<tr data-bind =  "if : outputMessageDeadline() != null">
 							<!-- A1_1 -->
 							<td class="message-td" >#{i18n.getText('KAF000_1')}</td>
 							<!-- A1_2 -->
-							<td class="message-td"> 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 </td>
-						</tr>
-						<tr>
+							<td class="message-td"><div data-bind="text:outputMessageDeadline().message" ></div></td>
+						</tr >
+						<tr data-bind =  "if : outputMessageDeadline() != null">
 							<!-- A1_3 -->
 							<td class="message-td">#{i18n.getText('KAF000_2')}</td>
 							<!-- A1_4 -->
-							<td class="message-td"> 2017/11/12  ~ 2019/11/12</td>
+							<td class="message-td"><div data-bind="text:outputMessageDeadline().deadline" ></div></td>
 						</tr>
 					</table>
 				</div>
@@ -102,12 +112,21 @@
 				</div>
 				
 				<!-- Body -->
-<!-- 				<div style="height: 50px;background-color: gray ; margin-top: 30px;'">body</div> -->
-				<div data-bind="with: screenModel.cm">
+				<com:ko-if bind="appType() == 7">
 					<ui:include src="../../002/cm/index.xhtml" />
-				</div>
+				</com:ko-if>
+				<com:ko-if bind="appType() == 9">
+					<ui:include src="../../004/e/index.xhtml" />
+				</com:ko-if>
+				<com:ko-if bind="appType() == 4">
+					<ui:include src="../../009/b/index.xhtml" />
+				</com:ko-if>
+<!--  				<div style="height: 50px;background-color: gray ; margin-top: 30px;'">body</div> -->
+				<!-- <div data-bind="with: screenModel.cm">
+					<ui:include src="../../002/cm/index.xhtml" />
+				</div>--> 
 				
-		<!-- 		<div class="divKaf009" data-bind="with: screenModel9">
+				<!-- <div class="divKaf009" data-bind="with: screenModel9">
 					<ui:include src="../../009/b/index.xhtml"></ui:include>
 				</div> -->
 				<!-- end body -->
@@ -118,8 +137,9 @@
 					<div  data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
 					
 				</div>
-				<BR />	
-				<div id="table-1">
+				
+				<div style="clear:both"></div>
+				<div id="table-1" data-bind="with: dataApplication">
 					<table id="table-phase">
 						<thead>
 							<tr  class="bg-green">
@@ -130,19 +150,26 @@
 								<th class="name-app" style="width:111px;">#{i18n.getText('KAF000_30')}</th>
 							</tr>
 						</thead>
-						<!-- <tbody data-bind="foreach :listFrameByListPhase1" >
-							<com:ko bind="$data" tag ="foreach">
+						<!-- foreach -->
+						<tbody data-bind="foreach : listOutputPhaseAndFrame" >
+							<com:ko bind="$data.listApprovalFrameDto" tag ="foreach">
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
-										<td class="bg-green" data-bind="attr: {rowspan: $parent.length},text: $data.phaseID">test</td>
+										<td class="bg-green" data-bind="attr: {rowspan: $parent.listApprovalFrameDto.length}">
+											フェーズ<label data-bind="text: $parent.appApprovalPhaseDto.phaseID"></label>
+										</td>
 									</com:ko>
-									<td class="bg-green" ><label data-bind="text: $data.approverSID"></label></td>
-									<td><label data-bind="text: $data.reason"></label></td>
-									<td><label>????</label></td>
-									<td><label>OK</label></td>
+									<td class="bg-green" >
+										承認者<label data-bind="text: $data.dispOrder"></label>
+									</td>
+									<td>
+										<label data-bind="text: $data.nameAll"></label>
+									</td>
+									<td><label data-bind="text: $data.approveAll"></label></td>
+									<td><label data-bind="text: $data.reasonAll"> </label></td>
 								</tr>
 							</com:ko>
-						</tbody> -->
+						</tbody>  
 					</table>
 				</div>
 				<!-- end footer -->

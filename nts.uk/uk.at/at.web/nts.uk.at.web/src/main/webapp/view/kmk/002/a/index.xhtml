@@ -21,15 +21,14 @@
 			<com:scriptfile path="kmk002.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
+		<com:ko tag="with" bind="optionalItemHeader">
 			<div id="functions-area">
 				<button tabindex="1" class="proceed" data-bind="click: saveOptionalItemDetail">#{i18n.getText('KMK002_1')}</button>
-				<button data-bind="click: openDialogC">test C</button>
-				<button data-bind="click: openDialogD">test D</button>
 			</div>
 			<div id="contents-area" style="display: none" data-bind="visible: true">
 				<table>
 					<tr>
-						<td>
+						<td style="vertical-align: top;">
 							<div style="width: 300px; margin-right: 30px; padding: 20px " class="caret-right caret-background bg-green">
 							<i class="icon icon-searchbox"></i>
 							<div tabindex="2" data-bind="ntsSearchBox: {targetKey: 'itemNo', mode:'igGrid', comId:'tbl-master-list', items: optionalItemHeaders, 
@@ -48,7 +47,8 @@
 						</div>
 						</td>
 						<td style="vertical-align: top;">
-							<table class="control-group" data-bind="with: optionalItem">
+						<com:ko tag="with" bind="optionalItem">
+							<table class="control-group">
 
 							<!-- Optional Item view model -->
 							
@@ -92,7 +92,8 @@
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_26]',
 		                                          value: calcResultRange.numberUpper,
-		                                          constraint: 'NumberRangeValue'}"/>
+		                                          constraint: 'NumberRangeValue',
+		                                          enable: calcResultRange.upperCheck}"/>
 		                                          </com:ko>
 		                                          
 		                                          <com:ko tag="if" bind="isAmountSelected()">
@@ -100,7 +101,8 @@
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_26]',
 		                                          value: calcResultRange.amountUpper,
-		                                          constraint: 'AmountRangeValue'}"/>
+		                                          constraint: 'AmountRangeValue',
+		                                          enable: calcResultRange.upperCheck}"/>
 		                                          </com:ko>
 		                                          
 		                                          <com:ko tag="if" bind="isTimeSelected()">
@@ -108,7 +110,8 @@
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_26]',
 		                                          value: calcResultRange.timeUpper,
-		                                          constraint: 'TimeRangeValue'}"/>
+		                                          constraint: 'TimeRangeValue',
+		                                          enable: calcResultRange.upperCheck}"/>
 		                                          </com:ko>
 									</td>
 								</tr>
@@ -141,7 +144,8 @@
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_27]',
 		                                          value: calcResultRange.numberLower,
-		                                          constraint: 'NumberRangeValue'}"/>
+		                                          constraint: 'NumberRangeValue',
+		                                          enable: calcResultRange.lowerCheck}"/>
 		                                          </com:ko>
 		                                
 		                                <com:ko tag="if" bind="isTimeSelected()">
@@ -149,7 +153,8 @@
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_27]',
 		                                          value: calcResultRange.timeLower,
-		                                          constraint: 'TimeRangeValue'}"/>
+		                                          constraint: 'TimeRangeValue',
+		                                          enable: calcResultRange.lowerCheck}"/>
 		                                          </com:ko>
 	
 										<com:ko tag="if" bind="isAmountSelected()">
@@ -157,7 +162,8 @@
 										data-bind="ntsTextEditor: {
 												  name: '#[KMK002_27]',
 		                                          value: calcResultRange.amountLower,
-		                                          constraint: 'AmountRangeValue'}"/>
+		                                          constraint: 'AmountRangeValue',
+		                                          enable: calcResultRange.lowerCheck}"/>
 		                                </com:ko>
 									</td>
 								</tr>
@@ -194,31 +200,37 @@
 								
 							<!-- Optional Item view model -->
 								<tr>
-									<td><button tabindex="15">#{i18n.getText('KMK002_28')}</button></td>
+									<td><button tabindex="15" data-bind="click: addFormulaAbove">#{i18n.getText('KMK002_28')}</button></td>
 									<td>
-										<button tabindex="16">#{i18n.getText('KMK002_29')}</button>
-										<button tabindex="17" class="danger">#{i18n.getText('KMK002_30')}</button>
+										<button tabindex="16" data-bind="click: addFormulaBelow">#{i18n.getText('KMK002_29')}</button>
+										<button tabindex="17" data-bind="click: removeFormula" class="danger">#{i18n.getText('KMK002_30')}</button>
 									</td>
 								</tr>
 								<tr>
 									<td colspan="5"><span>#{i18n.getText('KMK002_31')}</span>
-										<input style="width: 700px" id="cha biet la cai gi"
+										<input style="width: 700px" id="inp-apply-formula"
 										data-bind="ntsTextEditor: {
-		                                          value: $parent.name,
+		                                          value: applyFormula,
 		                                          enable: false,
 		                                          readonly: true,
 		                                          required: false}"/>
+		                                <button data-bind="click: openDialogC">test C</button>
+										<button data-bind="click: openDialogD">test D</button>
 									</td>
 								</tr>
 								<!-- Optional Item formula view model -->
 								<tr>
-									<td colspan="10"><table id="tbl-calc-formula"></table></td>
+									<td colspan="10">
+										<table id="tbl-calc-formula"></table>
+									</td>
 								</tr>
 							</table>
+						</com:ko>
 						</td>
 					</tr>
 				</table>
 			</div>
+		</com:ko>
 		</ui:define>
 	</ui:composition>
 </body>

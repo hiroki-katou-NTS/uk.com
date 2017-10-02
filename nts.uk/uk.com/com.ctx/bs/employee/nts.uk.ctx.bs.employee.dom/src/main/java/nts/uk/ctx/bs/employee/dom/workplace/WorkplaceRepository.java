@@ -7,8 +7,6 @@ package nts.uk.ctx.bs.employee.dom.workplace;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.time.GeneralDate;
-
 /**
  * The Interface WorkplaceRepository.
  */
@@ -38,30 +36,12 @@ public interface WorkplaceRepository {
     void removeByWkpId(String companyId, String workplaceId);
 
 	/**
-	 * Find by start date.
-	 *
-	 * @param companyId the company id
-	 * @param date the date
-	 * @return the list
-	 */
-    List<Workplace> findByStartDate(String companyId, GeneralDate date);
-	
-	
-	/**
 	 * Find all workplace.
 	 *
 	 * @param workplaceId the workplace id
 	 * @return the list
 	 */
 	List<Workplace> findByWkpIds(List<String> workplaceIds);
-	
-	/**
-	 * Find latest by workplace id.
-	 *
-	 * @param workplaceId the workplace id
-	 * @return the optional
-	 */
-	Optional<Workplace> findLatestByWorkplaceId(String workplaceId);
 
 	/**
 	 * Find by workplace id.
@@ -71,4 +51,13 @@ public interface WorkplaceRepository {
 	 * @return the optional
 	 */
     Optional<Workplace> findByWorkplaceId(String companyId, String workplaceId);
+    
+    /**
+     * Find by history id.
+     *
+     * @param companyId the company id
+     * @param historyId the history id
+     * @return the optional
+     */
+    Optional<Workplace> findByHistoryId(String companyId, String historyId);
 }

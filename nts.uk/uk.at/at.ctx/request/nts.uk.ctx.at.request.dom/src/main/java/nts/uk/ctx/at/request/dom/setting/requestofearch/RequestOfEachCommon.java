@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.dom.setting.requestofearch;
 import java.util.List;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 /**
@@ -13,6 +14,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @EqualsAndHashCode(callSuper=false)
 public class RequestOfEachCommon extends AggregateRoot {
 	
+	@Getter
 	@Setter
 	private List<RequestAppDetailSetting> requestAppDetailSettings;
 

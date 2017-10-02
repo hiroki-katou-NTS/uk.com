@@ -23,7 +23,7 @@ module nts.uk.com.view.cps005.b {
             startPage(): JQueryPromise<any> {
                 let self = this,
                     dfd = $.Deferred();
-                 block.invisible();
+                block.invisible();
                 new service.Service().getAllPerInfoItemDefByCtgId(self.categoryId).done(function(data: IItemData) {
                     self.currentItemData(new ItemDataModel(data));
                     if (data && data.personInfoItemList && data.personInfoItemList.length > 0) {
@@ -70,9 +70,15 @@ module nts.uk.com.view.cps005.b {
             addUpdateData() {
                 let self = this,
                     newItemDef;
-                 block.invisible();
+
+                block.invisible();
+
+                newItemDef = new UpdateItemModel(self.currentItemData().currentItemSelected());
+
+                self.checkRequired(newItemDef);
+
                 if (self.isUpdate == true) {
-                    newItemDef = new UpdateItemModel(self.currentItemData().currentItemSelected());
+
                     newItemDef.perInfoCtgId = self.categoryId;
                     newItemDef.singleItem.referenceCode = "Hard Code";
                     new service.Service().updateItemDef(newItemDef).done(function(data: string) {
@@ -85,10 +91,13 @@ module nts.uk.com.view.cps005.b {
                         self.currentItemData().perInfoItemSelectCode("");
                         self.currentItemData().perInfoItemSelectCode(newItemDef.perInfoItemDefId);
                     }).fail(error => {
+
                         alertError({ messageId: error.message });
+                        block.clear();
+
                     });
                 } else {
-                    newItemDef = new AddItemModel(self.currentItemData().currentItemSelected())
+                    newItemDef = new AddItemModel(self.currentItemData().currentItemSelected());
                     newItemDef.perInfoCtgId = self.categoryId;
                     newItemDef.singleItem.referenceCode = "Hard Code";
                     new service.Service().addItemDef(newItemDef).done(function(data: string) {
@@ -97,7 +106,10 @@ module nts.uk.com.view.cps005.b {
                         });
                         info({ messageId: "Msg_15" }).then(() => { block.clear(); });
                     }).fail(error => {
+
                         alertError({ messageId: error.message });
+                        block.clear();
+
                     });
                 }
             }
@@ -105,27 +117,31 @@ module nts.uk.com.view.cps005.b {
             removeData() {
                 let self = this,
                     removeModel = new RemoveItemModel(self.currentItemData().perInfoItemSelectCode());
-                //block.invisible();
+                block.invisible();
                 if (!self.currentItemData().perInfoItemSelectCode()) return;
                 let indexItemDelete = _.findIndex(self.currentItemData().personInfoItemList(), function(item) { return item.id == removeModel.perInfoItemDefId; });
                 confirm({ messageId: "Msg_18" }).ifYes(() => {
                     new service.Service().removeItemDef(removeModel).done(function(data: string) {
                         if (data) {
                             info({ messageId: data }).then(() => { block.clear(); });
+                            block.clear();
                             return;
                         }
                         self.reloadData().done(() => {
                             let itemListLength = self.currentItemData().personInfoItemList().length;
                             if (itemListLength === 0) {
                                 self.register();
+                                block.clear();
                                 return;
                             }
                             if (itemListLength - 1 >= indexItemDelete) {
                                 self.currentItemData().perInfoItemSelectCode(self.currentItemData().personInfoItemList()[indexItemDelete].id);
+                                block.clear();
                                 return;
                             }
                             if (itemListLength - 1 < indexItemDelete) {
                                 self.currentItemData().perInfoItemSelectCode(self.currentItemData().personInfoItemList()[itemListLength - 1].id);
+                                block.clear();
                                 return;
                             }
                         });
@@ -133,12 +149,65 @@ module nts.uk.com.view.cps005.b {
 
                     }).fail(error => {
                         alertError({ messageId: error.message });
+                        block.clear();
                     });
+                }).ifNo(() => {
+                    block.clear();
+                    return;
                 })
             }
 
             closedDialog() {
                 nts.uk.ui.windows.close();
+            }
+
+            checkRequired(newItemDef: any) {
+
+                if (newItemDef.singleItem.dataType === 1) {
+                    if (newItemDef.singleItem.stringItemLength === null) {
+                        $("#stringItemLength").focus();
+                        block.clear();
+                        return;
+                    }
+                }
+
+                if (newItemDef.singleItem.dataType === 2) {
+                    if (newItemDef.singleItem.integerPart === null) {
+                        $("#integerPart").focus();
+                        block.clear();
+                        return;
+                    } else if (newItemDef.singleItem.decimalPart === null) {
+                        $("#decimalPart").focus();
+                        block.clear();
+                        return;
+                    }
+                }
+
+                if (newItemDef.singleItem.dataType === 4) {
+                    if (newItemDef.singleItem.timeItemMin === null) {
+                        $("#timeItemMin").focus();
+                        newItemDef.singleItem.hintTimeMin("");
+                        block.clear();
+                        return;
+                    } else if (newItemDef.singleItem.timeItemMax === null) {
+                        $("#timeItemMax").focus();
+                        newItemDef.singleItem.hintTimeMax("");
+                        block.clear();
+                        return;
+                    }
+                }
+
+                if (newItemDef.singleItem.dataType === 5) {
+                    if (newItemDef.singleItem.timePointItemMin === undefined) {
+                        $("#timePointItemMin").focus();
+                        block.clear();
+                        return;
+                    } else if (newItemDef.singleItem.timePointItemMax === undefined) {
+                        $("#timePointItemMax").focus();
+                        block.clear();
+                        return;
+                    }
+                }
             }
         }
     }
@@ -201,6 +270,8 @@ module nts.uk.com.view.cps005.b {
 
                     });
                 });
+
+
             }
         }
     }
@@ -252,7 +323,6 @@ module nts.uk.com.view.cps005.b {
                     }
                 }
             }
-
         }
     }
 
@@ -293,6 +363,8 @@ module nts.uk.com.view.cps005.b {
     export class TimeItemModel {
         timeItemMin: KnockoutObservable<number> = ko.observable(null);
         timeItemMax: KnockoutObservable<number> = ko.observable(null);
+        hintTimeItemMin: KnockoutObservable<string> = ko.observable('0:00');
+        hintTimeItemMax: KnockoutObservable<string> = ko.observable('0:00');
         constructor(data: ITimeItem) {
             let self = this;
             if (!data) return;
@@ -301,13 +373,15 @@ module nts.uk.com.view.cps005.b {
         }
     }
     export class TimePointItemModel {
-        timePointItemMin: KnockoutObservable<number> = ko.observable(null);
-        timePointItemMax: KnockoutObservable<number> = ko.observable(null);
+        timePointItemMin: KnockoutObservable<number> = ko.observable();
+        timePointItemMax: KnockoutObservable<number> = ko.observable();
+        hintTimeMin: KnockoutObservable<string> = ko.observable('0.00');
+        hintTimeMax: KnockoutObservable<string> = ko.observable('0.00');
         constructor(data: ITimePointItem) {
             let self = this;
             if (!data) return;
-            self.timePointItemMin(data.timePointItemMin || null);
-            self.timePointItemMax(data.timePointItemMax || null);
+            self.timePointItemMin(data.timePointItemMin);
+            self.timePointItemMax(data.timePointItemMax);
         }
     }
     export class DateItemModel {

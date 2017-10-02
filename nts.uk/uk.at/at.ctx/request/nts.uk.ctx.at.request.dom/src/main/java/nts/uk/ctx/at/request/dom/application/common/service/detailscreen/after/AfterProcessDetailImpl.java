@@ -14,7 +14,8 @@ import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
-import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverImport;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
@@ -23,7 +24,6 @@ import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameR
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.Reason;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.ApproverResult;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.ApproverWhoApproved;
-import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
@@ -45,7 +45,7 @@ public class AfterProcessDetailImpl implements AfterProcessDetail {
 	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
 
 	@Inject
-	private ApprovalAgencyInformation approvalAgencyInformationService;
+	private AgentAdapter approvalAgencyInformationService;
 
 	@Inject
 	private AfterApprovalProcess detailedScreenAfterApprovalProcessService;
@@ -57,7 +57,7 @@ public class AfterProcessDetailImpl implements AfterProcessDetail {
 		List<AppApprovalPhase> appApprovalPhases = appApprovalPhaseRepository.findPhaseByAppID(companyID, appID);
 		ApproverResult approverResult = acquireApproverWhoApproved(appApprovalPhases);
 		List<ApproverWhoApproved> approverWhoApproveds = approverResult.getApproverWhoApproveds();
-		List<ApproverImport> approvers = approverResult.getApprovers();
+		List<ApproverWhoApproved> approvers = approverResult.getApprovers();
 		Application application = applicationOptional.get();
 		// application.reversionReason = "";
 		application.setReflectPerState(ReflectPlanPerState.NOTREFLECTED);
@@ -66,12 +66,14 @@ public class AfterProcessDetailImpl implements AfterProcessDetail {
 			appApprovalPhase.setApprovalATR(ApprovalAtr.UNAPPROVED);
 			List<ApprovalFrame> approvalFrames = approvalFrameRepository.getAllApproverByPhaseID(companyID, appID);
 			for (ApprovalFrame approvalFrame : approvalFrames) {
-				approvalFrame.setApprovalATR(ApprovalAtr.UNAPPROVED);
-				approvalFrame.setApproverSID("");
-				approvalFrame.setRepresenterSID("");
-				approvalFrame.setReason(new Reason(""));
-				approvalFrame.setApprovalDate(null);
-				approvalFrameRepository.update(approvalFrame);
+				approvalFrame.getListApproveAccepted().forEach(x -> {
+					x.changeApprovalATR(ApprovalAtr.UNAPPROVED);
+					x.changeApproverSID("");
+					x.changeRepresenterSID("");
+					x.changeReason(new Reason(""));
+					x.changeApprovalDate(null);
+				});
+				approvalFrameRepository.update(approvalFrame, appApprovalPhase.getPhaseID());
 			}
 		}
 		if (approverWhoApproveds.size() < 1)
@@ -82,9 +84,9 @@ public class AfterProcessDetailImpl implements AfterProcessDetail {
 			return;
 		for (ApproverWhoApproved approverWhoApproved : approverWhoApproveds) {
 			if (approverWhoApproved.isAgentFlag()) {
-				ApprovalAgencyInformationOutput agencyInformationOutput = approvalAgencyInformationService
+				AgentPubImport agencyInformationOutput = approvalAgencyInformationService
 						.getApprovalAgencyInformation(companyID,
-								approvers.stream().map(x -> x.getApproverId()).collect(Collectors.toList()));
+								approvers.stream().map(x -> x.getApproverAdaptorDto()).collect(Collectors.toList()));
 				for (String id : agencyInformationOutput.getListRepresenterSID()) {
 					if (id.equals(approverWhoApproved.getApproverAdaptorDto())) {
 						destinationList.add(approverWhoApproved.getApproverAdaptorDto());
@@ -108,14 +110,16 @@ public class AfterProcessDetailImpl implements AfterProcessDetail {
 			if(!approverList.isEmpty()){
 				List<ApprovalFrame> approvalFrames = approvalFrameRepository.getAllApproverByPhaseID(appApprovalPhase.getCompanyID(), appApprovalPhase.getAppID());
 				for(ApprovalFrame approvalFrame : approvalFrames) {
-					if(approvalFrame.getApprovalATR().equals(ApprovalAtr.APPROVED)){
-						if(Strings.isNotEmpty(approvalFrame.getRepresenterSID())){
-							approverResult.getApproverWhoApproveds().add(new ApproverWhoApproved(approvalFrame.getRepresenterSID(), true));
-						} else {
-							approverResult.getApproverWhoApproveds().add(new ApproverWhoApproved(approvalFrame.getApproverSID(), false));
-						}
-						// approverList.add(approvalFrame.approverList);
-					}	
+					approvalFrame.getListApproveAccepted().forEach(x -> {
+						if(x.getApprovalATR().equals(ApprovalAtr.APPROVED)){
+							if(Strings.isNotEmpty(x.getRepresenterSID())){
+								approverResult.getApproverWhoApproveds().add(new ApproverWhoApproved(x.getRepresenterSID(), true));
+							} else {
+								approverResult.getApproverWhoApproveds().add(new ApproverWhoApproved(x.getApproverSID(), false));
+							}
+							// approverList.add(approvalFrame.approverList);
+						}	
+					});
 				}
 			}
 		}

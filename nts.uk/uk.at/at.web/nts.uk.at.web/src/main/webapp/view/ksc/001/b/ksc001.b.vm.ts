@@ -16,8 +16,29 @@ module nts.uk.at.view.ksc001.b {
             selectSchedules: KnockoutObservableArray<any>;
             selectedRuleCode: any;
             checkAllCase: KnockoutObservable<boolean>;
+             enable: KnockoutObservable<boolean>;
+            required: KnockoutObservable<boolean>;
+            dateValue: KnockoutObservable<any>;
+            startDateString: KnockoutObservable<string>;
+            endDateString: KnockoutObservable<string>;
             constructor() {
                 var self = this;
+                self.enable = ko.observable(true);
+                self.required = ko.observable(true);
+
+                self.startDateString = ko.observable("");
+                self.endDateString = ko.observable("");
+                self.dateValue = ko.observable({});
+
+                self.startDateString.subscribe(function(value) {
+                    self.dateValue().startDate = value;
+                    self.dateValue.valueHasMutated();
+                });
+
+                self.endDateString.subscribe(function(value) {
+                    self.dateValue().endDate = value;
+                    self.dateValue.valueHasMutated();
+                });
                 self.stepList = [
                     { content: '.step-1' },
                     { content: '.step-2' },
@@ -70,10 +91,8 @@ module nts.uk.at.view.ksc001.b {
                     }
 
                 }
-
-                $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent).done(function(){
-                     self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
-                });
+                self.stepSelected = ko.observable({ id: 'step-1', content: '.step-1' });
+                
                 
                 self.selectSchedules = ko.observableArray([
                     { code: '1', name: nts.uk.resource.getText("KSC001_74") },

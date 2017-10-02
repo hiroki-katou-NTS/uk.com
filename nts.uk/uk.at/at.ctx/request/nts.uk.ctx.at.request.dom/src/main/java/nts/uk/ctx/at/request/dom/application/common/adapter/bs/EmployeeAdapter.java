@@ -35,5 +35,11 @@ public interface EmployeeAdapter {
 	 * @return the workplace id
 	 */
 	String getWorkplaceId(String companyId,String employeeId, GeneralDate baseDate);
+	/**
+	 * Get employee Name
+	 * @param sID
+	 * @return
+	 */
+	String getEmployeeName(String sID);
 	
 }

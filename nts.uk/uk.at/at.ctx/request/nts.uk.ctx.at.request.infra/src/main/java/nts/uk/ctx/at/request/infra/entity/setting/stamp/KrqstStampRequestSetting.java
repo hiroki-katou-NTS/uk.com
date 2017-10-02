@@ -28,13 +28,13 @@ public class KrqstStampRequestSetting extends UkJpaEntity {
 	@Column(name="TOP_COMMENT_FONT_WEIGHT")
 	public String topCommentFontWeight;
 	
-	@Column(name="BOT_COMMENT_TEXT")
+	@Column(name="BOTTOM_COMMENT_TEXT")
 	public String bottomComment;
 	
-	@Column(name="BOT_COMMENT_FONT_COLOR")
+	@Column(name="BOTTOM_COMMENT_FONT_COLOR")
 	public String bottomCommentFontColor;
 	
-	@Column(name="BOT_COMMENT_FONT_WEIGHT")
+	@Column(name="BOTTOM_COMMENT_FONT_WEIGHT")
 	public String bottomCommentFontWeight;
 	
 	@Column(name="RESULT_DISP_FLG")

@@ -4,14 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.app.find.optitem.calculation;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
 import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
-import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
+import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class FormulaFinder.
@@ -19,15 +20,16 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
 @Stateless
 public class FormulaFinder {
 
+	@Inject
+	private FormulaRepository repo;
+
 	/**
 	 * Find all.
 	 *
 	 * @return the list
 	 */
 	public List<FormulaDto> findByItemNo(String itemNo) {
-		// this.repo.findAll(AppContexts.user().companyId());
-		// TODO mock data
-		List<Formula> list = new ArrayList<Formula>();
+		List<Formula> list = this.repo.findByOptItemNo(AppContexts.user().companyId(), itemNo);
 
 		List<FormulaDto> listDto = list.stream().map(item -> {
 			FormulaDto dto = new FormulaDto();
@@ -35,11 +37,6 @@ public class FormulaFinder {
 			return dto;
 		}).collect(Collectors.toList());
 
-		for (int i = 0; i < 10; i++) {
-			FormulaDto dto = new FormulaDto();
-			dto.setFormulaId(new FormulaId(""+i));
-			listDto.add(dto);
-		}
 		return listDto;
 	}
 }

@@ -1,6 +1,6 @@
 package nts.uk.ctx.workflow.infra.repository.approvermanagement.workroot;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,6 +81,18 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		this.commandProxy().insert(toEntityPsApR(psAppRoot));
 	}
 	/**
+	 * add All Person Approval Root
+	 * @param psAppRoot
+	 */
+	@Override
+	public void addAllPsApprovalRoot(List<PersonApprovalRoot> psAppRoot) {
+		List<WwfmtPsApprovalRoot> lstEntity = new ArrayList<>();
+		for (PersonApprovalRoot ps : psAppRoot) {
+			lstEntity.add(toEntityPsApR(ps));
+		}
+		this.commandProxy().insertAll(lstEntity);
+	}
+	/**
 	 * update Person Approval Root
 	 * @param psAppRoot
 	 */
@@ -96,6 +108,28 @@ public class JpaPersonApprovalRootRepository extends JpaRepository implements Pe
 		x.setConfirmationRootType(a.confirmationRootType);
 		x.setEmploymentRootAtr(a.employmentRootAtr);
 		this.commandProxy().update(x);
+	}
+	/**
+	 * update All Person Approval Root
+	 * @param psAppRoot
+	 */
+	@Override
+	public void updateAllPsApprovalRoot(List<PersonApprovalRoot> psAppRoot) {
+		List<WwfmtPsApprovalRoot> lstEntity = new ArrayList<>();
+		for (PersonApprovalRoot ps : psAppRoot) {
+			WwfmtPsApprovalRoot a = toEntityPsApR(ps);
+			WwfmtPsApprovalRoot x = this.queryProxy().find(a.wwfmtPsApprovalRootPK, WwfmtPsApprovalRoot.class).get();
+			x.setStartDate(a.startDate);
+			x.setEndDate(a.endDate);
+			x.setApplicationType(a.applicationType);
+			x.setBranchId(a.branchId);
+			x.setAnyItemAppId(a.anyItemAppId);
+			x.setConfirmationRootType(a.confirmationRootType);
+			x.setEmploymentRootAtr(a.employmentRootAtr);
+			lstEntity.add(x);
+		}
+		
+		this.commandProxy().updateAll(lstEntity);
 	}
 	/**
 	 * get Person Approval Root By End date

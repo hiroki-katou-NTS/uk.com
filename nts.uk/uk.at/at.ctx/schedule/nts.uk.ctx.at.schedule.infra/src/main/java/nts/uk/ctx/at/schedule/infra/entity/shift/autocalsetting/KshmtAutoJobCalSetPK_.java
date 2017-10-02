@@ -14,9 +14,9 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class KshmtAutoJobCalSetPK_ {
 	
     /** The cid. */
-    public static volatile SingularAttribute<KshmtAutoJobCalSetPK_, String> cid; 
+    public static volatile SingularAttribute<KshmtAutoJobCalSetPK, String> cid; 
     
     /** The jobid. */
-    public static volatile SingularAttribute<KshmtAutoJobCalSetPK_, String> jobid;
+    public static volatile SingularAttribute<KshmtAutoJobCalSetPK, String> jobid;
 
 }

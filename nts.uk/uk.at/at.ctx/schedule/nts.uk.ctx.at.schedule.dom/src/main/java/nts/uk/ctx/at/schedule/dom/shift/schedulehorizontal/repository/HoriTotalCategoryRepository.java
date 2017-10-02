@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCategory;
+import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalItem;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 public interface HoriTotalCategoryRepository {
 	
@@ -68,4 +69,19 @@ public interface HoriTotalCategoryRepository {
 	 * @return
 	 */
 	List<TotalEvalOrder> findOrder(String companyId, String categoryCode, Integer totalItemNo);
+	
+	/**
+	 * find all total eval item
+	 * @param companyId
+	 * @return
+	 */
+	List<TotalEvalItem> findAllItem (String companyId);
+	
+	/**
+	 * find total eval item by code
+	 * @param companyId
+	 * @param totalItemNo
+	 * @return
+	 */
+	List<TotalEvalItem> findEvalItem(String companyId, int totalItemNo);
 }
