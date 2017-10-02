@@ -3,7 +3,6 @@ module nts.uk.at.view.kmk002.a {
     import OptionalItemHeaderDto = nts.uk.at.view.kmk002.a.service.model.OptionalItemHeader;
     import CalcResultRangeDto = nts.uk.at.view.kmk002.a.service.model.CalcResultRangeDto;
     import FormulaDto = nts.uk.at.view.kmk002.a.service.model.FormulaDto;
-    import CalcFormulaSettingDto = nts.uk.at.view.kmk002.a.service.model.CalcFormulaSettingDto;
     import FormulaSettingDto = nts.uk.at.view.kmk002.a.service.model.FormulaSettingDto;
     import ItemSelectionDto = nts.uk.at.view.kmk002.a.service.model.ItemSelectionDto;
     import SettingItemDto = nts.uk.at.view.kmk002.a.service.model.SettingItemDto;;
@@ -223,6 +222,10 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 let id = ''; //selected id.
                 _.remove(self.calcFormulas, item => item.formulaId == id);
+                self.calcFormulas = [];
+
+                // reload nts grid.
+                self.initNtsGrid();
             }
 
             /**
@@ -545,10 +548,31 @@ module nts.uk.at.view.kmk002.a {
                     dfd.resolve();
                 }).fail().always(() => nts.uk.ui.block.clear());
 
-                let test: Array<FormulaDto> = self.optionalItem.calcFormulas.map(item => {
+                // save formulas.
+                self.saveFormulas();
+
+                return dfd.promise();
+            }
+
+            /**
+             * Save formulas.
+             */
+            private saveFormulas(): JQueryPromise<void> {
+                let self = this;
+                let dfd = $.Deferred<void>();
+
+                // convert to dtos.
+                let formulas: Array<FormulaDto> = self.optionalItem.calcFormulas.map(item => {
                     return item.toDto();
                 });
-                service.saveFormula(test);
+
+                // set command.
+                let command = <service.model.FormulaCommand>{};
+                command.optItemNo = self.optionalItem.optionalItemNo();
+                command.calcFormulas = formulas;
+
+                // call saveFormula service.
+                service.saveFormula(command).done(() => dfd.resolve());
 
                 return dfd.promise();
             }
@@ -663,13 +687,9 @@ module nts.uk.at.view.kmk002.a {
                 dto.formulaName = self.formulaName;
                 dto.formulaAtr = self.formulaAtr;
                 dto.symbolValue = self.symbolValue;
-
-                // Calc setting
-                let calcSetting = <CalcFormulaSettingDto>{};
-                calcSetting.calcAtr = self.calcAtr;
-                calcSetting.formulaSetting = self.formulaSetting.toDto();
-                calcSetting.itemSelection = self.itemSelection.toDto();
-                dto.calcFormulaSetting = calcSetting;
+                dto.calcAtr = self.calcAtr;
+                dto.formulaSetting = self.formulaSetting.toDto();
+                dto.itemSelection = self.itemSelection.toDto();
 
                 // Rounding
                 //TODO mock data.
