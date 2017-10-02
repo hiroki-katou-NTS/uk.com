@@ -1,8 +1,12 @@
 package nts.uk.ctx.at.function.ws.dailyperformanceformat;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -16,6 +20,10 @@ import nts.uk.ctx.at.function.app.command.dailyperformanceformat.UpdateAuthority
 import nts.uk.ctx.at.function.app.command.dailyperformanceformat.UpdateAuthorityDailyCommandHandler;
 import nts.uk.ctx.at.function.app.command.dailyperformanceformat.UpdateAuthorityMonthlyCommand;
 import nts.uk.ctx.at.function.app.command.dailyperformanceformat.UpdateAuthorityMonthlyCommandHandler;
+import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceAuthorityFinder;
+import nts.uk.ctx.at.function.app.find.dailyperformanceformat.DailyPerformanceCodeFinder;
+import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyAttendanceItemAuthorityDto;
+import nts.uk.ctx.at.function.app.find.dailyperformanceformat.dto.DailyPerformanceCodeDto;
 
 @Path("at/function/dailyperformanceformat")
 @Produces("application/json")
@@ -35,6 +43,12 @@ public class AuthorityFormatWebService extends WebService {
 	
 	@Inject
 	private UpdateAuthorityDailyCommandHandler updateAuthorityDailyCommandHandler;
+	
+	@Inject
+	private DailyPerformanceAuthorityFinder dailyPerformanceAuthorityFinder;
+	
+	@Inject
+	private DailyPerformanceCodeFinder dailyPerformanceCodeFinder;
 	
 	@POST
 	@Path("removeAuthorityFormat")
@@ -64,5 +78,17 @@ public class AuthorityFormatWebService extends WebService {
 	@Path("updateAuthorityDailyFormat")
 	public void updateAuthorityDailyFormat(UpdateAuthorityDailyCommand command) {
 		this.updateAuthorityDailyCommandHandler.handle(command);
+	}
+
+	@POST
+	@Path("getAuthorityDailyFormat/{dailyPerformanceFormatCode}/{sheetNo}")
+	public DailyAttendanceItemAuthorityDto getDetail(@PathParam("dailyPerformanceFormatCode") String dailyPerformanceFormatCode,@PathParam("sheetNo") BigDecimal sheetNo) {
+		return this.dailyPerformanceAuthorityFinder.findAll(dailyPerformanceFormatCode,sheetNo);
+	}
+	
+	@POST
+	@Path("getAuthorityDailyFormatCode")
+	public List<DailyPerformanceCodeDto> getListCode() {
+		return this.dailyPerformanceCodeFinder.findAll();
 	}
 }
