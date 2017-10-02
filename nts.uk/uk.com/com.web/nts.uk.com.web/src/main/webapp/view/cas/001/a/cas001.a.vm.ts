@@ -85,7 +85,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 });
             });
 
-         
+
 
             self.checkboxSelectedAll.subscribe((newValue) => {
 
@@ -130,15 +130,89 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
 
             });
+
+            //register click change all event
+            $(() => {
+                $('#anotherSelectedAll_auth, #seftSelectedAll_auth').on('click', '.nts-switch-button', function() {
+                    let id = $(this).parent().attr('id');
+                    self.changeAll(id, id === 'anotherSelectedAll_auth' ? self.anotherSelectedAll() : self.seftSelectedAll());
+
+                });
+
+
+
+                $('#anotherSelectedAll_auth').keyup(function(event) {
+
+                    let code = event.keyCode,
+                        currentValue = self.anotherSelectedAll(),
+                        Value = currentValue;
+                    switch (code) {
+                        case 37:
+                        case 38: Value = currentValue - 1;
+                            break;
+                        case 39:
+                        case 40: Value = currentValue + 1;
+                            break;
+                    }
+
+                    if (Value === currentValue) {
+                        return;
+                    }
+
+                    self.changeAll($(this).attr('id'), Value);
+
+                });
+
+                $('#seftSelectedAll_auth').keyup(function(event) {
+
+                    let code = event.keyCode,
+                        currentValue = self.seftSelectedAll(),
+                        Value = currentValue;
+                    switch (code) {
+                        case 37:
+                        case 38: Value = currentValue - 1;
+                            break;
+                        case 39:
+                        case 40: Value = currentValue + 1;
+                            break;
+                    }
+
+                    if (Value === currentValue) {
+                        return;
+                    }
+
+                    self.changeAll($(this).attr('id'), Value);
+
+
+                });
+
+                $('#item_role_table_body_otherAuth').on('focus', function() {
+
+                    if (!!self.allowOtherRef()) {
+                        $('#anotherSelectedAll_auth').focus();
+                    }
+                });
+
+                $('#item_role_table_body_selfAuth').on('focus', function() {
+
+                    if (!!self.allowPersonRef()) {
+                        $('#seftSelectedAll_auth').focus();
+                    }
+                });
+
+
+            });
         }
 
 
-        changeAll(parrentId) {
+        changeAll(parrentId, changeValue) {
             let self = this,
                 currentList = self.currentRole().currentCategory().roleItemList(),
                 selectItemList = _.find(currentList, (i) => {
                     return i.isChecked;
-                });
+                }),
+                changeVal = changeValue < 1 ? 1 : changeValue > 3 ? 3 : changeValue;
+
 
             if (!selectItemList) {
                 dialog({ messageId: "Msg_664" });
@@ -147,7 +221,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
             _.forEach(currentList, (item) => {
                 if (item.isChecked) {
-                    parrentId == 'anotherSelectedAll_auth' ? item.otherAuth = self.anotherSelectedAll() : item.selfAuth = self.seftSelectedAll();
+                    parrentId == 'anotherSelectedAll_auth' ? item.otherAuth = changeVal : item.selfAuth = changeVal;
                 }
             });
 
