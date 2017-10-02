@@ -23,12 +23,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         [{ prop: 'code', length: 4 },
             { prop: 'name', length: 8 }];
 
-        items = _(new Array(10)).map((x, i) => new InitAndOrderSelection({
-            id: i,
-            sel_cd: "000" + i.toString(),
-            sel_name: "A" + i.toString(),
-            init_sel: true
-        })).value();
+        items = items = _(new Array(10)).map((x, i) => new GridItem(i + 1)).value();
 
         constructor() {
             let self = this;
