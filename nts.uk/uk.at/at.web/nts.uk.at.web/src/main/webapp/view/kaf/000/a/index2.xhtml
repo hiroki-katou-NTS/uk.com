@@ -6,11 +6,11 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-			<div class="contents-area cf">
+			<div class="contents-area cf" data-bind="if: approvalRoot().length != 0">
 				<div id="label-1">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
 				</div>
-				<div id="table-1" >
+				<div id="table-1">
 					<table id="table-phase" data-bind="with:approvalRoot">
 						<thead>
 							<tr class="bg-green">
@@ -19,7 +19,7 @@
 								<th class="content-app" style="width: 230px;">#{i18n.getText('KAF000_3')}</th>
 							</tr>
 						</thead>
-						 <tbody data-bind="foreach : beforeApprovers">
+						 <tbody data-bind="foreach: beforeApprovers">
 							<com:ko bind="$data.approvers" tag="foreach">
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
