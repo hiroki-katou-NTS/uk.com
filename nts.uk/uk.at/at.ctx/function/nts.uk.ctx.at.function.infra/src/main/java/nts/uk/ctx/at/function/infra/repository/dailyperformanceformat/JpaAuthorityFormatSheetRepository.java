@@ -65,7 +65,7 @@ public class JpaAuthorityFormatSheetRepository extends JpaRepository implements 
 
 	@Override
 	public void update(AuthorityFormatSheet authorityFormatSheet) {
-		this.getEntityManager().createNamedQuery(UPDATE_BY_KEY)
+		this.getEntityManager().createQuery(UPDATE_BY_KEY)
 				.setParameter("companyId", authorityFormatSheet.getCompanyId())
 				.setParameter("dailyPerformanceFormatCode", authorityFormatSheet.getDailyPerformanceFormatCode().v())
 				.setParameter("sheetNo", authorityFormatSheet.getSheetNo())

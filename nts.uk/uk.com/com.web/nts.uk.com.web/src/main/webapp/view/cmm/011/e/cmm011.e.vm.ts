@@ -38,7 +38,26 @@ module nts.uk.com.view.cmm011.e {
                     return;
                 }
                 // TODO: update history
+                nts.uk.ui.windows.setShared("ModeUpdateHistory", true);
                 nts.uk.ui.windows.close();
+            }
+            
+            /**
+             * toJSObject
+             */
+            private toJSObject(): any {
+                let self = this;
+                return {
+                    isAddMode: false,
+                    workplaceId: nts.uk.ui.windows.getShared("selectedWkpId"),
+                    workplaceHistory: {
+                        historyId: '',
+                        period: {
+                            startDate: self.startDate(),
+                            endDate: new Date("9999-12-31")
+                        }
+                    }
+                }
             }
             
             /**

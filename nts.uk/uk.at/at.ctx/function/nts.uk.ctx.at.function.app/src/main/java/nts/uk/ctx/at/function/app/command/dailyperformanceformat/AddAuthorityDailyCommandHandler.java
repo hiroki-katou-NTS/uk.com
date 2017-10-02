@@ -9,11 +9,13 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityDailyPerformanceFormat;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatDaily;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFormatInitialDisplay;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFormatSheet;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatName;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityDailyPerformanceFormatRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatDailyRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatInitialDisplayRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatSheetRepository;
@@ -32,6 +34,9 @@ public class AddAuthorityDailyCommandHandler extends CommandHandler<AddAuthority
 	@Inject
 	private AuthorityFormatInitialDisplayRepository authorityFormatInitialDisplayRepository;
 
+	@Inject
+	private AuthorityDailyPerformanceFormatRepository authorityDailyPerformanceFormatRepository;
+
 	@Override
 	protected void handle(CommandHandlerContext<AddAuthorityDailyCommand> context) {
 		LoginUserContext login = AppContexts.user();
@@ -43,16 +48,19 @@ public class AddAuthorityDailyCommandHandler extends CommandHandler<AddAuthority
 				.map(f -> {
 					return new AuthorityFomatDaily(companyId,
 							new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()),
-							f.getAttendanceItemId(), command.getSheetNo(),
-							new DailyPerformanceFormatName(command.getDailyPerformanceFormatName()), f.getOrder(),
-							f.getColumnWidth());
+							f.getAttendanceItemId(), command.getSheetNo(), f.getOrder(), f.getColumnWidth());
 				}).collect(Collectors.toList());
+
+		AuthorityDailyPerformanceFormat authorityDailyPerformanceFormat = new AuthorityDailyPerformanceFormat(companyId,
+				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()),
+				new DailyPerformanceFormatName(command.getDailyPerformanceFormatName()));
 
 		if (this.authorityFormatDailyRepository
 				.checkExistCode(new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()))) {
 			throw new BusinessException("#Msg_3");
 		} else {
 			this.authorityFormatDailyRepository.add(authorityFomatDailies);
+			this.authorityDailyPerformanceFormatRepository.add(authorityDailyPerformanceFormat);
 		}
 
 		AuthorityFormatSheet authorityFormatSheet = new AuthorityFormatSheet(companyId,
