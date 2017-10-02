@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.
  * 4-2.詳細画面登録後の処理
  *
  */
-public interface AfterProcessDetail {
+public interface DetailAfterUpdate {
 	/**
 	 * 4-2.詳細画面登録後の処理
 	 * @param companyID 会社ID

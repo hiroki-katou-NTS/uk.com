@@ -8,7 +8,7 @@ import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 
 @Stateless
-public class DetailBeforeProcessRegisterImpl implements DetailBeforeProcessRegister {
+public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithmService;

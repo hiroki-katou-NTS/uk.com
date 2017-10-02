@@ -8,7 +8,7 @@ import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
  * 4-1.詳細画面登録前の処理
  *
  */
-public interface DetailBeforeProcessRegister {
+public interface DetailBeforeUpdate {
 	/**
 	 * 4-1.詳細画面登録前の処理
 	 * @param companyID 会社ID 
