@@ -11,6 +11,7 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalcFormulaSetting;
+import nts.uk.ctx.at.record.dom.optitem.calculation.CalculationAtr;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaGetMemento;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaName;
@@ -43,8 +44,8 @@ public class FormulaDto implements FormulaGetMemento, FormulaDispOrderGetMemento
 	/** The formula name. */
 	private String formulaName;
 
-	/** The formula setting. */
-	private CalcFormulaSettingDto calcFormulaSetting;
+	/** The calculation atr. */
+	private int calcAtr;
 
 	// ===================== Optional ======================= //
 	/** The monthly rounding. */
@@ -52,6 +53,12 @@ public class FormulaDto implements FormulaGetMemento, FormulaDispOrderGetMemento
 
 	/** The daily rounding. */
 	private RoundingDto dailyRounding;
+
+	/** The formula setting. */
+	private FormulaSettingDto formulaSetting;
+
+	/** The item selection. */
+	private ItemSelectionDto itemSelection;
 
 	/*
 	 * (non-Javadoc)
@@ -106,7 +113,10 @@ public class FormulaDto implements FormulaGetMemento, FormulaDispOrderGetMemento
 	 */
 	@Override
 	public CalcFormulaSetting getCalcFormulaSetting() {
-		return new CalcFormulaSetting(this.calcFormulaSetting);
+		if (this.calcAtr == CalculationAtr.FORMULA_SETTING.value) {
+			return new CalcFormulaSetting(this.formulaSetting);
+		}
+		return new CalcFormulaSetting(this.itemSelection);
 	}
 
 	/*
@@ -116,7 +126,7 @@ public class FormulaDto implements FormulaGetMemento, FormulaDispOrderGetMemento
 	 * getCalculationFormulaAtr()
 	 */
 	@Override
-	public OptionalItemAtr getCalcFormulaAtr() {
+	public OptionalItemAtr getFormulaAtr() {
 		return EnumAdaptor.valueOf(this.formulaAtr, OptionalItemAtr.class);
 	}
 
@@ -163,5 +173,16 @@ public class FormulaDto implements FormulaGetMemento, FormulaDispOrderGetMemento
 	@Override
 	public DispOrder getDispOrder() {
 		return new DispOrder(this.orderNo);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.optitem.calculation.FormulaGetMemento#
+	 * getCalcFormulaAtr()
+	 */
+	@Override
+	public CalculationAtr getCalcFormulaAtr() {
+		return CalculationAtr.valueOf(this.calcAtr);
 	}
 }
