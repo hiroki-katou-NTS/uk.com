@@ -1,0 +1,52 @@
+#content-left {
+	margin-top: 10px;
+	margin-left: 10px !important;
+}
+
+#content-center {
+	margin-top: 10px;
+	width: 300px !important;
+}
+
+#sel_item_grid_container {
+	width: 200px !important;
+}
+
+#sel_item_grid {
+	height: initial !important;
+	width: 200px;
+}
+
+#caret {
+	margin-left: 80px;
+	font-size: 2rem;
+}
+
+#history_lst-grid {
+	width: 235px !important;
+}
+
+#history {
+	margin-bottom: 10px;
+}
+
+#history_lst_grid_container {
+	width: 235px !important;
+}
+
+.col1 {
+	width: 150px;
+}
+
+.col2 {
+	width: 150px;
+}
+
+#register {
+	margin-top: 20px;
+}
+
+#itemRegisterLst {
+	margin-top: 20px;
+	
+}
