@@ -28,23 +28,33 @@ module nts.uk.com.view.cmm011.d {
              */
             public execution() {
                 let self = this;
-                let data = {
+                if (!self.validate()) {
+                    return;
+                }
+                service.registerWorkplaceHistory(self.toJSObject()).done(function(){
+                    nts.uk.ui.windows.setShared("ModeAddHistory", true);
+                    self.close();
+                }).fail((res: any) => {
+                    self.showMessageError(res);
+                });
+            }
+            
+            /**
+             * toJSObject
+             */
+            private toJSObject(): any {
+                let self = this;
+                return {
+                    isAddMode: true,
                     workplaceId: nts.uk.ui.windows.getShared("selectedWkpId"),
-                    workplaceHistory: [{
+                    workplaceHistory: {
                         historyId: '',
                         period: {
                             startDate: self.startDate(),
                             endDate: new Date("9999-12-31")
                         }
-                    }]
+                    }
                 }
-                if (!self.validate()) {
-                    return;
-                }
-                service.registerWorkplaceHistory(data).done(function(){
-                    
-                }).fail();//TODO fails show message
-                nts.uk.ui.windows.close();
             }
             
             /**

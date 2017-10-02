@@ -8,19 +8,19 @@ __viewContext.ready(function () {
 });
 
 function OpenModalSubWindow(){
-    nts.uk.ui.windows.sub.modal("/view/sample/subwindow/subwindow.xhtml");
+    nts.uk.ui.windows.sub.modal("/view/sample/functionwrap/subwindow/subwindow.xhtml");
 }
 
 function OpenModelessSubWindow(){
-    nts.uk.ui.windows.sub.modeless("/view/sample/subwindow/subwindow.xhtml");
+    nts.uk.ui.windows.sub.modeless("/view/sample/functionwrap/subwindow/subwindow.xhtml");
 }
 
 function openDialog() {
-    nts.uk.ui.windows.sub.modeless("/view/sample/subwindow/dialog.xhtml");
+    nts.uk.ui.windows.sub.modeless("/view/sample/functionwrap/subwindow/dialog.xhtml");
 }
 
 function openDialogB() {
-    nts.uk.ui.windows.sub.modeless("/view/sample/subwindow/dialogb.xhtml");
+    nts.uk.ui.windows.sub.modeless("/view/sample/functionwrap/subwindow/dialogb.xhtml");
 }
 function openDialogC() {
     $("#switch-language").ntsSwitchMasterLanguage();

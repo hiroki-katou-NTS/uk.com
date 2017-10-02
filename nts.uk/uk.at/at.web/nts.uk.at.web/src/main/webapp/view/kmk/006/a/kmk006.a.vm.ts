@@ -22,6 +22,7 @@ module nts.uk.at.view.kmk006.a {
             multiSelectedWorkplaceId: KnockoutObservable<string>;
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;
             treeGrid: TreeComponentOption;
+            treeGridTotal: TreeComponentOption;
             autoCalAtrOvertimeEnum: Array<Enum>;
             selectedTab: KnockoutObservable<string>;
             timeLimitUpperLimitEnum: Array<Enum>;
@@ -46,20 +47,20 @@ module nts.uk.at.view.kmk006.a {
             valueEnumNorLegMidAtr: KnockoutObservable<number>;
             valueEnumFleTimeLi: KnockoutObservable<number>;
             valueEnumFleTimeAtr: KnockoutObservable<number>;
-            valueEnumFleTimeNigLi: KnockoutObservable<number>;
-            valueEnumFleTimeNigAtr: KnockoutObservable<number>;
             valueEnumResResLi: KnockoutObservable<number>;
             valueEnumResResAtr: KnockoutObservable<number>;
             valueEnumResLatLi: KnockoutObservable<number>;
             valueEnumResLatAtr: KnockoutObservable<number>;
 
             listComponentOption: any;
+            listComponentOptionTotal: any;
             selectedCode: KnockoutObservable<string>;
             multiSelectedCode: KnockoutObservableArray<string>;
             isShowAlreadySet: KnockoutObservable<boolean>;
             isDialog: KnockoutObservable<boolean>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
             isMultiSelect: KnockoutObservable<boolean>;
+            isMultiSelectKcp: KnockoutObservable<boolean>;
             jobTitleList: KnockoutObservableArray<UnitModel>;
             selectedCurrentJob: KnockoutObservable<string>;
             selectedCurrentWkp: KnockoutObservable<string>;
@@ -79,6 +80,8 @@ module nts.uk.at.view.kmk006.a {
             enableEnumResLatLi: KnockoutObservable<boolean>;
             baseDate: KnockoutObservable<Date>;
             isLoading: KnockoutObservable<boolean>;
+            date: KnockoutObservable<string>;
+            yearMonth: KnockoutObservable<number>;
 
             // Common
             tabs: KnockoutObservableArray<NtsTabPanelModel>;
@@ -86,6 +89,9 @@ module nts.uk.at.view.kmk006.a {
             constructor() {
                 var self = this;
                 self.baseDate = ko.observable(new Date());
+                self.isMultiSelectKcp = ko.observable(false);
+                self.date = ko.observable('20000101');
+                self.yearMonth = ko.observable(200001);
                 // Initial common data.
                 self.useUnitAutoCalSettingModel = new UnitAutoCalSettingModel();
                 this.tabs = ko.observableArray([
@@ -98,7 +104,19 @@ module nts.uk.at.view.kmk006.a {
                 self.alreadySettingList = ko.observableArray([]);
                 self.treeGrid = {
                     isShowAlreadySet: true,
-                    isMultiSelect: false,
+                    isMultiSelect: self.isMultiSelectKcp(),
+                    treeType: TreeType.WORK_PLACE,
+                    selectedWorkplaceId: self.multiSelectedWorkplaceId,
+                    baseDate: self.baseDate,
+                    selectType: SelectionType.SELECT_FIRST_ITEM,
+                    isShowSelectButton: true,
+                    isDialog: true,
+                    alreadySettingList: self.alreadySettingList,
+                    maxRows: 10
+                };
+                self.treeGridTotal = {
+                    isShowAlreadySet: true,
+                    isMultiSelect: true,
                     treeType: TreeType.WORK_PLACE,
                     selectedWorkplaceId: self.multiSelectedWorkplaceId,
                     baseDate: self.baseDate,
@@ -132,8 +150,6 @@ module nts.uk.at.view.kmk006.a {
                 self.valueEnumNorLegMidAtr = ko.observable(2);
                 self.valueEnumFleTimeLi = ko.observable(2);
                 self.valueEnumFleTimeAtr = ko.observable(2);
-                self.valueEnumFleTimeNigLi = ko.observable(2);
-                self.valueEnumFleTimeNigAtr = ko.observable(2);
                 self.valueEnumResResLi = ko.observable(2);
                 self.valueEnumResResAtr = ko.observable(2);
                 self.valueEnumResLatLi = ko.observable(2);
@@ -166,13 +182,24 @@ module nts.uk.at.view.kmk006.a {
                     isShowNoSelectRow: self.isShowNoSelectRow(),
                     alreadySettingList: self.alreadySettingList
                 };
+                self.listComponentOptionTotal = {
+                    baseDate: self.baseDate,
+                    isShowAlreadySet: true,
+                    isMultiSelect: true,
+                    listType: ListType.JOB_TITLE,
+                    selectType: SelectType.SELECT_BY_SELECTED_CODE,
+                    selectedCode: self.selectedCode,
+                    isDialog: self.isDialog(),
+                    isShowNoSelectRow: self.isShowNoSelectRow(),
+                    alreadySettingList: self.alreadySettingList
+                };
                 self.jobTitleList = ko.observableArray<UnitModel>([]);
 
 
                 //subscribe 
                 self.multiSelectedWorkplaceId.subscribe(function(codeChanged) {
                     self.selectedCurrentWkp(codeChanged);
-                    self.loadJobAutoCal(codeChanged);
+                    self.loadWkpAutoCal(codeChanged);
                     let data = $('#tree-grid-srcc').getDataList();
                     for (let ent of data) {
                         if (ent.workplaceId == codeChanged) {
@@ -185,7 +212,7 @@ module nts.uk.at.view.kmk006.a {
                 //subscribe 
                 self.selectedCode.subscribe(function(codeChanged) {
                     self.selectedCurrentJob(codeChanged);
-                    self.loadWkpAutoCal(codeChanged);
+                    self.loadJobAutoCal(codeChanged);
                     let data = $('#component-items-list').getDataList();
                     for (let ent of data) {
                         if (ent.id == codeChanged) {
@@ -391,8 +418,6 @@ module nts.uk.at.view.kmk006.a {
                 self.valueEnumNorLegMidAtr(self.autoCalAtrOvertimeEnum[list.normalOTTime.legalMidOtTime.calAtr()].value);
                 self.valueEnumFleTimeLi(self.autoCalAtrOvertimeEnum[list.flexOTTime.flexOtTime.upLimitOtSet()].value);
                 self.valueEnumFleTimeAtr(self.autoCalAtrOvertimeEnum[list.flexOTTime.flexOtTime.calAtr()].value);
-                self.valueEnumFleTimeNigLi(self.autoCalAtrOvertimeEnum[list.flexOTTime.flexOtNightTime.upLimitOtSet()].value);
-                self.valueEnumFleTimeNigAtr(self.autoCalAtrOvertimeEnum[list.flexOTTime.flexOtNightTime.calAtr()].value);
                 self.valueEnumResResLi(self.autoCalAtrOvertimeEnum[list.restTime.restTime.upLimitOtSet()].value);
                 self.valueEnumResResAtr(self.autoCalAtrOvertimeEnum[list.restTime.restTime.calAtr()].value);
                 self.valueEnumResLatLi(self.autoCalAtrOvertimeEnum[list.restTime.lateNightTime.upLimitOtSet()].value);
@@ -416,8 +441,6 @@ module nts.uk.at.view.kmk006.a {
                 list.normalOTTime.legalMidOtTime.calAtr(self.valueEnumNorLegMidAtr());
                 list.flexOTTime.flexOtTime.upLimitOtSet(self.valueEnumFleTimeLi());
                 list.flexOTTime.flexOtTime.calAtr(self.valueEnumFleTimeAtr());
-                list.flexOTTime.flexOtNightTime.upLimitOtSet(self.valueEnumFleTimeNigLi());
-                list.flexOTTime.flexOtNightTime.calAtr(self.valueEnumFleTimeNigAtr());
                 list.restTime.restTime.upLimitOtSet(self.valueEnumResResLi());
                 list.restTime.restTime.calAtr(self.valueEnumResResAtr());
                 list.restTime.lateNightTime.upLimitOtSet(self.valueEnumResLatLi());
@@ -479,9 +502,9 @@ module nts.uk.at.view.kmk006.a {
 
                 var dto: JobAutoCalSettingDto = {
                     jobId: jobId,
-                    normalOTTime: self.itemComAutoCalModel.normalOTTime.toDto(),
-                    flexOTTime: self.itemComAutoCalModel.flexOTTime.toDto(),
-                    restTime: self.itemComAutoCalModel.restTime.toDto()
+                    normalOTTime: self.itemJobAutoCalModel.normalOTTime.toDto(),
+                    flexOTTime: self.itemJobAutoCalModel.flexOTTime.toDto(),
+                    restTime: self.itemJobAutoCalModel.restTime.toDto()
                 };
 
                 self.itemJobAutoCalModel.updateData(self.itemJobAutoCalModel.toDto());
@@ -515,9 +538,9 @@ module nts.uk.at.view.kmk006.a {
 
                 var dto: WkpAutoCalSettingDto = {
                     wkpId: wkpId,
-                    normalOTTime: self.itemComAutoCalModel.normalOTTime.toDto(),
-                    flexOTTime: self.itemComAutoCalModel.flexOTTime.toDto(),
-                    restTime: self.itemComAutoCalModel.restTime.toDto()
+                    normalOTTime: self.itemWkpAutoCalModel.normalOTTime.toDto(),
+                    flexOTTime: self.itemWkpAutoCalModel.flexOTTime.toDto(),
+                    restTime: self.itemWkpAutoCalModel.restTime.toDto()
                 };
 
                 self.itemWkpAutoCalModel.updateData(self.itemWkpAutoCalModel.toDto());
@@ -553,9 +576,9 @@ module nts.uk.at.view.kmk006.a {
                 var dto: WkpJobAutoCalSettingDto = {
                     wkpId: wkpId,
                     jobId: jobId,
-                    normalOTTime: self.itemComAutoCalModel.normalOTTime.toDto(),
-                    flexOTTime: self.itemComAutoCalModel.flexOTTime.toDto(),
-                    restTime: self.itemComAutoCalModel.restTime.toDto()
+                    normalOTTime: self.itemWkpJobAutoCalModel.normalOTTime.toDto(),
+                    flexOTTime: self.itemWkpJobAutoCalModel.flexOTTime.toDto(),
+                    restTime: self.itemWkpJobAutoCalModel.restTime.toDto()
                 };
 
                 self.itemWkpJobAutoCalModel.updateData(self.itemWkpJobAutoCalModel.toDto());
@@ -626,7 +649,7 @@ module nts.uk.at.view.kmk006.a {
                 nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function() {
                     nts.uk.ui.block.grayout();
 
-                    service.deleteWkpJobAutoCal(self.selectedCurrentJob(), self.selectedCurrentWkp()).done(function() {
+                    service.deleteWkpJobAutoCal(self.selectedCurrentWkp(), self.selectedCurrentJob()).done(function() {
                         nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                             self.loadWkpJobAutoCal(self.selectedCurrentJob(), self.selectedCurrentWkp());
                         });
@@ -720,6 +743,8 @@ module nts.uk.at.view.kmk006.a {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 // Update flags.
+                //                self.isMultiSelect(true);
+                //                self.isMultiSelectKcp(true);
                 self.isLoading(true);
                 $('#jobtitles').ntsListComponent(self.listComponentOption);
                 $('#tree-grid').ntsTreeComponent(self.treeGrid).done(function() {
@@ -742,21 +767,12 @@ module nts.uk.at.view.kmk006.a {
             }
 
             /**
-             * open dialog UsageSettingModel (view model E)
+             * open dialog openDialogUsageSettingModel (view model E)
              */
             private openDialogUsageSettingModel(): void {
                 var self = this;
                 nts.uk.ui.windows.sub.modal("/view/kmk/006/e/index.xhtml").onClosed(function() {
                     self.loadUseUnitAutoCalSettingModel();
-                });
-            }
-
-            /**
-             * open dialog CommonSetting (view model F)
-             */
-            private openDialogCommonSetting(): void {
-                var self = this;
-                nts.uk.ui.windows.sub.modal("/view/ksm/001/f/index.xhtml").onClosed(function() {
                 });
             }
 
@@ -935,31 +951,26 @@ module nts.uk.at.view.kmk006.a {
         //        AutoCalOvertimeSettingDto
         export class AutoCalFlexOvertimeSettingModel {
             flexOtTime: AutoCalSettingModel;
-            flexOtNightTime: AutoCalSettingModel;
 
             constructor() {
                 this.flexOtTime = new AutoCalSettingModel();
-                this.flexOtNightTime = new AutoCalSettingModel();
 
             }
 
             updateData(dto: AutoCalFlexOvertimeSettingDto) {
-                this.flexOtTime.updateData(dto.flexOtNightTime);
-                this.flexOtNightTime.updateData(dto.flexOtNightTime);
+                this.flexOtTime.updateData(dto.flexOtTime);
 
             }
 
             toDto(): AutoCalFlexOvertimeSettingDto {
                 var dto: AutoCalFlexOvertimeSettingDto = {
                     flexOtTime: this.flexOtTime.toDto(),
-                    flexOtNightTime: this.flexOtNightTime.toDto(),
 
                 };
                 return dto;
             }
             resetData() {
                 this.flexOtTime.resetData();
-                this.flexOtNightTime.resetData();
             }
         }
 
@@ -1048,8 +1059,8 @@ module nts.uk.at.view.kmk006.a {
             upLimitOtSet: KnockoutObservable<number>;
             calAtr: KnockoutObservable<number>;
             constructor() {
-                this.upLimitOtSet = ko.observable(1);
-                this.calAtr = ko.observable(1);
+                this.upLimitOtSet = ko.observable(0);
+                this.calAtr = ko.observable(0);
             }
             updateData(dto: AutoCalSettingDto) {
                 this.upLimitOtSet(dto.upLimitOtSet);
@@ -1076,7 +1087,7 @@ module nts.uk.at.view.kmk006.a {
             constructor() {
                 this.useJobSet = ko.observable(true);
                 this.useWkpSet = ko.observable(true);
-                this.useJobwkpSet = ko.observable(true);
+                this.useJobwkpSet = ko.observable(false);
 
             }
             updateData(dto: UnitAutoCalSettingDto) {
@@ -1097,7 +1108,7 @@ module nts.uk.at.view.kmk006.a {
             resetData() {
                 this.useJobSet(true);
                 this.useWkpSet(true);
-                this.useJobwkpSet(true);
+                this.useJobwkpSet(false);
             }
         }
 

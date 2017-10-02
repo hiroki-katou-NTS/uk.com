@@ -1,5 +1,4 @@
 module nts.custombinding {
-
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
     import random = nts.uk.util.randomId;
@@ -10,7 +9,8 @@ module nts.custombinding {
     import modal = nts.uk.ui.windows.sub.modal;
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
-    //import writeConstraint = nts.uk.request.writeDynamicConstraint;
+    import writeConstraint = nts.uk.ui.validation.writeConstraint;
+    
 
     export class LetControl implements KnockoutBindingHandler {
         init = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
@@ -713,6 +713,10 @@ module nts.custombinding {
                             opts.sortable.isEnabled(false);
                         }
                     }
+                },
+                // render primative value to viewContext
+                primitiveConst = () => {
+                     //xx
                 };
 
             $(() => {

@@ -16,10 +16,4 @@ public interface AutoCalFlexOvertimeSettingGetMemento {
 	 */
 	AutoCalSetting getFlexOtTime();
 	
-	/**
-	 * Gets the flex ot night time.
-	 *
-	 * @return the flex ot night time
-	 */
-	AutoCalSetting getFlexOtNightTime();
 }
