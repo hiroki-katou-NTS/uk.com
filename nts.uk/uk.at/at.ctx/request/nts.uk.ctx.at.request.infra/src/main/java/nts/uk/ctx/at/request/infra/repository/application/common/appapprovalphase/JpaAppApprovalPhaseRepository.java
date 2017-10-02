@@ -95,7 +95,7 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 			
 			KrqdtApprovalFramePK krqdtApprovalFramePK = new KrqdtApprovalFramePK(domain.getCompanyID(), x.getFrameID());
 			return new KrqdtApprovalFrame(krqdtApprovalFramePK,
-					x.getFrameID(),
+					domain.getPhaseID(),
 					x.getDispOrder(),
 					kafdtApproveAccepteds);
 		}).collect(Collectors.toList());

@@ -58,13 +58,15 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	private KafdtApplication toEntity(Application domain) {
 		String appReasonID = domain.getApplicationReason().v().split(SEPERATE_REASON_STRING)[0];
 		String appReason = domain.getApplicationReason().v().substring(appReasonID.length() + SEPERATE_REASON_STRING.length());
-		return new KafdtApplication(new KafdtApplicationPK(domain.getCompanyID(), domain.getApplicationID()), appReasonID,
+		return new KafdtApplication(new KafdtApplicationPK(domain.getCompanyID(), domain.getApplicationID()),
+				(int)(long) domain.getVersion(), 
+				appReasonID,
 				domain.getPrePostAtr().value, domain.getInputDate() , domain.getEnteredPersonSID(),
 				domain.getReversionReason().v(), domain.getApplicationDate(), appReason,
 				domain.getApplicationType().value, domain.getApplicantSID(), domain.getReflectPlanScheReason().value,
 				domain.getReflectPlanTime(), domain.getReflectPlanState().value, domain.getReflectPlanEnforce().value,
 				domain.getReflectPerScheReason().value, domain.getReflectPerTime(), domain.getReflectPerState().value,
-				domain.getReflectPerEnforce().value, domain.getStartDate(), domain.getEndDate(),null);
+				domain.getReflectPerEnforce().value, domain.getStartDate(), domain.getEndDate(),null,null);
 	}
 
 	/**

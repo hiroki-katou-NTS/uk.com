@@ -11,12 +11,18 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.Table;
+import javax.persistence.Version;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
+import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdpAppStamp;
+import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdtAppStamp;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -28,6 +34,11 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
 	public KafdtApplicationPK kafdtApplicationPK;
+	
+	@Version
+	@Column(name="EXCLUS_VER")
+	public Integer version;
+	
 	/**
 	 * 申請理由ID
 	 */
@@ -133,6 +144,9 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	
 	@OneToMany(mappedBy="application", cascade = CascadeType.ALL)
 	public List<KrqdtAppApprovalPhase> appApprovalPhases;
+	
+	@OneToOne(targetEntity=KrqdtAppStamp.class, cascade = CascadeType.ALL, mappedBy = "kafdtApplication", orphanRemoval = true)
+	public KrqdtAppStamp krqdtAppStamp;
 	
 	@Override
 	protected Object getKey() {
