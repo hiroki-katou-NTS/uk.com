@@ -33,27 +33,27 @@ public class KrcmtFormulaRounding extends UkJpaEntity implements Serializable {
 
 	/** The number rounding. */
 	@Column(name = "NUMBER_ROUNDING")
-	private Short numberRounding;
+	private int numberRounding;
 
 	/** The time rounding. */
 	@Column(name = "TIME_ROUNDING")
-	private Short timeRounding;
+	private int timeRounding;
 
 	/** The amount rounding. */
 	@Column(name = "AMOUNT_ROUNDING")
-	private Short amountRounding;
+	private int amountRounding;
 
 	/** The number rounding unit. */
 	@Column(name = "NUMBER_ROUNDING_UNIT")
-	private Short numberRoundingUnit;
+	private int numberRoundingUnit;
 
 	/** The time rounding unit. */
 	@Column(name = "TIME_ROUNDING_UNIT")
-	private Short timeRoundingUnit;
+	private int timeRoundingUnit;
 
 	/** The amount rounding unit. */
 	@Column(name = "AMOUNT_ROUNDING_UNIT")
-	private Short amountRoundingUnit;
+	private int amountRoundingUnit;
 
 	/**
 	 * Instantiates a new krcmt formula rounding.
@@ -65,10 +65,11 @@ public class KrcmtFormulaRounding extends UkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new krcmt formula rounding.
 	 *
-	 * @param krcmtFormulaRoundingPK the krcmt formula rounding PK
+	 * @param pk the pk
+	 * @param roundingAtr the rounding atr
 	 */
-	public KrcmtFormulaRounding(KrcmtFormulaRoundingPK krcmtFormulaRoundingPK) {
-		this.krcmtFormulaRoundingPK = krcmtFormulaRoundingPK;
+	public KrcmtFormulaRounding(KrcmtOptItemFormulaPK pk , int roundingAtr) {
+		this.krcmtFormulaRoundingPK = new KrcmtFormulaRoundingPK(pk, roundingAtr);
 	}
 
 	/*
