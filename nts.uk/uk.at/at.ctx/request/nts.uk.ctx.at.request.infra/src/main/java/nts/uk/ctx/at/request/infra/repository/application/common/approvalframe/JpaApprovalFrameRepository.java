@@ -98,7 +98,7 @@ public class JpaApprovalFrameRepository extends JpaRepository implements Approva
 					c.getConfirmATR().value,
 					c.getApprovalDate(),
 					c.getReason().v(),
-					c.getRepresenterSID());
+					c.getRepresenterSID(),null);
 		}).collect(Collectors.toList());
 		return new KrqdtApprovalFrame(
 				new KrqdtApprovalFramePK(domain.getCompanyID(), domain.getFrameID()),
@@ -134,17 +134,7 @@ public class JpaApprovalFrameRepository extends JpaRepository implements Approva
 		return listFrame;
 	}
 
-	@Override
-	public List<List<ApprovalFrame>> getListFrameByListPhase1(String companyID, List<String> listPhaseID) {
-		List<List<ApprovalFrame>> listListFrame = new ArrayList<>();
-		for(String phaseID :listPhaseID) {
-			List<ApprovalFrame> listFrame = new ArrayList<>();
-			List<ApprovalFrame> approvalFrame = findByPhaseID( companyID,phaseID);
-			listFrame.addAll(approvalFrame);
-			listListFrame.add(listFrame);
-		}
-		return listListFrame;
-	}
+	
 
 
 

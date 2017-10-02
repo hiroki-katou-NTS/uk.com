@@ -8,8 +8,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.Approver;
@@ -41,6 +45,8 @@ public class CommonApprovalRootFinder {
 	private ApproverRepository repoApprover;
 	@Inject
 	private PersonAdapter adapterPerson;
+	@Inject
+	private WorkplaceAdapter adapterWp;
 	/**
 	 * getAllCommonApprovalRoot (grouping by history)
 	 * @param param
@@ -186,6 +192,7 @@ public class CommonApprovalRootFinder {
 		//get name company
 		Optional<CompanyInfor> companyCurrent = comAdapter.getCurrentCompany();
 		String companyName = companyCurrent == null ? "" : companyCurrent.get().getCompanyName();
+		GeneralDate baseDate = GeneralDate.today();
 		//TH: company - domain 会社別就業承認ルート
 		if(param.getRootType() == 0){
 			List<CompanyAppRootDto> lstComRoot = new ArrayList<>();
@@ -205,8 +212,10 @@ public class CommonApprovalRootFinder {
 					listApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
 					lstApproverDto = listApprover.stream()
 								.map(c->{
-									String employeeName = c.getEmployeeId() == null ? "" : getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName();
-									return ApproverDto.fromDomain(c,employeeName);
+									String name = c.getApprovalAtr().value == 0 ? 
+											getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName() : 	
+											"";
+									return ApproverDto.fromDomain(c,name);
 									})
 								.collect(Collectors.toList());
 					//lst (ApprovalPhase + lst Approver)
@@ -221,8 +230,15 @@ public class CommonApprovalRootFinder {
 		//TH: workplace - domain 職場別就業承認ルート
 		if(param.getRootType() == 1){
 			List<WorkPlaceAppRootDto> lstWpRoot = new ArrayList<>();
+			String workplaceId = param.getWorkplaceId();
+			if(workplaceId == null){
+				WorkplaceImport workplace = adapterWp.findBySid(AppContexts.user().employeeId(), baseDate);
+				if(workplace != null){
+					workplaceId = workplace.getWkpId();
+				}
+			}
 			//get all data from WorkplaceApprovalRoot (職場別就業承認ルート)
-			List<WpApprovalRootDto> lstWp = this.repoWorkplace.getAllWpApprovalRoot(companyId, param.getWorkplaceId())
+			List<WpApprovalRootDto> lstWp = this.repoWorkplace.getAllWpApprovalRoot(companyId, workplaceId)
 					.stream()
 					.map(c->WpApprovalRootDto.fromDomain(c))
 					.collect(Collectors.toList());
@@ -237,8 +253,10 @@ public class CommonApprovalRootFinder {
 					lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
 					lstApproverDto = lstApprover.stream()
 							.map(c->{
-								String employeeName = c.getEmployeeId() == null ? "" : getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName();
-								return ApproverDto.fromDomain(c,employeeName);
+								String name = c.getApprovalAtr().value == 0 ? 
+										getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName() : 	
+										"";
+								return ApproverDto.fromDomain(c,name);
 								})
 							.collect(Collectors.toList());
 					//lst (ApprovalPhase + lst Approver)
@@ -253,8 +271,9 @@ public class CommonApprovalRootFinder {
 		//TH: person - domain 個人別就業承認ルート
 		else{
 			List<PersonAppRootDto> lstPsRoot = new ArrayList<>();
+			String employeeId = param.getEmployeeId() != null ? AppContexts.user().employeeId() : param.getEmployeeId();
 			//get all data from PersonApprovalRoot (個人別就業承認ルート)
-			List<PsApprovalRootDto> lstPs = this.repo.getAllPsApprovalRoot(companyId, param.getEmployeeId())
+			List<PsApprovalRootDto> lstPs = this.repo.getAllPsApprovalRoot(companyId,employeeId )
 					.stream()
 					.map(c->PsApprovalRootDto.fromDomain(c))
 					.collect(Collectors.toList());
@@ -269,8 +288,10 @@ public class CommonApprovalRootFinder {
 					lstApprover = this.repoApprover.getAllApproverByCode(companyId, approvalPhase.getApprovalPhaseId());
 					lstApproverDto = lstApprover.stream()
 							.map(c->{
-								String employeeName = c.getEmployeeId() == null ? "" : getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName();
-								return ApproverDto.fromDomain(c,employeeName);
+								String name = c.getApprovalAtr().value == 0 ? 
+										getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName() : 	
+										"";
+								return ApproverDto.fromDomain(c,name);
 								})
 							.collect(Collectors.toList());
 					//lst (ApprovalPhase + lst Approver)
@@ -361,4 +382,11 @@ public class CommonApprovalRootFinder {
 	private PersonImport getPersonInfo(String employeeId){
 		return adapterPerson.getPersonInfo(employeeId);
 	}
+//	private WorkplaceImport getWpInfo(String workplaceId, GeneralDate baseDate){
+//		Optional<WorkplaceImport> wp = adapterWp.findByWkpId(workplaceId, baseDate);
+//		if(wp.isPresent()){
+//			return wp.get();
+//		}
+//		return null;
+//	}
 }

@@ -8,7 +8,7 @@ import nts.uk.ctx.at.request.dom.application.common.Application;
 
 @Value
 public class OutputAllDataApp {
-	Optional<Application> applicationDto;
+	Optional<Application> application;
 	
 	List<OutputPhaseFrame> listOutputPhaseFrame;
 }
