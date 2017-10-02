@@ -39,7 +39,6 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateGoB
 				command.appID,
 				EnumAdaptor.valueOf(command.prePostAtr, PrePostAtr.class));
 		
-		
 		goBackDirectRepo.update(
 			new GoBackDirectly(companyId, 
 				command.getAppID(),

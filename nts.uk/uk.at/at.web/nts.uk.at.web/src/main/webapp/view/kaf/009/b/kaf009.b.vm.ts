@@ -132,7 +132,6 @@ module nts.uk.at.view.kaf009.b.viewmodel {
             var dfd = $.Deferred();
             //get Common Setting
             service.getGoBackSetting().done(function(settingData: CommonSetting) {
-                debugger;
                 let appID : string = "e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d";
                 //get Reason
                 self.setReasonControl(settingData.listReasonDto);
@@ -142,7 +141,6 @@ module nts.uk.at.view.kaf009.b.viewmodel {
                 self.setGoBackSetting(settingData.goBackSettingDto);
                 //Get data 
                 service.getGoBackDirectDetail(appID).done(function(detailData: any) {
-                    debugger;
                     //get all Location 
                     self.getAllWorkLocation();
                     self.workTypeName(detailData.workTypeName);
@@ -316,7 +314,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
          * KDL010_勤務場所選択を起動する
          */
         openLocationDialog(line: number) {
-            var self = this;
+            let self = this;
             nts.uk.ui.block.invisible();
             if (line == 1) {
                 nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.workLocationCD());
@@ -324,8 +322,8 @@ module nts.uk.at.view.kaf009.b.viewmodel {
                 nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.workLocationCD2());
             };
             nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
-                var self = this;
-                var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
+                let self = this;
+                let returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
                 if (returnWorkLocationCD !== undefined) {
                     if (line == 1) {
                         self.workLocationCD(returnWorkLocationCD);
@@ -359,7 +357,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
 
             nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
                 //view all code of selected item 
-                var childData = nts.uk.ui.windows.getShared('childData');
+                let childData = nts.uk.ui.windows.getShared('childData');
                 if (childData) {
                     self.workTypeCd(childData.selectedWorkTypeCode);
                     self.workTypeName(childData.selectedWorkTypeName);

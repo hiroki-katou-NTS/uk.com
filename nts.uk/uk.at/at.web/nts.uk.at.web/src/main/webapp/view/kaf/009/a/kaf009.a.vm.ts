@@ -132,24 +132,14 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             service.getGoBackSetting().done(function(settingData: CommonSetting) {
                 //get all work Location source
                 self.getAllWorkLocation();
-                //get Reason
-                self.setReasonControl(settingData.listReasonDto);
-                //set employee Name
-                self.employeeName(settingData.employeeName);
-                //set Common Setting
-                debugger;
-                self.setGoBackSetting(settingData.goBackSettingDto);
-                //Get data 
-                //service.getGoBackDirectly().done(function(goBackDirectData: GoBackDirectData) {
-                //                service.getGoBackDirectDetail().done(function(detailData: any) {
-                //                    self.workTypeName(detailData.workTypeName);
-                //                    self.siftName(detailData.workTimeName);
-                //                    //Set Value of control
-                //                    self.setValueControl(detailData.goBackDirectlyDto);
-                //                    
-                //}).fail(function() {
-                //                    dfd.resolve();
-                //                });
+                if(!nts.uk.util.isNullOrEmpty(settingData)){
+                    //get Reason
+                    self.setReasonControl(settingData.listReasonDto);
+                    //set employee Name
+                    self.employeeName(settingData.employeeName);
+                    //set Common Setting
+                    self.setGoBackSetting(settingData.goBackSettingDto);    
+                }
                 dfd.resolve();
             });
             return dfd.promise();
@@ -186,7 +176,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let arrTemp: Array<IWorkLocation> = [];
             service.getAllLocation().done(function(data: any) {
                 _.forEach(data, function(value) {
-                    arrTemp.push({ workLocationCode: value.workLocationCD, workLocationName: value.workLocationName });
+                    if(nts.uk.util.isNullOrUndefined(value)){
+                        arrTemp.push({ workLocationCode: value.workLocationCD, workLocationName: value.workLocationName });
+                    };
                 });
                 self.locationData = arrTemp;
             }).fail(function() {

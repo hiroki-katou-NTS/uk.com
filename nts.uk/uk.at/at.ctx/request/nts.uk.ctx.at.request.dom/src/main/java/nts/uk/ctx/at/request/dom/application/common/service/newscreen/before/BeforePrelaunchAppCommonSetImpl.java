@@ -43,7 +43,7 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		Optional<ApplicationSetting> applicationSettingOp = appSettingRepository.getApplicationSettingByComID(companyID);
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		if(applicationSetting.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)){
-			if(appDate!=null){
+			if(appDate==null){
 				baseDate = GeneralDate.today();
 			} else {
 				baseDate = appDate;
