@@ -1,6 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.mailserver;
-
-import nts.uk.ctx.sys.gateway.dom.common.CompanyId;
+package nts.uk.ctx.sys.env.dom.mailserver;
 
 public interface MailServerGetMemento {
 	/**
@@ -8,7 +6,7 @@ public interface MailServerGetMemento {
 	 *
 	 * @return the company id
 	 */
-	CompanyId getCompanyId();
+	String getCompanyId();
 
 	/**
 	 * Gets use authentication

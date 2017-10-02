@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.mailserver;
+package nts.uk.ctx.sys.env.dom.mailserver;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;

@@ -1,9 +1,9 @@
-package nts.uk.ctx.sys.gateway.dom.mailserver;
+package nts.uk.ctx.sys.env.dom.mailserver;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 
 /**
- * タイムアウト時間
+ * タイ�?アウト時�?
  */
 public class TimeOut extends IntegerPrimitiveValue<TimeOut> {
 

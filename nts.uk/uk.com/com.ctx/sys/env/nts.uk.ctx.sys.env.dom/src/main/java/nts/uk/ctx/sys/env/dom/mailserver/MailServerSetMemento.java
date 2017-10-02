@@ -1,13 +1,11 @@
-package nts.uk.ctx.sys.gateway.dom.mailserver;
-
-import nts.uk.ctx.sys.gateway.dom.common.CompanyId;
+package nts.uk.ctx.sys.env.dom.mailserver;
 
 public interface MailServerSetMemento {
 	/**
 	 * Set the company id.
 	 *
 	 */
-	public void setCompanyId(CompanyId companyId);
+	public void setCompanyId(String companyId);
 
 	/**
 	 * Set use authentication

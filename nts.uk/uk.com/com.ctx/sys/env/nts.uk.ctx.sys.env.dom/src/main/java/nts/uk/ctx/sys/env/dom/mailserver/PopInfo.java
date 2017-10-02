@@ -1,27 +1,27 @@
-package nts.uk.ctx.sys.gateway.dom.mailserver;
+package nts.uk.ctx.sys.env.dom.mailserver;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 
-/** IMAP情報. */
+/** POP�?報. */
 @Getter
 @Setter
-public class ImapInfo extends DomainObject {
+public class PopInfo extends DomainObject {
 	
-	/** IPバージョン. */
+	/** IPバ�?�ジョン. */
 	private IpVersion ipVersion;
 	
-	/** サーバ . */
+	/** サー�? . */
 	private Server server;
 	
 	/** サーバ使用. */
 	private UseServer useServer;
 	
-	/** タイムアウト時間. */
+	/** タイ�?アウト時�?. */
 	private TimeOut timeOut;
 	
-	/** ポート. */
+	/** ポ�?��?. */
 	private Port port;
 	
 	/**
@@ -32,7 +32,7 @@ public class ImapInfo extends DomainObject {
 	 * @param timeOut
 	 * @param port
 	 */
-	public ImapInfo(IpVersion ipVersion, Server server, UseServer useServer, TimeOut timeOut, Port port){
+	public PopInfo(IpVersion ipVersion, Server server, UseServer useServer, TimeOut timeOut, Port port){
 		this.ipVersion = ipVersion;
 		this.server = server;
 		this.useServer = useServer;

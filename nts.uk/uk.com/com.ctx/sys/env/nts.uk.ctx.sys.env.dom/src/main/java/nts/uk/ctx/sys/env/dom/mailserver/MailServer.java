@@ -1,11 +1,10 @@
 /**
  * 
  */
-package nts.uk.ctx.sys.gateway.dom.mailserver;
+package nts.uk.ctx.sys.env.dom.mailserver;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.sys.gateway.dom.common.CompanyId;
 
 /**
  * The Class MailServer.
@@ -18,38 +17,39 @@ import nts.uk.ctx.sys.gateway.dom.common.CompanyId;
  */
 @Getter
 public class MailServer extends AggregateRoot {
-	
+
 	/** The company id. */
-	private CompanyId companyId;
-	
+	private String companyId;
+
 	/** The use authentication. */
 	private UseAuthentication useAuthentication;
-	
+
 	/** The encryption method. */
 	private EncryptionMethod encryptionMethod;
-	
+
 	/** The authentication method. */
 	private AuthenticationMethod authenticationMethod;
-	
+
 	/** The email authentication. */
 	private EmailAuthentication emailAuthentication;
-	
+
 	/** The password. */
 	private Password password;
-	
+
 	/** The smtp info. */
 	private SmtpInfo smtpInfo;
-	
+
 	/** The pop info. */
 	private PopInfo popInfo;
-	
+
 	/** The imap info. */
 	private ImapInfo imapInfo;
-	
+
 	/**
 	 * Instantiates a new mail server.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public MailServer(MailServerGetMemento memento) {
 		this.companyId = memento.getCompanyId();
@@ -62,11 +62,12 @@ public class MailServer extends AggregateRoot {
 		this.popInfo = memento.getPopInfo();
 		this.imapInfo = memento.getImapInfo();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(MailServerSetMemento memento) {
 		memento.setCompanyId(this.companyId);
@@ -80,7 +81,9 @@ public class MailServer extends AggregateRoot {
 		memento.setImapInfo(this.imapInfo);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -91,7 +94,9 @@ public class MailServer extends AggregateRoot {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

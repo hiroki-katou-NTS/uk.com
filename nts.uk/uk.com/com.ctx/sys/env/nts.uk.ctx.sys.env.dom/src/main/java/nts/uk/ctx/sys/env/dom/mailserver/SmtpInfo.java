@@ -1,4 +1,4 @@
-package nts.uk.ctx.sys.gateway.dom.mailserver;
+package nts.uk.ctx.sys.env.dom.mailserver;
 
 import lombok.Getter;
 import lombok.Setter;

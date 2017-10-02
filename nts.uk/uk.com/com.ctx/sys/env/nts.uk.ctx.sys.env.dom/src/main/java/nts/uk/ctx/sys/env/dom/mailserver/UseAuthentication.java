@@ -2,16 +2,18 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.mailserver;
+package nts.uk.ctx.sys.env.dom.mailserver;
 
 /**
- * サーバ使用
+ * メール送信認証
  */
+// 使用区�?
+public enum UseAuthentication {
 
-public enum UseServer {
-
+	/** The not use. */
 	NOT_USE(0, "Enum_UseClassificationAtr_NOT_USE"),
 
+	/** The use. */
 	USE(1, "Enum_UseClassificationAtr_USE");
 
 	/** The value. */
@@ -21,7 +23,7 @@ public enum UseServer {
 	public final String nameId;
 
 	/** The Constant values. */
-	private final static UseServer[] values = UseServer.values();
+	private final static UseAuthentication[] values = UseAuthentication.values();
 
 	/**
 	 * Instantiates a new rounding.
@@ -31,7 +33,7 @@ public enum UseServer {
 	 * @param nameId
 	 *            the name id
 	 */
-	private UseServer(int value, String nameId) {
+	private UseAuthentication(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
 	}
@@ -43,14 +45,14 @@ public enum UseServer {
 	 *            the value
 	 * @return the rounding
 	 */
-	public static UseServer valueOf(Integer value) {
+	public static UseAuthentication valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (UseServer val : UseServer.values) {
+		for (UseAuthentication val : UseAuthentication.values) {
 			if (val.value == value) {
 				return val;
 			}

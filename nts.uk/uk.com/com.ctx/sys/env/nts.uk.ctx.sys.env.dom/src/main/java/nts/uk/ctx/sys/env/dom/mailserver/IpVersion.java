@@ -2,22 +2,17 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.sys.gateway.dom.mailserver;
+package nts.uk.ctx.sys.env.dom.mailserver;
 
 /**
- * 暗号化方式
+ * サーバ使用
  */
 
-public enum EncryptionMethod {
+public enum IpVersion {
 
-	/** The none. */
-	NONE(0, "Enum_EncryptionMethod_NONE"),
+	IPv4(0, "ENUM_IPVERSION_IPV4"),
 
-	/** The ssl. */
-	SSL(1, "Enum_EncryptionMethod_SSL"),
-
-	/** The tsl. */
-	TSL(2, "Enum_EncryptionMethod_TSL");
+	IPv6(1, "ENUM_IPVERSION_IPV6");
 
 	/** The value. */
 	public final int value;
@@ -26,7 +21,7 @@ public enum EncryptionMethod {
 	public final String nameId;
 
 	/** The Constant values. */
-	private final static EncryptionMethod[] values = EncryptionMethod.values();
+	private final static IpVersion[] values = IpVersion.values();
 
 	/**
 	 * Instantiates a new rounding.
@@ -36,7 +31,7 @@ public enum EncryptionMethod {
 	 * @param nameId
 	 *            the name id
 	 */
-	private EncryptionMethod(int value, String nameId) {
+	private IpVersion(int value, String nameId) {
 		this.value = value;
 		this.nameId = nameId;
 	}
@@ -48,14 +43,14 @@ public enum EncryptionMethod {
 	 *            the value
 	 * @return the rounding
 	 */
-	public static EncryptionMethod valueOf(Integer value) {
+	public static IpVersion valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (EncryptionMethod val : EncryptionMethod.values) {
+		for (IpVersion val : IpVersion.values) {
 			if (val.value == value) {
 				return val;
 			}

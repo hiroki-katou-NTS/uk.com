@@ -1,11 +1,11 @@
-package nts.uk.ctx.sys.gateway.dom.mailserver;
+package nts.uk.ctx.sys.env.dom.mailserver;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
 
 /**
- * ãƒãƒ¼ãƒˆ
+ * ãƒã?¼ãƒ?
  */
 @IntegerMinValue(0)
 @IntegerMaxValue(65536)
