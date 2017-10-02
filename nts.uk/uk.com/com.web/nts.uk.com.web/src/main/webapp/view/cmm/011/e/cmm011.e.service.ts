@@ -3,13 +3,16 @@ module nts.uk.com.view.cmm011.e {
         /**
          *  Service paths
          */
-        var servicePath: any = {
-//            findLstWorkPlace: "basic/organization/findworkplace",
+        let servicePath: any = {
+            saveWorkplaceHistory: "bs/employee/workplace/history/save",
         };
         
-//        export function findLstWorkPlace(baseDate: Date): JQueryPromise<Array<model.TreeWorkplace>> {
-//            return nts.uk.request.ajax(servicePath.findLstWorkPlace + "/" + baseDate);
-//        }
+        /**
+         * saveWorkplaceHistory
+         */
+        export function saveWorkplaceHistory(command: any): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.saveWorkplaceHistory, command);
+        }
         
         /**
         * Model namespace.

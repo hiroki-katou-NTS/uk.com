@@ -46,13 +46,13 @@ public class BsymtWorkplaceInfoPK implements Serializable {
 	 * Instantiates a new bsymt workplace info PK.
 	 *
 	 * @param companyId the company id
-	 * @param historyId the history id
 	 * @param workplaceId the workplace id
+	 * @param historyId the history id
 	 */
-	public BsymtWorkplaceInfoPK(String companyId, String historyId, String workplaceId) {
+	public BsymtWorkplaceInfoPK(String companyId, String workplaceId, String historyId) {
 	    this.cid = companyId;
-	    this.historyId = historyId;
 	    this.wkpid = workplaceId;
+	    this.historyId = historyId;
 	}
 	
 	/*

@@ -74,7 +74,7 @@ public class WorkplaceConfigInfoFinder {
         List<WorkplaceHierarchy> lstHierarchy = wkpConfigInfo.getWkpHierarchy();
         List<WorkplaceInfo> lstWkpInfo = new ArrayList<>();
         lstHierarchy.stream().forEach(item -> {
-            lstWkpInfo.add(wkpInfoRepo.findLatestByWorkplaceId(item.getWorkplaceId().v()).get());
+            lstWkpInfo.add(wkpInfoRepo.findLatestByWkpId(item.getWorkplaceId().v()).get());
         });
 
         return this.convertToTree(lstWkpInfo, lstHierarchy);
