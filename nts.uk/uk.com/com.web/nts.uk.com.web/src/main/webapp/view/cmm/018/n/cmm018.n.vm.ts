@@ -146,15 +146,17 @@ export module viewmodel {
             lstEmpIds.push("90000000-0000-0000-0000-000000000015");
             lstEmpIds.push("90000000-0000-0000-0000-000000000016");
             data.lstEmpIds = lstEmpIds;
+            data.lstApps = self.currentAppType();
             var isCommon = _.find(self.currentAppType(), function(value){
                 return value  === "";    
             })
             if(isCommon !== undefined || isCommon !== null){
                 data.rootAtr = 0;
+                data.lstApps.removeItem("");
             }else{
                 data.rootAtr = 1;
             }
-            data.lstApps = self.currentAppType();
+            
             service.getInforRoot(data).done(function(){
                 
             }).fail(function(res: any){
