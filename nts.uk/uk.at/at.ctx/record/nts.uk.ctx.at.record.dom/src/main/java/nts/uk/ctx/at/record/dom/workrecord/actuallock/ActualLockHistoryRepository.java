@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * The Interface ActualLockHistoryRepository.
@@ -53,7 +54,7 @@ public interface ActualLockHistoryRepository {
 	 * @param lockDate the lock date
 	 * @return the optional
 	 */
-	Optional<ActualLockHistory> findByLockDate(String companyId, int closureId, GeneralDate lockDate);
+	Optional<ActualLockHistory> findByLockDate(String companyId, int closureId, GeneralDateTime lockDate);
 	
 	/**
 	 * Removes the.
