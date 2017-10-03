@@ -110,7 +110,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		}
 
 		//TODO delete domaim Application
-		
+		applicationRepo.deleteApplication(companyID, appID);
 		//TODO hien thi thong tin Msg_16 
 		if (converList != null) {
 			//TODO Hien thi thong tin 392
