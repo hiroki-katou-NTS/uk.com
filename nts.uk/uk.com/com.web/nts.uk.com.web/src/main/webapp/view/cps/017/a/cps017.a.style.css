@@ -5,7 +5,21 @@
 
 #content-center {
 	margin-top: 10px;
-	width: 300px !important;
+	width: 310px !important;
+}
+
+#content-right {
+	margin-left: 40px;
+	margin-top: 10px;
+	width: 600px !important;
+	float: left;
+	margin-top: 10px;
+}
+
+#item_register_grid_headers {
+	max-width: 310px;
+	padding-right: 17px;
+	width: 310px;
 }
 
 #sel_item_grid_container {
@@ -48,5 +62,30 @@
 
 #itemRegisterLst {
 	margin-top: 20px;
-	
+}
+
+#code {
+	width: 100px;
+}
+
+#name {
+	width: 250px;
+}
+
+#externalCode {
+	width: 100px;
+}
+
+#memo{
+	width: 400px;
+	height: 200px;
+}
+
+.distance {
+	margin-top: 5px;
+	margin-left: 10px;
+}
+
+.formlabel {
+	margin-top: 10px;
 }

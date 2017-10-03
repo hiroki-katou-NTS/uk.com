@@ -23,7 +23,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         [{ prop: 'code', length: 4 },
             { prop: 'name', length: 8 }];
 
-        items = _(new Array(10)).map((x, i) => new InitAndOrderSelection({
+         items = _(new Array(10)).map((x, i) => new InitAndOrderSelection({
             id: i,
             sel_cd: "000" + i.toString(),
             sel_name: "A" + i.toString(),
@@ -34,8 +34,6 @@ module nts.uk.com.view.cps017.a.viewmodel {
             let self = this;
 
             self.init();
-
-            self.currentItemSel
 
         }
 
@@ -151,7 +149,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
     export class HistorySelection {
 
         history_id: string = "0001";
-        period: string: "2017/01/01 ~ 2017/09/29";
+        period: string = "2017/01/01 ~ 2017/09/29";
         currentHistory_id: KnockoutObservable<string> = ko.observable('');
 
         constructor(params: IHistorySelection) {
