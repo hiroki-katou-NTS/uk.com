@@ -18,4 +18,5 @@ public interface AuthorityFormatMonthlyRepository {
 	void remove(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode);
 	
 	boolean checkExistCode(DailyPerformanceFormatCode dailyPerformanceFormatCode);
+
 }

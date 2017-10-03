@@ -14,12 +14,12 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class KshmtAutoWkpJobCalPK_ {
     
     /** The cid. */
-    public static volatile SingularAttribute<KshmtAutoWkpJobCalPK_, String> cid; 
+    public static volatile SingularAttribute<KshmtAutoWkpJobCalPK, String> cid; 
     
     /** The wpkid. */
-    public static volatile SingularAttribute<KshmtAutoWkpJobCalPK_, String> wpkid;
+    public static volatile SingularAttribute<KshmtAutoWkpJobCalPK, String> wpkid;
     
     /** The jobid. */
-    public static volatile SingularAttribute<KshmtAutoWkpJobCalPK_, String> jobid;
+    public static volatile SingularAttribute<KshmtAutoWkpJobCalPK, String> jobid;
 
 }

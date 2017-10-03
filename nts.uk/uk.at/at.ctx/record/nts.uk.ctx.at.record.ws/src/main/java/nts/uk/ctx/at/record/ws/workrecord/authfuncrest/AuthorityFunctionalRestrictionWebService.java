@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -49,7 +48,7 @@ public class AuthorityFunctionalRestrictionWebService extends WebService {
 	@Inject
 	private AuthFuncRestrictionCommandHandler authFuncRestHandler;
 
-	@GET
+	@POST
 	@Path("find-emp-roles")
 	public List<EmployeeRoleDto> getEmployeeRoles() {
 		String companyId = AppContexts.user().companyId();
@@ -61,7 +60,7 @@ public class AuthorityFunctionalRestrictionWebService extends WebService {
 				.collect(Collectors.toList());
 	}
 
-	@GET
+	@POST
 	@Path("find/{roleId}")
 	public List<FunctionalRestrictionWithAuthorityDto> findFuncRestWithAuthor(@PathParam("roleId") String roleId) {
 		List<DailyPerformanceFunction> daiPerfFunctions = dailyPerfFunctionRepo.getDailyPerformanceFunctions();

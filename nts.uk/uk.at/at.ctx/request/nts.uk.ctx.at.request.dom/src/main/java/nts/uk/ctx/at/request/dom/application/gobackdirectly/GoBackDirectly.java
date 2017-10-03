@@ -1,7 +1,8 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly;
 
-import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.WorkTimeGoBack;
 import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
@@ -13,9 +14,8 @@ import nts.uk.ctx.at.shared.dom.worktype.WorkTypeCode;
  * @author ducpm
  *
  */
-@AllArgsConstructor
-@Value
-public class GoBackDirectly {
+@Getter
+public class GoBackDirectly extends AggregateRoot {
 	/**
 	 * 会社ID
 	 */
@@ -31,7 +31,7 @@ public class GoBackDirectly {
 	/**
 	 * 就業時間帯
 	 */
-	private SiftCode siftCd;
+	private SiftCode siftCD;
 	/**
 	 * 勤務を変更する
 	 */
@@ -76,4 +76,24 @@ public class GoBackDirectly {
 	 * 勤務場所選択２
 	 */
 	private String workLocationCD2;
+
+	public GoBackDirectly(String companyID, String appID, String workTypeCD, String siftCD, int workChangeAtr,
+			int goWorkAtr1, int backHomeAtr1, int workTimeStart1, int workTimeEnd1, String workLocationCD1,
+			int goWorkAtr2, int backHomeAtr2, int workTimeStart2, int workTimeEnd2, String workLocationCD2) {
+		this.companyID = companyID;
+		this.appID = appID;
+		this.workTypeCD = new WorkTypeCode(workTypeCD);
+		this.siftCD = new SiftCode(siftCD);
+		this.workChangeAtr = EnumAdaptor.valueOf(workChangeAtr, UseAtr.class);
+		this.goWorkAtr1 = EnumAdaptor.valueOf(goWorkAtr1, UseAtr.class);
+		this.backHomeAtr1 = EnumAdaptor.valueOf(backHomeAtr1, UseAtr.class);
+		this.workTimeStart1 = new WorkTimeGoBack(workTimeStart1);
+		this.workTimeEnd1 = new WorkTimeGoBack(workTimeEnd1);
+		this.workLocationCD1 = workLocationCD1;
+		this.goWorkAtr2 = EnumAdaptor.valueOf(goWorkAtr2, UseAtr.class);
+		this.backHomeAtr2 = EnumAdaptor.valueOf(backHomeAtr2, UseAtr.class);
+		this.workTimeStart2 = new WorkTimeGoBack(workTimeStart2);
+		this.workTimeEnd2 = new WorkTimeGoBack(workTimeEnd2);
+		this.workLocationCD2 = workLocationCD2;
+	}
 }

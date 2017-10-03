@@ -18,6 +18,7 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApproval
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.DestinationMailListOuput;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
@@ -128,11 +129,21 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 		List<String> lstNotApprover = new ArrayList<>();
 		List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(AppContexts.user().companyId(), phaseID);
 		for (ApprovalFrame frame : listFrame) {
-			if (frame.getApprovalATR() == ApprovalAtr.APPROVED) {
+			//2017.09.25
+			/*if (frame.getApprovalATR() == ApprovalAtr.APPROVED) {
 				lstApprover.add(frame.getApproverSID());
 			} else {
 				lstNotApprover.add(frame.getApproverSID());
+			}*/
+			//2017.09.25
+			for(ApproveAccepted x : frame.getListApproveAccepted()){
+				if (x.getApprovalATR() == ApprovalAtr.APPROVED) {
+					lstApprover.add(x.getApproverSID());
+				} else {
+					lstNotApprover.add(x.getApproverSID());
+				}	
 			}
+			
 		}
 		// Get distinct List Approver
 		lstApprover.stream().distinct().collect(Collectors.toList());

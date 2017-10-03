@@ -18,7 +18,9 @@ public enum StampAtr {
 	
 	CHILDCARE(2, "育児外出/育児戻り"),
 	
-	SUPPORT(3, "応援入/応援出");
+	CARE(3, "介護外出/介護戻り"),
+	
+	SUPPORT(4, "応援入/応援出");
 
 	public final int value;
 

@@ -51,7 +51,7 @@ module nts.uk.com.view.cas001.c.viewmodel {
                 }
             });
             if (self.roleCodeArray.length > 0) {
-               dialog.confirm(text('Msg_64')).ifYes(() => {
+               dialog.confirm({messageId: "Msg_64"}).ifYes(() => {
                     let roleObj = { roleIdDestination: self.roleCopy().roleId, roleIds: self.roleCodeArray };
                     service.update(roleObj).done(function(obj) {
                         dialog.info({ messageId: "Msg_20" }).then(function() {
@@ -64,7 +64,7 @@ module nts.uk.com.view.cas001.c.viewmodel {
                 }).ifCancel(function() {
                 })
             }else{
-                dialog.alert(text('Msg_365'));
+                dialog.alert({messageId: "Msg_365"});
             }
             self.isCanceled = false;
             setShared('isCanceled', self.isCanceled);

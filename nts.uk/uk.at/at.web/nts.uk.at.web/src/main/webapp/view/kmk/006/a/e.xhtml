@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="base.xhtml">
 		<ui:define name="title">
-			<span class="title">#{i18n.getText('Com_Person')}</span>
+			<span class="title">#{i18n.getText('KMK006_6')}</span>
 		</ui:define>
 		<ui:define name="extended-action-bar">
 			<button tabindex="1" class="proceed"
@@ -17,9 +17,11 @@
 		</ui:define>
 		<ui:define name="extended-111">
 			<div class="lableContentPersonal"
-				data-bind="ntsFormLabel: {required: true}">
-				<label>#{i18n.getText('KSM001_4')}</label>
+				data-bind="ntsFormLabel: {}">
+				<label>#{i18n.getText('KMK006_33')}</label>
 			</div>
+			<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
+			<button style="margin-left: 10px" data-bind="click: saveWkpJobAutoCal">#{i18n.getText('KMK006_34')}</button>
 			<!-- <div tabindex="6" id="comboTargetYear"
 				data-bind="ntsComboBox: {
 				name: '#[KMK006_26]',

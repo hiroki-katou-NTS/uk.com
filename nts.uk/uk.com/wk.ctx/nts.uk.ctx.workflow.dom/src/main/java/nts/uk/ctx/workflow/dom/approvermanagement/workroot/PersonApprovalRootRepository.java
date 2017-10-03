@@ -1,6 +1,5 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +36,12 @@ public interface PersonApprovalRootRepository {
 	 * @param psAppRoot
 	 */
 	void addPsApprovalRoot(PersonApprovalRoot psAppRoot);
+	/**
+	 * add All Person Approval Root
+	 * 
+	 * @param psAppRoot
+	 */
+	void addAllPsApprovalRoot(List<PersonApprovalRoot> psAppRoot);
 
 	/**
 	 * update Person Approval Root
@@ -44,6 +49,12 @@ public interface PersonApprovalRootRepository {
 	 * @param psAppRoot
 	 */
 	void updatePsApprovalRoot(PersonApprovalRoot psAppRoot);
+	/**
+	 * update All Person Approval Root
+	 * 
+	 * @param psAppRoot
+	 */
+	void updateAllPsApprovalRoot(List<PersonApprovalRoot> psAppRoot);
 
 	/**
 	 * get Person Approval Root By End date

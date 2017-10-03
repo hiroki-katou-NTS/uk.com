@@ -14,6 +14,10 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
@@ -25,7 +29,6 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRootRepository;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.person.PersonInforExportAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalForApplication;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootCommonOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootMaster;
@@ -34,8 +37,6 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.Employ
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.PersonApproverOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.WorkplaceApproverOutput;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverAdaptor;
-import nts.uk.ctx.workflow.dom.approvermanagement.workroot.workplace.WorkplaceApproverDto;
 import nts.uk.shr.com.company.CompanyAdapter;
 import nts.uk.shr.com.company.CompanyInfor;
 @Stateless
@@ -49,11 +50,11 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 	@Inject
 	private CompanyAdapter comAdapter;
 	@Inject
-	private WorkplaceApproverAdaptor wpAdapter;
+	private WorkplaceAdapter wpAdapter;
 	@Inject
 	private ApprovalPhaseRepository phaseRepository;
 	@Inject
-	private PersonInforExportAdapter psInfor;
+	private PersonAdapter psInfor;
 	
 	private final String rootCommon = "共通ルート";
 	@Override
@@ -106,7 +107,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					"", 
 					root.getHistoryId(),
 					root.getApplicationType() == null ? 0: root.getApplicationType().value,
-					root.getPeriod().getEndDate(), 
+					root.getPeriod().getStartDate(), 
 					root.getPeriod().getEndDate(), 
 					root.getBranchId(), 
 					root.getAnyItemApplicationId(),
@@ -119,8 +120,9 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 				psWootInfor = getAppInfors(psRoot, psWootInfor, companyID);
 				continue;
 			}
-			//ドメインモデル「社員」を取得する(lấy dữ liệu domain「社員」)
-			EmployeeApproverOutput empInfor = new EmployeeApproverOutput(root.getEmployeeId(), root.getEmployeeId()); 
+			//ドメインモデル「社員」を取得する(lấy dữ liệu domain「社員」)		
+			PersonImport psInfos = psInfor.getPersonInfo(root.getEmployeeId());
+			EmployeeApproverOutput empInfor = new EmployeeApproverOutput(psInfos.getEmployeeCode(), psInfos.getEmployeeName()); 
 			psWootInfor = getAppInfors(psRoot, psWootInfor, companyID);
 			PersonApproverOutput psOutput = new PersonApproverOutput(empInfor, psWootInfor);
 			mapPsRootInfor.put(root.getEmployeeId(), psOutput);
@@ -145,7 +147,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 					root.getWorkplaceId(), 
 					root.getHistoryId(),
 					root.getApplicationType() == null ? 0:  root.getApplicationType().value,
-					root.getPeriod().getEndDate(), 
+					root.getPeriod().getStartDate(), 
 					root.getPeriod().getEndDate(), 
 					root.getBranchId(), 
 					root.getAnyItemApplicationId(),
@@ -160,9 +162,14 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 			}
 			
 			//ドメインモデル「職場」を取得する(lấy dữ liệu domain 「職場」) tra ra 1 list nhung thuc chat chi co 1 du lieu
-			Optional<WorkplaceApproverDto> wpInfors = wpAdapter.findByWkpId( root.getWorkplaceId(), baseDate);			
+			WorkplaceImport wpInfors = wpAdapter.findByWkpId( root.getWorkplaceId(), baseDate).get();			
+			// fix data
+			WorkplaceImport  wpDto = new WorkplaceImport(wpInfors.getWkpCode(), wpInfors.getWkpName());
 			wpRootInfor = getAppInfors(wpRoot, wpRootInfor, companyID);
-			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpInfors.get(), wpRootInfor);
+			
+			// fix data
+			//WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpInfors.get(), wpRootInfor);
+			WorkplaceApproverOutput wpOutput = new WorkplaceApproverOutput(wpDto, wpRootInfor);
 			mapWpRootInfor.put(root.getWorkplaceId(), wpOutput);
 		}
 		return mapWpRootInfor;
@@ -219,7 +226,9 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		for(ApprovalPhase phase: getAllIncludeApprovers) {
 			List<String> lstApprovers = new ArrayList<>();
 			for(Approver approver: phase.getApprovers()) {
-				lstApprovers.add(psInfor.personName(approver.getEmployeeId()));
+				//lstApprovers.add(psInfor.personName(approver.getEmployeeId()));
+				
+				lstApprovers.add(psInfor.getPersonInfo(approver.getEmployeeId()).getEmployeeName());
 			}
 			ApprovalRootMaster appRoot = new ApprovalRootMaster(phase.getOrderNumber(), phase.getApprovalForm().name, lstApprovers);
 			lstMatter.add(appRoot);
@@ -242,7 +251,7 @@ public class ApproverRootMasterImpl implements ApproverRootMaster{
 		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDate(companyID, baseDate);
 		Optional<CompanyInfor> comInfo = comAdapter.getCurrentCompany();
 		List<ApprovalForApplication> comApproverRoot =  new ArrayList<>();
-		if(!CollectionUtil.isEmpty(lstComs)) {
+		if(CollectionUtil.isEmpty(lstComs)) {
 			return null;
 		}
 		

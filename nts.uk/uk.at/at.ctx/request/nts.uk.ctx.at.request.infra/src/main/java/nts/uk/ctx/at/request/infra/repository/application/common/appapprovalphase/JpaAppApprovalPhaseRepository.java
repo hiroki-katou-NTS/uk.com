@@ -18,12 +18,12 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 	private final String SELECT= "SELECT c FROM KrqdtAppApprovalPhase c";
 	private final String SELECT_SINGLE = "SELECT c FROM KrqdtAppApprovalPhase c "
 			+ " WHERE c.KrqdtAppApprovalPhasePK.companyID = :companyID "
-			+ " AND c.krqdtAppApprovalPhasePK.appID = :appID "
+			+ " AND c.appID = :appID "
 			+ "AND c.krqdtAppApprovalPhasePK.phaseID = :phaseID";
 	//get List Phase by appID
 	private final String SELECT_BY_APP_ID = "SELECT c FROM KrqdtAppApprovalPhase c"
 			+ " WHERE c.krqdtAppApprovalPhasePK.companyID = :companyID"
-			+ " AND c.krqdtAppApprovalPhasePK.appID = :appID";
+			+ " AND c.appID = :appID";
 	private final String SELECT_ALL_BY_COMPANY = SELECT + " WHERE c.krqdtAppApprovalPhasePK.companyID = :companyID";
 	
 	
@@ -55,28 +55,28 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 		
 	}
 	@Override
-	public void delete(String companyID, String appID, String phaseID) {
-		this.commandProxy().remove(KrqdtAppApprovalPhase.class, new KrqdtAppApprovalPhasePK(companyID, appID,phaseID));
+	public void delete(AppApprovalPhase appAprovalPhase) {
+		this.commandProxy().remove(KrqdtAppApprovalPhase.class, new KrqdtAppApprovalPhasePK(appAprovalPhase.getCompanyID(), appAprovalPhase.getPhaseID()));
 		this.getEntityManager().flush();
 		
 	}
 	private AppApprovalPhase toDomain(KrqdtAppApprovalPhase entity) {
 		return AppApprovalPhase.createFromJavaType(
 				entity.krqdtAppApprovalPhasePK.companyID,
-				entity.krqdtAppApprovalPhasePK.appID,
+				entity.appID,
 				entity.krqdtAppApprovalPhasePK.phaseID,
 				Integer.valueOf(entity.approvalForm).intValue(),
 				Integer.valueOf(entity.dispOrder).intValue(),
 				Integer.valueOf(entity.approvalATR).intValue(),
-				null,
 				null);
 	}
 	private KrqdtAppApprovalPhase toEntity (AppApprovalPhase domain){
 		return new KrqdtAppApprovalPhase (
-					new KrqdtAppApprovalPhasePK(domain.getCompanyID(), domain.getAppID(), domain.getPhaseID()),
-					domain.getApprovalForm().toString(),
+					new KrqdtAppApprovalPhasePK(domain.getCompanyID(), domain.getPhaseID()),
+					domain.getAppID(),
+					domain.getApprovalForm().value,
 					domain.getDispOrder(),
-					domain.getApprovalATR().toString()
+					domain.getApprovalATR().value
 					);
 	}
 

@@ -17,6 +17,6 @@ import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDire
 @Setter
 public class GoBackDirectBasicData {
 	Optional<GoBackDirectlyCommonSetting> goBackDirectSet;
-	List<ApplicationReason> listAppReason;
 	String employeeName;
+	List<ApplicationReason> listAppReason;
 }

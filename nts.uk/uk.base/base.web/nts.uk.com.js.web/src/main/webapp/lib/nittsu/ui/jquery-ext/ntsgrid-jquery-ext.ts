@@ -399,7 +399,11 @@ module nts.uk.ui.jqueryExtentions {
                 let columnsMap: any = allColumnsMap || utils.getColumnsMap($grid);
                 let rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
                 grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
-                if (!utils.isNtsControl($grid, columnKey) || forceRender) renderCell($grid, rId, columnKey);
+                let isControl = utils.isNtsControl($grid, columnKey);
+                if (!isControl || forceRender) renderCell($grid, rId, columnKey);
+                if (isControl) {
+                    $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: columnKey, value: cellValue }]);
+                }
                 gridUpdate._notifyCellUpdated(rId);
             }
             
@@ -416,7 +420,11 @@ module nts.uk.ui.jqueryExtentions {
                 let origData = gridUpdate._getLatestValues(rId); 
                 grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
                 _.forEach(Object.keys(updatedRowData), function(key: any) {
-                    if (utils.isNtsControl($grid, key) && !forceRender) return;
+                    let isControl = utils.isNtsControl($grid, key);
+                    if (isControl) {
+                        $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: key, value: updatedRowData[key] }]);
+                    }
+                    if (isControl && !forceRender) return;
                     let $vCell = renderCell($grid, rId, key, origData);
                     
                     // Validate
@@ -761,12 +769,15 @@ module nts.uk.ui.jqueryExtentions {
                 let selectedCells = $grid.igGridSelection("selectedCells");
                 if (selectedCells.length > 0) ui.cell = selectedCells[0];
                 selectCellChange({ target: $grid[0] }, ui);
-                
-                // TODO: Focus nts common controls if exists.
                 let selectedCell: any = getSelectedCell($grid);
-                let ntsCombo = $(selectedCell.element).find(".nts-combo-container"); 
+                let $element = $(selectedCell.element);
+                let ntsCombo = $element.find(".nts-combo-container"); 
                 if (ntsCombo.length > 0) {
                     ntsCombo.find("input").select();
+                }
+                let ntsSwitchs = $element.find(".nts-switch-container");
+                if (ntsSwitchs.length > 0) {
+                    ntsSwitchs.find("button:first").focus();
                 }
             }
             
@@ -1240,6 +1251,26 @@ module nts.uk.ui.jqueryExtentions {
                     var optionsText = data.controlDef.optionsText;
                     var selectedValue = data.initValue;
                     var container = $("<div/>").addClass(this.containerClass()).data("enable", data.enable);
+                    container.on(events.Handler.KEY_UP, function(evt: any) {
+                        let $buttons: any = container.find("button");
+                        let index;
+                        $buttons.each(function(i, elm) {
+                            if (elm === document.activeElement) {
+                                index = i;
+                                return false;
+                            }
+                        });
+                        
+                        if (!util.isNullOrUndefined(index)) {
+                            if (utils.isArrowLeft(evt)) {
+                                index = index === 0 ? ($buttons.length - 1) : --index;
+                            }
+                            if (utils.isArrowRight(evt)) {
+                                index = index === $buttons.length - 1 ? 0 : ++index;
+                            }
+                            $buttons.eq(index).focus();
+                        }
+                    });
     
                     _.forEach(options, function(opt) {
                         var value = opt[optionsValue];
@@ -2004,6 +2035,7 @@ module nts.uk.ui.jqueryExtentions {
                 static CELL_CLICK: string = "iggridcellclick";
                 static PAGE_INDEX_CHANGE: string = "iggridpagingpageindexchanging";
                 static PAGE_SIZE_CHANGE: string = "iggridpagingpagesizechanging";
+                static CONTROL_CHANGE: string = "ntsgridcontrolvaluechanged";
                 $grid: JQuery;
                 options: any;
                 preventEditInError: boolean;
@@ -3140,6 +3172,12 @@ module nts.uk.ui.jqueryExtentions {
             export function isArrowKey(evt: any) {
                 return evt.keyCode >= 37 && evt.keyCode <= 40;
             }
+            export function isArrowLeft(evt: any) {
+                return evt.keyCode === 37;
+            }
+            export function isArrowRight(evt: any) {
+                return evt.keyCode === 39;
+            }
             export function isAlphaNumeric(evt: any) {
                 return evt.keyCode >= 48 && evt.keyCode <= 90;
             }
@@ -3193,22 +3231,22 @@ module nts.uk.ui.jqueryExtentions {
             }
             
             export function isIgGrid($grid: JQuery) {
-                return !util.isNullOrUndefined($grid.data("igGrid"));
+                return $grid && !util.isNullOrUndefined($grid.data("igGrid"));
             }
             export function selectable($grid: JQuery) {
-                return !util.isNullOrUndefined($grid.data("igGridSelection"));
+                return $grid && !util.isNullOrUndefined($grid.data("igGridSelection"));
             }
             export function updatable($grid: JQuery) {
-                return !util.isNullOrUndefined($grid.data("igGridUpdating"));
+                return $grid && !util.isNullOrUndefined($grid.data("igGridUpdating"));
             }
             export function fixable($grid: JQuery) {
-                return !util.isNullOrUndefined($grid.data("igGridColumnFixing"));
+                return $grid && !util.isNullOrUndefined($grid.data("igGridColumnFixing"));
             }
             export function hidable($grid: JQuery) {
-                return !util.isNullOrUndefined($grid.data("igGridHiding"));
+                return $grid && !util.isNullOrUndefined($grid.data("igGridHiding"));
             }
             export function pageable($grid: JQuery) {
-                return !util.isNullOrUndefined($grid.data("igGridPaging"));
+                return $grid && !util.isNullOrUndefined($grid.data("igGridPaging"));
             }
             export function disabled($cell: JQuery) {
                 return $cell.hasClass(color.Disable);

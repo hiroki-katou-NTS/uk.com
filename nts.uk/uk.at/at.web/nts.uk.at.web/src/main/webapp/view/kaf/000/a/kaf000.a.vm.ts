@@ -1,4 +1,4 @@
-module kaf000.a.viewmodel{
+module nts.uk.at.view.kaf000.a.viewmodel{
     export class ScreenModel{
         /**
          * List
@@ -7,6 +7,8 @@ module kaf000.a.viewmodel{
         listPhaseID: Array<String>;
         //List  Approval Root 
         listApprovalRoot :  KnockoutObservableArray<Array<model.ApprovalRootOutput>>;
+         //Item  Approval Root 
+        approvalRoot :  KnockoutObservableArray<model.ApprovalRootOutput>;
         
         /**
          * obj input
@@ -19,14 +21,16 @@ module kaf000.a.viewmodel{
         //obj output message deadline
         outputMessageDeadline : KnockoutObservable<model.OutputMessageDeadline>;
         constructor(){
-            var self = this;
+            let self = this;
             /**
              * List
              */
             
             self.listApprovalRoot = ko.observableArray([]);
+            //item approval root
+            self.approvalRoot = ko.observableArray([]);
             //obj input approval root
-            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','90000000-0000-0000-0000-000000000001',1,1,new Date('2019-11-02 00:00:00')));
+            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','90000000-0000-0000-0000-000000000001',1,1,new Date('2017-01-02 00:00:00')));
             //obj input get message deadline 
             self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline("000000000000-0005",null,1,null));
             //obj input get message deadline 
@@ -36,10 +40,10 @@ module kaf000.a.viewmodel{
         start(): JQueryPromise<any> {
             
             let self = this;
-            var dfd = $.Deferred();
-            var dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
-            //var dfdAllApprovalRoot = self.getAllApprovalRoot();
-            $.when(dfdMessageDeadline).done((dfdAllApprovalRootData)=>{
+            let dfd = $.Deferred();
+            let dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
+            let dfdAllApprovalRoot = self.getAllApprovalRoot();
+            $.when(dfdMessageDeadline,dfdAllApprovalRoot).done((dfdMessageDeadlineData,dfdAllApprovalRootData)=>{
 //                self.getAllFrameByListPhaseId1(self.listPhaseID);
                  dfd.resolve(); 
             });
@@ -48,20 +52,23 @@ module kaf000.a.viewmodel{
         
         //get all listApprovalRoot
         getAllApprovalRoot(){
-            var self = this;
-            var dfd = $.Deferred<any>();
-//            service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
-//                self.listApprovalRoot(data);
-//                dfd.resolve(data);    
-//            });
+            let self = this;
+            let dfd = $.Deferred<any>();
+            nts.uk.at.view.kaf000.a.service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
+                self.listApprovalRoot(data);
+                if(self.listApprovalRoot().length>0){
+                    self.approvalRoot(self.listApprovalRoot()[0]);
+                }
+                dfd.resolve(data);    
+            });
             return dfd.promise();
             
         }
          // getMessageDeadline
         getMessageDeadline(inputMessageDeadline){
-            var self = this;
-            var dfd = $.Deferred<any>();
-                service.getMessageDeadline(inputMessageDeadline).done(function(data){
+            let self = this;
+            let dfd = $.Deferred<any>();
+                nts.uk.at.view.kaf000.a.service.getMessageDeadline(inputMessageDeadline).done(function(data){
                     self.outputMessageDeadline(data);
                     dfd.resolve(data);    
                 }); 
@@ -176,12 +183,14 @@ module kaf000.a.viewmodel{
             approvalPhaseId : KnockoutObservable<String>;
             isConfirmPerson : KnockoutObservable<boolean>;
             orderNumber : KnockoutObservable<number>;
+            name : KnockoutObservable<String>;
             constructor(sid : String,approvalPhaseId : String,
-                        isConfirmPerson : boolean,orderNumber : number){
+                        isConfirmPerson : boolean,orderNumber : number,name : String){
                 this.sid = ko.observable(sid);
                 this.approvalPhaseId = ko.observable(approvalPhaseId);
                 this.isConfirmPerson  = ko.observable(isConfirmPerson);
                 this.orderNumber = ko.observable(orderNumber); 
+                this.name = ko.observable(name); 
                 
             }
         }//end class ApproverInfo
