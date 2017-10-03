@@ -17,11 +17,11 @@ public class ResetAtr extends DomainObject {
 	/** The reset master info. */
 	// マスタ情報再設定
 	private Boolean resetMasterInfo;
-	
+
 	/** The reset absent holiday business. */
 	// 休職休業再設定
 	private Boolean resetAbsentHolidayBusines;
-	
+
 	/** The reset working hours. */
 	// 就業時間帯再設定
 	private Boolean resetWorkingHours;
@@ -37,5 +37,35 @@ public class ResetAtr extends DomainObject {
 	/** The reset time child care. */
 	// 育児介護時間再設定
 	private Boolean resetTimeChildCare;
+
+	/**
+	 * To domain.
+	 *
+	 * @param memento the memento
+	 * @return the reset atr
+	 */
+	public ResetAtr toDomain(ExecutionContentGetMemento memento) {
+		this.resetMasterInfo = memento.getResetMasterInfo();
+		this.resetAbsentHolidayBusines = memento.getResetAbsentHolidayBusines();
+		this.resetWorkingHours = memento.getResetWorkingHours();
+		this.resetTimeAssignment = memento.getResetTimeAssignment();
+		this.resetDirectLineBounce = memento.getResetDirectLineBounce();
+		this.resetTimeChildCare = memento.getResetTimeChildCare();
+		return this;
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(ExecutionContentSetMemento memento) {
+		memento.setResetMasterInfo(this.resetMasterInfo);
+		memento.setResetAbsentHolidayBusines(this.resetAbsentHolidayBusines);
+		memento.setResetWorkingHours(this.resetWorkingHours);
+		memento.setResetTimeAssignment(this.resetTimeAssignment);
+		memento.setResetDirectLineBounce(this.resetDirectLineBounce);
+		memento.setResetTimeChildCare(this.resetTimeChildCare);
+	}
 
 }

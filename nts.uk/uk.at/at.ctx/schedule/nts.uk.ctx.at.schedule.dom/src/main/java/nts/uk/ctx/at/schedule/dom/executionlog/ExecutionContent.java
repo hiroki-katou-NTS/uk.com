@@ -25,4 +25,28 @@ public class ExecutionContent extends DomainObject{
 	
 	// 作成方法区分
 	private CreateMethodAtr createMethodAtr;
+	
+	/**
+	 * To domain.
+	 *
+	 * @param memento the memento
+	 * @return the execution content
+	 */
+	public ExecutionContent toDomain(ExecutionContentGetMemento memento){
+		this.content = new Content().toDomain(memento);
+		this.copyStartDate = memento.getCopyStartDate();
+		this.createMethodAtr = memento.getCreateMethodAtr();
+		return this;
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(ExecutionContentSetMemento memento){
+		this.content.saveToMemento(memento);
+		memento.setCopyStartDate(this.copyStartDate);
+		memento.setCreateMethodAtr(this.createMethodAtr);
+	}
 }
