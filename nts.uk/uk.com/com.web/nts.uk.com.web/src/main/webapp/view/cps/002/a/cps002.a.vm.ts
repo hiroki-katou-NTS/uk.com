@@ -129,6 +129,13 @@ module cps002.a.vm {
             nts.uk.ui.windows.sub.modal('/view/cps/002/f/index.xhtml', { title: '' }).onClosed(function(): any {
             });
         }
+        OpenGModal() {
+
+            let self = this;
+
+            nts.uk.ui.windows.sub.modal('/view/cps/002/g/index.xhtml', { title: '' }).onClosed(function(): any {
+            });
+        }
 
         genCategoryTypeText() {
             let self = this,

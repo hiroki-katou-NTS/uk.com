@@ -2,12 +2,15 @@ package repository.person.setting.regHistory;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import entity.person.info.setting.regHistory.BsymtEmployeeRegistrationHistory;
 import entity.person.info.setting.regHistory.BsymtEmployeeRegistrationHistoryPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.info.setting.regHistory.EmpRegHistory;
 import nts.uk.ctx.bs.person.dom.person.setting.regHistory.EmpRegHistoryRepository;
 
+@Stateless
 public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegHistoryRepository {
 
 	private static final String SELECT_LAST_REG_HISTORY_QUERY_STRING = "SELECT TOP 1 er FROM BsymtEmployeeRegistrationHistory er WHERE er.registeredDate DESC";
