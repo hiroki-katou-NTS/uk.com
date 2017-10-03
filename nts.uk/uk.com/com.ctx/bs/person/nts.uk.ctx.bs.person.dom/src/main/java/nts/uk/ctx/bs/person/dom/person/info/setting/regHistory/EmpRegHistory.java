@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.dom.person.info.setting.regisHistory;
+package nts.uk.ctx.bs.person.dom.person.info.setting.regHistory;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;

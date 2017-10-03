@@ -5,7 +5,7 @@ import java.util.Optional;
 import entity.person.info.setting.regHistory.BsymtEmployeeRegistrationHistory;
 import entity.person.info.setting.regHistory.BsymtEmployeeRegistrationHistoryPk;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.info.setting.regisHistory.EmpRegHistory;
+import nts.uk.ctx.bs.person.dom.person.info.setting.regHistory.EmpRegHistory;
 import nts.uk.ctx.bs.person.dom.person.setting.regHistory.EmpRegHistoryRepository;
 
 public class JpaEmpRegHistoryRepository extends JpaRepository implements EmpRegHistoryRepository {

@@ -1,7 +1,7 @@
 package find.person.setting.regHistory;
 
 import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.info.setting.regisHistory.EmpRegHistory;
+import nts.uk.ctx.bs.person.dom.person.info.setting.regHistory.EmpRegHistory;
 
 @Value
 public class EmpRegHistoryDto {
