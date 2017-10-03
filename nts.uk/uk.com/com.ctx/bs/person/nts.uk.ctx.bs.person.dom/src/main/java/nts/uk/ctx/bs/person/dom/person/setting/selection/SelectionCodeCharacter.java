@@ -7,8 +7,8 @@ import nts.arc.primitive.constraint.IntegerRange;
 @IntegerRange(max = 1, min = 0)
 public enum SelectionCodeCharacter {
 	/** kjk */
-	NUMBER_TYPE(0),//数値型
-	CHARATERS_TYPE(1);//英数型
+	NUMBER_TYPE(0),//半角数字
+	CHARATERS_TYPE(1);//半角英数字
 	
 	public final int value;
 }
