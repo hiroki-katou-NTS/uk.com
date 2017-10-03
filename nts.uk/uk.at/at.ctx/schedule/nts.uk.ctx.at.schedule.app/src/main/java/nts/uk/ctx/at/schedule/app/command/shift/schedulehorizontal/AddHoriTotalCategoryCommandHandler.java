@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.swing.text.html.Option;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCategory;
@@ -37,7 +37,7 @@ public class AddHoriTotalCategoryCommandHandler extends CommandHandler<AddHoriTo
 		Optional<HoriTotalCategory> horiOld = horiRep.findCateByCode(companyId, 
 																	context.getCommand().getCategoryCode());
 		if(horiOld.isPresent()){
-			throw new RuntimeException("入力したコードは、既に登録されています。");
+			throw new BusinessException("Msg_3");
 		}else{
 			horiRep.insertCate(hori);
 		}

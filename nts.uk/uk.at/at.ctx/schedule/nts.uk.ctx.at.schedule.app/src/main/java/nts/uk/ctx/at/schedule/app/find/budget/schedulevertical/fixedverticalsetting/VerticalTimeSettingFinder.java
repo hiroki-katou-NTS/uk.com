@@ -3,12 +3,14 @@ package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.fixedverticalset
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.FixedVerticalSettingRepository;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.VerticalTime;
 import nts.uk.shr.com.context.AppContexts;
 
+@Stateless
 public class VerticalTimeSettingFinder {
 	@Inject
 	private FixedVerticalSettingRepository repository;

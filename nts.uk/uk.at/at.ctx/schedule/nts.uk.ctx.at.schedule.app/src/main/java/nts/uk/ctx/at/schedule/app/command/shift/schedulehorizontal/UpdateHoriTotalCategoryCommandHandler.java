@@ -25,17 +25,17 @@ public class UpdateHoriTotalCategoryCommandHandler extends CommandHandler<Update
 		String companyId = AppContexts.user().companyId();
 		Optional<HoriTotalCategory> horiOld = horiRep.findCateByCode(companyId, context.getCommand().getCategoryCode());
 		List<TotalEvalOrder> totalEvalOrders = new ArrayList<>();
+		if(!horiOld.isPresent()){
+			throw new RuntimeException("対象データがありません。");
+		}
 		if(context.getCommand().getTotalEvalOrders() != null){
 			totalEvalOrders = context.getCommand().getTotalEvalOrders().stream()
 									.map(x -> x.toDomainOrder(companyId, context.getCommand().getCategoryCode()))
 									.collect(Collectors.toList());
 		}
-		if(!horiOld.isPresent()){
-			throw new RuntimeException("対象データがありません。");
-		}else{
-			HoriTotalCategory horiNew = HoriTotalCategory.createFromJavaType(companyId, context.getCommand().getCategoryCode(), context.getCommand().getCategoryName(), context.getCommand().getMemo(), totalEvalOrders);
-			horiRep.updateCate(horiNew);
-		}
+		HoriTotalCategory horiNew = HoriTotalCategory.createFromJavaType(companyId, context.getCommand().getCategoryCode(), context.getCommand().getCategoryName(), context.getCommand().getMemo(), totalEvalOrders);
+		horiNew.validate();
+		horiRep.updateCate(horiNew);
 	}
 
 }
