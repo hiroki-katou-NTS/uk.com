@@ -92,12 +92,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             /**
              * enable
              */
-            self.enableApprove = ko.observable(false);
+            self.enableApprove = ko.observable(true);
             self.enableDeny = ko.observable(false);
-            self.enableRelease = ko.observable(false);
+            self.enableRelease = ko.observable(true);
             self.enableRegistration = ko.observable(false);
-            self.enableDelete = ko.observable(false);
-            self.enableCancel = ko.observable(false);
+            self.enableDelete = ko.observable(true);
+            self.enableCancel = ko.observable(true);
             /**
              * visible
              */
@@ -292,10 +292,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         /**
          *  btn Approve
          */
-        btnApprove(appID){
+        btnApprove(){
             let self = this;
             let dfd = $.Deferred<any>();
-            service.approveApp(appID).done(function() {
+            service.approveApp(self.appID()).done(function() {
                 dfd.resolve();
             });
             return dfd.promise();
@@ -303,10 +303,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          /**
          *  btn Deny
          */
-        btnDeny(appID){
+        btnDeny(){
             let self = this;
             let dfd = $.Deferred<any>();
-            service.denyApp(appID).done(function() {
+            service.denyApp(self.appID()).done(function() {
                 dfd.resolve();
             });
             return dfd.promise();
@@ -315,11 +315,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          /**
          *  btn Release
          */
-        btnRelease(appID){
+        btnRelease(){
             let self = this;
             let dfd = $.Deferred<any>();
-            service.releaseApp(appID).done(function() {
-                dfd.resolve();
+            nts.uk.ui.dialog.confirm({ messageId: 'Msg_28' }).ifYes(function () {
+                service.releaseApp(self.appID()).done(function() {
+                    dfd.resolve();
+                });
             });
             return dfd.promise();
         }
@@ -349,27 +351,28 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         /**
          *  btn Delete 
          */
-        btnDelete(appID){
+        btnDelete(){
             let self = this;
             let dfd = $.Deferred<any>();
-            if(confirm("Are you sure ?")){
-                service.deleteApp(appID).done(function() {
+            nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function () {
+                service.deleteApp(self.appID()).done(function() {
                     dfd.resolve();
                 });
-            }    
+            });   
             return dfd.promise();
         }
         /**
          *  btn Cancel 
          */
-        btnCancel(appID){
+        btnCancel(){
             let self = this;
             let dfd = $.Deferred<any>();
-            if(confirm("Are you sure ?")){
-                service.cancelApp(appID).done(function() {
+            nts.uk.ui.dialog.confirm({ messageId: 'Msg_249' }).ifYes(function () {
+                service.cancelApp(self.appID()).done(function() {
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_224" });
                     dfd.resolve();
                 });
-            }
+            });
             return dfd.promise();
         }
         

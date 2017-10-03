@@ -3,6 +3,7 @@ package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerappr
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
@@ -14,7 +15,7 @@ import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.WorkplaceApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootCommonOutput;
-
+@Stateless
 public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 	@Inject
 	private EmployeeAdapter empAdapter;
@@ -115,7 +116,6 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			List<PersonApprovalRoot> lstPersonRootInfor,
 			String companyID, 
 			String sId, 
-			ApplicationType appType,
 			GeneralDate baseDate) {
 		//ドメインモデル「個人別就業承認ルート」を取得する(láy du lieu domain「個人別就業承認ルート」 ): 申請本人の社員ID, 就業ルート区分(共通)
 		List<PersonApprovalRoot> lstPsCommonRoots = lstPersonRootInfor

@@ -23,9 +23,11 @@ public class ApproveAccepted extends DomainObject {
 	private String appAcceptedID ;
 	
 	/** 承認者 */
+	@Setter
 	private String approverSID ;
 	
 	/** 承認区分 */
+	@Setter
 	private ApprovalAtr approvalATR;
 
 	/** 確定区分 */
@@ -38,6 +40,7 @@ public class ApproveAccepted extends DomainObject {
 	private Reason reason;
 	
 	/** 代行者 */
+	@Setter
 	private String representerSID;
 	
 	

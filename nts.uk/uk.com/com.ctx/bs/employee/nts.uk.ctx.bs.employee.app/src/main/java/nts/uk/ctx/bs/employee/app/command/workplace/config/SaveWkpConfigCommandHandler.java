@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -19,6 +18,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.service.WkpConfigInfoService;
 import nts.uk.ctx.bs.employee.dom.workplace.config.service.WkpConfigService;
+import nts.uk.ctx.bs.employee.dom.workplace.util.HistoryUtil;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -51,9 +51,9 @@ public class SaveWkpConfigCommandHandler extends CommandHandler<SaveWkpConfigCom
     protected void handle(CommandHandlerContext<SaveWkpConfigCommand> context) {
         SaveWkpConfigCommand command = context.getCommand();
         String companyId = AppContexts.user().companyId();
-        
+
         // workplace config history is sorted mode DESC by start date
-        Optional<WorkplaceConfig> optional = workplaceConfigRepository.findWorkplaceByCompanyId(companyId);
+        Optional<WorkplaceConfig> optional = workplaceConfigRepository.findAllByCompanyId(companyId);
         // new mode
         if (!optional.isPresent()) {
             workplaceConfigRepository.add(command.toDomain(companyId));
@@ -65,86 +65,79 @@ public class SaveWkpConfigCommandHandler extends CommandHandler<SaveWkpConfigCom
         } else {
             this.updateHistory(companyId, command, optional.get());
         }
-        
+
     }
 
     /**
      * Adds the history.
      *
-     * @param companyId the company id
-     * @param command the command
-     * @param latestWkpConfigHist the latest wkp config hist
+     * @param companyId
+     *            the company id
+     * @param command
+     *            the command
+     * @param latestWkpConfigHist
+     *            the latest wkp config hist
      */
     private void addHistory(String companyId, SaveWkpConfigCommand command, WorkplaceConfig wkpConfig) {
         // get start date of add new hist
         GeneralDate newStartDateHist = command.getWkpConfigHistory().getPeriod().getStartDate();
+
         WorkplaceConfigHistory latestWkpConfigHist = wkpConfig.getWkpConfigHistoryLatest();
         // validate add hist and return first histId
-        if (this.isInValidStartDateHistory(latestWkpConfigHist.getPeriod().getStartDate(),
-                newStartDateHist)) {
-            throw new BusinessException("Msg_102");
-        }
+        HistoryUtil.validStartDate(Boolean.TRUE, latestWkpConfigHist.getPeriod().getStartDate(), newStartDateHist);
+
         String latestHistIdCurrent = latestWkpConfigHist.getHistoryId();
-        
+
         // convert command to domain
         WorkplaceConfig workplaceConfig = command.toDomain(companyId);
-        
+
         // add workplace config and return add new historyId
         workplaceConfigRepository.add(workplaceConfig);
-        
+
         // previous day
         int dayOfAgo = -1;
         // update previous history
         wkpConfigService.updatePrevHistory(companyId, latestHistIdCurrent, newStartDateHist.addDays(dayOfAgo));
-        
+
         String newHistoryId = workplaceConfig.getWkpConfigHistoryLatest().getHistoryId();
         // copy latest ConfigInfoHist from fisrtHistId
         wkpConfigInfoService.copyWkpConfigInfoHist(companyId, latestHistIdCurrent, newHistoryId);
     }
-    
+
     /**
      * Update history.
      *
-     * @param companyId the company id
-     * @param command the command
+     * @param companyId
+     *            the company id
+     * @param command
+     *            the command
      */
     private void updateHistory(String companyId, SaveWkpConfigCommand command, WorkplaceConfig wkpConfigDatabase) {
         // get start date of add new hist
         GeneralDate newStartDateHist = command.getWkpConfigHistory().getPeriod().getStartDate();
-        
+
         // get previous history (below history latest)
         int idxPrevLatestHist = 1;
         WorkplaceConfigHistory prevHistLatest = wkpConfigDatabase.getWkpConfigHistory().get(idxPrevLatestHist);
-        
+
         // validate new start date with previous of latest history.
-        if (this.isInValidStartDateHistory(prevHistLatest.getPeriod().getStartDate(), newStartDateHist)) {
-            throw new BusinessException("Msg_127");
-        }
+        HistoryUtil.validStartDate(Boolean.FALSE, prevHistLatest.getPeriod().getStartDate(), newStartDateHist);
+
         // update workplace by new start date history if need
-        this.wkpConfigService.updateWkpHistoryIfNeed(companyId, wkpConfigDatabase.getWkpConfigHistoryLatest(), newStartDateHist);
-        
+        this.wkpConfigService.updateWkpHistoryIfNeed(companyId, wkpConfigDatabase.getWkpConfigHistoryLatest(),
+                newStartDateHist);
+
         // convert to domain
         WorkplaceConfig wkpConfigCommand = command.toDomain(companyId);
-        
+
         // set end date of previous history (below of history latest)
         int dayOfAgo = -1;
-        prevHistLatest.getPeriod().setEndDate(newStartDateHist.addDays(dayOfAgo));
-        
         // update previous history latest
-        wkpConfigCommand.getWkpConfigHistory().add(prevHistLatest);
-        
+        wkpConfigService.updatePrevHistory(companyId, prevHistLatest.getHistoryId(),
+                newStartDateHist.addDays(dayOfAgo));
+
         // update history
         this.workplaceConfigRepository.update(wkpConfigCommand);
     }
 
-    /**
-     * Checks if is in valid start date history.
-     *
-     * @param beforeDate the before date
-     * @param afterDate the after date
-     * @return true, if is in valid start date history
-     */
-    private boolean isInValidStartDateHistory(GeneralDate beforeDate, GeneralDate afterDate) {
-        return beforeDate.afterOrEquals(afterDate);
-    }
 }

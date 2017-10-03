@@ -41,7 +41,7 @@
 											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_78')}</span>
 									</label>
 									</span>
-									<input type="text" class="txtEmpCodeFirstChar" data-bind="value: txtEmpCodeLetter" />
+									<input type="text" class="txtEmpCodeFirstChar" maxLength="11" data-bind="value: txtEmpCodeLetter" />
 									<span>#{i18n.getText('CPS002_82')}</span>
 								</div>
 								<div>
@@ -73,13 +73,13 @@
 											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_78')}</span>
 									</label>
 									</span>
-									<input type="text" class="txtEmpCodeFirstChar" data-bind="value: txtCardNo" />
+									<input type="text" class="txtEmpCodeFirstChar" maxLength='20' data-bind="value: txtCardNo" />
 									<span>#{i18n.getText('CPS002_87')}</span>
 								</div>
 								<div>
 									<span class="ntsControl">
 									<label class="ntsRadioBox">
-										<input type="radio" value="2" name="cardNo" data-bind="checked: cardNoValue" />
+										<input type="radio" value="4" name="cardNo" data-bind="checked: cardNoValue" />
 											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_84')}</span>
 									</label>
 									</span>
@@ -95,7 +95,7 @@
 								<div>
 									<span class="ntsControl">
 									<label class="ntsRadioBox">
-										<input type="radio" value="4" name="cardNo" data-bind="checked: cardNoValue" />
+										<input type="radio" value="5" name="cardNo" data-bind="checked: cardNoValue" />
 											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_86')}</span>
 									</label>
 									</span>
@@ -103,7 +103,7 @@
 								<div>
 									<span class="ntsControl">
 									<label class="ntsRadioBox">
-										<input type="radio" value="5" name="textRadio" data-bind="checked: cardNoValue" />
+										<input type="radio" value="2" name="textRadio" data-bind="checked: cardNoValue" />
 											<span class="box"></span><span class="label"> #{i18n.getText('CPS002_80')}</span>
 									</label>
 									</span>
@@ -127,8 +127,8 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="proceed x-large" data-bind="">#{i18n.getText('CPS002_91')}</button>
-				<button data-bind="">#{i18n.getText('CPS002_92')}</button>
+				<button class="proceed x-large" data-bind="click: register">#{i18n.getText('CPS002_91')}</button>
+				<button data-bind="click: close">#{i18n.getText('CPS002_92')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

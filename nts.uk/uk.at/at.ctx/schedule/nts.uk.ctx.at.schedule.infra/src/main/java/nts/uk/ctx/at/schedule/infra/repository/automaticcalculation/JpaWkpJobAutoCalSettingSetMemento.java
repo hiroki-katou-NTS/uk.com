@@ -10,6 +10,7 @@ import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.AutoCalRestTimeSetting;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.PositionId;
 import nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpJobAutoCalSettingSetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.shift.autocalsetting.KshmtAutoWkpJobCal;
+import nts.uk.ctx.at.schedule.infra.entity.shift.autocalsetting.KshmtAutoWkpJobCalPK;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 
@@ -27,6 +28,9 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	 * @param entity the entity
 	 */
 	public JpaWkpJobAutoCalSettingSetMemento(KshmtAutoWkpJobCal entity) {
+		if (entity.getKshmtAutoWkpJobCalPK() == null) {
+			entity.setKshmtAutoWkpJobCalPK(new KshmtAutoWkpJobCalPK());
+		}
 		this.entity = entity;
 	}
 
@@ -35,7 +39,9 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		this.entity.getKshmtAutoWkpJobCalPK().setCid(companyId.v());
+		KshmtAutoWkpJobCalPK pk = entity.getKshmtAutoWkpJobCalPK();
+		pk.setCid(companyId.v());
+		this.entity.setKshmtAutoWkpJobCalPK(pk);
 	}
 
 	/* (non-Javadoc)
@@ -43,7 +49,9 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	 */
 	@Override
 	public void setWkpId(WorkplaceId workplaceId) {
-		this.entity.getKshmtAutoWkpJobCalPK().setWpkid(workplaceId.v());
+		KshmtAutoWkpJobCalPK pk = entity.getKshmtAutoWkpJobCalPK();
+		pk.setWpkid(workplaceId.v());
+		this.entity.setKshmtAutoWkpJobCalPK(pk);
 	}
 
 	/* (non-Javadoc)
@@ -51,7 +59,9 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	 */
 	@Override
 	public void setPositionId(PositionId positionId) {
-		this.entity.getKshmtAutoWkpJobCalPK().setJobid(positionId.v());
+		KshmtAutoWkpJobCalPK pk = entity.getKshmtAutoWkpJobCalPK();
+		pk.setJobid(positionId.v());
+		this.entity.setKshmtAutoWkpJobCalPK(pk);
 		
 	}
 
@@ -85,8 +95,6 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	 */
 	@Override
 	public void setFlexOTTime(AutoCalFlexOvertimeSetting flexOTTime) {
-		this.entity.setFlexOtNightTimeAtr(flexOTTime.getFlexOtNightTime().getCalAtr().value);
-		this.entity.setFlexOtNightTimeLimit(flexOTTime.getFlexOtNightTime().getUpLimitOtSet().value);
 		this.entity.setFlexOtTimeAtr(flexOTTime.getFlexOtTime().getCalAtr().value);
 		this.entity.setFlexOtTimeLimit(flexOTTime.getFlexOtTime().getUpLimitOtSet().value);
 

@@ -11,14 +11,15 @@ import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
+import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartApprovalRootService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.StartCheckErrorService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.AfterProcessRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeProcessRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReasonRepository;
@@ -37,7 +38,7 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	private StartCheckErrorService newScreenStartCheckErrorService;
 	
 	@Inject
-	private NewBeforeProcessRegister processBeforeRegisterService; 
+	private NewBeforeRegister processBeforeRegisterService; 
 	
 	@Inject
 	private RegisterAtApproveReflectionInfoService registerAtApproveReflectionInfoService;
@@ -46,7 +47,7 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	private AppStampRepository appStampRepository;
 	
 	@Inject
-	private AfterProcessRegister processAfterRegisterService;
+	private NewAfterRegister processAfterRegisterService;
 	
 	@Inject
 	private StartApprovalRootService startApprovalRootService;
@@ -56,6 +57,9 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	
 	@Inject
 	private AppApprovalPhaseRepository appApprovalPhaseRepository;
+	
+	@Inject
+	private ApprovalFrameRepository approvalFrameRepository;
 	
 	@Inject
 	private ApproveAcceptedRepository approveAcceptedRepository; 
@@ -75,36 +79,7 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	}
 
 	@Override
-	public void appStampGoOutPermitRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
-		this.appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
-		this.appStampCommonDomainService.validateReason(appStamp);
-		this.appStampRegistration(appStamp);
-	}
-
-	@Override
-	public void appStampWorkRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
-		this.appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
-		this.appStampCommonDomainService.validateReason(appStamp);
-		this.appStampRegistration(appStamp);
-	}
-
-	@Override
-	public void appStampCancelRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
-		this.appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
-		this.appStampCommonDomainService.validateReason(appStamp);
-		this.appStampRegistration(appStamp);
-	}
-
-	@Override
-	public void appStampOnlineRecordRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
-		this.appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
-		// this.appStampCommonDomainService.validateReason(appStamp);
-		this.appStampRegistration(appStamp);
-		this.approvalRegistration(appApprovalPhases, appStamp.getApplicationID());
-	}
-
-	@Override
-	public void appStampOtherRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
+	public void appStampRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
 		this.appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
 		// this.appStampCommonDomainService.validateReason(appStamp);
 		this.appStampRegistration(appStamp);
@@ -113,7 +88,6 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 	
 	// 打刻申請の新規登録
 	private void appStampRegistration(AppStamp appStamp) {
-		StampRequestMode StampRequestMode = appStamp.getStampRequestMode();
 		/*this.processBeforeRegisterService.processBeforeRegister(
 				appStamp.getCompanyID(), 
 				appStamp.getApplicantSID(), 
@@ -122,13 +96,7 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 				1, // EmploymentRootAtr.APPLICATION 就業ルート区分.申請
 				appStamp.getApplicationType().value);
 		registerAtApproveReflectionInfoService.newScreenRegisterAtApproveInfoReflect(appStamp.getApplicantSID(), appStamp);*/
-		switch(StampRequestMode){
-			case STAMP_GO_OUT_PERMIT: appStampRepository.addStampGoOutPermit(appStamp);break;
-			case STAMP_ADDITIONAL: appStampRepository.addStampWork(appStamp);break;
-			case STAMP_CANCEL: appStampRepository.addStampCancel(appStamp);break;
-			case STAMP_ONLINE_RECORD: appStampRepository.addStampOnlineRecord(appStamp);break;
-			default: break;
-		}
+		appStampRepository.addStamp(appStamp);
 		// this.processAfterRegisterService.processAfterRegister(appStamp.getCompanyID(), appStamp.getApplicationID());
 	}
 	
@@ -137,15 +105,15 @@ public class AppStampNewDefault implements AppStampNewDomainService {
 			appApprovalPhase.setAppID(appID);
 			String phaseID = UUID.randomUUID().toString();
 			appApprovalPhase.setPhaseID(phaseID);
-			appApprovalPhaseRepository.create(appApprovalPhase);
 			appApprovalPhase.getListFrame().forEach(approvalFrame -> {
+				String frameID = UUID.randomUUID().toString();
+				approvalFrame.setFrameID(frameID);
 				approvalFrame.getListApproveAccepted().forEach(appAccepted -> {
-					/*approveAcceptedRepository.createApproverAccepted(new ApproveAccepted.createFromJavaType(
-							appAccepted.getCompanyID(), 
-							phaseID, 
-							appAccepted.getApproverSID()));*/
+					String appAcceptedID = UUID.randomUUID().toString();
+					appAccepted.setAppAcceptedID(appAcceptedID);
 				});
 			});
+			appApprovalPhaseRepository.create(appApprovalPhase);
 		});
 	}
 }

@@ -32,13 +32,15 @@
 						data-bind="click:OpenCModal,enable:(personRoleList().length &gt; 0)">#{i18n.getText('CAS001_4')}</button>
 					<!-- 	<button id="A1_004" class="danger">#{i18n.getText('CAS001_5')}</button> -->
 					<div class="float-right">
-						<a id="A1_005" class="goout " data-bind="ntsLinkButton: { }">#{i18n.getText('CAS001_6')}</a>
+						<a id="A1_005" class="goout "
+							data-bind="ntsLinkButton: { jump: '/view/cps/001/a/index.xhtml' }">#{i18n.getText('CAS001_6')}</a>
 					</div>
 				</div>
 			</div>
 			<div id="contents-area" class="cf">
 				<div id="content">
-					<div id="content-left" class="bg-green caret-right caret-background">
+					<div id="content-left"
+						class="bg-green caret-right caret-background">
 						<div style="margin-left: 15px;">
 							<table id="A2_001"
 								data-bind="ntsGridList: {
@@ -65,7 +67,7 @@
 						 	selectedKey: 'categoryId',
 						 	fields: ['categoryName'],
 						 	mode: 'igGrid',
-						 	placeHolder:'名称で検索'}
+						 	placeHolder:'#{i18n.getText('CAS001_76')}'}
 						 	" />
 							<table id="A2_008"
 								data-bind="ntsGridList: {	
@@ -363,8 +365,6 @@
 														columns: [
 															{ prop: 'name', length: 5 },
 														]}"></div></td>
-
-
 															</tr>
 														</table>
 													</com:ko-if>

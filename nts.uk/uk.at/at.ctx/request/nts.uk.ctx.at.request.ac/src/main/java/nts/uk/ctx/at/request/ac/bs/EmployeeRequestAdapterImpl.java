@@ -11,9 +11,11 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.person.IPersonInfoPub;
+import nts.uk.ctx.bs.employee.pub.person.PersonInfoExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 
 /**
@@ -84,5 +86,16 @@ public class EmployeeRequestAdapterImpl implements EmployeeAdapter {
 	public String getEmployeeName(String sID) {
 		String test = this.personPub.getPersonInfo(sID).getEmployeeName();
 		return test;
+	}
+
+	@Override
+	public PesionInforImport getEmployeeInfor(String sID) {
+		PersonInfoExport personIn = this.personPub.getPersonInfo(sID);
+		PesionInforImport person = new PesionInforImport(personIn.getEmployeeCode(),
+				personIn.getEmployeeId(),
+				personIn.getEmployeeName(),
+				personIn.getCompanyMail(), 
+				null);
+		return person;
 	}
 }

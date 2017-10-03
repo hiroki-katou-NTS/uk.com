@@ -14,7 +14,7 @@ public class PerInfoSelectionItem {
 	private String contractCode;
 	private IntegrationCode integrationCode;
 	private FormatSelection formatSelection;
-
+	
 	public static PerInfoSelectionItem createFromJavaType(String selectionItemId, String selectionItemName, String memo,
 			int selectionItemClsAtr, String contractCd, String integrationCd, int selectionCd, int characterTypeAtr,
 			int selectionName, int selectionExtCd) {

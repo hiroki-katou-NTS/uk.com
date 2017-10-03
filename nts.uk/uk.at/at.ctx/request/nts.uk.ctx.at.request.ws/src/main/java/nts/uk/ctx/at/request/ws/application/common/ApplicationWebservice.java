@@ -28,6 +28,7 @@ import nts.uk.ctx.at.request.app.find.application.common.GetAllNameByAppID;
 import nts.uk.ctx.at.request.app.find.application.common.ObjApprovalRootInput;
 import nts.uk.ctx.at.request.app.find.application.common.OutputDetailCheckDto;
 import nts.uk.ctx.at.request.app.find.application.common.OutputGetAllDataApp;
+import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetMessageReasonForRemand;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.InputMessageDeadline;
@@ -256,5 +257,10 @@ public class ApplicationWebservice extends WebService {
 	public List<String> getAllNameByAppID(){
 		
 		return this.getAllNameByAppID.getAllNameByAppID("000");
+	}
+	@POST
+	@Path("getApplicationId")
+	public List<String> getAppId(ApplicationPeriodDto periodDate){
+		return this.finderApp.getAppbyDate(periodDate);
 	}
 }
