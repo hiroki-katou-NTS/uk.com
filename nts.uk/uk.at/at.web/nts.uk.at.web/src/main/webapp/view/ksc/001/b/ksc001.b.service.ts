@@ -14,20 +14,19 @@ module nts.uk.at.view.ksc001.b {
         export function findPeriodById(closureId: number): JQueryPromise<model.PeriodDto> {
             return nts.uk.request.ajax('at', paths.findPeriodById + '/' + closureId);
         }
+        
         /**
          * call service check three month by base date
          */
-        
         export function checkThreeMonth(baseDate: Date): JQueryPromise<boolean> {
-            return nts.uk.request.ajax('at', paths.checkThreeMonth, baseDate);
+            return nts.uk.request.ajax('at', paths.checkThreeMonth, {baseDate: baseDate});
         }
         
         /**
          * call service check max month by base date
          */
-        
         export function checkMonthMax(baseDate: Date): JQueryPromise<boolean> {
-            return nts.uk.request.ajax('at', paths.checkMonthMax, baseDate);
+            return nts.uk.request.ajax('at', paths.checkMonthMax, {baseDate: baseDate});
         }
         
         export module model {
