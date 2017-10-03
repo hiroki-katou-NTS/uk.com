@@ -16,6 +16,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksc001.k.main.css" />
 			<com:scriptfile path="ksc001.k.vm.js" />
+			<com:scriptfile path="ksc001.k.service.js" />
 			<com:scriptfile path="ksc001.k.start.js" />
 		</ui:define>
 
@@ -30,7 +31,7 @@
 					<label data-bind="text: errorNumber()"></label>
 				</div>
 				<div>
-					<button class="large button-right">#{i18n.getText('KSC001_54')}</button>
+					<button data-bind="click: exportError" class="large button-right">#{i18n.getText('KSC001_54')}</button>
 				</div>
 				<div>
 					<table id="single-list"
