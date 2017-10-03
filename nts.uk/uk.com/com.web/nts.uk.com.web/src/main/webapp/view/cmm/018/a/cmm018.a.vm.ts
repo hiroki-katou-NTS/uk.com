@@ -340,14 +340,20 @@ module nts.uk.com.view.cmm018.a {
                         self.employeeInputList.push(new vmbase.EmployeeKcp009(item.employeeId, item.employeeCode,item.employeeName,item.workplaceName,""));
                     });
                 $('#emp-component').ntsLoadListComponent(self.listComponentOption);
-                } 
+            }
+            /**
+             * open dialog CDL008
+             * chose work place
+             * @param baseDate, isMultiple, workplaceId
+             * @return workplaceId
+             */
             openDialogCDL008(){
                 let self = this;
                 setShared('inputCDL008', {baseDate: new Date(), isMultiple: false,canSelected: self.workplaceId()});
                 modal("/view/cdl/008/a/index.xhtml").onClosed(function(){
                     self.workplaceId(getShared('outputCDL008').selectedCode);
                     console.log(self.workplaceId());
-                    let param: vmbase.ParamDto = new vmbase.ParamDto(1,'000000000000000000000000000000000001','');
+                    let param: vmbase.ParamDto = new vmbase.ParamDto(1,self.workplaceId(),'');
                     self.getDataWorkplace(param);
                 });    
             }
@@ -429,6 +435,7 @@ module nts.uk.com.view.cmm018.a {
                         return;
                     } 
                     self.lstWorkplace(data.lstWorkplace);
+                    self.workplaceId(data.lstWorkplace[0].lstWorkplaceRoot[0].workplace.workplaceId);
                     dfd.resolve();
                 });
                 return dfd.promise();
