@@ -2,7 +2,6 @@ package nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.fixedverticalset
 
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -10,13 +9,15 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.F
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.VerticalTime;
 import nts.uk.shr.com.context.AppContexts;
 
+
 @Stateless
 public class VerticalTimeSettingFinder {
 	@Inject
 	private FixedVerticalSettingRepository repository;
-	
+
 	/**
 	 * Find Fixed Vertical by companyId
+	 * 
 	 * @return
 	 */
 	public List<VerticalTimeSettingDto> findAll(int fixedVerticalNo) {
@@ -28,6 +29,7 @@ public class VerticalTimeSettingFinder {
 
 	/**
 	 * Convert to Database Type Vertical Time
+	 * 
 	 * @param verticalTime
 	 * @return
 	 */

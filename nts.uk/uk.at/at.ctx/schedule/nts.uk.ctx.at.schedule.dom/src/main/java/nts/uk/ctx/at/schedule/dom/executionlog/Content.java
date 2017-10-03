@@ -25,4 +25,28 @@ public class Content extends DomainObject{
 	/** The implement atr. */
 	// 実施区分
 	private ImplementAtr implementAtr;
+	
+	/**
+	 * To domain.
+	 *
+	 * @param memento the memento
+	 * @return the content
+	 */
+	public Content toDomain(ExecutionContentGetMemento memento) {
+		this.confirm = memento.getConfirm();
+		this.reCreatedInfo = new ReCreatedInfo().toDomain(memento);
+		this.implementAtr = memento.getImplementAtr();
+		return this;
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(ExecutionContentSetMemento memento){
+		memento.setConfirm(this.confirm);
+		this.reCreatedInfo.saveToMemento(memento);
+		memento.setImplementAtr(this.implementAtr);
+	}
 }

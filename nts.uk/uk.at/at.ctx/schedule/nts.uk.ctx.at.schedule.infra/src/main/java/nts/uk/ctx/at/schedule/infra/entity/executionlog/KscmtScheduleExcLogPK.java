@@ -6,10 +6,8 @@ package nts.uk.ctx.at.schedule.infra.entity.executionlog;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,14 +25,10 @@ public class KscmtScheduleExcLogPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/** The cid. */
-	@Basic(optional = false)
-    @NotNull
     @Column(name = "CID")
     private String cid;
     
     /** The exe id. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "EXE_ID")
     private String exeId;
 

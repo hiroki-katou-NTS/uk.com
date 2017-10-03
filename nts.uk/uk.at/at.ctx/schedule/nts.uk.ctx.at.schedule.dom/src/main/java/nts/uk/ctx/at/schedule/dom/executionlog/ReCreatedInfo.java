@@ -21,4 +21,26 @@ public class ReCreatedInfo extends DomainObject{
 	/** The re create atr. */
 	// 再作成区分
 	private ReCreateAtr reCreateAtr;
+
+	/**
+	 * To domain.
+	 *
+	 * @param memento the memento
+	 * @return the re created info
+	 */
+	public ReCreatedInfo toDomain(ExecutionContentGetMemento memento){
+		this.reCreateContent = new ReCreateContent().toDomain(memento);
+		this.reCreateAtr = memento.getReCreateAtr();
+		return this;
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(ExecutionContentSetMemento memento) {
+		this.reCreateContent.saveToMemento(memento);
+		memento.setReCreateAtr(this.reCreateAtr);
+	}
 }

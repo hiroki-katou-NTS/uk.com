@@ -36,6 +36,7 @@ module nts.uk.at.view.ksc001.b {
             confirm: KnockoutObservable<boolean>;
             periodStartDate: KnockoutObservable<Date>;
             periodEndDate: KnockoutObservable<Date>;
+            copyStartDate: KnockoutObservable<Date>;
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
 
@@ -43,6 +44,7 @@ module nts.uk.at.view.ksc001.b {
             infoCreateMethod: KnockoutObservable<string>;
             infoPeriodDate: KnockoutObservable<string>;
             lengthEmployeeSelected: KnockoutObservable<string>;
+            
             // Employee tab
             lstPersonComponentOption: any;
             selectedEmployeeCode: KnockoutObservableArray<string>;
@@ -81,6 +83,7 @@ module nts.uk.at.view.ksc001.b {
                 self.checkCreateMethodAtrPersonalInfo = ko.observable(true);
                 self.checkCreateMethodAtrPatternSchedule = ko.observable(false);
                 self.checkCreateMethodAtrCopyPastSchedule = ko.observable(false);
+                self.copyStartDate = ko.observable(new Date());
                 self.ccgcomponent = {
                     baseDate: self.baseDate,
                     //Show/hide options
@@ -272,6 +275,60 @@ module nts.uk.at.view.ksc001.b {
              */
             private updatePersonalScheduleData(data: PersonalSchedule): void {
                 var self = this;
+                if(data){
+                        
+                }
+            }
+            /**
+             * convert ui to PersonalSchedule
+             */
+            private toPersonalScheduleData(employeeId: string): PersonalSchedule{
+                var self = this;
+                var data : PersonalSchedule = new PersonalSchedule();
+                data.resetMasterInfo = self.resetMasterInfo();
+                data.resetAbsentHolidayBusines = self.resetAbsentHolidayBusines();
+                
+                // set CreateMethodAtr
+                if (self.checkCreateMethodAtrPersonalInfo()) {
+                    data.createMethodAtr = CreateMethodAtr.PERSONAL_INFO;
+                }
+                if (self.checkCreateMethodAtrPatternSchedule()) {
+                    data.createMethodAtr = CreateMethodAtr.PATTERN_SCHEDULE;
+                }
+                if (self.checkCreateMethodAtrCopyPastSchedule) {
+                    data.createMethodAtr = CreateMethodAtr.COPY_PAST_SCHEDULE;
+                }
+                data.confirm = self.confirm();
+                
+                // set ReCreateAtr
+                if (self.checkReCreateAtrAllCase()) {
+                    data.reCreateAtr = ReCreateAtr.ALLCASE;
+                }
+                if (self.checkReCreateAtrOnlyUnConfirm()) {
+                    data.reCreateAtr = ReCreateAtr.ONLYUNCONFIRM;
+                }
+                
+                // set ProcessExecutionAtr
+                if (self.checkProcessExecutionAtrRebuild()) {
+                    data.processExecutionAtr = ProcessExecutionAtr.REBUILD;
+                }
+                if (self.checkProcessExecutionAtrReconfig()) {
+                    data.processExecutionAtr = ProcessExecutionAtr.RECONFIG;
+                }
+                
+                // set ImplementAtr
+                data.implementAtr = self.selectedImplementAtrCode();
+                
+                data.resetWorkingHours = self.resetWorkingHours();
+                
+                data.resetTimeAssignment = self.resetTimeAssignment();
+                
+                data.resetDirectLineBounce = self.resetDirectLineBounce();
+                
+                data.employeeId = employeeId;
+                
+                data.resetTimeChildCare = self.resetTimeChildCare();
+                return data;
             }
             /**
              * function previous page by selection employee goto page (C)
@@ -347,7 +404,7 @@ module nts.uk.at.view.ksc001.b {
                     self.infoCreateMethod(nts.uk.resource.getText("KSC001_23"));    
                 }
                 if(self.checkCreateMethodAtrCopyPastSchedule()){
-                    self.infoCreateMethod(nts.uk.resource.getText("KSC001_39",["2017/10/10"]));    
+                    self.infoCreateMethod(nts.uk.resource.getText("KSC001_39",[moment(self.copyStartDate()).format('YYYY/MM/DD')]));    
                 }
                 self.infoPeriodDate(nts.uk.resource.getText("KSC001_46",[moment(self.periodStartDate()).format('YYYY/MM/DD'),(moment(self.periodEndDate()).format('YYYY/MM/DD'))]));
                 self.lengthEmployeeSelected(nts.uk.resource.getText("KSC001_47",[self.selectedEmployeeCode().length]));
@@ -365,9 +422,76 @@ module nts.uk.at.view.ksc001.b {
              */
             private finish(): void {
                 var self = this;
+                service.checkThreeMonth(self.periodStartDate()).done(function(check) {
+                    if (check) {
+                        // show message confirm 567
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_567' }).ifYes(function() {
+                            service.checkMonthMax(self.periodStartDate()).done(function(checkMax) {
+                                self.createByCheckMaxMonth();
+                            });
+                        }).ifNo(function() {
+                            return;
+                        });
+                    } else {
+                        self.createByCheckMaxMonth();
+                    }
+                }).fail(function(error) {
+                    console.log(error);
+                });
+            }
+            
+            /**
+             * function createPersonalSchedule to client by check month max
+             */
+            private createByCheckMaxMonth(): void {
+                var self = this;
+                service.checkMonthMax(self.periodStartDate()).done(function(checkMax) {
+                    // check max
+                    if (checkMax) {
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_568' }).ifYes(function() {
+                            self.createPersonalSchedule();
+                        }).ifNo(function() {
+                            return;
+                        });
+                    } else {
+                        self.createPersonalSchedule();
+                    }
+                });
+            }
+            /**
+             * function createPersonalSchedule to client
+             */
+            private createPersonalSchedule(): void {
+                var self = this;
+                nts.uk.ui.dialog.confirm({ messageId: 'Msg_569' }).ifYes(function() {
+                    // C1_5 is check
+                    if (self.selectedImplementAtrCode() == ImplementAtr.RECREATE) {
+                        nts.uk.ui.dialog.confirm({ messageId: 'Msg_570' }).ifYes(function() {
+                           self.savePersonalScheduleData();
+                        }).ifNo(function() {
+                            return;
+                        });
+                    }
+                    else {
+                        self.savePersonalScheduleData();    
+                    }
+                }).ifNo(function() {
+                    return;
+                });
+
+            }
+            
+            /**
+             * save PersonalSchedule data
+             */
+            private savePersonalScheduleData(): void {
+                var self = this;
+                var user: UserInfoDto = self.getUserLogin();
+                self.savePersonalSchedule(user.employeeId, self.toPersonalScheduleData(user.employeeId));
                 nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function() {
                 });
             }
+            
             
             /**
              * open dialog KDL023

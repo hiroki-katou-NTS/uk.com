@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
@@ -37,6 +38,9 @@ public class ClosureFinder {
 	/** The repository history. */
 	@Inject
 	private ClosureHistoryRepository repositoryHistory;
+	
+	/** The Constant ZERO_START_DATE. */
+	public static final int ZERO_START_DATE = 0;
 
 	/**
 	 * Find all.
@@ -140,10 +144,9 @@ public class ClosureFinder {
 	}
 
 	/**
-	 * Detail master.
+	 * Find by master.
 	 *
-	 * @param master
-	 *            the master
+	 * @param master the master
 	 * @return the closure detail dto
 	 */
 	public ClosureDetailDto findByMaster(ClosureHistoryInDto master) {
@@ -171,6 +174,37 @@ public class ClosureFinder {
 		}
 
 		return dto;
+	}
+	
+	/**
+	 * Gets the max start date closure.
+	 *
+	 * @return the max start date closure
+	 */
+	public GeneralDate getMaxStartDateClosure() {
+		// get login user
+		LoginUserContext loginUserContext = AppContexts.user();
+
+		// get company id
+		String companyId = loginUserContext.companyId();
+
+		// get all closure use
+		List<Closure> lstClousreUse = this.repository.findAllUse(companyId);
+
+		// setup start date MIN
+		Period startDate = new Period();
+		startDate.setStartDate(GeneralDate.min());
+
+		lstClousreUse.forEach(closure -> {
+
+			Period period = this.findByIdGetMonthDay(closure.getClosureId());
+
+			if (period.getStartDate().compareTo(startDate.getStartDate()) > ZERO_START_DATE) {
+				startDate.setStartDate(period.getStartDate());
+			}
+		});
+
+		return startDate.getStartDate();
 	}
 
 }

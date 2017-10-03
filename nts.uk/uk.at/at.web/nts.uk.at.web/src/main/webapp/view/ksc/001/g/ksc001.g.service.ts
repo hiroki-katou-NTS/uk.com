@@ -1,14 +1,13 @@
 module nts.uk.at.view.ksc001.g {
     export module service {
         var paths = {
-           findExecutionHist: "",
-
+           findExecutionHist: "at/schedule/exelog/findAll",
         }
         
         /**
          * call service find findExecutionHist 
          */
-        export function findExecutionDetail(): JQueryPromise<any> {
+        export function findExecutionList(): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.findExecutionHist);
         }
         
