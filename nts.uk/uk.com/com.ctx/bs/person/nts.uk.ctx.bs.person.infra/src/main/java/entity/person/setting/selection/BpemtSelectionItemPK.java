@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class BpsmtSelectionItemPK implements Serializable {
+public class BpemtSelectionItemPK implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
