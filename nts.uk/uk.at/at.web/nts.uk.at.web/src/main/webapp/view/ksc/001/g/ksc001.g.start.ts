@@ -32,6 +32,7 @@ module nts.uk.at.view.ksc001.g {
                         controlType: 'Button' }
                 ]
             });
+            $("#fixed-table").ntsFixedTable({ height: 430 });
         });
     });
 }

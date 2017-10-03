@@ -15,7 +15,11 @@ module nts.uk.at.view.ksc001.g {
 
                 self.startDateString = ko.observable("");
                 self.endDateString = ko.observable("");
-                self.dateValue = ko.observable({});
+                self.dateValue = ko.observable({
+                    //get previous 1 year
+                    startDate: moment().subtract(1,'years').format("YYYY/MM/DD"),
+                    endDate: moment().format("YYYY/MM/DD"),
+                });
 
                 self.startDateString.subscribe(function(value) {
                     self.dateValue().startDate = value;
@@ -38,8 +42,10 @@ module nts.uk.at.view.ksc001.g {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                service.findExecutionList().done(function(data: any){
+                    
+                });
                 dfd.resolve();
-                $("#fixed-table").ntsFixedTable({ height: 430 });
                 return dfd.promise();
             }
             /**
