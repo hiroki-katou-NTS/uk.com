@@ -1584,7 +1584,7 @@ module nts.uk.com.view.cmm018.a {
                         appCommon.push(new vmbase.DataTree(itemRoot.approvalId, itemRoot.startDate + '~' + itemRoot.endDate,[]));
                     }
                 });
-                aa.push(new vmbase.DataTreeB('共通ルート',' 共通ルート', appCommon));  
+                aa.push(new vmbase.DataTreeB('共通ルート',' 共通ルート', _.orderBy(appCommon, ["nameAppType"], ["desc"]));  
                 //lay theo don  
                 _.each(self.lstNameAppType(), function(item: vmbase.ApplicationType){
                     let lstbyApp: Array<vmbase.Com> = [];
@@ -1594,7 +1594,7 @@ module nts.uk.com.view.cmm018.a {
                         }
                     });
                     if(item.value != 14){
-                        bb.push(new vmbase.DataTree(item.localizedName, item.localizedName, lstbyApp));    
+                        bb.push(new vmbase.DataTree(item.localizedName, item.localizedName, _.orderBy(lstbyApp,["nameAppType"], ["desc"]));    
                     }
                 })
                 let str = nts.uk.resource.getText("CMM018_7");
