@@ -9,7 +9,11 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class ScheduleExecutionLogSaveCommandHandler.
@@ -24,8 +28,27 @@ public class ScheduleExecutionLogSaveCommandHandler
 
 	@Override
 	protected void handle(CommandHandlerContext<ScheduleExecutionLogSaveCommand> context) {
-		// TODO Auto-generated method stub
 		
+		// get login user
+		LoginUserContext loginUserContext  = AppContexts.user();
+		
+		// get company id
+		String companyId = loginUserContext.companyId();
+		
+		// get employee id
+		String employeeId = loginUserContext.employeeId();
+		
+		// auto executionId
+		String executionId = IdentifierUtil.randomUniqueId();
+	
+		// get command
+		ScheduleExecutionLogSaveCommand command = context.getCommand();
+		
+		// command to domain
+		ScheduleExecutionLog domain = command.toDomain(companyId, employeeId, executionId);
+		
+		// save domain 
+		this.repository.save(domain);
 	}
 
 }

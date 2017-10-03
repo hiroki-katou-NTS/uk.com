@@ -22,7 +22,6 @@ public interface ScheduleExecutionLogRepository {
 	 */
 	public List<ScheduleExecutionLog> find(String companyId,Period period);
 	
-	
 	/**
 	 * Save.
 	 *

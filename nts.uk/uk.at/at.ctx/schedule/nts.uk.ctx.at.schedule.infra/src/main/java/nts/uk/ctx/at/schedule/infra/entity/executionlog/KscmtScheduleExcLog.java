@@ -14,7 +14,7 @@ import javax.persistence.Table;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -36,12 +36,12 @@ public class KscmtScheduleExcLog extends UkJpaEntity implements Serializable {
     
     /** The exe str D. */
     @Column(name = "EXE_STR_D")
-	@Convert(converter = GeneralDateToDBConverter.class)
+	@Convert(converter = GeneralDateTimeToDBConverter.class)
     private GeneralDateTime exeStrD;
     
     /** The exe end D. */
     @Column(name = "EXE_END_D")
-    @Convert(converter = GeneralDateToDBConverter.class)
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
     private GeneralDateTime exeEndD;
     
     /** The exe sid. */
@@ -50,11 +50,13 @@ public class KscmtScheduleExcLog extends UkJpaEntity implements Serializable {
     
     /** The start ymd. */
     @Column(name = "START_YMD")
-    private int startYmd;
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
+    private GeneralDateTime startYmd;
     
     /** The end ymd. */
     @Column(name = "END_YMD")
-    private int endYmd;
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
+    private GeneralDateTime endYmd;
     
     /** The completion status. */
     @Column(name = "COMPLETION_STATUS")
@@ -62,7 +64,8 @@ public class KscmtScheduleExcLog extends UkJpaEntity implements Serializable {
     
     /** The copy start ymd. */
     @Column(name = "COPY_START_YMD")
-    private Integer copyStartYmd;
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
+    private GeneralDateTime copyStartYmd;
     
     /** The create method atr. */
     @Column(name = "CREATE_METHOD_ATR")

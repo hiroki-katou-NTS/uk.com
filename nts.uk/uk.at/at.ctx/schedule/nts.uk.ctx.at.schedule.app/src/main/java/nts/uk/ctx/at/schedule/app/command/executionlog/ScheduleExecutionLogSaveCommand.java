@@ -16,6 +16,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogGetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
@@ -23,12 +24,11 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
 @Getter
 @Setter
 public class ScheduleExecutionLogSaveCommand {
-
-	/** The target start date. */
-	private GeneralDate targetStartDate;
-	
 	/** The period start date. */
 	private GeneralDate periodStartDate;
+	
+	/** The period end date. */
+	private GeneralDate periodEndDate;
 	
 	/** The implement atr. */
 	private int implementAtr;
@@ -66,6 +66,18 @@ public class ScheduleExecutionLogSaveCommand {
 	/** The period end date. */
 	private GeneralDate copyStartDate;
 	
+	/**
+	 * To domain.
+	 *
+	 * @param companyId the company id
+	 * @param employeeId the employee id
+	 * @param executionId the execution id
+	 * @return the schedule execution log
+	 */
+	public ScheduleExecutionLog toDomain(String companyId, String employeeId, String executionId) {
+		return new ScheduleExecutionLog().toDomain(
+				new ScheduleExecutionLogSaveGetMementoImpl(companyId, executionId, employeeId));
+	}
 	
 	/**
 	 * The Class ScheduleExecutionLogSaveGetMementoImpl.
@@ -302,7 +314,7 @@ public class ScheduleExecutionLogSaveCommand {
 		 */
 		@Override
 		public Period getPeriod() {
-			return new Period(periodStartDate, periodStartDate);
+			return new Period(periodStartDate, periodEndDate);
 		}
 		
 	}
