@@ -12,11 +12,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class BpemtSelectionItemPK implements Serializable {
-
+public class PpemtHistorySelectionPK implements Serializable{/**
+	 * 
+	 */
 	private static final long serialVersionUID = 1L;
-
+	
 	@Basic(optional = false)
-	@Column(name = "SELECTION_ITEM_ID")
-	public String selectionItemId;
+	@Column(name = "HIST_ID")
+	public String histidPK;
+
 }

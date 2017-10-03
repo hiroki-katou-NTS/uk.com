@@ -15,13 +15,13 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "BPEMT_SELECTION_ITEM")
-public class BpemtSelectionItem extends UkJpaEntity implements Serializable {
+@Table(name = "PPEMT_SELECTION_ITEM")
+public class PpemtSelectionItem extends UkJpaEntity implements Serializable {
 
 	public static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public BpemtSelectionItemPK selectionItemPk;
+	public PpemtSelectionItemPK selectionItemPk;
 
 	@Basic(optional = false)
 	@Column(name = "SELECTION_ITEM_NAME")
