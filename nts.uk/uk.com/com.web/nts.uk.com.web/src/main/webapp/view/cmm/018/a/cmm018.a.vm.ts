@@ -1568,6 +1568,28 @@ module nts.uk.com.view.cmm018.a {
                 }
                 
             }
+            findHistByEDate(appType: number,endDate: string, rootType: number): any {
+                let self = this;
+                //TH: company
+                if(rootType == 0){
+                    return _.find( self.lstCompany(), function(obj: vmbase.CompanyAppRootDto) {
+                        return obj.company.applicationType == appType && obj.company.endDate == endDate;
+                    });
+                }
+                //TH: work place
+                else if(rootType == 1){
+                    return _.find( self.lstWorkplace(), function(obj) {
+                        return obj.workplace.applicationType == appType && obj.workplace.endDate == endDate;
+                    });
+                }
+                //TH: person
+                else{
+                    return _.find( self.lstPerson(), function(obj: vmbase.PersonAppRootDto) {
+                        return obj.person.applicationType == appType && obj.person.endDate == endDate;
+                    });
+                }
+                
+            }
             /**
              * convert data db to data display
              * mode B: 申請個別登録モード
@@ -1817,33 +1839,47 @@ module nts.uk.com.view.cmm018.a {
                     return;
                 }
                 let itemCurrent = self.findHist(self.singleSelectedCode(), self.tabSelectedB());
-                if(itemCurrent == undefined){
+                if(itemCurrent == undefined){//TH: chon name
                     let obj = self.findAppbyName(self.singleSelectedCode());
-                    if(self.comRoot == null){//hien thi message 181
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_181" });
-                        return;
-                    }else{
-                    
-                        typeApp = obj == undefined ? null : obj.value;
+                    typeApp = obj == undefined ? null : obj.value;
+                    let itemLast = self.findHistByEDate(obj.value, '9999/12/31', self.tabSelectedB());
+                    if(itemLast != undefined){
+                        if(self.tabSelectedB() == 0){
+                            sDate = itemLast.company.startDate;
+                        }else if(self.tabSelectedB() == 1){
+                            sDate = itemLast.workplace.startDate;
+                        }else{
+                            sDate = itemLast.person.startDate;
+                        }
                     }
+//                    if(self.comRoot == null){//hien thi message 181
+//                        nts.uk.ui.dialog.alertError({ messageId: "Msg_181" });
+//                        return;
+//                    }else{
+//                    
+//                        typeApp = obj == undefined ? null : obj.value;
+//                    }
                 }else{
                     if(self.tabSelectedB() == 0){
                         if(itemCurrent !== undefined){
-                            sDate = itemCurrent.company.startDate;
+                            let itemLast = self.findHistByEDate(itemCurrent.company.applicationType, '9999/12/31', self.tabSelectedB());
+                            sDate = itemLast.company.startDate;
                             typeApp = itemCurrent.company.applicationType;
                             name = typeApp == null ? '共通ルート' : nts.uk.resource.getText("CMM018_7");
                         }
                     }
                     else if(self.tabSelectedB() == 1){
                         if(itemCurrent !== undefined){
-                            sDate = itemCurrent.workplace.startDate;
+                            let itemLast = self.findHistByEDate(itemCurrent.workplace.applicationType, '9999/12/31', self.tabSelectedB());
+                            sDate = itemLast.workplace.startDate;
                             typeApp = itemCurrent.workplace.applicationType
                             name = typeApp == null ? '共通ルート' : nts.uk.resource.getText("CMM018_7");
                         }
                     }
                     else{
                         if(itemCurrent !== undefined){
-                            sDate = itemCurrent.person.startDate;
+                            let itemLast = self.findHistByEDate(itemCurrent.person.applicationType, '9999/12/31', self.tabSelectedB());
+                            sDate = itemLast.person.startDate;
                             typeApp = itemCurrent.person.applicationType;
                             name = typeApp == null ? '共通ルート' : nts.uk.resource.getText("CMM018_7");
                         }
