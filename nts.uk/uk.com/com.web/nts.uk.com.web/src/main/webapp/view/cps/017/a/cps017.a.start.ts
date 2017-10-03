@@ -24,21 +24,16 @@ function init() {
         virtualizationMode: 'continuous',
         columns: [
             { headerText: '', key: 'id', dataType: 'number', width: '30px', ntsControl: 'Label' },
-            { headerText: nts.uk.resource.getText('CPS017_18'), key: 'flag', dataType: 'boolean', width: '50px', ntsControl: 'Checkbox' },
-            { headerText: nts.uk.resource.getText('CPS017_16'), key: 'combo', dataType: 'string', width: '110px', ntsControl: 'Combobox' },
-            { headerText: nts.uk.resource.getText('CPS017_17'), key: 'id', dataType: 'number', width: '70px', ntsControl: 'Label' },
+            { headerText: nts.uk.resource.getText('CPS017_18'), key: 'init_sel', dataType: 'boolean', width: '60px', ntsControl: 'Checkbox' },
+            { headerText: nts.uk.resource.getText('CPS017_16'), key: 'sel_cd', dataType: 'string', width: '100px', ntsControl: 'Label' },
+            { headerText: nts.uk.resource.getText('CPS017_17'), key: 'sel_name', dataType: 'string', width: '110px', ntsControl: 'Label' },
         ],
-        features: [{ name: 'Resizing' }],
+        features: [],
         ntsFeatures: [{ name: 'CopyPaste' }],
         ntsControls: [
             {
                 name: 'Checkbox', options: { value: 1, text: "" }, optionsValue: 'value',
                 optionsText: 'text', controlType: 'CheckBox', enable: true
-            },
-            {
-                name: 'Combobox', options: __viewContext["viewModel"].comboItems,
-                optionsValue: 'code', optionsText: 'name', columns: __viewContext["viewModel"].comboColumns,
-                controlType: 'ComboBox', enable: true
             }
         ]
     });

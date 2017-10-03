@@ -83,6 +83,7 @@
 
 				</div>
 
+				<!-- phần giữa của màn hình -->
 				<div id="content-center" class="pull-left">
 					<!--  tên  -->
 					<div>
@@ -97,11 +98,78 @@
 					<div id="register">
 						<span> #{i18n.getText('CPS017_14')}</span>
 					</div>
-					<div id="itemRegisterLst">
+					<div id="itemRegisterLst" class="caret-right caret-background">
 						<!-- selection item list -->
 						<table id="item_register_grid">
 						</table>
 					</div>
+				</div>
+
+				<!-- phần bên phải của màn hình  -->
+				<div id="content-right">
+					<!--  tên  -->
+					<div>
+						<div data-bind="ntsFormLabel: {required: true}"
+							class='distane col1'>
+							<label>#{i18n.getText('CPS017_20')}</label>
+						</div>
+					</div>
+
+					<!--  nội dung mã code và name  -->
+					<div class="distance">
+						<input id="code"
+							data-bind="ntsTextEditor: {
+								value: currentItemSel().current_sel_item_id,
+								required: true,
+								enable: true,
+								immediate: false}" />
+						<input id="name"
+							data-bind="ntsTextEditor: {
+								value: currentItemSel().current_sel_item_id,
+								required: true,
+								enable: true,
+								immediate: false}" />
+					</div>
+
+					<!--  external name vs code  -->
+					<div class="formlabel">
+						<div data-bind="ntsFormLabel: {}" class='distane'>
+							<label>#{i18n.getText('CPS017_23')}</label>
+						</div>
+
+					</div>
+
+					<!--  nội dung external code  -->
+					<div class="distance">
+
+						<input id="externalCode"
+							data-bind="ntsTextEditor: {
+								value: currentItemSel().current_sel_item_id,
+								required: true,
+								enable: true,
+								immediate: false}" />
+
+					</div>
+
+					<!--  memo  -->
+					<div class="formlabel">
+						<div data-bind="ntsFormLabel: {}" class='distane'>
+							<label>#{i18n.getText('CPS017_25')}</label>
+						</div>
+
+					</div>
+
+					<!--  nội dung memo  -->
+					<div class="distance">
+
+						<textarea id="memo"
+							data-bind="ntsMultilineEditor: {
+							value: currentItemSel().current_sel_item_id,
+							enable: true,
+							immediate: false}" />
+
+					</div>
+
 				</div>
 			</div>
 		</ui:define>
