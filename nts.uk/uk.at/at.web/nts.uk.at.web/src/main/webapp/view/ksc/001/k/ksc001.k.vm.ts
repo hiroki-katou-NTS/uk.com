@@ -39,7 +39,7 @@ module nts.uk.at.view.ksc001.k {
             private exportError():void {
                 var self = this;
                 let executionId = "";
-                service.exportError("123").done(function() {
+                service.exportError("07138ec6-57a2-49d7-a158-1e149c4296c9").done(function() {
 
                 });
             }

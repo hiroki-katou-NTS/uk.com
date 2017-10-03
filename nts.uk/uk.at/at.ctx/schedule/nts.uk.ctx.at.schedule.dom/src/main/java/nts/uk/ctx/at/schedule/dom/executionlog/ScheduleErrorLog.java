@@ -38,12 +38,11 @@ public class ScheduleErrorLog extends AggregateRoot {
 	 *            the memento
 	 * @return the schedule error log
 	 */
-	public ScheduleErrorLog toDomain(ScheduleErrorLogGetMemento memento) {
+	public ScheduleErrorLog(ScheduleErrorLogGetMemento memento) {
 		this.errorContent = memento.getErrorContent();
 		this.executionId = memento.getExecutionId();
 		this.date = memento.getDate();
 		this.employeeId = memento.getEmployeeId();
-		return this;
 	}
 
 	/**
@@ -56,13 +55,5 @@ public class ScheduleErrorLog extends AggregateRoot {
 		memento.setExecutionId(this.executionId);
 		memento.setDate(this.date);
 		memento.setEmployeeId(this.employeeId);
-	}
-	
-	//TODO remove after test export with mock data success
-	public ScheduleErrorLog(String errorContent, String executionId, GeneralDate date, String employeeId) {
-		this.errorContent = errorContent;
-		this.executionId = executionId;
-		this.date = date;
-		this.employeeId = employeeId;
 	}
 }
