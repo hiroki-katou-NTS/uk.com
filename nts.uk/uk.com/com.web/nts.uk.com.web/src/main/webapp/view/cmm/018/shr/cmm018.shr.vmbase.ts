@@ -124,7 +124,7 @@ module nts.uk.com.view.cmm018.shr {
             check: number;
             /** まとめて設定モード(0) - 申請個別設定モード(1)*/
             mode: number;
-            lstAppType: Array<String>;
+            lstAppType: Array<number>;
         }
         //ScreenI
         export class IData{
