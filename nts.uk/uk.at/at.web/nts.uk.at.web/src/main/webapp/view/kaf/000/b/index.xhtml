@@ -5,8 +5,8 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/sidebar.xhtml">
-		<ui:define name="sidebar-head">
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 				nts.uk.shr.com.primitive.PersonId
 				nts.uk.shr.com.time.TimeWithDayAttr
@@ -38,7 +38,6 @@
 			<com:scriptfile path="kaf000.b.start.js" />
 		</ui:define>
 		<ui:define name="content">
-		<div class="container">
 			<div id="functions-area">
 					<!-- B1_1 -->
 					<a class="goback" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KAF000_14')}</a>
@@ -78,7 +77,6 @@
 						<label data-bind=" visible : visibleApproval">【承認】</label><label style="margin-left: 25px;" data-bind=" visible : visibleDenial">【否認】</label>
 					</div>
 				</div>
-		</div>
 			
 			<div id="contents-area">
 				<!-- row1 -->
