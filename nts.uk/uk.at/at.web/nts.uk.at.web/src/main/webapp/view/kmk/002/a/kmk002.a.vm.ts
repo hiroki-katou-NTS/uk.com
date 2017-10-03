@@ -76,6 +76,7 @@ module nts.uk.at.view.kmk002.a {
             calcFormulas: Array<Formula>;
             applyFormula: KnockoutObservable<string>;
             selectedFormulas: KnockoutObservableArray<string>;
+            selectedFormula: any;
             selectedFormulaAbove: any;
             selectedFormulaBelow: any;
 
@@ -130,9 +131,15 @@ module nts.uk.at.view.kmk002.a {
                 // subscribe
 
                 this.selectedFormulas.subscribe(vl => {
+                    // Set single selected
+                    this.selectedFormula = vl;
+
+                    // set selected formula below
                     if (vl > this.selectedFormulaBelow) {
                         this.selectedFormulaBelow = vl;
                     }
+
+                    // set selected formula above
                     if (vl < this.selectedFormulaAbove) {
                         this.selectedFormulaAbove = vl;
                     }
@@ -274,6 +281,19 @@ module nts.uk.at.view.kmk002.a {
              */
             public openDialogC(): void {
                 //TODO move to formula view model later
+                let self = this;
+
+                // Set param
+                let dto = <ParamForC>{};
+                dto.formulaId = 'axcb';
+                dto.performanceAtr = 1;
+                dto.formulaAtr = 'time';
+                dto.formulaName = 'name';
+                dto.minusSegment = true;
+                dto.attendanceItems = [];
+                nts.uk.ui.windows.setShared('paramsForC', dto);
+
+                // Open dialog.
                 nts.uk.ui.windows.sub.modal('/view/kmk/002/c/index.xhtml');
             }
 
@@ -374,6 +394,9 @@ module nts.uk.at.view.kmk002.a {
                             multipleSelection: true,
                             multipleCellSelectOnClick: true,
                             rowSelectionChanged: function(evt, ui) {
+                                if (ui.selectedRows.lenght == 1) {
+                                    self.selectedFormula = ui.selectedRows[0].id;
+                                }
                                 self.selectedFormulas(ui.selectedRows);
                                 console.log(self.selectedFormulas());
                             }
@@ -1020,6 +1043,14 @@ module nts.uk.at.view.kmk002.a {
         interface Sorter {
             order: number;
             value: string;
+        }
+        interface ParamForC {
+            formulaId: string;
+            performanceAtr: number;
+            formulaAtr: string;
+            formulaName: string;
+            minusSegment: boolean;
+            attendanceItems: Array<any>;
         }
 
     }
