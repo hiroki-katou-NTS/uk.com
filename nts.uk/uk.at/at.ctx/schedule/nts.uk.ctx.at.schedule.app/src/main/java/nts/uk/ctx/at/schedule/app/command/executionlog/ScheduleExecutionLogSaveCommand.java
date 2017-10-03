@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.executionlog;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
@@ -13,17 +16,24 @@ import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentGetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
+import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreator;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorGetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogGetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
 
+/**
+ * The Class ScheduleExecutionLogSaveCommand.
+ */
 @Getter
 @Setter
 public class ScheduleExecutionLogSaveCommand {
+	
 	/** The period start date. */
 	private GeneralDate periodStartDate;
 	
@@ -63,8 +73,11 @@ public class ScheduleExecutionLogSaveCommand {
 	/** The create method atr. */
 	private int createMethodAtr;
 	
-	/** The period end date. */
+	/** The copy start date. */
 	private GeneralDate copyStartDate;
+	
+	/** The employee ids. */
+	private List<String> employeeIds;
 	
 	/**
 	 * To domain.
@@ -77,6 +90,50 @@ public class ScheduleExecutionLogSaveCommand {
 	public ScheduleExecutionLog toDomain(String companyId, String employeeId, String executionId) {
 		return new ScheduleExecutionLog().toDomain(
 				new ScheduleExecutionLogSaveGetMementoImpl(companyId, executionId, employeeId));
+	}
+	
+	/**
+	 * To domain creator.
+	 *
+	 * @param executionId the execution id
+	 * @return the list
+	 */
+	public List<ScheduleCreator> toDomainCreator(String executionId){
+		return this.employeeIds.stream().map(employeeId -> {
+			ScheduleCreator domain = new ScheduleCreator(new ScheduleCreatorGetMemento() {
+
+				/**
+				 * Gets the execution status.
+				 *
+				 * @return the execution status
+				 */
+				@Override
+				public ExecutionStatus getExecutionStatus() {
+					return ExecutionStatus.NOT_CREATED;
+				}
+
+				/**
+				 * Gets the execution id.
+				 *
+				 * @return the execution id
+				 */
+				@Override
+				public String getExecutionId() {
+					return executionId;
+				}
+
+				/**
+				 * Gets the employee id.
+				 *
+				 * @return the employee id
+				 */
+				@Override
+				public String getEmployeeId() {
+					return employeeId;
+				}
+			});
+			return domain;
+		}).collect(Collectors.toList());
 	}
 	
 	/**
