@@ -1,4 +1,4 @@
-package entity.person.info.setting.registeredHistory;
+package entity.person.info.setting.regHistory;
 
 import java.io.Serializable;
 
@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
@@ -25,15 +26,15 @@ public class BsymtEmployeeRegistrationHistory extends UkJpaEntity implements Ser
 
 	@Basic(optional = false)
 	@Column(name = "CID")
-	public String CompanyId;
+	public String companyId;
 
 	@Basic(optional = true)
 	@Column(name = "REG_DATE")
-	public String RegisteredDate;
+	public GeneralDate registeredDate;
 
 	@Basic(optional = false)
 	@Column(name = "LAST_REG_SID")
-	public String LastRegEmployeeID;
+	public String lastRegEmployeeID;
 
 	@Override
 	protected Object getKey() {

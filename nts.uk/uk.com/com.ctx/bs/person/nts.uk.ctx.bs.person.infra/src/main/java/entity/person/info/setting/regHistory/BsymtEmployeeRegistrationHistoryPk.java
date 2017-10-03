@@ -1,4 +1,4 @@
-package entity.person.info.setting.registeredHistory;
+package entity.person.info.setting.regHistory;
 
 import java.io.Serializable;
 
@@ -9,18 +9,15 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
 public class BsymtEmployeeRegistrationHistoryPk implements Serializable {
 
-	
 	@Basic(optional = false)
 	@Column(name = "REG_SID")
-	public String RegisteredEmployeeID;
-	
-	
+	public String registeredEmployeeID;
+
 	private static final long serialVersionUID = 1L;
 
 }
