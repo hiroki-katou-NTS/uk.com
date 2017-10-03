@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.app.find.ot.autocalsetting.ComAutoCalSettingDto;
 /**
  * The Class AutomaticCalculationWS.
  */
-@Path("ctx/at/schedule/shift/autocalcom")
+@Path("ctx/at/shared/ot/autocal/com")
 @Produces("application/json")
 public class ComAutoCalWS extends WebService {
 	/** The total times finder. */

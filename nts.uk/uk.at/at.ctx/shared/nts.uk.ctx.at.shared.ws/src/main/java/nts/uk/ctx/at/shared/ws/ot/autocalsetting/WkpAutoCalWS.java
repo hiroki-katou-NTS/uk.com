@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.app.find.ot.autocalsetting.wkp.WkpAutoCalSettingDto;
 /**
  * The Class WkpAutoCalWS.
  */
-@Path("ctx/at/schedule/shift/autocalwkp")
+@Path("ctx/at/shared/ot/autocal/wkp")
 @Produces("application/json")
 public class WkpAutoCalWS {
 

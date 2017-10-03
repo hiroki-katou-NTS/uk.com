@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.use;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.UseClassification;
+import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.use.UseUnitAutoCalSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.use.KshmtAutoUseUnitSet;
 
@@ -27,18 +27,18 @@ public class JpaUseUnitAutoCalSettingGetMemento implements UseUnitAutoCalSetting
 	}
 
 	@Override
-	public UseClassification getUseJobSet() {
-		return  UseClassification.valueOf(this.entity.getJobCalSet());
+	public ApplyAtr getUseJobSet() {
+		return  ApplyAtr.valueOf(this.entity.getJobCalSet());
 	}
 
 	@Override
-	public UseClassification getUseWkpSet() {
-		return  UseClassification.valueOf(this.entity.getWkpCalSet()) ;
+	public ApplyAtr getUseWkpSet() {
+		return  ApplyAtr.valueOf(this.entity.getWkpCalSet()) ;
 	}
 
 	@Override
-	public UseClassification getUseJobwkpSet() {
-		return UseClassification.valueOf(this.entity.getWkpJobCalSet());
+	public ApplyAtr getUseJobwkpSet() {
+		return ApplyAtr.valueOf(this.entity.getWkpJobCalSet());
 	}
 
 }

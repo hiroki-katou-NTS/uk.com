@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.app.find.ot.autocalsetting.unit.UseUnitAutoCalSettin
 /**
  * The Class UnitAutoCalWS.
  */
-@Path("ctx/at/schedule/shift/autocalunit")
+@Path("ctx/at/shared/ot/autocal/unit")
 @Produces("application/json")
 public class UnitAutoCalWS extends WebService {
 	

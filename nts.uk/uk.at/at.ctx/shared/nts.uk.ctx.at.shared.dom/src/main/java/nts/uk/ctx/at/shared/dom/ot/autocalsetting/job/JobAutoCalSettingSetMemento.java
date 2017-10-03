@@ -8,7 +8,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.PositionId;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 
 /**
  * The Interface JobAutoCalSettingSetMemento.
@@ -27,7 +27,7 @@ public interface JobAutoCalSettingSetMemento {
 	 *
 	 * @param positionId the new position id
 	 */
-	void  setPositionId(PositionId positionId);
+	void  setPositionId(JobTitleId positionId);
 	
 	/**
 	 * Sets the auto cal overtime setting.

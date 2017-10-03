@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.ot.autocalsetting.use;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.UseClassification;
+import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 
 /**
  * The Class AutoCalUseUnitSetting.
@@ -22,15 +22,15 @@ public class UseUnitAutoCalSetting extends DomainObject {
 
 	/** The job. */
 	// 職位の自動計算設定をする
-	private UseClassification useJobSet;
+	private ApplyAtr useJobSet;
 
 	/** The workplace. */
 	// 職場の自動計算設定をする
-	private UseClassification useWkpSet;
+	private ApplyAtr useWkpSet;
 
 	/** The jobwkp. */
 	// 職場・職位の自動計算設定を行う
-	private UseClassification useJobwkpSet;
+	private ApplyAtr useJobwkpSet;
 	
 	/**
 	 * Instantiates a new use unit auto cal setting.

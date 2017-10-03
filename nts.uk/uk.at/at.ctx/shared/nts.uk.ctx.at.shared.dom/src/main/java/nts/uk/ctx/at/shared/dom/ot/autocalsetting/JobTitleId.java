@@ -11,7 +11,7 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
  * The Class PositionId.
  */
 @StringMaxLength(36)
-public class PositionId extends CodePrimitiveValue<PositionId> {
+public class JobTitleId extends CodePrimitiveValue<JobTitleId> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -21,7 +21,7 @@ public class PositionId extends CodePrimitiveValue<PositionId> {
 	 *
 	 * @param rawValue the raw value
 	 */
-	public PositionId(String rawValue) {
+	public JobTitleId(String rawValue) {
 		super(rawValue);
 	}
 

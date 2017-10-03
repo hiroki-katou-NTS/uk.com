@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.app.command.ot.autocalsetting.use;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.UseClassification;
+import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.use.UseUnitAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.use.UseUnitAutoCalSettingGetMemento;
 
@@ -37,7 +37,8 @@ public class UseUnitAutoCalSettingCommand {
 	 * @param useJobwkpSet
 	 *            the use jobwkp set
 	 */
-	public UseUnitAutoCalSettingCommand(boolean useJobSet, boolean useWkpSet, boolean useJobwkpSet) {
+	public UseUnitAutoCalSettingCommand(boolean useJobSet, boolean useWkpSet,
+			boolean useJobwkpSet) {
 		super();
 		this.useJobSet = useJobSet;
 		this.useWkpSet = useWkpSet;
@@ -105,11 +106,11 @@ public class UseUnitAutoCalSettingCommand {
 		 * UseUnitAutoCalSettingGetMemento#getUseJobSet()
 		 */
 		@Override
-		public UseClassification getUseJobSet() {
+		public ApplyAtr getUseJobSet() {
 			if (this.command.isUseJobSet()) {
-				return UseClassification.USE;
+				return ApplyAtr.USE;
 			}
-			return UseClassification.NOT_USE;
+			return ApplyAtr.NOT_USE;
 		}
 
 		/*
@@ -119,11 +120,11 @@ public class UseUnitAutoCalSettingCommand {
 		 * UseUnitAutoCalSettingGetMemento#getUseWkpSet()
 		 */
 		@Override
-		public UseClassification getUseWkpSet() {
+		public ApplyAtr getUseWkpSet() {
 			if (this.command.isUseWkpSet()) {
-				return UseClassification.USE;
+				return ApplyAtr.USE;
 			}
-			return UseClassification.NOT_USE;
+			return ApplyAtr.NOT_USE;
 		}
 
 		/*
@@ -133,11 +134,11 @@ public class UseUnitAutoCalSettingCommand {
 		 * UseUnitAutoCalSettingGetMemento#getUseJobwkpSet()
 		 */
 		@Override
-		public UseClassification getUseJobwkpSet() {
+		public ApplyAtr getUseJobwkpSet() {
 			if (this.command.isUseJobwkpSet()) {
-				return UseClassification.USE;
+				return ApplyAtr.USE;
 			}
-			return UseClassification.NOT_USE;
+			return ApplyAtr.NOT_USE;
 		}
 	}
 }

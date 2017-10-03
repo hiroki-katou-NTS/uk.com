@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.PositionId;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingGetMemento;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJobCal;
 import nts.uk.ctx.at.shared.infra.repository.ot.autocalsetting.JpaAutoCalFlexOvertimeSettingGetMemento;
@@ -53,8 +53,8 @@ public class JpaWkpJobAutoCalSettingGetMemento implements WkpJobAutoCalSettingGe
 	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpJobAutoCalSettingGetMemento#getPositionId()
 	 */
 	@Override
-	public PositionId getPositionId() {
-		return new PositionId(this.entity.getKshmtAutoWkpJobCalPK().getJobid());
+	public JobTitleId getPositionId() {
+		return new JobTitleId(this.entity.getKshmtAutoWkpJobCalPK().getJobid());
 	}
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpAutoCalSettingGetMemento#getNormalOTTime()

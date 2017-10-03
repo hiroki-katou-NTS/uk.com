@@ -7,7 +7,7 @@ package nts.uk.ctx.at.shared.dom.ot.autocalsetting.job;
 import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.PositionId;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 
 /**
  * The Class JobAutoCalSetting.
@@ -22,7 +22,7 @@ public class JobAutoCalSetting extends BaseAutoCalSetting {
 
 	/** The job id. */
 	// 職位ID
-	private PositionId jobId;
+	private JobTitleId jobId;
 
 	/**
 	 * Instantiates a new job auto cal setting.
