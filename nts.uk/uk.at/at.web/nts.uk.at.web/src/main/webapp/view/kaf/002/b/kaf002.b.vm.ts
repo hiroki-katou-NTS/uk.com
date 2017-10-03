@@ -27,7 +27,34 @@ module nts.uk.at.view.kaf002.b {
                 var dfd = $.Deferred();
                 service.newScreenFind()
                     .done(function(data: vmbase.AppStampNewSetDto) {
-                        self.cm.start(data, self.kaf000_a2.approvalRoot().beforeApprovers);
+                        let a = self.kaf000_a2.approvalRoot().beforeApprovers;
+                        let approvalList = [];
+                        _.forEach(a, appPhase => {
+                            let b = new vmbase.AppApprovalPhase(
+                                "",
+                                appPhase.approvalForm,
+                                appPhase.orderNumber,
+                                1,
+                                []); 
+                            _.forEach(appPhase.approvers, appFrame => {
+                                let c = new vmbase.ApprovalFrame(
+                                    "",
+                                    appFrame.orderNumber,
+                                    []);
+                                let d = new vmbase.ApproveAccepted(
+                                    "",
+                                    appFrame.sid,
+                                    0,
+                                    appFrame.confirmPerson ? 1 : 0,
+                                    "",
+                                    "",
+                                    appFrame.sid);
+                                c.approveAcceptedCmds.push(d);
+                                b.approvalFrameCmds.push(c);   
+                            });
+                            approvalList.push(b);    
+                        });
+                        self.cm.start(data, approvalList);
                         dfd.resolve(); 
                     })
                     .fail(function(res) { 
@@ -41,12 +68,17 @@ module nts.uk.at.view.kaf002.b {
                 self.cm.register();
             }
             
+            update() {
+                var self = this;
+                self.cm.update();
+            }
+            
             performanceReference(){
                 alert('KDL004');   
             }
             
             changeAppDate(){
-                // CMM018    
+                nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", {screen: 'Application', employeeId: "000100003"}); 
             }
             
         }

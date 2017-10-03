@@ -38,6 +38,7 @@ public class DailyPerformanceCorrectionDto {
 	public DailyPerformanceCorrectionDto() {
 		super();
 		this.lstCellState = new ArrayList<>();
+		this.lstControlDisplayItem = new DPControlDisplayItem();
 	}
 	
 	private boolean isLoginUser(String employeeId) {

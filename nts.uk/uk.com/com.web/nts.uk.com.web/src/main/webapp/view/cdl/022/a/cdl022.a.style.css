@@ -28,3 +28,7 @@
 #contents-area tbody.ui-iggrid-tablebody tr.ui-sortable-placeholder>td {
 	visibility: visible !important;
 }
+
+.ui-iggrid .ui-iggrid-headertable, .ui-iggrid .ui-iggrid-content, .ui-iggrid .ui-widget-content, .ui-iggrid-scrolldiv table {
+	position: relative;
+}

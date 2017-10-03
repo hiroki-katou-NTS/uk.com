@@ -56,10 +56,6 @@ public abstract class KshmtAutoCalSet extends UkJpaEntity implements Serializabl
 	@Column(name = "FLEX_OT_TIME_LIMIT")
 	private int flexOtTimeLimit;
 
-	/** The flex ot night time limit. */
-	@Column(name = "FLEX_OT_NIGHT_TIME_LIMIT")
-	private int flexOtNightTimeLimit;
-
 	/** The rest time limit. */
 	@Column(name = "REST_TIME_LIMIT")
 	private int restTimeLimit;
@@ -95,10 +91,6 @@ public abstract class KshmtAutoCalSet extends UkJpaEntity implements Serializabl
 	/** The flex ot time atr. */
 	@Column(name = "FLEX_OT_TIME_ATR")
 	private int flexOtTimeAtr;
-
-	/** The flex ot night time atr. */
-	@Column(name = "FLEX_OT_NIGHT_TIME_ATR")
-	private int flexOtNightTimeAtr;
 
 	/** The rest time atr. */
 	@Column(name = "REST_TIME_ATR")

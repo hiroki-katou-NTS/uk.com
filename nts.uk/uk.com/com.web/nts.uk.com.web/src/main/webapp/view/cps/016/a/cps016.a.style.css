@@ -47,7 +47,7 @@
 	margin-top: 12px;
 	padding: 20px;
 	float: left;
-	min-height: 585px;
+	min-height: 540px;
 	width: 20%;
 }
 
@@ -90,7 +90,7 @@ button.search-btn {
 }
 
 div#left-content.relative.bg-green.caret-right.caret-background {
-	width: 330px;
+	width: 365px;
 }
 
 i.icon.icon-searchbox {

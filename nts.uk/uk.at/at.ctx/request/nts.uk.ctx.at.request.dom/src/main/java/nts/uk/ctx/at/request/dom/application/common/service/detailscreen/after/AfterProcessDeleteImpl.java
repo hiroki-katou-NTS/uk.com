@@ -7,6 +7,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
@@ -15,6 +18,8 @@ import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApproval
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.ScreenAfterDelete;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
+import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -42,12 +47,23 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	@Inject
 	private DestinationJudgmentProcess destinationJudgmentProcessService;
 	
+	@Inject
+	private  EmployeeAdapter  employeeAdapter;
+	
+	@Inject
+	private AppTypeDiscreteSettingRepository  appTypeDiscreteSettingRepo;
+	
+	@Inject
+	private ApplicationRepository applicationRepo;
+	
+	
 	
 	@Override
-	public ScreenAfterDelete screenAfterDelete(String appID) {
-		String companyID = AppContexts.user().companyId();
-		AppCanAtr sendMailWhenApprovalFlg = null;
-		ApprovalAtr approvalAtr = null;
+	public ScreenAfterDelete screenAfterDelete(String companyID,String appID) {
+		ApplicationType appType = applicationRepo.getAppById(companyID, appID).get().getApplicationType();
+		AppCanAtr sendMailWhenApprovalFlg = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value)
+				.get().getSendMailWhenRegisterFlg();
+	
 		
 		List<String> listDestination = new ArrayList<String>();
 		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする(kiểm tra
@@ -75,7 +91,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 					//Add listDestination to listSender
 					List<String> listSender = new ArrayList<String>(listDestination);
 					listSender.addAll(listApproverID);
-					if(approvalAtr != ApprovalAtr.APPROVED){
+					if(appApprovalPhase.getApprovalATR() != ApprovalAtr.APPROVED){
 						break;
 					}					
 				}
@@ -86,10 +102,15 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		if (converList != null) {
 			// TODOgui mail cho ng xac nhan
 			// TODO lay thong tin Imported
+			List<String> lstMail = new ArrayList<>();
+			for(String employeeId: converList){
+				String mail = employeeAdapter.getEmployeeInfor(employeeId).getCompanyMail();
+				lstMail.add(mail);
+			}
 		}
 
 		//TODO delete domaim Application
-		
+		applicationRepo.deleteApplication(companyID, appID);
 		//TODO hien thi thong tin Msg_16 
 		if (converList != null) {
 			//TODO Hien thi thong tin 392

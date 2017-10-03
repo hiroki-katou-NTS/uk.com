@@ -9,8 +9,9 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
-import nts.gul.text.StringUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
@@ -47,6 +48,8 @@ public class CommonApprovalRootFinder {
 	private PersonAdapter adapterPerson;
 	@Inject
 	private WorkplaceAdapter adapterWp;
+	@Inject
+	private SyJobTitleAdapter adapterJobtitle;
 	/**
 	 * getAllCommonApprovalRoot (grouping by history)
 	 * @param param
@@ -214,7 +217,7 @@ public class CommonApprovalRootFinder {
 								.map(c->{
 									String name = c.getApprovalAtr().value == 0 ? 
 											getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName() : 	
-											"";
+											getJobTitleInfo(c.getJobTitleId()) == null ? "" : getJobTitleInfo(c.getJobTitleId()).getPositionName();
 									return ApproverDto.fromDomain(c,name);
 									})
 								.collect(Collectors.toList());
@@ -255,7 +258,7 @@ public class CommonApprovalRootFinder {
 							.map(c->{
 								String name = c.getApprovalAtr().value == 0 ? 
 										getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName() : 	
-										"";
+										getJobTitleInfo(c.getJobTitleId()) == null ? "" : getJobTitleInfo(c.getJobTitleId()).getPositionName();
 								return ApproverDto.fromDomain(c,name);
 								})
 							.collect(Collectors.toList());
@@ -290,7 +293,7 @@ public class CommonApprovalRootFinder {
 							.map(c->{
 								String name = c.getApprovalAtr().value == 0 ? 
 										getPersonInfo(c.getEmployeeId()) == null ? "" : getPersonInfo(c.getEmployeeId()).getEmployeeName() : 	
-										"";
+										getJobTitleInfo(c.getJobTitleId()) == null ? "" : getJobTitleInfo(c.getJobTitleId()).getPositionName();
 								return ApproverDto.fromDomain(c,name);
 								})
 							.collect(Collectors.toList());
@@ -377,16 +380,23 @@ public class CommonApprovalRootFinder {
 				&& date2.getEndDate().compareTo(date1.getEndDate()) < 0) {
 			return true;
 		}
+		/**
+		 * date 1.........|..............]..........
+		 * date 2.........|...................].....
+		 * eDate2 > eDate1 && sDate2 < eDate1
+		 */
+		if(date2.getEndDate().compareTo(date1.getEndDate()) > 0
+				&& date2.getStartDate().compareTo(date1.getEndDate()) <0){
+			return true;
+		}
 		return false;
 	}
 	private PersonImport getPersonInfo(String employeeId){
 		return adapterPerson.getPersonInfo(employeeId);
 	}
-//	private WorkplaceImport getWpInfo(String workplaceId, GeneralDate baseDate){
-//		Optional<WorkplaceImport> wp = adapterWp.findByWkpId(workplaceId, baseDate);
-//		if(wp.isPresent()){
-//			return wp.get();
-//		}
-//		return null;
-//	}
+	private JobTitleImport getJobTitleInfo(String jobTitleId){
+		String companyId = AppContexts.user().companyId();
+		GeneralDate baseDate = GeneralDate.today();
+		return adapterJobtitle.findJobTitleByPositionId(companyId, jobTitleId, baseDate);
+	}
 }

@@ -61,35 +61,13 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
      * 
      * @see
      * nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository#
-     * findAllByCompanyId(java.lang.String)
+     * removeWkpConfigHist(java.lang.String, java.lang.String)
      */
     @Override
-    public WorkplaceConfig findAllByCompanyId(String companyId) {
-        List<WorkplaceConfigHistory> lstWorkplaceConfigHistory = new ArrayList<>();
-        // get entity manager
-        EntityManager em = this.getEntityManager();
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-        CriteriaQuery<BsymtWkpConfig> cq = criteriaBuilder.createQuery(BsymtWkpConfig.class);
-        Root<BsymtWkpConfig> root = cq.from(BsymtWkpConfig.class);
-
-        // select root
-        cq.select(root);
-
-        // add where
-        List<Predicate> lstpredicateWhere = new ArrayList<>();
-        lstpredicateWhere.add(criteriaBuilder
-                .equal(root.get(BsymtWkpConfig_.bsymtWkpConfigPK).get(BsymtWkpConfigPK_.cid), companyId));
-
-        cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-        cq.orderBy(criteriaBuilder.desc(root.get(BsymtWkpConfig_.strD)),
-                criteriaBuilder.desc(root.get(BsymtWkpConfig_.endD)));
-        // exclude select
-        lstWorkplaceConfigHistory = em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
-                .collect(Collectors.toList());
-        return new WorkplaceConfig(new JpaWorkplaceConfigGetMemento(companyId, lstWorkplaceConfigHistory));
+    public void removeWkpConfigHist(String companyId, String historyId) {
+        this.commandProxy().remove(BsymtWkpConfig.class, new BsymtWkpConfigPK(companyId, historyId));
     }
-
+    
     /*
      * (non-Javadoc)
      * 
@@ -99,7 +77,6 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
      */
     @Override
     public Optional<WorkplaceConfig> findByHistId(String companyId, String prevHistId) {
-        List<WorkplaceConfigHistory> lstWorkplaceConfigHistory = new ArrayList<>();
         // get entity manager
         EntityManager em = this.getEntityManager();
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -121,7 +98,8 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
         cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
         // exclude select
-        lstWorkplaceConfigHistory = em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
+        List<WorkplaceConfigHistory> lstWorkplaceConfigHistory = em.createQuery(cq).getResultList().stream()
+                .map(item -> this.toDomain(item))
                 .collect(Collectors.toList());
         return Optional.of(new WorkplaceConfig(new JpaWorkplaceConfigGetMemento(companyId, lstWorkplaceConfigHistory)));
     }
@@ -134,8 +112,7 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
      * findLatestByCompanyId(java.lang.String)
      */
     @Override
-    public Optional<WorkplaceConfig> findWorkplaceByCompanyId(String companyId) {
-        List<WorkplaceConfigHistory> lstWorkplaceConfigHistory = new ArrayList<>();
+    public Optional<WorkplaceConfig> findAllByCompanyId(String companyId) {
         // get entity manager
         EntityManager em = this.getEntityManager();
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -154,7 +131,8 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
         cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
         cq.orderBy(criteriaBuilder.desc(root.get(BsymtWkpConfig_.strD)));
 
-        lstWorkplaceConfigHistory = em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
+        List<WorkplaceConfigHistory> lstWorkplaceConfigHistory = em.createQuery(cq).getResultList().stream()
+                .map(item -> this.toDomain(item))
                 .collect(Collectors.toList());
         return Optional.of(new WorkplaceConfig(new JpaWorkplaceConfigGetMemento(companyId, lstWorkplaceConfigHistory)));
     }
@@ -192,18 +170,6 @@ public class JpaWorkplaceConfigRepository extends JpaRepository implements Workp
         lstWorkplaceConfigHistory = em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
                 .collect(Collectors.toList());
         return Optional.of(new WorkplaceConfig(new JpaWorkplaceConfigGetMemento(companyId, lstWorkplaceConfigHistory)));
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository#
-     * removeWkpConfigHist(java.lang.String, java.lang.String)
-     */
-    @Override
-    public void removeWkpConfigHist(String companyId, String historyId) {
-        this.commandProxy().remove(BsymtWkpConfig.class, new BsymtWkpConfigPK(companyId, historyId));
     }
 
     /**

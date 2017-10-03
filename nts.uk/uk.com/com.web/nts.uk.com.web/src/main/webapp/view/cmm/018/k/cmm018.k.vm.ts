@@ -58,14 +58,38 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 self.selectFormSet(data.formSetting);                
                 
                 self.setDataForSwapList(self.selectTypeSet());
+                //承認者の登録(個人別): 非表示
+                if(data.tab === 2){
+                    $('#typeSetting').hide();
+                    self.selectTypeSet(0);    
+                }else{
+                    $('#typeSetting').show();
+                    //設定種類
+                    self.selectTypeSet(data.selectTypeSet);
+                }
                 //承認者一覧                
                 if(data.approverInfor.length > 0){
                     _.forEach(data.approverInfor, function(sID){
-                        service.getPersonInfor(sID).done(function(data: any){
-                            self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName));
-                        })                            
+                        if(self.selectTypeSet() === 0){
+                            service.getPersonInfor(sID).done(function(data: any){
+                                self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName));
+                            })                            
+                        }else{
+                            let job = new service.model.JobtitleInfor;
+                            job.positionId = sID;
+                            job.startDate = self.standardDate();
+                            job.companyId = "";
+                            job.positionCode = "";
+                            job.positionName = "";
+                            job.sequenceCode = "";
+                            job.endDate = new Date();
+                            service.getJobTitleName(job).done(function(data: any){
+                                self.approverList.push(new shrVm.ApproverDtoK(data.positionId, data.positionCode, data.positionName));
+                            })    
+                        }
+                                                    
                     })    
-                }else{
+                }else{                    
                     self.setDataForCbb();    
                 }
                 
@@ -77,15 +101,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 }else{
                     self.selectedCbbCode("");
                 }
-                //承認者の登録(個人別): 非表示
-                if(data.tab === 2){
-                    $('#typeSetting').hide();
-                    self.selectTypeSet(0);    
-                }else{
-                    $('#typeSetting').show();
-                    //設定種類
-                    self.selectTypeSet(data.selectTypeSet);
-                }
+                
                 
             }
             //基準日
@@ -164,6 +180,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 service.getJobTitleInfor(self.standardDate()).done(function(data: string){
                     _.forEach(data, function(value: service.model.JobtitleInfor){
                         var job = new shrVm.ApproverDtoK;
+                        
                         job.id = value.positionId;
                         job.code = value.positionCode;
                         job.name = value.positionName;

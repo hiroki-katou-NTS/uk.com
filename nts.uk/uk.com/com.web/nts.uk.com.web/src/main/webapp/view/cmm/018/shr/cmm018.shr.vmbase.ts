@@ -124,7 +124,7 @@ module nts.uk.com.view.cmm018.shr {
             check: number;
             /** まとめて設定モード(0) - 申請個別設定モード(1)*/
             mode: number;
-            lstAppType: Array<String>;
+            lstAppType: Array<number>;
         }
         //ScreenI
         export class IData{
@@ -575,6 +575,49 @@ module nts.uk.com.view.cmm018.shr {
             static PERSONNEL = 3;
             static ACCOUNTING = 4;
             static OH = 6;
+        }
+        export interface GroupOption {
+            baseDate?: KnockoutObservable<Date>;
+            // クイック検索タブ
+            isQuickSearchTab: boolean;
+            // 参照可能な社員すべて
+            isAllReferableEmployee: boolean;
+            //自分だけ
+            isOnlyMe: boolean;
+            //おなじ部門の社員
+            isEmployeeOfWorkplace: boolean;
+            //おなじ＋配下部門の社員
+            isEmployeeWorkplaceFollow: boolean;
+            // 詳細検索タブ
+            isAdvancedSearchTab: boolean;
+            //複数選択 
+            isMutipleCheck: boolean;
+            
+            //社員指定タイプ or 全社員タイプ
+            isSelectAllEmployee: boolean;
+        
+            onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
+        
+            onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
+            
+            onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
+            
+            onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
+            
+            onApplyEmployee: (data: EmployeeSearchDto[]) => void;
+        }
+        export interface EmployeeSearchDto {
+            employeeId: string;
+            
+            employeeCode: string;
+            
+            employeeName: string;
+            
+            workplaceCode: string;
+            
+            workplaceId: string;
+            
+            workplaceName: string;
         }
     }
 }
