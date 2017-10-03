@@ -170,11 +170,11 @@
 											<!-- A3_17: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
-													data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,2)}"></button>
+													data-bind="click: function(){$parent.openDialogK(appPhase2,approvalId,appTypeValue,2)}"></button>
 												<div data-bind="text: appPhase2.appFormName"></div>
 											</td>
 											<!-- A3_19: -->
-											<td class="approver" data-bind="if: appPhase2 != null">
+											<td class="approver">
 												<div data-bind="foreach: appPhase2.approver">
 													<div data-bind="text: name"> <br /></div>
 												</div>
@@ -182,7 +182,7 @@
 											<!-- A3_20: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
-														data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,3)}"></button>
+														data-bind="click: function(){$parent.openDialogK(appPhase3,approvalId,appTypeValue,3)}"></button>
 												<div data-bind="text: appPhase3.appFormName"></div>
 											</td>
 											<!-- A3_22: -->										
