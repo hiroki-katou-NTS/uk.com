@@ -67,7 +67,7 @@ module nts.uk.com.view.cmm018.k.service{
             sequenceCode: string;
             startDate: Date;
             /** The end date. */
-            endDate: Date;    
+            endDate: Date; 
         }
     }
 }
