@@ -483,12 +483,13 @@ module nts.uk.com.view.cmm018.a {
                 var self = this;
                 let checkReload = false;
                 let itemCurrent = null;
+                 let paramI: vmbase.IData_Param = null;
                 if(self.listHistory() == null || self.listHistory().length == 0 ){
                     let lstAppType = [null];
                     _.each(self.lstNameAppType(), function(appType){
                         lstAppType.push(appType.value);
                     });
-                    let paramI: vmbase.IData_Param = {
+                    paramI = {
                                 name: "",
                                 startDate: '',
                                 check: self.tabSelected(),
@@ -558,7 +559,7 @@ module nts.uk.com.view.cmm018.a {
                         startDate = histLAst.lstPersonRoot[0].person.startDate
                     }
                     
-                    let paramI: vmbase.IData_Param = {
+                     paramI = {
                                     name: "",
                                     startDate: startDate,
                                     check: self.tabSelected(),
@@ -582,6 +583,7 @@ module nts.uk.com.view.cmm018.a {
                     let lstRoot: Array<vmbase.DataRootCheck> = [];
                      //display history new in screen main
                     let tmp: Array<vmbase.ListHistory> = [];
+                    self.dataI(data);
                     if(self.listHistory() == null || self.listHistory().length == 0 ){//tao moi hoan toan
                         //TH: list left
                         
@@ -595,7 +597,6 @@ module nts.uk.com.view.cmm018.a {
                             });
                             itemCurrent = self.findHistory(self.idOld());
                         }
-                        self.dataI(data);
                         let startDate = new Date(data.startDate);
                         startDate.setDate(startDate.getDate() - 1);
                         let month =  self.checkDate(startDate.getMonth() + 1);
@@ -1150,6 +1151,7 @@ module nts.uk.com.view.cmm018.a {
             convertlistRoot(root: Array<vmbase.DataRootCheck>): Array<vmbase.CompanyAppRootADto>{
                  var self = this;
                 let lstbyApp: Array<vmbase.CompanyAppRootADto> = [];
+                let tmp: Array<vmbase.CompanyAppRootADto> = [];
                 let common = false;
                 let appName = '';
                 _.each(root, function(itemRoot){
@@ -1157,16 +1159,25 @@ module nts.uk.com.view.cmm018.a {
                     if(itemRoot.applicationType == null && itemRoot.employmentRootAtr ==0){
                         common = true;
                         appName = ' 共通ルート';
-                    }else{
-                        let appType = __viewContext.viewModel.viewmodelB.findAppbyValue(itemRoot.applicationType);
-                        appName = appType.localizedName;
-                    }
-                    lstbyApp.push(new vmbase.CompanyAppRootADto(common, itemRoot.applicationType,appName, itemRoot.approvalId,
+                        tmp.push(new vmbase.CompanyAppRootADto(common, itemRoot.applicationType,appName, itemRoot.approvalId,
                                         itemRoot.historyId,itemRoot.branchId,
                                         self.listAppPhase()[0], self.listAppPhase()[1],self.listAppPhase()[2],
                                         self.listAppPhase()[3],self.listAppPhase()[4]));
+                    }else{
+                        common = false;
+                        let appType = __viewContext.viewModel.viewmodelB.findAppbyValue(itemRoot.applicationType);
+                        appName = appType.localizedName;
+                        lstbyApp.push(new vmbase.CompanyAppRootADto(common, itemRoot.applicationType,appName, itemRoot.approvalId,
+                                        itemRoot.historyId,itemRoot.branchId,
+                                        self.listAppPhase()[0], self.listAppPhase()[1],self.listAppPhase()[2],
+                                        self.listAppPhase()[3],self.listAppPhase()[4]));
+                    }
                 });
-                return lstbyApp;
+                let sortBy =  _.orderBy(lstbyApp, ["appTypeValue"], ["asc"]);
+                _.each(sortBy, function(obj){
+                    tmp.push(obj);
+                })
+                return tmp;
             }
             /**
              * create root new after add history new
