@@ -782,9 +782,17 @@ module nts.uk.com.view.cmm018.a {
                 var self = __viewContext.viewModel.viewmodelA;
                 console.log(obj);
                 self.approverInfor([]);
-                _.each(obj.approver, function(item){
-                    self.approverInfor.push(item.employeeId);
-                })
+                let approvalAtr = obj.approver[0] == null ? 0 : obj.approver[0].approvalAtr;
+                if(approvalAtr == 0){//person
+                    _.each(obj.approver, function(item){
+                        self.approverInfor.push(item.employeeId);
+                    });
+                }else{//job title
+                    _.each(obj.approver, function(item){
+                        self.approverInfor.push(item.jobTitleId);
+                    });
+                }
+                
                 //確定者 code
                 self.confirmedPerson(obj.approvalForm);
                 setShared("CMM018K_PARAM", { 
@@ -792,7 +800,7 @@ module nts.uk.com.view.cmm018.a {
                                         formSetting: 2,//1: 全員確認、2：誰か一人
                                         approverInfor: self.approverInfor(),//承認者一覧
                                         confirmedPerson: self.confirmedPerson, //確定者
-                                        selectTypeSet: 0, //職位指定（1）、個人指定（0）
+                                        selectTypeSet: approvalAtr, //職位指定（1）、個人指定（0）
                                         tab: 0//０：会社、１：職場、２：個人
                                         });
                 modal("/view/cmm/018/k/index.xhtml").onClosed(() => {
@@ -808,9 +816,9 @@ module nts.uk.com.view.cmm018.a {
                    let a: vmbase.CompanyAppRootADto = null;
                     let approver: Array<vmbase.ApproverDto> = [];
                     let approvalAtr = data.selectTypeSet; 
-                    _.each(data.approverInfor, function(item){
+                    _.each(data.approverInfor, function(item, index){
                         let confirmedPerson = (data.formSetting == 2)&&(item.id == data.confirmedPerson) ? 1 : 0;
-                        approver.push(new vmbase.ApproverDto('',approvalAtr == 1 ? item.id : null, approvalAtr == 0 ? item.id : null,item.name,1,approvalAtr,confirmedPerson));
+                        approver.push(new vmbase.ApproverDto('',approvalAtr == 1 ? item.id : null, approvalAtr == 0 ? item.id : null,item.name,index,approvalAtr,confirmedPerson));
                     });
                    let b: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto(approver,'','',data.formSetting,data.approvalFormName, 0,int);
                 switch(int){
@@ -1727,9 +1735,15 @@ module nts.uk.com.view.cmm018.a {
                                     item.company.endDate, item.company.applicationType, item.company.employmentRootAtr));
                             });
                             //list right
-                            let com = self.findRootComB(self.singleSelectedCode());
+                            
                             self.dataDisplay(self.convert(lstRoot));
-                           let a = self.findHistByType(self.dataIB().lstAppType[0], self.dataIB().startDate, self.tabSelectedB());
+                           let a:any = null;
+                           if(self.dataIB()==null){
+                               a = self.findRootComB(self.singleSelectedCode());
+                           }else{
+                               a = self.findHistByType(self.dataIB().lstAppType[0], self.dataIB().startDate, self.tabSelectedB());
+                           }
+                           
                             self.singleSelectedCode(a.company.approvalId);
                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.dataIB(null);
@@ -1745,7 +1759,12 @@ module nts.uk.com.view.cmm018.a {
                             //list right
                              let com = self.findRootWpD(self.singleSelectedCode());
                             self.dataDisplay(self.convert(lstRoot));
-                         let a = self.findHistByType(self.dataIB().lstAppType[0], self.dataIB().startDate, self.tabSelectedB());
+                           let a:any = null;
+                           if(self.dataIB()==null){
+                               a = self.findRootWpD(self.singleSelectedCode());
+                           }else{
+                               a = self.findHistByType(self.dataIB().lstAppType[0], self.dataIB().startDate, self.tabSelectedB());
+                           }
                        self.singleSelectedCode(a.workplace.approvalId);
                        nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                         self.dataIB(null);  
@@ -1762,7 +1781,12 @@ module nts.uk.com.view.cmm018.a {
                         //list right
                              let com = self.findRootWpD(self.singleSelectedCode());
                             self.dataDisplay(self.convert(lstRoot));
-                           let a = self.findHistByType(self.dataIB().lstAppType[0], self.dataIB().startDate, self.tabSelectedB());
+                           let a:any = null;
+                           if(self.dataIB()==null){
+                               a = self.findRootPsF(self.singleSelectedCode());
+                           }else{
+                               a = self.findHistByType(self.dataIB().lstAppType[0], self.dataIB().startDate, self.tabSelectedB());
+                           }
                             self.singleSelectedCode(a.person.approvalId);
                            nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                             self.dataIB(null);
