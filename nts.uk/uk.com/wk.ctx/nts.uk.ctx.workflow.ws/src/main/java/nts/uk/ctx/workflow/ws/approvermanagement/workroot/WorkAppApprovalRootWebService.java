@@ -53,7 +53,8 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@Inject
 	private SyJobTitleAdapter jobTitle;
 	@Inject
-	private EmployeeRegisterApprovalRoot registerApprovalRoot;
+	private EmployeeRegisterApprovalRoot registerApprovalRoot;	
+	
 	@POST
 	@Path("getbycom")
 	public DataFullDto getAllByCom(ParamDto param) {
@@ -130,6 +131,12 @@ public class WorkAppApprovalRootWebService extends WebService{
 	public void lstEmps(EmployeeRegisterApprovalRootDto data){
 		String companyId = AppContexts.user().companyId();
 		registerApprovalRoot.lstEmps(companyId, data.getBaseDate(), data.getLstEmpIds(),data.getRootAtr(), data.getLstApps());
+	}
+	@POST
+	@Path("getJobtitleName")
+	public JobTitleImport findJobTitleByPositionId(JobTitleImport jobTitleInfo) {
+		String companyId = AppContexts.user().companyId();
+		return jobTitle.findJobTitleByPositionId(companyId, jobTitleInfo.getPositionId(), jobTitleInfo.getStartDate());
 	}
 	
 }
