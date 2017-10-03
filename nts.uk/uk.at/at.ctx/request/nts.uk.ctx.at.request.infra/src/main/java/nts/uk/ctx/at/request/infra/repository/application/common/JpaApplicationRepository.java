@@ -31,6 +31,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	private final String SELECT_BY_APPDATE = SELECT_FROM_APPLICATION + " AND c.applicationDate = :applicationDate";
 	private final String SELECT_BY_APPTYPE = SELECT_FROM_APPLICATION + " AND c.applicationType = :applicationType";
 
+	private final String SELECT_BY_DATE = SELECT_FROM_APPLICATION + " AND c.applicationDate >= :startDate AND c.applicationDate <= :endDate";
 	private Application toDomain(KafdtApplication entity) {
 		return new Application(
 				entity.kafdtApplicationPK.companyID,
@@ -67,6 +68,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				new KafdtApplicationPK(
 					domain.getCompanyID(), 
 					domain.getApplicationID()), 
+				(int)(long)domain.getVersion(),
 				appReasonID,
 				domain.getPrePostAtr().value, 
 				domain.getInputDate() , 
@@ -85,7 +87,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				domain.getReflectPerEnforce().value, 
 				domain.getStartDate(), 
 				domain.getEndDate(),
-				null);
+				null,null);
 	}
 
 	/**
@@ -196,6 +198,16 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	public List<Application> getAllApplicationByPhaseID(String comanyID, String appID, String phaseID) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public List<String> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate) {
+		List<String> data = this.queryProxy().query(SELECT_BY_DATE, KafdtApplication.class)
+				.setParameter("companyID", companyId)
+				.setParameter("startDate", startDate)
+				.setParameter("endDate", endDate)
+				.getList(x -> x.kafdtApplicationPK.applicationID.toString());
+		return data;
 	}
 
 
