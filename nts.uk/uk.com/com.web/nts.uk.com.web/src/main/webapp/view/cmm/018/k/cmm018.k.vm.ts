@@ -61,11 +61,21 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 //承認者一覧                
                 if(data.approverInfor.length > 0){
                     _.forEach(data.approverInfor, function(sID){
-                        service.getPersonInfor(sID).done(function(data: any){
-                            self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName));
-                        })                            
+                        if(self.selectTypeSet() === 0){
+                            service.getPersonInfor(sID).done(function(data: any){
+                                self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName));
+                            })                            
+                        }else{
+                            let job = new service.model.JobtitleInfor;
+                            job.positionId = sID;
+                            job.startDate = self.standardDate();
+                            service.getJobTitleName(job).done(function(data: any){
+                                self.approverList.push(new shrVm.ApproverDtoK(data.positionId, data.positionCode, data.positionName));
+                            })    
+                        }
+                                                    
                     })    
-                }else{
+                }else{                    
                     self.setDataForCbb();    
                 }
                 
