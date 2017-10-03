@@ -57,11 +57,11 @@ module nts.uk.com.view.cmm018.a {
             //_______Check che do hien thi____
             visibleTab: KnockoutObservable<boolean> = ko.observable(true);
             //_______CCG001____
-            ccgcomponent: GroupOption;
+            ccgcomponent: vmbase.GroupOption;
             showinfoSelectedEmployee: KnockoutObservable<boolean>;
             // Options
             baseDate: KnockoutObservable<Date>;
-            selectedEmployee: KnockoutObservableArray<EmployeeSearchDto>;
+            selectedEmployee: KnockoutObservableArray<vmbase.EmployeeSearchDto>;
             workplaceId: KnockoutObservable<string> = ko.observable("");
             constructor(transferData: any) {
                 var self = this;
@@ -300,30 +300,32 @@ module nts.uk.com.view.cmm018.a {
                * @param dataList: list employee returned from component.
                * Define how to use this list employee by yourself in the function's body.
                */
-               onSearchAllClicked: function(dataList: EmployeeSearchDto[]) {
+               onSearchAllClicked: function(dataList: vmbase.EmployeeSearchDto[]) {
                    self.showinfoSelectedEmployee(true);
                    self.selectedEmployee(dataList);
                    self.convertEmployeeCcg01ToKcp009(dataList);
                    
                },
-               onSearchOnlyClicked: function(data: EmployeeSearchDto) {
+               onSearchOnlyClicked: function(data: vmbase.EmployeeSearchDto) {
                    self.showinfoSelectedEmployee(true);
-                   var dataEmployee: EmployeeSearchDto[] = [];
+                   var dataEmployee: vmbase.EmployeeSearchDto[] = [];
                    dataEmployee.push(data);
                    self.selectedEmployee(dataEmployee);
-                   self.convertEmployeeCcg01ToKcp009(data);
+                   let dataList: vmbase.EmployeeSearchDto[];
+                   dataList.push(data);
+                   self.convertEmployeeCcg01ToKcp009(dataList);
                },
-               onSearchOfWorkplaceClicked: function(dataList: EmployeeSearchDto[]) {
+               onSearchOfWorkplaceClicked: function(dataList: vmbase.EmployeeSearchDto[]) {
                    self.showinfoSelectedEmployee(true);
                    self.selectedEmployee(dataList);
                    self.convertEmployeeCcg01ToKcp009(dataList);
                },
-               onSearchWorkplaceChildClicked: function(dataList: EmployeeSearchDto[]) {
+               onSearchWorkplaceChildClicked: function(dataList: vmbase.EmployeeSearchDto[]) {
                    self.showinfoSelectedEmployee(true);
                    self.selectedEmployee(dataList);
                    self.convertEmployeeCcg01ToKcp009(dataList);
                },
-               onApplyEmployee: function(dataEmployee: EmployeeSearchDto[]) {
+               onApplyEmployee: function(dataEmployee: vmbase.mployeeSearchDto[]) {
                    self.showinfoSelectedEmployee(true);
                    self.selectedEmployee(dataEmployee);
                    self.convertEmployeeCcg01ToKcp009(dataEmployee);
@@ -333,7 +335,7 @@ module nts.uk.com.view.cmm018.a {
            
            $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
             }
-            public  convertEmployeeCcg01ToKcp009(dataList : EmployeeSearchDto[]) : void{
+            public  convertEmployeeCcg01ToKcp009(dataList : vmbase.EmployeeSearchDto[]) : void{
                 let self = this;    
                 self.employeeInputList([]);
                 _.each(dataList, function(item){
@@ -1251,52 +1253,6 @@ module nts.uk.com.view.cmm018.a {
                modal("/view/cmm/018/n/index.xhtml");
             }
         }
-export interface EmployeeSearchDto {
-    employeeId: string;
-    
-    employeeCode: string;
-    
-    employeeName: string;
-    
-    workplaceCode: string;
-    
-    workplaceId: string;
-    
-    workplaceName: string;
-}
-
-export interface GroupOption {
-    baseDate?: KnockoutObservable<Date>;
-    // クイック検索タブ
-    isQuickSearchTab: boolean;
-    // 参照可能な社員すべて
-    isAllReferableEmployee: boolean;
-    //自分だけ
-    isOnlyMe: boolean;
-    //おなじ部門の社員
-    isEmployeeOfWorkplace: boolean;
-    //おなじ＋配下部門の社員
-    isEmployeeWorkplaceFollow: boolean;
-
-    
-    // 詳細検索タブ
-    isAdvancedSearchTab: boolean;
-    //複数選択 
-    isMutipleCheck: boolean;
-    
-    //社員指定タイプ or 全社員タイプ
-    isSelectAllEmployee: boolean;
-
-    onSearchAllClicked: (data: EmployeeSearchDto[]) => void;
-
-    onSearchOnlyClicked: (data: EmployeeSearchDto) => void;
-    
-    onSearchOfWorkplaceClicked: (data: EmployeeSearchDto[]) => void;
-    
-    onSearchWorkplaceChildClicked: (data: EmployeeSearchDto[]) => void;
-    
-    onApplyEmployee: (data: EmployeeSearchDto[]) => void;
-}
     }
     /**
      * =============mode B: 申請個別登録モード===========
@@ -1368,6 +1324,7 @@ export interface GroupOption {
                         }
                         //TH: 1,2,appName
                         else{
+                            
                             self.comRoot(null);
 //                            self.showItem(codeChanged);
                         }
@@ -1526,6 +1483,12 @@ export interface GroupOption {
                     return obj.company.approvalId == value;
                 });
             }
+            findRootComByType(value: number): vmbase.CompanyAppRootDto {
+                let self = this;
+                return _.find( self.lstCompany(), function(obj: vmbase.CompanyAppRootDto) {
+                    return obj.company.applicationType == value;
+                });
+            }
             /**
              * find work place root is selected
              * mode B: 申請個別登録モード
@@ -1571,6 +1534,28 @@ export interface GroupOption {
                 else{
                     return _.find( self.lstPerson(), function(obj: vmbase.PersonAppRootDto) {
                         return obj.person.approvalId == approvalId;
+                    });
+                }
+                
+            }
+            findHistByType(appType: number,startDate: string, rootType: number): any {
+                let self = this;
+                //TH: company
+                if(rootType == 0){
+                    return _.find( self.lstCompany(), function(obj: vmbase.CompanyAppRootDto) {
+                        return obj.company.applicationType == appType && obj.company.startDate == startDate;
+                    });
+                }
+                //TH: work place
+                else if(rootType == 1){
+                    return _.find( self.lstWorkplace(), function(obj) {
+                        return obj.workplace.applicationType == appType && obj.workplace.startDate == startDate;
+                    });
+                }
+                //TH: person
+                else{
+                    return _.find( self.lstPerson(), function(obj: vmbase.PersonAppRootDto) {
+                        return obj.person.applicationType == appType && obj.person.startDate == startDate;
                     });
                 }
                 
@@ -1673,10 +1658,16 @@ export interface GroupOption {
              * mode B: 申請個別登録モード
              */
             registerB(){
-                nts.uk.ui.block.invisible();
+//                nts.uk.ui.block.invisible();
                 let self = this;
                 if(self.comRoot() == null){//TH: data right null
-                    return;
+                    let app = self.findAppbyName(self.singleSelectedCode());
+                    if(app != undefined){
+                       let root = self.findRootComByType(app.value);
+                        if(root != undefined && root != null){
+                            return;
+                        } 
+                    }
                 }
                 let checkDelete = false;
                 let checkAddHist = false;
@@ -1726,18 +1717,62 @@ export interface GroupOption {
                                     checkDelete,checkAddHist,checkAddRoot,checkEdit,'',
                                     self.employeeId(),startDate, endDate,self.dataIB(), listType, root);
                 servicebase.updateRoot(data).done(function(){
-                    nts.uk.ui.block.clear();
-                   if(self.tabSelectedB() == 0){
-                       self.getDataCompanyPr();
+//                    nts.uk.ui.block.clear();
+                    let lstRoot: Array<vmbase.DataCheckModeB> = [];
+                   if(self.tabSelectedB() == 0){//company
+                       self.getDataCompanyPr().done(function(){
+                           //list left
+                            _.each(self.lstCompany(), function(item){
+                                lstRoot.push(new vmbase.DataCheckModeB(item.company.approvalId, item.company.startDate,
+                                    item.company.endDate, item.company.applicationType, item.company.employmentRootAtr));
+                            });
+                            //list right
+                            let com = self.findRootComB(self.singleSelectedCode());
+                            self.dataDisplay(self.convert(lstRoot));
+                           let a = self.findHistByType(self.dataIB().lstAppType[0], self.dataIB().startDate, self.tabSelectedB());
+                            self.singleSelectedCode(a.company.approvalId);
+                           nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            self.dataIB(null);
+                       });
+                       
                    }else if(self.tabSelectedB() == 0){
-                       self.getDataWorkplacePr();
+                       self.getDataWorkplacePr().done(function(){
+                           //list left
+                            _.each(self.lstWorkplace(), function(item){
+                                lstRoot.push(new vmbase.DataCheckModeB(item.workplace.approvalId, item.workplace.startDate,
+                                    item.workplace.endDate, item.workplace.applicationType, item.workplace.employmentRootAtr));
+                            });
+                            //list right
+                             let com = self.findRootWpD(self.singleSelectedCode());
+                            self.dataDisplay(self.convert(lstRoot));
+                         let a = self.findHistByType(self.dataIB().lstAppType[0], self.dataIB().startDate, self.tabSelectedB());
+                       self.singleSelectedCode(a.workplace.approvalId);
+                       nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                        self.dataIB(null);  
+                       });
+                       
                    }else{
                        let param: vmbase.ParamDto = new vmbase.ParamDto(2,'',self.employeeId());
-                       self.getDataPersonPr(param);
+                       self.getDataPersonPr(param).done(function(){
+                           //list left
+                        _.each(self.lstPerson(), function(item){
+                            lstRoot.push(new vmbase.DataCheckModeB(item.person.approvalId, item.person.startDate,
+                                item.person.endDate, item.person.applicationType, item.person.employmentRootAtr));
+                        });
+                        //list right
+                             let com = self.findRootWpD(self.singleSelectedCode());
+                            self.dataDisplay(self.convert(lstRoot));
+                           let a = self.findHistByType(self.dataIB().lstAppType[0], self.dataIB().startDate, self.tabSelectedB());
+                            self.singleSelectedCode(a.person.approvalId);
+                           nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                            self.dataIB(null);
+                       });
+                       
                    }
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    self.dataIB(null);
-                    self.singleSelectedCode('共通ルート');
+                    
+                    
+                }).fail(function(){
+//                    nts.uk.ui.block.clear();    
                 });
                 
                 
@@ -1826,21 +1861,34 @@ export interface GroupOption {
                                             item.company.applicationType, item.company.employmentRootAtr);
                             }
                         });
-                        let add = new vmbase.DataCheckModeB('-1',data.startDate,'9999/12/31',a.applicationType,a.employmentRootAtr);
-                        let old = new vmbase.DataCheckModeB(a.approvalId, a.startDate, endDateNew, 
-                                            a.applicationType, a.employmentRootAtr);
-                        data2.push(add);
-                        data2.push(old);
-                        self.dataDisplay(self.convert(data2));
-                        self.dataDisplay.valueHasMutated();
-                        if(!data.copyDataFlag){//create new
-                            let appTypeValue = data.lstAppType[0];
-                            let app = self.findAppbyValue(appTypeValue);
+                        if(a == null){//loai don chua co lich su : them moi tu dau
+                            let appType = data.lstAppType[0];
+                            let app = self.findAppbyValue(appType);
+                            let add = new vmbase.DataCheckModeB('-1',data.startDate,'9999/12/31',appType,appType == null ? 0 : 1);
+                            data2.push(add);
+                            self.dataDisplay(self.convert(data2));
                             let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
-                            self.comRoot(new vmbase.CompanyAppRootADto(appTypeValue == null ? true : false, 
-                                appTypeValue, app == undefined ? '共通ルート' : app.localizedName, '-1', '',
-                                '',b,b,b,b,b));
+                            self.comRoot(new vmbase.CompanyAppRootADto(appType == null ? true : false, 
+                                    appType, appType == null ? '共通ルート' : app.localizedName, '-1', '',
+                                    '',b,b,b,b,b));
+                        }else{
+                            let add = new vmbase.DataCheckModeB('-1',data.startDate,'9999/12/31',a.applicationType,a.employmentRootAtr);
+                            let old = new vmbase.DataCheckModeB(a.approvalId, a.startDate, endDateNew, 
+                                                a.applicationType, a.employmentRootAtr);
+                            data2.push(add);
+                            data2.push(old);
+                            self.dataDisplay(self.convert(data2));
+                            self.dataDisplay.valueHasMutated();
+                            if(!data.copyDataFlag){//create new
+                                let appTypeValue = data.lstAppType[0];
+                                let app = self.findAppbyValue(appTypeValue);
+                                let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
+                                self.comRoot(new vmbase.CompanyAppRootADto(appTypeValue == null ? true : false, 
+                                    appTypeValue, app == undefined ? '共通ルート' : app.localizedName, '-1', '',
+                                    '',b,b,b,b,b));
+                            }
                         }
+                        
                         self.singleSelectedCode('-1');
                     }else if(self.tabSelectedB() == 1){//workplace
                         let a = null;
@@ -1853,20 +1901,32 @@ export interface GroupOption {
                                             item.workplace.applicationType, item.workplace.employmentRootAtr);
                             }
                         });
-                        let add = new vmbase.DataCheckModeB('-1',data.startDate,'9999/12/31',a.applicationType,a.employmentRootAtr);
-                        let old = new vmbase.DataCheckModeB(a.approvalId, a.startDate, endDateNew, 
-                                            a.applicationType, a.employmentRootAtr);
-                        data2.push(add);
-                        data2.push(old);
-                        self.dataDisplay(self.convert(data2));
-                        self.dataDisplay.valueHasMutated();
-                        if(!data.copyDataFlag){//create new
-                            let appTypeValue = data.lstAppType[0];
-                            let app = self.findAppbyValue(appTypeValue);
+                        if(a == null){//loai don chua co lich su : them moi tu dau
+                            let appType = data.lstAppType[0];
+                            let app = self.findAppbyValue(appType);
+                            let add = new vmbase.DataCheckModeB('-1',data.startDate,'9999/12/31',appType,appType == null ? 0 : 1);
+                            data2.push(add);
+                            self.dataDisplay(self.convert(data2));
                             let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
-                            self.comRoot(new vmbase.CompanyAppRootADto(appTypeValue == null ? true : false, 
-                                appTypeValue, app == undefined ? '共通ルート' : app.localizedName, '-1', '',
-                                '',b,b,b,b,b));
+                            self.comRoot(new vmbase.CompanyAppRootADto(appType == null ? true : false, 
+                                    appType, appType == null ? '共通ルート' : app.localizedName, '-1', '',
+                                    '',b,b,b,b,b));
+                        }else{
+                            let add = new vmbase.DataCheckModeB('-1',data.startDate,'9999/12/31',a.applicationType,a.employmentRootAtr);
+                            let old = new vmbase.DataCheckModeB(a.approvalId, a.startDate, endDateNew, 
+                                                a.applicationType, a.employmentRootAtr);
+                            data2.push(add);
+                            data2.push(old);
+                            self.dataDisplay(self.convert(data2));
+                            self.dataDisplay.valueHasMutated();
+                            if(!data.copyDataFlag){//create new
+                                let appTypeValue = data.lstAppType[0];
+                                let app = self.findAppbyValue(appTypeValue);
+                                let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
+                                self.comRoot(new vmbase.CompanyAppRootADto(appTypeValue == null ? true : false, 
+                                    appTypeValue, app == undefined ? '共通ルート' : app.localizedName, '-1', '',
+                                    '',b,b,b,b,b));
+                        }
                         }
                         self.singleSelectedCode('-1');
                     }else{//person
@@ -1880,20 +1940,32 @@ export interface GroupOption {
                                             item.person.applicationType, item.person.employmentRootAtr);
                             }
                         });
-                        let add = new vmbase.DataCheckModeB('-1',data.startDate,'9999/12/31',a.applicationType,a.employmentRootAtr);
-                        let old = new vmbase.DataCheckModeB(a.approvalId, a.startDate, endDateNew, 
-                                            a.applicationType, a.employmentRootAtr);
-                        data2.push(add);
-                        data2.push(old);
-                        self.dataDisplay(self.convert(data2));
-                        self.dataDisplay.valueHasMutated();
-                        if(!data.copyDataFlag){//create new
-                            let appTypeValue = data.lstAppType[0];
-                            let app = self.findAppbyValue(appTypeValue);
+                        if(a == null){//loai don chua co lich su : them moi tu dau
+                            let appType = data.lstAppType[0];
+                            let app = self.findAppbyValue(appType);
+                            let add = new vmbase.DataCheckModeB('-1',data.startDate,'9999/12/31',appType,appType == null ? 0 : 1);
+                            data2.push(add);
+                            self.dataDisplay(self.convert(data2));
                             let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
-                            self.comRoot(new vmbase.CompanyAppRootADto(appTypeValue == null ? true : false, 
-                                appTypeValue, app == undefined ? '共通ルート' : app.localizedName, '-1', '',
-                                '',b,b,b,b,b));
+                            self.comRoot(new vmbase.CompanyAppRootADto(appType == null ? true : false, 
+                                    appType, appType == null ? '共通ルート' : app.localizedName, '-1', '',
+                                    '',b,b,b,b,b));
+                        }else{
+                            let add = new vmbase.DataCheckModeB('-1',data.startDate,'9999/12/31',a.applicationType,a.employmentRootAtr);
+                            let old = new vmbase.DataCheckModeB(a.approvalId, a.startDate, endDateNew, 
+                                                a.applicationType, a.employmentRootAtr);
+                            data2.push(add);
+                            data2.push(old);
+                            self.dataDisplay(self.convert(data2));
+                            self.dataDisplay.valueHasMutated();
+                            if(!data.copyDataFlag){//create new
+                                let appTypeValue = data.lstAppType[0];
+                                let app = self.findAppbyValue(appTypeValue);
+                                let b = new vmbase.ApprovalPhaseDto([],'','',0,'',0,0);
+                                self.comRoot(new vmbase.CompanyAppRootADto(appTypeValue == null ? true : false, 
+                                    appTypeValue, app == undefined ? '共通ルート' : app.localizedName, '-1', '',
+                                    '',b,b,b,b,b));
+                            }
                         }
                         self.singleSelectedCode('-1');
                     }
