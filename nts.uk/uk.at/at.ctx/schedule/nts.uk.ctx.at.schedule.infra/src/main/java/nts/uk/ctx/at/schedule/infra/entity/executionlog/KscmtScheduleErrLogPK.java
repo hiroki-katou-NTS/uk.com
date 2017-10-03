@@ -6,13 +6,15 @@ package nts.uk.ctx.at.schedule.infra.entity.executionlog;
 
 import java.io.Serializable;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
+import nts.arc.time.GeneralDate;
 
 /**
  * The Class KscmtScheduleErrLogPK.
@@ -26,22 +28,20 @@ public class KscmtScheduleErrLogPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/** The exe id. */
-	@Basic(optional = false)
     @NotNull
     @Column(name = "EXE_ID")
     private String exeId;
     
     /** The sid. */
-    @Basic(optional = false)
     @NotNull
     @Column(name = "SID")
     private String sid;
     
     /** The ymd. */
-    @Basic(optional = false)
     @NotNull
     @Column(name = "YMD")
-    private int ymd;
+    @Convert(converter = GeneralDateToDBConverter.class)
+    private GeneralDate ymd;
 
     /**
      * Instantiates a new kscmt schedule err log PK.
@@ -56,7 +56,7 @@ public class KscmtScheduleErrLogPK implements Serializable {
      * @param sid the sid
      * @param ymd the ymd
      */
-    public KscmtScheduleErrLogPK(String exeId, String sid, int ymd) {
+    public KscmtScheduleErrLogPK(String exeId, String sid, GeneralDate ymd) {
         this.exeId = exeId;
         this.sid = sid;
         this.ymd = ymd;
