@@ -131,12 +131,12 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 							x.getEmployeeId(), 
 							"",
 							x.getHistoryId(),
-							x.getApplicationType() == null ? null: x.getApplicationType().value, 
+							x.getApplicationType() == null ? 99: x.getApplicationType().value, 
 							x.getPeriod().getStartDate(),
 							x.getPeriod().getEndDate(),
 							x.getBranchId(),
 							x.getAnyItemApplicationId(),
-							x.getConfirmationRootType() == null ? null: x.getConfirmationRootType().value,
+							x.getConfirmationRootType() == null ? 0: x.getConfirmationRootType().value,
 							x.getEmploymentRootAtr().value))
 					.collect(Collectors.toList());
 			return rootOutputs;
