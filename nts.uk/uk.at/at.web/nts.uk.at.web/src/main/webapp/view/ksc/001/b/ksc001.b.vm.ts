@@ -3,6 +3,7 @@ module nts.uk.at.view.ksc001.b {
     import NtsWizardStep = service.model.NtsWizardStep;
     import PeriodDto = service.model.PeriodDto;
     import UserInfoDto = service.model.UserInfoDto;
+    import ScheduleExecutionLogSaveDto = service.model.ScheduleExecutionLogSaveDto;
 
     export module viewmodel {
         export class ScreenModel {
@@ -488,6 +489,9 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 var user: UserInfoDto = self.getUserLogin();
                 self.savePersonalSchedule(user.employeeId, self.toPersonalScheduleData(user.employeeId));
+                service.saveScheduleExecutionLog(self.collectionData()).done(function(){
+                   alert('YES'); 
+                });
                 nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function() {
                 });
             }
@@ -522,6 +526,31 @@ module nts.uk.at.view.ksc001.b {
                 };
                 return dto;
             } 
+            
+            /**
+             * collection data => command save
+             */
+            private collectionData(): ScheduleExecutionLogSaveDto{
+                var self = this;
+                var data: PersonalSchedule = self.toPersonalScheduleData('');
+                var dto: ScheduleExecutionLogSaveDto = {
+                    periodStartDate: self.periodStartDate(),
+                    periodEndDate: self.periodEndDate(),
+                    implementAtr: data.implementAtr,
+                    reCreateAtr: data.reCreateAtr,
+                    processExecutionAtr: data.processExecutionAtr,
+                    resetWorkingHours: data.resetWorkingHours,
+                    resetDirectLineBounce: data.resetDirectLineBounce,
+                    resetMasterInfo: data.resetMasterInfo,
+                    resetTimeChildCare: data.resetTimeChildCare,
+                    resetAbsentHolidayBusines: data.resetAbsentHolidayBusines,
+                    resetTimeAssignment: data.resetTimeAssignment,
+                    confirm: data.confirm,
+                    createMethodAtr: data.createMethodAtr,
+                    copyStartDate: self.copyStartDate()
+                };
+                return dto;
+            }
             
             /**
              * convert work type setting
