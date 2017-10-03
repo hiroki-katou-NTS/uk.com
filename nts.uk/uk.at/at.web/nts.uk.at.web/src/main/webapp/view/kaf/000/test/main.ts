@@ -37,8 +37,14 @@ module nts.uk.at.view.kaf000.test.viewmodel {
             var self = this;
             var data = new service.dateInfor;
             data.startDate = self.startDate();
-            data.endate = self.endDate();
-            var dataInfor = service.getAppId(data);
+            data.endDate = self.endDate();
+            service.getAppId(data).done(function(values: any){
+                if(values.length !== 0){
+                    
+                }else{
+                    
+                }
+            });
         }
     }
     export class ApproverDtoK {

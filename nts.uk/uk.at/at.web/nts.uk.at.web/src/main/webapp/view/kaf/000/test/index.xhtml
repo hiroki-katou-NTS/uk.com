@@ -14,8 +14,10 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD'}"></div>
-			<div data-bind="ntsDatePicker: {value: endDate, dateFormat: 'YYYY/MM/DD'}"></div>
+			<label>Start date</label>
+			<div data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD'}"></div><br />
+			<label>End date</label>
+			<div data-bind="ntsDatePicker: {value: endDate, dateFormat: 'YYYY/MM/DD'}"></div><br />
 			<button data-bind="click: openDetailScreen">Detail Screen</button>
 			
 			<div id="contents-area">

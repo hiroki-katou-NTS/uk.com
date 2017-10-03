@@ -203,7 +203,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@Override
 	public List<String> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate) {
 		List<String> data = this.queryProxy().query(SELECT_BY_DATE, KafdtApplication.class)
-				.setParameter("companyId", companyId)
+				.setParameter("companyID", companyId)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
 				.getList(x -> x.kafdtApplicationPK.applicationID.toString());

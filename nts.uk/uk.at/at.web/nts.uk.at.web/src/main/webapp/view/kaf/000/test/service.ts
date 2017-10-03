@@ -4,11 +4,11 @@ module nts.uk.at.view.kaf000.test.service{
     }  
     
     export function getAppId(data: dateInfor){
-         return request.ajax('com', paths.getApplicationIdByDate, data);    
+         return request.ajax('at', paths.getApplicationIdByDate, data);    
     }
     
     export class dateInfor{
         startDate: any;
-        endate: any;    
+        endDate: any;    
     }
 }
