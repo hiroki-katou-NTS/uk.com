@@ -527,6 +527,33 @@ module nts.uk.at.view.ksc001.b {
                 return dto;
             } 
             
+             /**
+             * find employee id in selected
+             */
+            public findEmployeeIdByCode(employeeCode: string): string {
+                var self = this;
+                var employeeId = '';
+                for (var employee of self.selectedEmployee()) {
+                    if (employee.employeeCode === employeeCode) {
+                        employeeId = employee.employeeId;
+                    }
+                }
+                return employeeId;
+            }
+            /**
+             * find employee id in selection employee code
+             */
+            public findEmployeeIdsByCode(employeeCodes: string[]): string[] {
+                var self = this;
+                var employeeIds : string[] = [];
+                for(var employeeCode of employeeCodes){
+                    var employeeId = self.findEmployeeIdByCode(employeeCode);
+                    if(employeeId && !(employeeId ==='')){
+                        employeeIds.push(employeeId);
+                    }    
+                }
+                return employeeIds;
+            }
             /**
              * collection data => command save
              */
@@ -547,7 +574,8 @@ module nts.uk.at.view.ksc001.b {
                     resetTimeAssignment: data.resetTimeAssignment,
                     confirm: data.confirm,
                     createMethodAtr: data.createMethodAtr,
-                    copyStartDate: self.copyStartDate()
+                    copyStartDate: self.copyStartDate(),
+                    employeeIds: self.findEmployeeIdsByCode(self.selectedEmployeeCode())
                 };
                 return dto;
             }

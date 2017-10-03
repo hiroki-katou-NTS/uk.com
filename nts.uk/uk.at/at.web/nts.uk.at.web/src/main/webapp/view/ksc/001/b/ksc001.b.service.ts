@@ -65,6 +65,7 @@ module nts.uk.at.view.ksc001.b {
                 confirm: boolean;
                 createMethodAtr: number;
                 copyStartDate: Date;
+                employeeIds: string[];
             }
         }
 
