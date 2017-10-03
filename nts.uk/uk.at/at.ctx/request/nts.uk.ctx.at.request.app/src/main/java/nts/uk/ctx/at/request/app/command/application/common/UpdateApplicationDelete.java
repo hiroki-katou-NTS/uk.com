@@ -18,9 +18,10 @@ public class UpdateApplicationDelete {
 	private AfterProcessDelete afterProcessDelete;
 	
 	public void deleteApp(String appID) {
+		String companyID = AppContexts.user().companyId();
 		
 		//5.2(hieult)
-		afterProcessDelete.screenAfterDelete(appID);
+		afterProcessDelete.screenAfterDelete(companyID, appID);
 		
 		//refresh man hinh, k hien thi don xin da xoa 
 		
