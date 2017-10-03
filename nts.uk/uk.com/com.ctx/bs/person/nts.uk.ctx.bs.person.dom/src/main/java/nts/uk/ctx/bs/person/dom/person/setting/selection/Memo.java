@@ -5,7 +5,7 @@ import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLength(100)
+@StringMaxLength(500)
 @StringCharType(CharType.ALPHABET)
 public class Memo extends StringPrimitiveValue<Memo>{
 
