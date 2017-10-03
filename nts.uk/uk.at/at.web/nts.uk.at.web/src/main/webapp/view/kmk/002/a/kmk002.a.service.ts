@@ -27,7 +27,7 @@ module nts.uk.at.view.kmk002.a {
         }
 
         export function saveFormula(command: model.FormulaCommand): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.saveFormula, { listCalcFormula: command });
+            return nts.uk.request.ajax(servicePath.saveFormula, command);
         }
 
         export function findOptionalItemDetail(itemNo: string): JQueryPromise<model.OptionalItemDto> {
