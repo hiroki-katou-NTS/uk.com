@@ -61,7 +61,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
         locationData: Array<IWorkLocation>;
         constructor(appType:number) {
             super(appType);
-            var self = this;
+            let self = this;
             self.command = ko.observable(null);
             self.locationData = [];
             //申請者
@@ -128,11 +128,10 @@ module nts.uk.at.view.kaf009.b.viewmodel {
          * 
          */
         start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
+            let self = this;
+            let dfd = $.Deferred();
             //get Common Setting
             service.getGoBackSetting().done(function(settingData: CommonSetting) {
-                debugger;
                 let appID : string = "e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d";
                 //get Reason
                 self.setReasonControl(settingData.listReasonDto);
@@ -142,7 +141,6 @@ module nts.uk.at.view.kaf009.b.viewmodel {
                 self.setGoBackSetting(settingData.goBackSettingDto);
                 //Get data 
                 service.getGoBackDirectDetail(appID).done(function(detailData: any) {
-                    debugger;
                     //get all Location 
                     self.getAllWorkLocation();
                     self.workTypeName(detailData.workTypeName);
@@ -280,30 +278,31 @@ module nts.uk.at.view.kaf009.b.viewmodel {
          * set data from Server 
          */
         setValueControl(data: GoBackDirectData) {
-            var self = this;
-            //self.prePostSelected(data.workChangeAtr);
-            //Line 1
-            self.timeStart1(data.workTimeStart1);
-            self.timeEnd1(data.workTimeEnd1);
-            self.selectedGo(data.goWorkAtr1);
-            self.selectedBack(data.backHomeAtr1);
-            self.workLocationCD(data.workLocationCD1);
-            //LINe 2
-            self.timeStart2(data.workTimeStart2);
-            self.timeEnd2(data.workTimeEnd2);
-            self.selectedGo2(data.goWorkAtr2);
-            self.selectedBack2(data.backHomeAtr2);
-            self.workLocationCD2(data.workLocationCD2);
-            //workType, Sift
-            self.workChangeAtr(data.workChangeAtr == 1 ? true : false);
-            self.workTypeCd(data.workTypeCD);
-            self.siftCD(data.siftCD);
+            let self = this;
+            if(!nts.uk.util.isNullOrUndefined(data)){
+                //Line 1
+                self.timeStart1(data.workTimeStart1);
+                self.timeEnd1(data.workTimeEnd1);
+                self.selectedGo(data.goWorkAtr1);
+                self.selectedBack(data.backHomeAtr1);
+                self.workLocationCD(data.workLocationCD1);
+                //Line 2
+                self.timeStart2(data.workTimeStart2);
+                self.timeEnd2(data.workTimeEnd2);
+                self.selectedGo2(data.goWorkAtr2);
+                self.selectedBack2(data.backHomeAtr2);
+                self.workLocationCD2(data.workLocationCD2);
+                //workType, Sift
+                self.workChangeAtr(data.workChangeAtr == 1 ? true : false);
+                self.workTypeCd(data.workTypeCD);
+                self.siftCD(data.siftCD);    
+            }
         }
         /**
          * set reason 
          */
         setReasonControl(data: Array<ReasonDto>) {
-            var self = this;
+            let self = this;
             let comboSource: Array<ComboReason> = [];
             comboSource.push(new ComboReason(0, '選択してください',''));
             _.forEach(data, function(value: ReasonDto) {
@@ -316,7 +315,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
          * KDL010_勤務場所選択を起動する
          */
         openLocationDialog(line: number) {
-            var self = this;
+            let self = this;
             nts.uk.ui.block.invisible();
             if (line == 1) {
                 nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.workLocationCD());
@@ -324,8 +323,8 @@ module nts.uk.at.view.kaf009.b.viewmodel {
                 nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.workLocationCD2());
             };
             nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
-                var self = this;
-                var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
+                let self = this;
+                let returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
                 if (returnWorkLocationCD !== undefined) {
                     if (line == 1) {
                         self.workLocationCD(returnWorkLocationCD);
@@ -359,7 +358,7 @@ module nts.uk.at.view.kaf009.b.viewmodel {
 
             nts.uk.ui.windows.sub.modal('/view/kdl/003/a/index.xhtml').onClosed(function(): any {
                 //view all code of selected item 
-                var childData = nts.uk.ui.windows.getShared('childData');
+                let childData = nts.uk.ui.windows.getShared('childData');
                 if (childData) {
                     self.workTypeCd(childData.selectedWorkTypeCode);
                     self.workTypeName(childData.selectedWorkTypeName);

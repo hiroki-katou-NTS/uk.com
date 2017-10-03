@@ -84,8 +84,7 @@ public class EmployeeRequestAdapterImpl implements EmployeeAdapter {
 	 */
 	@Override
 	public String getEmployeeName(String sID) {
-		String test = this.personPub.getPersonInfo(sID).getEmployeeName();
-		return test;
+		return this.personPub.getPersonInfo(sID).getEmployeeName();
 	}
 
 	@Override

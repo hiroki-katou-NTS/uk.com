@@ -63,8 +63,4 @@ public class InsertGoBackDirectlyCommand {
 	 * 勤務場所選択２
 	 */
 	String workLocationCD2;
-	/**
-	 * Application Detail
-	 */
-	CreateApplicationCommand appCommand;
 }

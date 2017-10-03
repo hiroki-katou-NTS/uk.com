@@ -20,7 +20,7 @@ import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCompanyRepo
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * 新規画面起動時のエラーチェック
+ * 1-5 新規画面起動時のエラーチェック
  * 
  * @author ducpm
  */

@@ -26,7 +26,7 @@ public class InitModeImp implements InitMode {
 	@Override
 	public DetailScreenInitModeOutput getDetailScreenInitMode(User user, int reflectPerState) {
 		String companyID = AppContexts.user().companyId();
-		status = null;
+		
 		OutputMode outputMode;
 
 		Optional<ApplicationSetting> applicationSetting = applicationSettingRepository
@@ -47,7 +47,7 @@ public class InitModeImp implements InitMode {
 				 * 99:過去申請(passApp)、4:反映済(reflected),3:取消待ち(waiCancellation),2:
 				 * 取消済( canceled) ,
 				 */
-				if (status.value == 99 || status.value == 4 || status.value == 3 || status.value == 2) {
+				if (reflectPerState == 99 || reflectPerState == 4 || reflectPerState == 3 || reflectPerState == 2) {
 					outputMode = OutputMode.DISPLAYMODE;
 				} else {
 					outputMode = OutputMode.EDITMODE;
@@ -59,7 +59,7 @@ public class InitModeImp implements InitMode {
 			 * ステータスが差し戻し、未反映 Status 0:未反映 (notReflected) 1:差し戻し(remand)
 			 */
 
-			if (status.value == 0 || status.value == 1) {
+			if (reflectPerState == 0 || reflectPerState == 1) {
 				outputMode = OutputMode.EDITMODE;
 			} else {
 				outputMode = OutputMode.DISPLAYMODE;

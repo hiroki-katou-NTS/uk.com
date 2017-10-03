@@ -30,6 +30,7 @@ public class AppCommonSettingDto {
 	public List<ApplicationDeadlineDto> applicationDeadlineDtos;
 	
 	public static AppCommonSettingDto convertToDto(AppCommonSettingOutput output) {
+		if(output == null) return null;
 		AppCommonSettingDto appCommonSettingDto = new AppCommonSettingDto();
 		appCommonSettingDto.generalDate = output.generalDate.toString();
 		appCommonSettingDto.applicationSettingDto = ApplicationSettingDto.convertToDto(output.applicationSetting);

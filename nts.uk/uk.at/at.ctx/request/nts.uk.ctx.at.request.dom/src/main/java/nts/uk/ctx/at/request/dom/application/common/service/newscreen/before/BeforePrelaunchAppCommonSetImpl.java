@@ -46,9 +46,9 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting". Check base date of approval route )
 		if(applicationSetting.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)){
+			if(appDate==null){
 			// 「申請設定」．承認ルートの基準日が申請対象日時点の場合 ( "Application setting". When the reference date of the approval route is the date of the application target date )
 			// 申請対象日のパラメータがあるかチェックする ( Check if there is a parameter on the application target date )
-			if(appDate!=null){
 				baseDate = GeneralDate.today();
 			} else {
 				baseDate = appDate;
