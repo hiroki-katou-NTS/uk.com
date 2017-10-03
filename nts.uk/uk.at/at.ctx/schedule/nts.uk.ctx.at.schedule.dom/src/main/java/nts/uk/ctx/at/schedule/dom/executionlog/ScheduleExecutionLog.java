@@ -47,8 +47,7 @@ public class ScheduleExecutionLog extends AggregateRoot {
 	/**
 	 * To domain.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 * @return the schedule execution log
 	 */
 	public ScheduleExecutionLog toDomain(ScheduleExecutionLogGetMemento memento) {
