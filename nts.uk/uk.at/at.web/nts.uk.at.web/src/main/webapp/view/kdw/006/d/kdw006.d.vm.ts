@@ -8,7 +8,7 @@ module nts.uk.at.view.kdw006.d {
                 alert('screen d');
             }
             
-            startPage(): JQueryPromise<any> {
+            start(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
                 dfd.resolve();
