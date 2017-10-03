@@ -19,6 +19,10 @@ public class ScheduleExecutionLogFinder {
 	@Inject
 	private ScheduleExecutionLogRepository scheduleExecutionLogRepository;
 
+	// TODO get imported class
+	// @Inject
+	// private EmployeeRepository employeeRepository;
+	//
 	public List<ScheduleExecutionLogDto> findByDate(PeriodObject periodObj) {
 		String companyId = AppContexts.user().companyId();
 		if (periodObj == null) {
@@ -29,6 +33,11 @@ public class ScheduleExecutionLogFinder {
 		return sel.stream().map(item -> {
 			ScheduleExecutionLogDto dto = new ScheduleExecutionLogDto();
 			item.saveToMemento(dto);
+			// TODO
+			// Employee employee =
+			// employeeRepository.find(dto.getExecutionEmployeeId());
+			// dto.setEmployeeCode(employee.GetEmployeeCode);
+			// dto.setEmployeeName(employee.GetEmployeeName);
 			return dto;
 		}).collect(Collectors.toList());
 	}

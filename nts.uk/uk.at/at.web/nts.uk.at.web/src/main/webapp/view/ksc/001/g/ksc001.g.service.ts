@@ -1,7 +1,7 @@
 module nts.uk.at.view.ksc001.g {
     export module service {
         var paths = {
-           findExecutionHist: "",
+           findExecutionHist: "at/schedule/exelog/findAll",
         }
         
         /**
