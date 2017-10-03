@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import nts.arc.layer.ws.WebService;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertApplicationGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertGoBackDirectlyCommand;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.InsertGoBackDirectlyCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.gobackdirectly.UpdateGoBackDirectlyCommand;
@@ -68,7 +69,7 @@ public class GoBackDirectlyService extends WebService {
 	 */
 	@POST
 	@Path("insertGoBackDirectly")
-	public void insertGoBackData (InsertGoBackDirectlyCommand command) {
+	public void insertGoBackData (InsertApplicationGoBackDirectlyCommand command) {
 		this.insertGoBackHandler.handle(command);
 	}
 	/**

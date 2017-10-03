@@ -37,8 +37,7 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateGoB
 				GeneralDate.fromString(command.appDate, "yyyy/MM/dd"),
 				command.employeeRouteAtr,
 				command.appID,
-				EnumAdaptor.valueOf(command.prePostAtr, PrePostAtr.class));
-		
+				EnumAdaptor.valueOf(command.prePostAtr, PrePostAtr.class));	
 		goBackDirectRepo.update(
 			new GoBackDirectly(companyId, 
 				command.getAppID(),

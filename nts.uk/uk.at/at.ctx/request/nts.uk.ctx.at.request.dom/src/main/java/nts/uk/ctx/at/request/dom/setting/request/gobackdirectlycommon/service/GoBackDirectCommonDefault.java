@@ -46,7 +46,6 @@ public class GoBackDirectCommonDefault implements GoBackDirectCommonService {
 				1, 
 				ApplicationType.GO_RETURN_DIRECTLY_APPLICATION, 
 				null);
-		//1-4
 		
 		//アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する
 		startCheckErrorService.checkError(ApplicationType.GO_RETURN_DIRECTLY_APPLICATION.value);

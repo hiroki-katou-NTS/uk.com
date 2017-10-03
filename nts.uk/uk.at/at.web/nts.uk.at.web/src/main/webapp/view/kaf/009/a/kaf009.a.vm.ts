@@ -368,6 +368,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 }
             })
         }
+        
+        /**
+         * Jump to CMM018 Screen
+         */
+        openCMM018(){
+            nts.uk.request.jump("com","/view/cmm/018/a/index.xhtml");
+        }
     }
 
 
