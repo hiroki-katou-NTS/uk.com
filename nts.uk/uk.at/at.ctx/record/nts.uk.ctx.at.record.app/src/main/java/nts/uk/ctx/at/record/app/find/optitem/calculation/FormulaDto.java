@@ -114,8 +114,10 @@ public class FormulaDto implements FormulaSetMemento {
 	@Override
 	public void setCalcFormulaSetting(CalcFormulaSetting setting) {
 		if (this.calcAtr == CalculationAtr.ITEM_SELECTION.value) {
+			this.itemSelection = new ItemSelectionDto();
 			setting.saveToMemento(this.itemSelection);
 		} else {
+			this.formulaSetting = new FormulaSettingDto();
 			setting.saveToMemento(this.formulaSetting);
 		}
 	}
@@ -152,6 +154,7 @@ public class FormulaDto implements FormulaSetMemento {
 	 */
 	@Override
 	public void setMonthlyRounding(Rounding rounding) {
+		this.monthlyRounding = new RoundingDto();
 		rounding.saveToMemento(this.monthlyRounding);
 	}
 
@@ -163,6 +166,7 @@ public class FormulaDto implements FormulaSetMemento {
 	 */
 	@Override
 	public void setDailyRounding(Rounding rounding) {
+		this.dailyRounding = new RoundingDto();
 		rounding.saveToMemento(this.dailyRounding);
 	}
 
