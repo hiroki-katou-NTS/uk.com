@@ -50,6 +50,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         enableDelete : KnockoutObservable<boolean>;
         //enable enableCancel
         enableCancel: KnockoutObservable<boolean>;
+         //enable enableBefore
+        enableBefore : KnockoutObservable<boolean>;
+        //enable enableAfter
+        enableAfter: KnockoutObservable<boolean>;
         
         /**
          * visible
@@ -59,13 +63,25 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         //visible Denial
         visibleDenial : KnockoutObservable<boolean>;
         
+        //listAppID
+        listAppId : Array<any>;
+        
         
         constructor(appType: number) {
             let self = this;
-            // Metadata
-            self.appID =ko.observable("000"); 
+            
+            
+            self.listAppId = [];
             //__viewContext.transferred.value.appID;
             self.appType = ko.observable(appType);
+            
+            __viewContext.transferred.ifPresent(value => {
+                    self.listAppId = value.listAppId;    
+                    return {};
+                });
+            
+            // Metadata
+            self.appID =ko.observable(self.listAppId[0]); 
             
             /**
              * List
@@ -81,7 +97,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.dataApplication = ko.observable(null);
             //application
             self.objApp = (null);
-            self.inputDetail = ko.observable(new model.InputGetDetailCheck("000", "2022/01/01"));
+            self.inputDetail = ko.observable(new model.InputGetDetailCheck(self.appID(), "2022/01/01"));
             self.outputDetailCheck = ko.observable(null);
 
             //obj input get message deadline 
@@ -98,6 +114,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.enableRegistration = ko.observable(false);
             self.enableDelete = ko.observable(true);
             self.enableCancel = ko.observable(true);
+            self.enableBefore = ko.observable(true);
+            self.enableAfter = ko.observable(true);
             /**
              * visible
              */
@@ -112,9 +130,20 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred();
             let dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
-            let dfdAllReasonByAppID = self.getAllReasonByAppID("000");
-            let dfdAllDataByAppID = self.getAllDataByAppID("000");
+            let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
+            let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
             let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
+            if(self.appID() ==  self.listAppId[0]){
+                self.enableBefore(false);    
+            }else{
+                self.enableBefore(true);
+            }
+            
+            if(self.appID() ==  self.listAppId[self.listAppId.length-1]){
+                self.enableAfter(false);    
+            }else{
+                self.enableAfter(true);
+            }
             
 
             $.when( dfdAllReasonByAppID,dfdAllDataByAppID,dfdGetDetailCheck).done((dfdAllReasonByAppIDData,dfdAllDataByAppIDData,dfdGetDetailCheckData) => {
@@ -123,7 +152,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 dfd.resolve();
             });
             return dfd.promise();
-        }   
+        }   //end start
         // check display start
         checkDisplayStart(){
             let self = this;
@@ -267,6 +296,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.listReasonByAppID(data);
                 if(self.listReasonByAppID().length>0){
                     self.reasonApp(self.listReasonByAppID()[0].toString());
+                    self.listReasonToApprover('');
                     for (let i = 1; i < self.listReasonByAppID().length; i++) {
                         self.listReasonToApprover(
                             self.listReasonToApprover().toString() + self.listReasonByAppID()[i].toString() + "\n"
@@ -288,7 +318,28 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             });
             return dfd.promise();
         }
-        
+        /**
+         * btn before
+         */
+        btnBefore(){
+            let self = this;
+            let index = self.listAppId.indexOf(self.appID());
+            if(index !=0){
+                self.appID(self.listAppId[index-1]);
+                self.start();
+            }
+        }
+        /**
+         * btn after
+         */
+        btnAfter(){
+            let self = this;
+            let index = self.listAppId.indexOf(self.appID());
+            if(index != self.listAppId.length-1){
+                self.appID(self.listAppId[index+1]);
+                self.start();
+            }
+        }
         /**
          *  btn Approve
          */
@@ -355,7 +406,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function () {
-                service.deleteApp(self.appID()).done(function() {
+                service.deleteApp("4be33849-a4c3-4951-9d62-009b95029b8c").done(function() {
                     dfd.resolve();
                 });
             });   
