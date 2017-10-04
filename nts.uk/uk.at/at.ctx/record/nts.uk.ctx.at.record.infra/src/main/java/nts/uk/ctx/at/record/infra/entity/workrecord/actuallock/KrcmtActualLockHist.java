@@ -41,11 +41,11 @@ public class KrcmtActualLockHist extends UkJpaEntity implements Serializable {
     
     /** The d lock state. */
     @Column(name = "D_LOCK_STATE")
-    private short dLockState;
+    private int dLockState;
     
     /** The m lock state. */
     @Column(name = "M_LOCK_STATE")
-    private short mLockState;
+    private int mLockState;
 
     /**
      * Instantiates a new krcmt actual lock hist.
