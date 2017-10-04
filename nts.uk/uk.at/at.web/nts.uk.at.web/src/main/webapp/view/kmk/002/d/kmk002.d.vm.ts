@@ -2,6 +2,7 @@ module nts.uk.at.view.kmk002.d {
     export module viewmodel {
 
         import FormulaSetting = nts.uk.at.view.kmk002.a.viewmodel.FormulaSetting;
+        import ParamToD = nts.uk.at.view.kmk002.a.viewmodel.ParamToD;
 
         export class ScreenModel {
             formulaSetting: FormulaSettingVm;
@@ -16,10 +17,13 @@ module nts.uk.at.view.kmk002.d {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                let dto = nts.uk.ui.windows.getShared('formulaParams');
 
-                self.formulaSetting.fromDto(dto);
-                console.log(dto);
+                // Get params
+                let dto = nts.uk.ui.windows.getShared('paramToD');
+
+                // Set params to view model
+                self.formulaSetting.fromParam(dto);
+
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -30,7 +34,7 @@ module nts.uk.at.view.kmk002.d {
             public apply(): void {
                 let self = this;
                 if (self.formulaSetting.isValid()) {
-                    nts.uk.ui.windows.setShared('formulaReturned', self.formulaSetting.toDto());
+                    nts.uk.ui.windows.setShared('returnFromD', self.formulaSetting.toDto());
                     self.close();
                 }
             }
@@ -43,6 +47,7 @@ module nts.uk.at.view.kmk002.d {
             }
         }
         class FormulaSettingVm extends FormulaSetting {
+            formulaId: string; //TODO dung lam gi?
             formulaName: string;
             performanceAtr: number; //TODO dung lam gi ?
             formulaAtr: string;
@@ -52,7 +57,7 @@ module nts.uk.at.view.kmk002.d {
 
             constructor () {
                 super();
-                this.formulaName = 'lkjaslkjv';
+                this.formulaName = '';
                 this.performanceAtr = 0;
                 this.selectedItemLeft = ko.observable();
                 this.selectedItemRight = ko.observable();
@@ -104,9 +109,23 @@ module nts.uk.at.view.kmk002.d {
 
             }
 
-//            public fromDto(): void {
-//                
-//            }
+            /**
+             * Convert to viewmodel
+             */
+            public fromParam(dto: ParamToD): void {
+                let self = this;
+                self.formulaId = dto.formulaId;
+                self.formulaName = dto.formulaName;
+                self.formulaAtr = dto.formulaAtr;
+                super.fromDto(dto.formulaSetting);
+            }
+
+            /**
+             * Convert to dto.
+             */
+            public toDto(): any {
+                //TODO
+            }
 
         }
     }

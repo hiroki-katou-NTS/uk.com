@@ -16,7 +16,7 @@ module nts.uk.at.view.kmk002.c {
 
             constructor() {
                 var self = this;
-                let param = nts.uk.ui.windows.getShared('paramsForC');
+                let param = nts.uk.ui.windows.getShared('paramToC');
                 self.formulaAtr = param.formulaAtr;
                 self.formulaName = param.formulaName;
                 self.checkSelectDailyAttendanceItem = ko.observable(0);
@@ -46,6 +46,13 @@ module nts.uk.at.view.kmk002.c {
                 });
                 dfd.resolve();
                 return dfd.promise();
+            }
+
+            /**
+             * Close dialog.
+             */
+            public close(): void {
+                nts.uk.ui.windows.close();
             }
 
             /**
