@@ -35,7 +35,7 @@ public class ImageEditorWebService extends WebService{
 			BufferedImage bfi = ImageIO.read(is);
 			int width = getWidth(query, bfi);
 			int height = getHeight(query, bfi);
-			if(isCrop(width, height)){
+			if(query.isCrop() && isCroppable(width, height)){
 				bfi = bfi.getSubimage(query.getX(), query.getY(), width, height);
 			}
 			
@@ -52,12 +52,12 @@ public class ImageEditorWebService extends WebService{
 		}
 	} 
 	
-	private boolean isCrop(int width, int height){
+	private boolean isCroppable(int width, int height){
 		return width > 0 && height > 0;
 	}
 	
 	private int getWidth(ImageCropQuery query, BufferedImage bfi){
-		return Math.min(query.getHeight(), bfi.getHeight() - query.getY());
+		return Math.min(query.getHeight(), bfi.getHeight() - query.getX());
 	}
 	
 	private int getHeight(ImageCropQuery query, BufferedImage bfi){

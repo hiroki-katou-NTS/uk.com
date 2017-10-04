@@ -17,6 +17,8 @@ public class ImageCropQuery {
 	
 	private String format;
 	
+	private boolean crop;
+	
 	private int x;
 	
 	private int y;

@@ -25,6 +25,11 @@ module nts.uk.ui.jqueryExtentions {
             
             let dataFile = $element.find(".image-preview").attr("src");
             if (!nts.uk.util.isNullOrUndefined(dataFile)) {
+                try {
+                    window.atob(dataFile);
+                } catch(e) {
+                    throw new Error( "Image File is not valid!!!" );
+                }
                 
                 let cropper = $element.data("cropper");
                 let cropperData = cropper.getData(true);
@@ -37,7 +42,8 @@ module nts.uk.ui.jqueryExtentions {
                         "x": cropperData.x,
                         "y": cropperData.y,
                         "width": cropperData.width,
-                        "height": cropperData.height 
+                        "height": cropperData.height,
+                        "crop": $element.data('checkbox').checked() 
                      };
                 
                 nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function(data, textStatus, jqXHR) {
@@ -46,7 +52,7 @@ module nts.uk.ui.jqueryExtentions {
                     } else {
                         dfd.resolve(data);
                     }
-                }).fail(function(jqXHR, textStatus, errorThrown) {
+                }).fail(function() {
                     dfd.reject({ message: "Please check your network", messageId: "0" });
                 });
             }

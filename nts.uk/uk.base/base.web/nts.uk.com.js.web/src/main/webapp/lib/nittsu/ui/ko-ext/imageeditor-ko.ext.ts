@@ -201,7 +201,6 @@ module nts.uk.ui.koExtentions {
         buildSrcChangeHandler (){
             let self = this;
             self.$root.bind("srcchanging", function (evt, query?: SrcChangeQuery) {
-                let urlElements = query.url.split("/"), fileName = urlElements[urlElements.length - 1];
                 let target = self.helper.getUrl(query);
                 var xhr = new XMLHttpRequest();
                 xhr.open('GET', target);
@@ -211,20 +210,21 @@ module nts.uk.ui.koExtentions {
                     if (this.status == 200) {
                         var reader = new FileReader();
                         reader.readAsDataURL(xhr.response);
-                        var fileType = xhr.response.type.split("/")[1];
-                        self.$root.data("size", xhr.response.size);
-                        self.$root.data("file-name", fileName + "." + fileType);
-                        self.$root.data("file-type", fileType);
-                        reader.onload = function () {
-                            self.$imagePreview.attr("src", reader.result);
-                        };
+                        reader.onload = function () { 
+                            self.helper.getFileNameFromUrl().done(function(fileName){
+                                var fileType = xhr.response.type.split("/")[1], 
+                                    fileName = self.helper.data.isOutSiteUrl ? (fileName + "." + fileType) : fileName;
+                                self.backupData(null, fileName, fileType, xhr.response.size);
+                                self.$imagePreview.attr("src", reader.result);   
+                            });
+                        }; 
                     }
                 };
                 xhr.send();
             });    
         }
         
-        buildFileChangeHandler (){
+        buildFileChangeHandler (){ 
             let self = this;
             self.$inputFile.change(function() {
                 if (nts.uk.util.isNullOrEmpty(this.files)) {
@@ -237,19 +237,24 @@ module nts.uk.ui.koExtentions {
         
         assignImageToView (file) {
             let self = this;
-            self.$root.data("file", file);
-            self.$root.data("file-name", file.name);
-            self.$root.data("file-type", file.type.split("/")[1]);
-            self.$imageNameLbl.text(file.name);
             if (FileReader && file) {
                 var fr = new FileReader();
                 fr.onload = function() {
                     self.$imagePreview.attr("src", fr.result);
-                    self.$root.data("size", file.size);
+                    self.backupData(file, file.name, file.type.split("/")[1], file.size);
                 }
                 fr.readAsDataURL(file);
             }    
-            }
+        }
+        
+        private backupData(file, name, format, size){
+            let self = this;
+            self.$root.data("file", file);
+            self.$root.data("file-name", name);
+            self.$root.data("file-type", format);
+            self.$root.data("size", size);
+            self.$imageNameLbl.text(name);
+        }
     }
     
     class ImageEditorHelper {
@@ -293,11 +298,32 @@ module nts.uk.ui.koExtentions {
                 this.data = query;        
             }
             
-            if(this.data.url.indexOf(nts.uk.request.location.siteRoot.rawUrl) >= 0) {
+            if(!this.isOutSiteUrl(this.data.url)) {
                 return this.data.url;
             } else {
                 return `http://cors-anywhere.herokuapp.com/${this.data.url}`;
             }
+        }
+        
+        getFileNameFromUrl(){
+            let dfd = $.Deferred();
+            let urlElements = this.data.url.split("/"), 
+                fileName = urlElements[urlElements.length - 1];
+            if(this.data.isOutSiteUrl){
+                dfd.resolve(fileName);
+            } else {
+                nts.uk.request.ajax("/shr/infra/file/storage/infor/" + fileName).done(function(res) {
+                    dfd.resolve(res.originalName);
+                }).fail(function(error){
+                    dfd.reject(error);
+                });
+            }
+            
+            return dfd.promise();
+        }
+        
+        private isOutSiteUrl(url: string): boolean{
+            return url.indexOf(nts.uk.request.location.siteRoot.rawUrl) < 0;    
         }
     }
     
