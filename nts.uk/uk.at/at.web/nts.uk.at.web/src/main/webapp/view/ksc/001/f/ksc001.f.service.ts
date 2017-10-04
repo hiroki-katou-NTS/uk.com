@@ -3,6 +3,7 @@ module nts.uk.at.view.ksc001.f {
     export module service {
         var paths = {
             findScheduleExecutionLogById: "at/schedule/exelog/findById",
+            executionScheduleExecutionLog: "at/schedule/exelog/execution"
         }
 
         /**
@@ -10,6 +11,13 @@ module nts.uk.at.view.ksc001.f {
          */
         export function findScheduleExecutionLogById(executionId: string): JQueryPromise<model.ScheduleExecutionLogDto> {
             return nts.uk.request.ajax('at', paths.findScheduleExecutionLogById + '/' + executionId);
+        }
+        
+        /**
+         * executionScheduleExecutionLog
+         */
+        export function executionScheduleExecutionLog(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.executionScheduleExecutionLog, command);
         }
 
         export module model {

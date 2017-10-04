@@ -490,7 +490,7 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 var user: UserInfoDto = self.getUserLogin();
                 self.savePersonalSchedule(user.employeeId, self.toPersonalScheduleData(user.employeeId));
-                service.saveScheduleExecutionLog(self.collectionData()).done(function(data){
+                service.addScheduleExecutionLog(self.collectionData()).done(function(data){
                     nts.uk.ui.windows.setShared('inputData', data);
                     console.log(data);
                     nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function() {

@@ -3,7 +3,7 @@ module nts.uk.at.view.ksc001.f {
         var screenModel = new viewmodel.ScreenModel();
         screenModel.startPage().done(function(res) {
             __viewContext.bind(screenModel);
-            $('#first-color-picker').focus();
+            screenModel.execution();
         });
     });
 }
