@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output;
 
+import java.util.List;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -15,5 +16,5 @@ public class EmployeeApproverAsApplicationOutput {
 	/**
 	 * apptype 
 	 */
-	Map<Integer, ApproverAsApplicationInforOutput> mapAppTypeAsApprover;
+	Map<Integer, List<ApproverAsApplicationInforOutput>> mapAppTypeAsApprover;
 }

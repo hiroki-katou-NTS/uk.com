@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before;
 
+import java.util.List;
+
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.CanBeApprovedOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DecideAgencyExpiredOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
@@ -20,7 +23,7 @@ public interface BeforePreBootMode {
 	
 	public CanBeApprovedOutput approvedApproved(AppApprovalPhase appApprovalPhase);
 	
-	public DecideAgencyExpiredOutput decideAgencyExpired(ApprovalFrame approvalFrame);
+	public DecideAgencyExpiredOutput decideAgencyExpired(List<ApproveAccepted> lstApprover);
 	/**Decide by Approver
 	 * 14-2.詳細画面起動前モードの判断- 2*/
 	public boolean decideByApprover(Application applicationData);

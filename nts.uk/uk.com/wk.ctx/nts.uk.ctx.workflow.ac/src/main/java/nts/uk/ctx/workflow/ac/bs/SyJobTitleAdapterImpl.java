@@ -60,4 +60,13 @@ public class SyJobTitleAdapterImpl implements SyJobTitleAdapter{
 				ex.getStartDate(), 
 				ex.getEndDate());
 	}
+
+	@Override
+	public List<JobTitleImport> findAll(String companyId, GeneralDate baseDate) {
+		List<JobTitleImport> data = syJobTitlePub.findAll(companyId, baseDate)
+				.stream()
+				.map(x -> this.toImport(x))
+				.collect(Collectors.toList());
+		return data;
+	}
 }

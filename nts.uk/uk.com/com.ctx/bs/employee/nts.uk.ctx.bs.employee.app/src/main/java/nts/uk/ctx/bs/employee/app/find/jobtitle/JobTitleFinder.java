@@ -12,8 +12,8 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.app.find.jobtitle.dto.JobTitleDto;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle_old.JobTitle;
+import nts.uk.ctx.bs.employee.dom.jobtitle_old.JobTitleRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

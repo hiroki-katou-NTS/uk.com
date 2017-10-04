@@ -20,8 +20,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle_old.JobTitle;
+import nts.uk.ctx.bs.employee.dom.jobtitle_old.JobTitleRepository;
 import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 

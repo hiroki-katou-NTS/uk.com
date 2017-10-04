@@ -5,12 +5,12 @@ module nts.uk.at.view.kmk002.a {
     import FormulaDto = nts.uk.at.view.kmk002.a.service.model.FormulaDto;
     import FormulaSettingDto = nts.uk.at.view.kmk002.a.service.model.FormulaSettingDto;
     import ItemSelectionDto = nts.uk.at.view.kmk002.a.service.model.ItemSelectionDto;
-    import SettingItemDto = nts.uk.at.view.kmk002.a.service.model.SettingItemDto;;
-    import AttendanceItemDto = nts.uk.at.view.kmk002.a.service.model.AttendanceItemDto;;
-    import RoundingDto = nts.uk.at.view.kmk002.a.service.model.RoundingDto;;
+    import SettingItemDto = nts.uk.at.view.kmk002.a.service.model.SettingItemDto;
+    import AttendanceItemDto = nts.uk.at.view.kmk002.a.service.model.AttendanceItemDto;
+    import RoundingDto = nts.uk.at.view.kmk002.a.service.model.RoundingDto;
     import TypeAtr = nts.uk.at.view.kmk002.a.service.model.TypeAtr;
-    import OptItemEnumDto = nts.uk.at.view.kmk002.a.service.model.OptItemEnumDto;;
-    import FormulaEnumDto = nts.uk.at.view.kmk002.a.service.model.FormulaEnumDto;;
+    import OptItemEnumDto = nts.uk.at.view.kmk002.a.service.model.OptItemEnumDto;
+    import FormulaEnumDto = nts.uk.at.view.kmk002.a.service.model.FormulaEnumDto;
 
     export module viewmodel {
 
@@ -88,6 +88,7 @@ module nts.uk.at.view.kmk002.a {
 
             // flag
             hasChanged: boolean;
+            isUsed: KnockoutObservable<boolean>;
 
             // stash
             optionalItemAtrStash: number;
@@ -96,36 +97,37 @@ module nts.uk.at.view.kmk002.a {
             constructor() {
                 this.optionalItemNo = ko.observable('');
                 this.optionalItemName = ko.observable('');
-                this.optionalItemAtr = ko.observable(1);
-                this.usageAtr = ko.observable(1);
-                this.empConditionAtr = ko.observable(1);
-                this.performanceAtr = ko.observable(1);
+                this.optionalItemAtr = ko.observable(0);
+                this.usageAtr = ko.observable(0);
+                this.empConditionAtr = ko.observable(0);
+                this.performanceAtr = ko.observable(0);
                 this.calcResultRange = new CalculationResultRange();
                 this.calcFormulas = new Array<Formula>();
                 this.applyFormula = ko.observable('test');
                 this.hasChanged = false;
+                this.isUsed = ko.observable(false);
                 this.selectedFormulas = ko.observableArray([]);
                 this.selectedFormulaAbove = '';
                 this.selectedFormulaBelow = '';
 
                 // Data source
                 this.usageClsDatasource = ko.observableArray([
-                    { code: '0', name: nts.uk.resource.getText("KMK002_15") }, // not used
-                    { code: '1', name: nts.uk.resource.getText("KMK002_14") } // used
+                    { code: 0, name: nts.uk.resource.getText("KMK002_15") }, // not used
+                    { code: 1, name: nts.uk.resource.getText("KMK002_14") } // used
                 ]);
                 this.empConClsDatasource = ko.observableArray([
-                    { code: '0', name: nts.uk.resource.getText("KMK002_17") }, // not apply
-                    { code: '1', name: nts.uk.resource.getText("KMK002_18") } // apply
+                    { code: 0, name: nts.uk.resource.getText("KMK002_17") }, // not apply
+                    { code: 1, name: nts.uk.resource.getText("KMK002_18") } // apply
                 ]);
                 this.perfClsDatasource = ko.observableArray([
-                    { code: '0', name: nts.uk.resource.getText("KMK002_23") }, // monthly
-                    { code: '1', name: nts.uk.resource.getText("KMK002_22") } // daily
+                    { code: 0, name: nts.uk.resource.getText("KMK002_23") }, // monthly
+                    { code: 1, name: nts.uk.resource.getText("KMK002_22") } // daily
                 ]);
                 this.atrDataSource = ko.observableArray([
                     //TODO: lay tren server: EnumAdaptor.convertToValueNameList
-                    { code: '0', name: '回数' }, // TIMES
-                    { code: '1', name: '金額' }, // AMOUNT
-                    { code: '2', name: '時間' } // TIME
+                    { code: 0, name: '回数' }, // TIMES
+                    { code: 1, name: '金額' }, // AMOUNT
+                    { code: 2, name: '時間' } // TIME
                 ]);
 
                 // subscribe
@@ -221,7 +223,7 @@ module nts.uk.at.view.kmk002.a {
                 self.calcFormulas.push(f);
 
                 // sort by orderNo
-                _.sortBy(self.calcFormulas, item => item.orderNo);
+                self.sortListFormula();
 
                 // reload nts grid.
                 self.initNtsGrid();
@@ -245,10 +247,45 @@ module nts.uk.at.view.kmk002.a {
                 self.calcFormulas.push(f);
 
                 // sort by orderNo
-                _.sortBy(self.calcFormulas, item => item.orderNo);
+                self.sortListFormula();
 
                 // reload nts grid.
                 self.initNtsGrid();
+            }
+
+            /**
+             * Sort list formula by order number
+             */
+            private sortListFormula(): void {
+                let self = this;
+                // sort by orderNo
+                _.sortBy(self.calcFormulas, item => item.orderNo);
+            }
+
+            /**
+             * Enable all control in Nts grid.
+             */
+            private enableNtsGrid(): void {
+                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "formulaAtr", "FormulaAtr");
+                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "calcAtr", "SwitchButtons");
+                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "open", "Button");
+                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "dailyUnit", "DailyUnit");
+                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "dailyRounding", "DailyRounding");
+                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "monthlyUnit", "MonthlyUnit");
+                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "monthlyRounding", "MonthlyRounding");
+            }
+
+            /**
+             * Disable all control in Nts grid.
+             */
+            private disableNtsGrid(): void {
+                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "formulaAtr", "FormulaAtr");
+                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "calcAtr", "SwitchButtons");
+                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "open", "Button");
+                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "dailyUnit", "DailyUnit");
+                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "dailyRounding", "DailyRounding");
+                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "monthlyUnit", "MonthlyUnit");
+                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "monthlyRounding", "MonthlyRounding");
             }
 
             /**
@@ -284,14 +321,14 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
 
                 // Set param
-                let dto = <ParamForC>{};
+                let dto = <ParamToC>{};
                 dto.formulaId = 'axcb';
                 dto.performanceAtr = 1;
                 dto.formulaAtr = 'time';
                 dto.formulaName = 'name';
                 dto.minusSegment = true;
                 dto.attendanceItems = [];
-                nts.uk.ui.windows.setShared('paramsForC', dto);
+                nts.uk.ui.windows.setShared('paramToC', dto);
 
                 // Open dialog.
                 nts.uk.ui.windows.sub.modal('/view/kmk/002/c/index.xhtml');
@@ -303,10 +340,21 @@ module nts.uk.at.view.kmk002.a {
             public openDialogD(): void {
                 //TODO move to formula view model later
                 let self = this;
-                let dto = new FormulaSetting().toDto();
-                nts.uk.ui.windows.setShared('formulaParams', dto);
+
+                // set pram.
+                let dto = <ParamToD>{};
+                dto.formulaId = '';
+                dto.performanceAtr = 1;
+                dto.formulaAtr = 'time';
+                dto.formulaName = 'name';
+                dto.minusSegment = true;
+                dto.formulaSetting = new FormulaSetting().toDto();
+
+                nts.uk.ui.windows.setShared('paramToD', dto);
+
+                // open dialog D.
                 nts.uk.ui.windows.sub.modal('/view/kmk/002/d/index.xhtml').onClosed(() => {
-                    let dto = nts.uk.ui.windows.getShared("formulaReturned");
+                    let dto = nts.uk.ui.windows.getShared('returnFromD');
                     //TODO: lay gia tri tra ve
                 });
             }
@@ -329,8 +377,25 @@ module nts.uk.at.view.kmk002.a {
                     });
                     self.calcFormulas = list;
 
+                    // sort.
+                    self.sortListFormula();
+
                     // init nts grid.
                     self.initNtsGrid();
+
+                    // init usageAtr subscribe.
+                    self.usageAtr.subscribe(vl => {
+                        if (vl === 1) {
+                            self.isUsed(true);
+                            self.enableNtsGrid();
+                        } else {
+                            self.isUsed(false);
+                            self.disableNtsGrid();
+                        }
+                    });
+
+                    // force to check enable/disable condition.
+                    self.usageAtr.valueHasMutated();
 
                     dfd.resolve();
                 });
@@ -365,12 +430,13 @@ module nts.uk.at.view.kmk002.a {
                     columns: [
                         { headerText: 'ID', key: 'formulaId', dataType: 'string', width: '50px', hidden: true },
                         { headerText: nts.uk.resource.getText('KMK002_33'), key: 'symbolValue', dataType: 'string', width: '50px' },
-                        { headerText: nts.uk.resource.getText('KMK002_24'), key: 'formulaAtr', dataType: 'number', width: '100px', ntsControl: 'FormulaAtr' },
+                        { headerText: nts.uk.resource.getText('KMK002_24'), key: 'formulaAtr', dataType: 'number', width: '200px', ntsControl: 'FormulaAtr' },
                         { headerText: nts.uk.resource.getText('KMK002_34'), key: 'formulaName', dataType: 'string', width: '150px' },
                         {
                             headerText: nts.uk.resource.getText('KMK002_35'), key: 'ahihi', group: [
-                                { headerText: '', headerCssClass: 'hidden', key: 'calcAtr', dataType: 'number', width: '200px', ntsControl: 'SwitchButtons' },
-                                { headerText: '', headerCssClass: 'hidden', key: 'open', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' },
+                                { headerText: '', headerCssClass: 'hidden', key: 'calcAtr', dataType: 'number', width: '700px', ntsControl: 'SwitchButtons' },
+                                { headerText: '', headerCssClass: 'hidden', key: 'c', dataType: 'string', width: '80px', unbound: true, ntsControl: 'ButtonC' },
+                                { headerText: '', headerCssClass: 'hidden', key: 'd', dataType: 'string', width: '80px', unbound: true, ntsControl: 'ButtonD' },
                                 { headerText: '', headerCssClass: 'hidden', key: 'formulaName', dataType: 'string', width: '150px' },
                             ]
                         },
@@ -394,7 +460,7 @@ module nts.uk.at.view.kmk002.a {
                             multipleSelection: true,
                             multipleCellSelectOnClick: true,
                             rowSelectionChanged: function(evt, ui) {
-                                if (ui.selectedRows.lenght == 1) {
+                                if (ui.selectedRows.length == 1) {
                                     self.selectedFormula = ui.selectedRows[0].id;
                                 }
                                 self.selectedFormulas(ui.selectedRows);
@@ -418,7 +484,8 @@ module nts.uk.at.view.kmk002.a {
                         { name: 'DailyRounding', options: Enums.ENUM_FORMULA.timeRounding.rounding, optionsValue: 'value', optionsText: 'localizedName', columns: comboColumns, controlType: 'ComboBox', enable: true },
                         { name: 'MonthlyUnit', options: Enums.ENUM_FORMULA.timeRounding.unit, optionsValue: 'value', optionsText: 'localizedName', columns: comboColumns, controlType: 'ComboBox', enable: true },
                         { name: 'MonthlyRounding', options: Enums.ENUM_FORMULA.timeRounding.rounding, optionsValue: 'value', optionsText: 'localizedName', columns: comboColumns, controlType: 'ComboBox', enable: true },
-                        { name: 'Button', text: 'Open', click: self.openDialogD, controlType: 'Button' }
+                        { name: 'ButtonC', text: 'OpenC', click: self.openDialogC, controlType: 'Button' },
+                        { name: 'ButtonD', text: 'OpenD', click: self.openDialogD, controlType: 'Button' }
                     ]
                 });
 
@@ -865,10 +932,10 @@ module nts.uk.at.view.kmk002.a {
                 this.rightItem.settingMethod(1);
 
                 this.operatorDatasource = ko.observableArray([
-                    { code: '0', name: '+' },
-                    { code: '1', name: '-' },
-                    { code: '2', name: '*' },
-                    { code: '3', name: '/' }
+                    { code: 0, name: '+' },
+                    { code: 1, name: '-' },
+                    { code: 2, name: '*' },
+                    { code: 3, name: '/' }
                 ]);
             }
 
@@ -1044,13 +1111,21 @@ module nts.uk.at.view.kmk002.a {
             order: number;
             value: string;
         }
-        interface ParamForC {
+        export interface ParamToC {
             formulaId: string;
             performanceAtr: number;
             formulaAtr: string;
             formulaName: string;
             minusSegment: boolean;
             attendanceItems: Array<any>;
+        }
+        export interface ParamToD {
+            formulaId: string;
+            formulaName: string;
+            formulaAtr: string;
+            performanceAtr: number;
+            minusSegment: boolean;
+            formulaSetting: FormulaSettingDto;
         }
 
     }

@@ -130,13 +130,18 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 	 * @return
 	 */
 	private ApprovalPhase toDomainApPhase(WwfmtApprovalPhase entity){
+		List<Approver> lstApprover = new ArrayList<>();
+		for(WwfmtAppover approver: entity.wwfmtAppovers) {
+			lstApprover.add(toDomainApprover(approver));
+		}
+		
 		val domain = ApprovalPhase.createSimpleFromJavaType(entity.wwfmtApprovalPhasePK.companyId,
 				entity.wwfmtApprovalPhasePK.branchId,
 				entity.wwfmtApprovalPhasePK.approvalPhaseId,
 				entity.approvalForm,
 				entity.browsingPhase,
 				entity.displayOrder,
-				null);
+				lstApprover);
 		return domain;
 	}
 	
