@@ -13,7 +13,7 @@ module ksu001.o.viewmodel {
         time2: KnockoutObservable<string>;
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
-        nameWorkTimeType: KnockoutObservable<ExCell>;
+        nameWorkTimeType: KnockoutComputed<ExCell>;
 
         constructor() {
             let self = this;
@@ -79,23 +79,19 @@ module ksu001.o.viewmodel {
                 //Paste data into cell (set-sticker-single)
                 $("#extable").exTable("stickData", value);
             });
-
-            $("#stick-undo").click(function() {
-                $("#extable").exTable("stickUndo");
-            });
         }
 
         openDialogO1(): void {
             let self = this;
 
-            $('#oViewModel').hide();
+            $('#contain-viewO').hide();
             setShare('listWorkType', self.listWorkType());
             setShare('listWorkTime', self.listWorkTime());
-//            nts.uk.sessionStorage.setItemAsJson('listWorkType', self.listWorkType());
-//            nts.uk.sessionStorage.setItemAsJson('listWorkTime', self.listWorkTime());
-            
+
             nts.uk.ui.windows.sub.modeless("/view/ksu/001/o1/index.xhtml").onClosed(() => {
-                $('#oViewModel').show();
+                $('#contain-viewO').show();
+                //when close dialog, copy-paste value of nameWorkTimeType of screen O(not O1) for cell
+                $("#extable").exTable("stickData", self.nameWorkTimeType());
             });
         }
 

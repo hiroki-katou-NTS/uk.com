@@ -11,7 +11,7 @@ module ksu001.o1.viewmodel {
         time2: KnockoutObservable<string>;
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
-        nameWorkTimeType: KnockoutObservable<ExCell>;
+        nameWorkTimeType: KnockoutComputed<ExCell>;
         columnsWorkTime: KnockoutObservableArray<NtsGridListColumn>;
 
         constructor() {
@@ -81,14 +81,15 @@ module ksu001.o1.viewmodel {
 
             self.nameWorkTimeType.subscribe(function(value) {
                 //Paste data into cell (set-sticker-single)
-                $("#extable").exTable("stickData", value);
+                nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.$("#extable").exTable("stickData", value);
             });
 
-            $("#stick-undo").click(function() {
-                $("#extable").exTable("stickUndo");
+            //undo
+            $("#image030").click(function() {
+                nts.uk.ui.windows.container.windows["MAIN_WINDOW"].globalContext.$("#extable").exTable("stickUndo");
             });
         }
-                
+
         /**
          * Close dialog
          */

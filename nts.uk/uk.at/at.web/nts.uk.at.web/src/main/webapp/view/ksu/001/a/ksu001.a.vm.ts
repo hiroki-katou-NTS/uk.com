@@ -93,16 +93,22 @@ module ksu001.a.viewmodel {
 
             self.selectedModeDisplay.subscribe(function(newValue) {
                 if (newValue == 1) {
+                    $('#contain-viewO').show();
+                    $('#group-bt').show();
                     $('#oViewModel').show();
+                } else if (newValue == 2) {
+                    $('#contain-viewO').hide();
                 } else {
+                    $('#contain-viewO').show();
                     $('#oViewModel').hide();
+                    $('#group-bt').show();
                 }
             });
 
             self.itemList = ko.observableArray([
                 new ItemModel('基本給1', '基本給', ''),
                 new ItemModel('基本給2', '役職手当', ''),
-                new ItemModel('0003', '基本給', '')
+                new ItemModel('基本給3', '基本給', '')
             ]);
 
             //display for A3_2
@@ -450,6 +456,11 @@ module ksu001.a.viewmodel {
 
             //set mode of exTable is stickMode single
             $("#extable").exTable("stickMode", "single");
+            
+            //undo
+            $("#image030").click(function() {
+                $("#extable").exTable("stickUndo");
+            });
 
             /**
              * update text for row 2 of detailHeader
@@ -762,6 +773,14 @@ module ksu001.a.viewmodel {
             };
 
             nts.uk.ui.dialog.bundledErrors(errorVm);
+        }
+
+        /**
+         * open dialog C
+         */
+        openDialogC(): void {
+            $('#popup-area3').ntsPopup('hide');
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/c/index.xhtml");
         }
 
         /**

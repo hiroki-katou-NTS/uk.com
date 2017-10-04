@@ -25,3 +25,31 @@
 	vertical-align: middle;
 	margin-left: 30px
 }
+
+#image102 {
+	background: url(../image/image102.png) no-repeat center;
+	background-size: 26px 26px;
+	height: 30px;
+	min-width: 30px !important;
+	margin-left: 250px !important;
+}
+
+#image104 {
+	background: url(../image/image104.png) no-repeat center;
+	background-size: 26px 26px;
+	height: 30px;
+	min-width: 30px !important;
+	margin-left: 5px !important;
+}
+
+#image030 {
+	background: url(../image/image030.png) no-repeat center;
+	background-size: 26px 26px;
+	height: 30px;
+	min-width: 30px !important;
+	margin-left: 5px !important;
+}
+
+#functions-area button:FIRST-CHILD {
+	vertical-align: top
+}
