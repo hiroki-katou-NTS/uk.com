@@ -349,7 +349,7 @@ module nts.uk.request {
             return jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
         }
         if(webAppId==nts.uk.request.location.currentAppId){
-            path = nts.uk.request.resolvePath(path);
+            path = resolvePath(path);
         }else{
             path = nts.uk.request.location.siteRoot
             .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
