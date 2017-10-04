@@ -65,7 +65,7 @@ public class AppStampCommonDefault implements AppStampCommonDomainService {
 				Strings.isEmpty(appStamp.getApplicationReason().v())){
 					throw new BusinessException("Msg_115");
 		}
-		appStamp.validate();
+		appStamp.customValidate();
 	}
 
 }

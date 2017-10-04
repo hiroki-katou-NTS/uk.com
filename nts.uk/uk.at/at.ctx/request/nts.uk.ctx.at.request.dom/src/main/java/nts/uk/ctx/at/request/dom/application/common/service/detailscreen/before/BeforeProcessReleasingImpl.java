@@ -11,7 +11,7 @@ import javax.inject.Inject;
 @Stateless
 public class BeforeProcessReleasingImpl implements BeforeProcessReleasing {
 	@Inject
-	private DetailBeforeProcessRegister detailBeforeProcessRegisterRepo;
+	private DetailBeforeUpdate detailBeforeProcessRegisterRepo;
 
 	@Override
 	public void detailScreenProcessBeforeReleasing() {

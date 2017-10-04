@@ -4,13 +4,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
-import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeProcessRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
@@ -35,7 +32,7 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	@Inject
 	ApplicationRepository appRepo;
 	@Inject
-	NewBeforeProcessRegister processBeforeRegister;
+	NewBeforeRegister processBeforeRegister;
 	@Inject
 	GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
 
@@ -43,22 +40,20 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	 * 
 	 */
 	@Override
-	// public void register(int approvalRoot, String employeeID, Application
-	// application, GoBackDirectly goBackDirectly) {
-	public void register(int approvalRoot, String employeeID, String appID) {
+	public void register(GoBackDirectly goBackDirectly, Application application) {
 		String companyID = AppContexts.user().companyId();
-		/**
-		 * アルゴリズム「直行直帰登録前チェック」を実行する
-		 */
-		GoBackDirectly goBackDirectly = goBackDirectRepo.findByApplicationID(companyID, appID).get();
+		String employeeID = application.getEnteredPersonSID();
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
-		Application application = appRepo.getAppById(companyID, appID).get();
-		GeneralDate date = application.getApplicationDate();
-		PrePostAtr prePost = application.getPrePostAtr();
-		ApplicationType appType = application.getApplicationType();
-		processBeforeRegister.processBeforeRegister(companyID, employeeID, date, prePost, approvalRoot, appType.value);
-		// if hasError return
-		// if no Error
+		
+		//アルゴリズム「2-1.新規画面登録前の処理」を実行する
+		processBeforeRegister.processBeforeRegister(
+				companyID, 
+				employeeID, 
+				application.getApplicationDate(), 
+				application.getPrePostAtr(), 
+				1, 
+				application.getApplicationType().value);
+		
 		// アルゴリズム「直行直帰するチェック」を実行する
 		if (this.goBackDirectCheck(goBackDirectly) == GoBackDirectAtr.IS) {
 			// アルゴリズム「直行直帰遅刻早退のチェック」を実行する
@@ -80,19 +75,10 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			// メッセージ（Msg_338）を表示する
 			throw new BusinessException("Msg_338");
 		}
-
-//		/**
-//		 * 2-2.新規画面登録時承認反映情報の整理
-//		 */
-//		registerAppReplection.newScreenRegisterAtApproveInfoReflect(employeeID, application);
-//		/**
-//		 * ドメインモデル「直行直帰申請」の新規登録する
-//		 */
-//		goBackDirectRepo.insert(goBackDirectly);
 	}
 
 	/**
-	 *  
+	 *  アルゴリズム「直行直帰するチェック」を実行する
 	 */
 	@Override
 	public GoBackDirectAtr goBackDirectCheck(GoBackDirectly goBackDirectly) {
@@ -125,15 +111,12 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			// チェック対象１またはチェック対象２がTrueの場合
 			if (validOut1.isCheckValid || validOut2.isCheckValid) {
 				// アルゴリズム「1日分の勤怠時間を仮計算」を実行する
-				// GOI 1日分の勤怠時間を仮計算 ben HibetsuJisseki
+				//Mac Dinh tra ve 0
 				int attendanceTime = 0;
-
 				if (attendanceTime < 0) {
 					output.isError = true;
 					throw new BusinessException("Msg_296");
-					// output.isError = true;
 				} else {
-					// Lai check thang Time lan nua
 					// Merge Node 1
 					if (attendanceTime < 0) {
 						output.isError = true;

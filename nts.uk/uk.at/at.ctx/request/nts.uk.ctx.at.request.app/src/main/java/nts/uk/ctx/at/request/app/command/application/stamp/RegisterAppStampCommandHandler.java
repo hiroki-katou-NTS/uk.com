@@ -49,34 +49,31 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 		String companyID = AppContexts.user().companyId();
 		AppStampCmd appStampCmd = context.getCommand();
 		AppStamp appStamp = null;
-		/*List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
+		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
 				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
 						companyID, 
 						"", 
-						appApprovalPhaseCmd.phaseID, 
+						"", 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
 						appApprovalPhaseCmd.dispOrder, 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) , 
 						appApprovalPhaseCmd.getApprovalFrameCmds().stream().map(approvalFrame -> new ApprovalFrame(
 								companyID, 
-								approvalFrame.phaseID, 
+								"", 
 								approvalFrame.dispOrder, 
-								approvalFrame.approverSID, 
-								EnumAdaptor.valueOf(approvalFrame.approvalATR, ApprovalAtr.class) , 
-								EnumAdaptor.valueOf(approvalFrame.confirmATR, ConfirmAtr.class) , 
-								GeneralDate.fromString(approvalFrame.approvalDate, "yyyy/MM/dd") , 
-								new Reason(approvalFrame.reason), 
-								approvalFrame.representerSID, 
 								approvalFrame.approveAcceptedCmds.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
 										companyID, 
-										approveAccepted.phaseID, 
-										approveAccepted.dispOrder, 
-										approveAccepted.approverSID
+										"", 
+										approveAccepted.approverSID,
+										ApprovalAtr.UNAPPROVED.value,
+										approveAccepted.confirmATR,
+										null,
+										approveAccepted.reason,
+										approveAccepted.representerSID
 										)).collect(Collectors.toList())
 								)).collect(Collectors.toList())
 						))
-				.collect(Collectors.toList());*/
-		List<AppApprovalPhase> appApprovalPhases = new ArrayList<>();
+				.collect(Collectors.toList());
 		StampRequestMode stampRequestMode = EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class);
 		switch(stampRequestMode){
 			case STAMP_GO_OUT_PERMIT: 
@@ -101,7 +98,7 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 					null,
 					null,
 					null);
-				applicationStampNewDomainService.appStampGoOutPermitRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			case STAMP_ADDITIONAL: 
 				appStamp = AppStamp.createFromJavaType(
@@ -127,7 +124,7 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 					).collect(Collectors.toList()),
 					null,
 					null);
-				applicationStampNewDomainService.appStampWorkRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			case STAMP_CANCEL: 
 				appStamp = AppStamp.createFromJavaType(
@@ -147,7 +144,7 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 								x.getCancelAtr())	
 					).collect(Collectors.toList()),
 					null);
-				applicationStampNewDomainService.appStampCancelRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			case STAMP_ONLINE_RECORD: 
 				appStamp = AppStamp.createFromJavaType(
@@ -164,7 +161,7 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 					new AppStampOnlineRecord(
 							EnumAdaptor.valueOf(appStampCmd.getAppStampOnlineRecordCmd().getStampCombinationAtr(), StampCombinationAtr.class),
 							appStampCmd.getAppStampOnlineRecordCmd().getAppTime()));
-				applicationStampNewDomainService.appStampOnlineRecordRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			default:
 				break;

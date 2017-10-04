@@ -46,7 +46,7 @@ public class OperationSettingWebservice extends WebService {
 	@Inject
 	private FunctionalRestrictionCommandHandler funcRestCommandHandler;
 
-	@GET
+	@POST
 	@Path("find")
 	public OperationSettingDto findOperationSetting() {
 		String companyId = AppContexts.user().companyId();
@@ -55,7 +55,7 @@ public class OperationSettingWebservice extends WebService {
 		return new OperationSettingDto(companyId, domain.getSettingUnit().value, domain.getComment().toString());
 	}
 
-	@GET
+	@POST
 	@Path("disp-rest")
 	public DisplayRestrictionDto findDisplayRestriction() {
 		String companyId = AppContexts.user().companyId();
@@ -71,7 +71,7 @@ public class OperationSettingWebservice extends WebService {
 				dom.getSubstitution().isRemainingNumberCheck());
 	}
 
-	@GET
+	@POST
 	@Path("func-rest")
 	public FunctionalRestrictionDto findFunctionalRestriction() {
 		String companyId = AppContexts.user().companyId();

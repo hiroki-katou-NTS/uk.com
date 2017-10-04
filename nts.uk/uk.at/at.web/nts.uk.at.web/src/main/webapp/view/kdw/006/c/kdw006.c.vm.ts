@@ -1,96 +1,77 @@
-module nts.uk.at.view.kdw006.c {
-    export module viewmodel {
-        export class ScreenModel {
+module nts.uk.at.view.kdw006.c.viewmodel {
+    export class ScreenModel {
+        yearDisplayAtr: KnockoutObservable<boolean>;
+        yearRemainingNumberCheck: KnockoutObservable<boolean>;
+        savingYearDisplayAtr: KnockoutObservable<boolean>;
+        savingYearRemainingNumberCheck: KnockoutObservable<boolean>;
+        compensatoryDisplayAtr: KnockoutObservable<boolean>;
+        compensatoryRemainingNumberCheck: KnockoutObservable<boolean>;
+        substitutionDisplayAtr: KnockoutObservable<boolean>;
+        substitutionRemainingNumberCheck: KnockoutObservable<boolean>;
 
-            //Define DispRestric Knockout Object view in screen
-            dispRestric: KnockoutObservable<DispRestric> = ko.observable(new DispRestric());
+        roundingRules: KnockoutObservableArray<any>;
 
-            constructor() {
-                let self = this;
-            }
+        constructor() {
+            let self = this;
+            self.yearDisplayAtr = ko.observable(false);
+            self.yearRemainingNumberCheck = ko.observable(false);
+            self.savingYearDisplayAtr = ko.observable(false);
+            self.savingYearRemainingNumberCheck = ko.observable(false);
+            self.compensatoryDisplayAtr = ko.observable(false);
+            self.compensatoryRemainingNumberCheck = ko.observable(false);
+            self.substitutionDisplayAtr = ko.observable(false);
+            self.substitutionRemainingNumberCheck = ko.observable(false);
 
-            saveData() {
-                var self = this;
-                var dispRestric = {
-                    yearHolidaySwitch: self.dispRestric().yearHolidaySwitch(),
-                    yearHolidayCheck: self.dispRestric().yearHolidayCheck(),
-                    substitutionSwitch: self.dispRestric().substitutionSwitch(),
-                    substitutionCheck: self.dispRestric().substitutionCheck(),
-                    savingYearSwitch: self.dispRestric().savingYearSwitch(),
-                    savingYearCheck: self.dispRestric().savingYearCheck(),
-                    compensatorySwitch: self.dispRestric().compensatorySwitch(),
-                    compensatoryCheck: self.dispRestric().compensatoryCheck()
-                };
-
-                service.update(dispRestric).done(function(data) {
-                    self.getDispRestric();
-                });
-
-            }
-
-            //Get DispRestric
-            getDispRestric() {
-                let self = this;
-                var dfd = $.Deferred();
-
-                service.getDispRestric().done(function(data) {
-                    self.dispRestric(new DispRestric(data));
-
-                    dfd.resolve();
-                });
-                return dfd.promise();
-            }
-
-            start(): JQueryPromise<any> {
-                let self = this;
-
-                //When start screen, get DispRestric
-                //self.getDispRestric();
-
-                //Start init screen model
-                var x = {
-                    yearHolidaySwitch: 1,
-                    yearHolidayCheck: true,
-                    substitutionSwitch: 1,
-                    substitutionCheck: true,
-                    savingYearSwitch: 1,
-                    savingYearCheck: true,
-                    compensatorySwitch: 1,
-                    compensatoryCheck: true
-                };
-                self.dispRestric(new DispRestric(x));
-                //End init screen model
-
-                let dfd = $.Deferred();
-                dfd.resolve();
-                return dfd.promise();
-            }
-
+            self.roundingRules = ko.observableArray([
+                { code: true, name: 'する' },
+                { code: false, name: 'しない' }
+            ]);
         }
 
-        export class DispRestric {
-            yearHolidaySwitch: KnockoutObservable<number> = ko.observable(1);
-            yearHolidayCheck: KnockoutObservable<boolean> = ko.observable(true);
-            substitutionSwitch: KnockoutObservable<number> = ko.observable(1);
-            substitutionCheck: KnockoutObservable<boolean> = ko.observable(false);
-            savingYearSwitch: KnockoutObservable<number> = ko.observable(1);
-            savingYearCheck: KnockoutObservable<boolean> = ko.observable(false);
-            compensatorySwitch: KnockoutObservable<number> = ko.observable(1);
-            compensatoryCheck: KnockoutObservable<boolean> = ko.observable(false);
 
-            constructor(x: any) {
-                let self = this;
-                if (x) {
-                    self.yearHolidaySwitch = ko.observable(x.yearHolidaySwitch);
-                    self.yearHolidayCheck = ko.observable(x.yearHolidayCheck);
-                    self.substitutionSwitch = ko.observable(x.substitutionSwitch);
-                    self.substitutionCheck = ko.observable(x.substitutionCheck);
-                    self.savingYearSwitch = ko.observable(x.savingYearSwitch);
-                    self.savingYearCheck = ko.observable(x.savingYearCheck);
-                    self.compensatorySwitch = ko.observable(x.compensatorySwitch);
-                    self.compensatoryCheck = ko.observable(x.compensatoryCheck);
-                }
-            }
+        start(): JQueryPromise<any> {
+            let self = this;
+            var dfd = $.Deferred();
+            self.getDispRestric().done(function() {
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+        //Get DispRestric
+        getDispRestric(): JQueryPromise<any> {
+            let self = this;
+            var dfd = $.Deferred();
+            service.getDispRestric().done(function(data) {
+                self.yearDisplayAtr(data.yearDisplayAtr);
+                self.yearRemainingNumberCheck(data.yearRemainingNumberCheck);
+                self.savingYearDisplayAtr(data.savingYearDisplayAtr);
+                self.savingYearRemainingNumberCheck(data.savingYearRemainingNumberCheck);
+                self.compensatoryDisplayAtr(data.compensatoryDisplayAtr)
+                self.compensatoryRemainingNumberCheck(data.compensatoryRemainingNumberCheck);
+                self.substitutionDisplayAtr(data.substitutionDisplayAtr);
+                self.substitutionRemainingNumberCheck(data.substitutionRemainingNumberCheck);
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+
+        saveData() {
+            var self = this;
+            var dispRestric = {
+                yearDisplayAtr: self.yearDisplayAtr(),
+                yearRemainingNumberCheck: self.yearRemainingNumberCheck(),
+                savingYearDisplayAtr: self.savingYearDisplayAtr(),
+                savingYearRemainingNumberCheck: self.savingYearRemainingNumberCheck(),
+                compensatoryDisplayAtr: self.compensatoryDisplayAtr(),
+                compensatoryRemainingNumberCheck: self.compensatoryRemainingNumberCheck(),
+                substitutionDisplayAtr: self.substitutionDisplayAtr(),
+                substitutionRemainingNumberCheck: self.substitutionRemainingNumberCheck()
+            };
+            service.update(dispRestric);
+
         }
     }
+
 }
