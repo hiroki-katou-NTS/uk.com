@@ -53,7 +53,8 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 				command.appCommand.getReflectPerState(), 
 				command.appCommand.getReflectPlanEnforce(),
 				command.appCommand.getStartDate(), 
-				command.appCommand.getEndDate(), null);
+				command.appCommand.getEndDate(), 
+				null);
 		
 		// get new GoBack Direct Item
 		GoBackDirectly newGoBack = new GoBackDirectly(
