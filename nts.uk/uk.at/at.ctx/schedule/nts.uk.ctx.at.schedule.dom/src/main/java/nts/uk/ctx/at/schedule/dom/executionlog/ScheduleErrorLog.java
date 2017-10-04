@@ -38,12 +38,11 @@ public class ScheduleErrorLog extends AggregateRoot {
 	 *            the memento
 	 * @return the schedule error log
 	 */
-	public ScheduleErrorLog toDomain(ScheduleErrorLogGetMemento memento) {
+	public ScheduleErrorLog(ScheduleErrorLogGetMemento memento) {
 		this.errorContent = memento.getErrorContent();
 		this.executionId = memento.getExecutionId();
 		this.date = memento.getDate();
 		this.employeeId = memento.getEmployeeId();
-		return this;
 	}
 
 	/**
@@ -57,5 +56,4 @@ public class ScheduleErrorLog extends AggregateRoot {
 		memento.setDate(this.date);
 		memento.setEmployeeId(this.employeeId);
 	}
-
 }

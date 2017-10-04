@@ -3,6 +3,7 @@ module nts.uk.at.view.ksc001.b {
     import NtsWizardStep = service.model.NtsWizardStep;
     import PeriodDto = service.model.PeriodDto;
     import UserInfoDto = service.model.UserInfoDto;
+    import ScheduleExecutionLogSaveDto = service.model.ScheduleExecutionLogSaveDto;
 
     export module viewmodel {
         export class ScreenModel {
@@ -275,6 +276,60 @@ module nts.uk.at.view.ksc001.b {
              */
             private updatePersonalScheduleData(data: PersonalSchedule): void {
                 var self = this;
+                if(data){
+                        
+                }
+            }
+            /**
+             * convert ui to PersonalSchedule
+             */
+            private toPersonalScheduleData(employeeId: string): PersonalSchedule{
+                var self = this;
+                var data : PersonalSchedule = new PersonalSchedule();
+                data.resetMasterInfo = self.resetMasterInfo();
+                data.resetAbsentHolidayBusines = self.resetAbsentHolidayBusines();
+                
+                // set CreateMethodAtr
+                if (self.checkCreateMethodAtrPersonalInfo()) {
+                    data.createMethodAtr = CreateMethodAtr.PERSONAL_INFO;
+                }
+                if (self.checkCreateMethodAtrPatternSchedule()) {
+                    data.createMethodAtr = CreateMethodAtr.PATTERN_SCHEDULE;
+                }
+                if (self.checkCreateMethodAtrCopyPastSchedule) {
+                    data.createMethodAtr = CreateMethodAtr.COPY_PAST_SCHEDULE;
+                }
+                data.confirm = self.confirm();
+                
+                // set ReCreateAtr
+                if (self.checkReCreateAtrAllCase()) {
+                    data.reCreateAtr = ReCreateAtr.ALLCASE;
+                }
+                if (self.checkReCreateAtrOnlyUnConfirm()) {
+                    data.reCreateAtr = ReCreateAtr.ONLYUNCONFIRM;
+                }
+                
+                // set ProcessExecutionAtr
+                if (self.checkProcessExecutionAtrRebuild()) {
+                    data.processExecutionAtr = ProcessExecutionAtr.REBUILD;
+                }
+                if (self.checkProcessExecutionAtrReconfig()) {
+                    data.processExecutionAtr = ProcessExecutionAtr.RECONFIG;
+                }
+                
+                // set ImplementAtr
+                data.implementAtr = self.selectedImplementAtrCode();
+                
+                data.resetWorkingHours = self.resetWorkingHours();
+                
+                data.resetTimeAssignment = self.resetTimeAssignment();
+                
+                data.resetDirectLineBounce = self.resetDirectLineBounce();
+                
+                data.employeeId = employeeId;
+                
+                data.resetTimeChildCare = self.resetTimeChildCare();
+                return data;
             }
             /**
              * function previous page by selection employee goto page (C)
@@ -373,7 +428,6 @@ module nts.uk.at.view.ksc001.b {
                         // show message confirm 567
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_567' }).ifYes(function() {
                             service.checkMonthMax(self.periodStartDate()).done(function(checkMax) {
-
                                 self.createByCheckMaxMonth();
                             });
                         }).ifNo(function() {
@@ -385,8 +439,6 @@ module nts.uk.at.view.ksc001.b {
                 }).fail(function(error) {
                     console.log(error);
                 });
-                nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function() {
-                });
             }
             
             /**
@@ -395,7 +447,6 @@ module nts.uk.at.view.ksc001.b {
             private createByCheckMaxMonth(): void {
                 var self = this;
                 service.checkMonthMax(self.periodStartDate()).done(function(checkMax) {
-
                     // check max
                     if (checkMax) {
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_568' }).ifYes(function() {
@@ -417,15 +468,32 @@ module nts.uk.at.view.ksc001.b {
                     // C1_5 is check
                     if (self.selectedImplementAtrCode() == ImplementAtr.RECREATE) {
                         nts.uk.ui.dialog.confirm({ messageId: 'Msg_570' }).ifYes(function() {
-
+                           self.savePersonalScheduleData();
                         }).ifNo(function() {
                             return;
                         });
+                    }
+                    else {
+                        self.savePersonalScheduleData();    
                     }
                 }).ifNo(function() {
                     return;
                 });
 
+            }
+            
+            /**
+             * save PersonalSchedule data
+             */
+            private savePersonalScheduleData(): void {
+                var self = this;
+                var user: UserInfoDto = self.getUserLogin();
+                self.savePersonalSchedule(user.employeeId, self.toPersonalScheduleData(user.employeeId));
+                service.saveScheduleExecutionLog(self.collectionData()).done(function(){
+                   alert('YES'); 
+                });
+                nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function() {
+                });
             }
             
             
@@ -458,6 +526,59 @@ module nts.uk.at.view.ksc001.b {
                 };
                 return dto;
             } 
+            
+             /**
+             * find employee id in selected
+             */
+            public findEmployeeIdByCode(employeeCode: string): string {
+                var self = this;
+                var employeeId = '';
+                for (var employee of self.selectedEmployee()) {
+                    if (employee.employeeCode === employeeCode) {
+                        employeeId = employee.employeeId;
+                    }
+                }
+                return employeeId;
+            }
+            /**
+             * find employee id in selection employee code
+             */
+            public findEmployeeIdsByCode(employeeCodes: string[]): string[] {
+                var self = this;
+                var employeeIds : string[] = [];
+                for(var employeeCode of employeeCodes){
+                    var employeeId = self.findEmployeeIdByCode(employeeCode);
+                    if(employeeId && !(employeeId ==='')){
+                        employeeIds.push(employeeId);
+                    }    
+                }
+                return employeeIds;
+            }
+            /**
+             * collection data => command save
+             */
+            private collectionData(): ScheduleExecutionLogSaveDto{
+                var self = this;
+                var data: PersonalSchedule = self.toPersonalScheduleData('');
+                var dto: ScheduleExecutionLogSaveDto = {
+                    periodStartDate: self.periodStartDate(),
+                    periodEndDate: self.periodEndDate(),
+                    implementAtr: data.implementAtr,
+                    reCreateAtr: data.reCreateAtr,
+                    processExecutionAtr: data.processExecutionAtr,
+                    resetWorkingHours: data.resetWorkingHours,
+                    resetDirectLineBounce: data.resetDirectLineBounce,
+                    resetMasterInfo: data.resetMasterInfo,
+                    resetTimeChildCare: data.resetTimeChildCare,
+                    resetAbsentHolidayBusines: data.resetAbsentHolidayBusines,
+                    resetTimeAssignment: data.resetTimeAssignment,
+                    confirm: data.confirm,
+                    createMethodAtr: data.createMethodAtr,
+                    copyStartDate: self.copyStartDate(),
+                    employeeIds: self.findEmployeeIdsByCode(self.selectedEmployeeCode())
+                };
+                return dto;
+            }
             
             /**
              * convert work type setting

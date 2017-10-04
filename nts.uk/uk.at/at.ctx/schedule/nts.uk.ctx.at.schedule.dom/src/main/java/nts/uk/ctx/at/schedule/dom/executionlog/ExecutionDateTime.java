@@ -22,4 +22,17 @@ public class ExecutionDateTime extends DomainObject{
 	/** The execution end date. */
 	// 終了日時
 	private GeneralDateTime executionEndDate;
+
+	/**
+	 * Instantiates a new execution date time.
+	 *
+	 * @param executionStartDate the execution start date
+	 * @param executionEndDate the execution end date
+	 */
+	public ExecutionDateTime(GeneralDateTime executionStartDate, GeneralDateTime executionEndDate) {
+		this.executionStartDate = executionStartDate;
+		this.executionEndDate = executionEndDate;
+	}
+	
+	
 }

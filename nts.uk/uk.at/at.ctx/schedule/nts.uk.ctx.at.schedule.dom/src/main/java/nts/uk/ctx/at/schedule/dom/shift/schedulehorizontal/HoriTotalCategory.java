@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryCode;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryName;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.Memo;
@@ -14,7 +15,7 @@ import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.Memo;
  */
 @Getter
 @AllArgsConstructor
-public class HoriTotalCategory {
+public class HoriTotalCategory extends AggregateRoot{
 	/**会社ID**/
 	private String companyId;
 	/** カテゴリコード */
@@ -33,4 +34,9 @@ public class HoriTotalCategory {
 									new Memo(memo), 
 									totalEvalOrders);
 	} 
+	
+	@Override
+	public void validate(){
+		super.validate();
+	}
 }

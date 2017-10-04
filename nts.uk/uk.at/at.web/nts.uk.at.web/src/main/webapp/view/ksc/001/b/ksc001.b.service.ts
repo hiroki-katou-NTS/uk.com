@@ -3,9 +3,9 @@ module nts.uk.at.view.ksc001.b {
         var paths = {
            findPeriodById: "ctx/at/shared/workrule/closure/findPeriodById",
            checkThreeMonth: "ctx/at/shared/workrule/closure/checkThreeMonth",
-           checkMonthMax: "ctx/at/shared/workrule/closure/checkMonthMax"
+           checkMonthMax: "ctx/at/shared/workrule/closure/checkMonthMax",
+           saveScheduleExecutionLog: "at/schedule/exelog/save" 
             
-
         }
         
         /**
@@ -14,20 +14,25 @@ module nts.uk.at.view.ksc001.b {
         export function findPeriodById(closureId: number): JQueryPromise<model.PeriodDto> {
             return nts.uk.request.ajax('at', paths.findPeriodById + '/' + closureId);
         }
+        
         /**
          * call service check three month by base date
          */
-        
         export function checkThreeMonth(baseDate: Date): JQueryPromise<boolean> {
-            return nts.uk.request.ajax('at', paths.checkThreeMonth, baseDate);
+            return nts.uk.request.ajax('at', paths.checkThreeMonth, {baseDate: baseDate});
         }
         
         /**
          * call service check max month by base date
          */
-        
         export function checkMonthMax(baseDate: Date): JQueryPromise<boolean> {
-            return nts.uk.request.ajax('at', paths.checkMonthMax, baseDate);
+            return nts.uk.request.ajax('at', paths.checkMonthMax, {baseDate: baseDate});
+        }
+        /**
+         * call service save ScheduleExecutionLog
+         */
+        export function saveScheduleExecutionLog(command: model.ScheduleExecutionLogSaveDto): JQueryPromise<void> {
+            return nts.uk.request.ajax('at', paths.saveScheduleExecutionLog, command);
         }
         
         export module model {
@@ -43,6 +48,24 @@ module nts.uk.at.view.ksc001.b {
             export interface UserInfoDto{
                 companyId: string;
                 employeeId: string;    
+            }
+            
+            export interface ScheduleExecutionLogSaveDto {
+                periodStartDate: Date;
+                periodEndDate: Date;
+                implementAtr: number;
+                reCreateAtr: number;
+                processExecutionAtr: number;
+                resetWorkingHours: boolean;
+                resetDirectLineBounce: boolean;
+                resetMasterInfo: boolean;
+                resetTimeChildCare: boolean;
+                resetAbsentHolidayBusines: boolean;
+                resetTimeAssignment: boolean;
+                confirm: boolean;
+                createMethodAtr: number;
+                copyStartDate: Date;
+                employeeIds: string[];
             }
         }
 

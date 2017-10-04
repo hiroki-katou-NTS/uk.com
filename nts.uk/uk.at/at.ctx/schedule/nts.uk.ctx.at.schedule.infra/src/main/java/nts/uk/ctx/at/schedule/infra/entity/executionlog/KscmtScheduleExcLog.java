@@ -5,19 +5,17 @@
 package nts.uk.ctx.at.schedule.infra.entity.executionlog;
 
 import java.io.Serializable;
-import java.util.Date;
 
-import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -37,112 +35,81 @@ public class KscmtScheduleExcLog extends UkJpaEntity implements Serializable {
     protected KscmtScheduleExcLogPK kscmtScheduleExcLogPK;
     
     /** The exe str D. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "EXE_STR_D")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date exeStrD;
+	@Convert(converter = GeneralDateTimeToDBConverter.class)
+    private GeneralDateTime exeStrD;
     
     /** The exe end D. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "EXE_END_D")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date exeEndD;
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
+    private GeneralDateTime exeEndD;
     
     /** The exe sid. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "EXE_SID")
     private String exeSid;
     
     /** The start ymd. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "START_YMD")
-    private int startYmd;
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
+    private GeneralDateTime startYmd;
     
     /** The end ymd. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "END_YMD")
-    private int endYmd;
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
+    private GeneralDateTime endYmd;
     
     /** The completion status. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "COMPLETION_STATUS")
-    private short completionStatus;
+    private int completionStatus;
     
     /** The copy start ymd. */
     @Column(name = "COPY_START_YMD")
-    private Integer copyStartYmd;
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
+    private GeneralDateTime copyStartYmd;
     
     /** The create method atr. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "CREATE_METHOD_ATR")
-    private short createMethodAtr;
+    private int createMethodAtr;
     
     /** The confirm. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "CONFIRM")
-    private short confirm;
+    private int confirm;
     
     /** The implement atr. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "IMPLEMENT_ATR")
-    private short implementAtr;
+    private int implementAtr;
     
     /** The re create atr. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "RE_CREATE_ATR")
-    private short reCreateAtr;
+    private int reCreateAtr;
     
     /** The process exe atr. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "PROCESS_EXE_ATR")
-    private short processExeAtr;
+    private int processExeAtr;
     
     /** The re master info. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "RE_MASTER_INFO")
-    private short reMasterInfo;
+    private int reMasterInfo;
     
     /** The re abst hd busines. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "RE_ABST_HD_BUSINES")
-    private short reAbstHdBusines;
+    private int reAbstHdBusines;
     
     /** The re working hours. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "RE_WORKING_HOURS")
-    private short reWorkingHours;
+    private int reWorkingHours;
     
     /** The re time assignment. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "RE_TIME_ASSIGNMENT")
-    private short reTimeAssignment;
+    private int reTimeAssignment;
     
     /** The re dir line bounce. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "RE_DIR_LINE_BOUNCE")
-    private short reDirLineBounce;
+    private int reDirLineBounce;
     
     /** The re time child care. */
-    @Basic(optional = false)
-    @NotNull
     @Column(name = "RE_TIME_CHILD_CARE")
-    private short reTimeChildCare;
+    private int reTimeChildCare;
 
     /**
      * Instantiates a new kscmt schedule exc log.

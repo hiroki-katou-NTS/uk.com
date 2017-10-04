@@ -15,6 +15,7 @@ import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -61,7 +62,7 @@ public class KscmtScheduleErrLog extends UkJpaEntity implements Serializable {
      * @param exeId the exe id
      * @param sid the sid
      */
-	public KscmtScheduleErrLog(String exeId, String sid, int ymd) {
+	public KscmtScheduleErrLog(String exeId, String sid, GeneralDate ymd) {
 		this.kscmtScheduleErrLogPK = new KscmtScheduleErrLogPK(exeId, sid, ymd);
 	}
 

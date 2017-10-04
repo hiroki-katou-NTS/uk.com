@@ -23,15 +23,16 @@
 			<div id="functions-area">
 				<div class="container">
 					<!-- A1_1 -->
-					<button id="NEW_BTN" data-bind="click : newMode">#{i18n.getText('KML004_1')}</button>
+					<button tabindex="1" id="NEW_BTN" data-bind="click : newMode">#{i18n.getText('KML004_1')}</button>
 					<!-- A1_2 -->
-					<button id="REGISTER_BTN" class="proceed"
+					<button tabindex="2" id="REGISTER_BTN" class="proceed"
 						data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('KML004_2')}</button>
 					<!-- A1_3 -->
-					<button id="DELETE_BTN" class="danger"
-						data-bind="click: remove, enable: lstCate().length >0">#{i18n.getText('KML004_3')}</button>
+					<button tabindex="3" id="DELETE_BTN" class="danger"
+						data-bind="click: remove, enable: lstCate().length >0 &amp; checkUpdate()">#{i18n.getText('KML004_3')}</button>
 					<!-- A1_4 -->
-					<button id="Close_BTN" data-bind="click: close">#{i18n.getText('KML004_4')}</button>
+					<button tabindex="4" id="Close_BTN" data-bind="click: close">#{i18n.getText('KML004_4')}</button>
+					<button id="Close_BTN" data-bind="click: openBDialog">#{i18n.getText('KML004_4')}</button>
 				</div>
 			</div>
 			<div id="contents-area">
@@ -39,7 +40,7 @@
 					class="bg-green caret-right caret-background cf"
 					style="width: 340px; height: 335px;">
 					<!-- A2_1 -->
-					<div id="LST_001" style="margin-left: 10px; padding: 10px;">
+					<div tabindex="5" id="LST_001" style="margin-left: 10px; padding: 10px;">
 						<table id="single-list"
 							data-bind="ntsGridList: {	
 								width: 300,
@@ -57,11 +58,11 @@
 						<div id="code-sphd"
 							data-bind="ntsFormLabel: {required: true,constraint:['CategoryCode','CategoryName']}">#{i18n.getText('KML004_8')}</div>
 						<!-- A3_2 -->
-						<span><input id="code-text"
+						<span><input tabindex="6" id="code-text"
 							style="width: 40px; margin-left: -1px;"
-							data-bind="ntsTextEditor: {value: categoryCode, constraint:'CategoryCode' , required: true, enable:$parent.checkUpdate, immediate: true ,option: {autofill:true, filldirection:'left'}, name: '#[KML004_9]'}" /></span>
+							data-bind="ntsTextEditor: {value: categoryCode, constraint:'CategoryCode' , required: true, enable: $parent.check, immediate: true ,option: {autofill:true, filldirection:'left'}, name: '#[KML004_9]'}" /></span>
 						<!-- A3_3 -->
-						<span><input id="code-text2" style="width: 180px"
+						<span><input tabindex="7" id="name-text" style="width: 180px"
 							data-bind="ntsTextEditor: {value: categoryName, required: true, name: '#[KML004_10]'}" /></span>
 						<div id="memo">
 							<!-- A4_1 -->
@@ -69,7 +70,7 @@
 								style="margin-top: 10px; vertical-align: text-bottom;"
 								data-bind="ntsFormLabel: {constraint: 'Memo'}">#{i18n.getText('KML004_11')}</div>
 							<!-- A4_2 -->
-							<textarea
+							<textarea tabindex="8"
 								style="width: 516px; height: 50px; margin-left: 92px; margin-top: 10px; position: absolute;"
 								id="txta-memo"
 								data-bind="ntsMultilineEditor: {value: memo, name: '#[KML004_11]',constraint: 'Memo'}" />
@@ -83,13 +84,13 @@
 							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KML004_13')}</div>
 						<!-- A6_1 -->
 						<div id="lb_swap_right"
-							style="margin-top: 5px; margin-left: 400px"
+							style="margin-top: 5px; margin-left: 307px"
 							data-bind="ntsFormLabel: {required: false}">#{i18n.getText('KML004_16')}</div>
 						<!-- A5_3 disableMoveButton-->
 
 						<div class="left-contents">
 							<br />
-							<table class="left-data" id="multi-list1" tabindex="2"
+							<table class="left-data" id="multi-list1" tabindex="9"
 								data-bind="ntsGridList: {
 									height: 320,
 									options: items,
@@ -101,17 +102,17 @@
 						</div>
 
 						<div class="move-function">
-							<button id="insert_btn">
+							<button id="insert_btn" data-bind="click: add">
 								<i class="icon icon-button-arrow-right"></i>
 							</button>
 							<br />
-							<button id="remove-items">
+							<button id="remove-items" data-bind="click: del">
 								<i class="icon icon-button-arrow-left"></i>
 							</button>
 						</div>
 
 						<div class="right-contents">
-							<table id="multi-list2" tabindex="3" data-bind="ntsGridList: {
+							<table id="multi-list2" data-bind="ntsGridList: {
   									height: 320, 
   									options: newItems,  
  									optionsValue: 'totalItemNo',  
@@ -125,7 +126,7 @@
 							<div id="swap-up-down"
 								data-bind="ntsUpDown: {
 										targetSource: newItems,
-										primaryKey: 'primaryKey',
+										primaryKey: 'totalItemNo',
 										comId: '#multi-list2',
 										type: 'grid',
 										enable: true
