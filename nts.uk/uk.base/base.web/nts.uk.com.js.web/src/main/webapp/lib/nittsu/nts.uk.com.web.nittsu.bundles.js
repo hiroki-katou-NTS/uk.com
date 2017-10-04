@@ -6279,10 +6279,6 @@ var nts;
                         }
                     };
                     NtsFormLabelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var text = (data.text !== undefined) ? ko.unwrap(data.text) : $(element).find('label').html();
-                        var container = $(element);
-                        container.find("label").html(text);
                     };
                     return NtsFormLabelBindingHandler;
                 }());
@@ -11463,12 +11459,8 @@ var nts;
                             var columnsMap = allColumnsMap || utils.getColumnsMap($grid);
                             var rId = utils.parseIntIfNumber(rowId, $grid, columnsMap);
                             grid.dataSource.setCellValue(rId, columnKey, cellValue, autoCommit);
-                            var isControl = utils.isNtsControl($grid, columnKey);
-                            if (!isControl || forceRender)
+                            if (!utils.isNtsControl($grid, columnKey) || forceRender)
                                 renderCell($grid, rId, columnKey);
-                            if (isControl) {
-                                $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: columnKey, value: cellValue }]);
-                            }
                             gridUpdate._notifyCellUpdated(rId);
                         }
                         updating.updateCell = updateCell;
@@ -11483,11 +11475,7 @@ var nts;
                             var origData = gridUpdate._getLatestValues(rId);
                             grid.dataSource.updateRow(rId, $.extend({}, origData, updatedRowData), autoCommit);
                             _.forEach(Object.keys(updatedRowData), function (key) {
-                                var isControl = utils.isNtsControl($grid, key);
-                                if (isControl) {
-                                    $grid.trigger(events.Handler.CONTROL_CHANGE, [{ columnKey: key, value: updatedRowData[key] }]);
-                                }
-                                if (isControl && !forceRender)
+                                if (utils.isNtsControl($grid, key) && !forceRender)
                                     return;
                                 var $vCell = renderCell($grid, rId, key, origData);
                                 var validators = $grid.data(validation.VALIDATORS);
@@ -11831,14 +11819,9 @@ var nts;
                                 ui.cell = selectedCells[0];
                             selectCellChange({ target: $grid[0] }, ui);
                             var selectedCell = getSelectedCell($grid);
-                            var $element = $(selectedCell.element);
-                            var ntsCombo = $element.find(".nts-combo-container");
+                            var ntsCombo = $(selectedCell.element).find(".nts-combo-container");
                             if (ntsCombo.length > 0) {
                                 ntsCombo.find("input").select();
-                            }
-                            var ntsSwitchs = $element.find(".nts-switch-container");
-                            if (ntsSwitchs.length > 0) {
-                                ntsSwitchs.find("button:first").focus();
                             }
                         }
                         selection_1.selectCell = selectCell;
@@ -12251,25 +12234,6 @@ var nts;
                                 var optionsText = data.controlDef.optionsText;
                                 var selectedValue = data.initValue;
                                 var container = $("<div/>").addClass(this.containerClass()).data("enable", data.enable);
-                                container.on(events.Handler.KEY_UP, function (evt) {
-                                    var $buttons = container.find("button");
-                                    var index;
-                                    $buttons.each(function (i, elm) {
-                                        if (elm === document.activeElement) {
-                                            index = i;
-                                            return false;
-                                        }
-                                    });
-                                    if (!uk.util.isNullOrUndefined(index)) {
-                                        if (utils.isArrowLeft(evt)) {
-                                            index = index === 0 ? ($buttons.length - 1) : --index;
-                                        }
-                                        if (utils.isArrowRight(evt)) {
-                                            index = index === $buttons.length - 1 ? 0 : ++index;
-                                        }
-                                        $buttons.eq(index).focus();
-                                    }
-                                });
                                 _.forEach(options, function (opt) {
                                     var value = opt[optionsValue];
                                     var text = opt[optionsText];
@@ -13119,7 +13083,6 @@ var nts;
                             Handler.CELL_CLICK = "iggridcellclick";
                             Handler.PAGE_INDEX_CHANGE = "iggridpagingpageindexchanging";
                             Handler.PAGE_SIZE_CHANGE = "iggridpagingpagesizechanging";
-                            Handler.CONTROL_CHANGE = "ntsgridcontrolvaluechanged";
                             return Handler;
                         }());
                         events.Handler = Handler;
@@ -13983,14 +13946,6 @@ var nts;
                             return evt.keyCode >= 37 && evt.keyCode <= 40;
                         }
                         utils.isArrowKey = isArrowKey;
-                        function isArrowLeft(evt) {
-                            return evt.keyCode === 37;
-                        }
-                        utils.isArrowLeft = isArrowLeft;
-                        function isArrowRight(evt) {
-                            return evt.keyCode === 39;
-                        }
-                        utils.isArrowRight = isArrowRight;
                         function isAlphaNumeric(evt) {
                             return evt.keyCode >= 48 && evt.keyCode <= 90;
                         }
@@ -14043,27 +13998,27 @@ var nts;
                         }
                         utils.isEditMode = isEditMode;
                         function isIgGrid($grid) {
-                            return $grid && !uk.util.isNullOrUndefined($grid.data("igGrid"));
+                            return !uk.util.isNullOrUndefined($grid.data("igGrid"));
                         }
                         utils.isIgGrid = isIgGrid;
                         function selectable($grid) {
-                            return $grid && !uk.util.isNullOrUndefined($grid.data("igGridSelection"));
+                            return !uk.util.isNullOrUndefined($grid.data("igGridSelection"));
                         }
                         utils.selectable = selectable;
                         function updatable($grid) {
-                            return $grid && !uk.util.isNullOrUndefined($grid.data("igGridUpdating"));
+                            return !uk.util.isNullOrUndefined($grid.data("igGridUpdating"));
                         }
                         utils.updatable = updatable;
                         function fixable($grid) {
-                            return $grid && !uk.util.isNullOrUndefined($grid.data("igGridColumnFixing"));
+                            return !uk.util.isNullOrUndefined($grid.data("igGridColumnFixing"));
                         }
                         utils.fixable = fixable;
                         function hidable($grid) {
-                            return $grid && !uk.util.isNullOrUndefined($grid.data("igGridHiding"));
+                            return !uk.util.isNullOrUndefined($grid.data("igGridHiding"));
                         }
                         utils.hidable = hidable;
                         function pageable($grid) {
-                            return $grid && !uk.util.isNullOrUndefined($grid.data("igGridPaging"));
+                            return !uk.util.isNullOrUndefined($grid.data("igGridPaging"));
                         }
                         utils.pageable = pageable;
                         function disabled($cell) {
@@ -20944,6 +20899,248 @@ var nts;
         (function (ui_22) {
             var koExtentions;
             (function (koExtentions) {
+                var NtsImageEditorBindingHandler = (function () {
+                    function NtsImageEditorBindingHandler() {
+                    }
+                    NtsImageEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var editable = nts.uk.util.isNullOrUndefined(data.editable) ? false : ko.unwrap(data.editable);
+                        var zoomble = nts.uk.util.isNullOrUndefined(data.zoomble) ? false : ko.unwrap(data.zoomble);
+                        var helper = new ImageEditorHelper();
+                        var $container = $("<div>", { 'class': 'image-editor-container' }), $element = $(element);
+                        $element.append($container);
+                        var constructSite = new ImageEditorConstructSite($element, helper);
+                        var $uploadArea = $("<div>", { "class": "image-upload-container image-editor-area cf" });
+                        $container.append($uploadArea);
+                        if (editable === true) {
+                            var confirm_1 = { checked: ko.observable(true) };
+                            $(element).data('checkbox', confirm_1);
+                            var $editContainer = $("<div>", { "class": "edit-action-container image-editor-area" });
+                            $container.append($editContainer);
+                            constructSite.buildCheckBoxArea(allBindingsAccessor, viewModel, bindingContext);
+                        }
+                        constructSite.buildActionArea();
+                        constructSite.buildUploadAction();
+                        constructSite.buildImagePreviewArea();
+                        constructSite.buildFileChangeHandler();
+                        constructSite.buildImageLoadedHandler(zoomble);
+                        constructSite.buildSrcChangeHandler();
+                        constructSite.buildImageDropEvent();
+                        return { 'controlsDescendantBindings': true };
+                    };
+                    NtsImageEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor(), $element = $(element), confirm = $(element).data('checkbox'), $checkbox = $element.find('.comfirm-checkbox');
+                        if (!nts.uk.util.isNullOrEmpty($checkbox)) {
+                            ko.bindingHandlers["ntsCheckBox"].update($checkbox[0], function () {
+                                return confirm;
+                            }, allBindingsAccessor, viewModel, bindingContext);
+                        }
+                    };
+                    return NtsImageEditorBindingHandler;
+                }());
+                var ImageEditorConstructSite = (function () {
+                    function ImageEditorConstructSite($root, helper) {
+                        this.$root = $root;
+                        this.helper = helper;
+                    }
+                    ImageEditorConstructSite.prototype.buildCheckBoxArea = function (allBindingsAccessor, viewModel, bindingContext) {
+                        var self = this;
+                        var $checkboxHolder = $("<div>", { "class": "checkbox-holder image-editor-component" });
+                        var $editContainer = this.$root.find(".edit-action-container");
+                        $editContainer.append($checkboxHolder);
+                        this.$checkbox = $("<div>", { "class": "comfirm-checkbox style-button", text: "表示エリア選択する" });
+                        var $comment = $("<div>", { "class": "crop-description cf" });
+                        $checkboxHolder.append(this.$checkbox);
+                        $checkboxHolder.append($comment);
+                        var $cropAreaIcon = $("<div>", { "class": "crop-icon inline-container" });
+                        var $cropText = $("<div>", { "class": "crop-description-text inline-container" });
+                        var $mousePointerIcon = $("<div>", { "class": "mouse-icon inline-container" });
+                        var $mouseText = $("<div>", { "class": "mouse-description-text inline-container" });
+                        $("<label>", { "class": "info-label", "text": "のエリア内をメイン画面に表示します。" }).appendTo($cropText);
+                        $("<label>", { "class": "info-label", "text": "マウスのドラッグ＆ドロップでエリアを変更できます。" }).appendTo($mouseText);
+                        $comment.append($cropAreaIcon).append($cropText).append($mousePointerIcon).append($mouseText);
+                        var checkboxId = nts.uk.util.randomId();
+                        ko.bindingHandlers["ntsCheckBox"].init(this.$checkbox[0], function () {
+                            return self.$root.data('checkbox');
+                        }, allBindingsAccessor, viewModel, bindingContext);
+                    };
+                    ImageEditorConstructSite.prototype.buildActionArea = function () {
+                        this.$inputFile = $("<input>", { "class": "fileinput", "type": "file", "accept": this.helper.toStringExtension() })
+                            .appendTo($("<div>", { "class": "image-editor-component inline-container nts-fileupload-container" }));
+                        this.$imageNameLbl = $("<label>", { "class": "image-name-lbl info-label" })
+                            .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
+                        this.$imageSizeLbl = $("<label>", { "class": "image-info-lbl info-label" })
+                            .appendTo(this.$imageNameLbl.parent());
+                        this.$uploadBtn = $("<button>", { "class": "upload-btn" })
+                            .appendTo($("<div>", { "class": "image-editor-component inline-container" }));
+                        var $uploadArea = this.$root.find(".image-upload-container");
+                        $uploadArea.append(this.$uploadBtn.parent());
+                        $uploadArea.append(this.$imageNameLbl.parent());
+                        $uploadArea.append(this.$inputFile.parent());
+                    };
+                    ImageEditorConstructSite.prototype.buildImagePreviewArea = function () {
+                        this.$previewArea = $("<div>", { "class": "image-preview-container image-editor-area" });
+                        this.$previewArea.appendTo(this.$root.find(".image-editor-container"));
+                        var imagePreviewId = nts.uk.util.randomId();
+                        var $imageHolder = $("<div>", { "class": "image-holder image-editor-component" }).appendTo(this.$previewArea);
+                        this.$imagePreview = $("<img>", { "class": "image-preview", "id": imagePreviewId }).appendTo($imageHolder);
+                    };
+                    ImageEditorConstructSite.prototype.buildUploadAction = function () {
+                        var self = this;
+                        self.$uploadBtn.text("参照").click(function (evt) {
+                            self.$inputFile.click();
+                        });
+                    };
+                    ImageEditorConstructSite.prototype.buildImageDropEvent = function () {
+                        var self = this;
+                        self.$previewArea.on('drop dragdrop', function (evt, ui) {
+                            event.preventDefault();
+                            var files = evt.originalEvent["dataTransfer"].files;
+                            if (!nts.uk.util.isNullOrEmpty(files)) {
+                                var firstImageFile = self.helper.getFirstFile(files);
+                                if (!nts.uk.util.isNullOrUndefined(firstImageFile)) {
+                                    self.assignImageToView(firstImageFile);
+                                }
+                            }
+                        });
+                        this.$previewArea.on('dragenter', function (event) {
+                            event.preventDefault();
+                        });
+                        this.$previewArea.on('dragleave', function (evt, ui) {
+                        });
+                        this.$previewArea.on('dragover', function (event) {
+                            event.preventDefault();
+                        });
+                    };
+                    ImageEditorConstructSite.prototype.buildImageLoadedHandler = function (zoomble) {
+                        var self = this;
+                        self.$imagePreview.on('load', function () {
+                            var image = new Image();
+                            image.src = self.$imagePreview.attr("src");
+                            image.onload = function () {
+                                self.$imageSizeLbl.text("　(大きさ " + this.height + "x" + this.width + "　　サイズ " + self.helper.getFileSize(self.$root.data("size")) + ")");
+                                if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
+                                    self.cropper.destroy();
+                                }
+                                self.cropper = new Cropper(self.$imagePreview[0], {
+                                    viewMode: 1,
+                                    guides: false,
+                                    autoCrop: false,
+                                    highlight: false,
+                                    zoomable: zoomble,
+                                    crop: function (e) {
+                                    }
+                                });
+                                self.$root.data("cropper", self.cropper);
+                            };
+                        });
+                    };
+                    ImageEditorConstructSite.prototype.buildSrcChangeHandler = function () {
+                        var self = this;
+                        self.$root.bind("srcchanging", function (evt, query) {
+                            var urlElements = query.url.split("/"), fileName = urlElements[urlElements.length - 1];
+                            var target = self.helper.getUrl(query);
+                            var xhr = new XMLHttpRequest();
+                            xhr.open('GET', target);
+                            xhr.responseType = 'blob';
+                            xhr.onload = function (e) {
+                                if (this.status == 200) {
+                                    var reader = new FileReader();
+                                    reader.readAsDataURL(xhr.response);
+                                    var fileType = xhr.response.type.split("/")[1];
+                                    self.$root.data("size", xhr.response.size);
+                                    self.$root.data("file-name", fileName + "." + fileType);
+                                    self.$root.data("file-type", fileType);
+                                    reader.onload = function () {
+                                        self.$imagePreview.attr("src", reader.result);
+                                    };
+                                }
+                            };
+                            xhr.send();
+                        });
+                    };
+                    ImageEditorConstructSite.prototype.buildFileChangeHandler = function () {
+                        var self = this;
+                        self.$inputFile.change(function () {
+                            if (nts.uk.util.isNullOrEmpty(this.files)) {
+                                return;
+                            }
+                            self.assignImageToView(this.files[0]);
+                        });
+                    };
+                    ImageEditorConstructSite.prototype.assignImageToView = function (file) {
+                        var self = this;
+                        self.$root.data("file", file);
+                        self.$root.data("file-name", file.name);
+                        self.$root.data("file-type", file.type.split("/")[1]);
+                        self.$imageNameLbl.text(file.name);
+                        if (FileReader && file) {
+                            var fr = new FileReader();
+                            fr.onload = function () {
+                                self.$imagePreview.attr("src", fr.result);
+                                self.$root.data("size", file.size);
+                            };
+                            fr.readAsDataURL(file);
+                        }
+                    };
+                    return ImageEditorConstructSite;
+                }());
+                var ImageEditorHelper = (function () {
+                    function ImageEditorHelper(query, extensions) {
+                        this.IMAGE_EXTENSION = [".png", ".jpg", ".jpeg"];
+                        this.BYTE_SIZE = 1024;
+                        this.SIZE_UNITS = ["BYTE", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+                        this.data = query;
+                        if (!nts.uk.util.isNullOrUndefined(extensions)) {
+                            this.IMAGE_EXTENSION = extensions;
+                        }
+                    }
+                    ImageEditorHelper.prototype.toStringExtension = function () {
+                        return this.IMAGE_EXTENSION.join(",");
+                    };
+                    ImageEditorHelper.prototype.getFirstFile = function (files) {
+                        var IMAGE_EXTENSION = this.IMAGE_EXTENSION;
+                        return _.find(files, function (file) {
+                            return _.find(IMAGE_EXTENSION, function (ie) {
+                                return file.type.indexOf(ie.replace(".", "")) >= 0;
+                            }) !== undefined;
+                        });
+                    };
+                    ImageEditorHelper.prototype.getFileSize = function (originalSize) {
+                        var i = 0, result = originalSize;
+                        while (result > 5 * this.BYTE_SIZE) {
+                            result = result / this.BYTE_SIZE;
+                            i++;
+                        }
+                        var idx = i < this.SIZE_UNITS.length ? i : this.SIZE_UNITS.length - 1;
+                        return uk.ntsNumber.trunc(result) + this.SIZE_UNITS[idx];
+                    };
+                    ImageEditorHelper.prototype.getUrl = function (query) {
+                        if (!nts.uk.util.isNullOrUndefined(query)) {
+                            this.data = query;
+                        }
+                        if (this.data.url.indexOf(nts.uk.request.location.siteRoot.rawUrl) >= 0) {
+                            return this.data.url;
+                        }
+                        else {
+                            return "http://cors-anywhere.herokuapp.com/" + this.data.url;
+                        }
+                    };
+                    return ImageEditorHelper;
+                }());
+                ko.bindingHandlers['ntsImageEditor'] = new NtsImageEditorBindingHandler();
+            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_23) {
+            var koExtentions;
+            (function (koExtentions) {
                 var NtsFunctionPanelBindingHandler = (function () {
                     function NtsFunctionPanelBindingHandler() {
                     }
@@ -21015,7 +21212,7 @@ var nts;
                     return NtsFunctionPanelBindingHandler;
                 }());
                 ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
+            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -21046,6 +21243,75 @@ var nts;
                         });
                     }
                 })(ntsEditor || (ntsEditor = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                var ntsImageEditor;
+                (function (ntsImageEditor) {
+                    $.fn.ntsImageEditor = function (method, option) {
+                        var $element = $(this);
+                        switch (method) {
+                            case "upload": {
+                                return uploadImage($element, option);
+                            }
+                            case "selectByFileId": {
+                                return downloadImage($element, option);
+                            }
+                            case "showByUrl": {
+                                return viewByUrl($element, option);
+                            }
+                            default:
+                                return;
+                        }
+                    };
+                    function uploadImage($element, option) {
+                        var dfd = $.Deferred();
+                        var dataFile = $element.find(".image-preview").attr("src");
+                        if (!nts.uk.util.isNullOrUndefined(dataFile)) {
+                            var cropper = $element.data("cropper");
+                            var cropperData = cropper.getData(true);
+                            var formData = {
+                                "fileName": $element.data("file-name"),
+                                "stereoType": nts.uk.util.isNullOrUndefined(option) ? "image" : option.stereoType,
+                                "file": dataFile,
+                                "format": $element.data("file-type"),
+                                "x": cropperData.x,
+                                "y": cropperData.y,
+                                "width": cropperData.width,
+                                "height": cropperData.height
+                            };
+                            nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function (data, textStatus, jqXHR) {
+                                if (data !== undefined && data.businessException) {
+                                    dfd.reject(data);
+                                }
+                                else {
+                                    dfd.resolve(data);
+                                }
+                            }).fail(function (jqXHR, textStatus, errorThrown) {
+                                dfd.reject({ message: "Please check your network", messageId: "0" });
+                            });
+                        }
+                        else {
+                            dfd.reject({ message: "Please select file", messageId: "0" });
+                        }
+                        return dfd.promise();
+                    }
+                    function downloadImage($element, fileId) {
+                        $element.trigger("srcchanging", { url: nts.uk.request.liveView(fileId), isOutSiteUrl: false });
+                    }
+                    function viewByUrl($element, sourceUrl) {
+                        $element.trigger("srcchanging", { url: sourceUrl, isOutSiteUrl: true });
+                    }
+                })(ntsImageEditor || (ntsImageEditor = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
@@ -21162,7 +21428,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_23) {
+        (function (ui_24) {
             var koExtentions;
             (function (koExtentions) {
                 var NtsAccordionBindingHandler = (function () {
@@ -21238,8 +21504,7 @@ var nts;
                     return NtsAccordionBindingHandler;
                 }());
                 ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
-            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
+            })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map
