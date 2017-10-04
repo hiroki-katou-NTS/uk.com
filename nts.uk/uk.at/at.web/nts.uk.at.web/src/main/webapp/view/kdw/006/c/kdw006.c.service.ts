@@ -4,11 +4,11 @@ module nts.uk.at.view.kdw006.c.service {
         update: 'at/record/workrecord/operationsetting/register-disp-rest'
     };
 
-    export function update(dispRestric: any) {
+    export function update(dispRestric: any){
         nts.uk.request.ajax(servicePath.update, dispRestric);
     }
 
-    export function getDispRestric() {
+    export function getDispRestric(): JQueryPromise<any> {
         return nts.uk.request.ajax(servicePath.getDispRestric);
     }
 }
