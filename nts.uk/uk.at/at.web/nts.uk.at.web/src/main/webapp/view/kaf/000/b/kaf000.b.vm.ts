@@ -111,7 +111,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.enableApprove = ko.observable(true);
             self.enableDeny = ko.observable(false);
             self.enableRelease = ko.observable(true);
-            self.enableRegistration = ko.observable(false);
+            self.enableRegistration = ko.observable(true);
             self.enableDelete = ko.observable(true);
             self.enableCancel = ko.observable(true);
             self.enableBefore = ko.observable(true);

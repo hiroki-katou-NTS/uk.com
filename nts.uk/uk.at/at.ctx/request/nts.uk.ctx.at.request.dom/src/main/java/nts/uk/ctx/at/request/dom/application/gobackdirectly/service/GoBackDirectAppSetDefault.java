@@ -1,5 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -20,7 +22,9 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.adapter.WorkLocationAdapter;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeRepository;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -78,7 +82,6 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		PrelaunchAppSetting prelaunchAppSetting = beforeAppCommonSetting.getPrelaunchAppSetting(appID);
 		data.prelaunchAppSetting = prelaunchAppSetting;
 		//アルゴリズム「直行直帰基本データ」を実行する
-		
 		GoBackDirectly goBackDirect = goBackRepo.findByApplicationID(companyID, appID).get();
 		data.goBackDirectly = goBackDirect;
 		if (app != null) {
@@ -96,12 +99,16 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 					.getWorkLocationName();
 
 			if (!StringUtils.isEmpty(goBackDirect.getWorkTypeCD().v())) {
-				data.workTypeName = workTypeRepo.findByPK(companyID, goBackDirect.getWorkTypeCD().v()).get().getName().v();
+				Optional<WorkType> workType = workTypeRepo.findByPK(companyID, goBackDirect.getWorkTypeCD().v());
+				if(workType.isPresent()) {
+					data.workTypeName = workType.get().getName().v();
+				}
 			}
-
 			if (!StringUtils.isEmpty(goBackDirect.getSiftCD().v())) {
-				data.workTimeName = workTimeRepo.findByCode(companyID, goBackDirect.getSiftCD().v()).get()
-						.getWorkTimeDisplayName().getWorkTimeName().v();
+				Optional<WorkTime> workTime = workTimeRepo.findByCode(companyID, goBackDirect.getSiftCD().v());
+				if(workTime.isPresent()) {
+					data.workTimeName = workTime.get().getWorkTimeDisplayName().getWorkTimeName().v();
+				}
 			}
 		}
 		//アルゴリズム「直行直帰画面初期モード」を実行する
@@ -109,7 +116,5 @@ public class GoBackDirectAppSetDefault implements GoBackDirectAppSetService {
 		DetailScreenInitModeOutput outMode = initMode.getDetailScreenInitMode(preBootOuput.getUser(), preBootOuput.getReflectPlanState().value);
 		data.detailScreenInitModeOutput = outMode;
 		return data;
-		
-		
 	}
 }
