@@ -1,5 +1,6 @@
 module nts.uk.ui.menu {
     let SEPARATOR: string = "menu_item_separator";
+    let showingItem;
     
     /**
      * Menu item.
@@ -16,18 +17,23 @@ module nts.uk.ui.menu {
     /**
      * Create menu selection.
      */
-    function createMenuSelect($menuNav: JQuery) {
+    function createMenuSelect($menuNav: JQuery, menuSet: Array<any>) {
         let $cate = $("<li class='category'/>").addClass("menu-select").appendTo($menuNav);
         let $cateName = $("<div class='category-name'/>").html("&#9776;").appendTo($cate);
         let $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
-        let items = [ new MenuItem("メニュー選択"), new MenuItem(SEPARATOR), 
-                        new MenuItem("就業"), new MenuItem("給与"), new MenuItem("人事"), new MenuItem("会計") ];
-        _.forEach(items, function(item, i) {
-            if (item.name === SEPARATOR) {
-                $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
-                return;
-            }
-            $menuItems.append($("<li class='menu-item' path='" + item.path + "'/>").text(item.name));
+        $menuItems.append($("<li class='menu-item'/>").text("メニュー選択"));
+        $menuItems.append($("<hr/>").css({ margin: "5px 0px" }));
+        _.forEach(menuSet, function(item, i) {
+            $menuItems.append($("<li class='menu-item'/>").data("code", item.webMenuCode)
+                .text(item.webMenuName).on(constants.CLICK, function() {
+                    uk.localStorage.setItem(constants.MENU, $(this).data("code"));
+                    $menuNav.find(".category:eq(0)").off();
+                    $menuNav.find(".category:gt(0)").remove();
+                    generate($menuNav, item);
+                    _.defer(function() {
+                        showingItem = undefined;
+                    });
+                }));
         });
         $menuItems.append("<br/>");
     }
@@ -36,8 +42,20 @@ module nts.uk.ui.menu {
      * Request.
      */
     export function request() {
-        nts.uk.request.ajax(constants.MenuDataPath).done(function(data) {
-            generate(data);
+        nts.uk.request.ajax(constants.MenuDataPath).done(function(menuSet) {
+            if (!menuSet || menuSet.length === 0) return;
+            if (!menuSet) return;
+            let $menuNav = $("<ul/>").attr("id", "menu-nav").appendTo($("#nav-area"));
+            createMenuSelect($menuNav, menuSet);
+            let menuCode = uk.localStorage.getItem(constants.MENU);
+            if (menuCode.isPresent()) {
+                let selectedMenu = _.find(menuSet, function(m) {
+                    return m.webMenuCode === menuCode.get();
+                });
+                generate($menuNav, selectedMenu);
+            } else {
+                generate($menuNav, menuSet[0]);
+            }
             displayUserInfo();
             getProgram();
         });
@@ -46,21 +64,23 @@ module nts.uk.ui.menu {
     /**
      * Generate.
      */
-    function generate(menuSet: any) {
-        if (!menuSet) return;
-        let $menuNav = $("<ul/>").attr("id", "menu-nav").appendTo($("#nav-area"));
-        createMenuSelect($menuNav);
-        _.forEach(menuSet.categories, function(category: any) {
+    function generate($menuNav: JQuery, menuSet: any) {
+        _.forEach(menuSet.menuBars, function(category: any) {
             let $cate = $("<li class='category'/>").appendTo($menuNav);
-            let $cateName = $("<div class='category-name'/>").css("background", category.backgroundColor)
-                                .text(category.name).appendTo($cate);
+            if (category.selectedAttr === 1) {
+                // TODO: Menu bar hasn't had path field yet.
+                $cate.addClass("direct").data("path", category.path);
+            }
+            let $cateName = $("<div class='category-name'/>")
+                            .css({ background: category.backgroundColor, color: category.textColor || "#FFF" })
+                            .text(category.menuBarName).appendTo($cate);
             let $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
             if (category.items && category.items.length > 0) {
                 _.forEach(category.items, function(item: any) {
                     $menuItems.append($("<li class='menu-item' path='" + item.path + "'/>").text(item.name));
                 });
-            } else if (category.titles && category.titles.length > 0) {
-                titleMenu.createTitles($menuItems, category.titles);
+            } else if (category.titleMenu && category.titleMenu.length > 0) {
+                titleMenu.createTitles($menuItems, category.titleMenu);
             }
         });
         init();
@@ -155,9 +175,8 @@ module nts.uk.ui.menu {
      * Init.
      */
     function init() {
-        let showingItem;
         let $navArea = $("#nav-area");
-        let $menuItems = $("#menu-nav li.category");
+        let $menuItems = $("#menu-nav li.category:not(.direct)");
         function closeItem() {
             let $item = $("#menu-nav li.category:eq(" + showingItem + ")");
             $item.find(".category-name").removeClass("opening");
@@ -198,7 +217,7 @@ module nts.uk.ui.menu {
     
         $(".menu-item").on(constants.CLICK, function() {
             let path = $(this).data('path');
-            nts.uk.request.jump(path);
+            if (path) nts.uk.request.jump(path);
         });   
     }
     
@@ -222,21 +241,25 @@ module nts.uk.ui.menu {
                     width = left + WIDTH + 7;
                 }
                 let $titleDiv = $("<div/>").addClass("title-div").css({ left: left }).appendTo($title);
-                let $titleName = $("<div/>").addClass("title-name").text(t.name).css({ background: t.titleColor }).appendTo($titleDiv);
+                let $titleName = $("<div/>").addClass("title-name").text(t.titleMenuName)
+                                .css({ background: t.backgroundColor, color: t.textColor }).appendTo($titleDiv);
                 let $titleImage = $("<img/>").addClass("title-image").hide();
                 $titleDiv.append($titleImage);
-                if (!_.isNull(t.imagePath) && !_.isUndefined(t.imagePath) && !_.isEmpty(t.imagePath)) {
-                    $titleImage.attr("src", t.imagePath).show();
+                if (!_.isNull(t.imageFile) && !_.isUndefined(t.imageFile) && !_.isEmpty(t.imageFile)) {
+                    let fqpImage = nts.uk.request.specials.createPathToFile(t.imageFile);
+                    // TODO: Test image
+//                    $titleImage.attr("src", fqpImage).show();
+                    $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
                     height += 80;
                 }
-                if (t.items && t.items.length > 0) {
-                    _.forEach(t.items, function(item, i) {
-                        if (item.name === SEPARATOR) {
+                if (t.treeMenu && t.treeMenu.length > 0) {
+                    _.forEach(t.treeMenu, function(item, i) {
+                        if (item.menuAttr === 0) {
                             $titleDiv.append($("<hr/>").css({ margin: "14px 0px" }));
                             height += 30;
                             return;
                         }
-                        let $item = $("<li class='title-item' path='" + item.path + "'/>").text(item.name);
+                        let $item = $("<li class='title-item' path='" + item.url + "'/>").text(item.displayName || item.defaultName);
                         $titleDiv.append($item);
                         height += 40;
                     });
@@ -248,10 +271,12 @@ module nts.uk.ui.menu {
         }
     }
     
-    
     module constants {
+        export let MENU = "UK-Menu";
         export let CLICK = "click";
-        export let MenuDataPath = "/shared/menu/get";
+//        export let MenuDataPath = "/shared/menu/get";
+        export let AllMenus = "/sys/portal/webmenu/allmenus";
+        export let MenuDataPath = "/sys/portal/webmenu/finddetails";
         export let Companies = "/shared/menu/companies";
         export let UserName = "/shared/menu/username";
         export let PG = "/shared/menu/program";

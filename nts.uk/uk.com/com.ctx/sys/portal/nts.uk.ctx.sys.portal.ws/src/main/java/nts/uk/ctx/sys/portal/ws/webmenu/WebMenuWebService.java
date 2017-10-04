@@ -9,6 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.arc.scoped.request.RequestContextProvider;
 import nts.uk.ctx.sys.portal.app.command.webmenu.AddPersonalTyingCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.AddWebMenuCommandHandler;
 import nts.uk.ctx.sys.portal.app.command.webmenu.CopyWebMenuCommand;
@@ -22,6 +23,8 @@ import nts.uk.ctx.sys.portal.app.find.webmenu.EditMenuBarDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.PersonTypeDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.WebMenuFinder;
+import nts.uk.ctx.sys.portal.app.find.webmenu.detail.WebMenuDetailDto;
+import nts.uk.shr.com.context.AppContextsConfig;
 
 @Path("sys/portal/webmenu")
 @Produces("application/json")
@@ -68,6 +71,25 @@ public class WebMenuWebService extends WebService {
 	@Path("find")
 	public List<WebMenuDto> findAll() {
 		return this.webMenuFinder.findAll();
+	}
+	
+	@POST
+	@Path("finddefault")
+	public WebMenuDetailDto findDefault() {
+		return this.webMenuFinder.findDefault();
+	}
+	
+	@POST
+	@Path("programname")
+	public String getProgramName() {
+		String pgId = RequestContextProvider.get().get(AppContextsConfig.KEY_PROGRAM_ID);
+		return null;
+	}
+	
+	@POST
+	@Path("finddetails")
+	public List<WebMenuDetailDto> findAllDetails() {
+		return this.webMenuFinder.findAllDetails();
 	}
 	
 	@POST

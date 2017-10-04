@@ -19,11 +19,26 @@ public interface WebMenuRepository {
 	List<WebMenu> findAll(String companyId);
 	
 	/**
+	 * Find default web menu.
+	 * @param companyId companyId
+	 * @return default menu
+	 */
+	Optional<WebMenu> findDefault(String companyId);
+	
+	/**
 	 * Find a web menu
 	 * @param companyId
 	 * @return
 	 */
 	Optional<WebMenu> find(String companyId, String webMenuCode);
+	
+	/**
+	 * Find web menus.
+	 * @param companyId companyId
+	 * @param webMenuCodes webMenuCodes
+	 * @return web menu list
+	 */
+	List<WebMenu> find(String companyId, List<String> webMenuCodes);
 	
 	/**
 	 * add new a web menu
