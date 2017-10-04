@@ -59,8 +59,7 @@ public class DailyPerformanceAuthorityFinder {
 			dailyAttendanceAuthorityMonthlyDto = new ArrayList<>();
 		}
 
-		dailyAttendanceAuthorityMonthlyDto = this.authorityFormatMonthlyRepository
-				.getMonthlyDetail(companyId,new DailyPerformanceFormatCode(dailyPerformanceFormatCode)).stream().map(f -> {
+		dailyAttendanceAuthorityMonthlyDto = this.authorityFormatMonthlyRepository.getMonthlyDetail(companyId,new DailyPerformanceFormatCode(dailyPerformanceFormatCode)).stream().map(f -> {
 					if (attendanceItemMaps.containsKey(f.getAttendanceItemId()))
 						return new DailyAttendanceAuthorityDetailDto(f.getAttendanceItemId(),
 								attendanceItemMaps.get(f.getAttendanceItemId()).getAttendanceItemDisplayNumber(),

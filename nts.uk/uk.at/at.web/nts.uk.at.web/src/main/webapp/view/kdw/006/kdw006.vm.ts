@@ -12,7 +12,7 @@ module nts.uk.at.view.kdw006 {
             }
 
             opendScreenA() {
-                nts.uk.request.jump("/view/kdw/002/b/index.xhtml");
+                nts.uk.request.jump("/view/kdw/002/d/index.xhtml");
             }
 
             opendScreenB() {
