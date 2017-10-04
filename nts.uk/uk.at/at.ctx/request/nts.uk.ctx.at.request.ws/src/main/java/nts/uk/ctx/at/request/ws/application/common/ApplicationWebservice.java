@@ -43,7 +43,7 @@ public class ApplicationWebservice extends WebService {
 	private ApplicationFinder finderApp;
 	
 	@Inject 
-	private CheckDisplayMessage getDataBeforePreBootMode; 
+	private CheckDisplayMessage checkDisplayMessage; 
 	
 	@Inject 
 	private GetDataApprovalRootOfSubjectRequest getDataApprovalRoot;
@@ -122,13 +122,13 @@ public class ApplicationWebservice extends WebService {
 	}
 	
 	/**
-	 * cancel application
+	 * delete application
 	 * @return
 	 */
 	@POST
 	@Path("deleteapp/{applicationID}")
-	public void deleteApp(@PathParam("applicationID") String applicationID){
-		 this.deleteApp.deleteApp(applicationID);
+	public List<String> deleteApp(@PathParam("applicationID") String applicationID){
+		 return this.deleteApp.deleteApp(applicationID);
 	}
 	
 	/**
@@ -179,7 +179,7 @@ public class ApplicationWebservice extends WebService {
 	@POST
 	@Path("checkdisplayreason")
 	public boolean checkDisplayReason( Application application,GeneralDate datebase) {
-		return this.getDataBeforePreBootMode.checkDisplayReasonApp(application, datebase);
+		return this.checkDisplayMessage.checkDisplayReasonApp(application, datebase);
 	}
 	
 	/**
@@ -189,7 +189,7 @@ public class ApplicationWebservice extends WebService {
 	@POST
 	@Path("checkdisplayauthorizationcomment")
 	public boolean checkAuthorizationComment( Application application,GeneralDate datebase) {
-		return this.getDataBeforePreBootMode.checkDisplayAuthorizationComment(application, datebase);
+		return this.checkDisplayMessage.checkDisplayAuthorizationComment(application, datebase);
 	}
 	
 	

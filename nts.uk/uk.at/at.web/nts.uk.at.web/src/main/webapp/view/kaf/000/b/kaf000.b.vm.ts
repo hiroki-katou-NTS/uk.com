@@ -406,8 +406,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function () {
-                service.deleteApp(self.appID()).done(function() {
-                    nts.uk.ui.dialog.alert({messageId : 'Msg_16'});
+                service.deleteApp(self.appID()).done(function(data) {
+                    
+                    nts.uk.ui.dialog.alert({messageId : 'Msg_16'}).then(function(){
+                        //kiểm tra list người xác nhận, nếu khác null thì show info 392
+                        if(data.length !=0){
+                            nts.uk.ui.dialog.info({messageId : 'Msg_392'});    
+                        }
+                    });
                     //lấy vị trí appID vừa xóa trong listAppID
                     let index = self.listAppId.indexOf(self.appID());
                     if (index > -1) {
