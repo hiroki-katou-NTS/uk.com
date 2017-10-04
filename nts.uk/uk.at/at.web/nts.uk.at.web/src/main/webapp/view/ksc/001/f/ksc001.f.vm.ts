@@ -12,6 +12,7 @@ import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
             count: number = 100;
             scheduleExecutionLog: ScheduleExecutionLogDto;
             executionStartDate: string;
+            periodInfo: string;
             constructor() {
                 var self = this;
                 this.items = ko.observableArray([]);
@@ -43,6 +44,7 @@ import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
                     service.findScheduleExecutionLogById(inputData.executionId).done(function(data) {
                         self.scheduleExecutionLog = data;
                         self.executionStartDate = moment.utc(data.executionDateTime.executionStartDate).format("YYYY/MM/DD HH:mm:ss");
+                        self.periodInfo = nts.uk.resource.getText("KSC001_46", [moment(data.period.startDate).format('YYYY/MM/DD'), (moment(data.period.endDate).format('YYYY/MM/DD'))])
                         dfd.resolve();
                     });
                 }else {

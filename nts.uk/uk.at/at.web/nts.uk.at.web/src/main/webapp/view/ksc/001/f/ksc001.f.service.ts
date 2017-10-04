@@ -44,7 +44,7 @@ module nts.uk.at.view.ksc001.f {
                executionId: string;
                executionContent: ExecutionContentDto;
                executionDateTime: ExecutionDateTimeDto;
-               executionEmployeeId: String;
+               executionEmployeeId: string;
                period: PeriodDto;
                employeeCode: string;
                employeeName: string;
