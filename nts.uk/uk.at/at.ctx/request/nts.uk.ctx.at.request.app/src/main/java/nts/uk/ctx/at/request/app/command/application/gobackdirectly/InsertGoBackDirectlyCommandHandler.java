@@ -8,7 +8,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.AfterProcessRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
@@ -27,7 +27,7 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 	private GoBackDirectlyRegisterService goBackDirectlyRegisterService;
 	
 	@Inject 
-	private AfterProcessRegister afterProcessRegister;
+	private NewAfterRegister newAfterRegister;
 
 	@Override
 	protected void handle(CommandHandlerContext<InsertApplicationGoBackDirectlyCommand> context) {
@@ -78,6 +78,6 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 		appRepo.addApplication(newApp);
 		goBackDirectRepo.insert(newGoBack);
 		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
-		afterProcessRegister.processAfterRegister(companyId, newApp.getApplicationID());
+		newAfterRegister.processAfterRegister(companyId, newApp.getApplicationID());
 	}
 }
