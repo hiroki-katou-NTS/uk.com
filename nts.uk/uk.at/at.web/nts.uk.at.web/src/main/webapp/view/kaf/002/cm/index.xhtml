@@ -22,6 +22,7 @@
 						</div>
 						<div class="cell cm-column2">
 							<input class="cm-time-editor" data-bind="ntsTimeEditor: {
+									name: '#[KAF002_9]',
 									value: application().appDate, 
 									inputFormat: 'date',
 									required: true }" />
@@ -78,6 +79,7 @@
 						</div>
 						<div class="cell cm-column2">
 							<span class="cm-combo-box" data-bind="ntsComboBox: {
+									name: '#[KAF002_10]',
 									options: inputReasons,
 									optionsValue: 'id',
 									value: currentReason,
@@ -94,7 +96,9 @@
 						</div>
 						<div class="cell cm-column2">
 							<span>
-								<textarea class="cm-memo" data-bind="ntsMultilineEditor: { value: application().contentReason }" />
+								<textarea class="cm-memo" data-bind="ntsMultilineEditor: { 
+									name: '#[KAF002_11]',
+									value: application().contentReason }" />
 							</span>
 						</div>
 					</div>

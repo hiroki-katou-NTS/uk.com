@@ -8,7 +8,7 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 580, height: 440 };</script>
+			<script>var dialogSize = { width: 500, height: 340 };</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="cmm018.m.main.css" />
 			<com:scriptfile path="cmm018.m.start.js" />
@@ -23,18 +23,18 @@
 			</div>
 			<div id="contents-area">
 			
-				<div id="label1" class="label">#{i18n.getText('CMM018_91')}</div>
+				<div id="lblTitle" class="label">#{i18n.getText('CMM018_91')}</div><br/>
 				
-				<span id="label2" class="label with-image">
+				<div id="divImage" class="label with-image" style = "width: 50% !important">
 					<i class="image image-calendar"/>
 					<span>#{i18n.getText('CMM018_74')}</span>
 					<div data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>
-				</span>
+				</div>
 				
 				<div id="checkboxArea">
-					<div id="chkCompany" data-bind="ntsCheckBox: { checked: isCompany }">#{i18n.getText('CMM018_75')}</div><br></br>
-					<div id="chkWorkplace}" data-bind="ntsCheckBox: { checked: isWorkplace }">#{i18n.getText('CMM018_76')}</div><br></br>
-					<div id="chkPerson" data-bind="ntsCheckBox: { checked: isPerson }">#{i18n.getText('CMM018_78')}</div><br></br>
+					<div class ="divCheckbox" id="chkCompany" data-bind="ntsCheckBox: { checked: isCompany }">#{i18n.getText('CMM018_75')}</div><br></br>
+					<div class ="divCheckbox" id="chkWorkplace" data-bind="ntsCheckBox: { checked: isWorkplace }">#{i18n.getText('CMM018_76')}</div><br></br>
+					<div class ="divCheckbox" id="chkPerson" data-bind="ntsCheckBox: { checked: isPerson }">#{i18n.getText('CMM018_78')}</div><br></br>
 				</div>
 				
 			</div>
