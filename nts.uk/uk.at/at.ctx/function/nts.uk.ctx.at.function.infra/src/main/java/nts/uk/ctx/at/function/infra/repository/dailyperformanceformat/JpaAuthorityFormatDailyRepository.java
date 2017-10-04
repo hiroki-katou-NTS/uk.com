@@ -49,7 +49,7 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 		builderString = new StringBuilder();
 		builderString.append("UPDATE KfnmtAuthorityDailyItem a ");
 		builderString.append(
-				"SET a.displayOrder = :displayOrder , a.columnWidth = :columnWidth , a.dailyPerformanceFormatName = :dailyPerformanceFormatName ");
+				"SET a.displayOrder = :displayOrder , a.columnWidth = :columnWidth ");
 		builderString.append("WHERE a.kfnmtAuthorityDailyItemPK.companyId = :companyId ");
 		builderString
 				.append("AND a.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
@@ -100,7 +100,6 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 				.setParameter("attendanceItemId", authorityFomatDaily.getAttendanceItemId())
 				.setParameter("sheetNo", authorityFomatDaily.getSheetNo())
 				.setParameter("displayOrder", authorityFomatDaily.getDisplayOrder())
-				.setParameter("dailyPerformanceFormatName", authorityFomatDaily.getDailyPerformanceFormatName().v())
 				.setParameter("columnWidth", authorityFomatDaily.getColumnWidth()).executeUpdate();
 	}
 
@@ -133,7 +132,7 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 				kfnmtAuthorityDailyItem.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode,
 				kfnmtAuthorityDailyItem.kfnmtAuthorityDailyItemPK.attendanceItemId,
 				kfnmtAuthorityDailyItem.kfnmtAuthorityDailyItemPK.sheetNo,
-				kfnmtAuthorityDailyItem.dailyPerformanceFormatName, kfnmtAuthorityDailyItem.displayOrder,
+				kfnmtAuthorityDailyItem.displayOrder,
 				kfnmtAuthorityDailyItem.columnWidth);
 		return authorityFomatDaily;
 	}
@@ -147,7 +146,6 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 				.getDailyPerformanceFormatCode().v();
 		entity.kfnmtAuthorityDailyItemPK.attendanceItemId = authorityFomatDaily.getAttendanceItemId();
 		entity.kfnmtAuthorityDailyItemPK.sheetNo = authorityFomatDaily.getSheetNo();
-		entity.dailyPerformanceFormatName = authorityFomatDaily.getDailyPerformanceFormatName().v();
 		entity.columnWidth = authorityFomatDaily.getColumnWidth();
 		entity.displayOrder = authorityFomatDaily.getDisplayOrder();
 

@@ -27,9 +27,6 @@ public class KfnmtAuthorityMonthlyItem extends UkJpaEntity implements Serializab
 
 	@EmbeddedId
 	public KfnmtAuthorityMonthlyItemPK kfnmtAuthorityMonthlyItemPK;
-
-	@Column(name = "DAILY_PERFORMANCE_FORMAT_NAME")
-	public String dailyPerformanceFormatName;
 	
 	@Column(name = "DISPLAY_ORDER")
 	public int displayOrder;

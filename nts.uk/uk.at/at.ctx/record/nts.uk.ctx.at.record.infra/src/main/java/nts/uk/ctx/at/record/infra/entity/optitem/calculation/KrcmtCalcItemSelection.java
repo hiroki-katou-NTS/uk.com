@@ -55,6 +55,10 @@ public class KrcmtCalcItemSelection extends UkJpaEntity implements Serializable 
 		this.krcmtCalcItemSelectionPK = krcmtCalcItemSelectionPK;
 	}
 
+	public KrcmtCalcItemSelection(KrcmtOptItemFormulaPK pk) {
+		this.krcmtCalcItemSelectionPK = new KrcmtCalcItemSelectionPK();
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

@@ -26,10 +26,27 @@ module nts.uk.at.view.kaf002.m1 {
                 });        
             }
             
-            start(data: vmbase.StampRequestSettingDto){
+            start(appStampData: any, data: vmbase.StampRequestSettingDto){
                 var self = this;    
                 self.supFrameNo = data.supFrameDispNO > 10 ? 10 : data.supFrameDispNO;
                 self.stampPlaceDisplay(data.stampPlaceDisp);
+                self.appStampList.removeAll();
+                _.forEach(appStampData.appStampGoOutPermitCmds, item => {
+                    self.appStampList.push(
+                        new vmbase.AppStampGoOutPermit(
+                            item.stampAtr,
+                            item.stampFrameNo,
+                            item.stampGoOutReason,
+                            item.startTime,
+                            item.startLocation,
+                            item.endTime,
+                            item.endLocation, 
+                            false, 
+                            false, 
+                            false, 
+                            false
+                    ));        
+                });
             }
             
             extendsModeEvent(){

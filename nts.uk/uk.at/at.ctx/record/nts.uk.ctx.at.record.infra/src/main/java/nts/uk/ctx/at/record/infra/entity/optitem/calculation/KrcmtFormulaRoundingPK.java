@@ -23,6 +23,12 @@ public class KrcmtFormulaRoundingPK implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The Constant DAILY_ATR. */
+	public static final int DAILY_ATR = 1;
+
+	/** The Constant MONTHLY_ATR. */
+	public static final int MONTHLY_ATR = 2;
+
 	/** The cid. */
 	@Column(name = "CID")
 	private String cid;
@@ -44,6 +50,20 @@ public class KrcmtFormulaRoundingPK implements Serializable {
 	 */
 	public KrcmtFormulaRoundingPK() {
 		super();
+	}
+
+	/**
+	 * Instantiates a new krcmt formula rounding PK.
+	 *
+	 * @param pk the pk
+	 * @param roundingAtr the rounding atr
+	 */
+	public KrcmtFormulaRoundingPK(KrcmtOptItemFormulaPK pk, int roundingAtr) {
+		super();
+		this.cid = pk.getCid();
+		this.formulaId = pk.getFormulaId();
+		this.optionalItemNo = pk.getOptionalItemNo();
+		this.roundingAtr = roundingAtr;
 	}
 
 	/*

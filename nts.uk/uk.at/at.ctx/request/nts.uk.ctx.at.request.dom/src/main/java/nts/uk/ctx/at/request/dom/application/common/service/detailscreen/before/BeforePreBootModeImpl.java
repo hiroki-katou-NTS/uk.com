@@ -54,7 +54,6 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 	@Inject
 	ApproveAcceptedRepository approveAcceptedRepository;
 	
-	@Inject
 	/**
 	 * 
 	 */

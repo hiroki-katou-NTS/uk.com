@@ -17,21 +17,21 @@ public class KrcmtFormulaRounding_ {
 	public static volatile SingularAttribute<KrcmtFormulaRounding, KrcmtFormulaRoundingPK> krcmtFormulaRoundingPK;
 
 	/** The number rounding. */
-	public static volatile SingularAttribute<KrcmtFormulaRounding, Short> numberRounding;
+	public static volatile SingularAttribute<KrcmtFormulaRounding, Integer> numberRounding;
 
 	/** The time rounding. */
-	public static volatile SingularAttribute<KrcmtFormulaRounding, Short> timeRounding;
+	public static volatile SingularAttribute<KrcmtFormulaRounding, Integer> timeRounding;
 
 	/** The amount rounding. */
-	public static volatile SingularAttribute<KrcmtFormulaRounding, Short> amountRounding;
+	public static volatile SingularAttribute<KrcmtFormulaRounding, Integer> amountRounding;
 
 	/** The number rounding unit. */
-	public static volatile SingularAttribute<KrcmtFormulaRounding, Short> numberRoundingUnit;
+	public static volatile SingularAttribute<KrcmtFormulaRounding, Integer> numberRoundingUnit;
 
 	/** The time rounding unit. */
-	public static volatile SingularAttribute<KrcmtFormulaRounding, Short> timeRoundingUnit;
+	public static volatile SingularAttribute<KrcmtFormulaRounding, Integer> timeRoundingUnit;
 
 	/** The amount rounding unit. */
-	public static volatile SingularAttribute<KrcmtFormulaRounding, Short> amountRoundingUnit;
+	public static volatile SingularAttribute<KrcmtFormulaRounding, Integer> amountRoundingUnit;
 
 }
