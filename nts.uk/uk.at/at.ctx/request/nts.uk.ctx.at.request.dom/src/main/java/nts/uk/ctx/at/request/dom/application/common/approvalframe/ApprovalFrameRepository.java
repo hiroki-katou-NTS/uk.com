@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 
 /**
  * 
@@ -71,10 +72,4 @@ public interface ApprovalFrameRepository {
 	 */
 	List<ApprovalFrame> getListFrameByListPhase(String companyID,List<String> listPhaseID);
 
-	/**
-	 * get list frame by list phase 1
-	 * @param listPhase
-	 * @return
-	 */
-	List<List<ApprovalFrame>> getListFrameByListPhase1(String companyID,List<String> listPhaseID);
 }

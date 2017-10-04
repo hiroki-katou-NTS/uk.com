@@ -2,7 +2,11 @@ package nts.uk.ctx.at.request.app.find.application.gobackdirectly;
 
 import lombok.AllArgsConstructor;
 import lombok.Value;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.PrelaunchAppSetting;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailScreenInitModeOutput;
+import nts.uk.ctx.at.request.dom.application.common.service.other.output.OutputAllDataApp;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectAppSet;
 
 @AllArgsConstructor
@@ -17,8 +21,16 @@ public class GoBackDirectDetailDto {
 	String appReasonId;
 	String appReason;
 	String appDate;
-	AppCommonSettingDto appCommonSetting;
+	//AppCommonSettingDto appCommonSetting;
+	DetailedScreenPreBootModeDto detailedScreenPreBootModeDto;
+	
+	PrelaunchAppSettingDto prelaunchAppSettingDto;
 
+	ApplicationDto appDto;
+	
+	//OutputAllDataApp outputAllDataApp;
+
+	int OutMode;
 	/**
 	 * get Data of GoBackDirect with Application Setting
 	 * 
@@ -37,6 +49,10 @@ public class GoBackDirectDetailDto {
 				domain.getAppReasonId(), 
 				domain.getAppReason(),
 				domain.getAppDate(), 
-				AppCommonSettingDto.convertToDto(domain.getAppCommonSetOut()));
+				DetailedScreenPreBootModeDto.convertToDto(domain.getDetailedScreenPreBootModeOutput()),
+				PrelaunchAppSettingDto.convertToDto(domain.getPrelaunchAppSetting()),
+				ApplicationDto.fromDomain(domain.getApplication()),
+				domain.getDetailScreenInitModeOutput().getOutputMode().value
+				);
 	}
 }

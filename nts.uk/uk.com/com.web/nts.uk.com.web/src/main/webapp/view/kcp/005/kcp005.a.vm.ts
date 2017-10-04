@@ -65,6 +65,7 @@ module kcp005.a.viewmodel {
                         self.listComponentOption.selectedCode = self.bySelectedCode;
                     } else if (self.selectedType() == SelectType.SELECT_ALL) {
                         self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);
+                        return;
                     } else {
                         self.listComponentOption.selectedCode = self.selectedCode;
                     }
@@ -97,8 +98,12 @@ module kcp005.a.viewmodel {
                         
                         nts.uk.ui.dialog.alert("SelectAll button is not available for Single selection ! ");
                         self.isShowSelectAllButton(false);
+                        return;
                     } 
                 } 
+                if (!data && !self.isMultiSelect() ) {
+                    return;
+                }
                 self.reloadComponent();
             });
             self.selectedType = ko.observable(1);
@@ -143,6 +148,7 @@ module kcp005.a.viewmodel {
                         else {
                             self.selectedType(1);
                             nts.uk.ui.dialog.alert("SelectAll is not available for Single selection ! ");
+                            return;
                         }
                         break;
                     case 3:
@@ -210,7 +216,6 @@ module kcp005.a.viewmodel {
             } else {
                 nts.uk.ui.dialog.alert("Select Item to Save ! ");
             }
-            $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
         // Setting Item(s) which deleted from main Screen
         private settingDeletedItem() {
@@ -237,7 +242,6 @@ module kcp005.a.viewmodel {
             } else {
                 nts.uk.ui.dialog.alert("Select Item to Delete ! ");
             }
-            $('#component-items-list').ntsListComponent(self.listComponentOption);
         }
         // Get Code of Selected Item(s)
         private getSelectedItemCode(): string {

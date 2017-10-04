@@ -13,15 +13,15 @@ import javax.ws.rs.Produces;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.UseClassification;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.UseUnitOvertimeSetting;
 
 /**
  * The Class AutomaticCalculationWS.
  */
-@Path("ctx/at/schedule/shift/autocal")
+@Path("ctx/at/shared/ot/autocal")
 @Produces("application/json")
 public class AutomaticCalculationWS extends WebService {
 
@@ -44,7 +44,7 @@ public class AutomaticCalculationWS extends WebService {
 	@POST
 	@Path("find/autocaluseclassification")
 	public List<EnumConstant> findEnumUseClassification() {
-		return EnumAdaptor.convertToValueNameList(UseClassification.class);
+		return EnumAdaptor.convertToValueNameList(ApplyAtr.class);
 	}
 
 	/**

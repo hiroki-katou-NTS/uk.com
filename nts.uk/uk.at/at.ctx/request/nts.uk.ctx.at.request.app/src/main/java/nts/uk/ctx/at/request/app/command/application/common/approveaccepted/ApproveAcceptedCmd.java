@@ -9,7 +9,11 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public class ApproveAcceptedCmd {
-	public String phaseID ;
-	public int dispOrder ;
+	public String appAcceptedID ;
 	public String approverSID ;
+	public int approvalATR;
+	public int confirmATR;
+	public String approvalDate;
+	public String reason;
+	public String representerSID;
 }

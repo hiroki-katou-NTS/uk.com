@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.PositionId;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingSetMemento;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJobCal;
 import nts.uk.ctx.at.shared.infra.entity.ot.autocalsetting.wkpjob.KshmtAutoWkpJobCalPK;
@@ -58,7 +58,7 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpJobAutoCalSettingSetMemento#setPositionId(nts.uk.ctx.at.schedule.dom.shift.autocalsetting.PositionId)
 	 */
 	@Override
-	public void setPositionId(PositionId positionId) {
+	public void setPositionId(JobTitleId positionId) {
 		KshmtAutoWkpJobCalPK pk = entity.getKshmtAutoWkpJobCalPK();
 		pk.setJobid(positionId.v());
 		this.entity.setKshmtAutoWkpJobCalPK(pk);

@@ -8,7 +8,7 @@ import lombok.Getter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.BaseAutoCalSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.PositionId;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 
 /**
  * The Class WkpJobAutoCalSetting.
@@ -27,7 +27,7 @@ public class WkpJobAutoCalSetting extends BaseAutoCalSetting {
 
 	/** The job id. */
 	// 職位ID
-	private PositionId jobId;
+	private JobTitleId jobId;
 
 	/**
 	 * Instantiates a new wkp job auto cal setting.

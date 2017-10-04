@@ -102,7 +102,7 @@ div.form-label.broken {
 }
 
 .mainScreen {
-	height: 730	px;
+	height:1000	px;
 }
 
 #label-1 {
@@ -111,6 +111,7 @@ div.form-label.broken {
 
 .lstApprover {
 	margin-left: 20px;
+	margin-top: 730px;
 }
 /*workType, Sift */
 .lblSiftCd, .lblWorkTypeCd {

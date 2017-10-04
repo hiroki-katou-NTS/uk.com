@@ -57,35 +57,14 @@ module nts.uk.at.view.kaf002.cm {
                     case 4: self.m5.start(data.appStampSetDto.stampRequestSettingDto);break; 
                     default: break;
                 } 
-                
-                self.approvalList = [];
                 _.forEach(approvalList, appPhase => {
-                    let b = new vmbase.AppApprovalPhase(
-                        appPhase.approvalPhaseId,
-                        appPhase.approvalForm,
-                        appPhase.orderNumber,
-                        1,
-                        []); 
                     _.forEach(appPhase.approverDtos, appFrame => {
-                        let c = new vmbase.ApprovalFrame(
-                            appFrame.approvalPhaseId,
-                            appFrame.orderNumber,
-                            appFrame.approverId,
-                            appFrame.approvalAtr,
-                            appFrame.confirmPerson,
-                            self.application().inputDate(),
-                            "",
-                            "",
-                            []);
-                        let d = new vmbase.ApproveAccepted(
-                            appFrame.approvalPhaseId,
-                            appFrame.orderNumber,
-                            appFrame.employeeId);
-                        c.approveAcceptedCmds.push(d);
-                        b.approvalFrameCmds.push(c);   
-                    });
-                    self.approvalList.push(b);    
+                        _.forEach(appFrame.approveAcceptedCmds, appAccepted => {
+                            appAccepted.approvalDate = self.application().appDate();
+                        });    
+                    }); 
                 });
+                self.approvalList = approvalList;
             }
             
             register(){
@@ -103,8 +82,9 @@ module nts.uk.at.view.kaf002.cm {
             
             update(){
                 var self = this;
+                self.application().titleReason(_.find(self.inputReasons(), o => o.id = self.currentReason()).id);
                 switch(self.stampRequestMode()){
-                    case 0: self.m1.update(self.application());break;    
+                    case 0: self.m1.update(self.application(), self.approvalList);break;    
                     case 1: self.m2.update(self.application());break;  
                     case 2: self.m3.update(self.application());break; 
                     case 3: self.m4.update(self.application());break; 

@@ -15,13 +15,18 @@
 			<com:scriptfile path="cmm018.a.start.js" />
 			<com:scriptfile path="/view/kcp/009/kcp009.js" of="/nts.uk.com.web" />
 			<com:stylefile path="/view/kcp/009/style.css" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/kcp/share/tree.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.service.js" of="/nts.uk.com.web" />
+			<com:scriptfile path="/view/ccg/share/ccg.vm.js" of="/nts.uk.com.web" />
+			<com:stylefile path="/view/ccg/share/style.css" of="/nts.uk.com.web" />
 		</ui:define>
 		<ui:define name="sidebar">
-			<ul class="navigator">
+			<ul class="navigator" data-bind="with: viewmodelA">
 				<!-- A1_2: Tab 会社 -->
-				<li><a href="#tabpanel-1" role="tab-navigator">#{i18n.getText('Com_Company')}</a></li>
+				<li><a href="#tabpanel-1" role="tab-navigator" data-bind="visible: visibleTab">#{i18n.getText('Com_Company')}</a></li>
 				<!-- A1_3: Tab 職場 -->
-				<li><a href="#tabpanel-2" role="tab-navigator">#{i18n.getText('Com_Workplace')}</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" data-bind="visible: visibleTab">#{i18n.getText('Com_Workplace')}</a></li>
 				<!-- A1_4: Tab 個人 -->
 				<li><a href="#tabpanel-3" role="tab-navigator">#{i18n.getText('Com_Person')}</a></li>
 			</ul>
@@ -32,12 +37,12 @@
 					<span class="title">#{i18n.getText('Com_Company')}</span>
 					<!-- A1_5: Button 登録 -->
 					<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_18')}</button>
-					<!-- A1_6: Button 未登録社員リスト -->
-					<button>#{i18n.getText('CMM018_12')}</button>
-					<!-- A1_7: Button 承認者一覧 -->
-					<button data-bind="click: $data.openDialogI">#{i18n.getText('CMM018_14')}</button>
+					<!-- A1_6: Button 未登録社員リスト - Dialog L -->
+					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_12')}</button>
+					<!-- A1_7: Button 承認者一覧 - Dialog N -->
+					<button data-bind = "click: openDialogN">#{i18n.getText('CMM018_14')}</button>
 					<!-- A1_8: Button マスタリスト -->
-					<button data-bind="click: openDialogJ">#{i18n.getText('CMM018_13')}</button>
+					<button data-bind = "click: openDialogM">#{i18n.getText('CMM018_13')}</button>
 				</div>
 				<div class="contents-area" data-bind="with: viewmodelA">
 					<div style="margin-top: 10px;">
@@ -75,7 +80,7 @@
 								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<button class="dateControlBtn" data-bind="click: $data.openDialogI">#{i18n.getText('CMM018_20')}</button>
-										<button class="danger dateControlBtn" data-bind="click: openDialogJ">#{i18n.getText('CMM018_21')}</button>
+										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
 									</div>
 									<div style="margin: 20px">
 										<table tabindex="2" id="single-list-dataSource"
@@ -159,31 +164,31 @@
 											<!-- A3_16: -->
 											<td class="approver"><div>
 												<div data-bind="foreach: appPhase1.approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</div></td>
 											<!-- A3_17: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
-													data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,2)}"></button>
+													data-bind="click: function(){$parent.openDialogK(appPhase2,approvalId,appTypeValue,2)}"></button>
 												<div data-bind="text: appPhase2.appFormName"></div>
 											</td>
 											<!-- A3_19: -->
-											<td class="approver" data-bind="if: appPhase2 != null">
+											<td class="approver">
 												<div data-bind="foreach: appPhase2.approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_20: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" 
-														data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,3)}"></button>
+														data-bind="click: function(){$parent.openDialogK(appPhase3,approvalId,appTypeValue,3)}"></button>
 												<div data-bind="text: appPhase3.appFormName"></div>
 											</td>
 											<!-- A3_22: -->										
 											<td class="approver">
 												<div data-bind="foreach: appPhase3.approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div></td>
 											<!-- A3_23: -->
 											<td class="button_phase">
@@ -194,7 +199,7 @@
 											<!-- A3_25: -->
 											<td class="approver">
 												<div data-bind="foreach: appPhase4.approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_26: -->
@@ -206,7 +211,7 @@
 											<!-- A3_28: -->
 											<td class="approver">
 												<div data-bind="foreach: appPhase5.approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_29: Button delete -->
@@ -314,7 +319,7 @@
 											<!-- B3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</div></td>
 											<!-- B3_17: -->
@@ -326,7 +331,7 @@
 											<!-- B3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- B3_20: -->
@@ -338,7 +343,7 @@
 											<!-- B3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div></td>
 											<!-- B3_23: -->
 											<td class="button_phase">
@@ -349,7 +354,7 @@
 											<!-- B3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- B3_26: -->
@@ -361,7 +366,7 @@
 											<!-- B3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 										</tr>
@@ -378,18 +383,18 @@
 					<!-- C1_5: Button 登録 -->
 					<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_18')}</button>
 					<!-- C1_6: Button 未登録社員リスト -->
-					<button>#{i18n.getText('CMM018_12')}</button>
+					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_12')}</button>
 					<!-- c1_7: Button 承認者一覧 -->
-					<button>#{i18n.getText('CMM018_14')}</button>
+					<button data-bind = "click: openDialogN">#{i18n.getText('CMM018_14')}</button>
 					<!-- c1_8: Button マスタリスト -->
-					<button>#{i18n.getText('CMM018_13')}</button>
+					<button data-bind = "click: openDialogM">#{i18n.getText('CMM018_13')}</button>
 				</div>
 				<div class="contents-area" data-bind="with: viewmodelA">
 					<div style="margin-top: 10px;">
 						<table>
 							<tr>
 								<td style = "width: 880px">
-								<div>Hatake - Kakashi</div>
+								<button data-bind = "click: openDialogCDL008">CDL008</button>
 								</td>
 								<td>
 									<!-- A1_11: Label モード切替： -->
@@ -412,15 +417,15 @@
 						<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
 							<!-- A2: List gridList -->
 							<div id = "left-contents" style="float: left;margin-left: 10px;">
-								<div style="width: 290px; height: 350px;" class="caret-right caret-background bg-green">
+								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<button class="dateControlBtn" data-bind="click: $data.openDialogI">#{i18n.getText('CMM018_20')}</button>
-										<button class="danger dateControlBtn" data-bind="click: openDialogJ">#{i18n.getText('CMM018_21')}</button>
+										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
 									</div>
-									<div style="margin: 10px">
+									<div style="margin: 20px">
 										<table tabindex="2" id="single-list-dataSource"
 											data-bind="ntsGridList:{
-												width: 280,
+												width: 240,
 												height: 258,
 												options: listHistory,								
 												optionsValue: 'id',
@@ -499,7 +504,7 @@
 											<!-- A3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</div></td>
 											<!-- A3_17: -->
@@ -511,7 +516,7 @@
 											<!-- A3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_20: -->
@@ -523,7 +528,7 @@
 											<!-- A3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div></td>
 											<!-- A3_23: -->
 											<td class="button_phase">
@@ -534,7 +539,7 @@
 											<!-- A3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_26: -->
@@ -546,7 +551,7 @@
 											<!-- A3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_29: Button delete -->
@@ -654,7 +659,7 @@
 											<!-- B3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</div></td>
 											<!-- B3_17: -->
@@ -665,7 +670,7 @@
 											<!-- B3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- B3_20: -->
@@ -676,7 +681,7 @@
 											<!-- B3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div></td>
 											<!-- B3_23: -->
 											<td class="button_phase" data-bind="with: appPhase4">
@@ -686,7 +691,7 @@
 											<!-- B3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- B3_26: -->
@@ -697,7 +702,7 @@
 											<!-- B3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 										</tr>
@@ -708,15 +713,15 @@
 					</div>
 				</div>
 			</div>
-			<div id="tabpanel-3" role="tabpanel">
+			<div id="tabpanel-3" role="tabpanel" >
 				<div class="sidebar-content-header" data-bind="with: viewmodelA">
 					<span class="title">#{i18n.getText('Com_Person')}</span>
 					<!-- E1_5: Button 登録 -->
 					<button class="proceed" data-bind="click: register, enable: $root.errors.isEmpty">#{i18n.getText('CMM018_18')}</button>
 					<!-- E1_6: Button 未登録社員リスト -->
-					<button>#{i18n.getText('CMM018_12')}</button>
+					<button data-bind = "click: openDialogL">#{i18n.getText('CMM018_12')}</button>
 					<!-- E1_7: Button 承認者一覧 -->
-					<button >#{i18n.getText('CMM018_14')}</button>
+					<button data-bind = "click: openDialogN">#{i18n.getText('CMM018_14')}</button>
 					<!-- E1_8: Button マスタリスト -->
 					<button>#{i18n.getText('CMM018_13')}</button>
 				</div>
@@ -748,12 +753,13 @@
 					<div>
 						<!-- SCREEN E -->
 						<div class="mode_Common"  data-bind="visible: checkAAA" style="clear: both;">
+						<div id="ccgcomponent"></div>
 							<!-- A2: List gridList -->
 							<div id = "left-contents" style="float: left;margin-left: 10px;">
 								<div style="width: 280px; height: 350px;" class="caret-right caret-background bg-green">
 									<div style="margin: 10px 20px 20px 20px">
 										<button class="dateControlBtn" data-bind="click: $data.openDialogI">#{i18n.getText('CMM018_20')}</button>
-										<button class="danger dateControlBtn" data-bind="click: openDialogJ">#{i18n.getText('CMM018_21')}</button>
+										<button class="danger dateControlBtn" data-bind="click: openDialogJ, enable: enableDelete">#{i18n.getText('CMM018_21')}</button>
 									</div>
 									<div style = "margin-left: 20px">
 										<table tabindex="2" id="single-list-dataSource"
@@ -836,46 +842,50 @@
 											<!-- A3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</div></td>
 											<!-- A3_17: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,2)}"></button>
+												<div data-bind="text: appPhase2.appFormName"></div>
 											</td>
 											<!-- A3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_20: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,3)}"></button>
+												<div data-bind="text: appPhase3.appFormName"></div>
 											</td>
 											<!-- A3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div></td>
 											<!-- A3_23: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,4)}"></button>
+												<div data-bind="text: appPhase4.appFormName"></div>
 											</td>
 											<!-- A3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_26: -->
 											<td class="button_phase">
 												<button style=" background-image: url(../images/cmm018_icon.png);width:23px; height:33px;" data-bind="click: function(){$parent.openDialogK(appPhase1,approvalId,appTypeValue,5)}"></button>
+												<div data-bind="text: appPhase5.appFormName"></div>
 											</td>
 											<!-- A3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- A3_29: Button delete -->
@@ -982,7 +992,7 @@
 											<!-- B3_16: -->
 											<td class="approver" data-bind="with: appPhase1"><div>
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</div></td>
 											<!-- B3_17: -->
@@ -993,7 +1003,7 @@
 											<!-- B3_19: -->
 											<td class="approver" data-bind="with: appPhase2">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- B3_20: -->
@@ -1004,7 +1014,7 @@
 											<!-- B3_22: -->										
 											<td class="approver" data-bind="with: appPhase3">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div></td>
 											<!-- B3_23: -->
 											<td class="button_phase" data-bind="with: appPhase4">
@@ -1014,7 +1024,7 @@
 											<!-- B3_25: -->
 											<td class="approver" data-bind="with: appPhase4">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 											<!-- B3_26: -->
@@ -1025,7 +1035,7 @@
 											<!-- B3_28: -->
 											<td class="approver" data-bind="with: appPhase5">
 												<div data-bind="foreach: approver">
-													<div data-bind="text: employeeId"> <br /></div>
+													<div data-bind="text: name"> <br /></div>
 												</div>
 											</td>
 										</tr>

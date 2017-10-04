@@ -12,20 +12,8 @@ public interface AppStampRepository {
 	
 	public AppStamp findByAppDate(String companyID, GeneralDate appDate, StampRequestMode stampRequestMode, String employeeID);
 	
-	public void addStampGoOutPermit(AppStamp appStamp);
+	public void addStamp(AppStamp appStamp);
 	
-	public void addStampWork(AppStamp appStamp);
-	
-	public void addStampCancel(AppStamp appStamp);
-	
-	public void addStampOnlineRecord(AppStamp appStamp);
-	
-	public void updateStampGoOutPermit(AppStamp appStamp);
-	
-	public void updateStampWork(AppStamp appStamp);
-	
-	public void updateStampCancel(AppStamp appStamp);
-	
-	public void updateStampOnlineRecord(AppStamp appStamp);
+	public void updateStamp(AppStamp appStamp);
 	
 }
