@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.ws.company.organization.classification;
+package nts.uk.ctx.bs.employee.ws.classification;
 
 import java.util.List;
 
