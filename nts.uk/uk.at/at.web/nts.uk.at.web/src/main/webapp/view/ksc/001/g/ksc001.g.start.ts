@@ -13,9 +13,9 @@ module nts.uk.at.view.ksc001.g {
                 virtualization: true,
                 virtualizationMode: 'continuous',
                 columns: [
-                    { headerText: '', key: 'id', dataType: 'number', width: '150px',hidden: true },
-                    { headerText: nts.uk.resource.getText('KSC001_66'), key: 'exeDay', dataType: 'string', width: '150px' },
-                    { headerText: nts.uk.resource.getText('KSC001_67'), key: 'exeEmployeeCode', dataType: 'string', width: '100px' },
+                    { headerText: '', key: 'id', dataType: 'string', width: '150px',hidden: true },
+                    { headerText: nts.uk.resource.getText('KSC001_66'), key: 'exeDay', dataType: 'string', width: '100px' },
+                    { headerText: nts.uk.resource.getText('KSC001_67'), key: 'exeEmployeeCode', dataType: 'string', width: '150px' },
                     { headerText: nts.uk.resource.getText('KSC001_68'), key: 'exeEmployeeName', dataType: 'string', width: '200px' },
                     { headerText: nts.uk.resource.getText('KSC001_31'), key: 'targetPeriod', dataType: 'string', width: '220px' },
                     { headerText: nts.uk.resource.getText('KSC001_69'), key: 'status', dataType: 'string', width: '150px' },

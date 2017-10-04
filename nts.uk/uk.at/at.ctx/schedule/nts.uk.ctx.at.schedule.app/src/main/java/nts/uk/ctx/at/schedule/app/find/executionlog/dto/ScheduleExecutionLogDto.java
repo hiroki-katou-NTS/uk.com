@@ -18,7 +18,7 @@ public class ScheduleExecutionLogDto implements ScheduleExecutionLogSetMemento {
 	public String companyId;
 
 	/** The completion status. */
-	public Integer completionStatus;
+	public String completionStatus;
 
 	/** The execution id. */
 	public String executionId;
@@ -55,7 +55,7 @@ public class ScheduleExecutionLogDto implements ScheduleExecutionLogSetMemento {
 	 */
 	@Override
 	public void setCompletionStatus(CompletionStatus completionStatus) {
-		this.completionStatus = completionStatus.value;
+		this.completionStatus = completionStatus.description;
 	}
 
 	/* (non-Javadoc)
