@@ -30,6 +30,11 @@ module nts.uk.com.view.cps017.c.viewmodel {
                 }
             });
         }
+        
+        //
+        closeDialog(){
+            nts.uk.ui.windows.close();    
+        }
     }
 
     //
