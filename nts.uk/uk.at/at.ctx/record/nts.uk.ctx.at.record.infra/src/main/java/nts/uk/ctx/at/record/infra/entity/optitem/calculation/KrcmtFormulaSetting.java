@@ -75,6 +75,16 @@ public class KrcmtFormulaSetting extends UkJpaEntity implements Serializable {
 	/**
 	 * Instantiates a new krcmt formula setting.
 	 *
+	 * @param pk the pk
+	 */
+	public KrcmtFormulaSetting(KrcmtOptItemFormulaPK pk) {
+		super();
+		this.krcmtFormulaSettingPK = new KrcmtFormulaSettingPK(pk);
+	}
+
+	/**
+	 * Instantiates a new krcmt formula setting.
+	 *
 	 * @param krcmtFormulaSettingPK the krcmt formula setting PK
 	 */
 	public KrcmtFormulaSetting(KrcmtFormulaSettingPK krcmtFormulaSettingPK) {

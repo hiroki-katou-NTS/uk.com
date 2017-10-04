@@ -8,11 +8,13 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityDailyPerformanceFormat;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatDaily;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFormatInitialDisplay;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFormatSheet;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatName;
+import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityDailyPerformanceFormatRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatDailyRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatInitialDisplayRepository;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatSheetRepository;
@@ -30,6 +32,9 @@ public class UpdateAuthorityDailyCommandHandler extends CommandHandler<UpdateAut
 
 	@Inject
 	private AuthorityFormatInitialDisplayRepository authorityFormatInitialDisplayRepository;
+	
+	@Inject
+	private AuthorityDailyPerformanceFormatRepository authorityDailyPerformanceFormatRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateAuthorityDailyCommand> context) {
@@ -72,7 +77,7 @@ public class UpdateAuthorityDailyCommandHandler extends CommandHandler<UpdateAut
 					return new AuthorityFomatDaily(companyId,
 							new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()),
 							f.getAttendanceItemId(), command.getSheetNo(),
-							new DailyPerformanceFormatName(command.getDailyPerformanceFormatName()), f.getOrder(),
+							f.getOrder(),
 							f.getColumnWidth());
 				}).collect(Collectors.toList());
 		// List Data Add from UI (just added in UI)
@@ -81,7 +86,7 @@ public class UpdateAuthorityDailyCommandHandler extends CommandHandler<UpdateAut
 					return new AuthorityFomatDaily(companyId,
 							new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()),
 							f.getAttendanceItemId(), command.getSheetNo(),
-							new DailyPerformanceFormatName(command.getDailyPerformanceFormatName()), f.getOrder(),
+							f.getOrder(),
 							f.getColumnWidth());
 				}).collect(Collectors.toList());
 
@@ -99,6 +104,12 @@ public class UpdateAuthorityDailyCommandHandler extends CommandHandler<UpdateAut
 				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()), command.getSheetNo(),
 				command.getSheetName());
 		this.authorityFormatSheetRepository.update(authorityFormatSheet);
+		
+		AuthorityDailyPerformanceFormat authorityDailyPerformanceFormat = new AuthorityDailyPerformanceFormat(companyId,
+				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()),
+				new DailyPerformanceFormatName(command.getDailyPerformanceFormatName()));
+		
+		this.authorityDailyPerformanceFormatRepository.update(authorityDailyPerformanceFormat);
 
 		AuthorityFormatInitialDisplay authorityFormatInitialDisplay = new AuthorityFormatInitialDisplay(companyId,
 				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()));

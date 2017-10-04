@@ -406,7 +406,30 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function () {
-                service.deleteApp("4be33849-a4c3-4951-9d62-009b95029b8c").done(function() {
+                service.deleteApp(self.appID()).done(function() {
+                    nts.uk.ui.dialog.alert({messageId : 'Msg_16'});
+                    //lấy vị trí appID vừa xóa trong listAppID
+                    let index = self.listAppId.indexOf(self.appID());
+                    if (index > -1) {
+                        //xóa appID vừa xóa trong list
+                        self.listAppId.splice(index, 1);
+                    }
+                    //nếu vị trí vừa xóa khác vị trí cuối
+                    if(index !=self.listAppId.length-1){
+                        //gán lại appId mới tại vị trí chính nó
+                        self.appID(self.listAppId[index]);
+                    }else{
+                        //nếu nó ở vị trí cuối thì lấy appId ở vị trí trước nó
+                        self.appID(self.listAppId[index-1]);
+                    }
+                    //if list # null    
+                    if(self.listAppId.length!=0)
+                    {
+                        self.start();
+                    }else{ //nếu list null thì trả về màn hình mẹ
+                        nts.uk.request.jump("/view/kaf/000/test/index.xhtml");    
+                    }
+                    
                     dfd.resolve();
                 });
             });   
@@ -420,7 +443,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let dfd = $.Deferred<any>();
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_249' }).ifYes(function () {
                 service.cancelApp(self.appID()).done(function() {
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_224" });
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_224" })
                     dfd.resolve();
                 });
             });
