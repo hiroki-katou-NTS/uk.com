@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.dom.executionlog;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
 
@@ -20,7 +21,16 @@ public interface ScheduleExecutionLogRepository {
 	 * @param period the period
 	 * @return the optional
 	 */
-	public List<ScheduleExecutionLog> find(String companyId,Period period);
+	public List<ScheduleExecutionLog> find(String companyId ,Period period);
+	
+	/**
+	 * Find by id.
+	 *
+	 * @param companyId the company id
+	 * @param executionId the execution id
+	 * @return the optional
+	 */
+	public Optional<ScheduleExecutionLog> findById(String companyId, String executionId);
 	
 	/**
 	 * Save.

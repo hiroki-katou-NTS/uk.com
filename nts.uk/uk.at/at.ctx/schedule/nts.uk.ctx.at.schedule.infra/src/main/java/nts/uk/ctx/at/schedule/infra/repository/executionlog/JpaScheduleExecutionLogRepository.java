@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -20,6 +21,7 @@ import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLog;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLogPK;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLogPK_;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLog_;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
@@ -36,6 +38,20 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 	 * 
 	 * @see
 	 * nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository#
+	 * findById(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Optional<ScheduleExecutionLog> findById(String companyId, String executionId) {
+		return this.queryProxy()
+				.find(new KscmtScheduleExcLogPK(companyId, executionId), KscmtScheduleExcLog.class)
+				.map(entity -> this.toDomain(entity));
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository#
 	 * find(java.lang.String, nts.uk.ctx.at.shared.dom.workrule.closure.Period)
 	 */
 	@Override
@@ -44,7 +60,8 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
-		CriteriaQuery<KscmtScheduleExcLog> cq = criteriaBuilder.createQuery(KscmtScheduleExcLog.class);
+		CriteriaQuery<KscmtScheduleExcLog> cq = criteriaBuilder
+				.createQuery(KscmtScheduleExcLog.class);
 		Root<KscmtScheduleExcLog> root = cq.from(KscmtScheduleExcLog.class);
 
 		// select root
@@ -52,16 +69,16 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
-		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(KscmtScheduleExcLog_.kscmtScheduleExcLogPK).get(KscmtScheduleExcLogPK_.cid), companyId));
 		lstpredicateWhere
-				.add(criteriaBuilder.lessThanOrEqualTo(root.get(KscmtScheduleExcLog_.startYmd), period.getStartDate()));
-		lstpredicateWhere
-				.add(criteriaBuilder.greaterThanOrEqualTo(root.get(KscmtScheduleExcLog_.endYmd), period.getEndDate()));
-        
+				.add(criteriaBuilder.equal(root.get(KscmtScheduleExcLog_.kscmtScheduleExcLogPK)
+						.get(KscmtScheduleExcLogPK_.cid), companyId));
+		lstpredicateWhere.add(criteriaBuilder
+				.lessThanOrEqualTo(root.get(KscmtScheduleExcLog_.startYmd), period.getStartDate()));
+		lstpredicateWhere.add(criteriaBuilder
+				.greaterThanOrEqualTo(root.get(KscmtScheduleExcLog_.endYmd), period.getEndDate()));
+
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder
-				.desc(root.get(KscmtScheduleExcLog_.startYmd)));
+		cq.orderBy(criteriaBuilder.desc(root.get(KscmtScheduleExcLog_.startYmd)));
 
 		List<KscmtScheduleExcLog> lstKscmtScheduleExcLog = em.createQuery(cq).getResultList();
 		// check empty
@@ -96,5 +113,16 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 		domain.saveToMemento(new JpaScheduleExecutionLogSetMemento(entity));
 		return entity;
 	}
+	
+	/**
+	 * To domain.
+	 *
+	 * @param entity the entity
+	 * @return the schedule execution log
+	 */
+	private ScheduleExecutionLog toDomain(KscmtScheduleExcLog entity){
+		return new ScheduleExecutionLog(new JpaScheduleExecutionLogGetMemento(entity));
+	}
+
 
 }
