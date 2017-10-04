@@ -18,6 +18,8 @@ module nts.uk.at.view.kml002.b.viewmodel {
         constructor() {
             var self = this;
             
+            var data = nts.uk.ui.windows.getShared("KML002_DIALOG_B_DATA");
+            
             self.radioForm = ko.observableArray([
                 { id: 0, name: nts.uk.resource.getText("KML002_25") },
                 { id: 1, name: nts.uk.resource.getText("KML002_152") }
@@ -83,14 +85,49 @@ module nts.uk.at.view.kml002.b.viewmodel {
             return dfd.promise();
         }
         
+        /**
+         * Pass data to A screen.
+         */
         submit() {
             var self = this;
             
+            var resultValidate = self.validate();
+            
+            if(resultValidate) {
+                nts.uk.ui.windows.close();
+            }
         }
         
+        /**
+         * Close dialog.
+         */
         cancel() {
+            nts.uk.ui.windows.close();
+        }
+        
+        /**
+         * Validate input form.
+         */
+        validate() {
             var self = this;
+            var success = true;
             
+            //設定方法が数値入力の場合、縦計入力項目が入力しないといけない。
+            if(self.selectedLeftId() == 1 && (self.numerical1() == null) || self.numerical1().toString() == "") {
+                success = false;
+                nts.uk.ui.dialog.alert({ messageId: "Msg_419" });
+            } else if(self.selectedRightId() == 1 && (self.numerical1() == null) || self.numerical1().toString() == "") {
+                success = false;
+                nts.uk.ui.dialog.alert({ messageId: "Msg_419" });
+            }
+            
+            //「計算方法」が2つとも「数値入力」に設定することができない
+            if(self.selectedLeftId() == 1 && self.selectedRightId() == 1) {
+                success = false;
+                nts.uk.ui.dialog.alert({ messageId: "Msg_420" });
+            }
+            
+            return success;
         }
     }
 }
