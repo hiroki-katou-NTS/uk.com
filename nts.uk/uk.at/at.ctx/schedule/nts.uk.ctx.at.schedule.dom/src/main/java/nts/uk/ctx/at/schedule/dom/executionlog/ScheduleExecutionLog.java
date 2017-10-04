@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.schedule.dom.executionlog;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
@@ -34,6 +35,7 @@ public class ScheduleExecutionLog extends AggregateRoot {
 
 	/** The execution date time. */
 	// 実行日時
+	@Setter
 	private ExecutionDateTime executionDateTime;
 
 	/** The execution employee id. */

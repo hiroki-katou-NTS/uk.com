@@ -32,7 +32,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
  */
 @Getter
 @Setter
-public class ScheduleExecutionLogSaveCommand {
+public class ScheduleExecutionLogAddCommand {
 	
 	/** The period start date. */
 	private GeneralDate periodStartDate;

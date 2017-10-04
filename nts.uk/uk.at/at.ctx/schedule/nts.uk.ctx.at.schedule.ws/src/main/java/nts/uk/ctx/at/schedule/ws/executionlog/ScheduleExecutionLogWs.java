@@ -16,8 +16,12 @@ import javax.ws.rs.core.MediaType;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleExecutionLogSaveCommand;
-import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleExecutionLogSaveCommandHandler;
+import nts.arc.task.AsyncTaskInfo;
+import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommand;
+import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionRespone;
+import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleExecutionLogAddCommand;
+import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleExecutionLogAddCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleExecutionLogSaveRespone;
 import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleExecutionLogFinder;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.PeriodObject;
@@ -35,9 +39,13 @@ public class ScheduleExecutionLogWs extends WebService {
 	@Inject
 	private ScheduleExecutionLogFinder scheduleExecutionLogFinder;
 	
-	/** The save. */
+	/** The add. */
 	@Inject
-	private ScheduleExecutionLogSaveCommandHandler save;
+	private ScheduleExecutionLogAddCommandHandler add;
+	
+	/** The execution. */
+	@Inject
+	private ScheduleCreatorExecutionCommandHandler execution;
 
 	@Inject
 	private ExeErrorLogExportService exeErrorLogExportService;
@@ -83,9 +91,26 @@ public class ScheduleExecutionLogWs extends WebService {
 	 * @return the java type result
 	 */
 	@POST
-	@Path("save")
-	public JavaTypeResult<ScheduleExecutionLogSaveRespone> save(
-			ScheduleExecutionLogSaveCommand command) {
-		return new JavaTypeResult<ScheduleExecutionLogSaveRespone>(this.save.handle(command));
+	@Path("add")
+	public JavaTypeResult<ScheduleExecutionLogSaveRespone> add(
+			ScheduleExecutionLogAddCommand command) {
+		return new JavaTypeResult<ScheduleExecutionLogSaveRespone>(this.add.handle(command));
+	}
+	
+	/**
+	 * Execution.
+	 *
+	 * @param command the command
+	 * @return the schedule creator execution respone
+	 */
+	@POST
+	@Path("execution")
+	public ScheduleCreatorExecutionRespone execution(ScheduleCreatorExecutionCommand command) {
+		AsyncTaskInfo taskInfor = this.execution.handle(command);
+		ScheduleCreatorExecutionRespone respone = new ScheduleCreatorExecutionRespone();
+		respone.setExecuteId(command.getExecutionId());
+		respone.setTaskInfor(taskInfor);
+		return respone;
+
 	}
 }

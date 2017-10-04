@@ -73,9 +73,9 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 				.add(criteriaBuilder.equal(root.get(KscmtScheduleExcLog_.kscmtScheduleExcLogPK)
 						.get(KscmtScheduleExcLogPK_.cid), companyId));
 		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KscmtScheduleExcLog_.startYmd), period.getEndDate()));
+				.lessThanOrEqualTo(root.get(KscmtScheduleExcLog_.startYmd), period.getStartDate()));
 		lstpredicateWhere.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(KscmtScheduleExcLog_.endYmd), period.getStartDate()));
+				.greaterThanOrEqualTo(root.get(KscmtScheduleExcLog_.endYmd), period.getEndDate()));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		cq.orderBy(criteriaBuilder.desc(root.get(KscmtScheduleExcLog_.startYmd)));
@@ -98,8 +98,19 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 	 * save(nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog)
 	 */
 	@Override
-	public void save(ScheduleExecutionLog domain) {
+	public void add(ScheduleExecutionLog domain) {
 		this.commandProxy().insert(this.toEntity(domain));
+	}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository#
+	 * save(nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog)
+	 */
+	@Override
+	public void update(ScheduleExecutionLog domain) {
+		this.commandProxy().update(this.toEntityUpdate(domain));
 	}
 
 	/**
@@ -110,6 +121,23 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 	 */
 	private KscmtScheduleExcLog toEntity(ScheduleExecutionLog domain){
 		KscmtScheduleExcLog entity = new KscmtScheduleExcLog();
+		domain.saveToMemento(new JpaScheduleExecutionLogSetMemento(entity));
+		return entity;
+	}
+	/**
+	 * To entity.
+	 *
+	 * @param domain the domain
+	 * @return the kscmt schedule exc log
+	 */
+	private KscmtScheduleExcLog toEntityUpdate(ScheduleExecutionLog domain){
+		Optional<KscmtScheduleExcLog> opentity = this.queryProxy().find(
+				new KscmtScheduleExcLogPK(domain.getCompanyId().v(), domain.getExecutionId()),
+				KscmtScheduleExcLog.class);
+		KscmtScheduleExcLog entity = new KscmtScheduleExcLog();
+		if(opentity.isPresent()){
+			entity = opentity.get();
+		}
 		domain.saveToMemento(new JpaScheduleExecutionLogSetMemento(entity));
 		return entity;
 	}

@@ -20,8 +20,8 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class ScheduleExecutionLogSaveCommandHandler.
  */
 @Stateless
-public class ScheduleExecutionLogSaveCommandHandler
-		extends CommandHandlerWithResult<ScheduleExecutionLogSaveCommand, ScheduleExecutionLogSaveRespone> {
+public class ScheduleExecutionLogAddCommandHandler
+		extends CommandHandlerWithResult<ScheduleExecutionLogAddCommand, ScheduleExecutionLogSaveRespone> {
 	
 	/** The execution log repository. */
 	@Inject
@@ -40,7 +40,7 @@ public class ScheduleExecutionLogSaveCommandHandler
 	 */
 	@Override
 	protected ScheduleExecutionLogSaveRespone handle(
-			CommandHandlerContext<ScheduleExecutionLogSaveCommand> context) {
+			CommandHandlerContext<ScheduleExecutionLogAddCommand> context) {
 		
 		ScheduleExecutionLogSaveRespone respone = new ScheduleExecutionLogSaveRespone();
 		
@@ -57,13 +57,13 @@ public class ScheduleExecutionLogSaveCommandHandler
 		String executionId = IdentifierUtil.randomUniqueId();
 
 		// get command
-		ScheduleExecutionLogSaveCommand command = context.getCommand();
+		ScheduleExecutionLogAddCommand command = context.getCommand();
 
 		// command to domain
 		ScheduleExecutionLog domain = command.toDomain(companyId, employeeId, executionId);
 
 		// save domain
-		this.executionLogRepository.save(domain);
+		this.executionLogRepository.add(domain);
 
 		// save all domain creator
 		this.creatorRepository.saveAll(command.toDomainCreator(executionId));

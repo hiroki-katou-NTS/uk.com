@@ -37,5 +37,11 @@ public interface ScheduleExecutionLogRepository {
 	 *
 	 * @param domain the domain
 	 */
-	public void save(ScheduleExecutionLog domain);
+	public void add(ScheduleExecutionLog domain);
+	/**
+	 * Save.
+	 *
+	 * @param domain the domain
+	 */
+	public void update(ScheduleExecutionLog domain);
 }
