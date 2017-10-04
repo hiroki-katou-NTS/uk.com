@@ -85,6 +85,10 @@ module nts.uk.ui.jqueryExtentions {
         
         function setupScrollWhenBinding($grid: JQuery): any {
             let gridId = "#" + $grid.attr("id");
+            $(gridId).on("test", function (evt, ui) {
+                console.log(ui);
+            });
+
             $(document).delegate(gridId, "iggriddatarendered", function (evt, ui) {
                 let oldSelected = getSelectRow($grid);
                 if(!nts.uk.util.isNullOrEmpty(oldSelected)){
@@ -94,7 +98,7 @@ module nts.uk.ui.jqueryExtentions {
                             if ($grid.igGrid("scrollContainer").length > 0){
                                 let firstRowOffset = $($("#single-list").igGrid("rowAt", 0)).offset().top;
                                 let selectRowOffset = $($("#single-list").igGrid("rowAt", index)).offset().top;
-                                $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);    
+                                $grid.igGrid("scrollContainer").scrollTop(selectRowOffset - firstRowOffset);
                             } else { 
                                 let index = $(selected["element"]).attr("data-row-idx");
                                 $grid.igGrid("virtualScrollTo", nts.uk.util.isNullOrEmpty(index) ? oldSelected.index : parseInt(index)); //.scrollTop(scrollTop);    

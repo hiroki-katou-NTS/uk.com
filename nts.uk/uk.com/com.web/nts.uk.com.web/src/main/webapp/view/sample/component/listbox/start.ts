@@ -9,6 +9,7 @@ __viewContext.ready(function () {
         isMulti: KnockoutObservable<boolean>;
         isMulti2: KnockoutObservable<boolean>;
         isValidate: KnockoutObservable<boolean>;
+        index: KnockoutObservable<number> = ko.observable(0);
         
         constructor() {
             var self = this;
@@ -19,9 +20,9 @@ __viewContext.ready(function () {
             self.itemList = ko.observableArray(temp);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable(temp[2]);
+            self.selectedCode = ko.observable(temp[2].code);
             self.selectedCode.subscribe(function (value){
-                console.log(value);        
+                console.log(value);
             });
             self.selectedCodes = ko.observableArray([]);
             self.selectedCodes.subscribe(function (value){
@@ -70,6 +71,28 @@ __viewContext.ready(function () {
             // Remove by codes
             var selecteds: ItemModel[] = self.itemList().filter(item => self.selectedCodes().indexOf(item) != -1);
             self.itemList.removeAll(selecteds);
+        }
+        
+        prev() {
+            var self = this;
+            if (self.index() > 0) {
+                self.index(self.index() - 1);
+                self.selectedCode(self.itemList()[self.index()]);
+            }
+        }
+
+        next() {
+            var self = this;
+            if (self.index() < self.itemList().length - 1) {
+                self.index(self.index() + 1);
+                self.selectedCode(self.itemList()[self.index()]);
+            }
+        }
+
+        jump() {
+            var self = this;
+            self.index(50);
+            self.selectedCode(self.itemList()[self.index()]);
         }
     }
     

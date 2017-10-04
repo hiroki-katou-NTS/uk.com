@@ -25,10 +25,14 @@ module nts.uk.ui.jqueryExtentions {
                     } else {
                         row = $grid.igGrid("selectedRow");
                     }
-//                    if (row) $grid.igGrid("virtualScrollTo", getSelectRowIndex($grid, row.id));
                     if (row) {
-                        let index = $(row.element).attr("data-row-idx");
-                        $grid.igGrid("virtualScrollTo", index === undefined ? getSelectRowIndex($grid, row.id) : parseInt(index));
+                        let rowScrollTop = row.index * row.element.height();
+                        let scrollContainer = $($grid.igGrid("container")).find("#" + $grid.igGrid("id") + "_scrollContainer");
+                        if (isNaN(rowScrollTop) // In case virtualization not render row 
+                            || rowScrollTop < scrollContainer.scrollTop()
+                            || rowScrollTop > scrollContainer.scrollTop() + scrollContainer.height() - row.element.height()) {
+                            $grid.igGrid("virtualScrollTo", row.index === undefined ? getSelectRowIndex($grid, row.id) : row.index);
+                        }
                     }
                 });
             } else {
