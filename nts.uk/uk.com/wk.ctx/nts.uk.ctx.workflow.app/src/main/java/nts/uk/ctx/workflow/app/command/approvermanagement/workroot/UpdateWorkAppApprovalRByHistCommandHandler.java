@@ -47,19 +47,19 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		List<UpdateHistoryDto> lstHist = objUpdateItem.getLstUpdate();
 		//history current
 		String startDate = objUpdateItem.getStartDate();
-		GeneralDate sDate = GeneralDate.fromString(startDate, "yyyy-MM-dd");
+		GeneralDate sDate = GeneralDate.fromString(startDate, "yyyy/MM/dd");
 		GeneralDate eDate = sDate.addDays(-1);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String endDateUpdate = eDate.localDate().format(formatter);//Edate: edit
 		//history previous
 		String startDatePrevious = objUpdateItem.getStartDatePrevious();
-		GeneralDate sDatePrevious = GeneralDate.localDate(LocalDate.parse(startDatePrevious));
+		GeneralDate sDatePrevious = GeneralDate.localDate(LocalDate.parse(startDatePrevious.replace("/","-")));
 		GeneralDate eDatePrevious = sDatePrevious.addDays(-1);//Edate to find history Previous 
 		String endDateDelete = "9999-12-31";//Edate: delete
 		//** For
 		for (UpdateHistoryDto updateItem : lstHist) {
 			//TH: company - domain 会社別就業承認ルート
-			if(objUpdateItem.getCheck()==1){
+			if(objUpdateItem.getCheck()==0){
 				Optional<CompanyApprovalRoot> comAppRootDb = repoCom.getComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
 				if(!comAppRootDb.isPresent()){
 					continue;
@@ -117,7 +117,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				}
 			}
 			//TH: workplace - domain 職場別就業承認ルート
-			if(objUpdateItem.getCheck()==2){
+			if(objUpdateItem.getCheck()==1){
 				Optional<WorkplaceApprovalRoot> wpAppRootDb = repoWorkplace.getWpApprovalRoot(companyId, updateItem.getApprovalId(), objUpdateItem.getWorkplaceId(), updateItem.getHistoryId());
 				if(!wpAppRootDb.isPresent()){
 					continue;

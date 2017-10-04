@@ -326,16 +326,19 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		for (Integer type : lstAppTypeUi) {
 			CompanyAppRootADto commonRoot = findRoot(root, type);
 			String branchId = commonRoot.getBranchId();
+			//xoa app Phase
+			deleteAppPh(branchId);
 			ApprovalPhase appPhaseN1 = checkAppPh(commonRoot.getAppPhase1(), branchId);
 			ApprovalPhase appPhaseN2 = checkAppPh(commonRoot.getAppPhase2(), branchId);
 			ApprovalPhase appPhaseN3 = checkAppPh(commonRoot.getAppPhase3(), branchId);
 			ApprovalPhase appPhaseN4 = checkAppPh(commonRoot.getAppPhase4(), branchId);
 			ApprovalPhase appPhaseN5 = checkAppPh(commonRoot.getAppPhase5(), branchId);
 			//Xu ly them,sua,xoa appPh and approver
-			if(appPhaseN1 != null && appPhaseN1.getApprovalForm().value != 0){
+			if(appPhaseN1 != null){
 				addAppPhase(appPhaseN1,branchId);
 			}
 			if(appPhaseN2 != null && appPhaseN2.getApprovalForm().value != 0){
+				addAppPhase(appPhaseN2,branchId);
 				addAppPhase(appPhaseN2,branchId);
 			}
 			if(appPhaseN3 != null && appPhaseN3.getApprovalForm().value != 0){
@@ -370,15 +373,6 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			}
 			repoApprover.addAllApprover(approvers);
 			repoAppPhase.addApprovalPhase(appPhaseN1);
-		}else{//update
-			repoApprover.deleteAllApproverByAppPhId(companyId, appPhaseN1.getApprovalPhaseId());
-			List<Approver>  approvers = appPhaseN1.getApprovers();
-			for (Approver approver : approvers) {
-				approver.updateApprovalPhaseId(appPhaseN1.getApprovalPhaseId());
-				approver.updateApproverId(UUID.randomUUID().toString());
-			}
-			repoApprover.addAllApprover(approvers);
-			repoAppPhase.updateApprovalPhase(appPhaseN1);
 		}
 	}
 	/**
@@ -388,13 +382,13 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	 * @return
 	 */
 	private ApprovalPhase checkAppPh(ApprovalPhaseDto appPhase, String branchId){
-		if(appPhase.getApprovalForm() == null || appPhase.getApprovalForm().intValue() == 0 ){//khong co
+		if(appPhase.getApprovalForm() == null || appPhase.getApprovalForm().intValue() == 0){//khong co
 			return null;
 		}
+		List<Approver> lstApp = new ArrayList<>();
 		String companyId = AppContexts.user().companyId();
 		String approvalPhaseId = appPhase.getApprovalPhaseId();
 		List<ApproverDto> approver = appPhase.getApprover();
-		List<Approver> lstApp = new ArrayList<>();
 		for (ApproverDto approverDto : approver) {
 			lstApp.add(Approver.createSimpleFromJavaType(companyId, branchId,
 					approvalPhaseId, UUID.randomUUID().toString(), approverDto.getJobTitleId(), approverDto.getEmployeeId(), approverDto.getOrderNumber(), approverDto.getApprovalAtr(), approverDto.getConfirmPerson()));

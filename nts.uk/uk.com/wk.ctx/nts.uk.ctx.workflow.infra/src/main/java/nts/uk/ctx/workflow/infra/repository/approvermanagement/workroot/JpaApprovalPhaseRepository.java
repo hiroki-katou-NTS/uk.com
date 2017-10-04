@@ -123,7 +123,17 @@ public class JpaApprovalPhaseRepository extends JpaRepository implements Approva
 		.setParameter("branchId", branchId)
 		.executeUpdate();
 	}	
-	
+	/**
+	 * delete All Approval Phase By Branch Id
+	 * @param companyId
+	 * @param branchId
+	 * @param approvalPhaseId
+	 */
+	@Override
+	public void deleteAppPhaseByAppPhId(String companyId, String branchId, String approvalPhaseId) {
+		WwfmtApprovalPhasePK appPhasePk = new WwfmtApprovalPhasePK(companyId, branchId, approvalPhaseId);
+		this.commandProxy().remove(appPhasePk);
+	}
 	/**
 	 * convert entity WwfmtApprovalPhase to domain ApprovalPhase
 	 * @param entity
