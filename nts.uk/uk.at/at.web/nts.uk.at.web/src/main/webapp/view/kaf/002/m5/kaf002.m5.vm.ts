@@ -11,7 +11,7 @@ module nts.uk.at.view.kaf002.m5 {
                 var self = this; 
             }
             
-            start(data: vmbase.StampRequestSettingDto){
+            start(appStampData: any, data: vmbase.StampRequestSettingDto){
                 var self = this;    
                 self.supFrameNo = 10;
                 self.stampPlaceDisplay(data.stampPlaceDisp);
