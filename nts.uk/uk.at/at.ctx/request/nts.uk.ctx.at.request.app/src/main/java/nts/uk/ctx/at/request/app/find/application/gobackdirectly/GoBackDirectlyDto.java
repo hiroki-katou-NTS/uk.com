@@ -72,6 +72,7 @@ public class GoBackDirectlyDto {
 	 * Convert to GoBackDirectlyDto
 	 */
 	public static GoBackDirectlyDto convertToDto(GoBackDirectly domain) {
+		if(domain==null) return null;
 		return new GoBackDirectlyDto(
 				domain.getCompanyID(), 
 				domain.getAppID(), 

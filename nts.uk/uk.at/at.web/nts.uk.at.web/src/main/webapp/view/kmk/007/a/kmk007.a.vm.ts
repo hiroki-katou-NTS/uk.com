@@ -386,7 +386,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 nts.uk.ui.dialog.info(nts.uk.resource.getMessage('Msg_15'));
             }).fail(function(error) {
                 nts.uk.ui.dialog.alertError(error.message);
-            }).then(function() {
+            }).always(function() {
                 nts.uk.ui.block.clear();
             });
         }
@@ -427,7 +427,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
                 }).fail(function(error) {
                     self.isCreated(false);
                     nts.uk.ui.dialog.alertError(error.message);
-                }).then(function() {
+                }).always(function() {
                     nts.uk.ui.block.clear();
                 });
             });
@@ -751,7 +751,7 @@ module nts.uk.at.view.kmk007.a.viewmodel {
             service.saveAsExcel(langId).done(function() {
             }).fail(function(error) {
                 nts.uk.ui.dialog.alertError(error.message);
-            }).then(function() {
+            }).always(function() {
                 nts.uk.ui.block.clear();
             });
         }

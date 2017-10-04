@@ -185,7 +185,7 @@ module nts.uk.at.view.kdw006 {
             constructor() {
                 var self = this;
                 
-                self.startPage();
+                self.start();
                 
                 self.textAreaValue('afafad');
             }
@@ -220,7 +220,7 @@ module nts.uk.at.view.kdw006 {
 
             }
 
-            startPage(): JQueryPromise<any> {
+            start(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
 

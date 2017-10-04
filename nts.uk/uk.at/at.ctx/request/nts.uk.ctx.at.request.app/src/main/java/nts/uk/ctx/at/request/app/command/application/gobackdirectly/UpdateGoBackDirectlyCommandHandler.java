@@ -4,8 +4,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -18,11 +22,21 @@ public class UpdateGoBackDirectlyCommandHandler extends CommandHandler<UpdateGoB
 	private GoBackDirectlyRepository goBackDirectRepo;
 //	@Inject
 //	private ApplicationRepository appRepo;
+	@Inject 
+	private DetailBeforeUpdate beforeProcessRegister;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateGoBackDirectlyCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		UpdateGoBackDirectlyCommand command = context.getCommand();
+		
+		beforeProcessRegister.processBeforeDetailScreenRegistration(
+				companyId, 
+				command.employeeID,
+				GeneralDate.fromString(command.appDate, "yyyy/MM/dd"),
+				command.employeeRouteAtr,
+				command.appID,
+				EnumAdaptor.valueOf(command.prePostAtr, PrePostAtr.class));	
 		goBackDirectRepo.update(
 			new GoBackDirectly(companyId, 
 				command.getAppID(),
