@@ -6,8 +6,10 @@ module nts.uk.at.view.kaf000.test.viewmodel {
         appInfor: KnockoutObservableArray<ApproverDtoK> = ko.observableArray([]);
         startDate: KnockoutObservable<any> = ko.observable(new Date());
         endDate: KnockoutObservable<any> = ko.observable(new Date());
+        listAppID :Array<String> ;
         constructor() {
             var self = this;
+            self.listAppID  =[]; 
             self.appInfor.push(new ApproverDtoK('e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d', 4));
             self.appInfor.push(new ApproverDtoK('e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d', 7));
             self.appInfor.push(new ApproverDtoK('1445DA47-3CF9-4B0A-B819-96D20721881C', 9));
@@ -39,8 +41,9 @@ module nts.uk.at.view.kaf000.test.viewmodel {
             data.startDate = self.startDate();
             data.endDate = self.endDate();
             service.getAppId(data).done(function(values: any){
-                if(values.length !== 0){
-                    
+                if(values.length != 0){
+                    self.listAppID =values;
+                    nts.uk.request.jump("/view/kaf/000/b/index.xhtml", {'listAppId': self.listAppID, 'appType': 7});
                 }else{
                     
                 }
