@@ -752,7 +752,7 @@ module nts.uk.com.view.cmm018.a {
                 let paramJ: vmbase.JData_Param = {
                     startDate: history.startDate,
                     endDate: history.endDate,
-                    workplaceId: "",
+                    workplaceId: self.workplaceId(),
                     employeeId: self.selectedItem(),
                     check: self.tabSelected(),
                     mode: 0,//まとめて設定モード(0) - 申請個別設定モード(1)
@@ -760,7 +760,7 @@ module nts.uk.com.view.cmm018.a {
                     lstUpdate: lst
                 }
                 setShared('CMM018J_PARAM', paramJ);
-                modal("/view/cmm/018/j/index.xhtml").closed(function(){
+                modal("/view/cmm/018/j/index.xhtml").onClosed(function(){
                     //load data
                     if(self.tabSelected() == 0){//company
                         self.getDataCompany()
@@ -1297,6 +1297,8 @@ module nts.uk.com.view.cmm018.a {
             employeeId: KnockoutObservable<string> = ko.observable('');
             //_____________dialog I____
             dataIB: KnockoutObservable<vmbase.IData> = ko.observable(null);
+            //_______CDL008_____
+            workplaceIdB: KnockoutObservable<string> = ko.observable('');
             constructor(){
                 var self = this;
                 //----SCREEN B
@@ -2037,17 +2039,58 @@ module nts.uk.com.view.cmm018.a {
              * mode B: 申請個別登録モード
              */
             openDialogJ(){
+                let self = this;
+                let history;
+                let startDate = '';
+                let endDate = '';
+                let name = '';
+                if(self.tabSelectedB() == 0){//company
+                    history = self.findRootComB(self.singleSelectedCode());
+                    if(history != undefined){
+                        startDate = history.company.startDate;
+                        endDate = history.company.endDate;
+                        name = history.company.applicationType == null ? '共通ルート' : nts.uk.resource.getText("CMM018_7");
+                    }
+                }else if(self.tabSelectedB() == 1){
+                    history = self.findRootWpD(self.singleSelectedCode());
+                    if(history != undefined){
+                        startDate = history.workplace.startDate;
+                        endDate = history.workplace.endDate;
+                        name = history.workplace.applicationType == null ? '共通ルート' : nts.uk.resource.getText("CMM018_7");
+                    }
+                }else{
+                    history = self.findRootPsF(self.singleSelectedCode());
+                    if(history != undefined){
+                        startDate = history.person.startDate;
+                        endDate = history.person.endDate;
+                        name = history.person.applicationType == null ? '共通ルート' : nts.uk.resource.getText("CMM018_7");
+                    }
+                }
+                
+                //履歴変更対象を選択しているチェックする(check có chọn đối tượng sửa lịch sử hay không ?)
+                //対象未選択、申請ごとのルートを選択している場合(chưa chọn đối tượng, hoặc đang chọn 申請ごとのルート)
+                if(history == undefined){
+                    //エラーメッセージ(Msg_181)(error message (Msg_181))
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_181" });
+                    return;
+                }
+                //編集する期間が最新なのかチェックする(check lịch sử đang sửa có phải lịch sử mới nhất hay không)
+                //編集する履歴が最新履歴じゃない(lịch sử đang sửa không phải là lịch sử mới nhất)
+                
+                if(history.endDate != '9999/12/31'){
+                    //エラーメッセージ(Msg_154)(error message (Msg_154))
+                    nts.uk.ui.dialog.alertError({ messageId: "Msg_154" });
+                    return;
+                }
                 let lst: Array<vmbase.UpdateHistoryDto> = [];
                 let paramJ: vmbase.JData_Param = {
-                    name:"",
-                    startDate: "",
-                    endDate: "",
-                    workplaceId: "",
-                    employeeId: "",
-                    check: 1,
-                    mode: 0,
-                    overlapFlag: true,
-                    startDatePrevious: "",
+                    name: name,
+                    startDate: startDate,
+                    endDate: endDate,
+                    workplaceId: self.workplaceIdB(),
+                    employeeId: self.employeeId(),
+                    check: self.tabSelectedB(),
+                    mode: 1,
                     lstUpdate: lst
                 }
                 setShared('CMM018J_PARAM', paramJ);

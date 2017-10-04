@@ -206,7 +206,7 @@ module nts.uk.com.view.cmm018.shr {
             /** まとめて設定モード(0) - 申請個別設定モード(1)*/
             mode: number;
             /** 編集対象期間履歴が重なっているかチェックする*/
-            overlapFlag: boolean;
+            overlapFlag?: boolean;
             /** list history and approvalId */
             lstUpdate: Array<UpdateHistoryDto>;
         }
