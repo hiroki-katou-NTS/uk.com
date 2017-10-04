@@ -153,11 +153,11 @@ export module viewmodel {
                 data.rootAtr = 1;
             }
             
-            service.getInforRoot(data).done(function(){
-                
+            service.saveAsExcel(data).done(()=>{
+                console.log(data);    
             }).fail(function(res: any){
                 nts.uk.ui.dialog.alertError(res.messageId);
-            })
+            });
         }
     }
 
