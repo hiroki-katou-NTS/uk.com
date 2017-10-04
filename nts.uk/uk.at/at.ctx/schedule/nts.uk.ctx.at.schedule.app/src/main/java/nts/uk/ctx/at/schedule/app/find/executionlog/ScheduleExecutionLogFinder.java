@@ -41,6 +41,9 @@ public class ScheduleExecutionLogFinder {
 		}
 		Period period = new Period(periodObj.getStartDate(), periodObj.getEndDate());
 		List<ScheduleExecutionLog> sel = scheduleExecutionLogRepository.find(companyId, period);
+		if (sel == null) {
+			return null;
+		}
 		return sel.stream().map(item -> {
 			ScheduleExecutionLogDto dto = new ScheduleExecutionLogDto();
 			item.saveToMemento(dto);
