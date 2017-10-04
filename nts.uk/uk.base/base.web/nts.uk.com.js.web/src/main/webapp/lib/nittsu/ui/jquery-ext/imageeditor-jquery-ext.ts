@@ -1,6 +1,7 @@
 /// <reference path="../../reference.ts"/>
 
 module nts.uk.ui.jqueryExtentions {
+    import isNotNull = nts.uk.util.isNullOrUndefined;
     module ntsImageEditor {
 
         $.fn.ntsImageEditor = function(method: string, option?: any) {
@@ -15,6 +16,9 @@ module nts.uk.ui.jqueryExtentions {
                 case "showByUrl": {
                     return viewByUrl($element, option);     
                 } 
+                case "clear": {
+                    return clear($element);     
+                } 
                 default: 
                     return; 
             }            
@@ -24,19 +28,14 @@ module nts.uk.ui.jqueryExtentions {
             let dfd = $.Deferred();
             
             let dataFile = $element.find(".image-preview").attr("src");
-            if (!nts.uk.util.isNullOrUndefined(dataFile)) {
-                try {
-                    window.atob(dataFile);
-                } catch(e) {
-                    throw new Error( "Image File is not valid!!!" );
-                }
+            if (!isNotNull(dataFile)) {
                 
                 let cropper = $element.data("cropper");
                 let cropperData = cropper.getData(true);
                 
                 var formData = {
                         "fileName": $element.data("file-name"),
-                        "stereoType": nts.uk.util.isNullOrUndefined(option) ? "image" : option.stereoType,
+                        "stereoType": isNotNull(option) ? "image" : option.stereoType,
                         "file": dataFile,
                         "format": $element.data("file-type"),
                         "x": cropperData.x,
@@ -46,7 +45,7 @@ module nts.uk.ui.jqueryExtentions {
                         "crop": $element.data('checkbox').checked() 
                      };
                 
-                nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function(data, textStatus, jqXHR) {
+                nts.uk.request.ajax("com", "image/editor/cropimage", formData).done(function(data) {
                     if (data !== undefined && data.businessException) {
                         dfd.reject(data);
                     } else {
@@ -70,5 +69,10 @@ module nts.uk.ui.jqueryExtentions {
             $element.trigger("srcchanging", {url: sourceUrl, isOutSiteUrl: true});
             
         }
+            
+        function clear($element: JQuery){
+            let cropper = $element.data("cropper");
+            cropper.clear();
+        }   
     }
 }

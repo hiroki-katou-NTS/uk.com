@@ -4229,7 +4229,7 @@ div .ex-area-line.x-stay {
 	padding: 10px 10px;
 }
 .crop-icon{
-	border: 2px red solid;
+	border: 1px red solid;
     height: 15px;
     width: 25px;
 }
@@ -4246,6 +4246,16 @@ div .ex-area-line.x-stay {
 }
 .mouse-description-text{
     padding: 5px 0px;
+}
+.cropper-line{
+ 	background-color: red !important;
+}
+.cropper-point {
+    background-color: red !important;
+}
+.cropper-crop-box{
+    outline-color: rgba(255, 0, 0, 0.75) !important;
+    outline: 1px solid red !important;
 }
 
 /* line 48, ../sass/base.scss */
