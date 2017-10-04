@@ -26,7 +26,7 @@ module nts.uk.at.view.kaf002.b {
                 var self = this;
                 var dfd = $.Deferred();
                 service.newScreenFind()
-                    .done(function(data: vmbase.AppStampNewSetDto) {
+                    .done(function(commonSet: vmbase.AppStampNewSetDto) {
                         let a = self.kaf000_a2.approvalRoot().beforeApprovers;
                         let approvalList = [];
                         _.forEach(a, appPhase => {
@@ -54,7 +54,8 @@ module nts.uk.at.view.kaf002.b {
                             });
                             approvalList.push(b);    
                         });
-                        self.cm.start(data, approvalList);
+                        
+                        self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, approvalList);
                         dfd.resolve(); 
                     })
                     .fail(function(res) { 
