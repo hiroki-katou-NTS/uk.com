@@ -5,8 +5,15 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.Value;
+import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkFrameTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeWorkFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.OverTimeWorkFrameTimeSheet;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSet;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.OverTimeHourSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -21,34 +28,10 @@ public class OverTimeWorkOfDaily {
 	
 	private List<OverTimeWorkFrameTimeSheet> overTimeWorkFrameTimeSheet;
 	
+	private List<OverTimeWorkFrameTime> overTimeWorkFrameTime;
+	
 	private OverTimeWorkOfDaily(List<OverTimeWorkFrameTimeSheet> frameTimeList) {
 		this.overTimeWorkFrameTimeSheet = frameTimeList;
-	}
-	
-	
-	/**
-	 * 
-	 * @param overTimeHourSet
-	 * @param attendanceLeave
-	 * @param secondStartTime 2回目勤務の開始時間
-	 * @return
-	 */
-	public static OverTimeWorkOfDaily of(List<OverTimeHourSet> overTimeHourSet,AttendanceLeavingWork attendanceLeave,TimeWithDayAttr secondStartTime,int workNo) {
-		
-		List<OverTimeWorkFrameTimeSheet> frameTimeSheet = new ArrayList<OverTimeWorkFrameTimeSheet>();
-		TimeSpanForCalc timeSheet = new TimeSpanForCalc(attendanceLeave.getAttendance().getActualEngrave().getTimesOfDay(),attendanceLeave.getLeaveWork().getActualEngrave().getTimesOfDay());
-		TimeSpanForCalc timeSpan;
-		
-		for(OverTimeHourSet overTimeHour : overTimeHourSet) {
-			if(startDicision(secondStartTime,workNo,attendanceLeave.getAttendance().getActualEngrave().getTimesOfDay())) {
-				timeSpan = timeSheet.getDuplicatedWith(overTimeHour.getTimeSpan()).get();
-				frameTimeSheet.add(new OverTimeWorkFrameTimeSheet(null, overTimeHour.getFrameNo()
-										,new TimeSpanWithRounding(timeSpan.getStart(),timeSpan.getEnd(),overTimeHour.getTimeSpan().getRounding()), null));
-			}
-
-		}
-		
-		return new OverTimeWorkOfDaily(frameTimeSheet);
 	}
 	
 	/**
@@ -66,6 +49,72 @@ public class OverTimeWorkOfDaily {
 			return (startTime.v() >= attendanceTime.v());
 		}
 	}
-
-		
+	
+	/**
+	 * 残業時間枠時間帯をループさせ時間を計算する
+	 * @param autoCalcSet 時間外時間の自動計算設定
+	 */
+	public List<OverTimeWorkFrameTime> collectOverTimeWorkTime(AutoCalculationOfOverTimeWork autoCalcSet) {
+		List<OverTimeWorkFrameTime> calcOverTimeWorkTimeList = new ArrayList<>();
+		for(OverTimeWorkFrameTimeSheet overTimeWorkFrameTime : overTimeWorkFrameTimeSheet) {
+			calcOverTimeWorkTimeList.add(overTimeWorkFrameTime.calcOverTimeWorkTime(autoCalcSet));
+			//calcOverTimeWorkTimeList.add();
+		}
+		return calcOverTimeWorkTimeList;
+	}
+	
+	/**
+	 * 残業枠時間へ残業時間の集計結果を追加する
+	 * @param hasAddListClass 残業時間帯の集計を行った後の残業枠時間クラス
+	 */
+	public void addToList(ControlOverFrameTime hasAddListClass) {
+		this.overTimeWorkFrameTime.addAll(hasAddListClass.getOverTimeWorkFrameTime());
+	}
+	
+	/**
+	 * 残業時間が含んでいる加給時間の計算
+	 * @return 加給時間リスト
+	 */
+	public List<BonusPayTime> calcBonusPay(){
+		List<BonusPayTime> bonusPayList = new ArrayList<>();
+		for(OverTimeWorkFrameTimeSheet frameTimeSheet : overTimeWorkFrameTimeSheet) {
+			bonusPayList.addAll(frameTimeSheet.calcBonusPay());
+		}
+		return bonusPayList;
+	}
+	
+	/**
+	 * 残業時間が含んでいる深夜時間の算出
+	 * @return 日別実績の深夜時間帯クラス
+	 */
+	public ExcessOfStatutoryMidNightTime calcMidNightTimeIncludeOverTimeWork(AutoCalculationOfOverTimeWork autoCalcSet) {
+		int totalTime = 0;
+		for(OverTimeWorkFrameTimeSheet frameTime : overTimeWorkFrameTimeSheet) {
+			/*↓分岐の条件が明確になったら記述*/
+			AutoCalcSet setting;
+			if(frameTime.getWithinStatutoryAtr().isWithinStatutory()) {
+				setting = autoCalcSet.getLegalOvertimeHours();
+			}
+			else if(frameTime.isGoEarly()) {
+				setting = autoCalcSet.getEarlyOvertimeHours();
+			}
+			else {
+				setting = autoCalcSet.getNormalOvertimeHours();
+			}
+			totalTime += frameTime.calcMidNight(setting.getCalculationClassification());
+		}
+		return new ExcessOfStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(totalTime)));
+	}
+	
+	/**
+	 * 全枠の残業時間の合計の算出
+	 * @return　残業時間
+	 */
+	public int calcTotalFrameTime() {
+		int totalTime = 0;
+		for(OverTimeWorkFrameTime overTimeWorkFrameTime :overTimeWorkFrameTime) {
+			totalTime += overTimeWorkFrameTime.getOverTimeWork().getTime().valueAsMinutes();
+		}
+		return totalTime;
+	}
 }

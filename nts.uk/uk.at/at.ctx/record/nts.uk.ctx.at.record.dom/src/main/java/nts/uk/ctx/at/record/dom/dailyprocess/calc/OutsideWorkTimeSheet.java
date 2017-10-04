@@ -2,8 +2,6 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.Optional;
 
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.record.mekestimesheet.OverTimeWorkSheet;
-
 /**
  * 就業時間外時間帯
  * @author keisuke_hoshina
@@ -44,6 +42,25 @@ public class OutsideWorkTimeSheet {
 			this.overTimeWorkSheet = Optional.empty();
 		}
 	}
+	
+	/**
+	 * 法定外深夜時間の計算
+	 */
+	public OutsideWorkTimeSheet calcMidNightTimeIncludeExcessWorkTime(Optional<OverTimeWorkSheet> overTimeWorkSheet,Optional<HolidayWorkTimeSheet> holidayWorkSheet) {
+		int excessTime = 0;
+		Optional<OverTimeWorkSheet> overTimeWork = Optional.empty();
+		Optional<HolidayWorkTimeSheet> holidayTimeSheet = Optional.empty();
+		if(overTimeWorkSheet.isPresent()) {
+			overTimeWork = Optional.of(overTimeWorkSheet.get().reCreateToCalcExcessWork());
+			excessTime = overTimeWork.orElse(0);
+		}
+		if(holidayWorkSheet.isPresent()) {
+			holidayWorkSheet = Optional.of(holidayWorkSheet.get().reCreateToCalcExcessWork());
+		}
+		
+		return new OutsideWorkTimeSheet(overTimeWork,holidayTimeSheet);
+	}
+	
 	
 
 }

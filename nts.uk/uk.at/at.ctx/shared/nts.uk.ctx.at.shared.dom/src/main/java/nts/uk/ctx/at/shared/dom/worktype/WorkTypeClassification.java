@@ -30,6 +30,19 @@ public enum WorkTypeClassification {
 	/** The value. */
 	public final int value;
 	
+	
+	/**
+	 * 休日出勤であるか判定する
+	 * @return　休日出勤である
+	 */
+	public boolean isHolidayWork() {
+		return HolidayWork.equals(this);
+	}
+	
+	/**
+	 * 休日系か判定する
+	 * @return　休日系である
+	 */
 	public boolean isHoliday() {
 		switch (this) {
 		case Absence:
@@ -59,6 +72,10 @@ public enum WorkTypeClassification {
 		return !this.isHoliday();
 	}
 	
+	/**
+	 * 平日出勤系か判定する
+	 * @return　平日出勤系である
+	 */
 	public boolean isWeekDayAttendance() {
 		switch (this) {
 		case Attendance:

@@ -23,6 +23,7 @@ import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.BreakSetOfCommon;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.CalcMethodIfLeaveWorkDuringBreakTime;
 import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.LateLeaveEarlyClassification;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixRestTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.BreakClockOfManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidBreakTimeOfCalcMethod;
@@ -60,12 +61,27 @@ public class DeductionTimeSheet {
 		source.addAll(devided);
 	}
 	
-	public DeductionTimeSheet createDedctionTimeSheet(AcquisitionConditionsAtr acqAtr,WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage,
+	/**
+	 * 控除時間帯の作成
+	 * @param acqAtr 取得条件区分
+	 * @param setMethod 就業時間帯の設定方法
+	 * @param clockManage 休憩打刻の時刻管理設定区分
+	 * @param dailyGoOutSheet 日別実績の外出時間帯
+	 * @param oneDayRange 1日の計算範囲
+	 * @param CommonSet 共通の休憩設定
+	 * @param attendanceLeaveWork 日別実績の出退勤
+	 * @param fixedCalc 固定休憩の計算方法
+	 * @param workTimeDivision 就業時間帯勤務区分
+	 * @param noStampSet 休憩未打刻時の休憩設定
+	 * @param fluidSet 固定休憩の設定
+	 * @return 控除時間帯
+	 */
+	public static DeductionTimeSheet createDedctionTimeSheet(AcquisitionConditionsAtr acqAtr,WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage,
 								GoOutTimeSheetOfDailyWork dailyGoOutSheet,CalculationRangeOfOneDay oneDayRange,BreakSetOfCommon CommonSet, AttendanceLeavingWorkOfDaily attendanceLeaveWork
-								,FixRestCalcMethod fixedCalc,WorkTimeDivision workTimeDivision,SetForNoStamp noStampSet, FluidBreakTimeOfCalcMethod fluidSet){
+								,FixRestCalcMethod fixedCalc,WorkTimeDivision workTimeDivision,SetForNoStamp noStampSet, FixRestTimeSetting fixedSet, BreakManagement breakTimeSheet){
 		/*控除時間帯取得　控除時間帯リストへコピー*/
 		List<TimeSheetOfDeductionItem> useDedTimeSheet = collectDeductionTimes(dailyGoOutSheet,oneDayRange,CommonSet
-				,attendanceLeaveWork,fixedCalc,workTimeDivision,noStampSet,fluidSet,acqAtr );
+				,attendanceLeaveWork,fixedCalc,workTimeDivision,noStampSet,fixedSet,acqAtr );
 		/*重複部分補正処理*/
 		useDedTimeSheet = new DeductionTimeSheetAdjustDuplicationTime(useDedTimeSheet).reCreate(setMethod, clockManage);
 		/*計上用↓*/
@@ -88,25 +104,36 @@ public class DeductionTimeSheet {
 	
 	/**
 	 * 控除時間に該当する項目を集め控除時間帯を作成する
+	 * @param dailyGoOutSheet 
+	 * @param oneDayRange 
+	 * @param CommonSet 
+	 * @param attendanceLeaveWork 
+	 * @param fixedCalc 
+	 * @param workTimeDivision 
+	 * @param noStampSet 
+	 * @param fluidSet 
+	 * @param acqAtr 
+	 * @return 
 	 */
 	public static List<TimeSheetOfDeductionItem> collectDeductionTimes(GoOutTimeSheetOfDailyWork dailyGoOutSheet,CalculationRangeOfOneDay oneDayRange,BreakSetOfCommon CommonSet
-										, AttendanceLeavingWorkOfDaily attendanceLeaveWork,FixRestCalcMethod fixedCalc
-										,WorkTimeDivision workTimeDivision,SetForNoStamp noStampSet, FluidBreakTimeOfCalcMethod fluidSet,AcquisitionConditionsAtr acqAtr ) {
+										, AttendanceLeavingWorkOfDaily attendanceLeaveWork,FixRestCalcMethod fixedCalc,WorkTimeDivision workTimeDivision,SetForNoStamp noStampSet
+										, FluidBreakTimeOfCalcMethod fluidSet, AcquisitionConditionsAtr acqAtr , BreakManagement breakManagement) {
 		List<TimeSheetOfDeductionItem> sheetList = new ArrayList<TimeSheetOfDeductionItem>(); 
 		/*休憩時間帯取得*/
-		breakTimeSheet.getBreakTimeSheet(workTimeDivision, fixedCalc, noStampSet, fluidSet);
+		breakManagement.getBreakTimeSheet(workTimeDivision, fixedCalc, noStampSet, fluidSet);
 		/*外出時間帯取得*/
 		dailyGoOutSheet.RemoveUnuseItemBaseOnAtr(acqAtr)
 								.forEach(tc ->{
-									sheetList.add(TimeSheetOfDeductionItem.reateBreakTimeSheetAsFixed(new TimeSpanForCalc(tc.getGoOut().getEngrave().getTimesOfDay(),tc.getComeBack().getEngrave().getTimesOfDay())
+									sheetList.add(TimeSheetOfDeductionItem.createBreakTimeSheetAsFixed(new TimeSpanForCalc(tc.getGoOut().getEngrave().getTimesOfDay(),tc.getComeBack().getEngrave().getTimesOfDay())
+																									
 																									,Finally.of(tc.getGoOutReason())
 																									,null
 																									,DeductionClassification.GO_OUT
-																									,WithinStatutoryAtr.WithinStatury));	
+																									,WithinStatutoryAtr.WithinStatutory));	
 								});
 		/*育児時間帯を取得*/
 		/*ソート処理*/
-		sheetList.stream().sorted((first,second) -> first.calculationTimeSheet.getStart().compareTo(second.calculationTimeSheet.getStart()));
+		sheetList.stream().sorted((first,second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart()));
 		/*計算範囲による絞り込み*/
 		List<TimeSheetOfDeductionItem> reNewSheetList = refineCalcRange(sheetList,oneDayRange.getOneDayOfRange(),CommonSet.getLeaveWorkDuringBreakTime()
 				, attendanceLeaveWork);
@@ -129,25 +156,28 @@ public class DeductionTimeSheet {
 			case CHILD_CARE:
 				/*要確認*/
 			case GO_OUT:
-				Optional<TimeSpanForCalc> duplicateGoOutSheet = getGoOutCalcRange(timeSheet,oneDayRange);
+				Optional<TimeSpanForCalc> duplicateGoOutSheet = oneDayRange.getDuplicatedWith(timeSheet.calcrange);
 				if(duplicateGoOutSheet.isPresent()) {
-						sheetList.add(TimeSheetOfDeductionItem.reateBreakTimeSheetAsFixed( duplicateGoOutSheet.get()
+						/*ここで入れる控除、加給、特定日、深夜は duplicateGoOutSheetと同じ範囲に絞り込む*/
+						sheetList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed( duplicateGoOutSheet.get()
 																						, timeSheet.getGoOutReason()
 																						, timeSheet.getBreakAtr()
 																						, timeSheet.getDeductionAtr()
 																						, timeSheet.getWithinStatutoryAtr()));
+						
 				}
 			case BREAK:
 			
-				List<TimeSpanForCalc> duplicateBreakSheet = getBreakCalcRange(attendanceLeaveWork.getAttendanceLeavingWorkTime(),calcMethod,oneDayRange.getDuplicatedWith(timeSheet.calculationTimeSheet));
+				List<TimeSpanForCalc> duplicateBreakSheet = getBreakCalcRange(attendanceLeaveWork.getAttendanceLeavingWorkTime(),calcMethod,oneDayRange.getDuplicatedWith(timeSheet.calcrange));
 				if(!duplicateBreakSheet.isEmpty())
 				{
 					duplicateBreakSheet.forEach(tc -> {
-						sheetList.add(TimeSheetOfDeductionItem.reateBreakTimeSheetAsFixed( tc
-							, timeSheet.getGoOutReason()
-							, timeSheet.getBreakAtr()
-							, timeSheet.getDeductionAtr()
-							, timeSheet.getWithinStatutoryAtr()));	
+						/*ここで入れる控除、加給、特定日、深夜は duplicateGoOutSheetと同じ範囲に絞り込む*/
+						sheetList.add(TimeSheetOfDeductionItem.createTimeSheetOfDeductionItemAsFixed( tc
+																				, timeSheet.getGoOutReason()
+																				, timeSheet.getBreakAtr()
+																				, timeSheet.getDeductionAtr()
+																				, timeSheet.getWithinStatutoryAtr()));
 					});
 				}
 			default:
@@ -155,14 +185,6 @@ public class DeductionTimeSheet {
 			}
 		}
 		return sheetList;
-	}
-	
-	
-	//外出時間帯の計算範囲の取得(親(控除時間帯？)でやれる)
-	public static Optional<TimeSpanForCalc> getGoOutCalcRange(TimeSheetOfDeductionItem shet,TimeSpanForCalc oneDayRange) {
-		
-		return oneDayRange.getDuplicatedWith(shet.calculationTimeSheet); 
-	
 	}
 
 	/**
@@ -187,9 +209,9 @@ public class DeductionTimeSheet {
 
 	/**
 	 * 休憩時間帯に出勤、退勤が含まれているかの判定ののち重複時間帯の取得
-	 * @param time
-	 * @param calcMethod
-	 * @param oneDayRange
+	 * @param time 出退勤クラス
+	 * @param calcMethod　休憩時間中に退勤した場合の計算方法
+	 * @param oneDayRange 
 	 * @return
 	 */
 	public static TimeSpanForCalc getIncludeAttendanceOrLeaveDuplicateTimeSheet(AttendanceLeavingWork time,CalcMethodIfLeaveWorkDuringBreakTime calcMethod,TimeSpanForCalc oneDayRange) {
@@ -225,7 +247,7 @@ public class DeductionTimeSheet {
 		List<TimeSheetOfDeductionItem> duplicatitedworkTime = getCalcRange(workTimeSpan);
 		int sumTime = 0;
 		for(TimeSheetOfDeductionItem dedItem :duplicatitedworkTime) {
-			sumTime += dedItem.calculationTimeSheet.lengthAsMinutes();
+			sumTime += dedItem.calcrange.lengthAsMinutes();
 		}
 		return sumTime;
 	}
@@ -334,7 +356,7 @@ public class DeductionTimeSheet {
 	 * @return　計算範囲内に存在する控除時間帯
 	 */
 	public List<TimeSheetOfDeductionItem> getCalcRange(TimeSpanForCalc workTimeSpan){
-		return forDeductionTimeZoneList.stream().filter(tc -> workTimeSpan.contains(tc.calculationTimeSheet.getSpan())).collect(Collectors.toList());
+		return forDeductionTimeZoneList.stream().filter(tc -> workTimeSpan.contains(tc.calcrange.getSpan())).collect(Collectors.toList());
 	}
 
 }

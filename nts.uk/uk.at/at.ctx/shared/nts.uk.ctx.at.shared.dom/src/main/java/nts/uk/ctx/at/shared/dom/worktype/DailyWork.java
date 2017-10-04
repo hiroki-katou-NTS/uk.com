@@ -71,4 +71,12 @@ public class DailyWork extends DomainObject { // 1日の勤務
 		}
 		return false;
 	}
+	
+	/**
+	 * 休日出勤であるか判定
+	 * @return　休日出勤である
+	 */
+	public boolean isHolidayWork() {
+		return this.oneDay.isHolidayWork();
+	}
 }

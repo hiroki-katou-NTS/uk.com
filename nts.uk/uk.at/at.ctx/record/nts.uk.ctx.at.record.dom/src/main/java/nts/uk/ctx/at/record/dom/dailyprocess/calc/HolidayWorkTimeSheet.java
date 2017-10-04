@@ -1,7 +1,12 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 
 /**
@@ -23,15 +28,16 @@ public class HolidayWorkTimeSheet extends CalculationTimeSheet{
 		
 		super(roundingSheet,calculationTimeSheet);
 		this.workHolidayTime = holidayWorkOfDaily;
-		
 	}
 	
 	
 	/**
 	 * 全ての休日出勤時間帯から休日出勤時間を算出する(休日出勤時間帯の合計の時間を取得し1日の範囲に返す)
 	 */
-	public int calcHolidayWorkTime() {
-		
+	public HolidayWorkTimeOfDaily calcHolidayWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
+		ControlHolidayWorkTime returnClass = new ControlHolidayWorkTime(workHolidayTime.collectHolidayWorkTime(autoCalcSet));
+		workHolidayTime.addToList(returnClass);
+		return workHolidayTime;
 	}
 	
 	/**
@@ -39,7 +45,7 @@ public class HolidayWorkTimeSheet extends CalculationTimeSheet{
 	 * @return 遅刻時間
 	 */
 	public int calcLateLeaveEarlyinHolidayWorkTime() {
-		
+
 	}
 	
 }

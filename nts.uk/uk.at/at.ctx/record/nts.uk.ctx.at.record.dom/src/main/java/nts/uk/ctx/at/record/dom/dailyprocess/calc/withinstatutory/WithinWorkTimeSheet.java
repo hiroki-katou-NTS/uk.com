@@ -8,22 +8,18 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheet;
-import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
+import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.record.dom.daily.BonusPayTime;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.midnight.WithinStatutoryMidNightTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
-import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
-import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
 import nts.uk.ctx.at.shared.dom.worktime.AmPmClassification;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.PredetermineTimeSet;
-import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.TimeSheetWithUseAtr;
-import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.GraceTimeSetting;
-import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.LateLeaveEarlyClassification;
-import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.LateLeaveEarlyGraceTime;
-import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.LateLeaveEarlySettingOfWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeOfTimeSheetSet;
@@ -73,14 +69,24 @@ public class WithinWorkTimeSheet {
 		val leaveEarlyGraceTime = workTimeCommonSet.getLeaveEarlySetting().getGraceTimeSetting();
 						
 		val timeFrames = new ArrayList<WithinWorkTimeFrame>();
+		WithinWorkTimeFrame timeFrame;
 		val workingHourSet = createWorkingHourSet(workType, predetermineTimeSet, fixedWorkSetting);
-		WithinWorkTimeFrame newTimeFrame;
+		
 		for (int frameNo = 0; frameNo < workingHourSet.toArray().length; frameNo++) {
+			List<BonusPayTimesheet> bonusPayTimeSheet = new ArrayList<>();
+			List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet = new ArrayList<>();
+			Optional<MidNightTimeSheet> midNightTimeSheet;
 			for(WorkTimeOfTimeSheetSet duplicateTimeSheet :workingHourSet) {
-				newTimeFrame = new WithinWorkTimeFrame(frameNo, duplicateTimeSheet.getTimeSpan(), duplicateTimeSheet.getTimeSpan());
-				newTimeFrame.bonusPaySetting.createBonusPayTimeSheetList();
+				timeFrame = new WithinWorkTimeFrame(frameNo, duplicateTimeSheet.getTimeSpan(),duplicateTimeSheet.getTimeSpan(),Collections.emptyList(),Collections.emptyList(),Optional.empty(),Collections.emptyList());
+				/*控除時間を分割する
+				 * */
+				/*加給*/
+				bonusPayTimeSheet = bonusPaySetting.createDuplicationBonusPayTimeSheet(duplicateTimeSheet.getTimeSpan());
+				specifiedBonusPayTimeSheet = bonusPaySetting.createDuplicationSpecifyBonusPay(duplicateTimeSheet.getTimeSpan());
+				/*深夜*/
+				midNightTimeSheet = timeFrame.createMidNightTimeSheet();
 				
-//				timeFrames.add();
+				timeFrames.add(new WithinWorkTimeFrame(timeFrame.getWorkingHoursTimeNo(),timeFrame.getTimeSheet(),timeFrame.getCalcrange(),timeFrame.getDeductionTimeSheets(),bonusPayTimeSheet,midNightTimeSheet,specifiedBonusPayTimeSheet));
 			}
 		}
 		
@@ -180,5 +186,29 @@ public class WithinWorkTimeSheet {
 	 */
 	public int calcLateLeaveEarlyinWithinWorkTime() {
 		
+	}
+	
+	/**
+	 * 就業時間内時間帯に入っている加給時間の計算
+	 */
+	public List<BonusPayTime> calcBonusPayTimeInWithinWorkTime(BonusPayAutoCalcSet bonusPayAutoCalcSet) {
+		List<BonusPayTime> bonusPayList = new ArrayList<>();
+		for(WithinWorkTimeFrame timeFrame : withinWorkTimeFrame) {
+			bonusPayList.addAll(timeFrame.calcBonusPay(bonusPayAutoCalcSet.));
+		}
+		return bonusPayList;
+	}
+	
+	/**
+	 * 法定内深夜時間の計算
+	 * @return　法定内深夜時間
+	 */
+	public WithinStatutoryMidNightTime calcMidNightTime(AutoCalculationCategoryOutsideHours autoCalcSet) {
+		int totalMidNightTime = 0;
+		totalMidNightTime = withinWorkTimeFrame.stream()
+											   .filter(tg -> tg.getMidNightTimeSheet().isPresent())
+											   .map(ts -> ts.getMidNightTimeSheet().get().calcMidNight(autoCalcSet))
+											   .collect(Collectors.summingInt(tc -> tc));
+		return new WithinStatutoryMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(totalMidNightTime)));
 	}
 }

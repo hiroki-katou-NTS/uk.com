@@ -1,11 +1,18 @@
 package nts.uk.ctx.at.record.dom;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
+import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -15,13 +22,14 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 public class MidNightTimeSheet extends CalculationTimeSheet{
 
-	private CompanyId companyId;
+//	private CompanyId companyId;
 //	private TimeWithDayAttr start;
 //	private TimeWithDayAttr end;
-	private TimeSpanForCalc timeSpan;
+//	private TimeSpanForCalc timeSpan;
 	
-	public MidNightTimeSheet(TimeSpanWithRounding timeSheet, TimeSpanForCalc calculationTimeSheet) {
-		super(timeSheet, calculationTimeSheet);
+	public MidNightTimeSheet(TimeSpanWithRounding timeSheet, TimeSpanForCalc calculationTimeSheet,List<TimeSheetOfDeductionItem> deductionSheets,
+			List<BonusPayTimesheet> bonusPayTimeSheet,Optional<MidNightTimeSheet> midNighttimeSheet,List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet) {
+		super(timeSheet, calculationTimeSheet,deductionSheets,bonusPayTimeSheet,midNighttimeSheet,specifiedBonusPayTimeSheet);
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -32,4 +40,36 @@ public class MidNightTimeSheet extends CalculationTimeSheet{
 	public Optional<TimeSpanForCalc> TimeSpanForCalc () {
 		return this.timeSpan.getDuplicatedWith(((CalculationTimeSheet)this).getCalculationTimeSheet());
 	}
+	
+	
+	public boolean contains(TimeWithDayAttr baseTime) {
+		return ((CalculationTimeSheet)this).getCalculationTimeSheet().contains(baseTime);
+	}
+	/**
+	 * 終了時間と基準時間の早い方の時間を取得する
+	 * @param basePoint　基準時間
+	 * @return 時刻が早い方
+	 */
+	public TimeSpanForCalc decisionNewSpan(TimeSpanForCalc timeSpan,TimeWithDayAttr baseTime,boolean isDateBefore) {
+		if(isDateBefore) {
+			return new TimeSpanForCalc(timeSpan.getStart(),baseTime);
+		}
+		else {
+			return new TimeSpanForCalc(baseTime,timeSpan.getEnd());
+		}
+	}
+	/**
+	 * 再帰中に自分自身を作り直す処理
+	 * @param baseTime
+	 * @return
+	 */
+	public Optional<MidNightTimeSheet> reCreateOwn(TimeWithDayAttr baseTime,boolean isDateBefore) {
+		List<TimeSheetOfDeductionItem> deductionTimeSheets = this.recreateDeductionItemBeforeBase(baseTime,isDateBefore);
+		List<BonusPayTimesheet>        bonusPayTimeSheet = this.recreateBonusPayListBeforeBase(baseTime,isDateBefore);
+		Optional<MidNightTimeSheet>    midNighttimeSheet = this.recreateMidNightTimeSheetBeforeBase(baseTime,isDateBefore);
+		TimeSpanForCalc renewSpan = decisionNewSpan(this.calculationTimeSheet,baseTime,isDateBefore);
+		return Optional.of(new MidNightTimeSheet(this.getTimeSheet(),renewSpan,this.deductionTimeSheets));
+	}
+	
+	
 }

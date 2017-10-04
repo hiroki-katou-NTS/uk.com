@@ -19,8 +19,6 @@ public class AttendanceLeavingWorkOfDaily {
 	
 	public AttendanceLeavingWork getAttendanceLeavingWork(int workNo) {
 		
-		
-		
 	}
 	
 }

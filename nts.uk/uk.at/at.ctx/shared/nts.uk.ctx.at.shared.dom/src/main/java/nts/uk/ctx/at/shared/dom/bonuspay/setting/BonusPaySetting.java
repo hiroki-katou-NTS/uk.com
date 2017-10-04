@@ -95,4 +95,34 @@ public class BonusPaySetting extends AggregateRoot{
 		}
 		return returnList;
 	}
+	
+	/**
+	 * 加給時間帯の作成
+	 * @param timeSpan 計算範囲
+	 * @return 計算範囲に重複している時間帯リスト
+	 */
+	public List<BonusPayTimesheet> createDuplicationBonusPayTimeSheet(TimeSpanForCalc calcSpan){
+		List<BonusPayTimesheet> bonusPayList = new ArrayList<>();
+		Optional<TimeSpanForCalc> duplicateRange;
+		for(BonusPayTimesheet bonusPay : bonusPayList) {
+			duplicateRange　= calcSpan.getDuplicatedWith(bonusPay.calculationRange);
+			bonusPayList.add(new BonusPayList());
+		}
+		return bonusPayList;
+	}
+	
+	/**
+	 * 特定日加給時間帯の作成
+	 * @param timeSpan 計算範囲
+	 * @return 計算範囲に重複している時間帯リスト
+	 */
+	public List<SpecifiedbonusPayTimeSheet> createDuplicationSpecifyBonusPay(TimeSpanForCalc calcSpan){
+		List<SpecifiedbonusPayTimeSheet> bonusPayList = new ArrayList<>();
+		Optional<TimeSpanForCalc> duplicateRange;
+		for(SpecifiedbonusPayTimeSheet bonusPay : bonusPayList) {
+			duplicateRange　= calcSpan.getDuplicatedWith(bonusPay.calculationRange);
+			bonusPayList.add(new SpecifiedbonusPayTimeSheet());
+		}
+		return bonusPayList;
+	}
 }

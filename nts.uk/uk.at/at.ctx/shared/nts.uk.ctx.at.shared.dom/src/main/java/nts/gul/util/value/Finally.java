@@ -39,4 +39,12 @@ public class Finally<V> {
 		
 		return this.value;
 	}
+	
+	/**
+	 * 値を保持しているか判定する
+	 * @return　保持している
+	 */
+	public boolean isPresent() {
+		return hasInitialized;
+	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,12 @@ import lombok.Setter;
 import lombok.Value;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWorkOfDaily;
+import nts.uk.ctx.at.record.dom.daily.BonusPayTime;
+import nts.uk.ctx.at.record.dom.daily.ExcessOfStatutoryTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
+import nts.uk.ctx.at.record.dom.daily.OverTimeWorkOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ScheduleTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
 import nts.uk.ctx.at.record.dom.daily.holidaywork.HolidayWorkTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
@@ -69,7 +75,7 @@ public class CalculationRangeOfOneDay {
 	public void createWithinWorkTimeSheet() {
 		/*固定控除時間帯の作成*/
 //		DedcutionTimeSheet collectDeductionTimes = new DeductionTimeSheet();
-		collectDeductionTimes.createDedctionTimeSheet();
+		DeductionTimeSheet deductionTimeSheet = DeductionTimeSheet.createDedctionTimeSheet(acqAtr, setMethod, clockManage, dailyGoOutSheet, oneDayRange, CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, noStampSet, fixedSet, breakTimeSheet)
 		
 		
 		if(workingSystem.isExcludedWorkingCalculate()) {
@@ -87,7 +93,7 @@ public class CalculationRangeOfOneDay {
 	public void theDayOfWorkTimesLoop() {
 		for(int workNumber = 0; workNumber <= dailyOfAttendanceLeavingWork.size(); workNumber++ ) {
 			createWithinWorkTimeTimeSheet();
-			/*就業外*/
+			createOutOfWorkTimeSheet();
 			/*勤務時間帯の計算*/
 		}
 	}
@@ -106,13 +112,17 @@ public class CalculationRangeOfOneDay {
 										  DeductionTimeSheet deductionTimeSheet,
 										  CalculationByActualTimeAtr actualTimeAtr) {
 		int calcWithinWorkTime = withinTimeSheet.calcWorkTime(actualTimeAtr, dedTimeSheet);
-		int overTimeWorkTime = overTimeWorkSheet.calcOverTimeWork()；/*残業時間の計算*/
-		int holidayWorkTime = holidayWorkTimeSheet.calcHolidayWorkTime();/*休日出勤の計算*/
+		OverTimeWorkOfDaily overTimeWorkTime = overTimeWorkSheet.calcOverTimeWork()；
+		int totalOverTimeWorkTime = overTimeWorkTime.getOverTimeWorkFrameTime().stream().collect(Collectors.summarizingInt(tc -> tc.));/*残業時間の計算*/
+		HolidayWorkTimeOfDaily holidayWorkTime = holidayWorkTimeSheet.calcHolidayWorkTime();
+		int totalHolidayWorkTime = holidayWorkTime.getHolidayWorkFrameTime().stream().collect(Collectors.summarizingInt(tc -> tc.));/*休日出勤の計算*/
 		int deductionBreakTime = deductionTimeSheet.getTotalBreakTime(DeductionAtr.Deduction);
 		int recordBreakTime = deductionTimeSheet.getTotalBreakTime(DeductionAtr.Appropriate);/*計上用の休憩時間の計算*/
 		int deductionGoOutTime = deductionTimeSheet.getTotalGoOutTime(DeductionAtr.Deduction);/*控除用の外出時間の計算*/
 		int recordGoOutTime = deductionTimeSheet.getTotalGoOutTime(DeductionAtr.Appropriate);/*計上用の外出時間の計算*/
-		
+		int totalWorkingTime = calcWithinWorkTime + overTimeWorkTime.calcTotalFrameTime() + holidayWorkTime.calcTotalFrameTime();
+		int totalBonusPayTime = ;
+		int totalMidNightTime = ;
 		return /*法定労働時間*/ - calcWithinWorkTime;
 	}
 
@@ -124,7 +134,7 @@ public class CalculationRangeOfOneDay {
 	 */
 	public void createWithinWorkTimeTimeSheet() {
 		if(workType.isWeekDayAttendance()) {
-	//		 WithinWorkTimeSheet.createAsFixedWork(workType, workTime.getPredetermineTimeSet(), workTime.getFixedWorkSetting());
+			 WithinWorkTimeSheet.createAsFixedWork(workType, workTime.getPredetermineTimeSet(), workTime.getFixedWorkSetting());
 		}
 	}
 	
@@ -142,9 +152,42 @@ public class CalculationRangeOfOneDay {
 			outsideWorkTimeSheet = new OutsideWorkTimeSheet(Optional.empty(), Optional.of(HolidayWorkTimeOfDaily.getHolidayWorkTimeOfDaily(fixOff.getWorkingTimes(), attendanceLeave)));
 		}
 	}
+	
+	/**
+	 * 各深夜時間の算出結果から深夜時間の合計を算出する
+	 * @return 深夜時間
+	 */
+	public ExcessOfStatutoryTimeOfDaily calcMidNightTime(ExcessOfStatutoryTimeOfDaily excessOfDaily) {
+		ExcessOverTimeWorkMidNightTime excessMidNight = excessOfDaily.getOverTimeWork().calcMidNightTimeIncludeHolidayWorkTime();
+		int totalTime = /*残業深夜と休出深夜の合計算出*/;
+		excessOfDaily.setExcessOfStatutoryMidNightTime(new ExcessOverTimeWorkMidNightTime(TimeWithCalculation.sameTime(new AttendanceTime(totalTime))));
+		return excessOfDaily;
+	}
 
 	/**
-	 * 勤務　時間帯を判定し時間帯を作　
+	 * 加給時間の合計計算
+	 */
+	public void calcBonusPay() {
+		(/*区分 = 加給*/);
+		(/*区分 = 特定日加給*/);
+		List<BonusPayTime>
+		calcBonusPayTimeInWithinWorkTime
+		calcMidNightTimeIncludeOverTimeWork
+		calcBonusPay
+	}
+	
+	/**
+	 * 特定日加給時間の合計時間
+	 */
+	public void calcSpecifiedBonusPay() {
+		calcBonusPayTimeInWithinWorkTime
+		calcMidNightTimeIncludeOverTimeWork
+		calcBonusPay
+	}
+	
+	
+	/**
+	 * 勤務形態、就業時間帯の設定を判定し時間帯を作成　
 	 * @param workTimeDivision
 	 */
 	public void decisionWorkClassification(WorkTimeDivision workTimeDivision) {
@@ -154,10 +197,12 @@ public class CalculationRangeOfOneDay {
 		else {
 			switch(workTimeDivision.getWorkTimeMethodSet()) {
 			case Enum_Fixed_Work:
+				/*固定*/
 				createWithinWorkTimeSheet();
 			case Enum_Fluid_Work:
 				/*流動勤務*/
 			case Enum_Jogging_Time:
+				/*時差勤務*/
 			case Enum_Overtime_Work:
 			default:
 				throw new RuntimeException("unknown workTimeMethodSet" + workTimeDivision.getWorkTimeMethodSet());

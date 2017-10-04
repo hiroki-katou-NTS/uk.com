@@ -4,9 +4,18 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
  * @author keisuke_hoshina
  *
  */
+
+import lombok.Value;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
+import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.CalcMethodIfLeaveWorkDuringBreakTime;
+
+@Value
 public class OverTimeWorkFrameTime {
-//	private AttendanceClock OverWorkFrameNo;
-//	private OverWorkTime;
+	private int OverWorkFrameNo;
+	private TimeWithCalculation OverTimeWork;
+	private TimeWithCalculation TransferTime;
+	private AttendanceTime BeforeApplicationTime;
 	
 	/**
 	 * 上限の時間から残業時間の差分をとる
