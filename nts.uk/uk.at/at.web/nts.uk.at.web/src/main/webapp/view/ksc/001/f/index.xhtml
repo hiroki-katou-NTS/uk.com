@@ -15,6 +15,7 @@
 			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksc001.f.main.css" />
+			<com:scriptfile path="../b/ksc001.b.service.js" />
 			<com:scriptfile path="ksc001.f.start.js" />
 			<com:scriptfile path="ksc001.f.service.js" />
 			<com:scriptfile path="ksc001.f.vm.js" />
@@ -27,11 +28,11 @@
 					<table class="tableSchedule" tabindex="-1">
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_49')}</td>
-							<td class="valueScheduleSetting">AAAAAAAAAAAAAAAAAAAAAAAAA</td>
+							<td class="valueScheduleSetting" data-bind="text: executionStartDate"></td>
 						</tr>
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_50')}</td>
-							<td class="valueScheduleSetting">BBBBBBBBBBBBBBBBBBBBBBBBB</td>
+							<td class="valueScheduleSetting" data-bind="text: scheduleExecutionLog.completionStatus"></td>
 						</tr>
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_51')}</td>

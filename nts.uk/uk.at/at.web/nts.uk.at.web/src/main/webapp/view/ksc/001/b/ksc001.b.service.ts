@@ -31,7 +31,7 @@ module nts.uk.at.view.ksc001.b {
         /**
          * call service save ScheduleExecutionLog
          */
-        export function saveScheduleExecutionLog(command: model.ScheduleExecutionLogSaveDto): JQueryPromise<void> {
+        export function saveScheduleExecutionLog(command: model.ScheduleExecutionLogSaveDto): JQueryPromise<model.ScheduleExecutionLogSaveRespone> {
             return nts.uk.request.ajax('at', paths.saveScheduleExecutionLog, command);
         }
         
@@ -66,6 +66,11 @@ module nts.uk.at.view.ksc001.b {
                 createMethodAtr: number;
                 copyStartDate: Date;
                 employeeIds: string[];
+            }
+            
+            export interface ScheduleExecutionLogSaveRespone{
+                employeeId: string;
+                executionId: string;    
             }
         }
 

@@ -4,6 +4,7 @@ module nts.uk.at.view.ksc001.b {
     import PeriodDto = service.model.PeriodDto;
     import UserInfoDto = service.model.UserInfoDto;
     import ScheduleExecutionLogSaveDto = service.model.ScheduleExecutionLogSaveDto;
+    import ScheduleExecutionLogSaveRespone = service.model.ScheduleExecutionLogSaveRespone;
 
     export module viewmodel {
         export class ScreenModel {
@@ -489,11 +490,13 @@ module nts.uk.at.view.ksc001.b {
                 var self = this;
                 var user: UserInfoDto = self.getUserLogin();
                 self.savePersonalSchedule(user.employeeId, self.toPersonalScheduleData(user.employeeId));
-                service.saveScheduleExecutionLog(self.collectionData()).done(function(){
-                   alert('YES'); 
+                service.saveScheduleExecutionLog(self.collectionData()).done(function(data){
+                    nts.uk.ui.windows.setShared('inputData', data);
+                    console.log(data);
+                    nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function() {
+                    });
                 });
-                nts.uk.ui.windows.sub.modal("/view/ksc/001/f/index.xhtml").onClosed(function() {
-                });
+                
             }
             
             

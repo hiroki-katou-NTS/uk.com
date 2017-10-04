@@ -1,6 +1,7 @@
 module nts.uk.at.view.ksc001.f {
 
-
+import ScheduleExecutionLogSaveRespone = nts.uk.at.view.ksc001.b.service.model.ScheduleExecutionLogSaveRespone;
+import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
     export module viewmodel {
 
         export class ScreenModel {
@@ -9,6 +10,8 @@ module nts.uk.at.view.ksc001.f {
             currentCode: KnockoutObservable<any>;
             currentCodeList: KnockoutObservableArray<any>;
             count: number = 100;
+            scheduleExecutionLog: ScheduleExecutionLogDto;
+            executionStartDate: string;
             constructor() {
                 var self = this;
                 this.items = ko.observableArray([]);
@@ -34,7 +37,17 @@ module nts.uk.at.view.ksc001.f {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-                dfd.resolve();
+                var self = this;
+                var inputData: ScheduleExecutionLogSaveRespone = nts.uk.ui.windows.getShared('inputData');
+                if (inputData) {
+                    service.findScheduleExecutionLogById(inputData.executionId).done(function(data) {
+                        self.scheduleExecutionLog = data;
+                        self.executionStartDate = moment.utc(data.executionDateTime.executionStartDate).format("YYYY/MM/DD HH:mm:ss");
+                        dfd.resolve();
+                    });
+                }else {
+                    dfd.resolve();
+                }
                 return dfd.promise();
             }
             
