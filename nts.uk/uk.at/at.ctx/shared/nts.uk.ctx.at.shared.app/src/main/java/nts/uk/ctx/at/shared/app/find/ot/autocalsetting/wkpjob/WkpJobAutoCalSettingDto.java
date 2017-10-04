@@ -11,7 +11,7 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.PositionId;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingSetMemento;
 
 /**
@@ -50,7 +50,7 @@ public class WkpJobAutoCalSettingDto implements WkpJobAutoCalSettingSetMemento{
 	private WorkplaceId wkpId;
 
 	/** The job id. */
-	private PositionId jobId;
+	private JobTitleId jobId;
 	
 	/** The normal OT time. */
 	// 残業時間
@@ -86,7 +86,7 @@ public class WkpJobAutoCalSettingDto implements WkpJobAutoCalSettingSetMemento{
 	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpJobAutoCalSettingSetMemento#setPositionId(nts.uk.ctx.at.schedule.dom.shift.autocalsetting.PositionId)
 	 */
 	@Override
-	public void setPositionId(PositionId positionId) {
+	public void setPositionId(JobTitleId positionId) {
 		this.jobId = positionId;
 		
 	}

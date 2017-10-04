@@ -10,7 +10,7 @@ import nts.uk.ctx.at.shared.dom.common.CompanyId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.PositionId;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.job.JobAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.job.JobAutoCalSettingGetMemento;
 
@@ -104,8 +104,8 @@ public class JobAutoCalSetCommand {
 		 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.JobAutoCalSettingGetMemento#getPositionId()
 		 */
 		@Override
-		public PositionId getPositionId() {
-			return new PositionId(this.command.getJobId());
+		public JobTitleId getPositionId() {
+			return new JobTitleId(this.command.getJobId());
 		}
 
 

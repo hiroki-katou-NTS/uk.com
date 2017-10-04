@@ -7,19 +7,13 @@ package nts.uk.ctx.at.shared.app.find.ot.autocalsetting.unit;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.UseClassification;
+import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.use.UseUnitAutoCalSettingSetMemento;
 
 /**
  * The Class UseUnitAutoCalSettingDto.
  */
 @Setter
-
-/**
- * Gets the use jobwkp set.
- *
- * @return the use jobwkp set
- */
 @Getter
 public class UseUnitAutoCalSettingDto implements UseUnitAutoCalSettingSetMemento {
 
@@ -44,8 +38,7 @@ public class UseUnitAutoCalSettingDto implements UseUnitAutoCalSettingSetMemento
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		// TODO Auto-generated method stub
-
+		// Do nothing
 	}
 
 	/*
@@ -56,8 +49,8 @@ public class UseUnitAutoCalSettingDto implements UseUnitAutoCalSettingSetMemento
 	 * shift.autocalsetting.UseClassification)
 	 */
 	@Override
-	public void setUseJobSet(UseClassification useJobSet) {
-		this.useJobSet = (useJobSet.value == useJobSet.USE.value);
+	public void setUseJobSet(ApplyAtr useJobSet) {
+		this.useJobSet = ApplyAtr.USE.equals(useJobSet);
 
 	}
 
@@ -69,8 +62,8 @@ public class UseUnitAutoCalSettingDto implements UseUnitAutoCalSettingSetMemento
 	 * shift.autocalsetting.UseClassification)
 	 */
 	@Override
-	public void setUseWkpSet(UseClassification useWkpSet) {
-		this.useWkpSet = (useWkpSet.value == useWkpSet.USE.value);
+	public void setUseWkpSet(ApplyAtr useWkpSet) {
+		this.useWkpSet = ApplyAtr.USE.equals(useWkpSet);
 	}
 
 	/*
@@ -81,8 +74,8 @@ public class UseUnitAutoCalSettingDto implements UseUnitAutoCalSettingSetMemento
 	 * dom.shift.autocalsetting.UseClassification)
 	 */
 	@Override
-	public void setUseJobwkpSet(UseClassification useJobwkpSet) {
-		this.useJobwkpSet = (useJobwkpSet.value == useJobwkpSet.USE.value);
+	public void setUseJobwkpSet(ApplyAtr useJobwkpSet) {
+		this.useJobwkpSet = ApplyAtr.USE.equals(useJobwkpSet);
 	}
 
 }

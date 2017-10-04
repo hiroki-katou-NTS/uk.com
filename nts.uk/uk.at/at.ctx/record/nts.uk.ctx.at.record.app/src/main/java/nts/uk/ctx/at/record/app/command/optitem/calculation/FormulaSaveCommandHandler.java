@@ -57,7 +57,7 @@ public class FormulaSaveCommandHandler extends CommandHandler<FormulaSaveCommand
 			return new FormulaDispOrder(item);
 		}).collect(Collectors.toList());
 
-		String optionalItemNo = formulas.get(FIRST_ITEM).getOptionalItemNo().v();
+		String optionalItemNo = command.getOptItemNo();
 		this.repository.remove(companyId, optionalItemNo);
 		this.orderRepo.remove(companyId, optionalItemNo);
 

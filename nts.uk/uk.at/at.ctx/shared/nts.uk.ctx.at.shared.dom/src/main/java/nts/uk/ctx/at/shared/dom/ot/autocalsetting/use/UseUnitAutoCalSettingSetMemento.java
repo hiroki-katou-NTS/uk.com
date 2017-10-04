@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.ot.autocalsetting.use;
 
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.UseClassification;
+import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 
 /**
  * The Interface UseUnitAutoCalSettingSetMemento.
@@ -19,19 +19,19 @@ public interface UseUnitAutoCalSettingSetMemento {
 	 *
 	 * @param useJobSet the new use job set
 	 */
-	void  setUseJobSet(UseClassification useJobSet);
+	void  setUseJobSet(ApplyAtr useJobSet);
 
 	/**
 	 * Sets the use wkp set.
 	 *
 	 * @param useWkpSet the new use wkp set
 	 */
-	void  setUseWkpSet(UseClassification useWkpSet);
+	void  setUseWkpSet(ApplyAtr useWkpSet);
 	
 	/**
 	 * Sets the use jobwkp set.
 	 *
 	 * @param useJobwkpSet the new use jobwkp set
 	 */
-	void  setUseJobwkpSet(UseClassification useJobwkpSet);
+	void  setUseJobwkpSet(ApplyAtr useJobwkpSet);
 }

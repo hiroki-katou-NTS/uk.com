@@ -9,7 +9,7 @@ import nts.uk.ctx.at.shared.dom.common.WorkplaceId;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalOvertimeSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalRestTimeSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.PositionId;
+import nts.uk.ctx.at.shared.dom.ot.autocalsetting.JobTitleId;
 
 /**
  * The Interface WkpJobAutoCalSettingSetMemento.
@@ -37,7 +37,7 @@ public interface WkpJobAutoCalSettingSetMemento {
 	 *
 	 * @param positionId the new position id
 	 */
-	void  setPositionId(PositionId positionId);
+	void  setPositionId(JobTitleId positionId);
 
 	/**
 	 * Sets the normal OT time.

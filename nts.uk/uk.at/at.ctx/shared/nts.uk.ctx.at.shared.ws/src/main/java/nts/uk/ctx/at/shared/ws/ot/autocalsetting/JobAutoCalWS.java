@@ -19,7 +19,7 @@ import nts.uk.ctx.at.shared.app.find.ot.autocalsetting.job.JobAutoCalSettingDto;
 /**
  * The Class JobAutoCalWS.
  */
-@Path("ctx/at/schedule/shift/autocaljob")
+@Path("ctx/at/shared/ot/autocal/job")
 @Produces("application/json")
 public class JobAutoCalWS extends WebService {
 

@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.app.find.ot.autocalsetting.wkpjob.WkpJobAutoCalSetti
 /**
  * The Class WkpJobAutoCalWS.
  */
-@Path("ctx/at/schedule/shift/autocalwkpjob")
+@Path("ctx/at/shared/ot/autocal/wkpjob")
 @Produces("application/json")
 public class WkpJobAutoCalWS {
 
