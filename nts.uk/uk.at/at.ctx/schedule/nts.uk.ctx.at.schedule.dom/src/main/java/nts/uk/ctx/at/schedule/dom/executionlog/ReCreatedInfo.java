@@ -28,10 +28,9 @@ public class ReCreatedInfo extends DomainObject{
 	 * @param memento the memento
 	 * @return the re created info
 	 */
-	public ReCreatedInfo toDomain(ExecutionContentGetMemento memento){
-		this.reCreateContent = new ReCreateContent().toDomain(memento);
+	public ReCreatedInfo(ExecutionContentGetMemento memento){
+		this.reCreateContent = new ReCreateContent(memento);
 		this.reCreateAtr = memento.getReCreateAtr();
-		return this;
 	}
 	
 	/**

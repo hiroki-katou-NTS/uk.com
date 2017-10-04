@@ -50,7 +50,7 @@ public class ScheduleExecutionLog extends AggregateRoot {
 	 * @param memento the memento
 	 * @return the schedule execution log
 	 */
-	public ScheduleExecutionLog toDomain(ScheduleExecutionLogGetMemento memento) {
+	public ScheduleExecutionLog (ScheduleExecutionLogGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.completionStatus = memento.getCompletionStatus();
 		this.executionId = memento.getExecutionId();
@@ -58,7 +58,6 @@ public class ScheduleExecutionLog extends AggregateRoot {
 		this.executionDateTime = memento.getExecutionDateTime();
 		this.executionEmployeeId = memento.getExecutionEmployeeId();
 		this.period = memento.getPeriod();
-		return this;
 	}
 
 	/**

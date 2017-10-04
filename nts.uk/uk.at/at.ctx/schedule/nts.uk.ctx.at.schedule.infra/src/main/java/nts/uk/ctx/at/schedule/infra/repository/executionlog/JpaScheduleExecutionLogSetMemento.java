@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
@@ -112,8 +111,8 @@ public class JpaScheduleExecutionLogSetMemento implements ScheduleExecutionLogSe
 	 */
 	@Override
 	public void setPeriod(Period period) {
-		this.entity.setStartYmd(GeneralDateTime.legacyDateTime(period.getStartDate().date()));
-		this.entity.setEndYmd(GeneralDateTime.legacyDateTime(period.getEndDate().date()));
+		this.entity.setStartYmd(period.getStartDate());
+		this.entity.setEndYmd(period.getEndDate());
 	}
 
 }

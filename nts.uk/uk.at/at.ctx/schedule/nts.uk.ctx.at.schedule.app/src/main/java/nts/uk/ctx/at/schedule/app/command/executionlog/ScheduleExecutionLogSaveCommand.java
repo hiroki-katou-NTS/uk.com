@@ -88,7 +88,7 @@ public class ScheduleExecutionLogSaveCommand {
 	 * @return the schedule execution log
 	 */
 	public ScheduleExecutionLog toDomain(String companyId, String employeeId, String executionId) {
-		return new ScheduleExecutionLog().toDomain(
+		return new ScheduleExecutionLog(
 				new ScheduleExecutionLogSaveGetMementoImpl(companyId, executionId, employeeId));
 	}
 	
@@ -205,7 +205,7 @@ public class ScheduleExecutionLogSaveCommand {
 		 */
 		@Override
 		public ExecutionContent getExecutionContent() {
-			return new ExecutionContent().toDomain(new ExecutionContentGetMemento() {
+			return new ExecutionContent(new ExecutionContentGetMemento() {
 				
 				/*
 				 * (non-Javadoc)

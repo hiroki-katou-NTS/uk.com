@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.infra.entity.executionlog;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
+import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 
 /**
@@ -27,10 +28,10 @@ public class KscmtScheduleExcLog_ {
     public static volatile SingularAttribute<KscmtScheduleExcLog, String> exeSid;
     
     /** The start ymd. */
-    public static volatile SingularAttribute<KscmtScheduleExcLog, Integer> startYmd;
+    public static volatile SingularAttribute<KscmtScheduleExcLog, GeneralDate> startYmd;
     
     /** The end ymd. */
-    public static volatile SingularAttribute<KscmtScheduleExcLog, Integer> endYmd;
+    public static volatile SingularAttribute<KscmtScheduleExcLog, GeneralDate> endYmd;
     
     /** The completion status. */
     public static volatile SingularAttribute<KscmtScheduleExcLog, Integer> completionStatus;

@@ -32,11 +32,10 @@ public class Content extends DomainObject{
 	 * @param memento the memento
 	 * @return the content
 	 */
-	public Content toDomain(ExecutionContentGetMemento memento) {
+	public Content(ExecutionContentGetMemento memento) {
 		this.confirm = memento.getConfirm();
-		this.reCreatedInfo = new ReCreatedInfo().toDomain(memento);
+		this.reCreatedInfo = new ReCreatedInfo(memento);
 		this.implementAtr = memento.getImplementAtr();
-		return this;
 	}
 	
 	/**

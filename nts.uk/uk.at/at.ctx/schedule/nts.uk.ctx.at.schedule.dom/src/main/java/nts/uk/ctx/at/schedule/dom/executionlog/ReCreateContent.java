@@ -29,10 +29,9 @@ public class ReCreateContent extends DomainObject{
 	 * @param memento the memento
 	 * @return the re create content
 	 */
-	public ReCreateContent toDomain(ExecutionContentGetMemento memento) {
+	public ReCreateContent(ExecutionContentGetMemento memento) {
 		this.processExecutionAtr = memento.getProcessExecutionAtr();
-		this.resetAtr = new ResetAtr().toDomain(memento);
-		return this;
+		this.resetAtr = new ResetAtr(memento);
 	}
 
 	/**

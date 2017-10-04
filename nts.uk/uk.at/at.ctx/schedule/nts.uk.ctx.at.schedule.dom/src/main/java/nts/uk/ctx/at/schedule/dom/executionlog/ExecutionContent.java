@@ -32,11 +32,10 @@ public class ExecutionContent extends DomainObject{
 	 * @param memento the memento
 	 * @return the execution content
 	 */
-	public ExecutionContent toDomain(ExecutionContentGetMemento memento){
-		this.content = new Content().toDomain(memento);
+	public ExecutionContent (ExecutionContentGetMemento memento){
+		this.content = new Content(memento);
 		this.copyStartDate = memento.getCopyStartDate();
 		this.createMethodAtr = memento.getCreateMethodAtr();
-		return this;
 	}
 	
 	/**

@@ -8,6 +8,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.PeriodObject;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogDto;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.EmployeeDto;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
@@ -19,10 +21,9 @@ public class ScheduleExecutionLogFinder {
 	@Inject
 	private ScheduleExecutionLogRepository scheduleExecutionLogRepository;
 
-	// TODO get imported class
-	// @Inject
-	// private EmployeeRepository employeeRepository;
-	//
+	@Inject
+	private SCEmployeeAdapter employeeAdapter;
+	
 	public List<ScheduleExecutionLogDto> findByDate(PeriodObject periodObj) {
 		String companyId = AppContexts.user().companyId();
 		if (periodObj == null) {
@@ -33,11 +34,9 @@ public class ScheduleExecutionLogFinder {
 		return sel.stream().map(item -> {
 			ScheduleExecutionLogDto dto = new ScheduleExecutionLogDto();
 			item.saveToMemento(dto);
-			// TODO
-			// Employee employee =
-			// employeeRepository.find(dto.getExecutionEmployeeId());
-			// dto.setEmployeeCode(employee.GetEmployeeCode);
-			// dto.setEmployeeName(employee.GetEmployeeName);
+			EmployeeDto employee =employeeAdapter.findByEmployeeId(dto.getExecutionEmployeeId());
+			 dto.setEmployeeCode(employee.getEmployeeCode());
+			 dto.setEmployeeName(employee.getEmployeeName());
 			return dto;
 		}).collect(Collectors.toList());
 	}

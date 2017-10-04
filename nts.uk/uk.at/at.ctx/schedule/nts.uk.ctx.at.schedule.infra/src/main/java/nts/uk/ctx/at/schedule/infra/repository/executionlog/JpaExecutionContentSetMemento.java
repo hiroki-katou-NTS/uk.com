@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentSetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
@@ -55,7 +54,7 @@ public class JpaExecutionContentSetMemento implements ExecutionContentSetMemento
 	 */
 	@Override
 	public void setCopyStartDate(GeneralDate copyStartDate) {
-		this.entity.setCopyStartYmd(GeneralDateTime.legacyDateTime(copyStartDate.date()));
+		this.entity.setCopyStartYmd(copyStartDate);
 	}
 
 	/*
