@@ -40,7 +40,7 @@ public class Kmk007WebService {
 	 * @return the list
 	 */
 	@POST
-	@Path("find/dailyworktypea")
+	@Path("find/dailyworktype")
 	public List<WorkTypeDto> findByDailyWorkType(DailyWorkTypeAtrParam param){
 		return workTypeProcessor.findWorkTypeByDailyWorkType(param.getDailyWorkTypeAtr());
 	}
