@@ -13,6 +13,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.enums.EnumConstant;
 import nts.arc.i18n.custom.IInternationalization;
+import nts.arc.scoped.request.RequestContextProvider;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.portal.app.find.standardmenu.StandardMenuDto;
 import nts.uk.ctx.sys.portal.app.find.webmenu.detail.MenuBarDetailDto;
@@ -36,7 +37,12 @@ import nts.uk.ctx.sys.portal.dom.webmenu.jobtitletying.JobTitleTyingRepository;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTying;
 import nts.uk.ctx.sys.portal.dom.webmenu.personaltying.PersonalTyingRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.AppContextsConfig;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.program.Program;
+import nts.uk.shr.com.program.ProgramsManager;
+import nts.uk.shr.com.program.WebAppId;
+import nts.uk.ctx.sys.portal.dom.enums.System;
 
 @Stateless
 public class WebMenuFinder {
@@ -155,9 +161,6 @@ public class WebMenuFinder {
 		}
 		
 		return find(resultSet.stream().collect(Collectors.toList()));
-//		return menus.stream().map(m -> {
-//			return toMenuDetails(m, companyId);
-//		}).collect(Collectors.toList());
 	}
 	
 	/**
@@ -180,16 +183,22 @@ public class WebMenuFinder {
 	 */
 	private WebMenuDetailDto toMenuDetails(WebMenu menu, String companyId) {
 		List<MenuBarDetailDto> menuBar = menu.getMenuBars().stream().map(m -> {
+			String link = null;
+			if (m.getSelectedAtr() == SelectedAtr.DirectActivation) {
+				StandardMenu sMenu = findStandardMenu(companyId, m.getCode().v(), m.getSystem().value, m.getMenuCls().value);
+				link = getProgramPath(sMenu);
+			}
+			
 			List<TitleBarDetailDto> titleBars = m.getTitleMenu().stream().map(t -> {
 				List<TreeMenuDetailDto> treeMenus = t.getTreeMenu().stream().map(tm -> {
 					String menuCode = tm.getCode().v();
 					int system = tm.getSystem().value;
 					int classification = tm.getClassification().value;
-					Optional<StandardMenu> standardMenus = standardMenuRepository.getStandardMenubyCode(companyId, menuCode, system, classification);
-					StandardMenu stdMenu = standardMenus.orElseThrow(() -> new RuntimeException("Menu not found."));
+					StandardMenu stdMenu = findStandardMenu(companyId, menuCode, system, classification);
+					String path = getProgramPath(stdMenu);
 					return new TreeMenuDetailDto(menuCode, stdMenu.getTargetItems(), stdMenu.getDisplayName().v(),
-							stdMenu.getUrl(), tm.getDisplayOrder(), system, stdMenu.getMenuAtr().value,
-							classification, stdMenu.getAfterLoginDisplay());
+							path, tm.getDisplayOrder(), system, stdMenu.getMenuAtr().value, classification, 
+							stdMenu.getAfterLoginDisplay(), stdMenu.getProgramId(), stdMenu.getScreenId(), stdMenu.getQueryString());
 				}).sorted((tm1, tm2) -> tm1.getDisplayOrder() - tm2.getDisplayOrder()).collect(Collectors.toList());
 				
 				return new TitleBarDetailDto(t.getTitleMenuId().toString(), 
@@ -199,12 +208,77 @@ public class WebMenuFinder {
 			}).sorted((t1, t2) -> t1.getDisplayOrder() - t2.getDisplayOrder()).collect(Collectors.toList());
 			
 			return new MenuBarDetailDto(m.getMenuBarId().toString(),
-					m.getCode().v(), m.getMenuBarName().v(), m.getSelectedAtr().value,
+					m.getCode().v(), m.getMenuBarName().v(), m.getSelectedAtr().value, link,
 					m.getSystem().value, m.getMenuCls().value, m.getBackgroundColor().v(),
 					m.getTextColor().v(), m.getDisplayOrder().intValue(), titleBars);
 		}).sorted((m1, m2) -> m1.getDisplayOrder() - m2.getDisplayOrder()).collect(Collectors.toList());
 		return new WebMenuDetailDto(companyId, menu.getWebMenuCode().v(),
 				menu.getWebMenuName().v(), menu.getDefaultMenu().value, menuBar);
+	}
+	
+	/**
+	 * Find standard menu.
+	 * @param companyId companyId
+	 * @param menuCode menuCode
+	 * @param system system
+	 * @param classification classification
+	 * @return standard menu
+	 */
+	private StandardMenu findStandardMenu(String companyId, String menuCode, int system, int classification) {
+		Optional<StandardMenu> standardMenu = standardMenuRepository.getStandardMenubyCode(companyId, menuCode, system, classification);
+		return standardMenu.orElseThrow(() -> new RuntimeException("Menu not found."));
+	}
+	
+	/**
+	 * Find program path.
+	 * @param companyId companyId
+	 * @param menuCode menuCode
+	 * @param system system
+	 * @param classification classification
+	 * @return program path
+	 */
+	private String getProgramPath(StandardMenu stdMenu) {
+		// Get system
+		System sys = stdMenu.getSystem();
+		WebAppId appId = null;
+		if (sys == System.COMMON) {
+			appId = WebAppId.COM;
+		} else if (sys == System.TIME_SHEET) {
+			appId = WebAppId.AT;
+		} else if (sys == System.KYUYOU) {
+			appId = WebAppId.PR;
+		}
+		
+		String url = stdMenu.getUrl();
+		if (url == null || "".equals(url)) {
+			Optional<Program> programOpt = ProgramsManager.findById(appId, 
+					stdMenu.getProgramId() + (stdMenu.getScreenId() == null ? "" : stdMenu.getScreenId()));
+			if (programOpt.isPresent()) {
+				url = programOpt.get().getPPath();
+			}
+		}
+		return url;
+	}
+	
+	/**
+	 * Get program string.
+	 * @return program string
+	 */
+	public String getProgram() {
+		String companyId = AppContexts.user().companyId();
+		String pgId = RequestContextProvider.get().get(AppContextsConfig.KEY_PROGRAM_ID);
+		if (pgId == null) return "";
+		String programId = pgId, screenId = null;
+		if (pgId.length() > 6) {
+			 programId = pgId.substring(0, 6);
+			 screenId = pgId.substring(6);
+		}
+		Optional<StandardMenu> menuOpt = standardMenuRepository.getProgram(companyId, programId, screenId);
+		if (menuOpt.isPresent()) {
+			StandardMenu menu = menuOpt.get(); 
+			return pgId + " " + menu.getDisplayName().v();
+		}
+		return "";
 	}
 	
 	

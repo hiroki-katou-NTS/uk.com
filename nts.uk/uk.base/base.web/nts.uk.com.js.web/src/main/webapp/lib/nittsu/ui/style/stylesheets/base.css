@@ -4053,7 +4053,7 @@ div .ex-area-line.x-stay {
 /* line 1, ../sass/frame/_header.scss */
 #header {
   background-color: #ccc;
-  height: 50px;
+  height: 92px;
 }
 
 /* line 1, ../sass/frame/_functions.scss */
@@ -4295,6 +4295,10 @@ body * {
   line-height: 22px;
   margin: 2px;
   padding: 2px 12px 2px 8px;
+}
+
+#header #menu-header #logo-area > #user-info > #user > #user-image {
+	cursor: pointer;
 }
 
 #header #menu-header #logo-area > #user-info > #company > #company-name,

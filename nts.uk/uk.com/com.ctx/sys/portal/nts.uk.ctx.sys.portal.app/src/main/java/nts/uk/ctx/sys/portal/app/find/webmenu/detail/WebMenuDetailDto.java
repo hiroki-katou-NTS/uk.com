@@ -5,16 +5,35 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/**
+ * Web menu details.
+ */
 @Data
 @AllArgsConstructor
 public class WebMenuDetailDto {
+	
+	/**
+	 * Company Id 
+	 */
 	private String companyId;
 
+	/**
+	 * Web menu code
+	 */
 	private String webMenuCode;
 
+	/**
+	 * Web menu name
+	 */
 	private String webMenuName;
 
+	/**
+	 * Default menu
+	 */
 	private int defaultMenu;
 
-	private List<MenuBarDetailDto> menuBars;
+	/**
+	 * Menu bar
+	 */
+	private List<MenuBarDetailDto> menuBar;
 }

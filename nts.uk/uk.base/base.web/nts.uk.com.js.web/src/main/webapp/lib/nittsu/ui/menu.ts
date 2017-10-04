@@ -1,5 +1,6 @@
 module nts.uk.ui.menu {
-    let SEPARATOR: string = "menu_item_separator";
+    
+    /** Showing item */
     let showingItem;
     
     /**
@@ -42,10 +43,14 @@ module nts.uk.ui.menu {
      * Request.
      */
     export function request() {
+        $("#logo").on(constants.CLICK, function() {
+            // TODO: Jump to top page.
+        });
+        
+        displayUserInfo();
         nts.uk.request.ajax(constants.MenuDataPath).done(function(menuSet) {
-            if (!menuSet || menuSet.length === 0) return;
-            if (!menuSet) return;
             let $menuNav = $("<ul/>").attr("id", "menu-nav").appendTo($("#nav-area"));
+            if (!menuSet || menuSet.length === 0) return;
             createMenuSelect($menuNav, menuSet);
             let menuCode = uk.localStorage.getItem(constants.MENU);
             if (menuCode.isPresent()) {
@@ -56,25 +61,27 @@ module nts.uk.ui.menu {
             } else {
                 generate($menuNav, menuSet[0]);
             }
-            displayUserInfo();
-            getProgram();
         });
+        getProgram();
     }
     
     /**
      * Generate.
      */
     function generate($menuNav: JQuery, menuSet: any) {
-        _.forEach(menuSet.menuBars, function(category: any) {
+        _.forEach(menuSet.menuBar, function(category: any) {
             let $cate = $("<li class='category'/>").appendTo($menuNav);
             if (category.selectedAttr === 1) {
-                // TODO: Menu bar hasn't had path field yet.
-                $cate.addClass("direct").data("path", category.path);
+                $cate.addClass("direct").data("path", category.link).on(constants.CLICK, function() {
+                    uk.request.jump(category.link);
+                });
             }
+            
             let $cateName = $("<div class='category-name'/>")
                             .css({ background: category.backgroundColor, color: category.textColor || "#FFF" })
                             .text(category.menuBarName).appendTo($cate);
             let $menuItems = $("<ul class='menu-items'/>").appendTo($cate);
+            
             if (category.items && category.items.length > 0) {
                 _.forEach(category.items, function(item: any) {
                     $menuItems.append($("<li class='menu-item' path='" + item.path + "'/>").text(item.name));
@@ -120,16 +127,29 @@ module nts.uk.ui.menu {
             });
             
             nts.uk.request.ajax(constants.UserName).done(function(userName: any) {
-                let $userImage = $("<div/>").addClass("ui-icon ui-icon-person").appendTo($user);
-                $userImage.css("margin-right", "6px");
-                let $userName = $("<span/>").attr("id", "user-name").text(userName.value).appendTo($user);
+                let $userImage = $("<div/>").attr("id", "user-image").addClass("ui-icon ui-icon-person").appendTo($user);
+                $userImage.css("margin-right", "6px").on(constants.CLICK, function() {
+                    // TODO: Jump to personal profile.
+                });
+                let $userName = $("<span/>").attr("id", "user-name").text(userName).appendTo($user);
                 let $userSettings = $("<div/>").addClass("user-settings cf").appendTo($user);
                 $("<div class='ui-icon ui-icon-caret-1-s'/>").appendTo($userSettings);
                 let userOptions = [ new MenuItem("個人情報の設定"), new MenuItem("ログアウト") ];
                 let $userOptions = $("<ul class='menu-items user-options'/>").appendTo($userSettings);
                 _.forEach(userOptions, function(option: any, i: number) {
-                    $userOptions.append($("<li class='menu-item'/>").text(option.name));
+                    let $li = $("<li class='menu-item'/>").text(option.name);
+                    $userOptions.append($li);
+                    if (i === 0) {
+                        $li.on(constants.CLICK, function() {
+                            // TODO: Jump to personal information settings.
+                        });
+                        return;
+                    }
+                    $li.on(constants.CLICK, function() {
+                        // TODO: Jump to login screen.
+                    });
                 });
+                
                 $userSettings.on(constants.CLICK, function() {
                     if ($userOptions.css("display") === "none") {
                         $userOptions.fadeIn(100);
@@ -156,17 +176,17 @@ module nts.uk.ui.menu {
     function getProgram() {
         nts.uk.request.ajax(constants.PG).done(function(pg: any) {
             let $pgArea = $("#pg-area");
-            $("<div/>").attr("id", "pg-name").text(pg.value).appendTo($pgArea);
+            $("<div/>").attr("id", "pg-name").text(pg).appendTo($pgArea);
             let $manualArea = $("<div/>").attr("id", "manual").appendTo($pgArea);
             let $manualBtn = $("<button class='manual-button'/>").text("?").appendTo($manualArea);
             $manualBtn.on(constants.CLICK, function() {
-                // TODO:
+                // TODO: Open manual
             });
             
             let $tglBtn = $("<div class='tgl cf'/>").appendTo($manualArea);
             $tglBtn.append($("<div class='ui-icon ui-icon-caret-1-s'/>"));
             $tglBtn.on(constants.CLICK, function() {
-                
+                // TODO
             });
         });
     }
@@ -177,12 +197,19 @@ module nts.uk.ui.menu {
     function init() {
         let $navArea = $("#nav-area");
         let $menuItems = $("#menu-nav li.category:not(.direct)");
+        
+        /**
+         * Close item.
+         */
         function closeItem() {
             let $item = $("#menu-nav li.category:eq(" + showingItem + ")");
             $item.find(".category-name").removeClass("opening");
             $item.find("ul, div.title-menu").fadeOut(100);
         }
         
+        /**
+         * Open item.
+         */
         function openItem($item: JQuery) {
             $item.find(".category-name").addClass("opening");
             $item.find("ul, div.title-menu").fadeIn(100);
@@ -245,13 +272,15 @@ module nts.uk.ui.menu {
                                 .css({ background: t.backgroundColor, color: t.textColor }).appendTo($titleDiv);
                 let $titleImage = $("<img/>").addClass("title-image").hide();
                 $titleDiv.append($titleImage);
+                
                 if (!_.isNull(t.imageFile) && !_.isUndefined(t.imageFile) && !_.isEmpty(t.imageFile)) {
                     let fqpImage = nts.uk.request.specials.createPathToFile(t.imageFile);
-                    // TODO: Test image
+                    // TODO: Show image
 //                    $titleImage.attr("src", fqpImage).show();
                     $titleImage.attr("src", "../../catalog/images/valentine-bg.jpg").show();
                     height += 80;
                 }
+                
                 if (t.treeMenu && t.treeMenu.length > 0) {
                     _.forEach(t.treeMenu, function(item, i) {
                         if (item.menuAttr === 0) {
@@ -259,7 +288,15 @@ module nts.uk.ui.menu {
                             height += 30;
                             return;
                         }
-                        let $item = $("<li class='title-item' path='" + item.url + "'/>").text(item.displayName || item.defaultName);
+                        let $item = $("<li class='title-item'/>").data("path", item.url).text(item.displayName || item.defaultName);
+                        $item.on(constants.CLICK, function() {
+                            let path = $(this).data("path");
+                            if (path && path.indexOf("http") !== 0) {
+                                uk.request.jump(path);   
+                                return;
+                            }
+                            window.location.href = path;
+                        });
                         $titleDiv.append($item);
                         height += 40;
                     });
@@ -274,12 +311,10 @@ module nts.uk.ui.menu {
     module constants {
         export let MENU = "UK-Menu";
         export let CLICK = "click";
-//        export let MenuDataPath = "/shared/menu/get";
-        export let AllMenus = "/sys/portal/webmenu/allmenus";
         export let MenuDataPath = "/sys/portal/webmenu/finddetails";
-        export let Companies = "/shared/menu/companies";
-        export let UserName = "/shared/menu/username";
-        export let PG = "/shared/menu/program";
+        export let Companies = "sys/portal/webmenu/companies";
+        export let UserName = "sys/portal/webmenu/username";
+        export let PG = "sys/portal/webmenu/program";
     }
     
 }

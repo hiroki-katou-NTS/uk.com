@@ -105,4 +105,13 @@ public interface StandardMenuRepository {
 	 * @return
 	 */
 	List<StandardMenu> findAllDisplay(String companyID);
+	
+	/**
+	 * Get program.
+	 * @param companyId companyId
+	 * @param programId programId
+	 * @param screenId screenId
+	 * @return standard menu
+	 */
+	Optional<StandardMenu> getProgram(String companyId, String programId, String screenId);
 }

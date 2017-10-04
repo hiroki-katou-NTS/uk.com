@@ -65,7 +65,9 @@ public class JpaWebMenuRepository extends JpaRepository implements WebMenuReposi
 		StringBuilder queryStr = new StringBuilder(SEL_1);
 		if (webMenuCodes == null) return null;
 		queryStr.append(" AND a.ccgstWebMenuPK.webMenuCd IN :codes");
-		return this.queryProxy().query(queryStr.toString(), CcgstWebMenu.class).setParameter("codes", webMenuCodes).getList(w -> {
+		return this.queryProxy().query(queryStr.toString(), CcgstWebMenu.class)
+				.setParameter("companyId", companyId)
+				.setParameter("codes", webMenuCodes).getList(w -> {
 			return toDomain(companyId, w);
 		});
 	}

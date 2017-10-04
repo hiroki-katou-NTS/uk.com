@@ -5,27 +5,65 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+/**
+ * MenuBarDetailDto
+ */
 @Data
 @AllArgsConstructor
 public class MenuBarDetailDto {
+	
+	/**
+	 * Menu bar Id 
+	 */
 	private String menuBarId;
 	
+	/**
+	 * Code
+	 */
 	private String code;
 
+	/**
+	 * Menu bar name
+	 */
 	private String menuBarName;
 
-	// From tree or menu bar itself
+	/**
+	 * From tree or menu bar itself
+	 */
 	private int selectedAttr;
+	
+	/**
+	 * Link to jump to when menu is selected directly
+	 */
+	private String link;
 
+	/**
+	 * System
+	 */
 	private int system;
 
+	/**
+	 * Menu classification
+	 */
 	private int menuCls;
 
+	/**
+	 * Background color
+	 */
 	private String backgroundColor;
 
+	/**
+	 * Text color
+	 */
 	private String textColor;
 
+	/**
+	 * Display order
+	 */
 	private int displayOrder;
 
+	/**
+	 * Title menu
+	 */
 	private List<TitleBarDetailDto> titleMenu;
 }
