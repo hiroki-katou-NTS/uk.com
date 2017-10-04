@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.request.app.command.application.common.service.detailscreen.before;
+package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before;
 
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.PrelaunchAppSetting;
 

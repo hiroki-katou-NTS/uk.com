@@ -1,7 +1,9 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.approvalroot;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -10,8 +12,11 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApproverInfo;
+import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.JobClassification;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.JobtitleSearchSet;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.JobtitleSearchSetRepository;
 
@@ -31,6 +36,9 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	@Inject
 	private SyJobTitleAdapter syJobTitleAdapter;
 	
+	@Inject
+	private WorkplaceAdapter workplaceAdapter;
+	
 	/**
 	 * 3.職位から承認者へ変換する
 	 * 
@@ -40,7 +48,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 		// 共通アルゴリズム「申請者の職位の序列は承認者のと比較する」を実行する
 		boolean isApper = compareRank(cid, sid, baseDate, jobTitleId);
 		if (isApper) {
-			String wkpId = this.employeeAdapter.getWorkplaceId(cid, sid, baseDate);
+			String wkpId = this.workplaceAdapter.getWorkplaceId(cid, sid, baseDate);
 			// thực hiện xử lý 「職場に指定する職位の対象者を取得する」
 			List<ApproverInfo> approvers = this.getByWkp(cid, wkpId, baseDate, jobTitleId);
 			if (!CollectionUtil.isEmpty(approvers)) {
@@ -112,7 +120,14 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	 */
 	private List<ApproverInfo> getByWkp(String cid, String wkpId, GeneralDate baseDate, String jobTitleId) {
 		// 承認者の
-				JobTitleImport jobOfApprover = this.syJobTitleAdapter.findJobTitleByPositionId(cid, jobTitleId, baseDate);
+		List<ConcurrentEmployeeImport> jobOfApprover = this.employeeAdapter.getConcurrentEmployee(cid, jobTitleId, baseDate);
+		if (CollectionUtil.isEmpty(jobOfApprover)) {
+			return Collections.emptyList();
+		}
+		// TODO: QA #86027
+		// 兼務役職者はどうやって判断？
+		List<ConcurrentEmployeeImport> concurentJob = jobOfApprover.stream().filter(x -> x.getJobCls() == JobClassification.Concurrent.value).collect(Collectors.toList());
+		
 		return null;
 	}
 }

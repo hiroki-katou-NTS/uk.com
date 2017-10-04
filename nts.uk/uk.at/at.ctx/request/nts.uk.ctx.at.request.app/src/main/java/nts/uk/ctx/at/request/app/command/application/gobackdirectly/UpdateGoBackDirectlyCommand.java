@@ -70,5 +70,13 @@ public class UpdateGoBackDirectlyCommand {
 	 * 勤務場所選択２
 	 */
 	String workLocationCD2;
+	
+	String employeeID;
+	
+	int prePostAtr;
+	
+	String appDate;
+	
+	int employeeRouteAtr;
 
 }

@@ -5,13 +5,17 @@ import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.common.service.other.OtherCommonAlgorithm;
 
 @Stateless
-public class DetailBeforeProcessRegisterImpl implements DetailBeforeProcessRegister {
+public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 	
 	@Inject
 	private OtherCommonAlgorithm otherCommonAlgorithmService;
+	
+	@Inject
+	private NewBeforeRegister newBeforeRegister;
 	
 	public void processBeforeDetailScreenRegistration(String companyID, String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID, PrePostAtr postAtr ){
 
@@ -19,7 +23,7 @@ public class DetailBeforeProcessRegisterImpl implements DetailBeforeProcessRegis
 		// selectedWorkTypeConflictCheck();
 		
 		// アルゴリズム「確定チェック」を実施する(thực hiện xử lý 「確定チェック」)
-		otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID, employeeID, appDate);
+		newBeforeRegister.confirmationCheck(companyID, employeeID, appDate);
 		
 		exclusiveCheck();
 	}

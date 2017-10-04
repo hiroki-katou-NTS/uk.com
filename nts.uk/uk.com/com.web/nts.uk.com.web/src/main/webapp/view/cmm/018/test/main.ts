@@ -39,5 +39,12 @@ module nts.uk.com.view.cmm018.test.viewmodel{
         openDialogN(){
            windows.sub.modal("/view/cmm/018/n/index.xhtml", { title: "", dialogClass: "no-close" });
         }
+        openTotal(){
+           nts.uk.request.jump("/view/cmm/018/a/index.xhtml", {screen: 'Menu'});
+        }
+        
+        openPrivate(){
+           nts.uk.request.jump("/view/cmm/018/a/index.xhtml", {screen: 'Application', employeeId: "000100003"});
+        }
     }   
 }

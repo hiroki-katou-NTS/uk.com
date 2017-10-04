@@ -96,4 +96,13 @@ public class GoBackDirectly extends AggregateRoot {
 		this.workTimeEnd2 = new WorkTimeGoBack(workTimeEnd2);
 		this.workLocationCD2 = workLocationCD2;
 	}
+
+	public GoBackDirectly createFromJavaType(String companyID, String appID, String workTypeCD, String siftCD,
+			int workChangeAtr, int goWorkAtr1, int backHomeAtr1, int workTimeStart1, int workTimeEnd1,
+			String workLocationCD1, int goWorkAtr2, int backHomeAtr2, int workTimeStart2, int workTimeEnd2,
+			String workLocationCD2) {
+		return new GoBackDirectly(companyID, appID, workTypeCD, siftCD, workChangeAtr, goWorkAtr1, backHomeAtr1,
+				workTimeStart1, workTimeEnd1, workLocationCD1, goWorkAtr2, backHomeAtr2, workTimeStart2, workTimeEnd2,
+				workLocationCD2);
+	}
 }

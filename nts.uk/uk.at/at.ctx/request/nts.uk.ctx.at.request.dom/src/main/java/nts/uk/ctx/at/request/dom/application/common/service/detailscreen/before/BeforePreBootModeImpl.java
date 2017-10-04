@@ -53,7 +53,10 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 
 	@Inject
 	ApproveAcceptedRepository approveAcceptedRepository;
-
+	
+	/**
+	 * 
+	 */
 	@Override
 	public DetailedScreenPreBootModeOutput getDetailedScreenPreBootMode(Application applicationData,
 			GeneralDate baseDate) {
@@ -70,33 +73,23 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				employeeID, baseDate);
 		GeneralDate startDate = listDate.getStartDate();
 		GeneralDate endDate = listDate.getEndDate();
-
-		AppApprovalPhase appApprovalPhase = appApprovalPhaseRepository
-				.findPhaseByAppID(companyID, applicationData.getApplicationID()).get(0);
-		List<ApprovalFrame> listApprovalFrame = approvalFrameRepository.getAllApproverByPhaseID(companyID,
-				appApprovalPhase.getPhaseID());
-		//tu viet 27/9/2017
-		for(ApprovalFrame approvalFrame : listApprovalFrame ) {
-			approvalFrame.setListApproveAccepted(approvalFrame.getListApproveAccepted());
-		}
-		
-		// Check if current user has in list Approver
-		boolean isUserIsApprover = decideByApprover(applicationData);
-		String approverSID = null;
-		if (isUserIsApprover) {
-			// approverSID = filtedApprovalFrame.get(0).getApproverSID();
-			approverSID = "";
-		}
-		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// get status
 		if (startDate.after(applicationData.getApplicationDate()) == false) {
-			outputStatus = applicationData.getReflectPlanState();
+		outputStatus = applicationData.getReflectPlanState();
 		} else {
-			outputStatus = ReflectPlanPerState.PASTAPP;
+		outputStatus = ReflectPlanPerState.PASTAPP;
+		}
+		List<AppApprovalPhase> appApprovalPhase = appApprovalPhaseRepository.findPhaseByAppID(companyID, applicationData.getApplicationID());
+		for(AppApprovalPhase phase: appApprovalPhase) {
+			List<ApprovalFrame> listApprovalFrame = approvalFrameRepository.getAllApproverByPhaseID(companyID,
+					phase.getPhaseID());
+			for(ApprovalFrame approvalFrame : listApprovalFrame ) {
+				approvalFrame.setListApproveAccepted(approvalFrame.getListApproveAccepted());
+			}
 		}
 		// get User
 		if (decideByApprover(applicationData)) {
-			if (isUserIsApprover == true) {
+			if (applicationData.getEnteredPersonSID() == employeeID) {
 				applicationData.setApplicantSID(employeeID);
 				outputUser = User.APPLICANT_APPROVER;
 			} else {
@@ -107,7 +100,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			outputApprovalATR = canBeApprovedOutput.getApprovalATR();
 			outputAlternateExpiration = canBeApprovedOutput.getAlternateExpiration();
 		} else {
-			if (isUserIsApprover == true) {
+			if (applicationData.getEnteredPersonSID() == employeeID) {
 				outputUser = User.APPLICANT;
 			} else {
 				outputUser = User.OTHER;
@@ -117,7 +110,10 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		return new DetailedScreenPreBootModeOutput(outputUser, outputStatus, outputAuthorizableFlags, outputApprovalATR,
 				outputAlternateExpiration);
 	}
-
+	
+	/**
+	 * 14.2 -3-5
+	 */
 	@Override
 	public CanBeApprovedOutput canBeApproved(Application applicationData, ReflectPlanPerState status) {
 		String companyID = AppContexts.user().companyId();
@@ -223,7 +219,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 						if (approveAccepted.getRepresenterSID() == employeeID) {
 							outputAuthorizableflags = true;
 							outputApprovalATR = ApprovalAtr.APPROVED;
-							DecideAgencyExpiredOutput decideAgencyExpired = decideAgencyExpired(approvalFrame);
+							DecideAgencyExpiredOutput decideAgencyExpired = decideAgencyExpired(approvalFrame.getListApproveAccepted());
 							outputAlternateExpiration = decideAgencyExpired.isOutputAlternateExpiration();
 							return new CanBeApprovedOutput(outputAuthorizableflags, outputApprovalATR,outputAlternateExpiration);
 
@@ -257,7 +253,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 					if (approveAccepted.getApproverSID() == employeeID) {
 						return new CanBeApprovedOutput(true, ApprovalAtr.DENIAL, false);
 					} else {
-						DecideAgencyExpiredOutput decideAgencyExpired = decideAgencyExpired(approvalFrame);
+						DecideAgencyExpiredOutput decideAgencyExpired = decideAgencyExpired(approvalFrame.getListApproveAccepted());
 						// Whether the login person is a substitute approver
 						if (decideAgencyExpired.getOutputApprover().contains(employeeID)) {
 							return new CanBeApprovedOutput(true, ApprovalAtr.DENIAL, false);
@@ -271,7 +267,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 					} else {
 						// Check if login authorized as delegate approver
 						if (approveAccepted.getRepresenterSID() == employeeID) {
-							DecideAgencyExpiredOutput decideAgencyExpired = decideAgencyExpired(approvalFrame);
+							DecideAgencyExpiredOutput decideAgencyExpired = decideAgencyExpired(approvalFrame.getListApproveAccepted());
 							return new CanBeApprovedOutput(true, ApprovalAtr.APPROVED,
 									decideAgencyExpired.isOutputAlternateExpiration());
 						} else {
@@ -319,7 +315,6 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 					}
 				}
 
-				// 2017.09.25
 			}
 		}
 		return new CanBeApprovedOutput(outputAuthorizableflags, outputApprovalATR, outputAlternateExpiration);
@@ -347,7 +342,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 						return new CanBeApprovedOutput(true, ApprovalAtr.APPROVED, false);
 					} else {
 						if (employeeID == approveAccepted.getRepresenterSID()) {
-							DecideAgencyExpiredOutput decideAgencyExpired = decideAgencyExpired(approvalFrame);
+							DecideAgencyExpiredOutput decideAgencyExpired = decideAgencyExpired(approvalFrame.getListApproveAccepted());
 							return new CanBeApprovedOutput(true, ApprovalAtr.APPROVED,
 									decideAgencyExpired.isOutputAlternateExpiration());
 						}
@@ -394,7 +389,7 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 							if (employeeID == approveAccepted.getApproverSID()) {
 								outputAuthorizableflags = true;
 								outputApprovalATR = ApprovalAtr.APPROVED;
-								DecideAgencyExpiredOutput decideAgencyExpired = decideAgencyExpired(approvalFrame);
+								DecideAgencyExpiredOutput decideAgencyExpired = decideAgencyExpired(approvalFrame.getListApproveAccepted());
 								return new CanBeApprovedOutput(true, ApprovalAtr.APPROVED,
 										decideAgencyExpired.isOutputAlternateExpiration());
 							} else {
@@ -410,17 +405,19 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		return new CanBeApprovedOutput(outputAuthorizableflags, outputApprovalATR, outputAlternateExpiration);
 	}
 
+	/**
+	 * 6.代行者期限切れの判断
+	 */
 	@Override
-	public DecideAgencyExpiredOutput decideAgencyExpired(ApprovalFrame approvalFrame)
-
+	public DecideAgencyExpiredOutput decideAgencyExpired(List<ApproveAccepted> lstApproved)
 	{
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
-		List<String> approver = null;
-
+		//List<String> approver = null;
+		List<String> listID = lstApproved.stream().map(x->x.getApproverSID()).collect(Collectors.toList());
 		//Get list
 		AgentPubImport approvalAgencyInformationOutput = approvalAgencyInformationService
-				.getApprovalAgencyInformation(companyID, approver);
+				.getApprovalAgencyInformation(companyID, listID);
 		List<String> outputApprover = approvalAgencyInformationOutput.getListApproverAndRepresenterSID().stream()
 				.map(x -> x.getApprover()).collect(Collectors.toList());
 		boolean outputAlternateExpiration = false;

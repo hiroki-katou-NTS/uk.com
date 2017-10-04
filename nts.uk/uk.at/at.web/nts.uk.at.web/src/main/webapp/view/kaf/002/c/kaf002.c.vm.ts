@@ -10,7 +10,7 @@ module nts.uk.at.view.kaf002.c {
                 super(appType);
                 var self = this;
                 self.cm = new kaf002.cm.viewmodel.ScreenModel(0,1);
-                self.startPage();
+                // self.startPage();
             }
             
             testAbstract() {
@@ -22,7 +22,7 @@ module nts.uk.at.view.kaf002.c {
                 var dfd = $.Deferred();
                 service.newScreenFind()
                     .done(function(data: vmbase.AppStampNewSetDto) {
-                        self.cm.start(data);
+                        self.cm.start(data, self.listPhase());
                         dfd.resolve(); 
                     })
                     .fail(function(res) { 
@@ -37,7 +37,8 @@ module nts.uk.at.view.kaf002.c {
             }
             
             update(){
-                
+                var self = this;
+                self.cm.register();
             }
         }
     }
