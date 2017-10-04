@@ -3,18 +3,11 @@ package nts.uk.ctx.workflow.dom.adapter.bs;
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 
 public interface EmployeeAdapter {
-	/**
-	 * get workplace id by employeeId and basedate
-	 * @param companyId 会社ID
-	 * @param employeeId　社員ID
-	 * @param baseDate　基準日
-	 * @return　職場ID
-	 */
-	String getWorkplaceId(String companyId,String employeeId, GeneralDate baseDate);
-
+	
 	/**
 	 * get employment code by companyID, employeeID and base date
 	 * @param companyId 会社ID
@@ -56,4 +49,15 @@ public interface EmployeeAdapter {
 	 * @return
 	 */
 	String getEmployeeName(String sID);
+	
+	/**
+	 * Gets the concurrent employee.
+	 *
+	 * @param companyId the company id
+	 * @param jobId the job id
+	 * @param baseDate the base date
+	 * @return the concurrent employee
+	 */
+	// RequestList #77
+	List<ConcurrentEmployeeImport> getConcurrentEmployee(String companyId, String jobId, GeneralDate baseDate);
 }

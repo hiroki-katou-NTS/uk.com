@@ -16,17 +16,5 @@ public interface AppStampNewDomainService {
 	public AppStampNewPreOutput appStampPreProcess(String companyID, String employeeID, GeneralDate appDate);
 	
 	// 外出／育児／介護の申請の新規登録
-	public void appStampGoOutPermitRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases);
-	
-	// 出勤／退勤漏れの申請の新規登録
-	public void appStampWorkRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases);
-	
-	// 打刻の取消申請の新規登録
-	public void appStampCancelRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases);
-	
-	// レコーダイメージの申請の新規登録
-	public void appStampOnlineRecordRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases);
-	
-	// その他打刻申請の新規登録
-	public void appStampOtherRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases);
+	public void appStampRegister(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases);
 }

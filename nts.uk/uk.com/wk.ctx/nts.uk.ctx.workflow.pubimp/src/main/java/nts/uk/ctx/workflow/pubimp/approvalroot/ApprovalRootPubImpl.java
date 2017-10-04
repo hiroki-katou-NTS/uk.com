@@ -1,5 +1,6 @@
 package nts.uk.ctx.workflow.pubimp.approvalroot;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +36,7 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 			int appType, GeneralDate standardDate) {
 		List<ApprovalRootOutput> approvalData = this.approvalRootService.getApprovalRootOfSubjectRequest(cid, sid, employmentRootAtr, appType, standardDate);
 		if (CollectionUtil.isEmpty(approvalData)) {
-			return null;
+			return Collections.emptyList();
 		}
 		
 		return approvalData.stream().map(x -> { 

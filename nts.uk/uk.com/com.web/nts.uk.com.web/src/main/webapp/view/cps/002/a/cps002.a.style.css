@@ -44,7 +44,7 @@
 }
 
 #emp_reg_info_wizard {
-	width: auto !important;
+	width: 1320px !important;
 }
 
 #top_right_hr {
@@ -133,7 +133,7 @@
 }
 
 #search_box {
-	height: 700px;
+	height: 500px;
 	width: 200px;
 	position: relative;
 	border-radius: 5px;
@@ -148,4 +148,27 @@
 	
 }
 
+#table_item {
+	border-collapse: collapse;
+}
+
+#cover_table {
+	width: 453px;
+	height: 487px;
+	overflow: auto;
+}
+
+#table_item, th, td {
+	border: 1px solid black;
+	padding: 5px;
+	min-height: 20px;
+}
+
+#table_item th {
+	height: 40px;
+}
+
+.nts-wizard, .nts-wizard>.content {
+	overflow: unset !important;
+}
 /* step 2 */
