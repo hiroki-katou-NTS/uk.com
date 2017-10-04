@@ -11,7 +11,6 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.AuthorityFomatMonthly;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatCode;
-import nts.uk.ctx.at.function.dom.dailyperformanceformat.primitivevalue.DailyPerformanceFormatName;
 import nts.uk.ctx.at.function.dom.dailyperformanceformat.repository.AuthorityFormatMonthlyRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -35,7 +34,7 @@ public class AddAuthorityMonthlyCommandHandler extends CommandHandler<AddAuthori
 					return new AuthorityFomatMonthly(companyId,
 							new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()),
 							f.getAttendanceItemId(),
-							new DailyPerformanceFormatName(command.getDailyPerformanceFormatName()), f.getOrder(),
+							f.getOrder(),
 							f.getColumnWidth());
 				}).collect(Collectors.toList());
 

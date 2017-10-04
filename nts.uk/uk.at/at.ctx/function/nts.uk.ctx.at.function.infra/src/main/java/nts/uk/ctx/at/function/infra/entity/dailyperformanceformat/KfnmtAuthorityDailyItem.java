@@ -27,9 +27,6 @@ public class KfnmtAuthorityDailyItem extends UkJpaEntity implements Serializable
 
 	@EmbeddedId
 	public KfnmtAuthorityDailyItemPK kfnmtAuthorityDailyItemPK;
-
-	@Column(name = "DAILY_PERFORMANCE_FORMAT_NAME")
-	public String dailyPerformanceFormatName;
 	
 	@Column(name = "DISPLAY_ORDER")
 	public int displayOrder;

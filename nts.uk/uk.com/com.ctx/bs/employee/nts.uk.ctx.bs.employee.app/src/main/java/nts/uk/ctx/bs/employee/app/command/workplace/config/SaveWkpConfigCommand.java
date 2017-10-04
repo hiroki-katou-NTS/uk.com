@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.workplace.config;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import lombok.Getter;
@@ -83,9 +83,7 @@ public class SaveWkpConfigCommand {
          */
         @Override
         public List<WorkplaceConfigHistory> getWkpConfigHistory() {
-            List<WorkplaceConfigHistory> lstWkpConfigHistory = new ArrayList<>();
-            lstWkpConfigHistory.add(this.registerWorkplaceConfigCommand.getWkpConfigHistory().toDomain());
-            return lstWkpConfigHistory;
+            return Arrays.asList(this.registerWorkplaceConfigCommand.getWkpConfigHistory().toDomain());
         }
 
     }

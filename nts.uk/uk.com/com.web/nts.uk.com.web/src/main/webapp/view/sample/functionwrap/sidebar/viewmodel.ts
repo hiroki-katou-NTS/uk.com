@@ -92,11 +92,11 @@ module sample.sidebar.viewmodel {
         }
 
         openSubWindow() {
-            nts.uk.ui.windows.sub.modeless("/view/sample/sidebar/sidebar-sub.xhtml");
+            nts.uk.ui.windows.sub.modeless("/view/sample/functionwrap/sidebar/sidebar-sub.xhtml");
         }
 
         openNewTab() {
-            window.open("/nts.uk.com.web/view/sample/sidebar/sidebar-sub.xhtml", "_blank").focus();
+            window.open("/nts.uk.com.web/view/sample/functionwrap/sidebar/sidebar-sub.xhtml", "_blank").focus();
         }
 
         setError() {

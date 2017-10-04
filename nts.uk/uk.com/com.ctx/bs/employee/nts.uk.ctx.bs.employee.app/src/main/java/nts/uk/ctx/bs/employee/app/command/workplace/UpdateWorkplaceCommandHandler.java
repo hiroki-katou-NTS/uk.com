@@ -13,15 +13,15 @@ import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
-public class UpdateWorkplaceCommandHandler extends CommandHandler<RegisterWorkplaceCommand>{
+public class UpdateWorkplaceCommandHandler extends CommandHandler<SaveWkpHistoryCommand>{
 
 	@Inject
 	private WorkplaceRepository workplaceRepository;
 	
 	@Override
-	protected void handle(CommandHandlerContext<RegisterWorkplaceCommand> context) {
+	protected void handle(CommandHandlerContext<SaveWkpHistoryCommand> context) {
 		//Update history of latest history
-		RegisterWorkplaceCommand command = context.getCommand();
+		SaveWkpHistoryCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 		Workplace wkp = command.toDomain(companyId);
 		workplaceRepository.update(wkp);
