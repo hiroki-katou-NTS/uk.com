@@ -357,7 +357,7 @@ module nts.uk.request {
         }
         uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
 
-        window.location.href = resolvePath(path);
+        window.location.href = path;
     }
 
     export function resolvePath(path: string) {
