@@ -5,10 +5,10 @@
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.SequenceCode;
-import nts.uk.ctx.bs.employee.dom.jobtitle.SequenceMasterGetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.SequenceName;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CsqmtSequenceMaster;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterGetMemento;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceName;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster;
 
 /**
  * The Class JpaSequenceMasterGetMemento.
@@ -16,14 +16,14 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CsqmtSequenceMaster;
 public class JpaSequenceMasterGetMemento implements SequenceMasterGetMemento {
 
 	/** The type value. */
-	private CsqmtSequenceMaster typeValue;
+	private BsymtJobSeqMaster typeValue;
 
 	/**
 	 * Instantiates a new jpa sequence master get memento.
 	 *
 	 * @param typeValue the type value
 	 */
-	public JpaSequenceMasterGetMemento(CsqmtSequenceMaster typeValue) {
+	public JpaSequenceMasterGetMemento(BsymtJobSeqMaster typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -34,8 +34,8 @@ public class JpaSequenceMasterGetMemento implements SequenceMasterGetMemento {
 	 * SequenceMasterGetMemento#getOrder()
 	 */
 	@Override
-	public int getOrder() {
-		return this.typeValue.getOrder();
+	public short getOrder() {
+		return this.typeValue.getDisporder();
 	}
 
 	/*
@@ -46,7 +46,7 @@ public class JpaSequenceMasterGetMemento implements SequenceMasterGetMemento {
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.typeValue.getCsqmtSequenceMasterPK().getCompanyId());
+		return new CompanyId(this.typeValue.getBsymtJobSeqMasterPK().getCid());
 	}
 
 	/*
@@ -57,7 +57,7 @@ public class JpaSequenceMasterGetMemento implements SequenceMasterGetMemento {
 	 */
 	@Override
 	public SequenceCode getSequenceCode() {
-		return new SequenceCode(this.typeValue.getCsqmtSequenceMasterPK().getSequenceCode());
+		return new SequenceCode(this.typeValue.getBsymtJobSeqMasterPK().getSeqCd());
 	}
 
 	/*
@@ -68,7 +68,7 @@ public class JpaSequenceMasterGetMemento implements SequenceMasterGetMemento {
 	 */
 	@Override
 	public SequenceName getSequenceName() {
-		return new SequenceName(this.typeValue.getSequenceName());
+		return new SequenceName(this.typeValue.getSeqName());
 	}
 
 }

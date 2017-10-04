@@ -1,56 +1,33 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtitle;
 
+import java.util.List;
+
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
+import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 
 /**
  * The Interface JobTitleSetMemento.
  */
 public interface JobTitleSetMemento {
-
-	/**
-	 * Sets the position id.
-	 *
-	 * @param positionId the new position id
-	 */
-	 void setPositionId(PositionId positionId);
-
+	
 	/**
 	 * Sets the company id.
 	 *
 	 * @param companyId the new company id
 	 */
-	 void setCompanyId(CompanyId companyId);
+	public void setCompanyId(CompanyId companyId);
 
 	/**
-	 * Sets the sequence code.
+	 * Sets the workplace id.
 	 *
-	 * @param sequenceCode the new sequence code
+	 * @param jobTitleId the new job title id
 	 */
-	  void setSequenceCode(SequenceCode sequenceCode);
-
+	public void setJobTitleId(JobTitleId jobTitleId);
+	
 	/**
-	 * Sets the period.
+	 * Sets the workplace history.
 	 *
-	 * @param period the new period
+	 * @param jobTitleHistory the new job title history
 	 */
-	  void setPeriod(Period period);
-
-	/**
-	 * Sets the position code.
-	 *
-	 * @param positionCode the new position code
-	 */
-	  void setPositionCode(PositionCode positionCode);
-
-	/**
-	 * Sets the position name.
-	 *
-	 * @param positionName the new position name
-	 */
-	  void setPositionName(PositionName positionName);
+	public void setJobTitleHistory(List<JobTitleHistory> jobTitleHistory);
 }

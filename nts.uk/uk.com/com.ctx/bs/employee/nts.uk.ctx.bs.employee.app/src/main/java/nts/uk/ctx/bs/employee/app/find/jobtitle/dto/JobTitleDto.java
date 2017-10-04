@@ -8,11 +8,11 @@ import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.common.history.Period;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.PositionCode;
-import nts.uk.ctx.bs.employee.dom.jobtitle.PositionId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.PositionName;
-import nts.uk.ctx.bs.employee.dom.jobtitle.SequenceCode;
+import nts.uk.ctx.bs.employee.dom.jobtitle_old.JobTitleSetMemento;
+import nts.uk.ctx.bs.employee.dom.jobtitle_old.PositionCode;
+import nts.uk.ctx.bs.employee.dom.jobtitle_old.PositionId;
+import nts.uk.ctx.bs.employee.dom.jobtitle_old.PositionName;
+import nts.uk.ctx.bs.employee.dom.jobtitle_old.SequenceCode;
 
 /**
  * Instantiates a new job title dto.
