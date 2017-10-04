@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
+import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
 import nts.uk.ctx.at.request.dom.setting.request.gobackdirectlycommon.GoBackDirectlyCommonSetting;
 
@@ -11,7 +12,7 @@ public interface GoBackDirectlyRegisterService {
 	 * @param application
 	 * @param goBackDirectly
 	 */
-	public void register(int approvalRoot, String employeeID, String appID);
+	public void register(GoBackDirectly goBackDirectly, Application application);
 
 	/**
 	 * アルゴリズム「直行直帰するチェック」を実行する

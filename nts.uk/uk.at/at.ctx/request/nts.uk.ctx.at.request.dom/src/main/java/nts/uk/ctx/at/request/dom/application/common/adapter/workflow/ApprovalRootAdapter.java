@@ -10,7 +10,7 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ErrorFl
 
 
 /**
- * 
+ * 1-2.承認ルートを取得する
  * @author vunv
  *
  */

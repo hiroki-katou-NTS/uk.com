@@ -97,7 +97,7 @@ public class AppStamp extends Application {
 				appStampOnlineRecords);
 	}
 	
-	public void validate(){
+	public void customValidate(){
 		switch(this.stampRequestMode){
 			case STAMP_GO_OUT_PERMIT: {
 				for(AppStampGoOutPermit appStampGoOutPermit : this.appStampGoOutPermits){

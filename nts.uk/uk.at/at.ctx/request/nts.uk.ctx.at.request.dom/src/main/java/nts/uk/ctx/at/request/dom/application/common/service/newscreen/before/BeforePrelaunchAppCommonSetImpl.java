@@ -7,11 +7,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import org.eclipse.persistence.config.TunerType;
-
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
@@ -25,6 +22,8 @@ import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachWorkplaceRe
 
 @Stateless
 public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommonSet {
+	
+	private final String BASE_DATE_CACHE_KEY = "baseDate";
 	
 	@Inject
 	private ApplicationSettingRepository appSettingRepository;
@@ -41,17 +40,21 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 	public AppCommonSettingOutput prelaunchAppCommonSetService(String companyID, String employeeID, int rootAtr, ApplicationType targetApp, GeneralDate appDate){
 		AppCommonSettingOutput appCommonSettingOutput = new AppCommonSettingOutput();
 		GeneralDate baseDate = null;
+		// ドメインモデル「申請承認設定」を取得する ( Acquire the domain model "application approval setting" )
 		Optional<ApplicationSetting> applicationSettingOp = appSettingRepository.getApplicationSettingByComID(companyID);
-		if(!applicationSettingOp.isPresent()) throw new RuntimeException();
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
-		appCommonSettingOutput.applicationSetting = applicationSetting;
+		
+		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting". Check base date of approval route )
 		if(applicationSetting.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)){
-			if(appDate!=null){
+			if(appDate==null){
+			// 「申請設定」．承認ルートの基準日が申請対象日時点の場合 ( "Application setting". When the reference date of the approval route is the date of the application target date )
+			// 申請対象日のパラメータがあるかチェックする ( Check if there is a parameter on the application target date )
 				baseDate = GeneralDate.today();
 			} else {
 				baseDate = appDate;
 			}
 		} else {
+			// 「申請設定」．承認ルートの基準日がシステム日付時点の場合 ( "Application setting". When the base date of the approval route is at the time of the system date )
 			baseDate = GeneralDate.today();
 		}
 		appCommonSettingOutput.generalDate = baseDate;
@@ -60,20 +63,23 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		List<String> workPlaceIDs = employeeAdaptor.findWpkIdsBySid(companyID, employeeID, baseDate);
 		List<RequestOfEachWorkplace> loopResult = new ArrayList<>();
 		for(String workPlaceID : workPlaceIDs) {
+			// ドメインモデル「職場別申請承認設定」を取得する ( Acquire domain model "Application approval setting by workplace" )
 			Optional<RequestOfEachWorkplace> requestOfEarchWorkplaceOp = requestOfEachWorkplaceRepository.getRequest(companyID, workPlaceID);
 			if(requestOfEarchWorkplaceOp.isPresent()) {
 				loopResult.add(requestOfEarchWorkplaceOp.get());
 				break;
 			}
 		}
+		// ドメインモデル「職場別申請承認設定」を取得できたかチェックする ( Check whether domain model "application approval setting by workplace" could be acquired )
 		if(loopResult.size() == 0) {
 			Optional<RequestOfEachCompany> rqOptional = requestOfEachCompanyRepository.getRequestByCompany(companyID);
-			if(rqOptional.isPresent()) {
+			if(rqOptional.isPresent())
 				appCommonSettingOutput.requestOfEachCommon = rqOptional.get();
-			} 
 		} else {
+				// ドメインモデル「会社別申請承認設定」を取得する ( Acquire the domain model "application approval setting by company" )
 				appCommonSettingOutput.requestOfEachCommon = loopResult.get(0);
 		}
+		
 		// アルゴリズム「社員所属雇用履歴を取得」を実行する ( Execute the algorithm "Acquire employee affiliation employment history" )
 		/*String employeeCD = employeeAdaptor.getEmploymentCode(companyID, employeeID, baseDate);
 		if(employeeCD!=null) {

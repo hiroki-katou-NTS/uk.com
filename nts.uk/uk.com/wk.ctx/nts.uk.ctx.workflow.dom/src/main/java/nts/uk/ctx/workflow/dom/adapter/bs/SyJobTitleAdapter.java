@@ -43,4 +43,13 @@ public interface SyJobTitleAdapter {
 	 */
 	// RequestList #67-1
 	JobTitleImport findJobTitleByPositionId(String companyId, String positionId, GeneralDate baseDate);
+	/**
+	 * Find by base date.
+	 *
+	 * @param companyId the company id
+	 * @param baseDate the base date
+	 * @return the list
+	 */
+	// RequestList #74
+	List<JobTitleImport> findAll(String companyId, GeneralDate baseDate);
 }
