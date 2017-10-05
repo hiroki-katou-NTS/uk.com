@@ -8,17 +8,17 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KrcmtActualLock_.
+ * The Class KrcstActualLock_.
  */
-@StaticMetamodel(KrcmtActualLock.class)
-public class KrcmtActualLock_ {
+@StaticMetamodel(KrcstActualLock.class)
+public class KrcstActualLock_ {
 
 	/** The krcmt actual lock PK. */
-	public static volatile SingularAttribute<KrcmtActualLock, KrcmtActualLockPK> krcmtActualLockPK;
+	public static volatile SingularAttribute<KrcstActualLock, KrcstActualLockPK> krcstActualLockPK;
 	
 	/** The d lock state. */
-	public static volatile SingularAttribute<KrcmtActualLock, Integer> dLockState;
+	public static volatile SingularAttribute<KrcstActualLock, Integer> dLockState;
 	
 	/** The m lock state. */
-	public static volatile SingularAttribute<KrcmtActualLock, Integer> mLockState;
+	public static volatile SingularAttribute<KrcstActualLock, Integer> mLockState;
 }

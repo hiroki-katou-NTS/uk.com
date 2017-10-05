@@ -8,23 +8,23 @@ import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
 /**
- * The Class KrcmtActualLockHist_.
+ * The Class KrcdtActualLockHist_.
  */
-@StaticMetamodel(KrcmtActualLockHist.class)
-public class KrcmtActualLockHist_ {
+@StaticMetamodel(KrcdtActualLockHist.class)
+public class KrcdtActualLockHist_ {
 
 	/** The krcmt actual lock PK. */
-	public static volatile SingularAttribute<KrcmtActualLockHist, KrcmtActualLockHistPK> krcmtActualLockPK;
+	public static volatile SingularAttribute<KrcdtActualLockHist, KrcdtActualLockHistPK> krcmtActualLockPK;
 	
 	/** The target month. */
-	public static volatile SingularAttribute<KrcmtActualLockHist, Integer> targetMonth;
+	public static volatile SingularAttribute<KrcdtActualLockHist, Integer> targetMonth;
 	
 	/** The updator. */
-	public static volatile SingularAttribute<KrcmtActualLockHist, String> updator;
+	public static volatile SingularAttribute<KrcdtActualLockHist, String> updator;
 	
 	/** The d lock state. */
-	public static volatile SingularAttribute<KrcmtActualLockHist, Integer> dLockState;
+	public static volatile SingularAttribute<KrcdtActualLockHist, Integer> dLockState;
 	
 	/** The m lock state. */
-	public static volatile SingularAttribute<KrcmtActualLockHist, Integer> mLockState;
+	public static volatile SingularAttribute<KrcdtActualLockHist, Integer> mLockState;
 }

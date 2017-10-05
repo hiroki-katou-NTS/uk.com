@@ -8,8 +8,8 @@ import nts.arc.time.GeneralDateTime;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.ActualLockHistoryGetMemento;
 import nts.uk.ctx.at.record.dom.workrecord.actuallock.LockStatus;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcmtActualLockHist;
-import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcmtActualLockHistPK;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtActualLockHist;
+import nts.uk.ctx.at.record.infra.entity.workrecord.actuallock.KrcdtActualLockHistPK;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 
 /**
@@ -18,7 +18,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureId;
 public class JpaActualLockHistGetMemento implements ActualLockHistoryGetMemento {
 
 	/** The typed value. */
-	private KrcmtActualLockHist typedValue;
+	private KrcdtActualLockHist typedValue;
 	
 	
 	/**
@@ -26,10 +26,10 @@ public class JpaActualLockHistGetMemento implements ActualLockHistoryGetMemento 
 	 *
 	 * @param typedValue the typed value
 	 */
-	public JpaActualLockHistGetMemento(KrcmtActualLockHist typedValue) {
+	public JpaActualLockHistGetMemento(KrcdtActualLockHist typedValue) {
 		this.typedValue = typedValue;
-		if (this.typedValue.getKrcmtActualLockHistPK() == null) {
-			this.typedValue.setKrcmtActualLockHistPK(new KrcmtActualLockHistPK());
+		if (this.typedValue.getKrcdtActualLockHistPK() == null) {
+			this.typedValue.setKrcdtActualLockHistPK(new KrcdtActualLockHistPK());
 		}
 	}
 
@@ -38,7 +38,7 @@ public class JpaActualLockHistGetMemento implements ActualLockHistoryGetMemento 
 	 */
 	@Override
 	public String getCompanyId() {
-		return this.typedValue.getKrcmtActualLockHistPK().getCid();
+		return this.typedValue.getKrcdtActualLockHistPK().getCid();
 	}
 
 	/* (non-Javadoc)
@@ -46,7 +46,7 @@ public class JpaActualLockHistGetMemento implements ActualLockHistoryGetMemento 
 	 */
 	@Override
 	public ClosureId getClosureId() {
-		return ClosureId.valueOf(this.typedValue.getKrcmtActualLockHistPK().getClosureId());
+		return ClosureId.valueOf(this.typedValue.getKrcdtActualLockHistPK().getClosureId());
 	}
 
 	/* (non-Javadoc)
@@ -78,7 +78,7 @@ public class JpaActualLockHistGetMemento implements ActualLockHistoryGetMemento 
 	 */
 	@Override
 	public GeneralDateTime getLockDateTime() {
-		return this.typedValue.getKrcmtActualLockHistPK().getLockDate();
+		return this.typedValue.getKrcdtActualLockHistPK().getLockDate();
 	}
 
 	/* (non-Javadoc)

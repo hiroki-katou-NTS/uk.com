@@ -16,21 +16,28 @@ import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
- * The Class KrcmtActualLock.
+ * The Class KrcdtActualLockHist.
  */
 @Setter
 @Getter
 @Entity
-@Table(name = "KRCMT_ACTUAL_LOCK")
-
-public class KrcmtActualLock extends UkJpaEntity implements Serializable {
-	
+@Table(name = "KRCMT_ACTUAL_LOCK_HIST")
+public class KrcdtActualLockHist extends UkJpaEntity implements Serializable {
+    
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
     
-    /** The krcmt actual lock PK. */
+    /** The krcmt actual lock hist PK. */
     @EmbeddedId
-    protected KrcmtActualLockPK krcmtActualLockPK;
+    protected KrcdtActualLockHistPK krcdtActualLockHistPK;
+    
+    /** The target month. */
+    @Column(name = "TARGET_MONTH")
+    private int targetMonth;
+    
+    /** The updator. */
+    @Column(name = "UPDATOR")
+    private String updator;
     
     /** The d lock state. */
     @Column(name = "D_LOCK_STATE")
@@ -41,54 +48,51 @@ public class KrcmtActualLock extends UkJpaEntity implements Serializable {
     private int mLockState;
 
     /**
-     * Instantiates a new krcmt actual lock.
+     * Instantiates a new krcmt actual lock hist.
      */
-    public KrcmtActualLock() {
+    public KrcdtActualLockHist() {
     	super();
     }
-
-
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.infra.data.entity.JpaEntity#getKey()
-	 */
-	@Override
+    
+    /**
+     * Gets the key.
+     *
+     * @return the key
+     */
+    @Override
 	protected Object getKey() {
-		return this.krcmtActualLockPK;
+		return this.krcdtActualLockHistPK;
 	}
-
-
+    
 	/* (non-Javadoc)
-	 * @see nts.arc.layer.infra.data.entity.JpaEntity#hashCode()
+	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((krcmtActualLockPK == null) ? 0 : krcmtActualLockPK.hashCode());
+		int result = 1;
+		result = prime * result + ((krcdtActualLockHistPK == null) ? 0 : krcdtActualLockHistPK.hashCode());
 		return result;
 	}
 
-
 	/* (non-Javadoc)
-	 * @see nts.arc.layer.infra.data.entity.JpaEntity#equals(java.lang.Object)
+	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (!super.equals(obj))
+		if (obj == null)
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		KrcmtActualLock other = (KrcmtActualLock) obj;
-		if (krcmtActualLockPK == null) {
-			if (other.krcmtActualLockPK != null)
+		KrcdtActualLockHist other = (KrcdtActualLockHist) obj;
+		if (krcdtActualLockHistPK == null) {
+			if (other.krcdtActualLockHistPK != null)
 				return false;
-		} else if (!krcmtActualLockPK.equals(other.krcmtActualLockPK))
+		} else if (!krcdtActualLockHistPK.equals(other.krcdtActualLockHistPK))
 			return false;
 		return true;
 	}
-
-	
 
 }

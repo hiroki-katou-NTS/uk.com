@@ -18,13 +18,13 @@ import nts.arc.time.GeneralDateTime;
 
 
 /**
- * The Class KrcmtActualLockHistPK.
+ * The Class KrcdtActualLockHistPK.
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Embeddable
-public class KrcmtActualLockHistPK implements Serializable {
+public class KrcdtActualLockHistPK implements Serializable {
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

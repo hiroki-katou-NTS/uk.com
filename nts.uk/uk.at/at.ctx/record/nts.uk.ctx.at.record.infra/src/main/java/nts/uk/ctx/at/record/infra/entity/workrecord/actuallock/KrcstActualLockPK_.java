@@ -9,14 +9,14 @@ import javax.persistence.metamodel.StaticMetamodel;
 
 
 /**
- * The Class KrcmtActualLockPK_.
+ * The Class KrcstActualLockPK_.
  */
-@StaticMetamodel(KrcmtActualLockPK.class)
-public class KrcmtActualLockPK_ {
+@StaticMetamodel(KrcstActualLockPK.class)
+public class KrcstActualLockPK_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<KrcmtActualLockPK, String> cid;
+	public static volatile SingularAttribute<KrcstActualLockPK, String> cid;
 	
 	/** The closure id. */
-	public static volatile SingularAttribute<KrcmtActualLockPK, Integer> closureId;
+	public static volatile SingularAttribute<KrcstActualLockPK, Integer> closureId;
 }

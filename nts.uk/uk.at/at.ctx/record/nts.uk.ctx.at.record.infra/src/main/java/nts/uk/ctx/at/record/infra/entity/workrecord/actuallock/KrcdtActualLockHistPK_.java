@@ -10,17 +10,17 @@ import javax.persistence.metamodel.StaticMetamodel;
 import nts.arc.time.GeneralDateTime;
 
 /**
- * The Class KrcmtActualLockHistPK_.
+ * The Class KrcdtActualLockHistPK_.
  */
-@StaticMetamodel(KrcmtActualLockHistPK.class)
-public class KrcmtActualLockHistPK_ {
+@StaticMetamodel(KrcdtActualLockHistPK.class)
+public class KrcdtActualLockHistPK_ {
 
 	/** The cid. */
-	public static volatile SingularAttribute<KrcmtActualLockHistPK, String> cid;
+	public static volatile SingularAttribute<KrcdtActualLockHistPK, String> cid;
 	
 	/** The closure id. */
-	public static volatile SingularAttribute<KrcmtActualLockHistPK, Integer> closureId;
+	public static volatile SingularAttribute<KrcdtActualLockHistPK, Integer> closureId;
 	
 	/** The lock date. */
-	public static volatile SingularAttribute<KrcmtActualLockHistPK, GeneralDateTime> lockDate;
+	public static volatile SingularAttribute<KrcdtActualLockHistPK, GeneralDateTime> lockDate;
 }
