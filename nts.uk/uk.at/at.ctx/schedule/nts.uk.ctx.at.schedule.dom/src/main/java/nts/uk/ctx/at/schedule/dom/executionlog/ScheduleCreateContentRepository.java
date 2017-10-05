@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.schedule.dom.executionlog;
 
 import java.util.Optional;
@@ -13,5 +17,20 @@ public interface ScheduleCreateContentRepository {
 	 * @param executionId the execution id
 	 * @return the optional
 	 */
-	Optional<ScheduleCreateContent> findByExecutionId(String executionId);
+	public Optional<ScheduleCreateContent> findByExecutionId(String executionId);
+	
+	
+	/**
+	 * Adds the.
+	 *
+	 * @param domain the domain
+	 */
+	public void add(ScheduleCreateContent domain);
+	
+	/**
+	 * Update.
+	 *
+	 * @param domain the domain
+	 */
+	public void update(ScheduleCreateContent domain);
 }

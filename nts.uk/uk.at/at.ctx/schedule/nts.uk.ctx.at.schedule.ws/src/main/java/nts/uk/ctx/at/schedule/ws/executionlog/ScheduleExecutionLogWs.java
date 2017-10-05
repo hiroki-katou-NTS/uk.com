@@ -28,6 +28,7 @@ import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleExecutionLogFinder;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.PeriodObject;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleCreateContentDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogDto;
+import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogInfoDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.export.ExeErrorLogExportService;
 
 /**
@@ -80,6 +81,18 @@ public class ScheduleExecutionLogWs extends WebService {
 	}
 	
 	/**
+	 * Find info by id.
+	 *
+	 * @param executionId the execution id
+	 * @return the schedule execution log info dto
+	 */
+	@POST
+	@Path("findInfoById/{executionId}")
+	public ScheduleExecutionLogInfoDto findInfoById(@PathParam("executionId") String executionId) {
+		return this.scheduleExecutionLogFinder.findInfoById(executionId);
+	}
+ 
+	/**
 	 * Find create content by exe id.
 	 *
 	 * @param executionId the execution id
@@ -131,4 +144,5 @@ public class ScheduleExecutionLogWs extends WebService {
 		return respone;
 
 	}
+	
 }

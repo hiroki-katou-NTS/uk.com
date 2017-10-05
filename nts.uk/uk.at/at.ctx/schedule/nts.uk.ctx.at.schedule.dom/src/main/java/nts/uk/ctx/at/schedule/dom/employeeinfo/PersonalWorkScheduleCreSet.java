@@ -31,4 +31,29 @@ public class PersonalWorkScheduleCreSet extends AggregateRoot{
 	// 営業日カレンダーによる勤務予定作成
 	private WorkScheduleBusCal workScheduleBusCal;
 
+
+	/**
+	 * Instantiates a new personal work schedule cre set.
+	 *
+	 * @param memento the memento
+	 */
+	public PersonalWorkScheduleCreSet(PersonalWorkScheduleCreSetGetMemento memento) {
+		this.employeeId = memento.getEmployeeId();
+		this.basicCreateMethod = memento.getBasicCreateMethod();
+		this.monthlyPatternWorkScheduleCre = memento.getMonthlyPatternWorkScheduleCre();
+		this.workScheduleBusCal = memento.getWorkScheduleBusCal();
+	}
+
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(PersonalWorkScheduleCreSetSetMemento memento){
+		memento.setEmployeeId(this.employeeId);
+		memento.setBasicCreateMethod(this.basicCreateMethod);
+		memento.setMonthlyPatternWorkScheduleCre(this.monthlyPatternWorkScheduleCre);
+		memento.setWorkScheduleBusCal(this.workScheduleBusCal);
+	}
 }

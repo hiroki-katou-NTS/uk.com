@@ -39,10 +39,6 @@ public class JpaScheduleCreateContentSetMemento implements ScheduleCreateContent
 	 * @param entity the entity
 	 */
 	public JpaScheduleCreateContentSetMemento(KscmtScCreateContent entity) {
-		//TODO
-//		if(entity.getKscmtScheduleExcLogPK() == null){
-//			entity.setKscmtScheduleExcLogPK(new KscmtScheduleExcLogPK());
-//		}
 		this.entity = entity;
 	}
 

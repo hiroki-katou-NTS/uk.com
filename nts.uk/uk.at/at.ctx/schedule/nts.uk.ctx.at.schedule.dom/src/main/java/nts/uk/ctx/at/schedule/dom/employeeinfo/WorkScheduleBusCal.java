@@ -25,8 +25,20 @@ public class WorkScheduleBusCal extends DomainObject{
 	/** The working hours. */
 	// 就業時間帯の参照先
 	private TimeZoneScheduledMasterAtr referenceWorkingHours;
-	
-	
-	
-	
+
+	/**
+	 * Instantiates a new work schedule bus cal.
+	 *
+	 * @param referenceBusinessDayCalendar the reference business day calendar
+	 * @param referenceBasicWork the reference basic work
+	 * @param referenceWorkingHours the reference working hours
+	 */
+	public WorkScheduleBusCal(WorkScheduleMasterReferenceAtr referenceBusinessDayCalendar,
+			WorkScheduleMasterReferenceAtr referenceBasicWork,
+			TimeZoneScheduledMasterAtr referenceWorkingHours) {
+		this.referenceBusinessDayCalendar = referenceBusinessDayCalendar;
+		this.referenceBasicWork = referenceBasicWork;
+		this.referenceWorkingHours = referenceWorkingHours;
+	}
+		
 }

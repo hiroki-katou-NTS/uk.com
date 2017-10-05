@@ -47,5 +47,21 @@ public class ScheduleCreator extends AggregateRoot{
 		memento.setExecutionStatus(this.executionStatus);
 		memento.setEmployeeId(this.employeeId);
 	}
+	
+	/**
+	 * Update to created.
+	 */
+	public void updateToCreated(){
+		this.executionStatus = ExecutionStatus.CREATED;
+	}
+	
+	/**
+	 * Checks if is created.
+	 *
+	 * @return true, if is created
+	 */
+	public boolean isCreated(){
+		return this.executionStatus.equals(ExecutionStatus.CREATED);
+	}
 
 }

@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
@@ -22,6 +23,10 @@ import nts.uk.shr.com.context.LoginUserContext;
 @Stateless
 public class ScheduleExecutionLogAddCommandHandler
 		extends CommandHandlerWithResult<ScheduleExecutionLogAddCommand, ScheduleExecutionLogSaveRespone> {
+	
+	/** The create content repository. */
+	@Inject
+	private ScheduleCreateContentRepository createContentRepository; 
 	
 	/** The execution log repository. */
 	@Inject
@@ -64,6 +69,7 @@ public class ScheduleExecutionLogAddCommandHandler
 
 		// save domain
 		this.executionLogRepository.add(domain);
+		this.createContentRepository.add(command.toDomainContent(executionId));
 
 		// save all domain creator
 		this.creatorRepository.saveAll(command.toDomainCreator(executionId));

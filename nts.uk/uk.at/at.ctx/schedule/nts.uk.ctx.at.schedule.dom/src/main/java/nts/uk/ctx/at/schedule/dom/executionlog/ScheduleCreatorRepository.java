@@ -20,11 +20,18 @@ public interface ScheduleCreatorRepository {
 	public List<ScheduleCreator> findAll(String executionId);
 	
 	/**
-	 * Save.
+	 * Adds the.
 	 *
 	 * @param domain the domain
 	 */
-	public void save(ScheduleCreator domain);
+	public void add(ScheduleCreator domain);
+	
+	/**
+	 * Update.
+	 *
+	 * @param domain the domain
+	 */
+	public void update(ScheduleCreator domain);
 	
 	/**
 	 * Save all.
