@@ -1046,23 +1046,18 @@ module nts.uk.com.view.cmm018.a {
                 servicebase.updateRoot(data).done(function(){
                     self.enableDelete(true);
                    if(self.tabSelected() == 0){
-                       self.getDataCompany().done(function(){
-                           self.convertHistForCom(self.lstCompany());
-                           self.currentCode(self.listHistory()[0].id);
-                       });
+                       self.getDataCompany();
                    }else if(self.tabSelected() == 0){
                        self.getDataWorkplace();
-                       if(self.listHistory().length > 0){
-                        self.currentCode(self.listHistory()[0].id);
-                           }
                    }else{
                        self.getDataPerson();
                    }
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+                    if(self.dataI() != null){
+                        self.currentCode(self.listHistory()[0].id);
+                    }
                     self.dataI(null);
-                    self.currentCode(self.listHistory()[0].id);
                 });
-                
             }
             /**
              * convert to list history company
