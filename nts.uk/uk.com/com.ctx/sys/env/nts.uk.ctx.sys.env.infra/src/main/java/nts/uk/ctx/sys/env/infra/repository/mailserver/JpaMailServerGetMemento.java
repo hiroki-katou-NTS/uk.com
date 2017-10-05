@@ -9,11 +9,16 @@ import nts.uk.ctx.sys.env.dom.mailserver.AuthenticationMethod;
 import nts.uk.ctx.sys.env.dom.mailserver.EmailAuthentication;
 import nts.uk.ctx.sys.env.dom.mailserver.EncryptionMethod;
 import nts.uk.ctx.sys.env.dom.mailserver.ImapInfo;
+import nts.uk.ctx.sys.env.dom.mailserver.IpVersion;
 import nts.uk.ctx.sys.env.dom.mailserver.MailServerGetMemento;
 import nts.uk.ctx.sys.env.dom.mailserver.Password;
 import nts.uk.ctx.sys.env.dom.mailserver.PopInfo;
+import nts.uk.ctx.sys.env.dom.mailserver.Port;
+import nts.uk.ctx.sys.env.dom.mailserver.Server;
 import nts.uk.ctx.sys.env.dom.mailserver.SmtpInfo;
+import nts.uk.ctx.sys.env.dom.mailserver.TimeOut;
 import nts.uk.ctx.sys.env.dom.mailserver.UseAuthentication;
+import nts.uk.ctx.sys.env.dom.mailserver.UseServer;
 import nts.uk.ctx.sys.env.infra.entity.mailserver.SevstMailServer;
 
 /**
@@ -91,8 +96,10 @@ public class JpaMailServerGetMemento implements MailServerGetMemento {
 	 */
 	@Override
 	public SmtpInfo getSmtpInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		return new SmtpInfo(IpVersion.valueOf((int)this.sevstMailServer.getSmtpIpVer()), 
+						new Server(this.sevstMailServer.getSmtpServer()), 
+						new TimeOut((int)this.sevstMailServer.getStmtTimeOut()), 
+						new Port(this.sevstMailServer.getStmtPort()));
 	}
 
 	/* (non-Javadoc)
@@ -100,8 +107,11 @@ public class JpaMailServerGetMemento implements MailServerGetMemento {
 	 */
 	@Override
 	public ImapInfo getImapInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ImapInfo(IpVersion.valueOf((int)this.sevstMailServer.getImapIpVer()), 
+				new Server(this.sevstMailServer.getImapServer()),
+				UseServer.valueOf((int)this.sevstMailServer.getImapUse()),
+				new TimeOut((int)this.sevstMailServer.getImapTimeOut()), 
+				new Port(this.sevstMailServer.getImapPort()));
 	}
 
 	/* (non-Javadoc)
@@ -109,8 +119,11 @@ public class JpaMailServerGetMemento implements MailServerGetMemento {
 	 */
 	@Override
 	public PopInfo getPopInfo() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PopInfo(IpVersion.valueOf((int)this.sevstMailServer.getPopIpVer()), 
+				new Server(this.sevstMailServer.getPopServer()),
+				UseServer.valueOf((int)this.sevstMailServer.getPopUse()),
+				new TimeOut((int)this.sevstMailServer.getPopTimeOut()), 
+				new Port(this.sevstMailServer.getPopPort()));
 	}
 	
 }

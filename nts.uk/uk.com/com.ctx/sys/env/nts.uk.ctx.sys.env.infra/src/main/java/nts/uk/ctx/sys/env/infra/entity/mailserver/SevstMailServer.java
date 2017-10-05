@@ -7,18 +7,16 @@ package nts.uk.ctx.sys.env.infra.entity.mailserver;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -31,38 +29,6 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "SEVST_MAIL_SERVER")
-@XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "SevstMailServer.findAll", query = "SELECT s FROM SevstMailServer s"),
-    @NamedQuery(name = "SevstMailServer.findByInsDate", query = "SELECT s FROM SevstMailServer s WHERE s.insDate = :insDate"),
-    @NamedQuery(name = "SevstMailServer.findByInsCcd", query = "SELECT s FROM SevstMailServer s WHERE s.insCcd = :insCcd"),
-    @NamedQuery(name = "SevstMailServer.findByInsScd", query = "SELECT s FROM SevstMailServer s WHERE s.insScd = :insScd"),
-    @NamedQuery(name = "SevstMailServer.findByInsPg", query = "SELECT s FROM SevstMailServer s WHERE s.insPg = :insPg"),
-    @NamedQuery(name = "SevstMailServer.findByUpdDate", query = "SELECT s FROM SevstMailServer s WHERE s.updDate = :updDate"),
-    @NamedQuery(name = "SevstMailServer.findByUpdCcd", query = "SELECT s FROM SevstMailServer s WHERE s.updCcd = :updCcd"),
-    @NamedQuery(name = "SevstMailServer.findByUpdScd", query = "SELECT s FROM SevstMailServer s WHERE s.updScd = :updScd"),
-    @NamedQuery(name = "SevstMailServer.findByUpdPg", query = "SELECT s FROM SevstMailServer s WHERE s.updPg = :updPg"),
-    @NamedQuery(name = "SevstMailServer.findByExclusVer", query = "SELECT s FROM SevstMailServer s WHERE s.exclusVer = :exclusVer"),
-    @NamedQuery(name = "SevstMailServer.findByCid", query = "SELECT s FROM SevstMailServer s WHERE s.cid = :cid"),
-    @NamedQuery(name = "SevstMailServer.findByUseAuth", query = "SELECT s FROM SevstMailServer s WHERE s.useAuth = :useAuth"),
-    @NamedQuery(name = "SevstMailServer.findByEncryptMethod", query = "SELECT s FROM SevstMailServer s WHERE s.encryptMethod = :encryptMethod"),
-    @NamedQuery(name = "SevstMailServer.findByAuthMethod", query = "SELECT s FROM SevstMailServer s WHERE s.authMethod = :authMethod"),
-    @NamedQuery(name = "SevstMailServer.findByEmailAuth", query = "SELECT s FROM SevstMailServer s WHERE s.emailAuth = :emailAuth"),
-    @NamedQuery(name = "SevstMailServer.findByPassword", query = "SELECT s FROM SevstMailServer s WHERE s.password = :password"),
-    @NamedQuery(name = "SevstMailServer.findBySmtpIpVer", query = "SELECT s FROM SevstMailServer s WHERE s.smtpIpVer = :smtpIpVer"),
-    @NamedQuery(name = "SevstMailServer.findBySmtpServer", query = "SELECT s FROM SevstMailServer s WHERE s.smtpServer = :smtpServer"),
-    @NamedQuery(name = "SevstMailServer.findByStmtTimeOut", query = "SELECT s FROM SevstMailServer s WHERE s.stmtTimeOut = :stmtTimeOut"),
-    @NamedQuery(name = "SevstMailServer.findByStmtPort", query = "SELECT s FROM SevstMailServer s WHERE s.stmtPort = :stmtPort"),
-    @NamedQuery(name = "SevstMailServer.findByPopIpVer", query = "SELECT s FROM SevstMailServer s WHERE s.popIpVer = :popIpVer"),
-    @NamedQuery(name = "SevstMailServer.findByPopUse", query = "SELECT s FROM SevstMailServer s WHERE s.popUse = :popUse"),
-    @NamedQuery(name = "SevstMailServer.findByPopServer", query = "SELECT s FROM SevstMailServer s WHERE s.popServer = :popServer"),
-    @NamedQuery(name = "SevstMailServer.findByPopTimeOut", query = "SELECT s FROM SevstMailServer s WHERE s.popTimeOut = :popTimeOut"),
-    @NamedQuery(name = "SevstMailServer.findByPopPort", query = "SELECT s FROM SevstMailServer s WHERE s.popPort = :popPort"),
-    @NamedQuery(name = "SevstMailServer.findByImapIpVer", query = "SELECT s FROM SevstMailServer s WHERE s.imapIpVer = :imapIpVer"),
-    @NamedQuery(name = "SevstMailServer.findByImapUse", query = "SELECT s FROM SevstMailServer s WHERE s.imapUse = :imapUse"),
-    @NamedQuery(name = "SevstMailServer.findByImapServer", query = "SELECT s FROM SevstMailServer s WHERE s.imapServer = :imapServer"),
-    @NamedQuery(name = "SevstMailServer.findByImapTimeOut", query = "SELECT s FROM SevstMailServer s WHERE s.imapTimeOut = :imapTimeOut"),
-    @NamedQuery(name = "SevstMailServer.findByImapPort", query = "SELECT s FROM SevstMailServer s WHERE s.imapPort = :imapPort")})
 public class SevstMailServer implements Serializable {
     private static final long serialVersionUID = 1L;
     @Column(name = "INS_DATE")

@@ -9,14 +9,30 @@ import javax.ws.rs.core.MediaType;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.sys.env.app.command.mailserver.MailServerSaveCommand;
 import nts.uk.ctx.sys.env.app.command.mailserver.MailServerSaveCommandHandler;
+import nts.uk.ctx.sys.env.app.find.mailserver.MailServerDto;
+import nts.uk.ctx.sys.env.app.find.mailserver.MailServerFinder;
 
 
-@Path("system/environment/mailserver")
+@Path("sys/env/mailserver")
 @Produces(MediaType.APPLICATION_JSON)
 public class MailServerWs extends WebService{
 	
 	@Inject
 	MailServerSaveCommandHandler saveHandler;
+	
+	@Inject
+	MailServerFinder findHandler;
+	
+	/**
+	 * Save.
+	 *
+	 * @param command the command
+	 */
+	@Path("find")
+	@POST
+	public MailServerDto find() {
+		return this.findHandler.find();
+	}
 	
 	/**
 	 * Save.

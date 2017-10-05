@@ -91,8 +91,10 @@ public class JpaMailServerSetMemento implements MailServerSetMemento {
 	 */
 	@Override
 	public void setSmtpInfo(SmtpInfo smtpInfo) {
-		// TODO Auto-generated method stub
-		
+		this.sevstMailServer.setSmtpIpVer((short)smtpInfo.getIpVersion().value);
+		this.sevstMailServer.setSmtpServer(smtpInfo.getServer().v());
+		this.sevstMailServer.setStmtTimeOut(smtpInfo.getTimeOut().v().shortValue());
+		this.sevstMailServer.setStmtPort(smtpInfo.getPort().v());
 	}
 
 	/* (non-Javadoc)
@@ -100,8 +102,11 @@ public class JpaMailServerSetMemento implements MailServerSetMemento {
 	 */
 	@Override
 	public void setImapInfo(ImapInfo imapInfo) {
-		// TODO Auto-generated method stub
-		
+		this.sevstMailServer.setImapIpVer((short) imapInfo.getIpVersion().value);
+		this.sevstMailServer.setImapServer(imapInfo.getServer().v());
+		this.sevstMailServer.setImapUse((short) imapInfo.getUseServer().value);
+		this.sevstMailServer.setImapTimeOut(imapInfo.getTimeOut().v().shortValue());
+		this.sevstMailServer.setImapPort(imapInfo.getPort().v());
 	}
 
 	/* (non-Javadoc)
@@ -109,8 +114,11 @@ public class JpaMailServerSetMemento implements MailServerSetMemento {
 	 */
 	@Override
 	public void setPopInfo(PopInfo popInfo) {
-		// TODO Auto-generated method stub
-		
+		this.sevstMailServer.setPopIpVer((short) popInfo.getIpVersion().value);
+		this.sevstMailServer.setPopServer(popInfo.getServer().v());
+		this.sevstMailServer.setPopUse((short) popInfo.getUseServer().value);
+		this.sevstMailServer.setPopTimeOut(popInfo.getTimeOut().v().shortValue());
+		this.sevstMailServer.setPopPort(popInfo.getPort().v());
 	}
 
 }
