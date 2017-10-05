@@ -29,16 +29,16 @@ public class KscstHoriCalDaysSetItem extends UkJpaEntity implements Serializable
 	public KscstHoriCalDaysSetPK kscstHoriCalDaysSetPK;
 	/** 半日カウント区分 **/
 	@Column(name = "HALF_DAY_ATR")
-	public Integer halfDay;
+	public int halfDay;
 	/** 年休カウント区分 **/
 	@Column(name = "YEAR_HD_ATR")
-	public Integer yearHd;
+	public int yearHd;
 	/** 特休カウント区分 **/
 	@Column(name = "SPHD_ATR")
-	public Integer specialHoliday;
+	public int specialHoliday;
 	/** 積休カウント区分 **/
 	@Column(name = "HAVY_HD_ATR")
-	public Integer heavyHd;
+	public int heavyHd;
 	@Override
 	protected Object getKey() {
 		return kscstHoriCalDaysSetPK;

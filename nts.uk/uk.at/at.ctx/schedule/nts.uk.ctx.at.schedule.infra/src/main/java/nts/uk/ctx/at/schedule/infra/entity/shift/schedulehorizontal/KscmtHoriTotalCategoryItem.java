@@ -17,10 +17,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCST_HORI_TOTAL_CATEGORY")
-public class KscstHoriTotalCategoryItem extends UkJpaEntity implements Serializable{
+public class KscmtHoriTotalCategoryItem extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KscstHoriTotalCategoryPK kscstHoriTotalCategoryPK;
+	public KscmtHoriTotalCategoryPK kscmtHoriTotalCategoryPK;
 	/** カテゴリ名称 */
 	@Column(name = "CATEGORY_NAME")
 	public String categoryName;
@@ -29,15 +29,15 @@ public class KscstHoriTotalCategoryItem extends UkJpaEntity implements Serializa
 	public String memo;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstHoriTotalCategory", orphanRemoval = true)
-	public List<KscstTotalEvalOrderItem> listTotalEvalOrder;
+	public List<KscmtTotalEvalOrderItem> listTotalEvalOrder;
 	
 	@Override
 	protected Object getKey() {
-		return kscstHoriTotalCategoryPK;
+		return kscmtHoriTotalCategoryPK;
 	}
 	
-	public KscstHoriTotalCategoryItem(KscstHoriTotalCategoryPK kscstHoriTotalCategoryPK){
+	public KscmtHoriTotalCategoryItem(KscmtHoriTotalCategoryPK kscmtHoriTotalCategoryPK){
 		super();
-		this.kscstHoriTotalCategoryPK = kscstHoriTotalCategoryPK;
+		this.kscmtHoriTotalCategoryPK = kscmtHoriTotalCategoryPK;
 	}
 }

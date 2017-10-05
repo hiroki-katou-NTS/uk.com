@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscstTotalEvalOrderPK implements Serializable{
+public class KscmtHoriTotalCategoryPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 会社ID **/
 	@Column(name = "CID")
@@ -19,7 +19,4 @@ public class KscstTotalEvalOrderPK implements Serializable{
 	/** カテゴリコード */
 	@Column(name = "CATEGORY_CD")
 	public String categoryCode;
-	/** 並び順 */
-	@Column(name = "TOTAL_ITEM_NO")
-	public Integer totalItemNo;
 }

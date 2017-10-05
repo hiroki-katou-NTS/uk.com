@@ -7,9 +7,9 @@ import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryCode;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryName;
-import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.Memo;
+import nts.uk.shr.com.primitive.Memo;
 /**
- * 
+ * 横計集計カテゴリ
  * @author yennth
  *
  */

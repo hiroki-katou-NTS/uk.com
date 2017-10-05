@@ -6,7 +6,7 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryCode;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.TotalItemNo;
 /**
- * 
+ * 回数集計NO
  * @author yennth
  *
  */

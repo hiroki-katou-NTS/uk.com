@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class KscstTotalEvalItemPK implements Serializable{
+public class KscmtTotalEvalItemPK implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/** 会社ID **/
 	@Column(name = "CID")

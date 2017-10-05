@@ -3,6 +3,7 @@ package nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.repository;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriCalDaysSet;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCategory;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalItem;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
@@ -14,6 +15,8 @@ public interface HoriTotalCategoryRepository {
 	 * @return
 	 */
 	List<HoriTotalCategory> findAllCate(String companyId);
+	
+	List<HoriCalDaysSet> findAllCal(String companyId);
 	
 	/**
 	 * update a hori total category 

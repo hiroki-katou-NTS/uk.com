@@ -18,16 +18,16 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCST_TOTAL_EVAL_ITEM")
-public class KscstTotalEvalItem extends UkJpaEntity implements Serializable{
+public class KscmtTotalEvalItem extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KscstTotalEvalItemPK kscstTotalEvalItemPK;
+	public KscmtTotalEvalItemPK kscmtTotalEvalItemPK;
 	/* 名称 */
 	@Column(name = "TOTAL_ITEM_NAME")
 	public String totalItemName;
 	
 	@Override
 	protected Object getKey() {
-		return kscstTotalEvalItemPK;
+		return kscmtTotalEvalItemPK;
 	}
 }

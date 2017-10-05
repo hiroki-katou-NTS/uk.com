@@ -33,6 +33,10 @@ module nts.uk.at.view.kml004.a.viewmodel {
         evalItems: KnockoutObservableArray<EvalOrder>;
         // list co dinh ben trai lay tu DB
         listEval: KnockoutObservableArray<EvalOrder>;
+        // list CalDaySet
+        calDaySetList: KnockoutObservableArray<CalDaySet>;
+        // cal day set object selected
+        calSetObject: KnockoutObservable<CalDaySet>;
         
         constructor() {
             let self = this;
@@ -58,6 +62,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
             self.check = ko.observable(false);
             self.checkUpdate = ko.observable(true);
             self.checkDelete = ko.observable(true);
+            self.calSetObject = ko.observable(null);
             self.items = ko.observableArray([]);
             self.currentCodeList = ko.observableArray([]);
             self.newCurrentCodeList = ko.observableArray([]);
@@ -65,6 +70,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
             self.list = ko.observableArray([]);
             self.evalItems = ko.observableArray([]);
             self.listEval = ko.observableArray([]);
+            self.calDaySetList = ko.observableArray([]);
             self.selectedCode.subscribe((value) => {
                 self.list([]);
                 if (value) {
@@ -84,19 +90,16 @@ module nts.uk.at.view.kml004.a.viewmodel {
                         }
                     }
                     self.newItems(self.list());
-                    
-                    
-                    
                     var totalItemNoList = _.map(self.newItems(), function(item) { return item.totalItemNo; });
                     self.items(_.filter(self.evalItems(), function(item) {
                        return _.indexOf(totalItemNoList, item.totalItemNo) < 0;   
                     }));
-//                    _.forEach(self.list(),function(a){
-//                        _.remove(self.items(),function(b){
-//                            return a.totalItemNo == b.totalItemNo;
-//                        }) 
-//                    });
-                    console.log(self.items());
+                    _.forEach(self.calDaySetList(), function(a){
+                        if(a.categoryCode == value){
+                            self.calSetObject(a);    
+                        }
+                    })
+                    console.log(self.calSetObject());
                     self.check(false);
                 }
             });
@@ -138,21 +141,35 @@ module nts.uk.at.view.kml004.a.viewmodel {
             return dfd.promise();
         }
 
+        /** get cal day set */
+        getCal(): JQueryPromise<any>{
+            let self = this;
+            let dfd = $.Deferred();
+            service.getSet().done((lstSet) => {
+                self.calDaySetList(lstSet); 
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+        
         /** get data when start dialog **/
         startPage(): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred();
             let array=[];
             let list=[];
-            self.getEvalItem().done(function(data1){
-                self.getData().done(function(data2){
-                    if(self.lstCate().length == 0){
-                        self.clearForm();
-                        self.checkDelete(false);  
-                    }
-                    else{
-                        self.selectedCode(self.lstCate()[0].categoryCode);
-                    }
+            self.getCal().done(function(data3){
+                self.getEvalItem().done(function(data1){
+                    self.getData().done(function(data2){
+                        if(self.lstCate().length == 0){
+                            self.clearForm();
+                            self.checkDelete(false);  
+                        }
+                        else{
+                            self.selectedCode(self.lstCate()[0].categoryCode);
+                        }
+                        dfd.resolve();
+                    });
                     dfd.resolve();
                 });
                 dfd.resolve();
@@ -164,13 +181,14 @@ module nts.uk.at.view.kml004.a.viewmodel {
         add(){           
             let self = this;
             let arr = self.items();
+            let lst = [];
             _.forEach(self.currentCodeList(), function(item) {
                 let a = _.find(self.items(), function(o){
                     return o.totalItemNo == parseInt(item);
                 });
-                let convert = new EvalOrder(self.selectedOption().categoryCode(), a.totalItemNo, a.totalItemName, i);    
-                self.newItems.push(convert); 
-                 _.remove(arr, function(n){
+                let convert = new EvalOrder(self.selectedOption().categoryCode(), a.totalItemNo, a.totalItemName, 1);
+                self.newItems().push(convert);
+                _.remove(arr, function(n){
                      return n.totalItemNo == parseInt(item);
                 });  
             });
@@ -319,15 +337,16 @@ module nts.uk.at.view.kml004.a.viewmodel {
             nts.uk.ui.windows.close();
             var t1 = performance.now();
             console.log("Selection process " + (t1 - t0) + " milliseconds.");
-        }
+        } 
         
         openBDialog() {
             let self = this;
+            nts.uk.ui.windows.setShared('KML004B_DAY_SET', self.calSetObject());
             nts.uk.ui.windows.sub.modal('/view/kml/004/b/index.xhtml').onClosed(function(): any {
             });
         }
         
-    }
+    }   
     
     export interface ITotalCategory{
         categoryCode: string;
@@ -361,6 +380,21 @@ module nts.uk.at.view.kml004.a.viewmodel {
             this.totalItemName = totalItemName;
             this.dispOrder = dispOrder;     
         }
+    }
+    
+    export class CalDaySet{
+        categoryCode: string;
+        halfDay: number;
+        yearHd: number;
+        specialHoliday: number;
+        heavyHd: number;
+        constructor(categoryCode: string, halfDay: number, yearHd: number, specialHoliday: number, heavyHd: number){
+            this.categoryCode = categoryCode;
+            this.halfDay = halfDay;
+            this.yearHd = yearHd;
+            this.specialHoliday = specialHoliday; 
+            this.heavyHd = heavyHd;
+        }  
     }
 }
 

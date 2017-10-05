@@ -1,17 +1,17 @@
 package nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal;
 
-import nts.arc.enums.EnumAdaptor;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryCode;
 /**
- * 
+ * 月間勤務日数集計設定
  * @author yennth                                                       
  *
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class HoriCalDaysSet extends DomainObject{
 	/**会社ID**/
 	private String companyId;
@@ -27,8 +27,8 @@ public class HoriCalDaysSet extends DomainObject{
 	private HeavyHd heavyHd;
 	
 	public static HoriCalDaysSet createFromJavaType(String companyId, 
-													String categoryCode, Integer halfDay, 
-													Integer yearHd, Integer specialHoliday, Integer heavyHd){
+													String categoryCode, int halfDay, 
+													int yearHd, int specialHoliday, int heavyHd){
 		return new HoriCalDaysSet(companyId, 
 									new CategoryCode(categoryCode), 
 									EnumAdaptor.valueOf(halfDay, HalfDay.class), 

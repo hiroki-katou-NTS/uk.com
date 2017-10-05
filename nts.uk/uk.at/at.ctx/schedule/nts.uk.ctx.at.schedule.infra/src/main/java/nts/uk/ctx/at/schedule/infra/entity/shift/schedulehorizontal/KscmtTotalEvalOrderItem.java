@@ -18,10 +18,10 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @Entity
 @Table(name = "KSCST_TOTAL_EVAL_ORDER")
-public class KscstTotalEvalOrderItem extends UkJpaEntity implements Serializable{
+public class KscmtTotalEvalOrderItem extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public KscstTotalEvalOrderPK kscstTotalEvalOrderPK;
+	public KscmtTotalEvalOrderPK kscmtTotalEvalOrderPK;
 	/** 並び順 */
 	@Column(name = "DISPORDER")
 	public Integer dispOrder;
@@ -30,15 +30,15 @@ public class KscstTotalEvalOrderItem extends UkJpaEntity implements Serializable
 	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSCST_HORI_TOTAL_CATEGORY.CID", insertable = false, updatable = false),
 			@JoinColumn(name = "CATEGORY_CD", referencedColumnName = "KSCST_HORI_TOTAL_CATEGORY.CATEGORY_CD", insertable = false, updatable = false)
 	})
-	public KscstHoriTotalCategoryItem kscstHoriTotalCategory;
+	public KscmtHoriTotalCategoryItem kscstHoriTotalCategory;
 	
 	@Override
 	protected Object getKey() {
-		return kscstTotalEvalOrderPK;
+		return kscmtTotalEvalOrderPK;
 	}
 	
-	public KscstTotalEvalOrderItem(KscstTotalEvalOrderPK kscstTotalEvalOrderPK){
+	public KscmtTotalEvalOrderItem(KscmtTotalEvalOrderPK kscstTotalEvalOrderPK){
 		super();
-		this.kscstTotalEvalOrderPK = kscstTotalEvalOrderPK;
+		this.kscmtTotalEvalOrderPK = kscstTotalEvalOrderPK;
 	}
 }
