@@ -1,7 +1,7 @@
 package find.person.setting.copysetting;
 
 import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.info.setting.copySetting.EmpCopySettingItem;
+import nts.uk.ctx.bs.person.dom.person.info.setting.copysetting.EmpCopySettingItem;
 
 @Value
 public class EmpCopySettingItemDto {

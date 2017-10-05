@@ -7,7 +7,7 @@ import javax.ejb.Stateless;
 import entity.person.info.setting.reghistory.BsymtEmployeeRegistrationHistory;
 import entity.person.info.setting.reghistory.BsymtEmployeeRegistrationHistoryPk;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.info.setting.regHistory.EmpRegHistory;
+import nts.uk.ctx.bs.person.dom.person.info.setting.reghistory.EmpRegHistory;
 import nts.uk.ctx.bs.person.dom.person.setting.reghistory.EmpRegHistoryRepository;
 
 @Stateless

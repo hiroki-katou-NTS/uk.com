@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.info.setting.copySetting.EmpCopySetting;
+import nts.uk.ctx.bs.person.dom.person.info.setting.copysetting.EmpCopySetting;
 
 @Value
 public class EmpCopySettingDto {

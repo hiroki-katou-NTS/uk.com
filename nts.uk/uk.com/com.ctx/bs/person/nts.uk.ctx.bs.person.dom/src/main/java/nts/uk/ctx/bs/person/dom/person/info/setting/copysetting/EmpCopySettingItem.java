@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.dom.person.info.setting.copySetting;
+package nts.uk.ctx.bs.person.dom.person.info.setting.copysetting;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;

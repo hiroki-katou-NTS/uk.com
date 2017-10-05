@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.person.dom.person.info.setting.copySetting.EmpCopySetting;
+import nts.uk.ctx.bs.person.dom.person.info.setting.copysetting.EmpCopySetting;
 import nts.uk.ctx.bs.person.dom.person.setting.copysetting.EmpCopySettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 

@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.info.setting.copySetting.EmpCopySetting;
+import nts.uk.ctx.bs.person.dom.person.info.setting.copysetting.EmpCopySetting;
 import nts.uk.ctx.bs.person.dom.person.setting.copysetting.EmpCopySettingRepository;
 
 @Stateless

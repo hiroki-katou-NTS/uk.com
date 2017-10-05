@@ -5,7 +5,7 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.person.dom.person.info.setting.regHistory.EmpRegHistory;
+import nts.uk.ctx.bs.person.dom.person.info.setting.reghistory.EmpRegHistory;
 import nts.uk.ctx.bs.person.dom.person.setting.reghistory.EmpRegHistoryRepository;
 
 @Stateless

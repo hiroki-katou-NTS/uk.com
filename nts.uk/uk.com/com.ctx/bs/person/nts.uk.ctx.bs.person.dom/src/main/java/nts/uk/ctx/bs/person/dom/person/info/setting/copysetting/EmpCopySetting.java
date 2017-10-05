@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.dom.person.info.setting.copySetting;
+package nts.uk.ctx.bs.person.dom.person.info.setting.copysetting;
 
 import java.util.List;
 
