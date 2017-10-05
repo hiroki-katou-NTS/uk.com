@@ -42,7 +42,7 @@
      /**
       * delete application
       */
-     export function deleteApp(appID) : JQueryPromise<any>{
+     export function deleteApp(appID) : JQueryPromise<Array<any>>{
          return nts.uk.request.ajax("at",paths.deleteApp+"/"+appID);
      }
      
