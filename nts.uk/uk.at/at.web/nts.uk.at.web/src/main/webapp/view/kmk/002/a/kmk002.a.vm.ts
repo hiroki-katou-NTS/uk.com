@@ -210,6 +210,13 @@ module nts.uk.at.view.kmk002.a {
              */
             public addFormulaAbove(): void {
                 let self = this;
+
+                // check before add
+                if (!self.canAddFormula()) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_508' });
+                    return;
+                }
+
                 let od = 1;
                 if (this.selectedFormulaAbove) {
                     od = this.selectedFormulaAbove - 1;
@@ -217,7 +224,7 @@ module nts.uk.at.view.kmk002.a {
 
                 let f = new Formula();
                 f.orderNo = od;
-                f.symbolValue = FormulaSorter.getNextSymbolOf(self.getLastSymbol()); 
+                f.symbolValue = FormulaSorter.getNextSymbolOf(self.getLastSymbol());
                 f.optionalItemNo = self.optionalItemNo();
 
                 self.calcFormulas.push(f);
@@ -234,6 +241,13 @@ module nts.uk.at.view.kmk002.a {
              */
             public addFormulaBelow(): void {
                 let self = this;
+
+                // check before add
+                if (!self.canAddFormula()) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_508' });
+                    return;
+                }
+
                 let od = 1;
                 if (this.selectedFormulaBelow) {
                     od = this.selectedFormulaAbove + 1;
@@ -251,6 +265,18 @@ module nts.uk.at.view.kmk002.a {
 
                 // reload nts grid.
                 self.initNtsGrid();
+            }
+
+            /**
+             * Confirm whether a calculation formula can be added (Check whether ZZ is used in the symbol)
+             * Confirm the check status of calculation formula
+             */
+            public canAddFormula(): boolean {
+                // TODO
+                // if zz is used
+                // or no formula checked
+                // => show message 508.
+                return true;
             }
 
             /**
@@ -713,9 +739,13 @@ module nts.uk.at.view.kmk002.a {
                 nts.uk.ui.block.invisible();
 
                 let command = self.optionalItem.toDto();
+
                 service.saveOptionalItem(command).done(() => {
                     dfd.resolve();
-                }).fail().always(() => nts.uk.ui.block.clear());
+                    nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+                }).fail(res => {
+                    nts.uk.ui.dialog.alertError(res);
+                }).always(() => nts.uk.ui.block.clear());
 
                 // save formulas.
                 self.saveFormulas();
@@ -729,6 +759,11 @@ module nts.uk.at.view.kmk002.a {
             private saveFormulas(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
+
+                // Validate
+                if (!self.isListFormulaValid()) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_111' });
+                };
 
                 // convert to dtos.
                 let formulas: Array<FormulaDto> = self.optionalItem.calcFormulas.map(item => {
@@ -744,6 +779,18 @@ module nts.uk.at.view.kmk002.a {
                 service.saveFormula(command).done(() => dfd.resolve());
 
                 return dfd.promise();
+            }
+
+            /**
+             * Checks whether an item of a nonexistent line is set in a formula
+             */
+            private isListFormulaValid(): boolean {
+                // TODO chi toi dong bi loi.
+                // xem lai 計算式登録時チェック処理 trong EA.
+                  if (1 == 1) {
+                    return true;
+                }
+                return false;
             }
 
             /**
