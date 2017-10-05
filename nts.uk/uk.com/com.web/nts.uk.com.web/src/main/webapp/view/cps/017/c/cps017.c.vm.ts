@@ -11,11 +11,13 @@ module nts.uk.com.view.cps017.c.viewmodel {
     export class ScreenModel {
         Items: KnockoutObservableArray<IItem> = ko.observableArray([]);
         item: KnockoutObservable<Item> = ko.observable(new Item({ id: '', name: '' }));
+        date: KnockoutObservable<string>;
 
         constructor() {
             let self = this,
                 item: Item = self.item();
-
+            
+            self.date = ko.observable("1990/01/01");
             self.start();
         }
 

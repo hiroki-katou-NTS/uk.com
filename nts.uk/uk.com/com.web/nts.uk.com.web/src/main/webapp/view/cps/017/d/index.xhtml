@@ -40,7 +40,9 @@
 					</div>
 					<div class="row">
 						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_44')}</div>
-						<input style="width: 100px;" /> ~ <span class="label">#{i18n.getText('CPS017_48')}</span>
+						<input style="width: 90px;"
+							data-bind="ntsTimeEditor: {value: date, inputFormat: 'date'}" />
+						~ <span class="label">#{i18n.getText('CPS017_48')}</span>
 					</div>
 				</div>
 
