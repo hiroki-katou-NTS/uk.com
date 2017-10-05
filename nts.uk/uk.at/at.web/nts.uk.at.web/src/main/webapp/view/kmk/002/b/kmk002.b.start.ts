@@ -5,6 +5,8 @@ module nts.uk.at.view.kmk002.b {
             __viewContext.bind(screenModel);
             // init NtsGrid
             screenModel.empCondition.initNtsGrid();
+            // initial focus.
+            $('#func-apply-all').focus();
         });
     });
 }
