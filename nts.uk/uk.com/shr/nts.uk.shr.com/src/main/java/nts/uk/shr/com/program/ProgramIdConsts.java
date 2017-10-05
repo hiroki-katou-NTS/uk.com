@@ -341,4 +341,57 @@ public class ProgramIdConsts {
 	public static final String CPS002G = "CPS002G";
 	
 	public static final String CPS002I = "CPS002Í";
+	
+	public static final String CMM008 = "CMM008";
+	
+	public static final String CMM014 = "CMM014";
+	
+	public static final String CDL002 = "CDL002";
+	
+	public static final String CDL003 = "CDL003";
+	
+	public static final String CMM011 = "CMM011";
+
+	public static final String CDL008 = "CDL008";
+	
+	public static final String CDL009 = "CDL009";
+	
+	public static final String KMK002A = "KMK002A";
+	
+	public static final String KMK002B = "KMK002B";
+	
+	public static final String KMK002C = "KMK002C";
+	
+	public static final String KMK002D = "KMK002D";
+	
+	public static final String KMK006A = "KMK006A";
+	
+	public static final String KMK006B = "KMK006B";
+	
+	public static final String KMK006C = "KMK006C";
+	
+	public static final String KMK006D = "KMK006D";
+	
+	public static final String KMK006E = "KMK006E";
+	
+	public static final String KMK010A = "KMK010A";
+	
+	public static final String KMK010B = "KMK010B";
+	
+	public static final String KMK010C = "KMK010C";
+	
+	public static final String KDL006 = "KDL006";
+	
+	public static final String KMW005A = "KMW005A";
+	
+	public static final String KMW005B = "KMW005B";
+	
+	public static final String CMM050A = "CMM050A";
+	
+	public static final String CMM050B = "CMM050B";
+	
+	public static final String CMM013 = "CMM013";
+	
+	public static final String CDL004 = "CDL004";
+
 }
