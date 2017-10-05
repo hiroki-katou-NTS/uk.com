@@ -1058,6 +1058,7 @@ module nts.uk.com.view.cmm018.a {
                     }
                     self.dataI(null);
                 });
+                
             }
             /**
              * convert to list history company
