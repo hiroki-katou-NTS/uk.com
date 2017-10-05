@@ -326,6 +326,10 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			listAppPhase.add(appPhaseN5);
 		}
 		for (ApprovalPhase approvalPhase : listAppPhase) {
+			String approvalPhaseId = approvalPhase.getApprovalPhaseId();
+			for (Approver approver : approvalPhase.getApprovers()) {
+				approver.updateApprovalPhaseId(approvalPhaseId);
+			}
 			repoApprover.addAllApprover(approvalPhase.getApprovers());
 		}
 		repoAppPhase.addAllApprovalPhase(listAppPhase);
