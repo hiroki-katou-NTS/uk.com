@@ -6,12 +6,11 @@ package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentSetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLog;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLogPK;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentSetMemento;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScCreateContent;
 
 /**
  * The Class JpaExecutionContentSetMemento.
@@ -32,17 +31,18 @@ public class JpaScheduleCreateContentSetMemento implements ScheduleCreateContent
 	public static final int FALSE_VALUE = 0;
 	
 	/** The entity. */
-	private KscmtScheduleExcLog entity; 
+	private KscmtScCreateContent entity; 
 
 	/**
 	 * Instantiates a new jpa execution content set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaScheduleCreateContentSetMemento(KscmtScheduleExcLog entity) {
-		if(entity.getKscmtScheduleExcLogPK() == null){
-			entity.setKscmtScheduleExcLogPK(new KscmtScheduleExcLogPK());
-		}
+	public JpaScheduleCreateContentSetMemento(KscmtScCreateContent entity) {
+		//TODO
+//		if(entity.getKscmtScheduleExcLogPK() == null){
+//			entity.setKscmtScheduleExcLogPK(new KscmtScheduleExcLogPK());
+//		}
 		this.entity = entity;
 	}
 
@@ -188,7 +188,7 @@ public class JpaScheduleCreateContentSetMemento implements ScheduleCreateContent
 	 */
 	@Override
 	public void setExecutionId(String executionId) {
-		this.entity.getKscmtScheduleExcLogPK().setExeId(executionId);;
+		this.entity.setExeId(executionId);
 	}
 
 	

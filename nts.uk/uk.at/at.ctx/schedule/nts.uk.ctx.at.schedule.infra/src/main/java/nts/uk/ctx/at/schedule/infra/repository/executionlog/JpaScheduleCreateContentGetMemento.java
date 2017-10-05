@@ -2,11 +2,11 @@ package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentGetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
-import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLog;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentGetMemento;
+import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScCreateContent;
 
 /**
  * The Class JpaExecutionContentGetMemento.
@@ -17,14 +17,14 @@ public class JpaScheduleCreateContentGetMemento implements ScheduleCreateContent
 	public static final int TRUE_VALUE = 1;
 
 	/** The entity. */
-	private KscmtScheduleExcLog entity;
+	private KscmtScCreateContent entity;
 
 	/**
 	 * Instantiates a new jpa execution content get memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaScheduleCreateContentGetMemento(KscmtScheduleExcLog entity) {
+	public JpaScheduleCreateContentGetMemento(KscmtScCreateContent entity) {
 		this.entity = entity;
 	}
 
@@ -129,7 +129,7 @@ public class JpaScheduleCreateContentGetMemento implements ScheduleCreateContent
 	 */
 	@Override
 	public String getExecutionId() {
-		return this.entity.getKscmtScheduleExcLogPK().getExeId();
+		return this.entity.getExeId();
 	}
 
 }

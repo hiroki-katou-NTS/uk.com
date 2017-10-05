@@ -8,6 +8,7 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,20 +16,21 @@ import lombok.Setter;
 /**
  * The Class KscmtScheduleExcLogPK.
  */
-
 @Getter
 @Setter
 @Embeddable
 public class KscmtScheduleExcLogPK implements Serializable {
     
-    /** The Constant serialVersionUID. */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-	
+
 	/** The cid. */
+	@NotNull
     @Column(name = "CID")
     private String cid;
     
     /** The exe id. */
+    @NotNull
     @Column(name = "EXE_ID")
     private String exeId;
 
@@ -41,16 +43,15 @@ public class KscmtScheduleExcLogPK implements Serializable {
     /**
      * Instantiates a new kscmt schedule exc log PK.
      *
-     * @param cid the cid
-     * @param exeId the exe id
+     * @param companyId the company id
+     * @param executionId the execution id
      */
-    public KscmtScheduleExcLogPK(String cid, String exeId) {
-        this.cid = cid;
-        this.exeId = exeId;
-    }
+    public KscmtScheduleExcLogPK(String companyId, String executionId) {
+    	this.cid = companyId;
+    	this.exeId = executionId;
+	}
 
-
-    /* (non-Javadoc)
+	/* (non-Javadoc)
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -66,21 +67,18 @@ public class KscmtScheduleExcLogPK implements Serializable {
      */
     @Override
     public boolean equals(Object object) {
-		// not set
-		if (!(object instanceof KscmtScheduleExcLogPK)) {
-			return false;
-		}
-		KscmtScheduleExcLogPK other = (KscmtScheduleExcLogPK) object;
-		if ((this.cid == null && other.cid != null)
-				|| (this.cid != null && !this.cid.equals(other.cid))) {
-			return false;
-		}
-		if ((this.exeId == null && other.exeId != null)
-				|| (this.exeId != null && !this.exeId.equals(other.exeId))) {
-			return false;
-		}
-		return true;
-	}
+        if (!(object instanceof KscmtScheduleExcLogPK)) {
+            return false;
+        }
+        KscmtScheduleExcLogPK other = (KscmtScheduleExcLogPK) object;
+        if ((this.cid == null && other.cid != null) || (this.cid != null && !this.cid.equals(other.cid))) {
+            return false;
+        }
+        if ((this.exeId == null && other.exeId != null) || (this.exeId != null && !this.exeId.equals(other.exeId))) {
+            return false;
+        }
+        return true;
+    }
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
@@ -89,6 +87,5 @@ public class KscmtScheduleExcLogPK implements Serializable {
     public String toString() {
         return "entity.KscmtScheduleExcLogPK[ cid=" + cid + ", exeId=" + exeId + " ]";
     }
-    
     
 }
