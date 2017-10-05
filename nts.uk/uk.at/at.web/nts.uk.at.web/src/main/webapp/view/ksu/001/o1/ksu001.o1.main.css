@@ -10,10 +10,13 @@
 #time-edit1, #time-edit2 {
 	text-align: center !important;
 	width: 43px !important;
+}
+
+#time-edit1 {
 	margin-left: 16px
 }
 
-#spelcial, .reserved, #table-worktime {
+.reserved, #table-worktime {
 	margin-left: 10px;
 }
 

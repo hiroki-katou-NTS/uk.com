@@ -24,6 +24,10 @@
 			<com:stylefile path="../o/ksu001.o.main.css" />
 			<com:scriptfile path="../o/ksu001.o.vm.js" />
 			<com:scriptfile path="../o/ksu001.o.service.js" />
+			
+			<com:stylefile path="../q/ksu001.q.main.css" />
+			<com:scriptfile path="../q/ksu001.q.vm.js" />
+			<com:scriptfile path="../q/ksu001.q.service.js" />
 
 		</ui:define>
 		<ui:define name="content">
@@ -34,7 +38,7 @@
 					<button tabindex="2" class="done">#{i18n.getText('KSU001_2')}</button>
 					<button tabindex="3" class="create">#{i18n.getText('KSU001_3')}</button>
 					<button tabindex="7" class="check">#{i18n.getText('KSU001_4')}</button>
-					<button tabindex="10" class="confirm">#{i18n.getText('KSU001_5')}</button>
+					<button tabindex="10" class="confirm" data-bind="click: openDialogD">#{i18n.getText('KSU001_5')}</button>
 					<button tabindex="11" class="release">#{i18n.getText('KSU001_6')}</button>
 					<button tabindex="12" class="output">#{i18n.getText('KSU001_7')}</button>
 					<button tabindex="13" class="hope">#{i18n.getText('KSU001_8')}</button>
@@ -121,11 +125,11 @@
 					<hr></hr>
 					<div id="company-setting">
 						<div>
-							<button tabindex="28">#{i18n.getText('KSU001_23')}</button>
+							<button tabindex="28" data-bind="click: gotoKml004">#{i18n.getText('KSU001_23')}</button>
 							<span>#{i18n.getText('KSU001_31')}</span>
 						</div>
 						<div>
-							<button tabindex="29">#{i18n.getText('KSU001_24')}</button>
+							<button tabindex="29" data-bind="click: gotoKml002">#{i18n.getText('KSU001_24')}</button>
 							<span>#{i18n.getText('KSU001_32')}</span>
 						</div>
 					</div>
@@ -245,7 +249,7 @@
 					<span>#{i18n.getText('KSU001_344')}</span> <span>#{i18n.getText('KSU001_344')}</span>
 					<hr />
 					<div>
-						<input
+						<input 
 							data-bind="ntsTextEditor: {
 								value: popupVal,
 								option:  ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
@@ -259,7 +263,7 @@
 					</div>
 					<div style="margin-top: 10px">
 						<button id="popup-set" class="proceed" style="margin-left: 25px">#{i18n.getText('KSU001_1')}</button>
-						<button id="close-popup">#{i18n.getText('KSU001_84')}</button>
+						<button class="close-popup">#{i18n.getText('KSU001_84')}</button>
 					</div>
 				</div>
 
@@ -410,7 +414,7 @@
 								<button tabindex="-1" class="setting-button"></button>
 							</div>
 						</div>
-						<div id="contain-viewO">
+						<div id="contain-view">
 							<div id="group-bt">
 								<button id="image102"></button>
 								<button id="image104"></button>
@@ -420,6 +424,11 @@
 							<div id="oViewModel">
 								<div data-bind="with: $parent.viewO">
 									<ui:include src="../o/index.xhtml" />
+								</div>
+							</div>
+							<div id="qViewModel">
+								<div data-bind="with: $parent.viewQ">
+									<ui:include src="../q/index.xhtml" />
 								</div>
 							</div>
 						</div>

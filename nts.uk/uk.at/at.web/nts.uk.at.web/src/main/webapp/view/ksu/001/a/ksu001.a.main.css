@@ -1,3 +1,7 @@
+#master-wrapper {
+	overflow-x: hidden;
+}
+
 .extable .xheader td.color-pink {
 	background-color: #FFB9B9;
 }
@@ -88,11 +92,9 @@ table th, table td {
 	height: 20px
 }
 
-#oViewModel {
+#oViewModel, #qViewModel {
 	float: left;
-	width: 92% /* margin-left: 80px;
-	margin-top: 5px;
-	height: 85px; */
+	width: 92% 
 }
 
 #group-bt {
@@ -322,7 +324,7 @@ table th, table td {
 	width: 30px;
 }
 
-#contain-viewO {
+#contain-view {
 	margin-left: 80px;
 	margin-top: 5px;
 	height: 85px;

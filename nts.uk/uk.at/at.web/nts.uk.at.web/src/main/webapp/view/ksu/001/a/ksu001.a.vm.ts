@@ -93,14 +93,16 @@ module ksu001.a.viewmodel {
 
             self.selectedModeDisplay.subscribe(function(newValue) {
                 if (newValue == 1) {
-                    $('#contain-viewO').show();
+                    $('#contain-view').show();
                     $('#group-bt').show();
                     $('#oViewModel').show();
+                    $('#qViewModel').hide();
                 } else if (newValue == 2) {
-                    $('#contain-viewO').hide();
+                    $('#contain-view').hide();
                 } else {
-                    $('#contain-viewO').show();
+                    $('#contain-view').show();
                     $('#oViewModel').hide();
+                    $('#qViewModel').show();
                     $('#group-bt').show();
                 }
             });
@@ -456,7 +458,7 @@ module ksu001.a.viewmodel {
 
             //set mode of exTable is stickMode single
             $("#extable").exTable("stickMode", "single");
-            
+
             //undo
             $("#image030").click(function() {
                 $("#extable").exTable("stickUndo");
@@ -472,8 +474,8 @@ module ksu001.a.viewmodel {
             /**
              * close popup
              */
-            $("#close-popup").click(function() {
-                $('#popup-area8').ntsPopup('hide');
+            $(".close-popup").click(function() {
+                $('#popup-area8').css('display', 'none');
             });
 
             /**
@@ -784,6 +786,13 @@ module ksu001.a.viewmodel {
         }
 
         /**
+         * open dialog D
+         */
+        openDialogD(): void {
+            nts.uk.ui.windows.sub.modal("/view/ksu/001/d/index.xhtml");
+        }
+
+        /**
          * open dialog L
          */
         openDialogL(): void {
@@ -799,6 +808,20 @@ module ksu001.a.viewmodel {
             nts.uk.ui.windows.sub.modal("/view/ksu/001/n/index.xhtml");
         }
 
+        /**
+         * go to screen KML004
+         */
+        gotoKml004(): void {
+            nts.uk.request.jump("/view/kml/004/a/index.xhtml");
+        }
+        
+         /**
+         * go to screen KML002
+         */
+        gotoKml002(): void {
+            nts.uk.request.jump("/view/kml/002/a/index.xhtml");
+        }
+        
     }
 
     class BoxModel {

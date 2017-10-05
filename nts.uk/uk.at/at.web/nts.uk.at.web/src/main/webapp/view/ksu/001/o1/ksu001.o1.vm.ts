@@ -1,16 +1,15 @@
 module ksu001.o1.viewmodel {
-    import alert = nts.uk.ui.dialog.alert;
     import getShare = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
         listWorkType: KnockoutObservableArray<any>;
         listWorkTime: KnockoutObservableArray<any>;
-        selectedWorkTypeCode: KnockoutObservable<string>;
-        selectedWorkTimeCode: KnockoutObservable<string>;
-        time1: KnockoutObservable<string>;
-        time2: KnockoutObservable<string>;
+        selectedWorkTypeCode: KnockoutObservable<string> = ko.observable('');
+        selectedWorkTimeCode: KnockoutObservable<string> = ko.observable('');
+        time1: KnockoutObservable<string> = ko.observable('12:00');
+        time2: KnockoutObservable<string> = ko.observable('15:00');
         roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
+        selectedRuleCode: KnockoutObservable<number> = ko.observable(1);
         nameWorkTimeType: KnockoutComputed<ExCell>;
         columnsWorkTime: KnockoutObservableArray<NtsGridListColumn>;
 
@@ -32,12 +31,6 @@ module ksu001.o1.viewmodel {
                 { headerText: nts.uk.resource.getText("KSU001_1408"), key: 'note', width: 160 },
                 { headerText: 'data-id', key: 'codeName', width: 160, hidden: true }
             ]);
-
-            self.selectedRuleCode = ko.observable(1);
-            self.selectedWorkTypeCode = ko.observable('');
-            self.selectedWorkTimeCode = ko.observable('');
-            self.time1 = ko.observable('12:00');
-            self.time2 = ko.observable('15:00');
 
             //get name of workType and workTime
             self.nameWorkTimeType = ko.pureComputed(() => {

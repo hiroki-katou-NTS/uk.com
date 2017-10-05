@@ -1,0 +1,14 @@
+#group-radio {
+	margin: 15px 0 15px 20px
+}
+
+#check-box {
+	margin: 15px 0 0 20px
+}
+
+#component-items-list {
+	margin: 20px 0 0 15px;
+	float: left;
+	width: 49%;
+	height: 90%;
+}

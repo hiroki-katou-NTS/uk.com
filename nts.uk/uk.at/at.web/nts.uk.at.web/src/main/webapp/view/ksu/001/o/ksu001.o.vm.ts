@@ -1,5 +1,4 @@
 module ksu001.o.viewmodel {
-    import alert = nts.uk.ui.dialog.alert;
     import setShare = nts.uk.ui.windows.setShared;
 
     export class ScreenModel {
