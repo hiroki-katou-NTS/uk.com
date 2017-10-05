@@ -35,6 +35,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         outputMessageDeadline: KnockoutObservable<model.OutputMessageDeadline>;
         //obj DetailedScreenPreBootModeOutput
         outputDetailCheck :  KnockoutObservable<model.DetailedScreenPreBootModeOutput>;
+        //obj InputCommandEvent
+        inputCommandEvent :  KnockoutObservable<model.InputCommandEvent>;
+        
+        
         /**
          * enable button
          */
@@ -67,9 +71,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         listAppId : Array<any>;
         
         
+        //item InputCommandEvent
+        appReasonEvent : KnockoutObservable<String>;
+        
         constructor(appType: number) {
             let self = this;
-            
+            //reason input event
+            self.appReasonEvent = ko.observable('');
             
             self.listAppId = [];
             //__viewContext.transferred.value.appID;
@@ -82,6 +90,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             
             // Metadata
             self.appID =ko.observable(self.listAppId[0]); 
+            self.inputCommandEvent = ko.observable(new model.InputCommandEvent(self.appID(),self.appReasonEvent()));
             
             /**
              * List
@@ -121,6 +130,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
              */
             self.visibleApproval = ko.observable(false)
             self.visibleDenial = ko.observable(false)
+            
+            
         }
                 
         abstract update(): any;
@@ -649,5 +660,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 this.deadline = deadline;
             }
         }// end class outputMessageDeadline
+        
+        //class InputCommandEvent
+        export class InputCommandEvent{
+            appID : String;
+            appReason : String;
+            constructor(appID : String,appReason : String){
+                this.appID = appID;
+                this.appReason = appReason;
+            }
+        }
     }
 }
