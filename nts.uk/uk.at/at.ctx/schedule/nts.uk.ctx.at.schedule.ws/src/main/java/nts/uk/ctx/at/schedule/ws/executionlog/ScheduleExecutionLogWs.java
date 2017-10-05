@@ -23,8 +23,10 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleCreatorExecutionR
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleExecutionLogAddCommand;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleExecutionLogAddCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleExecutionLogSaveRespone;
+import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleCreateContentFinder;
 import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleExecutionLogFinder;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.PeriodObject;
+import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleCreateContentDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.export.ExeErrorLogExportService;
 
@@ -38,6 +40,10 @@ public class ScheduleExecutionLogWs extends WebService {
 	/** The schedule execution log finder. */
 	@Inject
 	private ScheduleExecutionLogFinder scheduleExecutionLogFinder;
+	
+	/** The add. */
+	@Inject
+	private ScheduleCreateContentFinder scheduleCreateContentFinder;
 	
 	/** The add. */
 	@Inject
@@ -72,7 +78,19 @@ public class ScheduleExecutionLogWs extends WebService {
 	public ScheduleExecutionLogDto findById(@PathParam("executionId") String executionId) {
 		return this.scheduleExecutionLogFinder.findById(executionId);
 	}
-
+	
+	/**
+	 * Find create content by exe id.
+	 *
+	 * @param executionId the execution id
+	 * @return the schedule create content dto
+	 */
+	@POST
+	@Path("createContent/{executionId}")
+	public ScheduleCreateContentDto findCreateContentByExeId(@PathParam("executionId") String executionId) {
+		return this.scheduleCreateContentFinder.findByExecutionId(executionId);
+	}
+	
 	/**
 	 * Export error.
 	 *

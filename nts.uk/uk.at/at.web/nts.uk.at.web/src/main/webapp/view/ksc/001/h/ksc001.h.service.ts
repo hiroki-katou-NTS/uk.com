@@ -1,7 +1,7 @@
 module nts.uk.at.view.ksc001.h {
     export module service {
         var paths = {
-           findExecutionDetail: "at/schedule/exelog/findById",
+           findExecutionDetail: "at/schedule/exelog/createContent",
 
         }
         

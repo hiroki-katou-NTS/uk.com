@@ -22,9 +22,6 @@ public class ScheduleExecutionLogDto implements ScheduleExecutionLogSetMemento {
 	/** The execution id. */
 	public String executionId;
 
-	/** The execution content. */
-	public ExecutionContentDto executionContent;
-
 	/** The execution date time. */
 	public ExecutionDateTime executionDateTime;
 
