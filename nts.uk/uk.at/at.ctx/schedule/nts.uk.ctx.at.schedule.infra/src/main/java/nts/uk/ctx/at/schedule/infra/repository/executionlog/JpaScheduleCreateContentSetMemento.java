@@ -16,7 +16,7 @@ import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLogPK;
 /**
  * The Class JpaExecutionContentSetMemento.
  */
-public class JpaExecutionContentSetMemento implements ScheduleCreateContentSetMemento{
+public class JpaScheduleCreateContentSetMemento implements ScheduleCreateContentSetMemento{
 	
 	//YYYYMMDD
 	/** The Constant MUL_YEAR. */
@@ -39,7 +39,7 @@ public class JpaExecutionContentSetMemento implements ScheduleCreateContentSetMe
 	 *
 	 * @param entity the entity
 	 */
-	public JpaExecutionContentSetMemento(KscmtScheduleExcLog entity) {
+	public JpaScheduleCreateContentSetMemento(KscmtScheduleExcLog entity) {
 		if(entity.getKscmtScheduleExcLogPK() == null){
 			entity.setKscmtScheduleExcLogPK(new KscmtScheduleExcLogPK());
 		}
@@ -181,6 +181,14 @@ public class JpaExecutionContentSetMemento implements ScheduleCreateContentSetMe
 	public void setResetTimeChildCare(Boolean resetTimeChildCare) {
 		this.entity.setReTimeChildCare(resetTimeChildCare ? TRUE_VALUE : FALSE_VALUE);
 
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentSetMemento#setExecutionId(java.lang.String)
+	 */
+	@Override
+	public void setExecutionId(String executionId) {
+		this.entity.getKscmtScheduleExcLogPK().setExeId(executionId);;
 	}
 
 	

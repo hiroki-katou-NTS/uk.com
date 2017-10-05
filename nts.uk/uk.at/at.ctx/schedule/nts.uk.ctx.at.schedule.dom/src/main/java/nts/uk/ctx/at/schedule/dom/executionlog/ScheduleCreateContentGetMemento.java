@@ -8,6 +8,13 @@ import nts.arc.time.GeneralDate;
 public interface ScheduleCreateContentGetMemento {
 	
 	/**
+	 * Gets the execution id.
+	 *
+	 * @return the execution id
+	 */
+	public String getExecutionId();
+	
+	/**
 	 * Gets the copy start date.
 	 *
 	 * @return the copy start date

@@ -8,6 +8,13 @@ import nts.arc.time.GeneralDate;
 public interface ScheduleCreateContentSetMemento {
 	
 	/**
+	 * Sets the execution id.
+	 *
+	 * @param executionId the new execution id
+	 */
+	public void setExecutionId(String executionId);
+	
+	/**
 	 * Sets the copy start date.
 	 *
 	 * @param copyStartDate the new copy start date

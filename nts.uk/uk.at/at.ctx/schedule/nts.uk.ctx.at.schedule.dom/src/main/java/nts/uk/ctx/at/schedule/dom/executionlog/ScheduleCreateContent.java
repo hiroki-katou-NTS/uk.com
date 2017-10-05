@@ -46,8 +46,12 @@ public class ScheduleCreateContent extends DomainObject{
 	 * @return the execution content
 	 */
 	public ScheduleCreateContent (ScheduleCreateContentGetMemento memento){
+		this.confirm = memento.getConfirm();
+		this.implementAtr = memento.getImplementAtr();
+		this.executionId = memento.getExecutionId();
 		this.copyStartDate = memento.getCopyStartDate();
 		this.createMethodAtr = memento.getCreateMethodAtr();
+		this.reCreateContent = new ReCreateContent(memento);
 	}
 	
 	/**
@@ -56,7 +60,11 @@ public class ScheduleCreateContent extends DomainObject{
 	 * @param memento the memento
 	 */
 	public void saveToMemento(ScheduleCreateContentSetMemento memento){
+		memento.setConfirm(this.confirm);
+		memento.setImplementAtr(this.implementAtr);
+		memento.setExecutionId(this.executionId);
 		memento.setCopyStartDate(this.copyStartDate);
 		memento.setCreateMethodAtr(this.createMethodAtr);
+		reCreateContent.saveToMemento(memento);
 	}
 }
