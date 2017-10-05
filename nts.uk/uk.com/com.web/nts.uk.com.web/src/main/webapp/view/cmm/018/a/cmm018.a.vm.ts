@@ -393,7 +393,6 @@ module nts.uk.com.view.cmm018.a {
                     let lstRoot: Array<vmbase.DataRootCheck> = [];
                     self.convertHistForCom(self.lstCompany());
                     if(self.listHistory().length > 0){
-//                        self.currentCode(self.listHistory()[0].id);
                         let history = self.findHistory(self.currentCode());
                         if(history !== undefined){
                             self.historyStr(history.dateRange);
@@ -406,9 +405,12 @@ module nts.uk.com.view.cmm018.a {
                                             item.company.applicationType, item.company.employmentRootAtr,item.company.branchId, item.lstAppPhase));
                         }); 
                     }
-//                        });
-                        self.cpA(self.convertlistRoot(lstRoot));
-                        self.cpA.valueHasMutated();
+                    self.cpA(self.convertlistRoot(lstRoot));
+                    self.cpA.valueHasMutated();
+                    if(self.dataI() != null){
+                        self.currentCode(self.listHistory()[0].id);
+                    }
+                    self.dataI(null);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -437,22 +439,26 @@ module nts.uk.com.view.cmm018.a {
                     }
                     let lstRoot: Array<vmbase.DataRootCheck> = [];
                     self.convertHistForWp(self.lstWorkplace());
-                        if(self.listHistory().length > 0){
-                            self.currentCode(self.listHistory()[0].id);
-                            let history = self.findHistory(self.currentCode());
-                            if(history !== undefined){
-                                self.historyStr(history.dateRange);
-                            }
+                    if(self.listHistory().length > 0){
+                        self.currentCode(self.listHistory()[0].id);
+                        let history = self.findHistory(self.currentCode());
+                        if(history !== undefined){
+                            self.historyStr(history.dateRange);
                         }
-                       let lstWorkplace: vmbase.DataDisplayWpDto = self.findAppIdForWp(self.currentCode());
-                        if(lstWorkplace != undefined){
-                           _.each(lstWorkplace.lstWorkplaceRoot, function(item){
-                                lstRoot.push(new vmbase.DataRootCheck(item.workplace.approvalId, item.workplace.historyId,
-                                                item.workplace.applicationType, item.workplace.employmentRootAtr,item.workplace.branchId, item.lstAppPhase));
-                            }); 
-                        }
-                        self.cpA(self.convertlistRoot(lstRoot));
-                        self.cpA.valueHasMutated();
+                    }
+                   let lstWorkplace: vmbase.DataDisplayWpDto = self.findAppIdForWp(self.currentCode());
+                    if(lstWorkplace != undefined){
+                       _.each(lstWorkplace.lstWorkplaceRoot, function(item){
+                            lstRoot.push(new vmbase.DataRootCheck(item.workplace.approvalId, item.workplace.historyId,
+                                            item.workplace.applicationType, item.workplace.employmentRootAtr,item.workplace.branchId, item.lstAppPhase));
+                        }); 
+                    }
+                    self.cpA(self.convertlistRoot(lstRoot));
+                    self.cpA.valueHasMutated();
+                    if(self.dataI() != null){
+                        self.currentCode(self.listHistory()[0].id);
+                    }
+                    self.dataI(null);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -493,6 +499,10 @@ module nts.uk.com.view.cmm018.a {
                     }
                     self.cpA(self.convertlistRoot(lstRoot));
                     self.cpA.valueHasMutated();
+                    if(self.dataI() != null){
+                        self.currentCode(self.listHistory()[0].id);
+                    }
+                    self.dataI(null);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -1065,10 +1075,6 @@ module nts.uk.com.view.cmm018.a {
                        self.getDataPerson();
                    }
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    if(self.dataI() != null){
-                        self.currentCode(self.listHistory()[0].id);
-                    }
-                    self.dataI(null);
                 });
             }
             /**
