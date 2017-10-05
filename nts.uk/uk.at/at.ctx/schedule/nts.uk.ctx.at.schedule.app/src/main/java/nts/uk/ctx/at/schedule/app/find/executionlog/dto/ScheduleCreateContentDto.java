@@ -12,12 +12,16 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentSetMemento;
  */
 public class ScheduleCreateContentDto implements ScheduleCreateContentSetMemento {
 
+	/** The execution id. */
+	// 実行ID
+	public String executionId;
+
 	/** The copy start date. */
 	// コピー開始日
 	public GeneralDate copyStartDate;
 
 	// 作成方法区分
-	public CreateMethodAtr createMethodAtr;
+	public Integer createMethodAtr;
 
 	/** The confirm. */
 	// 作成時に確定済みにする
@@ -25,15 +29,15 @@ public class ScheduleCreateContentDto implements ScheduleCreateContentSetMemento
 
 	/** The implement atr. */
 	// 実施区分
-	public ImplementAtr implementAtr;
+	public Integer implementAtr;
 
 	/** The process execution atr. */
 	// 処理実行区分
-	public ProcessExecutionAtr processExecutionAtr;
+	public Integer processExecutionAtr;
 
 	/** The re create atr. */
 	// 再作成区分
-	public ReCreateAtr reCreateAtr;
+	public Integer reCreateAtr;
 
 	/** The reset master info. */
 	// マスタ情報再設定
@@ -61,80 +65,67 @@ public class ScheduleCreateContentDto implements ScheduleCreateContentSetMemento
 
 	@Override
 	public void setExecutionId(String executionId) {
-		// TODO Auto-generated method stub
-		
+		this.executionId = executionId;
 	}
 
 	@Override
 	public void setCopyStartDate(GeneralDate copyStartDate) {
-		// TODO Auto-generated method stub
-		
+		this.copyStartDate = copyStartDate;
 	}
 
 	@Override
 	public void setCreateMethodAtr(CreateMethodAtr createMethodAtr) {
-		// TODO Auto-generated method stub
-		
+		this.createMethodAtr = createMethodAtr.value;
 	}
 
 	@Override
 	public void setConfirm(Boolean confirm) {
-		// TODO Auto-generated method stub
-		
+		this.confirm = confirm;
 	}
 
 	@Override
 	public void setImplementAtr(ImplementAtr implementAtr) {
-		// TODO Auto-generated method stub
-		
+		this.implementAtr = implementAtr.value;
 	}
 
 	@Override
 	public void setProcessExecutionAtr(ProcessExecutionAtr processExecutionAtr) {
-		// TODO Auto-generated method stub
-		
+		this.processExecutionAtr = processExecutionAtr.value;
 	}
 
 	@Override
 	public void setReCreateAtr(ReCreateAtr reCreateAtr) {
-		// TODO Auto-generated method stub
-		
+		this.reCreateAtr = reCreateAtr.value;
 	}
 
 	@Override
 	public void setResetMasterInfo(Boolean resetMasterInfo) {
-		// TODO Auto-generated method stub
-		
+		this.resetMasterInfo = resetMasterInfo;
 	}
 
 	@Override
 	public void setResetAbsentHolidayBusines(Boolean resetAbsentHolidayBusines) {
-		// TODO Auto-generated method stub
-		
+		this.resetAbsentHolidayBusines = resetAbsentHolidayBusines;
 	}
 
 	@Override
 	public void setResetWorkingHours(Boolean resetWorkingHours) {
-		// TODO Auto-generated method stub
-		
+		this.resetWorkingHours = resetWorkingHours;
 	}
 
 	@Override
 	public void setResetTimeAssignment(Boolean resetTimeAssignment) {
-		// TODO Auto-generated method stub
-		
+		this.resetTimeAssignment = resetTimeAssignment;
 	}
 
 	@Override
 	public void setResetDirectLineBounce(Boolean resetDirectLineBounce) {
-		// TODO Auto-generated method stub
-		
+		this.resetDirectLineBounce = resetDirectLineBounce;
 	}
 
 	@Override
 	public void setResetTimeChildCare(Boolean resetTimeChildCare) {
-		// TODO Auto-generated method stub
-		
+		this.resetTimeChildCare = resetTimeChildCare;
 	}
 
 }

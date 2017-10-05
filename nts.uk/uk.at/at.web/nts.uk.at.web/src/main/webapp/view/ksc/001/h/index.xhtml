@@ -51,8 +51,10 @@
 							<tr style="height:200px;">
 								<td><label data-bind="text: period().startDateTime"></label></td>
 								<td><label data-bind="text: period().endDateTime"></label></td>
-								<td><label data-bind="text: 'TODO'"></label></td>
-								<td><label data-bind="text: executionContent()"></label></td>
+								<td><label data-bind="text: executionDateTime()"></label></td>
+								<td><div data-bind="foreach: executionContent">
+										<p data-bind="text: $data" />
+									</div></td>
 								<td><label data-bind="text: ''"></label></td>
 								<td><a class="nounderline" href="javascript:void(0);"
 									data-bind="text: executionNumber(),click: $parent.openDialogI">
