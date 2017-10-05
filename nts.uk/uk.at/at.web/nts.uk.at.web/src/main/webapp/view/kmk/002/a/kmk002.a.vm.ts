@@ -271,11 +271,29 @@ module nts.uk.at.view.kmk002.a {
              * Confirm whether a calculation formula can be added (Check whether ZZ is used in the symbol)
              * Confirm the check status of calculation formula
              */
-            public canAddFormula(): boolean {
+            private canAddFormula(): boolean {
                 // TODO
                 // if zz is used
                 // or no formula checked
                 // => show message 508.
+                return true;
+            }
+
+            /**
+             * Check if one or more calculation expressions are checked
+             */
+            private isCheckedFormula(): boolean {
+                //TODO
+                // error msg 508
+                return true;
+            }
+
+            /**
+             * Check whether the symbol of the line to be deleted is included in the settings of other lines
+             */
+            private isInUse(): boolean {
+                //TODO
+                // warning msg 113
                 return true;
             }
 
@@ -291,27 +309,29 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Enable all control in Nts grid.
              */
-            private enableNtsGrid(): void {
-                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "formulaAtr", "FormulaAtr");
+            public enableNtsGrid(): void {
+                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "formulaAtr", "ComboBox");
                 $("#tbl-calc-formula").ntsGrid("enableNtsControls", "calcAtr", "SwitchButtons");
-                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "open", "Button");
-                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "dailyUnit", "DailyUnit");
-                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "dailyRounding", "DailyRounding");
-                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "monthlyUnit", "MonthlyUnit");
-                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "monthlyRounding", "MonthlyRounding");
+                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "c", "Button");
+                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "d", "Button");
+                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "dailyUnit", "ComboBox");
+                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "dailyRounding", "ComboBox");
+                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "monthlyUnit", "ComboBox");
+                $("#tbl-calc-formula").ntsGrid("enableNtsControls", "monthlyRounding", "ComboBox");
             }
 
             /**
              * Disable all control in Nts grid.
              */
-            private disableNtsGrid(): void {
-                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "formulaAtr", "FormulaAtr");
+            public disableNtsGrid(): void {
+                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "formulaAtr", "ComboBox");
                 $("#tbl-calc-formula").ntsGrid("disableNtsControls", "calcAtr", "SwitchButtons");
-                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "open", "Button");
-                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "dailyUnit", "DailyUnit");
-                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "dailyRounding", "DailyRounding");
-                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "monthlyUnit", "MonthlyUnit");
-                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "monthlyRounding", "MonthlyRounding");
+                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "c", "Button");
+                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "d", "Button");
+                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "dailyUnit", "ComboBox");
+                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "dailyRounding", "ComboBox");
+                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "monthlyUnit", "ComboBox");
+                $("#tbl-calc-formula").ntsGrid("disableNtsControls", "monthlyRounding", "ComboBox");
             }
 
             /**
@@ -319,6 +339,16 @@ module nts.uk.at.view.kmk002.a {
              */
             public removeFormula(): void {
                 let self = this;
+
+                // Check before remove
+                if (!self.isCheckedFormula()) {
+                    return;
+                }
+                if (self.isInUse()) {
+                    return;
+                }
+
+                // Remove.
                 let id = ''; //selected id.
                 _.remove(self.calcFormulas, item => item.formulaId == id);
                 self.calcFormulas = [];
@@ -409,18 +439,7 @@ module nts.uk.at.view.kmk002.a {
                     // init nts grid.
                     self.initNtsGrid();
 
-                    // init usageAtr subscribe.
-                    self.usageAtr.subscribe(vl => {
-                        if (vl === 1) {
-                            self.isUsed(true);
-                            self.enableNtsGrid();
-                        } else {
-                            self.isUsed(false);
-                            self.disableNtsGrid();
-                        }
-                    });
-
-                    // force to check enable/disable condition.
+                    // force to check enable/disable condition for nts grid.
                     self.usageAtr.valueHasMutated();
 
                     dfd.resolve();
@@ -717,10 +736,24 @@ module nts.uk.at.view.kmk002.a {
 
             public initialize(): void {
                 let self = this;
-                let itemNo = self.optionalItemHeaders()[0].itemNo;
+
                 // Select first item
+                let itemNo = self.optionalItemHeaders()[0].itemNo;
                 self.selectedCode(itemNo);
+
                 self.loadOptionalItemDetail(itemNo).done(() => {
+
+                    // init usageAtr subscribe.
+                    self.optionalItem.usageAtr.subscribe(vl => {
+                        if (vl === 1) {
+                            self.optionalItem.isUsed(true);
+                            self.optionalItem.enableNtsGrid();
+                        } else {
+                            self.optionalItem.isUsed(false);
+                            self.optionalItem.disableNtsGrid();
+                        }
+                    });
+
                     // init selected code subscribe
                     self.selectedCode.subscribe(itemNo => {
                         if (itemNo) {
