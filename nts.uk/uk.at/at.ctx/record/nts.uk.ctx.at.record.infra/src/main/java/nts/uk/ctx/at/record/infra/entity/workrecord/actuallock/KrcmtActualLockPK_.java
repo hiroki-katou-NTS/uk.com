@@ -18,5 +18,5 @@ public class KrcmtActualLockPK_ {
 	public static volatile SingularAttribute<KrcmtActualLockPK, String> cid;
 	
 	/** The closure id. */
-	public static volatile SingularAttribute<KrcmtActualLockPK, Short> closureId;
+	public static volatile SingularAttribute<KrcmtActualLockPK, Integer> closureId;
 }

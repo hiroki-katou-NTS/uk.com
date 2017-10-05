@@ -17,8 +17,8 @@ public class KrcmtActualLock_ {
 	public static volatile SingularAttribute<KrcmtActualLock, KrcmtActualLockPK> krcmtActualLockPK;
 	
 	/** The d lock state. */
-	public static volatile SingularAttribute<KrcmtActualLock, Short> dLockState;
+	public static volatile SingularAttribute<KrcmtActualLock, Integer> dLockState;
 	
 	/** The m lock state. */
-	public static volatile SingularAttribute<KrcmtActualLock, Short> mLockState;
+	public static volatile SingularAttribute<KrcmtActualLock, Integer> mLockState;
 }

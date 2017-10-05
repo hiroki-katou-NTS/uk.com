@@ -23,8 +23,8 @@ public class KrcmtActualLockHist_ {
 	public static volatile SingularAttribute<KrcmtActualLockHist, String> updator;
 	
 	/** The d lock state. */
-	public static volatile SingularAttribute<KrcmtActualLockHist, Short> dLockState;
+	public static volatile SingularAttribute<KrcmtActualLockHist, Integer> dLockState;
 	
 	/** The m lock state. */
-	public static volatile SingularAttribute<KrcmtActualLockHist, Short> mLockState;
+	public static volatile SingularAttribute<KrcmtActualLockHist, Integer> mLockState;
 }
