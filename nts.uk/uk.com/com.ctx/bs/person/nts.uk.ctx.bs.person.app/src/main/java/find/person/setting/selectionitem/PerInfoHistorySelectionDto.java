@@ -1,4 +1,4 @@
-package find.person.setting.selection;
+package find.person.setting.selectionitem;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;

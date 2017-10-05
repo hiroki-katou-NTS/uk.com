@@ -1,4 +1,4 @@
-package command.person.setting.selection;
+package command.person.setting.selectionitem;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
