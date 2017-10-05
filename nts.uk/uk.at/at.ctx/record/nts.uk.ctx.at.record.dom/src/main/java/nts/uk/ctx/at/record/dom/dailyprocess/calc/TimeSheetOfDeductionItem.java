@@ -22,7 +22,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidBre
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidPrefixBreakTimeOfCalcMethod;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 /**
- * 控除　　の時間帯
+ * 控除項目の時間帯
  * @author keisuke_hoshina
  *
  */

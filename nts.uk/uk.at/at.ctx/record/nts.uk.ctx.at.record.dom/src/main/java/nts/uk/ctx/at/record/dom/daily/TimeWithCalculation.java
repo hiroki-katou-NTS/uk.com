@@ -13,9 +13,9 @@ public class TimeWithCalculation {
 	private AttendanceTime time;
 	private AttendanceTime calcTime;
 	
-	private TimeWithCalculation(AttendanceTime time) {
+	private TimeWithCalculation(AttendanceTime time,AttendanceTime calcTime) {
 		this.time = time;
-		this.calcTime = time;
+		this.calcTime = calcTime;
 	}
 	
 	/**
@@ -23,6 +23,17 @@ public class TimeWithCalculation {
 	 * @return
 	 */
 	public static TimeWithCalculation of(AttendanceTime time) {
-		return new TimeWithCalculation(time);
+		return new TimeWithCalculation(time,time);
 	}
+	
+	
+	/**
+	 * 指定された時間で計算付き時間を作成する
+	 * @return
+	 */
+	public static TimeWithCalculation createTimeWithCalculation(AttendanceTime time,AttendanceTime calcTime) {
+		return new TimeWithCalculation(time,calcTime);
+	}
+	
+	
 }

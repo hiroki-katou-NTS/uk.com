@@ -5,6 +5,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.fluidworkset;
 
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
 import nts.arc.layer.dom.AggregateRoot;
@@ -14,6 +15,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Unit.Direction;
  * The Class TimeRoundingSetting.
  */
 @Getter
+@AllArgsConstructor
 // 時間丸め設定
 public class TimeRoundingSetting extends AggregateRoot {
 

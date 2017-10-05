@@ -3,6 +3,7 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -17,6 +18,8 @@ import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.GoOutTimeSheetOfDailyWork;
 import nts.uk.ctx.at.record.dom.daily.calcset.SetForNoStamp;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeDivision;
 import nts.uk.ctx.at.shared.dom.worktime.WorkTimeMethodSet;
@@ -24,6 +27,9 @@ import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.BreakSetOfCommon;
 import nts.uk.ctx.at.shared.dom.worktime.CommomSetting.CalcMethodIfLeaveWorkDuringBreakTime;
 import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.LateLeaveEarlyClassification;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.set.FixRestCalcMethod;
+import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluRestTimeSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.BreakClockOfManageAtr;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidBreakTimeOfCalcMethod;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -35,6 +41,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 @RequiredArgsConstructor
 public class DeductionTimeSheet {
+	@Getter
 	private final List<TimeSheetOfDeductionItem> forDeductionTimeZoneList;
 	private final List<TimeSheetOfDeductionItem> forRecordTimeZoneList;
 	@Getter
@@ -335,6 +342,101 @@ public class DeductionTimeSheet {
 	 */
 	public List<TimeSheetOfDeductionItem> getCalcRange(TimeSpanForCalc workTimeSpan){
 		return forDeductionTimeZoneList.stream().filter(tc -> workTimeSpan.contains(tc.calculationTimeSheet.getSpan())).collect(Collectors.toList());
+	}	
+	
+	
+	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	
+	/**
+	 * 控除時間帯の仮確定(流動用) 
+	 */
+	public void provisionalDecisionOfDeductionTimeSheet(FluidWorkSetting fluidWorkSetting) {
+		//固定休憩か流動休憩か確認する
+		if(fluidWorkSetting.getWeekdayWorkTime().getRestTime().getUseFixedRestTime()) {//固定休憩の場合
+			switch(fluidWorkSetting.getRestSetting().getFluidWorkBreakSettingDetail().getFluidPrefixBreakTimeSet().getCalcMethod()) {
+				//マスタを参照する
+				case ReferToMaster:
+				this.createDedctionTimeSheet(acqAtr, setMethod, clockManage, dailyGoOutSheet, oneDayRange, CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, noStampSet, fluidSet);
+				//予定を参照する
+				case ReferToSchedule:
+				this.createDedctionTimeSheet(acqAtr, setMethod, clockManage, dailyGoOutSheet, oneDayRange, CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, noStampSet, fluidSet);
+				//参照せずに打刻する
+				case StampWithoutReference:
+				this.createDedctionTimeSheet(acqAtr, setMethod, clockManage, dailyGoOutSheet, oneDayRange, CommonSet, attendanceLeaveWork, fixedCalc, workTimeDivision, noStampSet, fluidSet);
+			}
+		}else{//流動休憩の場合
+			switch(fluidWorkSetting.getRestSetting().getFluidWorkBreakSettingDetail().getFluidBreakTimeSet().getCalcMethod()) {
+				//マスタを参照する
+				case ReferToMaster:
+				
+				//マスタと打刻を併用する	
+				case ConbineMasterWithStamp:
+				
+				//参照せずに打刻する	
+				case StampWithoutReference:
+			
+			}
+		}
+		
 	}
-
+	
+	
+	/**
+	 * 控除時間帯の作成   流動勤務で固定休憩の場合にシフトから計算する場合の処理の事
+	 */
+	public void createLateTimeSheetForFluid(
+			WithinWorkTimeFrame withinWorkTimeFrame,
+			FluidWorkSetting fluidWorkSetting,
+			CalculationRangeOfOneDay oneDayRange) {
+		
+		//計算範囲の取得
+		oneDayRange.
+		//控除時間帯の取得　・・・保科君が作成済みの処理を呼ぶ
+		List<TimeSheetOfDeductionItem> deductionTimeSheet = this.collectDeductionTimes(
+				dailyGoOutSheet, 
+				oneDayRange, 
+				CommonSet, 
+				attendanceLeaveWork, 
+				fixedCalc, 
+				workTimeDivision, 
+				noStampSet, 
+				fluidSet, 
+				acqAtr);
+		//控除時間帯同士の重複部分を補正
+		deductionTimeSheet = new DeductionTimeSheetAdjustDuplicationTime(deductionTimeSheet).reCreate(setMethod, clockManage);
+		//控除合計時間クラスを作成　　不要な可能性あり
+		DeductionTotalTimeForFluidCalc deductionTotalTime = new DeductionTotalTimeForFluidCalc();
+		//流動休憩時間帯を取得する
+		List<FluRestTimeSetting> fluRestTimeSheetList = 
+				fluidWorkSetting.getWeekdayWorkTime().getRestTime().getFluidRestTime().getFluidRestTimes();
+		//外出取得開始時刻を作成する
+		AttendanceTime getGoOutStartClock = new AttendanceTime(withinWorkTimeFrame.getCalcrange().getStart().valueAsMinutes());
+		//一時的に作成
+		int roopNo = 0;
+		//一時的に作成
+		List<TimeSheetOfDeductionItem> restTimeSheetList = new ArrayList<>();
+		//流動休憩時間帯分ループ
+		for(FluRestTimeSetting fluRestTimeSetting : fluRestTimeSheetList) {
+			roopNo++;
+			//外出のみの控除時間帯リストを作成する
+			List<TimeSheetOfDeductionItem> goOutDeductionTimelist = 
+					this.forDeductionTimeZoneList.stream().filter(ts -> ts.getGoOutReason().isPresent()).collect(Collectors.toList());		
+			//流動休憩時間帯の作成（引数にgetGoOutStartClockを渡す
+			TimeSheetOfDeductionItem restTimeSheet = deductionTotalTime.createDeductionFluidRestTime(
+					fluRestTimeSetting, 
+					getGoOutStartClock, 
+					ｔimeSheetOfDeductionItem, 
+					roopNo, 
+					fluidWorkSetting, 
+					deductionTimeSheet, 
+					goOutDeductionTimelist);
+			//作成した時間帯を休憩時間帯リストに格納
+			restTimeSheetList.add(restTimeSheet);
+		}
+		//退勤時刻までの外出の処理
+		deductionTotalTime.collectDeductionTotalTime(list, getGoOutStartClock, fluidWorkSetting, roopNo);
+		//控除時間帯をソート
+		
+	}
+	
 }

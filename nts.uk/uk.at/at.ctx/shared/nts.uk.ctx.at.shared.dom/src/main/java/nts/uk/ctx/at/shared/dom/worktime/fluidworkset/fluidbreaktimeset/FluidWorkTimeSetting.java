@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -19,12 +20,14 @@ public class FluidWorkTimeSetting {
 	 * @param workNo
 	 * @return
 	 */
-	public FluidOverTimeWorkSheet getMatchWorkNoOverTimeWorkSheet(int overTimeFrameNo) {
+	public Optional<FluidOverTimeWorkSheet> getMatchWorkNoOverTimeWorkSheet(int overTimeFrameNo) {
 		List<FluidOverTimeWorkSheet> timeSheet = this.overTimeWorkSheet.stream().filter(tc -> tc.getOverWorkTimeNo() == overTimeFrameNo).collect(Collectors.toList());
 		if(timeSheet.size()>1) {
 			throw new RuntimeException("Exist duplicate overTimeFrameNo : " + overTimeFrameNo);
+		}else if(timeSheet==null) {
+			return Optional.empty();
 		}
-		return timeSheet.get(0);
+		return Optional.of(timeSheet.get(0));
 	}
 	
 }

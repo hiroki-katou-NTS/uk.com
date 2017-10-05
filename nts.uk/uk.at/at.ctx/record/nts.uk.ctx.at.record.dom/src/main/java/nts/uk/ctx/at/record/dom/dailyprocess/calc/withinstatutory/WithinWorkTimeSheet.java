@@ -2,18 +2,27 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.val;
-
+import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.daily.WorkInformationOfDaily;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.breaktimegoout.BreakTimeSheetOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPaySetting;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.WithinStatutoryAtr;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.CalculationByActualTimeAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
@@ -28,6 +37,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.FixedWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeOfTimeSheetSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeOfTimeSheetSetList;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.FluidWorkSetting;
 import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -38,7 +48,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  *
  */
 @RequiredArgsConstructor
-public class WithinWorkTimeSheet {
+public class WithinWorkTimeSheet implements {
 
 	//必要になったら追加
 	//private WorkingHours
@@ -181,4 +191,194 @@ public class WithinWorkTimeSheet {
 	public int calcLateLeaveEarlyinWithinWorkTime() {
 		
 	}
+	
+	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	
+	//就業時間内時間帯クラスを作成　　（流動勤務）
+	public WithinWorkTimeSheet createAsFluidWork(
+			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
+			WorkType workType,
+			WorkInformationOfDaily workInformationOfDaily,
+			FluidWorkSetting fluidWorkSetting,
+			DeductionTimeSheet deductionTimeSheet) {
+		//開始時刻を取得
+		TimeWithDayAttr startClock = getStartClock();
+		//所定時間帯、残業開始を補正
+		cllectPredetermineTimeAndOverWorkTimeStart();
+		//残業開始となる経過時間を取得
+		AttendanceTime elapsedTime = fluidWorkSetting.getWeekdayWorkTime().getWorkTimeSheet().getMatchWorkNoOverTimeWorkSheet(1).getFluidWorkTimeSetting().getElapsedTime();
+		//経過時間から終了時刻を計算
+		TimeWithDayAttr endClock = startClock.backByMinutes(elapsedTime.valueAsMinutes());
+		//就業時間帯の作成（一時的に作成）
+		TimeSpanForCalc workTimeSheet = new TimeSpanForCalc(startClock,endClock);
+		//控除時間帯を取得 (控除時間帯分ループ）
+		for(TimeSheetOfDeductionItem timeSheetOfDeductionItem : deductionTimeSheet.getForDeductionTimeZoneList()) {
+			//就業時間帯に重複する控除時間を計算
+			TimeSpanForCalc duplicateTime = workTimeSheet.getDuplicatedWith(timeSheetOfDeductionItem.getTimeSheet().getSpan()).orElse(null);
+			//就業時間帯と控除時間帯が重複しているかチェック
+			if(duplicateTime!=null) {
+				//控除項目の時間帯に法定内区分をセット
+				timeSheetOfDeductionItem = new TimeSheetOfDeductionItem(
+						timeSheetOfDeductionItem.getTimeSheet().getSpan(),
+						timeSheetOfDeductionItem.getGoOutReason(),
+						timeSheetOfDeductionItem.getBreakAtr(),
+						timeSheetOfDeductionItem.getDeductionAtr(),
+						WithinStatutoryAtr.WithinStatutory);
+				//控除時間分、終了時刻をズラす
+				endClock.backByMinutes(duplicateTime.lengthAsMinutes());
+				//休暇加算するかチェックしてズラす
+				
+			}		
+		}
+		//就業時間内時間帯クラスを作成
+		
+		
+		
+	}
+	
+	/**
+	 * 開始時刻を取得　　（流動勤務（平日・就内））
+	 * @return
+	 */
+	public TimeWithDayAttr getStartClock() {
+		
+	}
+	
+	
+	//所定時間帯、残業開始を補正
+	public void cllectPredetermineTimeAndOverWorkTimeStart(
+			PredetermineTimeSetForCalc predetermineTimeSetForCalc,
+			WorkType workType,
+			WorkInformationOfDaily workInformationOfDaily) {
+		//所定時間帯を取得
+		predetermineTimeSetForCalc.correctPredetermineTimeSheet(workType.getDailyWork());
+		//予定所定時間が変更された場合に所定時間を変更するかチェック
+		//勤務予定と勤務実績の勤怠情報を比較
+		//勤務種類が休日出勤でないかチェック
+		if(
+				!workInformationOfDaily.isMatchWorkInfomation()||
+				workType.getDailyWork().isHolidayWork()
+				) {
+			return;
+		}
+		//就業時間帯の所定時間と予定時間を比較
+			
+		//計算用所定時間設定を所定終了ずらす時間分ズラす
+		
+		//流動勤務時間帯設定の残業時間帯を所定終了ずらす時間分ズラす
+		
+	}
+	
+	
+	/**
+	 * 遅刻時間の計算　（遅刻時間帯の作成）
+	 * 呼び出す時に勤務No分ループする前提で記載
+	 * @return 日別実績の遅刻時間
+	 */
+	public LateTimeOfDaily calcLateTime(
+			boolean clacification,/*遅刻早退の自動計算設定.遅刻　←　どこが持ってるか不明*/
+			boolean deducttionClacification,/*控除設定　←　何を参照すればよいのか不明*/
+			int workNo) {
+		
+		//勤務Noに一致する遅刻時間をListで取得する
+		List<LateTimeSheet> lateTimeSheetList = getMatchWorkNoLateTimeSheetList(workNo).orElse(null);
+		
+		LateTimeSheet lateTimeSheet;
+		//遅刻時間帯を１つの時間帯にする。
+		if(lateTimeSheetList!=null) {
+			//ここの処理で保科君が考えてくれた処理を組み込む
+			lateTimeSheet = createBondLateTimeSheet(workNo,lateTimeSheetList);
+		}
+
+		//遅刻計上時間の計算  ←　1つのメソッドとして出すこと
+		int calcTime = lateTimeSheet.getForRecordTimeSheet().get().calcTotalTime();
+		TimeWithCalculation lateTime = calcClacificationjudge(clacification, calcTime);
+		
+		//遅刻控除時間の計算 ←　1つのメソッドとして出すこと
+		TimeWithCalculation lateDeductionTime;
+		if(deducttionClacification) {//控除する場合
+			int calcTime2 = lateTimeSheet.getForDeducationTimeSheet().get().calcTotalTime();
+			lateDeductionTime =  calcClacificationjudge(clacification, calcTime2);
+		}else {//控除しない場合
+			lateDeductionTime = TimeWithCalculation.of(new AttendanceTime(0));
+		}
+		
+		//相殺時間の計算
+		
+		//計上用時間帯から相殺時間を控除する
+		
+		LateTimeOfDaily lateTimeOfDaily = new LateTimeOfDaily();
+		return lateTimeOfDaily;
+	}
+	
+	/***
+	 * 勤務Noに一致する遅刻時間をListで取得する
+	 * @return
+	 */
+	public Optional<List<LateTimeSheet>> getMatchWorkNoLateTimeSheetList(int workNo){
+		//<<interface>>遅刻早退管理時間帯が持っているはずの遅刻時間帯<List>
+		List<LateTimeSheet> oldlateTimeSheetList;
+		//遅刻時間帯を１つの時間帯にする。
+		List<LateTimeSheet> lateTimeSheetList = oldlateTimeSheetList.stream().filter(ts -> ts.getWorkNo()==workNo).collect(Collectors.toList());
+		if(lateTimeSheetList==null) {
+			return Optional.empty();
+		}
+		return Optional.of(lateTimeSheetList);
+	}
+	
+	/**
+	 * 遅刻時間帯を１つの時間帯にする。
+	 * @param workNo
+	 * @return
+	 */
+	public LateTimeSheet createBondLateTimeSheet(
+			int workNo,
+			List<LateTimeSheet> lateTimeSheetList) {
+		//計上用時間帯のみのリストを作成
+		List<TimeSpanForCalc> forRecordTimeSheetList = 
+				lateTimeSheetList.stream().map(ts -> ts.getForRecordTimeSheet().get()).collect(Collectors.toList());
+		//1つの時間帯に結合
+		TimeSpanForCalc forRecordTimeSheet = bondTimeSpan(forRecordTimeSheetList);
+		
+		//控除用時間帯のみのリストを作成
+		List<TimeSpanForCalc> forDeductionTimeSheetList = 
+				lateTimeSheetList.stream().map(ts -> ts.getForDeducationTimeSheet().get()).collect(Collectors.toList());
+		//1つの時間帯に結合
+		TimeSpanForCalc forDeductionTimeSheet = bondTimeSpan(forRecordTimeSheetList);
+		
+		return LateTimeSheet.createAsLate(
+				forRecordTimeSheet,
+				forDeductionTimeSheet,
+				workNo,
+				Optional.empty(),
+				Optional.empty());
+	}
+	
+	/**
+	 * 渡した時間帯(List)を1つの時間帯に結合する
+	 * @param list
+	 * @return
+	 */
+	public TimeSpanForCalc bondTimeSpan(List<TimeSpanForCalc> list) {
+		TimeWithDayAttr start = list.stream().map(ts -> ts.getStart()).min(Comparator.naturalOrder()).get();
+		TimeWithDayAttr end =  list.stream().map(ts -> ts.getEnd()).max(Comparator.naturalOrder()).get();
+		TimeSpanForCalc bondTimeSpan = new TimeSpanForCalc(start, end);
+		return bondTimeSpan;
+	}
+	
+	/**
+	 * 指定された計算区分を基に計算付き時間帯を作成する
+	 * @return
+	 */
+	public TimeWithCalculation calcClacificationjudge(boolean clacification , int calcTime) {
+		if(clacification) {
+			return TimeWithCalculation.of(new AttendanceTime(calcTime));
+		}else {
+			return TimeWithCalculation.createTimeWithCalculation(new AttendanceTime(0),new AttendanceTime(calcTime));
+		}
+	}
+	
+	
+	
+	
 }

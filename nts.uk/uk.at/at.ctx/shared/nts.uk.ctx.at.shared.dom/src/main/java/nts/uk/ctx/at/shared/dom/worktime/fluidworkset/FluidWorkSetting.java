@@ -7,6 +7,7 @@ package nts.uk.ctx.at.shared.dom.worktime.fluidworkset;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.at.shared.dom.worktime.SiftCode;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidWorkBreakSetting;
 
 /**
  * The Class FixedWorkSetting.
@@ -34,7 +35,7 @@ public class FluidWorkSetting extends AggregateRoot {
 	// private 勤務専用設定 designatedSetting;
 
 	// 休憩設定
-	// private 流動勤務の休憩設定 restSetting;
+	private FluidWorkBreakSetting restSetting;
 
 	// 打刻反映時間帯
 	// private List<打刻反映時間帯> stampImprintingTime
