@@ -378,22 +378,22 @@ module nts.uk.at.view.ksc001.b {
                     lstLabelInfomation.push(nts.uk.resource.getText("KSC001_37")+nts.uk.resource.getText("KSC001_8"));
                 }
                 if (self.resetWorkingHours()) {
-                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_15"));
+                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_15"));
                 }
                 if (self.resetDirectLineBounce()) {
-                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_11"));
+                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_11"));
                 }
                 if (self.resetMasterInfo()) {
-                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_12"));
+                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_12"));
                 }
                 if (self.resetTimeChildCare()) {
-                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_13"));
+                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_13"));
                 }
                 if (self.resetAbsentHolidayBusines()) {
-                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_14"));
+                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_14"));
                 }
                 if (self.resetTimeAssignment()) {
-                    lstLabelInfomation.push("▲"+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_16"));
+                    lstLabelInfomation.push(" "+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_16"));
                 }
                 if (self.confirm()) {
                     lstLabelInfomation.push(nts.uk.resource.getText("KSC001_17"));
