@@ -40,28 +40,30 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	public void update(GoBackDirectly goBackDirectly, Application application) {
 		String companyId = AppContexts.user().companyId();
 		// アルゴリズム「直行直帰更新前チェック」を実行する
-		this.checkErrorBeforeUpdate(application.getEnteredPersonSID(), application.getApplicationDate(), 1,
-				application.getApplicationID(), application.getPrePostAtr());
+		this.checkErrorBeforeUpdate(
+				application.getEnteredPersonSID(), 
+				application.getApplicationDate(), 
+				1,
+				application.getApplicationID(), 
+				application.getPrePostAtr());
 		// アルゴリズム「直行直帰するチェック」を実行する
 		GoBackDirectAtr goBackAtr = goBackDirectlyRegisterService.goBackDirectCheck(goBackDirectly);
 
 		if (goBackAtr == GoBackDirectAtr.NOT) {
-			throw new BusinessException("Msg_338");
+			throw new BusinessException("Msg_307");
 		} else {
 			GoBackDirectLateEarlyOuput lateEarlyOut = goBackDirectlyRegisterService
 					.goBackDirectLateEarlyCheck(goBackDirectly);
-			if (lateEarlyOut.isError) {
-				// 直行直帰申請共通設定.早退遅刻設定がチェックするの場合、メッセージを表示する
-				Optional<GoBackDirectlyCommonSetting> commonSet = commonSetRepo.findByCompanyID(companyId);
-				if (commonSet.isPresent()) {
-					// ・チェックする（登録可）
-					if (commonSet.get().getLateLeaveEarlySettingAtr() == CheckAtr.CHECKNOTREGISTER) {
-						// 遅行早退のチェックメッセージに確認メッセージ（Msg_298）を追加して表示する
-						throw new BusinessException("Msg_298");
-						// 入力項目をエラー「赤色」枠を表示する
-					} else if (commonSet.get().getLateLeaveEarlySettingAtr() == CheckAtr.CHECKREGISTER) {
-						throw new BusinessException("Msg_297");
-					}
+			// 直行直帰申請共通設定.早退遅刻設定がチェックするの場合、メッセージを表示する
+			Optional<GoBackDirectlyCommonSetting> commonSet = commonSetRepo.findByCompanyID(companyId);
+			if (lateEarlyOut.isError && commonSet.isPresent()) {
+				// ・チェックする（登録可）
+				if (commonSet.get().getLateLeaveEarlySettingAtr() == CheckAtr.CHECKNOTREGISTER) {
+					// 遅行早退のチェックメッセージに確認メッセージ（Msg_298）を追加して表示する
+					throw new BusinessException("Msg_298");
+					// 入力項目をエラー「赤色」枠を表示する
+				} else if (commonSet.get().getLateLeaveEarlySettingAtr() == CheckAtr.CHECKREGISTER) {
+					throw new BusinessException("Msg_297");
 				}
 			} else {
 				//アルゴリズム「直行直帰更新」を実行する
@@ -74,8 +76,7 @@ public class GoBackDirectlyUpdateDefault implements GoBackDirectlyUpdateService 
 	 * アルゴリズム「直行直帰更新前チェック」を実行する
 	 */
 	@Override
-	public void checkErrorBeforeUpdate(String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID,
-			PrePostAtr postAtr) {
+	public void checkErrorBeforeUpdate(String employeeID, GeneralDate appDate, int employeeRouteAtr, String appID, PrePostAtr postAtr) {
 		// アルゴリズム「4-1.詳細画面登録前の処理」を実行する
 		String companyId = AppContexts.user().companyId();
 		this.detailBeforeUpdate.processBeforeDetailScreenRegistration(companyId, employeeID, appDate, employeeRouteAtr,

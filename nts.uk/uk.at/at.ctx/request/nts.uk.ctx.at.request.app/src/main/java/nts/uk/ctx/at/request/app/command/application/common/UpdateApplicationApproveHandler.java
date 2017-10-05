@@ -42,7 +42,7 @@ public class UpdateApplicationApproveHandler {
 		//8.2.1.
 		afterApprovalProcessRepo.invidialApplicationErrorCheck(appID);
 		//8.2.2.
-		afterApprovalProcessRepo.invidialApplicationUpdate(appID);
+		afterApprovalProcessRepo.invidialApplicationUpdate(application);
 		//8-2.
 		afterApprovalProcessRepo.detailScreenAfterApprovalProcess(companyID, 
 				appID, 

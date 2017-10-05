@@ -192,7 +192,9 @@ module nts.uk.at.view.kaf009.b {
                 let arrTemp: Array<common.IWorkLocation> = [];
                 service.getAllLocation().done(function(data: any) {
                     _.forEach(data, function(value) {
-                        arrTemp.push({ workLocationCode: value.workLocationCD, workLocationName: value.workLocationName });
+                        if(!nts.uk.util.isNullOrUndefined(value)){
+                            arrTemp.push({ workLocationCode: value.workLocationCD, workLocationName: value.workLocationName });
+                        }
                     });
                     self.locationData = arrTemp;
                 }).fail(function() {

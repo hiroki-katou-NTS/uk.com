@@ -24,9 +24,11 @@ import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.Destina
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ApprovalInfoOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
+import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyUpdateService;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
+import nts.uk.ctx.at.request.dom.setting.stamp.StampRequestSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -48,6 +50,9 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	
 	@Inject
 	private ApproveAcceptedRepository approveAcceptedRepository;
+	
+	@Inject 
+	private GoBackDirectlyUpdateService goBackDirectlyUpdateService;
 
 	@Override
 	public void detailScreenAfterApprovalProcess(String companyID, String appID, Application application) {
@@ -93,36 +98,8 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	 * 2.申請個別の更新
 	 */
 	@Override
-	public void invidialApplicationUpdate(String appID) {
-		Optional<Application> currentApplication = appRepo.getAppById(AppContexts.user().companyId(), appID);
-		int appType = currentApplication.get().getApplicationType().value;
-		switch (appType) {
-		case 1:
-			// Update domain 打刻申請」	
-			break;
-		case 2:
-			// Update domain 残業申請」
-			break;
-		case 3:
-			// Update domain 休日出勤申請」
-			break;
-		case 4:
-			// Update domain 休暇申請」
-			break;
-		case 5:
-			// update domain 出張申請」
-			break;
-		case 6:
-			// update domain 勤務変更申請」
-			break;
-		case 7:
-			// update domain 「直行直帰申請」
-			break;
-		default:
-			// update domain 「振休振出申請」
-			break;
-		}
-
+	public void invidialApplicationUpdate(Application application) {
+		appRepo.updateApplication(application);
 	}
 	/**
 	 * 
