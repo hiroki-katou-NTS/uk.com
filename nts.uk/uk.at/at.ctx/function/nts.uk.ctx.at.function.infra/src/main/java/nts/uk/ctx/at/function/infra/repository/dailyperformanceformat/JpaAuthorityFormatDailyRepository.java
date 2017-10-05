@@ -22,8 +22,6 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 
 	private static final String UPDATE_BY_KEY;
 
-	private static final String IS_EXIST_DATA;
-
 	private static final String DEL_BY_KEY;
 
 	private static final String REMOVE_EXIST_DATA;
@@ -56,13 +54,6 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 		builderString.append("AND a.kfnmtAuthorityDailyItemPK.attendanceItemId = :attendanceItemId ");
 		builderString.append("AND a.kfnmtAuthorityDailyItemPK.sheetNo = :sheetNo ");
 		UPDATE_BY_KEY = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("SELECT COUNT(a) ");
-		builderString.append("FROM KfnmtAuthorityDailyItem a ");
-		builderString
-				.append("WHERE a.kfnmtAuthorityDailyItemPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
-		IS_EXIST_DATA = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("DELETE ");
@@ -106,12 +97,6 @@ public class JpaAuthorityFormatDailyRepository extends JpaRepository implements 
 	@Override
 	public void add(List<AuthorityFomatDaily> authorityFomatDailies) {
 		authorityFomatDailies.forEach(f -> this.commandProxy().insert(toEntity(f)));
-	}
-
-	@Override
-	public boolean checkExistCode(DailyPerformanceFormatCode dailyPerformanceFormatCode) {
-		return this.queryProxy().query(IS_EXIST_DATA, long.class)
-				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v()).getSingle().get() > 0;
 	}
 
 	@Override
