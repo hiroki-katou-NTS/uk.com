@@ -13,6 +13,7 @@ import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
             scheduleExecutionLog: ScheduleExecutionLogDto;
             executionStartDate: string;
             executionTotal: KnockoutObservable<string>;
+            executionError: KnockoutObservable<string>;
             periodInfo: string;
             taskId: KnockoutObservable<string>;
             totalRecord: KnockoutObservable<number>;
@@ -54,6 +55,7 @@ import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
                     service.findScheduleExecutionLogById(inputData.executionId).done(function(data) {
                         self.scheduleExecutionLog = data;
                         self.executionTotal = ko.observable('0');
+                        self.executionError = ko.observable('0');
                         self.executionStartDate = moment.utc(data.executionDateTime.executionStartDate).format("YYYY/MM/DD HH:mm:ss");
                         self.periodInfo = nts.uk.resource.getText("KSC001_46", [moment(data.period.startDate).format('YYYY/MM/DD'), (moment(data.period.endDate).format('YYYY/MM/DD'))])
                         self.inputData = inputData;
@@ -118,6 +120,7 @@ import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
                             });
                         }
                         self.executionTotal(nts.uk.resource.getText("KSC001_84", [self.numberSuccess(), self.totalRecord()]));
+                        self.executionError(nts.uk.resource.getText("KSC001_85", [self.numberFail()]));
                         // finish task
                         if (res.succeeded || res.failed || res.cancelled) {
                             /*self.isDone(true);

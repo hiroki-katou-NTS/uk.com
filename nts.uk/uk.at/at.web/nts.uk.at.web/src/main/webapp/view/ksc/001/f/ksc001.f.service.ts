@@ -3,6 +3,7 @@ module nts.uk.at.view.ksc001.f {
     export module service {
         var paths = {
             findScheduleExecutionLogById: "at/schedule/exelog/findById",
+            findScheduleExecutionLogInfoById: "at/schedule/exelog/findInfoById",
             executionScheduleExecutionLog: "at/schedule/exelog/execution"
         }
 
@@ -18,6 +19,13 @@ module nts.uk.at.view.ksc001.f {
          */
         export function executionScheduleExecutionLog(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.executionScheduleExecutionLog, command);
+        }
+        
+        /**
+         * call service find ScheduleExecutionLogInfo by id
+         */
+        export function findScheduleExecutionLogInfoById(executionId: string): JQueryPromise<model.ScheduleExecutionLogInfoDto> {
+            return nts.uk.request.ajax('at', paths.findScheduleExecutionLogInfoById + '/' + executionId);
         }
 
         export module model {
@@ -56,6 +64,12 @@ module nts.uk.at.view.ksc001.f {
                period: PeriodDto;
                employeeCode: string;
                employeeName: string;
+           }
+            
+           export interface ScheduleExecutionLogInfoDto {
+               totalNumber: number;
+               totalNumberCreated: number;
+               totalNumberError: number;
            }
         }
     }
