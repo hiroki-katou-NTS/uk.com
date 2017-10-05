@@ -127,6 +127,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             //change 個人設定　or 職位設定
             self.selectTypeSet.subscribe(function(newValue){
                 self.approverList.removeAll();
+                self.employeeList.removeAll();
                 self.setDataForSwapList(newValue);
             })
             //職場リスト            
