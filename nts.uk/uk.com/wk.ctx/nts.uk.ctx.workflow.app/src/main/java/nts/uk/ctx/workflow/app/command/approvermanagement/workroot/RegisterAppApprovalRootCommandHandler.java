@@ -101,7 +101,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				List<CompanyApprovalRoot> comOld = repoCom.getComApprovalRootByEdate(companyId, endDate, type);
 				if(!comOld.isEmpty()){
 					//update ls cu
-					CompanyApprovalRoot comPre = CompanyApprovalRoot.updateSdateEdate(comOld.get(0), endDateNew);
+					CompanyApprovalRoot comPre = CompanyApprovalRoot.updateEdate(comOld.get(0), endDateNew);
 					listComPre.add(comPre);
 				}
 				//Add approval
@@ -178,7 +178,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				List<WorkplaceApprovalRoot> psOld = repoWorkplace.getWpApprovalRootByEdate(companyId, workplaceId, endDate, type);
 				if(!psOld.isEmpty()){
 					//update ls cu
-					WorkplaceApprovalRoot psPre = WorkplaceApprovalRoot.updateSdateEdate(psOld.get(0), endDateNew);
+					WorkplaceApprovalRoot psPre = WorkplaceApprovalRoot.updateEdate(psOld.get(0), endDateNew);
 					listWpPre.add(psPre);
 				}
 				//Add approval
@@ -250,7 +250,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 				List<PersonApprovalRoot> psOld = repoPerson.getPsApprovalRootByEdate(companyId, employeeId, endDate, type);
 				if(!psOld.isEmpty()){
 					//update ls cu
-					PersonApprovalRoot psPre = PersonApprovalRoot.updateSdateEdate(psOld.get(0), endDateNew);
+					PersonApprovalRoot psPre = PersonApprovalRoot.updateEdate(psOld.get(0), endDateNew);
 					listPsPre.add(psPre);
 				}
 				//Add approval

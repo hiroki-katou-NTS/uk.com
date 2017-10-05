@@ -357,10 +357,10 @@ public class CommonApprovalRootFinder {
 		/**
 		 * date 1.........|..............]..........
 		 * date 2............|......................
-		 * sDate1<sDate2
+		 * sDate1<=sDate2
 		 */
-		if (date2.getStartDate().compareTo(date1.getStartDate()) > 0
-				&& date2.getStartDate().compareTo(date1.getEndDate()) < 0) {
+		if (date2.getStartDate().compareTo(date1.getStartDate()) >= 0
+				&& date2.getStartDate().compareTo(date1.getEndDate()) <= 0) {
 			return true;
 		}
 		/**

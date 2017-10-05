@@ -189,7 +189,7 @@ module nts.uk.com.view.cmm018.a {
                     }
                 });
                 //_______KCP009_______
-                self.employeeInputList = ko.observableArray([{id: "90000000-0000-0000-0000-000000000002", code: "000000000005", businessName: "Do thi Du", workplaceName: "テスト情報", depName: ""}]);
+                self.employeeInputList = ko.observableArray([]);
                     
                 self.systemReference = ko.observable(vmbase.SystemType.EMPLOYMENT);
                 self.isDisplayOrganizationName = ko.observable(true);
@@ -383,6 +383,8 @@ module nts.uk.com.view.cmm018.a {
                 servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
                     if(data == null || data === undefined || data.lstCompany.length == 0){
                         self.historyStr('');
+                        self.listHistory([]);
+                        self.cpA([]);
                         dfd.resolve();
                         return dfd.promise();
                     } 
@@ -421,8 +423,12 @@ module nts.uk.com.view.cmm018.a {
                 let param: vmbase.ParamDto = new vmbase.ParamDto(1,self.workplaceId(),'');
                 self.lstWorkplace([]);
                 servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
-                    if(data == null || data === undefined){
-                        return;
+                    if(data == null || data === undefined || data.lstWorkplace.length == 0){
+                        self.historyStr('');
+                        self.listHistory([]);
+                        self.cpA([]);
+                        dfd.resolve();
+                        return dfd.promise();
                     } 
                     self.checkAddHistory(false);
                     self.lstWorkplace(data.lstWorkplace);
@@ -460,8 +466,12 @@ module nts.uk.com.view.cmm018.a {
                 var dfd = $.Deferred();
                 let param: vmbase.ParamDto = new vmbase.ParamDto(2,'',self.selectedItem());
                 servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
-                    if(data == null || data === undefined){
-                        return;
+                    if(data == null || data === undefined || data.lstPerson.length == 0){
+                        self.historyStr('');
+                        self.listHistory([]);
+                        self.cpA([]);
+                        dfd.resolve();
+                        return dfd.promise();
                     } 
                     self.checkAddHistory(false);
                     self.lstPerson(data.lstPerson);
