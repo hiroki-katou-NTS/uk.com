@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcess;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeProcessRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -18,7 +18,7 @@ public class UpdateApplicationApproveHandler {
 	
 	//4-1.詳細画面登録前の処理
 	@Inject 
-	private DetailBeforeProcessRegister beforeRegisterRepo;
+	private DetailBeforeUpdate beforeRegisterRepo;
 	//8-2.詳細画面承認後の処理
 	@Inject 
 	private AfterApprovalProcess afterApprovalProcessRepo;

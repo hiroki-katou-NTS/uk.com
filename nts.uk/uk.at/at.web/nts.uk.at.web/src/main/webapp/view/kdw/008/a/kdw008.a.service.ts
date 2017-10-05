@@ -2,38 +2,24 @@ module nts.uk.at.view.kdw008.a {
     export module service {
         export class Service {
             paths = {
-                getDailyDetail: "at/record/businesstype/findBusinessTypeDailyDetail/{0}/{1}",
-                addDailyDetail: "at/record/businesstype/addBusinessTypeDailyDetail",
-                updateDailyDetail: "at/record/businesstype/updateBusinessTypeDailyDetail",
-                getMonthlyDetail: "at/record/businesstype/findBusinessTypeMonthlyDetail/{0}",
-                addMonthlyDetail: "at/record/businesstype/addBusinessTypeMonthlyDetail",
-                updateMonthlyDetail: "at/record/businesstype/updateBusinessTypeMonthlyDetail",
-                getAttendanceItem: "at/record/businesstype/attendanceItem/findAll",
-                getSheetNo: "at/record/businesstype/findBusinessTypeDailyDetail/findSheetNo/{0}",
-                getBusinessType: "at/record/businesstype/findAll",
-                getDailyPerformance: "at/record/businesstype/find/businessTypeDetail/{0}/{1}"
+                addDailyDetail: "at/function/dailyperformanceformat/addAuthorityDailyFormat",
+                updateDailyDetail: "at/function/dailyperformanceformat/updateAuthorityDailyFormat",
+                addMonthlyDetail: "at/function/dailyperformanceformat/addAuthorityMonthlyFormat",
+                updateMonthlyDetail: "at/function/dailyperformanceformat/updateAuthorityMonthlyFormat",
+                getListAuthorityDailyFormatCode: "at/function/dailyperformanceformat/getAuthorityDailyFormatCode",
+                getDailyPerformance: "at/function/dailyperformanceformat/getAuthorityDailyFormat/{0}/{1}",
+                removeAuthorityDailyFormat: "at/function/dailyperformanceformat/removeAuthorityFormat"
             }
 
             constructor() {
 
             }
-
-            getDailyDetail(businessTypeCode: string, sheetNo: number): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.getDailyDetail, businessTypeCode, sheetNo);
-                return nts.uk.request.ajax("at", _path);
-            };
-
             addDailyDetail(AddBusinessTypeDailyDetailCommand: any): JQueryPromise<any> {
                 return nts.uk.request.ajax("at", this.paths.addDailyDetail, AddBusinessTypeDailyDetailCommand);
             };
 
             updateDailyDetail(UpdateBusinessTypeDailyCommand: any): JQueryPromise<any> {
                 return nts.uk.request.ajax("at", this.paths.updateDailyDetail, UpdateBusinessTypeDailyCommand);
-            };
-
-            getMonthlyDetail(businessTypeCode: string): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.getMonthlyDetail, businessTypeCode);
-                return nts.uk.request.ajax("at", _path);
             };
 
             addMonthlyDetail(AddBusinessTypeMonthlyCommand: any): JQueryPromise<any> {
@@ -44,18 +30,8 @@ module nts.uk.at.view.kdw008.a {
                 return nts.uk.request.ajax("at", this.paths.updateMonthlyDetail, UpdateBusinessTypeMonthlyCommand);
             };
 
-            getAttendanceItem(): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.getAttendanceItem);
-                return nts.uk.request.ajax("at", _path);
-            };
-
-            getSheetNo(businessTypeCode: string): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.getSheetNo, businessTypeCode);
-                return nts.uk.request.ajax("at", _path);
-            };
-
             getBusinessType(): JQueryPromise<any> {
-                let _path = nts.uk.text.format(this.paths.getBusinessType);
+                let _path = nts.uk.text.format(this.paths.getListAuthorityDailyFormatCode);
                 return nts.uk.request.ajax("at", _path);
             };
 
@@ -64,7 +40,9 @@ module nts.uk.at.view.kdw008.a {
                 return nts.uk.request.ajax("at", _path);
             };
 
-
+            removeAuthorityDailyFormat(RemoveAuthorityCommand: any): JQueryPromise<any> {
+                return nts.uk.request.ajax("at", this.paths.removeAuthorityDailyFormat, RemoveAuthorityCommand);
+            };
         }
     }
 }

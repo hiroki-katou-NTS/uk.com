@@ -41,8 +41,6 @@ public class DetailScreenInitModeDto {
 
 	private AppCanAtr appContentChangeFlg;
 
-	private AprovalPersonFlg personApprovalFlg;
-
 	private ReflectionFlg scheReflectFlg;
 
 	private PriorityFLg priorityTimeReflectFlg;
@@ -62,7 +60,6 @@ public class DetailScreenInitModeDto {
 				domain.getWarningDateDispAtr(),
 				domain.getAppReasonDispAtr(),
 				domain.getAppContentChangeFlg(),
-				domain.getPersonApprovalFlg(),
 				domain.getScheReflectFlg(),
 				domain.getPriorityTimeReflectFlg(),
 				domain.getAttendentTimeReflectFlg());

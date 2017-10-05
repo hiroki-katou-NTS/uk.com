@@ -10,10 +10,16 @@
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="main.js" />
-			
+			<com:scriptfile path="service.js" />
 		</ui:define>
 
 		<ui:define name="content">
+			<label>Start date</label>
+			<div data-bind="ntsDatePicker: {value: startDate, dateFormat: 'YYYY/MM/DD'}"></div><br />
+			<label>End date</label>
+			<div data-bind="ntsDatePicker: {value: endDate, dateFormat: 'YYYY/MM/DD'}"></div><br />
+			<button data-bind="click: openDetailScreen">Detail Screen</button>
+			
 			<div id="contents-area">
 				<button data-bind="click: openKaf002b">Kaf002 B</button>
 				<button data-bind="click: openKaf004e">Kaf004 E</button>

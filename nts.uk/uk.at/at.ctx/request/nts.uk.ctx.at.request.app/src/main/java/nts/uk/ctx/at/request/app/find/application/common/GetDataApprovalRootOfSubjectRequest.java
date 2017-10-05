@@ -34,9 +34,10 @@ public class GetDataApprovalRootOfSubjectRequest {
 //				 approverInfo.setSid(nameApprover);
 //			 }
 //		 }
-		return approvalRootRepo.getApprovalRootOfSubjectRequest(objApprovalRootInput.getCid(), 
+		
+		return this.approvalRootRepo.getApprovalRootOfSubjectRequest(objApprovalRootInput.getCid(), 
 				objApprovalRootInput.getSid(), objApprovalRootInput.getEmploymentRootAtr(), 
-				objApprovalRootInput.getAppType(),objApprovalRootInput.getStandardDate() )
+				objApprovalRootInput.getAppType(),objApprovalRootInput.getStandardDate())
 				.stream()
 				.map(c->ApprovalRootOfSubjectRequestDto.fromDomain(c))
 				.collect(Collectors.toList());
