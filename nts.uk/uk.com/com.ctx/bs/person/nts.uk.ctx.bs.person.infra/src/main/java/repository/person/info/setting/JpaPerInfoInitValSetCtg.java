@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
-import entity.person.info.setting.innitValue.BpsstPersonInitValueSettingCtg;
-import entity.person.info.setting.innitValue.BpsstPersonInitValueSettingCtgPk;
+
+import entity.person.info.setting.innitvalue.BpsstPersonInitValueSettingCtg;
+import entity.person.info.setting.innitvalue.BpsstPersonInitValueSettingCtgPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValSetCtg;
 import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValSetCtgRepository;

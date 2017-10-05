@@ -12,7 +12,7 @@ import entity.person.info.category.PpemtPerInfoCtgCm;
 import entity.person.info.category.PpemtPerInfoCtgCmPK;
 import entity.person.info.category.PpemtPerInfoCtgOrder;
 import entity.person.info.category.PpemtPerInfoCtgPK;
-import entity.person.info.setting.copySetting.BsystEmployeeCopySetting;
+import entity.person.info.setting.copysetting.BsystEmployeeCopySetting;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
