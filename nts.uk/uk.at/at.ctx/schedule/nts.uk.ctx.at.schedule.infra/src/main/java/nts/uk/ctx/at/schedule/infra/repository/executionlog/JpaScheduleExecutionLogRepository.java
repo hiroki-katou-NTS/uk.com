@@ -73,9 +73,9 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 				.add(criteriaBuilder.equal(root.get(KscmtScheduleExcLog_.kscmtScheduleExcLogPK)
 						.get(KscmtScheduleExcLogPK_.cid), companyId));
 		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KscmtScheduleExcLog_.startYmd), period.getStartDate()));
+				.lessThanOrEqualTo(root.get(KscmtScheduleExcLog_.startYmd), period.getEndDate()));
 		lstpredicateWhere.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(KscmtScheduleExcLog_.endYmd), period.getEndDate()));
+				.greaterThanOrEqualTo(root.get(KscmtScheduleExcLog_.endYmd), period.getStartDate()));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		cq.orderBy(criteriaBuilder.desc(root.get(KscmtScheduleExcLog_.startYmd)));

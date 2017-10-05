@@ -14,17 +14,23 @@ module nts.uk.at.view.ksc001.h {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                let executionId = nts.uk.ui.windows.getShared("executionId");
+                self.loadDetailData(executionId).done(function() {
+                    dfd.resolve();
+                });
                 $("#fixed-table").ntsFixedTable();
-                dfd.resolve();
                 return dfd.promise();
             }
             /**
              * Load excution detail data
              */
-            private loadDetailData(executionId: string) {
-                service.findExecutionDetail(executionId).done(function(data: any){
+            private loadDetailData(executionId: string): JQueryPromise<any> {
+                let dfd = $.Deferred();
+                service.findExecutionDetail(executionId).done(function(data: any) {
                     //TODO bind data to screen
+                    dfd.resolve();
                 });
+                return dfd.promise();
             }
             /**
              * 

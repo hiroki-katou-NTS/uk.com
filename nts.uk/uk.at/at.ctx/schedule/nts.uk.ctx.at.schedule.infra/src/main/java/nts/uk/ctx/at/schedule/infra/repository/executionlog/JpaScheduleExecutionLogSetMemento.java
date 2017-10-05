@@ -5,7 +5,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
-import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogSetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLog;
@@ -62,20 +61,7 @@ public class JpaScheduleExecutionLogSetMemento implements ScheduleExecutionLogSe
 	public void setExecutionId(String executionId) {
 		this.entity.getKscmtScheduleExcLogPK().setExeId(executionId);
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogSetMemento#
-	 * setExecutionContent(nts.uk.ctx.at.schedule.dom.executionlog.
-	 * ExecutionContent)
-	 */
-	@Override
-	public void setExecutionContent(ExecutionContent executionContent) {
-		executionContent.saveToMemento(new JpaExecutionContentSetMemento(this.entity));
-	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 

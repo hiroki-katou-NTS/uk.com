@@ -2,7 +2,7 @@ package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentGetMemento;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentGetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
@@ -11,7 +11,7 @@ import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLog;
 /**
  * The Class JpaExecutionContentGetMemento.
  */
-public class JpaExecutionContentGetMemento implements ExecutionContentGetMemento {
+public class JpaExecutionContentGetMemento implements ScheduleCreateContentGetMemento {
 
 	/** The Constant TRUE_VALUE. */
 	public static final int TRUE_VALUE = 1;

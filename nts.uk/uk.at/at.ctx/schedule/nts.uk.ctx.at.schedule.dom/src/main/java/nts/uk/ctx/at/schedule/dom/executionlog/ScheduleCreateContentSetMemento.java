@@ -5,7 +5,7 @@ import nts.arc.time.GeneralDate;
 /**
  * The Interface ExecutionContentSetMemento.
  */
-public interface ExecutionContentSetMemento {
+public interface ScheduleCreateContentSetMemento {
 	
 	/**
 	 * Sets the copy start date.

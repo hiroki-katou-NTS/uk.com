@@ -8,16 +8,25 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.time.GeneralDate;
 
-/**
- * The Class ExecutionContent.
- */
-// 実行内容
-@Getter
-public class ExecutionContent extends DomainObject{
 
-	/** The content. */
-	// 実施内容
-	private Content content;
+/**
+ * The Class ScheduleCreateContent.
+ */
+// スケジュール作成内容
+@Getter
+public class ScheduleCreateContent extends DomainObject{
+
+	/** The confirm. */
+	// 作成時に確定済みにする
+	private Boolean confirm;
+	
+	/** The implement atr. */
+	// 実施区分
+	private ImplementAtr implementAtr;
+	
+	/** The execution id. */
+	// 実行ID
+	private String executionId;
 	
 	/** The copy start date. */
 	// コピー開始日
@@ -25,6 +34,10 @@ public class ExecutionContent extends DomainObject{
 	
 	// 作成方法区分
 	private CreateMethodAtr createMethodAtr;
+
+	/** The content. */
+	// 再作成内容
+	private ReCreateContent reCreateContent;
 	
 	/**
 	 * To domain.
@@ -32,8 +45,7 @@ public class ExecutionContent extends DomainObject{
 	 * @param memento the memento
 	 * @return the execution content
 	 */
-	public ExecutionContent (ExecutionContentGetMemento memento){
-		this.content = new Content(memento);
+	public ScheduleCreateContent (ScheduleCreateContentGetMemento memento){
 		this.copyStartDate = memento.getCopyStartDate();
 		this.createMethodAtr = memento.getCreateMethodAtr();
 	}
@@ -43,8 +55,7 @@ public class ExecutionContent extends DomainObject{
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(ExecutionContentSetMemento memento){
-		this.content.saveToMemento(memento);
+	public void saveToMemento(ScheduleCreateContentSetMemento memento){
 		memento.setCopyStartDate(this.copyStartDate);
 		memento.setCreateMethodAtr(this.createMethodAtr);
 	}

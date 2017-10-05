@@ -44,7 +44,7 @@ public class ResetAtr extends DomainObject {
 	 * @param memento the memento
 	 * @return the reset atr
 	 */
-	public ResetAtr(ExecutionContentGetMemento memento) {
+	public ResetAtr(ScheduleCreateContentGetMemento memento) {
 		this.resetMasterInfo = memento.getResetMasterInfo();
 		this.resetAbsentHolidayBusines = memento.getResetAbsentHolidayBusines();
 		this.resetWorkingHours = memento.getResetWorkingHours();
@@ -58,7 +58,7 @@ public class ResetAtr extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(ExecutionContentSetMemento memento) {
+	public void saveToMemento(ScheduleCreateContentSetMemento memento) {
 		memento.setResetMasterInfo(this.resetMasterInfo);
 		memento.setResetAbsentHolidayBusines(this.resetAbsentHolidayBusines);
 		memento.setResetWorkingHours(this.resetWorkingHours);

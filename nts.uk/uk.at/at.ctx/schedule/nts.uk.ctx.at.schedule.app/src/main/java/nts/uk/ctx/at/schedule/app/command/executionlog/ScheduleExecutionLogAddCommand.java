@@ -12,14 +12,8 @@ import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
-import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContent;
-import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentGetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionStatus;
-import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreator;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorGetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
@@ -203,143 +197,144 @@ public class ScheduleExecutionLogAddCommand {
 		 * @see nts.uk.ctx.at.schedule.dom.executionlog.
 		 * ScheduleExecutionLogGetMemento#getExecutionContent()
 		 */
-		@Override
-		public ExecutionContent getExecutionContent() {
-			return new ExecutionContent(new ExecutionContentGetMemento() {
-				
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-				 * ExecutionContentGetMemento#getResetWorkingHours()
-				 */
-				@Override
-				public Boolean getResetWorkingHours() {
-					return resetWorkingHours;
-				}
-				
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-				 * ExecutionContentGetMemento#getResetTimeChildCare()
-				 */
-				@Override
-				public Boolean getResetTimeChildCare() {
-					return resetTimeChildCare;
-				}
-				
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-				 * ExecutionContentGetMemento#getResetTimeAssignment()
-				 */
-				@Override
-				public Boolean getResetTimeAssignment() {
-					return resetTimeAssignment;
-				}
-				
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-				 * ExecutionContentGetMemento#getResetMasterInfo()
-				 */
-				@Override
-				public Boolean getResetMasterInfo() {
-					return resetMasterInfo;
-				}
-				
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-				 * ExecutionContentGetMemento#getResetDirectLineBounce()
-				 */
-				@Override
-				public Boolean getResetDirectLineBounce() {
-					return resetDirectLineBounce;
-				}
-				
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-				 * ExecutionContentGetMemento#getResetAbsentHolidayBusines()
-				 */
-				@Override
-				public Boolean getResetAbsentHolidayBusines() {
-					return resetAbsentHolidayBusines;
-				}
-				
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-				 * ExecutionContentGetMemento#getReCreateAtr()
-				 */
-				@Override
-				public ReCreateAtr getReCreateAtr() {
-					return ReCreateAtr.valueOf(reCreateAtr);
-				}
-				
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-				 * ExecutionContentGetMemento#getProcessExecutionAtr()
-				 */
-				@Override
-				public ProcessExecutionAtr getProcessExecutionAtr() {
-					return ProcessExecutionAtr.valueOf(processExecutionAtr);
-				}
-				
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-				 * ExecutionContentGetMemento#getImplementAtr()
-				 */
-				@Override
-				public ImplementAtr getImplementAtr() {
-					return ImplementAtr.valueOf(implementAtr);
-				}
-				
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-				 * ExecutionContentGetMemento#getCreateMethodAtr()
-				 */
-				@Override
-				public CreateMethodAtr getCreateMethodAtr() {
-					return CreateMethodAtr.valueOf(createMethodAtr);
-				}
-				
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-				 * ExecutionContentGetMemento#getCopyStartDate()
-				 */
-				@Override
-				public GeneralDate getCopyStartDate() {
-					return copyStartDate;
-				}
-				
-				/*
-				 * (non-Javadoc)
-				 * 
-				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
-				 * ExecutionContentGetMemento#getConfirm()
-				 */
-				@Override
-				public Boolean getConfirm() {
-					return confirm;
-				}
-			});
-		}
+		//TODO duongtv
+//		@Override
+//		public ScheduleCreateContent getExecutionContent() {
+//			return new ScheduleCreateContent(new ScheduleCreateContentGetMemento() {
+//				
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
+//				 * ExecutionContentGetMemento#getResetWorkingHours()
+//				 */
+//				@Override
+//				public Boolean getResetWorkingHours() {
+//					return resetWorkingHours;
+//				}
+//				
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
+//				 * ExecutionContentGetMemento#getResetTimeChildCare()
+//				 */
+//				@Override
+//				public Boolean getResetTimeChildCare() {
+//					return resetTimeChildCare;
+//				}
+//				
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
+//				 * ExecutionContentGetMemento#getResetTimeAssignment()
+//				 */
+//				@Override
+//				public Boolean getResetTimeAssignment() {
+//					return resetTimeAssignment;
+//				}
+//				
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
+//				 * ExecutionContentGetMemento#getResetMasterInfo()
+//				 */
+//				@Override
+//				public Boolean getResetMasterInfo() {
+//					return resetMasterInfo;
+//				}
+//				
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
+//				 * ExecutionContentGetMemento#getResetDirectLineBounce()
+//				 */
+//				@Override
+//				public Boolean getResetDirectLineBounce() {
+//					return resetDirectLineBounce;
+//				}
+//				
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
+//				 * ExecutionContentGetMemento#getResetAbsentHolidayBusines()
+//				 */
+//				@Override
+//				public Boolean getResetAbsentHolidayBusines() {
+//					return resetAbsentHolidayBusines;
+//				}
+//				
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
+//				 * ExecutionContentGetMemento#getReCreateAtr()
+//				 */
+//				@Override
+//				public ReCreateAtr getReCreateAtr() {
+//					return ReCreateAtr.valueOf(reCreateAtr);
+//				}
+//				
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
+//				 * ExecutionContentGetMemento#getProcessExecutionAtr()
+//				 */
+//				@Override
+//				public ProcessExecutionAtr getProcessExecutionAtr() {
+//					return ProcessExecutionAtr.valueOf(processExecutionAtr);
+//				}
+//				
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
+//				 * ExecutionContentGetMemento#getImplementAtr()
+//				 */
+//				@Override
+//				public ImplementAtr getImplementAtr() {
+//					return ImplementAtr.valueOf(implementAtr);
+//				}
+//				
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
+//				 * ExecutionContentGetMemento#getCreateMethodAtr()
+//				 */
+//				@Override
+//				public CreateMethodAtr getCreateMethodAtr() {
+//					return CreateMethodAtr.valueOf(createMethodAtr);
+//				}
+//				
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
+//				 * ExecutionContentGetMemento#getCopyStartDate()
+//				 */
+//				@Override
+//				public GeneralDate getCopyStartDate() {
+//					return copyStartDate;
+//				}
+//				
+//				/*
+//				 * (non-Javadoc)
+//				 * 
+//				 * @see nts.uk.ctx.at.schedule.dom.executionlog.
+//				 * ExecutionContentGetMemento#getConfirm()
+//				 */
+//				@Override
+//				public Boolean getConfirm() {
+//					return confirm;
+//				}
+//			});
+//		}
 
 		/*
 		 * (non-Javadoc)

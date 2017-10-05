@@ -1,7 +1,6 @@
 package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
-import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogGetMemento;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLog;
@@ -30,11 +29,6 @@ public class JpaScheduleExecutionLogGetMemento implements ScheduleExecutionLogGe
 	@Override
 	public String getExecutionId() {
 		return this.entity.getKscmtScheduleExcLogPK().getExeId();
-	}
-
-	@Override
-	public ExecutionContent getExecutionContent() {
-		return new ExecutionContent(new JpaExecutionContentGetMemento(this.entity));
 	}
 
 	@Override

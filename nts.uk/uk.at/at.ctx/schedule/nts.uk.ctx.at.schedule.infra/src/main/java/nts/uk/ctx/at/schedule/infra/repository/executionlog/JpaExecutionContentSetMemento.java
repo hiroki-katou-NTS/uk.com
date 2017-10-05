@@ -6,7 +6,7 @@ package nts.uk.ctx.at.schedule.infra.repository.executionlog;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
-import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContentSetMemento;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentSetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
@@ -16,7 +16,7 @@ import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLogPK;
 /**
  * The Class JpaExecutionContentSetMemento.
  */
-public class JpaExecutionContentSetMemento implements ExecutionContentSetMemento{
+public class JpaExecutionContentSetMemento implements ScheduleCreateContentSetMemento{
 	
 	//YYYYMMDD
 	/** The Constant MUL_YEAR. */

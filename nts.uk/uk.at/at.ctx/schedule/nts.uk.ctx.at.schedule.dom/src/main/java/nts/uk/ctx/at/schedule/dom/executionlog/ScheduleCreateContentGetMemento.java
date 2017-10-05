@@ -5,7 +5,7 @@ import nts.arc.time.GeneralDate;
 /**
  * The Interface ExecutionContentGetMemento.
  */
-public interface ExecutionContentGetMemento {
+public interface ScheduleCreateContentGetMemento {
 	
 	/**
 	 * Gets the copy start date.

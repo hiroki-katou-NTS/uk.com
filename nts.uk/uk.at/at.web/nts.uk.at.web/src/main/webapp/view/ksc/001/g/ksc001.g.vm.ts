@@ -8,6 +8,7 @@ module nts.uk.at.view.ksc001.g {
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
             items: KnockoutObservableArray<GridItem>;
+            selectedFormula:KnockoutObservable<string>;
             constructor() {
                 let self = this;
                 self.enable = ko.observable(true);
@@ -35,6 +36,7 @@ module nts.uk.at.view.ksc001.g {
 //                    list.push(new GridItem(i));
 //                }
                 self.items = ko.observableArray([]);
+                self.selectedFormula = ko.observable('');
             }
             /**
              * get data on start page
@@ -83,6 +85,7 @@ module nts.uk.at.view.ksc001.g {
             }
             
             loadGridTable(screenModel:ScreenModel) {
+                var self = this;
                 $("#gridTable").ntsGrid({
                     width: null,
                     height: '400px',
@@ -99,11 +102,35 @@ module nts.uk.at.view.ksc001.g {
                         { headerText: nts.uk.resource.getText('KSC001_69'), key: 'status', dataType: 'string', width: '150px' },
                         { headerText: nts.uk.resource.getText('KSC001_70'), key: 'exeId', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' }
                     ],
-                    features: [],
+                    features: [
+                        { name: 'MultiColumnHeaders' },
+                        {
+                            name: "Selection",
+                            mode: "row",
+                            multipleSelection: true,
+                            enableCheckBoxes: true,
+                            activation: true
+                        },
+                        {
+                            name: 'Selection',
+                            mode: 'row',
+                            multipleSelection: true,
+                            multipleCellSelectOnClick: true,
+                            rowSelectionChanged: function(evt, ui) {
+                                self.selectedFormula(ui.selectedRows[0].id);
+                            }
+                        },
+                        {
+                            name: "RowSelectors",
+                            enableCheckBoxes: true,
+                            enableRowNumbering: false
+                        }
+                    ],
                     ntsFeatures: [{ name: 'CopyPaste' }],
                     ntsControls: [
                         {
                             name: 'Button', text: nts.uk.resource.getText('KSC001_71'), click: function() {
+                                nts.uk.ui.windows.setShared("executionId", self.selectedFormula());
                                 nts.uk.ui.windows.sub.modal("/view/ksc/001/h/index.xhtml").onClosed(() => {
                                 });
                             },
@@ -111,7 +138,13 @@ module nts.uk.at.view.ksc001.g {
                         }
                     ]
                 });
+                
                 $("#fixed-table").ntsFixedTable({ height: 430 });
+//                $("#gridTable").on("iggridselectionrowselectionchanged", function(event,ui){
+//                    alert(ui.selectedRows[0].id);
+//                });
+//                let rows = $('#gridTable').igGridSelection('selectedRows');
+
             }
         }
 

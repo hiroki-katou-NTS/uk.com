@@ -2,7 +2,6 @@ package nts.uk.ctx.at.schedule.app.find.executionlog.dto;
 
 import lombok.Getter;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
-import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogSetMemento;
 import nts.uk.ctx.at.shared.dom.common.CompanyId;
@@ -65,15 +64,7 @@ public class ScheduleExecutionLogDto implements ScheduleExecutionLogSetMemento {
 	public void setExecutionId(String executionId) {
 		this.executionId = executionId;
 	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogSetMemento#setExecutionContent(nts.uk.ctx.at.schedule.dom.executionlog.ExecutionContent)
-	 */
-	@Override
-	public void setExecutionContent(ExecutionContent executionContent) {
-		// TODO Auto-generated method stub
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogSetMemento#setExecutionDateTime(nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime)
 	 */
