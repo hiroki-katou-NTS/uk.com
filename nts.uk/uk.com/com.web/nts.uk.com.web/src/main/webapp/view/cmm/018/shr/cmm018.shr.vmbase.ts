@@ -163,7 +163,7 @@ module nts.uk.com.view.cmm018.shr {
             workplaceId: string;
             /**社員ID*/
             employeeId: string;
-            /**check 申請承認の種類区分: 会社(1)　－　職場(2)　－　社員(3)*/
+            /**check 申請承認の種類区分: 会社(0)　－　職場(1)　－　社員(2)*/
             check: number;
             /**「履歴を削除する」を選択する か(0)、「履歴を修正する」を選択する か(1)。*/
             editOrDelete: number;

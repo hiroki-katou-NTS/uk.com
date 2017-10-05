@@ -45,8 +45,13 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 alreadySettingList: ko.observableArray([])
         };
         //選択可能な職位一覧
-        
-        
+        //承認者の登録(個人別)
+        personTab : number = 2;
+        //設定種類
+        personSetting: number = 0; //個人設定
+        //承認形態
+        formOne : number = 2; //誰か一人
+        formAll: number = 1; //全員承認
         constructor(){
             var self = this;            
             //設定対象
@@ -59,9 +64,9 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 
                 self.setDataForSwapList(self.selectTypeSet());
                 //承認者の登録(個人別): 非表示
-                if(data.tab === 2){
+                if(data.tab === self.personTab){
                     $('#typeSetting').hide();
-                    self.selectTypeSet(0);    
+                    self.selectTypeSet(self.personSetting);    
                 }else{
                     $('#typeSetting').show();
                     //設定種類
@@ -70,7 +75,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 //承認者一覧                
                 if(data.approverInfor.length > 0){
                     _.forEach(data.approverInfor, function(sID){
-                        if(self.selectTypeSet() === 0){
+                        if(self.selectTypeSet() === self.personSetting){
                             service.getPersonInfor(sID).done(function(data: any){
                                 self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName));
                             })                            
@@ -122,6 +127,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             //change 個人設定　or 職位設定
             self.selectTypeSet.subscribe(function(newValue){
                 self.approverList.removeAll();
+                self.employeeList.removeAll();
                 self.setDataForSwapList(newValue);
             })
             //職場リスト            
@@ -131,7 +137,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             //change 承認形態
             self.selectFormSet.subscribe(function(newValues){
                 //承認形態が誰か一人を選択する場合
-                if(newValues === 2){
+                if(newValues === self.formOne){
                     self.cbbEnable(true);
                 }else{
                     //承認形態が全員承認を選択する場合
@@ -166,7 +172,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             var self = this;
             
             //個人設定 (employee setting)
-            if(selectTypeSet === 0){                
+            if(selectTypeSet === self.personSetting){                
                 var employeeSearch = new service.model.EmployeeSearchInDto();
                 employeeSearch.baseDate = self.standardDate();
                 employeeSearch.workplaceCodes = self.treeGrid.selectedWorkplaceId();
@@ -201,7 +207,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                                         approverInfor: self.approverList(),//承認者一覧
                                         confirmedPerson: self.selectedCbbCode(), //確定者
                                         selectTypeSet: self.selectTypeSet(),
-                                        approvalFormName: self.selectFormSet() == 1 ? resource.getText('CMM018_63') : resource.getText('CMM018_66')
+                                        approvalFormName: self.selectFormSet() == self.formAll ? resource.getText('CMM018_63') : resource.getText('CMM018_66')
                                         }
             setShared("CMM018K_DATA",data );
             nts.uk.ui.windows.close();

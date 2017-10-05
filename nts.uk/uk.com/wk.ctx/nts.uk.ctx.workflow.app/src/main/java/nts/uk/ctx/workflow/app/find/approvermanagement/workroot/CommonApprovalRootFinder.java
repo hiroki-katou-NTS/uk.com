@@ -9,6 +9,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
@@ -234,7 +235,7 @@ public class CommonApprovalRootFinder {
 		if(param.getRootType() == 1){
 			List<WorkPlaceAppRootDto> lstWpRoot = new ArrayList<>();
 			String workplaceId = param.getWorkplaceId();
-			if(workplaceId == null){
+			if(workplaceId == ""){
 				WorkplaceImport workplace = adapterWp.findBySid(AppContexts.user().employeeId(), baseDate);
 				if(workplace != null){
 					workplaceId = workplace.getWkpId();
@@ -274,7 +275,7 @@ public class CommonApprovalRootFinder {
 		//TH: person - domain 個人別就業承認ルート
 		else{
 			List<PersonAppRootDto> lstPsRoot = new ArrayList<>();
-			String employeeId = param.getEmployeeId() != null ? AppContexts.user().employeeId() : param.getEmployeeId();
+			String employeeId = StringUtil.isNullOrEmpty(param.getEmployeeId(), true) ? AppContexts.user().employeeId() : param.getEmployeeId();
 			//get all data from PersonApprovalRoot (個人別就業承認ルート)
 			List<PsApprovalRootDto> lstPs = this.repo.getAllPsApprovalRoot(companyId,employeeId )
 					.stream()
@@ -356,10 +357,19 @@ public class CommonApprovalRootFinder {
 		/**
 		 * date 1.........|..............]..........
 		 * date 2............|......................
-		 * sDate1<sDate2
+		 * sDate1<=sDate2<eDate1
 		 */
 		if (date2.getStartDate().compareTo(date1.getStartDate()) > 0
 				&& date2.getStartDate().compareTo(date1.getEndDate()) < 0) {
+			return true;
+		}
+		/**
+		 * date 1.........|..............]..........
+		 * date 2.........|..........]..............
+		 * sDate1<=sDate2<eDate1
+		 */
+		if (date2.getStartDate().compareTo(date1.getStartDate()) >= 0
+				&& date2.getEndDate().compareTo(date1.getEndDate()) > 0) {
 			return true;
 		}
 		/**

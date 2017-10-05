@@ -106,6 +106,58 @@ public class ProgramIdConsts {
 	
 	public static final String KSU001A = "KSU001A";
 	
+	public static final String KSU001C = "KSU001C";
+	
+	public static final String KSU001D = "KSU001D";
+	
+	public static final String KSU001JA = "KSU001JA";
+	
+	public static final String KSU001JB = "KSU001JB";
+	
+	public static final String KSU001L = "KSU001L";
+	
+	public static final String KSU001LX = "KSU001LX";
+	
+	public static final String KSU001N = "KSU001N";
+	
+	public static final String KSU001R = "KSU001R";
+	
+	public static final String KSU001O = "KSU001O";
+	
+	public static final String KSU001Q = "KSU001Q";
+	
+	public static final String KML002A = "KML002A";
+	
+	public static final String KML002B = "KML002B";
+	
+	public static final String KML002C = "KML002C";
+	
+	public static final String KML002D = "KML002D";
+	
+	public static final String KML002E = "KML002E";
+	
+	public static final String KML002F = "KML002F";
+	
+	public static final String KML002G = "KML002G";
+	
+	public static final String KML002H = "KML002H";
+	
+	public static final String KML002I = "KML002I";
+	
+	public static final String KML002K = "KML002K";
+	
+	public static final String KML002L = "KML002L";
+	
+	public static final String KML002M = "KML002M";
+	
+	public static final String KML004A = "KML004A";
+	
+	public static final String KML004B = "KML004B";
+	
+	public static final String KML004C = "KML004C";
+	
+	public static final String KML004D = "KML004D";
+	
 	public static final String KDL001A = "KDL001A";
 	
 	public static final String KDL002A = "KDL002A";

@@ -50,17 +50,17 @@ public class BusinessTypeSortedFinder {
 			businessTypeSortedDtos = attendanceItemDtos.values().stream().map(f -> {
 				return new BusinessTypeSortedDto(f.getAttendanceItemId(), f.getAttendanceItemDisplayNumber(), f.getAttendanceItemName(), 1);
 			}).collect(Collectors.toList());
+		} else {
+			businessTypeSortedDtos = businessTypeSorted.stream().map(f -> {
+				return new BusinessTypeSortedDto(f.getAttendanceItemId(),
+						attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceItemDisplayNumber(),
+						attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceItemName(),
+//						attendanceItemDtos.get(f.getAttendanceItemId()).getDislayNumber(),
+//						attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceName().v(),
+						f.getOrder().v());
+			}).collect(Collectors.toList());
 		}
 		
-		businessTypeSortedDtos = businessTypeSorted.stream().map(f -> {
-			return new BusinessTypeSortedDto(f.getAttendanceItemId(),
-					attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceItemDisplayNumber(),
-					attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceItemName(),
-//					attendanceItemDtos.get(f.getAttendanceItemId()).getDislayNumber(),
-//					attendanceItemDtos.get(f.getAttendanceItemId()).getAttendanceName().v(),
-					f.getOrder().v());
-		}).collect(Collectors.toList());
-
 		return businessTypeSortedDtos;
 	}
 

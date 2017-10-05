@@ -85,6 +85,19 @@ module nts.uk.at.view.kdw002.b {
 
             }
 
+            copy(): void {
+                var self = this;
+                var bussinessCodeItems = self.bussinessCodeItems();
+                var bussinessCurrentCode = self.bussinessCurrentCode();
+                var bussinessCodeItem = _.find(self.bussinessCodeItems(), { businessTypeCode: self.bussinessCurrentCode() });
+                var businessTypeName = bussinessCodeItem.businessTypeName;
+                var data = {
+                    code: bussinessCurrentCode, name: businessTypeName, bussinessItems: bussinessCodeItems
+                }
+                nts.uk.ui.windows.setShared("KDW002_B_BUSINESSTYPE", data);
+            }
+
+
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
@@ -274,7 +287,7 @@ function useHeaderChanged(element) {
         var i;
         var l = filteredData.length;
         for (i = 0; i < l; i++) {
-              $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "use", true);
+            $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "use", true);
             if (filteredData[i].userCanSet) {
                 var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
                 var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
@@ -293,7 +306,7 @@ function useHeaderChanged(element) {
         var i;
         var l = filteredData.length;
         for (i = 0; i < l; i++) {
-             $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "use", false);
+            $("#grid").igGridUpdating("setCellValue", filteredData[i].attendanceItemId, "use", false);
             if (filteredData[i].userCanSet) {
                 var cellYouCanChangeIt = $('#grid').igGrid('cellAt', 3, i);
                 var cellCanBeChangedByOthers = $('#grid').igGrid('cellAt', 4, i);
@@ -337,9 +350,9 @@ function youCanChangeItHeaderChanged(element) {
 }
 
 function canBeChangedByOthersHeaderChanged(element) {
-     var dataSource = $('#grid').data('igGrid').dataSource;
+    var dataSource = $('#grid').data('igGrid').dataSource;
     var filteredData = dataSource.transformedData('afterfilteringandpaging');
-      if (element.checked) {
+    if (element.checked) {
         var i;
         var l = filteredData.length;
         for (i = 0; i < l; i++) {

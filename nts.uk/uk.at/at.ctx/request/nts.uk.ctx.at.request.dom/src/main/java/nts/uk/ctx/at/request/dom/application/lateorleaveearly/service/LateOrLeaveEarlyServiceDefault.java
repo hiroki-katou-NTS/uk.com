@@ -12,11 +12,19 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.common.UseAtr;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadline;
+import nts.uk.ctx.at.request.dom.setting.request.application.ApplicationDeadlineRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.Deadline;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.RequiredFlg;
+import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
+import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
@@ -33,6 +41,15 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 	@Inject
 	ApplicationSettingRepository applicationSetting;
 	
+	@Inject 
+	EmployeeAdapter employeeAdapter;
+	
+	@Inject
+	ApplicationDeadlineRepository deadlineRepository;	
+	
+	// アルゴリズム「社員IDから社員を取得する」を実行する
+	// lay dc cai ten thang Nhan vien
+	 String employeeName = employeeAdapter.getEmployeeName(AppContexts.user().employeeId());
 
 	@Override
 	public boolean isExist(String companyID, String appID) {
@@ -119,8 +136,6 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 		if (checkInputTime <= 0 && prePost == 0) {
 			throw new BusinessException("Msg_470");
 		}
-		
-		
 
 	}
 
@@ -133,9 +148,7 @@ public class LateOrLeaveEarlyServiceDefault implements LateOrLeaveEarlyService {
 
 	@Override
 	public void registerLateOrLeaveEarly(String companyID) {
-
-		// TODO Auto-generated method stub
-
+	
 	}
 
 	@Override
