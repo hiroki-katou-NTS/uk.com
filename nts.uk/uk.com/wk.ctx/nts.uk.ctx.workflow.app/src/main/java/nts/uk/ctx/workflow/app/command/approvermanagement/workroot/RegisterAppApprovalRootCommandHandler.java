@@ -14,6 +14,8 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ApprovalPhaseDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ApproverDto;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranch;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalBranchRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
@@ -43,6 +45,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	private ApproverRepository repoApprover;
 	@Inject
 	private ApprovalBranchRepository repoBranch;
+	@Inject
+	private WorkplaceAdapter adapterWp;
 	@Override
 	protected void handle(CommandHandlerContext<RegisterAppApprovalRootCommand> context) {
 		//____________New__________
@@ -152,6 +156,11 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		GeneralDate endDateUpdate = GeneralDate.fromString(endDateOld, "yyyy-MM-dd");
 		//TH: create history new
 		if(checkAddHist){
+			if(workplaceId.compareTo("") == 0){
+				GeneralDate baseDate = GeneralDate.today();
+				WorkplaceImport workplace = adapterWp.findBySid(AppContexts.user().employeeId(), baseDate);
+				workplaceId = workplace.getWkpId();
+			}
 			//Tạo root có ls mới với appType ở dữ liệu bên phải.
 			//Update root có ls trước đó của những root mới được tạo ở trên.
 			List<WorkplaceApprovalRoot> listWp = new ArrayList<>();
@@ -297,18 +306,23 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		ApprovalPhase appPhaseN4 = checkAppPh(commonRoot.getAppPhase4(), branchId);
 		ApprovalPhase appPhaseN5 = checkAppPh(commonRoot.getAppPhase5(), branchId);
 		if(appPhaseN1 != null){
+			appPhaseN1.updateAppPhaseId(UUID.randomUUID().toString());
 			listAppPhase.add(appPhaseN1);
 		}
 		if(appPhaseN2 != null){
+			appPhaseN2.updateAppPhaseId(UUID.randomUUID().toString());
 			listAppPhase.add(appPhaseN2);
 		}
 		if(appPhaseN3 != null){
+			appPhaseN3.updateAppPhaseId(UUID.randomUUID().toString());
 			listAppPhase.add(appPhaseN3);
 		}
 		if(appPhaseN4 != null){
+			appPhaseN4.updateAppPhaseId(UUID.randomUUID().toString());
 			listAppPhase.add(appPhaseN4);
 		}
 		if(appPhaseN5 != null){
+			appPhaseN5.updateAppPhaseId(UUID.randomUUID().toString());
 			listAppPhase.add(appPhaseN5);
 		}
 		for (ApprovalPhase approvalPhase : listAppPhase) {
