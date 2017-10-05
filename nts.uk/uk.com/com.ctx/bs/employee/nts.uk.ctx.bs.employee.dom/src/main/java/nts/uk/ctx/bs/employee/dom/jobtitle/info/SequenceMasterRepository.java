@@ -5,19 +5,12 @@
 package nts.uk.ctx.bs.employee.dom.jobtitle.info;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The Interface SequenceMasterRepository.
  */
 public interface SequenceMasterRepository {
-
-	/**
-	 * Find by company id.
-	 *
-	 * @param companyId the company id
-	 * @return the list
-	 */
-	List<SequenceMaster> findByCompanyId(String companyId);
 	
 	/**
 	 * Adds the.
@@ -40,5 +33,22 @@ public interface SequenceMasterRepository {
 	 * @param sequenceCode the sequence code
 	 */
 	void remove(String companyId, String sequenceCode);
+	
+	/**
+	 * Find by company id.
+	 *
+	 * @param companyId the company id
+	 * @return the list
+	 */
+	List<SequenceMaster> findByCompanyId(String companyId);
+	
+	/**
+	 * Find by sequence code.
+	 *
+	 * @param companyId the company id
+	 * @param sequenceCode the sequence code
+	 * @return the optional
+	 */
+	Optional<SequenceMaster> findBySequenceCode(String companyId, String sequenceCode);
 	
 }

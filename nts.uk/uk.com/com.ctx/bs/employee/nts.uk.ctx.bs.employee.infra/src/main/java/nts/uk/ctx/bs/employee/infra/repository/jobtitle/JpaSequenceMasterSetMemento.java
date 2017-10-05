@@ -49,7 +49,10 @@ public class JpaSequenceMasterSetMemento implements SequenceMasterSetMemento {
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		BsymtJobSeqMasterPK pk = new BsymtJobSeqMasterPK();
+		BsymtJobSeqMasterPK pk = this.typeValue.getBsymtJobSeqMasterPK();
+		if (pk == null) {
+			pk = new BsymtJobSeqMasterPK();
+		}
 		pk.setCid(companyId.v());
 		this.typeValue.setBsymtJobSeqMasterPK(pk);
 	}
@@ -63,7 +66,10 @@ public class JpaSequenceMasterSetMemento implements SequenceMasterSetMemento {
 	 */
 	@Override
 	public void setSequenceCode(SequenceCode sequenceCode) {
-		BsymtJobSeqMasterPK pk = new BsymtJobSeqMasterPK();
+		BsymtJobSeqMasterPK pk = this.typeValue.getBsymtJobSeqMasterPK();
+		if (pk == null) {
+			pk = new BsymtJobSeqMasterPK();
+		}
 		pk.setSeqCd(sequenceCode.v());
 		this.typeValue.setBsymtJobSeqMasterPK(pk);
 	}
