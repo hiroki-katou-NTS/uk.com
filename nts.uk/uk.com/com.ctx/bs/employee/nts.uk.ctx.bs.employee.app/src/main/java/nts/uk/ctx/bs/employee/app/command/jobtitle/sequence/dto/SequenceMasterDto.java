@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.find.jobtitle.dto;
+package nts.uk.ctx.bs.employee.app.command.jobtitle.sequence.dto;
 
 import lombok.Data;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;

@@ -1,7 +1,9 @@
-package nts.uk.ctx.bs.employee.app.find.jobtitle.dto;
+package nts.uk.ctx.bs.employee.app.command.jobtitle.sequence;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.sequence.dto.SequenceMasterDto;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.sequence.dto.SequenceMasterGetMementoImpl;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMaster;
 
 /**

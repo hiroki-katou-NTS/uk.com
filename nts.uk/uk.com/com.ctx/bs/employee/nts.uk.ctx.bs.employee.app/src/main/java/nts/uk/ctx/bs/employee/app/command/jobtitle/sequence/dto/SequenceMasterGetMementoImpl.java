@@ -1,5 +1,6 @@
-package nts.uk.ctx.bs.employee.app.find.jobtitle.dto;
+package nts.uk.ctx.bs.employee.app.command.jobtitle.sequence.dto;
 
+import nts.uk.ctx.bs.employee.app.command.jobtitle.sequence.SaveSequenceCommand;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterGetMemento;

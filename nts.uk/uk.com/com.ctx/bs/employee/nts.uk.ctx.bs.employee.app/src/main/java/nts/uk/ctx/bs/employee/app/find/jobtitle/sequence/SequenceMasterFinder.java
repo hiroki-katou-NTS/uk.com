@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.find.jobtitle;
+package nts.uk.ctx.bs.employee.app.find.jobtitle.sequence;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.employee.app.find.jobtitle.dto.SequenceMasterDto;
+import nts.uk.ctx.bs.employee.app.command.jobtitle.sequence.dto.SequenceMasterDto;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMaster;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -22,6 +22,15 @@ public class SequenceMasterFinder {
 	@Inject
 	private SequenceMasterRepository repository;
 
+	/**
+	 * Find max order.
+	 *
+	 * @return the short
+	 */
+	public short findMaxOrder() {
+		return this.repository.findMaxOrder();
+	}
+	
 	/**
 	 * Find all.
 	 *
