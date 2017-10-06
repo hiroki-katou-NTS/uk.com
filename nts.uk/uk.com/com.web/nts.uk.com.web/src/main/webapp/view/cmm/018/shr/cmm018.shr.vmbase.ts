@@ -4,10 +4,7 @@ module nts.uk.com.view.cmm018.shr {
         export class DataResigterDto{
             /**就業ルート区分: 会社(0)　－　職場(1)　－　社員(2)*/
             rootType: number;
-            checkDelete: boolean;
             checkAddHist: boolean;
-            checkAddRoot: boolean;
-            checkEdit: boolean;
             workpplaceId: string;
             employeeId: string;
             startDate: string;
@@ -15,17 +12,13 @@ module nts.uk.com.view.cmm018.shr {
             addHist: IData;
             lstAppType: Array<number>;
             root: Array<CompanyAppRootADto>;
-            constructor(rootType: number, checkDelete: boolean,
-                checkAddHist: boolean, checkAddRoot: boolean,
-                checkEdit: boolean, workpplaceId: string,
+            constructor(rootType: number, checkAddHist: boolean,
+                workpplaceId: string,
                 employeeId: string, startDate: string, endDate: string,
                 addHist: IData,lstAppType: Array<number>,
                 root: Array<CompanyAppRootADto>){
                     this.rootType = rootType;
-                    this.checkDelete = checkDelete;
                     this.checkAddHist = checkAddHist;
-                    this.checkAddRoot = checkAddRoot;
-                    this.checkEdit = checkEdit;
                     this.workpplaceId = workpplaceId;
                     this.employeeId = employeeId;
                     this.startDate = startDate; 
@@ -618,6 +611,11 @@ module nts.uk.com.view.cmm018.shr {
             workplaceId: string;
             
             workplaceName: string;
+        }
+        export enum RootType {
+            COMPANY = 0,
+            WORKPLACE = 1,
+            PERSON = 2
         }
     }
 }
