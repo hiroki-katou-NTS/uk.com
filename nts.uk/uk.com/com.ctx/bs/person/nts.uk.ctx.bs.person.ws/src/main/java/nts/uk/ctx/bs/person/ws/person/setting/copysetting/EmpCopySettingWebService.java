@@ -1,11 +1,13 @@
 package nts.uk.ctx.bs.person.ws.person.setting.copysetting;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import find.person.setting.copysetting.EmpCopySettingDto;
+import find.person.info.category.PerInfoCtgMapDto;
 import find.person.setting.copysetting.EmpCopySettingFinder;
 import nts.arc.layer.ws.WebService;
 
@@ -18,7 +20,7 @@ public class EmpCopySettingWebService extends WebService {
 
 	@POST
 	@Path("getCopySetting")
-	public EmpCopySettingDto getEmpCopySetting() {
+	public List<PerInfoCtgMapDto> getEmpCopySetting() {
 		return this.finder.getEmpCopySetting();
 	}
 

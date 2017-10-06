@@ -32,6 +32,18 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 			+ " AND p.ppemtPersonCategoryAuthPk.roleId = :roleId" + " WHERE c.cid = :companyId"
 			+ " AND c.abolitionAtr = 0" + "	ORDER BY co.disporder";
 
+	private final String SELECT_CATEGORY_BY_CATEGORY_LIST_ID_QUERY = "SELECT DISTINCT c.ppemtPerInfoCtgPK.perInfoCtgId, c.categoryCd, c.categoryName "
+			+ " FROM PpemtPerInfoCtg c" + " INNER JOIN PpemtPerInfoCtgCm cm"
+			+ " ON c.categoryCd = cm.ppemtPerInfoCtgCmPK.categoryCd"
+			+ " AND cm.ppemtPerInfoCtgCmPK.contractCd = :contractCd" + " INNER JOIN PpemtPerInfoCtgOrder co"
+			+ "	ON c.ppemtPerInfoCtgPK.perInfoCtgId = co.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItem i" + " ON  c.ppemtPerInfoCtgPK.perInfoCtgId = i.perInfoCtgId"
+			+ " LEFT JOIN PpemtPersonCategoryAuth p "
+			+ " ON p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId  = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " WHERE c.cid = :companyId" + " AND c.abolitionAtr = 0" + " AND p.allowOtherRef = 1"
+			+ "	AND p.ppemtPersonCategoryAuthPk.personInfoCategoryAuthId IN perInfoCtgIdlst"
+			+ "	ORDER BY co.disporder ";
+
 	private final String SEL_CATEGORY_BY_ROLEID = "SELECT c FROM PpemtPersonCategoryAuth c  WHERE c.ppemtPersonCategoryAuthPk.roleId =:roleId ";
 
 	private final String SEL_CATEGORY_BY_ABOLITION_ATR = "SELECT  c.perInfoCtgId, d.categoryCd, d.categoryName, d.abolitionAtr, c.abolitionAtr, c.requiredAtr, cm.personEmployeeType , "
@@ -75,6 +87,14 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 		domain.setPersonEmployeeType(Integer.valueOf(entity[6].toString()));
 		boolean isHigher = Integer.valueOf(entity[8].toString()) > Integer.valueOf(entity[9].toString());
 		domain.setSetting(!isHigher ? Boolean.valueOf(entity[7].toString()) : false);
+		return domain;
+	}
+
+	private static PersonInfoCategoryDetail toDomainLess(Object[] entity) {
+		val domain = new PersonInfoCategoryDetail();
+		domain.setCategoryId(entity[0].toString());
+		domain.setCategoryCode(entity[1].toString());
+		domain.setCategoryName(entity[2].toString());
 		return domain;
 	}
 
@@ -170,6 +190,15 @@ public class JpaPersonInfoCategoryAuthRepository extends JpaRepository implement
 	public void deleteByRoleId(String roleId) {
 		this.getEntityManager().createQuery(DEL_BY_ROLE_ID).setParameter("roleId", roleId).executeUpdate();
 		this.getEntityManager().flush();
+	}
+
+	@Override
+	public List<PersonInfoCategoryDetail> getAllCategoryByCtgIdList(String contractCd, List<String> perInfoCtgIdlst) {
+
+		return this.queryProxy().query(SELECT_CATEGORY_BY_CATEGORY_LIST_ID_QUERY, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("categoryIdlst", perInfoCtgIdlst)
+				.getList(c -> toDomainLess(c));
+
 	}
 
 }

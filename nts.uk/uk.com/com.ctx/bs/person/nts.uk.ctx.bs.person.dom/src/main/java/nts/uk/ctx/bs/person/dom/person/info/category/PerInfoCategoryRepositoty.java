@@ -26,13 +26,13 @@ public interface PerInfoCategoryRepositoty {
 	void addDateRangeItemRoot(DateRangeItem dateRangeItem);
 
 	void addListDateRangeItem(List<DateRangeItem> dateRangeItems);
-	
-	//vinhpx: start
-	
+
+	// vinhpx: start
+
 	List<PersonInfoCategory> getPerInfoCategoryByName(String companyId, String contractCd, String name);
-	
+
 	boolean checkPerInfoCtgAlreadyCopy(String perInfoCtgId, String companyId);
-	
+
 	void updatePerInfoCtgInCopySetting(String perInfoCtgId, String companyId);
-	//vinhpx: end
+	// vinhpx: end
 }
