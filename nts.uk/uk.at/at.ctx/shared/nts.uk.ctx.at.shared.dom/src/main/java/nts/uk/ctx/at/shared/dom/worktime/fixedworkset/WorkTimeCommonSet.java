@@ -14,4 +14,7 @@ public class WorkTimeCommonSet {
 	
 	@Getter
 	private LateLeaveEarlySettingOfWorkTime leaveEarlySetting;
+	
+	@Getter
+	private boolean overDayEndCalcSet;
 }

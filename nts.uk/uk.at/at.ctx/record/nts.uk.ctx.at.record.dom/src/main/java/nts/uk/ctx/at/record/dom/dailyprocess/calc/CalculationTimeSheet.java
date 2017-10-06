@@ -1,15 +1,28 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.val;
+import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
+import nts.uk.ctx.at.record.dom.daily.BonusPayTime;
+import nts.uk.ctx.at.record.dom.daily.BonusPayTimeOfDaily;
+import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.shared.dom.bonuspay.enums.UseAtr;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
+import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanDuplication;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationCategoryOutsideHours;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.shr.com.time.AttendanceClock;
 import nts.uk.shr.com.time.TimeWithDayAttr;
@@ -23,25 +36,34 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
 public abstract class CalculationTimeSheet {
 	protected TimeSpanWithRounding timeSheet;
 	protected final TimeSpanForCalc calcrange;
-	protected final List<TimeSheetOfDeductionItem> deductionTimeSheets = new ArrayList<>();
+	protected List<TimeSheetOfDeductionItem> deductionTimeSheets = new ArrayList<>();
 	protected List<BonusPayTimesheet> bonusPayTimeSheet;
+	protected List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet;
 	protected Optional<MidNightTimeSheet> midNightTimeSheet;
+
 	
 	
 	/**
 	 * Constructor
 	 * @param timeSheet 時間帯(丸め付き)
-	 * @param calculationTimeSheet 計算範囲
+	 * @param calcrange 計算範囲
 	 * @param midNighttimeSheet 深夜時間帯
 	 */
 	public CalculationTimeSheet(TimeSpanWithRounding timeSheet,
-								TimeSpanForCalc calculationTimeSheet,
+								TimeSpanForCalc calcrange,
 								List<TimeSheetOfDeductionItem> deductionTimeSheets,
 								List<BonusPayTimesheet> bonusPayTimeSheet,
-								Optional<MidNightTimeSheet> midNighttimeSheet) {
+								List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet,
+								Optional<MidNightTimeSheet> midNighttimeSheet
+								) {
 		this.timeSheet = timeSheet;
-		this.calcrange = calculationTimeSheet;
+		this.calcrange = calcrange;
+		this.deductionTimeSheets = deductionTimeSheets;
+		this.bonusPayTimeSheet = bonusPayTimeSheet;
+		this.specifiedBonusPayTimeSheet = specifiedBonusPayTimeSheet;
 		this.midNightTimeSheet = midNighttimeSheet;
+
+		
 	}
 	
 	
@@ -51,7 +73,7 @@ public abstract class CalculationTimeSheet {
 	 */
 	public TimeSpanForCalc reCreateTreatAsSiteiTimeEnd(int transTime,OverTimeWorkFrameTimeSheet overTimeWork) {
 		TimeSpanForCalc copySpan = calcrange;
-		return overTimeWork.syukusyou(copySpan.lengthAsMinutes() - transTime);
+		return overTimeWork.reduceUntilSpecifiedTime(copySpan.lengthAsMinutes() - transTime);
 	}
 	
 	/**
@@ -59,16 +81,16 @@ public abstract class CalculationTimeSheet {
 	 * @param assingnTime 指定時間
 	 * @return 縮小後の時間帯
 	 */
-	public TimeSpanForCalc syukusyou(int assignTime) {
+	public TimeSpanWithRounding reduceUntilSpecifiedTime(int assignTime) {
 		int shortened = calcTotalTime() - assignTime;
-		int newEnd = calcrange.getStart().valueAsMinutes() - shortened;
+		int newEnd = timeSheet.getStart().valueAsMinutes() + shortened;
 		
-		TimeSpanForCalc newTimeSpan = new TimeSpanForCalc(new TimeWithDayAttr(shortened),new TimeWithDayAttr(newEnd));
+		TimeSpanWithRounding newTimeSpan = new TimeSpanWithRounding(new TimeWithDayAttr(shortened),new TimeWithDayAttr(newEnd),this.timeSheet.getRounding());
 		List<TimeSheetOfDeductionItem> refineList = duplicateNewTimeSpan(newTimeSpan);
 		int deductionTime = 0;
 		for(TimeSheetOfDeductionItem deductionItem : refineList) {
 			deductionTime = deductionItem.calcTotalTime();
-			newTimeSpan = new TimeSpanForCalc(new TimeWithDayAttr(shortened),new TimeWithDayAttr(newEnd + deductionTime));
+			newTimeSpan = new TimeSpanWithRounding(new TimeWithDayAttr(shortened),new TimeWithDayAttr(newEnd + deductionTime), this.timeSheet.getRounding());
 		}
 		return newTimeSpan;
 	}
@@ -88,7 +110,8 @@ public abstract class CalculationTimeSheet {
 	 * @return 
 	 */
 	public int calcTotalTime() {
-		int calcTime = minusDeductionTime();
+		
+		int calcTime = timeSheet.getSpan().lengthAsMinutes() - minusDeductionTime();
 		/*丸め設定*/
 		return calcTime;
 	}
@@ -114,19 +137,42 @@ public abstract class CalculationTimeSheet {
 		}
 		return totalDedTime - calcrange.lengthAsMinutes();
 	}
-	
+
 	/**
 	 * 指定時間に従って時間帯の縮小
+	 * @return 縮小後の時間帯
+	 */
+	public Optional<TimeSpanForCalc> contractTimeSheet(TimeWithDayAttr timeWithDayAttr) {
+		/*ここのcalcTotalTImeは残業時間帯の時間*/
+		int afterShort = calcTotalTime() - timeWithDayAttr.valueAsMinutes();
+		if(afterShort <= 0) return Optional.empty();
+		int newEnd = 0;
+		TimeSpanForCalc newSpan = new TimeSpanForCalc(timeSheet.getStart(), new TimeWithDayAttr(newEnd + afterShort));
+		List<TimeSheetOfDeductionItem> copyList = deductionTimeSheets.stream().filter(tc -> newSpan.contains(tc.calcrange)).collect(Collectors.toList());
+		for(int listn = 0 ; listn < copyList.size() ; listn++){
+				/*ここのcalcTotalTimeは残業時間帯が持ってる控除時間帯の時間*/
+				int differTime = copyList.get(listn).calcTotalTime();
+				newSpan = newSpan.shiftEndAhead(differTime);
+				/*ずらす前に範囲内に入っている時間帯の数を保持*/
+				int beforeincludeSpan = copyList.stream().filter(tc -> newSpan.contains(tc.calcrange)).collect(Collectors.toList()).size();
+				newSpan = newSpan.shiftEndAhead(copyList.stream().map(ts -> ts.calcrange.lengthAsMinutes()).collect(Collectors.summingInt(tc -> tc)));
+				int afterincludeSpan = copyList.stream().filter(tc -> newSpan.contains(tc.calcrange)).collect(Collectors.toList()).size();
+				/*ずらした後の範囲に入っている時間帯の数とずらす前のかずを比較し増えていた場合、控除時間帯を保持してる変数に追加する*/
+				if(afterincludeSpan > beforeincludeSpan) {
+					copyList = Collections.emptyList();
+					copyList = deductionTimeSheets.stream().filter(tc -> newSpan.contains(tc.calcrange)).collect(Collectors.toList());
+				}
+		}
+		return Optional.of(newSpan);
+	}
+	
+	/**
+	 * 
+	 * @param basePoint
 	 * @return
 	 */
-	public TimeSpanForCalc contractTimeSheet(TimeWithDayAttr timeWithDayAttr) {
-		int afterShort = calcTotalTime() - timeWithDayAttr.valueAsMinutes();
-		if(afterShort <= 0) return /*時間帯をクリア*/;
-		TimeSpanForCalc newSpan = new TimeSpanForCalc(timeSheet.getStart(),timeSheet.getStart() + afterShort);
-		for(TimeSheetOfDeductionItem timeSheet :deductionTimeSheets.stream().filter(tc -> newSpan.contains(tc.calcrange)).collect(Collectors.toList())){
-				newSpan.getEnd() += timeSheet.calcTotalTime();
-		}
-		return newSpan;
+	public int calcIncludeTimeSheet(int basePoint, List<TimeSheetOfDeductionItem> deductionItemList){
+		return deductionItemList.stream().map(ts -> ts.calcrange.lengthAsMinutes()).collect(Collectors.summingInt(tc -> tc));
 	}
 	
 	/**
@@ -172,6 +218,28 @@ public abstract class CalculationTimeSheet {
 	}
 	
 	/**
+	 * 特定日加給時間帯のリストを作り直す
+	 * @param baseTime 基準時間
+	 * @param isDateBefore 基準時間より早い時間を切り出す
+	 * @return 切り出した加給時間帯
+	 */
+	public List<SpecifiedbonusPayTimeSheet> recreateSpecifiedBonusPayListBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
+		List<SpecifiedbonusPayTimeSheet> specifiedBonusPayList = new ArrayList<>();
+		for(SpecifiedbonusPayTimeSheet specifiedBonusPay : specifiedBonusPayList) {
+			if(specifiedBonusPay.contains(baseTime)) {
+				specifiedBonusPayList.add(specifiedBonusPay.reCreateOwn(baseTime,isDateBefore));
+			}
+			else if(specifiedBonusPay.calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
+				specifiedBonusPayList.add(specifiedBonusPay);
+			}
+			else if(specifiedBonusPay.calcrange.getStart().greaterThan(baseTime) && !isDateBefore) {
+				specifiedBonusPayList.add(specifiedBonusPay);
+			}
+		}
+		return specifiedBonusPayList; 
+	}
+	
+	/**
 	 * 控除時間帯のリストを作り直す
 	 * @param baseTime 基準時間
 	 * @param isDateBefore 基準時間より早い時間を切り出す
@@ -202,7 +270,7 @@ public abstract class CalculationTimeSheet {
 	public Optional<MidNightTimeSheet> recreateMidNightTimeSheetBeforeBase(TimeWithDayAttr baseTime,boolean isDateBefore){
 		if(this.midNightTimeSheet.isPresent()) {
 			if(midNightTimeSheet.get().calcrange.contains(baseTime)) {
-				return midNightTimeSheet.get().midNightTimeSheet.get().reCreateOwn(baseTime,midNightTimeSheet.get().calculationTimeSheet.getEnd());
+				return midNightTimeSheet.get().midNightTimeSheet.get().reCreateOwn(baseTime,isDateBefore);
 			}
 			else if(midNightTimeSheet.get().calcrange.getEnd().lessThan(baseTime) && isDateBefore) {
 				return midNightTimeSheet;
@@ -214,4 +282,103 @@ public abstract class CalculationTimeSheet {
 		return Optional.empty();
 	}
 	
+	/**
+	 * 深夜時間帯の作成(トリガー)
+	 * @param midnightTimeSheet
+	 */
+	public Optional<MidNightTimeSheet> createMidNightTimeSheet() {
+		if(midNightTimeSheet.isPresent()) {
+			if(calcrange.checkDuplication(midNightTimeSheet.get().calcrange).isDuplicated()) { ここは計算範囲と深夜時間帯がもつ時間帯の比較のがよい？
+				return Optional.of(new MidNightTimeSheet(timeSheet,
+										 calcrange.getDuplicatedWith(midNightTimeSheet.get().calcrange).get(),　ここは計算範囲と深夜時間帯がもつ計算時間帯の比較のがよい？
+										 duplicateTimeSpan(midNightTimeSheet.get().calcrange),
+										 bonusPayTimeSheet,
+										 midNightTimeSheet,
+										 specifiedBonusPayTimeSheet
+										 ));
+			}
+		}
+		return Optional.empty();
+	}
+	
+	/**
+	 * 深夜時間帯の作成(再帰)
+	 * @param timeSpan
+	 * @return
+	 */
+	public List<TimeSheetOfDeductionItem> duplicateTimeSpan(TimeSpanForCalc timeSpan) {
+		List<TimeSheetOfDeductionItem> returnList = new ArrayList<>();
+		for(TimeSheetOfDeductionItem deductionTimeSheet : deductionTimeSheets) {
+			if(midNightTimeSheet.isPresent()) {
+				Optional<TimeSpanForCalc> duplicateSpan = midNightTimeSheet.get().calcrange.getDuplicatedWith(deductionTimeSheet.calcrange);
+				if(duplicateSpan.isPresent()) {
+					returnList.add(TimeSheetOfDeductionItem.reateBreakTimeSheetAsFixed(deductionTimeSheet.timeSheet
+																					  ,duplicateSpan.get()
+																					  ,deductionTimeSheet.deductionTimeSheets
+																					  ,deductionTimeSheet.bonusPayTimeSheet
+																					  ,deductionTimeSheet.midNightTimeSheet
+																					  ,deductionTimeSheet.getGoOutReason()
+																					  ,deductionTimeSheet.getBreakAtr()
+																					  ,deductionTimeSheet.getDeductionAtr()
+																					  ,deductionTimeSheet.getWithinStatutoryAtr()
+																					));
+				}
+			}
+		}
+		return returnList;
+	}
+	
+	/**
+	 * 加給時間の計算
+	 * @param bonusPayTimeSet
+	 */
+	public List<BonusPayTime> calcBonusPay(UseAtr useAtr) {
+		List<BonusPayTime> bonusPayTimeList = new ArrayList<>();
+		if(!useAtr.isUse()) return Collections.emptyList();
+		for(BonusPayTimesheet bonusPaySheet : this.bonusPayTimeSheet)
+		{
+			int calcTime = bonusPaySheet.calcTotalTime();
+			bonusPayTimeList.add(new BonusPayTime(/*引数で受け取った加給項目No*/,TimeWithCalculation.sameTime(new AttendanceTime(calcTime), TimeWithCalculation.sameTime(new AttendanceTime(calcTime)));
+		}
+		return bonusPayTimeList;
+	}
+	
+	/**
+	 * 特定日加給時間帯の作成
+	 * @param specifiedDayList　特定日
+	 * @return 加給設定
+	 */
+	public List<SpecifiedbonusPayTimeSheet> createSpecifiedBonusPayTimeSheet(List<> specifiedDayList,List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheetList){
+		if(specifiedDayList.size() == 0) return Collections.emptyList();
+		for(SpecifiedbonusPayTimeSheet specifiedBonusPayTimeSheet : specifiedBonusPayTimeSheetList) {
+			if(specifiedDayList.contains(specifiedBonusPayTimeSheet.getSpecifiedItemNo())) {
+				Optional<TimeSpanForCalc> newSpan = this.calcrange.getDuplicatedWith(
+														new TimeSpanForCalc(new TimeWithDayAttr(specifiedBonusPayTimeSheet.getStart().valueAsMinutes())
+																		   ,new TimeWithDayAttr(specifiedBonusPayTimeSheet.getEnd().valueAsMinutes())));
+				if(newSpan.isPresent()) {
+					this.specifiedBonusPayTimeSheet.add(new SpecifiedbonusPayTimeSheet(new AttendanceClock(newSpan.get().getStart()), new AttendanceClock(newSpan.get().getEnd()), specifiedBonusPayTimeSheet.getSpecifiedItemNo()));
+				}
+			}
+		}
+		
+	}
+	
+	/**
+	 * 深夜時間の計算
+	 * @return 深夜時間
+	 */
+	public int calcMidNight(AutoCalculationCategoryOutsideHours autoCalcSet) {
+		if(autoCalcSet.isCalculateEmbossing())
+		{
+			if(this.midNightTimeSheet.isPresent()) {
+				return this.midNightTimeSheet.get().calcTotalTime();
+			}
+			else {
+				return 0;
+			}
+		}
+		else {
+			return 0;
+		}
+	}
 }

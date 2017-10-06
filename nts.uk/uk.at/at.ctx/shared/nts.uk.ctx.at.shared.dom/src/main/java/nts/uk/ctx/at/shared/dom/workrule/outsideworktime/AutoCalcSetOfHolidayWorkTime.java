@@ -8,6 +8,6 @@ import lombok.Value;
  *
  */
 @Value
-public class HolidayWorkTimeOfAutoCalcSet {
+public class AutoCalcSetOfHolidayWorkTime {
 	private AutoCalcSet LateNightTime;
 }

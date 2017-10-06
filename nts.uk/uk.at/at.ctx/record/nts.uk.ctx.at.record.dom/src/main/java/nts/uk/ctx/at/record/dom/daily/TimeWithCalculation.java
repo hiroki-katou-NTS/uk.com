@@ -22,7 +22,7 @@ public class TimeWithCalculation {
 	 * 時間、計算時間が同じ計算付き時間帯を作成する
 	 * @return
 	 */
-	public static TimeWithCalculation of(AttendanceTime time) {
+	public static TimeWithCalculation sameTime(AttendanceTime time) {
 		return new TimeWithCalculation(time,time);
 	}
 	

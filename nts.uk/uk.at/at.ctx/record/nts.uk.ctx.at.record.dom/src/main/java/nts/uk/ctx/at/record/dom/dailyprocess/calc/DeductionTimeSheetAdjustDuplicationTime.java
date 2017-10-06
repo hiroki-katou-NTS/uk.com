@@ -38,7 +38,7 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 			for(int number = 0 ;  number < originCopyList.size()  ; number++) {
 				for(int nextNumber = number + 1; nextNumber < originCopyList.size(); nextNumber++) {
 					processedListNumber = number;
-					if(isDeplicated(originCopyList.get(number).calculationTimeSheet, originCopyList.get(nextNumber).calculationTimeSheet)){
+					if(isDeplicated(originCopyList.get(number).calcrange, originCopyList.get(nextNumber).calcrange)){
 						int beforeCorrectSize = originCopyList.size();
 						originCopyList = convertFromDeductionItemToList(originCopyList,number,nextNumber, setMethod, clockManage);
 						if(originCopyList.size()>beforeCorrectSize) {
@@ -55,14 +55,14 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	
 	/**
 	 * 重複の調整後の値を入れたListを作成
-	 * @param originList　
-	 * @param number
-	 * @param setMethod
-	 * @param clockManage
+	 * @param originList　編集前の時間帯
+	 * @param number 今の要素番号
+	 * @param setMethod　 就業時間帯の設定方法
+	 * @param clockManage　休憩打刻の時刻管理設定区分
 	 * @return 調整後の値を入れたList
 	 */
 	private List<TimeSheetOfDeductionItem> convertFromDeductionItemToList(List<TimeSheetOfDeductionItem> originList,int number,int nextNumber,WorkTimeMethodSet setMethod,BreakClockOfManageAtr clockManage){
-		return ReplaceListItem(originList,originList.get(number).DeplicateBreakGoOut(originList.get(nextNumber),setMethod,clockManage,true),number,nextNumber).stream().sorted((first,second) -> first.calculationTimeSheet.getStart().compareTo(second.calculationTimeSheet.getStart())).collect(Collectors.toList());
+		return ReplaceListItem(originList,originList.get(number).DeplicateBreakGoOut(originList.get(nextNumber),setMethod,clockManage,true),number,nextNumber).stream().sorted((first,second) -> first.calcrange.getStart().compareTo(second.calcrange.getStart())).collect(Collectors.toList());
 	}
 	
 	/**
@@ -80,18 +80,8 @@ public class DeductionTimeSheetAdjustDuplicationTime {
 	}
 	
 	/**
-	 * アクセスしようとしている場所の調整(配列の最大要素数を超えていた場合最大数に減らす)
-	 * @param upperlimit 配列の要素数
-	 * @param now　アクセスしようとしている場所
-	 * @return 調整後の値
-	 */
-	private int adjustUpperLimit(int upperlimit,int now) {
-		return (upperlimit > now)?now:upperlimit;
-	}
-	
-	/**
 	 * 重複チェック
-	 * @param nowTimeSpan
+	 * @param nowTimeSpan 
 	 * @param nextTimeSpan
 	 * @return　重複している
 	 */

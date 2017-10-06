@@ -1,8 +1,10 @@
 package nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory;
 
+import java.util.List;
 import java.util.Optional;
 
 import lombok.val;
+import lombok.Getter;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
@@ -13,6 +15,9 @@ import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyManagementTimeFr
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
+import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.HolidayAdditionAtr;
 import nts.uk.ctx.at.shared.dom.vacation.setting.addsettingofworktime.WorkTimeCalcMethodDetailOfHoliday;
@@ -34,6 +39,7 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  */
 public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLeaveEarlyManagementTimeFrame {
 
+	@Getter
 	private final int workingHoursTimeNo;
 	
 	private final Optional<TimeSpanForCalc> premiumTimeSheetInPredetermined;
@@ -56,9 +62,13 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLea
 	public WithinWorkTimeFrame(
 			int workingHoursTimeNo,
 			TimeSpanWithRounding timeSheet,
-			TimeSpanForCalc calculationTimeSheet) {
+			TimeSpanForCalc calculationTimeSheet,
+			List<TimeSheetOfDeductionItem> deductionTimeSheets,
+			List<BonusPayTimesheet> bonusPayTimeSheet,
+			Optional<MidNightTimeSheet> midNighttimeSheet,
+			List<SpecifiedbonusPayTimeSheet> specifiedBonusPayTimeSheet) {
 		
-		super(timeSheet, calculationTimeSheet);
+		super(timeSheet, calculationTimeSheet,deductionTimeSheets,bonusPayTimeSheet,specifiedBonusPayTimeSheet,midNighttimeSheet);
 		this.workingHoursTimeNo = workingHoursTimeNo;
 		this.premiumTimeSheetInPredetermined = Optional.empty();
 	}

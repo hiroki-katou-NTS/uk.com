@@ -1,9 +1,7 @@
 package nts.uk.ctx.at.shared.dom.worktime.fixedworkset;
 
-import java.awt.List;
 
 import lombok.Value;
-import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 /**
  * 残業時間の時間帯設定
@@ -17,7 +15,10 @@ public class OverTimeHourSet{
 	
 	/** 時間帯 */
 	private final TimeSpanWithRounding timeSpan;
+	/**早出残業として扱う**/
+	private final boolean treatAsGoEarlyOverTimeWork;
 	
-
+	/**拘束時間として扱う**/
+	private final boolean treatAsTimeSpentAtWork;
 }
 

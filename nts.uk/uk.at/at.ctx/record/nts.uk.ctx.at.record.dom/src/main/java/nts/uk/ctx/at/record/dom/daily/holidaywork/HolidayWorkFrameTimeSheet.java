@@ -17,7 +17,7 @@ import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
 import nts.uk.ctx.at.shared.dom.common.time.AttendanceTime;
 import nts.uk.ctx.at.shared.dom.common.time.TimeSpanForCalc;
 import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalculationOfOverTimeWork;
-import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.HolidayWorkTimeOfAutoCalcSet;
+import nts.uk.ctx.at.shared.dom.workrule.outsideworktime.AutoCalcSetOfHolidayWorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidworktimesheet.FluWorkHolidayTimeSheet;
 import nts.uk.ctx.at.shared.dom.worktype.WorkType;
@@ -69,7 +69,7 @@ public class HolidayWorkFrameTimeSheet extends CalculationTimeSheet{
 	 * @param autoCalcSet 時間外の自動計算区分
 	 * @return 残業時間枠時間帯クラス
 	 */
-	public HolidayWorkFrameTime calcOverTimeWorkTime(HolidayWorkTimeOfAutoCalcSet autoCalcSet) {
+	public HolidayWorkFrameTime calcOverTimeWorkTime(AutoCalcSetOfHolidayWorkTime autoCalcSet) {
 		int holidayWorkTime;
 		if(autoCalcSet.getLateNightTime().getCalculationClassification().isCalculateEmbossing()) {
 			holidayWorkTime = 0;
