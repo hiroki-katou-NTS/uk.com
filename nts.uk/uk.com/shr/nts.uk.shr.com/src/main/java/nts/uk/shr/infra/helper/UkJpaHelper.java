@@ -2,10 +2,12 @@ package nts.uk.shr.infra.helper;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.helper.JPAHelper;
+import nts.arc.layer.ws.json.JacksonUtil;
 import nts.arc.time.GeneralDateTime;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
@@ -33,7 +35,7 @@ public class UkJpaHelper implements JPAHelper {
 	private <T extends UkJpaEntity> boolean makeDirtyDetail(T entity) throws IllegalArgumentException, IllegalAccessException {
 		boolean flag = false;
 		entity.setUpdDate(GeneralDateTime.now());
-		Field[] fields = entity.getClass().getFields();
+		List<Field> fields = JacksonUtil.getAllFieldFromClass(entity.getClass());
 		for(Field field : fields){
 			Object fieldValue = field.get(entity);
 			flag = flag && makeDirty(fieldValue);
