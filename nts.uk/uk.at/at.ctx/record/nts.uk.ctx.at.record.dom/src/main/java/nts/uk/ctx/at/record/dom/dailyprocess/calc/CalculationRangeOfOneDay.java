@@ -170,22 +170,22 @@ public class CalculationRangeOfOneDay {
 	/**
 	 * 加給時間の合計計算
 	 */
-	public void calcBonusPay() {
+	public void calcBonusPay(WithinWorkTimeSheet withinWorkSheet,OverTimeWorkOfDaily overTimeWorkOfDaily) {
 		(/*区分 = 加給*/);
 		(/*区分 = 特定日加給*/);
-		List<BonusPayTime>
-		calcBonusPayTimeInWithinWorkTime
-		calcMidNightTimeIncludeOverTimeWork
-		calcBonusPay
+		
+		List<BonusPayTime> bonusPayList = withinWorkSheet.calcBonusPayTimeInWithinWorkTime();
+		bonusPayList.addAll(overTimeWorkOfDaily.calcBonusPay());
+		bonusPayList.addAll(calcSpecifiedBonusPay());
 	}
 	
 	/**
 	 * 特定日加給時間の合計時間
 	 */
-	public void calcSpecifiedBonusPay() {
-		calcBonusPayTimeInWithinWorkTime
-		calcMidNightTimeIncludeOverTimeWork
-		calcBonusPay
+	public void calcSpecifiedBonusPay(WithinWorkTimeSheet withinWorkSheet,OverTimeWorkOfDaily overTimeWorkOfDaily) {
+		List<BonusPayTime> bonusPayList = withinWorkSheet.calcSpecifiedBonusPayTimeInWithinWorkTime(bonusPayAutoCalcSet, bonusPayAtr);
+		bonusPayList.addAll(overTimeWorkOfDaily.calcSpecifiedBonusPay());
+		bonusPayList.addAll(calcSpecifiedBonusPay());
 	}
 	
 	
