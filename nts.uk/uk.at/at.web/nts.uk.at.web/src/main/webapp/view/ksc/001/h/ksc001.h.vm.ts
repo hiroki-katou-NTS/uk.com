@@ -14,7 +14,7 @@ module nts.uk.at.view.ksc001.h {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                let executionId = nts.uk.ui.windows.getShared("executionId");
+                let executionId = nts.uk.ui.windows.getShared("executionData").executionId;
                 self.loadDetailData(executionId).done(function() {
                     dfd.resolve();
                 });
@@ -29,7 +29,7 @@ module nts.uk.at.view.ksc001.h {
                 let dfd = $.Deferred();
                 service.findExecutionDetail(executionId).done(function(data: any) {
                     if (data) {
-                        self.exeDetailModel(new ExecutionDetailModel(data,self.detailContentString(data)));
+                        self.exeDetailModel(new ExecutionDetailModel(data,self.detailContentString(data),self.detailCreateMethod(data)));
                     }
                     dfd.resolve();
                 });
@@ -81,87 +81,85 @@ module nts.uk.at.view.ksc001.h {
                     str.push(nts.uk.resource.getText("KSC001_35"));
                 } else {
                     str.push(nts.uk.resource.getText("KSC001_36"));
-                }
-                //==
-                if (data.reCreateAtr == ReCreateAtr.ALLCASE) {
-                    str.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_4"));
-                } else {
-                    str.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_5"));
-                }
-                //==
-                if (data.processExecutionAtr == ProcessExecutionAtr.REBUILD) {
-                    str.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_7"));
-                } else {
-                    str.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_8"));
-                }
-                //==
-                if (data.resetWorkingHours) {
-                    str.push(spaceString+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_15"));
-                }
-                //==
-                if (data.resetDirectLineBounce) {
-                    str.push(spaceString+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_11"));
-                }
-                //==
-                if (data.resetMasterInfo) {
-                    str.push(spaceString+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_12"));
-                }
-                //==
-                if (data.resetTimeChildCare) {
-                    str.push(spaceString+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_13"));
-                }
-                //==
-                if (data.resetAbsentHolidayBusines) {
-                    str.push(spaceString+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_14"));
-                }
-                //==
-                if (data.resetTimeAssignment) {
-                    str.push(spaceString+nts.uk.resource.getText("KSC001_38")+nts.uk.resource.getText("KSC001_16"));
+                    //==
+                    if (data.reCreateAtr == ReCreateAtr.ALLCASE) {
+                        str.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_4"));
+                    } else {
+                        str.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_5"));
+                    }
+                    //==
+                    if (data.processExecutionAtr == ProcessExecutionAtr.REBUILD) {
+                        str.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_7"));
+                    } else {
+                        str.push(nts.uk.resource.getText("KSC001_37") + nts.uk.resource.getText("KSC001_8"));
+
+                        //==
+                        if (data.resetWorkingHours) {
+                            str.push(spaceString + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_15"));
+                        }
+                        //==
+                        if (data.resetDirectLineBounce) {
+                            str.push(spaceString + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_11"));
+                        }
+                        //==
+                        if (data.resetMasterInfo) {
+                            str.push(spaceString + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_12"));
+                        }
+                        //==
+                        if (data.resetTimeChildCare) {
+                            str.push(spaceString + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_13"));
+                        }
+                        //==
+                        if (data.resetAbsentHolidayBusines) {
+                            str.push(spaceString + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_14"));
+                        }
+                        //==
+                        if (data.resetTimeAssignment) {
+                            str.push(spaceString + nts.uk.resource.getText("KSC001_38") + nts.uk.resource.getText("KSC001_16"));
+                        }
+                    }
                 }
                 if (data.confirm) {
                     str.push(nts.uk.resource.getText("KSC001_17"));
                 }
                 //return
                 return str;
-            } 
+            }
+            
+            private detailCreateMethod(data: any): string[] {
+                let self = this;
+                let str: string[] = [];
+                if (!((data.implementAtr == ImplementAtr.RECREATE) && (data.processExecutionAtr == ProcessExecutionAtr.RECONFIG))) {
+                    str.push(nts.uk.resource.getText("KSC001_22"));
+                    str.push(nts.uk.resource.getText("KSC001_23"));
+                    str.push(nts.uk.resource.getText("KSC001_39", [data.copyStartDate]));
+                }
+                return str;
+            }
 
         }
         
         export class ExecutionDetailModel {
-            a:KnockoutObservable<string>;
-            b:KnockoutObservable<string>;
             targetRange: KnockoutObservable<string>;
-            completionStatus: KnockoutObservable<string>;
-            executionId: KnockoutObservable<string>;
+            detailContentMethod: KnockoutObservableArray<string>;
             executionContent: KnockoutObservableArray<string>;
             executionDateTime: KnockoutObservable<string>;
-            executionEmployeeId: KnockoutObservable<string>;
-            period: KnockoutObservable<Period>;
+            exeStart: KnockoutObservable<string>;
+            exeEnd: KnockoutObservable<string>;
             executionNumber: KnockoutObservable<string>;
             errorNumber: KnockoutObservable<string>;
-            constructor(data:any,detailString :string[]){
+            constructor(data:any,detailString :string[],detailContentMethod :string[]){
                 var self = this;
-                self.a = ko.observable('2016/11/11');
-                self.b = ko.observable('2016/11/11');
-                self.targetRange = ko.observable(nts.uk.resource.getText("KSC001_46", [self.a(), self.b()]));
-                self.completionStatus = ko.observable('1');
-                self.executionId = ko.observable('1');
+                self.targetRange = ko.observable(nts.uk.resource.getText("KSC001_46", [data.startDate, data.endDate]));
+                self.detailContentMethod = ko.observableArray(detailContentMethod);
                 self.executionContent = ko.observableArray(detailString);
-                self.executionEmployeeId = ko.observable('1');
-                self.period = ko.observable(new Period());
+                self.exeStart = ko.observable(moment(data.executionStart).format("YYYY/MM/DD HH:mm:ss"));
+                self.exeEnd = ko.observable(moment(data.executionEnd).format( "YYYY/MM/DD HH:mm:ss"));
                 //get diff time execution
-                let diffTime = moment.utc(moment(self.period().endDateTime, "YYYY/MM/DD HH:mm:ss").diff(moment(self.period().startDateTime, "YYYY/MM/DD HH:mm:ss"))).format("HH:mm:ss");
+                let diffTime = moment.utc(moment(data.executionEnd, "YYYY/MM/DD HH:mm:ss").diff(moment(data.executionStart, "YYYY/MM/DD HH:mm:ss"))).format("HH:mm:ss");
                 self.executionDateTime = ko.observable(diffTime);
-                self.executionNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [33]));
-                self.errorNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [2]));
-            }
-        }
-        export class Period{
-            startDateTime: string;
-            endDateTime: string;
-            constructor() {
-                this.startDateTime = "2016/11/30 12:19:10";
-                this.endDateTime = "2016/11/30 12:29:50";
+                self.executionNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [data.countExecution]));
+                self.errorNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [data.countError]));
             }
         }
         
