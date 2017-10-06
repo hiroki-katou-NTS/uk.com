@@ -5,23 +5,31 @@ module nts.uk.com.view.cmm018.shr {
             getAllDataCom: "workflow/approvermanagement/workroot/getbycom",
             getAllDataPr: "workflow/approvermanagement/workroot/getbyprivate",
             getNameAppType: "workflow/approvermanagement/workroot/find/applicationType",
-            updateRoot: "workflow/approvermanagement/workroot/updateRoot"
+            updateRoot: "workflow/approvermanagement/workroot/updateRoot",
+            getInfoEmployee: "workflow/approvermanagement/workroot/getInforPerson",
+            getInfoEmLogin: "workflow/approvermanagement/workroot/getInforPsLogin"
         }
         
         export function updateHistory(data): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.updateHistory, data);
+            return nts.uk.request.ajax("com", paths.updateHistory, data);
         }
         export function getAllDataCom(param): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getAllDataCom, param);
+            return nts.uk.request.ajax("com", paths.getAllDataCom, param);
         }
         export function getAllDataPr(param): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getAllDataPr, param);
+            return nts.uk.request.ajax("com", paths.getAllDataPr, param);
         }
         export function getNameAppType(): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.getNameAppType);
+            return nts.uk.request.ajax("com", paths.getNameAppType);
         }
         export function updateRoot(data): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.updateRoot, data);
+            return nts.uk.request.ajax("com", paths.updateRoot, data);
+        }
+        export function getInfoEmployee(employeeId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax("com", paths.getInfoEmployee, employeeId);
+        }
+        export function getInfoEmLogin(): JQueryPromise<any> {
+            return nts.uk.request.ajax("com", paths.getInfoEmLogin);
         }
     } 
 }

@@ -47,13 +47,13 @@ module nts.uk.com.view.cmm018.a {
             confirmedPerson : KnockoutObservable<string> = ko.observable("");
             selectTypeSet : KnockoutObservable<number> = ko.observable(0);
             //___________KCP009______________
-            employeeInputList: KnockoutObservableArray<vmbase.EmployeeKcp009>;
-            systemReference: KnockoutObservable<number>;
-            isDisplayOrganizationName: KnockoutObservable<boolean>;
-            targetBtnText: string;
+            employeeInputList: KnockoutObservableArray<vmbase.EmployeeKcp009> = ko.observableArray([]);
+            systemReference: KnockoutObservable<number> = ko.observable(vmbase.SystemType.EMPLOYMENT);
+            isDisplayOrganizationName: KnockoutObservable<boolean> = ko.observable(true);
+            targetBtnText: string = nts.uk.resource.getText("KCP009_3");
             listComponentOption: vmbase.ComponentOption;
-            selectedItem: KnockoutObservable<string>;
-            tabindex: number;
+            selectedItem: KnockoutObservable<string> = ko.observable(null);
+            tabindex: number = 1;
             //__________Sidebar________
             tabSelected: KnockoutObservable<number> = ko.observable(null);
             lstCompany: KnockoutObservableArray<vmbase.DataDisplayComDto> = ko.observableArray([]);
@@ -179,12 +179,6 @@ module nts.uk.com.view.cmm018.a {
                     }
                 });
                 //_______KCP009_______
-                self.employeeInputList = ko.observableArray([]);
-                self.systemReference = ko.observable(vmbase.SystemType.EMPLOYMENT);
-                self.isDisplayOrganizationName = ko.observable(true);
-                self.targetBtnText = nts.uk.resource.getText("KCP009_3");
-                self.selectedItem = ko.observable(null);
-                self.tabindex = 1;
                 // Initial listComponentOption
                 self.listComponentOption = {
                     systemReference: self.systemReference(),
@@ -194,7 +188,7 @@ module nts.uk.com.view.cmm018.a {
                     selectedItem: self.selectedItem,
                     tabIndex: self.tabindex
                 };
-                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+//                $('#emp-component').ntsLoadListComponent(self.listComponentOption);
                 //____subscribe selected item (return employee id)____
                 self.selectedItem.subscribe(function(codeChanged){
                     //TH: mode A: まとめて登録モード
@@ -278,7 +272,7 @@ module nts.uk.com.view.cmm018.a {
                        self.selectedEmployee(dataList);
                        self.convertEmployeeCcg01ToKcp009(dataList);
                    },
-                   onApplyEmployee: function(dataEmployee: vmbase.mployeeSearchDto[]) {
+                   onApplyEmployee: function(dataEmployee: vmbase.EmployeeSearchDto[]) {
                        self.showinfoSelectedEmployee(true);
                        self.selectedEmployee(dataEmployee);
                        self.convertEmployeeCcg01ToKcp009(dataEmployee);
@@ -323,12 +317,22 @@ module nts.uk.com.view.cmm018.a {
                 if(transferData.screen == 'Application'){//screen Application
                     self.visibleTab(false);
                     self.tabSelected(2);
-                    self.employeeId(transferData.employeeId);
+                    self.employeeId('90000000-0000-0000-0000-000000000001');
                     param = new vmbase.ParamDto(2,'',self.employeeId());
+                    servicebase.getInfoEmployee('90000000-0000-0000-0000-000000000001').done(function(employeeInfo){
+                        self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
+                                    employeeInfo.employeeCode, employeeInfo.employeeName, '', ''));
+                        $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+                    });
                 }else{//menu
                     self.visibleTab(true);
                     self.tabSelected(0);
                     param = new vmbase.ParamDto(0,'','');
+                    servicebase.getInfoEmLogin().done(function(employeeInfo){
+                        self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
+                                    employeeInfo.employeeCode, employeeInfo.employeeName, '', ''));
+                        $('#emp-component').ntsLoadListComponent(self.listComponentOption);
+                    });
                 }
                 servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
                     if(data == null || data === undefined){
@@ -718,10 +722,10 @@ module nts.uk.com.view.cmm018.a {
                         });
                     }
                 }else if(rootType == 1){
-                    let obj: vmbase.DataDisplayComDto = self.findAppIdForWp(self.currentCode());
+                    let obj: vmbase.DataDisplayWpDto = self.findAppIdForWp(self.currentCode());
                     if(obj != undefined){
                         _.each(obj.lstWorkplaceRoot, function(item){
-                            lstApp.push(item.worplace.applicationType);
+                            lstApp.push(item.workplace.applicationType);
                         });
                     }
                 }else{

@@ -113,6 +113,12 @@ public class WorkAppApprovalRootWebService extends WebService{
 		return psInfo.getPersonInfo(SID);
 	}
 	@POST
+	@Path("getInforPsLogin")
+	public PersonImport getPsInforLogin() {
+		String sId = AppContexts.user().employeeId();
+		return psInfo.getPersonInfo(sId);
+	}
+	@POST
 	@Path("getInforJobTitle")
 	public List<JobTitleImport> findAllJobTitle(GeneralDate baseDate){
 		String companyId = AppContexts.user().companyId();
