@@ -30,7 +30,9 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             //item approval root
             self.approvalRoot = ko.observableArray([]);
             //obj input approval root
-            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','90000000-0000-0000-0000-000000000001',1,1,new Date('2017-01-02 00:00:00')));
+            //self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','90000000-0000-0000-0000-000000000001',1,1,new Date('2017-01-02 00:00:00')));
+            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','90000000-0000-0000-0000-000000000005',1,1,new Date('2018-01-01 00:00:00')));
+            //console.log(self.objApprovalRootInput());
             //obj input get message deadline 
             self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline("000000000000-0005",null,1,null));
             //obj input get message deadline 
@@ -77,8 +79,8 @@ module nts.uk.at.view.kaf000.a.viewmodel{
     }
     
     export module model {
-        //       AppApprovalPhase
-        // class AppApprovalPhase
+        //AppApprovalPhase
+        //class AppApprovalPhase
         export class AppApprovalPhase{
             appID : KnockoutObservable<String>;
             phaseID : KnockoutObservable<String>;

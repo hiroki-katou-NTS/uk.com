@@ -204,7 +204,7 @@ module nts.uk.at.view.kaf009.share {
          */
         export class GoBackCommand {
             //appDate: string;
-            appID: string;
+            //appID: string;
             workTypeCD: string;
             siftCD: string;
             workChangeAtr: number;
@@ -218,7 +218,55 @@ module nts.uk.at.view.kaf009.share {
             workTimeStart2: number;
             workTimeEnd2: number;
             workLocationCD2: string;
-            appCommand: ApplicationCommand;
+            //appCommand: ApplicationCommand;
+            //appApprovalPhaseCmds: Array<common.AppApprovalPhase>;
+        }
+        
+        
+        export class AppApprovalPhase {
+            phaseID: string;
+            approvalForm: number;
+            dispOrder: number;
+            approvalATR: number;
+            approvalFrameCmds: Array<ApprovalFrame>;   
+            constructor(phaseID: string, approvalForm: number, dispOrder: number, approvalATR: number, approvalFrameCmds: Array<ApprovalFrame>){
+                this.phaseID = phaseID;
+                this.approvalForm = approvalForm;
+                this.dispOrder = dispOrder;
+                this.approvalATR = approvalATR;
+                this.approvalFrameCmds = approvalFrameCmds;     
+            }
+        }
+        
+        export class ApprovalFrame {
+            frameID: string;
+            dispOrder: number;
+            approveAcceptedCmds: Array<ApproveAccepted>;
+            constructor(frameID: string, dispOrder: number, approveAcceptedCmds: Array<ApproveAccepted>){
+                this.frameID = frameID;
+                this.dispOrder = dispOrder; 
+                this.approveAcceptedCmds = approveAcceptedCmds;   
+            }     
+        }
+        
+        export class ApproveAccepted {
+            appAcceptedID: string;
+            approverSID: string;
+            approvalATR: number;
+            confirmATR: number;
+            approvalDate: string;
+            reason: string;
+            representerSID: string; 
+            constructor(appAcceptedID: string, approverSID: string, approvalATR: number, 
+                confirmATR: number, approvalDate: string, reason: string, representerSID: string){
+                this.appAcceptedID = appAcceptedID;
+                this.approverSID = approverSID;
+                this.approvalATR = approvalATR;
+                this.confirmATR = confirmATR;
+                this.approvalDate = approvalDate;
+                this.reason = reason;
+                this.representerSID = representerSID;    
+            }
         }
     }
 }

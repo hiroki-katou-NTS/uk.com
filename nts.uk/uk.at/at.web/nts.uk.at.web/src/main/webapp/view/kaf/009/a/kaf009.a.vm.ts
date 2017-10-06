@@ -1,6 +1,8 @@
 module nts.uk.at.view.kaf009.a.viewmodel {
     import common = nts.uk.at.view.kaf009.share.common;
     export class ScreenModel {
+        //kaf000
+        kaf000_a: kaf000.a.viewmodel.ScreenModel;
         //current Data
         curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //申請者
@@ -60,9 +62,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         command: KnockoutObservable<common.GoBackCommand>;
         //list Work Location 
         locationData: Array<common.IWorkLocation>;
+        //Approval 
+        approvalSource: Array<common.AppApprovalPhase> = [];
         constructor() {
-            var self = this;
+            let self = this;
             self.command = ko.observable(null);
+            //KAF000_A
+            self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             self.locationData = [];
             //申請者
             self.employeeName = ko.observable("");
@@ -122,6 +128,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             self.workChangeAtr.subscribe(function(value) {
                 self.workEnable(value);
             });
+            //startPage 009a AFTER start 000_A
+            self.kaf000_a.start().done(function(){
+                debugger;
+                self.getApprovalList(self.kaf000_a.approvalRoot().beforeApprovers);
+                
+            })
         }
         /**
          * 
@@ -139,11 +151,46 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     //set employee Name
                     self.employeeName(settingData.employeeName);
                     //set Common Setting
-                    self.setGoBackSetting(settingData.goBackSettingDto);    
+                    self.setGoBackSetting(settingData.goBackSettingDto);
                 }
                 dfd.resolve();
             });
             return dfd.promise();
+        }
+        
+        /**
+         * get approver list 
+         */
+        getApprovalList(beforeApprovers: Array<common.AppApprovalPhase>) {
+            let self = this;
+            let approvalList = [];
+            _.forEach(a, appPhase => {
+                let b = new common.AppApprovalPhase(
+                    "",
+                    appPhase.approvalForm,
+                    appPhase.orderNumber,
+                    1,
+                    []);
+                _.forEach(appPhase.approvers, appFrame => {
+                    let c = new common.ApprovalFrame(
+                        "",
+                        appFrame.orderNumber,
+                        []);
+                    let d = new common.ApproveAccepted(
+                        "",
+                        appFrame.sid,
+                        0,
+                        appFrame.confirmPerson ? 1 : 0,
+                        self.appDate(),
+                        "",
+                        appFrame.sid);
+                    c.approveAcceptedCmds.push(d);
+                    b.approvalFrameCmds.push(c);
+                });
+                approvalList.push(b);
+            });
+            debugger;
+            self.approvalSource = approvalList;
         }
         /**
          * insert
@@ -180,7 +227,6 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             let self = this;
             let locationName: string = "";
             let location: common.IWorkLocation = _.find(self.locationData, function(o) { return o.workLocationCode == code });
-            debugger;
             locationName = location.workLocationName;
             return locationName;
         }
@@ -191,10 +237,9 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          * 3: delete
          */
         getCommand() {
-            let self = this;
+            let self = this; 
             let command: common.GoBackCommand = new common.GoBackCommand();
             command.workTypeCD = self.workTypeCd();
-            debugger;
             command.siftCD = self.siftCD();
             command.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
             command.goWorkAtr1 = self.selectedGo();
@@ -207,7 +252,8 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             command.workTimeEnd2 = self.timeEnd2();
             command.workLocationCD1 = self.workLocationCD();
             command.workLocationCD2 = self.workLocationCD2();
-            command.appCommand = new common.ApplicationCommand(
+            
+            let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
                 self.selectedReason(),
                 self.prePostSelected(),
                 self.appDate(),
@@ -220,7 +266,14 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 self.appDate(),
                 self.appDate(),
                 self.appDate());
-            return command;
+            
+            let commandTotal = {
+                goBackCommand : command,
+                appCommand : appCommand,
+                appApprovalPhaseCmds : self.approvalSource
+                }
+            return commandTotal;
+            
         }
 
         /**

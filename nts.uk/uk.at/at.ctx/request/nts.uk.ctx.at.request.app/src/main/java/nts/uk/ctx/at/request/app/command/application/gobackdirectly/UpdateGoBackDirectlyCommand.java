@@ -1,10 +1,13 @@
 package nts.uk.ctx.at.request.app.command.application.gobackdirectly;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommand;
+import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.AppApprovalPhaseCmd;
 
 @Getter
 @Setter
@@ -81,5 +84,7 @@ public class UpdateGoBackDirectlyCommand {
 	int employeeRouteAtr;
 	
 	UpdateApplicationCommand appCommand;
-
+	
+	List<AppApprovalPhaseCmd> appApprovalPhaseCmds;
+	
 }

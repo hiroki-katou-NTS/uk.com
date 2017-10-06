@@ -1,11 +1,16 @@
 package nts.uk.ctx.at.request.dom.application.gobackdirectly.service;
 
+import java.util.List;
+import java.util.UUID;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.RegisterAtApproveReflectionInfoService;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
@@ -35,12 +40,14 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 	NewBeforeRegister processBeforeRegister;
 	@Inject
 	GoBackDirectlyCommonSettingRepository goBackDirectCommonSetRepo;
+	@Inject
+	AppApprovalPhaseRepository appApprovalPhaseRepository;
 
 	/**
 	 * 
 	 */
 	@Override
-	public void register(GoBackDirectly goBackDirectly, Application application) {
+	public void register(GoBackDirectly goBackDirectly, Application application,List<AppApprovalPhase> appApprovalPhases) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = application.getEnteredPersonSID();
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
@@ -75,8 +82,29 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 			// メッセージ（Msg_338）を表示する
 			throw new BusinessException("Msg_338");
 		}
+		//insert application, goBackDirect, approval phase
+		goBackDirectRepo.insert(goBackDirectly);
+		appRepo.addApplication(application);
+		this.approvalRegistration(appApprovalPhases, application.getApplicationID());
 	}
-
+	
+	private void approvalRegistration(List<AppApprovalPhase> appApprovalPhases, String appID){
+		appApprovalPhases.forEach(appApprovalPhase -> {
+			appApprovalPhase.setAppID(appID);
+			String phaseID = UUID.randomUUID().toString();
+			appApprovalPhase.setPhaseID(phaseID);
+			appApprovalPhase.getListFrame().forEach(approvalFrame -> {
+				String frameID = UUID.randomUUID().toString();
+				approvalFrame.setFrameID(frameID);
+				approvalFrame.getListApproveAccepted().forEach(appAccepted -> {
+					String appAcceptedID = UUID.randomUUID().toString();
+					appAccepted.setAppAcceptedID(appAcceptedID);
+				});
+			});
+			appApprovalPhaseRepository.create(appApprovalPhase);
+		});
+	}
+	
 	/**
 	 *  アルゴリズム「直行直帰するチェック」を実行する
 	 */
