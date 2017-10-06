@@ -26,6 +26,10 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         //switch button selected
         selectedBack: any;
         selectedGo: any;
+        //Back Home 2
+        selectedBack2: any;
+        //Go Work 2
+        selectedGo2: any;
         //TIME LINE 2
         timeStart2: KnockoutObservable<number>;
         timeEnd2: KnockoutObservable<number>;
@@ -40,10 +44,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         colorBack: KnockoutObservable<string>;
         fontWeightGo: KnockoutObservable<number>;
         fontWeightBack: KnockoutObservable<number>;
-        //Back Home 2
-        selectedBack2: any;
-        //Go Work 2
-        selectedGo2: any;
+        
         //勤務を変更する 
         workChangeAtr: KnockoutObservable<boolean>;
         //勤務種類
@@ -129,15 +130,16 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 self.workEnable(value);
             });
             //startPage 009a AFTER start 000_A
-            self.kaf000_a.start().done(function(){
-                debugger;
-                self.getApprovalList(self.kaf000_a.approvalRoot().beforeApprovers);
-                
-            })
+//            self.kaf000_a.start().done(function(){
+//                self.getApprovalList(self.kaf000_a.approvalRoot().beforeApprovers);
+//                
+//            })
         }
         /**
          * 
          */
+        
+        
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
@@ -238,20 +240,20 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         getCommand() {
             let self = this; 
-            let command: common.GoBackCommand = new common.GoBackCommand();
-            command.workTypeCD = self.workTypeCd();
-            command.siftCD = self.siftCD();
-            command.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
-            command.goWorkAtr1 = self.selectedGo();
-            command.backHomeAtr1 = self.selectedBack();
-            command.workTimeStart1 = self.timeStart1();
-            command.workTimeEnd1 = self.timeEnd1();
-            command.goWorkAtr2 = self.selectedGo2();
-            command.backHomeAtr2 = self.selectedBack2();
-            command.workTimeStart2 = self.timeStart2();
-            command.workTimeEnd2 = self.timeEnd2();
-            command.workLocationCD1 = self.workLocationCD();
-            command.workLocationCD2 = self.workLocationCD2();
+            let goBackCommand: common.GoBackCommand = new common.GoBackCommand();
+            goBackCommand.workTypeCD = self.workTypeCd();
+            goBackCommand.siftCD = self.siftCD();
+            goBackCommand.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
+            goBackCommand.goWorkAtr1 = self.selectedGo();
+            goBackCommand.backHomeAtr1 = self.selectedBack();
+            goBackCommand.workTimeStart1 = self.timeStart1();
+            goBackCommand.workTimeEnd1 = self.timeEnd1();
+            goBackCommand.goWorkAtr2 = self.selectedGo2();
+            goBackCommand.backHomeAtr2 = self.selectedBack2();
+            goBackCommand.workTimeStart2 = self.timeStart2();
+            goBackCommand.workTimeEnd2 = self.timeEnd2();
+            goBackCommand.workLocationCD1 = self.workLocationCD();
+            goBackCommand.workLocationCD2 = self.workLocationCD2();
             
             let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
                 self.selectedReason(),
@@ -268,7 +270,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 self.appDate());
             
             let commandTotal = {
-                goBackCommand : command,
+                goBackCommand : goBackCommand,
                 appCommand : appCommand,
                 appApprovalPhaseCmds : self.approvalSource
                 }
@@ -413,6 +415,10 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         openCMM018(){
             nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", {screen: 'Application', employeeId: "000100003"}); 
         }
+    }
+    
+    class GoBackDirectly(){
+            
     }
 }
 

@@ -43,7 +43,7 @@ public class UpdateApplicationApproveHandler extends CommandHandler<UpdateApplic
 		// 8.2.1. check
 		afterApprovalProcessRepo.invidialApplicationErrorCheck(command.getAppId());
 		// 8.2.2. update application
-		afterApprovalProcessRepo.invidialApplicationUpdate(command.getAppId());
+		//afterApprovalProcessRepo.invidialApplicationUpdate(command.getAppId());
 		// 8-2.  
 		afterApprovalProcessRepo.detailScreenAfterApprovalProcess(companyID, command.getAppId(), application);
 
