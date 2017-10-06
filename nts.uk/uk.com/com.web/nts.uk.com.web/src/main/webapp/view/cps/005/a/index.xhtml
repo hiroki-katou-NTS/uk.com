@@ -34,7 +34,7 @@
 					<div
 						data-bind="ntsPanel:{width: '300px', height: '525px', direction: 'right', showIcon: false, visible: true}">
 						<div tabindex="3" style="width: 300px"
-							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'id', comId: 'category-list-items', 
+							data-bind="ntsSearchBox: {placeHolder:'名称で検索…',searchMode: 'filter',targetKey: 'id', comId: 'category-list-items', 
 									items: categoryList, selected: perInfoCtgSelectCode, selectedKey: 'id', fields: ['categoryName'], mode: 'igGrid'}" />
 						<table id="category-list-items"
 							data-bind="ntsGridList: {								
@@ -58,7 +58,8 @@
 						<div data-bind="visible: !fixedIsSelected() ">
 							<div
 								class="valign-center control-group control-group-margin-custom">
-								<div data-bind="ntsFormLabel: { constraint: ['CategoryName'], required: true }"
+								<div
+									data-bind="ntsFormLabel: { constraint: ['CategoryName'], required: true }"
 									class="margin-right-FormLabel">
 									<span data-bind="text: '#{i18n.getText('CPS005_4')}' "></span>
 								</div>
@@ -79,7 +80,8 @@
 								immediate: false}" />
 							</div>
 
-							<div class="valign-center control-group control-group-margin-custom" 
+							<div
+								class="valign-center control-group control-group-margin-custom"
 								data-bind="visible: !$parent.isHisTypeUpdateModel()">
 								<div data-bind="ntsFormLabel: { required: true }"
 									class="margin-right-FormLabel">
@@ -94,11 +96,12 @@
 									value: historyClassSelected }">
 								</div>
 							</div>
-							<div class="valign-center control-group control-group-margin-custom" 
+							<div
+								class="valign-center control-group control-group-margin-custom"
 								data-bind="visible: $parent.isHisTypeUpdateModel()">
 								<div data-bind="ntsFormLabel: {}" class="margin-right-FormLabel">
 									<span data-bind="text: '#{i18n.getText('CPS005_5')}' "></span>
-								</div>	
+								</div>
 								<span class="label" data-bind="text: historyClassSelectedText"></span>
 							</div>
 

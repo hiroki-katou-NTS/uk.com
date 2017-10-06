@@ -45,7 +45,7 @@
 					<div
 						data-bind="ntsPanel:{width: '300px', height: '430px', direction: 'right', showIcon: false, visible: true}">
 						<div tabindex="5" style="width: 300px"
-							data-bind="ntsSearchBox: {searchMode: 'filter',targetKey: 'id', comId: 'item-info-list', 
+							data-bind="ntsSearchBox: {placeHolder:'名称で検索…',searchMode: 'filter',targetKey: 'id', comId: 'item-info-list', 
 									items: personInfoItemList, selected: perInfoItemSelectCode, selectedKey: 'id', fields: ['itemName'], mode: 'igGrid'}" />
 						<table id="item-info-list"
 							data-bind="ntsGridList: {								
@@ -342,8 +342,7 @@
 												required: true,
 												enable: true,
 												readonly: false}" />
-										<span class="label">～</span> 
-										<input id="timeItemMax"
+										<span class="label">～</span> <input id="timeItemMax"
 											tabindex="18"
 											data-bind="ntsTimeEditor: {
 												name: '#[CPS005_31]',
@@ -385,8 +384,7 @@
 												required: true,
 												enable: true,
 												readonly: false}" />
-										<span class="label">～</span>
-										 <input id="timePointItemMax"
+										<span class="label">～</span> <input id="timePointItemMax"
 											tabindex="20"
 											data-bind="ntsTimeWithDayEditor: {
 												name: '#[CPS005_34]',
