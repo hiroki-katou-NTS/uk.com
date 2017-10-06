@@ -15,4 +15,6 @@ public interface AuthorityDailyPerformanceFormatRepository {
 	
 	List<AuthorityDailyPerformanceFormat> getListCode(String companyId);
 	
+	boolean checkExistCode(DailyPerformanceFormatCode dailyPerformanceFormatCode);
+	
 }

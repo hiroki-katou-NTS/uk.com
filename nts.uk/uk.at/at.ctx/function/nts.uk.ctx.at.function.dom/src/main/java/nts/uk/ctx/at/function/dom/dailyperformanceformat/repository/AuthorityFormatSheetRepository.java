@@ -15,4 +15,6 @@ public interface AuthorityFormatSheetRepository {
 	void update(AuthorityFormatSheet authorityFormatSheet);
 	
 	void remove(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode);
+	
+	boolean checkExistData(String companyId, DailyPerformanceFormatCode dailyPerformanceFormatCode, BigDecimal sheetNo);
 }
