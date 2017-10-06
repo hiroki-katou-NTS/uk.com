@@ -6,10 +6,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.Value;
+import nts.uk.ctx.at.record.dom.bonuspay.autocalc.BonusPayAutoCalcSet;
 import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
 import nts.uk.ctx.at.record.dom.daily.BonusPayTime;
+import nts.uk.ctx.at.record.dom.daily.CalcAtrOfDaily;
 import nts.uk.ctx.at.record.dom.daily.ExcessOverTimeWorkMidNightTime;
 import nts.uk.ctx.at.record.dom.daily.TimeWithCalculation;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.ActualWorkTimeSheetAtr;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.BonusPayAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlHolidayWorkTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.ControlOverFrameTime;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.HolidayWorkTimeSheet;
@@ -92,16 +96,27 @@ public class HolidayWorkTimeOfDaily {
 	
 	/**
 	 * 休出時間に含まれている加給時間帯を計算する
-	 * @return　加給時間
+	 * @return　加給時間クラス
 	 */
-	public List<BonusPayTime> calcBonusPay(){
+	public List<BonusPayTime> calcBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalcAtrOfDaily calcAtrOfDaily){
 		List<BonusPayTime> bonusPayList = new ArrayList<>();
 		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
-			bonusPayList.add(frameTimeSheet.calcBonusPay());
+			bonusPayList.addAll(frameTimeSheet.calcBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));
 		}
 		return bonusPayList;
 	}
 	
+	/**
+	 * 休出時間に含まれている特定日加給時間帯を計算する
+	 * @return　加給時間クラス
+	 */
+	public List<BonusPayTime> calcSpecifiedBonusPay(BonusPayAutoCalcSet bonusPayAutoCalcSet,BonusPayAtr bonusPayAtr,CalcAtrOfDaily calcAtrOfDaily){
+		List<BonusPayTime> bonusPayList = new ArrayList<>();
+		for(HolidayWorkFrameTimeSheet frameTimeSheet: holidayWorkFrameTimeSheet) {
+			bonusPayList.addAll(frameTimeSheet.calcSpacifiedBonusPay(ActualWorkTimeSheetAtr.HolidayWork,bonusPayAutoCalcSet,calcAtrOfDaily));
+		}
+		return bonusPayList;
+	}
 	/**
 	 * 休出時間が含んでいる深夜時間の算出
 	 * @return
