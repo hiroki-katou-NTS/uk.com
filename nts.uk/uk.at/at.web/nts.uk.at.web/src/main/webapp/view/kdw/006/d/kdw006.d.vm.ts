@@ -1,43 +1,85 @@
-module nts.uk.at.view.kdw006.d {
-    export module viewmodel {
-        export class ScreenModel {
-            //Define radio button group
-            itemList: KnockoutObservableArray<any> = ko.observableArray([
-                new BoxModel(1, 'エラーがあっても確認できる'),
-                new BoxModel(2, 'エラーを訂正するまでチェックできない'),
-                new BoxModel(3, 'エラーを訂正するまで登録できない')
-            ]);;
-            selectedId: KnockoutObservable<number> = ko.observable(1);
-            enable2: KnockoutObservable<boolean> = ko.observable(true);
+module nts.uk.at.view.kdw006.d.viewmodel {
+    export class ScreenModel {
+        registeredTotalTimeCheer: KnockoutObservable<boolean>;
+        completeDisplayOneMonth: KnockoutObservable<boolean>;
+        useWorkDetail: KnockoutObservable<boolean>;
+        registerActualExceed: KnockoutObservable<boolean>;
+        displayConfirmMessage: KnockoutObservable<boolean>;
+        useSupervisorConfirm: KnockoutObservable<boolean>;
+        supervisorConfirmError: KnockoutObservable<number>;
+        useConfirmByYourself: KnockoutObservable<boolean>;
+        yourselfConfirmError: KnockoutObservable<number>;
 
-            //Define checkbox
-            enable: KnockoutObservable<boolean> = ko.observable(true);
+        itemList: KnockoutObservableArray<any>;
+        constructor() {
+            var self = this;
+            self.registeredTotalTimeCheer = ko.observable(false);
+            self.completeDisplayOneMonth = ko.observable(false);
+            self.useWorkDetail = ko.observable(false);
+            self.registerActualExceed = ko.observable(false);
+            self.displayConfirmMessage = ko.observable(false);
+            self.useSupervisorConfirm = ko.observable(false);
+            self.supervisorConfirmError = ko.observable(null);
+            self.useConfirmByYourself = ko.observable(false);
+            self.yourselfConfirmError = ko.observable(null);
 
-            constructor() {
-                let self = this;
-            }
-
-            saveData() {
-                alert('screen d');
-            }
-
-            start(): JQueryPromise<any> {
-                let self = this;
-                let dfd = $.Deferred();
-                dfd.resolve();
-                return dfd.promise();
-            }
-
+            self.itemList = ko.observableArray([
+                new BoxModel(0, 'エラーがあっても確認できる'),
+                new BoxModel(1, 'エラーを訂正するまでチェックできない'),
+                new BoxModel(2, 'エラーを訂正するまで登録できない')
+            ]);
         }
 
-        export class BoxModel {
-            id: number;
-            name: string;
-            constructor(id, name) {
-                var self = this;
-                self.id = id;
-                self.name = name;
-            }
+
+        start(): JQueryPromise<any> {
+            let self = this;
+            return self.getFuncRestric();
+        }
+
+        //Get Function Restriction
+        getFuncRestric(): JQueryPromise<any> {
+            let self = this;
+            var dfd = $.Deferred();
+            service.getFuncRestric().done(function(data) {
+                self.registeredTotalTimeCheer(data.registeredTotalTimeCheer);
+                self.completeDisplayOneMonth(data.completeDisplayOneMonth);
+                self.useWorkDetail(data.useWorkDetail);
+                self.registerActualExceed(data.registerActualExceed);
+                self.displayConfirmMessage(data.displayConfirmMessage);
+                self.useSupervisorConfirm(data.useSupervisorConfirm);
+                self.supervisorConfirmError(data.supervisorConfirmError);
+                self.useConfirmByYourself(data.useConfirmByYourself);
+                self.yourselfConfirmError(data.yourselfConfirmError);
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
+        saveData() {
+            var self = this;
+            var funcRestric = {
+                registeredTotalTimeCheer: self.registeredTotalTimeCheer(),
+                completeDisplayOneMonth: self.completeDisplayOneMonth(),
+                useWorkDetail: self.useWorkDetail(),
+                registerActualExceed: self.registerActualExceed(),
+                displayConfirmMessage: self.displayConfirmMessage(),
+                useSupervisorConfirm: self.useSupervisorConfirm(),
+                supervisorConfirmError: self.supervisorConfirmError(),
+                useConfirmByYourself: self.useConfirmByYourself(),
+                yourselfConfirmError: self.yourselfConfirmError()
+            };
+            service.update(funcRestric);
+        }
+
+    }
+
+    class BoxModel {
+        id: number;
+        name: string;
+        constructor(id, name) {
+            var self = this;
+            self.id = id;
+            self.name = name;
         }
     }
 }

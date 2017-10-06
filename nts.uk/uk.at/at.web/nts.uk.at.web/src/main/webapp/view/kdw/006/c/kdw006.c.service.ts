@@ -1,22 +1,14 @@
 module nts.uk.at.view.kdw006.c.service {
     let servicePath = {
-        getDispRestric: '',
-        update: ''
+        getDispRestric: 'at/record/workrecord/operationsetting/disp-rest',
+        update: 'at/record/workrecord/operationsetting/register-disp-rest'
     };
 
-    export function update(dispRestric) {
-        let dfd = $.Deferred();
-        request.ajax(servicePath.update, dispRestric).done(function(res) {
-            dfd.resolve(res);
-        });
-        return dfd.promise();
+    export function update(dispRestric: any){
+        nts.uk.request.ajax(servicePath.update, dispRestric);
     }
 
-    export function getDispRestric() {
-        let dfd = $.Deferred();
-        request.ajax(servicePath.getDispRestric).done(function(res) {
-            dfd.resolve(res);
-        });
-        return dfd.promise();
+    export function getDispRestric(): JQueryPromise<any> {
+        return nts.uk.request.ajax(servicePath.getDispRestric);
     }
 }

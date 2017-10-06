@@ -343,11 +343,21 @@ module nts.uk.request {
     }
 
 
-    export function jump(path: string, data?: any) {
-
+    export function jump(path: string, data?: any);
+    export function jump(webAppId: WebAppId, path: string, data?: any): string {
+        if (typeof arguments[1] !== 'string') {
+            return jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+        }
+        if(webAppId==nts.uk.request.location.currentAppId){
+            path = resolvePath(path);
+        }else{
+            path = nts.uk.request.location.siteRoot
+            .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+            .mergeRelativePath(path).serialize();
+        }
         uk.sessionStorage.setItemAsJson(STORAGE_KEY_TRANSFER_DATA, data);
 
-        window.location.href = resolvePath(path);
+        window.location.href = path;
     }
 
     export function resolvePath(path: string) {

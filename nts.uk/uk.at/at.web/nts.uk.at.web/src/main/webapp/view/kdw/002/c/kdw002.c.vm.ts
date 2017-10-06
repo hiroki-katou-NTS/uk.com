@@ -78,7 +78,7 @@ module nts.uk.at.view.kdw002.c {
                 var data = {
                     code: currentRoleId, name: businessTypeName, bussinessItems: bussinessCodeItems
                 }
-                nts.uk.ui.windows.setShared("KDW002_B_BUSINESSTYPE", data);
+                nts.uk.ui.windows.setShared("KDW002_B_AUTHORITYTYPE", data);
             }
 
 

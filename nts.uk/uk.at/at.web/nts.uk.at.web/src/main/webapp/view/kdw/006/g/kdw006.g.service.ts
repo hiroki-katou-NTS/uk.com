@@ -14,20 +14,20 @@ module nts.uk.at.view.kdw006.g.service {
         return nts.uk.request.ajax(paths.getWorkType + employmentCode);
     }
 
-    export function register(employmentCode: string, groups1: any, group2 : any): JQueryPromise<Array<any>> {
+    export function register(employmentCode: string, groups1: any, groups2 : any): JQueryPromise<Array<any>> {
         var groups = [];
-        _.foreach(groups1 , function( group) {
+        _.forEach(groups1 , function( group) {
             groups.push({
                 no : group.no,
                 name : group.name,
-                workTypeList : workTypeCodes
+                workTypeList : group.workTypeCodes
             });
         });
-        _.foreach(groups2 , function( group) {
+        _.forEach(groups2 , function( group) {
             groups.push({
                 no : group.no,
                 name : group.name,
-                workTypeList : workTypeCodes
+                workTypeList : group.workTypeCodes
             });
         });
         var command = {
