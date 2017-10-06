@@ -311,7 +311,7 @@ public class WithinWorkTimeSheet implements {
 			int calcTime2 = lateTimeSheet.getForDeducationTimeSheet().get().calcTotalTime();
 			lateDeductionTime =  calcClacificationjudge(clacification, calcTime2);
 		}else {//控除しない場合
-			lateDeductionTime = TimeWithCalculation.of(new AttendanceTime(0));
+			lateDeductionTime = TimeWithCalculation.sameTime(new AttendanceTime(0));
 		}
 		
 		//相殺時間の計算
