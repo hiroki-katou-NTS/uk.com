@@ -3,12 +3,15 @@ module nts.uk.com.view.cmm011.d {
         /**
          *  Service paths
          */
-        var servicePath: any = {
-            addWorkplaceHistory: "bs/employee/workplace/register/history",
+        let servicePath: any = {
+            saveWorkplaceHistory: "bs/employee/workplace/history/save",
         };
         
-        export function registerWorkplaceHistory(data:any): JQueryPromise<void> {
-            return nts.uk.request.ajax(servicePath.addWorkplaceHistory,data);
+        /**
+         * saveWorkplaceHistory
+         */
+        export function saveWorkplaceHistory(command: any): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.saveWorkplaceHistory, command);
         }
         
         /**

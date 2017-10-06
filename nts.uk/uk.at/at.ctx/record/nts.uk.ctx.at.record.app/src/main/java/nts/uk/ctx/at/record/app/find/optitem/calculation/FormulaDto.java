@@ -9,6 +9,7 @@ import lombok.Setter;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalcFormulaSetting;
+import nts.uk.ctx.at.record.dom.optitem.calculation.CalculationAtr;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaId;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaName;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSetMemento;
@@ -41,8 +42,8 @@ public class FormulaDto implements FormulaSetMemento {
 	/** The formula name. */
 	private String formulaName;
 
-	/** The formula setting. */
-	private CalcFormulaSettingDto calcFormulaSetting;
+	/** The calculation atr. */
+	private int calcAtr;
 
 	// ===================== Optional ======================= //
 	/** The monthly rounding. */
@@ -50,6 +51,12 @@ public class FormulaDto implements FormulaSetMemento {
 
 	/** The daily rounding. */
 	private RoundingDto dailyRounding;
+
+	/** The formula setting. */
+	private FormulaSettingDto formulaSetting;
+
+	/** The item selection. */
+	private ItemSelectionDto itemSelection;
 
 	/*
 	 * (non-Javadoc)
@@ -106,7 +113,13 @@ public class FormulaDto implements FormulaSetMemento {
 	 */
 	@Override
 	public void setCalcFormulaSetting(CalcFormulaSetting setting) {
-		setting.saveToMemento(this.calcFormulaSetting);
+		if (this.calcAtr == CalculationAtr.ITEM_SELECTION.value) {
+			this.itemSelection = new ItemSelectionDto();
+			setting.saveToMemento(this.itemSelection);
+		} else {
+			this.formulaSetting = new FormulaSettingDto();
+			setting.saveToMemento(this.formulaSetting);
+		}
 	}
 
 	/*
@@ -117,7 +130,7 @@ public class FormulaDto implements FormulaSetMemento {
 	 * FormulaAtr)
 	 */
 	@Override
-	public void setCalcFormulaAtr(OptionalItemAtr atr) {
+	public void setFormulaAtr(OptionalItemAtr atr) {
 		this.formulaAtr = atr.value;
 	}
 
@@ -141,6 +154,7 @@ public class FormulaDto implements FormulaSetMemento {
 	 */
 	@Override
 	public void setMonthlyRounding(Rounding rounding) {
+		this.monthlyRounding = new RoundingDto();
 		rounding.saveToMemento(this.monthlyRounding);
 	}
 
@@ -152,6 +166,19 @@ public class FormulaDto implements FormulaSetMemento {
 	 */
 	@Override
 	public void setDailyRounding(Rounding rounding) {
+		this.dailyRounding = new RoundingDto();
 		rounding.saveToMemento(this.dailyRounding);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSetMemento#
+	 * setCalculationAtr(nts.uk.ctx.at.record.dom.optitem.calculation.
+	 * CalculationAtr)
+	 */
+	@Override
+	public void setCalcAtr(CalculationAtr calcAtr) {
+		this.calcAtr = calcAtr.value;
 	}
 }

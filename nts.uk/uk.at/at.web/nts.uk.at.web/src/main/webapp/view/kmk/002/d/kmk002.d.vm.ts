@@ -2,6 +2,7 @@ module nts.uk.at.view.kmk002.d {
     export module viewmodel {
 
         import FormulaSetting = nts.uk.at.view.kmk002.a.viewmodel.FormulaSetting;
+        import ParamToD = nts.uk.at.view.kmk002.a.viewmodel.ParamToD;
 
         export class ScreenModel {
             formulaSetting: FormulaSettingVm;
@@ -16,10 +17,13 @@ module nts.uk.at.view.kmk002.d {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                let dto = nts.uk.ui.windows.getShared('formulaParams');
 
-                self.formulaSetting.fromDto(dto);
-                console.log(dto);
+                // Get params
+                let dto = nts.uk.ui.windows.getShared('paramToD');
+
+                // Set params to view model
+                self.formulaSetting.fromParam(dto);
+
                 dfd.resolve();
                 return dfd.promise();
             }
@@ -30,7 +34,7 @@ module nts.uk.at.view.kmk002.d {
             public apply(): void {
                 let self = this;
                 if (self.formulaSetting.isValid()) {
-                    nts.uk.ui.windows.setShared('formulaReturned', self.formulaSetting.toDto());
+                    nts.uk.ui.windows.setShared('returnFromD', self.formulaSetting.toDto());
                     self.close();
                 }
             }
@@ -43,6 +47,7 @@ module nts.uk.at.view.kmk002.d {
             }
         }
         class FormulaSettingVm extends FormulaSetting {
+            formulaId: string; //TODO dung lam gi?
             formulaName: string;
             performanceAtr: number; //TODO dung lam gi ?
             formulaAtr: string;
@@ -50,9 +55,9 @@ module nts.uk.at.view.kmk002.d {
             selectedItemLeft: KnockoutObservable<any>;
             selectedItemRight: KnockoutObservable<any>;
 
-            constructor () {
+            constructor() {
                 super();
-                this.formulaName = 'lkjaslkjv';
+                this.formulaName = '';
                 this.performanceAtr = 0;
                 this.selectedItemLeft = ko.observable();
                 this.selectedItemRight = ko.observable();
@@ -61,10 +66,10 @@ module nts.uk.at.view.kmk002.d {
                 //self.formulaAtr = nts.uk.resource.getText('KMK002_72'); // amount
 
                 this.selectableFormulas = ko.observableArray([
-                    { code: '0', name: 'aaaaaaaaaaa' },
-                    { code: '1', name: 'bbbbbbbbb' },
-                    { code: '2', name: 'cccccccc' },
-                    { code: '3', name: 'ddddddddd' }
+                    { code: '0', name: 'aaaaaaaaaaa', atr: 1 },
+                    { code: '1', name: 'bbbbbbbbb', atr: 1 },
+                    { code: '2', name: 'cccccccc', atr: 2 },
+                    { code: '3', name: 'ddddddddd', atr: 2 }
                 ]);
             }
 
@@ -73,40 +78,113 @@ module nts.uk.at.view.kmk002.d {
              */
             public isValid(): boolean {
                 let self = this;
+
+                // Check divide by zero
                 if (self.operator() == 3 && self.rightItem.inputValue() == 0) {
-                    // Divide by zero
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_638" });
                     return false;
                 }
-                if (self.rightItem.settingMethod() == 1 && self.leftItem.settingMethod() == 1) {
-                    // both item setting method = number.
+
+                // both item setting method = number.
+                if (self.isBothNumberInput()) {
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_420" });
                     return false;
                 }
+
+                // Check required input
                 if (self.rightItem.settingMethod() == 1 && !self.rightItem.inputValue()) {
-                    // required input
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_419" });
                     return false;
                 }
+
+                // Check required input
                 if (self.leftItem.settingMethod() == 1 && !self.leftItem.inputValue()) {
-                    // required input
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_419" });
                     return false;
                 }
-                //TODO Msg_114
+
+                // Validate calculation
+                // If operator is '+' or '-' , 
+                // both item must have the same attribute if setting method is both item selection 
                 if (self.operator() == 0 || self.operator() == 1) {
-                    
+                    if (self.isBothItemSelect() && self.isDifferentAtr()) {
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_114" });
+                        return false;
+                    }
                 }
+
+                // Validate number input.
                 if ($('.nts-editor').ntsError('hasError')) {
                     return false;
                 }
+
                 return true;
 
             }
 
-//            public fromDto(): void {
-//                
-//            }
+            /**
+             * Check if attribute of left item and right item is different.
+             */
+            private isDifferentAtr(): boolean {
+                let self = this;
+                let leftItem = self.findFormulaById(self.selectedItemLeft());
+                let rightItem = self.findFormulaById(self.selectedItemRight());
+
+                if (leftItem.atr != rightItem.atr) {
+                    return true;
+                }
+
+                return false;
+            }
+
+            /**
+             * Check if both item's method setting is item selection
+             */
+            private isBothItemSelect(): boolean {
+                let self = this;
+                if (self.leftItem.settingMethod() == 0 && self.rightItem.settingMethod() == 0) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * Check if both item's method setting is numerical input.
+             */
+            private isBothNumberInput(): boolean {
+                let self = this;
+                if (self.leftItem.settingMethod() == 1 && self.rightItem.settingMethod() == 1) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * find formula by id.
+             */
+            private findFormulaById(id: string): any {
+                let self = this;
+                let f = _.find(self.selectableFormulas(), item => item.code == id);
+                return f;
+            }
+
+            /**
+             * Convert to viewmodel
+             */
+            public fromParam(dto: ParamToD): void {
+                let self = this;
+                self.formulaId = dto.formulaId;
+                self.formulaName = dto.formulaName;
+                self.formulaAtr = dto.formulaAtr;
+                super.fromDto(dto.formulaSetting);
+            }
+
+            /**
+             * Convert to dto.
+             */
+            public toDto(): any {
+                //TODO
+            }
 
         }
     }

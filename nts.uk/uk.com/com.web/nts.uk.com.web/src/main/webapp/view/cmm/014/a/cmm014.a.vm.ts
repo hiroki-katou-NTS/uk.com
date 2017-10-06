@@ -1,8 +1,11 @@
-module cmm014.a.viewmodel {
+module nts.uk.com.view.cmm014.a.viewmodel {
+    
+    import ClassificationModel = service.model.ClassificationFindDto;
+    import RemoveClassificationCommand = service.model.RemoveClassificationCommand;
         
     export class ScreenModel {
 
-        dataSource: KnockoutObservableArray<viewmodel.model.ClassificationModel>;
+        dataSource: KnockoutObservableArray<ClassificationModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCode: KnockoutObservable<string>;
         currentCodeList: KnockoutObservableArray<any>;
@@ -19,14 +22,14 @@ module cmm014.a.viewmodel {
             var self = this;
             self.dataSource = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'classificationCode', width: 100 },
-                { headerText: '名称', key: 'classificationName', width: 80 }
+                { headerText: 'コード', key: 'code', width: 100 },
+                { headerText: '名称', key: 'name', width: 80 }
 
             ]);
 
             self.currentCode = ko.observable(null);
             self.currentCodeList = ko.observableArray([]);
-            self.currentItem = ko.observable(new viewmodel.model.InputField(new viewmodel.model.ClassificationModel(), true));
+            self.currentItem = ko.observable(new viewmodel.model.InputField(new ClassificationModel(), true));
             self.multilineeditor = ko.observable(null);
             self.itemdata_add = ko.observable(null);
             self.itemdata_update = ko.observable(null);
@@ -66,9 +69,9 @@ module cmm014.a.viewmodel {
 
         findObj(value: string): any {
             let self = this;
-            var itemModel: viewmodel.model.ClassificationModel = null;
-            _.find(self.dataSource(), (obj: viewmodel.model.ClassificationModel) => {
-                if (obj.classificationCode == value) {
+            var itemModel: ClassificationModel = null;
+            _.find(self.dataSource(), (obj: ClassificationModel) => {
+                if (obj.code == value) {
                     itemModel = obj;
                 }
             })
@@ -84,7 +87,7 @@ module cmm014.a.viewmodel {
                         self.dirty.reset();
                         self.currentCode(null);
                         $("#A_INP_002").focus();
-                        $("#test input").val("");
+                        $("#A_INP_004").val("");
                         self.hasCellphone(false);
                     })
                     .ifNo(() => {
@@ -95,7 +98,7 @@ module cmm014.a.viewmodel {
                 self.dirty.reset();
                 self.currentCode(null);
                 $("#A_INP_002").focus();
-                $("#test input").val("");
+                $("#A_INP_004").val("");
                 self.hasCellphone(false);
             }
         }
@@ -119,7 +122,7 @@ module cmm014.a.viewmodel {
             var dfd = $.Deferred<any>();
             if (self.checkInput()) {
                 if (self.dataSource().length === 0) {
-                    let classification = new viewmodel.model.ClassificationModel(
+                    let classification = new ClassificationModel(
                         self.currentItem().INP_002_code(), 
                         self.currentItem().INP_003_name(), 
                         self.currentItem().INP_004_notes());
@@ -135,9 +138,9 @@ module cmm014.a.viewmodel {
                         });
                 }
                 for (let i = 0; i < self.dataSource().length; i++) {
-                    if (self.currentItem().INP_002_code() == self.dataSource()[i].classificationCode && self.currentItem().INP_002_enable() == false) {
+                    if (self.currentItem().INP_002_code() == self.dataSource()[i].code && self.currentItem().INP_002_enable() == false) {
                         var classification_old = self.dataSource()[i];
-                        var classification_update = new viewmodel.model.ClassificationModel(
+                        var classification_update = new ClassificationModel(
                             self.currentItem().INP_002_code(), 
                             self.currentItem().INP_003_name(), 
                             self.currentItem().INP_004_notes());
@@ -153,10 +156,10 @@ module cmm014.a.viewmodel {
                                 dfd.reject(res);
                             });
                         break;
-                    } else if (self.currentItem().INP_002_code() != self.dataSource()[i].classificationCode
+                    } else if (self.currentItem().INP_002_code() != self.dataSource()[i].code
                         && i == self.dataSource().length - 1
                         && self.currentItem().INP_002_enable() == true) {
-                        var classification_new = new viewmodel.model.ClassificationModel(
+                        var classification_new = new ClassificationModel(
                             self.currentItem().INP_002_code(), 
                             self.currentItem().INP_003_name(), 
                             self.currentItem().INP_004_notes());
@@ -173,7 +176,7 @@ module cmm014.a.viewmodel {
                                 dfd.reject(res);
                             });
                         break;
-                    } else if (self.currentItem().INP_002_code() == self.dataSource()[i].classificationCode && self.currentItem().INP_002_enable() == true) {
+                    } else if (self.currentItem().INP_002_code() == self.dataSource()[i].code && self.currentItem().INP_002_enable() == true) {
                         alert("入力したコードは既に存在しています。\r\n コードを確認してください。  ");
                         break;
                     }
@@ -187,7 +190,7 @@ module cmm014.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
             if (self.dataSource().length > 0) {
-                var item = new viewmodel.model.RemoveClassificationCommand(self.currentItem().INP_002_code());
+                var item = new RemoveClassificationCommand(self.currentItem().INP_002_code());
                 self.index_of_itemDelete = self.dataSource().indexOf(self.findObj(self.currentItem().INP_002_code()));
                 nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                     service.removeClassification(item).done(function(res: any) {
@@ -208,10 +211,10 @@ module cmm014.a.viewmodel {
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
-            service.findAllClassification().done(function(classification_arr: Array<viewmodel.model.ClassificationModel>) {
+            service.findAllClassification().done(function(classification_arr: Array<ClassificationModel>) {
                 if (classification_arr.length > 0) {
                     self.dataSource(classification_arr);
-                    self.currentCode(self.dataSource()[0].classificationCode);
+                    self.currentCode(self.dataSource()[0].code);
                 } else if (classification_arr.length === 0) {
                     self.currentItem().INP_002_enable(true);
                     $("#A_INP_002").focus();
@@ -227,13 +230,13 @@ module cmm014.a.viewmodel {
         getClassificationList(): any {
             var self = this;
             var dfd = $.Deferred<any>();
-            service.findAllClassification().done(function(classification_arr: Array<viewmodel.model.ClassificationModel>) {
+            service.findAllClassification().done(function(classification_arr: Array<ClassificationModel>) {
                 self.dataSource(classification_arr);
-                self.currentItem().INP_002_code(self.dataSource()[0].classificationCode);
-                self.currentItem().INP_003_name(self.dataSource()[0].classificationName);
+                self.currentItem().INP_002_code(self.dataSource()[0].code);
+                self.currentItem().INP_003_name(self.dataSource()[0].name);
                 self.currentItem().INP_004_notes(self.dataSource()[0].memo);
                 if (self.dataSource().length > 0) {
-                    self.currentCode(self.dataSource()[0].classificationCode);
+                    self.currentCode(self.dataSource()[0].code);
                 }
                 self.notAlert(true);
                 dfd.resolve();
@@ -248,11 +251,11 @@ module cmm014.a.viewmodel {
         getClassificationList_afterUpdateClassification(): any {
             var self = this;
             var dfd = $.Deferred<any>();
-            service.findAllClassification().done(function(classification_arr: Array<viewmodel.model.ClassificationModel>) {
+            service.findAllClassification().done(function(classification_arr: Array<ClassificationModel>) {
                 self.dataSource(classification_arr);
 
                 if (self.dataSource().length > 1) {
-                    self.currentCode(self.itemdata_update().classificationCode);
+                    self.currentCode(self.itemdata_update().code);
                 }
 
                 dfd.resolve();
@@ -268,14 +271,14 @@ module cmm014.a.viewmodel {
         getClassificationList_first(): any {
             var self = this;
             var dfd = $.Deferred<any>();
-            service.findAllClassification().done(function(classification_arr: Array<viewmodel.model.ClassificationModel>) {
+            service.findAllClassification().done(function(classification_arr: Array<ClassificationModel>) {
                 self.dataSource(classification_arr);
-                self.currentCode(self.dataSource()[0].classificationCode);
+                self.currentCode(self.dataSource()[0].code);
                 let i = self.dataSource().length;
                 if (i > 0) {
                     self.currentItem().INP_002_enable(false);
-                    self.currentItem().INP_002_code(self.dataSource()[0].classificationCode);
-                    self.currentItem().INP_003_name(self.dataSource()[0].classificationName);
+                    self.currentItem().INP_002_code(self.dataSource()[0].code);
+                    self.currentItem().INP_003_name(self.dataSource()[0].name);
                     self.currentItem().INP_004_notes(self.dataSource()[0].memo);
                 }
                 self.notAlert(true);
@@ -291,10 +294,10 @@ module cmm014.a.viewmodel {
         getClassificationList_afterAddClassification(): any {
             var self = this;
             var dfd = $.Deferred<any>();
-            service.findAllClassification().done(function(classification_arr: Array<viewmodel.model.ClassificationModel>) {
+            service.findAllClassification().done(function(classification_arr: Array<ClassificationModel>) {
                 self.dataSource(classification_arr);
 
-                self.currentCode(self.itemdata_add().classificationCode);
+                self.currentCode(self.itemdata_add().code);
                 dfd.resolve();
             }).fail(function(error: any) {
                 alert(error.messageId);
@@ -306,14 +309,14 @@ module cmm014.a.viewmodel {
         getClassificationList_aftefDelete(): any {
             var self = this;
             var dfd = $.Deferred<any>();
-            service.findAllClassification().done(function(classification_arr: Array<viewmodel.model.ClassificationModel>) {
+            service.findAllClassification().done(function(classification_arr: Array<ClassificationModel>) {
                 self.dataSource(classification_arr);
 
                 if (self.dataSource().length > 0) {
                     if (self.index_of_itemDelete === self.dataSource().length) {
-                        self.currentCode(self.dataSource()[self.index_of_itemDelete - 1].classificationCode)
+                        self.currentCode(self.dataSource()[self.index_of_itemDelete - 1].code)
                     } else {
-                        self.currentCode(self.dataSource()[self.index_of_itemDelete].classificationCode)
+                        self.currentCode(self.dataSource()[self.index_of_itemDelete].code)
                     }
 
                 } else {
@@ -341,8 +344,8 @@ module cmm014.a.viewmodel {
             INP_002_code: KnockoutObservable<string>;
             
             constructor(classification: ClassificationModel, enable: boolean) {
-                this.INP_002_code = ko.observable(classification.classificationCode);
-                this.INP_003_name = ko.observable(classification.classificationName);
+                this.INP_002_code = ko.observable(classification.code);
+                this.INP_003_name = ko.observable(classification.name);
                 this.INP_004_notes = ko.observable(classification.memo);
                 this.INP_002_enable = ko.observable(enable);
             }
@@ -356,24 +359,5 @@ module cmm014.a.viewmodel {
             }
         }
 
-        export class ClassificationModel {
-            classificationCode: string;
-            classificationName: string;
-            memo: string;
-            
-            constructor(classificationCode?: string, classificationName?: string, memo?: string) {
-                this.classificationCode = classificationCode;
-                this.classificationName = classificationName;
-                this.memo = memo;
-            }
-        }
-
-        export class RemoveClassificationCommand {
-            classificationCode: string;
-            
-            constructor(classificationCode: string) {
-                this.classificationCode = classificationCode;
-            }
-        }
     }    
 }

@@ -1,81 +1,69 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleGetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.PositionCode;
-import nts.uk.ctx.bs.employee.dom.jobtitle.PositionId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.PositionName;
-import nts.uk.ctx.bs.employee.dom.jobtitle.SequenceCode;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CjtmtJobTitle;
+import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
+import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
 
 /**
  * The Class JpaJobTitleGetMemento.
  */
 public class JpaJobTitleGetMemento implements JobTitleGetMemento {
 
-	/** The type value. */
-	private CjtmtJobTitle typeValue;
+	/** The list job title hist. */
+	private List<BsymtJobHist> listJobTitleHistory;
+
+	/** The Constant ELEMENT_FIRST. */
+	private static final Integer ELEMENT_FIRST = 0;
 
 	/**
 	 * Instantiates a new jpa job title get memento.
 	 *
-	 * @param typeValue the type value
+	 * @param listJobTitleHistory
+	 *            the list job title history
 	 */
-	public JpaJobTitleGetMemento(CjtmtJobTitle typeValue) {
-		this.typeValue = typeValue;
+	public JpaJobTitleGetMemento(List<BsymtJobHist> listJobTitleHistory) {
+		this.listJobTitleHistory = listJobTitleHistory;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleGetMemento#getPositionId()
-	 */
-	@Override
-	public PositionId getPositionId() {
-		return new PositionId(this.typeValue.getCjtmtJobTitlePK().getJobId());
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleGetMemento#getCompanyId()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleGetMemento#getCompanyId()
 	 */
 	@Override
 	public CompanyId getCompanyId() {
-		return new CompanyId(this.typeValue.getCjtmtJobTitlePK().getCompanyId());
+		return new CompanyId(this.listJobTitleHistory.get(ELEMENT_FIRST).getBsymtJobHistPK().getCid());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleGetMemento#getSequenceCode()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleGetMemento#getJobTitleId()
 	 */
 	@Override
-	public SequenceCode getSequenceCode() {
-		return new SequenceCode(this.typeValue.getSequenceCode());
+	public JobTitleId getJobTitleId() {
+		return new JobTitleId(this.listJobTitleHistory.get(ELEMENT_FIRST).getBsymtJobHistPK().getJobId());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleGetMemento#getPeriod()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleGetMemento#getJobTitleHistory
+	 * ()
 	 */
 	@Override
-	public Period getPeriod() {
-		return new Period(this.typeValue.getStartDate(), this.typeValue.getEndDate());
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleGetMemento#getPositionCode()
-	 */
-	@Override
-	public PositionCode getPositionCode() {
-		return new PositionCode(this.typeValue.getCjtmtJobTitlePK().getJobCode());
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.basic.dom.company.organization.jobtitle.JobTitleGetMemento#getPositionName()
-	 */
-	@Override
-	public PositionName getPositionName() {
-		return new PositionName(this.typeValue.getJobName());
+	public List<JobTitleHistory> getJobTitleHistory() {
+		return this.listJobTitleHistory.stream()
+				.map(item -> new JobTitleHistory(new JpaJobTitleHistoryGetMemento(item)))
+				.collect(Collectors.toList());
 	}
 
 }

@@ -70,7 +70,10 @@ public class DeleteWkpConfigCommandHandler extends CommandHandler<DeleteWkpConfi
         DeleteWkpConfigCommand command = context.getCommand();
         
         // valid history latest
-        HistoryUtil.validHistoryLatest(wkpConfig, command.getHistoryId());
+        List<String> lstHistoryId = wkpConfig.getWkpConfigHistory().stream()
+                .map(item -> item.getHistoryId())
+                .collect(Collectors.toList());
+        HistoryUtil.validHistoryLatest(lstHistoryId, command.getHistoryId());
         
         // remove workplace config history
         this.wkpConfigRepo.removeWkpConfigHist(companyId, command.getHistoryId());

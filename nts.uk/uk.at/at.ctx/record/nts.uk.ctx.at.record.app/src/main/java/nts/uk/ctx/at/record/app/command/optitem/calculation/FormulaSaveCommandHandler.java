@@ -49,15 +49,15 @@ public class FormulaSaveCommandHandler extends CommandHandler<FormulaSaveCommand
 		FormulaSaveCommand command = context.getCommand();
 		String companyId = AppContexts.user().companyId();
 
-		List<Formula> formulas = command.getListCalcFormula().stream().map(item -> {
+		List<Formula> formulas = command.getCalcFormulas().stream().map(item -> {
 			return new Formula(item);
 		}).collect(Collectors.toList());
 
-		List<FormulaDispOrder> dispOrders = command.getListCalcFormula().stream().map(item -> {
+		List<FormulaDispOrder> dispOrders = command.getCalcFormulas().stream().map(item -> {
 			return new FormulaDispOrder(item);
 		}).collect(Collectors.toList());
 
-		String optionalItemNo = formulas.get(FIRST_ITEM).getOptionalItemNo().v();
+		String optionalItemNo = command.getOptItemNo();
 		this.repository.remove(companyId, optionalItemNo);
 		this.orderRepo.remove(companyId, optionalItemNo);
 

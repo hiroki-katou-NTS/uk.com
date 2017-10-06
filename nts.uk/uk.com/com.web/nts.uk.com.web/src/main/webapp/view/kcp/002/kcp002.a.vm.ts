@@ -34,7 +34,6 @@ module kcp002.a.viewmodel {
             self.isAlreadySetting = ko.observable(false);
             self.isDialog = ko.observable(false);
             self.isShowNoSelectionItem = ko.observable(false);
-            self.isMultiSelect = ko.observable(false);
             self.selectionTypeList = ko.observableArray([
                 { code: 1, name: 'By Selected Code' },
                 { code: 2, name: 'Select All Items' },
@@ -100,6 +99,7 @@ module kcp002.a.viewmodel {
                         else {
                             self.selectedType(1);
                             nts.uk.ui.dialog.alert("使用できません ! ");
+                            return;
                         }
                         break;
                     case 3:
@@ -139,6 +139,9 @@ module kcp002.a.viewmodel {
                 } else {
                     if (self.selectedType() == SelectType.SELECT_BY_SELECTED_CODE) {
                         self.listComponentOption.selectedCode = self.bySelectedCode;
+                    } else if (self.selectedType() == SelectType.SELECT_ALL) {
+                        self.selectedType(SelectType.SELECT_BY_SELECTED_CODE);
+                        return;
                     } else {
                         self.listComponentOption.selectedCode = self.selectedCode;
                     }
@@ -181,7 +184,6 @@ module kcp002.a.viewmodel {
             } else {
                 nts.uk.ui.dialog.alert("保存する項目を選択してください! ");
             }
-            $('#classification-list-setting').ntsListComponent(self.listComponentOption);
         }
 
         private remove() {
@@ -207,7 +209,6 @@ module kcp002.a.viewmodel {
             } else {
                 nts.uk.ui.dialog.alert("削除する項目を選択してください ! ");
             }
-            $('#classification-list-setting').ntsListComponent(self.listComponentOption);
         }
 
         private getSelectedItemCode(): string {

@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.classification;
 
 import lombok.Data;
@@ -6,6 +10,11 @@ import nts.uk.ctx.bs.employee.dom.classification.ClassificationGetMemento;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationName;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.primitive.Memo;
+
+/**
+ * The Class ClfSaveCommand.
+ */
 
 /**
  * Instantiates a new clf save command.
@@ -19,7 +28,7 @@ public class ClfSaveCommand implements ClassificationGetMemento {
 	/** The classification name. */
 	private String classificationName;
 	
-	/** The memo. */
+	/** The classification memo. */
 	private String memo;
 	
 	/* (non-Javadoc)
@@ -44,5 +53,15 @@ public class ClfSaveCommand implements ClassificationGetMemento {
 	@Override
 	public ClassificationName getClassificationName() {
 		return new ClassificationName(this.classificationName);
+	}
+	
+	/**
+	 * Get classification memo.
+	 *
+	 * @return the classification memo
+	 */
+	@Override
+	public Memo getClassificationMemo(){
+		return new Memo(this.memo);
 	}
 }

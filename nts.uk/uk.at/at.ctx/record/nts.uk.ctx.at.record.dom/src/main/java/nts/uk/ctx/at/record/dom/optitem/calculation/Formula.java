@@ -47,6 +47,10 @@ public class Formula extends AggregateRoot {
 	// 計算式設定
 	private CalcFormulaSetting calcFormulaSetting;
 
+	/** The calculation atr. */
+	// 計算区分
+	private CalculationAtr calcAtr;
+
 	// ===================== Optional ======================= //
 	/** The monthly rounding. */
 	// 月別端数処理
@@ -67,7 +71,8 @@ public class Formula extends AggregateRoot {
 		this.optionalItemNo = memento.getOptionalItemNo();
 		this.formulaName = memento.getFormulaName();
 		this.calcFormulaSetting = memento.getCalcFormulaSetting();
-		this.formulaAtr = memento.getCalcFormulaAtr();
+		this.calcAtr = memento.getCalcFormulaAtr();
+		this.formulaAtr = memento.getFormulaAtr();
 		this.symbol = memento.getSymbol();
 		this.monthlyRounding = memento.getMonthlyRounding();
 		this.dailyRounding = memento.getDailyRounding();
@@ -82,10 +87,11 @@ public class Formula extends AggregateRoot {
 		memento.setCompanyId(this.companyId);
 		memento.setFormulaId(this.formulaId);
 		memento.setOptionalItemNo(this.optionalItemNo);
+		memento.setFormulaAtr(this.formulaAtr);
 		memento.setFormulaName(this.formulaName);
-		memento.setCalcFormulaSetting(this.calcFormulaSetting);
-		memento.setCalcFormulaAtr(this.formulaAtr);
 		memento.setSymbol(this.symbol);
+		memento.setCalcAtr(this.calcAtr);
+		memento.setCalcFormulaSetting(this.calcFormulaSetting);
 		memento.setMonthlyRounding(this.monthlyRounding);
 		memento.setDailyRounding(this.dailyRounding);
 	}

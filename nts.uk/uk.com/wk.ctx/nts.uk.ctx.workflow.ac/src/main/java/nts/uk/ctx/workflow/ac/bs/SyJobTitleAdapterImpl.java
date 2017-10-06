@@ -34,13 +34,13 @@ public class SyJobTitleAdapterImpl implements SyJobTitleAdapter{
 
 	@Override
 	public JobTitleImport findJobTitleBySid(String employeeId, GeneralDate baseDate) {
-		Optional<JobTitleExport> export = this.syJobTitlePub.findJobTitleBySid(employeeId, baseDate);
+		Optional<JobTitleExport> export = this.syJobTitlePub.findBySid(employeeId, baseDate);
 		return export.map(x -> this.toImport(x)).orElse(null);
 	}
 
 	@Override
 	public JobTitleImport findJobTitleByPositionId(String companyId, String positionId, GeneralDate baseDate) {
-		return this.syJobTitlePub.findJobTitleByPositionId(companyId, positionId, baseDate)
+		return this.syJobTitlePub.findByJobId(companyId, positionId, baseDate)
 				.map(x-> this.toImport(x)).orElse(null);
 	}
 

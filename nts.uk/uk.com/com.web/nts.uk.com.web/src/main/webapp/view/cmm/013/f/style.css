@@ -1,0 +1,22 @@
+#left-content {
+	float: left;
+	padding: 20px 10px 25px 10px;
+}
+
+#right-content {
+	float: left;
+	padding: 20px 20px 20px 50px;
+}
+
+#list-data {
+	float: left;
+}
+
+#list-data-function {
+	float: left;
+	padding-left: 10px;
+}
+
+.table_content td {
+	padding-top: 20px;
+}

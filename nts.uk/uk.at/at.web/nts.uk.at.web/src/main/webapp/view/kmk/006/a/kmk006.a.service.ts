@@ -2,22 +2,22 @@ module nts.uk.at.view.kmk006.a {
     export module service {
         var paths = {
 
-            findEnumUnitAutoCal: "ctx/at/schedule/shift/autocalunit/find/autocalunit",
-            findEnumAutoCalAtrOvertime: "ctx/at/schedule/shift/autocal/find/autocalatrovertime",
-            findEnumUseClassification: "ctx/at/schedule/shift/autocal/find/autocaluseclassification",
-            findEnumTimeLimitUpperLimitSetting: "ctx/at/schedule/shift/autocal/find/autocaltimelimitsetting",
-            findEnumUseUnitOvertimeSetting: "ctx/at/schedule/shift/autocal/find/autocaluseunitovertimesetting",
-            getComAutoCal: "ctx/at/schedule/shift/autocalcom/getautocalcom",
-            saveComAutoCal: "ctx/at/schedule/shift/autocalcom/save",
-            saveJobAutoCal: "ctx/at/schedule/shift/autocaljob/save",
-            saveWkpAutoCal: "ctx/at/schedule/shift/autocalwkp/save",
-            saveWkpJobAutoCal: "ctx/at/schedule/shift/autocalwkpjob/save",
-            getJobAutoCal: "ctx/at/schedule/shift/autocaljob/getautocaljob",
-            getWkpAutoCal: "ctx/at/schedule/shift/autocalwkp/getautocalwkp",
-            getWkpJobAutoCal: "ctx/at/schedule/shift/autocalwkpjob/getautocalwkpjob",
-            deleteJobAutoCal: "ctx/at/schedule/shift/autocaljob/delete",
-            deleteWkpAutoCal: "ctx/at/schedule/shift/autocalwkp/delete",
-            deleteWkpJobAutoCal: "ctx/at/schedule/shift/autocalwkpjob/delete"
+            findEnumUnitAutoCal: "ctx/at/shared/ot/autocal/unit/find/autocalunit",
+            findEnumAutoCalAtrOvertime: "ctx/at/shared/ot/autocal/find/autocalatrovertime",
+            findEnumUseClassification: "ctx/at/shared/ot/autocal/find/autocaluseclassification",
+            findEnumTimeLimitUpperLimitSetting: "ctx/at/shared/ot/autocal/find/autocaltimelimitsetting",
+            findEnumUseUnitOvertimeSetting: "ctx/at/shared/ot/autocal/find/autocaluseunitovertimesetting",
+            getComAutoCal: "ctx/at/shared/ot/autocal/com/getautocalcom",
+            saveComAutoCal: "ctx/at/shared/ot/autocal/com/save",
+            saveJobAutoCal: "ctx/at/shared/ot/autocal/job/save",
+            saveWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/save",
+            saveWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/save",
+            getJobAutoCal: "ctx/at/shared/ot/autocal/job/getautocaljob",
+            getWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/getautocalwkp",
+            getWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/getautocalwkpjob",
+            deleteJobAutoCal: "ctx/at/shared/ot/autocal/job/delete",
+            deleteWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/delete",
+            deleteWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/delete"
         }
 
         /**
