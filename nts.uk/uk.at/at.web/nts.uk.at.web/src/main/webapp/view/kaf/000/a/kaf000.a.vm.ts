@@ -1,4 +1,6 @@
 module nts.uk.at.view.kaf000.a.viewmodel{
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel{
         /**
          * List
@@ -20,8 +22,10 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         inputMessageDeadline : KnockoutObservable<model.InputMessageDeadline>;
         //obj output message deadline
         outputMessageDeadline : KnockoutObservable<model.OutputMessageDeadline>;
+        
         constructor(){
             let self = this;
+
             /**
              * List
              */
@@ -30,18 +34,32 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             //item approval root
             self.approvalRoot = ko.observableArray([]);
             //obj input approval root
-            //self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','90000000-0000-0000-0000-000000000001',1,1,new Date('2017-01-02 00:00:00')));
             self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','90000000-0000-0000-0000-000000000005',1,1,new Date('2018-01-01 00:00:00')));
-            //console.log(self.objApprovalRootInput());
             //obj input get message deadline 
-            self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline("000000000000-0005",null,1,null));
+            self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline("000000000000-0005",null,1));
             //obj input get message deadline 
             self.outputMessageDeadline = ko.observable(null);
         }
-        
-        start(): JQueryPromise<any> {
-            
+        /**
+         * cid 会社ID 
+           sid 社員ID（申請本人の社員ID）
+           employmentRootAtr 就業ルート区分
+           subjectRequest 対象申請
+           baseDate 基準日
+           workplaceID 
+         */
+        start(cid, sid, employmentRootAtr,appType,standardDate,workplaceID): JQueryPromise<any> {
             let self = this;
+            self.objApprovalRootInput().cid=cid;
+            self.objApprovalRootInput().sid=sid;
+            self.objApprovalRootInput().employmentRootAtr =employmentRootAtr;
+            self.objApprovalRootInput().appType = appType;
+            self.objApprovalRootInput().standardDate = standardDate;
+            
+            self.inputMessageDeadline().companyID  = cid;
+            self.inputMessageDeadline().appType = appType;
+            self.inputMessageDeadline().workplaceID =workplaceID;
+            
             let dfd = $.Deferred();
             let dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
             let dfdAllApprovalRoot = self.getAllApprovalRoot();
@@ -51,6 +69,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             });
             return dfd.promise();
         }
+        
         
         //get all listApprovalRoot
         getAllApprovalRoot(){
@@ -79,8 +98,8 @@ module nts.uk.at.view.kaf000.a.viewmodel{
     }
     
     export module model {
-        //AppApprovalPhase
-        //class AppApprovalPhase
+        //       AppApprovalPhase
+        // class AppApprovalPhase
         export class AppApprovalPhase{
             appID : KnockoutObservable<String>;
             phaseID : KnockoutObservable<String>;
@@ -249,10 +268,10 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             sid : String;
             employmentRootAtr : number;
             appType : number;
-            standardDate :  Date;
+            standardDate :  String;
             constructor (cid : String,
                         sid : String,employmentRootAtr : number,
-                        appType : number,standardDate : Date){
+                        appType : number,standardDate : String){
                 this.cid  = cid;
                 this.sid = sid; 
                 this.employmentRootAtr =employmentRootAtr;
@@ -266,12 +285,10 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             companyID : String;
             workplaceID : String;
             appType : number;
-            appDate : Date;
-            constructor(companyID : String,workplaceID : String,appType : number,appDate: Date){
+            constructor(companyID : String,workplaceID : String,appType : number){
             this.companyID = companyID;
             this.workplaceID = workplaceID;
-            this.appType = appType;
-            this.appDate = appDate;                
+            this.appType = appType;            
             }
             
         }//end class InputMessageDeadline

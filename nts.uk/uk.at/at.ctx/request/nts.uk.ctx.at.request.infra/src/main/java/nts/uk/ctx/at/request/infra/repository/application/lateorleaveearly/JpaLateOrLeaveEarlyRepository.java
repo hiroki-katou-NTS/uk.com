@@ -58,7 +58,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 		updateEntity.early2 = newEntity.early2;
 		updateEntity.earlyTime2 = newEntity.earlyTime2;
 		updateEntity.late2 = newEntity.late2;
-		updateEntity.lateTime2 = newEntity.early2;
+		updateEntity.lateTime2 = newEntity.lateTime2;
 		this.commandProxy().update(updateEntity);
 		
 	}

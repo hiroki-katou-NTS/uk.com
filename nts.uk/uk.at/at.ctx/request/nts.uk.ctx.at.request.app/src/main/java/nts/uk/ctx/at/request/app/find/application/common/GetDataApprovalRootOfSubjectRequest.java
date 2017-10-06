@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.ApprovalRootAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApprovalRootImport;
 
 @Stateless
 public class GetDataApprovalRootOfSubjectRequest {
@@ -34,6 +35,13 @@ public class GetDataApprovalRootOfSubjectRequest {
 //				 approverInfo.setSid(nameApprover);
 //			 }
 //		 }
+		List<ApprovalRootImport> list = this.approvalRootRepo.getApprovalRootOfSubjectRequest(
+				objApprovalRootInput.getCid(), 
+				objApprovalRootInput.getSid(),
+				objApprovalRootInput.getEmploymentRootAtr(), 
+				objApprovalRootInput.getAppType(),
+				objApprovalRootInput.getStandardDate());
+		
 		
 		return this.approvalRootRepo.getApprovalRootOfSubjectRequest(objApprovalRootInput.getCid(), 
 				objApprovalRootInput.getSid(), objApprovalRootInput.getEmploymentRootAtr(), 
