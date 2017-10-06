@@ -559,9 +559,10 @@
 											class="margin-right-FormLabel">
 											<span data-bind="text: '#{i18n.getText('CPS005_29')}' "></span>
 										</div>
-										<span class="label" data-bind="text: timeItemMin"></span> <span
-											class="label">～</span> <span class="label"
-											data-bind="text: timeItemMax"></span>
+										<span class="label"
+											data-bind="text: $parents[2].genTextTime(timeItemMin)"></span>
+										<span class="label">～</span> <span class="label"
+											data-bind="text: $parents[2].genTextTime(timeItemMax)"></span>
 									</div>
 								</div>
 								<!-- End dataType is selected value 4 - 時間(Time) -->
@@ -576,9 +577,10 @@
 											class="margin-right-FormLabel">
 											<span data-bind="text: '#{i18n.getText('CPS005_32')}' "></span>
 										</div>
-										<span class="label" data-bind="text: timePointItemMin"></span>
+										<span class="label"
+											data-bind="text: $parents[2].genTextTime(timePointItemMin)"></span>
 										<span class="label">～</span> <span class="label"
-											data-bind="text: timePointItemMax"></span>
+											data-bind="text: $parents[2].genTextTime(timePointItemMax)"></span>
 									</div>
 								</div>
 								<!-- End dataType is selected value 5 - 時刻(TimePoint) -->

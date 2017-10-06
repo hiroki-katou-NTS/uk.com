@@ -9,7 +9,7 @@ module nts.uk.com.view.cps005.b {
             });
 
             $('#contents-area').on('focusout', '#timePointItemMin', function() {
-                __viewContext['screenModel'].currentItemData().currentItemSelected().timePointItem().hintTimeMin('0.00');
+                __viewContext['screenModel'].currentItemData().currentItemSelected().timePointItem().hintTimeMin('0:00');
             });
 
             $('#contents-area').on('focus', '#timePointItemMax', function() {
@@ -17,7 +17,7 @@ module nts.uk.com.view.cps005.b {
             });
 
             $('#contents-area').on('focusout', '#timePointItemMax', function() {
-                __viewContext['screenModel'].currentItemData().currentItemSelected().timePointItem().hintTimeMax('0.00');
+                __viewContext['screenModel'].currentItemData().currentItemSelected().timePointItem().hintTimeMax('0:00');
             });
 
 

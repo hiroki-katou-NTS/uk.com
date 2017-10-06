@@ -209,6 +209,10 @@ module nts.uk.com.view.cps005.b {
                     }
                 }
             }
+            
+            genTextTime(time) {
+                return nts.uk.time.parseTime(time(), true).format();
+            }
         }
     }
 
@@ -375,8 +379,8 @@ module nts.uk.com.view.cps005.b {
     export class TimePointItemModel {
         timePointItemMin: KnockoutObservable<number> = ko.observable();
         timePointItemMax: KnockoutObservable<number> = ko.observable();
-        hintTimeMin: KnockoutObservable<string> = ko.observable('0.00');
-        hintTimeMax: KnockoutObservable<string> = ko.observable('0.00');
+        hintTimeMin: KnockoutObservable<string> = ko.observable('0:00');
+        hintTimeMax: KnockoutObservable<string> = ko.observable('0:00');
         constructor(data: ITimePointItem) {
             let self = this;
             if (!data) return;
