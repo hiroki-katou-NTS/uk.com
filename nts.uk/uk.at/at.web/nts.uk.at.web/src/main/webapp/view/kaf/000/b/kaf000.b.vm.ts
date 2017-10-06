@@ -77,7 +77,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         constructor(appType: number) {
             let self = this;
             //reason input event
-            self.appReasonEvent = ko.observable('');
+            self.appReasonEvent = ko.observable('123');
             
             self.listAppId = [];
             //__viewContext.transferred.value.appID;
@@ -110,7 +110,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.outputDetailCheck = ko.observable(null);
 
             //obj input get message deadline 
-            self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline("000000000000-0005", null, 1, null));
+            self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline("000000000000-0005", null, 1));
             //obj input get message deadline 
             self.outputMessageDeadline = ko.observable(null);
             
@@ -136,9 +136,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 
         abstract update(): any;
 
-        start(): JQueryPromise<any> {
-
+        start(cid,workplaceID,appType,baseDate): JQueryPromise<any> {
             let self = this;
+            self.inputMessageDeadline().companyID = cid;
+            self.inputMessageDeadline().workplaceID = workplaceID;
+            self.inputMessageDeadline().appType = appType;
+            
+            self.inputDetail().baseDate =baseDate;
             let dfd = $.Deferred();
             let dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
             let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
@@ -337,7 +341,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let index = self.listAppId.indexOf(self.appID());
             if(index !=0){
                 self.appID(self.listAppId[index-1]);
-                self.start();
+                self.start(self.inputMessageDeadline().companyID,
+                           self.inputMessageDeadline().workplaceID,
+                           self.inputMessageDeadline().appType,
+                           self.inputDetail().baseDate);
             }
         }
         /**
@@ -348,7 +355,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let index = self.listAppId.indexOf(self.appID());
             if(index != self.listAppId.length-1){
                 self.appID(self.listAppId[index+1]);
-                self.start();
+                
+                
+                self.start(self.inputMessageDeadline().companyID,
+                           self.inputMessageDeadline().workplaceID,
+                           self.inputMessageDeadline().appType,
+                           self.inputDetail().baseDate);
             }
         }
         /**
@@ -356,8 +368,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          */
         btnApprove(){
             let self = this;
+            self.inputCommandEvent(new model.InputCommandEvent(self.appID(),self.appReasonEvent()));
             let dfd = $.Deferred<any>();
-            service.approveApp(self.appID()).done(function() {
+            service.approveApp(self.inputCommandEvent()).done(function() {
                 dfd.resolve();
             });
             return dfd.promise();
@@ -367,8 +380,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          */
         btnDeny(){
             let self = this;
+            self.inputCommandEvent(new model.InputCommandEvent(self.appID(),self.appReasonEvent()));
             let dfd = $.Deferred<any>();
-            service.denyApp(self.appID()).done(function() {
+            service.denyApp(self.inputCommandEvent()).done(function() {
                 dfd.resolve();
             });
             return dfd.promise();
@@ -379,9 +393,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          */
         btnRelease(){
             let self = this;
+            self.inputCommandEvent(new model.InputCommandEvent(self.appID(),self.appReasonEvent()));
             let dfd = $.Deferred<any>();
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_28' }).ifYes(function () {
-                service.releaseApp(self.appID()).done(function() {
+                service.releaseApp(self.inputCommandEvent()).done(function() {
                     dfd.resolve();
                 });
             });
@@ -415,9 +430,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          */
         btnDelete(){
             let self = this;
+            self.inputCommandEvent(new model.InputCommandEvent(self.appID(),self.appReasonEvent()));
             let dfd = $.Deferred<any>();
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function () {
-                service.deleteApp(self.appID()).done(function(data) {
+                service.deleteApp(self.inputCommandEvent()).done(function(data) {
                     
                     nts.uk.ui.dialog.alert({messageId : 'Msg_16'}).then(function(){
                         //kiểm tra list người xác nhận, nếu khác null thì show info 392
@@ -442,7 +458,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     //if list # null    
                     if(self.listAppId.length!=0)
                     {
-                        self.start();
+                        self.start(self.inputMessageDeadline().companyID,
+                                    self.inputMessageDeadline().workplaceID,
+                                    self.inputMessageDeadline().appType,
+                                    self.inputDetail().baseDate);
                     }else{ //nếu list null thì trả về màn hình mẹ
                         nts.uk.request.jump("/view/kaf/000/test/index.xhtml");    
                     }
@@ -457,9 +476,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          */
         btnCancel(){
             let self = this;
+            self.inputCommandEvent(new model.InputCommandEvent(self.appID(),self.appReasonEvent()));
             let dfd = $.Deferred<any>();
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_249' }).ifYes(function () {
-                service.cancelApp(self.appID()).done(function() {
+                service.cancelApp( self.inputCommandEvent()).done(function() {
                     nts.uk.ui.dialog.alert({ messageId: "Msg_224" })
                     dfd.resolve();
                 });
@@ -641,12 +661,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             companyID: String;
             workplaceID: String;
             appType: number;
-            appDate: Date;
-            constructor(companyID: String, workplaceID: String, appType: number, appDate: Date) {
+            constructor(companyID: String, workplaceID: String, appType: number) {
                 this.companyID = companyID;
                 this.workplaceID = workplaceID;
                 this.appType = appType;
-                this.appDate = appDate;
             }
 
         }//end class InputMessageDeadline
@@ -663,11 +681,11 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         
         //class InputCommandEvent
         export class InputCommandEvent{
-            appID : String;
-            appReason : String;
-            constructor(appID : String,appReason : String){
-                this.appID = appID;
-                this.appReason = appReason;
+            appId : String;
+            applicationReason : String;
+            constructor(appId : String,applicationReason : String){
+                this.appId = appId;
+                this.applicationReason = applicationReason;
             }
         }
     }

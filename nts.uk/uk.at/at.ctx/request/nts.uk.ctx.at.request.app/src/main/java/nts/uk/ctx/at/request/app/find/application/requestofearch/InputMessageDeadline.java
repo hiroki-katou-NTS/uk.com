@@ -8,5 +8,4 @@ public class InputMessageDeadline {
 	String companyID;
 	String workplaceID;
 	int appType;
-	GeneralDate appDate;
 }
