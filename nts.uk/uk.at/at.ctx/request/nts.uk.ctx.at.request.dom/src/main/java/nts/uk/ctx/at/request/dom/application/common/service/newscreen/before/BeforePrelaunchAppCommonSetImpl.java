@@ -7,13 +7,14 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.AppCommonSettingOutput;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSetting;
 import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSetting;
+import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCompany;
 import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCompanyRepository;
@@ -37,18 +38,25 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 	@Inject
 	private RequestOfEachCompanyRepository requestOfEachCompanyRepository;
 	
+	@Inject
+	private AppTypeDiscreteSettingRepository appTypeDiscreteSettingRepository;
+	
 	public AppCommonSettingOutput prelaunchAppCommonSetService(String companyID, String employeeID, int rootAtr, ApplicationType targetApp, GeneralDate appDate){
 		AppCommonSettingOutput appCommonSettingOutput = new AppCommonSettingOutput();
 		GeneralDate baseDate = null;
 		// ドメインモデル「申請承認設定」を取得する ( Acquire the domain model "application approval setting" )
 		Optional<ApplicationSetting> applicationSettingOp = appSettingRepository.getApplicationSettingByComID(companyID);
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
-		
+		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, ApplicationType.STAMP_APPLICATION.value);
+		if(appTypeDiscreteSettingOp.isPresent()) {
+			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
+			appCommonSettingOutput.appTypeDiscreteSettings.add(appTypeDiscreteSetting);
+		}
 		// ドメインモデル「申請設定」．承認ルートの基準日をチェックする ( Domain model "application setting". Check base date of approval route )
 		if(applicationSetting.getBaseDateFlg().equals(BaseDateFlg.APP_DATE)){
+			if(appDate==null){
 			// 「申請設定」．承認ルートの基準日が申請対象日時点の場合 ( "Application setting". When the reference date of the approval route is the date of the application target date )
 			// 申請対象日のパラメータがあるかチェックする ( Check if there is a parameter on the application target date )
-			if(appDate!=null){
 				baseDate = GeneralDate.today();
 			} else {
 				baseDate = appDate;

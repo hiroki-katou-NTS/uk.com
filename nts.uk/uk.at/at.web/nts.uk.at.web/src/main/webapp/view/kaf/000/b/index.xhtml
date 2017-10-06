@@ -42,9 +42,9 @@
 					<!-- B1_1 -->
 					<a class="goback" data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">#{i18n.getText('KAF000_14')}</a>
 					<!-- B1_2 -->
-					<button><i class="icon icon-button-arrow-left"></i></button>
+					<button data-bind="click: btnBefore, enable: enableBefore" ><i class="icon icon-button-arrow-left"></i></button>
 					<!-- B1_3 -->
-					<button><i class="icon icon-button-arrow-right"></i></button>
+					<button data-bind="click: btnAfter, enable: enableAfter"><i class="icon icon-button-arrow-right"></i></button>
 					<!-- B1_4 -->
 					<button class="proceed" data-bind="click: btnApprove, enable: enableApprove">#{i18n.getText('KAF000_15')}</button>
 					<!-- B1_5 -->

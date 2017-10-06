@@ -49,15 +49,13 @@ public class KrcmtCalcItemSelectionPK implements Serializable {
 	/**
 	 * Instantiates a new krcmt calc item selection PK.
 	 *
-	 * @param cid the cid
-	 * @param optionalItemNo the optional item no
-	 * @param formulaId the formula id
+	 * @param formulaPk the formula pk
 	 * @param attendanceItemId the attendance item id
 	 */
-	public KrcmtCalcItemSelectionPK(String cid, String optionalItemNo, String formulaId, String attendanceItemId) {
-		this.cid = cid;
-		this.optionalItemNo = optionalItemNo;
-		this.formulaId = formulaId;
+	public KrcmtCalcItemSelectionPK(KrcmtOptItemFormulaPK formulaPk, String attendanceItemId) {
+		this.cid = formulaPk.getCid();
+		this.optionalItemNo = formulaPk.getOptionalItemNo();
+		this.formulaId = formulaPk.getFormulaId();
 		this.attendanceItemId = attendanceItemId;
 	}
 

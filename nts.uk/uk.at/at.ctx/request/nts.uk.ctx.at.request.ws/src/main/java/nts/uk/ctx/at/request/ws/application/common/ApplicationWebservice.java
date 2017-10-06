@@ -11,9 +11,10 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommonCmd;
+import nts.uk.ctx.at.request.app.command.application.common.ListMailApproval;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationApproveHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCancelHandler;
-import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationCommand;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDelete;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationDenyHandler;
 import nts.uk.ctx.at.request.app.command.application.common.UpdateApplicationReleaseHandler;
@@ -43,7 +44,7 @@ public class ApplicationWebservice extends WebService {
 	private ApplicationFinder finderApp;
 	
 	@Inject 
-	private CheckDisplayMessage getDataBeforePreBootMode; 
+	private CheckDisplayMessage checkDisplayMessage; 
 	
 	@Inject 
 	private GetDataApprovalRootOfSubjectRequest getDataApprovalRoot;
@@ -86,9 +87,9 @@ public class ApplicationWebservice extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("approveapp/{applicationID}")
-	public void approveApp(@PathParam("applicationID") String applicationID){
-		 this.approveApp.approveApp(applicationID);
+	@Path("approveapp")
+	public void approveApp(UpdateApplicationCommonCmd command){
+		 this.approveApp.handle(command);
 	}
 	
 	/**
@@ -96,9 +97,9 @@ public class ApplicationWebservice extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("denyapp/{applicationID}")
-	public void denyApp(@PathParam("applicationID") String applicationID){
-		 this.denyApp.denyApp(applicationID);
+	@Path("denyapp")
+	public void denyApp(UpdateApplicationCommonCmd command){
+		 this.denyApp.handle(command);
 	}
 	
 	/**
@@ -106,9 +107,9 @@ public class ApplicationWebservice extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("releaseapp/{applicationID}")
-	public void releaseApp(@PathParam("applicationID") String applicationID){
-		 this.releaseApp.releaseApp(applicationID);
+	@Path("releaseapp")
+	public void releaseApp(UpdateApplicationCommonCmd command){
+		 this.releaseApp.handle(command);
 	}
 	
 	/**
@@ -116,19 +117,19 @@ public class ApplicationWebservice extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("cancelapp/{applicationID}")
-	public void cancelApp(@PathParam("applicationID") String applicationID){
-		 this.cancelApp.cancelApp(applicationID);
+	@Path("cancelapp")
+	public void cancelApp(UpdateApplicationCommonCmd command){
+		 this.cancelApp.handle(command);
 	}
 	
 	/**
-	 * cancel application
+	 * delete application
 	 * @return
 	 */
 	@POST
-	@Path("deleteapp/{applicationID}")
-	public void deleteApp(@PathParam("applicationID") String applicationID){
-		 this.deleteApp.deleteApp(applicationID);
+	@Path("deleteapp")
+	public ListMailApproval deleteApp(UpdateApplicationCommonCmd command){
+		 return this.deleteApp.handle(command);
 	}
 	
 	/**
@@ -179,7 +180,7 @@ public class ApplicationWebservice extends WebService {
 	@POST
 	@Path("checkdisplayreason")
 	public boolean checkDisplayReason( Application application,GeneralDate datebase) {
-		return this.getDataBeforePreBootMode.checkDisplayReasonApp(application, datebase);
+		return this.checkDisplayMessage.checkDisplayReasonApp(application, datebase);
 	}
 	
 	/**
@@ -189,7 +190,7 @@ public class ApplicationWebservice extends WebService {
 	@POST
 	@Path("checkdisplayauthorizationcomment")
 	public boolean checkAuthorizationComment( Application application,GeneralDate datebase) {
-		return this.getDataBeforePreBootMode.checkDisplayAuthorizationComment(application, datebase);
+		return this.checkDisplayMessage.checkDisplayAuthorizationComment(application, datebase);
 	}
 	
 	

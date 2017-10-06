@@ -22,16 +22,8 @@ public class RegisterAppApprovalRootCommand {
 	private List<CompanyAppRootADto> root;
 	/**ls is selected*/
 	private AddHistoryDto addHist;
-	
-	private boolean checkAddRoot;
-	private boolean checkEdit;
-	
-	private boolean checkDelete;
 	//list db
 	private List<Integer> lstAppType;
-	
 	private String startDate;
 	private String endDate;
-	private String approvalId;
-//	private int mode;//0: common; 1: private
 }

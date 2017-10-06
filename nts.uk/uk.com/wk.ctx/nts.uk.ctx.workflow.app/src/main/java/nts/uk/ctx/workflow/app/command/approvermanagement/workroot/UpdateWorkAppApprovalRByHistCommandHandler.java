@@ -47,25 +47,25 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 		List<UpdateHistoryDto> lstHist = objUpdateItem.getLstUpdate();
 		//history current
 		String startDate = objUpdateItem.getStartDate();
-		GeneralDate sDate = GeneralDate.fromString(startDate, "yyyy-MM-dd");
+		GeneralDate sDate = GeneralDate.fromString(startDate, "yyyy/MM/dd");
 		GeneralDate eDate = sDate.addDays(-1);
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		String endDateUpdate = eDate.localDate().format(formatter);//Edate: edit
 		//history previous
 		String startDatePrevious = objUpdateItem.getStartDatePrevious();
-		GeneralDate sDatePrevious = GeneralDate.localDate(LocalDate.parse(startDatePrevious));
+		GeneralDate sDatePrevious = GeneralDate.localDate(LocalDate.parse(startDatePrevious.replace("/","-")));
 		GeneralDate eDatePrevious = sDatePrevious.addDays(-1);//Edate to find history Previous 
 		String endDateDelete = "9999-12-31";//Edate: delete
 		//** For
 		for (UpdateHistoryDto updateItem : lstHist) {
 			//TH: company - domain 会社別就業承認ルート
-			if(objUpdateItem.getCheck()==1){
+			if(objUpdateItem.getCheck()==0){
 				Optional<CompanyApprovalRoot> comAppRootDb = repoCom.getComApprovalRoot(companyId, updateItem.getApprovalId(), updateItem.getHistoryId());
 				if(!comAppRootDb.isPresent()){
 					continue;
 				}
-				//item update
-				CompanyApprovalRoot comAppRoot = CompanyApprovalRoot.updateSdateEdate(comAppRootDb.get(), objUpdateItem.getEndDate());
+				//item update (New)
+				CompanyApprovalRoot comAppRoot = CompanyApprovalRoot.updateSdate(comAppRootDb.get(), startDate.replace("/","-"));
 				//find history previous
 				List<CompanyApprovalRoot> lstOld= repoCom.getComApprovalRootByEdate(companyId, eDatePrevious, comAppRoot.getApplicationType()== null ? null : comAppRoot.getApplicationType().value);
 				if(lstOld.isEmpty()){// history previous is not exist
@@ -91,13 +91,13 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					}
 					if(objUpdateItem.getEditOrDelete()==1){//edit
 						//history previous 
-						CompanyApprovalRoot comAppRootUpdate= CompanyApprovalRoot.updateSdateEdate(com, endDateUpdate);
+						CompanyApprovalRoot comAppRootUpdate= CompanyApprovalRoot.updateEdate(com, endDateUpdate);
 						//update history previous
 						repoCom.updateComApprovalRoot(comAppRootUpdate);
 						//update history current
 						repoCom.updateComApprovalRoot(comAppRoot);
 					}else{//delete 
-						CompanyApprovalRoot comAppRootUpdate = CompanyApprovalRoot.updateSdateEdate(com, endDateDelete);
+						CompanyApprovalRoot comAppRootUpdate = CompanyApprovalRoot.updateEdate(com, endDateDelete);
 						//update history previous
 						repoCom.updateComApprovalRoot(comAppRootUpdate);
 						//get all  ApprovalPhase by BranchId
@@ -117,12 +117,12 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				}
 			}
 			//TH: workplace - domain 職場別就業承認ルート
-			if(objUpdateItem.getCheck()==2){
+			if(objUpdateItem.getCheck()==1){
 				Optional<WorkplaceApprovalRoot> wpAppRootDb = repoWorkplace.getWpApprovalRoot(companyId, updateItem.getApprovalId(), objUpdateItem.getWorkplaceId(), updateItem.getHistoryId());
 				if(!wpAppRootDb.isPresent()){
 					continue;
 				}
-				WorkplaceApprovalRoot wpAppRoot = WorkplaceApprovalRoot.updateSdateEdate(wpAppRootDb.get(), objUpdateItem.getEndDate());
+				WorkplaceApprovalRoot wpAppRoot = WorkplaceApprovalRoot.updateSdate(wpAppRootDb.get(), startDate.replace("/","-"));
 				//find history previous
 				List<WorkplaceApprovalRoot> lstOld= repoWorkplace.getWpApprovalRootByEdate(companyId, wpAppRoot.getWorkplaceId(), eDatePrevious, wpAppRoot.getApplicationType() == null ? null : wpAppRoot.getApplicationType().value);
 				if(lstOld.isEmpty()){// history previous is not exist
@@ -151,13 +151,13 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					}
 					if(objUpdateItem.getEditOrDelete()==1){//edit
 						//history previous 
-						WorkplaceApprovalRoot wpAppRootUpdate = WorkplaceApprovalRoot.updateSdateEdate(wp, endDateUpdate);
+						WorkplaceApprovalRoot wpAppRootUpdate = WorkplaceApprovalRoot.updateEdate(wp, endDateUpdate);
 						//update history previous
 						repoWorkplace.updateWpApprovalRoot(wpAppRootUpdate);
 						//update history current
 						repoWorkplace.updateWpApprovalRoot(wpAppRoot);
 					}else{//delete 
-						WorkplaceApprovalRoot wpAppRootUpdate = WorkplaceApprovalRoot.updateSdateEdate(wp, endDateDelete);
+						WorkplaceApprovalRoot wpAppRootUpdate = WorkplaceApprovalRoot.updateEdate(wp, endDateDelete);
 						//update history previous
 						repoWorkplace.updateWpApprovalRoot(wpAppRootUpdate);
 						//get all  ApprovalPhase by BranchId
@@ -182,11 +182,12 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				if(!psAppRootDb.isPresent()){
 					continue;
 				}
-				PersonApprovalRoot psAppRoot = PersonApprovalRoot.updateSdateEdate(psAppRootDb.get(), objUpdateItem.getEndDate());
+				PersonApprovalRoot psAppRoot = PersonApprovalRoot.updateSdate(psAppRootDb.get(), startDate.replace("/","-"));
 				//find history previous
 				List<PersonApprovalRoot> lstOld= repo.getPsApprovalRootByEdate(companyId, psAppRoot.getEmployeeId(),  eDatePrevious, psAppRoot.getApplicationType() == null ? null : psAppRoot.getApplicationType().value);
 				if(lstOld.isEmpty()){// history previous is not exist
 					if(objUpdateItem.getEditOrDelete()==1){//TH: edit
+						
 						repo.updatePsApprovalRoot(psAppRoot);
 					}else{//TH: delete
 						//get all  ApprovalPhase by BranchId
@@ -211,13 +212,13 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 					}
 					if(objUpdateItem.getEditOrDelete()==1){//edit
 						//history previous 
-						PersonApprovalRoot psAppRootUpdate= PersonApprovalRoot.updateSdateEdate(ps,  endDateUpdate);
+						PersonApprovalRoot psAppRootUpdate= PersonApprovalRoot.updateEdate(ps,  endDateUpdate);
 						//update history previous
 						repo.updatePsApprovalRoot(psAppRootUpdate);
 						//update history current
 						repo.updatePsApprovalRoot(psAppRoot);
 					}else{//delete 
-						PersonApprovalRoot psAppRootUpdate= PersonApprovalRoot.updateSdateEdate(ps, endDateDelete);
+						PersonApprovalRoot psAppRootUpdate= PersonApprovalRoot.updateEdate(ps, endDateDelete);
 						//update history previous
 						repo.updatePsApprovalRoot(psAppRootUpdate);
 						//get all  ApprovalPhase by BranchId

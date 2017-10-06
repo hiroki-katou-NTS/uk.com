@@ -8,7 +8,7 @@ import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 
 @Value
 public class OutputPhaseFrame {
-	//thoong tin phase
+		//thoong tin phase
 		AppApprovalPhase appApprovalPhase;
 		//list frame
 		List<ApprovalFrame> listApprovalFrame;

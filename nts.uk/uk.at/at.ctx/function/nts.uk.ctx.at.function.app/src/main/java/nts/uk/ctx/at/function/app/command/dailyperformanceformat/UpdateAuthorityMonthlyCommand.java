@@ -16,7 +16,5 @@ public class UpdateAuthorityMonthlyCommand {
 
 	private String dailyPerformanceFormatCode;
 	
-	private String dailyPerformanceFormatName;
-	
 	private List<DailyAttendanceAuthorityDetailDto> dailyAttendanceAuthorityDetailDtos;
 }

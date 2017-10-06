@@ -80,9 +80,14 @@ public class WorkplaceApprovalRoot extends AggregateRoot{
 			EnumAdaptor.valueOf(employmentRootAtr, EmploymentRootAtr.class),
 			applicationType == null ? null: EnumAdaptor.valueOf(applicationType, ApplicationType.class));
 	}
-	public static WorkplaceApprovalRoot updateSdateEdate(WorkplaceApprovalRoot wpApprovalRoot, String eDate){
+	public static WorkplaceApprovalRoot updateEdate(WorkplaceApprovalRoot wpApprovalRoot, String eDate){
 		WorkplaceApprovalRoot wp = wpApprovalRoot;
 		wp.period.updateEndate(eDate);
+		return wp;
+	}
+	public static WorkplaceApprovalRoot updateSdate(WorkplaceApprovalRoot wpApprovalRoot, String sDate){
+		WorkplaceApprovalRoot wp = wpApprovalRoot;
+		wp.period.updateStrartDate(sDate);
 		return wp;
 	}
 }
