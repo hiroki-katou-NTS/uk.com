@@ -87,7 +87,7 @@ public class WkpConfigServiceImpl implements WkpConfigService {
             return;
         }
         // find all workplace by historyId
-        List<String> lstWkpId = optionalWkpConfigInfo.get().getWkpHierarchy().stream()
+        List<String> lstWkpId = optionalWkpConfigInfo.get().getLstWkpHierarchy().stream()
                 .map(item -> item.getWorkplaceId().v()).collect(Collectors.toList());
 
         // check date of workplace

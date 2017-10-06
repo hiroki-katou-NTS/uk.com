@@ -16,7 +16,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepos
  * The Class RegisterWorkplaceConfigInfoCommandHandler.
  */
 @Stateless
-public class RegisterWorkplaceConfigInfoCommandHandler extends CommandHandler<RegisterWorkplaceConfigInfoCommand>{
+public class RegisterWkpConfigInfoCommandHandler extends CommandHandler<RegisterWkpConfigInfoCommand>{
 
 	/** The workplace config info repository. */
 	@Inject WorkplaceConfigInfoRepository workplaceConfigInfoRepository;
@@ -25,8 +25,8 @@ public class RegisterWorkplaceConfigInfoCommandHandler extends CommandHandler<Re
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<RegisterWorkplaceConfigInfoCommand> context) {
-		RegisterWorkplaceConfigInfoCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<RegisterWkpConfigInfoCommand> context) {
+		RegisterWkpConfigInfoCommand command = context.getCommand();
 		WorkplaceConfigInfo workplaceConfigInfo = command.toDomain();
 		//add new 
 		workplaceConfigInfoRepository.add(workplaceConfigInfo);

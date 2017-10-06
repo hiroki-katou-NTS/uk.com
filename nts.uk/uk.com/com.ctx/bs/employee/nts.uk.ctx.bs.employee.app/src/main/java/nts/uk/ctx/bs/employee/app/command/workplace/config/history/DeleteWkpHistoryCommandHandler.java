@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.app.command.workplace;
+package nts.uk.ctx.bs.employee.app.command.workplace.config.history;
 
 import java.util.List;
 import java.util.Optional;
@@ -74,8 +74,8 @@ public class DeleteWkpHistoryCommandHandler extends CommandHandler<DeleteWkpHist
         this.wkpRepo.removeWkpHistory(companyId, command.getWorkplaceId(), command.getHistoryId());
         
         // update end date of previous workplace history
-        int idxprevHistLatest = 1;
-        this.wkpService.updatePreviousHistory(companyId, lstHistoryId.get(idxprevHistLatest),
+        int idxPrevHistLatest = 1;
+        this.wkpService.updatePreviousHistory(companyId, lstHistoryId.get(idxPrevHistLatest),
                 GeneralDate.fromString(MAX_DATE, DATE_FORMAT));
     }
 

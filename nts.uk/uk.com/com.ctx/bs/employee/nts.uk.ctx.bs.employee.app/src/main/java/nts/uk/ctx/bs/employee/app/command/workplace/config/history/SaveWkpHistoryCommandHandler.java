@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.app.command.workplace;
+package nts.uk.ctx.bs.employee.app.command.workplace.config.history;
 
 import java.util.Optional;
 
@@ -141,7 +141,7 @@ public class SaveWkpHistoryCommandHandler extends CommandHandler<SaveWkpHistoryC
                 wkpCommand.getWorkplaceId().v(), latestHistId);
         if (optionalWkpInfo.isPresent()) {
             WorkplaceInfo wkpInfo = optionalWkpInfo.get()
-                    .cloneWithHistoryId(wkpCommand.getWkpHistoryLatest().getHistoryId().v());
+                    .cloneWithHistId(wkpCommand.getWkpHistoryLatest().getHistoryId().v());
             workplaceInfoRepository.update(wkpInfo);
         }
     }

@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.ws.workplace.config;
 
-import java.util.List;
-
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -15,14 +13,13 @@ import javax.ws.rs.core.MediaType;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.bs.employee.app.command.workplace.config.DeleteWkpConfigCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.config.DeleteWkpConfigCommandHandler;
-import nts.uk.ctx.bs.employee.app.command.workplace.config.SaveWkpConfigCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.config.SaveWkpConfigCommand;
+import nts.uk.ctx.bs.employee.app.command.workplace.config.SaveWkpConfigCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.WorkplaceConfigFinder;
-import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WkpConfigInfoFindObject;
 import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceConfigDto;
-import nts.uk.ctx.bs.employee.app.find.workplace.config.dto.WorkplaceHierarchyDto;
-import nts.uk.ctx.bs.employee.app.find.workplace.config.info.WorkplaceConfigInfoFinder;
+import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceBase;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceCommandDto;
+import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceStateDto;
 
 /**
  * The Class WorkplaceConfigWebService.
@@ -42,10 +39,6 @@ public class WorkplaceConfigWebService extends WebService {
     /** The remove handler. */
     @Inject
     private DeleteWkpConfigCommandHandler removeHandler;
-    
-    /** The wkp config info finder. */
-    @Inject
-    private WorkplaceConfigInfoFinder wkpConfigInfoFinder;
     
     /**
      * Find all wkp configure.
@@ -82,14 +75,14 @@ public class WorkplaceConfigWebService extends WebService {
     }
 
     /**
-     * Wkp config info find.
+     * Valid workplace.
      *
-     * @param findObject the find object
-     * @return the list
+     * @param workplaceDto the workplace dto
+     * @return true, if successful
      */
-    @Path("info/find")
+    @Path("validWkp")
     @POST
-    public List<WorkplaceHierarchyDto> wkpConfigInfoFind(WkpConfigInfoFindObject findObject) {
-        return this.wkpConfigInfoFinder.findAll(findObject.getStartDate());
+    public WorkplaceStateDto checkWorkplace(WorkplaceBase condition) {
+        return this.wkpConfigFinder.checkWorkplace(condition);
     }
 }

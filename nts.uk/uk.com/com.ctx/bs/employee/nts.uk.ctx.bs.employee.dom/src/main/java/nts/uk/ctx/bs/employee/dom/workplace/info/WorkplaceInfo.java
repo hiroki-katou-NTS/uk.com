@@ -12,12 +12,6 @@ import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 /**
  * The Class WorkplaceInfo.
  */
-
-/**
- * Gets the outside wkp code.
- *
- * @return the outside wkp code
- */
 @Getter
 //職場情報
 public class WorkplaceInfo extends AggregateRoot {
@@ -56,6 +50,12 @@ public class WorkplaceInfo extends AggregateRoot {
 
 	/**
 	 * Instantiates a new workplace info.
+	 */
+	private WorkplaceInfo() {
+	}
+	
+	/**
+	 * Instantiates a new workplace info.
 	 *
 	 * @param memento the memento
 	 */
@@ -87,14 +87,22 @@ public class WorkplaceInfo extends AggregateRoot {
 	}
 
 	/**
-	 * Clone with history id.
+	 * Clone with hist id.
 	 *
-	 * @param historyId the history id
+	 * @param newHistoryId the new history id
 	 * @return the workplace info
 	 */
-	public WorkplaceInfo cloneWithHistoryId(String historyId) {
-		this.historyId = new HistoryId(historyId);
-		return this;
+	public WorkplaceInfo cloneWithHistId(String newHistoryId) {
+	    WorkplaceInfo newEntity = new WorkplaceInfo();
+	    newEntity.companyId = this.companyId;
+	    newEntity.historyId = new HistoryId(newHistoryId);
+	    newEntity.workplaceId = this.workplaceId;
+	    newEntity.workplaceCode = this.workplaceCode;
+	    newEntity.workplaceName = this.workplaceName;
+	    newEntity.wkpGenericName = this.wkpGenericName;
+	    newEntity.wkpDisplayName = this.wkpDisplayName;
+	    newEntity.outsideWkpCode = this.outsideWkpCode;
+		return newEntity;
 	}
 	
 	/* (non-Javadoc)

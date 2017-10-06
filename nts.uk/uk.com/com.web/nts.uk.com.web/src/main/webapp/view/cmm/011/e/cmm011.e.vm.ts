@@ -43,10 +43,13 @@ module nts.uk.com.view.cmm011.e {
                 if (!self.validate()) {
                     return;
                 }
+                nts.uk.ui.block.grayout();
                 service.saveWorkplaceHistory(self.toJSObject()).done(function(){
+                    nts.uk.ui.block.clear();
                     nts.uk.ui.windows.setShared("ModeUpdateHistory", true);
                     self.close();
                 }).fail((res: any) => {
+                    nts.uk.ui.block.clear();
                     self.showMessageError(res);
                 });
             }
@@ -106,7 +109,7 @@ module nts.uk.com.view.cmm011.e {
             private showMessageError(res: any) {
                 if (res.businessException) {
 //                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
-                    nts.uk.ui.dialog.bundledErrors(res); 
+                    nts.uk.ui.dialog.bundledErrors(res);
                 }
             }
         }

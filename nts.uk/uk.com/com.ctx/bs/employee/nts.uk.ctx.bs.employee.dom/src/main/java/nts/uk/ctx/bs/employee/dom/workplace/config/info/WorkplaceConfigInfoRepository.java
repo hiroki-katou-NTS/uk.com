@@ -6,27 +6,24 @@ package nts.uk.ctx.bs.employee.dom.workplace.config.info;
 
 import java.util.Optional;
 
-import nts.arc.time.GeneralDate;
-
 /**
  * The Interface WorkplaceConfigInfoRepository.
  */
 public interface WorkplaceConfigInfoRepository {
-
+	
 	/**
 	 * Adds the.
 	 *
-	 * @param workplaceConfigInfo the workplace config info
+	 * @param wkpConfigInfo the wkp config info
 	 */
-	void add(WorkplaceConfigInfo workplaceConfigInfo);
+	void add(WorkplaceConfigInfo wkpConfigInfo);
 	
 	/**
-	 * Adds the list.
+	 * Update.
 	 *
-	 * @param WkpConfigInfo the wkp config info
+	 * @param wkpConfigInfo the wkp config info
 	 */
-	void addList(WorkplaceConfigInfo WkpConfigInfo);
-	
+	void update(WorkplaceConfigInfo wkpConfigInfo);
 	
 	/**
 	 * Find.
@@ -38,11 +35,12 @@ public interface WorkplaceConfigInfoRepository {
 	Optional<WorkplaceConfigInfo> find(String companyId, String historyId);
 	
 	/**
-	 * Find by start date.
+	 * Find.
 	 *
 	 * @param companyId the company id
-	 * @param startDate the start date
+	 * @param historyId the history id
+	 * @param wkpId the wkp id
 	 * @return the optional
 	 */
-	Optional<WorkplaceConfigInfo> findByStartDate(String companyId, GeneralDate startDate);
+	Optional<WorkplaceConfigInfo> find(String companyId, String historyId, String wkpId);
 }

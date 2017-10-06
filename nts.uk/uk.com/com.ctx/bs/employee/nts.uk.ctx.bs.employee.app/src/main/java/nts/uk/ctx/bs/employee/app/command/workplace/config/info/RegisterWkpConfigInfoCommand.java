@@ -16,7 +16,7 @@ import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 
 @Getter
 @Setter
-public class RegisterWorkplaceConfigInfoCommand {
+public class RegisterWkpConfigInfoCommand {
 
 	/** The company id. */
 	// 会社ID
@@ -45,7 +45,7 @@ public class RegisterWorkplaceConfigInfoCommand {
 	public class WorkplaceConfigInfoGetMementoImpl implements WorkplaceConfigInfoGetMemento{
 
 		/** The register workplace config info command. */
-		private RegisterWorkplaceConfigInfoCommand registerWorkplaceConfigInfoCommand;
+		private RegisterWkpConfigInfoCommand registerWorkplaceConfigInfoCommand;
 		
 		/**
 		 * Instantiates a new workplace config info get memento impl.
@@ -53,7 +53,7 @@ public class RegisterWorkplaceConfigInfoCommand {
 		 * @param registerWorkplaceConfigInfoCommand the register workplace config info command
 		 */
 		public WorkplaceConfigInfoGetMementoImpl(
-				RegisterWorkplaceConfigInfoCommand registerWorkplaceConfigInfoCommand) {
+				RegisterWkpConfigInfoCommand registerWorkplaceConfigInfoCommand) {
 			this.registerWorkplaceConfigInfoCommand = registerWorkplaceConfigInfoCommand;
 		}
 
