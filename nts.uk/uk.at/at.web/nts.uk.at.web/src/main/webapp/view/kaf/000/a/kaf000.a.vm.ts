@@ -34,31 +34,31 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             //item approval root
             self.approvalRoot = ko.observableArray([]);
             //obj input approval root
-            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','90000000-0000-0000-0000-000000000005',1,1,new Date('2018-01-01 00:00:00')));
+            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('90000000-0000-0000-0000-000000000005',1,1,'2018/01/01'));
             //obj input get message deadline 
-            self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline("000000000000-0005",null,1));
+            self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline('90000000-0000-0000-0000-000000000005',1,'2018/01/01'));
             //obj input get message deadline 
             self.outputMessageDeadline = ko.observable(null);
         }
         /**
-         * cid 会社ID 
+         *
            sid 社員ID（申請本人の社員ID）
            employmentRootAtr 就業ルート区分
            subjectRequest 対象申請
            baseDate 基準日
            workplaceID 
          */
-        start(cid, sid, employmentRootAtr,appType,standardDate,workplaceID): JQueryPromise<any> {
+        start( sid, employmentRootAtr,appType,standardDate): JQueryPromise<any> {
             let self = this;
-            self.objApprovalRootInput().cid=cid;
             self.objApprovalRootInput().sid=sid;
             self.objApprovalRootInput().employmentRootAtr =employmentRootAtr;
             self.objApprovalRootInput().appType = appType;
             self.objApprovalRootInput().standardDate = standardDate;
             
-            self.inputMessageDeadline().companyID  = cid;
+            
             self.inputMessageDeadline().appType = appType;
-            self.inputMessageDeadline().workplaceID =workplaceID;
+            self.inputMessageDeadline().sid = sid;
+            self.inputMessageDeadline().appDate = standardDate;
             
             let dfd = $.Deferred();
             let dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
@@ -264,15 +264,13 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         
         //class ObjApprovalRootInput    
         export class ObjApprovalRootInput{
-            cid : String;
             sid : String;
             employmentRootAtr : number;
             appType : number;
             standardDate :  String;
-            constructor (cid : String,
+            constructor (
                         sid : String,employmentRootAtr : number,
                         appType : number,standardDate : String){
-                this.cid  = cid;
                 this.sid = sid; 
                 this.employmentRootAtr =employmentRootAtr;
                 this.appType = appType;
@@ -282,13 +280,13 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         
         //class InputMessageDeadline
         export class InputMessageDeadline{
-            companyID : String;
-            workplaceID : String;
+            sid : String;
             appType : number;
-            constructor(companyID : String,workplaceID : String,appType : number){
-            this.companyID = companyID;
-            this.workplaceID = workplaceID;
-            this.appType = appType;            
+            appDate : String;
+            constructor(sid : String,appType : number,appDate : String){
+            this.sid = sid;
+            this.appType = appType;  
+            this.appDate = appDate;          
             }
             
         }//end class InputMessageDeadline

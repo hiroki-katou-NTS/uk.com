@@ -5,7 +5,7 @@ import nts.arc.time.GeneralDate;
 
 @Value
 public class InputMessageDeadline {
-	String companyID;
-	String workplaceID;
+	String sid;
 	int appType;
+	String appDate;
 }
