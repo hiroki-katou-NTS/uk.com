@@ -5,6 +5,8 @@ import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.val;
+import nts.gul.util.value.Finally;
+import nts.uk.ctx.at.record.dom.daily.LateTimeOfDaily;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.LateDecisionClock;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeFrame;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory.WithinWorkTimeSheet;
@@ -21,30 +23,44 @@ import nts.uk.shr.com.time.TimeWithDayAttr;
  * @author keisuke_hoshina
  *
  */
-public class LateTimeSheet {
+public class LateTimeSheet{
 	
 	// 遅刻していない場合はempty
-	
-	private Optional<TimeSpanForCalc> forRecordTimeSheet;
+	@Getter
+	private Optional<LateLateLeaveEarlyTimeSheet> forRecordTimeSheet;
 	
 	@Getter
-	private Optional<TimeSpanForCalc> forDeducationTimeSheet;
+	private Optional<LateLateLeaveEarlyTimeSheet> forDeducationTimeSheet;
+	
+	@Getter
+	//今は一時的にint型で作成しているが、本来はworkNo型
+	private int workNo;
+	
+	private Optional<LateTimeOfDaily> lateTime;
+	
+	private Optional<DeductionOffSetTime> OffsetTime;
 	
 	
 	private LateTimeSheet(
 			Optional<TimeSpanForCalc> recordTimeSheet,
-			Optional<TimeSpanForCalc> deductionTimeSheet) {
+			Optional<TimeSpanForCalc> deductionTimeSheet,
+			int workNo,
+			Optional<LateTimeOfDaily> lateTime,
+			Optional<DeductionOffSetTime> OffsetTime) {
 		
 		this.forRecordTimeSheet = recordTimeSheet;
 		this.forDeducationTimeSheet = deductionTimeSheet;
+		this.workNo = workNo;
+		this.lateTime = lateTime;
+		this.OffsetTime = OffsetTime;
 	}
 	
-	public static LateTimeSheet createAsLate(TimeSpanForCalc timeSheet) {
-		return new LateTimeSheet(Optional.of(timeSheet), Optional.of(timeSheet));
+	public static LateTimeSheet createAsLate(TimeSpanForCalc recordTimeSheet,TimeSpanForCalc deductionTimeSheet,int workNo,Optional<LateTimeOfDaily> lateTime,Optional<DeductionOffSetTime> OffsetTime) {
+		return new LateTimeSheet(Optional.of(recordTimeSheet), Optional.of(deductionTimeSheet),workNo,lateTime,OffsetTime);
 	}
 	
 	public static LateTimeSheet createAsNotLate() {
-		return new LateTimeSheet(Optional.empty(), Optional.empty());
+		return new LateTimeSheet(Optional.empty(), Optional.empty(),1,Optional.empty(),Optional.empty());
 	}
 	
 	
@@ -172,4 +188,92 @@ public class LateTimeSheet {
 		return source.newTimeSpan(
 				source.shiftOnlyStart(this.forDeducationTimeSheet.get().getEnd()));
 	}
+	
+	
+	/**
+	 * 流動勤務の場合の遅刻控除時間の計算
+	 * @return
+	 */
+	public LateTimeSheet lateTimeCalcForFluid(
+			WithinWorkTimeFrame withinWorkTimeFrame,
+			TimeSpanForCalc lateRangeForCalc,
+			WorkTimeCommonSet workTimeCommonSet,
+			LateDecisionClock lateDecisionClock,
+			DeductionTimeSheet deductionTimeSheet) {
+		
+		TimeWithDayAttr goWorkTime = lateRangeForCalc.getEnd();
+		
+		if(lateDecisionClock.isLate(goWorkTime)){
+			
+			return withinWorkTimeFrame.getTimeSheet().getDuplicatedWith(lateRangeForCalc)
+					.map(initialLateTimeSheet -> {
+						val revisedLateTimeSheet = reviceLateTimeSheetForFluid(initialLateTimeSheet, deductionTimeSheet);						
+						return LateTimeSheet.createAsLate(revisedLateTimeSheet);
+					})
+					.orElse(LateTimeSheet.createAsNotLate());
+		}
+		return LateTimeSheet.createAsNotLate();//遅刻していない場合
+	}
+	
+	/**
+	 * 遅刻時間帯作成(流動勤務)
+	 * @param goWorkTime
+	 * @param workTime
+	 * @param deductionTimeSheet
+	 * @param workNo
+	 * @param deductionAtr
+	 * @return 控除用または計上用の早退時間帯
+	 */
+	private TimeSpanForCalc reviceLateTimeSheetForFluid(
+			TimeSpanForCalc lateTimeSheet,/*遅刻時間帯の作成*/
+			DeductionTimeSheet deductionTimeSheet) {
+		
+		
+		//遅刻時間を計算
+		int lateTime = getLateTimeForFluid(lateTimeSheet, deductionTimeSheet);
+		//遅刻時間帯を再度補正
+		lateTimeSheet = getCorrectedLateTimeSheet(lateTimeSheet, lateTime, deductionTimeSheet);		
+		//丸め設定を保持（未作成）
+		
+		return lateTimeSheet;
+	}
+
+	/**
+	 * 遅刻時間の計算(流動勤務)
+	 * @param lateTimeSpan
+	 * @param deductionTimeSheet
+	 * @return　遅刻時間
+	 */
+	public int getLateTimeForFluid(
+			TimeSpanForCalc lateTimeSpan,
+			DeductionTimeSheet deductionTimeSheet) {
+		//遅刻時間を計算
+		int lateTime = lateTimeSpan.lengthAsMinutes();
+
+		//遅刻時間の取得（未作成）	
+		
+		//控除時間の計算（未作成）	
+		
+		//遅刻時間から控除時間を控除する（未作成）	
+		//lateTime -= deductionTime;
+
+		//丸め処理（未作成）		
+		
+		return lateTime;
+	}
+	
+	
+	/**
+	 * 遅刻時間の計算　（時間帯作成後の処理で使用する）
+	 * @return
+	 */
+	public LateTimeSheet createLateTimeSheet(LateTimeSheet baseLateTimeSheet) {
+		//遅刻時間の計算
+		
+		
+		
+		
+		
+	}
+	
 }

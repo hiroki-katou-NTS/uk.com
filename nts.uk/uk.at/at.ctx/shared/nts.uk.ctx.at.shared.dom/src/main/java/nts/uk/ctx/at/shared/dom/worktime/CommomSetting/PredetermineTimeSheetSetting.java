@@ -116,7 +116,6 @@ public class PredetermineTimeSheetSetting extends AggregateRoot{
 			} else {
 				return this.timeSheets.get(1).getEndTime();
 			}
-		}
-		
+		}		
 	}
 }

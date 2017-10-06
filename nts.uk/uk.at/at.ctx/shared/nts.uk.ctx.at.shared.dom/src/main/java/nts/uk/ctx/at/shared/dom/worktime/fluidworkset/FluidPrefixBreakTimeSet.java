@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.shared.dom.worktime.fluidworkset;
 
+import lombok.Value;
 import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidPrefixBreakTimeOfCalcMethod;
 
 /**
@@ -7,6 +8,7 @@ import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.fluidbreaktimeset.FluidPre
  * @author keisuke_hoshina
  *
  */
+@Value
 public class FluidPrefixBreakTimeSet {
 	private boolean isReferToBreakClockFromMaster;
 	private FluidPrefixBreakTimeOfCalcMethod CalcMethod;

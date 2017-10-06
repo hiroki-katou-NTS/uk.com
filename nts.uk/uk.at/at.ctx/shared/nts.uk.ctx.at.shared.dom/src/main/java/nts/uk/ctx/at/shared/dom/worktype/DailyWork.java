@@ -73,10 +73,17 @@ public class DailyWork extends DomainObject { // 1日の勤務
 	}
 	
 	/**
-	 * 休日出勤であるか判定
-	 * @return　休日出勤である
+	 * 休日出勤か判定
+	 * @return　　　true：休日出勤である　false：休日出勤ではない
 	 */
 	public boolean isHolidayWork() {
-		return this.oneDay.isHolidayWork();
+		if(this.workTypeUnit == WorkTypeUnit.OneDay) {
+			return this.oneDay.isHolidayWork();
+		}
+		else if(this.workTypeUnit == WorkTypeUnit.MonringAndAfternoon) {
+			return morning.isHolidayWork() || afternoon.isHolidayWork();
+		}
+		return false;
 	}
+	
 }

@@ -28,13 +28,14 @@ public class TimeWithCalculation {
 		return new TimeWithCalculation(time,time);
 	}
 	
+	
 	/**
-	 * 時間、計算時間が異なる計算付き時間帯を作成する
-	 * @param time 時間
-	 * @param calcTime　計算時間
+	 * 指定された時間で計算付き時間を作成する
 	 * @return
 	 */
-	public static TimeWithCalculation of(AttendanceTime time, AttendanceTime calcTime) {
+	public static TimeWithCalculation createTimeWithCalculation(AttendanceTime time,AttendanceTime calcTime) {
 		return new TimeWithCalculation(time,calcTime);
 	}
+	
+	
 }

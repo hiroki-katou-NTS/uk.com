@@ -105,32 +105,7 @@ public class LeaveEarlyTimeSheet {
 		//丸め設定を保持（未作成）
 		return leaveEarlyTimeSheet;
 	}
-	
-//	/**
-//	 * 早退時間帯作成(早退時間帯作成時の初期値)
-//	 * @param leaveWorkTime
-//	 * @param workTime
-//	 * @param deductionTimeSheet
-//	 * @param workNo
-//	 * @param deductionAtr
-//	 * @return　控除用または計上用の早退時間帯
-//	 */
-//	public static TimeSpanForCalc getLeaveEarlyTimespan(TimeWithDayAttr leaveWorkTime,WorkTime workTime,int workNo) {
-//		//計算範囲の取得
-//		val calcRange = workTime.getleaveEarlyTimeCalcRange(leaveWorkTime, workNo);
-//		//早退時間帯の開始時刻の作成
-//		TimeWithDayAttr start;
-//		//遅刻時間帯の終了時刻の作成
-//		TimeWithDayAttr end = calcRange.getEnd();
-//		if(leaveWorkTime.lessThanOrEqualTo(calcRange.getEnd())) {
-//			start = leaveWorkTime;
-//		}else {
-//			start = calcRange.getEnd();
-//		}
-//		TimeSpanForCalc leaveEarlyTimeSpan = new TimeSpanForCalc(start, end);
-//		return leaveEarlyTimeSpan;
-//	}
-	
+		
 	/**
 	 * 早退時間の計算
 	 * @param leaveEarlyTimeSpan
@@ -179,6 +154,71 @@ public class LeaveEarlyTimeSheet {
 		//早退時間帯の終了時刻を開始時刻にする
 		return source.newTimeSpan(//↓間違っている遅刻用のままなので早退ように変えろ
 				source.shiftOnlyStart(this.forDeducationTimeSheet.get().getEnd()));
+	}
+	
+	
+	/**
+	 * 流動勤務の場合の早退控除時間の計算
+	 * @return
+	 */
+	public LeaveEarlyTimeSheet leaveEarlyTimeCalcForFluid(
+			WithinWorkTimeFrame withinWorkTimeFrame,
+			TimeWithDayAttr leaveworkTime,
+			WorkTimeCommonSet workTimeCommonSet,
+			LeaveEarlyDecisionClock leaveEarlyDecisionClock,
+			DeductionTimeSheet deductionTimeSheet) {
+		
+		if(leaveEarlyDecisionClock.isLeaveEarly(leaveworkTime)) {
+			
+			return withinWorkTimeFrame.getTimeSheet().getDuplicatedWith(leaveEarlyRangeForCalc)
+					.map(initialLeaveEarlyTimeSheet -> {
+						val revisedLeaveEarlyTimeSheet = reviseLeaveEarlyTimeSheet(initialLeaveEarlyTimeSheet, deductionTimeSheet);
+						return LeaveEarlyTimeSheet.createAsLeaveEarly(revisedLeaveEarlyTimeSheet);
+					})
+					.orElse(LeaveEarlyTimeSheet.createAsNotLeaveEarly());			
+		}
+		return LeaveEarlyTimeSheet.createAsNotLeaveEarly();
+	}
+	
+	
+	/**
+	 * 早退時間帯作成（流動勤務）
+	 * @return
+	 */
+	public TimeSpanForCalc reviceLeaveEarlyTimeSheetForFluid(
+			TimeSpanForCalc leaveEarlyTimeSheet,/*??*/
+			DeductionTimeSheet deductionTimeSheet) {
+		
+		//早退時間を計算
+		int leaveEarlyTime = getLeaveEarlyTimeForFluid();
+		//早退時間帯を再度補正
+		leaveEarlyTimeSheet = getCorrectedLeaveEarlyTimeSheet(leaveEarlyTimeSheet, leaveEarlyTime, deductionTimeSheet);
+		//丸め設定を保持（未作成）
+		
+		return leaveEarlyTimeSheet;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public int getLeaveEarlyTimeForFluid(
+			TimeSpanForCalc leaveEarlyTimeSpan,
+			DeductionTimeSheet deductionTimeSheet) {
+		//早退時間を計算
+		int leaveEarlyTime = leaveEarlyTimeSpan.lengthAsMinutes();
+		
+		//遅刻時間の取得（未作成）	
+		
+		//控除時間の計算（未作成）	
+		
+		//早退時間から控除時間を控除する（未作成）	
+		//leaveEarlyTime -= deductionTime;
+
+		//丸め処理（未作成）		
+		
+		return leaveEarlyTime;
+		
 	}
 	
 }

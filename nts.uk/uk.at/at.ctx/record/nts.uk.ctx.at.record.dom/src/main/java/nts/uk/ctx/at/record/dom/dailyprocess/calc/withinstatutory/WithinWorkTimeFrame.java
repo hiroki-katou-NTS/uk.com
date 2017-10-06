@@ -3,15 +3,18 @@ package nts.uk.ctx.at.record.dom.dailyprocess.calc.withinstatutory;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.val;
 import lombok.Getter;
 import nts.gul.util.value.Finally;
 import nts.uk.ctx.at.record.dom.MidNightTimeSheet;
+import nts.uk.ctx.at.record.dom.daily.AttendanceLeavingWork;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.CalculationTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionAtr;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.DeductionTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateLeaveEarlyManagementTimeFrame;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LateTimeSheet;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.LeaveEarlyTimeSheet;
+import nts.uk.ctx.at.record.dom.dailyprocess.calc.PredetermineTimeSetForCalc;
 import nts.uk.ctx.at.record.dom.dailyprocess.calc.TimeSheetOfDeductionItem;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.BonusPayTimesheet;
 import nts.uk.ctx.at.shared.dom.bonuspay.setting.SpecifiedbonusPayTimeSheet;
@@ -22,6 +25,11 @@ import nts.uk.ctx.at.shared.dom.worktime.WorkTime;
 import nts.uk.ctx.at.shared.dom.worktime.CommonSetting.lateleaveearly.GraceTimeSetting;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.WorkTimeCommonSet;
 import nts.uk.ctx.at.shared.dom.worktime.fixedworkset.timespan.TimeSpanWithRounding;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Rounding;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.TimeRoundingSetting;
+import nts.uk.ctx.at.shared.dom.worktime.fluidworkset.Unit;
+import nts.uk.ctx.at.shared.dom.worktype.AttendanceHolidayAttr;
+import nts.uk.ctx.at.shared.dom.worktype.DailyWork;
 import nts.uk.shr.com.time.TimeWithDayAttr;
 
 /**
@@ -218,4 +226,60 @@ public class WithinWorkTimeFrame extends CalculationTimeSheet implements LateLea
 	public int calcWorkTime() {
 		return ((CalculationTimeSheet)this).getTimeSheet().lengthAsMinutes();
 	}
+
+	//＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊＊
+	
+	/**
+	 * 計算範囲を判断（流動）　　流動時の就業時間内時間枠
+	 */
+	public void createWithinWorkTimeFrameForFluid(
+			AttendanceLeavingWork attendanceLeavingWork,
+			DailyWork dailyWork,
+			PredetermineTimeSetForCalc predetermineTimeSetForCalc) {
+		TimeSpanForCalc timeSheet = new TimeSpanForCalc(
+				attendanceLeavingWork.getAttendance().getEngrave().getTimesOfDay(),
+				attendanceLeavingWork.getLeaveWork().getEngrave().getTimesOfDay());
+		this.correctTimeSheet(dailyWork, timeSheet, predetermineTimeSetForCalc);
+	}
+	
+	/**
+	 * 勤務の単位を基に時間帯の開始、終了を補正
+	 * @param dailyWork 1日の勤務
+	 */
+	public WithinWorkTimeFrame correctTimeSheet(
+			DailyWork dailyWork,
+			TimeSpanForCalc timeSheet,
+			PredetermineTimeSetForCalc predetermineTimeSetForCalc) {
+		
+		//丸め設定を作成
+		Finally<TimeRoundingSetting> rounding = Finally.of(new TimeRoundingSetting(Unit.ROUNDING_TIME_1MIN,Rounding.ROUNDING_DOWN));
+		
+		if (dailyWork.getAttendanceHolidayAttr().isHalfDayWorking()) {
+			TimeSpanForCalc timeSheetForRounding = this.getHalfDayWorkingTimeSheetOf(dailyWork.getAttendanceHolidayAttr(),timeSheet,predetermineTimeSetForCalc);
+			TimeSpanWithRounding calcRange = new TimeSpanWithRounding(timeSheetForRounding.getStart(),timeSheetForRounding.getEnd(),rounding);
+			CalculationTimeSheet t = new CalculationTimeSheet(calcRange,timeSheetForRounding,Optional.empty());
+			return new WithinWorkTimeFrame(workingHoursTimeNo,timeSheet,t);
+		}
+	}
+
+	/**
+	 * 午前出勤、午後出勤の判定
+	 * @param attr
+	 * @return
+	 */
+	private TimeSpanForCalc getHalfDayWorkingTimeSheetOf(
+			AttendanceHolidayAttr attr,
+			TimeSpanForCalc timeSheet,
+			PredetermineTimeSetForCalc predetermineTimeSetForCalc) {
+		switch (attr) {
+		case MORNING:
+			return new TimeSpanForCalc(timeSheet.getStart(), predetermineTimeSetForCalc.getAMEndTime());
+		case AFTERNOON:
+			return new TimeSpanForCalc(predetermineTimeSetForCalc.getPMStartTime(),timeSheet.getEnd());
+		default:
+			throw new RuntimeException("半日専用のメソッドです: " + attr);
+		}
+	}
+
+		
 }
