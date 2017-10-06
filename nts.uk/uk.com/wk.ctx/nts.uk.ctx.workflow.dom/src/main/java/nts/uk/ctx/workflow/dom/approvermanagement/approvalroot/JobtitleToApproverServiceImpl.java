@@ -137,7 +137,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 		for (ConcurrentEmployeeImport emp : employeeList) {
 			String wkpIdOfEmp = this.wkApproverAdapter.getWorkplaceId(cid, emp.getEmployeeId(), baseDate);
 			if (wkpId.equals(wkpIdOfEmp)) {
-				approvers.add(new ApproverInfo(emp.getEmployeeId(), null, null, null, null));
+				approvers.add(new ApproverInfo(emp.getEmployeeId(), null, null, null, emp.getPersonName()));
 			}
 		}
 		return approvers;
