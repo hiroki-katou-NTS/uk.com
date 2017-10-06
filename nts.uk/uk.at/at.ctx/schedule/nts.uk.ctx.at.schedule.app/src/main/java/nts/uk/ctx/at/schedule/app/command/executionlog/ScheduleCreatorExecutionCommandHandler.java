@@ -15,10 +15,14 @@ import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
 import nts.arc.time.GeneralDateTime;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleExecutionLogFinder;
+import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreator;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorRepository;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -42,6 +46,13 @@ public class ScheduleCreatorExecutionCommandHandler
     /** The schedule creator repository. */
     @Inject
     private ScheduleCreatorRepository scheduleCreatorRepository;
+    
+    /** The schedule error log repository. */
+    @Inject 
+    private ScheduleErrorLogRepository scheduleErrorLogRepository;
+    
+    /** The setter. */
+    private TaskDataSetter setter;
     
     /** The default value. */
     private final Integer DEFAULT_VALUE = 0;
@@ -67,7 +78,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		String companyId = loginUserContext.companyId();
 		
 		val asyncTask = context.asAsync();
-		TaskDataSetter setter = asyncTask.getDataSetter();
+		setter = asyncTask.getDataSetter();
 		ScheduleCreatorExecutionCommand command = context.getCommand();
 
 		String executionId = command.getExecutionId();
@@ -81,20 +92,56 @@ public class ScheduleCreatorExecutionCommandHandler
 			domain.setExecutionDateTime(
 					new ExecutionDateTime(GeneralDateTime.now(), GeneralDateTime.now()));
 			this.scheduleExecutionLogRepository.update(domain);
+			List<ScheduleCreator> scheduleCreators =  this.scheduleCreatorRepository.findAll(executionId);
+			
+			setter.setData(TOTAL_RECORD, scheduleCreators.size());
+			setter.setData(SUCCESS_CNT, DEFAULT_VALUE);
+			setter.setData(FAIL_CNT, DEFAULT_VALUE);
+			
+			this.registerPersonalSchedule(domain, scheduleCreators);
 		}
 
-		List<ScheduleCreator> scheduleCreators =  this.scheduleCreatorRepository.findAll(executionId);
 		
-		setter.setData(TOTAL_RECORD, scheduleCreators.size());
-		setter.setData(SUCCESS_CNT, DEFAULT_VALUE);
-		setter.setData(FAIL_CNT, DEFAULT_VALUE);
-		scheduleCreators.forEach(domain->{
-			domain.updateToCreated();
-			this.scheduleCreatorRepository.update(domain);
-			setter.updateData(SUCCESS_CNT, this.finder.findInfoById(executionId).getTotalNumberCreated());
-		});
 	
 
 	}
 	
+	
+	/**
+	 * Register personal schedule.
+	 *
+	 * @param executionId the execution id
+	 * @param scheduleCreators the schedule creators
+	 */
+	// 個人スケジュールを登録する
+	private void registerPersonalSchedule(ScheduleExecutionLog scheduleExecutionLog,
+			List<ScheduleCreator> scheduleCreators) {
+		scheduleCreators.forEach(domain -> {
+			domain.updateToCreated();
+			this.scheduleCreatorRepository.update(domain);
+			setter.updateData(SUCCESS_CNT, this.finder
+					.findInfoById(scheduleExecutionLog.getExecutionId()).getTotalNumberCreated());
+		});
+		this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
+	}
+	
+	/**
+	 * Update status schedule execution log.
+	 *
+	 * @param domain the domain
+	 */
+	private void updateStatusScheduleExecutionLog(ScheduleExecutionLog domain) {
+		List<ScheduleErrorLog> scheduleErrorLogs = this.scheduleErrorLogRepository
+				.findByExecutionId(domain.getExecutionId());
+
+		
+		// check exist data schedule error log
+		if (CollectionUtil.isEmpty(scheduleErrorLogs)) {
+			domain.setCompletionStatus(CompletionStatus.DONE);
+		}
+		else {
+			domain.setCompletionStatus(CompletionStatus.COMPLETION_ERROR);
+		}
+		this.scheduleExecutionLogRepository.update(domain);
+	}
 }

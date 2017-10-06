@@ -23,6 +23,7 @@ public class ScheduleExecutionLog extends AggregateRoot {
 
 	/** The completion status. */
 	// 完了状態
+	@Setter
 	private CompletionStatus completionStatus;
 
 	/** The execution id. */
@@ -70,4 +71,5 @@ public class ScheduleExecutionLog extends AggregateRoot {
 		memento.setExecutionEmployeeId(this.executionEmployeeId);
 		memento.setPeriod(this.period);
 	}
+	
 }

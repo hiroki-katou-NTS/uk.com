@@ -11,6 +11,7 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSet;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSetRepository;
+import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.ScheduleManagementControl;
 import nts.uk.ctx.at.schedule.infra.entity.employeeinfo.KscmtPewScheduleCreset;
 
 /**
@@ -31,6 +32,18 @@ public class JpaPersonalWorkScheduleCreSetRepository extends JpaRepository
 		return this.queryProxy().find(employeeId, KscmtPewScheduleCreset.class)
 				.map(entity -> this.toDomain(entity));
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.at.schedule.dom.employeeinfo.
+	 * PersonalWorkScheduleCreSetRepository#findControlById(java.lang.String)
+	 */
+	@Override
+	public Optional<ScheduleManagementControl> findControlById(String employeeId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 	/**
 	 * To domain.
@@ -41,4 +54,5 @@ public class JpaPersonalWorkScheduleCreSetRepository extends JpaRepository
 	private PersonalWorkScheduleCreSet toDomain(KscmtPewScheduleCreset entity){
 		return new PersonalWorkScheduleCreSet(new JpaPersonalWorkScheduleCreSetGetMemento(entity));
 	}
+
 }
