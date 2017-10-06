@@ -129,8 +129,12 @@ module nts.uk.at.view.ksc001.g {
                     ntsFeatures: [{ name: 'CopyPaste' }],
                     ntsControls: [
                         {
-                            name: 'Button', text: nts.uk.resource.getText('KSC001_71'), click: function() {
-                                nts.uk.ui.windows.setShared("executionId", self.selectedFormula());
+                            name: 'Button', text: nts.uk.resource.getText('KSC001_71'), click: function(data: any) {
+                                
+                                nts.uk.ui.windows.setShared("executionData", 
+                                {
+                                 executionId : self.selectedFormula()
+                                });
                                 nts.uk.ui.windows.sub.modal("/view/ksc/001/h/index.xhtml").onClosed(() => {
                                 });
                             },

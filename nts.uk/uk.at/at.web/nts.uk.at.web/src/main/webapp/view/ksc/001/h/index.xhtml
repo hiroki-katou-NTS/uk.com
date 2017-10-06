@@ -28,13 +28,13 @@
 				<div>
 					<table id="fixed-table">
 						<colgroup>
-							<col width="180px" />
-							<col width="180px" />
-							<col width="100px" />
+							<col width="170px" />
+							<col width="170px" />
+							<col width="70px" />
 							<col width="250px" />
-							<col width="200px" />
-							<col width="100px" />
-							<col width="100px" />
+							<col width="350px" />
+							<col width="70px" />
+							<col width="70px" />
 						</colgroup>
 						<thead>
 							<tr>
@@ -49,13 +49,15 @@
 						</thead>
 						<tbody>
 							<tr style="height:200px;">
-								<td><label data-bind="text: period().startDateTime"></label></td>
-								<td><label data-bind="text: period().endDateTime"></label></td>
+								<td><label data-bind="text: exeStart()"></label></td>
+								<td><label data-bind="text: exeEnd()"></label></td>
 								<td><label data-bind="text: executionDateTime()"></label></td>
 								<td><div data-bind="foreach: executionContent">
 										<p data-bind="text: $data" />
 									</div></td>
-								<td><label data-bind="text: ''"></label></td>
+								<td><div data-bind="foreach: detailContentMethod">
+										<p data-bind="text: $data" />
+									</div></td>
 								<td><a class="nounderline" href="javascript:void(0);"
 									data-bind="text: executionNumber(),click: $parent.openDialogI">
 								</a></td>
