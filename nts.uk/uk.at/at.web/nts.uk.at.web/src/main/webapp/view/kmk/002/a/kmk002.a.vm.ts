@@ -75,10 +75,10 @@ module nts.uk.at.view.kmk002.a {
             calcResultRange: CalculationResultRange;
             calcFormulas: Array<Formula>;
             applyFormula: KnockoutObservable<string>;
-            selectedFormulas: KnockoutObservableArray<string>;
-            selectedFormula: any;
-            selectedFormulaAbove: any;
-            selectedFormulaBelow: any;
+            selectedFormulas: KnockoutObservableArray<NtsGridSelectedRow>;
+            selectedFormula: NtsGridSelectedRow;
+            selectedFormulaAbove: NtsGridSelectedRow;
+            selectedFormulaBelow: NtsGridSelectedRow;
 
             // Switch button data source
             usageClsDatasource: KnockoutObservableArray<any>;
@@ -107,8 +107,9 @@ module nts.uk.at.view.kmk002.a {
                 this.hasChanged = false;
                 this.isUsed = ko.observable(false);
                 this.selectedFormulas = ko.observableArray([]);
-                this.selectedFormulaAbove = '';
-                this.selectedFormulaBelow = '';
+                this.selectedFormula = <NtsGridSelectedRow>{};
+                this.selectedFormulaAbove = <NtsGridSelectedRow>{};
+                this.selectedFormulaBelow = <NtsGridSelectedRow>{};
 
                 // Data source
                 this.usageClsDatasource = ko.observableArray([
@@ -134,17 +135,18 @@ module nts.uk.at.view.kmk002.a {
 
                 this.selectedFormulas.subscribe(vl => {
                     // Set single selected
-                    this.selectedFormula = vl;
-
-                    // set selected formula below
-                    if (vl > this.selectedFormulaBelow) {
-                        this.selectedFormulaBelow = vl;
+                    if (vl.length == 1) {
+                        this.selectedFormula = vl[0];
+                        this.selectedFormulaAbove = vl[0];
+                        this.selectedFormulaBelow = vl[0];
+                    } else {
+                        // set selected formula below and above.
+                        this.setSelectedFormulaBelowAndAbove();
                     }
 
-                    // set selected formula above
-                    if (vl < this.selectedFormulaAbove) {
-                        this.selectedFormulaAbove = vl;
-                    }
+                    console.log(this.selectedFormula);
+                    console.log(this.selectedFormulaAbove);
+                    console.log(this.selectedFormulaBelow);
                 });
 
                 this.optionalItemNo.subscribe(v => {
@@ -212,20 +214,25 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
 
                 // check before add
+                // if zz is used or no formula checked => show message 508.
                 if (!self.canAddFormula()) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_508' });
                     return;
                 }
 
-                let od = 1;
-                if (this.selectedFormulaAbove) {
-                    od = this.selectedFormulaAbove - 1;
-                }
+                let od = this.selectedFormulaAbove.index;
 
                 let f = new Formula();
+                // Set order
                 f.orderNo = od;
+                // Set symbol
                 f.symbolValue = FormulaSorter.getNextSymbolOf(self.getLastSymbol());
+
+                // TODO move ra cho khac sau.
                 f.optionalItemNo = self.optionalItemNo();
+
+                // update order of below items.
+                self.updateOrderAfter(od);
 
                 self.calcFormulas.push(f);
 
@@ -237,12 +244,26 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Update order of below items after add a formula
+             */
+            private updateOrderAfter(orderNo: number): void {
+                let self = this;
+                let list = _.filter(self.calcFormulas, item => item.orderNo === orderNo);
+                console.log(list);
+                _.each(list, item => {
+                    item.orderNo += 1;
+                });
+                console.log(list);
+            }
+
+            /**
              * Add formula below
              */
             public addFormulaBelow(): void {
                 let self = this;
 
                 // check before add
+                // if zz is used or no formula checked => show message 508.
                 if (!self.canAddFormula()) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_508' });
                     return;
@@ -268,23 +289,31 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
-             * Confirm whether a calculation formula can be added (Check whether ZZ is used in the symbol)
              * Confirm the check status of calculation formula
              */
             private canAddFormula(): boolean {
-                // TODO
-                // if zz is used
-                // or no formula checked
-                // => show message 508.
-                return true;
+                let self = this;
+                if (self.isCheckedFormula() && !self.hasReachedZZ()) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * Confirm whether a calculation formula can be added (Check whether ZZ is used in the symbol)
+             */
+            private hasReachedZZ(): boolean {
+                return false;
             }
 
             /**
              * Check if one or more calculation expressions are checked
              */
             private isCheckedFormula(): boolean {
-                //TODO
-                // error msg 508
+                let self = this;
+                if (nts.uk.util.isNullOrEmpty(self.selectedFormulas())) {
+                    return false;
+                }
                 return true;
             }
 
@@ -293,8 +322,7 @@ module nts.uk.at.view.kmk002.a {
              */
             private isInUse(): boolean {
                 //TODO
-                // warning msg 113
-                return true;
+                return false;
             }
 
             /**
@@ -342,9 +370,11 @@ module nts.uk.at.view.kmk002.a {
 
                 // Check before remove
                 if (!self.isCheckedFormula()) {
+                    nts.uk.ui.dialog.alertError({ messageId: 'Msg_508' });
                     return;
                 }
                 if (self.isInUse()) {
+                    nts.uk.ui.dialog.alert({ messageId: 'Msg_113' });
                     return;
                 }
 
@@ -505,11 +535,7 @@ module nts.uk.at.view.kmk002.a {
                             multipleSelection: true,
                             multipleCellSelectOnClick: true,
                             rowSelectionChanged: function(evt, ui) {
-                                if (ui.selectedRows.length == 1) {
-                                    self.selectedFormula = ui.selectedRows[0].id;
-                                }
                                 self.selectedFormulas(ui.selectedRows);
-                                console.log(self.selectedFormulas());
                             }
                         },
                         {
@@ -605,13 +631,6 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
-             * Get selected formula below
-             */
-            private getSelectedFormulaBelow(): void {
-                let self = this;
-            }
-
-            /**
              * Get last symbol value of list formula.
              */
             private getLastSymbol(): string {
@@ -626,11 +645,28 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
-             * Get selected formula above
+             * Set selected formula below and above
              */
-            private getSelectedFormulaAbove(): void {
+            private setSelectedFormulaBelowAndAbove(): void {
                 let self = this;
-                self.selectedFormulas;
+                let bottom = <NtsGridSelectedRow>{};
+                let top = <NtsGridSelectedRow>{};
+
+                self.selectedFormulas().forEach(item => {
+                    if (item.index === 0) {
+                        bottom = item;
+                        top = item;
+                    }
+                    if (item.index > bottom.index) {
+                        bottom = item;
+                    }
+                    if (item.index < top.index) {
+                        top = item;
+                    }
+                });
+
+                self.selectedFormulaAbove = top;
+                self.selectedFormulaBelow = bottom;
             }
 
         }
@@ -754,6 +790,9 @@ module nts.uk.at.view.kmk002.a {
                         }
                     });
 
+                    // force to check enable/disable condition
+                    self.optionalItem.usageAtr.valueHasMutated();
+
                     // init selected code subscribe
                     self.selectedCode.subscribe(itemNo => {
                         if (itemNo) {
@@ -820,7 +859,7 @@ module nts.uk.at.view.kmk002.a {
             private isListFormulaValid(): boolean {
                 // TODO chi toi dong bi loi.
                 // xem lai 計算式登録時チェック処理 trong EA.
-                  if (1 == 1) {
+                if (1 == 1) {
                     return true;
                 }
                 return false;
@@ -1206,6 +1245,12 @@ module nts.uk.at.view.kmk002.a {
             performanceAtr: number;
             minusSegment: boolean;
             formulaSetting: FormulaSettingDto;
+        }
+        interface NtsGridSelectedRow {
+            checkbox: any;
+            element: any;
+            id: string;
+            index: number;
         }
 
     }
