@@ -16,4 +16,10 @@ public class AppStampNewPreDto {
 	public AppCommonSettingDto appCommonSettingDto;
 	
 	public AppStampSetDto appStampSetDto;
+	
+	public String companyID;
+	
+	public String employeeID;
+	
+	public String employeeName;
 }
