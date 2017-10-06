@@ -24,7 +24,7 @@ public interface AfterApprovalProcess {
 	/**
 	 * 2.申請個別の更新
 	 */
-	public void invidialApplicationUpdate(String appID);
+	public void invidialApplicationUpdate(Application application);
 
 	/**
 	 * 3.1 : 承認者一覧を取得する : ApprovalATR.APPROVED 

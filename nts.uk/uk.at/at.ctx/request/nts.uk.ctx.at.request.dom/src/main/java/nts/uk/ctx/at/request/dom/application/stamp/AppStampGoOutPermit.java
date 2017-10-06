@@ -17,14 +17,14 @@ import nts.arc.layer.dom.DomainObject;
 @EqualsAndHashCode(callSuper = false)
 public class AppStampGoOutPermit extends DomainObject {
 	
-	private StampAtr stampAtr;
+	private AppStampAtr stampAtr;
 	
 	/**
 	 * 打刻枠No
 	 */
 	private Integer stampFrameNo;
 	
-	private StampGoOutAtr stampGoOutAtr;
+	private AppStampGoOutAtr stampGoOutAtr;
 	
 	/**
 	 * 開始時刻
@@ -46,7 +46,7 @@ public class AppStampGoOutPermit extends DomainObject {
 	 */
 	private String endLocation;
 	
-	public AppStampGoOutPermit(StampAtr stampAtr, Integer stampFrameNo, StampGoOutAtr stampGoOutAtr,
+	public AppStampGoOutPermit(AppStampAtr stampAtr, Integer stampFrameNo, AppStampGoOutAtr stampGoOutAtr,
 			Integer startTime, String startLocation, Integer endTime, String endLocation) {
 		super();
 		this.stampAtr = stampAtr;

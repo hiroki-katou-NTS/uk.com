@@ -27,9 +27,9 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutPermit;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampWork;
-import nts.uk.ctx.at.request.dom.application.stamp.StampAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.StampCombinationAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.StampGoOutAtr;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -79,7 +79,7 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 			case STAMP_GO_OUT_PERMIT: 
 				appStamp = AppStamp.createFromJavaType(
 					companyID, 
-					PrePostAtr.POSTERIOR,
+					PrePostAtr.PREDICT,
 					GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
 					appStampCmd.getEnteredPerson(), 
 					GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
@@ -87,9 +87,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
 					appStampCmd.getAppStampGoOutPermitCmds().stream().map(
 						x -> new AppStampGoOutPermit(
-								EnumAdaptor.valueOf(x.getStampAtr(), StampAtr.class), 
+								EnumAdaptor.valueOf(x.getStampAtr(), AppStampAtr.class), 
 								x.getStampFrameNo(), 
-								EnumAdaptor.valueOf(x.getStampGoOutAtr(), StampGoOutAtr.class), 
+								EnumAdaptor.valueOf(x.getStampGoOutAtr(), AppStampGoOutAtr.class), 
 								x.getStartTime(), 
 								x.getStartLocation(), 
 								x.getEndTime(), 
@@ -112,9 +112,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 					null,
 					appStampCmd.getAppStampWorkCmds().stream().map(
 						x -> new AppStampWork(
-								EnumAdaptor.valueOf(x.getStampAtr(), StampAtr.class), 
+								EnumAdaptor.valueOf(x.getStampAtr(), AppStampAtr.class), 
 								x.getStampFrameNo(), 
-								EnumAdaptor.valueOf(x.getStampGoOutAtr(), StampGoOutAtr.class), 
+								EnumAdaptor.valueOf(x.getStampGoOutAtr(), AppStampGoOutAtr.class), 
 								x.getSupportCard(), 
 								x.getSupportLocationCD(), 
 								x.getStartTime(), 
@@ -139,7 +139,7 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 					null,
 					appStampCmd.getAppStampCancelCmds().stream().map(
 						x -> new AppStampCancel(
-								EnumAdaptor.valueOf(x.getStampAtr(), StampAtr.class), 
+								EnumAdaptor.valueOf(x.getStampAtr(), AppStampAtr.class), 
 								x.getStampFrameNo(), 
 								x.getCancelAtr())	
 					).collect(Collectors.toList()),
@@ -159,8 +159,34 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 					null,
 					null,
 					new AppStampOnlineRecord(
-							EnumAdaptor.valueOf(appStampCmd.getAppStampOnlineRecordCmd().getStampCombinationAtr(), StampCombinationAtr.class),
+							EnumAdaptor.valueOf(appStampCmd.getAppStampOnlineRecordCmd().getStampCombinationAtr(), AppStampCombinationAtr.class),
 							appStampCmd.getAppStampOnlineRecordCmd().getAppTime()));
+				applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
+				break;
+			case OTHER: 
+				appStamp = AppStamp.createFromJavaType(
+						companyID, 
+						PrePostAtr.POSTERIOR,
+						GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
+						appStampCmd.getEnteredPerson(), 
+						GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
+						appStampCmd.getEmployeeID(), 
+					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
+					null,
+					appStampCmd.getAppStampWorkCmds().stream().map(
+						x -> new AppStampWork(
+								EnumAdaptor.valueOf(x.getStampAtr(), AppStampAtr.class), 
+								x.getStampFrameNo(), 
+								EnumAdaptor.valueOf(x.getStampGoOutAtr(), AppStampGoOutAtr.class), 
+								x.getSupportCard(), 
+								x.getSupportLocationCD(), 
+								x.getStartTime(), 
+								x.getStartLocation(), 
+								x.getEndTime(), 
+								x.getEndLocation())	
+					).collect(Collectors.toList()),
+					null,
+					null);
 				applicationStampNewDomainService.appStampRegister(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			default:

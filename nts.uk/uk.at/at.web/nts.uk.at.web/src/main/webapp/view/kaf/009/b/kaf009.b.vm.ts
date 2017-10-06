@@ -1,9 +1,10 @@
 module nts.uk.at.view.kaf009.b {
     import kaf000 = nts.uk.at.view.kaf000;
-    export module viewmodel {
+    import common = nts.uk.at.view.kaf009.share.common;
+    export module viewmodel{
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
             //current Data
-            curentGoBackDirect: KnockoutObservable<GoBackDirectData>;
+            curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
             //申請者
             employeeName: KnockoutObservable<string>;
             //Pre-POST
@@ -52,20 +53,19 @@ module nts.uk.at.view.kaf009.b {
             siftCD: KnockoutObservable<string>;
             siftName: KnockoutObservable<string>;
             //comboBox 定型理由
-            reasonCombo: KnockoutObservableArray<ComboReason>;
+            reasonCombo: KnockoutObservableArray<common.ComboReason>;
             selectedReason: KnockoutObservable<string>;
             //MultilineEditor
             multilContent: KnockoutObservable<string>;
             multiOption: any;
             //Insert command
-            command: KnockoutObservable<GoBackCommand>;
+            command: KnockoutObservable<common.GoBackCommand>;
             //list Work Location 
-            locationData: Array<IWorkLocation>;
+            locationData: Array<common.IWorkLocation>;
 
             constructor(appType: number) {
                 super(appType);
-                let self = this;
-                let self = this;
+                var self = this;
                 self.command = ko.observable(null);
                 self.locationData = [];
                 //申請者
@@ -126,7 +126,8 @@ module nts.uk.at.view.kaf009.b {
                 self.workChangeAtr.subscribe(function(value) {
                     self.workEnable(value);
                 });
-                self.startPage();
+                let appID: string = "e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d";
+                self.startPage(appID);
             }
 
             testAbstract() {
@@ -136,12 +137,11 @@ module nts.uk.at.view.kaf009.b {
             /**
              * 
              */
-            startPage(): JQueryPromise<any> {
+            startPage(appId : string): JQueryPromise<any> {
                 var self = this;
                 let dfd = $.Deferred();
                 //get Common Setting
-                service.getGoBackSetting().done(function(settingData: CommonSetting) {
-                    let appID: string = "e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d";
+                service.getGoBackSetting().done(function(settingData: common.CommonSetting) {
                     //get Reason
                     self.setReasonControl(settingData.listReasonDto);
                     //set employee Name
@@ -149,7 +149,7 @@ module nts.uk.at.view.kaf009.b {
                     //set Common Setting
                     self.setGoBackSetting(settingData.goBackSettingDto);
                     //Get data 
-                    service.getGoBackDirectDetail(appID).done(function(detailData: any) {
+                    service.getGoBackDirectDetail(appId).done(function(detailData: any) {
                         //get all Location 
                         self.getAllWorkLocation();
                         self.workTypeName(detailData.workTypeName);
@@ -175,8 +175,8 @@ module nts.uk.at.view.kaf009.b {
              */
             update() {
                 let self = this;
-                service.updateGoBackDirect(self.getCommand()).done(function() {
-                    //self.startPage();
+                let appId: string = "e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d";
+                service.updateGoBackDirect(self.getCommand(appId)).done(function() {
                     alert("Update Done");
                 }).fail(function() {
 
@@ -189,10 +189,12 @@ module nts.uk.at.view.kaf009.b {
              */
             getAllWorkLocation() {
                 let self = this;
-                let arrTemp: Array<IWorkLocation> = [];
+                let arrTemp: Array<common.IWorkLocation> = [];
                 service.getAllLocation().done(function(data: any) {
                     _.forEach(data, function(value) {
-                        arrTemp.push({ workLocationCode: value.workLocationCD, workLocationName: value.workLocationName });
+                        if(!nts.uk.util.isNullOrUndefined(value)){
+                            arrTemp.push({ workLocationCode: value.workLocationCD, workLocationName: value.workLocationName });
+                        }
                     });
                     self.locationData = arrTemp;
                 }).fail(function() {
@@ -205,7 +207,7 @@ module nts.uk.at.view.kaf009.b {
             findWorkLocationName(code: string) {
                 let self = this;
                 let locationName: string = "";
-                let location: IWorkLocation = _.find(self.locationData, function(o) { return o.workLocationCode == code });
+                let location: common.IWorkLocation = _.find(self.locationData, function(o) { return o.workLocationCode == code });
                 locationName = location.workLocationName;
                 return locationName;
             }
@@ -215,10 +217,11 @@ module nts.uk.at.view.kaf009.b {
          * 2: update 
          * 3: delete
          */
-            getCommand() {
+            getCommand(appId :string) {
                 let self = this;
-                let command: GoBackCommand = new GoBackCommand();
-                command.appID = "e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d";
+                let command: common.GoBackCommand = new common.GoBackCommand();
+                command.appID = appId;
+                //command.appDate = self.appDate();
                 command.workTypeCD = self.workTypeCd();
                 command.siftCD = self.siftCD();
                 command.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
@@ -232,7 +235,7 @@ module nts.uk.at.view.kaf009.b {
                 command.workTimeEnd2 = self.timeEnd2();
                 command.workLocationCD1 = self.workLocationCD();
                 command.workLocationCD2 = self.workLocationCD2();
-                command.appCommand = new ApplicationCommand(
+                command.appCommand = new common.ApplicationCommand(
                     self.selectedReason(),
                     self.prePostSelected(),
                     self.appDate(),
@@ -251,7 +254,7 @@ module nts.uk.at.view.kaf009.b {
             /**
          * Set common Setting 
          */
-            setGoBackSetting(data: GoBackDirectSetting) {
+            setGoBackSetting(data: common.GoBackDirectSetting) {
                 let self = this;
                 if (data != undefined) {
                     self.commentGo1(data.commentContent1);
@@ -290,7 +293,7 @@ module nts.uk.at.view.kaf009.b {
             /**
          * set data from Server 
          */
-            setValueControl(data: GoBackDirectData) {
+            setValueControl(data: common.GoBackDirectData) {
                 let self = this;
                 if (!nts.uk.util.isNullOrUndefined(data)) {
                     //Line 1
@@ -315,12 +318,12 @@ module nts.uk.at.view.kaf009.b {
             /**
          * set reason 
          */
-            setReasonControl(data: Array<ReasonDto>) {
+            setReasonControl(data: Array<common.ReasonDto>) {
                 let self = this;
-                let comboSource: Array<ComboReason> = [];
-                comboSource.push(new ComboReason(0, '選択してください', ''));
-                _.forEach(data, function(value: ReasonDto) {
-                    comboSource.push(new ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
+                let comboSource: Array<common.ComboReason> = [];
+                comboSource.push(new common.ComboReason(0, '選択してください', ''));
+                _.forEach(data, function(value: common.ReasonDto) {
+                    comboSource.push(new common.ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
                 });
                 self.reasonCombo(_.orderBy(comboSource, 'reasonCode', 'asc'));
             }
@@ -357,8 +360,8 @@ module nts.uk.at.view.kaf009.b {
             }
 
             /**
-         * KDL003
-         */
+             * KDL003
+             */
             openDialogKdl003() {
                 let self = this;
                 let workTypeCodes = [];
@@ -382,214 +385,6 @@ module nts.uk.at.view.kaf009.b {
                     }
                 })
             }
-
-
-        }
-
-        /**
-     * 直行直帰申請共通設定
-     */
-        class GoBackDirectSetting {
-            workChangeFlg: number;
-            workChangeTimeAtr: number;
-            perfomanceDisplayAtr: number;
-            contraditionCheckAtr: number;
-            workType: number;
-            lateLeaveEarlySettingAtr: number;
-            commentContent1: string;
-            commentFontWeight1: number;
-            commentFontColor1: string;
-            commentContent2: string;
-            commentFontWeight2: number;
-            commentFontColor2: string;
-            constructor(workChangeFlg: number, workChangeTimeAtr: number, perfomanceDisplayAtr: number,
-                contraditionCheckAtr: number, workType: number, lateLeaveEarlySettingAtr: number, commentContent1: string,
-                commentFontWeight1: number, commentFontColor1: string, commentContent2: string, commentFontWeight2: number,
-                commentFontColor2: string) {
-                var self = this;
-                self.workChangeFlg = workChangeFlg;
-                self.workChangeTimeAtr = workChangeTimeAtr;
-                self.perfomanceDisplayAtr = perfomanceDisplayAtr;
-                self.contraditionCheckAtr = contraditionCheckAtr;
-                self.workType = workType;
-                self.lateLeaveEarlySettingAtr = lateLeaveEarlySettingAtr;
-                self.commentContent1 = commentContent1;
-                self.commentFontWeight1 = commentFontWeight1;
-                self.commentFontColor1 = commentFontColor1;
-                self.commentContent2 = commentContent2;
-                self.commentFontWeight2 = commentFontWeight2;
-                self.commentFontColor2 = commentFontColor2;
-            }
-        }
-        /**
-         * 
-         */
-        class ReasonDto {
-            companyId: string;
-            appType: number;
-            reasonID: string;
-            displayOrder: number;
-            reasonTemp: string;
-            constructor(companyId: string, appType: number, reasonID: string, displayOrder: number, reasonTemp: string) {
-                var self = this;
-                self.companyId = companyId;
-                self.appType = appType;
-                self.reasonID = reasonID;
-                self.displayOrder = displayOrder;
-                self.reasonTemp = reasonTemp;
-            }
-
-        };
-        /**
-         * 
-         */
-        class ComboReason {
-            reasonCode: number;
-            reasonName: string;
-            reasonId: string;
-
-            constructor(reasonCode: number, reasonName: string, reasonId: string) {
-                this.reasonCode = reasonCode;
-                this.reasonName = reasonName;
-                this.reasonId = reasonId;
-            }
-        }
-
-        /**
-         * 
-         * 直行直帰申請
-         */
-        class GoBackDirectData {
-            appID: string;
-            workTypeCD: string;
-            siftCD: string;
-            workChangeAtr: number;
-            goWorkAtr1: number;
-            backHomeAtr1: number;
-            workTimeStart1: number;
-            workTimeEnd1: number;
-            workLocationCD1: string;
-            goWorkAtr2: number;
-            backHomeAtr2: number;
-            workTimeStart2: number;
-            workTimeEnd2: number;
-            workLocationCD2: string;
-            constructor(appID: string,
-                workTypeCD: string,
-                siftCD: string,
-                workChangeAtr: number,
-                goWorkAtr1: number,
-                backHomeAtr1: number,
-                workTimeStart1: number,
-                workTimeEnd1: number,
-                workLocationCD1: string,
-                goWorkAtr2: number,
-                backHomeAtr2: number,
-                workTimeStart2: number,
-                workTimeEnd2: number,
-                workLocationCD2: string) {
-                this.appID = appID;
-                this.siftCD = siftCD;
-                this.workChangeAtr = workChangeAtr;
-                this.goWorkAtr1 = goWorkAtr1;
-                this.backHomeAtr1 = backHomeAtr1;
-                this.workTimeStart1 = workTimeStart1;
-                this.workTimeEnd1 = workTimeEnd1;
-                this.workLocationCD1 = workLocationCD1;
-                this.goWorkAtr2 = goWorkAtr2;
-                this.backHomeAtr2 = backHomeAtr2;
-                this.workTimeStart2 = workTimeStart2;
-                this.workTimeEnd2 = workTimeEnd2;
-                this.workLocationCD2 = workLocationCD2;
-            }
-        }
-        /**
-         * 
-         */
-        interface IWorkLocation {
-            workLocationCode: string;
-            workLocationName: string;
-        }
-        /**
-         * Application detail
-         */
-        export class ApplicationCommand {
-            applicationID: string;
-            appReasonID: string;
-            prePostAtr: number;
-            inputDate: string;
-            enteredPersonSID: string;
-            reversionReason: string;
-            applicationDate: string;
-            applicationReason: string;
-            applicationType: number;
-            applicantSID: string;
-            reflectPlanScheReason: number;
-            reflectPlanTime: string;
-            reflectPlanState: number;
-            reflectPlanEnforce: number;
-            reflectPerScheReason: number;
-            reflectPerTime: string;
-            reflectPerState: number;
-            reflectPerEnforce: number;
-            startDate: string;
-            endDate: string;
-            listPhase: any;
-            constructor(
-                appReasonID: string,
-                prePostAtr: number,
-                inputDate: string,
-                enteredPersonSID: string,
-                reversionReason: string,
-                applicationDate: string,
-                applicationReason: string,
-                applicantSID: string,
-                reflectPlanTime: string,
-                reflectPerTime: string,
-                startDate: string,
-                endDate: string) {
-                this.applicationID = "";
-                this.appReasonID = appReasonID;
-                this.prePostAtr = prePostAtr;
-                this.inputDate = moment.utc(inputDate, "YYYY/MM/DD").toISOString();
-                this.enteredPersonSID = enteredPersonSID;
-                this.reversionReason = reversionReason;
-                this.applicationDate = moment.utc(applicationDate, "YYYY/MM/DD").toISOString();
-                this.applicationReason = applicationReason;
-                this.applicationType = 4;
-                this.applicantSID = applicantSID;
-                this.reflectPlanScheReason = 1;
-                this.reflectPlanTime = moment.utc(reflectPlanTime, "YYYY/MM/DD").toISOString();
-                this.reflectPlanState = 1;
-                this.reflectPlanEnforce = 1;
-                this.reflectPerScheReason = 1;
-                this.reflectPerTime = moment.utc(reflectPerTime, "YYYY/MM/DD").toISOString();
-                this.reflectPerState = 1;
-                this.reflectPerEnforce = 1;
-                this.startDate = moment.utc(startDate, "YYYY/MM/DD").toISOString();
-                this.endDate = moment.utc(endDate, "YYYY/MM/DD").toISOString();
-                this.listPhase = null;
-            }
-        }
-        /**
-         * 
-         */
-        export class GoBackCommand {
-            appID: string;
-            workTypeCD: string;
-            siftCD: string;
-            workChangeAtr: number;
-            goWorkAtr1: number;
-            backHomeAtr1: number;
-            workTimeStart1: number;
-            workTimeEnd1: number;
-            workLocationCD1: string;
-            goWorkAtr2: number;
-            backHomeAtr2: number;
-            workTimeStart2: number;
-            workTimeEnd2: number;
-            workLocationCD2: string;
-            appCommand: ApplicationCommand;
         }
     }
 }

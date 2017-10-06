@@ -1,11 +1,11 @@
 module nts.uk.at.view.kaf009.a.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
+    import common = nts.uk.at.view.kaf009.share.common;
     var paths = {
         getAllWorkLocation: "at/record/worklocation/findall",
         getGoBackDirectly: "/at/request/application/gobackdirectly/getGoBackDirectlyByAppID",
         getGoBackDirectlySetting: "/at/request/application/gobackdirectly/getGoBackCommonSetting",
-        getGoBackDirectDetail: "/at/request/application/gobackdirectly/getGoBackDirectDetail",
         insertGoBackDirectly: "/at/request/application/gobackdirectly/insertGoBackDirectly",
         updateGoBackDirectly: "/at/request/application/gobackdirectly/updateGoBackDirectly"
     }
@@ -31,21 +31,15 @@ module nts.uk.at.view.kaf009.a.service {
     }
 
     /**
-     * get Go Back Detail Data
-     */
-    export function getGoBackDirectDetail(): JQueryPromise<any> {
-        return ajax("at", paths.getGoBackDirectDetail, {});
-    }
-    /**
      * 
      */
-    export function insertGoBackDirect(currentGoBack: viewmodel.GoBackCommand): JQueryPromise<Array<any>> {
+    export function insertGoBackDirect(currentGoBack: common.GoBackCommand): JQueryPromise<Array<any>> {
         return ajax("at", paths.insertGoBackDirectly, currentGoBack);
     }
     /**
      * 
      */
-    export function updateGoBackDirect(currentGoBack: viewmodel.GoBackCommand): JQueryPromise<Array<any>> {
+    export function updateGoBackDirect(currentGoBack: common.GoBackCommand): JQueryPromise<Array<any>> {
         return ajax("at", paths.updateGoBackDirectly, currentGoBack);
     }
 }
