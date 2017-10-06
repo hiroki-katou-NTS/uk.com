@@ -31,19 +31,20 @@ public class UpdateApplicationApproveHandler extends CommandHandler<UpdateApplic
 	protected void handle(CommandHandlerContext<UpdateApplicationCommonCmd> context) {
 		String companyID = AppContexts.user().companyId();
 		UpdateApplicationCommonCmd command = context.getCommand();
+		String appID = command.getAppId();
 		
 		Application application = appRepo.getAppById(companyID, command.getAppId()).get();
 
 		// if approve
-		// 4-1.
+		// 4-1.   nothing
 		beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, application.getApplicantSID(),
 				application.getApplicationDate(), 1, command.getAppId(), application.getPrePostAtr());
 
-		// 8.2.1.
+		// 8.2.1. check
 		afterApprovalProcessRepo.invidialApplicationErrorCheck(command.getAppId());
-		// 8.2.2.
+		// 8.2.2. update application
 		afterApprovalProcessRepo.invidialApplicationUpdate(command.getAppId());
-		// 8-2.
+		// 8-2.  
 		afterApprovalProcessRepo.detailScreenAfterApprovalProcess(companyID, command.getAppId(), application);
 
 	}
