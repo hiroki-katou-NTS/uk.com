@@ -16,7 +16,7 @@ import nts.arc.time.GeneralDate;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "BSYDT_EMP_INFO_ITEM_DATA")
+@Table(name = "PPEMT_EMP_INFO_ITEM_DATA")
 public class BsydtEmpInfoItemData extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;

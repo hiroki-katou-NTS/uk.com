@@ -20,4 +20,8 @@ public class BsydtEmpInfoItemDataPk implements Serializable {
 	@Column(name = "PER_INFO_DEF_ID")
 	public String perInfoDefId;
 
+	@Basic(optional = false)
+	@Column(name = "RECORD_ID")
+	public String recordId;
+
 }
