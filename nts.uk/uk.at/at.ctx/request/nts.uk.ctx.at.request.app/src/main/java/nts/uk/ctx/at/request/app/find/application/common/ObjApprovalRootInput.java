@@ -18,5 +18,5 @@ public class ObjApprovalRootInput {
 	String sid; 
 	int employmentRootAtr; 
 	int appType;
-	GeneralDate standardDate;
+	String standardDate;
 }

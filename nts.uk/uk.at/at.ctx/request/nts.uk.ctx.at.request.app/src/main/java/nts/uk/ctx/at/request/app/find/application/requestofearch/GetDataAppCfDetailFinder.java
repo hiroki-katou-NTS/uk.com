@@ -25,16 +25,17 @@ public class GetDataAppCfDetailFinder {
 	@Inject
 	private nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
 
-	public OutputMessageDeadline getDataConfigDetail(InputMessageDeadline inputMessageDeadline) {
+	public OutputMessageDeadline getDataConfigDetail(int  appType) {
 		String message = "";
 		String deadline = "";
 		GeneralDate date1 = GeneralDate.today();
 		GeneralDate date2 = GeneralDate.today();
 		GeneralDate date3 = GeneralDate.today();
 		String companyID = AppContexts.user().companyId();
+		String sid = AppContexts.user().employeeId();
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepo
 				.getAppTypeDiscreteSettingByAppType(companyID,
-						inputMessageDeadline.getAppType());
+						appType);
 		// 事後申請の受付は7月27日分まで。
 		// 「事後の受付制限」．未来日許可しないがtrue、その他は利用しない
 		// if : RetrictPostAllowFutureFlg = true(allow)s và RetrictPreUseFlg = false(not
@@ -50,11 +51,13 @@ public class GetDataAppCfDetailFinder {
 		}
 
 		// 1.1(Hung)
-		GeneralDate generalDate = GeneralDate.fromString(inputMessageDeadline.getAppDate(), "yyyy/MM/dd");
+		//GeneralDate generalDate = GeneralDate.fromString(inputMessageDeadline.getAppDate(), "yyyy/MM/dd");
+		//rootAtr = 1
 		RequestOfEachCommon RequestOfEachCommon = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(
-				companyID, inputMessageDeadline.getSid(), 1,
-				EnumAdaptor.valueOf(inputMessageDeadline.getAppType(), ApplicationType.class),
-				generalDate).requestOfEachCommon;
+				companyID, sid, 1,
+				EnumAdaptor.valueOf(appType, ApplicationType.class),
+				GeneralDate.today()).requestOfEachCommon;
+		
 		AppConfigDetailDto appConfigDetail = AppConfigDetailDto
 				.fromDomain(RequestOfEachCommon.getRequestAppDetailSettings().get(0));
 

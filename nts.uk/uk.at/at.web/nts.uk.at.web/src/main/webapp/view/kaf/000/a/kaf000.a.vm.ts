@@ -18,11 +18,11 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         //obj 
         objApprovalRootInput : KnockoutObservable<model.ObjApprovalRootInput>;
         
-        //obj input
-        inputMessageDeadline : KnockoutObservable<model.InputMessageDeadline>;
         //obj output message deadline
         outputMessageDeadline : KnockoutObservable<model.OutputMessageDeadline>;
         
+        //
+        appType : KnockoutObservable<number>;
         constructor(){
             let self = this;
 
@@ -35,8 +35,8 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             self.approvalRoot = ko.observableArray([]);
             //obj input approval root
             self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('90000000-0000-0000-0000-000000000005',1,1,'2018/01/01'));
-            //obj input get message deadline 
-            self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline('90000000-0000-0000-0000-000000000005',1,'2018/01/01'));
+            // app ID
+            self.appType = ko.observable(0);
             //obj input get message deadline 
             self.outputMessageDeadline = ko.observable(null);
         }
@@ -55,13 +55,10 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             self.objApprovalRootInput().appType = appType;
             self.objApprovalRootInput().standardDate = standardDate;
             
-            
-            self.inputMessageDeadline().appType = appType;
-            self.inputMessageDeadline().sid = sid;
-            self.inputMessageDeadline().appDate = standardDate;
+            self.appType(appType);
             
             let dfd = $.Deferred();
-            let dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
+            let dfdMessageDeadline = self.getMessageDeadline(self.appType());
             let dfdAllApprovalRoot = self.getAllApprovalRoot();
             $.when(dfdMessageDeadline,dfdAllApprovalRoot).done((dfdMessageDeadlineData,dfdAllApprovalRootData)=>{
 //                self.getAllFrameByListPhaseId1(self.listPhaseID);
@@ -77,7 +74,7 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             let dfd = $.Deferred<any>();
             nts.uk.at.view.kaf000.a.service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
                 self.listApprovalRoot(data);
-                if(self.listApprovalRoot().length>0){
+                if(self.listApprovalRoot !=null && self.listApprovalRoot().length>0 ){
                     self.approvalRoot(self.listApprovalRoot()[0]);
                 }
                 dfd.resolve(data);    
@@ -86,10 +83,10 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             
         }
          // getMessageDeadline
-        getMessageDeadline(inputMessageDeadline){
+        getMessageDeadline(appType){
             let self = this;
             let dfd = $.Deferred<any>();
-                nts.uk.at.view.kaf000.a.service.getMessageDeadline(inputMessageDeadline).done(function(data){
+                nts.uk.at.view.kaf000.a.service.getMessageDeadline(appType).done(function(data){
                     self.outputMessageDeadline(data);
                     dfd.resolve(data);    
                 }); 
@@ -278,18 +275,6 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             }
         }//end class ObjApprovalRootInput
         
-        //class InputMessageDeadline
-        export class InputMessageDeadline{
-            sid : String;
-            appType : number;
-            appDate : String;
-            constructor(sid : String,appType : number,appDate : String){
-            this.sid = sid;
-            this.appType = appType;  
-            this.appDate = appDate;          
-            }
-            
-        }//end class InputMessageDeadline
         
         //class outputMessageDeadline
         export class OutputMessageDeadline{
