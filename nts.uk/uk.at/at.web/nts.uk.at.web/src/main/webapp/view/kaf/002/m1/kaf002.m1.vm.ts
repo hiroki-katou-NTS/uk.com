@@ -5,48 +5,61 @@ module nts.uk.at.view.kaf002.m1 {
         export class ScreenModel {
             stampAtr: KnockoutObservable<number> = ko.observable(1);
             extendsMode: KnockoutObservable<boolean> = ko.observable(false);
-            appStampList: KnockoutObservableArray<vmbase.AppStampGoOutPermit> = ko.observableArray([
-                new vmbase.AppStampGoOutPermit(this.stampAtr(),1,0,0,'sta1',0,'end1', true, true, true, true),
-                new vmbase.AppStampGoOutPermit(this.stampAtr(),2,0,0,'sta2',0,'end2', true, true, true, true),
-                new vmbase.AppStampGoOutPermit(this.stampAtr(),3,0,0,'sta3',0,'end3', true, true, true, true)
-            ]);
-            supFrameNo: number = 10;
+            appStampList: KnockoutObservableArray<vmbase.AppStampGoOutPermit> = ko.observableArray([]);
+            supFrameNo: number = 1;
             stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
+            stampAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
+            stampGoOutAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
             constructor(){
                 var self = this;
                 self.stampAtr.subscribe(()=>{ self.extendsMode(false); });
                 self.extendsMode.subscribe((v)=>{ 
                     if(v){
-                        for(let i=4;i<=self.supFrameNo;i++) {
-                            self.appStampList.push(new vmbase.AppStampGoOutPermit(self.stampAtr(),i,0,0,'',0,'',true, true, true, true));    
+                        let stampGoOutAtr = _.first(self.stampGoOutAtrList()).code;
+                        for(let i=self.supFrameNo+1;i<=10;i++) {
+                            self.appStampList.push(new vmbase.AppStampGoOutPermit(self.stampAtr(),i,stampGoOutAtr,0,'',0,'',true, true, true, true));    
                         } 
                     } else {
-                        self.appStampList.remove((o) => { return o.stampFrameNo() > 3 });   
+                        self.appStampList.remove((o) => { return o.stampFrameNo() > self.supFrameNo });   
                     } 
                 });        
             }
             
             start(appStampData: any, data: vmbase.StampRequestSettingDto){
                 var self = this;    
-                self.supFrameNo = data.supFrameDispNO > 10 ? 10 : data.supFrameDispNO;
+                self.supFrameNo = data.supFrameDispNO;
                 self.stampPlaceDisplay(data.stampPlaceDisp);
-                self.appStampList.removeAll();
-                _.forEach(appStampData.appStampGoOutPermitCmds, item => {
-                    self.appStampList.push(
-                        new vmbase.AppStampGoOutPermit(
-                            item.stampAtr,
-                            item.stampFrameNo,
-                            item.stampGoOutReason,
-                            item.startTime,
-                            item.startLocation,
-                            item.endTime,
-                            item.endLocation, 
-                            false, 
-                            false, 
-                            false, 
-                            false
-                    ));        
-                });
+                if(!nts.uk.util.isNullOrUndefined(appStampData)){
+                    self.appStampList.removeAll();
+                    _.forEach(appStampData, item => {
+                        self.appStampList.push(
+                            new vmbase.AppStampGoOutPermit(
+                                item.stampAtr,
+                                item.stampFrameNo,
+                                item.stampGoOutReason,
+                                item.startTime,
+                                item.startLocation,
+                                item.endTime,
+                                item.endLocation, 
+                                false, 
+                                false, 
+                                false, 
+                                false
+                        ));        
+                    });
+                }
+                if(data.stampAtr_GoOut_Disp==1) self.stampAtrList.push({ code: 1, name: nts.uk.resource.getText('KAF002_31') });
+                if(data.stampAtr_Care_Disp==1) self.stampAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_32') });
+                if(data.stampAtr_Sup_Disp==1) self.stampAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_33') });
+                self.stampAtr(_.first(self.stampAtrList()).code);
+                if(data.stampGoOutAtr_Private_Disp==1) self.stampGoOutAtrList.push({ code: 0, name: nts.uk.resource.getText('KAF002_40') });
+                if(data.stampGoOutAtr_Public_Disp==1) self.stampGoOutAtrList.push({ code: 1, name: nts.uk.resource.getText('KAF002_41') });
+                if(data.stampGoOutAtr_Compensation_Disp==1) self.stampGoOutAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_42') });
+                if(data.stampGoOutAtr_Union_Disp==1) self.stampGoOutAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_43') });
+                let stampGoOutAtr = _.first(self.stampGoOutAtrList()).code;
+                for(let i=1;i<=self.supFrameNo;i++) {
+                    self.appStampList.push(new vmbase.AppStampGoOutPermit(self.stampAtr(),i,stampGoOutAtr,0,'star',0,'end',true, true, true, true));    
+                } 
             }
             
             extendsModeEvent(){

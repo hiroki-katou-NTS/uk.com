@@ -2,15 +2,15 @@ module nts.uk.at.view.kaf002.shr {
     import ajax = nts.uk.request.ajax;
     export module service {
         var paths: any = {
-            findByAppID: "at/request/application/stamp/findByAppID",
+            findByAppID: "at/request/application/stamp/findByID",
             newScreenFind: "at/request/application/stamp/newAppStampInitiative",
             insert: "at/request/application/stamp/insert",
             update: "at/request/application/stamp/update",
             getStampCombinationAtr: "at/request/application/stamp/enum/stampCombination"
         }
         
-        export function findByAppID(): JQueryPromise<any> {
-            return ajax(paths.findByAppID);
+        export function findByAppID(appID: string): JQueryPromise<any> {
+            return ajax("at", paths.findByAppID, appID);
         }
         
         export function newScreenFind(): JQueryPromise<any> {

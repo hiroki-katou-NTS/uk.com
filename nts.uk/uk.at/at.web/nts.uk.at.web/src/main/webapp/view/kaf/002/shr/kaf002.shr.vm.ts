@@ -2,7 +2,10 @@ module nts.uk.at.view.kaf002.shr {
     export module vmbase {
         export interface AppStampNewSetDto {
             appCommonSettingDto: AppCommonSettingDto;
-            appStampSetDto: AppStampSetDto;        
+            appStampSetDto: AppStampSetDto;     
+            companyID: string;
+            employeeID: string;
+            employeeName: string;
         }
         
         export interface AppCommonSettingDto {
