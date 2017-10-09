@@ -298,6 +298,7 @@ module nts.uk.com.view.cmm018.shr {
         }
         //list display right
         export class CompanyAppRootADto{
+            color: boolean;
             common: boolean;
             appTypeValue: number;
             appTypeName: string;
@@ -309,7 +310,8 @@ module nts.uk.com.view.cmm018.shr {
             appPhase3: ApprovalPhaseDto;
             appPhase4: ApprovalPhaseDto;
             appPhase5: ApprovalPhaseDto;
-            constructor(common: boolean,
+            constructor(color: boolean, 
+            common: boolean,
             appTypeValue: number,
             appTypeName: string,
             approvalId: string,
@@ -319,6 +321,7 @@ module nts.uk.com.view.cmm018.shr {
             appPhase3: ApprovalPhaseDto,
             appPhase4: ApprovalPhaseDto, 
             appPhase5: ApprovalPhaseDto){
+                this.color = color;
                 this.common = common;
                 this.appTypeValue = appTypeValue;
                 this.appTypeName = appTypeName;

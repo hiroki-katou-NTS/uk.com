@@ -84,6 +84,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	public void retirementCheckBeforeJoinCompany(String companyID, String employeeID, GeneralDate date){
 		// Imported(就業)「社員」を取得する (Lấy employee)
 		PesionInforImport pesionInforImport = employeeAdaptor.getEmployeeInfor(employeeID);
+		// lấy lịch sử làm việc mới nhất
 		JobEntryHistoryImport jobEntryHistoryImport = pesionInforImport.getListJobEntryHist().get(0);
 		
 		// 入社前をチェックする(Check trước khi vào cty)
