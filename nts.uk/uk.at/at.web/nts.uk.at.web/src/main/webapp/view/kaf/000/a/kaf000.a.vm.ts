@@ -78,7 +78,9 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                     self.approvalRoot(self.listApprovalRoot()[0]);
                 }
                 dfd.resolve(data);    
-            });
+            }).fail(function (res: any){
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+            }); 
             return dfd.promise();
             
         }
@@ -89,6 +91,8 @@ module nts.uk.at.view.kaf000.a.viewmodel{
                 nts.uk.at.view.kaf000.a.service.getMessageDeadline(appType).done(function(data){
                     self.outputMessageDeadline(data);
                     dfd.resolve(data);    
+                }).fail(function (res: any){
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                 }); 
             return dfd.promise();
         }

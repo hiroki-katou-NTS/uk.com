@@ -5,32 +5,60 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>
+				var dialogSize = {
+					width : 600,
+					height : 400
+				};
+			</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionItemName
+					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionCode
+					nts.uk.ctx.bs.person.dom.person.setting.selection.IntegrationCode
+					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionName
+					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionExternalCode
+					nts.uk.ctx.bs.person.dom.person.setting.selection.Memo
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
 			<com:stylefile path="cps017.c.style.css" />
 			<com:scriptfile path="cps017.c.service.js" />
-			<com:scriptfile pcth="cps017.c.start.js" />
 			<com:scriptfile path="cps017.c.vm.js" />
+			<com:scriptfile path="cps017.c.start.js" />
 		</ui:define>
+
 
 		<ui:define name="content">
-			<div id="functions-area">
-				<button id="A1_001" tabindex="1">#{i18n.getText('CPS009_3')}</button>
-				<button id="A1_002" class="proceed" tabindex="2">#{i18n.getText('CPS009_4')}</button>
-				<button id="A1_003" tabindex="3">#{i18n.getText('CPS009_5')}</button>
-				<button id="A1_004" class="danger" tabindex="4">#{i18n.getText('CPS009_6')}</button>
+			<div id="contents-area">
+				<div class="form-group">
+					<div class="row">
+						<div class="collll">#{i18n.getText('CPS017_35')}</div>
+					</div>
+					<div class="row">
+						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_36')}</div>
+						<span class="label">個人情報選択項目の定義</span>
+					</div>
+					<div class="row">
+						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_37')}</div>
+						<input style="width: 100px;" /> ~ <span class="label">#{i18n.getText('CPS017_48')}</span>
+					</div>
+				</div>
 
-			</div>
-			<div id="contents-area" class="cf">
-				<div id="content-left"
-					data-bind="ntsPanel:{width: '260px', height: '500px',
-					direction: 'right', showIcon: false, visible: true}">
+				<div id="functions-area-bottom"
+					style="width: 580px; height: 100px; padding-top: 15px; text-align: center;">
+					<button id="A_BTN_REGISTER" class="proceed"
+						style="width: 145px; height: 60px; font-size: 25px;">#{i18n.getText('CPS017_40')}</button>
+					<button id="A_BTN_COPPY" data-bind="click: closeDialog">#{i18n.getText('CPS017_41')}</button>
 
 				</div>
-				<div id="content-right"></div>
 			</div>
 		</ui:define>
+
+
+
+
 	</ui:composition>
 </body>
 </html>

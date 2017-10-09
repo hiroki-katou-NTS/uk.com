@@ -11,6 +11,10 @@ module nts.uk.com.view.cmm011.d {
                 //TODO change when update text resource
 //                self.endDate = ko.observable(nts.uk.resource.getText("CMM011_27"));
                 self.endDate = ko.observable(nts.uk.resource.getText("CMM011_27"));
+                
+                self.startDate.subscribe((newValue) => {
+//                    nts.uk.ui.windows.getSelf().setSize(290, 500);
+                });
             }
             
             /**
@@ -31,7 +35,7 @@ module nts.uk.com.view.cmm011.d {
                 if (!self.validate()) {
                     return;
                 }
-                service.registerWorkplaceHistory(self.toJSObject()).done(function(){
+                service.saveWorkplaceHistory(self.toJSObject()).done(function(){
                     nts.uk.ui.windows.setShared("ModeAddHistory", true);
                     self.close();
                 }).fail((res: any) => {

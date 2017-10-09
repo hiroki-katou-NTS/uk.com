@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.dom.DomainObject;
 
 /**
@@ -40,7 +39,7 @@ public class NumberRange extends DomainObject {
 
 		// Validate
 		if (this.isInvalidRange()) {
-			throw new BusinessException(new RawErrorMessage("Upper limit >= Lower limit"));
+			throw new BusinessException("Msg_574");
 		}
 	}
 

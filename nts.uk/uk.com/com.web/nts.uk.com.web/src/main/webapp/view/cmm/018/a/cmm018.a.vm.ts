@@ -155,15 +155,15 @@ module nts.uk.com.view.cmm018.a {
                         self.checkAAA(0);
                         //TH: company
                         if(self.tabSelected() == vmbase.RootType.COMPANY){
-                             __viewContext.viewModel.viewmodelB.checkTabSelectedB(0,'');
+                             __viewContext.viewModel.viewmodelB.checkTabSelectedB(vmbase.RootType.COMPANY,'');
                         }
                         //TH: work place
                         else if(self.tabSelected() == vmbase.RootType.WORKPLACE){
-                             __viewContext.viewModel.viewmodelB.checkTabSelectedB(1,'');
+                             __viewContext.viewModel.viewmodelB.checkTabSelectedB(vmbase.RootType.WORKPLACE,'');
                         }
                         //TH: person
                         else{
-                             __viewContext.viewModel.viewmodelB.checkTabSelectedB(2,self.selectedItem());
+                             __viewContext.viewModel.viewmodelB.checkTabSelectedB(vmbase.RootType.PERSON,self.selectedItem());
                         }
                     }else{//common
                         self.checkAAA(1);
@@ -200,7 +200,7 @@ module nts.uk.com.view.cmm018.a {
                     }
                     //TH: mode B: 申請個別登録モード
                     else{
-                        __viewContext.viewModel.viewmodelB.checkTabSelectedB(2,codeChanged);
+                        __viewContext.viewModel.viewmodelB.checkTabSelectedB(vmbase.RootType.PERSON,codeChanged); 
                     }
                 });
                 //____________sidebar tab_____________
@@ -212,21 +212,21 @@ module nts.uk.com.view.cmm018.a {
                                 if(self.selectedModeCode()==0){
                                     self.tabSelected(vmbase.RootType.COMPANY);
                                 }else{
-                                    __viewContext.viewModel.viewmodelB.checkTabSelectedB(0,'');
+                                    __viewContext.viewModel.viewmodelB.checkTabSelectedB(vmbase.RootType.COMPANY,'');
                                 }
                                 break;
                             case 1://workplace
                                 if(self.selectedModeCode()==0){
                                     self.tabSelected(vmbase.RootType.WORKPLACE);
                                 }else{
-                                    __viewContext.viewModel.viewmodelB.checkTabSelectedB(1,'');
+                                    __viewContext.viewModel.viewmodelB.checkTabSelectedB(vmbase.RootType.WORKPLACE,'');
                                 }
                                 break;
                             default://employee
                                 if(self.selectedModeCode()==0){
                                     self.tabSelected(vmbase.RootType.PERSON);
                                 }else{
-                                    __viewContext.viewModel.viewmodelB.checkTabSelectedB(2,self.selectedItem());
+                                    __viewContext.viewModel.viewmodelB.checkTabSelectedB(vmbase.RootType.PERSON,self.selectedItem());
                                 }
                          }
                     }
@@ -320,9 +320,9 @@ module nts.uk.com.view.cmm018.a {
                 if(transferData.screen == 'Application'){//screen Application
                     self.visibleTab(false);
                     self.tabSelected(2);
-                    self.employeeId('90000000-0000-0000-0000-000000000001');
+                    self.employeeId(transferData.employeeId);
                     param = new vmbase.ParamDto(2,'',self.employeeId());
-                    servicebase.getInfoEmployee('90000000-0000-0000-0000-000000000001').done(function(employeeInfo){
+                    servicebase.getInfoEmployee(transferData.employeeId).done(function(employeeInfo){
                         self.employeeInputList.push(new vmbase.EmployeeKcp009(employeeInfo.sid,
                                     employeeInfo.employeeCode, employeeInfo.employeeName, '', ''));
                     });
@@ -472,7 +472,7 @@ module nts.uk.com.view.cmm018.a {
             getDataPerson(): JQueryPromise<any>{
                 let self = this;
                 let dfd = $.Deferred();
-                let param: vmbase.ParamDto = new vmbase.ParamDto(2,'',self.selectedItem());
+                let param: vmbase.ParamDto = new vmbase.ParamDto(vmbase.RootType.PERSON,'',self.selectedItem());
                 servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
                     if(data == null || data === undefined || data.lstPerson.length == 0){
                         self.historyStr('');
@@ -548,7 +548,7 @@ module nts.uk.com.view.cmm018.a {
                     let lstAppType: Array<Number> = []; 
                     
                     //TH: tab company
-                    if(self.tabSelected() == 0){
+                    if(self.tabSelected() == vmbase.RootType.COMPANY){
                         //Check dang chon item vua moi them
                         if(self.currentCode() == -1){
                             checkReload = true;
@@ -563,7 +563,7 @@ module nts.uk.com.view.cmm018.a {
                         startDate = histLAst.lstCompanyRoot[0].company.startDate
                     }
                     //TH: tab work place
-                    else if(self.tabSelected() == 1){
+                    else if(self.tabSelected() == vmbase.RootType.WORKPLACE){
                         //Check dang chon item vua moi them
                         if(self.currentCode() == -1){
                             checkReload = true;
@@ -659,7 +659,7 @@ module nts.uk.com.view.cmm018.a {
                             //重なるフラグがfalse
                             //重なるフラグがtrue
                             //TH: tab company
-                            if(self.tabSelected() == 0){
+                            if(self.tabSelected() == vmbase.RootType.COMPANY){
                                 //check add history new
                                 if(self.checkAddHistory()){
 //                                    self.getDataCompany();
@@ -677,7 +677,7 @@ module nts.uk.com.view.cmm018.a {
                                 }); 
                             }
                             //TH: tab work place
-                            else if(self.tabSelected() == 1){
+                            else if(self.tabSelected() == vmbase.RootType.WORKPLACE){
 //                                let lstWorkplace: vmbase.DataDisplayWpDto = self.findAppIdForWp(self.idOld());
                                 let lstWorkplace;
                                 if(self.currentCode() == -1){
@@ -722,14 +722,14 @@ module nts.uk.com.view.cmm018.a {
             findAppTypeHistory(rootType: number): Array<number>{
                 let self = this;
                 let lstApp = [];
-                if(rootType == 0){
+                if(rootType == vmbase.RootType.COMPANY){
                     let obj: vmbase.DataDisplayComDto = self.findAppIdForCom(self.currentCode());
                     if(obj != undefined){
                         _.each(obj.lstCompanyRoot, function(item){
                             lstApp.push(item.company.applicationType);
                         });
                     }
-                }else if(rootType == 1){
+                }else if(rootType == vmbase.RootType.WORKPLACE){
                     let obj: vmbase.DataDisplayWpDto = self.findAppIdForWp(self.currentCode());
                     if(obj != undefined){
                         _.each(obj.lstWorkplaceRoot, function(item){
@@ -1056,13 +1056,13 @@ module nts.uk.com.view.cmm018.a {
                                     history.startDate, history.endDate,self.dataI(), listType, root);
                 servicebase.updateRoot(data).done(function(){
                     self.enableDelete(true);
-                   if(self.tabSelected() == 0){
+                    if(self.tabSelected() == vmbase.RootType.COMPANY){
                        self.getDataCompany();
-                   }else if(self.tabSelected() == 0){
+                    }else if(self.tabSelected() == vmbase.RootType.WORKPLACE){
                        self.getDataWorkplace();
-                   }else{
+                    }else{
                        self.getDataPerson();
-                   }
+                    }
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });
             }
@@ -1790,13 +1790,11 @@ module nts.uk.com.view.cmm018.a {
             registerB(){
 //                nts.uk.ui.block.invisible();
                 let self = this;
-                if(self.comRoot() == null){//TH: data right null
+                if(self.comRoot() == null){//TH: data right null: xoa het or k co
                     let app = self.findAppbyName(self.singleSelectedCode());
-                    if(app != undefined){
-                       let root = self.findRootComByType(app.value);
-                        if(root != undefined && root != null){
-                            return;
-                        } 
+                    //TH: select not item history
+                    if(app != undefined ||self.singleSelectedCode() == '共通ルート' || self.singleSelectedCode() == nts.uk.resource.getText("CMM018_7")){//don
+                        return null;
                     }
                 }
                 let checkAddHist = false;

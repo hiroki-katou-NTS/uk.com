@@ -84,7 +84,7 @@
 											data-bind="ntsCheckBox: {
 													name: '#[KMK002_26]',
 													checked: calcResultRange.upperCheck,
-													enable: true,
+													enable: isUsed,
 													text: nts.uk.resource.getText('KMK002_26') }"></div>
 													
 													<com:ko tag="if" bind="isNumberSelected()">
@@ -93,7 +93,7 @@
 												  name: '#[KMK002_26]',
 		                                          value: calcResultRange.numberUpper,
 		                                          constraint: 'NumberRangeValue',
-		                                          enable: calcResultRange.upperCheck}"/>
+		                                          enable: calcResultRange.upperCheck &amp;&amp; isUsed}"/>
 		                                          </com:ko>
 		                                          
 		                                          <com:ko tag="if" bind="isAmountSelected()">
@@ -102,7 +102,7 @@
 												  name: '#[KMK002_26]',
 		                                          value: calcResultRange.amountUpper,
 		                                          constraint: 'AmountRangeValue',
-		                                          enable: calcResultRange.upperCheck}"/>
+		                                          enable: calcResultRange.upperCheck &amp;&amp; isUsed}"/>
 		                                          </com:ko>
 		                                          
 		                                          <com:ko tag="if" bind="isTimeSelected()">
@@ -111,7 +111,7 @@
 												  name: '#[KMK002_26]',
 		                                          value: calcResultRange.timeUpper,
 		                                          constraint: 'TimeRangeValue',
-		                                          enable: calcResultRange.upperCheck}"/>
+		                                          enable: calcResultRange.upperCheck &amp;&amp; isUsed}"/>
 		                                          </com:ko>
 									</td>
 								</tr>
@@ -125,8 +125,8 @@
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: empConditionAtr,
-											enable: true }"></div>
-										<button data-bind="click: openDialogB">#{i18n.getText('KMK002_19')}</button>
+											enable: isUsed }"></div>
+										<button data-bind="click: openDialogB, enable: empConditionAtr() == 1 &amp;&amp; isUsed">#{i18n.getText('KMK002_19')}</button>
 										</td>
 									<td></td>
 									
@@ -136,7 +136,7 @@
 											data-bind="ntsCheckBox: {
 												name: '#[KMK002_27]',
 												checked: calcResultRange.lowerCheck,
-												enable: true,
+												enable: isUsed,
 												text: nts.uk.resource.getText('KMK002_27') }"></div>
 
 										<com:ko tag="if" bind="isNumberSelected()">
@@ -145,7 +145,7 @@
 												  name: '#[KMK002_27]',
 		                                          value: calcResultRange.numberLower,
 		                                          constraint: 'NumberRangeValue',
-		                                          enable: calcResultRange.lowerCheck}"/>
+		                                          enable: calcResultRange.lowerCheck &amp;&amp; isUsed}"/>
 		                                          </com:ko>
 		                                
 		                                <com:ko tag="if" bind="isTimeSelected()">
@@ -154,7 +154,7 @@
 												  name: '#[KMK002_27]',
 		                                          value: calcResultRange.timeLower,
 		                                          constraint: 'TimeRangeValue',
-		                                          enable: calcResultRange.lowerCheck}"/>
+		                                          enable: calcResultRange.lowerCheck &amp;&amp; isUsed}"/>
 		                                          </com:ko>
 	
 										<com:ko tag="if" bind="isAmountSelected()">
@@ -163,7 +163,7 @@
 												  name: '#[KMK002_27]',
 		                                          value: calcResultRange.amountLower,
 		                                          constraint: 'AmountRangeValue',
-		                                          enable: calcResultRange.lowerCheck}"/>
+		                                          enable: calcResultRange.lowerCheck &amp;&amp; isUsed}"/>
 		                                </com:ko>
 									</td>
 								</tr>
@@ -177,7 +177,7 @@
 											optionsValue: 'code',
 											optionsText: 'name',
 											value: performanceAtr,
-											enable: true }"></div>
+											enable: isUsed }"></div>
 									</td>
 								</tr>
 								<tr>
@@ -191,7 +191,7 @@
 													value: optionalItemAtr,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: isUsed,
 													columns: [
 														{ prop: 'name', length: 1 },
 													]}">
@@ -200,10 +200,10 @@
 								
 							<!-- Optional Item view model -->
 								<tr>
-									<td><button tabindex="15" data-bind="click: addFormulaAbove">#{i18n.getText('KMK002_28')}</button></td>
+									<td><button tabindex="15" data-bind="click: addFormulaAbove, enable: isUsed">#{i18n.getText('KMK002_28')}</button></td>
 									<td>
-										<button tabindex="16" data-bind="click: addFormulaBelow">#{i18n.getText('KMK002_29')}</button>
-										<button tabindex="17" data-bind="click: removeFormula" class="danger">#{i18n.getText('KMK002_30')}</button>
+										<button tabindex="16" data-bind="click: addFormulaBelow, enable: isUsed">#{i18n.getText('KMK002_29')}</button>
+										<button tabindex="17" data-bind="click: removeFormula, enable: isUsed" class="danger">#{i18n.getText('KMK002_30')}</button>
 									</td>
 								</tr>
 								<tr>
@@ -214,8 +214,6 @@
 		                                          enable: false,
 		                                          readonly: true,
 		                                          required: false}"/>
-		                                <button data-bind="click: openDialogC">test C</button>
-										<button data-bind="click: openDialogD">test D</button>
 									</td>
 								</tr>
 								<!-- Optional Item formula view model -->

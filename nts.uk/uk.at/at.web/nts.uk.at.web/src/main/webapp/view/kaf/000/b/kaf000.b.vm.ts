@@ -296,6 +296,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 //                data.listOutputPhaseAndFrame = temp;
                 self.dataApplication(data);
                 dfd.resolve(data);
+            }).fail(function (res: any){
+                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
             });
             return dfd.promise();
         }
@@ -326,6 +328,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 //
                 self.outputDetailCheck(data);
                 dfd.resolve(data);
+            }).fail(function (res: any){
+                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
             });
             return dfd.promise();
         }
