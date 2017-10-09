@@ -2775,7 +2775,18 @@ var nts;
                 }
                 specials.isFileExist = isFileExist;
             })(specials = request.specials || (request.specials = {}));
-            function jump(path, data) {
+            function jump(webAppId, path, data) {
+                if (typeof arguments[1] !== 'string') {
+                    return jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                }
+                if (webAppId == nts.uk.request.location.currentAppId) {
+                    path = nts.uk.request.resolvePath(path);
+                }
+                else {
+                    path = nts.uk.request.location.siteRoot
+                        .mergeRelativePath(nts.uk.request.WEB_APP_NAME[webAppId] + '/')
+                        .mergeRelativePath(path).serialize();
+                }
                 uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
                 window.location.href = resolvePath(path);
             }
@@ -21242,4 +21253,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=nts.uk.com.web.nittsu.bundles.js.map

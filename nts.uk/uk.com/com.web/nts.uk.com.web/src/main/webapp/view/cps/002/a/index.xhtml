@@ -24,9 +24,9 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="init_setting_btn">#{i18n.getText('CPS002_11')}</button>
-
+				<button data-bind="click:OpenGModal" id="init_setting_btn">#{i18n.getText('CPS002_11')}</button>
 			</div>
+
 			<div id="contents-area" class="cf">
 				<div data-bind="visible:selectedId()===1">
 					<div id="ccgcomponent"></div>
@@ -244,7 +244,7 @@
 													visibleItemsCount: 5,
 													value: currentCategoryId,
 													optionsText: 'name',
-													editable: false,
+													editable: false ,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },

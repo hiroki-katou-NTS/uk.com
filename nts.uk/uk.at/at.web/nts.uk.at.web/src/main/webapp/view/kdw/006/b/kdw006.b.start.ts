@@ -5,7 +5,7 @@ module nts.uk.at.view.kdw006.b {
     __viewContext.ready(function() {
         __viewContext.viewModel = {
             tabView: new kdw.viewmodel.TabScreenModel(),
-            viewmodelB: new kdw.b.viewmodel.ScreenModel(),
+            viewmodelB: new kdw.b1.viewmodel.ScreenModel(),
             viewmodelC: new kdw.c.viewmodel.ScreenModel(),
             viewmodelD: new kdw.d.viewmodel.ScreenModel(),
             viewmodelE: new kdw.e.viewmodel.ScreenModel(),

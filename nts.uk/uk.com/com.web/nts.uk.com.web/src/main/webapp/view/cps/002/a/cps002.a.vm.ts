@@ -75,8 +75,8 @@ module cps002.a.vm {
             let self = this;
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 
-            self.selectedId.subscribe(() => {
-
+            self.selectedId.subscribe((newValue) => {
+               
             });
         }
 
@@ -87,6 +87,7 @@ module cps002.a.vm {
                 $('#emp_reg_info_wizard').ntsWizard("goto", 2);
                 return;
             }
+
             $('#emp_reg_info_wizard').ntsWizard("next");
         }
 
@@ -99,12 +100,7 @@ module cps002.a.vm {
             $('#emp_reg_info_wizard').ntsWizard("prev");
         }
 
-        getStep() {
-            if (nts.uk.ui._viewModel === undefined) {
-                return 0;
-            }
-            return $('#emp_reg_info_wizard').ntsWizard("getCurrentStep");
-        }
+      
 
         finish() {
 
@@ -127,6 +123,13 @@ module cps002.a.vm {
             let self = this;
 
             nts.uk.ui.windows.sub.modal('/view/cps/002/f/index.xhtml', { title: '' }).onClosed(function(): any {
+            });
+        }
+        OpenGModal() {
+
+            let self = this;
+
+            nts.uk.ui.windows.sub.modal('/view/cps/002/g/index.xhtml', { title: '' }).onClosed(function(): any {
             });
         }
 

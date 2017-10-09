@@ -1,83 +1,90 @@
 <div class="contents-area">
-	<div data-bind="with: dispRestric">
-		<div id="area1">
-			<div id="label0" class="label">#{i18n.getText('KDW006_29', ['#Com_PaidHoliday'])}</div>
-		
-			<div id="label1">
-				<div class="label">#{i18n.getText('KDW006_30')}</div>
-			</div>
-			
-			<div id="switchBtn1" class="cf" data-bind="ntsSwitchButton: {
-				options: [{ code: '1', name: 'する' }, { code: '2', name: 'しない' }],
-				optionsValue: 'code',
-				optionsText: 'name',
-				value: yearHolidaySwitch,
-				enable: true }">
-			</div>
-			
-			<div>
-				<div id="checkBox1" data-bind="ntsCheckBox: { checked: yearHolidayCheck }">#{i18n.getText('KDW006_31')}</div>
-			</div>	
+	<div id="area1">
+		<div id="label0" class="label">#{i18n.getText('KDW006_29')}</div>
+
+		<div id="label1">
+			<div class="label">#{i18n.getText('KDW006_30')}</div>
 		</div>
-		
-		<div id="area2">
-			<div id="label0" class="label">#{i18n.getText('KDW006_32', ['#Com_PaidHoliday'])}</div>
-		
-			<div id="label1">
-				<div class="label">#{i18n.getText('KDW006_30')}</div>
-			</div>
-			
-			<div id="switchBtn1" class="cf" data-bind="ntsSwitchButton: {
-				options: [{ code: '1', name: 'する' }, { code: '2', name: 'しない' }],
+
+		<div id="switchBtn1" class="cf"
+			data-bind="ntsSwitchButton: {
+				options: roundingRules,
 				optionsValue: 'code',
 				optionsText: 'name',
-				value: substitutionSwitch,
+				value: yearDisplayAtr,
 				enable: true }">
-			</div>
-			
-			<div>
-				<div id="checkBox1" data-bind="ntsCheckBox: { checked: substitutionCheck }">#{i18n.getText('KDW006_31')}</div>
-			</div>	
 		</div>
-		
-		<div id="area3">
-			<div id="label0" class="label">#{i18n.getText('KDW006_33', ['#Com_PaidHoliday'])}</div>
-		
-			<div id="label1">
-				<div class="label">#{i18n.getText('KDW006_30')}</div>
-			</div>
-			
-			<div id="switchBtn1" class="cf" data-bind="ntsSwitchButton: {
-				options: [{ code: '1', name: 'する' }, { code: '2', name: 'しない' }],
-				optionsValue: 'code',
-				optionsText: 'name',
-				value: savingYearSwitch,
-				enable: true }">
-			</div>
-			
-			<div>
-				<div id="checkBox1" data-bind="ntsCheckBox: { checked: savingYearCheck }">#{i18n.getText('KDW006_31')}</div>
-			</div>	
+		<div>
+			<div id="checkBox1"
+				data-bind="ntsCheckBox: { checked: yearRemainingNumberCheck , enable: yearDisplayAtr}">
+				#{i18n.getText('KDW006_31')}</div>
 		</div>
-		
-		<div id="area4">
-			<div id="label0" class="label">#{i18n.getText('KDW006_', ['#Com_PaidHoliday'])}</div>
-		
-			<div id="label1">
-				<div class="label">#{i18n.getText('KDW006_30')}</div>
-			</div>
-			
-			<div id="switchBtn1" class="cf" data-bind="ntsSwitchButton: {
-				options: [{ code: '1', name: 'する' }, { code: '2', name: 'しない' }],
+	</div>
+
+	<div id="area2">
+		<div id="label0" class="label">#{i18n.getText('KDW006_32')}</div>
+
+		<div id="label1">
+			<div class="label">#{i18n.getText('KDW006_30')}</div>
+		</div>
+
+		<div id="switchBtn1" class="cf"
+			data-bind="ntsSwitchButton: {
+				options: roundingRules,
 				optionsValue: 'code',
 				optionsText: 'name',
-				value: compensatorySwitch,
+				value: savingYearDisplayAtr,
 				enable: true }">
-			</div>
-			
-			<div>
-				<div id="checkBox1" data-bind="ntsCheckBox: { checked: compensatoryCheck }">#{i18n.getText('KDW006_31')}</div>
-			</div>	
+		</div>
+		<div>
+			<div id="checkBox1"
+				data-bind="ntsCheckBox: { checked: savingYearRemainingNumberCheck , enable:savingYearDisplayAtr }">
+				#{i18n.getText('KDW006_31')}</div>
+		</div>
+	</div>
+
+	<div id="area3">
+		<div id="label0" class="label">#{i18n.getText('KDW006_33')}</div>
+
+		<div id="label1">
+			<div class="label">#{i18n.getText('KDW006_30')}</div>
+		</div>
+
+		<div id="switchBtn1" class="cf"
+			data-bind="ntsSwitchButton: {
+				options: roundingRules,
+				optionsValue: 'code',
+				optionsText: 'name',
+				value: compensatoryDisplayAtr,
+				enable: true }">
+		</div>
+
+		<div>
+			<div id="checkBox1"
+				data-bind="ntsCheckBox: { checked: compensatoryRemainingNumberCheck , enable: compensatoryDisplayAtr}">
+				#{i18n.getText('KDW006_31')}</div>
+		</div>
+	</div>
+
+	<div id="area4">
+		<div id="label0" class="label">#{i18n.getText('KDW006_34')}</div>
+
+		<div id="label1">
+			<div class="label">#{i18n.getText('KDW006_30')}</div>
+		</div>
+
+		<div id="switchBtn1" class="cf"
+			data-bind="ntsSwitchButton: {
+				options: roundingRules,
+				optionsValue: 'code',
+				optionsText: 'name',
+				value: substitutionDisplayAtr,
+				enable: true }">
+		</div>
+		<div>
+			<div id="checkBox1"
+				data-bind="ntsCheckBox: { checked: substitutionRemainingNumberCheck , enable: substitutionDisplayAtr}">
+				#{i18n.getText('KDW006_31')}</div>
 		</div>
 	</div>
 </div>

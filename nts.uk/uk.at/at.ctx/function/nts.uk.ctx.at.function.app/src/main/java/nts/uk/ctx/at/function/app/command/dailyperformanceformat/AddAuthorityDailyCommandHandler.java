@@ -55,9 +55,9 @@ public class AddAuthorityDailyCommandHandler extends CommandHandler<AddAuthority
 				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()),
 				new DailyPerformanceFormatName(command.getDailyPerformanceFormatName()));
 
-		if (this.authorityFormatDailyRepository
+		if (this.authorityDailyPerformanceFormatRepository
 				.checkExistCode(new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()))) {
-			throw new BusinessException("#Msg_3");
+			throw new BusinessException("Msg_3");
 		} else {
 			this.authorityFormatDailyRepository.add(authorityFomatDailies);
 			this.authorityDailyPerformanceFormatRepository.add(authorityDailyPerformanceFormat);
@@ -66,8 +66,12 @@ public class AddAuthorityDailyCommandHandler extends CommandHandler<AddAuthority
 		AuthorityFormatSheet authorityFormatSheet = new AuthorityFormatSheet(companyId,
 				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()), command.getSheetNo(),
 				command.getSheetName());
-
-		this.authorityFormatSheetRepository.add(authorityFormatSheet);
+		
+		if(this.authorityFormatSheetRepository.checkExistData(companyId, new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()), command.getSheetNo())){
+			this.authorityFormatSheetRepository.update(authorityFormatSheet);
+		} else {
+			this.authorityFormatSheetRepository.add(authorityFormatSheet);	
+		}
 
 		AuthorityFormatInitialDisplay authorityFormatInitialDisplay = new AuthorityFormatInitialDisplay(companyId,
 				new DailyPerformanceFormatCode(command.getDailyPerformanceFormatCode()));

@@ -26,7 +26,7 @@ public class UpdateApplicationReleaseHandler {
 
 	public void releaseApp(String appID) {
 		String companyID = AppContexts.user().companyId();
-		String loginID = AppContexts.user().loginCode();
+		String loginID = AppContexts.user().userId();
 		Application application = appRepo.getAppById(companyID, appID).get();
 		
 		//10.1

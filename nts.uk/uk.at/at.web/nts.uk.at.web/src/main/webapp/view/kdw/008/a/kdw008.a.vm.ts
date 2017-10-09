@@ -3,7 +3,8 @@ module nts.uk.at.view.kdw008.a {
         export class ScreenModel {
 
             newMode: KnockoutObservable<boolean>;
-            isUpdate: boolean;
+            isUpdate: KnockoutObservable<boolean>;
+            showCode: KnockoutObservable<boolean>;
 
             checked: KnockoutObservable<boolean>;
 
@@ -40,7 +41,8 @@ module nts.uk.at.view.kdw008.a {
             constructor() {
                 var self = this;
                 self.newMode = ko.observable(false);
-                self.isUpdate = true;
+                self.isUpdate = ko.observable(true);
+                self.showCode = ko.observable(false);
 
                 self.checked = ko.observable(false);
 
@@ -110,6 +112,8 @@ module nts.uk.at.view.kdw008.a {
                 self.authorityFormatDailyValue = ko.observableArray([]);
 
                 self.selectedCode.subscribe(newValue => {
+                    self.isUpdate(true);
+                    self.showCode(false);
                     if (nts.uk.text.isNullOrEmpty(newValue)) return;
                     let empSelect = _.find(self.businessTypeList(), bus => {
                         return bus.dailyPerformanceFormatCode == newValue;
@@ -146,12 +150,14 @@ module nts.uk.at.view.kdw008.a {
             setNewMode() {
                 let self = this;
                 self.newMode(true);
-                self.isUpdate = false;
                 self.currentDailyFormatCode(null);
                 self.currentDailyFormatName('');
                 self.selectedCode(null);
                 self.getDetail(self.selectedCode());
                 self.checked(false);
+                self.showCode(true);
+                $("#currentCode").focus();
+                self.isUpdate(false);
             }
 
             getDetail(dailyPerformanceFormatCode: string) {
@@ -256,7 +262,8 @@ module nts.uk.at.view.kdw008.a {
                     return new DailyAttendanceAuthorityDetailDto(obj);
                 })
                 var addOrUpdateBusinessFormatMonthly = new AddAuthorityFormatMonthly(self.currentDailyFormatCode(), authorityFormatDetailDtos);
-                if (self.currentBusinessType().dailyAttendanceAuthorityMonthlyDto().length > 0) {
+                //                
+                if (self.isUpdate() == true) {
                     new service.Service().updateMonthlyDetail(addOrUpdateBusinessFormatMonthly);
                 } else {
                     new service.Service().addMonthlyDetail(addOrUpdateBusinessFormatMonthly);
@@ -281,12 +288,20 @@ module nts.uk.at.view.kdw008.a {
                     var addOrUpdateBusinessFormatDaily = new AddAuthorityFormatDaily(self.currentDailyFormatCode(), self.currentDailyFormatName(), self.selectedSheetNo(), self.selectedSheetName(), businessTypeFormatDetailDailyDto, 0);
                 }
 
-                if (self.currentBusinessType().dailyAttendanceAuthorityDailyDto() != null && self.currentBusinessType().dailyAttendanceAuthorityDailyDto().dailyAttendanceAuthorityDetailDtos.length > 0) {
-                    new service.Service().updateDailyDetail(addOrUpdateBusinessFormatDaily);
+                //                if (self.currentBusinessType().dailyAttendanceAuthorityDailyDto() != null && self.currentBusinessType().dailyAttendanceAuthorityDailyDto().dailyAttendanceAuthorityDetailDtos.length > 0) {
+                if (self.isUpdate() == true) {
+                    new service.Service().updateDailyDetail(addOrUpdateBusinessFormatDaily).done(function() {
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error.message);
+                    });
                 } else {
-                    new service.Service().addDailyDetail(addOrUpdateBusinessFormatDaily);
+                    new service.Service().addDailyDetail(addOrUpdateBusinessFormatDaily).done(function() {
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
+                    }).fail(function(error) {
+                        nts.uk.ui.dialog.alertError(error.message);
+                    });
                 }
-                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                 //self.getDetail(self.currentDailyFormatCode());
                 self.reloadData();
             }
@@ -309,10 +324,6 @@ module nts.uk.at.view.kdw008.a {
                 });
 
                 return dfd.promise();
-            }
-
-            dialog() {
-                nts.uk.ui.windows.sub.modal("../c/index.xhtml");
             }
 
         }
