@@ -115,7 +115,7 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 							m.getOrderNumber());
 					
 					phase.addApproverList(m.getApprovers().stream().map(a -> {
-							ApproverInfoExport export = new ApproverInfoExport(a.getSid(), a.getApprovalPhaseId(), a.isConfirmPerson(), a.getOrderNumber());
+							ApproverInfoExport export = new ApproverInfoExport(a.getSid(), a.getApprovalPhaseId(), a.getIsConfirmPerson(), a.getOrderNumber());
 							export.addEmployeeName(a.getName());
 							return export;
 						}).collect(Collectors.toList()));
@@ -128,7 +128,7 @@ public class ApprovalRootPubImpl implements ApprovalRootPub {
 		List<ApproverInfo> approvers = this.jobtitleToApproverService.convertToApprover(cid, sid, baseDate, jobTitleId);
 		if (!CollectionUtil.isEmpty(approvers)) {
 			return approvers.stream().map(x -> {
-				ApproverInfoExport export = new ApproverInfoExport(x.getSid(), x.getApprovalPhaseId(), x.isConfirmPerson(), x.getOrderNumber());
+				ApproverInfoExport export = new ApproverInfoExport(x.getSid(), x.getApprovalPhaseId(), x.getIsConfirmPerson(), x.getOrderNumber());
 				export.addEmployeeName(x.getName());
 				return export;
 			}).collect(Collectors.toList());

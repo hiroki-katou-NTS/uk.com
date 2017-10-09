@@ -2,7 +2,6 @@ package nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
 /**
  * 承認者IDリスト
@@ -20,9 +19,9 @@ public class ApproverInfo {
 	/**承認フェーズID*/
 	private String approvalPhaseId;
 	/**確定者*/
-	private boolean isConfirmPerson;
+	private Boolean isConfirmPerson;
 	/**順序*/
-	private int orderNumber;
+	private Integer orderNumber;
 	
 	private String name;
 }

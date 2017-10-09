@@ -147,9 +147,9 @@
 										</tr>
 									</thead>
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "foreach: cpA">
-										<tr>
+										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- A3_12: App Name -->
-											<td class="name">
+											<td class="name td-first-bg">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<div style="display: inline-block;" data-bind="if: common">
 													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
@@ -226,7 +226,7 @@
 							</div>
 						</div>
 						<!-- SCREEN B -->
-						<div class="mode_Private" data-bind="visible: selectedModeCode">
+						<div class="mode_Private" style="display:none" data-bind="visible: selectedModeCode">
 							<!-- B2: List gridList -->
 							<div id = "left-contents" style="float: left;margin-left: 10px;" data-bind="with: $parent.viewmodelB">
 								<div style="width: 280px; height: 470px;" class="caret-right caret-background bg-green">
@@ -301,9 +301,9 @@
 										</tr>
 									</thead>
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
-										<tr>
+										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- B3_12: App Name -->
-											<td class="name">
+											<td class="name td-first-bg">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<!-- B3_13: -->
 												<div style="display: inline-block;" data-bind="if: common">
@@ -487,9 +487,9 @@
 										</tr>
 									</thead>
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "foreach: cpA">
-										<tr>
+										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- C3_12: App Name -->
-											<td class="name">
+											<td class="name td-first-bg">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<div style="display: inline-block;" data-bind="if: common">
 													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
@@ -641,9 +641,9 @@
 										</tr>
 									</thead>
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
-										<tr>
+										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- B3_12: App Name -->
-											<td class="name">
+											<td class="name td-first-bg">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<!-- B3_13: -->
 												<div style="display: inline-block;" data-bind="if: common">
@@ -831,9 +831,9 @@
 										</tr>
 									</thead>
 									<tbody style = "height: 200px;" data-bind = "foreach: cpA">
-										<tr>
+										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- E3_12: App Name -->
-											<td class="name">
+											<td class="name td-first-bg">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<div style="display: inline-block;" data-bind="if: common">
 													<button id="help" data-bind="ntsHelpButton: {image: '../images/CMM018_001.png', position: 'right top',enable: true}" >?</button>
@@ -980,9 +980,9 @@
 										</tr>
 									</thead>
 									<tbody style = "overflow-y: scroll; height: 200px;" data-bind = "with: comRoot">
-										<tr>
+										<tr data-bind="style: { background: color ? '#E0F59E' : 'white' }">
 											<!-- F3_12: App Name -->
-											<td class="name">
+											<td class="name td-first-bg">
 												<div data-bind = "text: appTypeName" style="display: inline-block;"></div>
 												<!-- B3_13: -->
 												<div style="display: inline-block;" data-bind="if: common">

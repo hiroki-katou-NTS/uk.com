@@ -21,6 +21,7 @@ import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ApprovalInfoOutput;
 //import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
@@ -53,6 +54,9 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 	 */
 	@Inject
 	private AgentAdapter approvalAgencyInformationService;
+	
+	@Inject
+	private ApproveAcceptedRepository approveAcceptedRepo;
 
 	@Override
 	public void newScreenRegisterAtApproveInfoReflect(String SID, Application application) {
@@ -78,6 +82,11 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 			String phaseID = appPhase.getPhaseID();
 			String  loginEmp = AppContexts.user().employeeId();
 			List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(companyID, phaseID);
+			for(ApprovalFrame approvalFrame : listFrame) {
+				List<ApproveAccepted> listAccept = approveAcceptedRepo.getAllApproverAccepted(
+						approvalFrame.getCompanyID(),approvalFrame.getFrameID());
+				approvalFrame.setListApproveAccepted(listAccept);
+			}
 			// ドメインモデル「承認フェーズ」．承認区分が承認済じゃない(「承認フェーズ」．承認区分 ≠ 承認済)
 			if (appPhase.getApprovalATR() != ApprovalAtr.APPROVED) {
 				/// LOOP FRAME

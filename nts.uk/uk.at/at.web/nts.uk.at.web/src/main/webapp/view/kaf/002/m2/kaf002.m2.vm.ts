@@ -4,30 +4,52 @@ module nts.uk.at.view.kaf002.m2 {
     export module viewmodel {
         export class ScreenModel {
             extendsMode: KnockoutObservable<boolean> = ko.observable(false);
-            appStampList: KnockoutObservableArray<vmbase.AppStampWork> = ko.observableArray([
-                new vmbase.AppStampWork(0,1,0,'spCode1','spLocation1',true,true,0,'start1',0,'end1',true,true,true,true),
-                new vmbase.AppStampWork(0,2,0,'spCode2','spLocation2',true,true,0,'start2',0,'end2',true,true,true,true),
-                new vmbase.AppStampWork(0,3,0,'spCode3','spLocation3',true,true,0,'start3',0,'end3',true,true,true,true)
-            ]);    
-            supFrameNo: number = 10;
+            appStampList: KnockoutObservableArray<vmbase.AppStampWork> = ko.observableArray([]);    
+            supFrameNo: number = 1;
             stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             constructor(){
                 var self = this;
                 self.extendsMode.subscribe((v)=>{ 
                     if(v){
-                        for(let i=4;i<=self.supFrameNo;i++) {
+                        for(let i=self.supFrameNo+1;i<=10;i++) {
                             self.appStampList.push(new vmbase.AppStampWork(0,i,0,'','',true,true,0,'',0,'',true,true,true,true));    
                         } 
                     } else {
-                        self.appStampList.remove((o) => { return o.stampFrameNo() > 3 });   
+                        self.appStampList.remove((o) => { return o.stampFrameNo() > self.supFrameNo });   
                     } 
                 });        
             }
             
             start(appStampData: any, data: vmbase.StampRequestSettingDto){
                 var self = this;    
-                self.supFrameNo = data.supFrameDispNO > 10 ? 10 : data.supFrameDispNO;
+                self.supFrameNo = data.supFrameDispNO;
+                for(let i=1;i<=self.supFrameNo;i++) {
+                    self.appStampList.push(new vmbase.AppStampWork(0,i,0,'spCode','spLocation',true,true,0,'star',0,'end',true,true,true,true));    
+                } 
                 self.stampPlaceDisplay(data.stampPlaceDisp);
+                if(!nts.uk.util.isNullOrUndefined(appStampData)){
+                    self.appStampList.removeAll();
+                    _.forEach(appStampData, item => {
+                        self.appStampList.push(
+                            new vmbase.AppStampWork(
+                                item.stampAtr,
+                                item.stampFrameNo,
+                                item.stampGoOutReason,
+                                item.supportCard,
+                                item.supportLocation,
+                                false,
+                                false,
+                                item.startTime,
+                                item.startLocation,
+                                item.endTime,
+                                item.endLocation, 
+                                false, 
+                                false, 
+                                false, 
+                                false
+                        ));        
+                    });
+                }
             }
             
             extendsModeEvent(){

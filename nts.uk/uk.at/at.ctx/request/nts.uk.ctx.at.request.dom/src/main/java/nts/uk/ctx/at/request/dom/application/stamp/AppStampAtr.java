@@ -10,7 +10,7 @@ package nts.uk.ctx.at.request.dom.application.stamp;
  * 打刻分類
  *
  */
-public enum StampAtr {
+public enum AppStampAtr {
 	
 	ATTENDANCE(0, "出勤／退勤"),
 	
@@ -26,7 +26,7 @@ public enum StampAtr {
 
 	public final String name;
 
-	StampAtr(int value, String name) {
+	AppStampAtr(int value, String name) {
 		this.value = value;
 		this.name = name;
 	}

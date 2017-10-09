@@ -9,7 +9,7 @@ package nts.uk.ctx.at.request.dom.application.stamp;
  * 外出理由
  *
  */
-public enum StampGoOutAtr {
+public enum AppStampGoOutAtr {
 	
 	PRIVATE(0,"私用"),
 	
@@ -23,7 +23,7 @@ public enum StampGoOutAtr {
 	
 	public final String name;
 	
-	StampGoOutAtr(int value, String name){
+	AppStampGoOutAtr(int value, String name){
 		this.value = value;
 		this.name = name;
 	}

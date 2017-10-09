@@ -39,7 +39,9 @@ public class AppStampDto {
 	
 	private AppStampOnlineRecordDto appStampOnlineRecordCmd;
 	
-	public static AppStampDto convertToDto(AppStamp appStamp){
+	private String employeeName;
+	
+	public static AppStampDto convertToDto(AppStamp appStamp, String employeeName){
 		if(appStamp == null) return null;
 		return new AppStampDto(
 				appStamp.getApplicationID(), 
@@ -53,7 +55,8 @@ public class AppStampDto {
 				appStamp.getAppStampGoOutPermits().stream().map(x -> AppStampGoOutPermitDto.convertToDto(x)).collect(Collectors.toList()), 
 				appStamp.getAppStampWorks().stream().map(x -> AppStampWorkDto.convertToDto(x)).collect(Collectors.toList()), 
 				appStamp.getAppStampCancels().stream().map(x -> AppStampCancelDto.convertToDto(x)).collect(Collectors.toList()), 
-				AppStampOnlineRecordDto.convertToDto(appStamp.getAppStampOnlineRecords()));
+				AppStampOnlineRecordDto.convertToDto(appStamp.getAppStampOnlineRecords()),
+				employeeName);
 	}
 }
 

@@ -20,31 +20,39 @@ module nts.uk.at.view.kaf002.cm {
             topComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',0)); 
             botComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',0));
             approvalList: Array<vmbase.AppApprovalPhase> = [];
+            employeeName: KnockoutObservable<string> = ko.observable("");
             constructor(stampRequestMode: number, screenMode: number){
                 var self = this;
                 self.stampRequestMode(stampRequestMode);
                 self.screenMode(screenMode);
-                self.m1 = new kaf002.m1.viewmodel.ScreenModel(); 
-                self.m2 = new kaf002.m2.viewmodel.ScreenModel(); 
-                self.m3 = new kaf002.m3.viewmodel.ScreenModel(); 
-                self.m4 = new kaf002.m4.viewmodel.ScreenModel();
-                self.m5 = new kaf002.m5.viewmodel.ScreenModel();
+                switch(self.stampRequestMode()){
+                    case 0: self.m1 = new kaf002.m1.viewmodel.ScreenModel(); break;
+                    case 1: self.m2 = new kaf002.m2.viewmodel.ScreenModel(); break;
+                    case 2: self.m3 = new kaf002.m3.viewmodel.ScreenModel(); break;
+                    case 3: self.m4 = new kaf002.m4.viewmodel.ScreenModel(); break;
+                    case 4: self.m5 = new kaf002.m5.viewmodel.ScreenModel(); break;
+                    default: break;
+                }    
             }
             start(commonSet: vmbase.AppStampNewSetDto, appStampData: any, approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
-                if(!nts.uk.util.isNullOrUndefined(appStampData)) {
-                    self.application(new vmbase.Application(
-                        appStampData.appID,
-                        appStampData.inputDate,
-                        appStampData.enteredPerson,
-                        appStampData.applicationDate,
-                        appStampData.titleReason,
-                        appStampData.detailReason,
-                        appStampData.employeeID
-                    ));
+                if(self.screenMode()==0){
+                    if(!nts.uk.util.isNullOrUndefined(appStampData)) {
+                        self.application(new vmbase.Application(
+                            appStampData.appID,
+                            appStampData.inputDate,
+                            appStampData.enteredPerson,
+                            appStampData.applicationDate,
+                            appStampData.titleReason,
+                            appStampData.detailReason,
+                            appStampData.employeeID
+                        ));
+                    }
                     self.stampRequestMode(appStampData.stampRequestMode);
+                    self.employeeName(appStampData.employeeName);
                 } else {
                     self.application().appDate(commonSet.appCommonSettingDto.generalDate);    
+                    self.employeeName(commonSet.employeeName);
                 }
                 self.inputReasonsDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].typicalReasonDisplayFlg);
                 self.detailReasonDisp(commonSet.appCommonSettingDto.appTypeDiscreteSettingDtos[0].displayReasonFlg);
@@ -63,11 +71,11 @@ module nts.uk.at.view.kaf002.cm {
                 self.botComment().color(commonSet.appStampSetDto.stampRequestSettingDto.bottomCommentFontColor);
                 self.botComment().fontWeight(commonSet.appStampSetDto.stampRequestSettingDto.bottomCommentFontWeight);
                 switch(self.stampRequestMode()){
-                    case 0: self.m1.start(appStampData, commonSet.appStampSetDto.stampRequestSettingDto);break;    
-                    case 1: self.m2.start(appStampData, commonSet.appStampSetDto.stampRequestSettingDto);break;  
-                    case 2: self.m3.start(appStampData, commonSet.appStampSetDto.stampRequestSettingDto);break; 
-                    case 3: self.m4.start(appStampData, commonSet.appStampSetDto.stampRequestSettingDto);break; 
-                    case 4: self.m5.start(appStampData, commonSet.appStampSetDto.stampRequestSettingDto);break; 
+                    case 0: self.m1.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto);break;    
+                    case 1: self.m2.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto);break;  
+                    case 2: self.m3.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto);break; 
+                    case 3: self.m4.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto);break; 
+                    case 4: self.m5.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto);break; 
                     default: break;
                 } 
                 _.forEach(approvalList, appPhase => {
