@@ -5,7 +5,7 @@ module nts.uk.com.view.cdl003.a {
         var screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
         $('#classification').ntsListComponent(screenModel.classifications).done(function() {
-            $('#classification').focus();
+            $('#classification').focusComponent();
         });
 
     });
