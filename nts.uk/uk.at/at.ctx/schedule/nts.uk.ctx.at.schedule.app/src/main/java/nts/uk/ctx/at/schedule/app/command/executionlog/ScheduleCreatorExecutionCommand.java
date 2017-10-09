@@ -19,4 +19,11 @@ public class ScheduleCreatorExecutionCommand {
 	
 	/** The execution id. */
 	private String executionId;
+	
+	/** The implement atr. */
+	private Integer implementAtr;
+	
+	/** The re create atr. */
+	private Integer reCreateAtr;
+	
 }
