@@ -5,7 +5,9 @@ module nts.uk.ui.wizard.viewmodel {
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
+        
         stepList: Array<NtsWizardStep>;
+        activeStep: KnockoutObservable<number>;
         stepSelected: KnockoutObservable<NtsWizardStep>;
         
         tabs: KnockoutObservableArray<NtsTabPanelModel>;
@@ -73,6 +75,7 @@ module nts.uk.ui.wizard.viewmodel {
                 {content: '.step-5'},
                 {content: '.step-6'}
             ];
+            self.activeStep = ko.observable(0);
             self.stepSelected = ko.observable({content: '.step-1'});
             
         }
