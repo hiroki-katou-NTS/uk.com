@@ -62,8 +62,6 @@ public class EmployeeApproverExportService extends ExportService<EmployeeApprove
 				appLst.add(new ApproverAsApplicationInforOutput(i, "直行直帰申請", employeeOrder));
 			}else if(i== 4) {
 				appLst.add(new ApproverAsApplicationInforOutput(i, "時間年休申請", employeeOrder));
-			}else if(i== 5) {
-				appLst.add(new ApproverAsApplicationInforOutput(i, "振休振出申請", employeeOrder));
 			}
 		}
 		Map<Integer, List<ApproverAsApplicationInforOutput>> mapAppTypeAsApprover = new HashMap<>();
@@ -74,7 +72,7 @@ public class EmployeeApproverExportService extends ExportService<EmployeeApprove
 		Map<String, EmployeeApproverAsApplicationOutput> mapEmpRootInfo = new HashMap<>();
 
 		for(int i = 0; i < 5; i++) {
-			mapEmpRootInfo.put(String.valueOf(i), employee);
+			mapEmpRootInfo.put("0", employee);
 			
 		}
 		WorkplaceImport wpInfor = new WorkplaceImport("1","0001","A");
