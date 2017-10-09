@@ -97,11 +97,11 @@
 						</div>
 						
 						<div class="row" data-bind="with: formatSelection">
-							<div class="coll" data-bind="ntsFormLabel: {constraint: 'SelectionCode', required: true }">#{i18n.getText('CPS016_13')}</div>
+							<div class="coll" data-bind="ntsFormLabel: {constraint: 'SelectionCodeLength', required: true }">#{i18n.getText('CPS016_13')}</div>
 							<input style="width: 20px;"
 								data-bind="ntsNumberEditor :{
 									value: selectionCode,
-									constraint: 'SelectionCode',
+									constraint: 'SelectionCodeLength',
 									option: '',
 									required: true,
 									enable: true,
@@ -109,11 +109,11 @@
 						</div>
 
 						<div class="row" data-bind="with: formatSelection">
-							<div class="coll" data-bind="ntsFormLabel: {constraint: 'SelectionName', required: true }">#{i18n.getText('CPS016_15')}</div>
+							<div class="coll" data-bind="ntsFormLabel: {constraint: 'SelectionNameLength', required: true }">#{i18n.getText('CPS016_15')}</div>
 							<input style="width: 20px;"
 								data-bind="ntsNumberEditor : {
 									value: selectionName,
-									constraint: 'SelectionName',
+									constraint: 'SelectionNameLength',
 									option: '',
 									required: true,
 									enable: true,
@@ -121,11 +121,11 @@
 						</div>
 
 						<div class="row" data-bind="with: formatSelection">
-							<div class="coll" data-bind="ntsFormLabel: {constraint: 'SelectionExternalCode', required: true }">#{i18n.getText('CPS016_17')}</div>
+							<div class="coll" data-bind="ntsFormLabel: {constraint: 'SelectionExternalCDLength', required: true }">#{i18n.getText('CPS016_17')}</div>
 							<input style="width: 20px;"
 								data-bind="ntsNumberEditor : {
 									value: selectionExternalCode,
-									constraint: 'SelectionExternalCode',
+									constraint: 'SelectionExternalCDLength',
 									option: '',
 									required: true,
 									enable: true,
@@ -154,7 +154,7 @@
 								<label>#{i18n.getText('CPS016_21')}</label>
 							</div>
 							<textarea style="width: 450px; height: 90px;"
-								data-bind="ntsMultilineEditor: { value: memo }" />
+								data-bind="ntsMultilineEditor: { value: memo , constraint: 'Memo',}" />
 						</div>
 					</div>
 				</div>
