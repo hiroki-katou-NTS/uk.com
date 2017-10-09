@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.dom.person.setting.selection;
+package nts.uk.ctx.bs.person.dom.person.setting.selectionitem;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,20 +1,20 @@
-package nts.uk.ctx.bs.person.dom.person.setting.selection;
+package nts.uk.ctx.bs.person.dom.person.setting.selectionitem;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLength(30)
-@StringCharType(CharType.ALPHABET)
-public class SelectionItemName extends StringPrimitiveValue<SelectionItemName>{
+@StringMaxLength(2)
+@StringCharType(CharType.ALPHA_NUMERIC)
+public class IntegrationCode extends StringPrimitiveValue<IntegrationCode> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public SelectionItemName(String rawValue) {
+	public IntegrationCode(String rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}

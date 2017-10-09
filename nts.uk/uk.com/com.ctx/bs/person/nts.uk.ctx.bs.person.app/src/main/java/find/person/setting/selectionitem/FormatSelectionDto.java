@@ -1,7 +1,7 @@
 package find.person.setting.selectionitem;
 
 import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.FormatSelection;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.FormatSelection;
 
 @Value
 public class FormatSelectionDto {

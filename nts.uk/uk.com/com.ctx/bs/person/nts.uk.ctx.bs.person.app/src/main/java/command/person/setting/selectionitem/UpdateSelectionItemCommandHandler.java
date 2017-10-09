@@ -5,8 +5,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.IPerInfoSelectionItemRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoSelectionItem;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoSelectionItem;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

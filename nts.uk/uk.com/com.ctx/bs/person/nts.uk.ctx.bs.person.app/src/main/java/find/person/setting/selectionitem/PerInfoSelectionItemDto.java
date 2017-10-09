@@ -1,7 +1,7 @@
 package find.person.setting.selectionitem;
 
 import lombok.Value;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoSelectionItem;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoSelectionItem;
 
 @Value
 public class PerInfoSelectionItemDto {

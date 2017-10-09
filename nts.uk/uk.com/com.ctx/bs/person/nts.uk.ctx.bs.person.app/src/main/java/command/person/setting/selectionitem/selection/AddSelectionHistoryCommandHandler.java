@@ -11,8 +11,9 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoHistorySelection;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoHistorySelectionRepository;
+import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelection;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
 
 @Stateless
 public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<AddSelectionHistoryCommand, String> {
@@ -34,9 +35,31 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		}
 
 		// ログインしているユーザーの権限をチェックする
-		// Đang hỏi cách kiểm tra quyển User:
+		String newId = IdentifierUtil.randomUniqueId();
+		GeneralDate startDate = GeneralDate.ymd(1900, 1, 1);
+		GeneralDate endDate = GeneralDate.ymd(9999, 12, 31);
+		boolean userLogin;
+		if (userLogin = true) {
+			String cid0 = PersonInfoCategory.ROOT_COMPANY_ID;
 
-		// ドメインモデル「選択肢履歴」を登録する
+			// ドメインモデル「選択肢履歴」を登録する
+			PerInfoHistorySelection domainHist = PerInfoHistorySelection.historySelection(newHistId, newId, cid0,
+					endDate, startDate);
+			this.historySelectionRepository.add(domainHist);
+		} else {
+			String cid_login = PersonInfoCategory.ROOT_COMPANY_ID;
+
+			// ドメインモデル「選択肢履歴」を登録する
+			PerInfoHistorySelection domainHist1 = PerInfoHistorySelection.historySelection(newHistId, newId, cid_login,
+					endDate, startDate);
+			this.historySelectionRepository.add(domainHist1);
+		}
+
+		// ドメインモデル「選択肢」をコピーする
+		// TODO:
+
+		// ドメインモデル「選択肢の並び順と既定値」をコピーする
+		// TODO:
 
 		return newHistId;
 	}

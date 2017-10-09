@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.dom.person.setting.selection;
+package nts.uk.ctx.bs.person.dom.person.setting.selectionitem;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;

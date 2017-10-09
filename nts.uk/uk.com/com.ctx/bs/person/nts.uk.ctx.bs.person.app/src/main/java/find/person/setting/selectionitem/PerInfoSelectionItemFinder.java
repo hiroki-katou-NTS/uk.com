@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.bs.person.dom.person.setting.selection.IPerInfoSelectionItemRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoHistorySelectionRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoSelectionItem;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoSelectionItem;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

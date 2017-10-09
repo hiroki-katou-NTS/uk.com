@@ -14,10 +14,10 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.category.PersonInfoCategory;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.IPerInfoSelectionItemRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoHistorySelection;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoHistorySelectionRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoSelectionItem;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelection;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoSelectionItem;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

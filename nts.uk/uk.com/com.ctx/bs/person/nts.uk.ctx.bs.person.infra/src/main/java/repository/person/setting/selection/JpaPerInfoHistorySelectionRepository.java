@@ -9,8 +9,8 @@ import entity.person.setting.selection.PpemtHistorySelection;
 import entity.person.setting.selection.PpemtHistorySelectionPK;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoHistorySelection;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoHistorySelectionRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelection;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
 
 @Stateless
 public class JpaPerInfoHistorySelectionRepository extends JpaRepository implements PerInfoHistorySelectionRepository {

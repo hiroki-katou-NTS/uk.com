@@ -8,9 +8,9 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.IPerInfoSelectionItemRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoHistorySelection;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoHistorySelectionRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelection;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
 
 @Stateless
 @Transactional
