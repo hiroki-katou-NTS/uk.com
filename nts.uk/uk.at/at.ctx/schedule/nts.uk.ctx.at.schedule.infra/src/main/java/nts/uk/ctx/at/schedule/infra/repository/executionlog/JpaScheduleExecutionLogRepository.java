@@ -17,6 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
@@ -24,7 +25,6 @@ import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLog;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLogPK;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLogPK_;
 import nts.uk.ctx.at.schedule.infra.entity.executionlog.KscmtScheduleExcLog_;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
 
 /**
  * The Class JpaScheduleExecutionLogRepository.
@@ -55,7 +55,7 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 	 * find(java.lang.String, nts.uk.ctx.at.shared.dom.workrule.closure.Period)
 	 */
 	@Override
-	public List<ScheduleExecutionLog> find(String companyId, Period period) {
+	public List<ScheduleExecutionLog> find(String companyId, GeneralDateTime startDate,GeneralDateTime endDate) {
 		// get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -73,12 +73,12 @@ public class JpaScheduleExecutionLogRepository extends JpaRepository
 				.add(criteriaBuilder.equal(root.get(KscmtScheduleExcLog_.kscmtScheduleExcLogPK)
 						.get(KscmtScheduleExcLogPK_.cid), companyId));
 		lstpredicateWhere.add(criteriaBuilder
-				.lessThanOrEqualTo(root.get(KscmtScheduleExcLog_.startYmd), period.getEndDate()));
+				.lessThanOrEqualTo(root.get(KscmtScheduleExcLog_.exeStrD), endDate));
 		lstpredicateWhere.add(criteriaBuilder
-				.greaterThanOrEqualTo(root.get(KscmtScheduleExcLog_.endYmd), period.getStartDate()));
+				.greaterThanOrEqualTo(root.get(KscmtScheduleExcLog_.exeStrD), startDate));
 
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-		cq.orderBy(criteriaBuilder.desc(root.get(KscmtScheduleExcLog_.startYmd)));
+		cq.orderBy(criteriaBuilder.desc(root.get(KscmtScheduleExcLog_.exeStrD)));
 
 		List<KscmtScheduleExcLog> lstKscmtScheduleExcLog = em.createQuery(cq).getResultList();
 		// check empty

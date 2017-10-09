@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.schedule.app.find.executionlog.dto;
 
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * The Class PeriodObject.
@@ -10,8 +10,8 @@ import nts.arc.time.GeneralDate;
 public class PeriodObject {
 	
 	/** The start date. */
-	public GeneralDate startDate;
+	public GeneralDateTime startDate;
 	
 	/** The end date. */
-	public GeneralDate endDate;
+	public GeneralDateTime endDate;
 }

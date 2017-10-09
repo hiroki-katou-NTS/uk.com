@@ -20,7 +20,6 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreator;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -47,13 +46,12 @@ public class ScheduleExecutionLogFinder {
 	@Inject
 	private SCEmployeeAdapter employeeAdapter;
 	
-	public List<ScheduleExecutionLogDto> findByDate(PeriodObject periodObj) {
+	public List<ScheduleExecutionLogDto> findByDate(PeriodObject period) {
 		String companyId = AppContexts.user().companyId();
-		if (periodObj == null) {
+		if (period == null) {
 			return null;
 		}
-		Period period = new Period(periodObj.getStartDate(), periodObj.getEndDate());
-		List<ScheduleExecutionLog> sel = scheduleExecutionLogRepository.find(companyId, period);
+		List<ScheduleExecutionLog> sel = scheduleExecutionLogRepository.find(companyId,period.getStartDate(),period.getEndDate());
 		if (sel == null) {
 			return null;
 		}
