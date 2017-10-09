@@ -364,9 +364,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          */
         btnApprove(){
             let self = this;
-            self.inputCommandEvent(new model.InputCommandEvent(self.appID(),self.appReasonEvent()));
             let dfd = $.Deferred<any>();
-            service.approveApp(self.inputCommandEvent()).done(function() {
+            service.approveApp(self.dataApplication()).done(function() {
                 dfd.resolve();
             });
             return dfd.promise();
@@ -376,9 +375,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          */
         btnDeny(){
             let self = this;
-            self.inputCommandEvent(new model.InputCommandEvent(self.appID(),self.appReasonEvent()));
             let dfd = $.Deferred<any>();
-            service.denyApp(self.inputCommandEvent()).done(function() {
+            service.denyApp(self.dataApplication()).done(function() {
                 dfd.resolve();
             });
             return dfd.promise();
@@ -389,10 +387,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
          */
         btnRelease(){
             let self = this;
-            self.inputCommandEvent(new model.InputCommandEvent(self.appID(),self.appReasonEvent()));
             let dfd = $.Deferred<any>();
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_28' }).ifYes(function () {
-                service.releaseApp(self.inputCommandEvent()).done(function() {
+                service.releaseApp(self.dataApplication()).done(function() {
                     dfd.resolve();
                 });
             });

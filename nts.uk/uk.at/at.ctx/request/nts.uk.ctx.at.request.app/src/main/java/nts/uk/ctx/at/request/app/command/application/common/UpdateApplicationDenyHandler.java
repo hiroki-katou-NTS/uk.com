@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterDenialProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforeProcessDenial;
 
@@ -13,7 +14,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateApplicationDenyHandler extends CommandHandler<UpdateApplicationCommonCmd> {
+public class UpdateApplicationDenyHandler extends CommandHandler<ApplicationDto> {
 
 	@Inject
 	private BeforeProcessDenial beforeProcessDenialRepo;
@@ -22,12 +23,12 @@ public class UpdateApplicationDenyHandler extends CommandHandler<UpdateApplicati
 	
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdateApplicationCommonCmd> context) {
+	protected void handle(CommandHandlerContext<ApplicationDto> context) {
 		String companyID = AppContexts.user().companyId();
 		//9-1 .詳細画面否認前の処理
 		beforeProcessDenialRepo.detailedScreenProcessBeforeDenial();
 		//9.2 
-		afterDenialProcessRepo.detailedScreenAfterDenialProcess(companyID, context.getCommand().getAppId());
+		afterDenialProcessRepo.detailedScreenAfterDenialProcess(companyID, context.getCommand().getApplicationID());
 	}
 
 }
