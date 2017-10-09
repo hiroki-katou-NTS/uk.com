@@ -13,7 +13,7 @@
      /**
       * get getMessageDeadline
       */
-     export function getMessageDeadline(inputMessageDeadline ) : JQueryPromise<any>{
-         return nts.uk.request.ajax("at",paths.getMessageDeadline,inputMessageDeadline);
+     export function getMessageDeadline(appType ) : JQueryPromise<any>{
+         return nts.uk.request.ajax("at",paths.getMessageDeadline+"/"+appType);
      }
  }
