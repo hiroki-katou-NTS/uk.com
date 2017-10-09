@@ -286,7 +286,7 @@ module kcp.share.list {
             
             // Check is show no select row.
             if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultiple) {
-                self.itemList.unshift({code: undefined, name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
+                self.itemList.unshift({code: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
             
             // Init component.
