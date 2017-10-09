@@ -497,6 +497,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         itemName: string;
         otherAuth: number;
         selfAuth: number;
+        setItems: Array<any>;
     }
 
     export class PersonRole {
@@ -670,6 +671,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
         itemName: string;
         otherAuth: number;
         selfAuth: number;
+        setItems: Array<any>;
 
         constructor(param: IPersonRoleItem) {
             let self = this;
@@ -679,6 +681,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
             self.itemName = param ? param.itemName : '';
             self.otherAuth = this.setting === true ? param ? param.otherAuth : 1 : 1;
             self.selfAuth = this.setting === true ? param ? param.selfAuth : 1 : 1;
+            self.setItems = param ? param.setItems : [];
         }
     }
 
@@ -759,10 +762,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
         personItemDefId: string;
         otherAuth: number;
         selfAuth: number;
+        setItems: Array<any>
         constructor(param: PersonRoleItem) {
             this.personItemDefId = param.personItemDefId;
             this.otherAuth = param.otherAuth;
             this.selfAuth = param.selfAuth;
+            this.setItems = param.setItems;
         }
 
     }
