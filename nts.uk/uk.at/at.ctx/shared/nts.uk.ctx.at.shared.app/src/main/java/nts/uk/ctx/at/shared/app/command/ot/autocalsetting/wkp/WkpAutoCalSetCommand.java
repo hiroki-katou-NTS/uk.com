@@ -15,41 +15,29 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSettingGetMemento;
 
 /**
- * Sets the rest time.
- *
- * @param restTime
- *            the new rest time
+ * The Class WkpAutoCalSetCommand.
  */
 @Setter
-
-/**
- * Gets the rest time.
- *
- * @return the rest time
- */
 @Getter
 public class WkpAutoCalSetCommand {
 	
+	/** The wkp id. */
 	private String wkpId;
 
 	/** The normal OT time. */
-	// 残業時間
 	private AutoCalOvertimeSettingDto normalOTTime;
 
 	/** The flex OT time. */
-	// フレックス超過時間
 	private AutoCalFlexOvertimeSettingDto flexOTTime;
 
 	/** The rest time. */
-	// 休出時間
 	private AutoCalRestTimeSettingDto restTime;
 
 	/**
 	 * To domain.
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @return the com auto cal setting
+	 * @param companyId the company id
+	 * @return the wkp auto cal setting
 	 */
 	public WkpAutoCalSetting toDomain(String companyId) {
 		return new WkpAutoCalSetting(new DtoGetMemento(companyId, this));
@@ -69,10 +57,8 @@ public class WkpAutoCalSetCommand {
 		/**
 		 * Instantiates a new dto get memento.
 		 *
-		 * @param companyId
-		 *            the company id
-		 * @param command
-		 *            the command
+		 * @param companyId the company id
+		 * @param command the command
 		 */
 		public DtoGetMemento(String companyId, WkpAutoCalSetCommand command) {
 			this.companyId = companyId;
@@ -92,6 +78,9 @@ public class WkpAutoCalSetCommand {
 		}
 		
 
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkp.WkpAutoCalSettingGetMemento#getWkpId()
+		 */
 		@Override
 		public WorkplaceId getWkpId() {
 			return new WorkplaceId(this.command.getWkpId());
@@ -105,7 +94,7 @@ public class WkpAutoCalSetCommand {
 		 */
 		@Override
 		public AutoCalOvertimeSetting getNormalOTTime() {
-			return this.command.getNormalOTTime().toDomain(companyId);
+			return this.command.getNormalOTTime().toDomain();
 		}
 
 		/*
@@ -116,7 +105,7 @@ public class WkpAutoCalSetCommand {
 		 */
 		@Override
 		public AutoCalFlexOvertimeSetting getFlexOTTime() {
-			return this.command.getFlexOTTime().toDomain(companyId);
+			return this.command.getFlexOTTime().toDomain();
 		}
 
 		/*
@@ -127,7 +116,7 @@ public class WkpAutoCalSetCommand {
 		 */
 		@Override
 		public AutoCalRestTimeSetting getRestTime() {
-			return this.command.getRestTime().toDomain(companyId);
+			return this.command.getRestTime().toDomain();
 		}
 
 	}
