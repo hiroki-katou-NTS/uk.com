@@ -28,19 +28,23 @@ module nts.uk.at.view.ksc001.h {
                 self.executionNumber = ko.observable('');
                 self.errorNumber = ko.observable('');
             }
+
             /**
              * get data on start page
              */
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                blockUI.invisible();
                 self.executionId(nts.uk.ui.windows.getShared("executionData").executionId);
                 self.loadDetailData(self.executionId()).done(function() {
                     dfd.resolve();
+                    blockUI.clear();
                 });
                 $("#fixed-table").ntsFixedTable();
                 return dfd.promise();
             }
+
             /**
              * Load excution detail data
              */
@@ -69,10 +73,11 @@ module nts.uk.at.view.ksc001.h {
                 });
                 return dfd.promise();
             }
+
             /**
-             * 
+             * open EmployeeTargetListDialog
              */
-            openDialogI(): void {
+            openEmployeeTargetListDialog(): void {
                 let self = this;
                 var data: any = {
                     executionId: self.executionId(),
@@ -85,10 +90,11 @@ module nts.uk.at.view.ksc001.h {
                 });
                 blockUI.clear();
             }
+
             /**
-             * 
+             * open ErrorContentDialog
              */
-            openDialogK(): void {
+            openErrorContentDialog(): void {
                 let self = this;
                 blockUI.invisible();
                 var data: any = {
@@ -101,6 +107,7 @@ module nts.uk.at.view.ksc001.h {
                 });
                 blockUI.clear();
             }
+
             /**
             * close dialog 
             */
@@ -109,6 +116,9 @@ module nts.uk.at.view.ksc001.h {
                 nts.uk.ui.windows.close();
             }
 
+            /**
+             * function to load detail content string
+             */
             private detailContentString(data: any): string[] {
                 let self = this;
                 let str: string[] = [];
@@ -163,6 +173,9 @@ module nts.uk.at.view.ksc001.h {
                 return str;
             }
 
+            /**
+             * function to detail create method
+             */
             private detailCreateMethod(data: any): string[] {
                 let self = this;
                 let str: string[] = [];

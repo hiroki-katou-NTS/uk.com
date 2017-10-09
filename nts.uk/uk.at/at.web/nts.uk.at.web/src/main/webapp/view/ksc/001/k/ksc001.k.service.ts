@@ -9,16 +9,14 @@ module nts.uk.at.view.ksc001.k {
          * call service findAllError
          */
         export function findAllError(executionId: string): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.findAllError+"/"+executionId);
+            return nts.uk.request.ajax(paths.findAllError + "/" + executionId);
         }
 
+        /**
+         * export error to csv file 
+         */
         export function exportError(executionId: string): JQueryPromise<any> {
             return nts.uk.request.exportFile(paths.exportError + "/" + executionId);
         }
-
-        export module model {
-
-        }
-
     }
 }
