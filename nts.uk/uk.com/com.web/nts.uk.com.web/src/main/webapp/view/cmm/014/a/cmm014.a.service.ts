@@ -1,4 +1,4 @@
-module cmm014.a.service {
+module nts.uk.com.view.cmm014.a.service {
         
     /**
      *  Service paths
@@ -12,28 +12,51 @@ module cmm014.a.service {
     /**
      * Get list classification
      */
-    export function findAllClassification(): JQueryPromise<Array<viewmodel.model.ClassificationModel>> {
+    export function findAllClassification(): JQueryPromise<Array<model.ClassificationFindDto>> {
         return nts.uk.request.ajax('com', servicePath.findAllClassification);
     }
 
     /**
     * update Classification
     */
-    export function addClassification(classification: viewmodel.model.ClassificationModel) {
+    export function addClassification(classification: model.ClassificationFindDto) {
         return nts.uk.request.ajax('com', servicePath.saveClassification, classification);
     }
 
     /**
      * update Classification
      */
-    export function updateClassification(classification: viewmodel.model.ClassificationModel) {
+    export function updateClassification(classification: model.ClassificationFindDto) {
         return nts.uk.request.ajax('com', servicePath.saveClassification, classification);
     }
 
     /**
     * remove Classification
     */
-    export function removeClassification(classification: viewmodel.model.RemoveClassificationCommand) {    
+    export function removeClassification(classification: model.RemoveClassificationCommand) {    
         return nts.uk.request.ajax('com', servicePath.removeClassification, classification);
     }  
+    
+    export module model {
+        
+        export class ClassificationFindDto {
+            code: string;
+            name: string;
+            memo: string;
+            
+            constructor(code?: string, name?: string, memo?: string) {
+                this.code = code;
+                this.name = name;
+                this.memo = memo;
+            }
+        }
+
+        export class RemoveClassificationCommand {
+            code: string;
+            
+            constructor(code: string) {
+                this.code = code;
+            }
+        }
+    }    
 }

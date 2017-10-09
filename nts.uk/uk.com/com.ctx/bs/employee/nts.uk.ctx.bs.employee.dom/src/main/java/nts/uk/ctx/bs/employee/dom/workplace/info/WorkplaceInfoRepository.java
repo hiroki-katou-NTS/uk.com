@@ -58,10 +58,10 @@ public interface WorkplaceInfoRepository {
 	Optional<WorkplaceInfo> findByWkpId(String wkpId, GeneralDate baseDate);
 	
 	/**
-	 * Find latest by workplace id.
+	 * Find latest by wkp id.
 	 *
 	 * @param wkpId the wkp id
 	 * @return the optional
 	 */
-	Optional<WorkplaceInfo> findLatestByWorkplaceId(String wkpId);
+	Optional<WorkplaceInfo> findLatestByWkpId(String wkpId);
 }

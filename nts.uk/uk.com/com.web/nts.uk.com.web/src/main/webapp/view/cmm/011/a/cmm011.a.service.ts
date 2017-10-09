@@ -6,10 +6,12 @@ module nts.uk.com.view.cmm011.a {
         var servicePath: any = {
             findLstWorkPlace: "bs/employee/workplace/config/info/find",
             findWkpHistList: "bs/employee/workplace/hist",
-            findHistInfoByHistId: "bs/employee/workplace/find",
+            findHistInfoByHistId: "bs/employee/workplace/findHistInfo",
             registerWkp: "bs/employee/workplace/register",
             
             getListWkpConfigHistory: "bs/employee/workplace/config/findAll",
+            
+            removeWorkplaceHistory: "bs/employee/workplace/history/remove",
         };
 
         /**
@@ -38,6 +40,13 @@ module nts.uk.com.view.cmm011.a {
          */
         export function registerWkp(data: any): JQueryPromise<model.Workplace> {
             return nts.uk.request.ajax(servicePath.registerWkp, data);
+        }
+        
+        /**
+         * removeWorkplaceHistory
+         */
+        export function removeWorkplaceHistory(command: any): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.removeWorkplaceHistory, command);
         }
         
         /**

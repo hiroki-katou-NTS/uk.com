@@ -6,10 +6,14 @@ module nts.uk.com.view.cmm011.e {
         
         export class ScreenModel {
             
+            wkpId: string;
+            historyId: string;
             startDate: KnockoutObservable<string>;
             
             constructor() {
                 let self = this;
+                self.wkpId = null;
+                self.historyId = null;
                 self.startDate = ko.observable(null);
             }
             
@@ -20,8 +24,10 @@ module nts.uk.com.view.cmm011.e {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 
-                let startDate: string = nts.uk.ui.windows.getShared("StartDateHistory");
-                self.startDate(startDate);
+                let objTransfer: any = nts.uk.ui.windows.getShared("WokplaceHistoryInfor");
+                self.wkpId = objTransfer.wkpId;
+                self.historyId = objTransfer.historyId;
+                self.startDate(objTransfer.startDate);
                 
                 dfd.resolve();
                 
@@ -37,9 +43,12 @@ module nts.uk.com.view.cmm011.e {
                 if (!self.validate()) {
                     return;
                 }
-                // TODO: update history
-                nts.uk.ui.windows.setShared("ModeUpdateHistory", true);
-                nts.uk.ui.windows.close();
+                service.saveWorkplaceHistory(self.toJSObject()).done(function(){
+                    nts.uk.ui.windows.setShared("ModeUpdateHistory", true);
+                    self.close();
+                }).fail((res: any) => {
+                    self.showMessageError(res);
+                });
             }
             
             /**
@@ -49,9 +58,9 @@ module nts.uk.com.view.cmm011.e {
                 let self = this;
                 return {
                     isAddMode: false,
-                    workplaceId: nts.uk.ui.windows.getShared("selectedWkpId"),
+                    workplaceId: self.wkpId,
                     workplaceHistory: {
-                        historyId: '',
+                        historyId: self.historyId,
                         period: {
                             startDate: self.startDate(),
                             endDate: new Date("9999-12-31")
@@ -96,7 +105,8 @@ module nts.uk.com.view.cmm011.e {
              */
             private showMessageError(res: any) {
                 if (res.businessException) {
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+//                    nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    nts.uk.ui.dialog.bundledErrors(res); 
                 }
             }
         }

@@ -66,6 +66,7 @@ public class FormulaSettingDto implements FormulaSettingSetMemento {
 	 */
 	@Override
 	public void setLeftItem(FormulaSettingItem item) {
+		this.lefItem = new FormulaSettingItemDto();
 		item.saveToMemento(this.lefItem);
 	}
 
@@ -79,6 +80,7 @@ public class FormulaSettingDto implements FormulaSettingSetMemento {
 	 */
 	@Override
 	public void setRightItem(FormulaSettingItem item) {
+		this.rightItem = new FormulaSettingItemDto();
 		item.saveToMemento(this.rightItem);
 	}
 

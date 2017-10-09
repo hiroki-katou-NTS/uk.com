@@ -4,7 +4,7 @@ module nts.uk.at.view.kmk006.e {
 
     export module service {
         var paths = {
-            saveUnitAutoCal: "ctx/at/schedule/shift/autocalunit/save",
+            saveUnitAutoCal: "ctx/at/shared/ot/autocal/unit/save",
         }
 
         /**
