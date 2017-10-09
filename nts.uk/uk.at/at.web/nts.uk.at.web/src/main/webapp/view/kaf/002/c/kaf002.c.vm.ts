@@ -9,13 +9,12 @@ module nts.uk.at.view.kaf002.c {
             constructor(appType: number) {
                 super(appType);
                 var self = this;
-                self.cm = new kaf002.cm.viewmodel.ScreenModel(0,0);
-                self.startPage(self.appID());
                 self.appID.subscribe(value=>{
                     if(self.appType()==7){
                         self.startPage(value);       
                     }
                 });
+                self.startPage(self.appID());
             }
             
             testAbstract() {
@@ -28,6 +27,7 @@ module nts.uk.at.view.kaf002.c {
                 var dfdCommonSet = service.newScreenFind();
                 var dfdAppStamp = service.findByAppID(appID);
                 $.when(dfdCommonSet, dfdAppStamp).done((commonSetData, appStampData) => {
+                    self.cm = new kaf002.cm.viewmodel.ScreenModel(appStampData.stampRequestMode,0);
                     self.cm.start(commonSetData, appStampData, self.listPhase());
                     dfd.resolve(); 
                 })

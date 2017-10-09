@@ -32,7 +32,6 @@ import nts.uk.ctx.at.request.app.find.application.common.OutputGetAllDataApp;
 import nts.uk.ctx.at.request.app.find.application.common.dto.ApplicationPeriodDto;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetDataAppCfDetailFinder;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.GetMessageReasonForRemand;
-import nts.uk.ctx.at.request.app.find.application.requestofearch.InputMessageDeadline;
 import nts.uk.ctx.at.request.app.find.application.requestofearch.OutputMessageDeadline;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.InputGetDetailCheck;
@@ -200,9 +199,9 @@ public class ApplicationWebservice extends WebService {
 	 * @return
 	 */
 	@POST
-	@Path("getmessagedeadline")
-	public OutputMessageDeadline getDataConfigDetail(InputMessageDeadline inputMessageDeadline) {
-		return this.getDataAppCfDetailFinder.getDataConfigDetail(inputMessageDeadline);
+	@Path("getmessagedeadline/{applicationID}")
+	public OutputMessageDeadline getDataConfigDetail(@PathParam("applicationID") int appType) {
+		return this.getDataAppCfDetailFinder.getDataConfigDetail(appType);
 	}
 	//new InputMessageDeadline("000000000000-0005",null,1,null)
 	

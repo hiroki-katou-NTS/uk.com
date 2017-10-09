@@ -30,7 +30,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         inputDetail: KnockoutObservable<model.InputGetDetailCheck>;
 
         //obj input
-        inputMessageDeadline: KnockoutObservable<model.InputMessageDeadline>;
         //obj output message deadline
         outputMessageDeadline: KnockoutObservable<model.OutputMessageDeadline>;
         //obj DetailedScreenPreBootModeOutput
@@ -109,9 +108,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.inputDetail = ko.observable(new model.InputGetDetailCheck(self.appID(), "2022/01/01"));
             self.outputDetailCheck = ko.observable(null);
 
-            //obj input get message deadline 
-            self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline("000000000000-0005", null, 1));
-            //obj input get message deadline 
+            //obj output get message deadline 
             self.outputMessageDeadline = ko.observable(null);
             
             /**
@@ -136,15 +133,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 
         abstract update(): any;
 
-        start(cid,workplaceID,appType,baseDate): JQueryPromise<any> {
+        start(appType,baseDate): JQueryPromise<any> {
             let self = this;
-            self.inputMessageDeadline().companyID = cid;
-            self.inputMessageDeadline().workplaceID = workplaceID;
-            self.inputMessageDeadline().appType = appType;
+            
+            self.appType(appType);
             
             self.inputDetail().baseDate =baseDate;
             let dfd = $.Deferred();
-            let dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
+            let dfdMessageDeadline = self.getMessageDeadline(self.appType());
             let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
             let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
             let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
@@ -341,9 +337,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let index = self.listAppId.indexOf(self.appID());
             if(index !=0){
                 self.appID(self.listAppId[index-1]);
-                self.start(self.inputMessageDeadline().companyID,
-                           self.inputMessageDeadline().workplaceID,
-                           self.inputMessageDeadline().appType,
+                self.start(self.appType(),
                            self.inputDetail().baseDate);
             }
         }
@@ -357,9 +351,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.appID(self.listAppId[index+1]);
                 
                 
-                self.start(self.inputMessageDeadline().companyID,
-                           self.inputMessageDeadline().workplaceID,
-                           self.inputMessageDeadline().appType,
+                self.start(self.appType(),
                            self.inputDetail().baseDate);
             }
         }
@@ -458,10 +450,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     //if list # null    
                     if(self.listAppId.length!=0)
                     {
-                        self.start(self.inputMessageDeadline().companyID,
-                                    self.inputMessageDeadline().workplaceID,
-                                    self.inputMessageDeadline().appType,
-                                    self.inputDetail().baseDate);
+                        self.start(self.appType(),
+                           self.inputDetail().baseDate);
                     }else{ //nếu list null thì trả về màn hình mẹ
                         nts.uk.request.jump("/view/kaf/000/test/index.xhtml");    
                     }
@@ -654,20 +644,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 this.alternateExpiration = alternateExpiration;
             }
         }//end class DetailedScreenPreBootModeOutput
-
-
-        //class InputMessageDeadline
-        export class InputMessageDeadline {
-            companyID: String;
-            workplaceID: String;
-            appType: number;
-            constructor(companyID: String, workplaceID: String, appType: number) {
-                this.companyID = companyID;
-                this.workplaceID = workplaceID;
-                this.appType = appType;
-            }
-
-        }//end class InputMessageDeadline
 
         //class outputMessageDeadline
         export class OutputMessageDeadline {

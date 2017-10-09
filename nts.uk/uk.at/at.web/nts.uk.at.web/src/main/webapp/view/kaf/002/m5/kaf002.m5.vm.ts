@@ -3,27 +3,40 @@ module nts.uk.at.view.kaf002.m5 {
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
     export module viewmodel {
         export class ScreenModel {
-            supFrameNo: number = 7;
+            supFrameNo: number = 1;
             stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             stampAtr: KnockoutObservable<number> = ko.observable(0); 
             appStampList: KnockoutObservableArray<vmbase.AppStampWork> = ko.observableArray([]);
+            stampAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
+            stampGoOutAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
             constructor(){
                 var self = this; 
             }
             
             start(appStampData: any, data: vmbase.StampRequestSettingDto){
                 var self = this;    
-                self.supFrameNo = 10;
+                self.supFrameNo = 1;
                 self.stampPlaceDisplay(data.stampPlaceDisp);
+                if(data.stampAtr_Work_Disp==1) self.stampAtrList.push({ code: 0, name: nts.uk.resource.getText('KAF002_29') });
+                if(data.stampAtr_GoOut_Disp==1) self.stampAtrList.push({ code: 1, name: nts.uk.resource.getText('KAF002_31') });
+                if(data.stampAtr_Care_Disp==1) self.stampAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_32') });
+                if(data.stampAtr_Sup_Disp==1) self.stampAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_33') });
+                self.stampAtrList.push({ code: 4, name: nts.uk.resource.getText('KAF002_34') });
+                self.stampAtr(_.first(self.stampAtrList()).code);
+                if(data.stampGoOutAtr_Private_Disp==1) self.stampGoOutAtrList.push({ code: 0, name: nts.uk.resource.getText('KAF002_40') });
+                if(data.stampGoOutAtr_Public_Disp==1) self.stampGoOutAtrList.push({ code: 1, name: nts.uk.resource.getText('KAF002_41') });
+                if(data.stampGoOutAtr_Compensation_Disp==1) self.stampGoOutAtrList.push({ code: 2, name: nts.uk.resource.getText('KAF002_42') });
+                if(data.stampGoOutAtr_Union_Disp==1) self.stampGoOutAtrList.push({ code: 3, name: nts.uk.resource.getText('KAF002_43') });
                 self.refreshData();
             }
             
             refreshData(){
                 var self = this;
+                let stampGoOutAtr = _.first(self.stampGoOutAtrList()).code;
                 self.appStampList.removeAll();
                 let a = [];
                 for(let i=1;i<=self.supFrameNo;i++){
-                    a.push(new vmbase.AppStampWork(this.stampAtr(),i,0,'spCode','spLocation',true,true,0,'start',0,'end',true,true,true,true));    
+                    a.push(new vmbase.AppStampWork(this.stampAtr(),i,stampGoOutAtr,'spCode','spLocation',true,true,0,'start',0,'end',true,true,true,true));    
                 };
                 self.appStampList(a);    
             }
