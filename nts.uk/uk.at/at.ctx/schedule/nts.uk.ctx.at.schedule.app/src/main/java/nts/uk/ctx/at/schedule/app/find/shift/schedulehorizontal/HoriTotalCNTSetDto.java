@@ -1,9 +1,9 @@
 package nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 /**
  * 
  * @author yennth
@@ -11,15 +11,14 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class HoriTotalCategoryDto {
+@NoArgsConstructor
+public class HoriTotalCNTSetDto {
 	/**会社ID**/
 	private String companyId;
 	/** カテゴリコード */
 	private String categoryCode;
-	/** カテゴリ名称 */
-	private String categoryName;
-	/** メモ */
-	private String memo;
-	private HoriCalDaySetDto horiCalDaySetDto;
-	private List<TotalEvalOrderDto> totalEvalOrders;
+	/** 集計項目NO */
+	private int totalItemNo;
+	/** 回数集計No **/
+	private int totalTimeNo;
 }

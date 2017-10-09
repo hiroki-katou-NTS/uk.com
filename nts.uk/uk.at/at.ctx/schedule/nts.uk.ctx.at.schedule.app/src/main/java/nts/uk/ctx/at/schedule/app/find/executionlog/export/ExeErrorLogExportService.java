@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.app.find.executionlog.export;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -70,6 +71,7 @@ public class ExeErrorLogExportService extends ExportService<String> {
             throw new BusinessException("Msg_160");
         }
         
+//        lstError.stream().sorted(comparator).
         // convert to dto
         List<ScheduleErrorLogDto> lstErrorDto = lstError.stream()
                 .map(domain -> {
@@ -80,12 +82,13 @@ public class ExeErrorLogExportService extends ExportService<String> {
 					dto.setEmployeeName(employee.getEmployeeName());
                     return dto;
                 }).collect(Collectors.toList());
-        
+        //sort by employee code
+        List<ScheduleErrorLogDto> afterSort = lstErrorDto.stream().sorted(ScheduleErrorLogComparator).collect(Collectors.toList());
         // set data export
         ExportData exportData = ExportData.builder()
                 .employeeId(AppContexts.user().employeeId())
                 .lstHeader(this.finHeader())
-                .lstError(lstErrorDto)
+                .lstError(afterSort)
                 .build();
         // generate file
         this.generator.generate(context.getGeneratorContext(), exportData);
@@ -107,4 +110,15 @@ public class ExeErrorLogExportService extends ExportService<String> {
         }
         return lstHeader;
     }
+    
+	/** The Schedule error log comparator. */
+	public static Comparator<ScheduleErrorLogDto> ScheduleErrorLogComparator = new Comparator<ScheduleErrorLogDto>() {
+
+		@Override
+		public int compare(ScheduleErrorLogDto arg0, ScheduleErrorLogDto arg1) {
+			String employeeCode0 = arg0.getEmployeeCode().toUpperCase();
+			String employeeCode1 = arg1.getEmployeeCode().toUpperCase();
+			return employeeCode0.compareTo(employeeCode1);
+		}
+	};
 }

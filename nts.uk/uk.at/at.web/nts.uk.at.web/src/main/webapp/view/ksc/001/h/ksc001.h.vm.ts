@@ -13,6 +13,7 @@ module nts.uk.at.view.ksc001.h {
             exeEnd: KnockoutObservable<string>;
             executionNumber: KnockoutObservable<string>;
             errorNumber: KnockoutObservable<string>;
+            countError: KnockoutObservable<number>;
 
             constructor() {
                 var self = this;
@@ -27,6 +28,7 @@ module nts.uk.at.view.ksc001.h {
                 self.executionDateTime = ko.observable('');
                 self.executionNumber = ko.observable('');
                 self.errorNumber = ko.observable('');
+                self.countError = ko.observable(0);
             }
 
             /**
@@ -68,6 +70,7 @@ module nts.uk.at.view.ksc001.h {
                         self.executionDateTime = ko.observable(diffTime);
                         self.executionNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [data.countExecution]));
                         self.errorNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [data.countError]));
+                        self.countError(data.countError);
                     }
                     dfd.resolve();
                 });
@@ -100,7 +103,8 @@ module nts.uk.at.view.ksc001.h {
                 var data: any = {
                     executionId: self.executionId(),
                     startDate: self.startDate(),
-                    endDate: self.endDate()
+                    endDate: self.endDate(),
+                    countError: self.countError()
                 }
                 nts.uk.ui.windows.setShared('dataFromDetailDialog', data);
                 nts.uk.ui.windows.sub.modal("/view/ksc/001/k/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {

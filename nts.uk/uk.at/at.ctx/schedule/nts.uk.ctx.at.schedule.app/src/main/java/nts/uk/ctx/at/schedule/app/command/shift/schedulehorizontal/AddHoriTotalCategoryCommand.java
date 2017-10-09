@@ -20,5 +20,6 @@ public class AddHoriTotalCategoryCommand {
 	private String categoryName;
 	/** メモ */
 	private String memo;
+	private HoriCalDaysSetCommand horiCalDaysSet;
 	private List<TotalEvalOrderCommand> totalEvalOrders;
 }

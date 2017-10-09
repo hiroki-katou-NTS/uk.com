@@ -5,6 +5,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -39,6 +42,13 @@ public class KscstHoriCalDaysSetItem extends UkJpaEntity implements Serializable
 	/** 積休カウント区分 **/
 	@Column(name = "HAVY_HD_ATR")
 	public int heavyHd;
+	
+	@OneToOne
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSCMT_HORI_TOTAL_CATEGORY.CID", insertable = false, updatable = false),
+		@JoinColumn(name = "CATEGORY_CD", referencedColumnName = "KSCMT_HORI_TOTAL_CATEGORY.CATEGORY_CD", insertable = false, updatable = false)
+	})
+	public KscmtHoriTotalCategoryItem kscmtHoriTotalCategory1;
+	
 	@Override
 	protected Object getKey() {
 		return kscstHoriCalDaysSetPK;

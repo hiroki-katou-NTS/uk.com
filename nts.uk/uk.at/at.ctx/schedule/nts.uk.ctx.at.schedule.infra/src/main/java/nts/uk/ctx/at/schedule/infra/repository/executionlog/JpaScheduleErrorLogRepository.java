@@ -59,4 +59,30 @@ public class JpaScheduleErrorLogRepository extends JpaRepository implements Sche
 		}).collect(Collectors.toList());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository#distinctErrorByExecutionId(java.lang.String)
+	 */
+	@Override
+	public Integer distinctErrorByExecutionId(String executionId) {
+		// get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
+		Root<KscmtScheduleErrLog> root = cq.from(KscmtScheduleErrLog.class);
+
+		// select root
+		cq.select(criteriaBuilder
+				.countDistinct(root.get(KscmtScheduleErrLog_.kscmtScheduleErrLogPK).get(KscmtScheduleErrLogPK_.sid)));
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(KscmtScheduleErrLog_.kscmtScheduleErrLogPK).get(KscmtScheduleErrLogPK_.exeId), executionId));
+
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		int cntError = em.createQuery(cq).getSingleResult().intValue();
+		return cntError;
+	}
+
 }
