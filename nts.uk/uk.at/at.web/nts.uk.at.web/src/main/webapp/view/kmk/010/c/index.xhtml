@@ -30,18 +30,18 @@
 					<div tabindex="-1" class="tbOvertime">
 						<table tabindex="-1" class="overtime-border" >
 							<tr tabindex="-1" class="bg-dark-green">
-								<td tabindex="-1">#{i18n.getText('KMK010_43')}</td>
-								<td tabindex="-1">#{i18n.getText('KMK010_44')}</td>
-								<td tabindex="-1" data-bind="text: textOvertimeName"></td>
-								<td tabindex="-1">#{i18n.getText('KMK010_65')}</td>
+								<td class="tdcenter" tabindex="-1">#{i18n.getText('KMK010_43')}</td>
+								<td class="tdcenter" tabindex="-1">#{i18n.getText('KMK010_44')}</td>
+								<td class="tdcenter" tabindex="-1" data-bind="text: textOvertimeName"></td>
+								<td class="tdcenter" tabindex="-1">#{i18n.getText('KMK010_65')}</td>
 							</tr>
 							<com:ko tag="foreach" bind="lstOutsideOTBRDItemModel">
 								<tr tabindex="-1">
-									<td class="bg-green">
+									<td class="bg-green tdcenter">
 										<div tabindex="1" data-bind="ntsCheckBox: { checked: useClassification , enable: $parent.enableCheckbox }"></div>
 									</td>
 									<td>
-										<div tabindex="-1" data-bind="text: breakdownItemNo"></div>
+										<div class="tdcenter" tabindex="-1" data-bind="text: breakdownItemNo"></div>
 									</td>
 									<td>
 										<input tabindex="2"  data-bind="attr: {'id': 'breakdownItemNo_'+breakdownItemNo()}, ntsTextEditor: {value: name, constraint: 'BreakdownItemName' }"/>

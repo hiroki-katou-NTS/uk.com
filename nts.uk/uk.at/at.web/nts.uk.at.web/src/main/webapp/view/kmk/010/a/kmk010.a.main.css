@@ -37,7 +37,7 @@
 }
 
 .overtime-border .overtime {
-	width: 50px;
+	width: 35px;
 }
 
 .overtimeSettingDetail {
@@ -101,7 +101,7 @@
 	border-color: #565555;
 	border-width: 1px;
 	border-style: double;
-	width: 55%;
+	width: 970px;
 	min-height: 150px;
 }
 
@@ -140,7 +140,7 @@
 
 .oneOvertimeRate {
 	float: left;
-	width: 55%;
+	width: 500px;
 }
 
 .overtimeRate60H2 {
@@ -150,7 +150,7 @@
 }
 
 .overtimeRate60H3 {
-	width: 38%;
+	width: 400px;
 	float: left;
 	margin-top: 20px;
 }
@@ -163,5 +163,5 @@
 #switch-language {
 	float: right;
 	margin-top: 3px;
-	margin-right: 52%;
+	margin-right: 43%;
 }
