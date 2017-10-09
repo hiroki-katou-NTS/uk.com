@@ -1,41 +1,20 @@
-#sidebar-area{
-	width: 118px;
+#screen-b1 #setting-unit {
+	margin-top: 40px;
+	margin-left: 50px;
 }
 
-.screen-b button{
-	width: 75px;
+#screen-b1 #comment {
+	margin-top: 60px;
+	margin-left: 50px;
 }
 
-.screen-b textarea{
-	height: 81px;
-}
-
-#button1 {
-	width: 75px;
-	margin-left: 64px;
-}
-
-.screen-b #textBox {
-	margin-left: -49px;
-    margin-top: 19px;
+#screen-b1 .item-name {
 	display: inline-block;
+	width: 140px;
+	vertical-align: top;
 }
 
-.screen-b #label2 {
-	float: left;
-	display: inline-block;
-	margin: 26px 10px 20px 55px;
-}
-
-.screen-b #switchBtn1 {
-	margin: 26px 20px 20px 10px;
-}
-
-.screen-b #label1 {
-	display: inline-block;
-	margin: 26px 10px 20px 55px;
-}
-
-.ntsControl {
-	padding-left: 54px;
+#screen-b1 #comment-text {
+	width: 300px;
+	height: 100px;
 }
