@@ -3,9 +3,6 @@ package nts.uk.ctx.workflow.app.command.approvermanagement.workroot;
 import java.util.List;
 
 import lombok.Value;
-import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataDisplayComDto;
-import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataDisplayPsDto;
-import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataDisplayWpDto;
 
 @Value
 public class RegisterAppApprovalRootCommand {
