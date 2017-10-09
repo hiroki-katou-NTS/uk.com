@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriCalDaysSet;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCategory;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.repository.HoriTotalCategoryRepository;
@@ -23,17 +24,23 @@ public class UpdateHoriTotalCategoryCommandHandler extends CommandHandler<Update
 	@Override
 	protected void handle(CommandHandlerContext<UpdateHoriTotalCategoryCommand> context) {
 		String companyId = AppContexts.user().companyId();
+		UpdateHoriTotalCategoryCommand data = context.getCommand();
 		Optional<HoriTotalCategory> horiOld = horiRep.findCateByCode(companyId, context.getCommand().getCategoryCode());
 		List<TotalEvalOrder> totalEvalOrders = new ArrayList<>();
+		HoriCalDaysSet horiCalDaysSet =null;
 		if(!horiOld.isPresent()){
 			throw new RuntimeException("対象データがありません。");
 		}
-		if(context.getCommand().getTotalEvalOrders() != null){
+		if(data.getTotalEvalOrders() != null){
 			totalEvalOrders = context.getCommand().getTotalEvalOrders().stream()
 									.map(x -> x.toDomainOrder(companyId, context.getCommand().getCategoryCode()))
 									.collect(Collectors.toList());
 		}
-		HoriTotalCategory horiNew = HoriTotalCategory.createFromJavaType(companyId, context.getCommand().getCategoryCode(), context.getCommand().getCategoryName(), context.getCommand().getMemo(), totalEvalOrders);
+		if(data.getHoriCalDaysSet() != null){
+			horiCalDaysSet = data.getHoriCalDaysSet()
+								.toDomainCalSet(companyId, context.getCommand().getCategoryCode());
+		}
+		HoriTotalCategory horiNew = HoriTotalCategory.createFromJavaType(companyId, data.getCategoryCode(), data.getCategoryName(), data.getMemo(), horiCalDaysSet, totalEvalOrders);
 		horiNew.validate();
 		horiRep.updateCate(horiNew);
 	}

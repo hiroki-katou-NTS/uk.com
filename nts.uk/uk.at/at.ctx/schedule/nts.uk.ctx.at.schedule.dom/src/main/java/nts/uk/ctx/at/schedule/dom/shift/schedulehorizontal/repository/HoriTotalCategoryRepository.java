@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriCalDaysSet;
+import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCNTSet;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCategory;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalItem;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
@@ -16,7 +17,19 @@ public interface HoriTotalCategoryRepository {
 	 */
 	List<HoriTotalCategory> findAllCate(String companyId);
 	
+	/**
+	 * get all hori cal day set
+	 * @param companyId
+	 * @return
+	 */
 	List<HoriCalDaysSet> findAllCal(String companyId);
+	
+	/**
+	 * get all hori total cnt set
+	 * @param companyId
+	 * @return
+	 */
+	List<HoriTotalCNTSet> findAllCNT(String companyId);
 	
 	/**
 	 * update a hori total category 
@@ -71,7 +84,35 @@ public interface HoriTotalCategoryRepository {
 	 * @param totalItemNo
 	 * @return
 	 */
+	
+	/**
+	 * update a hori cal day set item 
+	 * @param horiCalDaysSet
+	 */
+	void updateCalDaySet(HoriCalDaysSet horiCalDaysSet);
+	
+	/**
+	 * insert a hori cal day set item
+	 * @param horiCalDaysSet
+	 */
+	void insertCalDaySet(HoriCalDaysSet horiCalDaysSet);
+	
+	/**
+	 * find a total eval order item
+	 * @param companyId
+	 * @param categoryCode
+	 * @param totalItemNo
+	 * @return
+	 */
 	List<TotalEvalOrder> findOrder(String companyId, String categoryCode, Integer totalItemNo);
+	
+	/**
+	 * find hori cal day set by code  
+	 * @param companyId
+	 * @param categoryCode
+	 * @return
+	 */
+	List<HoriCalDaysSet> findCalSet(String companyId, String categoryCode);	
 	
 	/**
 	 * find all total eval item
