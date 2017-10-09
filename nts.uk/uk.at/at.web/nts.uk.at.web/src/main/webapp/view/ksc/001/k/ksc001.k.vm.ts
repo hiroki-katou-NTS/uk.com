@@ -8,18 +8,16 @@ module nts.uk.at.view.ksc001.k {
             currentCode: KnockoutObservable<string>;
             constructor() {
                 var self = this;
-                self.targetRange = ko.observable(nts.uk.resource.getText("KSC001_46", ['2016/11/11', '2016/11/11']));
-                self.errorNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [2]));
+                self.targetRange = ko.observable('');
+                self.errorNumber = ko.observable('');
                 self.columns = ko.observableArray([
+                    { headerText: '', key: 'executionId', width: 100,hidden: true },
                     { headerText: nts.uk.resource.getText("KSC001_56"), key: 'code', width: 100 },
                     { headerText: nts.uk.resource.getText("KSC001_57"), key: 'name', width: 200 },
                     { headerText: nts.uk.resource.getText("KSC001_58"), key: 'date', width: 150 },
                     { headerText: nts.uk.resource.getText("KSC001_59"), key: 'errorContent', width: 300 }
                 ]);
                 self.items = ko.observableArray([]);
-                for (var i = 0; i < 2; i++) {
-                    self.items.push(new ItemModel("A0000000" + i, "日通システム" + i,"2016/11/11", "コピー元のスケジュールが存在しません。"));
-                }
                 self.currentCode = ko.observable('');
             }
             /**
@@ -28,18 +26,38 @@ module nts.uk.at.view.ksc001.k {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                let data: any = nts.uk.ui.windows.getShared('dataFromDetailDialog');
+                self.getDataBindScreen(data).done(function() {
+
+                });
                 $("#fixed-table").ntsFixedTable({ height: 230 });
                 dfd.resolve();
                 return dfd.promise();
             }
-            
+
+            private getDataBindScreen(parentData: any): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred();
+                service.findAllError(parentData.executionId).done(function(data: Array<any>) {
+                    if (data) {
+                        self.targetRange(nts.uk.resource.getText("KSC001_46", [parentData.startDate, parentData.endDate]));
+                        self.errorNumber(nts.uk.resource.getText("KSC001_47", [data.length]));
+                        data.forEach(function(item, index) {
+                            self.items.push(new ItemModel(item.executionId,item.employeeCode, item.employeeName, item.date, item.errorContent));
+                        });
+                    }
+                });
+                dfd.resolve();
+                return dfd.promise();
+            }
+
             /**
              * export error 
              */
-            private exportError():void {
+            private exportError(): void {
                 var self = this;
-                let executionId = "";
-                service.exportError("07138ec6-57a2-49d7-a158-1e149c4296c9").done(function() {
+                let executionId = self.currentCode();
+                service.exportError(executionId).done(function() {
 
                 });
             }
@@ -53,11 +71,13 @@ module nts.uk.at.view.ksc001.k {
 
         }
         class ItemModel {
+            executionId: string;
             code: string;
             name: string;
             date: string;
             errorContent: string;
-            constructor(code: string, name: string, date: string, errorContent: string) {
+            constructor(executionId: string, code: string, name: string, date: string, errorContent: string) {
+                this.executionId = executionId;
                 this.code = code;
                 this.name = name;
                 this.date = date;

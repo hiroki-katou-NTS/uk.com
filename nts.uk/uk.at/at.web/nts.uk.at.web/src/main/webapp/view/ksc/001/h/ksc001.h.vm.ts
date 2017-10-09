@@ -2,11 +2,31 @@ module nts.uk.at.view.ksc001.h {
     import blockUI = nts.uk.ui.block;
     export module viewmodel {
         export class ScreenModel {
-            exeDetailModel: KnockoutObservable<ExecutionDetailModel>;
-            
+            executionId: KnockoutObservable<string>;
+            startDate: KnockoutObservable<string>;
+            endDate: KnockoutObservable<string>;
+            targetRange: KnockoutObservable<string>;
+            detailContentMethod: KnockoutObservableArray<string>;
+            executionContent: KnockoutObservableArray<string>;
+            executionDateTime: KnockoutObservable<string>;
+            exeStart: KnockoutObservable<string>;
+            exeEnd: KnockoutObservable<string>;
+            executionNumber: KnockoutObservable<string>;
+            errorNumber: KnockoutObservable<string>;
+
             constructor() {
                 var self = this;
-                self.exeDetailModel = ko.observable(null);
+                self.executionId = ko.observable('');
+                self.startDate = ko.observable('');
+                self.endDate = ko.observable('');
+                self.targetRange = ko.observable('');
+                self.detailContentMethod = ko.observableArray([]);
+                self.executionContent = ko.observableArray([]);
+                self.exeStart = ko.observable('');
+                self.exeEnd = ko.observable('');
+                self.executionDateTime = ko.observable('');
+                self.executionNumber = ko.observable('');
+                self.errorNumber = ko.observable('');
             }
             /**
              * get data on start page
@@ -14,8 +34,8 @@ module nts.uk.at.view.ksc001.h {
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
-                let executionId = nts.uk.ui.windows.getShared("executionData").executionId;
-                self.loadDetailData(executionId).done(function() {
+                self.executionId(nts.uk.ui.windows.getShared("executionData").executionId);
+                self.loadDetailData(self.executionId()).done(function() {
                     dfd.resolve();
                 });
                 $("#fixed-table").ntsFixedTable();
@@ -29,7 +49,21 @@ module nts.uk.at.view.ksc001.h {
                 let dfd = $.Deferred();
                 service.findExecutionDetail(executionId).done(function(data: any) {
                     if (data) {
-                        self.exeDetailModel(new ExecutionDetailModel(data,self.detailContentString(data),self.detailCreateMethod(data)));
+                        //define format datetime string
+                        let dateTimeFormat = "YYYY/MM/DD HH:mm:ss";
+                        let timeFormat = "HH:mm:ss";
+                        self.startDate(data.startDate);
+                        self.endDate(data.endDate);
+                        self.targetRange = ko.observable(nts.uk.resource.getText("KSC001_46", [data.startDate, data.endDate]));
+                        self.detailContentMethod = ko.observableArray(self.detailCreateMethod(data));
+                        self.executionContent = ko.observableArray(self.detailContentString(data));
+                        self.exeStart = ko.observable(moment(data.executionStart).format(dateTimeFormat));
+                        self.exeEnd = ko.observable(moment(data.executionEnd).format(dateTimeFormat));
+                        //get diff time execution
+                        let diffTime = moment.utc(moment(data.executionEnd, dateTimeFormat).diff(moment(data.executionStart, dateTimeFormat))).format(timeFormat);
+                        self.executionDateTime = ko.observable(diffTime);
+                        self.executionNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [data.countExecution]));
+                        self.errorNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [data.countError]));
                     }
                     dfd.resolve();
                 });
@@ -40,11 +74,10 @@ module nts.uk.at.view.ksc001.h {
              */
             openDialogI(): void {
                 let self = this;
-                //TODO
                 var data: any = {
-                    executionId: '',
-                    strD: '',
-                    endD: ''    
+                    executionId: self.executionId(),
+                    startDate: self.startDate(),
+                    endDate: self.endDate()
                 }
                 blockUI.invisible();
                 nts.uk.ui.windows.setShared('dataFromDetailDialog', data);
@@ -58,21 +91,25 @@ module nts.uk.at.view.ksc001.h {
             openDialogK(): void {
                 let self = this;
                 blockUI.invisible();
-                // the default value of categorySet = undefined
-                //nts.uk.ui.windows.setShared('', );
+                var data: any = {
+                    executionId: self.executionId(),
+                    startDate: self.startDate(),
+                    endDate: self.endDate()
+                }
+                nts.uk.ui.windows.setShared('dataFromDetailDialog', data);
                 nts.uk.ui.windows.sub.modal("/view/ksc/001/k/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
                 });
                 blockUI.clear();
             }
-             /**
-             * close dialog 
-             */
+            /**
+            * close dialog 
+            */
             closeDialog(): void {
                 let self = this;
-                nts.uk.ui.windows.close();   
+                nts.uk.ui.windows.close();
             }
-            
-            private detailContentString(data:any):string[]{
+
+            private detailContentString(data: any): string[] {
                 let self = this;
                 let str: string[] = [];
                 let spaceString = "　";
@@ -125,7 +162,7 @@ module nts.uk.at.view.ksc001.h {
                 //return
                 return str;
             }
-            
+
             private detailCreateMethod(data: any): string[] {
                 let self = this;
                 let str: string[] = [];
@@ -138,31 +175,7 @@ module nts.uk.at.view.ksc001.h {
             }
 
         }
-        
-        export class ExecutionDetailModel {
-            targetRange: KnockoutObservable<string>;
-            detailContentMethod: KnockoutObservableArray<string>;
-            executionContent: KnockoutObservableArray<string>;
-            executionDateTime: KnockoutObservable<string>;
-            exeStart: KnockoutObservable<string>;
-            exeEnd: KnockoutObservable<string>;
-            executionNumber: KnockoutObservable<string>;
-            errorNumber: KnockoutObservable<string>;
-            constructor(data:any,detailString :string[],detailContentMethod :string[]){
-                var self = this;
-                self.targetRange = ko.observable(nts.uk.resource.getText("KSC001_46", [data.startDate, data.endDate]));
-                self.detailContentMethod = ko.observableArray(detailContentMethod);
-                self.executionContent = ko.observableArray(detailString);
-                self.exeStart = ko.observable(moment(data.executionStart).format("YYYY/MM/DD HH:mm:ss"));
-                self.exeEnd = ko.observable(moment(data.executionEnd).format( "YYYY/MM/DD HH:mm:ss"));
-                //get diff time execution
-                let diffTime = moment.utc(moment(data.executionEnd, "YYYY/MM/DD HH:mm:ss").diff(moment(data.executionStart, "YYYY/MM/DD HH:mm:ss"))).format("HH:mm:ss");
-                self.executionDateTime = ko.observable(diffTime);
-                self.executionNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [data.countExecution]));
-                self.errorNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [data.countError]));
-            }
-        }
-        
+
         // 実施区分
         export enum ImplementAtr {
             // 通常作成

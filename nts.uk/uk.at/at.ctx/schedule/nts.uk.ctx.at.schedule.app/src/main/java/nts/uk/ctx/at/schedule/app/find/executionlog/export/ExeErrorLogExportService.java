@@ -19,6 +19,8 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleErrorLogDto;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.EmployeeDto;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.SCEmployeeAdapter;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -41,6 +43,10 @@ public class ExeErrorLogExportService extends ExportService<String> {
     @Inject
     private IInternationalization internationalization;
 
+    /** The employee adapter. */
+	@Inject
+	private SCEmployeeAdapter employeeAdapter;
+	
     /** The Constant LST_NAME_ID. */
     private static final List<String> LST_NAME_ID_HEADER = Arrays.asList("KSC001_56", "KSC001_57", "KSC001_58",
             "KSC001_59");
@@ -69,6 +75,9 @@ public class ExeErrorLogExportService extends ExportService<String> {
                 .map(domain -> {
                 	ScheduleErrorLogDto dto = new ScheduleErrorLogDto();
                     domain.saveToMemento(dto);
+					EmployeeDto employee = this.employeeAdapter.findByEmployeeId(dto.getEmployeeId());
+					dto.setEmployeeCode(employee.getEmployeeCode());
+					dto.setEmployeeName(employee.getEmployeeName());
                     return dto;
                 }).collect(Collectors.toList());
         

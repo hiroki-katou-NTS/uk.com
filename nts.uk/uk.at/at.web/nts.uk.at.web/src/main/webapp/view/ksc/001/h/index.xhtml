@@ -20,7 +20,7 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div data-bind="with:exeDetailModel" id="contents-area">
+			<div id="contents-area">
 				<div class="lable-line">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KSC001_31')}</div>
 					<label data-bind="text: targetRange()"></label>
@@ -59,10 +59,10 @@
 										<p data-bind="text: $data" />
 									</div></td>
 								<td><a class="nounderline" href="javascript:void(0);"
-									data-bind="text: executionNumber(),click: $parent.openDialogI">
+									data-bind="text: executionNumber(),click: openDialogI">
 								</a></td>
 								<td><a class="nounderline" href="javascript:void(0);"
-									data-bind="text:errorNumber(),click : $parent.openDialogK">
+									data-bind="text:errorNumber(),click : openDialogK">
 								</a></td>
 							</tr>
 						</tbody>

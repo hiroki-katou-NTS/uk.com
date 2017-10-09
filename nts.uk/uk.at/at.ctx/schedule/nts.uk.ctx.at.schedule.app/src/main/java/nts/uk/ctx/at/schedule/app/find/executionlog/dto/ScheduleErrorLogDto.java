@@ -1,11 +1,15 @@
 package nts.uk.ctx.at.schedule.app.find.executionlog.dto;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogSetMemento;
 
 /**
  * The Class ScheduleErrorLogDto.
  */
+@Getter
+@Setter
 public class ScheduleErrorLogDto implements ScheduleErrorLogSetMemento {
 
 	/** The error content. */
@@ -19,6 +23,12 @@ public class ScheduleErrorLogDto implements ScheduleErrorLogSetMemento {
 
 	/** The employee id. */
 	public String employeeId;
+	
+	/** The employee code. */
+	public String employeeCode;
+
+	/** The employee name. */
+	public String employeeName;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogSetMemento#setErrorContent(java.lang.String)
@@ -51,5 +61,4 @@ public class ScheduleErrorLogDto implements ScheduleErrorLogSetMemento {
 	public void setEmployeeId(String employeeId) {
 		this.employeeId = employeeId;
 	}
-
 }

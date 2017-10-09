@@ -1,15 +1,15 @@
 module nts.uk.at.view.ksc001.k {
     export module service {
         var paths = {
-            findLstEmployeeError: "at/schedule/exelog/",
+            findAllError: "at/schedule/exelog/findAllError",
             exportError: "at/schedule/exelog/error/export"
         }
 
         /**
-         * call service find findLstEmployeeError
+         * call service findAllError
          */
-        export function findExecutionDetail(): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.findLstEmployeeError);
+        export function findAllError(executionId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findAllError+"/"+executionId);
         }
 
         export function exportError(executionId: string): JQueryPromise<any> {
