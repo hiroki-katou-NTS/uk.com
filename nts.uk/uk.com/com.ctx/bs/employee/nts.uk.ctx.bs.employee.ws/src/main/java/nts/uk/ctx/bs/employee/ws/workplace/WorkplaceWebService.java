@@ -12,6 +12,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.bs.employee.app.command.workplace.DeleteWorkplaceCommand;
+import nts.uk.ctx.bs.employee.app.command.workplace.DeleteWorkplaceCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.SaveWorkplaceCommand;
 import nts.uk.ctx.bs.employee.app.command.workplace.SaveWorkplaceCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.workplace.config.history.DeleteWkpHistoryCommand;
@@ -43,6 +45,10 @@ public class WorkplaceWebService extends WebService {
 	/** The save wkp command handler. */
 	@Inject
 	private SaveWorkplaceCommandHandler saveWkpCommandHandler;
+	
+	/** The delete wkp command handler. */
+	@Inject
+	private DeleteWorkplaceCommandHandler deleteWkpCommandHandler;
 	
 	/**
 	 * Adds the workplace history.
@@ -98,5 +104,16 @@ public class WorkplaceWebService extends WebService {
     @POST
     public void saveWorkplace(SaveWorkplaceCommand command) {
         this.saveWkpCommandHandler.handle(command);
+    }
+	
+	/**
+	 * Delete workplace.
+	 *
+	 * @param command the command
+	 */
+	@Path("remove")
+    @POST
+    public void deleteWorkplace(DeleteWorkplaceCommand command) {
+        this.deleteWkpCommandHandler.handle(command);
     }
 }

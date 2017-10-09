@@ -95,6 +95,7 @@ module nts.uk.com.view.cmm011.a {
                     // load tree workplace
                     self.treeWorkplace().findLstWorkplace(new Date(self.strDWorkplace())).done(() => {
                         nts.uk.ui.block.clear();
+                        self.treeWorkplace().selectFirst();
                         dfd.resolve();
                     });
                 });
@@ -126,15 +127,51 @@ module nts.uk.com.view.cmm011.a {
             }
             
             /**
+             * removeWorkplace 
+             */
+            public removeWorkplace() {
+                let self = this;
+                
+                let command: any = {};
+                command.startDWkpConfigInfo = new Date(self.strDWorkplace());
+                command.wkpIdSelected = self.treeWorkplace().selectedWpkId();
+                
+                nts.uk.ui.block.grayout();
+                service.removeWkp(command).done(function() {
+                    nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.info({ messageId: "Msg_16" });
+                    self.treeWorkplace().findLstWorkplace(new Date(self.strDWorkplace())).done(() => {
+                        self.treeWorkplace().selectFirst();
+                    });
+                }).fail((res: any) => {
+                    nts.uk.ui.block.clear();
+                    self.showMessageError(res);
+                });
+            } 
+            
+            /**
              * save workplace
              */
             public saveWorkplace() {
                 let self = this;
+                
+                if (!self.validate()) {
+                    return;
+                }
+                
+                let command: any = self.toJsonObject();
+                
                 nts.uk.ui.block.grayout();
-                service.saveWkp(self.toJsonObject()).done(function() {
+                service.saveWkp(command).done(function() {
                     nts.uk.ui.block.clear();
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
-                    self.treeWorkplace().findLstWorkplace(new Date(self.strDWorkplace()));
+                    self.treeWorkplace().findLstWorkplace(new Date(self.strDWorkplace())).done(() => {
+                        if (self.isNewMode()) {
+                            self.treeWorkplace().selectedWpkId(command.wkpIdSelected);
+                        } else {
+                            self.treeWorkplace().selectedWpkId.valueHasMutated();
+                        }
+                    });
                 }).fail((res: any) => {
                     nts.uk.ui.block.clear();
                     self.showMessageError(res);
@@ -169,6 +206,7 @@ module nts.uk.com.view.cmm011.a {
                 let wkpInfor: any = {};
                 wkpInfor.historyId = self.workplaceHistory().selectedHistoryId();
                 wkpInfor.workplaceCode = self.workplaceCode();
+                wkpInfor.workplaceName = self.workplaceName();
                 wkpInfor.wkpGenericName = self.wkpFullName();
                 wkpInfor.wkpDisplayName = self.wkpDisplayName();
                 wkpInfor.outsideWkpCode = self.externalCode();
@@ -227,6 +265,32 @@ module nts.uk.com.view.cmm011.a {
             }
             
             /**
+             * validate
+             */
+            private validate() {
+                let self = this;
+                
+                self.clearError();
+                
+                $('#wkpCd').ntsEditor('validate');
+                $('#wkpName').ntsEditor('validate');
+                $('#wkpDisplayName').ntsEditor('validate');
+                $('#wkpFullName').ntsEditor('validate');
+                
+                return $('.nts-input').ntsError('hasError');
+            }
+            
+            /**
+             * clearError
+             */
+            private clearError() {
+                $('#wkpCd').ntsError('clear');
+                $('#wkpName').ntsError('clear');
+                $('#wkpDisplayName').ntsError('clear');
+                $('#wkpFullName').ntsError('clear');
+            }
+            
+            /**
              * showMessageError
              */
             public showMessageError(res: any) {
@@ -279,7 +343,6 @@ module nts.uk.com.view.cmm011.a {
                     
                     // existed workplace
                     if (dataList && dataList.length > 0) {
-                        self.selectFirst();
                         self.parentModel.isNewMode(false);
                     }
                 });
@@ -323,7 +386,7 @@ module nts.uk.com.view.cmm011.a {
              */
             public selectFirst() {
                 let self = this;
-                if (self.lstWorkplace() && (self.lstWorkplace().length > 0)) {
+                if (self.lstWorkplace() && self.lstWorkplace().length > 0) {
                     self.selectedWpkId(self.lstWorkplace()[0].workplaceId);
                 }
             }
@@ -560,6 +623,7 @@ module nts.uk.com.view.cmm011.a {
                 let dfd = $.Deferred<any>();
                 nts.uk.ui.block.grayout();
                 service.getWkpInfoByHistId(wkpId, historyId).done(function(data:any) {
+                    nts.uk.ui.block.clear();
                     if (data) {
                         self.parentModel.workplaceCode(data.workplaceCode);
                         self.parentModel.workplaceName(data.workplaceName);
@@ -567,10 +631,9 @@ module nts.uk.com.view.cmm011.a {
                         self.parentModel.wkpFullName(data.wkpGenericName);
                         self.parentModel.externalCode(data.outsideWkpCode);
                     }
-                    
-                    nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail((res: any) => {
+                    nts.uk.ui.block.clear();
                     nts.uk.ui.block.clear();
                     self.parentModel.showMessageError(res);
                 });

@@ -10,6 +10,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
+import nts.uk.ctx.at.shared.app.command.ot.autocalsetting.wkpjob.RemoveWkpJobAutoCalSetCommand;
+import nts.uk.ctx.at.shared.app.command.ot.autocalsetting.wkpjob.RemoveWkpJobAutoCalSetCommandHandler;
 import nts.uk.ctx.at.shared.app.command.ot.autocalsetting.wkpjob.SaveWkpJobAutoCalSetCommandHandler;
 import nts.uk.ctx.at.shared.app.command.ot.autocalsetting.wkpjob.WkpJobAutoCalSetCommand;
 import nts.uk.ctx.at.shared.app.find.ot.autocalsetting.wkpjob.WkpJobAutoCalSetFinder;
@@ -29,6 +31,11 @@ public class WkpJobAutoCalWS {
 	/** The save wkp job auto cal set command handler. */
 	@Inject
 	private SaveWkpJobAutoCalSetCommandHandler saveWkpJobAutoCalSetCommandHandler;
+	
+	/** The remove job auto cal set command handler. */
+	@Inject
+	private RemoveWkpJobAutoCalSetCommandHandler removeWkpJobAutoCalSetCommandHandler;
+
 
 	/**
 	 * Gets the wkp job auto cal setting dto.
@@ -62,8 +69,8 @@ public class WkpJobAutoCalWS {
 	 * @param jobId the job id
 	 */
 	@POST
-	@Path("delete/{wkpId}/{jobId}")
-	public void deledte(@PathParam("wkpId") String wkpId, @PathParam("jobId") String jobId) {
-		this.wkpJobAutoCalSetFinder.deleteByCode(wkpId, jobId);
+	@Path("delete")
+	public void deledte(RemoveWkpJobAutoCalSetCommand command) {
+		this.removeWkpJobAutoCalSetCommandHandler.handle(command);
 	}
 }

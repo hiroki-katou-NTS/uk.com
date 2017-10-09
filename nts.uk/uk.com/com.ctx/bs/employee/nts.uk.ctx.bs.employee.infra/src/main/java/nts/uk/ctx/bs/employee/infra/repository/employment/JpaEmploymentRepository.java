@@ -106,7 +106,7 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 	 * #findByEmpCodes(java.util.List)
 	 */
 	@Override
-	public List<Employment> findByEmpCodes(List<String> empCodes) {
+	public List<Employment> findByEmpCodes(String companyId, List<String> empCodes) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -118,6 +118,9 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 
 		// Predicate where clause
 		List<Predicate> predicateList = new ArrayList<>();
+		predicateList.add(
+				cb.equal(root.get(BsymtEmployment_.bsymtEmploymentPK).get(BsymtEmploymentPK_.cid),
+						companyId));
 		predicateList.add(root.get(BsymtEmployment_.bsymtEmploymentPK).get(BsymtEmploymentPK_.code)
 				.in(empCodes));
 
@@ -158,22 +161,25 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 				.find(new BsymtEmploymentPK(employment.getCompanyId().v(),
 						employment.getEmploymentCode().v()), BsymtEmployment.class);
 		BsymtEmployment entity = null;
-		if(optional.isPresent()) {
+		if (optional.isPresent()) {
 			entity = optional.get();
-		}
-		else {
+		} else {
 			entity = new BsymtEmployment();
 		}
 		employment.saveToMemento(new JpaEmploymentSetMemento(entity));
 		this.commandProxy().update(entity);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository#remove(java.lang.String, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository#remove(java.
+	 * lang.String, java.lang.String)
 	 */
 	@Override
 	public void remove(String companyId, String employmentCode) {
-		this.commandProxy()
-		.remove(BsymtEmployment.class, new BsymtEmploymentPK(companyId, employmentCode));
+		this.commandProxy().remove(BsymtEmployment.class,
+				new BsymtEmploymentPK(companyId, employmentCode));
 	}
 }

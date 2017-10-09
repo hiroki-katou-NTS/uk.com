@@ -47,15 +47,4 @@ public class WkpJobAutoCalSetFinder {
 		return dto;
 	}
 
-	/**
-	 * Delete by code.
-	 *
-	 * @param wkpId the wkp id
-	 * @param jobId the job id
-	 */
-	public void deleteByCode(String wkpId, String jobId) {
-		String companyId = AppContexts.user().companyId();
-		wkpJobAutoCalSettingRepository.delete(companyId, wkpId, jobId);
-	}
-
 }
