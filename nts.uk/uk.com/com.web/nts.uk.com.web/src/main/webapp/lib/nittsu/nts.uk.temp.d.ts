@@ -79,6 +79,8 @@ interface JQuery {
      * init calendar component.
      */
     ntsCalendar(action: string, option: any);
+    
+    delegate(selector: string, eventName: string, handler: (evt: any, ui: any) => void)
 }
 
 interface UnitModel {

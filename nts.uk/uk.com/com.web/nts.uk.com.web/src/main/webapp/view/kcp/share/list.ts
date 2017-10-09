@@ -175,14 +175,15 @@ module kcp.share.list {
          */
         public init($input: JQuery, data: ComponentOption) :JQueryPromise<void> {
             var dfd = $.Deferred<void>();
-            ko.cleanNode($input[0]);
             var self = this;
+            $(document).undelegate('#' + self.componentGridId, 'iggriddatarendered');
+            ko.cleanNode($input[0]);
             
             // Init self data.
             self.isMultiple = data.isMultiSelect;
             self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
             self.maxRows = data.maxRows ? data.maxRows : 12;
-            self.selectedCodes = data.selectedCode;
+            self.selectedCodes = ko.observable(data.isMultiSelect ? [] : null);
             self.isDialog = data.isDialog;
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
@@ -198,15 +199,13 @@ module kcp.share.list {
             } else {
                 self.baseDate = ko.observable(new Date());
             }
-            data.selectedCode.subscribe(function(selectedValue) {
-                // If select No select row and other row in one time.
-                // => un-select No select row.
-                if (self.isMultiple && (<Array<string>>selectedValue).indexOf('') > -1 
-                        && (<Array<string>>selectedValue).length > 1) {
-                    var dataSelected = selectedValue.slice();
-                    (<Array<string>>dataSelected).splice((<Array<string>>selectedValue).indexOf(''), 1);
-                    data.selectedCode(dataSelected);
+            //Delegate
+            $(document).delegate('#' + self.componentGridId, "iggridselectionrowselectionchanged", function(evt: JQueryEventObject, ui: any) {
+                if (ui.selectedRows && ui.selectedRows.length == 0) {
+                    data.selectedCode(data.isMultiSelect ? [] : null);
+                    return;
                 }
+                data.selectedCode(self.selectedCodes());
             });
             if (self.listType == ListType.JOB_TITLE) {
                 this.listComponentColumn.push({headerText: '', hidden: true, prop: 'id'});
@@ -214,7 +213,9 @@ module kcp.share.list {
             
             // Setup list column.
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_2'), prop: 'code', width: self.gridStyle.codeColumnSize,
-                        template: "<td class='list-component-name-col'>${code}</td>",});
+                        formatter: function(code) {
+                            return code;
+                        },});
             this.listComponentColumn.push({headerText: nts.uk.resource.getText('KCP001_3'), prop: 'name', width: self.gridStyle.nameColumnSize,
                         template: "<td class='list-component-name-col'>${name}</td>",});
             // With Employee list, add column company name.
@@ -285,7 +286,7 @@ module kcp.share.list {
             
             // Check is show no select row.
             if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultiple) {
-                self.itemList.unshift({code: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
+                self.itemList.unshift({code: undefined, name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
             
             // Init component.
@@ -407,15 +408,19 @@ module kcp.share.list {
                         return;
                     }
                     self.selectedCodes(dataList.map(item => self.listType == ListType.JOB_TITLE ? item.id : item.code));
+                    data.selectedCode(self.selectedCodes());
                     return;
                 case SelectType.SELECT_FIRST_ITEM:
                     self.selectedCodes(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
+                    data.selectedCode(self.selectedCodes());
                     return;
                 case SelectType.NO_SELECT:
                     self.selectedCodes(data.isMultiSelect ? [] : null);
+                    data.selectedCode(self.selectedCodes())
                     return;
                 default:
                     self.selectedCodes(data.isMultiSelect ? [] : null);
+                    data.selectedCode(self.selectedCodes())
             }
         }
         
