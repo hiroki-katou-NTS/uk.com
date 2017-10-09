@@ -113,7 +113,8 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 			String contractCd) {
 		List<PersonInfoItemDetail> x = this.queryProxy()
 				.query(SELECT_ITEM_INFO_AUTH_BY_CATEGORY_ID_QUERY, Object[].class)
-				.setParameter("personInfoCategoryAuthId", personInfoCategoryAuthId).setParameter("roleId", roleId)
+				.setParameter("personInfoCategoryAuthId", personInfoCategoryAuthId)
+				.setParameter("roleId", roleId)
 				.setParameter("contractCd", contractCd).getList(c -> toDomain(c));
 		return x;
 	}

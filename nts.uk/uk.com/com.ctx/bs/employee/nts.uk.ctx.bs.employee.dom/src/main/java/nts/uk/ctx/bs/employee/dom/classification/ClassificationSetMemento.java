@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.dom.classification;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
+import nts.uk.shr.com.primitive.Memo;
 
 /**
  * The Interface ClassificationSetMemento.
@@ -33,4 +34,12 @@ public interface ClassificationSetMemento {
 	 * @param managementCategoryName the new management category name
 	 */
 	void setManagementCategoryName(ClassificationName managementCategoryName);
+	
+	
+	/**
+	 * Sets the management category memo.
+	 *
+	 * @param managementCategoryMemo the new management category memo
+	 */
+	void setManagementCategoryMemo(Memo managementCategoryMemo);
 }

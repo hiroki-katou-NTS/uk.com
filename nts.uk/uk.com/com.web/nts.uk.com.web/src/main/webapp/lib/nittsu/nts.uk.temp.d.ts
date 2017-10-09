@@ -5,7 +5,8 @@ declare module nts.uk.ui {
         function invisible(): any;
     }
     module dialog {
-        function alertError(errorData: any): any;
+        function alertError(errorData: any): void;
+        function bundledErrors(errorData: any): void;
     }
 }
 declare module nts.uk {
