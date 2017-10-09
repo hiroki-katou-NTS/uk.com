@@ -2,20 +2,19 @@ package nts.uk.ctx.at.schedule.dom.shift.workpairpattern;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 
 /**
- * 会社勤務ペアパターングループ
+ * 勤務ペアパターン
  * 
  * @author sonnh1
  *
  */
 @Getter
 @AllArgsConstructor
-public class WorkPairPattern extends AggregateRoot {
+public class ComPatternItem extends DomainObject {
 	private String companyId;
 	private int groupNo;
-	private String groupName;
-	private int groupUsageCls;
-	private String remarks;
+	private int patternNo;
+	private WorkPairPatternName patternName;
 }
