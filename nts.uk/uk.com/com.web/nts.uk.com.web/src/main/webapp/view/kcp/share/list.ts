@@ -284,7 +284,7 @@ module kcp.share.list {
             self.itemList.remove(self.itemList().filter(item => item.code === '')[0]);
             
             // Check is show no select row.
-            if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1) {
+            if (data.isShowNoSelectRow && self.itemList().map(item => item.code).indexOf('') == -1 && !self.isMultiple) {
                 self.itemList.unshift({code: '', name: nts.uk.resource.getText('KCP001_5'), isAlreadySetting: false});
             }
             
