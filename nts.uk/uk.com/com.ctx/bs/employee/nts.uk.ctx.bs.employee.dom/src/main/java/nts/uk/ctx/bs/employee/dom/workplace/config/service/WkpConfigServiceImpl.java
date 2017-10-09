@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.dom.workplace.config.service.internal;
+package nts.uk.ctx.bs.employee.dom.workplace.config.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,6 @@ import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
-import nts.uk.ctx.bs.employee.dom.workplace.config.service.WkpConfigService;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
 
 /**
