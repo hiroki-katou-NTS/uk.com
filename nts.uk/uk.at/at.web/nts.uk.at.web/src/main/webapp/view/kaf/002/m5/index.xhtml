@@ -6,13 +6,7 @@
 		<div class="cell m5-column2">
 			<div class="cf m5-switch" data-bind="ntsSwitchButton: {
 						name: '#[KAF002_16]',
-						options: ko.observableArray([
-				            { code: 0, name: '#{i18n.getText('KAF002_29')}' },
-				            { code: 1, name: '#{i18n.getText('KAF002_31')}' },
-				            { code: 2, name: '#{i18n.getText('KAF002_33')}' },
-				            { code: 3, name: '#{i18n.getText('KAF002_34')}' },
-				            { code: 4, name: '#{i18n.getText('KAF002_35')}' }
-				        ]),
+						options: stampAtrList,
 						optionsValue: 'code',
 						optionsText: 'name',
 						value: stampAtr,
@@ -107,14 +101,9 @@
 								<td>
 									<span class="m5-combo-box" data-bind="ntsComboBox: {
 												name: '#[KAF002_24]',
-												options: ko.observableArray([
-									                { code: 0, name: '#{i18n.getText('KAF002_40')}' },
-										            { code: 1, name: '#{i18n.getText('KAF002_41')}' },
-										            { code: 2, name: '#{i18n.getText('KAF002_42')}' },
-										            { code: 3, name: '#{i18n.getText('KAF002_43')}' }
-									            ]),
+												options: $parent.stampGoOutAtrList,
 												optionsValue: 'code',
-												value: ko.observable(0),
+												value: stampGoOutAtr,
 												optionsText: 'name',
 												enable: true,
 												columns: [

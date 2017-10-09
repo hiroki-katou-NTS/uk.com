@@ -6,11 +6,7 @@
 		<div class="cell m1-column2">
 			<div class="cf m1-switch" data-bind="ntsSwitchButton: {
 						name: '#[KAF002_16]',
-						options: ko.observableArray([
-				            { code: 1, name: '#{i18n.getText('KAF002_31')}' },
-				            { code: 2, name: '#{i18n.getText('KAF002_32')}' },
-				            { code: 3, name: '#{i18n.getText('KAF002_33')}' }
-				        ]),
+						options: stampAtrList,
 						optionsValue: 'code',
 						optionsText: 'name',
 						value: stampAtr }"></div>
@@ -69,12 +65,7 @@
 						<div class="table">
 							<div class="cf m1-switch" data-bind="ntsSwitchButton: {
 												name: '#[KAF002_24]',
-												options: ko.observableArray([
-										            { code: 0, name: '#{i18n.getText('KAF002_40')}' },
-										            { code: 1, name: '#{i18n.getText('KAF002_41')}' },
-										            { code: 2, name: '#{i18n.getText('KAF002_42')}' },
-										            { code: 3, name: '#{i18n.getText('KAF002_43')}' }
-										        ]),
+												options: $parent.stampGoOutAtrList,
 												optionsValue: 'code',
 												optionsText: 'name',
 												value: stampGoOutAtr }"></div>	
