@@ -86,8 +86,8 @@ module nts.uk.com.view.cmm018.shr {
             dateRange: string;
             startDate: string;
             endDate: string;
-            overLap: boolean;
-            constructor(id: number, dateRange: string, startDate: string, endDate: string, overLap: boolean) {
+            overLap: any;
+            constructor(id: number, dateRange: string, startDate: string, endDate: string, overLap: any) {
                 this.id = id;
                 this.dateRange = dateRange;
                 this.startDate = startDate;

@@ -1056,13 +1056,13 @@ module nts.uk.com.view.cmm018.a {
                                     history.startDate, history.endDate,self.dataI(), listType, root);
                 servicebase.updateRoot(data).done(function(){
                     self.enableDelete(true);
-                   if(self.tabSelected() == 0){
+                    if(self.tabSelected() == vmbase.RootType.COMPANY){
                        self.getDataCompany();
-                   }else if(self.tabSelected() == 0){
+                    }else if(self.tabSelected() == vmbase.RootType.WORKPLACE){
                        self.getDataWorkplace();
-                   }else{
+                    }else{
                        self.getDataPerson();
-                   }
+                    }
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });
             }
@@ -1790,13 +1790,11 @@ module nts.uk.com.view.cmm018.a {
             registerB(){
 //                nts.uk.ui.block.invisible();
                 let self = this;
-                if(self.comRoot() == null){//TH: data right null
+                if(self.comRoot() == null){//TH: data right null: xoa het or k co
                     let app = self.findAppbyName(self.singleSelectedCode());
-                    if(app != undefined){
-                       let root = self.findRootComByType(app.value);
-                        if(root != undefined && root != null){
-                            return;
-                        } 
+                    //TH: select not item history
+                    if(app != undefined ||self.singleSelectedCode() == '共通ルート' || self.singleSelectedCode() == nts.uk.resource.getText("CMM018_7")){//don
+                        return null;
                     }
                 }
                 let checkAddHist = false;
