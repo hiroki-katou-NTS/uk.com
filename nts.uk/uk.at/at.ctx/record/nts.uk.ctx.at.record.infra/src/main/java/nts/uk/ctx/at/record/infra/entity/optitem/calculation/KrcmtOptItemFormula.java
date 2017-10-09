@@ -34,6 +34,12 @@ public class KrcmtOptItemFormula extends UkJpaEntity implements Serializable {
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
+	/** The Constant ITEM_SELECTION. */
+	public static final int ITEM_SELECTION = 0;
+
+	/** The Constant FORMULA_SETTING. */
+	public static final int FORMULA_SETTING = 1;
+
 	/** The krcmt opt item formula PK. */
 	@EmbeddedId
 	protected KrcmtOptItemFormulaPK krcmtOptItemFormulaPK;
@@ -78,7 +84,7 @@ public class KrcmtOptItemFormula extends UkJpaEntity implements Serializable {
 		@JoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO", insertable = false, updatable = false),
 		@JoinColumn(name = "FORMULA_ID", referencedColumnName = "FORMULA_ID", insertable = false, updatable = false)
 	})
-	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
 	private KrcmtFormulaSetting krcmtFormulaSetting;
 
 

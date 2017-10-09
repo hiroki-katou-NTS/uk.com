@@ -12,8 +12,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.ctx.bs.employee.app.find.jobtitle.JobTitleFinder;
-import nts.uk.ctx.bs.employee.app.find.jobtitle.dto.JobTitleDto;
+import nts.uk.ctx.bs.employee.app.find.jobtitle_old.JobTitleFinder;
+import nts.uk.ctx.bs.employee.app.find.jobtitle_old.dto.JobTitleDto;
 
 /**
  * The Class JobTitleWs.

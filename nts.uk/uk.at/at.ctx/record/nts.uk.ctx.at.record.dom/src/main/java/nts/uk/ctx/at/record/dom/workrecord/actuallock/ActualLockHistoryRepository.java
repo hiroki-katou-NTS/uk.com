@@ -7,7 +7,7 @@ package nts.uk.ctx.at.record.dom.workrecord.actuallock;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * The Interface ActualLockHistoryRepository.
@@ -37,6 +37,15 @@ public interface ActualLockHistoryRepository {
 	List<ActualLockHistory> findAll(String companyId);
 	
 	/**
+	 * Find by target month.
+	 *
+	 * @param companyId the company id
+	 * @param closureId the closure id
+	 * @param targetMonth the target month
+	 * @return the list
+	 */
+	List<ActualLockHistory> findByTargetMonth(String companyId, int closureId, int targetMonth);
+	/**
 	 * Find by closure id.
 	 *
 	 * @param companyId the company id
@@ -53,7 +62,7 @@ public interface ActualLockHistoryRepository {
 	 * @param lockDate the lock date
 	 * @return the optional
 	 */
-	Optional<ActualLockHistory> findByLockDate(String companyId, int closureId, GeneralDate lockDate);
+	Optional<ActualLockHistory> findByLockDate(String companyId, int closureId, GeneralDateTime lockDate);
 	
 	/**
 	 * Removes the.
@@ -62,5 +71,5 @@ public interface ActualLockHistoryRepository {
 	 * @param closureId the closure id
 	 * @param lockDate the lock date
 	 */
-	void remove(String companyId, int closureId, GeneralDate lockDate);
+	void remove(String companyId, int closureId, GeneralDateTime lockDate);
 }

@@ -231,7 +231,8 @@ module nts.uk.com.view.cmm011.b {
                     service.removeWkpConfig(command).done(() => {
                         self.findAllHistory();
                     }).fail((res: any) => {
-                        self.parentModel.showMessageError(res);
+//                        self.parentModel.showMessageError(res);
+                        nts.uk.ui.dialog.bundledErrors(res);
                     });
                 });
             }
