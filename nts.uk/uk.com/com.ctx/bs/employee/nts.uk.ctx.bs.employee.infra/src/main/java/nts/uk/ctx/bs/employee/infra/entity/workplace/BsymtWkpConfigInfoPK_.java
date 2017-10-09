@@ -18,5 +18,9 @@ public class BsymtWkpConfigInfoPK_ {
 	
 	/** The history id. */
 	public static volatile SingularAttribute<BsymtWkpConfigInfoPK, String> historyId;
+	
+	/** The wkpid. */
+	public static volatile SingularAttribute<BsymtWkpConfigInfoPK, String> wkpid;
+	
 }
 

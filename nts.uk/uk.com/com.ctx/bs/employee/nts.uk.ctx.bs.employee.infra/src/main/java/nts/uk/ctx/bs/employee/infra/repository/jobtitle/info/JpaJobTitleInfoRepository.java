@@ -120,4 +120,29 @@ public class JpaJobTitleInfoRepository extends JpaRepository implements JobTitle
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.JobTitleInfoRepository#isSequenceMasterUsed(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean isSequenceMasterUsed(String companyId, String sequenceCode) {
+		
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<BsymtJobInfo> cq = criteriaBuilder.createQuery(BsymtJobInfo.class);
+		Root<BsymtJobInfo> root = cq.from(BsymtJobInfo.class);
+		
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		lstpredicateWhere.add(
+				criteriaBuilder.equal(root.get(BsymtJobInfo_.bsymtJobInfoPK).get(BsymtJobInfoPK_.cid), companyId));
+		lstpredicateWhere.add(
+				criteriaBuilder.equal(root.get(BsymtJobInfo_.sequenceCd), sequenceCode));
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		List<BsymtJobInfo> result = em.createQuery(cq).getResultList();
+		
+		return !result.isEmpty();
+	}
+
 }

@@ -30,7 +30,6 @@ public interface JobTitleInfoRepository {
 	 */
 	void remove(String companyId, String jobTitleId, String historyId);
 
-	
 	/**
 	 * Find.
 	 *
@@ -40,4 +39,13 @@ public interface JobTitleInfoRepository {
 	 * @return the optional
 	 */
 	Optional<JobTitleInfo> find(String companyId, String jobTitleId, String historyId);
+	
+	/**
+	 * Checks if is sequence master used.
+	 *
+	 * @param companyId the company id
+	 * @param sequenceCode the sequence code
+	 * @return true, if is sequence master used
+	 */
+	boolean isSequenceMasterUsed(String companyId, String sequenceCode);
 }

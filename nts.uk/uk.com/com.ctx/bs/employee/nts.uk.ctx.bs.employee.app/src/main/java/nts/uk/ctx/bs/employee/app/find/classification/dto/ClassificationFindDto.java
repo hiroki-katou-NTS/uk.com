@@ -20,10 +20,10 @@ import nts.uk.shr.com.primitive.Memo;
 public class ClassificationFindDto implements ClassificationSetMemento {
 	
 	/** The code. */
-	private String classificationCode;
+	private String code;
 	
 	/** The name. */
-	private String classificationName;
+	private String name;
 	
 	/** Memo. */
 	private String memo;
@@ -49,7 +49,7 @@ public class ClassificationFindDto implements ClassificationSetMemento {
 	 */
 	@Override
 	public void setManagementCategoryCode(ClassificationCode managementCategoryCode) {
-		this.classificationCode = managementCategoryCode.v();
+		this.code = managementCategoryCode.v();
 		
 	}
 
@@ -62,7 +62,7 @@ public class ClassificationFindDto implements ClassificationSetMemento {
 	 */
 	@Override
 	public void setManagementCategoryName(ClassificationName managementCategoryName) {
-		this.classificationName = managementCategoryName.v();
+		this.name = managementCategoryName.v();
 		
 	}
 	

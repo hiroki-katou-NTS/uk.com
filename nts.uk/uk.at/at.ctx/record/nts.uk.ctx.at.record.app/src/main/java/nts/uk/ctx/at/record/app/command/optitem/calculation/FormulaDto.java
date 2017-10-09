@@ -7,7 +7,6 @@ package nts.uk.ctx.at.record.app.command.optitem.calculation;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemAtr;
 import nts.uk.ctx.at.record.dom.optitem.OptionalItemNo;
 import nts.uk.ctx.at.record.dom.optitem.calculation.CalcFormulaSetting;
@@ -28,6 +27,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Getter
 @Setter
 public class FormulaDto implements FormulaGetMemento, FormulaDispOrderGetMemento {
+
+	/** The formula id. */
+	private String formulaId;
 
 	/** The optional item no. */
 	private String optionalItemNo;
@@ -79,8 +81,7 @@ public class FormulaDto implements FormulaGetMemento, FormulaDispOrderGetMemento
 	 */
 	@Override
 	public FormulaId getFormulaId() {
-		// Random Id.
-		return new FormulaId(IdentifierUtil.randomUniqueId());
+		return new FormulaId(this.formulaId);
 	}
 
 	/*

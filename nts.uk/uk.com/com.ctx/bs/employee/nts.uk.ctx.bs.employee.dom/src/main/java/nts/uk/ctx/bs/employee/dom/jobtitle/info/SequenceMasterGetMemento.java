@@ -12,13 +12,6 @@ import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 public interface SequenceMasterGetMemento {
 
 	/**
-	 * Gets the order.
-	 *
-	 * @return the order
-	 */
-	short getOrder();
-
-	/**
 	 * Gets the company id.
 	 *
 	 * @return the company id
@@ -38,4 +31,11 @@ public interface SequenceMasterGetMemento {
 	 * @return the sequence name
 	 */
 	SequenceName getSequenceName();
+	
+	/**
+	 * Gets the order.
+	 *
+	 * @return the order
+	 */
+	short getOrder();
 }

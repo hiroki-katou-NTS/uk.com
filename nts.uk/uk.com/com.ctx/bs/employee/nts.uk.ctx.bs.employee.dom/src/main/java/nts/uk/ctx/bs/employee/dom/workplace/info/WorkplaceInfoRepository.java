@@ -14,6 +14,13 @@ import nts.arc.time.GeneralDate;
  */
 public interface WorkplaceInfoRepository {
 
+    /**
+     * Adds the.
+     *
+     * @param workplaceInfo the workplace info
+     */
+    void add(WorkplaceInfo workplaceInfo);
+    
 	/**
 	 * Update.
 	 *
@@ -36,7 +43,7 @@ public interface WorkplaceInfoRepository {
 	 * @param wkpId the wkp id
 	 * @return the optional
 	 */
-	Optional<WorkplaceInfo> find(String companyId,String wkpId,String historyId);
+	Optional<WorkplaceInfo> find(String companyId, String wkpId, String historyId);
 
 	/**
 	 * Find by wkp cd.
@@ -64,4 +71,13 @@ public interface WorkplaceInfoRepository {
 	 * @return the optional
 	 */
 	Optional<WorkplaceInfo> findLatestByWkpId(String wkpId);
+	
+	/**
+	 * Checks if is existed.
+	 *
+	 * @param companyId the company id
+	 * @param newWkpId the new wkp id
+	 * @return true, if is existed
+	 */
+	boolean isExisted(String companyId, String newWkpId);
 }
