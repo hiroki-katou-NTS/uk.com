@@ -43,4 +43,8 @@ public class ImapInfoDto {
 		this.imapTimeOut = imapTimeOut;
 		this.imapPort = imapPort;
 	}
+	
+	public ImapInfoDto() {
+		super();
+	}
 }

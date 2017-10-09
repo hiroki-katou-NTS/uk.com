@@ -43,4 +43,8 @@ public class PopInfoDto {
 		this.popTimeOut = popTimeOut;
 		this.popPort = popPort;
 	}
+	
+	public PopInfoDto() {
+		super();
+	}
 }

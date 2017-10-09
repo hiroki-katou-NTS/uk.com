@@ -51,6 +51,10 @@ public class MailServerSaveCommand implements MailServerGetMemento {
 	/** The imap dto. */
 	private ImapInfoDto imapDto;
 	
+	public MailServerSaveCommand(){
+		super();
+	}
+	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.sys.env.dom.mailserver.MailServerGetMemento#getCompanyId()
 	 */

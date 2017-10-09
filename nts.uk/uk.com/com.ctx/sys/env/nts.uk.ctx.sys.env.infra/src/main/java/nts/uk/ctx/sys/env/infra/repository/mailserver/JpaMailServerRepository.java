@@ -40,7 +40,16 @@ public class JpaMailServerRepository extends JpaRepository implements MailServer
 
 	@Override
 	public void update(MailServer mailSetting) {
-		this.commandProxy().update(this.toEntity(mailSetting));
+		Optional<SevstMailServer> optinal = this.queryProxy()
+				.find(mailSetting.getCompanyId(), SevstMailServer.class);
+		
+		SevstMailServer entity = optinal.get();
+	
+		JpaMailServerSetMemento memento = new JpaMailServerSetMemento(entity);
+		mailSetting.saveToMemento(memento);
+		
+		this.commandProxy().update(entity);
+		
 	}
 	
 	

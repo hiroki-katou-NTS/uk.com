@@ -38,4 +38,8 @@ public class SmtpInfoDto {
 		this.smtpTimeOut = smtpTimeOut;
 		this.smtpPort = smtpPort;
 	}
+
+	public SmtpInfoDto() {
+		super();
+	}
 }
