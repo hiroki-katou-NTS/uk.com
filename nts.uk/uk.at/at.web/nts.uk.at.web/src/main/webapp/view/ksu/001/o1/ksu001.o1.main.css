@@ -10,10 +10,13 @@
 #time-edit1, #time-edit2 {
 	text-align: center !important;
 	width: 43px !important;
+}
+
+#time-edit1 {
 	margin-left: 16px
 }
 
-#spelcial, .reserved, #table-worktime {
+.reserved, #table-worktime {
 	margin-left: 10px;
 }
 
@@ -24,4 +27,32 @@
 #combo-box1 {
 	vertical-align: middle;
 	margin-left: 30px
+}
+
+#image102 {
+	background: url(../image/image102.png) no-repeat center;
+	background-size: 26px 26px;
+	height: 30px;
+	min-width: 30px !important;
+	margin-left: 250px !important;
+}
+
+#image104 {
+	background: url(../image/image104.png) no-repeat center;
+	background-size: 26px 26px;
+	height: 30px;
+	min-width: 30px !important;
+	margin-left: 5px !important;
+}
+
+#image030 {
+	background: url(../image/image030.png) no-repeat center;
+	background-size: 26px 26px;
+	height: 30px;
+	min-width: 30px !important;
+	margin-left: 5px !important;
+}
+
+#functions-area button:FIRST-CHILD {
+	vertical-align: top
 }

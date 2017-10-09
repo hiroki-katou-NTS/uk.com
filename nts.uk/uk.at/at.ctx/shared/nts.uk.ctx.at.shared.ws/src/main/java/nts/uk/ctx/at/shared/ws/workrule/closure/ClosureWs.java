@@ -12,10 +12,10 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureFinder;
+import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.CheckSaveDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureDetailDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
@@ -93,9 +93,9 @@ public class ClosureWs {
 	 */
 	@POST
 	@Path("checkThreeMonth")
-	public Boolean checkThreeMonth(GeneralDate baseDate) {
+	public Boolean checkThreeMonth(CheckSaveDto checksave) {
 		Period period = this.finder.findByIdGetMonthDay(CLOSURE_ID_BEGIN);
-		return (period.getStartDate().month() + THREE_MONTH < baseDate.month());
+		return (period.getStartDate().month() + THREE_MONTH < checksave.getBaseDate().month());
 	}
 	
 	/**
@@ -106,8 +106,8 @@ public class ClosureWs {
 	 */
 	@POST
 	@Path("checkMonthMax")
-	public Boolean checkMonthMax(GeneralDate baseDate) {
-		return baseDate.before(this.finder.getMaxStartDateClosure());
+	public Boolean checkMonthMax(CheckSaveDto checksave) {
+		return checksave.getBaseDate().before(this.finder.getMaxStartDateClosure());
 	}
 	
 	

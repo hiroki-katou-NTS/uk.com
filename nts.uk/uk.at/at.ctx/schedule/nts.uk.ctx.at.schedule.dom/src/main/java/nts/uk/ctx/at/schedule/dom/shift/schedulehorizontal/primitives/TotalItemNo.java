@@ -9,6 +9,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 public class TotalItemNo extends IntegerPrimitiveValue<PrimitiveValue<Integer>>{
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
+	/** 集計項目NO **/
 	public TotalItemNo(Integer rawValue){
 		super(rawValue);
 	}

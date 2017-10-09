@@ -15,6 +15,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 public class CategoryCode extends StringPrimitiveValue<PrimitiveValue<String>>{
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
+	/** カテゴリコード **/
 	public CategoryCode(String rawValue){
 		super(rawValue);
 	}

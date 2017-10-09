@@ -34,3 +34,12 @@
 .tableErrorLog {
 	margin-top: 60px;
 }
+
+ul.countdown {
+	list-style: none;
+	display: block;
+}
+
+ul.countdown li {
+	display: inline-block;
+}

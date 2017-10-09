@@ -30,13 +30,6 @@ public interface ScheduleExecutionLogGetMemento {
     public String getExecutionId();
 
     /**
-     * Gets the execution content.
-     *
-     * @return the execution content
-     */
-    public ExecutionContent getExecutionContent();
-
-    /**
      * Gets the execution date time.
      *
      * @return the execution date time

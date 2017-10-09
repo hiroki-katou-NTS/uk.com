@@ -1,6 +1,4 @@
 module ksu001.l.viewmodel {
-    import alert = nts.uk.ui.dialog.alert;
-    import getShare = nts.uk.ui.windows.getShared;
 
     export class ScreenModel {
         listTeam: KnockoutObservableArray<any> = ko.observableArray([]);

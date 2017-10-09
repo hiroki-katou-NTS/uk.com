@@ -16,6 +16,7 @@
 			<com:stylefile path="ksc001.h.main.css" />
 			<com:scriptfile path="ksc001.h.vm.js" />
 			<com:scriptfile path="ksc001.h.start.js" />
+			<com:scriptfile path="ksc001.h.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -27,13 +28,13 @@
 				<div>
 					<table id="fixed-table">
 						<colgroup>
-							<col width="180px" />
-							<col width="180px" />
-							<col width="100px" />
+							<col width="170px" />
+							<col width="170px" />
+							<col width="70px" />
 							<col width="250px" />
-							<col width="200px" />
-							<col width="100px" />
-							<col width="100px" />
+							<col width="350px" />
+							<col width="70px" />
+							<col width="70px" />
 						</colgroup>
 						<thead>
 							<tr>
@@ -48,11 +49,15 @@
 						</thead>
 						<tbody>
 							<tr style="height:200px;">
-								<td><label data-bind="text: period().startDateTime"></label></td>
-								<td><label data-bind="text: period().endDateTime"></label></td>
-								<td><label data-bind="text: 'TODO'"></label></td>
-								<td><label data-bind="text: executionContent()"></label></td>
-								<td><label data-bind="text: ''"></label></td>
+								<td><label data-bind="text: exeStart()"></label></td>
+								<td><label data-bind="text: exeEnd()"></label></td>
+								<td><label data-bind="text: executionDateTime()"></label></td>
+								<td><div data-bind="foreach: executionContent">
+										<p data-bind="text: $data" />
+									</div></td>
+								<td><div data-bind="foreach: detailContentMethod">
+										<p data-bind="text: $data" />
+									</div></td>
 								<td><a class="nounderline" href="javascript:void(0);"
 									data-bind="text: executionNumber(),click: $parent.openDialogI">
 								</a></td>

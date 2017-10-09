@@ -188,10 +188,17 @@ module nts.uk.at.view.kml002.a.viewmodel {
         
         openDialog(conditionNo: number) {
             var self = this;
-            
+
             if(conditionNo == 1) {
                 nts.uk.ui.windows.sub.modal("/view/kml/002/b/index.xhtml").onClosed(() => {
-                
+                    var dialogBData = {
+                        verticalCalCd: self.code(),
+                        itemId: "01",
+                        attribute: "1",
+                        itemName: "Test 01"
+                    };
+                    
+                    nts.uk.ui.windows.setShared("KML002_DIALOG_B_DATA", dialogBData);
                 }); 
             } else if(conditionNo == 2) {
                 nts.uk.ui.windows.sub.modal("/view/kml/002/c/index.xhtml").onClosed(() => {

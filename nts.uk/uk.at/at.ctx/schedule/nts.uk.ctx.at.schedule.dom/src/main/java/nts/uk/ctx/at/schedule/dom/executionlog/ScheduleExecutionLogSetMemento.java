@@ -30,13 +30,6 @@ public interface ScheduleExecutionLogSetMemento {
 	public void setExecutionId(String executionId);
 
 	/**
-	 * Sets the execution content.
-	 *
-	 * @param executionContent the new execution content
-	 */
-	public void setExecutionContent(ExecutionContent executionContent);
-
-	/**
 	 * Sets the execution date time.
 	 *
 	 * @param executionDateTime the new execution date time

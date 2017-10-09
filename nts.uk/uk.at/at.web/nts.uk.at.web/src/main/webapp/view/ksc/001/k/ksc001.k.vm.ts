@@ -32,6 +32,17 @@ module nts.uk.at.view.ksc001.k {
                 dfd.resolve();
                 return dfd.promise();
             }
+            
+            /**
+             * export error 
+             */
+            private exportError():void {
+                var self = this;
+                let executionId = "";
+                service.exportError("07138ec6-57a2-49d7-a158-1e149c4296c9").done(function() {
+
+                });
+            }
             /**
             * close dialog 
             */

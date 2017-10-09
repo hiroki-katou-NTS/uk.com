@@ -13,22 +13,47 @@ import nts.arc.time.GeneralDate;
  */
 // スケジュール作成エラーログ
 @Getter
-public class ScheduleErrorLog extends AggregateRoot{
-	
+public class ScheduleErrorLog extends AggregateRoot {
+
 	/** The error content. */
 	// エラー内容
 	private String errorContent;
-	
+
 	/** The execution id. */
 	// 実行ID
 	private String executionId;
-	
+
 	/** The date. */
 	// 年月日
 	private GeneralDate date;
-	
+
 	/** The employee id. */
 	// 社員ID
 	private String employeeId;
 
+	/**
+	 * To domain.
+	 *
+	 * @param memento
+	 *            the memento
+	 * @return the schedule error log
+	 */
+	public ScheduleErrorLog(ScheduleErrorLogGetMemento memento) {
+		this.errorContent = memento.getErrorContent();
+		this.executionId = memento.getExecutionId();
+		this.date = memento.getDate();
+		this.employeeId = memento.getEmployeeId();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(ScheduleErrorLogSetMemento memento) {
+		memento.setErrorContent(this.errorContent);
+		memento.setExecutionId(this.executionId);
+		memento.setDate(this.date);
+		memento.setEmployeeId(this.employeeId);
+	}
 }

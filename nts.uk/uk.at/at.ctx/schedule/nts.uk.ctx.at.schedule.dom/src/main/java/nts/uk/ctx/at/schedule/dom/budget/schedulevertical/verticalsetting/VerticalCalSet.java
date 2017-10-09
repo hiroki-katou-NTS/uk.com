@@ -1,11 +1,11 @@
 package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.verticalsetting;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
 
-@AllArgsConstructor
 @Getter
-public class VerticalCalSet {
+public class VerticalCalSet extends AggregateRoot {
 	/* 会社ID */
     private String companyId;
     
@@ -23,4 +23,27 @@ public class VerticalCalSet {
     
     /*応援集計区分*/
     private AssistanceTabulationAtr assistanceTabulationAtr;
+    
+    public void validate(){
+    	
+    }
+
+	public VerticalCalSet(String companyId, String verticalCalCd, String verticalCalName, Unit unit, UseAtr useAtr,
+			AssistanceTabulationAtr assistanceTabulationAtr) {
+		
+		this.companyId = companyId;
+		this.verticalCalCd = verticalCalCd;
+		this.verticalCalName = verticalCalName;
+		this.unit = unit;
+		this.useAtr = useAtr;
+		this.assistanceTabulationAtr = assistanceTabulationAtr;
+	}
+    
+	public static VerticalCalSet createFromJavaType(String companyId, String verticalCalCd, String verticalCalName, int unit, int useAtr,
+			int assistanceTabulationAtr) {
+		return new VerticalCalSet(companyId, verticalCalCd, verticalCalName,
+				EnumAdaptor.valueOf(unit, Unit.class),
+				EnumAdaptor.valueOf(useAtr, UseAtr.class),
+				EnumAdaptor.valueOf(assistanceTabulationAtr, AssistanceTabulationAtr.class));
+	}
 }

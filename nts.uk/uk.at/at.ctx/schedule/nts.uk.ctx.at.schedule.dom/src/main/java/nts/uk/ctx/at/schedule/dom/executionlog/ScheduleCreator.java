@@ -25,5 +25,43 @@ public class ScheduleCreator extends AggregateRoot{
 	/** The employee id. */
 	// 社員ID
 	private String employeeId;
+	
+	/**
+	 * Instantiates a new schedule creator.
+	 *
+	 * @param memento the memento
+	 */
+	public ScheduleCreator(ScheduleCreatorGetMemento memento){
+		this.executionId = memento.getExecutionId();
+		this.executionStatus = memento.getExecutionStatus();
+		this.employeeId = memento.getEmployeeId();
+	}
+	
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(ScheduleCreatorSetMemento memento){
+		memento.setExecutionId(this.executionId);
+		memento.setExecutionStatus(this.executionStatus);
+		memento.setEmployeeId(this.employeeId);
+	}
+	
+	/**
+	 * Update to created.
+	 */
+	public void updateToCreated(){
+		this.executionStatus = ExecutionStatus.CREATED;
+	}
+	
+	/**
+	 * Checks if is created.
+	 *
+	 * @return true, if is created
+	 */
+	public boolean isCreated(){
+		return this.executionStatus.equals(ExecutionStatus.CREATED);
+	}
 
 }

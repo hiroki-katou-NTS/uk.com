@@ -13,11 +13,15 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * The Class KscmtScheduleCreator.
  */
+@Getter
+@Setter
 @Entity
 @Table(name = "KSCMT_SCHEDULE_CREATOR")
 public class KscmtScheduleCreator extends UkJpaEntity  implements Serializable {
@@ -33,7 +37,7 @@ public class KscmtScheduleCreator extends UkJpaEntity  implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "EXE_STATUS")
-    private short exeStatus;
+    private int exeStatus;
 
     /**
      * Instantiates a new kscmt schedule creator.
