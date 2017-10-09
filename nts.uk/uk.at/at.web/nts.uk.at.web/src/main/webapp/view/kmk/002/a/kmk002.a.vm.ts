@@ -74,9 +74,9 @@ module nts.uk.at.view.kmk002.a {
             calcResultRange: CalculationResultRange;
             calcFormulas: KnockoutObservableArray<Formula>;
             applyFormula: KnockoutObservable<string>;
-            selectedFormulas: KnockoutObservableArray<any>;
-            selectedFormulaAbove: any;
-            selectedFormulaBelow: any;
+            static selectedFormulas: KnockoutObservableArray<number>;
+            selectedFormulaAbove: number;
+            selectedFormulaBelow: number;
 
             // Switch button data source
             usageClsDatasource: KnockoutObservableArray<any>;
@@ -106,9 +106,9 @@ module nts.uk.at.view.kmk002.a {
                 this.hasChanged = false;
                 this.isUsed = ko.observable(false);
                 this.checkedAllFormula = ko.observable(false);
-                this.selectedFormulas = ko.observableArray([]);
-                this.selectedFormulaAbove = {};
-                this.selectedFormulaBelow = {};
+                OptionalItem.selectedFormulas = ko.observableArray([]);
+                this.selectedFormulaAbove = 0;
+                this.selectedFormulaBelow = 0;
 
                 // Data source
                 this.usageClsDatasource = ko.observableArray([
@@ -132,18 +132,38 @@ module nts.uk.at.view.kmk002.a {
 
                 // subscribe
 
-                this.selectedFormulas.subscribe(vl => {
-                    // Set single selected
-                    if (vl.length == 1) {
-                        this.selectedFormulaAbove = vl[0];
-                        this.selectedFormulaBelow = vl[0];
-                    } else {
-                        // set selected formula below and above.
-                        this.setSelectedFormulaBelowAndAbove();
+                this.checkedAllFormula.subscribe(vl => {
+
+                    // checked all = true.
+                    if(vl === true) {
+                        let mapped = _.map(this.calcFormulas(), item => {
+                            // deep copy
+                            let updated = jQuery.extend(true, {}, item);
+                            updated.selected(true);
+                            return updated;
+                        });
+                        this.calcFormulas(mapped);
                     }
 
-                    console.log(this.selectedFormulaAbove);
-                    console.log(this.selectedFormulaBelow);
+                    // checked all == false
+                    if(vl === false) {
+                        let mapped = _.map(this.calcFormulas(), item => {
+                            // deep copy
+                            let updated = jQuery.extend(true, {}, item);
+                            updated.selected(false);
+                            return updated;
+                        });
+                        this.calcFormulas(mapped);
+                    }
+                });
+
+                OptionalItem.selectedFormulas.subscribe(vl => {
+                    // set selected formula below and above.
+                    this.setSelectedFormulaBelowAndAbove(vl);
+
+                    console.log('above='+this.selectedFormulaAbove);
+                    console.log('below='+this.selectedFormulaBelow);
+                    console.log('\n');
                 });
 
                 this.optionalItemNo.subscribe(v => {
@@ -206,16 +226,16 @@ module nts.uk.at.view.kmk002.a {
 
                 // check before add
                 // if zz is used or no formula checked => show message 508.
-                if (!self.canAddFormula()) {
+                if (!self.canAddFormula() && !nts.uk.util.isNullOrEmpty(self.calcFormulas())) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_508' });
                     return;
                 }
 
-                let od = this.selectedFormulaAbove.index;
+                let aboveOrder = this.selectedFormulaAbove;
 
                 let f = new Formula();
                 // Set order
-                f.orderNo = od;
+                f.orderNo = aboveOrder;
                 // Set symbol
                 f.symbolValue = FormulaSorter.getNextSymbolOf(self.getLastSymbol());
 
@@ -223,8 +243,9 @@ module nts.uk.at.view.kmk002.a {
                 f.optionalItemNo = self.optionalItemNo();
 
                 // update order of below items.
-                self.updateOrderAfter(od);
+                self.updateOrderAfter(aboveOrder - 1);
 
+                // add new formula
                 self.calcFormulas.push(f);
 
                 // sort by orderNo
@@ -233,38 +254,81 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
-             * Update order of below items after add a formula
+             * Check whether all formulas are checked
+             */
+            private isAllFormulaChecked(): boolean {
+                let self = this;
+                let checked = true;
+
+                _.each(self.calcFormulas(), item => {
+                    if (item.selected() == false) {
+                        checked = false;
+                    }
+                });
+
+                return checked;
+            }
+
+            /**
+             * Update order of all formula after selected order
              */
             private updateOrderAfter(orderNo: number): void {
                 let self = this;
-                _.each(self.calcFormulas(), item => {
-                    if (item.orderNo === orderNo) {
+                self.updateAllFormulaOrder(orderNo);
+                self.updateSelectedFormulaOrder(orderNo);
+            }
+
+            /**
+             * Update order of selected formulas
+             */
+            private updateSelectedFormulaOrder(orderNo: number): void {
+                let self = this;
+                let updatedList = OptionalItem.selectedFormulas()
+                    .filter(item => item > orderNo)
+                    .map(item => item += 1);
+                OptionalItem.selectedFormulas(updatedList);
+            }
+
+            /**
+             * Update order of all formulas
+             */
+            private updateAllFormulaOrder(orderNo: number): void {
+                let self = this;
+                let updatedList = self.calcFormulas()
+                    .filter(item => item.orderNo > orderNo)
+                    .forEach(item => {
                         item.orderNo += 1;
-                    }
-                });
-                console.log(self.calcFormulas());
+                    });
             }
 
             /**
              * Add formula below
              */
             public addFormulaBelow(): void {
-                let self = this;
+                 let self = this;
 
                 // check before add
                 // if zz is used or no formula checked => show message 508.
-                if (!self.canAddFormula()) {
+                if (!self.canAddFormula() && !nts.uk.util.isNullOrEmpty(self.calcFormulas())) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_508' });
                     return;
                 }
 
-                let od = 1;
+                let belowOrder = this.selectedFormulaBelow;
 
                 let f = new Formula();
-                f.orderNo = od;
+                // Set order
+                f.orderNo = belowOrder;
+                // Set symbol
                 f.symbolValue = FormulaSorter.getNextSymbolOf(self.getLastSymbol());
+
+                // TODO move ra cho khac sau.
                 f.optionalItemNo = self.optionalItemNo();
 
+                // update order of below items.
+                self.updateOrderAfter(belowOrder);
+
+                // add new formula
                 self.calcFormulas.push(f);
 
                 // sort by orderNo
@@ -277,7 +341,7 @@ module nts.uk.at.view.kmk002.a {
              */
             private canAddFormula(): boolean {
                 let self = this;
-                if (self.isCheckedFormula() && !self.hasReachedZZ()) {
+                if (self.hasSelectedFormula() && !self.hasReachedZZ()) {
                     return true;
                 }
                 return false;
@@ -293,9 +357,9 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Check if one or more calculation expressions are checked
              */
-            private isCheckedFormula(): boolean {
+            private hasSelectedFormula(): boolean {
                 let self = this;
-                if (nts.uk.util.isNullOrEmpty(self.selectedFormulas())) {
+                if (nts.uk.util.isNullOrEmpty(OptionalItem.selectedFormulas())) {
                     return false;
                 }
                 return true;
@@ -315,7 +379,8 @@ module nts.uk.at.view.kmk002.a {
             private sortListFormula(): void {
                 let self = this;
                 // sort by orderNo
-                _.sortBy(self.calcFormulas(), item => item.orderNo);
+                let sortedList = _.sortBy(self.calcFormulas(), item => item.orderNo);
+                self.calcFormulas(sortedList);
             }
 
             /**
@@ -325,7 +390,7 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
 
                 // Check before remove
-                if (!self.isCheckedFormula()) {
+                if (!self.hasSelectedFormula()) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_508' });
                     return;
                 }
@@ -358,7 +423,7 @@ module nts.uk.at.view.kmk002.a {
                         return formula;
                     });
                     self.calcFormulas(list);
-                    console.log(self.calcFormulas());
+                    //console.log(self.calcFormulas());
 
                     // sort.
                     self.sortListFormula();
@@ -461,26 +526,33 @@ module nts.uk.at.view.kmk002.a {
             /**
              * Set selected formula below and above
              */
-            private setSelectedFormulaBelowAndAbove(): void {
+            private setSelectedFormulaBelowAndAbove(array: Array<number>): void {
                 let self = this;
-                let bottom = <NtsGridSelectedRow>{};
-                let top = <NtsGridSelectedRow>{};
+                let above = 1;
+                let below = 2;
 
-                self.selectedFormulas().forEach(item => {
-                    if (item.index === 0) {
-                        bottom = item;
-                        top = item;
+                array.forEach(order => {
+
+                    // below = selected order
+                    if (order >= below) {
+                        below = order + 1;
                     }
-                    if (item.index > bottom.index) {
-                        bottom = item;
+
+                    // for single selection
+                    // set above = selected order - 1
+                    if (order > 1) {
+                        above = order;
                     }
-                    if (item.index < top.index) {
-                        top = item;
+
+                    // for multi selection
+                    // set above = lowest selected order
+                    if (order < above) {
+                        above = order;
                     }
                 });
 
-                self.selectedFormulaAbove = top;
-                self.selectedFormulaBelow = bottom;
+                self.selectedFormulaAbove = above;
+                self.selectedFormulaBelow = below;
             }
 
         }
@@ -764,6 +836,22 @@ module nts.uk.at.view.kmk002.a {
                 this.monthlyUnit = ko.observable(1);
                 this.dailyRounding = ko.observable(1);
                 this.dailyUnit = ko.observable(1);
+
+                // subscribe
+                this.selected.subscribe(vl => {
+                    // check if all formula checked
+                    $( "div[class*='ntsControl ntsCheckBox style-normal checked']" )
+
+                    // add to selected formulas if checked
+                    if (vl === true) {
+                        OptionalItem.selectedFormulas.push(this.orderNo);
+                    }
+
+                    // remove from selected formulas if unchecked
+                    if (vl === false) {
+                        OptionalItem.selectedFormulas.remove(this.orderNo);
+                    }
+                });
 
                 //TODO dang test.
                 // Sua phan loai thuoc tinh
