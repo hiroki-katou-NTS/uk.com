@@ -47,6 +47,8 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 	private ApprovalBranchRepository repoBranch;
 	@Inject
 	private WorkplaceAdapter adapterWp;
+	private final int COMPANY = 0;
+	private final int WORKPLACE = 1;
 	@Override
 	protected void handle(CommandHandlerContext<RegisterAppApprovalRootCommand> context) {
 		//____________New__________
@@ -54,11 +56,11 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		RegisterAppApprovalRootCommand data = context.getCommand();
 		int rootType = data.getRootType();
 		//TH: company
-		if(rootType == 0){
+		if(rootType == COMPANY){
 			registerCom(data, historyId);
 		}
 		//TH: work place
-		else if(rootType == 1){
+		else if(rootType == WORKPLACE){
 			registerWp(data, historyId);
 		}
 		//TH: person
@@ -66,7 +68,11 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 			registerPs(data, historyId);
 		}
 	}
-
+	/**
+	 * register domain Company
+	 * @param data
+	 * @param historyId
+	 */
 	private void registerCom(RegisterAppApprovalRootCommand data,String historyId){
 		String companyId = AppContexts.user().companyId();
 		List<CompanyAppRootADto> root = data.getRoot();
@@ -137,7 +143,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		}
 	}
 	/**
-	 * register work place
+	 * register domain work place
 	 * @param data
 	 * @param historyId
 	 */
@@ -214,7 +220,7 @@ public class RegisterAppApprovalRootCommandHandler  extends CommandHandler<Regis
 		}
 	}
 	/**
-	 * register person
+	 * register domain person
 	 * @param data
 	 * @param historyId
 	 */
