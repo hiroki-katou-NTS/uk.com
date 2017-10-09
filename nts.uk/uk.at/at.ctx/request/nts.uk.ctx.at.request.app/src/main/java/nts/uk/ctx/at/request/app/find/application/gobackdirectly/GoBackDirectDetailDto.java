@@ -12,14 +12,23 @@ import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirect
 @AllArgsConstructor
 @Value
 public class GoBackDirectDetailDto {
+	//直行直帰
 	GoBackDirectlyDto goBackDirectlyDto;
+	//事前事後区分
 	int prePostAtr;
+	//場所１
 	String workLocationName1;
+	//場所１
 	String workLocationName2;
+	//勤務種類
 	String workTypeName;
+	//就業時間帯
 	String workTimeName;
+	//定型理由
 	String appReasonId;
+	//申請理由
 	String appReason;
+	//申請日
 	String appDate;
 	//AppCommonSettingDto appCommonSetting;
 	DetailedScreenPreBootModeDto detailedScreenPreBootModeDto;

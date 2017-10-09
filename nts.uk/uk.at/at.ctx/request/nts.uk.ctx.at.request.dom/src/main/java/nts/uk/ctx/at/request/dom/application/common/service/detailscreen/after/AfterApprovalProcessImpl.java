@@ -51,15 +51,13 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	@Inject
 	private ApproveAcceptedRepository approveAcceptedRepository;
 	
-	@Inject 
-	private GoBackDirectlyUpdateService goBackDirectlyUpdateService;
-
 	@Override
-	public void detailScreenAfterApprovalProcess(String companyID, String appID, Application application) {
+	public void detailScreenAfterApprovalProcess(Application application) {
+		String companyID = AppContexts.user().companyId();
 		//アルゴリズム「承認情報の整理」を実行する
-		ApprovalInfoOutput  approvalInfo = reflectionInfoService.organizationOfApprovalInfo(appID);
+		ApprovalInfoOutput  approvalInfo = reflectionInfoService.organizationOfApprovalInfo(application);
 		//共通アルゴリズム「実績反映状態の判断」を実行する
-		this.judgmentActualReflection(approvalInfo.getAppApprovalPhase());
+		this.judgmentActualReflection(application);
 		//ドメインモデル「申請」と紐付き「承認情報」「反映情報」をUpdateする
 		// get domain 申請種類別設定
 		Optional<AppTypeDiscreteSetting> discreteSetting = discreteRepo.getAppTypeDiscreteSettingByAppType(companyID, application.getApplicationType().value);
@@ -178,12 +176,11 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	 * @return
 	 */
 	@Override
-	public void judgmentActualReflection(List<AppApprovalPhase> listPhase) {
+	public void  judgmentActualReflection(Application application) {
 		boolean allApprovedFlg = false;
 		String companyID = AppContexts.user().companyId();
-		String appID = listPhase.get(0).getAppID();
-		Application application = appRepo.getAppById(companyID,appID).get();
-		for (AppApprovalPhase phase : listPhase) {
+		String appID = application.getApplicationID();
+		for (AppApprovalPhase phase : application.getListPhase()) {
 			// 承認フェーズ」．承認区分が承認済以外の場合(「承認フェーズ」．承認区分 ≠ 承認済
 			if (phase.getApprovalATR() != ApprovalAtr.APPROVED) {
 				List<String> lstApprover = this.actualReflectionStateDecision(appID, phase.getPhaseID(),ApprovalAtr.APPROVED);
@@ -192,21 +189,28 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 					AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(companyID, lstApprover);
 					if(agency.isFlag()) {
 						allApprovedFlg = true;
+					// 返す結果の全承認者パス設定フラグがfalse(全承認者パス設定フラグ=false)
 					}else {
 						allApprovedFlg = false;
+						return;
 					}
-				}else {
-					continue;
 				}
 			//「承認フェーズ」．承認区分が承認済の場合(「承認フェーズ」．承認区分 = 承認済)
 			} else {
-				allApprovedFlg = true;
+				// 「反映情報」．実績反映状態を「反映待ち」にする
+				application.changeReflectState(ReflectPlanPerState.WAITREFLECTION.value);
+				return;
 			}
+			// 「反映情報」．実績反映状態を「反映待ち」にする
+			if (allApprovedFlg) {
+				phase.changeApprovalATR(ApprovalAtr.APPROVED);
+			}else {
+				phase.changeApprovalATR(ApprovalAtr.UNAPPROVED);
+			}
+			
+			
 		}
-		// 「反映情報」．実績反映状態を「反映待ち」にする
-		if (allApprovedFlg) {
-			application.changeReflectState(ReflectPlanPerState.WAITREFLECTION.value);
-		}
+		
 	}
 
 }
