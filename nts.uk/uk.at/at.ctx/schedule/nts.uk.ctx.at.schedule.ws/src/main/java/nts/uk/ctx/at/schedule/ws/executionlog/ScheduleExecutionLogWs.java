@@ -24,9 +24,13 @@ import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleExecutionLogAddCo
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleExecutionLogAddCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.executionlog.ScheduleExecutionLogSaveRespone;
 import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleCreateContentFinder;
+import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleCreatorFinder;
+import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleErrorLogFinder;
 import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleExecutionLogFinder;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.PeriodObject;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleCreateContentDto;
+import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleCreatorDto;
+import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleErrorLogDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogInfoDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.export.ExeErrorLogExportService;
@@ -45,6 +49,14 @@ public class ScheduleExecutionLogWs extends WebService {
 	/** The add. */
 	@Inject
 	private ScheduleCreateContentFinder scheduleCreateContentFinder;
+	
+	/** The schedule creator finder. */
+	@Inject
+	private ScheduleCreatorFinder scheduleCreatorFinder;
+	
+	/** The schedule error log finder. */
+	@Inject
+	private ScheduleErrorLogFinder scheduleErrorLogFinder;
 	
 	/** The add. */
 	@Inject
@@ -102,6 +114,30 @@ public class ScheduleExecutionLogWs extends WebService {
 	@Path("createContent/{executionId}")
 	public ScheduleCreateContentDto findCreateContentByExeId(@PathParam("executionId") String executionId) {
 		return this.scheduleCreateContentFinder.findByExecutionId(executionId);
+	}
+	
+	/**
+	 * Find all creator.
+	 *
+	 * @param executionId the execution id
+	 * @return the list
+	 */
+	@POST
+	@Path("findAllCreator/{executionId}")
+	public List<ScheduleCreatorDto> findAllCreator(@PathParam("executionId") String executionId) {
+		return this.scheduleCreatorFinder.findAllByExeId(executionId);
+	}
+	
+	/**
+	 * Find all error.
+	 *
+	 * @param executionId the execution id
+	 * @return the list
+	 */
+	@POST
+	@Path("findAllError/{executionId}")
+	public List<ScheduleErrorLogDto> findAllError(@PathParam("executionId") String executionId) {
+		return this.scheduleErrorLogFinder.findAllByExeId(executionId);
 	}
 	
 	/**

@@ -14,4 +14,12 @@ public interface ScheduleErrorLogRepository {
 	 * @return the list
 	 */
 	List<ScheduleErrorLog> findByExecutionId(String executionId);
+	
+	/**
+	 * Distinct error by execution id.
+	 *
+	 * @param executionId the execution id
+	 * @return the list
+	 */
+	Integer distinctErrorByExecutionId(String executionId);
 }

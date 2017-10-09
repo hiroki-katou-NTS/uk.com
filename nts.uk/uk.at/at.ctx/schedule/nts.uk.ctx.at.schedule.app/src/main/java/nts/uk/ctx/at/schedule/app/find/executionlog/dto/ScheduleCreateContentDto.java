@@ -1,6 +1,8 @@
 package nts.uk.ctx.at.schedule.app.find.executionlog.dto;
 
+import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
@@ -10,6 +12,7 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentSetMemento;
 /**
  * The Class ExecutionContentDto.
  */
+@Setter
 public class ScheduleCreateContentDto implements ScheduleCreateContentSetMemento {
 
 	/** The execution id. */
@@ -62,6 +65,24 @@ public class ScheduleCreateContentDto implements ScheduleCreateContentSetMemento
 	/** The reset time child care. */
 	// 育児介護時間再設定
 	public Boolean resetTimeChildCare;
+	
+	/** The start date. */
+	public GeneralDate startDate;
+	
+	/** The end date. */
+	public GeneralDate endDate;
+	
+	/** The execution start. */
+	public GeneralDateTime executionStart;
+	
+	/** The execution end. */
+	public GeneralDateTime executionEnd;
+	
+	/** The count execution. */
+	public Integer countExecution;
+	
+	/** The count error. */
+	public Integer countError;
 
 	@Override
 	public void setExecutionId(String executionId) {

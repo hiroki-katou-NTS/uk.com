@@ -5,14 +5,16 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 
 /**
- * 勤務ペア設定
+ * 勤務ペアパターン
  * 
  * @author sonnh1
  *
  */
-@Getter
 @AllArgsConstructor
-public class WorkPairSetting extends DomainObject {
+@Getter
+public class WorkplacePatternItem extends DomainObject {
+	private String workplaceId;
+	private int groupNo;
 	private int patternNo;
-	private int pairNo;
+	private WorkPairPatternName patternName;
 }

@@ -83,12 +83,12 @@ module ksu001.o.viewmodel {
         openDialogO1(): void {
             let self = this;
 
-            $('#contain-viewO').hide();
+            $('#contain-view').hide();
             setShare('listWorkType', self.listWorkType());
             setShare('listWorkTime', self.listWorkTime());
 
             nts.uk.ui.windows.sub.modeless("/view/ksu/001/o1/index.xhtml").onClosed(() => {
-                $('#contain-viewO').show();
+                $('#contain-view').show();
                 //when close dialog, copy-paste value of nameWorkTimeType of screen O(not O1) for cell
                 $("#extable").exTable("stickData", self.nameWorkTimeType());
             });

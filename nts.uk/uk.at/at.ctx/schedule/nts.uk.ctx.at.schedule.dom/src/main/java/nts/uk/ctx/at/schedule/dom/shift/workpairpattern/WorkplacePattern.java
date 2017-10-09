@@ -12,10 +12,10 @@ import nts.arc.layer.dom.AggregateRoot;
  */
 @Getter
 @AllArgsConstructor
-public class PositionPairPattern extends AggregateRoot {
-	private String workPlaceId;
+public class WorkplacePattern extends AggregateRoot {
+	private String workplaceId;
 	private int groupNo;
-	private String groupName;
-	private int groupUsageCls;
-	private String remarks;
+	private WorkPairPatternGroupName groupName;
+	private GroupUsageAtr groupUsageAtr;
+	private String note;
 }
