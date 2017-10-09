@@ -4,32 +4,30 @@
  *****************************************************************/
 package nts.uk.ctx.at.record.infra.repository.optitem.calculation;
 
+import lombok.Getter;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingItem;
 import nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingSetMemento;
 import nts.uk.ctx.at.record.dom.optitem.calculation.MinusSegment;
 import nts.uk.ctx.at.record.dom.optitem.calculation.OperatorAtr;
 import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaSetting;
-import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtFormulaSettingPK;
+import nts.uk.ctx.at.record.infra.entity.optitem.calculation.KrcmtOptItemFormulaPK;
 
 /**
  * The Class JpaFormulaSettingGetMemento.
  */
-public class JpaFormulaSettingSetMemento implements FormulaSettingSetMemento{
-	
+@Getter
+public class JpaFormulaSettingSetMemento implements FormulaSettingSetMemento {
+
 	/** The setting. */
 	private KrcmtFormulaSetting setting;
-	
-	
+
 	/**
 	 * Instantiates a new jpa formula setting set memento.
 	 *
-	 * @param setting the setting
+	 * @param formulaPk the formula pk
 	 */
-	public JpaFormulaSettingSetMemento(KrcmtFormulaSetting setting) {
-		if (setting.getKrcmtFormulaSettingPK() == null) {
-			setting.setKrcmtFormulaSettingPK(new KrcmtFormulaSettingPK());
-		}
-		this.setting = setting;
+	public JpaFormulaSettingSetMemento(KrcmtOptItemFormulaPK formulaPk) {
+		this.setting = new KrcmtFormulaSetting(formulaPk);
 	}
 
 	/*
@@ -43,7 +41,6 @@ public class JpaFormulaSettingSetMemento implements FormulaSettingSetMemento{
 	@Override
 	public void setMinusSegment(MinusSegment segment) {
 		this.setting.setMinusSegment(segment.value);
-		
 	}
 
 	/*
@@ -73,6 +70,14 @@ public class JpaFormulaSettingSetMemento implements FormulaSettingSetMemento{
 		this.setting.setLeftSetMethod(item.getSettingMethod().value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.at.record.dom.optitem.calculation.FormulaSettingSetMemento#
+	 * setRightItem(nts.uk.ctx.at.record.dom.optitem.calculation.
+	 * FormulaSettingItem)
+	 */
 	@Override
 	public void setRightItem(FormulaSettingItem item) {
 		this.setting.setRightInputVal(item.getInputValue().v());

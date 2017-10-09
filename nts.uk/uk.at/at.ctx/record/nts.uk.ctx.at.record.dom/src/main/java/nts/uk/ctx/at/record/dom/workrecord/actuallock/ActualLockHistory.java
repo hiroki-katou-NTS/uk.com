@@ -25,6 +25,10 @@ public class ActualLockHistory extends AggregateRoot {
 	//締めID
 	private ClosureId closureId;
 	
+	/** The lock date time. */
+	// ロック日時
+	private GeneralDateTime lockDateTime;
+	
 	/** The target year month. */
 	// 対象月
 	private YearMonth targetMonth;
@@ -36,10 +40,6 @@ public class ActualLockHistory extends AggregateRoot {
 	/** The monthly lock state. */
 	// 月別のロック状態
 	private LockStatus monthlyLockState;
-	
-	/** The lock date time. */
-	// ロック日時
-	private GeneralDateTime lockDateTime;
 	
 	/** The updater. */
 	// 更新者
@@ -53,10 +53,10 @@ public class ActualLockHistory extends AggregateRoot {
 	public ActualLockHistory (ActualLockHistoryGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.closureId = memento.getClosureId();
+		this.lockDateTime = memento.getLockDateTime();
 		this.targetMonth = memento.getTargetMonth();
 		this.dailyLockState = memento.getDailyLockState();
 		this.monthlyLockState = memento.getMonthyLockState();
-		this.lockDateTime = memento.getLockDateTime();
 		this.updater = memento.getUpdater();
 	}
 	
@@ -68,10 +68,10 @@ public class ActualLockHistory extends AggregateRoot {
 	public void saveToMemento (ActualLockHistorySetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setClosureId(this.closureId);
+		memento.setLockDateTime(this.lockDateTime);
 		memento.setTargetMonth(this.targetMonth);
 		memento.setDailyLockState(this.dailyLockState);
 		memento.setMonthlyLockState(this.monthlyLockState);
-		memento.setLockDateTime(this.lockDateTime);
 		memento.setUpdater(this.updater);
 	}
 
@@ -84,6 +84,7 @@ public class ActualLockHistory extends AggregateRoot {
 		int result = 1;
 		result = prime * result + ((closureId == null) ? 0 : closureId.hashCode());
 		result = prime * result + ((companyId == null) ? 0 : companyId.hashCode());
+		result = prime * result + ((lockDateTime == null) ? 0 : lockDateTime.hashCode());
 		return result;
 	}
 
@@ -106,8 +107,15 @@ public class ActualLockHistory extends AggregateRoot {
 				return false;
 		} else if (!companyId.equals(other.companyId))
 			return false;
+		if (lockDateTime == null) {
+			if (other.lockDateTime != null)
+				return false;
+		} else if (!lockDateTime.equals(other.lockDateTime))
+			return false;
 		return true;
 	}
+
+	
 	
 	
 }

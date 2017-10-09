@@ -20,8 +20,8 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistory;
 import nts.uk.ctx.bs.employee.dom.jobtile.affiliate.AffJobTitleHistoryRepository;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitle;
-import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository;
+import nts.uk.ctx.bs.employee.dom.jobtitle_old.JobTitle;
+import nts.uk.ctx.bs.employee.dom.jobtitle_old.JobTitleRepository;
 import nts.uk.ctx.bs.employee.pub.jobtitle.JobTitleExport;
 import nts.uk.ctx.bs.employee.pub.jobtitle.SyJobTitlePub;
 
@@ -75,7 +75,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	 * lang.String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public Optional<JobTitleExport> findJobTitleBySid(String employeeId, GeneralDate baseDate) {
+	public Optional<JobTitleExport> findBySid(String employeeId, GeneralDate baseDate) {
 		// Query
 		Optional<AffJobTitleHistory> optHistory = this.jobTitleHistoryRepository
 				.findBySid(employeeId, baseDate);
@@ -111,7 +111,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 	 * nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public Optional<JobTitleExport> findJobTitleByPositionId(String companyId, String positionId,
+	public Optional<JobTitleExport> findByJobId(String companyId, String positionId,
 			GeneralDate baseDate) {
 		// Query
 		List<JobTitle> jobTitleImports = this.jobTitleRepository.findByJobIds(companyId,

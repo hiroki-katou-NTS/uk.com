@@ -14,9 +14,9 @@
 			</com:ValidatorScript>
 			<com:stylefile path="cmm014.a.main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="cmm014.a.start.js" />
-			<com:scriptfile path="cmm014.a.vm.js" />
 			<com:scriptfile path="cmm014.a.service.js" />
+			<com:scriptfile path="cmm014.a.vm.js" />
+			<com:scriptfile path="cmm014.a.start.js" />
 			<script type="text/javascript">
 			</script>
 		</ui:define>
@@ -45,25 +45,25 @@
 						<div style="float: left">
 							<div id="test"
 								data-bind="ntsSearchBox: {
-									targetKey: 'classificationCode',
+									targetKey: 'code',
 									mode:'igGrid',
                                     comId: 'single-list',
                                     items: dataSource,         
                                     selected: currentCode, 
-                                    selectedKey: 'classificationCode', 
+                                    selectedKey: 'code', 
                                     childField: 'childs', 
-                                    fields: ['classificationName', 'classificationCode']}" />
+                                    fields: ['name', 'code']}" />
 							<br />
 							<table id="single-list"
 								data-bind="ntsGridList: {
                                             width: 400,
                                             height: 520,
                                             options: dataSource,
-                                            optionsValue: 'classificationCode',
+                                            optionsValue: 'code',
                                             columns: columns,
                                             multiple: false,
                                             value: currentCode,
-                                            primaryKey: 'classificationCode'}"
+                                            primaryKey: 'code'}"
 								class="cf">
 							</table>
 						</div>
@@ -117,7 +117,7 @@
 							</td>
 							<td class="valign-center">
 								<div>
-									<textarea style="margin-top: 20px; width: 446px; height: 180px"
+									<textarea id="A_INP_004" style="margin-top: 20px; width: 446px; height: 180px"
 										data-bind="ntsMultilineEditor: {
 											value: INP_004_notes,
 											constraint: 'Memo'

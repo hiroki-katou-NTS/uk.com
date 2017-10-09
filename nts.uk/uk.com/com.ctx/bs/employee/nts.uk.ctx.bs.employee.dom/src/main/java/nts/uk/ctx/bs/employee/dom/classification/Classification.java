@@ -7,6 +7,7 @@ package nts.uk.ctx.bs.employee.dom.classification;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
+import nts.uk.shr.com.primitive.Memo;
 
 /**
  * The Class Classification.
@@ -23,6 +24,9 @@ public class Classification extends DomainObject{
 	/** The classification name. */
 	private ClassificationName classificationName;
 	
+	/** The classification memo. */
+	private Memo memo;
+	
 	/**
 	 * Instantiates a new classification.
 	 *
@@ -32,6 +36,7 @@ public class Classification extends DomainObject{
 		this.companyId = memento.getCompanyId();
 		this.classificationCode = memento.getClassificationCode();
 		this.classificationName = memento.getClassificationName();
+		this.memo = memento.getClassificationMemo();
 	}
 
 	/**
@@ -43,6 +48,7 @@ public class Classification extends DomainObject{
 		memento.setCompanyId(this.companyId);
 		memento.setManagementCategoryCode(this.classificationCode);
 		memento.setManagementCategoryName(this.classificationName);
+		memento.setManagementCategoryMemo(this.memo);
 	}
 	
 }

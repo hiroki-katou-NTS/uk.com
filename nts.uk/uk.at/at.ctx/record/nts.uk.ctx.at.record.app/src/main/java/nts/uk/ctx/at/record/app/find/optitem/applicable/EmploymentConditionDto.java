@@ -31,7 +31,7 @@ public class EmploymentConditionDto {
 	 */
 	public EmploymentConditionDto(String empCd, int empApplicableAtr) {
 		this.empCd = empCd;
-		this.empName = "name"; //TODO testing
+		this.empName = ""; // Get name from imported class later.
 		this.empApplicableAtr = empApplicableAtr;
 	}
 

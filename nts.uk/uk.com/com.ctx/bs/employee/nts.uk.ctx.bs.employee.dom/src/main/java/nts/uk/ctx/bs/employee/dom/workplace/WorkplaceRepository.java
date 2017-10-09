@@ -34,6 +34,15 @@ public interface WorkplaceRepository {
 	 * @param workplaceId the workplace id
 	 */
     void removeByWkpId(String companyId, String workplaceId);
+    
+    /**
+     * Removes the wkp history.
+     *
+     * @param companyId the company id
+     * @param workplaceId the workplace id
+     * @param historyId the history id
+     */
+    void removeWkpHistory(String companyId, String workplaceId, String historyId);
 
 	/**
 	 * Find all workplace.

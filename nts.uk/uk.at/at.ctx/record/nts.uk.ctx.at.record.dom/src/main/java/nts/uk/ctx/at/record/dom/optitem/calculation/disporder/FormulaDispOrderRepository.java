@@ -6,8 +6,6 @@ package nts.uk.ctx.at.record.dom.optitem.calculation.disporder;
 
 import java.util.List;
 
-import nts.uk.ctx.at.record.dom.optitem.calculation.Formula;
-
 /**
  * The Interface FormulaDispOrderRepository.
  */
