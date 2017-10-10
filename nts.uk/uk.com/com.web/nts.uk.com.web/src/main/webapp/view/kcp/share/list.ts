@@ -572,7 +572,7 @@ module kcp.share.list {
         
         // Service paths.
         var servicePath = {
-            findEmployments: "basic/company/organization/employment/findAll/",
+            findEmployments: "bs/employee/employment/findAll/",
             findJobTitles: 'basic/company/organization/jobtitle/findall/',
             findClassifications: 'basic/company/organization/classification/findAll/',
         }
