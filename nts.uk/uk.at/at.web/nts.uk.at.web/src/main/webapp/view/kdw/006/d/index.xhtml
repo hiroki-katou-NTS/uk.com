@@ -1,10 +1,8 @@
-<div class="contents-area">
+<div id="screen-d">
 	<div id="label11" class="label">#{i18n.getText('KDW006_35')}</div>
-
-	<div id="checkBox21"
+	<div id="checkBox21" class="check-box-atr"
 		data-bind="ntsCheckBox: { checked: useConfirmByYourself }">#{i18n.getText('KDW006_36')}</div>
-	<br />
-	<div id="radioBox22"
+	<div id="radioBox22" class="radio-error"
 		data-bind="ntsRadioBoxGroup: {
 		options: itemList,
 		optionsValue: 'id',
@@ -12,11 +10,9 @@
 		value: yourselfConfirmError,
 		enable: useConfirmByYourself}">
 	</div>
-	<br />
-	<div id="checkBox31"
+	<div id="checkBox31" class="check-box-atr"
 		data-bind="ntsCheckBox: { checked: useSupervisorConfirm }">#{i18n.getText('KDW006_37')}</div>
-	<br />
-	<div id="radioBox32"
+	<div id="radioBox32" class="radio-error"
 		data-bind="ntsRadioBoxGroup: {
 		options: itemList,
 		optionsValue: 'id',
@@ -24,19 +20,14 @@
 		value: supervisorConfirmError,
 		enable: useSupervisorConfirm}">
 	</div>
-	<br />
-	<div id="checkBox41"
+	<div id="checkBox41" class="check-box-atr"
 		data-bind="ntsCheckBox: { checked: completeDisplayOneMonth }">#{i18n.getText('KDW006_38')}</div>
-	<br />
-	<div id="checkBox51"
+	<div id="checkBox51" class="check-box-atr"
 		data-bind="ntsCheckBox: { checked: useWorkDetail }">#{i18n.getText('KDW006_39')}</div>
-	<br />
-	<div id="checkBox61"
+	<div id="checkBox61" class="check-box-atr"
 		data-bind="ntsCheckBox: { checked: displayConfirmMessage }">#{i18n.getText('KDW006_40')}</div>
-	<br />
-	<div id="checkBox71"
+	<div id="checkBox71" class="check-box-atr"
 		data-bind="ntsCheckBox: { checked: registerActualExceed }">#{i18n.getText('KDW006_41')}</div>
-	<br />
-	<div id="checkBox81"
+	<div id="checkBox81" class="check-box-atr"
 		data-bind="ntsCheckBox: { checked: registeredTotalTimeCheer }">#{i18n.getText('KDW006_42')}</div>
 </div>

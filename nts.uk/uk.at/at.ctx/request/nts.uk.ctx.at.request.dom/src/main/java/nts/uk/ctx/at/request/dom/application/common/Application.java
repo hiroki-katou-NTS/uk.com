@@ -163,7 +163,7 @@ public class Application extends AggregateRoot{
 	  * @param reflectPerState
 	  */
 	 public void changeReflectState(int reflectPerState) {
-		 this.reflectPerState = reflectPlanState;
+		 this.reflectPerState =  EnumAdaptor.valueOf(reflectPerState,ReflectPlanPerState.class);
 	 }
 	 /**
 	  * change value of reversionReason

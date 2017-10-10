@@ -26,9 +26,9 @@ import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutPermit;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampOnlineRecord;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampWork;
-import nts.uk.ctx.at.request.dom.application.stamp.StampAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.StampCombinationAtr;
-import nts.uk.ctx.at.request.dom.application.stamp.StampGoOutAtr;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampAtr;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampGoOutAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.StampRequestMode;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
@@ -132,9 +132,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 			case 0:
 				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
 					AppStampGoOutPermit appStampGoOutPermit = new AppStampGoOutPermit(
-							EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetailsPK.stampAtr, StampAtr.class), 
+							EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetailsPK.stampAtr, AppStampAtr.class), 
 							krqdtAppStampDetail.krqdpAppStampDetailsPK.stampFrameNo, 
-							EnumAdaptor.valueOf(krqdtAppStampDetail.goOutReasonAtr, StampGoOutAtr.class), 
+							EnumAdaptor.valueOf(krqdtAppStampDetail.goOutReasonAtr, AppStampGoOutAtr.class), 
 							krqdtAppStampDetail.startTime, 
 							krqdtAppStampDetail.startLocationCD, 
 							krqdtAppStampDetail.endTime, 
@@ -145,9 +145,9 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 			case 1: 
 				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
 					AppStampWork appStampWork = new AppStampWork(
-							EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetailsPK.stampAtr, StampAtr.class),  
+							EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetailsPK.stampAtr, AppStampAtr.class),  
 							krqdtAppStampDetail.krqdpAppStampDetailsPK.stampFrameNo, 
-							EnumAdaptor.valueOf(krqdtAppStampDetail.goOutReasonAtr, StampGoOutAtr.class), 
+							EnumAdaptor.valueOf(krqdtAppStampDetail.goOutReasonAtr, AppStampGoOutAtr.class), 
 							krqdtAppStampDetail.supportCard, 
 							krqdtAppStampDetail.supportLocationCD, 
 							krqdtAppStampDetail.startTime, 
@@ -160,7 +160,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 			case 2: 
 				for(KrqdtAppStampDetail krqdtAppStampDetail : krqdtAppStamp.krqdtAppStampDetails){
 					AppStampCancel appStampCancel = new AppStampCancel(
-							EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetailsPK.stampAtr, StampAtr.class),  
+							EnumAdaptor.valueOf(krqdtAppStampDetail.krqdpAppStampDetailsPK.stampAtr, AppStampAtr.class),  
 							krqdtAppStampDetail.krqdpAppStampDetailsPK.stampFrameNo, 
 							krqdtAppStampDetail.cancelAtr);
 					appStampCancels.add(appStampCancel);
@@ -168,7 +168,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 				break;
 			case 3: 
 				appStampOnlineRecord = new AppStampOnlineRecord(
-						EnumAdaptor.valueOf(krqdtAppStamp.combinationAtr, StampCombinationAtr.class), 
+						EnumAdaptor.valueOf(krqdtAppStamp.combinationAtr, AppStampCombinationAtr.class), 
 						krqdtAppStamp.appTime);
 				break;
 			default:
@@ -236,7 +236,7 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 						appStamp.getReflectPerState().value, 
 						appStamp.getReflectPerEnforce().value,
 						null,
-						null,null,null, null),
+						null,null,null,null),
 				null);
 		List<KrqdtAppStampDetail> krqdtAppStampDetails = new ArrayList<KrqdtAppStampDetail>();
 		switch(appStamp.getStampRequestMode()) {

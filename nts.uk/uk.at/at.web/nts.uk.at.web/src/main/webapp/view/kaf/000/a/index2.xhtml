@@ -6,11 +6,12 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-			<div class="contents-area cf" data-bind="if: approvalRoot().length != 0">
+<!-- 			<div class="contents-area cf" data-bind="if: approvalRoot().length != 0"> -->
+			<div class="contents-area cf" data-bind="">
 				<div id="label-1">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
 				</div>
-				<div id="table-1">
+				<div id="table-1" data-bind="if: approvalRoot().length != 0">
 					<table id="table-phase" data-bind="with:approvalRoot">
 						<thead>
 							<tr class="bg-green">

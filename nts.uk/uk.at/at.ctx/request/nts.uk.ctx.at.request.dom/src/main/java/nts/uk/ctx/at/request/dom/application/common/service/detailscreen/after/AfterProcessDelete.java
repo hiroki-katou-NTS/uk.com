@@ -1,10 +1,10 @@
 package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.ScreenAfterDelete;
+import java.util.List;
+
 
 public interface AfterProcessDelete {
 
-	public ScreenAfterDelete screenAfterDelete (String companyID,String appID );
+	public List<String> screenAfterDelete (String companyID,String appID );
 
 }
