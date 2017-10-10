@@ -31,8 +31,8 @@
 					data-bind="click : addDataSelectioItem, enable: $root.errors.isEmpty">#{i18n.getText('CPS016_2')}</button>
 				<button id="A_BTN_COPPY">マスタ修正ログ</button>
 				<button id="A_BTN_DELETE" class="danger"
-					data-bind="click : removeDataSelectioItem, enable: $root.errors.isEmpty">#{i18n.getText('CPS016_3')}</button>
-				<button tabindex="4" id="A_BTN_CPS016_4">#{i18n.getText('CPS016_4')}</button>
+					data-bind="click : removeDataSelectioItem, enable: checkCreate()==false &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CPS016_3')}</button>
+				<button tabindex="4" id="A_BTN_CPS016_4" data-bind="visible: closeUp">#{i18n.getText('CPS016_4')}</button>
 				<button class="goout" id="A_BTN_JUMP">#{i18n.getText('CPS016_23')}</button>
 			</div>
 			
@@ -144,7 +144,7 @@
 									value: integrationCode,
 									constraint: 'IntegrationCode',
 									option: '',
-									required: true,
+									required: false,
 									enable: true,
 									readonly: false}" />
 						</div>
@@ -154,7 +154,7 @@
 								<label>#{i18n.getText('CPS016_21')}</label>
 							</div>
 							<textarea style="width: 450px; height: 90px;"
-								data-bind="ntsMultilineEditor: { value: memo , constraint: 'Memo',}" />
+								data-bind="ntsMultilineEditor: { value: memo , constraint: 'Memo',required: false}" />
 						</div>
 					</div>
 				</div>

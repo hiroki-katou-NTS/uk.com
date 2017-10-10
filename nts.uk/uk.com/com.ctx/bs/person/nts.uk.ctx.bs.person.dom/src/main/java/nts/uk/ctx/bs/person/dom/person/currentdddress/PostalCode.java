@@ -1,13 +1,13 @@
-package nts.uk.ctx.bs.person.dom.person.info;
+package nts.uk.ctx.bs.person.dom.person.currentdddress;
 
 import nts.arc.primitive.StringPrimitiveValue;
 
-public class Nationality extends StringPrimitiveValue<Nationality>{
+public class PostalCode extends StringPrimitiveValue<PostalCode>{
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
-	public Nationality(String rawValue) {
+	public PostalCode(String rawValue) {
 		super(rawValue);
 		// TODO Auto-generated constructor stub
 	}
