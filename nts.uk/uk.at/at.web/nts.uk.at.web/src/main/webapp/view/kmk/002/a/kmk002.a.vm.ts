@@ -910,8 +910,8 @@ module nts.uk.at.view.kmk002.a {
 
             // Calculation setting
             calcAtr: KnockoutObservable<number>;
-            formulaSetting: FormulaSetting;
-            itemSelection: ItemSelection;
+            formulaSetting: FormulaSettingDto;
+            itemSelection: ItemSelectionDto;
 
             //Rounding
             monthlyRounding: KnockoutObservable<number>;
@@ -948,8 +948,8 @@ module nts.uk.at.view.kmk002.a {
 
                 // Calculation setting.
                 this.calcAtr = ko.observable(1);
-                this.formulaSetting = new FormulaSetting();
-                this.itemSelection = new ItemSelection();
+                this.formulaSetting = this.getDefaultFormulaSetting();
+                this.itemSelection = this.getDefaultItemSelection();
 
                 // Rounding
                 this.monthlyRounding = ko.observable(1);
@@ -1037,6 +1037,24 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * get default formula setting.
+             */
+            private getDefaultFormulaSetting(): FormulaSettingDto {
+                let data = <FormulaSettingDto>{};
+                //TODO
+                return data;
+            }
+
+            /**
+             * get default item selection
+             */
+            private getDefaultItemSelection(): ItemSelectionDto {
+                let data = <ItemSelectionDto>{};
+                //TODO
+                return data;
+            }
+
+            /**
              * Check whether formula has setting
              */
             private hasSetting(): boolean {
@@ -1087,7 +1105,7 @@ module nts.uk.at.view.kmk002.a {
                 param.performanceAtr = 1; //TODO ??
                 param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_FORMULA.formulaAtr);
                 param.formulaName = dto.formulaName;
-                param.itemSelection = self.itemSelection.toDto();
+                param.itemSelection = self.itemSelection;
                 nts.uk.ui.windows.setShared('paramToC', param);
 
                 // Open dialog.
@@ -1107,7 +1125,7 @@ module nts.uk.at.view.kmk002.a {
                 param.performanceAtr = 1; //TODO ??
                 param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_FORMULA.formulaAtr);
                 param.formulaName = dto.formulaName;
-                param.formulaSetting = self.formulaSetting.toDto();
+                param.formulaSetting = self.formulaSetting;
 
                 nts.uk.ui.windows.setShared('paramToD', param);
 
@@ -1132,8 +1150,8 @@ module nts.uk.at.view.kmk002.a {
                 dto.formulaAtr = self.formulaAtr();
                 dto.symbolValue = self.symbolValue;
                 dto.calcAtr = self.calcAtr();
-                dto.formulaSetting = self.formulaSetting.toDto();
-                dto.itemSelection = self.itemSelection.toDto();
+                dto.formulaSetting = self.formulaSetting;
+                dto.itemSelection = self.itemSelection;
 
                 // Rounding
                 //TODO mock data.
@@ -1174,11 +1192,10 @@ module nts.uk.at.view.kmk002.a {
                 self.formulaAtrStash = dto.formulaAtr;
                 self.calcAtrStash = dto.calcAtr;
 
-                //TODO testing.
                 // Calc setting
-                self.calcAtr(1);
-                //self.formulaSetting.fromDto(dto.calcFormulaSetting.formulaSetting);
-                //self.itemSelection.fromDto(dto.calcFormulaSetting.itemSelection);
+                self.calcAtr(dto.calcAtr);
+                self.formulaSetting = dto.formulaSetting;
+                self.itemSelection = dto.itemSelection;
 
                 // rounding
                 //                self.monthlyRounding = dto.monthlyRounding.numberRounding;
@@ -1186,116 +1203,6 @@ module nts.uk.at.view.kmk002.a {
                 //                self.dailyRounding = dto.dailyRounding.numberRounding;
                 //                self.dailyUnit = dto.dailyRounding.numberUnit;
 
-            }
-        }
-
-        /**
-         * Formula setting.
-         */
-        export class FormulaSetting {
-            minusSegment: KnockoutObservable<number>;
-            operator: KnockoutObservable<number>;
-            leftItem: FormulaSettingItem;
-            rightItem: FormulaSettingItem;
-
-            operatorDatasource: KnockoutObservableArray<any>;
-
-            constructor() {
-                this.minusSegment = ko.observable(0);
-                this.operator = ko.observable(0);
-                this.leftItem = new FormulaSettingItem();
-                this.rightItem = new FormulaSettingItem();
-
-                // fixed 
-                this.leftItem.dispOrder = 1;
-                this.leftItem.settingMethod(0);
-                this.rightItem.dispOrder = 2;
-                this.rightItem.settingMethod(1);
-
-                this.operatorDatasource = ko.observableArray([
-                    { code: 0, name: '+' },
-                    { code: 1, name: '-' },
-                    { code: 2, name: '*' },
-                    { code: 3, name: '/' }
-                ]);
-            }
-
-            /**
-             * convert dto to viewmodel
-             */
-            public fromDto(dto: FormulaSettingDto): void {
-                let self = this;
-                self.minusSegment(dto.minusSegment);
-                self.operator(dto.operator);
-                self.leftItem.fromDto(dto.leftItem);
-                self.rightItem.fromDto(dto.rightItem);
-            }
-
-            /**
-             * convert viewmodel to dto
-             */
-            public toDto(): FormulaSettingDto {
-                let self = this;
-                let dto: FormulaSettingDto = <FormulaSettingDto>{};
-
-                dto.minusSegment = self.minusSegment();
-                dto.operator = self.operator();
-                dto.leftItem = this.leftItem.toDto();
-                dto.rightItem = this.rightItem.toDto();
-
-                return dto;
-            }
-        }
-
-        /**
-         * Formula setting item
-         */
-        class FormulaSettingItem {
-            settingMethod: KnockoutObservable<number>;
-            dispOrder: number;
-            inputValue: KnockoutObservable<number>;
-            formulaItemId: KnockoutObservable<string>;
-
-            constructor() {
-                this.settingMethod = ko.observable(1);
-                this.dispOrder = 1;
-                this.inputValue = ko.observable(1);
-                this.formulaItemId = ko.observable(nts.uk.util.randomId());
-            }
-
-            /**
-             * is input value check
-             */
-            public isInputValue(): boolean {
-                if (this.settingMethod() == 0) {
-                    return false;
-                }
-                return true;
-            }
-
-            /**
-             * convert dto to viewmodel
-             */
-            public fromDto(dto: SettingItemDto): void {
-                this.settingMethod(dto.settingMethod);
-                this.dispOrder = dto.dispOrder;
-                this.inputValue(dto.inputValue);
-                this.formulaItemId(dto.formulaItemId);
-            }
-
-            /**
-             * convert viewmodel to dto
-             */
-            public toDto(): SettingItemDto {
-                let self = this;
-                let dto: SettingItemDto = <SettingItemDto>{};
-
-                dto.settingMethod = this.settingMethod();
-                dto.dispOrder = this.dispOrder;
-                dto.inputValue = this.inputValue();
-                dto.formulaItemId = this.formulaItemId();
-
-                return dto;
             }
         }
 
