@@ -304,7 +304,11 @@ module nts.uk.com.view.cmm018.a {
                 let self = this;
                 setShared('inputCDL008', {baseDate: new Date(), isMultiple: false,canSelected: self.workplaceId()});
                 modal("/view/cdl/008/a/index.xhtml").onClosed(function(){
-                    self.workplaceId(getShared('outputCDL008').selectedCode);
+                    let data = getShared('outputCDL008');
+                    if(data == null || data === undefined){
+                        return;
+                    }
+                    self.workplaceId(data.selectedCode);
                     console.log(self.workplaceId());
                     self.getDataWorkplace();
                 });    
@@ -438,7 +442,7 @@ module nts.uk.com.view.cmm018.a {
                     self.checkAddHistory(false);
                     self.lstWorkplace(data.lstWorkplace);
                     if(data.lstWorkplace.length > 0){
-                       self.workplaceId(data.lstWorkplace[0].lstWorkplaceRoot[0].workplace.workplaceId); 
+                       self.workplaceId(data.workplaceId); 
                     }
                     let lstRoot: Array<vmbase.DataRootCheck> = [];
                     self.convertHistForWp(self.lstWorkplace());
@@ -1470,6 +1474,7 @@ module nts.uk.com.view.cmm018.a {
                         return;
                     }
                     self.dataSourceB(data);
+                    self.workplaceIdB(data.workplaceId);
                     self.lstWorkplace(data.lstWorkplaceRoot);
                     let lstRoot: Array<vmbase.DataCheckModeB> = [];
                     //list left

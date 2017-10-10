@@ -48,6 +48,7 @@ module nts.uk.com.view.cmm018.shr {
         }
         //data after grouping history (get from db)
         export class DataFullDto{
+            workplaceId: string;
             lstCompany: Array<DataDisplayComDto> ;
             lstWorkplace: Array<DataDisplayWpDto> ;
             lstPerson: Array<DataDisplayPsDto> ;
@@ -232,6 +233,7 @@ module nts.uk.com.view.cmm018.shr {
         export class CommonApprovalRootDto{
             /**会社名*/
             companyName: string;
+            workplaceId: string;
             lstCompanyRoot: Array<CompanyAppRootDto>;
             lstWorkplaceRoot: Array<WorkPlaceAppRootDto>;
             lstPersonRoot: Array<PersonAppRootDto>;
