@@ -1,12 +1,24 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
-import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
+import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
 import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
 
-@Value
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ApplicationDto {
 	/**
 	 * 会社ID
@@ -27,7 +39,7 @@ public class ApplicationDto {
 	/**
 	 * 入力日
 	 */
-	private GeneralDate inputDate; 
+	private String inputDate; 
 	
 	/**
 	 * 入力者
@@ -42,7 +54,7 @@ public class ApplicationDto {
 	/**
 	 * 申請日
 	 */
-	private GeneralDate applicationDate; 
+	private String applicationDate; 
 	
 	/**
 	 * 申請理由
@@ -66,7 +78,7 @@ public class ApplicationDto {
     /**
      * 予定反映日時
      */
-	private GeneralDate reflectPlanTime;
+	private String reflectPlanTime;
 	
 	/**
 	 * 予定反映状態
@@ -86,7 +98,7 @@ public class ApplicationDto {
 	/**
 	 * 実績反映日時
 	 */
-	private GeneralDate reflectPerTime;
+	private String reflectPerTime;
 	
 	/**
 	 * 予定反映状態
@@ -98,32 +110,35 @@ public class ApplicationDto {
 	 */
 	private int reflectPerEnforce;
 	
-	private GeneralDate startDate;
+	private String startDate;
 	
-	private GeneralDate endDate;
+	private String endDate;
+	
+	private List<AppApprovalPhaseDto> listPhase;
 	
 	public static ApplicationDto fromDomain(Application domain) {
 		return new ApplicationDto(
 				domain.getCompanyID(),
 				domain.getApplicationID(),
 				domain.getPrePostAtr().value,
-				domain.getInputDate(), 
+				domain.getInputDate() == null ? null :domain.getInputDate().toString(), 
 				domain.getEnteredPersonSID(), 
 				domain.getReversionReason().v(), 
-				domain.getApplicationDate(), 
+				domain.getApplicationDate() == null ? null :domain.getApplicationDate().toString(), 
 				domain.getApplicationReason().v(),
 				domain.getApplicationType().value, 
 				domain.getApplicantSID(), 
 				domain.getReflectPlanScheReason().value, 
-				domain.getReflectPlanTime(), 
+				domain.getReflectPlanTime() == null ? null : domain.getReflectPlanTime().toString(), 
 				domain.getReflectPlanState().value, 
 				domain.getReflectPlanEnforce().value, 
 				domain.getReflectPerScheReason().value, 
-				domain.getReflectPerTime(), 
+				domain.getReflectPerTime() == null ? null : domain.getReflectPerTime().toString(), 
 				domain.getReflectPerState().value, 
 				domain.getReflectPerEnforce().value,
-				domain.getStartDate(),
-				domain.getEndDate()
+				domain.getStartDate() == null ? null :domain.getStartDate().toString(),
+				domain.getEndDate() == null ? null :domain.getEndDate().toString(),
+				domain.getListPhase() == null ? null: domain.getListPhase().stream().map(x -> AppApprovalPhaseDto.fromDomain(x)).collect(Collectors.toList())
 				);
 	}
 

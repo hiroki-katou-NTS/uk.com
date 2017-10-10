@@ -58,7 +58,7 @@ public class JpaWkpJobAutoCalSettingSetMemento implements WkpJobAutoCalSettingSe
 	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpJobAutoCalSettingSetMemento#setPositionId(nts.uk.ctx.at.schedule.dom.shift.autocalsetting.PositionId)
 	 */
 	@Override
-	public void setPositionId(JobTitleId positionId) {
+	public void setJobId(JobTitleId positionId) {
 		KshmtAutoWkpJobCalPK pk = entity.getKshmtAutoWkpJobCalPK();
 		pk.setJobid(positionId.v());
 		this.entity.setKshmtAutoWkpJobCalPK(pk);

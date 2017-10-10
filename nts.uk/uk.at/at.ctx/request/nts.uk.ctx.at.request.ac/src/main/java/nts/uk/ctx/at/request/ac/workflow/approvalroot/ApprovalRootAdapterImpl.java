@@ -127,10 +127,12 @@ public class ApprovalRootAdapterImpl implements ApprovalRootAdapter
 	
 	private ApproverInfoImport convertApproverInfoImport(ApproverInfoExport approverInfoExport) {
 		ApproverInfoImport temp = new  ApproverInfoImport(
+				null, // jobID 
 				approverInfoExport.getSid(),
 				approverInfoExport.getApprovalPhaseId(),
 				approverInfoExport.isConfirmPerson(),
-				approverInfoExport.getOrderNumber()
+				approverInfoExport.getOrderNumber(),
+				1 // int approvalAtr  = 0,1
 				);
 		temp.addEmployeeName(employeeAdapter.getEmployeeName(approverInfoExport.getSid()));
 		return temp;

@@ -39,7 +39,7 @@ public class WkpJobAutoCalSetting extends BaseAutoCalSetting {
 		super();
 		this.companyId = memento.getCompanyId();
 		this.wkpId = memento.getWkpId();
-		this.jobId = memento.getPositionId();
+		this.jobId = memento.getJobId();
 		this.normalOTTime = memento.getNormalOTTime();
 		this.flexOTTime = memento.getFlexOTTime();
 		this.restTime = memento.getRestTime();
@@ -54,7 +54,7 @@ public class WkpJobAutoCalSetting extends BaseAutoCalSetting {
 	public void saveToMemento(WkpJobAutoCalSettingSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setWkpId(this.wkpId);
-		memento.setPositionId(this.jobId);
+		memento.setJobId(this.jobId);
 		memento.setFlexOTTime(this.flexOTTime);
 		memento.setNormalOTTime(this.normalOTTime);
 		memento.setRestTime(this.restTime);

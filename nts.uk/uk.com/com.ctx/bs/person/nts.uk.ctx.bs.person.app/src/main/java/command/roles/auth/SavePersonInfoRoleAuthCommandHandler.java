@@ -151,35 +151,37 @@ public class SavePersonInfoRoleAuthCommandHandler extends CommandHandler<SavePer
 		// this.pItemAuthRepo.getAllItemDetail(roleId, categoryId,
 		// AppContexts.user().contractCode());
 
-		for (PersonInfoItemAuthCommand pItemDetailCmd : listItems) {
-
-			// PersonInfoItemDetail pitemDetail = itemDetailList.stream()
-			// .filter(x ->
-			// x.getPersonItemDefId().equals(pItemDetailCmd.getPersonItemDefId())).findFirst().get();
-			//
-			// if (pitemDetail == null) {
-			// throw new BusinessException(new RawErrorMessage(""));
-			// }
-
-			Optional<PersonInfoItemAuth> optPItemAuth = this.pItemAuthRepo.getItemDetai(roleId, categoryId,
-					pItemDetailCmd.getPersonItemDefId());
-
-			if (optPItemAuth.isPresent()) {
-				PersonInfoItemAuth oldItemAuthDomain = optPItemAuth.get();
-
-				oldItemAuthDomain.updateFromJavaType(pItemDetailCmd.getSelfAuth(), pItemDetailCmd.getOtherAuth());
-				this.pItemAuthRepo.update(oldItemAuthDomain);
-
-			} else {
-
-				PersonInfoItemAuth pItemAuthDomain = PersonInfoItemAuth.createFromJavaType(roleId, categoryId,
-						pItemDetailCmd.getPersonItemDefId(), pItemDetailCmd.getSelfAuth(),
-						pItemDetailCmd.getOtherAuth());
-
-				this.pItemAuthRepo.add(pItemAuthDomain);
-
+		listItems.stream().forEach(ia -> {
+			doUpdateItemAuth(roleId, categoryId, ia);
+			if (ia.getSetItems() != null) {
+				ia.getSetItems().stream().forEach(i -> {
+					i.setSelfAuth(ia.getSelfAuth());
+					i.setOtherAuth(ia.getOtherAuth());
+					doUpdateItemAuth(roleId, categoryId, i);
+				});
 			}
+		});
+	}
+
+	private void doUpdateItemAuth(String roleId, String categoryId, PersonInfoItemAuthCommand pItemDetailCmd) {
+		Optional<PersonInfoItemAuth> optPItemAuth = this.pItemAuthRepo.getItemDetai(roleId, categoryId,
+				pItemDetailCmd.getPersonItemDefId());
+
+		if (optPItemAuth.isPresent()) {
+			PersonInfoItemAuth oldItemAuthDomain = optPItemAuth.get();
+
+			oldItemAuthDomain.updateFromJavaType(pItemDetailCmd.getSelfAuth(), pItemDetailCmd.getOtherAuth());
+			this.pItemAuthRepo.update(oldItemAuthDomain);
+
+		} else {
+
+			PersonInfoItemAuth pItemAuthDomain = PersonInfoItemAuth.createFromJavaType(roleId, categoryId,
+					pItemDetailCmd.getPersonItemDefId(), pItemDetailCmd.getSelfAuth(), pItemDetailCmd.getOtherAuth());
+
+			this.pItemAuthRepo.add(pItemAuthDomain);
+
 		}
+
 	}
 
 }

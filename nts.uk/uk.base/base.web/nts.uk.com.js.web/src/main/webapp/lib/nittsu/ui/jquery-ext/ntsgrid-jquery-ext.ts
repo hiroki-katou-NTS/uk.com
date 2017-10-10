@@ -95,6 +95,7 @@ module nts.uk.ui.jqueryExtentions {
                         update: update,
                         deleteRow: deleteRow,
                         initValue: value,
+                        rowObj: rowObj,
                         enable: isEnable
                     };
                     var controlCls = "nts-grid-control-" + column.key + "-" + rowId;
@@ -1455,7 +1456,7 @@ module nts.uk.ui.jqueryExtentions {
                 draw(data: any): JQuery {
                     var $container = $("<div/>").addClass(this.containerClass());
                     var $button = $("<button/>").addClass("ntsButton").css("height", "25px").appendTo($container).text(data.controlDef.text || data.initValue)
-                        .data("enable", data.enable).on("click", data.controlDef.click);
+                        .data("enable", data.enable).on("click", $.proxy(data.controlDef.click, null, data.rowObj));
                     $button.prop("disabled", !data.enable);
                     return $container;
                 }

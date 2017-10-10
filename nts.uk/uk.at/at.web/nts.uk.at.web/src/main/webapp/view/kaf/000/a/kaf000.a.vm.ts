@@ -33,8 +33,8 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             self.listApprovalRoot = ko.observableArray([]);
             //item approval root
             self.approvalRoot = ko.observableArray([]);
-            //obj input approval root
-            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('90000000-0000-0000-0000-000000000005',1,1,'2018/01/01'));
+            //obj input approval root (new model.ObjApprovalRootInput('90000000-0000-0000-0000-000000000005',1,1,'2018/01/01'))
+            self.objApprovalRootInput = ko.observable(null);
             // app ID
             self.appType = ko.observable(0);
             //obj input get message deadline 

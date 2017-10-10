@@ -1,10 +1,22 @@
 package nts.uk.ctx.at.request.app.find.application.common.appapprovalphase;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
+import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
-@Value
+import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class AppApprovalPhaseDto {
 	/** 会社ID */
 	private String companyID;
@@ -16,21 +28,25 @@ public class AppApprovalPhaseDto {
 	private String phaseID;
 
 	/** 承認形態 */
-	private ApprovalForm approvalForm;
+	private int approvalForm;
 
 	/** 順序 */
 	private int dispOrder;
 
 	/** 承認区分 */
-	private ApprovalAtr approvalATR;
+	private int approvalATR;
+	
+	private List<ApprovalFrameDto> listFrame;
 	
 	public static AppApprovalPhaseDto fromDomain (AppApprovalPhase domain){
 		return new AppApprovalPhaseDto(
 				domain.getCompanyID(),
 				domain.getAppID(),
 				domain.getPhaseID(),
-				domain.getApprovalForm(),
+				domain.getApprovalForm().value,
 				domain.getDispOrder(),
-				domain.getApprovalATR());
+				domain.getApprovalATR().value,
+				domain.getListFrame() == null ? null :domain.getListFrame().stream().map(x->ApprovalFrameDto.fromDomain(x))
+				.collect(Collectors.toList()));
 	}
 }

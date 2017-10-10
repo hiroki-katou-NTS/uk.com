@@ -14,12 +14,12 @@
 				};
 			</script>
 			<com:ValidatorScript>
-					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionItemName
-					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionCode
-					nts.uk.ctx.bs.person.dom.person.setting.selection.IntegrationCode
-					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionName
-					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionExternalCode
-					nts.uk.ctx.bs.person.dom.person.setting.selection.Memo
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionItemName
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionCodeLength
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.IntegrationCode
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionNameLength
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionExternalCDLength
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.Memo
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
@@ -42,7 +42,9 @@
 					</div>
 					<div class="row">
 						<div class="coll" data-bind="ntsFormLabel: { required: true }">#{i18n.getText('CPS017_37')}</div>
-						<input style="width: 100px;" /> ~ <span class="label">#{i18n.getText('CPS017_48')}</span>
+						<input style="width: 90px;"
+							data-bind="ntsTimeEditor: {value: date, inputFormat: 'date'}" />
+						~ <span class="label">#{i18n.getText('CPS017_48')}</span>
 					</div>
 				</div>
 

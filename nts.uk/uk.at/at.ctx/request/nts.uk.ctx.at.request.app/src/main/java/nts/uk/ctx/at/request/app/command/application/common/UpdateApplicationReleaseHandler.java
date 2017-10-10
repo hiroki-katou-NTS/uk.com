@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterRelease;
@@ -14,7 +15,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateApplicationReleaseHandler extends CommandHandler<UpdateApplicationCommonCmd> {
+public class UpdateApplicationReleaseHandler extends CommandHandler<ApplicationDto> {
 
 	@Inject
 	private ApplicationRepository appRepo;
@@ -28,10 +29,10 @@ public class UpdateApplicationReleaseHandler extends CommandHandler<UpdateApplic
 
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdateApplicationCommonCmd> context) {
+	protected void handle(CommandHandlerContext<ApplicationDto> context) {
 		String companyID = AppContexts.user().companyId();
 		String loginID = AppContexts.user().userId();
-		Application application = appRepo.getAppById(companyID, context.getCommand().getAppId()).get();
+		Application application = appRepo.getAppById(companyID, context.getCommand().getApplicationID()).get();
 		
 		//10.1
 		beforeProcessReleasingRepo.detailScreenProcessBeforeReleasing();
