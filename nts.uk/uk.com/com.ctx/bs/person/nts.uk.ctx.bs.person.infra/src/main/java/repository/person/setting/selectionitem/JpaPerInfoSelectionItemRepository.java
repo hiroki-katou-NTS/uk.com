@@ -1,4 +1,4 @@
-package repository.person.setting.selection;
+package repository.person.setting.selectionitem;
 
 import java.util.List;
 import java.util.Optional;
