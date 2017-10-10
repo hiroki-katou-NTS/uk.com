@@ -683,7 +683,6 @@ module nts.uk.com.view.cmm018.a {
                             }
                             //TH: tab work place
                             else if(self.tabSelected() == vmbase.RootType.WORKPLACE){
-//                                let lstWorkplace: vmbase.DataDisplayWpDto = self.findAppIdForWp(self.idOld());
                                 let lstWorkplace;
                                 if(self.currentCode() == -1){
                                     lstWorkplace = self.findAppIdForWp(self.idOld());
@@ -697,13 +696,16 @@ module nts.uk.com.view.cmm018.a {
                             }
                             //TH: tab person
                             else{
-                                let lstPerson: vmbase.DataDisplayPsDto = self.findAppIdForPs(self.idOld());
-                                if(lstPerson != undefined){
-                                   _.each(lstPerson.lstPersonRoot, function(item){
-                                        lstRoot.push(new vmbase.DataRootCheck(item.person.approvalId, item.person.historyId,
-                                                        item.person.applicationType, item.person.employmentRootAtr,item.person.branchId, item.lstAppPhase));
-                                    }); 
+                                let lstPerson;
+                                if(self.currentCode() == -1){
+                                    lstPerson = self.findAppIdForPs(self.idOld());
+                                }else{
+                                    lstPerson = self.findAppIdForPs(self.currentCode());    
                                 }
+                               _.each(lstPerson.lstPersonRoot, function(item){
+                                    lstRoot.push(new vmbase.DataRootCheck(item.person.approvalId, item.person.historyId,
+                                                    item.person.applicationType, item.person.employmentRootAtr,item.person.branchId, item.lstAppPhase));
+                                }); 
                             }
                                 self.cpA(self.convertlistRoot(lstRoot));
                         }
