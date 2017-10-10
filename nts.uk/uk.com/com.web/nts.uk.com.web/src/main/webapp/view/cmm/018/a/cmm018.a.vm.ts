@@ -1862,7 +1862,7 @@ module nts.uk.com.view.cmm018.a {
                 let sDate = '';
                 //履歴変更対象を選択しているチェックする
                 let name = '';
-                let typeApp = 0;
+                let typeApp = null;
                 let lstAppType = [];
                 if(self.singleSelectedCode() == nts.uk.resource.getText("CMM018_7")){//2
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_181" });
@@ -1885,14 +1885,23 @@ module nts.uk.com.view.cmm018.a {
                 }else{
                     if(self.tabSelectedB() == 0){
                         if(itemCurrent !== undefined){
-                            let itemLast = self.findHistByEDate(itemCurrent.company.applicationType, '9999/12/31', self.tabSelectedB());
+                            if(self.singleSelectedCode() == '-1'){
+                                typeApp = itemCurrent.lstAppType[0];
+                            }else{
+                                typeApp = itemCurrent.company.applicationType;
+                            }
+                            let itemLast = self.findHistByEDate(typeApp, '9999/12/31', self.tabSelectedB());
                             sDate = itemLast.company.startDate;
-                            typeApp = itemCurrent.company.applicationType;
                             name = typeApp == null ? '共通ルート' : nts.uk.resource.getText("CMM018_7");
                         }
                     }
                     else if(self.tabSelectedB() == 1){
                         if(itemCurrent !== undefined){
+                            if(self.singleSelectedCode() == '-1'){
+                                typeApp = itemCurrent.lstAppType[0];
+                            }else{
+                                typeApp = itemCurrent.workplace.applicationType;
+                            }
                             let itemLast = self.findHistByEDate(itemCurrent.workplace.applicationType, '9999/12/31', self.tabSelectedB());
                             sDate = itemLast.workplace.startDate;
                             typeApp = itemCurrent.workplace.applicationType
@@ -1901,7 +1910,12 @@ module nts.uk.com.view.cmm018.a {
                     }
                     else{
                         if(itemCurrent !== undefined){
-                            let itemLast = self.findHistByEDate(itemCurrent.person.applicationType, '9999/12/31', self.tabSelectedB());
+                            if(self.singleSelectedCode() == '-1'){
+                                typeApp = itemCurrent.lstAppType[0];
+                            }else{
+                                typeApp = itemCurrent.person.applicationType;
+                            }
+                            let itemLast = self.findHistByEDate(typeApp, '9999/12/31', self.tabSelectedB());
                             sDate = itemLast.person.startDate;
                             typeApp = itemCurrent.person.applicationType;
                             name = typeApp == null ? '共通ルート' : nts.uk.resource.getText("CMM018_7");
