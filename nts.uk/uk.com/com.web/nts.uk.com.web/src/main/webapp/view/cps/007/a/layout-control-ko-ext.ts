@@ -10,8 +10,8 @@ module nts.custombinding {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import parseTime = nts.uk.time.parseTime;
-    import writeConstraint = nts.uk.ui.validation.writeConstraints;
 
+    let writeConstraint = window['nts']['uk']['ui']['validation']['writeConstraints'];
 
     export class LetControl implements KnockoutBindingHandler {
         init = (element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext) => {
@@ -275,6 +275,10 @@ module nts.custombinding {
 
                     .layout-control.editable .item-classification:hover>.close-btn {
                         display: block;
+                    }
+
+                    .layout-control.editable [disabled] {
+                        background-color: #fff;
                     }
                 </style>`;
 
@@ -920,12 +924,9 @@ module nts.custombinding {
                     }
                 };
 
-            $(() => {
-                if (!$('#layout_style').length) {
-                    $('head').append(self.style);
-                }
-            });
-
+            if (!$('#layout_style').length) {
+                $('head').append(self.style);
+            }
 
             $element
                 .append(self.tmp)
@@ -933,14 +934,12 @@ module nts.custombinding {
 
             // bindding callback function to control
             if (access.callback) {
-                $.extend(opts, {
-                    callback: access.callback
-                });
+                $.extend(opts, { callback: access.callback });
             }
 
             // validate editAble
             if (ko.unwrap(access.editAble) != undefined) {
-                if (typeof access.editAble == 'function') {
+                if (ko.isObservable(access.editAble)) {
                     access.editAble.subscribe(editable);
                     access.editAble.valueHasMutated();
                 } else {
@@ -951,10 +950,11 @@ module nts.custombinding {
             // sortable
             opts.sortable.isEnabled.subscribe(x => {
                 if (!x) {
-                    $element.find('.left-area, .add-buttons, #cps007_btn_line').hide();
                     $element
                         .addClass('readonly')
                         .removeClass('editable');
+
+                    $element.find('.left-area, .add-buttons, #cps007_btn_line').hide();
                 } else {
                     $element
                         .addClass('editable')
@@ -973,25 +973,25 @@ module nts.custombinding {
                         if (e.itemTypeState && e.itemTypeState.dataTypeState) {
                             let state = e.itemTypeState.dataTypeState;
                             if (x == 2) {
-                                if (state.editable && typeof state.editable == 'function') {
+                                if (state.editable && ko.isObservable(state.editable)) {
                                     state.editable(true);
                                 } else {
                                     state.editable = ko.observable(true);
                                 }
 
-                                if (state.readonly && typeof state.readonly == 'function') {
+                                if (state.readonly && ko.isObservable(state.readonly)) {
                                     state.readonly(false);
                                 } else {
                                     state.readonly = ko.observable(false);
                                 }
                             } else {
-                                if (state.editable && typeof state.editable == 'function') {
+                                if (state.editable && ko.isObservable(state.editable)) {
                                     state.editable(false);
                                 } else {
                                     state.editable = ko.observable(false);
                                 }
 
-                                if (state.readonly && typeof state.readonly == 'function') {
+                                if (state.readonly && ko.isObservable(state.readonly)) {
                                     state.readonly(true);
                                 } else {
                                     state.readonly = ko.observable(true);
@@ -1005,9 +1005,7 @@ module nts.custombinding {
             opts.sortable.isEditable.valueHasMutated();
 
             // extend option
-            $.extend(opts.comboxbox, {
-                enable: ko.computed(() => !opts.radios.value())
-            });
+            $.extend(opts.comboxbox, { enable: ko.computed(() => !opts.radios.value()) });
 
             $.extend(opts.searchbox, {
                 items: ko.computed(opts.listbox.options),
@@ -1040,50 +1038,106 @@ module nts.custombinding {
                     switch (x.layoutItemType) {
                         case IT_CLA_TYPE.ITEM:
                             let item = x.listItemDf && x.listItemDf[0];
+                            if (!x.singleValues) {
+                                x.singleValues = [];
+                            }
+
                             if (item.itemTypeState.itemType == ITEM_TYPE.SINGLE) {
-                                x.listItemDfValues = [{
-                                    code: item.itemCode,
-                                    name: item.itemName,
-                                    required: !!item.isRequired,
-                                    value: ko.observable(undefined),
-                                    readonly: !!opts.sortable.isEnabled(),
-                                    editable: !!opts.sortable.isEditable(),
-                                    'type': (item.itemTypeState || <any>{}).itemType,
-                                    item: $.extend({}, ((item || <any>{}).itemTypeState || {}).dataTypeState || {})
-                                }];
-                            } else {
-                                x.listItemDfValues = _.map(Array((x.listItemDf || []).length), (_x, i) => {
-                                    let item = $.extend({}, x.listItemDf[i]);
-                                    return {
-                                        col: i,
+                                if (!x.singleValues[0]) {
+                                    x.singleValues[0] = {
+                                        id: item.id,
+                                        itemValue: undefined
+                                    };
+                                }
+
+                                let value = x.singleValues[0],
+                                    def = {
                                         code: item.itemCode,
                                         name: item.itemName,
                                         required: !!item.isRequired,
-                                        value: ko.observable(undefined),
+                                        value: ko.isObservable(value.itemValue) ? value.itemValue : ko.observable(value.itemValue),
                                         readonly: !!opts.sortable.isEnabled(),
                                         editable: !!opts.sortable.isEditable(),
                                         'type': (item.itemTypeState || <any>{}).itemType,
-                                        item: ((item || <any>{}).itemTypeState || {}).dataTypeState || {}
+                                        item: $.extend({}, ((item || <any>{}).itemTypeState || {}).dataTypeState || {})
                                     };
+
+                                if (!ko.isObservable(value.itemValue)) {
+                                    def.value.subscribe(x => { value.itemValue = x });
+                                }
+
+                                x.listItemDfValues = [def];
+                            } else {
+                                x.listItemDfValues = _.map(Array((x.listItemDf || []).length), (_x, i) => {
+                                    let item = x.listItemDf[i];
+                                    if (!x.singleValues[i]) {
+                                        x.singleValues[i] = {
+                                            id: item.id,
+                                            itemValue: undefined
+                                        }
+                                    }
+
+                                    let value: IItemDefinitionValue = x.singleValues[i],
+                                        def = {
+                                            col: i,
+                                            code: item.itemCode,
+                                            name: item.itemName,
+                                            required: !!item.isRequired,
+                                            value: ko.isObservable(value.itemValue) ? value.itemValue : ko.observable(value.itemValue),
+                                            readonly: !!opts.sortable.isEnabled(),
+                                            editable: !!opts.sortable.isEditable(),
+                                            'type': (item.itemTypeState || <any>{}).itemType,
+                                            item: ((item || <any>{}).itemTypeState || {}).dataTypeState || {}
+                                        };
+
+                                    if (!ko.isObservable(value.itemValue)) {
+                                        def.value.subscribe(x => { value.itemValue = x });
+                                    }
+
+                                    return def;
                                 });
                             }
                             break;
                         case IT_CLA_TYPE.LIST:
+                            if (!x.multipleValues) {
+                                x.multipleValues = [];
+                            }
+
                             x.listItemDfValues = _.map(Array(6), (_x, i) => {
+                                if (!x.multipleValues[i]) {
+                                    x.multipleValues[i] = [];
+                                }
+
                                 return _.map(Array((x.listItemDf || []).length), (__x, j) => {
-                                    let item = $.extend({}, x.listItemDf[j]);
-                                    return {
-                                        row: i,
-                                        col: j,
-                                        code: item.itemCode,
-                                        name: item.itemName,
-                                        required: !!item.isRequired,
-                                        value: ko.observable(undefined),
-                                        readonly: !!opts.sortable.isEnabled(),
-                                        editable: !!opts.sortable.isEditable(),
-                                        'type': (item.itemTypeState || <any>{}).itemType,
-                                        item: ((item || <any>{}).itemTypeState || {}).dataTypeState || {}
-                                    };
+                                    if (!x.multipleValues[i][j]) {
+                                        x.multipleValues[i][j] = {
+                                            id: x.listItemDf[j].id,
+                                            row: i,
+                                            col: j,
+                                            itemValue: undefined
+                                        };
+                                    }
+
+                                    let item = $.extend({}, x.listItemDf[j]),
+                                        value: IItemDefinitionValue = x.multipleValues[i][j],
+                                        def = {
+                                            row: i,
+                                            col: j,
+                                            code: item.itemCode,
+                                            name: item.itemName,
+                                            required: !!item.isRequired,
+                                            value: ko.isObservable(value.itemValue) ? value.itemValue : ko.observable(value.itemValue),
+                                            readonly: !!opts.sortable.isEnabled(),
+                                            editable: !!opts.sortable.isEditable(),
+                                            'type': (item.itemTypeState || <any>{}).itemType,
+                                            item: ((item || <any>{}).itemTypeState || {}).dataTypeState || {}
+                                        };
+
+                                    if (!ko.isObservable(value.itemValue)) {
+                                        def.value.subscribe(x => { value.itemValue = x });
+                                    }
+
+                                    return def;
                                 });
                             });
                             break;
@@ -1496,7 +1550,9 @@ module nts.custombinding {
         personInfoCategoryID?: string;
         layoutItemType: IT_CLA_TYPE;
         listItemDf: Array<IItemDefinition>; // layoutItemType == 0 ? [1] : layoutItemType == 1 ? [A, B, C] : undefined;
-        listItemDfValues?: any; // {value: } || [{c: 1, value: }, {c: 2, value: }], [[{r: 1, c: 1, value: }, {}], [{}, {}], [{}, {}], [{}, {}]] , undefined
+        listItemDfValues?: any; // [{value: }] || [{c: 1, value: }, {c: 2, value: }], [[{r: 1, c: 1, value: }, {}], [{}, {}], [{}, {}], [{}, {}]] , undefined
+        singleValues?: Array<IItemDefinitionValue>;
+        multipleValues?: Array<Array<IItemDefinitionValue>>
     }
 
     interface IItemDefinition {
@@ -1511,6 +1567,15 @@ module nts.custombinding {
         systemRequired?: number;
         requireChangable?: number;
         itemTypeState: IItemTypeState;
+    }
+
+    interface IItemDefinitionValue {
+        id: string;
+        row?: number;
+        col?: number;
+        itemCode?: string;
+        itemName?: string;
+        itemValue: any;
     }
 
     interface IItemTypeState extends ISetItem, ISingleItem {

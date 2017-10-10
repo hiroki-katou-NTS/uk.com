@@ -127,5 +127,17 @@ module nts.uk.com.view.cmm013 {
                 this.sequenceMasterDto = sequenceMasterDto;
             }
         }
+        
+        /**
+         * SequenceMaster remove command
+         */
+        export class SequenceMasterRemoveCommand {
+            
+            sequenceCode: string;
+            
+            constructor(sequenceCode: string) {
+                this.sequenceCode = sequenceCode;
+            }
+        }
     }
 }

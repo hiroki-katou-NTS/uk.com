@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.at.shared.app.command.ot.autocalsetting.wkpjob;
 
 import lombok.Getter;
@@ -8,24 +12,23 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalFlexOvertimeSettingGetM
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalSetting;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
 
+/**
+ * The Class AutoCalFlexOvertimeSettingDto.
+ */
 @Getter
 @Setter
 public class AutoCalFlexOvertimeSettingDto {
 
 	/** The flex ot time. */
-	// フレックス超過時間
 	private AutoCalSettingDto flexOtTime;
-
 
 	/**
 	 * To domain.
 	 *
-	 * @param companyId
-	 *            the company id
-	 * @return the auto cal overtime setting
+	 * @return the auto cal flex overtime setting
 	 */
-	public AutoCalFlexOvertimeSetting toDomain(String companyId) {
-		return new AutoCalFlexOvertimeSetting(new DtoGetMemento(companyId, this));
+	public AutoCalFlexOvertimeSetting toDomain() {
+		return new AutoCalFlexOvertimeSetting(new DtoGetMemento(this));
 	}
 
 	/**
@@ -33,28 +36,29 @@ public class AutoCalFlexOvertimeSettingDto {
 	 */
 	private class DtoGetMemento implements AutoCalFlexOvertimeSettingGetMemento {
 
-		/** The company id. */
-		private String companyId;
-
 		/** The command. */
 		private AutoCalFlexOvertimeSettingDto command;
 
 		/**
 		 * Instantiates a new dto get memento.
 		 *
-		 * @param companyId
-		 *            the company id
 		 * @param command
 		 *            the command
 		 */
-		public DtoGetMemento(String companyId, AutoCalFlexOvertimeSettingDto command) {
-			this.companyId = companyId;
+		public DtoGetMemento(AutoCalFlexOvertimeSettingDto command) {
 			this.command = command;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.at.shared.dom.ot.autocalsetting.
+		 * AutoCalFlexOvertimeSettingGetMemento#getFlexOtTime()
+		 */
 		@Override
 		public AutoCalSetting getFlexOtTime() {
-			return new AutoCalSetting(TimeLimitUpperLimitSetting.valueOf(command.getFlexOtTime().getUpLimitOtSet()),
+			return new AutoCalSetting(
+					TimeLimitUpperLimitSetting.valueOf(command.getFlexOtTime().getUpLimitOtSet()),
 					AutoCalAtrOvertime.valueOf(command.getFlexOtTime().getCalAtr()));
 		}
 

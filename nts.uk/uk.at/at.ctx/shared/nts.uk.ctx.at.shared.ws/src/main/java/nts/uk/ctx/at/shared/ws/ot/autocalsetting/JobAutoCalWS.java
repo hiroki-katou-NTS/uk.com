@@ -12,6 +12,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.app.command.ot.autocalsetting.job.JobAutoCalSetCommand;
+import nts.uk.ctx.at.shared.app.command.ot.autocalsetting.job.RemoveJobAutoCalSetCommand;
+import nts.uk.ctx.at.shared.app.command.ot.autocalsetting.job.RemoveJobAutoCalSetCommandHandler;
 import nts.uk.ctx.at.shared.app.command.ot.autocalsetting.job.SaveJobAutoCalSetCommandHandler;
 import nts.uk.ctx.at.shared.app.find.ot.autocalsetting.job.JobAutoCalSetFinder;
 import nts.uk.ctx.at.shared.app.find.ot.autocalsetting.job.JobAutoCalSettingDto;
@@ -30,6 +32,10 @@ public class JobAutoCalWS extends WebService {
 	/** The save job auto cal set command handler. */
 	@Inject
 	private SaveJobAutoCalSetCommandHandler saveJobAutoCalSetCommandHandler;
+
+	/** The remove job auto cal set command handler. */
+	@Inject
+	private RemoveJobAutoCalSetCommandHandler removeJobAutoCalSetCommandHandler;
 
 	/**
 	 * Gets the job auto cal set finder.
@@ -63,9 +69,9 @@ public class JobAutoCalWS extends WebService {
 	 *            the job id
 	 */
 	@POST
-	@Path("delete/{jobId}")
-	public void deledte(@PathParam("jobId") String jobId) {
-		this.jobAutoCalSetFinder.deleteByCode(jobId);
+	@Path("delete")
+	public void deledte(RemoveJobAutoCalSetCommand command) {
+		this.removeJobAutoCalSetCommandHandler.handle(command);
 	}
 
 }

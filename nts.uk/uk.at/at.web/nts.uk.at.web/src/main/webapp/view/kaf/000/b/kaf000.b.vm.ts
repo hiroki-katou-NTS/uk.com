@@ -23,10 +23,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         listReasonToApprover: KnockoutObservable<String>;
         reasonApp: KnockoutObservable<String>;
 
-        dataApplication: KnockoutObservable<model.OutputGetAllDataApp>;
+        dataApplication: KnockoutObservable<model.ApplicationDto>;
 
         //application
-        objApp: KnockoutObservable<model.ApplicationDto>;
         inputDetail: KnockoutObservable<model.InputGetDetailCheck>;
 
         //obj input
@@ -104,7 +103,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             self.reasonApp = ko.observable('');
             self.dataApplication = ko.observable(null);
             //application
-            self.objApp = (null);
             self.inputDetail = ko.observable(new model.InputGetDetailCheck(self.appID(), "2022/01/01"));
             self.outputDetailCheck = ko.observable(null);
 
@@ -497,43 +495,45 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         export class ApplicationDto {
             applicationID: String;
             prePostAtr: number;
-            inputDate: Date;
+            inputDate: String;
             enteredPersonSID: String;
             reversionReason: String;
-            applicationDate: Date;
+            applicationDate: String;
             applicationReason: String;
             applicationType: number;
             applicantSID: String;
             reflectPlanScheReason: number;
-            reflectPlanTime: Date;
+            reflectPlanTime: String;
             reflectPlanState: number;
             reflectPlanEnforce: number;
             reflectPerScheReason: number;
-            reflectPerTime: Date;
+            reflectPerTime: String;
             reflectPerState: number;
             reflectPerEnforce: number;
-            startDate: Date;
-            endDate: Date;
+            startDate: String;
+            endDate: String;
+            listPhase : Array<AppApprovalPhase>;
             constructor(
                 applicationID: String,
                 prePostAtr: number,
-                inputDate: Date,
+                inputDate: String,
                 enteredPersonSID: String,
                 reversionReason: String,
-                applicationDate: Date,
+                applicationDate: String,
                 applicationReason: String,
                 applicationType: number,
                 applicantSID: String,
                 reflectPlanScheReason: number,
-                reflectPlanTime: Date,
+                reflectPlanTime: String,
                 reflectPlanState: number,
                 reflectPlanEnforce: number,
                 reflectPerScheReason: number,
-                reflectPerTime: Date,
+                reflectPerTime: String,
                 reflectPerState: number,
                 reflectPerEnforce: number,
-                startDate: Date,
-                endDate: Date) {
+                startDate: String,
+                endDate: String,
+                listPhase : Array<AppApprovalPhase>) {
                 this.applicationID = applicationID;
                 this.prePostAtr = prePostAtr;
                 this.inputDate = inputDate;
@@ -553,6 +553,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 this.reflectPerEnforce = reflectPerEnforce;
                 this.startDate = startDate;
                 this.endDate = endDate;
+                this.listPhase = listPhase;
             }
         }//end class Application
 
@@ -577,24 +578,26 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             approvalForm: number;
             dispOrder: number;
             approvalATR: number;
-            constructor(appID: String, phaseID: String, approvalForm: number, dispOrder: number, approvalATR: number) {
+            listFrame : Array<ApprovalFrame>;
+            constructor(appID: String, phaseID: String, approvalForm: number, dispOrder: number, 
+                    approvalATR: number,
+                    listFrame : Array<ApprovalFrame>) {
                 this.appID = appID;
                 this.phaseID = phaseID;
                 this.approvalForm = approvalForm;
                 this.dispOrder = dispOrder;
                 this.approvalATR = approvalATR;
+                this.listFrame = listFrame;
             }
         }
 
         // class ApprovalFrame
         export class ApprovalFrame {
             frameID : String;
-            phaseID: String;
             dispOrder:number;
             listApproveAccepted: Array<ApproveAccepted>;
-            constructor(frameID : String,phaseID: String, dispOrder: number,listApproveAccepted: Array<ApproveAccepted>) {
+            constructor(frameID : String, dispOrder: number,listApproveAccepted: Array<ApproveAccepted>) {
                 this.frameID = frameID;
-                this.phaseID = phaseID;
                 this.dispOrder = dispOrder;
                 this.listApproveAccepted = listApproveAccepted;
                 
@@ -604,13 +607,27 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         //class ApproveAccepted
         export class ApproveAccepted {
             appAccedtedID : String;
-            frameID: String;
             approverSID: String;
             approvalATR: number;
             confirmATR: number;
             approvalDate: String;
             reason: String;
             representerSID: String;
+            constructor(appAccedtedID : String,
+                    approverSID: String,
+                    approvalATR: number,
+                    confirmATR: number,
+                    approvalDate: String,
+                    reason: String,
+                    representerSID: String){
+                this.appAccedtedID = appAccedtedID;
+                this.approverSID = approverSID;
+                this.approvalATR = approvalATR;
+                this.confirmATR = confirmATR;
+                this.approvalDate = approvalDate;
+                this.reason = reason;
+                this.representerSID = representerSID;
+            }
         }//end class ApproveAccepted
 
         //class InputGetDetailCheck 
