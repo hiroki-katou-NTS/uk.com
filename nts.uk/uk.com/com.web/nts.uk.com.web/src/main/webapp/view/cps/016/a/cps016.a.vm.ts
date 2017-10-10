@@ -166,7 +166,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                     let newItem = itemList[oldIndex];
                     currentItem.selectionItemId(newItem.selectionItemId);
                 });
-                confirm({ messageId: "Msg_15" });
+                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                 self.listItems.valueHasMutated();
 
             });
@@ -200,7 +200,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                             }
                         });
                         self.listItems.valueHasMutated();
-                        confirm({ messageId: "Msg_16" });
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
                     });
                 }).ifNo(() => {
                     self.listItems.valueHasMutated();

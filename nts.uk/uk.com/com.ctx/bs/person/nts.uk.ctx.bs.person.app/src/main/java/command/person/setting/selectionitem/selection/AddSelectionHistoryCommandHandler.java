@@ -43,14 +43,14 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 			String cid0 = PersonInfoCategory.ROOT_COMPANY_ID;
 
 			// ドメインモデル「選択肢履歴」を登録する
-			PerInfoHistorySelection domainHist = PerInfoHistorySelection.historySelection(newHistId, newId, cid0,
+			PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId, cid0,
 					endDate, startDate);
 			this.historySelectionRepository.add(domainHist);
 		} else {
 			String cid_login = PersonInfoCategory.ROOT_COMPANY_ID;
 
 			// ドメインモデル「選択肢履歴」を登録する
-			PerInfoHistorySelection domainHist1 = PerInfoHistorySelection.historySelection(newHistId, newId, cid_login,
+			PerInfoHistorySelection domainHist1 = PerInfoHistorySelection.createHistorySelection(newHistId, newId, cid_login,
 					endDate, startDate);
 			this.historySelectionRepository.add(domainHist1);
 		}
