@@ -2780,7 +2780,7 @@ var nts;
                     return jump.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                 }
                 if (webAppId == nts.uk.request.location.currentAppId) {
-                    path = nts.uk.request.resolvePath(path);
+                    path = resolvePath(path);
                 }
                 else {
                     path = nts.uk.request.location.siteRoot
@@ -2788,7 +2788,7 @@ var nts;
                         .mergeRelativePath(path).serialize();
                 }
                 uk.sessionStorage.setItemAsJson(request.STORAGE_KEY_TRANSFER_DATA, data);
-                window.location.href = resolvePath(path);
+                window.location.href = path;
             }
             request.jump = jump;
             function resolvePath(path) {
