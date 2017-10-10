@@ -136,6 +136,8 @@ module nts.uk.com.view.cps016.a.viewmodel {
                         self.perInfoSelectionItem().selectionItemId(selectId);
 
                         //Todo: 「CPS017_個人情報の選択肢の登録」をモーダルダイアログで起動する
+                        modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
+                        });
 
                     }).ifNo(() => {
                         self.listItems.valueHasMutated();
