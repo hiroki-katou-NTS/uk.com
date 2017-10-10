@@ -1,5 +1,5 @@
 module nts.uk.at.view.kdw006.d.viewmodel {
-    export class ScreenModel {
+    export class ScreenModelD {
         registeredTotalTimeCheer: KnockoutObservable<boolean>;
         completeDisplayOneMonth: KnockoutObservable<boolean>;
         useWorkDetail: KnockoutObservable<boolean>;
@@ -12,7 +12,7 @@ module nts.uk.at.view.kdw006.d.viewmodel {
 
         itemList: KnockoutObservableArray<any>;
         constructor() {
-            var self = this;
+            let self = this;
             self.registeredTotalTimeCheer = ko.observable(false);
             self.completeDisplayOneMonth = ko.observable(false);
             self.useWorkDetail = ko.observable(false);
@@ -39,7 +39,7 @@ module nts.uk.at.view.kdw006.d.viewmodel {
         //Get Function Restriction
         getFuncRestric(): JQueryPromise<any> {
             let self = this;
-            var dfd = $.Deferred();
+            let dfd = $.Deferred();
             service.getFuncRestric().done(function(data) {
                 self.registeredTotalTimeCheer(data.registeredTotalTimeCheer);
                 self.completeDisplayOneMonth(data.completeDisplayOneMonth);
@@ -56,8 +56,8 @@ module nts.uk.at.view.kdw006.d.viewmodel {
         }
 
         saveData() {
-            var self = this;
-            var funcRestric = {
+            let self = this;
+            let funcRestric = {
                 registeredTotalTimeCheer: self.registeredTotalTimeCheer(),
                 completeDisplayOneMonth: self.completeDisplayOneMonth(),
                 useWorkDetail: self.useWorkDetail(),
@@ -68,7 +68,9 @@ module nts.uk.at.view.kdw006.d.viewmodel {
                 useConfirmByYourself: self.useConfirmByYourself(),
                 yourselfConfirmError: self.yourselfConfirmError()
             };
-            service.update(funcRestric);
+            service.update(funcRestric).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+            });
         }
 
     }
