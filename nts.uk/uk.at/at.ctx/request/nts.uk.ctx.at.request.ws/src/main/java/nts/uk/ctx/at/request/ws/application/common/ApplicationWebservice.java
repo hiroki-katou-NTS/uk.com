@@ -232,7 +232,7 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("getalldatabyappid/{applicationID}")
-	public OutputGetAllDataApp getAllDataAppPhaseFrame(@PathParam("applicationID") String applicationID){
+	public ApplicationDto getAllDataAppPhaseFrame(@PathParam("applicationID") String applicationID){
 		return this.getAllDataAppPhaseFrame.getAllDataAppPhaseFrame(applicationID);
 	}
 	

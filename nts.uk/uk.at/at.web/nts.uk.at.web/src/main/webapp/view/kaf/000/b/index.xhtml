@@ -152,18 +152,18 @@
 							</tr>
 						</thead>
 						<!-- foreach -->
-						<tbody data-bind="foreach : listOutputPhaseAndFrame" >
-							<com:ko bind="$data.listApprovalFrameDto" tag ="foreach">
+						<tbody data-bind="foreach : listPhase" >
+							<com:ko bind="$data.listFrame" tag ="foreach">
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
-										<td class="bg-green" data-bind="attr: {rowspan: $parent.listApprovalFrameDto.length}">
-											フェーズ<label data-bind="text: $parent.appApprovalPhaseDto.phaseID"></label>
+										<td class="bg-green" data-bind="attr: {rowspan: $parent.listFrame.length}">
+											フェーズ<label data-bind="text: $parent.dispOrder"></label>
 										</td>
 									</com:ko>
 									<td class="bg-green" >
 										承認者<label data-bind="text: $data.dispOrder"></label>
 									</td>
-									<td>
+										<td>
 										<label data-bind="text: $data.nameAll"></label>
 									</td>
 									<td><label data-bind="text: $data.approveAll"></label></td>
