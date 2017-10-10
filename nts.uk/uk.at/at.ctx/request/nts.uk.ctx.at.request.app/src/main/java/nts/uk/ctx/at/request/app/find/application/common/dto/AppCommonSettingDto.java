@@ -15,7 +15,6 @@ import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.App
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Setter
 public class AppCommonSettingDto {
 	public String generalDate;
 	

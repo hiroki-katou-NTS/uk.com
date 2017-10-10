@@ -81,10 +81,14 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 				// LOOP FRAME
 				// 承認枠 1～5 のループ
 				for (ApprovalFrame frame : listFrame) {
-					List<ApproveAccepted> lstApproveAccepted = frame.getListApproveAccepted();
+					List<ApproveAccepted> lstApprover = frame.getListApproveAccepted();
+					List<ApproveAccepted> lstApproveAccepted = lstApprover.stream()
+							.filter(x-> x.getApprovalATR()
+									.equals(ApprovalAtr.APPROVED))
+							.collect(Collectors.toList());
 					// ループ中の「承認枠」．承認者リストに承認者がいるかチェックする
 					if (!lstApproveAccepted.isEmpty()) {
-						List<String> lstApproverIds = lstApproveAccepted.stream().map(x -> x.getApproverSID())
+						List<String> lstApproverIds = lstApprover.stream().map(x -> x.getApproverSID())
 								.collect(Collectors.toList());
 						// ログイン者が承認者かチェックする
 						if (lstApproverIds.contains(loginEmp)) {
