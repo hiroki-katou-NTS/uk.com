@@ -1,4 +1,103 @@
 module nts.uk.com.view.cps017.a.viewmodel {
+    import getText = nts.uk.resource.getText;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import info = nts.uk.ui.dialog.info;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import textUK = nts.uk.text;
+    import block = nts.uk.ui.block;
+    export class ScreenModel {
+        listItems: KnockoutObservableArray<ISelectionItem> = ko.observableArray([]);
+        perInfoSelectionItem: KnockoutObservable<SelectionItem> = ko.observable(new SelectionItem({ selectionItemId: '', selectionItemName: '' }));
+
+        constructor() {
+            let self = this,
+                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem();
+        }
+
+        start(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+
+            nts.uk.ui.errors.clearAll();
+            service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+
+                if (itemList && itemList.length > 0) {
+                    itemList.forEach(x => self.listItems.push(x));
+                    self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+
+                } else {
+                    self.registerDataSelectioItem();
+                }
+                dfd.resolve();
+
+            }).fail(error => {
+            });
+
+            return dfd.promise();
+        }
+        
+        //dialog C
+        openDialogC() {
+            let self = this,
+                obj = {
+                    sel_id: "0001",
+                    sel_name: " Du DT"
+                };
+
+            setShared('historyInfo', obj);
+
+            block.invisible();
+
+            modal('/view/cps/017/c/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                block.clear();
+            });
+        }
+
+        //dialog D
+        openDialogD() {
+            let self = this,
+                obj = {
+                    sel_id: "0001",
+                    sel_name: " Du DT"
+                };
+
+            setShared('historyInfo', obj);
+
+            block.invisible();
+
+            modal('/view/cps/017/d/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                block.clear();
+            });
+        }
+    }
+
+    interface ISelectionItem {
+        selectionItemId: string;
+        selectionItemName: string;
+    }
+
+    class SelectionItem {
+        selectionItemId: KnockoutObservable<string> = ko.observable('');
+        selectionItemName: KnockoutObservable<string> = ko.observable('');
+
+        constructor(param: ISelectionItem) {
+            let self = this;
+            self.selectionItemId(param.selectionItemId || '');
+            self.selectionItemName(param.selectionItemName || '');
+
+        }
+    }
+}
+
+
+
+
+/*
+module nts.uk.com.view.cps017.a.viewmodel {
     import error = nts.uk.ui.errors;
     import text = nts.uk.resource.getText;
     import close = nts.uk.ui.windows.close;
@@ -259,3 +358,4 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
 
 }
+*/
