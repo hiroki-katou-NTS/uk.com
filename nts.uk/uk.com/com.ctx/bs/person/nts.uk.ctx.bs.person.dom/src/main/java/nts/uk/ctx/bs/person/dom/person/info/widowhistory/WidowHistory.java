@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.dom.person.info.windowhistory;
+package nts.uk.ctx.bs.person.dom.person.info.widowhistory;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
@@ -9,7 +9,7 @@ import nts.arc.time.GeneralDate;
  * */
 
 @Getter
-public class WindowHistory {
+public class WidowHistory {
 	//寡夫寡婦ID
 	private String windowHistoryId;
 	//start date
@@ -17,16 +17,16 @@ public class WindowHistory {
 	//end date
 	private GeneralDate endDate;
 	//寡夫寡婦区分
-	private WindowType windowType;
+	private WidowType windowType;
 	
-	private WindowHistory(String windowHistoryId, GeneralDate startDate, GeneralDate endDate, int windowType){
+	private WidowHistory(String windowHistoryId, GeneralDate startDate, GeneralDate endDate, int windowType){
 		this.windowHistoryId = windowHistoryId;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.windowType = EnumAdaptor.valueOf(windowType, WindowType.class);
+		this.windowType = EnumAdaptor.valueOf(windowType, WidowType.class);
 	}
 	
-	public static WindowHistory createObjectFromJavaType(String windowHistoryId, GeneralDate startDate, GeneralDate endDate, int windowType){
-		return new WindowHistory(windowHistoryId, startDate, endDate, windowType);
+	public static WidowHistory createObjectFromJavaType(String windowHistoryId, GeneralDate startDate, GeneralDate endDate, int windowType){
+		return new WidowHistory(windowHistoryId, startDate, endDate, windowType);
 	}
 }
