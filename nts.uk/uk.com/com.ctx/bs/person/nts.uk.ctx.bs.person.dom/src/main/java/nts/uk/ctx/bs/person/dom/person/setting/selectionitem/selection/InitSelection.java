@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.IntegerRange;
  *
  */
 
-//
+// 初期選択とする
 public enum InitSelection {
 	NOT_INIT_SELECTION(0), // 初期選択としない
 	INIT_SELECTION(1);// 初期選択とする
