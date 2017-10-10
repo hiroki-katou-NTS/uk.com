@@ -17,34 +17,9 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingSet
 /**
  * The Class WkpJobAutoCalSettingDto.
  */
-
-/**
- * Gets the rest time.
- *
- * @return the rest time
- */
-
-/**
- * Gets the rest time.
- *
- * @return the rest time
- */
-
-/**
- * Gets the rest time.
- *
- * @return the rest time
- */
 @Getter
-
-/**
- * Sets the job id.
- *
- * @param jobId the new job id
- */
 @Setter
 public class WkpJobAutoCalSettingDto implements WkpJobAutoCalSettingSetMemento{
-	
 	
 	/** The wkp id. */
 	private WorkplaceId wkpId;
@@ -53,15 +28,12 @@ public class WkpJobAutoCalSettingDto implements WkpJobAutoCalSettingSetMemento{
 	private JobTitleId jobId;
 	
 	/** The normal OT time. */
-	// 残業時間
 	private AutoCalOvertimeSettingDto normalOTTime;
 
 	/** The flex OT time. */
-	// フレックス超過時間
 	private AutoCalFlexOvertimeSettingDto flexOTTime;
 
 	/** The rest time. */
-	// 休出時間
 	private AutoCalRestTimeSettingDto restTime;
 
 	/* (non-Javadoc)
@@ -86,7 +58,7 @@ public class WkpJobAutoCalSettingDto implements WkpJobAutoCalSettingSetMemento{
 	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpJobAutoCalSettingSetMemento#setPositionId(nts.uk.ctx.at.schedule.dom.shift.autocalsetting.PositionId)
 	 */
 	@Override
-	public void setPositionId(JobTitleId positionId) {
+	public void setJobId(JobTitleId positionId) {
 		this.jobId = positionId;
 		
 	}

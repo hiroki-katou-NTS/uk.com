@@ -885,13 +885,13 @@ public class ProgramsManager {
 	public static final Program CMM014 = new Program(WebAppId.COM, ProgramIdConsts.CMM014, "CMM014_9",
 			"/view/cmm/014/a/index.xhtml");
 	
-	public static final Program CDL002 = new Program(WebAppId.COM, ProgramIdConsts.CDL002, "",
+	public static final Program CDL002 = new Program(WebAppId.COM, ProgramIdConsts.CDL002, "CDL002_4",
 			"/view/cdl/002/a/index.xhtml");
 	
-	public static final Program CDL003 = new Program(WebAppId.COM, ProgramIdConsts.CDL003, "",
+	public static final Program CDL003 = new Program(WebAppId.COM, ProgramIdConsts.CDL003, "CDL003_4",
 			"/view/cdl/003/a/index.xhtml");
 	
-	public static final Program CMM011 = new Program(WebAppId.COM, ProgramIdConsts.CMM011, "",
+	public static final Program CMM011 = new Program(WebAppId.COM, ProgramIdConsts.CMM011, null,
 			"/view/cmm/011/a/index.xhtml");
 	
 	public static final Program CDL008 = new Program(WebAppId.COM, ProgramIdConsts.CDL008, "CDL008_1",
@@ -951,9 +951,24 @@ public class ProgramsManager {
 	public static final Program CMM050B = new Program(WebAppId.COM, ProgramIdConsts.CMM050B, "CMM050_2",
 			"/view/cmm/050/b/index.xhtml");
 	
-	public static final Program CMM013 = new Program(WebAppId.COM, ProgramIdConsts.CMM013, "",
+	public static final Program CMM013A = new Program(WebAppId.COM, ProgramIdConsts.CMM013A, "CMM013_53",
 			"/view/cmm/013/a/index.xhtml");
 	
+	public static final Program CMM013B = new Program(WebAppId.COM, ProgramIdConsts.CMM013B, "CMM013_54",
+			"/view/cmm/013/b/index.xhtml");
+	
+	public static final Program CMM013C = new Program(WebAppId.COM, ProgramIdConsts.CMM013C, "CMM013_55",
+			"/view/cmm/013/c/index.xhtml");
+	
+	public static final Program CMM013D = new Program(WebAppId.COM, ProgramIdConsts.CMM013D, "CMM013_56",
+			"/view/cmm/013/d/index.xhtml");
+	
+	public static final Program CMM013E = new Program(WebAppId.COM, ProgramIdConsts.CMM013E, "CMM013_57",
+			"/view/cmm/013/e/index.xhtml");
+	
+	public static final Program CMM013F = new Program(WebAppId.COM, ProgramIdConsts.CMM013F, "CMM013_58",
+			"/view/cmm/013/f/index.xhtml");
+										
 	public static final Program CDL004 = new Program(WebAppId.COM, ProgramIdConsts.CDL004, "CDL004_1",
 			"/view/cdl/004/a/index.xhtml");
 

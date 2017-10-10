@@ -17,25 +17,7 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.job.JobAutoCalSettingGetMement
 /**
  * The Class JobAutoCalSetCommand.
  */
-
-/**
- * Sets the rest time.
- *
- * @param restTime the new rest time
- */
 @Setter
-
-/**
- * Gets the rest time.
- *
- * @return the rest time
- */
-
-/**
- * Gets the rest time.
- *
- * @return the rest time
- */
 @Getter
 public class JobAutoCalSetCommand {
 	
@@ -43,15 +25,12 @@ public class JobAutoCalSetCommand {
 	private String jobId;
 	
 	/** The normal OT time. */
-	// 残業時間
 	private AutoCalOvertimeSettingDto normalOTTime;
 
 	/** The flex OT time. */
-	// フレックス超過時間
 	private AutoCalFlexOvertimeSettingDto flexOTTime;
 
 	/** The rest time. */
-	// 休出時間
 	private AutoCalRestTimeSettingDto restTime;
 
 	/**
@@ -71,8 +50,6 @@ public class JobAutoCalSetCommand {
 
 		/** The company id. */
 		private String companyId;
-		
-		
 
 		/** The command. */
 		private JobAutoCalSetCommand command;
@@ -117,7 +94,7 @@ public class JobAutoCalSetCommand {
 		 */
 		@Override
 		public AutoCalOvertimeSetting getNormalOTTime() {
-			return this.command.getNormalOTTime().toDomain(companyId);
+			return this.command.getNormalOTTime().toDomain();
 		}
 
 		/*
@@ -128,7 +105,7 @@ public class JobAutoCalSetCommand {
 		 */
 		@Override
 		public AutoCalFlexOvertimeSetting getFlexOTTime() {
-			return this.command.getFlexOTTime().toDomain(companyId);
+			return this.command.getFlexOTTime().toDomain();
 		}
 
 		/*
@@ -139,7 +116,7 @@ public class JobAutoCalSetCommand {
 		 */
 		@Override
 		public AutoCalRestTimeSetting getRestTime() {
-			return this.command.getRestTime().toDomain(companyId);
+			return this.command.getRestTime().toDomain();
 		}
 
 	}

@@ -44,14 +44,4 @@ public class WkpAutoCalSetFinder {
 
 		return dto;
 	}
-
-	/**
-	 * Delete by code.
-	 *
-	 * @param wkpId the wkp id
-	 */
-	public void deleteByCode(String wkpId) {
-		String companyId = AppContexts.user().companyId();
-		wkpAutoCalSettingRepository.delete(companyId, wkpId);
-	}
 }

@@ -1,0 +1,74 @@
+package nts.uk.ctx.bs.employee.app.command.jobtitle.sequence;
+
+import java.util.Optional;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
+
+import nts.arc.error.BusinessException;
+import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMaster;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterRepository;
+import nts.uk.shr.com.context.AppContexts;
+
+/**
+ * The Class SaveSequenceCommandHandler.
+ */
+@Stateless
+@Transactional
+public class SaveSequenceCommandHandler extends CommandHandler<SaveSequenceCommand> {
+
+	/** The repository. */
+	@Inject
+	private SequenceMasterRepository repository;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
+	 */
+	@Override
+	protected void handle(CommandHandlerContext<SaveSequenceCommand> context) {
+
+		// Get data
+		SaveSequenceCommand command = context.getCommand();
+		String companyId = AppContexts.user().companyId();
+
+		// Check required param
+		if (StringUtils.isEmpty(command.getSequenceMasterDto().getSequenceCode())
+				|| StringUtils.isEmpty(command.getSequenceMasterDto().getSequenceName())) {
+			return;
+		}
+
+		Optional<SequenceMaster> opSequenceMaster = this.repository.findBySequenceCode(companyId,
+				command.getSequenceMasterDto().getSequenceCode());
+
+		if (command.getIsCreateMode()) {
+			// Add
+			if (opSequenceMaster.isPresent()) {
+				// Throw Exception - Duplicated
+				throw new BusinessException("Msg_3");
+			}
+			this.repository.add(command.toDomain(companyId));
+		} else {
+			// Update
+			if (!opSequenceMaster.isPresent()) {
+				// Throw Exception - Sequence not found
+				throw new RuntimeException(String.format("Sequence code %s not found!", command.getSequenceMasterDto().getSequenceCode()));
+			}
+
+			// Sequence code + order is not changable
+			SequenceMaster oldDomain = opSequenceMaster.get();
+			command.getSequenceMasterDto().setOrder(oldDomain.getOrder());
+			command.getSequenceMasterDto().setSequenceCode(oldDomain.getSequenceCode());
+
+			this.repository.update(command.toDomain(companyId));
+		}
+	}
+}

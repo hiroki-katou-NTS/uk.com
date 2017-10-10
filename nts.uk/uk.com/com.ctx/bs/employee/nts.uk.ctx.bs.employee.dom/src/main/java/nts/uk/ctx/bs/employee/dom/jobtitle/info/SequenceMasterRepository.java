@@ -51,4 +51,11 @@ public interface SequenceMasterRepository {
 	 */
 	Optional<SequenceMaster> findBySequenceCode(String companyId, String sequenceCode);
 	
+	/**
+	 * Find max order.
+	 *
+	 * @return the short
+	 */
+	short findMaxOrder();
+	
 }
