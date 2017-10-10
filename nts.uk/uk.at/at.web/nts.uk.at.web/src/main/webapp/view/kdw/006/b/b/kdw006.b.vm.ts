@@ -1,11 +1,11 @@
-module nts.uk.at.view.kdw006.b1.viewmodel {
+module nts.uk.at.view.kdw006.b.viewmodel {
     export class ScreenModel {
         //Daily perform id from other screen
         settingUnit: KnockoutObservable<number>;
         comment: KnockoutObservable<string>;
         roundingRules: KnockoutObservableArray<any>;
         constructor() {
-            var self = this;
+            let self = this;
             self.settingUnit = ko.observable(null);
             self.comment = ko.observable(null);
             self.roundingRules = ko.observableArray([
@@ -25,7 +25,7 @@ module nts.uk.at.view.kdw006.b1.viewmodel {
 
         getDailyPerform(): JQueryPromise<any> {
             let self = this;
-            var dfd = $.Deferred();
+            let dfd = $.Deferred();
             service.getDailyPerform().done(function(data) {
                 self.settingUnit(data.settingUnit);
                 self.comment(data.comment);
@@ -36,13 +36,13 @@ module nts.uk.at.view.kdw006.b1.viewmodel {
         }
 
         saveData() {
-            var self = this;
-            var perform = {
+            let self = this;
+            let perform = {
                 settingUnit: self.settingUnit(),
                 comment: self.comment()
             };
             service.update(perform).done(function(data) {
-                self.getDailyPerform();
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             });
         };
 

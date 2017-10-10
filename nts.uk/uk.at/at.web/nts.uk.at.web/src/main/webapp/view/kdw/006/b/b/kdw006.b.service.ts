@@ -1,4 +1,4 @@
-module nts.uk.at.view.kdw006.b1.service {
+module nts.uk.at.view.kdw006.b.service {
     let servicePath = {
         getDailyPerform: 'at/record/workrecord/operationsetting/find',
         update: 'at/record/workrecord/operationsetting/register'

@@ -44,20 +44,16 @@ module nts.uk.at.view.kdw006.e.viewmodel {
             });
         }
 
-        saveData(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
+        saveData() {
+            let self = this;
             service.register(self.selectedItem(), self.functionalRestriction()).done(function(res: Array<RoleItem>) {
-                dfd.resolve();
-            }).fail(function(res) {
-                nts.uk.ui.dialog.alertError(res.message);
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
             });
-            return dfd.promise();
         }
 
         start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
+            let self = this;
+            let dfd = $.Deferred();
             service.getRoleList().done(function(res: Array<RoleItem>) {
                 self.roleItems(res);
                 self.selectedItem(self.roleItems()[0].roleId);
@@ -73,8 +69,8 @@ module nts.uk.at.view.kdw006.e.viewmodel {
         }
 
         getFuncRest(roleId: string): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
+            let self = this;
+            let dfd = $.Deferred();
             service.findFuncRest(roleId).done(function(res: Array<FuncRestItem>) {
                 self.functionalRestriction(res);
                 $("#grid2").igGrid("option", "dataSource", self.functionalRestriction());

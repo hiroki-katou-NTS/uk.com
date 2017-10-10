@@ -1,20 +1,20 @@
-#screen-b1 #setting-unit {
+#screen-b #setting-unit {
 	margin-top: 40px;
 	margin-left: 50px;
 }
 
-#screen-b1 #comment {
+#screen-b #comment {
 	margin-top: 60px;
 	margin-left: 50px;
 }
 
-#screen-b1 .item-name {
+#screen-b .item-name {
 	display: inline-block;
 	width: 140px;
 	vertical-align: top;
 }
 
-#screen-b1 #comment-text {
+#screen-b #comment-text {
 	width: 300px;
 	height: 100px;
 }

@@ -23,7 +23,7 @@ module nts.uk.at.view.kdw006.g.service {
     }
 
     export function register(employmentCode: string, groups1: any, groups2 : any): JQueryPromise<Array<any>> {
-        var groups = [];
+        let groups = [];
         _.forEach(groups1 , function( group) {
             groups.push({
                 no : group.no,
@@ -38,7 +38,7 @@ module nts.uk.at.view.kdw006.g.service {
                 workTypeList : group.workTypeCodes
             });
         });
-        var command = {
+        let command = {
             employmentCode: employmentCode,
             groups : groups
         };
