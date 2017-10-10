@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import nts.arc.primitive.constraint.IntegerRange;
 
 @AllArgsConstructor
-@IntegerRange(max = 4, min = 0)
+@IntegerRange(max = 7, min = 0)
 public enum SupportedCareClassifi {
 
 	// 0:なし
