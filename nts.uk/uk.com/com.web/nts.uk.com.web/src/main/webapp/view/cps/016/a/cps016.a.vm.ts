@@ -19,7 +19,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
                 formatSelection = perInfoSelectionItem.formatSelection();
             self.checkCreate = ko.observable(true);
-            self.closeUp = ko.observable(true);
+            self.closeUp = ko.observable(false);
             self.rulesFirst = ko.observableArray([
                 { id: 0, name: getText('Enum_SelectionCodeCharacter_NUMBER_TYPE') },
                 { id: 1, name: getText('Enum_SelectionCodeCharacter_CHARATERS_TYPE') }
@@ -211,6 +211,15 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 self.registerDataSelectioItem();
             }
         }
+
+        // 選択肢の登録ボタン
+        OpenCPS017() {
+            let self = this;
+
+            modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
+            });
+        }
+
     }
 
     interface ISelectionItem {

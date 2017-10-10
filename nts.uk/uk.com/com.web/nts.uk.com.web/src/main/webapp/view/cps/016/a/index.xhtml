@@ -33,7 +33,7 @@
 				<button id="A_BTN_DELETE" class="danger"
 					data-bind="click : removeDataSelectioItem, enable: checkCreate()==false &amp;&amp; $root.errors.isEmpty">#{i18n.getText('CPS016_3')}</button>
 				<button tabindex="4" id="A_BTN_CPS016_4" data-bind="visible: closeUp">#{i18n.getText('CPS016_4')}</button>
-				<button class="goout" id="A_BTN_JUMP">#{i18n.getText('CPS016_23')}</button>
+				<button class="goout" id="A_BTN_JUMP" data-bind="click:OpenCPS017">#{i18n.getText('CPS016_23')}</button>
 			</div>
 			
 			<div id="contents-area">
