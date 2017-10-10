@@ -41,8 +41,10 @@
 					</div>
 				</div>
 				<div id='category' class="bg-green caret-background">
-					<div id="search" tabindex="1"
-						data-bind="ntsSearchBox: {
+					<i class="icon icon-searchbox"></i>
+					<div style="margin-left: 25px;">
+						<div id="search" tabindex="1" style="width: 420px;"
+							data-bind="ntsSearchBox: {
 						searchMode: 'filter',
 						targetKey: 'categoryId',
 						mode: 'igGrid', 
@@ -50,7 +52,9 @@
 						items: categoryList ,  
 						selectedKey: 'categoryId',
 						fields: ['categoryCode', 'categoryName']}" />
+					</div>
 					<table id="grid">
+
 					</table>
 
 				</div>
@@ -61,7 +65,6 @@
 				<button id="delete" data-bind='click: closeDialog' tabindex="7">#{i18n.getText('CAS001_62')}</button>
 
 			</div>
-
 		</ui:define>
 	</ui:composition>
 </body>
