@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.employment.dto;
@@ -12,7 +12,6 @@ import nts.uk.ctx.bs.employee.dom.employment.EmploymentCode;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentName;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentSetMemento;
 import nts.uk.shr.com.primitive.Memo;
-import nts.uk.shr.find.employment.EmploymentDto;
 
 /**
  * The Class EmploymentFindDto.
@@ -70,7 +69,6 @@ public class EmploymentFindDto extends EmploymentDto implements EmploymentSetMem
 	public void setEmploymentName(EmploymentName employmentName) {
 		this.name = employmentName.v();
 	}
-
 
 	/*
 	 * (non-Javadoc)

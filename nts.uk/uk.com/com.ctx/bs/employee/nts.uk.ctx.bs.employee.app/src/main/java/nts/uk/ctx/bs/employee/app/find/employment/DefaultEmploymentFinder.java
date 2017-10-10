@@ -11,13 +11,12 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
 import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentFindDto;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
-import nts.uk.shr.find.employment.EmploymentDto;
-import nts.uk.shr.find.employment.EmploymentFinder;
 
 /**
  * The Class DefaultEmploymentFinder.
@@ -52,8 +51,6 @@ public class DefaultEmploymentFinder implements EmploymentFinder {
 		}).collect(Collectors.toList());
 	}
 	
-	
-
 	/* (non-Javadoc)
 	 * @see nts.uk.shr.find.employment.EmploymentFinder#findByCode(java.lang.String)
 	 */
