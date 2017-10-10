@@ -19,8 +19,6 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 			+ " WHERE si.contractCd = :contractCd";
 	private static final String SELECT_All_SELECTION_ITEM_NAME = SELECT_ALL
 			+ " WHERE si.selectionItemName = :selectionItemName";
-	private static final String SELECT_All_SELECTION_ITEM_CLASSIFI = SELECT_ALL
-			+ " WHERE si.selectionItemClassification = :selectionItemClassification";
 
 	@Override
 	public void add(PerInfoSelectionItem domain) {
@@ -57,25 +55,11 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 		return this.queryProxy().find(pk, PpemtSelectionItem.class).map(c -> toDomain(c));
 	}
 
-	// check selectionItemName
+	// get selectionItem By Name
 	@Override
-	public Optional<PerInfoSelectionItem> checkItemName(String selectionItemName) {
+	public Optional<PerInfoSelectionItem> getSelectionByName(String selectionItemName) {
 		return this.queryProxy().query(SELECT_All_SELECTION_ITEM_NAME, PpemtSelectionItem.class)
 				.setParameter("selectionItemName", selectionItemName).getSingle(c -> toDomain(c));
-	}
-
-	// check SelectionItemClassification
-	@Override
-	public Optional<PerInfoSelectionItem> checkItemClassification(String selectionItemClassification) {
-		return this.queryProxy().query(SELECT_All_SELECTION_ITEM_CLASSIFI, PpemtSelectionItem.class)
-				.setParameter("selectionItemClassification", selectionItemClassification).getSingle(c -> toDomain(c));
-
-	}
-
-	@Override
-	public boolean checkExist(String selectionItemId) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	private static PpemtSelectionItem toEntity(PerInfoSelectionItem domain) {

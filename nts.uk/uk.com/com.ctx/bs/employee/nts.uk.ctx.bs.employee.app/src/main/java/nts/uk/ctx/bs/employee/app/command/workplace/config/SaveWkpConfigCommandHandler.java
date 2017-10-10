@@ -59,7 +59,7 @@ public class SaveWkpConfigCommandHandler extends CommandHandler<SaveWkpConfigCom
             workplaceConfigRepository.add(command.toDomain(companyId));
             return;
         }
-        // add mode
+        // add mode or update mode
         if (command.getIsAddMode()) {
             this.addHistory(companyId, command, optional.get());
         } else {

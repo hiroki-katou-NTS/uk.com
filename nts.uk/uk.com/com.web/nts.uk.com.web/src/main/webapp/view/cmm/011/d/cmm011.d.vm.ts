@@ -35,10 +35,13 @@ module nts.uk.com.view.cmm011.d {
                 if (!self.validate()) {
                     return;
                 }
+                nts.uk.ui.block.grayout();
                 service.saveWorkplaceHistory(self.toJSObject()).done(function(){
+                    nts.uk.ui.block.clear();
                     nts.uk.ui.windows.setShared("ModeAddHistory", true);
                     self.close();
                 }).fail((res: any) => {
+                    nts.uk.ui.block.clear();
                     self.showMessageError(res);
                 });
             }

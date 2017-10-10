@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
-import nts.arc.layer.infra.file.temp.ApplicationTemporaryFileFactory;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
@@ -86,10 +85,8 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 				ApplicationType appTypeE = EnumAdaptor.valueOf(Integer.parseInt(appType), ApplicationType.class);
 				appOfEmployee = appEmployee.appOfEmployee(lstComs, lstWps, lstPss, companyID, empId, appTypeE,
 						baseDate);
-				if (appOfEmployee != null) {
-					this.getData(appOfEmployee, companyID, empId, baseDate, appOutput, appTypeE.value, appTypeE.nameId,
-							mapEmpRootInfo);
-				}
+				this.getData(appOfEmployee, companyID, empId, baseDate, appOutput, appTypeE.value, appTypeE.nameId,
+						mapEmpRootInfo);
 			}
 
 		}
@@ -115,21 +112,32 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 						x.getAnyItemApplicationId(), x.getConfirmationRootType(), x.getEmploymentRootAtr(), null,
 						null));
 
+				// tìm ra các phase từ bảng WWFMT_APPROVAL_PHASE
 				List<ApprovalPhase> phases = phaseRepo.getAllApprovalPhasebyCode(companyID, x.getBranchId());
+
+				// check nếu có thì add các phase còn ko thì đưa ra thông báo
+				if (phases.size() == 0) {
+					System.out.println(
+							" branchId atrr of WWFMT_APPROVAL_PHASE table is not equal WWFMT_PS_APPROVAL_ROOT or WWFMT_WP_APPROVAL_ROOT");
+				}
 				phases.stream().forEach(y -> {
 					approvalPhases.add(y);
 				});
+
 			});
+
 			List<ApprovalRootOutput> adjustmentData = approvalService.adjustmentData(companyID, empId, baseDate,
 					result);
 			List<ApprovalPhaseOutput> adjustmentPhase = new ArrayList<>();
 			adjustmentData.stream().forEach(z -> {
-				phaseRepo.getAllApprovalPhasebyCode(companyID, z.getBranchId()).stream().forEach(w -> {
-					adjustmentPhase.add(new ApprovalPhaseOutput(w.getCompanyId(), w.getBranchId(),
-							w.getApprovalPhaseId(), w.getApprovalForm().value, w.getBrowsingPhase(), w.getOrderNumber(),
-							w.getApprovers().stream().map(b -> new ApproverInfo(b.getApproverId(),
-									b.getApprovalPhaseId(), true, b.getOrderNumber(), null))
-									.collect(Collectors.toList())));
+				List<ApprovalPhase> phaseLst = phaseRepo.getAllApprovalPhasebyCode(companyID, z.getBranchId());
+				phaseLst.stream().forEach(w -> {
+					List<ApproverInfo> approvers = w.getApprovers().stream().map(b -> new ApproverInfo(null, b.getApproverId(),
+									b.getApprovalPhaseId(), true, b.getOrderNumber(), null,1))
+							.collect(Collectors.toList());
+					adjustmentPhase
+							.add(new ApprovalPhaseOutput(w.getCompanyId(), w.getBranchId(), w.getApprovalPhaseId(),
+									w.getApprovalForm().value, w.getBrowsingPhase(), w.getOrderNumber(), approvers));
 				});
 			});
 			approvalService.checkError(approvalPhases, adjustmentPhase);
@@ -137,8 +145,8 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			for (ApprovalPhaseOutput phase : adjustmentPhase) {
 				List<EmployeeOrderApproverAsAppOutput> employIn = new ArrayList<>();
 				for (ApproverInfo appInfo : phase.getApprovers()) {
-					employIn.add(new EmployeeOrderApproverAsAppOutput(appInfo.getOrderNumber(),
-							psAdapter.getPersonInfo(appInfo.getSid()).getEmployeeName()));
+					String name = psAdapter.getPersonInfo(appInfo.getSid()).getEmployeeName();
+					employIn.add(new EmployeeOrderApproverAsAppOutput(appInfo.getOrderNumber(),name));
 				}
 				ApproverAsApplicationInforOutput appAsAppInfor = new ApproverAsApplicationInforOutput(
 						phase.getOrderNumber(), EnumAdaptor.valueOf(phase.getApprovalForm(), ApprovalForm.class).name,

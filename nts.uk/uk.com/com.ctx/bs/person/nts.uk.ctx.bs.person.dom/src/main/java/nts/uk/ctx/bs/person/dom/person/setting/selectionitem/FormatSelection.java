@@ -7,17 +7,19 @@ import nts.arc.enums.EnumAdaptor;
 @AllArgsConstructor
 @Getter
 public class FormatSelection {
-	private SelectionCode selectionCode;
+	private SelectionCodeLength selectionCode;
 	private SelectionCodeCharacter selectionCodeCharacter;
-	private SelectionName selectionName;
-	private SelectionExternalCode selectionExternalCode;
+	private SelectionNameLength selectionName;
+	private SelectionExternalCDLength selectionExternalCode;
 
+	// 選択肢の形式ドメイン
 	public static FormatSelection createFromJavaType(int selectionCd, int characterTypeAtr, int selectionName,
 			int selectionExtCd) {
-		return new FormatSelection(new SelectionCode(selectionCd),
+
+		// 選択肢の形式パラメーター帰還
+		return new FormatSelection(new SelectionCodeLength(selectionCd),
 				EnumAdaptor.valueOf(characterTypeAtr, SelectionCodeCharacter.class),
-				new SelectionName(selectionName),
-				new SelectionExternalCode(selectionExtCd));
+				new SelectionNameLength(selectionName), new SelectionExternalCDLength(selectionExtCd));
 
 	}
 }

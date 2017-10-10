@@ -37,11 +37,11 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 		String newHistId = IdentifierUtil.randomUniqueId();
 
 		// ドメインモデル「個人情報の選択項目」のエラーチェック
-		Optional<PerInfoSelectionItem> opt = this.perInfoSelectionItemRepo
-				.checkItemName(command.getSelectionItemName());
+		Optional<PerInfoSelectionItem> optCheckExistByName = this.perInfoSelectionItemRepo
+				.getSelectionByName(command.getSelectionItemName());
 
 		// 「選択項目名称」は重複してはならない
-		if (opt.isPresent()) {
+		if (optCheckExistByName.isPresent()) {
 			throw new BusinessException(new RawErrorMessage("Msg_513"));
 		}
 
@@ -64,8 +64,8 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 
 		// 画面項目「グループ会社で共有する：選択項目区分をチェックする」
 		if (itemClassification == true) {// TRUE → 0会社の場合
-			PerInfoHistorySelection domainHist = PerInfoHistorySelection.historySelection(newHistId, newId, rootCID,
-					endDate, startDate);
+			PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId,
+					rootCID, endDate, startDate);
 
 			// 0会社の場合:「選択肢履歴」を登録する
 			this.historySelectionRepository.add(domainHist);
@@ -73,16 +73,16 @@ public class AddSelectionItemCommandHandler extends CommandHandlerWithResult<Add
 			List<String> companyIdList = GetListCompanyOfContract.LIST_COMPANY_OF_CONTRACT;
 			for (String cid : companyIdList) {
 				newHistId = IdentifierUtil.randomUniqueId();
-				PerInfoHistorySelection domainHist = PerInfoHistorySelection.historySelection(newHistId, newId, cid,
-						endDate, startDate);
+				PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId,
+						cid, endDate, startDate);
 
 				// 全会社 の場合:「選択肢履歴」を登録する
 				this.historySelectionRepository.add(domainHist);
 			}
 
 			newHistId = IdentifierUtil.randomUniqueId();
-			PerInfoHistorySelection domainHist = PerInfoHistorySelection.historySelection(newHistId, newId, rootCID,
-					endDate, startDate);
+			PerInfoHistorySelection domainHist = PerInfoHistorySelection.createHistorySelection(newHistId, newId,
+					rootCID, endDate, startDate);
 
 			// 0会社の場合: 「選択肢履歴」を登録する
 			this.historySelectionRepository.add(domainHist);

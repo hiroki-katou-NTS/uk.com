@@ -42,7 +42,7 @@ module nts.uk.com.view.cmm018.j {
              * update/delete data when no error and close dialog
              */
             registration(): void {
-                block.invisible();
+//                block.invisible();
                 var self = this;
                 //data
                 let dataFix: vmbase.JData = new vmbase.JData(self.newStartDate(),'9999-12-31',self.dataSource.workplaceId,self.dataSource.employeeId,self.dataSource.check,self.selectedId(),self.dataSource.startDate,self.dataSource.lstUpdate);
@@ -56,7 +56,7 @@ module nts.uk.com.view.cmm018.j {
                         return;
                     }
                     //履歴編集を実行する(Update history)
-                    servicebase.updateHistory(self.dataSource).done(function(){
+                    servicebase.updateHistory(dataFix).done(function(){
                         //情報メッセージ（Msg_15）(Show message Msg_15)
                         nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function() {
                             //close dialog
@@ -89,7 +89,7 @@ module nts.uk.com.view.cmm018.j {
                     //確認メッセージ（Msg_18）を表示する(Show Confirm Message Msg_18)
                     nts.uk.ui.dialog.confirm({ messageId: 'Msg_18' }).ifYes(function(){
                         //履歴の削除を実行する(Delete history) 
-                        servicebase.updateHistory(self.dataSource).done(function(){
+                        servicebase.updateHistory(dataFix).done(function(){
                             //情報メッセージ（Msg_16）(Show message Msg_16)
                             nts.uk.ui.dialog.info({ messageId: "Msg_16" }).then(function() {
                                 close();
@@ -103,15 +103,6 @@ module nts.uk.com.view.cmm018.j {
                         block.clear();        
                     });
                 }
-            }
-            submitAndCloseDialog(): void {
-                var self = this;
-                let dataFix: vmbase.JData = new vmbase.JData(self.newStartDate(),'9999-12-31',self.dataSource.workplaceId,self.dataSource.employeeId,self.dataSource.check,self.selectedId(),self.dataSource.startDate,self.dataSource.lstUpdate);
-                servicebase.updateHistory(self.dataSource).done(function(){
-                    alert("done");
-                }).fail(function(res){
-                    nts.uk.ui.dialog.alertError({ messageId: res.messageId });
-                });
             }
             /**
              * close dialog and do nothing

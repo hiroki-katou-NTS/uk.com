@@ -37,7 +37,7 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 	}
 
 	private PerInfoHistorySelection toDomain(PpemtHistorySelection entity) {
-		return PerInfoHistorySelection.historySelection(entity.histidPK.histidPK, entity.selectionItemId,
+		return PerInfoHistorySelection.createHistorySelection(entity.histidPK.histidPK, entity.selectionItemId,
 				entity.companyCode, entity.endDate, entity.startDate);
 	}
 	

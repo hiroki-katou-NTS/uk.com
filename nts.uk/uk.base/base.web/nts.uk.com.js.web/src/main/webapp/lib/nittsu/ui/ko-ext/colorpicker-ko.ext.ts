@@ -54,8 +54,8 @@ module nts.uk.ui.koExtentions {
                 preferredFormat: "name",
                 showPaletteOnly: true,
                 togglePaletteOnly: true,
-                togglePaletteMoreText: '強化', 
-                togglePaletteLessText: '略す',
+                togglePaletteMoreText: 'その他の色', 
+                togglePaletteLessText: '隠す',
                 color: color,
                 disabled: !enable,
                 showInput: true,
@@ -64,7 +64,7 @@ module nts.uk.ui.koExtentions {
                 chooseText: "確定",
                 cancelText: "キャンセル",
                 allowEmpty:true,
-                showAlpha: true,
+                showAlpha: false, //transparency setting
                 palette: [
                     ["#000","#444","#666","#999","#ccc","#eee","#f3f3f3","#fff"],
                     ["#f00","#f90","#ff0","#0f0","#0ff","#00f","#90f","#f0f"],
