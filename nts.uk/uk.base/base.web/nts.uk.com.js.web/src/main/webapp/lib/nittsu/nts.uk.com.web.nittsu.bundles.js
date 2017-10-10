@@ -9057,6 +9057,7 @@ var nts;
                         var options = ko.unwrap(data.steps);
                         var theme = ko.unwrap(data.theme);
                         var cssClass = "nts-wizard " + "theme-" + theme;
+                        var active = ko.isObservable(data.active) ? data.active : ko.observable(data.active || 0);
                         var container = $(element);
                         for (var i = 0; i < options.length; i++) {
                             var contentClass = ko.unwrap(options[i].content);
@@ -9087,6 +9088,7 @@ var nts;
                                 container.children('.steps').children('ul').children('.current').addClass('step-current');
                                 container.children('.steps').children('ul').children('.done').addClass('step-prev');
                                 container.children('.steps').children('ul').children('.step-current').nextAll('li').not('.done').addClass('step-next');
+                                active(container.steps("getCurrentIndex"));
                                 return true;
                             }
                         }).data("length", options.length);
@@ -9107,6 +9109,12 @@ var nts;
                         container.find('.header .image').attr('style', 'background-image: url("' + icon + '")');
                     };
                     WizardBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var active = (data.active !== undefined) ? ko.unwrap(data.active) : 0;
+                        var container = $(element);
+                        if (container.steps("getCurrentIndex") != active) {
+                            container.setStep(active);
+                        }
                     };
                     return WizardBindingHandler;
                 }());
@@ -10166,8 +10174,8 @@ var nts;
                             preferredFormat: "name",
                             showPaletteOnly: true,
                             togglePaletteOnly: true,
-                            togglePaletteMoreText: '強化',
-                            togglePaletteLessText: '略す',
+                            togglePaletteMoreText: 'その他の色',
+                            togglePaletteLessText: '隠す',
                             color: color,
                             disabled: !enable,
                             showInput: true,
@@ -10176,7 +10184,7 @@ var nts;
                             chooseText: "確定",
                             cancelText: "キャンセル",
                             allowEmpty: true,
-                            showAlpha: true,
+                            showAlpha: false,
                             palette: [
                                 ["#000", "#444", "#666", "#999", "#ccc", "#eee", "#f3f3f3", "#fff"],
                                 ["#f00", "#f90", "#ff0", "#0f0", "#0ff", "#00f", "#90f", "#f0f"],
