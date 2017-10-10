@@ -10,7 +10,7 @@ package nts.uk.ctx.at.request.dom.application.stamp;
  * 打刻組み合わせ区分
  *
  */
-public enum StampCombinationAtr {
+public enum AppStampCombinationAtr {
 	/**
 	 * 出勤
 	 */
@@ -105,7 +105,7 @@ public enum StampCombinationAtr {
 	
 	public final String name;
 	
-	StampCombinationAtr(int value, String name){
+	AppStampCombinationAtr(int value, String name){
 		this.value = value;
 		this.name = name;
 	}

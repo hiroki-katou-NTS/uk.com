@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.request.dom.application.common.service.newscreen.output;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
@@ -14,7 +15,6 @@ import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCommon;
  * @author Doan Duy Hung
  *
  */
-@NoArgsConstructor
 public class AppCommonSettingOutput {
 	
 	public GeneralDate generalDate;
@@ -26,4 +26,13 @@ public class AppCommonSettingOutput {
 	public List<AppTypeDiscreteSetting> appTypeDiscreteSettings;  
 	
 	public List<ApplicationDeadline> applicationDeadlines;
+
+	public AppCommonSettingOutput() {
+		super();
+		this.generalDate = null;
+		this.applicationSetting = null;
+		this.requestOfEachCommon = null;
+		this.appTypeDiscreteSettings = new ArrayList<>();
+		this.applicationDeadlines = new ArrayList<>();
+	}
 }

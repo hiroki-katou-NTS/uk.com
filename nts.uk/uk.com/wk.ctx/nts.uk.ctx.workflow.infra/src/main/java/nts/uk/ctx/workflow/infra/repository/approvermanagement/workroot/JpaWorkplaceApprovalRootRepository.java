@@ -153,7 +153,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 		for (WorkplaceApprovalRoot wp : wpAppRoot) {
 			lstEntity.add(toEntityWpApR(wp));
 		}
-		this.commandProxy().insert(lstEntity);
+		this.commandProxy().insertAll(lstEntity);
 	}
 	/**
 	 * update Workplace Approval Root
@@ -192,7 +192,7 @@ public class JpaWorkplaceApprovalRootRepository extends JpaRepository implements
 			lstEntity.add(x);
 		}
 		
-		this.commandProxy().update(lstEntity);
+		this.commandProxy().updateAll(lstEntity);
 	}
 	/**
 	 * delete Person Approval Root
