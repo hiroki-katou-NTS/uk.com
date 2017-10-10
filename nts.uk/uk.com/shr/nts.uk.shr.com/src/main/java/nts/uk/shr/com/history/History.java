@@ -6,13 +6,35 @@ import java.util.stream.Collectors;
 
 import lombok.val;
 import nts.gul.util.range.ComparableRange;
+import nts.uk.shr.com.history.constraint.HistoryConstraint;
 
 import static java.util.Comparator.*;
+
+import java.util.Collections;
 
 public interface History<S extends ComparableRange<S, D>, D extends Comparable<D>> {
 	
 
 	List<HistoryItem<S, D>> items();
+	
+	default List<HistoryConstraint<S, D>> constraints() {
+		return Collections.emptyList();
+	}
+
+	default void add(HistoryItem<S, D> itemToBeAdded) {
+		this.constraints().forEach(c -> c.validateIfCanAdd(this, itemToBeAdded));
+		this.items().add(itemToBeAdded);
+	}
+	
+	default void remove(HistoryItem<S, D> itemToBeRemoved) {
+		this.constraints().forEach(c -> c.validateIfCanRemove(this, itemToBeRemoved));
+		this.items().remove(itemToBeRemoved);
+	}
+	
+	default void changeSpan(HistoryItem<S, D> itemToBeChanged, S newSpan) {
+		this.constraints().forEach(c -> c.validateIfCanChangeSpan(this, itemToBeChanged, newSpan));
+		itemToBeChanged.changeSpan(newSpan);
+	}
 	
 	default List<HistoryItem<S, D>> itemsStartAscending() {
 		return this.items().stream()

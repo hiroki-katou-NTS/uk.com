@@ -5,34 +5,35 @@ import nts.gul.util.range.ComparableRange;
 
 /**
  * Item of history that has an own span.
+ * This class should be an interface but equals(Object) can not be overridden.
  *
  * @param <S> Span
  */
-public interface HistoryItem<S extends ComparableRange<S, D>, D extends Comparable<D>> {
+public abstract class HistoryItem<S extends ComparableRange<S, D>, D extends Comparable<D>> {
 
 	/**
 	 * Returns the own span.
 	 * @return span
 	 */
-	S span();
+	public abstract S span();
 	
 	/**
 	 * Returns string to identify: ID, code, ...
 	 * @return identifier
 	 */
-	String identifier();
+	public abstract String identifier();
 	
 	/**
 	 * Change span of this item.
 	 * @param newSpan new span
 	 */
-	void changeSpan(S newSpan);
+	public abstract void changeSpan(S newSpan);
 
 	/**
 	 * Shorten start of this span, to accept a given span.
 	 * @param spanToBeAccepted
 	 */
-	default void shortenStartToAccept(S spanToBeAccepted) {
+	public void shortenStartToAccept(S spanToBeAccepted) {
 		val newSpan = this.span().cutOffWithNewStart(spanToBeAccepted.end());
 		this.changeSpan(newSpan);
 	}
@@ -41,7 +42,7 @@ public interface HistoryItem<S extends ComparableRange<S, D>, D extends Comparab
 	 * Shorten start of this span, to accept a given span.
 	 * @param spanToBeAccepted
 	 */
-	default void shortenEndToAccept(S spanToBeAccepted) {
+	public void shortenEndToAccept(S spanToBeAccepted) {
 		val newSpan = this.span().cutOffWithNewEnd(spanToBeAccepted.start());
 		this.changeSpan(newSpan);
 	}
@@ -50,7 +51,7 @@ public interface HistoryItem<S extends ComparableRange<S, D>, D extends Comparab
 	 * Shorten start of this span, to accept a given item.
 	 * @param itemToBeAccepted item to be accepted
 	 */
-	default void shortenStartToAccept(HistoryItem<S, D> itemToBeAccepted) {
+	public void shortenStartToAccept(HistoryItem<S, D> itemToBeAccepted) {
 		this.shortenStartToAccept(itemToBeAccepted.span());
 	}
 	
@@ -58,7 +59,7 @@ public interface HistoryItem<S extends ComparableRange<S, D>, D extends Comparab
 	 * Shorten end of this span, to accept a given item.
 	 * @param itemToBeAccepted item to be accepted
 	 */
-	default void shortenEndToAccept(HistoryItem<S, D> itemToBeAccepted) {
+	public void shortenEndToAccept(HistoryItem<S, D> itemToBeAccepted) {
 		this.shortenEndToAccept(itemToBeAccepted.span());
 	}
 	
@@ -67,7 +68,21 @@ public interface HistoryItem<S extends ComparableRange<S, D>, D extends Comparab
 	 * @param other item to be compared
 	 * @return true if same identifier
 	 */
-	default boolean equals(HistoryItem<S, D> other) {
+	public boolean equals(HistoryItem<S, D> other) {
 		return this.identifier().equals(other.identifier());
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (this.getClass() != obj.getClass()) return false;
+		return this.equals((HistoryItem<S, D>)obj);
+	}
+	
+	@Override
+	public int hashCode() {
+		return this.identifier().hashCode();
 	}
 }
