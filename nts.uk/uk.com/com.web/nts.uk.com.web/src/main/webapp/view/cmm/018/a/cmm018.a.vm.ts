@@ -304,7 +304,11 @@ module nts.uk.com.view.cmm018.a {
                 let self = this;
                 setShared('inputCDL008', {baseDate: new Date(), isMultiple: false,canSelected: self.workplaceId()});
                 modal("/view/cdl/008/a/index.xhtml").onClosed(function(){
-                    self.workplaceId(getShared('outputCDL008').selectedCode);
+                    let data = getShared('outputCDL008');
+                    if(data == null || data === undefined){
+                        return;
+                    }
+                    self.workplaceId(data.selectedCode);
                     console.log(self.workplaceId());
                     self.getDataWorkplace();
                 });    
@@ -438,7 +442,7 @@ module nts.uk.com.view.cmm018.a {
                     self.checkAddHistory(false);
                     self.lstWorkplace(data.lstWorkplace);
                     if(data.lstWorkplace.length > 0){
-                       self.workplaceId(data.lstWorkplace[0].lstWorkplaceRoot[0].workplace.workplaceId); 
+                       self.workplaceId(data.workplaceId); 
                     }
                     let lstRoot: Array<vmbase.DataRootCheck> = [];
                     self.convertHistForWp(self.lstWorkplace());
@@ -518,7 +522,8 @@ module nts.uk.com.view.cmm018.a {
                 let self = this;
                 let checkReload = false;
                 let itemCurrent = null;
-                 let paramI: vmbase.IData_Param = null;
+                self.enableDelete(false);
+                let paramI: vmbase.IData_Param = null;
                 self.checkAddHistory(false);
                 if(self.listHistory() == null || self.listHistory().length == 0 ){
                     let lstAppType = [null];
@@ -533,7 +538,6 @@ module nts.uk.com.view.cmm018.a {
                                 lstAppType: lstAppType
                                 }
                 }else{
-                    self.enableDelete(false);
                     //item is selected
                     itemCurrent = self.findHistory(self.currentCode());
                        //最新の期間履歴を選択するかチェックする(check có đang chọn period history mới nhất hay không)
@@ -542,6 +546,7 @@ module nts.uk.com.view.cmm018.a {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_181" }).then(function(res){
     //                            block.clear();
                         });
+                        self.enableDelete(true);
                         return;
                     } 
                     let appType = null;
@@ -605,6 +610,7 @@ module nts.uk.com.view.cmm018.a {
                     //Xu ly sau khi dong dialog I
                     let data: vmbase.IData = getShared('CMM018I_DATA');
                     if(data == null){
+                        self.enableDelete(true);
                         return;
                     }
                     self.lstAppType = data.lstAppType;
@@ -1468,6 +1474,7 @@ module nts.uk.com.view.cmm018.a {
                         return;
                     }
                     self.dataSourceB(data);
+                    self.workplaceIdB(data.workplaceId);
                     self.lstWorkplace(data.lstWorkplaceRoot);
                     let lstRoot: Array<vmbase.DataCheckModeB> = [];
                     //list left
