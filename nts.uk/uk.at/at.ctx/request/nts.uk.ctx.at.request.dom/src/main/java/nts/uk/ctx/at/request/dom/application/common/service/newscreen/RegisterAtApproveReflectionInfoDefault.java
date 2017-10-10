@@ -2,7 +2,6 @@ package nts.uk.ctx.at.request.dom.application.common.service.newscreen;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -14,18 +13,14 @@ import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
-import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAcceptedRepository;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterApprovalProcess;
 import nts.uk.ctx.at.request.dom.application.common.service.newscreen.output.ApprovalInfoOutput;
-//import nts.uk.ctx.at.request.dom.application.common.service.other.ApprovalAgencyInformation;
-import nts.uk.ctx.at.request.dom.application.common.service.other.output.ApprovalAgencyInformationOutput;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -73,19 +68,22 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 		List<AppApprovalPhase> listPhase = application.getListPhase();
 		List<Integer> listDispOrder = new ArrayList<Integer>();
 		// LOOP PHASE
-		if(listPhase !=null) {
+		if (listPhase != null) {
 			for (AppApprovalPhase appPhase : listPhase) {
-				String  loginEmp = AppContexts.user().employeeId();
+				String loginEmp = AppContexts.user().employeeId();
 				List<ApprovalFrame> listFrame = appPhase.getListFrame();
 				// ドメインモデル「承認フェーズ」．承認区分が承認済じゃない(「承認フェーズ」．承認区分 ≠ 承認済)
 				if (appPhase.getApprovalATR() != ApprovalAtr.APPROVED) {
 					// LOOP FRAME
 					// 承認枠 1～5 のループ
 					for (ApprovalFrame frame : listFrame) {
-						List<ApproveAccepted> lstApproveAccepted = frame.getListApproveAccepted();
+						List<ApproveAccepted> lstApprover = frame.getListApproveAccepted();
+						List<ApproveAccepted> lstApproveAccepted = lstApprover.stream()
+								.filter(x -> x.getApprovalATR().equals(ApprovalAtr.APPROVED))
+								.collect(Collectors.toList());
 						// ループ中の「承認枠」．承認者リストに承認者がいるかチェックする
 						if (!lstApproveAccepted.isEmpty()) {
-							List<String> lstApproverIds = lstApproveAccepted.stream().map(x -> x.getApproverSID())
+							List<String> lstApproverIds = lstApprover.stream().map(x -> x.getApproverSID())
 									.collect(Collectors.toList());
 							// ログイン者が承認者かチェックする
 							if (lstApproverIds.contains(loginEmp)) {
@@ -111,13 +109,13 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 									}
 								}
 							}
-							//set list Approve Accepted after change
+							// set list Approve Accepted after change
 							frame.setListApproveAccepted(lstApproveAccepted);
 						} else {
 							continue;
 						}
 					}
-	
+
 				} else {
 					continue;
 				}
@@ -132,19 +130,22 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 					flgApprovalDone = false;
 					// if文：「承認枠」1．確定区分 == true OR 「承認枠」2．確定区分 == true OR...「承認枠」5．確定区分 == true
 					for (ApprovalFrame frame : listFrame) {
-						List<String> lstApproverIds = frame.getListApproveAccepted().stream().map(x->x.getApproverSID()).collect(Collectors.toList());
-						List<String> listApproved = approvalProcess.actualReflectionStateDecision(application.getApplicationID(), appPhase.getPhaseID(), ApprovalAtr.APPROVED);
-						for(ApproveAccepted accepted: frame.getListApproveAccepted()){
+						List<String> lstApproverIds = frame.getListApproveAccepted().stream()
+								.map(x -> x.getApproverSID()).collect(Collectors.toList());
+						List<String> listApproved = approvalProcess.actualReflectionStateDecision(
+								application.getApplicationID(), appPhase.getPhaseID(), ApprovalAtr.APPROVED);
+						for (ApproveAccepted accepted : frame.getListApproveAccepted()) {
 							// if文がtrue ==>> 確定者が承認済かチェックする(
 							if (accepted.getConfirmATR() == ConfirmAtr.USEATR_USE) {
 								// 確定者が承認済かチェックする
 								if (accepted.getApprovalATR() == ApprovalAtr.APPROVED) {
 									flgApprovalDone = true;
 								} else {
-									//アルゴリズム「承認代行情報の取得処理」を実行する
-									AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(companyID, lstApproverIds);
-									if(!agency.isFlag()){ 
-										flgApprovalDone = false; 
+									// アルゴリズム「承認代行情報の取得処理」を実行する
+									AgentPubImport agency = this.approvalAgencyInformationService
+											.getApprovalAgencyInformation(companyID, lstApproverIds);
+									if (!agency.isFlag()) {
+										flgApprovalDone = false;
 									}
 								}
 							} else {
@@ -152,45 +153,48 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 								if (accepted.getApprovalATR() == ApprovalAtr.APPROVED) {
 									flgApprovalDone = true;
 								} else {
-									AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(companyID, lstApproverIds);
-									if(!agency.isFlag()){ 
-										flgApprovalDone = false; 
+									AgentPubImport agency = this.approvalAgencyInformationService
+											.getApprovalAgencyInformation(companyID, lstApproverIds);
+									if (!agency.isFlag()) {
+										flgApprovalDone = false;
 									}
 								}
 							}
 						}
 					}
 				} else {
-					//「承認フェーズ」．承認形態が全員承認
+					// 「承認フェーズ」．承認形態が全員承認
 					flgApprovalDone = true;
 					// 全員承認したかチェックする
 					boolean allApprovePhase = true;
 					for (ApprovalFrame frame : listFrame) {
-						//全員承認したかチェックする
-						//tat ca da dc approver 
+						// 全員承認したかチェックする
+						// tat ca da dc approver
 						if (!this.isFrameApprove(frame)) {
 							allApprovePhase = false;
 						}
 					}
-					if(!allApprovePhase) {
-						//未承認の承認者一覧を取得する
-						List<String> listUnApprover = approvalProcess.actualReflectionStateDecision(application.getApplicationID(), appPhase.getPhaseID(),ApprovalAtr.UNAPPROVED);
-						//承認代行情報の取得処理
-						AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(companyID, listUnApprover);
-						if(!agency.isFlag()) {
+					if (!allApprovePhase) {
+						// 未承認の承認者一覧を取得する
+						List<String> listUnApprover = approvalProcess.actualReflectionStateDecision(
+								application.getApplicationID(), appPhase.getPhaseID(), ApprovalAtr.UNAPPROVED);
+						// 承認代行情報の取得処理
+						AgentPubImport agency = this.approvalAgencyInformationService
+								.getApprovalAgencyInformation(companyID, listUnApprover);
+						if (!agency.isFlag()) {
 							flgApprovalDone = false;
 						}
 					}
-					
+
 				}
-				//その以外
+				// その以外
 				if (flgApprovalDone) {
-					//承認完了フラグをチェックする
-					//ループ中のドメインモデル「承認フェーズ」．承認区分 = 承認済
+					// 承認完了フラグをチェックする
+					// ループ中のドメインモデル「承認フェーズ」．承認区分 = 承認済
 					appPhase.changeApprovalATR(ApprovalAtr.APPROVED);
 					listAppPhase.add(appPhase);
 					listDispOrder.add(appPhase.getDispOrder());
-				}else {
+				} else {
 					listAppPhase.add(appPhase);
 				}
 			}
