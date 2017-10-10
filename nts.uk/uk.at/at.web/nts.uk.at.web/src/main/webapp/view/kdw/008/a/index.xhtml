@@ -35,51 +35,60 @@
 			</div>
 
 			<div id="contents-area">
-				<div class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW008_6')}</div>
+				<table>
+					<tr>
+						<td style="vertical-align: top; width: 250px">
+							<div class="label" style="margin-bottom: 15px;">#{i18n.getText('KDW008_6')}</div>
 
-				<table id="single-list"
-					data-bind="ntsGridList: {								
-					height: 240,
-					dataSource: businessTypeList,
-					primaryKey: 'dailyPerformanceFormatCode',
-					columns: columns1,
-					multiple: false,
-					value: selectedCode
-				}"></table>
-				<div>
-					<div style="margin-bottom: 20px">
-						<span id="label2" class="label">#{i18n.getText('KDW008_7')} (半角英数字3桁)</span>
-						<input id="currentCode"
-							data-bind="ntsTextEditor: {value: currentDailyFormatCode, enable : showCode	}" /><br />
-					</div>
-					<div>
-						<span id="label4" class="label">#{i18n.getText('KDW008_8')} （全角10文字)</span>
-						<input style="margin-left: 15px" data-bind="ntsTextEditor: {value: currentDailyFormatName}" />
-					</div>
-					<br />
-					<div id="checkbox1" data-bind="ntsCheckBox: { checked: checked }">#{i18n.getText('KDW008_32')}</div>
-				</div>
-				<div id="tab-panel"
-					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-					<div class="tab-content-1" style="height: 500px; width: 900px">
-						<div>
-							<span class="label">#{i18n.getText('KDW008_23')}</span>
-							<div id="A_SEL_002"
-								data-bind="ntsComboBox: {
+							<table id="single-list"
+								data-bind="ntsGridList: {								
+									height: 350,
+									dataSource: businessTypeList,
+									primaryKey: 'dailyPerformanceFormatCode',
+									columns: columns1,
+									multiple: false,
+									value: selectedCode
+								}">
+							</table>
+						</td>
+						<td>
+							<div>
+								<div style="margin-bottom: 20px">
+									<span id="label2" class="label">#{i18n.getText('KDW008_7')}
+										(半角英数字3桁)</span> <input id="currentCode"
+										data-bind="ntsTextEditor: {value: currentDailyFormatCode, enable : showCode	}" /><br />
+								</div>
+								<div>
+									<span id="label4" class="label">#{i18n.getText('KDW008_8')}
+										（全角10文字)</span> <input style="margin-left: 15px"
+										data-bind="ntsTextEditor: {value: currentDailyFormatName}" />
+								</div>
+								<br />
+								<div id="checkbox1"
+									data-bind="ntsCheckBox: { checked: checked }">#{i18n.getText('KDW008_32')}</div>
+							</div>
+							<div id="tab-panel"
+								data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+								<div class="tab-content-1" style="height: 500px;">
+									<div>
+										<span class="label">#{i18n.getText('KDW008_23')}</span>
+										<div id="A_SEL_002"
+											data-bind="ntsComboBox: {
 									options: sheetNoList,
 									optionsValue: 'sheetNoId',
 									optionsText: 'sheetNoName',
 									value: selectedSheetNo,
 									enable: true}">
-							</div>
-							<span id="label2" class="label">#{i18n.getText('KDW008_8')}   （全角10文字)</span>
-							<input data-bind="ntsTextEditor: {value: selectedSheetName}"></input>
-						</div>
-						<div id="label2" style="margin-bottom: 10px" class="label">#{i18n.getText('KDW008_24')}</div>
-						<BR />
-						<div class="label">#{i18n.getText('KDW008_29')}</div>
-						<div style="margin-top: 10px" id="swap-list2"
-							data-bind="ntsSwapList: {
+										</div>
+										<span id="label2" class="label">#{i18n.getText('KDW008_8')}
+											（全角10文字)</span> <input
+											data-bind="ntsTextEditor: {value: selectedSheetName}"></input>
+									</div>
+									<div id="label2" style="margin-bottom: 10px" class="label">#{i18n.getText('KDW008_24')}</div>
+									<BR />
+									<div class="label">#{i18n.getText('KDW008_29')}</div>
+									<div style="margin-top: 10px" id="swap-list2"
+										data-bind="ntsSwapList: {
 							showSearchBox: { showLeft : true, showRight: true},
 							height: 400,
 							dataSource: currentBusinessType().attendanceItemDtos,
@@ -87,17 +96,17 @@
 							columns: columns2,
 							value: authorityFormatDailyValue,
 							searchMode: 'filter',
-							searchCriterion: ['currentBusinessType().attendanceItemName','currentBusinessType().attendanceItemId'],
+							searchCriterion: ['attendanceItemName','attendanceItemId'],
 							draggable: true,
 							multipleDrag: { left: true, right: false },
 							innerDrag: { left: false, right: true },
 							outerDrag: { left: true, right: true } 
 						}"></div>
-					</div>
-					<div class="tab-content-2" style="height: 500px; width: 900px">
-						<div class="label">#{i18n.getText('KDW008_28')}</div>
-						<div style="margin-top: 10px" id="swap-list"
-							data-bind="ntsSwapList: {
+								</div>
+								<div class="tab-content-2" style="height: 500px;">
+									<div class="label">#{i18n.getText('KDW008_28')}</div>
+									<div style="margin-top: 10px" id="swap-list"
+										data-bind="ntsSwapList: {
 							showSearchBox: { showLeft : true, showRight: true},
 							height: 456,
 							dataSource: currentBusinessType().attendanceItemDtos,
@@ -111,8 +120,11 @@
 							innerDrag: { left: false, right: true },
 							outerDrag: { left: true, right: true } 
 						}"></div>
-					</div>
-				</div>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</table>
 			</div>
 		</ui:define>
 
