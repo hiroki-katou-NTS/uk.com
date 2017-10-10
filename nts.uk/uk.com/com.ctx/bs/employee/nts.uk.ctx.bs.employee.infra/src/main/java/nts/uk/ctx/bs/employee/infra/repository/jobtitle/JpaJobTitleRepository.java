@@ -27,6 +27,12 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist_;
 @Stateless
 public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepository {
 
+	/**
+	 * To entity.
+	 *
+	 * @param jobTitle the job title
+	 * @return the list
+	 */
 	private List<BsymtJobHist> toEntity(JobTitle jobTitle) {
 		
 		List<BsymtJobHist> listEntity = jobTitle.getJobTitleHistory().stream()
@@ -73,11 +79,17 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository#removeHistory(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void removeHistory(String companyId, String jobTitleId, String historyId) {
 		this.commandProxy().remove(BsymtJobHist.class, new BsymtJobHistPK(companyId, historyId, jobTitleId));
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository#findByJobTitleId(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public Optional<JobTitle> findByJobTitleId(String companyId, String jobTitleId) {
 		
@@ -108,5 +120,4 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 		}
 		return Optional.of(new JobTitle(new JpaJobTitleGetMemento(listBsymtJobHist)));		
 	}
-
 }

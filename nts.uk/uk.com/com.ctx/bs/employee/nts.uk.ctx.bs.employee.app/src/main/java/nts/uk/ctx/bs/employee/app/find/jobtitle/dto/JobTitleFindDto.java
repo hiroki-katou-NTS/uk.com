@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.employee.app.command.jobtitle.dto;
+package nts.uk.ctx.bs.employee.app.find.jobtitle.dto;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,11 +10,11 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 
 /**
- * The Class JobTitleDto.
+ * Instantiates a new job title find dto.
  */
 @Data
-public class JobTitleDto implements JobTitleSetMemento {
-
+public class JobTitleFindDto implements JobTitleSetMemento {
+	
 	/** The company id. */
 	public String companyId;
 
@@ -22,8 +22,8 @@ public class JobTitleDto implements JobTitleSetMemento {
 	public String jobTitleId;
 
 	/** The job title history. */
-	public List<JobTitleHistoryDto> jobTitleHistory;
-	
+	public List<JobTitleHistoryFindDto> jobTitleHistory;
+
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento#setCompanyId(nts.uk.ctx.bs.employee.dom.common.CompanyId)
 	 */
@@ -46,7 +46,7 @@ public class JobTitleDto implements JobTitleSetMemento {
 	@Override
 	public void setJobTitleHistory(List<JobTitleHistory> jobTitleHistory) {
 		this.jobTitleHistory = jobTitleHistory.stream().map(item -> {
-			JobTitleHistoryDto dto = new JobTitleHistoryDto();
+			JobTitleHistoryFindDto dto = new JobTitleHistoryFindDto();
 			item.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());
