@@ -12,6 +12,7 @@ module nts.uk.at.view.kmk002.a {
     import OptItemEnumDto = nts.uk.at.view.kmk002.a.service.model.OptItemEnumDto;
     import FormulaEnumDto = nts.uk.at.view.kmk002.a.service.model.FormulaEnumDto;
     import EnumConstantDto = nts.uk.at.view.kmk002.a.service.model.EnumConstantDto;
+    import EnumAdaptor = nts.uk.at.view.kmk002.a.service.model.EnumAdaptor;
 
     export module viewmodel {
 
@@ -1077,18 +1078,17 @@ module nts.uk.at.view.kmk002.a {
             * Open dialog C: Item selection
             */
             public openDialogC(): void {
-                //TODO move to formula view model later
                 let self = this;
 
                 // Set param
-                let dto = <ParamToC>{};
-                dto.formulaId = 'axcb';
-                dto.performanceAtr = 1;
-                dto.formulaAtr = 'time';
-                dto.formulaName = 'name';
-                dto.minusSegment = true;
-                dto.attendanceItems = [];
-                nts.uk.ui.windows.setShared('paramToC', dto);
+                let dto = self.toDto();
+                let param = <ParamToC>{};
+                param.formulaId = dto.formulaId;
+                param.performanceAtr = 1; //TODO ??
+                param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_FORMULA.formulaAtr);
+                param.formulaName = dto.formulaName;
+                param.itemSelection = self.itemSelection.toDto();
+                nts.uk.ui.windows.setShared('paramToC', param);
 
                 // Open dialog.
                 nts.uk.ui.windows.sub.modal('/view/kmk/002/c/index.xhtml');
@@ -1098,19 +1098,18 @@ module nts.uk.at.view.kmk002.a {
              * Open dialog D: Formula setting
              */
             public openDialogD(): void {
-                //TODO move to formula view model later
                 let self = this;
 
                 // set pram.
-                let dto = <ParamToD>{};
-                dto.formulaId = '';
-                dto.performanceAtr = 1;
-                dto.formulaAtr = 'time';
-                dto.formulaName = 'name';
-                dto.minusSegment = true;
-                dto.formulaSetting = new FormulaSetting().toDto();
+                let dto = self.toDto();
+                let param = <ParamToD>{};
+                param.formulaId = dto.formulaId;
+                param.performanceAtr = 1; //TODO ??
+                param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_FORMULA.formulaAtr);
+                param.formulaName = dto.formulaName;
+                param.formulaSetting = self.formulaSetting.toDto();
 
-                nts.uk.ui.windows.setShared('paramToD', dto);
+                nts.uk.ui.windows.setShared('paramToD', param);
 
                 // open dialog D.
                 nts.uk.ui.windows.sub.modal('/view/kmk/002/d/index.xhtml').onClosed(() => {
@@ -1437,15 +1436,13 @@ module nts.uk.at.view.kmk002.a {
             performanceAtr: number;
             formulaAtr: string;
             formulaName: string;
-            minusSegment: boolean;
-            attendanceItems: Array<any>;
+            itemSelection: ItemSelectionDto;
         }
         export interface ParamToD {
             formulaId: string;
             formulaName: string;
             formulaAtr: string;
             performanceAtr: number;
-            minusSegment: boolean;
             formulaSetting: FormulaSettingDto;
         }
     }
