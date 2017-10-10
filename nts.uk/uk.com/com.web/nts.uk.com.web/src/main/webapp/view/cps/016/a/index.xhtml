@@ -9,12 +9,12 @@
 		<ui:define name="htmlHead">
 			<title>#{i18n.getText('CPS008_1')}</title>
 			<com:ValidatorScript>
-					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionItemName
-					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionCode
-					nts.uk.ctx.bs.person.dom.person.setting.selection.IntegrationCode
-					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionName
-					nts.uk.ctx.bs.person.dom.person.setting.selection.SelectionExternalCode
-					nts.uk.ctx.bs.person.dom.person.setting.selection.Memo
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionItemName
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionCodeLength
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.IntegrationCode
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionNameLength
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionExternalCDLength
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.Memo
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
@@ -97,11 +97,11 @@
 						</div>
 						
 						<div class="row" data-bind="with: formatSelection">
-							<div class="coll" data-bind="ntsFormLabel: {constraint: 'SelectionCode', required: true }">#{i18n.getText('CPS016_13')}</div>
+							<div class="coll" data-bind="ntsFormLabel: {constraint: 'SelectionCodeLength', required: true }">#{i18n.getText('CPS016_13')}</div>
 							<input style="width: 20px;"
 								data-bind="ntsNumberEditor :{
 									value: selectionCode,
-									constraint: 'SelectionCode',
+									constraint: 'SelectionCodeLength',
 									option: '',
 									required: true,
 									enable: true,
@@ -109,11 +109,11 @@
 						</div>
 
 						<div class="row" data-bind="with: formatSelection">
-							<div class="coll" data-bind="ntsFormLabel: {constraint: 'SelectionName', required: true }">#{i18n.getText('CPS016_15')}</div>
+							<div class="coll" data-bind="ntsFormLabel: {constraint: 'SelectionNameLength', required: true }">#{i18n.getText('CPS016_15')}</div>
 							<input style="width: 20px;"
 								data-bind="ntsNumberEditor : {
 									value: selectionName,
-									constraint: 'SelectionName',
+									constraint: 'SelectionNameLength',
 									option: '',
 									required: true,
 									enable: true,
@@ -121,11 +121,11 @@
 						</div>
 
 						<div class="row" data-bind="with: formatSelection">
-							<div class="coll" data-bind="ntsFormLabel: {constraint: 'SelectionExternalCode', required: true }">#{i18n.getText('CPS016_17')}</div>
+							<div class="coll" data-bind="ntsFormLabel: {constraint: 'SelectionExternalCDLength', required: true }">#{i18n.getText('CPS016_17')}</div>
 							<input style="width: 20px;"
 								data-bind="ntsNumberEditor : {
 									value: selectionExternalCode,
-									constraint: 'SelectionExternalCode',
+									constraint: 'SelectionExternalCDLength',
 									option: '',
 									required: true,
 									enable: true,
@@ -154,7 +154,7 @@
 								<label>#{i18n.getText('CPS016_21')}</label>
 							</div>
 							<textarea style="width: 450px; height: 90px;"
-								data-bind="ntsMultilineEditor: { value: memo }" />
+								data-bind="ntsMultilineEditor: { value: memo , constraint: 'Memo',}" />
 						</div>
 					</div>
 				</div>

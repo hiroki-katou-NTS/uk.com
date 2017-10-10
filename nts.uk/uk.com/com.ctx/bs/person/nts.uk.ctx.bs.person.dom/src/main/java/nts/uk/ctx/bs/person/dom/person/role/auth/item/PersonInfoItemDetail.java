@@ -1,5 +1,7 @@
 package nts.uk.ctx.bs.person.dom.person.role.auth.item;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,5 +32,9 @@ public class PersonInfoItemDetail {
 	private int requiredAtr;
 
 	private boolean setting;
+
+	private String itemParentCd;
+
+	List<PersonInfoItemDetail> setItems;
 
 }
