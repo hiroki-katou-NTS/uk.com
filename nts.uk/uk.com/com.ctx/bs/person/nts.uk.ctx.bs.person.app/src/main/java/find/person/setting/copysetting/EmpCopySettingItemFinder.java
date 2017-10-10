@@ -39,8 +39,8 @@ public class EmpCopySettingItemFinder {
 	@Inject
 	PerInfoItemDefRepositoty PerInfoItemRepo;
 
-	public List<PerInfoCopyItemDto> getEmpCopySettingItemList(String ctgId) {
-		List<EmpCopySettingItem> itemList = this.empCopyItemRepo.getAll(ctgId);
+	public List<PerInfoCopyItemDto> getEmpCopySettingItemList(String categoryId) {
+		List<EmpCopySettingItem> itemList = this.empCopyItemRepo.getAllItemFromCategoryId(categoryId);
 
 		if (itemList.isEmpty()) {
 			throw new BusinessException(new RawErrorMessage("Msg_347"));

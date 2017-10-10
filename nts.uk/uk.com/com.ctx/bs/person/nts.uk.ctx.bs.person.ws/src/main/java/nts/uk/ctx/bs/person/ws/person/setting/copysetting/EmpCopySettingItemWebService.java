@@ -20,9 +20,9 @@ public class EmpCopySettingItemWebService extends WebService {
 	private EmpCopySettingItemFinder finder;
 
 	@POST
-	@Path("getAll/{ctgId}")
-	public List<PerInfoCopyItemDto> getItemListFromCtgId(@PathParam("ctgId") String ctgId) {
-		return this.finder.getEmpCopySettingItemList(ctgId);
+	@Path("getAll/{categoryId}")
+	public List<PerInfoCopyItemDto> getItemListFromCtgId(@PathParam("categoryId") String categoryId) {
+		return this.finder.getEmpCopySettingItemList(categoryId);
 	}
 
 }
