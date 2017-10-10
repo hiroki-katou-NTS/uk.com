@@ -90,7 +90,7 @@ public class GrantHdTbl extends AggregateRoot {
 		Set<Integer> appeared = new HashSet<>();
 		
 		for (GrantHdTbl item : grantHolidayList) {
-			if (!appeared.add(item.lengthOfServiceYears.v())) {
+			if (item.lengthOfServiceYears != null && !appeared.add(item.lengthOfServiceYears.v())) {
 				throw new BusinessException("Msg_266");
 			}
 		}
@@ -98,21 +98,15 @@ public class GrantHdTbl extends AggregateRoot {
 		for (int i = 0; i < grantHolidayList.size(); i++) {
 			GrantHdTbl currentCondition = grantHolidayList.get(i);
 			
-			// 勤続年数が入力されている場合、付与日数を入力すること
-			if ((currentCondition.getLengthOfServiceMonths() != null || currentCondition.getLengthOfServiceYears() != null) 
-					&& (currentCondition.getGrantDays() == null || currentCondition.getGrantDays().v() == null)) {
-				throw new BusinessException("Msg_270");
-			}
-			// 付与日数が入力されている場合、勤続年数を入力すること
-			if ((currentCondition.getLengthOfServiceMonths() == null || currentCondition.getLengthOfServiceYears() == null) 
-					&& (currentCondition.getGrantDays() != null || currentCondition.getGrantDays().v() != null)) {
-				throw new BusinessException("Msg_270");
-			}
-			
 			// 勤続年数、0年0ヶ月は登録不可
 			if ((currentCondition.getLengthOfServiceMonths() == null && currentCondition.getLengthOfServiceYears() == null) ||
 					(currentCondition.getLengthOfServiceMonths().v() == 0 && currentCondition.getLengthOfServiceYears().v() == 0)) {
 				throw new BusinessException("Msg_268");
+			}
+						
+			// 勤続年数が入力されている場合、付与日数を入力すること
+			if (currentCondition.getGrantDays() == null || currentCondition.getGrantDays().v() == null) {
+				throw new BusinessException("Msg_270");
 			}
 						
 			if (i == 0) {
@@ -145,13 +139,20 @@ public class GrantHdTbl extends AggregateRoot {
 	 * @return
 	 */
 	public static GrantHdTbl createFromJavaType(String companyId, int grantYearHolidayNo, int conditionNo,
-			String yearHolidayCode, BigDecimal grantDays, int limitedTimeHdDays, int limitedHalfHdCnt,
-			int lengthOfServiceMonths, int lengthOfServiceYears, int grantReferenceDate, int grantSimultaneity) {
-
+			String yearHolidayCode, BigDecimal grantDays, Integer limitedTimeHdDays, Integer limitedHalfHdCnt,
+			Integer lengthOfServiceMonths, Integer lengthOfServiceYears, int grantReferenceDate, int grantSimultaneity) {
+		
+		if (lengthOfServiceYears != null || lengthOfServiceMonths != null) {
+			lengthOfServiceYears = lengthOfServiceYears == null ? 0 : lengthOfServiceYears;
+			lengthOfServiceMonths = lengthOfServiceMonths == null ? 0 : lengthOfServiceMonths;
+		}
+		
 		return new GrantHdTbl(companyId, grantYearHolidayNo, conditionNo, new YearHolidayCode(yearHolidayCode),
-				new GrantDays(grantDays), new LimitedTimeHdDays(limitedTimeHdDays),
-				new LimitedHalfHdCnt(limitedHalfHdCnt), new LengthOfServiceMonths(lengthOfServiceMonths),
-				new LengthOfServiceYears(lengthOfServiceYears),
+				grantDays != null ? new GrantDays(grantDays) : null,
+				limitedTimeHdDays != null ? new LimitedTimeHdDays(limitedTimeHdDays): null,
+				limitedHalfHdCnt != null ? new LimitedHalfHdCnt(limitedHalfHdCnt): null, 
+				lengthOfServiceMonths != null ? new LengthOfServiceMonths(lengthOfServiceMonths) : null,
+				lengthOfServiceYears != null ? new LengthOfServiceYears(lengthOfServiceYears) : null,
 				EnumAdaptor.valueOf(grantReferenceDate, GrantReferenceDate.class),
 				EnumAdaptor.valueOf(grantSimultaneity, GrantSimultaneity.class));
 	}
@@ -162,8 +163,8 @@ public class GrantHdTbl extends AggregateRoot {
 	 */
 	public void calculateGrantDate(GeneralDate referenceDate, GeneralDate simultaneousGrantDate,
 			UseSimultaneousGrant useSimultaneousGrant) {
-		referenceDate.addMonths(lengthOfServiceMonths.v());
-		referenceDate.addYears(lengthOfServiceYears.v());
+		referenceDate = referenceDate.addMonths(lengthOfServiceMonths.v());
+		referenceDate = referenceDate.addYears(lengthOfServiceYears.v());
 
 		if (UseSimultaneousGrant.USE.equals(useSimultaneousGrant)) {
 			if (GrantSimultaneity.USE.equals(this.grantSimultaneity)) {
