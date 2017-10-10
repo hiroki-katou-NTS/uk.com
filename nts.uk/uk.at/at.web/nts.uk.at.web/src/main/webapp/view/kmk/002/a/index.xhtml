@@ -187,13 +187,13 @@
                                     data-bind="ntsComboBox: {
                                     name: '#[KMK002_24]',
                                     options: atrDataSource,
-                                    optionsValue: 'code',
+                                    optionsValue: 'value',
                                     value: optionalItemAtr,
-                                    optionsText: 'name',
+                                    optionsText: 'localizedName',
                                     editable: false,
                                     enable: isUsed,
                                     columns: [
-                                    { prop: 'name', length: 1 },
+                                    { prop: 'localizedName', length: 10 },
                                     ]}">
                                  </div>
                               </td>
