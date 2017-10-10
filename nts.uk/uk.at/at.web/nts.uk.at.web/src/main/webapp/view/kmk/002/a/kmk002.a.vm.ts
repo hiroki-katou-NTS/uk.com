@@ -260,8 +260,10 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
 
                 // check before add
-                // if zz is used or no formula checked => show message 508.
-                if (!self.canAddFormula() && !nts.uk.util.isNullOrEmpty(self.calcFormulas())) {
+                // if zz is used
+                // or list formula has at least 1 item and no formula checked
+                // => show error message and return
+                if (!self.canAddFormula() && self.isFormulaSet()) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_508' });
                     return;
                 }
@@ -383,8 +385,10 @@ module nts.uk.at.view.kmk002.a {
                  let self = this;
 
                 // check before add
-                // if zz is used or no formula checked => show message 508.
-                if (!self.canAddFormula() && !nts.uk.util.isNullOrEmpty(self.calcFormulas())) {
+                // if zz is used
+                // or list formula has at least 1 item and no formula checked
+                // => show error message and return
+                if (!self.canAddFormula() && self.isFormulaSet()) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_508' });
                     return;
                 }
@@ -405,7 +409,7 @@ module nts.uk.at.view.kmk002.a {
                 f.optionalItemNo = self.optionalItemNo();
 
                 // update order of below items.
-                self.updateOrderAfter(belowOrder);
+                self.updateOrderAfter(belowOrder - 1);
 
                 // add new formula
                 self.calcFormulas.push(f);
@@ -543,9 +547,11 @@ module nts.uk.at.view.kmk002.a {
 
             }
 
+            /**
+             * check if at least one formula exist 
+             */
             public isFormulaSet(): boolean {
-                //TODO check if calculation formula is set.
-                if (this.calcFormulas.length > 0) {
+                if (!nts.uk.util.isNullOrEmpty(this.calcFormulas()) && this.calcFormulas().length > 0) {
                     return true;
                 }
                 return false;
