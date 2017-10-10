@@ -1,5 +1,5 @@
 module nts.uk.at.view.kdw006.g.viewmodel {
-    export class ScreenModel {
+    export class ScreenModelG {
         // declare
         fullWorkTypeList: KnockoutObservableArray<any>;
         groups1: KnockoutObservableArray<any>;

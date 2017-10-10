@@ -1,5 +1,5 @@
 module nts.uk.at.view.kdw006.b.viewmodel {
-    export class ScreenModel {
+    export class ScreenModelB {
         //Daily perform id from other screen
         settingUnit: KnockoutObservable<number>;
         comment: KnockoutObservable<string>;
