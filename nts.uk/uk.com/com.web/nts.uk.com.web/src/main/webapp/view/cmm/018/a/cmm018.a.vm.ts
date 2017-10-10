@@ -160,7 +160,7 @@ module nts.uk.com.view.cmm018.a {
                         }
                         //TH: work place
                         else if(self.tabSelected() == vmbase.RootType.WORKPLACE){
-                             __viewContext.viewModel.viewmodelB.checkTabSelectedB(vmbase.RootType.WORKPLACE,'');
+                             __viewContext.viewModel.viewmodelB.checkTabSelectedB(vmbase.RootType.WORKPLACE,self.workplaceId());
                         }
                         //TH: person
                         else{
@@ -307,8 +307,11 @@ module nts.uk.com.view.cmm018.a {
                         return;
                     }
                     self.workplaceId(data.selectedCode);
-                    console.log(self.workplaceId());
-                    self.getDataWorkplace();
+                    if(self.selectedModeCode() == 0){
+                        self.getDataWorkplace();
+                    }else{
+                        __viewContext.viewModel.viewmodelB.checkTabSelectedB(vmbase.RootType.WORKPLACE,data.selectedCode);
+                    }
                 });    
             }
             /**
@@ -2215,16 +2218,18 @@ module nts.uk.com.view.cmm018.a {
                     //TH: tab work place
                     else if(codeChanged == vmbase.RootType.WORKPLACE){
                         self.tabSelectedB(vmbase.RootType.WORKPLACE);
-                        self.getDataWorkplacePr().done(function(data){
-                            //list left
-                            _.each(self.lstWorkplace(), function(item){
-                                lstRoot.push(new vmbase.DataCheckModeB(item.workplace.approvalId, item.workplace.startDate,
-                                    item.workplace.endDate, item.workplace.applicationType, item.workplace.employmentRootAtr));
-                            });
-                            //list right
-                             let com = self.findRootWpD(self.singleSelectedCode());
-                            self.dataDisplay(self.convert(lstRoot));
-                        });;
+                        self.workplaceIdB(id);
+                        self.getDataWorkplacePr();
+//                        self.getDataWorkplacePr().done(function(data){
+//                            //list left
+//                            _.each(self.lstWorkplace(), function(item){
+//                                lstRoot.push(new vmbase.DataCheckModeB(item.workplace.approvalId, item.workplace.startDate,
+//                                    item.workplace.endDate, item.workplace.applicationType, item.workplace.employmentRootAtr));
+//                            });
+//                            //list right
+//                             let com = self.findRootWpD(self.singleSelectedCode());
+//                            self.dataDisplay(self.convert(lstRoot));
+//                        });;
                     }
                     //TH: tab person
                     else{
