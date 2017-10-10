@@ -6,7 +6,8 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
-			<div class="contents-area cf">
+<!-- 			<div class="contents-area cf" data-bind="if: approvalRoot().length != 0"> -->
+			<div class="contents-area cf" data-bind="">
 				<div id="label-1">
 					<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF000_37')}</div>
 				</div>
@@ -19,19 +20,19 @@
 								<th class="content-app" style="width: 230px;">#{i18n.getText('KAF000_3')}</th>
 							</tr>
 						</thead>
-						 <tbody data-bind="foreach : beforeApprovers">
-							<com:ko bind="$data.approverDtos" tag="foreach">
+						 <tbody data-bind="foreach: beforeApprovers">
+							<com:ko bind="$data.approvers" tag="foreach">
 								<tr>
 									<com:ko bind="$index() === 0" tag="if">
-										<td class="bg-green" data-bind="attr: {rowspan: $parent.approverDtos.length}">
-											フェーズ<label data-bind="text: $data.approvalPhaseId"></label>
+										<td class="bg-green" data-bind="attr: {rowspan: $parent.approvers.length}">
+											フェーズ<label data-bind="text: $parent.orderNumber"></label>
 										</td>
 									</com:ko>
 									<td class="bg-green">
 										承認者<label data-bind="text: $data.orderNumber"></label>
 									</td>
 									<td>
-										<label data-bind="text: $data.employeeName"></label>
+										<label data-bind="text: $data.name"></label>
 									</td>
 								</tr>
 							</com:ko>

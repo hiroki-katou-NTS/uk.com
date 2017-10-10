@@ -8,7 +8,6 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,7 +17,7 @@ public class BsymtEmpInfoCtgDataPk implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Basic(optional = false)
-	@Column(name = "P_INFO_CTG_ID")
-	public GeneralDate personInfoCtgId;
+	@Column(name = "RECORD_ID")
+	public String recordId;
 
 }

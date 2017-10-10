@@ -25,7 +25,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<a id="button1" class="goback"
-					data-bind="ntsLinkButton: { jump: '../../006/index.xhtml' }">#{i18n.getText('KDW008_30')}</a>
+					data-bind="ntsLinkButton: { jump: '../../006/a/index.xhtml' }">#{i18n.getText('KDW008_30')}</a>
 
 				<span id="button2">
 					<button class="proceed" data-bind="click : addOrUpdateClick">#{i18n.getText('KDW008_3')}</button>
@@ -56,6 +56,7 @@
 				</div>
 				<div id="tab-panel"
 					data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+					<div class="label">#{i18n.getText('KDW008_28')}</div>
 					<div class="tab-content-1" style="height: 500px; width: 900px">
 						<div style="margin-top: 10px" id="swap-list"
 							data-bind="ntsSwapList: {
@@ -87,7 +88,7 @@
 							<span id="label2" class="label">#{i18n.getText('KDW008_8')}</span>
 							<input data-bind="ntsTextEditor: {value: selectedSheetName}"></input>
 						</div>
-						<div id="label2" class="label">#{i18n.getText('KDW008_24')}</div>
+						<div id="label2" style="margin-bottom: 10px" class="label">#{i18n.getText('KDW008_24')}</div>
 						<BR />
 						<div class="label">#{i18n.getText('KDW008_29')}</div>
 						<div style="margin-top: 10px" id="swap-list2"

@@ -61,7 +61,6 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 				new NumDaysOfWeek(entity.warningDateDispAtr),
 				EnumAdaptor.valueOf(entity.appReasonDispAtr,AppDisplayAtr.class),
 				EnumAdaptor.valueOf(entity.appContentChangeFlg,AppCanAtr.class),
-				EnumAdaptor.valueOf(entity.personApprovalFlg,AprovalPersonFlg.class),
 				EnumAdaptor.valueOf(entity.scheReflectFlg,ReflectionFlg.class),
 				EnumAdaptor.valueOf(entity.priorityTimeReflectFlg,PriorityFLg.class),
 				EnumAdaptor.valueOf(entity.attendentTimeReflectFlg,ReflectionFlg.class));
@@ -94,7 +93,6 @@ public class JpaApplicationSettingRepository extends JpaRepository implements Ap
 		entity.warningDateDispAtr = domain.getWarningDateDispAtr().v();
 		entity.appReasonDispAtr = domain.getAppReasonDispAtr().value;
 		entity.appContentChangeFlg = domain.getAppContentChangeFlg().value;
-		entity.personApprovalFlg = domain.getPersonApprovalFlg().value;
 		entity.scheReflectFlg = domain.getScheReflectFlg().value;
 		entity.priorityTimeReflectFlg = domain.getPriorityTimeReflectFlg().value;
 		entity.attendentTimeReflectFlg = domain.getAttendentTimeReflectFlg().value;

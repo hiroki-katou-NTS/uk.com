@@ -8,11 +8,15 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class EmployeeAdapterInforFinder {
 	@Inject
 	private EmployeeAdapter employeeInfor;
+	@Inject
+	private WorkplaceAdapter wkplaceAdapter;
+	
 	/**
 	 * find employee by workplaceId and base date
 	 * @param workplaceIds
@@ -29,7 +33,7 @@ public class EmployeeAdapterInforFinder {
 	 * @return
 	 */
 	public String getWorkplaceId(String employeeId, GeneralDate baseDate) {
-		return employeeInfor.getWorkplaceId(AppContexts.user().companyId(), employeeId, baseDate);
+		return wkplaceAdapter.getWorkplaceId(AppContexts.user().companyId(), employeeId, baseDate);
 	}
 	/**
 	* get employment code by companyID, employeeID and base date

@@ -15,7 +15,7 @@
 								<div class="m2-inline-div">
 									<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: startTimeDisp }"></div>
 									<input class="m2-time-editor" data-bind="ntsTimeWithDayEditor: { 
-														name: 'Time With Day', 
+														name: '#[KAF002_20]', 
 														constraint:'TimeWithDayAttr', 
 														value: startTime,
 														required: true,
@@ -24,7 +24,7 @@
 								<div class="m2-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 									<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: startLocationDisp }"></div>
 									<button data-bind="click: function(){ $parent.openSelectLocationDialog('start', $index()) }, enable: startLocationDisp">#{i18n.getText('KAF002_14')}</button>
-									<span class="label m2-label" data-bind="text: startLocation, css: { m2DisableEdit: !startLocationDisp() }"></span>	
+									<span class="label m2-label" data-bind="name: '#[KAF002_26]', text: startLocation, css: { m2DisableEdit: !startLocationDisp() }"></span>	
 								</div>					
 							</div>
 						</div>
@@ -36,7 +36,7 @@
 								<div class="m2-inline-div">
 									<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: endTimeDisp }"></div>
 									<input class="m2-time-editor" data-bind="ntsTimeWithDayEditor: { 
-														name: 'Time With Day', 
+														name: '#[KAF002_20]', 
 														constraint:'TimeWithDayAttr', 
 														value: endTime, 
 														required: true,
@@ -45,7 +45,7 @@
 								<div class="m2-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
 									<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: endLocationDisp }"></div>					
 									<button data-bind="click: function(){ $parent.openSelectLocationDialog('end', $index()) }, enable: endLocationDisp">#{i18n.getText('KAF002_14')}</button>
-									<span class="label m2-label" data-bind="text: endLocation, css: { m2DisableEdit: !endLocationDisp() }"></span>	
+									<span class="label m2-label" data-bind="name: '#[KAF002_26]', text: endLocation, css: { m2DisableEdit: !endLocationDisp() }"></span>	
 								</div>					
 							</div>
 						</div>
@@ -53,7 +53,7 @@
 				</div>
 			</div>
 			<div>
-				<a class="hyperlink" href="#" data-bind="click: extendsModeEvent">アイコン無し、ただのリンク</a>
+				<a class="hyperlink" href="#" data-bind="click: extendsModeEvent">#{i18n.getText('KAF002_13')}</a>
 			</div>
 		</div>
 	</div>

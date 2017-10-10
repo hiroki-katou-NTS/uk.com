@@ -18,4 +18,16 @@ public interface WorkplaceAdapter {
 	 * @return the optional
 	 */
 	Optional<WorkplaceImport> findByWkpId(String workplaceId, GeneralDate baseDate);
+	
+	WorkplaceImport findBySid(String employeeId, GeneralDate baseDate);
+	
+	/**
+	 * get workplace id by employeeId and basedate
+	 * @param companyId 会社ID
+	 * @param employeeId　社員ID
+	 * @param baseDate　基準日
+	 * @return　職場ID
+	 */
+	String getWorkplaceId(String companyId,String employeeId, GeneralDate baseDate);
+
 }

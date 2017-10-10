@@ -5,11 +5,15 @@ module nts.uk.com.view.cmm011.a {
          */
         var servicePath: any = {
             findLstWorkPlace: "bs/employee/workplace/config/info/find",
-            findWkpHistList: "bs/employee/workplace/hist",
-            findHistInfoByHistId: "bs/employee/workplace/find",
-            registerWkp: "bs/employee/workplace/register",
-            
             getListWkpConfigHistory: "bs/employee/workplace/config/findAll",
+            checkWorkplaceState: "bs/employee/workplace/config/validWkp",
+            
+            findWkpHistList: "bs/employee/workplace/hist",
+            saveWkp: "bs/employee/workplace/save",
+            removeWkp: "bs/employee/workplace/remove",
+            findHistInfoByHistId: "bs/employee/workplace/info/findHistInfo",
+            
+            removeWorkplaceHistory: "bs/employee/workplace/history/remove",
         };
 
         /**
@@ -33,11 +37,32 @@ module nts.uk.com.view.cmm011.a {
             return nts.uk.request.ajax(servicePath.findHistInfoByHistId, { workplaceId: wkpId, historyId: historyId });
         }
         
-         /**
-         * registerWkp
+        /**
+         * checkWorkplaceState
          */
-        export function registerWkp(data: any): JQueryPromise<model.Workplace> {
-            return nts.uk.request.ajax(servicePath.registerWkp, data);
+        export function checkWorkplaceState(workplace: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.checkWorkplaceState, workplace);
+        }
+        
+         /**
+         * saveWkp
+         */
+        export function saveWkp(command: any): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.saveWkp, command);
+        }
+        
+        /**
+         * removeWkp
+         */
+        export function removeWkp(command: any): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.removeWkp, command);
+        }
+        
+        /**
+         * removeWorkplaceHistory
+         */
+        export function removeWorkplaceHistory(command: any): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.removeWorkplaceHistory, command);
         }
         
         /**

@@ -4,6 +4,7 @@ import java.util.List;
 
 import lombok.AllArgsConstructor;
 import nts.uk.ctx.at.request.app.command.application.common.approveaccepted.ApproveAcceptedCmd;
+import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
 /**
  * 
  * @author Doan Duy Hung
@@ -11,13 +12,7 @@ import nts.uk.ctx.at.request.app.command.application.common.approveaccepted.Appr
  */
 @AllArgsConstructor
 public class ApprovalFrameCmd {
-	public String phaseID ;
+	public String frameID ;
 	public int dispOrder;
-	public String approverSID;
-	public int approvalATR;
-	public int confirmATR;
-	public String approvalDate;
-	public String reason;
-	public String representerSID;
 	public List<ApproveAcceptedCmd> approveAcceptedCmds;
 }

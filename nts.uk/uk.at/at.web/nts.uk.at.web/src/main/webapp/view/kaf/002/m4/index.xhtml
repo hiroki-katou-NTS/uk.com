@@ -4,6 +4,7 @@
 	</div>
 	<div class="cell m4-column2">
 		<span class="m4-combo-box" data-bind="ntsComboBox: {
+				name: '#[KAF002_19]',
 				options: stampCombinationList,
 				optionsValue: 'value',
 				value: appStamp().stampCombinationAtr,
@@ -14,6 +15,7 @@
 				]}"></span>	
 		<div>
 			<input class="m4-time-editor" data-bind="ntsTimeEditor: {
+				name: '#[KAF002_20]',
 				value: appStamp().appTime, 
 				inputFormat: 'time',
 				required: true }" />

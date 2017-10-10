@@ -239,7 +239,14 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 				approvers.stream().forEach(x -> {
 					// 個人の場合
 					if (x.getApprovalAtr() == ApprovalAtr.PERSON) {
-						approversResult.add(new ApproverInfo(x.getEmployeeId(), x.getApprovalPhaseId(), true, x.getOrderNumber(),employeeAdapter.getEmployeeName(x.getEmployeeId())));
+						approversResult.add(new ApproverInfo(x.getJobTitleId(),
+								x.getEmployeeId(), 
+								x.getApprovalPhaseId(), 
+								true, 
+								x.getOrderNumber(),
+								employeeAdapter.getEmployeeName(x.getEmployeeId()),
+								x.getApprovalAtr().value
+								));
 					} else {
 						// 職位の場合
 						List<ApproverInfo> approversOfJob = this.jobtitleToAppService.convertToApprover(cid, sid,
@@ -296,7 +303,7 @@ public class ApprovalRootServiceImpl implements ApprovalRootService {
 		for (Map.Entry<String, List<ApproverInfo>> info : approversBySid.entrySet()) {
 			List<ApproverInfo> values = info.getValue();
 			values.sort((a,b) -> Integer.compare(a.getOrderNumber(), b.getOrderNumber()));
-			Optional<ApproverInfo> value = values.stream().filter(x -> x.isConfirmPerson()).findFirst();
+			Optional<ApproverInfo> value = values.stream().filter(x -> x.getIsConfirmPerson()).findFirst();
 			if (value.isPresent()) {
 				result.add(value.get());
 			}else {

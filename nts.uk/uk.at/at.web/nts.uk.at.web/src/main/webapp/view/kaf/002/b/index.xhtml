@@ -7,6 +7,9 @@
 	<body>
 		<ui:composition template="../../../../master/base.xhtml">
 			<ui:define name="htmlHead">
+				<com:ValidatorScript>
+					nts.uk.shr.com.time.TimeWithDayAttr
+				</com:ValidatorScript>
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="../shr/kaf002.shr.service.js" />
 				<com:scriptfile path="../shr/kaf002.shr.vm.js" />
@@ -37,16 +40,23 @@
 					<button data-bind="click: performanceReference">#{i18n.getText('KAF002_47')}</button>
 					<button data-bind="click: changeAppDate">#{i18n.getText('KAF002_48')}</button>
 					<div data-bind="ntsCheckBox: { checked: true }">#{i18n.getText('KAF002_49')}</div>
+					<button data-bind="click: update">Test Update</button>
 				</div>
 				<div id="contents-area">
-					<div data-bind="with: kaf000_a2">
-						<ui:include src="../../000/a/index1.xhtml" />	
+					<div data-bind="if: kaf000_a2">
+						<div data-bind="with: kaf000_a2">
+							<ui:include src="../../000/a/index1.xhtml" />	
+						</div>
 					</div>
-					<div data-bind="with: cm">
-						<ui:include src="../cm/index.xhtml" />
-					</div>	
-					<div data-bind="with: kaf000_a2">
-						<ui:include src="../../000/a/index2.xhtml" />	
+					<div data-bind="if: cm">
+						<div data-bind="with: cm">
+							<ui:include src="../cm/index.xhtml" />
+						</div>	
+					</div>
+					<div data-bind="if: kaf000_a2">
+						<div data-bind="with: kaf000_a2">
+							<ui:include src="../../000/a/index2.xhtml" />	
+						</div>
 					</div>
 				</div>
 			</ui:define>

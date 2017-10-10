@@ -28,9 +28,11 @@ tr {
 	width: 920px;
 	margin-top: 20px;
 }
+.td-first-bg{
+	background-color:#E0F59E !important;
+}
 table.contents-header tbody {
 	height: 200px;
-	background-color:#E0F59E;
 	overflow-y: scroll;
     overflow-x: hiden;
 }

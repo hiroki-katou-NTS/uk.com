@@ -23,7 +23,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 public class KrqdtAppStampDetail extends UkJpaEntity {
 	
 	@EmbeddedId
-	public KrqdpAppStampDetail krqdpAppStampDetails;
+	public KrqdpAppStampDetail krqdpAppStampDetailsPK;
 
 	@Column(name="GO_OUT_REASON_ATR")
 	public Integer goOutReasonAtr;
@@ -59,7 +59,7 @@ public class KrqdtAppStampDetail extends UkJpaEntity {
 	
 	@Override
 	protected Object getKey() {
-		return krqdpAppStampDetails;
+		return krqdpAppStampDetailsPK;
 	}
 	
 }

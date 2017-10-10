@@ -349,12 +349,12 @@ project (':pr.web:nts.uk.pr.web') {
 		runtime project (':pr.file:nts.uk.file.pr.app')
 		runtime project (':pr.file:nts.uk.file.pr.infra')
 		
-		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.bs.env.app', version: '0.1')
-		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.bs.env.dom', version: '0.1')
-		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.bs.env.infra', version: '0.1')
-		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.bs.env.pub', version: '0.1')
-		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.bs.env.pubimp', version: '0.1')
-		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.bs.env.ac', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.app', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.dom', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.infra', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pubimp', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.ac', version: '0.1')
 		
 		// to provide PrimitiveValue
 		compile group: 'com', name: 'nts.uk.ctx.basic.dom', version: '0.1'
