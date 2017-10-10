@@ -1003,7 +1003,18 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
-            * Open dialog C
+             * Check calculation attribute is formula setting or item selection 
+             */
+            public isFormulaSettingSelected(): boolean {
+                let self = this;
+                if (self.calcAtr() == 1) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+            * Open dialog C: Item selection
             */
             public openDialogC(): void {
                 //TODO move to formula view model later
@@ -1024,7 +1035,7 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
-             * Open dialog D
+             * Open dialog D: Formula setting
              */
             public openDialogD(): void {
                 //TODO move to formula view model later

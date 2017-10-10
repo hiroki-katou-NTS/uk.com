@@ -283,8 +283,12 @@
                                           optionsText: 'localizedName',
                                           value: calcAtr,
                                           enable: true }"></div>
-                                       <button data-bind="click: openDialogC">c</button>
-                                       <button data-bind="click: openDialogD">d</button>
+                                       <com:ko tag="if" bind="!isFormulaSettingSelected()">
+                                         	<button class="btn-calc-set" data-bind="click: openDialogC"></button>
+                                       </com:ko>
+                                       <com:ko tag="if" bind="isFormulaSettingSelected()">
+                                          <button class="btn-calc-set" data-bind="click: openDialogD"></button>
+                                       </com:ko>
                                        <input data-bind="ntsTextEditor: {
                                           value: formulaName,
                                           readonly: true,
