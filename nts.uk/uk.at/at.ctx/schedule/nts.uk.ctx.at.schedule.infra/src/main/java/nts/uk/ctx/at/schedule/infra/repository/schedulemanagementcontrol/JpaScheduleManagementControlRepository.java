@@ -6,6 +6,8 @@ package nts.uk.ctx.at.schedule.infra.repository.schedulemanagementcontrol;
 
 import java.util.Optional;
 
+import javax.ejb.Stateless;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.ScheduleManagementControl;
 import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.ScheduleManagementControlRepository;
@@ -15,6 +17,7 @@ import nts.uk.ctx.at.schedule.infra.entity.schedulemanagementcontrol.KscmtSchedu
 /**
  * The Class JpaScheduleManagementControlRepository.
  */
+@Stateless
 public class JpaScheduleManagementControlRepository extends JpaRepository
 		implements ScheduleManagementControlRepository {
 

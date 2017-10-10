@@ -267,9 +267,10 @@ public class ScheduleCreatorExecutionCommandHandler
 							
 							// check confirmedAtr of basic schedule
 							if(basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)){
-								
-								
+								this.getWorktype();
 							}
+						}else {
+							this.getWorktype();
 						}
 					}
 				}
@@ -279,6 +280,31 @@ public class ScheduleCreatorExecutionCommandHandler
 		}
 	}
 	
+	
+	/**
+	 * Gets the worktype.
+	 *
+	 * @return the worktype
+	 */
+	// 勤務種類を取得する
+	private void getWorktype(){
+		this.getBasicWorkSetting();
+	}
+	
+	/**
+	 * Gets the basic work setting.
+	 *
+	 * @return the basic work setting
+	 */
+	// 基本勤務設定を取得する
+	private void getBasicWorkSetting(){
+		this.getBusinessDayCalendar();
+	}
+	
+	// 営業日カレンダーから「稼働日区分」を取得する
+	private void getBusinessDayCalendar(){
+		
+	}
 	/**
 	 * Gets the status employment.
 	 *
