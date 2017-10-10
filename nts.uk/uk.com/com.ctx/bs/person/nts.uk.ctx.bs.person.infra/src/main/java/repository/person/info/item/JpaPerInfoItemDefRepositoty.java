@@ -589,6 +589,15 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 				.getSingle(o -> createPerInfoItemDefOrderFromEntity(o));
 	}
 
+	@Override
+	public List<PersonInfoItemDefinition> getAllItemFromIdList(String contractCd, List<EmpCopySettingItem> itemList) {
+		return this.queryProxy().query(SELECT_ITEM_BY_ITEM_ID_LIST_QUERY, Object[].class)
+				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", itemList).getList(i -> {
+					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
+					return createDomainFromEntity(i, items);
+				});
+	}
+
 	// Sonnlb Code
 
 	// vinhpx start
@@ -631,15 +640,6 @@ public class JpaPerInfoItemDefRepositoty extends JpaRepository implements PerInf
 			obj.categoryId = perInforCtgId;
 			getEntityManager().persist(obj);
 		}
-	}
-
-	@Override
-	public List<PersonInfoItemDefinition> getAllItemFromIdList(String contractCd, List<EmpCopySettingItem> itemList) {
-		return this.queryProxy().query(SELECT_ITEM_BY_ITEM_ID_LIST_QUERY, Object[].class)
-				.setParameter("contractCd", contractCd).setParameter("perInfoCtgId", itemList).getList(i -> {
-					List<String> items = getChildIds(contractCd, String.valueOf(i[27]), String.valueOf(i[1]));
-					return createDomainFromEntity(i, items);
-				});
 	}
 
 	// vinhpx end
