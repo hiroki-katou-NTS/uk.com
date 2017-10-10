@@ -1,56 +1,33 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtitle;
 
+import java.util.List;
+
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
+import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 
 /**
  * The Interface JobTitleGetMemento.
  */
 public interface JobTitleGetMemento {
-
-	/**
-	 * Gets the position id.
-	 *
-	 * @return the position id
-	 */
-	PositionId getPositionId();
-
+	
 	/**
 	 * Gets the company id.
 	 *
 	 * @return the company id
 	 */
-	CompanyId getCompanyId();
+	public CompanyId getCompanyId();
 
 	/**
-	 * Gets the sequence code.
+	 * Gets the job title id.
 	 *
-	 * @return the sequence code
+	 * @return the job title id
 	 */
-	 SequenceCode getSequenceCode();
-
+	public JobTitleId getJobTitleId();
+	
 	/**
-	 * Gets the period.
+	 * Gets the job title history.
 	 *
-	 * @return the period
+	 * @return the job title history
 	 */
-	 Period getPeriod();
-
-	/**
-	 * Gets the position code.
-	 *
-	 * @return the position code
-	 */
-	 PositionCode getPositionCode();
-
-	/**
-	 * Gets the position name.
-	 *
-	 * @return the position name
-	 */
-	 PositionName getPositionName();
+	public List<JobTitleHistory> getJobTitleHistory();
 }

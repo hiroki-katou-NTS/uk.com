@@ -6,14 +6,21 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition>
+	    <div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_11')}</div>
+						<label style="margin-left: 70px;" class="applicant">11111</label>
+					</div>
+			<div class="valign-center control-group">
+			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_29')}</div>
+			<label style="margin-left: 30px;">事前</label>
+			</div>
 		<div class="valign-center control-group">
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_12')}</div>
-			<!--TimeEditor -->
-			<input style="margin-left: 60px;"
-				data-bind="ntsTimeEditor: {value: date, inputFormat: 'date', readonly:true, dateFormat: 'YYYY/MM/DD'}" />
+			<div data-bind="ntsFormLabel: {}" style = "margin-right: 80px;">#{i18n.getText('KAF004_12')}</div>
+		<div id="inputdate" data-bind="ntsDatePicker: {value: date, dateFormat: 'YYYY/MM/DD'}"></div>	
 		</div>
+		<div class="note-right" style="height: 110px; width: 200px; background-color: #BEBEBE; float: right;"></div>
 		<div class="valign-center control-group">
-			<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_13')}</div>
+			<div data-bind="ntsFormLabel: {}" style = "margin-right: 40px">#{i18n.getText('KAF004_13')}</div>
 			<div data-bind="ntsCheckBox: { checked: late1 }">#{i18n.getText('KAF004_14')}</div>
 			<input
 				data-bind="ntsTimeEditor: {value: lateTime1, inputFormat: 'time',mode: 'time'}" />
@@ -22,7 +29,7 @@
 			<input
 				data-bind="ntsTimeEditor: {value: earlyTime1, inputFormat: 'time',mode: 'time'}" />
 			<br />
-			<div class="valign-center control-group row4">
+			<div class="valign-center control-group row4" style = "margin-left: 130px;">
 				<div data-bind="ntsCheckBox: { checked: late2 }">#{i18n.getText('KAF004_32')}</div>
 				<input class="col1"
 					data-bind="ntsTimeEditor: {value: lateTime2, inputFormat: 'time',mode: 'time'}" />
@@ -31,6 +38,36 @@
 					data-bind="ntsTimeEditor: {value: earlyTime2, inputFormat: 'time',mode: 'time'}" />
 			</div>
 		</div>
+		<div class="valign-center control-group">
+						<div style="margin-right: 50px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KAF004_17')}</div>
+						<div id="combo-box"
+							data-bind="ntsComboBox: {
+							options: ListTypeReason,
+							optionsValue: 'reasonID',
+							visibleItemsCount: 5,
+							value: selectedCode,
+							optionsText: 'reasonTemp',
+							enable: true,
+							columns: [
+								{ prop: 'reasonTemp', length: 4 },
+							
+							]}"></div>
+					</div>
+			<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF004_18')}</div>
+						<div id="multiline" style="margin-left: 25px;">
+							<textarea
+								data-bind="ntsMultilineEditor: {
+							value: appreason,
+							constraint: 'ResidenceCode',
+							option: {
+								resizeable: false,
+		                    	width: '500'
+		                   	},
+							
+							}" />
+						</div>
+					</div>		
 	</ui:composition>
 </body>
 </html>

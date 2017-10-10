@@ -1,4 +1,6 @@
 module nts.uk.at.view.kaf000.a.viewmodel{
+    import setShared = nts.uk.ui.windows.setShared;
+    import getShared = nts.uk.ui.windows.getShared;
     export class ScreenModel{
         /**
          * List
@@ -16,12 +18,14 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         //obj 
         objApprovalRootInput : KnockoutObservable<model.ObjApprovalRootInput>;
         
-        //obj input
-        inputMessageDeadline : KnockoutObservable<model.InputMessageDeadline>;
         //obj output message deadline
         outputMessageDeadline : KnockoutObservable<model.OutputMessageDeadline>;
+        
+        //
+        appType : KnockoutObservable<number>;
         constructor(){
             let self = this;
+
             /**
              * List
              */
@@ -29,19 +33,32 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             self.listApprovalRoot = ko.observableArray([]);
             //item approval root
             self.approvalRoot = ko.observableArray([]);
-            //obj input approval root
-            self.objApprovalRootInput = ko.observable(new model.ObjApprovalRootInput('000000000000-0001','90000000-0000-0000-0000-000000000001',1,1,new Date('2017-01-02 00:00:00')));
-            //obj input get message deadline 
-            self.inputMessageDeadline = ko.observable(new model.InputMessageDeadline("000000000000-0005",null,1,null));
+            //obj input approval root (new model.ObjApprovalRootInput('90000000-0000-0000-0000-000000000005',1,1,'2018/01/01'))
+            self.objApprovalRootInput = ko.observable(null);
+            // app ID
+            self.appType = ko.observable(0);
             //obj input get message deadline 
             self.outputMessageDeadline = ko.observable(null);
         }
-        
-        start(): JQueryPromise<any> {
-            
+        /**
+         *
+           sid 社員ID（申請本人の社員ID）
+           employmentRootAtr 就業ルート区分
+           subjectRequest 対象申請
+           baseDate 基準日
+           workplaceID 
+         */
+        start( sid, employmentRootAtr,appType,standardDate): JQueryPromise<any> {
             let self = this;
+            self.objApprovalRootInput().sid=sid;
+            self.objApprovalRootInput().employmentRootAtr =employmentRootAtr;
+            self.objApprovalRootInput().appType = appType;
+            self.objApprovalRootInput().standardDate = standardDate;
+            
+            self.appType(appType);
+            
             let dfd = $.Deferred();
-            let dfdMessageDeadline = self.getMessageDeadline(self.inputMessageDeadline());
+            let dfdMessageDeadline = self.getMessageDeadline(self.appType());
             let dfdAllApprovalRoot = self.getAllApprovalRoot();
             $.when(dfdMessageDeadline,dfdAllApprovalRoot).done((dfdMessageDeadlineData,dfdAllApprovalRootData)=>{
 //                self.getAllFrameByListPhaseId1(self.listPhaseID);
@@ -50,27 +67,32 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             return dfd.promise();
         }
         
+        
         //get all listApprovalRoot
         getAllApprovalRoot(){
             let self = this;
             let dfd = $.Deferred<any>();
             nts.uk.at.view.kaf000.a.service.getDataApprovalRoot(self.objApprovalRootInput()).done(function(data){
                 self.listApprovalRoot(data);
-                if(self.listApprovalRoot().length>0){
+                if(self.listApprovalRoot !=null && self.listApprovalRoot().length>0 ){
                     self.approvalRoot(self.listApprovalRoot()[0]);
                 }
                 dfd.resolve(data);    
-            });
+            }).fail(function (res: any){
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+            }); 
             return dfd.promise();
             
         }
          // getMessageDeadline
-        getMessageDeadline(inputMessageDeadline){
+        getMessageDeadline(appType){
             let self = this;
             let dfd = $.Deferred<any>();
-                nts.uk.at.view.kaf000.a.service.getMessageDeadline(inputMessageDeadline).done(function(data){
+                nts.uk.at.view.kaf000.a.service.getMessageDeadline(appType).done(function(data){
                     self.outputMessageDeadline(data);
                     dfd.resolve(data);    
+                }).fail(function (res: any){
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                 }); 
             return dfd.promise();
         }
@@ -243,15 +265,13 @@ module nts.uk.at.view.kaf000.a.viewmodel{
         
         //class ObjApprovalRootInput    
         export class ObjApprovalRootInput{
-            cid : String;
             sid : String;
             employmentRootAtr : number;
             appType : number;
-            standardDate :  Date;
-            constructor (cid : String,
+            standardDate :  String;
+            constructor (
                         sid : String,employmentRootAtr : number,
-                        appType : number,standardDate : Date){
-                this.cid  = cid;
+                        appType : number,standardDate : String){
                 this.sid = sid; 
                 this.employmentRootAtr =employmentRootAtr;
                 this.appType = appType;
@@ -259,20 +279,6 @@ module nts.uk.at.view.kaf000.a.viewmodel{
             }
         }//end class ObjApprovalRootInput
         
-        //class InputMessageDeadline
-        export class InputMessageDeadline{
-            companyID : String;
-            workplaceID : String;
-            appType : number;
-            appDate : Date;
-            constructor(companyID : String,workplaceID : String,appType : number,appDate: Date){
-            this.companyID = companyID;
-            this.workplaceID = workplaceID;
-            this.appType = appType;
-            this.appDate = appDate;                
-            }
-            
-        }//end class InputMessageDeadline
         
         //class outputMessageDeadline
         export class OutputMessageDeadline{

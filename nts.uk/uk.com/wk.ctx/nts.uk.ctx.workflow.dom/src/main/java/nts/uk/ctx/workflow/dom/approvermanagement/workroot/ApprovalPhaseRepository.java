@@ -49,5 +49,12 @@ public interface ApprovalPhaseRepository {
 	 * @param branchId
 	 */
 	void deleteAllAppPhaseByBranchId(String companyId, String branchId);
+	/**
+	 * delete Approval Phase By ApprovalPhaseId
+	 * @param companyId
+	 * @param branchId
+	 * @param approvalPhaseId
+	 */
+	void deleteAppPhaseByAppPhId(String companyId, String branchId, String approvalPhaseId);
 	
 }

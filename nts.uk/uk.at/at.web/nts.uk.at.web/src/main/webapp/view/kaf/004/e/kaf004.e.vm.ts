@@ -27,8 +27,8 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         //Show Screen
         showScreen: string;
         
-        constructor() {
-            super();
+        constructor(appType:number) {
+            super(appType);
             var self = this;
             //check sendMail
             self.sendMail = ko.observable(true);

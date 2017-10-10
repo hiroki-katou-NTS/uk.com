@@ -22,14 +22,23 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="contents-area" class="cf coverBlock">
-				
+			<div id="contents-area" class="cf coverBlock">	
+				<div>#{i18n.getText('CPS002_96')}</div>
 				<div>
-					
+					<table>
+						<tr>
+							<td><button type="button">#{i18n.getText('CPS002_97')}</button></td>
+						</tr>
+						<tr>
+							<td><div data-bind=""></div></td>
+							<td><div data-bind=""></div></td>
+						</tr>
+					</table>
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				
+				<button class="proceed x-large" data-bind="click: register">#{i18n.getText('CPS002_98')}</button>
+				<button data-bind="click: close">#{i18n.getText('CPS002_99')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

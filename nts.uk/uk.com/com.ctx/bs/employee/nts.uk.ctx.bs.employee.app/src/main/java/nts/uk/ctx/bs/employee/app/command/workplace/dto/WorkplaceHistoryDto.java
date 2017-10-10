@@ -22,11 +22,9 @@ import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistoryGetMemento;
 public class WorkplaceHistoryDto {
 
     /** The history id. */
-    // 履歴ID
     private String historyId;
 
     /** The period. */
-    // 期間
     private PeriodDto period;
 
     /**
@@ -60,10 +58,11 @@ public class WorkplaceHistoryDto {
          */
         @Override
         public HistoryId getHistoryId() {
+            String historyId = this.workplaceHistoryDto.getHistoryId();
             if (StringUtil.isNullOrEmpty(this.workplaceHistoryDto.historyId, true)) {
-                return new HistoryId(UUID.randomUUID().toString());
+                historyId = UUID.randomUUID().toString();
             }
-            return new HistoryId(this.workplaceHistoryDto.getHistoryId());
+            return new HistoryId(historyId);
         }
 
         /* (non-Javadoc)

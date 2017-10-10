@@ -37,6 +37,6 @@ public interface ActualLockSetMemento {
 	 *
 	 * @param dailyLockState the new monthly lock state
 	 */
-	void setMonthlyLockState(LockStatus dailyLockState);
+	void setMonthlyLockState(LockStatus monthlyLockState);
 	
 }

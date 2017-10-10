@@ -111,7 +111,7 @@ module nts.uk.at.view.kdw002.c {
 
             navigateView(): void {
                 let self = this;
-                var path = "/view/kdw/006/index.xhtml";
+                var path = "/view/kdw/006/a/index.xhtml";
                 href(path);
             }
 

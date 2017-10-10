@@ -5,7 +5,8 @@ declare module nts.uk.ui {
         function invisible(): any;
     }
     module dialog {
-        function alertError(errorData: any): any;
+        function alertError(errorData: any): JQueryPromise<any>;
+        function bundledErrors(errorData: any): JQueryPromise<any>;
     }
 }
 declare module nts.uk {
@@ -78,6 +79,8 @@ interface JQuery {
      * init calendar component.
      */
     ntsCalendar(action: string, option: any);
+    
+    delegate(selector: string, eventName: string, handler: (evt: any, ui: any) => void)
 }
 
 interface UnitModel {

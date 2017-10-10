@@ -7,7 +7,6 @@ package nts.uk.ctx.bs.employee.dom.workplace.config.info;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 
@@ -24,13 +23,18 @@ public class WorkplaceConfigInfo extends AggregateRoot {
 
 	/** The history id. */
 	// 履歴ID
-	@Setter
 	private HistoryId historyId;
 
-	/** The wkp hierarchy. */
+	/** The lst wkp hierarchy. */
 	// 階層
-	private List<WorkplaceHierarchy> wkpHierarchy;
+	private List<WorkplaceHierarchy> lstWkpHierarchy;
 
+	/**
+	 * Instantiates a new workplace config info.
+	 */
+	private WorkplaceConfigInfo() {
+	}
+	
 	/**
 	 * Save to memento.
 	 *
@@ -40,7 +44,7 @@ public class WorkplaceConfigInfo extends AggregateRoot {
 	public void saveToMemento(WorkplaceConfigInfoSetMemento memento) {
 		memento.setCompanyId(this.companyId);
 		memento.setHistoryId(this.getHistoryId());
-		memento.setWkpHierarchy(this.wkpHierarchy);
+		memento.setWkpHierarchy(this.lstWkpHierarchy);
 	}
 
 	/**
@@ -52,9 +56,24 @@ public class WorkplaceConfigInfo extends AggregateRoot {
 	public WorkplaceConfigInfo(WorkplaceConfigInfoGetMemento memento) {
 		this.companyId = memento.getCompanyId();
 		this.historyId = memento.getHistoryId();
-		this.wkpHierarchy = memento.getWkpHierarchy();
+		this.lstWkpHierarchy = memento.getWkpHierarchy();
 	}
 
+	/**
+	 * Clone with hist id.
+	 *
+	 * @param other the other
+	 * @param newHistoryId the new history id
+	 * @return the workplace config info
+	 */
+	public WorkplaceConfigInfo cloneWithHistId(String newHistoryId) {
+	    WorkplaceConfigInfo newEntity = new WorkplaceConfigInfo();
+	    newEntity.companyId = this.companyId;
+	    newEntity.historyId = new HistoryId(newHistoryId);
+	    newEntity.lstWkpHierarchy = this.lstWkpHierarchy;
+	    return newEntity;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -95,5 +114,6 @@ public class WorkplaceConfigInfo extends AggregateRoot {
 			return false;
 		return true;
 	}
+
 
 }
