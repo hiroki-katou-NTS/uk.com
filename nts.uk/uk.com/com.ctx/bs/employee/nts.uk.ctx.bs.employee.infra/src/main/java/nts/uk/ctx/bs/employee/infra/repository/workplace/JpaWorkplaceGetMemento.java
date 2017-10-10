@@ -53,8 +53,9 @@ public class JpaWorkplaceGetMemento implements WorkplaceGetMemento {
 	 */
 	@Override
 	public List<WorkplaceHistory> getWorkplaceHistory() {
-		return this.lstWorkplaceHistory.stream().map(item -> new WorkplaceHistory(new JpaWorkplaceHistoryGetMemento(item)))
-		        .collect(Collectors.toList());
+        return this.lstWorkplaceHistory.stream()
+                .map(item -> new WorkplaceHistory(new JpaWorkplaceHistoryGetMemento(item)))
+                .collect(Collectors.toList());
 	}
 
 }

@@ -5,19 +5,16 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.person.setting.selection.BpsmtHistorySelection;
-import entity.person.setting.selection.BpsmtHistorySelectionPK;
-import entity.person.setting.selection.BpsmtSelectionItem;
-import entity.person.setting.selection.BpsmtSelectionItemPK;
+import entity.person.setting.selection.PpemtSelectionItem;
+import entity.person.setting.selection.PpemtSelectionItemPK;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.IPerInfoSelectionItemRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoHistorySelection;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoSelectionItem;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoSelectionItem;
 
 @Stateless
 public class JpaPerInfoSelectionItemRepository extends JpaRepository implements IPerInfoSelectionItemRepository {
 
-	private static final String SELECT_ALL = "SELECT si FROM BpsmtSelectionItem si";
+	private static final String SELECT_ALL = "SELECT si FROM PpemtSelectionItem si";
 	private static final String SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE = SELECT_ALL
 			+ " WHERE si.contractCd = :contractCd";
 	private static final String SELECT_All_SELECTION_ITEM_NAME = SELECT_ALL
@@ -37,17 +34,17 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 
 	@Override
 	public void remove(String selectionItemId) {
-		BpsmtSelectionItemPK pk = new BpsmtSelectionItemPK(selectionItemId);
-		this.commandProxy().remove(BpsmtSelectionItem.class, pk);
+		PpemtSelectionItemPK pk = new PpemtSelectionItemPK(selectionItemId);
+		this.commandProxy().remove(PpemtSelectionItem.class, pk);
 	}
 
 	@Override
 	public List<PerInfoSelectionItem> getAllPerInfoSelectionItem(String contractCd) {
-		return this.queryProxy().query(SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE, BpsmtSelectionItem.class)
+		return this.queryProxy().query(SELECT_ALL_SELECTION_ITEM_BY_CONTRACTCODE, PpemtSelectionItem.class)
 				.setParameter("contractCd", contractCd).getList(c -> toDomain(c));
 	}
 
-	private PerInfoSelectionItem toDomain(BpsmtSelectionItem entity) {
+	private PerInfoSelectionItem toDomain(PpemtSelectionItem entity) {
 		return PerInfoSelectionItem.createFromJavaType(entity.selectionItemPk.selectionItemId, entity.selectionItemName,
 				entity.memo, entity.selectionItemClsAtr, entity.contractCd, entity.integrationCd, entity.selectionCd,
 				entity.characterTypeAtr, entity.selectionName, entity.selectionExtCd);
@@ -56,21 +53,21 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 	// check selectionItemId
 	@Override
 	public Optional<PerInfoSelectionItem> getPerInfoSelectionItem(String selectionItemId) {
-		BpsmtSelectionItemPK pk = new BpsmtSelectionItemPK(selectionItemId);
-		return this.queryProxy().find(pk, BpsmtSelectionItem.class).map(c -> toDomain(c));
+		PpemtSelectionItemPK pk = new PpemtSelectionItemPK(selectionItemId);
+		return this.queryProxy().find(pk, PpemtSelectionItem.class).map(c -> toDomain(c));
 	}
 
 	// check selectionItemName
 	@Override
 	public Optional<PerInfoSelectionItem> checkItemName(String selectionItemName) {
-		return this.queryProxy().query(SELECT_All_SELECTION_ITEM_NAME, BpsmtSelectionItem.class)
+		return this.queryProxy().query(SELECT_All_SELECTION_ITEM_NAME, PpemtSelectionItem.class)
 				.setParameter("selectionItemName", selectionItemName).getSingle(c -> toDomain(c));
 	}
 
 	// check SelectionItemClassification
 	@Override
 	public Optional<PerInfoSelectionItem> checkItemClassification(String selectionItemClassification) {
-		return this.queryProxy().query(SELECT_All_SELECTION_ITEM_CLASSIFI, BpsmtSelectionItem.class)
+		return this.queryProxy().query(SELECT_All_SELECTION_ITEM_CLASSIFI, PpemtSelectionItem.class)
 				.setParameter("selectionItemClassification", selectionItemClassification).getSingle(c -> toDomain(c));
 
 	}
@@ -81,9 +78,9 @@ public class JpaPerInfoSelectionItemRepository extends JpaRepository implements 
 		return false;
 	}
 
-	private static BpsmtSelectionItem toEntity(PerInfoSelectionItem domain) {
-		BpsmtSelectionItemPK key = new BpsmtSelectionItemPK(domain.getSelectionItemId());
-		return new BpsmtSelectionItem(key, domain.getSelectionItemName().v(), domain.getContractCode(),
+	private static PpemtSelectionItem toEntity(PerInfoSelectionItem domain) {
+		PpemtSelectionItemPK key = new PpemtSelectionItemPK(domain.getSelectionItemId());
+		return new PpemtSelectionItem(key, domain.getSelectionItemName().v(), domain.getContractCode(),
 				domain.getIntegrationCode().v(), domain.getSelectionItemClassification().value,
 				domain.getFormatSelection().getSelectionCode().v(), domain.getFormatSelection().getSelectionName().v(),
 				domain.getFormatSelection().getSelectionExternalCode().v(),

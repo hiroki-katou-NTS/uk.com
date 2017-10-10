@@ -17,14 +17,14 @@ import nts.arc.layer.dom.DomainObject;
 @Value
 @EqualsAndHashCode(callSuper = false)
 public class AppStampOnlineRecord extends DomainObject {
-	private StampCombinationAtr stampCombinationAtr;
+	private AppStampCombinationAtr stampCombinationAtr;
 	
 	/**
 	 * 勤怠時刻
 	 */
 	private Integer appTime;
 
-	public AppStampOnlineRecord(StampCombinationAtr stampCombinationAtr, Integer appTime) {
+	public AppStampOnlineRecord(AppStampCombinationAtr stampCombinationAtr, Integer appTime) {
 		super();
 		this.stampCombinationAtr = stampCombinationAtr;
 		this.appTime = appTime;

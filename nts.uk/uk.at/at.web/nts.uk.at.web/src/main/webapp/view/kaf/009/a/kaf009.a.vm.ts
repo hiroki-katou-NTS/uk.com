@@ -1,7 +1,10 @@
 module nts.uk.at.view.kaf009.a.viewmodel {
+    import common = nts.uk.at.view.kaf009.share.common;
     export class ScreenModel {
+        //kaf000
+        kaf000_a: kaf000.a.viewmodel.ScreenModel;
         //current Data
-        curentGoBackDirect: KnockoutObservable<GoBackDirectData>;
+        curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
         //申請者
         employeeName: KnockoutObservable<string>;
         //Pre-POST
@@ -13,7 +16,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         appDate: KnockoutObservable<string>;
         //TIME LINE 1
         timeStart1: KnockoutObservable<number>;
-        timeEnd1: KnockoutObservable<number>;
+        timeEnd1: KnockoutObservable<number>;   
         //場所名前 
         workLocationCD: KnockoutObservable<string>;
         workLocationName: KnockoutObservable<string>;
@@ -23,6 +26,10 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         //switch button selected
         selectedBack: any;
         selectedGo: any;
+        //Back Home 2
+        selectedBack2: any;
+        //Go Work 2
+        selectedGo2: any;
         //TIME LINE 2
         timeStart2: KnockoutObservable<number>;
         timeEnd2: KnockoutObservable<number>;
@@ -37,10 +44,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         colorBack: KnockoutObservable<string>;
         fontWeightGo: KnockoutObservable<number>;
         fontWeightBack: KnockoutObservable<number>;
-        //Back Home 2
-        selectedBack2: any;
-        //Go Work 2
-        selectedGo2: any;
+        
         //勤務を変更する 
         workChangeAtr: KnockoutObservable<boolean>;
         //勤務種類
@@ -50,18 +54,22 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         siftCD: KnockoutObservable<string>;
         siftName: KnockoutObservable<string>;
         //comboBox 定型理由
-        reasonCombo: KnockoutObservableArray<ComboReason>;
+        reasonCombo: KnockoutObservableArray<common.ComboReason>;
         selectedReason: KnockoutObservable<string>;
         //MultilineEditor
         multilContent: KnockoutObservable<string>;
         multiOption: any;
         //Insert command
-        command: KnockoutObservable<GoBackCommand>;
+        command: KnockoutObservable<common.GoBackCommand>;
         //list Work Location 
-        locationData: Array<IWorkLocation>;
+        locationData: Array<common.IWorkLocation>;
+        //Approval 
+        approvalSource: Array<common.AppApprovalPhase> = [];
         constructor() {
-            var self = this;
+            let self = this;
             self.command = ko.observable(null);
+            //KAF000_A
+            self.kaf000_a = new kaf000.a.viewmodel.ScreenModel();
             self.locationData = [];
             //申請者
             self.employeeName = ko.observable("");
@@ -121,59 +129,78 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             self.workChangeAtr.subscribe(function(value) {
                 self.workEnable(value);
             });
+            //startPage 009a AFTER start 000_A
+//            self.kaf000_a.start().done(function(){
+//                self.getApprovalList(self.kaf000_a.approvalRoot().beforeApprovers);
+//                
+//            })
         }
         /**
          * 
          */
+        
+        
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             //get Common Setting
-            service.getGoBackSetting().done(function(settingData: CommonSetting) {
+            service.getGoBackSetting().done(function(settingData: common.CommonSetting) {
                 //get all work Location source
                 self.getAllWorkLocation();
-                //get Reason
-                self.setReasonControl(settingData.listReasonDto);
-                //set employee Name
-                self.employeeName(settingData.employeeName);
-                //set Common Setting
-                debugger;
-                self.setGoBackSetting(settingData.goBackSettingDto);
-                //Get data 
-                //service.getGoBackDirectly().done(function(goBackDirectData: GoBackDirectData) {
-                //                service.getGoBackDirectDetail().done(function(detailData: any) {
-                //                    self.workTypeName(detailData.workTypeName);
-                //                    self.siftName(detailData.workTimeName);
-                //                    //Set Value of control
-                //                    self.setValueControl(detailData.goBackDirectlyDto);
-                //                    
-                //}).fail(function() {
-                //                    dfd.resolve();
-                //                });
+                if(!nts.uk.util.isNullOrEmpty(settingData)){
+                    //get Reason
+                    self.setReasonControl(settingData.listReasonDto);
+                    //set employee Name
+                    self.employeeName(settingData.employeeName);
+                    //set Common Setting
+                    self.setGoBackSetting(settingData.goBackSettingDto);
+                }
                 dfd.resolve();
             });
             return dfd.promise();
+        }
+        
+        /**
+         * get approver list 
+         */
+        getApprovalList(beforeApprovers: Array<common.AppApprovalPhase>) {
+            let self = this;
+            let approvalList = [];
+            _.forEach(a, appPhase => {
+                let b = new common.AppApprovalPhase(
+                    "",
+                    appPhase.approvalForm,
+                    appPhase.orderNumber,
+                    1,
+                    []);
+                _.forEach(appPhase.approvers, appFrame => {
+                    let c = new common.ApprovalFrame(
+                        "",
+                        appFrame.orderNumber,
+                        []);
+                    let d = new common.ApproveAccepted(
+                        "",
+                        appFrame.sid,
+                        0,
+                        appFrame.confirmPerson ? 1 : 0,
+                        self.appDate(),
+                        "",
+                        appFrame.sid);
+                    c.approveAcceptedCmds.push(d);
+                    b.approvalFrameCmds.push(c);
+                });
+                approvalList.push(b);
+            });
+            debugger;
+            self.approvalSource = approvalList;
         }
         /**
          * insert
          */
         insert() {
             let self = this;
-            service.insertGoBackDirect(self.getCommand(1)).done(function() {
+            service.insertGoBackDirect(self.getCommand()).done(function() {
                 alert("Insert Done");
-            }).fail(function() {
-
-            })
-        }
-        /**
-         * update 
-         */
-        update() {
-            let self = this;
-
-            service.updateGoBackDirect(self.getCommand(2)).done(function() {
-                //self.startPage();
-                alert("Update Done");
             }).fail(function() {
 
             })
@@ -183,10 +210,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         getAllWorkLocation() {
             let self = this;
-            let arrTemp: Array<IWorkLocation> = [];
+            let arrTemp: Array<common.IWorkLocation> = [];
             service.getAllLocation().done(function(data: any) {
                 _.forEach(data, function(value) {
-                    arrTemp.push({ workLocationCode: value.workLocationCD, workLocationName: value.workLocationName });
+                    if(!nts.uk.util.isNullOrUndefined(value)){
+                        arrTemp.push({ workLocationCode: value.workLocationCD, workLocationName: value.workLocationName });
+                    };
                 });
                 self.locationData = arrTemp;
             }).fail(function() {
@@ -199,7 +228,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         findWorkLocationName(code: string) {
             let self = this;
             let locationName: string = "";
-            let location: IWorkLocation = _.find(self.locationData, function(o) { return o.workLocationCode == code });
+            let location: common.IWorkLocation = _.find(self.locationData, function(o) { return o.workLocationCode == code });
             locationName = location.workLocationName;
             return locationName;
         }
@@ -209,28 +238,24 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          * 2: update 
          * 3: delete
          */
-        getCommand(mode: number) {
-            let self = this;
-            let command: GoBackCommand = new GoBackCommand();
-//            if (mode == 1) {
-//                command.appID = Math.random().toString();
-//            } else {
-//                command.appID = '469dce47-ba9c-4d38-844d-2f51927ce33b';
-//            }
-            command.workTypeCD = self.workTypeCd();
-            command.siftCD = self.siftCD();
-            command.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
-            command.goWorkAtr1 = self.selectedGo();
-            command.backHomeAtr1 = self.selectedBack();
-            command.workTimeStart1 = self.timeStart1();
-            command.workTimeEnd1 = self.timeEnd1();
-            command.goWorkAtr2 = self.selectedGo2();
-            command.backHomeAtr2 = self.selectedBack2();
-            command.workTimeStart2 = self.timeStart2();
-            command.workTimeEnd2 = self.timeEnd2();
-            command.workLocationCD1 = self.workLocationCD();
-            command.workLocationCD2 = self.workLocationCD2();
-            command.appCommand = new ApplicationCommand(
+        getCommand() {
+            let self = this; 
+            let goBackCommand: common.GoBackCommand = new common.GoBackCommand();
+            goBackCommand.workTypeCD = self.workTypeCd();
+            goBackCommand.siftCD = self.siftCD();
+            goBackCommand.workChangeAtr = self.workChangeAtr() == true ? 1 : 0;
+            goBackCommand.goWorkAtr1 = self.selectedGo();
+            goBackCommand.backHomeAtr1 = self.selectedBack();
+            goBackCommand.workTimeStart1 = self.timeStart1();
+            goBackCommand.workTimeEnd1 = self.timeEnd1();
+            goBackCommand.goWorkAtr2 = self.selectedGo2();
+            goBackCommand.backHomeAtr2 = self.selectedBack2();
+            goBackCommand.workTimeStart2 = self.timeStart2();
+            goBackCommand.workTimeEnd2 = self.timeEnd2();
+            goBackCommand.workLocationCD1 = self.workLocationCD();
+            goBackCommand.workLocationCD2 = self.workLocationCD2();
+            
+            let appCommand : common.ApplicationCommand  = new common.ApplicationCommand(
                 self.selectedReason(),
                 self.prePostSelected(),
                 self.appDate(),
@@ -243,13 +268,20 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 self.appDate(),
                 self.appDate(),
                 self.appDate());
-            return command;
+            
+            let commandTotal = {
+                goBackCommand : goBackCommand,
+                appCommand : appCommand,
+                appApprovalPhaseCmds : self.approvalSource
+                }
+            return commandTotal;
+            
         }
 
         /**
          * Set common Setting 
          */
-        setGoBackSetting(data: GoBackDirectSetting) {
+        setGoBackSetting(data: common.GoBackDirectSetting) {
             let self = this;
             if (data != undefined) {
                 self.commentGo1(data.commentContent1);
@@ -279,7 +311,6 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                         self.typeSiftVisible(false);
                         break;
                     }
-                                      
                 }
                 self.workEnable(data.workChangeFlg == 1 ? true : false);
             }
@@ -287,7 +318,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         /**
          * set data from Server 
          */
-        setValueControl(data: GoBackDirectData) {
+        setValueControl(data: common.GoBackDirectData) {
             var self = this;
             self.prePostSelected(data.workChangeAtr);
             //Line 1
@@ -310,12 +341,12 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         /**
          * set reason 
          */
-        setReasonControl(data: Array<ReasonDto>) {
+        setReasonControl(data: Array<common.ReasonDto>) {
             var self = this;
-            let comboSource: Array<ComboReason> = [];
-            comboSource.push(new ComboReason(0,'選択してください'));
-            _.forEach(data, function(value: ReasonDto) {
-                comboSource.push(new ComboReason(value.displayOrder, value.reasonTemp));
+            let comboSource: Array<common.ComboReason> = [];
+            comboSource.push(new common.ComboReason(0,'選択してください',""));
+            _.forEach(data, function(value: common.ReasonDto) {
+                comboSource.push(new common.ComboReason(value.displayOrder, value.reasonTemp, value.reasonID));
             });
             self.reasonCombo(_.orderBy(comboSource, 'reasonCode', 'asc'));
         }
@@ -336,6 +367,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
                 if (returnWorkLocationCD !== undefined) {
                     if (line == 1) {
+                        debugger;
                         self.workLocationCD(returnWorkLocationCD);
                         self.workLocationName(self.findWorkLocationName(returnWorkLocationCD));
                     } else {
@@ -376,225 +408,17 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 }
             })
         }
-    }
-
-
-    /**
-     * Setting Data from Server 
-     * 
-     */
-    class CommonSetting {
-        employeeName: string;
-        goBackSettingDto: GoBackDirectSetting;
-        listReasonDto: Array<ReasonDto>;
-        constructor(employeeName: string, goBackSettingDto: GoBackDirectSetting, listReasonDto: Array<ReasonDto>) {
-            var self = this;
-            self.employeeName = employeeName;
-            self.goBackSettingDto = goBackSettingDto;
-            self.listReasonDto = listReasonDto;
+        
+        /**
+         * Jump to CMM018 Screen
+         */
+        openCMM018(){
+            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", {screen: 'Application', employeeId: "000100003"}); 
         }
     }
-
-    /**
-     * 直行直帰申請共通設定
-     */
-    class GoBackDirectSetting {
-        workChangeFlg: number;
-        workChangeTimeAtr: number;
-        perfomanceDisplayAtr: number;
-        contraditionCheckAtr: number;
-        workType: number;
-        lateLeaveEarlySettingAtr: number;
-        commentContent1: string;
-        commentFontWeight1: number;
-        commentFontColor1: string;
-        commentContent2: string;
-        commentFontWeight2: number;
-        commentFontColor2: string;
-        constructor(workChangeFlg: number, workChangeTimeAtr: number, perfomanceDisplayAtr: number,
-            contraditionCheckAtr: number, workType: number, lateLeaveEarlySettingAtr: number, commentContent1: string,
-            commentFontWeight1: number, commentFontColor1: string, commentContent2: string, commentFontWeight2: number,
-            commentFontColor2: string) {
-            var self = this;
-            self.workChangeFlg = workChangeFlg;
-            self.workChangeTimeAtr = workChangeTimeAtr;
-            self.perfomanceDisplayAtr = perfomanceDisplayAtr;
-            self.contraditionCheckAtr = contraditionCheckAtr;
-            self.workType = workType;
-            self.lateLeaveEarlySettingAtr = lateLeaveEarlySettingAtr;
-            self.commentContent1 = commentContent1;
-            self.commentFontWeight1 = commentFontWeight1;
-            self.commentFontColor1 = commentFontColor1;
-            self.commentContent2 = commentContent2;
-            self.commentFontWeight2 = commentFontWeight2;
-            self.commentFontColor2 = commentFontColor2;
-        }
-    }
-    /**
-     * 
-     */
-    class ReasonDto {
-        companyId: string;
-        appType: number;
-        reasonID: string;
-        displayOrder: number;
-        reasonTemp: string;
-        constructor(companyId: string, appType: number, reasonID: string, displayOrder: number, reasonTemp: string) {
-            var self = this;
-            self.companyId = companyId;
-            self.appType = appType;
-            self.reasonID = reasonID;
-            self.displayOrder = displayOrder;
-            self.reasonTemp = reasonTemp;
-        }
-
-    };
-
-    /**
-     * 
-     * 直行直帰申請
-     */
-    class GoBackDirectData {
-        appID: string;
-        workTypeCD: string;
-        siftCD: string;
-        workChangeAtr: number;
-        goWorkAtr1: number;
-        backHomeAtr1: number;
-        workTimeStart1: number;
-        workTimeEnd1: number;
-        workLocationCD1: string;
-        goWorkAtr2: number;
-        backHomeAtr2: number;
-        workTimeStart2: number;
-        workTimeEnd2: number;
-        workLocationCD2: string;
-        constructor(appID: string,
-            workTypeCD: string,
-            siftCD: string,
-            workChangeAtr: number,
-            goWorkAtr1: number,
-            backHomeAtr1: number,
-            workTimeStart1: number,
-            workTimeEnd1: number,
-            workLocationCD1: string,
-            goWorkAtr2: number,
-            backHomeAtr2: number,
-            workTimeStart2: number,
-            workTimeEnd2: number,
-            workLocationCD2: string) {
-            this.appID = appID;
-            this.siftCD = siftCD;
-            this.workChangeAtr = workChangeAtr;
-            this.goWorkAtr1 = goWorkAtr1;
-            this.backHomeAtr1 = backHomeAtr1;
-            this.workTimeStart1 = workTimeStart1;
-            this.workTimeEnd1 = workTimeEnd1;
-            this.workLocationCD1 = workLocationCD1;
-            this.goWorkAtr2 = goWorkAtr2;
-            this.backHomeAtr2 = backHomeAtr2;
-            this.workTimeStart2 = workTimeStart2;
-            this.workTimeEnd2 = workTimeEnd2;
-            this.workLocationCD2 = workLocationCD2;
-        }
-    }
-
-    /**
-     * 
-     */
-    class ComboReason {
-        reasonCode: number;
-        reasonName: string;
-
-        constructor(reasonCode: number, reasonName: string) {
-            this.reasonCode = reasonCode;
-            this.reasonName = reasonName;
-        }
-    }
-
-    interface IWorkLocation {
-        workLocationCode: string;
-        workLocationName: string;
-    }
-    /**
-     * Application detail
-     */
-    export class ApplicationCommand {
-        applicationID: string;
-        appReasonID: string;
-        prePostAtr: number;
-        inputDate: string;
-        enteredPersonSID: string;
-        reversionReason: string;
-        applicationDate: string;
-        applicationReason: string;
-        applicationType: number;
-        applicantSID: string;
-        reflectPlanScheReason: number;
-        reflectPlanTime: string;
-        reflectPlanState: number;
-        reflectPlanEnforce: number;
-        reflectPerScheReason: number;
-        reflectPerTime: string;
-        reflectPerState: number;
-        reflectPerEnforce: number;
-        startDate: string;
-        endDate: string;
-        listPhase: any;
-        constructor(
-            appReasonID: string,
-            prePostAtr: number,
-            inputDate: string,
-            enteredPersonSID: string,
-            reversionReason: string,
-            applicationDate: string,
-            applicationReason: string,
-            applicantSID: string,
-            reflectPlanTime: string,
-            reflectPerTime: string,
-            startDate: string,
-            endDate: string) {
-            this.applicationID = "";
-            this.appReasonID = appReasonID;
-            this.prePostAtr = prePostAtr;
-            this.inputDate = moment.utc(inputDate, "YYYY/MM/DD").toISOString();
-            this.enteredPersonSID = enteredPersonSID;
-            this.reversionReason = reversionReason;
-            this.applicationDate = moment.utc(applicationDate, "YYYY/MM/DD").toISOString();
-            this.applicationReason = applicationReason;
-            this.applicationType = 4;
-            this.applicantSID = applicantSID;
-            this.reflectPlanScheReason = 1;
-            this.reflectPlanTime = moment.utc(reflectPlanTime, "YYYY/MM/DD").toISOString();
-            this.reflectPlanState = 1;
-            this.reflectPlanEnforce = 1;
-            this.reflectPerScheReason = 1;
-            this.reflectPerTime = moment.utc(reflectPerTime, "YYYY/MM/DD").toISOString();
-            this.reflectPerState = 1;
-            this.reflectPerEnforce = 1;
-            this.startDate = moment.utc(startDate, "YYYY/MM/DD").toISOString();
-            this.endDate = moment.utc(endDate, "YYYY/MM/DD").toISOString();
-            this.listPhase = null;
-        }
-    }
-    /**
-     * 
-     */
-    export class GoBackCommand {
-        workTypeCD: string;
-        siftCD: string;
-        workChangeAtr: number;
-        goWorkAtr1: number;
-        backHomeAtr1: number;
-        workTimeStart1: number;
-        workTimeEnd1: number;
-        workLocationCD1: string;
-        goWorkAtr2: number;
-        backHomeAtr2: number;
-        workTimeStart2: number;
-        workTimeEnd2: number;
-        workLocationCD2: string;
-        appCommand: ApplicationCommand;
+    
+    class GoBackDirectly(){
+            
     }
 }
 

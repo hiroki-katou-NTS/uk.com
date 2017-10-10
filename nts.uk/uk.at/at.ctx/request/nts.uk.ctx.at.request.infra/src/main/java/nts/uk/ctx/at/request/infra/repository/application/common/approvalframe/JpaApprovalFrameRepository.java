@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.infra.repository.application.common.approvalframe;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -12,6 +13,8 @@ import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrameRepository;
 import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFrame;
 import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFramePK;
+import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAccepted;
+import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAcceptedPK;
 /**
  * 
  * @author hieult
@@ -85,10 +88,23 @@ public class JpaApprovalFrameRepository extends JpaRepository implements Approva
 	}
 
 	private KrqdtApprovalFrame toEntity(ApprovalFrame domain, String phaseID) {
+		List<KafdtApproveAccepted> kafdtApproveAccepteds =  domain.getListApproveAccepted().stream().map(c -> {
+			KafdtApproveAcceptedPK kafdtApproveAcceptedPK = new KafdtApproveAcceptedPK(domain.getCompanyID(),c.getAppAcceptedID());
+			return new KafdtApproveAccepted(
+					kafdtApproveAcceptedPK,
+					domain.getFrameID(),
+					c.getApproverSID(),
+					c.getApprovalATR().value,
+					c.getConfirmATR().value,
+					c.getApprovalDate(),
+					c.getReason().v(),
+					c.getRepresenterSID(),null);
+		}).collect(Collectors.toList());
 		return new KrqdtApprovalFrame(
 				new KrqdtApprovalFramePK(domain.getCompanyID(), domain.getFrameID()),
 				phaseID,
-				domain.getDispOrder());
+				domain.getDispOrder(),
+				kafdtApproveAccepteds);
 	}
 	
 	/**
@@ -118,17 +134,7 @@ public class JpaApprovalFrameRepository extends JpaRepository implements Approva
 		return listFrame;
 	}
 
-	@Override
-	public List<List<ApprovalFrame>> getListFrameByListPhase1(String companyID, List<String> listPhaseID) {
-		List<List<ApprovalFrame>> listListFrame = new ArrayList<>();
-		for(String phaseID :listPhaseID) {
-			List<ApprovalFrame> listFrame = new ArrayList<>();
-			List<ApprovalFrame> approvalFrame = findByPhaseID( companyID,phaseID);
-			listFrame.addAll(approvalFrame);
-			listListFrame.add(listFrame);
-		}
-		return listListFrame;
-	}
+	
 
 
 

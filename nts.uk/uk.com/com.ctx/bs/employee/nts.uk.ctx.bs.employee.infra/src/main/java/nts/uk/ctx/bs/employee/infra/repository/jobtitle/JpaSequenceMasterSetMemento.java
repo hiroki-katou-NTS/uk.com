@@ -5,11 +5,11 @@
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.jobtitle.SequenceCode;
-import nts.uk.ctx.bs.employee.dom.jobtitle.SequenceMasterSetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.SequenceName;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CsqmtSequenceMaster;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CsqmtSequenceMasterPK;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceCode;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterSetMemento;
+import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceName;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMaster;
+import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobSeqMasterPK;
 
 /**
  * The Class JpaSequenceMasterSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CsqmtSequenceMasterPK;
 public class JpaSequenceMasterSetMemento implements SequenceMasterSetMemento {
 
 	/** The type value. */
-	private CsqmtSequenceMaster typeValue;
+	private BsymtJobSeqMaster typeValue;
 
 	/**
 	 * Instantiates a new jpa sequence master set memento.
@@ -25,7 +25,7 @@ public class JpaSequenceMasterSetMemento implements SequenceMasterSetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaSequenceMasterSetMemento(CsqmtSequenceMaster typeValue) {
+	public JpaSequenceMasterSetMemento(BsymtJobSeqMaster typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -36,8 +36,8 @@ public class JpaSequenceMasterSetMemento implements SequenceMasterSetMemento {
 	 * SequenceMasterSetMemento#setOrder(int)
 	 */
 	@Override
-	public void setOrder(int order) {
-		this.typeValue.setOrder(order);
+	public void setOrder(short order) {
+		this.typeValue.setDisporder(order);
 	}
 
 	/*
@@ -49,9 +49,12 @@ public class JpaSequenceMasterSetMemento implements SequenceMasterSetMemento {
 	 */
 	@Override
 	public void setCompanyId(CompanyId companyId) {
-		CsqmtSequenceMasterPK pk = new CsqmtSequenceMasterPK();
-		pk.setCompanyId(companyId.v());
-		this.typeValue.setCsqmtSequenceMasterPK(pk);
+		BsymtJobSeqMasterPK pk = this.typeValue.getBsymtJobSeqMasterPK();
+		if (pk == null) {
+			pk = new BsymtJobSeqMasterPK();
+		}
+		pk.setCid(companyId.v());
+		this.typeValue.setBsymtJobSeqMasterPK(pk);
 	}
 
 	/*
@@ -63,9 +66,12 @@ public class JpaSequenceMasterSetMemento implements SequenceMasterSetMemento {
 	 */
 	@Override
 	public void setSequenceCode(SequenceCode sequenceCode) {
-		CsqmtSequenceMasterPK pk = this.typeValue.getCsqmtSequenceMasterPK();
-		pk.setSequenceCode(sequenceCode.v());
-		this.typeValue.setCsqmtSequenceMasterPK(pk);
+		BsymtJobSeqMasterPK pk = this.typeValue.getBsymtJobSeqMasterPK();
+		if (pk == null) {
+			pk = new BsymtJobSeqMasterPK();
+		}
+		pk.setSeqCd(sequenceCode.v());
+		this.typeValue.setBsymtJobSeqMasterPK(pk);
 	}
 
 	/*
@@ -77,7 +83,7 @@ public class JpaSequenceMasterSetMemento implements SequenceMasterSetMemento {
 	 */
 	@Override
 	public void setSequenceName(SequenceName sequenceName) {
-		this.typeValue.setSequenceName(sequenceName.v());
+		this.typeValue.setSeqName(sequenceName.v());
 	}
 
 }

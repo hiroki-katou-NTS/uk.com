@@ -32,10 +32,13 @@ module nts.uk.at.view.kdw008.c {
                     }
                     return new BusinessTypeSortedModel(update);
                 });
+                nts.uk.ui.block.grayout();
                 new service.Service().updateBusinessTypeSorted(businessTypeSortedUpdateList).done(function(data) {
                     //self.findAll();
+                    nts.uk.ui.block.clear();
                     nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                     dfd.resolve();
+                    nts.uk.ui.windows.close();
                 });
                 return dfd.promise();
             }

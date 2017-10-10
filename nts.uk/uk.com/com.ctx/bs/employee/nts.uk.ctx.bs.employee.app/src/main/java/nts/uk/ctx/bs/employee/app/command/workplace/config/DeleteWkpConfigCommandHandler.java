@@ -70,14 +70,17 @@ public class DeleteWkpConfigCommandHandler extends CommandHandler<DeleteWkpConfi
         DeleteWkpConfigCommand command = context.getCommand();
         
         // valid history latest
-        HistoryUtil.validHistoryLatest(wkpConfig, command.getHistoryId());
+        List<String> lstHistoryId = wkpConfig.getWkpConfigHistory().stream()
+                .map(item -> item.getHistoryId())
+                .collect(Collectors.toList());
+        HistoryUtil.validHistoryLatest(lstHistoryId, command.getHistoryId());
         
         // remove workplace config history
         this.wkpConfigRepo.removeWkpConfigHist(companyId, command.getHistoryId());
         
         // update end date of previous history (below history that is removed)
-        int idxprevHistLatest = 1;
-        String prevHistIdLatest = wkpConfig.getWkpConfigHistory().get(idxprevHistLatest).getHistoryId();
+        int idxPrevHistLatest = 1;
+        String prevHistIdLatest = wkpConfig.getWkpConfigHistory().get(idxPrevHistLatest).getHistoryId();
         this.wkpConfigService.updatePrevHistory(companyId, prevHistIdLatest, GeneralDate.fromString(MAX_DATE, DATE_FORMAT));
         
         // find all workplace of history that is removed
@@ -86,7 +89,7 @@ public class DeleteWkpConfigCommandHandler extends CommandHandler<DeleteWkpConfi
         if (!optionalWkpConfigInfo.isPresent()) {
             return;
         }
-        List<String> lstWkpId = optionalWkpConfigInfo.get().getWkpHierarchy().stream()
+        List<String> lstWkpId = optionalWkpConfigInfo.get().getLstWkpHierarchy().stream()
                 .map(item -> item.getWorkplaceId().v())
                 .collect(Collectors.toList());
         

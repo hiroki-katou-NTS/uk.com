@@ -53,7 +53,14 @@ public interface FormulaGetMemento {
 	 *
 	 * @return the calc formula atr
 	 */
-	OptionalItemAtr getCalcFormulaAtr();
+	CalculationAtr getCalcFormulaAtr();
+
+	/**
+	 * Gets the calc formula atr.
+	 *
+	 * @return the calc formula atr
+	 */
+	OptionalItemAtr getFormulaAtr();
 
 	/**
 	 * Gets the symbol.

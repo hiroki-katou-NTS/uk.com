@@ -11,7 +11,7 @@ import javax.inject.Inject;
 @Stateless
 public class BeforeProcessDenialImpl implements BeforeProcessDenial {
 	@Inject
-	private DetailBeforeProcessRegister detailBeforeProcessRegisterRepo;
+	private DetailBeforeUpdate detailBeforeProcessRegisterRepo;
 
 	@Override
 	public void detailedScreenProcessBeforeDenial() {

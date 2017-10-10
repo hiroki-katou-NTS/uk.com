@@ -8,8 +8,8 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.AfterProcessRegisterImpl;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeProcessRegister;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegisterImpl;
+import nts.uk.ctx.at.request.dom.application.common.service.newscreen.before.NewBeforeRegister;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.FactoryLateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.service.LateOrLeaveEarlyService;
@@ -28,7 +28,7 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 	private FactoryLateOrLeaveEarly factoryLateOrLeaveEarly;
 	
 	@Inject
-	private NewBeforeProcessRegister newBeforeProcessRegisterSerivce;
+	private NewBeforeRegister newBeforeProcessRegisterSerivce;
 	
 
 	@Override

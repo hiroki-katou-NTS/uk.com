@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -36,7 +35,7 @@ public class WorkingTypeChangedByEmploymentWebService {
 	@Inject
 	private WorkTypeEmploymentCommandHandler handler;
 	
-	@GET
+	@POST
 	@Path("get/{empCode}")
 	public List<WorkTypeGroupDto> findWorkTypeGroups(@PathParam("empCode") String empCode) {
 		String companyId = AppContexts.user().companyId();
@@ -54,5 +53,7 @@ public class WorkingTypeChangedByEmploymentWebService {
 	public void registerWorkType(WorkTypeEmploymentCommand command) {
 		handler.handle(command);
 	}
+	
+	
 
 }

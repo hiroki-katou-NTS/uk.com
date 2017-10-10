@@ -25,14 +25,12 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<a id="button1" class="goback"
-					data-bind="ntsLinkButton: { jump: '../../006/index.xhtml' }">#{i18n.getText('KDW008_30')}</a>
+					data-bind="ntsLinkButton: { jump: '../../006/a/index.xhtml' }">#{i18n.getText('KDW008_30')}</a>
 
 				<span id="button2">
 					<button class="proceed" data-bind="click : setNewMode">#{i18n.getText('KDW008_2')}</button>
 					<button class="proceed" data-bind="click : addOrUpdateClick">#{i18n.getText('KDW008_3')}</button>
 					<button class="proceed" data-bind="click : remove">#{i18n.getText('KDW008_4')}</button>
-				</span> <span id="button3">
-					<button class="proceed" data-bind="click : dialog">並び順の設定</button>
 				</span>
 			</div>
 
@@ -49,12 +47,16 @@
 					value: selectedCode
 				}"></table>
 				<div>
-					<span id="label2" class="label">#{i18n.getText('KDW008_7')}</span>
-					<input data-bind="ntsTextEditor: {value: currentDailyFormatCode}" />
-<!-- 					<span id="label3" class="label" data-bind="text: currentDailyFormatCode"></span> -->
-					<span id="label4" class="label">#{i18n.getText('KDW008_8')}</span>
-					<input data-bind="ntsTextEditor: {value: currentDailyFormatName}" />
-<!-- 					<span id="label5" class="label" data-bind="text: currentDailyFormatName"></span> --><br></br>
+					<div style="margin-bottom: 20px">
+						<span id="label2" class="label">#{i18n.getText('KDW008_7')} (半角英数字3桁)</span>
+						<input id="currentCode"
+							data-bind="ntsTextEditor: {value: currentDailyFormatCode, enable : showCode	}" /><br />
+					</div>
+					<div>
+						<span id="label4" class="label">#{i18n.getText('KDW008_8')} （全角10文字)</span>
+						<input style="margin-left: 15px" data-bind="ntsTextEditor: {value: currentDailyFormatName}" />
+					</div>
+					<br />
 					<div id="checkbox1" data-bind="ntsCheckBox: { checked: checked }">#{i18n.getText('KDW008_32')}</div>
 				</div>
 				<div id="tab-panel"
@@ -70,10 +72,10 @@
 									value: selectedSheetNo,
 									enable: true}">
 							</div>
-							<span id="label2" class="label">#{i18n.getText('KDW008_8')}</span>
+							<span id="label2" class="label">#{i18n.getText('KDW008_8')}   （全角10文字)</span>
 							<input data-bind="ntsTextEditor: {value: selectedSheetName}"></input>
 						</div>
-						<div id="label2" class="label">#{i18n.getText('KDW008_24')}</div>
+						<div id="label2" style="margin-bottom: 10px" class="label">#{i18n.getText('KDW008_24')}</div>
 						<BR />
 						<div class="label">#{i18n.getText('KDW008_29')}</div>
 						<div style="margin-top: 10px" id="swap-list2"
@@ -93,6 +95,7 @@
 						}"></div>
 					</div>
 					<div class="tab-content-2" style="height: 500px; width: 900px">
+						<div class="label">#{i18n.getText('KDW008_28')}</div>
 						<div style="margin-top: 10px" id="swap-list"
 							data-bind="ntsSwapList: {
 							showSearchBox: { showLeft : true, showRight: true},

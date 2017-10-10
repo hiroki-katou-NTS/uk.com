@@ -14,9 +14,9 @@ public class ObjApprovalRootInput {
 	 * @param subjectRequest 対象申請
 	 * @param baseDate 基準日
 	 */
-	String cid; 
+	 
 	String sid; 
 	int employmentRootAtr; 
 	int appType;
-	GeneralDate standardDate;
+	String standardDate;
 }
