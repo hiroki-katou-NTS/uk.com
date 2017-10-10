@@ -128,7 +128,7 @@ public class ApplicationDto {
 				domain.getReflectPerEnforce().value,
 				domain.getStartDate(),
 				domain.getEndDate(),
-				domain.getListPhase().stream().map(x -> AppApprovalPhaseDto.fromDomain(x)).collect(Collectors.toList())
+				domain.getListPhase() == null ? null: domain.getListPhase().stream().map(x -> AppApprovalPhaseDto.fromDomain(x)).collect(Collectors.toList())
 				);
 	}
 

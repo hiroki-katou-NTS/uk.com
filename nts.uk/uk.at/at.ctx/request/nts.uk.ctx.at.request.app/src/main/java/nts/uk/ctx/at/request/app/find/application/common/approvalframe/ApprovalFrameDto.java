@@ -43,7 +43,7 @@ public class ApprovalFrameDto {
 				domain.getCompanyID(),
 				domain.getFrameID(),
 				domain.getDispOrder(),
-				domain.getListApproveAccepted().stream().map(x->ApproveAcceptedDto.fromDomain(x))
+				domain.getListApproveAccepted() == null ? null :domain.getListApproveAccepted().stream().map(x->ApproveAcceptedDto.fromDomain(x))
 				.collect(Collectors.toList())
 				,null,null,null);
 	}

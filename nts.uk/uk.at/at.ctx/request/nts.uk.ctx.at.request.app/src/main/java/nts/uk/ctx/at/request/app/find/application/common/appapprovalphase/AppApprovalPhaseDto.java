@@ -39,7 +39,7 @@ public class AppApprovalPhaseDto {
 				domain.getApprovalForm(),
 				domain.getDispOrder(),
 				domain.getApprovalATR(),
-				domain.getListFrame().stream().map(x->ApprovalFrameDto.fromDomain(x))
+				domain.getListFrame() == null ? null :domain.getListFrame().stream().map(x->ApprovalFrameDto.fromDomain(x))
 				.collect(Collectors.toList()));
 	}
 }
