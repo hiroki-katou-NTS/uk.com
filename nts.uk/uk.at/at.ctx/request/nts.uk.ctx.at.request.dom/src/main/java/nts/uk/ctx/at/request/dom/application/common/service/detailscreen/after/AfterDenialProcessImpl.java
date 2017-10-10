@@ -68,6 +68,9 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 			List<String> listApprover = afterApprovalProcess.actualReflectionStateDecision(appID, phase.getPhaseID(), ApprovalAtr.APPROVED);
 			// Check All ApproveAtr is NOT Approve
 			if (this.isAllUnapproved(phase)) {
+				if(phase.getDispOrder() - 1 < 0) {
+					continue;
+				}
 				canDeniedFlg = this.canDeniedCheck(application,phase.getDispOrder() - 1);
 				if (!canDeniedFlg) {
 					continue;
@@ -176,19 +179,13 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 	 * @return
 	 */
 	private boolean isAllUnapproved(AppApprovalPhase phase) {
-		int iTemp = 1;
 		boolean isAllUnapproved = true;
 		for (ApprovalFrame frame : phase.getListFrame()) {
 			for (ApproveAccepted x : frame.getListApproveAccepted()) {
-				if (x.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
-					iTemp = iTemp * 1;
-				} else {
-					iTemp = iTemp * 0;
+				if(x.getApprovalATR() ==ApprovalAtr.APPROVED) {
+					isAllUnapproved = false;
 				}
 			}
-		}
-		if (iTemp == 0) {
-			isAllUnapproved = false;
 		}
 		return isAllUnapproved;
 	}
@@ -200,19 +197,13 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 	 * @return
 	 */
 	private boolean isAllConfirm(AppApprovalPhase phase) {
-		int iTemp = 1;
-		boolean isAllConfirm = true;
+		boolean isAllConfirm = false;
 		for (ApprovalFrame frame : phase.getListFrame()) {
 			for (ApproveAccepted x : frame.getListApproveAccepted()) {
 				if (x.getConfirmATR() == ConfirmAtr.USEATR_USE) {
-					iTemp = iTemp * 1;
-				} else {
-					iTemp = iTemp * 0;
+					isAllConfirm = true;
 				}
 			}
-		}
-		if (iTemp == 0) {
-			isAllConfirm = false;
 		}
 		return isAllConfirm;
 	}
