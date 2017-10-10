@@ -150,6 +150,7 @@ module nts.uk.at.view.kmk002.a {
                                 item.check();
                             }
                         });
+                        return;
                     }
 
                     // uncheck all checked formula
@@ -453,11 +454,30 @@ module nts.uk.at.view.kmk002.a {
                     return;
                 }
 
-                // Remove.
-                let id = ''; //selected id.
-                _.remove(self.calcFormulas(), item => item.formulaId == id);
-                self.calcFormulas([]);
+                // Remove selected formulas.
+                OptionalItem.selectedFormulas().forEach(order => {
+                    //_.remove(self.calcFormulas(), item => item.orderNo == order);
+                    self.calcFormulas.remove(item => item.orderNo == order);
+                });
 
+                // clear selected
+                OptionalItem.selectedFormulas([]);
+
+                // reset formula order
+                self.resetFormulaOrder();
+
+            }
+
+            /**
+             * reset formula order.
+             */
+            private resetFormulaOrder(): void {
+                let self = this;
+                let index = 0;
+                _.each(self.calcFormulas(), item => {
+                    item.orderNo = index + 1;
+                    index++;
+                });
             }
 
             /**
