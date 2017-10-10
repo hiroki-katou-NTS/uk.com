@@ -7,16 +7,20 @@ package nts.uk.ctx.bs.employee.pubimp.employment;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.employment.Employment;
 import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistory;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistoryRepository;
+import nts.uk.ctx.bs.employee.pub.employment.EmpCdNameExport;
+import nts.uk.ctx.bs.employee.pub.employment.SEmpHistExport;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 
 /**
@@ -24,6 +28,9 @@ import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
  */
 @Stateless
 public class EmploymentPubImp implements SyEmploymentPub {
+
+	/** The Constant FIRST_ITEM_INDEX. */
+	private static final int FIRST_ITEM_INDEX = 0;
 
 	/** The employment repository. */
 	@Inject
@@ -48,7 +55,8 @@ public class EmploymentPubImp implements SyEmploymentPub {
 		List<String> employmentCodes = affEmploymentHistories.stream()
 				.map(item -> item.getEmploymentCode().v()).collect(Collectors.toList());
 
-		List<Employment> acEmploymentDtos = employmentRepository.findByEmpCodes(employmentCodes);
+		List<Employment> acEmploymentDtos = employmentRepository.findByEmpCodes(companyId,
+				employmentCodes);
 
 		Map<String, String> comEmpMap = acEmploymentDtos.stream()
 				.collect(Collectors.toMap((item) -> {
@@ -59,6 +67,57 @@ public class EmploymentPubImp implements SyEmploymentPub {
 
 		// Return EmploymentCode
 		return comEmpMap.get(companyId);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#findAll(java.lang.
+	 * String)
+	 */
+	@Override
+	public List<EmpCdNameExport> findAll(String companyId) {
+		return employmentRepository.findAll(companyId).stream()
+				.map(item -> EmpCdNameExport.builder().code(item.getEmploymentCode().v())
+						.name(item.getEmploymentName().v()).build())
+				.collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub#findSEmpHistBySid(
+	 * java.lang.String, java.lang.String, nts.arc.time.GeneralDate)
+	 */
+	@Override
+	public Optional<SEmpHistExport> findSEmpHistBySid(String companyId, String employeeId,
+			GeneralDate baseDate) {
+		// Query
+		List<AffEmploymentHistory> affEmploymentHistories = employmentHistoryRepository
+				.searchEmploymentOfSids(Arrays.asList(employeeId), baseDate);
+
+		// Check exist
+		if (CollectionUtil.isEmpty(affEmploymentHistories)) {
+			return Optional.empty();
+		}
+
+		AffEmploymentHistory empHist = affEmploymentHistories.get(FIRST_ITEM_INDEX);
+
+		// Find emp by empCd
+		List<Employment> employments = employmentRepository.findByEmpCodes(companyId,
+				Arrays.asList(empHist.getEmploymentCode().v()));
+
+		// Get employment info
+		Employment employment = employments.get(FIRST_ITEM_INDEX);
+
+		// Return
+		return Optional.of(SEmpHistExport.builder().employeeId(employeeId)
+				.employmentCode(employment.getEmploymentCode().v())
+				.employmentName(employment.getEmploymentName().v())
+				.startDate(empHist.getPeriod().getStartDate())
+				.endDate(empHist.getPeriod().getEndDate()).build());
 	}
 
 }

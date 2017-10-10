@@ -176,4 +176,45 @@ public class JpaSequenceMasterRepository extends JpaRepository implements Sequen
 		}
 		return Optional.of(toDomain(result.get(0)));
 	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterRepository#findMaxOrder()
+	 */
+	@Override
+	public short findMaxOrder() {
+		
+		// Check if sequence is empty
+		if (isEmpty()) {
+			return 1;
+		}
+		
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();		
+		CriteriaQuery<Short> cq = criteriaBuilder.createQuery(Short.class);
+		Root<BsymtJobSeqMaster> root = cq.from(BsymtJobSeqMaster.class);
+		
+		// Build query
+		cq.select(criteriaBuilder.max(root.get(BsymtJobSeqMaster_.disporder)));
+
+		return em.createQuery(cq).getSingleResult();	
+	}
+	
+	/**
+	 * Checks if is empty.
+	 *
+	 * @return true, if is empty
+	 */
+	private boolean isEmpty() {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();		
+		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
+		Root<BsymtJobSeqMaster> root = cq.from(BsymtJobSeqMaster.class);
+		
+		cq.select(criteriaBuilder.count(root));
+		Long count = em.createQuery(cq).getSingleResult();
+		
+		return count == 0;
+	}
 }

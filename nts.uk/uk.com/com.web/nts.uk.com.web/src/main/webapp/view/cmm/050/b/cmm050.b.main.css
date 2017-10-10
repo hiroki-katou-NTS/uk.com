@@ -1,0 +1,11 @@
+.form-input{
+	padding: 20px 30px;
+}
+
+.form-input > .label_style{
+	display: inline-block;
+}
+
+.form-input > .input{
+	display: inline-block;
+}

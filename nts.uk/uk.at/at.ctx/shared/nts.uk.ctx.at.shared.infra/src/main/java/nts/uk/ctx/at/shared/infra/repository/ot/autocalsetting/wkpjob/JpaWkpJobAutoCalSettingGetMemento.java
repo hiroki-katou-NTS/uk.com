@@ -53,7 +53,7 @@ public class JpaWkpJobAutoCalSettingGetMemento implements WkpJobAutoCalSettingGe
 	 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpJobAutoCalSettingGetMemento#getPositionId()
 	 */
 	@Override
-	public JobTitleId getPositionId() {
+	public JobTitleId getJobId() {
 		return new JobTitleId(this.entity.getKshmtAutoWkpJobCalPK().getJobid());
 	}
 	/* (non-Javadoc)

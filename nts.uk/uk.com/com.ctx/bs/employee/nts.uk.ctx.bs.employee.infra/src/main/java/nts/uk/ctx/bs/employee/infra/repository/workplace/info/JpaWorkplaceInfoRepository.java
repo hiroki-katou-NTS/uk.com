@@ -36,6 +36,43 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
      * (non-Javadoc)
      * 
      * @see
+     * nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#add(nts
+     * .uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo)
+     */
+    @Override
+    public void add(WorkplaceInfo workplaceInfo) {
+        this.commandProxy().insert(this.toEntity(workplaceInfo));
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#update(
+     * nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo)
+     */
+    @Override
+    public void update(WorkplaceInfo workplaceInfo) {
+        this.commandProxy().update(this.toEntity(workplaceInfo));
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#remove(
+     * java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public void remove(String companyId, String workplaceId, String historyId) {
+        this.commandProxy().remove(BsymtWorkplaceInfo.class,
+                new BsymtWorkplaceInfoPK(companyId, workplaceId, historyId));
+    }
+    
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
      * nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#find(
      * java.lang.String, java.lang.String, java.lang.String)
      */
@@ -59,38 +96,12 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
                 .equal(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid), wkpId));
         lstpredicateWhere.add(criteriaBuilder.equal(
                 root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.historyId), historyId));
+        
         cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-        List<BsymtWorkplaceInfo> lst = em.createQuery(cq).getResultList();
-        if (lst.isEmpty()) {
-            return Optional.empty();
-        } else {
-            return Optional.of(new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(lst.get(0))));
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#update(
-     * nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo)
-     */
-    @Override
-    public void update(WorkplaceInfo workplaceInfo) {
-        this.commandProxy().update(this.toEntity(workplaceInfo));
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#remove(
-     * java.lang.String, java.lang.String, java.lang.String)
-     */
-    @Override
-    public void remove(String companyId, String workplaceId, String historyId) {
-        this.commandProxy().remove(BsymtWorkplaceInfo.class,
-                new BsymtWorkplaceInfoPK(companyId, workplaceId, historyId));
+        
+        return em.createQuery(cq).getResultList().stream()
+                .map(entity -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(entity)))
+                .findFirst();
     }
 
     /*
@@ -122,9 +133,10 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
                 root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.endD), baseDate));
 
         cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-        return em.createQuery(cq).getResultList().stream().map(item -> {
-            return new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item));
-        }).collect(Collectors.toList());
+        
+        return em.createQuery(cq).getResultList().stream()
+                .map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
+                .collect(Collectors.toList());
     }
 
     /*
@@ -155,13 +167,10 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
                 root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.endD), baseDate));
 
         cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-        List<WorkplaceInfo> lstWkpInfo = em.createQuery(cq).getResultList().stream().map(item -> {
-            return new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item));
-        }).collect(Collectors.toList());
-        if (lstWkpInfo.isEmpty()) {
-            return Optional.of(null);
-        }
-        return Optional.of(lstWkpInfo.get(0));
+        
+        return em.createQuery(cq).getResultList().stream()
+                .map(item -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item)))
+                .findFirst();
     }
 
     /*
@@ -186,16 +195,46 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
         List<Predicate> lstpredicateWhere = new ArrayList<>();
         lstpredicateWhere.add(criteriaBuilder
                 .equal(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid), wkpId));
-        cq.orderBy(
+        
+        // order by end date, start date DESC
+        cq.orderBy(criteriaBuilder.desc(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.endD)),
                 criteriaBuilder.desc(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.strD)));
+        
         cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-        List<WorkplaceInfo> lstWkpInfo = em.createQuery(cq).getResultList().stream().map(item -> {
-            return new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(item));
-        }).collect(Collectors.toList());
-        if (lstWkpInfo.isEmpty()) {
-            return Optional.of(null);
-        }
-        return Optional.of(lstWkpInfo.get(0));
+        
+        return em.createQuery(cq).getResultList().stream()
+                .map(entity -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(entity)))
+                .findFirst();
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#
+     * isExisted(java.lang.String, java.lang.String)
+     */
+    @Override
+    public boolean isExisted(String companyId, String newWkpId) {
+        // get entity manager
+        EntityManager em = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+        CriteriaQuery<BsymtWorkplaceInfo> cq = criteriaBuilder.createQuery(BsymtWorkplaceInfo.class);
+        Root<BsymtWorkplaceInfo> root = cq.from(BsymtWorkplaceInfo.class);
+
+        // select root
+        cq.select(root);
+
+        // add where
+        List<Predicate> lstpredicateWhere = new ArrayList<>();
+        lstpredicateWhere.add(criteriaBuilder
+                .equal(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.cid), companyId));
+        lstpredicateWhere.add(criteriaBuilder
+                .equal(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid), newWkpId));
+
+        cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+        return !em.createQuery(cq).getResultList().isEmpty();
     }
 
     /**
@@ -217,4 +256,5 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
         workplaceInfo.saveToMemento(memento);
         return entity;
     }
+
 }

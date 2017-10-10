@@ -67,11 +67,11 @@ module nts.uk.com.view.cdl003.a {
                     nts.uk.ui.windows.close();    
                 }else {
                      var selectedCode: string = self.getSelectBySel(self.selectedSelClassification(), dataList);
-                    if(!selectedCode){
+                    if(selectedCode == null && selectedCode == undefined){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
                         return;
                     }
-                    nts.uk.ui.windows.setShared('outputCDL003', { selectedCode: selectedCode });
+                    nts.uk.ui.windows.setShared('outputCDL003', { selectedCode: selectedCode = '' ? null : selectedCode});
                     nts.uk.ui.windows.close();    
                 }
                 
@@ -81,6 +81,9 @@ module nts.uk.com.view.cdl003.a {
              * check selected code
              */
             private getSelectBySel(selected: string, selectedCodes: UnitModel[]): string {
+                if (selected == "") {
+                    return selected;
+                }
                 let a = _.find(selectedCodes, x => x.code === selected);
                 if (a) {
                     return a.code;
