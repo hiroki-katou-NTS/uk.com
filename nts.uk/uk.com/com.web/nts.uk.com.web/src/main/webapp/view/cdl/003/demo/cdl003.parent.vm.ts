@@ -22,7 +22,7 @@ module nts.uk.com.view.cdl003.parent.viewmodel {
             let self = this;
             let canSelected = self.canSelectClassificationCodes() ? self.canSelectClassificationCodes().split(',') : [];
             nts.uk.ui.windows.setShared('inputCDL003', {
-                canSelected: canSelected,
+                canSelected: self.selectMode() ? canSelected : canSelected[0],
                 showNoSelection: self.showNoSelection(),
                 isMultiple: self.selectMode()
             }, true);

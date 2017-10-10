@@ -183,7 +183,7 @@ module kcp.share.list {
             self.isMultiple = data.isMultiSelect;
             self.targetKey = data.listType == ListType.JOB_TITLE ? 'id': 'code';
             self.maxRows = data.maxRows ? data.maxRows : 12;
-            self.selectedCodes = ko.observable(data.isMultiSelect ? [] : null);
+            self.selectedCodes = data.selectedCode;
             self.isDialog = data.isDialog;
             self.hasBaseDate = data.listType == ListType.JOB_TITLE && !data.isDialog && !data.isMultiSelect;
             self.isHasButtonSelectAll = data.listType == ListType.EMPLOYEE
@@ -199,14 +199,6 @@ module kcp.share.list {
             } else {
                 self.baseDate = ko.observable(new Date());
             }
-            //Delegate
-            $(document).delegate('#' + self.componentGridId, "iggridselectionrowselectionchanged", function(evt: JQueryEventObject, ui: any) {
-                if (ui.selectedRows && ui.selectedRows.length == 0) {
-                    data.selectedCode(data.isMultiSelect ? [] : null);
-                    return;
-                }
-                data.selectedCode(self.selectedCodes());
-            });
             if (self.listType == ListType.JOB_TITLE) {
                 this.listComponentColumn.push({headerText: '', hidden: true, prop: 'id'});
             }
@@ -310,7 +302,7 @@ module kcp.share.list {
             $input.load(webserviceLocator, function() {
                 $input.find('table').attr('id', self.componentGridId);
                 ko.applyBindings(self, $input[0]);
-                $('.base-date-editor').find('.nts-input').width(133);
+                $input.find('.base-date-editor').find('.nts-input').width(133);
                 
                 // Set default value when init component.
                 self.initSelectedValue(data, self.itemList());
@@ -330,12 +322,22 @@ module kcp.share.list {
             // defined function focus
             $.fn.focusComponent = function() {
                 if (self.hasBaseDate) {
-                    $('.base-date-editor').first().focus();
+                    $input.find('.base-date-editor').first().focus();
                 } else {
-                    $(".ntsSearchBox").focus();
+                    $input.find(".ntsSearchBox").focus();
                 }
             }
             $.fn.reloadJobtitleDataList = self.reload;
+            $.fn.isNoSelectRowSelected = function() {
+                if (self.isMultiple) {
+                    return false;
+                }
+                var selectedRow: any = $('#' + self.componentGridId).igGridSelection("selectedRow");
+                if (selectedRow && selectedRow.id === '') {
+                    return true;
+                }
+                return false;
+            }
             return dfd.promise();
         }
         
@@ -399,28 +401,22 @@ module kcp.share.list {
             var self = this;
             switch(data.selectType) {
                 case SelectType.SELECT_BY_SELECTED_CODE:
-                    if (self.isMultiple) {
-                        self.selectedCodes(data.selectedCode());
-                    }
+                    //self.selectedCodes(data.selectedCode());
                     return;
                 case SelectType.SELECT_ALL:
                     if (!self.isMultiple){
                         return;
                     }
                     self.selectedCodes(dataList.map(item => self.listType == ListType.JOB_TITLE ? item.id : item.code));
-                    data.selectedCode(self.selectedCodes());
                     return;
                 case SelectType.SELECT_FIRST_ITEM:
                     self.selectedCodes(dataList.length > 0 ? self.selectData(data, dataList[0]) : null);
-                    data.selectedCode(self.selectedCodes());
                     return;
                 case SelectType.NO_SELECT:
                     self.selectedCodes(data.isMultiSelect ? [] : null);
-                    data.selectedCode(self.selectedCodes())
                     return;
                 default:
                     self.selectedCodes(data.isMultiSelect ? [] : null);
-                    data.selectedCode(self.selectedCodes())
             }
         }
         
@@ -630,6 +626,11 @@ interface JQuery {
      * Function reload job title data list. Support job title list only.
      */
     reloadJobtitleDataList(): void;
+    
+    /**
+     * Check isNoSelectRowSelected.
+     */
+    isNoSelectRowSelected(): boolean;
 }
 
 (function($: any) {
