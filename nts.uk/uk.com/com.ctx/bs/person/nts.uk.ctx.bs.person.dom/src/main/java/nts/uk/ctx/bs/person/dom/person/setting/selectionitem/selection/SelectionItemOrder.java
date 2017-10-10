@@ -6,6 +6,13 @@ import nts.arc.enums.EnumAdaptor;
 
 @AllArgsConstructor
 @Getter
+/**
+ * 
+ * @author tuannv
+ *
+ */
+
+//選択肢の並び順 ドメイン
 public class SelectionItemOrder {
 	private String selectionID;
 	private String histId;
@@ -14,6 +21,8 @@ public class SelectionItemOrder {
 
 	public static SelectionItemOrder selectionItemOrder(String selectionID, String histId, int disporder,
 			int initSelection) {
+
+		// 選択肢の並び順 パラメーター帰還
 		return new SelectionItemOrder(histId, histId, new Disporder(disporder),
 				EnumAdaptor.valueOf(initSelection, InitSelection.class));
 	}

@@ -12,12 +12,14 @@ module nts.uk.com.view.cps016.a.viewmodel {
         perInfoSelectionItem: KnockoutObservable<SelectionItem> = ko.observable(new SelectionItem({ selectionItemId: '', selectionItemName: '' }));
         rulesFirst: KnockoutObservableArray<IRule>;
         checkCreate: KnockoutObservable<boolean>;
+        closeUp: KnockoutObservable<boolean>;
 
         constructor() {
             let self = this,
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
                 formatSelection = perInfoSelectionItem.formatSelection();
             self.checkCreate = ko.observable(true);
+            self.closeUp = ko.observable(true);
             self.rulesFirst = ko.observableArray([
                 { id: 0, name: getText('Enum_SelectionCodeCharacter_NUMBER_TYPE') },
                 { id: 1, name: getText('Enum_SelectionCodeCharacter_CHARATERS_TYPE') }
