@@ -87,7 +87,7 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("approveapp")
-	public void approveApp(UpdateApplicationCommonCmd command){
+	public void approveApp(ApplicationDto command){
 		 this.approveApp.handle(command);
 	}
 	
@@ -97,7 +97,7 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("denyapp")
-	public void denyApp(UpdateApplicationCommonCmd command){
+	public void denyApp(ApplicationDto command){
 		 this.denyApp.handle(command);
 	}
 	
@@ -107,7 +107,7 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("releaseapp")
-	public void releaseApp(UpdateApplicationCommonCmd command){
+	public void releaseApp(ApplicationDto command){
 		 this.releaseApp.handle(command);
 	}
 	

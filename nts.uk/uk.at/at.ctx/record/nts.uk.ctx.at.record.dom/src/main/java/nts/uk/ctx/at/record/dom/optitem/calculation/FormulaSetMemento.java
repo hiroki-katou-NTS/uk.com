@@ -53,7 +53,14 @@ public interface FormulaSetMemento {
 	 *
 	 * @param atr the new calc formula atr
 	 */
-	void setCalcFormulaAtr(OptionalItemAtr atr);
+	void setFormulaAtr(OptionalItemAtr atr);
+
+	/**
+	 * Sets the calc atr.
+	 *
+	 * @param calcAtr the new calc atr
+	 */
+	void setCalcAtr(CalculationAtr calcAtr);
 
 	/**
 	 * Sets the symbol.

@@ -85,33 +85,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 });
             });
 
-            //register click change all event
-            $(() => {
-                $('#anotherSelectedAll_auth, #seftSelectedAll_auth').on('click', '.nts-switch-button', function() {
 
-                    let parrentId = $(this).parent().attr('id'),
-                        currentList = self.currentRole().currentCategory().roleItemList(),
-                        selectItemList = _.find(currentList, (i) => {
-                            return i.isChecked;
-                        });
-
-                    if (!selectItemList) {
-                        dialog({ messageId: "Msg_664" });
-                        return;
-                    }
-
-                    _.forEach(currentList, (item) => {
-                        if (item.isChecked) {
-                            parrentId == 'anotherSelectedAll_auth' ? item.otherAuth = self.anotherSelectedAll() : item.selfAuth = self.seftSelectedAll();
-                        }
-                    });
-
-                    $("#item_role_table_body").igGrid("option", "dataSource", currentList);
-
-                });
-                
-               
-            });
 
             self.checkboxSelectedAll.subscribe((newValue) => {
 
@@ -156,6 +130,68 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
 
             });
+
+            //register click change all event
+            $(() => {
+                $('#anotherSelectedAll_auth, #seftSelectedAll_auth').on('click', '.nts-switch-button', function() {
+                    let id = $(this).parent().attr('id');
+                    self.changeAll(id, id === 'anotherSelectedAll_auth' ? self.anotherSelectedAll() : self.seftSelectedAll());
+
+                });
+
+                $('.selected_all_auth').keyup(function(event) {
+                    let id = $(this).attr('id');
+                    let code = event.keyCode,
+                        currentValue = id === 'anotherSelectedAll_auth' ? self.anotherSelectedAll() : self.seftSelectedAll(),
+                        Value;
+                    switch (code) {
+                        case 37:
+                        case 38: Value = currentValue - 1;
+                            break;
+                        case 39:
+                        case 40: Value = currentValue + 1;
+                            break;
+                    }
+
+                    if (!Value) {
+                        return;
+                    }
+
+                    self.changeAll(id, Value);
+
+                });
+
+                $('.ui-iggrid-header').on('focus', function() {
+
+                    if ($(this).find('.nts-switch-button').is(':enabled')) {
+                        $(this).find('.selected_all_auth').focus();
+                    }
+                });
+            });
+        }
+
+
+        changeAll(parrentId, changeValue) {
+            let self = this,
+                currentList = self.currentRole().currentCategory().roleItemList(),
+                selectItemList = _.find(currentList, (i) => {
+                    return i.isChecked;
+                }),
+                changeVal = changeValue < 1 ? 1 : changeValue > 3 ? 3 : changeValue;
+
+
+            if (!selectItemList) {
+                dialog({ messageId: "Msg_664" });
+                return;
+            }
+
+            _.forEach(currentList, (item) => {
+                if (item.isChecked) {
+                    parrentId == 'anotherSelectedAll_auth' ? item.otherAuth = changeVal : item.selfAuth = changeVal;
+                }
+            });
+
+            $("#item_role_table_body").igGrid("option", "dataSource", currentList);
         }
 
         OpenDModal() {
@@ -200,24 +236,22 @@ module nts.uk.com.view.cas001.a.viewmodel {
 
         InitializationItemGrid() {
             let self = this,
-                switchString = "<div id=\'{0}_auth\' class=\'selected_all_auth\'"
-                    + "data-bind=\"ntsSwitchButton: {options: itemListCbb"
-                    + ",optionsValue:\'code\',optionsText: \'name\',value: {0},enable: {1} }\">"
-                    + "</div><span id=\'selected_all_caret\' class=\'caret-bottom outline\'></span>",
-                checkboxString = "<div id=\'selected_all_ckb\' data-bind=\'ntsCheckBox: { checked: checkboxSelectedAll, enable: isDisableAll()===false }\'></div>",
+                switchString = `<div id='{0}_auth' class='selected_all_auth'
+                                    data-bind="ntsSwitchButton: {
+                                        options: itemListCbb,
+                                        optionsValue:'code',
+                                        optionsText: 'name',
+                                        value: {0},
+                                        enable: {1} }"></div>
+                                <span id='selected_all_caret' class='caret-bottom outline'></span>`,
+                checkboxString = `<div id='selected_all_ckb' data-bind='ntsCheckBox: { checked: checkboxSelectedAll, enable: !isDisableAll() }'></div>`,
 
-                selectedAllString = nts.uk.text.format(switchString, 'anotherSelectedAll', 'allowOtherRef() == 1 ? true : false'),
+                selectedAllString = nts.uk.text.format(switchString, 'anotherSelectedAll', '!!allowOtherRef()'),
 
-                seftSelectedAllString = nts.uk.text.format(switchString, 'seftSelectedAll', 'allowPersonRef() == 1 ? true : false');
+                seftSelectedAllString = nts.uk.text.format(switchString, 'seftSelectedAll', '!!allowPersonRef()');
 
             $("#item_role_table_body").ntsGrid({
-                features: [{ name: 'Resizing' },
-                    {
-                        name: "RowSelectors",
-                        enableCheckBoxes: false,
-                        enableRowNumbering: false,
-                        rowSelectorColumnWidth: 0
-                    }
+                features: [{ name: 'Resizing' }
                 ],
                 ntsFeatures: [{ name: 'CopyPaste' }],
 
@@ -245,7 +279,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                         function(index, el: any) {
                             let CheckboxCell = $("#item_role_table_body").igGrid("cellAt", 1, index);
                             let IsConfigCell = $("#item_role_table_body").igGrid("cellAt", 2, index);
-                            let NameCell     = $("#item_role_table_body").igGrid("cellAt", 3, index);
+                            let NameCell = $("#item_role_table_body").igGrid("cellAt", 3, index);
 
                             if (el.requiredAtr == '1') {
                                 $(CheckboxCell).addClass('requiredCell');

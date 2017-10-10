@@ -25,13 +25,12 @@ public class PerInfoCtgFinder {
 	private PerInfoItemDefRepositoty pernfoItemDefRep;
 
 	public List<PerInfoCtgFullDto> getAllPerInfoCtg(String companyId) {
-		String contractCd = companyId.substring(0,12);
-		return perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCd)
-				.stream().map(p -> {
-					return new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(),
-							p.getCategoryName().v(), p.getPersonEmployeeType().value, p.getIsAbolition().value,
-							p.getCategoryType().value, p.getIsFixed().value);
-				}).collect(Collectors.toList());
+		String contractCd = companyId.substring(0, 12);
+		return perInfoCtgRepositoty.getAllPerInfoCategory(companyId, contractCd).stream().map(p -> {
+			return new PerInfoCtgFullDto(p.getPersonInfoCategoryId(), p.getCategoryCode().v(), p.getCategoryName().v(),
+					p.getPersonEmployeeType().value, p.getIsAbolition().value, p.getCategoryType().value,
+					p.getIsFixed().value);
+		}).collect(Collectors.toList());
 	};
 
 	public PerCtgInfoDto getDetailCtgInfo(String categoryId) {
@@ -46,18 +45,18 @@ public class PerInfoCtgFinder {
 					perInfoCtg.getCategoryCode().toString());
 			detailCtgInfo.setCategoryName(perInfoCtg.getCategoryName().toString());
 			detailCtgInfo.setCategoryType(perInfoCtg.getCategoryType().value);
-			detailCtgInfo.setAbolition(perInfoCtg.getIsAbolition().value == 1? true: false);
+			detailCtgInfo.setAbolition(perInfoCtg.getIsAbolition().value == 1 ? true : false);
 			if (!categoryNameDefault.equals("null")) {
 				detailCtgInfo.setCategoryNameDefault(categoryNameDefault);
 			}
 			List<PersonInfoItemDefDto> itemLst = this.pernfoItemDefRep
 					.getAllPerInfoItemDefByCategoryIdWithoutSetItem(categoryId, contractCd).stream()
 					.map(item -> PersonInfoItemDefDto.fromDomain(item)).collect(Collectors.toList());
-			if(itemLst.size() > 0) {
+			if (itemLst.size() > 0) {
 				detailCtgInfo.setIsExistedItemLst(1);
-				
-			}else {
-				
+
+			} else {
+
 				detailCtgInfo.setIsExistedItemLst(0);
 			}
 			detailCtgInfo.setItemLst(itemLst);

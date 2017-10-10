@@ -25,6 +25,9 @@ public class RemoveSelectionItemCommandHandler extends CommandHandler<RemoveSele
 	protected void handle(CommandHandlerContext<RemoveSelectionItemCommand> context) {
 		RemoveSelectionItemCommand command = context.getCommand();
 		String getSelectionItemId = command.getSelectionItemId();
+		
+		//Todo: ドメインモデル「選択項目.ReferenceTypeState.コード名称参照条件」に削除対象の選択項目IDが登録されているかチェックする
+		//	  : ※削除対象の個人情報の選択項目が使用されていないかのチェック
 
 		// ToDo: ドメインモデル「選択肢」を削除する
 

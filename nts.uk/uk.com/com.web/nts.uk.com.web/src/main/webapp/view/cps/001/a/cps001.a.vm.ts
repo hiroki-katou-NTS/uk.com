@@ -6,6 +6,7 @@ module cps001.a.vm {
     import setShared = nts.uk.ui.windows.setShared;
     import getShared = nts.uk.ui.windows.getShared;
     import showDialog = nts.uk.ui.dialog;
+    import clearError = nts.uk.ui.errors.clearAll;
 
     let DEF_AVATAR = 'images/avatar.png',
         __viewContext: any = window['__viewContext'] || {},
@@ -75,6 +76,8 @@ module cps001.a.vm {
 
             self.tabActive.subscribe(x => {
                 if (x) {
+                    // clear all error message
+                    clearError();
                     if (x == 'layout') { // layout mode
                         self.listLayout.removeAll();
                         service.getAllLayout().done((data: Array<ILayout>) => {
@@ -92,6 +95,9 @@ module cps001.a.vm {
 
             layout.maintenanceLayoutID.subscribe(x => {
                 if (x) {
+                    // clear all error message
+                    clearError();
+                    
                     service.getCurrentLayout(x).done((data: ILayout) => {
                         layout.layoutCode(data.layoutCode || '');
                         layout.layoutName(data.layoutName || '');

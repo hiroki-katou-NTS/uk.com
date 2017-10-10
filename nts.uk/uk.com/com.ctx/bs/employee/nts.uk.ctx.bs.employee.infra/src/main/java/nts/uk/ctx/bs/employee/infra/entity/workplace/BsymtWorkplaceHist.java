@@ -50,7 +50,7 @@ public class BsymtWorkplaceHist extends UkJpaEntity implements Serializable {
 	private GeneralDate endD;
 
 	/** The bsymt wkp config info. */
-	@OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.LAZY)
 	@PrimaryKeyJoinColumns({
 			@PrimaryKeyJoinColumn(name = "HISTORY_ID", referencedColumnName = "HISTORY_ID") })
 	public BsymtWorkplaceInfo bsymtWorkplaceInfo;

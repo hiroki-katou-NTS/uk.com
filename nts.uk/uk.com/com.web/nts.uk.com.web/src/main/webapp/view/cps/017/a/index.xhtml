@@ -16,19 +16,161 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A1_001" tabindex="1">#{i18n.getText('CPS009_3')}</button>
-				<button id="A1_002" class="proceed" tabindex="2">#{i18n.getText('CPS009_4')}</button>
-				<button id="A1_003" tabindex="3">#{i18n.getText('CPS009_5')}</button>
-				<button id="A1_004" class="danger" tabindex="4">#{i18n.getText('CPS009_6')}</button>
+
+				<button id="A1_001" tabindex="1">#{i18n.getText('CPS017_1')}</button>
+				<button id="A1_002" class="proceed" tabindex="2">#{i18n.getText('CPS017_2')}</button>
+				<button id="A1_005" class="danger" tabindex="3">#{i18n.getText('CPS017_4')}</button>
+
+				<button id="A1_008" tabindex="4">#{i18n.getText('CPS017_50')}</button>
+				<button id="A1_003" tabindex="5">#{i18n.getText('CPS017_3')}</button>
+				<button id="A1_007" tabindex="6">#{i18n.getText('CPS017_49')}</button>
 
 			</div>
 			<div id="contents-area" class="cf">
-				<div id="content-left"
-					data-bind="ntsPanel:{width: '260px', height: '500px',
-					direction: 'right', showIcon: false, visible: true}">
+				<div id="content-left" class="pull-left"
+					data-bind="ntsPanel:{width: '270px', height: '665px',
+					direction: 'right', showIcon: true, visible: true}">
+
+					<!-- search box -->
+					<div id="search" tabindex="1"
+						data-bind="ntsSearchBox: {
+						searchMode: 'filter',
+						targetKey: 'sel_item_id',
+						mode: 'igGrid', 
+						comId: 'grid',
+						items: sel_item_lst ,  
+						selectedKey: 'sel_item_id',
+						fields: ['sel_item_id', 'sel_item_name']}" />
+
+					<!-- selection item list -->
+					<table id="sel_item_grid"
+						data-bind="ntsGridList: {								
+						height: 350,
+						dataSource: sel_item_lst,
+						primaryKey: 'sel_item_id',
+						columns: item_sel_col,
+						multiple: false,
+						value: currentItemSel().current_sel_item_id,
+						showNumbering: true
+					}">
+					</table>
+
+					<span id="caret" class="caret-bottom outline"></span>
+
+					<!-- khu vực thêm lịch sử, sửa lịch sử  -->
+					<div id="history">
+						<button id="A2_8" data-bind="click: openDialogC" tabindex="9">#{i18n.getText('CPS017_8')}</button>
+						<button id="A2_9" data-bind="click: openDialogD" tabindex="10">#{i18n.getText('CPS017_9')}</button>
+						<button id="A2_10" tabindex="11" class="danger">#{i18n.getText('CPS017_10')}</button>
+
+					</div>
+
+					<!-- khu vực history list -->
+
+					<div id="history_lst"
+						data-bind="ntsListBox: {
+						options: currentItemSel().history_lst,
+						optionsValue: 'history_id',
+						optionsText: 'period',
+						value: currentItemSel().currentId,
+						enable: true,
+						rows: 6,
+						columns: [
+							{ key: 'history_id', length: 4 },
+							{ key: 'period', length: 15 }
+						]}">
+					</div>
 
 				</div>
-				<div id="content-right"></div>
+
+				<!-- phần giữa của màn hình -->
+				<div id="content-center" class="pull-left">
+					<!--  tên  -->
+					<div>
+						<div data-bind="ntsFormLabel: {required: true}"
+							class='distane col1'>
+							<label>#{i18n.getText('CPS017_13')}</label>
+						</div>
+						<span class='col1'> Web帳票種別</span>
+					</div>
+
+					<!-- danh sách đăng kí  -->
+					<div id="register">
+						<span> #{i18n.getText('CPS017_14')}</span>
+					</div>
+					<div id="itemRegisterLst" class="caret-right caret-background">
+						<!-- selection item list -->
+						<table id="item_register_grid">
+						</table>
+					</div>
+				</div>
+
+				<!-- phần bên phải của màn hình  -->
+				<div id="content-right">
+					<!--  tên  -->
+					<div>
+						<div data-bind="ntsFormLabel: {required: true}"
+							class='distane col1'>
+							<label>#{i18n.getText('CPS017_20')}</label>
+						</div>
+					</div>
+
+					<!--  nội dung mã code và name  -->
+					<div class="distance">
+						<input id="code"
+							data-bind="ntsTextEditor: {
+								value: currentItemSel().current_sel_item_id,
+								required: true,
+								enable: true,
+								immediate: false}" />
+						<input id="name"
+							data-bind="ntsTextEditor: {
+								value: currentItemSel().current_sel_item_id,
+								required: true,
+								enable: true,
+								immediate: false}" />
+					</div>
+
+					<!--  external name vs code  -->
+					<div class="formlabel">
+						<div data-bind="ntsFormLabel: {}" class='distane'>
+							<label>#{i18n.getText('CPS017_23')}</label>
+						</div>
+
+					</div>
+
+					<!--  nội dung external code  -->
+					<div class="distance">
+
+						<input id="externalCode"
+							data-bind="ntsTextEditor: {
+								value: currentItemSel().current_sel_item_id,
+								required: true,
+								enable: true,
+								immediate: false}" />
+
+					</div>
+
+					<!--  memo  -->
+					<div class="formlabel">
+						<div data-bind="ntsFormLabel: {}" class='distane'>
+							<label>#{i18n.getText('CPS017_25')}</label>
+						</div>
+
+					</div>
+
+					<!--  nội dung memo  -->
+					<div class="distance">
+
+						<textarea id="memo"
+							data-bind="ntsMultilineEditor: {
+							value: currentItemSel().current_sel_item_id,
+							enable: true,
+							immediate: false}" />
+
+					</div>
+
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

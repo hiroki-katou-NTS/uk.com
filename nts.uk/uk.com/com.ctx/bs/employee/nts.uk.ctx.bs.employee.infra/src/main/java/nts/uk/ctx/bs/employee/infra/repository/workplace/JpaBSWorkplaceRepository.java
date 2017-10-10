@@ -81,6 +81,19 @@ public class JpaBSWorkplaceRepository extends JpaRepository implements Workplace
 				}).collect(Collectors.toList());
 		this.commandProxy().removeAll(BsymtWorkplaceHist.class, lstPrimaryKey);
 	}
+	
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository#removeWkpHistory
+     * (java.lang.String, java.lang.String, java.lang.String)
+     */
+	@Override
+    public void removeWkpHistory(String companyId, String workplaceId, String historyId) {
+        this.commandProxy().remove(BsymtWorkplaceHist.class,
+                new BsymtWorkplaceHistPK(companyId, workplaceId, historyId));
+    }
 
 	/*
 	 * (non-Javadoc)
