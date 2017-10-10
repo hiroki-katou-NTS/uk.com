@@ -36,7 +36,7 @@ public interface WkpJobAutoCalSettingGetMemento {
 	 *
 	 * @return the position id
 	 */
-	JobTitleId getPositionId();
+	JobTitleId getJobId();
 
 	/**
 	 * Gets the normal OT time.

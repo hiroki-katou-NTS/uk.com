@@ -1,12 +1,10 @@
 module nts.uk.at.view.kmk006.a {
     export module service {
         var paths = {
-
-            findEnumUnitAutoCal: "ctx/at/shared/ot/autocal/unit/find/autocalunit",
+           
             findEnumAutoCalAtrOvertime: "ctx/at/shared/ot/autocal/find/autocalatrovertime",
             findEnumUseClassification: "ctx/at/shared/ot/autocal/find/autocaluseclassification",
             findEnumTimeLimitUpperLimitSetting: "ctx/at/shared/ot/autocal/find/autocaltimelimitsetting",
-            findEnumUseUnitOvertimeSetting: "ctx/at/shared/ot/autocal/find/autocaluseunitovertimesetting",
             getComAutoCal: "ctx/at/shared/ot/autocal/com/getautocalcom",
             saveComAutoCal: "ctx/at/shared/ot/autocal/com/save",
             saveJobAutoCal: "ctx/at/shared/ot/autocal/job/save",
@@ -17,32 +15,29 @@ module nts.uk.at.view.kmk006.a {
             getWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/getautocalwkpjob",
             deleteJobAutoCal: "ctx/at/shared/ot/autocal/job/delete",
             deleteWkpAutoCal: "ctx/at/shared/ot/autocal/wkp/delete",
-            deleteWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/delete"
+            deleteWkpJobAutoCal: "ctx/at/shared/ot/autocal/wkpjob/delete",
         }
 
         /**
-        * delete divergence reason
-       */
+         * delete divergence reason
+        */
         export function deleteJobAutoCal(jobId: string): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", paths.deleteJobAutoCal + '/' + jobId);
+            return nts.uk.request.ajax("at", paths.deleteJobAutoCal, { 'jobId': jobId });
         }
-
 
         /**
         * delete divergence reason
        */
         export function deleteWkpAutoCal(wkpId: string): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", paths.deleteWkpAutoCal + '/' + wkpId);
+            return nts.uk.request.ajax("at", paths.deleteWkpAutoCal, { 'wkpId': wkpId });
         }
-
 
         /**
         * delete divergence reason
        */
         export function deleteWkpJobAutoCal(wkpId: string, jobId: string): JQueryPromise<any> {
-            return nts.uk.request.ajax("at", paths.deleteWkpJobAutoCal + '/' + wkpId + '/' + jobId);
+            return nts.uk.request.ajax("at", paths.deleteWkpJobAutoCal, { 'wkpId': wkpId, 'jobId': jobId });
         }
-
 
         export function findEnumAutoCalAtrOvertime(): JQueryPromise<Array<model.Enum>> {
             return nts.uk.request.ajax(paths.findEnumAutoCalAtrOvertime);
@@ -54,10 +49,6 @@ module nts.uk.at.view.kmk006.a {
 
         export function findEnumTimeLimitUpperLimitSetting(): JQueryPromise<Array<model.Enum>> {
             return nts.uk.request.ajax(paths.findEnumTimeLimitUpperLimitSetting);
-        }
-
-        export function findEnumUseUnitOvertimeSetting(): JQueryPromise<Array<model.Enum>> {
-            return nts.uk.request.ajax(paths.findEnumUseUnitOvertimeSetting);
         }
 
         /**
@@ -99,12 +90,6 @@ module nts.uk.at.view.kmk006.a {
         export function getWkpJobAutoCal(wkpId: string, jobId: string): JQueryPromise<model.WkpJobAutoCalSettingDto> {
             return nts.uk.request.ajax("at", paths.getWkpJobAutoCal + '/' + wkpId + '/' + jobId);
         }
-        export function getEnumUnitAutoCal(): JQueryPromise<model.UnitAutoCalSettingDto> {
-            return nts.uk.request.ajax("at", paths.findEnumUnitAutoCal);
-        }
-
-
-
 
         export module model {
             //modelauto
@@ -159,11 +144,7 @@ module nts.uk.at.view.kmk006.a {
                 calAtr: number;
             }
 
-            export interface UnitAutoCalSettingDto {
-                useJobSet: boolean;
-                useWkpSet: boolean;
-                useJobwkpSet: boolean;
-            }
+            
 
             export class Enum {
                 value: number;
@@ -178,7 +159,4 @@ module nts.uk.at.view.kmk006.a {
             }
         }
     }
-
-
-
 }
