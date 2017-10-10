@@ -68,7 +68,8 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		// ドメインモデル「申請」と紐付き「承認フェーズ」「承認枠」「反映情報」をUpdateする
 		// application.reversionReason = "";
 		application.setReflectPerState(ReflectPlanPerState.NOTREFLECTED);
-		applicationRepository.updateApplication(application);
+		//applicationRepository.updateApplication(application);
+		if(appApprovalPhases == null) return ;
 		for (AppApprovalPhase appApprovalPhase : appApprovalPhases) {
 			appApprovalPhase.setApprovalATR(ApprovalAtr.UNAPPROVED);
 			List<ApprovalFrame> approvalFrames = approvalFrameRepository.getAllApproverByPhaseID(companyID, appID);
@@ -130,6 +131,9 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 
 	public ApproverResult acquireApproverWhoApproved(List<AppApprovalPhase> appApprovalPhases){
 		ApproverResult approverResult = new ApproverResult();
+		if(appApprovalPhases == null) {
+			return approverResult;
+		} 
 		// ドメインモデル「申請」．「承認フェーズ」1～5の順でループする ( Domain model 'application'. Loop in the order of "approval phase" 1 to 5 )
 		for(AppApprovalPhase appApprovalPhase : appApprovalPhases){
 			// アルゴリズム「承認者一覧を取得する」を実行する ( Execute algorithm "Acquire approver list" )

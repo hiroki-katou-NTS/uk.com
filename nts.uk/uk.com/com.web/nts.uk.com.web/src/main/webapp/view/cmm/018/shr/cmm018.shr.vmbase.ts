@@ -4,10 +4,7 @@ module nts.uk.com.view.cmm018.shr {
         export class DataResigterDto{
             /**就業ルート区分: 会社(0)　－　職場(1)　－　社員(2)*/
             rootType: number;
-            checkDelete: boolean;
             checkAddHist: boolean;
-            checkAddRoot: boolean;
-            checkEdit: boolean;
             workpplaceId: string;
             employeeId: string;
             startDate: string;
@@ -15,17 +12,13 @@ module nts.uk.com.view.cmm018.shr {
             addHist: IData;
             lstAppType: Array<number>;
             root: Array<CompanyAppRootADto>;
-            constructor(rootType: number, checkDelete: boolean,
-                checkAddHist: boolean, checkAddRoot: boolean,
-                checkEdit: boolean, workpplaceId: string,
+            constructor(rootType: number, checkAddHist: boolean,
+                workpplaceId: string,
                 employeeId: string, startDate: string, endDate: string,
                 addHist: IData,lstAppType: Array<number>,
                 root: Array<CompanyAppRootADto>){
                     this.rootType = rootType;
-                    this.checkDelete = checkDelete;
                     this.checkAddHist = checkAddHist;
-                    this.checkAddRoot = checkAddRoot;
-                    this.checkEdit = checkEdit;
                     this.workpplaceId = workpplaceId;
                     this.employeeId = employeeId;
                     this.startDate = startDate; 
@@ -93,8 +86,8 @@ module nts.uk.com.view.cmm018.shr {
             dateRange: string;
             startDate: string;
             endDate: string;
-            overLap: string;
-            constructor(id: number, dateRange: string, startDate: string, endDate: string, overLap: string) {
+            overLap: any;
+            constructor(id: number, dateRange: string, startDate: string, endDate: string, overLap: any) {
                 this.id = id;
                 this.dateRange = dateRange;
                 this.startDate = startDate;
@@ -163,7 +156,7 @@ module nts.uk.com.view.cmm018.shr {
             workplaceId: string;
             /**社員ID*/
             employeeId: string;
-            /**check 申請承認の種類区分: 会社(1)　－　職場(2)　－　社員(3)*/
+            /**check 申請承認の種類区分: 会社(0)　－　職場(1)　－　社員(2)*/
             check: number;
             /**「履歴を削除する」を選択する か(0)、「履歴を修正する」を選択する か(1)。*/
             editOrDelete: number;
@@ -305,6 +298,7 @@ module nts.uk.com.view.cmm018.shr {
         }
         //list display right
         export class CompanyAppRootADto{
+            color: boolean;
             common: boolean;
             appTypeValue: number;
             appTypeName: string;
@@ -316,7 +310,8 @@ module nts.uk.com.view.cmm018.shr {
             appPhase3: ApprovalPhaseDto;
             appPhase4: ApprovalPhaseDto;
             appPhase5: ApprovalPhaseDto;
-            constructor(common: boolean,
+            constructor(color: boolean, 
+            common: boolean,
             appTypeValue: number,
             appTypeName: string,
             approvalId: string,
@@ -326,6 +321,7 @@ module nts.uk.com.view.cmm018.shr {
             appPhase3: ApprovalPhaseDto,
             appPhase4: ApprovalPhaseDto, 
             appPhase5: ApprovalPhaseDto){
+                this.color = color;
                 this.common = common;
                 this.appTypeValue = appTypeValue;
                 this.appTypeName = appTypeName;
@@ -618,6 +614,11 @@ module nts.uk.com.view.cmm018.shr {
             workplaceId: string;
             
             workplaceName: string;
+        }
+        export enum RootType {
+            COMPANY = 0,
+            WORKPLACE = 1,
+            PERSON = 2
         }
     }
 }

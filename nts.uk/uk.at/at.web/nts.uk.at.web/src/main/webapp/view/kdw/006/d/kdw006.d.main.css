@@ -1,32 +1,15 @@
-.screen-d #checkBox81{
-	margin-bottom: 46px;
+#screen-d #label11 {
+	margin-left: 40px;
+	margin-top: 40px;
 }
 
-.screen-d, #checkBox41, #checkBox51, #checkBox61, #checkBox71, #checkBox81{
-	margin-left: 14px;
-    margin-top: 46px;
+#screen-d .check-box-atr {
+	width: 100%;
+	margin-top: 30px;
+	margin-left: 60px;
 }
 
-.screen-d #radioBox32 {
-	margin-left: 42px;
-	margin-top: 9px;
-}
-
-.screen-d #checkBox31 {
-	margin-left: 14px;
-    margin-top: 46px;
-}
-
-.screen-d #radioBox22 {
-	margin-left: 42px;
-	margin-top: 9px;
-}
-
-.screen-d #checkBox21 {
-	margin-left: 14px;
-	margin-top: 11px;
-}
-
-.screen-d #label11 {
-	margin-left: 46px;
+#screen-d .radio-error {
+	margin-left: 90px;
+	margin-top: 20px;
 }

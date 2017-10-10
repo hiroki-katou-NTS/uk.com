@@ -13,7 +13,7 @@
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_8')}</div>
 						</div>
 						<div class="cell cm-column2">
-							<span class="label">............</span>
+							<span class="label" data-bind="text: employeeName"></span>
 						</div>
 					</div>
 					<div class="table cm-table" data-bind="style: { display: screenMode() === 1 ? '' : 'none' }">
@@ -73,7 +73,7 @@
 															color: botComment().color,
 															'font-weight': botComment().fontWeight() === 1 ? 'bold' : 'normal' 
 														}"></div>
-					<div class="table cm-table">
+					<div class="table cm-table" data-bind="if: inputReasonsDisp() != 0">
 						<div class="cell cm-column1">
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_10')}</div>	
 						</div>
@@ -90,7 +90,7 @@
 									]}"></span>	
 						</div>
 					</div>
-					<div class="table cm-table">
+					<div class="table cm-table" data-bind="if: detailReasonDisp() != 0">
 						<div class="cell cm-column1">
 							<div data-bind="ntsFormLabel: {}">#{i18n.getText('KAF002_11')}</div>	
 						</div>

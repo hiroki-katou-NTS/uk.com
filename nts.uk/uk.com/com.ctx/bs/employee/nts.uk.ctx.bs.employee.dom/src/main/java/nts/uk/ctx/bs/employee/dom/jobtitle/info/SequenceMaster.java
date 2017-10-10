@@ -4,24 +4,33 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtitle.info;
 
+import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 
 /**
- * 序列マスタ.
+ * Gets the sequence name.
+ *
+ * @return the sequence name
  */
+@Getter
+//序列マスタ
 public class SequenceMaster extends AggregateRoot {
 
-	/** 会社ID. */
+	/** The company id. */
+	//会社ID
 	private CompanyId companyId;
 
-	/** 並び順. */
+	/** The order. */
+	//並び順
 	private short order;
 
-	/** 序列コード. */
+	/** The sequence code. */
+	//序列コード
 	private SequenceCode sequenceCode;
 
-	/** 序列名称. */
+	/** The sequence name. */
+	//序列名称
 	private SequenceName sequenceName;
 
 	/**

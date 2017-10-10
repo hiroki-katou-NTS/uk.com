@@ -1,9 +1,11 @@
 package nts.uk.ctx.at.request.app.find.application.common;
 
-import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Value;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 
 @Value
@@ -102,6 +104,8 @@ public class ApplicationDto {
 	
 	private GeneralDate endDate;
 	
+	private List<AppApprovalPhaseDto> listphase;
+	
 	public static ApplicationDto fromDomain(Application domain) {
 		return new ApplicationDto(
 				domain.getCompanyID(),
@@ -123,7 +127,8 @@ public class ApplicationDto {
 				domain.getReflectPerState().value, 
 				domain.getReflectPerEnforce().value,
 				domain.getStartDate(),
-				domain.getEndDate()
+				domain.getEndDate(),
+				domain.getListPhase().stream().map(x -> AppApprovalPhaseDto.fromDomain(x)).collect(Collectors.toList())
 				);
 	}
 
