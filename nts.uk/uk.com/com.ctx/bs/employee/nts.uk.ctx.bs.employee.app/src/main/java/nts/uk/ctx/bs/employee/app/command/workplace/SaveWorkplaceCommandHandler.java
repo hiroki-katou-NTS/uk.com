@@ -14,6 +14,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.app.command.workplace.config.info.WorkplaceHierarchyDto;
 import nts.uk.ctx.bs.employee.dom.workplace.CreateWorkpceType;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
+import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
@@ -56,10 +57,16 @@ public class SaveWorkplaceCommandHandler extends CommandHandler<SaveWorkplaceCom
         String companyId = AppContexts.user().companyId();
         SaveWorkplaceCommand command = context.getCommand();
         
+        // valid existed workplace code
+        if (this.wkpInfoRepo.isExisted(companyId, command.getWkpInfor().getWorkplaceCode())) {
+            throw new BusinessException("Msg_3");
+        }
+        
         if (command.getIsAddMode()) {
             this.addWorkplace(companyId, command);
         } else {
-            this.updateWorkplace(companyId, command);
+            this.wkpInfoRepo.update(command.getWkpInfor().toDomain(companyId,
+                    new WorkplaceId(command.getWkpIdSelected())));
         }
     }
 
@@ -70,10 +77,6 @@ public class SaveWorkplaceCommandHandler extends CommandHandler<SaveWorkplaceCom
      * @param command the command
      */
     private void addWorkplace(String companyId, SaveWorkplaceCommand command) {
-        // valid existed workplace code
-        if (this.wkpInfoRepo.isExisted(companyId, command.getWkpInfor().getWorkplaceCode())) {
-            throw new BusinessException("Msg_3");
-        }
         // insert domain workplace
         Workplace newWorkplace = command.getWorkplace().toDomain(companyId);
         this.wkpRepo.add(newWorkplace);
@@ -97,15 +100,6 @@ public class SaveWorkplaceCommandHandler extends CommandHandler<SaveWorkplaceCom
             this.wkpConfigInfoService.updateWkpHierarchy(command.getWkpConfigInfoHistId(), command.getWkpIdSelected(),
                     newWorkplace, command.getCreateType());
         }
-    }
-
-    /**
-     * Update workplace.
-     *
-     * @param companyId the company id
-     * @param command the command
-     */
-    private void updateWorkplace(String companyId, SaveWorkplaceCommand command) {
     }
 
 }

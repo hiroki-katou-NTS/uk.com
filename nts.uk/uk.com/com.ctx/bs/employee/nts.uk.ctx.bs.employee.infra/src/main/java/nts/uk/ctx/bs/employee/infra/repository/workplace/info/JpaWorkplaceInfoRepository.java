@@ -234,7 +234,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
 
         cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 
-        return em.createQuery(cq).getResultList().isEmpty();
+        return !em.createQuery(cq).getResultList().isEmpty();
     }
 
     /**

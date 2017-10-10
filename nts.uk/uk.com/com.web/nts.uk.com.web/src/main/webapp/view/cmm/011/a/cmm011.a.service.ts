@@ -10,6 +10,7 @@ module nts.uk.com.view.cmm011.a {
             
             findWkpHistList: "bs/employee/workplace/hist",
             saveWkp: "bs/employee/workplace/save",
+            removeWkp: "bs/employee/workplace/remove",
             findHistInfoByHistId: "bs/employee/workplace/info/findHistInfo",
             
             removeWorkplaceHistory: "bs/employee/workplace/history/remove",
@@ -46,8 +47,15 @@ module nts.uk.com.view.cmm011.a {
          /**
          * saveWkp
          */
-        export function saveWkp(command: any): JQueryPromise<model.Workplace> {
+        export function saveWkp(command: any): JQueryPromise<void> {
             return nts.uk.request.ajax(servicePath.saveWkp, command);
+        }
+        
+        /**
+         * removeWkp
+         */
+        export function removeWkp(command: any): JQueryPromise<void> {
+            return nts.uk.request.ajax(servicePath.removeWkp, command);
         }
         
         /**
