@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.ProcessCancel;
+import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
@@ -15,11 +16,16 @@ public class UpdateApplicationCancelHandler extends CommandHandler<UpdateApplica
 	
 	@Inject
 	private ProcessCancel processCancelRepo;
+	@Inject
+	private DetailBeforeUpdate detailBeforeUpdate;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateApplicationCommonCmd> context) {
 		String companyID = AppContexts.user().companyId();
-		//12
+		
+		//1 : 排他チェック,
+		detailBeforeUpdate.exclusiveCheck();
+		//12 
 		processCancelRepo.detailScreenCancelProcess(companyID,context.getCommand().getAppId());
 		
 	}

@@ -113,7 +113,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
              * enable
              */
             self.enableApprove = ko.observable(true);
-            self.enableDeny = ko.observable(false);
+            self.enableDeny = ko.observable(true);
             self.enableRelease = ko.observable(true);
             self.enableRegistration = ko.observable(true);
             self.enableDelete = ko.observable(true);
@@ -363,7 +363,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         btnApprove(){
             let self = this;
             let dfd = $.Deferred<any>();
-            service.approveApp(self.dataApplication()).done(function() {
+            service.approveApp(self.dataApplication()).done(function(data) {
+                 nts.uk.ui.dialog.alert({messageId : 'Msg_220'}).then(function(){
+                     if(data.length !=0){
+                        nts.uk.ui.dialog.info({messageId : 'Msg_392' });
+                     }
+                 });
+                
                 dfd.resolve();
             });
             return dfd.promise();
@@ -429,7 +435,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                     nts.uk.ui.dialog.alert({messageId : 'Msg_16'}).then(function(){
                         //kiểm tra list người xác nhận, nếu khác null thì show info 392
                         if(data.length !=0){
-                            nts.uk.ui.dialog.info({messageId : 'Msg_392'});    
+                            nts.uk.ui.dialog.info({messageId : 'Msg_392' });    
                         }
                     });
                     //lấy vị trí appID vừa xóa trong listAppID
