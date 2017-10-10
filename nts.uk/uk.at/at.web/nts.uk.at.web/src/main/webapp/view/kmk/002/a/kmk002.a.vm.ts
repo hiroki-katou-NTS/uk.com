@@ -59,14 +59,16 @@ module nts.uk.at.view.kmk002.a {
 
         }
 
-        /******************************************************************
-         ************************* VIEW MODEL *****************************
-         *****************************************************************/
+        //******************************************************************
+        //************************* VIEW MODEL *****************************
+        //******************************************************************
 
         /**
          * The class OptionalItem
          */
         class OptionalItem {
+            static selectedFormulas: KnockoutObservableArray<number>;
+
             optionalItemNo: KnockoutObservable<string>;
             optionalItemName: KnockoutObservable<string>;
             optionalItemAtr: KnockoutObservable<number>;
@@ -76,7 +78,6 @@ module nts.uk.at.view.kmk002.a {
             calcResultRange: CalculationResultRange;
             calcFormulas: KnockoutObservableArray<Formula>;
             applyFormula: KnockoutObservable<string>;
-            static selectedFormulas: KnockoutObservableArray<number>;
             selectedFormulaAbove: number;
             selectedFormulaBelow: number;
 
@@ -113,7 +114,18 @@ module nts.uk.at.view.kmk002.a {
                 this.selectedFormulaAbove = 0;
                 this.selectedFormulaBelow = 0;
 
-                // Data source
+                // init datasource
+                this.initDatasource();
+
+                // init subscribe
+                this.initSubscribe();
+
+            }
+
+            /**
+             * Initial datasource
+             */
+            private initDatasource(): void {
                 this.usageClsDatasource = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KMK002_15") }, // not used
                     { code: 1, name: nts.uk.resource.getText("KMK002_14") } // used
@@ -127,9 +139,12 @@ module nts.uk.at.view.kmk002.a {
                     { code: 1, name: nts.uk.resource.getText("KMK002_22") } // daily
                 ]);
                 this.atrDataSource = [];
+            }
 
-                // subscribe
-
+            /**
+             * Initial subscribe
+             */
+            private initSubscribe(): void {
                 this.checkedAllFormula.subscribe(vl => {
 
                     // if the value is changed because of a child element (formula) then do nothing.
@@ -164,6 +179,7 @@ module nts.uk.at.view.kmk002.a {
                     }
                 });
 
+                // selected subscribe
                 OptionalItem.selectedFormulas.subscribe(vl => {
                     // set selected formula below and above.
                     this.setSelectedFormulaBelowAndAbove(vl);
@@ -178,38 +194,48 @@ module nts.uk.at.view.kmk002.a {
                     this.hasChanged = true;
                 });
 
-                // Sua phan loai thanh tich
+                // Event on performanceAtr value changed
                 this.performanceAtr.subscribe(value => {
-                    if (this.hasChanged) {
+
+                    // if value change because of select new optional item
+                    // or new value == value in stash
+                    // then do nothing
+                    if (this.hasChanged || this.performanceAtr() == this.performanceAtrStash) {
                         return;
                     }
-                    // Neu co formulas roi.
+
+                    // if has formulas
                     if (this.isFormulaSet()) {
                         nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_506')).ifYes(() => {
 
-                            // xoa het formulas.
+                            // remove all formulas
                             this.calcFormulas([]);
 
                             // save new value to stash
                             this.performanceAtrStash = this.performanceAtr();
 
                         }).ifNo(() => {
-                            // de nguyen gia tri cu.
+                            // get old value from stash
                             this.performanceAtr(this.performanceAtrStash);
                         });
                     }
                 });
 
-                // Sua phan loai thuoc tinh
+                // Event on optionalItemAtr value changed
                 this.optionalItemAtr.subscribe(value => {
+
+                    // if value change because of select new optional item
+                    // or new value == value in stash
+                    // then do nothing
                     if (this.hasChanged || this.optionalItemAtr() == this.optionalItemAtrStash) {
                         return;
                     }
-                    // Check xem co formulas va pham vi tinh toan chua
+
+                    // Check whether has formula or calculation result range is set.
                     if (this.isFormulaSet() || this.calcResultRange.isSet(this.optionalItemAtr())) {
                         nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_573')).ifYes(() => {
 
-                            // xoa het formulas.
+                            // remove all formulas
                             this.calcFormulas([]);
 
                             // reset calc result range.
@@ -219,7 +245,7 @@ module nts.uk.at.view.kmk002.a {
                             this.optionalItemAtrStash = this.optionalItemAtr();
 
                         }).ifNo(() => {
-                            // de nguyen gia tri cu.
+                            // get old value from stash
                             this.optionalItemAtr(this.optionalItemAtrStash);
                         });
                     }
@@ -906,6 +932,10 @@ module nts.uk.at.view.kmk002.a {
             roundingUnitDs: EnumConstantDto[];
             roundingDs: EnumConstantDto[];
 
+            // stash
+            formulaAtrStash: number;
+            calcAtrStash: number;
+
             constructor() {
                 this.formulaId = nts.uk.util.randomId();
                 this.optionalItemNo = '001';
@@ -932,7 +962,14 @@ module nts.uk.at.view.kmk002.a {
                 this.roundingUnitDs = Enums.ENUM_FORMULA.timeRounding.unit;
                 this.roundingDs = Enums.ENUM_FORMULA.timeRounding.rounding;
 
-                // subscribe
+                // init subscribe
+                this.initSubscribe();
+            }
+
+            /**
+             * Initial subscribe
+             */
+            private initSubscribe(): void {
                 this.selected.subscribe(vl => {
 
                     if (this.isCheckFromParent == false) {
@@ -956,34 +993,57 @@ module nts.uk.at.view.kmk002.a {
 
                 });
 
-                //TODO dang test.
-                // Sua phan loai thuoc tinh
-                //                this.formulaAtr.subscribe(value => {
-                //                    // Kiem tra formula nay co cai dat chua
-                //                    //if (self.calcFormulas.length > 0) {
-                //                    if (1 > 0) { //test
-                //                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_192')).ifYes(() => {
-                //                            // xoa cai dat
-                //                            // cap nhat gia tri moi.
-                //                        }).ifNo(() => {
-                //                            // de nguyen gia tri cu.
-                //                        });
-                //                    }
-                //                });
+                // Event on formulaAtr value changed
+                this.formulaAtr.subscribe(value => {
 
-                // Sua phan loai tinh toan
-                //                this.calcAtr.subscribe(value => {
-                //                    // Kiem tra formula nay co cai dat chua
-                //                    //if (self.calcFormulas.length > 0) {
-                //                    if (1 > 0) { //test
-                //                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_126')).ifYes(() => {
-                //                            // xoa cai dat
-                //                            // cap nhat gia tri moi.
-                //                        }).ifNo(() => {
-                //                            // de nguyen gia tri cu.
-                //                        });
-                //                    }
-                //                });
+                    // if new value == value in stash then do nothing
+                    if (this.formulaAtr() == this.formulaAtrStash) {
+                        return;
+                    }
+
+                    // Check whether the formula has setting or not
+                    if (this.hasSetting()) {
+                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_192')).ifYes(() => {
+                            // TODO remove the setting
+                            // save new value to stash
+                            this.formulaAtrStash = this.formulaAtr();
+                        }).ifNo(() => {
+                            // get old value from stash
+                            this.formulaAtr(this.formulaAtrStash);
+                        });
+                    }
+                });
+
+                // Event on calcAtr value changed
+                this.calcAtr.subscribe(value => {
+
+                    // if new value == value in stash then do nothing
+                    if (this.calcAtr() == this.calcAtrStash) {
+                        return;
+                    }
+                    // Check whether the formula has setting or not
+                    if (this.hasSetting()) {
+                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_126')).ifYes(() => {
+                            // TODO remove the setting
+                            // save new value to stash
+                            this.calcAtrStash = this.calcAtr();
+                        }).ifNo(() => {
+                            // get old value from stash
+                            this.calcAtr(this.calcAtrStash);
+                        });
+                    }
+                });
+            }
+
+            /**
+             * Check whether formula has setting
+             */
+            private hasSetting(): boolean {
+                //TODO 
+                if (1 > 0) {
+                    return true;
+                }
+                return false;
             }
 
             /**
@@ -1110,6 +1170,10 @@ module nts.uk.at.view.kmk002.a {
                 self.formulaName(dto.formulaName);
                 self.formulaAtr(dto.formulaAtr);
                 self.symbolValue = dto.symbolValue;
+
+                // save to stash
+                self.formulaAtrStash = dto.formulaAtr;
+                self.calcAtrStash = dto.calcAtr;
 
                 //TODO testing.
                 // Calc setting
