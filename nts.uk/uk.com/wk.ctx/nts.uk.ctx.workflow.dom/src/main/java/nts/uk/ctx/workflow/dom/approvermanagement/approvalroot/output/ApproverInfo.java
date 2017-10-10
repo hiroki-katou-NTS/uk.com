@@ -12,6 +12,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ApproverInfo {
+	/**職位ID*/
+	private String jobId;
 	/**
 	 * 社員ID
 	 */
@@ -24,4 +26,6 @@ public class ApproverInfo {
 	private Integer orderNumber;
 	
 	private String name;
+	/**確定者*/
+	private int approvalAtr;
 }

@@ -17,7 +17,7 @@ import entity.person.info.item.PpemtPerInfoItemCm;
 import entity.person.info.item.PpemtPerInfoItemCmPK;
 import entity.person.info.item.PpemtPerInfoItemOrder;
 import entity.person.info.item.PpemtPerInfoItemPK;
-import entity.person.info.setting.copySetting.BsystEmployeeCopySettingItem;
+import entity.person.info.setting.copysetting.BsystEmployeeCopySettingItem;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.dateitem.DateItem;

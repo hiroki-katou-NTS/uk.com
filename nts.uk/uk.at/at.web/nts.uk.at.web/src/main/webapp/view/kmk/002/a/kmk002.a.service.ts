@@ -26,8 +26,8 @@ module nts.uk.at.view.kmk002.a {
             return nts.uk.request.ajax(servicePath.saveOptionalItem, command);
         }
 
-        export function saveFormula(command: Array<model.FormulaDto>): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.saveFormula, { listCalcFormula: command });
+        export function saveFormula(command: model.FormulaCommand): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.saveFormula, command);
         }
 
         export function findOptionalItemDetail(itemNo: string): JQueryPromise<model.OptionalItemDto> {
@@ -88,7 +88,9 @@ module nts.uk.at.view.kmk002.a {
                 orderNo: number;
                 symbolValue: string;
                 formulaAtr: number;
-                calcFormulaSetting: CalcFormulaSettingDto;
+                calcAtr: number;
+                formulaSetting: FormulaSettingDto;
+                itemSelection: ItemSelectionDto;
                 monthlyRounding: RoundingDto;
                 dailyRounding: RoundingDto;
             }
@@ -102,14 +104,6 @@ module nts.uk.at.view.kmk002.a {
                 timeUnit: number;
                 amountRounding: number;
                 amountUnit: number;
-            }
-            /**
-             * CalcFormulaSettingDto
-             */
-            export interface CalcFormulaSettingDto {
-                calcAtr: number;
-                formulaSetting: FormulaSettingDto;
-                itemSelection: ItemSelectionDto;
             }
             /**
              * FormulaSettingDto
@@ -174,6 +168,10 @@ module nts.uk.at.view.kmk002.a {
                 value: number;
                 fieldName: string;
                 localizedName: string;
+            }
+            export interface FormulaCommand {
+                optItemNo: string;
+                calcFormulas: Array<FormulaDto>;
             }
 
 //            export abstract class EnumAdaptor {

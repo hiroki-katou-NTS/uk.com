@@ -14,7 +14,7 @@ public interface AfterApprovalProcess {
 	/**
 	 * 詳細画面承認後の処理
 	 */
-	public void detailScreenAfterApprovalProcess(String companyID, String appID, Application application);
+	public void detailScreenAfterApprovalProcess(Application application);
 
 	/**
 	 * 1.申請個別のエラーチェック
@@ -35,7 +35,7 @@ public interface AfterApprovalProcess {
 	/**
 	 * 3.実績反映状態の判断 
 	 */
-	public void judgmentActualReflection(List<AppApprovalPhase> listPhase);
+	public void judgmentActualReflection(Application application);
 	
 	/**
 	 * 4.メール送信先リストを取得する	

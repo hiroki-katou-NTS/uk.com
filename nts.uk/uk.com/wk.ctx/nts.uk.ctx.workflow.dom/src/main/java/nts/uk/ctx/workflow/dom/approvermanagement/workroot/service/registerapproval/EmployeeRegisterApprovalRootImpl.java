@@ -132,8 +132,8 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			adjustmentData.stream().forEach(z -> {
 				List<ApprovalPhase> phaseLst = phaseRepo.getAllApprovalPhasebyCode(companyID, z.getBranchId());
 				phaseLst.stream().forEach(w -> {
-					List<ApproverInfo> approvers = w.getApprovers().stream().map(b -> new ApproverInfo(b.getApproverId(),
-									b.getApprovalPhaseId(), true, b.getOrderNumber(), null))
+					List<ApproverInfo> approvers = w.getApprovers().stream().map(b -> new ApproverInfo(null, b.getApproverId(),
+									b.getApprovalPhaseId(), true, b.getOrderNumber(), null,1))
 							.collect(Collectors.toList());
 					adjustmentPhase
 							.add(new ApprovalPhaseOutput(w.getCompanyId(), w.getBranchId(), w.getApprovalPhaseId(),

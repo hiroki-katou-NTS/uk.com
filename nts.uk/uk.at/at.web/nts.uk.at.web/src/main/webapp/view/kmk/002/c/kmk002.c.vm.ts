@@ -11,9 +11,14 @@ module nts.uk.at.view.kmk002.c {
             columns: any;
             columnsRight: any;
             lstSelectDailyAttendanceItem: KnockoutObservableArray<SelectDailyAttendanceItemDto>;
+            formulaAtr: string;
+            formulaName: string;
 
             constructor() {
                 var self = this;
+                let param = nts.uk.ui.windows.getShared('paramToC');
+                self.formulaAtr = param.formulaAtr;
+                self.formulaName = param.formulaName;
                 self.checkSelectDailyAttendanceItem = ko.observable(0);
                 self.lstDailyAttendanceItem = ko.observableArray([]);
                 self.selectCodeDailyAttendanceItem = ko.observableArray([]);
@@ -36,84 +41,93 @@ module nts.uk.at.view.kmk002.c {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                service.findAllDailyAttendanceItem().done(function(data){
-                   self.lstDailyAttendanceItem(data); 
+                service.findAllDailyAttendanceItem().done(function(data) {
+                    self.lstDailyAttendanceItem(data);
                 });
                 dfd.resolve();
                 return dfd.promise();
             }
+
+            /**
+             * Close dialog.
+             */
+            public close(): void {
+                nts.uk.ui.windows.close();
+            }
+
             /**
              * add method add by click button ADD
              */
-            private addMethodAdd(): void{
+            private addMethodAdd(): void {
                 var self = this;
                 var updateData: DailyAttendanceItemDto[] = [];
                 var selectData: SelectDailyAttendanceItemDto[] = self.lstSelectDailyAttendanceItem();
-                for(var item of self.lstDailyAttendanceItem()){
-                    var selected : boolean = false;
-                    for(var itemSelect of self.selectCodeDailyAttendanceItem()){
-                        if(item.attendanceItemId == itemSelect){
-                             selected = true;   
+                for (var item of self.lstDailyAttendanceItem()) {
+                    var selected: boolean = false;
+                    for (var itemSelect of self.selectCodeDailyAttendanceItem()) {
+                        if (item.attendanceItemId == itemSelect) {
+                            selected = true;
                         }
                     }
-                    if(!selected){
-                        updateData.push(item);    
-                    }else{
-                        selectData.push(self.toSelectDto(item, AddSubOperator.ADD));    
+                    if (!selected) {
+                        updateData.push(item);
+                    } else {
+                        selectData.push(self.toSelectDto(item, AddSubOperator.ADD));
                     }
                 }
-                self.lstDailyAttendanceItem(updateData);    
-                self.lstSelectDailyAttendanceItem(selectData);               
+                self.lstDailyAttendanceItem(updateData);
+                self.lstSelectDailyAttendanceItem(selectData);
             }
+
             /**
              * add method sub by click button SUB
              */
-            private addMethodSub(): void{
+            private addMethodSub(): void {
                 var self = this;
                 var updateData: DailyAttendanceItemDto[] = [];
                 var selectData: SelectDailyAttendanceItemDto[] = self.lstSelectDailyAttendanceItem();
-                for(var item of self.lstDailyAttendanceItem()){
-                    var selected : boolean = false;
-                    for(var itemSelect of self.selectCodeDailyAttendanceItem()){
-                        if(item.attendanceItemId == itemSelect){
-                             selected = true;   
+                for (var item of self.lstDailyAttendanceItem()) {
+                    var selected: boolean = false;
+                    for (var itemSelect of self.selectCodeDailyAttendanceItem()) {
+                        if (item.attendanceItemId == itemSelect) {
+                            selected = true;
                         }
                     }
-                    if(!selected){
-                        updateData.push(item);    
-                    }else{
-                        selectData.push(self.toSelectDto(item, AddSubOperator.SUBTRACT));    
+                    if (!selected) {
+                        updateData.push(item);
+                    } else {
+                        selectData.push(self.toSelectDto(item, AddSubOperator.SUBTRACT));
                     }
                 }
-                self.lstDailyAttendanceItem(updateData);    
-                self.lstSelectDailyAttendanceItem(selectData);               
+                self.lstDailyAttendanceItem(updateData);
+                self.lstSelectDailyAttendanceItem(selectData);
             }
 
-            
             /**
              * function by click button back
              */
-            private gobackSelectItem(): void{
+            private gobackSelectItem(): void {
                 var self = this;
                 var updateData: DailyAttendanceItemDto[] = self.lstDailyAttendanceItem();
                 var selectData: SelectDailyAttendanceItemDto[] = [];
-                for(var item of self.lstSelectDailyAttendanceItem()){
-                    if(item.attendanceItemId == self.checkSelectDailyAttendanceItem()){
+                for (var item of self.lstSelectDailyAttendanceItem()) {
+                    if (item.attendanceItemId == self.checkSelectDailyAttendanceItem()) {
                         updateData.push(self.toBackDto(item));
-                    }else {
-                        selectData.push(item);    
+                    } else {
+                        selectData.push(item);
                     }
                 }
-                self.lstDailyAttendanceItem(updateData);    
+                self.lstDailyAttendanceItem(updateData);
                 self.selectCodeDailyAttendanceItem([]);
                 self.lstSelectDailyAttendanceItem(selectData);
             }
+
             /**
              * to select data object
              */
             private toSelectDto(data: DailyAttendanceItemDto, method: number): SelectDailyAttendanceItemDto {
-                var operatorText : string = '';
-                if(method == AddSubOperator.ADD){
+                var operatorText: string = '';
+                if (method == AddSubOperator.ADD) {
                     operatorText = nts.uk.resource.getText('KMK002_56');
                 }
                 else {
@@ -127,24 +141,24 @@ module nts.uk.at.view.kmk002.c {
                 };
                 return dto;
             }
-            
+
             /**
              * to back data object
              */
-            private toBackDto(data: SelectDailyAttendanceItemDto): DailyAttendanceItemDto{
-                    var dto: DailyAttendanceItemDto = {
+            private toBackDto(data: SelectDailyAttendanceItemDto): DailyAttendanceItemDto {
+                var dto: DailyAttendanceItemDto = {
                     attendanceItemId: data.attendanceItemId,
                     attendanceItemName: data.attendanceItemName
                 };
-                return dto; 
+                return dto;
             }
-           
+
         }
 
         export enum AddSubOperator {
             ADD = 0,
             SUBTRACT = 1
         }
-        
+
     }
 }

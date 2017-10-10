@@ -1,9 +1,140 @@
 module nts.uk.at.view.kaf009.share {
     export module common {
         /**
+         * 
+         */
+        export class GoBackDiretly {
+            selectedBack: any;
+            selectedGo: any;
+            timeStart1: KnockoutObservable<number>;
+            timeEnd1: KnockoutObservable<number>;
+            workLocationCD: KnockoutObservable<string>;
+            workLocationName: KnockoutObservable<string>;
+            //TIME LINE 2
+            selectedGo2: any;
+            selectedBack2: any;
+            timeStart2: KnockoutObservable<number>;
+            timeEnd2: KnockoutObservable<number>;
+            workLocationCD2: KnockoutObservable<string>;
+            workLocationName2: KnockoutObservable<string>;
+            //勤務種類
+            workTypeCd: KnockoutObservable<string>;
+            workTypeName: KnockoutObservable<string>;
+            //勤務種類
+            siftCD: KnockoutObservable<string>;
+            siftName: KnockoutObservable<string>;
+            constructor(
+                selectedBack: number,
+                selectedGo: number,
+                timeStart1: number,
+                timeEnd1: number,
+                workLocationCD: string,
+                workLocationName: string,
+                //LINE 2
+                selectedBack2: number,
+                selectedGo2: number,
+                timeStart2: number,
+                timeEnd2: number,
+                workLocationCD2: string,
+                workLocationName2: string,
+                workTypeCd:string,
+                workTypeName:string,
+                siftCD:string,
+                siftName:string) {
+                    let self = this;
+                    //LINE 1
+                    self.selectedGo = ko.observable(1);
+                    self.selectedBack = ko.observable(1);
+                    self.timeStart1 = ko.observable(0);
+                    self.timeEnd1 = ko.observable(0);
+                    self.workLocationCD = ko.observable('');
+                    self.workLocationName = ko.observable('');
+                    //LINE 2                   
+                    self.selectedGo2 = ko.observable(1);
+                    self.selectedBack2 = ko.observable(1);
+                    self.timeStart2 = ko.observable(0);
+                    self.timeEnd2 = ko.observable(0);
+                    self.workLocationCD2 = ko.observable('');
+                    self.workLocationName2 = ko.observable('');
+                    //
+                    self.workTypeCd = ko.observable('');
+                    self.workTypeName = ko.observable('');
+                    self.siftCD = ko.observable('');
+                    self.siftName = ko.observable('');
+            }
+        }
+        
+        
+        /**
+         * 
+         */
+        export class GoBackDiretlySetting {
+            //color, font Weight
+            //comment
+            commentGo1: KnockoutObservable<string>;
+            commentBack1: KnockoutObservable<string>;
+            //comment
+            commentGo2: KnockoutObservable<string>;
+            commentBack2: KnockoutObservable<string>;
+            colorGo: KnockoutObservable<string>;
+            colorBack: KnockoutObservable<string>;
+            fontWeightGo: KnockoutObservable<number>;
+            fontWeightBack: KnockoutObservable<number>;
+            constructor(
+                commentGo1: string,
+                commentBack1: string,
+                commentGo2: string,
+                commentBack2: string,
+                colorGo: string,
+                colorBack: string,
+                fontWeightGo: string,
+                fontWeightBack: string
+            ) {
+                let self = this;
+                self.commentGo1 = ko.observable('');
+                self.commentBack1 = ko.observable('');
+                self.commentGo2 = ko.observable('');
+                self.commentBack2 = ko.observable('');
+                self.colorGo = ko.observable('#000000');
+                self.colorBack = ko.observable('#000000');
+                self.fontWeightGo = ko.observable(0);
+                self.fontWeightBack = ko.observable(0);
+            }
+        }
+        
+        /**
+         * 
+         */
+        export class Application {
+            applicationID: KnockoutObservable<string>; // 申請ID
+            inputDate: KnockoutObservable<string>; // 入力日
+            enteredPerson: KnockoutObservable<string>; // 入力者
+            appDate: KnockoutObservable<string>; // 申請日
+            titleReason: KnockoutObservable<string>; 
+            contentReason: KnockoutObservable<string>;
+            employeeID: KnockoutObservable<string>; // 申請者
+            constructor( 
+                applicationID: string,
+                inputDate: string,
+                enteredPerson: string,
+                appDate: string,
+                titleReason: string,
+                contentReason: string,
+                employeeID: string){
+                    this.applicationID = ko.observable(applicationID);  
+                    this.inputDate = ko.observable(inputDate);
+                    this.enteredPerson = ko.observable(enteredPerson);
+                    this.appDate = ko.observable(appDate);
+                    this.titleReason = ko.observable(titleReason);
+                    this.contentReason = ko.observable(contentReason);
+                    this.employeeID = ko.observable(employeeID);
+            }
+        }
+        /**
          * Setting Data from Server 
          */
         export class CommonSetting {
+            sid: string;
             employeeName: string;
             goBackSettingDto: GoBackDirectSetting;
             listReasonDto: Array<ReasonDto>;

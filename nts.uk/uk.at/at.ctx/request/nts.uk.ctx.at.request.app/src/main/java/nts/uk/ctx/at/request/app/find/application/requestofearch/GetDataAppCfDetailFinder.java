@@ -86,24 +86,26 @@ public class GetDataAppCfDetailFinder {
 				&& appTypeDiscreteSetting.get().getRetrictPostAllowFutureFlg() == AllowAtr.ALLOW) {
 			// if retrictPreMethodFlg is timecheck
 			if (appTypeDiscreteSetting.get().getRetrictPreMethodFlg() == CheckMethod.TIMECHECK) {
-				int a = Integer.parseInt(appTypeDiscreteSetting.get().getRetrictPreTimeDay().v().toString());
-				int minute = a % 60;
-				int hours = a / 60;
+				int minuteData = Integer.parseInt(appTypeDiscreteSetting.get().getRetrictPreTimeDay().v().toString());
 
-				deadline = "事前申請の受付は" + date1.month() + "月" + date1.day() + "日 " + hours + ":" + minute + " 分から。"
-						+ "事後申請の受付は" + date2.month() + "月" + date2.day() + "日" + "分まで。" + "当月の申請は" + date3.month() + "月"
-						+ date3.day() + "日" + "まで";
+				deadline = "事前申請の受付は" + date1.month() + "月" + date1.day() + "日 " +formatTime(minuteData) +" 分から。"
+						+ "事後申請の受付は" + date2.month() + "月" + date2.day() + "日 分まで。 当月の申請は" + date3.month() + "月"
+						+ date3.day() + "日 まで";
 			}
 			// if retrictPreMethodFlg is daycheck
 			if (appTypeDiscreteSetting.get().getRetrictPreMethodFlg() == CheckMethod.DAYCHECK) {
 				date1 = date1.addDays(appTypeDiscreteSetting.get().getRetrictPreDay().value);
 
-				deadline = "事前申請の受付は" + date1.month() + "月" + date1.day() + "日  分から。" + "事後申請の受付は" + date2.month() + "月"
-						+ date2.day() + "日" + "分まで。" + "当月の申請は" + date3.month() + "月" + date3.day() + "日" + "まで";
+				deadline = "事前申請の受付は" + date1.month() + "月" + date1.day() + "日  分から。 事後申請の受付は" + date2.month() + "月"
+						+ date2.day() + "日 分まで。 当月の申請は" + date3.month() + "月" + date3.day() + "日 まで";
 			}
 
 		}
 
 		return new OutputMessageDeadline(message, deadline);
 	}
+	
+	private String formatTime(int time) {
+		  return String.format("%02d:%02d", time / 60, time % 60);
+		 }
 }

@@ -45,11 +45,14 @@ module nts.uk.at.view.kdw006.g.viewmodel {
 
         start(): JQueryPromise<any> {
             var self = this;
+            var dfd = $.Deferred();
             $('#empt-list-setting').ntsListComponent(self.listComponentOption);
             self.getFullWorkTypeList().done(function() {
-                self.getWorkType();
+                self.getWorkType().done(function() {
+                    dfd.resolve();
+                });
             });
-
+            return dfd.promise();
         }
 
         getFullWorkTypeList() {
@@ -76,7 +79,7 @@ module nts.uk.at.view.kdw006.g.viewmodel {
             var dfd = $.Deferred();
             var fullWorkTypeCodes = _.map(self.fullWorkTypeList(), function(item: any) { return item.workTypeCode; });
             self.groups1.removeAll();
-            self.groups1.removeAll();
+            self.groups2.removeAll();
             service.getWorkTypes(self.selectedCode()).done(function(res) {
                 _.forEach(res, function(item) {
                     let names = _(item.workTypeList).map(x => (_.find(ko.toJS(self.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
@@ -109,17 +112,35 @@ module nts.uk.at.view.kdw006.g.viewmodel {
 
     export class WorkTypeGroup {
         no: number;
-        name: string;
+        name: KnockoutObservable<string>;
         workTypeCodes: string[];
-        workTypeName: string;
+        workTypeName: KnockoutObservable<string>;
         fullWorkTypeCodes: string[];
 
         constructor(no: number, name: string, workTypeCodes: string[], workTypeName: string, fullWorkTypeCodes: string[]) {
             this.no = no;
-            this.name = name;
+            this.name = ko.observable(name);
             this.workTypeCodes = workTypeCodes;
             this.workTypeName = ko.observable(workTypeName);
             this.fullWorkTypeCodes = fullWorkTypeCodes;
+        }
+
+        defaultValue() {
+            let self = this;
+            let listWorkType : number[];
+            if (self.no == 1) {
+                listWorkType = [WorkTypeClass.Attendance, WorkTypeClass.AnnualHoliday, WorkTypeClass.YearlyReserved,
+                WorkTypeClass.SpecialHoliday, WorkTypeClass.Absence, WorkTypeClass.SubstituteHoliday,
+                WorkTypeClass.Pause, WorkTypeClass.ContinuousWork, WorkTypeClass.Closure, WorkTypeClass.TimeDigestVacation];
+            } else {
+                listWorkType = [WorkTypeClass.Holiday, WorkTypeClass.HolidayWork, WorkTypeClass.Shooting];    
+            }
+            service.defaultValue(listWorkType).done(function(res) {
+                let workTypeCodes = _.map(res, 'workTypeCode');
+                self.workTypeCodes = workTypeCodes;
+                let names = _(workTypeCodes).map(x => (_.find(ko.toJS(self.fullWorkTypeList), z => z.workTypeCode == x) || {}).name).value();
+                self.workTypeName(names.join("、　"));
+            });
         }
 
         openKDL002Dialog() {
@@ -160,6 +181,23 @@ module nts.uk.at.view.kdw006.g.viewmodel {
         static Classification = 2;
         static JOB_TITLE = 3;
         static EMPLOYEE = 4;
+    }
+
+    export class WorkTypeClass {
+        static Attendance = 0;
+        static Holiday = 1;
+        static AnnualHoliday = 2;
+        static YearlyReserved = 3;
+        static SpecialHoliday = 4;
+        static Absence = 5;
+        static SubstituteHoliday = 6;
+        static Shooting = 7;
+        static Pause = 8;
+        static TimeDigestVacation = 9;
+        static ContinuousWork = 10;
+        static HolidayWork = 11;
+        static LeaveOfAbsence = 12;
+        static Closure = 13;
     }
 
     export interface UnitModel {

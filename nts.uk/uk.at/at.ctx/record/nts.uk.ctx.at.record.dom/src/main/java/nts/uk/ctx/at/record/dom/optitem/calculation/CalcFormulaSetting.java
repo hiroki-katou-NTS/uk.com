@@ -14,10 +14,6 @@ import nts.arc.layer.dom.DomainObject;
 @Getter
 public class CalcFormulaSetting extends DomainObject {
 
-	/** The calculation atr. */
-	// 計算区分
-	private CalculationAtr calculationAtr;
-
 	// ===================== Optional ======================= //
 	/** The formula setting. */
 	// 計算式設定
@@ -32,10 +28,17 @@ public class CalcFormulaSetting extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public CalcFormulaSetting(CalcFormulaSettingGetMemento memento) {
-		this.calculationAtr = memento.getCalculationAtr();
-		this.formulaSetting = memento.getFormulaSetting();
-		this.itemSelection = memento.getItemSelection();
+	public CalcFormulaSetting(FormulaSettingGetMemento memento) {
+		this.formulaSetting = new FormulaSetting(memento);
+	}
+
+	/**
+	 * Instantiates a new calc formula setting.
+	 *
+	 * @param memento the memento
+	 */
+	public CalcFormulaSetting(ItemSelectionGetMemento memento) {
+		this.itemSelection = new ItemSelection(memento);
 	}
 
 	/**
@@ -43,9 +46,21 @@ public class CalcFormulaSetting extends DomainObject {
 	 *
 	 * @param memento the memento
 	 */
-	public void saveToMemento(CalcFormulaSettingSetMemento memento) {
-		memento.setCalculationAtr(this.calculationAtr);
-		memento.setFormulaSetting(this.formulaSetting);
-		memento.setItemSelection(this.itemSelection);
+	public void saveToMemento(FormulaSettingSetMemento memento) {
+		memento.setMinusSegment(this.formulaSetting.getMinusSegment());
+		memento.setOperatorAtr(this.formulaSetting.getOperator());
+		memento.setLeftItem(this.formulaSetting.getLeftItem());
+		memento.setRightItem(this.formulaSetting.getRightItem());
 	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento the memento
+	 */
+	public void saveToMemento(ItemSelectionSetMemento memento) {
+		memento.setMinusSegment(this.itemSelection.getMinusSegment());
+		memento.setListSelectedAttendanceItem(this.itemSelection.getSelectedAttendanceItems());
+	}
+
 }

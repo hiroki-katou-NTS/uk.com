@@ -67,7 +67,7 @@ public class JpaWorkingTypeChangedByEmploymentRepository extends JpaRepository
 				.query(GET_ALL_OF_EMPLOYEE, KrcmtWorktypeChangeable.class).setParameter("companyId", cid)
 				.setParameter("employeeCode", empCode).getList();
 		this.commandProxy().removeAll(deleteEntities);
-		
+		this.getEntityManager().flush();
 		// create and insert new results
 		workingType.getChangeableWorkTypeGroups().forEach(group -> {
 			group.getWorkTypeList().forEach(workTypeCode -> {
