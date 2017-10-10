@@ -24,8 +24,10 @@ import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSet;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSetRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
+import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreator;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorRepository;
@@ -36,8 +38,11 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicSchedule;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.BasicScheduleRepository;
 import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
+import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.ScheduleManagementControl;
+import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.ScheduleManagementControlRepository;
+import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.UseAtr;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.context.LoginUserContext;;
 
 /**
  * The Class ScheduleCreatorExecutionCommandHandler.
@@ -69,9 +74,16 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The basic schedule repository. */
 	@Inject
 	private BasicScheduleRepository basicScheduleRepository;
+	
+	/** The schedule management control repository. */
+	@Inject
+	private ScheduleManagementControlRepository scheduleManagementControlRepository;
 
 	/** The setter. */
 	private TaskDataSetter setter;
+	
+	/** The command. */
+	private ScheduleCreatorExecutionCommand command;
 
 	/** The default value. */
 	private static final Integer DEFAULT_VALUE = 0;
@@ -90,6 +102,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	
 	/** The Constant ZERO_DAY_MONT. */
 	public static final int ZERO_DAY_MONTH = 0;
+	
 
 	/*
 	 * (non-Javadoc)
@@ -144,6 +157,30 @@ public class ScheduleCreatorExecutionCommandHandler
 	private void registerPersonalSchedule(ScheduleExecutionLog scheduleExecutionLog,
 			List<ScheduleCreator> scheduleCreators) {
 		scheduleCreators.forEach(domain -> {
+			
+			Optional<ScheduleManagementControl> optionalScheduleManagementControl = this.scheduleManagementControlRepository
+					.findById(domain.getEmployeeId());
+			
+			// check exist data schedule management control
+			if(optionalScheduleManagementControl.isPresent()){
+				ScheduleManagementControl scheduleManagementControl = optionalScheduleManagementControl
+						.get();
+				
+				// check use manager control use
+				if(scheduleManagementControl.getScheduleManagementAtr().equals(UseAtr.USE)){
+					
+					// check processExecutionAtr reconfig
+					if(command.getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG.value){
+						this.resetSchedule();
+					}else {
+						
+						// check parameter CreateMethodAtr 
+						if (command.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO.value) {
+							this.createScheduleBasedPerson(scheduleExecutionLog);
+						}
+					}
+				}
+			}
 			domain.updateToCreated();
 			this.scheduleCreatorRepository.update(domain);
 			setter.updateData(SUCCESS_CNT, this.finder
@@ -151,6 +188,12 @@ public class ScheduleCreatorExecutionCommandHandler
 		});
 		this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
 	}
+	
+	// スケジュールを再設定する
+	private void resetSchedule(){
+		
+	}
+	
 
 	/**
 	 * Update status schedule execution log.
@@ -176,7 +219,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @param domain the domain
 	 */
 	// 個人情報をもとにスケジュールを作成する
-	private void createScheduleBasedPerson(ScheduleExecutionLog domain,ScheduleCreatorExecutionCommand command) {
+	private void createScheduleBasedPerson(ScheduleExecutionLog domain) {
 		Optional<PersonalWorkScheduleCreSet> optionalPersonalWorkScheduleCreSet = this.personalWorkScheduleCreSetRepository
 				.findById(domain.getExecutionEmployeeId());
 		
@@ -188,7 +231,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			if (personalWorkScheduleCreSet.getBasicCreateMethod()
 					.equals(WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR)) {
 				// call create WorkSchedule
-				this.createWorkScheduleByBusinessDayCalenda(domain, command);
+				this.createWorkScheduleByBusinessDayCalenda(domain);
 			}
 		}
 	}
@@ -199,7 +242,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @param domain the domain
 	 */
 	// 営業日カレンダーで勤務予定を作成する
-	private void createWorkScheduleByBusinessDayCalenda(ScheduleExecutionLog domain,ScheduleCreatorExecutionCommand command){
+	private void createWorkScheduleByBusinessDayCalenda(ScheduleExecutionLog domain){
 		
 		// get to day by start period date 
 		Date toDate = domain.getPeriod().getStartDate().date();

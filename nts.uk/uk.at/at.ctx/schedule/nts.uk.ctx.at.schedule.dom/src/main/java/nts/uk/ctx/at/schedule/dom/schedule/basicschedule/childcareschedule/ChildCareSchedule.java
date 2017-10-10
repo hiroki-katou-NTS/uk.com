@@ -6,6 +6,7 @@ package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.childcareschedule;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ClockValue;
 
 /**
  * The Class ChildCareSchedule.

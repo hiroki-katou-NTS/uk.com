@@ -26,4 +26,10 @@ public class ScheduleCreatorExecutionCommand {
 	/** The re create atr. */
 	private Integer reCreateAtr;
 	
+	/** The process execution atr. */
+	private Integer processExecutionAtr;
+	
+	/** The create method atr. */
+	private Integer createMethodAtr;
+	
 }
