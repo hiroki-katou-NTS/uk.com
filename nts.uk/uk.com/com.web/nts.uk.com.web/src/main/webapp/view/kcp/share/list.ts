@@ -333,7 +333,7 @@ module kcp.share.list {
                     return false;
                 }
                 var selectedRow: any = $('#' + self.componentGridId).igGridSelection("selectedRow");
-                if (selectedRow && selectedRow.id === '') {
+                if (selectedRow && selectedRow.id === '' && selectedRow.index > -1) {
                     return true;
                 }
                 return false;
