@@ -5,16 +5,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.val;
-import nts.gul.util.range.ComparableRange;
+import nts.gul.util.value.DiscreteValue;
 import nts.uk.shr.com.history.constraint.HistoryConstraint;
+import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
 
 import static java.util.Comparator.*;
 
 import java.util.Collections;
 
-public interface History<S extends ComparableRange<S, D>, D extends Comparable<D>> {
+public interface History<S extends GeneralPeriod<S, D>, D extends Comparable<D> & DiscreteValue<D>> {
 	
-
 	List<HistoryItem<S, D>> items();
 	
 	default List<HistoryConstraint<S, D>> constraints() {

@@ -9,13 +9,13 @@ import nts.uk.shr.com.history.constraint.MustBeResident;
 import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
 
 /**
- * ContinuousResidentHistory
+ * PersistentResidentHistory
  *
  * @param <S> self
  * @param <D> endpoint
  */
-public interface ContinuousResidentHistory<S extends GeneralPeriod<S, D>, D extends Comparable<D> & DiscreteValue<D>>
-		extends ContinuousHistory<S, D> {
+public interface PersistentResidentHistory<S extends GeneralPeriod<S, D>, D extends Comparable<D> & DiscreteValue<D>>
+		extends PersistentHistory<S, D> {
 
 	@Override
 	default List<HistoryConstraint<S, D>> constraints() {

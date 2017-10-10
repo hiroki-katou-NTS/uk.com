@@ -4,21 +4,22 @@ import java.util.Arrays;
 import java.util.List;
 
 import nts.gul.util.value.DiscreteValue;
+import nts.uk.shr.com.history.History;
 import nts.uk.shr.com.history.constraint.HistoryConstraint;
-import nts.uk.shr.com.history.constraint.MustBeResident;
+import nts.uk.shr.com.history.constraint.MustNotDuplicate;
 import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
 
 /**
- * ContinuousResidentHistory
+ * UnduplicatableHistory
  *
  * @param <S> self
  * @param <D> endpoint
  */
-public interface ContinuousResidentHistory<S extends GeneralPeriod<S, D>, D extends Comparable<D> & DiscreteValue<D>>
-		extends ContinuousHistory<S, D> {
+public interface UnduplicatableHistory<S extends GeneralPeriod<S, D>, D extends Comparable<D> & DiscreteValue<D>>
+		extends History<S, D> {
 
 	@Override
 	default List<HistoryConstraint<S, D>> constraints() {
-		return Arrays.asList(new MustBeResident<>());
+		return Arrays.asList(new MustNotDuplicate<>());
 	}
 }

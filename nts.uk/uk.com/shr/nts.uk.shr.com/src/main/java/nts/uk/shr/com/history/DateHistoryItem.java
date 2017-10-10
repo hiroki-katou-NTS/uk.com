@@ -1,7 +1,7 @@
 package nts.uk.shr.com.history;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * Item of history that has a days period.

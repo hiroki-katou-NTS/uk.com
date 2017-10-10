@@ -1,7 +1,8 @@
 package nts.uk.shr.com.history;
 
 import lombok.val;
-import nts.gul.util.range.ComparableRange;
+import nts.gul.util.value.DiscreteValue;
+import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
 
 /**
  * Item of history that has an own span.
@@ -9,13 +10,29 @@ import nts.gul.util.range.ComparableRange;
  *
  * @param <S> Span
  */
-public abstract class HistoryItem<S extends ComparableRange<S, D>, D extends Comparable<D>> {
+public abstract class HistoryItem<S extends GeneralPeriod<S, D>, D extends Comparable<D> & DiscreteValue<D>> {
 
 	/**
 	 * Returns the own span.
 	 * @return span
 	 */
 	public abstract S span();
+	
+	/**
+	 * Returns start of own span.
+	 * @return start
+	 */
+	public D start() {
+		return this.span().start();
+	}
+	
+	/**
+	 * Returns end of own span.
+	 * @return end
+	 */
+	public D end() {
+		return this.span().end();
+	}
 	
 	/**
 	 * Returns string to identify: ID, code, ...
@@ -34,7 +51,7 @@ public abstract class HistoryItem<S extends ComparableRange<S, D>, D extends Com
 	 * @param spanToBeAccepted
 	 */
 	public void shortenStartToAccept(S spanToBeAccepted) {
-		val newSpan = this.span().cutOffWithNewStart(spanToBeAccepted.end());
+		val newSpan = this.span().cutOffWithNewStart(spanToBeAccepted.endNext(true));
 		this.changeSpan(newSpan);
 	}
 	
@@ -43,7 +60,7 @@ public abstract class HistoryItem<S extends ComparableRange<S, D>, D extends Com
 	 * @param spanToBeAccepted
 	 */
 	public void shortenEndToAccept(S spanToBeAccepted) {
-		val newSpan = this.span().cutOffWithNewEnd(spanToBeAccepted.start());
+		val newSpan = this.span().cutOffWithNewEnd(spanToBeAccepted.startNext(false));
 		this.changeSpan(newSpan);
 	}
 

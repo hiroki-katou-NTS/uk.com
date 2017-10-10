@@ -1,25 +1,36 @@
 package nts.uk.shr.com.history.strategic;
 
-import lombok.val;
 import nts.arc.error.BusinessException;
-import nts.gul.util.range.ComparableRange;
+import nts.gul.util.value.DiscreteValue;
 import nts.uk.shr.com.history.History;
 import nts.uk.shr.com.history.HistoryItem;
+import nts.uk.shr.com.time.calendar.period.GeneralPeriod;
 
-public interface ContinuousHistory<S extends ComparableRange<S, D>, D extends Comparable<D>>
+/**
+ * ContinuousHistory
+ *
+ * @param <S> self
+ * @param <D> endpoint
+ */
+public interface ContinuousHistory<S extends GeneralPeriod<S, D>, D extends Comparable<D> & DiscreteValue<D>>
 		extends History<S, D> {
 
 	@Override
 	default void add(HistoryItem<S, D> itemToBeAdded) {
 		
 		this.constraints().forEach(c -> c.validateIfCanAdd(this, itemToBeAdded));
+		this.exValidateIfCanAdd(itemToBeAdded);
 
 		this.latestStartItem().ifPresent(latest -> {
-			if (itemToBeAdded.span().startIsBefore(latest.span())) {
-				throw new BusinessException("Msg_102");
+			if (!(latest.span().isStart().before(itemToBeAdded.start()))
+					&& latest.span().isEnd().beforeOrEqual(itemToBeAdded.end())) {
+				throw new BusinessException("");
 			}
+			
 			latest.shortenEndToAccept(itemToBeAdded);
 		});
+		
+		this.exCorrectToAdd(itemToBeAdded);
 		
 		this.items().add(itemToBeAdded);
 	}
@@ -28,9 +39,18 @@ public interface ContinuousHistory<S extends ComparableRange<S, D>, D extends Co
 	default void remove(HistoryItem<S, D> itemToBeRemoved) {
 
 		this.constraints().forEach(c -> c.validateIfCanRemove(this, itemToBeRemoved));
+		this.exValidateIfCanRemove(itemToBeRemoved);
+
+		// this should be restricted by UI
+		this.latestStartItem().ifPresent(latest -> {
+			if (!latest.equals(itemToBeRemoved)) {
+				throw new RuntimeException("just only latest item can be removed.");
+			}
+		});
 		
+		this.exCorrectToRemove(itemToBeRemoved);
 		
-		
+		// if no items, no error (common default spec)
 		this.items().remove(itemToBeRemoved);
 	}
 
@@ -38,18 +58,37 @@ public interface ContinuousHistory<S extends ComparableRange<S, D>, D extends Co
 	default void changeSpan(HistoryItem<S, D> itemToBeChanged, S newSpan) {
 
 		this.constraints().forEach(c -> c.validateIfCanChangeSpan(this, itemToBeChanged, newSpan));
+		this.exValidateIfCanChangeSpan(itemToBeChanged, newSpan);
 		
 		this.immediatelyBefore(itemToBeChanged).ifPresent(immediatelyBefore -> {
 
-			if (newSpan.startIsBefore(immediatelyBefore.span())) {
+			if (!(immediatelyBefore.span().isStart().before(newSpan.start()))) {
 				throw new BusinessException("Msg_127");
 			}
 			
 			immediatelyBefore.shortenEndToAccept(newSpan);
 		});
+		
+		this.exCorrectToChangeSpan(itemToBeChanged, newSpan);
 
 		itemToBeChanged.changeSpan(newSpan);
 	}
 
-
+	default void exValidateIfCanAdd(HistoryItem<S, D> itemToBeAdded) {
+	}
+	
+	default void exCorrectToAdd(HistoryItem<S, D> itemToBeAdded) {
+	}
+	
+	default void exValidateIfCanRemove(HistoryItem<S, D> itemToBeRemoved) {
+	}
+	
+	default void exCorrectToRemove(HistoryItem<S, D> itemToBeRemoved) {
+	}
+	
+	default void exValidateIfCanChangeSpan(HistoryItem<S, D> itemToBeChanged, S newSpan) {
+	}
+	
+	default void exCorrectToChangeSpan(HistoryItem<S, D> itemToBeChanged, S newSpan) {
+	}
 }
