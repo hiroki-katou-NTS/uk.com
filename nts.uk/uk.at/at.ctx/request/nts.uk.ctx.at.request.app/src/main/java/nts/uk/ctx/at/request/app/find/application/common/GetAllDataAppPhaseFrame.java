@@ -73,7 +73,7 @@ public class GetAllDataAppPhaseFrame {
 							this.approveAcceptedRepo.getAllApproverAccepted(companyID, approvalFrameDto.getFrameID())
 							.stream().map(c -> ApproveAcceptedDto.fromDomain(c)).collect(Collectors.toList());
 						//set list approveAccepted to frame
-						approvalFrameDto.setListApproveAcceptedDto(listApproveAccepted);
+						approvalFrameDto.setListApproveAccepted(listApproveAccepted);
 					}
 					
 					//set value : reasonAll,ApproveAll,nameAll to frame
@@ -82,7 +82,7 @@ public class GetAllDataAppPhaseFrame {
 						String approveAll ="";
 						String reasonAll = "";
 						//duyet list approveaccepted to frame
-						for(ApproveAcceptedDto approveAcceptedDto : approvalFrameDto.getListApproveAcceptedDto() ) {
+						for(ApproveAcceptedDto approveAcceptedDto : approvalFrameDto.getListApproveAccepted() ) {
 							String str ="";
 							String str1 ="";
 							String str2 ="";

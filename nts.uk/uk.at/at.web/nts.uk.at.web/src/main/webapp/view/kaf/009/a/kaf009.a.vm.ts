@@ -140,7 +140,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             //startPage 009a AFTER start 000_A
             self.startPage().done(function(){
                 self.kaf000_a.start(self.employeeID,1,4,moment(new Date()).format("YYYY/MM/DD")).done(function(){
-                    self.getApprovalList(self.kaf000_a.approvalRoot().beforeApprovers);
+                    self.approvalSource = self.kaf000_a.approvalList;
                 })    
             })
             
@@ -153,7 +153,6 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             var dfd = $.Deferred();
             //get Common Setting
             service.getGoBackSetting().done(function(settingData: any) {
-                debugger;
                 //申請制限設定.申請理由が必須
                 self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true: false);
                 //send Mail
@@ -181,51 +180,14 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             });
             return dfd.promise();
         }
-            
-        /**
-         * get approver list 
-         */
-        getApprovalList(beforeApprovers: any) {
-            let self = this;
-            let approvalList = [];
-            for(let x = 0; x < beforeApprovers.length; x++){
-                let appPhase = beforeApprovers[x];
-                let b = new common.AppApprovalPhase(
-                    "",
-                    appPhase.approvalForm,
-                    x,
-                    0,
-                    []); 
-                for(let y = 1; y <= appPhase.length; y++){
-                    let appFrame = appPhase[y];
-                    let c = new common.ApprovalFrame(
-                        "",
-                        y,
-                        []);
-                    let d = new common.ApproveAccepted(
-                        "",
-                        appFrame.sid,
-                        0,
-                        appFrame.confirmPerson ? 1 : 0,
-                        "",
-                        "",
-                        appFrame.sid);
-                    c.approveAcceptedCmds.push(d);
-                    b.approvalFrameCmds.push(c);   
-                };
-                approvalList.push(b);    
-            };
-            self.approvalSource = approvalList;
-        }
         /**
          * insert
          */
         insert() {
             let self = this;
-            nts.uk.ui.block.invisible();
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_338' }).ifYes(function() {
                 service.insertGoBackDirect(self.getCommand()).done(function() {
-                //alert("Insert Done");
+                    alert("Insert Done");
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                 })
@@ -287,7 +249,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 self.selectedReason(),
                 self.prePostSelected(),
                 self.appDate(),
-                self.employeeName(),
+                self.employeeID,
                 self.multilContent(),
                 self.appDate(),
                 self.multilContent(),

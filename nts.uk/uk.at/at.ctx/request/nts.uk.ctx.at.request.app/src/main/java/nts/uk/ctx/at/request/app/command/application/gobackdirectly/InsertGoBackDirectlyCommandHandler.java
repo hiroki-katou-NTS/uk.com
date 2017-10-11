@@ -103,11 +103,9 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 				command.goBackCommand.workTimeStart2,
 				command.goBackCommand.workTimeEnd2, 
 				command.goBackCommand.workLocationCD2);
-		
-		
 		//登録ボタンをクリックする
 		goBackDirectlyRegisterService.register(newGoBack, newApp,appApprovalPhases);
 		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
-		newAfterRegister.processAfterRegister(newApp);
+		//newAfterRegister.processAfterRegister(newApp);
 	}
 }

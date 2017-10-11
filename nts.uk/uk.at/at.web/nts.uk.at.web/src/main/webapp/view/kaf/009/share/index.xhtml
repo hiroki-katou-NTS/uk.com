@@ -6,9 +6,10 @@
 			<label class="lblEmployeeName" data-bind="text : employeeName"></label>
 		</div>
 		<!--事前事後区分 -->
-		<div class="valign-center control-group " data-bind="if: prePostDisp()">
+		<div class="valign-center control-group "
+			data-bind="if: prePostDisp()">
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_8')}</div>
-			<div tabindex="5" class="cf" id="switchPrePost"
+			<div tabindex="5" class="cf"
 				data-bind="ntsSwitchButton: {
 								options:ko.observableArray([
 						                { prePostCode: 0, prePostName: '#{i18n.getText('KAF009_9')}' },
@@ -151,7 +152,8 @@
 		<!--勤務を変更する -->
 		<!--Work Change-->
 		<div class="valign-center control-group">
-			<div tabindex="17" data-bind="visible: workVisible, ntsCheckBox: { checked: workChangeAtr , enable: true, text: '#{i18n.getText('KAF009_21')}' }"></div>
+			<div tabindex="17"
+				data-bind="visible: workVisible, ntsCheckBox: { checked: workChangeAtr , enable: true, text: '#{i18n.getText('KAF009_21')}' }"></div>
 			<HR data-bind="visible : typeSiftVisible" />
 			<div class="table" data-bind="visible : typeSiftVisible">
 				<div class="cell valign-center">
@@ -177,7 +179,7 @@
 		<!--定型理由 -->
 		<div class="valign-center control-group">
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_25')}</div>
-			<div  tabindex="19" id="combo-box"
+			<div tabindex="19" id="combo-box"
 				data-bind="ntsComboBox: {
 								options: reasonCombo,
 								optionsValue: 'reasonId',

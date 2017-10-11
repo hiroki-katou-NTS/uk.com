@@ -302,8 +302,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                             frameLoop.frameID,
                             frameLoop.dispOrder,
                             []);
-                        for(let z = 1; z <= phaseLoop.listFrame.length; z++){
-                            let acceptedLoop = phaseLoop.listApproveAccepted[z-1];
+                        for(let z = 1; z <= frameLoop.listApproveAccepted.length; z++){
+                            let acceptedLoop = frameLoop.listApproveAccepted[z-1];
                             let appAccepted = new model.ApproveAccepted(
                                 acceptedLoop.appAccedtedID,
                                 acceptedLoop.approverSID,
