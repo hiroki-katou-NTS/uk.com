@@ -126,6 +126,7 @@ public class DetailAfterUpdateImpl implements DetailAfterUpdate {
 		if (destinationList.size() >= 1) {
 			// 送信先リストにメールを送信する ( Send mail to recipient list )
 			// Imported(Employment)[Employee]; // Imported(就業)「社員」を取得する ???
+			System.out.println("Send mail to: "+destinationList);
 		}
 	}
 

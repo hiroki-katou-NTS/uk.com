@@ -16,7 +16,7 @@ public interface NewAfterRegister {
 	 * @param companyID 会社ID
 	 * @param appID 申請ID
 	 */
-	public void processAfterRegister(String companyID, String appID);
+	public void processAfterRegister(Application application);
 	
 	/**
 	 * 1.送信先リストの取得
