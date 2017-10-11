@@ -135,9 +135,9 @@ module nts.uk.at.view.ksu001.lx.viewmodel {
                 }).fail(function(error) {
                     self.isCreated(false);
                     nts.uk.ui.dialog.alertError(error.message);
-                }).then(function() {
-                    nts.uk.ui.block.clear();
                 });
+            }).then(function() {
+                nts.uk.ui.block.clear();
             });
 
         }
