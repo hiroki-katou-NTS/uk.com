@@ -1,26 +1,41 @@
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
+
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
-import nts.uk.shr.com.enumcommon.DayAttr;
-import nts.uk.shr.com.time.AttendanceClock;
 
 /**
- * 勤務予定時間帯
- * 
- * @author sonnh1
- *
+ * The Class WorkScheduleTime.
  */
-@AllArgsConstructor
+//勤務予定時間
 @Getter
 public class WorkScheduleTime {
-	private String sId;
-	private GeneralDate ymd;
-	private int scheduleCnt;
-	private BounceAtr bounceAtr;
-	private AttendanceClock scheduleStartClock;
-	private DayAttr scheduleStartDayAtr;
-	private AttendanceClock scheduleEndClock;
-	private DayAttr scheduleEndDayAtr;
+
+	/** The person fee time. */
+	//人件費時間
+	private List<PersonFeeTime> personFeeTime;
+	
+	/** The break time. */
+	//休憩時間
+	private AttendanceTime breakTime;
+	
+	/** The working time. */
+	//実働時間
+	private AttendanceTime workingTime;
+	
+	/** The weekday time. */
+	//平日時間
+	private AttendanceTime weekdayTime;
+	
+	/** The predetermine time. */
+	//所定時間
+	private AttendanceTime predetermineTime;
+	
+	/** The total labor time. */
+	//総労働時間
+	private AttendanceTime totalLaborTime;
+	
+	/** The child care time. */
+	//育児介護時間
+	private AttendanceTime childCareTime;
 }

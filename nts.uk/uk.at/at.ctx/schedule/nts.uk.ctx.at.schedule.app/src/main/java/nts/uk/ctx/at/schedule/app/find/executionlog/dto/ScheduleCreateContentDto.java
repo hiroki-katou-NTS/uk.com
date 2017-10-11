@@ -96,7 +96,11 @@ public class ScheduleCreateContentDto implements ScheduleCreateContentSetMemento
 
 	@Override
 	public void setCreateMethodAtr(CreateMethodAtr createMethodAtr) {
-		this.createMethodAtr = createMethodAtr.value;
+		if (createMethodAtr == null) {
+			this.createMethodAtr = null;
+		} else {
+			this.createMethodAtr = createMethodAtr.value;
+		}
 	}
 
 	@Override
@@ -111,12 +115,20 @@ public class ScheduleCreateContentDto implements ScheduleCreateContentSetMemento
 
 	@Override
 	public void setProcessExecutionAtr(ProcessExecutionAtr processExecutionAtr) {
-		this.processExecutionAtr = processExecutionAtr.value;
+		if (processExecutionAtr == null) {
+			this.processExecutionAtr = null;
+		} else {
+			this.processExecutionAtr = processExecutionAtr.value;
+		}
 	}
 
 	@Override
 	public void setReCreateAtr(ReCreateAtr reCreateAtr) {
-		this.reCreateAtr = reCreateAtr.value;
+		if (reCreateAtr == null) {
+			this.reCreateAtr = null;
+		} else {
+			this.reCreateAtr = reCreateAtr.value;
+		}
 	}
 
 	@Override

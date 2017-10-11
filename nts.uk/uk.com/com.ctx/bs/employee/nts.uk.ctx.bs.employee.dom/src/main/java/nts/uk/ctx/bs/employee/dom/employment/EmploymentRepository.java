@@ -26,7 +26,7 @@ public interface EmploymentRepository {
 	 * @param empCodes the emp codes
 	 * @return the list
 	 */
-	List<Employment> findByEmpCodes(List<String> empCodes);
+	List<Employment> findByEmpCodes(String companyId, List<String> empCodes);
 
 	/**
 	 * Find employment.
@@ -35,7 +35,7 @@ public interface EmploymentRepository {
 	 * @param employmentCode the employment code
 	 * @return the optional
 	 */
-	Optional<Employment> findEmployment(String companyCode, String employmentCode);
+	Optional<Employment> findEmployment(String companyId, String employmentCode);
 	
 	/**
 	 * Insert.

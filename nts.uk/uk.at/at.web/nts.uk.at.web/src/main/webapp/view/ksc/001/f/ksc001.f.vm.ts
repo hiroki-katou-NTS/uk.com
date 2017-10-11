@@ -100,7 +100,7 @@ import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
             private updateState() {
                 let self = this;
                 // start count time
-                //$('.countdown').startCount();
+                $('.countdown').startCount();
                 
                 nts.uk.deferred.repeat(conf => conf
                 .task(() => {
@@ -123,11 +123,11 @@ import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
                         self.executionError(nts.uk.resource.getText("KSC001_85", [self.numberFail()]));
                         // finish task
                         if (res.succeeded || res.failed || res.cancelled) {
+                            $('.countdown').stopCount();
                             /*self.isDone(true);
                             self.status(nts.uk.resource.getText("KSU006_217"));
                             
                             // end count time
-                            $('.countdown').stopCount();
                             if (res.error) {
                                 self.showMessageError(res.error);
                             }*/

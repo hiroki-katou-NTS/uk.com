@@ -11,7 +11,6 @@ import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -38,38 +37,32 @@ public class KscmtScheduleExcLog extends UkJpaEntity implements Serializable {
     protected KscmtScheduleExcLogPK kscmtScheduleExcLogPK;
     
     /** The exe sid. */
-    @NotNull
     @Column(name = "EXE_SID")
     private String exeSid;
     
     /** The exe str D. */
-    @NotNull
     @Column(name = "EXE_STR_D")
     @Convert(converter = GeneralDateTimeToDBConverter.class)
     private GeneralDateTime exeStrD;
 
     /** The exe end D. */
-    @NotNull
     @Column(name = "EXE_END_D")
     @Convert(converter = GeneralDateTimeToDBConverter.class)
     private GeneralDateTime exeEndD;
 
     /** The start ymd. */
-    @NotNull
     @Column(name = "START_YMD")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate startYmd;
 
     /** The end ymd. */
-    @NotNull
     @Column(name = "END_YMD")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate endYmd;
 
     /** The completion status. */
-    @NotNull
     @Column(name = "COMPLETION_STATUS")
-    private int completionStatus;
+    private Integer completionStatus;
     
     /**
      * Instantiates a new kscmt schedule exc log.

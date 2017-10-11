@@ -45,8 +45,13 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 alreadySettingList: ko.observableArray([])
         };
         //選択可能な職位一覧
-        
-        
+        //承認者の登録(個人別)
+        personTab : number = 2;
+        //設定種類
+        personSetting: number = 0; //個人設定
+        //承認形態
+        formOne : number = 2; //誰か一人
+        formAll: number = 1; //全員承認
         constructor(){
             var self = this;            
             //設定対象
@@ -58,14 +63,38 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 self.selectFormSet(data.formSetting);                
                 
                 self.setDataForSwapList(self.selectTypeSet());
+                //承認者の登録(個人別): 非表示
+                if(data.tab === self.personTab){
+                    $('#typeSetting').hide();
+                    self.selectTypeSet(self.personSetting);    
+                }else{
+                    $('#typeSetting').show();
+                    //設定種類
+                    self.selectTypeSet(data.selectTypeSet);
+                }
                 //承認者一覧                
                 if(data.approverInfor.length > 0){
                     _.forEach(data.approverInfor, function(sID){
-                        service.getPersonInfor(sID).done(function(data: any){
-                            self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName));
-                        })                            
+                        if(self.selectTypeSet() === self.personSetting){
+                            service.getPersonInfor(sID).done(function(data: any){
+                                self.approverList.push(new shrVm.ApproverDtoK(data.sid, data.employeeCode, data.employeeName));
+                            })                            
+                        }else{
+                            let job = new service.model.JobtitleInfor;
+                            job.positionId = sID;
+                            job.startDate = self.standardDate();
+                            job.companyId = "";
+                            job.positionCode = "";
+                            job.positionName = "";
+                            job.sequenceCode = "";
+                            job.endDate = new Date();
+                            service.getJobTitleName(job).done(function(data: any){
+                                self.approverList.push(new shrVm.ApproverDtoK(data.positionId, data.positionCode, data.positionName));
+                            })    
+                        }
+                                                    
                     })    
-                }else{
+                }else{                    
                     self.setDataForCbb();    
                 }
                 
@@ -77,15 +106,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 }else{
                     self.selectedCbbCode("");
                 }
-                //承認者の登録(個人別): 非表示
-                if(data.tab === 2){
-                    $('#typeSetting').hide();
-                    self.selectTypeSet(0);    
-                }else{
-                    $('#typeSetting').show();
-                    //設定種類
-                    self.selectTypeSet(data.selectTypeSet);
-                }
+                
                 
             }
             //基準日
@@ -105,6 +126,8 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 ])
             //change 個人設定　or 職位設定
             self.selectTypeSet.subscribe(function(newValue){
+                self.approverList.removeAll();
+                self.employeeList.removeAll();
                 self.setDataForSwapList(newValue);
             })
             //職場リスト            
@@ -114,7 +137,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             //change 承認形態
             self.selectFormSet.subscribe(function(newValues){
                 //承認形態が誰か一人を選択する場合
-                if(newValues === 0){
+                if(newValues === self.formOne){
                     self.cbbEnable(true);
                 }else{
                     //承認形態が全員承認を選択する場合
@@ -147,8 +170,9 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         //set data in swap-list
         setDataForSwapList(selectTypeSet: number){
             var self = this;
+            
             //個人設定 (employee setting)
-            if(selectTypeSet === 0){
+            if(selectTypeSet === self.personSetting){                
                 var employeeSearch = new service.model.EmployeeSearchInDto();
                 employeeSearch.baseDate = self.standardDate();
                 employeeSearch.workplaceCodes = self.treeGrid.selectedWorkplaceId();
@@ -159,8 +183,18 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                 })
             //職位設定(job setting)
             }else{
-            
-                
+                service.getJobTitleInfor(self.standardDate()).done(function(data: string){
+                    _.forEach(data, function(value: service.model.JobtitleInfor){
+                        var job = new shrVm.ApproverDtoK;
+                        
+                        job.id = value.positionId;
+                        job.code = value.positionCode;
+                        job.name = value.positionName;
+                        self.employeeList.push(job);
+                    })    
+                }).fail(function(res: any){
+                    nts.uk.ui.dialog.alert(res.messageId);
+                })
             }    
         } 
         
@@ -173,7 +207,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
                                         approverInfor: self.approverList(),//承認者一覧
                                         confirmedPerson: self.selectedCbbCode(), //確定者
                                         selectTypeSet: self.selectTypeSet(),
-                                        approvalFormName: self.selectFormSet() == 1 ? resource.getText('CMM018_63') : resource.getText('CMM018_66')
+                                        approvalFormName: self.selectFormSet() == self.formAll ? resource.getText('CMM018_63') : resource.getText('CMM018_66')
                                         }
             setShared("CMM018K_DATA",data );
             nts.uk.ui.windows.close();

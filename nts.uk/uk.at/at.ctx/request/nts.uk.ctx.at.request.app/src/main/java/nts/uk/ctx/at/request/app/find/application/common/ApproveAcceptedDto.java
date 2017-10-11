@@ -17,7 +17,7 @@ public class ApproveAcceptedDto {
 	private String approverSID ;
 	private int approvalATR;
 	private int confirmATR;
-	private String approvalDate;
+	private GeneralDate approvalDate;
 	private String reason;
 	private String representerSID;
 	
@@ -28,7 +28,7 @@ public class ApproveAcceptedDto {
 				domain.getApproverSID(), 
 				domain.getApprovalATR().value, 
 				domain.getConfirmATR().value, 
-				domain.getApprovalDate().toString("yyyy/MM/dd"), 
+				domain.getApprovalDate(), 
 				domain.getReason().v(), 
 				domain.getRepresenterSID());
 	}

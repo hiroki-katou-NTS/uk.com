@@ -3,9 +3,6 @@ package nts.uk.ctx.workflow.app.command.approvermanagement.workroot;
 import java.util.List;
 
 import lombok.Value;
-import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataDisplayComDto;
-import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataDisplayPsDto;
-import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataDisplayWpDto;
 
 @Value
 public class RegisterAppApprovalRootCommand {
@@ -22,16 +19,8 @@ public class RegisterAppApprovalRootCommand {
 	private List<CompanyAppRootADto> root;
 	/**ls is selected*/
 	private AddHistoryDto addHist;
-	
-	private boolean checkAddRoot;
-	private boolean checkEdit;
-	
-	private boolean checkDelete;
 	//list db
 	private List<Integer> lstAppType;
-	
 	private String startDate;
 	private String endDate;
-	private String approvalId;
-//	private int mode;//0: common; 1: private
 }

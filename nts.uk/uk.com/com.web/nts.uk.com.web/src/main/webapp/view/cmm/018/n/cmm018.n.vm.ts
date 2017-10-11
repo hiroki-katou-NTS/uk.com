@@ -1,10 +1,10 @@
-module cmm018.n.viewmodel {
+module nts.uk.com.view.cmm018.n {
+export module viewmodel {
     export class ScreenModel {
         //Right table's properties.
         applicationType: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<NtsGridListColumn>;
         currentAppType: KnockoutObservableArray<any>;
-        count: number = 100;
 
         //Left filter area
         ccgcomponent: GroupOption;
@@ -74,10 +74,14 @@ module cmm018.n.viewmodel {
         getRightList() {
             let self = this;
             var dfd = $.Deferred();
+            self.applicationType.removeAll();
             service.getRightList().done(function(data: any) {
-                let items = _.map(data, item => {
-                    return new ItemModel(item);
-                });
+                let items : ItemModel[] = [];
+                items.push( new ItemModel("",  "共通ルート"));
+                _.forEach(data, function(value: any){
+                    items.push(new ItemModel(value.value, value.localizedName));
+                })
+                
                 self.applicationType(items);
 
                 dfd.resolve();
@@ -100,34 +104,75 @@ module cmm018.n.viewmodel {
         //Exceｌ出力
         printExcel(){
             var self = this;
+            
+            
             //対象社員を選択したかをチェックする(kiểm tra đã chọn nhân viên chưa?)
             //対象者未選択(chưa chọn nhân viên)
-            if(self.selectedEmployee().length <= 0){
-                nts.uk.ui.dialog.alertError({ messageId: "Msg_184"});
-                return;
-            }
+            //tam thoi comment de test
+//            if(self.selectedEmployee().length <= 0){
+//                nts.uk.ui.dialog.alertError({ messageId: "Msg_184"});
+//                return;
+//            }
             //出力対象申請を選択したかチェックする(check đã chọn đơn xin để xuất ra chưa?)
             //出力対象未選択(chưa chọn đối tượng output)
             if(self.currentAppType().length <= 0){
                 nts.uk.ui.dialog.alertError({ messageId: "Msg_199"});
                 return;    
             }
+            //xuat file
+            var data = new service.model.appInfor();
+//            data.baseDate = self.baseDate();
+            data.baseDate = new Date('2017-10-10 00:00:00');
+            
+            //fix tam du lieu
+            //data.lstEmpIds = self.selectedEmployee();
+            var lstEmpIds : string[] = [];
+            lstEmpIds.push("90000000-0000-0000-0000-000000000003");
+//            lstEmpIds.push("000426a2-181b-4c7f-abc8-6fff9f4f983a");
+//            lstEmpIds.push("90000000-0000-0000-0000-000000000001");
+//            lstEmpIds.push("90000000-0000-0000-0000-000000000002");
+//            lstEmpIds.push("90000000-0000-0000-0000-000000000003");
+//            lstEmpIds.push("90000000-0000-0000-0000-000000000004");
+//            lstEmpIds.push("90000000-0000-0000-0000-000000000005");
+//            lstEmpIds.push("90000000-0000-0000-0000-000000000007");
+//            lstEmpIds.push("90000000-0000-0000-0000-000000000008");
+//            lstEmpIds.push("90000000-0000-0000-0000-000000000013");
+//            lstEmpIds.push("90000000-0000-0000-0000-000000000014");
+//            lstEmpIds.push("90000000-0000-0000-0000-000000000015");
+//            lstEmpIds.push("90000000-0000-0000-0000-000000000016");
+            data.lstEmpIds = lstEmpIds;
+            data.lstApps = self.currentAppType();
+            var isCommon = _.find(self.currentAppType(), function(value){
+                return value  === "";    
+            })
+            if(isCommon !== undefined || isCommon !== null){
+                data.rootAtr = 0;
+                data.lstApps.removeItem("");
+            }else{
+                data.rootAtr = 1;
+            }
+            
+            service.saveAsExcel(data).done(()=>{
+                console.log(data);    
+            }).fail(function(res: any){
+                nts.uk.ui.dialog.alertError(res.messageId);
+            });
         }
     }
 
     export class ItemModel {
         code: string;
         name: string;
-        constructor(x: IItemModel) {
-            this.code = x.value;
-            this.name = x.localizedName;
+        constructor(code: string, name: string) {
+            this.code = code;
+            this.name = name;
         }
     }
     
-    export interface IItemModel {
-        value: string;
-        localizedName: string;
-    }
+//    export interface IItemModel {
+//        value: string;
+//        localizedName: string;
+//    }
     
     export interface EmployeeSearchDto {
         employeeId: string;
@@ -176,3 +221,4 @@ module cmm018.n.viewmodel {
         onApplyEmployee: (data: EmployeeSearchDto[]) => void;
     }
 }
+    }

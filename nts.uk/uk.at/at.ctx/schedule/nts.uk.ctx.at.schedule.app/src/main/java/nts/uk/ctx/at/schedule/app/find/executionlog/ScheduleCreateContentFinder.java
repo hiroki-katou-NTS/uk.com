@@ -44,7 +44,8 @@ public class ScheduleCreateContentFinder {
 	/**
 	 * Find by execution id.
 	 *
-	 * @param executionId the execution id
+	 * @param executionId
+	 *            the execution id
 	 * @return the schedule create content dto
 	 */
 	public ScheduleCreateContentDto findByExecutionId(String executionId) {
@@ -72,6 +73,8 @@ public class ScheduleCreateContentFinder {
 				dto.setEndDate(endDate);
 				dto.setExecutionStart(exeStart);
 				dto.setExecutionEnd(exeEnd);
+			} else {
+				return null;
 			}
 			dto.setCountExecution(lstCreator == null ? BigDecimal.ZERO.intValue() : lstCreator.size());
 			dto.setCountError(cntError);

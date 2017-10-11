@@ -22,6 +22,8 @@ public class JpaAuthorityDailyPerformanceFormatRepository extends JpaRepository
 
 	private static final String DEL_BY_KEY;
 
+	private static final String IS_EXIST_DATA;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT a ");
@@ -44,6 +46,13 @@ public class JpaAuthorityDailyPerformanceFormatRepository extends JpaRepository
 		builderString.append(
 				"AND a.kfnmtAuthorityDailyPerformanceFormatPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
 		DEL_BY_KEY = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM KfnmtAuthorityDailyPerformanceFormat a ");
+		builderString
+				.append("WHERE a.kfnmtAuthorityDailyPerformanceFormatPK.dailyPerformanceFormatCode = :dailyPerformanceFormatCode ");
+		IS_EXIST_DATA = builderString.toString();
 	}
 
 	@Override
@@ -56,6 +65,12 @@ public class JpaAuthorityDailyPerformanceFormatRepository extends JpaRepository
 		this.getEntityManager().createQuery(DEL_BY_KEY, KfnmtAuthorityDailyPerformanceFormat.class)
 				.setParameter("companyId", companyId)
 				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v()).executeUpdate();
+	}
+
+	@Override
+	public boolean checkExistCode(DailyPerformanceFormatCode dailyPerformanceFormatCode) {
+		return this.queryProxy().query(IS_EXIST_DATA, long.class)
+				.setParameter("dailyPerformanceFormatCode", dailyPerformanceFormatCode.v()).getSingle().get() > 0;
 	}
 
 	@Override

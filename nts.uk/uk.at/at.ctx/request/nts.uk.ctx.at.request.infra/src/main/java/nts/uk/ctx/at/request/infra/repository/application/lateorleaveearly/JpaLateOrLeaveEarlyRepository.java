@@ -10,6 +10,7 @@ import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarly;
 import nts.uk.ctx.at.request.dom.application.lateorleaveearly.LateOrLeaveEarlyRepository;
 import nts.uk.ctx.at.request.dom.setting.applicationreason.ApplicationReason;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
+import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeavePK;
 
@@ -57,7 +58,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 		updateEntity.early2 = newEntity.early2;
 		updateEntity.earlyTime2 = newEntity.earlyTime2;
 		updateEntity.late2 = newEntity.late2;
-		updateEntity.lateTime2 = newEntity.early2;
+		updateEntity.lateTime2 = newEntity.lateTime2;
 		this.commandProxy().update(updateEntity);
 		
 	}
@@ -117,7 +118,31 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 					domain.getEarly2().value,
 					domain.getEarlyTime2().v(),
 					domain.getLate2().value,
-					domain.getLateTime2().v());
+					domain.getLateTime2().v(),
+					new KafdtApplication(
+							new KafdtApplicationPK(
+									domain.getCompanyID(), 
+									domain.getApplicationID()), 
+							(int)(long)domain.getVersion(),
+							domain.getApplicationReason().v().split(":")[0],
+							domain.getPrePostAtr().value, 
+							domain.getInputDate(), 
+							domain.getEnteredPersonSID(), 
+							domain.getReversionReason().v(), 
+							domain.getApplicationDate(), 
+							domain.getApplicationReason().v().split(":")[1].substring(1), 
+							domain.getApplicationType().value, 
+							domain.getApplicantSID(), 
+							domain.getReflectPlanScheReason().value, 
+							null, 
+							domain.getReflectPlanState().value, 
+							domain.getReflectPlanEnforce().value, 
+							domain.getReflectPerScheReason().value, 
+							null, 
+							domain.getReflectPerState().value, 
+							domain.getReflectPerEnforce().value,
+							null,
+							null,null,null,null));
 	}
 	@Override
 	public ApplicationReason findApplicationReason(String companyID, ApplicationType applicationType) {

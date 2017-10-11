@@ -67,14 +67,14 @@ public class WorkplaceConfigInfoFinder {
             return null;
         }
         WorkplaceConfigInfo wkpConfigInfo = optionalWkpConfigInfo.get();
-        if (wkpConfigInfo.getWkpHierarchy().isEmpty()) {
+        if (wkpConfigInfo.getLstWkpHierarchy().isEmpty()) {
             throw new BusinessException("Msg_373");
         }
         // get list hierarchy
-        List<WorkplaceHierarchy> lstHierarchy = wkpConfigInfo.getWkpHierarchy();
+        List<WorkplaceHierarchy> lstHierarchy = wkpConfigInfo.getLstWkpHierarchy();
         List<WorkplaceInfo> lstWkpInfo = new ArrayList<>();
         lstHierarchy.stream().forEach(item -> {
-            lstWkpInfo.add(wkpInfoRepo.findLatestByWorkplaceId(item.getWorkplaceId().v()).get());
+            lstWkpInfo.add(wkpInfoRepo.findLatestByWkpId(item.getWorkplaceId().v()).get());
         });
 
         return this.convertToTree(lstWkpInfo, lstHierarchy);

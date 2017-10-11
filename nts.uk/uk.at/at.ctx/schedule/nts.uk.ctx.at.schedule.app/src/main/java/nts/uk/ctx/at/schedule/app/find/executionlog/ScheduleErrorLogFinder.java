@@ -25,15 +25,19 @@ public class ScheduleErrorLogFinder {
 	/** The employee adapter. */
 	@Inject
 	private SCEmployeeAdapter employeeAdapter;
-	
+
 	/**
 	 * Find all by exe id.
 	 *
-	 * @param executionId the execution id
+	 * @param executionId
+	 *            the execution id
 	 * @return the list
 	 */
 	public List<ScheduleErrorLogDto> findAllByExeId(String executionId) {
 		List<ScheduleErrorLog> lstError = this.scheduleErrorLogRepository.findByExecutionId(executionId);
+		if (lstError == null) {
+			return null;
+		}
 		return lstError.stream().map(item -> {
 			ScheduleErrorLogDto dto = new ScheduleErrorLogDto();
 			item.saveToMemento(dto);

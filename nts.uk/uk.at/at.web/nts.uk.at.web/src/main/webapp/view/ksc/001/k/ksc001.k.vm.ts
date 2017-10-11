@@ -86,7 +86,10 @@ module nts.uk.at.view.ksc001.k {
                 var self = this;
                 let executionId = self.executionId();
                 service.exportError(executionId).done(function() {
-
+                }).fail(function(res:any){
+                    if (res.businessException) {
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId, messageParams: res.parameterIds });
+                    }
                 });
             }
 
