@@ -10,9 +10,11 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private RolesForOneBusinessWork forAttendance = new RolesForOneBusinessWork(null, null);
-	private RolesForOneBusinessWork forPayroll = new RolesForOneBusinessWork(null, null);;
-	private RolesForOneBusinessWork forPersonnel = new RolesForOneBusinessWork(null, null);;
-	private RolesForOneBusinessWork forPersonalInfo = new RolesForOneBusinessWork(null, null);;
+	private RolesForOneBusinessWork forPayroll = new RolesForOneBusinessWork(null, null);
+	private RolesForOneBusinessWork forPersonnel = new RolesForOneBusinessWork(null, null);
+	private RolesForOneBusinessWork forPersonalInfo = new RolesForOneBusinessWork(null, null);
+	private RolesForOneBusinessWork forSystemAdmin = new RolesForOneBusinessWork(null, null);
+	private RolesForOneBusinessWork forCompanyAdmin = new RolesForOneBusinessWork(null, null);
 	
 	@Override
 	public String forAttendance() {
@@ -34,6 +36,16 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 		return this.forPersonalInfo.getRoleId();
 	}
 
+	@Override
+	public String forSystemAdmin() {
+		return this.forSystemAdmin.getRoleId();
+	}
+
+	@Override
+	public String forCompanyAdmin() {
+		return this.forCompanyAdmin.getRoleId();
+	}
+
 	public void setRoleIdsForAttendance(String forPersonInCharge, String forGeneral) {
 		this.forAttendance = new RolesForOneBusinessWork(forPersonInCharge, forGeneral);
 	}
@@ -48,6 +60,14 @@ public class DefaultLoginUserRoles implements LoginUserRoles, Serializable {
 
 	public void setRoleIdsforPersonalInfo(String forPersonInCharge, String forGeneral) {
 		this.forPersonalInfo = new RolesForOneBusinessWork(forPersonInCharge, forGeneral);
+	}
+
+	public void setRoleIdsforSystemAdmin(String forPersonInCharge, String forGeneral) {
+		this.forSystemAdmin = new RolesForOneBusinessWork(forPersonInCharge, forGeneral);
+	}
+
+	public void setRoleIdsforCompanyAdmin(String forPersonInCharge, String forGeneral) {
+		this.forCompanyAdmin = new RolesForOneBusinessWork(forPersonInCharge, forGeneral);
 	}
 
 	@RequiredArgsConstructor
