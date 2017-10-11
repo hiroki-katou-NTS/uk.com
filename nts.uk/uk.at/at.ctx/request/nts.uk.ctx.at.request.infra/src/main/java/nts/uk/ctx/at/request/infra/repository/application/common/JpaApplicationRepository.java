@@ -68,7 +68,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				new KafdtApplicationPK(
 					domain.getCompanyID(), 
 					domain.getApplicationID()), 
-				(int)(long)domain.getVersion(),
+				domain.getVersion(),
 				appReasonID,
 				domain.getPrePostAtr().value, 
 				domain.getInputDate() , 
