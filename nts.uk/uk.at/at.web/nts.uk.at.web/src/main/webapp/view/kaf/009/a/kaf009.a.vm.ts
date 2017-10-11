@@ -57,6 +57,7 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         reasonCombo: KnockoutObservableArray<common.ComboReason>;
         selectedReason: KnockoutObservable<string>;
         //MultilineEditor
+        requiredReason : KnockoutObservable<boolean> = ko.observable(false);
         multilContent: KnockoutObservable<string>;
         multiOption: any;
         //Insert command
@@ -65,6 +66,13 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         locationData: Array<common.IWorkLocation>;
         //Approval 
         approvalSource: Array<common.AppApprovalPhase> = [];
+        employeeID : string ="";
+        //menu-bar 
+        enableSendMail :KnockoutObservable<boolean> = ko.observable(false); 
+        
+        prePostDisp: KnockoutObservable<boolean> = ko.observable(false);
+        
+        prePostEnable: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             let self = this;
             self.command = ko.observable(null);
@@ -127,26 +135,37 @@ module nts.uk.at.view.kaf009.a.viewmodel {
             }));
             //勤務を変更する
             self.workChangeAtr.subscribe(function(value) {
-                self.workEnable(value);
+                //self.workEnable(value);
             });
             //startPage 009a AFTER start 000_A
-//            self.kaf000_a.start().done(function(){
-//                self.getApprovalList(self.kaf000_a.approvalRoot().beforeApprovers);
-//                
-//            })
+            self.startPage().done(function(){
+                self.kaf000_a.start(self.employeeID,1,4,moment(new Date()).format("YYYY/MM/DD")).done(function(){
+                    self.getApprovalList(self.kaf000_a.approvalRoot().beforeApprovers);
+                })    
+            })
+            
         }
         /**
          * 
          */
-        
-        
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             //get Common Setting
-            service.getGoBackSetting().done(function(settingData: common.CommonSetting) {
-                //get all work Location source
+            service.getGoBackSetting().done(function(settingData: any) {
+                debugger;
+                //申請制限設定.申請理由が必須
+                self.requiredReason(settingData.appCommonSettingDto.applicationSettingDto.requireAppReasonFlg == 1 ? true: false);
+                //send Mail
+                self.enableSendMail(settingData.appCommonSettingDto.appTypeDiscreteSettingDtos[0].sendMailWhenRegisterFlg == 1 ? true: false);
+                //pre Post display
+                self.prePostDisp(settingData.appCommonSettingDto.applicationSettingDto.displayPrePostFlg == 1 ? true: false);
+                //pre Post Enable
+                self.prePostEnable(settingData.goBackSettingDto.workChangeFlg == 1 ? true: false);
+                //get all work Location source  
                 self.getAllWorkLocation();
+                //get employeeID login 
+                self.employeeID = settingData.sid;
                 if(!nts.uk.util.isNullOrEmpty(settingData)){
                     //get Reason
                     self.setReasonControl(settingData.listReasonDto);
@@ -156,42 +175,46 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                     self.setGoBackSetting(settingData.goBackSettingDto);
                 }
                 dfd.resolve();
+            }).fail((res) => {
+                nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                dfd.reject();
             });
             return dfd.promise();
         }
-        
+            
         /**
          * get approver list 
          */
-        getApprovalList(beforeApprovers: Array<common.AppApprovalPhase>) {
+        getApprovalList(beforeApprovers: any) {
             let self = this;
             let approvalList = [];
-            _.forEach(a, appPhase => {
+            for(let x = 0; x < beforeApprovers.length; x++){
+                let appPhase = beforeApprovers[x];
                 let b = new common.AppApprovalPhase(
                     "",
                     appPhase.approvalForm,
-                    appPhase.orderNumber,
-                    1,
-                    []);
-                _.forEach(appPhase.approvers, appFrame => {
+                    x,
+                    0,
+                    []); 
+                for(let y = 1; y <= appPhase.length; y++){
+                    let appFrame = appPhase[y];
                     let c = new common.ApprovalFrame(
                         "",
-                        appFrame.orderNumber,
+                        y,
                         []);
                     let d = new common.ApproveAccepted(
                         "",
                         appFrame.sid,
                         0,
                         appFrame.confirmPerson ? 1 : 0,
-                        self.appDate(),
+                        "",
                         "",
                         appFrame.sid);
                     c.approveAcceptedCmds.push(d);
-                    b.approvalFrameCmds.push(c);
-                });
-                approvalList.push(b);
-            });
-            debugger;
+                    b.approvalFrameCmds.push(c);   
+                };
+                approvalList.push(b);    
+            };
             self.approvalSource = approvalList;
         }
         /**
@@ -199,11 +222,16 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          */
         insert() {
             let self = this;
-            service.insertGoBackDirect(self.getCommand()).done(function() {
-                alert("Insert Done");
-            }).fail(function() {
-
-            })
+            nts.uk.ui.block.invisible();
+            nts.uk.ui.dialog.confirm({ messageId: 'Msg_338' }).ifYes(function() {
+                service.insertGoBackDirect(self.getCommand()).done(function() {
+                //alert("Insert Done");
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                })
+            }).ifNo(function() {
+                nts.uk.ui.block.clear();
+            });
         }
         /**
          * get All Work Location
@@ -367,7 +395,6 @@ module nts.uk.at.view.kaf009.a.viewmodel {
                 var returnWorkLocationCD = nts.uk.ui.windows.getShared("KDL010workLocation");
                 if (returnWorkLocationCD !== undefined) {
                     if (line == 1) {
-                        debugger;
                         self.workLocationCD(returnWorkLocationCD);
                         self.workLocationName(self.findWorkLocationName(returnWorkLocationCD));
                     } else {
@@ -388,7 +415,6 @@ module nts.uk.at.view.kaf009.a.viewmodel {
         openDialogKdl003() {
             let self = this;
             let workTypeCodes = [];
-
             let workTimeCodes = [];
             nts.uk.ui.windows.setShared('parentCodes', {
                 workTypeCodes: workTypeCodes,
@@ -413,12 +439,10 @@ module nts.uk.at.view.kaf009.a.viewmodel {
          * Jump to CMM018 Screen
          */
         openCMM018(){
-            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", {screen: 'Application', employeeId: "000100003"}); 
+            let self = this;
+            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", {screen: 'Application', employeeId: self.employeeID});  
         }
     }
     
-    class GoBackDirectly(){
-            
-    }
 }
 
