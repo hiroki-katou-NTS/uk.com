@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Value;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
@@ -47,6 +48,17 @@ public class AppApprovalPhaseDto {
 				domain.getDispOrder(),
 				domain.getApprovalATR().value,
 				domain.getListFrame() == null ? null :domain.getListFrame().stream().map(x->ApprovalFrameDto.fromDomain(x))
+				.collect(Collectors.toList()));
+	}
+	public static AppApprovalPhase toEntity(AppApprovalPhaseDto entity){
+		return new AppApprovalPhase(
+				entity.getCompanyID(),
+				entity.getAppID(),
+				entity.getPhaseID(),
+				EnumAdaptor.valueOf(entity.getApprovalForm(), ApprovalForm.class) ,
+				entity.getDispOrder(),
+				EnumAdaptor.valueOf(entity.getApprovalATR(), ApprovalAtr.class) ,
+				entity.getListFrame() == null ? null :entity.getListFrame().stream().map(x->ApprovalFrameDto.toEntity(x))
 				.collect(Collectors.toList()));
 	}
 }

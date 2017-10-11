@@ -46,7 +46,6 @@ public class GrantHolidayTblFinder {
 		String companyId = AppContexts.user().companyId();
 		
 		List<GrantHdTbl> grantHolidayList = param.getGrantHolidayTblList().stream()
-				.filter(x -> x.getLengthOfServiceYears() != 0 && x.getLengthOfServiceMonths() != 0)
 				.map(x -> GrantHdTbl.createFromJavaType(
 						companyId, 
 						x.getGrantYearHolidayNo(), 

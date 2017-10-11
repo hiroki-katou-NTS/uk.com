@@ -14,7 +14,7 @@ module nts.uk.at.view.kdw006.e.service {
     }
 
     export function register(roleId: number, functionalRestriction: any): JQueryPromise<Array<any>> {
-        var command = {
+        let command = {
             roleId : roleId,
             authFuncRests : functionalRestriction
         };

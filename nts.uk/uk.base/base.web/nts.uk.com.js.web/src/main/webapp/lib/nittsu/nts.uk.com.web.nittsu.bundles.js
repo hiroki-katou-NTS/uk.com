@@ -34,7 +34,7 @@ var nts;
             }
             util.compare = compare;
             /**
-             * 常にtrueを返す関数が忦�になったらこれ
+             * 常にtrueを返す関数が必要になったらこれ
              */
             function alwaysTrue() {
                 return true;
@@ -187,8 +187,8 @@ var nts;
             }
             util.isInFrame = isInFrame;
             /**
-             * valueMaybeEmptyがnullまた�undefinedの場合、defaultValueを返す�
-             * そうでなければ、valueMaybeEmptyを返す�
+             * valueMaybeEmptyがnullまたはundefinedの場合、defaultValueを返す。
+             * そうでなければ、valueMaybeEmptyを返す。
              */
             function orDefault(valueMaybeEmpty, defaultValue) {
                 return isNullOrUndefined(valueMaybeEmpty) ? defaultValue : valueMaybeEmpty;
@@ -210,11 +210,11 @@ var nts;
                             break;
                         case 'Decimal':
                             constraintText += (constraintText.length > 0) ? "/" : "";
-                            constraintText += constraint.min + " + constraint.max;
+                            constraintText += constraint.min + "～" + constraint.max;
                             break;
                         case 'Integer':
                             constraintText += (constraintText.length > 0) ? "/" : "";
-                            constraintText += constraint.min + " + constraint.max;
+                            constraintText += constraint.min + "～" + constraint.max;
                             break;
                         default:
                             constraintText += 'ERROR';
@@ -817,20 +817,20 @@ var nts;
                 allHalfNumeric: /^\d*$/,
                 allHalfAlphabet: /^[a-zA-Z]*$/,
                 allHalfAlphanumeric: /^[a-zA-Z0-9]*$/,
-                allHalfKatakanaReg: /^[�-�ｧ-��-��� �ﾟ｡.���'-]*$/,
-                allFullKatakanaReg: /^[ァ-ー　。．�、�’－ヴヽヾ]*$/,
-                allHiragana: /^[�ん　ー ]*$/,
+                allHalfKatakanaReg: /^[ｱ-ﾝｧ-ｫｬ-ｮｯｦ ﾞﾟ｡.ｰ､･'-]*$/,
+                allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]*$/,
+                allHiragana: /^[ぁ-ん　ー ]*$/,
             };
             /**
-             * 断��の半角文字数を数えるnicode用
-             * @param text 解析対象の断��
+             * 文字列の半角文字数を数える（Unicode用）
+             * @param text 解析対象の文字列
              */
             function countHalf(text) {
                 var count = 0;
                 for (var i = 0; i < text.length; i++) {
                     var c = text.charCodeAt(i);
-                    // 0x20 0x80: 半角記号と半角英数�
-                    // 0xff61 0xff9f: 半角カタカ�
+                    // 0x20 ～ 0x80: 半角記号と半角英数字
+                    // 0xff61 ～ 0xff9f: 半角カタカナ
                     if ((0x20 <= c && c <= 0x7e) || (0xff61 <= c && c <= 0xff9f)) {
                         count += 1;
                     }
@@ -842,7 +842,7 @@ var nts;
             }
             text_3.countHalf = countHalf;
             function toOneByteAlphaNumberic(text) {
-                return text.replace(/[�　]/g, function (s) {
+                return text.replace(/[！-～　]/g, function (s) {
                     if (s === "　") {
                         return String.fromCharCode(s.charCodeAt(0) - 12256);
                     }
@@ -862,24 +862,24 @@ var nts;
             function katakanaToHiragana(text) {
                 text = text.replace(/[ァ-ヴ]/g, function (s) {
                     return String.fromCharCode(s.charCodeAt(0) - 0x60);
-                }).replace(/g, '�).replace(/g, '�)
-                    .replace(/(�)/g, '�).replace(/ヷ/g, 'わ�')
-                    .replace(/ヸ/g, 'ゐ�').replace(/ヹ/g, 'ゑ�')
-                    .replace(/ヺ/g, 'を�').replace(/(ヽ�/g, '�)
-                    .replace(/ヽ/g, '�).replace(/ヾ/g, '�);
+                }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜')
+                    .replace(/(う゛)/g, 'ゔ').replace(/ヷ/g, 'わ゛')
+                    .replace(/ヸ/g, 'ゐ゛').replace(/ヹ/g, 'ゑ゛')
+                    .replace(/ヺ/g, 'を゛').replace(/(ヽ゛)/g, 'ゞ')
+                    .replace(/ヽ/g, 'ゝ').replace(/ヾ/g, 'ゞ');
                 return text;
             }
             text_3.katakanaToHiragana = katakanaToHiragana;
             function hiraganaToKatakana(text, opt) {
-                text = text.replace(/[�ゔ]/g, function (s) {
+                text = text.replace(/[ぁ-ゔ]/g, function (s) {
                     return String.fromCharCode(s.charCodeAt(0) + 0x60);
-                }).replace(/g, '�).replace(/g, '�)
-                    .replace(/(ウ�/g, 'ヴ').replace(/(ワ�/g, 'ヷ')
-                    .replace(/(ヰ�/g, 'ヸ').replace(/(ヱ�/g, 'ヹ')
-                    .replace(/(ヲ�/g, 'ヺ').replace(/(ゝ�)/g, 'ヾ')
-                    .replace(/�g, 'ヽ').replace(/�g, 'ヾ');
+                }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜')
+                    .replace(/(ウ゛)/g, 'ヴ').replace(/(ワ゛)/g, 'ヷ')
+                    .replace(/(ヰ゛)/g, 'ヸ').replace(/(ヱ゛)/g, 'ヹ')
+                    .replace(/(ヲ゛)/g, 'ヺ').replace(/(ゝ゛)/g, 'ヾ')
+                    .replace(/ゝ/g, 'ヽ').replace(/ゞ/g, 'ヾ');
                 if (opt !== false) {
-                    text = text.replace(/�g, 'ヵ').replace(/�g, 'ヶ');
+                    text = text.replace(/ゕ/g, 'ヵ').replace(/ゖ/g, 'ヶ');
                 }
                 return text;
             }
@@ -887,34 +887,34 @@ var nts;
             /**
              * 半角カタカナを全角カタカナに変換
              *
-             * @param {String} str 変換したざ�字�
+             * @param {String} str 変換したい文字列
              */
             function oneByteKatakanaToTwoByte(text) {
                 var katakanaMap = {
-                    '�: 'ガ', '�: 'ギ', '�: 'グ', '�: 'ゲ', '�: 'ゴ',
-                    '�: 'ザ', '�: 'ジ', '�: 'ズ', '�: 'ゼ', '�: 'ゾ',
-                    '�: 'ダ', '�: '�, '��: '�, '�: '�, '�: '�,
-                    '��: '�, '��: '�, '��: '�, '��: '�, '��: '�,
-                    '��: '�, '��: '�, '��: '�, '��: '�, '��: '�,
-                    '�: 'ヴ', '��: 'ヷ', '�: 'ヺ',
-                    '�': 'ア', '�': 'イ', '�': 'ウ', '�': 'エ', '�': 'オ',
-                    '�': 'カ', '�': 'キ', '�': 'ク', '�': 'ケ', '�': 'コ',
-                    '�': 'サ', '�': 'シ', '�': 'ス', '�': 'セ', '�': 'ソ',
-                    '�': 'タ', ': '�, ': '�, ': '�, ': '�,
-                    ': '�, ': '�, ': '�, ': '�, ': '�,
-                    ': '�, ': '�, ': '�, ': '�, ': '�,
-                    ': '�, ': '�, ': '�', ': 'メ', ': 'モ',
-                    ': 'ヤ', ': 'ユ', ': 'ヨ',
-                    ': 'ラ', ': 'リ', ': 'ル', ': 'レ', ': 'ロ',
-                    ': 'ワ', '�': 'ヲ', ': 'ン',
-                    '�': 'ァ', '�': 'ィ', '�': 'ゥ', '�': 'ェ', '�': 'ォ',
-                    '�': '�, '�': 'ャ', '�': 'ュ', '�': 'ョ',
-                    '�': '�, '�': '�, '�': 'ー', '�': '�, '�': '�, '�': '・'
+                    'ｶﾞ': 'ガ', 'ｷﾞ': 'ギ', 'ｸﾞ': 'グ', 'ｹﾞ': 'ゲ', 'ｺﾞ': 'ゴ',
+                    'ｻﾞ': 'ザ', 'ｼﾞ': 'ジ', 'ｽﾞ': 'ズ', 'ｾﾞ': 'ゼ', 'ｿﾞ': 'ゾ',
+                    'ﾀﾞ': 'ダ', 'ﾁﾞ': 'ヂ', 'ﾂﾞ': 'ヅ', 'ﾃﾞ': 'デ', 'ﾄﾞ': 'ド',
+                    'ﾊﾞ': 'バ', 'ﾋﾞ': 'ビ', 'ﾌﾞ': 'ブ', 'ﾍﾞ': 'ベ', 'ﾎﾞ': 'ボ',
+                    'ﾊﾟ': 'パ', 'ﾋﾟ': 'ピ', 'ﾌﾟ': 'プ', 'ﾍﾟ': 'ペ', 'ﾎﾟ': 'ポ',
+                    'ｳﾞ': 'ヴ', 'ﾜﾞ': 'ヷ', 'ｦﾞ': 'ヺ',
+                    'ｱ': 'ア', 'ｲ': 'イ', 'ｳ': 'ウ', 'ｴ': 'エ', 'ｵ': 'オ',
+                    'ｶ': 'カ', 'ｷ': 'キ', 'ｸ': 'ク', 'ｹ': 'ケ', 'ｺ': 'コ',
+                    'ｻ': 'サ', 'ｼ': 'シ', 'ｽ': 'ス', 'ｾ': 'セ', 'ｿ': 'ソ',
+                    'ﾀ': 'タ', 'ﾁ': 'チ', 'ﾂ': 'ツ', 'ﾃ': 'テ', 'ﾄ': 'ト',
+                    'ﾅ': 'ナ', 'ﾆ': 'ニ', 'ﾇ': 'ヌ', 'ﾈ': 'ネ', 'ﾉ': 'ノ',
+                    'ﾊ': 'ハ', 'ﾋ': 'ヒ', 'ﾌ': 'フ', 'ﾍ': 'ヘ', 'ﾎ': 'ホ',
+                    'ﾏ': 'マ', 'ﾐ': 'ミ', 'ﾑ': 'ム', 'ﾒ': 'メ', 'ﾓ': 'モ',
+                    'ﾔ': 'ヤ', 'ﾕ': 'ユ', 'ﾖ': 'ヨ',
+                    'ﾗ': 'ラ', 'ﾘ': 'リ', 'ﾙ': 'ル', 'ﾚ': 'レ', 'ﾛ': 'ロ',
+                    'ﾜ': 'ワ', 'ｦ': 'ヲ', 'ﾝ': 'ン',
+                    'ｧ': 'ァ', 'ｨ': 'ィ', 'ｩ': 'ゥ', 'ｪ': 'ェ', 'ｫ': 'ォ',
+                    'ｯ': 'ッ', 'ｬ': 'ャ', 'ｭ': 'ュ', 'ｮ': 'ョ',
+                    '｡': '。', '､': '、', 'ｰ': 'ー', '｢': '「', '｣': '」', '･': '・'
                 };
                 var expression = new RegExp('(' + Object.keys(katakanaMap).join('|') + ')', 'g');
                 return text.replace(expression, function (match) {
                     return katakanaMap[match];
-                }).replace(/g, '�).replace(/g, '�);
+                }).replace(/ﾞ/g, '゛').replace(/ﾟ/g, '゜');
             }
             text_3.oneByteKatakanaToTwoByte = oneByteKatakanaToTwoByte;
             function anyChar(text) {
@@ -925,8 +925,8 @@ var nts;
             }
             text_3.anyChar = anyChar;
             /**
-             * 断��が半角数字�みで構�され�断�以上�断��かどぁ�判断する
-             * @param text 解析対象の断��
+             * 文字列が半角数字のみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
              */
             function allHalfNumeric(text) {
                 return {
@@ -936,8 +936,8 @@ var nts;
             }
             text_3.allHalfNumeric = allHalfNumeric;
             /**
-             * 断��が半角英字�みで構�され�断�以上�断��かどぁ�判断する
-             * @param text 解析対象の断��
+             * 文字列が半角英字のみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
              */
             function allHalfAlphabet(text) {
                 return {
@@ -947,8 +947,8 @@ var nts;
             }
             text_3.allHalfAlphabet = allHalfAlphabet;
             /**
-             * 断��が半角英数字�みで構�され�断�以上�断��かどぁ�判断する
-             * @param text 解析対象の断��
+             * 文字列が半角英数字のみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
              */
             function allHalfAlphanumeric(text) {
                 return {
@@ -958,8 +958,8 @@ var nts;
             }
             text_3.allHalfAlphanumeric = allHalfAlphanumeric;
             /**
-             * 断��が半角カナ�みで構�され�断�以上�断��かどぁ�判断する
-             * @param text 解析対象の断��
+             * 文字列が半角カナのみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
              */
             function allHalfKatakana(text) {
                 return {
@@ -969,8 +969,8 @@ var nts;
             }
             text_3.allHalfKatakana = allHalfKatakana;
             /**
-             * 断��が�角カナ�みで構�され�断�以上�断��かどぁ�判断する
-             * @param text 解析対象の断��
+             * 文字列が全角カナのみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
              */
             function allFullKatakana(text) {
                 return {
@@ -980,8 +980,8 @@ var nts;
             }
             text_3.allFullKatakana = allFullKatakana;
             /**
-             * 断��が半角文字�みで構�され�断�以上�断��かどぁ�判断する
-             * @param text 解析対象の断��
+             * 文字列が半角文字のみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
              */
             function allHalf(text) {
                 return {
@@ -991,8 +991,8 @@ var nts;
             }
             text_3.allHalf = allHalf;
             /**
-             * 断��が平仮名�みで構�され�断�以上�断��かどぁ�判断する
-             * @param text 解析対象の断��
+             * 文字列が平仮名のみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
              */
             function allHiragana(text) {
                 return {
@@ -1002,8 +1002,8 @@ var nts;
             }
             text_3.allHiragana = allHiragana;
             /**
-             * 断��がカタカナ�みで構�され�断�以上�断��かどぁ�判断する
-             * @param text 解析対象の断��
+             * 文字列がカタカナのみで構成された1文字以上の文字列かどうか判断する
+             * @param text 解析対象の文字列
              */
             function allKatakana(text) {
                 return {
@@ -1028,8 +1028,8 @@ var nts;
             }
             text_3.halfInt = halfInt;
             /**
-             * 断��中のHTML記号をサニタイズする
-             * @param text 変換対象の断��
+             * 文字列中のHTML記号をサニタイズする
+             * @param text 変換対象の文字列
              */
             function htmlEncode(text) {
                 var element = document.createElement('pre');
@@ -1043,8 +1043,8 @@ var nts;
             }
             text_3.htmlEncode = htmlEncode;
             /**
-             * 1断�目のみ小文字に変換する
-             * @param text 変換対象の断��
+             * 1文字目のみ小文字に変換する
+             * @param text 変換対象の文字列
              */
             function toLowerCaseFirst(text) {
                 return text.charAt(0).toLowerCase() + text.slice(1);
@@ -1052,8 +1052,8 @@ var nts;
             text_3.toLowerCaseFirst = toLowerCaseFirst;
             ;
             /**
-             * 1断�目のみ大断�に変換する
-             * @param text 変換対象の断��
+             * 1文字目のみ大文字に変換する
+             * @param text 変換対象の文字列
              */
             function toUpperCaseFirst(text) {
                 return text.charAt(0).toUpperCase() + text.slice(1);
@@ -1070,8 +1070,8 @@ var nts;
             }
             text_3.toUpperCase = toUpperCase;
             /**
-            * 挮�された断��が、null、undefined、Emptyか判定す�
-            * @param text 判定対象の断��
+            * 指定された文字列が、null、undefined、Emptyか判定する
+            * @param text 判定対象の文字列
             */
             function isNullOrEmpty(text) {
                 var result = true;
@@ -1083,9 +1083,9 @@ var nts;
             }
             text_3.isNullOrEmpty = isNullOrEmpty;
             /**
-            * 挮�した文字�の君�式雮を、対応するオブジェクト�値と等価のヂ�ストに置換す�
-            * @param text 書式文字�
-            * @param args 置換�断���列可
+            * 指定した文字列の各書式項目を、対応するオブジェクトの値と等価のテキストに置換する
+            * @param text 書式文字列
+            * @param args 置換の文字列（配列可）
             */
             function format(format) {
                 var args = [];
@@ -1104,31 +1104,31 @@ var nts;
             }
             text_3.format = format;
             /**
-            * 変換断��の先�に、文字数�挮�文字�を追�する
-            * @param text 変換対象の断��
-            * @param paddingChar 挮�文字�
-            * @param length 断�数
+            * 変換文字列の先頭に、文字数分の指定文字列を追加する
+            * @param text 変換対象の文字列
+            * @param paddingChar 指定文字列
+            * @param length 文字数
             */
             function padLeft(text, paddingChar, length) {
                 return charPadding(text, paddingChar, true, length);
             }
             text_3.padLeft = padLeft;
             /**
-            * 変換断��の末尾に、文字数�挮�文字�を追�する
-            * @param text 変換対象の断��
-            * @param paddingChar 挮�文字�
-            * @param length 断�数
+            * 変換文字列の末尾に、文字数分の指定文字列を追加する
+            * @param text 変換対象の文字列
+            * @param paddingChar 指定文字列
+            * @param length 文字数
             */
             function padRight(text, paddingChar, length) {
                 return charPadding(text, paddingChar, false, length);
             }
             text_3.padRight = padRight;
             /**
-            * 挮�した文字�に、指定した文字�数刀�指定文字�を追�する
-            * @param text 変換対象の断��
-            * @param paddingChar 埋める文字�
-            * @param isPadLeft 左埋めフラグalse�右埋め
-            * @param length 断�数
+            * 指定した文字列に、指定した文字列数分、指定文字列を追加する
+            * @param text 変換対象の文字列
+            * @param paddingChar 埋める文字列
+            * @param isPadLeft 左埋めフラグ（false：右埋め）
+            * @param length 文字数
             */
             function charPadding(text, paddingChar, isPadLeft, length) {
                 var result;
@@ -1200,7 +1200,7 @@ var nts;
                     return result;
                 };
                 CharType.prototype.buildConstraintText = function (maxLength) {
-                    return this.viewName + this.getViewLength(maxLength) + '断;
+                    return this.viewName + this.getViewLength(maxLength) + '文字';
                 };
                 CharType.prototype.getViewLength = function (length) {
                     return Math.floor(length / (this.width * 2));
@@ -1209,12 +1209,12 @@ var nts;
             }());
             text_3.CharType = CharType;
             var charTypes = {
-                AnyHalfWidth: new CharType('半�, 0.5, nts.uk.text.allHalf),
-                AlphaNumeric: new CharType('半角英数�, 0.5, nts.uk.text.allHalfAlphanumeric),
-                Alphabet: new CharType('半角英�, 0.5, nts.uk.text.allHalfAlphabet),
-                Numeric: new CharType('半角数�, 0.5, nts.uk.text.allHalfNumeric),
-                Any: new CharType('全�, 1, nts.uk.text.anyChar),
-                Kana: new CharType('カ�, 1, nts.uk.text.allFullKatakana),
+                AnyHalfWidth: new CharType('半角', 0.5, nts.uk.text.allHalf),
+                AlphaNumeric: new CharType('半角英数字', 0.5, nts.uk.text.allHalfAlphanumeric),
+                Alphabet: new CharType('半角英字', 0.5, nts.uk.text.allHalfAlphabet),
+                Numeric: new CharType('半角数字', 0.5, nts.uk.text.allHalfNumeric),
+                Any: new CharType('全角', 1, nts.uk.text.anyChar),
+                Kana: new CharType('カナ', 1, nts.uk.text.allFullKatakana),
                 HalfInt: new CharType('半整数', 0.5, nts.uk.text.halfInt)
             };
             function getCharType(primitiveValueName) {
@@ -1272,8 +1272,8 @@ var nts;
             function formatCurrency(amount, locale) {
                 var result = addSeperation("" + amount);
                 if (locale == 'en' || locale == 'EN')
-                    return "�" + result;
-                return result + "�;
+                    return "￥" + result;
+                return result + "円";
             }
             text_3.formatCurrency = formatCurrency;
             function reverseDirection(direction) {
@@ -1392,7 +1392,7 @@ var nts;
             text_3.NumberUnit = NumberUnit;
             var units = {
                 "JPY": {
-                    "ja": new NumberUnit("JPY", "�, "right", "ja"),
+                    "ja": new NumberUnit("JPY", "円", "right", "ja"),
                     "en": new NumberUnit("JPY", "\u00A5", "left", "en")
                 },
                 "PERCENT": {
@@ -1403,7 +1403,7 @@ var nts;
                     "ja": new NumberUnit("DAYS", "日", "right", "ja")
                 },
                 "MONTHS": {
-                    "ja": new NumberUnit("MONTHS", "ヶ�, "right", "ja")
+                    "ja": new NumberUnit("MONTHS", "ヶ月", "right", "ja")
                 },
                 "YEARS": {
                     "ja": new NumberUnit("YEARS", "年", "right", "ja")
@@ -1415,7 +1415,7 @@ var nts;
                     "ja": new NumberUnit("FIS_YEAR", "年度", "right", "ja")
                 },
                 "TIMES": {
-                    "ja": new NumberUnit("TIMES", "�, "right", "ja")
+                    "ja": new NumberUnit("TIMES", "回", "right", "ja")
                 },
                 "AGE": {
                     "ja": new NumberUnit("AGE", "歳", "right", "ja")
@@ -1534,13 +1534,13 @@ var nts;
             var listEmpire = {
                 "明治": "1868/01/01",
                 "大正": "1912/07/30",
-                "昭�: "1926/12/25",
-                "平�: "1989/01/08"
+                "昭和": "1926/12/25",
+                "平成": "1989/01/08"
             };
             var dotW = ["日曜日", "月曜日", "火曜日", "水曜日", "木曜日", "金曜日", "土曜日"];
             function getYearMonthJapan(year, month) {
                 if (month)
-                    return year + "年 " + month + " �;
+                    return year + "年 " + month + " 月";
                 return year;
             }
             var JapanYearMonth = (function () {
@@ -1561,7 +1561,7 @@ var nts;
                 JapanYearMonth.prototype.toString = function () {
                     return (this.empire === undefined ? "" : this.empire + " ")
                         + (this.year === undefined ? "" : this.year + " 年 ")
-                        + (this.month === undefined ? "" : this.month + " �);
+                        + (this.month === undefined ? "" : this.month + " 月");
                 };
                 return JapanYearMonth;
             }());
@@ -1569,7 +1569,7 @@ var nts;
             function yearInJapanEmpire(date) {
                 var year = moment.utc(date, defaultInputFormat, true).year();
                 if (year == 1868) {
-                    return new JapanYearMonth("明治兹�");
+                    return new JapanYearMonth("明治元年");
                 }
                 if (year <= 1912) {
                     var diff = year - 1867;
@@ -1581,25 +1581,25 @@ var nts;
                 }
                 if (year < 1989) {
                     var diff = year - 1925;
-                    return new JapanYearMonth("昭�", diff);
+                    return new JapanYearMonth("昭和 ", diff);
                 }
                 if (year == 1989) {
-                    return new JapanYearMonth("平成�年 ", diff);
+                    return new JapanYearMonth("平成元年 ", diff);
                 }
                 var diff = year - 1988;
-                return new JapanYearMonth("平�", diff);
+                return new JapanYearMonth("平成 ", diff);
             }
             time_1.yearInJapanEmpire = yearInJapanEmpire;
             function yearmonthInJapanEmpire(yearmonth) {
                 if (!(yearmonth instanceof String)) {
                     yearmonth = "" + yearmonth;
                 }
-                var nguyennien = "兹�";
+                var nguyennien = "元年";
                 yearmonth = yearmonth.replace("/", "");
                 var year = parseInt(yearmonth.substring(0, 4));
                 var month = parseInt(yearmonth.substring(4));
                 if (year == 1868) {
-                    return new JapanYearMonth("明治兹� ", undefined, month);
+                    return new JapanYearMonth("明治元年 ", undefined, month);
                 }
                 if (year < 1912) {
                     var diff = year - 1867;
@@ -1608,7 +1608,7 @@ var nts;
                 if (year == 1912) {
                     if (month < 8)
                         return new JapanYearMonth("明治 ", 45, month);
-                    return new JapanYearMonth("大正兹� ", undefined, month);
+                    return new JapanYearMonth("大正元年 ", undefined, month);
                 }
                 if (year < 1926) {
                     var diff = year - 1911;
@@ -1617,17 +1617,17 @@ var nts;
                 if (year == 1926) {
                     if (month < 12)
                         return new JapanYearMonth("大正", 15, month);
-                    return new JapanYearMonth("昭和�年 ", undefined, month);
+                    return new JapanYearMonth("昭和元年 ", undefined, month);
                 }
                 if (year < 1989) {
                     var diff = year - 1925;
-                    return new JapanYearMonth("昭�", diff, month);
+                    return new JapanYearMonth("昭和 ", diff, month);
                 }
                 if (year == 1989) {
-                    return new JapanYearMonth("平成�年 ", undefined, month);
+                    return new JapanYearMonth("平成元年 ", undefined, month);
                 }
                 var diff = year - 1988;
-                return new JapanYearMonth("平�", diff, month);
+                return new JapanYearMonth("平成 ", diff, month);
             }
             time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
             var JapanDateMoment = (function () {
@@ -1639,7 +1639,7 @@ var nts;
                 JapanDateMoment.prototype.toString = function () {
                     return (this.empire === undefined ? "" : this.empire + " ")
                         + (this.year === undefined ? "" : this.year + " 年 ")
-                        + (this.month === undefined ? "" : this.month + " �)
+                        + (this.month === undefined ? "" : this.month + " 月")
                         + (this.day === undefined ? "" : this.day + " ");
                 };
                 return JapanDateMoment;
@@ -2150,15 +2150,15 @@ var nts;
                     this.shortYmdwPattern = /^\d{4}\/\d{1,2}\/\d{1,2}\(\w+\)$/;
                     this.shortYmPattern = /^\d{4}\/\d{1,2}$/;
                     this.shortMdPattern = /^\d{1,2}\/\d{1,2}$/;
-                    this.longYmdPattern = /^\d{4}年\d{1,2}�{1,2}日$/;
-                    this.longYmdwPattern = /^\d{4}年\d{1,2}�{1,2}日\(\w+\)$/;
+                    this.longYmdPattern = /^\d{4}年\d{1,2}月d{1,2}日$/;
+                    this.longYmdwPattern = /^\d{4}年\d{1,2}月d{1,2}日\(\w+\)$/;
                     this.longFPattern = /^\d{4}年度$/;
-                    this.longJmdPattern = /^\w{2}\d{1,3}年\d{1,2}�{1,2}日$/;
-                    this.longJmPattern = /^\w{2}\d{1,3}年\d{1,2}�/;
+                    this.longJmdPattern = /^\w{2}\d{1,3}年\d{1,2}月d{1,2}日$/;
+                    this.longJmPattern = /^\w{2}\d{1,3}年\d{1,2}月$/;
                     this.fullDateTimeShortPattern = /^\d{4}\/\d{1,2}\/\d{1,2} \d+:\d{2}:\d{2}$/;
                     this.timeShortHmsPattern = /^\d+:\d{2}:\d{2}$/;
                     this.timeShortHmPattern = /^\d+:\d{2}$/;
-                    this.days = ['日', '�, '火', '水', '木', '�, '�];
+                    this.days = ['日', '月', '火', '水', '木', '金', '土'];
                 }
                 DateTimeFormatter.prototype.shortYmd = function (date) {
                     var d = this.dateOf(date);
@@ -2213,7 +2213,7 @@ var nts;
                     }
                 };
                 DateTimeFormatter.prototype.toLongJpDate = function (d) {
-                    return d.getFullYear() + '年' + (d.getMonth() + 1) + '� + d.getDate() + '日';
+                    return d.getFullYear() + '年' + (d.getMonth() + 1) + '月' + d.getDate() + '日';
                 };
                 DateTimeFormatter.prototype.longF = function (date) {
                     var d = this.dateOf(date);
@@ -2235,7 +2235,7 @@ var nts;
                     if (this.longJmPattern.test(d))
                         return d;
                     var jpDate = this.fullJapaneseDateOf(d);
-                    var start = jpDate.indexOf("�);
+                    var start = jpDate.indexOf("月");
                     if (start !== -1) {
                         return jpDate.substring(0, start + 1);
                     }
@@ -2569,7 +2569,7 @@ var nts;
                                 case DayAttr.THE_PREVIOUS_DAY: return "前日";
                                 case DayAttr.THE_PRESENT_DAY: return "当日";
                                 case DayAttr.THE_NEXT_DAY: return "翌日";
-                                case DayAttr.TWO_DAY_LATER: return "翌〗�";
+                                case DayAttr.TWO_DAY_LATER: return "翌々日";
                                 default: throw new Error("invalid value: " + dayAttr);
                             }
                         }
@@ -2775,10 +2775,10 @@ var nts;
                     var stack = this.rawUrl.split('/');
                     var parts = relativePath.split('/');
                     var queryStringToAdd = QueryString.parseUrl(relativePath);
-                    // 最後�ファイル名�除�
-                    // (最後がフォルダ名でしか�/ で終わってぁ�ぴ合��しな�
+                    // 最後のファイル名は除外
+                    // (最後がフォルダ名でしかも / で終わっていない場合は考慮しない)
                     stack.pop();
-                    // relativePathの先��'/' の場合、それを取り除�
+                    // relativePathの先頭が '/' の場合、それを取り除く
                     if (parts[0] === '') {
                         parts.shift();
                     }
@@ -3244,13 +3244,13 @@ var nts;
                     return result;
                 }
                 function autoConvertText(inputText, charType) {
-                    if (this.charType.viewName === '半角英数�) {
+                    if (this.charType.viewName === '半角英数字') {
                         inputText = uk.text.toUpperCase(inputText);
                     }
-                    else if (this.charType.viewName === 'カタカ�) {
+                    else if (this.charType.viewName === 'カタカナ') {
                         inputText = uk.text.oneByteKatakanaToTwoByte(inputText);
                     }
-                    else if (this.charType.viewName === 'カ�) {
+                    else if (this.charType.viewName === 'カナ') {
                         inputText = uk.text.hiraganaToKatakana(uk.text.oneByteKatakanaToTwoByte(inputText));
                     }
                     return inputText;
@@ -3400,13 +3400,13 @@ var nts;
                         var validateResult;
                         // Check CharType
                         if (!util.isNullOrUndefined(this.charType)) {
-                            if (this.charType.viewName === '半角英数�) {
+                            if (this.charType.viewName === '半角英数字') {
                                 inputText = uk.text.toUpperCase(inputText);
                             }
-                            else if (this.charType.viewName === 'カタカ�) {
+                            else if (this.charType.viewName === 'カタカナ') {
                                 inputText = uk.text.oneByteKatakanaToTwoByte(inputText);
                             }
-                            else if (this.charType.viewName === 'カ�) {
+                            else if (this.charType.viewName === 'カナ') {
                                 inputText = uk.text.hiraganaToKatakana(uk.text.oneByteKatakanaToTwoByte(inputText));
                             }
                             validateResult = this.charType.validate(inputText);
@@ -3968,8 +3968,8 @@ var nts;
                         this.$iframe.bind('load', function () {
                             _this.globalContext.nts.uk.ui.windows.selfId = _this.id;
                             var dialogName = _this.globalContext.__viewContext["program"]["programName"];
-                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? "未設� : dialogName;
-                            //                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設� : dialogName; 
+                            var title = nts.uk.util.isNullOrEmpty(dialogName) ? "未設定" : dialogName;
+                            //                        || path !== this.globalContext.__viewContext["program"]["path"] ? "未設定" : dialogName; 
                             _this.$dialog.dialog('option', {
                                 width: options.width || _this.globalContext.dialogSize.width,
                                 height: options.height || _this.globalContext.dialogSize.height,
@@ -4282,7 +4282,7 @@ var nts;
                     });
                     setTimeout(function () {
                         var $this = createNoticeDialog(text, [{
-                                text: "は�,
+                                text: "はい",
                                 "class": "large",
                                 click: function () {
                                     $this.dialog('close');
@@ -4308,7 +4308,7 @@ var nts;
                     });
                     setTimeout(function () {
                         var $this = createNoticeDialog(message, [{
-                                text: "は�,
+                                text: "はい",
                                 "class": "large",
                                 click: function () {
                                     $this.dialog('close');
@@ -4340,7 +4340,7 @@ var nts;
                     });
                     setTimeout(function () {
                         var $this = createNoticeDialog(text, [{
-                                text: "は�,
+                                text: "はい",
                                 "class": "large",
                                 click: function () {
                                     $this.dialog('close');
@@ -4395,7 +4395,7 @@ var nts;
                         var buttons = [];
                         // yes button
                         buttons.push({
-                            text: "は�,
+                            text: "はい",
                             "class": "yes large danger",
                             click: function () {
                                 $this.dialog('close');
@@ -4406,7 +4406,7 @@ var nts;
                         // no button
                         if (hasNoButton) {
                             buttons.push({
-                                text: "ぁ��,
+                                text: "いいえ",
                                 "class": "no large",
                                 click: function () {
                                     $this.dialog('close');
@@ -4437,8 +4437,8 @@ var nts;
                     var id = uk.util.randomId();
                     $("body").append("<div id='" + id + "' class='bundled-errors-alert'/>");
                     var container = $("body").find("#" + id);
-                    container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー冮�</th>" +
-                        "<th style='display: none;'/><th style='width: 150px;'>エラーコー�/th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
+                    container.append("<div id='error-board'><table><thead><tr><th style='width: auto;'>エラー内容</th>" +
+                        "<th style='display: none;'/><th style='width: 150px;'>エラーコード</th></tr></thead><tbody/></table></div><div id='functions-area-bottom'/>");
                     var errorBody = container.find("tbody");
                     _.forEach(errors["messageId"], function (id, idx) {
                         var row = $("<tr/>");
@@ -4458,7 +4458,7 @@ var nts;
                         open: function () {
                             container.find("#error-board").css({ "overflow": "auto", "max-height": "300px", "margin-bottom": "65px" });
                             container.find("#functions-area-bottom").css({ "left": "0px" });
-                            functionArea.find(".ntsClose").text("閉じ�).click(function (evt) {
+                            functionArea.find(".ntsClose").text("閉じる").click(function (evt) {
                                 container.dialog("destroy");
                                 container.remove();
                             });
@@ -4543,7 +4543,7 @@ var nts;
                 function grayout() {
                     var rect = calcRect();
                     $.blockUI({
-                        message: '<div class="block-ui-message">お征�ください</div>',
+                        message: '<div class="block-ui-message">お待ちください</div>',
                         fadeIn: 200,
                         css: {
                             width: rect.width,
@@ -5427,7 +5427,7 @@ var nts;
                         this.MONTH = "month";
                         this.DAY = "day";
                         this.YEAR_TEXT = "年";
-                        this.MONTH_TEXT = "�;
+                        this.MONTH_TEXT = "月";
                         this.PERIOD_TEXT = "度";
                         this.structure = { 0: this.YEARS, 1: this.MONTHS, 2: this.DAYS };
                         this.EVENT_SHOW = "show." + this.NAMESPACE;
@@ -7952,7 +7952,7 @@ var nts;
                         var data = ko.unwrap(valueAccessor());
                         var fields = ko.unwrap(data.fields);
                         var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
-                        var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード�名称で検索・・・";
+                        var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
                         var searchMode = (data.searchMode !== undefined) ? ko.unwrap(data.searchMode) : "highlight";
                         var enable = ko.unwrap(data.enable);
                         var selectedKey = null;
@@ -8000,7 +8000,7 @@ var nts;
                             });
                         }
                         $input.attr("placeholder", placeHolder);
-                        $input.attr("data-name", "検索ヂ�スト�ヂ�ス");
+                        $input.attr("data-name", "検索テキストボックス");
                         $input.outerWidth($container.outerWidth(true) - buttonWidth);
                         var primaryKey = ko.unwrap(data.targetKey);
                         var searchObject = new SearchPub(primaryKey, searchMode, dataSource, fields, childField);
@@ -8226,7 +8226,7 @@ var nts;
                                     .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSwap_Component ntsSearchBox nts-editor ntsSearchBox_Component'/>");
                                 $SearchArea.find(".ntsSearchButtonContainer")
                                     .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom ntsSwap_Component'/>");
-                                $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード�名称で検索・・・").wrap("<span class='nts-editor-wrapped ntsControl'/>");
+                                $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").wrap("<span class='nts-editor-wrapped ntsControl'/>");
                                 $SearchArea.find(".search-btn").text("検索");
                             };
                             var searchAreaId = elementId + "-search-area";
@@ -9365,7 +9365,7 @@ var nts;
                         }
                         else {
                             var displayColumns = [
-                                { headerText: "コー�, key: optionsValue, dataType: "string", hidden: true },
+                                { headerText: "コード", key: optionsValue, dataType: "string", hidden: true },
                                 { headerText: "コード／名称", key: optionsText, dataType: "string" }
                             ];
                         }
@@ -9822,6 +9822,7 @@ var nts;
                         var options = ko.unwrap(data.steps);
                         var theme = ko.unwrap(data.theme);
                         var cssClass = "nts-wizard " + "theme-" + theme;
+                        var active = ko.isObservable(data.active) ? data.active : ko.observable(data.active || 0);
                         // Container
                         var container = $(element);
                         // Create steps
@@ -9890,6 +9891,7 @@ var nts;
                     WizardBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var active = (data.active !== undefined) ? ko.unwrap(data.active) : 0;
+                        // Container
                         var container = $(element);
                         if (container.steps("getCurrentIndex") != active) {
                             container.setStep(active);
@@ -9920,7 +9922,7 @@ var nts;
                     NtsLegentButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var $container = $(element);
-                        $container.text('� 凡�);
+                        $container.text('■ 凡例');
                         $container.click(function () {
                             showLegendPanel($container, data);
                         });
@@ -10173,7 +10175,7 @@ var nts;
                             // Build EncodeType
                             self.buildEncodeType($dialogTemplate);
                             // Function Area
-                            var $proccedButton = $("<button class='x-large proceed'>決�/button>").on("click", function (event) {
+                            var $proccedButton = $("<button class='x-large proceed'>決定</button>").on("click", function (event) {
                                 self.result = {
                                     encodeType: self.getEncodeType(),
                                     linebreakCode: null,
@@ -10525,7 +10527,7 @@ var nts;
                         this.buttons = [];
                         // Add OK Button
                         this.buttons.push({
-                            text: "は�,
+                            text: "はい",
                             "class": "yes ",
                             size: "large",
                             color: "danger",
@@ -10536,7 +10538,7 @@ var nts;
                         });
                         // Add Cancel Button
                         this.buttons.push({
-                            text: "ぁ��,
+                            text: "いいえ",
                             "class": "no ",
                             size: "large",
                             color: "",
@@ -10558,7 +10560,7 @@ var nts;
                         this.buttons = [];
                         // Add OK Button
                         this.buttons.push({
-                            text: "は�,
+                            text: "はい",
                             "class": "yes ",
                             size: "large",
                             color: "proceed",
@@ -10569,7 +10571,7 @@ var nts;
                         });
                         // Add Cancel Button
                         this.buttons.push({
-                            text: "ぁ��,
+                            text: "いいえ",
                             "class": "no ",
                             size: "large",
                             color: "",
@@ -10588,8 +10590,8 @@ var nts;
                         _super.call(this);
                         // Default value
                         this.headers = (option && option.headers) ? option.headers : [
-                            new nts.uk.ui.errors.ErrorHeader("messageText", "エラー冮�", "auto", true),
-                            new nts.uk.ui.errors.ErrorHeader("errorCode", "エラーコー�, 150, true)
+                            new nts.uk.ui.errors.ErrorHeader("messageText", "エラー内容", "auto", true),
+                            new nts.uk.ui.errors.ErrorHeader("errorCode", "エラーコード", 150, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
                         this.displayrows = (option && option.displayrows) ? option.displayrows : 10;
@@ -10598,7 +10600,7 @@ var nts;
                         this.buttons = [];
                         // Add Close Button
                         this.buttons.push({
-                            text: "閉じ�,
+                            text: "閉じる",
                             "class": "yes ",
                             size: "large",
                             color: "",
@@ -10617,8 +10619,8 @@ var nts;
                         _super.call(this);
                         // Default value
                         this.headers = (option && option.headers) ? option.headers : [
-                            new ui_13.errors.ErrorHeader("tab", "タ�, 90, true),
-                            new ui_13.errors.ErrorHeader("location", "エラー箉�", 115, true),
+                            new ui_13.errors.ErrorHeader("tab", "タブ", 90, true),
+                            new ui_13.errors.ErrorHeader("location", "エラー箇所", 115, true),
                             new ui_13.errors.ErrorHeader("message", "エラー詳細", 250, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
@@ -10628,7 +10630,7 @@ var nts;
                         this.buttons = [];
                         // Add Close Button
                         this.buttons.push({
-                            text: "閉じ�,
+                            text: "閉じる",
                             "class": "yes ",
                             size: "large",
                             color: "",
@@ -10753,7 +10755,7 @@ var nts;
                         $container.append("<div class='ntsDateRange_Container' id='" + id + "' />");
                         var $datePickerArea = $container.find(".ntsDateRange_Container");
                         $datePickerArea.append("<div class='ntsDateRangeComponent ntsControl ntsDateRange'>" +
-                            "<div class='ntsDateRangeComponent ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsDateRangeComponent ntsRangeLabel'><label>/label></div>" +
+                            "<div class='ntsDateRangeComponent ntsStartDate ntsControl nts-datepicker-wrapper'/><div class='ntsDateRangeComponent ntsRangeLabel'><label>～</label></div>" +
                             "<div class='ntsDateRangeComponent ntsEndDate ntsControl nts-datepicker-wrapper' /></div>");
                         $datePickerArea.data("required", required);
                         var dateFormat = (dateType !== 'yearmonth') ? "YYYY/MM/DD" : 'YYYY/MM';
@@ -10838,9 +10840,9 @@ var nts;
                             format: ISOFormat,
                             autoHide: true,
                         });
-                        rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォー�" : nts.uk.resource.getControlName(rangeName);
-                        startName = nts.uk.util.isNullOrUndefined(startName) ? "期間入力フォー�開� : nts.uk.resource.getControlName(startName);
-                        endName = nts.uk.util.isNullOrUndefined(endName) ? "期間入力フォー�終� : nts.uk.resource.getControlName(endName);
+                        rangeName = nts.uk.util.isNullOrUndefined(rangeName) ? "期間入力フォーム" : nts.uk.resource.getControlName(rangeName);
+                        startName = nts.uk.util.isNullOrUndefined(startName) ? "期間入力フォーム開始" : nts.uk.resource.getControlName(startName);
+                        endName = nts.uk.util.isNullOrUndefined(endName) ? "期間入力フォーム終了" : nts.uk.resource.getControlName(endName);
                         var $ntsDateRange = $container.find(".ntsRangeLabel");
                         var getMessage = nts.uk.resource.getMessage;
                         var validateProcess = function (newText, $target, isStart, oldValue, result) {
@@ -11138,14 +11140,14 @@ var nts;
                             preferredFormat: "name",
                             showPaletteOnly: true,
                             togglePaletteOnly: true,
-                            togglePaletteMoreText: 'そ�他�色',
-                            togglePaletteLessText: '��,
+                            togglePaletteMoreText: 'その他の色',
+                            togglePaletteLessText: '隠す',
                             color: color,
                             disabled: !enable,
                             showInput: true,
                             showSelectionPalette: true,
                             showInitial: true,
-                            chooseText: "確�,
+                            chooseText: "確定",
                             cancelText: "キャンセル",
                             allowEmpty: true,
                             showAlpha: false,
@@ -11571,7 +11573,7 @@ var nts;
                         // used to auto scrolling when dragged above/below grid)
                         var mousePos = null;
                         $grid.bind('mousedown', function (e) {
-                            // グリッ�冁�マウスダウンされてぁ�ぴ合�処琁�しで終�
+                            // グリッド内がマウスダウンされていない場合は処理なしで終了
                             var $container = $grid.closest('.ui-iggrid-scrolldiv');
                             if ($(e.target).closest('.ui-iggrid-table').length === 0) {
                                 return;
@@ -11631,7 +11633,7 @@ var nts;
                             if (isNaN(mousePos.rowIndex)) {
                                 return;
                             }
-                            // 以前�ドラヂ�篛�の選択を一旦解除する
+                            // 以前のドラッグ範囲の選択を一旦解除する
                             // TODO: probably this code has problem of perfomance when select many rows
                             // should process only "differences" instead of "all"
                             for (var i = 0, i_len = dragSelectRange.length; i < i_len; i++) {
@@ -11748,7 +11750,7 @@ var nts;
                         var fileName = ko.unwrap(data.filename);
                         var accept = (data.accept !== undefined) ? ko.unwrap(data.accept) : "";
                         var asLink = (data.aslink !== undefined) ? ko.unwrap(data.aslink) : false;
-                        var text = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "参�";
+                        var text = (data.text !== undefined) ? nts.uk.resource.getText(ko.unwrap(data.text)) : "参照";
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var container = $(element);
                         container.find("input[type='file']").attr("accept", accept.toString());
@@ -16899,8 +16901,8 @@ var nts;
                             var $rowDel = $("<button/>").addClass(NAMESPACE + "-" + DEL_ROWS).on(events.CLICK_EVT, function () {
                                 update.deleteRows(self.$container);
                             }).appendTo($area);
-                            var dftRowAddTxt = "新規行�追�";
-                            var dftRowDelTxt = "行�削除";
+                            var dftRowAddTxt = "新規行の追加";
+                            var dftRowDelTxt = "行の削除";
                             if (updateF.addNew) {
                                 $rowAdd.addClass(updateF.addNew.buttonClass || "proceed").text(updateF.addNew.buttonText || dftRowAddTxt);
                             }
@@ -23047,7 +23049,7 @@ var nts;
                         var $dayPicker = $control.find(".ntsDayPicker");
                         var $monthLabel = $control.find(".ntsMonthLabel");
                         var $dayLabel = $control.find(".ntsDayLabel");
-                        $monthLabel.append("<label>�/label>");
+                        $monthLabel.append("<label>月</label>");
                         $dayLabel.append("<label>日</label>");
                         $monthPicker.igCombo({
                             dataSource: NtsMonthDaysBindingHandler.getMonths(),
@@ -23338,347 +23340,14 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
                 /**
-                 * CheckBox binding handler
+                 * Dialog binding handler
                  */
-                var NtsFunctionPanelBindingHandler = (function () {
-                    /**
-                     * Constructor.
-                     */
-                    function NtsFunctionPanelBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsFunctionPanelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
-                        var data = valueAccessor();
-                        var width = (data.width !== undefined) ? ko.unwrap(data.width) : 100;
-                        var headerText = (data.headerText !== undefined) ? ko.unwrap(data.headerText) : "";
-                        var items = (data.dataSource !== undefined) ? ko.unwrap(data.dataSource) : [];
-                        // Container
-                        var container = $(element);
-                        if (nts.uk.util.isNullOrEmpty(container.attr("id"))) {
-                            container.attr("id", nts.uk.util.randomId());
-                        }
-                        container.width(width);
-                        container.addClass("ntsControl ntsFunctionPanel").on("click", function (e) {
-                            if (container.data("readonly") === true)
-                                e.preventDefault();
-                        });
-                        container.append("<div class='function-header' /><div class='function-items'/>");
-                        var header = container.find('.function-header');
-                        header.append("<div class='function-icon'/><div class='function-link'><a class='header-link function-item'>" + headerText + "</a></div>");
-                        var itemAreas = container.find('.function-items');
-                        header.find(".function-item").click(function (evt, ui) {
-                            var current = $(this);
-                            if ($(this).data("dbClick") === false) {
-                                itemAreas.find(".function-item-container").hide("fast", function () {
-                                    current.data("dbClick", true);
-                                });
-                            }
-                            else {
-                                itemAreas.find(".function-item-container").show("fast", "linear", function () {
-                                    current.data("dbClick", false);
-                                });
-                            }
-                        });
-                        container.mouseleave(function (evt, ui) {
-                            var current = header.find(".function-item");
-                            itemAreas.find(".function-item-container").hide("fast", function () {
-                                current.data("dbClick", true);
-                            });
-                        });
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsFunctionPanelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
-                        var data = valueAccessor();
-                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
-                        var width = (data.width !== undefined) ? ko.unwrap(data.width) : 100;
-                        var headerText = (data.headerText !== undefined) ? ko.unwrap(data.headerText) : "";
-                        var items = (data.dataSource !== undefined) ? ko.unwrap(data.dataSource) : [];
-                        // Container
-                        var container = $(element);
-                        var itemAreas = container.find('.function-items');
-                        var headerLink = container.find('.header-link');
-                        var containerId = container.attr("id");
-                        headerLink.text(headerText);
-                        itemAreas.empty();
-                        _.forEach(items, function (item, idx) {
-                            var div = $("<div class='function-item-container' />");
-                            div.attr("data-idx", idx);
-                            div.width(width);
-                            div.append("<div class='function-icon'/><div class='function-link'/>");
-                            var itemLink = $("<a id='" + (containerId + '-' + idx) + "' class='function-item'>" + item["text"] + "</a>");
-                            itemLink.click(item["action"]);
-                            itemLink.appendTo(div.find(".function-link"));
-                            var icon = $("<img class='ft-icon' src='" + item["icon"] + "'/>");
-                            icon.appendTo(div.find(".function-icon"));
-                            div.appendTo(itemAreas);
-                        });
-                        container.find(".function-item-container").hide();
-                    };
-                    return NtsFunctionPanelBindingHandler;
-                }());
-                ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
-            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var ntsEditor;
-                (function (ntsEditor) {
-                    $.fn.ntsEditor = function (action) {
-                        var $editor = $(this);
-                        switch (action) {
-                            case 'validate':
-                                validate($editor);
-                            default:
-                                break;
-                        }
-                    };
-                    function validate($editor) {
-                        var validateEvent = new CustomEvent("validate", {});
-                        $editor.each(function (index) {
-                            var $input = $(this);
-                            document.getElementById($input.attr('id')).dispatchEvent(validateEvent);
-                        });
-                        //            document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
-                        //            $editor.trigger("validate");
-                    }
-                })(ntsEditor || (ntsEditor = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var sharedvm;
-            (function (sharedvm) {
-                var KibanTimer = (function () {
-                    function KibanTimer(target) {
-                        var self = this;
-                        self.elapsedSeconds = 0;
-                        self.formatted = ko.observable(uk.time.formatSeconds(this.elapsedSeconds, 'hh:mm:ss'));
-                        self.targetComponent = target;
-                        self.isTimerStart = ko.observable(false);
-                        self.oldDated = ko.observable(undefined);
-                        document.getElementById(self.targetComponent).innerHTML = self.formatted();
-                    }
-                    KibanTimer.prototype.run = function (timer) {
-                        var x = new Date().getTime() - timer.oldDated().getTime();
-                        x = Math.floor(x / 1000);
-                        timer.elapsedSeconds = x;
-                        document.getElementById(timer.targetComponent).innerHTML
-                            = uk.time.formatSeconds(x, 'hh:mm:ss');
-                    };
-                    KibanTimer.prototype.start = function () {
-                        var self = this;
-                        if (!self.isTimerStart()) {
-                            self.oldDated(new Date());
-                            self.isTimerStart(true);
-                            self.interval = setInterval(self.run, 1000, self);
-                        }
-                    };
-                    KibanTimer.prototype.end = function () {
-                        var self = this;
-                        if (self.isTimerStart()) {
-                            self.oldDated(undefined);
-                            self.isTimerStart(false);
-                            clearInterval(self.interval);
-                        }
-                    };
-                    return KibanTimer;
-                }());
-                sharedvm.KibanTimer = KibanTimer;
-            })(sharedvm = ui.sharedvm || (ui.sharedvm = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var jqueryExtentions;
-            (function (jqueryExtentions) {
-                var ntsFileUpload;
-                (function (ntsFileUpload) {
-                    $.fn.ntsFileUpload = function (option) {
-                        var dfd = $.Deferred();
-                        var fileInput;
-                        if ($(this).find("input[type='file']").length == 0) {
-                            fileInput = $(this).get(0);
-                        }
-                        else {
-                            fileInput = $(this).find("input[type='file']").get(0);
-                        }
-                        if (fileInput !== undefined) {
-                            var files = fileInput.files;
-                            if (files.length > 0) {
-                                // Check file is deleted on Chrome
-                                if (files[0].size == 0) {
-                                    dfd.reject({ message: nts.uk.resource.getMessage("Msg_158"), messageId: "Msg_158" });
-                                    return dfd.promise();
-                                }
-                                var formData = new FormData();
-                                formData.append("stereotype", option.stereoType);
-                                formData.append("userfile", files[0]);
-                                formData.append("filename", files[0].name);
-                                nts.uk.request.uploadFile(formData, option).done(function (data, textStatus, jqXHR) {
-                                    // Business Exception
-                                    if (data !== undefined && data.businessException) {
-                                        if (option.onFail)
-                                            option.onFail();
-                                        dfd.reject(data);
-                                    }
-                                    else {
-                                        if (option.onSuccess)
-                                            option.onSuccess();
-                                        dfd.resolve(data);
-                                    }
-                                }).fail(function (jqXHR, textStatus, errorThrown) {
-                                    // Client Exception
-                                    dfd.reject({ message: "Please check your network", messageId: "0" });
-                                });
-                            }
-                            else {
-                                dfd.reject({ message: "Please select file", messageId: "0" });
-                            }
-                        }
-                        else {
-                            dfd.reject({ messageId: "0", message: "Can not find control" });
-                        }
-                        return dfd.promise();
-                    };
-                })(ntsFileUpload || (ntsFileUpload = {}));
-            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui_23) {
-            var koExtentions;
-            (function (koExtentions) {
-                /**
-                 * Accordion binding handler
-                 */
-                var NtsAccordionBindingHandler = (function () {
-                    function NtsAccordionBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsAccordionBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var active = (data.active !== undefined) ? (data.active) : ko.observable(false);
-                        var realActive = (nts.uk.ntsNumber.isNumber(ko.unwrap(active))) ? Number(ko.unwrap(active)) : ko.unwrap(active);
-                        var animate = (data.animate !== undefined) ? ko.unwrap(data.animate) : {};
-                        var collapsible = (data.collapsible !== undefined) ? ko.unwrap(data.collapsible) : true;
-                        var event = (data.event !== undefined) ? ko.unwrap(data.event) : "click";
-                        var header = (data.header !== undefined) ? ko.unwrap(data.header) : "> li > :first-child,> :not(li):even";
-                        var heightStyle = (data.heightStyle !== undefined) ? ko.unwrap(data.heightStyle) : "content";
-                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var activate = (data.activate !== undefined) ? (data.activate) : function (event, ui) { };
-                        var create = (data.create !== undefined) ? (data.create) : function (event, ui) { };
-                        var container = $(element);
-                        container.accordion({
-                            active: realActive,
-                            animate: animate,
-                            collapsible: collapsible,
-                            event: event,
-                            header: header,
-                            heightStyle: heightStyle,
-                            disabled: !enable,
-                            beforeActivate: function (event, ui) {
-                                ui.newPanel.removeClass("disappear");
-                                ui.newPanel.stop(false, false);
-                            },
-                            activate: function (event, ui) {
-                                if (ko.isObservable(active))
-                                    active(container.accordion("option", "active"));
-                                ui.oldPanel.addClass("disappear");
-                                ui.newPanel.removeClass("disappear");
-                                activate.call(this, event, ui);
-                            },
-                            create: function (event, ui) {
-                                container.find(".nts-accordion-content").addClass("disappear");
-                                ui.panel.removeClass("disappear");
-                                create.call(this, event, ui);
-                            },
-                            icons: { "header": "ui-icon-caret-1-s", "activeHeader": "ui-icon-caret-1-n" },
-                            classes: {
-                                "ui-accordion": "ntsAccordion",
-                                "ui-accordion-content": "ui-corner-bottom nts-accordion-content"
-                            }
-                        });
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsAccordionBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var active = (data.active !== undefined) ? (data.active) : ko.observable(false);
-                        var animate = (data.animate !== undefined) ? ko.unwrap(data.animate) : {};
-                        var collapsible = (data.collapsible !== undefined) ? ko.unwrap(data.collapsible) : true;
-                        var event = (data.event !== undefined) ? ko.unwrap(data.event) : "click";
-                        var heightStyle = (data.heightStyle !== undefined) ? ko.unwrap(data.heightStyle) : "content";
-                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        var container = $(element);
-                        var currentOption = container.accordion("option");
-                        if (ko.isObservable(active) && currentOption.active !== ko.unwrap(active))
-                            container.accordion("option", "active", Number(ko.unwrap(active)));
-                        if (currentOption.animate != animate)
-                            container.accordion("option", "animate", animate);
-                        if (currentOption.collapsible != collapsible)
-                            container.accordion("option", "collapsible", collapsible);
-                        if (currentOption.event != event)
-                            container.accordion("option", "event", event);
-                        if (currentOption.heightStyle != heightStyle)
-                            container.accordion("option", "heightStyle", heightStyle);
-                        if (currentOption.disabled != !enable)
-                            container.accordion("option", "disabled", !enable);
-                    };
-                    return NtsAccordionBindingHandler;
-                }());
-                ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
-            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui_24) {
-            var koExtentions;
-            (function (koExtentions) {
                 var NtsImageEditorBindingHandler = (function () {
                     function NtsImageEditorBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsImageEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var editable = nts.uk.util.isNullOrUndefined(data.editable) ? false : ko.unwrap(data.editable);
@@ -23709,6 +23378,9 @@ var nts;
                         $element.find(".image-holder").width(width).height(height);
                         return { 'controlsDescendantBindings': true };
                     };
+                    /**
+                     * Update
+                     */
                     NtsImageEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor(), $element = $(element), confirm = $(element).data('checkbox'), $checkbox = $element.find('.comfirm-checkbox');
                         if (!nts.uk.util.isNullOrEmpty($checkbox)) {
@@ -23729,7 +23401,7 @@ var nts;
                         var $checkboxHolder = $("<div>", { "class": "checkbox-holder image-editor-component" });
                         var $editContainer = this.$root.find(".edit-action-container");
                         $editContainer.append($checkboxHolder);
-                        this.$checkbox = $("<div>", { "class": "comfirm-checkbox style-button", text: "表示エリア選択す� });
+                        this.$checkbox = $("<div>", { "class": "comfirm-checkbox style-button", text: "表示エリア選択する" });
                         var $comment = $("<div>", { "class": "crop-description cf" });
                         $checkboxHolder.append(this.$checkbox);
                         $checkboxHolder.append($comment);
@@ -23737,8 +23409,8 @@ var nts;
                         var $cropText = $("<div>", { "class": "crop-description-text inline-container" });
                         var $mousePointerIcon = $("<div>", { "class": "mouse-icon inline-container" });
                         var $mouseText = $("<div>", { "class": "mouse-description-text inline-container" });
-                        $("<label>", { "class": "info-label", "text": "のエリア冂�メイン画面に表示します� }).appendTo($cropText);
-                        $("<label>", { "class": "info-label", "text": "マウスのドラヂ���ロ�でエリアを変更できます� }).appendTo($mouseText);
+                        $("<label>", { "class": "info-label", "text": "のエリア内をメイン画面に表示します。" }).appendTo($cropText);
+                        $("<label>", { "class": "info-label", "text": "マウスのドラッグ＆ドロップでエリアを変更できます。" }).appendTo($mouseText);
                         $comment.append($cropAreaIcon).append($cropText).append($mousePointerIcon).append($mouseText);
                         var checkboxId = nts.uk.util.randomId();
                         ko.bindingHandlers["ntsCheckBox"].init(this.$checkbox[0], function () {
@@ -23768,7 +23440,7 @@ var nts;
                     };
                     ImageEditorConstructSite.prototype.buildUploadAction = function () {
                         var self = this;
-                        self.$uploadBtn.text("参�").click(function (evt) {
+                        self.$uploadBtn.text("参照").click(function (evt) {
                             self.$inputFile.click();
                         });
                     };
@@ -23811,7 +23483,11 @@ var nts;
                                     highlight: false,
                                     zoomable: zoomble,
                                     crop: function (e) {
+                                        //                            console.log(e);
                                     }, cropstart: function (e) {
+                                        //                            e.preventDefault();
+                                        //                            console.log(e);
+                                        //                            return croppable;
                                     }
                                 });
                                 self.$root.data("cropper", self.cropper);
@@ -23933,10 +23609,145 @@ var nts;
                     return ImageEditorHelper;
                 }());
                 ko.bindingHandlers['ntsImageEditor'] = new NtsImageEditorBindingHandler();
-            })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
+            })(koExtentions = ui_22.koExtentions || (ui_22.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_23) {
+            var koExtentions;
+            (function (koExtentions) {
+                /**
+                 * CheckBox binding handler
+                 */
+                var NtsFunctionPanelBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
+                    function NtsFunctionPanelBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsFunctionPanelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
+                        var data = valueAccessor();
+                        var width = (data.width !== undefined) ? ko.unwrap(data.width) : 100;
+                        var headerText = (data.headerText !== undefined) ? ko.unwrap(data.headerText) : "";
+                        var items = (data.dataSource !== undefined) ? ko.unwrap(data.dataSource) : [];
+                        // Container
+                        var container = $(element);
+                        if (nts.uk.util.isNullOrEmpty(container.attr("id"))) {
+                            container.attr("id", nts.uk.util.randomId());
+                        }
+                        container.width(width);
+                        container.addClass("ntsControl ntsFunctionPanel").on("click", function (e) {
+                            if (container.data("readonly") === true)
+                                e.preventDefault();
+                        });
+                        container.append("<div class='function-header' /><div class='function-items'/>");
+                        var header = container.find('.function-header');
+                        header.append("<div class='function-icon'/><div class='function-link'><a class='header-link function-item'>" + headerText + "</a></div>");
+                        var itemAreas = container.find('.function-items');
+                        header.find(".function-item").click(function (evt, ui) {
+                            var current = $(this);
+                            if ($(this).data("dbClick") === false) {
+                                itemAreas.find(".function-item-container").hide("fast", function () {
+                                    current.data("dbClick", true);
+                                });
+                            }
+                            else {
+                                itemAreas.find(".function-item-container").show("fast", "linear", function () {
+                                    current.data("dbClick", false);
+                                });
+                            }
+                        });
+                        container.mouseleave(function (evt, ui) {
+                            var current = header.find(".function-item");
+                            itemAreas.find(".function-item-container").hide("fast", function () {
+                                current.data("dbClick", true);
+                            });
+                        });
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsFunctionPanelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data
+                        var data = valueAccessor();
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : true;
+                        var width = (data.width !== undefined) ? ko.unwrap(data.width) : 100;
+                        var headerText = (data.headerText !== undefined) ? ko.unwrap(data.headerText) : "";
+                        var items = (data.dataSource !== undefined) ? ko.unwrap(data.dataSource) : [];
+                        // Container
+                        var container = $(element);
+                        var itemAreas = container.find('.function-items');
+                        var headerLink = container.find('.header-link');
+                        var containerId = container.attr("id");
+                        headerLink.text(headerText);
+                        itemAreas.empty();
+                        _.forEach(items, function (item, idx) {
+                            var div = $("<div class='function-item-container' />");
+                            div.attr("data-idx", idx);
+                            div.width(width);
+                            div.append("<div class='function-icon'/><div class='function-link'/>");
+                            var itemLink = $("<a id='" + (containerId + '-' + idx) + "' class='function-item'>" + item["text"] + "</a>");
+                            itemLink.click(item["action"]);
+                            itemLink.appendTo(div.find(".function-link"));
+                            var icon = $("<img class='ft-icon' src='" + item["icon"] + "'/>");
+                            icon.appendTo(div.find(".function-icon"));
+                            div.appendTo(itemAreas);
+                        });
+                        container.find(".function-item-container").hide();
+                    };
+                    return NtsFunctionPanelBindingHandler;
+                }());
+                ko.bindingHandlers['ntsFunctionPanel'] = new NtsFunctionPanelBindingHandler();
+            })(koExtentions = ui_23.koExtentions || (ui_23.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                var ntsEditor;
+                (function (ntsEditor) {
+                    $.fn.ntsEditor = function (action) {
+                        var $editor = $(this);
+                        switch (action) {
+                            case 'validate':
+                                validate($editor);
+                            default:
+                                break;
+                        }
+                    };
+                    function validate($editor) {
+                        var validateEvent = new CustomEvent("validate", {});
+                        $editor.each(function (index) {
+                            var $input = $(this);
+                            document.getElementById($input.attr('id')).dispatchEvent(validateEvent);
+                        });
+                        //            document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
+                        //            $editor.trigger("validate");
+                    }
+                })(ntsEditor || (ntsEditor = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -24012,6 +23823,212 @@ var nts;
                     }
                 })(ntsImageEditor || (ntsImageEditor = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var sharedvm;
+            (function (sharedvm) {
+                var KibanTimer = (function () {
+                    function KibanTimer(target) {
+                        var self = this;
+                        self.elapsedSeconds = 0;
+                        self.formatted = ko.observable(uk.time.formatSeconds(this.elapsedSeconds, 'hh:mm:ss'));
+                        self.targetComponent = target;
+                        self.isTimerStart = ko.observable(false);
+                        self.oldDated = ko.observable(undefined);
+                        document.getElementById(self.targetComponent).innerHTML = self.formatted();
+                    }
+                    KibanTimer.prototype.run = function (timer) {
+                        var x = new Date().getTime() - timer.oldDated().getTime();
+                        x = Math.floor(x / 1000);
+                        timer.elapsedSeconds = x;
+                        document.getElementById(timer.targetComponent).innerHTML
+                            = uk.time.formatSeconds(x, 'hh:mm:ss');
+                    };
+                    KibanTimer.prototype.start = function () {
+                        var self = this;
+                        if (!self.isTimerStart()) {
+                            self.oldDated(new Date());
+                            self.isTimerStart(true);
+                            self.interval = setInterval(self.run, 1000, self);
+                        }
+                    };
+                    KibanTimer.prototype.end = function () {
+                        var self = this;
+                        if (self.isTimerStart()) {
+                            self.oldDated(undefined);
+                            self.isTimerStart(false);
+                            clearInterval(self.interval);
+                        }
+                    };
+                    return KibanTimer;
+                }());
+                sharedvm.KibanTimer = KibanTimer;
+            })(sharedvm = ui.sharedvm || (ui.sharedvm = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var jqueryExtentions;
+            (function (jqueryExtentions) {
+                var ntsFileUpload;
+                (function (ntsFileUpload) {
+                    $.fn.ntsFileUpload = function (option) {
+                        var dfd = $.Deferred();
+                        var fileInput;
+                        if ($(this).find("input[type='file']").length == 0) {
+                            fileInput = $(this).get(0);
+                        }
+                        else {
+                            fileInput = $(this).find("input[type='file']").get(0);
+                        }
+                        if (fileInput !== undefined) {
+                            var files = fileInput.files;
+                            if (files.length > 0) {
+                                // Check file is deleted on Chrome
+                                if (files[0].size == 0) {
+                                    dfd.reject({ message: nts.uk.resource.getMessage("Msg_158"), messageId: "Msg_158" });
+                                    return dfd.promise();
+                                }
+                                var formData = new FormData();
+                                formData.append("stereotype", option.stereoType);
+                                formData.append("userfile", files[0]);
+                                formData.append("filename", files[0].name);
+                                nts.uk.request.uploadFile(formData, option).done(function (data, textStatus, jqXHR) {
+                                    // Business Exception
+                                    if (data !== undefined && data.businessException) {
+                                        if (option.onFail)
+                                            option.onFail();
+                                        dfd.reject(data);
+                                    }
+                                    else {
+                                        if (option.onSuccess)
+                                            option.onSuccess();
+                                        dfd.resolve(data);
+                                    }
+                                }).fail(function (jqXHR, textStatus, errorThrown) {
+                                    // Client Exception
+                                    dfd.reject({ message: "Please check your network", messageId: "0" });
+                                });
+                            }
+                            else {
+                                dfd.reject({ message: "Please select file", messageId: "0" });
+                            }
+                        }
+                        else {
+                            dfd.reject({ messageId: "0", message: "Can not find control" });
+                        }
+                        return dfd.promise();
+                    };
+                })(ntsFileUpload || (ntsFileUpload = {}));
+            })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_24) {
+            var koExtentions;
+            (function (koExtentions) {
+                /**
+                 * Accordion binding handler
+                 */
+                var NtsAccordionBindingHandler = (function () {
+                    function NtsAccordionBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsAccordionBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var active = (data.active !== undefined) ? (data.active) : ko.observable(false);
+                        var realActive = (nts.uk.ntsNumber.isNumber(ko.unwrap(active))) ? Number(ko.unwrap(active)) : ko.unwrap(active);
+                        var animate = (data.animate !== undefined) ? ko.unwrap(data.animate) : {};
+                        var collapsible = (data.collapsible !== undefined) ? ko.unwrap(data.collapsible) : true;
+                        var event = (data.event !== undefined) ? ko.unwrap(data.event) : "click";
+                        var header = (data.header !== undefined) ? ko.unwrap(data.header) : "> li > :first-child,> :not(li):even";
+                        var heightStyle = (data.heightStyle !== undefined) ? ko.unwrap(data.heightStyle) : "content";
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var activate = (data.activate !== undefined) ? (data.activate) : function (event, ui) { };
+                        var create = (data.create !== undefined) ? (data.create) : function (event, ui) { };
+                        var container = $(element);
+                        container.accordion({
+                            active: realActive,
+                            animate: animate,
+                            collapsible: collapsible,
+                            event: event,
+                            header: header,
+                            heightStyle: heightStyle,
+                            disabled: !enable,
+                            beforeActivate: function (event, ui) {
+                                ui.newPanel.removeClass("disappear");
+                                ui.newPanel.stop(false, false);
+                            },
+                            activate: function (event, ui) {
+                                if (ko.isObservable(active))
+                                    active(container.accordion("option", "active"));
+                                ui.oldPanel.addClass("disappear");
+                                ui.newPanel.removeClass("disappear");
+                                activate.call(this, event, ui);
+                            },
+                            create: function (event, ui) {
+                                container.find(".nts-accordion-content").addClass("disappear");
+                                ui.panel.removeClass("disappear");
+                                create.call(this, event, ui);
+                            },
+                            icons: { "header": "ui-icon-caret-1-s", "activeHeader": "ui-icon-caret-1-n" },
+                            classes: {
+                                "ui-accordion": "ntsAccordion",
+                                "ui-accordion-content": "ui-corner-bottom nts-accordion-content"
+                            }
+                        });
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsAccordionBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var active = (data.active !== undefined) ? (data.active) : ko.observable(false);
+                        var animate = (data.animate !== undefined) ? ko.unwrap(data.animate) : {};
+                        var collapsible = (data.collapsible !== undefined) ? ko.unwrap(data.collapsible) : true;
+                        var event = (data.event !== undefined) ? ko.unwrap(data.event) : "click";
+                        var heightStyle = (data.heightStyle !== undefined) ? ko.unwrap(data.heightStyle) : "content";
+                        var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
+                        var container = $(element);
+                        var currentOption = container.accordion("option");
+                        if (ko.isObservable(active) && currentOption.active !== ko.unwrap(active))
+                            container.accordion("option", "active", Number(ko.unwrap(active)));
+                        if (currentOption.animate != animate)
+                            container.accordion("option", "animate", animate);
+                        if (currentOption.collapsible != collapsible)
+                            container.accordion("option", "collapsible", collapsible);
+                        if (currentOption.event != event)
+                            container.accordion("option", "event", event);
+                        if (currentOption.heightStyle != heightStyle)
+                            container.accordion("option", "heightStyle", heightStyle);
+                        if (currentOption.disabled != !enable)
+                            container.accordion("option", "disabled", !enable);
+                    };
+                    return NtsAccordionBindingHandler;
+                }());
+                ko.bindingHandlers['ntsAccordion'] = new NtsAccordionBindingHandler();
+            })(koExtentions = ui_24.koExtentions || (ui_24.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

@@ -28,7 +28,6 @@ import nts.uk.ctx.at.shared.infra.entity.vacation.setting.subst.KsvstComSubstVac
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
 import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification;
 import nts.uk.ctx.bs.employee.infra.entity.employment.BsymtEmployment;
-import nts.uk.ctx.bs.employee.infra.entity.jobtitle.CjtmtJobTitle;
 import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWorkplace;
 import nts.uk.screen.at.app.dailyperformance.correction.ClosureDto;
 import nts.uk.screen.at.app.dailyperformance.correction.Com60HVacationDto;
@@ -59,8 +58,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 	private final static String SEL_FORMAT_DP_CORRECTION;
 
 	private final static String SEL_CLOSURE;
-
-	private final static String SEL_JOB_TITLE;
 
 	private final static String SEL_EMPLOYMENT_BY_CLOSURE;
 
@@ -115,17 +112,6 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 		builderString.append("AND closure.kclmtClosurePK.cid = :companyId ");
 		builderString.append("AND closure.kclmtClosurePK.closureId = emp.workClosureId");
 		SEL_CLOSURE = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("SELECT j FROM CjtmtJobTitle j ");
-		builderString.append("JOIN CsqmtSequenceMaster s ");
-		builderString.append("WHERE s.csqmtSequenceMasterPK.companyId = :companyId ");
-		builderString.append("AND j.cjtmtJobTitlePK.companyId = :companyId ");
-		builderString.append("AND j.startDate <= :baseDate ");
-		builderString.append("AND j.endDate >= :baseDate ");
-		builderString.append("AND j.sequenceCode = s.csqmtSequenceMasterPK.sequenceCode ");
-		builderString.append("ORDER BY s.order ASC, j.cjtmtJobTitlePK.jobCode ASC");
-		SEL_JOB_TITLE = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append(
@@ -250,11 +236,7 @@ public class JpaDailyPerformanceScreenRepo extends JpaRepository implements Dail
 
 	@Override
 	public List<String> getListJobTitle(DateRange dateRange) {
-		return this.queryProxy().query(SEL_JOB_TITLE, CjtmtJobTitle.class)
-				.setParameter("companyId", AppContexts.user().companyId())
-				.setParameter("baseDate", dateRange.getEndDate()).getList().stream().map(j -> {
-					return j.getCjtmtJobTitlePK().getJobId();
-				}).collect(Collectors.toList());
+		return null;
 	}
 
 	@Override

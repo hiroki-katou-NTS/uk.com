@@ -8,10 +8,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.Value;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
 import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
+import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
 
@@ -141,5 +149,31 @@ public class ApplicationDto {
 				domain.getListPhase() == null ? null: domain.getListPhase().stream().map(x -> AppApprovalPhaseDto.fromDomain(x)).collect(Collectors.toList())
 				);
 	}
+	public static Application toEntity(ApplicationDto entity) {
+		return new Application(entity.getCompanyID(), 
+				entity.getApplicationID(), 
+				EnumAdaptor.valueOf(entity.getPrePostAtr(), PrePostAtr.class), 
+				entity.getInputDate() == null?null :GeneralDate.fromString(entity.getInputDate(), "yyyy/MM/dd"), 
+				entity.getEnteredPersonSID(), 
+				new AppReason(entity.getReversionReason()), 
+				entity.getApplicationDate() == null?null :GeneralDate.fromString(entity.getApplicationDate(), "yyyy/MM/dd"),   
+				new AppReason(entity.getApplicationReason()), 
+				EnumAdaptor.valueOf(entity.getApplicationType(), ApplicationType.class), 
+				entity.getApplicantSID(), 
+				EnumAdaptor.valueOf(entity.getReflectPlanScheReason(), ReflectPlanScheReason.class),
+				entity.getReflectPlanTime() == null?null :GeneralDate.fromString(entity.getReflectPlanTime(), "yyyy/MM/dd"), 
+				EnumAdaptor.valueOf(entity.getReflectPlanState(), ReflectPlanPerState.class), 
+				EnumAdaptor.valueOf(entity.getReflectPlanEnforce(), ReflectPlanPerEnforce.class), 
+				EnumAdaptor.valueOf(entity.getReflectPerScheReason(), ReflectPerScheReason.class), 
+				entity.getReflectPerTime() == null?null :GeneralDate.fromString(entity.getReflectPerTime(), "yyyy/MM/dd"), 
+				EnumAdaptor.valueOf(entity.getReflectPerState(), ReflectPlanPerState.class), 
+				EnumAdaptor.valueOf(entity.getReflectPerEnforce(), ReflectPlanPerEnforce.class), 
+				entity.getStartDate() == null?null :GeneralDate.fromString(entity.getStartDate(), "yyyy/MM/dd"), 
+				entity.getEndDate() == null?null :GeneralDate.fromString(entity.getEndDate(), "yyyy/MM/dd"), 
+				entity.getListPhase() == null ? null: entity.getListPhase().stream().map(x -> AppApprovalPhaseDto.toEntity(x)).collect(Collectors.toList())
+				);//entity.getListPhase()
+	}
+	
+	
 
 }

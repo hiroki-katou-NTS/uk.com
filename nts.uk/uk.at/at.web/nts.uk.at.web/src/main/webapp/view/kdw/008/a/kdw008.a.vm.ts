@@ -232,8 +232,10 @@ module nts.uk.at.view.kdw008.a {
                 }
                 nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage("Msg_18", []))
                     .ifYes(() => {
-                        new service.Service().removeAuthorityDailyFormat(removeAuthorityDto);
-                        //                        self.getDetail(self.businessTypeList()[1].dailyPerformanceFormatCode);
+                        new service.Service().removeAuthorityDailyFormat(removeAuthorityDto).done(function() {
+                            nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
+                        }).fail(function(error) {
+                        });;
                         self.reloadData();
                     });
             }

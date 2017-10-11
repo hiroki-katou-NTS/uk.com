@@ -1,5 +1,5 @@
 module nts.uk.at.view.kdw006.c.viewmodel {
-    export class ScreenModel {
+    export class ScreenModelC {
         yearDisplayAtr: KnockoutObservable<boolean>;
         yearRemainingNumberCheck: KnockoutObservable<boolean>;
         savingYearDisplayAtr: KnockoutObservable<boolean>;
@@ -41,7 +41,7 @@ module nts.uk.at.view.kdw006.c.viewmodel {
         //Get DispRestric
         getDispRestric(): JQueryPromise<any> {
             let self = this;
-            var dfd = $.Deferred();
+            let dfd = $.Deferred();
             service.getDispRestric().done(function(data) {
                 self.yearDisplayAtr(data.yearDisplayAtr);
                 self.yearRemainingNumberCheck(data.yearRemainingNumberCheck);
@@ -58,8 +58,8 @@ module nts.uk.at.view.kdw006.c.viewmodel {
 
 
         saveData() {
-            var self = this;
-            var dispRestric = {
+            let self = this;
+            let dispRestric = {
                 yearDisplayAtr: self.yearDisplayAtr(),
                 yearRemainingNumberCheck: self.yearRemainingNumberCheck(),
                 savingYearDisplayAtr: self.savingYearDisplayAtr(),
@@ -69,8 +69,9 @@ module nts.uk.at.view.kdw006.c.viewmodel {
                 substitutionDisplayAtr: self.substitutionDisplayAtr(),
                 substitutionRemainingNumberCheck: self.substitutionRemainingNumberCheck()
             };
-            service.update(dispRestric);
-
+            service.update(dispRestric).done(function() {
+                nts.uk.ui.dialog.info({ messageId: "Msg_15" });
+            });
         }
     }
 

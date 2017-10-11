@@ -32,6 +32,10 @@ public class KrqdtAppStamp extends UkJpaEntity {
 	@EmbeddedId
 	public KrqdpAppStamp krqdpAppStampPK;
 	
+	@Version
+	@Column(name="EXCLUS_VER")
+	public Long version;
+	
 	@Column(name="COMBINATION_ATR")
 	public Integer combinationAtr;
 

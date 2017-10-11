@@ -68,7 +68,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				new KafdtApplicationPK(
 					domain.getCompanyID(), 
 					domain.getApplicationID()), 
-				(int)(long)domain.getVersion(),
+				domain.getVersion(),
 				appReasonID,
 				domain.getPrePostAtr().value, 
 				domain.getInputDate() , 
@@ -177,23 +177,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		this.getEntityManager().flush();
 	}
 
-	@Override
-	public void updateById(String companyID, String applicationID) {
-		Application aa =  this.queryProxy().query(SELECT_BY_CODE, KafdtApplication.class)
-		.setParameter("companyID", companyID).setParameter("applicationID", applicationID)
-		.getSingle(c -> toDomain(c)).get();
 
-		/*Optional<Application> optional = this.queryProxy().query(SELECT_BY_CODE, KafdtApplication.class)
-				.setParameter("companyID", companyID).setParameter("applicationID", applicationID)
-				.getSingle(c -> toDomain(c));*/
-
-		KafdtApplication newEntity = toEntity(aa);
-		KafdtApplication updateEntity = this.queryProxy().find(newEntity.kafdtApplicationPK, KafdtApplication.class)
-				.get();
-		updateEntity.reflectPerState = 3;
-		this.commandProxy().update(updateEntity);
-
-	}
 
 	@Override
 	public List<Application> getAllApplicationByPhaseID(String comanyID, String appID, String phaseID) {
