@@ -63,8 +63,8 @@ module nts.uk.at.view.kaf009.b {
             //list Work Location 
             locationData: Array<common.IWorkLocation>;
 
-            constructor(appType: number) {
-                super(appType);
+            constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
+                super(listAppMetadata, currentApp);
                 var self = this;
                 self.command = ko.observable(null);
                 self.locationData = [];

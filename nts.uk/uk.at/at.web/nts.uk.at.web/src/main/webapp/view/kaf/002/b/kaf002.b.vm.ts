@@ -3,7 +3,8 @@ module nts.uk.at.view.kaf002.b {
     import kaf002 = nts.uk.at.view.kaf002;
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase; 
     export module viewmodel {
-        let __viewContext: any = window["__viewContext"] || {};
+        const employmentRootAtr: number = 1; // EmploymentRootAtr: Application
+        const applicationType: number = 7; // Application Type: Stamp Application
         export class ScreenModel {
             cm: kaf002.cm.viewmodel.ScreenModel;
             kaf000_a2: kaf000.a.viewmodel.ScreenModel;
@@ -20,40 +21,48 @@ module nts.uk.at.view.kaf002.b {
                 self.kaf000_a2 = new kaf000.a.viewmodel.ScreenModel();
                 self.startPage().done((commonSet: vmbase.AppStampNewSetDto)=>{
                     self.employeeID = commonSet.employeeID;
-                    self.kaf000_a2.start(self.employeeID, 1, 7, moment(new Date()).format("YYYY/MM/DD")).done(()=>{
-                        let a = self.kaf000_a2.approvalRoot().beforeApprovers;
+                    self.kaf000_a2.start(
+                        self.employeeID, 
+                        employmentRootAtr, 
+                        applicationType, 
+                        moment(new Date()).format("YYYY/MM/DD")).done(()=>{
+                        let listPhase = self.kaf000_a2.approvalRoot().beforeApprovers; 
                         let approvalList = [];
-                        for(let x = 1; x <= a.length; x++){
-                            let appPhase = a[x];
-                            let b = new vmbase.AppApprovalPhase(
+                        for(let x = 1; x <= listPhase.length; x++){
+                            let phaseLoop = listPhase[x-1];
+                            let appPhase = new vmbase.AppApprovalPhase(
                                 "",
-                                appPhase.approvalForm,
+                                phaseLoop.approvalForm,
                                 x,
                                 0,
                                 []); 
-                            for(let y = 1; y <= appPhase.length; y++){
-                                let appFrame = appPhase[y];
-                                let c = new vmbase.ApprovalFrame(
+                            for(let y = 1; y <= phaseLoop.approvers.length; y++){
+                                let frameLoop = phaseLoop.approvers[y-1];
+                                let appFrame = new vmbase.ApprovalFrame(
                                     "",
                                     y,
                                     []);
-                                let d = new vmbase.ApproveAccepted(
+                                let appAccepted = new vmbase.ApproveAccepted(
                                     "",
-                                    appFrame.sid,
+                                    frameLoop.sid,
                                     0,
-                                    appFrame.confirmPerson ? 1 : 0,
+                                    frameLoop.confirmPerson ? 1 : 0,
                                     "",
                                     "",
-                                    appFrame.sid);
-                                c.approveAcceptedCmds.push(d);
-                                b.approvalFrameCmds.push(c);   
+                                    frameLoop.sid);
+                                appFrame.approveAcceptedCmds.push(appAccepted);
+                                appPhase.approvalFrameCmds.push(appFrame);   
                             };
                             approvalList.push(b);    
                         };
                         
                         self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, approvalList);    
+                    }).fail(function(res) { 
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                     });   
-                });
+                }).fail(function(res) { 
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                }); 
             }
             
             startPage(): JQueryPromise<any> {
@@ -65,6 +74,7 @@ module nts.uk.at.view.kaf002.b {
                         dfd.resolve(commonSet); 
                     })
                     .fail(function(res) { 
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                         dfd.reject(res); 
                     });
                 return dfd.promise();

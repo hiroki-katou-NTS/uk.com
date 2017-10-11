@@ -12,9 +12,9 @@ module nts.uk.at.view.kaf002.cm {
             stampRequestMode: KnockoutObservable<number> = ko.observable(0);
             screenMode: KnockoutObservable<number> = ko.observable(0);
             resultDisplay: KnockoutObservable<number> = ko.observable(0);
-            application: KnockoutObservable<vmbase.Application> = ko.observable(new vmbase.Application('',moment(new Date()).format("YYYY/MM/20"),'',moment(new Date()).format("YYYY/MM/20"),'','',''));
+            application: KnockoutObservable<vmbase.Application> = ko.observable(new vmbase.Application('',moment(new Date()).format("YYYY/MM/20"),'',moment(new Date()).format("YYYY/MM/20"),'','','',0));
             inputReasons: KnockoutObservableArray<vmbase.InputReason> = ko.observableArray([new vmbase.InputReason('','')]);
-            currentReason: KnockoutObservable<vmbase.InputReason> = ko.observable('');
+            currentReason: KnockoutObservable<string> = ko.observable('');
             inputReasonsDisp: KnockoutObservable<number> = ko.observable(0);
             detailReasonDisp: KnockoutObservable<number> = ko.observable(0);
             topComment: KnockoutObservable<vmbase.CommentUI> = ko.observable(new vmbase.CommentUI('','',0)); 

@@ -13,6 +13,7 @@ import nts.uk.shr.com.primitive.ZeroPaddedCode;
 /**
  * The Class EmploymentCode.
  */
+// 雇用コード
 @StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(2)
 @ZeroPaddedCode
@@ -21,7 +22,8 @@ public class EmploymentCode extends CodePrimitiveValue<EmploymentCode> {
 	/**
 	 * Instantiates a new employment code.
 	 *
-	 * @param rawValue the raw value
+	 * @param rawValue
+	 *            the raw value
 	 */
 	public EmploymentCode(String rawValue) {
 		super(rawValue);

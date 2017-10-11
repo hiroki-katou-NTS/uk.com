@@ -13,6 +13,9 @@ import nts.arc.time.GeneralDate;
 @Data
 public class DeleteWorkplaceCommand {
 
+    /** The history id wkp config info. */
+    private String historyIdWkpConfigInfo;
+    
     /** The start D wkp config info. */
     private GeneralDate startDWkpConfigInfo;
     

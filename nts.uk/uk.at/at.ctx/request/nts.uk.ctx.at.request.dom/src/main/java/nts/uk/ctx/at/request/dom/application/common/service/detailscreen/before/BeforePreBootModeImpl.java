@@ -484,9 +484,10 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			List<String> lstRepresenterSID = new ArrayList<>();
 			for (AppApprovalPhase appApprovalPhase : listAppApprovalPhase) {
 				for (ApprovalFrame approvalFrame : appApprovalPhase.getListFrame()) {
-					lstRepresenterSID.addAll(approvalFrame.getListApproveAccepted().stream().map(item -> {
+					List<String> lstTemp = approvalFrame.getListApproveAccepted().stream().map(item -> {
 						return item.getApproverSID();
-					}).collect(Collectors.toList()));
+					}).collect(Collectors.toList());
+					lstRepresenterSID.addAll(lstTemp);
 				}
 			}
 			if (lstRepresenterSID.contains(employeeID)) {

@@ -77,20 +77,7 @@ public class WorkplaceConfigInfoFinder {
             lstWkpInfo.add(wkpInfoRepo.findLatestByWkpId(item.getWorkplaceId().v()).get());
         });
 
-        return this.convertToTree(lstWkpInfo, lstHierarchy);
-	}
-
-	/**
-	 * Convert to tree.
-	 *
-	 * @param lstWkpInfo the lst wkp info
-	 * @param lstHierarchy the lst hierarchy
-	 * @return the list
-	 */
-	private List<WorkplaceHierarchyDto> convertToTree(List<WorkplaceInfo> lstWkpInfo,
-			List<WorkplaceHierarchy> lstHierarchy) {
-		// define convert tree function
-		return createTree(lstWkpInfo, lstHierarchy, new ArrayList<>());
+        return this.createTree(lstWkpInfo, lstHierarchy, new ArrayList<>());
 	}
 
 	/**

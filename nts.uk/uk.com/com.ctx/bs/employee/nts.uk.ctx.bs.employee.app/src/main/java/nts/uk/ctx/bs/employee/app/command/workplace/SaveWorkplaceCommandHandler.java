@@ -67,6 +67,7 @@ public class SaveWorkplaceCommandHandler extends CommandHandler<SaveWorkplaceCom
         } else {
             this.wkpInfoRepo.update(command.getWkpInfor().toDomain(companyId,
                     new WorkplaceId(command.getWkpIdSelected())));
+            // TODO: register workplace hierarchy
         }
     }
 
