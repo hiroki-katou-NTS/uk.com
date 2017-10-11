@@ -825,11 +825,17 @@ module nts.uk.com.view.cmm018.a {
                         self.approverInfor.push(item.jobTitleId);
                     });
                 }
-                this.find
+                let appType = __viewContext.viewModel.viewmodelB.findAppbyValue(appTypeValue);
+                let appTypeName;
+                if(appType != undefined){
+                    appTypeName = appType.localizedName;
+                }else{
+                    appTypeName = '共通';
+                }
                 //確定者 code
                 self.confirmedPerson(obj.approvalForm);
                 setShared("CMM018K_PARAM", { 
-                                        appTypeName: "0", //設定する対象申請名 
+                                        appTypeName: appTypeName, //設定する対象申請名 
                                         formSetting: 2,//1: 全員確認、2：誰か一人
                                         approverInfor: self.approverInfor(),//承認者一覧
                                         confirmedPerson: self.confirmedPerson, //確定者
@@ -1733,10 +1739,17 @@ module nts.uk.com.view.cmm018.a {
                         self.approverInfor.push(item.jobTitleId);
                     });
                 }
+                let appType = self.findAppbyValue(appTypeValue);
+                let appTypeName;
+                if(appType != undefined){
+                    appTypeName = appType.localizedName;
+                }else{
+                    appTypeName = '共通';
+                }
                 //確定者 code
                 self.confirmedPerson(obj.approvalForm);
                 setShared("CMM018K_PARAM", { 
-                                        appType: "0", //設定する対象申請名 
+                                        appTypeName: appTypeName, //設定する対象申請名 
                                         formSetting: 1,//1: 全員確認、2：誰か一人
                                         approverInfor: self.approverInfor(),//承認者一覧
                                         confirmedPerson: self.confirmedPerson, //確定者
@@ -1887,6 +1900,7 @@ module nts.uk.com.view.cmm018.a {
                             sDate = itemLast.person.startDate;
                         }
                     }
+                    name = typeApp == null ? '共通ルート' : nts.uk.resource.getText("CMM018_7");
                 }else{
                     if(self.tabSelectedB() == 0){
                         if(itemCurrent !== undefined){
@@ -2220,16 +2234,6 @@ module nts.uk.com.view.cmm018.a {
                         self.tabSelectedB(vmbase.RootType.WORKPLACE);
                         self.workplaceIdB(id);
                         self.getDataWorkplacePr();
-//                        self.getDataWorkplacePr().done(function(data){
-//                            //list left
-//                            _.each(self.lstWorkplace(), function(item){
-//                                lstRoot.push(new vmbase.DataCheckModeB(item.workplace.approvalId, item.workplace.startDate,
-//                                    item.workplace.endDate, item.workplace.applicationType, item.workplace.employmentRootAtr));
-//                            });
-//                            //list right
-//                             let com = self.findRootWpD(self.singleSelectedCode());
-//                            self.dataDisplay(self.convert(lstRoot));
-//                        });;
                     }
                     //TH: tab person
                     else{
