@@ -26,6 +26,6 @@ public class JpaEmpCopySettingRepository extends JpaRepository implements EmpCop
 
 	private EmpCopySetting toDomain(BsystEmployeeCopySetting entity) {
 
-		return new EmpCopySetting(entity.BsystEmployeeCopySettingPk.categoryId, entity.companyId);
+		return EmpCopySetting.createFromJavaType(entity.BsystEmployeeCopySettingPk.categoryId, entity.companyId);
 	}
 }
