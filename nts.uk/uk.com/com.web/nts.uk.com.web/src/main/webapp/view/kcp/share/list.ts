@@ -98,6 +98,12 @@ module kcp.share.list {
          * Set max width for component.Min is 350px;
          */
         maxWidth?: number;
+        
+        /**
+         * Set tabindex attr for controls in component.
+         * If not set, tabindex will same as spec of KCPs.
+         */
+        tabindex?: number;
     }
     
     export class SelectType {
@@ -193,7 +199,7 @@ module kcp.share.list {
                 data.maxWidth = 350;
             }
             self.listType = data.listType;
-            self.tabIndex = this.getTabIndexByListType(data.listType);
+            self.tabIndex = this.getTabIndexByListType(data);
             if (data.baseDate) {
                 self.baseDate = data.baseDate;
             } else {
@@ -344,8 +350,14 @@ module kcp.share.list {
         /**
          * Get tab index by list type.
          */
-        private getTabIndexByListType(listType: ListType): TabIndex {
-            switch(listType) {
+        private getTabIndexByListType(data: ComponentOption): TabIndex {
+            if (data.tabindex) {
+                return {
+                    searchBox: data.tabindex,
+                    table: data.tabindex
+                }
+            }
+            switch(data.listType) {
                 case ListType.EMPLOYMENT, ListType.Classification:
                     return {
                         searchBox: 1,
