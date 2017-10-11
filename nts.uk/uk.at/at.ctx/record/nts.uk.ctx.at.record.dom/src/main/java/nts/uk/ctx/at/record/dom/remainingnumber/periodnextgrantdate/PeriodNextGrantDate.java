@@ -45,7 +45,8 @@ public class PeriodNextGrantDate {
 		//次回年休付与を計算 : not period
 		List<NextAnnualLeaveGrant> listDataNotPeriod = calNextHolidayGrantService.getCalNextHolidayGrant(companyId, employeeId, Optional.empty());
 		//次回年休付与を計算 : have period
-		Period periodParam = new Period(employeeRecordImport.getEntryDate(),listDataNotPeriod.get(0).getGrantDate());
+		//Update EA修正履歴NO.3175 : add 1 year 
+		Period periodParam = new Period(employeeRecordImport.getEntryDate(),listDataNotPeriod.get(0).getGrantDate().addYears(1));
 		List<NextAnnualLeaveGrant> listDataByPeriod = calNextHolidayGrantService.getCalNextHolidayGrant(companyId, employeeId, Optional.of(periodParam));
 		
 		//nếu k lấy dc dữ liệu nào
