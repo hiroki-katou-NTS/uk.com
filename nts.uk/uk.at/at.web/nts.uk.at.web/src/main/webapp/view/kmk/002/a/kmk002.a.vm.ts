@@ -268,7 +268,25 @@ module nts.uk.at.view.kmk002.a {
                     return;
                 }
 
-                let aboveOrder = this.selectedFormulaAbove;
+                let aboveOrder = self.selectedFormulaAbove;
+
+                // update order of below items.
+                self.updateOrderAfter(aboveOrder - 1);
+
+                // add formula.
+                self.addFormulaAtOrder(aboveOrder);
+
+                // recheck the checkAll checkbox
+                self.reCheckAll();
+
+            }
+
+            /**
+             * add formula at order
+             * @param order: number
+             */
+            private addFormulaAtOrder(order: number): void {
+                let self = this;
 
                 let f = new Formula();
 
@@ -276,24 +294,23 @@ module nts.uk.at.view.kmk002.a {
                 f.reCheckAll = self.reCheckAll.bind(self);
 
                 // Set order
-                f.orderNo = aboveOrder;
-                // Set symbol
-                f.symbolValue = FormulaSorter.getNextSymbolOf(self.getLastSymbol());
+                f.orderNo = order;
 
-                // TODO move ra cho khac sau.
+                // Set symbol
+                f.symbolValue = 'a';
+                let lastSymbol = self.getLastSymbol();
+                if (lastSymbol) {
+                    f.symbolValue = FormulaSorter.getNextSymbolOf(self.getLastSymbol());
+                }
+
+                // set optional item no
                 f.optionalItemNo = self.optionalItemNo();
 
-                // update order of below items.
-                self.updateOrderAfter(aboveOrder - 1);
-
-                // add new formula
+                 // add new formula
                 self.calcFormulas.push(f);
 
                 // sort by orderNo
                 self.sortListFormula();
-
-                // recheck the checkAll checkbox
-                self.reCheckAll();
 
             }
 
@@ -395,27 +412,11 @@ module nts.uk.at.view.kmk002.a {
 
                 let belowOrder = this.selectedFormulaBelow;
 
-                let f = new Formula();
-
-                // bind function
-                f.reCheckAll = self.reCheckAll.bind(self);
-
-                // Set order
-                f.orderNo = belowOrder;
-                // Set symbol
-                f.symbolValue = FormulaSorter.getNextSymbolOf(self.getLastSymbol());
-
-                // TODO move ra cho khac sau.
-                f.optionalItemNo = self.optionalItemNo();
-
                 // update order of below items.
                 self.updateOrderAfter(belowOrder - 1);
 
                 // add new formula
-                self.calcFormulas.push(f);
-
-                // sort by orderNo
-                self.sortListFormula();
+                self.addFormulaAtOrder(belowOrder);
 
                 // recheck the checkAll checkbox
                 self.reCheckAll();
@@ -437,6 +438,10 @@ module nts.uk.at.view.kmk002.a {
              * Confirm whether a calculation formula can be added (Check whether ZZ is used in the symbol)
              */
             private hasReachedZZ(): boolean {
+                let self = this;
+                if (self.getLastSymbol() == 'zz') {
+                    return true;
+                }
                 return false;
             }
 
@@ -632,10 +637,25 @@ module nts.uk.at.view.kmk002.a {
              */
             private getLastSymbol(): string {
                 let self = this;
+
+                // return null if has no formula
+                if (!self.isFormulaSet()) {
+                    return null;
+                };
+
+                // find the last symbol.
                 let lastSymbol = 'a';
                 self.calcFormulas().forEach(item => {
-                    if (item.symbolValue.localeCompare(lastSymbol) > 0) {
+                    // Check two string's length first
+                    // Because z > aa using localeCompare
+                    if (item.symbolValue.length > lastSymbol.length) {
                         lastSymbol = item.symbolValue;
+                        return;
+                    }
+                    if (item.symbolValue.length == lastSymbol.length) {
+                        if (item.symbolValue.localeCompare(lastSymbol) > 0) {
+                            lastSymbol = item.symbolValue;
+                        }
                     }
                 });
                 return lastSymbol;
