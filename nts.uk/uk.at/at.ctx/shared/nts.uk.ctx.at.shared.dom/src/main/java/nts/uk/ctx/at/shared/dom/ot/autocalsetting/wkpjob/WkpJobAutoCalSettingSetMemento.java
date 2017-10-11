@@ -37,7 +37,7 @@ public interface WkpJobAutoCalSettingSetMemento {
 	 *
 	 * @param positionId the new position id
 	 */
-	void  setPositionId(JobTitleId positionId);
+	void  setJobId(JobTitleId positionId);
 
 	/**
 	 * Sets the normal OT time.

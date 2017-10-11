@@ -43,9 +43,6 @@ public class GrantHolidayTblAddCommandHandler extends CommandHandler<GrantHolida
 		}
 		
 		List<GrantHdTbl> grantHolidays = command.getGrantHolidayList().stream()
-				.filter(x -> (x.getLengthOfServiceYears() != null && x.getLengthOfServiceYears() != 0) 
-						|| (x.getLengthOfServiceMonths() != null && x.getLengthOfServiceMonths() != 0) 
-						|| (x.getGrantDays() != null))
 				.map(x->x.toDomain(companyId)).collect(Collectors.toList());
 		GrantHdTbl.validateInput(grantHolidays);
 		

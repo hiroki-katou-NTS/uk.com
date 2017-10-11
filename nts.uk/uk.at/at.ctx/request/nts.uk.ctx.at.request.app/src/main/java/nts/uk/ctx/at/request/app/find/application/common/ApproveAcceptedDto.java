@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.common;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Value;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ConfirmAtr;
@@ -17,7 +18,7 @@ public class ApproveAcceptedDto {
 	private String approverSID ;
 	private int approvalATR;
 	private int confirmATR;
-	private GeneralDate approvalDate;
+	private String approvalDate;
 	private String reason;
 	private String representerSID;
 	
@@ -28,8 +29,19 @@ public class ApproveAcceptedDto {
 				domain.getApproverSID(), 
 				domain.getApprovalATR().value, 
 				domain.getConfirmATR().value, 
-				domain.getApprovalDate(), 
+				domain.getApprovalDate() ==null?null : domain.getApprovalDate().toString(), 
 				domain.getReason().v(), 
 				domain.getRepresenterSID());
+	}
+	public static ApproveAccepted toEntity(ApproveAcceptedDto entity) {
+		return new ApproveAccepted(
+				entity.getCompanyID(), 
+				entity.getAppAcceptedID(), 
+				entity.getApproverSID(), 
+				EnumAdaptor.valueOf(entity.getApprovalATR(), ApprovalAtr.class), 
+				EnumAdaptor.valueOf(entity.getConfirmATR(), ConfirmAtr.class), 
+				entity.getApprovalDate() ==null?null:GeneralDate.fromString(entity.getApprovalDate(), "yyyy/MM/dd"), 
+				new Reason(entity.getReason()), 
+				entity.getRepresenterSID());
 	}
 }

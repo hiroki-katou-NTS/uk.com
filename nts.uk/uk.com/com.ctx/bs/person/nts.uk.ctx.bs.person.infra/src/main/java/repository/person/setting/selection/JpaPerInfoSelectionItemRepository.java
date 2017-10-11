@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import entity.person.setting.selection.PpemtSelectionItem;
 import entity.person.setting.selection.PpemtSelectionItemPK;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.IPerInfoSelectionItemRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoSelectionItem;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.IPerInfoSelectionItemRepository;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoSelectionItem;
 
 @Stateless
 public class JpaPerInfoSelectionItemRepository extends JpaRepository implements IPerInfoSelectionItemRepository {

@@ -16,7 +16,6 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.at.shared.dom.common.usecls.ApplyAtr;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.AutoCalAtrOvertime;
 import nts.uk.ctx.at.shared.dom.ot.autocalsetting.TimeLimitUpperLimitSetting;
-import nts.uk.ctx.at.shared.dom.ot.autocalsetting.UseUnitOvertimeSetting;
 
 /**
  * The Class AutomaticCalculationWS.
@@ -56,17 +55,6 @@ public class AutomaticCalculationWS extends WebService {
 	@Path("find/autocaltimelimitsetting")
 	public List<EnumConstant> findEnumTimeLimitUpperLimitSetting() {
 		return EnumAdaptor.convertToValueNameList(TimeLimitUpperLimitSetting.class);
-	}
-
-	/**
-	 * Find enum use unit overtime setting.
-	 *
-	 * @return the list
-	 */
-	@POST
-	@Path("find/autocaluseunitovertimesetting")
-	public List<EnumConstant> findEnumUseUnitOvertimeSetting() {
-		return EnumAdaptor.convertToValueNameList(UseUnitOvertimeSetting.class);
 	}
 
 }

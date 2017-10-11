@@ -36,7 +36,18 @@ module nts.uk.at.view.kaf002.m5 {
                 self.appStampList.removeAll();
                 let a = [];
                 for(let i=1;i<=self.supFrameNo;i++){
-                    a.push(new vmbase.AppStampWork(this.stampAtr(),i,stampGoOutAtr,'spCode','spLocation',true,true,0,'start',0,'end',true,true,true,true));    
+                    a.push(
+                        new vmbase.AppStampWork(
+                            0,
+                            i,
+                            0,
+                            new vmbase.CheckBoxLocation('','',true,false),
+                            new vmbase.CheckBoxLocation('','',true,false),
+                            new vmbase.CheckBoxTime(0,true,false),
+                            new vmbase.CheckBoxLocation('','',true,false),
+                            new vmbase.CheckBoxTime(0,true,false),
+                            new vmbase.CheckBoxLocation('','',true,false))
+                    );    
                 };
                 self.appStampList(a);    
             }
@@ -58,13 +69,18 @@ module nts.uk.at.view.kaf002.m5 {
                     appStampOnlineRecordCmd: null,
                     appApprovalPhaseCmds: approvalList   
                 }
-                service.insert(command);    
+                service.insert(command)
+                .done(() => {})
+                .fail(function(res) { 
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                }); 
             }
             
             update(application : vmbase.Application){
                 var self = this;
                 let command = {
-                    appID: "",
+                    version: application.version,
+                    appID: application.applicationID,
                     inputDate: application.inputDate(),
                     enteredPerson: application.enteredPerson(),
                     applicationDate: application.appDate(),
@@ -77,7 +93,15 @@ module nts.uk.at.view.kaf002.m5 {
                     appStampCancelCmds: null,
                     appStampOnlineRecordCmd: null  
                 }
-                service.update(command);     
+                service.update(command)
+                .done(() => {})
+                .fail(function(res) { 
+                    if(res.optimisticLock == true){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){nts.uk.ui.block.clear();});    
+                    } else {
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});    
+                    }
+                });  
             }
             
             openSelectLocationDialog(timeType: string, frameNo: number){

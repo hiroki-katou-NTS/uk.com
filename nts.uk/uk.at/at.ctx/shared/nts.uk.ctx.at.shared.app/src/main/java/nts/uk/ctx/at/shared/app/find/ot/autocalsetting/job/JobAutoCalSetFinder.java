@@ -44,14 +44,4 @@ public class JobAutoCalSetFinder {
 
 		return dto;
 	}
-
-	/**
-	 * Delete by code.
-	 *
-	 * @param jobId the job id
-	 */
-	public void deleteByCode(String jobId) {
-		String companyId = AppContexts.user().companyId();
-		jobAutoCalSettingRepository.delete(companyId, jobId);
-	}
 }

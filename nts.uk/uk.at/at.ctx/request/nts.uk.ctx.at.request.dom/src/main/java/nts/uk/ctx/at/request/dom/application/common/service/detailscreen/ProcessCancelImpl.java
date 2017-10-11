@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 
 /**
  * 12.詳細画面取消の処理
@@ -22,16 +23,9 @@ public class ProcessCancelImpl implements ProcessCancel {
 	
 	@Override
 	public void detailScreenCancelProcess(String companyID, String appID) {
-		Optional<Application> app = appRepo.getAppById(companyID, appID);
-		if(app.isPresent()) {
-			appRepo.updateById(companyID,appID );
-			//throw new BusinessException("Msg_224");
-		}else {
-			throw new BusinessException("K ton tai");
-		}
-		
-		
-		
+		Application app = appRepo.getAppById(companyID, appID).get();
+		app.setReflectPerState(ReflectPlanPerState.CANCELED);
+		appRepo.updateApplication(app);
 	}
 
 }

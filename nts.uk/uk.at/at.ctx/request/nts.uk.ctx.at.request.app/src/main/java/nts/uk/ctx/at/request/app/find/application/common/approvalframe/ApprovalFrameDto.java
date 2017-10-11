@@ -47,4 +47,11 @@ public class ApprovalFrameDto {
 				.collect(Collectors.toList())
 				,null,null,null);
 	}
+	public static ApprovalFrame toEntity(ApprovalFrameDto entity){
+		return new ApprovalFrame(entity.getCompanyID(), 
+				entity.getFrameID(), 
+				entity.getDispOrder(), 
+				entity.getListApproveAcceptedDto() == null?null:entity.getListApproveAcceptedDto().stream().map(x ->ApproveAcceptedDto.toEntity(x)).collect(Collectors.toList()));
+	}
+	
 }

@@ -18,32 +18,14 @@ import nts.uk.ctx.at.shared.dom.ot.autocalsetting.wkpjob.WkpJobAutoCalSettingGet
 /**
  * The Class WkpJobAutoCalSetCommand.
  */
-
-/**
- * Sets the rest time.
- *
- * @param restTime the new rest time
- */
 @Setter
-
-/**
- * Gets the rest time.
- *
- * @return the rest time
- */
-
-/**
- * Gets the rest time.
- *
- * @return the rest time
- */
 @Getter
 public class WkpJobAutoCalSetCommand {
 
-	/** The wkp. */
+	/** The wkp id. */
 	private String wkpId;
 
-	/** The job. */
+	/** The job id. */
 	private String jobId;
 
 	/** The normal OT time. */
@@ -110,7 +92,7 @@ public class WkpJobAutoCalSetCommand {
 		 */
 		@Override
 		public AutoCalOvertimeSetting getNormalOTTime() {
-			return this.command.getNormalOTTime().toDomain(companyId);
+			return this.command.getNormalOTTime().toDomain();
 		}
 
 		/*
@@ -121,7 +103,7 @@ public class WkpJobAutoCalSetCommand {
 		 */
 		@Override
 		public AutoCalFlexOvertimeSetting getFlexOTTime() {
-			return this.command.getFlexOTTime().toDomain(companyId);
+			return this.command.getFlexOTTime().toDomain();
 		}
 
 		/*
@@ -132,7 +114,7 @@ public class WkpJobAutoCalSetCommand {
 		 */
 		@Override
 		public AutoCalRestTimeSetting getRestTime() {
-			return this.command.getRestTime().toDomain(companyId);
+			return this.command.getRestTime().toDomain();
 		}
 
 		/* (non-Javadoc)
@@ -147,7 +129,7 @@ public class WkpJobAutoCalSetCommand {
 		 * @see nts.uk.ctx.at.schedule.dom.shift.autocalsetting.WkpJobAutoCalSettingGetMemento#getPositionId()
 		 */
 		@Override
-		public JobTitleId getPositionId() {
+		public JobTitleId getJobId() {
 			return new JobTitleId(this.command.getJobId());
 		}
 

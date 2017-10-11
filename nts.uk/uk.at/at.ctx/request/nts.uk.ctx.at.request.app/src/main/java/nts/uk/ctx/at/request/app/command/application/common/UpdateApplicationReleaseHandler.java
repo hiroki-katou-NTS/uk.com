@@ -30,14 +30,14 @@ public class UpdateApplicationReleaseHandler extends CommandHandler<ApplicationD
 
 	@Override
 	protected void handle(CommandHandlerContext<ApplicationDto> context) {
-		String companyID = AppContexts.user().companyId();
-		String loginID = AppContexts.user().userId();
-		Application application = appRepo.getAppById(companyID, context.getCommand().getApplicationID()).get();
+		//String loginID = AppContexts.user().userId();
+		String employeeId = AppContexts.user().employeeId();
+		Application application =  ApplicationDto.toEntity(context.getCommand());
 		
 		//10.1
 		beforeProcessReleasingRepo.detailScreenProcessBeforeReleasing();
 		//10.2
-		detailAfterRelease.detailAfterRelease(application, loginID);
+		detailAfterRelease.detailAfterRelease(application, employeeId);
 	}
 
 }

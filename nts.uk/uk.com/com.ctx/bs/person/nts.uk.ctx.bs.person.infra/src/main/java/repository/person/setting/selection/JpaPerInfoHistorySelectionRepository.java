@@ -7,12 +7,10 @@ import javax.ejb.Stateless;
 
 import entity.person.setting.selection.PpemtHistorySelection;
 import entity.person.setting.selection.PpemtHistorySelectionPK;
-import entity.person.setting.selection.PpemtSelectionItem;
-import entity.person.setting.selection.PpemtSelectionItemPK;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoHistorySelection;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoHistorySelectionRepository;
-import nts.uk.ctx.bs.person.dom.person.setting.selection.PerInfoSelectionItem;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelection;
+import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelectionRepository;
 
 @Stateless
 public class JpaPerInfoHistorySelectionRepository extends JpaRepository implements PerInfoHistorySelectionRepository {
@@ -20,6 +18,9 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 	private static final String SELECT_ALL = "SELECT si FROM PpemtHistorySelection si";
 	private static final String SELECT_ALL_HISTORY_SELECTION = SELECT_ALL
 			+ " WHERE si.selectionItemId = :selectionItemId";
+	
+	private static final String SELECT_ALL_HISTORY_STARTDATE_SELECTION = SELECT_ALL
+			+ " WHERE si.startDate < :startDate";
 	
 	
 	@Override
@@ -55,5 +56,13 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 		PpemtHistorySelectionPK key = new PpemtHistorySelectionPK(domain.getHistId());
 		return new PpemtHistorySelection(key, domain.getSelectionItemId(), domain.getCompanyCode(), domain.getEndDate(),
 				domain.getStartDate());
+	}
+
+	// historyStartDateSelection
+	@Override
+	public List<PerInfoHistorySelection> historyStartDateSelection(GeneralDate startDate) {
+		// TODO Auto-generated method stub
+		return this.queryProxy().query(SELECT_ALL_HISTORY_STARTDATE_SELECTION, PpemtHistorySelection.class)
+				.setParameter("startDate", startDate).getList(c -> toDomain(c));
 	}
 }

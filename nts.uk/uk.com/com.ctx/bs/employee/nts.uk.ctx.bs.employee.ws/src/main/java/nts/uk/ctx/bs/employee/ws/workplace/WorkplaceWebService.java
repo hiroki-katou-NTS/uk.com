@@ -12,15 +12,16 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.bs.employee.app.command.workplace.DeleteWkpHistoryCommand;
-import nts.uk.ctx.bs.employee.app.command.workplace.DeleteWkpHistoryCommandHandler;
-import nts.uk.ctx.bs.employee.app.command.workplace.SaveWkpHistoryCommand;
-import nts.uk.ctx.bs.employee.app.command.workplace.SaveWkpHistoryCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.workplace.DeleteWorkplaceCommand;
+import nts.uk.ctx.bs.employee.app.command.workplace.DeleteWorkplaceCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.workplace.SaveWorkplaceCommand;
+import nts.uk.ctx.bs.employee.app.command.workplace.SaveWorkplaceCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.workplace.config.history.DeleteWkpHistoryCommand;
+import nts.uk.ctx.bs.employee.app.command.workplace.config.history.DeleteWkpHistoryCommandHandler;
+import nts.uk.ctx.bs.employee.app.command.workplace.config.history.SaveWkpHistoryCommand;
+import nts.uk.ctx.bs.employee.app.command.workplace.config.history.SaveWkpHistoryCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.workplace.BSWorkplaceFinder;
-import nts.uk.ctx.bs.employee.app.find.workplace.dto.WkpInfoFindObject;
 import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceDto;
-import nts.uk.ctx.bs.employee.app.find.workplace.dto.WorkplaceInfoDto;
-import nts.uk.ctx.bs.employee.app.find.workplace.info.WorkplaceInfoFinder;
 
 /**
  * The Class WorkplaceWebService.
@@ -41,9 +42,13 @@ public class WorkplaceWebService extends WebService {
 	@Inject
 	private BSWorkplaceFinder workplaceFinder;
 	
-	/** The workplace info finder. */
+	/** The save wkp command handler. */
 	@Inject
-	private WorkplaceInfoFinder workplaceInfoFinder;
+	private SaveWorkplaceCommandHandler saveWkpCommandHandler;
+	
+	/** The delete wkp command handler. */
+	@Inject
+	private DeleteWorkplaceCommandHandler deleteWkpCommandHandler;
 	
 	/**
 	 * Adds the workplace history.
@@ -69,18 +74,6 @@ public class WorkplaceWebService extends WebService {
 	}
 	
 	/**
-	 * Gets the workplace info by history id.
-	 *
-	 * @param findObj the find obj
-	 * @return the workplace info by history id
-	 */
-	@Path("findHistInfo")
-	@POST
-	public WorkplaceInfoDto getWorkplaceInfoByHistoryId(WkpInfoFindObject findObj) {
-		return this.workplaceInfoFinder.find(findObj);
-	}
-	
-	/**
 	 * Save wkp history.
 	 *
 	 * @param command the command
@@ -100,5 +93,27 @@ public class WorkplaceWebService extends WebService {
     @POST
     public void removeWkpHistory(DeleteWkpHistoryCommand command) {
         this.deleteWkpHistoryHandler.handle(command);
+    }
+	
+	/**
+	 * Save workplace.
+	 *
+	 * @param command the command
+	 */
+	@Path("save")
+    @POST
+    public void saveWorkplace(SaveWorkplaceCommand command) {
+        this.saveWkpCommandHandler.handle(command);
+    }
+	
+	/**
+	 * Delete workplace.
+	 *
+	 * @param command the command
+	 */
+	@Path("remove")
+    @POST
+    public void deleteWorkplace(DeleteWorkplaceCommand command) {
+        this.deleteWkpCommandHandler.handle(command);
     }
 }
