@@ -10,6 +10,10 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 public class EmployeeFileManagement extends AggregateRoot{
 	
+	/**
+	 * domain : 社員ファイル管理
+	 */
+	
 	/** The employeeId 社員ID */
 	private String sId;
 	

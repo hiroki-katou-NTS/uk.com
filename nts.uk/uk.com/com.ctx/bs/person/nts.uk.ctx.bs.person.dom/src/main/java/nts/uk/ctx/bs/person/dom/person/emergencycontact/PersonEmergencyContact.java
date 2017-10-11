@@ -9,14 +9,14 @@ import nts.uk.ctx.bs.person.dom.person.info.PersonMailAddress;
 import nts.uk.ctx.bs.person.dom.person.info.PersonMobile;
 import nts.uk.ctx.bs.person.dom.person.info.personnamegroup.PersonName;
 
-/**
- * The class Person Emergecy Contact - 緊急連絡先
- *
- */
+
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 public class PersonEmergencyContact extends AggregateRoot {
+	
+	/**
+	 * domain : 緊急連絡先
+	 */
 
 	/** 緊急連絡先ID */
 	private String emgencyContactId;
