@@ -71,6 +71,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
         //item InputCommandEvent
         appReasonEvent: KnockoutObservable<String>;
+        
+        approvalList: Array<model.AppApprovalPhase> = [];
 
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             let self = this;
@@ -282,6 +284,41 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 //                data.listOutputPhaseAndFrame = temp;
                 self.dataApplication(data);
                 self.appType(data.applicationType);
+                self.dataApplication(data);
+                let listPhase = self.dataApplication().listPhase; 
+                let approvalList = [];
+                for(let x = 1; x <= listPhase.length; x++){
+                    let phaseLoop = listPhase[x-1];
+                    let appPhase = new model.AppApprovalPhase(
+                        phaseLoop.appID,
+                        phaseLoop.phaseID,
+                        phaseLoop.approvalForm,
+                        phaseLoop.dispOrder,
+                        phaseLoop.approvalATR,
+                        []); 
+                    for(let y = 1; y <= phaseLoop.listFrame.length; y++){
+                        let frameLoop = phaseLoop.listFrame[y-1];
+                        let appFrame = new model.ApprovalFrame(
+                            frameLoop.frameID,
+                            frameLoop.dispOrder,
+                            []);
+                        for(let z = 1; z <= phaseLoop.listFrame.length; z++){
+                            let acceptedLoop = phaseLoop.listApproveAccepted[z-1];
+                            let appAccepted = new model.ApproveAccepted(
+                                acceptedLoop.appAccedtedID,
+                                acceptedLoop.approverSID,
+                                acceptedLoop.approvalATR,
+                                acceptedLoop.confirmATR,
+                                acceptedLoop.approvalDate,
+                                acceptedLoop.reason,
+                                acceptedLoop.representerSID);
+                            appFrame.listApproveAccepted.push(appAccepted);
+                        }
+                        appPhase.listFrame.push(appFrame);   
+                    };
+                    approvalList.push(appPhase);    
+                };
+                self.approvalList = approvalList;
                 dfd.resolve(data);
             }).fail(function(res: any) {
                 nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });

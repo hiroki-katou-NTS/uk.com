@@ -45,7 +45,8 @@ module nts.uk.at.view.kaf002.cm {
                             appStampData.applicationDate,
                             appStampData.titleReason,
                             appStampData.detailReason,
-                            appStampData.employeeID
+                            appStampData.employeeID,
+                            appStampDate.version
                         ));
                     }
                     self.stampRequestMode(appStampData.stampRequestMode);
@@ -86,6 +87,7 @@ module nts.uk.at.view.kaf002.cm {
                     }); 
                 });
                 self.approvalList = approvalList;
+                $('.cm-memo').focus();
             }
             
             register(){

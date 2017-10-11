@@ -163,24 +163,24 @@ module nts.uk.at.view.kaf002.shr {
             approvalForm: number;
             dispOrder: number;
             approvalATR: number;
-            approvalFrameCmds: Array<ApprovalFrame>;   
-            constructor(phaseID: string, approvalForm: number, dispOrder: number, approvalATR: number, approvalFrameCmds: Array<ApprovalFrame>){
+            listFrame: Array<ApprovalFrame>;   
+            constructor(phaseID: string, approvalForm: number, dispOrder: number, approvalATR: number, listFrame: Array<ApprovalFrame>){
                 this.phaseID = phaseID;
                 this.approvalForm = approvalForm;
                 this.dispOrder = dispOrder;
                 this.approvalATR = approvalATR;
-                this.approvalFrameCmds = approvalFrameCmds;     
+                this.listFrame = listFrame;     
             }
         }
         
         export class ApprovalFrame {
             frameID: string;
             dispOrder: number;
-            approveAcceptedCmds: Array<ApproveAccepted>;
-            constructor(frameID: string, dispOrder: number, approveAcceptedCmds: Array<ApproveAccepted>){
+            listApproveAccepted: Array<ApproveAccepted>;
+            constructor(frameID: string, dispOrder: number, listApproveAccepted: Array<ApproveAccepted>){
                 this.frameID = frameID;
                 this.dispOrder = dispOrder; 
-                this.approveAcceptedCmds = approveAcceptedCmds;   
+                this.listApproveAccepted = listApproveAccepted;   
             }     
         }
         

@@ -26,37 +26,7 @@ module nts.uk.at.view.kaf002.b {
                         employmentRootAtr, 
                         applicationType, 
                         moment(new Date()).format("YYYY/MM/DD")).done(()=>{
-                        let listPhase = self.kaf000_a2.approvalRoot().beforeApprovers; 
-                        let approvalList = [];
-                        for(let x = 1; x <= listPhase.length; x++){
-                            let phaseLoop = listPhase[x-1];
-                            let appPhase = new vmbase.AppApprovalPhase(
-                                "",
-                                phaseLoop.approvalForm,
-                                x,
-                                0,
-                                []); 
-                            for(let y = 1; y <= phaseLoop.approvers.length; y++){
-                                let frameLoop = phaseLoop.approvers[y-1];
-                                let appFrame = new vmbase.ApprovalFrame(
-                                    "",
-                                    y,
-                                    []);
-                                let appAccepted = new vmbase.ApproveAccepted(
-                                    "",
-                                    frameLoop.sid,
-                                    0,
-                                    frameLoop.confirmPerson ? 1 : 0,
-                                    "",
-                                    "",
-                                    frameLoop.sid);
-                                appFrame.approveAcceptedCmds.push(appAccepted);
-                                appPhase.approvalFrameCmds.push(appFrame);   
-                            };
-                            approvalList.push(b);    
-                        };
-                        
-                        self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, approvalList);    
+                        self.cm.start(commonSet, {'stampRequestMode': self.stampRequestMode }, self.kaf000_a2.approvalList);    
                     }).fail(function(res) { 
                         nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                     });   
