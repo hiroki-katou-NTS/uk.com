@@ -35,7 +35,11 @@ module cps002.g.vm {
                 cardNoLetter: parseInt(self.cardNoValue()) != 1 ? "" : self.txtCardNo(),
                 recentRegType: parseInt(self.selectedRuleCode())
             };
-            service.setUserSetting(command);
+            service.setUserSetting(command).done(function(){
+                setShared("userSettingStatus", true);
+                })
+            .fail(function(){setShared("userSettingStatus", false);})
+            .always(function(){ self.close();});
         }
         close(){close();}
         
