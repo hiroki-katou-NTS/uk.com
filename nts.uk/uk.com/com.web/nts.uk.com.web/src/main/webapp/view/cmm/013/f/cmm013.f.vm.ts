@@ -11,7 +11,7 @@ module nts.uk.com.view.cmm013.f {
             // Store create/update mode
             createMode: KnockoutObservable<boolean>;
             
-            columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;            
+            columns: KnockoutObservableArray<any>;  //nts.uk.ui.NtsGridListColumn
             items: KnockoutObservableArray<SequenceMaster>; 
             currentCode: KnockoutObservable<string>; 
             
@@ -105,10 +105,10 @@ module nts.uk.com.view.cmm013.f {
                 _self.enable_F1_1(!newValue);
                 _self.enable_F1_4(!newValue);
                 _self.enable_F3_2(newValue);
-                if(newValue) {
+                if (newValue) {
                     _self.sequenceCode("");
                     _self.sequenceName("");   
-                }
+                }                                
             }
             
             /**
@@ -197,7 +197,7 @@ module nts.uk.com.view.cmm013.f {
                                 } else {
                                     // Create mode
                                     _self.createMode(true);
-                                    _self.items(null);
+                                    _self.items([]);
                                     _self.currentCode(null);
                                 }                                        
                             })
@@ -250,7 +250,7 @@ module nts.uk.com.view.cmm013.f {
                                     } else {
                                         // Create mode
                                         _self.createMode(true);
-                                        _self.items(null);
+                                        _self.items([]);
                                         _self.currentCode(null);
                                     }     
                                 })

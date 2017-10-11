@@ -58,6 +58,9 @@ public class SaveWorkplaceCommand {
      * @return the creates the type
      */
     public CreateWorkpceType getCreateType() {
+        if (this.createType == null) {
+            return CreateWorkpceType.CREATE_TO_LIST;
+        }
         return CreateWorkpceType.valueOf(this.createType);
     }
 

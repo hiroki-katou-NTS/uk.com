@@ -816,6 +816,7 @@ module nts.uk.com.view.cmm018.a {
                 console.log(obj);
                 self.approverInfor([]);
                 let approvalAtr = obj.approver[0] == null ? 0 : obj.approver[0].approvalAtr;
+                let formSetting = obj.approvalForm == 0 ? 1 : obj.approvalForm;
                 if(approvalAtr == 0){//person
                     _.each(obj.approver, function(item){
                         self.approverInfor.push(item.employeeId);
@@ -825,16 +826,22 @@ module nts.uk.com.view.cmm018.a {
                         self.approverInfor.push(item.jobTitleId);
                     });
                 }
-                this.find
+                let appType = __viewContext.viewModel.viewmodelB.findAppbyValue(appTypeValue);
+                let appTypeName;
+                if(appType != undefined){
+                    appTypeName = appType.localizedName;
+                }else{
+                    appTypeName = '共通';
+                }
                 //確定者 code
                 self.confirmedPerson(obj.approvalForm);
                 setShared("CMM018K_PARAM", { 
-                                        appTypeName: "0", //設定する対象申請名 
-                                        formSetting: 2,//1: 全員確認、2：誰か一人
+                                        appTypeName: appTypeName, //設定する対象申請名 
+                                        formSetting: formSetting,//1: 全員確認、2：誰か一人
                                         approverInfor: self.approverInfor(),//承認者一覧
                                         confirmedPerson: self.confirmedPerson, //確定者
                                         selectTypeSet: approvalAtr, //職位指定（1）、個人指定（0）
-                                        tab: 0//０：会社、１：職場、２：個人
+                                        tab: self.tabSelected()//０：会社、１：職場、２：個人
                                         });
                 modal("/view/cmm/018/k/index.xhtml").onClosed(() => {
                     self.approverInfor([]);
@@ -1724,6 +1731,7 @@ module nts.uk.com.view.cmm018.a {
                 let self = this;
                 self.approverInfor([]);
                 let approvalAtr = obj.approver[0] == null ? 0 : obj.approver[0].approvalAtr;
+                let formSetting = obj.approvalForm == 0 ? 1 : obj.approvalForm;
                 if(approvalAtr == 0){//person
                     _.each(obj.approver, function(item){
                         self.approverInfor.push(item.employeeId);
@@ -1733,15 +1741,22 @@ module nts.uk.com.view.cmm018.a {
                         self.approverInfor.push(item.jobTitleId);
                     });
                 }
+                let appType = self.findAppbyValue(appTypeValue);
+                let appTypeName;
+                if(appType != undefined){
+                    appTypeName = appType.localizedName;
+                }else{
+                    appTypeName = '共通';
+                }
                 //確定者 code
                 self.confirmedPerson(obj.approvalForm);
                 setShared("CMM018K_PARAM", { 
-                                        appType: "0", //設定する対象申請名 
-                                        formSetting: 1,//1: 全員確認、2：誰か一人
+                                        appTypeName: appTypeName, //設定する対象申請名 
+                                        formSetting: formSetting,//1: 全員確認、2：誰か一人
                                         approverInfor: self.approverInfor(),//承認者一覧
                                         confirmedPerson: self.confirmedPerson, //確定者
                                         selectTypeSet: approvalAtr, //職位指定（1）、個人指定（0）
-                                        tab: 0//０：会社、１：職場、２：個人
+                                        tab: self.tabSelectedB()//０：会社、１：職場、２：個人
                                         });
                 modal("/view/cmm/018/k/index.xhtml").onClosed(() => {
                     self.approverInfor([]);
@@ -1869,7 +1884,7 @@ module nts.uk.com.view.cmm018.a {
                 let name = '';
                 let typeApp = null;
                 let lstAppType = [];
-                if(self.singleSelectedCode() == nts.uk.resource.getText("CMM018_7")){//2
+                if(self.singleSelectedCode() == nts.uk.resource.getText("CMM018_7") || self.singleSelectedCode() == null){//2
                     nts.uk.ui.dialog.alertError({ messageId: "Msg_181" });
                     return;
                 }
@@ -1887,6 +1902,7 @@ module nts.uk.com.view.cmm018.a {
                             sDate = itemLast.person.startDate;
                         }
                     }
+                    name = typeApp == null ? '共通ルート' : nts.uk.resource.getText("CMM018_7");
                 }else{
                     if(self.tabSelectedB() == 0){
                         if(itemCurrent !== undefined){
@@ -2220,16 +2236,6 @@ module nts.uk.com.view.cmm018.a {
                         self.tabSelectedB(vmbase.RootType.WORKPLACE);
                         self.workplaceIdB(id);
                         self.getDataWorkplacePr();
-//                        self.getDataWorkplacePr().done(function(data){
-//                            //list left
-//                            _.each(self.lstWorkplace(), function(item){
-//                                lstRoot.push(new vmbase.DataCheckModeB(item.workplace.approvalId, item.workplace.startDate,
-//                                    item.workplace.endDate, item.workplace.applicationType, item.workplace.employmentRootAtr));
-//                            });
-//                            //list right
-//                             let com = self.findRootWpD(self.singleSelectedCode());
-//                            self.dataDisplay(self.convert(lstRoot));
-//                        });;
                     }
                     //TH: tab person
                     else{

@@ -15,4 +15,7 @@ public class BsymtWkpConfigInfo_ {
 
 	/** The bsymt wkp config info PK. */
 	public static volatile SingularAttribute<BsymtWkpConfigInfo, BsymtWkpConfigInfoPK> bsymtWkpConfigInfoPK;
+	
+	/** The hierarchy cd. */
+	public static volatile SingularAttribute<BsymtWkpConfigInfo, String> hierarchyCd;
 }

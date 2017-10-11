@@ -79,8 +79,9 @@ public class DeleteWorkplaceCommandHandler extends CommandHandler<DeleteWorkplac
                     command.getStartDWkpConfigInfo().addDays(dayOfAgo));
         }
         
-        // TODO: delete workplace hierarchy
-        
+        // delete workplace hierarchy that workplace is selected.
+        this.wkpConfigInfoRepo.removeWkpHierarchy(companyId, command.getHistoryIdWkpConfigInfo(),
+                command.getWkpIdSelected());
     }
 
     /**
