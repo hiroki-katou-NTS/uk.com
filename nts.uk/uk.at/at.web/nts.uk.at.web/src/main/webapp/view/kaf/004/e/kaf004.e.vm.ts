@@ -1,7 +1,9 @@
 module nts.uk.at.view.kaf004.e.viewmodel {
+    import model = nts.uk.at.view.kaf000.b.viewmodel.model;
+    import service = nts.uk.at.view.kaf004.b.service;
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
         // date editor
-        date: KnockoutObservable<string>;
+        date1: KnockoutObservable<string>;
         //latetime editor
         lateTime1: KnockoutObservable<number>;
         lateTime2: KnockoutObservable<number>;
@@ -27,13 +29,13 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         //Show Screen
         showScreen: string;
         
-        constructor(appType:number) {
-            super(appType);
+        constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
+            super(listAppMetadata, currentApp);
             var self = this;
             //check sendMail
             self.sendMail = ko.observable(true);
             //date editor
-            self.date = ko.observable("");
+            self.date1 = ko.observable("2017/01/01");
             //time editor
             self.lateTime1 = ko.observable(0);
             self.lateTime2 = ko.observable(0);
@@ -55,6 +57,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             self.appreason = ko.observable('');
             //Show Screen
             self.showScreen = __viewContext.transferred.value.showScreen;
+            self.startPage();
         }
         
         update(): JQueryPromise<any> {
@@ -80,7 +83,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
-                    appDate: self.date(),
+                    appDate: self.date1(),
                     sendMail: self.sendMail(),
                     late1: self.late1() ? 1 : 0,
                     lateTime1: self.lateTime1(),

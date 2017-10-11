@@ -1,4 +1,5 @@
 module nts.uk.at.view.kaf002.c {
+    import model = nts.uk.at.view.kaf000.b.viewmodel.model;
     import service = nts.uk.at.view.kaf002.shr.service;
     import kaf000 = nts.uk.at.view.kaf000;
     import kaf002 = nts.uk.at.view.kaf002;
@@ -6,8 +7,8 @@ module nts.uk.at.view.kaf002.c {
     export module viewmodel {
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
             cm: kaf002.cm.viewmodel.ScreenModel;
-            constructor(appType: number) {
-                super(appType);
+            constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
+                super(listAppMetadata, currentApp);
                 var self = this;
                 self.appID.subscribe(value=>{
                     if(self.appType()==7){
