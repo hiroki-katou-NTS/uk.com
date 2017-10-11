@@ -20,6 +20,15 @@ public interface ScheduleErrorLogRepository {
 	List<ScheduleErrorLog> findByExecutionId(String executionId);
 	
 	/**
+	 * Find by employee id.
+	 *
+	 * @param executionId the execution id
+	 * @param employeeId the employee id
+	 * @return the list
+	 */
+	public List<ScheduleErrorLog> findByEmployeeId(String executionId, String employeeId);
+	
+	/**
 	 * Distinct error by execution id.
 	 *
 	 * @param executionId the execution id

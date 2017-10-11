@@ -21,6 +21,7 @@ import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleExecutionLogFinder;
+import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogInfoDto;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSet;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSetRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
@@ -72,7 +73,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	@Inject
 	private ScheduleErrorLogRepository scheduleErrorLogRepository;
 	
-	/** The personal work schedule cre set repository. */
+	/** The cre set repository. */
 	@Inject
 	private PersonalWorkScheduleCreSetRepository creSetRepository;
 	
@@ -80,7 +81,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	@Inject
 	private BasicScheduleRepository basicScheduleRepository;
 	
-	/** The schedule management control repository. */
+	/** The control repository. */
 	@Inject
 	private ScheduleManagementControlRepository controlRepository;
 	
@@ -100,7 +101,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	
 	/** The content. */
 	private ScheduleCreateContent content;
-	
+		
 	/** The to date. */
 	private Date toDate;
 	
@@ -179,34 +180,36 @@ public class ScheduleCreatorExecutionCommandHandler
 	private void registerPersonalSchedule(ScheduleExecutionLog scheduleExecutionLog,
 			List<ScheduleCreator> scheduleCreators) {
 		scheduleCreators.forEach(domain -> {
-			
 			Optional<ScheduleManagementControl> optionalScheduleManagementControl = this.controlRepository
 					.findById(domain.getEmployeeId());
-			
+
 			// check exist data schedule management control
-			if(optionalScheduleManagementControl.isPresent()){
+			if (optionalScheduleManagementControl.isPresent()) {
 				ScheduleManagementControl scheduleManagementControl = optionalScheduleManagementControl
 						.get();
-				
+
 				// check use manager control use
-				if(scheduleManagementControl.getScheduleManagementAtr().equals(UseAtr.USE)){
-					
+				if (scheduleManagementControl.getScheduleManagementAtr().equals(UseAtr.USE)) {
+
 					// check processExecutionAtr reconfig
-					if(content.getReCreateContent().getProcessExecutionAtr().value == ProcessExecutionAtr.RECONFIG.value){
+					if (content.getReCreateContent()
+							.getProcessExecutionAtr().value == ProcessExecutionAtr.RECONFIG.value) {
 						this.resetSchedule();
-					}else {
-						
-						// check parameter CreateMethodAtr 
-						if (content.getCreateMethodAtr().value == CreateMethodAtr.PERSONAL_INFO.value) {
-							this.createScheduleBasedPerson(scheduleExecutionLog);
+					} else {
+
+						// check parameter CreateMethodAtr
+						if (content
+								.getCreateMethodAtr().value == CreateMethodAtr.PERSONAL_INFO.value) {
+							this.createScheduleBasedPerson(domain, scheduleExecutionLog);
 						}
 					}
 				}
 			}
 			domain.updateToCreated();
 			this.scheduleCreatorRepository.update(domain);
-			setter.updateData(SUCCESS_CNT, this.finder
-					.findInfoById(scheduleExecutionLog.getExecutionId()).getTotalNumberCreated());
+			ScheduleExecutionLogInfoDto dto = this.finder.findInfoById(scheduleExecutionLog.getExecutionId());
+			setter.updateData(SUCCESS_CNT, dto.getTotalNumberCreated());
+			setter.updateData(FAIL_CNT, dto.getTotalNumberError());
 		});
 		this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
 	}
@@ -244,9 +247,9 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @param domain the domain
 	 */
 	// 個人情報をもとにスケジュールを作成する
-	private void createScheduleBasedPerson(ScheduleExecutionLog domain) {
+	private void createScheduleBasedPerson(ScheduleCreator creator, ScheduleExecutionLog domain) {
 		Optional<PersonalWorkScheduleCreSet> optionalPersonalWorkScheduleCreSet = this.creSetRepository
-				.findById(domain.getExecutionEmployeeId());
+				.findById(creator.getEmployeeId());
 		
 		// check exist data PersonalWorkScheduleCreSet
 		if (optionalPersonalWorkScheduleCreSet.isPresent()) {
@@ -342,8 +345,12 @@ public class ScheduleCreatorExecutionCommandHandler
 		// check 営業日カレンダーの参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
 		if (personalWorkScheduleCreSet.getWorkScheduleBusCal().getReferenceBusinessDayCalendar()
 				.equals(WorkScheduleMasterReferenceAtr.WORKPLACE)) {
-			this.scheduleErrorLogRepository.add(
-					this.toScheduleErrorLog(personalWorkScheduleCreSet.getEmployeeId(), "Msg_602"));
+			List<ScheduleErrorLog> errorLogs = this.scheduleErrorLogRepository.findByEmployeeId(
+					content.getExecutionId(), personalWorkScheduleCreSet.getEmployeeId());
+			if (CollectionUtil.isEmpty(errorLogs)) {
+				this.scheduleErrorLogRepository.add(this
+						.toScheduleErrorLog(personalWorkScheduleCreSet.getEmployeeId(), "Msg_602"));
+			}
 		} else
 		// CLASSIFICATION
 		{
@@ -354,7 +361,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	/**
 	 * To schedule error log.
 	 *
-	 * @param personalWorkScheduleCreSet the personal work schedule cre set
+	 * @param employeeId the employee id
 	 * @param messageId the message id
 	 * @return the schedule error log
 	 */
@@ -378,7 +385,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			 */
 			@Override
 			public String getErrorContent() {
-				return internationalization.getItemName(messageId).get();
+				return internationalization.getMessage(messageId).get();
 			}
 
 			/**
