@@ -38,12 +38,15 @@ public class LateOrLeaveEarlyFinder {
 	@Inject 
 	private EmployeeAdapter employeeAdapter;
 	
+	/** アルゴリズム「1-1.新規画面起動前申請共通設定を取得する」を実行する (Thực thi 「1-1.新規画面起動前申請共通設定を取得する」) */
 	@Inject
 	private BeforePrelaunchAppCommonSet beforePrelaunchAppCommonSet;
 	
+	/** アルゴリズム「1-4.新規画面起動時の承認ルート取得パターン」を実行する (Thực thi 「1-4.新規画面起動時の承認ルート取得パターン」) */
 	@Inject
 	private StartApprovalRootService startApprovalRootService;
 	
+	/** アルゴリズム「1-5.新規画面起動時のエラーチェック」を実行する (Thực thi 「1-5.新規画面起動時のエラーチェック」) */
 	@Inject
 	private  StartCheckErrorService  startCheckErrorService;
 
@@ -53,10 +56,14 @@ public class LateOrLeaveEarlyFinder {
 		String applicantName = employeeAdapter.getEmployeeName(employeeID);
 	
 		AppCommonSettingOutput appCommonSettingOutput = beforePrelaunchAppCommonSet.prelaunchAppCommonSetService(companyID, employeeID, 1, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION, null);
+		 
 		
+		startApprovalRootService.getApprovalRootPattern(companyID, employeeID, 1, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value, null);
 		
+		startCheckErrorService.checkError(ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
 		
 		List<ApplicationReason> applicationReasons = applicationReasonRepository.getReasonByAppType(companyID, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
+		
 		List<ApplicationReasonDto> listApplicationReasonDto = applicationReasons.stream()
 																.map(r -> new ApplicationReasonDto(r.getReasonID(), r.getReasonTemp()))
 																.collect(Collectors.toList());

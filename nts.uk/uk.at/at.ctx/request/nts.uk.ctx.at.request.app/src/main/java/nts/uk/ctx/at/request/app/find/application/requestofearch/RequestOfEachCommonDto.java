@@ -16,6 +16,8 @@ import nts.uk.ctx.at.request.dom.setting.requestofearch.RequestOfEachCommon;
 @AllArgsConstructor
 @Getter
 public class RequestOfEachCommonDto {
+	@Setter
+	@Getter
 	List<RequestAppDetailSettingDto> requestOfEachCommonDtos;
 
 	public static RequestOfEachCommonDto convertToDto(RequestOfEachCommon domain) {

@@ -143,9 +143,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let dfdMessageDeadline = self.getMessageDeadline(self.appType());
             let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
             let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
-            let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
+            // let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
 
-            $.when(dfdAllReasonByAppID, dfdAllDataByAppID, dfdGetDetailCheck).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData, dfdGetDetailCheckData) => {
+            $.when(dfdAllReasonByAppID, dfdAllDataByAppID).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData) => {
 
                 //self.checkDisplayStart();
                 dfd.resolve();
@@ -284,7 +284,6 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 //                data.listOutputPhaseAndFrame = temp;
                 self.dataApplication(data);
                 self.appType(data.applicationType);
-                self.dataApplication(data);
                 let listPhase = self.dataApplication().listPhase; 
                 let approvalList = [];
                 for(let x = 1; x <= listPhase.length; x++){
