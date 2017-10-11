@@ -131,20 +131,22 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 		List<PersonInfoItemDetail> newItemList = itemList.stream().filter(x -> x.getItemParentCd() == null)
 				.collect(Collectors.toList());
 
-		setItemList.forEach(i -> {
-			PersonInfoItemDetail newItem = newItemList.stream().filter(ni -> ni.getItemCd().equals(i.getItemParentCd()))
-					.findFirst().get();
-			if (newItem != null) {
+		if (!newItemList.isEmpty()) {
+			setItemList.forEach(i -> {
+				PersonInfoItemDetail newItem = newItemList.stream()
+						.filter(ni -> ni.getItemCd().equals(i.getItemParentCd())).findFirst().get();
+				if (newItem != null) {
 
-				if (newItem.getSetItems() == null) {
-					List<PersonInfoItemDetail> newList = new ArrayList<PersonInfoItemDetail>();
-					newList.add(i);
-					newItem.setSetItems(newList);
-				} else {
-					newItem.getSetItems().add(i);
+					if (newItem.getSetItems() == null) {
+						List<PersonInfoItemDetail> newList = new ArrayList<PersonInfoItemDetail>();
+						newList.add(i);
+						newItem.setSetItems(newList);
+					} else {
+						newItem.getSetItems().add(i);
+					}
 				}
-			}
-		});
+			});
+		}
 
 		return newItemList;
 	}

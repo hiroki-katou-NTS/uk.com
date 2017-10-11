@@ -7,7 +7,17 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<title>#{i18n.getText('CPS008_1')}</title>
+			<com:ValidatorScript>
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionItemName
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionCodeLength
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.IntegrationCode
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionNameLength
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.SelectionExternalCDLength
+					nts.uk.ctx.bs.person.dom.person.setting.selectionitem.Memo
+			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../../007/a/layout-control-ko-ext.js" />
 			<com:stylefile path="cps017.a.style.css" />
 			<com:scriptfile path="cps017.a.service.js" />
 			<com:scriptfile path="cps017.a.start.js" />
@@ -31,28 +41,30 @@
 					data-bind="ntsPanel:{width: '270px', height: '665px',
 					direction: 'right', showIcon: true, visible: true}">
 
-					<!-- search box -->
 					<div id="search" tabindex="1"
 						data-bind="ntsSearchBox: {
 						searchMode: 'filter',
-						targetKey: 'sel_item_id',
+						targetKey: 'selectionItemName',
 						mode: 'igGrid', 
-						comId: 'grid',
-						items: sel_item_lst ,  
-						selectedKey: 'sel_item_id',
-						fields: ['sel_item_id', 'sel_item_name']}" />
+						comId: 'single-list',
+						items: listItems ,  
+						selected: perInfoSelectionItem().selectionItemId,
+						selectedKey: 'selectionItemId',
+						fields: ['selectionItemId', 'selectionItemName']}" />
 
-					<!-- selection item list -->
+
 					<table id="sel_item_grid"
-						data-bind="ntsGridList: {								
-						height: 350,
-						dataSource: sel_item_lst,
-						primaryKey: 'sel_item_id',
-						columns: item_sel_col,
-						multiple: false,
-						value: currentItemSel().current_sel_item_id,
-						showNumbering: true
-					}">
+						data-bind="ntsGridList: {
+									height: 270,
+									options: listItems,
+									primaryKey: 'selectionItemId',
+									showNumbering:true,
+									columns: [
+						                { headerText: '', key: 'selectionItemId', width: 20 ,hidden:true},
+						                { headerText: '#{i18n.getText('CPS016_7')}', key: 'selectionItemName', width: 195 }
+						            ],
+									multiple: false,
+									value: perInfoSelectionItem().selectionItemId}">
 					</table>
 
 					<span id="caret" class="caret-bottom outline"></span>
@@ -66,7 +78,7 @@
 					</div>
 
 					<!-- khu vực history list -->
-
+					<!-- 
 					<div id="history_lst"
 						data-bind="ntsListBox: {
 						options: currentItemSel().history_lst,
@@ -80,34 +92,41 @@
 							{ key: 'period', length: 15 }
 						]}">
 					</div>
-
+ -->
 				</div>
 
+
 				<!-- phần giữa của màn hình -->
-				<div id="content-center" class="pull-left">
-					<!--  tên  -->
+				<div id="content-center" class="pull-left"
+					data-bind="with: perInfoSelectionItem">
 					<div>
 						<div data-bind="ntsFormLabel: {required: true}"
 							class='distane col1'>
 							<label>#{i18n.getText('CPS017_13')}</label>
 						</div>
-						<span class='col1'> Web帳票種別</span>
+						<span class="col1" data-bind="text: selectionItemName"></span>
 					</div>
 
-					<!-- danh sách đăng kí  -->
+
 					<div id="register">
 						<span> #{i18n.getText('CPS017_14')}</span>
 					</div>
+
+					<!-- 
 					<div id="itemRegisterLst" class="caret-right caret-background">
-						<!-- selection item list -->
+						
 						<table id="item_register_grid">
 						</table>
 					</div>
+					 -->
 				</div>
 
+
+
 				<!-- phần bên phải của màn hình  -->
+				<!-- 				
 				<div id="content-right">
-					<!--  tên  -->
+					
 					<div>
 						<div data-bind="ntsFormLabel: {required: true}"
 							class='distane col1'>
@@ -115,7 +134,8 @@
 						</div>
 					</div>
 
-					<!--  nội dung mã code và name  -->
+					
+					
 					<div class="distance">
 						<input id="code"
 							data-bind="ntsTextEditor: {
@@ -131,7 +151,8 @@
 								immediate: false}" />
 					</div>
 
-					<!--  external name vs code  -->
+					
+					
 					<div class="formlabel">
 						<div data-bind="ntsFormLabel: {}" class='distane'>
 							<label>#{i18n.getText('CPS017_23')}</label>
@@ -139,7 +160,8 @@
 
 					</div>
 
-					<!--  nội dung external code  -->
+					
+					
 					<div class="distance">
 
 						<input id="externalCode"
@@ -151,7 +173,8 @@
 
 					</div>
 
-					<!--  memo  -->
+					
+					
 					<div class="formlabel">
 						<div data-bind="ntsFormLabel: {}" class='distane'>
 							<label>#{i18n.getText('CPS017_25')}</label>
@@ -159,7 +182,7 @@
 
 					</div>
 
-					<!--  nội dung memo  -->
+					
 					<div class="distance">
 
 						<textarea id="memo"
@@ -169,8 +192,8 @@
 							immediate: false}" />
 
 					</div>
+ -->
 
-				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
