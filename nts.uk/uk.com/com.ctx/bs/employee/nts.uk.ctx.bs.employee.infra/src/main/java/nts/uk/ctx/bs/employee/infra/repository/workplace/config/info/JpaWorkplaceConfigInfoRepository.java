@@ -57,6 +57,18 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository implements W
     /*
      * (non-Javadoc)
      * 
+     * @see nts.uk.ctx.bs.employee.dom.workplace.config.info.
+     * WorkplaceConfigInfoRepository#removeWkpHierarchy(java.lang.String,
+     * java.lang.String, java.lang.String)
+     */
+    @Override
+    public void removeWkpHierarchy(String companyId, String historyId, String wkpId) {
+        this.commandProxy().remove(BsymtWkpConfigInfo.class, new BsymtWkpConfigInfoPK(companyId, historyId, wkpId));
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
      * @see nts.uk.ctx.bs.employee.dom.workplace.configinfo.
      * WorkplaceConfigInfoRepository#find(java.lang.String, java.lang.String)
      */
@@ -80,6 +92,7 @@ public class JpaWorkplaceConfigInfoRepository extends JpaRepository implements W
                 root.get(BsymtWkpConfigInfo_.bsymtWkpConfigInfoPK).get(BsymtWkpConfigInfoPK_.historyId), historyId));
 
         cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+        cq.orderBy(criteriaBuilder.asc(root.get(BsymtWkpConfigInfo_.hierarchyCd)));
 
         List<BsymtWkpConfigInfo> lstEntity = em.createQuery(cq).getResultList();
         
