@@ -69,7 +69,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
                 self.ListTypeReason(data.listApplicationReasonDto);
                 dfd.resolve();
             });
-
+               
             return dfd.promise();
         }
 
@@ -80,6 +80,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
+                    applicant: string;
                     appDate: self.date(),
                     sendMail: self.sendMail(),
                     late1: self.late1() ? 1 : 0,
@@ -103,6 +104,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
 
         }
     }
+    
 
     interface TypeReason {
         reasonID: string;
@@ -110,6 +112,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
     }
 
     interface LateOrLeaveEarly {
+        applicant: string;
         appDate: string;
         sendMail: boolean
         late1: number;
