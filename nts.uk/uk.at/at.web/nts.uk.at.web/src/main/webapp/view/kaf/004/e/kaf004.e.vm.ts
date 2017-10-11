@@ -1,4 +1,6 @@
 module nts.uk.at.view.kaf004.e.viewmodel {
+    import model = nts.uk.at.view.kaf000.b.viewmodel.model;
+    import service = nts.uk.at.view.kaf004.b.service;
     export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
         // date editor
         date: KnockoutObservable<string>;
@@ -27,8 +29,8 @@ module nts.uk.at.view.kaf004.e.viewmodel {
         //Show Screen
         showScreen: string;
         
-        constructor(appType:number) {
-            super(appType);
+        constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
+            super(listAppMetadata, currentApp);
             var self = this;
             //check sendMail
             self.sendMail = ko.observable(true);
@@ -55,6 +57,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             self.appreason = ko.observable('');
             //Show Screen
             self.showScreen = __viewContext.transferred.value.showScreen;
+            self.startPage();
         }
         
         update(): JQueryPromise<any> {
