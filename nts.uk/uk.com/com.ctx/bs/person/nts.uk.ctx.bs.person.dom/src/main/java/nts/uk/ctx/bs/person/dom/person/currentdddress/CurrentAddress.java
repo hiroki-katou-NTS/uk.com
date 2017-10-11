@@ -12,32 +12,36 @@ import nts.uk.ctx.bs.person.dom.person.info.currentaddress.Perfectures;
 @AllArgsConstructor
 public class CurrentAddress extends AggregateRoot {
 
+	/**
+	 * domain : 現住所
+	 */
+	/** 現住所ID */
 	private String currentAddressId;
-
+	/** 個人ID */
 	private String pid;
-
+	/** 国 */
 	private String countryId;
-
+	/** 郵便番号*/
 	private PostalCode postalCode;
-
+	/** 電話番号 */
 	private PersonMobile phoneNumber;
-
+	/** 都道府県 */
 	private Prefectures prefectures;
-
+	/** 社宅家賃 */
 	private HouseRent houseRent;
-
+	/** 期間 */
 	private Period period;
-
+	/** 住所１*/
 	private AddressSet1 address1;
-
+	/** 住所2*/
 	private AddressSet2 address2;
-
+	/** 住宅状況種別*/
 	private HomeSituationType homeSituationType;
-
+	/** メールアドレス */
 	private PersonMailAddress personMailAddress;
-
+	/** 住居区分 */
 	private HouseType houseType;
-
+	/** 最寄り駅 */
 	private NearestStation nearestStation;
 
 	public static CurrentAddress createFromJavaType(String currentAddressId, String pid, String countryId,

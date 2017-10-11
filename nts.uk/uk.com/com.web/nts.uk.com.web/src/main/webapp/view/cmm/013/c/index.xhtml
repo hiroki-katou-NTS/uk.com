@@ -29,10 +29,11 @@
 			<div id="contents-area">
 				<div>#{i18n.getText('CMM013_21')}</div>
 				
-				<table id="single-list" data-bind="ntsGridList: {							
+				<table id="single-list" tabindex="1" data-bind="ntsGridList: {	
+					width: 270,					
 					height: 350,
 					dataSource: items,
-					primaryKey: 'code',
+					primaryKey: 'sequenceCode',
 					columns: columns,
 					multiple: false,
 					value: currentCode
@@ -41,7 +42,7 @@
 			</div>
 			
 			<div id="functions-area-bottom">
-				<button class="x-large proceed" tabindex="2" >#{i18n.getText('CMM013_25')}</button>
+				<button class="x-large proceed" tabindex="2" data-bind="click: selectSequence" >#{i18n.getText('CMM013_25')}</button>
 				<button class="large" tabindex="3" data-bind="click: close">#{i18n.getText('CMM013_26')}</button>
 			</div>
 		</ui:define>

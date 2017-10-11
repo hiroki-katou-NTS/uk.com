@@ -7,13 +7,13 @@ import nts.arc.primitive.constraint.IntegerRange;
 @IntegerRange(max = 3, min = 1)
 public enum DeductionTargetType {
 
-	/** NotTarget */
+	/** NotTarget - 控除対象外 */
 	NOT_TARGET(1),
 
-	/** Spouse - */
+	/** Spouse - 控除対象配偶者 */
 	SPOUSE(2),
 
-	/** OldSpouse - */
+	/** OldSpouse - 老人控除対象配偶者 */
 	OLD_SPOUSE(3);
 
 	public final int value;

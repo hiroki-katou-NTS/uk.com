@@ -26,6 +26,15 @@ public interface WorkplaceConfigInfoRepository {
 	void update(WorkplaceConfigInfo wkpConfigInfo);
 	
 	/**
+	 * Removes the wkp hierarchy.
+	 *
+	 * @param companyId the company id
+	 * @param historyId the history id
+	 * @param wkpId the wkp id
+	 */
+	void removeWkpHierarchy(String companyId, String historyId, String wkpId);
+	
+	/**
 	 * Find.
 	 *
 	 * @param companyId the company id

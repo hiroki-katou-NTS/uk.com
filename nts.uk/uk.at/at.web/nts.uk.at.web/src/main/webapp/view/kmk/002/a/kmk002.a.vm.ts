@@ -11,6 +11,8 @@ module nts.uk.at.view.kmk002.a {
     import TypeAtr = nts.uk.at.view.kmk002.a.service.model.TypeAtr;
     import OptItemEnumDto = nts.uk.at.view.kmk002.a.service.model.OptItemEnumDto;
     import FormulaEnumDto = nts.uk.at.view.kmk002.a.service.model.FormulaEnumDto;
+    import EnumConstantDto = nts.uk.at.view.kmk002.a.service.model.EnumConstantDto;
+    import EnumAdaptor = nts.uk.at.view.kmk002.a.service.model.EnumAdaptor;
 
     export module viewmodel {
 
@@ -35,10 +37,11 @@ module nts.uk.at.view.kmk002.a {
                 FormulaSorter.initSorter();
 
                 // Load data.
-                $.when(self.loadEnum(),
-                    self.optionalItemHeader.loadOptionalItemHeaders().done(res => {
-                        self.optionalItemHeader.initialize().done(() => dfd.resolve());
-                    }).always(() => nts.uk.ui.block.clear()));
+                self.loadEnum()
+                    .done(() => self.optionalItemHeader.loadOptionalItemHeaders()
+                        .done(() => self.optionalItemHeader.initialize()
+                            .done(() => dfd.resolve())))
+                    .always(() => nts.uk.ui.block.clear());
 
                 return dfd.promise();
             }
@@ -57,14 +60,16 @@ module nts.uk.at.view.kmk002.a {
 
         }
 
-        /******************************************************************
-         ************************* VIEW MODEL *****************************
-         *****************************************************************/
+        //******************************************************************
+        //************************* VIEW MODEL *****************************
+        //******************************************************************
 
         /**
          * The class OptionalItem
          */
         class OptionalItem {
+            static selectedFormulas: KnockoutObservableArray<number>;
+
             optionalItemNo: KnockoutObservable<string>;
             optionalItemName: KnockoutObservable<string>;
             optionalItemAtr: KnockoutObservable<number>;
@@ -74,7 +79,6 @@ module nts.uk.at.view.kmk002.a {
             calcResultRange: CalculationResultRange;
             calcFormulas: KnockoutObservableArray<Formula>;
             applyFormula: KnockoutObservable<string>;
-            static selectedFormulas: KnockoutObservableArray<number>;
             selectedFormulaAbove: number;
             selectedFormulaBelow: number;
 
@@ -82,12 +86,13 @@ module nts.uk.at.view.kmk002.a {
             usageClsDatasource: KnockoutObservableArray<any>;
             empConClsDatasource: KnockoutObservableArray<any>;
             perfClsDatasource: KnockoutObservableArray<any>;
-            atrDataSource: KnockoutObservableArray<any>;
+            atrDataSource: EnumConstantDto[];
 
             // flag
             hasChanged: boolean;
             isUsed: KnockoutObservable<boolean>;
             checkedAllFormula: KnockoutObservable<boolean>;
+            isCheckedFromChild = false;
 
             // stash
             optionalItemAtrStash: number;
@@ -110,7 +115,18 @@ module nts.uk.at.view.kmk002.a {
                 this.selectedFormulaAbove = 0;
                 this.selectedFormulaBelow = 0;
 
-                // Data source
+                // init datasource
+                this.initDatasource();
+
+                // init subscribe
+                this.initSubscribe();
+
+            }
+
+            /**
+             * Initial datasource
+             */
+            private initDatasource(): void {
                 this.usageClsDatasource = ko.observableArray([
                     { code: 0, name: nts.uk.resource.getText("KMK002_15") }, // not used
                     { code: 1, name: nts.uk.resource.getText("KMK002_14") } // used
@@ -123,44 +139,53 @@ module nts.uk.at.view.kmk002.a {
                     { code: 0, name: nts.uk.resource.getText("KMK002_23") }, // monthly
                     { code: 1, name: nts.uk.resource.getText("KMK002_22") } // daily
                 ]);
-                this.atrDataSource = ko.observableArray([
-                    //TODO: lay tren server: EnumAdaptor.convertToValueNameList
-                    { code: 0, name: '回数' }, // TIMES
-                    { code: 1, name: '金額' }, // AMOUNT
-                    { code: 2, name: '時間' } // TIME
-                ]);
+                this.atrDataSource = [];
+            }
 
-                // subscribe
-
+            /**
+             * Initial subscribe
+             */
+            private initSubscribe(): void {
                 this.checkedAllFormula.subscribe(vl => {
 
-                    // checked all = true.
-                    if(vl === true) {
-                        let mapped = _.map(this.calcFormulas(), item => {
-                            // deep copy
-                            let updated = jQuery.extend(true, {}, item);
-                            updated.selected(true);
-                            return updated;
-                        });
-                        this.calcFormulas(mapped);
+                    // if the value is changed because of a child element (formula) then do nothing.
+                    if (this.isCheckedFromChild == true) {
+
+                        // reset flag.
+                        this.isCheckedFromChild = false;
+
+                        // return and do nothing.
+                        return;
                     }
 
-                    // checked all == false
-                    if(vl === false) {
-                        let mapped = _.map(this.calcFormulas(), item => {
-                            // deep copy
-                            let updated = jQuery.extend(true, {}, item);
-                            updated.selected(false);
-                            return updated;
+                    // check all unchecked formula
+                    if(vl === true) {
+                        _.each(this.calcFormulas(), item => {
+                            if (item.selected() == false) {
+                                item.isCheckFromParent = true
+                                item.check();
+                            }
                         });
-                        this.calcFormulas(mapped);
+                        return;
+                    }
+
+                    // uncheck all checked formula
+                    if(vl === false) {
+                        _.each(this.calcFormulas(), item => {
+                            if (item.selected() == true) {
+                                item.isCheckFromParent = true
+                                item.uncheck();
+                            }
+                        });
                     }
                 });
 
+                // selected subscribe
                 OptionalItem.selectedFormulas.subscribe(vl => {
                     // set selected formula below and above.
                     this.setSelectedFormulaBelowAndAbove(vl);
 
+                    console.log(vl);
                     console.log('above='+this.selectedFormulaAbove);
                     console.log('below='+this.selectedFormulaBelow);
                     console.log('\n');
@@ -170,38 +195,48 @@ module nts.uk.at.view.kmk002.a {
                     this.hasChanged = true;
                 });
 
-                // Sua phan loai thanh tich
+                // Event on performanceAtr value changed
                 this.performanceAtr.subscribe(value => {
-                    if (this.hasChanged) {
+
+                    // if value change because of select new optional item
+                    // or new value == value in stash
+                    // then do nothing
+                    if (this.hasChanged || this.performanceAtr() == this.performanceAtrStash) {
                         return;
                     }
-                    // Neu co formulas roi.
+
+                    // if has formulas
                     if (this.isFormulaSet()) {
                         nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_506')).ifYes(() => {
 
-                            // xoa het formulas.
+                            // remove all formulas
                             this.calcFormulas([]);
 
                             // save new value to stash
                             this.performanceAtrStash = this.performanceAtr();
 
                         }).ifNo(() => {
-                            // de nguyen gia tri cu.
+                            // get old value from stash
                             this.performanceAtr(this.performanceAtrStash);
                         });
                     }
                 });
 
-                // Sua phan loai thuoc tinh
+                // Event on optionalItemAtr value changed
                 this.optionalItemAtr.subscribe(value => {
+
+                    // if value change because of select new optional item
+                    // or new value == value in stash
+                    // then do nothing
                     if (this.hasChanged || this.optionalItemAtr() == this.optionalItemAtrStash) {
                         return;
                     }
-                    // Check xem co formulas va pham vi tinh toan chua
+
+                    // Check whether has formula or calculation result range is set.
                     if (this.isFormulaSet() || this.calcResultRange.isSet(this.optionalItemAtr())) {
                         nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_573')).ifYes(() => {
 
-                            // xoa het formulas.
+                            // remove all formulas
                             this.calcFormulas([]);
 
                             // reset calc result range.
@@ -211,7 +246,7 @@ module nts.uk.at.view.kmk002.a {
                             this.optionalItemAtrStash = this.optionalItemAtr();
 
                         }).ifNo(() => {
-                            // de nguyen gia tri cu.
+                            // get old value from stash
                             this.optionalItemAtr(this.optionalItemAtrStash);
                         });
                     }
@@ -225,31 +260,81 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
 
                 // check before add
-                // if zz is used or no formula checked => show message 508.
-                if (!self.canAddFormula() && !nts.uk.util.isNullOrEmpty(self.calcFormulas())) {
+                // if zz is used
+                // or list formula has at least 1 item and no formula checked
+                // => show error message and return
+                if (!self.canAddFormula() && self.isFormulaSet()) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_508' });
                     return;
                 }
 
-                let aboveOrder = this.selectedFormulaAbove;
-
-                let f = new Formula();
-                // Set order
-                f.orderNo = aboveOrder;
-                // Set symbol
-                f.symbolValue = FormulaSorter.getNextSymbolOf(self.getLastSymbol());
-
-                // TODO move ra cho khac sau.
-                f.optionalItemNo = self.optionalItemNo();
+                let aboveOrder = self.selectedFormulaAbove;
 
                 // update order of below items.
                 self.updateOrderAfter(aboveOrder - 1);
 
-                // add new formula
+                // add formula.
+                self.addFormulaAtOrder(aboveOrder);
+
+                // recheck the checkAll checkbox
+                self.reCheckAll();
+
+            }
+
+            /**
+             * add formula at order
+             * @param order: number
+             */
+            private addFormulaAtOrder(order: number): void {
+                let self = this;
+
+                // If this is the first formula ever added
+                if (!self.isFormulaSet()) {
+                    order = 1;
+
+                    OptionalItem.selectedFormulas([]);
+                }
+
+                let f = new Formula();
+
+                // bind function
+                f.reCheckAll = self.reCheckAll.bind(self);
+
+                // Set order
+                f.orderNo = order;
+
+                // Set symbol
+                f.symbolValue = 'a';
+                let lastSymbol = self.getLastSymbol();
+                if (lastSymbol) {
+                    f.symbolValue = FormulaSorter.getNextSymbolOf(self.getLastSymbol());
+                }
+
+                // set optional item no
+                f.optionalItemNo = self.optionalItemNo();
+
+                 // add new formula
                 self.calcFormulas.push(f);
 
                 // sort by orderNo
                 self.sortListFormula();
+
+            }
+
+            /**
+             * Check / unchecked the check all Checkbox.
+             */
+            private reCheckAll(): void {
+                let self = this;
+
+                // is checked from child flag.
+                self.isCheckedFromChild = true;
+
+                if (self.isAllFormulaChecked() == true) {
+                    self.checkedAllFormula(true);
+                } else {
+                    self.checkedAllFormula(false);
+                }
 
             }
 
@@ -270,6 +355,22 @@ module nts.uk.at.view.kmk002.a {
             }
 
             /**
+             * Check whether all formulas are unchecked
+             */
+            private isAllFormulaUnChecked(): boolean {
+                let self = this;
+                let unchecked = true;
+
+                _.each(self.calcFormulas(), item => {
+                    if (item.selected() == true) {
+                        unchecked = false;
+                    }
+                });
+
+                return unchecked;
+            }
+
+            /**
              * Update order of all formula after selected order
              */
             private updateOrderAfter(orderNo: number): void {
@@ -283,10 +384,14 @@ module nts.uk.at.view.kmk002.a {
              */
             private updateSelectedFormulaOrder(orderNo: number): void {
                 let self = this;
-                let updatedList = OptionalItem.selectedFormulas()
-                    .filter(item => item > orderNo)
-                    .map(item => item += 1);
-                OptionalItem.selectedFormulas(updatedList);
+                let mapped = OptionalItem.selectedFormulas()
+                    .map(item => {
+                        if (item > orderNo) {
+                            item += 1;
+                        }
+                        return item;
+                    });
+                OptionalItem.selectedFormulas(mapped);
             }
 
             /**
@@ -294,11 +399,9 @@ module nts.uk.at.view.kmk002.a {
              */
             private updateAllFormulaOrder(orderNo: number): void {
                 let self = this;
-                let updatedList = self.calcFormulas()
+                self.calcFormulas()
                     .filter(item => item.orderNo > orderNo)
-                    .forEach(item => {
-                        item.orderNo += 1;
-                    });
+                    .forEach(item => item.orderNo += 1);
             }
 
             /**
@@ -308,31 +411,24 @@ module nts.uk.at.view.kmk002.a {
                  let self = this;
 
                 // check before add
-                // if zz is used or no formula checked => show message 508.
-                if (!self.canAddFormula() && !nts.uk.util.isNullOrEmpty(self.calcFormulas())) {
+                // if zz is used
+                // or list formula has at least 1 item and no formula checked
+                // => show error message and return
+                if (!self.canAddFormula() && self.isFormulaSet()) {
                     nts.uk.ui.dialog.alertError({ messageId: 'Msg_508' });
                     return;
                 }
 
-                let belowOrder = this.selectedFormulaBelow;
-
-                let f = new Formula();
-                // Set order
-                f.orderNo = belowOrder;
-                // Set symbol
-                f.symbolValue = FormulaSorter.getNextSymbolOf(self.getLastSymbol());
-
-                // TODO move ra cho khac sau.
-                f.optionalItemNo = self.optionalItemNo();
+                let belowOrder = self.selectedFormulaBelow;
 
                 // update order of below items.
-                self.updateOrderAfter(belowOrder);
+                self.updateOrderAfter(belowOrder - 1);
 
                 // add new formula
-                self.calcFormulas.push(f);
+                self.addFormulaAtOrder(belowOrder);
 
-                // sort by orderNo
-                self.sortListFormula();
+                // recheck the checkAll checkbox
+                self.reCheckAll();
 
             }
 
@@ -351,6 +447,10 @@ module nts.uk.at.view.kmk002.a {
              * Confirm whether a calculation formula can be added (Check whether ZZ is used in the symbol)
              */
             private hasReachedZZ(): boolean {
+                let self = this;
+                if (self.getLastSymbol() == 'zz') {
+                    return true;
+                }
                 return false;
             }
 
@@ -399,11 +499,30 @@ module nts.uk.at.view.kmk002.a {
                     return;
                 }
 
-                // Remove.
-                let id = ''; //selected id.
-                _.remove(self.calcFormulas(), item => item.formulaId == id);
-                self.calcFormulas([]);
+                // Remove selected formulas.
+                OptionalItem.selectedFormulas().forEach(order => {
+                    //_.remove(self.calcFormulas(), item => item.orderNo == order);
+                    self.calcFormulas.remove(item => item.orderNo == order);
+                });
 
+                // clear selected
+                OptionalItem.selectedFormulas([]);
+
+                // reset formula order
+                self.resetFormulaOrder();
+
+            }
+
+            /**
+             * reset formula order.
+             */
+            private resetFormulaOrder(): void {
+                let self = this;
+                let index = 0;
+                _.each(self.calcFormulas(), item => {
+                    item.orderNo = index + 1;
+                    index++;
+                });
             }
 
             /**
@@ -415,6 +534,11 @@ module nts.uk.at.view.kmk002.a {
                 service.findFormulas(itemNo).done(res => {
                     let list: Array<Formula> = res.map(item => {
                         let formula = new Formula();
+
+                        // bind function
+                        formula.reCheckAll = self.reCheckAll.bind(self);
+
+                        // convert dto to viewmodel
                         formula.fromDto(item);
 
                         //TODO remove later.
@@ -437,9 +561,11 @@ module nts.uk.at.view.kmk002.a {
 
             }
 
+            /**
+             * check if at least one formula exist 
+             */
             public isFormulaSet(): boolean {
-                //TODO check if calculation formula is set.
-                if (this.calcFormulas.length > 0) {
+                if (!nts.uk.util.isNullOrEmpty(this.calcFormulas()) && this.calcFormulas().length > 0) {
                     return true;
                 }
                 return false;
@@ -469,6 +595,9 @@ module nts.uk.at.view.kmk002.a {
                 return dto;
             }
 
+            /**
+             * Convert dto to view model
+             */
             public fromDto(dto: OptionalItemDto): void {
                 let self = this;
                 self.optionalItemNo(dto.optionalItemNo);
@@ -478,6 +607,9 @@ module nts.uk.at.view.kmk002.a {
                 self.empConditionAtr(dto.empConditionAtr);
                 self.performanceAtr(dto.performanceAtr);
                 self.calcResultRange.fromDto(dto.calcResultRange);
+
+                // set data source
+                self.atrDataSource = Enums.ENUM_OPT_ITEM.itemAtr;
 
                 // Stash
                 self.optionalItemAtrStash = dto.optionalItemAtr;
@@ -514,10 +646,25 @@ module nts.uk.at.view.kmk002.a {
              */
             private getLastSymbol(): string {
                 let self = this;
+
+                // return null if has no formula
+                if (!self.isFormulaSet()) {
+                    return null;
+                };
+
+                // find the last symbol.
                 let lastSymbol = 'a';
                 self.calcFormulas().forEach(item => {
-                    if (item.symbolValue.localeCompare(lastSymbol) > 0) {
+                    // Check two string's length first
+                    // Because z > aa using localeCompare
+                    if (item.symbolValue.length > lastSymbol.length) {
                         lastSymbol = item.symbolValue;
+                        return;
+                    }
+                    if (item.symbolValue.length == lastSymbol.length) {
+                        if (item.symbolValue.localeCompare(lastSymbol) > 0) {
+                            lastSymbol = item.symbolValue;
+                        }
                     }
                 });
                 return lastSymbol;
@@ -528,25 +675,19 @@ module nts.uk.at.view.kmk002.a {
              */
             private setSelectedFormulaBelowAndAbove(array: Array<number>): void {
                 let self = this;
-                let above = 1;
-                let below = 2;
+
+                let above = 999;
+                let below = 1;
 
                 array.forEach(order => {
 
-                    // below = selected order
+                    // set below = bottom selected order + 1
                     if (order >= below) {
                         below = order + 1;
                     }
 
-                    // for single selection
-                    // set above = selected order - 1
-                    if (order > 1) {
-                        above = order;
-                    }
-
-                    // for multi selection
-                    // set above = lowest selected order
-                    if (order < above) {
+                    // set above = top selected
+                    if (order <= above) {
                         above = order;
                     }
                 });
@@ -703,8 +844,13 @@ module nts.uk.at.view.kmk002.a {
                 let command = self.optionalItem.toDto();
 
                 service.saveOptionalItem(command).done(() => {
-                    dfd.resolve();
+                    // reload optional item list.
+                    self.loadOptionalItemHeaders();
+
+                    // show message
                     nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+
+                    dfd.resolve();
                 }).fail(res => {
                     nts.uk.ui.dialog.alertError(res);
                 }).always(() => nts.uk.ui.block.clear());
@@ -798,8 +944,8 @@ module nts.uk.at.view.kmk002.a {
 
             // Calculation setting
             calcAtr: KnockoutObservable<number>;
-            formulaSetting: FormulaSetting;
-            itemSelection: ItemSelection;
+            formulaSetting: FormulaSettingDto;
+            itemSelection: ItemSelectionDto;
 
             //Rounding
             monthlyRounding: KnockoutObservable<number>;
@@ -810,12 +956,20 @@ module nts.uk.at.view.kmk002.a {
             // flags
             selected: KnockoutObservable<boolean>;
             isUsed = true;
+            isCheckFromParent = false;
+
+            // function
+            reCheckAll: () => void;
 
             // Enums datasource
-            formulaAtrDs = Enums.ENUM_FORMULA.formulaAtr;
-            calcAtrDs = Enums.ENUM_FORMULA.calcAtr;
-            roundingUnitDs = Enums.ENUM_FORMULA.timeRounding.unit;
-            roundingDs = Enums.ENUM_FORMULA.timeRounding.rounding;
+            formulaAtrDs: EnumConstantDto[];
+            calcAtrDs: EnumConstantDto[];
+            roundingUnitDs: EnumConstantDto[];
+            roundingDs: EnumConstantDto[];
+
+            // stash
+            formulaAtrStash: number;
+            calcAtrStash: number;
 
             constructor() {
                 this.formulaId = nts.uk.util.randomId();
@@ -828,8 +982,8 @@ module nts.uk.at.view.kmk002.a {
 
                 // Calculation setting.
                 this.calcAtr = ko.observable(1);
-                this.formulaSetting = new FormulaSetting();
-                this.itemSelection = new ItemSelection();
+                this.formulaSetting = this.getDefaultFormulaSetting();
+                this.itemSelection = this.getDefaultItemSelection();
 
                 // Rounding
                 this.monthlyRounding = ko.observable(1);
@@ -837,10 +991,27 @@ module nts.uk.at.view.kmk002.a {
                 this.dailyRounding = ko.observable(1);
                 this.dailyUnit = ko.observable(1);
 
-                // subscribe
+                // initial data source
+                this.formulaAtrDs = Enums.ENUM_FORMULA.formulaAtr;
+                this.calcAtrDs = Enums.ENUM_FORMULA.calcAtr;
+                this.roundingUnitDs = Enums.ENUM_FORMULA.timeRounding.unit;
+                this.roundingDs = Enums.ENUM_FORMULA.timeRounding.rounding;
+
+                // init subscribe
+                this.initSubscribe();
+            }
+
+            /**
+             * Initial subscribe
+             */
+            private initSubscribe(): void {
                 this.selected.subscribe(vl => {
-                    // check if all formula checked
-                    $( "div[class*='ntsControl ntsCheckBox style-normal checked']" )
+
+                    if (this.isCheckFromParent == false) {
+                        // check if all formula checked
+                        this.reCheckAll();
+
+                    }
 
                     // add to selected formulas if checked
                     if (vl === true) {
@@ -851,76 +1022,146 @@ module nts.uk.at.view.kmk002.a {
                     if (vl === false) {
                         OptionalItem.selectedFormulas.remove(this.orderNo);
                     }
+
+                    // reset flag
+                    this.isCheckFromParent = false;
+
                 });
 
-                //TODO dang test.
-                // Sua phan loai thuoc tinh
-                //                this.formulaAtr.subscribe(value => {
-                //                    // Kiem tra formula nay co cai dat chua
-                //                    //if (self.calcFormulas.length > 0) {
-                //                    if (1 > 0) { //test
-                //                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_192')).ifYes(() => {
-                //                            // xoa cai dat
-                //                            // cap nhat gia tri moi.
-                //                        }).ifNo(() => {
-                //                            // de nguyen gia tri cu.
-                //                        });
-                //                    }
-                //                });
+                // Event on formulaAtr value changed
+                this.formulaAtr.subscribe(value => {
 
-                // Sua phan loai tinh toan
-                //                this.calcAtr.subscribe(value => {
-                //                    // Kiem tra formula nay co cai dat chua
-                //                    //if (self.calcFormulas.length > 0) {
-                //                    if (1 > 0) { //test
-                //                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_126')).ifYes(() => {
-                //                            // xoa cai dat
-                //                            // cap nhat gia tri moi.
-                //                        }).ifNo(() => {
-                //                            // de nguyen gia tri cu.
-                //                        });
-                //                    }
-                //                });
+                    // if new value == value in stash then do nothing
+                    if (this.formulaAtr() == this.formulaAtrStash) {
+                        return;
+                    }
+
+                    // Check whether the formula has setting or not
+                    if (this.hasSetting()) {
+                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_192')).ifYes(() => {
+                            // TODO remove the setting
+                            // save new value to stash
+                            this.formulaAtrStash = this.formulaAtr();
+                        }).ifNo(() => {
+                            // get old value from stash
+                            this.formulaAtr(this.formulaAtrStash);
+                        });
+                    }
+                });
+
+                // Event on calcAtr value changed
+                this.calcAtr.subscribe(value => {
+
+                    // if new value == value in stash then do nothing
+                    if (this.calcAtr() == this.calcAtrStash) {
+                        return;
+                    }
+                    // Check whether the formula has setting or not
+                    if (this.hasSetting()) {
+                        nts.uk.ui.dialog.confirm(nts.uk.resource.getMessage('Msg_126')).ifYes(() => {
+                            // TODO remove the setting
+                            // save new value to stash
+                            this.calcAtrStash = this.calcAtr();
+                        }).ifNo(() => {
+                            // get old value from stash
+                            this.calcAtr(this.calcAtrStash);
+                        });
+                    }
+                });
             }
 
             /**
-            * Open dialog C
+             * get default formula setting.
+             */
+            private getDefaultFormulaSetting(): FormulaSettingDto {
+                let data = <FormulaSettingDto>{};
+                //TODO
+                return data;
+            }
+
+            /**
+             * get default item selection
+             */
+            private getDefaultItemSelection(): ItemSelectionDto {
+                let data = <ItemSelectionDto>{};
+                //TODO
+                return data;
+            }
+
+            /**
+             * Check whether formula has setting
+             */
+            private hasSetting(): boolean {
+                //TODO 
+                if (1 > 0) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+             * set to selected
+             */
+            public check(): void {
+                let self = this;
+                self.selected(true);
+            }
+
+            /**
+             * set to unselected
+             */
+            public uncheck(): void {
+                let self = this;
+                self.selected(false);
+            }
+
+            /**
+             * Check calculation attribute is formula setting or item selection 
+             */
+            public isFormulaSettingSelected(): boolean {
+                let self = this;
+                if (self.calcAtr() == 1) {
+                    return true;
+                }
+                return false;
+            }
+
+            /**
+            * Open dialog C: Item selection
             */
             public openDialogC(): void {
-                //TODO move to formula view model later
                 let self = this;
 
                 // Set param
-                let dto = <ParamToC>{};
-                dto.formulaId = 'axcb';
-                dto.performanceAtr = 1;
-                dto.formulaAtr = 'time';
-                dto.formulaName = 'name';
-                dto.minusSegment = true;
-                dto.attendanceItems = [];
-                nts.uk.ui.windows.setShared('paramToC', dto);
+                let dto = self.toDto();
+                let param = <ParamToC>{};
+                param.formulaId = dto.formulaId;
+                param.performanceAtr = 1; //TODO ??
+                param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_FORMULA.formulaAtr);
+                param.formulaName = dto.formulaName;
+                param.itemSelection = self.itemSelection;
+                nts.uk.ui.windows.setShared('paramToC', param);
 
                 // Open dialog.
                 nts.uk.ui.windows.sub.modal('/view/kmk/002/c/index.xhtml');
             }
 
             /**
-             * Open dialog D
+             * Open dialog D: Formula setting
              */
             public openDialogD(): void {
-                //TODO move to formula view model later
                 let self = this;
 
                 // set pram.
-                let dto = <ParamToD>{};
-                dto.formulaId = '';
-                dto.performanceAtr = 1;
-                dto.formulaAtr = 'time';
-                dto.formulaName = 'name';
-                dto.minusSegment = true;
-                dto.formulaSetting = new FormulaSetting().toDto();
+                let dto = self.toDto();
+                let param = <ParamToD>{};
+                param.formulaId = dto.formulaId;
+                param.performanceAtr = 1; //TODO ??
+                param.formulaAtr = EnumAdaptor.localizedNameOf(dto.formulaAtr, Enums.ENUM_FORMULA.formulaAtr);
+                param.formulaName = dto.formulaName;
+                param.formulaSetting = self.formulaSetting;
 
-                nts.uk.ui.windows.setShared('paramToD', dto);
+                nts.uk.ui.windows.setShared('paramToD', param);
 
                 // open dialog D.
                 nts.uk.ui.windows.sub.modal('/view/kmk/002/d/index.xhtml').onClosed(() => {
@@ -943,8 +1184,8 @@ module nts.uk.at.view.kmk002.a {
                 dto.formulaAtr = self.formulaAtr();
                 dto.symbolValue = self.symbolValue;
                 dto.calcAtr = self.calcAtr();
-                dto.formulaSetting = self.formulaSetting.toDto();
-                dto.itemSelection = self.itemSelection.toDto();
+                dto.formulaSetting = self.formulaSetting;
+                dto.itemSelection = self.itemSelection;
 
                 // Rounding
                 //TODO mock data.
@@ -981,11 +1222,14 @@ module nts.uk.at.view.kmk002.a {
                 self.formulaAtr(dto.formulaAtr);
                 self.symbolValue = dto.symbolValue;
 
-                //TODO testing.
+                // save to stash
+                self.formulaAtrStash = dto.formulaAtr;
+                self.calcAtrStash = dto.calcAtr;
+
                 // Calc setting
-                self.calcAtr(1);
-                //self.formulaSetting.fromDto(dto.calcFormulaSetting.formulaSetting);
-                //self.itemSelection.fromDto(dto.calcFormulaSetting.itemSelection);
+                self.calcAtr(dto.calcAtr);
+                self.formulaSetting = dto.formulaSetting;
+                self.itemSelection = dto.itemSelection;
 
                 // rounding
                 //                self.monthlyRounding = dto.monthlyRounding.numberRounding;
@@ -993,101 +1237,6 @@ module nts.uk.at.view.kmk002.a {
                 //                self.dailyRounding = dto.dailyRounding.numberRounding;
                 //                self.dailyUnit = dto.dailyRounding.numberUnit;
 
-            }
-        }
-
-        /**
-         * Formula setting.
-         */
-        export class FormulaSetting {
-            minusSegment: KnockoutObservable<number>;
-            operator: KnockoutObservable<number>;
-            leftItem: FormulaSettingItem;
-            rightItem: FormulaSettingItem;
-
-            operatorDatasource: KnockoutObservableArray<any>;
-
-            constructor() {
-                this.minusSegment = ko.observable(0);
-                this.operator = ko.observable(0);
-                this.leftItem = new FormulaSettingItem();
-                this.rightItem = new FormulaSettingItem();
-
-                // fixed 
-                this.leftItem.dispOrder = 1;
-                this.leftItem.settingMethod(0);
-                this.rightItem.dispOrder = 2;
-                this.rightItem.settingMethod(1);
-
-                this.operatorDatasource = ko.observableArray([
-                    { code: 0, name: '+' },
-                    { code: 1, name: '-' },
-                    { code: 2, name: '*' },
-                    { code: 3, name: '/' }
-                ]);
-            }
-
-            public fromDto(dto: FormulaSettingDto): void {
-                let self = this;
-                self.minusSegment(dto.minusSegment);
-                self.operator(dto.operator);
-                self.leftItem.fromDto(dto.leftItem);
-                self.rightItem.fromDto(dto.rightItem);
-            }
-
-            public toDto(): FormulaSettingDto {
-                let self = this;
-                let dto: FormulaSettingDto = <FormulaSettingDto>{};
-
-                dto.minusSegment = self.minusSegment();
-                dto.operator = self.operator();
-                dto.leftItem = this.leftItem.toDto();
-                dto.rightItem = this.rightItem.toDto();
-
-                return dto;
-            }
-        }
-
-        /**
-         * Formula setting item
-         */
-        class FormulaSettingItem {
-            settingMethod: KnockoutObservable<number>;
-            dispOrder: number;
-            inputValue: KnockoutObservable<number>;
-            formulaItemId: KnockoutObservable<string>;
-
-            constructor() {
-                this.settingMethod = ko.observable(1);
-                this.dispOrder = 1;
-                this.inputValue = ko.observable(1);
-                this.formulaItemId = ko.observable(nts.uk.util.randomId());
-            }
-
-            public isInputValue(): boolean {
-                if (this.settingMethod() == 0) {
-                    return false;
-                }
-                return true;
-            }
-
-            public fromDto(dto: SettingItemDto): void {
-                this.settingMethod(dto.settingMethod);
-                this.dispOrder = dto.dispOrder;
-                this.inputValue(dto.inputValue);
-                this.formulaItemId(dto.formulaItemId);
-            }
-
-            public toDto(): SettingItemDto {
-                let self = this;
-                let dto: SettingItemDto = <SettingItemDto>{};
-
-                dto.settingMethod = this.settingMethod();
-                dto.dispOrder = this.dispOrder;
-                dto.inputValue = this.inputValue();
-                dto.formulaItemId = this.formulaItemId();
-
-                return dto;
             }
         }
 
@@ -1103,11 +1252,17 @@ module nts.uk.at.view.kmk002.a {
                 this.attendanceItems = []; //TODO
             }
 
+            /**
+             * convert dto to viewmodel
+             */
             public fromDto(dto: ItemSelectionDto): void {
                 this.minusSegment(dto.minusSegment);
                 this.attendanceItems = []; //TODO
             }
 
+            /**
+             * convert viewmodel to dto
+             */
             public toDto(): ItemSelectionDto {
                 let self = this;
                 let dto: ItemSelectionDto = <ItemSelectionDto>{};
@@ -1131,11 +1286,17 @@ module nts.uk.at.view.kmk002.a {
                 this.operator = ko.observable(1);
             }
 
+            /**
+             * Convert dto to view model
+             */
             public fromDto(dto: AttendanceItemDto): void {
                 this.id = dto.id;
                 this.operator(dto.operator);
             }
 
+            /**
+             * Convert viewmodel to dto
+             */
             public toDto(): AttendanceItemDto {
                 let self = this;
                 let dto: AttendanceItemDto = <AttendanceItemDto>{};
@@ -1155,6 +1316,9 @@ module nts.uk.at.view.kmk002.a {
         class FormulaSorter {
             static SORTER: Array<Sorter>;
 
+            /**
+             * initial sorter
+             */
             public static initSorter(): void {
                 let arr = new Array<Sorter>();
                 let order = 1;
@@ -1173,6 +1337,9 @@ module nts.uk.at.view.kmk002.a {
                 FormulaSorter.SORTER = arr;
             }
 
+            /**
+             * get value of
+             */
             public static getValueOf(order: number): string {
                 let item = _.find(FormulaSorter.SORTER, item => item.order == order);
                 if (item) {
@@ -1181,6 +1348,9 @@ module nts.uk.at.view.kmk002.a {
                 return 'NOT FOUND';
             }
 
+            /**
+             * get order of
+             */
             public static getOrderOf(value: string): number {
                 let item = _.find(FormulaSorter.SORTER, item => item.value == value);
                 if (item) {
@@ -1190,6 +1360,9 @@ module nts.uk.at.view.kmk002.a {
                 return 0;
             }
 
+            /**
+             * get next symbol of
+             */
             public static getNextSymbolOf(symbolValue: string): string {
                 let nextOd = FormulaSorter.getOrderOf(symbolValue) + 1;
                 return FormulaSorter.getValueOf(nextOd);
@@ -1204,15 +1377,13 @@ module nts.uk.at.view.kmk002.a {
             performanceAtr: number;
             formulaAtr: string;
             formulaName: string;
-            minusSegment: boolean;
-            attendanceItems: Array<any>;
+            itemSelection: ItemSelectionDto;
         }
         export interface ParamToD {
             formulaId: string;
             formulaName: string;
             formulaAtr: string;
             performanceAtr: number;
-            minusSegment: boolean;
             formulaSetting: FormulaSettingDto;
         }
     }

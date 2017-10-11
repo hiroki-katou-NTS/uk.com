@@ -5,6 +5,9 @@ import nts.arc.time.GeneralDate;
 
 @Data
 public class MidweekClosure {
+	/**
+	 * 産前休業
+	 */
 
 	/** 多胎妊娠区分 */
 	private boolean multiple;

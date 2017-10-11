@@ -55,7 +55,7 @@ public class SaveSequenceCommandHandler extends CommandHandler<SaveSequenceComma
 				// Throw Exception - Duplicated
 				throw new BusinessException("Msg_3");
 			}
-			this.repository.add(command.toDomain(companyId));
+			this.repository.add(new SequenceMaster(command));
 		} else {
 			// Update
 			if (!opSequenceMaster.isPresent()) {
@@ -68,7 +68,7 @@ public class SaveSequenceCommandHandler extends CommandHandler<SaveSequenceComma
 			command.getSequenceMasterDto().setOrder(oldDomain.getOrder());
 			command.getSequenceMasterDto().setSequenceCode(oldDomain.getSequenceCode());
 
-			this.repository.update(command.toDomain(companyId));
+			this.repository.update(new SequenceMaster(command));
 		}
 	}
 }
