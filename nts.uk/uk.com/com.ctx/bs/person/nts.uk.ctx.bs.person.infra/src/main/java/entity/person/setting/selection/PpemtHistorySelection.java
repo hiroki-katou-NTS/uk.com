@@ -32,7 +32,7 @@ public class PpemtHistorySelection extends UkJpaEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "CID")
-	public String companyCode;
+	public String companyId;
 
 	@Basic(optional = false)
 	@Column(name = "START_DATE")

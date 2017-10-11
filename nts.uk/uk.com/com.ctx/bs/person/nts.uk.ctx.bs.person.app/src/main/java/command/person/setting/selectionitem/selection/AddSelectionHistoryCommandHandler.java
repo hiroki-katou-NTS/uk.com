@@ -38,8 +38,8 @@ public class AddSelectionHistoryCommandHandler extends CommandHandlerWithResult<
 		String newId = IdentifierUtil.randomUniqueId();
 		GeneralDate startDate = GeneralDate.ymd(1900, 1, 1);
 		GeneralDate endDate = GeneralDate.ymd(9999, 12, 31);
-		boolean userLogin;
-		if (userLogin = true) {
+		boolean userLogin = false;
+		if (userLogin == true) {
 			String cid0 = PersonInfoCategory.ROOT_COMPANY_ID;
 
 			// ドメインモデル「選択肢履歴」を登録する
