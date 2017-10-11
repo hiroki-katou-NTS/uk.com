@@ -1,5 +1,5 @@
 module nts.uk.at.view.kdw006.d.viewmodel {
-    export class ScreenModel {
+    export class ScreenModelD {
         registeredTotalTimeCheer: KnockoutObservable<boolean>;
         completeDisplayOneMonth: KnockoutObservable<boolean>;
         useWorkDetail: KnockoutObservable<boolean>;
