@@ -1,5 +1,5 @@
 module nts.uk.at.view.kdw006.e.viewmodel {
-    export class ScreenModel {
+    export class ScreenModelE {
         roleItems: KnockoutObservableArray<any>;
         functionalRestriction: KnockoutObservableArray<any>;
         selectedItem: KnockoutObservable<any>;

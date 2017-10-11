@@ -9,7 +9,6 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -27,13 +26,11 @@ public class KscmtScheduleCreatorPK implements Serializable {
 
 	/** The exe id. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "EXE_ID")
     private String exeId;
     
     /** The sid. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "SID")
     private String sid;
 

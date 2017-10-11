@@ -9,7 +9,6 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Embeddable;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -28,17 +27,14 @@ public class KscmtScheduleErrLogPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	/** The exe id. */
-    @NotNull
     @Column(name = "EXE_ID")
     private String exeId;
     
     /** The sid. */
-    @NotNull
     @Column(name = "SID")
     private String sid;
     
     /** The ymd. */
-    @NotNull
     @Column(name = "YMD")
     @Convert(converter = GeneralDateToDBConverter.class)
     private GeneralDate ymd;

@@ -1,5 +1,5 @@
 module nts.uk.at.view.kdw006.c.viewmodel {
-    export class ScreenModel {
+    export class ScreenModelC {
         yearDisplayAtr: KnockoutObservable<boolean>;
         yearRemainingNumberCheck: KnockoutObservable<boolean>;
         savingYearDisplayAtr: KnockoutObservable<boolean>;
