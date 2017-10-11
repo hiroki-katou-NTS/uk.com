@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime;
+package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone;
 
 import lombok.AllArgsConstructor;
 

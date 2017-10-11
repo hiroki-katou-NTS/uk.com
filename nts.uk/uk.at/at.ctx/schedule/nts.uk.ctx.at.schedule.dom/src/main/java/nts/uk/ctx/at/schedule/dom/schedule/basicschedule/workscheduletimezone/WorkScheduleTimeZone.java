@@ -1,4 +1,4 @@
-package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime;
+package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletimezone;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import nts.uk.shr.com.time.AttendanceClock;
  */
 @AllArgsConstructor
 @Getter
-public class WorkScheduleTime {
+public class WorkScheduleTimeZone {
 	private String sId;
 	private GeneralDate ymd;
 	private int scheduleCnt;
