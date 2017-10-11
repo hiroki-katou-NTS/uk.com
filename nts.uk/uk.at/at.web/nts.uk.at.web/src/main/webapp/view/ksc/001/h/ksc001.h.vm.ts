@@ -14,7 +14,8 @@ module nts.uk.at.view.ksc001.h {
             executionNumber: KnockoutObservable<string>;
             errorNumber: KnockoutObservable<string>;
             countError: KnockoutObservable<number>;
-
+            controlExecution :KnockoutObservable<boolean>;
+            controlError :KnockoutObservable<boolean>;
             constructor() {
                 var self = this;
                 self.executionId = ko.observable('');
@@ -29,6 +30,8 @@ module nts.uk.at.view.ksc001.h {
                 self.executionNumber = ko.observable('');
                 self.errorNumber = ko.observable('');
                 self.countError = ko.observable(0);
+                self.controlExecution = ko.observable(true);
+                self.controlError = ko.observable(true);
             }
 
             /**
@@ -71,6 +74,8 @@ module nts.uk.at.view.ksc001.h {
                         self.executionNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [data.countExecution]));
                         self.errorNumber = ko.observable(nts.uk.resource.getText("KSC001_47", [data.countError]));
                         self.countError(data.countError);
+                        data.countExecution==0?self.controlExecution(false):self.controlExecution(true);
+                        data.countError==0?self.controlError(false):self.controlError(true);
                     }
                     dfd.resolve();
                 });
@@ -82,16 +87,18 @@ module nts.uk.at.view.ksc001.h {
              */
             openEmployeeTargetListDialog(): void {
                 let self = this;
-                var data: any = {
-                    executionId: self.executionId(),
-                    startDate: self.startDate(),
-                    endDate: self.endDate()
+                if (self.controlExecution()) {
+                    var data: any = {
+                        executionId: self.executionId(),
+                        startDate: self.startDate(),
+                        endDate: self.endDate()
+                    }
+                    blockUI.invisible();
+                    nts.uk.ui.windows.setShared('dataFromDetailDialog', data);
+                    nts.uk.ui.windows.sub.modal("/view/ksc/001/i/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
+                    });
+                    blockUI.clear();
                 }
-                blockUI.invisible();
-                nts.uk.ui.windows.setShared('dataFromDetailDialog', data);
-                nts.uk.ui.windows.sub.modal("/view/ksc/001/i/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
-                });
-                blockUI.clear();
             }
 
             /**
@@ -99,17 +106,19 @@ module nts.uk.at.view.ksc001.h {
              */
             openErrorContentDialog(): void {
                 let self = this;
-                blockUI.invisible();
-                var data: any = {
-                    executionId: self.executionId(),
-                    startDate: self.startDate(),
-                    endDate: self.endDate(),
-                    countError: self.countError()
+                if (self.controlError()) {
+                    blockUI.invisible();
+                    var data: any = {
+                        executionId: self.executionId(),
+                        startDate: self.startDate(),
+                        endDate: self.endDate(),
+                        countError: self.countError()
+                    }
+                    nts.uk.ui.windows.setShared('dataFromDetailDialog', data);
+                    nts.uk.ui.windows.sub.modal("/view/ksc/001/k/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
+                    });
+                    blockUI.clear();
                 }
-                nts.uk.ui.windows.setShared('dataFromDetailDialog', data);
-                nts.uk.ui.windows.sub.modal("/view/ksc/001/k/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
-                });
-                blockUI.clear();
             }
 
             /**
