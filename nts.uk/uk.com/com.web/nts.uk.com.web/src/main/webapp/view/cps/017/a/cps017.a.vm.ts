@@ -22,22 +22,22 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
             nts.uk.ui.errors.clearAll();
             service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
-
                 if (itemList && itemList.length > 0) {
                     itemList.forEach(x => self.listItems.push(x));
                     self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
 
                 } else {
-                    self.registerDataSelectioItem();
+                    alertError({ messageId: "Msg_455" });
                 }
                 dfd.resolve();
 
             }).fail(error => {
+                alertError({ messageId: "Msg_455" });
             });
 
             return dfd.promise();
         }
-        
+
         //dialog C
         openDialogC() {
             let self = this,
