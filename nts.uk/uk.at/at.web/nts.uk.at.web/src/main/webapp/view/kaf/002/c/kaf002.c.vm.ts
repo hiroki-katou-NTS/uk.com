@@ -17,10 +17,6 @@ module nts.uk.at.view.kaf002.c {
                 self.startPage(self.appID());
             }
             
-            testAbstract() {
-                alert('aaaaaa');    
-            }
-            
             startPage(appID: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
