@@ -12,7 +12,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
 import nts.uk.ctx.at.request.dom.application.common.AppReason;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
@@ -42,9 +41,6 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
-	
-	@Inject
-	private ApplicationRepository applicationRepository;
 	
 	@Inject
 	private AppStampDetailDomainService applicationStampDetailDomainService;
@@ -118,6 +114,7 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 					null,
 					null,
 					null); 
+				appStamp.setVersion(appStampCmd.getVersion());
 				applicationStampDetailDomainService.appStampUpdate(appStampCmd.getTitleReason(), appStampCmd.getDetailReason(), appStamp, appApprovalPhases);
 				break;
 			case STAMP_ADDITIONAL: 

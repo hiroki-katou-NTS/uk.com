@@ -87,8 +87,8 @@ public class ApplicationWebservice extends WebService {
 	 */
 	@POST
 	@Path("approveapp")
-	public void approveApp(ApplicationDto command){
-		 this.approveApp.handle(command);
+	public ListMailApproval approveApp(ApplicationDto command){
+		 return this.approveApp.handle(command);
 	}
 	
 	/**

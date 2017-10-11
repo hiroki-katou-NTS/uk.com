@@ -52,8 +52,9 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 	private ApproveAcceptedRepository approveAcceptedRepository;
 	
 	@Override
-	public void detailScreenAfterApprovalProcess(Application application) {
+	public List<String> detailScreenAfterApprovalProcess(Application application) {
 		String companyID = AppContexts.user().companyId();
+		List<String> listMailReceived = new ArrayList<>();
 		//アルゴリズム「承認情報の整理」を実行する
 		ApprovalInfoOutput  approvalInfo = reflectionInfoService.organizationOfApprovalInfo(application);
 		//共通アルゴリズム「実績反映状態の判断」を実行する
@@ -74,7 +75,7 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 				// 「反映情報」．実績反映状態が「反映待ち」じゃない場合
 				if (application.getReflectPerState() != ReflectPlanPerState.WAITREFLECTION) {
 					// 申請者本人にメール送信する 
-					List<String> listMailReceived = this.MailDestination(application).getDestinationMail();
+					listMailReceived = this.MailDestination(application).getDestinationMail();
 					if(!listMailReceived.isEmpty()) {
 						//TODO:
 						//メール送信先リストにメール送信する
@@ -86,6 +87,7 @@ public class AfterApprovalProcessImpl implements AfterApprovalProcess {
 		//情報メッセージ（)
 		//throw new BusinessException("Msg_220");
 		//TODO: TRA VE MOT LIST GUI MAIL
+		return listMailReceived;
 	}
 	/**
 	 * 1.申請個別のエラーチェック

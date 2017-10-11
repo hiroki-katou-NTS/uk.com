@@ -36,6 +36,8 @@ public class DetailBeforeUpdateImpl implements DetailBeforeUpdate {
 			throw new BusinessException(Msg_197);
 			reloadScreen();
 		}
+		
+		// xử lý đã được bao gồm khi update
 		*/
 	}
 }
