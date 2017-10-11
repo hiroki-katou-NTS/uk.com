@@ -33,9 +33,6 @@ import nts.uk.shr.com.context.AppContexts;
 public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApproveReflectionInfoService {
 
 	@Inject
-	private ApplicationRepository appRepo;
-
-	@Inject
 	private AfterApprovalProcess approvalProcess;
 
 	/**
@@ -221,24 +218,28 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 	@Override
 	public void performanceReflectedStateJudgment(Application application) {
 		List<AppApprovalPhase> listPhase = application.getListPhase();
-		for (AppApprovalPhase phase : listPhase) {
-			// 「承認フェーズ」．承認区分が承認済以外の場合(「承認フェーズ」．承認区分 ≠ 承認済)
-			if (phase.getApprovalATR() != ApprovalAtr.APPROVED) {
-				// Lay danh sach nguoi xac nhan TU
-				List<String> listApprover = approvalProcess.actualReflectionStateDecision(application.getApplicationID(), phase.getPhaseID(), ApprovalAtr.APPROVED);
-				// Thuc hien lay danh sach nguoi xac nhan dai dien, PATH setting
-				AgentPubImport agency = this.approvalAgencyInformationService.getApprovalAgencyInformation(AppContexts.user().companyId(), listApprover);
-				if (!agency.isFlag()) {
-					continue;
+		if (listPhase != null) {
+			for (AppApprovalPhase phase : listPhase) {
+				// 「承認フェーズ」．承認区分が承認済以外の場合(「承認フェーズ」．承認区分 ≠ 承認済)
+				if (phase.getApprovalATR() != ApprovalAtr.APPROVED) {
+					// Lay danh sach nguoi xac nhan TU
+					List<String> listApprover = approvalProcess.actualReflectionStateDecision(
+							application.getApplicationID(), phase.getPhaseID(), ApprovalAtr.APPROVED);
+					// Thuc hien lay danh sach nguoi xac nhan dai dien, PATH setting
+					AgentPubImport agency = this.approvalAgencyInformationService
+							.getApprovalAgencyInformation(AppContexts.user().companyId(), listApprover);
+					if (!agency.isFlag()) {
+						continue;
+					}
+				} else {
+					// APPROVAL DONE
+					// 「反映情報」．実績反映状態を「反映待ち」にする
+					application.changeReflectState(ReflectPlanPerState.WAITREFLECTION.value);
+					//appRepo.updateApplication(application);
 				}
-			} else {
-				// APPROVAL DONE
-				// 「反映情報」．実績反映状態を「反映待ち」にする
-				application.changeReflectState(ReflectPlanPerState.WAITREFLECTION.value);
-				appRepo.updateApplication(application);
 			}
 		}
-
+		//return application;
 	}
 
 }

@@ -84,7 +84,8 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 						"", 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
 						appApprovalPhaseCmd.dispOrder, 
-						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) , 
+						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) ,
+						//Frame
 						appApprovalPhaseCmd.getApprovalFrameCmds().stream().map(approvalFrame -> new ApprovalFrame(
 								companyId, 
 								"", 
