@@ -57,7 +57,7 @@ module nts.uk.at.view.kmk004.b.viewmodel {
                 let yearHd = self.yearHd() == true ? 1 : 0;
                 let specialHoliday = self.specialHoliday() == true ? 1 : 0;
                 let heavyHd = self.heavyHd() == true ? 1 : 0;
-                let calSet = new CalDaySet(self.calDaySet().categoryCode, halfDay, yearHd, specialHoliday, heavyHd);
+                let calSet = new CalDaySet(self.calDaySet(), halfDay, yearHd, specialHoliday, heavyHd);
                 self.share(calSet);
                 setShared('KML004B_DAY_SET', calSet);
                 nts.uk.ui.windows.close();

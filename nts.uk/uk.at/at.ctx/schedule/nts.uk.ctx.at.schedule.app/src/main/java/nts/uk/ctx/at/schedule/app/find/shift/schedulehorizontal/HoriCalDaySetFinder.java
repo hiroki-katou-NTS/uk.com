@@ -13,11 +13,19 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.repository.HoriTotalCategoryRepository;
 import nts.uk.shr.com.context.AppContexts;
+/**
+ * find hori cal days set data 
+ * @author yennth
+ *
+ */
 @Stateless
 public class HoriCalDaySetFinder {
 	@Inject
 	private HoriTotalCategoryRepository horiRep;
-	
+	/**
+	 *  find all hori cal days set data
+	 * @return
+	 */
 	public List<HoriCalDaySetDto> finder(){
 		String companyId = AppContexts.user().companyId();
 		return this.horiRep.findAllCal(companyId)

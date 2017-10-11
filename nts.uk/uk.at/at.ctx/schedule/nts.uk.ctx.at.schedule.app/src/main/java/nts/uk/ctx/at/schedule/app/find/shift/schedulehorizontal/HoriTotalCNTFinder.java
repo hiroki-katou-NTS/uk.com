@@ -13,17 +13,26 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.repository.HoriTotalCategoryRepository;
 import nts.uk.shr.com.context.AppContexts;
+/**
+ * find hori total cnt set data
+ * @author yennth
+ *
+ */
 @Stateless
 public class HoriTotalCNTFinder {
 	@Inject
 	private HoriTotalCategoryRepository horiRep;
-	
-	public List<HoriTotalCNTSetDto> finder(){
+	/**
+	 *  find hori total cnt set list by categoryCode, totalItemNo
+	 * @param param
+	 * @return
+	 */
+	public List<HoriTotalCNTSetDto> finder(Param param){
 		String companyId = AppContexts.user().companyId();
-		return this.horiRep.findAllCNT(companyId)
+		return this.horiRep.findCNTSet(companyId, param.getCategoryCode(), param.getTotalItemNo())
 							.stream()
 							.map(x -> {
-								return new HoriTotalCNTSetDto(companyId, x.getCategoryCode().toString(), x.getTotalItemNo(), x.getTotalTimeNo());
+								return new HoriTotalCNTSetDto(companyId, param.getCategoryCode(), param.getTotalItemNo(), x.getTotalTimeNo());
 							}).collect(Collectors.toList());
 	}
 }

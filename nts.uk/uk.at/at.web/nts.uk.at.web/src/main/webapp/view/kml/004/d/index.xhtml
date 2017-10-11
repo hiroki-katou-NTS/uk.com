@@ -24,20 +24,20 @@
 			<div id="contents-area cf">
 				<div id="label_1" data-bind="ntsFormLabel: {requied: false}">#{i18n.getText('KML004_38')}<span id = "note">#{i18n.getText('KML004_51')}</span></div>
 				
-				<div id="swap-list" data-bind="ntsSwapList: {
+				<div tabindex="1"><div id="swap-list" data-bind="ntsSwapList: {
 																height: 300,
 																dataSource: itemsSwap,
 																disableMoveButton: false,
-																primaryKey: 'totalCountNo',
+																primaryKey: 'totalTimeNo',
 																columns: columns,
 																value: currentCodeListSwap,
-															}"></div>
+															}"></div></div>
 			</div>
 			<div id="functions-area-bottom">
 				<!-- B4_1 -->
-				<button tabindex="5" class="x-large proceed" data-bind="click: save">#{i18n.getText('KML004_45')}</button>
+				<button tabindex="2" class="x-large proceed" data-bind="click: save">#{i18n.getText('KML004_45')}</button>
 				<!-- B4_2 -->
-				<button tabindex="6" data-bind="click: cancel">#{i18n.getText('KML004_46')}</button>
+				<button tabindex="3" data-bind="click: cancel">#{i18n.getText('KML004_46')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

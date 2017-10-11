@@ -41,6 +41,8 @@ module nts.uk.at.view.kml004.a.viewmodel {
         calSetObject: KnockoutObservable<CalDaySet>;
         //  cal day set received from dialog B
         calSetReceive: KnockoutObservable<CalDaySet>;
+        // cnt set received from dialog D
+        cntSetls: KnockoutObservableArray<any>;
         
         constructor() {
             let self = this;
@@ -78,6 +80,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
             self.listEval = ko.observableArray([]);
             self.calDaySetList = ko.observableArray([]);
             self.calSetReceive = ko.observable(null);
+            self.cntSetls = ko.observableArray(null);
             
             self.selectedCode.subscribe((value) => {
                 self.list([]);
@@ -240,8 +243,9 @@ module nts.uk.at.view.kml004.a.viewmodel {
                 categoryCode: self.selectedOption().categoryCode(),
                 categoryName: self.selectedOption().categoryName(),
                 memo: self.selectedOption().memo(),
+                horiCalDaysSet: self.calSetReceive(),
                 totalEvalOrders: self.newItems(),
-                horiCalDaysSet: self.calSetReceive(),  
+                cntSetls: self.cntSetls(),  
             }
             _.defer(() => {
                 if (nts.uk.ui.errors.hasError() === false) {
@@ -258,12 +262,13 @@ module nts.uk.at.view.kml004.a.viewmodel {
                         });
                     }
                     else{
-                        let obj: ITotalCategory ={
+                        let obj: ITotalCategory ={   
                             categoryCode: self.selectedOption().categoryCode(),
                             categoryName: self.selectedOption().categoryName(),
                             memo: self.selectedOption().memo(),
-                            totalEvalOrders: self.selectedOption().totalEvalOrders(),
-                            horiCalDaysSet: self.calSetReceive(),  
+                            horiCalDaysSet: self.calSetReceive(),                            
+                            totalEvalOrders: self.newItems(),
+                            cntSetls: self.cntSetls(),  
                         }
                         // insert item to list
                         service.add(ko.toJS(obj)).done(function(){
@@ -284,12 +289,25 @@ module nts.uk.at.view.kml004.a.viewmodel {
         //  new mode  
         newMode(){               
             let self = this;
-            
+            let dfd = $.Deferred();
             $("#code-text").ntsError('clear');  
             self.clearForm();
             self.checkDelete(false);
-            self.items(self.evalItems());
+            self.items(self.items());
             self.newItems([]);
+            service.getItem().done((lstItem) => {
+                if(lstItem.length == 0){
+                    nts.uk.ui.dialog.info({ messageId: "Msg_458" });
+                     nts.uk.ui.windows.close();    
+                } else {
+                    let sortedData = _.orderBy(lstItem, ['totalItemNo'], ['asc']);
+                    _.forEach(sortedData, function(item: EvalOrder){
+                        self.items.push(item);
+                    });
+                }
+                dfd.resolve();
+            });
+            return dfd.promise();
         }
         
         clearForm() {
@@ -359,10 +377,10 @@ module nts.uk.at.view.kml004.a.viewmodel {
         /** click 設定 button **/
         openBDialog() {
             let self = this;
-            if(self.calSetObject() == undefined){
+            if(self.calSetObject() == undefined || self.checkUpdate()==false){
                 self.calSetObject(new CalDaySet(self.selectedOption().categoryCode(), 0, 0, 0, 0));
             }
-            setSharedA('KML004A_DAY_SET', self.selectedOption().categoryCode());
+            setSharedA('KML004A_DAY_SET', self.calSetObject());   
             console.log(self.calSetReceive());
             nts.uk.ui.windows.sub.modal('/view/kml/004/b/index.xhtml').onClosed(function(): any {
                 self.calSetReceive = ko.observable(getSharedA("KML004B_DAY_SET")); 
@@ -372,9 +390,18 @@ module nts.uk.at.view.kml004.a.viewmodel {
         /** click 設定 button **/
         openDDialog() {
             let self = this;
+            setSharedA('KML004A_CNT_SET', self.selectedCode());
             nts.uk.ui.windows.sub.modal('/view/kml/004/d/index.xhtml').onClosed(function(): any {
+                var sets = getSharedA("KML004D_CNT_SET");
+                self.cntSetls(_.map(sets, function(item) {
+                    return {
+                        categoryCode: item.categoryCode,
+                        totalItemNo: item.totalItemNo,
+                        totalTimeNo: item.totalTimeNo     
+                    };    
+                }));
             });
-        }
+        }    
         
         openDialog(id, name) {
             var self = this;
@@ -391,22 +418,25 @@ module nts.uk.at.view.kml004.a.viewmodel {
         categoryName: string;
         memo: string;
         totalEvalOrders: Array<EvalOrder>;
-        horiCalDaysSet: Array<CalDaySet>;      
+        horiCalDaysSet: Array<CalDaySet>;  
+        cntSetls: Array<any>;     
     }
     
     export class TotalCategory{
         categoryCode: KnockoutObservable<string>;
         categoryName: KnockoutObservable<string>;
         memo: KnockoutObservable<string>;
-        totalEvalOrders: KnockoutObservableArray<any>;
         horiCalDaysSet: KnockoutObservableArray<any>;
+        totalEvalOrders: KnockoutObservableArray<any>;
+        cntSetls: KnockoutObservableArray<any>;
         constructor(param: ITotalCategory){
             let self = this;
             this.categoryCode = ko.observable(param.categoryCode);
             this.categoryName = ko.observable(param.categoryName);
             this.memo = ko.observable(param.memo); 
-            this.totalEvalOrders = ko.observableArray(param.totalEvalOrders);
             this.horiCalDaysSet = ko.observableArray(param.horiCalDaysSet);
+            this.totalEvalOrders = ko.observableArray(param.totalEvalOrders);
+            this.cntSetls = ko.observableArray(param.cntSetls);
         } 
     }
     

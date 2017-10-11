@@ -32,6 +32,15 @@ public interface HoriTotalCategoryRepository {
 	List<HoriTotalCNTSet> findAllCNT(String companyId);
 	
 	/**
+	 * get hori total cnt set by PK
+	 * @param companyId
+	 * @param totalItemNo
+	 * @param totalTimeNo
+	 * @return
+	 */
+	List<HoriTotalCNTSet> findCNTSet(String companyId, String categoryCode, int totalItemNo);
+	
+	/**
 	 * update a hori total category 
 	 * @param aggregateCategory
 	 */
@@ -76,6 +85,18 @@ public interface HoriTotalCategoryRepository {
 	 * @param totalEvalOrders
 	 */
 	void insertOrder(List<TotalEvalOrder> totalEvalOrders);
+	
+	/**
+	 * update list cntSet
+	 * @param cntSets
+	 */
+	void updateCNTSet(List<HoriTotalCNTSet> cntSets);
+	
+	/**
+	 * insert list cntSet
+	 * @param cntSets
+	 */
+	void insertCNTSet(List<HoriTotalCNTSet> cntSets);
 	
 	/**
 	 * find list total eval order by code

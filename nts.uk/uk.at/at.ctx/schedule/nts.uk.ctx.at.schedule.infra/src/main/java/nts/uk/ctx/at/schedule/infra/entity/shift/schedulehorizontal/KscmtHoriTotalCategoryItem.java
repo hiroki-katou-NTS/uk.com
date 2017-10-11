@@ -32,6 +32,9 @@ public class KscmtHoriTotalCategoryItem extends UkJpaEntity implements Serializa
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtHoriTotalCategory", orphanRemoval = true)
 	public List<KscmtTotalEvalOrderItem> listTotalEvalOrder;
 	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtHoriTotalCategory2", orphanRemoval = true)
+	public List<KscstHoriTotalCntSetItem> listHoriCNTSet;
+	
 	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtHoriTotalCategory1", orphanRemoval = true)
 	public KscstHoriCalDaysSetItem horiCalDaysSet;
 	

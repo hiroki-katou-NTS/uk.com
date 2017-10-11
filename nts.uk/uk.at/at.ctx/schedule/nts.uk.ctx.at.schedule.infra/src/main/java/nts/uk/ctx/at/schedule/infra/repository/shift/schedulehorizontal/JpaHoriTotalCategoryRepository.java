@@ -43,7 +43,8 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	private final String SELECT_SET_ITEM_CD = SELECT_SET_ITEM + "AND c.kscstHoriCalDaysSetPK.categoryCode = :categoryCode";
 	// hori total cnt set
 	private final String SELECT_CNT_NO_WHERE = "SELECT c FROM KscstHoriTotalCntSetItem c ";
-	private final String SELECT_CNT_ITEM = SELECT_CNT_NO_WHERE + "WHERE c.kscstHoriTotalCntSetPK.companyId = :companyId";
+	private final String SELECT_CNT_ITEM = SELECT_CNT_NO_WHERE + "WHERE c.kscstHoriTotalCntSetPK.companyId = :companyId ";
+	private final String SELECT_CNT_ITEM_CD = SELECT_CNT_ITEM + "AND c.kscstHoriTotalCntSetPK.categoryCode = :categoryCode AND c.kscstHoriTotalCntSetPK.totalItemNo = :totalItemNo ";
 	
 	/**
 	 * change total eval order entity to total eval order domain
@@ -99,9 +100,16 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	private static HoriTotalCategory toDomainCate(KscmtHoriTotalCategoryItem entity){
 		List<KscmtTotalEvalOrderItem> lsEvalOrderEntity = entity.listTotalEvalOrder;
 		KscstHoriCalDaysSetItem object = entity.horiCalDaysSet;
+		List<KscstHoriTotalCntSetItem> lsCntSetEntity = entity.listHoriCNTSet;
 		List<TotalEvalOrder> domlsEvalOrderEntity = new ArrayList<>();
+		List<HoriTotalCNTSet> totalCntSetls = new ArrayList<>();
+		// get eval order entity dom list
 		for(KscmtTotalEvalOrderItem item : lsEvalOrderEntity){
 			domlsEvalOrderEntity.add(toDomainOrder(item));
+		}
+		// get hori total cnt set dom list
+		for(KscstHoriTotalCntSetItem obj : lsCntSetEntity){
+			totalCntSetls.add(toDomainCNT(obj));
 		}
 		HoriCalDaysSet horiCalDaysSet = object == null ? null : toDomainSet(object);
 		HoriTotalCategory domain = HoriTotalCategory.createFromJavaType(entity.kscmtHoriTotalCategoryPK.companyId, 
@@ -109,7 +117,8 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 																		entity.categoryName, 
 																		entity.memo,
 																		horiCalDaysSet,
-																		domlsEvalOrderEntity);
+																		domlsEvalOrderEntity,
+																		totalCntSetls);
 		return domain;
 	}
 	
@@ -128,6 +137,9 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 			entity.listTotalEvalOrder = domain.getTotalEvalOrders().stream()
 										.map(x -> toEntityOrder(x))
 										.collect(Collectors.toList());
+		}
+		if(domain.getHoriCalDaysSet() != null){
+			entity.horiCalDaysSet = toEntitySet(domain.getHoriCalDaysSet());
 		}
 		return entity;
 	}
@@ -218,6 +230,11 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 		}
 		if(horiTotalCategory.getHoriCalDaysSet() != null){
 			oldEntity.horiCalDaysSet = toEntitySet(horiTotalCategory.getHoriCalDaysSet());
+		}
+		if(horiTotalCategory.getCntSetls() != null){
+			oldEntity.listHoriCNTSet = horiTotalCategory.getCntSetls().stream()
+														.map(c -> toEntityCNT(c))
+														.collect(Collectors.toList());
 		}
 		this.commandProxy().update(oldEntity);
 	}
@@ -373,7 +390,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	}
 	
 	/**
-	 * find hori cal day set by categoryCode
+	 * find hori cal day set by categoryCode 
 	 * author: Hoang Yen
 	 */
 	@Override
@@ -382,5 +399,43 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 								.setParameter("companyId", companyId)
 								.setParameter("categoryCode", categoryCode)
 								.getList(c -> toDomainSet(c));
+	}
+	
+	/**
+	 * update cnt set list
+	 * author: Hoang Yen
+	 */
+	@Override
+	public void updateCNTSet(List<HoriTotalCNTSet> cntSets) {
+		for(HoriTotalCNTSet item : cntSets){
+			KscstHoriTotalCntSetItem entity = toEntityCNT(item);
+			KscstHoriTotalCntSetItem oldEntity = this.queryProxy().find(entity.kscstHoriTotalCntSetPK, KscstHoriTotalCntSetItem.class).get();
+			this.commandProxy().update(oldEntity);
+		}
+	}
+
+	/**
+	 * insert cnt set list
+	 * author: Hoang Yen
+	 */
+	@Override
+	public void insertCNTSet(List<HoriTotalCNTSet> cntSets) {
+		for(HoriTotalCNTSet item : cntSets){
+			KscstHoriTotalCntSetItem entity = toEntityCNT(item);
+			this.commandProxy().insert(entity);
+		}
+	}
+
+	/**
+	 * find hori total cnt set
+	 * author: Hoang Yen
+	 */
+	@Override
+	public List<HoriTotalCNTSet> findCNTSet(String companyId, String categoryCode, int totalItemNo) { 
+		return this.queryProxy().query(SELECT_CNT_ITEM_CD, KscstHoriTotalCntSetItem.class)
+				.setParameter("companyId", companyId)
+				.setParameter("categoryCode", categoryCode)
+				.setParameter("totalItemNo", totalItemNo)
+				.getList(c -> toDomainCNT(c));
 	}
 }

@@ -21,6 +21,7 @@ import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriTotalCNTFind
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriTotalCNTSetDto;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriTotalCategoryDto;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriTotalCategoryFinder;
+import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.Param;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.TotalEvalItemDto;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.TotalEvalItemFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.TotalEvalOrderDto;
@@ -83,8 +84,8 @@ public class HoriTotalCategoryWebService extends WebService{
 	 */
 	@POST
 	@Path("findCNT")
-	public List<HoriTotalCNTSetDto> finderCNT(){
-		return this.finderCNT.finder();
+	public List<HoriTotalCNTSetDto> finderCNT(Param param){
+		return this.finderCNT.finder(param);
 	}
 	
 	/**
@@ -99,8 +100,8 @@ public class HoriTotalCategoryWebService extends WebService{
 	
 	@POST
 	@Path("update")
-	public void update(UpdateHoriTotalCategoryCommand command){
-		this.update.handle(command);
+	public void update(UpdateHoriTotalCategoryCommand aa){
+		this.update.handle(aa);
 	}
 	
 	@POST
