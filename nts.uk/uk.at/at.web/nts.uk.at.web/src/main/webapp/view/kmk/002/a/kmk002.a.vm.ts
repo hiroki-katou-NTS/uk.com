@@ -186,8 +186,8 @@ module nts.uk.at.view.kmk002.a {
                     this.setSelectedFormulaBelowAndAbove(vl);
 
                     console.log(vl);
-                    //console.log('above='+this.selectedFormulaAbove);
-                    //console.log('below='+this.selectedFormulaBelow);
+                    console.log('above='+this.selectedFormulaAbove);
+                    console.log('below='+this.selectedFormulaBelow);
                     console.log('\n');
                 });
 
@@ -288,6 +288,13 @@ module nts.uk.at.view.kmk002.a {
             private addFormulaAtOrder(order: number): void {
                 let self = this;
 
+                // If this is the first formula ever added
+                if (!self.isFormulaSet()) {
+                    order = 1;
+
+                    OptionalItem.selectedFormulas([]);
+                }
+
                 let f = new Formula();
 
                 // bind function
@@ -377,10 +384,14 @@ module nts.uk.at.view.kmk002.a {
              */
             private updateSelectedFormulaOrder(orderNo: number): void {
                 let self = this;
-                let updatedList = OptionalItem.selectedFormulas()
-                    .filter(item => item > orderNo)
-                    .map(item => item += 1);
-                OptionalItem.selectedFormulas(updatedList);
+                let mapped = OptionalItem.selectedFormulas()
+                    .map(item => {
+                        if (item > orderNo) {
+                            item += 1;
+                        }
+                        return item;
+                    });
+                OptionalItem.selectedFormulas(mapped);
             }
 
             /**
@@ -388,11 +399,9 @@ module nts.uk.at.view.kmk002.a {
              */
             private updateAllFormulaOrder(orderNo: number): void {
                 let self = this;
-                let updatedList = self.calcFormulas()
+                self.calcFormulas()
                     .filter(item => item.orderNo > orderNo)
-                    .forEach(item => {
-                        item.orderNo += 1;
-                    });
+                    .forEach(item => item.orderNo += 1);
             }
 
             /**
@@ -410,7 +419,7 @@ module nts.uk.at.view.kmk002.a {
                     return;
                 }
 
-                let belowOrder = this.selectedFormulaBelow;
+                let belowOrder = self.selectedFormulaBelow;
 
                 // update order of below items.
                 self.updateOrderAfter(belowOrder - 1);
@@ -666,25 +675,19 @@ module nts.uk.at.view.kmk002.a {
              */
             private setSelectedFormulaBelowAndAbove(array: Array<number>): void {
                 let self = this;
-                let above = 1;
-                let below = 2;
+
+                let above = 999;
+                let below = 1;
 
                 array.forEach(order => {
 
-                    // below = selected order
+                    // set below = bottom selected order + 1
                     if (order >= below) {
                         below = order + 1;
                     }
 
-                    // for single selection
-                    // set above = selected order - 1
-                    if (order > 1) {
-                        above = order;
-                    }
-
-                    // for multi selection
-                    // set above = lowest selected order
-                    if (order < above) {
+                    // set above = top selected
+                    if (order <= above) {
                         above = order;
                     }
                 });
@@ -841,8 +844,13 @@ module nts.uk.at.view.kmk002.a {
                 let command = self.optionalItem.toDto();
 
                 service.saveOptionalItem(command).done(() => {
-                    dfd.resolve();
+                    // reload optional item list.
+                    self.loadOptionalItemHeaders();
+
+                    // show message
                     nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+
+                    dfd.resolve();
                 }).fail(res => {
                     nts.uk.ui.dialog.alertError(res);
                 }).always(() => nts.uk.ui.block.clear());
