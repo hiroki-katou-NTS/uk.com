@@ -11,7 +11,6 @@ import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -33,19 +32,16 @@ public class KscmtScCreateContent extends UkJpaEntity implements Serializable {
     
     /** The exe id. */
     @Id
-    @NotNull
     @Column(name = "EXE_ID")
     private String exeId;
     
     /** The confirm. */
-    @NotNull
     @Column(name = "CONFIRM")
-    private int confirm;
+    private Integer confirm;
     
     /** The implement atr. */
-    @NotNull
     @Column(name = "IMPLEMENT_ATR")
-    private int implementAtr;
+    private Integer implementAtr;
 
     /** The copy start ymd. */
     @Column(name = "COPY_START_YMD")
@@ -54,39 +50,39 @@ public class KscmtScCreateContent extends UkJpaEntity implements Serializable {
     
     /** The create method atr. */
     @Column(name = "CREATE_METHOD_ATR")
-    private int createMethodAtr;
+    private Integer createMethodAtr;
     
     /** The re create atr. */
     @Column(name = "RE_CREATE_ATR")
-    private int reCreateAtr;
+    private Integer reCreateAtr;
     
     /** The process exe atr. */
     @Column(name = "PROCESS_EXE_ATR")
-    private int processExeAtr;
+    private Integer processExeAtr;
     
     /** The re master info. */
     @Column(name = "RE_MASTER_INFO")
-    private int reMasterInfo;
+    private Integer reMasterInfo;
     
     /** The re abst hd busines. */
     @Column(name = "RE_ABST_HD_BUSINES")
-    private int reAbstHdBusines;
+    private Integer reAbstHdBusines;
     
     /** The re working hours. */
     @Column(name = "RE_WORKING_HOURS")
-    private int reWorkingHours;
+    private Integer reWorkingHours;
     
     /** The re time assignment. */
     @Column(name = "RE_TIME_ASSIGNMENT")
-    private int reTimeAssignment;
+    private Integer reTimeAssignment;
     
     /** The re dir line bounce. */
     @Column(name = "RE_DIR_LINE_BOUNCE")
-    private int reDirLineBounce;
+    private Integer reDirLineBounce;
     
     /** The re time child care. */
     @Column(name = "RE_TIME_CHILD_CARE")
-    private int reTimeChildCare;
+    private Integer reTimeChildCare;
 
     /**
      * Instantiates a new kscmt sc create content.

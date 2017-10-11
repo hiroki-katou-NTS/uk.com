@@ -192,6 +192,10 @@ module nts.uk.at.view.ksc001.h {
             private detailCreateMethod(data: any): string[] {
                 let self = this;
                 let str: string[] = [];
+                if(data.createMethodAtr == null)
+                {
+                    return str;
+                }
                 if (!((data.implementAtr == ImplementAtr.RECREATE) && (data.processExecutionAtr == ProcessExecutionAtr.RECONFIG))) {
                     str.push(nts.uk.resource.getText("KSC001_22"));
                     str.push(nts.uk.resource.getText("KSC001_23"));

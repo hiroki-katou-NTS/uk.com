@@ -11,7 +11,6 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -35,9 +34,8 @@ public class KscmtScheduleCreator extends UkJpaEntity  implements Serializable {
     
     /** The exe status. */
     @Basic(optional = false)
-    @NotNull
     @Column(name = "EXE_STATUS")
-    private int exeStatus;
+    private Integer exeStatus;
 
     /**
      * Instantiates a new kscmt schedule creator.
