@@ -297,7 +297,7 @@ module nts.uk.at.view.ksc001.b {
                 if (self.checkCreateMethodAtrPatternSchedule()) {
                     data.createMethodAtr = CreateMethodAtr.PATTERN_SCHEDULE;
                 }
-                if (self.checkCreateMethodAtrCopyPastSchedule) {
+                if (self.checkCreateMethodAtrCopyPastSchedule()) {
                     data.createMethodAtr = CreateMethodAtr.COPY_PAST_SCHEDULE;
                 }
                 data.confirm = self.confirm();

@@ -13,6 +13,7 @@ import javax.ejb.Stateful;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.layer.app.command.AsyncCommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.task.data.TaskDataSetter;
@@ -23,15 +24,19 @@ import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleExecutionLogFinder;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSet;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSetRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
 import nts.uk.ctx.at.schedule.dom.executionlog.CreateMethodAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ExecutionDateTime;
 import nts.uk.ctx.at.schedule.dom.executionlog.ImplementAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ProcessExecutionAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.ReCreateAtr;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreator;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
+import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogGetMemento;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
@@ -69,7 +74,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	
 	/** The personal work schedule cre set repository. */
 	@Inject
-	private PersonalWorkScheduleCreSetRepository personalWorkScheduleCreSetRepository;
+	private PersonalWorkScheduleCreSetRepository creSetRepository;
 	
 	/** The basic schedule repository. */
 	@Inject
@@ -77,30 +82,44 @@ public class ScheduleCreatorExecutionCommandHandler
 	
 	/** The schedule management control repository. */
 	@Inject
-	private ScheduleManagementControlRepository scheduleManagementControlRepository;
-
+	private ScheduleManagementControlRepository controlRepository;
+	
+	/** The content repository. */
+	@Inject
+	private ScheduleCreateContentRepository contentRepository;
+	
+	/** The internationalization. */
+	@Inject
+	private IInternationalization internationalization;
+	
 	/** The setter. */
 	private TaskDataSetter setter;
 	
 	/** The command. */
 	private ScheduleCreatorExecutionCommand command;
-
-	/** The default value. */
+	
+	/** The content. */
+	private ScheduleCreateContent content;
+	
+	/** The to date. */
+	private Date toDate;
+	
+	/** The Constant DEFAULT_VALUE. */
 	private static final Integer DEFAULT_VALUE = 0;
 
-	/** The total record. */
+	/** The Constant TOTAL_RECORD. */
 	private static final String TOTAL_RECORD = "TOTAL_RECORD";
 
-	/** The success cnt. */
+	/** The Constant SUCCESS_CNT. */
 	private static final String SUCCESS_CNT = "SUCCESS_CNT";
 
-	/** The fail cnt. */
+	/** The Constant FAIL_CNT. */
 	private static final String FAIL_CNT = "FAIL_CNT";
 	
-	/** The Constant NEXT_DAY_MONT. */
+	/** The Constant NEXT_DAY_MONTH. */
 	public static final int NEXT_DAY_MONTH = 1;
 	
-	/** The Constant ZERO_DAY_MONT. */
+	/** The Constant ZERO_DAY_MONTH. */
 	public static final int ZERO_DAY_MONTH = 0;
 	
 
@@ -122,12 +141,10 @@ public class ScheduleCreatorExecutionCommandHandler
 
 		val asyncTask = context.asAsync();
 		setter = asyncTask.getDataSetter();
-		ScheduleCreatorExecutionCommand command = context.getCommand();
-
-		String executionId = command.getExecutionId();
+		command = context.getCommand();
 
 		Optional<ScheduleExecutionLog> optionalScheduleExecutionLog = this.scheduleExecutionLogRepository
-				.findById(companyId, executionId);
+				.findById(companyId, command.getExecutionId());
 
 		// check exist data
 		if (optionalScheduleExecutionLog.isPresent()) {
@@ -135,8 +152,13 @@ public class ScheduleCreatorExecutionCommandHandler
 			domain.setExecutionDateTime(
 					new ExecutionDateTime(GeneralDateTime.now(), GeneralDateTime.now()));
 			this.scheduleExecutionLogRepository.update(domain);
+			Optional<ScheduleCreateContent> optionalContent = this.contentRepository
+					.findByExecutionId(command.getExecutionId());
+			
+			content = optionalContent.get();
+			
 			List<ScheduleCreator> scheduleCreators = this.scheduleCreatorRepository
-					.findAll(executionId);
+					.findAll(command.getExecutionId());
 
 			setter.setData(TOTAL_RECORD, scheduleCreators.size());
 			setter.setData(SUCCESS_CNT, DEFAULT_VALUE);
@@ -158,7 +180,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			List<ScheduleCreator> scheduleCreators) {
 		scheduleCreators.forEach(domain -> {
 			
-			Optional<ScheduleManagementControl> optionalScheduleManagementControl = this.scheduleManagementControlRepository
+			Optional<ScheduleManagementControl> optionalScheduleManagementControl = this.controlRepository
 					.findById(domain.getEmployeeId());
 			
 			// check exist data schedule management control
@@ -170,12 +192,12 @@ public class ScheduleCreatorExecutionCommandHandler
 				if(scheduleManagementControl.getScheduleManagementAtr().equals(UseAtr.USE)){
 					
 					// check processExecutionAtr reconfig
-					if(command.getProcessExecutionAtr() == ProcessExecutionAtr.RECONFIG.value){
+					if(content.getReCreateContent().getProcessExecutionAtr().value == ProcessExecutionAtr.RECONFIG.value){
 						this.resetSchedule();
 					}else {
 						
 						// check parameter CreateMethodAtr 
-						if (command.getCreateMethodAtr() == CreateMethodAtr.PERSONAL_INFO.value) {
+						if (content.getCreateMethodAtr().value == CreateMethodAtr.PERSONAL_INFO.value) {
 							this.createScheduleBasedPerson(scheduleExecutionLog);
 						}
 					}
@@ -189,6 +211,9 @@ public class ScheduleCreatorExecutionCommandHandler
 		this.updateStatusScheduleExecutionLog(scheduleExecutionLog);
 	}
 	
+	/**
+	 * Reset schedule.
+	 */
 	// スケジュールを再設定する
 	private void resetSchedule(){
 		
@@ -220,7 +245,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	 */
 	// 個人情報をもとにスケジュールを作成する
 	private void createScheduleBasedPerson(ScheduleExecutionLog domain) {
-		Optional<PersonalWorkScheduleCreSet> optionalPersonalWorkScheduleCreSet = this.personalWorkScheduleCreSetRepository
+		Optional<PersonalWorkScheduleCreSet> optionalPersonalWorkScheduleCreSet = this.creSetRepository
 				.findById(domain.getExecutionEmployeeId());
 		
 		// check exist data PersonalWorkScheduleCreSet
@@ -231,7 +256,7 @@ public class ScheduleCreatorExecutionCommandHandler
 			if (personalWorkScheduleCreSet.getBasicCreateMethod()
 					.equals(WorkScheduleBasicCreMethod.BUSINESS_DAY_CALENDAR)) {
 				// call create WorkSchedule
-				this.createWorkScheduleByBusinessDayCalenda(domain);
+				this.createWorkScheduleByBusinessDayCalenda(domain,personalWorkScheduleCreSet);
 			}
 		}
 	}
@@ -240,12 +265,14 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * Creates the work schedule by business day calenda.
 	 *
 	 * @param domain the domain
+	 * @param personalWorkScheduleCreSet the personal work schedule cre set
 	 */
 	// 営業日カレンダーで勤務予定を作成する
-	private void createWorkScheduleByBusinessDayCalenda(ScheduleExecutionLog domain){
+	private void createWorkScheduleByBusinessDayCalenda(ScheduleExecutionLog domain,
+			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 		
 		// get to day by start period date 
-		Date toDate = domain.getPeriod().getStartDate().date();
+		toDate = domain.getPeriod().getStartDate().date();
 		
 		// loop start period date => end period date
 		while(toDate.before(this.nextDay(domain.getPeriod().getEndDate().date()))){
@@ -260,17 +287,17 @@ public class ScheduleCreatorExecutionCommandHandler
 					
 					BasicSchedule basicSchedule = optionalBasicSchedule.get();
 					// check parameter implementAtr recreate
-					if (command.getImplementAtr() == ImplementAtr.RECREATE.value) {
+					if (content.getImplementAtr().value == ImplementAtr.RECREATE.value) {
 						
 						// check parameter ReCreateAtr onlyUnconfirm
-						if(command.getReCreateAtr() == ReCreateAtr.ONLYUNCONFIRM.value){
+						if(content.getReCreateContent().getReCreateAtr().value == ReCreateAtr.ONLYUNCONFIRM.value){
 							
 							// check confirmedAtr of basic schedule
 							if(basicSchedule.getConfirmedAtr().equals(ConfirmedAtr.UNSETTLED)){
-								this.getWorktype();
+								this.getWorktype(personalWorkScheduleCreSet);
 							}
 						}else {
-							this.getWorktype();
+							this.getWorktype(personalWorkScheduleCreSet);
 						}
 					}
 				}
@@ -284,27 +311,100 @@ public class ScheduleCreatorExecutionCommandHandler
 	/**
 	 * Gets the worktype.
 	 *
+	 * @param personalWorkScheduleCreSet the personal work schedule cre set
 	 * @return the worktype
 	 */
 	// 勤務種類を取得する
-	private void getWorktype(){
-		this.getBasicWorkSetting();
+	private void getWorktype(PersonalWorkScheduleCreSet personalWorkScheduleCreSet){
+		this.getBasicWorkSetting(personalWorkScheduleCreSet);
 	}
 	
 	/**
 	 * Gets the basic work setting.
 	 *
+	 * @param personalWorkScheduleCreSet the personal work schedule cre set
 	 * @return the basic work setting
 	 */
 	// 基本勤務設定を取得する
-	private void getBasicWorkSetting(){
-		this.getBusinessDayCalendar();
+	private void getBasicWorkSetting(PersonalWorkScheduleCreSet personalWorkScheduleCreSet){
+		this.getBusinessDayCalendar(personalWorkScheduleCreSet);
 	}
 	
+	/**
+	 * Gets the business day calendar.
+	 *
+	 * @param personalWorkScheduleCreSet the personal work schedule cre set
+	 * @return the business day calendar
+	 */
 	// 営業日カレンダーから「稼働日区分」を取得する
-	private void getBusinessDayCalendar(){
+	private void getBusinessDayCalendar(PersonalWorkScheduleCreSet personalWorkScheduleCreSet){
 		
+		// check 営業日カレンダーの参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
+		if (personalWorkScheduleCreSet.getWorkScheduleBusCal().getReferenceBusinessDayCalendar()
+				.equals(WorkScheduleMasterReferenceAtr.WORKPLACE)) {
+			this.scheduleErrorLogRepository.add(
+					this.toScheduleErrorLog(personalWorkScheduleCreSet.getEmployeeId(), "Msg_602"));
+		} else
+		// CLASSIFICATION
+		{
+
+		}
 	}
+	
+	/**
+	 * To schedule error log.
+	 *
+	 * @param personalWorkScheduleCreSet the personal work schedule cre set
+	 * @param messageId the message id
+	 * @return the schedule error log
+	 */
+	private ScheduleErrorLog toScheduleErrorLog(String employeeId, String messageId) {
+		return new ScheduleErrorLog(new ScheduleErrorLogGetMemento() {
+
+			/**
+			 * Gets the execution id.
+			 *
+			 * @return the execution id
+			 */
+			@Override
+			public String getExecutionId() {
+				return command.getExecutionId();
+			}
+
+			/**
+			 * Gets the error content.
+			 *
+			 * @return the error content
+			 */
+			@Override
+			public String getErrorContent() {
+				return internationalization.getItemName(messageId).get();
+			}
+
+			/**
+			 * Gets the employee id.
+			 *
+			 * @return the employee id
+			 */
+			@Override
+			public String getEmployeeId() {
+				return employeeId;
+			}
+
+			/*
+			 * (non-Javadoc)
+			 * 
+			 * @see nts.uk.ctx.at.schedule.dom.executionlog.
+			 * ScheduleErrorLogGetMemento#getDate()
+			 */
+			@Override
+			public GeneralDate getDate() {
+				return GeneralDate.legacyDate(toDate);
+			}
+
+		});
+	}
+	
 	/**
 	 * Gets the status employment.
 	 *
@@ -316,6 +416,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		// fake data
 		return true;
 	}
+	
 	/**
 	 * Next day.
 	 *
