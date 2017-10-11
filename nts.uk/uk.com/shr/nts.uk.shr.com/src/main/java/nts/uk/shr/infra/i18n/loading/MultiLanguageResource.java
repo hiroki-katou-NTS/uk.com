@@ -3,6 +3,7 @@ package nts.uk.shr.infra.i18n.loading;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -33,7 +35,7 @@ import nts.uk.shr.infra.i18n.SystemProperties;
 import nts.uk.shr.infra.i18n.format.DateTimeFormatProvider;
 import nts.uk.shr.infra.i18n.format.DateTimeTranscoder;
 
-@Dependent
+@ApplicationScoped
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 public class MultiLanguageResource implements IInternationalization, Serializable {
 
@@ -52,7 +54,7 @@ public class MultiLanguageResource implements IInternationalization, Serializabl
 	// Map<programid,Map<messageId,message>
 	private Map<String, Map<String, String>> messageResource;
 
-	private Map<String, String> companyCustomizedResource;
+	//private Map<String, String> companyCustomizedResource;
 
 	private static final Pattern COMPANYDENPENDITEMPATTERN = Pattern.compile("\\{#(\\w*)\\}");
 	private static final Pattern MESSAGEPARAMETERPATTERN = Pattern.compile("\\{([0-9])+(:\\w+)?\\}");
@@ -95,21 +97,21 @@ public class MultiLanguageResource implements IInternationalization, Serializabl
 	}
 
 	private void loadCustomizedResource() {
-		companyCustomizedResource = companyResourceBundle
-				.getResource(getCompanyCode(), currentLocale.getSessionLocale()).stream()
-				.collect(Collectors.toMap(ResourceItem::getCode, ResourceItem::getContent));
+//		companyCustomizedResource = companyResourceBundle
+//				.getResource(getCompanyCode(), currentLocale.getSessionLocale()).stream()
+//				.collect(Collectors.toMap(ResourceItem::getCode, ResourceItem::getContent));
 
 	}
 
 	@Override
 	public Optional<String> getItemName(String id, String... params) {
 		// because company customised resource has higher priority
-		String text = companyCustomizedResource.get(id);
-		if (text != null)
-			return Optional.of(text);
+//		String text = companyCustomizedResource.get(id);
+//		if (text != null)
+//			return Optional.of(text);
 
 		Map<String, String> allSystemCodeName = groupResource(codeNameResource);
-		text = allSystemCodeName.get(id);
+		String text = allSystemCodeName.get(id);
 		if (text != null) {
 			text = replaceCompanyCustomizeResource(text);
 			if (params.length > 0)
@@ -142,8 +144,9 @@ public class MultiLanguageResource implements IInternationalization, Serializabl
 	@Override
 	public Optional<String> getRawMessage(String messageId) {
 		Map<String, String> allMessage = groupResource(messageResource);
-		String message = companyCustomizedResource.getOrDefault(messageId, allMessage.get(messageId));
-		return message == null ? Optional.empty() : Optional.of(message);
+		return Optional.ofNullable(allMessage.get(messageId));
+//		String message = companyCustomizedResource.getOrDefault(messageId, allMessage.get(messageId));
+//		return message == null ? Optional.empty() : Optional.of(message);
 	}
 
 	private String replaceCompanyCustomizeResource(String message) {
@@ -226,7 +229,7 @@ public class MultiLanguageResource implements IInternationalization, Serializabl
 		codeName.putAll(codeNameResource.getOrDefault(SystemProperties.SYSTEM_ID, new HashMap<>()));
 		codeName.putAll(codeNameResource.getOrDefault(programId, new HashMap<>()));
 		// company customized will override system default
-		codeName.putAll(companyCustomizedResource);
+		//codeName.putAll(companyCustomizedResource);
 		return codeName;
 
 	}
@@ -258,9 +261,11 @@ public class MultiLanguageResource implements IInternationalization, Serializabl
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, String> getCustomizeResource() {
-		return companyCustomizedResource;
+		return Collections.EMPTY_MAP;
+		//return companyCustomizedResource;
 	}
 
 	@Override

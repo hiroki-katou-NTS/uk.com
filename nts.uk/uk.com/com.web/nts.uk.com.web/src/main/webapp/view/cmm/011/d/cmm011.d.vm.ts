@@ -8,8 +8,6 @@ module nts.uk.com.view.cmm011.d {
             constructor() {
                 let self = this;
                 self.startDate = ko.observable('');
-                //TODO change when update text resource
-//                self.endDate = ko.observable(nts.uk.resource.getText("CMM011_27"));
                 self.endDate = ko.observable(nts.uk.resource.getText("CMM011_27"));
                 
                 self.startDate.subscribe((newValue) => {

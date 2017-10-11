@@ -3,15 +3,15 @@ module nts.uk.com.view.cmm013.a {
     export module viewmodel {
     
         import JobTitleHistoryAbstract = base.JobTitleHistoryAbstract;
+        import History = base.History;
+        
+        import JobTitle = base.JobTitle;
+        import SequenceMaster = base.SequenceMaster;
         
         export class ScreenModel {
-            
-            jobTitleHistoryModel: KnockoutObservable<JobTitleHistoryModel>;
-            
-            createMode: KnockoutObservable<boolean>;
-            
+                                     
             listJobTitleOption: ComponentOption;
-            
+                     
             baseDate: KnockoutObservable<Date>;
             isShowAlreadySet: KnockoutObservable<boolean>;
             isMultiSelect: KnockoutObservable<boolean>;
@@ -19,13 +19,19 @@ module nts.uk.com.view.cmm013.a {
             multiJobTitleSelectedId: KnockoutObservableArray<string>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;           
-            
+                        
             jobTitleList: KnockoutObservableArray<UnitModel>;
+            
+            
+            
+            createMode: KnockoutObservable<boolean>;
+            
+            jobTitleHistoryModel: KnockoutObservable<JobTitleHistoryModel>;
             
             jobTitleCode: KnockoutObservable<string>;
             jobTitleName: KnockoutObservable<string>;
             sequenceCode: KnockoutObservable<string>;
-            sequenceDisplayText: KnockoutObservable<string>;
+            sequenceName: KnockoutObservable<string>;
             
             constructor() {
                 let _self = this;               
@@ -39,9 +45,10 @@ module nts.uk.com.view.cmm013.a {
                 
                 // Init list JobTitle setting
                 _self.baseDate = ko.observable(new Date()); 
+
                 _self.jobTitleSelectedId = ko.observable("");
                 _self.jobTitleSelectedId.subscribe((newValue) => {
-                    _self.loadJobTitleById(newValue);
+                    _self.findJobHistoryById(newValue);
                 });        
                 _self.isShowAlreadySet = ko.observable(false);
                 _self.isShowAlreadySet.subscribe(() => {
@@ -77,7 +84,7 @@ module nts.uk.com.view.cmm013.a {
                 _self.jobTitleCode = ko.observable("");
                 _self.jobTitleName = ko.observable("");          
                 _self.sequenceCode = ko.observable("");  
-                _self.sequenceDisplayText = ko.observable("01 役員");    
+                _self.sequenceName = ko.observable("");    
             }
     
             /**
@@ -104,14 +111,11 @@ module nts.uk.com.view.cmm013.a {
                 _self.isMultiSelect(false);
                 _self.reloadComponent();
                 
-                //TODO: Get JobTitle data by date
+                //TODO: Get JobTitle data by date                                
+                //TODO: mocked JobTitle
+                _self.jobTitleSelectedId("000000000000000000000000000000000001");
                 
-                
-                //TODO: Get SequenceCode data
-                
-                
-                //TODO: Apply data to list JobTitle
-                
+                //TODO: Apply data to list JobTitle                
                 
                 dfd.resolve();
                 return dfd.promise();
@@ -120,39 +124,103 @@ module nts.uk.com.view.cmm013.a {
             startCreate(newValue: boolean) {
                 let _self = this;
                 
-                if(newValue === true) {
-                    
-                } else {
+                if (newValue === true) {
                     _self.jobTitleHistoryModel().listJobTitleHistory.removeAll();
                     //_self.jobTitleHistoryModel().listJobTitleHistory.push(new History());
                     _self.jobTitleHistoryModel().selectFirst();
                     _self.jobTitleCode = ko.observable("");
                     _self.jobTitleName = ko.observable("");          
                     _self.sequenceCode = ko.observable("");  
+                    _self.sequenceName = ko.observable("");
+                } else {
+                        
                 }               
             }
             
-            loadJobTitleById(jobTitleId: string) {
-                let _self = this;               
-                //TODO: load new JobTitle info
-                
-                console.log(_self.jobTitleList());
+            /**
+             * Find JobTitle history by id
+             */
+            private findJobHistoryById(jobTitleId: string) {
+                let _self = this;    
+                           
+                // Load JobTitle history info 
+                service.findJobHistoryList(jobTitleId)
+                    .done((data: any) => {
+                        if (data) {
+                            // Load JobTitle History
+                            let listHistory: History[] = _.map(data.jobTitleHistory, (item: any) => {
+                                return new History(data.jobTitleId, item.historyId, item.period);
+                            });
+                            _self.jobTitleHistoryModel().init(listHistory);   
+                        }                                           
+                    })
+                    .fail((res: any) => {
+                        
+                    }); 
             }          
+            
+            /**
+             * Find JobTitle info by job title id and job history id
+             */
+            public findJobInfo(jobTitleId: string, jobHistoryId: string) {
+                let _self = this;    
+                
+                service.findJobInfoByJobIdAndHistoryId(jobTitleId, jobHistoryId)
+                    .done((data: any) => {
+                        if (data) {
+                            _self.jobTitleCode(data.jobTitleCode);
+                            _self.jobTitleName(data.jobTitleName);
+                            _self.sequenceCode(data.sequenceCode);
+                            _self.sequenceName(data.sequenceName);
+                        }
+                    })
+                    .fail((res: any) => {
+                        
+                    });                
+            }
+            
+            
             
             
             
             // Load Dialog
-            openDeleteDialog() {
+            /**
+             * Screen B - openDeleteDialog
+             */
+            public openDeleteDialog() {
                 let _self = this;
                 nts.uk.ui.windows.sub.modal('/view/cmm/013/b/index.xhtml').onClosed(() => {});
             }
             
-            openSelectSequenceDialog() {
+            /**
+             * Screen C - openSelectSequenceDialog
+             */
+            public openSelectSequenceDialog() {
                 let _self = this;
-                nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml').onClosed(() => {});   
+                nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml').onClosed(() => {
+                    let dialogData: SequenceMaster = nts.uk.ui.windows.getShared("ShareDateScreenC");
+                    if (!dialogData) {
+                        _self.sequenceCode("");
+                        _self.sequenceName("");
+                        return;
+                    }
+                    _self.sequenceCode(dialogData.sequenceCode);
+                    _self.sequenceName(dialogData.sequenceName);
+                });   
             }
             
-            openSequenceManageDialog() {
+            /**
+             * Screen D - openAddHistoryDialog
+             */
+            
+            /**
+             * Screen E - openUpdateHistoryDialog
+             */
+            
+            /**
+             * Screen F - openSequenceManageDialog
+             */
+            public openSequenceManageDialog() {
                 let _self = this;
                 nts.uk.ui.windows.sub.modal('/view/cmm/013/f/index.xhtml').onClosed(() => {});   
             }
@@ -169,10 +237,13 @@ module nts.uk.com.view.cmm013.a {
                 super();
                 let _self = this;
                 _self.parentModel = parentModel;
+                _self.selectedJobTitleHistory.subscribe((jobHistoryId: string) => {
+                    _self.parentModel.findJobInfo(_self.parentModel.jobTitleSelectedId(), jobHistoryId);
+                });
                 _self.init([]);
             }
             
-            init(data: any) {
+            public init(data: History[]) {
                 let _self = this;
                 _self.listJobTitleHistory(data);
                 _self.selectFirst();

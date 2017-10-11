@@ -24,8 +24,6 @@ import nts.uk.ctx.bs.employee.infra.entity.classification.BsymtClassification;
 import nts.uk.ctx.bs.employee.infra.entity.classification.BsymtClassificationPK;
 import nts.uk.ctx.bs.employee.infra.entity.classification.BsymtClassificationPK_;
 import nts.uk.ctx.bs.employee.infra.entity.classification.BsymtClassification_;
-import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassification;
-import nts.uk.ctx.bs.employee.infra.entity.classification.CclmtClassificationPK;
 
 /**
  * The Class JpaManagementCategoryRepository.
@@ -74,8 +72,8 @@ public class JpaClassificationRepository extends JpaRepository
 	@Override
 	public void remove(String companyId, String classificationCode) {
 		this.commandProxy().remove(
-				CclmtClassification.class, 
-				new CclmtClassificationPK(companyId, classificationCode));
+				BsymtClassification.class, 
+				new BsymtClassificationPK(companyId, classificationCode));
 	}
 
 	/*

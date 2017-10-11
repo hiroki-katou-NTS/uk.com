@@ -1,10 +1,12 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.shr.find.employment;
+package nts.uk.ctx.bs.employee.app.find.employment;
 
 import java.util.List;
+
+import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
 
 /**
  * The Interface EmploymentFinder.

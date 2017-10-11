@@ -1,13 +1,17 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.shr.find.employment;
+package nts.uk.ctx.bs.employee.app.find.employment.dto;
 
 import lombok.Data;
 
 /**
  * The Class EmploymentDto.
+ */
+
+/**
+ * Instantiates a new employment dto.
  */
 @Data
 public class EmploymentDto {
