@@ -71,7 +71,6 @@ public class ExeErrorLogExportService extends ExportService<String> {
             throw new BusinessException("Msg_160");
         }
         
-//        lstError.stream().sorted(comparator).
         // convert to dto
         List<ScheduleErrorLogDto> lstErrorDto = lstError.stream()
                 .map(domain -> {
