@@ -52,7 +52,7 @@
 						</tr>
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_51')}</td>
-							<td class="valueScheduleSetting" data-bind="text: scheduleExecutionLog.completionStatus"></td>
+							<td class="valueScheduleSetting" data-bind="text: scheduleExecutionLogModel.completionStatus"></td>
 						</tr>
 						<tr tabindex="-1">
 							<td class="bg-green titleScheduleSetting" tabindex="-1">#{i18n.getText('KSC001_52')}</td>
@@ -75,8 +75,8 @@
 					<div class="tableErrorLog cf">
 						<table id="tableShowError" data-bind="ntsGridList: {								
 							height: 350,
-							dataSource: items,
-							primaryKey: 'code',
+							dataSource: errorLogs,
+							primaryKey: 'employeeId',
 							columns: columns,
 							multiple: false,
 							value: currentCode,
