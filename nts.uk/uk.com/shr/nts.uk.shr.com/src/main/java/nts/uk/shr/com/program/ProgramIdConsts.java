@@ -312,6 +312,8 @@ public class ProgramIdConsts {
 
 	public static final String KDW002B = "KDW002B";
 	
+	public static final String KDW002C = "KDW002C";
+	
 	public static final String KCP001 = "KCP001";
 	
 	public static final String KCP002 = "KCP002";

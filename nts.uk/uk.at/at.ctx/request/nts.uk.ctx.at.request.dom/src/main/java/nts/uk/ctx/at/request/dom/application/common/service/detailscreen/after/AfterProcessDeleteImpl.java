@@ -3,10 +3,8 @@ package nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
@@ -16,12 +14,9 @@ import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.Approve
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhaseRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
-import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.ScreenAfterDelete;
 import nts.uk.ctx.at.request.dom.application.common.service.other.DestinationJudgmentProcess;
-import nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting.ApplicationSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingRepository;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -59,10 +54,11 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 	
 	
 	@Override
-	public ScreenAfterDelete screenAfterDelete(String companyID,String appID) {
+	public List<String> screenAfterDelete(String companyID,String appID) {
 		ApplicationType appType = applicationRepo.getAppById(companyID, appID).get().getApplicationType();
 		AppCanAtr sendMailWhenApprovalFlg = appTypeDiscreteSettingRepo.getAppTypeDiscreteSettingByAppType(companyID, appType.value)
 				.get().getSendMailWhenRegisterFlg();
+		List<String> converList =new ArrayList<String>();
 	
 		
 		List<String> listDestination = new ArrayList<String>();
@@ -98,9 +94,11 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 			}
 		}
 		//filter duplicate
-		List<String> converList = listDestination.stream().distinct().collect(Collectors.toList());
+		 converList = listDestination.stream().distinct().collect(Collectors.toList());
+		
 		if (converList != null) {
 			// TODOgui mail cho ng xac nhan
+			
 			// TODO lay thong tin Imported
 			List<String> lstMail = new ArrayList<>();
 			for(String employeeId: converList){
@@ -115,7 +113,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 		if (converList != null) {
 			//TODO Hien thi thong tin 392
 		}
-		return null;
+		return converList;
 	}
 
 }

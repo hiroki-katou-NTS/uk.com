@@ -121,20 +121,19 @@ export module viewmodel {
             }
             //xuat file
             var data = new service.model.appInfor();
-            data.baseDate = self.baseDate();
-            
+//            data.baseDate = self.baseDate();
+            data.baseDate = new Date('2017-10-10 00:00:00');
             
             //fix tam du lieu
             //data.lstEmpIds = self.selectedEmployee();
             var lstEmpIds : string[] = [];
-            
-            lstEmpIds.push("000426a2-181b-4c7f-abc8-6fff9f4f983a");
-           // lstEmpIds.push("90000000-0000-0000-0000-000000000001");
+            lstEmpIds.push("90000000-0000-0000-0000-000000000003");
+//            lstEmpIds.push("000426a2-181b-4c7f-abc8-6fff9f4f983a");
+//            lstEmpIds.push("90000000-0000-0000-0000-000000000001");
 //            lstEmpIds.push("90000000-0000-0000-0000-000000000002");
 //            lstEmpIds.push("90000000-0000-0000-0000-000000000003");
 //            lstEmpIds.push("90000000-0000-0000-0000-000000000004");
 //            lstEmpIds.push("90000000-0000-0000-0000-000000000005");
-//            lstEmpIds.push("90000000-0000-0000-0000-000000000006");
 //            lstEmpIds.push("90000000-0000-0000-0000-000000000007");
 //            lstEmpIds.push("90000000-0000-0000-0000-000000000008");
 //            lstEmpIds.push("90000000-0000-0000-0000-000000000013");

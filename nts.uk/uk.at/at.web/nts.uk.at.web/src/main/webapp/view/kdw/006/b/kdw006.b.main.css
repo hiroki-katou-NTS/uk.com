@@ -1,41 +1,20 @@
-#sidebar-area{
+#sidebar-area {
 	width: 118px;
 }
 
-.screen-b button{
-	width: 75px;
-}
-
-.screen-b textarea{
-	height: 81px;
-}
-
-#button1 {
+#save {
 	width: 75px;
 	margin-left: 64px;
 }
 
-.screen-b #textBox {
-	margin-left: -49px;
-    margin-top: 19px;
-	display: inline-block;
+#tab-title {
+	width: 300px;
 }
 
-.screen-b #label2 {
-	float: left;
-	display: inline-block;
-	margin: 26px 10px 20px 55px;
+#back-navigate {
+	
 }
 
-.screen-b #switchBtn1 {
-	margin: 26px 20px 20px 10px;
-}
-
-.screen-b #label1 {
-	display: inline-block;
-	margin: 26px 10px 20px 55px;
-}
-
-.ntsControl {
-	padding-left: 54px;
+#copy {
+	margin-left: 50px;
 }

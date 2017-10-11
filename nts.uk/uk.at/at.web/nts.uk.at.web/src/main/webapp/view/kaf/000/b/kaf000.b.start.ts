@@ -13,8 +13,12 @@ __viewContext.ready(function() {
         screenModel = new nts.uk.at.view.kaf009.b.viewmodel.ScreenModel(appType);     
     }
     
-    screenModel.start().done(function() {
+    screenModel.start(appType, moment(new Date()).format("YYYY/MM/DD")).done(function() {
         __viewContext.bind(screenModel);
     });
 });
+
+
+
+
 

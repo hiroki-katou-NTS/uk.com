@@ -48,23 +48,14 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 
 	@Override
 	public void add(GrantHdTbl holidayGrant) {
-		this.commandProxy().insert(toEntity(holidayGrant));
+		this.commandProxy().insert(toEntity(holidayGrant, null));
 	}
 
 	@Override
 	public void update(GrantHdTbl holidayGrant) {
 		KshstGrantHdTblPK key = new KshstGrantHdTblPK(holidayGrant.getCompanyId(), holidayGrant.getGrantYearHolidayNo(), holidayGrant.getConditionNo(), holidayGrant.getYearHolidayCode().v());
 		Optional<KshstGrantHdTbl> entity = this.queryProxy().find(key, KshstGrantHdTbl.class);
-		KshstGrantHdTbl kshstGrantHdTbl = entity.get();
-		kshstGrantHdTbl.grantDays = holidayGrant.getGrantDays().v();
-		kshstGrantHdTbl.limitedTimeHdDays = holidayGrant.getLimitedTimeHdDays().v();
-		kshstGrantHdTbl.limitedHalfHdCnt = holidayGrant.getLimitedHalfHdCnt().v();
-		kshstGrantHdTbl.lengthOfServiceMonths = holidayGrant.getLengthOfServiceMonths().v();
-		kshstGrantHdTbl.lengthOfServiceYears = holidayGrant.getLengthOfServiceYears().v();
-		kshstGrantHdTbl.grantReferenceDate = holidayGrant.getGrantReferenceDate().value;
-		kshstGrantHdTbl.grantSimultaneity = holidayGrant.getGrantSimultaneity().value;
-		
-		this.commandProxy().update(kshstGrantHdTbl);
+		this.commandProxy().update(toEntity(holidayGrant, entity.get()));
 	}
 
 	@Override
@@ -107,16 +98,18 @@ public class JpaGrantYearHolidayRepository extends JpaRepository implements Gran
 	 * @param holidayGrant
 	 * @return
 	 */
-	private KshstGrantHdTbl toEntity(GrantHdTbl holidayGrant) {
-		return new KshstGrantHdTbl(
-				new KshstGrantHdTblPK(holidayGrant.getCompanyId(), holidayGrant.getGrantYearHolidayNo(), holidayGrant.getConditionNo(), holidayGrant.getYearHolidayCode().v()),
-						holidayGrant.getGrantDays().v(),
-						holidayGrant.getLimitedTimeHdDays().v(),
-						holidayGrant.getLimitedHalfHdCnt().v(),
-						holidayGrant.getLengthOfServiceMonths().v(),
-						holidayGrant.getLengthOfServiceYears().v(),
-						holidayGrant.getGrantReferenceDate().value,
-						holidayGrant.getGrantSimultaneity().value
-						);
+	private KshstGrantHdTbl toEntity(GrantHdTbl holidayGrant, KshstGrantHdTbl kshstGrantHdTbl) {
+		if (kshstGrantHdTbl == null) {
+			kshstGrantHdTbl = new KshstGrantHdTbl();
+		}
+		kshstGrantHdTbl.kshstGrantHdTblPK  =  new KshstGrantHdTblPK(holidayGrant.getCompanyId(), holidayGrant.getGrantYearHolidayNo(), holidayGrant.getConditionNo(), holidayGrant.getYearHolidayCode().v());
+		kshstGrantHdTbl.grantDays =	holidayGrant.getGrantDays().v();
+		kshstGrantHdTbl.limitedTimeHdDays = holidayGrant.getLimitedTimeHdDays() != null ? holidayGrant.getLimitedTimeHdDays().v() : 0;
+		kshstGrantHdTbl.limitedHalfHdCnt = holidayGrant.getLimitedHalfHdCnt() != null ? holidayGrant.getLimitedHalfHdCnt().v() : 0;
+		kshstGrantHdTbl.lengthOfServiceMonths = holidayGrant.getLengthOfServiceMonths() != null ? holidayGrant.getLengthOfServiceMonths().v() : 0;
+		kshstGrantHdTbl.lengthOfServiceYears = holidayGrant.getLengthOfServiceYears() != null ? holidayGrant.getLengthOfServiceYears().v() : 0;
+		kshstGrantHdTbl.grantReferenceDate = holidayGrant.getGrantReferenceDate().value;
+		kshstGrantHdTbl.grantSimultaneity = holidayGrant.getGrantSimultaneity().value;
+		return kshstGrantHdTbl;
 	}
 }

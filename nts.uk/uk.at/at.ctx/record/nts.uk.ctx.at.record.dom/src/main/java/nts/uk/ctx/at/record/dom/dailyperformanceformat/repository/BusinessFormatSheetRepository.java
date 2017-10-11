@@ -10,6 +10,8 @@ public interface BusinessFormatSheetRepository {
 	
 	Optional<BusinessFormatSheet> getSheetInformation(String companyId, BusinessTypeCode businessTypeCode, BigDecimal sheetNo);
 	
+	boolean checkExistData(String companyId, BusinessTypeCode businessTypeCode, BigDecimal sheetNo);
+	
 	void update(BusinessFormatSheet businessFormatSheet);
 	
 	void add(BusinessFormatSheet businessFormatSheet);

@@ -39,5 +39,8 @@ public class ApprovalPeriod {
 	public void updateEndate(String endDate){
 		this.endDate = GeneralDate.fromString(endDate, "yyyy-MM-dd");
 	}
+	public void updateStrartDate(String startDate){
+		this.startDate = GeneralDate.fromString(startDate, "yyyy-MM-dd");
+	}
 
 }
