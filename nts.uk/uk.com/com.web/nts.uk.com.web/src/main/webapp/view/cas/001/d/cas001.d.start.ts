@@ -45,7 +45,7 @@ function InitIggrid() {
         autoGenerateColumns: false,
         dataSource: [],
         width: "440px",
-        height: "490px",
+        height: "270px",
         features: [{
             name: 'Selection',
             mode: 'row',

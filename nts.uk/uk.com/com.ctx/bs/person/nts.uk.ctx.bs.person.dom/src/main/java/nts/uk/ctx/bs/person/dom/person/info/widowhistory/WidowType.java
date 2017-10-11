@@ -1,4 +1,4 @@
-package nts.uk.ctx.bs.person.dom.person.info.windowhistory;
+package nts.uk.ctx.bs.person.dom.person.info.widowhistory;
 
 import lombok.AllArgsConstructor;
 
@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
  * */
 
 @AllArgsConstructor
-public enum WindowType {
+public enum WidowType {
 	//そうでない
 	NOPE(1),
 	//寡夫
