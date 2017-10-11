@@ -71,7 +71,9 @@ public class JpaTeamSetRepository extends JpaRepository implements TeamSetReposi
 	public void removeListTeamSet(List<String> employees, String workPlaceId) {
 		employees.stream().forEach(sId -> {
 			KscstTeamSetPK pk = new KscstTeamSetPK(sId, workPlaceId);
-			this.commandProxy().remove(KscstTeamSet.class, pk);
+			if (this.getEntityManager().find(KscstTeamSet.class, pk) != null) {
+				this.commandProxy().remove(KscstTeamSet.class, pk);
+			}
 		});
 	}
 
