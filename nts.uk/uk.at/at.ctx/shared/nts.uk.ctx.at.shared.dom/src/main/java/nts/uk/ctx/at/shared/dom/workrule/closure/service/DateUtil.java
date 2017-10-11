@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.at.shared.app.find.workrule.closure;
+package nts.uk.ctx.at.shared.dom.workrule.closure.service;
 
 import java.util.Calendar;
 
