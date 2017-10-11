@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf009.b {
     import kaf000 = nts.uk.at.view.kaf000;
     import common = nts.uk.at.view.kaf009.share.common;
+    import model = nts.uk.at.view.kaf000.b.viewmodel.model;
     export module viewmodel{
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
             //current Data
