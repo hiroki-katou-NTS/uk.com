@@ -36,46 +36,6 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 	protected void handle(CommandHandlerContext<InsertApplicationGoBackDirectlyCommand> context) {
 		String companyId = AppContexts.user().companyId();
 		InsertApplicationGoBackDirectlyCommand command = context.getCommand();
-		//get new Application Item
-		Application newApp = Application.createFromJavaType(
-				companyId, 
-				command.appCommand.getPrePostAtr(),
-				command.appCommand.getInputDate(), 
-				command.appCommand.getEnteredPersonSID(),
-				command.appCommand.getReversionReason(), 
-				command.appCommand.getApplicationDate(),
-				command.appCommand.getAppReasonID() + ":" + command.appCommand.getApplicationReason(),
-				command.appCommand.getApplicationType(), 
-				command.appCommand.getApplicantSID(),
-				command.appCommand.getReflectPlanScheReason(), 
-				command.appCommand.getReflectPlanTime(),
-				command.appCommand.getReflectPerState(), 
-				command.appCommand.getReflectPlanEnforce(),
-				command.appCommand.getReflectPerScheReason(), 
-				command.appCommand.getReflectPerTime(),
-				command.appCommand.getReflectPerState(), 
-				command.appCommand.getReflectPlanEnforce(),
-				command.appCommand.getStartDate(), 
-				command.appCommand.getEndDate(), 
-				null);
-		
-		// get new GoBack Direct Item
-		GoBackDirectly newGoBack = new GoBackDirectly(
-				companyId, 
-				newApp.getApplicationID(),
-				command.goBackCommand.workTypeCD, 
-				command.goBackCommand.siftCD, 
-				command.goBackCommand.workChangeAtr,
-				command.goBackCommand.goWorkAtr1, 
-				command.goBackCommand.backHomeAtr1,
-				command.goBackCommand.workTimeStart1, 
-				command.goBackCommand.workTimeEnd1,
-				command.goBackCommand.workLocationCD1, 
-				command.goBackCommand.goWorkAtr2,
-				command.goBackCommand.backHomeAtr2, 
-				command.goBackCommand.workTimeStart2,
-				command.goBackCommand.workTimeEnd2, 
-				command.goBackCommand.workLocationCD2);
 		//approval phase
 		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
 				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
@@ -104,6 +64,46 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 						))
 				.collect(Collectors.toList());
 		
+		//get new Application Item
+		Application newApp = Application.createFromJavaType(
+				companyId, 
+				command.appCommand.getPrePostAtr(),
+				command.appCommand.getInputDate(), 
+				command.appCommand.getEnteredPersonSID(),
+				command.appCommand.getReversionReason(), 
+				command.appCommand.getApplicationDate(),
+				command.appCommand.getAppReasonID() + ":" + command.appCommand.getApplicationReason(),
+				command.appCommand.getApplicationType(), 
+				command.appCommand.getApplicantSID(),
+				command.appCommand.getReflectPlanScheReason(), 
+				command.appCommand.getReflectPlanTime(),
+				command.appCommand.getReflectPerState(), 
+				command.appCommand.getReflectPlanEnforce(),
+				command.appCommand.getReflectPerScheReason(), 
+				command.appCommand.getReflectPerTime(),
+				command.appCommand.getReflectPerState(), 
+				command.appCommand.getReflectPlanEnforce(),
+				command.appCommand.getStartDate(), 
+				command.appCommand.getEndDate(), 
+				appApprovalPhases);
+		
+		// get new GoBack Direct Item
+		GoBackDirectly newGoBack = new GoBackDirectly(
+				companyId, 
+				newApp.getApplicationID(),
+				command.goBackCommand.workTypeCD, 
+				command.goBackCommand.siftCD, 
+				command.goBackCommand.workChangeAtr,
+				command.goBackCommand.goWorkAtr1, 
+				command.goBackCommand.backHomeAtr1,
+				command.goBackCommand.workTimeStart1, 
+				command.goBackCommand.workTimeEnd1,
+				command.goBackCommand.workLocationCD1, 
+				command.goBackCommand.goWorkAtr2,
+				command.goBackCommand.backHomeAtr2, 
+				command.goBackCommand.workTimeStart2,
+				command.goBackCommand.workTimeEnd2, 
+				command.goBackCommand.workLocationCD2);
 		//登録ボタンをクリックする
 		goBackDirectlyRegisterService.register(newGoBack, newApp,appApprovalPhases);
 		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 

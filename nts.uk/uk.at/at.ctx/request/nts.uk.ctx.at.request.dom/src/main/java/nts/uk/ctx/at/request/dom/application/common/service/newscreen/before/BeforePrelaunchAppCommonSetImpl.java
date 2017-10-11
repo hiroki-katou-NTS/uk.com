@@ -50,7 +50,9 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		if(!applicationSettingOp.isPresent()){
 			throw new RuntimeException("khong co application setting");
 		}
+		
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
+		appCommonSettingOutput.applicationSetting = applicationSetting;
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, ApplicationType.STAMP_APPLICATION.value);
 		if(appTypeDiscreteSettingOp.isPresent()) {
 			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
