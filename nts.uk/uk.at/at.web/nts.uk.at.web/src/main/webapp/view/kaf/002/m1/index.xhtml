@@ -25,19 +25,21 @@
 								<span class="label m1-label" data-bind="text: '外出'+($index()+1)"></span>
 							</div>
 							<div class="cell">
-								<div class="m1-inline-div">
-									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: startTimeDisp }"></div>
+								<div class="m1-inline-div" data-bind="with: startTime">
+									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
 									<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
 													name: '#[KAF002_20]',
 													constraint:'TimeWithDayAttr', 
-													value: startTime,
-													required: true,
-													enable: startTimeDisp }" />	
+													value: value,
+													required: checked,
+													enable: checked }" />	
 								</div>
 								<div class="m1-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
-									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: startLocationDisp }"></div>
-									<button data-bind="click: function(){ $parent.openSelectLocationDialog('start', $index()) }, enable: startLocationDisp">#{i18n.getText('KAF002_14')}</button>
-									<span class="label m1-label" data-bind="name: '#[KAF002_26]', text: startLocation, css: { m1DisableEdit: !startLocationDisp() }"></span>
+									<div class="m1-inline-div" data-bind="with: startLocation">
+										<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+										<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+										<span class="label m1-label" data-bind="name: '#[KAF002_26]', text: name, css: { m1DisableEdit: !checked() }"></span>
+									</div>
 								</div>					
 							</div>
 						</div>
@@ -46,19 +48,21 @@
 								<span class="label m1-label" data-bind="text: '戻り'+($index()+1)"></span>
 							</div>
 							<div class="cell">
-								<div class="m1-inline-div">
-									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: endTimeDisp }"></div>
+								<div class="m1-inline-div" data-bind="with: endTime">
+									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
 									<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
 													name: '#[KAF002_20]', 
 													constraint:'TimeWithDayAttr', 
-													value: endTime,
-													required: true,
-													enable: endTimeDisp }" />	
+													value: value,
+													required: checked,
+													enable: checked }" />	
 								</div>	
 								<div class="m1-inline-div" data-bind="if: $parent.stampPlaceDisplay() == 1">
-									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: endLocationDisp }"></div>
-									<button data-bind="click: function(){ $parent.openSelectLocationDialog('end', $index()) }, enable: endLocationDisp">#{i18n.getText('KAF002_14')}</button>
-									<span class="label m1-label" data-bind="name: '#[KAF002_26]', text: endLocation, css: { m1DisableEdit: !endLocationDisp() }"></span>	
+									<div class="m1-inline-div" data-bind="with: endLocation">
+										<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
+										<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
+										<span class="label m1-label" data-bind="name: '#[KAF002_26]', text: name, css: { m1DisableEdit: !checked() }"></span>	
+									</div>
 								</div>			
 							</div>
 						</div>
@@ -79,13 +83,15 @@
 								<span class="label m1-label" data-bind="text: '開始'+($index()+1)"></span>
 							</div>
 							<div class="cell">
-								<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: startTimeDisp }"></div>
-								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
+								<div class="m1-inline-div" data-bind="with: startTime">
+									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+									<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
 													name: '#[KAF002_20]',
 													constraint:'TimeWithDayAttr', 
-													value: startTime,
-													required: true,
-													enable: startTimeDisp }" />						
+													value: value,
+													required: checked,
+													enable: checked }" />	
+								</div>					
 							</div>
 						</div>
 						<div class="table">
@@ -93,13 +99,15 @@
 								<span class="label m1-label" data-bind="text: '終了'+($index()+1)"></span>
 							</div>
 							<div class="cell">
-								<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: endTimeDisp }"></div>
-								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
-													name: '#[KAF002_20]',
+								<div class="m1-inline-div" data-bind="with: endTime">
+									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+									<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
+													name: '#[KAF002_20]', 
 													constraint:'TimeWithDayAttr', 
-													value: endTime,
-													required: true,
-													enable: endTimeDisp }" />						
+													value: value,
+													required: checked,
+													enable: checked }" />	
+								</div>						
 							</div>
 						</div>
 					</div>
@@ -111,13 +119,15 @@
 								<span class="label m1-label" data-bind="text: '開始'+($index()+1)"></span>
 							</div>
 							<div class="cell">
-								<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: startTimeDisp }"></div>
-								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
-													name: '#[KAF002_20]', 
+								<div class="m1-inline-div" data-bind="with: startTime">
+									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+									<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
+													name: '#[KAF002_20]',
 													constraint:'TimeWithDayAttr', 
-													value: startTime,
-													required: true,
-													enable: startTimeDisp }" />							
+													value: value,
+													required: checked,
+													enable: checked }" />	
+								</div>					
 							</div>
 						</div>
 						<div class="table">
@@ -125,13 +135,15 @@
 								<span class="label m1-label" data-bind="text: '終了'+($index()+1)"></span>
 							</div>
 							<div class="cell">
-								<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: endTimeDisp }"></div>
-								<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
+								<div class="m1-inline-div" data-bind="with: endTime">
+									<div class="m1-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
+									<input class="m1-time-editor" data-bind="ntsTimeWithDayEditor: { 
 													name: '#[KAF002_20]', 
 													constraint:'TimeWithDayAttr', 
-													value: endTime,
-													required: true,
-													enable: endTimeDisp }" />							
+													value: value,
+													required: checked,
+													enable: checked }" />	
+								</div>							
 							</div>
 						</div>
 					</div>

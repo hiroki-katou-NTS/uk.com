@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.ApproverRepresenterImport;
 import nts.uk.ctx.at.request.dom.application.common.service.other.output.ObjApproverRepresenterOutput;
 /**
- * 3-2.送信先の判断処理
+ * 
  * @author tutk
  *
  */

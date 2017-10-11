@@ -43,6 +43,7 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 	@Override
 	protected void handle(CommandHandlerContext<AppStampCmd> context) {
 		String companyID = AppContexts.user().companyId();
+		String employeeID = AppContexts.user().employeeId();
 		AppStampCmd appStampCmd = context.getCommand();
 		AppStamp appStamp = null;
 		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
@@ -53,11 +54,11 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
 						appApprovalPhaseCmd.dispOrder, 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) , 
-						appApprovalPhaseCmd.getApprovalFrameCmds().stream().map(approvalFrame -> new ApprovalFrame(
+						appApprovalPhaseCmd.getListFrame().stream().map(approvalFrame -> new ApprovalFrame(
 								companyID, 
 								"", 
 								approvalFrame.dispOrder, 
-								approvalFrame.approveAcceptedCmds.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
+								approvalFrame.listApproveAccepted.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
 										companyID, 
 										"", 
 										approveAccepted.approverSID,
@@ -77,9 +78,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 					companyID, 
 					PrePostAtr.PREDICT,
 					GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
-					appStampCmd.getEnteredPerson(), 
+					employeeID, 
 					GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
-					appStampCmd.getEmployeeID(), 
+					employeeID, 
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
 					appStampCmd.getAppStampGoOutPermitCmds().stream().map(
 						x -> new AppStampGoOutPermit(
@@ -101,9 +102,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 						companyID, 
 						PrePostAtr.POSTERIOR,
 						GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
-						appStampCmd.getEnteredPerson(), 
+						employeeID, 
 						GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
-						appStampCmd.getEmployeeID(), 
+						employeeID, 
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
 					null,
 					appStampCmd.getAppStampWorkCmds().stream().map(
@@ -127,9 +128,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 						companyID,  
 						PrePostAtr.POSTERIOR,
 						GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
-						appStampCmd.getEnteredPerson(), 
+						employeeID, 
 						GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
-						appStampCmd.getEmployeeID(), 
+						employeeID, 
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
 					null,
 					null,
@@ -147,9 +148,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 						companyID, 
 						PrePostAtr.POSTERIOR,
 						GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
-						appStampCmd.getEnteredPerson(), 
+						employeeID, 
 						GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
-						appStampCmd.getEmployeeID(), 
+						employeeID, 
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
 					null,
 					null,
@@ -164,9 +165,9 @@ public class RegisterAppStampCommandHandler extends CommandHandler<AppStampCmd> 
 						companyID, 
 						PrePostAtr.POSTERIOR,
 						GeneralDate.fromString(appStampCmd.getInputDate(), "yyyy/MM/dd"), 
-						appStampCmd.getEnteredPerson(), 
+						employeeID, 
 						GeneralDate.fromString(appStampCmd.getApplicationDate(), "yyyy/MM/dd"), 
-						appStampCmd.getEmployeeID(), 
+						employeeID, 
 					EnumAdaptor.valueOf(appStampCmd.getStampRequestMode(), StampRequestMode.class),
 					null,
 					appStampCmd.getAppStampWorkCmds().stream().map(

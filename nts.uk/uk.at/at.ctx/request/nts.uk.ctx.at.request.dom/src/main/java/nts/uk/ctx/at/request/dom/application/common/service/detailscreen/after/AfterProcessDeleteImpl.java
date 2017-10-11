@@ -82,7 +82,7 @@ public class AfterProcessDeleteImpl implements AfterProcessDelete {
 					List<ApproverRepresenterImport> listApproverRepresenter = agentPubImport.getListApproverAndRepresenterSID();
 					
 					/** 3-2 */
-					listDestination = destinationJudgmentProcessService.getDestinationJudgmentProcessService(listApproverRepresenter);
+					listDestination.addAll(destinationJudgmentProcessService.getDestinationJudgmentProcessService(listApproverRepresenter));
 					
 					//Add listDestination to listSender
 					List<String> listSender = new ArrayList<String>(listDestination);

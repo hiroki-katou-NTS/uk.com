@@ -12,7 +12,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.ctx.bs.employee.app.find.jobtitle_old.JobTitleFinder;
+import nts.uk.ctx.bs.employee.app.find.jobtitle_old.JobTitleFinderOld;
 import nts.uk.ctx.bs.employee.app.find.jobtitle_old.dto.JobTitleDto;
 
 /**
@@ -24,7 +24,7 @@ public class JobTitleWs {
 
 	/** The finder. */
 	@Inject
-	private JobTitleFinder finder;
+	private JobTitleFinderOld finder;
 
 	/**
 	 * Find all.

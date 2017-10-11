@@ -58,11 +58,11 @@ public class UpdateAppStampCommandHandler extends CommandHandler<AppStampCmd>{
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
 						appApprovalPhaseCmd.dispOrder, 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) , 
-						appApprovalPhaseCmd.getApprovalFrameCmds().stream().map(approvalFrame -> new ApprovalFrame(
+						appApprovalPhaseCmd.getListFrame().stream().map(approvalFrame -> new ApprovalFrame(
 								companyID, 
 								"", 
 								approvalFrame.dispOrder, 
-								approvalFrame.approveAcceptedCmds.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
+								approvalFrame.listApproveAccepted.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
 										companyID, 
 										"", 
 										approveAccepted.approverSID,

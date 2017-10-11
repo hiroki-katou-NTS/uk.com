@@ -46,11 +46,11 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 						appApprovalPhaseCmd.dispOrder, 
 						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) ,
 						//Frame
-						appApprovalPhaseCmd.getApprovalFrameCmds().stream().map(approvalFrame -> new ApprovalFrame(
+						appApprovalPhaseCmd.getListFrame().stream().map(approvalFrame -> new ApprovalFrame(
 								companyId, 
 								"", 
 								approvalFrame.dispOrder, 
-								approvalFrame.approveAcceptedCmds.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
+								approvalFrame.listApproveAccepted.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
 										companyId, 
 										"", 
 										approveAccepted.approverSID,
@@ -63,7 +63,6 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 								)).collect(Collectors.toList())
 						))
 				.collect(Collectors.toList());
-		
 		//get new Application Item
 		Application newApp = Application.createFromJavaType(
 				companyId, 
@@ -104,6 +103,8 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 				command.goBackCommand.workTimeStart2,
 				command.goBackCommand.workTimeEnd2, 
 				command.goBackCommand.workLocationCD2);
+		
+		
 		//登録ボタンをクリックする
 		goBackDirectlyRegisterService.register(newGoBack, newApp,appApprovalPhases);
 		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 

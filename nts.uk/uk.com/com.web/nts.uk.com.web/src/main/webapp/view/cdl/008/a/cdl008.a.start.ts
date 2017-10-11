@@ -3,7 +3,7 @@ module nts.uk.com.view.cdl008.a {
         var screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
          $('#workplaceList').ntsTreeComponent(screenModel.workplaces).done(function(){
-              $('#workplaceList').focus();
+              $('#workplaceList').focusTreeGridComponent();
          });
     });
 }

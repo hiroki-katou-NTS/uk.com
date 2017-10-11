@@ -29,7 +29,7 @@ public class ApproveAcceptedDto {
 				domain.getApproverSID(), 
 				domain.getApprovalATR().value, 
 				domain.getConfirmATR().value, 
-				domain.getApprovalDate().toString(), 
+				domain.getApprovalDate() ==null?null : domain.getApprovalDate().toString(), 
 				domain.getReason().v(), 
 				domain.getRepresenterSID());
 	}

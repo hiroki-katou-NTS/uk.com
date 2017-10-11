@@ -56,5 +56,5 @@ public interface ApplicationRepository {
 	void deleteApplication(String companyID,String applicationID);
 	
 	
-	List<String> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate);
+	List<Application> getApplicationIdByDate(String companyId, GeneralDate startDate, GeneralDate endDate);
 }

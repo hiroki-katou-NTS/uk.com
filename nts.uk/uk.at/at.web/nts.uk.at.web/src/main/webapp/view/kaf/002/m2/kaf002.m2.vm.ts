@@ -12,7 +12,17 @@ module nts.uk.at.view.kaf002.m2 {
                 self.extendsMode.subscribe((v)=>{ 
                     if(v){
                         for(let i=self.supFrameNo+1;i<=10;i++) {
-                            self.appStampList.push(new vmbase.AppStampWork(0,i,0,'','',true,true,0,'',0,'',true,true,true,true));    
+                            self.appStampList.push(
+                                new vmbase.AppStampWork(
+                                    0,
+                                    i,
+                                    0,
+                                    new vmbase.CheckBoxLocation('','',true,false),
+                                    new vmbase.CheckBoxLocation('','',true,false),
+                                    new vmbase.CheckBoxTime(0,true,false),
+                                    new vmbase.CheckBoxLocation('','',true,false),
+                                    new vmbase.CheckBoxTime(0,true,false),
+                                    new vmbase.CheckBoxLocation('','',true,false)));    
                         } 
                     } else {
                         self.appStampList.remove((o) => { return o.stampFrameNo() > self.supFrameNo });   
@@ -24,7 +34,17 @@ module nts.uk.at.view.kaf002.m2 {
                 var self = this;    
                 self.supFrameNo = data.supFrameDispNO;
                 for(let i=1;i<=self.supFrameNo;i++) {
-                    self.appStampList.push(new vmbase.AppStampWork(0,i,0,'spCode','spLocation',true,true,0,'star',0,'end',true,true,true,true));    
+                    self.appStampList.push(
+                        new vmbase.AppStampWork(
+                            0,
+                            i,
+                            0,
+                            new vmbase.CheckBoxLocation('','',true,false),
+                            new vmbase.CheckBoxLocation('','',true,false),
+                            new vmbase.CheckBoxTime(0,true,false),
+                            new vmbase.CheckBoxLocation('','',true,false),
+                            new vmbase.CheckBoxTime(0,true,false),
+                            new vmbase.CheckBoxLocation('','',true,false)));    
                 } 
                 self.stampPlaceDisplay(data.stampPlaceDisp);
                 if(!nts.uk.util.isNullOrUndefined(appStampData)){
@@ -35,18 +55,12 @@ module nts.uk.at.view.kaf002.m2 {
                                 item.stampAtr,
                                 item.stampFrameNo,
                                 item.stampGoOutReason,
-                                item.supportCard,
-                                item.supportLocation,
-                                false,
-                                false,
-                                item.startTime,
-                                item.startLocation,
-                                item.endTime,
-                                item.endLocation, 
-                                false, 
-                                false, 
-                                false, 
-                                false
+                                new vmbase.CheckBoxLocation(item.supportCard,'',true,false),
+                                new vmbase.CheckBoxLocation(item.supportLocation,'',true,false),
+                                new vmbase.CheckBoxTime(item.startTime,true,false),
+                                new vmbase.CheckBoxLocation(item.startLocation,'',true,false),
+                                new vmbase.CheckBoxTime(item.endTime,true,false),
+                                new vmbase.CheckBoxLocation(item.endLocation,'',true,false) 
                         ));        
                     });
                 }
@@ -74,12 +88,17 @@ module nts.uk.at.view.kaf002.m2 {
                     appStampOnlineRecordCmd: null,
                     appApprovalPhaseCmds: approvalList   
                 }
-                service.insert(command);  
+                service.insert(command)
+                .done(() => {})
+                .fail(function(res) { 
+                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                }); 
             }
             
             update(application : vmbase.Application){
                 var self = this;
                 let command = {
+                    version: application.version,
                     appID: application.applicationID,
                     inputDate: application.inputDate(),
                     enteredPerson: application.enteredPerson(),
@@ -93,7 +112,15 @@ module nts.uk.at.view.kaf002.m2 {
                     appStampCancelCmds: null,
                     appStampOnlineRecordCmd: null  
                 }
-                service.update(command);     
+                service.update(command)
+                .done(() => {})
+                .fail(function(res) { 
+                    if(res.optimisticLock == true){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){nts.uk.ui.block.clear();});    
+                    } else {
+                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});    
+                    }
+                });  
             }
             
             openSelectLocationDialog(timeType: string, frameNo: number){

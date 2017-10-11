@@ -101,14 +101,14 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			outputApprovalATR = canBeApprovedOutput.getApprovalATR();
 			outputAlternateExpiration = canBeApprovedOutput.getAlternateExpiration();
 		} else {
-			if (applicationData.getEnteredPersonSID() == employeeID) {
+			if (applicationData.getApplicantSID() == employeeID) {
 				outputUser = User.APPLICANT;
 			} else {
 				outputUser = User.OTHER;
 			}
 		}
 		// 利用者をチェックする(Check người sử dụng)
-		// Check the user (Check ngườử sử dụng)
+		// Check the user (Check người sử dụng)
 		if (outputUser == User.APPLICANT_APPROVER || outputUser == User.APPROVER) {
 			// アルゴリズム「承認できるかの判断」を実行する(phán đoán xem có thể approve hay không)
 
@@ -483,11 +483,12 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 			// get all lstApproverSID
 			List<String> lstRepresenterSID = new ArrayList<>();
 			for (AppApprovalPhase appApprovalPhase : listAppApprovalPhase) {
-				for (ApprovalFrame approvalFrame : appApprovalPhase.getListFrame()) {
-					List<String> lstTemp = approvalFrame.getListApproveAccepted().stream().map(item -> {
-						return item.getApproverSID();
-					}).collect(Collectors.toList());
-					lstRepresenterSID.addAll(lstTemp);
+				if(appApprovalPhase.getListFrame() != null){
+					for (ApprovalFrame approvalFrame : appApprovalPhase.getListFrame()) {
+						lstRepresenterSID.addAll(approvalFrame.getListApproveAccepted().stream().map(item -> {
+							return item.getApproverSID();
+						}).collect(Collectors.toList()));
+					}
 				}
 			}
 			if (lstRepresenterSID.contains(employeeID)) {
@@ -508,6 +509,8 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		boolean outputAuthorizableflags = false;
 		List<AppApprovalPhase> listAppApprovalPhase = appApprovalPhaseRepository.findPhaseByAppID(companyID,
 				applicationData.getApplicationID());
+		
+		
        //順序(input)の異常をチェックする
 		if (1 <= dispOrder && dispOrder <= 5) {
 			//順序をチェックする
@@ -534,12 +537,32 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 				if(listCheckApproved.contains(false) == false){
 					outputAuthorizableflags = false;
 				}else{
-					//TODO Chua co link
+					//前の承認フェーズが承認済かチェックする
+					for (int i = dispOrder; i>= 0; i--) {
+						AppApprovalPhase appApprovalPhase = listAppApprovalPhase.get(i);
+						for (ApprovalFrame approvalFrame : appApprovalPhase.getListFrame()) {
+							outputAuthorizableflags = approvalFrame.getListApproveAccepted().stream().anyMatch(x -> ApprovalAtr.APPROVED.equals(x.getApprovalATR()));
+							if(!outputAuthorizableflags){
+								break;
+							}
+						}
+					}
+					
 				}
 			
 			} else if (dispOrder == 5) {
+				//前の承認フェーズが承認済かチェックする
+				for (int i = dispOrder; i>= 0; i--) {
+					AppApprovalPhase appApprovalPhase = listAppApprovalPhase.get(i);
+					for (ApprovalFrame approvalFrame : appApprovalPhase.getListFrame()) {
+						outputAuthorizableflags = approvalFrame.getListApproveAccepted().stream().anyMatch(x -> ApprovalAtr.APPROVED.equals(x.getApprovalATR()));
+						if(!outputAuthorizableflags){
+							break;
+						}
+					}
+				}
+				
 			}
-			// TODO
 		}
 
 		return outputAuthorizableflags;

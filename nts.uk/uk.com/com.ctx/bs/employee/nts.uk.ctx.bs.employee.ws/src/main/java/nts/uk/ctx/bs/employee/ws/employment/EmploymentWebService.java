@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.basic.ws.company.organization.employment;
+package nts.uk.ctx.bs.employee.ws.employment;
 
 import java.util.List;
 
@@ -18,13 +18,13 @@ import nts.uk.ctx.bs.employee.app.command.employment.EmpRemoveCommand;
 import nts.uk.ctx.bs.employee.app.command.employment.EmpRemoveCommandHandler;
 import nts.uk.ctx.bs.employee.app.command.employment.EmpSaveCommand;
 import nts.uk.ctx.bs.employee.app.command.employment.EmpSaveCommandHandler;
-import nts.uk.shr.find.employment.EmploymentDto;
-import nts.uk.shr.find.employment.EmploymentFinder;
+import nts.uk.ctx.bs.employee.app.find.employment.EmploymentFinder;
+import nts.uk.ctx.bs.employee.app.find.employment.dto.EmploymentDto;
 
 /**
  * The Class EmploymentWebService.
  */
-@Path("basic/company/organization/employment")
+@Path("bs/employee/employment")
 @Produces(MediaType.APPLICATION_JSON)
 public class EmploymentWebService extends WebService {
 	
@@ -59,8 +59,8 @@ public class EmploymentWebService extends WebService {
 	 * @return the employment dto
 	 */
 	@POST
-	@Path("findById/{employmentCode}")
-	public EmploymentDto findById(@PathParam("employmentCode") String employmentCode) {
+	@Path("findByCode/{employmentCode}")
+	public EmploymentDto findByCode(@PathParam("employmentCode") String employmentCode) {
 		return this.finder.findByCode(employmentCode);
 	}
 	

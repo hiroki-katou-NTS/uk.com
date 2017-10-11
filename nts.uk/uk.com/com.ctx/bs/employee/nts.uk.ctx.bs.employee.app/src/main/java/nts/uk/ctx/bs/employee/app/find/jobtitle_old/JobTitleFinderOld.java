@@ -20,7 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class JobTitleFinder.
  */
 @Stateless
-public class JobTitleFinder {
+public class JobTitleFinderOld {
 
 	/** The repository. */
 	@Inject
