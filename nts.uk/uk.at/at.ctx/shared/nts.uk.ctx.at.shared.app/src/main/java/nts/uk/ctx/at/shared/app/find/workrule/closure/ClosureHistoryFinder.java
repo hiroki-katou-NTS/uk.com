@@ -12,14 +12,10 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryFindDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryHeaderDto;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosureHistoryInDto;
-import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.ClosurePeriodDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
-import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
@@ -101,48 +97,6 @@ public class ClosureHistoryFinder {
 			closureHistory.get().saveToMemento(dto);
 		}
 		return dto;
-	}
-
-	/**
-	 * Gets the closure period.
-	 *
-	 * @param closureId
-	 *            the closure id
-	 * @param processingYm
-	 *            the processing ym
-	 * @return the closure period
-	 */
-	// 当月の期間を算出する
-	public ClosurePeriodDto getClosurePeriod(int closureId, YearMonth processingYm) {
-		// get login user
-		LoginUserContext loginUserContext = AppContexts.user();
-
-		// get company id
-		String companyId = loginUserContext.companyId();
-
-		//
-		Optional<ClosureHistory> optClosureHistory = this.repositoryHistory
-				.findBySelectedYearMonth(companyId, closureId, processingYm.v());
-
-		// Check exist
-		if (!optClosureHistory.isPresent()) {
-			return null;
-		}
-
-		ClosureHistory closureHistory = optClosureHistory.get();
-
-		ClosureDay closureDay = closureHistory.getClosureDate().getClosureDay();
-		GeneralDate startDate = GeneralDate.ymd(processingYm.year(), processingYm.month(), 1);
-		GeneralDate endDate = DateUtil.getLastDateOfMonth(processingYm.year(),
-				processingYm.month());
-
-		if (closureHistory.getClosureDate().getLastDayOfMonth() || !DateUtil
-				.isDateOfMonth(processingYm.year(), processingYm.month(), closureDay.v())) {
-			return ClosurePeriodDto.builder().startDate(startDate).endDate(endDate).build();
-		}
-
-		endDate = GeneralDate.ymd(processingYm.year(), processingYm.month(), closureDay.v());
-		return ClosurePeriodDto.builder().startDate(startDate).endDate(endDate).build();
 	}
 
 }

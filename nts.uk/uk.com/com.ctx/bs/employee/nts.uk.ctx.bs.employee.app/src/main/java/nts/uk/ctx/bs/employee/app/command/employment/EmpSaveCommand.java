@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.employment;
@@ -14,16 +14,15 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
- * Instantiates a new emp save command.
+ * The Class EmpSaveCommand.
  */
 @Data
 public class EmpSaveCommand implements EmploymentGetMemento {
 	
-	
-	/** The code. */
+	/** The employment code. */
 	private String employmentCode;
 	
-	/** The name. */
+	/** The employment name. */
 	private String employmentName;
 	
 	/** The emp external code. */
@@ -32,8 +31,8 @@ public class EmpSaveCommand implements EmploymentGetMemento {
 	/** The memo. */
 	private String memo;
 	
-	/** The mode. */
-	private int mode;
+	/** The is update mode. */
+	private Boolean isUpdateMode;
 	
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.bs.employee.dom.employment.EmploymentGetMemento#getCompanyId()

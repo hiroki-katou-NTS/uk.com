@@ -4,37 +4,30 @@ module nts.uk.com.view.cmm014.a.service {
      *  Service paths
      */
     var servicePath: any = {
-        findAllClassification: "basic/company/organization/classification/findAll",
-        saveClassification: "basic/company/organization/classification/save",
-        removeClassification: "basic/company/organization/classification/remove"
+        findAllClassification: "basic/employee/classification/findAll",
+        saveClassification: "basic/employee/classification/save",
+        removeClassification: "basic/employee/classification/remove"
     }
 
     /**
      * Get list classification
      */
     export function findAllClassification(): JQueryPromise<Array<model.ClassificationFindDto>> {
-        return nts.uk.request.ajax('com', servicePath.findAllClassification);
+        return nts.uk.request.ajax(servicePath.findAllClassification);
     }
 
     /**
-    * update Classification
-    */
-    export function addClassification(classification: model.ClassificationFindDto) {
-        return nts.uk.request.ajax('com', servicePath.saveClassification, classification);
-    }
-
-    /**
-     * update Classification
+     * save Classification
      */
-    export function updateClassification(classification: model.ClassificationFindDto) {
-        return nts.uk.request.ajax('com', servicePath.saveClassification, classification);
+    export function saveClassification(classification: any): JQueryPromise<any> {
+        return nts.uk.request.ajax(servicePath.saveClassification, classification);
     }
 
     /**
     * remove Classification
     */
-    export function removeClassification(classification: model.RemoveClassificationCommand) {    
-        return nts.uk.request.ajax('com', servicePath.removeClassification, classification);
+    export function removeClassification(params: any): JQueryPromise<any> {    
+        return nts.uk.request.ajax(servicePath.removeClassification, params);
     }  
     
     export module model {
@@ -48,14 +41,6 @@ module nts.uk.com.view.cmm014.a.service {
                 this.code = code;
                 this.name = name;
                 this.memo = memo;
-            }
-        }
-
-        export class RemoveClassificationCommand {
-            code: string;
-            
-            constructor(code: string) {
-                this.code = code;
             }
         }
     }    
