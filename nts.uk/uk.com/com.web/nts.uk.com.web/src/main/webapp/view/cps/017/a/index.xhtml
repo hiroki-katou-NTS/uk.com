@@ -93,38 +93,34 @@
 						]}">
 					</div>
  -->
-
-
 				</div>
 
 
-
 				<!-- phần giữa của màn hình -->
-
-				<!-- 				
-				<div id="content-center" class="pull-left">
-					
-					
+				<div id="content-center" class="pull-left"
+					data-bind="with: perInfoSelectionItem">
 					<div>
 						<div data-bind="ntsFormLabel: {required: true}"
 							class='distane col1'>
 							<label>#{i18n.getText('CPS017_13')}</label>
 						</div>
-						<span class='col1'> Web帳票種別</span>
+						<span class="col1" data-bind="text: selectionItemName"></span>
 					</div>
 
-					
-					
+
 					<div id="register">
 						<span> #{i18n.getText('CPS017_14')}</span>
 					</div>
+
+					<!-- 
 					<div id="itemRegisterLst" class="caret-right caret-background">
 						
 						<table id="item_register_grid">
 						</table>
 					</div>
+					 -->
 				</div>
--->
+
 
 
 				<!-- phần bên phải của màn hình  -->

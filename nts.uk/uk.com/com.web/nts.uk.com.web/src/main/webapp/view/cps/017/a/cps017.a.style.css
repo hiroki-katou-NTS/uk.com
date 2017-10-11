@@ -57,7 +57,7 @@
 }
 
 #register {
-	margin-top: 20px;
+	margin-top: 30px;
 }
 
 #itemRegisterLst {
@@ -76,7 +76,7 @@
 	width: 100px;
 }
 
-#memo{
+#memo {
 	width: 400px;
 	height: 200px;
 }
