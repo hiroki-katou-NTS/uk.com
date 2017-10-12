@@ -25,7 +25,7 @@
 									<div class="m2-inline-div" data-bind="with: startLocation">
 										<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
 										<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
-										<span class="label m2-label" data-bind="name: '#[KAF002_26]', text: name, css: { m2DisableEdit: !checked() }"></span>
+										<span class="label m2-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m2DisableEdit: !checked() }"></span>
 									</div>
 								</div>					
 							</div>
@@ -48,7 +48,7 @@
 									<div class="m2-inline-div" data-bind="with: endLocation">
 										<div class="m2-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
 										<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
-										<span class="label m2-label" data-bind="name: '#[KAF002_26]', text: name, css: { m2DisableEdit: !checked() }"></span>	
+										<span class="label m2-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m2DisableEdit: !checked() }"></span>	
 									</div>
 								</div>				
 							</div>

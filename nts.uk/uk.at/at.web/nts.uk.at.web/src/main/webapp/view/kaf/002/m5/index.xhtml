@@ -52,7 +52,7 @@
 										<div class="m5-inline-div" data-bind="with: startLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
 											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
-											<span class="label m5-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>
+											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>
 										</div>
 									</div>	
 								</td>
@@ -70,7 +70,7 @@
 										<div class="m5-inline-div" data-bind="with: endLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
 											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
-											<span class="label m5-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
+											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
 										</div>
 									</div>
 								</td>
@@ -128,7 +128,7 @@
 										<div class="m5-inline-div" data-bind="with: startLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable }"></div>
 											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('start', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
-											<span class="label m5-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>
+											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>
 										</div>
 									</div>
 								</td>
@@ -146,7 +146,7 @@
 										<div class="m5-inline-div" data-bind="with: endLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
 											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
-											<span class="label m5-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
+											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
 										</div>
 									</div>
 								</td>
@@ -301,7 +301,7 @@
 									<div class="m5-inline-div" data-bind="with: supportCard">
 										<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
 										<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
-										<span class="label m5-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
+										<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
 									</div>
 								</td>
 								<td data-bind="style: { display: $parent.stampPlaceDisplay() == 1 ? '' : 'none' }">
@@ -309,7 +309,7 @@
 										<div class="m5-inline-div" data-bind="with: supportLocation">
 											<div class="m5-checkBox" data-bind="ntsCheckBox: { checked: checked, enable: enable}"></div>
 											<button data-bind="click: function(){ $parents[1].openSelectLocationDialog('end', $index()) }, enable: checked">#{i18n.getText('KAF002_14')}</button>
-											<span class="label m5-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
+											<span class="label m5-label limited-label" data-bind="name: '#[KAF002_26]', text: name, css: { m5DisableEdit: !checked() }"></span>	
 										</div>
 									</div>
 								</td>

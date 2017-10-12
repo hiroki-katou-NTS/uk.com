@@ -9,12 +9,14 @@ module nts.uk.at.view.kaf002.m5 {
             appStampList: KnockoutObservableArray<vmbase.AppStampWork> = ko.observableArray([]);
             stampAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
             stampGoOutAtrList: KnockoutObservableArray<any> = ko.observableArray([]);
+            workLocationList: Array<vmbase.IWorkLocation> = [];
             constructor(){
                 var self = this; 
             }
             
-            start(appStampData: any, data: vmbase.StampRequestSettingDto){
+            start(appStampData: any, data: vmbase.StampRequestSettingDto, listWorkLocation: Array<vmbase.IWorkLocation>){
                 var self = this;    
+                self.workLocationList = listWorkLocation;
                 self.supFrameNo = 1;
                 self.stampPlaceDisplay(data.stampPlaceDisp);
                 if(data.stampAtr_Work_Disp==1) self.stampAtrList.push({ code: 0, name: nts.uk.resource.getText('KAF002_29') });
@@ -50,6 +52,11 @@ module nts.uk.at.view.kaf002.m5 {
                     );    
                 };
                 self.appStampList(a);    
+            }
+            
+            findWorkLocationName(workLocationCD: string): string {
+                var self = this;
+                return _.find(self.workLocationList, item => { return item.workLocationCD == workLocationCD }).workLocationName;
             }
             
             register(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
@@ -110,7 +117,8 @@ module nts.uk.at.view.kaf002.m5 {
                 nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     if(nts.uk.ui.windows.getShared("KDL010workLocation")!=null){
                         let workLocation = nts.uk.ui.windows.getShared("KDL010workLocation");
-                        self.appStampList()[frameNo][timeType+'Location'](workLocation);     
+                        self.appStampList()[frameNo][timeType+'Location']().code(workLocation);   
+                        self.appStampList()[frameNo][timeType+'Location']().name(self.findWorkLocationName(workLocation));     
                     }
                 });      
             }
