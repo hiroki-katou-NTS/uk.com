@@ -1,4 +1,4 @@
-package entity.person.setting.selection;
+package entity.person.setting.selectionitem;
 
 import java.io.Serializable;
 
@@ -12,11 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class PpemtHistorySelectionPK implements Serializable{/**
-	 * 
-	 */
+public class PpemtHistorySelectionPK implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Basic(optional = false)
 	@Column(name = "HIST_ID")
 	public String histidPK;

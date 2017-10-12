@@ -1,4 +1,4 @@
-package entity.person.setting.selection;
+package entity.person.setting.selectionitem;
 
 import java.io.Serializable;
 
@@ -8,6 +8,12 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+
+/**
+ * 
+ * @author tuannv
+ *
+ */
 
 @AllArgsConstructor
 @NoArgsConstructor

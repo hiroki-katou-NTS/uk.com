@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.person.setting.selection.PpemtHistorySelection;
-import entity.person.setting.selection.PpemtHistorySelectionPK;
+import entity.person.setting.selectionitem.PpemtHistorySelection;
+import entity.person.setting.selectionitem.PpemtHistorySelectionPK;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelection;

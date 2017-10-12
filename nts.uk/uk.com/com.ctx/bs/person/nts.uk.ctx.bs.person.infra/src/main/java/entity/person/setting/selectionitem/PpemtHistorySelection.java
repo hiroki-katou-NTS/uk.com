@@ -1,4 +1,4 @@
-package entity.person.setting.selection;
+package entity.person.setting.selectionitem;
 
 import java.io.Serializable;
 
@@ -18,9 +18,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @Table(name = "PPEMT_HISTORY_SELECTION")
 public class PpemtHistorySelection extends UkJpaEntity implements Serializable {
-	/**
-	* 
-	*/
+
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
@@ -44,7 +42,6 @@ public class PpemtHistorySelection extends UkJpaEntity implements Serializable {
 
 	@Override
 	protected Object getKey() {
-		// TODO Auto-generated method stub
 		return histidPK;
 	}
 

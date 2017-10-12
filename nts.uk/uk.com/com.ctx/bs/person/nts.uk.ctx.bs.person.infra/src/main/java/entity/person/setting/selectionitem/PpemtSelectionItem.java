@@ -1,4 +1,4 @@
-package entity.person.setting.selection;
+package entity.person.setting.selectionitem;
 
 import java.io.Serializable;
 
