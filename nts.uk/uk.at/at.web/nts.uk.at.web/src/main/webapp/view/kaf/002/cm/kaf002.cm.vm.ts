@@ -1,6 +1,7 @@
 module nts.uk.at.view.kaf002.cm {
     export module viewmodel {
         import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
+        import service = nts.uk.at.view.kaf002.shr.service;
         import kaf002 = nts.uk.at.view.kaf002;
         let __viewContext: any = window["__viewContext"] || {};
         export class ScreenModel {
@@ -71,14 +72,16 @@ module nts.uk.at.view.kaf002.cm {
                 self.botComment().text(commonSet.appStampSetDto.stampRequestSettingDto.bottomComment);
                 self.botComment().color(commonSet.appStampSetDto.stampRequestSettingDto.bottomCommentFontColor);
                 self.botComment().fontWeight(commonSet.appStampSetDto.stampRequestSettingDto.bottomCommentFontWeight);
-                switch(self.stampRequestMode()){
-                    case 0: self.m1.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto);break;    
-                    case 1: self.m2.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto);break;  
-                    case 2: self.m3.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto);break; 
-                    case 3: self.m4.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto);break; 
-                    case 4: self.m5.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto);break; 
-                    default: break;
-                } 
+                service.findAllWorkLocation().done((listWorkLocation: Array<vmbase.IWorkLocation>)=>{
+                    switch(self.stampRequestMode()){
+                        case 0: self.m1.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break;    
+                        case 1: self.m2.start(appStampData.appStampWorkCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break;  
+                        case 2: self.m3.start(appStampData.appStampCancelCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break; 
+                        case 3: self.m4.start(appStampData.appStampOnlineRecordCmd, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break; 
+                        case 4: self.m5.start(appStampData.appStampWorkCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break; 
+                        default: break;
+                    }     
+                });
                 _.forEach(approvalList, appPhase => {
                     _.forEach(appPhase.approverDtos, appFrame => {
                         _.forEach(appFrame.approveAcceptedCmds, appAccepted => {
