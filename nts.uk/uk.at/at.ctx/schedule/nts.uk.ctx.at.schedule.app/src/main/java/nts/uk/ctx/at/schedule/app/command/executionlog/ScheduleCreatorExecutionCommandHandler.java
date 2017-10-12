@@ -22,6 +22,8 @@ import nts.arc.time.GeneralDateTime;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.find.executionlog.ScheduleExecutionLogFinder;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogInfoDto;
+import nts.uk.ctx.at.schedule.dom.adapter.ScWorkplaceAdapter;
+import nts.uk.ctx.at.schedule.dom.adapter.executionlog.WorkplaceDto;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSet;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSetRepository;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
@@ -92,6 +94,11 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The internationalization. */
 	@Inject
 	private IInternationalization internationalization;
+	
+	
+	/** The sc workplace adapter. */
+	@Inject
+	private ScWorkplaceAdapter scWorkplaceAdapter;
 	
 	/** The setter. */
 	private TaskDataSetter setter;
@@ -345,18 +352,50 @@ public class ScheduleCreatorExecutionCommandHandler
 		// check 営業日カレンダーの参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
 		if (personalWorkScheduleCreSet.getWorkScheduleBusCal().getReferenceBusinessDayCalendar()
 				.equals(WorkScheduleMasterReferenceAtr.WORKPLACE)) {
-			List<ScheduleErrorLog> errorLogs = this.scheduleErrorLogRepository.findByEmployeeId(
-					content.getExecutionId(), personalWorkScheduleCreSet.getEmployeeId());
-			if (CollectionUtil.isEmpty(errorLogs)) {
-				this.scheduleErrorLogRepository.add(this
-						.toScheduleErrorLog(personalWorkScheduleCreSet.getEmployeeId(), "Msg_602"));
+			
+			Optional<WorkplaceDto> optionalWorkplace = this.scWorkplaceAdapter.findWorkplaceById(
+					personalWorkScheduleCreSet.getEmployeeId(), GeneralDate.legacyDate(toDate));
+			
+			if(optionalWorkplace.isPresent()){
+				
+			} else {
+				
+				// add log error employee => 602
+				this.addError(personalWorkScheduleCreSet.getEmployeeId(), "Msg_602");
 			}
+			
 		} else
 		// CLASSIFICATION
 		{
 
 		}
 	}
+
+	/**
+	 * Adds the error.
+	 *
+	 * @param employeeId the employee id
+	 * @param messageId the message id
+	 */
+	private void addError(String employeeId, String messageId) {
+		List<ScheduleErrorLog> errorLogs = this.scheduleErrorLogRepository
+				.findByEmployeeId(content.getExecutionId(), employeeId);
+		if (CollectionUtil.isEmpty(errorLogs)) {
+			this.scheduleErrorLogRepository.add(this.toScheduleErrorLog(employeeId, messageId));
+		}
+	}
+	
+	/**
+	 * Gets the schedule work hour.
+	 *
+	 * @return the schedule work hour
+	 */
+	// 勤務予定時間帯を取得する
+	private void getScheduleWorkHour(){
+		
+	}
+	
+	
 	
 	/**
 	 * To schedule error log.
