@@ -9,6 +9,6 @@ public class CheckDuplicateEmpInfoDto {
 
 	Boolean isDuplicate;
 
-	String fieldName;
+	String messageId;
 
 }

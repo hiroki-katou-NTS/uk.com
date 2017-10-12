@@ -124,7 +124,7 @@ public class EmployeeFinder {
 		Boolean isDuplicateCardNo = this.employeeRepository.isDuplicateCardNo(AppContexts.user().companyId(), cardNo);
 
 		return new CheckDuplicateEmpInfoDto(isDuplicateEmpCode || isDuplicateCardNo,
-				isDuplicateEmpCode ? "employeeCode" : "CardNo");
+				isDuplicateEmpCode ? "Msg_345" : "Msg_346");
 
 	}
 

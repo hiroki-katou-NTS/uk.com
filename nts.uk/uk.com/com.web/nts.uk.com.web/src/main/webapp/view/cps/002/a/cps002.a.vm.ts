@@ -177,9 +177,6 @@ module cps002.a.vm {
             service.checkDuplicateEmpCodeOrCardNo(employee.employeeCode(), employee.cardNo()).done((result) => {
                 dfd.promise(result);
             })
-
-
-
             return dfd.promise();
         }
 
@@ -195,18 +192,31 @@ module cps002.a.vm {
             let self = this;
             self.ValidEmployeeInfo().done((result) => {
                 if (result.isDuplicate) {
-                    dialog({ messageId: result.fieldName === 'EmployeeCode' ? "Msg_345" : "Msg_346" });
+                    dialog({ messageId: result.messageId });
 
                 } else {
 
                     if (self.selectedId() === 3) {
-                        $('#emp_reg_info_wizard').ntsWizard("goto", 2);
+                        self.gotoStep3();
                         return;
                     }
 
-                    $('#emp_reg_info_wizard').ntsWizard("next");
+                    self.gotoStep2();
                 }
             })
+
+        }
+
+        gotoStep3() {
+            $('#emp_reg_info_wizard').ntsWizard("goto", 2);
+
+
+        }
+
+        gotoStep2() {
+
+            $('#emp_reg_info_wizard').ntsWizard("goto", 1);
+
 
         }
 
