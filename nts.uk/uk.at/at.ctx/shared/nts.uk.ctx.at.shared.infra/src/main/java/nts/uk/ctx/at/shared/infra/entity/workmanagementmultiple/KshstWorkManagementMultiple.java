@@ -15,7 +15,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
  * author hieult
  */
 @Entity
-@Table(name = "KRQDT_APP_LATE_OR_LEAVE")
+@Table(name = "KSHST_WORK_MANAGEMENT")
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshstWorkManagementMultiple extends UkJpaEntity implements Serializable {
@@ -27,7 +27,7 @@ public class KshstWorkManagementMultiple extends UkJpaEntity implements Serializ
 	@EmbeddedId
 	public KshstWorkManagementMultiplePK kshstWorkManagementPK;
 	
-	@Column(name = "Use_ATR")
+	@Column(name = "USE_ATR")
 	public int useATR;
 	@Override
 	
