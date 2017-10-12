@@ -1,9 +1,10 @@
 module nts.uk.at.view.kaf009.b {
-    import kaf000 = nts.uk.at.view.kaf000;
     import common = nts.uk.at.view.kaf009.share.common;
     import model = nts.uk.at.view.kaf000.b.viewmodel.model;
     export module viewmodel{
         export class ScreenModel extends kaf000.b.viewmodel.ScreenModel {
+            //kaf000
+            kaf000_a: kaf000.a.viewmodel.ScreenModel;
             //current Data
             curentGoBackDirect: KnockoutObservable<common.GoBackDirectData>;
             //申請者
@@ -63,6 +64,16 @@ module nts.uk.at.view.kaf009.b {
             command: KnockoutObservable<common.GoBackCommand>;
             //list Work Location 
             locationData: Array<common.IWorkLocation>;
+            approvalSource: Array<any> = [];
+            
+            employeeID : string ="";
+            enableSendMail :KnockoutObservable<boolean> = ko.observable(false); 
+        
+            prePostDisp: KnockoutObservable<boolean> = ko.observable(false);
+            
+            prePostEnable: KnockoutObservable<boolean> = ko.observable(false);
+            
+            requiredReason : KnockoutObservable<boolean> = ko.observable(false);
 
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
@@ -127,12 +138,7 @@ module nts.uk.at.view.kaf009.b {
                 self.workChangeAtr.subscribe(function(value) {
                     self.workEnable(value);
                 });
-                let appID: string = "e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d";
-                self.startPage(appID);
-            }
-
-            testAbstract() {
-                alert('aaaaaa');
+                self.startPage(currentApp.appID);
             }
 
             /**
@@ -142,7 +148,9 @@ module nts.uk.at.view.kaf009.b {
                 var self = this;
                 let dfd = $.Deferred();
                 //get Common Setting
-                service.getGoBackSetting().done(function(settingData: common.CommonSetting) {
+                service.getGoBackSetting().done(function(settingData: any) {
+                    debugger;
+                    self.employeeID = settingData.sid;
                     //get Reason
                     self.setReasonControl(settingData.listReasonDto);
                     //set employee Name

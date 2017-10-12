@@ -44,7 +44,7 @@ public class GetMessageReasonForRemand {
 			List<ApprovalFrameDto> list = outputPhaseAndFrame.getListFrame();
 			//loop list frame get reason approver
 			for(ApprovalFrameDto approvalFrameDto :list ) {
-				approvalFrameDto.getListApproveAcceptedDto().forEach(x -> {
+				approvalFrameDto.getListApproveAccepted().forEach(x -> {
 					if(x.getReason().isEmpty()) {
 						listReason.add("");
 					}else {
