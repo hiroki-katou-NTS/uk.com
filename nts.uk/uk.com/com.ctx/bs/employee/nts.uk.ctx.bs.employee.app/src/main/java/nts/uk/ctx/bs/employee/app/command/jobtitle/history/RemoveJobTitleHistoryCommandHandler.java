@@ -2,16 +2,11 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.app.command.jobtitle.sequence;
-
-import lombok.Data;
+package nts.uk.ctx.bs.employee.app.command.jobtitle.history;
 
 /**
- * The Class RemoveSequenceCommand.
+ * The Class RemoveJobTitleHistoryCommandHandler.
  */
-@Data
-public class RemoveSequenceCommand {
+public class RemoveJobTitleHistoryCommandHandler {
 
-    /** The sequence code. */
-    private String sequenceCode;	
 }

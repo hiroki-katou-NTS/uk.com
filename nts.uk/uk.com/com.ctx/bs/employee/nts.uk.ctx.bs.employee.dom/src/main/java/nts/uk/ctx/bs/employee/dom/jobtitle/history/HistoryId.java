@@ -1,14 +1,11 @@
 package nts.uk.ctx.bs.employee.dom.jobtitle.history;
 
 import nts.arc.primitive.StringPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * The Class JobTitleHistoryId.
  */
-@StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(36)
 public class HistoryId extends StringPrimitiveValue<HistoryId> {
 	

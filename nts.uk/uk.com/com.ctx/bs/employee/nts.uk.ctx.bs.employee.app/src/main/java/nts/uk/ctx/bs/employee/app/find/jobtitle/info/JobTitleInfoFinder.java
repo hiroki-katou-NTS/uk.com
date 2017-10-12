@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.jobtitle.info;
 
 import java.util.Optional;
@@ -18,7 +22,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class JobTitleInfoFinder {
 
-	/** The repository. */
+	/** The job title info repository. */
 	@Inject
 	private JobTitleInfoRepository jobTitleInfoRepository;
 
@@ -29,10 +33,8 @@ public class JobTitleInfoFinder {
 	/**
 	 * Find by job id and history id.
 	 *
-	 * @param jobTitleId
-	 *            the job title id
-	 * @param historyId
-	 *            the history id
+	 * @param jobTitleId the job title id
+	 * @param historyId the history id
 	 * @return the job title info find dto
 	 */
 	public JobTitleInfoFindDto findByJobIdAndHistoryId(String jobTitleId, String historyId) {
