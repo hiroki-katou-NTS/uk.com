@@ -4,29 +4,23 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.AfterProcessDelete;
 import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
-public class UpdateApplicationDelete {
-	@Inject
-	private ApplicationRepository appRepo;
+public class UpdateApplicationDelete extends CommandHandlerWithResult<UpdateApplicationCommonCmd,ListMailApproval> {
+
 	
 	@Inject
 	private AfterProcessDelete afterProcessDelete;
-	
-	public void deleteApp(String appID) {
+
+	@Override
+	protected ListMailApproval handle(CommandHandlerContext<UpdateApplicationCommonCmd> context) {
 		String companyID = AppContexts.user().companyId();
-		
-		Application application = appRepo.getAppById(companyID, appID).get();
-		
 		//5.2(hieult)
-		afterProcessDelete.screenAfterDelete( appID);
 		
-		//refresh man hinh, k hien thi don xin da xoa 
-		
-		
+		return new ListMailApproval(afterProcessDelete.screenAfterDelete(companyID, context.getCommand().getAppId()));
 	}
 }

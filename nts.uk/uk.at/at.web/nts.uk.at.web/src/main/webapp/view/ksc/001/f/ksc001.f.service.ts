@@ -4,7 +4,8 @@ module nts.uk.at.view.ksc001.f {
         var paths = {
             findScheduleExecutionLogById: "at/schedule/exelog/findById",
             findScheduleExecutionLogInfoById: "at/schedule/exelog/findInfoById",
-            executionScheduleExecutionLog: "at/schedule/exelog/execution"
+            executionScheduleExecutionLog: "at/schedule/exelog/execution",
+            findAllScheduleErrorLog: "at/schedule/exelog/findAllError"
         }
 
         /**
@@ -26,6 +27,12 @@ module nts.uk.at.view.ksc001.f {
          */
         export function findScheduleExecutionLogInfoById(executionId: string): JQueryPromise<model.ScheduleExecutionLogInfoDto> {
             return nts.uk.request.ajax('at', paths.findScheduleExecutionLogInfoById + '/' + executionId);
+        }
+        /**
+         * call service find all ScheduleErrorLog
+         */
+        export function findAllScheduleErrorLog(executionId: string): JQueryPromise<model.ScheduleErrorLogDto[]> {
+            return nts.uk.request.ajax('at', paths.findAllScheduleErrorLog + '/' + executionId);
         }
 
         export module model {
@@ -70,6 +77,15 @@ module nts.uk.at.view.ksc001.f {
                totalNumber: number;
                totalNumberCreated: number;
                totalNumberError: number;
+           }
+            
+           export interface ScheduleErrorLogDto {
+               errorContent: string;
+               executionId: string;
+               date: Date;
+               employeeId: string;
+               employeeCode: string;
+               employeeName: string;
            }
         }
     }

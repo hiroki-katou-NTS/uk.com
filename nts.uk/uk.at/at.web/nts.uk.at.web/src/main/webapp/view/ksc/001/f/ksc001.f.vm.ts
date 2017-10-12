@@ -2,15 +2,16 @@ module nts.uk.at.view.ksc001.f {
 
 import ScheduleExecutionLogSaveRespone = nts.uk.at.view.ksc001.b.service.model.ScheduleExecutionLogSaveRespone;
 import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
+import ScheduleErrorLogDto = service.model.ScheduleErrorLogDto;
     export module viewmodel {
 
         export class ScreenModel {
-            items: KnockoutObservableArray<ItemModel>;
+            errorLogs: KnockoutObservableArray<ScheduleErrorLogDto>;
             columns: KnockoutObservableArray<any>;
             currentCode: KnockoutObservable<any>;
             currentCodeList: KnockoutObservableArray<any>;
             count: number = 100;
-            scheduleExecutionLog: ScheduleExecutionLogDto;
+            scheduleExecutionLogModel: ScheduleExecutionLogModel;
             executionStartDate: string;
             executionTotal: KnockoutObservable<string>;
             executionError: KnockoutObservable<string>;
@@ -22,17 +23,13 @@ import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
             inputData: ScheduleExecutionLogSaveRespone;
             constructor() {
                 var self = this;
-                self.items = ko.observableArray([]);
-
-                for (let i = 1; i < 100; i++) {
-                    self.items.push(new ItemModel('00' + i, '基本給', "description " + i, "2010/1/1"));
-                }
+                self.errorLogs = ko.observableArray([]);
 
                 self.columns = ko.observableArray([
-                    { headerText: nts.uk.resource.getText("KSC001_55"), key: 'code', width: 80},
-                    { headerText: nts.uk.resource.getText("KSC001_56"), key: 'name', width: 150 },
-                    { headerText: nts.uk.resource.getText("KSC001_57"), key: 'description', width: 150 },
-                    { headerText: nts.uk.resource.getText("KSC001_58"), key: 'other', width: 150 }
+                    { headerText: nts.uk.resource.getText("KSC001_55"), key: 'employeeId', width: 80},
+                    { headerText: nts.uk.resource.getText("KSC001_56"), key: 'employeeCode', width: 150 },
+                    { headerText: nts.uk.resource.getText("KSC001_57"), key: 'employeeName', width: 150 },
+                    { headerText: nts.uk.resource.getText("KSC001_58"), key: 'errorContent', width: 150 }
                 ]);
 
                 self.currentCode = ko.observable();
@@ -41,6 +38,7 @@ import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
                 self.totalRecord = ko.observable(0);
                 self.numberSuccess = ko.observable(0);
                 self.numberFail = ko.observable(0);
+                self.scheduleExecutionLogModel = new ScheduleExecutionLogModel();
             }
 
             /**
@@ -53,7 +51,7 @@ import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
                 var inputData: ScheduleExecutionLogSaveRespone = nts.uk.ui.windows.getShared('inputData');
                 if (inputData) {
                     service.findScheduleExecutionLogById(inputData.executionId).done(function(data) {
-                        self.scheduleExecutionLog = data;
+                        self.scheduleExecutionLogModel.updateStatus(data.completionStatus);
                         self.executionTotal = ko.observable('0');
                         self.executionError = ko.observable('0');
                         self.executionStartDate = moment.utc(data.executionDateTime.executionStartDate).format("YYYY/MM/DD HH:mm:ss");
@@ -95,12 +93,25 @@ import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
             }
             
             /**
+             * reload page by action stop execution
+             */
+            private reloadPage(): void {
+                var self = this;
+                service.findScheduleExecutionLogById(self.inputData.executionId).done(function(data) {
+                    self.scheduleExecutionLogModel.updateStatus(data.completionStatus);
+                    service.findAllScheduleErrorLog(self.inputData.executionId).done(function(errorLogs){
+                       self.errorLogs(errorLogs); 
+                    });
+                });
+            }
+            
+            /**
              * updateState
              */
             private updateState() {
                 let self = this;
                 // start count time
-                //$('.countdown').startCount();
+                $('.countdown').startCount();
                 
                 nts.uk.deferred.repeat(conf => conf
                 .task(() => {
@@ -123,14 +134,8 @@ import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
                         self.executionError(nts.uk.resource.getText("KSC001_85", [self.numberFail()]));
                         // finish task
                         if (res.succeeded || res.failed || res.cancelled) {
-                            /*self.isDone(true);
-                            self.status(nts.uk.resource.getText("KSU006_217"));
-                            
-                            // end count time
                             $('.countdown').stopCount();
-                            if (res.error) {
-                                self.showMessageError(res.error);
-                            }*/
+                            self.reloadPage();
                             if (res.succeeded) {
                                 $('#closeDialog').focus();
                             }
@@ -145,16 +150,14 @@ import ScheduleExecutionLogDto = service.model.ScheduleExecutionLogDto;
         }     
         
         
-        export class ItemModel {
-            code: string;
-            name: string;
-            description: string;
-            other: string
-            constructor(code: string, name: string, description: string, other: string) {
-                this.code = code;
-                this.name = name;
-                this.description = description;
-                this.other = other;
+        export class ScheduleExecutionLogModel{
+            completionStatus: KnockoutObservable<string>;
+            
+            constructor(){
+                this.completionStatus = ko.observable('');    
+            }
+            updateStatus(completionStatus: string) {
+                this.completionStatus(completionStatus);
             }
         }
     }

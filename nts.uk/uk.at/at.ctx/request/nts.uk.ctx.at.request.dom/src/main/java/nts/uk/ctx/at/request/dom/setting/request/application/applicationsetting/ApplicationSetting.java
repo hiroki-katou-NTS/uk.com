@@ -3,7 +3,6 @@ package nts.uk.ctx.at.request.dom.setting.request.application.applicationsetting
 import lombok.Value;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.primitive.UseAtr;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.AppCanAtr;
-import nts.uk.ctx.at.request.dom.setting.request.application.common.AprovalPersonFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.BaseDateFlg;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.NumDaysOfWeek;
 import nts.uk.ctx.at.request.dom.setting.request.application.common.PriorityFLg;
@@ -55,8 +54,6 @@ public class ApplicationSetting {
 	private AppDisplayAtr appReasonDispAtr;
 	/** 承認時に申請内容を変更できる */
 	private AppCanAtr appContentChangeFlg;
-	/** 本人による承認 */
-	private AprovalPersonFlg personApprovalFlg;
 	/** 事前申請スケジュール反映 */
 	private ReflectionFlg scheReflectFlg;
 	/** 反映時刻優先 */
@@ -70,7 +67,7 @@ public class ApplicationSetting {
 			UseAtr manualSendMailAtr, BaseDateFlg baseDateFlg, AppDisplayAtr advanceExcessMessDispAtr,
 			AppDisplayAtr hwAdvanceDispAtr, AppDisplayAtr hwActualDispAtr, AppDisplayAtr actualExcessMessDispAtr,
 			AppDisplayAtr otAdvanceDispAtr, AppDisplayAtr otActualDispAtr, NumDaysOfWeek warningDateDispAtr,
-			AppDisplayAtr appReasonDispAtr, AppCanAtr appContentChangeFlg, AprovalPersonFlg personApprovalFlg,
+			AppDisplayAtr appReasonDispAtr, AppCanAtr appContentChangeFlg,
 			ReflectionFlg scheReflectFlg, PriorityFLg priorityTimeReflectFlg, ReflectionFlg attendentTimeReflectFlg) {
 		super();
 		this.companyID = companyID;
@@ -93,7 +90,6 @@ public class ApplicationSetting {
 		this.warningDateDispAtr = warningDateDispAtr;
 		this.appReasonDispAtr = appReasonDispAtr;
 		this.appContentChangeFlg = appContentChangeFlg;
-		this.personApprovalFlg = personApprovalFlg;
 		this.scheReflectFlg = scheReflectFlg;
 		this.priorityTimeReflectFlg = priorityTimeReflectFlg;
 		this.attendentTimeReflectFlg = attendentTimeReflectFlg;

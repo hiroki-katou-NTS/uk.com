@@ -77,7 +77,10 @@ module nts.uk.com.view.cmm011.b {
              */
             private shareData() {
                 let self = this;
-                nts.uk.ui.windows.setShared("ShareDateScreenParent", self.toJSonDate(true));
+                let shareData: any = self.toJSonDate(true);
+                shareData.historyId = self.workplaceHistory().getSelectedHistoryByHistId().historyId;
+                
+                nts.uk.ui.windows.setShared("ShareDateScreenParent", shareData);
                 nts.uk.ui.windows.close();
             }
             
@@ -231,7 +234,8 @@ module nts.uk.com.view.cmm011.b {
                     service.removeWkpConfig(command).done(() => {
                         self.findAllHistory();
                     }).fail((res: any) => {
-                        self.parentModel.showMessageError(res);
+//                        self.parentModel.showMessageError(res);
+                        nts.uk.ui.dialog.bundledErrors(res);
                     });
                 });
             }

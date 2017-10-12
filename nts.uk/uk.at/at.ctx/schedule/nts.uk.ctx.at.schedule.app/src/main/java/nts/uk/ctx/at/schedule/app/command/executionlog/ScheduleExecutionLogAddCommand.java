@@ -30,19 +30,7 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
 /**
  * The Class ScheduleExecutionLogAddCommand.
  */
-
-/**
- * Gets the employee ids.
- *
- * @return the employee ids
- */
 @Getter
-
-/**
- * Sets the employee ids.
- *
- * @param employeeIds the new employee ids
- */
 @Setter
 public class ScheduleExecutionLogAddCommand {
 	

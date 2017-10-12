@@ -8,7 +8,6 @@ module nts.uk.at.view.ksc001.g {
             startDateString: KnockoutObservable<string>;
             endDateString: KnockoutObservable<string>;
             items: KnockoutObservableArray<GridItem>;
-            selectedFormula:KnockoutObservable<string>;
             constructor() {
                 let self = this;
                 self.enable = ko.observable(true);
@@ -18,8 +17,8 @@ module nts.uk.at.view.ksc001.g {
                 self.endDateString = ko.observable("");
                 self.dateValue = ko.observable({
                     //get previous 1 year
-                    startDate: moment().subtract(1, 'years').format("YYYY/MM/DD"),
-                    endDate: moment().format("YYYY/MM/DD"),
+                    startDate: moment().subtract(1, 'years').add(1,'days').format('YYYY/MM/DD'),
+                    endDate: moment().format('YYYY/MM/DD'),
                 });
 
                 self.startDateString.subscribe(function(value) {
@@ -31,26 +30,27 @@ module nts.uk.at.view.ksc001.g {
                     self.dateValue().endDate = value;
                     self.dateValue.valueHasMutated();
                 });
-//                let list: Array<GridItem> = [];
-//                for (var i = 0; i < 50; i++) {
-//                    list.push(new GridItem(i));
-//                }
                 self.items = ko.observableArray([]);
-                self.selectedFormula = ko.observable('');
             }
+            
             /**
              * get data on start page
              */
             startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred();
+                blockUI.invisible();
                 service.findExecutionList({ startDate: new Date(self.dateValue().startDate), endDate: new Date(self.dateValue().endDate) }).done(function(data: any) {
                     self.pushDataToList(data);
                     dfd.resolve();
+                    blockUI.clear();
                 });
                 return dfd.promise();
             }
             
+            /**
+             * Init list data
+             */
             pushDataToList(data: Array<any>) {
                 var self = this;
                 self.items([]);
@@ -60,31 +60,28 @@ module nts.uk.at.view.ksc001.g {
                     });
                 }
             }
-            private search()
-            {
-                var self = this;
-                service.findExecutionList({ startDate: new Date(self.dateValue().startDate), endDate: new Date(self.dateValue().endDate) }).done(function(data: any) {
-                    self.pushDataToList(data);
-                    self.loadGridTable(self);
-                });
-            }
-//            covertToRangeString(data:any):string{
-//                return ;
-//            }
-            /**
-             * request to create creation screen
-             */
-            openDialog(): void {
-                let self = this;
-                blockUI.invisible();
-                // the default value of categorySet = undefined
-                //nts.uk.ui.windows.setShared('', );
-                nts.uk.ui.windows.sub.modal("/view/ksc/001/h/index.xhtml", { dialogClass: "no-close" }).onClosed(() => {
-                });
-                blockUI.clear();
-            }
             
-            loadGridTable(screenModel:ScreenModel) {
+            /**
+             * search by date
+             */
+            private search() {
+                if (!nts.uk.ui.errors.hasError()) {
+                    var self = this;
+                    //block UI
+                    blockUI.invisible();
+                    service.findExecutionList({ startDate: new Date(self.dateValue().startDate), endDate: new Date(self.dateValue().endDate) }).done(function(data: any) {
+                        self.pushDataToList(data);
+                        self.loadGridTable(self);
+                        //clear block
+                        blockUI.clear();
+                    });
+                }
+            }
+
+            /**
+             * Load data to grid table
+             */
+            loadGridTable(screenModel: ScreenModel) {
                 var self = this;
                 $("#gridTable").ntsGrid({
                     width: null,
@@ -102,39 +99,12 @@ module nts.uk.at.view.ksc001.g {
                         { headerText: nts.uk.resource.getText('KSC001_69'), key: 'status', dataType: 'string', width: '150px' },
                         { headerText: nts.uk.resource.getText('KSC001_70'), key: 'exeId', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' }
                     ],
-                    features: [
-                        { name: 'MultiColumnHeaders' },
-                        {
-                            name: "Selection",
-                            mode: "row",
-                            multipleSelection: true,
-                            enableCheckBoxes: true,
-                            activation: true
-                        },
-                        {
-                            name: 'Selection',
-                            mode: 'row',
-                            multipleSelection: true,
-                            multipleCellSelectOnClick: true,
-                            rowSelectionChanged: function(evt, ui) {
-                                self.selectedFormula(ui.selectedRows[0].id);
-                            }
-                        },
-                        {
-                            name: "RowSelectors",
-                            enableCheckBoxes: true,
-                            enableRowNumbering: false
-                        }
-                    ],
+                    features: [],
                     ntsFeatures: [{ name: 'CopyPaste' }],
                     ntsControls: [
                         {
                             name: 'Button', text: nts.uk.resource.getText('KSC001_71'), click: function(data: any) {
-                                
-                                nts.uk.ui.windows.setShared("executionData", 
-                                {
-                                 executionId : self.selectedFormula()
-                                });
+                                nts.uk.ui.windows.setShared("executionData",{executionId: data.id});
                                 nts.uk.ui.windows.sub.modal("/view/ksc/001/h/index.xhtml").onClosed(() => {
                                 });
                             },
@@ -142,13 +112,7 @@ module nts.uk.at.view.ksc001.g {
                         }
                     ]
                 });
-                
                 $("#fixed-table").ntsFixedTable({ height: 430 });
-//                $("#gridTable").on("iggridselectionrowselectionchanged", function(event,ui){
-//                    alert(ui.selectedRows[0].id);
-//                });
-//                let rows = $('#gridTable').igGridSelection('selectedRows');
-
             }
         }
 
@@ -160,7 +124,7 @@ module nts.uk.at.view.ksc001.g {
             targetPeriod: string;
             status: string;
             exeId: string;
-            
+
             constructor(exeDay: any, exeEmployeeCode: string, exeEmployeeName: string, targetPeriod: any, status: string, exeId: string) {
                 this.id = exeId;
                 this.exeDay = exeDay;

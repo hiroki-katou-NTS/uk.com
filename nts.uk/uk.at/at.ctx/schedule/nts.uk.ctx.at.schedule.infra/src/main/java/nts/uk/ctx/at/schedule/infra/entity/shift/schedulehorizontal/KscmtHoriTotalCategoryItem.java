@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_HORI_TOTAL_CATEGORY")
+@Table(name = "KSCMT_HORI_TOTAL_CATEGORY")
 public class KscmtHoriTotalCategoryItem extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
@@ -28,8 +29,14 @@ public class KscmtHoriTotalCategoryItem extends UkJpaEntity implements Serializa
 	@Column(name = "MEMO")
 	public String memo;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscstHoriTotalCategory", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtHoriTotalCategory", orphanRemoval = true)
 	public List<KscmtTotalEvalOrderItem> listTotalEvalOrder;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtHoriTotalCategory2", orphanRemoval = true)
+	public List<KscstHoriTotalCntSetItem> listHoriCNTSet;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtHoriTotalCategory1", orphanRemoval = true)
+	public KscstHoriCalDaysSetItem horiCalDaysSet;
 	
 	@Override
 	protected Object getKey() {

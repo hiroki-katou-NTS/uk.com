@@ -5,14 +5,14 @@
 package nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.arc.layer.dom.AggregateRoot;
 
 /**
  * The Class ScheduleManagementControl.
  */
 // 予定管理制御
 @Getter
-public class ScheduleManagementControl extends DomainObject{
+public class ScheduleManagementControl extends AggregateRoot{
 
 	/** The employee id. */
 	// 社員ID
@@ -22,4 +22,18 @@ public class ScheduleManagementControl extends DomainObject{
 	/** The schedule management atr. */
 	// 予定管理区分
 	private UseAtr scheduleManagementAtr;
+
+
+	/**
+	 * Instantiates a new schedule management control.
+	 *
+	 * @param employeeId the employee id
+	 * @param scheduleManagementAtr the schedule management atr
+	 */
+	public ScheduleManagementControl(String employeeId, UseAtr scheduleManagementAtr) {
+		this.employeeId = employeeId;
+		this.scheduleManagementAtr = scheduleManagementAtr;
+	}
+	
+	
 }

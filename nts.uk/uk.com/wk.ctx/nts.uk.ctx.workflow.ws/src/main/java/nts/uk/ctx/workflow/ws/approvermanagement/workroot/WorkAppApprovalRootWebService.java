@@ -18,25 +18,28 @@ import nts.uk.ctx.workflow.app.command.approvermanagement.workroot.UpdateWorkApp
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.CommonApprovalRootFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.DataFullDto;
-import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeAdapterInforFinder;
+import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeRegisterApprovalRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeSearch;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.EmployeeUnregisterFinder;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.MasterApproverRootDto;
 import nts.uk.ctx.workflow.app.find.approvermanagement.workroot.ParamDto;
+import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.EmployeeUnregisterOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.MasterApproverRootOutput;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.registerapproval.EmployeeRegisterApprovalRoot;
+import nts.uk.shr.com.context.AppContexts;
 @Path("workflow/approvermanagement/workroot")
 @Produces("application/json")
 public class WorkAppApprovalRootWebService extends WebService{
 
 	@Inject
 	private CommonApprovalRootFinder comFinder;
-	@Inject
-	private EmployeeAdapterInforFinder employeeInfor;
 	@Inject
 	private UpdateWorkAppApprovalRByHistCommandHandler updateHist;
 	@Inject
@@ -45,6 +48,13 @@ public class WorkAppApprovalRootWebService extends WebService{
 	private RegisterAppApprovalRootCommandHandler updateRoot;
 	@Inject
 	private PersonAdapter psInfo;
+	@Inject
+	private EmployeeAdapter employeeAdapter;
+	@Inject
+	private SyJobTitleAdapter jobTitle;
+	@Inject
+	private EmployeeRegisterApprovalRoot registerApprovalRoot;	
+	
 	@POST
 	@Path("getbycom")
 	public DataFullDto getAllByCom(ParamDto param) {
@@ -59,7 +69,7 @@ public class WorkAppApprovalRootWebService extends WebService{
 	@POST
 	@Path("getEmployeesInfo")
 	public List<EmployeeImport> findByWpkIds(EmployeeSearch employeeSearch){
-		return employeeInfor.findEmployeeByWpIdAndBaseDate(employeeSearch.getWorkplaceCodes(), employeeSearch.getBaseDate());		
+		return employeeAdapter.findByWpkIds(AppContexts.user().companyId(), employeeSearch.getWorkplaceCodes(), employeeSearch.getBaseDate());		
 	}
 	 @POST
 	 @Path("updateHistory")
@@ -102,4 +112,37 @@ public class WorkAppApprovalRootWebService extends WebService{
 	public PersonImport getPsInfor(String SID) {
 		return psInfo.getPersonInfo(SID);
 	}
+	@POST
+	@Path("getInforPsLogin")
+	public PersonImport getPsInforLogin() {
+		String sId = AppContexts.user().employeeId();
+		return psInfo.getPersonInfo(sId);
+	}
+	@POST
+	@Path("getInforJobTitle")
+	public List<JobTitleImport> findAllJobTitle(GeneralDate baseDate){
+		String companyId = AppContexts.user().companyId();
+		return jobTitle.findAll(companyId, baseDate);
+	}
+	/**
+	 * 
+	 * @param baseDate
+	 * @param lstEmpIds
+	 * @param rootAtr:　申請共通を選んだとrootAtr：０、以外：１
+	 * @param lstApps
+	 * @return
+	 */
+	@POST
+	@Path("getEmployeeRegisterApprovalRoot")
+	public void lstEmps(EmployeeRegisterApprovalRootDto data){
+		String companyId = AppContexts.user().companyId();
+		registerApprovalRoot.lstEmps(companyId, data.getBaseDate(), data.getLstEmpIds(),data.getRootAtr(), data.getLstApps());
+	}
+	@POST
+	@Path("getJobtitleName")
+	public JobTitleImport findJobTitleByPositionId(JobTitleImport jobTitleInfo) {
+		String companyId = AppContexts.user().companyId();
+		return jobTitle.findJobTitleByPositionId(companyId, jobTitleInfo.getPositionId(), jobTitleInfo.getStartDate());
+	}
+	
 }

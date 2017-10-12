@@ -48,7 +48,11 @@ public class AddBusinessTypeDailyCommandHandler extends CommandHandler<AddBusine
 		BusinessFormatSheet businessFormatSheet = new BusinessFormatSheet(companyId,
 				new BusinessTypeCode(command.getBusinesstypeCode()), command.getSheetNo(), command.getSheetName());
 
-		this.businessFormatSheetRepository.add(businessFormatSheet);
+		if(this.businessFormatSheetRepository.checkExistData(companyId, new BusinessTypeCode(command.getBusinesstypeCode()), command.getSheetNo())){
+			this.businessFormatSheetRepository.update(businessFormatSheet);
+		} else {
+			this.businessFormatSheetRepository.add(businessFormatSheet);			
+		}
 	}
 
 }

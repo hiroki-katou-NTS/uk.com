@@ -17,7 +17,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_TOTAL_EVAL_ITEM")
+@Table(name = "KSCMT_TOTAL_EVAL_ITEM")
 public class KscmtTotalEvalItem extends UkJpaEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId

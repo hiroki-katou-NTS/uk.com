@@ -17,8 +17,11 @@ import nts.uk.ctx.at.schedule.app.command.shift.schedulehorizontal.UpdateHoriTot
 import nts.uk.ctx.at.schedule.app.command.shift.schedulehorizontal.UpdateHoriTotalCategoryCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriCalDaySetDto;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriCalDaySetFinder;
+import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriTotalCNTFinder;
+import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriTotalCNTSetDto;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriTotalCategoryDto;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.HoriTotalCategoryFinder;
+import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.Param;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.TotalEvalItemDto;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.TotalEvalItemFinder;
 import nts.uk.ctx.at.schedule.app.find.shift.schedulehorizontal.TotalEvalOrderDto;
@@ -34,6 +37,8 @@ public class HoriTotalCategoryWebService extends WebService{
 	private TotalEvalItemFinder finderItem;
 	@Inject 
 	private HoriCalDaySetFinder finderSet;
+	@Inject 
+	private HoriTotalCNTFinder finderCNT;
 	@Inject
 	private AddHoriTotalCategoryCommandHandler add;
 	@Inject
@@ -74,6 +79,16 @@ public class HoriTotalCategoryWebService extends WebService{
 	}
 	
 	/**
+	 * get all hori totalCNTSet item
+	 * @return
+	 */
+	@POST
+	@Path("findCNT")
+	public List<HoriTotalCNTSetDto> finderCNT(Param param){
+		return this.finderCNT.finder(param);
+	}
+	
+	/**
 	 * get all HoriCalDaysSet
 	 * @return
 	 */
@@ -85,8 +100,8 @@ public class HoriTotalCategoryWebService extends WebService{
 	
 	@POST
 	@Path("update")
-	public void update(UpdateHoriTotalCategoryCommand command){
-		this.update.handle(command);
+	public void update(UpdateHoriTotalCategoryCommand aa){
+		this.update.handle(aa);
 	}
 	
 	@POST

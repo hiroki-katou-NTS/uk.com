@@ -25,9 +25,13 @@ public class ProcessCancelImpl implements ProcessCancel {
 		Optional<Application> app = appRepo.getAppById(companyID, appID);
 		if(app.isPresent()) {
 			appRepo.updateById(companyID,appID );
+			//throw new BusinessException("Msg_224");
 		}else {
 			throw new BusinessException("K ton tai");
 		}
+		
+		
+		
 	}
 
 }

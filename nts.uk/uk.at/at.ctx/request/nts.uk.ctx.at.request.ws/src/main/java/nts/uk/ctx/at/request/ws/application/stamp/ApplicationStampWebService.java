@@ -12,6 +12,7 @@ import nts.uk.ctx.at.request.app.command.application.stamp.RegisterAppStampComma
 import nts.uk.ctx.at.request.app.command.application.stamp.UpdateAppStampCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.stamp.command.AppStampCmd;
 import nts.uk.ctx.at.request.app.find.application.stamp.AppStampFinder;
+import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
 /**
@@ -31,6 +32,12 @@ public class ApplicationStampWebService extends WebService {
 	
 	@Inject
 	private UpdateAppStampCommandHandler updateApplicationStampCommandHandler;
+	
+	@POST
+	@Path("findByID")
+	public AppStampDto findByID(String appID){
+		return this.appStampFinder.getAppStampByID(appID);
+	}
 	
 	@POST
 	@Path("newAppStampInitiative")

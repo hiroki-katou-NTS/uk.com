@@ -1,12 +1,6 @@
-/******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
- * All right reserved.                                            *
- *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtitle;
 
-import java.util.List;
-
-import nts.arc.time.GeneralDate;
+import java.util.Optional;
 
 /**
  * The Interface JobTitleRepository.
@@ -14,28 +8,43 @@ import nts.arc.time.GeneralDate;
 public interface JobTitleRepository {
 
 	/**
-	 * Find all.
+	 * Adds the.
 	 *
-	 * @return the list
+	 * @param jobTitle the job title
 	 */
-	List<JobTitle> findAll(String companyId, GeneralDate referenceDate);
+	void add(JobTitle jobTitle);
 
 	/**
-	 * Find by job ids.
+	 * Update.
 	 *
-	 * @param jobIds the job ids
-	 * @return the list
+	 * @param jobTitle the job title
 	 */
-	List<JobTitle> findByJobIds(List<String> jobIds);
+	void update(JobTitle jobTitle);
 
-	/**
-	 * Find by job ids.
-	 *
-	 * @param companyId the company id
-	 * @param jobIds the job ids
-	 * @param baseDate the base date
-	 * @return the list
-	 */
-	List<JobTitle> findByJobIds(String companyId, List<String> jobIds,
-			GeneralDate baseDate);
+    /**
+     * Removes the.
+     *
+     * @param companyId the company id
+     * @param jobTitleId the job title id
+     */
+    void remove(String companyId, String jobTitleId);
+	
+    /**
+     * Removes the history.
+     *
+     * @param companyId the company id
+     * @param jobTitleId the job title id
+     * @param historyId the history id
+     */
+    void removeHistory(String companyId, String jobTitleId, String historyId);
+    
+    /**
+     * Find by job title id.
+     *
+     * @param companyId the company id
+     * @param jobTitleId the job title id
+     * @return the optional
+     */
+    Optional<JobTitle> findByJobTitleId(String companyId, String jobTitleId);
+    
 }

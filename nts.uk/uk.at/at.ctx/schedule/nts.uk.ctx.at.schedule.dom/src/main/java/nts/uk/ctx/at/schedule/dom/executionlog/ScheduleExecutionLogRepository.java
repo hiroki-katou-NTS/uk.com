@@ -7,7 +7,7 @@ package nts.uk.ctx.at.schedule.dom.executionlog;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
+import nts.arc.time.GeneralDateTime;
 
 /**
  * The Interface ScheduleExecutionLogRepository.
@@ -18,10 +18,11 @@ public interface ScheduleExecutionLogRepository {
 	 * Find.
 	 *
 	 * @param companyId the company id
-	 * @param period the period
+	 * @param startDate the start date
+	 * @param endDate the end date
 	 * @return the optional
 	 */
-	public List<ScheduleExecutionLog> find(String companyId ,Period period);
+	public List<ScheduleExecutionLog> find(String companyId ,GeneralDateTime startDate,GeneralDateTime endDate);
 	
 	/**
 	 * Find by id.

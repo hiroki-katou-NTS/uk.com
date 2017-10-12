@@ -16,7 +16,10 @@ import lombok.Setter;
 @Setter
 public class FormulaSaveCommand {
 
+	/** The opt item no. */
+	private String optItemNo;
+
 	/** The list calc formula. */
-	private List<FormulaDto> listCalcFormula;
+	private List<FormulaDto> calcFormulas;
 
 }

@@ -19,9 +19,9 @@ module nts.uk.at.view.kdw008.c {
                 this.testSingle = ko.observable(null);
             }
 
-            update(): JQueryPromise<any> {
+            update(): void {
                 let self = this;
-                let dfd = $.Deferred();
+//                let dfd = $.Deferred();
                 var businessTypeSortedUpdateList = _.map(self.businessTypeSortedList(), item => {
                     var indexOfDaily = _.findIndex(self.businessTypeSortedList(), { attendanceItemId: item.attendanceItemId });
                     var update = {
@@ -32,12 +32,17 @@ module nts.uk.at.view.kdw008.c {
                     }
                     return new BusinessTypeSortedModel(update);
                 });
+                nts.uk.ui.block.grayout();
                 new service.Service().updateBusinessTypeSorted(businessTypeSortedUpdateList).done(function(data) {
                     //self.findAll();
-                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
-                    dfd.resolve();
+                    nts.uk.ui.block.clear();
+                    nts.uk.ui.dialog.alert({ messageId: "Msg_15" }).then(function(){
+                        nts.uk.ui.windows.close();
+                    });
+//                    dfd.resolve();
+                    
                 });
-                return dfd.promise();
+//                return dfd.promise();
             }
 
             startPage(): JQueryPromise<any> {

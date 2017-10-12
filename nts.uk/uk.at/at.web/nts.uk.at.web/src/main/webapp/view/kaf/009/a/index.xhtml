@@ -14,6 +14,7 @@
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="kaf009.a.style.css" />
 			<com:stylefile path="../../000/a/kaf000.a.main.css" />
+			<com:scriptfile path="../../009/share/kaf009.share.vm.js" />
 			<com:scriptfile path="kaf009.a.start.js" />
 			<com:scriptfile path="kaf009.a.service.js" />
 			<com:scriptfile path="../../000/a/kaf000.a.service.js" />
@@ -21,26 +22,26 @@
 			<com:scriptfile path="kaf009.a.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area" data-bind="with: mainModel">
+			<div id="functions-area" data-bind="">
 				<button class="proceed" data-bind="click: insert" tabindex="1">#{i18n.getText('KAF009_3')}</button>
-				<button id="btnSpecSetting" data-bind="" tabindex="2">#{i18n.getText('KAF009_4')}</button>
+				<button id="btnSpecSetting" data-bind="click: openCMM018" tabindex="2">#{i18n.getText('KAF009_4')}</button>
 				<button data-bind="" tabindex="3">#{i18n.getText('KAF009_5')}</button>
 				<div class="btnSendMail"
 					data-bind="ntsCheckBox: { checked: true, enable: true, text: '#{i18n.getText('KAF009_6')}' }"></div>
 			</div>
-			<div id="contents-area">
-				<!-- Message area -->
-				<div data-bind="with: commonModel">
-					<ui:include src="../../000/a/index1.xhtml" />
-				</div>
-				<!-- Main -->
-				<div class="mainScreen" data-bind="with :mainModel">
-					<ui:include src="../b/index.xhtml"></ui:include>
-				</div>
-				<!-- Footer -->
-				<div class="lstApprover" data-bind="with: commonModel">
-					<ui:include src="../../000/a/index2.xhtml" />
-				</div>
+			<div id="contents-area" class="">
+					<!-- Message area -->
+					<div data-bind="with: kaf000_a" class="">
+						<ui:include src="../../000/a/index1.xhtml" />
+					</div>
+					<!-- Main -->
+					<div class="mainScreen" data-bind="">
+						<ui:include src="../share/index.xhtml"></ui:include>
+					</div>
+					<!-- Footer -->
+					<div class="lstApprover" data-bind="with: kaf000_a">
+						<ui:include src="../../000/a/index2.xhtml" />
+					</div>
 			</div>
 		</ui:define>
 	</ui:composition>

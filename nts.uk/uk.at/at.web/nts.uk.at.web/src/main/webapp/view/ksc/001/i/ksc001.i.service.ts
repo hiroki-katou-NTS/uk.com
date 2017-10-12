@@ -1,19 +1,14 @@
 module nts.uk.at.view.ksc001.i {
     export module service {
         var paths = {
-           findLstEmployeeExe: "",
+            findAllCreator: "at/schedule/exelog/findAllCreator",
         }
-        
+
         /**
-         * call service find LstEmployeeExe
+         * call service findAllCreator
          */
-        export function findExecutionDetail(): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.findLstEmployeeExe);
+        export function findAllCreator(executionId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findAllCreator + "/" + executionId);
         }
-        
-        export module model {
-
-        }
-
     }
 }

@@ -11,11 +11,12 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.JpaEntity;
+import nts.arc.time.GeneralDate;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "BSYMT_EMP_INFO_CTG_DATA")
+@Table(name = "PPEMT_EMP_INFO_CTG_DATA")
 public class BsymtEmpInfoCtgData extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -24,8 +25,8 @@ public class BsymtEmpInfoCtgData extends JpaEntity implements Serializable {
 	public BsymtEmpInfoCtgDataPk bsydtEmpInfoCtgDataPk;
 
 	@Basic(optional = false)
-	@Column(name = "RECORD_ID")
-	public String recordId;
+	@Column(name = "P_INFO_CTG_ID")
+	public GeneralDate personInfoCtgId;
 
 	@Basic(optional = false)
 	@Column(name = "S_ID")

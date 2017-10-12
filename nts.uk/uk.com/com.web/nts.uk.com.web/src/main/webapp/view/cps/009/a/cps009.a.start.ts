@@ -33,8 +33,8 @@ function init() {
         virtualization: true,
         virtualizationMode: 'continuous',
         columns: [
-            { headerText: 'ID', key: 'id', dataType: 'number', width: '200px', ntsControl: 'Label' },
-            { headerText: '', key: 'combo', dataType: 'string', width: '80px', ntsControl: 'Combobox' },
+            { headerText: 'ID', key: 'id', dataType: 'number', width: '10px', ntsControl: 'Label' },
+            { headerText: '', key: 'combo', dataType: 'string', width: '20px', ntsControl: 'Combobox' },
             { headerText: nts.uk.resource.getText('CPS009_23'), key: 'id', dataType: 'number', width: '320px', ntsControl: 'Label' },
         ],
         features: [{ name: 'Resizing' }],

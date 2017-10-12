@@ -2,7 +2,10 @@ module nts.uk.at.view.kaf002.shr {
     export module vmbase {
         export interface AppStampNewSetDto {
             appCommonSettingDto: AppCommonSettingDto;
-            appStampSetDto: AppStampSetDto;        
+            appStampSetDto: AppStampSetDto;     
+            companyID: string;
+            employeeID: string;
+            employeeName: string;
         }
         
         export interface AppCommonSettingDto {
@@ -198,37 +201,33 @@ module nts.uk.at.view.kaf002.shr {
         }
         
         export class ApprovalFrame {
-            phaseID: string;
+            frameID: string;
             dispOrder: number;
-            approverSID: string;
-            approvalATR: number;
-            confirmATR: number;
-            approvalDate: string;
-            reason: string;
-            representerSID: string;
             approveAcceptedCmds: Array<ApproveAccepted>;
-            constructor(phaseID: string, dispOrder: number, approverSID: string, approvalATR: number, confirmATR: number,
-                approvalDate: string, reason: string, representerSID: string, approveAcceptedCmds: Array<ApproveAccepted>){
-                this.phaseID = phaseID;
+            constructor(frameID: string, dispOrder: number, approveAcceptedCmds: Array<ApproveAccepted>){
+                this.frameID = frameID;
                 this.dispOrder = dispOrder; 
-                this.approverSID = approverSID;
-                this.approvalATR = approvalATR;
-                this.confirmATR = confirmATR;
-                this.approvalDate = approvalDate;
-                this.reason = reason;
-                this.representerSID = representerSID;
                 this.approveAcceptedCmds = approveAcceptedCmds;   
             }     
         }
         
         export class ApproveAccepted {
-            phaseID: string;
-            dispOrder: number;
-            approverSID: string;   
-            constructor(phaseID: string, dispOrder: number, approverSID: string){
-                this.phaseID = phaseID;
-                this.dispOrder = dispOrder;
-                this.approverSID = approverSID;     
+            appAcceptedID: string;
+            approverSID: string;
+            approvalATR: number;
+            confirmATR: number;
+            approvalDate: string;
+            reason: string;
+            representerSID: string; 
+            constructor(appAcceptedID: string, approverSID: string, approvalATR: number, 
+                confirmATR: number, approvalDate: string, reason: string, representerSID: string){
+                this.appAcceptedID = appAcceptedID;
+                this.approverSID = approverSID;
+                this.approvalATR = approvalATR;
+                this.confirmATR = confirmATR;
+                this.approvalDate = approvalDate;
+                this.reason = reason;
+                this.representerSID = representerSID;    
             }
         }
         

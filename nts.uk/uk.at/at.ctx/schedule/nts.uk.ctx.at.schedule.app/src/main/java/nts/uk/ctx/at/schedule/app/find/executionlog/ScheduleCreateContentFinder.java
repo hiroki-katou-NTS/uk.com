@@ -14,13 +14,11 @@ import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContent;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreateContentRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreator;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleCreatorRepository;
-import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleErrorLogRepository;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLog;
 import nts.uk.ctx.at.schedule.dom.executionlog.ScheduleExecutionLogRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ScheduleCreateContentFinder.
  */
@@ -46,7 +44,8 @@ public class ScheduleCreateContentFinder {
 	/**
 	 * Find by execution id.
 	 *
-	 * @param executionId the execution id
+	 * @param executionId
+	 *            the execution id
 	 * @return the schedule create content dto
 	 */
 	public ScheduleCreateContentDto findByExecutionId(String executionId) {
@@ -60,7 +59,7 @@ public class ScheduleCreateContentFinder {
 		List<ScheduleCreator> lstCreator = scheduleCreatorRepository.findAll(executionId);
 
 		// get count ScheduleError
-		List<ScheduleErrorLog> lstError = scheduleErrorLogRepository.findByExecutionId(executionId);
+		Integer cntError = scheduleErrorLogRepository.distinctErrorByExecutionId(executionId);
 
 		if (createContentOp.isPresent()) {
 			ScheduleCreateContentDto dto = new ScheduleCreateContentDto();
@@ -74,9 +73,11 @@ public class ScheduleCreateContentFinder {
 				dto.setEndDate(endDate);
 				dto.setExecutionStart(exeStart);
 				dto.setExecutionEnd(exeEnd);
+			} else {
+				return null;
 			}
 			dto.setCountExecution(lstCreator == null ? BigDecimal.ZERO.intValue() : lstCreator.size());
-			dto.setCountError(lstError == null ? BigDecimal.ZERO.intValue() : lstError.size());
+			dto.setCountError(cntError);
 			return dto;
 		}
 		return null;

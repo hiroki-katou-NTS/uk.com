@@ -46,7 +46,7 @@ public class KshstGrantCondition extends UkJpaEntity {
     })
 	public KshstGrantHdTblSet grantHdTblSet;
 	
-	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantCondition", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy="grantCondition")
 	public List<KshstGrantHdTbl> yearHolidayGrants;
 	
 	@Override

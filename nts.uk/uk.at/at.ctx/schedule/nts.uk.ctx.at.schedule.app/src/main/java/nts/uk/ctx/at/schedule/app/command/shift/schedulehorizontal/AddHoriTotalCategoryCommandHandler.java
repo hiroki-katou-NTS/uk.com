@@ -1,5 +1,6 @@
 package nts.uk.ctx.at.schedule.app.command.shift.schedulehorizontal;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,6 +11,8 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriCalDaysSet;
+import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCNTSet;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriTotalCategory;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.TotalEvalOrder;
 import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.repository.HoriTotalCategoryRepository;
@@ -21,25 +24,47 @@ public class AddHoriTotalCategoryCommandHandler extends CommandHandler<AddHoriTo
 
 	@Override
 	protected void handle(CommandHandlerContext<AddHoriTotalCategoryCommand> context) {
+		AddHoriTotalCategoryCommand data = context.getCommand();
 		String companyId = AppContexts.user().companyId();
-		List<TotalEvalOrder> totalEvalOrders = null;
-		if(context.getCommand().getTotalEvalOrders() != null){
-			totalEvalOrders = context.getCommand().getTotalEvalOrders()
-								.stream()
-								.map(x -> x.toDomainOrder(companyId, context.getCommand().getCategoryCode()))
-								.collect(Collectors.toList());
-		}
-		HoriTotalCategory hori = HoriTotalCategory.createFromJavaType(companyId, 
-																	context.getCommand().getCategoryCode(), 
-																	context.getCommand().getCategoryName(), 
-																	context.getCommand().getMemo(), 
-																	totalEvalOrders);
-		Optional<HoriTotalCategory> horiOld = horiRep.findCateByCode(companyId, 
-																	context.getCommand().getCategoryCode());
+		List<TotalEvalOrder> totalEvalOrders = new ArrayList<>();
+		List<HoriTotalCNTSet> horiCntSets = new ArrayList<>();
+		HoriCalDaysSet horiCalDaysSet =null;
+		Optional<HoriTotalCategory> horiOld = horiRep.findCateByCode(companyId, data.getCategoryCode());
+		// check duplicate code
 		if(horiOld.isPresent()){
 			throw new BusinessException("Msg_3");
-		}else{
-			horiRep.insertCate(hori);
 		}
+		// check list 集計項目一覧 exsisted or not
+		if(data.getTotalEvalOrders() == null){
+			throw new BusinessException("Msg_363");
+		}
+		// get total eval order list
+		if(data.getTotalEvalOrders() != null){
+			totalEvalOrders = data.getTotalEvalOrders()
+								.stream()
+								.map(x -> x.toDomainOrder(companyId, data.getCategoryCode()))
+								.collect(Collectors.toList());
+		}
+		// get hori cal day set item
+		if(data.getHoriCalDaysSet() != null){
+			horiCalDaysSet = context.getCommand().getHoriCalDaysSet()
+								.toDomainCalSet(companyId, data.getCategoryCode());
+		}
+		// get hori total cnt set list
+		if(data.getCntSetls() != null){
+			horiCntSets = data.getCntSetls().stream()
+											.map(x -> x.toDomainCNTSet(companyId, data.getCategoryCode(), 
+																		x.getTotalItemNo(), x.getTotalTimeNo()))
+											.collect(Collectors.toList());
+		}
+		HoriTotalCategory hori = HoriTotalCategory.createFromJavaType(companyId, 
+																	data.getCategoryCode(), 
+																	data.getCategoryName(), 
+																	data.getMemo(), 
+																	horiCalDaysSet,
+																	totalEvalOrders,
+																	horiCntSets);
+		hori.validate();
+		horiRep.insertCate(hori);
 	}
 }

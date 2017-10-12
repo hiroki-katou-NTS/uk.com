@@ -1,8 +1,6 @@
 module nts.uk.at.view.kmk006.e {
 
-    import UnitAutoCalSettingDto = nts.uk.at.view.kmk006.a.service.model.UnitAutoCalSettingDto;
-    import UnitAutoCalSettingModel = nts.uk.at.view.kmk006.a.viewmodel.UnitAutoCalSettingModel;
-
+    import UnitAutoCalSettingDto = service.model.UnitAutoCalSettingDto;
 
     export module viewmodel {
 
@@ -21,11 +19,12 @@ module nts.uk.at.view.kmk006.e {
                 var self = this;
 
                 var dfd = $.Deferred();
+                
 
                 nts.uk.ui.block.invisible();
-                nts.uk.at.view.kmk006.a.service.getEnumUnitAutoCal().done(function(data) {
-                    self.unitAtutoCalSettingModel.updateData(data);
-                    dfd.resolve();
+                service.getUseUnitAutoCal().done(function(data) {
+                    // Initial settings.
+                    self.loadUseUnitAutoCalSettingModel();
                     dfd.resolve();
                 }).always(function() {
                     nts.uk.ui.block.clear();
@@ -34,6 +33,17 @@ module nts.uk.at.view.kmk006.e {
                 return dfd.promise();
             }
 
+            /**
+           * call service load UseUnitAutoCalSettingModel
+           */
+            private loadUseUnitAutoCalSettingModel(): void {
+                var self = this;
+                service.getUseUnitAutoCal().done(function(data) {
+                    self.unitAtutoCalSettingModel.updateData(data);
+                }).fail(res => {
+                    nts.uk.ui.dialog.alertError(res);
+                });
+            }
 
             /**
              * call service save button action click
@@ -63,6 +73,38 @@ module nts.uk.at.view.kmk006.e {
                 nts.uk.ui.windows.close();
             }
 
+        }
+
+        export class UnitAutoCalSettingModel {
+            useJobSet: KnockoutObservable<boolean>;
+            useWkpSet: KnockoutObservable<boolean>;
+            useJobwkpSet: KnockoutObservable<boolean>;
+            constructor() {
+                this.useJobSet = ko.observable(true);
+                this.useWkpSet = ko.observable(true);
+                this.useJobwkpSet = ko.observable(false);
+            }
+
+            updateData(dto: UnitAutoCalSettingDto) {
+                this.useJobSet(dto.useJobSet);
+                this.useWkpSet(dto.useWkpSet);
+                this.useJobwkpSet(dto.useJobwkpSet);
+            }
+
+            toDto(): UnitAutoCalSettingDto {
+                var dto: UnitAutoCalSettingDto = {
+                    useJobSet: this.useJobSet(),
+                    useWkpSet: this.useWkpSet(),
+                    useJobwkpSet: this.useJobwkpSet()
+                };
+                return dto;
+            }
+
+            resetData() {
+                this.useJobSet(true);
+                this.useWkpSet(true);
+                this.useJobwkpSet(false);
+            }
         }
 
     }

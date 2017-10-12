@@ -22,7 +22,7 @@ public class TotalEvalOrder extends DomainObject{
 	/** 並び順 */
 	private Integer dispOrder;
 	
-	public static TotalEvalOrder createFromJavaType(String companyId, String categoryCode, Integer totalItemNo, Integer dispOrder){
+	public static TotalEvalOrder createFromJavaType(String companyId, String categoryCode, int totalItemNo, Integer dispOrder){
 		return new TotalEvalOrder(companyId, new CategoryCode(categoryCode), new TotalItemNo(totalItemNo), dispOrder);
 	}
 }

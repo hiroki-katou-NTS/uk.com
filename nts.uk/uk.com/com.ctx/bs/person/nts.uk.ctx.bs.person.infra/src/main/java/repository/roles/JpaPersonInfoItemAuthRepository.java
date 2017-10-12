@@ -1,7 +1,9 @@
 package repository.roles;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -19,10 +21,12 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 	private final String SELECT_ITEM_INFO_AUTH_BY_CATEGORY_ID_QUERY = " SELECT DISTINCT p.ppemtPersonItemAuthPk.roleId, p.ppemtPersonItemAuthPk.personInfoCategoryAuthId,"
 			+ " i.ppemtPerInfoItemPK.perInfoItemDefId,"
 			+ " p.selfAuthType, p.otherPersonAuth, i.itemCd, i.itemName, i.abolitionAtr, i.requiredAtr,"
-			+ " CASE WHEN p.ppemtPersonItemAuthPk.personItemDefId IS NULL THEN 'False' ELSE 'True' END AS IsConfig"
-			+ " FROM PpemtPerInfoItem i " + "	INNER JOIN PpemtPerInfoItemCm im"
-			+ " ON i.itemCd = im.ppemtPerInfoItemCmPK.itemCd" + " AND im.ppemtPerInfoItemCmPK.contractCd = :contractCd"
-			+ " INNER JOIN PpemtPerInfoItemOrder io"
+			+ " CASE WHEN p.ppemtPersonItemAuthPk.personItemDefId IS NULL THEN 'False' ELSE 'True' END AS IsConfig,"
+			+ " im.itemParentCd" + " FROM PpemtPerInfoItem i"
+			+ " INNER JOIN PpemtPerInfoCtg c ON i.perInfoCtgId = c.ppemtPerInfoCtgPK.perInfoCtgId"
+			+ " INNER JOIN PpemtPerInfoItemCm im" + " ON i.itemCd = im.ppemtPerInfoItemCmPK.itemCd"
+			+ " AND im.ppemtPerInfoItemCmPK.categoryCd = c.categoryCd"
+			+ " AND im.ppemtPerInfoItemCmPK.contractCd = :contractCd" + " INNER JOIN PpemtPerInfoItemOrder io"
 			+ " ON i.ppemtPerInfoItemPK.perInfoItemDefId = io.ppemtPerInfoItemPK.perInfoItemDefId"
 			+ " AND i.perInfoCtgId = :personInfoCategoryAuthId" + " LEFT JOIN PpemtPersonItemAuth p"
 			+ " ON i.ppemtPerInfoItemPK.perInfoItemDefId = p.ppemtPersonItemAuthPk.personItemDefId"
@@ -70,6 +74,8 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 
 		domain.setSetting(entity[9] == null ? false : Boolean.valueOf(entity[9].toString()));
 
+		domain.setItemParentCd(entity[10] == null ? null : entity[10].toString());
+
 		return domain;
 	}
 
@@ -92,11 +98,11 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 
 		Optional<PpemtPersonItemAuth> opt = this.queryProxy().find(new PpemtPersonItemAuthPk(domain.getRoleId(),
 				domain.getPersonCategoryAuthId(), domain.getPersonItemDefId()), PpemtPersonItemAuth.class);
-		
+
 		if (opt.isPresent()) {
-			
+
 			this.commandProxy().update(opt.get().updateFromDomain(domain));
-			
+
 		}
 
 	}
@@ -115,7 +121,32 @@ public class JpaPersonInfoItemAuthRepository extends JpaRepository implements Pe
 				.query(SELECT_ITEM_INFO_AUTH_BY_CATEGORY_ID_QUERY, Object[].class)
 				.setParameter("personInfoCategoryAuthId", personInfoCategoryAuthId).setParameter("roleId", roleId)
 				.setParameter("contractCd", contractCd).getList(c -> toDomain(c));
-		return x;
+
+		return setSetitemForSetType(x);
+	}
+
+	private List<PersonInfoItemDetail> setSetitemForSetType(List<PersonInfoItemDetail> itemList) {
+		List<PersonInfoItemDetail> setItemList = itemList.stream().filter(x -> x.getItemParentCd() != null)
+				.collect(Collectors.toList());
+		List<PersonInfoItemDetail> newItemList = itemList.stream().filter(x -> x.getItemParentCd() == null)
+				.collect(Collectors.toList());
+
+		setItemList.forEach(i -> {
+			PersonInfoItemDetail newItem = newItemList.stream().filter(ni -> ni.getItemCd().equals(i.getItemParentCd()))
+					.findFirst().get();
+			if (newItem != null) {
+
+				if (newItem.getSetItems() == null) {
+					List<PersonInfoItemDetail> newList = new ArrayList<PersonInfoItemDetail>();
+					newList.add(i);
+					newItem.setSetItems(newList);
+				} else {
+					newItem.getSetItems().add(i);
+				}
+			}
+		});
+
+		return newItemList;
 	}
 
 	@Override

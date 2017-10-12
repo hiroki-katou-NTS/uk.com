@@ -9,14 +9,15 @@
 		<ui:define name="htmlHead">
 			<script>
 				var dialogSize = {
-					width : 460,
-					height : 700
+					width : 500,
+					height : 650
 				};
 			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="ksc001.i.main.css" />
 			<com:scriptfile path="ksc001.i.vm.js" />
 			<com:scriptfile path="ksc001.i.start.js" />
+			<com:scriptfile path="ksc001.i.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -42,7 +43,7 @@
 				</div>
 			</div>
 			<div id="functions-area-bottom">
-				<button class="large" data-bind="click: closeDialog">#{i18n.getText('KSC001_61')}</button>
+				<button id="btn-close" tabindex="1" class="large" data-bind="click: closeDialog">#{i18n.getText('KSC001_61')}</button>
 			</div>
 		</ui:define>
 	</ui:composition>

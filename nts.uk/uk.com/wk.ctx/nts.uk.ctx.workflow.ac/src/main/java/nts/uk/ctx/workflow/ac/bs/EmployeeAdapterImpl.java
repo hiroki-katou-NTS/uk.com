@@ -13,6 +13,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.bs.employee.pub.employee.ConcurrentEmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.EmployeeExport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employee.employeeInfo.EmployeeInfoPub;
@@ -20,6 +22,7 @@ import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 
 /**
@@ -72,17 +75,6 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.
-	 * EmployeeApproveAdapter#getWorkplaceId(java.lang.String, java.lang.String,
-	 * nts.arc.time.GeneralDate)
-	 */
-	public String getWorkplaceId(String companyId, String employeeId, GeneralDate baseDate) {
-		return workplacePub.getWorkplaceId(companyId, employeeId, baseDate);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.workflow.dom.approvermanagement.workroot.employee.
 	 * EmployeeApproveAdapter#getEmploymentCode(java.lang.String,
 	 * java.lang.String, nts.arc.time.GeneralDate)
 	 */
@@ -121,5 +113,20 @@ public class EmployeeAdapterImpl implements EmployeeAdapter {
 	@Override
 	public String getEmployeeName(String sID) {
 		return this.psInfor.getPersonInfo(sID).getEmployeeName();
+	}
+
+	@Override
+	public List<ConcurrentEmployeeImport> getConcurrentEmployee(String companyId, String jobId, GeneralDate baseDate) {
+		List<ConcurrentEmployeeExport> export = employeePub.getConcurrentEmployee(companyId, jobId, baseDate);
+		if (CollectionUtil.isEmpty(export)) {
+			Collections.emptyList();
+		}
+		
+		return export.stream().map(x -> new ConcurrentEmployeeImport(
+				x.getEmployeeId(), 
+				x.getEmployeeCd(), 
+				x.getPersonName(), 
+				x.getJobId(), 
+				x.getJobCls().value)).collect(Collectors.toList());
 	}
 }

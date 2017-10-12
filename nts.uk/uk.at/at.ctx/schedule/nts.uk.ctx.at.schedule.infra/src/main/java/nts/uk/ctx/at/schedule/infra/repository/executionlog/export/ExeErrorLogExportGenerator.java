@@ -22,6 +22,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleErrorLogDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.export.ExeErrorLogGenerator;
 import nts.uk.ctx.at.schedule.app.find.executionlog.export.ExportData;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 @Stateless
@@ -64,7 +65,7 @@ public class ExeErrorLogExportGenerator extends AsposeCellsReportGenerator imple
 			reportContext.processDesigner();
 
 			// save csv file
-			reportContext.saveAsCSV(this.createNewFile(fileContext, this.getFileName(exportData.employeeId)));
+			reportContext.saveAsCSV(this.createNewFile(fileContext, this.getFileName()));
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -205,10 +206,11 @@ public class ExeErrorLogExportGenerator extends AsposeCellsReportGenerator imple
 	 *            the employee id
 	 * @return the file name
 	 */
-	private String getFileName(String employeeId) {
+	private String getFileName() {
+		String loginEmployeeCode = AppContexts.user().employeeCode();
 		String rawFileName = this.getReportName(EXPORT_FILE_NAME);
 		String fileName = rawFileName.substring(DEFAULT_VALUE, rawFileName.indexOf(EXTENSION_FILE));
-		return String.format("%s_%s%s", fileName, employeeId, EXTENSION_FILE);
+		return String.format("%s_%s%s", fileName, loginEmployeeCode, EXTENSION_FILE);
 	}
 
 	/**
@@ -220,7 +222,7 @@ public class ExeErrorLogExportGenerator extends AsposeCellsReportGenerator imple
 	 */
 	@SuppressWarnings({ "rawtypes" })
 	private List convertObjectToList(ScheduleErrorLogDto data) {
-		return Arrays.asList("imported code","imported name", data.date, data.errorContent);
+		return Arrays.asList(data.employeeCode, data.employeeName, data.date, data.errorContent);
 	}
 
 }

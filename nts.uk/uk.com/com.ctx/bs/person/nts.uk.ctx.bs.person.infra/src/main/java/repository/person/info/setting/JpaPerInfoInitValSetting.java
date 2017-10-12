@@ -5,8 +5,8 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import entity.person.info.setting.innitValue.BpsstPersonInitValueSetting;
-import entity.person.info.setting.innitValue.BpsstPersonInitValueSettingPk;
+import entity.person.info.setting.innitvalue.BpsstPersonInitValueSetting;
+import entity.person.info.setting.innitvalue.BpsstPersonInitValueSettingPk;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.setting.init.PerInfoInitValueSetting;
 import nts.uk.ctx.bs.person.dom.person.setting.init.PerInfoInitValueSettingRepository;
