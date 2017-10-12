@@ -8,12 +8,11 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.closure.Closure;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 
 @Getter
@@ -120,12 +119,5 @@ public class ClosureSaveCommand {
 		public List<ClosureHistory> getClosureHistories() {
 			return null;
 		}
-
-		@Override
-		public List<EmploymentCode> getEmpCodes() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
 	}
 }
