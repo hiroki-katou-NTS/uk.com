@@ -55,7 +55,6 @@ note:before{position:absolute;display:block;content:'';width:50px;height:15px;le
 	box-sizing:border-box;
 }
 #content .tabs{margin:25px 0;}
-#content ul:not([role='tablist']){list-style:disc;margin-left:20px;}
 #content .footer{margin-top:35px;}
 #content .footer button.previous{float: left;}
 #content .footer button.next{float: right;}
