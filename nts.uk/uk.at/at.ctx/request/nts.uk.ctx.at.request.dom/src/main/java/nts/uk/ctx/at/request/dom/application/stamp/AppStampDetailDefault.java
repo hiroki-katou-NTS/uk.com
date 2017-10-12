@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccep
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.after.DetailAfterUpdate;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.BeforePreBootMode;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.before.DetailBeforeUpdate;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author Doan Duy Hung
@@ -51,7 +52,7 @@ public class AppStampDetailDefault implements AppStampDetailDomainService {
 	
 	@Override
 	public void appStampPreProcess(AppStamp appStamp) {
-		this.beforePreBootMode.getDetailedScreenPreBootMode(appStamp, appStamp.getApplicationDate());
+		this.beforePreBootMode.judgmentDetailScreenMode(appStamp, appStamp.getApplicationDate());
 		// this.preLaunchScreenSetting
 		this.appStampCommonDomainService.appStampSet(appStamp.getCompanyID());
 		// 13.実績を取得する

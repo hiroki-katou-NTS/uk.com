@@ -67,7 +67,7 @@ public class JpaAppApprovalPhaseRepository extends JpaRepository implements AppA
 		this.getEntityManager().flush();
 		
 	}
-	private AppApprovalPhase toDomain(KrqdtAppApprovalPhase entity) {
+	public static AppApprovalPhase toDomain(KrqdtAppApprovalPhase entity) {
 		return AppApprovalPhase.createFromJavaType(
 				entity.krqdtAppApprovalPhasePK.companyID,
 				entity.appID,

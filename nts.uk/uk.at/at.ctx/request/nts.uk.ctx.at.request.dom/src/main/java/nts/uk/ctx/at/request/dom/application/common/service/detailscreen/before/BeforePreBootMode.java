@@ -11,10 +11,19 @@ import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccep
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.CanBeApprovedOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DecideAgencyExpiredOutput;
 import nts.uk.ctx.at.request.dom.application.common.service.detailscreen.output.DetailedScreenPreBootModeOutput;
-
+/**
+ * 14-2.詳細画面起動前モードの判断
+ * @author dudt
+ *
+ */
 public interface BeforePreBootMode {
-	
-	public DetailedScreenPreBootModeOutput getDetailedScreenPreBootMode(Application applicationData, GeneralDate baseDate);
+	/**
+	 * 詳細画面起動前モードの判断
+	 * @param applicationData
+	 * @param baseDate
+	 * @return
+	 */
+	public DetailedScreenPreBootModeOutput judgmentDetailScreenMode(Application applicationData, GeneralDate baseDate);
 	/** Can be Approved
 	 *14-2.詳細画面起動前モードの判断- 3 */
 	public CanBeApprovedOutput canBeApproved(Application applicationData, ReflectPlanPerState status);
@@ -25,7 +34,7 @@ public interface BeforePreBootMode {
 	
 	public DecideAgencyExpiredOutput decideAgencyExpired(List<ApproveAccepted> lstApprover);
 	/**Decide by Approver
-	 * 14-2.詳細画面起動前モードの判断- 2*/
+	 * 2.承認者かの判断*/
 	public boolean decideByApprover(Application applicationData);
 	
 	/** 14-2 3-5.承認中の承認フェーズの判断 */

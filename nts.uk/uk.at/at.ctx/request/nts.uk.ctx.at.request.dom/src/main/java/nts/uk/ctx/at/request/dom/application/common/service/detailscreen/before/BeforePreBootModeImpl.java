@@ -10,6 +10,7 @@ import javax.inject.Inject;
 
 import lombok.val;
 import nts.arc.time.GeneralDate;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
@@ -54,11 +55,8 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 	@Inject
 	ApproveAcceptedRepository approveAcceptedRepository;
 
-	/**
-	 * 
-	 */
 	@Override
-	public DetailedScreenPreBootModeOutput getDetailedScreenPreBootMode(Application applicationData,
+	public DetailedScreenPreBootModeOutput judgmentDetailScreenMode(Application applicationData,
 			GeneralDate baseDate) {
 		String companyID = AppContexts.user().companyId();
 		String employeeID = AppContexts.user().employeeId();
@@ -68,28 +66,24 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 		boolean outputAuthorizableFlags = false;
 		ApprovalAtr outputApprovalATR = ApprovalAtr.UNAPPROVED;
 		boolean outputAlternateExpiration = false;
-
+		//4.社員の当月の期間を算出する
 		PeriodCurrentMonth listDate = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID,
 				employeeID, baseDate);
 		GeneralDate startDate = listDate.getStartDate();
 		GeneralDate endDate = listDate.getEndDate();
-		// get status
-		if (startDate.after(applicationData.getApplicationDate()) == false) {
-			outputStatus = applicationData.getReflectPlanState();
-		} else {
+		// 締め開始日 >  ドメインモデル「申請」．申請日 がtrue
+		if (startDate.after(applicationData.getApplicationDate()) == true) {
+			//ステータス = 過去申請(status= 過去申請)
 			outputStatus = ReflectPlanPerState.PASTAPP;
-		}
+		} else {
+			//
+			outputStatus = applicationData.getReflectPlanState();
+		}	
 		
-		List<AppApprovalPhase> appApprovalPhase = appApprovalPhaseRepository.findPhaseByAppID(companyID, applicationData.getApplicationID());
-		for (AppApprovalPhase phase : appApprovalPhase) {
-			List<ApprovalFrame> listApprovalFrame = approvalFrameRepository.getAllApproverByPhaseID(companyID, phase.getPhaseID());
-			for (ApprovalFrame approvalFrame : listApprovalFrame) {
-				approvalFrame.setListApproveAccepted(approvalFrame.getListApproveAccepted());
-			}
-		}
 		// get User
-		// ドメインモデル「申請」．申請者 = ログイン者社員ID がtrue
 		// "Application".Applicant = login If employee ID is true
+		//ログイン者が承認者かチェックする(Check xem login có phải là người approve ko?)
+		// ドメインモデル「申請」．申請者 = ログイン者社員ID がtrue
 		if (decideByApprover(applicationData)) {
 			if (applicationData.getApplicantSID() == employeeID) {
 				outputUser = User.APPLICANT_APPROVER;
@@ -455,49 +449,44 @@ public class BeforePreBootModeImpl implements BeforePreBootMode {
 	@Override
 	public boolean decideByApprover(Application applicationData) {
 		String companyID = AppContexts.user().companyId();
-		String logger = AppContexts.user().userId();
 		String employeeID = AppContexts.user().employeeId();
 		boolean approverFlag = false;
-		List<AppApprovalPhase> listAppApprovalPhase = appApprovalPhaseRepository.findPhaseByAppID(companyID,
-				applicationData.getApplicationID());
-		List<String> listApproverID = new ArrayList<String>();
-
-		for (AppApprovalPhase appApprovalPhase : listAppApprovalPhase) {
-			listApproverID.addAll(detailedScreenAfterApprovalProcessService.actualReflectionStateDecision(
-					appApprovalPhase.getAppID(), appApprovalPhase.getPhaseID(), appApprovalPhase.getApprovalATR()));
-		}
-		// Remove duplicate Approver
-		listApproverID = listApproverID.stream().distinct().collect(Collectors.toList());
-		if (listApproverID.contains(logger)) {
+		List<String> listApproverID = new ArrayList<>();
+		List<String> listRepresenter = new ArrayList<>();
+		applicationData.getListPhase().stream()
+				.forEach(x -> {
+					x.getListFrame().stream().forEach(y -> {
+						y.getListApproveAccepted().stream().forEach(z ->{
+							listRepresenter.add(z.getRepresenterSID());
+							//承認者リストに重複な承認者を削除する
+							if(!listApproverID.contains(z.getApproverSID())) {
+								listApproverID.add(z.getApproverSID());
+							}
+						});
+					});
+				});
+		
+		//ログイン者が承認者かチェックする Whether the loginer is an approver
+		if (listApproverID.contains(employeeID)) {
 			approverFlag = true;
 		} else {
-			val approvalAgencyInformationOutput = approvalAgencyInformationService
+			//アルゴリズム「承認代行情報の取得処理」を実行する
+			AgentPubImport approvalAgencyInformationOutput = approvalAgencyInformationService
 					.getApprovalAgencyInformation(companyID, listApproverID);
-			if (approvalAgencyInformationOutput.getListRepresenterSID().contains(logger)) {
-				approverFlag = true;
+			//ログイン者が代行承認者かチェックする
+			if (approvalAgencyInformationOutput.getListRepresenterSID().contains(employeeID)) {
+				return true;
 			}
 		}
 		// 承認者フラグをチェックする
 		// Check Approver Flag
-		if (approverFlag == false){ 
-			// get all lstApproverSID
-			List<String> lstRepresenterSID = new ArrayList<>();
-			for (AppApprovalPhase appApprovalPhase : listAppApprovalPhase) {
-				if(appApprovalPhase.getListFrame() != null){
-					for (ApprovalFrame approvalFrame : appApprovalPhase.getListFrame()) {
-						lstRepresenterSID.addAll(approvalFrame.getListApproveAccepted().stream().map(item -> {
-							return item.getApproverSID();
-						}).collect(Collectors.toList()));
-					}
-				}
+		if (approverFlag == false){
+			// ログイン者が承認代行者として承認を行ったかチェックする
+			if(listRepresenter.contains(employeeID)) {
+				return true;
+			}else {
+				approverFlag = false;
 			}
-			if (lstRepresenterSID.contains(employeeID)) {
-				approverFlag = true;
-			} else {
-				approverFlag = true;
-			}
-		} else {
-			approverFlag = false;
 		}
 		return approverFlag;
 	}
