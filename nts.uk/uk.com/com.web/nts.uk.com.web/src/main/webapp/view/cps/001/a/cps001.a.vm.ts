@@ -97,10 +97,35 @@ module cps001.a.vm {
                 if (x) {
                     // clear all error message
                     clearError();
-                    
+
                     service.getCurrentLayout(x).done((data: ILayout) => {
                         layout.layoutCode(data.layoutCode || '');
                         layout.layoutName(data.layoutName || '');
+
+                        //demo data
+                        for (let i in data.listItemClsDto) {
+                            let item = data.listItemClsDto[i];
+                            if (item.layoutItemType == 0) {
+                                for (let j in item.listItemDf) {
+                                    let value = item.listItemDf[j];
+                                    if (!item.singleValues) {
+                                        item.singleValues = [];
+                                    }
+                                    let obs = {
+                                        id: value.id,
+                                        itemValue: ko.observable(undefined)
+                                    };
+
+                                    item.singleValues.push(obs);
+                                    obs.itemValue.subscribe(x => {
+                                        console.log(data.listItemClsDto.map(x => { return { single: ko.toJS(x.singleValues), multiple: ko.toJS(x.multipleValues) } }));
+                                    });
+
+                                }
+                            } else {
+
+                            }
+                        }
 
                         layout.listItemClsDto(data.listItemClsDto || []);
                     });

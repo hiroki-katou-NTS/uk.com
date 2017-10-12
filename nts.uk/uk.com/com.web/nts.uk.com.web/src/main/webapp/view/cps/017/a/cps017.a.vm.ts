@@ -1,4 +1,121 @@
 module nts.uk.com.view.cps017.a.viewmodel {
+    import getText = nts.uk.resource.getText;
+    import confirm = nts.uk.ui.dialog.confirm;
+    import alertError = nts.uk.ui.dialog.alertError;
+    import info = nts.uk.ui.dialog.info;
+    import modal = nts.uk.ui.windows.sub.modal;
+    import setShared = nts.uk.ui.windows.setShared;
+    import textUK = nts.uk.text;
+    import block = nts.uk.ui.block;
+    export class ScreenModel {
+        listItems: KnockoutObservableArray<ISelectionItem> = ko.observableArray([]);
+        perInfoSelectionItem: KnockoutObservable<SelectionItem> = ko.observable(new SelectionItem({ selectionItemId: '', selectionItemName: '' }));
+
+        constructor() {
+            let self = this,
+                perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem();
+
+            //Subscribe: 項目変更→項目のID変更
+            perInfoSelectionItem.selectionItemId.subscribe(x => {
+                if (x) {
+                    nts.uk.ui.errors.clearAll();
+                    service.getPerInfoSelectionItem(x).done((_perInfoSelectionItem: ISelectionItem) => {
+                        if (_perInfoSelectionItem) {
+                            perInfoSelectionItem.selectionItemName(_perInfoSelectionItem.selectionItemName);
+                        }
+                    });
+                }
+            });
+        }
+
+        //開始
+        start(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred();
+
+            nts.uk.ui.errors.clearAll();
+
+            // ドメインモデル「個人情報の選択項目」をすべて取得する
+            service.getAllSelectionItems().done((itemList: Array<ISelectionItem>) => {
+                //取得した選択項目を画面項目「A2_3：選択項目名称一覧」に表示する
+                if (itemList && itemList.length > 0) {
+                    itemList.forEach(x => self.listItems.push(x));
+                    self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+
+                } else {
+                    //0件の場合: エラーメッセージの表示(#Msg_455)
+                    alertError({ messageId: "Msg_455" });
+                }
+                dfd.resolve();
+
+
+            }).fail(error => {
+                //0件の場合: エラーメッセージの表示(#Msg_455)
+                alertError({ messageId: "Msg_455" });
+            });
+            return dfd.promise();
+        }
+
+        //ダイアログC画面
+        openDialogC() {
+            let self = this,
+                obj = {
+                    sel_id: "0001",
+                    sel_name: " Du DT"
+                };
+
+            setShared('historyInfo', obj);
+
+            block.invisible();
+
+            modal('/view/cps/017/c/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                block.clear();
+            });
+        }
+
+        //ダイアログD画面
+        openDialogD() {
+            let self = this,
+                obj = {
+                    sel_id: "0001",
+                    sel_name: " Du DT"
+                };
+
+            setShared('historyInfo', obj);
+
+            block.invisible();
+
+            modal('/view/cps/017/d/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                block.clear();
+            });
+        }
+    }
+
+    interface ISelectionItem {
+        selectionItemId: string;
+        selectionItemName: string;
+    }
+
+    class SelectionItem {
+        selectionItemId: KnockoutObservable<string> = ko.observable('');
+        selectionItemName: KnockoutObservable<string> = ko.observable('');
+
+        constructor(param: ISelectionItem) {
+            let self = this;
+            self.selectionItemId(param.selectionItemId || '');
+            self.selectionItemName(param.selectionItemName || '');
+
+        }
+    }
+}
+
+
+
+
+/*
+module nts.uk.com.view.cps017.a.viewmodel {
     import error = nts.uk.ui.errors;
     import text = nts.uk.resource.getText;
     import close = nts.uk.ui.windows.close;
@@ -259,3 +376,4 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
 
 }
+*/

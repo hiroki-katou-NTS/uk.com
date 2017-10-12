@@ -27,7 +27,7 @@ public class EmpCopySettingFinder {
 	public List<PerInfoCtgMapDto> getEmpCopySetting() {
 		List<EmpCopySetting> copyList = this.empCopyRepo.find(AppContexts.user().companyId());
 
-		if (copyList.size() < 0) {
+		if (copyList.isEmpty()) {
 
 			throw new BusinessException(new RawErrorMessage("Msg_347"));
 

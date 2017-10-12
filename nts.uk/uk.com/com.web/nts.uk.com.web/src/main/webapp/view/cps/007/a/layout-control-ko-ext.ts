@@ -115,12 +115,8 @@ module nts.custombinding {
                     .layout-control .item-classification div.item-control>*,
                     .layout-control .item-classification div.item-controls>* {
                         overflow: hidden;
-                        display: inline-block;
-                        vertical-align: middle;
-                    }
-
-                    .layout-control .item-classification div.item-controls>* {
                         vertical-align: top;
+                        display: inline-block;
                     }
 
                     .layout-control .item-classification div.set-item-list,
@@ -174,8 +170,12 @@ module nts.custombinding {
                 
                     .layout-control .item-classification td,
                     .layout-control .item-classification th {
-                        padding: 3px;
+                        padding: 0px;
                         border: 1px solid #aaa;
+                    }
+
+                    .layout-control .item-classification td {
+                        position: relative;
                     }
                 
                     .layout-control .item-classification td:first-child {
@@ -189,9 +189,8 @@ module nts.custombinding {
                     .layout-control .item-classification th {
                       height: 0;
                       line-height: 0;
-                      padding: 0;
-                      color: transparent;
                       border: none;
+                      color: transparent;
                       white-space: nowrap;
                     }
                 
@@ -216,6 +215,24 @@ module nts.custombinding {
                 
                     .layout-control .item-classification thead>tr:nth-child(3) div {
                       top: 70px;
+                    }
+
+                    .layout-control .item-classification th.index,
+                    .layout-control .item-classification td.index {
+                        min-width: 30px;
+                        text-align: center;
+                    }
+
+                    .layout-control .item-classification td input,
+                    .layout-control .item-classification td textarea {
+                        border: 1px solid transparent;
+                        border-radius: 0;
+                    }
+
+                    .layout-control .item-classification td input:focus,
+                    .layout-control .item-classification td textarea:focus {
+                        border: 1px dashed #0096f2;
+                        box-shadow: none;
                     }
                 
                     .layout-control .item-classification th:first-child div {
@@ -280,6 +297,15 @@ module nts.custombinding {
                     .layout-control.editable [disabled] {
                         background-color: #fff;
                     }
+
+                    .layout-control .add-rows {
+                        text-align: right;
+                    }
+
+                    .layout-control.editable .add-rows {
+                        display: none;
+                    }
+
                 </style>`;
 
         private tmp = `<div class="left-area">
@@ -335,11 +361,17 @@ module nts.custombinding {
                                                 <table>
                                                     <thead>
                                                         <tr data-bind="foreach: listItemDf">
+                                                            <!-- ko if: $index() == 0 -->
+                                                            <th class="index"></th>
+                                                            <!-- /ko -->
                                                             <th><div data-bind="text: itemName"></div></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody data-bind="foreach:  { data: listItemDfValues, as: 'row' }">
                                                         <tr data-bind="foreach: { data: row, as: 'column' }">
+                                                            <!-- ko if: $index() == 0 -->
+                                                            <td class="index"><div data-bind="text: $parentContext.$index()"></div></td>
+                                                            <!-- /ko -->
                                                             <td data-bind="template: { 
                                                                     data: column,
                                                                     name: 'itemtemplate'
@@ -349,7 +381,7 @@ module nts.custombinding {
                                                     </tbody>
                                                 </table>
                                             </div>
-                                        </div>            
+                                        </div>
                                     </div>
                                 </div>
                                 <div data-bind="if: layoutItemType == 2" class="item-sperator">
@@ -1103,7 +1135,7 @@ module nts.custombinding {
                                 x.multipleValues = [];
                             }
 
-                            x.listItemDfValues = _.map(Array(6), (_x, i) => {
+                            x.listItemDfValues = _.map(Array(3), (_x, i) => {
                                 if (!x.multipleValues[i]) {
                                     x.multipleValues[i] = [];
                                 }
@@ -1134,7 +1166,11 @@ module nts.custombinding {
                                         };
 
                                     if (!ko.isObservable(value.itemValue)) {
-                                        def.value.subscribe(x => { value.itemValue = x });
+                                        def.value.subscribe(x => {
+                                            value.itemValue = x;
+                                            // add new line ?
+                                            //x.listItemDfValues
+                                        });
                                     }
 
                                     return def;
