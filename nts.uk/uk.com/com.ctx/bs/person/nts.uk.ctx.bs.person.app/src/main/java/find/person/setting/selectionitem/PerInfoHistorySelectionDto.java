@@ -1,7 +1,6 @@
 package find.person.setting.selectionitem;
 
 import lombok.Value;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.person.dom.person.setting.selectionitem.PerInfoHistorySelection;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
