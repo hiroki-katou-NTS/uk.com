@@ -31,17 +31,17 @@ module nts.uk.at.view.kmk002.a {
             public startPage(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                nts.uk.ui.block.invisible();
 
                 // init formula sorter.
                 FormulaSorter.initSorter();
 
                 // Load data.
                 self.loadEnum()
-                    .done(() => self.optionalItemHeader.loadOptionalItemHeaders()
-                        .done(() => self.optionalItemHeader.initialize()
-                            .done(() => dfd.resolve())))
-                    .always(() => nts.uk.ui.block.clear());
+                    .done(() => {
+                        self.optionalItemHeader.loadOptionalItemHeaders()
+                            .done(() => self.optionalItemHeader.initialize()
+                                .done(() => dfd.resolve()));
+                    });
 
                 return dfd.promise();
             }
@@ -532,28 +532,32 @@ module nts.uk.at.view.kmk002.a {
             public loadFormulas(itemNo: string): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                service.findFormulas(itemNo).done(res => {
-                    let list: Array<Formula> = res.map(item => {
-                        let formula = new Formula();
 
-                        // bind function
-                        formula.reCheckAll = self.reCheckAll.bind(self);
+                // get formula from webservice
+                service.findFormulas(itemNo)
+                    .done(res => {
+                        let list: Array<Formula> = res.map(item => {
+                            let formula = new Formula();
 
-                        // convert dto to viewmodel
-                        formula.fromDto(item);
+                            // bind function
+                            formula.reCheckAll = self.reCheckAll.bind(self);
 
-                        return formula;
-                    });
-                    self.calcFormulas(list);
+                            // convert dto to viewmodel
+                            formula.fromDto(item);
 
-                    // sort.
-                    self.sortListFormula();
+                            return formula;
+                        });
+                        self.calcFormulas(list);
 
-                    // force to check enable/disable condition for nts grid.
-                    self.usageAtr.valueHasMutated();
+                        // sort.
+                        self.sortListFormula();
 
-                    dfd.resolve();
-                });
+                        // force to check enable/disable condition for nts grid.
+                        self.usageAtr.valueHasMutated();
+
+                        dfd.resolve();
+                    })
+                    .always(() => nts.uk.ui.block.clear()); // clear block ui.
                 return dfd.promise();
 
             }
@@ -837,27 +841,51 @@ module nts.uk.at.view.kmk002.a {
              */
             public saveOptionalItemDetail(): JQueryPromise<void> {
                 let self = this;
+
+                // Validate data.
+                if (!self.isValidData()) {
+                    return;
+                }
+
                 let dfd = $.Deferred<void>();
+
+                // block ui.
                 nts.uk.ui.block.invisible();
 
                 let command = self.optionalItem.toDto();
 
-                service.saveOptionalItem(command).done(() => {
-                    // reload optional item list.
-                    self.loadOptionalItemHeaders();
+                // call webservice to save optional item.
+                service.saveOptionalItem(command)
+                    .done(() => {
+                        // reload optional item list.
+                        self.loadOptionalItemHeaders();
 
-                    // show message
-                    nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+                        // show message
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
 
-                    dfd.resolve();
-                }).fail(res => {
-                    nts.uk.ui.dialog.alertError(res);
-                }).always(() => nts.uk.ui.block.clear());
+                        dfd.resolve();
+                    })
+                    .fail(res => {
+                        nts.uk.ui.dialog.alertError(res);
+                    })
+                    .always(() => nts.uk.ui.block.clear()); // clear block ui.
 
                 // save formulas.
                 self.saveFormulas();
 
                 return dfd.promise();
+            }
+
+            /**
+             * Data validation
+             */
+            private isValidData(): boolean {
+                let self = this;
+                if ($('.nts-editor').ntsError('hasError')) {
+                    return false;
+                }
+                //TODO: check xem co formula nao chua co setting ko?
+                return true;;
             }
 
             /**
@@ -906,10 +934,17 @@ module nts.uk.at.view.kmk002.a {
             public loadOptionalItemHeaders(): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<void>();
-                service.findOptionalItemHeaders().done(res => {
-                    self.optionalItemHeaders(res);
-                    dfd.resolve();
-                });
+
+                // block ui
+                nts.uk.ui.block.invisible();
+
+                // get optional item headers
+                service.findOptionalItemHeaders()
+                    .done(res => {
+                        self.optionalItemHeaders(res);
+                        dfd.resolve();
+                    })
+                    .always(() => nts.uk.ui.block.clear()); // clear block ui.
                 return dfd.promise();
 
             }
@@ -921,10 +956,16 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 let dfd = $.Deferred<void>();
 
-                service.findOptionalItemDetail(itemNo).done(res => {
-                    self.optionalItem.fromDto(res);
-                    self.optionalItem.loadFormulas(itemNo).done(() => dfd.resolve());
-                });
+                // block ui
+                nts.uk.ui.block.invisible();
+
+                // get optional item detail
+                service.findOptionalItemDetail(itemNo)
+                    .done(res => {
+                        self.optionalItem.fromDto(res);
+                        self.optionalItem.loadFormulas(itemNo)
+                            .done(() => dfd.resolve());
+                    });
 
                 return dfd.promise();
             }
@@ -976,6 +1017,7 @@ module nts.uk.at.view.kmk002.a {
                 this.optionalItemNo = '';
                 this.formulaName = ko.observable('');
                 this.formulaAtr = ko.observable(1);
+                this.formulaAtrStash = 1;
                 this.symbolValue = '';
                 this.orderNo = 1;
                 this.selected = ko.observable(false);
@@ -983,6 +1025,7 @@ module nts.uk.at.view.kmk002.a {
 
                 // Calculation setting.
                 this.calcAtr = ko.observable(1);
+                this.calcAtrStash = 1;
                 this.formulaSetting = this.getDefaultFormulaSetting();
                 this.itemSelection = this.getDefaultItemSelection();
 
@@ -1089,8 +1132,22 @@ module nts.uk.at.view.kmk002.a {
              * get default formula setting.
              */
             private getDefaultFormulaSetting(): FormulaSettingDto {
+                let self = this;
                 let data = <FormulaSettingDto>{};
-                //TODO
+                data.minusSegment = 0;
+                data.operator = 0;
+                data.leftItem = {
+                    settingMethod: 0,
+                    dispOrder: 1,
+                    inputValue: 0,
+                    formulaItemId: self.formulaId
+                }
+                data.rightItem = {
+                    settingMethod: 0,
+                    dispOrder: 2,
+                    inputValue: 0,
+                    formulaItemId: self.formulaId
+                }
                 return data;
             }
 
@@ -1249,8 +1306,12 @@ module nts.uk.at.view.kmk002.a {
 
                 // Calc setting
                 self.calcAtr(dto.calcAtr);
-                self.formulaSetting = dto.formulaSetting;
-                self.itemSelection = dto.itemSelection;
+                if (dto.formulaSetting) {
+                    self.formulaSetting = dto.formulaSetting;
+                }
+                if (dto.itemSelection) {
+                    self.itemSelection = dto.itemSelection;
+                }
 
                 // rounding
                 //                self.monthlyRounding = dto.monthlyRounding.numberRounding;
