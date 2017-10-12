@@ -97,4 +97,9 @@ public class EmployeeRequestAdapterImpl implements EmployeeAdapter {
 				null);
 		return person;
 	}
+
+	@Override
+	public String empEmail(String sID) {
+		return this.personPub.getPersonInfo(sID).getCompanyMail();
+	}
 }

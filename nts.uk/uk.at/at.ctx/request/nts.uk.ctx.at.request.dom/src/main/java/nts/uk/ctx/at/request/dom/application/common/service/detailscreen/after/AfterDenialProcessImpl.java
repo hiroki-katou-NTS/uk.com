@@ -14,6 +14,7 @@ import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.AgentAdapter;
 import nts.uk.ctx.at.request.dom.application.common.adapter.workflow.dto.AgentPubImport;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
@@ -53,11 +54,15 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 
 	@Inject
 	private AgentAdapter approvalAgencyInformationService;
+	
+	@Inject 
+	private EmployeeAdapter employeeAdapter;
 
 	@Override
-	public void detailedScreenAfterDenialProcess(Application application) {
+	public String detailedScreenAfterDenialProcess(Application application) {
 		// 否認できるフラグ
 		boolean canDeniedFlg = false;
+		String email = "";
 		String loginEmp = AppContexts.user().employeeId();
 		String companyID = AppContexts.user().companyId();
 		String appID = application.getApplicationID();
@@ -120,10 +125,11 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 		// check Continue
 		if (sendMailWhenApprovalFlg == AppCanAtr.CAN) {
 			// 申請者本人にメール送信する ===>>>>Thuc hien gui mail cho nguoi viet don
+			email = employeeAdapter.empEmail(loginEmp);
 		}
 		// Hien thi Message
-		throw new BusinessException("Msg_222");
 		// 送信先リストに項目がいる
+		return email;
 	}
 	/**
 	 * 否認できるかチェックする true：否認できる false：否認できない
