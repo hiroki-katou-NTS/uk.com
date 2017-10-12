@@ -3,6 +3,8 @@ __viewContext.ready(function() {
     class ScreenModel {
         itemsSwap: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+        leftColumns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+        rightColumns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCodeListSwap: KnockoutObservableArray<any>;
         test: KnockoutObservableArray<any>;
         disableMoveButton: KnockoutObservable<boolean>;
@@ -17,6 +19,15 @@ __viewContext.ready(function() {
             this.columns = ko.observableArray([
                 { headerText: 'コード', key: 'code', width: 100 },
                 { headerText: '名称', key: 'name', width: 150 }
+            ]);
+            this.leftColumns = ko.observableArray([
+                { headerText: 'コード', key: 'code', width: 200 }
+            ]);
+            
+            let template = '${name} {{if ${code} == 3 || ${code} == 9}} <button class="setting" onclick="openDlg(${code})" data-code="${code}" style="margin-left: 20px;">設定</button> {{/if}}';
+            this.rightColumns = ko.observableArray([
+                { headerText: 'コード', key: 'code', width: 100 },
+                { headerText: '名称', key: 'name', width: 150, template: template }
             ]);
             var x = [];
 //            x.push(_.cloneDeep(array[0]));
@@ -41,7 +52,6 @@ __viewContext.ready(function() {
             }    
             self.itemsSwap(array);
         }
-        
     }
     
     class ItemModel {
@@ -60,3 +70,7 @@ __viewContext.ready(function() {
     var screen;
     this.bind(screen = new ScreenModel());
 });
+
+let openDlg = function(code) {
+    alert(code);
+};
