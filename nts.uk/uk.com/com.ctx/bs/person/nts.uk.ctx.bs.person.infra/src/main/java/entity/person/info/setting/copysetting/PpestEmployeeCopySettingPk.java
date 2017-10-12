@@ -1,4 +1,4 @@
-package entity.person.info.setting.reghistory;
+package entity.person.info.setting.copysetting;
 
 import java.io.Serializable;
 
@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class BsymtEmployeeRegistrationHistoryPk implements Serializable {
+public class PpestEmployeeCopySettingPk implements Serializable {
 
-	@Basic(optional = false)
-	@Column(name = "REG_SID")
-	public String registeredEmployeeID;
-
+	
 	private static final long serialVersionUID = 1L;
+	@Basic(optional = false)
+	@Column(name = "EMP_COPY_CTG_ID")
+	public String categoryId;
 
 }

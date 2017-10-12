@@ -1,4 +1,4 @@
-package entity.person.info.data.category;
+package entity.person.info.setting.reghistory;
 
 import java.io.Serializable;
 
@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class BsymtEmpInfoCtgDataPk implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class PpedtEmployeeRegistrationHistoryPk implements Serializable {
 
 	@Basic(optional = false)
-	@Column(name = "RECORD_ID")
-	public String recordId;
+	@Column(name = "REG_SID")
+	public String registeredEmployeeID;
+
+	private static final long serialVersionUID = 1L;
 
 }

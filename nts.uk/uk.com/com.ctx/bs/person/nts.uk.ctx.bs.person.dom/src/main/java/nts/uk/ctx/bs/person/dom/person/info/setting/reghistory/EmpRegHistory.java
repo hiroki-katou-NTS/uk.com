@@ -12,7 +12,7 @@ public class EmpRegHistory extends AggregateRoot {
 	GeneralDate registeredDate;
 	String lastRegEmployeeID;
 
-	public EmpRegHistory(String registeredEmployeeID, String companyId, GeneralDate registeredDate,
+	private EmpRegHistory(String registeredEmployeeID, String companyId, GeneralDate registeredDate,
 			String lastRegEmployeeID) {
 		this.registeredEmployeeID = registeredEmployeeID;
 		this.companyId = companyId;

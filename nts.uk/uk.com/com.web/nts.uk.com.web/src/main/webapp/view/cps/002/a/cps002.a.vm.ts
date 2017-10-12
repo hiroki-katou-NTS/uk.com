@@ -5,12 +5,12 @@ module cps002.a.vm {
     import getShared = nts.uk.ui.windows.getShared;
     import block = nts.uk.ui.block;
     import dialog = nts.uk.ui.dialog.info;
+    import subModal = nts.uk.ui.windows.sub.modal;
+    import jump = nts.uk.request.jump;
 
     export class ViewModel {
 
         date: KnockoutObservable<Date> = ko.observable(new Date());
-
-        simpleValue: KnockoutObservable<String> = ko.observable('pikamieo');
 
         itemList: KnockoutObservableArray<any> = ko.observableArray([
             new BoxModel(1, text('CPS002_26')),
@@ -43,6 +43,10 @@ module cps002.a.vm {
         ]);
 
         currentCategoryId = ko.observable(1);
+
+        empRegHistory: KnockoutObservable<EmpRegHistory> = ko.observable(new EmpRegHistory(null));
+
+        currentStep: KnockoutObservable<number> = ko.observable(0);
 
         ccgcomponent: any = {
             baseDate: ko.observable(new Date()),
@@ -88,23 +92,144 @@ module cps002.a.vm {
             let self = this;
 
             service.getLayout().done((layout) => {
-                if (!layout) {
-                    dialog({ messageId: "Msg_344" });
+                if (layout) {
+                    service.getUserSetting().done((result: IUserSetting) => {
+                        if (result) {
 
-                    //move to toppage
+                            self.getEmployeeCode(result).done(() => {
+
+                                self.getCardNumber(result);
+
+                            });
+                        }
+
+                        self.getLastRegHistory(result);
+
+                    });
+                } else {
+                    dialog({ messageId: "Msg_344" }).then(() => {
+                        //move to toppage
+                    });
                 }
             });
         }
 
-        next() {
-            let self = this;
+        getLastRegHistory(userSetting: IUserSetting) {
+            let self = this,
+                showHistory = !userSetting ? true : userSetting.employeeCodeType === 1 ? true : false;
 
-            if (self.selectedId() === 3) {
-                $('#emp_reg_info_wizard').ntsWizard("goto", 2);
-                return;
+            if (showHistory)
+                service.getLastRegHistory().done((result: IEmpRegHistory) => {
+                    self.empRegHistory(new EmpRegHistory(result));
+                });
+
+        }
+
+        getEmployeeCode(userSetting: IUserSetting): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred(),
+                genType = userSetting.employeeCodeType;
+
+            if (genType === 3 || genType === 1) {
+                service.getEmployeeCode(genType === 1 ? userSetting.employeeCodeLetter : '').done((result) => {
+                    self.currentEmployee().employeeCode(result);
+                    dfd.resolve();
+                });
             }
 
+            return dfd.promise();
+
+
+        }
+
+        getCardNumber(userSetting: IUserSetting) {
+            let self = this,
+                genType = userSetting.cardNumberType,
+                eployee = self.currentEmployee();
+
+            if (genType === 1 || genType === 4) {
+
+                service.getCardNumber(genType === 1 ? userSetting.cardNumberLetter : '').done((result) => {
+
+                    eployee.cardNo(result);
+
+                });
+            } else {
+
+                if (genType === 3) {
+
+                    eployee.cardNo(eployee.employeeCode());
+                }
+
+                if (genType === 5) {
+
+                    service.getEmployeeCodeAndComId(userSetting.employeeCodeLetter).done((result) => {
+
+                        eployee.cardNo(result);
+                    });
+                }
+            }
+
+        }
+
+        validEmployeeInfo(): JQueryPromise<any> {
+            let self = this,
+                dfd = $.Deferred(),
+                employee = self.currentEmployee();
+            service.validateEmpInfo(employee.employeeCode(), employee.cardNo()).done((result) => {
+                dfd.resolve(result);
+            })
+            return dfd.promise();
+        }
+
+        next() {
+            let self = this;
             $('#emp_reg_info_wizard').ntsWizard("next");
+
+
+
+        }
+
+        validateForm() {
+            $(".nts-editor").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return false;
+            }
+            return true;
+        }
+
+        completeStep1() {
+            let self = this;
+            if (self.validateForm()) {
+                self.validEmployeeInfo().done((result) => {
+                    if (result.isError) {
+                        dialog({ messageId: result.messageId });
+
+                    } else {
+
+                        if (self.selectedId() === 3) {
+                            self.gotoStep3();
+                            return;
+                        }
+
+                        self.gotoStep2();
+                    }
+                });
+            }
+
+        }
+
+        gotoStep3() {
+            $('#emp_reg_info_wizard').ntsWizard("goto", 2);
+
+
+        }
+
+        gotoStep2() {
+
+            $('#emp_reg_info_wizard').ntsWizard("goto", 1);
+
+
         }
 
         prev() {
@@ -126,11 +251,16 @@ module cps002.a.vm {
             });
         }
 
-        OpenEModal() {
+        OpenEModal(param, data) {
 
-            let self = this;
+            let self = __viewContext['viewModel'];
+            setShared("cardNoMode", param === 'true' ? true : false);
+            subModal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(function(): any {
 
-            nts.uk.ui.windows.sub.modal('/view/cps/002/e/index.xhtml', { title: '' }).onClosed(function(): any {
+                let result = getShared("CPS002_PARAM"),
+                    currentEmp = self.currentEmployee();
+
+                param === 'true' ? currentEmp.cardNo(result) : currentEmp.employeeCode(result);
             });
         }
 
@@ -138,32 +268,39 @@ module cps002.a.vm {
 
             let self = this;
 
-            nts.uk.ui.windows.sub.modal('/view/cps/002/f/index.xhtml', { title: '' }).onClosed(function(): any {
+            subModal('/view/cps/002/f/index.xhtml', { title: '' }).onClosed(function(): any {
+
+
+
+
             });
         }
+
         OpenGModal() {
 
             let self = this;
 
-            nts.uk.ui.windows.sub.modal('/view/cps/002/g/index.xhtml', { title: '' }).onClosed(function(): any {
+            subModal('/view/cps/002/g/index.xhtml', { title: '' }).onClosed(function(): any {
+
+                if (true) {
+                    service.getUserSetting().done((result: IUserSetting) => {
+
+                        self.getLastRegHistory(result);
+
+                    });
+
+                }
+
             });
         }
 
-        genCategoryTypeText() {
-            let self = this,
-                currentCtgType = 0;
 
-            switch (currentCtgType) {
-                case 1: return text('Enum_CategoryType_SINGLEINFO');
-                case 2: return text('Enum_CategoryType_MULTIINFO');
-                case 3: return text('Enum_CategoryType_CONTINUOUSHISTORY');
-                case 4: return text('Enum_CategoryType_NODUPLICATEHISTORY');
-                case 5: return text('Enum_CategoryType_DUPLICATEHISTORY');
-                case 6: return text('Enum_CategoryType_CONTINUOUSHISTORY');
-                default: return '';
+        JumpToInitValueSettingPage() {
 
-            }
+            jump('/view/cps/009/a/index.xhtml');
         }
+
+
     }
 
     class BoxModel {
@@ -184,10 +321,38 @@ module cps002.a.vm {
         cardNo: KnockoutObservable<string> = ko.observable("");
 
         constructor(param?) {
+        }
+    }
 
+    interface IUserSetting {
+        employeeCodeType: number;
+        recentRegistrationType: number;
+        cardNumberType: number;
+        employeeCodeLetter: string;
+        cardNumberLetter: string;
+    }
+
+    interface IEmpRegHistory {
+
+        registeredEmployeeID: string;
+
+        lastRegEmployeeID: string;
+
+    }
+
+    class EmpRegHistory {
+
+        registeredEmployeeID: string;
+
+        lastRegEmployeeID: string;
+
+
+        constructor(param: IEmpRegHistory) {
+            this.registeredEmployeeID = param ? param.registeredEmployeeID : '';
+
+            this.lastRegEmployeeID = param ? param.lastRegEmployeeID : '';
 
         }
-
     }
 
 }
