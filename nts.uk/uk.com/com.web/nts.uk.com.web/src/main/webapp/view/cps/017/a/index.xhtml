@@ -77,18 +77,20 @@
 
 					</div>
 
+
 					<!-- khu vực history list -->
 					<div id="history_lst"
 						data-bind="ntsListBox: {
-						options: listItems,
+						height: 267,
+						options: listHistorySelection,
 						optionsValue: 'selectionItemId',
 						optionsText: 'selectionItemName',
 						value: perInfoSelectionItem().selectionItemId,
 						enable: true,
-						rows: 3,
+						rows: 9,
 						columns: [
-							{ key: 'startDate', length: 20 },
-							{ key: 'endDate', length: 20 }
+							{ key: 'startDate', length: 7 },
+							{ key: 'endDate', length: 7, width: 200}
 						]}">
 					</div>
 

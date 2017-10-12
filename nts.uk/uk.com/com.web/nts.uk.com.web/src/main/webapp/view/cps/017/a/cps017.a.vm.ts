@@ -14,7 +14,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
 
         // history:
         listHistorySelection: KnockoutObservableArray<IHistorySelection> = ko.observableArray([]);
-        
+
         constructor() {
             let self = this,
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem();
@@ -61,6 +61,24 @@ module nts.uk.com.view.cps017.a.viewmodel {
                 //0件の場合: エラーメッセージの表示(#Msg_455)
                 alertError({ messageId: "Msg_455" });
             });
+
+
+            //Histor:
+            service.getAllPerInfoHistorySelection().done((listHistorySelection: Array<IHistorySelection>) => {
+                //項目がある場合
+                if (listHistorySelection && listHistorySelection.length > 0) {
+                    listHistorySelection.forEach(x => self.listHistorySelection.push(x));
+                    //self.perInfoSelectionItem().selectionItemId(self.listItems()[0].selectionItemId);
+                    //debugger;
+
+                } else {
+                    alertError({ messageId: "Msg_455" });
+                }
+                dfd.resolve();
+            }).fail(error => {
+                alertError({ messageId: "Msg_455" });
+            });
+
             return dfd.promise();
         }
 
@@ -134,6 +152,7 @@ module nts.uk.com.view.cps017.a.viewmodel {
         companyCode: KnockoutObservable<string> = ko.observable('');
         startDate: KnockoutObservable<string> = ko.observable('');
         endDate: KnockoutObservable<string> = ko.observable('');
+
         constructor(param: IHistorySelection) {
             let self = this;
             self.histId(param.histId || '');
