@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "KSCST_FIXED_VERTICAL_SET")
+@Table(name = "KSCST_VERTICAL_TIME_SET")
 
 public class KscstVerticalTimeSet extends UkJpaEntity implements Serializable {
 	private static final long serialVersionUID = 1L;

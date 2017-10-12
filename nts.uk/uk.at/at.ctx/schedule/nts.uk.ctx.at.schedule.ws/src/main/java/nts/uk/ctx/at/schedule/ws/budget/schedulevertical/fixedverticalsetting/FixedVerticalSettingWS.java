@@ -14,13 +14,19 @@ import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.fixedverticals
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.fixedverticalsetting.AddFixedVerticalSettingCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.fixedverticalsetting.AddVerticalTimeSettingCommand;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.fixedverticalsetting.AddVerticalTimeSettingCommandHandler;
+import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.fixedverticalsetting.DeleteVerticalTimeSettingCommand;
+import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.fixedverticalsetting.DeleteVerticalTimeSettingCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.fixedverticalsetting.UpdateFixedVerticalSettingCommandHandler;
 import nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.fixedverticalsetting.UpdateVerticalTimeSettingCommandHandler;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.fixedverticalsetting.FixedVerticalSettingDto;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.fixedverticalsetting.FixedVerticalSettingFinder;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.fixedverticalsetting.VerticalTimeSettingDto;
 import nts.uk.ctx.at.schedule.app.find.budget.schedulevertical.fixedverticalsetting.VerticalTimeSettingFinder;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Path("ctx/at/schedule/budget/fixedverticalsetting")
 @Produces("application/json")
 public class FixedVerticalSettingWS extends WebService{
@@ -42,6 +48,9 @@ public class FixedVerticalSettingWS extends WebService{
 	@Inject
 	private UpdateVerticalTimeSettingCommandHandler updateVerticalTimeSettingCommandHandler;
 	
+	@Inject
+	private DeleteVerticalTimeSettingCommandHandler deleteVerticalTimeSettingCommandHandler; 
+	
 	@Path("findByCid")
 	@POST
 	public List<FixedVerticalSettingDto> findByCid() {
@@ -58,14 +67,14 @@ public class FixedVerticalSettingWS extends WebService{
 	
 	@Path("addFixedVertical")
 	@POST
-	public JavaTypeResult<List<String>> add(AddFixedVerticalSettingCommand command) {
-		return new JavaTypeResult<List<String>>(this.addVerticalSettingCommandHandler.handle(command));
+	public void add(AddFixedVerticalSettingCommand command) { 
+		this.addVerticalSettingCommandHandler.handle(command);
 	}
 	
 	@Path("updateFixedVertical")
 	@POST
-	public JavaTypeResult<List<String>> update(AddFixedVerticalSettingCommand command) {
-		return new JavaTypeResult<List<String>>(this.updateFixedVerticalSettingCommandHandler.handle(command));
+	public void update(AddFixedVerticalSettingCommand command) {
+		this.updateFixedVerticalSettingCommandHandler.handle(command);
 	}
 	
 	@Path("addVerticalTime")
@@ -78,5 +87,11 @@ public class FixedVerticalSettingWS extends WebService{
 	@POST
 	public JavaTypeResult<List<String>> update(AddVerticalTimeSettingCommand command) {
 		return new JavaTypeResult<List<String>>(this.updateVerticalTimeSettingCommandHandler.handle(command));
+	}
+	
+	@Path("deleteVerticalTime")
+	@POST
+	public void deleteVerticalTime (DeleteVerticalTimeSettingCommand command){
+		deleteVerticalTimeSettingCommandHandler.handle(command);
 	}
 }

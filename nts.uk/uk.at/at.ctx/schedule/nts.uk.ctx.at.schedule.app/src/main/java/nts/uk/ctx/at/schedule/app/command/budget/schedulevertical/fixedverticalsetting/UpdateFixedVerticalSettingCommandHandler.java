@@ -12,7 +12,11 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.FixedVertical;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.FixedVerticalSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Transactional
 @Stateless
 public class UpdateFixedVerticalSettingCommandHandler extends CommandHandlerWithResult<AddFixedVerticalSettingCommand, List<String>> {

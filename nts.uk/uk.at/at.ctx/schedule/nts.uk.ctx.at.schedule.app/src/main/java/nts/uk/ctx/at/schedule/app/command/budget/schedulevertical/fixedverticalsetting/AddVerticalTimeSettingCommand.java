@@ -4,7 +4,11 @@ package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.fixedvertical
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.VerticalTime;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Data
 @AllArgsConstructor
 public class AddVerticalTimeSettingCommand {

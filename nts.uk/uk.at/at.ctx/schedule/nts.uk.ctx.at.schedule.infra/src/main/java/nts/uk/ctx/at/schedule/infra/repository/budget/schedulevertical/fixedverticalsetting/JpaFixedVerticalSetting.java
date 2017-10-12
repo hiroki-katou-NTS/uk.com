@@ -160,4 +160,12 @@ public class JpaFixedVerticalSetting extends JpaRepository implements FixedVerti
 		kTimeSet.startClock = verticalTime.getStartClock().v();
 		this.commandProxy().update(kTimeSet);	
 	}
+	
+	/**
+	 * Delete Vertical Time
+	 */
+	public void deleteVerticalTime(String companyId, int fixedVerticalNo){
+		KscstVerticalTimeSetPK kVerticalSetPK = new KscstVerticalTimeSetPK(companyId, fixedVerticalNo);
+		this.commandProxy().remove(KscstVerticalTimeSet.class, kVerticalSetPK);
+	}
 }
