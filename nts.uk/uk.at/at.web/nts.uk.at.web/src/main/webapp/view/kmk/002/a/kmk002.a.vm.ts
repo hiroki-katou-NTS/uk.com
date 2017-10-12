@@ -536,6 +536,11 @@ module nts.uk.at.view.kmk002.a {
                 // get formula from webservice
                 service.findFormulas(itemNo)
                     .done(res => {
+
+                        // clear selected formula
+                        OptionalItem.selectedFormulas([]);
+
+                        // map dto to view model
                         let list: Array<Formula> = res.map(item => {
                             let formula = new Formula();
 
@@ -547,6 +552,7 @@ module nts.uk.at.view.kmk002.a {
 
                             return formula;
                         });
+
                         self.calcFormulas(list);
 
                         // sort.
@@ -857,21 +863,20 @@ module nts.uk.at.view.kmk002.a {
                 // call webservice to save optional item.
                 service.saveOptionalItem(command)
                     .done(() => {
-                        // reload optional item list.
-                        self.loadOptionalItemHeaders();
 
-                        // show message
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+                        // save formulas.
+                        self.saveFormulas()
+                            .done(() => {
+                                // reload optional item list.
+                                self.loadOptionalItemHeaders();
 
-                        dfd.resolve();
+                                // show message save successful
+                                nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
+
+                                dfd.resolve();
+                            });
                     })
-                    .fail(res => {
-                        nts.uk.ui.dialog.alertError(res);
-                    })
-                    .always(() => nts.uk.ui.block.clear()); // clear block ui.
-
-                // save formulas.
-                self.saveFormulas();
+                    .fail(res => nts.uk.ui.dialog.alertError(res));
 
                 return dfd.promise();
             }
@@ -911,7 +916,10 @@ module nts.uk.at.view.kmk002.a {
                 command.calcFormulas = formulas;
 
                 // call saveFormula service.
-                service.saveFormula(command).done(() => dfd.resolve());
+                service.saveFormula(command)
+                    .done(() => dfd.resolve())
+                    .fail(res => nts.uk.ui.dialog.alertError(res))
+                    .always(() => nts.uk.ui.block.clear()); // clear block ui.;
 
                 return dfd.promise();
             }
@@ -962,6 +970,7 @@ module nts.uk.at.view.kmk002.a {
                 // get optional item detail
                 service.findOptionalItemDetail(itemNo)
                     .done(res => {
+
                         self.optionalItem.fromDto(res);
                         self.optionalItem.loadFormulas(itemNo)
                             .done(() => dfd.resolve());
@@ -1299,6 +1308,7 @@ module nts.uk.at.view.kmk002.a {
                 self.formulaName(dto.formulaName);
                 self.formulaAtr(dto.formulaAtr);
                 self.symbolValue = dto.symbolValue;
+                self.orderNo = dto.orderNo;
 
                 // save to stash
                 self.formulaAtrStash = dto.formulaAtr;
