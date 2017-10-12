@@ -335,6 +335,7 @@ module nts.uk.at.view.kmk002.a {
                     self.checkedAllFormula(true);
                 } else {
                     self.checkedAllFormula(false);
+                    self.isCheckedFromChild = false;
                 }
 
             }
@@ -886,6 +887,13 @@ module nts.uk.at.view.kmk002.a {
              */
             private isValidData(): boolean {
                 let self = this;
+
+                // validate required formulaName
+                self.optionalItem.calcFormulas().forEach((item, index) => {
+                    $('#formulaName'+index).ntsEditor('validate');
+                });
+
+                // check has error.
                 if ($('.nts-editor').ntsError('hasError')) {
                     return false;
                 }
