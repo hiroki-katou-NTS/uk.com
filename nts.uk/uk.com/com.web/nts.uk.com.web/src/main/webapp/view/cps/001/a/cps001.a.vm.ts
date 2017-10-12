@@ -102,32 +102,28 @@ module cps001.a.vm {
                         layout.layoutCode(data.layoutCode || '');
                         layout.layoutName(data.layoutName || '');
 
-                        //demo data
-                        for (let i in data.listItemClsDto) {
-                            let item = data.listItemClsDto[i];
-                            if (item.layoutItemType == 0) {
-                                for (let j in item.listItemDf) {
-                                    let value = item.listItemDf[j];
-                                    if (!item.singleValues) {
-                                        item.singleValues = [];
-                                    }
-                                    let obs = {
-                                        id: value.id,
-                                        itemValue: ko.observable(undefined)
-                                    };
-
-                                    item.singleValues.push(obs);
-                                    obs.itemValue.subscribe(x => {
-                                        console.log(data.listItemClsDto.map(x => { return { single: ko.toJS(x.singleValues), multiple: ko.toJS(x.multipleValues) } }));
+                        _.each(data.listItemClsDto, x => {
+                            x.items = ko.observableArray([]);
+                            if (x.listItemDf && x.listItemDf[0]) {
+                                if (x.listItemDf[0].itemTypeState.itemType == 2) {
+                                    _.each(x.listItemDf, m => {
+                                        x.items.push({ code: m.itemCode, value: ko.observable('xxxx') });
                                     });
-
+                                } else {
+                                    _.each(Array(3), (_x, i) => {
+                                        let rows = [];
+                                        _.each(x.listItemDf, (m, j) => {
+                                            rows.push({ row: i, col: j, code: m.itemCode, value: ko.observable('xxxx') });
+                                        });
+                                        x.items.push(rows);
+                                    });
                                 }
-                            } else {
-
                             }
-                        }
+                        });
 
                         layout.listItemClsDto(data.listItemClsDto || []);
+
+
                     });
                 }
             });
