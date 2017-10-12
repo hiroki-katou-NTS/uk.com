@@ -14,7 +14,7 @@ import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.ApprovalRootService;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApprovalPhaseOutput;
@@ -53,7 +53,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 	@Inject
 	private ApprovalPhaseRepository phaseRepo;
 	@Inject
-	private WorkplaceAdapter wpAdapter;
+	private WorkplaceApproverAdapter wpAdapter;
 	@Inject
 	private PersonAdapter psAdapter;
 

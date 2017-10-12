@@ -52,7 +52,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             self.ListTypeReason = ko.observableArray([]);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable('0002')
+            self.selectedCode = ko.observable('0002');
             //MultilineEditor 
             self.appreason = ko.observable('');
             //Show Screen
@@ -83,7 +83,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
                 var lateOrLeaveEarly: LateOrLeaveEarly = {
-                    applicant: string;
+                    applicant: string,
                     appDate: self.date(),
                     sendMail: self.sendMail(),
                     late1: self.late1() ? 1 : 0,

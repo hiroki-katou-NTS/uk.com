@@ -65,7 +65,6 @@ module nts.uk.at.view.kaf009.b {
             //list Work Location 
             locationData: Array<common.IWorkLocation>;
             approvalSource: Array<any> = [];
-            
             employeeID : string ="";
             enableSendMail :KnockoutObservable<boolean> = ko.observable(false); 
         
@@ -74,6 +73,8 @@ module nts.uk.at.view.kaf009.b {
             prePostEnable: KnockoutObservable<boolean> = ko.observable(false);
             
             requiredReason : KnockoutObservable<boolean> = ko.observable(false);
+            
+            appID : string  = "";
 
             constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
                 super(listAppMetadata, currentApp);
@@ -139,6 +140,7 @@ module nts.uk.at.view.kaf009.b {
                     self.workEnable(value);
                 });
                 self.startPage(currentApp.appID);
+                self.appID = currentApp.appID;
             }
 
             /**
@@ -149,7 +151,6 @@ module nts.uk.at.view.kaf009.b {
                 let dfd = $.Deferred();
                 //get Common Setting
                 service.getGoBackSetting().done(function(settingData: any) {
-                    debugger;
                     self.employeeID = settingData.sid;
                     //get Reason
                     self.setReasonControl(settingData.listReasonDto);
@@ -184,8 +185,7 @@ module nts.uk.at.view.kaf009.b {
              */
             update() {
                 let self = this;
-                let appId: string = "e3ee58d6-4ed3-4b88-a6e9-e91e2545ea7d";
-                service.updateGoBackDirect(self.getCommand(appId)).done(function() {
+                service.updateGoBackDirect(self.getCommand(self.appID)).done(function() {
                     alert("Update Done");
                 }).fail(function() {
 
@@ -229,7 +229,7 @@ module nts.uk.at.view.kaf009.b {
             getCommand(appId :string) {
                 let self = this;
                 let command: common.GoBackCommand = new common.GoBackCommand();
-                command.appID = appId;
+                //command.appID = appId;
                 //command.appDate = self.appDate();
                 command.workTypeCD = self.workTypeCd();
                 command.siftCD = self.siftCD();
@@ -261,8 +261,8 @@ module nts.uk.at.view.kaf009.b {
             }
 
             /**
-         * Set common Setting 
-         */
+             * Set common Setting 
+             */
             setGoBackSetting(data: common.GoBackDirectSetting) {
                 let self = this;
                 if (data != undefined) {
@@ -300,8 +300,8 @@ module nts.uk.at.view.kaf009.b {
             }
 
             /**
-         * set data from Server 
-         */
+             * set data from Server 
+             */
             setValueControl(data: common.GoBackDirectData) {
                 let self = this;
                 if (!nts.uk.util.isNullOrUndefined(data)) {
@@ -325,8 +325,8 @@ module nts.uk.at.view.kaf009.b {
             }
 
             /**
-         * set reason 
-         */
+             * set reason 
+             */
             setReasonControl(data: Array<common.ReasonDto>) {
                 let self = this;
                 let comboSource: Array<common.ComboReason> = [];
@@ -338,8 +338,8 @@ module nts.uk.at.view.kaf009.b {
             }
 
             /**
-         * KDL010_勤務場所選択を起動する
-         */
+             * KDL010_勤務場所選択を起動する
+             */
             openLocationDialog(line: number) {
                 let self = this;
                 nts.uk.ui.block.invisible();

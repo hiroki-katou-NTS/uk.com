@@ -22,4 +22,5 @@ public class GoBackDirectBasicData {
 	String sID;
 	List<ApplicationReason> listAppReason;
 	AppCommonSettingOutput appCommonSettingOutput;
+	boolean isDutiesMulti;
 }
