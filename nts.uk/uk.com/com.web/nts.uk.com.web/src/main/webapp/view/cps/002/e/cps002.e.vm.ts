@@ -43,14 +43,13 @@ module cps002.e.vm {
         
         returnEmCode(){
             let self = this;
-            if(self.generateEmCode() != ""){
-                setShared("CPS002_PARAM", self.generateEmCode());
-                close();
-            }
+            setShared("CPS002_PARAM", self.generateEmCode());
+            close();
         }
         
         close(){
-            setShared("CPS002_PARAM", self.generateEmCode());
+      
+            setShared("CPS002_PARAM", "");
             close();
         }
     }

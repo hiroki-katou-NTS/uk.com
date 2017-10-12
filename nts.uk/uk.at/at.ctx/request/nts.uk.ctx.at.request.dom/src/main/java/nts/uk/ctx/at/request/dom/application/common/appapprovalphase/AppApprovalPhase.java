@@ -45,7 +45,7 @@ public class AppApprovalPhase extends DomainObject {
 	/**
 	 * list Frame
 	 */
-	
+	@Setter
 	private List<ApprovalFrame> listFrame;
 	
 

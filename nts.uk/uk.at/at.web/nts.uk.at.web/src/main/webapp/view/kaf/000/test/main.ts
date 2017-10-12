@@ -4,7 +4,7 @@ module nts.uk.at.view.kaf000.test.viewmodel {
     import windows = nts.uk.ui.windows;
     export class ScreenModel {
         appInfor: KnockoutObservableArray<ApproverDtoK> = ko.observableArray([]);
-        startDate: KnockoutObservable<any> = ko.observable(new Date());
+        startDate: KnockoutObservable<any> = ko.observable('2017/01/01');
         endDate: KnockoutObservable<any> = ko.observable(new Date());
         listAppID :Array<String> ;
         constructor() {
@@ -40,10 +40,12 @@ module nts.uk.at.view.kaf000.test.viewmodel {
             var data = new service.dateInfor;
             data.startDate = self.startDate();
             data.endDate = self.endDate();
+            debugger;
             service.getAppId(data).done(function(values: any){
                 if(values.length != 0){
+                    debugger;
                     self.listAppID =values;
-                    nts.uk.request.jump("/view/kaf/000/b/index.xhtml", {'listAppId': self.listAppID, 'appType': 7});
+                    nts.uk.request.jump("/view/kaf/000/b/index.xhtml", {'listAppId': self.listAppID, 'appType': 4});
                 }else{
                     
                 }
