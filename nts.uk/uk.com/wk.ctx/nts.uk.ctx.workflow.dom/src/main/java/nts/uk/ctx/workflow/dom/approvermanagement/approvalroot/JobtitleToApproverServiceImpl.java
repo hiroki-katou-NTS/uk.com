@@ -14,7 +14,7 @@ import nts.uk.ctx.workflow.dom.adapter.bs.EmployeeAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.ConcurrentEmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApproverInfo;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSetting;
 import nts.uk.ctx.workflow.dom.approvermanagement.setting.JobAssignSettingRepository;
@@ -39,7 +39,7 @@ public class JobtitleToApproverServiceImpl implements JobtitleToApproverService 
 	@Inject
 	private JobAssignSettingRepository jobAssignSetRepository;
 	@Inject
-	private WorkplaceAdapter wkApproverAdapter;
+	private WorkplaceApproverAdapter wkApproverAdapter;
 
 	/**
 	 * 3.職位から承認者へ変換する
