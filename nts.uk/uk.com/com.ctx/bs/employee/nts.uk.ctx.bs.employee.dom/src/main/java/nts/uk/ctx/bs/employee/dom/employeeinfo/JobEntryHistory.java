@@ -1,24 +1,17 @@
 package nts.uk.ctx.bs.employee.dom.employeeinfo;
 
-import java.util.Date;
-
 import org.eclipse.persistence.internal.xr.ValueObject;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Data;
 import nts.arc.time.GeneralDate;
 
 /**
  * 
  * JobEntryHistory - 入社履歴
  */
-
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class JobEntryHistory extends ValueObject {
 
 	/** The CompanyId */

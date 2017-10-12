@@ -70,6 +70,12 @@ module nts.uk.com.view.cmm014.a.viewmodel {
          */
         public registerClassification(): void {
             let _self = this;
+            
+            // Validate
+            if (_self.hasError()) {
+                return;
+            }
+            
             blockUI.invisible()
             
             var command = {
@@ -112,6 +118,12 @@ module nts.uk.com.view.cmm014.a.viewmodel {
          */
         public deleteClassification(): void {
             let _self = this;
+            
+            // Validate
+            if (_self.hasError()) {
+                return;
+            }
+            
             // Remove
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 
@@ -167,7 +179,36 @@ module nts.uk.com.view.cmm014.a.viewmodel {
             
             return dfd.promise();
         }
+        
+        /**
+         * Check Errors all input.
+         */
+        private hasError(): boolean {
+            let _self = this;
+            _self.clearErrors();
+            $('#clfCode').ntsEditor("validate");
+            $('#clfName').ntsEditor("validate");
+            if ($('.nts-input').ntsError('hasError')) {
+                return true;
+            }
+            return false;
+        }
 
+        /**
+         * Clear Errors
+         */
+        private clearErrors(): void {
+            // Clear errors
+            $('#clfCode').ntsError('clear');
+            $('#clfName').ntsError('clear');
+            $('#memo').ntsError('clear');
+            // Clear error inputs
+            $('.nts-input').ntsError('clear');
+        }
+        
+        /**
+         * call service list classification
+         */
         private getClassificationList(): JQueryPromise<any> {
             let _self = this;
             var dfd = $.Deferred<Array<ClassificationModel>>();
@@ -179,6 +220,9 @@ module nts.uk.com.view.cmm014.a.viewmodel {
             return dfd.promise();
         }
         
+        /**
+         * call service save classification
+         */
         private saveClassificationInfo(data: any): JQueryPromise<any> {
             let _self = this;
             var dfd = $.Deferred<void>();

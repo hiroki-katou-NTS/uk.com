@@ -12,12 +12,14 @@ module nts.uk.com.view.cps016.a.viewmodel {
         perInfoSelectionItem: KnockoutObservable<SelectionItem> = ko.observable(new SelectionItem({ selectionItemId: '', selectionItemName: '' }));
         rulesFirst: KnockoutObservableArray<IRule>;
         checkCreate: KnockoutObservable<boolean>;
+        closeUp: KnockoutObservable<boolean>;
 
         constructor() {
             let self = this,
                 perInfoSelectionItem: SelectionItem = self.perInfoSelectionItem(),
                 formatSelection = perInfoSelectionItem.formatSelection();
             self.checkCreate = ko.observable(true);
+            self.closeUp = ko.observable(false);
             self.rulesFirst = ko.observableArray([
                 { id: 0, name: getText('Enum_SelectionCodeCharacter_NUMBER_TYPE') },
                 { id: 1, name: getText('Enum_SelectionCodeCharacter_CHARATERS_TYPE') }
@@ -134,6 +136,8 @@ module nts.uk.com.view.cps016.a.viewmodel {
                         self.perInfoSelectionItem().selectionItemId(selectId);
 
                         //Todo: 「CPS017_個人情報の選択肢の登録」をモーダルダイアログで起動する
+                        modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
+                        });
 
                     }).ifNo(() => {
                         self.listItems.valueHasMutated();
@@ -164,7 +168,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                     let newItem = itemList[oldIndex];
                     currentItem.selectionItemId(newItem.selectionItemId);
                 });
-                confirm({ messageId: "Msg_15" });
+                nts.uk.ui.dialog.alert({ messageId: "Msg_15" });
                 self.listItems.valueHasMutated();
 
             });
@@ -198,7 +202,7 @@ module nts.uk.com.view.cps016.a.viewmodel {
                             }
                         });
                         self.listItems.valueHasMutated();
-                        confirm({ messageId: "Msg_16" });
+                        nts.uk.ui.dialog.alert({ messageId: "Msg_16" });
                     });
                 }).ifNo(() => {
                     self.listItems.valueHasMutated();
@@ -209,6 +213,15 @@ module nts.uk.com.view.cps016.a.viewmodel {
                 self.registerDataSelectioItem();
             }
         }
+
+        // 選択肢の登録ボタン
+        OpenCPS017() {
+            let self = this;
+
+            modal('/view/cps/017/a/index.xhtml', { title: '', height: 1000, width: 1500 }).onClosed(function(): any {
+            });
+        }
+
     }
 
     interface ISelectionItem {

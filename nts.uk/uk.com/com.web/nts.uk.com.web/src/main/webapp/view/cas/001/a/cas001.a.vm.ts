@@ -258,7 +258,7 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 showHeader: true,
 
                 width: '830px',
-
+    
                 height: '315px',
 
                 dataSource: self.currentRole().currentCategory() === null ? null : self.currentRole().currentCategory().roleItemList(),
@@ -268,7 +268,9 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 virtualization: true,
 
                 virtualizationMode: 'continuous',
-
+                
+                enter: 'right',
+                
                 virtualrecordsrender: function(evt, ui) {
                     if ($("#item_role_table_body").data("igGrid") === undefined) {
                         return;
@@ -440,12 +442,12 @@ module nts.uk.com.view.cas001.a.viewmodel {
                 currentCtgType = self.currentRole().currentCategory().categoryType;
 
             switch (currentCtgType) {
-                case 1: return getText('Enum_CategoryType_SINGLEINFO');
-                case 2: return getText('Enum_CategoryType_MULTIINFO');
-                case 3: return getText('Enum_CategoryType_CONTINUOUSHISTORY');
-                case 4: return getText('Enum_CategoryType_NODUPLICATEHISTORY');
-                case 5: return getText('Enum_CategoryType_DUPLICATEHISTORY');
-                case 6: return getText('Enum_CategoryType_CONTINUOUSHISTORY');
+                case 1: return getText('Enum_CategoryType_SINGLE_INFO');
+                case 2: return getText('Enum_CategoryType_MULTI_INFO');
+                case 3: return getText('Enum_CategoryType_CONTINUOUS_HISTORY');
+                case 4: return getText('Enum_CategoryType_NODUPLICATE_HISTOR');
+                case 5: return getText('Enum_CategoryType_DUPLICATE_HISTORY');
+                case 6: return getText('Enum_CategoryType_CONTINUOUS_HISTORY');
                 default: return '';
 
             }
