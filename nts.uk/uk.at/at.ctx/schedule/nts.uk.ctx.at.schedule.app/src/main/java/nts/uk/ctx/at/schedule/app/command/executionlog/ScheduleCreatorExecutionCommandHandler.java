@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.at.schedule.app.command.executionlog;
 
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,7 @@ import nts.uk.ctx.at.schedule.dom.adapter.ScWorkplaceAdapter;
 import nts.uk.ctx.at.schedule.dom.adapter.executionlog.WorkplaceDto;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSet;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.PersonalWorkScheduleCreSetRepository;
+import nts.uk.ctx.at.schedule.dom.employeeinfo.TimeZoneScheduledMasterAtr;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleBasicCreMethod;
 import nts.uk.ctx.at.schedule.dom.employeeinfo.WorkScheduleMasterReferenceAtr;
 import nts.uk.ctx.at.schedule.dom.executionlog.CompletionStatus;
@@ -49,6 +51,12 @@ import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.ConfirmedAtr;
 import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.ScheduleManagementControl;
 import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.ScheduleManagementControlRepository;
 import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.UseAtr;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkRepository;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompany;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompanyRepository;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkPlaceRepository;
+import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;;
 
@@ -100,6 +108,19 @@ public class ScheduleCreatorExecutionCommandHandler
 	@Inject
 	private ScWorkplaceAdapter scWorkplaceAdapter;
 	
+	
+	/** The workplace basic work repository. */
+	@Inject
+	private WorkplaceBasicWorkRepository workplaceBasicWorkRepository;
+	
+	/** The calendar work place repository. */
+	@Inject
+	private CalendarWorkPlaceRepository calendarWorkPlaceRepository;
+	
+	/** The calendar company repository. */
+	@Inject
+	private CalendarCompanyRepository calendarCompanyRepository;
+	
 	/** The setter. */
 	private TaskDataSetter setter;
 	
@@ -111,6 +132,9 @@ public class ScheduleCreatorExecutionCommandHandler
 		
 	/** The to date. */
 	private Date toDate;
+	
+	/** The company id. */
+	private String companyId;
 	
 	/** The Constant DEFAULT_VALUE. */
 	private static final Integer DEFAULT_VALUE = 0;
@@ -130,7 +154,12 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The Constant ZERO_DAY_MONTH. */
 	public static final int ZERO_DAY_MONTH = 0;
 	
-
+	
+	/** The Constant MUL_YEAR. */
+	public static final int MUL_YEAR = 10000;
+	
+	/** The Constant MUL_MONTH. */
+	public static  final int MUL_MONTH = 100;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -145,7 +174,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		LoginUserContext loginUserContext = AppContexts.user();
 
 		// get company id
-		String companyId = loginUserContext.companyId();
+		companyId = loginUserContext.companyId();
 
 		val asyncTask = context.asAsync();
 		setter = asyncTask.getDataSetter();
@@ -336,8 +365,43 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @return the basic work setting
 	 */
 	// 基本勤務設定を取得する
-	private void getBasicWorkSetting(PersonalWorkScheduleCreSet personalWorkScheduleCreSet){
-		this.getBusinessDayCalendar(personalWorkScheduleCreSet);
+	private Optional<BasicWorkSetting> getBasicWorkSetting(
+			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
+		Optional<Integer> optionalBusinessDayCalendar = this
+				.getBusinessDayCalendar(personalWorkScheduleCreSet);
+		if (optionalBusinessDayCalendar.isPresent()) {
+			this.getWorktypeCode(personalWorkScheduleCreSet);
+			return this.getBasicWorkSetingByWorkdayDivision(personalWorkScheduleCreSet,
+					optionalBusinessDayCalendar.get());
+		}
+		return Optional.empty();
+	}
+	
+	/**
+	 * Gets the work type code.
+	 *
+	 * @return the work type code
+	 */
+	// 在職状態に対応する「勤務種類コード」を取得する
+	private void getWorktypeCode(PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
+
+		// check 就業時間帯の参照先 of 勤務予定の時間帯マスタ参照区分 == 個人曜日別
+		if (personalWorkScheduleCreSet.getWorkScheduleBusCal()
+				.getReferenceWorkingHours().value == TimeZoneScheduledMasterAtr.PERSONAL_DAY_OF_WEEK.value) {
+			this.convertWorktypeCodeByDayOfWeek();
+		} else
+		// 個人勤務日別, マスタ参照区分に従う
+		{
+
+		}
+	}
+
+	/**
+	 * Convert worktype code by day of week.
+	 */
+	// 個人曜日別と在職状態から「勤務種類コード」を変換する
+	private void convertWorktypeCodeByDayOfWeek() {
+
 	}
 	
 	/**
@@ -347,28 +411,68 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @return the business day calendar
 	 */
 	// 営業日カレンダーから「稼働日区分」を取得する
-	private void getBusinessDayCalendar(PersonalWorkScheduleCreSet personalWorkScheduleCreSet){
-		
+	private Optional<Integer> getBusinessDayCalendar(
+			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 		// check 営業日カレンダーの参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
 		if (personalWorkScheduleCreSet.getWorkScheduleBusCal().getReferenceBusinessDayCalendar()
 				.equals(WorkScheduleMasterReferenceAtr.WORKPLACE)) {
-			
+
 			Optional<WorkplaceDto> optionalWorkplace = this.scWorkplaceAdapter.findWorkplaceById(
 					personalWorkScheduleCreSet.getEmployeeId(), GeneralDate.legacyDate(toDate));
-			
-			if(optionalWorkplace.isPresent()){
+
+			if (optionalWorkplace.isPresent()) {
+				WorkplaceDto workplaceDto = optionalWorkplace.get();
 				
+				List<String> workplaceIds = this.findLelvelWorkplace(workplaceDto.getWorkplaceId());
+
+				return this.getWorkdayDivisionByWkp(personalWorkScheduleCreSet.getEmployeeId(), workplaceIds);
 			} else {
-				
 				// add log error employee => 602
 				this.addError(personalWorkScheduleCreSet.getEmployeeId(), "Msg_602");
 			}
-			
+
 		} else
 		// CLASSIFICATION
 		{
 
 		}
+		return Optional.empty();
+
+	}
+	
+	/**
+	 * Gets the basic work seting by workday division.
+	 *
+	 * @param workdayDivision the workday division
+	 * @return the basic work seting by workday division
+	 */
+	// 「稼働日区分」に対応する「基本勤務設定」を取得する
+	private Optional<BasicWorkSetting> getBasicWorkSetingByWorkdayDivision(
+			PersonalWorkScheduleCreSet personalWorkScheduleCreSet, int workdayDivision) {
+		// check 営業日カレンダーの参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
+		if (personalWorkScheduleCreSet.getWorkScheduleBusCal().getReferenceBusinessDayCalendar()
+				.equals(WorkScheduleMasterReferenceAtr.WORKPLACE)) {
+
+			Optional<WorkplaceDto> optionalWorkplace = this.scWorkplaceAdapter.findWorkplaceById(
+					personalWorkScheduleCreSet.getEmployeeId(), GeneralDate.legacyDate(toDate));
+
+			if (optionalWorkplace.isPresent()) {
+				WorkplaceDto workplaceDto = optionalWorkplace.get();
+				Optional<BasicWorkSetting> optionalBasicWorkSetting = this
+						.getBasicWorkSettingByWkpIds(workplaceDto.getWorkplaceId(),
+								workdayDivision);
+			} else {
+
+				// add log error employee => 602
+				this.addError(personalWorkScheduleCreSet.getEmployeeId(), "Msg_602");
+			}
+
+		} else
+		// CLASSIFICATION
+		{
+
+		}
+		return Optional.empty();
 	}
 
 	/**
@@ -394,16 +498,58 @@ public class ScheduleCreatorExecutionCommandHandler
 	private void getScheduleWorkHour(){
 		
 	}
-	
+		
+	/**
+	 * Find by workplace ids.
+	 *
+	 * @param workplaceId the workplace id
+	 * @return the list
+	 */
+	// 所属職場を含む上位職場を取得
+	private List<String> findLelvelWorkplace(String workplaceId) {
+		return this.scWorkplaceAdapter.findWpkIdList(companyId, workplaceId, toDate);
+	}
 	
 	
 	/**
-	 * To schedule error log.
+	 * Gets the basic work setting by wkp id.
 	 *
-	 * @param employeeId the employee id
-	 * @param messageId the message id
-	 * @return the schedule error log
+	 * @param workplaceId the workplace id
+	 * @param workDayAtr the work day atr
+	 * @return the basic work setting by wkp id
 	 */
+	private Optional<BasicWorkSetting> getBasicWorkSettingByWkpIds(String workplaceId,
+			int workDayAtr) {
+		List<String> workplaceIds = this.findLelvelWorkplace(workplaceId);
+
+		// loop work place id
+		for (String wkpId : workplaceIds) {
+			Optional<BasicWorkSetting> optional = this.getBasicWorkSettingByWkpId(wkpId,
+					workDayAtr);
+			if (optional.isPresent()) {
+				return optional;
+			}
+		}
+		return Optional.empty();
+	}
+	/**
+	 * Gets the basic work setting by wkp id.
+	 *
+	 * @param workplaceId the workplace id
+	 * @param workDayAtr the work day atr
+	 * @return the basic work setting by wkp id
+	 */
+	
+	private Optional<BasicWorkSetting> getBasicWorkSettingByWkpId(String workplaceId, int workDayAtr) {
+		return this.workplaceBasicWorkRepository.findById(workplaceId).map(setting -> {
+			for (BasicWorkSetting basicWorkSetting : setting.getBasicWorkSetting()) {
+				if (basicWorkSetting.getWorkdayDivision().value == workDayAtr) {
+					return basicWorkSetting;
+				}
+			}
+			return null;
+		});
+	}
 	private ScheduleErrorLog toScheduleErrorLog(String employeeId, String messageId) {
 		return new ScheduleErrorLog(new ScheduleErrorLogGetMemento() {
 
@@ -474,5 +620,46 @@ public class ScheduleCreatorExecutionCommandHandler
 		cal.setTime(day);
 		cal.add(Calendar.DAY_OF_MONTH, NEXT_DAY_MONTH); 
 		return cal.getTime();
+	}
+	
+	/**
+	 * Gets the workday division by wkp.
+	 *
+	 * @param employeeId the employee id
+	 * @param workplaceIds the workplace ids
+	 * @return the workday division by wkp
+	 */
+	// 職場の稼働日区分を取得する
+	public Optional<Integer> getWorkdayDivisionByWkp(String employeeId, List<String> workplaceIds) {
+		for (String workplaceId : workplaceIds) {
+			Optional<CalendarWorkplace> optionalCalendarWorkplace = this.calendarWorkPlaceRepository
+					.findCalendarWorkplaceByDate(workplaceId,
+							this.toYearMonthDate(GeneralDate.legacyDate(toDate)));
+			// check exist data WorkplaceBasicWork
+			if (optionalCalendarWorkplace.isPresent()) {
+				return Optional.of(optionalCalendarWorkplace.get().getWorkingDayAtr().value);
+			}
+		}
+
+		Optional<CalendarCompany> optionalCalendarCompany = this.calendarCompanyRepository
+				.findCalendarCompanyByDate(companyId,
+						this.toYearMonthDate(GeneralDate.legacyDate(toDate)));
+		if (optionalCalendarCompany.isPresent()) {
+			return Optional.of(optionalCalendarCompany.get().getWorkingDayAtr().value);
+		}
+		// add error messageId Msg_588
+		this.addError(employeeId, "Msg_588");
+		return Optional.empty();
+	}
+
+	/**
+	 * To year month date.
+	 *
+	 * @param toDate the to date
+	 * @return the big decimal
+	 */
+	private BigDecimal toYearMonthDate(GeneralDate baseDate) {
+		return new BigDecimal(
+				baseDate.year() * MUL_YEAR + baseDate.month() * MUL_MONTH + baseDate.day());
 	}
 }
