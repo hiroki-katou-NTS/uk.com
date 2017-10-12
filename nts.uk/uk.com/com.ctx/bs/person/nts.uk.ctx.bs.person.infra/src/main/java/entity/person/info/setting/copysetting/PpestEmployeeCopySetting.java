@@ -15,19 +15,19 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "PPEST_EMP_COPY_SET_ITEM")
-public class BsystEmployeeCopySettingItem extends UkJpaEntity implements Serializable {
+@Table(name = "PPEST_EMP_COPY_SET")
+public class PpestEmployeeCopySetting extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	@EmbeddedId
-	public BsystEmployeeCopySettingItemPk BsystEmployeeCopySettingItemPk;
+	public PpestEmployeeCopySettingPk PpestEmployeeCopySettingPk;
 
 	@Basic(optional = false)
-	@Column(name = "EMP_COPY_CTG_ID")
-	public String categoryId;
+	@Column(name = "CID")
+	public String companyId;
 
 	@Override
 	protected Object getKey() {
-		return BsystEmployeeCopySettingItemPk;
+		return PpestEmployeeCopySettingPk;
 	}
 }

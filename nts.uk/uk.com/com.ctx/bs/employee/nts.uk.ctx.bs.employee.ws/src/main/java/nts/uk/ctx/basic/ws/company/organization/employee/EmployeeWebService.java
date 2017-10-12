@@ -16,9 +16,10 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.app.find.employee.CheckDuplicateEmpInfoDto;
+import nts.uk.ctx.bs.employee.app.find.employee.EmpInfoDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
+import nts.uk.ctx.bs.employee.app.find.employee.validateEmpInfoResultDto;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchData;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListData;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListQuery;
@@ -81,11 +82,10 @@ public class EmployeeWebService extends WebService {
 	}
 
 	@POST
-	@Path("checkDuplicateEmpCodeOrCardNo/{employeeCode}/{cardNo}")
-	public CheckDuplicateEmpInfoDto isDuplicateEmpCodeOrCardNo(@PathParam("employeeCode") String employeeCode,
-			@PathParam("cardNo") String cardNo) {
+	@Path("validateEmpInfo")
+	public validateEmpInfoResultDto validateEmpInfo(EmpInfoDto empInfo) {
 
-		return this.employeeFinder.isDuplicateEmpCodeOrCardNo(employeeCode, cardNo);
+		return this.employeeFinder.validateEmpInfo(empInfo);
 	}
 
 	// sonnlb

@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
-import entity.person.info.setting.copysetting.BsystEmployeeCopySetting;
+import entity.person.info.setting.copysetting.PpestEmployeeCopySetting;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.bs.person.dom.person.info.setting.copysetting.EmpCopySetting;
 import nts.uk.ctx.bs.person.dom.person.setting.copysetting.EmpCopySettingRepository;
@@ -14,18 +14,18 @@ import nts.uk.ctx.bs.person.dom.person.setting.copysetting.EmpCopySettingReposit
 public class JpaEmpCopySettingRepository extends JpaRepository implements EmpCopySettingRepository {
 
 	private static final String SELECT_EMP_COPY_SETTING_BY_COMID_QUERY_STRING = "SELECT cs "
-			+ "FROM BsystEmployeeCopySetting cs " + "WHERE cs.companyId =:companyId";
+			+ "FROM PpestEmployeeCopySetting cs " + "WHERE cs.companyId =:companyId";
 
 	@Override
 	public List<EmpCopySetting> find(String companyId) {
-		return this.queryProxy().query(SELECT_EMP_COPY_SETTING_BY_COMID_QUERY_STRING, BsystEmployeeCopySetting.class)
+		return this.queryProxy().query(SELECT_EMP_COPY_SETTING_BY_COMID_QUERY_STRING, PpestEmployeeCopySetting.class)
 				.setParameter("companyId", companyId).getList().stream().map(x -> toDomain(x))
 				.collect(Collectors.toList());
 
 	}
 
-	private EmpCopySetting toDomain(BsystEmployeeCopySetting entity) {
+	private EmpCopySetting toDomain(PpestEmployeeCopySetting entity) {
 
-		return EmpCopySetting.createFromJavaType(entity.BsystEmployeeCopySettingPk.categoryId, entity.companyId);
+		return EmpCopySetting.createFromJavaType(entity.PpestEmployeeCopySettingPk.categoryId, entity.companyId);
 	}
 }

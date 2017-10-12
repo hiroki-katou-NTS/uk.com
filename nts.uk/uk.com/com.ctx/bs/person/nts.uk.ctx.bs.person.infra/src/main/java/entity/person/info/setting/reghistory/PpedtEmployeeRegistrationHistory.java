@@ -17,12 +17,12 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "PPEDT_EMP_REG_HISTORY")
-public class BsymtEmployeeRegistrationHistory extends UkJpaEntity implements Serializable {
+public class PpedtEmployeeRegistrationHistory extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public BsymtEmployeeRegistrationHistoryPk bsydtEmployeeRegistrationHistoryPk;
+	public PpedtEmployeeRegistrationHistoryPk ppedtEmployeeRegistrationHistoryPk;
 
 	@Basic(optional = false)
 	@Column(name = "CID")
@@ -38,7 +38,7 @@ public class BsymtEmployeeRegistrationHistory extends UkJpaEntity implements Ser
 
 	@Override
 	protected Object getKey() {
-		return bsydtEmployeeRegistrationHistoryPk;
+		return ppedtEmployeeRegistrationHistoryPk;
 	}
 
 }

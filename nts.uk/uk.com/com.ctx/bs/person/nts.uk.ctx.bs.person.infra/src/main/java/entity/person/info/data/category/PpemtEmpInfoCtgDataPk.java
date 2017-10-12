@@ -1,4 +1,4 @@
-package entity.person.info.setting.copysetting;
+package entity.person.info.data.category;
 
 import java.io.Serializable;
 
@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class BsystEmployeeCopySettingPk implements Serializable {
+public class PpemtEmpInfoCtgDataPk implements Serializable {
 
-	
 	private static final long serialVersionUID = 1L;
+
 	@Basic(optional = false)
-	@Column(name = "EMP_COPY_CTG_ID")
-	public String categoryId;
+	@Column(name = "RECORD_ID")
+	public String recordId;
 
 }

@@ -9,7 +9,7 @@ module cps002.a.service {
         'getEmployeeCode': 'basic/organization/employee/getGenerateEmplCode',
         'getCardNumber': 'basic/organization/employee/getGenerateCardNo',
         'getGenerateEmplCodeAndComId': 'basic/organization/employee/getGenerateEmplCodeAndComId',
-        'isDuplicateEmpCodeOrCardNo': 'basic/organization/employee/checkDuplicateEmpCodeOrCardNo/{0}/{1}',
+        'validateEmpInfo': 'basic/organization/employee/validateEmpInfo',
 
     };
 
@@ -37,8 +37,8 @@ module cps002.a.service {
         return ajax(paths.getCardNumber, employeeLetter);
     }
 
-    export function checkDuplicateEmpCodeOrCardNo(employeeCode, cardNo) {
-        return ajax(format(paths.isDuplicateEmpCodeOrCardNo, employeeCode, cardNo));
+    export function validateEmpInfo(employeeCode, cardNo) {
+        return ajax(paths.validateEmpInfo, { employeeCode: employeeCode, cardNo: cardNo });
     }
 
 }

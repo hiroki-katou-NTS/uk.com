@@ -117,13 +117,14 @@ public class EmployeeFinder {
 		return EmpCode == "" ? "" : ComId + EmpCode;
 	}
 
-	public CheckDuplicateEmpInfoDto isDuplicateEmpCodeOrCardNo(String employeeCode, String cardNo) {
+	public validateEmpInfoResultDto validateEmpInfo(EmpInfoDto empInfo) {
 
 		Boolean isDuplicateEmpCode = this.employeeRepository.isDuplicateEmpCode(AppContexts.user().companyId(),
-				employeeCode);
-		Boolean isDuplicateCardNo = this.employeeRepository.isDuplicateCardNo(AppContexts.user().companyId(), cardNo);
+				empInfo.getEmployeeCode());
+		Boolean isDuplicateCardNo = this.employeeRepository.isDuplicateCardNo(AppContexts.user().companyId(),
+				empInfo.getCardNo());
 
-		return new CheckDuplicateEmpInfoDto(isDuplicateEmpCode || isDuplicateCardNo,
+		return new validateEmpInfoResultDto(isDuplicateEmpCode || isDuplicateCardNo,
 				isDuplicateEmpCode ? "Msg_345" : "Msg_346");
 
 	}

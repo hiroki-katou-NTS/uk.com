@@ -172,12 +172,12 @@ module cps002.a.vm {
 
         }
 
-        ValidEmployeeInfo(): JQueryPromise<any> {
+        validEmployeeInfo(): JQueryPromise<any> {
             let self = this,
                 dfd = $.Deferred(),
                 employee = self.currentEmployee();
-            service.checkDuplicateEmpCodeOrCardNo(employee.employeeCode(), employee.cardNo()).done((result) => {
-                dfd.promise(result);
+            service.validateEmpInfo(employee.employeeCode(), employee.cardNo()).done((result) => {
+                dfd.resolve(result);
             })
             return dfd.promise();
         }
@@ -190,22 +190,32 @@ module cps002.a.vm {
 
         }
 
+        validateForm() {
+            $(".nts-editor").trigger("validate");
+            if (nts.uk.ui.errors.hasError()) {
+                return false;
+            }
+            return true;
+        }
+
         completeStep1() {
             let self = this;
-            self.ValidEmployeeInfo().done((result) => {
-                if (result.isDuplicate) {
-                    dialog({ messageId: result.messageId });
+            if (self.validateForm()) {
+                self.validEmployeeInfo().done((result) => {
+                    if (result.isError) {
+                        dialog({ messageId: result.messageId });
 
-                } else {
+                    } else {
 
-                    if (self.selectedId() === 3) {
-                        self.gotoStep3();
-                        return;
+                        if (self.selectedId() === 3) {
+                            self.gotoStep3();
+                            return;
+                        }
+
+                        self.gotoStep2();
                     }
-
-                    self.gotoStep2();
-                }
-            })
+                });
+            }
 
         }
 

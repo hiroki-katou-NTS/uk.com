@@ -5,9 +5,9 @@ import lombok.Value;
 
 @Value
 @AllArgsConstructor
-public class CheckDuplicateEmpInfoDto {
+public class validateEmpInfoResultDto {
 
-	Boolean isDuplicate;
+	Boolean isError;
 
 	String messageId;
 

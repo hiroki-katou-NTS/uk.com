@@ -17,12 +17,12 @@ import nts.arc.time.GeneralDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "PPEMT_EMP_INFO_CTG_DATA")
-public class BsymtEmpInfoCtgData extends JpaEntity implements Serializable {
+public class PpemtEmpInfoCtgData extends JpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public BsymtEmpInfoCtgDataPk bsydtEmpInfoCtgDataPk;
+	public PpemtEmpInfoCtgDataPk ppemtEmpInfoCtgDataPk;
 
 	@Basic(optional = false)
 	@Column(name = "P_INFO_CTG_ID")
@@ -35,7 +35,7 @@ public class BsymtEmpInfoCtgData extends JpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 
-		return bsydtEmpInfoCtgDataPk;
+		return ppemtEmpInfoCtgDataPk;
 	}
 
 }
