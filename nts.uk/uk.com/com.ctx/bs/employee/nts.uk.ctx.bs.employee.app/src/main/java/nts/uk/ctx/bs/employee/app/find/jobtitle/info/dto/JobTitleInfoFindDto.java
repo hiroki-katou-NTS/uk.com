@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.jobtitle.info.dto;
 
 import lombok.Data;
@@ -13,10 +17,6 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceName;
 
 /**
  * The Class JobTitleInfoFindDto.
- */
-
-/**
- * Instantiates a new job title info find dto.
  */
 @Data
 public class JobTitleInfoFindDto implements JobTitleInfoSetMemento, SequenceMasterSetMemento {

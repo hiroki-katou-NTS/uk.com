@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.jobtitle.dto;
 
 import java.util.List;
@@ -10,7 +14,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
 
 /**
- * Instantiates a new job title find dto.
+ * The Class JobTitleFindDto.
  */
 @Data
 public class JobTitleFindDto implements JobTitleSetMemento {

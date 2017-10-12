@@ -4,17 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtitle;
 
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
+import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
-import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 /**
  * The Class PositionId.
  */
-@StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(36)
-public class JobTitleId extends CodePrimitiveValue<JobTitleId> {
+public class JobTitleId extends StringPrimitiveValue<JobTitleId> {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
