@@ -2,16 +2,16 @@ module cps001.b.service {
     import ajax = nts.uk.request.ajax;
     import format = nts.uk.text.format;
 
-    let paths: any = {
-        'getCat': '',
-        'getItemDs': ''
+    let paths = {
+        getDetails: "basic/organization/employee/getemployeeinfo/{0}"
     };
 
-    export function getCategory(cid) {
-        return ajax(format(paths.getCat, cid));
-    }
 
-    export function getItemDefinitions(cid) {
-        return ajax(format(paths.getItemDs, cid));
+   /**
+    * add  Maintenance Layout
+    */
+   
+    export function getEmployee(employeeId) {
+        return ajax(format(paths.getDetails, employeeId));
     }
 }

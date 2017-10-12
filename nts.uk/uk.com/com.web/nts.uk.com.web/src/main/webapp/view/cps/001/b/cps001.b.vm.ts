@@ -10,7 +10,19 @@ module cps001.b.vm {
 
         constructor() {
             let self = this,
-                dto: IModelDto = getShared('CPS001B_PARAM') || {};
+                employeeIdq: IModelDto = getShared('CPS001B_PARAM') || {};
+            if (employeeIdq){
+                var employeeId = "90000000-0000-0000-0000-000000000001";
+                    // Gọi service tải dữ liệu employee
+                    service.getEmployee(employeeId).done((data: any) => {
+                        if (data) {
+                            console.log(data);
+                            debugger;
+                        }
+                    });
+            }
+
+
 
         }
 
@@ -27,8 +39,8 @@ module cps001.b.vm {
     }
 
     interface IModelDto {
-        id: string;    
+        id: string;
     }
-    
-    
+
+
 }
