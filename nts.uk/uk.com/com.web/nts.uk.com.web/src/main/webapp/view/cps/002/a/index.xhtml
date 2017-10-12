@@ -28,11 +28,13 @@
 			</div>
 
 			<div id="contents-area" class="cf">
-				<div data-bind="visible:selectedId()===1">
+				<div
+					data-bind="visible: currentStep()===2 &amp;&amp;selectedId()===1">
 					<div id="ccgcomponent"></div>
 				</div>
 				<div id="emp_reg_info_wizard"
-					data-bind="ntsWizard: {steps: [
+					data-bind="ntsWizard: {active: currentStep,
+											steps: [
 								            { content: '.step-1' },
 								            { content: '.step-2' },
 								            { content: '.step-3' },

@@ -9,7 +9,7 @@ module cps002.a.service {
         'getEmployeeCode': 'basic/organization/employee/getGenerateEmplCode',
         'getCardNumber': 'basic/organization/employee/getGenerateCardNo',
         'getGenerateEmplCodeAndComId': 'basic/organization/employee/getGenerateEmplCodeAndComId',
-        'checkDuplicateEmpCodeOrCardNo': 'basic/organization/employee/checkDuplicateEmpCodeOrCardNo/{0}/{1}',
+        'isDuplicateEmpCodeOrCardNo': 'basic/organization/employee/checkDuplicateEmpCodeOrCardNo/{0}/{1}',
 
     };
 

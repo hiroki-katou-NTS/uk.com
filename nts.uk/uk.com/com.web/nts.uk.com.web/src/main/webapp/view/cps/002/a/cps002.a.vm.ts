@@ -46,6 +46,8 @@ module cps002.a.vm {
 
         empRegHistory: KnockoutObservable<EmpRegHistory> = ko.observable(new EmpRegHistory(null));
 
+        currentStep: KnockoutObservable<number> = ko.observable(0);
+
         ccgcomponent: any = {
             baseDate: ko.observable(new Date()),
             isQuickSearchTab: ko.observable(true),

@@ -252,8 +252,10 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 
 	@Override
 	public Boolean isDuplicateEmpCode(String companyId, String employeeCode) {
-		return this.queryProxy().query(CHECK_DUPLICATE_EMPLOYEE_CODE_STRING_QUERY, BsymtEmployee.class).getSingle()
-				.isPresent();
+		return this.queryProxy().query(CHECK_DUPLICATE_EMPLOYEE_CODE_STRING_QUERY, BsymtEmployee.class)
+				.setParameter("companyId", companyId)
+				.setParameter("employeeCode", employeeCode)
+				.getSingle().isPresent();
 	}
 
 	@Override
