@@ -1,7 +1,11 @@
 package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting;
 
 import java.util.List;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 public interface FixedVerticalSettingRepository {
 
 	/**
@@ -42,4 +46,11 @@ public interface FixedVerticalSettingRepository {
 	 * @param verticalTime
 	 */
 	void updateVerticalTime(VerticalTime verticalTime);
+	
+	/**
+	 * Delete Vertical Time
+	 * @param companyId
+	 * @param fixedVerticalNo
+	 */
+	void deleteVerticalTime(String companyId, int fixedVerticalNo);
 }

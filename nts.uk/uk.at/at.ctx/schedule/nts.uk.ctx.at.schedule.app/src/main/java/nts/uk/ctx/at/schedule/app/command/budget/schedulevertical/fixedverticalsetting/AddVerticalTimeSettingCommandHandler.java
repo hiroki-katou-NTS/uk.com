@@ -12,7 +12,11 @@ import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.FixedVerticalSettingRepository;
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.VerticalTime;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Transactional
 @Stateless
 public class AddVerticalTimeSettingCommandHandler extends CommandHandlerWithResult<AddVerticalTimeSettingCommand, List<String>> {
@@ -28,6 +32,7 @@ public class AddVerticalTimeSettingCommandHandler extends CommandHandlerWithResu
 		
 		VerticalTime verticalTime = addVerticalTimeSettingCommand.toDomain(companyId);
 
+		//Add Vertical Time
 		repository.addVerticalTime(verticalTime);
 		return errList;
 		

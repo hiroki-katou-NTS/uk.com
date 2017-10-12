@@ -9,7 +9,11 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.F
 import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.VerticalTime;
 import nts.uk.shr.com.context.AppContexts;
 
-
+/**
+ * 
+ * @author phongtq
+ *
+ */
 @Stateless
 public class VerticalTimeSettingFinder {
 	@Inject
