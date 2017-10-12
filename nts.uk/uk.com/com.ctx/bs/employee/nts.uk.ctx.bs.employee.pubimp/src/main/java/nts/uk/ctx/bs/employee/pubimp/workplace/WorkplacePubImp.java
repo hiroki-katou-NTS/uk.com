@@ -17,9 +17,9 @@ import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository;
+import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
-import nts.uk.ctx.bs.employee.pub.workplace.WorkplaceInfoExport;
 
 /**
  * The Class WorkplacePubImp.
@@ -127,7 +127,7 @@ public class WorkplacePubImp implements SyWorkplacePub {
 	 * String, nts.arc.time.GeneralDate)
 	 */
 	@Override
-	public Optional<WorkplaceInfoExport> findBySid(String employeeId, GeneralDate baseDate) {
+	public Optional<SWkpHistExport> findBySid(String employeeId, GeneralDate baseDate) {
 		// Query
 		List<AffWorkplaceHistory> affWorkplaceHistories = workplaceHistoryRepository
 				.searchWorkplaceHistoryByEmployee(employeeId, baseDate);
@@ -137,7 +137,9 @@ public class WorkplacePubImp implements SyWorkplacePub {
 			return Optional.empty();
 		}
 
-		String wkpId = affWorkplaceHistories.get(FIRST_ITEM_INDEX).getWorkplaceId().v();
+		AffWorkplaceHistory affWorkplaceHistory = affWorkplaceHistories.get(FIRST_ITEM_INDEX);
+
+		String wkpId = affWorkplaceHistory.getWorkplaceId().v();
 
 		// Get workplace info.
 		Optional<WorkplaceInfo> optWorkplaceInfo = workplaceInfoRepository.findByWkpId(wkpId,
@@ -150,12 +152,13 @@ public class WorkplacePubImp implements SyWorkplacePub {
 
 		// Return workplace id
 		WorkplaceInfo wkpInfo = optWorkplaceInfo.get();
-		return Optional.of(WorkplaceInfoExport.builder().companyId(wkpInfo.getCompanyId())
-				.historyId(wkpInfo.getHistoryId().v()).workplaceId(wkpInfo.getWorkplaceId().v())
+		return Optional.of(SWkpHistExport.builder()
+				.dateRange(affWorkplaceHistory.getPeriod())
+				.employeeId(employeeId)
+				.workplaceId(wkpInfo.getWorkplaceId().v())
 				.workplaceCode(wkpInfo.getWorkplaceCode().v())
 				.workplaceName(wkpInfo.getWorkplaceName().v())
-				.wkpGenericName(wkpInfo.getWkpGenericName().v())
 				.wkpDisplayName(wkpInfo.getWkpDisplayName().v())
-				.outsideWkpCode(wkpInfo.getOutsideWkpCode().v()).build());
+				.build());
 	}
 }

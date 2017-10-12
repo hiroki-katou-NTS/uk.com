@@ -42,7 +42,7 @@ public class JobTitle extends AggregateRoot {
         Collections.sort(this.jobTitleHistory, new Comparator<JobTitleHistory>() {
             @Override
             public int compare(JobTitleHistory obj1, JobTitleHistory obj2) {
-                return obj2.getPeriod().getStartDate().compareTo(obj1.getPeriod().getStartDate());
+                return obj2.getPeriod().start().compareTo(obj1.getPeriod().start());
             }
         });
 	}

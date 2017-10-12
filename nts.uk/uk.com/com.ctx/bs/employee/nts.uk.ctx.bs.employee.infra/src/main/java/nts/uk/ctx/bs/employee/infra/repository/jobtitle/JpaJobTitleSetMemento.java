@@ -8,9 +8,9 @@ import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistory;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.Period;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHistPK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaJobTitleSetMemento.
@@ -60,16 +60,16 @@ public class JpaJobTitleSetMemento implements JobTitleSetMemento {
 	@Override
 	public void setJobTitleHistory(List<JobTitleHistory> jobTitleHistory) {
 		// convert list workplace history to map by key historyId
-        Map<String, Period> mapJobHist = jobTitleHistory.stream()
+        Map<String, DatePeriod> mapJobHist = jobTitleHistory.stream()
         		.collect(Collectors.toMap(
         				item -> ((JobTitleHistory) item).getHistoryId().v(), 
         				item -> ((JobTitleHistory) item).getPeriod()));
 
         // set period
         this.listEntity.forEach(entity -> {
-            Period period = mapJobHist.get(entity.getBsymtJobHistPK().getHistId());
-            entity.setStartDate(period.getStartDate());
-            entity.setEndDate(period.getEndDate());
+            DatePeriod period = mapJobHist.get(entity.getBsymtJobHistPK().getHistId());
+            entity.setStartDate(period.start());
+            entity.setEndDate(period.end());
         });
 	}
 
