@@ -6,8 +6,8 @@ package nts.uk.ctx.sys.env.app.command.mailserver;
 
 import lombok.Data;
 
-/* (non-Javadoc)
- * @see java.lang.Object#toString()
+/**
+ * The Class PopInfoDto.
  */
 @Data
 public class PopInfoDto {
@@ -44,6 +44,9 @@ public class PopInfoDto {
 		this.popPort = popPort;
 	}
 	
+	/**
+	 * Instantiates a new pop info dto.
+	 */
 	public PopInfoDto() {
 		super();
 	}

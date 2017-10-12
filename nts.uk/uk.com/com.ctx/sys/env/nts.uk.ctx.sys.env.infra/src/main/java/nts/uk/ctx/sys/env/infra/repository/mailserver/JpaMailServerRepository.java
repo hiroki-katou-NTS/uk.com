@@ -28,50 +28,63 @@ public class JpaMailServerRepository extends JpaRepository implements MailServer
 	 */
 	@Override
 	public Optional<MailServer> findBy(String companyId) {
-		return this.queryProxy()
-				.find(companyId, SevstMailServer.class)
-				.map(e -> this.toDomain(e));
+		return this.queryProxy().find(companyId, SevstMailServer.class).map(e -> this.toDomain(e));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailserver.MailServerRepository#add(nts.uk.ctx.sys
+	 * .env.dom.mailserver.MailServer)
+	 */
 	@Override
 	public void add(MailServer mailSetting) {
 		this.commandProxy().insert(this.toEntity(mailSetting));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.sys.env.dom.mailserver.MailServerRepository#update(nts.uk.ctx.
+	 * sys.env.dom.mailserver.MailServer)
+	 */
 	@Override
 	public void update(MailServer mailSetting) {
-		Optional<SevstMailServer> optinal = this.queryProxy()
-				.find(mailSetting.getCompanyId(), SevstMailServer.class);
-		
+		Optional<SevstMailServer> optinal = this.queryProxy().find(mailSetting.getCompanyId(),
+				SevstMailServer.class);
+
 		SevstMailServer entity = optinal.get();
-	
+
 		JpaMailServerSetMemento memento = new JpaMailServerSetMemento(entity);
 		mailSetting.saveToMemento(memento);
-		
+
 		this.commandProxy().update(entity);
-		
+
 	}
-	
-	
+
 	/**
 	 * To entity.
 	 *
-	 * @param domain the domain
-	 * @return mail server entity
+	 * @param domain
+	 *            the domain
+	 * @return the sevst mail server
 	 */
-	private SevstMailServer toEntity(MailServer domain){
+	private SevstMailServer toEntity(MailServer domain) {
 		SevstMailServer entity = new SevstMailServer();
 		domain.saveToMemento(new JpaMailServerSetMemento(entity));
 		return entity;
 	}
-	
+
 	/**
 	 * To domain.
 	 *
-	 * @param entity the entity
-	 * @return the management category
+	 * @param entity
+	 *            the entity
+	 * @return the mail server
 	 */
-	private MailServer toDomain(SevstMailServer entity){
+	private MailServer toDomain(SevstMailServer entity) {
 		return new MailServer(new JpaMailServerGetMemento(entity));
 	}
 
