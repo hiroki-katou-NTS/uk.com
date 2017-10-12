@@ -53,7 +53,7 @@ public class BeforePrelaunchAppCommonSetImpl implements BeforePrelaunchAppCommon
 		ApplicationSetting applicationSetting = applicationSettingOp.get();
 		
 		appCommonSettingOutput.applicationSetting = applicationSetting;
-		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, ApplicationType.STAMP_APPLICATION.value);
+		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, targetApp.value);
 		if(appTypeDiscreteSettingOp.isPresent()) {
 			AppTypeDiscreteSetting appTypeDiscreteSetting = appTypeDiscreteSettingOp.get();
 			appCommonSettingOutput.appTypeDiscreteSettings.add(appTypeDiscreteSetting);

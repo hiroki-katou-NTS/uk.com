@@ -5,12 +5,14 @@
 package nts.uk.ctx.at.request.ac.bs;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.EmployeeAdapter;
+import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.JobEntryHistoryImport;
 import nts.uk.ctx.at.request.dom.application.common.adapter.bs.dto.PesionInforImport;
 import nts.uk.ctx.bs.employee.pub.employee.SyEmployeePub;
 import nts.uk.ctx.bs.employee.pub.employment.SyEmploymentPub;
@@ -94,7 +96,13 @@ public class EmployeeRequestAdapterImpl implements EmployeeAdapter {
 				personIn.getEmployeeId(),
 				personIn.getEmployeeName(),
 				personIn.getCompanyMail(), 
-				null);
+				personIn.getListJobEntryHist().stream().map(x -> new JobEntryHistoryImport(
+						x.getCompanyId(), 
+						x.getSId(), 
+						x.getHiringType(), 
+						x.getRetirementDate(), 
+						x.getJoinDate(), 
+						x.getAdoptDate())).collect(Collectors.toList()));
 		return person;
 	}
 
