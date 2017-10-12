@@ -27,6 +27,8 @@ module nts.uk.com.view.cmm018.a {
             historyStr: KnockoutObservable<string>  = ko.observable('');
             lstNameAppType: KnockoutObservableArray<vmbase.ApplicationType>;
             approver: KnockoutObservableArray<vmbase.ApproverDto>;
+            //enable button register
+            enableRegister: KnockoutObservable<boolean> = ko.observable(true);
             //---list AppPhase---
             listAppPhase: KnockoutObservableArray<vmbase.ApprovalPhaseDto> = ko.observableArray([]);
             //---list data right---
@@ -347,7 +349,6 @@ module nts.uk.com.view.cmm018.a {
                         self.nameCompany('');
                         return;
                     } 
-                    console.log(data);
                     if(transferData.screen == 'Application'){//screen Application
                         //list person
                         self.lstPerson(data.lstPerson);
@@ -393,9 +394,11 @@ module nts.uk.com.view.cmm018.a {
                         self.historyStr('');
                         self.listHistory([]);
                         self.cpA([]);
+                        self.enableRegister(true); 
                         dfd.resolve();
                         return dfd.promise();
                     } 
+                    self.enableRegister(true); 
                     self.checkAddHistory(false);
                     self.lstCompany(data.lstCompany);
                     let lstRoot: Array<vmbase.DataRootCheck> = [];
@@ -437,9 +440,11 @@ module nts.uk.com.view.cmm018.a {
                         self.historyStr('');
                         self.listHistory([]);
                         self.cpA([]);
+                        self.enableRegister(false);
                         dfd.resolve();
                         return dfd.promise();
                     } 
+                    self.enableRegister(true); 
                     self.checkAddHistory(false);
                     self.lstWorkplace(data.lstWorkplace);
                     if(data.lstWorkplace.length > 0){
@@ -484,9 +489,11 @@ module nts.uk.com.view.cmm018.a {
                         self.historyStr('');
                         self.listHistory([]);
                         self.cpA([]);
+                        self.enableRegister(false); 
                         dfd.resolve();
                         return dfd.promise();
                     } 
+                    self.enableRegister(true); 
                     self.checkAddHistory(false);
                     self.lstPerson(data.lstPerson);
                     let lstRoot: Array<vmbase.DataRootCheck> = [];
@@ -614,6 +621,7 @@ module nts.uk.com.view.cmm018.a {
                         self.enableDelete(true);
                         return;
                     }
+                    self.enableRegister(true);
                     self.lstAppType = data.lstAppType;
                     self.checkAddHistory(true);
                     let add: vmbase.ListHistory = new vmbase.ListHistory(-1, 
@@ -813,7 +821,6 @@ module nts.uk.com.view.cmm018.a {
              */
             openDialogK(obj: vmbase.ApprovalPhaseDto, approvalId: string, appTypeValue: number, int: number){
                 let self = __viewContext.viewModel.viewmodelA;
-                console.log(obj);
                 self.approverInfor([]);
                 let approvalAtr = obj.approver[0] == null ? 0 : obj.approver[0].approvalAtr;
                 let formSetting = obj.approvalForm == 0 ? 1 : obj.approvalForm;
@@ -1445,7 +1452,6 @@ module nts.uk.com.view.cmm018.a {
                         self.dataSourceB();
                         return;
                     }
-                    console.log(data);
                     self.dataSourceB(data);
                     self.lstCompany(data.lstCompanyRoot);
                      let lstRoot: Array<vmbase.DataCheckModeB> = [];
@@ -1467,6 +1473,11 @@ module nts.uk.com.view.cmm018.a {
                        self.singleSelectedCode(a.company.approvalId);
                    }
                     self.dataIB(null);
+                    if(self.lstCompany().length >0){
+                        __viewContext.viewModel.viewmodelA.enableRegister(true);    
+                    }else{
+                        __viewContext.viewModel.viewmodelA.enableRegister(false);
+                    }
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -1504,7 +1515,12 @@ module nts.uk.com.view.cmm018.a {
                     if(a != undefined){
                         self.singleSelectedCode(a.workplace.approvalId);
                     }
-                    self.dataIB(null); 
+                    self.dataIB(null);
+                    if(self.lstWorkplace().length >0){
+                        __viewContext.viewModel.viewmodelA.enableRegister(true);    
+                    }else{
+                        __viewContext.viewModel.viewmodelA.enableRegister(false);
+                    } 
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -1542,6 +1558,11 @@ module nts.uk.com.view.cmm018.a {
                         self.singleSelectedCode(a.person.approvalId);
                     }
                     self.dataIB(null);
+                    if(self.lstPerson().length >0){
+                        __viewContext.viewModel.viewmodelA.enableRegister(true);    
+                    }else{
+                        __viewContext.viewModel.viewmodelA.enableRegister(false);
+                    } 
                     dfd.resolve();
                     });
                 return dfd.promise();
@@ -1957,6 +1978,7 @@ module nts.uk.com.view.cmm018.a {
                     if(data == null){
                         return;
                     }
+                    __viewContext.viewModel.viewmodelA.enableRegister(true);
                     self.dataIB(data);
                     let lst = data.lstAppType;
                     let data2 = [];
@@ -2245,7 +2267,6 @@ module nts.uk.com.view.cmm018.a {
                     }
                     //list left
                     self.singleSelectedCode('共通ルート');
-                    console.log(self.dataDisplay());
                     //list right
             }
             /**
