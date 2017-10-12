@@ -9,7 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import nts.arc.time.GeneralDate;
-import nts.arc.time.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ClosureGetMonthDay.

@@ -5,7 +5,7 @@
 package nts.uk.ctx.at.shared.dom.workrule.closure.service;
 
 import nts.arc.time.YearMonth;
-import nts.arc.time.period.DatePeriod;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface ClosureService.

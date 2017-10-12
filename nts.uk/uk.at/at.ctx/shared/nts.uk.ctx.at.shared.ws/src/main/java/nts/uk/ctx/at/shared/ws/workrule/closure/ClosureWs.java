@@ -12,7 +12,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.arc.time.period.DatePeriod;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommand;
 import nts.uk.ctx.at.shared.app.command.workrule.closure.ClosureSaveCommandHandler;
 import nts.uk.ctx.at.shared.app.find.workrule.closure.ClosureFinder;
@@ -26,6 +25,7 @@ import nts.uk.ctx.at.shared.app.find.workrule.closure.dto.DayMonthInDto;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureDate;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.DayMonthChange;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ClosureWs.
