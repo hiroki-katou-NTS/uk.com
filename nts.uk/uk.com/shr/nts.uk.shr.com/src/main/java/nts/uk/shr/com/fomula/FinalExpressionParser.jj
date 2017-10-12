@@ -12,6 +12,8 @@ public class ExpressionParser {
      
     private Stack<BigDecimal> argStack = new Stack<BigDecimal>();
     private String expression;
+    private int divineScale = 10;
+    private RoundingMode divineRoundMode = RoundingMode.HALF_UP;
  
  	public ExpressionParser() {
   	  	this("");
@@ -22,16 +24,6 @@ public class ExpressionParser {
  	  	this.expression = in;
   	}
 
-	public BigDecimal parse(String in) throws ParseException{
-	  	this.expression = in;
-	  	if(in!= null && !in.trim().isEmpty()) {
-			this.ReInit(new StringReader(this.expression));
-        	this.expressionParse();
-        	return argStack.pop();
-	  	}
-        return BigDecimal.ZERO;
-	}
-
 	public BigDecimal parse() throws ParseException{
 	  	if(this.expression!= null && !this.expression.trim().isEmpty()) {
 		  	this.ReInit(new StringReader(this.expression));
@@ -40,6 +32,18 @@ public class ExpressionParser {
       	}
       	
       	return BigDecimal.ZERO; 
+	}
+
+	public BigDecimal parse(String in) throws ParseException{
+	  	this.expression = in;
+        return this.parse();
+	}
+
+	public BigDecimal parse(String in, int divineScale, RoundingMode divineRoundMode) throws ParseException{
+	  	this.divineRoundMode = divineRoundMode;
+	  	this.divineScale = divineScale;
+	  	this.expression = in;
+        return this.parse();
 	}
 }
 PARSER_END(ExpressionParser)
@@ -281,5 +285,5 @@ private boolean logicExpression() :
 
 JAVACODE
 private MathContext getMathContext() {
-	return new MathContext(10, RoundingMode.FLOOR);
+	return new MathContext(this.divineScale, this.divineRoundMode);
 }
