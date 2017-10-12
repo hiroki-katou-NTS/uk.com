@@ -424,6 +424,7 @@ public class CommonApprovalRootFinder {
 				&& date2.getEndDate().compareTo(date1.getEndDate()) < 0) {
 			return true;
 		}
+		
 		/**
 		 * date 1.........|..............]..........
 		 * date 2.....|........]....................
@@ -444,7 +445,7 @@ public class CommonApprovalRootFinder {
 		}
 		/**
 		 * date 1.........|..............]..........
-		 * date 2.........|...................].....
+		 * date 2..........|...................].....
 		 * eDate2 > eDate1 && sDate2 < eDate1
 		 */
 		if(date2.getEndDate().compareTo(date1.getEndDate()) > 0

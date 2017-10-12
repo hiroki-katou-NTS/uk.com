@@ -49,7 +49,7 @@ module nts.uk.com.view.cmm018.j {
                 //編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
                     if(self.newStartDate() < self.beginStartDate()){
                         //エラーメッセージ(Msg_156)(error mesage (Msg_156))
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_156" }).then(function(res){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_156", messageParams: nts.uk.resource.getText("CMM018_48")  }).then(function(res){
                             block.clear();
                         });
                         return;
