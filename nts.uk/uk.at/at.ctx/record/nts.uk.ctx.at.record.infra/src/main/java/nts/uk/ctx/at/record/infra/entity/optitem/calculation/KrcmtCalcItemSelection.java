@@ -9,6 +9,9 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -30,6 +33,15 @@ public class KrcmtCalcItemSelection extends UkJpaEntity implements Serializable 
 	/** The krcmt calc item selection PK. */
 	@EmbeddedId
 	protected KrcmtCalcItemSelectionPK krcmtCalcItemSelectionPK;
+
+	/** The krcmt opt item formula. */
+	@ManyToOne
+	@JoinColumns({
+		@JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+		@JoinColumn(name = "OPTIONAL_ITEM_NO", referencedColumnName = "OPTIONAL_ITEM_NO", insertable = false, updatable = false),
+		@JoinColumn(name = "FORMULA_ID", referencedColumnName = "FORMULA_ID", insertable = false, updatable = false)
+		})
+	private KrcmtOptItemFormula krcmtOptItemFormula;
 
 	/** The minus segment. */
 	@Column(name = "MINUS_SEGMENT")

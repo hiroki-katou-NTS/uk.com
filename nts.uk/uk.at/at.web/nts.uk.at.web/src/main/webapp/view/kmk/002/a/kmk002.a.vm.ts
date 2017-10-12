@@ -722,12 +722,12 @@ module nts.uk.at.view.kmk002.a {
             constructor() {
                 this.upperCheck = ko.observable(false);
                 this.lowerCheck = ko.observable(false);
-                this.numberUpper = ko.observable(3);
-                this.numberLower = ko.observable(3);
-                this.amountUpper = ko.observable(2);
-                this.amountLower = ko.observable(2);
-                this.timeUpper = ko.observable(1);
-                this.timeLower = ko.observable(1);
+                this.numberUpper = ko.observable(0);
+                this.numberLower = ko.observable(0);
+                this.amountUpper = ko.observable(0);
+                this.amountLower = ko.observable(0);
+                this.timeUpper = ko.observable(0);
+                this.timeLower = ko.observable(0);
             }
 
             /**
@@ -746,12 +746,12 @@ module nts.uk.at.view.kmk002.a {
                 let self = this;
                 this.upperCheck(false);
                 this.lowerCheck(false);
-                this.numberUpper(null);
-                this.numberLower(null);
-                this.amountUpper(null);
-                this.amountLower(null);
-                this.timeUpper(null);
-                this.timeLower(null);
+                this.numberUpper(0);
+                this.numberLower(0);
+                this.amountUpper(0);
+                this.amountLower(0);
+                this.timeUpper(0);
+                this.timeLower(0);
             }
 
             public fromDto(dto: CalcResultRangeDto): void {
@@ -861,23 +861,19 @@ module nts.uk.at.view.kmk002.a {
 
                 let command = self.optionalItem.toDto();
 
-                // call webservice to save optional item.
-                service.saveOptionalItem(command)
+                // call webservice to save optional item
+                $.when(service.saveOptionalItem(command), self.saveFormulas())
                     .done(() => {
+                        // reload optional item list.
+                        self.loadOptionalItemHeaders();
 
-                        // save formulas.
-                        self.saveFormulas()
-                            .done(() => {
-                                // reload optional item list.
-                                self.loadOptionalItemHeaders();
+                        // show message save successful
+                        nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
 
-                                // show message save successful
-                                nts.uk.ui.dialog.info({ messageId: 'Msg_15' });
-
-                                dfd.resolve();
-                            });
+                        dfd.resolve();
                     })
-                    .fail(res => nts.uk.ui.dialog.alertError(res));
+                    .fail(res => nts.uk.ui.dialog.alertError(res))
+                    .always(() => nts.uk.ui.block.clear()); // clear block ui.;
 
                 return dfd.promise();
             }
@@ -1006,10 +1002,18 @@ module nts.uk.at.view.kmk002.a {
             itemSelection: ItemSelectionDto;
 
             //Rounding
-            monthlyRounding: KnockoutObservable<number>;
-            monthlyUnit: KnockoutObservable<number>;
-            dailyRounding: KnockoutObservable<number>;
-            dailyUnit: KnockoutObservable<number>;
+            timeMonthlyRounding: KnockoutObservable<number>;
+            timeMonthlyUnit: KnockoutObservable<number>;
+            timeDailyRounding: KnockoutObservable<number>;
+            timeDailyUnit: KnockoutObservable<number>;
+            numberMonthlyRounding: KnockoutObservable<number>;
+            numberMonthlyUnit: KnockoutObservable<number>;
+            numberDailyRounding: KnockoutObservable<number>;
+            numberDailyUnit: KnockoutObservable<number>;
+            amountMonthlyRounding: KnockoutObservable<number>;
+            amountMonthlyUnit: KnockoutObservable<number>;
+            amountDailyRounding: KnockoutObservable<number>;
+            amountDailyUnit: KnockoutObservable<number>;
 
             // flags
             selected: KnockoutObservable<boolean>;
@@ -1022,8 +1026,12 @@ module nts.uk.at.view.kmk002.a {
             // Enums datasource
             formulaAtrDs: EnumConstantDto[];
             calcAtrDs: EnumConstantDto[];
-            roundingUnitDs: EnumConstantDto[];
-            roundingDs: EnumConstantDto[];
+            numberUnitDs: EnumConstantDto[];
+            numberRoundingDs: EnumConstantDto[];
+            amountUnitDs: EnumConstantDto[];
+            amountRoundingDs: EnumConstantDto[];
+            timeUnitDs: EnumConstantDto[];
+            timeRoundingDs: EnumConstantDto[];
 
             // stash
             formulaAtrStash: number;
@@ -1034,7 +1042,6 @@ module nts.uk.at.view.kmk002.a {
                 this.optionalItemNo = '';
                 this.formulaName = ko.observable('');
                 this.formulaAtr = ko.observable(1);
-                this.formulaAtrStash = 1;
                 this.symbolValue = '';
                 this.orderNo = 1;
                 this.selected = ko.observable(false);
@@ -1042,24 +1049,46 @@ module nts.uk.at.view.kmk002.a {
 
                 // Calculation setting.
                 this.calcAtr = ko.observable(1);
-                this.calcAtrStash = 1;
                 this.formulaSetting = this.getDefaultFormulaSetting();
                 this.itemSelection = this.getDefaultItemSelection();
 
+                // stash
+                this.calcAtrStash = 1;
+                this.formulaAtrStash = 1;
+
                 // Rounding
-                this.monthlyRounding = ko.observable(1);
-                this.monthlyUnit = ko.observable(1);
-                this.dailyRounding = ko.observable(1);
-                this.dailyUnit = ko.observable(1);
+                this.timeMonthlyRounding = ko.observable(1);
+                this.timeMonthlyUnit = ko.observable(1);
+                this.timeDailyRounding = ko.observable(1);
+                this.timeDailyUnit = ko.observable(1);
+                this.numberMonthlyRounding = ko.observable(1);
+                this.numberMonthlyUnit = ko.observable(1);
+                this.numberDailyRounding = ko.observable(1);
+                this.numberDailyUnit = ko.observable(1);
+                this.amountMonthlyRounding = ko.observable(1);
+                this.amountMonthlyUnit = ko.observable(1);
+                this.amountDailyRounding = ko.observable(1);
+                this.amountDailyUnit = ko.observable(1);
 
                 // initial data source
-                this.formulaAtrDs = Enums.ENUM_FORMULA.formulaAtr;
-                this.calcAtrDs = Enums.ENUM_FORMULA.calcAtr;
-                this.roundingUnitDs = Enums.ENUM_FORMULA.timeRounding.unit;
-                this.roundingDs = Enums.ENUM_FORMULA.timeRounding.rounding;
+                this.initDatasource();
 
                 // init subscribe
                 this.initSubscribe();
+            }
+
+            /**
+             * Initial data source
+             */
+            private initDatasource(): void {
+                this.formulaAtrDs = Enums.ENUM_FORMULA.formulaAtr;
+                this.calcAtrDs = Enums.ENUM_FORMULA.calcAtr;
+                this.timeUnitDs = Enums.ENUM_FORMULA.timeRounding.unit;
+                this.timeRoundingDs = Enums.ENUM_FORMULA.timeRounding.rounding;
+                this.amountUnitDs = Enums.ENUM_FORMULA.amountRounding.unit;
+                this.amountRoundingDs = Enums.ENUM_FORMULA.amountRounding.rounding;
+                this.numberUnitDs = Enums.ENUM_FORMULA.numberRounding.unit;
+                this.numberRoundingDs = Enums.ENUM_FORMULA.numberRounding.rounding;
             }
 
             /**
@@ -1216,6 +1245,28 @@ module nts.uk.at.view.kmk002.a {
                 return false;
             }
 
+            public isTimeSelected(): boolean {
+                let self = this;
+                if (self.formulaAtr() == TypeAtr.TIME) {
+                    return true;
+                }
+                return false;
+            }
+            public isNumberSelected(): boolean {
+                let self = this;
+                if (self.formulaAtr() == TypeAtr.NUMBER) {
+                    return true;
+                }
+                return false;
+            }
+            public isAmountSelected(): boolean {
+                let self = this;
+                if (self.formulaAtr() == TypeAtr.AMOUNT) {
+                    return true;
+                }
+                return false;
+            }
+
             /**
             * Open dialog C: Item selection
             */
@@ -1283,22 +1334,21 @@ module nts.uk.at.view.kmk002.a {
                 dto.itemSelection = self.itemSelection;
 
                 // Rounding
-                //TODO mock data.
                 let monthly = <RoundingDto>{};
-                monthly.numberRounding = self.monthlyRounding();
-                monthly.numberUnit = self.monthlyUnit();
-                monthly.timeRounding = self.monthlyRounding();
-                monthly.timeUnit = self.monthlyUnit();
-                monthly.amountRounding = self.monthlyRounding();
-                monthly.amountUnit = self.monthlyUnit();
+                monthly.numberRounding = self.numberMonthlyRounding();
+                monthly.numberUnit = self.numberMonthlyUnit();
+                monthly.timeRounding = self.timeMonthlyRounding();
+                monthly.timeUnit = self.timeMonthlyUnit();
+                monthly.amountRounding = self.amountMonthlyRounding();
+                monthly.amountUnit = self.amountMonthlyUnit();
 
                 let daily = <RoundingDto>{};
-                daily.numberRounding = self.dailyRounding();
-                daily.numberUnit = self.dailyUnit();
-                daily.timeRounding = self.dailyRounding();
-                daily.timeUnit = self.dailyUnit();
-                daily.amountRounding = self.dailyRounding();
-                daily.amountUnit = self.dailyUnit();
+                daily.numberRounding = self.numberDailyRounding();
+                daily.numberUnit = self.numberDailyUnit();
+                daily.timeRounding = self.timeDailyRounding();
+                daily.timeUnit = self.timeDailyUnit();
+                daily.amountRounding = self.amountDailyRounding();
+                daily.amountUnit = self.amountDailyUnit();;
 
                 dto.monthlyRounding = monthly;
                 dto.dailyRounding = daily;
@@ -1331,11 +1381,22 @@ module nts.uk.at.view.kmk002.a {
                     self.itemSelection = dto.itemSelection;
                 }
 
-                // rounding
-                //                self.monthlyRounding = dto.monthlyRounding.numberRounding;
-                //                self.monthlyUnit = dto.monthlyRounding.numberUnit;
-                //                self.dailyRounding = dto.dailyRounding.numberRounding;
-                //                self.dailyUnit = dto.dailyRounding.numberUnit;
+                // Rounding
+                //number
+                self.numberMonthlyRounding(dto.monthlyRounding.numberRounding);
+                self.numberMonthlyUnit(dto.monthlyRounding.numberUnit);
+                self.numberDailyRounding(dto.dailyRounding.numberRounding);
+                self.numberDailyUnit(dto.dailyRounding.numberUnit);
+                //time
+                self.timeMonthlyRounding(dto.monthlyRounding.timeRounding);
+                self.timeMonthlyUnit(dto.monthlyRounding.timeUnit);
+                self.timeDailyRounding(dto.dailyRounding.timeRounding);
+                self.timeDailyUnit(dto.dailyRounding.timeUnit);
+                //amount
+                self.amountMonthlyRounding(dto.monthlyRounding.amountRounding);
+                self.amountMonthlyUnit(dto.monthlyRounding.amountUnit);
+                self.amountDailyRounding(dto.dailyRounding.amountRounding);
+                self.amountDailyUnit(dto.dailyRounding.amountUnit);
 
             }
         }
