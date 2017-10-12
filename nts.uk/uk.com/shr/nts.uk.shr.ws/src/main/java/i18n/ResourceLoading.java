@@ -3,6 +3,7 @@ package i18n;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -23,18 +24,34 @@ import nts.arc.i18n.custom.IInternationalization;
 import nts.arc.i18n.custom.ISessionLocale;
 import nts.arc.i18n.custom.ResourceType;
 import nts.arc.layer.app.command.JavaTypeResult;
+import nts.arc.scoped.session.SessionContextProvider;
 import nts.uk.shr.infra.i18n.SystemProperties;
+import nts.uk.shr.infra.i18n.loading.SessionLocale;
 
 @Path("loadresource")
 @Produces("text/javascript")
 public class ResourceLoading {
-	@Inject
+	private static final String CURRENT_LOCALE = "current locale";
+	private static int YEAR = 31536000;
+	
 	private ISessionLocale currentLanguage;
 	@Inject
 	private IInternationalization i18n;
 
-	private static int YEAR = 31536000;
-
+	@PostConstruct
+	public void postConstruct(){
+		getSessionLocale();
+	}
+	
+	private void getSessionLocale() {
+		ISessionLocale fromSeesion = SessionContextProvider.get().<ISessionLocale>get(CURRENT_LOCALE);
+		// if it isn't set yet, we will create new one with default locale
+		if (fromSeesion == null) {
+			fromSeesion = new SessionLocale();
+		}
+		this.currentLanguage = fromSeesion;
+	}
+	
 	@GET
 	public Response getSystemResource(@Context Request request) {
 		CacheControl cacheControl = new CacheControl();

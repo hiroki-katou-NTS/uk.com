@@ -306,7 +306,7 @@ module nts.uk.ui {
             export function modeless(path: string, options?: any)
             export function modeless(webAppId: nts.uk.request.WebAppId, path: string, options?: any) {
                  if (typeof arguments[1] !== 'string') {
-                    return modal.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
+                    return modeless.apply(null, _.concat(nts.uk.request.location.currentAppId, arguments));
                 }
                 if(webAppId==nts.uk.request.location.currentAppId){
                     path = nts.uk.request.resolvePath(path);
@@ -336,11 +336,11 @@ module nts.uk.ui {
      * Using for display info or confirm dialog
      */
     export module dialog {
-        export class DialogHeader {
+        interface DialogHeader {
             icon?: string;
             text?: string;
         }
-        export class Message {
+        interface Message {
             d: string;
             messageParams?: any[];
         }

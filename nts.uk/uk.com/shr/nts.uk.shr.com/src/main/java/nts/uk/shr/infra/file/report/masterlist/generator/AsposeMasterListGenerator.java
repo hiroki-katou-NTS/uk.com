@@ -123,7 +123,7 @@ public class AsposeMasterListGenerator extends AsposeCellsReportGenerator implem
 		for (MasterHeaderColumn c : columns) {
 			Cell cell = cells.get(MASTERLIST_DATA_START_ROW - 1, columnIndex);
 			cell.setStyle(this.getCellStyle(cell.getStyle(), c));
-			cell.setValue(c.getColumnId());
+			cell.setValue(c.getColumnText());
 			columnIndex++;
 		}
 	}

@@ -3,6 +3,7 @@ package nts.uk.shr.infra.i18n.loading;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.Dependent;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -27,14 +29,15 @@ import nts.arc.i18n.custom.ISessionLocale;
 import nts.arc.i18n.custom.ISystemResourceBundle;
 import nts.arc.i18n.custom.ResourceItem;
 import nts.arc.i18n.custom.ResourceType;
+import nts.arc.scoped.session.SessionContextProvider;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.i18n.SystemProperties;
 import nts.uk.shr.infra.i18n.format.DateTimeFormatProvider;
 import nts.uk.shr.infra.i18n.format.DateTimeTranscoder;
 
-@Dependent
+@ApplicationScoped
 @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-public class MultiLanguageResource implements IInternationalization,Serializable {
+public class MultiLanguageResource implements IInternationalization, Serializable {
 
 	private String getCompanyCode() {
 		return AppContexts.user().companyCode();
@@ -44,35 +47,39 @@ public class MultiLanguageResource implements IInternationalization,Serializable
 	private ISystemResourceBundle systemResourceBundle;
 	@Inject
 	private ICompanyResourceBundle companyResourceBundle;
-	@Inject
-	private ISessionLocale currentLanguage;
+
+	private ISessionLocale currentLocale;
 	// Map<programId, Map<String, String>>
 	private Map<String, Map<String, String>> codeNameResource;
 	// Map<programid,Map<messageId,message>
 	private Map<String, Map<String, String>> messageResource;
 
-	private Map<String, String> companyCustomizedResource;
+	//private Map<String, String> companyCustomizedResource;
 
 	private static final Pattern COMPANYDENPENDITEMPATTERN = Pattern.compile("\\{#(\\w*)\\}");
 	private static final Pattern MESSAGEPARAMETERPATTERN = Pattern.compile("\\{([0-9])+(:\\w+)?\\}");
 	private static final String ID_MARK = "#";
 	private static final String SEPARATOR = "_";
 
+	private static final String CURRENT_LOCALE = "current locale";
+
 	@PostConstruct
 	private void load() {
+		getSessionLocale();
+		
 		loadSystemResource();
 		loadCustomizedResource();
 	}
 
 	private void loadSystemResource() {
-		codeNameResource = systemResourceBundle.getResource(currentLanguage.getSessionLocale(), ResourceType.CODE_NAME);
+		codeNameResource = systemResourceBundle.getResource(currentLocale.getSessionLocale(), ResourceType.CODE_NAME);
 		if (codeNameResource == null || codeNameResource.isEmpty()) {
 			codeNameResource = systemResourceBundle.getResource(SystemProperties.DEFAULT_LANGUAGE,
 					ResourceType.CODE_NAME);
 		}
 
 		Map<String, Map<String, String>> tempMessageResource = systemResourceBundle
-				.getResource(currentLanguage.getSessionLocale(), ResourceType.MESSAGE);
+				.getResource(currentLocale.getSessionLocale(), ResourceType.MESSAGE);
 		if (tempMessageResource == null || tempMessageResource.isEmpty()) {
 			tempMessageResource = systemResourceBundle.getResource(SystemProperties.DEFAULT_LANGUAGE,
 					ResourceType.MESSAGE);
@@ -80,22 +87,31 @@ public class MultiLanguageResource implements IInternationalization,Serializable
 		messageResource = tempMessageResource;
 	}
 
+	private void getSessionLocale() {
+		ISessionLocale fromSeesion = SessionContextProvider.get().<ISessionLocale>get(CURRENT_LOCALE);
+		// if it isn't set yet, we will create new one with default locale
+		if (fromSeesion == null) {
+			fromSeesion = new SessionLocale();
+		}
+		this.currentLocale = fromSeesion;
+	}
+
 	private void loadCustomizedResource() {
-		companyCustomizedResource = companyResourceBundle
-				.getResource(getCompanyCode(), currentLanguage.getSessionLocale()).stream()
-				.collect(Collectors.toMap(ResourceItem::getCode, ResourceItem::getContent));
+//		companyCustomizedResource = companyResourceBundle
+//				.getResource(getCompanyCode(), currentLocale.getSessionLocale()).stream()
+//				.collect(Collectors.toMap(ResourceItem::getCode, ResourceItem::getContent));
 
 	}
 
 	@Override
 	public Optional<String> getItemName(String id, String... params) {
 		// because company customised resource has higher priority
-		String text = companyCustomizedResource.get(id);
-		if (text != null)
-			return Optional.of(text);
+//		String text = companyCustomizedResource.get(id);
+//		if (text != null)
+//			return Optional.of(text);
 
 		Map<String, String> allSystemCodeName = groupResource(codeNameResource);
-		text = allSystemCodeName.get(id);
+		String text = allSystemCodeName.get(id);
 		if (text != null) {
 			text = replaceCompanyCustomizeResource(text);
 			if (params.length > 0)
@@ -128,8 +144,9 @@ public class MultiLanguageResource implements IInternationalization,Serializable
 	@Override
 	public Optional<String> getRawMessage(String messageId) {
 		Map<String, String> allMessage = groupResource(messageResource);
-		String message = companyCustomizedResource.getOrDefault(messageId, allMessage.get(messageId));
-		return message == null ? Optional.empty() : Optional.of(message);
+		return Optional.ofNullable(allMessage.get(messageId));
+//		String message = companyCustomizedResource.getOrDefault(messageId, allMessage.get(messageId));
+//		return message == null ? Optional.empty() : Optional.of(message);
 	}
 
 	private String replaceCompanyCustomizeResource(String message) {
@@ -164,7 +181,7 @@ public class MultiLanguageResource implements IInternationalization,Serializable
 				String param;
 				if (format != null) {
 					DateTimeTranscoder transcoder = DateTimeFormatProvider.LocaleTranscoderMap
-							.get(currentLanguage.getSessionLocale());
+							.get(currentLocale.getSessionLocale());
 					param = transcoder.create().get(format.substring(1)).apply(params.get(paramIndex));
 				} else {
 					param = getArgument(params.get(paramIndex));
@@ -212,7 +229,7 @@ public class MultiLanguageResource implements IInternationalization,Serializable
 		codeName.putAll(codeNameResource.getOrDefault(SystemProperties.SYSTEM_ID, new HashMap<>()));
 		codeName.putAll(codeNameResource.getOrDefault(programId, new HashMap<>()));
 		// company customized will override system default
-		codeName.putAll(companyCustomizedResource);
+		//codeName.putAll(companyCustomizedResource);
 		return codeName;
 
 	}
@@ -244,9 +261,11 @@ public class MultiLanguageResource implements IInternationalization,Serializable
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Map<String, String> getCustomizeResource() {
-		return companyCustomizedResource;
+		return Collections.EMPTY_MAP;
+		//return companyCustomizedResource;
 	}
 
 	@Override

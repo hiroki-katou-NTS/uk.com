@@ -59,7 +59,7 @@ subprojects {
 		compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
 		
 		// Lombok
-		compile group: 'org.projectlombok', name: 'lombok', version: '1.16.10'
+		compile group: 'org.projectlombok', name: 'lombok', version: '1.16.18'
 		
 		// JUnit
 		testCompile group: 'junit', name: 'junit', version: '4.12'
@@ -105,10 +105,10 @@ subprojects {
         // Apache commons IO
 		compile group: 'commons-io', name: 'commons-io', version: '2.5'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.29'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.41.1'
+		compile group: 'nts.gul', name: 'nts.gul', version: '0.32'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.43.1'
 		
-		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.5.4'
+		compile group: 'com.shr', name: 'nts.uk.shr.com', version: '0.6.4.2'
 	}
 }
 
@@ -348,6 +348,13 @@ project (':pr.web:nts.uk.pr.web') {
 		
 		runtime project (':pr.file:nts.uk.file.pr.app')
 		runtime project (':pr.file:nts.uk.file.pr.infra')
+		
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.app', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.dom', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.infra', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pub', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.pubimp', version: '0.1')
+		runtime(group: 'com.sys.env', name: 'nts.uk.ctx.sys.env.ac', version: '0.1')
 		
 		// to provide PrimitiveValue
 		compile group: 'com', name: 'nts.uk.ctx.basic.dom', version: '0.1'

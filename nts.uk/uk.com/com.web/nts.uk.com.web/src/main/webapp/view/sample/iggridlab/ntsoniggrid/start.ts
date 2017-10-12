@@ -76,6 +76,7 @@ module nts.uk.ui.gridlist {
                             primaryKey: 'id',
                             virtualization: true,
                             virtualizationMode: 'continuous',
+//                            enter: 'right',
                             columns: [
                                 { headerText: 'ID', key: 'id', dataType: 'number', width: '50px', ntsControl: 'Label' },
                                 { headerText: 'FLAG', key: 'flag', dataType: 'boolean', width: '200px', ntsControl: 'Checkbox' },
@@ -85,8 +86,14 @@ module nts.uk.ui.gridlist {
                                 { headerText: 'Button', key: 'open', dataType: 'string', width: '80px', unbound: true, ntsControl: 'Button' },
                                 { headerText: 'Delete', key: 'delete', dataType: 'string', width: '80px', unbound: true, ntsControl: 'DeleteButton' }
                             ], 
-                            features: [{ name: 'Resizing' }],
-                            ntsFeatures: [{ name: 'CopyPaste' }],
+                            features: [{ name: 'Resizing' },
+                                        { 
+                                            name: 'Selection',
+                                            mode: 'row',
+                                            multipleSelection: true
+                                        }
+                            ],
+//                            ntsFeatures: [{ name: 'CopyPaste' }],
                             ntsControls: [{ name: 'Checkbox', options: { value: 1, text: 'Custom Check' }, optionsValue: 'value', optionsText: 'text', controlType: 'CheckBox', enable: true },
                                             { name: 'SwitchButtons', options: [{ value: '1', text: 'Option 1' }, { value: '2', text: 'Option 2' }, { value: '3', text: 'Option 3' }], 
                                                 optionsValue: 'value', optionsText: 'text', controlType: 'SwitchButtons', enable: true },
@@ -94,6 +101,7 @@ module nts.uk.ui.gridlist {
                                             { name: 'Button', text: 'Open', click: function() { alert("Button!!"); }, controlType: 'Button' },
                                             { name: 'DeleteButton', text: 'Delete', controlType: 'DeleteButton', enable: true }]
                             });
+        $("#grid2").setupSearchScroll("igGrid", true);
         $("#run").on("click", function() {
             var source = $("#grid2").igGrid("option", "dataSource");
             alert(source[1].flag);
