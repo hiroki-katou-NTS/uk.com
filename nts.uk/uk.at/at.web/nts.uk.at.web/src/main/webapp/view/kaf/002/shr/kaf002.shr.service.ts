@@ -10,6 +10,10 @@ module nts.uk.at.view.kaf002.shr {
             getStampCombinationAtr: "at/request/application/stamp/enum/stampCombination"
         }
         
+        export function findAllWorkLocation(): JQueryPromise<any> {
+            return ajax("at", paths.getAllWorkLocation);
+        }
+        
         export function findByAppID(appID: string): JQueryPromise<any> {
             return ajax("at", paths.findByAppID, appID);
         }

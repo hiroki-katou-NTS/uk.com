@@ -51,6 +51,11 @@ module nts.uk.at.view.kaf002.shr {
             stampGoOutAtr_Union_Disp: number;
         }
         
+        export interface IWorkLocation {
+            workLocationCD: string;
+            workLocationName: string;  
+        } 
+        
         export class Application {
             applicationID: KnockoutObservable<string>; // 申請ID
             inputDate: KnockoutObservable<string>; // 入力日
