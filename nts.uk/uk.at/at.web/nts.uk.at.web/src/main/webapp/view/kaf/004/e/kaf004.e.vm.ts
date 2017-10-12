@@ -70,6 +70,7 @@ module nts.uk.at.view.kaf004.e.viewmodel {
 
             service.getByCode().done(function(data) {
                 self.ListTypeReason(data.listApplicationReasonDto);
+                
                 dfd.resolve();
             });
                

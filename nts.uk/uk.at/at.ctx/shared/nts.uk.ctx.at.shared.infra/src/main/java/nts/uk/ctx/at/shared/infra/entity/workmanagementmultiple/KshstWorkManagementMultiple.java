@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -19,20 +20,19 @@ import nts.uk.shr.infra.data.entity.UkJpaEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 public class KshstWorkManagementMultiple extends UkJpaEntity implements Serializable {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
-	public KshstWorkManagementMultiplePK kshstWorkManagementPK;
-	
+	@Id
+	@Column(name = "CID")
+	public String companyID;
+
 	@Column(name = "USE_ATR")
 	public int useATR;
+
 	@Override
-	
 	protected Object getKey() {
-		return kshstWorkManagementPK;
+		return companyID;
 	}
 
 }

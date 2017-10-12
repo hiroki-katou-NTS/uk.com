@@ -6,7 +6,6 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.at.request.app.command.application.lateorleaveearly.CreateApplicationLateOrLeaveEarlyCommand;
 import nts.uk.ctx.at.request.app.command.application.lateorleaveearly.CreateLateOrLeaveEarlyCommand;
 import nts.uk.ctx.at.request.app.command.application.lateorleaveearly.CreateLateOrLeaveEarlyCommandHandler;
 import nts.uk.ctx.at.request.app.command.application.lateorleaveearly.DeleteLateOrLeaveEarlyCommand;
@@ -46,7 +45,7 @@ public class LateOrLeaveEarlyWebservice extends WebService{
 	
 	@POST 
 	@Path("create")
-	public void createLateOrLeaveEarly(CreateApplicationLateOrLeaveEarlyCommand command) {
+	public void createLateOrLeaveEarly(CreateLateOrLeaveEarlyCommand command) {
 		this.createLateOrLeaveEarly.handle(command);
 	}
 	

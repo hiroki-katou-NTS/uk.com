@@ -36,6 +36,8 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         //Chua lay dc thong tin 
         fixtime1: KnockoutObservable<string>;
         fixtime2: KnockoutObservable<string>;
+        //DisplayOrder
+        displayOrder: KnockoutObservable<number>;
         constructor() {
             var self = this;
             //check sendMail
@@ -61,6 +63,8 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             self.selectedCode = ko.observable('0002');
             //MultilineEditor 
             self.appreason = ko.observable('');
+            
+            self.displayOrder =ko.observable (0);
             //Show Screen
             self.showScreen = __viewContext.transferred.value.showScreen;
             /////////////////fix cứng time//////////////////////////////
@@ -109,7 +113,9 @@ module nts.uk.at.view.kaf004.b.viewmodel {
 
             service.getByCode().done(function(data) {
                 self.ListTypeReason(data.listApplicationReasonDto);
+                self.displayOrder(data.workManagementMultiple);
                 dfd.resolve(data);
+                
             });
 
             return dfd.promise();

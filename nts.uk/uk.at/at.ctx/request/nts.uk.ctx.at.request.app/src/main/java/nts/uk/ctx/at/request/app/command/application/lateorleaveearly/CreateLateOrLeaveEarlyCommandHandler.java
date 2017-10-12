@@ -32,7 +32,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 @Transactional
 
-public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateApplicationLateOrLeaveEarlyCommand> {
+public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateLateOrLeaveEarlyCommand> {
 
 	@Inject
 	private LateOrLeaveEarlyService lateOrLeaveEarlyService;
@@ -51,78 +51,30 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateA
 	
 
 	@Override
-	protected void handle(CommandHandlerContext<CreateApplicationLateOrLeaveEarlyCommand> context) {
+	protected void handle(CommandHandlerContext<CreateLateOrLeaveEarlyCommand> context) {
 		String companyId = AppContexts.user().companyId();
-		CreateApplicationLateOrLeaveEarlyCommand command = context.getCommand();
+		CreateLateOrLeaveEarlyCommand command = context.getCommand();
         LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(
-        		command.lateOrLeaveEarlyCommand.getApplicationDate(),
-        		command.lateOrLeaveEarlyCommand.getReasonTemp() + ":" + command.lateOrLeaveEarlyCommand.getAppReason(),
-        		command.lateOrLeaveEarlyCommand.getEarly1(),
-        		command.lateOrLeaveEarlyCommand.getEarlyTime1(),
-        		command.lateOrLeaveEarlyCommand.getLate1(),
-        		command.lateOrLeaveEarlyCommand.getLateTime1(),
-        		command.lateOrLeaveEarlyCommand.getEarly2(),
-        		command.lateOrLeaveEarlyCommand.getEarlyTime2(),
-        		command.lateOrLeaveEarlyCommand.getLate2(),
-        		command.lateOrLeaveEarlyCommand.getLateTime2());
+        		command.getApplicationDate(),
+        		command.getReasonTemp() + ":" + command.getAppReason(),
+        		command.getEarly1(),
+        		command.getEarlyTime1(),
+        		command.getLate1(),
+        		command.getLateTime1(),
+        		command.getEarly2(),
+        		command.getEarlyTime2(),
+        		command.getLate2(),
+        		command.getLateTime2());
         
-      //approval phase
-      		List<AppApprovalPhase> appApprovalPhases = context.getCommand().getAppApprovalPhaseCmds()
-      				.stream().map(appApprovalPhaseCmd -> new AppApprovalPhase(
-      						companyId, 
-      						"", 
-      						"", 
-      						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalForm, ApprovalForm.class) , 
-      						appApprovalPhaseCmd.dispOrder, 
-      						EnumAdaptor.valueOf(appApprovalPhaseCmd.approvalATR, ApprovalAtr.class) ,
-      						//Frame
-      						appApprovalPhaseCmd.getListFrame().stream().map(approvalFrame -> new ApprovalFrame(
-      								companyId, 
-      								"", 
-      								approvalFrame.dispOrder, 
-      								approvalFrame.listApproveAccepted.stream().map(approveAccepted -> ApproveAccepted.createFromJavaType(
-      										companyId, 
-      										"", 
-      										approveAccepted.approverSID,
-      										ApprovalAtr.UNAPPROVED.value,
-      										approveAccepted.confirmATR,
-      										null,
-      										approveAccepted.reason,
-      										approveAccepted.representerSID
-      										)).collect(Collectors.toList())
-      								)).collect(Collectors.toList())
-      						))
-      				.collect(Collectors.toList());
-      		//get new Application Item
-      		Application newApp = Application.createFromJavaType(
-      				companyId, 
-      				command.appCommand.getPrePostAtr(),
-      				command.appCommand.getInputDate(), 
-      				command.appCommand.getEnteredPersonSID(),
-      				command.appCommand.getReversionReason(), 
-      				command.appCommand.getApplicationDate(),
-      				command.appCommand.getAppReasonID() + ":" + command.appCommand.getApplicationReason(),
-      				command.appCommand.getApplicationType(), 
-      				command.appCommand.getApplicantSID(),
-      				command.appCommand.getReflectPlanScheReason(), 
-      				command.appCommand.getReflectPlanTime(),
-      				command.appCommand.getReflectPerState(), 
-      				command.appCommand.getReflectPlanEnforce(),
-      				command.appCommand.getReflectPerScheReason(), 
-      				command.appCommand.getReflectPerTime(),
-      				command.appCommand.getReflectPerState(), 
-      				command.appCommand.getReflectPlanEnforce(),
-      				command.appCommand.getStartDate(), 
-      				command.appCommand.getEndDate(), 
-      				appApprovalPhases);
+  
         
         // 2-1.譁ｰ隕冗判髱｢逋ｻ骭ｲ蜑阪蜃ｦ逅縲
         // TODO: Change GeneralDate.today() to StartDate and EndDate
 	
-	  	newBeforeProcessRegisterSerivce.processBeforeRegister(domainLateOrLeaveEarly.getCompanyID(),
-				AppContexts.user().employeeId(), GeneralDate.today(), domainLateOrLeaveEarly.getPrePostAtr(), 1, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
+//	  	newBeforeProcessRegisterSerivce.processBeforeRegister(domainLateOrLeaveEarly.getCompanyID(),
+//				AppContexts.user().employeeId(), GeneralDate.today(), domainLateOrLeaveEarly.getPrePostAtr(), 1, ApplicationType.EARLY_LEAVE_CANCEL_APPLICATION.value);
 		//2-2.譁ｰ隕冗判髱｢逋ｻ骭ｲ譎よ価隱榊渚譏諠蝣ｱ縺ｮ謨ｴ逅縲 
-	  	registerService.newScreenRegisterAtApproveInfoReflect(domainLateOrLeaveEarly.getApplicantSID(), newApp);
+	  	registerService.newScreenRegisterAtApproveInfoReflect(domainLateOrLeaveEarly.getApplicantSID(), domainLateOrLeaveEarly);
 	
 		lateOrLeaveEarlyService.createLateOrLeaveEarly(domainLateOrLeaveEarly);
 		/**
@@ -130,7 +82,7 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateA
 		 * @param companyID 莨夂､ｾID
 		 * @param appID 逕ｳ隲紀D
 		 */
-		newAfterRegister.processAfterRegister(newApp);
+		//newAfterRegister.processAfterRegister(domainLateOrLeaveEarly);
 		
 		
 	

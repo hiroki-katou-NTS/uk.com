@@ -48,7 +48,7 @@ public class NewBeforeRegisterImpl implements NewBeforeRegister {
 	
 	public void processBeforeRegister(String companyID, String employeeID, GeneralDate date, PrePostAtr postAtr, int routeAtr, int appType){
 		// アルゴリズム「未入社前チェック」を実施する(Check trước khi vào cty)
-		retirementCheckBeforeJoinCompany(companyID, employeeID, date);
+		//retirementCheckBeforeJoinCompany(companyID, employeeID, date);
 		
 		// アルゴリズム「社員の当月の期間を算出する」を実行する(Tính toán thời gian của tháng hiện tại cưa nhân viên)
 		PeriodCurrentMonth periodCurrentMonth = otherCommonAlgorithmService.employeePeriodCurrentMonthCalculate(companyID, employeeID, date);
