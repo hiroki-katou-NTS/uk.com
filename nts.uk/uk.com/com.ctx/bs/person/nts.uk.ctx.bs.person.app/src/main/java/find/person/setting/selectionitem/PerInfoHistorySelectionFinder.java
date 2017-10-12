@@ -24,8 +24,10 @@ public class PerInfoHistorySelectionFinder {
 		String cid = userLogin == true ? PersonInfoCategory.ROOT_COMPANY_ID : AppContexts.user().companyId();
 
 		// ドメインモデル「選択肢履歴」を取得する(lấy Domain Model 「選択肢履歴」)
-		return this.historySelectionRepo.getAllPerInfoHistorySelection(cid).stream()
+		List<PerInfoHistorySelectionDto> historyList = this.historySelectionRepo.getAllPerInfoHistorySelection(cid).stream()
 				.map(i -> PerInfoHistorySelectionDto.fromDomainHistorySelection(i)).collect(Collectors.toList());
 
+	
+		 return historyList;
 	}
 }
