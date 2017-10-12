@@ -88,17 +88,19 @@
 							<td class="valign-center">
 								<div>
 									<div class="input_002">
-										<input id= "A_INP_002"
+										<input id= "clfCode"
 											data-bind="ntsTextEditor: {
                                             value: classificationCode,
                                             constraint: 'ClassificationCode',
+                                            required: true,
                                             enable: inputClfCodeEnable}" />
 									</div>
 
 									<div class="input_002">
-										<input id= "A_INP_003"
+										<input id= "clfName"
 											data-bind="ntsTextEditor: {
 	                                            value: classificationName,
+	                                            required: true,
 	                                            constraint: 'ClassificationName'}" />
 									</div>
 								</div>
@@ -114,7 +116,7 @@
 							</td>
 							<td class="valign-center">
 								<div>
-									<textarea id="A_INP_004" style="margin-top: 20px; width: 446px; height: 180px"
+									<textarea id="memo" style="margin-top: 20px; width: 446px; height: 180px"
 										data-bind="ntsMultilineEditor: {
 											value: memo,
 											constraint: 'Memo'

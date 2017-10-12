@@ -6,8 +6,6 @@ package nts.uk.ctx.at.shared.dom.workrule.closure;
 
 import java.util.List;
 
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
-
 /**
  * The Interface ClosureGetMemento.
  */
@@ -40,13 +38,6 @@ public interface ClosureGetMemento {
 	 * @return the closure month
 	 */
 	CurrentMonth getClosureMonth();
-
-	/**
-	 * Gets the emp codes.
-	 *
-	 * @return the emp codes
-	 */
-	List<EmploymentCode> getEmpCodes();
 
 	/**
 	 * Gets the closure histories.

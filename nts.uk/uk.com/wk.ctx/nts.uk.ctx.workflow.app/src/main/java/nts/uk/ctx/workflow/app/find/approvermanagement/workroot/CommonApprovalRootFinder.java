@@ -14,7 +14,7 @@ import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.JobTitleImport;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
-import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceAdapter;
+import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
@@ -48,7 +48,7 @@ public class CommonApprovalRootFinder {
 	@Inject
 	private PersonAdapter adapterPerson;
 	@Inject
-	private WorkplaceAdapter adapterWp;
+	private WorkplaceApproverAdapter adapterWp;
 	@Inject
 	private SyJobTitleAdapter adapterJobtitle;
 	private final int COMPANY = 0;
@@ -424,6 +424,7 @@ public class CommonApprovalRootFinder {
 				&& date2.getEndDate().compareTo(date1.getEndDate()) < 0) {
 			return true;
 		}
+		
 		/**
 		 * date 1.........|..............]..........
 		 * date 2.....|........]....................
@@ -444,7 +445,7 @@ public class CommonApprovalRootFinder {
 		}
 		/**
 		 * date 1.........|..............]..........
-		 * date 2.........|...................].....
+		 * date 2..........|...................].....
 		 * eDate2 > eDate1 && sDate2 < eDate1
 		 */
 		if(date2.getEndDate().compareTo(date1.getEndDate()) > 0

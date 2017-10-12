@@ -126,10 +126,10 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 self.enableBefore(true);
             }
 
-            if (self.appID() == self.listAppMeta[self.listAppMeta.length - 1]) {
+            if (self.appID() == self.listAppMeta[self.listAppMeta.length - 1].appID) {
                 self.enableAfter(false);
             } else {
-                self.enableAfter(true);
+                self.enableAfter(true) ;
             }
         }
 
@@ -143,9 +143,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let dfdMessageDeadline = self.getMessageDeadline(self.appType());
             let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
             let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
-            // let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
+             let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
 
-            $.when(dfdAllReasonByAppID, dfdAllDataByAppID).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData) => {
+            $.when(dfdAllReasonByAppID, dfdAllDataByAppID,dfdGetDetailCheck).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData,dfdGetDetailCheckData) => {
 
                 //self.checkDisplayStart();
                 dfd.resolve();

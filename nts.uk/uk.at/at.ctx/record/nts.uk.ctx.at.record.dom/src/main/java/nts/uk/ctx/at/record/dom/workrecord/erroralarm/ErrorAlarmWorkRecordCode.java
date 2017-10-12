@@ -11,7 +11,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 /* 勤務実績のエラーアラームコード */
-@StringMaxLength(3)
+@StringMaxLength(4)
 public class ErrorAlarmWorkRecordCode extends StringPrimitiveValue<ErrorAlarmWorkRecordCode> {
 
 	private static final long serialVersionUID = 1L;

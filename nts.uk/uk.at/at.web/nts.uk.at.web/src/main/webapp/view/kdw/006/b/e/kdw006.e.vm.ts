@@ -24,7 +24,7 @@ module nts.uk.at.view.kdw006.e.viewmodel {
         }
 
         initGrid() {
-            var self = this;
+            let self = this;
             $("#grid2").ntsGrid({
                 width: '750px',
                 height: '400px',
@@ -58,7 +58,7 @@ module nts.uk.at.view.kdw006.e.viewmodel {
                 self.roleItems(res);
                 self.selectedItem(self.roleItems()[0].roleId);
                 self.initGrid();
-                self.getFuncRest(self.selectedItem).done(function() {
+                self.getFuncRest(self.selectedItem()).done(function() {
                     dfd.resolve();
                 });
 
