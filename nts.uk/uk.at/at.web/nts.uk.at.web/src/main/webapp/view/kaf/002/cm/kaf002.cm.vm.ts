@@ -47,7 +47,7 @@ module nts.uk.at.view.kaf002.cm {
                             appStampData.titleReason,
                             appStampData.detailReason,
                             appStampData.employeeID,
-                            appStampDate.version
+                            appStampData.version
                         ));
                     }
                     self.stampRequestMode(appStampData.stampRequestMode);
