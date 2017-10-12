@@ -6,7 +6,7 @@ package nts.uk.ctx.bs.employee.dom.department;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class DepartmentHistory. 部門履歴
@@ -20,5 +20,5 @@ public class DepartmentHistory extends DomainObject {
 	
 	/** The period. */
 	/* 期間 */
-	private Period period; 
+	private DatePeriod period; 
 }

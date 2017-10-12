@@ -60,12 +60,14 @@ public class StartCheckErrorDefault implements StartCheckErrorService {
 							.getApprovalRootOfSubjectRequest(companyId, employeeId, 1, appType, GeneralDate.today());
 					
 					ApprovalRootImport approvalRootOutput = approvalRootOutputs.get(0);
-					if (approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_CONFIRM_PERSON))
-						throw new BusinessException("Msg_238");
-					if (approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.APPROVER_UP_10))
-						throw new BusinessException("Msg_237");
-					if (approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_APPROVER))
-						throw new BusinessException("Msg_324");
+					if(approvalRootOutput.getErrorFlag() != null) {
+						if (approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_CONFIRM_PERSON))
+							throw new BusinessException("Msg_238");
+						if (approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.APPROVER_UP_10))
+							throw new BusinessException("Msg_237");
+						if (approvalRootOutput.getErrorFlag().equals(ErrorFlagImport.NO_APPROVER))
+							throw new BusinessException("Msg_324");
+					}
 				} else {
 					// 「申請設定」．承認ルートの基準日が申請対象日時点の場合
 				}

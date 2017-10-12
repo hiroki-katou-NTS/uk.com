@@ -6,9 +6,9 @@ package nts.uk.ctx.bs.employee.infra.repository.classification.affiliate;
 
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationCode;
 import nts.uk.ctx.bs.employee.dom.classification.affiliate.AffClassHistorySetMemento;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.KmnmtAffiliClassificationHist;
 import nts.uk.ctx.bs.employee.infra.entity.classification.affiliate.KmnmtAffiliClassificationHistPK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaAffClassHistorySetMemento.
@@ -51,9 +51,9 @@ public class JpaAffClassHistorySetMemento implements AffClassHistorySetMemento {
 	 * Period)
 	 */
 	@Override
-	public void setPeriod(Period period) {
-		this.classifcationHistory.getKmnmtClassificationHistPK().setStrD(period.getStartDate());
-		this.classifcationHistory.setEndD(period.getEndDate());
+	public void setPeriod(DatePeriod period) {
+		this.classifcationHistory.getKmnmtClassificationHistPK().setStrD(period.start());
+		this.classifcationHistory.setEndD(period.end());
 	}
 
 	/*

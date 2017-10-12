@@ -6,6 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.uk.ctx.at.request.app.find.application.common.ApplicationDto;
 import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
@@ -15,7 +16,7 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class UpdateApplicationApproveHandler extends CommandHandler<ApplicationDto> {
+public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<ApplicationDto,ListMailApproval> {
 
 	@Inject
 	private ApplicationRepository appRepo;
@@ -29,12 +30,11 @@ public class UpdateApplicationApproveHandler extends CommandHandler<ApplicationD
 
 
 	@Override
-	protected void handle(CommandHandlerContext<ApplicationDto> context) {
+	protected ListMailApproval handle(CommandHandlerContext<ApplicationDto> context) {
 		String companyID = AppContexts.user().companyId();
 		ApplicationDto command = context.getCommand();
 		
-		Application application = appRepo.getAppById(companyID, command.getApplicationID()).get();
-
+		Application application =  ApplicationDto.toEntity(command);
 		// if approve
 		// 4-1.   nothing
 		beforeRegisterRepo.processBeforeDetailScreenRegistration(companyID, application.getApplicantSID(),
@@ -45,7 +45,7 @@ public class UpdateApplicationApproveHandler extends CommandHandler<ApplicationD
 		// 8.2.2. update application
 		afterApprovalProcessRepo.invidialApplicationUpdate(application);
 		// 8-2.  
-		afterApprovalProcessRepo.detailScreenAfterApprovalProcess(application);
+		return new  ListMailApproval(afterApprovalProcessRepo.detailScreenAfterApprovalProcess(application));
 
 	}
 

@@ -10,7 +10,6 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampDto;
-import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampGoOutPermitDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampNewPreDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.AppStampSetDto;
 import nts.uk.ctx.at.request.app.find.application.stamp.dto.StampCombinationDto;
@@ -18,11 +17,10 @@ import nts.uk.ctx.at.request.app.find.setting.applicationreason.ApplicationReaso
 import nts.uk.ctx.at.request.app.find.setting.request.application.apptypediscretesetting.AppTypeDiscreteSettingDto;
 import nts.uk.ctx.at.request.app.find.setting.stamp.dto.StampRequestSettingDto;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStamp;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampDetailDomainService;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
-import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCombinationAtr;
 import nts.uk.ctx.at.request.dom.application.stamp.AppStampCommonDomainService;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampNewDomainService;
+import nts.uk.ctx.at.request.dom.application.stamp.AppStampRepository;
 import nts.uk.ctx.at.request.dom.application.stamp.output.AppStampNewPreOutput;
 import nts.uk.shr.com.context.AppContexts;
 /**
@@ -39,7 +37,8 @@ public class AppStampFinder {
 	@Inject
 	private AppStampRepository appStampRepository;
 	
-	@Inject AppStampCommonDomainService appStampCommonDomainService;
+	@Inject 
+	private AppStampCommonDomainService appStampCommonDomainService;
 	
 	public AppStampNewPreDto newAppStampPreProcess() {
 		String companyID = AppContexts.user().companyId();

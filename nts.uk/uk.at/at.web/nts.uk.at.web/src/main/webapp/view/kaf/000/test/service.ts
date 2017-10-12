@@ -1,7 +1,7 @@
 module nts.uk.at.view.kaf000.test.service{
     import ajax = nts.uk.request.ajax;
     var paths = {
-        getApplicationIdByDate : "at/request/application/getApplicationId"
+        getApplicationIdByDate : "at/request/application/getApplicationInfo",
     }  
     
     export function getAppId(data: dateInfor){

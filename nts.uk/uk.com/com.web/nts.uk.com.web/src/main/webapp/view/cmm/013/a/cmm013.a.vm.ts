@@ -1,6 +1,8 @@
 module nts.uk.com.view.cmm013.a {
 
     export module viewmodel {
+        
+        import Constants = base.Constants;
     
         import JobTitleHistoryAbstract = base.JobTitleHistoryAbstract;
         import History = base.History;
@@ -15,8 +17,8 @@ module nts.uk.com.view.cmm013.a {
             baseDate: KnockoutObservable<Date>;
             isShowAlreadySet: KnockoutObservable<boolean>;
             isMultiSelect: KnockoutObservable<boolean>;
-            jobTitleSelectedId: KnockoutObservable<string>;
-            multiJobTitleSelectedId: KnockoutObservableArray<string>;
+            selectedJobTitleId: KnockoutObservable<string>;
+            multiselectedJobTitleId: KnockoutObservableArray<string>;
             isShowNoSelectRow: KnockoutObservable<boolean>;
             alreadySettingList: KnockoutObservableArray<UnitAlreadySettingModel>;           
                         
@@ -46,8 +48,8 @@ module nts.uk.com.view.cmm013.a {
                 // Init list JobTitle setting
                 _self.baseDate = ko.observable(new Date()); 
 
-                _self.jobTitleSelectedId = ko.observable("");
-                _self.jobTitleSelectedId.subscribe((newValue) => {
+                _self.selectedJobTitleId = ko.observable("");
+                _self.selectedJobTitleId.subscribe((newValue) => {
                     _self.findJobHistoryById(newValue);
                 });        
                 _self.isShowAlreadySet = ko.observable(false);
@@ -62,7 +64,7 @@ module nts.uk.com.view.cmm013.a {
                 _self.isShowNoSelectRow.subscribe(() => {
                     _self.reloadComponent();
                 });
-                _self.multiJobTitleSelectedId = ko.observableArray([]);                       
+                _self.multiselectedJobTitleId = ko.observableArray([]);                       
                 _self.alreadySettingList = ko.observableArray([]);           
                 
                 _self.listJobTitleOption = {
@@ -71,7 +73,7 @@ module nts.uk.com.view.cmm013.a {
                     isMultiSelect: _self.isMultiSelect(),
                     listType: 3,
                     selectType: 1,
-                    selectedCode: _self.jobTitleSelectedId,
+                    selectedCode: _self.selectedJobTitleId,
                     isDialog: false,
                     isShowNoSelectRow: _self.isShowNoSelectRow(),
                     alreadySettingList: _self.alreadySettingList,
@@ -98,7 +100,7 @@ module nts.uk.com.view.cmm013.a {
                 _self.listJobTitleOption.isShowNoSelectRow = _self.isShowNoSelectRow();
                 _self.listJobTitleOption.alreadySettingList = _self.alreadySettingList;
                 
-                _self.listJobTitleOption.selectedCode = _self.isMultiSelect() ? _self.multiJobTitleSelectedId : _self.jobTitleSelectedId;
+                _self.listJobTitleOption.selectedCode = _self.isMultiSelect() ? _self.multiselectedJobTitleId : _self.selectedJobTitleId;
                 
                 $('#job-title-items-list').ntsListComponent(_self.listJobTitleOption);
             }
@@ -113,7 +115,7 @@ module nts.uk.com.view.cmm013.a {
                 
                 //TODO: Get JobTitle data by date                                
                 //TODO: mocked JobTitle
-                _self.jobTitleSelectedId("000000000000000000000000000000000001");
+                _self.selectedJobTitleId("000000000000000000000000000000000001");
                 
                 //TODO: Apply data to list JobTitle                
                 
@@ -198,7 +200,7 @@ module nts.uk.com.view.cmm013.a {
             public openSelectSequenceDialog() {
                 let _self = this;
                 nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml').onClosed(() => {
-                    let dialogData: SequenceMaster = nts.uk.ui.windows.getShared("ShareDateScreenC");
+                    let dialogData: SequenceMaster = nts.uk.ui.windows.getShared(Constants.SHARE_OUT_DIALOG_SELECT_SEQUENCE);
                     if (!dialogData) {
                         _self.sequenceCode("");
                         _self.sequenceName("");
@@ -212,10 +214,38 @@ module nts.uk.com.view.cmm013.a {
             /**
              * Screen D - openAddHistoryDialog
              */
+            public openAddHistoryDialog() {
+                let _self = this;
+                nts.uk.ui.windows.setShared(Constants.SHARE_IN_DIALOG_ADD_HISTORY, _self.selectedJobTitleId());
+                nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml').onClosed(() => {
+                    let isSuccess: boolean = nts.uk.ui.windows.getShared(Constants.SHARE_OUT_DIALOG_ADD_HISTORY);                 
+                    if (isSuccess) {
+                        // Reload history
+                        //TODO
+                        _self.findJobHistoryById(_self.selectedJobTitleId());
+                    }
+                });   
+            }
             
             /**
              * Screen E - openUpdateHistoryDialog
              */
+            public openUpdateHistoryDialog() {
+                let _self = this;
+                let transferObj: any = {};
+                transferObj.jobTitleId = _self.selectedJobTitleId();
+                transferObj.historyId = _self.jobTitleHistoryModel().selectedHistoryId();
+                transferObj.startDate = _self.jobTitleHistoryModel().getSelectedHistoryByHistoryId().period.startDate;
+                nts.uk.ui.windows.setShared(Constants.SHARE_IN_DIALOG_EDIT_HISTORY, transferObj);
+                nts.uk.ui.windows.sub.modal('/view/cmm/013/e/index.xhtml').onClosed(() => {
+                    let isSuccess: boolean = nts.uk.ui.windows.getShared(Constants.SHARE_OUT_DIALOG_EDIT_HISTORY);                 
+                    if (isSuccess) {
+                        // Reload history
+                        //TODO
+                        _self.findJobHistoryById(_self.selectedJobTitleId());
+                    }    
+                });   
+            }
             
             /**
              * Screen F - openSequenceManageDialog
@@ -237,8 +267,8 @@ module nts.uk.com.view.cmm013.a {
                 super();
                 let _self = this;
                 _self.parentModel = parentModel;
-                _self.selectedJobTitleHistory.subscribe((jobHistoryId: string) => {
-                    _self.parentModel.findJobInfo(_self.parentModel.jobTitleSelectedId(), jobHistoryId);
+                _self.selectedHistoryId.subscribe((jobHistoryId: string) => {
+                    _self.parentModel.findJobInfo(_self.parentModel.selectedJobTitleId(), jobHistoryId);
                 });
                 _self.init([]);
             }

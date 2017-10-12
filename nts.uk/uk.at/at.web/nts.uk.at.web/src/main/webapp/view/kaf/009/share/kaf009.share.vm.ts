@@ -1,7 +1,7 @@
 module nts.uk.at.view.kaf009.share {
     export module common {
         /**
-         * 
+         * GoBackDirect item
          */
         export class GoBackDiretly {
             selectedBack: any;
@@ -138,12 +138,21 @@ module nts.uk.at.view.kaf009.share {
             employeeName: string;
             goBackSettingDto: GoBackDirectSetting;
             listReasonDto: Array<ReasonDto>;
-            constructor(employeeName: string, goBackSettingDto: GoBackDirectSetting, listReasonDto: Array<ReasonDto>) {
-                var self = this;
+            //appCommonSettingDto : appCommonSettingDto; 
+            //.applicationSettingDto.requireAppReasonFlg
+            constructor(sid:string,employeeName: string, goBackSettingDto: GoBackDirectSetting, listReasonDto: Array<ReasonDto>) {
+                let self = this;
+                self.sid = sid;
                 self.employeeName = employeeName;
                 self.goBackSettingDto = goBackSettingDto;
                 self.listReasonDto = listReasonDto;
             }
+        }
+        /**
+         * 
+         */
+        export interface AppCommonSettingDto{
+            
         }
         /**
          * 直行直帰申請共通設定

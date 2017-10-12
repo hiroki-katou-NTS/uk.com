@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 
 import java.util.ArrayList;
@@ -39,14 +43,17 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 				.map(jobTitleHistory -> {
 					BsymtJobHistPK pk = new BsymtJobHistPK(
 							jobTitle.getCompanyId().v(), 
-							jobTitle.getJobTitleId().v(), 
-							jobTitleHistory.getHistoryId().v());
+							jobTitleHistory.getHistoryId().v(),
+							jobTitle.getJobTitleId().v());
 					BsymtJobHist entity = this.queryProxy()
 							.find(pk, BsymtJobHist.class)
 							.orElse(new BsymtJobHist());
+					entity.setBsymtJobHistPK(pk);
+					entity.setStartDate(jobTitleHistory.getPeriod().start());
+					entity.setEndDate(jobTitleHistory.getPeriod().end());
 					return entity;
 				})
-				.collect(Collectors.toList());
+				.collect(Collectors.toList());	
 		
 		JpaJobTitleSetMemento memento = new JpaJobTitleSetMemento(listEntity);
 		jobTitle.saveToMemento(memento);
@@ -115,6 +122,40 @@ public class JpaJobTitleRepository extends JpaRepository implements JobTitleRepo
 		cq.orderBy(criteriaBuilder.desc(root.get(BsymtJobHist_.startDate)));
 
 		List<BsymtJobHist> listBsymtJobHist = em.createQuery(cq).getResultList();
+		if (CollectionUtil.isEmpty(listBsymtJobHist)) {
+			return Optional.empty();
+		}
+		return Optional.of(new JobTitle(new JpaJobTitleGetMemento(listBsymtJobHist)));		
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleRepository#findByHistoryId(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Optional<JobTitle> findByHistoryId(String companyId, String historyId) {
+		
+		// Get entity manager
+        EntityManager em = this.getEntityManager();
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<BsymtJobHist> cq = criteriaBuilder.createQuery(BsymtJobHist.class);
+		Root<BsymtJobHist> root = cq.from(BsymtJobHist.class);
+
+        // select root
+        cq.select(root);
+
+        // add where
+        List<Predicate> lstpredicateWhere = new ArrayList<>();
+        lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(BsymtJobHist_.bsymtJobHistPK).get(BsymtJobHistPK_.cid),
+				companyId));
+        lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(BsymtJobHist_.bsymtJobHistPK).get(BsymtJobHistPK_.histId),
+				historyId));
+
+        cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+        cq.orderBy(criteriaBuilder.desc(root.get(BsymtJobHist_.startDate)));
+
+        List<BsymtJobHist> listBsymtJobHist = em.createQuery(cq).getResultList();
 		if (CollectionUtil.isEmpty(listBsymtJobHist)) {
 			return Optional.empty();
 		}

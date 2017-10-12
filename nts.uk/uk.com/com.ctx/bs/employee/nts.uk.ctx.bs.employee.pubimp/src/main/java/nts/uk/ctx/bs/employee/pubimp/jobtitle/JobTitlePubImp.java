@@ -63,8 +63,8 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		return jobTitleDtos.stream().map(item -> JobTitleExport.builder()
 				.companyId(item.getCompanyId().v()).positionId(item.getPositionId().v())
 				.positionCode(item.getPositionCode().v()).positionName(item.getPositionName().v())
-				.sequenceCode(item.getSequenceCode().v()).startDate(item.getPeriod().getStartDate())
-				.endDate(item.getPeriod().getEndDate()).build()).collect(Collectors.toList());
+				.sequenceCode(item.getSequenceCode().v()).startDate(item.getPeriod().start())
+				.endDate(item.getPeriod().end()).build()).collect(Collectors.toList());
 	}
 
 	/*
@@ -99,7 +99,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		return Optional.of(JobTitleExport.builder().companyId(item.getCompanyId().v())
 				.positionId(item.getPositionId().v()).positionCode(item.getPositionCode().v())
 				.positionName(item.getPositionName().v()).sequenceCode(item.getSequenceCode().v())
-				.startDate(item.getPeriod().getStartDate()).endDate(item.getPeriod().getEndDate())
+				.startDate(item.getPeriod().start()).endDate(item.getPeriod().end())
 				.build());
 	}
 
@@ -127,7 +127,7 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		return Optional.of(JobTitleExport.builder().companyId(item.getCompanyId().v())
 				.positionId(item.getPositionId().v()).positionCode(item.getPositionCode().v())
 				.positionName(item.getPositionName().v()).sequenceCode(item.getSequenceCode().v())
-				.startDate(item.getPeriod().getStartDate()).endDate(item.getPeriod().getEndDate())
+				.startDate(item.getPeriod().start()).endDate(item.getPeriod().end())
 				.build());
 	}
 
@@ -147,8 +147,8 @@ public class JobTitlePubImp implements SyJobTitlePub {
 		return jobTitleDtos.stream().map(item -> JobTitleExport.builder()
 				.companyId(item.getCompanyId().v()).positionId(item.getPositionId().v())
 				.positionCode(item.getPositionCode().v()).positionName(item.getPositionName().v())
-				.sequenceCode(item.getSequenceCode().v()).startDate(item.getPeriod().getStartDate())
-				.endDate(item.getPeriod().getEndDate()).build()).collect(Collectors.toList());
+				.sequenceCode(item.getSequenceCode().v()).startDate(item.getPeriod().start())
+				.endDate(item.getPeriod().end()).build()).collect(Collectors.toList());
 	}
 
 }

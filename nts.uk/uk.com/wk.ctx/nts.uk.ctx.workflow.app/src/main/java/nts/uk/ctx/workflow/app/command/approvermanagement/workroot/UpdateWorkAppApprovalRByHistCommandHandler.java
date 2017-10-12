@@ -177,7 +177,7 @@ public class UpdateWorkAppApprovalRByHistCommandHandler extends CommandHandler<U
 				}
 			}
 			//TH: person - domain 個人別就業承認ルート
-			if(objUpdateItem.getCheck()==3){
+			if(objUpdateItem.getCheck()== 2){
 				Optional<PersonApprovalRoot> psAppRootDb = repo.getPsApprovalRoot(companyId, updateItem.getApprovalId(), objUpdateItem.getEmployeeId(), updateItem.getHistoryId());
 				if(!psAppRootDb.isPresent()){
 					continue;

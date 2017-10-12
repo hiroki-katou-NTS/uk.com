@@ -2,31 +2,33 @@ package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistorySetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.Period;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHistPK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaJobTitleHistorySetMemento.
  */
 public class JpaJobTitleHistorySetMemento implements JobTitleHistorySetMemento {
-	
+
 	/** The entity. */
 	private BsymtJobHist entity;
-	
+
 	/**
 	 * Instantiates a new jpa job title history set memento.
 	 *
-	 * @param entity the entity
+	 * @param entity
+	 *            the entity
 	 */
 	public JpaJobTitleHistorySetMemento(BsymtJobHist entity) {
 		this.entity = entity;
 	}
-	
+
 	/**
 	 * Sets the history id.
 	 *
-	 * @param historyId the new history id
+	 * @param historyId
+	 *            the new history id
 	 */
 	@Override
 	public void setHistoryId(HistoryId historyId) {
@@ -38,11 +40,12 @@ public class JpaJobTitleHistorySetMemento implements JobTitleHistorySetMemento {
 	/**
 	 * Sets the period.
 	 *
-	 * @param period the new period
+	 * @param period
+	 *            the new period
 	 */
 	@Override
-	public void setPeriod(Period period) {
-		this.entity.setStartDate(period.getStartDate());
-		this.entity.setEndDate(period.getEndDate());
+	public void setPeriod(DatePeriod period) {
+		this.entity.setStartDate(period.start());
+		this.entity.setEndDate(period.end());
 	}
 }

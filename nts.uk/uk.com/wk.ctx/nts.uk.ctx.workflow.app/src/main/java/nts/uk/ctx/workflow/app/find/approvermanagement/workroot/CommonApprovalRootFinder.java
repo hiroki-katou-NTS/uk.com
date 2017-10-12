@@ -140,7 +140,7 @@ public class CommonApprovalRootFinder {
 			lstComFinal.add(new DataDisplayComDto(index,objDate.isOverlap(),data.getCompanyName(), lstItem));
 			index++;
 		}
-		return new DataFullDto(lstComFinal, null, null);
+		return new DataFullDto("",lstComFinal, null, null);
 	}
 	/**
 	 * get All Work place Approval Root(grouping by history)
@@ -183,7 +183,7 @@ public class CommonApprovalRootFinder {
 			lstWpFinal.add(new DataDisplayWpDto(index,objDate.isOverlap(), lstItem));
 			index++;
 		}
-		return new DataFullDto(null, lstWpFinal, null);
+		return new DataFullDto(data.getWorkplaceId(),null, lstWpFinal, null);
 	}
 	/**
 	 * get All Person Approval Root(grouping by history)
@@ -226,7 +226,7 @@ public class CommonApprovalRootFinder {
 			lstPsFinal.add(new DataDisplayPsDto(index, objDate.isOverlap(), lstItem));
 			index++;
 		}
-		return new DataFullDto(null, null, lstPsFinal);
+		return new DataFullDto("",null, null, lstPsFinal);
 	}
 	/**
 	 * get Data Company Approval Root
@@ -267,7 +267,7 @@ public class CommonApprovalRootFinder {
 			//add in lstAppRoot
 			lstComRoot.add(new CompanyAppRootDto(companyApprovalRoot,lstApprovalPhase));
 		}
-		return new CommonApprovalRootDto(companyName,lstComRoot, null, null);
+		return new CommonApprovalRootDto(companyName,"",lstComRoot, null, null);
 	}
 	/**
 	 * get Data Work place Approval Root
@@ -316,7 +316,7 @@ public class CommonApprovalRootFinder {
 			//add in lstAppRoot
 			lstWpRoot.add(new WorkPlaceAppRootDto(workplaceApprovalRoot,lstApprovalPhase));
 		}
-		return new CommonApprovalRootDto(companyName, null, lstWpRoot, null);
+		return new CommonApprovalRootDto(companyName, workplaceId, null, lstWpRoot, null);
 	}
 	/**
 	 * get Data Person Approval Root
@@ -358,7 +358,7 @@ public class CommonApprovalRootFinder {
 			//add in lstAppRoot
 			lstPsRoot.add(new PersonAppRootDto(personApprovalRoot,lstApprovalPhase));
 		}
-		return new CommonApprovalRootDto(companyName, null, null, lstPsRoot);
+		return new CommonApprovalRootDto(companyName, "", null, null, lstPsRoot);
 	}
 	/**
 	 * grouping history
@@ -424,6 +424,7 @@ public class CommonApprovalRootFinder {
 				&& date2.getEndDate().compareTo(date1.getEndDate()) < 0) {
 			return true;
 		}
+		
 		/**
 		 * date 1.........|..............]..........
 		 * date 2.....|........]....................
@@ -444,7 +445,7 @@ public class CommonApprovalRootFinder {
 		}
 		/**
 		 * date 1.........|..............]..........
-		 * date 2.........|...................].....
+		 * date 2..........|...................].....
 		 * eDate2 > eDate1 && sDate2 < eDate1
 		 */
 		if(date2.getEndDate().compareTo(date1.getEndDate()) > 0

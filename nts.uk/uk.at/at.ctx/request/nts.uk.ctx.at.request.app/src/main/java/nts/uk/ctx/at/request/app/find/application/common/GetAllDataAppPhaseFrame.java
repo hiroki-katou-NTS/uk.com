@@ -43,18 +43,21 @@ public class GetAllDataAppPhaseFrame {
 	@Inject
 	private EmployeeAdapter employeeAdapter;
 	
-	public OutputGetAllDataApp getAllDataAppPhaseFrame(String applicationID) {
+	public ApplicationDto getAllDataAppPhaseFrame(String applicationID) {
 		
 		String companyID = AppContexts.user().companyId();
 		//info app
-		Optional<ApplicationDto> application = this.appRepo.getAppById(companyID, applicationID)
-				.map(c->ApplicationDto.fromDomain(c));
+		ApplicationDto application = this.appRepo.getAppById(companyID, applicationID)
+				.map(c->ApplicationDto.fromDomain(c)).get();
 		//list output
-		List<OutputPhaseAndFrame> listOutputPhaseAndFrame = new ArrayList<>();
+		//List<OutputPhaseAndFrame> listOutputPhaseAndFrame = new ArrayList<>();
 		//list phase
 		List<AppApprovalPhaseDto> listPhaseByAppID = this.appApprovalPhaseRepository.findPhaseByAppID(companyID, applicationID)
 				.stream().map(appApprovalPhase -> AppApprovalPhaseDto.fromDomain(appApprovalPhase))
 				.collect(Collectors.toList());
+		if(!CollectionUtil.isEmpty(listPhaseByAppID)) {
+			application.setListPhase(listPhaseByAppID);
+		}
 		//duyet list phase
 		if(!CollectionUtil.isEmpty(listPhaseByAppID)) {
 			for(AppApprovalPhaseDto appApprovalPhase : listPhaseByAppID) {
@@ -62,6 +65,7 @@ public class GetAllDataAppPhaseFrame {
 				List<ApprovalFrameDto> listFrame = 
 						this.approvalFrameRepository.getAllApproverByPhaseID(companyID, appApprovalPhase.getPhaseID())
 						.stream().map(approvalFrame -> ApprovalFrameDto.fromDomain(approvalFrame)).collect(Collectors.toList());
+				appApprovalPhase.setListFrame(listFrame);
 				//get list approve accepted
 				if(!CollectionUtil.isEmpty(listFrame)) {
 					for(ApprovalFrameDto approvalFrameDto:listFrame) {
@@ -69,15 +73,16 @@ public class GetAllDataAppPhaseFrame {
 							this.approveAcceptedRepo.getAllApproverAccepted(companyID, approvalFrameDto.getFrameID())
 							.stream().map(c -> ApproveAcceptedDto.fromDomain(c)).collect(Collectors.toList());
 						//set list approveAccepted to frame
-						approvalFrameDto.setListApproveAcceptedDto(listApproveAccepted);
+						approvalFrameDto.setListApproveAccepted(listApproveAccepted);
 					}
+					
 					//set value : reasonAll,ApproveAll,nameAll to frame
 					for(ApprovalFrameDto approvalFrameDto:listFrame) {
 						String nameAll = "";
 						String approveAll ="";
 						String reasonAll = "";
 						//duyet list approveaccepted to frame
-						for(ApproveAcceptedDto approveAcceptedDto : approvalFrameDto.getListApproveAcceptedDto() ) {
+						for(ApproveAcceptedDto approveAcceptedDto : approvalFrameDto.getListApproveAccepted() ) {
 							String str ="";
 							String str1 ="";
 							String str2 ="";
@@ -101,21 +106,21 @@ public class GetAllDataAppPhaseFrame {
 						approvalFrameDto.setApproveAll(approveAll);
 						approvalFrameDto.setReasonAll(reasonAll);
 					}//end for listFrame
-					OutputPhaseAndFrame outputPhaseAndFrame = new OutputPhaseAndFrame(appApprovalPhase, listFrame);
+					//OutputPhaseAndFrame outputPhaseAndFrame = new OutputPhaseAndFrame(appApprovalPhase, listFrame);
 					
-					listOutputPhaseAndFrame.add(outputPhaseAndFrame);
+					//listOutputPhaseAndFrame.add(outputPhaseAndFrame);
 				}
 				
 				
 			}
 		}
 		
-		OutputGetAllDataApp dataApp = new OutputGetAllDataApp(application, listOutputPhaseAndFrame);
+		//OutputGetAllDataApp dataApp = new OutputGetAllDataApp(application, listOutputPhaseAndFrame);
 		
-		if(dataApp.equals(null)) {
+		if(application.equals(null)) {
 			throw new BusinessException("Msg_198");
 		}
-		return dataApp;
+		return application;
 	}
 	
 }

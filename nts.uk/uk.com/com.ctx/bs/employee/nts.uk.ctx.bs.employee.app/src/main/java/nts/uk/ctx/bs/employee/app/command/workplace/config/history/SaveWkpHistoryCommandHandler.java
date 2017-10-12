@@ -89,7 +89,7 @@ public class SaveWkpHistoryCommandHandler extends CommandHandler<SaveWkpHistoryC
         WorkplaceHistory latestWkpHistory = workplace.getWkpHistoryLatest();
         
         // validate add new history
-        HistoryUtil.validStartDate(Boolean.TRUE, latestWkpHistory.getPeriod().getStartDate(),
+        HistoryUtil.validStartDate(Boolean.TRUE, latestWkpHistory.getPeriod().start(),
                 command.getWorkplaceHistory().getPeriod().getStartDate());
         
         // Update endDate previous history

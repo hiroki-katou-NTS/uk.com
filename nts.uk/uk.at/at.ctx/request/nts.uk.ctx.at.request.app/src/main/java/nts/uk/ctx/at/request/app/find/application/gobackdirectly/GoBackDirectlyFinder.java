@@ -39,7 +39,7 @@ public class GoBackDirectlyFinder {
 	 * @param SID
 	 * @return
 	 */
-	public GoBackDirectSettingDto getGoBackDirectSettingBySID(String SID) {
+	public GoBackDirectSettingDto getGoBackDirectCommonSetting(String SID) {
 		return GoBackDirectSettingDto.convertToDto(goBackCommon.getSettingData(SID));
 	}
 
