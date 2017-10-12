@@ -5,6 +5,7 @@
 package nts.uk.ctx.bs.employee.dom.classification.affiliate;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
 
@@ -34,4 +35,12 @@ public interface AffClassHistoryRepository {
 	List<AffClassHistory> searchClassification(List<String> employeeIds, 
 			GeneralDate baseDate, List<String> classificationCodes);
 
+	/**
+	 * Find by.
+	 *
+	 * @param employeeId the employee id
+	 * @param baseDate the base date
+	 * @return the optional
+	 */
+	Optional<AffClassHistory> getAssignedClassificationBy(String employeeId, GeneralDate baseDate);
 }
