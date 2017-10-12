@@ -132,8 +132,8 @@ public class SubmitLoginFormThreeCommandHandler extends CommandHandler<SubmitLog
 				throw new RuntimeException();
 			}
 			// check contract time
-			if (contract.get().getContractPeriod().getStartDate().after(GeneralDate.today())
-					|| contract.get().getContractPeriod().getEndDate().before(GeneralDate.today())) {
+			if (contract.get().getContractPeriod().start().after(GeneralDate.today())
+					|| contract.get().getContractPeriod().end().before(GeneralDate.today())) {
 				throw new RuntimeException();
 			}
 		} else {

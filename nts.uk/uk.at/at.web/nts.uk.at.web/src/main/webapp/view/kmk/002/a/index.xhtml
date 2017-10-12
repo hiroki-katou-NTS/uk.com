@@ -272,8 +272,8 @@
                                           ]}">
                                        </div>
                                     </td>
-                                    <td><input id="inpName"
-                                       data-bind="ntsTextEditor: {
+                                    <td><input data-bind="attr: {'id': 'formulaName' + $index()},
+                                    ntsTextEditor: {
                                        value: formulaName,
                                        enable: true, 
                                        required: true}"/>

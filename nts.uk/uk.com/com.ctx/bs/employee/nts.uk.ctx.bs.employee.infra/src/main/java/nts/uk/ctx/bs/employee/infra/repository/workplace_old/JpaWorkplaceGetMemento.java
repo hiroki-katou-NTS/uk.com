@@ -6,12 +6,12 @@ package nts.uk.ctx.bs.employee.infra.repository.workplace_old;
 
 import lombok.Setter;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
 import nts.uk.ctx.bs.employee.dom.workplace_old.WorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace_old.WorkplaceGetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace_old.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace_old.WorkplaceName;
 import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWorkplace;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkplaceGetMemento.
@@ -58,8 +58,8 @@ public class JpaWorkplaceGetMemento implements WorkplaceGetMemento {
 	 * nts.uk.ctx.bs.employee.dom.workplace_old.WorkplaceGetMemento#getPeriod()
 	 */
 	@Override
-	public Period getPeriod() {
-		return new Period(this.cwpmtWorkplace.getCwpmtWorkplacePK().getStrD(),
+	public DatePeriod getPeriod() {
+		return new DatePeriod(this.cwpmtWorkplace.getCwpmtWorkplacePK().getStrD(),
 				this.cwpmtWorkplace.getCwpmtWorkplacePK().getEndD());
 	}
 

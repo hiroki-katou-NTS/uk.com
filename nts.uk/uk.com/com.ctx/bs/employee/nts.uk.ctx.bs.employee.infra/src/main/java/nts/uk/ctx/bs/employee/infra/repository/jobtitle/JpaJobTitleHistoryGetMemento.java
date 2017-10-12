@@ -2,8 +2,8 @@ package nts.uk.ctx.bs.employee.infra.repository.jobtitle;
 
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistoryGetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.Period;
 import nts.uk.ctx.bs.employee.infra.entity.jobtitle.BsymtJobHist;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaJobTitleHistoryGetMemento.
@@ -34,8 +34,8 @@ public class JpaJobTitleHistoryGetMemento implements JobTitleHistoryGetMemento {
 	 * @see nts.uk.ctx.bs.employee.dom.jobtitle.JobTitleHistoryGetMemento#getPeriod()
 	 */
 	@Override
-	public Period getPeriod() {
-		return new Period(this.entity.getStartDate(), this.entity.getEndDate());
+	public DatePeriod getPeriod() {
+		return new DatePeriod(this.entity.getStartDate(), this.entity.getEndDate());
 	}
 
 }

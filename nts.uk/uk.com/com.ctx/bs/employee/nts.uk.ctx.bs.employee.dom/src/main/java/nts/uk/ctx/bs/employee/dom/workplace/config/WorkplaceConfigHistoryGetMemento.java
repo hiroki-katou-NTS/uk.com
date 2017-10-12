@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.workplace.config;
 
-import nts.uk.ctx.bs.employee.dom.workplace.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface WorkplaceConfigHistoryGetMemento.
@@ -23,5 +23,5 @@ public interface WorkplaceConfigHistoryGetMemento {
      *
      * @return the period
      */
-    public Period getPeriod();
+    public DatePeriod getPeriod();
 }

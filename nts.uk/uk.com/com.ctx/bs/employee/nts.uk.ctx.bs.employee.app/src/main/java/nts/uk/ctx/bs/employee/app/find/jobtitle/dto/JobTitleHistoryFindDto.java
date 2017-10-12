@@ -3,7 +3,7 @@ package nts.uk.ctx.bs.employee.app.find.jobtitle.dto;
 import lombok.Data;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 import nts.uk.ctx.bs.employee.dom.jobtitle.history.JobTitleHistorySetMemento;
-import nts.uk.ctx.bs.employee.dom.jobtitle.history.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * Instantiates a new job title history find dto.
@@ -15,7 +15,7 @@ public class JobTitleHistoryFindDto implements JobTitleHistorySetMemento {
     public String historyId;
 
     /** The period. */
-    public Period period;
+    public DatePeriod period;
     
 	/**
 	 * Sets the history id.
@@ -33,7 +33,7 @@ public class JobTitleHistoryFindDto implements JobTitleHistorySetMemento {
 	 * @param period the new period
 	 */
 	@Override
-	public void setPeriod(Period period) {
+	public void setPeriod(DatePeriod period) {
 		this.period = period;
 	}
 }

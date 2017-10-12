@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.sys.env.ws.mailserver;
 
 import javax.inject.Inject;
@@ -12,32 +16,37 @@ import nts.uk.ctx.sys.env.app.command.mailserver.MailServerSaveCommandHandler;
 import nts.uk.ctx.sys.env.app.find.mailserver.MailServerDto;
 import nts.uk.ctx.sys.env.app.find.mailserver.MailServerFinder;
 
-
+/**
+ * The Class MailServerWs.
+ */
 @Path("sys/env/mailserver")
 @Produces(MediaType.APPLICATION_JSON)
-public class MailServerWs extends WebService{
-	
+public class MailServerWs extends WebService {
+
+	/** The save handler. */
 	@Inject
 	MailServerSaveCommandHandler saveHandler;
-	
+
+	/** The find handler. */
 	@Inject
 	MailServerFinder findHandler;
-	
+
 	/**
-	 * Save.
+	 * Find.
 	 *
-	 * @param command the command
+	 * @return the mail server dto
 	 */
 	@Path("find")
 	@POST
 	public MailServerDto find() {
 		return this.findHandler.find();
 	}
-	
+
 	/**
 	 * Save.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@Path("save")
 	@POST
