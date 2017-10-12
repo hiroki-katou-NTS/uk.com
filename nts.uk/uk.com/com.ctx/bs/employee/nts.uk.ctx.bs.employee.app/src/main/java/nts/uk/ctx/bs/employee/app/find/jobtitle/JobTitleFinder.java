@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.jobtitle;
 
 import java.util.Optional;
@@ -24,7 +28,7 @@ public class JobTitleFinder {
 	 * Find job history by job id.
 	 *
 	 * @param jobTitleId the job title id
-	 * @return the list
+	 * @return the job title find dto
 	 */
 	public JobTitleFindDto findJobHistoryByJobId(String jobTitleId) {
 		String companyId = AppContexts.user().companyId();

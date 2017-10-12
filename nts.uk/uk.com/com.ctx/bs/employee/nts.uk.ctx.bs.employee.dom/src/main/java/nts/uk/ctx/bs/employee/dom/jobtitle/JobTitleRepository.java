@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtitle;
 
 import java.util.Optional;
@@ -47,4 +51,12 @@ public interface JobTitleRepository {
      */
     Optional<JobTitle> findByJobTitleId(String companyId, String jobTitleId);
     
+    /**
+     * Find by history id.
+     *
+     * @param companyId the company id
+     * @param historyId the history id
+     * @return the optional
+     */
+    Optional<JobTitle> findByHistoryId(String companyId, String historyId);   
 }

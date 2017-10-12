@@ -2,16 +2,20 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.app.command.jobtitle.sequence;
+package nts.uk.ctx.bs.employee.app.command.jobtitle.dto;
 
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 
 /**
- * The Class RemoveSequenceCommand.
+ * Instantiates a new period dto.
  */
 @Data
-public class RemoveSequenceCommand {
-
-    /** The sequence code. */
-    private String sequenceCode;	
+public class PeriodDto {
+	
+	/** The start date. */
+	private GeneralDate startDate;
+	
+	/** The end date. */
+	private GeneralDate endDate;
 }
