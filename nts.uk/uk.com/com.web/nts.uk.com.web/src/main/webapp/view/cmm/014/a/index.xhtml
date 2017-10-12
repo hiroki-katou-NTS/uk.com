@@ -12,66 +12,38 @@
 					nts.uk.ctx.bs.employee.dom.classification.ClassificationName
 					nts.uk.shr.com.primitive.Memo
 			</com:ValidatorScript>
-			<com:stylefile path="cmm014.a.main.css" />
+			
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="/view/kcp/share/list.js" of="/nts.uk.com.web"/>
+			
+			<com:stylefile path="cmm014.a.main.css" />
 			<com:scriptfile path="cmm014.a.service.js" />
 			<com:scriptfile path="cmm014.a.vm.js" />
 			<com:scriptfile path="cmm014.a.start.js" />
-			<script type="text/javascript">
-			</script>
 		</ui:define>
 
 		<ui:define name="content">
 
 			<div id="functions-area" class="divHeader">
-				<button id="A_BTN_001" data-bind="click: initRegisterClassification"
+				<button id="A_BTN_001" data-bind="click: clearData"
 					class="btnStyle">#{i18n.getText('CMM014_1')}</button>
 				<button id="A_BTN_002"
-					data-bind="click: registerClassification , enable: true"
+					data-bind="click: createClassification , enable: true"
 					class="proceed btnStyle">#{i18n.getText('CMM014_2')}</button>
 				<button id="A_BTN_003">#{i18n.getText('CMM014_3')}</button>
 				<button id="A_BTN_004"
-					data-bind="click: deleteClassification , enable: isEnableDeleteButton"
+					data-bind="click: deleteClassification , enable: enableDelete"
 					class="danger btnStyle">#{i18n.getText('CMM014_4')}</button>
 
 			</div>
 
 			<div id="contents-area">
-				<div id="left-content" class="bg-green caret-right caret-background">
-
-					<i class="icon icon-searchbox"></i>
-
-					<div class="cf">
-						<div style="float: left">
-							<div id="test"
-								data-bind="ntsSearchBox: {
-									targetKey: 'code',
-									mode:'igGrid',
-                                    comId: 'single-list',
-                                    items: listClassification,         
-                                    selected: currentSelectedRow, 
-                                    selectedKey: 'code', 
-                                    childField: 'childs', 
-                                    fields: ['name', 'code']}" />
-							<br />
-							<table id="single-list"
-								data-bind="ntsGridList: {
-                                            width: 400,
-                                            height: 520,
-                                            options: listClassification,
-                                            optionsValue: 'code',
-                                            columns: classificationTableColumns,
-                                            multiple: false,
-                                            value: currentSelectedRow,
-                                            primaryKey: 'code'}"
-								class="cf">
-							</table>
-						</div>
-					</div>
+				<div id="left-content">
+					<div id="clf-component" tabindex="6"></div>
 				</div>
 
 				<div id="right-content">
-					<table class="table_content" data-bind="with: currentClassification">
+					<table class="table_content" data-bind="with: classificationModel">
 						<colgroup>
 							<col width="230px" />
 							<col width="*" />
@@ -93,7 +65,7 @@
                                             value: classificationCode,
                                             constraint: 'ClassificationCode',
                                             required: true,
-                                            enable: inputClfCodeEnable}" />
+                                            enable: isEnableCode}" />
 									</div>
 
 									<div class="input_002">

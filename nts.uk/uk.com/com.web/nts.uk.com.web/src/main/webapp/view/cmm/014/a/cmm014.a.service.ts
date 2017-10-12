@@ -4,7 +4,7 @@ module nts.uk.com.view.cmm014.a.service {
      *  Service paths
      */
     var servicePath: any = {
-        findAllClassification: "basic/employee/classification/findAll",
+        findClassification: "basic/employee/classification/find",
         saveClassification: "basic/employee/classification/save",
         removeClassification: "basic/employee/classification/remove"
     }
@@ -12,8 +12,8 @@ module nts.uk.com.view.cmm014.a.service {
     /**
      * Get list classification
      */
-    export function findAllClassification(): JQueryPromise<Array<model.ClassificationFindDto>> {
-        return nts.uk.request.ajax(servicePath.findAllClassification);
+    export function findClassification(classificationCode: any): JQueryPromise<Array<model.ClassificationFindDto>> {
+        return nts.uk.request.ajax(servicePath.findClassification + "/" + classificationCode);
     }
 
     /**
