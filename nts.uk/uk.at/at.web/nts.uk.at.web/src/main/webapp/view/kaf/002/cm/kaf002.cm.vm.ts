@@ -53,6 +53,7 @@ module nts.uk.at.view.kaf002.cm {
                 self.botComment().color(commonSet.appStampSetDto.stampRequestSettingDto.bottomCommentFontColor);
                 self.botComment().fontWeight(commonSet.appStampSetDto.stampRequestSettingDto.bottomCommentFontWeight);
                 service.findAllWorkLocation().done((listWorkLocation: Array<vmbase.IWorkLocation>)=>{
+                    $('.cm-memo').focus();
                     switch(self.stampRequestMode()){
                         case 0: self.m1.start(appStampData.appStampGoOutPermitCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break;    
                         case 1: self.m2.start(appStampData.appStampWorkCmds, commonSet.appStampSetDto.stampRequestSettingDto, listWorkLocation);break;  
@@ -91,7 +92,6 @@ module nts.uk.at.view.kaf002.cm {
                     }); 
                 });
                 self.approvalList = approvalList;
-                $('.cm-memo').focus();
             }
             
             register(){

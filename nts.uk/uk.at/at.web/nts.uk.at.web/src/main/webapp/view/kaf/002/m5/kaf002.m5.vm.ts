@@ -100,7 +100,10 @@ module nts.uk.at.view.kaf002.m5 {
                 }
                 service.insert(command)
                 .done(() => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){nts.uk.ui.block.clear();});     
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                        $('.cm-memo').focus();
+                        nts.uk.ui.block.clear();
+                    });     
                 })
                 .fail(function(res) { 
                     nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
@@ -127,7 +130,10 @@ module nts.uk.at.view.kaf002.m5 {
                 }
                 service.update(command)
                 .done(() => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){nts.uk.ui.block.clear();});     
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){
+                        $('.cm-memo').focus();
+                        nts.uk.ui.block.clear();
+                    });     
                 })
                 .fail(function(res) { 
                     if(res.optimisticLock == true){
