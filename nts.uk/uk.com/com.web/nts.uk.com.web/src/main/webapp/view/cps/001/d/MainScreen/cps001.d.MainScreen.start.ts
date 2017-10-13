@@ -1,10 +1,9 @@
-module cps001.d {
+module cps001.d.MainScreen {
     let __viewContext: any = window['__viewContext'] || {};
-    __viewContext.ready(function() {
+    __viewContext.ready(() => {
         __viewContext['viewModel'] = new vm.ViewModel();
+
         __viewContext.bind(__viewContext['viewModel']);
-        __viewContext['viewModel'].start();
-        // focus to first input textbox
-        $('input:first').focus();
+
     });
 }
