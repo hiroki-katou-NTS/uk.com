@@ -105,10 +105,6 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             return dfd.promise();
         }
 
-        openSetting(): void {
-            var self = this;
-            nts.uk.request.jump("com", "/view/cmm/018/a/index.xhtml", { screen: 'Application', employeeId: self.employeeID });
-        }
 
         /** Create Button Click */
         registryButtonClick() {
@@ -116,7 +112,14 @@ module nts.uk.at.view.kaf004.b.viewmodel {
 
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
-                var lateOrLeaveEarly: LateOrLeaveEarly = { 
+               /**  0: 事前の受付制限
+                    1: 事後の受付制限
+                */ 
+                var prePostAtr = 1;
+                if (self.showScreen == 'B')
+                    {prePostAtr = 0;}
+                var lateOrLeaveEarly: LateOrLeaveEarly = {
+                    prePostAtr: prePostAtr, 
                     applicationDate: self.date(),
                     sendMail: self.sendMail(),
                     late1: self.late1() ? 1 : 0,
@@ -172,5 +175,6 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         earlyTime2: number;
         reasonTemp: string;
         appReason: string;
+        prePostAtr: number;
     }
 }
