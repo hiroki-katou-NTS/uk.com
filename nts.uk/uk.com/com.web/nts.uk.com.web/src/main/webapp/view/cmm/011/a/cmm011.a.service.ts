@@ -75,8 +75,8 @@ module nts.uk.com.view.cmm011.a {
                     return {
                         workplaceId: "",
                         historyId: item.historyId,
-                        startDate: item.period.startDate,
-                        endDate: item.period.endDate
+                        startDate: item.startDate,
+                        endDate: item.endDate
                     };
                 });
                 dfd.resolve(list);

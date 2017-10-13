@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistorySetMemento;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -16,9 +17,12 @@ public class WorkplaceHistoryDto implements WorkplaceHistorySetMemento {
     // 履歴ID
     public String historyId;
 
-    /** The period. */
+    /** The start date. */
     // 期間
-    public DatePeriod period;
+    public GeneralDate startDate;
+    
+    /** The end date. */
+    public GeneralDate endDate;
 
     /*
      * (non-Javadoc)
@@ -40,7 +44,8 @@ public class WorkplaceHistoryDto implements WorkplaceHistorySetMemento {
      */
     @Override
     public void setPeriod(DatePeriod period) {
-        this.period = period;
+        this.startDate = period.start();
+        this.endDate = period.end();
     }
 
 }

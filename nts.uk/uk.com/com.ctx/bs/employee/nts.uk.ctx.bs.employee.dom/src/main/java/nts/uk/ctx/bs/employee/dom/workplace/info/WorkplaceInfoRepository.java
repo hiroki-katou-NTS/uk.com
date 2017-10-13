@@ -68,8 +68,8 @@ public interface WorkplaceInfoRepository {
 	 * Checks if is existed.
 	 *
 	 * @param companyId the company id
-	 * @param newWkpId the new wkp id
+	 * @param newWkpCd the new wkp id
 	 * @return true, if is existed
 	 */
-	boolean isExisted(String companyId, String newWkpId);
+	boolean isExistedWkpCd(String companyId, String newWkpCd);
 }

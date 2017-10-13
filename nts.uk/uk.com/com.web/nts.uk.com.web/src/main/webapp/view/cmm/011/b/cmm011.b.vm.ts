@@ -240,6 +240,9 @@ module nts.uk.com.view.cmm011.b {
                 service.findLstWkpConfigHistory().done(function(data: any) {
                     if (data) {
                         self.init(data.wkpConfigHistory);
+                    } else {
+                        self.screenMode(ScreenMode.NewMode);
+                        self.parentModel.endDate("9999/12/31");//(nts.uk.resource.getText("CMM011_27"));
                     }
                     dfd.resolve();
                 }).fail((res: any) => {
@@ -254,17 +257,12 @@ module nts.uk.com.view.cmm011.b {
             private init(data: Array<any>) {
                 let self = this;
                 let lstWpkHistory: Array<IHistory> = [];
-                // if has data, select first
-                if (data && data.length < 1) {
-                    self.screenMode(ScreenMode.NewMode);
-                    self.parentModel.endDate("9999/12/31");//(nts.uk.resource.getText("CMM011_27"));
-                    return;
-                }
+                
                 data.forEach(function(item, index) {
                     //workplaceId not key => ""
                     lstWpkHistory.push({
-                        workplaceId: "", historyId: item.historyId, startDate: item.period.startDate,
-                        endDate: item.period.endDate
+                        workplaceId: "", historyId: item.historyId, startDate: item.startDate,
+                        endDate: item.endDate
                     });
                 });
                 self.lstWpkHistory(lstWpkHistory);

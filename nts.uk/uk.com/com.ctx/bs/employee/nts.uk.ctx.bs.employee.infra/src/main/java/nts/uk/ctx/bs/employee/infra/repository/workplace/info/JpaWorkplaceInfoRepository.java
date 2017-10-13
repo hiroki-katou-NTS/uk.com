@@ -180,7 +180,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
      * isExisted(java.lang.String, java.lang.String)
      */
     @Override
-    public boolean isExisted(String companyId, String newWkpId) {
+    public boolean isExistedWkpCd(String companyId, String newWkpCd) {
         // get entity manager
         EntityManager em = this.getEntityManager();
         CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -196,7 +196,7 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
         lstpredicateWhere.add(criteriaBuilder
                 .equal(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.cid), companyId));
         lstpredicateWhere.add(criteriaBuilder
-                .equal(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid), newWkpId));
+                .equal(root.get(BsymtWorkplaceInfo_.wkpcd), newWkpCd));
 
         cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 

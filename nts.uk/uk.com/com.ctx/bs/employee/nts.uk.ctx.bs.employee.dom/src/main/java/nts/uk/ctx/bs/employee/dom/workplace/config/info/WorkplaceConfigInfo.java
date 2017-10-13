@@ -59,19 +59,28 @@ public class WorkplaceConfigInfo extends AggregateRoot {
 	}
 
 	/**
-	 * Clone with hist id.
+	 * Clone with wkp hierarchy.
 	 *
 	 * @param other the other
-	 * @param newHistoryId the new history id
+	 * @param lstWkpHierarchy the lst wkp hierarchy
 	 * @return the workplace config info
 	 */
-	public WorkplaceConfigInfo cloneWithHistId(String newHistoryId) {
+    public static WorkplaceConfigInfo cloneWithWkpHierarchy(WorkplaceConfigInfo other,
+            List<WorkplaceHierarchy> lstWkpHierarchy) {
 	    WorkplaceConfigInfo newEntity = new WorkplaceConfigInfo();
-	    newEntity.companyId = this.companyId;
-	    newEntity.historyId = newHistoryId;
-	    newEntity.lstWkpHierarchy = this.lstWkpHierarchy;
+	    newEntity.companyId = other.getCompanyId();
+	    newEntity.historyId = other.getHistoryId();
+	    newEntity.lstWkpHierarchy = lstWkpHierarchy;
 	    return newEntity;
 	}
+	
+	public WorkplaceConfigInfo cloneWithHistId(String newHistoryId) {
+        WorkplaceConfigInfo newEntity = new WorkplaceConfigInfo();
+        newEntity.companyId = this.companyId;
+        newEntity.historyId = newHistoryId;
+        newEntity.lstWkpHierarchy = this.lstWkpHierarchy;
+        return newEntity;
+    }
 	
 	/*
 	 * (non-Javadoc)

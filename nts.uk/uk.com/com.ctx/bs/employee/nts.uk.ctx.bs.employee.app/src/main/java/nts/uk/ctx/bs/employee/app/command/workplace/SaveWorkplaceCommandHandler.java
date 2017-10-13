@@ -57,7 +57,7 @@ public class SaveWorkplaceCommandHandler extends CommandHandler<SaveWorkplaceCom
         SaveWorkplaceCommand command = context.getCommand();
         
         // valid existed workplace code
-        if (this.wkpInfoRepo.isExisted(companyId, command.getWkpInfor().getWorkplaceCode())) {
+        if (this.wkpInfoRepo.isExistedWkpCd(companyId, command.getWkpInfor().getWorkplaceCode())) {
             throw new BusinessException("Msg_3");
         }
         
@@ -66,7 +66,7 @@ public class SaveWorkplaceCommandHandler extends CommandHandler<SaveWorkplaceCom
         } else {
             this.wkpInfoRepo.update(command.getWkpInfor().toDomain(companyId,
                     command.getWkpIdSelected(), command.getWkpInfor().getHistoryId()));
-            // TODO: register workplace hierarchy
+            // TODO: register workplace hierarchy when drag & drop workplace in tree
         }
     }
 
