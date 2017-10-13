@@ -11,24 +11,20 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.request.dom.application.common.Application;
-import nts.uk.ctx.at.request.dom.application.common.ApplicationRepository;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
 import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
 import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccepted;
-import nts.uk.ctx.at.request.dom.application.common.service.newscreen.after.NewAfterRegister;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectly;
-import nts.uk.ctx.at.request.dom.application.gobackdirectly.GoBackDirectlyRepository;
 import nts.uk.ctx.at.request.dom.application.gobackdirectly.service.GoBackDirectlyRegisterService;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApplicationGoBackDirectlyCommand> {
+public class CheckInsertGoBackCommandHandler extends CommandHandler<InsertApplicationGoBackDirectlyCommand>{
 	@Inject
 	private GoBackDirectlyRegisterService goBackDirectlyRegisterService;
-	
 	@Override
 	protected void handle(CommandHandlerContext<InsertApplicationGoBackDirectlyCommand> context) {
 		String companyId = AppContexts.user().companyId();
@@ -103,8 +99,8 @@ public class InsertGoBackDirectlyCommandHandler extends CommandHandler<InsertApp
 		//勤務を変更する
 		
 		//登録ボタンをクリックする
-		goBackDirectlyRegisterService.register(newGoBack, newApp,appApprovalPhases);
-		//アルゴリズム「2-3.新規画面登録後の処理」を実行する 
-		//newAfterRegister.processAfterRegister(newApp);
+		goBackDirectlyRegisterService.checkBeforRegister(newGoBack, newApp,appApprovalPhases);
+		
 	}
+
 }

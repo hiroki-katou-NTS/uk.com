@@ -202,6 +202,17 @@ public class AppStamp extends Application {
 							appStampWork.getEndTime() == null )){
 								throw new BusinessException("Msg_308");
 					}
+					
+					/*打刻申請詳細.打刻分類＝応援のとき、すべての出退勤申請が以下のいずれも設定されていない (#Msg_308#)
+					- 開始時刻
+					- 終了時刻
+					- 応援カード*/
+					if(appStampWork.getStampAtr().equals(AppStampAtr.SUPPORT)&&
+							(appStampWork.getStartTime() == null ||
+							Strings.isBlank(appStampWork.getSupportCard()) || 
+							appStampWork.getEndTime() == null )){
+								throw new BusinessException("Msg_308");
+					}
 				}
 				break;
 			}

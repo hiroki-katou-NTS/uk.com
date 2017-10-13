@@ -14,12 +14,13 @@ import nts.uk.ctx.at.request.app.command.application.common.appapprovalphase.App
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateGoBackDirectlyCommand {
+	
 	/**
-	 * 会社ID
+	 * version
 	 */
-	String companyID;
+	Long version;
 	/**
-	 * 申請ID
+	 * application ID
 	 */
 	String appID;
 	/**

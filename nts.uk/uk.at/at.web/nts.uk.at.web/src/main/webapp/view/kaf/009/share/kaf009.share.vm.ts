@@ -343,6 +343,7 @@ module nts.uk.at.view.kaf009.share {
          * 
          */
         export class GoBackCommand {
+            version : number;
             appDate: string;
             appID: string;
             workTypeCD: string;
