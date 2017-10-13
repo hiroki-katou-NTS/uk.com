@@ -34,4 +34,14 @@ public class PerInfoInitValueSettingWebservice extends WebService {
 		this.add.handle(command);
 	}
 
+	// sonnlb
+
+	@POST
+	@Path("findAllHasChild")
+	public List<PerInfoInitValueSettingDto> getAllInitValueSettingHasChild() {
+		return this.finder.getAllInitValueSettingHasChild();
+	}
+
+	// sonnlb
+
 }

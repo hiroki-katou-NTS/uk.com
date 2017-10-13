@@ -29,7 +29,7 @@
 
 			<div id="contents-area" class="cf">
 				<div
-					data-bind="visible: currentStep()===2 &amp;&amp;selectedId()===1">
+					data-bind="visible: currentStep()===1 &amp;&amp; selectedId()===1">
 					<div id="ccgcomponent"></div>
 				</div>
 				<div id="emp_reg_info_wizard"
@@ -169,6 +169,8 @@
 
 						<!-- step2 -->
 
+
+
 						<div class="step-2">
 							<div id="step2_content">
 								<div class="div_line">
@@ -179,43 +181,46 @@
 										<label id="step2_des">#{i18n.getText('CPS002_39')}</label>
 									</com:ko-if>
 								</div>
-								<com:ko-if bind="selectedId()===2">
-									<div class="float_left " id="search_panel">
-										<div id="search_box" class="bg-green">
-											<i class="icon icon-searchbox"></i>
-											<div class="div_line">
-												<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_40')}</div>
-											</div>
-											<div class="div_line">
-												<div style="width: 190px"
-													data-bind="ntsSearchBox: {
-															targetKey: 'id',
+
+								<div class="float_left " id="search_panel">
+									<div id="search_box" class="bg-green">
+										<i class="icon icon-searchbox"></i>
+										<div class="div_line">
+											<div data-bind="ntsFormLabel: {   }">#{i18n.getText('CPS002_40')}</div>
+										</div>
+										<div class="div_line">
+											<div style="width: 190px"
+												data-bind="ntsSearchBox: {
+															targetKey: 'settingId',
 															mode:'igGrid', 
 															comId:'init_list', 
-															items: itemList , 
-															selected: currentCode , 
-															selectedKey: 'id', fields: ['name'],
+															items: initValueList , 
+															selected: initValueSelectedId , 
+															selectedKey: 'settingId', 
+															fields: ['settingName'],
 															placeHolder:'#{i18n.getText('CPS002_41')}'
 															}" />
 
-											</div>
-											<div class="div_line">
-												<table id="init_list"
-													data-bind="ntsGridList: {								
+										</div>
+										<div class="div_line">
+											<table id="init_list"
+												data-bind="ntsGridList: {								
 															height: 350,
-															dataSource: itemList ,
-															primaryKey: 'id',
-															columns: columns,
+															dataSource: initValueList ,
+															primaryKey: 'settingId',
+															columns:[
+																	{ headerText: '#{i18n.getText('CAS001_8')}', key: 'settingId', width: 50, hidden : true},
+																	{ headerText: '#{i18n.getText('CPS002_44')}', key: 'settingCode', width: 40},
+															        { headerText: '#{i18n.getText('CPS002_45')}', key: 'settingName', width: 130 } ]  ,
 															multiple: false,
-															value: currentCode ,
+															value: initValueSelectedId ,
 															rows:15
 														}">
-												</table>
+											</table>
 
-											</div>
 										</div>
 									</div>
-								</com:ko-if>
+								</div>
 								<div class="float_left" id="value_item">
 									<div class="div_line">
 										<div class="step2_col1">
@@ -246,7 +251,7 @@
 													options: categoryList,
 													optionsValue: 'id',
 													visibleItemsCount: 5,
-													value: currentCategoryId,
+													value: categorySelectedId ,
 													optionsText: 'name',
 													editable: false ,
 													enable: true,
@@ -333,7 +338,7 @@
 										<button class="prev_btn" id="step2_prev_btn"
 											data-bind="click:prev">#{i18n.getText('CPS002_38')}</button>
 										<button class="large proceed next_btn" id="next_btn"
-											data-bind="click:next">#{i18n.getText('CPS002_29')}</button>
+											data-bind="click:completeStep2">#{i18n.getText('CPS002_29')}</button>
 									</div>
 								</div>
 							</div>

@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.uk.ctx.bs.person.dom.person.setting.init.category.PerInfoInitValueSettingCtg;
 
 @Getter
 @Setter
@@ -12,5 +13,10 @@ import lombok.Setter;
 public class PerInfoInitValueSettingCtgDto {
 	private String perInfoCtgId;
 	private String categoryName;
-	private boolean isSetting; 
+	private boolean isSetting;
+
+	public static PerInfoInitValueSettingCtgDto fromDomain(PerInfoInitValueSettingCtg domain) {
+		return new PerInfoInitValueSettingCtgDto(domain.getPerInfoCtgId(), domain.getCategoryName(),
+				domain.isSetting());
+	}
 }

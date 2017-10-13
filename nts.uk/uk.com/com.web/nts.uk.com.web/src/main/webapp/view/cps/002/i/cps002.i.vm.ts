@@ -9,14 +9,36 @@ module cps002.i.vm {
     
 
     export class ViewModel {
-        constructor(){
-             
+        imageId: KnockoutObservable<string> = ko.observable("");
+        
+        constructor(){  
+            let self = this;         
         }
-       
-        register(){
-            let self = this;          
+        start(){
+            let self = this;
+            self.imageId(getShared("imageId"));
+            if(self.imageId() != ""){
+                self.getImage();
+            }
         }
-        close(){close();}
+        upload(){
+            let self = this;
+            nts.uk.ui.block.grayout();
+            $("#test").ntsImageEditor("upload", {stereoType: "image"}).done(function(data){
+                self.imageId(data.id);
+                nts.uk.ui.block.clear();
+                setShared("imageId", self.imageId());
+                self.close();
+            });
+        }
+        getImage(){
+            let self = this;
+            let id = self.imageId();
+            $("#test").ntsImageEditor("selectByFileId", id); 
+        }
+        close(){
+           close();
+        }
         
     }
 }
