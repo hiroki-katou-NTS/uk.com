@@ -8,6 +8,7 @@ module nts.uk.at.view.kaf002.m2 {
             supFrameNo: number = 1;
             stampPlaceDisplay: KnockoutObservable<number> = ko.observable(0);
             workLocationList: Array<vmbase.IWorkLocation> = [];
+            displayAllLabel: KnockoutObservable<string> = ko.observable(nts.uk.resource.getText("KAF002_13", nts.uk.resource.getText('KAF002_29')); 
             constructor(){
                 var self = this;
                 self.extendsMode.subscribe((v)=>{ 
@@ -58,11 +59,11 @@ module nts.uk.at.view.kaf002.m2 {
                                 item.stampFrameNo,
                                 item.stampGoOutReason,
                                 new vmbase.CheckBoxLocation(item.supportCard,'',true,false),
-                                new vmbase.CheckBoxLocation(item.supportLocation,'',true,false),
+                                new vmbase.CheckBoxLocation(item.supportLocation,self.findWorkLocationName(item.supportLocation),true,false),
                                 new vmbase.CheckBoxTime(item.startTime,true,false),
-                                new vmbase.CheckBoxLocation(item.startLocation,'',true,false),
+                                new vmbase.CheckBoxLocation(item.startLocation,self.findWorkLocationName(item.startLocation),true,false),
                                 new vmbase.CheckBoxTime(item.endTime,true,false),
-                                new vmbase.CheckBoxLocation(item.endLocation,'',true,false) 
+                                new vmbase.CheckBoxLocation(item.endLocation,self.findWorkLocationName(item.endLocation),true,false) 
                         ));        
                     });
                 }
@@ -75,7 +76,12 @@ module nts.uk.at.view.kaf002.m2 {
             
             findWorkLocationName(workLocationCD: string): string {
                 var self = this;
-                return _.find(self.workLocationList, item => { return item.workLocationCD == workLocationCD }).workLocationName;
+                let workLocationObject: any = _.find(self.workLocationList, item => { return item.workLocationCD == workLocationCD });
+                if(nts.uk.util.isNullOrUndefined(workLocationObject)){
+                    return "";        
+                } else {
+                    return workLocationObject.workLocationName;
+                } 
             }
             
             register(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
@@ -96,17 +102,19 @@ module nts.uk.at.view.kaf002.m2 {
                     appApprovalPhaseCmds: approvalList   
                 }
                 service.insert(command)
-                .done(() => {})
+                .done(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){nts.uk.ui.block.clear();});     
+                })
                 .fail(function(res) { 
                     nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
                 }); 
             }
             
-            update(application : vmbase.Application){
+            update(application : vmbase.Application, approvalList: Array<vmbase.AppApprovalPhase>){
                 var self = this;
                 let command = {
                     version: application.version,
-                    appID: application.applicationID,
+                    appID: application.applicationID(),
                     inputDate: application.inputDate(),
                     enteredPerson: application.enteredPerson(),
                     applicationDate: application.appDate(),
@@ -117,10 +125,13 @@ module nts.uk.at.view.kaf002.m2 {
                     appStampGoOutPermitCmds: null,
                     appStampWorkCmds: ko.mapping.toJS(self.appStampList()),
                     appStampCancelCmds: null,
-                    appStampOnlineRecordCmd: null  
+                    appStampOnlineRecordCmd: null,
+                    appApprovalPhaseCmds: approvalList   
                 }
                 service.update(command)
-                .done(() => {})
+                .done(() => {
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(function(){nts.uk.ui.block.clear();});     
+                })
                 .fail(function(res) { 
                     if(res.optimisticLock == true){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){nts.uk.ui.block.clear();});    
@@ -132,7 +143,7 @@ module nts.uk.at.view.kaf002.m2 {
             
             openSelectLocationDialog(timeType: string, frameNo: number){
                 var self = this;
-                nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', false);
+                nts.uk.ui.windows.setShared('KDL010SelectWorkLocation', self.appStampList()[frameNo][timeType+'Location']().code());
                 nts.uk.ui.windows.sub.modal("/view/kdl/010/a/index.xhtml", { title: "割増項目の設定", dialogClass: "no-close" }).onClosed(function() {
                     if(nts.uk.ui.windows.getShared("KDL010workLocation")!=null){
                         let workLocation = nts.uk.ui.windows.getShared("KDL010workLocation");

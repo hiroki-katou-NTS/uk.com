@@ -41,7 +41,7 @@ module nts.uk.at.view.kaf002.c {
             
             update(){
                 var self = this;
-                self.cm.register();
+                self.cm.update(self.approvalList);
             }
         }
     }
