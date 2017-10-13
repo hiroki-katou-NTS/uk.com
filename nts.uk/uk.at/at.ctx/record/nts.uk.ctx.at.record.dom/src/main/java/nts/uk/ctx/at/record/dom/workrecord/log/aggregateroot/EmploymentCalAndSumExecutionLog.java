@@ -19,7 +19,7 @@ import nts.uk.ctx.at.record.dom.workrecord.log.objectvalue.ExecutionStatusOfCalA
  *
  */
 @Getter
-public class EmploymentCalculationAndSummaryExecutionLog extends AggregateRoot {
+public class EmploymentCalAndSumExecutionLog extends AggregateRoot {
 
 	private long Id;
 
