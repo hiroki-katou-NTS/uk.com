@@ -26,10 +26,11 @@ public class KscstHoriTotalCntSetItem extends UkJpaEntity implements Serializabl
 	public KscstHoriTotalCntSetPK kscstHoriTotalCntSetPK;
 
 	@ManyToOne
-	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "KSCMT_HORI_TOTAL_CATEGORY.CID", insertable = false, updatable = false),
-			@JoinColumn(name = "CATEGORY_CD", referencedColumnName = "KSCMT_HORI_TOTAL_CATEGORY.CATEGORY_CD", insertable = false, updatable = false)
+	@JoinColumns({ @JoinColumn(name = "CID", referencedColumnName = "CID", insertable = false, updatable = false),
+			@JoinColumn(name = "CATEGORY_CD", referencedColumnName = "CATEGORY_CD", insertable = false, updatable = false),
+			@JoinColumn(name = "TOTAL_ITEM_NO", referencedColumnName = "TOTAL_ITEM_NO", insertable = false, updatable = false)
 	})
-	public KscmtHoriTotalCategoryItem kscmtHoriTotalCategory2;
+	public KscmtTotalEvalOrderItem kscmtTotalEvalOrderItem;
 	
 	@Override
 	protected Object getKey() {

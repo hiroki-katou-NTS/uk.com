@@ -3,9 +3,6 @@ package nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.CategoryCode;
-import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.primitives.TotalItemNo;
-import nts.uk.ctx.at.schedule.dom.shift.totaltimes.TotalTimes;
 /**
  * 回数集計NO
  * @author yennth

@@ -33,6 +33,7 @@ public class HoriCalDaySetFinder {
 							.map(x -> {
 								return new HoriCalDaySetDto(companyId,
 															x.getCategoryCode().v(),
+															x.getTotalItemNo().v(),
 															x.getHalfDay().value,
 															x.getYearHd().value,
 															x.getSpecialHoliday().value,

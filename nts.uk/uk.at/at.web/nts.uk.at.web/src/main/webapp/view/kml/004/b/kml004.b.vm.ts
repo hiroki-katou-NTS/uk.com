@@ -25,6 +25,18 @@ module nts.uk.at.view.kmk004.b.viewmodel {
                 self.halfDay = ko.observable(false);
                 self.share = ko.observable(null);
                 self.calDaySet = ko.observable(getShared("KML004A_DAY_SET"));
+                self.halfDay.subscribe((value) => {
+                    self.calDaySet().halfDay = value;
+                });
+                self.yearHd.subscribe((value) => {
+                    self.calDaySet().yearHd = value;
+                });
+                self.heavyHd.subscribe((value) => {
+                    self.calDaySet().heavyHd = value;
+                });
+                self.specialHoliday.subscribe((value) => {
+                    self.calDaySet().specialHoliday = value;
+                });
             }
 
 
@@ -57,7 +69,7 @@ module nts.uk.at.view.kmk004.b.viewmodel {
                 let yearHd = self.yearHd() == true ? 1 : 0;
                 let specialHoliday = self.specialHoliday() == true ? 1 : 0;
                 let heavyHd = self.heavyHd() == true ? 1 : 0;
-                let calSet = new CalDaySet(self.calDaySet(), halfDay, yearHd, specialHoliday, heavyHd);
+                let calSet = new CalDaySet(self.calDaySet().categoryCode, self.calDaySet().totalItemNo, halfDay, yearHd, specialHoliday, heavyHd);
                 self.share(calSet);
                 setShared('KML004B_DAY_SET', calSet);
                 nts.uk.ui.windows.close();
@@ -74,12 +86,14 @@ module nts.uk.at.view.kmk004.b.viewmodel {
         }
     export class CalDaySet{
         categoryCode: string;
+        totalItemNo: number;
         halfDay: number;
         yearHd: number;
         specialHoliday: number;
         heavyHd: number;
-        constructor(categoryCode: string, halfDay: number, yearHd: number, specialHoliday: number, heavyHd: number){
+        constructor(categoryCode: string, totalItemNo: number, halfDay: number, yearHd: number, specialHoliday: number, heavyHd: number){
             this.categoryCode = categoryCode;
+            this.totalItemNo = totalItemNo;
             this.halfDay = halfDay;
             this.yearHd = yearHd;
             this.specialHoliday = specialHoliday; 

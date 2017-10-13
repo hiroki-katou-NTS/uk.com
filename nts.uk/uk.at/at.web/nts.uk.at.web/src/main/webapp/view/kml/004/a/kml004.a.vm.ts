@@ -59,8 +59,9 @@ module nts.uk.at.view.kml004.a.viewmodel {
             self.newColumns = ko.observableArray([
                 { headerText: nts.uk.resource.getText("KML004_17"), key: 'totalItemNo', width: 70 },
                 { headerText: nts.uk.resource.getText("KML004_18"), key: 'totalItemName', width: 150},
-                { headerText: nts.uk.resource.getText(""), key: 'totalItemName', width: 70,
-                    template: "<input type='button' onclick='openDialog(${totalItemNo})' value='Set' class='delete-button'/>"    
+                { headerText: nts.uk.resource.getText(""), key: 'totalItemName', width: 70, unbound: true, dataType: "string", 
+//                    template: "<input type='button' onclick='openDialog(${totalItemNo})' value='Set' class='delete-button'/>"
+                     template : '{{if ${totalItemName} == "月間勤務日数" || ${totalItemName} == "回数集計１" || ${totalItemName} == "回数集計２"}} <button class="setting" onclick="openDlg(this)" data-code="${totalItemNo}" data-name="${totalItemName}" style="margin-left: 7px;">設定</button> {{/if}}',    
                 }
             ]);   
             
@@ -70,11 +71,11 @@ module nts.uk.at.view.kml004.a.viewmodel {
             self.check = ko.observable(false);
             self.checkUpdate = ko.observable(true);
             self.checkDelete = ko.observable(true);
-            self.calSetObject = ko.observable(null);
+            self.calSetObject = ko.observable(null);  
             self.items = ko.observableArray([]);
-            self.currentCodeList = ko.observableArray([]);
+            self.currentCodeList = ko.observableArray([]);  
             self.newCurrentCodeList = ko.observableArray([]);
-            self.newItems = ko.observableArray([]);
+            self.newItems = ko.observableArray([]);  
             self.list = ko.observableArray([]);
             self.evalItems = ko.observableArray([]);
             self.listEval = ko.observableArray([]);
@@ -112,9 +113,7 @@ module nts.uk.at.view.kml004.a.viewmodel {
 //                        }
 //                    })
                     //++++++++
-                    self.calSetObject(_.find(self.calDaySetList(), function(a){
-                        return a.categoryCode == value;
-                    }));
+                    
                     //+++++++++
                     
                     self.check(false);
@@ -177,6 +176,9 @@ module nts.uk.at.view.kml004.a.viewmodel {
             let array=[];
             let list=[];
             $.when(self.getCal(), self.getEvalItem(), self.getData()).done(function(){
+                if(self.checkUpdate() == true){
+                    
+                }
                 if(self.lstCate().length == 0){
                     self.clearForm();
                     self.checkDelete(false);  
@@ -200,7 +202,15 @@ module nts.uk.at.view.kml004.a.viewmodel {
                 let a = _.find(self.items(), function(o){
                     return o.totalItemNo == parseInt(item);
                 });
-                let convert = new EvalOrder(self.selectedOption().categoryCode(), a.totalItemNo, a.totalItemName, 1);
+                let param: IEvalOrder ={   
+                            categoryCode: self.selectedOption().categoryCode(),
+                            totalItemNo: a.totalItemNo,
+                            totalItemName: a.totalItemName,
+                            dispOrder: 1,
+                            horiCalDaysSet: null,                            
+                            cntSetls: [],  
+                        }
+                let convert = new EvalOrder(param);
                 self.newItems().push(convert);
                 _.remove(arr, function(n){
                      return n.totalItemNo == parseInt(item);
@@ -237,15 +247,35 @@ module nts.uk.at.view.kml004.a.viewmodel {
             $("#code-text").trigger("validate");
             $("#name-text").trigger("validate");
             for(let i = 0; i < self.newItems().length; i++){
-                self.newItems()[i].dispOrder = i;    
+                self.newItems()[i].dispOrder = i; 
+                if(self.newItems()[i].horiCalDaysSet != null && self.calSetReceive() != null){
+                    if(self.newItems()[i].totalItemNo == self.calSetReceive().totalItemNo){
+                        self.newItems()[i].horiCalDaysSet(self.calSetReceive());
+                    }
+                }  
+                if(self.newItems()[i].cntSetls != null && self.cntSetls() != null){
+                    if(self.newItems()[i].totalItemNo){
+                        self.newItems()[i].cntSetls(self.cntSetls());
+                    }
+                }  
+                
+//                if(self.newItems()[i].cntSetls)
+//                let object: IEvalOrder ={
+//                    categoryCode: self.newItems()[i].categoryCode,
+//                    totalItemNo: self.newItems()[i].totalItemNo,
+//                    totalItemName: self.calSetReceive().categoryName(),
+//                    dispOrder: self.newItems()[i].dispOrder,
+//                    horiCalDaysSet: self.calSetReceive(),
+//                    cntSetls: self.cntSetls(), 
+//                }
+//                lst.push(object);
             }
+            
             let param: ITotalCategory ={
                 categoryCode: self.selectedOption().categoryCode(),
                 categoryName: self.selectedOption().categoryName(),
                 memo: self.selectedOption().memo(),
-                horiCalDaysSet: self.calSetReceive(),
                 totalEvalOrders: self.newItems(),
-                cntSetls: self.cntSetls(),  
             }
             _.defer(() => {
                 if (nts.uk.ui.errors.hasError() === false) {
@@ -266,12 +296,10 @@ module nts.uk.at.view.kml004.a.viewmodel {
                             categoryCode: self.selectedOption().categoryCode(),
                             categoryName: self.selectedOption().categoryName(),
                             memo: self.selectedOption().memo(),
-                            horiCalDaysSet: self.calSetReceive(),                            
                             totalEvalOrders: self.newItems(),
-                            cntSetls: self.cntSetls(),  
                         }
                         // insert item to list
-                        service.add(ko.toJS(obj)).done(function(){
+                        service.add(ko.toJS(param)).done(function(){
                             self.lstCate([]);
                             self.getData().done(function(){
                                 nts.uk.ui.dialog.info({ messageId: "Msg_15" });
@@ -377,13 +405,8 @@ module nts.uk.at.view.kml004.a.viewmodel {
         /** click 設定 button **/
         openBDialog() {
             let self = this;
-            if(self.calSetObject() == undefined || self.checkUpdate()==false){
-                self.calSetObject(new CalDaySet(self.selectedOption().categoryCode(), 0, 0, 0, 0));
-            }
-            setSharedA('KML004A_DAY_SET', self.calSetObject());   
-            console.log(self.calSetReceive());
             nts.uk.ui.windows.sub.modal('/view/kml/004/b/index.xhtml').onClosed(function(): any {
-                self.calSetReceive = ko.observable(getSharedA("KML004B_DAY_SET")); 
+                self.calSetReceive(getSharedA("KML004B_DAY_SET")); 
             });
         }
            
@@ -405,9 +428,16 @@ module nts.uk.at.view.kml004.a.viewmodel {
         
         openDialog(id, name) {
             var self = this;
-            if ("A" == name) {
+            if ("月間勤務日数" == name) {
+                self.calSetObject(_.find(self.calDaySetList(), function(a){
+                            return (a.categoryCode == self.selectedOption().categoryCode() && a.totalItemNo == id);
+                    }));
+                if(self.calSetObject() == undefined || self.checkUpdate()==false || self.calSetObject() == null){
+                    self.calSetObject(new CalDaySet(self.selectedOption().categoryCode(), id, 0, 0, 0, 0));
+                }
+                setSharedA('KML004A_DAY_SET', self.calSetObject());   
                 self.openBDialog();
-            } else {
+            } else if("回数集計１" == name || "回数集計２" == name) {
                 self.openDDialog();
             }
         }
@@ -418,26 +448,31 @@ module nts.uk.at.view.kml004.a.viewmodel {
         categoryName: string;
         memo: string;
         totalEvalOrders: Array<EvalOrder>;
-        horiCalDaysSet: Array<CalDaySet>;  
-        cntSetls: Array<any>;     
     }
     
     export class TotalCategory{
         categoryCode: KnockoutObservable<string>;
         categoryName: KnockoutObservable<string>;
         memo: KnockoutObservable<string>;
-        horiCalDaysSet: KnockoutObservableArray<any>;
         totalEvalOrders: KnockoutObservableArray<any>;
-        cntSetls: KnockoutObservableArray<any>;
         constructor(param: ITotalCategory){
             let self = this;
             this.categoryCode = ko.observable(param.categoryCode);
             this.categoryName = ko.observable(param.categoryName);
             this.memo = ko.observable(param.memo); 
-            this.horiCalDaysSet = ko.observableArray(param.horiCalDaysSet);
             this.totalEvalOrders = ko.observableArray(param.totalEvalOrders);
-            this.cntSetls = ko.observableArray(param.cntSetls);
+            
         } 
+    }
+    
+    
+    export interface IEvalOrder{
+        categoryCode: string;
+        totalItemNo: number;
+        totalItemName: string;
+        dispOrder: number;
+        horiCalDaysSet: CalDaySet;
+        cntSetls: Array<any>;
     }
     
     export class EvalOrder{
@@ -445,22 +480,28 @@ module nts.uk.at.view.kml004.a.viewmodel {
         totalItemNo: number;
         totalItemName: string;
         dispOrder: number;
-        constructor(categoryCode: string, totalItemNo: number, totalItemName: string, dispOrder: number){
-            this.categoryCode = categoryCode;
-            this.totalItemNo = totalItemNo;
-            this.totalItemName = totalItemName;
-            this.dispOrder = dispOrder;     
+        horiCalDaysSet: KnockoutObservable<any> = ko.observable(null);
+        cntSetls: KnockoutObservableArray<any> = ko.observableArray([]);
+        constructor(param : IEvalOrder){
+            this.categoryCode = param.categoryCode;
+            this.totalItemNo = param.totalItemNo;
+            this.totalItemName = param.totalItemName;
+            this.dispOrder = param.dispOrder;
+            this.horiCalDaysSet(param.horiCalDaysSet);
+            this.cntSetls(param.cntSetls);     
         }
     }
     
     export class CalDaySet{
         categoryCode: string;
+        totalItemNo: number;
         halfDay: number;
         yearHd: number;
         specialHoliday: number;
         heavyHd: number;
-        constructor(categoryCode: string, halfDay: number, yearHd: number, specialHoliday: number, heavyHd: number){
+        constructor(categoryCode: string, totalItemNo: number,  halfDay: number, yearHd: number, specialHoliday: number, heavyHd: number){
             this.categoryCode = categoryCode;
+            this.totalItemNo = totalItemNo;
             this.halfDay = halfDay;
             this.yearHd = yearHd;
             this.specialHoliday = specialHoliday; 
@@ -469,6 +510,11 @@ module nts.uk.at.view.kml004.a.viewmodel {
     }
 }
 
+function openDlg(element){
+    var itemNo = $(element).data("code");
+    var itemName = $(element).data("name");
+    nts.uk.ui._viewModel.content.openDialog(itemNo, itemName);
+}
 
 
 

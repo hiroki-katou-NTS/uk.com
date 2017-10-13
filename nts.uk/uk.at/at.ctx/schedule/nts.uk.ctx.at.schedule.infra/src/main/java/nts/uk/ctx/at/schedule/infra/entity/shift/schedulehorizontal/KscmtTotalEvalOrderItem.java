@@ -1,13 +1,17 @@
 package nts.uk.ctx.at.schedule.infra.entity.shift.schedulehorizontal;
 
 import java.io.Serializable;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -31,6 +35,12 @@ public class KscmtTotalEvalOrderItem extends UkJpaEntity implements Serializable
 			@JoinColumn(name = "CATEGORY_CD", referencedColumnName = "KSCMT_HORI_TOTAL_CATEGORY.CATEGORY_CD", insertable = false, updatable = false)
 	})
 	public KscmtHoriTotalCategoryItem kscmtHoriTotalCategory;
+	
+	@OneToOne(cascade = CascadeType.ALL, mappedBy = "kscmtTotalEvalOrderItem", orphanRemoval = true)
+	public KscstHoriCalDaysSetItem horiCalDaysSet;
+	
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "kscmtTotalEvalOrderItem", orphanRemoval = true)
+	public List<KscstHoriTotalCntSetItem> listHoriCNTSet;
 	
 	@Override
 	protected Object getKey() {

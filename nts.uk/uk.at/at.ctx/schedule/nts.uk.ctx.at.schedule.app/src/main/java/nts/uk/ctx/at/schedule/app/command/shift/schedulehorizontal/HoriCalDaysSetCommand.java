@@ -12,10 +12,10 @@ import nts.uk.ctx.at.schedule.dom.shift.schedulehorizontal.HoriCalDaysSet;
 @Data
 @AllArgsConstructor
 public class HoriCalDaysSetCommand {
-	/**会社ID**/
-	private String companyId;
 	/** カテゴリコード */
 	private String categoryCode;
+	/** 集計項目NO */
+	private int totalItemNo;
 	/** 半日カウント区分 */
 	private int halfDay;
 	/** 年休カウント区分*/
@@ -31,7 +31,7 @@ public class HoriCalDaysSetCommand {
 	 * @param categoryCode
 	 * @return
 	 */
-	public HoriCalDaysSet toDomainCalSet(String companyId, String categoryCode){
-		return HoriCalDaysSet.createFromJavaType(companyId, categoryCode, halfDay, yearHd, specialHoliday, heavyHd);
+	public HoriCalDaysSet toDomainCalSet(String companyId, String categoryCode, int totalItemNo){
+		return HoriCalDaysSet.createFromJavaType(companyId, categoryCode, totalItemNo, halfDay, yearHd, specialHoliday, heavyHd);
 	}
 }

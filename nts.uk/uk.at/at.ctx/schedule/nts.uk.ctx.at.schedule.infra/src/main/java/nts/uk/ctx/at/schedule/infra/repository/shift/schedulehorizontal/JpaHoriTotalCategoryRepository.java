@@ -53,10 +53,20 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 * author: Hoang Yen
 	 */
 	private static TotalEvalOrder toDomainOrder(KscmtTotalEvalOrderItem entity){
+		List<HoriTotalCNTSet> totalCntSetls = new ArrayList<>();
+		KscstHoriCalDaysSetItem object = entity.horiCalDaysSet;
+		HoriCalDaysSet horiCalDaysSet = object == null ? null : toDomainSet(object);
+		List<KscstHoriTotalCntSetItem> lsCntSetEntity = entity.listHoriCNTSet;
+		// get hori total cnt set dom list
+		for(KscstHoriTotalCntSetItem obj : lsCntSetEntity){
+			totalCntSetls.add(toDomainCNT(obj));
+		}
 		TotalEvalOrder domain = TotalEvalOrder.createFromJavaType(entity.kscmtTotalEvalOrderPK.companyId, 
 																	entity.kscmtTotalEvalOrderPK.categoryCode, 
 																	entity.kscmtTotalEvalOrderPK.totalItemNo, 
-																	entity.dispOrder);
+																	entity.dispOrder,
+																	horiCalDaysSet,
+																	totalCntSetls);
 		return domain;
 	}
 	
@@ -69,6 +79,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	private static HoriCalDaysSet toDomainSet(KscstHoriCalDaysSetItem entity){
 		HoriCalDaysSet domain = HoriCalDaysSet.createFromJavaType(entity.kscstHoriCalDaysSetPK.companyId, 
 																entity.kscstHoriCalDaysSetPK.categoryCode, 
+																entity.kscstHoriCalDaysSetPK.totalItemNo,
 																entity.halfDay, 
 																entity.yearHd, 
 																entity.specialHoliday, 
@@ -84,6 +95,9 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 */
 	private static KscmtTotalEvalOrderItem toEntityOrder(TotalEvalOrder domain){
 		val entity = new KscmtTotalEvalOrderItem();
+		if(domain.getHoriCalDaysSet() != null){
+			entity.horiCalDaysSet = toEntitySet(domain.getHoriCalDaysSet());
+		}
 		entity.kscmtTotalEvalOrderPK = new KscmtTotalEvalOrderPK(domain.getCompanyId(), 
 																domain.getCategoryCode().v(), 
 																domain.getTotalItemNo().v());
@@ -99,26 +113,17 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 */
 	private static HoriTotalCategory toDomainCate(KscmtHoriTotalCategoryItem entity){
 		List<KscmtTotalEvalOrderItem> lsEvalOrderEntity = entity.listTotalEvalOrder;
-		KscstHoriCalDaysSetItem object = entity.horiCalDaysSet;
-		List<KscstHoriTotalCntSetItem> lsCntSetEntity = entity.listHoriCNTSet;
 		List<TotalEvalOrder> domlsEvalOrderEntity = new ArrayList<>();
-		List<HoriTotalCNTSet> totalCntSetls = new ArrayList<>();
+
 		// get eval order entity dom list
 		for(KscmtTotalEvalOrderItem item : lsEvalOrderEntity){
 			domlsEvalOrderEntity.add(toDomainOrder(item));
 		}
-		// get hori total cnt set dom list
-		for(KscstHoriTotalCntSetItem obj : lsCntSetEntity){
-			totalCntSetls.add(toDomainCNT(obj));
-		}
-		HoriCalDaysSet horiCalDaysSet = object == null ? null : toDomainSet(object);
 		HoriTotalCategory domain = HoriTotalCategory.createFromJavaType(entity.kscmtHoriTotalCategoryPK.companyId, 
 																		entity.kscmtHoriTotalCategoryPK.categoryCode, 
 																		entity.categoryName, 
 																		entity.memo,
-																		horiCalDaysSet,
-																		domlsEvalOrderEntity,
-																		totalCntSetls);
+																		domlsEvalOrderEntity);
 		return domain;
 	}
 	
@@ -138,9 +143,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 										.map(x -> toEntityOrder(x))
 										.collect(Collectors.toList());
 		}
-		if(domain.getHoriCalDaysSet() != null){
-			entity.horiCalDaysSet = toEntitySet(domain.getHoriCalDaysSet());
-		}
+		
 		return entity;
 	}
 	
@@ -180,7 +183,7 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 	 */
 	public static KscstHoriCalDaysSetItem toEntitySet(HoriCalDaysSet domain){
 		val entity = new KscstHoriCalDaysSetItem();
-		entity.kscstHoriCalDaysSetPK = new KscstHoriCalDaysSetPK(domain.getCompanyId(), domain.getCategoryCode().v());
+		entity.kscstHoriCalDaysSetPK = new KscstHoriCalDaysSetPK(domain.getCompanyId(), domain.getCategoryCode().v(), domain.getTotalItemNo().v());
 		entity.halfDay = domain.getHalfDay().value;
 		entity.yearHd = domain.getYearHd().value;
 		entity.specialHoliday = domain.getSpecialHoliday().value;
@@ -227,14 +230,6 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 			oldEntity.listTotalEvalOrder = horiTotalCategory.getTotalEvalOrders().stream()
 											.map(x -> toEntityOrder(x))
 											.collect(Collectors.toList());
-		}
-		if(horiTotalCategory.getHoriCalDaysSet() != null){
-			oldEntity.horiCalDaysSet = toEntitySet(horiTotalCategory.getHoriCalDaysSet());
-		}
-		if(horiTotalCategory.getCntSetls() != null){
-			oldEntity.listHoriCNTSet = horiTotalCategory.getCntSetls().stream()
-														.map(c -> toEntityCNT(c))
-														.collect(Collectors.toList());
 		}
 		this.commandProxy().update(oldEntity);
 	}
@@ -290,6 +285,12 @@ public class JpaHoriTotalCategoryRepository extends JpaRepository implements Hor
 			KscmtTotalEvalOrderItem entity = toEntityOrder(item);
 			KscmtTotalEvalOrderItem oldEntity = this.queryProxy().find(entity.kscmtTotalEvalOrderPK, KscmtTotalEvalOrderItem.class).get();
 			oldEntity.dispOrder = entity.dispOrder;
+			oldEntity.horiCalDaysSet = toEntitySet(item.getHoriCalDaysSet());
+			if(item.getCntSetls() != null){
+				oldEntity.listHoriCNTSet = item.getCntSetls().stream()
+																.map(c -> toEntityCNT(c))
+																.collect(Collectors.toList());
+			}
 			this.commandProxy().update(oldEntity);
 		}
 	}

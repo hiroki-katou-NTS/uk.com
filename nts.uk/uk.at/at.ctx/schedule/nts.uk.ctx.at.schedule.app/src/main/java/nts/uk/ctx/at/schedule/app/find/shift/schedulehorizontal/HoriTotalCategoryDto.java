@@ -20,6 +20,5 @@ public class HoriTotalCategoryDto {
 	private String categoryName;
 	/** メモ */
 	private String memo;
-	private HoriCalDaySetDto horiCalDaySetDto;
 	private List<TotalEvalOrderDto> totalEvalOrders;
 }

@@ -39,6 +39,6 @@ public class TotalEvalItemFinder {
 				.stream()
 				.map(c -> fromDomain(c))
 				.collect(Collectors.toList());
-		return totalEvalItemDtos;
+ 		return totalEvalItemDtos;
 	}
 }
