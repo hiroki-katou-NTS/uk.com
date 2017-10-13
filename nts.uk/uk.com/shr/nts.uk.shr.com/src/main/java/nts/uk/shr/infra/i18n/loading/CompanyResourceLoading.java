@@ -18,7 +18,7 @@ import nts.arc.i18n.custom.ICompanyResourceBundle;
 import nts.arc.i18n.custom.ResourceChangedEvent;
 import nts.arc.i18n.custom.ResourceItem;
 import nts.arc.layer.infra.data.EntityManagerLoader;
-import nts.uk.shr.infra.i18n.entity.CompanyResource;
+import nts.uk.shr.infra.i18n.resource.data.CmnmtResource;
 
 @Singleton
 @Startup
@@ -30,7 +30,7 @@ public class CompanyResourceLoading implements ICompanyResourceBundle {
 	private static final String SELECT_ALL = "Select e from CompanyResource e";
 	private static final String SELECT_COMPANY_ALL = "Select e from CompanyResource e where e.primaryKey.companyID =:companyCode";
 	// Map<company code, Map<languageCode, List<resource>>>
-	private Map<String, Map<String, List<CompanyResource>>> resource;
+	private Map<String, Map<String, List<CmnmtResource>>> resource;
 
 	public CompanyResourceLoading() {
 	}
@@ -39,7 +39,7 @@ public class CompanyResourceLoading implements ICompanyResourceBundle {
 	private void load() {
 		resource = new HashMap<>();
 		EntityManager em = managerLoader.getEntityManager();
-		List<CompanyResource> compResource = em.createQuery(SELECT_ALL, CompanyResource.class).getResultList();
+		List<CmnmtResource> compResource = em.createQuery(SELECT_ALL, CmnmtResource.class).getResultList();
 		resource = compResource.stream().collect(Collectors.groupingBy((p) -> p.getPrimaryKey().getCompanyID(),
 				Collectors.groupingBy((x) -> x.getPrimaryKey().getLanguageCode(), Collectors.toList())));
 	}
@@ -47,8 +47,8 @@ public class CompanyResourceLoading implements ICompanyResourceBundle {
 	@Override
 	public List<ResourceItem> getResource(String companyCode, Locale language) {
 
-		return resource.getOrDefault(companyCode, new HashMap<String, List<CompanyResource>>())
-				.getOrDefault(language.getLanguage(), new ArrayList<CompanyResource>()).stream().map(p -> {
+		return resource.getOrDefault(companyCode, new HashMap<String, List<CmnmtResource>>())
+				.getOrDefault(language.getLanguage(), new ArrayList<CmnmtResource>()).stream().map(p -> {
 					ResourceItem item = ResourceItem.of(p.getPrimaryKey().getCode(), p.getContent());
 					return item;
 				}).collect(Collectors.toList());
@@ -57,9 +57,9 @@ public class CompanyResourceLoading implements ICompanyResourceBundle {
 	@Override
 	public void loadResourceOfCompany(ResourceChangedEvent event) {
 		EntityManager em = managerLoader.getEntityManager();
-		List<CompanyResource> compResource = em.createQuery(SELECT_COMPANY_ALL, CompanyResource.class)
+		List<CmnmtResource> compResource = em.createQuery(SELECT_COMPANY_ALL, CmnmtResource.class)
 				.setParameter("companyCode", event.getCompanyCode()).getResultList();
-		Map<String, List<CompanyResource>> groupedByLanguageCode = compResource.stream()
+		Map<String, List<CmnmtResource>> groupedByLanguageCode = compResource.stream()
 				.collect(Collectors.groupingBy((x) -> x.getPrimaryKey().getLanguageCode(), Collectors.toList()));
 
 		resource.put(event.getCompanyCode(), groupedByLanguageCode);

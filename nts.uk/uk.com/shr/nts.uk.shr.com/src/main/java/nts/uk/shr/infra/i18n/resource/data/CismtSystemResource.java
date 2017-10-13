@@ -1,4 +1,4 @@
-package nts.uk.shr.infra.i18n.entity;
+package nts.uk.shr.infra.i18n.resource.data;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -15,9 +15,9 @@ import nts.arc.i18n.custom.ResourceType;
 @Table(name = "CISMT_SYSTEM_RESOURCE")
 @Getter
 @Setter
-public class SystemResource {
+public class CismtSystemResource {
 	@EmbeddedId
-	private SystemResourcePK pk;
+	private CismtSystemResourcePK pk;
 
 	@Column(name = "ITEM_CONTENT")
 	private String content;

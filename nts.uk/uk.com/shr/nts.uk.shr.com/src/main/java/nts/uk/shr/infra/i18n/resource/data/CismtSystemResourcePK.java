@@ -1,4 +1,4 @@
-package nts.uk.shr.infra.i18n.entity;
+package nts.uk.shr.infra.i18n.resource.data;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Embeddable
 @Setter
 @Getter
-public class SystemResourcePK {
+public class CismtSystemResourcePK {
 	@Column(name = "CODE")
 	private String code;
 	@Column(name = "LANGUAGE_CODE")

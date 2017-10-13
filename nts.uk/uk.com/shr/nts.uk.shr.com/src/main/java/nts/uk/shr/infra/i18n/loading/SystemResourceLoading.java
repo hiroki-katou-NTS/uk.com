@@ -17,7 +17,7 @@ import nts.arc.i18n.custom.ISystemResourceBundle;
 import nts.arc.i18n.custom.ResourceType;
 import nts.arc.layer.infra.data.EntityManagerLoader;
 import nts.uk.shr.infra.i18n.SystemProperties;
-import nts.uk.shr.infra.i18n.entity.SystemResource;
+import nts.uk.shr.infra.i18n.resource.data.CismtSystemResource;
 
 @Startup
 @Singleton
@@ -35,17 +35,17 @@ public class SystemResourceLoading implements ISystemResourceBundle {
 		Map<String, Map<ResourceType, Map<String, Map<String, String>>>> tempGroupByProgram = new HashMap<>();
 
 		EntityManager em = entityManagerLoader.getEntityManager();
-		List<SystemResource> resource = em.createQuery(SELECT_ALL, SystemResource.class).getResultList();
+		List<CismtSystemResource> resource = em.createQuery(SELECT_ALL, CismtSystemResource.class).getResultList();
 
 		// group by language
-		Map<String, List<SystemResource>> resourceGroupingByLanguage = resource.stream()
+		Map<String, List<CismtSystemResource>> resourceGroupingByLanguage = resource.stream()
 				.collect(Collectors.groupingBy((x) -> x.getPk().getLanguageCode(), Collectors.toList()));
 
 		resourceGroupingByLanguage.forEach((k, v) -> {
 
 			// Map<Locale,Map<Type,Map<ProgramID,Map<id,content>>>>
 			Map<ResourceType, Map<String, Map<String, String>>> groupByProgram = v.stream()
-					.collect(Collectors.groupingBy(SystemResource::getType,
+					.collect(Collectors.groupingBy(CismtSystemResource::getType,
 							Collectors.groupingBy((x) -> x.getPk().getProgramId(), Collectors.toMap((x) -> {
 								if (SystemProperties.SYSTEM_ID.equals(x.getPk().getProgramId())) {
 									return x.getPk().getCode();
@@ -53,7 +53,7 @@ public class SystemResourceLoading implements ISystemResourceBundle {
 									return x.getPk().getProgramId() + SystemProperties.UNDERSCORE + x.getPk().getCode();
 								}
 
-							}, SystemResource::getContent))));
+							}, CismtSystemResource::getContent))));
 
 			tempGroupByProgram.put(k, groupByProgram);
 
