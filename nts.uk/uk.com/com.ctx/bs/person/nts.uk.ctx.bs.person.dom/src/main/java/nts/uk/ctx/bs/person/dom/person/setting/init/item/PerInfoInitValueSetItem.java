@@ -18,8 +18,13 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 	// 個人情報項目定義ID
 	private String perInfoItemDefId;
 
+	private String settingId;
+	
 	// 個人情報カテゴリID
-	private String initValueSettingCtgId;
+	private String perInfoCtgId;
+	
+	
+	private String itemName;
 
 	// 参照方法
 	private ReferenceMethodType refMethodType;
@@ -52,7 +57,7 @@ public class PerInfoInitValueSetItem extends AggregateRoot {
 			GeneralDate dateValue) {
 		super();
 		this.perInfoItemDefId = perInfoItemDefId;
-		this.initValueSettingCtgId = initValueSettingCtgId;
+		this.settingId = initValueSettingCtgId;
 		this.refMethodType = refMethodType;
 		this.saveDataType = saveDataType;
 		this.stringValue = stringValue;
