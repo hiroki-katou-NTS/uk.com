@@ -67,7 +67,8 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 		String companyID = AppContexts.user().companyId();
 		String appID = application.getApplicationID();
 		//ドメインモデル「申請」．「承認フェーズ」5～1の順でループする
-		List<AppApprovalPhase> listPhase = application.getListPhase().stream().sorted(Comparator.comparingInt(AppApprovalPhase::getDispOrder).reversed()).collect(Collectors.toList());
+		application.setListPhase(application.getListPhase().stream().sorted(Comparator.comparingInt(AppApprovalPhase::getDispOrder).reversed()).collect(Collectors.toList()));
+		List<AppApprovalPhase> listPhase = application.getListPhase();
 		for (AppApprovalPhase phase : listPhase) {
 			//アルゴリズム「承認者一覧を取得する」を実行する
 			List<String> listApprover = afterApprovalProcess.actualReflectionStateDecision(appID, phase.getPhaseID(), ApprovalAtr.APPROVED);
@@ -81,19 +82,18 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 					continue;
 				}
 			} else {
-				List<ApprovalFrame> listFrame = frameRepo.findByPhaseID(AppContexts.user().companyId(),
-						phase.getPhaseID());
+				List<ApprovalFrame> listFrame = phase.getListFrame();
 				for (ApprovalFrame frame : listFrame) {
 					List<String> approverIds = frame.getListApproveAccepted().stream().map(x -> x.getApproverSID())
 							.collect(Collectors.toList());
 					if (approverIds.contains(loginEmp)) {
 						for (ApproveAccepted appAccepted : frame.getListApproveAccepted()) {
-							if (appAccepted.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
+							//if (appAccepted.getApprovalATR() == ApprovalAtr.UNAPPROVED) {
 								// (ループ中の「承認枠」)承認区分=「否認」、承認者=ログイン者の社員ID、代行者=空
 								appAccepted.changeApprovalATR(ApprovalAtr.DENIAL);
 								appAccepted.changeApproverSID(loginEmp);
 								appAccepted.changeRepresenterSID(null);
-							}
+							//}
 						}
 					} else {
 						// 3-1.承認代行情報の取得処理
@@ -113,6 +113,8 @@ public class AfterDenialProcessImpl implements AfterDenialProcess {
 		}
 		// 「反映情報」．実績反映状態を「否認」にする
 		application.changeReflectState(ReflectPlanPerState.DENIAL.value);
+		
+		appRepo.updateApplication(application);
 		//SEND mail
 		// lấy domain 申請種類別設定
 		ApplicationType appType = application.getApplicationType();

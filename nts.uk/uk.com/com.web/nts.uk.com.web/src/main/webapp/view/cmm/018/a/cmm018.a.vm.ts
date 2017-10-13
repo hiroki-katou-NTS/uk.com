@@ -1183,7 +1183,7 @@ module nts.uk.com.view.cmm018.a {
             checklistRoot(root: Array<vmbase.DataRootCheck>): Array<vmbase.CompanyAppRootADto>{
                  let self = this;
                 let lstbyApp: Array<vmbase.CompanyAppRootADto> = [];
-                let a: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto([],'abc','123',0, '',0,0);
+                let a: vmbase.ApprovalPhaseDto = new vmbase.ApprovalPhaseDto([],'','',0, '',0,0);
                 let color: boolean;
                 //Them common type
                 _.each(root, function(itemRoot){
