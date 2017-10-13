@@ -52,7 +52,8 @@ module nts.uk.ui.koExtentions {
 
             let customOption = {
                 aspectRatio: freeResize ? 0 : resizeRatio,
-                dragMode: croppable ? "crop" : "none"
+                dragMode: croppable ? "crop" : "none",
+                modal: false
             };
             constructSite.buildImageLoadedHandler(zoomble, customOption);
 
@@ -185,6 +186,7 @@ module nts.uk.ui.koExtentions {
 
         buildImageLoadedHandler(zoomble: boolean, customOption: any) {
             let self = this;
+            self.$root.data("img-status", self.buildImgStatus("not init", 0));
             self.$imagePreview.on('load', function() {
                 var image = new Image();
                 image.src = self.$imagePreview.attr("src");
@@ -211,41 +213,101 @@ module nts.uk.ui.koExtentions {
                     jQuery.extend(option, customOption);
                     self.cropper = new Cropper(self.$imagePreview[0], option);
                     self.$root.data("cropper", self.cropper);
-
+                    self.$root.data("img-status", self.buildImgStatus("loaded", 4));
+                    let evtData = {
+                        size: self.$root.data("size"), 
+                        height: this.height, 
+                        width: this.width, 
+                        name: self.$root.data("file-name"), 
+                        fileType: self.$root.data("file-type")
+                    };
+                    self.$root.trigger("imgloaded", evtData);
                 };
+            }).on("error", function(){
+                self.$root.data("img-status", self.buildImgStatus("load fail", 3));
             });
+        }
+        
+        buildImgStatus(status: string, statusCode: number){
+            return {
+                imgOnView: statusCode === 4 ? true : false,
+                imgStatus: status,
+                imgStatusCode: statusCode    
+            };
         }
 
         buildSrcChangeHandler() {
             let self = this;
             self.$root.bind("srcchanging", function(evt, query?: SrcChangeQuery) {
+                self.$root.data("img-status", self.buildImgStatus("img loading", 2));
                 let target = self.helper.getUrl(query);
-                var xhr = new XMLHttpRequest();
+                var xhr = self.getXRequest();
+                if(xhr === null){
+                    self.destroyImg();
+                    return;
+                }
                 xhr.open('GET', target);
                 xhr.responseType = 'blob';
 
                 xhr.onload = function(e) {
                     if (this.status == 200) {
-                        var reader = new FileReader();
-                        reader.readAsDataURL(xhr.response);
-                        reader.onload = function() {
-                            self.helper.getFileNameFromUrl().done(function(fileName) {
-                                var fileType = xhr.response.type.split("/")[1],
-                                    fileName = self.helper.data.isOutSiteUrl ? (fileName + "." + fileType) : fileName;
-                                self.backupData(null, fileName, fileType, xhr.response.size);
-                                self.$imagePreview.attr("src", reader.result);
-                            });
-                        };
+                        if(xhr.response.type.indexOf("image") >= 0){
+                            var reader = new FileReader();
+                            reader.readAsDataURL(xhr.response);
+                            reader.onload = function() {
+                                self.helper.getFileNameFromUrl().done(function(fileName) {
+                                    var fileType = xhr.response.type.split("/")[1],
+                                        fileName = self.helper.data.isOutSiteUrl ? (fileName + "." + fileType) : fileName;
+                                    self.backupData(null, fileName, fileType, xhr.response.size);
+                                    self.$imagePreview.attr("src", reader.result);
+                                });
+                            };    
+                        } else {
+                            self.destroyImg();  
+                        }
+                    } else {
+                        self.destroyImg();
                     }
                 };
                 xhr.send();
             });
         }
+        
+        destroyImg(){
+            let self = this;
+            nts.uk.ui.dialog.alert("画像データが正しくないです。。");
+            self.$root.data("img-status", self.buildImgStatus("load fail", 3));
+            self.backupData(null, "", "", 0);
+            self.$imagePreview.attr("src", "");
+            self.$imageSizeLbl.text("");
+            if(!nts.uk.util.isNullOrUndefined(self.cropper)){
+                self.cropper.destroy();     
+            }   
+            self.$root.data("cropper", self.cropper);
+        }
+        
+        getXRequest(){
+            if ( typeof XDomainRequest != "undefined" ){
+                // IE8
+                return new XDomainRequest();
+            } else if ( typeof XMLHttpRequest != "undefined" ){
+                // firefox 他
+                return new XMLHttpRequest();
+            } else if ( window.ActiveXObject ) {
+                // IE 7 以前
+                return new ActiveXObject("Microsoft.XMLHTTP");
+            } else {
+                // 未対応ブラウザ
+                return null;
+            }    
+        }
 
         buildFileChangeHandler() {
             let self = this;
             self.$inputFile.change(function() {
+                self.$root.data("img-status", self.buildImgStatus("img loading", 2));
                 if (nts.uk.util.isNullOrEmpty(this.files)) {
+                    self.$root.data("img-status", self.buildImgStatus("load fail", 3));
                     return;
                 }
 
@@ -260,6 +322,9 @@ module nts.uk.ui.koExtentions {
                 fr.onload = function() {
                     self.$imagePreview.attr("src", fr.result);
                     self.backupData(file, file.name, file.type.split("/")[1], file.size);
+                }
+                fr.onerror = function(){
+                    self.destroyImg();
                 }
                 fr.readAsDataURL(file);
             }
