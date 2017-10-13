@@ -76,7 +76,7 @@ module nts.uk.com.view.cmm014.a {
              */
             private loadClassification(code: string): void {
                 let self = this;
-                service.findClassification(code).done(function(classification) {
+                service.findClassification(code).done(function(classification: any) {
                     if (classification) {
                         self.selectedCode(classification.code);
                         self.classificationModel().updateData(classification);
@@ -171,7 +171,7 @@ module nts.uk.com.view.cmm014.a {
                                 })[0];
 
                                 // Check Data List
-                                if (($('#clf-component').getDataList() == undefined) || ($('clf-component').getDataList().length <= 0)) {
+                                if (($('#clf-component').getDataList() == undefined) || ($('#clf-component').getDataList().length <= 0)) {
                                     self.clearData();
                                 }
                                 else {
