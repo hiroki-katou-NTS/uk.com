@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace.config.dto;
 
-import nts.uk.ctx.bs.employee.dom.workplace.Period;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistorySetMemento;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 public class WorkplaceConfigHistoryDto implements WorkplaceConfigHistorySetMemento {
 
@@ -15,7 +15,7 @@ public class WorkplaceConfigHistoryDto implements WorkplaceConfigHistorySetMemen
 
 	/** The period. */
 	// 期間
-	public Period period;
+	public DatePeriod period;
 
 	@Override
 	public void setHistoryId(String historyId) {
@@ -23,7 +23,7 @@ public class WorkplaceConfigHistoryDto implements WorkplaceConfigHistorySetMemen
 	}
 
 	@Override
-	public void setPeriod(Period period) {
+	public void setPeriod(DatePeriod period) {
 		this.period = period;
 	}
 }

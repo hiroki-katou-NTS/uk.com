@@ -7,7 +7,7 @@ package nts.uk.ctx.bs.employee.dom.jobtitle_old;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * 職位.
@@ -31,7 +31,7 @@ public class JobTitle extends AggregateRoot {
 	private SequenceCode sequenceCode;
 
 	/** 期間. */
-	private Period period;
+	private DatePeriod period;
 
 	/**
 	 * Instantiates a new job title.

@@ -804,6 +804,12 @@ public class ProgramsManager {
 	public static final Program KDW002B  = new Program(WebAppId.AT, ProgramIdConsts.KDW002B, "KDW002_1",
 			"/view/kdw/002/b/index.xhtml");
 	
+	/**
+	 * KDW002C
+	 */
+	public static final Program KDW002C  = new Program(WebAppId.AT, ProgramIdConsts.KDW002C, "KDW002_1",
+			"/view/kdw/002/c/index.xhtml");
+	
 	/** The Constant CCG001. */
 	public static final Program CCG001  = new Program(WebAppId.COM, ProgramIdConsts.CCG001, null,
 			"/view/ccg/001/index.xhtml");

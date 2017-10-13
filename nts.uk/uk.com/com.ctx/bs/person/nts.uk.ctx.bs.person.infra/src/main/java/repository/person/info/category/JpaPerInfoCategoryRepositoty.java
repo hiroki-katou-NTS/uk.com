@@ -12,7 +12,7 @@ import entity.person.info.category.PpemtPerInfoCtgCm;
 import entity.person.info.category.PpemtPerInfoCtgCmPK;
 import entity.person.info.category.PpemtPerInfoCtgOrder;
 import entity.person.info.category.PpemtPerInfoCtgPK;
-import entity.person.info.setting.copysetting.BsystEmployeeCopySetting;
+import entity.person.info.setting.copysetting.PpestEmployeeCopySetting;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.bs.person.dom.person.info.category.PerInfoCategoryRepositoty;
@@ -53,8 +53,8 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 			+ " FROM PpemtPerInfoCtg c WHERE c.cid = :companyId AND c.categoryName = :categoryName"
 			+ " AND c.ppemtPerInfoCtgPK.perInfoCtgId != :ctgId";
 
-	private final static String COUNT_PERINFOCTGIN_COPYSETING = "SELECT COUNT(i) FROM BsystEmployeeCopySetting i "
-			+ "WHERE i.BsystEmployeeCopySettingPk.categoryId = :categoryId AND i.companyId = :companyId";
+	private final static String COUNT_PERINFOCTGIN_COPYSETING = "SELECT COUNT(i) FROM PpestEmployeeCopySetting i "
+			+ "WHERE i.PpestEmployeeCopySettingPk.categoryId = :categoryId AND i.companyId = :companyId";
 
 	private final static String SELECT_CATEGORY_BY_NAME = "SELECT ca.ppemtPerInfoCtgPK.perInfoCtgId,"
 			+ " ca.categoryCd, ca.categoryName, ca.abolitionAtr,"
@@ -232,8 +232,8 @@ public class JpaPerInfoCategoryRepositoty extends JpaRepository implements PerIn
 	public void updatePerInfoCtgInCopySetting(String perInfoCtgId, String companyId) {
 		boolean alreadyExist = checkPerInfoCtgAlreadyCopy(perInfoCtgId, companyId);
 		if (!alreadyExist) {
-			BsystEmployeeCopySetting obj = new BsystEmployeeCopySetting();
-			obj.BsystEmployeeCopySettingPk.categoryId = perInfoCtgId;
+			PpestEmployeeCopySetting obj = new PpestEmployeeCopySetting();
+			obj.PpestEmployeeCopySettingPk.categoryId = perInfoCtgId;
 			obj.companyId = companyId;
 			getEntityManager().persist(obj);
 		}

@@ -56,7 +56,7 @@ public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 	@Column(name = "LATE_TIME2")
 	public int lateTime2;
 
-	@OneToOne
+	@OneToOne(targetEntity=KafdtApplication.class, cascade = CascadeType.ALL, orphanRemoval = true)
 	@PrimaryKeyJoinColumns({
 		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
 		@PrimaryKeyJoinColumn(name="APP_ID",referencedColumnName="APP_ID")

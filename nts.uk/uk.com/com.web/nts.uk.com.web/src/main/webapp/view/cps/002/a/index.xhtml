@@ -28,11 +28,13 @@
 			</div>
 
 			<div id="contents-area" class="cf">
-				<div data-bind="visible:selectedId()===1">
+				<div
+					data-bind="visible: currentStep()===2 &amp;&amp;selectedId()===1">
 					<div id="ccgcomponent"></div>
 				</div>
 				<div id="emp_reg_info_wizard"
-					data-bind="ntsWizard: {steps: [
+					data-bind="ntsWizard: {active: currentStep,
+											steps: [
 								            { content: '.step-1' },
 								            { content: '.step-2' },
 								            { content: '.step-3' },
@@ -74,7 +76,8 @@
 										<div class="step1_top_left_col2">
 											<input
 												data-bind="ntsTextEditor: {value: employeeCode,required:true}" />
-											<button data-bind="click:$parent.OpenEModal">#{i18n.getText('CPS002_17')}</button>
+											<button
+												data-bind="click:$parent.OpenEModal.bind($data,'false')">#{i18n.getText('CPS002_17')}</button>
 										</div>
 									</div>
 
@@ -99,7 +102,8 @@
 										</div>
 										<div class="step1_top_left_col2">
 											<input data-bind="ntsTextEditor: {value: cardNo}" />
-											<button data-bind="click:$parent.OpenEModal">#{i18n.getText('CPS002_17')}</button>
+											<button
+												data-bind="click:$parent.OpenEModal.bind($data,'true')">#{i18n.getText('CPS002_17')}</button>
 										</div>
 									</div>
 
@@ -151,13 +155,13 @@
 											<button data-bind="click:OpenFModal">#{i18n.getText('CPS002_30')}</button>
 										</div>
 										<div class="div_line">
-											<button>#{i18n.getText('CPS002_31')}</button>
+											<button data-bind="click:JumpToInitValueSettingPage">#{i18n.getText('CPS002_31')}</button>
 										</div>
 									</div>
 								</div>
 								<div class='div_line'>
 									<button class="large proceed next_btn" id="next_btn"
-										data-bind="click:next">#{i18n.getText('CPS002_29')}</button>
+										data-bind="click:completeStep1">#{i18n.getText('CPS002_29')}</button>
 								</div>
 							</div>
 						</div>

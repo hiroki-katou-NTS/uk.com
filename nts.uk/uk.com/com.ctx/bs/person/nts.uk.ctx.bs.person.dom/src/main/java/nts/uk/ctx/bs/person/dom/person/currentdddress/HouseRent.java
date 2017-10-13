@@ -5,6 +5,10 @@ import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(30)
 public class HouseRent extends StringPrimitiveValue<HouseRent>{
+	
+	/**
+	 * chua co primitive
+	 */
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;

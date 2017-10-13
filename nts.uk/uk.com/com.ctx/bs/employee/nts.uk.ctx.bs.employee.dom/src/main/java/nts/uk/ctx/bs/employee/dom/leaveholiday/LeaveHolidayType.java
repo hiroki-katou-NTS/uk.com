@@ -4,8 +4,12 @@ import lombok.AllArgsConstructor;
 import nts.arc.primitive.constraint.IntegerRange;
 
 @AllArgsConstructor
-@IntegerRange(max = 4, min = 1)
+@IntegerRange(max = 5, min = 1)
 public enum LeaveHolidayType {
+	
+	/**
+	 * 休業休職区分  Leave of absence classification
+	 */
 
 	// 1:休職
 	LEAVEOFABSENCE(1),

@@ -6,7 +6,7 @@ package nts.uk.ctx.bs.employee.dom.department;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class AffiliationDepartment.
@@ -18,7 +18,7 @@ public class AffiliationDepartment extends AggregateRoot {
 	private String id;
 	
 	/** The period. */
-	private Period period;
+	private DatePeriod period;
 	
 	/** The employee id. */
 	private String employeeId;

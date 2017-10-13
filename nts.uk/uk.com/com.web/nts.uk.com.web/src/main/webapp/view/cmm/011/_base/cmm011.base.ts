@@ -16,7 +16,7 @@ module nts.uk.com.view.cmm011 {
                 
                 // lstWpkHistory subscribe
                 self.lstWpkHistory.subscribe((newLstHistory) => {
-                    if (!newLstHistory) {
+                    if (!newLstHistory || newLstHistory.length < 1) {
                         return;
                     }
                     

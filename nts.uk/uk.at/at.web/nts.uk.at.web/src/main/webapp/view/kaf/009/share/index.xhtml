@@ -6,26 +6,30 @@
 			<label class="lblEmployeeName" data-bind="text : employeeName"></label>
 		</div>
 		<!--事前事後区分 -->
-		<div class="valign-center control-group ">
+		<div class="valign-center control-group "
+			data-bind="if: prePostDisp()">
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_8')}</div>
-			<div class="cf"
+			<div tabindex="5" class="cf"
 				data-bind="ntsSwitchButton: {
 								options:ko.observableArray([
 						                { prePostCode: 0, prePostName: '#{i18n.getText('KAF009_9')}' },
 						                { prePostCode: 1, prePostName: '#{i18n.getText('KAF009_10')}' }
 						                ]),
-						
 								optionsValue: 'prePostCode',
 								optionsText: 'prePostName',
 								value: prePostSelected,
-								enable: workEnable }">
+								enable: prePostEnable}">
 			</div>
 		</div>
 		<div class="valign-center control-group">
 			<!--申請日付 -->
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_11')}</div>
-			<input id="inputdate"
-				data-bind="ntsTimeEditor: {value: appDate, inputFormat: 'date'}" />
+			<input tabindex="6" id="inputdate"
+				data-bind="ntsTimeEditor: {
+					name: '#[KAF009_12]',	
+					required:true, 
+					value: appDate, 
+					inputFormat: 'date'}" />
 		</div>
 		<!--勤務時間 1-->
 		<div class="valign-center control-group">
@@ -35,11 +39,11 @@
 				</div>
 				<div class="cell valign-center">
 					<div>
-						<input class="row-cell-margin" id="inpStartTime1"
+						<input tabindex="7" class="row-cell-margin" id="inpStartTime1"
 							data-bind="ntsTimeWithDayEditor: { name: 'Time Start 1', constraint:'TimeWithDayAttr',value: timeStart1, enable: true, readonly: false, required: true }" />
 						<label class="valign-center link-label">#{i18n.getText('KAF009_14')}</label>
 					</div>
-					<div class="row-cell-margin"
+					<div tabindex="10" class="row-cell-margin"
 						data-bind="ntsSwitchButton: {
 								options:ko.observableArray([
 						                { goCode: 0, goName: '#{i18n.getText('KAF009_16')}' },
@@ -58,11 +62,11 @@
 
 				<div class="cell valign-center">
 					<div class="row-cell-margin">
-						<input id="inpEndTime1"
+						<input tabindex="8" id="inpEndTime1"
 							data-bind="ntsTimeWithDayEditor: {name: 'Time End 1', constraint:'TimeWithDayAttr', value: timeEnd1, enable: true, readonly: false, required: true}" />
 					</div>
 
-					<div class="row-cell-margin"
+					<div tabindex="11" class="row-cell-margin"
 						data-bind="ntsSwitchButton: {
 								options: ko.observableArray([
 										{ backCode: 0, backName: '#{i18n.getText('KAF009_18')}' },
@@ -80,7 +84,7 @@
 				</div>
 				<div class="cell valign-top row-cell-margin">
 					<!--選択場所　Button-->
-					<button id="btnLocation1" class="location-button"
+					<button tabindex="9" id="btnLocation1" class="location-button"
 						data-bind="click: function(){openLocationDialog(1)}">#{i18n.getText('KAF009_15')}</button>
 					<label
 						data-bind="text : workLocationCD() + '   ' + workLocationName()"></label>
@@ -96,11 +100,11 @@
 				</div>
 				<div class="cell valign-center">
 					<div>
-						<input class="row-cell-margin" id="inpStartTime2"
+						<input tabindex="12" class="row-cell-margin" id="inpStartTime2"
 							data-bind="ntsTimeWithDayEditor: {name: 'Time Start 2',constraint:'TimeWithDayAttr',value: timeStart2}" />
 						<label class="valign-center link-label">#{i18n.getText('KAF009_14')}</label>
 					</div>
-					<div class="row-cell-margin"
+					<div tabindex="15" class="row-cell-margin"
 						data-bind="ntsSwitchButton: {
 								options:ko.observableArray([
 						                { goCode: 0, goName: '#{i18n.getText('KAF009_16')}' },
@@ -118,10 +122,10 @@
 				</div>
 				<div class="cell valign-center">
 					<div>
-						<input class="row-cell-margin" id="inpEndTime2"
+						<input tabindex="13" class="row-cell-margin" id="inpEndTime2"
 							data-bind="ntsTimeWithDayEditor: {name: 'Time End 2', constraint:'TimeWithDayAttr',value: timeEnd2}" />
 					</div>
-					<div class="row-cell-margin"
+					<div tabindex="16" class="row-cell-margin"
 						data-bind="ntsSwitchButton: {
 								options: ko.observableArray([
 										{ backCode: 0, backName: '#{i18n.getText('KAF009_18')}' },
@@ -138,7 +142,7 @@
 					</div>
 				</div>
 				<div class="cell valign-top row-cell-margin">
-					<button id="btnLocation2" class="location-button"
+					<button tabindex="14" id="btnLocation2" class="location-button"
 						data-bind="click: function(){openLocationDialog(2)}">#{i18n.getText('KAF009_15')}</button>
 					<label
 						data-bind="text : workLocationCD2() + '   ' + workLocationName2()"></label>
@@ -148,7 +152,7 @@
 		<!--勤務を変更する -->
 		<!--Work Change-->
 		<div class="valign-center control-group">
-			<div
+			<div tabindex="17"
 				data-bind="visible: workVisible, ntsCheckBox: { checked: workChangeAtr , enable: true, text: '#{i18n.getText('KAF009_21')}' }"></div>
 			<HR data-bind="visible : typeSiftVisible" />
 			<div class="table" data-bind="visible : typeSiftVisible">
@@ -160,7 +164,7 @@
 						data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_23')}</div>
 				</div>
 				<div class="cell valign-center">
-					<button class="workSelect"
+					<button tabindex="18" class="workSelect"
 						data-bind="click: openDialogKdl003,enable: workEnable">#{i18n.getText('KAF009_24')}</button>
 				</div>
 				<div class="cell valign-center">
@@ -175,7 +179,7 @@
 		<!--定型理由 -->
 		<div class="valign-center control-group">
 			<div class="lblTitle" data-bind="ntsFormLabel:{}">#{i18n.getText('KAF009_25')}</div>
-			<div id="combo-box"
+			<div tabindex="19" id="combo-box"
 				data-bind="ntsComboBox: {
 								options: reasonCombo,
 								optionsValue: 'reasonId',
@@ -190,8 +194,8 @@
 			<div class="lblTitle"
 				data-bind="ntsFormLabel: { constraint: 'AppReason'}">#{i18n.getText('KAF009_27')}</div>
 			<div id="multiline">
-				<textarea
-					data-bind="ntsMultilineEditor: {value: multilContent,option: multiOption }" />
+				<textarea tabindex="20"
+					data-bind="ntsMultilineEditor: {value: multilContent,option: multiOption, required : requiredReason()}" />
 			</div>
 		</div>
 	</div>

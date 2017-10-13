@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.employment;
@@ -10,30 +10,37 @@ import nts.uk.ctx.bs.employee.dom.common.CompanyId;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
- * 雇用.
+ * The Class Employment.
  */
+// 雇用
 @Getter
 public class Employment extends AggregateRoot {
-	
-	/** 会社ID. */
+
+	/** The company id. */
+	// 会社ID.
 	private CompanyId companyId;
-	
-	/** 雇用コード. */
+
+	/** The employment code. */
+	// 雇用コード.
 	private EmploymentCode employmentCode;
-	
-	/** 雇用名称. */
+
+	/** The employment name. */
+	// 雇用名称.
 	private EmploymentName employmentName;
-	
-	/** 雇用外部コード. */
+
+	/** The emp external code. */
+	// 雇用外部コード.
 	private EmpExternalCode empExternalCode;
-	
-	/** メモ. */
+
+	/** The memo. */
+	// メモ.
 	private Memo memo;
-	
+
 	/**
 	 * Instantiates a new employment.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public Employment(EmploymentGetMemento memento) {
 		this.companyId = memento.getCompanyId();
@@ -42,11 +49,12 @@ public class Employment extends AggregateRoot {
 		this.empExternalCode = memento.getEmpExternalcode();
 		this.memo = memento.getMemo();
 	}
-	
+
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(EmploymentSetMemento memento) {
 		memento.setCompanyId(this.companyId);
@@ -56,7 +64,9 @@ public class Employment extends AggregateRoot {
 		memento.setMemo(this.memo);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -68,7 +78,9 @@ public class Employment extends AggregateRoot {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -92,6 +104,5 @@ public class Employment extends AggregateRoot {
 			return false;
 		return true;
 	}
-	
 
 }

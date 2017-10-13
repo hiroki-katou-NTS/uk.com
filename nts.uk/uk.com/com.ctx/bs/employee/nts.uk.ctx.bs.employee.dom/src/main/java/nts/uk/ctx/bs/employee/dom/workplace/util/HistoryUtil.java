@@ -9,7 +9,7 @@ import java.util.List;
 import nts.arc.error.BundledBusinessException;
 import nts.arc.error.BusinessException;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.bs.employee.dom.workplace.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class HistoryUtil.
@@ -46,19 +46,19 @@ public class HistoryUtil {
      * @param prevPeriod the prev period
      * @param newStartDate the new start date
      */
-    public static void validStartDate(Period latestPeriod, Period prevPeriod, GeneralDate newStartDate) {
+    public static void validStartDate(DatePeriod latestPeriod, DatePeriod prevPeriod, GeneralDate newStartDate) {
         boolean isHasError = false;
         BundledBusinessException exceptions = BundledBusinessException.newInstance();
         
-        if (newStartDate.beforeOrEquals(prevPeriod.getStartDate())) {
+        if (newStartDate.beforeOrEquals(prevPeriod.start())) {
             exceptions.addMessage("Msg_127");
             isHasError = true;
         }
-        if (latestPeriod.getEndDate().beforeOrEquals(newStartDate)) {
+        if (latestPeriod.end().beforeOrEquals(newStartDate)) {
             exceptions.addMessage("Msg_667");
             isHasError = true;
         }
-        if (latestPeriod.getEndDate().beforeOrEquals(prevPeriod.getStartDate())) {
+        if (latestPeriod.end().beforeOrEquals(prevPeriod.end())) {
             exceptions.addMessage("Msg_666");
             isHasError = true;
         }

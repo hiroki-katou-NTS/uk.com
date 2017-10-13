@@ -80,4 +80,11 @@ public interface EmployeeRepository {
 	Optional<Employee> getBySid(String employeeId);
 
 	List<Employee> getListEmpByStandardDate(String companyId, GeneralDate standardDate);
+
+	// SONNLB
+
+	Boolean isDuplicateEmpCode(String companyId, String employeeCode);
+
+	Boolean isDuplicateCardNo(String companyId, String cardNumber);
+
 }

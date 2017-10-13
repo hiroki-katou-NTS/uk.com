@@ -25,14 +25,14 @@
 
 			<div id="functions-area" class="divHeader">
 				<button id="A_BTN_001" data-bind="click: initRegisterClassification"
-					class="btnStyle">新規</button>
+					class="btnStyle">#{i18n.getText('CMM014_1')}</button>
 				<button id="A_BTN_002"
-					data-bind="click: registerClassification , enable: $root.errors.isEmpty"
-					class="proceed btnStyle">登録</button>
-				<button id="A_BTN_003">マスタ修正ログ</button>
+					data-bind="click: registerClassification , enable: true"
+					class="proceed btnStyle">#{i18n.getText('CMM014_2')}</button>
+				<button id="A_BTN_003">#{i18n.getText('CMM014_3')}</button>
 				<button id="A_BTN_004"
-					data-bind="click: deleteClassification , enable: hasCellphone"
-					class="danger btnStyle">削除</button>
+					data-bind="click: deleteClassification , enable: isEnableDeleteButton"
+					class="danger btnStyle">#{i18n.getText('CMM014_4')}</button>
 
 			</div>
 
@@ -48,8 +48,8 @@
 									targetKey: 'code',
 									mode:'igGrid',
                                     comId: 'single-list',
-                                    items: dataSource,         
-                                    selected: currentCode, 
+                                    items: listClassification,         
+                                    selected: currentSelectedRow, 
                                     selectedKey: 'code', 
                                     childField: 'childs', 
                                     fields: ['name', 'code']}" />
@@ -58,11 +58,11 @@
 								data-bind="ntsGridList: {
                                             width: 400,
                                             height: 520,
-                                            options: dataSource,
+                                            options: listClassification,
                                             optionsValue: 'code',
-                                            columns: columns,
+                                            columns: classificationTableColumns,
                                             multiple: false,
-                                            value: currentCode,
+                                            value: currentSelectedRow,
                                             primaryKey: 'code'}"
 								class="cf">
 							</table>
@@ -71,7 +71,7 @@
 				</div>
 
 				<div id="right-content">
-					<table class="table_content" data-bind="with: currentItem">
+					<table class="table_content" data-bind="with: currentClassification">
 						<colgroup>
 							<col width="230px" />
 							<col width="*" />
@@ -81,29 +81,28 @@
 							<td class="row_1">
 								<div
 									data-bind="ntsFormLabel: { constraint: ['ClassificationCode', 'ClassificationName'], required: true }">
-									コード/名称</div>
+									#{i18n.getText('CMM014_5')}</div>
 
 
 							</td>
 							<td class="valign-center">
 								<div>
 									<div class="input_002">
-										<input id= "A_INP_002"
+										<input id= "clfCode"
 											data-bind="ntsTextEditor: {
-                                            value: INP_002_code,
+                                            value: classificationCode,
                                             constraint: 'ClassificationCode',
-                                            enable: INP_002_enable}" />
+                                            required: true,
+                                            enable: inputClfCodeEnable}" />
 									</div>
 
 									<div class="input_002">
-										<input id= "A_INP_003"
+										<input id= "clfName"
 											data-bind="ntsTextEditor: {
-                                            value: INP_003_name,
-                                            constraint: 'ClassificationName'
-                                            
-                                            }" />
+	                                            value: classificationName,
+	                                            required: true,
+	                                            constraint: 'ClassificationName'}" />
 									</div>
-
 								</div>
 							</td>
 						</tr>
@@ -112,14 +111,14 @@
 							<td>
 								<div style="margin-bottom: 140px;"
 									data-bind="ntsFormLabel: {constraint: 'Memo'}">
-									<label id="A_LBL_003">メモ</label>
+									<label id="A_LBL_003">#{i18n.getText('CMM014_8')}</label>
 								</div>
 							</td>
 							<td class="valign-center">
 								<div>
-									<textarea id="A_INP_004" style="margin-top: 20px; width: 446px; height: 180px"
+									<textarea id="memo" style="margin-top: 20px; width: 446px; height: 180px"
 										data-bind="ntsMultilineEditor: {
-											value: INP_004_notes,
+											value: memo,
 											constraint: 'Memo'
 											}" />
 								</div>

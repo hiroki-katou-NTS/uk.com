@@ -51,7 +51,7 @@ public class GoBackDirectlyService extends WebService {
 	@Path("getGoBackCommonSetting")
 	public GoBackDirectSettingDto getGoBackCommonSetting() {
 		String SID = AppContexts.user().employeeId();
-		return this.goBackDirectlyFinder.getGoBackDirectSettingBySID(SID);
+		return this.goBackDirectlyFinder.getGoBackDirectCommonSetting(SID);
 	}
 
 	/**

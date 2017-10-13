@@ -15,6 +15,8 @@ module nts.uk.ui.koExtentions {
             let editable = nts.uk.util.isNullOrUndefined(data.editable) ? false : ko.unwrap(data.editable);
             let zoomble = nts.uk.util.isNullOrUndefined(data.zoomble) ? false : ko.unwrap(data.zoomble);
             let width = nts.uk.util.isNullOrUndefined(data.width) ? 600 : ko.unwrap(data.width);
+            let freeResize = nts.uk.util.isNullOrUndefined(data.freeResize) ? true : ko.unwrap(data.freeResize);
+            let resizeRatio = nts.uk.util.isNullOrUndefined(data.resizeRatio) ? 1 : ko.unwrap(data.resizeRatio);
             let height = nts.uk.util.isNullOrUndefined(data.height) ? 600 : ko.unwrap(data.height);
             let croppable = false;
             
@@ -38,7 +40,7 @@ module nts.uk.ui.koExtentions {
                 $container.append($editContainer);
 
                 constructSite.buildCheckBoxArea(allBindingsAccessor, viewModel, bindingContext);
-            }
+            } 
 
             constructSite.buildActionArea();
 
@@ -48,7 +50,11 @@ module nts.uk.ui.koExtentions {
 
             constructSite.buildFileChangeHandler();
 
-            constructSite.buildImageLoadedHandler(zoomble, croppable);
+            let customOption = {
+                aspectRatio: freeResize ? 0 : resizeRatio,
+                dragMode: croppable ? "crop" : "none"
+            };
+            constructSite.buildImageLoadedHandler(zoomble, customOption);
 
             constructSite.buildSrcChangeHandler();
 
@@ -177,7 +183,7 @@ module nts.uk.ui.koExtentions {
             });
         }
 
-        buildImageLoadedHandler(zoomble: boolean, croppable: boolean) {
+        buildImageLoadedHandler(zoomble: boolean, customOption: any) {
             let self = this;
             self.$imagePreview.on('load', function() {
                 var image = new Image();
@@ -188,10 +194,8 @@ module nts.uk.ui.koExtentions {
                     if (!nts.uk.util.isNullOrUndefined(self.cropper)) {
                         self.cropper.destroy();
                     }
-
-                    self.cropper = new Cropper(self.$imagePreview[0], {
+                    let option = {
                         viewMode: 1,
-                        dragMode: croppable ? "crop" : "none",
                         guides: false,
                         autoCrop: false,
                         highlight: false,
@@ -203,7 +207,9 @@ module nts.uk.ui.koExtentions {
 //                            console.log(e);
 //                            return croppable;
                         }
-                    });
+                    };
+                    jQuery.extend(option, customOption);
+                    self.cropper = new Cropper(self.$imagePreview[0], option);
                     self.$root.data("cropper", self.cropper);
 
                 };

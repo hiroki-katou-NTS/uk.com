@@ -6,14 +6,22 @@ module nts.uk.com.view.cmm013.a {
          *  Service paths
          */
         var servicePath: any = {
-            findListJobTitle: "",
+            findJobHistoryList: "bs/employee/jobtitle/history/findByJobId",
+            findJobInfoByJobIdAndHistoryId: "bs/employee/jobtitle/info/findByJobIdAndHistoryId",
         }
     
         /**
-         * find list JobTitle by Date
+         * findJobHistoryList
          */
-        export function findListJobTitle(baseDate: Date): JQueryPromise<Array<model.JobTitleInfo>> {
-            return nts.uk.request.ajax(servicePath.findListJobTitle, { startDate: baseDate });
+        export function findJobHistoryList(jobTitleId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findJobHistoryList, { jobTitleId: jobTitleId });
+        }
+        
+        /**
+         * findJobInfoByJobIdAndHistoryId
+         */
+        export function findJobInfoByJobIdAndHistoryId(jobTitleId: string, jobTitleHistoryId: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.findJobInfoByJobIdAndHistoryId, { jobTitleId: jobTitleId, jobTitleHistoryId: jobTitleHistoryId });
         }
     
         /**
@@ -27,30 +35,7 @@ module nts.uk.com.view.cmm013.a {
                 jobTitleCode: string;
                 jobTitleName: string;
                 sequenceCode: string;
-            }
-    
-            export interface JobTitle {
-                companyId: string;
-                jobTitleId: string;
-                jobTitleHistory: Array<JobTitleHistory>;
-            }
-    
-            export interface JobTitleHistory {
-                historyId: string;
-                period: Period;
-            }
-    
-            export interface Period {
-                startDate: string;
-                endDate: string;
-            }
-    
-            export interface SequenceCode {
-                companyId: string;
-                sequenceCode: string;
-                sequenceName: string;
-                order: number;
-            }
+            }           
         }
     }
 }

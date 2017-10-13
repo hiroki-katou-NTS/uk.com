@@ -14,6 +14,8 @@ import command.person.setting.selectionitem.RemoveSelectionItemCommand;
 import command.person.setting.selectionitem.RemoveSelectionItemCommandHandler;
 import command.person.setting.selectionitem.UpdateSelectionItemCommand;
 import command.person.setting.selectionitem.UpdateSelectionItemCommandHandler;
+import find.person.setting.selectionitem.PerInfoHistorySelectionDto;
+import find.person.setting.selectionitem.PerInfoHistorySelectionFinder;
 import find.person.setting.selectionitem.PerInfoSelectionItemDto;
 import find.person.setting.selectionitem.PerInfoSelectionItemFinder;
 import nts.arc.layer.app.command.JavaTypeResult;
@@ -34,6 +36,10 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	@Inject
 	private RemoveSelectionItemCommandHandler removeCommandHandler;
 
+	//history:
+	@Inject
+	private PerInfoHistorySelectionFinder hisFinder;
+	
 	@POST
 	@Path("findAll")
 	public List<PerInfoSelectionItemDto> getAllPerInfoSelectionItem() {
@@ -62,6 +68,13 @@ public class PerInfoSelectionItemWebservice extends WebService {
 	@Path("removeSelectionItem")
 	public void removeSelectionItem(RemoveSelectionItemCommand command) {
 		this.removeCommandHandler.handle(command);
+	}
+	
+	//history:
+	@POST
+	@Path("findAllHistSelection")
+	public List<PerInfoHistorySelectionDto> getAllPerInfoHistorySelection() {
+		return this.hisFinder.historySelection();
 	}
 
 }

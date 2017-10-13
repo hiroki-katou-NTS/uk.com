@@ -7,7 +7,7 @@ package nts.uk.ctx.bs.employee.dom.classification.affiliate;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.bs.employee.dom.classification.ClassificationCode;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class AffClassHistory.
@@ -22,7 +22,7 @@ public class AffClassHistory extends AggregateRoot {
 
 	/** The period. */
 	// 譛滄俣
-	private Period period;
+	private DatePeriod period;
 
 	/** The employee id. */
 	// 遉ｾ蜩｡ID

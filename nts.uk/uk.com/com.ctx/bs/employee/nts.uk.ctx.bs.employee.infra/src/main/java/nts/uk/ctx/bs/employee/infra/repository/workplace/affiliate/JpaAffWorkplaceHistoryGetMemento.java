@@ -4,10 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.affiliate;
 
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.AffWorkplaceHistoryGetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.affiliate.WorkplaceId;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.affiliate.KmnmtAffiliWorkplaceHist;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaAffWorkplaceHistoryGetMemento.
@@ -33,8 +33,8 @@ public class JpaAffWorkplaceHistoryGetMemento implements AffWorkplaceHistoryGetM
 	 * WorkplaceHistoryGetMemento#getPeriod()
 	 */
 	@Override
-	public Period getPeriod() {
-		return new Period(this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().getStrD(),
+	public DatePeriod getPeriod() {
+		return new DatePeriod(this.workplaceHistory.getKmnmtAffiliWorkplaceHistPK().getStrD(),
 				this.workplaceHistory.getEndD());
 	}
 
