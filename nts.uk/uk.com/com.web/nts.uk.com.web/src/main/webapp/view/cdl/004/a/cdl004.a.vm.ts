@@ -63,7 +63,7 @@ module nts.uk.com.view.cdl004.a {
                 if(self.isMultiple){
                     selectedCode = self.selectedMulJobtitle();
                     if(!selectedCode || selectedCode.length == 0){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_642" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_642" }).then(() => nts.uk.ui.windows.close());
                         return;    
                     }    
                 } else {
@@ -71,7 +71,7 @@ module nts.uk.com.view.cdl004.a {
                     var isNoSelectRowSelected = $("#jobtitle").isNoSelectRowSelected();
                     if (!selectedCode && !isNoSelectRowSelected) {
                         // Check if selected No select Row.
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" }).then(() => nts.uk.ui.windows.close());
                         return;
                     }
                 }
