@@ -46,6 +46,7 @@ module nts.uk.at.view.kdw007.a.viewmodel {
 
         changeSelectedErrorAlarm(foundItem) {
             let self = this;
+            $(".nts-input").ntsError("clear");
             self.selectedErrorAlarm().companyId(foundItem.companyId);
             self.selectedErrorAlarm().code(foundItem.code);
             self.selectedErrorAlarm().name(foundItem.name);
