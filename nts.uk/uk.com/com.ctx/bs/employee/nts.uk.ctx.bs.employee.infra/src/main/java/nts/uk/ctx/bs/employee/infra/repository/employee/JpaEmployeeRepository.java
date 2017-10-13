@@ -71,6 +71,9 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 			+ " JOIN BsymtJobEntryHistory d ON c.bsymtEmployeePk.sId = d.bsymtJobEntryHistoryPk.sId "
 			+ " WHERE c.companyId = :companyId " + " AND d.bsymtJobEntryHistoryPk.entryDate <= :standardDate"
 			+ " AND d.retireDate >= :standardDate";
+	
+	public final String GET_EMPLOYEE_INFO_TO_DELETE = "SELECT c.employeeCode, d.personName FROM BsymtEmployee c "
+			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId " + " WHERE c.bsymtEmployeePk.sId = :sId";
 
 	/**
 	 * convert entity BsymtEmployee to domain Employee
@@ -262,6 +265,16 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	public Boolean isDuplicateCardNo(String companyId, String cardNumber) {
 
 		return false;
+	}
+
+	// laitv
+	@Override
+	public Optional<Object[]> getEmployeeInfoToDelete(String employeeId) {
+		// TODO Auto-generated method stub
+
+		Optional<Object[]> empInfo = this.queryProxy().query(GET_EMPLOYEE_INFO_TO_DELETE)
+				.setParameter("sId", employeeId).getSingle();
+		return empInfo;
 	}
 
 }
