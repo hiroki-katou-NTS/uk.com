@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.jobtitle.sequence.dto;
 
 import lombok.Data;
@@ -7,7 +11,7 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceMasterSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle.info.SequenceName;
 
 /**
- * Instantiates a new sequence master find dto.
+ * The Class SequenceMasterFindDto.
  */
 @Data
 public class SequenceMasterFindDto implements SequenceMasterSetMemento {

@@ -31,7 +31,8 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 		List<PersonApprovalRoot> lstPsRoots = lstPersonRootInfor
 				.stream()
 				.filter(x -> x.getEmployeeId().equals(sId) 
-						&& x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON)
+						&& x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON
+						&& x.getApplicationType().equals(appType))
 				.collect(Collectors.toList());
 		//データが１件以上取得した場合(data >= 1)
 		if(!CollectionUtil.isEmpty(lstPsRoots)) {
@@ -65,7 +66,8 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			List<WorkplaceApprovalRoot> lstWpRoots = lstWorkpalceRootInfor
 					.stream()
 					.filter(x -> (x.getWorkplaceId().equals(wpId) 
-							&& x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON))
+							&& x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON)
+							&& x.getApplicationType().equals(appType))
 					.collect(Collectors.toList());
 			//データが１件以上取得した場合(data >= 1)
 			if(!CollectionUtil.isEmpty(lstWpRoots)) {
@@ -89,7 +91,9 @@ public class ApplicationOfEmployeeImpl implements ApplicationOfEmployee{
 			
 			//ドメインモデル「会社別就業承認ルート」を取得する(lấy dư liệu domain 「会社別就業承認ルート」): 就業ルート区分(申請か、確認か、任意項目か), 対象申請（３６協定時間申請を除く）
 			List<CompanyApprovalRoot> lstRoots = lstCompanyRootInfor.stream()
-					.filter(x -> x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON && x.getCompanyId().equals(companyID))
+					.filter(x -> x.getEmploymentRootAtr() != EmploymentRootAtr.COMMON 
+								&& x.getCompanyId().equals(companyID)
+								&& x.getApplicationType().equals(appType))
 					.collect(Collectors.toList());
 			//データが１件以上取得した場合(data >= 1)
 			if(!CollectionUtil.isEmpty(lstRoots)) {

@@ -65,7 +65,6 @@ public class KrqdtAppLateOrLeave  extends UkJpaEntity implements Serializable {
 	
 	@Override
 	protected Object getKey() {
-		
 		return krqdtAppLateOrLeavePK;
 	}
 

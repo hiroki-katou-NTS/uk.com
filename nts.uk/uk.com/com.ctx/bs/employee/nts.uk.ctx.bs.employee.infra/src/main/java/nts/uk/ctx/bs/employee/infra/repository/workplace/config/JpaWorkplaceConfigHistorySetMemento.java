@@ -4,9 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.workplace.config;
 
-import nts.uk.ctx.bs.employee.dom.workplace.Period;
 import nts.uk.ctx.bs.employee.dom.workplace.config.WorkplaceConfigHistorySetMemento;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWkpConfig;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkplaceConfigHistorySetMemento.
@@ -44,9 +44,9 @@ public class JpaWorkplaceConfigHistorySetMemento implements WorkplaceConfigHisto
      *            the new period
      */
     @Override
-    public void setPeriod(Period period) {
-        entity.setStrD(period.getStartDate());
-        entity.setEndD(period.getEndDate());
+    public void setPeriod(DatePeriod period) {
+        entity.setStrD(period.start());
+        entity.setEndD(period.end());
     }
 
 }

@@ -1,5 +1,5 @@
 module nts.uk.at.view.kaf000.b.viewmodel {
-
+    import vmbase =  nts.uk.at.view.kaf002.shr.vmbase;
     export abstract class ScreenModel {
 
         // Metadata
@@ -71,7 +71,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         //item InputCommandEvent
         appReasonEvent: KnockoutObservable<String>;
         
-        approvalList: Array<model.AppApprovalPhase> = [];
+        approvalList: Array<vmbase.AppApprovalPhase> = [];
 
         constructor(listAppMetadata: Array<model.ApplicationMetadata>, currentApp: model.ApplicationMetadata) {
             let self = this;
@@ -142,12 +142,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let dfdMessageDeadline = self.getMessageDeadline(self.appType());
             let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
             let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
-             let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
+            // let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
 
-            $.when(dfdAllReasonByAppID, dfdAllDataByAppID,dfdGetDetailCheck).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData,dfdGetDetailCheckData) => {
+            $.when(dfdAllReasonByAppID, dfdAllDataByAppID).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData) => {
 
-                self.checkDisplayStart();
-                self.checkDisplayAction();
+                //self.checkDisplayStart();
+                //self.checkDisplayAction();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -288,8 +288,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                 let approvalList = [];
                 for(let x = 1; x <= listPhase.length; x++){
                     let phaseLoop = listPhase[x-1];
-                    let appPhase = new model.AppApprovalPhase(
-                        phaseLoop.appID,
+                    let appPhase = new vmbase.AppApprovalPhase(
                         phaseLoop.phaseID,
                         phaseLoop.approvalForm,
                         phaseLoop.dispOrder,
@@ -297,14 +296,14 @@ module nts.uk.at.view.kaf000.b.viewmodel {
                         []); 
                     for(let y = 1; y <= phaseLoop.listFrame.length; y++){
                         let frameLoop = phaseLoop.listFrame[y-1];
-                        let appFrame = new model.ApprovalFrame(
+                        let appFrame = new vmbase.ApprovalFrame(
                             frameLoop.frameID,
                             frameLoop.dispOrder,
                             []);
                         for(let z = 1; z <= frameLoop.listApproveAccepted.length; z++){
                             let acceptedLoop = frameLoop.listApproveAccepted[z-1];
-                            let appAccepted = new model.ApproveAccepted(
-                                acceptedLoop.appAccedtedID,
+                            let appAccepted = new vmbase.ApproveAccepted(
+                                acceptedLoop.appAcceptedID,
                                 acceptedLoop.approverSID,
                                 acceptedLoop.approvalATR,
                                 acceptedLoop.confirmATR,
@@ -404,7 +403,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let dfd = $.Deferred<any>();
             service.approveApp(self.dataApplication()).done(function(data) {
                 nts.uk.ui.dialog.alert({ messageId: 'Msg_220' }).then(function() {
-                    if (data.length != 0) {
+                    if (!data) {
                         nts.uk.ui.dialog.info({ messageId: 'Msg_392' });
                     }
                 });

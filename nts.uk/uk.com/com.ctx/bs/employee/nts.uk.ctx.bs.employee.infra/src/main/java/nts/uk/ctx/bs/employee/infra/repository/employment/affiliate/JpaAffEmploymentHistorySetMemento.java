@@ -4,11 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.infra.repository.employment.affiliate;
 
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.AffEmploymentHistorySetMemento;
 import nts.uk.ctx.bs.employee.dom.employment.affiliate.EmploymentCode;
 import nts.uk.ctx.bs.employee.infra.entity.employment.affiliate.KmnmtAffiliEmploymentHist;
 import nts.uk.ctx.bs.employee.infra.entity.employment.affiliate.KmnmtAffiliEmploymentHistPK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaAffEmploymentHistorySetMemento.
@@ -50,9 +50,9 @@ public class JpaAffEmploymentHistorySetMemento implements AffEmploymentHistorySe
 	 * .Period)
 	 */
 	@Override
-	public void setPeriod(Period period) {
-		this.employmentHistory.getKmnmtEmploymentHistPK().setStrD(period.getStartDate());
-		this.employmentHistory.setEndD(period.getEndDate());
+	public void setPeriod(DatePeriod period) {
+		this.employmentHistory.getKmnmtEmploymentHistPK().setStrD(period.start());
+		this.employmentHistory.setEndD(period.end());
 	}
 
 	/*

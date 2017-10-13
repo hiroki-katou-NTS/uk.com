@@ -9,11 +9,11 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
 import nts.uk.ctx.bs.employee.dom.workplace_old.WorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace_old.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace_old.WorkplaceName;
 import nts.uk.ctx.bs.employee.dom.workplace_old.WorkplaceSetMemento;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class WorkplaceFindDto.
@@ -59,7 +59,7 @@ public class WorkplaceFindDto implements WorkplaceSetMemento{
 	 * setPeriod(nts.uk.ctx.basic.dom.common.history.Period)
 	 */
 	@Override
-	public void setPeriod(Period period) {
+	public void setPeriod(DatePeriod period) {
 		// No thing code
 
 	}

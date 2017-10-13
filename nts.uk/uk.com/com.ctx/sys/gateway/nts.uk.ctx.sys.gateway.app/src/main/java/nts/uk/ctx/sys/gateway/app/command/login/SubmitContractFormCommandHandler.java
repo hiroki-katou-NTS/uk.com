@@ -63,8 +63,8 @@ public class SubmitContractFormCommandHandler extends CommandHandler<SubmitContr
 	 * @param contract the contract
 	 */
 	private void checkTime(Optional<Contract> contract) {
-		if (contract.get().getContractPeriod().getStartDate().after(GeneralDate.today())
-				|| contract.get().getContractPeriod().getEndDate().before(GeneralDate.today())) {
+		if (contract.get().getContractPeriod().start().after(GeneralDate.today())
+				|| contract.get().getContractPeriod().end().before(GeneralDate.today())) {
 			throw new BusinessException("Msg_315");
 		}
 	}

@@ -17,9 +17,9 @@ import nts.uk.ctx.sys.gateway.app.command.login.dto.CheckContractDto;
 import nts.uk.ctx.sys.gateway.dom.login.Contract;
 import nts.uk.ctx.sys.gateway.dom.login.ContractRepository;
 import nts.uk.ctx.sys.gateway.dom.login.InstallForm;
-import nts.uk.ctx.sys.gateway.dom.login.Period;
 import nts.uk.ctx.sys.gateway.dom.login.SystemConfig;
 import nts.uk.ctx.sys.gateway.dom.login.SystemConfigRepository;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class LocalContractFormCommandHandler.
@@ -115,8 +115,8 @@ public class LocalContractFormCommandHandler
 	 * @return true, if successful
 	 */
 	private boolean contractPeriodInvalid(Contract contract) {
-		Period period = contract.getContractPeriod();
+		DatePeriod period = contract.getContractPeriod();
 		GeneralDate currentDate = GeneralDate.today();
-		return !(period.getStartDate().beforeOrEquals(currentDate) && period.getEndDate().afterOrEquals(currentDate));
+		return !(period.start().beforeOrEquals(currentDate) && period.end().afterOrEquals(currentDate));
 	}
 }

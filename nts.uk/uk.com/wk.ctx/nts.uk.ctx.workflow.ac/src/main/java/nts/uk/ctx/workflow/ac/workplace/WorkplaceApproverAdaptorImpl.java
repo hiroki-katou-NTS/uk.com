@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.pub.workplace.SyWorkplacePub;
 import nts.uk.ctx.bs.employee.pub.workplace.WkpCdNameExport;
-import nts.uk.ctx.bs.employee.pub.workplace.WorkplaceInfoExport;
+import nts.uk.ctx.bs.employee.pub.workplace.SWkpHistExport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 
@@ -58,7 +58,7 @@ public class WorkplaceApproverAdaptorImpl implements WorkplaceApproverAdapter {
 	// RequestList #30
 	@Override
 	public WorkplaceImport findBySid(String employeeId, GeneralDate baseDate) {
-		WorkplaceInfoExport data = wpPub.findBySid(employeeId, baseDate).get();
+		SWkpHistExport data = wpPub.findBySid(employeeId, baseDate).get();
 		WorkplaceImport result = new WorkplaceImport(data.getWorkplaceId(), data.getWorkplaceCode(), data.getWorkplaceName());
 		return result;
 	}

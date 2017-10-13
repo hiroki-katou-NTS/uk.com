@@ -8,12 +8,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.bs.employee.dom.workplace.Period;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceSetMemento;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHist;
 import nts.uk.ctx.bs.employee.infra.entity.workplace.BsymtWorkplaceHistPK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkplaceSetMemento.
@@ -85,14 +85,14 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento {
     @Override
     public void setWorkplaceHistory(List<WorkplaceHistory> lstWkpHistory) {
         // convert list workplace history to map by key historyId
-        Map<String, Period> mapWkpHist = lstWkpHistory.stream().collect(Collectors.toMap(
+        Map<String, DatePeriod> mapWkpHist = lstWkpHistory.stream().collect(Collectors.toMap(
                 item -> ((WorkplaceHistory) item).getHistoryId().v(), item -> ((WorkplaceHistory) item).getPeriod()));
 
         // set period
         this.lstEntity.forEach(entity -> {
-            Period period = mapWkpHist.get(entity.getBsymtWorkplaceHistPK().getHistoryId());
-            entity.setStrD(period.getStartDate());
-            entity.setEndD(period.getEndDate());
+            DatePeriod period = mapWkpHist.get(entity.getBsymtWorkplaceHistPK().getHistoryId());
+            entity.setStrD(period.start());
+            entity.setEndD(period.end());
         });
     }
 

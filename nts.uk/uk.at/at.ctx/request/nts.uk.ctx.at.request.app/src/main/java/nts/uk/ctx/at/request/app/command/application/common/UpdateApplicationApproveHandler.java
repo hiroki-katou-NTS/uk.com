@@ -45,7 +45,8 @@ public class UpdateApplicationApproveHandler extends CommandHandlerWithResult<Ap
 		// 8.2.2. update application
 		afterApprovalProcessRepo.invidialApplicationUpdate(application);
 		// 8-2.  
-		return new  ListMailApproval(afterApprovalProcessRepo.detailScreenAfterApprovalProcess(application));
+		ListMailApproval listMailApproval = new ListMailApproval(afterApprovalProcessRepo.detailScreenAfterApprovalProcess(application)); 
+		return listMailApproval;
 
 	}
 

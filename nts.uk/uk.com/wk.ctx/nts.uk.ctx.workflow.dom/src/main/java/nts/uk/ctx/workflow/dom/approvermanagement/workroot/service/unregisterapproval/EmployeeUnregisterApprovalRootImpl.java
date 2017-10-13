@@ -1,6 +1,5 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -16,6 +15,8 @@ import nts.uk.ctx.workflow.dom.adapter.bs.dto.EmployeeImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
@@ -41,6 +42,8 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 	private EmployeeAdapter empInfor;
 	@Inject
 	private WorkplaceApproverAdapter wpNameInfor;
+	@Inject
+	private ApprovalPhaseRepository repoAppPhase;
 
 	@Override
 	public List<EmployeeUnregisterOutput> lstEmployeeUnregister(String companyId, GeneralDate baseDate) {
@@ -52,12 +55,17 @@ public class EmployeeUnregisterApprovalRootImpl implements EmployeeUnregisterApp
 			return lstUnRegister;
 		}
 		// ドメインモデル「会社別就業承認ルート」を取得する(lấy thông tin domain「会社別就業承認ルート」)
-		List<CompanyApprovalRoot> comInfo = comRootRepository.findByBaseDateOfCommon(companyId, baseDate);
+		List<CompanyApprovalRoot> comInfo = comRootRepository.findByBaseDate(companyId, baseDate);
 		List<CompanyApprovalRoot> comInfoCommon = comInfo.stream()
 				.filter(x -> x.getEmploymentRootAtr().value == EmploymentRootAtr.COMMON.value)
 				.collect(Collectors.toList());
 		if (!CollectionUtil.isEmpty(comInfoCommon)) {
-			return lstUnRegister;
+			for (CompanyApprovalRoot companyApprovalRoot : comInfoCommon) {
+				List<ApprovalPhase> lstAppPhase = repoAppPhase.getAllApprovalPhasebyCode(companyId, companyApprovalRoot.getBranchId());
+				if(!lstAppPhase.isEmpty()){
+					return lstUnRegister;
+				}
+			}
 		}
 
 		// 就業ルート区分が共通の「会社別就業承認ルート」がない場合(không có thông tin 「会社別就業承認ルート」 của 就業ルート区分là

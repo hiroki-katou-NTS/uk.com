@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.login;
 
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+
 /**
  * The Interface ContractSetMemento.
  */
@@ -28,5 +30,5 @@ public interface ContractSetMemento {
      *
      * @param contractPeriod the new contract period
      */
-    public void setContractPeriod(Period contractPeriod);
+    public void setContractPeriod(DatePeriod contractPeriod);
 }

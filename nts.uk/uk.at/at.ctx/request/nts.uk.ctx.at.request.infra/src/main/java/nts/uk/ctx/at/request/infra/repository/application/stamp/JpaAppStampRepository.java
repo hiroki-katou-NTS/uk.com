@@ -77,7 +77,6 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 		if(!optional.isPresent()) throw new RuntimeException();
 		KrqdtAppStamp krqdtAppStamp = optional.get();
 		krqdtAppStamp.version = appStamp.getVersion();
-		krqdtAppStamp.kafdtApplication.version = appStamp.getVersion();
 		krqdtAppStamp.kafdtApplication.appReasonId = appStamp.getApplicationReason().v().split(":")[0];
 		krqdtAppStamp.kafdtApplication.applicationReason = appStamp.getApplicationReason().v().split(":")[1].substring(1);
 		switch(appStamp.getStampRequestMode()) {
@@ -88,7 +87,6 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 					krqdtAppStamp.krqdtAppStampDetails.get(i).startLocationCD = appStamp.getAppStampGoOutPermits().get(i).getStartLocation();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampGoOutPermits().get(i).getEndTime();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).endLocationCD = appStamp.getAppStampGoOutPermits().get(i).getEndLocation();
-					krqdtAppStamp.krqdtAppStampDetails.get(i).version = appStamp.getVersion();
 				}
 				break;
 			case STAMP_ADDITIONAL:
@@ -99,13 +97,11 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 					krqdtAppStamp.krqdtAppStampDetails.get(i).startLocationCD = appStamp.getAppStampWorks().get(i).getStartLocation();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampWorks().get(i).getEndTime();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).endLocationCD = appStamp.getAppStampWorks().get(i).getEndLocation();
-					krqdtAppStamp.krqdtAppStampDetails.get(i).version = appStamp.getVersion();
 				}
 				break;
 			case STAMP_CANCEL:
 				for(int i=0;i<appStamp.getAppStampCancels().size();i++){
 					krqdtAppStamp.krqdtAppStampDetails.get(i).cancelAtr = appStamp.getAppStampCancels().get(i).getCancelAtr();
-					krqdtAppStamp.krqdtAppStampDetails.get(i).version = appStamp.getVersion();
 				}
 				break;
 			case STAMP_ONLINE_RECORD:
@@ -120,7 +116,6 @@ public class JpaAppStampRepository extends JpaRepository implements AppStampRepo
 					krqdtAppStamp.krqdtAppStampDetails.get(i).startLocationCD = appStamp.getAppStampWorks().get(i).getStartLocation();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).endTime = appStamp.getAppStampWorks().get(i).getEndTime();
 					krqdtAppStamp.krqdtAppStampDetails.get(i).endLocationCD = appStamp.getAppStampWorks().get(i).getEndLocation();
-					krqdtAppStamp.krqdtAppStampDetails.get(i).version = appStamp.getVersion();
 				}
 				break;
 			default: break;

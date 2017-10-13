@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -34,62 +35,68 @@ public class EmployeeApproverExportService extends ExportService<EmployeeApprove
 
 		// get query parameters
 		EmployeeApproverRootQuery query = context.getQuery();
+		List<EmployeeQuery> employee = query.getLstEmpIds();
+		List<String> employeeIdLst = employee.stream().map(c -> c.getEmployeeId()).collect(Collectors.toList());
 
 		// get worplaces: employee info
-//		Map<String, WpApproverAsAppOutput> wpApprover1 = registerApprovalRoot.lstEmps(companyId, query.getBaseDate(),
-//				query.getLstEmpIds(), query.getRootAtr(), query.getLstApps());
-//		System.out.println(wpApprover1);
+		Map<String, WpApproverAsAppOutput> wpApprover1 = registerApprovalRoot.lstEmps(companyId, query.getBaseDate(),
+				employeeIdLst, query.getRootAtr(), query.getLstApps());
+		System.out.println(wpApprover1);
 
-		Map<String, WpApproverAsAppOutput> wpApprover = new HashMap<>();
-		EmployeeApproverAsApplicationOutput employeeApp = null;
-		EmployeeApproverOutput employeeInfor = new EmployeeApproverOutput("1", "A");
-		List<ApproverAsApplicationInforOutput> appLst = new ArrayList<>();
-		List<EmployeeOrderApproverAsAppOutput> employeeOrder = new ArrayList<>();
-		
-		for (int i = 0; i < 5; i++) {
-			employeeOrder.add(new EmployeeOrderApproverAsAppOutput(i, "A"));
-		}
-		
-		for (int i = 0; i < 5; i++) {
-			if (i == 0) {
-				appLst.add(new ApproverAsApplicationInforOutput(i, "全員承認", employeeOrder));
-			}
-			else if(i == 1) {
-				appLst.add(new ApproverAsApplicationInforOutput(i, "残業申請", employeeOrder));
-				
-			}else if(i == 2) {
-				appLst.add(new ApproverAsApplicationInforOutput(i, "出張申請", employeeOrder));
-			}else if(i== 3) {
-				appLst.add(new ApproverAsApplicationInforOutput(i, "直行直帰申請", employeeOrder));
-			}else if(i== 4) {
-				appLst.add(new ApproverAsApplicationInforOutput(i, "時間年休申請", employeeOrder));
-			}
-		}
-		Map<Integer, List<ApproverAsApplicationInforOutput>> mapAppTypeAsApprover = new HashMap<>();
-		for(int i = 0 ; i < 5 ; i++) {
-			mapAppTypeAsApprover.put(i, appLst);
-		}
-		EmployeeApproverAsApplicationOutput employee = new EmployeeApproverAsApplicationOutput(employeeInfor, mapAppTypeAsApprover);
-		Map<String, EmployeeApproverAsApplicationOutput> mapEmpRootInfo = new HashMap<>();
-
-		for(int i = 0; i < 5; i++) {
-			mapEmpRootInfo.put("0", employee);
-			
-		}
-		WorkplaceImport wpInfor = new WorkplaceImport("1","0001","A");
-		
-		WpApproverAsAppOutput  output = new WpApproverAsAppOutput(wpInfor, mapEmpRootInfo);
-		
-		for(int i = 0; i < 5 ; i++) {
-			wpApprover.put(String.valueOf(i), output);
-		}
-		
-		if (wpApprover.isEmpty()) {
+		// Map<String, WpApproverAsAppOutput> wpApprover = new HashMap<>();
+		// EmployeeApproverAsApplicationOutput employeeApp = null;
+		// EmployeeApproverOutput employeeInfor = new EmployeeApproverOutput("1", "A");
+		// List<ApproverAsApplicationInforOutput> appLst = new ArrayList<>();
+		// List<EmployeeOrderApproverAsAppOutput> employeeOrder = new ArrayList<>();
+		//
+		// for (int i = 0; i < 5; i++) {
+		// employeeOrder.add(new EmployeeOrderApproverAsAppOutput(i, "A"));
+		// }
+		//
+		// for (int i = 0; i < 5; i++) {
+		// if (i == 0) {
+		// appLst.add(new ApproverAsApplicationInforOutput(i, "全員承認", employeeOrder));
+		// }
+		// else if(i == 1) {
+		// appLst.add(new ApproverAsApplicationInforOutput(i, "残業申請", employeeOrder));
+		//
+		// }else if(i == 2) {
+		// appLst.add(new ApproverAsApplicationInforOutput(i, "出張申請", employeeOrder));
+		// }else if(i== 3) {
+		// appLst.add(new ApproverAsApplicationInforOutput(i, "直行直帰申請", employeeOrder));
+		// }else if(i== 4) {
+		// appLst.add(new ApproverAsApplicationInforOutput(i, "時間年休申請", employeeOrder));
+		// }
+		// }
+		// Map<Integer, List<ApproverAsApplicationInforOutput>> mapAppTypeAsApprover =
+		// new HashMap<>();
+		// for(int i = 0 ; i < 5 ; i++) {
+		// mapAppTypeAsApprover.put(i, appLst);
+		// }
+		// EmployeeApproverAsApplicationOutput employee = new
+		// EmployeeApproverAsApplicationOutput(employeeInfor, mapAppTypeAsApprover);
+		// Map<String, EmployeeApproverAsApplicationOutput> mapEmpRootInfo = new
+		// HashMap<>();
+		//
+		// for(int i = 0; i < 5; i++) {
+		// mapEmpRootInfo.put("0", employee);
+		//
+		// }
+		// WorkplaceImport wpInfor = new WorkplaceImport("1","0001","A");
+		//
+		// WpApproverAsAppOutput output = new WpApproverAsAppOutput(wpInfor,
+		// mapEmpRootInfo);
+		//
+		// for(int i = 0; i < 5 ; i++) {
+		// wpApprover.put(String.valueOf(i), output);
+		// }
+		//
+		if (wpApprover1.isEmpty()) {
 			throw new BusinessException("ko co' data");
 		}
 
 		EmployeeApproverDataSource dataSource = new EmployeeApproverDataSource();
-		dataSource.setWpApprover(wpApprover);
+		dataSource.setWpApprover(wpApprover1);
 		dataSource.setHeaderEmployee(this.setHeader());
 
 		this.employeeGenerator.generate(context.getGeneratorContext(), dataSource);

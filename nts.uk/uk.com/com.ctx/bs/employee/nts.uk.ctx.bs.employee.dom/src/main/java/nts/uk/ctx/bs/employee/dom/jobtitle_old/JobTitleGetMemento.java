@@ -5,7 +5,7 @@
 package nts.uk.ctx.bs.employee.dom.jobtitle_old;
 
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface JobTitleGetMemento.
@@ -38,7 +38,7 @@ public interface JobTitleGetMemento {
 	 *
 	 * @return the period
 	 */
-	 Period getPeriod();
+	 DatePeriod getPeriod();
 
 	/**
 	 * Gets the position code.

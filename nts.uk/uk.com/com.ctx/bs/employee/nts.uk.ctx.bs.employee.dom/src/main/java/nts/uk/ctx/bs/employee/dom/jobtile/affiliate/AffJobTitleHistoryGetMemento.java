@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtile.affiliate;
 
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface JobTitleHistoryGetMemento.
@@ -17,7 +17,7 @@ public interface AffJobTitleHistoryGetMemento {
 	 *
 	 * @return the period
 	 */
-	Period getPeriod();
+	DatePeriod getPeriod();
 	
 	
 	/**

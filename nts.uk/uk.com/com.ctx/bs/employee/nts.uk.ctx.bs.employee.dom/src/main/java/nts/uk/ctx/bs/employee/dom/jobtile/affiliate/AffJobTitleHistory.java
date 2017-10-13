@@ -6,7 +6,7 @@ package nts.uk.ctx.bs.employee.dom.jobtile.affiliate;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JobTitleHistory.
@@ -17,7 +17,7 @@ public class AffJobTitleHistory extends AggregateRoot{
 	
 	/** The period. */
 	// 期間
-	private Period period;
+	private DatePeriod period;
 
 	/** The employee id. */
 	// 社員ID

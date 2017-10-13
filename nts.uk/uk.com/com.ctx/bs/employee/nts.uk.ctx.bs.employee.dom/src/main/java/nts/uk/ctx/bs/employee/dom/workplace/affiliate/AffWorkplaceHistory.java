@@ -6,7 +6,7 @@ package nts.uk.ctx.bs.employee.dom.workplace.affiliate;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class AffiliationWorkplaceHistory.
@@ -17,7 +17,7 @@ public class AffWorkplaceHistory extends AggregateRoot {
 
 	/** The period. */
 	// 期間
-	private Period period;
+	private DatePeriod period;
 
 	/** The employee id. */
 	// 社員ID
@@ -30,20 +30,22 @@ public class AffWorkplaceHistory extends AggregateRoot {
 	/**
 	 * Instantiates a new employee work place history.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public AffWorkplaceHistory(AffWorkplaceHistoryGetMemento memento) {
 		this.period = memento.getPeriod();
 		this.employeeId = memento.getEmployeeId();
 		this.workplaceId = memento.getWorkplaceId();
 	}
-	
+
 	/**
 	 * Save to memen to.
 	 *
-	 * @param memento the memen to
+	 * @param memento
+	 *            the memen to
 	 */
-	public void saveToMemento(AffWorkplaceHistorySetMemento memento){
+	public void saveToMemento(AffWorkplaceHistorySetMemento memento) {
 		memento.setPeriod(this.period);
 		memento.setEmployeeId(this.employeeId);
 		memento.setWorkplaceId(this.workplaceId);

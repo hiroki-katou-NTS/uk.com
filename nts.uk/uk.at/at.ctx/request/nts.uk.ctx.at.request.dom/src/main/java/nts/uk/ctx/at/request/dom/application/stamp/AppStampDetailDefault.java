@@ -41,59 +41,31 @@ public class AppStampDetailDefault implements AppStampDetailDomainService {
 	@Inject
 	private DetailAfterUpdate afterProcessDetail;
 	
-	@Inject
-	private AppApprovalPhaseRepository appApprovalPhaseRepository;
-	
-	@Inject
-	private ApprovalFrameRepository approvalFrameRepository;
-	
-	@Inject
-	private ApproveAcceptedRepository approveAcceptedRepository; 
-	
 	@Override
 	public void appStampPreProcess(AppStamp appStamp) {
-		this.beforePreBootMode.judgmentDetailScreenMode(appStamp, appStamp.getApplicationDate());
+		beforePreBootMode.judgmentDetailScreenMode(appStamp, appStamp.getApplicationDate());
 		// this.preLaunchScreenSetting
-		this.appStampCommonDomainService.appStampSet(appStamp.getCompanyID());
+		appStampCommonDomainService.appStampSet(appStamp.getCompanyID());
 		// 13.実績を取得する
 	}
 
 	@Override
 	public void appStampUpdate(String titleReason, String detailReason, AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
-		this.appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
-		// this.appStampCommonDomainService.validateReason(appStamp);
-		this.appStampUpdateProcess(appStamp);
-		// this.approvalUpdate(appApprovalPhases, appStamp.getApplicationID());
+		appStampCommonDomainService.appReasonCheck(titleReason, detailReason, appStamp);
+		appStampCommonDomainService.validateReason(appStamp);
+		appStampUpdateProcess(appStamp, appApprovalPhases);
 	}
 	
-	private void appStampUpdateProcess(AppStamp appStamp) {
-		/*this.detailBeforeProcessRegister.processBeforeDetailScreenRegistration(
+	private void appStampUpdateProcess(AppStamp appStamp, List<AppApprovalPhase> appApprovalPhases) {
+		appStamp.setListPhase(appApprovalPhases);
+		detailBeforeProcessRegister.processBeforeDetailScreenRegistration(
 				appStamp.getCompanyID(), 
 				appStamp.getApplicantSID(), 
 				appStamp.getApplicationDate(), 
 				1, 
 				appStamp.getApplicationID(), 
-				PrePostAtr.PREDICT);*/
+				PrePostAtr.PREDICT);
 		appStampRepository.updateStamp(appStamp);
-		// this.afterProcessDetail.processAfterDetailScreenRegistration(appStamp.getCompanyID(), appStamp.getApplicationID());
-	}
-	
-	private void approvalUpdate(List<AppApprovalPhase> appApprovalPhases, String appID){
-		appApprovalPhases.forEach(appApprovalPhase -> {
-			appApprovalPhase.setAppID(appID);
-			String phaseID = UUID.randomUUID().toString();
-			appApprovalPhase.setPhaseID(phaseID);
-			appApprovalPhaseRepository.update(appApprovalPhase);
-			appApprovalPhase.getListFrame().forEach(approvalFrame -> {
-				String frameID = UUID.randomUUID().toString();
-				approvalFrame.setFrameID(frameID);
-				approvalFrameRepository.update(approvalFrame, phaseID);
-				approvalFrame.getListApproveAccepted().forEach(appAccepted -> {
-					String appAcceptedID = UUID.randomUUID().toString();
-					appAccepted.setAppAcceptedID(appAcceptedID);
-					approveAcceptedRepository.updateApproverAccepted(appAccepted, frameID);
-				});
-			});
-		});
+		afterProcessDetail.processAfterDetailScreenRegistration(appStamp);
 	}
 }

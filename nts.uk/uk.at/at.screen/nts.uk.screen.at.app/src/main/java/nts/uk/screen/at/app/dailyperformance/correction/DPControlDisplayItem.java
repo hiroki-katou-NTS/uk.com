@@ -6,7 +6,6 @@ package nts.uk.screen.at.app.dailyperformance.correction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import lombok.Data;
 
 /**
@@ -19,11 +18,28 @@ public class DPControlDisplayItem {
 	private List<DPSheetDto> lstSheet;
 	// header dtos
 	private List<DPHeaderDto> lstHeader;
-	
+
 	public DPControlDisplayItem() {
 		super();
 		this.lstSheet = new ArrayList<>();
 		this.lstHeader = new ArrayList<>();
+	}
+	
+	private boolean isExistSheet(DPSheetDto sheet){
+		for(DPSheetDto exstSheet : this.lstSheet){
+			if(exstSheet.getName().equals(sheet.getName())){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void createSheets(List<DPSheetDto> lstSheet) {
+		for (DPSheetDto sheet : lstSheet) {
+			if(!isExistSheet(sheet)){
+				this.lstSheet.add(sheet);
+			}
+		}
 	}
 
 	public void addColumnsToSheet(List<FormatDPCorrectionDto> lstFormat) {
@@ -66,5 +82,5 @@ public class DPControlDisplayItem {
 			}
 		});
 	}
-	
+
 }

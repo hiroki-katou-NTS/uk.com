@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.sys.gateway.dom.login;
 
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
+
 /**
  * The Interface ContractGetMemento.
  */
@@ -28,5 +30,5 @@ public interface ContractGetMemento {
      *
      * @return the contract period
      */
-    public Period getContractPeriod();
+    public DatePeriod getContractPeriod();
 }

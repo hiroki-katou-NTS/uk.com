@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtitle.info;
 
 import lombok.Getter;
@@ -9,34 +13,47 @@ import nts.uk.ctx.bs.employee.dom.jobtitle.history.HistoryId;
 /**
  * The Class JobTitleInfo.
  */
+
+/**
+ * Gets the sequence code.
+ *
+ * @return the sequence code
+ */
 @Getter
-//職位情報
+// 職位情報
 public class JobTitleInfo extends AggregateRoot {
 
 	/** The company id. */
-	//会社ID
+	// 会社ID
 	private CompanyId companyId;
-	
+
 	/** The job title history id. */
-	//職位履歴ID
+	// 職位履歴ID
 	private HistoryId jobTitleHistoryId;
-	
+
 	/** The job title id. */
-	//職位ID
+	// 職位ID
 	private JobTitleId jobTitleId;
-	
+
 	/** The job title code. */
-	//職位コード
+	// 職位コード
 	private JobTitleCode jobTitleCode;
-	
+
 	/** The job title name. */
-	//職位名称
+	// 職位名称
 	private JobTitleName jobTitleName;
-	
+
 	/** The sequence code. */
-	//序列コード
+	// 序列コード
 	private SequenceCode sequenceCode;
-		
+
+	/**
+	 * Instantiates a new job title info.
+	 */
+	public JobTitleInfo() {
+
+	}
+
 	/**
 	 * Instantiates a new job title info.
 	 *
@@ -64,8 +81,27 @@ public class JobTitleInfo extends AggregateRoot {
 		memento.setJobTitleName(this.jobTitleName);
 		memento.setSequenceCode(this.sequenceCode);
 	}
-	
-	/* (non-Javadoc)
+
+	/**
+	 * Clone.
+	 *
+	 * @param historyId the history id
+	 * @return the job title info
+	 */
+	public JobTitleInfo clone(String historyId) {
+		JobTitleInfo newEntity = new JobTitleInfo();
+		newEntity.companyId = this.companyId;
+		newEntity.jobTitleHistoryId = new HistoryId(historyId);
+		newEntity.jobTitleId = this.jobTitleId;
+		newEntity.jobTitleCode = this.jobTitleCode;
+		newEntity.jobTitleName = this.jobTitleName;
+		newEntity.sequenceCode = this.sequenceCode;
+		return newEntity;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -78,7 +114,9 @@ public class JobTitleInfo extends AggregateRoot {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
@@ -106,5 +144,5 @@ public class JobTitleInfo extends AggregateRoot {
 		} else if (!jobTitleId.equals(other.jobTitleId))
 			return false;
 		return true;
-	}	
+	}
 }

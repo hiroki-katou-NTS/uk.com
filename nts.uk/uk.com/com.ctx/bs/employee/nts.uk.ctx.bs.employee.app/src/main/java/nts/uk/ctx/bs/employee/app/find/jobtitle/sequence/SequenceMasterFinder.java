@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.jobtitle.sequence;
 
 import java.util.List;
@@ -50,9 +54,8 @@ public class SequenceMasterFinder {
 	/**
 	 * Find sequence by sequence code.
 	 *
-	 * @param sequenceCode
-	 *            the sequence code
-	 * @return the sequence master dto
+	 * @param sequenceCode the sequence code
+	 * @return the sequence master find dto
 	 */
 	public SequenceMasterFindDto findSequenceBySequenceCode(String sequenceCode) {
 		String companyId = AppContexts.user().companyId();
