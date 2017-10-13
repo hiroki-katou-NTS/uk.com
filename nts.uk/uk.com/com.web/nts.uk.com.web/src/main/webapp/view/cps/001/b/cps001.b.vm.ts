@@ -32,13 +32,14 @@ module cps001.b.vm {
 
         pushData() {
             let self = this,
-                empDelete: ModelDelete = self.empDelete();
+                empDelete : IModelDto = ko.toJS(self.empDelete);
             nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
                 let self = this,
                     //employeeId: any = getShared('CPS001B_PARAM') || null;
                     employeeId = "90000000-0000-0000-0000-000000000001";
                 if (employeeId) {
-                    service.deleteEmp(new EmpDelete(employeeId, empDelete.reason + "")).done((result) => {
+                    let command ={sId: employeeId , reason :empDelete.reason };
+                    service.deleteEmp(command).done((result) => {
                         setShared('CPS001B_VALUE', {});
                         console.log(result);
                     });
@@ -74,17 +75,4 @@ module cps001.b.vm {
             }
         }
     }
-
-    class EmpDelete {
-        employeeId: string;
-        reasonDelete: string;
-        constructor(employeeId: string, reasonDelete: string) {
-            this.employeeId = employeeId;
-            this.reasonDelete = reasonDelete;
-        }
-    }
-
-
-
-
 }

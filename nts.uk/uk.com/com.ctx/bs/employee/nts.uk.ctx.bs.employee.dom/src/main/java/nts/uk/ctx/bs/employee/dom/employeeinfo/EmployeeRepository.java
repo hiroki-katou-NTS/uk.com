@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpManagement;
 
 /**
  * The Interface EmployeeRepository.
@@ -89,4 +90,12 @@ public interface EmployeeRepository {
 	
 	Optional<Object[]> getEmployeeInfoToDelete(String employeeId);
 
+	
+	//laitv
+	/**
+	 * 
+	 * temporary delete Employee 
+	 * @param domain: DeleteEmpManagement
+	 */
+	void insertToDeleteEmpManagemrnt(DeleteEmpManagement deleteEmpManagement);
 }

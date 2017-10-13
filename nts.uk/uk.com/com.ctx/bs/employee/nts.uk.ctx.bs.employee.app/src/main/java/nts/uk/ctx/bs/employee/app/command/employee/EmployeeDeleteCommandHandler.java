@@ -1,25 +1,45 @@
 package nts.uk.ctx.bs.employee.app.command.employee;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.bs.employee.dom.employment.EmploymentRepository;
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.DeleteEmpManagement;
+import nts.uk.ctx.bs.employee.dom.deleteEmpManagement.ReasonRemoveEmp;
+import nts.uk.ctx.bs.employee.dom.employeeinfo.EmployeeRepository;
 
 @Stateless
-public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteCommand>{
-	
+@Transactional
+public class EmployeeDeleteCommandHandler extends CommandHandler<EmployeeDeleteCommand> {
+
 	/** The repository. */
 	@Inject
-	private EmploymentRepository repository;
+	private EmployeeRepository empRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<EmployeeDeleteCommand> context) {
-		
-		//get command
+
+		// get command
 		EmployeeDeleteCommand command = context.getCommand();
+
+		// getting current date and time using Date class
+		DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date dateobj = new Date();
 		
+
+		if (command != null) {
+			DeleteEmpManagement domain = new DeleteEmpManagement(0, command.getSId(),
+					GeneralDate.fromString(df.format(dateobj), "yyyy-MM-dd HH:mm:ss"), new ReasonRemoveEmp(command.getReason()));
+			empRepo.insertToDeleteEmpManagemrnt(domain);
+		}
+
 	}
 
 }
