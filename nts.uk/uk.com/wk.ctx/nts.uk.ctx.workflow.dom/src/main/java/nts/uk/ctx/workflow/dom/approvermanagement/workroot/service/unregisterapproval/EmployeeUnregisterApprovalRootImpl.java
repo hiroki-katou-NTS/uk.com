@@ -1,6 +1,5 @@
 package nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.unregisterapproval;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
