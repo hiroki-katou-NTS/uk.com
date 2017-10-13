@@ -278,7 +278,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
             var self = this;
             _.forEach(self.dailyPerfomanceData(), (data) => {
                 if (!self.isDisableRow(data.id)) {
-                    data.sign = true;
+                    data.sign = !data.sign;
                 }
             });
             self.dailyPerfomanceData.valueHasMutated();
