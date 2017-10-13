@@ -131,7 +131,7 @@ export module viewmodel {
             var isCommon = _.find(self.currentAppType(), function(value){
                 return value  === "";    
             })
-            if(isCommon !== undefined || isCommon !== null){
+            if(!nts.uk.util.isNullOrUndefined(isCommon)){
                 data.rootAtr = 0;
                 data.lstApps.removeItem("");
             }else{

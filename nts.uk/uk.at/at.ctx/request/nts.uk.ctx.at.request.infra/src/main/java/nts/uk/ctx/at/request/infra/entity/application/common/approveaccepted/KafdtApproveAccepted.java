@@ -73,4 +73,17 @@ public class KafdtApproveAccepted extends UkJpaEntity implements Serializable {
 				domain.getReason().v(), 
 				domain.getRepresenterSID(),null);
 	}
+	
+	public ApproveAccepted toDomain() {
+		return ApproveAccepted.createFromJavaType(
+				this.kafdtApproveAcceptedPK.companyID, 
+				this.kafdtApproveAcceptedPK.appAccedtedID, 
+				this.approverSID, 
+				this.approvalATR, 
+				this.confirmATR, 
+				this.approvalDate, 
+				this.reason, 
+				this.representerSID);
+	}
+
 }

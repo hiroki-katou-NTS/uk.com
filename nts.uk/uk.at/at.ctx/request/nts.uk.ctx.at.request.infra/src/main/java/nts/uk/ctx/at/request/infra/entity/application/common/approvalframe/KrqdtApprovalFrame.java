@@ -23,6 +23,7 @@ import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
 import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAccepted;
 import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAcceptedPK;
+import nts.uk.ctx.at.request.infra.repository.application.common.approveaccepted.JpaApproveAcceptedRepository;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
@@ -81,4 +82,13 @@ public class KrqdtApprovalFrame extends UkJpaEntity implements Serializable {
 				kafdtApproveAccepteds);
 	}
 
+	public ApprovalFrame toDomain() {
+		return ApprovalFrame.createFromJavaType(
+				this.krqdtApprovalFramePK.companyID,
+				this.krqdtApprovalFramePK.frameID, 
+				this.dispOrder, 
+				this.kafdtApproveAccepteds.stream().map(c -> c.toDomain()).collect(Collectors.toList()));
+	}
+
+	
 }

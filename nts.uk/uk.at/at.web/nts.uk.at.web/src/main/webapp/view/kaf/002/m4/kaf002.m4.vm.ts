@@ -51,7 +51,7 @@ module nts.uk.at.view.kaf002.m4 {
                     });     
                 })
                 .fail(function(res) { 
-                    nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});
+                    nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});
                 });
             }
             
@@ -84,9 +84,21 @@ module nts.uk.at.view.kaf002.m4 {
                     if(res.optimisticLock == true){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_197" }).then(function(){nts.uk.ui.block.clear();});    
                     } else {
-                        nts.uk.ui.dialog.alertError(res.message).then(function(){nts.uk.ui.block.clear();});    
+                        nts.uk.ui.dialog.alertError({ messageId: res.messageId}).then(function(){nts.uk.ui.block.clear();});    
                     }
                 });  
+            }
+            
+            convertToJS(appStamp: KnockoutObservable<vmbase.AppStampGoOutPermit>){
+                return {
+                    stampAtr: appStamp.stampAtr(),
+                    stampFrameNo: appStamp.stampFrameNo(),
+                    stampGoOutAtr: appStamp.stampGoOutAtr(),
+                    startTime: appStamp.startTime().value(),
+                    startLocation: appStamp.startLocation().code(),
+                    endTime: appStamp.endTime().value(),
+                    endLocation: appStamp.endLocation().code()    
+                }           
             }
         }
     }

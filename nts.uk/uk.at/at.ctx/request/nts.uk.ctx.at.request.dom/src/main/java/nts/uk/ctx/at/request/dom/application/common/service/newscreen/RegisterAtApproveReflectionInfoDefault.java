@@ -70,34 +70,45 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 			for (AppApprovalPhase appPhase : listPhase) {
 				List<ApprovalFrame> listFrame = appPhase.getListFrame();
 				// ドメインモデル「承認フェーズ」．承認区分が承認済じゃない(「承認フェーズ」．承認区分 ≠ 承認済)
+				//=====================A.D=============
 //				if (appPhase.getApprovalATR() != ApprovalAtr.APPROVED) {
 					// LOOP FRAME
 					// 承認枠 1～5 のループ
+				//===========end============
+				
 					for (ApprovalFrame frame : listFrame) {
+						boolean checkAllApproval = true;
 						List<ApproveAccepted> lstApprover = frame.getListApproveAccepted();
-						List<ApproveAccepted> lstApproveAccepted = lstApprover.stream()
-								.filter(x -> x.getApprovalATR().equals(ApprovalAtr.APPROVED))
-								.collect(Collectors.toList());
 						List<String> lstApproverIds = lstApprover.stream().map(x -> x.getApproverSID())
 								.collect(Collectors.toList());
+						//duyệt list người approval xem có ai chưa approved k, nếu có thì :checkAllApproval = false
 						for(ApproveAccepted approveAccepted:lstApprover) {
-							if (approveAccepted.getApproverSID().equals(loginEmp)) {
-								approveAccepted.setApprovalATR(ApprovalAtr.APPROVED);
-								// 代行者=空
-								approveAccepted.setRepresenterSID(null);
-							}else {
-								AgentPubImport agency = this.approvalAgencyInformationService
-										.getApprovalAgencyInformation(companyID, lstApproverIds);
-									// (ループ中の「承認枠」)承認区分=「承認済」、
-								if (agency.getListRepresenterSID().contains(loginEmp)) {
-									approveAccepted.setApprovalATR(ApprovalAtr.APPROVED);
-									// 承認者=空
-									approveAccepted.setApproverSID(null);
-								}
-									
+							if(approveAccepted.getApprovalATR() != ApprovalAtr.APPROVED) {
+								checkAllApproval = false;
+								break;
 							}
 						}
+						//nếu có người chưa approved thì chạy vào 
+						if(!checkAllApproval) {
+							for(ApproveAccepted approveAccepted:lstApprover) {
+								if (approveAccepted.getApproverSID().equals(loginEmp)) {
+									approveAccepted.setApprovalATR(ApprovalAtr.APPROVED);
+									// 代行者=空
+									approveAccepted.setRepresenterSID(null);
+								}else {
+									AgentPubImport agency = this.approvalAgencyInformationService
+											.getApprovalAgencyInformation(companyID, lstApproverIds);
+										// (ループ中の「承認枠」)承認区分=「承認済」、
+									if (agency.getListRepresenterSID().contains(loginEmp)) {
+										approveAccepted.setApprovalATR(ApprovalAtr.APPROVED);
+										// 承認者=空
+										approveAccepted.setApproverSID(null);
+									}
+								}//end else
+							}//end for
+						}
 						
+						// ============== Anh Đức Viết ===============
 						// ループ中の「承認枠」．承認者リストに承認者がいるかチェックする
 						//if (!lstApproveAccepted.isEmpty()) {
 //							List<String> lstApproverIds = lstApprover.stream().map(x -> x.getApproverSID())
@@ -136,7 +147,7 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 //				} else {
 //					continue;
 //				}
-					
+				// ========================end Anh Đức Viết =======================
 					
 					
 				// 「承認フェーズ」．承認形態をチェックする
@@ -147,7 +158,7 @@ public class RegisterAtApproveReflectionInfoDefault implements RegisterAtApprove
 				boolean flgApprovalDone = false;
 				// Trường hợp chỉ có một người approval
 				if (aprovalForm == ApprovalForm.SINGLEAPPROVED) {
-					flgApprovalDone = false;
+					flgApprovalDone = false;	
 					// if文：「承認枠」1．確定区分 == true OR 「承認枠」2．確定区分 == true OR...「承認枠」5．確定区分 == true
 					for (ApprovalFrame frame : listFrame) {
 						List<String> lstApproverIds = frame.getListApproveAccepted().stream()

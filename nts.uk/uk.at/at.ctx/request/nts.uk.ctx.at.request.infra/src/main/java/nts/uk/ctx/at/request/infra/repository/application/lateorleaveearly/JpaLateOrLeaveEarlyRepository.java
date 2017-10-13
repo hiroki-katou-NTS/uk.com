@@ -107,10 +107,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 				 appLateOrLeaveEntity.lateTime2);
 	}
 	
-	private KrqdtAppLateOrLeave toEntity (LateOrLeaveEarly domain){
-		int index = domain.getApplicationReason().v().indexOf(":");
-		String appReasonId = domain.getApplicationReason().v().substring(0, index);
-		String applicationReason = domain.getApplicationReason().v().substring(index + 1);
+	private KrqdtAppLateOrLeave toEntity(LateOrLeaveEarly domain){
 		return new KrqdtAppLateOrLeave (
 					new KrqdtAppLateOrLeavePK(domain.getCompanyID(), domain.getAppID()),
 					domain.getActualCancelAtr(),
@@ -122,30 +119,7 @@ public class JpaLateOrLeaveEarlyRepository extends JpaRepository implements Late
 					domain.getEarlyTime2().v(),
 					domain.getLate2().value,
 					domain.getLateTime2().v(),
-					new KafdtApplication(
-							new KafdtApplicationPK(
-									domain.getCompanyID(), 
-									domain.getApplicationID()), 
-							domain.getVersion(),
-							appReasonId,
-							domain.getPrePostAtr().value, 
-							domain.getInputDate(), 
-							domain.getEnteredPersonSID(), 
-							domain.getReversionReason().v(), 
-							domain.getApplicationDate(), 
-							applicationReason, 
-							domain.getApplicationType().value, 
-							domain.getApplicantSID(), 
-							domain.getReflectPlanScheReason().value, 
-							null, 
-							domain.getReflectPlanState().value, 
-							domain.getReflectPlanEnforce().value, 
-							domain.getReflectPerScheReason().value, 
-							null, 
-							domain.getReflectPerState().value, 
-							domain.getReflectPerEnforce().value,
-							null,
-							null,null,null,null));
+					KafdtApplication.toEntity(domain));
 	}
 	@Override
 	public ApplicationReason findApplicationReason(String companyID, ApplicationType applicationType) {

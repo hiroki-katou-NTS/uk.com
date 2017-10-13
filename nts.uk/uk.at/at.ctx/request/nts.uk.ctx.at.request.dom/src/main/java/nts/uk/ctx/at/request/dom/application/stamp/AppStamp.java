@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.request.dom.application.stamp;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.apache.logging.log4j.util.Strings;
@@ -152,10 +153,9 @@ public class AppStamp extends Application {
 			
 			case STAMP_CANCEL: {
 				// すべての打刻取消申請が実績取消＝するしない区分.しない (#Msg_321#)
-				for(AppStampCancel appStampCancel : this.appStampCancels) {
-					if(appStampCancel.getCancelAtr()==0){
-						throw new BusinessException("Msg_321");
-					}
+				Boolean allFalse = this.appStampCancels.stream().allMatch(item -> item.getCancelAtr()==0);
+				if(allFalse){
+					throw new BusinessException("Msg_321");
 				}
 				break;
 			}

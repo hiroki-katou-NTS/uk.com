@@ -34,29 +34,6 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	private final String SELECT_BY_APPTYPE = SELECT_FROM_APPLICATION + " AND c.applicationType = :applicationType";
 
 	private final String SELECT_BY_DATE = SELECT_FROM_APPLICATION + " AND c.applicationDate >= :startDate AND c.applicationDate <= :endDate";
-	private Application toDomain(KafdtApplication entity) {
-		return new Application(
-				entity.kafdtApplicationPK.companyID,
-				entity.kafdtApplicationPK.applicationID,
-				EnumAdaptor.valueOf(entity.prePostAtr,PrePostAtr.class), 
-				entity.inputDate, entity.enteredPersonSID,
-				new AppReason(entity.reversionReason), 
-				entity.applicationDate, 
-				entity.appReasonId ==null?new AppReason(entity.applicationReason):new AppReason(entity.appReasonId + SEPERATE_REASON_STRING + entity.applicationReason),
-				EnumAdaptor.valueOf(entity.applicationType,ApplicationType.class),
-				entity.applicantSID, 
-				EnumAdaptor.valueOf(entity.reflectPlanScheReason,ReflectPlanScheReason.class), 
-				entity.reflectPlanTime, 
-				EnumAdaptor.valueOf(entity.reflectPlanState,ReflectPlanPerState.class),
-				EnumAdaptor.valueOf(entity.reflectPlanEnforce,ReflectPlanPerEnforce.class), 
-				EnumAdaptor.valueOf(entity.reflectPerScheReason,ReflectPerScheReason.class),
-				entity.reflectPerTime,
-				EnumAdaptor.valueOf(entity.reflectPerState,ReflectPlanPerState.class),
-				EnumAdaptor.valueOf(entity.reflectPerEnforce,ReflectPlanPerEnforce.class),
-				entity.startDate,
-				entity.endDate,
-				null);
-	}
 
 	/**
 	 * Get ALL application
@@ -64,7 +41,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@Override
 	public List<Application> getAllApplication(String companyID) {
 		return this.queryProxy().query(SELECT_FROM_APPLICATION, KafdtApplication.class)
-				.setParameter("companyID", companyID).getList(c -> toDomain(c));
+				.setParameter("companyID", companyID).getList(c -> c.toDomain());
 	}
 
 	/**
@@ -73,7 +50,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@Override
 	public Optional<Application> getAppById(String companyID, String applicationID) {
 		return this.queryProxy().query(SELECT_BY_CODE, KafdtApplication.class).setParameter("companyID", companyID)
-				.setParameter("applicationID", applicationID).getSingle(c -> toDomain(c));
+				.setParameter("applicationID", applicationID).getSingle(c -> c.toDomain());
 	}
 
 	/**
@@ -82,7 +59,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	@Override
 	public List<Application> getAllAppByDate(String companyID, GeneralDate applicationDate) {
 		return this.queryProxy().query(SELECT_BY_APPDATE, KafdtApplication.class).setParameter("companyID", companyID)
-				.setParameter("applicationDate", applicationDate).getList(c -> toDomain(c));
+				.setParameter("applicationDate", applicationDate).getList(c -> c.toDomain());
 	}
 
 	/**
@@ -93,7 +70,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		return this.queryProxy().query(SELECT_BY_APPTYPE, KafdtApplication.class)
 				.setParameter("companyID", companyID)
 				.setParameter("applicationType", applicationType)
-				.getList(c -> toDomain(c));
+				.getList(c -> c.toDomain());
 	}
 
 	/**
@@ -145,7 +122,6 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	}
 
 
-
 	@Override
 	public List<Application> getAllApplicationByPhaseID(String comanyID, String appID, String phaseID) {
 		// TODO Auto-generated method stub
@@ -158,7 +134,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				.setParameter("companyID", companyId)
 				.setParameter("startDate", startDate)
 				.setParameter("endDate", endDate)
-				.getList(c -> toDomain(c));
+				.getList(c -> c.toDomain());
 		return data;
 	}
 
