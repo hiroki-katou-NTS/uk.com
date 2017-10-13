@@ -81,7 +81,7 @@ public class ClosureWs {
 	 */
 	@POST
 	@Path("findPeriodById/{closureId}")
-	public Period findPeriodById(@PathParam("closureId") int closureId) {
+	public DatePeriod findPeriodById(@PathParam("closureId") int closureId) {
 		return this.finder.findByIdGetMonthDay(closureId);
 	}
 	
@@ -94,8 +94,8 @@ public class ClosureWs {
 	@POST
 	@Path("checkThreeMonth")
 	public Boolean checkThreeMonth(CheckSaveDto checksave) {
-		Period period = this.finder.findByIdGetMonthDay(CLOSURE_ID_BEGIN);
-		return (period.getStartDate().month() + THREE_MONTH < checksave.getBaseDate().month());
+		DatePeriod period = this.finder.findByIdGetMonthDay(CLOSURE_ID_BEGIN);
+		return (period.start().month() + THREE_MONTH < checksave.getBaseDate().month());
 	}
 	
 	/**

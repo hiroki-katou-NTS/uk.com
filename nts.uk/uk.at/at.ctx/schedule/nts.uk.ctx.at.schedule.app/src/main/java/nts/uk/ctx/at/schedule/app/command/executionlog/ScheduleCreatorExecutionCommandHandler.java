@@ -58,6 +58,8 @@ import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCom
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompanyRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkPlaceRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarWorkplace;
+import nts.uk.ctx.at.shared.dom.worktype.WorkType;
+import nts.uk.ctx.at.shared.dom.worktype.WorkTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;;
 
@@ -121,6 +123,10 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The calendar company repository. */
 	@Inject
 	private CalendarCompanyRepository calendarCompanyRepository;
+	
+	/** The work type repository. */
+	@Inject
+	private WorkTypeRepository workTypeRepository;
 		
 	/** The setter. */
 	private TaskDataSetter setter;
@@ -312,10 +318,10 @@ public class ScheduleCreatorExecutionCommandHandler
 			PersonalWorkScheduleCreSet personalWorkScheduleCreSet) {
 		
 		// get to day by start period date 
-		toDate = domain.getPeriod().getStartDate().date();
+		toDate = domain.getPeriod().start().date();
 		
 		// loop start period date => end period date
-		while(toDate.before(this.nextDay(domain.getPeriod().getEndDate().date()))){
+		while(toDate.before(this.nextDay(domain.getPeriod().end().date()))){
 			
 			// get status employment
 			if(getStatusEmployment(domain)){
@@ -500,7 +506,11 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * @return the schedule work hour
 	 */
 	// 勤務予定時間帯を取得する
-	private void getScheduleWorkHour(){
+	private void getScheduleWorkHour(String worktypeCode){
+		Optional<WorkType> optionalWorktype = workTypeRepository.findByPK(companyId, worktypeCode);
+		if (optionalWorktype.isPresent()) {
+			WorkType workType = optionalWorktype.get();
+		}
 		
 	}
 		
@@ -706,7 +716,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		}
 		return Optional.empty();
 	}
-	
+
 }
 
 

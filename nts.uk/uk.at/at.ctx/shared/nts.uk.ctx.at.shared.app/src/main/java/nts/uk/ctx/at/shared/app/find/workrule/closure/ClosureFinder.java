@@ -21,9 +21,9 @@ import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMonthDay;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistoryRepository;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureRepository;
-import nts.uk.ctx.at.shared.dom.workrule.closure.Period;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class ClosureFinder.
@@ -110,7 +110,7 @@ public class ClosureFinder {
 	 * @param closureId the closure id
 	 * @return the period
 	 */
-	public Period findByIdGetMonthDay(int closureId) {
+	public DatePeriod findByIdGetMonthDay(int closureId) {
 		
 		// get login user
 		LoginUserContext loginUserContext = AppContexts.user();
@@ -121,7 +121,7 @@ public class ClosureFinder {
 		// call service
 		Optional<Closure> closure = this.repository.findById(companyId, closureId);
 		
-		Period period = new Period();
+		DatePeriod period = new DatePeriod(GeneralDate.min(), GeneralDate.min());
 		
 		List<ClosureHistory> closureHistories = this.repositoryHistory.findByClosureId(companyId,
 				closureId);
@@ -191,20 +191,17 @@ public class ClosureFinder {
 		// get all closure use
 		List<Closure> lstClousreUse = this.repository.findAllUse(companyId);
 
-		// setup start date MIN
-		Period startDate = new Period();
-		startDate.setStartDate(GeneralDate.min());
+		GeneralDate startDate = GeneralDate.min();
 
-		lstClousreUse.forEach(closure -> {
+		for (Closure closure : lstClousreUse) {
+			DatePeriod period = this.findByIdGetMonthDay(closure.getClosureId());
 
-			Period period = this.findByIdGetMonthDay(closure.getClosureId());
-
-			if (period.getStartDate().compareTo(startDate.getStartDate()) > ZERO_START_DATE) {
-				startDate.setStartDate(period.getStartDate());
+			if (period.start().compareTo(startDate) > ZERO_START_DATE) {
+				startDate = period.start();
 			}
-		});
+		}
 
-		return startDate.getStartDate();
+		return startDate;
 	}
 
 }
