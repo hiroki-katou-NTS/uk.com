@@ -129,5 +129,17 @@ public class EmployeeFinder {
 
 	}
 
-	// sonnlb
+
+	// laitv
+		/**
+		 * Gets EmployeeInfo to Delete  by employeeId.
+		 *
+		 * @param employeeCode
+		 *            the employee code
+		 * @return the person id by employee code
+		 */
+		public EmployeeToDeleteDto getEmployeeInfoToDelete(String employeeId ) {
+
+			return this.employeeRepository.getEmployeeInfoToDelete(employeeId).map(item -> EmployeeToDeleteDto.fromDomain(item)).get();
+		}
 }

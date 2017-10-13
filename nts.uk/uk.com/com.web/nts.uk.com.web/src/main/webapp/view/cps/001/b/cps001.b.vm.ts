@@ -8,18 +8,22 @@ module cps001.b.vm {
 
     export class ViewModel {
 
+        empDelete: KnockoutObservable<ModelDelete> = ko.observable(new ModelDelete({ employeeCode: '', personName: '', reason: '' }));
+
         constructor() {
             let self = this,
-                employeeIdq: IModelDto = getShared('CPS001B_PARAM') || {};
-            if (employeeIdq){
-                var employeeId = "90000000-0000-0000-0000-000000000001";
-                    // Gọi service tải dữ liệu employee
-                    service.getEmployee(employeeId).done((data: any) => {
-                        if (data) {
-                            console.log(data);
-                            debugger;
-                        }
-                    });
+                empDelete: ModelDelete = self.empDelete(),
+                employeeId: IModelDto = getShared('CPS001B_PARAM') || null;
+            var employeeIdq = "90000000-0000-0000-0000-000000000001";
+            if (employeeIdq) {
+
+                // Gọi service tải dữ liệu employee
+                service.getEmployee(employeeIdq).done((data: IModelDto) => {
+                    if (data) {
+                        empDelete.employeeCode(data.employeeCode);
+                        empDelete.personName(data.personName);
+                    }
+                });
             }
 
 
@@ -27,10 +31,20 @@ module cps001.b.vm {
         }
 
         pushData() {
-            let self = this;
-
-            setShared('CPS001B_VALUE', {});
-            self.close();
+            let self = this,
+                empDelete: ModelDelete = self.empDelete();
+            nts.uk.ui.dialog.confirm({ messageId: "Msg_18" }).ifYes(() => {
+                let self = this,
+                    //employeeId: any = getShared('CPS001B_PARAM') || null;
+                    employeeId = "90000000-0000-0000-0000-000000000001";
+                if (employeeId) {
+                    service.deleteEmp(new EmpDelete(employeeId, empDelete.reason + "")).done((result) => {
+                        setShared('CPS001B_VALUE', {});
+                        console.log(result);
+                    });
+                }
+            }).ifCancel(() => {
+            });
         }
 
         close() {
@@ -39,8 +53,38 @@ module cps001.b.vm {
     }
 
     interface IModelDto {
-        id: string;
+        employeeCode: string;
+        personName: string;
+        reason: string;
     }
+
+    class ModelDelete {
+        employeeCode: KnockoutObservable<string> = ko.observable('');
+        personName: KnockoutObservable<string> = ko.observable('');
+        reason: KnockoutObservable<string> = ko.observable('');
+
+        constructor(param: IModelDto) {
+            let self = this;
+
+            if (param) {
+                self.employeeCode(param.employeeCode || '');
+                self.personName(param.personName || '');
+                self.reason(param.reason || '');
+
+            }
+        }
+    }
+
+    class EmpDelete {
+        employeeId: string;
+        reasonDelete: string;
+        constructor(employeeId: string, reasonDelete: string) {
+            this.employeeId = employeeId;
+            this.reasonDelete = reasonDelete;
+        }
+    }
+
+
 
 
 }

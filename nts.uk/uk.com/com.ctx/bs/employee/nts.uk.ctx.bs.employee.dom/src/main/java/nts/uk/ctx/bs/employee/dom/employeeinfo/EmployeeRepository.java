@@ -86,5 +86,7 @@ public interface EmployeeRepository {
 	Boolean isDuplicateEmpCode(String companyId, String employeeCode);
 
 	Boolean isDuplicateCardNo(String companyId, String cardNumber);
+	
+	Optional<Object[]> getEmployeeInfoToDelete(String employeeId);
 
 }

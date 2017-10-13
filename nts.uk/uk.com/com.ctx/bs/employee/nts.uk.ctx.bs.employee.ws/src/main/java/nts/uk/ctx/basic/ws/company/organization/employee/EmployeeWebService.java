@@ -16,9 +16,12 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.app.command.JavaTypeResult;
 import nts.arc.layer.ws.WebService;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.bs.employee.app.command.employee.EmployeeDeleteCommand;
+import nts.uk.ctx.bs.employee.app.command.employee.EmployeeDeleteCommandHandler;
 import nts.uk.ctx.bs.employee.app.find.employee.EmpInfoDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeDto;
 import nts.uk.ctx.bs.employee.app.find.employee.EmployeeFinder;
+import nts.uk.ctx.bs.employee.app.find.employee.EmployeeToDeleteDto;
 import nts.uk.ctx.bs.employee.app.find.employee.validateEmpInfoResultDto;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchData;
 import nts.uk.ctx.bs.employee.app.query.employee.EmployeeSearchListData;
@@ -32,6 +35,9 @@ public class EmployeeWebService extends WebService {
 
 	@Inject
 	private EmployeeFinder employeeFinder;
+	
+	@Inject
+	private EmployeeDeleteCommandHandler empDeleteHandler;
 
 	/** The employee query processor. */
 	@Inject
@@ -191,5 +197,22 @@ public class EmployeeWebService extends WebService {
 	@Path("search")
 	public List<EmployeeSearchListData> searchListData(EmployeeSearchListQuery input) {
 		return this.employeeQueryProcessor.searchEmployees(input);
+	}
+	
+	/**
+	 * Get Employee Info to Display Screen Delete Emp
+	 * @param employeeId
+	 * @return
+	 */
+	@POST
+	@Path("getemployeetodelete/{employeeId}")
+	public EmployeeToDeleteDto getEmployee(@PathParam("employeeId") String employeeId) {
+		return employeeFinder.getEmployeeInfoToDelete(employeeId);
+	}
+	
+	@POST
+	@Path("deleteemployee")
+	public void delereEmployee(EmployeeDeleteCommand command) {
+		this.empDeleteHandler.handle(command);
 	}
 }
