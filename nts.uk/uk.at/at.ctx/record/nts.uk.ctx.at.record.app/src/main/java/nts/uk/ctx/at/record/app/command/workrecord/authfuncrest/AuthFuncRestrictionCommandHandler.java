@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthority;
-import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthorityRepoInterface;
+import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformAuthorRepo;
 
 /**
  * @author danpv
@@ -21,7 +21,7 @@ import nts.uk.ctx.at.record.dom.workrecord.authormanage.DailyPerformanceAuthorit
 public class AuthFuncRestrictionCommandHandler extends CommandHandler<AuthFuncRestrictionCommand> {
 
 	@Inject
-	private DailyPerformanceAuthorityRepoInterface daiPerAuthRepo;
+	private DailyPerformAuthorRepo daiPerAuthRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<AuthFuncRestrictionCommand> context) {
@@ -29,7 +29,7 @@ public class AuthFuncRestrictionCommandHandler extends CommandHandler<AuthFuncRe
 		commmand.getAuthFuncRests().forEach(element -> {
 			DailyPerformanceAuthority daiPerAuth = new DailyPerformanceAuthority(commmand.getRoleId(),
 					new BigDecimal(element.getFunctionNo()), element.isAvailability());
-			daiPerAuthRepo.saveDailyPerformanceAuthority(daiPerAuth);
+			daiPerAuthRepo.save(daiPerAuth);
 		});
 	}
 
