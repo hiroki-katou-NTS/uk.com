@@ -34,20 +34,18 @@ public class JpaErrorAlarmWorkRecordRepository extends JpaRepository implements 
 
 	@Override
 	public void updateErrorAlarmWorkRecord(ErrorAlarmWorkRecord domain) {
-		Optional<KwrmtErAlWorkRecord> targetEntity = this.queryProxy().find(
-				new KwrmtErAlWorkRecordPK(domain.getCompanyId(), domain.getCode().v()), KwrmtErAlWorkRecord.class);
-		if (targetEntity.isPresent()) {
-			targetEntity.get().boldAtr = domain.getMessage().getBoldAtr() ? new BigDecimal(1) : new BigDecimal(0);
-			targetEntity.get().cancelableAtr = domain.getCancelableAtr() ? new BigDecimal(1) : new BigDecimal(0);
-			targetEntity.get().errorAlarmName = domain.getName().v();
-			targetEntity.get().errorDisplayItem = domain.getErrorDisplayItem();
-			targetEntity.get().fixedAtr = domain.getFixedAtr() ? new BigDecimal(1) : new BigDecimal(2);
-			targetEntity.get().messageColor = domain.getMessage().getMessageColor().v();
-			targetEntity.get().messageDisplay = domain.getMessage().getDisplayMessage().v();
-			targetEntity.get().typeAtr = new BigDecimal(domain.getTypeAtr().value);
-			targetEntity.get().useAtr = domain.getUseAtr() ? new BigDecimal(1) : new BigDecimal(2);
-			this.commandProxy().update(targetEntity.get());
-		}
+		KwrmtErAlWorkRecord targetEntity = this.queryProxy().find(
+				new KwrmtErAlWorkRecordPK(domain.getCompanyId(), domain.getCode().v()), KwrmtErAlWorkRecord.class).get();
+		targetEntity.boldAtr = domain.getMessage().getBoldAtr() ? new BigDecimal(1) : new BigDecimal(0);
+		targetEntity.cancelableAtr = domain.getCancelableAtr() ? new BigDecimal(1) : new BigDecimal(0);
+		targetEntity.errorAlarmName = domain.getName().v();
+		targetEntity.errorDisplayItem = domain.getErrorDisplayItem();
+		targetEntity.fixedAtr = domain.getFixedAtr() ? new BigDecimal(1) : new BigDecimal(2);
+		targetEntity.messageColor = domain.getMessage().getMessageColor().v();
+		targetEntity.messageDisplay = domain.getMessage().getDisplayMessage().v();
+		targetEntity.typeAtr = new BigDecimal(domain.getTypeAtr().value);
+		targetEntity.useAtr = domain.getUseAtr() ? new BigDecimal(1) : new BigDecimal(2);
+		this.commandProxy().update(targetEntity);
 	}
 
 	private ErrorAlarmWorkRecord toDomain(KwrmtErAlWorkRecord entity) {

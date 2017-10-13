@@ -22,7 +22,7 @@ public interface SyWorkplacePub {
 	 * @return the optional
 	 */
 	// RequestList #30
-	Optional<WorkplaceInfoExport> findBySid(String employeeId, GeneralDate baseDate);
+	Optional<SWkpHistExport> findBySid(String employeeId, GeneralDate baseDate);
 
 	/**
 	 * Find wpk ids by wkp code.

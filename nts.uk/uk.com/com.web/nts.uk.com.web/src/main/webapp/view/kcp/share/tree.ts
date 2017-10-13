@@ -83,6 +83,11 @@ module kcp.share.tree {
          * Limit display row
          */
         maxRows?: number;
+        
+        /**
+         * set tabIndex
+         */
+        tabindex?: number;
     }
     
     export class TreeType {
@@ -118,6 +123,9 @@ module kcp.share.tree {
         data: TreeComponentOption
         treeStyle: TreeStyle;
         maxRows: number;
+        
+        isSetTabindex: KnockoutObservable<boolean>;
+        tabindex: number;
         
         constructor() {
             let self = this;
@@ -162,6 +170,13 @@ module kcp.share.tree {
             } else {
                 self.maxRows = data.maxRows;
             }
+            self.tabindex = data.tabindex;
+            self.isSetTabindex = ko.computed(() => {
+                if (self.tabindex) {
+                    return true;
+                }
+                return false;
+            });
             self.calHeightTree(data);
             
             

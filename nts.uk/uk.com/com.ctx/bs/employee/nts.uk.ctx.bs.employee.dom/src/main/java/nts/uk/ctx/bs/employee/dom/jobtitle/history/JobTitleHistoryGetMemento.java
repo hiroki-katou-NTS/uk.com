@@ -1,10 +1,16 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.dom.jobtitle.history;
+
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Interface JobTitleHistoryGetMemento.
  */
 public interface JobTitleHistoryGetMemento {
-	
+
 	/**
 	 * Gets the history id.
 	 *
@@ -17,5 +23,5 @@ public interface JobTitleHistoryGetMemento {
 	 *
 	 * @return the period
 	 */
-	public Period getPeriod();
+	public DatePeriod getPeriod();
 }

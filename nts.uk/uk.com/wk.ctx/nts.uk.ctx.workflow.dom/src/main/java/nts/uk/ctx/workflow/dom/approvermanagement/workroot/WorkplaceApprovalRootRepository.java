@@ -97,7 +97,7 @@ public interface WorkplaceApprovalRootRepository {
 	void deleteWpApprovalRoot(String companyId, String approvalId, String workplaceId, String historyId);
 	/**
 	 * ドメインモデル「職場別就業承認ルート」を取得する(lấy dữ liệu domain 「職場別就業承認ルート」)
-	 * @param companyId
+	 * @param companyID
 	 * @param baseDate・期間．開始日 <= 基準日  ・期間．終了日 >= 基準日
 	 * @return
 	 */

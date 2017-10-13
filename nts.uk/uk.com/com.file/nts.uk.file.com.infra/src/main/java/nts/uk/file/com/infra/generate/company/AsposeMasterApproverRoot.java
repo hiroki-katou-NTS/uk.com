@@ -1,5 +1,6 @@
 package nts.uk.file.com.infra.generate.company;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +24,7 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalForApplication;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.service.output.ApprovalRootMaster;
@@ -40,6 +42,12 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 	private static final String REPORT_FILE_NAME = "マスタリストのEXCEL出力.xlsx";
 
 	private static final int[] COLUMN_INDEX = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+
+	private final int numberRowOfPage = 52;
+
+	private final int maxRowOfApp = 5;
+	
+	private final int numberOfColumns = 13;
 
 	@Override
 	public void generate(FileGeneratorContext generatorContext, MasterApproverRootOutputDataSource dataSource) {
@@ -168,16 +176,17 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				.getLstComs();
 		int firstRow = 2;
 		for (int i = 0; i < lstApproval.size(); i++) {
-			if (lstApproval.get(i).getLstApproval() == null) {
+			if (lstApproval.get(i).getLstApproval() == null
+					|| CollectionUtil.isEmpty(lstApproval.get(i).getLstApproval())) {
 
-				int numberOfPage = (firstRow + 1) / 52;
+				int numberOfPage = (firstRow + 1) / numberRowOfPage;
 
-				int numberOfRowMerge = (52 * numberOfPage) - firstRow;
+				int numberOfRowMerge = (numberRowOfPage * numberOfPage) - firstRow;
 				if (numberOfRowMerge > 0) {
 					// print App name
 					Cell nameApp = cells.get(firstRow, COLUMN_INDEX[1]);
 					nameApp.setValue(lstApproval.get(i).getAppTypeName());
-					for (int index = 1; index < 13; index++) {
+					for (int index = 1; index < numberOfColumns; index++) {
 						Cell oddCell = cells.get(firstRow, COLUMN_INDEX[index]);
 						setTitleStyle(oddCell);
 					}
@@ -192,7 +201,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 					// print App name
 					Cell nameApp = cells.get(firstRow, COLUMN_INDEX[1]);
 					nameApp.setValue(lstApproval.get(i).getAppTypeName());
-					for (int index = 1; index < 13; index++) {
+					for (int index = 1; index < numberOfColumns ; index++) {
 						Cell oddCell = cells.get(firstRow, COLUMN_INDEX[index]);
 						setTitleStyle(oddCell);
 					}
@@ -205,9 +214,9 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 				int sizeOfApp = this.findMax(lstApproval.get(i));
 
-				int numberOfPage = (firstRow + sizeOfApp) / 52;
+				int numberOfPage = (firstRow + sizeOfApp) / numberRowOfPage;
 
-				int numberOfRowMerge = (52 * numberOfPage) - firstRow;
+				int numberOfRowMerge = (numberRowOfPage * numberOfPage) - firstRow;
 				// print phase Name 1 mergered
 				if (numberOfRowMerge > 0) {
 					/**
@@ -320,9 +329,9 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 		Worksheet worksheet = worksheets.get(0);
 		if (j < numberOfPhase) {
 			int oldRow = firstRow;
-			int numberOfPage = (firstRow + sizeOfApp) / 52;
+			int numberOfPage = (firstRow + sizeOfApp) / numberRowOfPage;
 
-			int numberOfRowMerge = (52 * numberOfPage) - firstRow;
+			int numberOfRowMerge = (numberRowOfPage * numberOfPage) - firstRow;
 			// print phase Name 1 mergered
 			if (numberOfRowMerge > 0) {
 
@@ -339,12 +348,11 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				for (int em = 0; em < numberOfRowMerge; em++) {
 					// phase 1
 					Cell personName = cells.get(firstRow + em, COLUMN_INDEX[indexCol + 1]);
-					personName.setValue(
-							lstApproval.get(i).getLstApproval().get(j).getPersonName().get(em).substring(33, 35));
+					personName.setValue(lstApproval.get(i).getLstApproval().get(j).getPersonName().get(em));
 					setTitleStyle(personName);
 				}
 
-				for (int index = 1; index < 13; index++) {
+				for (int index = 1; index < numberOfColumns; index++) {
 					Cell oddCell = cells.get((firstRow + numberOfRowMerge), COLUMN_INDEX[index]);
 					setTitleStyle(oddCell);
 				}
@@ -380,8 +388,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 							.size(); em++) {
 						// phase 1
 						Cell personName = cells.get(oldRow + em, COLUMN_INDEX[indexCol + 1]);
-						personName.setValue(
-								lstApproval.get(i).getLstApproval().get(j).getPersonName().get(em).substring(33, 35));
+						personName.setValue(lstApproval.get(i).getLstApproval().get(j).getPersonName().get(em));
 						// set style
 						Cell sPName = cells.get(oldRow + em, COLUMN_INDEX[indexCol + 1]);
 						setTitleStyle(sPName);
@@ -399,8 +406,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 					for (int em = numberOfRowMerge; em < sizeOfApp; em++) {
 						// phase 1
 						Cell personName = cells.get(oldRow + em, COLUMN_INDEX[indexCol + 1]);
-						personName.setValue(
-								lstApproval.get(i).getLstApproval().get(j).getPersonName().get(em).substring(33, 35));
+						personName.setValue(lstApproval.get(i).getLstApproval().get(j).getPersonName().get(em));
 						// set style
 						Cell sPName = cells.get(oldRow + em, COLUMN_INDEX[indexCol + 1]);
 						setTitleStyle(sPName);
@@ -422,14 +428,13 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				for (int em = 0; em < lstApproval.get(i).getLstApproval().get(j).getPersonName().size(); em++) {
 					// phase 1
 					Cell personName = cells.get(firstRow + em, COLUMN_INDEX[indexCol + 1]);
-					personName.setValue(
-							lstApproval.get(i).getLstApproval().get(j).getPersonName().get(em).substring(33, 35));
+					personName.setValue(lstApproval.get(i).getLstApproval().get(j).getPersonName().get(em));
 					// set style
 					Cell sPName = cells.get(firstRow + em, COLUMN_INDEX[indexCol + 1]);
 					setTitleStyle(sPName);
 				}
-				if (lstApproval.get(i).getLstApproval().get(j).getPersonName().size() < 5) {
-					for (int em = lstApproval.get(i).getLstApproval().get(j).getPersonName().size(); em <= 5; em++) {
+				if (lstApproval.get(i).getLstApproval().get(j).getPersonName().size() < maxRowOfApp) {
+					for (int em = lstApproval.get(i).getLstApproval().get(j).getPersonName().size(); em <= maxRowOfApp; em++) {
 						// phase 1 set style
 						Cell sPName = cells.get(firstRow + em, COLUMN_INDEX[indexCol + 1]);
 						setTitleStyle(sPName);
@@ -443,16 +448,16 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 			}
 			j = j + 1;
 
-		} else if (numberOfPhase <= j && j <= 5) {
+		} else if (numberOfPhase <= j && j <= maxRowOfApp) {
 
-			int numberOfPage = (firstRow + sizeOfApp) / 52;
+			int numberOfPage = (firstRow + sizeOfApp) / numberRowOfPage;
 
-			int numberOfRowMerge = (52 * numberOfPage) - firstRow;
+			int numberOfRowMerge = (numberRowOfPage * numberOfPage) - firstRow;
 			// print phase Name 1 mergered
 			if (numberOfRowMerge > 0) {
 				int oldRow = firstRow;
 
-				// in ra nhung thang dc merger < 52*x
+				// in ra nhung thang dc merger < numberRowOfPage*x
 				cells.merge(firstRow, indexCol, numberOfRowMerge, 1, true);
 				// set style
 				for (int k = 0; k < numberOfRowMerge; k++) {
@@ -592,9 +597,9 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 			ApprovalForApplication app = lstAppprove.get(i);
 			int sizeOfForm = this.findMax(app);
 
-			int numberOfPage = (firstRow + sizeOfForm) / 52;
+			int numberOfPage = (firstRow + sizeOfForm) / numberRowOfPage;
 
-			int numberOfRowMerge = (52 * numberOfPage) - firstRow;
+			int numberOfRowMerge = (numberRowOfPage * numberOfPage) - firstRow;
 			if (numberOfRowMerge < 0) {
 
 				// in ra name app , time app
@@ -754,9 +759,9 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 			ApprovalForApplication app = lstAppprove.get(i);
 			int sizeOfForm = this.findMax(app);
 
-			int numberOfPage = (firstRow + sizeOfForm) / 52;
+			int numberOfPage = (firstRow + sizeOfForm) / numberRowOfPage;
 
-			int numberOfRowMerge = (52 * numberOfPage) - firstRow;
+			int numberOfRowMerge = (numberRowOfPage * numberOfPage) - firstRow;
 			if (numberOfRowMerge < 0) {
 
 				// in ra name app , time app
@@ -874,7 +879,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 	private void printPhaseOfApproval(WorksheetCollection worksheets, Cells cells, int firstRow, int sizeOfForm,
 			List<ApprovalRootMaster> lstApp, boolean isBreak) {
 		int numberOfPhase = lstApp.size();
-		if (numberOfPhase < 5) {
+		if (numberOfPhase < maxRowOfApp) {
 			int colPhase = 3;
 			for (int i = 0; i < numberOfPhase; i++) {
 				ApprovalRootMaster appRootMaster = lstApp.get(i);
@@ -891,7 +896,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 				// content of phase
 				List<String> lstPerson = appRootMaster.getPersonName();
-				if (lstPerson.size() < 5) {
+				if (lstPerson.size() < maxRowOfApp) {
 					for (int j = 0; j < lstPerson.size(); j++) {
 
 						Cell perName = cells.get(firstRow + j, COLUMN_INDEX[colPhase + 1]);
@@ -919,7 +924,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				}
 				colPhase = colPhase + 2;
 				if (i == (numberOfPhase - 1)) {
-					for (int x = numberOfPhase; x < 5; x++) {
+					for (int x = numberOfPhase; x < maxRowOfApp; x++) {
 						cells.merge(firstRow, colPhase, sizeOfForm, 1, true);
 						for (int k = 0; k < sizeOfForm; k++) {
 							Cell sName = cells.get(firstRow + k, COLUMN_INDEX[colPhase]);
@@ -939,7 +944,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				}
 			}
 
-		} else if (numberOfPhase >= 5) {
+		} else if (numberOfPhase >= maxRowOfApp) {
 			int colPhase = 3;
 			for (int i = 0; i < numberOfPhase; i++) {
 				ApprovalRootMaster appRootMaster = lstApp.get(i);
@@ -982,7 +987,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 					}
 					if (isBreak = false) {
-						if (lstPerson.size() <= 5) {
+						if (lstPerson.size() <= maxRowOfApp) {
 							for (int j = sizeOfForm; j < lstPerson.size(); j++) {
 
 								Cell perName = cells.get(firstRow + j, COLUMN_INDEX[colPhase + 1]);

@@ -7,11 +7,10 @@ package nts.uk.ctx.at.shared.infra.repository.workrule.closure;
 import java.util.List;
 
 import lombok.Setter;
-import nts.uk.ctx.at.shared.dom.vacation.setting.compensatoryleave.EmploymentCode;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureGetMemento;
 import nts.uk.ctx.at.shared.dom.workrule.closure.ClosureHistory;
-import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.CompanyId;
+import nts.uk.ctx.at.shared.dom.workrule.closure.CurrentMonth;
 import nts.uk.ctx.at.shared.dom.workrule.closure.UseClassification;
 import nts.uk.ctx.at.shared.infra.entity.workrule.closure.KclmtClosure;
 
@@ -70,12 +69,6 @@ public class JpaClosureGetMemento implements ClosureGetMemento{
 	 */
 	@Override
 	public List<ClosureHistory> getClosureHistories() {
-		return null;
-	}
-
-	@Override
-	public List<EmploymentCode> getEmpCodes() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

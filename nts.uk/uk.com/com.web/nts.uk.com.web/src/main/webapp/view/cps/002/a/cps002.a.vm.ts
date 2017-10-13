@@ -71,12 +71,28 @@ module cps002.a.vm {
                 let self = this;
             }
         };
+
         constructor() {
             let self = this;
             $('#ccgcomponent').ntsGroupComponent(self.ccgcomponent);
 
             self.selectedId.subscribe((newValue) => {
-               
+
+            });
+
+            self.start();
+        }
+
+        start() {
+
+            let self = this;
+
+            service.getLayout().done((layout) => {
+                if (!layout) {
+                    dialog({ messageId: "Msg_344" });
+
+                    //move to toppage
+                }
             });
         }
 
@@ -100,7 +116,7 @@ module cps002.a.vm {
             $('#emp_reg_info_wizard').ntsWizard("prev");
         }
 
-      
+
 
         finish() {
 

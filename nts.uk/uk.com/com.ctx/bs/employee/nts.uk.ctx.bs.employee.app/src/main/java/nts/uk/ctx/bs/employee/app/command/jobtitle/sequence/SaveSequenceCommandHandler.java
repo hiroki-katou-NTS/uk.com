@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.bs.employee.app.command.jobtitle.sequence;
 
 import java.util.Optional;
@@ -41,13 +45,12 @@ public class SaveSequenceCommandHandler extends CommandHandler<SaveSequenceComma
 		String companyId = AppContexts.user().companyId();
 
 		// Check required param
-		if (StringUtils.isEmpty(command.getSequenceMasterDto().getSequenceCode())
-				|| StringUtils.isEmpty(command.getSequenceMasterDto().getSequenceName())) {
+		if (StringUtils.isEmpty(command.getSequenceCode()) || StringUtils.isEmpty(command.getSequenceName())) {
 			return;
 		}
 
 		Optional<SequenceMaster> opSequenceMaster = this.repository.findBySequenceCode(companyId,
-				command.getSequenceMasterDto().getSequenceCode());
+				command.getSequenceCode());
 
 		if (command.getIsCreateMode()) {
 			// Add
@@ -60,13 +63,13 @@ public class SaveSequenceCommandHandler extends CommandHandler<SaveSequenceComma
 			// Update
 			if (!opSequenceMaster.isPresent()) {
 				// Throw Exception - Sequence not found
-				throw new RuntimeException(String.format("Sequence code %s not found!", command.getSequenceMasterDto().getSequenceCode()));
+				throw new RuntimeException(String.format("Sequence code %s not found!", command.getSequenceCode()));
 			}
 
 			// Sequence code + order is not changable
 			SequenceMaster oldDomain = opSequenceMaster.get();
-			command.getSequenceMasterDto().setOrder(oldDomain.getOrder());
-			command.getSequenceMasterDto().setSequenceCode(oldDomain.getSequenceCode());
+			command.setOrder(oldDomain.getOrder());
+			command.setSequenceCode(oldDomain.getSequenceCode().v());
 
 			this.repository.update(command.toDomain(companyId));
 		}

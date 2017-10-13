@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.PeriodObject;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogDto;
 import nts.uk.ctx.at.schedule.app.find.executionlog.dto.ScheduleExecutionLogInfoDto;
@@ -105,9 +106,15 @@ public class ScheduleExecutionLogFinder {
 		List<ScheduleErrorLog> scheduleErrorLogs = this.scheduleErrorLogRepository
 				.findByExecutionId(executionId);
 		ScheduleExecutionLogInfoDto dto = new ScheduleExecutionLogInfoDto();
-		dto.setTotalNumber(scheduleCreators.size());
-		dto.setTotalNumberError(scheduleErrorLogs.size());
-		dto.setTotalNumberCreated(scheduleCreators.size());
+		if (!CollectionUtil.isEmpty(scheduleCreators)) {
+			dto.setTotalNumber(scheduleCreators.size());
+		} 
+		if (!CollectionUtil.isEmpty(scheduleErrorLogs)) {
+			dto.setTotalNumberError(scheduleErrorLogs.size());
+		}
+		if (!CollectionUtil.isEmpty(scheduleCreators)) {
+			dto.setTotalNumberCreated(scheduleCreators.size());
+		}
 		
 		return dto;
 	}

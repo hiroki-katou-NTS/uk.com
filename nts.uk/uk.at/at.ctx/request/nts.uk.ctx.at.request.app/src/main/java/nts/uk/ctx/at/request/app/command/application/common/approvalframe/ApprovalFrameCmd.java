@@ -14,5 +14,5 @@ import nts.uk.ctx.at.request.dom.application.common.approveaccepted.ApproveAccep
 public class ApprovalFrameCmd {
 	public String frameID ;
 	public int dispOrder;
-	public List<ApproveAcceptedCmd> approveAcceptedCmds;
+	public List<ApproveAcceptedCmd> listApproveAccepted;
 }

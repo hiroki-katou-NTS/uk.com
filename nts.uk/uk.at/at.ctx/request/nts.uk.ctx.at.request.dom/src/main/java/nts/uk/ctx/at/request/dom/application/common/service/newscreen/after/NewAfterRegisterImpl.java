@@ -44,16 +44,10 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 	@Inject
 	private DestinationJudgmentProcess destinationJudgmentProcessService;
 	
-	public void processAfterRegister(String companyID, String appID){
-		// ドメインモデル「申請」を取得する ( Acquire the domain model "application")
-		Optional<Application> applicationOp = applicationRepository.getAppById(companyID, appID);
-		if(!applicationOp.isPresent()) { 
-			return; 
-		}
+	public void processAfterRegister(Application application){
 		
 		// ドメインモデル「申請種類別設定」．新規登録時に自動でメールを送信するをチェックする ( Domain model "Application type setting". Check to send mail automatically when newly registered )
-		Application application = applicationOp.get();
-		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(companyID, application.getApplicationType().value);
+		Optional<AppTypeDiscreteSetting> appTypeDiscreteSettingOp = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(application.getCompanyID(), application.getApplicationType().value);
 		if(!appTypeDiscreteSettingOp.isPresent()) {
 			throw new RuntimeException();
 		}
@@ -69,6 +63,7 @@ public class NewAfterRegisterImpl implements NewAfterRegister {
 		for(String destination : destinationList) {
 			// sendMail(obj);
 			// Imported(Employment)[Employee]; // Imported(就業)「社員」 ??? 
+			System.out.println("Send Mail to "+destinationList);
 		}
 	}
 	

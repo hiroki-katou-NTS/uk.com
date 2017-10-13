@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.app.find.application.lateorleaveearly;
 import java.util.List;
 
 import lombok.Value;
+import nts.uk.ctx.at.request.app.find.application.common.dto.AppCommonSettingDto;
 
 /**
  * 
@@ -16,5 +17,11 @@ public class ScreenLateOrLeaveEarlyDto {
 	
 	/** 定型理由 typicalReason :DB reasonTemp */ 
 	private List<ApplicationReasonDto> ListApplicationReasonDto;
+	
+	private String employeeID;
+	
+	private String applicantName;
+	
+	private AppCommonSettingDto appCommonSettingDto;
 
 }

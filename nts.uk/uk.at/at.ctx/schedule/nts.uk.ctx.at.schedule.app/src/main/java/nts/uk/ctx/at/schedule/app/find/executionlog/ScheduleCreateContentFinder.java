@@ -67,8 +67,8 @@ public class ScheduleCreateContentFinder {
 			if (exeLogOp.isPresent()) {
 				GeneralDateTime exeStart = exeLogOp.get().getExecutionDateTime().getExecutionStartDate();
 				GeneralDateTime exeEnd = exeLogOp.get().getExecutionDateTime().getExecutionEndDate();
-				GeneralDate startDate = exeLogOp.get().getPeriod().getStartDate();
-				GeneralDate endDate = exeLogOp.get().getPeriod().getEndDate();
+				GeneralDate startDate = exeLogOp.get().getPeriod().start();
+				GeneralDate endDate = exeLogOp.get().getPeriod().end();
 				dto.setStartDate(startDate);
 				dto.setEndDate(endDate);
 				dto.setExecutionStart(exeStart);

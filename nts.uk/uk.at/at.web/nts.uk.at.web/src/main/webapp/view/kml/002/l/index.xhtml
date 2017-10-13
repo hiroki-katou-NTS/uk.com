@@ -16,13 +16,13 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" id="L_BTN_001">#{i18n.getText('KML002_2')}</button>
+				<button class="proceed" data-bind="click :addTotalTime" id="L_BTN_001">#{i18n.getText('KML002_2')}</button>
 				<button id="L_BTN_002" data-bind="click: closeDialog">#{i18n.getText('KML002_90')}</button>
 			</div>
 			<div id="contents-area">
 				<span>#{i18n.getText('KML002_117')}</span>
 				<div style="margin-top: 10px;">
-					<div id="L_LBL_001" style="float: left" data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_118')}<hr  style="margin-left: -12px;width: 290px;"></hr></div>
+					<div id="L_LBL_001"  style="float: left" data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_118')}<hr  style="margin-left: -12px;width: 290px;"></hr></div>
 					<div id="L_LBL_002" style="float: left; margin-left: 64px;" data-bind="ntsFormLabel: {}">#{i18n.getText('KML002_119')}<hr style="margin-left: -12px;width: 290px;"></hr></div>
 					
 				</div>

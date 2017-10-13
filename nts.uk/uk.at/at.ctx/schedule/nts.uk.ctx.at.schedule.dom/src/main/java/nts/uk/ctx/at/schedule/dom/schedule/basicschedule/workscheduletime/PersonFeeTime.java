@@ -1,7 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.schedule.basicschedule.workscheduletime;
 
 import lombok.Getter;
-import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalcost.ExtraTimeItemNo;
+import nts.uk.ctx.at.schedule.dom.schedule.basicschedule.personalfee.ExtraTimeItemNo;
 
 /**
  * The Class PersonFeeTime.

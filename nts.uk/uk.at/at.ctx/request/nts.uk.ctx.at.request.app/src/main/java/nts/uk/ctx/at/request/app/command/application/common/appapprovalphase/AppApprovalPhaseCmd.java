@@ -22,5 +22,5 @@ public class AppApprovalPhaseCmd {
 	public int approvalForm;
 	public int dispOrder;
 	public int approvalATR;
-	public List<ApprovalFrameCmd> approvalFrameCmds;
+	public List<ApprovalFrameCmd> listFrame;
 }

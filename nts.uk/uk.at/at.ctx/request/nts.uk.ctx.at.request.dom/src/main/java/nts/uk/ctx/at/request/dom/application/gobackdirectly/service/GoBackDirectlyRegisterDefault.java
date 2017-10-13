@@ -53,13 +53,14 @@ public class GoBackDirectlyRegisterDefault implements GoBackDirectlyRegisterServ
 		GoBackDirectlyCommonSetting goBackCommonSet = goBackDirectCommonSetRepo.findByCompanyID(companyID).get();
 		
 		//アルゴリズム「2-1.新規画面登録前の処理」を実行する
-		processBeforeRegister.processBeforeRegister(
-				companyID, 
-				employeeID, 
-				application.getApplicationDate(), 
-				application.getPrePostAtr(), 
-				1, 
-				application.getApplicationType().value);
+		//TODO : TAM THOI BO QUA 
+//		processBeforeRegister.processBeforeRegister(
+//				companyID, 
+//				employeeID, 
+//				application.getApplicationDate(), 
+//				application.getPrePostAtr(), 
+//				1, 
+//				application.getApplicationType().value);
 		
 		// アルゴリズム「直行直帰するチェック」を実行する
 		if (this.goBackDirectCheck(goBackDirectly) == GoBackDirectAtr.IS) {

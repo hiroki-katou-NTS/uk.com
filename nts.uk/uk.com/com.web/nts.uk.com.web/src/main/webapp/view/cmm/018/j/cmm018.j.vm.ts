@@ -22,8 +22,7 @@ module nts.uk.com.view.cmm018.j {
                 let lstItem = [];
                 lstItem.push(new vmbase.UpdateHistoryDto('1','1'));
                 lstItem.push(new vmbase.UpdateHistoryDto('0','2'));
-                var data: vmbase.JData_Param = nts.uk.ui.windows.getShared('CMM018J_PARAM')|| 
-                        {name: 'Hatake Kakashi',startDate: '2021-11-02', endDate: '9999-12-31', workplaceId: '123', employeeId: 'abc', check: 1, mode: 1, overlapFlag: true, lstUpdate: lstItem};
+                var data: vmbase.JData_Param = nts.uk.ui.windows.getShared('CMM018J_PARAM');
                 self.dataSource = data;
                 self.beginStartDate = ko.observable(moment(self.dataSource.startDate).add(1, 'days').format("YYYY/MM/DD"));
                 self.item(self.dataSource.name);
@@ -50,7 +49,7 @@ module nts.uk.com.view.cmm018.j {
                 //編集後の履歴の開始年月日 > 取得した履歴の開始年月日 が falseの場合
                     if(self.newStartDate() < self.beginStartDate()){
                         //エラーメッセージ(Msg_156)(error mesage (Msg_156))
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_156" }).then(function(res){
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_156", messageParams: nts.uk.resource.getText("CMM018_48")  }).then(function(res){
                             block.clear();
                         });
                         return;

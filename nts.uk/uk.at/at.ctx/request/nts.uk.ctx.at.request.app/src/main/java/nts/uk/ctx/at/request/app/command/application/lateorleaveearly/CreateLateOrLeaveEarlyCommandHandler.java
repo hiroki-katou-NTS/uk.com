@@ -36,7 +36,7 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
 		CreateLateOrLeaveEarlyCommand command = context.getCommand();
         LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(
         		command.getApplicationDate(),
-        		command.getReasonTemp() +  System.lineSeparator() + command.getAppReason(),
+        		command.getReasonTemp() +  ":" + command.getAppReason(),
         	//	command.getActualCancelAtr(),
         		command.getEarly1(),
         		command.getEarlyTime1(),
@@ -47,21 +47,22 @@ public class CreateLateOrLeaveEarlyCommandHandler extends CommandHandler<CreateL
         		command.getLate2(),
         		command.getLateTime2());
         
-        // 2-1.新規画面登録前の処理」
+        // 2-1.譁ｰ隕冗判髱｢逋ｻ骭ｲ蜑阪�ｮ蜃ｦ逅�縲�
         // TODO: Change GeneralDate.today() to StartDate and EndDate
-		newBeforeProcessRegisterSerivce.processBeforeRegister(domainLateOrLeaveEarly.getCompanyID(),
-				AppContexts.user().employeeId(), GeneralDate.today(), domainLateOrLeaveEarly.getPrePostAtr(), 1, 9);
-		//2-2.新規画面登録時承認反映情報の整理」 registerApproveInfoservice.newScreenRegisterAtApproveInfoReflect(domainLateOrLeaveEarly.get, application);
+	/*Chua co ListJobEntryHist ben Hung
+	 * 	newBeforeProcessRegisterSerivce.processBeforeRegister(domainLateOrLeaveEarly.getCompanyID(),
+				AppContexts.user().employeeId(), GeneralDate.today(), domainLateOrLeaveEarly.getPrePostAtr(), 1, 9);*/
+		//2-2.譁ｰ隕冗判髱｢逋ｻ骭ｲ譎よ価隱榊渚譏�諠�蝣ｱ縺ｮ謨ｴ逅�縲� registerApproveInfoservice.newScreenRegisterAtApproveInfoReflect(domainLateOrLeaveEarly.get, application);
 	
 		lateOrLeaveEarlyService.createLateOrLeaveEarly(domainLateOrLeaveEarly);
 		/**
-		 * 2-3.新規画面登録後の処理
-		 * @param companyID 会社ID
-		 * @param appID 申請ID
+		 * 2-3.譁ｰ隕冗判髱｢逋ｻ骭ｲ蠕後�ｮ蜃ｦ逅�
+		 * @param companyID 莨夂､ｾID
+		 * @param appID 逕ｳ隲紀D
 		 */
 	//	afterProcessRegisterImpl.processAfterRegister(domainLateOrLeaveEarly.getCompanyID(),domainLateOrLeaveEarly.getAppID());
 		
-		/**アルゴリズム「メールを送信する」を実行する (Thực thi xử lý 「メールを送信する」) */
+		/**繧｢繝ｫ繧ｴ繝ｪ繧ｺ繝�縲後Γ繝ｼ繝ｫ繧帝�∽ｿ｡縺吶ｋ縲阪ｒ螳溯｡後☆繧� (Th盻ｱc thi x盻ｭ lﾃｽ 縲後Γ繝ｼ繝ｫ繧帝�∽ｿ｡縺吶ｋ縲�) */
 	/*	Optional<ApplicationSetting> applicationSetting = applicationSettingRepository.getApplicationSettingByComID(domainLateOrLeaveEarly.getCompanyID());
 		Optional<AppTypeDiscreteSetting> appTypeDiscreteSetting = appTypeDiscreteSettingRepository.getAppTypeDiscreteSettingByAppType(domainLateOrLeaveEarly.getCompanyID(), 9);
 		if(applicationSetting.get().getManualSendMailAtr().USE != null ){

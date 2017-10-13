@@ -28,7 +28,7 @@ public interface BeforePreBootMode {
 	 * 14-2.詳細画面起動前モードの判断- 2*/
 	public boolean decideByApprover(Application applicationData);
 	
+	/** 14-2 3-5.承認中の承認フェーズの判断 */
 	public boolean checkFlag(Application applicationData, int dispOrder);
-	
 	
 }

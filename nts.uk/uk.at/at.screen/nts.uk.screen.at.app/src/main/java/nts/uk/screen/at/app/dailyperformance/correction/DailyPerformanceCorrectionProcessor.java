@@ -24,7 +24,7 @@ public class DailyPerformanceCorrectionProcessor {
 	@Inject
 	private DailyPerformanceScreenRepo repo;
 
-	public DailyPerformanceCorrectionDto startScreen(DateRange dateRange, GeneralDate baseDate)
+	public DailyPerformanceCorrectionDto generateData(DateRange dateRange, List<DailyPerformanceEmployeeDto> lstEmployee)
 			throws InterruptedException {
 		String sId = AppContexts.user().employeeId();
 		DailyPerformanceCorrectionDto screenDto = new DailyPerformanceCorrectionDto();
@@ -35,17 +35,12 @@ public class DailyPerformanceCorrectionProcessor {
 		screenDto.setSubstVacationDto(this.repo.getSubstVacationDto());
 		screenDto.setCompensLeaveComDto(this.repo.getCompensLeaveComDto());
 		screenDto.setCom60HVacationDto(this.repo.getCom60HVacationDto());
-		// Get closure of login user
-		// ClosureDto clo = this.repo.getClosure(sId, baseDate);
-		// システム日付を基準に1ヵ月前の期間を設定する
 		screenDto.setDateRange(dateRange);
-		// アルゴリズム「対象者を抽出する」を実行する
-		// get list employee by closure
-//		if (clo != null) {
+		if (lstEmployee.size() > 0) {
+			screenDto.setLstEmployee(lstEmployee);
+		} else {
 			screenDto.setLstEmployee(this.getListEmployee(sId, screenDto.getDateRange()));
-//		} else {
-//			screenDto.setLstEmployee(new ArrayList<>());
-//		}
+		}
 		// create lst data
 		if (screenDto.getLstEmployee().size() > 0) {
 			List<GeneralDate> lstDate = dateRange.toListDate();
@@ -55,7 +50,7 @@ public class DailyPerformanceCorrectionProcessor {
 				for (int i = 0; i < lstDate.size(); i++) {
 					lstData.add(
 							new DPDataDto(id, "", "", lstDate.get(i), false, screenDto.getLstEmployee().get(j).getId(),
-									screenDto.getLstEmployee().get(j).getCode(), "日通太郎"));
+									screenDto.getLstEmployee().get(j).getCode(), screenDto.getLstEmployee().get(j).getBusinessName()));
 					id += 1;
 				}
 			}
@@ -83,15 +78,16 @@ public class DailyPerformanceCorrectionProcessor {
 				screenDto.addErrorToResponseData(lstError, lstErrorSetting);
 			}
 		}
+		screenDto.markLoginUser();
 		screenDto.createAccessModifierCellState();
 		return screenDto;
 	}
 
 	private List<DailyPerformanceEmployeeDto> getListEmployee(String sId, DateRange dateRange) {
-//		List<String> lstJobTitle = this.repo.getListJobTitle(dateRange);
-//		List<String> lstEmployment = this.repo.getListEmployment();
+		// List<String> lstJobTitle = this.repo.getListJobTitle(dateRange);
+		// List<String> lstEmployment = this.repo.getListEmployment();
 		Map<String, String> lstWorkplace = this.repo.getListWorkplace(sId, dateRange);
-//		List<String> lstClassification = this.repo.getListClassification();
+		// List<String> lstClassification = this.repo.getListClassification();
 		return this.repo.getListEmployee(null, null, lstWorkplace, null);
 	}
 
@@ -100,11 +96,11 @@ public class DailyPerformanceCorrectionProcessor {
 		List<String> lstBusinessTypeCode = this.repo.getListBusinessType(lstEmployee, dateRange);
 		List<FormatDPCorrectionDto> lstFormat = new ArrayList<FormatDPCorrectionDto>();
 		List<DPSheetDto> lstSheet = new ArrayList<DPSheetDto>();
-		// create header
+		// create header & sheet
 		if (lstBusinessTypeCode.size() > 0) {
 			lstSheet = this.repo.getFormatSheets(lstBusinessTypeCode);
 			lstFormat = this.repo.getListFormatDPCorrection(lstBusinessTypeCode);
-			result.setLstSheet(lstSheet);
+			result.createSheets(lstSheet);
 			result.addColumnsToSheet(lstFormat);
 			result.setLstHeader(lstFormat.stream().map(f -> {
 				return new DPHeaderDto(String.valueOf(f.getAttendanceItemId()),

@@ -4,9 +4,9 @@ module nts.uk.com.view.cmm008.a {
          *  Service paths
          */
         var paths = {
-            findEmployment: 'basic/company/organization/employment/findById',
-            saveEmployment: 'basic/company/organization/employment/save',
-            removeEmployment: 'basic/company/organization/employment/remove'
+            findEmployment: 'bs/employee/employment/findByCode',
+            saveEmployment: 'bs/employee/employment/save',
+            removeEmployment: 'bs/employee/employment/remove'
             
         };
 

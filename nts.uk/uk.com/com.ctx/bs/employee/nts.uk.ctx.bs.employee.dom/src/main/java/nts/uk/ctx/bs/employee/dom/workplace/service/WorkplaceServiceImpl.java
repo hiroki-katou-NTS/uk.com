@@ -12,6 +12,7 @@ import javax.inject.Inject;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class WorkplaceServiceImpl.
@@ -41,7 +42,8 @@ public class WorkplaceServiceImpl implements WorkplaceService {
         }
         Workplace workplace = optional.get();
         // set end date of previous history
-        workplace.getWorkplaceHistory().get(ELEMENT_FIRST).getPeriod().setEndDate(endĐate);
+        DatePeriod period = workplace.getWorkplaceHistory().get(ELEMENT_FIRST).getPeriod();
+        workplace.getWorkplaceHistory().get(ELEMENT_FIRST).setPeriod(period.newSpan(period.start(), endĐate));
         this.workplaceRepo.update(workplace);
     }
 

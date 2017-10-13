@@ -28,10 +28,6 @@ public class KscstFixedVerticalSet extends UkJpaEntity implements Serializable {
 	public int useAtr;
 	
 	/* 付与基準日 */
-	@Column(name = "FIXED_ITEM_ATR")
-	public int fixedItemAtr;
-	
-	/* 付与基準日 */
 	@Column(name = "VERTICAL_DETAILED_SET")
 	public int verticalDetailedSet;
 	

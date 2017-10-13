@@ -3,17 +3,29 @@ module nts.uk.com.view.cmm013 {
     export module base {
 
         /**
+         * Constants
+         */
+        export class Constants {           
+            public static SHARE_IN_DIALOG_SELECT_SEQUENCE: string = "SHARE_IN_DIALOG_SELECT_SEQUENCE";
+            public static SHARE_OUT_DIALOG_SELECT_SEQUENCE: string = "SHARE_OUT_DIALOG_SELECT_SEQUENCE"; 
+            public static SHARE_IN_DIALOG_ADD_HISTORY: string = "SHARE_IN_DIALOG_ADD_HISTORY"; 
+            public static SHARE_OUT_DIALOG_ADD_HISTORY: string = "SHARE_OUT_DIALOG_ADD_HISTORY"; 
+            public static SHARE_IN_DIALOG_EDIT_HISTORY: string = "SHARE_IN_DIALOG_EDIT_HISTORY"; 
+            public static SHARE_OUT_DIALOG_EDIT_HISTORY: string = "SHARE_OUT_DIALOG_EDIT_HISTORY"; 
+        }
+        
+        /**
          * JobTitleHistoryAbstract
          */
         export abstract class JobTitleHistoryAbstract {
 
             listJobTitleHistory: KnockoutObservableArray<History>;
-            selectedJobTitleHistory: KnockoutObservable<string>;
+            selectedHistoryId: KnockoutObservable<string>;
             
             constructor() {
                 let _self = this;
                 _self.listJobTitleHistory = ko.observableArray([]);
-                _self.selectedJobTitleHistory = ko.observable(null);
+                _self.selectedHistoryId = ko.observable(null);
                 
                 _self.listJobTitleHistory.subscribe((newListHistory) => {
                     _self.fillTextDisplay();
@@ -26,32 +38,16 @@ module nts.uk.com.view.cmm013 {
             public selectFirst() {
                 let _self = this;
                 if (_self.listJobTitleHistory()[0]){
-                    _self.selectedJobTitleHistory(_self.listJobTitleHistory()[0].historyId);
+                    _self.selectedHistoryId(_self.listJobTitleHistory()[0].historyId);
                 }               
-            }
+            }            
             
             /**
-             * getSelectedHistoryByWkpId
+             * getSelectedHistoryByHistoryId
              */
-            public getSelectedHistoryByWkpId(): History {
+            public getSelectedHistoryByHistoryId(): History {
                 let _self = this;
-                return _self.listJobTitleHistory().filter(item => item.jobTitleId == _self.selectedJobTitleHistory())[0];
-            }
-            
-            /**
-             * getSelectedHistoryByHistId
-             */
-            public getSelectedHistoryByHistId(historyId :string): History {
-                let _self = this;
-                return _self.listJobTitleHistory().filter(item => item.historyId == historyId)[0];
-            }
-            
-            /**
-             * isWorkplaceHistoryLatest
-             */
-            public isWorkplaceHistoryLatest(): boolean {
-                let _self = this;
-                return _self.selectedJobTitleHistory() == _self.listJobTitleHistory()[0].jobTitleId;
+                return _self.listJobTitleHistory().filter(item => item.historyId == _self.selectedHistoryId())[0];
             }
             
             /**
@@ -60,7 +56,7 @@ module nts.uk.com.view.cmm013 {
             private fillTextDisplay() {
                 let _self = this;
                 _.forEach(_self.listJobTitleHistory(), (item: History) => {
-                    item.textDisplay = item.startDate + " " + nts.uk.resource.getText('CMM013_6') + " " + item.endDate;
+                    item.textDisplay = item.period.startDate + " " + nts.uk.resource.getText("CMM013_30") + " " + item.period.endDate;
                 })
             }
             
@@ -70,11 +66,29 @@ module nts.uk.com.view.cmm013 {
             public isSelectedLatestHistory() {
                 let _self = this;
                 if (_self.listJobTitleHistory().length > 0) {
-                    return _self.selectedJobTitleHistory() == _self.listJobTitleHistory()[0].historyId;
+                    return _self.selectedHistoryId() == _self.listJobTitleHistory()[0].historyId;
                 }
                 return false;
             }
+        }        
+        
+        /**
+         * JobTitle
+         */
+        export class JobTitle {
+            
+            companyId: string;
+            jobTitleId: string;
+            
+            constructor(companyId: string, jobTitleId: string) {
+                this.companyId = companyId;
+                this.jobTitleId = jobTitleId;
+            }
         }
+               
+        
+        
+        
         
         /**
          * History
@@ -83,31 +97,41 @@ module nts.uk.com.view.cmm013 {
             
             jobTitleId: string;
             historyId: string;
-            startDate: string;
-            endDate: string;
+            period: Period;
             textDisplay: string;
             
-            constructor(jobTitleId: string, historyId: string, startDate: string, endDate: string, textDisplay?: string) {
+            constructor(jobTitleId: string, historyId: string, period: Period, textDisplay?: string) {
                 this.jobTitleId = jobTitleId;
                 this.historyId = historyId;
-                this.startDate = startDate;
-                this.endDate = endDate;
+                this.period = period;
                 this.textDisplay = textDisplay;
             }          
         }    
         
         /**
+         * Period
+         */
+        export class Period {
+            
+            startDate: string;
+            endDate: string;
+            
+            constructor(startDate: string, endDate: string){
+                this.startDate = startDate;
+                this.endDate = endDate;
+            }
+        }
+        
+        /**
          * SequenceMaster
          */
         export class SequenceMaster {
-
-            companyId: string;                        
+                    
             sequenceCode: string;
             sequenceName: string;
             order: number;
-                        
-            constructor(companyId: string, sequenceCode: string, sequenceName: string, order: number) {
-                this.companyId = companyId;
+                                      
+            constructor(sequenceCode: string, sequenceName: string, order: number) {
                 this.sequenceCode = sequenceCode;
                 this.sequenceName = sequenceName;
                 this.order = order;
@@ -120,11 +144,15 @@ module nts.uk.com.view.cmm013 {
         export class SequenceMasterSaveCommand {
             
             isCreateMode: boolean;
-            sequenceMasterDto: SequenceMaster;
+            sequenceCode: string;
+            sequenceName: string;
+            order: number;
             
-            constructor(isCreateMode: boolean, sequenceMasterDto: SequenceMaster) {
+            constructor(isCreateMode: boolean, sequenceCode: string, sequenceName: string, order: number) {
                 this.isCreateMode = isCreateMode;
-                this.sequenceMasterDto = sequenceMasterDto;
+                this.sequenceCode = sequenceCode;
+                this.sequenceName = sequenceName;
+                this.order = order;
             }
         }
         
@@ -138,6 +166,6 @@ module nts.uk.com.view.cmm013 {
             constructor(sequenceCode: string) {
                 this.sequenceCode = sequenceCode;
             }
-        }
+        }      
     }
 }

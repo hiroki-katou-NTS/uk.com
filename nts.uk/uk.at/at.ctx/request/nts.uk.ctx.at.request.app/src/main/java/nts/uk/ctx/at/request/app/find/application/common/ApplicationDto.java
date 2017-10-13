@@ -3,12 +3,30 @@ package nts.uk.ctx.at.request.app.find.application.common;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.Value;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.at.request.app.find.application.common.appapprovalphase.AppApprovalPhaseDto;
+import nts.uk.ctx.at.request.app.find.application.common.approvalframe.ApprovalFrameDto;
+import nts.uk.ctx.at.request.dom.application.common.AppReason;
 import nts.uk.ctx.at.request.dom.application.common.Application;
+import nts.uk.ctx.at.request.dom.application.common.ApplicationType;
+import nts.uk.ctx.at.request.dom.application.common.PrePostAtr;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
+import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalAtr;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.ApprovalForm;
 
-@Value
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class ApplicationDto {
 	/**
 	 * 会社ID
@@ -29,7 +47,7 @@ public class ApplicationDto {
 	/**
 	 * 入力日
 	 */
-	private GeneralDate inputDate; 
+	private String inputDate; 
 	
 	/**
 	 * 入力者
@@ -44,7 +62,7 @@ public class ApplicationDto {
 	/**
 	 * 申請日
 	 */
-	private GeneralDate applicationDate; 
+	private String applicationDate; 
 	
 	/**
 	 * 申請理由
@@ -68,7 +86,7 @@ public class ApplicationDto {
     /**
      * 予定反映日時
      */
-	private GeneralDate reflectPlanTime;
+	private String reflectPlanTime;
 	
 	/**
 	 * 予定反映状態
@@ -88,7 +106,7 @@ public class ApplicationDto {
 	/**
 	 * 実績反映日時
 	 */
-	private GeneralDate reflectPerTime;
+	private String reflectPerTime;
 	
 	/**
 	 * 予定反映状態
@@ -100,36 +118,62 @@ public class ApplicationDto {
 	 */
 	private int reflectPerEnforce;
 	
-	private GeneralDate startDate;
+	private String startDate;
 	
-	private GeneralDate endDate;
+	private String endDate;
 	
-	private List<AppApprovalPhaseDto> listphase;
+	private List<AppApprovalPhaseDto> listPhase;
 	
 	public static ApplicationDto fromDomain(Application domain) {
 		return new ApplicationDto(
 				domain.getCompanyID(),
 				domain.getApplicationID(),
 				domain.getPrePostAtr().value,
-				domain.getInputDate(), 
+				domain.getInputDate() == null ? null :domain.getInputDate().toString(), 
 				domain.getEnteredPersonSID(), 
 				domain.getReversionReason().v(), 
-				domain.getApplicationDate(), 
+				domain.getApplicationDate() == null ? null :domain.getApplicationDate().toString(), 
 				domain.getApplicationReason().v(),
 				domain.getApplicationType().value, 
 				domain.getApplicantSID(), 
 				domain.getReflectPlanScheReason().value, 
-				domain.getReflectPlanTime(), 
+				domain.getReflectPlanTime() == null ? null : domain.getReflectPlanTime().toString(), 
 				domain.getReflectPlanState().value, 
 				domain.getReflectPlanEnforce().value, 
 				domain.getReflectPerScheReason().value, 
-				domain.getReflectPerTime(), 
+				domain.getReflectPerTime() == null ? null : domain.getReflectPerTime().toString(), 
 				domain.getReflectPerState().value, 
 				domain.getReflectPerEnforce().value,
-				domain.getStartDate(),
-				domain.getEndDate(),
-				domain.getListPhase().stream().map(x -> AppApprovalPhaseDto.fromDomain(x)).collect(Collectors.toList())
+				domain.getStartDate() == null ? null :domain.getStartDate().toString(),
+				domain.getEndDate() == null ? null :domain.getEndDate().toString(),
+				domain.getListPhase() == null ? null: domain.getListPhase().stream().map(x -> AppApprovalPhaseDto.fromDomain(x)).collect(Collectors.toList())
 				);
 	}
+	public static Application toEntity(ApplicationDto entity) {
+		return new Application(entity.getCompanyID(), 
+				entity.getApplicationID(), 
+				EnumAdaptor.valueOf(entity.getPrePostAtr(), PrePostAtr.class), 
+				entity.getInputDate() == null?null :GeneralDate.fromString(entity.getInputDate(), "yyyy/MM/dd"), 
+				entity.getEnteredPersonSID(), 
+				new AppReason(entity.getReversionReason()), 
+				entity.getApplicationDate() == null?null :GeneralDate.fromString(entity.getApplicationDate(), "yyyy/MM/dd"),   
+				new AppReason(entity.getApplicationReason()), 
+				EnumAdaptor.valueOf(entity.getApplicationType(), ApplicationType.class), 
+				entity.getApplicantSID(), 
+				EnumAdaptor.valueOf(entity.getReflectPlanScheReason(), ReflectPlanScheReason.class),
+				entity.getReflectPlanTime() == null?null :GeneralDate.fromString(entity.getReflectPlanTime(), "yyyy/MM/dd"), 
+				EnumAdaptor.valueOf(entity.getReflectPlanState(), ReflectPlanPerState.class), 
+				EnumAdaptor.valueOf(entity.getReflectPlanEnforce(), ReflectPlanPerEnforce.class), 
+				EnumAdaptor.valueOf(entity.getReflectPerScheReason(), ReflectPerScheReason.class), 
+				entity.getReflectPerTime() == null?null :GeneralDate.fromString(entity.getReflectPerTime(), "yyyy/MM/dd"), 
+				EnumAdaptor.valueOf(entity.getReflectPerState(), ReflectPlanPerState.class), 
+				EnumAdaptor.valueOf(entity.getReflectPerEnforce(), ReflectPlanPerEnforce.class), 
+				entity.getStartDate() == null?null :GeneralDate.fromString(entity.getStartDate(), "yyyy/MM/dd"), 
+				entity.getEndDate() == null?null :GeneralDate.fromString(entity.getEndDate(), "yyyy/MM/dd"), 
+				entity.getListPhase() == null ? null: entity.getListPhase().stream().map(x -> AppApprovalPhaseDto.toEntity(x)).collect(Collectors.toList())
+				);//entity.getListPhase()
+	}
+	
+	
 
 }
