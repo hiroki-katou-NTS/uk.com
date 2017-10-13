@@ -83,9 +83,5 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 				.setParameter("companyId", companyId).getList(c -> toDomain(c));
 	}
 
-	@Override
-	public List<PerInfoHistorySelection> getAllPerInfoHistorySelection(String companyId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 }
