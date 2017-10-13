@@ -142,12 +142,12 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let dfdMessageDeadline = self.getMessageDeadline(self.appType());
             let dfdAllReasonByAppID = self.getAllReasonByAppID(self.appID());
             let dfdAllDataByAppID = self.getAllDataByAppID(self.appID());
-            // let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
+             let dfdGetDetailCheck = self.getDetailCheck(self.inputDetail());
 
             $.when(dfdAllReasonByAppID, dfdAllDataByAppID).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData) => {
 
-                //self.checkDisplayStart();
-                //self.checkDisplayAction();
+//                self.checkDisplayStart();
+//                self.checkDisplayAction();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -402,12 +402,13 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let self = this;
             let dfd = $.Deferred<any>();
             service.approveApp(self.dataApplication()).done(function(data) {
-                nts.uk.ui.dialog.alert({ messageId: 'Msg_220' }).then(function() {
-                    if (!data) {
-                        nts.uk.ui.dialog.info({ messageId: 'Msg_392' });
-                    }
+                self.getAllDataByAppID(self.appID()).done(function(value){
+                    nts.uk.ui.dialog.alert({ messageId: 'Msg_220' }).then(function() {
+                        if (!data) {
+                            nts.uk.ui.dialog.info({ messageId: 'Msg_392' });
+                        }
+                    });
                 });
-
                 dfd.resolve();
             });
             return dfd.promise();
@@ -418,10 +419,15 @@ module nts.uk.at.view.kaf000.b.viewmodel {
         btnDeny() {
             let self = this;
             let dfd = $.Deferred<any>();
-            service.denyApp(self.dataApplication()).done(function() {
-                nts.uk.ui.dialog.confirm({ messageId: 'Msg_222' })
-                dfd.resolve();
+            nts.uk.ui.dialog.confirm({ messageId: 'Msg_222' }).ifYes(function() {
+                service.denyApp(self.dataApplication()).done(function() {
+                    self.getAllDataByAppID(self.appID()).done(function(value){
+                        
+                    });
+                    dfd.resolve();
+               });
             });
+                
             return dfd.promise();
         }
 
@@ -433,6 +439,9 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let dfd = $.Deferred<any>();
             nts.uk.ui.dialog.confirm({ messageId: 'Msg_28' }).ifYes(function() {
                 service.releaseApp(self.dataApplication()).done(function() {
+                    self.getAllDataByAppID(self.appID()).done(function(value){
+                        
+                    });
                     dfd.resolve();
                 });
             });
