@@ -10,9 +10,9 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-import nts.uk.ctx.bs.employee.dom.workplace.Period;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistoryGetMemento;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class WorkplaceHistoryDto.
@@ -69,8 +69,8 @@ public class WorkplaceHistoryDto {
          * @see nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistoryGetMemento#getPeriod()
          */
         @Override
-        public Period getPeriod() {
-            return new Period(this.workplaceHistoryDto.getPeriod().getStartDate(),
+        public DatePeriod getPeriod() {
+            return new DatePeriod(this.workplaceHistoryDto.getPeriod().getStartDate(),
                     this.workplaceHistoryDto.getPeriod().getEndDate());
         }
     }

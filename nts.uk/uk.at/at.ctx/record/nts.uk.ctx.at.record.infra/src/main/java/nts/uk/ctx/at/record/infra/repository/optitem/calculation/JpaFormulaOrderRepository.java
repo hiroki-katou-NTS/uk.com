@@ -43,7 +43,7 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 
 			item.saveToMemento(new JpaFormulaDispOrderSetMemento(entity));
 
-			this.commandProxy().update(entity);
+			this.commandProxy().insert(entity);
 		});
 	}
 
@@ -62,6 +62,7 @@ public class JpaFormulaOrderRepository extends JpaRepository implements FormulaD
 		}
 
 		this.commandProxy().removeAll(entities);
+		this.getEntityManager().flush();
 	}
 
 	/*

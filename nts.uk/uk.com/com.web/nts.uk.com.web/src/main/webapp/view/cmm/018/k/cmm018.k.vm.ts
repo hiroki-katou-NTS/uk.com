@@ -13,7 +13,7 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         selectTypeSet: KnockoutObservable<number> = ko.observable(0);
         //承認形態
         formSetting: KnockoutObservableArray<ButtonSelect> = ko.observableArray([]);
-        selectFormSet: KnockoutObservable<number> = ko.observable(1);
+        selectFormSet: KnockoutObservable<number> = ko.observable(null);
         currentCalendarWorkPlace: KnockoutObservableArray<SimpleObject> = ko.observableArray([]);
         employeeList: KnockoutObservableArray<shrVm.ApproverDtoK> = ko.observableArray([]);
         multiSelectedWorkplaceId: KnockoutObservableArray<string> = ko.observableArray([]);
@@ -55,7 +55,17 @@ module nts.uk.com.view.cmm018.k.viewmodel{
         constructor(){
             var self = this;            
             //設定対象
-            let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM');            
+            let data: any = nts.uk.ui.windows.getShared('CMM018K_PARAM'); 
+            //change 承認形態
+            self.selectFormSet.subscribe(function(newValues){
+                //承認形態が誰か一人を選択する場合
+                if(newValues === self.formOne){
+                    self.cbbEnable(true);
+                }else{
+                    //承認形態が全員承認を選択する場合
+                    self.cbbEnable(false);    
+                }
+            });           
             if(data !== undefined){
                 //設定する対象申請名
                 self.appType(data.appTypeName);
@@ -134,17 +144,6 @@ module nts.uk.com.view.cmm018.k.viewmodel{
             self.treeGrid.selectedWorkplaceId.subscribe(function(newValues){
                 self.setDataForSwapList(self.selectTypeSet());                
             })
-            //change 承認形態
-            self.selectFormSet.subscribe(function(newValues){
-                //承認形態が誰か一人を選択する場合
-                if(newValues === self.formOne){
-                    self.cbbEnable(true);
-                }else{
-                    //承認形態が全員承認を選択する場合
-                    self.cbbEnable(false);    
-                }
-            })
-            
             //確定者(K2_21)の選択肢を承認者一覧(K2_15)と合わせる(update item cua control 確定者(K2_21)  theo 承認者一覧(K2_15))
             self.approverList.subscribe(function(){
                 self.setDataForCbb();

@@ -112,10 +112,4 @@ public class JpaClosureSetMemento implements ClosureSetMemento {
 		// No thing code
 	}
 
-	@Override
-	public void setEmpCodes(List<EmploymentCode> empCodes) {
-		// TODO Auto-generated method stub
-
-	}
-
 }

@@ -19,7 +19,7 @@ import nts.uk.ctx.at.request.app.find.application.lateorleaveearly.ScreenLateOrL
  * 
  * @author hieult
  *
- */
+ */	
 @Path("at/request/lateorleaveearly")
 @Produces("application/json")
 public class LateOrLeaveEarlyWebservice extends WebService{
@@ -39,7 +39,8 @@ public class LateOrLeaveEarlyWebservice extends WebService{
 	@POST
 	@Path("findbycode")
 	public ScreenLateOrLeaveEarlyDto getByCode(String appID) {
-		return this.finder.getLateOrLeaveEarly(appID);
+		ScreenLateOrLeaveEarlyDto test = this.finder.getLateOrLeaveEarly(appID);
+		return test;	
 	}
 	
 	@POST 

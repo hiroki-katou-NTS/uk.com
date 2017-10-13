@@ -38,7 +38,7 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	
 	@Version
 	@Column(name="EXCLUS_VER")
-	public Integer version;
+	public Long version;
 	
 	/**
 	 * 申請理由ID

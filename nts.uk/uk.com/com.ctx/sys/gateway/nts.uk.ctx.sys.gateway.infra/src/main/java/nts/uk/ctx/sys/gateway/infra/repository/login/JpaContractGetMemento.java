@@ -8,8 +8,8 @@ import nts.arc.time.GeneralDate;
 import nts.uk.ctx.sys.gateway.dom.login.ContractCode;
 import nts.uk.ctx.sys.gateway.dom.login.ContractGetMemento;
 import nts.uk.ctx.sys.gateway.dom.login.HashPassword;
-import nts.uk.ctx.sys.gateway.dom.login.Period;
 import nts.uk.ctx.sys.gateway.infra.entity.login.SgwdtContract;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaContractGetMemento.
@@ -48,8 +48,8 @@ public class JpaContractGetMemento implements ContractGetMemento {
 	 * @see nts.uk.ctx.sys.gateway.dom.login.ContractGetMemento#getContractPeriod()
 	 */
 	@Override
-	public Period getContractPeriod() {
-		return new Period(GeneralDate.legacyDate(this.entity.getStrD()), GeneralDate.legacyDate(this.entity.getEndD()));
+	public DatePeriod getContractPeriod() {
+		return new DatePeriod(GeneralDate.legacyDate(this.entity.getStrD()), GeneralDate.legacyDate(this.entity.getEndD()));
 	}
 
 }

@@ -6,7 +6,7 @@ module nts.uk.at.view.kaf002.a {
             }
             
             performanceReference(){
-                alert('KDL004');   
+                // alert('KDL004');   
             }
         }
     }

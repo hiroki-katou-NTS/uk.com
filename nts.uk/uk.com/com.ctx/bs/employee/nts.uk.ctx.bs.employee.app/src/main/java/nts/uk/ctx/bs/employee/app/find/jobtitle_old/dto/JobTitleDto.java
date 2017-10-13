@@ -7,12 +7,12 @@ package nts.uk.ctx.bs.employee.app.find.jobtitle_old.dto;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
 import nts.uk.ctx.bs.employee.dom.jobtitle_old.JobTitleSetMemento;
 import nts.uk.ctx.bs.employee.dom.jobtitle_old.PositionCode;
 import nts.uk.ctx.bs.employee.dom.jobtitle_old.PositionId;
 import nts.uk.ctx.bs.employee.dom.jobtitle_old.PositionName;
 import nts.uk.ctx.bs.employee.dom.jobtitle_old.SequenceCode;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * Instantiates a new job title dto.
@@ -85,9 +85,9 @@ public class JobTitleDto implements JobTitleSetMemento {
 	 * setPeriod(nts.uk.ctx.basic.dom.common.history.Period)
 	 */
 	@Override
-	public void setPeriod(Period period) {
-		this.startDate = period.getStartDate();
-		this.endDate = period.getEndDate();
+	public void setPeriod(DatePeriod period) {
+		this.startDate = period.start();
+		this.endDate = period.end();
 	}
 
 	/*

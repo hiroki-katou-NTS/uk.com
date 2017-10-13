@@ -6,13 +6,13 @@ package nts.uk.ctx.bs.employee.infra.repository.workplace_old;
 
 import lombok.Setter;
 import nts.uk.ctx.bs.employee.dom.common.CompanyId;
-import nts.uk.ctx.bs.employee.dom.common.history.Period;
 import nts.uk.ctx.bs.employee.dom.workplace_old.WorkplaceCode;
 import nts.uk.ctx.bs.employee.dom.workplace_old.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace_old.WorkplaceName;
 import nts.uk.ctx.bs.employee.dom.workplace_old.WorkplaceSetMemento;
 import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWorkplace;
 import nts.uk.ctx.bs.employee.infra.entity.workplace_old.CwpmtWorkplacePK;
+import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
 /**
  * The Class JpaWorkplaceSetMemento.
@@ -60,10 +60,10 @@ public class JpaWorkplaceSetMemento implements WorkplaceSetMemento {
 	 * setPeriod(nts.uk.ctx.basic.dom.common.history.Period)
 	 */
 	@Override
-	public void setPeriod(Period period) {
+	public void setPeriod(DatePeriod period) {
 		CwpmtWorkplacePK pk = this.kwpmtWorkplace.getCwpmtWorkplacePK();
-		pk.setStrD(period.getStartDate());
-		pk.setEndD(period.getEndDate());
+		pk.setStrD(period.start());
+		pk.setEndD(period.end());
 		this.kwpmtWorkplace.setCwpmtWorkplacePK(pk);
 	}
 

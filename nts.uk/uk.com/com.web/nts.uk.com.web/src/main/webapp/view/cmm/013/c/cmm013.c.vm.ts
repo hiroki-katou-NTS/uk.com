@@ -2,6 +2,8 @@ module nts.uk.com.view.cmm013.c {
 
     export module viewmodel {
        
+        import Constants = base.Constants;
+        
         import SequenceMaster = base.SequenceMaster;
         
         export class ScreenModel {
@@ -22,13 +24,18 @@ module nts.uk.com.view.cmm013.c {
                 ]); 
             }
             
-            startPage(): JQueryPromise<any> {
+            /**
+             * Start page
+             */
+            public startPage(): JQueryPromise<any> {
                 let _self = this;
                 let dfd = $.Deferred<any>();
-               
+
                 // Load sequence data list
+                nts.uk.ui.block.grayout();
                 _self.loadSequenceList()
-                    .done((data: SequenceMaster[]) => {                        
+                    .done((data: SequenceMaster[]) => {    
+                        nts.uk.ui.block.clear();                    
                         if (data && data.length > 0) {
                             // Load data
                             _self.items(data);
@@ -55,7 +62,7 @@ module nts.uk.com.view.cmm013.c {
                         dfd.resolve();
                     })
                     .fail((res: any) => {
-                        
+                        nts.uk.ui.block.clear();
                     });
                 
                 return dfd.promise();
@@ -83,23 +90,26 @@ module nts.uk.com.view.cmm013.c {
             public selectSequence(): void {               
                 let _self = this;               
                 if (_self.currentCode()) {
+                    nts.uk.ui.block.grayout();
                     service.findBySequenceCode(_self.currentCode())
-                        .done((data: SequenceMaster) => {                        
-                            nts.uk.ui.windows.setShared("ShareDateScreenC", data);
+                        .done((data: SequenceMaster) => {   
+                            nts.uk.ui.block.clear();                        
+                            nts.uk.ui.windows.setShared(Constants.SHARE_OUT_DIALOG_SELECT_SEQUENCE, data);
                             _self.close();
                         })
                         .fail((res: any) => {
-                            nts.uk.ui.windows.setShared("ShareDateScreenC", null);
+                            nts.uk.ui.block.clear();   
+                            nts.uk.ui.windows.setShared(Constants.SHARE_OUT_DIALOG_SELECT_SEQUENCE, null);
                             _self.close();
                         });
                 } else {
-                    nts.uk.ui.windows.setShared("ShareDateScreenC", null);
+                    nts.uk.ui.windows.setShared(Constants.SHARE_OUT_DIALOG_SELECT_SEQUENCE, null);
                     _self.close();                                
                 }
             }
             
             /**
-             * close
+             * Close
              */
             public close(): void {
                 nts.uk.ui.windows.close();
