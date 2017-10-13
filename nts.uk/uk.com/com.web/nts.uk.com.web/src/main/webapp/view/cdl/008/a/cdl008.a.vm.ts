@@ -43,7 +43,8 @@ module nts.uk.com.view.cdl008.a {
                     baseDate: self.baseDate,
                     isDialog: true,
                     selectedWorkplaceId : null, 
-                    maxRows: 12
+                    maxRows: 12, 
+                    tabindex: 1
                 }
                 if (self.isMultiple) {
                     self.workplaces.selectedWorkplaceId = self.selectedMulWorkplace;
