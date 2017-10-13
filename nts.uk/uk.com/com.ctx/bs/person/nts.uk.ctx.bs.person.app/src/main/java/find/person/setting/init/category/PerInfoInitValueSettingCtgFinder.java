@@ -32,12 +32,23 @@ public class PerInfoInitValueSettingCtgFinder {
 		List<PerInfoInitValueSettingCtg> ctgLst = this.settingCtgRepo.getAllCategory(companyId);
 
 		if (ctgLst.size() > 0) {
-			
+
 			return ctgLst.stream().filter(c -> this.settingItemRepo.isExist(c.getPerInfoCtgId()))
 					.collect(Collectors.toList());
 		}
-		
+
 		return ctgLst;
 	}
+
+	// sonnlb
+
+	public List<PerInfoInitValueSettingCtgDto> getAllCategoryBySetId(String settingId) {
+
+		return this.settingCtgRepo.getAllCategoryBySetId(settingId).stream()
+				.map(c -> PerInfoInitValueSettingCtgDto.fromDomain(c)).collect(Collectors.toList());
+
+	}
+
+	// sonnlb
 
 }
