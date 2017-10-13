@@ -24,7 +24,7 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 			+ " WHERE si.startDate < :startDate";
 
 	private static final String SELECT_ALL_HISTORY_COMPANYID_SELECTION = SELECT_ALL
-			+ " WHERE si.companyId < :companyId";
+			+ " WHERE si.selectionItemId = :selectionItemId AND si.companyId=:companyId" ;
 
 	@Override
 	public void add(PerInfoHistorySelection domain) {
@@ -74,10 +74,18 @@ public class JpaPerInfoHistorySelectionRepository extends JpaRepository implemen
 				.setParameter("startDate", startDate).getList(c -> toDomain(c));
 	}
 
+	// test:
 	@Override
-	public List<PerInfoHistorySelection> getAllPerInfoHistorySelection(String companyId) {
+	public List<PerInfoHistorySelection> getAllPerInfoHistorySelection(String selectionItemId, String companyId) {
 
 		return this.queryProxy().query(SELECT_ALL_HISTORY_COMPANYID_SELECTION, PpemtHistorySelection.class)
+				.setParameter("selectionItemId", selectionItemId)
 				.setParameter("companyId", companyId).getList(c -> toDomain(c));
+	}
+
+	@Override
+	public List<PerInfoHistorySelection> getAllPerInfoHistorySelection(String companyId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
