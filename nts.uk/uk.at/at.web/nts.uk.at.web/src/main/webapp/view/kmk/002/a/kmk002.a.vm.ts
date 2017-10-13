@@ -196,6 +196,13 @@ module nts.uk.at.view.kmk002.a {
                     this.hasChanged = true;
                 });
 
+                // uncheck all if remove all formulas
+                this.calcFormulas.subscribe(vl => {
+                    if (nts.uk.util.isNullOrEmpty(vl)) {
+                        this.checkedAllFormula(false);
+                    }
+                });
+
                 // Event on performanceAtr value changed
                 this.performanceAtr.subscribe(value => {
 
