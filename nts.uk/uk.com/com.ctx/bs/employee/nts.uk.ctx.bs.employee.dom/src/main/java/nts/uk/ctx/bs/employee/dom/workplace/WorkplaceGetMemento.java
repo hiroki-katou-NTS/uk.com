@@ -23,7 +23,7 @@ public interface WorkplaceGetMemento {
 	 *
 	 * @return the workplace id
 	 */
-	public WorkplaceId getWorkplaceId();
+	public String getWorkplaceId();
 	
 	/**
 	 * Gets the workplace history.

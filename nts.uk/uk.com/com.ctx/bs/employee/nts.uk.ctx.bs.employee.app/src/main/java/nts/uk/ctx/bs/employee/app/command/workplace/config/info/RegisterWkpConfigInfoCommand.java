@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoGetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
@@ -69,8 +68,8 @@ public class RegisterWkpConfigInfoCommand {
 		 * @see nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceConfigInfoGetMemento#getHistoryId()
 		 */
 		@Override
-		public HistoryId getHistoryId() {
-			return new HistoryId(this.registerWorkplaceConfigInfoCommand.getHistoryId());
+		public String getHistoryId() {
+			return this.registerWorkplaceConfigInfoCommand.getHistoryId();
 		}
 
 		/* (non-Javadoc)

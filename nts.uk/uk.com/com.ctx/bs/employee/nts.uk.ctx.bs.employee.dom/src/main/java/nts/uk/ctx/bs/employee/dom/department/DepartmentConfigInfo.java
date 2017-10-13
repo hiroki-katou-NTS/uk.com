@@ -8,7 +8,6 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 
 /**
  * The Class DepartmentConfigInfo.
@@ -23,7 +22,7 @@ public class DepartmentConfigInfo extends AggregateRoot {
 
 	/** The history id. */
 	// 履歴ID
-	private HistoryId historyId;
+	private String historyId;
 
 	/** The wkp hierarchy. */
 	// 階層

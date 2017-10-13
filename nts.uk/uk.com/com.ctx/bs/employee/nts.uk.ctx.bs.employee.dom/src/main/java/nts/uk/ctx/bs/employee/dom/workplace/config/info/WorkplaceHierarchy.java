@@ -7,7 +7,6 @@ package nts.uk.ctx.bs.employee.dom.workplace.config.info;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 
 /**
  * The Class WorkHierarchy.
@@ -18,7 +17,7 @@ public class WorkplaceHierarchy extends DomainObject {
 
 	/** The workplace id. */
 	// 職場ID
-	private WorkplaceId workplaceId;
+	private String workplaceId;
 
 	/** The hierarchy code. */
 	// 階層コード
@@ -57,7 +56,7 @@ public class WorkplaceHierarchy extends DomainObject {
 	 */
 	public static WorkplaceHierarchy newInstance(String workplaceId, String hierarchyCode) {
 	    WorkplaceHierarchy other = new WorkplaceHierarchy();
-	    other.workplaceId = new WorkplaceId(workplaceId);
+	    other.workplaceId = workplaceId;
 	    other.hierarchyCode = new HierarchyCode(hierarchyCode);
 	    return other;
 	}

@@ -80,7 +80,7 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
         WorkplaceConfigInfo wkpConfigInfo = optional.get();
 
         Optional<WorkplaceHierarchy> optionalWkpHierarchySelected = wkpConfigInfo.getLstWkpHierarchy().stream()
-                .filter(item -> item.getWorkplaceId().v().equals(wkpIdSelected))
+                .filter(item -> item.getWorkplaceId().equals(wkpIdSelected))
                 .findFirst();
         if (!optionalWkpHierarchySelected.isPresent()) {
             throw new RuntimeException(String.format("Didn't have workplace %s", wkpIdSelected));
@@ -91,10 +91,10 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
         // create hierarchy at child
         if (createType == CreateWorkpceType.CREATE_AT_CHILD) {
             this.updateHierarchyChild(wkpConfigInfo.getLstWkpHierarchy(), wkpHierarchySelected,
-                    newWorkplace.getWorkplaceId().v());
+                    newWorkplace.getWorkplaceId());
         } else {
             this.process(wkpConfigInfo.getLstWkpHierarchy(), wkpHierarchySelected, createType,
-                    newWorkplace.getWorkplaceId().v());
+                    newWorkplace.getWorkplaceId());
         }
         
         // update workplace config infor
@@ -212,6 +212,9 @@ public class WkpConfigInfoServiceImpl implements WkpConfigInfoService {
         }
         // update hierarchy
         wkpHierarchy.setHierarchyCode(new HierarchyCode(this.getNewHierarchyCd(hierarchyCdSelected)));
+        if (hierarchyCd.compareTo(hierarchyCdSelected) > EQUAL_VALUE) {
+            return wkpHierarchy;
+        }
         // return new wkpHierarchy
         return WorkplaceHierarchy.newInstance(newWkpId, newHierarchyCd);
     }

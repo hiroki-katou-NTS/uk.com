@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.app.command.workplace.config.history;
+package nts.uk.ctx.bs.employee.app.command.workplace.history;
 
 import java.util.Optional;
 
@@ -12,7 +12,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
@@ -79,26 +78,22 @@ public class SaveWkpHistoryCommandHandler extends CommandHandler<SaveWkpHistoryC
      */
     private void addkpHistory(String companyId, SaveWkpHistoryCommand command, Workplace workplace) {
         Workplace wkpCommand = command.toDomain(companyId);
-        // add workplace
-        this.workplaceRepository.add(wkpCommand);
-        
-        if (CollectionUtil.isEmpty(workplace.getWorkplaceHistory())) {
-            return;
-        }
-        
         WorkplaceHistory latestWkpHistory = workplace.getWkpHistoryLatest();
         
         // validate add new history
         HistoryUtil.validStartDate(Boolean.TRUE, latestWkpHistory.getPeriod().start(),
                 command.getWorkplaceHistory().getPeriod().getStartDate());
+
+        // add workplace
+        this.workplaceRepository.add(wkpCommand);
         
         // Update endDate previous history
         int dayOfAgo = -1;
-        this.wkpService.updatePreviousHistory(companyId, latestWkpHistory.getHistoryId().v(),
+        this.wkpService.updatePreviousHistory(companyId, latestWkpHistory.getHistoryId(),
                 command.getWorkplaceHistory().getPeriod().getStartDate().addDays(dayOfAgo));
 
         // copy workplace info by historyId
-        this.copyWorkplaceInfo(companyId, latestWkpHistory.getHistoryId().v(), wkpCommand);
+        this.copyWorkplaceInfo(companyId, latestWkpHistory.getHistoryId(), wkpCommand);
     }
 
     /**
@@ -125,7 +120,7 @@ public class SaveWkpHistoryCommandHandler extends CommandHandler<SaveWkpHistoryC
         // set end date of previous history (below of history latest)
         int dayOfAgo = -1;
         // update previous history latest
-        this.wkpService.updatePreviousHistory(companyId, prevWkpLatest.getHistoryId().v(),
+        this.wkpService.updatePreviousHistory(companyId, prevWkpLatest.getHistoryId(),
                 command.getWorkplaceHistory().getPeriod().getStartDate().addDays(dayOfAgo));
     }
 
@@ -138,11 +133,11 @@ public class SaveWkpHistoryCommandHandler extends CommandHandler<SaveWkpHistoryC
      */
     private void copyWorkplaceInfo(String companyId, String latestHistId, Workplace wkpCommand) {
         Optional<WorkplaceInfo> optionalWkpInfo = workplaceInfoRepository.find(companyId,
-                wkpCommand.getWorkplaceId().v(), latestHistId);
+                wkpCommand.getWorkplaceId(), latestHistId);
         if (optionalWkpInfo.isPresent()) {
             WorkplaceInfo wkpInfo = optionalWkpInfo.get()
-                    .cloneWithHistId(wkpCommand.getWkpHistoryLatest().getHistoryId().v());
-            workplaceInfoRepository.update(wkpInfo);
+                    .cloneWithHistId(wkpCommand.getWkpHistoryLatest().getHistoryId());
+            workplaceInfoRepository.add(wkpInfo);
         }
     }
 }

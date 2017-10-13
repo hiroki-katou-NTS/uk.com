@@ -6,7 +6,6 @@ package nts.uk.ctx.bs.employee.app.command.workplace.config.info;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.HierarchyCode;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchy;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceHierarchyGetMemento;
@@ -53,8 +52,8 @@ public class WorkplaceHierarchyDto {
 		 * @see nts.uk.ctx.bs.employee.dom.workplace.configinfo.WorkplaceHierarchyGetMemento#getWorkplaceId()
 		 */
 		@Override
-		public WorkplaceId getWorkplaceId() {
-			return new WorkplaceId(this.workplaceHierarchyDto.getWorkplaceId());
+		public String getWorkplaceId() {
+			return this.workplaceHierarchyDto.getWorkplaceId();
 		}
 
 		/* (non-Javadoc)
