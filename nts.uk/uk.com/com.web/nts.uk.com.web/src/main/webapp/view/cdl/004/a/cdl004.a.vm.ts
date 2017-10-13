@@ -59,22 +59,23 @@ module nts.uk.com.view.cdl004.a {
              */
             private selectedJobtitle() :void {
                 var self = this;
+                var selectedCode: any = null;
                 if(self.isMultiple){
-                    if(!self.selectedMulJobtitle() || self.selectedMulJobtitle().length == 0){
+                    selectedCode = self.selectedMulJobtitle();
+                    if(!selectedCode || selectedCode.length == 0){
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_642" });
                         return;    
                     }    
-                }else {
-                     if(!self.selectedSelJobtitle || !self.selectedSelJobtitle()){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_642" });
-                        return;    
-                    }      
-                }
-                
-                var selectedCode : any = self.selectedMulJobtitle();
-                if (!self.isMultiple) {
+                } else {
                     selectedCode = self.selectedSelJobtitle();
+                    var isNoSelectRowSelected = $("#jobtitle").isNoSelectRowSelected();
+                    if (!selectedCode && !isNoSelectRowSelected) {
+                        // Check if selected No select Row.
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
+                        return;
+                    }
                 }
+
                 nts.uk.ui.windows.setShared('outputCDL004', { selectedCode: selectedCode });
                 nts.uk.ui.windows.close();    
             }
