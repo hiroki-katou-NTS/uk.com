@@ -6,8 +6,6 @@ package nts.uk.ctx.bs.employee.dom.workplace.config.info;
 
 import java.util.List;
 
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
-
 /**
  * The Interface WorkPlaceConfigInfoGetMemento.
  */
@@ -25,7 +23,7 @@ public interface WorkplaceConfigInfoGetMemento {
      *
      * @return the history id
      */
-    public HistoryId getHistoryId();
+    public String getHistoryId();
 
 	/**
      * Gets the wkp hierarchy.

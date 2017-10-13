@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.bs.employee.app.find.workplace.dto;
 
-import nts.uk.ctx.bs.employee.dom.workplace.HistoryId;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistorySetMemento;
 import nts.uk.shr.com.time.calendar.period.DatePeriod;
 
@@ -28,8 +27,8 @@ public class WorkplaceHistoryDto implements WorkplaceHistorySetMemento {
      * setHistoryId(nts.uk.ctx.bs.employee.dom.workplace.HistoryId)
      */
     @Override
-    public void setHistoryId(HistoryId historyId) {
-        this.historyId = historyId.v();
+    public void setHistoryId(String historyId) {
+        this.historyId = historyId;
     }
 
     /*

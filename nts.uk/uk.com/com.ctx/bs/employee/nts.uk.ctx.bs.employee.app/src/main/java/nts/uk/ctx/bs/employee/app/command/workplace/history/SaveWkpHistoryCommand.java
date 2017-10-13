@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.app.command.workplace.config.history;
+package nts.uk.ctx.bs.employee.app.command.workplace.history;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +13,6 @@ import nts.uk.ctx.bs.employee.app.command.workplace.dto.WorkplaceHistoryDto;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceGetMemento;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceHistory;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 
 /**
  * The Class SaveWkpHistoryCommand.
@@ -75,8 +74,8 @@ public class SaveWkpHistoryCommand {
          * @see nts.uk.ctx.bs.employee.dom.workplace.WorkplaceGetMemento#getWorkplaceId()
          */
         @Override
-        public WorkplaceId getWorkplaceId() {
-            return new WorkplaceId(this.workplaceCommand.getWorkplaceId());
+        public String getWorkplaceId() {
+            return this.workplaceCommand.getWorkplaceId();
         }
 
         /* (non-Javadoc)

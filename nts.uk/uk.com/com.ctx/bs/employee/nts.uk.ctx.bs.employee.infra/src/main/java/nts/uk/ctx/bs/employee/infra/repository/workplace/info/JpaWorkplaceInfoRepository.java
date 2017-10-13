@@ -177,40 +177,6 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
      * (non-Javadoc)
      * 
      * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#
-     * findLatestByWorkplaceId(java.lang.String)
-     */
-    @Override
-    public Optional<WorkplaceInfo> findLatestByWkpId(String wkpId) {
-        // get entity manager
-        EntityManager em = this.getEntityManager();
-        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-        CriteriaQuery<BsymtWorkplaceInfo> cq = criteriaBuilder.createQuery(BsymtWorkplaceInfo.class);
-        Root<BsymtWorkplaceInfo> root = cq.from(BsymtWorkplaceInfo.class);
-
-        // select root
-        cq.select(root);
-
-        // add where
-        List<Predicate> lstpredicateWhere = new ArrayList<>();
-        lstpredicateWhere.add(criteriaBuilder
-                .equal(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceInfoPK).get(BsymtWorkplaceInfoPK_.wkpid), wkpId));
-        
-        // order by end date, start date DESC
-        cq.orderBy(criteriaBuilder.desc(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.endD)),
-                criteriaBuilder.desc(root.get(BsymtWorkplaceInfo_.bsymtWorkplaceHist).get(BsymtWorkplaceHist_.strD)));
-        
-        cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
-        
-        return em.createQuery(cq).getResultList().stream()
-                .map(entity -> new WorkplaceInfo(new JpaWorkplaceInfoGetMemento(entity)))
-                .findFirst();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see nts.uk.ctx.bs.employee.dom.workplace.info.WorkplaceInfoRepository#
      * isExisted(java.lang.String, java.lang.String)
      */
     @Override
@@ -246,8 +212,8 @@ public class JpaWorkplaceInfoRepository extends JpaRepository implements Workpla
      */
     private BsymtWorkplaceInfo toEntity(WorkplaceInfo workplaceInfo) {
         Optional<BsymtWorkplaceInfo> optional = this.queryProxy()
-                .find(new BsymtWorkplaceInfoPK(workplaceInfo.getCompanyId(), workplaceInfo.getHistoryId().v(),
-                        workplaceInfo.getWorkplaceId().v()), BsymtWorkplaceInfo.class);
+                .find(new BsymtWorkplaceInfoPK(workplaceInfo.getCompanyId(), workplaceInfo.getHistoryId(),
+                        workplaceInfo.getWorkplaceId()), BsymtWorkplaceInfo.class);
         BsymtWorkplaceInfo entity = new BsymtWorkplaceInfo();
         if (optional.isPresent()) {
             entity = optional.get();

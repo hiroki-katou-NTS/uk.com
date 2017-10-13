@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.bs.employee.app.command.workplace.config.history;
+package nts.uk.ctx.bs.employee.app.command.workplace.history;
 
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +63,7 @@ public class DeleteWkpHistoryCommandHandler extends CommandHandler<DeleteWkpHist
         
         // valid history latest
         List<String> lstHistoryId = workplace.getWorkplaceHistory().stream()
-                .map(item -> item.getHistoryId().v())
+                .map(item -> item.getHistoryId())
                 .collect(Collectors.toList());
         HistoryUtil.validHistoryLatest(lstHistoryId, command.getHistoryId());
         

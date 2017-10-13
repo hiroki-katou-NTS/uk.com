@@ -16,7 +16,7 @@ public interface WorkplaceHistoryGetMemento {
 	 *
 	 * @return the history id
 	 */
-	public HistoryId getHistoryId();
+	public String getHistoryId();
 
 	/**
 	 * Gets the period.

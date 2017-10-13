@@ -28,8 +28,6 @@ module nts.uk.com.view.cmm011.a {
             isWkpHistoryLatest: KnockoutObservable<boolean>;
             isWkpConfigHistLatest: KnockoutObservable<boolean>;
             
-            isLoadedScreen: boolean;
-            
             constructor() {
                 let self = this;
                 
@@ -41,7 +39,7 @@ module nts.uk.com.view.cmm011.a {
                 
                 self.workplaceCode = ko.observable(null);
                 self.externalCode = ko.observable(null);
-                self.workplaceName = ko.observable(null);
+                self.workplaceName = ko.observable('');
                 self.wkpDisplayName = ko.observable(null);
                 self.wkpFullName = ko.observable(null);
                 
@@ -54,22 +52,25 @@ module nts.uk.com.view.cmm011.a {
                 });
                 self.isWkpConfigHistLatest = ko.observable(true);
                 
-                self.isLoadedScreen = false;
-                
                 // subscribe
                 self.strDWorkplace.subscribe((newValue) => {
-                    if (!newValue) {
+                    if (nts.uk.text.isNullOrEmpty(newValue)) {
                         self.openWkpConfigDialog();
+                        return;
                     }
                     // load again tree workplace
-                    if (self.isLoadedScreen) {
-                        self.treeWorkplace().findLstWorkplace(new Date(newValue));
-                    }
+                    self.treeWorkplace().findLstWorkplace(newValue);
                 });
-                self.workplaceName.subscribe((newValue) => {
+                self.workplaceName.subscribe((newValue: string) => {
                     let obj: any = self.treeWorkplace().findPathNameByWkpIdSelected();
-                    self.wkpDisplayName(obj.wkpDisplayName + " " + newValue);
-                    self.wkpFullName(obj.wkpFullName + " " + newValue);
+                    let wkpDisplayName: string = "";
+                    let wkpFullName: string = "";
+                    if (obj) {
+                        wkpDisplayName = obj.wkpDisplayName + " ";
+                        wkpFullName = obj.wkpFullName + " ";
+                    }
+                    self.wkpDisplayName(wkpDisplayName + newValue);
+                    self.wkpFullName(wkpFullName + newValue);
                 });
             }
             
@@ -80,16 +81,10 @@ module nts.uk.com.view.cmm011.a {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 
-                nts.uk.ui.block.grayout();
                 // find all history master
                 self.findAllHistory().done(() => {
-                    
-                    // load tree workplace
-                    self.treeWorkplace().findLstWorkplace(new Date(self.strDWorkplace())).done(() => {
-                        nts.uk.ui.block.clear();
-                        self.treeWorkplace().selectFirst();
-                        dfd.resolve();
-                    });
+                    self.strDWorkplace.valueHasMutated();
+                    dfd.resolve();
                 });
                 
                 return dfd.promise();
@@ -103,13 +98,13 @@ module nts.uk.com.view.cmm011.a {
                 let dfd = $.Deferred<void>();
                 nts.uk.ui.block.grayout();
                 service.findLstWkpConfigHistory().done(function(data: Array<IHistory>) {
+                    nts.uk.ui.block.clear();
                     // set start date, end date
                     if (data && data.length > 0) {
                         self.wkpConfigHistId = data[0].historyId;
                         self.strDWorkplace(data[0].startDate);
                         self.endDWorkplace(data[0].endDate);
                     }
-                    nts.uk.ui.block.clear();
                     dfd.resolve();
                 }).fail((res: any) => {
                     nts.uk.ui.block.clear();
@@ -133,9 +128,7 @@ module nts.uk.com.view.cmm011.a {
                 service.removeWkp(command).done(function() {
                     nts.uk.ui.block.clear();
                     nts.uk.ui.dialog.info({ messageId: "Msg_16" });
-                    self.treeWorkplace().findLstWorkplace(new Date(self.strDWorkplace())).done(() => {
-                        self.treeWorkplace().selectFirst();
-                    });
+                    self.treeWorkplace().findLstWorkplace(self.strDWorkplace());
                 }).fail((res: any) => {
                     nts.uk.ui.block.clear();
                     self.showMessageError(res);
@@ -159,7 +152,7 @@ module nts.uk.com.view.cmm011.a {
                     nts.uk.ui.block.clear();
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                     
-                    self.treeWorkplace().findLstWorkplace(new Date(self.strDWorkplace())).done(() => {
+                    self.treeWorkplace().findLstWorkplace(self.strDWorkplace()).done(() => {
                         if (self.isNewMode()) {
                             self.treeWorkplace().selectedWpkId(command.wkpIdSelected);
                         } else {
@@ -273,7 +266,7 @@ module nts.uk.com.view.cmm011.a {
                 $('#wkpDisplayName').ntsEditor('validate');
                 $('#wkpFullName').ntsEditor('validate');
                 
-                return $('.nts-input').ntsError('hasError');
+                return !$('.nts-input').ntsError('hasError');
             }
             
             /**
@@ -351,18 +344,27 @@ module nts.uk.com.view.cmm011.a {
                 
                 // subscribe
                 self.lstWorkplace.subscribe(dataList => {
+                    
+                    if (!dataList || dataList.length < 1) {
+                        $('#wkpCd').focus();
+                        self.parentModel.isNewMode(true);
+                        self.parentModel.workplaceHistory().newHistory();
+                        return;
+                    }
+                    
                     // update nodeText, level of tree
                     self.updateTree(self.lstWorkplace());
                     
                     // convert tree to array
                     self.treeArray(self.convertTreeToArray(dataList));
                     
+                    // calculate width of cell nodeText
+                    self.calWidthColText();
+                    
+                    self.selectFirst();
+                    
                     // existed workplace
-                    if (dataList && dataList.length > 0) {
-                        self.parentModel.isNewMode(false);
-                    } else {
-                        $('#wkpCd').focus();
-                    }
+                    self.parentModel.isNewMode(false);
                 });
                 
                 //subscribe selected wkp Id
@@ -380,17 +382,18 @@ module nts.uk.com.view.cmm011.a {
             /**
              * findLstWorkplace
              */
-            public findLstWorkplace(startDate: Date): JQueryPromise<void> {
+            public findLstWorkplace(startDate: string): JQueryPromise<void> {
                 let self = this;
                 let dfd = $.Deferred<any>();
+                
+                if (nts.uk.text.isNullOrEmpty(startDate)) {
+                    return dfd.promise();
+                }
+                
                 nts.uk.ui.block.grayout();
-                service.findLstWorkPlace(startDate).done((res: Array<TreeWorkplace>) => {
-                    self.lstWorkplace(res);
-                    
-                    // calculate width of cell nodeText
-                    self.calWidthColText();
-                    
+                service.findLstWorkPlace(new Date(startDate)).done((res: Array<TreeWorkplace>) => {
                     nts.uk.ui.block.clear();
+                    self.lstWorkplace(res);
                     dfd.resolve();
                 }).fail((res: any) => {
                     nts.uk.ui.block.clear();
@@ -404,9 +407,7 @@ module nts.uk.com.view.cmm011.a {
              */
             public selectFirst() {
                 let self = this;
-                if (self.lstWorkplace() && self.lstWorkplace().length > 0) {
-                    self.selectedWpkId(self.lstWorkplace()[0].workplaceId);
-                }
+                self.selectedWpkId(self.lstWorkplace()[0].workplaceId);
             }
             
             /**
@@ -425,6 +426,9 @@ module nts.uk.com.view.cmm011.a {
                 let obj: any = {};
                 let index: number = 3;
                 let wkpFullName: string = "";
+                if (nts.uk.text.isNullOrEmpty(self.selectedHierarchyCd)) {
+                    return null;
+                }
                 while(index <= self.selectedHierarchyCd.length) {
                     let parentHeirarchyCd: string = self.selectedHierarchyCd.substr(0, index);
                     wkpFullName += " " + self.mapHierarchy[parentHeirarchyCd];

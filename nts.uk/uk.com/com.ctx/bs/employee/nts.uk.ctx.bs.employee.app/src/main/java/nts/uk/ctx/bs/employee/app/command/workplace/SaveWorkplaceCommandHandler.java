@@ -14,7 +14,6 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.bs.employee.app.command.workplace.config.info.WorkplaceHierarchyDto;
 import nts.uk.ctx.bs.employee.dom.workplace.CreateWorkpceType;
 import nts.uk.ctx.bs.employee.dom.workplace.Workplace;
-import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceId;
 import nts.uk.ctx.bs.employee.dom.workplace.WorkplaceRepository;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfo;
 import nts.uk.ctx.bs.employee.dom.workplace.config.info.WorkplaceConfigInfoRepository;
@@ -66,7 +65,7 @@ public class SaveWorkplaceCommandHandler extends CommandHandler<SaveWorkplaceCom
             this.addWorkplace(companyId, command);
         } else {
             this.wkpInfoRepo.update(command.getWkpInfor().toDomain(companyId,
-                    new WorkplaceId(command.getWkpIdSelected())));
+                    command.getWkpIdSelected(), command.getWkpInfor().getHistoryId()));
             // TODO: register workplace hierarchy
         }
     }
@@ -83,13 +82,14 @@ public class SaveWorkplaceCommandHandler extends CommandHandler<SaveWorkplaceCom
         this.wkpRepo.add(newWorkplace);
         
         // insert domain workplace infor
-        WorkplaceInfo workplaceInfo = command.getWkpInfor().toDomain(companyId, newWorkplace.getWorkplaceId());
+        WorkplaceInfo workplaceInfo = command.getWkpInfor().toDomain(companyId, newWorkplace.getWorkplaceId(),
+                newWorkplace.getWkpHistoryLatest().getHistoryId());
         this.wkpInfoRepo.add(workplaceInfo);
         
         if (command.getCreateType() == CreateWorkpceType.CREATE_TO_LIST) {
             // new workplace hierarchy
             WorkplaceHierarchyDto wkpHierarchyDto = new WorkplaceHierarchyDto();
-            wkpHierarchyDto.setWorkplaceId(newWorkplace.getWorkplaceId().v());
+            wkpHierarchyDto.setWorkplaceId(newWorkplace.getWorkplaceId());
             wkpHierarchyDto.setHierarchyCode(HIERARCHY_ORIGIN);
             
             WorkplaceConfigInfo wkpConfigInfo = command.getWkpConfigInfo(companyId, wkpHierarchyDto);
