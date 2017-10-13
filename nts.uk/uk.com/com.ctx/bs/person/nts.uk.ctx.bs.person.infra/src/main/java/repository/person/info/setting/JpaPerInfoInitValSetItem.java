@@ -26,6 +26,9 @@ public class JpaPerInfoInitValSetItem extends JpaRepository implements PerInfoIn
 			+ " WHERE b.abolitionAtr = 0"
 			+ " AND c.perInfoCtgId =:perInfoCtgId";
 
+	
+	
+	
 	@Override
 	public List<PerInfoInitValueSetItem> getAllItem(String initValueSettingCtgId) {
 		// TODO Auto-generated method stub
