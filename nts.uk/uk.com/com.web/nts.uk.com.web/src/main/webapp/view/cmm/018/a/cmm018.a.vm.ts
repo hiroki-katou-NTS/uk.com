@@ -1266,7 +1266,7 @@ module nts.uk.com.view.cmm018.a {
                 _.each(lstAppType, function(appType, index){
                     if(appType == null){//common
                         lstbyApp.push(new vmbase.CompanyAppRootADto(false, true, null,' 共通ルート', index.toString(), '','', a, a, a, a, a)); 
-                    }else{
+                    }else if(appType != 14){
                         let objType: vmbase.ApplicationType = __viewContext.viewModel.viewmodelB.findAppbyValue(appType);
                         lstbyApp.push(new vmbase.CompanyAppRootADto(false, false, objType.value, objType.localizedName, index.toString(), '','', a, a, a, a, a)); 
                     }
