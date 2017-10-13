@@ -1,6 +1,10 @@
 module nts.uk.at.view.kaf004.b.viewmodel {
     import kaf002 = nts.uk.at.view.kaf002;
     import vmbase = nts.uk.at.view.kaf002.shr.vmbase;
+    
+    const employmentRootAtr: number = 1; // EmploymentRootAtr: Application
+    const applicationType: number = 9; // Application Type: Stamp Application
+    
     export class ScreenModel {
         // date editor
         date: KnockoutObservable<string>;
@@ -38,6 +42,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
         fixtime2: KnockoutObservable<string>;
         //DisplayOrder
         displayOrder: KnockoutObservable<number>;
+                
         constructor() {
             var self = this;
             //check sendMail
@@ -63,8 +68,8 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             self.selectedCode = ko.observable('0002');
             //MultilineEditor 
             self.appreason = ko.observable('');
-            
-            self.displayOrder =ko.observable (0);
+
+            self.displayOrder = ko.observable(0);
             //Show Screen
             self.showScreen = __viewContext.transferred.value.showScreen;
             /////////////////fix cứng time//////////////////////////////
@@ -73,37 +78,15 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             self.kaf000_a2 = new kaf000.a.viewmodel.ScreenModel();
             self.startPage().done((commonSet: vmbase.AppStampNewSetDto) => {
                 self.employeeID = commonSet.employeeID;
-                self.applicantName(commonSet.applicantName);
-                self.kaf000_a2.start(self.employeeID, 1, 9, moment.utc().format("YYYY/MM/DD")).done(() => {
-                    let a = self.kaf000_a2.approvalRoot().beforeApprovers;
-                    for (let x = 1; x <= a.length; x++) {
-                        let appPhase = a[x - 1];
-                        let b = new vmbase.AppApprovalPhase(
-                            "",
-                            appPhase.approvalForm,
-                            x,
-                            0,
-                            []);
-                        for (let y = 1; y <= appPhase.length; y++) {
-                            let appFrame = appPhase[y];
-                            let c = new vmbase.ApprovalFrame(
-                                "",
-                                y,
-                                []);
-                            let d = new vmbase.ApproveAccepted(
-                                "",
-                                appFrame.sid,
-                                0,
-                                appFrame.confirmPerson ? 1 : 0,
-                                "",
-                                "",
-                                appFrame.sid);
-                            c.approveAcceptedCmds.push(d);
-                            b.approvalFrameCmds.push(c);
-                        };
-                        this.approvalList = b;
-                    };
-                });
+                self.kaf000_a2.start(
+                    self.employeeID,
+                    employmentRootAtr,
+                    applicationType,
+                    moment.utc().format("YYYY/MM/DD")).done(() => {
+                        
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alertError(res.message).then(function() { nts.uk.ui.block.clear(); });
+                    });
             });
         }
 
@@ -114,8 +97,9 @@ module nts.uk.at.view.kaf004.b.viewmodel {
             service.getByCode().done(function(data) {
                 self.ListTypeReason(data.listApplicationReasonDto);
                 self.displayOrder(data.workManagementMultiple);
+                self.applicantName(data.applicantName);
                 dfd.resolve(data);
-                
+
             });
 
             return dfd.promise();
@@ -132,7 +116,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
 
             $(".nts-input").trigger("validate");
             if (!$(".nts-input").ntsError("hasError")) {
-                var lateOrLeaveEarly: LateOrLeaveEarly = {
+                var lateOrLeaveEarly: LateOrLeaveEarly = { 
                     applicationDate: self.date(),
                     sendMail: self.sendMail(),
                     late1: self.late1() ? 1 : 0,
@@ -144,11 +128,12 @@ module nts.uk.at.view.kaf004.b.viewmodel {
                     early2: self.early2() ? 1 : 0,
                     earlyTime2: self.earlyTime2(),
                     reasonTemp: self.selectedCode(),
-                    appReason: self.appreason()
+                    appReason: self.appreason(),
+                    appApprovalPhaseCmds: self.kaf000_a2.approvalList
                 };
                 service.createLateOrLeaveEarly(lateOrLeaveEarly).done((data) => {
-                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => { 
-                     /** Clear screen after Registry*/
+                    nts.uk.ui.dialog.info({ messageId: "Msg_15" }).then(() => {
+                        /** Clear screen after Registry*/
                         self.date(null);
                         self.late1(null);
                         self.late2(null);
@@ -174,6 +159,7 @@ module nts.uk.at.view.kaf004.b.viewmodel {
     }
 
     interface LateOrLeaveEarly {
+        applicantName: string;
         applicationDate: string;
         sendMail: boolean
         late1: number;

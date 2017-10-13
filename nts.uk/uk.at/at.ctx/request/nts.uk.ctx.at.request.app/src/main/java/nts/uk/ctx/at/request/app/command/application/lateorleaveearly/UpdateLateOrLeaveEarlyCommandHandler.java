@@ -37,7 +37,7 @@ public class UpdateLateOrLeaveEarlyCommandHandler extends CommandHandler<UpdateL
 		LateOrLeaveEarly domainLateOrLeaveEarly = factoryLateOrLeaveEarly.buildLateOrLeaveEarly(
         		command.getApplicationDate(),
         		command.getReasonTemp() +  System.lineSeparator() + command.getAppReason(),
-     //   		command.getActualCancelAtr(),
+        		null,
         		command.getEarly1(),
         		command.getEarlyTime1(),
         		command.getLate1(),
