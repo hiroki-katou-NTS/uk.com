@@ -111,16 +111,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                 { code: 2, name: nts.uk.resource.getText("Enum_DisplayFormat_ErrorAlarm") }
             ]);
             self.displayFormat.subscribe((val) => {
-                if (val == 0) {
-                    $("#emp-component").css("display", "block");
-                    $("#cbListDate").css("display", "none");
-                } else if (val == 1) {
-                    $("#cbListDate").css("display", "block");
-                    $("#emp-component").css("display", "none");
-                } else {
-                    $("#cbListDate").css("display", "none");
-                    $("#emp-component").css("display", "none");
-                }
+                
             });
             self.displayFormat(0);
             self.headersGrid = ko.observableArray(self.employeeModeHeader);
@@ -178,6 +169,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         btnExtraction_Click() {
             var self = this;
+            if (self.displayFormat() == 0) {
+                    $("#emp-component").css("display", "block");
+                    $("#cbListDate").css("display", "none");
+                } else if (self.displayFormat() == 1) {
+                    $("#cbListDate").css("display", "block");
+                    $("#emp-component").css("display", "none");
+                } else {
+                    $("#cbListDate").css("display", "none");
+                    $("#emp-component").css("display", "none");
+                }
             let lstEmployee = [];
             if (self.displayFormat() === 0) {
                 lstEmployee.push(_.find(self.lstEmployee(), (employee) => {
