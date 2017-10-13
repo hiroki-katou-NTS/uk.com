@@ -41,7 +41,8 @@ module nts.uk.com.view.cdl003.a {
                     isShowNoSelectRow:  self.isShowNoSelectRow,
                     selectedCode: null,
                     isDialog: true,
-                    maxRows: 12
+                    maxRows: 12,
+                    tabindex: 1
                 }
                 if (self.isMultiple) {
                     self.classifications.selectedCode = self.selectedMulClassification;
@@ -60,7 +61,7 @@ module nts.uk.com.view.cdl003.a {
                 if(self.isMultiple){
                     var selectedCodes: string[] = self.getSelectByMul(self.selectedMulClassification(), dataList);
                     if(!selectedCodes || selectedCodes.length == 0){
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" }).then(() => nts.uk.ui.windows.close());
                         return;
                     }
                     nts.uk.ui.windows.setShared('outputCDL003', { selectedCode: selectedCodes });
@@ -70,7 +71,7 @@ module nts.uk.com.view.cdl003.a {
                     var isNoSelectRowSelected = $("#classification").isNoSelectRowSelected();
                     if(!selectedCode && !isNoSelectRowSelected){
                         // Check if selected No select Row.
-                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" });
+                        nts.uk.ui.dialog.alertError({ messageId: "Msg_641" }).then(() => nts.uk.ui.windows.close());
                         return;
                     }
                     nts.uk.ui.windows.setShared('outputCDL003', { selectedCode: isNoSelectRowSelected ? null : selectedCode});

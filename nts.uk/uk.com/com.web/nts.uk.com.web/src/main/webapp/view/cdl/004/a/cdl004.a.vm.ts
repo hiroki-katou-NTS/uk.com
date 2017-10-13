@@ -44,7 +44,8 @@ module nts.uk.com.view.cdl004.a {
                     isShowNoSelectRow:  self.isShowNoSelectRow,
                     selectedCode: null,
                     isDialog: true,
-                    maxRows: 12
+                    maxRows: 12,
+                    tabindex: 1
                 }
                 if (self.isMultiple) {
                     self.jobtitles.selectedCode = self.selectedMulJobtitle;
