@@ -107,10 +107,12 @@ module nts.uk.com.view.cmm018.a {
                         }
                         self.convertHistForWp(self.lstWorkplace());
                         let lstWorkplace: vmbase.DataDisplayWpDto = self.findAppIdForWp(codeChanged);
-                        _.each(lstWorkplace.lstWorkplaceRoot, function(item){
-                            lstRoot.push(new vmbase.DataRootCheck(item.workplace.approvalId, item.workplace.historyId,
-                                            item.workplace.applicationType, item.workplace.employmentRootAtr,item.workplace.branchId, item.lstAppPhase));
-                        });
+                        if(lstWorkplace != undefined){
+                            _.each(lstWorkplace.lstWorkplaceRoot, function(item){
+                                lstRoot.push(new vmbase.DataRootCheck(item.workplace.approvalId, item.workplace.historyId,
+                                                item.workplace.applicationType, item.workplace.employmentRootAtr,item.workplace.branchId, item.lstAppPhase));
+                            });
+                        }
                     }
                     //TH: tab person: vmbase.RootType.PERSON
                     else{
@@ -391,9 +393,11 @@ module nts.uk.com.view.cmm018.a {
              */
             getDataCompany(): JQueryPromise<any>{
                 let self = this;
+                block.invisible();
                 let dfd = $.Deferred();
                 let param: vmbase.ParamDto = new vmbase.ParamDto(vmbase.RootType.COMPANY,'','');
-                servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
+                servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {
+                    block.clear();  
                     if(data == null || data === undefined || data.lstCompany.length == 0){
                         self.historyStr('');
                         self.listHistory([]);
@@ -436,10 +440,12 @@ module nts.uk.com.view.cmm018.a {
              */
             getDataWorkplace(): JQueryPromise<any>{
                 let self = this;
+                block.invisible();
                 let dfd = $.Deferred();
                 let param: vmbase.ParamDto = new vmbase.ParamDto(vmbase.RootType.WORKPLACE,self.workplaceId(),'');
                 self.lstWorkplace([]);
-                servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
+                servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) { 
+                    block.clear();  
                     if(data == null || data === undefined || data.lstWorkplace.length == 0){
                         self.historyStr('');
                         self.listHistory([]);
@@ -486,9 +492,11 @@ module nts.uk.com.view.cmm018.a {
              */
             getDataPerson(): JQueryPromise<any>{
                 let self = this;
+                block.invisible();
                 let dfd = $.Deferred();
                 let param: vmbase.ParamDto = new vmbase.ParamDto(vmbase.RootType.PERSON,'',self.selectedItem());
-                servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {   
+                servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {
+                    block.clear(); 
                     if(data == null || data === undefined || data.lstPerson.length == 0){
                         self.historyStr('');
                         self.listHistory([]);
@@ -1459,9 +1467,11 @@ module nts.uk.com.view.cmm018.a {
              */
             getDataCompanyPr(): JQueryPromise<any>{
                 let self = this;
+                block.invisible();
                 let dfd = $.Deferred();
                 let param: vmbase.ParamDto = new vmbase.ParamDto(0,'','');
                 servicebase.getAllDataPr(param).done(function(data: vmbase.CommonApprovalRootDto) {    
+                    block.clear();
                     if(data == null || data === undefined){
                         self.dataSourceB();
                         return;
@@ -1501,9 +1511,11 @@ module nts.uk.com.view.cmm018.a {
              */
             getDataWorkplacePr(): JQueryPromise<any>{
                 let self = this;
+                block.invisible();
                 let dfd = $.Deferred();
                 let param: vmbase.ParamDto = new vmbase.ParamDto(1,self.workplaceIdB(),'');
                 servicebase.getAllDataPr(param).done(function(data: vmbase.CommonApprovalRootDto) {    
+                    block.clear();
                     if(data == null || data === undefined){
                         self.dataSourceB();
                         return;
@@ -1544,9 +1556,11 @@ module nts.uk.com.view.cmm018.a {
              */
             getDataPersonPr(): JQueryPromise<any>{
                 let self = this;
+                block.invisible();
                 let dfd = $.Deferred();
                 let param: vmbase.ParamDto = new vmbase.ParamDto(2,'',self.employeeId());
                 servicebase.getAllDataPr(param).done(function(data: vmbase.CommonApprovalRootDto) {    
+                    block.clear();
                     if(data == null || data === undefined){
                         self.dataSourceB();
                         return;
