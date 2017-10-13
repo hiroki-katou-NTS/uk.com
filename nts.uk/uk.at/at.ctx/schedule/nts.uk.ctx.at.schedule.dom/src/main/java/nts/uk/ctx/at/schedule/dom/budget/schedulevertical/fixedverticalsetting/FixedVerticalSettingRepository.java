@@ -1,6 +1,7 @@
 package nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting;
 
 import java.util.List;
+import java.util.Optional;
 /**
  * 
  * @author phongtq
@@ -30,10 +31,10 @@ public interface FixedVerticalSettingRepository {
 	/**
 	 * Find all Vertical Time
 	 * @param companyId
-	 * @param fixedVerticalNo
+	 * @param fixedItemAtr
 	 * @return
 	 */
-	List<VerticalTime> findAllVerticalTime(String companyId, int fixedVerticalNo);
+	List<VerticalTime> findAllVerticalTime(String companyId, int fixedItemAtr);
 	
 	/**
 	 * Add new Vertical Time
@@ -50,7 +51,31 @@ public interface FixedVerticalSettingRepository {
 	/**
 	 * Delete Vertical Time
 	 * @param companyId
-	 * @param fixedVerticalNo
+	 * @param fixedItemAtr
 	 */
-	void deleteVerticalTime(String companyId, int fixedVerticalNo);
+	void deleteVerticalTime(String companyId, int fixedItemAtr, int startClock);
+	
+	/**
+	 * Delete Vertical Time
+	 * @param companyId
+	 * @param fixedItemAtr
+	 */
+	void deleteVerticalTime(String companyId, int fixedItemAtr);
+
+	/**
+	 * Delete Fixed Vertical
+	 * @param companyId
+	 * @param fixedItemAtr
+	 */
+	void deleteFixedVertical(String companyId, int fixedItemAtr);
+	
+	/**
+	 * Find Vertical Time
+	 * @param companyId
+	 * @param fixedItemAtr
+	 * @return
+	 */
+	Optional<FixedVertical> find(String companyId, int fixedItemAtr);
+	
+
 }

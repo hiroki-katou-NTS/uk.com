@@ -8,32 +8,47 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum FixedItemAtr {
-	/** 0- シフト **/
-	SHIFT(0),
-	/** 1- ランク **/
-	RANK(1),
-	/** 2- 作業1 **/
-	TASK1(2),
-	/** 3- 作業2 **/
-	TASK2(3),
-	/** 4- 作業3 **/
-	TASK3(4),
-	/** 5- 作業4 **/
-	TASK4(5),
-	/** 6- 作業5 **/
-	TASK5(6),
-	/** 7- 分類 **/
-	CLASSIFICATION(7),
-	/** 8- 回数集計 **/
-	TOTAL_COUNT(8),
-	/** 9- 役割 **/
-	ROLE(9),
-	/** 10- 時間帯 **/
-	TIME_ZONE(10),
-	/** 11- 職位 **/
-	POSITION(11),
-	/** 12- 雇用 **/
-	EMPLOYMENT(12),;
+	/** 0- 時間帯 **/
+	TIME_ZONE(0, "KML002_85", ""),
+	
+	/** 1- 回数集計 **/
+	TOTAL_COUNT(1, "KML002_86", ""),
+
+	
+	/** 2- 雇用 **/
+	EMPLOYMENT(2, "KML002_87", "Com_Employment"),
+	
+	/** 3- 分類 **/
+	CLASSIFICATION(3, "KML002_87", "Com_Jobtitle"),
+	
+	/** 4- 職位 **/
+	POSITION(4, "KML002_87", "Com_Jobtitle"),
+	
+	/** 5- シフト **/
+	SHIFT(5, "KML002_88", ""),
+	
+	/** 6- 役割 **/
+	ROLE(6, "KML002_89", ""),
+	
+	/** 7- 作業1 *KML002_101*/
+	TASK1(7, "KML002_101", ""),
+	
+	/** 8- 作業2 **/
+	TASK2(8, "KML002_102", ""),
+	
+	/** 9- 作業3 **/
+	TASK3(9, "KML002_103", ""),
+	
+	/** 10- 作業4 **/
+	TASK4(10, "KML002_104", ""),
+	
+	/** 11- 作業5 **/
+	TASK5(11, "KML002_105", ""),
+	
+	/** 12- ランク **/
+	RANK(12, "KML002_148", ""),;
 
 	public final int value;
+	public final String nameId;
+	public final String paramNameId;
 }

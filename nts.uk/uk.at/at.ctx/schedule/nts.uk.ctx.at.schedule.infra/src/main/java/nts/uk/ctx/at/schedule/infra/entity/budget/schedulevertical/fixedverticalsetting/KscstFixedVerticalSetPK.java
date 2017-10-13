@@ -18,7 +18,7 @@ public class KscstFixedVerticalSetPK implements Serializable{
 	@Column(name = "CID")
 	public String companyId;
 	
-	/* 特別休暇コード */
-	@Column(name = "FIXED_VERTICAL_NO")
-	public int fixedVerticalNo;
+	/* 付与基準日 */
+	@Column(name = "FIXED_ITEM_ATR")
+	public int fixedItemAtr;
 }

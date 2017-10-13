@@ -9,19 +9,19 @@ import lombok.NoArgsConstructor;
 @Data
 public class FixedVerticalSettingDto {
 	
-	/* 会社ID */
+	/** 会社ID **/
 	private String companyId;
 	
-	/**/
-	private int fixedVerticalNo;
-	
-	/*利用区分*/
-	private int useAtr;
-	
-	/*固定項目区分*/
+	/** 固定項目区分 **/
 	private int fixedItemAtr;
 	
-	/*縦計詳細設定*/
+	/****/
+	private String fixedVerticalName;
+	
+	/** 利用区分 **/
+	private int useAtr;
+	
+	/** 縦計詳細設定 **/
 	private int verticalDetailedSettings;
 	
 }

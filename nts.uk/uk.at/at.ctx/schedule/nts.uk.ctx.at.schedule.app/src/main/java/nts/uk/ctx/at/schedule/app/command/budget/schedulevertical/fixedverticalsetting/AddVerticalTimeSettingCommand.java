@@ -1,9 +1,10 @@
 package nts.uk.ctx.at.schedule.app.command.budget.schedulevertical.fixedverticalsetting;
 
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.VerticalTime;
 /**
  * 
  * @author phongtq
@@ -14,15 +15,7 @@ import nts.uk.ctx.at.schedule.dom.budget.schedulevertical.fixedverticalsetting.V
 public class AddVerticalTimeSettingCommand {
 	
 	/* 特別休暇コード */
-	private int fixedVerticalNo;
+	private int fixedItemAtr;
 	
-	/* 表示区分 */
-	public int displayAtr;
-	
-	/* 時刻 */
-	public int startClock;
-	
-	public VerticalTime toDomain(String companyId){
-		return VerticalTime.createFromJavaType(companyId, this.fixedVerticalNo, this.displayAtr, this.startClock);
-	}
+	private List<VerticalTimeSettingCommand> verticalTimes;
 }

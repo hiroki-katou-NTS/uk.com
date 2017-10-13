@@ -24,9 +24,9 @@ public class VerticalTimeSettingFinder {
 	 * 
 	 * @return
 	 */
-	public List<VerticalTimeSettingDto> findAll(int fixedVerticalNo) {
+	public List<VerticalTimeSettingDto> findAll(int fixedItemAtr) {
 		String companyId = AppContexts.user().companyId();
-		return repository.findAllVerticalTime(companyId, fixedVerticalNo).stream().map(e -> {
+		return repository.findAllVerticalTime(companyId, fixedItemAtr).stream().map(e -> {
 			return convertToDbType(e);
 		}).collect(Collectors.toList());
 	}
@@ -40,7 +40,7 @@ public class VerticalTimeSettingFinder {
 	private VerticalTimeSettingDto convertToDbType(VerticalTime verticalTime) {
 		VerticalTimeSettingDto verticalSettingDto = new VerticalTimeSettingDto();
 		verticalSettingDto.setCompanyId(verticalTime.getCompanyId());
-		verticalSettingDto.setFixedVerticalNo(verticalTime.getFixedVerticalNo());
+		verticalSettingDto.setFixedItemAtr(verticalTime.getFixedItemAtr().value);
 		verticalSettingDto.setDisplayAtr(verticalTime.getDisplayAtr().value);
 		verticalSettingDto.setStartClock(verticalTime.getStartClock().v());
 

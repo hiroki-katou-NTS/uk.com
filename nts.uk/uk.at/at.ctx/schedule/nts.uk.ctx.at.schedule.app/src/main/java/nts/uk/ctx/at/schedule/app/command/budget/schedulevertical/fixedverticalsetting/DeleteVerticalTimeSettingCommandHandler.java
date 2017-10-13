@@ -20,7 +20,7 @@ public class DeleteVerticalTimeSettingCommandHandler extends CommandHandler<Dele
 		String companyId = AppContexts.user().companyId();
 		
 		//Delete Vertical Time
-		repository.deleteVerticalTime(companyId, command.getFixedVerticalNo());
+		repository.deleteVerticalTime(companyId, command.getFixedItemAtr(), command.getStartClock());
 	}
 
 }

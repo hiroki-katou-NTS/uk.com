@@ -7,5 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class DeleteVerticalTimeSettingCommand {
 	/* 特別休暇コード */
-	private int fixedVerticalNo;
+	private int fixedItemAtr;
+	
+	private int startClock;
 }
