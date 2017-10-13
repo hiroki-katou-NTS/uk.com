@@ -548,7 +548,7 @@ public class AsposeEmployeeApproverReportGenerator extends AsposeCellsReportGene
 			if (m1.getKey().toString().equals("99")) {
 				em_Form.setValue("共通");
 			} else {
-				em_Form.setValue(EnumAdaptor.valueOf(Integer.valueOf(m1.getKey().toString()), ApplicationType.class));
+				em_Form.setValue(EnumAdaptor.valueOf(Integer.valueOf(m1.getKey().toString()), ApplicationType.class).nameId);
 			}
 
 			// SET STYLE CHO CỘT THỨ 3

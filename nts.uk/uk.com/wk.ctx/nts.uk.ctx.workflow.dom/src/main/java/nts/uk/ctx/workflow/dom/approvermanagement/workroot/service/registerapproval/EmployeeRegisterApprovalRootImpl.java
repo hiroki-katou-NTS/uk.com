@@ -179,7 +179,14 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		if (!appOutput.isEmpty() && appOutput.containsKey(wpInfor.getWkpCode())) {
 			WpApproverAsAppOutput wpRoot = appOutput.get(wpInfor.getWkpCode());
 			Map<String, EmployeeApproverAsApplicationOutput> mapEmAp = wpRoot.getMapEmpRootInfo();
-			mapEmAp.put(empId, infor);
+			if(!mapEmAp.isEmpty() && mapEmAp.containsKey(empId)) {
+				EmployeeApproverAsApplicationOutput employ = mapEmAp.get(empId);
+				Map<Integer, List<ApproverAsApplicationInforOutput>> mapAppTypeAsApprover = employ.getMapAppTypeAsApprover();
+				mapAppTypeAsApprover.put(apptyle, phaseInfors);
+			}else {
+				mapEmAp.put(empId, infor);
+			}
+			
 		} else {
 			WorkplaceImport wkInfor = wpAdapter.findBySid(empId, baseDate);
 			mapEmpRootInfo.put(empId, infor);
