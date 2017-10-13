@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.infra.entity.application.common.approvalframe;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -17,9 +18,11 @@ import javax.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.approvalframe.ApprovalFrame;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
 import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAccepted;
+import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAcceptedPK;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 /**
  * 
@@ -66,6 +69,16 @@ public class KrqdtApprovalFrame extends UkJpaEntity implements Serializable {
 	protected Object getKey() {
 		// TODO Auto-generated method stub
 		return krqdtApprovalFramePK;
+	}
+	
+	public static KrqdtApprovalFrame toEntity(ApprovalFrame domain, String phaseID) {
+		List<KafdtApproveAccepted> kafdtApproveAccepteds =  domain.getListApproveAccepted()
+				.stream().map(c -> KafdtApproveAccepted.toEntity(c, domain.getFrameID())).collect(Collectors.toList());
+		return new KrqdtApprovalFrame(
+				new KrqdtApprovalFramePK(domain.getCompanyID(), domain.getFrameID()),
+				phaseID,
+				domain.getDispOrder(),
+				kafdtApproveAccepteds);
 	}
 
 }

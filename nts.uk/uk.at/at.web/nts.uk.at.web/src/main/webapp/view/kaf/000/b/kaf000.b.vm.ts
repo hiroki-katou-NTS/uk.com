@@ -146,8 +146,8 @@ module nts.uk.at.view.kaf000.b.viewmodel {
 
             $.when(dfdAllReasonByAppID, dfdAllDataByAppID,dfdGetDetailCheck).done((dfdAllReasonByAppIDData, dfdAllDataByAppIDData,dfdGetDetailCheckData) => {
 
-                self.checkDisplayStart();
-                self.checkDisplayAction();
+                //self.checkDisplayStart();
+                //self.checkDisplayAction();
                 dfd.resolve();
             });
             return dfd.promise();
@@ -404,7 +404,7 @@ module nts.uk.at.view.kaf000.b.viewmodel {
             let dfd = $.Deferred<any>();
             service.approveApp(self.dataApplication()).done(function(data) {
                 nts.uk.ui.dialog.alert({ messageId: 'Msg_220' }).then(function() {
-                    if (data.length != 0) {
+                    if (!data) {
                         nts.uk.ui.dialog.info({ messageId: 'Msg_392' });
                     }
                 });

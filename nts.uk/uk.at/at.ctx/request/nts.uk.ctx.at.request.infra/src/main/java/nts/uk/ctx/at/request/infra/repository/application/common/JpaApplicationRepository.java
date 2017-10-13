@@ -18,12 +18,9 @@ import nts.uk.ctx.at.request.dom.application.common.ReflectPerScheReason;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerEnforce;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanPerState;
 import nts.uk.ctx.at.request.dom.application.common.ReflectPlanScheReason;
-import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplicationPK;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
-import nts.uk.ctx.at.request.infra.repository.application.common.appapprovalphase.JpaAppApprovalPhaseRepository;
-import nts.uk.ctx.at.request.infra.repository.application.common.approvalframe.JpaApprovalFrameRepository;
 
 @Stateless
 public class JpaApplicationRepository extends JpaRepository implements ApplicationRepository {
@@ -58,40 +55,6 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 				EnumAdaptor.valueOf(entity.reflectPerEnforce,ReflectPlanPerEnforce.class),
 				entity.startDate,
 				entity.endDate,
-				entity.appApprovalPhases.stream().map(c -> JpaAppApprovalPhaseRepository.toDomain(c)).collect(Collectors.toList()));
-	}
-	private KafdtApplication toEntity(Application domain) {
-		String applicationReason = domain.getApplicationReason().v();
-		String appReasonID = "";
-		String appReason = "";
-		if (applicationReason.indexOf(SEPERATE_REASON_STRING) != -1) {
-			appReasonID = applicationReason.split(SEPERATE_REASON_STRING)[0];
-			appReason = applicationReason.substring(appReasonID.length() + SEPERATE_REASON_STRING.length());
-		}
-		return new KafdtApplication(
-				new KafdtApplicationPK(
-					domain.getCompanyID(), 
-					domain.getApplicationID()), 
-				domain.getVersion(),
-				appReasonID,
-				domain.getPrePostAtr().value, 
-				domain.getInputDate() , 
-				domain.getEnteredPersonSID(),
-				domain.getReversionReason().v(), 
-				domain.getApplicationDate(), 
-				appReason,
-				domain.getApplicationType().value, 
-				domain.getApplicantSID(), 
-				domain.getReflectPlanScheReason().value,
-				domain.getReflectPlanTime(), 
-				domain.getReflectPlanState().value, 
-				domain.getReflectPlanEnforce().value,
-				domain.getReflectPerScheReason().value, 
-				domain.getReflectPerTime(), domain.getReflectPerState().value,
-				domain.getReflectPerEnforce().value, 
-				domain.getStartDate(), 
-				domain.getEndDate(),
-				null,null,
 				null);
 	}
 
@@ -138,7 +101,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	 */
 	@Override
 	public void addApplication(Application application) {
-		this.commandProxy().insert(toEntity(application));
+		this.commandProxy().insert(KafdtApplication.toEntity(application));
 
 	}
 
@@ -147,9 +110,8 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 	 */
 	@Override
 	public void updateApplication(Application application) {
-		KafdtApplication newEntity = toEntity(application);
-		KafdtApplication updateEntity = this.queryProxy().find(newEntity.kafdtApplicationPK, KafdtApplication.class)
-				.get();
+		KafdtApplication newEntity = KafdtApplication.toEntity(application);
+		KafdtApplication updateEntity = this.queryProxy().find(newEntity.kafdtApplicationPK, KafdtApplication.class).get();
 		updateEntity.appReasonId = newEntity.appReasonId;
 		updateEntity.prePostAtr = newEntity.prePostAtr;
 		updateEntity.inputDate = newEntity.inputDate;
@@ -169,6 +131,7 @@ public class JpaApplicationRepository extends JpaRepository implements Applicati
 		updateEntity.reflectPerEnforce = newEntity.reflectPerEnforce;
 		updateEntity.startDate = newEntity.startDate;
 		updateEntity.endDate = newEntity.endDate;
+		updateEntity.appApprovalPhases = newEntity.appApprovalPhases;
 		this.commandProxy().update(updateEntity);
 	}
 

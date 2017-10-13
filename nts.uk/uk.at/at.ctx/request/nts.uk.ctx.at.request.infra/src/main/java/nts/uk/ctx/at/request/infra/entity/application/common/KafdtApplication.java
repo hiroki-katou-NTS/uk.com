@@ -3,6 +3,7 @@ package nts.uk.ctx.at.request.infra.entity.application.common;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -20,6 +21,7 @@ import javax.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.at.request.dom.application.common.Application;
 import nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase.KrqdtAppApprovalPhase;
 import nts.uk.ctx.at.request.infra.entity.application.lateorleaveearly.KrqdtAppLateOrLeave;
 import nts.uk.ctx.at.request.infra.entity.application.stamp.KrqdpAppStamp;
@@ -156,5 +158,42 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	@Override
 	protected Object getKey() {
 		return kafdtApplicationPK;
+	}
+	
+	private static final String SEPERATE_REASON_STRING = ":";
+	public static KafdtApplication toEntity(Application domain) {
+		String applicationReason = domain.getApplicationReason().v();
+		String appReasonID = "";
+		String appReason = "";
+		if (applicationReason.indexOf(SEPERATE_REASON_STRING) != -1) {
+			appReasonID = applicationReason.split(SEPERATE_REASON_STRING)[0];
+			appReason = applicationReason.substring(appReasonID.length() + SEPERATE_REASON_STRING.length());
+		}
+		return new KafdtApplication(
+			new KafdtApplicationPK(
+				domain.getCompanyID(), 
+				domain.getApplicationID()), 
+			domain.getVersion(),
+			appReasonID,
+			domain.getPrePostAtr().value, 
+			domain.getInputDate() , 
+			domain.getEnteredPersonSID(),
+			domain.getReversionReason().v(), 
+			domain.getApplicationDate(), 
+			appReason,
+			domain.getApplicationType().value, 
+			domain.getApplicantSID(), 
+			domain.getReflectPlanScheReason().value,
+			domain.getReflectPlanTime(), 
+			domain.getReflectPlanState().value, 
+			domain.getReflectPlanEnforce().value,
+			domain.getReflectPerScheReason().value, 
+			domain.getReflectPerTime(), domain.getReflectPerState().value,
+			domain.getReflectPerEnforce().value, 
+			domain.getStartDate(), 
+			domain.getEndDate(),
+			domain.getListPhase().stream().map(c -> KrqdtAppApprovalPhase.toEntity(c)).collect(Collectors.toList()),
+			null,
+			null);
 	}
 }

@@ -2,6 +2,7 @@ package nts.uk.ctx.at.request.infra.entity.application.common.appapprovalphase;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,8 +16,12 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.at.request.dom.application.common.appapprovalphase.AppApprovalPhase;
 import nts.uk.ctx.at.request.infra.entity.application.common.KafdtApplication;
 import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFrame;
+import nts.uk.ctx.at.request.infra.entity.application.common.approvalframe.KrqdtApprovalFramePK;
+import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAccepted;
+import nts.uk.ctx.at.request.infra.entity.application.common.approveaccepted.KafdtApproveAcceptedPK;
 import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
@@ -73,8 +78,18 @@ public class KrqdtAppApprovalPhase extends UkJpaEntity implements Serializable {
 		return krqdtAppApprovalPhasePK;
 	}
 
-
-
-	
+	public static KrqdtAppApprovalPhase toEntity(AppApprovalPhase domain) {
+		List<KrqdtApprovalFrame> approvalFrames = domain.getListFrame().stream()
+				.map(x -> KrqdtApprovalFrame.toEntity(x, domain.getPhaseID())).collect(Collectors.toList());
+		
+		return new KrqdtAppApprovalPhase (
+			new KrqdtAppApprovalPhasePK(domain.getCompanyID(), domain.getPhaseID()),
+			domain.getAppID(),
+			domain.getApprovalForm().value,
+			domain.getDispOrder(),
+			domain.getApprovalATR().value,
+			approvalFrames
+		);
+	}
 
 }

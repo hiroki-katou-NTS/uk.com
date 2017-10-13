@@ -74,10 +74,6 @@ public class JpaApprovalFrameRepository extends JpaRepository implements Approva
 				.setParameter("companyID", companyID)
 				.setParameter("phaseID", phaseID)
 				.getList(c -> toDomain(c));
-		List<KrqdtApprovalFrame> list1 = this.queryProxy().query(SELECT_BY_PHASE_ID, KrqdtApprovalFrame.class)
-				.setParameter("companyID", companyID)
-				.setParameter("phaseID", phaseID)
-				.getList();
 		return list;
 	}
 
