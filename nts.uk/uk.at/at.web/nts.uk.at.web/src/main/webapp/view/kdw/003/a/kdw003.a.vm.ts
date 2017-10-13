@@ -522,7 +522,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     tempList.push(header);
                 });
             }
-            self.dislayHeaderText();
+            self.dislayNumberHeaderText();
             _.forEach(self.optionalHeader, (header) => {
                 tempList.push(header);
             });
@@ -548,10 +548,9 @@ module nts.uk.at.view.kdw003.a.viewmodel {
                     return header.columnKey === "picture-person";
                 });
             }
-            debugger;
         }
 
-        dislayHeaderText() {
+        dislayNumberHeaderText() {
             var self = this;
             if (self.showHeaderNumber()) {
                 self.optionalHeader.map((header) => {
