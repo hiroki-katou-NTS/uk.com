@@ -20,6 +20,7 @@ module nts.uk.at.view.kdw003.a.viewmodel {
     ];
 
     export class ScreenModel {
+        legendOptions: any;
         //grid user setting
         cursorMoveDirections: KnockoutObservableArray<any> = ko.observableArray([
             { code: 0, name: "縦" },
@@ -80,6 +81,16 @@ module nts.uk.at.view.kdw003.a.viewmodel {
 
         constructor() {
             var self = this;
+            self.legendOptions = {
+                items: [
+                    { colorCode: '', labelText: '手修正（本人）' },
+                    { colorCode: '', labelText: '手修正（他人）' },
+                    { colorCode: '', labelText: '申請反映' },
+                    { colorCode: '', labelText: '計算値' },
+                    { colorCode: '', labelText: nts.uk.resource.getText("KDW003_44") },
+                    { colorCode: '', labelText: nts.uk.resource.getText("KDW003_45") },
+                ]
+            };
             self.dateRanger.subscribe((dateRange) => {
                 if (dateRange) {
                     self.selectedDate(dateRange.startDate);

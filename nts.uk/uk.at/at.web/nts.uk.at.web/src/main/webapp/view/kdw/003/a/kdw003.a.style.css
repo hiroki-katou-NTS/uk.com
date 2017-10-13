@@ -33,6 +33,12 @@
 	margin-top: 3px;
 }
 
+#btn-legend {
+	float: right;
+	margin-top: 3px;
+	margin-right: 10px;
+}
+
 .grid-container {
 	margin: 15px 0 0 0px;
 }
@@ -85,6 +91,10 @@
 
 #vacationRemaining-content button {
 	width: 110px;
+}
+
+.nts-legendbutton-panel {
+	z-index: 2 !IMPORTANT;
 }
 /* #contents-area, #function-content {width: 1280px;}
 #left-content{width: 100px; height: 500px; float: left;} */
