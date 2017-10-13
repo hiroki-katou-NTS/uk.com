@@ -13,6 +13,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.time.GeneralDate;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.workflow.dom.adapter.bs.PersonAdapter;
+import nts.uk.ctx.workflow.dom.adapter.bs.SyJobTitleAdapter;
 import nts.uk.ctx.workflow.dom.adapter.bs.dto.PersonImport;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceApproverAdapter;
 import nts.uk.ctx.workflow.dom.adapter.workplace.WorkplaceImport;
@@ -21,11 +22,13 @@ import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApprovalPh
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApprovalRootOutput;
 import nts.uk.ctx.workflow.dom.approvermanagement.approvalroot.output.ApproverInfo;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApplicationType;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalForm;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhase;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ApprovalPhaseRepository;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.CompanyApprovalRootRepository;
+import nts.uk.ctx.workflow.dom.approvermanagement.workroot.ConfirmPerson;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.EmploymentRootAtr;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRoot;
 import nts.uk.ctx.workflow.dom.approvermanagement.workroot.PersonApprovalRootRepository;
@@ -56,7 +59,8 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 	private WorkplaceApproverAdapter wpAdapter;
 	@Inject
 	private PersonAdapter psAdapter;
-
+	@Inject
+	private SyJobTitleAdapter jobTitle;
 	@Override
 	public Map<String, WpApproverAsAppOutput> lstEmps(String companyID, GeneralDate baseDate, List<String> lstEmpIds,
 			int rootAtr, List<String> lstApps) {
@@ -64,7 +68,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 		Map<String, WpApproverAsAppOutput> appOutput = new HashMap<>();
 
 		// ドメインモデル「会社別就業承認ルート」を取得する(lấy dữ liệu domain 「会社別就業承認ルート」)
-		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDateOfCommon(companyID, baseDate);
+		List<CompanyApprovalRoot> lstComs = comRootRepository.findByBaseDate(companyID, baseDate);
 		// ドメインモデル「職場別就業承認ルート」を取得する(lấy dữ liệu domain 「職場別就業承認ルート」)
 		List<WorkplaceApprovalRoot> lstWps = wpRootRepository.findAllByBaseDate(companyID, baseDate);
 		// ドメインモデル「個人別就業承認ルート」を取得する(lấy dữ liệu domain「個人別就業承認ルート」)
@@ -116,14 +120,11 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 				List<ApprovalPhase> phases = phaseRepo.getAllApprovalPhasebyCode(companyID, x.getBranchId());
 
 				// check nếu có thì add các phase còn ko thì đưa ra thông báo
-				if (phases.size() == 0) {
-					System.out.println(
-							" branchId atrr of WWFMT_APPROVAL_PHASE table is not equal WWFMT_PS_APPROVAL_ROOT or WWFMT_WP_APPROVAL_ROOT");
+				if (!CollectionUtil.isEmpty(phases)) {
+					phases.stream().forEach(y -> {
+						approvalPhases.add(y);
+					});
 				}
-				phases.stream().forEach(y -> {
-					approvalPhases.add(y);
-				});
-
 			});
 
 			List<ApprovalRootOutput> adjustmentData = approvalService.adjustmentData(companyID, empId, baseDate,
@@ -132,9 +133,13 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			adjustmentData.stream().forEach(z -> {
 				List<ApprovalPhase> phaseLst = phaseRepo.getAllApprovalPhasebyCode(companyID, z.getBranchId());
 				phaseLst.stream().forEach(w -> {
-					List<ApproverInfo> approvers = w.getApprovers().stream().map(b -> new ApproverInfo(null, b.getApproverId(),
-									b.getApprovalPhaseId(), true, b.getOrderNumber(), null,1))
-							.collect(Collectors.toList());
+					List<ApproverInfo> approvers = w.getApprovers().stream().map(b -> new ApproverInfo(b.getJobTitleId(),
+							b.getEmployeeId(),
+							b.getApprovalPhaseId(), 
+							b.getConfirmPerson() == ConfirmPerson.CONFIRM ? true : false, 
+							b.getOrderNumber(),
+							null,
+							b.getApprovalAtr().value)).collect(Collectors.toList());
 					adjustmentPhase
 							.add(new ApprovalPhaseOutput(w.getCompanyId(), w.getBranchId(), w.getApprovalPhaseId(),
 									w.getApprovalForm().value, w.getBrowsingPhase(), w.getOrderNumber(), approvers));
@@ -145,7 +150,13 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			for (ApprovalPhaseOutput phase : adjustmentPhase) {
 				List<EmployeeOrderApproverAsAppOutput> employIn = new ArrayList<>();
 				for (ApproverInfo appInfo : phase.getApprovers()) {
-					String name = psAdapter.getPersonInfo(appInfo.getSid()).getEmployeeName();
+					String name = "";
+					if(appInfo.getApprovalAtr() == ApprovalAtr.PERSON.value) {
+						name = psAdapter.getPersonInfo(appInfo.getSid()).getEmployeeName();
+					}else {
+						name = jobTitle.findJobTitleByPositionId(companyID, appInfo.getJobId(), baseDate).getPositionName();
+					}
+					
 					employIn.add(new EmployeeOrderApproverAsAppOutput(appInfo.getOrderNumber(),name));
 				}
 				ApproverAsApplicationInforOutput appAsAppInfor = new ApproverAsApplicationInforOutput(
@@ -156,7 +167,7 @@ public class EmployeeRegisterApprovalRootImpl implements EmployeeRegisterApprova
 			}
 		} else {
 			// 「マスタなし」を表示し、出力対象として追加する(hiển thị là 「マスタなし」 ,và thêm vào dữ liệu output)
-			ApproverAsApplicationInforOutput phase = new ApproverAsApplicationInforOutput(apptyle, appTypeName, null);
+			ApproverAsApplicationInforOutput phase = new ApproverAsApplicationInforOutput(apptyle, null, null);
 			phaseInfors.add(phase);
 		}
 		PersonImport ps = psAdapter.getPersonInfo(empId);

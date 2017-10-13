@@ -8,7 +8,7 @@ import nts.arc.time.GeneralDate;
 @Value
 public class EmployeeApproverRootQuery {
 	private GeneralDate baseDate;
-	private List<String> lstEmpIds;
+	private List<EmployeeQuery> lstEmpIds;
 	private List<String> lstApps;
 	private int rootAtr;
 
