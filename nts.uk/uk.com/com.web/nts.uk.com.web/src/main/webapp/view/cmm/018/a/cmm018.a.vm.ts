@@ -397,12 +397,12 @@ module nts.uk.com.view.cmm018.a {
                 let dfd = $.Deferred();
                 let param: vmbase.ParamDto = new vmbase.ParamDto(vmbase.RootType.COMPANY,'','');
                 servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {
-                    block.clear();  
                     if(data == null || data === undefined || data.lstCompany.length == 0){
                         self.historyStr('');
                         self.listHistory([]);
                         self.cpA([]);
                         self.enableRegister(true); 
+                        block.clear();
                         dfd.resolve();
                         return dfd.promise();
                     } 
@@ -430,6 +430,7 @@ module nts.uk.com.view.cmm018.a {
                         self.currentCode(self.listHistory()[0].id);
                     }
                     self.dataI(null);
+                    block.clear();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -445,12 +446,12 @@ module nts.uk.com.view.cmm018.a {
                 let param: vmbase.ParamDto = new vmbase.ParamDto(vmbase.RootType.WORKPLACE,self.workplaceId(),'');
                 self.lstWorkplace([]);
                 servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) { 
-                    block.clear();  
                     if(data == null || data === undefined || data.lstWorkplace.length == 0){
                         self.historyStr('');
                         self.listHistory([]);
                         self.cpA([]);
                         self.enableRegister(false);
+                        block.clear();
                         dfd.resolve();
                         return dfd.promise();
                     } 
@@ -482,6 +483,7 @@ module nts.uk.com.view.cmm018.a {
                         self.currentCode(self.listHistory()[0].id);
                     }
                     self.dataI(null);
+                    block.clear();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -496,12 +498,12 @@ module nts.uk.com.view.cmm018.a {
                 let dfd = $.Deferred();
                 let param: vmbase.ParamDto = new vmbase.ParamDto(vmbase.RootType.PERSON,'',self.selectedItem());
                 servicebase.getAllDataCom(param).done(function(data: vmbase.DataFullDto) {
-                    block.clear(); 
                     if(data == null || data === undefined || data.lstPerson.length == 0){
                         self.historyStr('');
                         self.listHistory([]);
                         self.cpA([]);
                         self.enableRegister(false); 
+                        block.clear();
                         dfd.resolve();
                         return dfd.promise();
                     } 
@@ -530,6 +532,7 @@ module nts.uk.com.view.cmm018.a {
                         self.currentCode(self.listHistory()[0].id);
                     }
                     self.dataI(null);
+                    block.clear();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -567,6 +570,7 @@ module nts.uk.com.view.cmm018.a {
                         nts.uk.ui.dialog.alertError({ messageId: "Msg_181" });
                         block.clear();
                         self.enableDelete(true);
+                        block.clear();
                         return;
                     } 
                     let appType = null;
@@ -627,11 +631,11 @@ module nts.uk.com.view.cmm018.a {
                 }
                 setShared('CMM018I_PARAM', paramI);
                 modal("/view/cmm/018/i/index.xhtml").onClosed(function(){
-                    block.clear();
                     //Xu ly sau khi dong dialog I
                     let data: vmbase.IData = getShared('CMM018I_DATA');
                     if(data == null){
                         self.enableDelete(true);
+                        block.clear();
                         return;
                     }
                     self.enableRegister(true);
@@ -745,6 +749,7 @@ module nts.uk.com.view.cmm018.a {
                     self.listHistory.valueHasMutated()
                     self.cpA.valueHasMutated();
                     self.currentCode(-1);
+                    block.clear();
                 });
             }
             /**
@@ -1088,7 +1093,6 @@ module nts.uk.com.view.cmm018.a {
                                     checkAddHist,self.workplaceId(), self.selectedItem(),
                                     history.startDate, history.endDate,self.dataI(), listType, root);
                 servicebase.updateRoot(data).done(function(){
-                    block.clear();
                     self.enableDelete(true);
                     if(self.tabSelected() == vmbase.RootType.COMPANY){
                        self.getDataCompany();
@@ -1097,6 +1101,7 @@ module nts.uk.com.view.cmm018.a {
                     }else{
                        self.getDataPerson();
                     }
+                    block.clear();
                     nts.uk.ui.dialog.info({ messageId: "Msg_15" });
                 });
             }
@@ -1471,9 +1476,9 @@ module nts.uk.com.view.cmm018.a {
                 let dfd = $.Deferred();
                 let param: vmbase.ParamDto = new vmbase.ParamDto(0,'','');
                 servicebase.getAllDataPr(param).done(function(data: vmbase.CommonApprovalRootDto) {    
-                    block.clear();
                     if(data == null || data === undefined){
                         self.dataSourceB();
+                        block.clear();
                         return;
                     }
                     self.dataSourceB(data);
@@ -1502,6 +1507,7 @@ module nts.uk.com.view.cmm018.a {
                     }else{
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
                     }
+                    block.clear();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -1515,9 +1521,9 @@ module nts.uk.com.view.cmm018.a {
                 let dfd = $.Deferred();
                 let param: vmbase.ParamDto = new vmbase.ParamDto(1,self.workplaceIdB(),'');
                 servicebase.getAllDataPr(param).done(function(data: vmbase.CommonApprovalRootDto) {    
-                    block.clear();
                     if(data == null || data === undefined){
                         self.dataSourceB();
+                        block.clear();
                         return;
                     }
                     self.dataSourceB(data);
@@ -1547,6 +1553,7 @@ module nts.uk.com.view.cmm018.a {
                     }else{
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
                     } 
+                    block.clear();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -1560,9 +1567,9 @@ module nts.uk.com.view.cmm018.a {
                 let dfd = $.Deferred();
                 let param: vmbase.ParamDto = new vmbase.ParamDto(2,'',self.employeeId());
                 servicebase.getAllDataPr(param).done(function(data: vmbase.CommonApprovalRootDto) {    
-                    block.clear();
                     if(data == null || data === undefined){
                         self.dataSourceB();
+                        block.clear();
                         return;
                     }
                     self.dataSourceB(data);
@@ -1591,6 +1598,7 @@ module nts.uk.com.view.cmm018.a {
                     }else{
                         __viewContext.viewModel.viewmodelA.enableRegister(false);
                     } 
+                    block.clear();
                     dfd.resolve();
                     });
                 return dfd.promise();
