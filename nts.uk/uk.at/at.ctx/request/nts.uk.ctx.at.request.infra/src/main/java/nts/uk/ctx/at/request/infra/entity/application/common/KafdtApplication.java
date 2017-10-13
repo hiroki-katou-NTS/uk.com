@@ -148,7 +148,11 @@ public class KafdtApplication extends UkJpaEntity implements Serializable {
 	@OneToMany(mappedBy="application", cascade = CascadeType.ALL)
 	public List<KrqdtAppApprovalPhase> appApprovalPhases;
 	
-	@OneToOne(targetEntity=KrqdtAppStamp.class, cascade = CascadeType.ALL, mappedBy = "kafdtApplication", orphanRemoval = true)
+	@OneToOne(targetEntity=KrqdtAppStamp.class, cascade = CascadeType.ALL, orphanRemoval = true)
+	@PrimaryKeyJoinColumns({
+		@PrimaryKeyJoinColumn(name="CID",referencedColumnName="CID"),
+		@PrimaryKeyJoinColumn(name="APP_ID",referencedColumnName="APP_ID")
+	})
 	public KrqdtAppStamp krqdtAppStamp;
 	
 	@OneToOne(targetEntity=KrqdtAppLateOrLeave.class, cascade = CascadeType.ALL, mappedBy = "kafdtApplication", orphanRemoval = true)
