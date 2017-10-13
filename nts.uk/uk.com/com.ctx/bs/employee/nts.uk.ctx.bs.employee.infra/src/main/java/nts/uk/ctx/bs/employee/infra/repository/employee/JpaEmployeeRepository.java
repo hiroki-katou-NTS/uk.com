@@ -79,7 +79,10 @@ public class JpaEmployeeRepository extends JpaRepository implements EmployeeRepo
 	public final String GET_EMPLOYEE_INFO_TO_DELETE = "SELECT c.employeeCode, d.personName FROM BsymtEmployee c "
 			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId " + " WHERE c.bsymtEmployeePk.sId = :sId";
 	
-	public final String GET_ALL_EMPLOYEE_INFO_TO_DELETE = "SELECT c.employeeCode, d.personName FROM BsymtEmployee c "
+	public final String GET_ALL_EMPLOYEE_INFO_TO_DELETE = 
+			" SELECT c.employeeCode, d.personName "
+			+ " FROM BsymtDeleteEmpManagement a "
+			+ " JOIN BsymtEmployee c ON a.bsymtDeleteEmpManagementPK.sid =  c.bsymtEmployeePk.sId "
 			+ " JOIN BpsmtPerson d ON c.personId = d.bpsmtPersonPk.pId ";
 
 	/**

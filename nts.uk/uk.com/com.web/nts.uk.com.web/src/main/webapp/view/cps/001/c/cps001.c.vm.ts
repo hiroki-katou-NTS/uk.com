@@ -2,6 +2,7 @@ module cps001.c.vm {
     import info = nts.uk.ui.dialog.info;
     import alert = nts.uk.ui.dialog.alert;
     import text = nts.uk.resource.getText;
+    import clearError = nts.uk.ui.errors.clearAll;
 
     let __viewContext: any = window['__viewContext'] || {},
         block = window["nts"]["uk"]["ui"]["block"]["grayout"],
@@ -12,20 +13,46 @@ module cps001.c.vm {
 
         listEmpDelete: KnockoutObservableArray<IEmployees> = ko.observableArray([]);
         currentEmployee: KnockoutObservable<Employee> = ko.observable(new Employee());
-        detail: KnockoutObservable<EmployeeInfo> = ko.observable(new EmployeeInfo({ datedelete: '', reason: '', newCode: '', newName:'' }));
+        detail: KnockoutObservable<IEmployeeInfo> = ko.observable(null);
 
         constructor() {
             let self = this,
-            currentEmployee = self.currentEmployee(),
-            detail = self.detail();
+                currentEmployee = self.currentEmployee(),
+                listEmpDelete = self.listEmpDelete(),
+                detail = self.detail();
 
-            
+            currentEmployee.code.subscribe(x => {
+                if (x) {
+                    // clear all error message
+                    clearError();
+                    service.getDetail(x).done((data: IEmployeeInfo) => {
+                        if (data) {
+                            self.detail(data);
+                        }
+                    });
+                }
+            });
+
+
+
             self.start();
         }
 
         start() {
-            let self = this;
+            let self = this,
+                currentEmployee = self.currentEmployee();
+            self.listEmpDelete.removeAll();
+            service.getData().done((data: Array<IEmployees>) => {
+                if (data && data.length) {
+                    self.listEmpDelete(data);
+                    currentEmployee.code(data[0].code);
+                }
+            });
 
+        }
+
+        saveData() {
+            let self = this;
         }
 
 
@@ -35,11 +62,11 @@ module cps001.c.vm {
         code: string;
         name: string;
     }
-    
-     class Employee {
+
+    class Employee {
         code: KnockoutObservable<string> = ko.observable('');
         name: KnockoutObservable<string> = ko.observable('');
-         
+
         constructor(param?: IEmployees) {
             let self = this;
             if (param) {
@@ -48,15 +75,15 @@ module cps001.c.vm {
             }
         }
     }
-    
-      interface IEmployeeInfo {
+
+    interface IEmployeeInfo {
         datedelete: string;
         reason: string;
         newCode: string;
         newName: string;
     }
-    
-     class EmployeeInfo {
+
+    class EmployeeInfo {
         datedelete: KnockoutObservable<string> = ko.observable('');
         reason: KnockoutObservable<string> = ko.observable('');
         newCode: KnockoutObservable<string> = ko.observable('');

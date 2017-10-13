@@ -9,7 +9,7 @@ module cps001.b.vm {
 
     export class ViewModel {
 
-        empDelete: KnockoutObservable<ModelDelete> = ko.observable(new ModelDelete({ employeeCode: '', personName: '', reason: '' }));
+        empDelete: KnockoutObservable<ModelDelete> = ko.observable(new ModelDelete({ code: '', name: '', reason: '' }));
 
         constructor() {
             let self = this,
@@ -21,8 +21,8 @@ module cps001.b.vm {
                 // Gọi service tải dữ liệu employee
                 service.getEmployee(employeeIdq).done((data: IModelDto) => {
                     if (data) {
-                        empDelete.employeeCode(data.employeeCode);
-                        empDelete.personName(data.personName);
+                        empDelete.code(data.code);
+                        empDelete.name(data.name);
                     }
                 });
             }
@@ -55,22 +55,22 @@ module cps001.b.vm {
     }
 
     interface IModelDto {
-        employeeCode: string;
-        personName: string;
+        code: string;
+        name: string;
         reason: string;
     }
 
     class ModelDelete {
-        employeeCode: KnockoutObservable<string> = ko.observable('');
-        personName: KnockoutObservable<string> = ko.observable('');
+        code: KnockoutObservable<string> = ko.observable('');
+        name: KnockoutObservable<string> = ko.observable('');
         reason: KnockoutObservable<string> = ko.observable('');
 
         constructor(param: IModelDto) {
             let self = this;
 
             if (param) {
-                self.employeeCode(param.employeeCode || '');
-                self.personName(param.personName || '');
+                self.code(param.code || '');
+                self.name(param.name || '');
                 self.reason(param.reason || '');
             }
         }

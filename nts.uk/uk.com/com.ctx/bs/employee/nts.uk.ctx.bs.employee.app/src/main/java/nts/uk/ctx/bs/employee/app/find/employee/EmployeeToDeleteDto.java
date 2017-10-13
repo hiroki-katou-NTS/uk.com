@@ -7,9 +7,9 @@ import lombok.Data;
 @AllArgsConstructor
 public class EmployeeToDeleteDto {
 
-	private String employeeCode;
+	private String code;
 
-	private String personName;
+	private String name;
 
 	public static EmployeeToDeleteDto fromDomain(Object[] obj) {
 		return new EmployeeToDeleteDto(obj[0].toString(), obj[1].toString());

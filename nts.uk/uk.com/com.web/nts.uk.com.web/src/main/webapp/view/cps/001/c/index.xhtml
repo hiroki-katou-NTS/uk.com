@@ -38,16 +38,15 @@
 								searchMode: 'filter',
 								comId:'list_employees', 
 								items: ko.observableArray([]),
-								selected: ko.observable(undefined),
-								selectedKey: 'id',
+								selected: 'code',
+								selectedKey: 'code',
 								fields: ['name', 'code']}"></div>
 						<table id="list_employees"
 							data-bind="ntsGridList: {								
 								rows: 20,
-								dataSource: listEmpDelete,
-								primaryKey: 'id',
+								dataSource: listEmpDelete ,
+								primaryKey: 'code',
 								columns: [
-					                { headerText: '名称', key: 'id', width: 0, hidden: true }, 
 					                { headerText: nts.uk.resource.getText('CPS001_52'), key: 'code', width: 140 }, 
 					                { headerText: nts.uk.resource.getText('CPS001_53'), key: 'name', width: 160 }, 
 								],
