@@ -18,7 +18,7 @@ import nts.uk.ctx.at.record.dom.optitem.calculation.SelectedAttendanceItemGetMem
 public class SelectedAttendanceItemDto implements SelectedAttendanceItemGetMemento {
 
 	/** The attendance item id. */
-	private String id;
+	private int id;
 
 	/** The operator. */
 	private int operator;
@@ -30,7 +30,7 @@ public class SelectedAttendanceItemDto implements SelectedAttendanceItemGetMemen
 	 * SelectedAttendanceItemGetMemento#getAttItemId()
 	 */
 	@Override
-	public String getAttItemId() {
+	public int getAttItemId() {
 		return this.id;
 	}
 
