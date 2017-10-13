@@ -52,6 +52,7 @@ import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.ScheduleManagementCo
 import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.ScheduleManagementControlRepository;
 import nts.uk.ctx.at.schedule.dom.schedulemanagementcontrol.UseAtr;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.BasicWorkSetting;
+import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWork;
 import nts.uk.ctx.at.schedule.dom.shift.basicworkregister.WorkplaceBasicWorkRepository;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompany;
 import nts.uk.ctx.at.schedule.dom.shift.businesscalendar.daycalendar.CalendarCompanyRepository;
@@ -120,7 +121,7 @@ public class ScheduleCreatorExecutionCommandHandler
 	/** The calendar company repository. */
 	@Inject
 	private CalendarCompanyRepository calendarCompanyRepository;
-	
+		
 	/** The setter. */
 	private TaskDataSetter setter;
 	
@@ -358,6 +359,7 @@ public class ScheduleCreatorExecutionCommandHandler
 		this.getBasicWorkSetting(personalWorkScheduleCreSet);
 	}
 	
+	
 	/**
 	 * Gets the basic work setting.
 	 *
@@ -371,7 +373,7 @@ public class ScheduleCreatorExecutionCommandHandler
 				.getBusinessDayCalendar(personalWorkScheduleCreSet);
 		if (optionalBusinessDayCalendar.isPresent()) {
 			this.getWorktypeCode(personalWorkScheduleCreSet);
-			return this.getBasicWorkSetingByWorkdayDivision(personalWorkScheduleCreSet,
+			return this.getBasicWorkSettingByWorkdayDivision(personalWorkScheduleCreSet,
 					optionalBusinessDayCalendar.get());
 		}
 		return Optional.empty();
@@ -400,8 +402,8 @@ public class ScheduleCreatorExecutionCommandHandler
 	 * Convert worktype code by day of week.
 	 */
 	// 個人曜日別と在職状態から「勤務種類コード」を変換する
-	private void convertWorktypeCodeByDayOfWeek() {
-
+	private String convertWorktypeCodeByDayOfWeek() {
+		return "001";
 	}
 	
 	/**
@@ -441,13 +443,14 @@ public class ScheduleCreatorExecutionCommandHandler
 	}
 	
 	/**
-	 * Gets the basic work seting by workday division.
+	 * Gets the basic work setting by work day division.
 	 *
-	 * @param workdayDivision the workday division
-	 * @return the basic work seting by workday division
+	 * @param personalWorkScheduleCreSet the personal work schedule cre set
+	 * @param workdayDivision the work day division
+	 * @return the basic work setting by work day division
 	 */
 	// 「稼働日区分」に対応する「基本勤務設定」を取得する
-	private Optional<BasicWorkSetting> getBasicWorkSetingByWorkdayDivision(
+	private Optional<BasicWorkSetting> getBasicWorkSettingByWorkdayDivision(
 			PersonalWorkScheduleCreSet personalWorkScheduleCreSet, int workdayDivision) {
 		// check 営業日カレンダーの参照先 is 職場 (referenceBusinessDayCalendar is WORKPLACE)
 		if (personalWorkScheduleCreSet.getWorkScheduleBusCal().getReferenceBusinessDayCalendar()
@@ -458,9 +461,11 @@ public class ScheduleCreatorExecutionCommandHandler
 
 			if (optionalWorkplace.isPresent()) {
 				WorkplaceDto workplaceDto = optionalWorkplace.get();
-				Optional<BasicWorkSetting> optionalBasicWorkSetting = this
-						.getBasicWorkSettingByWkpIds(workplaceDto.getWorkplaceId(),
-								workdayDivision);
+
+				List<String> workplaceIds = this.findLelvelWorkplace(workplaceDto.getWorkplaceId());
+
+				return this.getBasicWorkSetting(workplaceIds, workdayDivision);
+
 			} else {
 
 				// add log error employee => 602
@@ -623,11 +628,11 @@ public class ScheduleCreatorExecutionCommandHandler
 	}
 	
 	/**
-	 * Gets the workday division by wkp.
+	 * Gets the work day division by wkp.
 	 *
 	 * @param employeeId the employee id
-	 * @param workplaceIds the workplace ids
-	 * @return the workday division by wkp
+	 * @param workplaceIds the work place ids
+	 * @return the work day division by wkp
 	 */
 	// 職場の稼働日区分を取得する
 	public Optional<Integer> getWorkdayDivisionByWkp(String employeeId, List<String> workplaceIds) {
@@ -662,4 +667,46 @@ public class ScheduleCreatorExecutionCommandHandler
 		return new BigDecimal(
 				baseDate.year() * MUL_YEAR + baseDate.month() * MUL_MONTH + baseDate.day());
 	}
+	
+	/**
+	 * Gets the basic work setting.
+	 *
+	 * @param workplaceIds the workplace ids
+	 * @param workdayAtr the workday atr
+	 * @return the basic work setting
+	 */
+	// 職場の基本勤務設定を取得する
+	private Optional<BasicWorkSetting> getBasicWorkSetting(List<String> workplaceIds,
+			int workdayAtr) {
+		for (String workplaceId : workplaceIds) {
+			Optional<WorkplaceBasicWork> optionalWorkplaceBasicWork = this.workplaceBasicWorkRepository
+					.findById(workplaceId);
+
+			// check exist data WorkplaceBasicWork
+			if (optionalWorkplaceBasicWork.isPresent()) {
+				return this.toBasicWorkSetting(optionalWorkplaceBasicWork.get(), workdayAtr);
+			}
+
+		}
+		return Optional.empty();
+	}
+	
+	/**
+	 * To basic work setting.
+	 *
+	 * @param domain the domain
+	 * @param workdayAtr the workday atr
+	 */
+	private Optional<BasicWorkSetting> toBasicWorkSetting(WorkplaceBasicWork domain,
+			int workdayAtr) {
+		for (BasicWorkSetting basicWorkSetting : domain.getBasicWorkSetting()) {
+			if (basicWorkSetting.getWorkdayDivision().value == workdayAtr) {
+				return Optional.ofNullable(basicWorkSetting);
+			}
+		}
+		return Optional.empty();
+	}
+	
 }
+
+
