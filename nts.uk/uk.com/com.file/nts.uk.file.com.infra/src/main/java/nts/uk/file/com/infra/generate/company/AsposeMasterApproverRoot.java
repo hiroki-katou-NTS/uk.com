@@ -1,6 +1,5 @@
 package nts.uk.file.com.infra.generate.company;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +45,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 	private final int numberRowOfPage = 52;
 
 	private final int maxRowOfApp = 5;
-	
+
 	private final int numberOfColumns = 13;
 
 	@Override
@@ -61,7 +60,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				if (dataSource.getMasterApproverRootOutput().getCompanyRootInfor() != null) {
 					Worksheet worksheet = worksheets.get(0);
 					// set up page prepare print
-					this.printPage(worksheet);
+					this.printPage(worksheet,dataSource);
 					this.printCompanyOfApproval(worksheets, dataSource);
 				}
 			} else {
@@ -72,7 +71,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				if (!dataSource.getMasterApproverRootOutput().getWorplaceRootInfor().isEmpty()) {
 
 					Worksheet workplaceSheet = worksheets.get(1);
-					this.printWorkPlacePage(workplaceSheet);
+					this.printWorkPlacePage(workplaceSheet, dataSource);
 					this.printWorkplace(worksheets, dataSource);
 				}
 			} else {
@@ -82,7 +81,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 			if (dataSource.isCheckPerson()) {
 				if (!dataSource.getMasterApproverRootOutput().getPersonRootInfor().isEmpty()) {
 					Worksheet personSheet = worksheets.get(2);
-					this.printPersonPage(personSheet);
+					this.printPersonPage(personSheet, dataSource);
 					this.printPerson(worksheets, dataSource);
 				}
 			} else {
@@ -106,11 +105,12 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 	 * @param worksheet
 	 * @param lstDeparmentInf
 	 */
-	private void printPage(Worksheet worksheet) {
+	private void printPage(Worksheet worksheet, MasterApproverRootOutputDataSource dataSource) {
 		// Set print page
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setFirstPageNumber(1);
 		pageSetup.setPrintArea("A1:N");
+		pageSetup.setHeader(0, "【会社】 " + dataSource.getHeader().getNameCompany());
 	}
 
 	/**
@@ -119,11 +119,12 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 	 * @param worksheet
 	 * @param lstDeparmentInf
 	 */
-	private void printWorkPlacePage(Worksheet worksheet) {
+	private void printWorkPlacePage(Worksheet worksheet, MasterApproverRootOutputDataSource dataSource) {
 		// Set print page
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setFirstPageNumber(1);
 		pageSetup.setPrintArea("A1:N");
+		pageSetup.setHeader(0, "【会社】 " + dataSource.getHeader().getNameCompany());
 	}
 
 	/**
@@ -132,11 +133,12 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 	 * @param worksheet
 	 * @param lstDeparmentInf
 	 */
-	private void printPersonPage(Worksheet worksheet) {
+	private void printPersonPage(Worksheet worksheet, MasterApproverRootOutputDataSource dataSource) {
 		// Set print page
 		PageSetup pageSetup = worksheet.getPageSetup();
 		pageSetup.setFirstPageNumber(1);
 		pageSetup.setPrintArea("A1:N");
+		pageSetup.setHeader(0, "【会社】 " + dataSource.getHeader().getNameCompany());
 	}
 
 	/**
@@ -201,7 +203,7 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 					// print App name
 					Cell nameApp = cells.get(firstRow, COLUMN_INDEX[1]);
 					nameApp.setValue(lstApproval.get(i).getAppTypeName());
-					for (int index = 1; index < numberOfColumns ; index++) {
+					for (int index = 1; index < numberOfColumns; index++) {
 						Cell oddCell = cells.get(firstRow, COLUMN_INDEX[index]);
 						setTitleStyle(oddCell);
 					}
@@ -434,7 +436,8 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 					setTitleStyle(sPName);
 				}
 				if (lstApproval.get(i).getLstApproval().get(j).getPersonName().size() < maxRowOfApp) {
-					for (int em = lstApproval.get(i).getLstApproval().get(j).getPersonName().size(); em <= maxRowOfApp; em++) {
+					for (int em = lstApproval.get(i).getLstApproval().get(j).getPersonName()
+							.size(); em <= maxRowOfApp; em++) {
 						// phase 1 set style
 						Cell sPName = cells.get(firstRow + em, COLUMN_INDEX[indexCol + 1]);
 						setTitleStyle(sPName);
@@ -791,12 +794,15 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 			} else {
 
 				// in ra name app , time app
-
-				cells.merge(firstRow, 1, numberOfRowMerge, 1, true);
+				if (numberOfRowMerge > 1) {
+					cells.merge(firstRow, 1, numberOfRowMerge, 1, true);
+				}
 				Cell appName = cells.get(firstRow, COLUMN_INDEX[1]);
 				appName.setValue(app.getAppTypeName());
 
-				cells.merge(firstRow, 2, numberOfRowMerge, 1, true);
+				if (numberOfRowMerge > 1) {
+					cells.merge(firstRow, 2, numberOfRowMerge, 1, true);
+				}
 				Cell timeName = cells.get(firstRow, COLUMN_INDEX[2]);
 				timeName.setValue(app.getStartDate() + "~" + app.getEndDate());
 
@@ -885,7 +891,9 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				ApprovalRootMaster appRootMaster = lstApp.get(i);
 				// phase 1
 				// phase Name
-				cells.merge(firstRow, colPhase, sizeOfForm, 1, true);
+				if (sizeOfForm > 1) {
+					cells.merge(firstRow, colPhase, sizeOfForm, 1, true);
+				}
 				Cell phaseName = cells.get(firstRow, COLUMN_INDEX[colPhase]);
 				phaseName.setValue(appRootMaster.getApprovalForm());
 
@@ -925,7 +933,9 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 				colPhase = colPhase + 2;
 				if (i == (numberOfPhase - 1)) {
 					for (int x = numberOfPhase; x < maxRowOfApp; x++) {
-						cells.merge(firstRow, colPhase, sizeOfForm, 1, true);
+						if (sizeOfForm > 1) {
+							cells.merge(firstRow, colPhase, sizeOfForm, 1, true);
+						}
 						for (int k = 0; k < sizeOfForm; k++) {
 							Cell sName = cells.get(firstRow + k, COLUMN_INDEX[colPhase]);
 							setTitleStyle(sName);
@@ -951,7 +961,9 @@ public class AsposeMasterApproverRoot extends AsposeCellsReportGenerator impleme
 
 				// phase 1
 				// phase Name
-				cells.merge(firstRow, colPhase, sizeOfForm, 1, true);
+				if (sizeOfForm > 1) {
+					cells.merge(firstRow, colPhase, sizeOfForm, 1, true);
+				}
 				Cell phaseName = cells.get(firstRow, COLUMN_INDEX[colPhase]);
 				phaseName.setValue(appRootMaster.getApprovalForm());
 
